@@ -235,7 +235,7 @@ const PopperSection: React.FC = () => {
       multiline: true,
       content: "这是一段多行文本，会自动换行显示。".repeat(5),
       width: 300,
-      height: 200,
+      height: 250,
     },
   ];
 
