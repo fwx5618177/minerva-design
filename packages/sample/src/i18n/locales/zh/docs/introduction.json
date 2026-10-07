@@ -1,0 +1,53 @@
+{
+  "title": "介绍",
+  "description": "Minerva 背后的设计理念、如何阅读组件页面，以及所有组件共同遵循的约定。",
+  "principles": {
+    "title": "设计原则",
+    "tokens": {
+      "title": "令牌驱动",
+      "text": "颜色、圆角和阴影都来自 CSS 自定义属性，因此每个组件都会跟随当前主题，包括你自定义的主题。"
+    },
+    "accessible": {
+      "title": "默认无障碍",
+      "text": "组件渲染原生语义化元素，支持键盘操作，显示清晰的焦点环，并在可能缺少可见标签时提供 ariaLabel。"
+    },
+    "predictable": {
+      "title": "可预期的 API",
+      "text": "相同的属性名（variant、size、shape、disabled、loading 等）在不同组件中含义一致。"
+    },
+    "small": {
+      "title": "小而可组合",
+      "text": "组件职责单一，并接受 className 和 style，便于与你自己的布局和样式组合。"
+    }
+  },
+  "reading": {
+    "title": "如何阅读组件页面",
+    "text": "每个组件页面都采用相同的结构：",
+    "import": "准确的导入语句，包括样式表。",
+    "examples": "覆盖各项功能的在线示例。点击“显示代码”可查看完整源码；每个示例都是独立的，可以直接复制使用。",
+    "api": "根据组件的 TypeScript 类型生成的表格，列出每个属性的类型、默认值和说明。"
+  },
+  "conventions": {
+    "title": "约定",
+    "controlled": {
+      "title": "受控与非受控",
+      "text": "表单组件可以自行管理状态（传入 defaultChecked / defaultValue，或不传），也可以受控（同时传入 checked / value 和 onChange）。不要在组件生命周期内切换这两种模式。"
+    },
+    "passthrough": {
+      "title": "className 与 style",
+      "text": "组件在根元素上接受 className（通常也接受 style）。封装原生元素的组件（例如 Button）还会透传原生属性（type、name、data-*、aria-* 等）。"
+    },
+    "aria": {
+      "title": "无障碍名称",
+      "text": "当控件没有可见文本时（图标按钮、搜索按钮、关闭图标等），请通过 ariaLabel 属性为其提供无障碍名称。它会以 aria-label 的形式渲染在可交互元素上。"
+    }
+  },
+  "browsers": {
+    "title": "浏览器支持",
+    "text": "Minerva 面向当前的常青浏览器：Chrome 与 Edge 111+、Firefox 113+、Safari 16.2+。主题依赖 CSS 自定义属性和 color-mix()；不支持 Internet Explorer。支持服务端渲染，主题会在 React 挂载后于客户端应用。"
+  },
+  "contributing": {
+    "title": "参与贡献",
+    "text": "Minerva 基于 MIT 许可证开源。欢迎在 GitHub 上提交问题反馈、想法和 Pull Request："
+  }
+}

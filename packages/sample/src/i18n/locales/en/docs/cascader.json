@@ -1,0 +1,75 @@
+{
+  "title": "Cascader",
+  "description": "Selects a value from a hierarchy of options, one level at a time (e.g. country / region / city).",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Click an option to open the next level; choosing a leaf completes the selection."
+    },
+    "default-value": {
+      "title": "Default value",
+      "description": "defaultValue takes the path of values, one per level."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "Pass value and update it in onChange. Clearing calls onChange with an empty array."
+    },
+    "hover": {
+      "title": "Expand on hover",
+      "description": "With expandTrigger=\"hover\", sub-menus open when the pointer hovers a parent option."
+    },
+    "search": {
+      "title": "Search",
+      "description": "showSearch lets users type to filter every path; filter customizes the matching."
+    },
+    "display-render": {
+      "title": "Custom display",
+      "description": "displayRender formats the text shown in the input; here only the last level is displayed and allowClear is off."
+    },
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disable individual options with option.disabled, or the whole component with disabled."
+    },
+    "lazy-load": {
+      "title": "Load options lazily",
+      "description": "loadData is called for options without children that are not isLeaf. Set loading on the option and add its children to options when they arrive."
+    },
+    "custom-option": {
+      "title": "Custom options and levels",
+      "description": "optionRender renders each option with its level, maxLevel limits the depth, and dropdownStyle / optionStyle adjust the menu."
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "Label of the input",
+      "name": "Name of the input",
+      "options": "Option tree",
+      "value": "Selected path of values (controlled)",
+      "defaultValue": "Initially selected path of values (uncontrolled)",
+      "onChange": "Called when a leaf option is selected or the value is cleared",
+      "displayRender": "Formats the text shown in the input; by default labels are joined with \" / \"",
+      "disabled": "Disables the cascader",
+      "placeholder": "Placeholder of the input",
+      "allowClear": "Shows a clear button when a value is selected",
+      "expandTrigger": "How sub-menus are expanded",
+      "className": "Additional class name",
+      "showSearch": "Allows typing to search all paths",
+      "filter": "Custom search predicate; by default paths whose labels contain the input match",
+      "loadData": "Loads children lazily for options without children that are not isLeaf; update options yourself",
+      "dropdownClassName": "Additional class name of the dropdown",
+      "optionRender": "Custom option renderer",
+      "width": "Width of the component",
+      "maxLevel": "Maximum number of levels shown",
+      "dropdownStyle": "Inline styles of the dropdown",
+      "optionStyle": "Inline styles of every option"
+    },
+    "CascaderOption": {
+      "value": "Value of the option, unique among its siblings",
+      "label": "Text displayed for the option",
+      "children": "Options of the next level",
+      "disabled": "Prevents the option from being selected",
+      "isLeaf": "Marks the option as a leaf (no children to load) when using loadData",
+      "loading": "Shows a loading indicator while its children are being loaded"
+    }
+  }
+}

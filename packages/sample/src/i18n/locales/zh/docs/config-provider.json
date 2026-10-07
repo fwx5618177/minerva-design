@@ -1,0 +1,43 @@
+{
+  "title": "ConfigProvider 全局配置",
+  "description": "为应用提供 lib-core 的主题和语言，并通过 useConfig() 读取它们。",
+  "usage": {
+    "title": "用法",
+    "text": "在应用根部渲染一个 ConfigProvider。它会把主题以 CSS 变量的形式写到 <html> 上，设置 lib-core 内置文案的语言，并通过 useConfig() 提供这两者。",
+    "dynamic": "两个属性都是响应式的：把它们存放在 state 中，即可让用户在运行时切换主题或语言。",
+    "global": "主题和语言都是全局的：Provider 会在 <html> 上写入 CSS 变量，并修改 lib-core 的 i18next 语言。因此嵌套的 ConfigProvider 会重新设置整个页面的主题，而不仅仅是它的子元素。若只想为某个区域设置主题，请改为在包裹元素上设置 CSS 变量（见自定义主题示例）。"
+  },
+  "demos": {
+    "use-config": {
+      "title": "读取配置",
+      "description": "useConfig() 返回最近的 Provider 中配置的主题、解析后的主题和语言。在页头切换站点主题即可看到变化。"
+    },
+    "custom-theme": {
+      "title": "自定义主题",
+      "description": "基于 themes.light 创建的自定义主题。传给 ConfigProvider 会改变整个页面的主题；这里把它的令牌作为 CSS 变量只应用到一个容器上。"
+    },
+    "locale": {
+      "title": "语言",
+      "description": "locale 属性设置 lib-core 内置文案的语言（en、zh 或 fr）。由于语言是全局的，示例在卸载时会恢复为英文。"
+    }
+  },
+  "api": {
+    "ConfigContextProviderProps": {
+      "theme": "要应用的主题：\"auto\"（跟随 prefers-color-scheme）、内置主题名称、主题对象，或 { light, dark } 组合。以 CSS 变量形式应用在文档根元素上。",
+      "locale": "lib-core 内置文案的语言（全局生效）。",
+      "children": "应用内容。"
+    },
+    "ConfigContextProps": {
+      "theme": "配置的主题（可能是 \"auto\" 或 { light, dark } 组合）。",
+      "resolvedTheme": "解析 \"auto\" 和 { light, dark } 组合后当前实际应用的主题：内置主题名称或主题对象。",
+      "locale": "lib-core 内置文案的当前语言设置。"
+    },
+    "Locale": {
+      "language": "lib-core 内置文案的语言：\"en\"、\"zh\" 或 \"fr\"。"
+    }
+  },
+  "context": {
+    "title": "ConfigContext",
+    "text": "当上层没有 ConfigProvider 时，useConfig() 会抛出错误，便于尽早发现配置问题。如果 Provider 是可选的，请直接读取 ConfigContext：它会返回 undefined 而不是抛错。"
+  }
+}

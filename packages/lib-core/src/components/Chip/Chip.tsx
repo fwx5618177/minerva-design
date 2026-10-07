@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import classNames from "classnames";
 import { FaTimes } from "react-icons/fa";
 import { ProgressIndicator } from "../ProgressIndicator";
 import styles from "./chip.module.scss";
@@ -17,6 +18,7 @@ import type { ChipProps } from "./types";
  * @param disabled - If true, the chip will be disabled
  * @param className - Additional class name
  * @param deleteIcon - Custom delete icon
+ * @param deleteLabel - Accessible label for the delete button
  * @param clickable - If true, the chip will be clickable
  * @param loading - If true, shows loading state
  * @param selected - If true, shows selected state
@@ -35,40 +37,66 @@ const Chip = forwardRef<HTMLDivElement, ChipProps>(
       disabled = false,
       className = "",
       deleteIcon,
+      deleteLabel,
       clickable = false,
       loading = false,
       selected = false,
     },
     ref,
   ) => {
-    const handleDelete = (e: React.MouseEvent<HTMLDivElement>) => {
+    const isInteractive = clickable && !disabled;
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       onDelete?.(e);
     };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!disabled && clickable) {
+      if (isInteractive) {
         onClick?.(e);
+      }
+    };
+
+    // Mirror native button activation: Enter on keydown, Space on keyup.
+    // Keys from nested controls (the delete button) are ignored.
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!isInteractive || e.target !== e.currentTarget) return;
+      if (e.key === " ") {
+        e.preventDefault();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        e.currentTarget.click();
+      }
+    };
+
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!isInteractive || e.target !== e.currentTarget) return;
+      if (e.key === " ") {
+        e.preventDefault();
+        e.currentTarget.click();
       }
     };
 
     return (
       <div
         ref={ref}
-        className={`
-          ${styles.chip}
-          ${styles[variant]}
-          ${styles[color]}
-          ${styles[size]}
-          ${disabled ? styles.disabled : ""}
-          ${clickable ? styles.clickable : ""}
-          ${selected ? styles.selected : ""}
-          ${loading ? styles.loading : ""}
-          ${className}
-        `}
+        className={classNames(
+          styles.chip,
+          styles[variant],
+          styles[color],
+          styles[size],
+          disabled && styles.disabled,
+          clickable && styles.clickable,
+          selected && styles.selected,
+          loading && styles.loading,
+          className,
+        )}
         onClick={handleClick}
+        onKeyDown={clickable ? handleKeyDown : undefined}
+        onKeyUp={clickable ? handleKeyUp : undefined}
         role={clickable ? "button" : undefined}
-        tabIndex={clickable && !disabled ? 0 : undefined}
+        tabIndex={isInteractive ? 0 : undefined}
+        aria-disabled={clickable && disabled ? true : undefined}
       >
         {loading ? (
           <div className={styles.loadingWrapper}>
@@ -83,9 +111,14 @@ const Chip = forwardRef<HTMLDivElement, ChipProps>(
           </>
         )}
         {onDelete && !disabled && !loading && (
-          <span className={styles.deleteIcon} onClick={handleDelete}>
-            {deleteIcon || <FaTimes size={16} />}
-          </span>
+          <button
+            type="button"
+            className={styles.deleteIcon}
+            onClick={handleDelete}
+            aria-label={deleteLabel ?? `Remove ${label}`}
+          >
+            {deleteIcon || <FaTimes size={16} aria-hidden focusable={false} />}
+          </button>
         )}
       </div>
     );

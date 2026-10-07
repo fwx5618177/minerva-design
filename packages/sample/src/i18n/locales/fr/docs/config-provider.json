@@ -1,0 +1,43 @@
+{
+  "title": "ConfigProvider",
+  "description": "Fournit le thème et la langue de lib-core à votre application, et les expose via useConfig().",
+  "usage": {
+    "title": "Utilisation",
+    "text": "Affichez un seul ConfigProvider à la racine de votre application. Il applique le thème sous forme de variables CSS sur <html>, définit la langue des textes intégrés de lib-core et fournit les deux à useConfig().",
+    "dynamic": "Les deux props sont réactives : stockez-les dans un état pour permettre de changer de thème ou de langue à l'exécution.",
+    "global": "Le thème et la langue sont globaux : le provider écrit des variables CSS sur <html> et change la langue de l'instance i18next de lib-core. Un ConfigProvider imbriqué change donc le thème de toute la page, pas seulement de ses enfants. Pour thémer une seule zone, définissez plutôt les variables CSS sur un élément conteneur (voir l'exemple de thème personnalisé)."
+  },
+  "demos": {
+    "use-config": {
+      "title": "Lire la configuration",
+      "description": "useConfig() renvoie le thème configuré, le thème résolu et la locale du provider le plus proche. Changez le thème du site dans l'en-tête pour le voir se mettre à jour."
+    },
+    "custom-theme": {
+      "title": "Thème personnalisé",
+      "description": "Un thème personnalisé construit à partir de themes.light. Passé à ConfigProvider, il changerait le thème de la page ; ici ses jetons sont appliqués comme variables CSS sur un seul conteneur."
+    },
+    "locale": {
+      "title": "Langue",
+      "description": "La prop locale définit la langue des textes intégrés de lib-core (en, zh ou fr). La démo rétablit l'anglais lorsqu'elle est démontée, car la langue est globale."
+    }
+  },
+  "api": {
+    "ConfigContextProviderProps": {
+      "theme": "Thème à appliquer : \"auto\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Appliqué sous forme de variables CSS sur la racine du document.",
+      "locale": "Langue des textes intégrés de lib-core (modifiée globalement).",
+      "children": "Contenu de l'application."
+    },
+    "ConfigContextProps": {
+      "theme": "Thème tel que configuré (peut être \"auto\" ou une paire { light, dark }).",
+      "resolvedTheme": "Thème réellement appliqué après résolution de \"auto\" et des paires { light, dark } : un nom de thème intégré ou un objet de thème.",
+      "locale": "Locale actuelle des textes intégrés de lib-core."
+    },
+    "Locale": {
+      "language": "Langue des textes intégrés de lib-core : \"en\", \"zh\" ou \"fr\"."
+    }
+  },
+  "context": {
+    "title": "ConfigContext",
+    "text": "useConfig() lève une erreur s'il n'y a pas de ConfigProvider au-dessus, ce qui révèle tôt les erreurs de configuration. Lisez ConfigContext directement lorsque le provider est facultatif : il renvoie undefined au lieu de lever une erreur."
+  }
+}

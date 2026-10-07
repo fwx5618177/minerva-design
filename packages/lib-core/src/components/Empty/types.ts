@@ -1,38 +1,33 @@
 export interface EmptyProps {
-  /** 自定义图标 */
+  /** Custom icon, replacing the default one */
   icon?: React.ReactNode;
-  /** 描述文字 */
+  /**
+   * Description text
+   * @default "No Data"
+   */
   description?: React.ReactNode;
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: React.CSSProperties;
-  /** 底部内容 */
+  /** Footer content, e.g. an action button */
   children?: React.ReactNode;
   /**
-   * 是否用 svg 图标
+   * Uses the built-in SVG illustration instead of the default icon
    * @default false
    */
   useSvg?: boolean;
-
-  /**
-   * 宽度
-   */
-  width?: string;
-  /**
-   * 高度
-   */
-  height?: string;
-  /**
-   * 背景颜色
-   */
+  /** Width of the container */
+  width?: string | number;
+  /** Height of the container */
+  height?: string | number;
+  /** Background color */
   backgroundColor?: string;
   /**
-   * 是否显示阴影
+   * Adds a drop shadow
+   * @default false
    */
   showShadow?: boolean;
-  /**
-   * 字体颜色
-   */
+  /** Text color */
   color?: string;
 }

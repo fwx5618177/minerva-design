@@ -90,19 +90,16 @@ const IconButton: React.FC<IconButtonProps> = ({
     </button>
   );
 
-  // 如果不需要 tooltip，直接返回按钮
-  if (!showTooltip || !tooltip) {
-    return buttonContent;
-  }
-
-  // 使用 useMemo 缓存 tooltip props
+  // 使用 useMemo 缓存 tooltip props (hooks must run before any early return)
   const tooltipProps = useMemo(
-    () => ({
-      ...tooltip,
-      disabled: disabled || loading,
-    }),
+    () => (tooltip ? { ...tooltip, disabled: disabled || loading } : null),
     [tooltip, disabled, loading],
   );
+
+  // 如果不需要 tooltip，直接返回按钮
+  if (!showTooltip || !tooltipProps) {
+    return buttonContent;
+  }
 
   return <Tooltip {...tooltipProps}>{buttonContent}</Tooltip>;
 };

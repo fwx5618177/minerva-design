@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .customButton {
   border: none;
@@ -15,71 +15,90 @@
   display: inline-block;
   padding: 0.5rem 1rem;
   font-size: clamp(0.875rem, 2vw, 1rem); // 使用 clamp 调整字体大小
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // 默认 box-shadow
+  box-shadow: var(--shadow-sm); // 默认 box-shadow
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); // 悬停时的 box-shadow
+    box-shadow: var(--shadow-md); // 悬停时的 box-shadow
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); // 聚焦时的 box-shadow
+    box-shadow: var(--shadow-md); // 聚焦时的 box-shadow
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &.primary {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #0056b3;
+      background-color: var(--btn-bg-color-hover, var(--primary-color-hover));
+    }
+
+    &:active {
+      background-color: var(--btn-bg-color-active, var(--primary-color-active));
     }
   }
 
   &.warning {
-    background-color: #ff9800;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-warning, var(--warning-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #ffb74d;
+      background-color: var(--warning-color-hover);
+    }
+
+    &:active {
+      background-color: var(--warning-color-active);
     }
   }
 
-  &.error {
-    background-color: #ff4d4f;
-    color: #ffffff;
+  &.error,
+  &.danger {
+    background-color: var(--btn-bg-color-danger, var(--danger-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #e57373;
+      background-color: var(--danger-color-hover);
+    }
+
+    &:active {
+      background-color: var(--danger-color-active);
+    }
+  }
+
+  &.info {
+    background-color: var(--btn-bg-color-info, var(--info-color));
+    color: var(--text-inverse-color);
+
+    &:hover {
+      background-color: var(--info-color-hover);
+    }
+
+    &:active {
+      background-color: var(--info-color-active);
     }
   }
 
   &.retry {
-    background: linear-gradient(90deg, #ff4c4c, #ff9a9a);
-    color: #fff;
+    background: linear-gradient(90deg, var(--danger-color), color-mix(in srgb, var(--danger-color) 70%, var(--surface-color)));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background: linear-gradient(90deg, #ff9a9a, #ff4c4c);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--danger-color) 70%, var(--surface-color)), var(--danger-color));
     }
   }
 
   &.back {
-    background: linear-gradient(90deg, #0198e9, #01c5e4);
-    color: #fff;
+    background: linear-gradient(90deg, var(--info-color), color-mix(in srgb, var(--info-color) 70%, var(--surface-color)));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background: linear-gradient(90deg, #01c5e4, #0198e9);
-    }
-  }
-
-  &:disabled {
-    background-color: #c0c0c0;
-    color: #666666;
-    cursor: not-allowed;
-    opacity: 0.5;
-    box-shadow: none;
-
-    &:hover {
-      background-color: #a0a0a0;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--info-color) 70%, var(--surface-color)), var(--info-color));
     }
   }
 
@@ -162,29 +181,50 @@
     padding: 1rem 2rem;
   }
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 
   &.secondary {
-    background-color: #6c757d;
-    color: #ffffff;
+    background-color: var(--secondary-color);
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #5a6268;
+      background-color: var(--secondary-color-hover);
+    }
+
+    &:active {
+      background-color: var(--secondary-color-active);
     }
   }
 
   &.success {
-    background-color: #28a745;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-success, var(--success-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #218838;
+      background-color: var(--success-color-hover);
+    }
+
+    &:active {
+      background-color: var(--success-color-active);
+    }
+  }
+
+  // after every variant so disabled styling wins over .secondary/.success
+  &:disabled {
+    background: var(--surface-muted-color);
+    color: var(--text-disabled-color);
+    cursor: not-allowed;
+    opacity: 0.5;
+    box-shadow: none;
+
+    &:hover {
+      background: var(--surface-muted-color);
     }
   }
 
   &.active {
     transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
   }
 
   &.loading {
@@ -201,9 +241,9 @@
       display: inline-block;
       width: 16px;
       height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
       border-radius: 50%;
-      border-top-color: #fff;
+      border-top-color: currentColor;
       animation: spin 1s linear infinite;
     }
   }

@@ -1,10 +1,10 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .showShadow {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
   }
 }
 
@@ -14,8 +14,8 @@
   align-items: center;
   justify-content: center;
   padding: 32px;
-  color: rgba(0, 0, 0, 0.45);
-  background: #fff;
+  color: var(--text-secondary-color);
+  background: var(--surface-color);
   border-radius: 4px;
   transition:
     box-shadow 0.3s ease,
@@ -44,7 +44,7 @@
     margin-top: 16px;
   }
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 }
 
 .defaultIcon {

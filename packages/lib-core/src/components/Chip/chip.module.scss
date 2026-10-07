@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .chip {
   display: inline-flex;
@@ -15,7 +15,12 @@
 
   &.clickable {
     cursor: pointer;
-    @extend .commonRippleEffect;
+    @include ripple-effect;
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
   }
 
   // Sizes
@@ -95,192 +100,73 @@
   }
 
   // Variants
+  // Class name -> design-token role (error maps to danger)
+  $chip-roles: (
+    primary: primary,
+    secondary: secondary,
+    success: success,
+    error: danger,
+    warning: warning,
+    info: info,
+  );
+
   &.filled {
-    background-color: #e0e0e0;
-    color: rgba(0, 0, 0, 0.87);
+    background-color: var(--surface-muted-color);
+    color: var(--text-color);
 
     &:hover {
-      background-color: #d5d5d5;
+      background-color: color-mix(in srgb, var(--surface-muted-color) 88%, var(--foreground-color));
     }
 
-    &.primary {
-      background-color: #1976d2;
-      color: #ffffff;
+    @each $name, $role in $chip-roles {
+      &.#{$name} {
+        background-color: var(--#{$role}-color);
+        color: var(--text-inverse-color);
 
-      &:hover {
-        background-color: #1565c0;
-      }
-    }
-
-    &.secondary {
-      background-color: #9c27b0;
-      color: #ffffff;
-
-      &:hover {
-        background-color: #7b1fa2;
-      }
-    }
-
-    &.success {
-      background-color: #2e7d32;
-      color: #ffffff;
-
-      &:hover {
-        background-color: #1b5e20;
-      }
-    }
-
-    &.error {
-      background-color: #d32f2f;
-      color: #ffffff;
-
-      &:hover {
-        background-color: #c62828;
-      }
-    }
-
-    &.warning {
-      background-color: #ed6c02;
-      color: #ffffff;
-
-      &:hover {
-        background-color: #e65100;
-      }
-    }
-
-    &.info {
-      background-color: #0288d1;
-      color: #ffffff;
-
-      &:hover {
-        background-color: #01579b;
+        &:hover {
+          background-color: var(--#{$role}-color-hover);
+        }
       }
     }
   }
 
   &.outlined {
     background-color: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.23);
-    color: rgba(0, 0, 0, 0.87);
+    border: 1px solid var(--border-strong-color);
+    color: var(--text-color);
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.04);
+      background-color: var(--surface-muted-color);
     }
 
-    &.primary {
-      border-color: #1976d2;
-      color: #1976d2;
+    @each $name, $role in $chip-roles {
+      &.#{$name} {
+        border-color: var(--#{$role}-color);
+        color: var(--#{$role}-color-text);
 
-      &:hover {
-        background-color: rgba(25, 118, 210, 0.04);
-      }
-    }
-
-    &.secondary {
-      border-color: #9c27b0;
-      color: #9c27b0;
-
-      &:hover {
-        background-color: rgba(156, 39, 176, 0.04);
-      }
-    }
-
-    &.success {
-      border-color: #2e7d32;
-      color: #2e7d32;
-
-      &:hover {
-        background-color: rgba(46, 125, 50, 0.04);
-      }
-    }
-
-    &.error {
-      border-color: #d32f2f;
-      color: #d32f2f;
-
-      &:hover {
-        background-color: rgba(211, 47, 47, 0.04);
-      }
-    }
-
-    &.warning {
-      border-color: #ed6c02;
-      color: #ed6c02;
-
-      &:hover {
-        background-color: rgba(237, 108, 2, 0.04);
-      }
-    }
-
-    &.info {
-      border-color: #0288d1;
-      color: #0288d1;
-
-      &:hover {
-        background-color: rgba(2, 136, 209, 0.04);
+        &:hover {
+          background-color: var(--#{$role}-color-subtle);
+        }
       }
     }
   }
 
   &.soft {
-    background-color: rgba(0, 0, 0, 0.08);
-    color: rgba(0, 0, 0, 0.87);
+    background-color: var(--surface-muted-color);
+    color: var(--text-color);
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.12);
+      background-color: color-mix(in srgb, var(--surface-muted-color) 88%, var(--foreground-color));
     }
 
-    &.primary {
-      background-color: rgba(25, 118, 210, 0.12);
-      color: #1976d2;
+    @each $name, $role in $chip-roles {
+      &.#{$name} {
+        background-color: var(--#{$role}-color-subtle);
+        color: var(--#{$role}-color-text);
 
-      &:hover {
-        background-color: rgba(25, 118, 210, 0.2);
-      }
-    }
-
-    &.secondary {
-      background-color: rgba(156, 39, 176, 0.12);
-      color: #9c27b0;
-
-      &:hover {
-        background-color: rgba(156, 39, 176, 0.2);
-      }
-    }
-
-    &.success {
-      background-color: rgba(46, 125, 50, 0.12);
-      color: #2e7d32;
-
-      &:hover {
-        background-color: rgba(46, 125, 50, 0.2);
-      }
-    }
-
-    &.error {
-      background-color: rgba(211, 47, 47, 0.12);
-      color: #d32f2f;
-
-      &:hover {
-        background-color: rgba(211, 47, 47, 0.2);
-      }
-    }
-
-    &.warning {
-      background-color: rgba(237, 108, 2, 0.12);
-      color: #ed6c02;
-
-      &:hover {
-        background-color: rgba(237, 108, 2, 0.2);
-      }
-    }
-
-    &.info {
-      background-color: rgba(2, 136, 209, 0.12);
-      color: #0288d1;
-
-      &:hover {
-        background-color: rgba(2, 136, 209, 0.2);
+        &:hover {
+          background-color: color-mix(in srgb, var(--#{$role}-color) 20%, var(--#{$role}-color-subtle));
+        }
       }
     }
   }
@@ -291,12 +177,12 @@
   }
 
   &.selected {
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.5);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 50%, transparent);
   }
 
   &.loading {
-    background-color: #e0e0e0;
-    color: rgba(0, 0, 0, 0.87);
+    background-color: var(--surface-muted-color);
+    color: var(--text-color);
   }
 
   .avatar {
@@ -317,12 +203,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
     opacity: 0.7;
     transition: opacity 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 1px;
+      border-radius: 50%;
     }
   }
 
@@ -356,7 +255,7 @@
     &.warning,
     &.info {
       :global(.status-indicator) {
-        color: rgba(255, 255, 255, 0.8);
+        color: color-mix(in srgb, var(--text-inverse-color) 80%, transparent);
       }
     }
   }

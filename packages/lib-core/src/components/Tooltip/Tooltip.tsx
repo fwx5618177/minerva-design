@@ -1,14 +1,19 @@
 import React, {
+  cloneElement,
   forwardRef,
+  isValidElement,
   useImperativeHandle,
   useRef,
   useState,
   useEffect,
   useCallback,
+  useId,
 } from "react";
 import { createPortal } from "react-dom";
 import { TooltipProps, TooltipRef, TooltipPlacement } from "./types";
 import styles from "./tooltip.module.scss";
+
+const DEFAULT_OFFSET: [number, number] = [0, 8];
 
 const placementMap: Record<
   TooltipPlacement,
@@ -106,7 +111,7 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
       animation = "fade",
       enterDelay = 200,
       leaveDelay = 0,
-      offset = [0, 8],
+      offset = DEFAULT_OFFSET,
       disabled = false,
       followCursor = false,
       className = "",
@@ -125,10 +130,19 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
     const triggerRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
-    const enterTimeoutRef = useRef<NodeJS.Timeout>();
-    const leaveTimeoutRef = useRef<NodeJS.Timeout>();
+    const enterTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const tooltipId = `tooltip-${useId().replace(/:/g, "")}`;
 
     const open = controlledOpen ?? isOpen;
+
+    useEffect(
+      () => () => {
+        clearTimeout(enterTimeoutRef.current);
+        clearTimeout(leaveTimeoutRef.current);
+      },
+      [],
+    );
 
     useImperativeHandle(ref, () => ({
       open: () => setIsOpen(true),
@@ -139,8 +153,15 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
     const updatePosition = useCallback(() => {
       if (!triggerRef.current || !tooltipRef.current) return;
 
+      // Bail out when unchanged so an inline `offset` array passed by the
+      // caller cannot re-trigger the positioning effect forever.
+      const commit = (next: { top: number; left: number }) =>
+        setPosition((prev) =>
+          prev.top === next.top && prev.left === next.left ? prev : next,
+        );
+
       if (followCursor) {
-        setPosition({
+        commit({
           top: cursorPosition.y - tooltipRef.current.offsetHeight - offset[1],
           left: cursorPosition.x - tooltipRef.current.offsetWidth / 2,
         });
@@ -150,7 +171,7 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
       const triggerRect = triggerRef.current.getBoundingClientRect();
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
       const getPosition = placementMap[placement];
-      setPosition(getPosition(triggerRect, tooltipRect, offset));
+      commit(getPosition(triggerRect, tooltipRect, offset));
     }, [placement, offset, followCursor, cursorPosition.x, cursorPosition.y]);
 
     useEffect(() => {
@@ -214,18 +235,50 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
       }
     }, [followCursor, handleMouseMove]);
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Keyboard users get the tooltip when the wrapped (interactive) child
+    // receives focus. Activation keys (Enter/Space) are deliberately left
+    // alone so they still reach the child, e.g. to press a wrapped button.
+    const handleFocus = () => {
       if (disabled) return;
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
+      clearTimeout(enterTimeoutRef.current);
+      clearTimeout(leaveTimeoutRef.current);
+      if (!open) {
         setIsOpen(true);
         onOpen?.();
       }
-      if (e.key === "Escape" && open) {
+    };
+
+    const handleBlur = () => {
+      if (disabled) return;
+      clearTimeout(enterTimeoutRef.current);
+      clearTimeout(leaveTimeoutRef.current);
+      if (open) {
         setIsOpen(false);
         onClose?.();
       }
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (disabled) return;
+      if (e.key === "Escape" && open) {
+        clearTimeout(enterTimeoutRef.current);
+        setIsOpen(false);
+        onClose?.();
+      }
+    };
+
+    const describedBy = open ? tooltipId : undefined;
+
+    // Point the interactive child at the tooltip; fall back to the wrapper
+    // when children is not a single element (e.g. plain text).
+    const trigger = isValidElement<{ "aria-describedby"?: string }>(children)
+      ? cloneElement(children, {
+          "aria-describedby":
+            [children.props["aria-describedby"], describedBy]
+              .filter(Boolean)
+              .join(" ") || undefined,
+        })
+      : children;
 
     return (
       <>
@@ -234,19 +287,18 @@ const Tooltip = forwardRef<TooltipRef, TooltipProps>(
           className={`${styles.tooltipTrigger} ${className}`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          tabIndex={0}
-          role="button"
-          aria-label={ariaLabel}
-          aria-describedby={open ? "tooltip" : undefined}
+          aria-describedby={isValidElement(children) ? undefined : describedBy}
         >
-          {children}
+          {trigger}
         </div>
         {open &&
           createPortal(
             <div
               ref={tooltipRef}
-              id="tooltip"
+              id={tooltipId}
               role="tooltip"
               aria-label={ariaLabel}
               className={`

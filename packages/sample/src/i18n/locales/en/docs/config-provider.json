@@ -1,0 +1,43 @@
+{
+  "title": "ConfigProvider",
+  "description": "Provides the theme and the language of lib-core to your application, and exposes them through useConfig().",
+  "usage": {
+    "title": "Usage",
+    "text": "Render one ConfigProvider at the root of your application. It applies the theme as CSS variables on <html>, sets the language of lib-core's built-in texts, and provides both to useConfig().",
+    "dynamic": "Both props are reactive: store them in state to let users switch theme or language at runtime.",
+    "global": "Theme and language are global: the provider writes CSS variables on <html> and changes lib-core's i18next language. A nested ConfigProvider therefore re-themes the whole page, not only its children. To theme a single region, set the CSS variables on a wrapper element instead (see the custom theme example)."
+  },
+  "demos": {
+    "use-config": {
+      "title": "Reading the configuration",
+      "description": "useConfig() returns the configured theme, the resolved theme and the locale of the nearest provider. Change the site theme in the header to see it update."
+    },
+    "custom-theme": {
+      "title": "Custom theme",
+      "description": "A custom theme built from themes.light. Passed to ConfigProvider it would re-theme the page; here its tokens are applied as CSS variables on one container."
+    },
+    "locale": {
+      "title": "Locale",
+      "description": "The locale prop sets the language of lib-core's built-in texts (en, zh or fr). The demo restores English when it unmounts, because the language is global."
+    }
+  },
+  "api": {
+    "ConfigContextProviderProps": {
+      "theme": "Theme to apply: \"auto\" (follows prefers-color-scheme), a built-in theme name, a theme object, or a { light, dark } pair. Applied as CSS variables on the document root.",
+      "locale": "Language of lib-core's built-in texts (changes it globally).",
+      "children": "Application content."
+    },
+    "ConfigContextProps": {
+      "theme": "Theme as configured (may be \"auto\" or a { light, dark } pair).",
+      "resolvedTheme": "Theme currently applied after resolving \"auto\" and { light, dark } pairs: a built-in theme name or a theme object.",
+      "locale": "Current locale of lib-core's built-in texts."
+    },
+    "Locale": {
+      "language": "Language of lib-core's built-in texts: \"en\", \"zh\" or \"fr\"."
+    }
+  },
+  "context": {
+    "title": "ConfigContext",
+    "text": "useConfig() throws when there is no ConfigProvider above it, which catches setup mistakes early. Read ConfigContext directly when the provider is optional: it returns undefined instead of throwing."
+  }
+}

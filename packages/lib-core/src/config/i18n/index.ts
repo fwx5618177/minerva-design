@@ -1,19 +1,31 @@
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import i18next, { type i18n as I18n } from "i18next";
+import type { SupportedLanguage } from "../../contexts/types";
 
 import en from "./en";
 import fr from "./fr";
+import zh from "./zh";
 
-const resources = {
+export const DEFAULT_LANGUAGE: SupportedLanguage = "en";
+
+export const resources = {
   en,
   fr,
-};
+  zh,
+} as const satisfies Record<SupportedLanguage, unknown>;
 
-i18n.use(initReactI18next).init({
+/**
+ * Private i18next instance for lib-core. It is intentionally not registered
+ * globally (no `initReactI18next`) so the host app's i18next stays untouched.
+ */
+const i18n: I18n = i18next.createInstance();
+
+i18n.init({
   resources,
-  lng: "en",
+  lng: DEFAULT_LANGUAGE,
+  fallbackLng: DEFAULT_LANGUAGE,
   ns: ["index"],
   defaultNS: "index",
+  initImmediate: false,
   interpolation: {
     escapeValue: false,
   },

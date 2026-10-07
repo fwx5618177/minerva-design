@@ -19,21 +19,16 @@ export type PopperPlacement =
  * Popper variant options
  */
 export type PopperVariant =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "error";
+  "default" | "primary" | "secondary" | "success" | "warning" | "error";
 
 /**
  * Popper type options - simplified to most common use cases
  */
 export type PopperType =
-  | "default" // 默认弹出层
-  | "menu" // 菜单类型
-  | "select" // 选择器类型
-  | "tooltip"; // 提示类型
+  | "default" // generic popup
+  | "menu" // menu (role="menu")
+  | "select" // select dropdown
+  | "tooltip"; // tooltip
 
 /**
  * Popper size options
@@ -44,7 +39,9 @@ export type PopperSize = "auto" | "small" | "medium" | "large";
  * Position offset configuration
  */
 export interface PopperOffset {
+  /** Horizontal offset in pixels */
   x: number;
+  /** Vertical offset in pixels */
   y: number;
 }
 
@@ -54,7 +51,7 @@ export interface PopperOffset {
 export interface PopperAnimation {
   /** Duration in milliseconds */
   duration: number;
-  /** Timing function */
+  /** CSS timing function */
   easing: string;
 }
 
@@ -62,69 +59,91 @@ export interface PopperAnimation {
  * Popper component props
  */
 export interface PopperProps {
-  /** Element to anchor the popper to */
+  /** Element the popper is positioned against */
   anchorEl: HTMLElement | null;
-
-  /** Whether the popper is visible */
+  /** Whether the popper is visible (controlled) */
   visible: boolean;
-
-  /** Children content */
+  /** Popper content */
   children: React.ReactNode;
-
-  /** Placement relative to anchor */
+  /**
+   * Placement relative to the anchor
+   * @default "bottom"
+   */
   placement?: PopperPlacement;
-
-  /** Visual variant */
+  /**
+   * Color variant
+   * @default "default"
+   */
   variant?: PopperVariant;
-
-  /** Functional type */
+  /**
+   * Functional type; "menu" sets role="menu", otherwise role="dialog"
+   * @default "default"
+   */
   type?: PopperType;
-
-  /** Position offset */
+  /**
+   * Position offset in pixels
+   * @default { x: 0, y: 8 }
+   */
   offset?: PopperOffset;
-
-  /** Animation settings */
+  /**
+   * Transition settings
+   * @default { duration: 200, easing: "ease" }
+   */
   animation?: PopperAnimation;
-
-  /** Show arrow indicator */
+  /**
+   * Shows an arrow pointing at the anchor
+   * @default false
+   */
   arrow?: boolean;
-
-  /** Z-index level */
+  /**
+   * z-index of the popper
+   * @default 1000
+   */
   zIndex?: number;
-
-  /** Click outside handler */
+  /** Called on mousedown outside both the popper and the anchor */
   onClickAway?: (event: MouseEvent) => void;
-
-  /** Custom class name */
+  /**
+   * Additional class name
+   * @default ""
+   */
   className?: string;
-
-  /** Focus management */
+  /**
+   * tabIndex of the popper element
+   * @default 0
+   */
   tabIndex?: number;
-
-  /** Accessibility label */
+  /** Accessible label of the popper */
   ariaLabel?: string;
-
-  /** Custom popper styles */
+  /**
+   * Custom colors and dimensions
+   * @default {}
+   */
   popperStyle?: PopperCustomStyle;
-
-  /** Size variant */
+  /**
+   * Preset size; "auto" fits the content
+   * @default "auto"
+   */
   size?: PopperSize;
-
-  /** Whether to allow text wrapping */
+  /**
+   * Allows text to wrap onto multiple lines
+   * @default false
+   */
   multiline?: boolean;
-
-  /** Trigger mode */
+  /**
+   * Anchor interaction that requests a visibility change via onVisibleChange
+   * @default "click"
+   */
   trigger?: PopperTrigger;
-
-  /** Callback when visibility changes */
+  /** Called with the requested visibility when the trigger fires */
   onVisibleChange?: (visible: boolean) => void;
-  /** 是否允许内容滚动 */
+  /**
+   * Lets the content scroll when it overflows
+   * @default true
+   */
   scrollable?: boolean;
-
-  /** 固定宽度 */
+  /** Fixed width, overriding the size preset */
   width?: number | string;
-
-  /** 固定高度 */
+  /** Fixed height, overriding the size preset */
   height?: number | string;
 }
 
@@ -152,8 +171,4 @@ export interface PopperCustomStyle {
 }
 
 export type PopperTrigger =
-  | "hover"
-  | "click"
-  | "contextMenu"
-  | "focus"
-  | "manual";
+  "hover" | "click" | "contextMenu" | "focus" | "manual";

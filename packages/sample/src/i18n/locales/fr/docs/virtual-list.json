@@ -1,0 +1,42 @@
+{
+  "title": "VirtualList",
+  "description": "Affiche efficacement de longues listes en ne montant que les lignes visibles dans le conteneur défilant.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "10 000 lignes avec un itemHeight fixe ; seules les lignes visibles (plus l'overscan) sont dans le DOM."
+    },
+    "auto-height": {
+      "title": "Hauteur mesurée",
+      "description": "Omettez itemHeight pour la mesurer à partir du premier élément ; itemPadding est ajouté autour de chaque ligne."
+    },
+    "infinite-scroll": {
+      "title": "Défilement infini",
+      "description": "onLoadMore est appelé près du bas de la liste ; affichez un indicateur de chargement pendant son exécution."
+    },
+    "high-performance": {
+      "title": "Mode haute performance",
+      "description": "highPerformance regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback, ici avec 100 000 lignes."
+    }
+  },
+  "api": {
+    "VirtualListProps": {
+      "items": "Éléments à afficher",
+      "itemHeight": "Hauteur fixe des lignes en pixels ; mesurée à partir du premier élément si omise",
+      "itemPadding": "Marge intérieure de chaque ligne en pixels",
+      "overscan": "Nombre de lignes rendues au-dessus et au-dessous de la zone visible",
+      "maxHeight": "Hauteur maximale du conteneur défilant en pixels",
+      "renderItem": "Affiche le contenu d'une ligne",
+      "className": "Nom de classe supplémentaire",
+      "style": "Styles en ligne du conteneur défilant",
+      "onLoadMore": "Appelé à l'approche du bas de la liste ; renvoie une promesse résolue une fois les nouveaux éléments chargés",
+      "loadMoreThreshold": "Distance du bas (px) à partir de laquelle onLoadMore est déclenché",
+      "highPerformance": "Regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback",
+      "loading": "Affiche un indicateur de chargement en bas de la liste"
+    },
+    "VirtualListItem": {
+      "id": "Clé unique de l'élément",
+      "metadata": "Données arbitraires pour renderItem"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "title": "Web Components",
+  "description": "<minerva-button>：Lit で構築されたフレームワーク非依存のカスタム要素。素の HTML、React、Vue などあらゆるフレームワークで使えます。",
+  "what": {
+    "title": "概要",
+    "p1": "@minerva/lib-web-components は Minerva のコンポーネントを標準のカスタム要素として提供します。パッケージを一度インポートするとブラウザに登録され、以降はどのページやフレームワークでも組み込みの HTML タグのように使えます。",
+    "p2": "要素は shadow root 内に描画されるため、内部のスタイルがページに漏れたり、ページのスタイルで崩れたりしません。HTML 属性で設定し、click などの通常の DOM イベントを発行します。"
+  },
+  "html": {
+    "title": "HTML での使い方",
+    "text": "パッケージを（バンドラー経由で）ES モジュールとして読み込み、ドキュメント内のどこでもタグを使えます。loading や disabled などのブール属性は、指定されていれば有効です。"
+  },
+  "react": {
+    "title": "React での使い方",
+    "text": "副作用のためにパッケージを一度インポートし、同梱の型定義を参照して JSX で属性を型チェックします。onClick などの DOM イベントは通常どおり動作します。アクセシブルな名前にはハイフン付きの aria-label を使います。",
+    "booleans": "React 18 はカスタム要素の属性を文字列として設定するため、loading={false} は loading=\"false\" になり、存在するものとして扱われます。ブール属性の切り替えには true か undefined を渡してください（例：loading={saving || undefined}）。React 19 ではプロパティとして設定されるため、そのままブール値を使えます。"
+  },
+  "other": {
+    "title": "Vue などのフレームワーク",
+    "text": "HTML を描画できるフレームワークならどれでも利用できます。Vue では minerva-* タグをカスタム要素として宣言し、コンパイラーが Vue コンポーネントとして解決しないようにします。ブール属性を外すには null をバインドします。Angular では CUSTOM_ELEMENTS_SCHEMA が必要で、Svelte、Solid、Lit は設定不要です。"
+  },
+  "theming": {
+    "title": "テーマ",
+    "text": "ボタンは独自の CSS カスタムプロパティ（--primary-color、--primary-hover、--error-color など）を読み、既定値は要素自身に宣言されているため、lib-core の ConfigProvider のテーマには自動では追従しません。デザインに合わせるには、要素（またはそれを対象とするルール）で変数を設定してください："
+  },
+  "a11y": {
+    "title": "アクセシビリティ",
+    "text": "要素は shadow root 内にネイティブの <button> を描画するため、フォーカスでき、キーボードで操作できます。aria-label 属性はそのボタンに転送されます。アイコンのみのボタンには必ず設定してください。読み込み中は aria-busy が設定され、クリックは無視されます。無効なボタンはフォーカスできません。"
+  },
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "パッケージを一度インポートすれば、<minerva-button> を通常の要素のように使えます。React の onClick もネイティブ要素と同様に動作します。"
+    },
+    "variants": {
+      "title": "バリアント",
+      "description": "primary、secondary、success、warning、error、info、ghost、retry、back の 9 種類。"
+    },
+    "sizes-shapes": {
+      "title": "サイズと形状",
+      "description": "4 つのサイズ（tiny〜large）と 4 つの形状。アイコンのみの円形ボタンには aria-label が必要です。"
+    },
+    "states": {
+      "title": "状態",
+      "description": "loading はスピナーを表示してクリックを無効にします。disabled と active もブール属性です。React 18 では true か undefined を渡し、false は渡さないでください。"
+    }
+  },
+  "api": {
+    "wc_ButtonProps": {
+      "variant": "ボタンの見た目（variant 属性に反映されます）。",
+      "size": "ボタンのサイズ。",
+      "shape": "ボタンの角の形状。",
+      "disabled": "ボタンを無効にします（ブール属性）。",
+      "loading": "内容の代わりにスピナーを表示し、クリックを無効にします。aria-busy も設定します。",
+      "active": "押下中／アクティブのスタイルで表示します。",
+      "ariaLabel": "内部の <button> に転送されるアクセシブルなラベル。aria-label 属性で指定します。アイコンのみのボタンでは必須です。"
+    }
+  }
+}

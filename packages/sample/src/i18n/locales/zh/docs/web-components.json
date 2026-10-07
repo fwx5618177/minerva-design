@@ -1,0 +1,59 @@
+{
+  "title": "Web Components",
+  "description": "<minerva-button>：基于 Lit 构建、与框架无关的自定义元素，可用于纯 HTML、React、Vue 或任何其他框架。",
+  "what": {
+    "title": "它是什么",
+    "p1": "@minerva/lib-web-components 把 Minerva 组件封装为标准的自定义元素。引入一次该包即可向浏览器注册这些元素；之后它们就像内置的 HTML 标签一样，可用于任何页面或框架。",
+    "p2": "这些元素渲染在 shadow root 中，因此内部样式不会泄漏到页面中（也不会被页面样式破坏）。它们通过 HTML 属性进行配置，并派发 click 等普通 DOM 事件。"
+  },
+  "html": {
+    "title": "在 HTML 中使用",
+    "text": "以 ES 模块的形式（通过构建工具）加载该包，然后即可在文档的任何位置使用这些标签。loading、disabled 等布尔属性只要存在即为开启。"
+  },
+  "react": {
+    "title": "在 React 中使用",
+    "text": "为了副作用引入一次该包，并引用包内的类型声明，以便在 JSX 中检查属性类型。onClick 等 DOM 事件照常工作；无障碍名称请使用带连字符的 aria-label。",
+    "booleans": "React 18 会把自定义元素上的属性设置为字符串，因此 loading={false} 会变成 loading=\"false\"，仍然被视为存在。切换布尔属性时请传入 true 或 undefined（例如 loading={saving || undefined}）。React 19 会把它们设置为 property，可以直接使用布尔值。"
+  },
+  "other": {
+    "title": "Vue 及其他框架",
+    "text": "任何能渲染 HTML 的框架都可以使用这些元素。在 Vue 中，请把 minerva-* 标签声明为自定义元素，以免编译器把它们当作 Vue 组件解析，并绑定 null 来移除布尔属性。Angular 需要 CUSTOM_ELEMENTS_SCHEMA；Svelte、Solid 和 Lit 无需配置。"
+  },
+  "theming": {
+    "title": "主题",
+    "text": "按钮读取自身的 CSS 自定义属性（--primary-color、--primary-hover、--error-color 等），其默认值声明在元素上，因此不会自动跟随 lib-core 的 ConfigProvider 主题。请在元素上（或在选中它的规则中）设置这些变量以匹配你的设计："
+  },
+  "a11y": {
+    "title": "无障碍",
+    "text": "该元素在 shadow root 中渲染原生 <button>，因此可获得焦点并支持键盘操作。aria-label 属性会被转发到该按钮上；纯图标按钮请务必设置。加载中时按钮会设置 aria-busy 并忽略点击；禁用的按钮无法获得焦点。"
+  },
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "引入一次该包，然后像使用普通元素一样使用 <minerva-button>。React 的 onClick 与原生元素上一样有效。"
+    },
+    "variants": {
+      "title": "变体",
+      "description": "九种变体：primary、secondary、success、warning、error、info、ghost、retry 和 back。"
+    },
+    "sizes-shapes": {
+      "title": "尺寸与形状",
+      "description": "四种尺寸（tiny 到 large）和四种形状。纯图标的圆形按钮需要设置 aria-label。"
+    },
+    "states": {
+      "title": "状态",
+      "description": "loading 显示加载指示并阻止点击；disabled 和 active 也是布尔属性。在 React 18 中请传 true 或 undefined，不要传 false。"
+    }
+  },
+  "api": {
+    "wc_ButtonProps": {
+      "variant": "按钮的视觉样式（会反映到 variant 属性上）。",
+      "size": "按钮尺寸。",
+      "shape": "按钮的圆角形状。",
+      "disabled": "禁用按钮（布尔属性）。",
+      "loading": "以加载指示替代内容并阻止点击；同时设置 aria-busy。",
+      "active": "以按下 / 激活样式渲染按钮。",
+      "ariaLabel": "转发到内部 <button> 的无障碍标签；通过 aria-label 属性设置。纯图标按钮必须提供。"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 .card {
-  background-color: #ffffff; /* 替换为原生颜色 */
+  background-color: var(--card-bg-color, var(--surface-color));
+  color: var(--text-color);
   border-radius: 0.25rem; /* 替换为原生值 */
   overflow: hidden;
   display: flex;
@@ -8,29 +9,34 @@
     box-shadow 0.3s ease,
     border-color 0.3s ease;
 
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
   &.default {
-    border: 1px solid #e1e1e1; /* 替换为原生颜色 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 替换为原生值 */
+    border: 1px solid var(--card-border-color, var(--border-color));
+    box-shadow: var(--shadow-sm);
   }
 
   &.outlined {
-    border: 1px solid #e1e1e1; /* 替换为原生颜色 */
+    border: 1px solid var(--card-border-color, var(--border-color));
     box-shadow: none;
   }
 
   &.shadow {
     border: none;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 替换为原生值 */
+    box-shadow: var(--shadow-md);
   }
 
   &.elevated {
     border: none;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* 替换为原生值 */
+    box-shadow: var(--shadow-lg);
   }
 
   &.filled {
     border: none;
-    background-color: #f0f0f0; /* 替换为原生颜色 */
+    background-color: var(--surface-muted-color);
     box-shadow: none;
   }
 
@@ -49,14 +55,14 @@
 
   .cardHeader {
     padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* 添加分割线 */
+    background-color: var(--surface-muted-color);
+    border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
   }
 
   .cardTitle {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #333333; /* 替换为原生颜色 */
+    color: var(--text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -64,7 +70,7 @@
 
   .cardDescription {
     font-size: 0.875rem; /* 替换为原生值 */
-    color: #666666; /* 替换为原生颜色 */
+    color: var(--text-secondary-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -73,8 +79,8 @@
   .cardContent {
     padding: 1rem;
     flex: 1;
-    background-color: #f9f9f9; /* 替换为原生颜色 */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* 添加分割线 */
+    background-color: var(--card-bg-color-content, var(--surface-color));
+    border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -82,14 +88,14 @@
 
   .cardFooter {
     padding: 1rem;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: color-mix(in srgb, var(--surface-muted-color) 60%, transparent);
     text-align: right;
-    border-top: 1px solid rgba(0, 0, 0, 0.1); /* 添加分割线 */
+    border-top: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
   }
 
   .cardButton {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: var(--text-inverse-color);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -99,16 +105,22 @@
       box-shadow 0.3s ease;
 
     &:hover {
-      background-color: #0056b3;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: var(--primary-color-hover);
+      box-shadow: var(--shadow-sm);
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
     }
 
     &:active {
+      background-color: var(--primary-color-active);
       transform: translateY(2px);
     }
   }

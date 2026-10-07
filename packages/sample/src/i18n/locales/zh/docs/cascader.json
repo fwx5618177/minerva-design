@@ -1,0 +1,75 @@
+{
+  "title": "Cascader 级联选择",
+  "description": "从层级数据中逐级选择一个值，例如国家 / 地区 / 城市。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "点击选项展开下一级，选择叶子节点后完成选择。"
+    },
+    "default-value": {
+      "title": "默认值",
+      "description": "defaultValue 接收由每一级的值组成的路径。"
+    },
+    "controlled": {
+      "title": "受控模式",
+      "description": "传入 value 并在 onChange 中更新；清除时 onChange 会收到空数组。"
+    },
+    "hover": {
+      "title": "悬停展开",
+      "description": "设置 expandTrigger=\"hover\" 后，鼠标悬停父级选项时展开子菜单。"
+    },
+    "search": {
+      "title": "搜索",
+      "description": "showSearch 允许输入文字过滤所有路径，filter 可自定义匹配规则。"
+    },
+    "display-render": {
+      "title": "自定义显示",
+      "description": "displayRender 自定义输入框中显示的文本；本例只显示最后一级，并关闭了 allowClear。"
+    },
+    "disabled": {
+      "title": "禁用",
+      "description": "通过 option.disabled 禁用单个选项，或通过 disabled 禁用整个组件。"
+    },
+    "lazy-load": {
+      "title": "动态加载",
+      "description": "对没有 children 且非 isLeaf 的选项会调用 loadData。请求期间为选项设置 loading，数据返回后将 children 写入 options。"
+    },
+    "custom-option": {
+      "title": "自定义选项与层级",
+      "description": "optionRender 按层级渲染每个选项，maxLevel 限制展开深度，dropdownStyle / optionStyle 调整菜单样式。"
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "输入框的标签",
+      "name": "输入框的 name",
+      "options": "选项数据树",
+      "value": "选中的值路径（受控）",
+      "defaultValue": "初始选中的值路径（非受控）",
+      "onChange": "选中叶子选项或清除值时的回调",
+      "displayRender": "自定义输入框中显示的文本，默认用 \" / \" 连接各级标签",
+      "disabled": "是否禁用",
+      "placeholder": "输入框占位文本",
+      "allowClear": "有选中值时显示清除按钮",
+      "expandTrigger": "次级菜单的展开方式",
+      "className": "额外的类名",
+      "showSearch": "允许输入以搜索所有路径",
+      "filter": "自定义搜索逻辑，默认匹配标签包含输入内容的路径",
+      "loadData": "为没有 children 且非 isLeaf 的选项动态加载子项，需自行更新 options",
+      "dropdownClassName": "下拉框的额外类名",
+      "optionRender": "自定义选项渲染",
+      "width": "组件宽度",
+      "maxLevel": "最多显示的层级数",
+      "dropdownStyle": "下拉框的内联样式",
+      "optionStyle": "每个选项的内联样式"
+    },
+    "CascaderOption": {
+      "value": "选项的值，在同级中唯一",
+      "label": "选项显示的文本",
+      "children": "下一级的选项",
+      "disabled": "禁止选择该选项",
+      "isLeaf": "使用 loadData 时标记为叶子节点（无需加载子项）",
+      "loading": "加载子项时显示加载指示"
+    }
+  }
+}

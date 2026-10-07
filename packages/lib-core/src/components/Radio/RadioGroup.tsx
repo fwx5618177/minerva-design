@@ -1,4 +1,5 @@
 import React, { createContext, forwardRef, useState } from "react";
+import classNames from "classnames";
 import { RadioGroupProps } from "./types";
 import styles from "./radio.module.scss";
 
@@ -47,7 +48,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       error = false,
       helperText,
       required = false,
-      color = "#1976d2",
+      color = "var(--primary-color)",
     },
     ref,
   ) => {
@@ -59,21 +60,20 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
     ) => {
       if (disabled) return;
 
-      if (onChange) {
-        onChange(val, event);
-      } else {
+      if (value === undefined) {
         setInternalValue(val);
       }
+      onChange?.(val, event);
     };
 
     return (
       <div
         ref={ref}
-        className={`
-          ${styles.radioGroupWrapper}
-          ${error ? styles.error : ""}
-          ${className}
-        `}
+        className={classNames(
+          styles.radioGroupWrapper,
+          error && styles.error,
+          className,
+        )}
       >
         <RadioGroupContext.Provider
           value={{
@@ -86,7 +86,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           }}
         >
           <div
-            className={`${styles.radioGroup} ${styles[direction]}`}
+            className={classNames(styles.radioGroup, styles[direction])}
             role="radiogroup"
             aria-required={required}
             aria-invalid={error}
@@ -96,7 +96,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
         </RadioGroupContext.Provider>
         {helperText && (
           <div
-            className={`${styles.helperText} ${error ? styles.errorText : ""}`}
+            className={classNames(styles.helperText, error && styles.errorText)}
           >
             {helperText}
           </div>

@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .alert {
   position: relative;
@@ -10,7 +10,7 @@
   margin-bottom: 16px;
 
   &.withElevation {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
   }
 
   &.rounded {
@@ -36,11 +36,17 @@
       opacity: 0.7;
       transition: all 0.3s;
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         opacity: 1;
       }
 
-      @extend .commonRippleEffect;
+      &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
+      }
+
+      @include ripple-effect;
     }
   }
 
@@ -74,62 +80,102 @@
 
   // Type variants
   &.info {
-    background-color: rgba(33, 150, 243, 0.1);
-    color: #2196f3;
+    background-color: var(--info-color-subtle);
+    border: 1px solid var(--info-color-border);
+    color: var(--info-color-text);
+
+    .icon {
+      color: var(--info-color);
+    }
 
     &.filled {
-      background-color: #2196f3;
-      color: #fff;
+      background-color: var(--info-color);
+      border-color: var(--info-color);
+      color: var(--text-inverse-color);
+
+      .icon {
+        color: inherit;
+      }
     }
 
     &.outlined {
       background-color: transparent;
-      border: 1px solid #2196f3;
+      border: 1px solid var(--info-color);
     }
   }
 
   &.success {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: #4caf50;
+    background-color: var(--success-color-subtle);
+    border: 1px solid var(--success-color-border);
+    color: var(--success-color-text);
+
+    .icon {
+      color: var(--success-color);
+    }
 
     &.filled {
-      background-color: #4caf50;
-      color: #fff;
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+      color: var(--text-inverse-color);
+
+      .icon {
+        color: inherit;
+      }
     }
 
     &.outlined {
       background-color: transparent;
-      border: 1px solid #4caf50;
+      border: 1px solid var(--success-color);
     }
   }
 
   &.warning {
-    background-color: rgba(255, 152, 0, 0.1);
-    color: #ff9800;
+    background-color: var(--warning-color-subtle);
+    border: 1px solid var(--warning-color-border);
+    color: var(--warning-color-text);
+
+    .icon {
+      color: var(--warning-color);
+    }
 
     &.filled {
-      background-color: #ff9800;
-      color: #fff;
+      background-color: var(--warning-color);
+      border-color: var(--warning-color);
+      color: var(--text-inverse-color);
+
+      .icon {
+        color: inherit;
+      }
     }
 
     &.outlined {
       background-color: transparent;
-      border: 1px solid #ff9800;
+      border: 1px solid var(--warning-color);
     }
   }
 
   &.error {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #f44336;
+    background-color: var(--danger-color-subtle);
+    border: 1px solid var(--danger-color-border);
+    color: var(--danger-color-text);
+
+    .icon {
+      color: var(--danger-color);
+    }
 
     &.filled {
-      background-color: #f44336;
-      color: #fff;
+      background-color: var(--danger-color);
+      border-color: var(--danger-color);
+      color: var(--text-inverse-color);
+
+      .icon {
+        color: inherit;
+      }
     }
 
     &.outlined {
       background-color: transparent;
-      border: 1px solid #f44336;
+      border: 1px solid var(--danger-color);
     }
   }
 
@@ -177,11 +223,17 @@
     display: flex;
     align-items: center;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       opacity: 1;
     }
 
-    @extend .commonRippleEffect;
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+
+    @include ripple-effect;
   }
 
   // Animation

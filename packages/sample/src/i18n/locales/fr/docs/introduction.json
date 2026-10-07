@@ -1,0 +1,53 @@
+{
+  "title": "Introduction",
+  "description": "Les idées derrière Minerva, comment lire les pages de composants et les conventions communes à tous les composants.",
+  "principles": {
+    "title": "Principes de conception",
+    "tokens": {
+      "title": "Piloté par les jetons",
+      "text": "les couleurs, rayons et ombres proviennent de propriétés personnalisées CSS : chaque composant suit le thème actif, y compris le vôtre."
+    },
+    "accessible": {
+      "title": "Accessible par défaut",
+      "text": "les composants rendent des éléments natifs et sémantiques, prennent en charge le clavier, affichent un anneau de focus visible et exposent ariaLabel lorsqu'un libellé visible peut manquer."
+    },
+    "predictable": {
+      "title": "Des API prévisibles",
+      "text": "les mêmes noms de props (variant, size, shape, disabled, loading...) ont la même signification d'un composant à l'autre."
+    },
+    "small": {
+      "title": "Petits et composables",
+      "text": "les composants font une seule chose et acceptent className et style, ce qui les rend faciles à combiner avec votre propre mise en page et vos styles."
+    }
+  },
+  "reading": {
+    "title": "Lire les pages de composants",
+    "text": "Chaque page de composant suit la même structure :",
+    "import": "l'instruction d'import exacte, feuille de style comprise.",
+    "examples": "des démos interactives couvrant chaque fonctionnalité. Utilisez « Afficher le code » pour voir la source complète ; chaque démo est autonome et peut être copiée telle quelle.",
+    "api": "des tables générées à partir des types TypeScript du composant, avec le type, la valeur par défaut et la description de chaque prop."
+  },
+  "conventions": {
+    "title": "Conventions",
+    "controlled": {
+      "title": "Contrôlé et non contrôlé",
+      "text": "Les composants de formulaire peuvent gérer leur propre état (passez defaultChecked / defaultValue, ou rien) ou être contrôlés (passez checked / value avec onChange). Ne passez pas d'un mode à l'autre pendant la vie du composant."
+    },
+    "passthrough": {
+      "title": "className et style",
+      "text": "Les composants acceptent className (et généralement style) sur leur élément racine. Ceux qui enveloppent un élément natif, comme Button, transmettent aussi les attributs natifs (type, name, data-*, aria-*...)."
+    },
+    "aria": {
+      "title": "Noms accessibles",
+      "text": "Lorsqu'un contrôle n'a pas de texte visible (bouton icône, bouton de recherche, icône de fermeture...), donnez-lui un nom accessible avec la prop ariaLabel. Elle est rendue en aria-label sur l'élément interactif."
+    }
+  },
+  "browsers": {
+    "title": "Navigateurs pris en charge",
+    "text": "Minerva cible les navigateurs modernes à jour : Chrome et Edge 111+, Firefox 113+ et Safari 16.2+. Le thème repose sur les propriétés personnalisées CSS et color-mix() ; Internet Explorer n'est pas pris en charge. Le rendu côté serveur fonctionne : le thème est appliqué côté client une fois React monté."
+  },
+  "contributing": {
+    "title": "Contribuer",
+    "text": "Minerva est open source sous licence MIT. Les rapports de bugs, idées et pull requests sont les bienvenus sur GitHub :"
+  }
+}

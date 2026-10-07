@@ -1,42 +1,65 @@
-import type { TooltipProps } from "@components/Tooltip";
+import type { TooltipProps } from "../Tooltip";
 
 type TooltipVariant = Pick<
   TooltipProps,
   "content" | "variant" | "shape" | "arrow"
 >;
 
-export interface IconButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Icon element to be displayed */
+export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Icon element to display */
   icon: React.ReactNode;
-  /** Button variant style */
+  /** Color variant; a neutral style is used when omitted */
   variant?: "primary" | "secondary" | "success" | "warning" | "error" | "info";
-  /** Button size */
+  /**
+   * Button size
+   * @default "medium"
+   */
   size?: "small" | "medium" | "large";
-  /** Button shape */
+  /**
+   * Button shape
+   * @default "circle"
+   */
   shape?: "circle" | "square";
-  /** Whether the button is disabled */
+  /**
+   * Disables the button and removes it from the tab order
+   * @default false
+   */
   disabled?: boolean;
-  /** Whether the button is in loading state */
+  /**
+   * Replaces the icon with a spinner and blocks interaction
+   * @default false
+   */
   loading?: boolean;
-  /** Whether the button is in active state */
+  /**
+   * Renders the button in its active (pressed) state
+   * @default false
+   */
   active?: boolean;
-  /** Additional CSS class names */
+  /**
+   * Additional class name
+   * @default ""
+   */
   className?: string;
   /** Custom icon color */
   color?: string;
-  /** Custom active state color */
+  /** Custom icon color in the active state */
   activeColor?: string;
   /** Custom background color */
   bgColor?: string;
-  /** Custom hover state background color */
+  /** Custom background color on hover */
   hoverColor?: string;
-  /** Custom fill color */
+  /** Custom fill color of the icon */
   fillColor?: string;
-  /** Tooltip configuration */
+  /** Tooltip configuration (content, variant, shape, arrow); requires showTooltip */
   tooltip?: TooltipVariant;
-  /** Whether to show tooltip */
+  /**
+   * Shows the tooltip on hover and focus
+   * @default false
+   */
   showTooltip?: boolean;
-  /** Accessibility label for the button */
+  /**
+   * Accessible label; always set it, since the button only contains an icon
+   * @default "icon button"
+   */
   ariaLabel?: string;
 }

@@ -1,3 +1,7 @@
-import { generateCSSVariables, applyThemeStyles } from "./applyThemeStyles";
-
-export { generateCSSVariables, applyThemeStyles };
+export {
+  applyThemeStyles,
+  generateCSSVariables,
+  getSystemTheme,
+  isBilingualTheme,
+  resolveTheme,
+} from "./applyThemeStyles";

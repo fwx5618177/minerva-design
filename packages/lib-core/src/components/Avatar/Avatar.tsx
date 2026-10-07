@@ -26,12 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({
   const initial = name ? name.charAt(0).toUpperCase() : "";
 
   return (
-    <span
-      className={avatarClasses}
-      {...props}
-      tabIndex={0}
-      aria-label={name || "avatar"}
-    >
+    <span className={avatarClasses} {...props} aria-label={name || "avatar"}>
       {!showText && (
         <img
           alt={name || "avatar"}

@@ -1,5 +1,3 @@
-@import "../../styles/common.scss";
-
 .radioWrapper {
   display: inline-flex;
   flex-direction: column;
@@ -37,8 +35,12 @@
     flex-shrink: 0;
     width: 18px;
     height: 18px;
-    border: 2px solid #757575;
+    border: 2px solid var(--border-strong-color);
     border-radius: 50%;
+    background-color: var(--surface-color);
+    // Accent comes from the type class (`--radio-accent`) or the inline
+    // `color` set from TSX; defaults to the primary role.
+    color: var(--radio-accent, var(--primary-color));
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
 
@@ -60,11 +62,17 @@
   // 当选中时
   .input:checked ~ .radioMark {
     border-color: currentColor;
+    background-color: currentColor;
 
     &:after {
+      background-color: var(--text-inverse-color);
       opacity: 1;
       transform: scale(1);
     }
+  }
+
+  .input:focus-visible ~ .radioMark {
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
   }
 
   &.disabled {
@@ -73,8 +81,8 @@
   }
 
   &.error .radioMark {
-    border-color: #d32f2f;
-    background-color: rgba(211, 47, 47, 0.1);
+    border-color: var(--danger-color);
+    background-color: var(--danger-color-subtle);
   }
 
   // Label placement styles
@@ -92,30 +100,7 @@
     align-items: flex-start;
   }
 
-  // Type styles
-  &.primary .radioMark {
-    &:after {
-      background-color: #1976d2;
-    }
-  }
-
-  &.success .radioMark {
-    &:after {
-      background-color: #2e7d32;
-    }
-  }
-
-  &.warning .radioMark {
-    &:after {
-      background-color: #ed6c02;
-    }
-  }
-
-  &.error .radioMark {
-    &:after {
-      background-color: #d32f2f;
-    }
-  }
+  // Type styles: see the `--radio-accent` variant classes at the bottom.
 
   // Shape styles
   &.circle .radioMark {
@@ -190,7 +175,7 @@
   display: inline-block;
   width: 18px;
   height: 18px;
-  border: 2px solid #757575;
+  border: 2px solid var(--border-strong-color);
   border-radius: 50%;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -202,7 +187,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #1976d2;
+    background-color: var(--text-inverse-color);
     opacity: 0;
     transform: translate(-50%, -50%) scale(0);
     transition:
@@ -212,7 +197,7 @@
 
   &:hover {
     &:not(:disabled) {
-      border-color: #1976d2;
+      border-color: currentColor;
       &:before {
         opacity: 0.04;
         transform: translate(-50%, -50%) scale(1);
@@ -228,7 +213,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #1976d2;
+    background-color: currentColor;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0);
     transition:
@@ -248,7 +233,7 @@
 
 .label {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--text-color);
 }
 
 .small {
@@ -320,17 +305,17 @@
 
 .helperText {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary-color);
   margin-top: 4px;
   min-height: 20px;
 
   &.errorText {
-    color: #d32f2f;
+    color: var(--danger-color);
   }
 }
 
 .errorIcon {
-  color: #d32f2f;
+  color: var(--danger-color);
   display: flex;
   align-items: center;
 }
@@ -348,40 +333,20 @@
   }
 }
 
-.primary .radioMark {
-  &:after {
-    background-color: #1976d2;
-  }
-  &:before {
-    background-color: #1976d2;
-  }
+.primary {
+  --radio-accent: var(--primary-color);
 }
 
-.success .radioMark {
-  &:after {
-    background-color: #2e7d32;
-  }
-  &:before {
-    background-color: #2e7d32;
-  }
+.success {
+  --radio-accent: var(--success-color);
 }
 
-.warning .radioMark {
-  &:after {
-    background-color: #ed6c02;
-  }
-  &:before {
-    background-color: #ed6c02;
-  }
+.warning {
+  --radio-accent: var(--warning-color);
 }
 
-.error .radioMark {
-  &:after {
-    background-color: #d32f2f;
-  }
-  &:before {
-    background-color: #d32f2f;
-  }
+.error {
+  --radio-accent: var(--danger-color);
 }
 
 .radioGroupWrapper {
@@ -391,7 +356,7 @@
 
   &.error {
     .radioGroup {
-      border-color: #d32f2f;
+      border-color: var(--danger-color);
     }
   }
 }

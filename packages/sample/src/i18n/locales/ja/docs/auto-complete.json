@@ -1,0 +1,90 @@
+{
+  "title": "AutoComplete オートコンプリート",
+  "description": "入力中に一致する候補を提示するテキスト入力です。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "入力した文字列をラベルに含む候補を表示します。textFieldProps は入力欄に渡されます。"
+    },
+    "controlled": {
+      "title": "制御モード",
+      "description": "value / onChange で入力テキストを制御し、onSelect で選択された候補を、onDropdownVisibleChange でドロップダウンの開閉を受け取ります。"
+    },
+    "rich-options": {
+      "title": "アイコン・説明・状態",
+      "description": "basic モードでは候補にアイコンと説明を付けられ、強調表示や無効化もできます。"
+    },
+    "custom-render": {
+      "title": "カスタム描画",
+      "description": "mode=\"custom\" と renderOption で候補の見た目を自由に描画します。renderEmpty は空状態を置き換えます。"
+    },
+    "grouped": {
+      "title": "グループ化",
+      "description": "groupBy で各候補のグループ名を返します。グループは出現順に見出し付きで表示されます。"
+    },
+    "multiple": {
+      "title": "複数選択",
+      "description": "multiple を有効にすると選択した候補が削除可能なタグになり、maxTagCount を超えた分は「+N」にまとめられます。"
+    },
+    "filter-sort": {
+      "title": "フィルターと並び替えのカスタマイズ",
+      "description": "filterOption で既定の「部分一致」を置き換え、sortOption で結果を並べ替えます。"
+    },
+    "async-loading": {
+      "title": "リモート検索",
+      "description": "入力に応じて候補を取得し、リクエスト中は loading を表示します。"
+    },
+    "appearance": {
+      "title": "ドロップダウンの位置と色",
+      "description": "placement、offset、animation、およびドロップダウン・ホバー・強調表示の背景色をカスタマイズします。"
+    }
+  },
+  "keyboard": {
+    "title": "キーボードとアクセシビリティ",
+    "arrows": "↓ / ↑ キーで表示中の候補を移動します（端で折り返します）。",
+    "enter": "Enter でアクティブな候補を選択します。無効な候補は選択されません。",
+    "escape": "Esc でドロップダウンを閉じます。",
+    "aria": "入力欄は combobox ロールを持ち、aria-expanded・aria-controls・aria-activedescendant で listbox の候補と関連付けられます。"
+  },
+  "api": {
+    "AutoCompleteProps": {
+      "name": "入力欄の name",
+      "label": "入力欄のラベル",
+      "mode": "\"basic\" はアイコン／ラベル／説明を表示し、\"custom\" は renderOption を使います",
+      "value": "入力値（制御）",
+      "onChange": "入力テキストが変わったとき（入力または候補選択）に呼び出されます",
+      "options": "候補のリスト",
+      "defaultValue": "初期入力値（非制御）",
+      "onSelect": "候補が選択されたとき（マウスまたはキーボード）に呼び出されます",
+      "groupBy": "候補のグループ名を返します。候補は見出しごとにグループ化されます",
+      "multiple": "複数選択を許可し、選択項目を削除可能なタグで表示します",
+      "maxTagCount": "複数選択時に表示するタグの最大数。残りは「+N」で表示されます",
+      "renderOption": "候補のカスタム描画（mode が \"custom\" のとき）",
+      "renderEmpty": "一致する候補がないときに表示するカスタム内容",
+      "loading": "ドロップダウンに読み込み中インジケーターを表示します",
+      "textFieldProps": "内部の TextField に渡す props",
+      "emptyProps": "既定の Empty（空状態）に渡す props",
+      "popperProps": "ドロップダウンの Popper に渡す props",
+      "placement": "ドロップダウンの位置",
+      "offset": "ドロップダウンのオフセット",
+      "dropdownBgColor": "ドロップダウンの背景色",
+      "highlightBgColor": "強調表示された候補の背景色",
+      "hoverBgColor": "ホバー中／キーボードでフォーカス中の候補の背景色",
+      "animation": "ドロップダウンを開くときにアニメーションします",
+      "filterOption": "カスタムフィルター。既定ではラベルに入力を含む候補（大文字小文字を区別しない）を表示します",
+      "sortOption": "フィルター後の候補を並べ替える比較関数",
+      "onOptionClick": "候補がマウスでクリックされたときに呼び出されます",
+      "onDropdownVisibleChange": "ドロップダウンの開閉時に呼び出されます"
+    },
+    "AutoCompleteOption": {
+      "label": "候補として表示され、選択時に入力欄へ入るテキスト",
+      "value": "候補の一意な値",
+      "disabled": "候補を選択できないようにします",
+      "highlight": "候補を強調表示します（おすすめなど）",
+      "icon": "ラベルの前に表示するアイコン（basic モード）",
+      "description": "ラベルの下に表示する補足テキスト（basic モード）",
+      "group": "自由形式のグループ識別子。通常は groupBy で参照します",
+      "style": "候補のインラインスタイル"
+    }
+  }
+}

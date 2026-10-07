@@ -1,59 +1,52 @@
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { message } from "./MessageContainer";
-import type { MessageProps, MessageType } from "./types";
+import type {
+  MessageOptions,
+  MessagePromiseResult,
+  MessageType,
+} from "./types";
 
-interface MessagePromiseResult {
-  then: (callback: () => void | Promise<void>) => MessagePromiseResult;
-  catch: (callback: () => void) => MessagePromiseResult;
-  messageId: string;
-}
+const showMessage = (
+  type: MessageType,
+  props: MessageOptions | string,
+): MessagePromiseResult => {
+  const config: MessageOptions =
+    typeof props === "string" ? { content: props } : props;
 
-export const useMessage = () => {
-  const showMessage = useCallback(
-    (type: MessageType, props: MessageProps | string): MessagePromiseResult => {
-      const config: MessageProps =
-        typeof props === "string"
-          ? { content: props, id: Date.now().toString() }
-          : props;
-      const messageId = message[type](config);
-      const duration = config.duration ?? 3000;
+  let resolveClosed: () => void = () => undefined;
+  const closed = new Promise<void>((resolve) => {
+    resolveClosed = resolve;
+  });
 
-      const createPromiseChain = (): MessagePromiseResult => {
-        let currentPromise = Promise.resolve();
-        return {
-          then: (callback: () => void | Promise<void>) => {
-            if (duration > 0) {
-              currentPromise = currentPromise.then(
-                () =>
-                  new Promise((resolve) =>
-                    setTimeout(() => {
-                      Promise.resolve(callback()).then(resolve);
-                    }, duration),
-                  ),
-              );
-            }
-            return createPromiseChain();
-          },
-          catch: (callback: () => void) => {
-            currentPromise = currentPromise.catch(callback);
-            return createPromiseChain();
-          },
-          messageId,
-        };
-      };
-
-      return createPromiseChain();
+  const messageId = message[type]({
+    ...config,
+    onClose: (id: string) => {
+      config.onClose?.(id);
+      resolveClosed();
     },
+  });
+
+  return Object.assign(closed, { messageId });
+};
+
+/**
+ * Promise-based message API. Each call returns a promise that resolves when
+ * the message closes, so messages can be chained:
+ * `loading("Saving").then(() => success("Saved"))`.
+ */
+export const useMessage = () =>
+  useMemo(
+    () => ({
+      info: (props: MessageOptions | string) => showMessage("info", props),
+      success: (props: MessageOptions | string) =>
+        showMessage("success", props),
+      warning: (props: MessageOptions | string) =>
+        showMessage("warning", props),
+      error: (props: MessageOptions | string) => showMessage("error", props),
+      loading: (props: MessageOptions | string) =>
+        showMessage("loading", props),
+      destroy: message.destroy,
+      update: message.update,
+    }),
     [],
   );
-
-  return {
-    info: (props: MessageProps | string) => showMessage("info", props),
-    success: (props: MessageProps | string) => showMessage("success", props),
-    warning: (props: MessageProps | string) => showMessage("warning", props),
-    error: (props: MessageProps | string) => showMessage("error", props),
-    loading: (props: MessageProps | string) => showMessage("loading", props),
-    destroy: message.destroy,
-    update: message.update,
-  };
-};

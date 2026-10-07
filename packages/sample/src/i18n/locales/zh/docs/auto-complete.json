@@ -1,0 +1,90 @@
+{
+  "title": "AutoComplete 自动完成",
+  "description": "输入时根据内容提示匹配选项的输入框。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "提示标签中包含输入内容的选项；textFieldProps 会透传给输入框。"
+    },
+    "controlled": {
+      "title": "受控模式",
+      "description": "value / onChange 控制输入文本，onSelect 返回选中的选项，onDropdownVisibleChange 通知下拉框的显示状态。"
+    },
+    "rich-options": {
+      "title": "图标、描述与状态",
+      "description": "basic 模式下选项可以带图标和描述，也可以高亮或禁用。"
+    },
+    "custom-render": {
+      "title": "自定义渲染",
+      "description": "设置 mode=\"custom\" 和 renderOption 完全自定义选项外观；renderEmpty 替换空状态。"
+    },
+    "grouped": {
+      "title": "选项分组",
+      "description": "groupBy 为每个选项返回分组名，分组按首次出现顺序显示并带有标题。"
+    },
+    "multiple": {
+      "title": "多选",
+      "description": "开启 multiple 后，选中项以可移除的标签展示；maxTagCount 将多余的标签折叠为“+N”。"
+    },
+    "filter-sort": {
+      "title": "自定义过滤与排序",
+      "description": "filterOption 替换默认的“包含”匹配逻辑，sortOption 对结果排序。"
+    },
+    "async-loading": {
+      "title": "远程搜索",
+      "description": "随输入请求选项，并在请求期间显示 loading 状态。"
+    },
+    "appearance": {
+      "title": "下拉框位置与颜色",
+      "description": "自定义下拉框的 placement、offset、animation，以及下拉框、悬停和高亮背景色。"
+    }
+  },
+  "keyboard": {
+    "title": "键盘与无障碍",
+    "arrows": "↓ / ↑ 在可见选项间移动（首尾循环）。",
+    "enter": "Enter 选择当前选项，禁用的选项无法被选中。",
+    "escape": "Esc 关闭下拉框。",
+    "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。"
+  },
+  "api": {
+    "AutoCompleteProps": {
+      "name": "输入框的 name",
+      "label": "输入框的标签",
+      "mode": "\"basic\" 渲染图标 / 标签 / 描述；\"custom\" 使用 renderOption",
+      "value": "输入框的值（受控）",
+      "onChange": "输入文本变化时的回调（输入或选择选项）",
+      "options": "提示的选项列表",
+      "defaultValue": "初始输入值（非受控）",
+      "onSelect": "选中选项时的回调（鼠标或键盘）",
+      "groupBy": "返回选项所属的分组名，选项将按分组显示",
+      "multiple": "允许多选，选中项以可移除标签显示",
+      "maxTagCount": "多选模式下最多显示的标签数，其余显示为“+N”",
+      "renderOption": "自定义选项渲染（mode 为 \"custom\" 时生效）",
+      "renderEmpty": "无匹配选项时显示的自定义内容",
+      "loading": "在下拉框中显示加载指示",
+      "textFieldProps": "透传给内部 TextField 的属性",
+      "emptyProps": "透传给默认 Empty 空状态的属性",
+      "popperProps": "透传给下拉框 Popper 的属性",
+      "placement": "下拉框位置",
+      "offset": "下拉框偏移量",
+      "dropdownBgColor": "下拉框背景色",
+      "highlightBgColor": "高亮选项的背景色",
+      "hoverBgColor": "悬停或键盘聚焦选项的背景色",
+      "animation": "打开下拉框时显示动画",
+      "filterOption": "自定义过滤逻辑；默认显示标签包含输入内容（不区分大小写）的选项",
+      "sortOption": "对过滤后的选项排序的比较函数",
+      "onOptionClick": "鼠标点击选项时的回调",
+      "onDropdownVisibleChange": "下拉框打开或关闭时的回调"
+    },
+    "AutoCompleteOption": {
+      "label": "选项显示的文本，选中后写入输入框",
+      "value": "选项的唯一值",
+      "disabled": "禁止选择该选项",
+      "highlight": "高亮显示该选项（例如作为推荐项）",
+      "icon": "标签前显示的图标（basic 模式）",
+      "description": "标签下方的次要说明文字（basic 模式）",
+      "group": "自由定义的分组标识，通常由 groupBy 读取",
+      "style": "选项的内联样式"
+    }
+  }
+}

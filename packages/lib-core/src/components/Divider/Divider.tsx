@@ -56,7 +56,12 @@ const Divider: React.FC<DividerProps> = ({
   );
 
   return (
-    <div className={dividerClasses} style={dividerStyle}>
+    <div
+      className={dividerClasses}
+      style={dividerStyle}
+      role="separator"
+      aria-orientation={orientation}
+    >
       {children && <span className={styles.text}>{children}</span>}
     </div>
   );

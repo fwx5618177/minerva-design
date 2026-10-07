@@ -1,50 +1,77 @@
 export type TagVariant =
-  | "default"
-  | "primary"
-  | "success"
-  | "warning"
-  | "error"
-  | "info";
+  "default" | "primary" | "success" | "warning" | "error" | "info";
 export type TagSize = "small" | "medium" | "large";
 export type TagShape = "square" | "rounded" | "circle";
 
 export interface TagProps {
-  /** Tag的文本内容 */
+  /** Content of the tag */
   children?: React.ReactNode;
-  /** Tag的变体样式 */
+  /**
+   * Color scheme
+   * @default "default"
+   */
   variant?: TagVariant;
-  /** Tag的尺寸 */
+  /**
+   * Tag size
+   * @default "medium"
+   */
   size?: TagSize;
-  /** Tag的形状 */
+  /**
+   * Tag shape
+   * @default "rounded"
+   */
   shape?: TagShape;
-  /** 是否可关闭 */
+  /**
+   * Shows a close button
+   * @default false
+   */
   closable?: boolean;
-  /** 关闭按钮的回调 */
+  /** Called when the close button is clicked */
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
-  /** 是否可点击 */
+  /**
+   * Makes the tag behave like a button (focusable, activated with Enter / Space)
+   * @default false
+   */
   clickable?: boolean;
-  /** 点击事件回调 */
+  /** Called when the tag is activated (requires clickable) */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  /** 自定义图标 */
+  /** Icon displayed before the content */
   icon?: React.ReactNode;
-  /** 是否显示边框 */
+  /**
+   * Shows a border
+   * @default false
+   */
   bordered?: boolean;
-  /** 是否显示阴影 */
+  /**
+   * Shows a shadow
+   * @default false
+   */
   elevation?: boolean;
-  /** 自定义背景色 */
+  /** Custom background color */
   bgColor?: string;
-  /** 自定义文字颜色 */
+  /** Custom text color */
   textColor?: string;
-  /** 自定义边框颜色 */
+  /** Custom border color */
   borderColor?: string;
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: React.CSSProperties;
-  /** 是否禁用 */
+  /**
+   * Disables the tag and its close button
+   * @default false
+   */
   disabled?: boolean;
-  /** 自定义关闭图标 */
+  /** Custom close icon */
   closeIcon?: React.ReactNode;
-  /** 是否显示波纹效果 */
+  /**
+   * Accessible label of the close button
+   * @default "Close"
+   */
+  closeLabel?: string;
+  /**
+   * Shows a ripple effect on click
+   * @default true
+   */
   ripple?: boolean;
 }

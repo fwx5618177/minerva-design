@@ -1,11 +1,9 @@
-@import "../../styles/common.scss";
-
 .timePickerPanel {
-  background: #ffffff;
+  background: var(--surface-elevated-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  box-shadow:
-    0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   padding: 8px;
   user-select: none;
 
@@ -18,7 +16,7 @@
     width: 60px;
     height: 224px;
     overflow-y: auto;
-    border-right: 1px solid #f0f0f0;
+    border-right: 1px solid var(--border-color);
 
     &:last-child {
       border-right: none;
@@ -29,7 +27,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #bfbfbf;
+      background: var(--border-strong-color);
       border-radius: 3px;
     }
   }
@@ -44,16 +42,22 @@
     transition: all 0.2s ease;
 
     &:hover:not(.disabled) {
-      background: #f5f5f5;
+      background: var(--surface-muted-color);
     }
 
     &.selected {
-      background: #1890ff;
-      color: #ffffff;
+      background: var(--primary-color-subtle);
+      color: var(--primary-color-text);
+      font-weight: 500;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: -2px;
     }
 
     &.disabled {
-      color: #d9d9d9;
+      color: var(--text-disabled-color);
       cursor: not-allowed;
     }
   }

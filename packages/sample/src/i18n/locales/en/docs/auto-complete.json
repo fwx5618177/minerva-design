@@ -1,0 +1,90 @@
+{
+  "title": "AutoComplete",
+  "description": "A text input that suggests matching options while the user types.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Options whose label contains the typed text are suggested; textFieldProps are forwarded to the input."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "value / onChange control the input text, onSelect reports the chosen option and onDropdownVisibleChange the dropdown state."
+    },
+    "rich-options": {
+      "title": "Icons, descriptions and states",
+      "description": "In basic mode an option can have an icon and a description, and can be highlighted or disabled."
+    },
+    "custom-render": {
+      "title": "Custom rendering",
+      "description": "Set mode=\"custom\" and renderOption to fully control how options look; renderEmpty replaces the empty state."
+    },
+    "grouped": {
+      "title": "Grouped options",
+      "description": "groupBy returns a group name for each option; groups are shown under headings in order of appearance."
+    },
+    "multiple": {
+      "title": "Multiple selection",
+      "description": "With multiple, selected options become removable tags; maxTagCount collapses the rest into \"+N\"."
+    },
+    "filter-sort": {
+      "title": "Custom filter and sort",
+      "description": "filterOption replaces the default \"contains\" matching and sortOption orders the results."
+    },
+    "async-loading": {
+      "title": "Remote search",
+      "description": "Fetch options as the user types and show loading while the request is pending."
+    },
+    "appearance": {
+      "title": "Dropdown placement and colors",
+      "description": "Customize placement, offset, animation and the dropdown, hover and highlight background colors."
+    }
+  },
+  "keyboard": {
+    "title": "Keyboard and accessibility",
+    "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
+    "enter": "Enter selects the active option; disabled options are skipped on selection.",
+    "escape": "Escape closes the dropdown.",
+    "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+  },
+  "api": {
+    "AutoCompleteProps": {
+      "name": "Name of the input",
+      "label": "Label of the input",
+      "mode": "\"basic\" renders icon / label / description; \"custom\" uses renderOption",
+      "value": "Input value (controlled)",
+      "onChange": "Called when the input text changes (typing or selecting an option)",
+      "options": "Options to suggest",
+      "defaultValue": "Initial input value (uncontrolled)",
+      "onSelect": "Called when an option is selected (mouse or keyboard)",
+      "groupBy": "Returns the group name of an option; options are grouped under headings",
+      "multiple": "Allows selecting several options, shown as removable tags",
+      "maxTagCount": "Maximum number of tags shown in multiple mode; the rest are summarized as \"+N\"",
+      "renderOption": "Custom option renderer (used when mode is \"custom\")",
+      "renderEmpty": "Custom content shown when no option matches",
+      "loading": "Shows a loading indicator in the dropdown",
+      "textFieldProps": "Props forwarded to the underlying TextField",
+      "emptyProps": "Props forwarded to the default Empty state",
+      "popperProps": "Props forwarded to the dropdown Popper",
+      "placement": "Dropdown placement",
+      "offset": "Dropdown offset",
+      "dropdownBgColor": "Background color of the dropdown",
+      "highlightBgColor": "Background color of highlighted options",
+      "hoverBgColor": "Background color of hovered / keyboard-focused options",
+      "animation": "Animates the dropdown when it opens",
+      "filterOption": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
+      "sortOption": "Compare function used to sort the filtered options",
+      "onOptionClick": "Called when an option is clicked with the mouse",
+      "onDropdownVisibleChange": "Called when the dropdown opens or closes"
+    },
+    "AutoCompleteOption": {
+      "label": "Text displayed for the option and written to the input when selected",
+      "value": "Unique value of the option",
+      "disabled": "Prevents the option from being selected",
+      "highlight": "Highlights the option (e.g. as a recommendation)",
+      "icon": "Icon displayed before the label (basic mode)",
+      "description": "Secondary text displayed under the label (basic mode)",
+      "group": "Free-form group identifier, typically read by groupBy",
+      "style": "Inline styles of the option"
+    }
+  }
+}

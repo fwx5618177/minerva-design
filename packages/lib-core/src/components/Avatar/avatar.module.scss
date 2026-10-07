@@ -1,11 +1,11 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .avatar {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  border: 1px solid #e1e1e1; /* 替换为原生变量 */
-  background-color: #17a2b8; /* 替换为原生变量 */
+  border: 1px solid var(--avatar-border-color, var(--border-color));
+  background-color: var(--avatar-bg-color, var(--info-color));
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease,
@@ -39,13 +39,25 @@
     height: 4rem;
   }
 
+  // Background variants (overridable via --avatar-bg-color-<role>)
+  @each $role in (primary, secondary, success, warning, danger, info) {
+    &.#{$role} {
+      background-color: var(--avatar-bg-color-#{$role}, var(--#{$role}-color));
+    }
+  }
+
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px var(--shadow-color);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 10px var(--shadow-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &:active {
@@ -54,7 +66,7 @@
 
   &.stacked {
     margin-left: -0.5rem;
-    border: 1px solid #fff;
+    border: 1px solid var(--surface-color);
     transition: transform 0.3s ease;
 
     &:hover {
@@ -77,7 +89,7 @@
     left: 50%;
     top: 50%;
     font-size: clamp(2rem, 2vw, 2.8rem);
-    color: #ffffff;
+    color: var(--avatar-text-color, var(--text-inverse-color));
     text-align: center;
     transform: translate(-50%, -50%) scale(0.65);
     white-space: nowrap;
@@ -88,5 +100,5 @@
     }
   }
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 }

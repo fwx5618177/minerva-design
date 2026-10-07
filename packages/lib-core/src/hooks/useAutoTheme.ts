@@ -1,31 +1,53 @@
 import { useEffect, useState } from "react";
-import { applyThemeStyles } from "@utils/applyThemeStyles";
-import { Theme } from "@contexts/types";
+import {
+  applyThemeStyles,
+  getSystemTheme,
+  isBilingualTheme,
+} from "../utils/applyThemeStyles";
+import type { DefaultTheme, Theme } from "../contexts/types";
 
-const useAutoTheme = (initialTheme: Theme) => {
+const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
+
+/**
+ * Manage the active theme and apply it as CSS variables.
+ *
+ * When the theme is "auto" (or a `{ light, dark }` pair) the hook subscribes to
+ * `prefers-color-scheme` changes and unsubscribes on unmount / theme change.
+ *
+ * @returns `[theme, setTheme, systemTheme]`
+ */
+const useAutoTheme = (initialTheme: Theme = "auto") => {
   const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [systemTheme, setSystemTheme] = useState<DefaultTheme>(getSystemTheme);
 
-  const themeManager = async (theme: Theme) => {
-    if (theme === "auto") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleChange = (e: MediaQueryListEvent) => {
-        const match = e.matches ? "dark" : "light";
-        setTheme(match);
-      };
-      mediaQuery.addEventListener("change", handleChange);
-      setTheme(mediaQuery.matches ? "dark" : "light");
+  // Keep in sync when the caller passes a new theme
+  useEffect(() => {
+    setTheme(initialTheme);
+  }, [initialTheme]);
 
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    } else {
-      await applyThemeStyles(theme);
-    }
-  };
+  const followsSystem = theme === "auto" || isBilingualTheme(theme);
 
   useEffect(() => {
-    themeManager(theme);
-  }, [theme]);
+    if (!followsSystem || typeof window === "undefined" || !window.matchMedia) {
+      return;
+    }
 
-  return [theme, setTheme] as const;
+    const mediaQuery = window.matchMedia(DARK_SCHEME_QUERY);
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? "dark" : "light");
+    };
+
+    setSystemTheme(mediaQuery.matches ? "dark" : "light");
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [followsSystem]);
+
+  useEffect(() => {
+    applyThemeStyles(theme, systemTheme);
+  }, [theme, systemTheme]);
+
+  return [theme, setTheme, systemTheme] as const;
 };
 
 export default useAutoTheme;

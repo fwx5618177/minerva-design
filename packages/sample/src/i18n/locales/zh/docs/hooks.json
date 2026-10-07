@@ -1,0 +1,28 @@
+{
+  "title": "Hooks",
+  "description": "ConfigProvider 背后的底层 Hooks：自行管理主题、语言和 lib-core 的翻译。",
+  "reference": {
+    "title": "参考",
+    "text": "所有 Hooks 都从 @minerva/lib-core 导出。",
+    "hook": "Hook",
+    "signature": "签名",
+    "useAutoTheme": "在 state 中保存当前主题，并以 CSS 变量的形式写到 <html> 上。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其设置函数以及当前的系统配色。",
+    "useLocale": "在 state 中保存语言设置，并切换 lib-core 内置文案的语言（en、zh 或 fr）。返回 locale 及其设置函数。",
+    "useI18n": "返回 lib-core 使用的 t 函数和 i18next 实例。这是一个私有实例，因此绝不会影响应用自身的 i18next 配置。",
+    "global": "useAutoTheme 和 useLocale 会修改全局状态（<html> 上的 CSS 变量、lib-core 的语言）。下面的示例从站点当前的设置开始，并在卸载时恢复。"
+  },
+  "standalone": {
+    "title": "不使用 ConfigProvider 时使用 Hooks",
+    "text": "ConfigProvider 只是对 useAutoTheme 和 useLocale 的轻量封装。如果不需要 useConfig()，可以直接调用这些 Hooks——用来替代 Provider，而不是在 Provider 内部使用。"
+  },
+  "demos": {
+    "use-auto-theme": {
+      "title": "useAutoTheme",
+      "description": "通过 setTheme 切换页面主题。systemTheme 始终反映操作系统的配色方案。点击 Reset（或离开页面）会恢复站点主题。"
+    },
+    "use-locale": {
+      "title": "useLocale 与 useI18n",
+      "description": "setLocale 会改变 lib-core 的语言；useI18n 返回的 t() 会以该语言返回 lib-core 的内置文案。"
+    }
+  }
+}

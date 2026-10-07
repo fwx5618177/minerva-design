@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .wrapper {
   display: inline-flex;
@@ -22,9 +22,9 @@
   justify-content: center;
   padding: 0.5rem;
   font-size: clamp(0.875rem, 2vw, 1rem); // 使用 clamp 调整字体大小
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #007bff;
-  color: #ffffff;
+  box-shadow: 0 4px 6px color-mix(in srgb, var(--shadow-color) 70%, transparent);
+  background-color: var(--primary-color);
+  color: var(--text-inverse-color);
   cursor: pointer;
 
   &::before {
@@ -34,7 +34,7 @@
     left: 50%;
     width: 0;
     height: 100%;
-    background: rgba(255, 255, 255, 0.6);
+    background: color-mix(in srgb, var(--text-inverse-color) 60%, transparent);
     transform: translateX(-50%);
     pointer-events: none;
     opacity: 0;
@@ -68,60 +68,40 @@
     border-radius: 0.25rem;
   }
 
-  &.success {
-    background-color: #4caf50;
-    color: #ffffff;
+  @each $name, $role in (success: success, error: danger, warning: warning, info: info) {
+    &.#{$name} {
+      background-color: var(--#{$role}-color);
+      color: var(--text-inverse-color);
 
-    &:hover {
-      background-color: #388e3c;
-    }
-  }
-
-  &.error {
-    background-color: #f44336;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #d32f2f;
-    }
-  }
-
-  &.warning {
-    background-color: #ff9800;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #fb8c00;
-    }
-  }
-
-  &.info {
-    background-color: #2196f3;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #1976d2;
+      &:hover {
+        background-color: var(--#{$role}-color-hover);
+      }
     }
   }
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px var(--shadow-color);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 10px var(--shadow-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &[aria-disabled="true"] {
-    background-color: #c0c0c0;
-    color: #666666;
+    background-color: var(--surface-muted-color);
+    color: var(--text-disabled-color);
     cursor: not-allowed;
     opacity: 0.8;
     box-shadow: none;
 
     &:hover {
-      background-color: #a0a0a0;
+      background-color: color-mix(in srgb, var(--surface-muted-color) 88%, var(--foreground-color));
     }
   }
 
@@ -130,11 +110,11 @@
   }
 
   &.clicked {
-    @extend .commonClickedAnimation;
+    @include clicked-animation;
   }
 
   &.clicked.error {
-    @extend .commonErrorAnimation;
+    @include error-animation;
   }
 
   .stars {
@@ -153,10 +133,10 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background: gold;
+    background: gold; // intentional decorative celebration sparkle
     border-radius: 50%;
 
-    @extend .commonStarAnimation;
+    @include star-animation;
   }
 
   &.clicked .stars::before {
@@ -194,19 +174,19 @@
   }
 
   &.online {
-    background-color: #4caf50;
+    background-color: var(--success-color);
   }
 
   &.offline {
-    background-color: #f44336;
+    background-color: var(--danger-color);
   }
 
   &.away {
-    background-color: #ff9800;
+    background-color: var(--warning-color);
   }
 
   &.busy {
-    background-color: #f44336;
+    background-color: var(--danger-color);
   }
 }
 
@@ -237,6 +217,6 @@
 
 .label {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--text-color);
   user-select: none;
 }

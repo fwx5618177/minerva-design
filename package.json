@@ -1,80 +1,67 @@
 {
   "name": "minerva",
-  "description": "",
-  "scripts": {
-    "release": "pnpm run release -r ./lib-core",
-    "dev:sample": "pnpm --filter @minerva/sample dev",
-    "serve": "pnpm --filter @minerva/sample serve",
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "clean": "pnpm -r clean && rimraf node_modules",
-    "clean:cache": "pnpm -r clean:cache",
-    "lint": "pnpm -r lint",
-    "format": "pnpm -r format"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
+  "private": true,
+  "description": "Minerva component library monorepo",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.23.0",
   "engines": {
-    "node": ">=20.10.0"
+    "node": "^20.19.0 || >=22.12.0"
   },
-  "dependencies": {
-    "i18next": "^23.12.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-i18next": "^15.0.0",
-    "react-icons": "^5.2.1",
-    "react-router-dom": "^6.25.1"
+  "scripts": {
+    "dev": "pnpm --filter \"@minerva/sample^...\" build && pnpm --filter @minerva/sample dev",
+    "build": "pnpm -r build",
+    "preview": "pnpm --filter @minerva/sample preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "pnpm -r typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "pnpm -r clean && rimraf node_modules coverage",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm --filter \"./packages/lib-*\" build && changeset publish",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.8",
-    "@babel/plugin-transform-runtime": "^7.24.7",
-    "@babel/preset-env": "^7.25.0",
-    "@babel/preset-react": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.8.0",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@types/enzyme": "^3.10.18",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.13",
+    "@changesets/cli": "^3.0.3",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^24.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.17.0",
-    "@typescript-eslint/parser": "^7.17.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "babel-jest": "^27.5.1",
-    "babel-plugin-transform-rename-import": "^2.3.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.35.0",
-    "fast-glob": "^3.3.2",
-    "husky": "^9.1.3",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "lint-staged": "^15.2.7",
-    "pnpm": "^9.6.0",
-    "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "sass": "^1.77.8",
-    "standard-version": "^9.5.0",
-    "typescript": "^5.5.4",
-    "vite": "^5.3.5",
-    "vite-plugin-dts": "^4.5.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/coverage-v8": "^5.0.3",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "happy-dom": "^20.14.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
+    "rimraf": "^6.1.3",
+    "sass": "^1.105.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^8.3.3",
+    "vite-plugin-dts": "^5.1.2",
+    "vitest": "^5.0.3"
   },
   "lint-staged": {
-    "{src,sample}/**/*.{js,ts,tsx}": [
+    "packages/*/src/**/*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
-    ]
+    ],
+    "*.{js,ts,json,md,yml,yaml,scss}": "prettier --write"
   }
 }

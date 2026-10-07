@@ -2,6 +2,7 @@ import React from "react";
 import { FaCheck, FaTimes, FaExclamation, FaInfo } from "react-icons/fa";
 import styles from "./statusIndicator.module.scss";
 import { StatusIndicatorProps } from "./types";
+import useI18n from "../../hooks/useI18n";
 
 /**
  * StatusIndicator component
@@ -27,6 +28,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
   size = "medium",
   color,
 }) => {
+  const { t } = useI18n();
   const iconMap = {
     success: <FaCheck className={styles.icon} />,
     error: <FaTimes className={styles.icon} />,
@@ -37,10 +39,10 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
   const typeTextMap: Partial<
     Record<NonNullable<StatusIndicatorProps["type"]>, string>
   > = {
-    online: "在线",
-    offline: "离线",
-    away: "离开",
-    busy: "忙碌",
+    online: t("status.online"),
+    offline: t("status.offline"),
+    away: t("status.away"),
+    busy: t("status.busy"),
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {

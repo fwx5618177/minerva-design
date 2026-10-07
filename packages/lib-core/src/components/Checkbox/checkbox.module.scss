@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .checkboxWrapper {
   display: inline-flex;
@@ -6,7 +6,7 @@
   gap: 4px;
 
   &.error {
-    @extend .commonErrorAnimation;
+    @include error-animation;
   }
 }
 
@@ -24,8 +24,8 @@
   }
 
   &.error .checkmark {
-    border-color: #d32f2f;
-    background-color: rgba(211, 47, 47, 0.1);
+    border-color: var(--danger-color);
+    background-color: var(--danger-color-subtle);
   }
 
   &.labelStart {
@@ -55,16 +55,16 @@
   margin: 0;
 
   &:checked ~ .checkmark {
-    background-color: #1976d2;
-    border: 1px solid rgba(0, 0, 0, 0.54);
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
 
     &:after {
       display: block;
     }
   }
 
-  &:focus ~ .checkmark {
-    box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.12);
+  &:focus-visible ~ .checkmark {
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
   }
 
   &:hover:not(:disabled) ~ .checkmark {
@@ -79,8 +79,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-strong-color);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:after {
@@ -89,7 +89,8 @@
     display: none;
     width: 5px;
     height: 10px;
-    border: solid #ffffff;
+    // `--checkmark-color` is set from TSX (checkmarkColor prop).
+    border: solid var(--checkmark-color, var(--text-inverse-color));
     border-width: 0 2px 2px 0;
     transform: rotate(45deg) translate(-1px, -1px);
   }
@@ -156,7 +157,7 @@
 
 .label {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--text-color);
 }
 
 .helperTextWrapper {
@@ -166,7 +167,7 @@
   margin-top: 4px;
 
   .errorIcon {
-    color: #d32f2f;
+    color: var(--danger-color);
     width: 14px;
     height: 14px;
     display: flex;
@@ -176,17 +177,17 @@
 
 .helperText {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary-color);
 
   &.errorText {
-    color: #d32f2f;
+    color: var(--danger-color);
   }
 }
 
 // Indeterminate state
 input:indeterminate ~ .checkmark {
-  background-color: #1976d2;
-  border-color: #1976d2;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 
   &:after {
     display: block;
@@ -194,7 +195,7 @@ input:indeterminate ~ .checkmark {
     width: 12px;
     height: 3px;
     border: 0;
-    background-color: #ffffff;
+    background-color: var(--checkmark-color, var(--text-inverse-color));
     top: 50%;
     left: 50%;
     margin: -1.5px 0 0 -6px;
@@ -203,7 +204,7 @@ input:indeterminate ~ .checkmark {
 
 // Ripple effect
 .checkbox {
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 }
 
 // 当设置自定义颜色时更新边框颜色

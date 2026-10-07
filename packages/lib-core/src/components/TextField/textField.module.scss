@@ -4,14 +4,18 @@
 
 .containerHideBorder {
   border: none !important;
-  border-bottom: 1px solid #e1e1e1 !important;
+  border-bottom: 1px solid var(--border-color) !important;
   box-shadow: none !important;
   border-radius: 0 !important;
 
-  &:focus,
   &:hover {
-    border-bottom-color: #ff9800 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.25);
+    border-bottom-color: var(--border-strong-color) !important;
+  }
+
+  &:focus,
+  &.focused {
+    border-bottom-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
   }
 }
 
@@ -27,39 +31,49 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid #e1e1e1;
+  border: 1px solid var(--border-color);
   border-radius: 0.25rem;
+  background-color: var(--surface-color);
+  color: var(--text-color);
   transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 
+  &:hover {
+    border-color: var(--border-strong-color);
+  }
+
   &.focused {
-    border-color: #ff9800;
-    box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.25);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
 
     .label {
-      color: #ff9800;
+      color: var(--primary-color-text);
     }
   }
 
   &.filled {
     .label {
-      color: #ff9800;
+      color: var(--text-secondary-color);
     }
   }
 
   &.minimal {
     border: none;
     box-shadow: none;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px solid var(--border-color);
   }
 
   &.error {
-    border-color: #dc3545;
+    border-color: var(--danger-color);
     border-width: 2px;
 
     .label {
-      color: #dc3545;
+      color: var(--danger-color);
+    }
+
+    &.focused {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 30%, transparent);
     }
   }
 
@@ -68,53 +82,53 @@
   }
 
   &.readonly {
-    background-color: #f5f5f5;
-    border-color: #e1e1e1;
+    background-color: var(--surface-muted-color);
+    border-color: var(--border-color);
     cursor: default;
 
     .input {
-      background-color: #f5f5f5;
-      color: #666666;
+      background-color: var(--surface-muted-color);
+      color: var(--text-secondary-color);
       cursor: default;
 
       &::placeholder {
-        color: #999999;
+        color: var(--text-disabled-color);
       }
     }
 
     .suffix {
-      color: #666666;
+      color: var(--text-secondary-color);
     }
 
     &:hover,
     &:focus {
-      border-color: #e1e1e1;
+      border-color: var(--border-color);
       box-shadow: none;
     }
   }
 
   &.disabled {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
+    background-color: var(--surface-muted-color);
+    border-color: var(--border-color);
     cursor: not-allowed;
     opacity: 0.8;
 
     .input {
       background-color: transparent;
-      color: #333333;
+      color: var(--text-disabled-color);
       cursor: not-allowed;
 
       &::placeholder {
-        color: #adb5bd;
+        color: var(--text-disabled-color);
       }
     }
 
     .suffix {
-      color: #6c757d;
+      color: var(--text-disabled-color);
     }
 
     &:hover {
-      border-color: #dee2e6;
+      border-color: var(--border-color);
       box-shadow: none;
     }
   }
@@ -158,7 +172,7 @@
 
 .label {
   position: absolute;
-  color: #6c757d;
+  color: var(--text-secondary-color);
   transition: all 0.3s ease;
   z-index: 1;
   cursor: text;
@@ -168,15 +182,15 @@
   align-items: center;
 
   &:not(.shrink) {
-    background: linear-gradient(180deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%);
+    background: linear-gradient(180deg, transparent 45%, var(--surface-color) 45%, var(--surface-color) 55%, transparent 55%);
   }
 
   &.shrink {
-    background: #ffffffcc;
+    background: var(--surface-color);
     top: -0.5rem;
     left: 0.75rem;
     font-size: 0.75rem;
-    color: #ff9800;
+    color: var(--text-secondary-color);
     height: 1rem;
     line-height: 1;
   }
@@ -198,6 +212,7 @@
   border-radius: inherit;
   margin-left: 0.5rem;
   background-color: transparent;
+  color: var(--text-color);
 
   &.hideBorder {
     border: none;
@@ -206,6 +221,7 @@
 
   &::placeholder {
     margin-left: 0.5rem;
+    color: var(--text-disabled-color);
   }
 
   &:focus-visible {
@@ -216,8 +232,8 @@
   &:-webkit-autofill,
   &:-webkit-autofill:focus,
   &:-webkit-autofill:focus-visible {
-    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
-    -webkit-text-fill-color: #000;
+    -webkit-box-shadow: 0 0 0px 1000px var(--surface-color) inset;
+    -webkit-text-fill-color: var(--text-color);
     transition: background-color 5000s ease-in-out 0s;
   }
 }
@@ -227,42 +243,57 @@
   align-items: center;
   position: absolute;
   left: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary-color);
 }
 
 .iconRight {
   display: flex;
   position: absolute;
   right: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary-color);
+}
+
+.togglePasswordIcon,
+.clearIcon {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 .togglePasswordIcon {
   cursor: pointer;
+  color: inherit;
 }
 
 .clearIcon {
   position: absolute;
   right: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary-color);
   cursor: pointer;
   display: flex;
   align-items: center;
 
   &:hover {
-    color: #495057;
+    color: var(--text-color);
   }
 }
 
 .errorIcon {
   margin-right: 1.5rem;
-  color: #dc3545;
+  color: var(--danger-color);
 }
 
 .errorMessage {
   display: flex;
   align-items: center;
-  color: #dc3545;
+  color: var(--danger-color);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
@@ -272,7 +303,7 @@
   bottom: -1.5rem;
   right: 0.75rem;
   font-size: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary-color);
 }
 
 .suffix {
@@ -280,7 +311,7 @@
   align-items: center;
   position: absolute;
   right: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary-color);
   pointer-events: none;
   padding: 0 0.5rem;
   font-size: 0.875rem;

@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import type {
   MessageProps,
+  MessageOptions,
   MessageType,
   MessagePlacement,
   MessageInstance,
@@ -76,7 +77,7 @@ const removeMessage = (id: string, placement: MessagePlacement) => {
   }
 };
 
-const addMessage = (props: MessageProps) => {
+const addMessage = (props: MessageOptions) => {
   const id = props.id || `message-${messageKey++}`;
   const placement = props.placement || "topRight";
   const container = getPlacementContainer(placement);
@@ -88,12 +89,17 @@ const addMessage = (props: MessageProps) => {
 
   const root = createRoot(messageElement);
 
-  const messageProps = {
+  // Guard so the user's onClose runs at most once per message, whichever
+  // path closes it (timer, close button, destroy).
+  let closed = false;
+  const messageProps: MessageProps = {
     ...props,
     id,
     placement,
     duration: props.duration ?? 3000,
     onClose: (msgId: string) => {
+      if (closed) return;
+      closed = true;
       props.onClose?.(msgId);
       removeMessage(msgId, placement);
     },
@@ -108,13 +114,19 @@ const addMessage = (props: MessageProps) => {
   return id;
 };
 
+const isMessageOptions = (value: unknown): value is MessageOptions =>
+  typeof value === "object" &&
+  value !== null &&
+  !React.isValidElement(value) &&
+  "content" in value;
+
 const createMessageMethod =
-  (type: MessageType) => (content: React.ReactNode | MessageProps) => {
-    const props =
-      typeof content === "object" && !React.isValidElement(content)
-        ? { ...content, type }
-        : { content, type };
-    return addMessage(props as MessageProps);
+  (type: MessageType) =>
+  (content: React.ReactNode | MessageOptions): string => {
+    const props: MessageOptions = isMessageOptions(content)
+      ? { ...content, type }
+      : { content, type };
+    return addMessage(props);
   };
 
 export const message = {
@@ -124,47 +136,49 @@ export const message = {
   warning: createMessageMethod("warning"),
   loading: createMessageMethod("loading"),
   destroy: (id?: string) => {
-    if (id) {
-      // 在所有位置查找并移除指定消息
-      Object.entries(messageQueues).forEach(([placement, queue]) => {
-        const instance = queue.find((msg) => msg.id === id);
-        if (instance) {
-          removeMessage(id, placement as MessagePlacement);
-        }
-      });
-    } else {
-      // 移除所有消息
-      Object.entries(messageQueues).forEach(([placement, queue]) => {
-        queue.forEach((instance) => {
-          instance.root.unmount();
-        });
-        const container = document.getElementById(
-          `message-container-${placement}`,
-        );
-        if (container) {
-          document.body.removeChild(container);
-        }
-      });
-      Object.keys(messageQueues).forEach((placement) => {
-        messageQueues[placement as MessagePlacement] = [];
-      });
-    }
+    // Close through each message's stored onClose so user callbacks (and
+    // useMessage promises) fire; that handler also removes the message.
+    const closeInstance = (
+      instance: MessageInstance,
+      placement: MessagePlacement,
+    ) => {
+      if (instance.props.onClose) {
+        instance.props.onClose(instance.id);
+      } else {
+        removeMessage(instance.id, placement);
+      }
+    };
+
+    (Object.keys(messageQueues) as MessagePlacement[]).forEach((placement) => {
+      // Snapshot: closing mutates the queue
+      [...messageQueues[placement]]
+        .filter((instance) => !id || instance.id === id)
+        .forEach((instance) => closeInstance(instance, placement));
+    });
   },
   update: (id: string, props: Partial<MessageProps>) => {
     // 在所有位置查找并更新指定消息
-    Object.entries(messageQueues).forEach(([placement, queue]) => {
+    Object.values(messageQueues).forEach((queue) => {
       const instance = queue.find((msg) => msg.id === id);
       if (instance) {
-        const updatedProps = {
+        // The stored onClose already removes the message and calls the
+        // original callback; keep it and chain any new callback before it.
+        const previousOnClose = instance.props.onClose;
+        let closed = false;
+        const updatedProps: MessageProps = {
           ...instance.props,
           ...props,
+          id,
           onClose: (msgId: string) => {
+            if (closed) return;
+            closed = true;
             props.onClose?.(msgId);
-            removeMessage(msgId, placement as MessagePlacement);
+            previousOnClose?.(msgId);
           },
         };
         instance.props = updatedProps;
         instance.root.render(<Message {...updatedProps} />);
+        updatedProps.onUpdate?.(id, updatedProps);
       }
     });
   },

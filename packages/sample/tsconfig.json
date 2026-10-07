@@ -1,27 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "esnext",
-    "lib": ["dom", "es2017"],
-    "jsx": "react",
-    "moduleResolution": "node",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "strict": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": true,
-    "baseUrl": "./",
     "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@layout/*": ["src/layout/*"],
-      "@pages/*": ["src/pages/*"],
-      "@styles/*": ["src/styles/*"],
-      "@assets/*": ["src/assets/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@router/*": ["src/router/*"],
-      "@utils/*": ["src/utils/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@layout/*": ["./src/layout/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@i18n/*": ["./src/i18n/*"],
+      "@router/*": ["./src/router/*"],
+      "@minerva/lib-core": ["../lib-core/src/index.ts"],
+      "@minerva/lib-web-components/react": ["../lib-web-components/src/react.d.ts"]
     },
-    "types": ["@minerva/lib-web-components"]
+    "noUncheckedSideEffectImports": false
   },
-  "include": ["src", "global.d.ts"]
+  "include": ["src", "global.d.ts", "vite.config.ts"]
 }

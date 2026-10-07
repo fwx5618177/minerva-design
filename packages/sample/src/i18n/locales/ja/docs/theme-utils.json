@@ -1,0 +1,100 @@
+{
+  "title": "テーマユーティリティ",
+  "description": "ConfigProvider の外でテーマを解決・適用・確認するための関数とテーマオブジェクト。",
+  "reference": {
+    "title": "リファレンス",
+    "text": "ConfigProvider と useAutoTheme はこれらのヘルパーの上に構築されています。React を使わずにテーマを適用したり、1 つの要素だけにテーマを当てたり、トークンの値を読み取ったりするのに使えます。",
+    "name": "名前",
+    "signature": "シグネチャ",
+    "applyThemeStyles": "テーマを解決し、CSS 変数として <html> に書き込みます（グローバル）。前のテーマにあって新しいテーマで定義されていない変数は削除されます。",
+    "generateCSSVariables": "テーマオブジェクトの各トークンを --<token> として指定のスタイル宣言（例：element.style）に書き込み、古い変数を削除します。1 つの要素にテーマを当てるのに使います。",
+    "resolveTheme": "受け付け可能な任意のテーマ値をテーマオブジェクトに変換します。\"auto\" と { light, dark } のペアは systemTheme を使い、名前は themes から検索し、オブジェクトはそのまま返します。未知の名前では例外を投げます。副作用なし。",
+    "getSystemTheme": "prefers-color-scheme から OS の配色を返します。matchMedia が使えない場合（SSR、テスト）は \"light\" を返します。",
+    "isBilingualTheme": "型ガード：テーマオブジェクトの { light, dark } ペアなら true。",
+    "themes": "theme プロパティで指定できる名前をキーにした内蔵テーマ。",
+    "builtIns": "内蔵テーマオブジェクト（個別にもエクスポート）。展開してカスタムテーマを作れます。"
+  },
+  "usage": {
+    "apply": "テーマをグローバルに適用する",
+    "applyText": "applyThemeStyles は ConfigProvider が呼び出している関数です。React 以外のコードや、初回レンダリング前にテーマを適用して既定色のちらつきを防ぐのに使えます。",
+    "generate": "1 つの要素にテーマを当てる",
+    "generateText": "generateCSSVariables は任意の CSSStyleDeclaration を受け付けるため、トークンを要素に限定できます。子孫要素はそれを継承します。",
+    "resolve": "テーマを解決する",
+    "resolveText": "resolveTheme、isBilingualTheme、getSystemTheme には副作用がありません。canvas やチャートのスタイル付けなど、トークン値の計算に使えます。"
+  },
+  "demos": {
+    "theme-swatches": {
+      "title": "内蔵テーマ",
+      "description": "themes からトークン値を読み取り、スウォッチとして表示します。CSS 変数は書き込みません。"
+    },
+    "resolve-theme": {
+      "title": "テーマ値の解決",
+      "description": "指定したシステム配色で resolveTheme が各種テーマ値をどう解決するか、そして isBilingualTheme / getSystemTheme の戻り値を示します。"
+    },
+    "scoped-preview": {
+      "title": "要素内でテーマをプレビュー",
+      "description": "generateCSSVariables で解決済みテーマをコンテナーの style に書き込むため、中のコンポーネントだけが変わります。"
+    }
+  },
+  "api": {
+    "ThemeProps": {
+      "primary-color": "ブランド／アクセントカラー：プライマリボタン、アクティブ状態、フォーカスリング。",
+      "secondary-color": "secondary バリアントで使う中立的なアクセントカラー。",
+      "success-color": "成功ステータスの色（success バリアント）。",
+      "danger-color": "破壊的操作／エラーステータスの色（danger・error バリアント）。",
+      "warning-color": "警告ステータスの色。",
+      "info-color": "情報ステータスの色。",
+      "light-color": "明るいニュートラルカラー（旧仕様；light バリアント）。",
+      "dark-color": "暗いニュートラルカラー（旧仕様；dark バリアント）。",
+      "background-color": "ページの背景色。--surface-color の既定値。",
+      "foreground-color": "メインのテキスト色。--text-color の既定値。",
+      "border-color": "既定の境界線／区切り線の色。",
+      "text-gray": "補助的で強調の弱いテキスト（背景とのコントラスト比 4.5:1 以上を推奨）。",
+      "primary-gradient-start": "プライマリグラデーションの開始色。",
+      "primary-gradient-end": "プライマリグラデーションの終了色。",
+      "secondary-gradient-start": "セカンダリグラデーションの開始色。",
+      "secondary-gradient-end": "セカンダリグラデーションの終了色。",
+      "highlight-color": "ハイライト／マーカーの色。",
+      "shadow-color": "--shadow-sm・--shadow-md・--shadow-lg で使う基本の影の色。",
+      "muted-color": "控えめな UI カラー（プレースホルダー、アイコン、非アクティブなコントロール）。",
+      "link-color": "リンクの色。",
+      "link-hover-color": "ホバー時のリンクの色。",
+      "link-active-color": "押下中のリンクの色。",
+      "link-visited-color": "訪問済みリンクの色。"
+    },
+    "SemanticThemeProps": {
+      "surface-color": "カードや入力欄など、コンポーネント表面の背景色。",
+      "surface-muted-color": "ホバーした行、無効なコントロール、トラックの背景色。",
+      "surface-elevated-color": "ポップオーバー、メニュー、ドロップダウン、ツールチップの背景色。",
+      "overlay-color": "背景のオーバーレイ／モーダルの幕。",
+      "border-strong-color": "コントラストの高い境界線（入力欄、ホバー時の枠線）。",
+      "text-color": "メインのテキスト色（既定は --foreground-color）。",
+      "text-secondary-color": "補助テキスト（説明文、ヘルパーテキスト）。",
+      "text-disabled-color": "無効状態のテキスト。",
+      "text-inverse-color": "塗りつぶしのロールカラー背景上のテキスト（例：プライマリボタン）。",
+      "focus-ring-color": "フォーカスのアウトライン／リングの色。",
+      "error-color": "--danger-color の別名。",
+      "shadow-sm": "小さい影（低い高さ）。",
+      "shadow-md": "中くらいの影（ポップオーバー、メニュー）。",
+      "shadow-lg": "大きい影（ダイアログ、オーバーレイ）。",
+      "radius-sm": "小さい角丸。",
+      "radius-md": "中くらいの角丸。",
+      "radius-lg": "大きい角丸。"
+    },
+    "ComponentThemeProps": {
+      "btn-bg-color-success": "success ボタンの背景色を上書きします。",
+      "btn-bg-color-danger": "error／danger ボタンの背景色を上書きします。",
+      "btn-bg-color-warning": "warning ボタンの背景色を上書きします。",
+      "btn-bg-color-info": "info ボタンの背景色を上書きします。",
+      "btn-bg-color-hover": "プライマリボタンのホバー時の背景色を上書きします。",
+      "btn-bg-color-active": "プライマリボタンのアクティブ時の背景色を上書きします。",
+      "avatar-bg-color-info": "info アバターの背景色。",
+      "avatar-bg-color-success": "success アバターの背景色。",
+      "avatar-bg-color-danger": "danger アバターの背景色。",
+      "avatar-bg-color-warning": "warning アバターの背景色。",
+      "card-bg-color": "カードの背景色（既定は --surface-color）。",
+      "card-bg-color-content": "カード本文の背景色（既定は --surface-color）。",
+      "card-border-color": "カードの枠線の色（既定は --border-color）。"
+    }
+  }
+}

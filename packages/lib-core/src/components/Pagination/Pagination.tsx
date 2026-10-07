@@ -15,6 +15,7 @@ import {
 import classNames from "classnames";
 import { PaginationProps } from "./types";
 import styles from "./pagination.module.scss";
+import useI18n from "../../hooks/useI18n";
 
 type PaginationType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
 
@@ -70,12 +71,22 @@ const Pagination: React.FC<PaginationProps> = ({
   },
 }) => {
   // 内部状态
+  const { t } = useI18n();
   const [jumpValue, setJumpValue] = useState("");
+  // Draft text of the simple-mode page input while the user is typing
+  // (null when not editing, so the input mirrors `current`)
+  const [simpleDraft, setSimpleDraft] = useState<string | null>(null);
   const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const [ripples, setRipples] = useState<
-    { x: number; y: number; id: number }[]
+    { x: number; y: number; id: number; itemKey: string }[]
   >([]);
   const nextRippleId = useRef(0);
+
+  // Follow `pageSize` prop changes; local state still tracks size-changer
+  // selections when the parent does not update the prop.
+  useEffect(() => {
+    setCurrentPageSize(pageSize);
+  }, [pageSize]);
 
   // 计算总页数
   const totalPages = Math.ceil(total / currentPageSize);
@@ -100,17 +111,18 @@ const Pagination: React.FC<PaginationProps> = ({
 
   // 处理页码点击
   const handlePageClick = useCallback(
-    (page: number, event?: MouseEvent<HTMLElement>) => {
+    (page: number, event?: MouseEvent<HTMLElement>, itemKey?: string) => {
       if (page === current || page < 1 || page > totalPages || disabled) {
         return;
       }
 
-      if (event) {
+      if (event && itemKey) {
         const rect = event.currentTarget.getBoundingClientRect();
         const ripple = {
           x: event.clientX - rect.left,
           y: event.clientY - rect.top,
           id: nextRippleId.current++,
+          itemKey,
         };
         setRipples((prev) => [...prev, ripple]);
       }
@@ -143,6 +155,18 @@ const Pagination: React.FC<PaginationProps> = ({
     },
     [onChange],
   );
+
+  // 提交简单模式输入框的页码: 有效值夹取到合法范围, 无效值还原
+  const commitSimpleDraft = useCallback(() => {
+    if (simpleDraft === null) return;
+    setSimpleDraft(null);
+    const value = parseInt(simpleDraft, 10);
+    if (isNaN(value) || totalPages < 1) return;
+    const page = Math.min(Math.max(value, 1), totalPages);
+    if (page !== current) {
+      onChange?.(page, currentPageSize);
+    }
+  }, [simpleDraft, totalPages, current, onChange, currentPageSize]);
 
   // 清理水波纹效果
   useEffect(() => {
@@ -185,7 +209,7 @@ const Pagination: React.FC<PaginationProps> = ({
           content = (
             <div className={styles.jumpWrapper}>
               {icons.jumpPrev}
-              <div className={styles.jumpHint}>向前 5 页</div>
+              <div className={styles.jumpHint}>{t("pagination.jumpPrev")}</div>
             </div>
           );
           break;
@@ -193,7 +217,7 @@ const Pagination: React.FC<PaginationProps> = ({
           content = (
             <div className={styles.jumpWrapper}>
               {icons.jumpNext}
-              <div className={styles.jumpHint}>向后 5 页</div>
+              <div className={styles.jumpHint}>{t("pagination.jumpNext")}</div>
             </div>
           );
           break;
@@ -205,30 +229,50 @@ const Pagination: React.FC<PaginationProps> = ({
         content = itemRender(page, type);
       }
 
+      const itemKey = `${type}-${page}`;
+
       return (
         <div
-          key={`${type}-${page}`}
+          key={itemKey}
           className={itemClassName}
-          onClick={(e) => !isDisabled && handlePageClick(page, e)}
+          onClick={(e) => !isDisabled && handlePageClick(page, e, itemKey)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              if (!isDisabled) handlePageClick(page);
+            }
+          }}
           role="button"
           tabIndex={isDisabled ? -1 : 0}
-          aria-label={`${type === "page" ? "Page " : ""}${page}`}
+          aria-label={
+            type === "prev"
+              ? "Previous page"
+              : type === "next"
+                ? "Next page"
+                : type === "jump-prev"
+                  ? "Previous 5 pages"
+                  : type === "jump-next"
+                    ? "Next 5 pages"
+                    : `Page ${page}`
+          }
           aria-current={
             type === "page" && page === current ? "page" : undefined
           }
           aria-disabled={isDisabled}
         >
           {content}
-          {ripples.map((ripple) => (
-            <span
-              key={ripple.id}
-              className={styles.ripple}
-              style={{
-                left: ripple.x,
-                top: ripple.y,
-              }}
-            />
-          ))}
+          {ripples
+            .filter((ripple) => ripple.itemKey === itemKey)
+            .map((ripple) => (
+              <span
+                key={ripple.id}
+                className={styles.ripple}
+                style={{
+                  left: ripple.x,
+                  top: ripple.y,
+                }}
+              />
+            ))}
         </div>
       );
     },
@@ -240,6 +284,7 @@ const Pagination: React.FC<PaginationProps> = ({
       handlePageClick,
       ripples,
       disabled,
+      t,
     ],
   );
 
@@ -251,18 +296,16 @@ const Pagination: React.FC<PaginationProps> = ({
           {renderPageItem(current - 1, "prev")}
           <div className={styles.simpleInput}>
             <input
-              value={jumpValue || current}
-              onChange={(e) => setJumpValue(e.target.value)}
+              value={simpleDraft ?? String(current)}
+              disabled={disabled}
+              aria-label="Current page"
+              onChange={(e) => setSimpleDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  const value = parseInt(jumpValue);
-                  if (!isNaN(value) && value >= 1 && value <= totalPages) {
-                    onChange?.(value, currentPageSize);
-                    setJumpValue("");
-                  }
+                  commitSimpleDraft();
                 }
               }}
-              onBlur={() => setJumpValue("")}
+              onBlur={commitSimpleDraft}
             />
             <span className={styles.simpleDivider}>/</span>
             <span>{totalPages}</span>
@@ -282,7 +325,7 @@ const Pagination: React.FC<PaginationProps> = ({
     if (range[0] > 1) {
       items.push(renderPageItem(1, "page"));
       if (range[0] > 2) {
-        items.push(renderPageItem(current - 5, "jump-prev"));
+        items.push(renderPageItem(Math.max(1, current - 5), "jump-prev"));
       }
     }
 
@@ -294,7 +337,9 @@ const Pagination: React.FC<PaginationProps> = ({
     // 最后一页
     if (range[range.length - 1] < totalPages) {
       if (range[range.length - 1] < totalPages - 1) {
-        items.push(renderPageItem(current + 5, "jump-next"));
+        items.push(
+          renderPageItem(Math.min(totalPages, current + 5), "jump-next"),
+        );
       }
       items.push(renderPageItem(totalPages, "page"));
     }
@@ -309,9 +354,9 @@ const Pagination: React.FC<PaginationProps> = ({
     simple,
     getPageRange,
     renderPageItem,
-    jumpValue,
-    onChange,
-    currentPageSize,
+    simpleDraft,
+    commitSimpleDraft,
+    disabled,
   ]);
 
   // 组件类名
@@ -334,6 +379,9 @@ const Pagination: React.FC<PaginationProps> = ({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (disabled) return;
+      // Let text inputs / selects keep their own arrow/Home/End behaviour
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "SELECT") return;
 
       switch (e.key) {
         case "ArrowLeft":

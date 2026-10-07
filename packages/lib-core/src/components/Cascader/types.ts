@@ -1,68 +1,99 @@
 import { ReactNode } from "react";
 
 export interface CascaderOption {
+  /** Value of the option, unique among its siblings */
   value: string | number;
+  /** Text displayed for the option */
   label: string | number;
+  /** Options of the next level */
   children?: CascaderOption[];
+  /** Prevents the option from being selected */
   disabled?: boolean;
+  /** Marks the option as a leaf (no children to load) when using loadData */
   isLeaf?: boolean;
+  /** Shows a loading indicator while its children are being loaded */
   loading?: boolean;
-  path: CascaderOption[];
 }
 
 export interface CascaderProps {
-  /** 标签 */
+  /** Label of the input */
   label: string;
-  /** 名称 */
+  /** Name of the input */
   name: string;
-  /** 可选项数据源 */
+  /**
+   * Option tree
+   * @default []
+   */
   options: CascaderOption[];
-  /** 当前选中的值 */
+  /** Selected path of values (controlled) */
   value?: (string | number)[];
-  /** 默认选中的值 */
+  /** Initially selected path of values (uncontrolled) */
   defaultValue?: (string | number)[];
-  /** 选择后的回调 */
+  /** Called when a leaf option is selected or the value is cleared */
   onChange?: (
     value: (string | number)[],
     selectedOptions: CascaderOption[],
   ) => void;
-  /** 自定义渲染节点内容 */
+  /** Formats the text shown in the input; by default labels are joined with " / " */
   displayRender?: (
     labels: string[],
     selectedOptions: CascaderOption[],
   ) => string;
-  /** 是否禁用 */
+  /**
+   * Disables the cascader
+   * @default false
+   */
   disabled?: boolean;
-  /** 输入框占位文本 */
+  /**
+   * Placeholder of the input
+   * @default "Please select"
+   */
   placeholder?: string;
-  /** 是否支持清除 */
+  /**
+   * Shows a clear button when a value is selected
+   * @default true
+   */
   allowClear?: boolean;
-  /** 次级菜单的展开方式 */
+  /**
+   * How sub-menus are expanded
+   * @default "click"
+   */
   expandTrigger?: "click" | "hover";
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 是否支持搜索 */
+  /**
+   * Allows typing to search all paths
+   * @default false
+   */
   showSearch?: boolean;
-  /** 自定义搜索逻辑 */
+  /** Custom search predicate; by default paths whose labels contain the input match */
   filter?: (inputValue: string, path: CascaderOption[]) => boolean;
-  /** 动态加载数据 */
+  /** Loads children lazily for options without children that are not isLeaf; update options yourself */
   loadData?: (selectedOptions: CascaderOption[]) => void;
-  /** 自定义下拉框样式 */
+  /** Additional class name of the dropdown */
   dropdownClassName?: string;
-  /** 自定义选项渲染 */
+  /** Custom option renderer */
   optionRender?: (option: CascaderOption, level: number) => ReactNode;
-  /** 组件宽度 */
+  /**
+   * Width of the component
+   * @default 240
+   */
   width?: number | string;
-  /** 最大层级 */
+  /**
+   * Maximum number of levels shown
+   * @default 6
+   */
   maxLevel?: number;
-  /** 下拉框样式 */
+  /** Inline styles of the dropdown */
   dropdownStyle?: React.CSSProperties;
-  /** 选项样式 */
+  /** Inline styles of every option */
   optionStyle?: React.CSSProperties;
 }
 
-export interface CascaderPanelProps
-  extends Omit<CascaderProps, "value" | "defaultValue"> {
+export interface CascaderPanelProps extends Omit<
+  CascaderProps,
+  "value" | "defaultValue"
+> {
   /** 当前选中的路径 */
   activePath?: CascaderOption[];
   /** 面板展开的层级 */

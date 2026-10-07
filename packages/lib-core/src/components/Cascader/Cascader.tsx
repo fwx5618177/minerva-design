@@ -7,10 +7,58 @@ import type { CascaderProps, CascaderOption } from "./types";
 import styles from "./cascader.module.scss";
 import ReactDOM from "react-dom";
 
+/** Resolve the option chain for a list of values (one value per level) */
+const findOptionsByValues = (
+  opts: CascaderOption[],
+  values: (string | number)[],
+): CascaderOption[] => {
+  const result: CascaderOption[] = [];
+  let level: CascaderOption[] | undefined = opts;
+  for (const value of values) {
+    const found: CascaderOption | undefined = level?.find(
+      (o) => o.value === value,
+    );
+    if (!found) break;
+    result.push(found);
+    level = found.children;
+  }
+  return result;
+};
+
+/** Find the full path (ancestors + target) of an option in the tree */
+const findOptionPath = (
+  opts: CascaderOption[],
+  target: CascaderOption,
+): CascaderOption[] | null => {
+  for (const opt of opts) {
+    if (opt === target) return [opt];
+    if (opt.children) {
+      const subPath = findOptionPath(opt.children, target);
+      if (subPath) return [opt, ...subPath];
+    }
+  }
+  return null;
+};
+
+/** Stable default so effects depending on `options` don't re-run each render */
+const EMPTY_OPTIONS: CascaderOption[] = [];
+
+/** A flattened option together with the chain of options leading to it */
+type SearchResult = CascaderOption & { path: CascaderOption[] };
+
+/** Make a non-button element activate (via a native click) on Enter / Space. */
+const activateOnEnterOrSpace = (e: React.KeyboardEvent<HTMLElement>) => {
+  if (e.target !== e.currentTarget) return;
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    e.currentTarget.click();
+  }
+};
+
 const Cascader: React.FC<CascaderProps> = ({
   label,
   name,
-  options = [],
+  options = EMPTY_OPTIONS,
   value,
   defaultValue,
   onChange,
@@ -34,18 +82,44 @@ const Cascader: React.FC<CascaderProps> = ({
   const [selectedValue, setSelectedValue] = useState<(string | number)[]>(
     value || defaultValue || [],
   );
-  const [selectedOptions, setSelectedOptions] = useState<CascaderOption[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<CascaderOption[]>(() =>
+    findOptionsByValues(options, value || defaultValue || []),
+  );
   const anchorRef = useRef<HTMLDivElement>(null);
+
+  // Follow controlled `value` changes (and re-resolve labels when `options`
+  // change, e.g. after loadData). Compare by content so inline array
+  // literals from the parent don't reset local state on every render.
+  const syncedValueKeyRef = useRef(JSON.stringify(value ?? null));
+  const syncedOptionsRef = useRef(options);
+  useEffect(() => {
+    if (value === undefined) return;
+    const valueKey = JSON.stringify(value);
+    if (
+      valueKey === syncedValueKeyRef.current &&
+      options === syncedOptionsRef.current
+    ) {
+      return;
+    }
+    syncedValueKeyRef.current = valueKey;
+    syncedOptionsRef.current = options;
+    setSelectedValue(value);
+    setSelectedOptions(findOptionsByValues(options, value));
+  }, [value, options]);
+
   const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState<CascaderOption[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // Open state captured on mousedown (before the input's focus handler opens
+  // the dropdown), so the following click toggles from the pre-click state
+  const openAtMouseDownRef = useRef(false);
 
   const handleSelectorClick = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       if (!disabled) {
-        setIsOpen((prev) => !prev);
+        setIsOpen(!openAtMouseDownRef.current);
       }
     },
     [disabled],
@@ -108,23 +182,20 @@ const Cascader: React.FC<CascaderProps> = ({
       const flattenOptions = (
         opts: CascaderOption[],
         path: CascaderOption[] = [],
-      ): (CascaderOption & { path: CascaderOption[] })[] => {
-        return opts.reduce(
-          (acc, opt) => {
-            const currentPath = [...path, opt];
-            const currentOpt = { ...opt, path: currentPath };
+      ): SearchResult[] => {
+        return opts.reduce((acc, opt) => {
+          const currentPath = [...path, opt];
+          const currentOpt = { ...opt, path: currentPath };
 
-            if (!opt.disabled) {
-              acc.push(currentOpt);
-              if (opt.children) {
-                acc.push(...flattenOptions(opt.children, currentPath));
-              }
+          if (!opt.disabled) {
+            acc.push(currentOpt);
+            if (opt.children) {
+              acc.push(...flattenOptions(opt.children, currentPath));
             }
+          }
 
-            return acc;
-          },
-          [] as (CascaderOption & { path: CascaderOption[] })[],
-        );
+          return acc;
+        }, [] as SearchResult[]);
       };
 
       const allOptions = flattenOptions(options);
@@ -206,12 +277,16 @@ const Cascader: React.FC<CascaderProps> = ({
         }}
       >
         {searchValue && showSearch ? (
-          <div className={styles.searchResults}>
+          <div className={styles.searchResults} role="listbox">
             {searchResults.length > 0 ? (
               searchResults.map((option) => (
                 <div
                   key={`${option.value}-${option.path.length}`}
                   className={styles.searchOption}
+                  role="option"
+                  aria-selected={false}
+                  tabIndex={0}
+                  onKeyDown={activateOnEnterOrSpace}
                   onClick={() => {
                     const values = option.path.map((o) => o.value);
                     handleSelect(values, option.path);
@@ -233,8 +308,8 @@ const Cascader: React.FC<CascaderProps> = ({
             expandTrigger={expandTrigger}
             maxLevel={maxLevel}
             optionStyle={optionStyle}
-            onLevelSelect={(option, level) => {
-              const newPath = selectedOptions.slice(0, level).concat(option);
+            onLevelSelect={(option) => {
+              const newPath = findOptionPath(options, option) ?? [option];
               if (!option.children || option.isLeaf) {
                 handleSelect(
                   newPath.map((o) => o.value),
@@ -272,11 +347,22 @@ const Cascader: React.FC<CascaderProps> = ({
       className={`${styles.cascader} ${className || ""}`}
       ref={anchorRef}
       style={{ width }}
+      onKeyDown={(e) => {
+        // events from the portaled dropdown bubble here through React
+        if (e.key === "Escape" && isOpen) {
+          e.stopPropagation();
+          setIsOpen(false);
+          setSearchValue("");
+        }
+      }}
     >
       <div
         className={`${styles.selector} ${disabled ? styles.disabled : ""} ${
           isOpen ? styles.focused : ""
         }`}
+        onMouseDown={() => {
+          openAtMouseDownRef.current = isOpen;
+        }}
         onClick={handleSelectorClick}
       >
         <TextField
@@ -293,6 +379,10 @@ const Cascader: React.FC<CascaderProps> = ({
         {allowClear && selectedValue.length > 0 && !disabled && (
           <span
             className={styles.clearIcon}
+            role="button"
+            tabIndex={0}
+            aria-label="Clear"
+            onKeyDown={activateOnEnterOrSpace}
             onClick={(e) => {
               e.stopPropagation();
               handleClear(e);
@@ -300,7 +390,7 @@ const Cascader: React.FC<CascaderProps> = ({
               setSearchResults([]);
             }}
           >
-            <IoClose className={styles.icon} />
+            <IoClose className={styles.icon} aria-hidden focusable={false} />
           </span>
         )}
         <span className={`${styles.arrow} ${isOpen ? styles.open : ""}`}>

@@ -75,7 +75,22 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     },
     ref,
   ) => {
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const shakeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+    // Keep the internal ref working while also forwarding the node to the
+    // caller's ref (function or object ref).
+    const setInputRef = useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
+    );
     const [isFocused, setIsFocused] = useState(false);
     const [isFilled, setIsFilled] = useState(!!value);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -118,22 +133,17 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
-        if (!onChange) {
-          setInternalValue(newValue);
-        } else {
-          onChange(newValue);
-        }
+        // uncontrolled: keep our own state, even when onChange is provided
+        if (value === undefined) setInternalValue(newValue);
+        onChange?.(newValue);
       },
-      [onChange],
+      [onChange, value],
     );
 
     const handleClear = useCallback(() => {
-      if (onChange) {
-        onChange("");
-      } else {
-        setInternalValue("");
-      }
-    }, [onChange]);
+      if (value === undefined) setInternalValue("");
+      onChange?.("");
+    }, [onChange, value]);
 
     const handleTogglePasswordVisibility = useCallback(() => {
       setIsPasswordVisible(!isPasswordVisible);
@@ -142,10 +152,13 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     useEffect(() => {
       if (helperText) {
         setShake(true);
-        setTimeout(() => setShake(false), 500);
+        clearTimeout(shakeTimerRef.current);
+        shakeTimerRef.current = setTimeout(() => setShake(false), 500);
         inputRef.current?.focus();
       }
     }, [helperText]);
+
+    useEffect(() => () => clearTimeout(shakeTimerRef.current), []);
 
     const textFieldClasses = `${styles.textField} ${
       isFocused ? styles.focused : ""
@@ -172,6 +185,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         <div className={textFieldClasses} style={{ borderColor, borderRadius }}>
           {label && !placeholder && !readOnly && (
             <label
+              htmlFor={name}
               className={labelClasses}
               onClick={() => inputRef?.current?.focus()}
               style={{
@@ -186,10 +200,14 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
               <span className={styles.iconLeft}>{icon}</span>
             )}
             <input
-              ref={ref || inputRef}
+              ref={setInputRef}
               id={name}
               type={
-                type === "password" && !isPasswordVisible ? "password" : "text"
+                type === "password"
+                  ? isPasswordVisible
+                    ? "text"
+                    : "password"
+                  : type
               }
               name={name}
               className={inputClasses}
@@ -215,12 +233,18 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
                 {type !== "password" ? (
                   <span className={styles.iconRight}>{icon}</span>
                 ) : (
-                  <span
+                  <button
+                    type="button"
                     className={`${styles.iconRight} ${styles.togglePasswordIcon}`}
                     onClick={handleTogglePasswordVisibility}
+                    aria-label={
+                      isPasswordVisible ? "Hide password" : "Show password"
+                    }
+                    aria-pressed={isPasswordVisible}
+                    disabled={disabled}
                   >
                     {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-                  </span>
+                  </button>
                 )}
               </>
             )}
@@ -229,9 +253,14 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
               !readOnly &&
               !disabled &&
               !suffix && (
-                <span className={styles.clearIcon} onClick={handleClear}>
+                <button
+                  type="button"
+                  className={styles.clearIcon}
+                  onClick={handleClear}
+                  aria-label="Clear"
+                >
                   <FaTimesCircle />
-                </span>
+                </button>
               )}
             {suffix && <span className={styles.suffix}>{suffix}</span>}
             {helperText && (

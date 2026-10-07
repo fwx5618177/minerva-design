@@ -1,11 +1,4 @@
-/// <reference types="@minerva/lib-web-components" />
+/// <reference types="vite/client" />
 
-declare module "*.scss" {
-  const classes: { [key: string]: string };
-  export default classes;
-}
-
-declare module "*.css" {
-  const classes: { [key: string]: string };
-  export default classes;
-}
+// JSX typings for <minerva-button> and friends
+import type {} from "@minerva/lib-web-components/react";

@@ -1,0 +1,90 @@
+{
+  "title": "AutoComplete",
+  "description": "Champ de saisie qui suggère des options correspondantes pendant la frappe.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Les options dont le libellé contient le texte saisi sont proposées ; textFieldProps est transmis au champ."
+    },
+    "controlled": {
+      "title": "Mode contrôlé",
+      "description": "value / onChange contrôlent le texte, onSelect indique l'option choisie et onDropdownVisibleChange l'état de la liste."
+    },
+    "rich-options": {
+      "title": "Icônes, descriptions et états",
+      "description": "En mode basic, une option peut avoir une icône et une description, et être mise en avant ou désactivée."
+    },
+    "custom-render": {
+      "title": "Rendu personnalisé",
+      "description": "Avec mode=\"custom\" et renderOption, contrôlez entièrement le rendu des options ; renderEmpty remplace l'état vide."
+    },
+    "grouped": {
+      "title": "Options groupées",
+      "description": "groupBy renvoie un nom de groupe par option ; les groupes s'affichent sous des titres, dans l'ordre d'apparition."
+    },
+    "multiple": {
+      "title": "Sélection multiple",
+      "description": "Avec multiple, les options choisies deviennent des étiquettes supprimables ; maxTagCount regroupe le reste en « +N »."
+    },
+    "filter-sort": {
+      "title": "Filtre et tri personnalisés",
+      "description": "filterOption remplace la correspondance « contient » par défaut et sortOption trie les résultats."
+    },
+    "async-loading": {
+      "title": "Recherche distante",
+      "description": "Récupérez les options pendant la frappe et affichez loading pendant la requête."
+    },
+    "appearance": {
+      "title": "Position et couleurs de la liste",
+      "description": "Personnalisez placement, offset, animation et les couleurs de fond de la liste, du survol et de la mise en avant."
+    }
+  },
+  "keyboard": {
+    "title": "Clavier et accessibilité",
+    "arrows": "Flèche bas / haut parcourent les options visibles (en boucle).",
+    "enter": "Entrée sélectionne l'option active ; les options désactivées ne peuvent pas être choisies.",
+    "escape": "Échap ferme la liste.",
+    "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox."
+  },
+  "api": {
+    "AutoCompleteProps": {
+      "name": "Nom du champ",
+      "label": "Libellé du champ",
+      "mode": "\"basic\" affiche icône / libellé / description ; \"custom\" utilise renderOption",
+      "value": "Valeur du champ (contrôlé)",
+      "onChange": "Appelé quand le texte change (saisie ou sélection d'une option)",
+      "options": "Options proposées",
+      "defaultValue": "Valeur initiale (non contrôlé)",
+      "onSelect": "Appelé quand une option est sélectionnée (souris ou clavier)",
+      "groupBy": "Renvoie le nom de groupe d'une option ; les options sont regroupées sous des titres",
+      "multiple": "Permet de choisir plusieurs options, affichées comme étiquettes supprimables",
+      "maxTagCount": "Nombre maximal d'étiquettes affichées en mode multiple ; le reste est résumé en « +N »",
+      "renderOption": "Rendu personnalisé des options (quand mode vaut \"custom\")",
+      "renderEmpty": "Contenu affiché quand aucune option ne correspond",
+      "loading": "Affiche un indicateur de chargement dans la liste",
+      "textFieldProps": "Props transmises au TextField sous-jacent",
+      "emptyProps": "Props transmises à l'état vide Empty par défaut",
+      "popperProps": "Props transmises au Popper de la liste",
+      "placement": "Position de la liste",
+      "offset": "Décalage de la liste",
+      "dropdownBgColor": "Couleur de fond de la liste",
+      "highlightBgColor": "Couleur de fond des options mises en avant",
+      "hoverBgColor": "Couleur de fond des options survolées ou actives au clavier",
+      "animation": "Anime la liste à l'ouverture",
+      "filterOption": "Filtre personnalisé ; par défaut, les options dont le libellé contient la saisie (sans casse) sont affichées",
+      "sortOption": "Fonction de comparaison pour trier les options filtrées",
+      "onOptionClick": "Appelé quand une option est cliquée à la souris",
+      "onDropdownVisibleChange": "Appelé à l'ouverture ou à la fermeture de la liste"
+    },
+    "AutoCompleteOption": {
+      "label": "Texte de l'option, inséré dans le champ à la sélection",
+      "value": "Valeur unique de l'option",
+      "disabled": "Empêche la sélection de l'option",
+      "highlight": "Met l'option en avant (par exemple comme recommandation)",
+      "icon": "Icône affichée avant le libellé (mode basic)",
+      "description": "Texte secondaire sous le libellé (mode basic)",
+      "group": "Identifiant de groupe libre, généralement lu par groupBy",
+      "style": "Styles en ligne de l'option"
+    }
+  }
+}

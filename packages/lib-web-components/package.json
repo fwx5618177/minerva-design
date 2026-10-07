@@ -1,26 +1,58 @@
 {
-    "name": "@minerva/lib-web-components",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "./dist/index.cjs.js",
-    "module": "./dist/index.es.js",
-    "types": "global.d.ts",
-    "files": [
-        "dist",
-        "src",
-        "global.d.ts"
-    ],
-    "scripts": {
-        "release": "standard-version",
-        "build": "tsc && vite build",
-        "watch": "vite build --watch",
-        "test": "jest --config .jest.config.js --no-cache --coverage",
-        "clean": "rimraf dist node_modules",
-        "clean:cache": "rimraf dist src/dist src/**/dist src/**/**/dist",
-        "lint": "eslint \"{src}/**/*.{js,ts,tsx}\"",
-        "format": "prettier --write 'src/**/*.{ts,tsx,scss}'"
+  "name": "@minerva/lib-web-components",
+  "version": "0.0.1",
+  "description": "Minerva Web Components built with Lit",
+  "license": "MIT",
+  "author": "fwx5618177 <fwx5618177@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fwx5618177/minerva.git",
+    "directory": "packages/lib-web-components"
+  },
+  "homepage": "https://fwx5618177.github.io/minerva/",
+  "keywords": [
+    "web-components",
+    "lit",
+    "custom-elements"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "dependencies": {
-        "lit": "^3.1.0"
+    "./react": {
+      "types": "./dist/react.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "lit": "^3.3.0"
+  },
+  "peerDependencies": {
+    "@types/react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
     }
+  }
 }

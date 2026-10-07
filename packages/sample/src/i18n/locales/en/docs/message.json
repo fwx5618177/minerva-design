@@ -1,0 +1,82 @@
+{
+  "title": "Message",
+  "description": "Lightweight global feedback shown at the edge of the screen, called imperatively from anywhere.",
+  "demos": {
+    "types": {
+      "title": "Types",
+      "description": "message.success / error / info / warning / loading accept a string or any React node."
+    },
+    "options": {
+      "title": "Options",
+      "description": "Pass an options object to set the duration, close button, icon, progress bar, hover behavior and more."
+    },
+    "placements": {
+      "title": "Placements",
+      "description": "Six screen positions; messages at the same position are stacked."
+    },
+    "update": {
+      "title": "Update a message",
+      "description": "Keep the returned id and call message.update to change the content, type or duration."
+    },
+    "use-message": {
+      "title": "useMessage",
+      "description": "The hook returns promise-based methods that resolve when the message closes, so steps can be chained with await."
+    },
+    "destroy": {
+      "title": "Close programmatically",
+      "description": "message.destroy(id) closes one message; message.destroy() closes all of them."
+    }
+  },
+  "api": {
+    "MessageProps": {
+      "id": "Unique id; generated automatically when omitted in MessageOptions",
+      "type": "Message type, which sets the color. Set by the method you call (message.success, ...)",
+      "content": "Message content",
+      "duration": "Time in milliseconds before the message closes automatically; 0 keeps it open",
+      "showClose": "Shows a close button",
+      "icon": "Icon displayed before the content",
+      "className": "Additional class name",
+      "style": "Inline styles",
+      "onClose": "Called with the message id when the message closes, whatever the reason",
+      "showProgress": "Shows a countdown progress bar (only when duration > 0)",
+      "pauseOnHover": "Pauses the countdown and progress bar while hovered",
+      "placement": "Screen position of the message stack",
+      "onClick": "Called when the message is clicked",
+      "description": "Extra description exposed to assistive technologies (aria-description)",
+      "closeAriaLabel": "Accessible label of the close button",
+      "onUpdate": "Called after message.update() re-renders the message",
+      "maxWidth": "Maximum width of the message",
+      "zIndex": "z-index of the message"
+    }
+  },
+  "imperative": {
+    "title": "Imperative API",
+    "intro": "Messages are not rendered as JSX. Call the global message object, or the useMessage hook inside components, and pass either the content or a MessageOptions object (MessageProps with an optional id).",
+    "types": "Types",
+    "columns": {
+      "method": "Method",
+      "signature": "Signature",
+      "returns": "Returns",
+      "description": "Description",
+      "type": "Type",
+      "definition": "Definition"
+    },
+    "rows": {
+      "show": "Shows a message of the given type and returns its id. A plain string or React element is used as content; an object with a content key is treated as options.",
+      "update": "Merges new props into an open message and re-renders it, e.g. turning a loading message into a success. Unknown ids are ignored.",
+      "destroy": "Closes the message with the given id, or every open message when called without an id. onClose is called for each closed message.",
+      "hook": "Returns a stable object of promise-based methods for use inside components.",
+      "hookShow": "Shows a message and returns a promise that resolves when it closes. The promise also exposes the message id as messageId.",
+      "hookManage": "The same functions as message.update and message.destroy.",
+      "options": "Options accepted by every show method: all MessageProps except that id is optional.",
+      "promise": "Return value of the useMessage show methods."
+    },
+    "notes": {
+      "title": "Notes",
+      "id": "Pass your own id to update or close a message later; otherwise use the returned id (message-0, message-1, …).",
+      "onClose": "onClose is called exactly once per message, whether it closes on timeout, through the close button or through destroy.",
+      "stacking": "Each placement has its own stack container appended to document.body; it is removed when its last message closes.",
+      "promise": "To chain messages, await the promise or return only messageId from then(): returning the result itself would also wait for the next message to close."
+    }
+  }
+}

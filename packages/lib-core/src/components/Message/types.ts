@@ -1,14 +1,9 @@
-import { CSSProperties, ReactNode } from "react";
-import { createRoot } from "react-dom/client";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
+import type { createRoot } from "react-dom/client";
 
 export type MessageType = "success" | "error" | "info" | "warning" | "loading";
 export type MessagePlacement =
-  | "top"
-  | "bottom"
-  | "topLeft"
-  | "topRight"
-  | "bottomLeft"
-  | "bottomRight";
+  "top" | "bottom" | "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
 
 export interface MessageInstance {
   id: string;
@@ -17,59 +12,73 @@ export interface MessageInstance {
 }
 
 export interface MessageProps {
-  /** 消息唯一标识 */
+  /** Unique id; generated automatically when omitted in MessageOptions */
   id: string;
-  /** 消息类型 */
+  /**
+   * Message type, which sets the color. Set by the method you call (message.success, ...)
+   * @default "info"
+   */
   type?: MessageType;
-  /** 消息内容 */
+  /** Message content */
   content: ReactNode;
-  /** 自动关闭的延时，单位毫秒。设为 0 时不自动关闭 */
+  /**
+   * Time in milliseconds before the message closes automatically; 0 keeps it open
+   * @default 3000
+   */
   duration?: number;
-  /** 是否显示关闭按钮 */
+  /**
+   * Shows a close button
+   * @default false
+   */
   showClose?: boolean;
-  /** 自定义图标 */
+  /** Icon displayed before the content */
   icon?: ReactNode;
-  /** 自定义类名 */
+  /**
+   * Additional class name
+   * @default ""
+   */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: CSSProperties;
-  /** 关闭时的回调函数 */
+  /** Called with the message id when the message closes, whatever the reason */
   onClose?: (id: string) => void;
-  /** 是否显示进度条 */
+  /**
+   * Shows a countdown progress bar (only when duration > 0)
+   * @default true
+   */
   showProgress?: boolean;
-  /** 鼠标悬停时是否暂停自动关闭和进度条 */
+  /**
+   * Pauses the countdown and progress bar while hovered
+   * @default true
+   */
   pauseOnHover?: boolean;
-  /** 消息出现的位置 */
+  /**
+   * Screen position of the message stack
+   * @default "topRight"
+   */
   placement?: MessagePlacement;
-  /** 点击消息时的回调 */
-  onClick?: (e: React.MouseEvent) => void;
-  /** 消息的描述信息，用于无障碍 */
+  /** Called when the message is clicked */
+  onClick?: (e: MouseEvent) => void;
+  /** Extra description exposed to assistive technologies (aria-description) */
   description?: string;
-  /** 自定义关闭按钮的文本，用于无障碍 */
+  /**
+   * Accessible label of the close button
+   * @default "Close"
+   */
   closeAriaLabel?: string;
-  /** 更新消息时的回调 */
+  /** Called after message.update() re-renders the message */
   onUpdate?: (id: string, props: MessageProps) => void;
-  /** 消息的最大宽度 */
+  /** Maximum width of the message */
   maxWidth?: number | string;
-  /** 消息的层级 */
+  /** z-index of the message */
   zIndex?: number;
 }
 
-export interface MessageContainerProps {
-  placement?: MessagePlacement;
-  maxCount?: number;
-  duration?: number;
-  getContainer?: () => HTMLElement;
-  prefixCls?: string;
-  className?: string;
-  style?: CSSProperties;
-}
-export type MessageContainerType = React.FC<Record<string, never>> & {
-  success: (content: React.ReactNode | MessageProps) => string;
-  error: (content: React.ReactNode | MessageProps) => string;
-  info: (content: React.ReactNode | MessageProps) => string;
-  warning: (content: React.ReactNode | MessageProps) => string;
-  loading: (content: React.ReactNode | MessageProps) => string;
-  update: (id: string, props: Partial<MessageProps>) => void;
-  destroy: () => void;
-};
+/**
+ * Options accepted by `message.xxx()` / `useMessage().xxx()`.
+ * `id` is optional — one is generated when omitted.
+ */
+export type MessageOptions = Omit<MessageProps, "id"> & { id?: string };
+
+/** Result of `useMessage().xxx()`: resolves once the message has closed */
+export type MessagePromiseResult = Promise<void> & { messageId: string };

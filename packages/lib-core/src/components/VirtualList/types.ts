@@ -1,35 +1,55 @@
 export interface VirtualListItem {
+  /** Unique key of the item */
   id: string | number;
+  /** Arbitrary data for renderItem */
   metadata?: Record<string, string | number | boolean>;
 }
 
 /**
- * VirtualList 组件属性
+ * VirtualList props
  */
 export interface VirtualListProps {
-  /** 列表项数据 */
+  /** Items to render */
   items: VirtualListItem[];
-  /** 列表项高度(px)，不传则自动计算 */
+  /** Fixed row height in pixels; measured from the first item when omitted */
   itemHeight?: number;
-  /** 列表项内边距(px) */
+  /**
+   * Padding of each row in pixels
+   * @default 8
+   */
   itemPadding?: number;
-  /** 可视区域外预加载的项目数 */
+  /**
+   * Number of rows rendered above and below the visible area
+   * @default 5
+   */
   overscan?: number;
-  /** 最大高度(px) */
+  /** Maximum height of the scroll container in pixels */
   maxHeight: number;
-  /** 渲染列表项的函数 */
+  /** Renders the content of one row */
   renderItem: (item: VirtualListItem, index: number) => React.ReactNode;
-  /** 自定义类名 */
+  /**
+   * Additional class name
+   * @default ""
+   */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles of the scroll container */
   style?: React.CSSProperties;
-  /** 加载更多的回调函数 */
+  /** Called when scrolling near the bottom; return a promise that resolves once new items are loaded */
   onLoadMore?: () => Promise<void>;
-  /** 触发加载更多的阈值(px) */
+  /**
+   * Distance from the bottom (px) at which onLoadMore is triggered
+   * @default 100
+   */
   loadMoreThreshold?: number;
-  /** 是否启用高性能模式,使用 requestAnimationFrame 和 requestIdleCallback 优化渲染 */
+  /**
+   * Batches scroll updates with requestAnimationFrame and requestIdleCallback
+   * @default false
+   */
   highPerformance?: boolean;
-  /** 是否显示加载中状态 */
+  /**
+   * Shows a loading indicator at the bottom of the list
+   * @default false
+   */
   loading?: boolean;
 }
 

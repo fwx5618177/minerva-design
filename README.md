@@ -12,225 +12,257 @@
 
 </div>
 
-A versatile component library supporting web applications. Built with modern web technologies and designed for performance and flexibility.
+Minerva is a UI component library for the web: a React component library plus a set of framework-agnostic Web Components, developed together in a single pnpm monorepo.
 
 ## 🌟 Demo & Documentation
 
-Visit our documentation site: [https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
+Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
 
 ## ✨ Features
 
-- **Module Support**: ESM, CommonJS
-- **Version Management**: Free and paid versions with usage time calculation
-- **WASM Integration**: High-performance computing capabilities
-- **Development Tools**: ESLint, Prettier, Husky, Commitlint, Standard Version
-- **Comprehensive Components**: Rich set of UI components
-- **TypeScript Support**: Full type definitions
-- **Customization**: Extensive theming and styling options
+- **React components**: 30+ components for React 18 and later
+- **Web Components**: Lit-based custom elements that work with any framework, or none
+- **ESM + CommonJS**: both module formats are shipped
+- **TypeScript**: type definitions are included
+- **Theming**: light, dark, `github-dark` or your own theme, driven by CSS custom properties; follows the system color scheme by default
+- **i18n**: built-in locales for English, Chinese and French
 
-## 📦 Components
+## 📦 Packages
 
-### Implemented Components ✅
+| Package                       | Description                                                                                    |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- |
+| `@minerva/lib-core`           | React (>= 18) component library. ESM + CJS, TypeScript types. Peer deps: `react`, `react-dom`. |
+| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.            |
+| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                 |
 
-- **Basic**
-  - 🟢 Button `v1.0.0`
-  - 🟢 IconButton `v1.0.0`
-    - ✨ Box Shadow
-    - ✨ Ripple Effect
-  - 🟢 TextField `v1.0.0`
-  - 🟢 SearchButton `v1.0.0`
-  - 🟢 TimePicker `v1.0.0`
-    - ✨ 12/24 Hour Format
-    - ✨ Seconds Support
-  - 🟢 Popper `v1.0.0`
-  - 🟢 Ripple Effect `v1.0.0`
+### Components (`@minerva/lib-core`)
 
-### Upcoming Components 🚧
+| Category     | Components                                                                                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| General      | `Button`, `IconButton`, `InteractiveIconButton`, `SearchButton`                                                                                                                              |
+| Layout       | `Space`, `Divider`                                                                                                                                                                           |
+| Data entry   | `TextField`, `AutoComplete`, `Cascader`, `Checkbox`, `Radio`, `RadioGroup`, `Switch`, `TimePicker`                                                                                           |
+| Data display | `Avatar`, `AvatarGroup`, `Badge`, `Card` (`CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`), `Chip`, `Tag`, `Empty`, `StatusIndicator`, `Pagination`, `VirtualList` |
+| Feedback     | `Alert`, `message` / `useMessage`, `ProgressIndicator`, `Skeleton`                                                                                                                           |
+| Overlay      | `Dropdown`, `Popper`, `Tooltip`                                                                                                                                                              |
 
-- **Basic**
-
-  - ⏳ Checkbox
-  - ⏳ Radio
-  - ⏳ Switch
-  - ⏳ Select
-  - ⏳ DatePicker
-  - ⏳ DateTimePicker
-  - ⏳ Slider
-
-- **Layout**
-
-  - ⏳ Grid
-  - ⏳ Box
-  - ⏳ Container
-  - ⏳ Stack
-
-- **Navigation**
-
-  - ⏳ Menu
-  - ⏳ Tabs
-  - ⏳ Breadcrumb
-  - ⏳ Pagination
-
-- **Feedback**
-
-  - ⏳ Alert
-  - ⏳ Dialog
-  - ⏳ Snackbar
-  - ⏳ Progress
-  - ⏳ Skeleton
-
-- **Data Display**
-  - ⏳ Table
-  - ⏳ List
-  - ⏳ Tree
-  - ⏳ Card
-  - ⏳ Badge
-
-### Future Web Components 🔮
-
-We're planning to implement native Web Components support, including:
-
-- **Core Web Components**
-
-  - 🎯 Custom Elements
-  - 🎯 Shadow DOM
-  - 🎯 HTML Templates
-  - 🎯 ES Modules
-
-- **Features**
-  - 🎯 Framework Agnostic
-  - 🎯 Native Browser Support
-  - 🎯 Encapsulated Styling
-  - 🎯 Custom Events
-  - 🎯 Slot-based Content Distribution
-
-### Component Status Legend
-
-- 🟢 Released - Component is stable and ready for production
-- ⏳ Planned - Component is in the roadmap
-- 🎯 Future - Planned for future releases
-- ✨ Feature - Sub-feature of a component
+Besides components, `@minerva/lib-core` exports `ConfigProvider`, `useConfig`, the hooks `useAutoTheme`, `useLocale` and `useI18n`, the utilities `applyThemeStyles` and `generateCSSVariables`, and the built-in `themes` map (`light`, `dark`, `github-dark`).
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-yarn add @minerva/lib-core @minerva/lib-theme
+pnpm add @minerva/lib-core react react-dom
 ```
 
 OR
 
 ```bash
-npm install @minerva/lib-core @minerva/lib-theme
+npm install @minerva/lib-core react react-dom
 ```
 
 OR
 
 ```bash
-pnpm add @minerva/lib-core @minerva/lib-theme
+yarn add @minerva/lib-core react react-dom
 ```
 
 ### Basic Usage
 
-````tsx
-import { Button, TextField } from "@minerva/lib-core";
-import { ThemeProvider } from "@minerva/lib-theme";
-
-function App() {
-  return (
-    <ThemeProvider>
-      <TextField
-        label="Username"
-        placeholder="Enter username"
-      />
-      <Button variant="contained" color="primary">
-        Submit
-      </Button>
-    </ThemeProvider>
-  );
-}
-
-### Advanced Usage
-
-#### Custom Theme
+Import the stylesheet once (for example in your entry file), then use the components:
 
 ```tsx
-import { createTheme, ThemeProvider } from "@minerva/lib-theme";
+import { useState } from "react";
+import {
+  Alert,
+  Button,
+  ConfigProvider,
+  Space,
+  Switch,
+  TextField,
+  message,
+} from "@minerva/lib-core";
+import "@minerva/lib-core/style.css";
 
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
-    },
-  },
-});
+export default function App() {
+  const [name, setName] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-function App() {
   return (
-    <ThemeProvider theme={customTheme}>
-      {/* Your components */}
-    </ThemeProvider>
+    <ConfigProvider>
+      <Space direction="vertical" size="medium">
+        <Alert variant="info" title="Welcome" closable>
+          Minerva is ready.
+        </Alert>
+        <TextField
+          name="username"
+          label="Username"
+          placeholder="Enter username"
+          value={name}
+          onChange={setName}
+          clearable
+        />
+        <Switch
+          label="Subscribe"
+          checked={subscribed}
+          onChange={(checked) => setSubscribed(checked)}
+        />
+        <Button
+          variant="primary"
+          onClick={() => message.success(`Hello, ${name}`)}
+        >
+          Submit
+        </Button>
+      </Space>
+    </ConfigProvider>
   );
 }
-````
+```
 
-#### Using TimePicker
+### Theming and Locale
+
+`ConfigProvider` applies the theme by setting CSS custom properties (such as `--primary-color`, `--background-color`, `--text-gray`) on `document.documentElement`.
+
+- `theme`: `"auto"` (default, follows `prefers-color-scheme`), `"light"`, `"dark"`, `"github-dark"`, a full theme object, or a `{ light, dark }` pair
+- `locale`: `{ language: "en" | "zh" | "fr" }` (default `"en"`)
 
 ```tsx
-import { TimePicker } from "@minerva/lib-core";
+import { ConfigProvider, themes, useConfig } from "@minerva/lib-core";
 
-function TimePickerExample() {
-  const [time, setTime] = useState(null);
+const brandTheme = {
+  light: { ...themes.light, "primary-color": "#6750a4" },
+  dark: { ...themes.dark, "primary-color": "#d0bcff" },
+};
 
+function CurrentTheme() {
+  const { theme, locale } = useConfig();
+  return <pre>{JSON.stringify({ theme, locale })}</pre>;
+}
+
+export function Root() {
   return (
-    <TimePicker
-      value={time}
-      onChange={setTime}
-      format="24"
-      showSeconds
-      label="Select Time"
-    />
+    <ConfigProvider theme={brandTheme} locale={{ language: "fr" }}>
+      <CurrentTheme />
+    </ConfigProvider>
   );
 }
+```
+
+Pass `theme="github-dark"` (or `"light"` / `"dark"`) to use a built-in theme as-is.
+
+### Message API
+
+```tsx
+import { Button, message, useMessage } from "@minerva/lib-core";
+
+export function SaveButton() {
+  const msg = useMessage();
+
+  const save = () => {
+    msg
+      .loading({ content: "Saving...", duration: 1000 })
+      .then(() => message.success("Saved"));
+  };
+
+  return <Button onClick={save}>Save</Button>;
+}
+```
+
+### Web Components
+
+```bash
+pnpm add @minerva/lib-web-components
+```
+
+Register the custom elements once:
+
+```ts
+import "@minerva/lib-web-components";
+```
+
+Then use them in any HTML:
+
+```html
+<minerva-button variant="primary" size="medium" shape="pill">
+  Click me
+</minerva-button>
+<minerva-button variant="ghost" loading>Loading</minerva-button>
+<minerva-button variant="error" disabled aria-label="Delete">
+  Delete
+</minerva-button>
+```
+
+`<minerva-button>` attributes:
+
+| Attribute                       | Values                                                                                  |
+| ------------------------------- | --------------------------------------------------------------------------------------- |
+| `variant`                       | `primary`, `secondary`, `success`, `warning`, `error`, `info`, `ghost`, `retry`, `back` |
+| `size`                          | `tiny`, `small`, `medium`, `large`                                                      |
+| `shape`                         | `square`, `rounded`, `circle`, `pill`                                                   |
+| `loading`, `disabled`, `active` | boolean                                                                                 |
+| `aria-label`                    | string                                                                                  |
+
+For JSX typings in a React project, add:
+
+```ts
+/// <reference types="@minerva/lib-web-components/react" />
 ```
 
 ## 🧑‍💻 Developer Quick Start
 
-To develop with Minerva, follow these steps:
-
-1. Clone the repository:
+Requirements: Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 for local development. Building the packages and the docs site also works on Node.js 20.19+, which is what the GitHub Pages deploy workflow uses.
 
 ```bash
 git clone https://github.com/fwx5618177/minerva.git
 cd minerva
-```
-
-2. Install the dependencies:
-
-```bash
 pnpm install
-```
-
-3. Start the development server:
-
-```bash
 pnpm dev
 ```
 
-4. Run tests:
+### Scripts
+
+| Command                             | Description                                                         |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| `pnpm dev`                          | Build the libraries, then start the docs/demo site                  |
+| `pnpm build`                        | Build all packages in order: lib-core → lib-web-components → sample |
+| `pnpm test`                         | Run Vitest in all packages                                          |
+| `pnpm test:coverage`                | Run tests with coverage                                             |
+| `pnpm lint`                         | Run ESLint (flat config)                                            |
+| `pnpm typecheck`                    | Type-check all packages                                             |
+| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                             |
+| `pnpm clean`                        | Remove build output                                                 |
+| `pnpm changeset`                    | Add a changeset describing your change                              |
+| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs        |
+| `pnpm release`                      | Build the libraries and publish them to npm                         |
+
+### Tooling
+
+- Build: Vite 8
+- Testing: Vitest, Testing Library, happy-dom
+- Linting and formatting: ESLint 10 + typescript-eslint, Prettier
+- Git hooks: Husky, lint-staged, commitlint (Conventional Commits)
+- Docs deployment: `.github/workflows/deploy.yml` builds the docs site and publishes it to GitHub Pages on every push to `main`
+
+### Releasing
+
+Versioning and changelogs are managed with [Changesets](https://github.com/changesets/changesets). Publishing is done manually from a maintainer's machine:
 
 ```bash
-pnpm test
+# 1. In your PR: describe the change (choose packages + semver bump)
+pnpm changeset
+
+# 2. When releasing, on an up-to-date main branch:
+pnpm version-packages   # bumps versions, updates CHANGELOG.md files, consumes .changeset/*.md
+pnpm install            # refresh the lockfile if internal versions changed
+git commit -am "chore: release" && git push
+
+# 3. Publish (requires `npm login` with publish rights to the @minerva scope)
+pnpm release            # builds lib-core + lib-web-components, then `changeset publish`
+git push --follow-tags  # push the tags created by changeset publish
 ```
 
-5. Build the library:
-
-```bash
-pnpm build
-```
+Before publishing, make sure `pnpm lint && pnpm typecheck && pnpm test && pnpm build` pass.
 
 ## 🤝 Contributing
 
@@ -244,6 +276,6 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 For any questions or feedback, please contact us:
 
-- Email: [Email](mailto:fwx5618177@gmail.com)
-- Github Issue: [https://github.com/fwx5618177/minerva/issues](https://github.com/fwx5618177/minerva/issues)
-- Github Pull Request: [https://github.com/fwx5618177/minerva/pulls](https://github.com/fwx5618177/minerva/pulls)
+- Email: [fwx5618177@gmail.com](mailto:fwx5618177@gmail.com)
+- GitHub Issues: [https://github.com/fwx5618177/minerva/issues](https://github.com/fwx5618177/minerva/issues)
+- GitHub Pull Requests: [https://github.com/fwx5618177/minerva/pulls](https://github.com/fwx5618177/minerva/pulls)

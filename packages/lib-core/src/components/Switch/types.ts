@@ -1,43 +1,70 @@
 export interface SwitchProps {
-  /** 开关是否选中 */
+  /** Whether the switch is on (controlled) */
   checked?: boolean;
-  /** 默认是否选中 */
+  /**
+   * Initial state (uncontrolled)
+   * @default false
+   */
   defaultChecked?: boolean;
-  /** 是否禁用 */
+  /**
+   * Disables the switch
+   * @default false
+   */
   disabled?: boolean;
-  /** 开关大小 */
+  /**
+   * Switch size
+   * @default "medium"
+   */
   size?: "small" | "medium" | "large";
-  /** 开关颜色 */
+  /**
+   * Color when on: a theme color name or any CSS color
+   * @default "primary"
+   */
   color?: "primary" | "secondary" | "success" | "warning" | "error" | string;
-  /** 开关形状 */
+  /**
+   * Shape of the track and thumb
+   * @default "round"
+   */
   shape?: "round" | "square";
-  /** 开关标签 */
+  /** Label displayed next to the switch */
   label?: React.ReactNode;
-  /** 标签位置 */
+  /**
+   * Position of the label relative to the switch
+   * @default "end"
+   */
   labelPlacement?: "start" | "end" | "top" | "bottom";
-  /** 是否加载中 */
+  /**
+   * Shows a loading state and blocks interaction
+   * @default false
+   */
   loading?: boolean;
-  /** 是否显示涟漪效果 */
+  /**
+   * Shows a ripple effect on click
+   * @default true
+   */
   ripple?: boolean;
-  /** 自定义样式 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles of the root label element */
   labelStyle?: React.CSSProperties;
-  /** 自定义轨道样式 */
+  /** Inline styles of the track */
   trackStyle?: React.CSSProperties;
-  /** 自定义滑块样式 */
+  /** Inline styles of the thumb */
   thumbStyle?: React.CSSProperties;
-  /** 值改变时的回调函数 */
+  /** Called when the state changes */
   onChange?: (
     checked: boolean,
     event: React.ChangeEvent<HTMLInputElement>,
   ) => void;
-  /** 聚焦时的回调函数 */
+  /** Called when the switch receives focus */
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  /** 失焦时的回调函数 */
+  /** Called when the switch loses focus */
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  /** 自定义图标 */
+  /** Custom icon */
   icon?: React.ReactNode;
-  /** 图标位置 */
+  /**
+   * Icon position: inside the thumb ("start") or after the switch ("end")
+   * @default "start"
+   */
   iconPlacement?: "start" | "end";
 }

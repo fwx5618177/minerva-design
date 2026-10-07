@@ -1,0 +1,28 @@
+{
+  "title": "Hooks",
+  "description": "Les hooks de bas niveau utilisés par ConfigProvider : gérez vous-même le thème, la langue et les traductions de lib-core.",
+  "reference": {
+    "title": "Référence",
+    "text": "Tous les hooks sont exportés par @minerva/lib-core.",
+    "hook": "Hook",
+    "signature": "Signature",
+    "useAutoTheme": "Conserve le thème actif dans un état et l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma actuel du système.",
+    "useLocale": "Conserve la locale dans un état et change la langue des textes intégrés de lib-core (en, zh ou fr). Renvoie la locale et son setter.",
+    "useI18n": "Renvoie t et l'instance i18next utilisée par lib-core. C'est une instance privée : la configuration i18next de votre application n'est jamais affectée.",
+    "global": "useAutoTheme et useLocale modifient un état global (variables CSS sur <html>, langue de lib-core). Les démos ci-dessous partent des réglages actuels du site et les rétablissent au démontage."
+  },
+  "standalone": {
+    "title": "Utiliser les hooks sans ConfigProvider",
+    "text": "ConfigProvider n'est qu'une fine couche autour de useAutoTheme et useLocale. Si vous n'avez pas besoin de useConfig(), appelez directement les hooks, à la place d'un provider et non à l'intérieur."
+  },
+  "demos": {
+    "use-auto-theme": {
+      "title": "useAutoTheme",
+      "description": "Changez le thème de la page avec setTheme. systemTheme indique toujours le schéma du système d'exploitation. Reset (ou quitter la page) rétablit le thème du site."
+    },
+    "use-locale": {
+      "title": "useLocale et useI18n",
+      "description": "setLocale change la langue de lib-core ; t() de useI18n renvoie les textes intégrés de lib-core dans cette langue."
+    }
+  }
+}

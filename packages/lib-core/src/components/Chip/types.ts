@@ -1,6 +1,15 @@
 export interface ChipProps {
+  /** Text of the chip */
   label: string;
+  /**
+   * Visual style
+   * @default "filled"
+   */
   variant?: "filled" | "outlined" | "soft";
+  /**
+   * Color scheme
+   * @default "default"
+   */
   color?:
     | "default"
     | "primary"
@@ -9,15 +18,49 @@ export interface ChipProps {
     | "error"
     | "warning"
     | "info";
+  /**
+   * Chip size
+   * @default "medium"
+   */
   size?: "small" | "medium" | "large";
+  /** Icon displayed before the label */
   icon?: React.ReactNode;
+  /** Avatar displayed before the label */
   avatar?: React.ReactNode;
-  onDelete?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  /** Called when the delete button is clicked; providing it shows the delete button */
+  onDelete?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  /** Called when the chip is clicked (requires clickable) */
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  /**
+   * Disables the chip and hides the delete button
+   * @default false
+   */
   disabled?: boolean;
+  /**
+   * Additional class name
+   * @default ""
+   */
   className?: string;
+  /** Custom delete icon */
   deleteIcon?: React.ReactNode;
+  /**
+   * Accessible label for the delete button
+   * @default "Remove {label}"
+   */
+  deleteLabel?: string;
+  /**
+   * Makes the chip a keyboard-operable button
+   * @default false
+   */
   clickable?: boolean;
+  /**
+   * Shows a spinner before the label
+   * @default false
+   */
   loading?: boolean;
+  /**
+   * Shows the selected state
+   * @default false
+   */
   selected?: boolean;
 }

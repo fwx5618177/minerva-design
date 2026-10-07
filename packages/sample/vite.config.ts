@@ -1,49 +1,47 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
+import type { Alias } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { fileURLToPath } from "node:url";
+import tsconfig from "./tsconfig.json" with { type: "json" };
+
+// App path aliases are defined once, in tsconfig.json "paths".
+// The @minerva/* entries there only point tsc at workspace sources for
+// type-checking; at runtime Vite resolves the built packages instead.
+const alias: Alias[] = Object.entries(tsconfig.compilerOptions.paths)
+  .filter(([key]) => !key.startsWith("@minerva/"))
+  .map(([key, [target]]) => ({
+    find: new RegExp(`^${key.replace("*", "")}`),
+    replacement: fileURLToPath(
+      new URL(target.replace("*", ""), import.meta.url),
+    ),
+  }));
 
 export default defineConfig({
   base: "/minerva/",
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@layout": path.resolve(__dirname, "./src/layout"),
-      "@pages": path.resolve(__dirname, "./src/pages"),
-      "@styles": path.resolve(__dirname, "./src/styles"),
-      "@assets": path.resolve(__dirname, "./src/assets"),
-      "@i18n": path.resolve(__dirname, "./src/i18n"),
-      "@router": path.resolve(__dirname, "./src/router"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
-    },
-  },
-  build: {
-    outDir: "dist",
-    assetsDir: ".",
-    rollupOptions: {
-      input: path.resolve(__dirname, "index.html"),
-      output: {
-        assetFileNames: "[name].[ext]",
-        chunkFileNames: "[name].js",
-        entryFileNames: "[name].js",
-      },
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@use "@styles/variables.scss" as *;`,
-        includePaths: [path.resolve(__dirname, "src/styles")],
-      },
-    },
-  },
+  resolve: { alias },
   server: {
     port: 3000,
-    open: true,
     host: "127.0.0.1",
-    watch: {
-      usePolling: true,
+  },
+  build: {
+    // Each docs page is its own chunk; keep vendor code in a stable chunk
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom|@remix-run)[\\/]/,
+            },
+          ],
+        },
+      },
     },
+  },
+  test: {
+    name: "sample",
+    environment: "node",
+    include: ["src/**/*.test.ts"],
   },
 });

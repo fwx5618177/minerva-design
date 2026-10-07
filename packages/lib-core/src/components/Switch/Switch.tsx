@@ -67,6 +67,14 @@ const Switch: React.FC<SwitchProps> = ({
     onChange?.(event.target.checked, event);
   };
 
+  // Native checkboxes toggle on Space only; the switch pattern also allows Enter.
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    if (disabled || loading) return;
+    event.currentTarget.click();
+  };
+
   const handleRipple = () => {
     if (!ripple || disabled || loading) return;
 
@@ -122,9 +130,14 @@ const Switch: React.FC<SwitchProps> = ({
       <div className={styles.switchBase}>
         <input
           type="checkbox"
+          role="switch"
+          aria-checked={isChecked}
+          aria-disabled={disabled || loading || undefined}
+          aria-busy={loading || undefined}
           checked={isChecked}
           disabled={disabled || loading}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           onFocus={onFocus}
           onBlur={onBlur}
         />

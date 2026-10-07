@@ -1,0 +1,40 @@
+{
+  "title": "Installation",
+  "description": "Add Minerva to a React project, load the stylesheet, and optionally register the Web Components.",
+  "requirements": {
+    "title": "Requirements",
+    "react": "React and React DOM 18 or later (peer dependencies of @minerva/lib-core).",
+    "bundler": "A bundler that understands ES modules and CSS imports, such as Vite, webpack, Rspack or Next.js. A CommonJS build is shipped as well.",
+    "browsers": "A modern evergreen browser: the theme tokens rely on CSS custom properties and color-mix()."
+  },
+  "core": {
+    "title": "Install the React components",
+    "text": "Install @minerva/lib-core with your package manager. Add react and react-dom if your project does not have them yet.",
+    "peers": "react and react-dom are peer dependencies (>= 18) so your app keeps a single copy of React. i18next, react-i18next, react-icons and classnames are installed automatically as regular dependencies."
+  },
+  "styles": {
+    "title": "Import the stylesheet",
+    "text": "The component styles and the default theme tokens are bundled in a single CSS file. Import it once, in your application's entry file:",
+    "note": "Without @minerva/lib-core/style.css the components render unstyled. Import it only once; importing it from several modules is harmless but unnecessary."
+  },
+  "app": {
+    "title": "Your first component",
+    "text": "Wrap the application in ConfigProvider and start using components:",
+    "provider": "ConfigProvider is optional for rendering components, but it applies the theme (following the system color scheme by default), sets the language of lib-core's built-in texts and makes useConfig() available. Use one provider at the root of your app."
+  },
+  "webComponents": {
+    "title": "Web Components (optional)",
+    "text": "@minerva/lib-web-components provides the same design as framework-agnostic custom elements. Install it and import the package once to register the elements:",
+    "typings": "To get type checking and autocompletion for <minerva-button> in React JSX, reference the bundled typings once, for example in a global.d.ts file:"
+  },
+  "typescript": {
+    "title": "TypeScript",
+    "text": "Both packages ship their own type declarations; no @types package is needed. Props types (ButtonProps, TagProps, ...) and theme types (Theme, ComponentTheme, ThemeName, ...) are exported from the package root:"
+  },
+  "next": {
+    "title": "Next steps",
+    "introduction": "Design principles and the conventions used by every component.",
+    "theming": "Built-in themes, design tokens and custom themes.",
+    "components": "Start with the first component page and its live examples."
+  }
+}

@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .badgeWrapper {
   display: inline-flex;
@@ -9,15 +9,20 @@
     background-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px var(--shadow-color);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 10px var(--shadow-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &:active {
@@ -37,109 +42,63 @@
   font-size: 0.65rem; /* 调整默认字体大小 */
   font-weight: 600;
   line-height: 1;
-  color: #ffffff; /* 实际的前景色 */
-  background-color: #6c757d; /* 实际的背景色 */
+  color: var(--text-inverse-color); /* 实际的前景色 */
+  background-color: var(--secondary-color); /* 实际的背景色 */
   border-radius: 0.25rem;
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px color-mix(in srgb, var(--shadow-color) 70%, transparent);
   cursor: pointer;
   position: relative;
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px var(--shadow-color);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 10px var(--shadow-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &:active {
     transform: translateY(2px);
   }
 
-  &.primary {
-    background-color: #007bff;
-    color: #ffffff;
+  // Class name -> design-token role (error is an alias of danger)
+  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+    &.#{$name} {
+      background-color: var(--#{$role}-color);
+      color: var(--text-inverse-color);
 
-    &:hover {
-      background-color: #0056b3;
-    }
-  }
-
-  &.secondary {
-    background-color: #6c757d;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #5a6268;
-    }
-  }
-
-  &.success {
-    background-color: #28a745;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #218838;
-    }
-  }
-
-  &.danger {
-    background-color: #dc3545;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #c82333;
-    }
-  }
-
-  &.warning {
-    background-color: #ffc107;
-    color: #212529;
-
-    &:hover {
-      background-color: #e0a800;
-    }
-  }
-
-  &.info {
-    background-color: #17a2b8;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #138496;
-    }
-  }
-
-  &.error {
-    background-color: #dc3545;
-    color: #ffffff;
-
-    &:hover {
-      background-color: #c82333;
+      &:hover {
+        background-color: var(--#{$role}-color-hover);
+      }
     }
   }
 
   &.light {
-    background-color: #f8f9fa;
-    color: #212529;
+    background-color: var(--surface-muted-color);
+    color: var(--text-color);
 
     &:hover {
-      background-color: #e2e6ea;
+      background-color: color-mix(in srgb, var(--surface-muted-color) 88%, var(--foreground-color));
     }
   }
 
   &.dark {
-    background-color: #343a40;
-    color: #ffffff;
+    background-color: var(--dark-color);
+    color: var(--light-color);
 
     &:hover {
-      background-color: #23272b;
+      background-color: color-mix(in srgb, var(--dark-color) 85%, var(--foreground-color));
     }
   }
 

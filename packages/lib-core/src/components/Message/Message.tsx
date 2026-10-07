@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import type { MessageProps } from "./types";
 import styles from "./message.module.scss";
@@ -15,27 +15,30 @@ const Message: React.FC<MessageProps> = ({
   onClose,
   showProgress = true,
   pauseOnHover = true,
-  placement = "topRight",
   onClick,
   description,
   closeAriaLabel = "Close",
+  maxWidth,
+  zIndex,
 }) => {
   const [progress, setProgress] = useState(100);
   const [isPaused, setIsPaused] = useState(false);
+  // Time already elapsed before the current (un-paused) run, so that
+  // resuming after a hover continues instead of restarting the countdown.
+  const elapsedRef = useRef(0);
 
   useEffect(() => {
-    if (duration > 0) {
-      const startTime = Date.now();
+    if (duration > 0 && !isPaused) {
+      const startTime = Date.now() - elapsedRef.current;
       const timer = setInterval(() => {
-        if (!isPaused) {
-          const elapsed = Date.now() - startTime;
-          const remaining = Math.max(0, 100 - (elapsed / duration) * 100);
-          setProgress(remaining);
+        const elapsed = Date.now() - startTime;
+        elapsedRef.current = elapsed;
+        const remaining = Math.max(0, 100 - (elapsed / duration) * 100);
+        setProgress(remaining);
 
-          if (remaining === 0) {
-            clearInterval(timer);
-            onClose?.(id);
-          }
+        if (remaining === 0) {
+          clearInterval(timer);
+          onClose?.(id);
         }
       }, 10);
 
@@ -51,14 +54,15 @@ const Message: React.FC<MessageProps> = ({
     <div
       className={`${styles.message} ${styles[type]} ${className}`}
       style={{
+        maxWidth,
+        zIndex,
         ...style,
-        position: "fixed",
-        ...getPositionStyle(placement),
       }}
       onClick={onClick}
       onMouseEnter={() => pauseOnHover && setIsPaused(true)}
       onMouseLeave={() => pauseOnHover && setIsPaused(false)}
       role="alert"
+      aria-description={description}
     >
       <div className={styles.content}>
         {icon && <span className={styles.icon}>{icon}</span>}
@@ -81,25 +85,6 @@ const Message: React.FC<MessageProps> = ({
       )}
     </div>
   );
-};
-
-const getPositionStyle = (placement: MessageProps["placement"]) => {
-  switch (placement) {
-    case "top":
-      return { top: "20px", left: "50%", transform: "translateX(-50%)" };
-    case "topLeft":
-      return { top: "20px", left: "20px" };
-    case "topRight":
-      return { top: "20px", right: "20px" };
-    case "bottom":
-      return { bottom: "20px", left: "50%", transform: "translateX(-50%)" };
-    case "bottomLeft":
-      return { bottom: "20px", left: "20px" };
-    case "bottomRight":
-      return { bottom: "20px", right: "20px" };
-    default:
-      return { top: "20px", right: "20px" };
-  }
 };
 
 export default Message;

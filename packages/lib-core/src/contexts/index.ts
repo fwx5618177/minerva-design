@@ -1,33 +1,20 @@
-import { ConfigContext, ConfigProvider, useConfig } from "./ConfigProvider";
-import type {
+export { ConfigContext, ConfigProvider, useConfig } from "./ConfigProvider";
+export type {
   ThemeProps,
   ComponentThemeProps,
+  SemanticThemeProps,
+  ThemeColorRole,
+  ThemeRoleTokens,
   ComponentTheme,
   SupportTheme,
   DefaultTheme,
+  ThemeName,
   CustomBilingualTheme,
   ThemeMap,
   ConfigProviderThemeProps,
   Theme,
+  SupportedLanguage,
   Locale,
   ConfigContextProps,
   ConfigContextProviderProps,
 } from "./types";
-
-export {
-  ConfigContext,
-  ConfigProvider,
-  useConfig,
-  ThemeProps,
-  ComponentThemeProps,
-  ComponentTheme,
-  SupportTheme,
-  DefaultTheme,
-  CustomBilingualTheme,
-  ThemeMap,
-  ConfigProviderThemeProps,
-  Theme,
-  Locale,
-  ConfigContextProps,
-  ConfigContextProviderProps,
-};

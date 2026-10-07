@@ -1,0 +1,42 @@
+{
+  "title": "VirtualList 仮想リスト",
+  "description": "スクロールコンテナ内で表示されている行だけをマウントし、長いリストを効率よく描画します。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "固定の itemHeight で 10,000 行。DOM には表示中の行（と overscan 分）だけが存在します。"
+    },
+    "auto-height": {
+      "title": "行の高さの自動計測",
+      "description": "itemHeight を省略すると最初の項目から高さを計測します。各行の周囲に itemPadding が追加されます。"
+    },
+    "infinite-scroll": {
+      "title": "無限スクロール",
+      "description": "リストの末尾付近で onLoadMore が呼び出されます。読み込み中はローディング表示を出します。"
+    },
+    "high-performance": {
+      "title": "高パフォーマンスモード",
+      "description": "highPerformance は requestAnimationFrame と requestIdleCallback でスクロール更新をまとめます。この例は 100,000 行です。"
+    }
+  },
+  "api": {
+    "VirtualListProps": {
+      "items": "描画する項目",
+      "itemHeight": "固定の行の高さ（ピクセル）。省略時は最初の項目から計測する",
+      "itemPadding": "各行のパディング（ピクセル）",
+      "overscan": "表示領域の上下に追加で描画する行数",
+      "maxHeight": "スクロールコンテナの最大の高さ（ピクセル）",
+      "renderItem": "1 行分の内容を描画する関数",
+      "className": "追加のクラス名",
+      "style": "スクロールコンテナのインラインスタイル",
+      "onLoadMore": "末尾付近までスクロールしたときに呼び出される。新しい項目の読み込み後に resolve する Promise を返す",
+      "loadMoreThreshold": "onLoadMore を発火させる末尾からの距離（px）",
+      "highPerformance": "requestAnimationFrame と requestIdleCallback でスクロール更新をまとめる",
+      "loading": "リストの末尾にローディング表示を出す"
+    },
+    "VirtualListItem": {
+      "id": "項目の一意なキー",
+      "metadata": "renderItem で使う任意のデータ"
+    }
+  }
+}

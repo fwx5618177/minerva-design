@@ -1,0 +1,42 @@
+{
+  "title": "VirtualList 虚拟列表",
+  "description": "只挂载滚动容器中可见的行，从而高效渲染长列表。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "10,000 行数据，固定 itemHeight；DOM 中只存在可见行（以及 overscan 预渲染的行）。"
+    },
+    "auto-height": {
+      "title": "自动测量行高",
+      "description": "不传 itemHeight 时根据第一个渲染项测量行高；每行四周会加上 itemPadding。"
+    },
+    "infinite-scroll": {
+      "title": "无限滚动",
+      "description": "滚动到接近底部时调用 onLoadMore；加载期间显示加载指示器。"
+    },
+    "high-performance": {
+      "title": "高性能模式",
+      "description": "highPerformance 使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新，此示例包含 100,000 行。"
+    }
+  },
+  "api": {
+    "VirtualListProps": {
+      "items": "要渲染的列表项",
+      "itemHeight": "固定行高（像素）；不传时根据第一个列表项测量",
+      "itemPadding": "每行的内边距（像素）",
+      "overscan": "在可视区域上方和下方额外渲染的行数",
+      "maxHeight": "滚动容器的最大高度（像素）",
+      "renderItem": "渲染单行内容的函数",
+      "className": "额外的类名",
+      "style": "滚动容器的内联样式",
+      "onLoadMore": "滚动到接近底部时调用；返回一个在新数据加载完成后 resolve 的 Promise",
+      "loadMoreThreshold": "距底部多少像素时触发 onLoadMore",
+      "highPerformance": "使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新",
+      "loading": "在列表底部显示加载指示器"
+    },
+    "VirtualListItem": {
+      "id": "列表项的唯一键",
+      "metadata": "供 renderItem 使用的任意数据"
+    }
+  }
+}

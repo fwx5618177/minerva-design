@@ -1,0 +1,43 @@
+{
+  "title": "ConfigProvider",
+  "description": "lib-core のテーマと言語をアプリケーションに提供し、useConfig() から参照できるようにします。",
+  "usage": {
+    "title": "使い方",
+    "text": "アプリケーションのルートに ConfigProvider を 1 つ配置します。テーマを CSS 変数として <html> に適用し、lib-core 内蔵テキストの言語を設定し、両方を useConfig() に提供します。",
+    "dynamic": "どちらのプロパティもリアクティブです。state に保持すれば、実行時にテーマや言語をユーザーが切り替えられます。",
+    "global": "テーマと言語はグローバルです。Provider は <html> に CSS 変数を書き込み、lib-core の i18next の言語を変更します。そのため入れ子の ConfigProvider は子要素だけでなくページ全体のテーマを変えます。特定の領域だけテーマを変えたい場合は、ラッパー要素に CSS 変数を設定してください（カスタムテーマの例を参照）。"
+  },
+  "demos": {
+    "use-config": {
+      "title": "設定の読み取り",
+      "description": "useConfig() は最も近い Provider の設定テーマ、解決済みテーマ、ロケールを返します。ヘッダーでサイトのテーマを変えると更新されます。"
+    },
+    "custom-theme": {
+      "title": "カスタムテーマ",
+      "description": "themes.light をもとにしたカスタムテーマ。ConfigProvider に渡すとページ全体のテーマが変わるため、ここではトークンを CSS 変数として 1 つのコンテナーにだけ適用しています。"
+    },
+    "locale": {
+      "title": "ロケール",
+      "description": "locale プロパティは lib-core 内蔵テキストの言語（en、zh、fr）を設定します。言語はグローバルなので、このデモはアンマウント時に英語へ戻します。"
+    }
+  },
+  "api": {
+    "ConfigContextProviderProps": {
+      "theme": "適用するテーマ：\"auto\"（prefers-color-scheme に追従）、内蔵テーマ名、テーマオブジェクト、または { light, dark } のペア。ドキュメントのルートに CSS 変数として適用されます。",
+      "locale": "lib-core 内蔵テキストの言語（グローバルに変更されます）。",
+      "children": "アプリケーションのコンテンツ。"
+    },
+    "ConfigContextProps": {
+      "theme": "設定されたテーマ（\"auto\" や { light, dark } のペアの場合があります）。",
+      "resolvedTheme": "\"auto\" や { light, dark } のペアを解決した後に実際に適用されているテーマ：内蔵テーマ名またはテーマオブジェクト。",
+      "locale": "lib-core 内蔵テキストの現在のロケール。"
+    },
+    "Locale": {
+      "language": "lib-core 内蔵テキストの言語：\"en\"、\"zh\"、\"fr\"。"
+    }
+  },
+  "context": {
+    "title": "ConfigContext",
+    "text": "上位に ConfigProvider がない場合、useConfig() は例外を投げるため、設定ミスを早期に発見できます。Provider が任意の場合は ConfigContext を直接読み取ってください。例外ではなく undefined が返ります。"
+  }
+}

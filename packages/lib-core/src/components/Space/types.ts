@@ -10,26 +10,41 @@ export type SpaceJustify =
   | "space-evenly";
 
 export interface SpaceProps {
-  /** 对齐方式 */
+  /** Alignment of the items on the cross axis */
   align?: SpaceAlign;
-  /** 主轴对齐方式 */
+  /** Alignment of the items on the main axis */
   justify?: SpaceJustify;
-  /** 间距方向 */
+  /**
+   * Layout direction
+   * @default "horizontal"
+   */
   direction?: SpaceDirection;
-  /** 间距大小 */
+  /**
+   * Gap between items: a preset (small = 8px, medium = 16px, large = 24px) or a number of pixels
+   * @default "medium"
+   */
   size?: SpaceSize | number;
-  /** 是否自动换行 */
+  /**
+   * Wraps items onto multiple lines (horizontal only)
+   * @default false
+   */
   wrap?: boolean;
-  /** 分隔符 */
+  /** Separator rendered between items */
   split?: React.ReactNode;
-  /** 是否是紧凑模式 */
+  /**
+   * Compact mode: halves the preset gap
+   * @default false
+   */
   compact?: boolean;
-  /** 是否占满父元素宽度 */
+  /**
+   * Stretches the container to the full width of its parent
+   * @default false
+   */
   block?: boolean;
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: React.CSSProperties;
-  /** 子元素 */
+  /** Items to space out */
   children?: React.ReactNode;
 }

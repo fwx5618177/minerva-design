@@ -137,7 +137,7 @@ const Alert: React.FC<AlertProps> = ({
               <button
                 className={styles.expandButton}
                 onClick={handleExpand}
-                aria-label={expanded ? "收起" : "展开"}
+                aria-label={expanded ? "Collapse" : "Expand"}
                 aria-expanded={expanded}
               >
                 {expanded ? <IoChevronUp /> : <IoChevronDown />}

@@ -1,0 +1,100 @@
+{
+  "title": "Utilitaires de thème",
+  "description": "Fonctions et objets de thème pour résoudre, appliquer et inspecter des thèmes en dehors de ConfigProvider.",
+  "reference": {
+    "title": "Référence",
+    "text": "ConfigProvider et useAutoTheme reposent sur ces utilitaires. Utilisez-les pour appliquer un thème sans React, thémer un seul élément ou lire la valeur des jetons.",
+    "name": "Nom",
+    "signature": "Signature",
+    "applyThemeStyles": "Résout un thème et l'écrit sous forme de variables CSS sur <html> (global). Les variables du thème précédent que le nouveau ne définit pas sont supprimées.",
+    "generateCSSVariables": "Écrit chaque jeton d'un objet de thème en --<token> sur la déclaration de style donnée (par ex. element.style) et supprime les anciennes. Permet de thémer un seul élément.",
+    "resolveTheme": "Transforme toute valeur de thème acceptée en objet de thème : \"auto\" et les paires { light, dark } utilisent systemTheme, les noms sont cherchés dans themes, les objets sont renvoyés tels quels. Lève une erreur pour un nom inconnu. Sans effet de bord.",
+    "getSystemTheme": "Renvoie le schéma de couleurs du système d'après prefers-color-scheme ; \"light\" si matchMedia n'est pas disponible (SSR, tests).",
+    "isBilingualTheme": "Garde de type : true pour les paires { light, dark } d'objets de thème.",
+    "themes": "Les thèmes intégrés, indexés par les noms acceptés par la prop theme.",
+    "builtIns": "Les objets de thème intégrés, aussi exportés individuellement ; étendez-les pour créer des thèmes personnalisés."
+  },
+  "usage": {
+    "apply": "Appliquer un thème globalement",
+    "applyText": "applyThemeStyles est la fonction appelée par ConfigProvider. Utilisez-la dans du code sans React, ou pour appliquer le thème avant le premier rendu et éviter un flash des couleurs par défaut.",
+    "generate": "Thémer un seul élément",
+    "generateText": "generateCSSVariables accepte n'importe quelle CSSStyleDeclaration : les jetons peuvent donc être limités à un élément, dont les descendants en héritent.",
+    "resolve": "Résoudre des thèmes",
+    "resolveText": "resolveTheme, isBilingualTheme et getSystemTheme n'ont pas d'effet de bord ; utilisez-les pour calculer des valeurs de jetons, par exemple pour styler un canvas ou un graphique."
+  },
+  "demos": {
+    "theme-swatches": {
+      "title": "Thèmes intégrés",
+      "description": "Lit les valeurs des jetons dans themes et les affiche sous forme de pastilles. Aucune variable CSS n'est écrite."
+    },
+    "resolve-theme": {
+      "title": "Résoudre une valeur de thème",
+      "description": "Comment resolveTheme résout chaque type de valeur de thème pour un schéma système donné, et ce que renvoient isBilingualTheme / getSystemTheme."
+    },
+    "scoped-preview": {
+      "title": "Prévisualiser un thème dans un élément",
+      "description": "generateCSSVariables écrit un thème résolu sur le style d'un conteneur : seuls les composants qu'il contient changent."
+    }
+  },
+  "api": {
+    "ThemeProps": {
+      "primary-color": "Couleur de marque / d'accent : boutons principaux, états actifs, anneaux de focus.",
+      "secondary-color": "Accent neutre utilisé par les variantes secondary.",
+      "success-color": "Couleur de statut positif (variantes success).",
+      "danger-color": "Couleur des actions destructives / erreurs (variantes danger et error).",
+      "warning-color": "Couleur de statut d'avertissement.",
+      "info-color": "Couleur de statut informatif.",
+      "light-color": "Neutre clair (hérité ; variantes light).",
+      "dark-color": "Neutre foncé (hérité ; variantes dark).",
+      "background-color": "Fond de la page. Valeur par défaut de --surface-color.",
+      "foreground-color": "Couleur principale du texte. Valeur par défaut de --text-color.",
+      "border-color": "Couleur par défaut des bordures / séparateurs.",
+      "text-gray": "Texte secondaire, peu accentué (contraste d'au moins 4.5:1 sur le fond).",
+      "primary-gradient-start": "Couleur de départ du dégradé principal.",
+      "primary-gradient-end": "Couleur de fin du dégradé principal.",
+      "secondary-gradient-start": "Couleur de départ du dégradé secondaire.",
+      "secondary-gradient-end": "Couleur de fin du dégradé secondaire.",
+      "highlight-color": "Couleur de surlignage / marquage.",
+      "shadow-color": "Couleur d'ombre de base utilisée par --shadow-sm, --shadow-md et --shadow-lg.",
+      "muted-color": "Couleur d'interface atténuée (placeholders, icônes, contrôles inactifs).",
+      "link-color": "Couleur des liens.",
+      "link-hover-color": "Couleur des liens au survol.",
+      "link-active-color": "Couleur des liens pendant l'activation.",
+      "link-visited-color": "Couleur des liens visités."
+    },
+    "SemanticThemeProps": {
+      "surface-color": "Fond des cartes, champs et autres surfaces de composants.",
+      "surface-muted-color": "Lignes survolées, contrôles désactivés, pistes.",
+      "surface-elevated-color": "Popovers, menus, listes déroulantes, infobulles.",
+      "overlay-color": "Voile d'arrière-plan / superposition modale.",
+      "border-strong-color": "Bordure plus contrastée (champs, bordures survolées).",
+      "text-color": "Couleur principale du texte (par défaut --foreground-color).",
+      "text-secondary-color": "Texte secondaire (descriptions, textes d'aide).",
+      "text-disabled-color": "Texte désactivé.",
+      "text-inverse-color": "Texte affiché sur un fond de couleur de rôle plein (ex. un bouton principal).",
+      "focus-ring-color": "Couleur du contour / de l'anneau de focus.",
+      "error-color": "Alias de --danger-color.",
+      "shadow-sm": "Ombre d'élévation légère.",
+      "shadow-md": "Ombre d'élévation moyenne (popovers, menus).",
+      "shadow-lg": "Ombre d'élévation forte (dialogues, superpositions).",
+      "radius-sm": "Petit rayon d'angle.",
+      "radius-md": "Rayon d'angle moyen.",
+      "radius-lg": "Grand rayon d'angle."
+    },
+    "ComponentThemeProps": {
+      "btn-bg-color-success": "Remplace le fond des boutons success.",
+      "btn-bg-color-danger": "Remplace le fond des boutons error / danger.",
+      "btn-bg-color-warning": "Remplace le fond des boutons warning.",
+      "btn-bg-color-info": "Remplace le fond des boutons info.",
+      "btn-bg-color-hover": "Remplace le fond des boutons principaux au survol.",
+      "btn-bg-color-active": "Remplace le fond des boutons principaux à l'état actif.",
+      "avatar-bg-color-info": "Fond des avatars info.",
+      "avatar-bg-color-success": "Fond des avatars success.",
+      "avatar-bg-color-danger": "Fond des avatars danger.",
+      "avatar-bg-color-warning": "Fond des avatars warning.",
+      "card-bg-color": "Fond des cartes (par défaut --surface-color).",
+      "card-bg-color-content": "Fond du contenu des cartes (par défaut --surface-color).",
+      "card-border-color": "Bordure des cartes (par défaut --border-color)."
+    }
+  }
+}

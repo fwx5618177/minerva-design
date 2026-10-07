@@ -1,0 +1,59 @@
+{
+  "title": "Web Components",
+  "description": "<minerva-button> : un élément personnalisé indépendant du framework, construit avec Lit, utilisable en HTML pur, avec React, Vue ou tout autre framework.",
+  "what": {
+    "title": "De quoi s'agit-il",
+    "p1": "@minerva/lib-web-components fournit des composants Minerva sous forme d'éléments personnalisés standard. Importer le paquet une fois les enregistre auprès du navigateur ; ils se comportent ensuite comme des balises HTML natives dans n'importe quelle page ou framework.",
+    "p2": "Les éléments sont rendus dans une shadow root : leurs styles internes ne débordent pas sur votre page (et ne peuvent pas être cassés par elle). Ils se configurent avec des attributs HTML et émettent des événements DOM classiques comme click."
+  },
+  "html": {
+    "title": "Utilisation en HTML",
+    "text": "Chargez le paquet comme module ES (via votre bundler), puis utilisez les balises n'importe où dans le document. Les attributs booléens comme loading ou disabled sont actifs dès qu'ils sont présents."
+  },
+  "react": {
+    "title": "Utilisation avec React",
+    "text": "Importez le paquet une fois pour son effet de bord et référencez les typages fournis pour vérifier les attributs dans le JSX. onClick et les autres événements DOM fonctionnent normalement ; utilisez aria-label (avec un tiret) pour le nom accessible.",
+    "booleans": "React 18 définit les attributs des éléments personnalisés sous forme de chaînes : loading={false} devient loading=\"false\", qui compte toujours comme présent. Passez true ou undefined (par ex. loading={saving || undefined}) pour basculer un attribut booléen. React 19 les définit comme propriétés et accepte des booléens simples."
+  },
+  "other": {
+    "title": "Vue et autres frameworks",
+    "text": "Tout framework capable de rendre du HTML peut utiliser ces éléments. Avec Vue, déclarez les balises minerva-* comme éléments personnalisés pour que le compilateur ne cherche pas à les résoudre comme composants Vue, et liez null pour retirer un attribut booléen. Angular nécessite CUSTOM_ELEMENTS_SCHEMA ; Svelte, Solid et Lit fonctionnent sans configuration."
+  },
+  "theming": {
+    "title": "Thème",
+    "text": "Le bouton lit ses propres propriétés personnalisées CSS (--primary-color, --primary-hover, --error-color, ...) dont les valeurs par défaut sont déclarées sur l'élément : il ne suit donc pas automatiquement le thème de ConfigProvider de lib-core. Définissez ces variables sur l'élément, ou dans une règle qui le cible, pour l'adapter à votre design :"
+  },
+  "a11y": {
+    "title": "Accessibilité",
+    "text": "L'élément rend un <button> natif dans sa shadow root : il est focalisable et utilisable au clavier. L'attribut aria-label est transmis à ce bouton ; renseignez-le pour les boutons composés uniquement d'une icône. Pendant le chargement, le bouton définit aria-busy et ignore les clics ; un bouton désactivé n'est pas focalisable."
+  },
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Importez le paquet une fois, puis utilisez <minerva-button> comme n'importe quel élément. Le onClick de React fonctionne comme sur les éléments natifs."
+    },
+    "variants": {
+      "title": "Variantes",
+      "description": "Neuf variantes : primary, secondary, success, warning, error, info, ghost, retry et back."
+    },
+    "sizes-shapes": {
+      "title": "Tailles et formes",
+      "description": "Quatre tailles (de tiny à large) et quatre formes. Les boutons ronds composés d'une icône ont besoin d'un aria-label."
+    },
+    "states": {
+      "title": "États",
+      "description": "loading affiche un indicateur et bloque les clics ; disabled et active sont aussi des attributs booléens. Avec React 18, passez true ou undefined, jamais false."
+    }
+  },
+  "api": {
+    "wc_ButtonProps": {
+      "variant": "Style visuel du bouton (reflété dans l'attribut variant).",
+      "size": "Taille du bouton.",
+      "shape": "Forme des angles du bouton.",
+      "disabled": "Désactive le bouton (attribut booléen).",
+      "loading": "Affiche un indicateur à la place du contenu et bloque les clics ; définit aria-busy.",
+      "active": "Affiche le bouton dans son style enfoncé / actif.",
+      "ariaLabel": "Libellé accessible transmis au <button> interne ; à définir avec l'attribut aria-label. Obligatoire pour les boutons composés uniquement d'une icône."
+    }
+  }
+}

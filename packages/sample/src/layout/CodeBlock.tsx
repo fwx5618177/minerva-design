@@ -1,103 +1,93 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IoCheckmarkOutline, IoCopyOutline } from "react-icons/io5";
-import Prism from "prismjs";
-
-// 基础主题
 import "prismjs/themes/prism-tomorrow.css";
-
-// 添加更多语言支持
-import "prismjs/components/prism-bash";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-tsx";
-import "prismjs/components/prism-scss";
-import "prismjs/components/prism-css";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-yaml";
-import "prismjs/components/prism-docker";
-import "prismjs/components/prism-shell-session";
-
 import styles from "@styles/layout/code-block.module.scss";
+import { highlight } from "./prism";
 
 interface CodeBlockProps {
   code: string;
+  /** Prism language id or alias: tsx, typescript, bash, json, scss, html… */
   language?: string;
-  showLineNumbers?: boolean;
-  live?: boolean;
+  /** Optional label shown in the header instead of the language */
+  title?: string;
 }
+
+const formatCode = (code: string) => code.replace(/^\n+|\s+$/g, "");
 
 const CodeBlock: React.FC<CodeBlockProps> = ({
   code,
-  language = "typescript",
-  showLineNumbers = true,
-  live = false,
+  language = "tsx",
+  title,
 }) => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
-  const [preview, setPreview] = useState<React.ReactNode>(null);
-  const codeRef = useRef<HTMLElement>(null);
+  const [html, setHtml] = useState<string>();
+  const source = formatCode(code);
 
   useEffect(() => {
-    if (codeRef.current) {
-      Prism.highlightElement(codeRef.current);
-    }
-  }, [code, language]);
+    let cancelled = false;
+    setHtml(undefined);
+    highlight(source, language)
+      .then((result) => {
+        if (!cancelled) setHtml(result);
+      })
+      .catch(() => {
+        // fall back to plain text
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [source, language]);
 
   useEffect(() => {
-    if (live && language === "jsx") {
-      try {
-        const Component = new Function("React", `return ${code}`).call(
-          null,
-          React,
-        ).default;
-        setPreview(<Component />);
-      } catch (error) {
-        console.error("Live preview error:", error);
-      }
-    }
-  }, [code, live, language]);
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(source);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error("Failed to copy:", error);
+    } catch {
+      // clipboard may be unavailable (insecure context); nothing to do
     }
-  };
-
-  const formatCode = (code: string) => {
-    return code.trim().replace(/\n$/, "");
   };
 
   return (
     <div className={styles.codeBlock}>
       <div className={styles.header}>
-        <span className={styles.language}>{language}</span>
-        <button className={styles.copyButton} onClick={handleCopy}>
+        <span className={styles.language}>{title ?? language}</span>
+        <button
+          type="button"
+          className={styles.copyButton}
+          onClick={handleCopy}
+          aria-label={copied ? t("doc.copied") : t("doc.copy")}
+          title={copied ? t("doc.copied") : t("doc.copy")}
+        >
           {copied ? (
-            <IoCheckmarkOutline className={styles.icon} />
+            <IoCheckmarkOutline className={styles.icon} aria-hidden />
           ) : (
-            <IoCopyOutline className={styles.icon} />
+            <IoCopyOutline className={styles.icon} aria-hidden />
           )}
         </button>
+        <span className={styles.srOnly} aria-live="polite">
+          {copied ? t("doc.copied") : ""}
+        </span>
       </div>
       <div className={styles.codeWrapper}>
-        <pre
-          className={`${styles.pre} ${showLineNumbers ? "line-numbers" : ""}`}
-        >
-          <code
-            ref={codeRef}
-            className={`language-${language}`}
-            style={{ whiteSpace: "pre" }}
-          >
-            {formatCode(code)}
-          </code>
+        <pre className={`${styles.pre} language-${language}`} tabIndex={0}>
+          {html !== undefined ? (
+            <code
+              className={`language-${language}`}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          ) : (
+            <code className={`language-${language}`}>{source}</code>
+          )}
         </pre>
       </div>
-      {live && preview && <div className={styles.preview}>{preview}</div>}
     </div>
   );
 };

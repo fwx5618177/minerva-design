@@ -1,0 +1,75 @@
+{
+  "title": "Cascader カスケード選択",
+  "description": "階層化された選択肢から段階的に値を選択します（例：国 / 地域 / 都市）。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "選択肢をクリックすると次の階層が開き、末端の項目を選ぶと選択が確定します。"
+    },
+    "default-value": {
+      "title": "初期値",
+      "description": "defaultValue には各階層の値を並べたパスを指定します。"
+    },
+    "controlled": {
+      "title": "制御モード",
+      "description": "value を渡して onChange で更新します。クリア時は空配列で onChange が呼ばれます。"
+    },
+    "hover": {
+      "title": "ホバーで展開",
+      "description": "expandTrigger=\"hover\" では、親項目にポインターを重ねるとサブメニューが開きます。"
+    },
+    "search": {
+      "title": "検索",
+      "description": "showSearch で入力によりすべてのパスを絞り込めます。filter で一致条件をカスタマイズします。"
+    },
+    "display-render": {
+      "title": "表示のカスタマイズ",
+      "description": "displayRender で入力欄の表示テキストを整形します。この例では最後の階層のみを表示し、allowClear を無効にしています。"
+    },
+    "disabled": {
+      "title": "無効状態",
+      "description": "option.disabled で個別の項目を、disabled でコンポーネント全体を無効にします。"
+    },
+    "lazy-load": {
+      "title": "遅延読み込み",
+      "description": "children がなく isLeaf でもない項目では loadData が呼ばれます。取得中は loading を設定し、取得後に children を options に追加します。"
+    },
+    "custom-option": {
+      "title": "項目と階層のカスタマイズ",
+      "description": "optionRender で階層ごとに項目を描画し、maxLevel で深さを制限し、dropdownStyle / optionStyle でメニューを調整します。"
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "入力欄のラベル",
+      "name": "入力欄の name",
+      "options": "選択肢のツリー",
+      "value": "選択された値のパス（制御）",
+      "defaultValue": "初期選択の値のパス（非制御）",
+      "onChange": "末端の項目が選択されたとき、または値がクリアされたときに呼び出されます",
+      "displayRender": "入力欄の表示テキストを整形します。既定ではラベルを \" / \" で連結します",
+      "disabled": "コンポーネントを無効にします",
+      "placeholder": "入力欄のプレースホルダー",
+      "allowClear": "値が選択されているときにクリアボタンを表示します",
+      "expandTrigger": "サブメニューの展開方法",
+      "className": "追加のクラス名",
+      "showSearch": "入力してすべてのパスを検索できるようにします",
+      "filter": "カスタム検索条件。既定ではラベルに入力を含むパスが一致します",
+      "loadData": "children がなく isLeaf でない項目の子を遅延読み込みします。options は自分で更新してください",
+      "dropdownClassName": "ドロップダウンの追加クラス名",
+      "optionRender": "項目のカスタム描画",
+      "width": "コンポーネントの幅",
+      "maxLevel": "表示する最大階層数",
+      "dropdownStyle": "ドロップダウンのインラインスタイル",
+      "optionStyle": "各項目のインラインスタイル"
+    },
+    "CascaderOption": {
+      "value": "項目の値（同じ階層内で一意）",
+      "label": "項目に表示するテキスト",
+      "children": "次の階層の項目",
+      "disabled": "項目を選択できないようにします",
+      "isLeaf": "loadData 使用時に末端項目（読み込む子がない）であることを示します",
+      "loading": "子の読み込み中にインジケーターを表示します"
+    }
+  }
+}

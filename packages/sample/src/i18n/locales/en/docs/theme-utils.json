@@ -1,0 +1,100 @@
+{
+  "title": "Theme utilities",
+  "description": "Functions and theme objects to resolve, apply and inspect themes outside of ConfigProvider.",
+  "reference": {
+    "title": "Reference",
+    "text": "ConfigProvider and useAutoTheme are built on these helpers. Use them to apply a theme without React, to theme a single element, or to read token values.",
+    "name": "Name",
+    "signature": "Signature",
+    "applyThemeStyles": "Resolves a theme and writes it as CSS variables on <html> (global). Variables of the previous theme that the new one doesn't define are removed.",
+    "generateCSSVariables": "Writes every token of a theme object as --<token> on the given style declaration (e.g. element.style) and removes stale ones. Use it to theme one element.",
+    "resolveTheme": "Turns any accepted theme value into a theme object: \"auto\" and { light, dark } pairs use systemTheme, names are looked up in themes, objects are returned as is. Throws for unknown names. Pure.",
+    "getSystemTheme": "Returns the operating system color scheme from prefers-color-scheme; \"light\" when matchMedia is unavailable (SSR, tests).",
+    "isBilingualTheme": "Type guard: true for { light, dark } pairs of theme objects.",
+    "themes": "The built-in themes keyed by the names accepted by the theme prop.",
+    "builtIns": "The built-in theme objects, also exported individually; spread them to create custom themes."
+  },
+  "usage": {
+    "apply": "Applying a theme globally",
+    "applyText": "applyThemeStyles is what ConfigProvider calls. Use it in non-React code, or to apply the theme before the first render to avoid a flash of the default colors.",
+    "generate": "Theming one element",
+    "generateText": "generateCSSVariables accepts any CSSStyleDeclaration, so the tokens can be scoped to an element: its descendants inherit them.",
+    "resolve": "Resolving themes",
+    "resolveText": "resolveTheme, isBilingualTheme and getSystemTheme have no side effects; use them to compute token values, e.g. to style a canvas or a chart."
+  },
+  "demos": {
+    "theme-swatches": {
+      "title": "Built-in themes",
+      "description": "Reads token values from the themes map and renders them as swatches. No CSS variable is written."
+    },
+    "resolve-theme": {
+      "title": "Resolving a theme value",
+      "description": "How resolveTheme resolves each kind of theme value for a given system scheme, and what isBilingualTheme / getSystemTheme return."
+    },
+    "scoped-preview": {
+      "title": "Previewing a theme in an element",
+      "description": "generateCSSVariables writes a resolved theme on a container's style, so only the components inside it change."
+    }
+  },
+  "api": {
+    "ThemeProps": {
+      "primary-color": "Brand / accent color: primary buttons, active states, focus rings.",
+      "secondary-color": "Neutral accent used by secondary variants.",
+      "success-color": "Positive status color (success variants).",
+      "danger-color": "Destructive / error status color (danger and error variants).",
+      "warning-color": "Warning status color.",
+      "info-color": "Informational status color.",
+      "light-color": "A light neutral (legacy; light variants).",
+      "dark-color": "A dark neutral (legacy; dark variants).",
+      "background-color": "Page background. Default for --surface-color.",
+      "foreground-color": "Main text color. Default for --text-color.",
+      "border-color": "Default border / divider color.",
+      "text-gray": "Secondary, low-emphasis text (should keep at least 4.5:1 contrast on the background).",
+      "primary-gradient-start": "Start color of the primary gradient.",
+      "primary-gradient-end": "End color of the primary gradient.",
+      "secondary-gradient-start": "Start color of the secondary gradient.",
+      "secondary-gradient-end": "End color of the secondary gradient.",
+      "highlight-color": "Highlight / mark color.",
+      "shadow-color": "Base shadow color used by --shadow-sm, --shadow-md and --shadow-lg.",
+      "muted-color": "Muted UI color (placeholders, icons, inactive controls).",
+      "link-color": "Link color.",
+      "link-hover-color": "Link color on hover.",
+      "link-active-color": "Link color while pressed.",
+      "link-visited-color": "Color of visited links."
+    },
+    "SemanticThemeProps": {
+      "surface-color": "Background of cards, inputs and other component surfaces.",
+      "surface-muted-color": "Hovered rows, disabled controls, tracks.",
+      "surface-elevated-color": "Popovers, menus, dropdowns, tooltips.",
+      "overlay-color": "Backdrop / modal overlay.",
+      "border-strong-color": "Higher-contrast border (inputs, hovered borders).",
+      "text-color": "Main text color (defaults to --foreground-color).",
+      "text-secondary-color": "Secondary text (descriptions, helper text).",
+      "text-disabled-color": "Disabled text.",
+      "text-inverse-color": "Text drawn on filled role backgrounds (e.g. a primary button).",
+      "focus-ring-color": "Focus outline / ring color.",
+      "error-color": "Alias of --danger-color.",
+      "shadow-sm": "Small elevation shadow.",
+      "shadow-md": "Medium elevation shadow (popovers, menus).",
+      "shadow-lg": "Large elevation shadow (dialogs, overlays).",
+      "radius-sm": "Small corner radius.",
+      "radius-md": "Medium corner radius.",
+      "radius-lg": "Large corner radius."
+    },
+    "ComponentThemeProps": {
+      "btn-bg-color-success": "Overrides the background of success buttons.",
+      "btn-bg-color-danger": "Overrides the background of error / danger buttons.",
+      "btn-bg-color-warning": "Overrides the background of warning buttons.",
+      "btn-bg-color-info": "Overrides the background of info buttons.",
+      "btn-bg-color-hover": "Overrides the hover background of primary buttons.",
+      "btn-bg-color-active": "Overrides the active background of primary buttons.",
+      "avatar-bg-color-info": "Background of info avatars.",
+      "avatar-bg-color-success": "Background of success avatars.",
+      "avatar-bg-color-danger": "Background of danger avatars.",
+      "avatar-bg-color-warning": "Background of warning avatars.",
+      "card-bg-color": "Card background (defaults to --surface-color).",
+      "card-bg-color-content": "Card content background (defaults to --surface-color).",
+      "card-border-color": "Card border (defaults to --border-color)."
+    }
+  }
+}

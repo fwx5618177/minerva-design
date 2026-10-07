@@ -1,10 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { IoLanguageOutline } from "react-icons/io5";
+import { changeLanguage, type Language } from "@i18n/config";
 import styles from "@styles/components/language-switcher.module.scss";
 
 const LanguageSwitcher: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const languages = [
     { code: "en", name: "English" },
@@ -14,14 +15,15 @@ const LanguageSwitcher: React.FC = () => {
   ];
 
   const handleLanguageChange = (languageCode: string) => {
-    i18n.changeLanguage(languageCode);
+    void changeLanguage(languageCode as Language);
   };
 
   return (
     <div className={styles.languageSwitcher}>
-      <IoLanguageOutline className={styles.icon} />
+      <IoLanguageOutline className={styles.icon} aria-hidden />
       <select
-        value={i18n.language}
+        aria-label={t("header.language")}
+        value={i18n.resolvedLanguage ?? i18n.language}
         onChange={(e) => handleLanguageChange(e.target.value)}
         className={styles.select}
       >

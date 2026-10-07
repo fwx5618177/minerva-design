@@ -17,9 +17,30 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 1. Fork the repo and create your branch from `main`.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+4. Ensure the test suite passes (`pnpm test`) and the build works (`pnpm build`).
+5. Make sure your code lints, type-checks and is formatted (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`).
+6. If your change affects a published package (`@minerva/lib-core`, `@minerva/lib-web-components`), add a changeset with `pnpm changeset`.
+7. Issue that pull request!
+
+Run all checks locally before pushing — the only GitHub workflow builds and deploys the docs site, it does not run tests.
+
+## Development setup
+
+- Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 (`corepack enable` or `npm i -g pnpm`)
+- `pnpm install`, then `pnpm dev` to build the libraries and start the docs site at http://127.0.0.1:3000/minerva/
+- Documentation pages live in `packages/sample/src/docs/pages/<page>/` (one file per live demo under `demos/`), their strings in `packages/sample/src/i18n/locales/<lng>/docs/<page>.json` (en, zh, ja, fr — keep all four in sync). API tables are generated from each component's `types.ts`: document props with JSDoc and `@default`, then run `pnpm --filter @minerva/sample gen:api`. `pnpm test` fails if a public export is undocumented, a locale is missing a key, or the generated API file is stale.
+
+## Releasing (maintainers)
+
+Releases are published manually with [Changesets](https://github.com/changesets/changesets):
+
+```bash
+pnpm version-packages   # apply pending changesets: bump versions + write CHANGELOG.md
+pnpm install            # refresh the lockfile if internal versions changed
+git commit -am "chore: release" && git push
+pnpm release            # build lib-core + lib-web-components and run `changeset publish` (requires npm login)
+git push --follow-tags
+```
 
 ## Any contributions you make will be under the MIT Software License
 

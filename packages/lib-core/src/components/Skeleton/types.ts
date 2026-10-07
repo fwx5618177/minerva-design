@@ -1,45 +1,69 @@
 export type SkeletonVariant =
-  | "text"
-  | "circular"
-  | "rectangular"
-  | "rounded"
-  | "button"
-  | "image"
-  | "card";
+  "text" | "circular" | "rectangular" | "rounded" | "button" | "image" | "card";
 
 export type SkeletonAnimation = "pulse" | "wave" | "false";
 
 export interface SkeletonProps {
-  /** 骨架屏变体类型 */
+  /**
+   * Shape of the placeholder
+   * @default "text"
+   */
   variant?: SkeletonVariant;
-  /** 动画效果 */
+  /**
+   * Loading animation; "false" disables it
+   * @default "pulse"
+   */
   animation?: SkeletonAnimation;
-  /** 宽度 */
+  /** Width of each line (numbers are pixels) */
   width?: number | string;
-  /** 高度 */
+  /** Height of each line (numbers are pixels) */
   height?: number | string;
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 是否显示子元素 */
+  /** Real content, rendered once loading is false */
   children?: React.ReactNode;
-  /** 是否加载完成 */
+  /**
+   * Shows the placeholder; set to false to render children
+   * @default true
+   */
   loading?: boolean;
-  /** 圆角大小 */
+  /** Custom corner radius of each line */
   borderRadius?: number | string;
-  /** 自定义样式 */
+  /** Inline styles applied to each line */
   style?: React.CSSProperties;
-  /** 行数 */
+  /**
+   * Number of lines to render
+   * @default 1
+   */
   lines?: number;
-  /** 是否显示头像 */
+  /**
+   * Shows an avatar placeholder
+   * @default false
+   */
   avatar?: boolean;
-  /** 头像大小 */
+  /**
+   * Avatar size (numbers are pixels)
+   * @default 40
+   */
   avatarSize?: number | string;
-  /** 头像形状 */
+  /**
+   * Avatar shape
+   * @default "circle"
+   */
   avatarShape?: "circle" | "square";
-  /** 是否激活交互态 */
+  /**
+   * Highlights the card variant as active
+   * @default false
+   */
   active?: boolean;
-  /** 是否显示段落 */
+  /**
+   * Shows a paragraph placeholder (replaces the lines)
+   * @default false
+   */
   paragraph?: boolean;
-  /** 是否显示标题 */
+  /**
+   * Shows a title placeholder (replaces the lines)
+   * @default false
+   */
   title?: boolean;
 }

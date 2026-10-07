@@ -1,9 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { IoLayersOutline } from "react-icons/io5";
 import styles from "@styles/layout/sidebar.module.scss";
 import { menuConfig } from "@router/routes";
-import { IoLayersOutline } from "react-icons/io5";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -13,46 +13,48 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
 
-  const renderNavSection = (
-    section: keyof typeof menuConfig,
-    titleKey: string,
-  ) => (
-    <div className={styles.section}>
-      <div className={styles.title}>{t(titleKey)}</div>
-      <div className={styles.list}>
-        {menuConfig[section].map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `${styles.item} ${isActive ? styles.active : ""}`
-            }
-            onClick={onClose}
-          >
-            <span className={styles.itemIcon}>{item.icon}</span>
-            <span className={styles.text}>{t(item.translationKey)}</span>
-          </NavLink>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
-    <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+    <aside
+      id="docs-sidebar"
+      className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}
+    >
       <div className={styles.header}>
         <div className={styles.logo}>
-          <IoLayersOutline className={styles.icon} />
+          <IoLayersOutline className={styles.icon} aria-hidden />
           <span>Minerva UI</span>
         </div>
       </div>
 
-      <nav className={styles.nav}>
-        {renderNavSection("gettingStarted", "components.menu.getting_started")}
-        {renderNavSection("inputs", "components.menu.inputs")}
-        {renderNavSection("dataDisplay", "components.menu.data_display")}
-        {renderNavSection("feedback", "components.menu.feedback")}
-        {renderNavSection("navigation", "components.menu.navigation")}
-        {renderNavSection("webComponents", "components.menu.web_components")}
+      <nav className={styles.nav} aria-label={t("nav.label")}>
+        {menuConfig
+          .filter((group) => group.items.length > 0)
+          .map((group) => (
+            <div className={styles.section} key={group.category}>
+              <h2 className={styles.title} id={`nav-${group.category}`}>
+                {t(group.translationKey)}
+              </h2>
+              <ul
+                className={styles.list}
+                aria-labelledby={`nav-${group.category}`}
+              >
+                {group.items.map((item) => (
+                  <li key={item.path}>
+                    <NavLink
+                      to={item.path}
+                      className={({ isActive }) =>
+                        `${styles.item} ${isActive ? styles.active : ""}`
+                      }
+                      onClick={onClose}
+                    >
+                      <span className={styles.text}>
+                        {t(item.translationKey)}
+                      </span>
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
       </nav>
     </aside>
   );

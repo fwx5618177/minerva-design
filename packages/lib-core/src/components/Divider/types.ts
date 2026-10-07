@@ -3,26 +3,44 @@ export type DividerOrientation = "horizontal" | "vertical";
 export type DividerTextAlign = "left" | "center" | "right";
 
 export interface DividerProps {
-  /** 分割线的样式变体 */
+  /**
+   * Line style
+   * @default "solid"
+   */
   variant?: DividerVariant;
-  /** 分割线方向 */
+  /**
+   * Divider direction
+   * @default "horizontal"
+   */
   orientation?: DividerOrientation;
-  /** 分割线颜色 */
+  /** Line color */
   color?: string;
-  /** 分割线粗细 */
+  /**
+   * Line thickness in pixels
+   * @default 1
+   */
   thickness?: number;
-  /** 分割线长度(垂直时为高度) */
+  /** Length of the line (width when horizontal, height when vertical) */
   length?: number | string;
-  /** 分割线两端间距 */
+  /**
+   * Margin around the divider in pixels (top/bottom when horizontal, left/right when vertical)
+   * @default 16
+   */
   spacing?: number;
-  /** 是否带文字 */
+  /** Optional text rendered inside a horizontal divider */
   children?: React.ReactNode;
-  /** 文字对齐方式 */
+  /**
+   * Position of the text
+   * @default "center"
+   */
   textAlign?: DividerTextAlign;
-  /** 是否带投影 */
+  /**
+   * Adds a subtle shadow
+   * @default false
+   */
   elevation?: boolean;
-  /** 自定义类名 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: React.CSSProperties;
 }

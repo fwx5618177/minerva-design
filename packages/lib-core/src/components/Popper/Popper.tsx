@@ -7,8 +7,26 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { POPPER_SIZE_CONFIG } from "./constants";
-import type { PopperProps, PopperPlacement } from "./types";
+import type {
+  PopperProps,
+  PopperPlacement,
+  PopperOffset,
+  PopperAnimation,
+  PopperCustomStyle,
+} from "./types";
 import styles from "./popper.module.scss";
+
+/**
+ * Stable default prop values. Hoisted to module scope so that omitting these
+ * props does not create a new object every render (which would invalidate the
+ * memos/effects that depend on them).
+ */
+const DEFAULT_OFFSET: Readonly<PopperOffset> = Object.freeze({ x: 0, y: 8 });
+const DEFAULT_ANIMATION: Readonly<PopperAnimation> = Object.freeze({
+  duration: 200,
+  easing: "ease",
+});
+const DEFAULT_POPPER_STYLE: Readonly<PopperCustomStyle> = Object.freeze({});
 
 /**
  * Position calculation map for different placements
@@ -72,7 +90,9 @@ const POSITION_MAP: Record<
 };
 
 /**
- * Arrow component for the Popper
+ * Arrow component for the Popper.
+ * Rendered as a rotated square sitting on the edge facing the anchor element;
+ * it inherits the popper's background / border colors unless overridden.
  */
 const PopperArrow = ({
   placement,
@@ -80,15 +100,14 @@ const PopperArrow = ({
 }: {
   placement: PopperPlacement;
   style?: React.CSSProperties;
-}) => {
-  return null;
-  // TODO: 箭头, 需要修复
-  return (
-    <div className={styles.popperArrow} data-placement={placement}>
-      <div className={styles.popperArrowInner} style={style} />
-    </div>
-  );
-};
+}) => (
+  <span
+    className={styles.popperArrow}
+    data-placement={placement}
+    style={style}
+    aria-hidden="true"
+  />
+);
 
 /**
  * Popper Component
@@ -123,13 +142,13 @@ const Popper: React.FC<PopperProps> = ({
   variant = "default",
   type = "default",
   size = "auto",
-  offset = { x: 0, y: 8 },
-  animation = { duration: 200, easing: "ease" },
+  offset = DEFAULT_OFFSET,
+  animation = DEFAULT_ANIMATION,
   arrow = false,
   zIndex = 1000,
   onClickAway,
   className = "",
-  popperStyle = {},
+  popperStyle = DEFAULT_POPPER_STYLE,
   tabIndex = 0,
   ariaLabel,
   multiline = false,
@@ -195,10 +214,13 @@ const Popper: React.FC<PopperProps> = ({
         finalTop = viewportHeight - popperRect.height;
       }
 
-      setPosition({
-        top: finalTop + window.scrollY,
-        left: finalLeft + window.scrollX,
-      });
+      const top = finalTop + window.scrollY;
+      const left = finalLeft + window.scrollX;
+      // Bail out when unchanged so callers passing an inline `offset` object
+      // cannot trigger an endless measure/re-render loop.
+      setPosition((prev) =>
+        prev.top === top && prev.left === left ? prev : { top, left },
+      );
     });
   }, [anchorEl, getPosition, offset]);
 
@@ -268,27 +290,19 @@ const Popper: React.FC<PopperProps> = ({
         visibility ${animation.duration}ms ${animation.easing},
         transform ${animation.duration}ms ${animation.easing}
       `,
-      ...(multiline
-        ? {
-            overflowY: scrollable ? "auto" : "visible",
-            overflowX: "hidden",
-          }
-        : {
-            overflowY: "hidden",
-            overflowX: scrollable ? "auto" : "hidden",
-          }),
       ...(size === "auto"
         ? {
             width: width || "auto",
             height: height || "auto",
-            overflowX: scrollable ? "auto" : "hidden",
-            overflowY: scrollable ? "auto" : "visible",
           }
         : {
             width: width || POPPER_SIZE_CONFIG[size].width,
             height: height || POPPER_SIZE_CONFIG[size].height,
           }),
       ...popperStyle,
+      // Keep the outer box unclipped so the arrow can overflow its edge;
+      // scrolling happens on the content wrapper instead.
+      ...(arrow ? { overflow: "visible" } : {}),
     }),
     [
       position.top,
@@ -300,16 +314,39 @@ const Popper: React.FC<PopperProps> = ({
       width,
       height,
       size,
-      scrollable,
-      multiline,
+      arrow,
     ],
+  );
+
+  // Overflow handling lives on the content so it never clips the arrow
+  const contentStyles: React.CSSProperties = useMemo(
+    () => ({
+      maxWidth: "inherit",
+      maxHeight: "inherit",
+      height: "100%",
+      ...(size === "auto"
+        ? {
+            overflowX: scrollable ? "auto" : "hidden",
+            overflowY: scrollable ? "auto" : "visible",
+          }
+        : multiline
+          ? {
+              overflowY: scrollable ? "auto" : "visible",
+              overflowX: "hidden",
+            }
+          : {
+              overflowY: "hidden",
+              overflowX: scrollable ? "auto" : "hidden",
+            }),
+    }),
+    [size, scrollable, multiline],
   );
 
   // Arrow styles
   const arrowStyle = useMemo(
     () => ({
-      backgroundColor: popperStyle?.backgroundColor || "",
-      borderColor: popperStyle?.borderColor || "",
+      backgroundColor: popperStyle.backgroundColor,
+      borderColor: popperStyle.borderColor,
     }),
     [popperStyle.backgroundColor, popperStyle.borderColor],
   );
@@ -396,7 +433,9 @@ const Popper: React.FC<PopperProps> = ({
       aria-hidden={!visible}
       aria-label={ariaLabel}
     >
-      <div className={styles.popperContent}>{children}</div>
+      <div className={styles.popperContent} style={contentStyles}>
+        {children}
+      </div>
       {arrow && <PopperArrow placement={placement} style={arrowStyle} />}
     </div>,
 

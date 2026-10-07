@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .searchButton {
   border: none;
@@ -17,9 +17,9 @@
   justify-content: center;
   padding: 0.5rem;
   font-size: clamp(0.875rem, 2vw, 1rem); // 使用 clamp 调整字体大小
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #007bff;
-  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--primary-color);
+  color: var(--text-inverse-color);
 
   &.circle {
     border-radius: 50%;
@@ -34,29 +34,33 @@
   }
 
   &.primary {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #0056b3;
+      background-color: var(--btn-bg-color-hover, var(--primary-color-hover));
+    }
+
+    &:active {
+      background-color: var(--btn-bg-color-active, var(--primary-color-active));
     }
   }
 
   &.warning {
-    background-color: #ff9800;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-warning, var(--warning-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #ffb74d;
+      background-color: var(--warning-color-hover);
     }
   }
 
   &.error {
-    background-color: #ff4d4f;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-danger, var(--danger-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #e57373;
+      background-color: var(--danger-color-hover);
     }
 
     &:focus:not(:active) {
@@ -65,30 +69,35 @@
   }
 
   &.success {
-    background-color: #4caf50;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-success, var(--success-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #388e3c;
+      background-color: var(--success-color-hover);
     }
   }
 
   &.info {
-    background-color: #2196f3;
-    color: #ffffff;
+    background-color: var(--btn-bg-color-info, var(--info-color));
+    color: var(--text-inverse-color);
 
     &:hover {
-      background-color: #1976d2;
+      background-color: var(--info-color-hover);
     }
   }
 
   &:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 
   &.loading {
@@ -97,8 +106,8 @@
   }
 
   .loader {
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-top: 2px solid #ffffff;
+    border: 2px solid color-mix(in srgb, currentColor 50%, transparent);
+    border-top: 2px solid currentColor;
     border-radius: 50%;
     width: 1rem;
     height: 1rem;
@@ -115,17 +124,17 @@
   }
 
   &:disabled {
-    background-color: #c0c0c0;
-    color: #666666;
+    background-color: var(--surface-muted-color);
+    color: var(--text-disabled-color);
     cursor: not-allowed;
     opacity: 0.8;
     box-shadow: none;
 
     &:hover {
-      background-color: #a0a0a0;
+      background-color: var(--surface-muted-color);
     }
     .icon {
-      fill: #666666;
+      fill: var(--text-disabled-color);
     }
   }
 
@@ -243,7 +252,7 @@
     }
   }
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 }
 
 // 响应式支持

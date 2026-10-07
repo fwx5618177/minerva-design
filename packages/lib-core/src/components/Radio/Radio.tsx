@@ -1,4 +1,5 @@
 import React, { forwardRef, useContext } from "react";
+import classNames from "classnames";
 import { FaInfoCircle } from "react-icons/fa";
 import styles from "./radio.module.scss";
 import { RadioProps } from "./types";
@@ -39,9 +40,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
       }
     };
 
-    const isChecked = group
-      ? group.value === value
-      : (checked ?? defaultChecked);
+    const isChecked = group ? group.value === value : checked;
     const isDisabled = group ? group.disabled || disabled : disabled;
     const radioName = group ? group.name : name;
     const radioSize = group ? group.size || size : size;
@@ -49,16 +48,16 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
 
     return (
       <div
-        className={`
-          ${styles.radioWrapper} 
-          ${styles[radioSize]}
-          ${styles[type]}
-          ${error ? styles.error : ""}
-          ${className}
-        `}
+        className={classNames(
+          styles.radioWrapper,
+          styles[radioSize],
+          styles[type],
+          error && styles.error,
+          className,
+        )}
       >
         <label
-          className={`${styles.radio} ${isDisabled ? styles.disabled : ""}`}
+          className={classNames(styles.radio, isDisabled && styles.disabled)}
         >
           <input
             type="radio"
@@ -66,6 +65,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             name={radioName}
             value={value}
             checked={isChecked}
+            defaultChecked={group ? undefined : defaultChecked}
             disabled={isDisabled}
             onChange={handleChange}
             required={required}
@@ -86,7 +86,10 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               <span className={styles.errorIcon}>{errorIcon}</span>
             )}
             <span
-              className={`${styles.helperText} ${error ? styles.errorText : ""}`}
+              className={classNames(
+                styles.helperText,
+                error && styles.errorText,
+              )}
             >
               {error ? errorMessage : helperText}
             </span>

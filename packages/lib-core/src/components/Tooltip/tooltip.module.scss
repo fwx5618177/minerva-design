@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .tooltipTrigger {
   display: inline-flex;
@@ -17,12 +17,12 @@
   line-height: 1.5;
   z-index: 1500;
   pointer-events: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   opacity: 0;
   transform: translate3d(0, 0, 0);
   transition: opacity 0.2s ease-in-out;
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 
   &.show {
     opacity: 1;
@@ -45,35 +45,36 @@
   }
 
   // Variants
+  // Intentionally inverted: dark-on-light in light themes, light-on-dark in dark themes.
   &.dark {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: color-mix(in srgb, var(--foreground-color) 90%, var(--background-color));
+    color: var(--background-color);
   }
 
   &.light {
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #e0e0e0;
+    background-color: var(--surface-elevated-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
   }
 
   &.info {
-    background-color: #2196f3;
-    color: #ffffff;
+    background-color: var(--info-color);
+    color: var(--text-inverse-color);
   }
 
   &.success {
-    background-color: #4caf50;
-    color: #ffffff;
+    background-color: var(--success-color);
+    color: var(--text-inverse-color);
   }
 
   &.warning {
-    background-color: #ff9800;
-    color: #ffffff;
+    background-color: var(--warning-color);
+    color: var(--text-inverse-color);
   }
 
   &.error {
-    background-color: #f44336;
-    color: #ffffff;
+    background-color: var(--danger-color);
+    color: var(--text-inverse-color);
   }
 
   // Shapes
@@ -133,29 +134,29 @@
     &[data-placement^="top"] .tooltipArrow {
       bottom: -6px;
       left: calc(50% - 6px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
+      border-right: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
     }
 
     &[data-placement^="bottom"] .tooltipArrow {
       top: -6px;
       left: calc(50% - 6px);
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      border-top: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
+      border-left: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
     }
 
     &[data-placement^="left"] .tooltipArrow {
       right: -6px;
       top: calc(50% - 6px);
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      border-top: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
+      border-right: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
     }
 
     &[data-placement^="right"] .tooltipArrow {
       left: -6px;
       top: calc(50% - 6px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
+      border-left: 1px solid color-mix(in srgb, var(--foreground-color) 10%, transparent);
     }
   }
 }

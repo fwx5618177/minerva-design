@@ -1,39 +1,42 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
-import { resolve } from "path";
+import { fileURLToPath } from "node:url";
+import pkg from "./package.json" with { type: "json" };
+
+// lit (and its subpaths such as lit/decorators.js) is resolved by the consumer.
+const externalDeps = Object.keys(pkg.dependencies ?? {});
+const isExternal = (id: string) =>
+  externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
 export default defineConfig({
-  plugins: [dts()],
+  plugins: [
+    dts({
+      tsconfigPath: "./tsconfig.build.json",
+      entryRoot: "src",
+      // ships src/react.d.ts (optional React JSX typings) as dist/react.d.ts
+      copyDtsFiles: true,
+    }),
+  ],
   build: {
     emptyOutDir: true,
+    outDir: "dist",
+    sourcemap: true,
+    target: "es2021",
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "MinervaWebComponents",
-      fileName: (format) => `minerva-web-components.${format}.js`,
-      formats: ["es", "umd", "cjs"],
+      entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+      formats: ["es", "cjs"],
+      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
     },
-    rollupOptions: {
-      external: ["lit", "lit/decorators.js"],
+    rolldownOptions: {
+      external: isExternal,
       output: {
-        globals: {
-          lit: "lit",
-          "lit/decorators.js": "litDecorators",
-        },
-        entryFileNames: "[name].[format].js",
-        chunkFileNames: "[name].[hash].js",
-        dir: "dist",
         exports: "named",
       },
     },
-    cssCodeSplit: true,
-    outDir: "dist",
-    sourcemap: false,
-    target: "esnext",
   },
-  server: {
-    watch: {
-      usePolling: true,
-      interval: 100,
-    },
+  test: {
+    name: "lib-web-components",
+    environment: "happy-dom",
+    include: ["src/**/*.test.ts"],
   },
 });

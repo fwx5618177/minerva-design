@@ -30,13 +30,13 @@ const SearchButton: React.FC<SearchButtonProps> = ({
   animation = "none", // 默认值为 none
   size = "medium", // 默认值为 medium
   color, // 添加 color 属性
-  iconColor = "#ffffff", // 默认值为白色
+  iconColor = "var(--text-inverse-color)", // text color on the primary fill
   bgColor, // 添加 bgColor 属性
   loading = false, // 添加 loading 属性
   children, // 添加 children 属性
 }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!disabled && onClick) {
+    if (!disabled && !loading && onClick) {
       onClick(event);
     }
   };
@@ -49,9 +49,8 @@ const SearchButton: React.FC<SearchButtonProps> = ({
       className={`${styles.searchButton} ${styles[adjustedShape]} ${styles[variant]} ${styles[size]} ${animation !== "none" ? styles[animation] : ""} ${loading ? styles.loading : ""} ${className}`}
       onClick={handleClick}
       aria-label={ariaLabel}
-      role="button"
-      tabIndex={0}
       disabled={disabled}
+      aria-busy={loading || undefined}
       style={{
         backgroundColor: bgColor,
         color: color,

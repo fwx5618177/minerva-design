@@ -1,0 +1,4549 @@
+{
+  "AlertProps": {
+    "source": "lib-core/src/components/Alert/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "title",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Alert title"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Alert content"
+      },
+      {
+        "name": "variant",
+        "type": "AlertVariant",
+        "required": false,
+        "default": "\"info\"",
+        "description": "Semantic variant, which sets the color and default icon"
+      },
+      {
+        "name": "size",
+        "type": "AlertSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Alert size"
+      },
+      {
+        "name": "type",
+        "type": "AlertType",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Visual style"
+      },
+      {
+        "name": "showIcon",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the variant icon"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom icon, replacing the variant icon"
+      },
+      {
+        "name": "closable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a close button"
+      },
+      {
+        "name": "closeIcon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom close icon"
+      },
+      {
+        "name": "onClose",
+        "type": "(e: React.MouseEvent<HTMLButtonElement>) => void",
+        "required": false,
+        "description": "Called when the close button is clicked"
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Plays an entrance animation"
+      },
+      {
+        "name": "animationName",
+        "type": "\"slideIn\" | \"fadeIn\" | \"bounce\" | \"zoom\"",
+        "required": false,
+        "default": "\"slideIn\"",
+        "description": "Entrance animation name"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "action",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Action area rendered on the right, e.g. buttons"
+      },
+      {
+        "name": "outlined",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a border"
+      },
+      {
+        "name": "filled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the background with the variant color"
+      },
+      {
+        "name": "banner",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Banner mode, suited to page-level notices at the top of a page"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a drop shadow"
+      },
+      {
+        "name": "rounded",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Rounds the corners"
+      },
+      {
+        "name": "borderRadius",
+        "type": "number | string",
+        "required": false,
+        "description": "Custom corner radius"
+      },
+      {
+        "name": "collapsible",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the content be expanded and collapsed (requires a title)"
+      },
+      {
+        "name": "defaultExpanded",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Whether the content is initially expanded"
+      },
+      {
+        "name": "onExpand",
+        "type": "(expanded: boolean) => void",
+        "required": false,
+        "description": "Called when the content is expanded or collapsed"
+      }
+    ]
+  },
+  "AlertSize": {
+    "source": "lib-core/src/components/Alert/types.ts",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "AlertType": {
+    "source": "lib-core/src/components/Alert/types.ts",
+    "kind": "alias",
+    "type": "\"default\" | \"outlined\" | \"filled\""
+  },
+  "AlertVariant": {
+    "source": "lib-core/src/components/Alert/types.ts",
+    "kind": "alias",
+    "type": "\"info\" | \"success\" | \"warning\" | \"error\""
+  },
+  "AutoCompleteInputProps": {
+    "source": "lib-core/src/components/AutoComplete/types.ts",
+    "description": "AutoComplete 输入框属性接口",
+    "kind": "interface",
+    "extends": [
+      "TextFieldProps"
+    ],
+    "props": [
+      {
+        "name": "ref",
+        "type": "React.Ref<HTMLInputElement>",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onKeyDown",
+        "type": "(event: React.KeyboardEvent<HTMLInputElement>) => void",
+        "required": true
+      },
+      {
+        "name": "onFocus",
+        "type": "React.FocusEventHandler<HTMLInputElement>",
+        "required": true
+      },
+      {
+        "name": "onBlur",
+        "type": "React.FocusEventHandler<HTMLInputElement>",
+        "required": true
+      }
+    ]
+  },
+  "AutoCompleteOption": {
+    "source": "lib-core/src/components/AutoComplete/types.ts",
+    "description": "An option of the AutoComplete dropdown",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Text displayed for the option and written to the input when selected"
+      },
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": true,
+        "description": "Unique value of the option"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Prevents the option from being selected"
+      },
+      {
+        "name": "highlight",
+        "type": "boolean",
+        "required": false,
+        "description": "Highlights the option (e.g. as a recommendation)"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon displayed before the label (basic mode)"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Secondary text displayed under the label (basic mode)"
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false,
+        "description": "Free-form group identifier, typically read by groupBy"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the option"
+      }
+    ]
+  },
+  "AutoCompleteProps": {
+    "source": "lib-core/src/components/AutoComplete/types.ts",
+    "description": "Props of the AutoComplete component",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the input"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Label of the input"
+      },
+      {
+        "name": "mode",
+        "type": "\"basic\" | \"custom\"",
+        "required": false,
+        "default": "\"basic\"",
+        "description": "\"basic\" renders icon / label / description; \"custom\" uses renderOption"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Input value (controlled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called when the input text changes (typing or selecting an option)"
+      },
+      {
+        "name": "options",
+        "type": "AutoCompleteOption[]",
+        "required": true,
+        "default": "[]",
+        "description": "Options to suggest"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial input value (uncontrolled)"
+      },
+      {
+        "name": "onSelect",
+        "type": "(option: AutoCompleteOption) => void",
+        "required": false,
+        "description": "Called when an option is selected (mouse or keyboard)"
+      },
+      {
+        "name": "groupBy",
+        "type": "(option: AutoCompleteOption) => string",
+        "required": false,
+        "description": "Returns the group name of an option; options are grouped under headings"
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Allows selecting several options, shown as removable tags"
+      },
+      {
+        "name": "maxTagCount",
+        "type": "number",
+        "required": false,
+        "description": "Maximum number of tags shown in multiple mode; the rest are summarized as \"+N\""
+      },
+      {
+        "name": "renderOption",
+        "type": "(option: AutoCompleteOption) => React.ReactNode",
+        "required": false,
+        "description": "Custom option renderer (used when mode is \"custom\")"
+      },
+      {
+        "name": "renderEmpty",
+        "type": "() => React.ReactNode",
+        "required": false,
+        "description": "Custom content shown when no option matches"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a loading indicator in the dropdown"
+      },
+      {
+        "name": "textFieldProps",
+        "type": "Omit< TextFieldProps, \"value\" | \"onChange\" | \"name\" | \"label\" >",
+        "required": false,
+        "description": "Props forwarded to the underlying TextField"
+      },
+      {
+        "name": "emptyProps",
+        "type": "Omit<EmptyProps, \"children\">",
+        "required": false,
+        "description": "Props forwarded to the default Empty state"
+      },
+      {
+        "name": "popperProps",
+        "type": "Omit<PopperProps, \"anchorEl\" | \"visible\" | \"children\">",
+        "required": false,
+        "description": "Props forwarded to the dropdown Popper"
+      },
+      {
+        "name": "placement",
+        "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+        "required": false,
+        "default": "\"bottom\"",
+        "description": "Dropdown placement"
+      },
+      {
+        "name": "offset",
+        "type": "PopperProps[\"offset\"]",
+        "required": false,
+        "default": "{ x: 0, y: 4 }",
+        "description": "Dropdown offset"
+      },
+      {
+        "name": "dropdownBgColor",
+        "type": "string",
+        "required": false,
+        "description": "Background color of the dropdown"
+      },
+      {
+        "name": "highlightBgColor",
+        "type": "string",
+        "required": false,
+        "description": "Background color of highlighted options"
+      },
+      {
+        "name": "hoverBgColor",
+        "type": "string",
+        "required": false,
+        "description": "Background color of hovered / keyboard-focused options"
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Animates the dropdown when it opens"
+      },
+      {
+        "name": "filterOption",
+        "type": "(inputValue: string, option: AutoCompleteOption) => boolean",
+        "required": false,
+        "description": "Custom filter; by default options whose label contains the input (case-insensitive) are shown"
+      },
+      {
+        "name": "sortOption",
+        "type": "(a: AutoCompleteOption, b: AutoCompleteOption) => number",
+        "required": false,
+        "description": "Compare function used to sort the filtered options"
+      },
+      {
+        "name": "onOptionClick",
+        "type": "(option: AutoCompleteOption) => void",
+        "required": false,
+        "description": "Called when an option is clicked with the mouse"
+      },
+      {
+        "name": "onDropdownVisibleChange",
+        "type": "(visible: boolean) => void",
+        "required": false,
+        "description": "Called when the dropdown opens or closes"
+      }
+    ]
+  },
+  "AvatarGroupProps": {
+    "source": "lib-core/src/components/Avatar/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of additional avatars, shown as a \"+N\" indicator"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Avatar elements"
+      }
+    ]
+  },
+  "AvatarProps": {
+    "source": "lib-core/src/components/Avatar/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "description": "Image URL. When omitted, the first letter of name is shown"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Name of the person; used for the initial, alt text and accessible label"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"square\" | \"rounded\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Avatar shape"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Avatar size"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uses tighter margins for overlapping avatars"
+      }
+    ]
+  },
+  "BadgeProps": {
+    "source": "lib-core/src/components/Badge/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Element the badge is attached to"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name of the badge"
+      },
+      {
+        "name": "variant",
+        "type": "| \"primary\" | \"secondary\" | \"success\" | \"danger\" | \"warning\" | \"error\" | \"info\" | \"light\" | \"dark\"",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color scheme of the badge"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Badge size"
+      },
+      {
+        "name": "content",
+        "type": "string | number",
+        "required": false,
+        "description": "Content displayed inside the badge (count, short text...)"
+      },
+      {
+        "name": "position",
+        "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\"",
+        "required": false,
+        "default": "\"top-right\"",
+        "description": "Corner of the children the badge is placed on"
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders a small dot instead of content"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom text color"
+      },
+      {
+        "name": "borderRadius",
+        "type": "string",
+        "required": false,
+        "description": "Custom border radius (CSS value)"
+      },
+      {
+        "name": "borderWidth",
+        "type": "string",
+        "required": false,
+        "description": "Custom border width (CSS value)"
+      },
+      {
+        "name": "borderColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom border color"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon displayed before the content"
+      }
+    ]
+  },
+  "ButtonProps": {
+    "source": "lib-core/src/components/Button/types.ts",
+    "kind": "interface",
+    "extends": [
+      "Omit< React.ButtonHTMLAttributes<HTMLButtonElement>, \"children\" >"
+    ],
+    "props": [
+      {
+        "name": "onClick",
+        "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+        "required": false,
+        "description": "Called when the button is clicked (not called while disabled)"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Button content"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "variant",
+        "type": "| \"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\" | \"retry\" | \"back\"",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Visual style of the button"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\" | \"xlarge\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label, required when the button only contains an icon"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner and blocks interaction"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders the button in its pressed/active state"
+      },
+      {
+        "name": "shape",
+        "type": "\"square\" | \"rounded\" | \"circle\"",
+        "required": false,
+        "description": "Preset shape of the button"
+      },
+      {
+        "name": "borderRadius",
+        "type": "\"none\" | \"small\" | \"medium\" | \"large\" | \"circle\" | \"square\" | number",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Corner radius: a preset or a number of pixels"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      }
+    ]
+  },
+  "CardContentProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Main content of the card"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Content background color"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Content text color"
+      },
+      {
+        "name": "animation",
+        "type": "\"fadeIn\" | \"slideIn\" | \"zoomIn\"",
+        "required": false,
+        "description": "Entrance animation of the content"
+      }
+    ]
+  },
+  "CardDescriptionProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Secondary text shown below the title"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      }
+    ]
+  },
+  "CardFooterProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Footer content, e.g. actions"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Footer background color"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Footer text color"
+      }
+    ]
+  },
+  "CardHeaderProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Header content, usually CardTitle and CardDescription"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Header background color"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Header text color"
+      }
+    ]
+  },
+  "CardProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Card content, usually CardHeader, CardContent and CardFooter"
+      },
+      {
+        "name": "variant",
+        "type": "\"default\" | \"outlined\" | \"shadow\" | \"elevated\" | \"filled\"",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Visual style of the card"
+      },
+      {
+        "name": "type",
+        "type": "\"default\" | \"noHeader\" | \"noFooter\" | \"noHeaderFooter\"",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Hides the CardHeader and/or CardFooter (noHeader, noFooter, noHeaderFooter)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      }
+    ]
+  },
+  "CardTitleProps": {
+    "source": "lib-core/src/components/Card/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Title text, rendered as an <h3>"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      }
+    ]
+  },
+  "CascaderOption": {
+    "source": "lib-core/src/components/Cascader/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": true,
+        "description": "Value of the option, unique among its siblings"
+      },
+      {
+        "name": "label",
+        "type": "string | number",
+        "required": true,
+        "description": "Text displayed for the option"
+      },
+      {
+        "name": "children",
+        "type": "CascaderOption[]",
+        "required": false,
+        "description": "Options of the next level"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Prevents the option from being selected"
+      },
+      {
+        "name": "isLeaf",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the option as a leaf (no children to load) when using loadData"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows a loading indicator while its children are being loaded"
+      }
+    ]
+  },
+  "CascaderPanelProps": {
+    "source": "lib-core/src/components/Cascader/types.ts",
+    "kind": "interface",
+    "extends": [
+      "Omit< CascaderProps, \"value\" | \"defaultValue\" >"
+    ],
+    "props": [
+      {
+        "name": "activePath",
+        "type": "CascaderOption[]",
+        "required": false,
+        "description": "当前选中的路径"
+      },
+      {
+        "name": "activeLevel",
+        "type": "number",
+        "required": false,
+        "description": "面板展开的层级"
+      },
+      {
+        "name": "onLevelSelect",
+        "type": "(option: CascaderOption, level: number) => void",
+        "required": false,
+        "description": "选择某一级时的回调"
+      },
+      {
+        "name": "maxLevel",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "optionStyle",
+        "type": "React.CSSProperties",
+        "required": false
+      }
+    ]
+  },
+  "CascaderProps": {
+    "source": "lib-core/src/components/Cascader/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Label of the input"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the input"
+      },
+      {
+        "name": "options",
+        "type": "CascaderOption[]",
+        "required": true,
+        "default": "[]",
+        "description": "Option tree"
+      },
+      {
+        "name": "value",
+        "type": "(string | number)[]",
+        "required": false,
+        "description": "Selected path of values (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "(string | number)[]",
+        "required": false,
+        "description": "Initially selected path of values (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "( value: (string | number)[], selectedOptions: CascaderOption[], ) => void",
+        "required": false,
+        "description": "Called when a leaf option is selected or the value is cleared"
+      },
+      {
+        "name": "displayRender",
+        "type": "( labels: string[], selectedOptions: CascaderOption[], ) => string",
+        "required": false,
+        "description": "Formats the text shown in the input; by default labels are joined with \" / \""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the cascader"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "\"Please select\"",
+        "description": "Placeholder of the input"
+      },
+      {
+        "name": "allowClear",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows a clear button when a value is selected"
+      },
+      {
+        "name": "expandTrigger",
+        "type": "\"click\" | \"hover\"",
+        "required": false,
+        "default": "\"click\"",
+        "description": "How sub-menus are expanded"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "showSearch",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Allows typing to search all paths"
+      },
+      {
+        "name": "filter",
+        "type": "(inputValue: string, path: CascaderOption[]) => boolean",
+        "required": false,
+        "description": "Custom search predicate; by default paths whose labels contain the input match"
+      },
+      {
+        "name": "loadData",
+        "type": "(selectedOptions: CascaderOption[]) => void",
+        "required": false,
+        "description": "Loads children lazily for options without children that are not isLeaf; update options yourself"
+      },
+      {
+        "name": "dropdownClassName",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name of the dropdown"
+      },
+      {
+        "name": "optionRender",
+        "type": "(option: CascaderOption, level: number) => ReactNode",
+        "required": false,
+        "description": "Custom option renderer"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "default": "240",
+        "description": "Width of the component"
+      },
+      {
+        "name": "maxLevel",
+        "type": "number",
+        "required": false,
+        "default": "6",
+        "description": "Maximum number of levels shown"
+      },
+      {
+        "name": "dropdownStyle",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the dropdown"
+      },
+      {
+        "name": "optionStyle",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of every option"
+      }
+    ]
+  },
+  "CheckboxProps": {
+    "source": "lib-core/src/components/Checkbox/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Checked state (controlled)"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "description": "Initial checked state (uncontrolled)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the checkbox"
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the indeterminate (partially checked) state"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the input, used in forms"
+      },
+      {
+        "name": "onChange",
+        "type": "( checked: boolean, event: React.ChangeEvent<HTMLInputElement>, ) => void",
+        "required": false,
+        "description": "Called with the new checked state and the change event"
+      },
+      {
+        "name": "shape",
+        "type": "\"square\" | \"circle\" | \"rounded\"",
+        "required": false,
+        "default": "\"square\"",
+        "description": "Box shape"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Checkbox size"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Label text"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "checkmarkColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom checkmark color"
+      },
+      {
+        "name": "boxColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom box background color"
+      },
+      {
+        "name": "boxBorderColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom box border color"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom icon shown when checked (controlled mode only)"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Marks the input as required"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the error state"
+      },
+      {
+        "name": "errorIcon",
+        "type": "React.ReactNode",
+        "required": false,
+        "default": "<FaInfoCircle />",
+        "description": "Icon shown before the helper text in the error state"
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": "Helper or error text shown below the checkbox"
+      },
+      {
+        "name": "labelPlacement",
+        "type": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+        "required": false,
+        "default": "\"end\"",
+        "description": "Position of the label relative to the box"
+      },
+      {
+        "name": "ref",
+        "type": "React.Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the underlying <input> element"
+      }
+    ]
+  },
+  "ChipProps": {
+    "source": "lib-core/src/components/Chip/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Text of the chip"
+      },
+      {
+        "name": "variant",
+        "type": "\"filled\" | \"outlined\" | \"soft\"",
+        "required": false,
+        "default": "\"filled\"",
+        "description": "Visual style"
+      },
+      {
+        "name": "color",
+        "type": "| \"default\" | \"primary\" | \"secondary\" | \"success\" | \"error\" | \"warning\" | \"info\"",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Color scheme"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Chip size"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon displayed before the label"
+      },
+      {
+        "name": "avatar",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Avatar displayed before the label"
+      },
+      {
+        "name": "onDelete",
+        "type": "(e: React.MouseEvent<HTMLButtonElement>) => void",
+        "required": false,
+        "description": "Called when the delete button is clicked; providing it shows the delete button"
+      },
+      {
+        "name": "onClick",
+        "type": "(e: React.MouseEvent<HTMLDivElement>) => void",
+        "required": false,
+        "description": "Called when the chip is clicked (requires clickable)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the chip and hides the delete button"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "deleteIcon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom delete icon"
+      },
+      {
+        "name": "deleteLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Remove {label}\"",
+        "description": "Accessible label for the delete button"
+      },
+      {
+        "name": "clickable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the chip a keyboard-operable button"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner before the label"
+      },
+      {
+        "name": "selected",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the selected state"
+      }
+    ]
+  },
+  "ComponentTheme": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "Partial<ComponentThemeProps> & ThemeProps"
+  },
+  "ComponentThemeProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Optional per-component overrides. Components fall back to the semantic tokens when these are not set.",
+    "kind": "interface",
+    "extends": [
+      "SemanticThemeProps"
+    ],
+    "props": [
+      {
+        "name": "btn-bg-color-success",
+        "type": "string",
+        "required": false,
+        "description": "Overrides the background of `success` buttons."
+      },
+      {
+        "name": "btn-bg-color-danger",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "btn-bg-color-warning",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "btn-bg-color-info",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "btn-bg-color-hover",
+        "type": "string",
+        "required": false,
+        "description": "Overrides the hover background of primary buttons."
+      },
+      {
+        "name": "btn-bg-color-active",
+        "type": "string",
+        "required": false,
+        "description": "Overrides the active background of primary buttons."
+      },
+      {
+        "name": "avatar-bg-color-info",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "avatar-bg-color-success",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "avatar-bg-color-danger",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "avatar-bg-color-warning",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "card-bg-color",
+        "type": "string",
+        "required": false,
+        "description": "Card background (defaults to `--surface-color`)."
+      },
+      {
+        "name": "card-bg-color-content",
+        "type": "string",
+        "required": false,
+        "description": "Card content background (defaults to `--surface-color`)."
+      },
+      {
+        "name": "card-border-color",
+        "type": "string",
+        "required": false,
+        "description": "Card border (defaults to `--border-color`)."
+      }
+    ]
+  },
+  "ConfigContextProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Value of `ConfigContext`, returned by `useConfig()`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "theme",
+        "type": "ConfigProviderThemeProps",
+        "required": false,
+        "description": "Theme as configured (may be \"auto\" or a light/dark pair)"
+      },
+      {
+        "name": "resolvedTheme",
+        "type": "ThemeName | ComponentTheme",
+        "required": false,
+        "description": "Theme that is currently applied after resolving \"auto\" / light-dark pairs"
+      },
+      {
+        "name": "locale",
+        "type": "Locale",
+        "required": false,
+        "description": "Current locale of lib-core's built-in texts"
+      }
+    ]
+  },
+  "ConfigContextProviderProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Props of `ConfigProvider`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "theme",
+        "type": "ConfigProviderThemeProps",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Theme to apply: \"auto\" (follows `prefers-color-scheme`), a built-in theme name, a theme object, or a `{ light, dark }` pair. Applied as CSS variables on the document root."
+      },
+      {
+        "name": "locale",
+        "type": "Locale",
+        "required": false,
+        "default": "{ language: \"en\" }",
+        "description": "Language of lib-core's built-in texts (changes it globally)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Application content"
+      }
+    ]
+  },
+  "ConfigProviderThemeProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "\"auto\" | CustomBilingualTheme | SupportTheme | ThemeMap | DefaultTheme"
+  },
+  "CustomBilingualTheme": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "{ [key in DefaultTheme]: ComponentTheme; }"
+  },
+  "DefaultTheme": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "\"light\" | \"dark\""
+  },
+  "DividerOrientation": {
+    "source": "lib-core/src/components/Divider/types.ts",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
+  "DividerProps": {
+    "source": "lib-core/src/components/Divider/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "variant",
+        "type": "DividerVariant",
+        "required": false,
+        "default": "\"solid\"",
+        "description": "Line style"
+      },
+      {
+        "name": "orientation",
+        "type": "DividerOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Divider direction"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Line color"
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Line thickness in pixels"
+      },
+      {
+        "name": "length",
+        "type": "number | string",
+        "required": false,
+        "description": "Length of the line (width when horizontal, height when vertical)"
+      },
+      {
+        "name": "spacing",
+        "type": "number",
+        "required": false,
+        "default": "16",
+        "description": "Margin around the divider in pixels (top/bottom when horizontal, left/right when vertical)"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Optional text rendered inside a horizontal divider"
+      },
+      {
+        "name": "textAlign",
+        "type": "DividerTextAlign",
+        "required": false,
+        "default": "\"center\"",
+        "description": "Position of the text"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a subtle shadow"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      }
+    ]
+  },
+  "DividerTextAlign": {
+    "source": "lib-core/src/components/Divider/types.ts",
+    "kind": "alias",
+    "type": "\"left\" | \"center\" | \"right\""
+  },
+  "DividerVariant": {
+    "source": "lib-core/src/components/Divider/types.ts",
+    "kind": "alias",
+    "type": "\"solid\" | \"dashed\" | \"dotted\""
+  },
+  "DropdownOption": {
+    "source": "lib-core/src/components/Dropdown/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Text of the menu item"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value of the menu item"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the menu item"
+      }
+    ]
+  },
+  "DropdownProps": {
+    "source": "lib-core/src/components/Dropdown/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the menu"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the dropdown"
+      },
+      {
+        "name": "items",
+        "type": "DropdownOption[]",
+        "required": false,
+        "default": "[]",
+        "description": "Menu items"
+      },
+      {
+        "name": "onSelect",
+        "type": "(item: DropdownOption) => void",
+        "required": false,
+        "description": "Called with the selected item; the menu closes afterwards"
+      },
+      {
+        "name": "menuBgColor",
+        "type": "string",
+        "required": false,
+        "default": "\"var(--surface-elevated-color)\"",
+        "description": "Menu background color"
+      },
+      {
+        "name": "menuTextColor",
+        "type": "string",
+        "required": false,
+        "default": "\"var(--text-color)\"",
+        "description": "Menu text color"
+      },
+      {
+        "name": "menuBoxShadow",
+        "type": "string",
+        "required": false,
+        "default": "\"var(--shadow-md)\"",
+        "description": "Menu box shadow"
+      },
+      {
+        "name": "direction",
+        "type": "\"down\" | \"up\" | \"left\" | \"right\"",
+        "required": false,
+        "default": "\"down\"",
+        "description": "Side on which the menu opens"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Trigger element; a small \"Dropdown\" button is rendered when omitted"
+      }
+    ]
+  },
+  "EmptyProps": {
+    "source": "lib-core/src/components/Empty/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom icon, replacing the default one"
+      },
+      {
+        "name": "description",
+        "type": "React.ReactNode",
+        "required": false,
+        "default": "\"No Data\"",
+        "description": "Description text"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Footer content, e.g. an action button"
+      },
+      {
+        "name": "useSvg",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uses the built-in SVG illustration instead of the default icon"
+      },
+      {
+        "name": "width",
+        "type": "string | number",
+        "required": false,
+        "description": "Width of the container"
+      },
+      {
+        "name": "height",
+        "type": "string | number",
+        "required": false,
+        "description": "Height of the container"
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "required": false,
+        "description": "Background color"
+      },
+      {
+        "name": "showShadow",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a drop shadow"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Text color"
+      }
+    ]
+  },
+  "IconButtonProps": {
+    "source": "lib-core/src/components/IconButton/types.ts",
+    "kind": "interface",
+    "extends": [
+      "React.ButtonHTMLAttributes<HTMLButtonElement>"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Icon element to display"
+      },
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\" | \"info\"",
+        "required": false,
+        "description": "Color variant; a neutral style is used when omitted"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"square\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Button shape"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button and removes it from the tab order"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Replaces the icon with a spinner and blocks interaction"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders the button in its active (pressed) state"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Custom icon color"
+      },
+      {
+        "name": "activeColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom icon color in the active state"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color"
+      },
+      {
+        "name": "hoverColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color on hover"
+      },
+      {
+        "name": "fillColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom fill color of the icon"
+      },
+      {
+        "name": "tooltip",
+        "type": "TooltipVariant",
+        "required": false,
+        "description": "Tooltip configuration (content, variant, shape, arrow); requires showTooltip"
+      },
+      {
+        "name": "showTooltip",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the tooltip on hover and focus"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"icon button\"",
+        "description": "Accessible label; always set it, since the button only contains an icon"
+      }
+    ]
+  },
+  "InteractiveIconProps": {
+    "source": "lib-core/src/components/IconButton/interactive-types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "InteractiveIconType",
+        "required": true,
+        "description": "Preset that defines the icon, colors and tooltips (a key of interactiveIconsMap)"
+      },
+      {
+        "name": "onChange",
+        "type": "(isActive: boolean) => void",
+        "required": false,
+        "description": "Called with the new state after each toggle"
+      },
+      {
+        "name": "initialState",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial active state (the component manages its state internally)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"square\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Button shape"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button"
+      }
+    ]
+  },
+  "InteractiveIconState": {
+    "source": "lib-core/src/components/IconButton/interactive-types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "isActive",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "activeColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inactiveColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "activeBgColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inactiveBgColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "activeHoverColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inactiveHoverColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "activeFillColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inactiveFillColor",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "activeTooltip",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "inactiveTooltip",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "InteractiveIconType": {
+    "source": "lib-core/src/components/IconButton/interactive-types.ts",
+    "kind": "alias",
+    "type": "| \"favorite\" | \"bookmark\" | \"star\" | \"like\" | \"follow\" | \"share\" | \"notification\" | \"pin\" | \"archive\" | \"lock\" | \"download\" | \"visibility\" | \"clock\" | \"rate\" | \"thumbDown\" | \"flag\" | \"close\""
+  },
+  "Locale": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Locale settings of lib-core's built-in texts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "language",
+        "type": "SupportedLanguage",
+        "required": false,
+        "default": "\"en\"",
+        "description": "Language of lib-core's built-in texts"
+      }
+    ]
+  },
+  "MessageInstance": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "props",
+        "type": "MessageProps",
+        "required": true
+      },
+      {
+        "name": "root",
+        "type": "ReturnType<typeof createRoot>",
+        "required": true
+      }
+    ]
+  },
+  "MessageOptions": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "description": "Options accepted by `message.xxx()` / `useMessage().xxx()`. `id` is optional — one is generated when omitted.",
+    "kind": "alias",
+    "type": "Omit<MessageProps, \"id\"> & { id?: string }"
+  },
+  "MessagePlacement": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "kind": "alias",
+    "type": "\"top\" | \"bottom\" | \"topLeft\" | \"topRight\" | \"bottomLeft\" | \"bottomRight\""
+  },
+  "MessagePromiseResult": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "description": "Result of `useMessage().xxx()`: resolves once the message has closed",
+    "kind": "alias",
+    "type": "Promise<void> & { messageId: string }"
+  },
+  "MessageProps": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true,
+        "description": "Unique id; generated automatically when omitted in MessageOptions"
+      },
+      {
+        "name": "type",
+        "type": "MessageType",
+        "required": false,
+        "default": "\"info\"",
+        "description": "Message type, which sets the color. Set by the method you call (message.success, ...)"
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Message content"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "required": false,
+        "default": "3000",
+        "description": "Time in milliseconds before the message closes automatically; 0 keeps it open"
+      },
+      {
+        "name": "showClose",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a close button"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon displayed before the content"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "onClose",
+        "type": "(id: string) => void",
+        "required": false,
+        "description": "Called with the message id when the message closes, whatever the reason"
+      },
+      {
+        "name": "showProgress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows a countdown progress bar (only when duration > 0)"
+      },
+      {
+        "name": "pauseOnHover",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pauses the countdown and progress bar while hovered"
+      },
+      {
+        "name": "placement",
+        "type": "MessagePlacement",
+        "required": false,
+        "default": "\"topRight\"",
+        "description": "Screen position of the message stack"
+      },
+      {
+        "name": "onClick",
+        "type": "(e: MouseEvent) => void",
+        "required": false,
+        "description": "Called when the message is clicked"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Extra description exposed to assistive technologies (aria-description)"
+      },
+      {
+        "name": "closeAriaLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Close\"",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "onUpdate",
+        "type": "(id: string, props: MessageProps) => void",
+        "required": false,
+        "description": "Called after message.update() re-renders the message"
+      },
+      {
+        "name": "maxWidth",
+        "type": "number | string",
+        "required": false,
+        "description": "Maximum width of the message"
+      },
+      {
+        "name": "zIndex",
+        "type": "number",
+        "required": false,
+        "description": "z-index of the message"
+      }
+    ]
+  },
+  "MessageType": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "kind": "alias",
+    "type": "\"success\" | \"error\" | \"info\" | \"warning\" | \"loading\""
+  },
+  "PaginationProps": {
+    "source": "lib-core/src/components/Pagination/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "current",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Current page (1-based); update it in onChange"
+      },
+      {
+        "name": "total",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Total number of items"
+      },
+      {
+        "name": "pageSize",
+        "type": "number",
+        "required": false,
+        "default": "10",
+        "description": "Number of items per page"
+      },
+      {
+        "name": "onChange",
+        "type": "(page: number, pageSize: number) => void",
+        "required": false,
+        "description": "Called with the new page and page size when the page or page size changes"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the pagination"
+      },
+      {
+        "name": "showQuickJumper",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows an input to jump to a page"
+      },
+      {
+        "name": "showSizeChanger",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a page size selector"
+      },
+      {
+        "name": "pageSizeOptions",
+        "type": "number[]",
+        "required": false,
+        "default": "[10, 20, 50, 100]",
+        "description": "Options of the page size selector"
+      },
+      {
+        "name": "itemRender",
+        "type": "( page: number, type: \"page\" | \"prev\" | \"next\" | \"jump-prev\" | \"jump-next\", ) => ReactNode",
+        "required": false,
+        "description": "Custom rendering of the page, prev/next and jump items"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "showTotal",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the total number of items"
+      },
+      {
+        "name": "totalRender",
+        "type": "(total: number, range: [number, number]) => ReactNode",
+        "required": false,
+        "description": "Custom rendering of the total; range is the [first, last] item index of the current page"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Pagination size"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"rounded\" | \"square\"",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Shape of the page items"
+      },
+      {
+        "name": "variant",
+        "type": "\"filled\" | \"outlined\" | \"text\"",
+        "required": false,
+        "default": "\"filled\"",
+        "description": "Visual style of the page items"
+      },
+      {
+        "name": "simple",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Simple mode: prev/next buttons with a page input"
+      },
+      {
+        "name": "responsive",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adapts the layout to small screens"
+      },
+      {
+        "name": "icons",
+        "type": "{ prev?: ReactNode; next?: ReactNode; jumpPrev?: ReactNode; jumpNext?: ReactNode; }",
+        "required": false,
+        "description": "Custom icons for the prev, next and jump items"
+      }
+    ]
+  },
+  "PopperAnimation": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Animation configuration",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "required": true,
+        "description": "Duration in milliseconds"
+      },
+      {
+        "name": "easing",
+        "type": "string",
+        "required": true,
+        "description": "CSS timing function"
+      }
+    ]
+  },
+  "PopperCustomStyle": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "required": false,
+        "description": "Background color"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Text color"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "description": "Width"
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "description": "Height"
+      },
+      {
+        "name": "maxWidth",
+        "type": "number | string",
+        "required": false,
+        "description": "Max width"
+      },
+      {
+        "name": "maxHeight",
+        "type": "number | string",
+        "required": false,
+        "description": "Max height"
+      },
+      {
+        "name": "minWidth",
+        "type": "number | string",
+        "required": false,
+        "description": "Min width"
+      },
+      {
+        "name": "minHeight",
+        "type": "number | string",
+        "required": false,
+        "description": "Min height"
+      },
+      {
+        "name": "padding",
+        "type": "number | string",
+        "required": false,
+        "description": "Padding"
+      },
+      {
+        "name": "borderColor",
+        "type": "string",
+        "required": false,
+        "description": "Border color"
+      }
+    ]
+  },
+  "PopperOffset": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Position offset configuration",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Horizontal offset in pixels"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true,
+        "description": "Vertical offset in pixels"
+      }
+    ]
+  },
+  "PopperPlacement": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Popper placement options",
+    "kind": "alias",
+    "type": "| \"top\" | \"topStart\" | \"topEnd\" | \"bottom\" | \"bottomStart\" | \"bottomEnd\" | \"left\" | \"leftStart\" | \"leftEnd\" | \"right\" | \"rightStart\" | \"rightEnd\""
+  },
+  "PopperProps": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Popper component props",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "anchorEl",
+        "type": "HTMLElement | null",
+        "required": true,
+        "description": "Element the popper is positioned against"
+      },
+      {
+        "name": "visible",
+        "type": "boolean",
+        "required": true,
+        "description": "Whether the popper is visible (controlled)"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": true,
+        "description": "Popper content"
+      },
+      {
+        "name": "placement",
+        "type": "PopperPlacement",
+        "required": false,
+        "default": "\"bottom\"",
+        "description": "Placement relative to the anchor"
+      },
+      {
+        "name": "variant",
+        "type": "PopperVariant",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Color variant"
+      },
+      {
+        "name": "type",
+        "type": "PopperType",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Functional type; \"menu\" sets role=\"menu\", otherwise role=\"dialog\""
+      },
+      {
+        "name": "offset",
+        "type": "PopperOffset",
+        "required": false,
+        "default": "{ x: 0, y: 8 }",
+        "description": "Position offset in pixels"
+      },
+      {
+        "name": "animation",
+        "type": "PopperAnimation",
+        "required": false,
+        "default": "{ duration: 200, easing: \"ease\" }",
+        "description": "Transition settings"
+      },
+      {
+        "name": "arrow",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows an arrow pointing at the anchor"
+      },
+      {
+        "name": "zIndex",
+        "type": "number",
+        "required": false,
+        "default": "1000",
+        "description": "z-index of the popper"
+      },
+      {
+        "name": "onClickAway",
+        "type": "(event: MouseEvent) => void",
+        "required": false,
+        "description": "Called on mousedown outside both the popper and the anchor"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "tabIndex",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "tabIndex of the popper element"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the popper"
+      },
+      {
+        "name": "popperStyle",
+        "type": "PopperCustomStyle",
+        "required": false,
+        "default": "{}",
+        "description": "Custom colors and dimensions"
+      },
+      {
+        "name": "size",
+        "type": "PopperSize",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Preset size; \"auto\" fits the content"
+      },
+      {
+        "name": "multiline",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Allows text to wrap onto multiple lines"
+      },
+      {
+        "name": "trigger",
+        "type": "PopperTrigger",
+        "required": false,
+        "default": "\"click\"",
+        "description": "Anchor interaction that requests a visibility change via onVisibleChange"
+      },
+      {
+        "name": "onVisibleChange",
+        "type": "(visible: boolean) => void",
+        "required": false,
+        "description": "Called with the requested visibility when the trigger fires"
+      },
+      {
+        "name": "scrollable",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Lets the content scroll when it overflows"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "description": "Fixed width, overriding the size preset"
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "description": "Fixed height, overriding the size preset"
+      }
+    ]
+  },
+  "PopperSize": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Popper size options",
+    "kind": "alias",
+    "type": "\"auto\" | \"small\" | \"medium\" | \"large\""
+  },
+  "PopperTrigger": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "kind": "alias",
+    "type": "\"hover\" | \"click\" | \"contextMenu\" | \"focus\" | \"manual\""
+  },
+  "PopperType": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Popper type options - simplified to most common use cases",
+    "kind": "alias",
+    "type": "| \"default\" // generic popup | \"menu\" // menu (role=\"menu\") | \"select\" // select dropdown | \"tooltip\""
+  },
+  "PopperVariant": {
+    "source": "lib-core/src/components/Popper/types.ts",
+    "description": "Popper variant options",
+    "kind": "alias",
+    "type": "\"default\" | \"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\""
+  },
+  "ProgressIndicatorProps": {
+    "source": "lib-core/src/components/ProgressIndicator/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"spinner\" | \"bar\" | \"wave\" | \"circle\" | \"dottedBar\"",
+        "required": false,
+        "default": "\"spinner\"",
+        "description": "Indicator style"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Indicator size"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon displayed before the indicator"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label describing what is loading"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "width",
+        "type": "string",
+        "required": false,
+        "description": "Custom width (ignored when full is set)"
+      },
+      {
+        "name": "full",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the indicator to the full width of its container"
+      }
+    ]
+  },
+  "RadioGroupProps": {
+    "source": "lib-core/src/components/Radio/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": false,
+        "description": "Value of the selected radio (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | number",
+        "required": false,
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name shared by all radios of the group"
+      },
+      {
+        "name": "onChange",
+        "type": "( value: string | number, event: React.ChangeEvent<HTMLInputElement>, ) => void",
+        "required": false,
+        "description": "Called with the newly selected value"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables every radio in the group"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Radio elements"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "direction",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "Layout direction of the radios"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Size applied to every radio in the group"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the error state"
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": "Helper text shown below the group"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Marks the group as required (aria-required)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "\"var(--primary-color)\"",
+        "description": "Color applied to every radio in the group"
+      }
+    ]
+  },
+  "RadioProps": {
+    "source": "lib-core/src/components/Radio/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the radio is checked (controlled). Ignored inside a RadioGroup"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "description": "Initial checked state (uncontrolled). Ignored inside a RadioGroup"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the radio"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Native name attribute. Inside a RadioGroup the group's name is used"
+      },
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": false,
+        "description": "Value of the radio; identifies it within a RadioGroup"
+      },
+      {
+        "name": "onChange",
+        "type": "( checked: boolean, event: React.ChangeEvent<HTMLInputElement>, ) => void",
+        "required": false,
+        "description": "Called when the checked state changes (standalone radios only; inside a group use RadioGroup's onChange)"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Radio size. Overridden by the RadioGroup size"
+      },
+      {
+        "name": "type",
+        "type": "\"default\" | \"primary\" | \"success\" | \"warning\" | \"error\"",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Color scheme of the radio"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Text label displayed next to the radio"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Custom color of the radio mark. Overridden by the RadioGroup color"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color of the radio mark"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Marks the input as required"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the error state (errorMessage replaces helperText)"
+      },
+      {
+        "name": "errorIcon",
+        "type": "React.ReactNode",
+        "required": false,
+        "default": "<FaInfoCircle />",
+        "description": "Icon shown before the error message"
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "Message shown below the radio when error is true"
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": "Helper text shown below the radio"
+      },
+      {
+        "name": "ref",
+        "type": "React.Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref forwarded to the native input element"
+      }
+    ]
+  },
+  "SearchButtonProps": {
+    "source": "lib-core/src/components/SearchButton/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "onClick",
+        "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+        "required": false,
+        "description": "Called when the button is clicked (not called while disabled)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label; required when the button has no text"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"square\" | \"rounded\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Button shape; buttons with children are always rendered square"
+      },
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"warning\" | \"error\" | \"success\" | \"info\"",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color variant"
+      },
+      {
+        "name": "animation",
+        "type": "\"none\" | \"expand\" | \"shrink\" | \"shake\"",
+        "required": false,
+        "default": "\"none\"",
+        "description": "Hover animation"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\" | \"xlarge\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Text color"
+      },
+      {
+        "name": "iconColor",
+        "type": "string",
+        "required": false,
+        "default": "\"var(--text-inverse-color)\"",
+        "description": "Color of the search icon"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Replaces the icon with a loading spinner"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Optional text shown next to the icon"
+      }
+    ]
+  },
+  "SemanticThemeProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Optional semantic tokens. All of them have defaults declared on `:root` in `styles/default-theme.scss`, derived from the base `ThemeProps` keys with `color-mix()`, so they follow any theme (including custom ones). Set them in a theme only when the derived value is not what you want (the built-in dark themes set explicit surface and text colors, for example).",
+    "kind": "interface",
+    "extends": [
+      "ThemeRoleTokens"
+    ],
+    "props": [
+      {
+        "name": "surface-color",
+        "type": "string",
+        "required": false,
+        "description": "Background of cards, inputs and other component surfaces."
+      },
+      {
+        "name": "surface-muted-color",
+        "type": "string",
+        "required": false,
+        "description": "Hovered rows, disabled controls, tracks."
+      },
+      {
+        "name": "surface-elevated-color",
+        "type": "string",
+        "required": false,
+        "description": "Popovers, menus, dropdowns, tooltips."
+      },
+      {
+        "name": "overlay-color",
+        "type": "string",
+        "required": false,
+        "description": "Backdrop / modal overlay."
+      },
+      {
+        "name": "border-strong-color",
+        "type": "string",
+        "required": false,
+        "description": "Higher-contrast border (inputs, hovered borders)."
+      },
+      {
+        "name": "text-color",
+        "type": "string",
+        "required": false,
+        "description": "Main text color (defaults to `--foreground-color`)."
+      },
+      {
+        "name": "text-secondary-color",
+        "type": "string",
+        "required": false,
+        "description": "Secondary text (descriptions, helper text)."
+      },
+      {
+        "name": "text-disabled-color",
+        "type": "string",
+        "required": false,
+        "description": "Disabled text."
+      },
+      {
+        "name": "text-inverse-color",
+        "type": "string",
+        "required": false,
+        "description": "Text drawn on filled role backgrounds (e.g. a primary button)."
+      },
+      {
+        "name": "focus-ring-color",
+        "type": "string",
+        "required": false,
+        "description": "Focus outline / ring color."
+      },
+      {
+        "name": "error-color",
+        "type": "string",
+        "required": false,
+        "description": "Alias of `--danger-color`."
+      },
+      {
+        "name": "shadow-sm",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "shadow-md",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "shadow-lg",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "radius-sm",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "radius-md",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "radius-lg",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "SkeletonAnimation": {
+    "source": "lib-core/src/components/Skeleton/types.ts",
+    "kind": "alias",
+    "type": "\"pulse\" | \"wave\" | \"false\""
+  },
+  "SkeletonProps": {
+    "source": "lib-core/src/components/Skeleton/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "variant",
+        "type": "SkeletonVariant",
+        "required": false,
+        "default": "\"text\"",
+        "description": "Shape of the placeholder"
+      },
+      {
+        "name": "animation",
+        "type": "SkeletonAnimation",
+        "required": false,
+        "default": "\"pulse\"",
+        "description": "Loading animation; \"false\" disables it"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "description": "Width of each line (numbers are pixels)"
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "description": "Height of each line (numbers are pixels)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Real content, rendered once loading is false"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the placeholder; set to false to render children"
+      },
+      {
+        "name": "borderRadius",
+        "type": "number | string",
+        "required": false,
+        "description": "Custom corner radius of each line"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles applied to each line"
+      },
+      {
+        "name": "lines",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Number of lines to render"
+      },
+      {
+        "name": "avatar",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows an avatar placeholder"
+      },
+      {
+        "name": "avatarSize",
+        "type": "number | string",
+        "required": false,
+        "default": "40",
+        "description": "Avatar size (numbers are pixels)"
+      },
+      {
+        "name": "avatarShape",
+        "type": "\"circle\" | \"square\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Avatar shape"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Highlights the card variant as active"
+      },
+      {
+        "name": "paragraph",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a paragraph placeholder (replaces the lines)"
+      },
+      {
+        "name": "title",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a title placeholder (replaces the lines)"
+      }
+    ]
+  },
+  "SkeletonVariant": {
+    "source": "lib-core/src/components/Skeleton/types.ts",
+    "kind": "alias",
+    "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\" | \"card\""
+  },
+  "SpaceAlign": {
+    "source": "lib-core/src/components/Space/types.ts",
+    "kind": "alias",
+    "type": "\"start\" | \"end\" | \"center\" | \"baseline\" | \"stretch\""
+  },
+  "SpaceDirection": {
+    "source": "lib-core/src/components/Space/types.ts",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
+  "SpaceJustify": {
+    "source": "lib-core/src/components/Space/types.ts",
+    "kind": "alias",
+    "type": "| \"start\" | \"end\" | \"center\" | \"space-around\" | \"space-between\" | \"space-evenly\""
+  },
+  "SpaceProps": {
+    "source": "lib-core/src/components/Space/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "align",
+        "type": "SpaceAlign",
+        "required": false,
+        "description": "Alignment of the items on the cross axis"
+      },
+      {
+        "name": "justify",
+        "type": "SpaceJustify",
+        "required": false,
+        "description": "Alignment of the items on the main axis"
+      },
+      {
+        "name": "direction",
+        "type": "SpaceDirection",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Layout direction"
+      },
+      {
+        "name": "size",
+        "type": "SpaceSize | number",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Gap between items: a preset (small = 8px, medium = 16px, large = 24px) or a number of pixels"
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wraps items onto multiple lines (horizontal only)"
+      },
+      {
+        "name": "split",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Separator rendered between items"
+      },
+      {
+        "name": "compact",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Compact mode: halves the preset gap"
+      },
+      {
+        "name": "block",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the container to the full width of its parent"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Items to space out"
+      }
+    ]
+  },
+  "SpaceSize": {
+    "source": "lib-core/src/components/Space/types.ts",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "StatusIndicatorProps": {
+    "source": "lib-core/src/components/StatusIndicator/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label describing the status"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the click feedback animation"
+      },
+      {
+        "name": "status",
+        "type": "\"success\" | \"error\" | \"warning\" | \"info\"",
+        "required": false,
+        "default": "\"success\"",
+        "description": "Status, which sets the color and icon"
+      },
+      {
+        "name": "shape",
+        "type": "\"circle\" | \"square\" | \"rounded\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Shape of the indicator"
+      },
+      {
+        "name": "type",
+        "type": "\"online\" | \"offline\" | \"away\" | \"busy\" | \"custom\"",
+        "required": false,
+        "description": "Presence type; overrides the status color. Use \"custom\" together with color"
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a text label next to the indicator (presence types only)"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Indicator size"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color, applied when type is \"custom\""
+      }
+    ]
+  },
+  "SupportedLanguage": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Languages that lib-core ships translations for",
+    "kind": "alias",
+    "type": "\"en\" | \"zh\" | \"fr\""
+  },
+  "SupportTheme": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "\"github-dark\""
+  },
+  "SwitchProps": {
+    "source": "lib-core/src/components/Switch/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the switch is on (controlled)"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial state (uncontrolled)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the switch"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Switch size"
+      },
+      {
+        "name": "color",
+        "type": "\"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\" | string",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color when on: a theme color name or any CSS color"
+      },
+      {
+        "name": "shape",
+        "type": "\"round\" | \"square\"",
+        "required": false,
+        "default": "\"round\"",
+        "description": "Shape of the track and thumb"
+      },
+      {
+        "name": "label",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Label displayed next to the switch"
+      },
+      {
+        "name": "labelPlacement",
+        "type": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+        "required": false,
+        "default": "\"end\"",
+        "description": "Position of the label relative to the switch"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a loading state and blocks interaction"
+      },
+      {
+        "name": "ripple",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows a ripple effect on click"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "labelStyle",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root label element"
+      },
+      {
+        "name": "trackStyle",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the track"
+      },
+      {
+        "name": "thumbStyle",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the thumb"
+      },
+      {
+        "name": "onChange",
+        "type": "( checked: boolean, event: React.ChangeEvent<HTMLInputElement>, ) => void",
+        "required": false,
+        "description": "Called when the state changes"
+      },
+      {
+        "name": "onFocus",
+        "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+        "required": false,
+        "description": "Called when the switch receives focus"
+      },
+      {
+        "name": "onBlur",
+        "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+        "required": false,
+        "description": "Called when the switch loses focus"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom icon"
+      },
+      {
+        "name": "iconPlacement",
+        "type": "\"start\" | \"end\"",
+        "required": false,
+        "default": "\"start\"",
+        "description": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")"
+      }
+    ]
+  },
+  "TagProps": {
+    "source": "lib-core/src/components/Tag/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Content of the tag"
+      },
+      {
+        "name": "variant",
+        "type": "TagVariant",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Color scheme"
+      },
+      {
+        "name": "size",
+        "type": "TagSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Tag size"
+      },
+      {
+        "name": "shape",
+        "type": "TagShape",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Tag shape"
+      },
+      {
+        "name": "closable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a close button"
+      },
+      {
+        "name": "onClose",
+        "type": "(e: React.MouseEvent<HTMLElement>) => void",
+        "required": false,
+        "description": "Called when the close button is clicked"
+      },
+      {
+        "name": "clickable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the tag behave like a button (focusable, activated with Enter / Space)"
+      },
+      {
+        "name": "onClick",
+        "type": "(e: React.MouseEvent<HTMLElement>) => void",
+        "required": false,
+        "description": "Called when the tag is activated (requires clickable)"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon displayed before the content"
+      },
+      {
+        "name": "bordered",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a border"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a shadow"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom text color"
+      },
+      {
+        "name": "borderColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom border color"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the tag and its close button"
+      },
+      {
+        "name": "closeIcon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Custom close icon"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Close\"",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "ripple",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows a ripple effect on click"
+      }
+    ]
+  },
+  "TagShape": {
+    "source": "lib-core/src/components/Tag/types.ts",
+    "kind": "alias",
+    "type": "\"square\" | \"rounded\" | \"circle\""
+  },
+  "TagSize": {
+    "source": "lib-core/src/components/Tag/types.ts",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "TagVariant": {
+    "source": "lib-core/src/components/Tag/types.ts",
+    "kind": "alias",
+    "type": "\"default\" | \"primary\" | \"success\" | \"warning\" | \"error\" | \"info\""
+  },
+  "TextFieldProps": {
+    "source": "lib-core/src/components/TextField/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name of the input; also used as its id to link the label"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Floating label (hidden when a placeholder is set or the field is read-only)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Current value; omit for an uncontrolled field"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "Placeholder text, replaces the floating label"
+      },
+      {
+        "name": "helperText",
+        "type": "string",
+        "required": false,
+        "description": "Error message shown below the field; switches it to the error state"
+      },
+      {
+        "name": "icon",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Icon shown inside the field"
+      },
+      {
+        "name": "iconPosition",
+        "type": "\"left\" | \"right\"",
+        "required": false,
+        "default": "\"left\"",
+        "description": "Side of the icon; with type=\"password\" a right icon becomes a show/hide toggle"
+      },
+      {
+        "name": "borderColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom border color"
+      },
+      {
+        "name": "hideBorder",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Hides the border"
+      },
+      {
+        "name": "minimal",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Minimal style with only a bottom border"
+      },
+      {
+        "name": "borderRadius",
+        "type": "string",
+        "required": false,
+        "default": "\"0.25rem\"",
+        "description": "Corner radius (any CSS length)"
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "\"text\"",
+        "description": "Native input type"
+      },
+      {
+        "name": "showCharCount",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of characters"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a clear button when the field has a value"
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Takes the full width of the container (overrides width)"
+      },
+      {
+        "name": "width",
+        "type": "string",
+        "required": false,
+        "default": "\"300px\"",
+        "description": "Width of the field (any CSS length)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the input"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the field read-only"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Field size"
+      },
+      {
+        "name": "suffix",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Content shown at the end of the field, e.g. a unit"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the new value on every change; pass value as well to control the field"
+      },
+      {
+        "name": "onBlur",
+        "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+        "required": false,
+        "description": "Called when the input loses focus"
+      },
+      {
+        "name": "onFocus",
+        "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+        "required": false,
+        "description": "Called when the input gains focus"
+      },
+      {
+        "name": "onKeyDown",
+        "type": "(event: React.KeyboardEvent<HTMLInputElement>) => void",
+        "required": false,
+        "description": "Called on key down in the input"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name of the container"
+      }
+    ]
+  },
+  "Theme": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "ConfigProviderThemeProps"
+  },
+  "ThemeColorRole": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Status / accent roles that get a full set of derived tokens.",
+    "kind": "alias",
+    "type": "\"primary\" | \"secondary\" | \"success\" | \"warning\" | \"danger\" | \"info\""
+  },
+  "ThemeMap": {
+    "source": "lib-core/src/contexts/types.ts",
+    "kind": "alias",
+    "type": "{ [key in keyof ComponentTheme]: ComponentTheme[key]; }"
+  },
+  "ThemeName": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Names of the built-in themes",
+    "kind": "alias",
+    "type": "DefaultTheme | SupportTheme"
+  },
+  "ThemeProps": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Base design tokens. Every key is written to the document root as a CSS custom property named `--<key>` (e.g. `\"primary-color\"` -> `--primary-color`) by `applyThemeStyles` / `ConfigProvider`. Components never read these values directly from JS: their styles consume the CSS variables, so switching theme is a pure CSS-variable swap. Most semantic tokens (see `ComponentThemeProps`) are derived from these keys with `color-mix()`, so a custom theme only has to provide the base keys below.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "primary-color",
+        "type": "string",
+        "required": true,
+        "description": "Brand / accent color: primary buttons, active states, focus rings."
+      },
+      {
+        "name": "secondary-color",
+        "type": "string",
+        "required": true,
+        "description": "Neutral accent used by `secondary` variants."
+      },
+      {
+        "name": "success-color",
+        "type": "string",
+        "required": true,
+        "description": "Positive status color (success variants)."
+      },
+      {
+        "name": "danger-color",
+        "type": "string",
+        "required": true,
+        "description": "Destructive / error status color (danger and error variants)."
+      },
+      {
+        "name": "warning-color",
+        "type": "string",
+        "required": true,
+        "description": "Warning status color."
+      },
+      {
+        "name": "info-color",
+        "type": "string",
+        "required": true,
+        "description": "Informational status color."
+      },
+      {
+        "name": "light-color",
+        "type": "string",
+        "required": true,
+        "description": "A light neutral (legacy; light variants)."
+      },
+      {
+        "name": "dark-color",
+        "type": "string",
+        "required": true,
+        "description": "A dark neutral (legacy; dark variants)."
+      },
+      {
+        "name": "background-color",
+        "type": "string",
+        "required": true,
+        "description": "Page background. Default for `--surface-color`."
+      },
+      {
+        "name": "foreground-color",
+        "type": "string",
+        "required": true,
+        "description": "Main text color. Default for `--text-color`."
+      },
+      {
+        "name": "border-color",
+        "type": "string",
+        "required": true,
+        "description": "Default border / divider color."
+      },
+      {
+        "name": "text-gray",
+        "type": "string",
+        "required": true,
+        "description": "Secondary, low-emphasis text (should keep >= 4.5:1 on the background)."
+      },
+      {
+        "name": "primary-gradient-start",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "primary-gradient-end",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "secondary-gradient-start",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "secondary-gradient-end",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "highlight-color",
+        "type": "string",
+        "required": true,
+        "description": "Highlight / mark color."
+      },
+      {
+        "name": "shadow-color",
+        "type": "string",
+        "required": true,
+        "description": "Base shadow color used by `--shadow-sm|md|lg`."
+      },
+      {
+        "name": "muted-color",
+        "type": "string",
+        "required": true,
+        "description": "Muted UI color (placeholders, icons, inactive controls)."
+      },
+      {
+        "name": "link-color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "link-hover-color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "link-active-color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "link-visited-color",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "ThemeRoleTokens": {
+    "source": "lib-core/src/contexts/types.ts",
+    "description": "Derived tokens for each role `R` (`--R-color-hover`, `--R-color-active`, ...). - `hover` / `active`: R mixed toward `--foreground-color` (darkens in light themes, lightens in dark themes) - `subtle`: soft tinted background (~12% R over `--surface-color`) - `border`: tinted border (~40% R over `--surface-color`) - `text`: R-toned text that stays readable on `subtle` backgrounds",
+    "kind": "alias",
+    "type": "{ [ K in | `${ThemeColorRole}-color-hover` | `${ThemeColorRole}-color-active` | `${ThemeColorRole}-color-subtle` | `${ThemeColorRole}-color-border` | `${ThemeColorRole}-color-text` ]?: string; }"
+  },
+  "TimePickerPanelProps": {
+    "source": "lib-core/src/components/TimePicker/types.ts",
+    "kind": "interface",
+    "extends": [
+      "TimePickerProps"
+    ],
+    "props": [
+      {
+        "name": "onTimeChange",
+        "type": "( type: \"hour\" | \"minute\" | \"second\" | \"ampm\", value: number, ) => void",
+        "required": true
+      },
+      {
+        "name": "visible",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "TimePickerProps": {
+    "source": "lib-core/src/components/TimePicker/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "Date",
+        "required": false,
+        "description": "Selected time (only read on mount; the date part is ignored)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "Date",
+        "required": false,
+        "description": "Initially selected time (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(date: Date | undefined) => void",
+        "required": false,
+        "description": "Called with the new time, or `undefined` when the value is cleared"
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "default": "\"HH:mm:ss\"",
+        "description": "Display format: \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" or \"hh:mm a\""
+      },
+      {
+        "name": "use12Hours",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uses a 12-hour clock with an AM/PM column"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "\"Select time\"",
+        "description": "Placeholder of the input"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the picker"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Allows clearing the value with the suffix button"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Size of the input and panel"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "minTime",
+        "type": "Date",
+        "required": false,
+        "description": "Earliest selectable time; earlier options are disabled"
+      },
+      {
+        "name": "maxTime",
+        "type": "Date",
+        "required": false,
+        "description": "Latest selectable time; later options are disabled"
+      },
+      {
+        "name": "showSecond",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the seconds column"
+      },
+      {
+        "name": "hourStep",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Interval between hour options"
+      },
+      {
+        "name": "minuteStep",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Interval between minute options"
+      },
+      {
+        "name": "secondStep",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Interval between second options"
+      }
+    ]
+  },
+  "TimeUnit": {
+    "source": "lib-core/src/components/TimePicker/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "TooltipAnimation": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "kind": "alias",
+    "type": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\""
+  },
+  "TooltipPlacement": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "kind": "alias",
+    "type": "| \"top\" | \"top-start\" | \"top-end\" | \"bottom\" | \"bottom-start\" | \"bottom-end\" | \"left\" | \"left-start\" | \"left-end\" | \"right\" | \"right-start\" | \"right-end\""
+  },
+  "TooltipProps": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Content displayed inside the tooltip"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "description": "The element that triggers the tooltip; prefer a focusable element"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the tooltip is shown (controlled)"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state (uncontrolled)"
+      },
+      {
+        "name": "placement",
+        "type": "TooltipPlacement",
+        "required": false,
+        "default": "\"top\"",
+        "description": "Placement relative to the trigger"
+      },
+      {
+        "name": "variant",
+        "type": "TooltipVariant",
+        "required": false,
+        "default": "\"dark\"",
+        "description": "Color variant"
+      },
+      {
+        "name": "shape",
+        "type": "TooltipShape",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Shape of the tooltip"
+      },
+      {
+        "name": "animation",
+        "type": "TooltipAnimation",
+        "required": false,
+        "default": "\"fade\"",
+        "description": "Show / hide animation"
+      },
+      {
+        "name": "enterDelay",
+        "type": "number",
+        "required": false,
+        "default": "200",
+        "description": "Delay before showing on hover, in milliseconds"
+      },
+      {
+        "name": "leaveDelay",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Delay before hiding on mouse leave, in milliseconds"
+      },
+      {
+        "name": "offset",
+        "type": "[number, number]",
+        "required": false,
+        "default": "[0, 8]",
+        "description": "Offset from the trigger as [x, y] in pixels"
+      },
+      {
+        "name": "followCursor",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the tooltip follow the mouse cursor"
+      },
+      {
+        "name": "bgColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom background color (CSS gradients are supported)"
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "required": false,
+        "description": "Custom text color"
+      },
+      {
+        "name": "zIndex",
+        "type": "number",
+        "required": false,
+        "default": "1500",
+        "description": "z-index of the tooltip"
+      },
+      {
+        "name": "arrow",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows an arrow pointing at the trigger"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the tooltip"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name of the trigger wrapper"
+      },
+      {
+        "name": "onOpen",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the tooltip opens from hover or focus"
+      },
+      {
+        "name": "onClose",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the tooltip closes from mouse leave, blur or Escape"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the tooltip element"
+      }
+    ]
+  },
+  "TooltipRef": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "description": "Imperative handle exposed through `ref`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "() => void",
+        "required": true,
+        "description": "Opens the tooltip"
+      },
+      {
+        "name": "close",
+        "type": "() => void",
+        "required": true,
+        "description": "Closes the tooltip"
+      },
+      {
+        "name": "toggle",
+        "type": "() => void",
+        "required": true,
+        "description": "Toggles the tooltip"
+      }
+    ]
+  },
+  "TooltipShape": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "kind": "alias",
+    "type": "\"default\" | \"rounded\" | \"thought\" | \"square\""
+  },
+  "TooltipVariant": {
+    "source": "lib-core/src/components/Tooltip/types.ts",
+    "kind": "alias",
+    "type": "\"light\" | \"dark\" | \"info\" | \"success\" | \"warning\" | \"error\""
+  },
+  "VirtualItem": {
+    "source": "lib-core/src/components/VirtualList/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "start",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "measureRef",
+        "type": "(el: HTMLElement | null) => void",
+        "required": false
+      }
+    ]
+  },
+  "VirtualListItem": {
+    "source": "lib-core/src/components/VirtualList/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string | number",
+        "required": true,
+        "description": "Unique key of the item"
+      },
+      {
+        "name": "metadata",
+        "type": "Record<string, string | number | boolean>",
+        "required": false,
+        "description": "Arbitrary data for renderItem"
+      }
+    ]
+  },
+  "VirtualListProps": {
+    "source": "lib-core/src/components/VirtualList/types.ts",
+    "description": "VirtualList props",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "items",
+        "type": "VirtualListItem[]",
+        "required": true,
+        "description": "Items to render"
+      },
+      {
+        "name": "itemHeight",
+        "type": "number",
+        "required": false,
+        "description": "Fixed row height in pixels; measured from the first item when omitted"
+      },
+      {
+        "name": "itemPadding",
+        "type": "number",
+        "required": false,
+        "default": "8",
+        "description": "Padding of each row in pixels"
+      },
+      {
+        "name": "overscan",
+        "type": "number",
+        "required": false,
+        "default": "5",
+        "description": "Number of rows rendered above and below the visible area"
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": true,
+        "description": "Maximum height of the scroll container in pixels"
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: VirtualListItem, index: number) => React.ReactNode",
+        "required": true,
+        "description": "Renders the content of one row"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the scroll container"
+      },
+      {
+        "name": "onLoadMore",
+        "type": "() => Promise<void>",
+        "required": false,
+        "description": "Called when scrolling near the bottom; return a promise that resolves once new items are loaded"
+      },
+      {
+        "name": "loadMoreThreshold",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Distance from the bottom (px) at which onLoadMore is triggered"
+      },
+      {
+        "name": "highPerformance",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Batches scroll updates with requestAnimationFrame and requestIdleCallback"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a loading indicator at the bottom of the list"
+      }
+    ]
+  },
+  "wc:ButtonProps": {
+    "source": "lib-web-components/src/Button/types.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "variant",
+        "type": "ButtonVariant",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Visual style of the button (reflected to the `variant` attribute)"
+      },
+      {
+        "name": "size",
+        "type": "ButtonSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size"
+      },
+      {
+        "name": "shape",
+        "type": "ButtonShape",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Corner shape of the button"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button (boolean attribute)"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner instead of the content and blocks clicks; sets `aria-busy`"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders the button in its pressed / active style"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Accessible label forwarded to the inner `<button>`; set it with the `aria-label` attribute. Required for icon-only buttons."
+      }
+    ]
+  },
+  "wc:ButtonShape": {
+    "source": "lib-web-components/src/Button/types.ts",
+    "kind": "alias",
+    "type": "\"square\" | \"rounded\" | \"circle\" | \"pill\""
+  },
+  "wc:ButtonSize": {
+    "source": "lib-web-components/src/Button/types.ts",
+    "kind": "alias",
+    "type": "\"tiny\" | \"small\" | \"medium\" | \"large\""
+  },
+  "wc:ButtonVariant": {
+    "source": "lib-web-components/src/Button/types.ts",
+    "description": "Public attributes of `<minerva-button>`. Values mirror the classes defined in `./styles.ts`; keep both in sync.",
+    "kind": "alias",
+    "type": "| \"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\" | \"info\" | \"ghost\" | \"retry\" | \"back\""
+  }
+}

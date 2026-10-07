@@ -1,5 +1,3 @@
-@import "../../styles/common.scss";
-
 .timePicker {
   display: inline-block;
   position: relative;
@@ -8,11 +6,17 @@
   .clearButton {
     opacity: 0;
     transition: opacity 0.3s ease;
-    color: #8c8c8c;
+    color: var(--text-secondary-color);
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       opacity: 1;
-      color: #595959;
+      color: var(--text-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
     }
   }
 
@@ -21,6 +25,6 @@
   }
 
   .clockIcon {
-    color: #8c8c8c;
+    color: var(--text-secondary-color);
   }
 }

@@ -22,6 +22,8 @@ export {
   CardDescription,
   CardTitle,
   CardFooter,
+};
+export type {
   CardProps,
   CardHeaderProps,
   CardTitleProps,

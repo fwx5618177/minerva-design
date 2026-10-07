@@ -7,13 +7,7 @@ import type {
 } from "./interactive-types";
 import { interactiveIconsMap } from "./interactive-config";
 
-export {
-  IconButton,
-  InteractiveIconButton,
-  interactiveIconsMap,
-  IconButtonProps,
-  InteractiveIconProps,
-  InteractiveIconType,
-};
+export { IconButton, InteractiveIconButton, interactiveIconsMap };
+export type { IconButtonProps, InteractiveIconProps, InteractiveIconType };
 
 export default IconButton;

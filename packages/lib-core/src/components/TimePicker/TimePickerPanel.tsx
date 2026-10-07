@@ -4,7 +4,6 @@ import styles from "./timePickerPanel.module.scss";
 
 const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
   value = new Date(),
-  format,
   use12Hours,
   showSecond,
   hourStep = 1,
@@ -13,7 +12,6 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
   minTime,
   maxTime,
   onTimeChange,
-  visible,
 }) => {
   const hours = useMemo(() => {
     const items: TimeUnit[] = [];
@@ -21,9 +19,14 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
     const end = use12Hours ? 12 : 23;
 
     for (let i = start; i <= end; i += hourStep) {
-      const disabled =
-        (minTime && value.getHours() < minTime.getHours()) ||
-        (maxTime && value.getHours() > maxTime.getHours());
+      // Compare the candidate hour (in 24h form) against the bounds
+      const hour24 = use12Hours
+        ? (i % 12) + (value.getHours() >= 12 ? 12 : 0)
+        : i;
+      const disabled = Boolean(
+        (minTime && hour24 < minTime.getHours()) ||
+        (maxTime && hour24 > maxTime.getHours()),
+      );
 
       items.push({
         value: i,
@@ -37,9 +40,15 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
   const minutes = useMemo(() => {
     const items: TimeUnit[] = [];
     for (let i = 0; i < 60; i += minuteStep) {
-      const disabled =
-        (minTime && value.getMinutes() < minTime.getMinutes()) ||
-        (maxTime && value.getMinutes() > maxTime.getMinutes());
+      // Minutes are only constrained within the boundary hour
+      const disabled = Boolean(
+        (minTime &&
+          value.getHours() === minTime.getHours() &&
+          i < minTime.getMinutes()) ||
+        (maxTime &&
+          value.getHours() === maxTime.getHours() &&
+          i > maxTime.getMinutes()),
+      );
 
       items.push({
         value: i,
@@ -53,9 +62,19 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
   const seconds = useMemo(() => {
     const items: TimeUnit[] = [];
     for (let i = 0; i < 60; i += secondStep) {
-      const disabled =
-        (minTime && value.getSeconds() < minTime.getSeconds()) ||
-        (maxTime && value.getSeconds() > maxTime.getSeconds());
+      // Seconds are only constrained within the boundary hour + minute
+      const isMinBoundary =
+        minTime &&
+        value.getHours() === minTime.getHours() &&
+        value.getMinutes() === minTime.getMinutes();
+      const isMaxBoundary =
+        maxTime &&
+        value.getHours() === maxTime.getHours() &&
+        value.getMinutes() === maxTime.getMinutes();
+      const disabled = Boolean(
+        (minTime && isMinBoundary && i < minTime.getSeconds()) ||
+        (maxTime && isMaxBoundary && i > maxTime.getSeconds()),
+      );
 
       items.push({
         value: i,
@@ -66,6 +85,14 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
     return items;
   }, [secondStep, minTime, maxTime, value]);
 
+  // In 12-hour mode the hour column shows 1-12; map to/from 24h values
+  const isPM = value.getHours() >= 12;
+  const selectedHour = use12Hours
+    ? value.getHours() % 12 || 12
+    : value.getHours();
+  const toHour24 = (hour: number) =>
+    use12Hours ? (hour % 12) + (isPM ? 12 : 0) : hour;
+
   return (
     <div className={styles.timePickerPanel}>
       <div className={styles.timeColumns}>
@@ -75,10 +102,12 @@ const TimePickerPanel: React.FC<TimePickerPanelProps> = ({
               key={hour.value}
               className={`
                 ${styles.timeUnit}
-                ${hour.value === value.getHours() ? styles.selected : ""}
+                ${hour.value === selectedHour ? styles.selected : ""}
                 ${hour.disabled ? styles.disabled : ""}
               `}
-              onClick={() => !hour.disabled && onTimeChange("hour", hour.value)}
+              onClick={() =>
+                !hour.disabled && onTimeChange("hour", toHour24(hour.value))
+              }
             >
               {hour.label}
             </div>

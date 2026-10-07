@@ -1,35 +1,66 @@
+@use "./variables";
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
+// Sample-site variables.
+//
+// Colors, shadows and radii come from the @minerva/lib-core design tokens
+// (declared in lib-core's default-theme.scss and overridden per theme by
+// <ConfigProvider>). Do NOT redefine lib tokens here (--primary-color,
+// --border-color, --success-color, --shadow-*, --radius-*, ...): this file is
+// loaded after the library CSS and would clobber the active theme.
+// Sample-only names below are aliases of lib tokens so they follow the theme.
 :root {
-  // Light theme
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-active: #1d4ed8;
-  --primary-focus: rgba(59, 130, 246, 0.5);
+  // Colors (aliases of lib tokens)
+  --primary-hover: var(--primary-color-hover);
+  --primary-active: var(--primary-color-active);
+  --primary-focus: var(--focus-ring-color);
+  --primary-dark: var(--primary-color-active);
+  --primary-darker-color: var(--primary-color-active);
+  // r, g, b of --primary-color; kept in sync by ThemeModeProvider at runtime
+  --primary-rgb: 37, 99, 235;
 
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-hover: #f1f5f9;
-  --bg-active: #e2e8f0;
+  --bg-base: var(--background-color);
+  --bg-primary: var(--background-color);
+  --bg-secondary: var(--surface-muted-color);
+  --bg-subtle: var(--surface-muted-color);
+  --bg-surface: var(--surface-color);
+  --bg-hover: color-mix(in srgb, var(--foreground-color) 10%, var(--background-color));
+  --bg-active: color-mix(in srgb, var(--foreground-color) 16%, var(--background-color));
+  --surface-card: var(--surface-color);
+  --surface-ground: var(--background-color);
 
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-disabled: #94a3b8;
+  --text-primary: var(--text-color);
+  --text-secondary: var(--text-secondary-color);
+  --text-disabled: var(--text-disabled-color);
+  --text-muted: var(--text-gray);
+  --text-on-primary: var(--text-inverse-color);
 
-  --border-color: #e2e8f0;
-  --border-hover: #cbd5e1;
+  --border-hover: var(--border-strong-color);
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --scrollbar-track: var(--surface-muted-color);
+  --scrollbar-thumb: color-mix(in srgb, var(--foreground-color) 25%, var(--background-color));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--foreground-color) 40%, var(--background-color));
+
+  // Code blocks stay dark (prism-tomorrow) in every theme; the header bar
+  // follows the page theme so its controls keep using --text-*/--bg-* tokens.
+  --code-bg: #1e1e2e;
+  --code-content-bg: #1e1e2e;
+  --code-text: #cdd6f4;
+  --code-header-bg: var(--bg-secondary);
+  --code-line-number: #7f849c;
+  --code-line-number-bg: #181825;
+  --code-line-hover-bg: rgba(255, 255, 255, 0.05);
+
+  --radius: var(--radius-md);
+  --radius-xl: 12px;
+  --shadow: var(--shadow-md);
 
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
+  --transition-all: all var(--transition-normal);
+  --transition-colors: color var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal);
 
   // Typography
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -43,6 +74,17 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+
+  --text-xs: var(--font-size-xs);
+  --text-sm: var(--font-size-sm);
+  --text-base: var(--font-size-base);
+  --text-lg: var(--font-size-lg);
+  --text-xl: var(--font-size-xl);
+  --text-2xl: var(--font-size-2xl);
+  --text-3xl: var(--font-size-3xl);
+  --text-4xl: var(--font-size-4xl);
+  --text-5xl: var(--font-size-5xl);
 
   // Spacing
   --spacing-1: 0.25rem;
@@ -56,34 +98,11 @@
   --spacing-12: 3rem;
   --spacing-16: 4rem;
 
-  // Additional Colors
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --info-color: #3b82f6;
-  --danger-color: #ef4444;
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --primary-color: #60a5fa;
-  --primary-hover: #3b82f6;
-  --primary-active: #2563eb;
-  --primary-focus: rgba(96, 165, 250, 0.5);
-
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-hover: #334155;
-  --bg-active: #475569;
-
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-disabled: #64748b;
-
-  --border-color: #334155;
-  --border-hover: #475569;
-
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  color-scheme: dark;
 }
 
 * {
@@ -289,7 +308,7 @@ body {
 // 美化选择文本
 ::selection {
   background: var(--primary-color);
-  color: white;
+  color: var(--text-inverse-color);
 }
 
 // 全局过渡动画

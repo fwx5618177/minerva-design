@@ -1,6 +1,7 @@
-import ProgressIndicator from "./progressIndicator";
+import ProgressIndicator from "./ProgressIndicator";
 import type { ProgressIndicatorProps } from "./types";
 
-export { ProgressIndicator, ProgressIndicatorProps };
+export { ProgressIndicator };
+export type { ProgressIndicatorProps };
 
 export default ProgressIndicator;

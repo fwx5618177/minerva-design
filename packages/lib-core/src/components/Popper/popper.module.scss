@@ -1,40 +1,44 @@
-@import "../../styles/common.scss"; // your global styles or variables
+@use "sass:map";
 
-// Colors
+// Colors (design tokens)
 $popper-colors: (
   default: (
-    bg: #ffffff,
-    text: rgba(0, 0, 0, 0.85),
-    border: #e8e8e8,
-    hover-bg: #f5f5f5,
-    active-bg: #e6f7ff,
-    active-color: #1890ff,
-    focus-shadow: rgba(24, 144, 255, 0.2),
+    bg: var(--surface-elevated-color),
+    text: var(--text-color),
+    border: var(--border-color),
+    hover-bg: var(--surface-muted-color),
+    active-bg: var(--primary-color-subtle),
+    active-color: var(--primary-color-text),
+    focus-shadow: var(--focus-ring-color),
   ),
   primary: (
-    bg: #1890ff,
-    text: #ffffff,
-    border: #1890ff,
+    bg: var(--primary-color),
+    text: var(--text-inverse-color),
+    border: var(--primary-color),
+    hover-bg: var(--primary-color-hover),
+    active-bg: var(--primary-color-active),
   ),
   secondary: (
-    bg: #6c757d,
-    text: #ffffff,
-    border: #6c757d,
+    bg: var(--secondary-color),
+    text: var(--text-inverse-color),
+    border: var(--secondary-color),
+    hover-bg: var(--secondary-color-hover),
+    active-bg: var(--secondary-color-active),
   ),
   success: (
-    bg: #52c41a,
-    text: #ffffff,
-    border: #52c41a,
+    bg: var(--success-color),
+    text: var(--text-inverse-color),
+    border: var(--success-color),
   ),
   warning: (
-    bg: #faad14,
-    text: #ffffff,
-    border: #faad14,
+    bg: var(--warning-color),
+    text: var(--text-inverse-color),
+    border: var(--warning-color),
   ),
   error: (
-    bg: #ff4d4f,
-    text: #ffffff,
-    border: #ff4d4f,
+    bg: var(--danger-color),
+    text: var(--text-inverse-color),
+    border: var(--danger-color),
   ),
 );
 
@@ -58,9 +62,9 @@ $popper-sizes: (
 );
 
 // Shadows
-$shadow-sm: 0 3px 6px -4px rgba(0, 0, 0, 0.12);
-$shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.08);
-$shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+$shadow-sm: var(--shadow-sm);
+$shadow-md: var(--shadow-md);
+$shadow-lg: var(--shadow-lg);
 
 .popper {
   position: fixed;
@@ -70,7 +74,7 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   font-size: 0.875rem;
   line-height: 1.5;
   z-index: 1500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   opacity: 0;
   transform: translate3d(0, 0, 0);
   transition: opacity 0.2s ease-in-out;
@@ -88,24 +92,29 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   }
 
   &.default {
-    background-color: map-get(map-get($popper-colors, default), bg);
-    color: map-get(map-get($popper-colors, default), text);
-    border: 1px solid map-get(map-get($popper-colors, default), border);
+    background-color: map.get(map.get($popper-colors, default), bg);
+    color: map.get(map.get($popper-colors, default), text);
+    border: 1px solid map.get(map.get($popper-colors, default), border);
 
     .menuItem,
     .selectItem {
       &:hover {
-        background-color: map-get(map-get($popper-colors, default), hover-bg);
+        background-color: map.get(map.get($popper-colors, default), hover-bg);
       }
 
       &:active,
       &.active {
-        background-color: map-get(map-get($popper-colors, default), active-bg);
-        color: map-get(map-get($popper-colors, default), active-color);
+        background-color: map.get(map.get($popper-colors, default), active-bg);
+        color: map.get(map.get($popper-colors, default), active-color);
       }
 
       &:focus {
-        box-shadow: 0 0 0 2px map-get(map-get($popper-colors, default), focus-shadow);
+        box-shadow: 0 0 0 2px map.get(map.get($popper-colors, default), focus-shadow);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: 2px;
       }
     }
   }
@@ -113,8 +122,9 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   &.tooltip {
     font-size: 0.875rem;
     line-height: 1.5;
-    background-color: #333333;
-    color: #ffffff;
+    // Intentionally inverted: dark-on-light in light themes, light-on-dark in dark themes.
+    background-color: color-mix(in srgb, var(--foreground-color) 90%, var(--background-color));
+    color: var(--background-color);
     pointer-events: none; // tooltip 不需要交互
 
     &.multiline {
@@ -134,8 +144,9 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   &.menu,
   &.select {
     position: absolute;
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--surface-elevated-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
     border-radius: 0.5rem;
     overflow: hidden;
     z-index: 1000;
@@ -151,16 +162,16 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
     }
 
     &::-webkit-scrollbar-track {
-      background: #cbcbcb;
+      background: var(--surface-muted-color);
       border-radius: inherit;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #888;
+      background: var(--border-strong-color);
       border-radius: 4px;
 
       &:hover {
-        background: #555;
+        background: var(--text-secondary-color);
       }
     }
 
@@ -170,7 +181,7 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
       text-align: center;
       font-size: clamp(0.6rem, 2vw, 0.8rem);
       font-weight: 600;
-      color: #000;
+      color: var(--text-color);
       transition:
         background-color 0.3s ease,
         color 0.3s ease;
@@ -178,109 +189,88 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
       &:hover,
       &:focus,
       &:active {
-        background-color: #e9ecef;
-        color: #007bff !important;
+        background-color: var(--surface-muted-color);
+        color: var(--primary-color-text) !important;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -2px;
       }
 
       &.disabled {
-        color: #c0c0c0;
+        color: var(--text-disabled-color);
         cursor: not-allowed;
         pointer-events: none;
       }
     }
   }
 
-  // Arrow styles
+  // Arrow: a rotated square on the edge that faces the anchor.
+  // It inherits the popper background/border so variants just work.
   .popperArrow {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    border: 0 solid transparent;
+    border-color: inherit;
+    transform: rotate(45deg);
     pointer-events: none;
-    overflow: visible;
-    z-index: 1;
-
-    .popperArrowInner {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: inherit;
-      border-color: inherit;
-      transform: rotate(45deg);
-    }
 
     &[data-placement^="top"] {
-      bottom: -12px;
-      .popperArrowInner {
-        top: -6px;
-        border-bottom: 1px solid;
-        border-right: 1px solid;
-      }
+      bottom: -6px;
+      border-bottom-width: 1px;
+      border-right-width: 1px;
     }
 
     &[data-placement^="bottom"] {
-      top: -12px;
-      .popperArrowInner {
-        bottom: -6px;
-        border-top: 1px solid;
-        border-left: 1px solid;
-      }
+      top: -6px;
+      border-top-width: 1px;
+      border-left-width: 1px;
     }
 
     &[data-placement^="left"] {
-      right: -12px;
-      .popperArrowInner {
-        bottom: 10px;
-        left: -6px;
-        border-top: 1px solid;
-        border-right: 1px solid;
-      }
+      right: -6px;
+      border-top-width: 1px;
+      border-right-width: 1px;
     }
 
     &[data-placement^="right"] {
-      left: -12px;
-      .popperArrowInner {
-        bottom: 10px;
-        right: -6px;
-        border-bottom: 1px solid;
-        border-left: 1px solid;
-      }
+      left: -6px;
+      border-bottom-width: 1px;
+      border-left-width: 1px;
     }
-  }
 
-  // Variant-specific arrow styles
-  &.default .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, default), bg);
-    border-color: map-get(map-get($popper-colors, default), border);
-  }
+    &[data-placement="top"],
+    &[data-placement="bottom"] {
+      left: calc(50% - 5px);
+    }
 
-  &.primary .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, primary), bg);
-    border-color: map-get(map-get($popper-colors, primary), border);
-  }
+    &[data-placement="topStart"],
+    &[data-placement="bottomStart"] {
+      left: 12px;
+    }
 
-  &.secondary .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, secondary), bg);
-    border-color: map-get(map-get($popper-colors, secondary), border);
-  }
+    &[data-placement="topEnd"],
+    &[data-placement="bottomEnd"] {
+      right: 12px;
+    }
 
-  &.success .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, success), bg);
-    border-color: map-get(map-get($popper-colors, success), border);
-  }
+    &[data-placement="left"],
+    &[data-placement="right"] {
+      top: calc(50% - 5px);
+    }
 
-  &.warning .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, warning), bg);
-    border-color: map-get(map-get($popper-colors, warning), border);
-  }
+    &[data-placement="leftStart"],
+    &[data-placement="rightStart"] {
+      top: 12px;
+    }
 
-  &.error .popperArrow .popperArrowInner {
-    background-color: map-get(map-get($popper-colors, error), bg);
-    border-color: map-get(map-get($popper-colors, error), border);
-  }
-
-  &.tooltip .popperArrow .popperArrowInner {
-    background-color: #333333;
-    border-color: #333333;
+    &[data-placement="leftEnd"],
+    &[data-placement="rightEnd"] {
+      bottom: 12px;
+    }
   }
 
   // Animation
@@ -301,58 +291,61 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
 
   // Variants
   &.primary {
-    background-color: map-get(map-get($popper-colors, primary), bg);
-    color: map-get(map-get($popper-colors, primary), text);
-    border: 1px solid map-get(map-get($popper-colors, primary), border);
+    background-color: map.get(map.get($popper-colors, primary), bg);
+    color: map.get(map.get($popper-colors, primary), text);
+    border: 1px solid map.get(map.get($popper-colors, primary), border);
 
     .menuItem,
     .selectItem {
-      color: #fff;
+      color: map.get(map.get($popper-colors, primary), text);
 
       &:hover {
-        background-color: darken(map-get(map-get($popper-colors, primary), bg), 10%);
+        background-color: map.get(map.get($popper-colors, primary), hover-bg);
       }
 
       &:active,
       &.active {
-        background-color: darken(map-get(map-get($popper-colors, primary), bg), 15%);
+        background-color: map.get(map.get($popper-colors, primary), active-bg);
       }
     }
   }
 
   &.secondary {
-    background-color: map-get(map-get($popper-colors, secondary), bg);
-    color: map-get(map-get($popper-colors, secondary), text);
-    border: 1px solid map-get(map-get($popper-colors, secondary), border);
+    background-color: map.get(map.get($popper-colors, secondary), bg);
+    color: map.get(map.get($popper-colors, secondary), text);
+    border: 1px solid map.get(map.get($popper-colors, secondary), border);
 
     .menuItem,
     .selectItem {
-      color: #fff;
+      color: map.get(map.get($popper-colors, secondary), text);
 
       &:hover {
-        background-color: darken(map-get(map-get($popper-colors, secondary), bg), 10%);
+        background-color: map.get(map.get($popper-colors, secondary), hover-bg);
       }
 
       &:active,
       &.active {
-        background-color: darken(map-get(map-get($popper-colors, secondary), bg), 15%);
+        background-color: map.get(map.get($popper-colors, secondary), active-bg);
       }
     }
   }
 
   &.success {
-    background-color: #4caf50;
-    color: #ffffff;
+    background-color: map.get(map.get($popper-colors, success), bg);
+    color: map.get(map.get($popper-colors, success), text);
+    border: 1px solid map.get(map.get($popper-colors, success), border);
   }
 
   &.warning {
-    background-color: #ff9800;
-    color: #ffffff;
+    background-color: map.get(map.get($popper-colors, warning), bg);
+    color: map.get(map.get($popper-colors, warning), text);
+    border: 1px solid map.get(map.get($popper-colors, warning), border);
   }
 
   &.error {
-    background-color: #f44336;
-    color: #ffffff;
+    background-color: map.get(map.get($popper-colors, error), bg);
+    color: map.get(map.get($popper-colors, error), text);
+    border: 1px solid map.get(map.get($popper-colors, error), border);
   }
 
   // Size variants
@@ -459,16 +452,16 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
+      background: color-mix(in srgb, var(--foreground-color) 20%, transparent);
       border-radius: 3px;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.3);
+        background: color-mix(in srgb, var(--foreground-color) 30%, transparent);
       }
     }
 
     &::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
+      background: color-mix(in srgb, var(--foreground-color) 5%, transparent);
     }
   }
 
@@ -503,12 +496,12 @@ $shadow-lg: 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #bfbfbf;
+    background: var(--border-strong-color);
     border-radius: 3px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: var(--surface-muted-color);
     border-radius: 3px;
   }
 }

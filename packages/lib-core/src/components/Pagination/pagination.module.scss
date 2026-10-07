@@ -1,11 +1,9 @@
-@import "../../styles/themes/light.module.scss";
-
 .pagination {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #1e293b;
+  color: var(--text-color);
   user-select: none;
 
   .item {
@@ -20,43 +18,49 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    color: #1e293b;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
     font-weight: 500;
 
     &:hover {
-      border-color: #3b82f6;
-      color: #3b82f6;
+      border-color: var(--primary-color);
+      color: var(--primary-color-text);
       transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+      box-shadow: 0 2px 4px color-mix(in srgb, var(--primary-color) 10%, transparent);
       z-index: 1;
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
       z-index: 2;
     }
 
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+
     &.active {
-      background: #3b82f6;
-      border-color: #3b82f6;
-      color: #ffffff;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--text-inverse-color);
       font-weight: 600;
       z-index: 3;
 
       &:hover {
-        background: #2563eb;
+        background: var(--primary-color-hover);
+        border-color: var(--primary-color-hover);
+        color: var(--text-inverse-color);
         transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 4px 6px color-mix(in srgb, var(--primary-color) 20%, transparent);
       }
     }
 
     &.disabled {
-      background: #f8fafc;
-      border-color: #e2e8f0;
-      color: #94a3b8;
+      background: var(--surface-muted-color);
+      border-color: var(--border-color);
+      color: var(--text-disabled-color);
       cursor: not-allowed;
       pointer-events: none;
       transform: none;
@@ -91,7 +95,7 @@
     .ripple {
       position: absolute;
       border-radius: 50%;
-      background: rgba(59, 130, 246, 0.3);
+      background: color-mix(in srgb, var(--primary-color) 30%, transparent);
       transform: scale(0);
       animation: ripple 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       pointer-events: none;
@@ -109,26 +113,27 @@
       width: 40px;
       height: 24px;
       padding: 0 4px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
+      background: var(--surface-color);
       text-align: center;
       font-size: 14px;
-      color: #1e293b;
+      color: var(--text-color);
       transition: all 0.2s;
 
       &:hover {
-        border-color: #3b82f6;
+        border-color: var(--primary-color);
       }
 
       &:focus {
         outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px var(--focus-ring-color);
       }
     }
 
     .simpleDivider {
-      color: #64748b;
+      color: var(--text-secondary-color);
       margin: 0 4px;
     }
   }
@@ -139,28 +144,28 @@
     align-items: center;
     gap: 8px;
     margin-left: 16px;
-    color: #64748b;
+    color: var(--text-secondary-color);
 
     input {
       width: 48px;
       height: 32px;
       padding: 0 8px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
       text-align: center;
       transition: all 0.2s;
-      background: #ffffff;
-      color: #1e293b;
+      background: var(--surface-color);
+      color: var(--text-color);
       font-size: 14px;
 
       &:hover {
-        border-color: #3b82f6;
+        border-color: var(--primary-color);
       }
 
       &:focus {
         outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px var(--focus-ring-color);
       }
     }
   }
@@ -172,138 +177,39 @@
     select {
       height: 32px;
       padding: 0 32px 0 12px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
-      background: #ffffff
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")
-        no-repeat right 8px center;
-      background-size: 16px;
+      background-color: var(--surface-color);
+      // Chevron drawn with gradients so it follows the theme text color
+      background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary-color) 50%), linear-gradient(135deg, var(--text-secondary-color) 50%, transparent 50%);
+      background-position:
+        calc(100% - 17px) 50%,
+        calc(100% - 12px) 50%;
+      background-size: 5px 5px;
+      background-repeat: no-repeat;
       appearance: none;
       transition: all 0.2s;
       cursor: pointer;
-      color: #1e293b;
+      color: var(--text-color);
       font-size: 14px;
 
       &:hover {
-        border-color: #3b82f6;
+        border-color: var(--primary-color);
       }
 
       &:focus {
         outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px var(--focus-ring-color);
       }
     }
   }
 
   // 总数显示
   .total {
-    color: #64748b;
+    color: var(--text-secondary-color);
     margin-right: 16px;
     font-size: 14px;
-  }
-}
-
-// 暗色主题
-:global(.dark) {
-  .pagination {
-    color: #f1f5f9;
-
-    .item {
-      background: #1e293b;
-      border-color: #334155;
-      color: #f1f5f9;
-
-      &:hover {
-        border-color: #60a5fa;
-        color: #60a5fa;
-        background: #1e293b;
-      }
-
-      &.active {
-        background: #3b82f6;
-        border-color: #3b82f6;
-        color: #ffffff;
-
-        &:hover {
-          background: #2563eb;
-        }
-      }
-
-      &.disabled {
-        background: #0f172a;
-        border-color: #334155;
-        color: #64748b;
-      }
-
-      &.jump {
-        .jumpHint {
-          color: #94a3b8;
-        }
-      }
-    }
-
-    .simpleInput {
-      input {
-        background: #1e293b;
-        border-color: #334155;
-        color: #f1f5f9;
-
-        &:hover {
-          border-color: #60a5fa;
-        }
-
-        &:focus {
-          border-color: #60a5fa;
-          box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-        }
-      }
-
-      .simpleDivider {
-        color: #94a3b8;
-      }
-    }
-
-    .jumper {
-      color: #94a3b8;
-
-      input {
-        background: #1e293b;
-        border-color: #334155;
-        color: #f1f5f9;
-
-        &:hover {
-          border-color: #60a5fa;
-        }
-
-        &:focus {
-          border-color: #60a5fa;
-          box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-        }
-      }
-    }
-
-    .sizeChanger {
-      select {
-        background-color: #1e293b;
-        border-color: #334155;
-        color: #f1f5f9;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f1f5f9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-
-        &:hover {
-          border-color: #60a5fa;
-        }
-
-        &:focus {
-          border-color: #60a5fa;
-          box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-        }
-      }
-    }
-
-    .total {
-      color: #94a3b8;
-    }
   }
 }
 

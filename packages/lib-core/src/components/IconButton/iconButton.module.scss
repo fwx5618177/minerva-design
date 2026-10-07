@@ -1,4 +1,4 @@
-@import "../../styles/common.scss";
+@use "../../styles/mixins" as *;
 
 .iconButton {
   position: relative;
@@ -12,7 +12,7 @@
   padding: 0;
   background-color: transparent;
 
-  @extend .commonRippleEffect;
+  @include ripple-effect;
 
   // Size variants
   &.small {
@@ -44,74 +44,74 @@
 
   // Style variants
   &.default {
-    color: #666666;
+    color: var(--text-secondary-color);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(0, 0, 0, 0.08);
+      background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
     }
     &.active {
-      color: #333333;
-      background-color: rgba(0, 0, 0, 0.12);
+      color: var(--text-color);
+      background-color: color-mix(in srgb, var(--text-color) 12%, transparent);
     }
   }
 
   &.primary {
-    color: #1976d2;
+    color: var(--primary-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(25, 118, 210, 0.12);
+      background-color: var(--primary-color-subtle);
     }
     &.active {
-      color: #0d47a1;
-      background-color: rgba(25, 118, 210, 0.16);
+      color: var(--primary-color-active);
+      background-color: color-mix(in srgb, var(--primary-color) 16%, transparent);
     }
   }
 
   &.secondary {
-    color: #9c27b0;
+    color: var(--secondary-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(156, 39, 176, 0.12);
+      background-color: var(--secondary-color-subtle);
     }
     &.active {
-      color: #7b1fa2;
-      background-color: rgba(156, 39, 176, 0.16);
+      color: var(--secondary-color-active);
+      background-color: color-mix(in srgb, var(--secondary-color) 16%, transparent);
     }
   }
 
   &.success {
-    color: #4caf50;
+    color: var(--success-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(76, 175, 80, 0.12);
+      background-color: var(--success-color-subtle);
     }
     &.active {
-      color: #2e7d32;
-      background-color: rgba(76, 175, 80, 0.16);
+      color: var(--success-color-active);
+      background-color: color-mix(in srgb, var(--success-color) 16%, transparent);
     }
   }
 
   &.error {
-    color: #d32f2f;
+    color: var(--danger-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(211, 47, 47, 0.12);
+      background-color: var(--danger-color-subtle);
     }
     &.active {
-      color: #c62828;
-      background-color: rgba(211, 47, 47, 0.16);
+      color: var(--danger-color-active);
+      background-color: color-mix(in srgb, var(--danger-color) 16%, transparent);
     }
   }
 
   &.warning {
-    color: #ff9800;
+    color: var(--warning-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: rgba(255, 152, 0, 0.12);
+      background-color: var(--warning-color-subtle);
     }
     &.active {
-      color: #f57c00;
-      background-color: rgba(255, 152, 0, 0.16);
+      color: var(--warning-color-active);
+      background-color: color-mix(in srgb, var(--warning-color) 16%, transparent);
     }
   }
 
   // States
   &:focus-visible {
-    outline: 2px solid #1976d2;
+    outline: 2px solid var(--focus-ring-color);
     outline-offset: 2px;
   }
 
@@ -131,7 +131,7 @@
     border-radius: 50%;
     transform: scale(0);
     animation: ripple 600ms linear;
-    background-color: rgba(0, 0, 0, 0.16);
+    background-color: color-mix(in srgb, var(--text-color) 16%, transparent);
     pointer-events: none;
   }
 
@@ -143,15 +143,15 @@
   }
 
   &:hover:not(.disabled):not(.loading) {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px var(--shadow-color);
   }
 
   &:active:not(.disabled):not(.loading) {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
   }
 
   &.active {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
   }
 
   // Add SVG fill color support
@@ -162,7 +162,7 @@
 
   &.active {
     color: var(--active-color, currentColor);
-    background-color: var(--hover-color, rgba(0, 0, 0, 0.12));
+    background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 12%, transparent));
 
     svg {
       fill: var(--fill-color, currentColor);
@@ -171,14 +171,14 @@
 
   // Custom colors
   &:hover:not(.disabled):not(.loading) {
-    background-color: var(--hover-color, rgba(0, 0, 0, 0.08));
+    background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 8%, transparent));
   }
 
   // Override default variant styles when custom colors are used
   &[style] {
     &.active {
       color: var(--active-color);
-      background-color: var(--hover-color, rgba(0, 0, 0, 0.12));
+      background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 12%, transparent));
     }
 
     &:hover:not(.disabled):not(.loading) {

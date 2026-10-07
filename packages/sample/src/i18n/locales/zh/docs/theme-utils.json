@@ -1,0 +1,100 @@
+{
+  "title": "主题工具",
+  "description": "用于在 ConfigProvider 之外解析、应用和查看主题的函数与主题对象。",
+  "reference": {
+    "title": "参考",
+    "text": "ConfigProvider 和 useAutoTheme 都基于这些工具函数构建。可用它们在不使用 React 的情况下应用主题、为单个元素设置主题，或读取令牌的值。",
+    "name": "名称",
+    "signature": "签名",
+    "applyThemeStyles": "解析主题并以 CSS 变量的形式写到 <html> 上（全局生效）。上一个主题中有而新主题未定义的变量会被移除。",
+    "generateCSSVariables": "把主题对象的每个令牌以 --<token> 的形式写入给定的样式声明（例如 element.style），并移除过期的变量。可用于为单个元素设置主题。",
+    "resolveTheme": "把任意可接受的主题值转换为主题对象：\"auto\" 和 { light, dark } 组合使用 systemTheme，名称会在 themes 中查找，对象原样返回。遇到未知名称会抛错。无副作用。",
+    "getSystemTheme": "根据 prefers-color-scheme 返回操作系统的配色方案；matchMedia 不可用时（SSR、测试）返回 \"light\"。",
+    "isBilingualTheme": "类型守卫：对由主题对象组成的 { light, dark } 组合返回 true。",
+    "themes": "以 theme 属性可接受的名称为键的内置主题集合。",
+    "builtIns": "内置主题对象，也会单独导出；展开它们即可创建自定义主题。"
+  },
+  "usage": {
+    "apply": "全局应用主题",
+    "applyText": "applyThemeStyles 正是 ConfigProvider 所调用的函数。可在非 React 代码中使用，或在首次渲染前应用主题，以避免默认颜色闪烁。",
+    "generate": "为单个元素设置主题",
+    "generateText": "generateCSSVariables 接受任意 CSSStyleDeclaration，因此可以把令牌限定在某个元素上：其后代元素会继承这些值。",
+    "resolve": "解析主题",
+    "resolveText": "resolveTheme、isBilingualTheme 和 getSystemTheme 没有副作用；可用它们计算令牌的值，例如为 canvas 或图表设置样式。"
+  },
+  "demos": {
+    "theme-swatches": {
+      "title": "内置主题",
+      "description": "从 themes 中读取令牌值并以色块展示，不会写入任何 CSS 变量。"
+    },
+    "resolve-theme": {
+      "title": "解析主题值",
+      "description": "展示 resolveTheme 在给定系统配色下如何解析各类主题值，以及 isBilingualTheme / getSystemTheme 的返回值。"
+    },
+    "scoped-preview": {
+      "title": "在元素中预览主题",
+      "description": "generateCSSVariables 把解析后的主题写到容器的 style 上，因此只有容器内的组件会变化。"
+    }
+  },
+  "api": {
+    "ThemeProps": {
+      "primary-color": "品牌 / 强调色：主要按钮、激活状态、焦点环。",
+      "secondary-color": "secondary 变体使用的中性强调色。",
+      "success-color": "表示成功状态的颜色（success 变体）。",
+      "danger-color": "危险 / 错误状态色（danger 和 error 变体）。",
+      "warning-color": "警告状态色。",
+      "info-color": "信息状态色。",
+      "light-color": "浅色中性色（旧版；light 变体）。",
+      "dark-color": "深色中性色（旧版；dark 变体）。",
+      "background-color": "页面背景色。--surface-color 的默认值。",
+      "foreground-color": "主要文字颜色。--text-color 的默认值。",
+      "border-color": "默认边框 / 分割线颜色。",
+      "text-gray": "次要、低强调的文字（与背景的对比度应不低于 4.5:1）。",
+      "primary-gradient-start": "主渐变的起始颜色。",
+      "primary-gradient-end": "主渐变的结束颜色。",
+      "secondary-gradient-start": "次渐变的起始颜色。",
+      "secondary-gradient-end": "次渐变的结束颜色。",
+      "highlight-color": "高亮 / 标记颜色。",
+      "shadow-color": "--shadow-sm、--shadow-md 和 --shadow-lg 使用的基础阴影颜色。",
+      "muted-color": "弱化的界面颜色（占位符、图标、未激活的控件）。",
+      "link-color": "链接颜色。",
+      "link-hover-color": "链接悬停时的颜色。",
+      "link-active-color": "链接按下时的颜色。",
+      "link-visited-color": "已访问链接的颜色。"
+    },
+    "SemanticThemeProps": {
+      "surface-color": "卡片、输入框等组件表面的背景色。",
+      "surface-muted-color": "悬停行、禁用控件、轨道等的背景色。",
+      "surface-elevated-color": "弹出层、菜单、下拉框、文字提示的背景色。",
+      "overlay-color": "遮罩 / 模态框背景层。",
+      "border-strong-color": "对比度更高的边框（输入框、悬停时的边框）。",
+      "text-color": "主要文字颜色（默认为 --foreground-color）。",
+      "text-secondary-color": "次要文字（描述、辅助说明）。",
+      "text-disabled-color": "禁用状态的文字。",
+      "text-inverse-color": "绘制在填充角色色背景上的文字（例如主要按钮）。",
+      "focus-ring-color": "焦点轮廓 / 焦点环颜色。",
+      "error-color": "--danger-color 的别名。",
+      "shadow-sm": "小号阴影。",
+      "shadow-md": "中号阴影（弹出层、菜单）。",
+      "shadow-lg": "大号阴影（对话框、浮层）。",
+      "radius-sm": "小圆角。",
+      "radius-md": "中等圆角。",
+      "radius-lg": "大圆角。"
+    },
+    "ComponentThemeProps": {
+      "btn-bg-color-success": "覆盖 success 按钮的背景色。",
+      "btn-bg-color-danger": "覆盖 error / danger 按钮的背景色。",
+      "btn-bg-color-warning": "覆盖 warning 按钮的背景色。",
+      "btn-bg-color-info": "覆盖 info 按钮的背景色。",
+      "btn-bg-color-hover": "覆盖主要按钮悬停时的背景色。",
+      "btn-bg-color-active": "覆盖主要按钮激活时的背景色。",
+      "avatar-bg-color-info": "info 头像的背景色。",
+      "avatar-bg-color-success": "success 头像的背景色。",
+      "avatar-bg-color-danger": "danger 头像的背景色。",
+      "avatar-bg-color-warning": "warning 头像的背景色。",
+      "card-bg-color": "卡片背景色（默认为 --surface-color）。",
+      "card-bg-color-content": "卡片内容区背景色（默认为 --surface-color）。",
+      "card-border-color": "卡片边框颜色（默认为 --border-color）。"
+    }
+  }
+}

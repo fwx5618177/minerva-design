@@ -1,0 +1,40 @@
+{
+  "title": "安装",
+  "description": "在 React 项目中添加 Minerva、引入样式表，并可选地注册 Web Components。",
+  "requirements": {
+    "title": "环境要求",
+    "react": "React 与 React DOM 18 或更高版本（@minerva/lib-core 的 peer 依赖）。",
+    "bundler": "支持 ES 模块和 CSS 导入的构建工具，例如 Vite、webpack、Rspack 或 Next.js。同时也提供 CommonJS 构建。",
+    "browsers": "现代常青浏览器：主题令牌依赖 CSS 自定义属性和 color-mix()。"
+  },
+  "core": {
+    "title": "安装 React 组件",
+    "text": "使用你的包管理器安装 @minerva/lib-core。如果项目中还没有 react 和 react-dom，请一并安装。",
+    "peers": "react 和 react-dom 是 peer 依赖（>= 18），以确保应用中只有一份 React。i18next、react-i18next、react-icons 和 classnames 作为普通依赖会被自动安装。"
+  },
+  "styles": {
+    "title": "引入样式表",
+    "text": "组件样式和默认主题令牌被打包在同一个 CSS 文件中。请在应用的入口文件中引入一次：",
+    "note": "缺少 @minerva/lib-core/style.css 时组件将没有样式。只需引入一次；在多个模块中重复引入不会出错，但没有必要。"
+  },
+  "app": {
+    "title": "第一个组件",
+    "text": "用 ConfigProvider 包裹应用，然后开始使用组件：",
+    "provider": "渲染组件并不强制需要 ConfigProvider，但它会应用主题（默认跟随系统配色）、设置 lib-core 内置文案的语言，并使 useConfig() 可用。请在应用根部使用一个 Provider。"
+  },
+  "webComponents": {
+    "title": "Web Components（可选）",
+    "text": "@minerva/lib-web-components 以与框架无关的自定义元素提供相同的设计。安装后引入一次该包即可注册元素：",
+    "typings": "如需在 React JSX 中获得 <minerva-button> 的类型检查和自动补全，请引用包内的类型声明一次，例如在 global.d.ts 中："
+  },
+  "typescript": {
+    "title": "TypeScript",
+    "text": "两个包都自带类型声明，无需安装 @types 包。Props 类型（ButtonProps、TagProps 等）和主题类型（Theme、ComponentTheme、ThemeName 等）都从包的根入口导出："
+  },
+  "next": {
+    "title": "下一步",
+    "introduction": "了解设计原则以及所有组件遵循的约定。",
+    "theming": "内置主题、设计令牌与自定义主题。",
+    "components": "从第一个组件页面及其在线示例开始。"
+  }
+}

@@ -39,7 +39,7 @@ export const Badge: React.FC<BadgeProps> = ({
   const isValidElement = React.isValidElement(children);
   const badgeContent = dot
     ? null
-    : content || (!isValidElement ? children : "Badge");
+    : (content ?? (!isValidElement ? children : "Badge"));
 
   return (
     <div className={styles.badgeWrapper}>
@@ -55,7 +55,6 @@ export const Badge: React.FC<BadgeProps> = ({
         `}
         aria-label={ariaLabel}
         role="status"
-        tabIndex={0}
         style={{
           backgroundColor: bgColor,
           color: textColor,

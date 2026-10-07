@@ -12,219 +12,257 @@
 
 </div>
 
-一个支持Web应用的多功能组件库。使用现代Web技术构建，注重性能和灵活性。
+Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和一组与框架无关的 Web Components，统一在一个 pnpm monorepo 中开发。
 
 ## 🌟 演示和文档
 
-访问我们的文档站点：[https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
+文档与在线演示：[https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
 
 ## ✨ 特性
 
-- **模块支持**：ESM、CommonJS
-- **版本管理**：提供免费版和付费版，支持使用时间计算
-- **WASM集成**：高性能计算能力
-- **开发工具**：ESLint、Prettier、Husky、Commitlint、Standard Version
-- **丰富组件**：完整的UI组件集
-- **TypeScript支持**：完整的类型定义
-- **自定义能力**：丰富的主题和样式选项
+- **React 组件**：30+ 个组件，支持 React 18 及以上版本
+- **Web Components**：基于 Lit 的自定义元素，可在任意框架中使用，也可不依赖框架
+- **ESM + CommonJS**：同时提供两种模块格式
+- **TypeScript**：自带类型定义
+- **主题**：支持 light、dark、`github-dark` 或自定义主题，基于 CSS 自定义属性实现；默认跟随系统配色
+- **国际化**：内置英文、中文和法文语言包
 
-## 📦 组件
+## 📦 包
 
-### 已实现组件 ✅
+| 包                            | 说明                                                                                     |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `@minerva/lib-core`           | React（>= 18）组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom`。 |
+| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                     |
+| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                         |
 
-- **基础组件**
-  - 🟢 按钮 (Button) `v1.0.0`
-  - 🟢 图标按钮 (IconButton) `v1.0.0`
-    - ✨ 阴影效果
-    - ✨ 涟漪效果
-  - 🟢 文本框 (TextField) `v1.0.0`
-  - 🟢 搜索按钮 (SearchButton) `v1.0.0`
-  - 🟢 时间选择器 (TimePicker) `v1.0.0`
-    - ✨ 12/24小时制
-    - ✨ 秒数支持
-  - 🟢 弹出层 (Popper) `v1.0.0`
-  - 🟢 涟漪效果 (Ripple Effect) `v1.0.0`
+### 组件（`@minerva/lib-core`）
 
-### 开发中组件 🚧
+| 分类     | 组件                                                                                                                                                                                          |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 通用     | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                               |
+| 布局     | `Space`、`Divider`                                                                                                                                                                            |
+| 数据录入 | `TextField`、`AutoComplete`、`Cascader`、`Checkbox`、`Radio`、`RadioGroup`、`Switch`、`TimePicker`                                                                                            |
+| 数据展示 | `Avatar`、`AvatarGroup`、`Badge`、`Card`（`CardHeader`、`CardTitle`、`CardDescription`、`CardContent`、`CardFooter`）、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Pagination`、`VirtualList` |
+| 反馈     | `Alert`、`message` / `useMessage`、`ProgressIndicator`、`Skeleton`                                                                                                                            |
+| 浮层     | `Dropdown`、`Popper`、`Tooltip`                                                                                                                                                               |
 
-- **基础组件**
-
-  - ⏳ 复选框 (Checkbox)
-  - ⏳ 单选框 (Radio)
-  - ⏳ 开关 (Switch)
-  - ⏳ 选择器 (Select)
-  - ⏳ 日期选择器 (DatePicker)
-  - ⏳ 日期时间选择器 (DateTimePicker)
-  - ⏳ 滑块 (Slider)
-
-- **布局组件**
-
-  - ⏳ 栅格 (Grid)
-  - ⏳ 盒子 (Box)
-  - ⏳ 容器 (Container)
-  - ⏳ 堆栈 (Stack)
-
-- **导航组件**
-
-  - ⏳ 菜单 (Menu)
-  - ⏳ 标签页 (Tabs)
-  - ⏳ 面包屑 (Breadcrumb)
-  - ⏳ 分页 (Pagination)
-
-- **反馈组件**
-
-  - ⏳ 提示 (Alert)
-  - ⏳ 对话框 (Dialog)
-  - ⏳ 消息条 (Snackbar)
-  - ⏳ 进度条 (Progress)
-  - ⏳ 骨架屏 (Skeleton)
-
-- **数据展示**
-  - ⏳ 表格 (Table)
-  - ⏳ 列表 (List)
-  - ⏳ 树形控件 (Tree)
-  - ⏳ 卡片 (Card)
-  - ⏳ 徽章 (Badge)
-
-### 未来的Web组件 🔮
-
-我们计划实现原生Web Components支持，包括：
-
-- **核心Web组件**
-
-  - 🎯 自定义元素 (Custom Elements)
-  - 🎯 影子DOM (Shadow DOM)
-  - 🎯 HTML模板 (HTML Templates)
-  - 🎯 ES模块 (ES Modules)
-
-- **特性**
-  - 🎯 框架无关性
-  - 🎯 原生浏览器支持
-  - 🎯 样式封装
-  - 🎯 自定义事件
-  - 🎯 基于插槽的内容分发
-
-### 组件状态图例
-
-- 🟢 已发布 - 组件稳定且可用于生产环境
-- ⏳ 计划中 - 组件在开发路线图中
-- 🎯 未来 - 计划在未来版本中发布
-- ✨ 功能 - 组件的子功能
+除组件外，`@minerva/lib-core` 还导出 `ConfigProvider`、`useConfig`，Hooks `useAutoTheme`、`useLocale`、`useI18n`，工具函数 `applyThemeStyles`、`generateCSSVariables`，以及内置主题集合 `themes`（`light`、`dark`、`github-dark`）。
 
 ## 🚀 快速开始
 
 ### 安装
 
 ```bash
-pnpm add @minerva/lib-core @minerva/lib-theme
+pnpm add @minerva/lib-core react react-dom
 ```
 
-或者
+或
 
 ```bash
-yarn add @minerva/lib-core @minerva/lib-theme
+npm install @minerva/lib-core react react-dom
 ```
 
-或者
+或
 
 ```bash
-npm install @minerva/lib-core @minerva/lib-theme
+yarn add @minerva/lib-core react react-dom
 ```
 
 ### 基础用法
 
-```tsx
-import { Button, TextField } from "@minerva/lib-core";
-import { ThemeProvider } from "@minerva/lib-theme";
+先引入一次样式文件（例如在入口文件中），然后即可使用组件：
 
-function App() {
+```tsx
+import { useState } from "react";
+import {
+  Alert,
+  Button,
+  ConfigProvider,
+  Space,
+  Switch,
+  TextField,
+  message,
+} from "@minerva/lib-core";
+import "@minerva/lib-core/style.css";
+
+export default function App() {
+  const [name, setName] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
   return (
-    <ThemeProvider>
-      <TextField label="用户名" placeholder="请输入用户名" />
-      <Button variant="contained" color="primary">
-        提交
-      </Button>
-    </ThemeProvider>
+    <ConfigProvider>
+      <Space direction="vertical" size="medium">
+        <Alert variant="info" title="Welcome" closable>
+          Minerva is ready.
+        </Alert>
+        <TextField
+          name="username"
+          label="Username"
+          placeholder="Enter username"
+          value={name}
+          onChange={setName}
+          clearable
+        />
+        <Switch
+          label="Subscribe"
+          checked={subscribed}
+          onChange={(checked) => setSubscribed(checked)}
+        />
+        <Button
+          variant="primary"
+          onClick={() => message.success(`Hello, ${name}`)}
+        >
+          Submit
+        </Button>
+      </Space>
+    </ConfigProvider>
   );
 }
 ```
 
-### 进阶用法
+### 主题与语言
 
-#### 自定义主题
+`ConfigProvider` 通过在 `document.documentElement` 上设置 CSS 自定义属性（如 `--primary-color`、`--background-color`、`--text-gray`）来应用主题。
+
+- `theme`：`"auto"`（默认，跟随 `prefers-color-scheme`）、`"light"`、`"dark"`、`"github-dark"`、完整的主题对象，或 `{ light, dark }` 组合
+- `locale`：`{ language: "en" | "zh" | "fr" }`（默认 `"en"`）
 
 ```tsx
-import { createTheme, ThemeProvider } from "@minerva/lib-theme";
+import { ConfigProvider, themes, useConfig } from "@minerva/lib-core";
 
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-      light: "#42a5f5",
-      dark: "#1565c0",
-    },
-  },
-});
+const brandTheme = {
+  light: { ...themes.light, "primary-color": "#6750a4" },
+  dark: { ...themes.dark, "primary-color": "#d0bcff" },
+};
 
-function App() {
-  return <ThemeProvider theme={customTheme}>{/* 你的组件 */}</ThemeProvider>;
+function CurrentTheme() {
+  const { theme, locale } = useConfig();
+  return <pre>{JSON.stringify({ theme, locale })}</pre>;
+}
+
+export function Root() {
+  return (
+    <ConfigProvider theme={brandTheme} locale={{ language: "fr" }}>
+      <CurrentTheme />
+    </ConfigProvider>
+  );
 }
 ```
 
-#### 使用时间选择器
+传入 `theme="github-dark"`（或 `"light"` / `"dark"`）即可直接使用内置主题。
+
+### Message API
 
 ```tsx
-import { TimePicker } from "@minerva/lib-core";
+import { Button, message, useMessage } from "@minerva/lib-core";
 
-function TimePickerExample() {
-  const [time, setTime] = useState(null);
+export function SaveButton() {
+  const msg = useMessage();
 
-  return (
-    <TimePicker
-      value={time}
-      onChange={setTime}
-      format="24"
-      showSeconds
-      label="选择时间"
-    />
-  );
+  const save = () => {
+    msg
+      .loading({ content: "Saving...", duration: 1000 })
+      .then(() => message.success("Saved"));
+  };
+
+  return <Button onClick={save}>Save</Button>;
 }
+```
+
+### Web Components
+
+```bash
+pnpm add @minerva/lib-web-components
+```
+
+注册一次自定义元素：
+
+```ts
+import "@minerva/lib-web-components";
+```
+
+之后即可在任意 HTML 中使用：
+
+```html
+<minerva-button variant="primary" size="medium" shape="pill">
+  Click me
+</minerva-button>
+<minerva-button variant="ghost" loading>Loading</minerva-button>
+<minerva-button variant="error" disabled aria-label="Delete">
+  Delete
+</minerva-button>
+```
+
+`<minerva-button>` 属性：
+
+| 属性                            | 取值                                                                                    |
+| ------------------------------- | --------------------------------------------------------------------------------------- |
+| `variant`                       | `primary`、`secondary`、`success`、`warning`、`error`、`info`、`ghost`、`retry`、`back` |
+| `size`                          | `tiny`、`small`、`medium`、`large`                                                      |
+| `shape`                         | `square`、`rounded`、`circle`、`pill`                                                   |
+| `loading`、`disabled`、`active` | 布尔值                                                                                  |
+| `aria-label`                    | 字符串                                                                                  |
+
+在 React 项目中如需 JSX 类型提示，请添加：
+
+```ts
+/// <reference types="@minerva/lib-web-components/react" />
 ```
 
 ## 🧑‍💻 开发者快速开始
 
-按照以下步骤开始开发：
-
-1. 克隆仓库：
+环境要求：本地开发需要 Node.js >= 22.12（见 `.nvmrc`）和 pnpm 11。构建各个包和文档站点在 Node.js 20.19+ 上同样可用（GitHub Pages 部署工作流使用的就是 Node 20）。
 
 ```bash
 git clone https://github.com/fwx5618177/minerva.git
 cd minerva
-```
-
-2. 安装依赖：
-
-```bash
 pnpm install
-```
-
-3. 启动开发服务器：
-
-```bash
 pnpm dev
 ```
 
-4. 运行测试：
+### 脚本
+
+| 命令                                | 说明                                                     |
+| ----------------------------------- | -------------------------------------------------------- |
+| `pnpm dev`                          | 构建组件库，然后启动文档/演示站点                        |
+| `pnpm build`                        | 按顺序构建所有包：lib-core → lib-web-components → sample |
+| `pnpm test`                         | 在所有包中运行 Vitest                                    |
+| `pnpm test:coverage`                | 运行测试并生成覆盖率报告                                 |
+| `pnpm lint`                         | 运行 ESLint（flat config）                               |
+| `pnpm typecheck`                    | 对所有包进行类型检查                                     |
+| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                          |
+| `pnpm clean`                        | 清理构建产物                                             |
+| `pnpm changeset`                    | 添加描述本次改动的 changeset                             |
+| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG       |
+| `pnpm release`                      | 构建组件库并发布到 npm                                   |
+
+### 工具链
+
+- 构建：Vite 8
+- 测试：Vitest、Testing Library、happy-dom
+- 代码检查与格式化：ESLint 10 + typescript-eslint、Prettier
+- Git Hooks：Husky、lint-staged、commitlint（Conventional Commits）
+- 文档部署：`.github/workflows/deploy.yml` 在每次推送到 `main` 时构建文档站点并发布到 GitHub Pages
+
+### 发布
+
+版本与变更日志由 [Changesets](https://github.com/changesets/changesets) 管理，发布由维护者在本地手动完成：
 
 ```bash
-pnpm test
+# 1. 在 PR 中：描述改动（选择包和语义化版本级别）
+pnpm changeset
+
+# 2. 发布时，在最新的 main 分支上：
+pnpm version-packages   # 更新版本号、写入 CHANGELOG.md，并消费 .changeset/*.md
+pnpm install            # 若内部依赖版本变化，刷新 lockfile
+git commit -am "chore: release" && git push
+
+# 3. 发布（需要已 `npm login` 且拥有 @minerva scope 的发布权限）
+pnpm release            # 构建 lib-core 与 lib-web-components，然后执行 `changeset publish`
+git push --follow-tags  # 推送 changeset publish 创建的 tag
 ```
 
-5. 构建库：
-
-```bash
-pnpm build
-```
+发布前请确认 `pnpm lint && pnpm typecheck && pnpm test && pnpm build` 全部通过。
 
 ## 🤝 贡献
 

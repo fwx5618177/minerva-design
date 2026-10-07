@@ -1,11 +1,11 @@
-import { LitElement, html, unsafeCSS } from "lit";
+import { LitElement, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import styles from "./styles";
-import { ButtonProps } from "./types";
+import type { ButtonProps } from "./types";
 
 @customElement("minerva-button")
 export class Button extends LitElement {
-  static styles = unsafeCSS(styles);
+  static styles = styles;
 
   @property({ type: String, reflect: true })
   variant: ButtonProps["variant"] = "primary";
@@ -16,9 +16,6 @@ export class Button extends LitElement {
   @property({ type: String, reflect: true })
   shape: ButtonProps["shape"] = "rounded";
 
-  @property({ type: String, reflect: true })
-  borderRadius: ButtonProps["borderRadius"] = "medium";
-
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
@@ -28,7 +25,7 @@ export class Button extends LitElement {
   @property({ type: Boolean, reflect: true })
   active = false;
 
-  @property({ type: String })
+  @property({ type: String, attribute: "aria-label" })
   ariaLabel = "";
 
   private handleClick(e: MouseEvent) {
@@ -42,7 +39,8 @@ export class Button extends LitElement {
   }
 
   private createRippleEffect(e: MouseEvent) {
-    const button = this.shadowRoot?.querySelector(".button") as HTMLElement;
+    const button = this.shadowRoot?.querySelector<HTMLElement>(".button");
+    if (!button) return;
     const ripple = document.createElement("span");
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
@@ -71,13 +69,15 @@ export class Button extends LitElement {
       <button
         class=${this.generateClasses()}
         ?disabled=${this.disabled}
-        ?active=${this.active}
-        aria-label=${this.ariaLabel}
+        aria-label=${this.ariaLabel || nothing}
+        aria-busy=${this.loading ? "true" : nothing}
         @click=${this.handleClick}
       >
-        ${this.loading
-          ? html`<span class="loading-spinner"></span>`
-          : html`<slot></slot>`}
+        ${
+          this.loading
+            ? html`<span class="loading-spinner"></span>`
+            : html`<slot></slot>`
+        }
       </button>
     `;
   }
@@ -88,12 +88,17 @@ export class Button extends LitElement {
       `variant-${this.variant}`,
       `size-${this.size}`,
       `shape-${this.shape}`,
-      `border-radius-${this.borderRadius}`,
       this.loading && "loading",
       this.active && "active",
       this.disabled && "disabled",
     ]
       .filter(Boolean)
       .join(" ");
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "minerva-button": Button;
   }
 }

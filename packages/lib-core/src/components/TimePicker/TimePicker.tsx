@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Popper } from "../Popper";
 import { TextField } from "../TextField";
 import { IconButton } from "../IconButton";
@@ -33,7 +33,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
     currentValue ? formatTime(currentValue, format) : "",
   );
   const [visible, setVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Stored in state so Popper re-renders with the element once it mounts
+  const [inputEl, setInputEl] = useState<HTMLInputElement | null>(null);
 
   const handleVisibleChange = useCallback(
     (newVisible: boolean) => {
@@ -44,30 +45,33 @@ const TimePicker: React.FC<TimePickerProps> = ({
     [disabled],
   );
 
-  const timeChangeMap = {
-    hour: (val: number) => {
-      const newDate = new Date(currentValue || new Date());
-      newDate.setHours(val);
-      return newDate;
-    },
-    minute: (val: number) => {
-      const newDate = new Date(currentValue || new Date());
-      newDate.setMinutes(val);
-      return newDate;
-    },
-    second: (val: number) => {
-      const newDate = new Date(currentValue || new Date());
-      newDate.setSeconds(val);
-      return newDate;
-    },
-    ampm: (val: number) => {
-      const newDate = new Date(currentValue || new Date());
-      const hours = newDate.getHours();
-      const isPM = val === 1;
-      newDate.setHours(isPM ? (hours % 12) + 12 : hours % 12);
-      return newDate;
-    },
-  };
+  const timeChangeMap = useMemo(
+    () => ({
+      hour: (val: number) => {
+        const newDate = new Date(currentValue || new Date());
+        newDate.setHours(val);
+        return newDate;
+      },
+      minute: (val: number) => {
+        const newDate = new Date(currentValue || new Date());
+        newDate.setMinutes(val);
+        return newDate;
+      },
+      second: (val: number) => {
+        const newDate = new Date(currentValue || new Date());
+        newDate.setSeconds(val);
+        return newDate;
+      },
+      ampm: (val: number) => {
+        const newDate = new Date(currentValue || new Date());
+        const hours = newDate.getHours();
+        const isPM = val === 1;
+        newDate.setHours(isPM ? (hours % 12) + 12 : hours % 12);
+        return newDate;
+      },
+    }),
+    [currentValue],
+  );
 
   const handleTimeChange = useCallback(
     (type: keyof typeof timeChangeMap, val: number) => {
@@ -76,7 +80,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
       setInputValue(formatTime(newDate, format));
       onChange?.(newDate);
     },
-    [currentValue, onChange, format],
+    [timeChangeMap, onChange, format],
   );
 
   const handleInputChange = useCallback(
@@ -119,7 +123,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
         placement="bottomStart"
         type="select"
         size={size}
-        anchorEl={inputRef.current}
+        anchorEl={inputEl}
       >
         <TimePickerPanel
           value={currentValue}
@@ -136,7 +140,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
         />
       </Popper>
       <TextField
-        ref={inputRef}
+        ref={setInputEl}
         value={inputValue}
         placeholder={placeholder}
         label=""

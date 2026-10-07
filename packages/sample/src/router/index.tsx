@@ -3,7 +3,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import Layout from "@layout/Layout";
 import ErrorBoundary from "@pages/ErrorBoundary";
 import NotFoundPage from "@pages/NotFoundPage";
-import { flattenedRoutes } from "./routes";
+import { routes } from "./routes";
 
 const router = createHashRouter([
   {
@@ -15,7 +15,7 @@ const router = createHashRouter([
         index: true,
         element: <Navigate to="overview" replace />,
       },
-      ...flattenedRoutes,
+      ...routes,
       {
         path: "*",
         element: <NotFoundPage />,

@@ -17,15 +17,14 @@ const AvatarGroup: React.FC<React.PropsWithChildren<AvatarGroupProps>> = ({
   return (
     <div
       className={`${styles.avatarGroup} ${className}`}
-      tabIndex={0}
-      aria-label={`Avatar group with ${count} more`}
+      aria-label={count ? `Avatar group with ${count} more` : "Avatar group"}
     >
       {React.Children.map(children, (child, index) => (
         <div className={styles.avatarGroupItem} key={index}>
           {child}
         </div>
       ))}
-      {count && <div className={styles.count}>+{count}</div>}
+      {count ? <div className={styles.count}>+{count}</div> : null}
     </div>
   );
 };

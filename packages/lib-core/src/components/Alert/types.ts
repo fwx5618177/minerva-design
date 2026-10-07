@@ -3,52 +3,94 @@ export type AlertSize = "small" | "medium" | "large";
 export type AlertType = "default" | "outlined" | "filled";
 
 export interface AlertProps {
-  /** Alert的标题 */
+  /** Alert title */
   title?: React.ReactNode;
-  /** Alert的内容 */
+  /** Alert content */
   children?: React.ReactNode;
-  /** Alert的类型 */
+  /**
+   * Semantic variant, which sets the color and default icon
+   * @default "info"
+   */
   variant?: AlertVariant;
-  /** Alert的尺寸 */
+  /**
+   * Alert size
+   * @default "medium"
+   */
   size?: AlertSize;
-  /** Alert的样式类型 */
+  /**
+   * Visual style
+   * @default "default"
+   */
   type?: AlertType;
-  /** 是否显示图标 */
+  /**
+   * Shows the variant icon
+   * @default true
+   */
   showIcon?: boolean;
-  /** 自定义图标 */
+  /** Custom icon, replacing the variant icon */
   icon?: React.ReactNode;
-  /** 是否可关闭 */
+  /**
+   * Shows a close button
+   * @default false
+   */
   closable?: boolean;
-  /** 自定义关闭图标 */
+  /** Custom close icon */
   closeIcon?: React.ReactNode;
-  /** 关闭时的回调 */
+  /** Called when the close button is clicked */
   onClose?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  /** 是否显示动画效果 */
+  /**
+   * Plays an entrance animation
+   * @default true
+   */
   animation?: boolean;
-  /** 自定义动画名称 */
+  /**
+   * Entrance animation name
+   * @default "slideIn"
+   */
   animationName?: "slideIn" | "fadeIn" | "bounce" | "zoom";
-  /** 自定义样式类名 */
+  /** Additional class name */
   className?: string;
-  /** 自定义样式 */
+  /** Inline styles */
   style?: React.CSSProperties;
-  /** 操作区域 */
+  /** Action area rendered on the right, e.g. buttons */
   action?: React.ReactNode;
-  /** 是否显示边框 */
+  /**
+   * Shows a border
+   * @default false
+   */
   outlined?: boolean;
-  /** 是否填充背景色 */
+  /**
+   * Fills the background with the variant color
+   * @default false
+   */
   filled?: boolean;
-  /** Banner模式(适合页面顶部通知) */
+  /**
+   * Banner mode, suited to page-level notices at the top of a page
+   * @default false
+   */
   banner?: boolean;
-  /** 是否显示阴影 */
+  /**
+   * Adds a drop shadow
+   * @default false
+   */
   elevation?: boolean;
-  /** 是否圆角 */
+  /**
+   * Rounds the corners
+   * @default true
+   */
   rounded?: boolean;
-  /** 自定义圆角大小 */
+  /** Custom corner radius */
   borderRadius?: number | string;
-  /** 是否可以展开收起 */
+  /**
+   * Lets the content be expanded and collapsed (requires a title)
+   * @default false
+   */
   collapsible?: boolean;
-  /** 默认是否展开 */
+  /**
+   * Whether the content is initially expanded
+   * @default true
+   */
   defaultExpanded?: boolean;
-  /** 展开收起的回调 */
+  /** Called when the content is expanded or collapsed */
   onExpand?: (expanded: boolean) => void;
 }

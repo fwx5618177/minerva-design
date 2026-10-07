@@ -1,0 +1,59 @@
+{
+  "title": "Web Components",
+  "description": "<minerva-button>: a framework-agnostic custom element built with Lit, usable in plain HTML, React, Vue or any other framework.",
+  "what": {
+    "title": "What it is",
+    "p1": "@minerva/lib-web-components packages Minerva components as standard custom elements. Importing the package once registers them with the browser; after that they behave like built-in HTML tags in any page or framework.",
+    "p2": "The elements render into a shadow root, so their internal styles cannot leak into your page (or be broken by it). They are configured with HTML attributes and emit regular DOM events such as click."
+  },
+  "html": {
+    "title": "Usage in HTML",
+    "text": "Load the package as an ES module (through your bundler), then use the tags anywhere in the document. Boolean attributes such as loading or disabled are on when present."
+  },
+  "react": {
+    "title": "Usage in React",
+    "text": "Import the package once for its side effect, and reference the bundled typings to type-check attributes in JSX. onClick and other DOM events work as usual; use aria-label (with a dash) for the accessible name.",
+    "booleans": "React 18 sets attributes on custom elements as strings, so loading={false} becomes loading=\"false\", which still counts as present. Pass true or undefined (e.g. loading={saving || undefined}) to toggle boolean attributes. React 19 sets them as properties and accepts plain booleans."
+  },
+  "other": {
+    "title": "Vue and other frameworks",
+    "text": "Any framework that renders HTML can use the elements. In Vue, declare minerva-* tags as custom elements so the compiler doesn't try to resolve them as Vue components, and bind null to remove a boolean attribute. Angular needs CUSTOM_ELEMENTS_SCHEMA; Svelte, Solid and Lit work without configuration."
+  },
+  "theming": {
+    "title": "Theming",
+    "text": "The button reads its own CSS custom properties (--primary-color, --primary-hover, --error-color, ...) with defaults declared on the element, so it does not automatically follow lib-core's ConfigProvider theme. Set the variables on the element, or in a rule that targets it, to match your design:"
+  },
+  "a11y": {
+    "title": "Accessibility",
+    "text": "The element renders a native <button> inside its shadow root, so it is focusable and keyboard-operable. The aria-label attribute is forwarded to that button; set it on icon-only buttons. While loading, the button sets aria-busy and ignores clicks; disabled buttons are not focusable."
+  },
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Import the package once, then use <minerva-button> like any element. React's onClick works as with native elements."
+    },
+    "variants": {
+      "title": "Variants",
+      "description": "Nine variants: primary, secondary, success, warning, error, info, ghost, retry and back."
+    },
+    "sizes-shapes": {
+      "title": "Sizes and shapes",
+      "description": "Four sizes (tiny to large) and four shapes. Icon-only circle buttons need an aria-label."
+    },
+    "states": {
+      "title": "States",
+      "description": "loading shows a spinner and blocks clicks; disabled and active are boolean attributes too. In React 18 pass true or undefined, never false."
+    }
+  },
+  "api": {
+    "wc_ButtonProps": {
+      "variant": "Visual style of the button (reflected to the variant attribute).",
+      "size": "Button size.",
+      "shape": "Corner shape of the button.",
+      "disabled": "Disables the button (boolean attribute).",
+      "loading": "Shows a spinner instead of the content and blocks clicks; sets aria-busy.",
+      "active": "Renders the button in its pressed / active style.",
+      "ariaLabel": "Accessible label forwarded to the inner <button>; set it with the aria-label attribute. Required for icon-only buttons."
+    }
+  }
+}

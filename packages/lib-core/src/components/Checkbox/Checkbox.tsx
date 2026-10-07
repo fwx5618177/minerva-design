@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, forwardRef } from "react";
+import classNames from "classnames";
 import { FaInfoCircle } from "react-icons/fa";
 import styles from "./checkbox.module.scss";
 import { CheckboxProps } from "./types";
@@ -70,18 +71,22 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       ...(checkmarkColor && { "--checkmark-color": checkmarkColor }),
     } as React.CSSProperties;
 
-    const labelClasses = `
-    ${styles.checkbox}
-    ${styles[size]}
-    ${styles[shape]}
-    ${styles[`label${labelPlacement.charAt(0).toUpperCase()}${labelPlacement.slice(1)}`]}
-    ${disabled ? styles.disabled : ""}
-    ${error ? styles.error : ""}
-    ${className}
-  `;
+    const labelClasses = classNames(
+      styles.checkbox,
+      styles[size],
+      styles[shape],
+      styles[
+        `label${labelPlacement.charAt(0).toUpperCase()}${labelPlacement.slice(1)}`
+      ],
+      disabled && styles.disabled,
+      error && styles.error,
+      className,
+    );
 
     return (
-      <div className={`${styles.checkboxWrapper} ${error ? styles.error : ""}`}>
+      <div
+        className={classNames(styles.checkboxWrapper, error && styles.error)}
+      >
         <label className={labelClasses}>
           <input
             ref={inputRef}
@@ -103,7 +108,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           <div className={styles.helperTextWrapper}>
             {error && <span className={styles.errorIcon}>{errorIcon}</span>}
             <span
-              className={`${styles.helperText} ${error ? styles.errorText : ""}`}
+              className={classNames(
+                styles.helperText,
+                error && styles.errorText,
+              )}
             >
               {helperText}
             </span>

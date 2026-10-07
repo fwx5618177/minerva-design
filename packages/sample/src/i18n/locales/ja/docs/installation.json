@@ -1,0 +1,40 @@
+{
+  "title": "インストール",
+  "description": "React プロジェクトに Minerva を追加し、スタイルシートを読み込み、必要に応じて Web Components を登録します。",
+  "requirements": {
+    "title": "動作要件",
+    "react": "React と React DOM 18 以上（@minerva/lib-core の peer 依存）。",
+    "bundler": "ES モジュールと CSS のインポートを扱えるバンドラー（Vite、webpack、Rspack、Next.js など）。CommonJS ビルドも同梱しています。",
+    "browsers": "モダンなエバーグリーンブラウザ：テーマトークンは CSS カスタムプロパティと color-mix() を使用します。"
+  },
+  "core": {
+    "title": "React コンポーネントのインストール",
+    "text": "お使いのパッケージマネージャーで @minerva/lib-core をインストールします。react と react-dom が未導入なら一緒に追加してください。",
+    "peers": "react と react-dom は peer 依存（>= 18）なので、アプリ内の React は 1 つに保たれます。i18next、react-i18next、react-icons、classnames は通常の依存として自動でインストールされます。"
+  },
+  "styles": {
+    "title": "スタイルシートの読み込み",
+    "text": "コンポーネントのスタイルとデフォルトのテーマトークンは 1 つの CSS ファイルにまとめられています。アプリのエントリーファイルで一度だけ読み込んでください：",
+    "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。読み込みは一度で十分です。複数のモジュールから読み込んでも問題はありませんが不要です。"
+  },
+  "app": {
+    "title": "最初のコンポーネント",
+    "text": "アプリを ConfigProvider で囲み、コンポーネントを使い始めましょう：",
+    "provider": "ConfigProvider はコンポーネントの描画に必須ではありませんが、テーマの適用（既定ではシステムの配色に追従）、lib-core 内蔵テキストの言語設定、useConfig() の提供を行います。アプリのルートに 1 つ配置してください。"
+  },
+  "webComponents": {
+    "title": "Web Components（任意）",
+    "text": "@minerva/lib-web-components は同じデザインをフレームワーク非依存のカスタム要素として提供します。インストールしてパッケージを一度インポートすると要素が登録されます：",
+    "typings": "React の JSX で <minerva-button> の型チェックと補完を有効にするには、同梱の型定義を一度参照します（例：global.d.ts）："
+  },
+  "typescript": {
+    "title": "TypeScript",
+    "text": "どちらのパッケージも型定義を同梱しているため、@types パッケージは不要です。Props 型（ButtonProps、TagProps など）とテーマ型（Theme、ComponentTheme、ThemeName など）はパッケージのルートからエクスポートされています："
+  },
+  "next": {
+    "title": "次のステップ",
+    "introduction": "設計原則と、すべてのコンポーネントに共通する規約。",
+    "theming": "内蔵テーマ、デザイントークン、カスタムテーマ。",
+    "components": "最初のコンポーネントページとライブサンプルから始めましょう。"
+  }
+}

@@ -43,12 +43,12 @@ const VirtualList: React.FC<VirtualListProps> = ({
   const [containerHeight, setContainerHeight] = useState(0);
   const lastScrollTop = useRef(0);
   const isLoadingMore = useRef(false);
-  const loadingTimeoutRef = useRef<NodeJS.Timeout>();
   const rafRef = useRef<number>();
-  const renderTimeoutRef = useRef<number>();
+  const idleCallbackRef = useRef<number>();
 
-  // 添加自动计算高度的状态
-  const [calculatedItemHeight, setCalculatedItemHeight] = useState(0);
+  // 测量得到的内容高度 (不含 padding), padding 在渲染时叠加,
+  // 这样 itemPadding 变化后无需重新测量也能生效
+  const [measuredContentHeight, setMeasuredContentHeight] = useState(0);
   const measureRef = useRef<HTMLDivElement>(null);
   const hasMeasured = useRef(false);
 
@@ -60,7 +60,7 @@ const VirtualList: React.FC<VirtualListProps> = ({
       if (measureRef.current) {
         const height = measureRef.current.offsetHeight;
         if (height > 0) {
-          setCalculatedItemHeight(height + itemPadding * 2);
+          setMeasuredContentHeight(height);
           hasMeasured.current = true;
         }
       }
@@ -86,7 +86,9 @@ const VirtualList: React.FC<VirtualListProps> = ({
   }, [itemHeight]);
 
   // 使用固定高度或计算出的高度
-  const finalItemHeight = itemHeight || calculatedItemHeight;
+  const finalItemHeight =
+    itemHeight ||
+    (measuredContentHeight > 0 ? measuredContentHeight + itemPadding * 2 : 0);
 
   // 计算可见范围
   const visibleRange = useMemo(() => {
@@ -107,18 +109,33 @@ const VirtualList: React.FC<VirtualListProps> = ({
     };
   }, [scrollTop, containerHeight, finalItemHeight, overscan, items.length]);
 
+  // 取消尚未执行的 RAF / idle 回调
+  const cancelScheduled = useCallback(() => {
+    if (rafRef.current !== undefined) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = undefined;
+    }
+    if (idleCallbackRef.current !== undefined) {
+      if ("cancelIdleCallback" in window) {
+        cancelIdleCallback(idleCallbackRef.current);
+      }
+      idleCallbackRef.current = undefined;
+    }
+  }, []);
+
   // 高性能模式下的渲染优化
   const scheduleUpdate = useCallback(
     (callback: () => void) => {
       if (highPerformance) {
-        if (rafRef.current) {
-          cancelAnimationFrame(rafRef.current);
-        }
+        // Only the latest scroll position matters: drop pending work
+        cancelScheduled();
 
         rafRef.current = requestAnimationFrame(() => {
+          rafRef.current = undefined;
           if ("requestIdleCallback" in window) {
-            renderTimeoutRef.current = requestIdleCallback(
+            idleCallbackRef.current = requestIdleCallback(
               () => {
+                idleCallbackRef.current = undefined;
                 callback();
               },
               { timeout: 100 },
@@ -131,7 +148,7 @@ const VirtualList: React.FC<VirtualListProps> = ({
         callback();
       }
     },
-    [highPerformance],
+    [highPerformance, cancelScheduled],
   );
 
   // 生成虚拟列表项
@@ -195,20 +212,8 @@ const VirtualList: React.FC<VirtualListProps> = ({
     };
   }, []);
 
-  // 清理函数
-  useEffect(() => {
-    return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current);
-      }
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      if (renderTimeoutRef.current && "cancelIdleCallback" in window) {
-        cancelIdleCallback(renderTimeoutRef.current);
-      }
-    };
-  }, []);
+  // 卸载时清理所有待执行的 RAF / idle 回调
+  useEffect(() => cancelScheduled, [cancelScheduled]);
 
   return (
     <div

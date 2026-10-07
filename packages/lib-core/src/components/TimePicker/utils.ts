@@ -67,7 +67,7 @@ export const parseTime = (timeString: string, format: string): Date => {
 };
 
 export const isValidTime = (date: Date, format: string): boolean => {
-  const timeRegexMap = {
+  const timeRegexMap: Record<string, RegExp | undefined> = {
     "HH:mm:ss": /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
     "HH:mm": /^([01]\d|2[0-3]):([0-5]\d)$/,
     "hh:mm:ss a": /^(0\d|1[0-2]):([0-5]\d):([0-5]\d)\s*(AM|PM)$/i,
