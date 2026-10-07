@@ -1,6 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { createRef } from "react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import Empty from "./Empty";
 
 describe("Empty", () => {
@@ -109,5 +111,67 @@ describe("Empty", () => {
       color: "rgb(0, 0, 255)",
       margin: "4px",
     });
+  });
+
+  it("names the region from a ReactNode description instead of [object Object]", () => {
+    render(
+      <Empty
+        description={
+          <span>
+            No <strong>results</strong>
+          </span>
+        }
+      />,
+    );
+    expect(
+      screen.getByRole("status", { name: "No results" }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the default icons from assistive technologies", () => {
+    const { container, rerender } = render(<Empty />);
+    expect(container.querySelector("svg")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    rerender(<Empty useSvg />);
+    expect(container.querySelector("svg")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
+  it("forwards ref to the root element", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<Empty ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("status"));
+  });
+});
+
+describe("Empty localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the default description", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(<Empty />);
+    expect(
+      screen.getByRole("status", { name: "暂无数据" }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps a custom description and still hides a null one", () => {
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    const { rerender } = render(<Empty description="Nothing here" />);
+    expect(screen.getByText("Nothing here")).toBeInTheDocument();
+
+    rerender(<Empty description={null} />);
+    expect(screen.queryByText("Aucune donnée")).not.toBeInTheDocument();
   });
 });

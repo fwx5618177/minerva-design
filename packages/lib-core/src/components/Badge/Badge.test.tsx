@@ -1,6 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { createRef } from "react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import i18n from "../../config/i18n";
 import Badge from "./Badge";
 
 describe("Badge", () => {
@@ -8,19 +10,13 @@ describe("Badge", () => {
     render(<Badge content={5} ariaLabel="5 notifications" />);
     const badge = screen.getByRole("status", { name: "5 notifications" });
     expect(badge).toHaveTextContent("5");
-    expect(badge).toHaveClass("badge", "primary", "medium", "top-right");
-    expect(badge).not.toHaveClass("dot");
+    expect(badge).toHaveClass("badge", "primary", "medium", "standalone");
+    expect(badge).not.toHaveClass("dot", "top-right");
   });
 
   it("renders a zero count", () => {
     render(<Badge content={0} />);
     expect(screen.getByRole("status")).toHaveTextContent("0");
-  });
-
-  it("renders text children as both wrapped content and badge text", () => {
-    render(<Badge>New</Badge>);
-    expect(screen.getByRole("status")).toHaveTextContent("New");
-    expect(screen.getByText("New", { selector: "div" })).toHaveClass("content");
   });
 
   it("wraps element children and shows content on the badge", () => {
@@ -64,7 +60,9 @@ describe("Badge", () => {
           size={size}
           position={position}
           className="custom"
-        />,
+        >
+          <span>Icon</span>
+        </Badge>,
       );
       expect(screen.getByRole("status")).toHaveClass(
         variant,
@@ -107,5 +105,79 @@ describe("Badge", () => {
     await user.tab();
     expect(screen.getByRole("status", { name: "One" })).not.toHaveFocus();
     expect(document.body).toHaveFocus();
+  });
+
+  describe("regressions", () => {
+    it("renders a standalone badge inline, outside the positioned wrapper", () => {
+      const { container } = render(
+        <p>
+          Inbox <Badge content={5} /> messages
+        </p>,
+      );
+      const badge = screen.getByRole("status");
+      const paragraph = container.querySelector("p") as HTMLElement;
+      expect(badge.parentElement).toBe(paragraph);
+      expect(container.querySelector(".badgeWrapper")).not.toBeInTheDocument();
+      expect(badge).toHaveClass("standalone");
+      // position classes are what absolutely position an attached badge
+      expect(badge).not.toHaveClass(
+        "top-right",
+        "top-left",
+        "bottom-right",
+        "bottom-left",
+      );
+    });
+
+    it("keeps the positioned wrapper when attached to children", () => {
+      render(
+        <Badge content={2} position="bottom-left">
+          <span>Icon</span>
+        </Badge>,
+      );
+      const badge = screen.getByRole("status");
+      expect(badge.parentElement).toHaveClass("badgeWrapper");
+      expect(badge).toHaveClass("bottom-left");
+      expect(badge).not.toHaveClass("standalone");
+    });
+
+    it("renders text children once, as a standalone badge", () => {
+      render(<Badge>New</Badge>);
+      expect(screen.getAllByText("New")).toHaveLength(1);
+      expect(screen.getByRole("status")).toHaveTextContent("New");
+      expect(screen.getByRole("status")).toHaveClass("standalone");
+    });
+
+    it("forwards the ref to the root element", () => {
+      const standalone = createRef<HTMLElement>();
+      const { rerender } = render(<Badge ref={standalone} content={1} />);
+      expect(standalone.current).toBe(screen.getByRole("status"));
+
+      const attached = createRef<HTMLElement>();
+      rerender(
+        <Badge ref={attached} content={1}>
+          <span>Icon</span>
+        </Badge>,
+      );
+      expect(attached.current).toHaveClass("badgeWrapper");
+    });
+  });
+});
+
+describe("Badge localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the fallback content of an attached badge", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <Badge>
+        <span>Inbox</span>
+      </Badge>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("徽标");
   });
 });

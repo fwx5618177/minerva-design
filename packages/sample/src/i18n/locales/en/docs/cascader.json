@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Click an option to open the next level; choosing a leaf completes the selection."
+      "description": "Click the input (or press Enter, Space or Arrow Down) to open the panel, then click an option to open the next level; choosing a leaf completes the selection. The dropdown grows with its columns."
     },
     "default-value": {
       "title": "Default value",
@@ -32,11 +32,11 @@
     },
     "lazy-load": {
       "title": "Load options lazily",
-      "description": "loadData is called for options without children that are not isLeaf. Set loading on the option and add its children to options when they arrive."
+      "description": "Clicking an option that has no children and is not isLeaf expands it and calls loadData instead of selecting it. Set loading on the option, add its children to options when they arrive, and mark the loaded leaves with isLeaf: true so they can be selected."
     },
     "custom-option": {
       "title": "Custom options and levels",
-      "description": "optionRender renders each option with its level, maxLevel limits the depth, and dropdownStyle / optionStyle adjust the menu."
+      "description": "optionRender renders each option with its level, maxLevel limits the depth (an option at the last level is selected), and dropdownStyle / optionStyle adjust the menu."
     }
   },
   "api": {
@@ -44,24 +44,25 @@
       "label": "Label of the input",
       "name": "Name of the input",
       "options": "Option tree",
-      "value": "Selected path of values (controlled)",
+      "value": "Selected path of values (controlled; pair with onChange)",
       "defaultValue": "Initially selected path of values (uncontrolled)",
       "onChange": "Called when a leaf option is selected or the value is cleared",
       "displayRender": "Formats the text shown in the input; by default labels are joined with \" / \"",
       "disabled": "Disables the cascader",
-      "placeholder": "Placeholder of the input",
-      "allowClear": "Shows a clear button when a value is selected",
+      "placeholder": "Placeholder of the input; defaults to a localized \"Please select\"",
+      "allowClear": "Shows a clear button (labelled \"Clear selection\", localized) when a value is selected",
       "expandTrigger": "How sub-menus are expanded",
       "className": "Additional class name",
       "showSearch": "Allows typing to search all paths",
       "filter": "Custom search predicate; by default paths whose labels contain the input match",
-      "loadData": "Loads children lazily for options without children that are not isLeaf; update options yourself",
+      "loadData": "Loads children lazily: clicking an option that has no children and is not isLeaf expands it and calls loadData with its path (instead of selecting it). Add the children to options yourself; set loading on the option meanwhile",
       "dropdownClassName": "Additional class name of the dropdown",
       "optionRender": "Custom option renderer",
       "width": "Width of the component",
-      "maxLevel": "Maximum number of levels shown",
+      "maxLevel": "Maximum number of levels shown; an option at the last level is selected",
       "dropdownStyle": "Inline styles of the dropdown",
-      "optionStyle": "Inline styles of every option"
+      "optionStyle": "Inline styles of every option",
+      "ref": "Ref to the inner <input> element"
     },
     "CascaderOption": {
       "value": "Value of the option, unique among its siblings",
@@ -71,5 +72,13 @@
       "isLeaf": "Marks the option as a leaf (no children to load) when using loadData",
       "loading": "Shows a loading indicator while its children are being loaded"
     }
+  },
+  "keyboard": {
+    "title": "Keyboard and accessibility",
+    "open": "Enter, Space or Arrow Down on the input opens the panel and moves focus into it; focusing the input alone does not open it.",
+    "navigate": "Arrow Up / Arrow Down, Home and End move within a column.",
+    "expand": "Arrow Right or Enter expands the next column (also after lazy loading) and Enter selects a leaf; Arrow Left goes back to the previous column.",
+    "close": "Escape closes the panel and returns focus to the input; Tab closes it.",
+    "aria": "The input has the combobox role. Its default placeholder and the \"Clear selection\" button label follow lib-core's locale."
   }
 }

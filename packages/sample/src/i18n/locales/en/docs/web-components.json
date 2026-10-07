@@ -12,8 +12,8 @@
   },
   "react": {
     "title": "Usage in React",
-    "text": "Import the package once for its side effect, and reference the bundled typings to type-check attributes in JSX. onClick and other DOM events work as usual; use aria-label (with a dash) for the accessible name.",
-    "booleans": "React 18 sets attributes on custom elements as strings, so loading={false} becomes loading=\"false\", which still counts as present. Pass true or undefined (e.g. loading={saving || undefined}) to toggle boolean attributes. React 19 sets them as properties and accepts plain booleans."
+    "text": "Import the package once for its side effect, and reference the bundled typings to type-check attributes in JSX. React 19 is required. onClick and other DOM events work as usual; use aria-label (with a dash) for the accessible name.",
+    "booleans": "React 19 passes values to custom elements as properties, so boolean props take plain booleans: loading={saving} or disabled={false} work as expected."
   },
   "other": {
     "title": "Vue and other frameworks",
@@ -21,11 +21,11 @@
   },
   "theming": {
     "title": "Theming",
-    "text": "The button reads its own CSS custom properties (--primary-color, --primary-hover, --error-color, ...) with defaults declared on the element, so it does not automatically follow lib-core's ConfigProvider theme. Set the variables on the element, or in a rule that targets it, to match your design:"
+    "text": "The button consumes lib-core's design tokens (CSS custom properties such as --primary-color, --danger-color, --text-inverse-color, --surface-muted-color, --focus-ring-color and --radius-md), with built-in fallbacks for pages without lib-core. Custom properties inherit into the shadow root, so ConfigProvider / applyThemeStyles theme changes apply to it as well. To restyle only some buttons, set the tokens on the element or on an ancestor:"
   },
   "a11y": {
     "title": "Accessibility",
-    "text": "The element renders a native <button> inside its shadow root, so it is focusable and keyboard-operable. The aria-label attribute is forwarded to that button; set it on icon-only buttons. While loading, the button sets aria-busy and ignores clicks; disabled buttons are not focusable."
+    "text": "The element renders a native <button> inside its shadow root, so it is focusable and keyboard-operable, with a visible focus ring (--focus-ring-color). The aria-label attribute is forwarded to that button; set it on icon-only buttons. While loading, the button sets aria-busy and ignores clicks; disabled buttons are not focusable."
   },
   "demos": {
     "basic": {
@@ -42,7 +42,7 @@
     },
     "states": {
       "title": "States",
-      "description": "loading shows a spinner and blocks clicks; disabled and active are boolean attributes too. In React 18 pass true or undefined, never false."
+      "description": "loading shows a spinner and blocks clicks; disabled and active are boolean properties too. In React 19 pass plain booleans, e.g. loading={saving}."
     }
   },
   "api": {

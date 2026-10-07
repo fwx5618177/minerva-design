@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { createRef } from "react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import Dropdown from "./Dropdown";
 import type { DropdownOption } from "./types";
 
@@ -327,5 +328,79 @@ describe("Dropdown", () => {
     expect(menu.style.backgroundColor).toBe("rgb(10, 20, 30)");
     expect(menu.style.boxShadow).toBe("none");
     expect(getItem("Edit").style.color).toBe("rgb(200, 0, 0)");
+  });
+
+  describe("positioning and control", () => {
+    const rect = (r: Partial<DOMRect>) =>
+      ({
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: 0,
+        height: 0,
+        toJSON: () => ({}),
+        ...r,
+      }) as DOMRect;
+
+    afterEach(() => vi.restoreAllMocks());
+
+    it("opens upwards when there is no room below the trigger", async () => {
+      const user = userEvent.setup();
+      vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
+        600,
+      );
+      vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(
+        800,
+      );
+      vi.spyOn(
+        HTMLElement.prototype,
+        "getBoundingClientRect",
+      ).mockImplementation(function (this: HTMLElement) {
+        return this.classList.contains("trigger")
+          ? rect({
+              top: 560,
+              bottom: 590,
+              left: 10,
+              right: 110,
+              width: 100,
+              height: 30,
+            })
+          : rect({});
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
+        function (this: HTMLElement) {
+          return this.classList.contains("menu") ? 120 : 0;
+        },
+      );
+      render(<Dropdown items={items} />);
+      await user.click(screen.getByRole("button", { name: "Dropdown" }));
+      const menu = screen.getByRole("menu").parentElement!;
+      await waitFor(() =>
+        expect(menu).toHaveAttribute("data-placement", "top-start"),
+      );
+      expect(menu.style.top).toBe("436px");
+    });
+
+    it("supports controlled open with onOpenChange", async () => {
+      const user = userEvent.setup();
+      const onOpenChange = vi.fn();
+      const { rerender } = render(
+        <Dropdown items={items} open={false} onOpenChange={onOpenChange} />,
+      );
+      await user.click(screen.getByRole("button", { name: "Dropdown" }));
+      expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(true);
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+      rerender(<Dropdown items={items} open onOpenChange={onOpenChange} />);
+      expect(screen.getByRole("menu")).toBeInTheDocument();
+    });
+
+    it("forwards ref to the root element", () => {
+      const ref = createRef<HTMLDivElement>();
+      const { container } = render(<Dropdown items={items} ref={ref} />);
+      expect(ref.current).toBe(container.firstElementChild);
+    });
   });
 });

@@ -4,11 +4,11 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "入力欄をクリックするとパネルが開きます。onChange には Date（クリア時は undefined）が渡されます。"
+      "description": "入力欄をクリック（または下矢印キー）してパネルを開きます。onChange は Date を受け取り、クリア時は undefined を受け取ります。label を指定しない場合、入力欄の名前は \"Time\"（時刻）になります。"
     },
     "default-value": {
       "title": "初期値とクリア",
-      "description": "defaultValue で初期時刻を設定します。clearable={false} でクリアボタンを非表示にします。"
+      "description": "defaultValue で初期時刻を設定します。クリアボタンのラベルは \"Clear time\"（時刻をクリア）です。clearable={false} で非表示にできます。"
     },
     "formats": {
       "title": "フォーマット",
@@ -33,18 +33,22 @@
     "disabled": {
       "title": "無効状態",
       "description": "無効にするとパネルを開いたり編集したりできません。"
+    },
+    "controlled": {
+      "title": "制御モード",
+      "description": "value を渡し、onChange で更新します。null は制御モードのまま空の状態、undefined は非制御になります。label は入力欄に表示ラベルを付けます。"
     }
   },
   "api": {
     "TimePickerProps": {
-      "value": "選択された時刻（マウント時のみ参照され、日付部分は無視されます）",
+      "value": "選択された時刻（制御モード。onChange と組み合わせて使用）。null は制御モードのまま「時刻なし」を表し、undefined は非制御になります。日付部分は無視されます",
       "defaultValue": "初期選択の時刻（非制御）",
       "onChange": "新しい時刻（クリア時は undefined）で呼び出されます",
       "format": "表示フォーマット：\"HH:mm:ss\"、\"HH:mm\"、\"hh:mm:ss a\"、\"hh:mm a\"",
       "use12Hours": "AM/PM 列付きの 12 時間制を使用します",
-      "placeholder": "入力欄のプレースホルダー",
+      "placeholder": "入力欄のプレースホルダー。既定はローカライズされた \"Select time\"（時刻を選択）",
       "disabled": "時刻選択を無効にします",
-      "clearable": "末尾のボタンで値をクリアできるようにします",
+      "clearable": "サフィックスのボタン（ラベルはローカライズされた \"Clear time\"）で値をクリアできるようにします",
       "size": "入力欄とパネルのサイズ",
       "className": "追加のクラス名",
       "minTime": "選択可能な最も早い時刻。それより前の選択肢は無効になります",
@@ -52,7 +56,20 @@
       "showSecond": "秒の列を表示します",
       "hourStep": "時の選択肢の間隔",
       "minuteStep": "分の選択肢の間隔",
-      "secondStep": "秒の選択肢の間隔"
+      "secondStep": "秒の選択肢の間隔",
+      "ref": "<input> 要素への ref",
+      "label": "入力欄の表示ラベル。未指定の場合、入力欄のラベルはローカライズされた \"Time\"（時刻）になります",
+      "ariaLabel": "表示ラベルがない場合の入力欄のアクセシブルラベル",
+      "name": "入力欄の name",
+      "onOpenChange": "パネルが開閉したときに呼ばれます"
     }
+  },
+  "keyboard": {
+    "title": "キーボードとアクセシビリティ",
+    "open": "入力欄で下矢印キーを押すとパネルが開きます。外側をクリックすると閉じます。",
+    "navigate": "各列（時・分・秒・午前/午後）は listbox です。上下矢印キー、Home、End で列内を移動し、左右矢印キーで列を切り替えます。",
+    "select": "Enter または Space でフォーカス中の選択肢を選びます。",
+    "close": "Escape でパネルを閉じてフォーカスを入力欄に戻します。",
+    "typing": "入力したテキストは、完全で有効な時刻になったときだけ確定されます。フォーカスが外れると緩やかな解析が行われ、空のテキストは値をクリアし、解析できないテキストは元の値に戻ります。"
   }
 }

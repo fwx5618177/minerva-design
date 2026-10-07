@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface ProgressIndicatorProps {
   /**
    * Indicator style
@@ -11,7 +13,10 @@ export interface ProgressIndicatorProps {
   size?: "small" | "medium" | "large";
   /** Icon displayed before the indicator */
   icon?: React.ReactNode;
-  /** Accessible label describing what is loading */
+  /**
+   * Accessible label describing what is loading
+   * @default "Loading" (localized)
+   */
   ariaLabel?: string;
   /**
    * Additional class name
@@ -25,4 +30,6 @@ export interface ProgressIndicatorProps {
    * @default false
    */
   full?: boolean;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

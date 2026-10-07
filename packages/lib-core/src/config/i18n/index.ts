@@ -25,7 +25,7 @@ i18n.init({
   fallbackLng: DEFAULT_LANGUAGE,
   ns: ["index"],
   defaultNS: "index",
-  initImmediate: false,
+  initAsync: false,
   interpolation: {
     escapeValue: false,
   },

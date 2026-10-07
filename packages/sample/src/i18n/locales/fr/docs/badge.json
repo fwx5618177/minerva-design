@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Enveloppez un élément et définissez content. Donnez au badge un ariaLabel qui explique la signification du nombre."
+      "description": "Enveloppez un élément et définissez content. Donnez au badge un ariaLabel qui décrit la signification du nombre. Sans children (ou avec du texte), le badge s'affiche en ligne, par exemple dans une phrase."
     },
     "variants": {
       "title": "Variantes",
@@ -33,12 +33,12 @@
   },
   "api": {
     "BadgeProps": {
-      "children": "Élément auquel le badge est attaché",
+      "children": "Élément auquel le badge est attaché. Sans children (ou avec un texte / nombre, utilisé comme contenu), le badge s'affiche en ligne dans le flux normal au lieu d'être positionné dans un coin",
       "className": "Classe CSS supplémentaire du badge",
       "variant": "Palette de couleurs du badge",
       "size": "Taille du badge",
       "content": "Contenu affiché dans le badge (compteur, texte court…)",
-      "position": "Coin des children sur lequel le badge est placé",
+      "position": "Coin des children sur lequel le badge est placé (ignoré par les badges autonomes)",
       "dot": "Affiche un petit point au lieu du contenu",
       "bgColor": "Couleur de fond personnalisée",
       "textColor": "Couleur de texte personnalisée",
@@ -46,7 +46,8 @@
       "borderWidth": "Épaisseur de bordure personnalisée (valeur CSS)",
       "borderColor": "Couleur de bordure personnalisée",
       "ariaLabel": "Libellé accessible du badge, ex. « 5 messages non lus »",
-      "icon": "Icône affichée avant le contenu"
+      "icon": "Icône affichée avant le contenu",
+      "ref": "Ref vers l'élément racine : le conteneur s'il est attaché à des children, sinon le badge lui-même"
     }
   }
 }

@@ -16,8 +16,9 @@ import styles from "./divider.module.scss";
  * @param elevation - 是否带投影
  * @param className - 自定义类名
  * @param style - 自定义样式
+ * @param ref - 根元素的 ref
  */
-const Divider: React.FC<DividerProps> = ({
+const Divider = ({
   variant = "solid",
   orientation = "horizontal",
   color,
@@ -29,14 +30,17 @@ const Divider: React.FC<DividerProps> = ({
   elevation = false,
   className,
   style,
-}) => {
+  ref,
+}: DividerProps) => {
+  // `0` is a valid thickness / spacing / text, so only skip null-ish values
+  const hasText = children != null && children !== false && children !== "";
   const dividerStyle: React.CSSProperties = {
     ...style,
     ...(color && { borderColor: color }),
-    ...(thickness && { borderWidth: thickness }),
-    ...(orientation === "vertical" && length && { height: length }),
-    ...(orientation === "horizontal" && length && { width: length }),
-    ...(spacing && {
+    ...(thickness != null && { borderWidth: thickness }),
+    ...(orientation === "vertical" && length != null && { height: length }),
+    ...(orientation === "horizontal" && length != null && { width: length }),
+    ...(spacing != null && {
       marginTop: orientation === "horizontal" ? spacing : 0,
       marginBottom: orientation === "horizontal" ? spacing : 0,
       marginLeft: orientation === "vertical" ? spacing : 0,
@@ -48,8 +52,8 @@ const Divider: React.FC<DividerProps> = ({
     styles.divider,
     styles[variant],
     styles[orientation],
-    children && styles.withText,
-    children &&
+    hasText && styles.withText,
+    hasText &&
       styles[`text${textAlign.charAt(0).toUpperCase() + textAlign.slice(1)}`],
     elevation && styles.elevation,
     className,
@@ -57,12 +61,13 @@ const Divider: React.FC<DividerProps> = ({
 
   return (
     <div
+      ref={ref}
       className={dividerClasses}
       style={dividerStyle}
       role="separator"
       aria-orientation={orientation}
     >
-      {children && <span className={styles.text}>{children}</span>}
+      {hasText && <span className={styles.text}>{children}</span>}
     </div>
   );
 };

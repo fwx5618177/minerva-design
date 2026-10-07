@@ -20,11 +20,11 @@
     },
     "closable": {
       "title": "閉じられるタグ",
-      "description": "closable で閉じるボタンが追加され、onClose が呼ばれます。そこで state からタグを削除してください。closeIcon と closeLabel でボタンをカスタマイズできます。"
+      "description": "closable で閉じるボタンが追加され、onClose が呼ばれます。そこで state からタグを削除してください。closeIcon と closeLabel でボタンをカスタマイズできます。最初のタグはクリックも可能で、タグ本体と閉じるボタンは別々のボタンとしてそれぞれ Tab で移動できます。"
     },
     "clickable": {
       "title": "クリック可能（選択式）",
-      "description": "クリック可能なタグはボタンとして動作します。Tab でフォーカスし、クリック・Enter・Space で実行します。この例では選択を切り替えます。"
+      "description": "clickable は内容をネイティブのボタンとして描画します。Tab でフォーカスし、クリック・Enter・Space で実行します。ここではタグで選択を切り替え、pressed で支援技術に状態を伝えます。"
     },
     "custom-colors": {
       "title": "カスタムカラー",
@@ -49,8 +49,9 @@
       "shape": "タグの形状",
       "closable": "閉じるボタンを表示します",
       "onClose": "閉じるボタンのクリック時に呼び出されます",
-      "clickable": "タグをボタンとして動作させます（フォーカス可能、Enter / Space で実行）",
+      "clickable": "タグの内容をネイティブのボタンとして描画します（フォーカス可能、Enter / Space で実行）。closable と併用すると、閉じるボタンは兄弟要素の別ボタンになります",
       "onClick": "タグが実行されたときに呼び出されます（clickable が必要）",
+      "pressed": "トグル型タグの押下状態（clickable が必要）。aria-pressed を設定します",
       "icon": "内容の前に表示するアイコン",
       "bordered": "枠線を表示します",
       "elevation": "影を表示します",
@@ -62,7 +63,8 @@
       "disabled": "タグと閉じるボタンを無効にします",
       "closeIcon": "カスタムの閉じるアイコン",
       "closeLabel": "閉じるボタンのアクセシブルなラベル",
-      "ripple": "クリック時にリップル効果を表示します"
+      "ripple": "クリック時にリップル効果を表示します",
+      "ref": "ルート要素への ref"
     }
   }
 }

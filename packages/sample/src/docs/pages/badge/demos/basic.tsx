@@ -10,6 +10,10 @@ export default function BasicDemo() {
       <Badge content="99+" ariaLabel="More than 99 messages">
         <FaEnvelope size={24} aria-label="Messages" />
       </Badge>
+      <span>
+        Inbox <Badge content={12} variant="info" ariaLabel="12 unread" /> and
+        changelog <Badge variant="success">New</Badge>
+      </span>
     </>
   );
 }

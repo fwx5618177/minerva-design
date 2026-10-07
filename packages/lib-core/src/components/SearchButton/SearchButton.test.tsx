@@ -1,6 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import React, { createRef } from "react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import SearchButton from "./SearchButton";
 
 describe("SearchButton", () => {
@@ -126,5 +128,64 @@ describe("SearchButton", () => {
     expect(button).toHaveAttribute("aria-busy", "true");
     await userEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
+  });
+
+  describe("regressions", () => {
+    it("has an accessible name by default when icon-only", () => {
+      const { container } = render(<SearchButton />);
+      expect(
+        screen.getByRole("button", { name: "Search" }),
+      ).toBeInTheDocument();
+      expect(container.querySelector("svg")).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
+    });
+
+    it("uses the visible text as name when it has children", () => {
+      render(<SearchButton>Find</SearchButton>);
+      expect(screen.getByRole("button", { name: "Find" })).toBeInTheDocument();
+    });
+
+    it("only contains phrasing content (no <div> inside the button)", () => {
+      render(<SearchButton loading />);
+      expect(screen.getByRole("button").querySelector("div")).toBeNull();
+    });
+
+    it("does not submit its form while loading", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <SearchButton type="submit" loading />
+        </form>,
+      );
+      await user.click(screen.getByRole("button"));
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("forwards the ref to the <button>", () => {
+      const ref = createRef<HTMLButtonElement>();
+      render(<SearchButton ref={ref} />);
+      expect(ref.current).toBe(screen.getByRole("button"));
+    });
+  });
+});
+
+describe("SearchButton localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the icon-only label and lets ariaLabel win", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    const { rerender } = render(<SearchButton />);
+    expect(screen.getByRole("button", { name: "搜索" })).toBeInTheDocument();
+
+    rerender(<SearchButton ariaLabel="Find" />);
+    expect(screen.getByRole("button", { name: "Find" })).toBeInTheDocument();
   });
 });

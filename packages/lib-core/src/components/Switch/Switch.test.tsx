@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { StrictMode, createRef, useState } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -286,5 +286,94 @@ describe("Switch", () => {
     expect(screen.getByRole("switch")).not.toHaveAttribute("aria-busy");
     rerender(<Switch label="Wi-Fi" loading />);
     expect(screen.getByRole("switch")).toHaveAttribute("aria-busy", "true");
+  });
+
+  describe("regressions", () => {
+    it.each([
+      ["top", "labelTop"],
+      ["bottom", "labelBottom"],
+    ] as const)(
+      "renders the label when labelPlacement is %s",
+      (placement, className) => {
+        const { container } = render(
+          <Switch label="Wi-Fi" labelPlacement={placement} />,
+        );
+        expect(screen.getByText("Wi-Fi")).toBeInTheDocument();
+        expect(
+          screen.getByRole("switch", { name: "Wi-Fi" }),
+        ).toBeInTheDocument();
+        const root = container.querySelector("label") as HTMLElement;
+        expect(root).toHaveClass(className);
+        if (placement === "top") {
+          expect(root.firstElementChild).toHaveTextContent("Wi-Fi");
+        } else {
+          expect(root.lastElementChild).toHaveTextContent("Wi-Fi");
+        }
+      },
+    );
+
+    it.each([
+      ["start", "labelStart"],
+      ["end", "labelEnd"],
+    ] as const)("adds a placement class for %s", (placement, className) => {
+      const { container } = render(
+        <Switch label="Wi-Fi" labelPlacement={placement} />,
+      );
+      expect(container.querySelector("label")).toHaveClass(className);
+    });
+
+    it("forwards the ref to the <input>", () => {
+      const ref = createRef<HTMLInputElement>();
+      render(<Switch label="Wi-Fi" ref={ref} />);
+      expect(ref.current).toBe(screen.getByRole("switch"));
+    });
+
+    it("calls onChange exactly once per toggle under StrictMode", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <StrictMode>
+          <Switch label="Wi-Fi" onChange={onChange} />
+        </StrictMode>,
+      );
+      await user.click(screen.getByRole("switch"));
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole("switch")).toBeChecked();
+    });
+
+    it("follows the controlled prop on every render (controlled -> new value)", async () => {
+      const user = userEvent.setup();
+      const Parent = () => {
+        const [on, setOn] = useState(true);
+        return (
+          <>
+            <Switch label="Wi-Fi" checked={on} />
+            <button type="button" onClick={() => setOn((v) => !v)}>
+              flip
+            </button>
+          </>
+        );
+      };
+      render(
+        <StrictMode>
+          <Parent />
+        </StrictMode>,
+      );
+      const control = screen.getByRole("switch");
+      expect(control).toBeChecked();
+      await user.click(screen.getByRole("button", { name: "flip" }));
+      expect(control).not.toBeChecked();
+      expect(control).toHaveAttribute("aria-checked", "false");
+    });
+
+    it("clears the ripple timer on unmount", async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const { unmount } = render(<Switch label="S" />);
+      await user.click(screen.getByRole("switch"));
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    });
   });
 });

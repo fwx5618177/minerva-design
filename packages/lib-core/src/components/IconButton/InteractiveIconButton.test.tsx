@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { createRef, StrictMode } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -6,7 +6,7 @@ import InteractiveIconButton from "./InteractiveIconButton";
 import { interactiveIconsMap } from "./interactive-config";
 import type { InteractiveIconType } from "./interactive-types";
 
-const getIconButton = () => screen.getByRole("button", { name: "icon button" });
+const getIconButton = () => screen.getByRole("button");
 
 describe("InteractiveIconButton", () => {
   beforeEach(() => {
@@ -145,4 +145,56 @@ describe("InteractiveIconButton", () => {
       );
     },
   );
+
+  describe("a11y and controlled state", () => {
+    it("has a stable accessible name and exposes aria-pressed", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<InteractiveIconButton type="favorite" />);
+      const button = screen.getByRole("button", { name: "Favorite" });
+      expect(button).toHaveAttribute("aria-pressed", "false");
+      await user.click(button);
+      expect(
+        screen.getByRole("button", { name: "Favorite", pressed: true }),
+      ).toBe(button);
+    });
+
+    it("accepts aria-label / ariaLabel", () => {
+      const { rerender } = render(
+        <InteractiveIconButton type="like" aria-label="Like this post" />,
+      );
+      expect(
+        screen.getByRole("button", { name: "Like this post" }),
+      ).toBeInTheDocument();
+      rerender(<InteractiveIconButton type="like" ariaLabel="Like comment" />);
+      expect(
+        screen.getByRole("button", { name: "Like comment" }),
+      ).toBeInTheDocument();
+    });
+
+    it("is controlled by pressed and only reports changes", async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const onChange = vi.fn();
+      const { rerender } = render(
+        <InteractiveIconButton
+          type="star"
+          pressed={false}
+          onChange={onChange}
+        />,
+      );
+      await user.click(getIconButton());
+      expect(onChange).toHaveBeenCalledExactlyOnceWith(true);
+      expect(getIconButton()).toHaveAttribute("aria-pressed", "false");
+      rerender(
+        <InteractiveIconButton type="star" pressed onChange={onChange} />,
+      );
+      expect(getIconButton()).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("supports defaultPressed and forwards ref to the button", () => {
+      const ref = createRef<HTMLButtonElement>();
+      render(<InteractiveIconButton type="pin" defaultPressed ref={ref} />);
+      expect(ref.current).toBe(getIconButton());
+      expect(getIconButton()).toHaveAttribute("aria-pressed", "true");
+    });
+  });
 });

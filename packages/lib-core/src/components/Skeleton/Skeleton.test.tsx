@@ -1,5 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { createRef } from "react";
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
+import i18n from "../../config/i18n";
 import Skeleton from "./Skeleton";
 
 const getRoot = (container: HTMLElement) =>
@@ -141,5 +143,46 @@ describe("Skeleton", () => {
     expect(block.className).not.toMatch(/undefined/);
     expect(block.style.width).toBe("200px");
     expect(block.style.height).toBe("80px");
+  });
+
+  it("exposes the placeholder as a busy, labelled status region", () => {
+    const { rerender } = render(<Skeleton />);
+    const status = screen.getByRole("status", { name: "Loading" });
+    expect(status).toHaveAttribute("aria-busy", "true");
+    rerender(<Skeleton ariaLabel="Loading profile" />);
+    expect(
+      screen.getByRole("status", { name: "Loading profile" }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not crash on invalid line counts", () => {
+    const { container } = render(<Skeleton lines={-1} />);
+    expect(container.querySelectorAll(".content > .skeleton")).toHaveLength(0);
+  });
+
+  it("forwards ref to the root element while loading", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<Skeleton ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("status"));
+  });
+});
+
+describe("Skeleton localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the default label and lets ariaLabel win", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    const { rerender } = render(<Skeleton />);
+    expect(screen.getByRole("status", { name: "加载中" })).toBeInTheDocument();
+
+    rerender(<Skeleton ariaLabel="Loading profile" />);
+    expect(
+      screen.getByRole("status", { name: "Loading profile" }),
+    ).toBeInTheDocument();
   });
 });

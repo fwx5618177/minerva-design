@@ -1,33 +1,9 @@
-@use "../../styles/mixins" as *;
-
+// Attached badge: the wrapper is the positioning context of the corner badge.
+// It is not interactive, so it has no hover / active / focus styles.
 .badgeWrapper {
   display: inline-flex;
   padding: 0.25rem 0.5rem;
   position: relative;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
-  @include ripple-effect;
-
-  &:hover {
-    box-shadow: 0 6px 10px var(--shadow-color);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 6px 10px var(--shadow-color);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--focus-ring-color);
-    outline-offset: 2px;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
 }
 
 .content {
@@ -50,26 +26,12 @@
     color 0.3s ease,
     box-shadow 0.3s ease;
   box-shadow: 0 4px 6px color-mix(in srgb, var(--shadow-color) 70%, transparent);
-  cursor: pointer;
   position: relative;
-  @include ripple-effect;
 
-  &:hover {
-    box-shadow: 0 6px 10px var(--shadow-color);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 6px 10px var(--shadow-color);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--focus-ring-color);
-    outline-offset: 2px;
-  }
-
-  &:active {
-    transform: translateY(2px);
+  // Standalone badge: inline, in the normal flow (never absolutely positioned)
+  &.standalone {
+    position: relative;
+    vertical-align: middle;
   }
 
   // Class name -> design-token role (error is an alias of danger)
@@ -77,29 +39,17 @@
     &.#{$name} {
       background-color: var(--#{$role}-color);
       color: var(--text-inverse-color);
-
-      &:hover {
-        background-color: var(--#{$role}-color-hover);
-      }
     }
   }
 
   &.light {
     background-color: var(--surface-muted-color);
     color: var(--text-color);
-
-    &:hover {
-      background-color: color-mix(in srgb, var(--surface-muted-color) 88%, var(--foreground-color));
-    }
   }
 
   &.dark {
     background-color: var(--dark-color);
     color: var(--light-color);
-
-    &:hover {
-      background-color: color-mix(in srgb, var(--dark-color) 85%, var(--foreground-color));
-    }
   }
 
   &.small {

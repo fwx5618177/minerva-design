@@ -289,6 +289,7 @@ export const docPages: DocPageMeta[] = [
     demos: [
       "basic",
       "default-value",
+      "controlled",
       "formats",
       "twelve-hour",
       "steps",
@@ -408,6 +409,7 @@ export const docPages: DocPageMeta[] = [
       "triggers",
       "variants",
       "menu",
+      "anchor-width",
       "sizes",
       "custom-style",
     ],
@@ -474,13 +476,20 @@ export const docPages: DocPageMeta[] = [
     category: "navigation",
     exports: ["Dropdown"],
     api: ["DropdownProps", "DropdownOption"],
-    demos: ["basic", "custom-trigger", "directions", "disabled", "custom-menu"],
+    demos: [
+      "basic",
+      "controlled",
+      "custom-trigger",
+      "directions",
+      "disabled",
+      "custom-menu",
+    ],
   },
   {
     id: "pagination",
     category: "navigation",
     exports: ["Pagination"],
-    api: ["PaginationProps"],
+    api: ["PaginationProps", "PaginationLabels"],
     demos: [
       "basic",
       "many-pages",

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Un bouton de recherche avec icône seule. Donnez-lui un ariaLabel pour que les lecteurs d'écran puissent l'annoncer."
+      "description": "Un bouton de recherche avec icône seule. Il est annoncé « Search » par défaut ; passez ariaLabel pour le décrire plus précisément."
     },
     "variants": {
       "title": "Variantes",
@@ -39,7 +39,7 @@
     "SearchButtonProps": {
       "onClick": "Appelé lors du clic sur le bouton (pas lorsqu'il est désactivé)",
       "className": "Nom de classe supplémentaire",
-      "ariaLabel": "Libellé accessible ; obligatoire lorsque le bouton n'a pas de texte",
+      "ariaLabel": "Libellé accessible. Les boutons avec icône seule valent \"Search\" par défaut ; avec des children, le texte visible est utilisé",
       "disabled": "Désactive le bouton",
       "shape": "Forme du bouton ; un bouton avec enfants est toujours carré",
       "variant": "Variante de couleur",
@@ -48,8 +48,10 @@
       "color": "Couleur du texte",
       "iconColor": "Couleur de l'icône de recherche",
       "bgColor": "Couleur de fond personnalisée",
-      "loading": "Remplace l'icône par un indicateur de chargement",
-      "children": "Texte optionnel affiché à côté de l'icône"
+      "loading": "Remplace l'icône par un indicateur de chargement et bloque l'activation (y compris l'envoi du formulaire)",
+      "children": "Texte optionnel affiché à côté de l'icône",
+      "type": "Type natif du bouton (dans un formulaire, le navigateur utilise \"submit\" par défaut)",
+      "ref": "Ref vers l'élément <button>"
     }
   }
 }

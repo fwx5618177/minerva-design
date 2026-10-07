@@ -8,7 +8,7 @@
     },
     "options": {
       "title": "Options",
-      "description": "Passez un objet d’options pour régler la durée, le bouton de fermeture, l’icône, la barre de progression, le comportement au survol, etc."
+      "description": "Passez un objet d’options pour régler la durée, le bouton de fermeture, l’icône, la barre de progression, le comportement au survol, etc. message.config({ maxCount }) limite le nombre de messages affichés simultanément."
     },
     "placements": {
       "title": "Positions",
@@ -29,18 +29,18 @@
   },
   "api": {
     "MessageProps": {
-      "id": "Identifiant unique ; généré automatiquement s’il est omis dans MessageOptions",
+      "id": "Identifiant unique ; généré automatiquement s’il est omis dans MessageOptions. Réutiliser l’id d’un message ouvert le remplace",
       "type": "Type du message, qui détermine la couleur. Défini par la méthode appelée (message.success, …)",
       "content": "Contenu du message",
-      "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert",
+      "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert. Par défaut, la duration de message.config()",
       "showClose": "Affiche un bouton de fermeture",
       "icon": "Icône affichée avant le contenu",
       "className": "Classe CSS supplémentaire",
       "style": "Styles en ligne",
       "onClose": "Appelé avec l’id du message à sa fermeture, quelle qu’en soit la raison",
       "showProgress": "Affiche une barre de progression du compte à rebours (uniquement si duration > 0)",
-      "pauseOnHover": "Met en pause le compte à rebours et la barre de progression au survol",
-      "placement": "Position à l’écran de la pile de messages",
+      "pauseOnHover": "Met en pause le compte à rebours et la barre de progression au survol ou lorsque le focus clavier est dans le message",
+      "placement": "Position de la pile de messages à l’écran. Par défaut, le placement de message.config()",
       "onClick": "Appelé lors d’un clic sur le message",
       "description": "Description supplémentaire exposée aux technologies d’assistance (aria-description)",
       "closeAriaLabel": "Libellé accessible du bouton de fermeture",
@@ -69,14 +69,17 @@
       "hookShow": "Affiche un message et renvoie une promesse résolue à sa fermeture. La promesse expose aussi l’id du message via messageId.",
       "hookManage": "Les mêmes fonctions que message.update et message.destroy.",
       "options": "Options acceptées par toutes les méthodes d’affichage : toutes les MessageProps, avec un id facultatif.",
-      "promise": "Valeur renvoyée par les méthodes d’affichage de useMessage."
+      "promise": "Valeur renvoyée par les méthodes d’affichage de useMessage.",
+      "config": "Définit les valeurs globales par défaut (duration, placement, maxCount) des messages créés ensuite ; au-delà de maxCount, les plus anciens se ferment. Appelez-la sans argument pour rétablir les valeurs intégrées.",
+      "configType": "Options de message.config(). Valeurs par défaut : duration 3000, placement \"topRight\", maxCount illimité."
     },
     "notes": {
       "title": "Remarques",
       "id": "Passez votre propre id pour mettre à jour ou fermer un message plus tard ; sinon, utilisez l’id renvoyé (message-0, message-1, …).",
       "onClose": "onClose est appelé exactement une fois par message, qu’il se ferme à l’expiration du délai, via le bouton de fermeture ou via destroy.",
       "stacking": "Chaque position possède son propre conteneur de pile ajouté à document.body ; il est supprimé à la fermeture de son dernier message.",
-      "promise": "Pour enchaîner des messages, attendez la promesse avec await ou ne renvoyez que messageId depuis then() : renvoyer le résultat lui-même attendrait aussi la fermeture du message suivant."
+      "promise": "Pour enchaîner des messages, attendez la promesse avec await ou ne renvoyez que messageId depuis then() : renvoyer le résultat lui-même attendrait aussi la fermeture du message suivant.",
+      "a11y": "Les erreurs et avertissements utilisent role=\"alert\" (annoncés immédiatement) ; les autres types utilisent role=\"status\" (annoncés poliment). Avec pauseOnHover, le compte à rebours se met aussi en pause lorsque le focus clavier est dans un message, pour atteindre le bouton de fermeture à temps."
     }
   }
 }

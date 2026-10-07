@@ -1,20 +1,33 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import Alert from "./Alert";
 
+/** Alerts are role="alert" (error / warning) or role="status" (info / success) */
+const getAlert = () => {
+  const found = [
+    ...screen.queryAllByRole("alert"),
+    ...screen.queryAllByRole("status"),
+  ];
+  if (found.length !== 1) throw new Error(`Found ${found.length} alerts`);
+  return found[0];
+};
+const queryAlert = () =>
+  screen.queryByRole("alert") ?? screen.queryByRole("status");
+
 describe("Alert", () => {
-  it("renders title and content with role alert", () => {
+  it("renders title and content with role status for info", () => {
     render(<Alert title="Heads up">Something happened</Alert>);
-    const alert = screen.getByRole("alert");
+    const alert = screen.getByRole("status");
     expect(alert).toHaveTextContent("Heads up");
     expect(alert).toHaveTextContent("Something happened");
   });
 
   it("applies default variant, size and type", () => {
     render(<Alert>Body</Alert>);
-    const alert = screen.getByRole("alert");
+    const alert = getAlert();
     expect(alert).toHaveAttribute("data-variant", "info");
     expect(alert).toHaveAttribute("data-size", "medium");
     expect(alert).toHaveAttribute("data-type", "default");
@@ -33,7 +46,7 @@ describe("Alert", () => {
     "renders %s variant with a labelled icon",
     (variant) => {
       render(<Alert variant={variant}>Body</Alert>);
-      const alert = screen.getByRole("alert");
+      const alert = getAlert();
       expect(alert).toHaveClass(variant);
       expect(alert).toHaveAttribute("data-variant", variant);
       expect(
@@ -57,7 +70,7 @@ describe("Alert", () => {
         Body
       </Alert>,
     );
-    const alert = screen.getByRole("alert");
+    const alert = getAlert();
     expect(alert).toHaveAttribute("data-size", "large");
     expect(alert).toHaveAttribute("data-type", "outlined");
     expect(alert).toHaveClass(
@@ -74,7 +87,7 @@ describe("Alert", () => {
   it("hides the icon when showIcon is false", () => {
     render(<Alert showIcon={false}>Body</Alert>);
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
-    expect(screen.getByRole("alert")).not.toHaveClass("withIcon");
+    expect(getAlert()).not.toHaveClass("withIcon");
   });
 
   it("renders a custom icon", () => {
@@ -90,14 +103,14 @@ describe("Alert", () => {
         Body
       </Alert>,
     );
-    const alert = screen.getByRole("alert");
+    const alert = getAlert();
     expect(alert).not.toHaveClass("withAnimation");
     expect(alert).not.toHaveClass("animation-zoom");
   });
 
   it("uses the given animation name", () => {
     render(<Alert animationName="bounce">Body</Alert>);
-    expect(screen.getByRole("alert")).toHaveClass("animation-bounce");
+    expect(getAlert()).toHaveClass("animation-bounce");
   });
 
   it("merges style and borderRadius", () => {
@@ -106,7 +119,7 @@ describe("Alert", () => {
         Body
       </Alert>,
     );
-    const alert = screen.getByRole("alert");
+    const alert = getAlert();
     expect(alert.style.color).toBe("red");
     expect(alert.style.borderRadius).toBe("12px");
   });
@@ -134,7 +147,7 @@ describe("Alert", () => {
     await user.click(screen.getByRole("button", { name: "Close" }));
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(onClose.mock.calls[0][0]).toHaveProperty("type", "click");
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(queryAlert()).not.toBeInTheDocument();
   });
 
   it("closes via keyboard activation", async () => {
@@ -142,7 +155,7 @@ describe("Alert", () => {
     render(<Alert closable>Body</Alert>);
     screen.getByRole("button", { name: "Close" }).focus();
     await user.keyboard("{Enter}");
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(queryAlert()).not.toBeInTheDocument();
   });
 
   it("renders a custom close icon", () => {
@@ -168,14 +181,14 @@ describe("Alert", () => {
       const toggle = screen.getByRole("button", { name: "Collapse" });
       expect(toggle).toHaveAttribute("aria-expanded", "true");
       expect(screen.getByText("Details")).toBeInTheDocument();
-      expect(screen.getByRole("alert")).toHaveClass("collapsible", "expanded");
+      expect(getAlert()).toHaveClass("collapsible", "expanded");
 
       await user.click(toggle);
       expect(onExpand).toHaveBeenLastCalledWith(false);
       expect(screen.queryByText("Details")).not.toBeInTheDocument();
       const expandBtn = screen.getByRole("button", { name: "Expand" });
       expect(expandBtn).toHaveAttribute("aria-expanded", "false");
-      expect(screen.getByRole("alert")).not.toHaveClass("expanded");
+      expect(getAlert()).not.toHaveClass("expanded");
 
       await user.click(expandBtn);
       expect(onExpand).toHaveBeenLastCalledWith(true);
@@ -215,5 +228,154 @@ describe("Alert", () => {
       render(<Alert collapsible>Details</Alert>);
       expect(screen.queryByRole("button")).not.toBeInTheDocument();
     });
+
+    it("keeps the content visible without a title, even if defaultExpanded is false", () => {
+      render(
+        <Alert collapsible defaultExpanded={false}>
+          Details
+        </Alert>,
+      );
+      expect(screen.getByText("Details")).toBeInTheDocument();
+    });
+
+    it("honors the controlled expanded prop on every render", async () => {
+      const user = userEvent.setup();
+      const onExpand = vi.fn();
+      const { rerender } = render(
+        <Alert title="Title" collapsible expanded={false} onExpand={onExpand}>
+          Details
+        </Alert>,
+      );
+      expect(screen.queryByText("Details")).not.toBeInTheDocument();
+
+      // The parent does not update `expanded`: the content stays collapsed
+      await user.click(screen.getByRole("button", { name: "Expand" }));
+      expect(onExpand).toHaveBeenCalledExactlyOnceWith(true);
+      expect(screen.queryByText("Details")).not.toBeInTheDocument();
+
+      rerender(
+        <Alert title="Title" collapsible expanded onExpand={onExpand}>
+          Details
+        </Alert>,
+      );
+      expect(screen.getByText("Details")).toBeInTheDocument();
+    });
+
+    it("works as a controlled component driven by onExpand", async () => {
+      const user = userEvent.setup();
+      const Controlled = () => {
+        const [expanded, setExpanded] = React.useState(false);
+        return (
+          <React.StrictMode>
+            <Alert
+              title={`State: ${expanded}`}
+              collapsible
+              expanded={expanded}
+              onExpand={setExpanded}
+            >
+              Details
+            </Alert>
+          </React.StrictMode>
+        );
+      };
+      render(<Controlled />);
+      await user.click(screen.getByRole("button", { name: "Expand" }));
+      expect(screen.getByText("State: true")).toBeInTheDocument();
+      expect(screen.getByText("Details")).toBeInTheDocument();
+    });
+
+    it("links the toggle to the content with aria-controls", () => {
+      render(
+        <Alert title="Title" collapsible>
+          Details
+        </Alert>,
+      );
+      const toggle = screen.getByRole("button", { name: "Collapse" });
+      const contentId = toggle.getAttribute("aria-controls");
+      expect(contentId).toBeTruthy();
+      expect(document.getElementById(contentId as string)).toHaveTextContent(
+        "Details",
+      );
+    });
+
+    it("does not submit an enclosing form when toggled", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <Alert title="Title" collapsible>
+            Details
+          </Alert>
+        </form>,
+      );
+      await user.click(screen.getByRole("button", { name: "Collapse" }));
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+  });
+
+  it("applies borderRadius={0}", () => {
+    render(<Alert borderRadius={0}>Body</Alert>);
+    expect(getAlert().style.borderRadius).toBe("0px");
+  });
+
+  it.each([
+    ["error", "alert"],
+    ["warning", "alert"],
+    ["info", "status"],
+    ["success", "status"],
+  ] as const)("%s variant uses role=%s", (variant, role) => {
+    render(<Alert variant={variant}>Body</Alert>);
+    expect(screen.getByRole(role)).toHaveTextContent("Body");
+  });
+
+  it("forwards ref to the root element", () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(<Alert ref={ref}>Body</Alert>);
+    expect(ref.current).toBe(getAlert());
+  });
+});
+
+describe("Alert localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the default labels with the library language", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <Alert title="Title" variant="success" closable collapsible>
+        Body
+      </Alert>,
+    );
+    expect(screen.getByRole("button", { name: "关闭" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "收起" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "成功图标" })).toBeInTheDocument();
+  });
+
+  it("lets the label props win over the translation", () => {
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    render(
+      <Alert
+        title="Title"
+        closable
+        collapsible
+        defaultExpanded={false}
+        closeLabel="Dismiss"
+        expandLabel="Show more"
+        iconLabel="Notice"
+      >
+        Body
+      </Alert>,
+    );
+    expect(screen.getByRole("button", { name: "Dismiss" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Show more" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Notice" })).toBeInTheDocument();
   });
 });

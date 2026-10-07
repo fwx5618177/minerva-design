@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "defaultValue を指定した非制御の RadioGroup。各 Radio は value で識別されます。"
+      "description": "defaultValue を持つ非制御の RadioGroup。各 Radio は value で識別されます。label は支援技術向けにグループの名前になります。"
     },
     "controlled": {
       "title": "制御モード",
@@ -42,20 +42,23 @@
       "size": "サイズ。RadioGroup の size で上書きされます",
       "type": "配色のプリセット",
       "label": "ラジオボタンの横に表示するラベル",
+      "ariaLabel": "アクセシブルなラベル。表示ラベルがない場合は必須",
       "className": "追加のクラス名",
       "color": "マークのカスタムカラー。RadioGroup の color で上書きされます",
       "bgColor": "マークのカスタム背景色",
       "required": "入力を必須にします",
       "error": "エラー状態を表示します（helperText の代わりに errorMessage を表示）",
       "errorIcon": "エラーメッセージの前に表示するアイコン",
-      "errorMessage": "error が true のときに下に表示するメッセージ",
-      "helperText": "下に表示する補助テキスト",
-      "ref": "ネイティブの input 要素に転送される ref"
+      "errorMessage": "error が true のときラジオボタンの下に表示するメッセージ（aria-describedby で関連付け）",
+      "helperText": "ラジオボタンの下に表示するヘルプテキスト（aria-describedby で関連付け）",
+      "ref": "ネイティブの <input type=\"radio\"> 要素への ref"
     },
     "RadioGroupProps": {
       "value": "選択中のラジオボタンの値（制御）",
       "defaultValue": "初期選択値（非制御）",
-      "name": "グループ内のすべてのラジオボタンで共有される name",
+      "name": "グループ内のすべてのラジオボタンで共有する name（省略時は一意の name が生成されるため、矢印キーでの移動が常に機能します）",
+      "label": "グループの表示ラベル。アクセシブルな名前にもなります",
+      "ariaLabel": "表示ラベルがない場合のグループのアクセシブルなラベル",
       "onChange": "新しく選択された値で呼び出されます",
       "disabled": "グループ内のすべてのラジオボタンを無効にします",
       "children": "Radio 要素",
@@ -63,9 +66,10 @@
       "direction": "並べる方向",
       "size": "グループ内のすべてのラジオボタンに適用されるサイズ",
       "error": "エラー状態を表示します",
-      "helperText": "グループの下に表示する補助テキスト",
+      "helperText": "グループの下に表示するヘルプテキスト（aria-describedby で関連付け）",
       "required": "グループを必須にします（aria-required）",
-      "color": "グループ内のすべてのラジオボタンに適用される色"
+      "color": "グループ内のすべてのラジオボタンに適用される色",
+      "ref": "ルートのラッパー要素への ref"
     }
   }
 }

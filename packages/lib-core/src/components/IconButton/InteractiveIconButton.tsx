@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React from "react";
 import {
   FaHeart,
   FaStar,
@@ -17,11 +17,16 @@ import {
   FaFlag,
   FaTimes as FaClose,
 } from "react-icons/fa";
-import { InteractiveIconProps } from "./interactive-types";
+import type { IconType } from "react-icons";
+import type {
+  InteractiveIconProps,
+  InteractiveIconType,
+} from "./interactive-types";
 import { interactiveIconsMap } from "./interactive-config";
+import { useControllableState } from "../../internal/useControllableState";
 import IconButton from "./IconButton";
 
-const iconMap = {
+const iconMap: Record<InteractiveIconType, IconType> = {
   favorite: FaHeart,
   star: FaStar,
   bookmark: FaBookmark,
@@ -41,54 +46,56 @@ const iconMap = {
   close: FaClose,
 };
 
-const InteractiveIconButton: React.FC<InteractiveIconProps> = ({
+/**
+ * A preset toggle icon button (favorite, like, bookmark, ...). Exposes its
+ * state with aria-pressed; works controlled (`pressed`) or uncontrolled
+ * (`defaultPressed`).
+ */
+const InteractiveIconButton = ({
+  ref,
   type,
-  onChange,
+  pressed,
+  defaultPressed,
   initialState = false,
+  onChange,
   className,
   size = "medium",
   shape = "circle",
   disabled = false,
-}) => {
-  const [isActive, setIsActive] = useState(initialState);
+  ariaLabel,
+  "aria-label": ariaLabelAttr,
+}: InteractiveIconProps) => {
+  const [isActive, setIsActive] = useControllableState({
+    value: pressed,
+    defaultValue: defaultPressed ?? initialState,
+    onChange,
+  });
   const config = interactiveIconsMap[type];
   const Icon = iconMap[type];
 
-  const handleClick = useCallback(() => {
-    setIsActive((prevState) => {
-      const newState = !prevState;
-      onChange?.(newState);
-      return newState;
-    });
-  }, [onChange]);
-
-  const buttonProps = useMemo(
-    () => ({
-      color: isActive ? config.activeColor : config.inactiveColor,
-      activeColor: config.activeColor,
-      bgColor: isActive ? config.activeBgColor : config.inactiveBgColor,
-      hoverColor: isActive
-        ? config.activeHoverColor
-        : config.inactiveHoverColor,
-      fillColor: isActive ? config.activeFillColor : config.inactiveFillColor,
-      tooltip: {
-        content: isActive ? config.activeTooltip : config.inactiveTooltip,
-      },
-    }),
-    [isActive, config],
-  );
-
   return (
     <IconButton
-      icon={<Icon />}
+      ref={ref}
+      icon={<Icon aria-hidden focusable={false} />}
       active={isActive}
-      onClick={handleClick}
+      aria-pressed={isActive}
+      ariaLabel={ariaLabelAttr ?? ariaLabel ?? config.label}
+      onClick={() => setIsActive((prev) => !prev)}
       showTooltip
       className={className}
       size={size}
       shape={shape}
       disabled={disabled}
-      {...buttonProps}
+      color={isActive ? config.activeColor : config.inactiveColor}
+      activeColor={config.activeColor}
+      bgColor={isActive ? config.activeBgColor : config.inactiveBgColor}
+      hoverColor={
+        isActive ? config.activeHoverColor : config.inactiveHoverColor
+      }
+      fillColor={isActive ? config.activeFillColor : config.inactiveFillColor}
+      tooltip={{
+        content: isActive ? config.activeTooltip : config.inactiveTooltip,
+      }}
     />
   );
 };

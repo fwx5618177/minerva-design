@@ -1,10 +1,10 @@
 {
   "title": "Tooltip ツールチップ",
-  "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。",
+  "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。ビューポートの端では反転・シフトして表示を保ちます。",
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "フォーカス可能な要素をラップします。ホバー時とキーボードフォーカス時に表示され、Escape で閉じます。"
+      "description": "フォーカス可能な要素をラップします。ツールチップはホバー時とキーボードフォーカス時に表示され、ホバーで開いた場合でも Escape で閉じます。"
     },
     "placements": {
       "title": "配置",
@@ -24,7 +24,7 @@
     },
     "custom-colors": {
       "title": "色、矢印、オフセット",
-      "description": "bgColor は単色と CSS グラデーションに対応します。arrow で矢印を追加し、offset でトリガーからの距離を調整します。"
+      "description": "bgColor は単色と CSS グラデーションに対応します。arrow はトリガーを指す矢印を追加し、offset はトリガーとの間隔（既定 8px）を設定します。"
     },
     "delays": {
       "title": "遅延と無効化",
@@ -36,7 +36,7 @@
     },
     "controlled": {
       "title": "制御モードと命令的操作",
-      "description": "open で表示を制御するか、TooltipRef の open / close / toggle を呼び出します。"
+      "description": "open と onOpenChange で表示を制御するか（ホバー・フォーカス・Escape は引き続き変更を要求します）、TooltipRef の open / close / toggle を呼び出します。"
     },
     "events": {
       "title": "イベント",
@@ -47,7 +47,7 @@
     "TooltipProps": {
       "content": "ツールチップ内に表示するコンテンツ",
       "children": "ツールチップのトリガーとなる要素。フォーカス可能な要素を推奨します",
-      "open": "ツールチップを表示するかどうか（制御モード）",
+      "open": "ツールチップを表示するかどうか（制御モード。onOpenChange と組み合わせて使用）",
       "defaultOpen": "初期の表示状態（非制御モード）",
       "placement": "トリガーに対する配置",
       "variant": "カラーバリアント",
@@ -55,7 +55,7 @@
       "animation": "表示・非表示のアニメーション",
       "enterDelay": "ホバー後に表示するまでの遅延（ミリ秒）",
       "leaveDelay": "マウスが離れてから非表示にするまでの遅延（ミリ秒）",
-      "offset": "トリガーからのオフセット [x, y]（ピクセル）",
+      "offset": "[x, y] 形式のオフセット（ピクセル）。top/bottom 配置では y がトリガーとの間隔、x がそれに沿ったずれ。left/right 配置では x が間隔、y がずれです。未指定時はトリガーから 8px 離れます",
       "followCursor": "ツールチップをマウスカーソルに追従させる",
       "bgColor": "カスタム背景色（CSS グラデーション対応）",
       "textColor": "カスタム文字色",
@@ -65,7 +65,9 @@
       "className": "トリガーのラッパーに追加するクラス名",
       "onOpen": "ホバーまたはフォーカスでツールチップが開いたときに呼び出されます",
       "onClose": "マウスアウト、ブラー、Escape でツールチップが閉じたときに呼び出されます",
-      "ariaLabel": "ツールチップ要素のアクセシブルなラベル"
+      "ariaLabel": "ツールチップ要素のアクセシブルなラベル",
+      "ref": "open / close / toggle を持つ命令的ハンドル",
+      "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）"
     },
     "TooltipRef": {
       "open": "ツールチップを開く",

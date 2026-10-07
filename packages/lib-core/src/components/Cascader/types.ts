@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 
 export interface CascaderOption {
   /** Value of the option, unique among its siblings */
@@ -16,6 +16,8 @@ export interface CascaderOption {
 }
 
 export interface CascaderProps {
+  /** Ref to the inner <input> element */
+  ref?: Ref<HTMLInputElement>;
   /** Label of the input */
   label: string;
   /** Name of the input */
@@ -25,7 +27,7 @@ export interface CascaderProps {
    * @default []
    */
   options: CascaderOption[];
-  /** Selected path of values (controlled) */
+  /** Selected path of values (controlled; pair with onChange) */
   value?: (string | number)[];
   /** Initially selected path of values (uncontrolled) */
   defaultValue?: (string | number)[];
@@ -46,7 +48,7 @@ export interface CascaderProps {
   disabled?: boolean;
   /**
    * Placeholder of the input
-   * @default "Please select"
+   * @default "Please select" (localized)
    */
   placeholder?: string;
   /**
@@ -68,7 +70,12 @@ export interface CascaderProps {
   showSearch?: boolean;
   /** Custom search predicate; by default paths whose labels contain the input match */
   filter?: (inputValue: string, path: CascaderOption[]) => boolean;
-  /** Loads children lazily for options without children that are not isLeaf; update options yourself */
+  /**
+   * Loads children lazily: clicking an option that has no children and is
+   * not isLeaf expands it and calls loadData with its path (instead of
+   * selecting it). Add the children to `options` yourself; set `loading` on
+   * the option meanwhile
+   */
   loadData?: (selectedOptions: CascaderOption[]) => void;
   /** Additional class name of the dropdown */
   dropdownClassName?: string;
@@ -85,21 +92,35 @@ export interface CascaderProps {
    */
   maxLevel?: number;
   /** Inline styles of the dropdown */
-  dropdownStyle?: React.CSSProperties;
+  dropdownStyle?: CSSProperties;
   /** Inline styles of every option */
-  optionStyle?: React.CSSProperties;
+  optionStyle?: CSSProperties;
 }
 
-export interface CascaderPanelProps extends Omit<
-  CascaderProps,
-  "value" | "defaultValue"
-> {
-  /** 当前选中的路径 */
-  activePath?: CascaderOption[];
-  /** 面板展开的层级 */
-  activeLevel?: number;
-  /** 选择某一级时的回调 */
-  onLevelSelect?: (option: CascaderOption, level: number) => void;
+/** Props of the internal column panel rendered in the Cascader dropdown */
+export interface CascaderPanelProps {
+  /** Label used to name the columns */
+  label?: string;
+  /** Option tree */
+  options: CascaderOption[];
+  /** Options of the expanded path (one per level) */
+  expandedPath: CascaderOption[];
+  /** Options of the selected path (one per level) */
+  selectedPath: CascaderOption[];
+  /** How sub-menus are expanded */
+  expandTrigger?: "click" | "hover";
+  /** Maximum number of levels shown */
   maxLevel?: number;
-  optionStyle?: React.CSSProperties;
+  /** Custom option renderer */
+  optionRender?: (option: CascaderOption, level: number) => ReactNode;
+  /** Inline styles of every option */
+  optionStyle?: CSSProperties;
+  /** Focus an option when mounted (keyboard opening) */
+  autoFocus?: boolean;
+  /** Called when an option is clicked or activated with the keyboard */
+  onActivate: (path: CascaderOption[], level: number) => void;
+  /** Called when an option is hovered (expandTrigger "hover") */
+  onHoverExpand?: (path: CascaderOption[]) => void;
+  /** Called when the user leaves the first column with ArrowLeft / Escape */
+  onExit?: () => void;
 }

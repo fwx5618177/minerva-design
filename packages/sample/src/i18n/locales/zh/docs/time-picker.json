@@ -4,11 +4,11 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "点击输入框打开面板。onChange 接收一个 Date，清除时为 undefined。"
+      "description": "点击输入框（或按向下箭头）打开面板。onChange 接收一个 Date，清除时接收 undefined。未设置 label 时，输入框的无障碍名称为 \"Time\"（时间）。"
     },
     "default-value": {
       "title": "默认值与清除",
-      "description": "defaultValue 设置初始时间；设置 clearable={false} 隐藏清除按钮。"
+      "description": "defaultValue 设置初始时间。清除按钮的标签为 \"Clear time\"（清除时间）；设置 clearable={false} 可隐藏该按钮。"
     },
     "formats": {
       "title": "格式",
@@ -33,18 +33,22 @@
     "disabled": {
       "title": "禁用",
       "description": "禁用后无法打开面板或编辑。"
+    },
+    "controlled": {
+      "title": "受控",
+      "description": "传入 value 并在 onChange 中更新。null 表示保持受控但为空，undefined 则让组件变为非受控。label 为输入框提供可见标签。"
     }
   },
   "api": {
     "TimePickerProps": {
-      "value": "选中的时间（仅在挂载时读取，日期部分会被忽略）",
+      "value": "选中的时间（受控；与 onChange 搭配使用）。null 表示\"无时间\"但保持受控；undefined 让选择器变为非受控。日期部分会被忽略",
       "defaultValue": "初始选中的时间（非受控）",
       "onChange": "以新时间调用，清除时传入 undefined",
       "format": "显示格式：\"HH:mm:ss\"、\"HH:mm\"、\"hh:mm:ss a\" 或 \"hh:mm a\"",
       "use12Hours": "使用 12 小时制并显示 AM/PM 列",
-      "placeholder": "输入框占位文本",
+      "placeholder": "输入框占位文字；默认为本地化的 \"Select time\"（选择时间）",
       "disabled": "是否禁用",
-      "clearable": "允许通过后缀按钮清除值",
+      "clearable": "允许通过后缀按钮清除值（标签为本地化的 \"Clear time\"）",
       "size": "输入框和面板的尺寸",
       "className": "额外的类名",
       "minTime": "可选的最早时间，更早的选项会被禁用",
@@ -52,7 +56,20 @@
       "showSecond": "显示秒列",
       "hourStep": "小时选项的间隔",
       "minuteStep": "分钟选项的间隔",
-      "secondStep": "秒选项的间隔"
+      "secondStep": "秒选项的间隔",
+      "ref": "<input> 元素的 ref",
+      "label": "输入框的可见标签；未设置时输入框的标签为本地化的 \"Time\"（时间）",
+      "ariaLabel": "未显示可见标签时输入框的无障碍标签",
+      "name": "输入框的 name",
+      "onOpenChange": "面板打开或关闭时调用"
     }
+  },
+  "keyboard": {
+    "title": "键盘与无障碍",
+    "open": "在输入框上按向下箭头打开面板；点击外部关闭面板。",
+    "navigate": "每一列（时、分、秒、上午/下午）都是 listbox：向上 / 向下箭头、Home 和 End 在列内移动，向左 / 向右箭头切换列。",
+    "select": "Enter 或 Space 选择当前聚焦的选项。",
+    "close": "Escape 关闭面板并把焦点还给输入框。",
+    "typing": "输入的文本只有在构成完整且有效的时间时才会提交。失焦时会采用更宽松的解析；文本为空则清除值，无法解析则恢复之前的值。"
   }
 }

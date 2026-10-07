@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface VirtualListItem {
   /** Unique key of the item */
   id: string | number;
@@ -34,8 +36,8 @@ export interface VirtualListProps {
   className?: string;
   /** Inline styles of the scroll container */
   style?: React.CSSProperties;
-  /** Called when scrolling near the bottom; return a promise that resolves once new items are loaded */
-  onLoadMore?: () => Promise<void>;
+  /** Called when scrolling near the bottom; return a promise that resolves once new items are loaded (no new call happens until it settles) */
+  onLoadMore?: () => Promise<void> | void;
   /**
    * Distance from the bottom (px) at which onLoadMore is triggered
    * @default 100
@@ -51,6 +53,10 @@ export interface VirtualListProps {
    * @default false
    */
   loading?: boolean;
+  /** Accessible name of the list */
+  ariaLabel?: string;
+  /** Ref to the root (scroll container) <div> element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 export interface VirtualItem {

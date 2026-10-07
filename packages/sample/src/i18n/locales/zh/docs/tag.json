@@ -20,11 +20,11 @@
     },
     "closable": {
       "title": "可关闭",
-      "description": "closable 会添加关闭按钮并调用 onClose，请在其中从状态中移除标签；closeIcon 和 closeLabel 用于自定义该按钮。"
+      "description": "closable 会添加关闭按钮并调用 onClose，请在其中从状态中移除标签；closeIcon 和 closeLabel 用于自定义该按钮。第一个标签同时可点击：标签本身和关闭按钮是两个独立的按钮，都可以用 Tab 到达。"
     },
     "clickable": {
       "title": "可点击（可选择）",
-      "description": "可点击的标签是按钮：可用 Tab 聚焦，并通过点击、Enter 或空格键触发。本例用于切换选中状态。"
+      "description": "clickable 会将内容渲染为原生按钮：用 Tab 聚焦，用点击、Enter 或空格键触发。这里标签用于切换选中状态，并通过 pressed 告知辅助技术。"
     },
     "custom-colors": {
       "title": "自定义颜色",
@@ -49,8 +49,9 @@
       "shape": "标签形状",
       "closable": "显示关闭按钮",
       "onClose": "点击关闭按钮时的回调",
-      "clickable": "让标签表现为按钮（可聚焦，可用 Enter / 空格键触发）",
+      "clickable": "将标签内容渲染为原生按钮（可聚焦，可用 Enter / 空格键触发）。与 closable 同时使用时，关闭按钮是与之并列的独立按钮",
       "onClick": "标签被触发时的回调（需要 clickable）",
+      "pressed": "切换型标签的按下状态（需要 clickable），会设置 aria-pressed",
       "icon": "内容前显示的图标",
       "bordered": "显示边框",
       "elevation": "显示阴影",
@@ -62,7 +63,8 @@
       "disabled": "禁用标签及其关闭按钮",
       "closeIcon": "自定义关闭图标",
       "closeLabel": "关闭按钮的无障碍标签",
-      "ripple": "点击时显示涟漪效果"
+      "ripple": "点击时显示涟漪效果",
+      "ref": "指向根元素的 ref"
     }
   }
 }

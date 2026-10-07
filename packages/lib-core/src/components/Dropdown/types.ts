@@ -1,3 +1,5 @@
+import type { ReactNode, Ref } from "react";
+
 export interface DropdownOption {
   /** Text of the menu item */
   label: string;
@@ -8,6 +10,17 @@ export interface DropdownOption {
 }
 
 export interface DropdownProps {
+  /** Ref to the root element */
+  ref?: Ref<HTMLDivElement>;
+  /** Whether the menu is open (controlled; pair with onOpenChange) */
+  open?: boolean;
+  /**
+   * Initial open state (uncontrolled)
+   * @default false
+   */
+  defaultOpen?: boolean;
+  /** Called when the menu requests to open or close */
+  onOpenChange?: (open: boolean) => void;
   /**
    * Additional class name
    * @default ""
@@ -43,10 +56,11 @@ export interface DropdownProps {
    */
   menuBoxShadow?: string;
   /**
-   * Side on which the menu opens
+   * Preferred side on which the menu opens; it flips to the opposite side
+   * and shifts to stay inside the viewport
    * @default "down"
    */
   direction?: "down" | "up" | "left" | "right";
   /** Trigger element; a small "Dropdown" button is rendered when omitted */
-  children?: React.ReactNode;
+  children?: ReactNode;
 }

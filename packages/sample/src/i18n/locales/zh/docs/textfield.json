@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "name 和 label 为必填项。标签浮动在输入值上方；设置 placeholder 后会替代标签。"
+      "description": "name 和 label 为必填。标签浮动在值的上方；placeholder 会在视觉上替代它，但标签仍是无障碍名称。"
     },
     "controlled": {
       "title": "受控模式",
@@ -20,7 +20,7 @@
     },
     "clearable-and-count": {
       "title": "可清除与字数统计",
-      "description": "clearable 在有值时显示清除按钮；showCharCount 显示字符数。"
+      "description": "clearable 会在有值时显示清除按钮（清除后焦点回到输入框）；showCharCount 显示字符数。defaultValue 设置非受控输入框的初始值。"
     },
     "appearance": {
       "title": "外观",
@@ -36,7 +36,7 @@
     },
     "states": {
       "title": "状态",
-      "description": "禁用和只读的输入框。只读输入框不显示浮动标签，请提供 ariaLabel。"
+      "description": "禁用和只读的输入框。只读输入框隐藏的浮动标签仍会为屏幕阅读器提供名称。"
     },
     "validation": {
       "title": "校验",
@@ -45,11 +45,13 @@
   },
   "api": {
     "TextFieldProps": {
-      "name": "输入框的 name，同时用作其 id 以关联标签",
-      "label": "浮动标签（设置 placeholder 或只读时隐藏）",
-      "value": "当前值；不传则为非受控模式",
+      "name": "输入框的 name；（未设置 id 时）也用作其 id 以关联标签",
+      "id": "输入框的 id，默认为 name",
+      "label": "浮动标签。设置 placeholder 或只读时隐藏，但仍作为输入框的无障碍名称",
+      "value": "当前值（受控）；非受控时省略",
+      "defaultValue": "非受控输入框的初始值",
       "placeholder": "占位文字，会替代浮动标签",
-      "helperText": "显示在输入框下方的错误信息，并将其切换为错误状态",
+      "helperText": "显示在输入框下方的错误信息（通过 aria-describedby 关联）；会切换到错误状态、聚焦输入框并短暂抖动",
       "icon": "显示在输入框内的图标",
       "iconPosition": "图标位置；type=\"password\" 时右侧图标会变成显示/隐藏切换按钮",
       "borderColor": "自定义边框颜色",
@@ -62,7 +64,10 @@
       "fullWidth": "占满容器宽度（覆盖 width）",
       "width": "输入框宽度（任意 CSS 长度）",
       "disabled": "禁用输入框",
-      "ariaLabel": "输入框的无障碍标签",
+      "ariaLabel": "输入框的无障碍标签（默认为 label）",
+      "clearLabel": "清除按钮的无障碍标签",
+      "showPasswordLabel": "密码隐藏时密码切换按钮的无障碍标签",
+      "hidePasswordLabel": "密码可见时密码切换按钮的无障碍标签",
       "readOnly": "设为只读",
       "size": "输入框尺寸",
       "suffix": "显示在末尾的内容，例如单位",
@@ -70,7 +75,8 @@
       "onBlur": "输入框失去焦点时调用",
       "onFocus": "输入框获得焦点时调用",
       "onKeyDown": "在输入框中按下按键时调用",
-      "className": "容器的额外类名"
+      "className": "容器的额外类名",
+      "ref": "指向底层 <input> 元素的 ref"
     }
   }
 }

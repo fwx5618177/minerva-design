@@ -1,291 +1,250 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  forwardRef,
-} from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
+import classNames from "classnames";
 import {
   FaExclamationTriangle,
   FaTimesCircle,
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useControllableState } from "../../internal/useControllableState";
 import styles from "./textField.module.scss";
-import { TextFieldProps } from "./types";
+import useI18n from "../../hooks/useI18n";
+import type { TextFieldProps } from "./types";
+
+const SHAKE_DURATION = 500;
 
 /**
- * TextField component
- * @param label - The label of the text field
- * @param placeholder - The placeholder text of the text field
- * @param value - The value of the text field
- * @param onChange - Function to be called when the text field value changes
- * @param helperText - The error message to be displayed
- * @param icon - The icon to be displayed in the text field
- * @param iconPosition - The position of the icon (left, right)
- * @param borderColor - The border color of the text field
- * @param hideBorder - Whether to hide the border of the text field
- * @param minimal - Whether to use the minimal version of the text field
- * @param borderRadius - The border radius of the text field
- * @param name - The name attribute of the input (required)
- * @param type - The type attribute of the input
- * @param showCharCount - Whether to show the character count
- * @param clearable - Whether to show the clear icon
- * @param fullWidth - Whether the text field should take the full width of its container
- * @param width - The width of the text field (e.g., "200px", "50%")
- * @param disabled - Whether the text field is disabled
- * @param ariaLabel - The aria-label attribute for accessibility
- * @param readOnly - Whether the text field is read-only
- * @param size - The size of the text field
- * @param suffix - The suffix to be displayed
- * @param onBlur - Callback fired when the input loses focus
- * @param onFocus - Callback fired when the input gains focus
- * @param className - The custom class name for the text field
- * @returns A text field component
+ * TextField: a single-line input with a floating label, icons, clear button,
+ * character count and error message. `ref` reaches the <input>.
  */
-const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
-  (
-    {
-      label,
-      placeholder,
-      value,
-      onChange,
-      helperText,
-      icon,
-      iconPosition = "left",
-      borderColor,
-      hideBorder = false,
-      minimal = false,
-      borderRadius = "0.25rem",
-      name,
-      type = "text",
-      showCharCount = false,
-      clearable = false,
-      fullWidth = false,
-      width = "300px",
-      disabled = false,
-      ariaLabel,
-      readOnly = false,
-      size = "medium",
-      suffix,
-      onBlur,
-      onFocus,
-      onKeyDown,
-      className,
-    },
-    ref,
-  ) => {
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    const shakeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+const TextField = ({
+  label,
+  placeholder,
+  value,
+  defaultValue = "",
+  onChange,
+  helperText,
+  icon,
+  iconPosition = "left",
+  borderColor,
+  hideBorder = false,
+  minimal = false,
+  borderRadius = "0.25rem",
+  name,
+  id,
+  type = "text",
+  showCharCount = false,
+  clearable = false,
+  fullWidth = false,
+  width = "300px",
+  disabled = false,
+  ariaLabel,
+  clearLabel,
+  showPasswordLabel,
+  hidePasswordLabel,
+  readOnly = false,
+  size = "medium",
+  suffix,
+  onBlur,
+  onFocus,
+  onKeyDown,
+  className,
+  ref,
+}: TextFieldProps) => {
+  const { t } = useI18n();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const mergedRef = useMergedRefs(inputRef, ref);
+  const errorId = useId();
+  const inputId = id ?? name;
 
-    // Keep the internal ref working while also forwarding the node to the
-    // caller's ref (function or object ref).
-    const setInputRef = useCallback(
-      (node: HTMLInputElement | null) => {
-        inputRef.current = node;
-        if (typeof ref === "function") {
-          ref(node);
-        } else if (ref) {
-          ref.current = node;
-        }
-      },
-      [ref],
-    );
-    const [isFocused, setIsFocused] = useState(false);
-    const [isFilled, setIsFilled] = useState(!!value);
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [shake, setShake] = useState(false);
-    const [internalValue, setInternalValue] = useState(value || "");
+  const [currentValue, setValue] = useControllableState({
+    value,
+    defaultValue,
+    onChange,
+  });
+  const [isFocused, setIsFocused] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    useEffect(() => {
-      if (value !== undefined) {
-        setInternalValue(value);
-      }
-    }, [value]);
+  // Shake whenever a (new) error message appears. Derived during render from
+  // the previous message instead of setting state in an effect.
+  const [prevHelperText, setPrevHelperText] = useState(helperText);
+  const [shake, setShake] = useState(!!helperText);
+  if (helperText !== prevHelperText) {
+    setPrevHelperText(helperText);
+    if (helperText) setShake(true);
+  }
 
-    useEffect(() => {
-      setIsFilled(!!(value || internalValue));
-    }, [value, internalValue]);
+  useEffect(() => {
+    if (!shake) return;
+    const timer = setTimeout(() => setShake(false), SHAKE_DURATION);
+    return () => clearTimeout(timer);
+  }, [shake, helperText]);
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent<HTMLInputElement>) => {
-        onKeyDown?.(e);
-      },
-      [onKeyDown],
-    );
+  // Move focus to the field when an error message appears.
+  useEffect(() => {
+    if (helperText) inputRef.current?.focus();
+  }, [helperText]);
 
-    const handleFocus = useCallback(
-      (e: React.FocusEvent<HTMLInputElement>) => {
-        setIsFocused(true);
-        onFocus?.(e);
-      },
-      [onFocus],
-    );
+  const isFilled = currentValue !== "";
+  const labelVisible = !!label && !placeholder && !readOnly;
 
-    const handleBlur = useCallback(
-      (e: React.FocusEvent<HTMLInputElement>) => {
-        setIsFocused(false);
-        onBlur?.(e);
-      },
-      [onBlur],
-    );
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    onFocus?.(e);
+  };
 
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        // uncontrolled: keep our own state, even when onChange is provided
-        if (value === undefined) setInternalValue(newValue);
-        onChange?.(newValue);
-      },
-      [onChange, value],
-    );
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false);
+    onBlur?.(e);
+  };
 
-    const handleClear = useCallback(() => {
-      if (value === undefined) setInternalValue("");
-      onChange?.("");
-    }, [onChange, value]);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
 
-    const handleTogglePasswordVisibility = useCallback(() => {
-      setIsPasswordVisible(!isPasswordVisible);
-    }, [isPasswordVisible]);
+  const handleClear = () => {
+    setValue("");
+    // The clear button disappears; keep focus in the field.
+    inputRef.current?.focus();
+  };
 
-    useEffect(() => {
-      if (helperText) {
-        setShake(true);
-        clearTimeout(shakeTimerRef.current);
-        shakeTimerRef.current = setTimeout(() => setShake(false), 500);
-        inputRef.current?.focus();
-      }
-    }, [helperText]);
+  const textFieldClasses = classNames(
+    styles.textField,
+    styles[size],
+    isFocused && styles.focused,
+    isFilled && styles.filled,
+    minimal && styles.minimal,
+    helperText && styles.error,
+    hideBorder && styles.containerHideBorder,
+    shake && styles.shake,
+    disabled && styles.disabled,
+    readOnly && styles.readonly,
+  );
+  const inputClasses = classNames(
+    styles.input,
+    hideBorder && styles.hideBorder,
+  );
+  const labelClasses = classNames(
+    styles.label,
+    (isFocused || isFilled) && styles.shrink,
+  );
+  const containerClass = classNames(
+    styles.container,
+    hideBorder && styles.containerHideBorder,
+    className,
+  );
+  const containerStyles = {
+    width: fullWidth ? "100%" : width,
+    borderRadius: borderRadius,
+    borderColor: borderColor,
+  };
 
-    useEffect(() => () => clearTimeout(shakeTimerRef.current), []);
-
-    const textFieldClasses = `${styles.textField} ${
-      isFocused ? styles.focused : ""
-    } ${isFilled ? styles.filled : ""} ${minimal ? styles.minimal : ""} ${
-      helperText ? styles.error : ""
-    } ${hideBorder ? styles.containerHideBorder : ""} ${
-      shake ? styles.shake : ""
-    } ${disabled ? styles.disabled : ""} ${readOnly ? styles.readonly : ""} ${
-      styles[size]
-    }`;
-    const inputClasses = `${styles.input} ${hideBorder ? styles.hideBorder : ""}`;
-    const labelClasses = `${styles.label} ${isFocused || isFilled ? styles.shrink : ""}`;
-    const containerClass = `${styles.container} ${
-      hideBorder ? styles.containerHideBorder : ""
-    } ${className || ""}`;
-    const containerStyles = {
-      width: fullWidth ? "100%" : width,
-      borderRadius: borderRadius,
-      borderColor: borderColor,
-    };
-
-    return (
-      <div className={containerClass} style={containerStyles}>
-        <div className={textFieldClasses} style={{ borderColor, borderRadius }}>
-          {label && !placeholder && !readOnly && (
-            <label
-              htmlFor={name}
-              className={labelClasses}
-              onClick={() => inputRef?.current?.focus()}
-              style={{
-                left: icon && iconPosition === "left" ? "2.5rem" : "0.75rem",
-              }}
-            >
-              {label}
-            </label>
+  return (
+    <div className={containerClass} style={containerStyles}>
+      <div className={textFieldClasses} style={{ borderColor, borderRadius }}>
+        {labelVisible && (
+          <label
+            htmlFor={inputId}
+            className={labelClasses}
+            style={{
+              left: icon && iconPosition === "left" ? "2.5rem" : "0.75rem",
+            }}
+          >
+            {label}
+          </label>
+        )}
+        <div className={styles.inputWrapper} style={{ borderRadius }}>
+          {icon && iconPosition === "left" && (
+            <span className={styles.iconLeft}>{icon}</span>
           )}
-          <div className={styles.inputWrapper} style={{ borderRadius }}>
-            {icon && iconPosition === "left" && (
-              <span className={styles.iconLeft}>{icon}</span>
-            )}
-            <input
-              ref={setInputRef}
-              id={name}
-              type={
-                type === "password"
-                  ? isPasswordVisible
-                    ? "text"
-                    : "password"
-                  : type
-              }
-              name={name}
-              className={inputClasses}
-              placeholder={isFocused || isFilled ? "" : placeholder}
-              value={value !== undefined ? value : internalValue}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-              tabIndex={0}
-              disabled={disabled}
-              readOnly={readOnly}
-              aria-label={ariaLabel}
-              style={{
-                paddingLeft: icon && iconPosition === "left" ? "2rem" : "",
-                paddingRight:
-                  (icon && iconPosition === "right" ? "2rem" : "") +
-                  (!suffix && clearable ? "2rem" : ""),
-              }}
-            />
-            {icon && iconPosition === "right" && (
-              <>
-                {type !== "password" ? (
-                  <span className={styles.iconRight}>{icon}</span>
-                ) : (
-                  <button
-                    type="button"
-                    className={`${styles.iconRight} ${styles.togglePasswordIcon}`}
-                    onClick={handleTogglePasswordVisibility}
-                    aria-label={
-                      isPasswordVisible ? "Hide password" : "Show password"
-                    }
-                    aria-pressed={isPasswordVisible}
-                    disabled={disabled}
-                  >
-                    {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                )}
-              </>
-            )}
-            {clearable &&
-              (value || internalValue) &&
-              !readOnly &&
-              !disabled &&
-              !suffix && (
+          <input
+            ref={mergedRef}
+            id={inputId}
+            type={
+              type === "password"
+                ? isPasswordVisible
+                  ? "text"
+                  : "password"
+                : type
+            }
+            name={name}
+            className={inputClasses}
+            placeholder={isFocused || isFilled ? "" : placeholder}
+            value={currentValue}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={onKeyDown}
+            disabled={disabled}
+            readOnly={readOnly}
+            aria-label={
+              ariaLabel ?? (labelVisible ? undefined : label || undefined)
+            }
+            aria-invalid={helperText ? true : undefined}
+            aria-describedby={helperText ? errorId : undefined}
+            style={{
+              paddingLeft: icon && iconPosition === "left" ? "2rem" : "",
+              paddingRight:
+                (icon && iconPosition === "right" ? "2rem" : "") +
+                (!suffix && clearable ? "2rem" : ""),
+            }}
+          />
+          {icon && iconPosition === "right" && (
+            <>
+              {type !== "password" ? (
+                <span className={styles.iconRight}>{icon}</span>
+              ) : (
                 <button
                   type="button"
-                  className={styles.clearIcon}
-                  onClick={handleClear}
-                  aria-label="Clear"
+                  className={`${styles.iconRight} ${styles.togglePasswordIcon}`}
+                  onClick={() => setIsPasswordVisible((visible) => !visible)}
+                  aria-label={
+                    isPasswordVisible
+                      ? (hidePasswordLabel ?? t("textField.hidePassword"))
+                      : (showPasswordLabel ?? t("textField.showPassword"))
+                  }
+                  aria-pressed={isPasswordVisible}
+                  disabled={disabled}
                 >
-                  <FaTimesCircle />
+                  {isPasswordVisible ? (
+                    <FaEyeSlash aria-hidden />
+                  ) : (
+                    <FaEye aria-hidden />
+                  )}
                 </button>
               )}
-            {suffix && <span className={styles.suffix}>{suffix}</span>}
-            {helperText && (
-              <span className={styles.errorIcon}>
-                <FaExclamationTriangle />
-              </span>
-            )}
-          </div>
-          {showCharCount && (
-            <div className={styles.charCount}>
-              {(value !== undefined ? value : internalValue)?.length}
-            </div>
+            </>
+          )}
+          {clearable && isFilled && !readOnly && !disabled && !suffix && (
+            <button
+              type="button"
+              className={styles.clearIcon}
+              onClick={handleClear}
+              aria-label={clearLabel ?? t("textField.clear")}
+            >
+              <FaTimesCircle aria-hidden />
+            </button>
+          )}
+          {suffix && <span className={styles.suffix}>{suffix}</span>}
+          {helperText && (
+            <span className={styles.errorIcon} aria-hidden>
+              <FaExclamationTriangle />
+            </span>
           )}
         </div>
-        {helperText && (
-          <div className={styles.errorMessage}>
-            <FaExclamationTriangle className={styles.errorIcon} />
-            {helperText}
-          </div>
+        {showCharCount && (
+          <div className={styles.charCount}>{currentValue.length}</div>
         )}
       </div>
-    );
-  },
-);
-
-TextField.displayName = "TextField";
+      {helperText && (
+        <div id={errorId} className={styles.errorMessage}>
+          <FaExclamationTriangle className={styles.errorIcon} aria-hidden />
+          {helperText}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default React.memo(TextField);

@@ -1,5 +1,3 @@
-@use "../../styles/mixins" as *;
-
 .chip {
   display: inline-flex;
   align-items: center;
@@ -13,13 +11,44 @@
   overflow: hidden;
   cursor: default;
 
-  &.clickable {
+  &.clickable:not(.disabled) {
     cursor: pointer;
-    @include ripple-effect;
+  }
+
+  // Main action of a clickable chip: a reset native button whose ::after
+  // stretches over the whole chip (so the padding is clickable too) and draws
+  // the focus ring. The delete button sits above it.
+  .action {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    cursor: inherit;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+    }
 
     &:focus-visible {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
+      outline: none;
+
+      &::after {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -2px;
+        border-radius: 16px;
+      }
+    }
+
+    &:disabled {
+      cursor: inherit;
     }
   }
 
@@ -200,6 +229,8 @@
   }
 
   .deleteIcon {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;

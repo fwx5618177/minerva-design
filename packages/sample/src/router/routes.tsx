@@ -1,5 +1,5 @@
 import React, { lazy } from "react";
-import type { RouteObject } from "react-router-dom";
+import type { RouteObject } from "react-router";
 import { categories, docPages, type DocCategory } from "@/docs/registry";
 
 // Every page is its own lazily-loaded chunk (src/docs/pages/<id>/index.tsx)

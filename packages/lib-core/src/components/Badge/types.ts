@@ -1,5 +1,11 @@
+import type { Ref } from "react";
+
 export interface BadgeProps {
-  /** Element the badge is attached to */
+  /**
+   * Element the badge is attached to. Without children (or with plain text /
+   * number children, used as the content) the badge renders inline in the
+   * normal flow instead of being positioned on a corner
+   */
   children?: React.ReactNode;
   /**
    * Additional class name of the badge
@@ -28,7 +34,7 @@ export interface BadgeProps {
   /** Content displayed inside the badge (count, short text...) */
   content?: string | number;
   /**
-   * Corner of the children the badge is placed on
+   * Corner of the children the badge is placed on (ignored by standalone badges)
    * @default "top-right"
    */
   position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
@@ -51,4 +57,6 @@ export interface BadgeProps {
   ariaLabel?: string;
   /** Icon displayed before the content */
   icon?: React.ReactNode;
+  /** Ref to the root element: the wrapper when attached to children, otherwise the badge itself */
+  ref?: Ref<HTMLElement>;
 }

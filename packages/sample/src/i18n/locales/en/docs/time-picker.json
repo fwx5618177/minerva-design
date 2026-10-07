@@ -4,11 +4,11 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Click the input to open the panel. onChange receives a Date, or undefined when cleared."
+      "description": "Click the input (or press Arrow Down) to open the panel. onChange receives a Date, or undefined when cleared. Without label, the input is named \"Time\"."
     },
     "default-value": {
       "title": "Default value and clearing",
-      "description": "defaultValue sets the initial time. Set clearable={false} to hide the clear button."
+      "description": "defaultValue sets the initial time. The clear button is labelled \"Clear time\"; set clearable={false} to hide it."
     },
     "formats": {
       "title": "Formats",
@@ -33,18 +33,22 @@
     "disabled": {
       "title": "Disabled",
       "description": "A disabled picker cannot be opened or edited."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "Pass value and update it in onChange. null keeps the picker controlled but empty, while undefined makes it uncontrolled. label gives the input a visible label."
     }
   },
   "api": {
     "TimePickerProps": {
-      "value": "Selected time (only read on mount; the date part is ignored)",
+      "value": "Selected time (controlled; pair with onChange). null means \"no time\" while staying controlled; undefined makes the picker uncontrolled. The date part is ignored",
       "defaultValue": "Initially selected time (uncontrolled)",
       "onChange": "Called with the new time, or undefined when the value is cleared",
       "format": "Display format: \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" or \"hh:mm a\"",
       "use12Hours": "Uses a 12-hour clock with an AM/PM column",
-      "placeholder": "Placeholder of the input",
+      "placeholder": "Placeholder of the input; defaults to a localized \"Select time\"",
       "disabled": "Disables the picker",
-      "clearable": "Allows clearing the value with the suffix button",
+      "clearable": "Allows clearing the value with the suffix button (labelled \"Clear time\", localized)",
       "size": "Size of the input and panel",
       "className": "Additional class name",
       "minTime": "Earliest selectable time; earlier options are disabled",
@@ -52,7 +56,20 @@
       "showSecond": "Shows the seconds column",
       "hourStep": "Interval between hour options",
       "minuteStep": "Interval between minute options",
-      "secondStep": "Interval between second options"
+      "secondStep": "Interval between second options",
+      "ref": "Ref to the <input> element",
+      "label": "Visible label of the input; without it the input is labelled \"Time\" (localized)",
+      "ariaLabel": "Accessible label of the input when no visible label is shown",
+      "name": "Name of the input",
+      "onOpenChange": "Called when the panel opens or closes"
     }
+  },
+  "keyboard": {
+    "title": "Keyboard and accessibility",
+    "open": "Arrow Down on the input opens the panel; clicking outside closes it.",
+    "navigate": "Each column (Hours, Minutes, Seconds, AM/PM) is a listbox: Arrow Up / Arrow Down, Home and End move within it, Arrow Left / Arrow Right switch columns.",
+    "select": "Enter or Space picks the focused option.",
+    "close": "Escape closes the panel and returns focus to the input.",
+    "typing": "Typed text is committed only once it is a complete, valid time. On blur a more lenient parse is applied; empty text clears the value and unparsable text restores the previous one."
   }
 }

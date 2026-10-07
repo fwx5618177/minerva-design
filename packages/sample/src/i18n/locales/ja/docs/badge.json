@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "要素を囲み content を設定します。数値の意味を説明する ariaLabel を付けてください。"
+      "description": "要素をラップして content を設定します。数値の意味を説明する ariaLabel をバッジに指定してください。children がない場合（またはテキストの場合）、バッジは文中などにインライン表示されます。"
     },
     "variants": {
       "title": "バリエーション",
@@ -33,12 +33,12 @@
   },
   "api": {
     "BadgeProps": {
-      "children": "バッジを付ける要素",
+      "children": "バッジを付ける要素。children がない場合（またはテキスト / 数値の children の場合は内容として使用）、バッジは角に配置されず通常のフロー内にインライン表示されます",
       "className": "バッジの追加クラス名",
       "variant": "バッジの配色",
       "size": "バッジのサイズ",
       "content": "バッジ内に表示する内容（数値、短いテキストなど）",
-      "position": "children のどの角にバッジを置くか",
+      "position": "children のどの角にバッジを置くか（単独のバッジでは無視されます）",
       "dot": "内容の代わりに小さな点を表示します",
       "bgColor": "カスタム背景色",
       "textColor": "カスタム文字色",
@@ -46,7 +46,8 @@
       "borderWidth": "カスタム枠線の太さ（CSS の値）",
       "borderColor": "カスタム枠線の色",
       "ariaLabel": "バッジのアクセシブルなラベル（例：「未読メッセージ 5 件」）",
-      "icon": "内容の前に表示するアイコン"
+      "icon": "内容の前に表示するアイコン",
+      "ref": "ルート要素への ref。children に付ける場合はラッパー、それ以外はバッジ自体"
     }
   }
 }

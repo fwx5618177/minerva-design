@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Wrap an element and set content. Give the badge an ariaLabel that describes what the number means."
+      "description": "Wrap an element and set content. Give the badge an ariaLabel that describes what the number means. Without children (or with text children) the badge is rendered inline, e.g. inside a sentence."
     },
     "variants": {
       "title": "Variants",
@@ -33,12 +33,12 @@
   },
   "api": {
     "BadgeProps": {
-      "children": "Element the badge is attached to",
+      "children": "Element the badge is attached to. Without children (or with plain text / number children, used as the content) the badge renders inline in the normal flow instead of being positioned on a corner",
       "className": "Additional class name of the badge",
       "variant": "Color scheme of the badge",
       "size": "Badge size",
       "content": "Content displayed inside the badge (count, short text...)",
-      "position": "Corner of the children the badge is placed on",
+      "position": "Corner of the children the badge is placed on (ignored by standalone badges)",
       "dot": "Renders a small dot instead of content",
       "bgColor": "Custom background color",
       "textColor": "Custom text color",
@@ -46,7 +46,8 @@
       "borderWidth": "Custom border width (CSS value)",
       "borderColor": "Custom border color",
       "ariaLabel": "Accessible label of the badge, e.g. \"5 unread messages\"",
-      "icon": "Icon displayed before the content"
+      "icon": "Icon displayed before the content",
+      "ref": "Ref to the root element: the wrapper when attached to children, otherwise the badge itself"
     }
   }
 }

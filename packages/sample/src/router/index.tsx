@@ -1,5 +1,5 @@
 import React from "react";
-import { createHashRouter, Navigate } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router";
 import Layout from "@layout/Layout";
 import ErrorBoundary from "@pages/ErrorBoundary";
 import NotFoundPage from "@pages/NotFoundPage";

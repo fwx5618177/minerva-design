@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface AvatarProps {
   /** Image URL. When omitted, the first letter of name is shown */
   src?: string;
@@ -26,6 +28,8 @@ export interface AvatarProps {
    * @default false
    */
   stacked?: boolean;
+  /** Ref to the root <span> element */
+  ref?: Ref<HTMLSpanElement>;
 }
 
 export interface AvatarGroupProps {
@@ -38,4 +42,11 @@ export interface AvatarGroupProps {
   className?: string;
   /** Avatar elements */
   children?: React.ReactNode;
+  /**
+   * Accessible label of the group
+   * @default "Avatar group" / "Avatar group with {count} more" (localized)
+   */
+  ariaLabel?: string;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

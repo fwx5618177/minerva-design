@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "任意のアイコン要素を渡します。ボタンにはアイコンしか含まれないため、必ず ariaLabel を指定してください。"
+      "description": "任意のアイコン要素を渡します。ボタンにはアイコンしかないため、必ず ariaLabel を指定してください。type=\"button\" のネイティブボタンとして描画されるため、フォームを送信しません。"
     },
     "variants": {
       "title": "バリアント",
@@ -16,7 +16,7 @@
     },
     "states": {
       "title": "状態",
-      "description": "loading はアイコンをスピナーに置き換え、active は押下状態のトグルを示し、disabled はボタンをタブ順序から外します。"
+      "description": "loading はアイコンをスピナーに置き換え、active は押された状態のトグルを示し、disabled はネイティブの disabled 属性を設定してボタンをタブ順序から外します。"
     },
     "custom-colors": {
       "title": "カスタムカラー",
@@ -28,11 +28,11 @@
     },
     "interactive": {
       "title": "InteractiveIconButton",
-      "description": "状態を内部で管理するトグルです。initialState で初期状態を設定し、onChange で変更を受け取ります。"
+      "description": "aria-pressed で状態を公開するトグルボタンです。pressed と onChange で制御するか、defaultPressed で非制御のまま使います。アクセシブルネームは変わらず（プリセットのラベル、例: \"Like\"）、ariaLabel で上書きできます。"
     },
     "interactive-types": {
       "title": "インタラクティブプリセット",
-      "description": "すべての InteractiveIconType、つまり interactiveIconsMap のすべてのキーです。各プリセットがアイコン、色、ツールチップを定義します。クリックで切り替わります。"
+      "description": "すべての InteractiveIconType、つまり interactiveIconsMap のすべてのキーです。各プリセットはアイコン、色、ツールチップ、アクセシブルラベルを定義します。クリックで切り替わります。"
     }
   },
   "api": {
@@ -41,7 +41,7 @@
       "variant": "カラーバリアント。省略時はニュートラルなスタイル",
       "size": "ボタンのサイズ",
       "shape": "ボタンの形状",
-      "disabled": "ボタンを無効にし、タブ順序から外す",
+      "disabled": "ネイティブボタンを無効にし、タブ順序から外します",
       "loading": "アイコンをスピナーに置き換え、操作をブロックする",
       "active": "アクティブ（押下）状態で表示する",
       "className": "追加のクラス名",
@@ -52,16 +52,22 @@
       "fillColor": "アイコンのカスタム塗りつぶし色",
       "tooltip": "ツールチップの設定（content、variant、shape、arrow）。showTooltip が必要",
       "showTooltip": "ホバー時とフォーカス時にツールチップを表示する",
-      "ariaLabel": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する"
+      "ariaLabel": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する",
+      "ref": "<button> 要素への ref"
     },
     "InteractiveIconProps": {
       "type": "アイコン、色、ツールチップを定義するプリセット（interactiveIconsMap のキー）",
       "onChange": "切り替えのたびに新しい状態で呼び出される",
-      "initialState": "初期のアクティブ状態（状態はコンポーネント内部で管理される）",
+      "initialState": "非推奨。defaultPressed の別名",
       "className": "追加のクラス名",
       "size": "ボタンのサイズ",
       "shape": "ボタンの形状",
-      "disabled": "ボタンを無効にする"
+      "disabled": "ボタンを無効にする",
+      "ref": "内部の <button> 要素への ref",
+      "pressed": "アクティブ（押下）状態（制御モード。onChange と組み合わせて使用）。aria-pressed として公開されます",
+      "defaultPressed": "初期のアクティブ状態（非制御）",
+      "ariaLabel": "トグルのアクセシブルネーム。押下状態は aria-pressed で別途公開されるため、名前は変えないでください。既定はプリセットのラベル（例: \"Favorite\"）",
+      "aria-label": "ariaLabel と同じ（標準の属性表記）"
     }
   }
 }

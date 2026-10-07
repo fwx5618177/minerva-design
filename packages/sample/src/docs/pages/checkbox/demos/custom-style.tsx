@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { Checkbox } from "@minerva/lib-core";
 import { IoHeart } from "react-icons/io5";
 
 export default function CustomStyleDemo() {
-  const [favorite, setFavorite] = useState(true);
-
   return (
     <>
       <Checkbox
@@ -16,8 +13,7 @@ export default function CustomStyleDemo() {
       />
       <Checkbox
         label="Custom icon"
-        checked={favorite}
-        onChange={setFavorite}
+        defaultChecked
         icon={<IoHeart color="#e11d48" />}
       />
     </>

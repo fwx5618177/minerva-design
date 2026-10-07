@@ -1,4 +1,4 @@
-import { createRef, useState } from "react";
+import { StrictMode, createRef, useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -266,5 +266,94 @@ describe("RadioGroup", () => {
       "mine",
     );
     expect(screen.getByRole("radiogroup")).toHaveClass("horizontal");
+  });
+
+  describe("regressions", () => {
+    it("shares a generated name when none is given, so arrow keys work", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <RadioGroup defaultValue="apple" onChange={onChange}>
+          <Radio label="Apple" value="apple" />
+          <Radio label="Banana" value="banana" />
+        </RadioGroup>,
+      );
+      const [apple, banana] = screen.getAllByRole("radio");
+      expect(apple.getAttribute("name")).toBeTruthy();
+      expect(banana).toHaveAttribute("name", apple.getAttribute("name")!);
+
+      await user.click(apple);
+      onChange.mockClear();
+      await user.keyboard("{ArrowDown}");
+      expect(onChange).toHaveBeenCalledWith("banana", expect.anything());
+      expect(banana).toBeChecked();
+    });
+
+    it("gets an accessible name from label or ariaLabel", () => {
+      const { rerender } = render(
+        <RadioGroup label="Favourite fruit">
+          <Radio label="Apple" value="apple" />
+        </RadioGroup>,
+      );
+      expect(
+        screen.getByRole("radiogroup", { name: "Favourite fruit" }),
+      ).toBeInTheDocument();
+      expect(screen.getByText("Favourite fruit")).toBeVisible();
+
+      rerender(
+        <RadioGroup ariaLabel="Fruit">
+          <Radio label="Apple" value="apple" />
+        </RadioGroup>,
+      );
+      expect(
+        screen.getByRole("radiogroup", { name: "Fruit" }),
+      ).toBeInTheDocument();
+    });
+
+    it("links the helper text to the radiogroup", () => {
+      renderGroup({ helperText: "Pick one" });
+      expect(screen.getByRole("radiogroup")).toHaveAccessibleDescription(
+        "Pick one",
+      );
+    });
+
+    it("calls onChange once per selection under StrictMode", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <StrictMode>
+          <RadioGroup onChange={onChange}>
+            <Radio label="Apple" value="apple" />
+            <Radio label="Banana" value="banana" />
+          </RadioGroup>
+        </StrictMode>,
+      );
+      await user.click(screen.getByRole("radio", { name: "Banana" }));
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole("radio", { name: "Banana" })).toBeChecked();
+    });
+
+    it("follows the controlled value on every render", async () => {
+      const user = userEvent.setup();
+      const Parent = () => {
+        const [value, setValue] = useState<string | number>("apple");
+        return (
+          <>
+            <RadioGroup value={value}>
+              <Radio label="Apple" value="apple" />
+              <Radio label="Banana" value="banana" />
+            </RadioGroup>
+            <button type="button" onClick={() => setValue("banana")}>
+              pick banana
+            </button>
+          </>
+        );
+      };
+      render(<Parent />);
+      await user.click(screen.getByRole("radio", { name: "Apple" }));
+      expect(screen.getByRole("radio", { name: "Apple" })).toBeChecked();
+      await user.click(screen.getByRole("button", { name: "pick banana" }));
+      expect(screen.getByRole("radio", { name: "Banana" })).toBeChecked();
+    });
   });
 });

@@ -50,6 +50,18 @@ export default function OptionsDemo() {
       >
         Clickable
       </Button>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          // At most 3 messages at once: the oldest ones close first
+          message.config({ maxCount: 3 });
+          for (let i = 1; i <= 5; i++) message.info(`Burst message ${i}`);
+          // Restore the defaults for the other demos
+          message.config();
+        }}
+      >
+        maxCount: 3
+      </Button>
     </div>
   );
 }

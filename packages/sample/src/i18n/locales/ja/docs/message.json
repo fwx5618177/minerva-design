@@ -8,7 +8,7 @@
     },
     "options": {
       "title": "オプション",
-      "description": "オプションオブジェクトを渡して、表示時間、閉じるボタン、アイコン、プログレスバー、ホバー時の動作などを設定します。"
+      "description": "オプションオブジェクトを渡して、表示時間、閉じるボタン、アイコン、プログレスバー、ホバー時の動作などを設定します。message.config({ maxCount }) で同時に表示するメッセージ数を制限できます。"
     },
     "placements": {
       "title": "配置",
@@ -29,18 +29,18 @@
   },
   "api": {
     "MessageProps": {
-      "id": "一意の ID。MessageOptions で省略した場合は自動生成されます",
+      "id": "一意の ID。MessageOptions で省略すると自動生成されます。表示中のメッセージの ID を再利用すると置き換えられます",
       "type": "メッセージの種類。色を決定します。呼び出したメソッド（message.success など）によって設定されます",
       "content": "メッセージの内容",
-      "duration": "自動的に閉じるまでの時間（ミリ秒）。0 の場合は開いたままになります",
+      "duration": "メッセージが自動的に閉じるまでの時間（ミリ秒）。0 にすると開いたままになります。既定値は message.config() の duration",
       "showClose": "閉じるボタンを表示する",
       "icon": "内容の前に表示するアイコン",
       "className": "追加のクラス名",
       "style": "インラインスタイル",
       "onClose": "理由を問わずメッセージが閉じたときに、メッセージ ID を引数に呼び出されます",
       "showProgress": "カウントダウンのプログレスバーを表示する（duration > 0 の場合のみ）",
-      "pauseOnHover": "ホバー中はカウントダウンとプログレスバーを一時停止する",
-      "placement": "メッセージスタックの画面上の位置",
+      "pauseOnHover": "ホバー中、またはキーボードフォーカスがメッセージ内にある間、カウントダウンとプログレスバーを一時停止します",
+      "placement": "メッセージスタックの画面上の位置。既定値は message.config() の placement",
       "onClick": "メッセージがクリックされたときに呼び出されます",
       "description": "支援技術に公開する追加の説明（aria-description）",
       "closeAriaLabel": "閉じるボタンのアクセシブルなラベル",
@@ -69,14 +69,17 @@
       "hookShow": "メッセージを表示し、閉じたときに解決される Promise を返します。この Promise は messageId としてメッセージ ID も公開します。",
       "hookManage": "message.update および message.destroy と同じ関数です。",
       "options": "すべての表示メソッドが受け取るオプション。id が省略可能である点を除き MessageProps と同じです。",
-      "promise": "useMessage の表示メソッドの戻り値です。"
+      "promise": "useMessage の表示メソッドの戻り値です。",
+      "config": "以降に作成されるメッセージのグローバル既定値（duration、placement、maxCount）を設定します。maxCount を超えると古いメッセージから閉じます。引数なしで呼び出すと組み込みの既定値に戻ります。",
+      "configType": "message.config() のオプション。既定値：duration 3000、placement \"topRight\"、maxCount 無制限。"
     },
     "notes": {
       "title": "注意事項",
       "id": "後でメッセージを更新・終了するには独自の id を渡すか、返された ID（message-0、message-1 …）を使用します。",
       "onClose": "onClose は、タイムアウト、閉じるボタン、destroy のいずれで閉じた場合でも、メッセージごとに一度だけ呼び出されます。",
       "stacking": "配置ごとに document.body に追加される専用のスタックコンテナがあり、最後のメッセージが閉じると削除されます。",
-      "promise": "メッセージを連結するには Promise を await するか、then() で messageId だけを返してください。結果そのものを返すと、次のメッセージが閉じるまで待つことになります。"
+      "promise": "メッセージを連結するには Promise を await するか、then() で messageId だけを返してください。結果そのものを返すと、次のメッセージが閉じるまで待つことになります。",
+      "a11y": "error と warning は role=\"alert\"（即時に読み上げ）、その他のタイプは role=\"status\"（控えめに読み上げ）を使用します。pauseOnHover が有効な場合、キーボードフォーカスがメッセージ内にある間もカウントダウンが一時停止するため、閉じるボタンに間に合って到達できます。"
     }
   }
 }

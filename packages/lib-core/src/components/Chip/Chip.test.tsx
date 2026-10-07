@@ -1,7 +1,8 @@
-import React, { createRef } from "react";
-import { render, screen } from "@testing-library/react";
+import React, { StrictMode, createRef } from "react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import Chip from "./Chip";
 
 const getChip = (label: string) =>
@@ -71,8 +72,8 @@ describe("Chip", () => {
     const onClick = vi.fn();
     render(<Chip label="C" clickable onClick={onClick} />);
     const chip = screen.getByRole("button", { name: "C" });
-    expect(chip).toHaveAttribute("tabindex", "0");
-    expect(chip).toHaveClass("clickable");
+    expect(chip.tagName).toBe("BUTTON");
+    expect(getChip("C")).toHaveClass("clickable");
 
     await user.tab();
     expect(chip).toHaveFocus();
@@ -95,7 +96,7 @@ describe("Chip", () => {
     const onClick = vi.fn();
     render(<Chip label="C" clickable disabled onClick={onClick} />);
     const chip = screen.getByRole("button", { name: "C" });
-    expect(chip).not.toHaveAttribute("tabindex");
+    expect(chip).toBeDisabled();
     await user.click(chip);
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -176,7 +177,7 @@ describe("Chip", () => {
 
     rerender(<Chip label="C" clickable disabled onClick={onClick} />);
     const chip = screen.getByRole("button", { name: "C" });
-    expect(chip).toHaveAttribute("aria-disabled", "true");
+    expect(chip).toBeDisabled();
     chip.focus();
     await user.keyboard("{Enter} ");
     expect(onClick).not.toHaveBeenCalled();
@@ -234,5 +235,80 @@ describe("Chip", () => {
     expect(cls).not.toMatch(/undefined|false/);
     expect(cls).toBe(cls.trim());
     expect(cls).not.toMatch(/\s{2,}/);
+  });
+
+  describe("clickable + deletable (no nested interactive elements)", () => {
+    it("renders the action and the delete control as sibling buttons", () => {
+      render(<Chip label="C" clickable onClick={vi.fn()} onDelete={vi.fn()} />);
+      const chip = getChip("C");
+      expect(chip).not.toHaveAttribute("role");
+      expect(chip).not.toHaveAttribute("tabindex");
+      const action = screen.getByRole("button", { name: "C" });
+      const del = screen.getByRole("button", { name: "Remove C" });
+      expect(action.tagName).toBe("BUTTON");
+      expect(action.parentElement).toBe(chip);
+      expect(del.parentElement).toBe(chip);
+      for (const el of screen.getAllByRole("button")) {
+        expect(el.parentElement?.closest("button, [role='button']")).toBeNull();
+      }
+    });
+
+    it("reaches both buttons with Tab and activates each independently", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      const onDelete = vi.fn();
+      render(
+        <StrictMode>
+          <Chip label="C" clickable onClick={onClick} onDelete={onDelete} />
+        </StrictMode>,
+      );
+      await user.tab();
+      expect(screen.getByRole("button", { name: "C" })).toHaveFocus();
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      expect(onClick).toHaveBeenCalledTimes(2);
+      await user.tab();
+      expect(screen.getByRole("button", { name: "Remove C" })).toHaveFocus();
+      await user.keyboard("{Enter}");
+      expect(onDelete).toHaveBeenCalledTimes(1);
+      expect(onClick).toHaveBeenCalledTimes(2);
+    });
+
+    it("exposes selected as aria-pressed on clickable chips", () => {
+      const { rerender } = render(<Chip label="C" clickable selected />);
+      expect(screen.getByRole("button", { name: "C" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      rerender(<Chip label="C" clickable selected={false} />);
+      expect(screen.getByRole("button", { name: "C" })).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      );
+      rerender(<Chip label="C" clickable />);
+      expect(screen.getByRole("button", { name: "C" })).not.toHaveAttribute(
+        "aria-pressed",
+      );
+    });
+  });
+});
+
+describe("Chip localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the delete label and lets deleteLabel win", () => {
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    const { rerender } = render(<Chip label="React" onDelete={() => {}} />);
+    expect(
+      screen.getByRole("button", { name: "Retirer React" }),
+    ).toBeInTheDocument();
+
+    rerender(<Chip label="React" onDelete={() => {}} deleteLabel="Drop" />);
+    expect(screen.getByRole("button", { name: "Drop" })).toBeInTheDocument();
   });
 });

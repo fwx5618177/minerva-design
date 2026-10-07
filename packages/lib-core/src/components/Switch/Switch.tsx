@@ -1,32 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
+import { useControllableState } from "../../internal/useControllableState";
 import type { SwitchProps } from "./types";
 import styles from "./switch.module.scss";
 
+const RIPPLE_DURATION = 400;
+
+const placementClass = {
+  start: styles.labelStart,
+  end: styles.labelEnd,
+  top: styles.labelTop,
+  bottom: styles.labelBottom,
+} as const;
+
 /**
- * Switch 开关组件
- * 用于在两个互斥状态之间切换
- * @param checked - 开关是否选中
- * @param defaultChecked - 默认是否选中
- * @param disabled - 是否禁用
- * @param size - 开关大小
- * @param color - 开关颜色
- * @param shape - 开关形状
- * @param label - 开关标签
- * @param labelPlacement - 标签位置
- * @param loading - 是否加载中
- * @param ripple - 是否显示涟漪效果
- * @param className - 自定义类名
- * @param labelStyle - 自定义样式
- * @param onChange - 值改变时的回调函数
- * @param onFocus - 聚焦时的回调函数
- * @param onBlur - 失焦时的回调函数
- * @param icon - 自定义图标
- * @param iconPlacement - 图标位置
- * @param trackStyle - 自定义轨道样式
- * @param thumbStyle - 自定义滑块样式
+ * Switch: toggles between two mutually exclusive states.
+ * Renders a native checkbox with role="switch"; `ref` reaches the <input>.
  */
-const Switch: React.FC<SwitchProps> = ({
+const Switch = ({
   checked,
   defaultChecked = false,
   disabled = false,
@@ -34,6 +25,8 @@ const Switch: React.FC<SwitchProps> = ({
   color = "primary",
   shape = "round",
   label,
+  ariaLabel,
+  name,
   labelPlacement = "end",
   loading = false,
   ripple = true,
@@ -46,24 +39,24 @@ const Switch: React.FC<SwitchProps> = ({
   onBlur,
   icon,
   iconPlacement = "start",
-}) => {
-  const [isChecked, setIsChecked] = useState(checked ?? defaultChecked);
+  ref,
+}: SwitchProps) => {
+  const [isChecked, setIsChecked] = useControllableState({
+    value: checked,
+    defaultValue: defaultChecked,
+  });
   const [rippleActive, setRippleActive] = useState(false);
-  const switchRef = useRef<HTMLLabelElement>(null);
+  const rippleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
-  useEffect(() => {
-    if (checked !== undefined) {
-      setIsChecked(checked);
-    }
-  }, [checked]);
+  useEffect(() => () => clearTimeout(rippleTimer.current), []);
+
+  const blocked = disabled || loading;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled || loading) return;
-
-    if (checked === undefined) {
-      setIsChecked(event.target.checked);
-    }
-
+    if (blocked) return;
+    setIsChecked(event.target.checked);
     onChange?.(event.target.checked, event);
   };
 
@@ -71,20 +64,26 @@ const Switch: React.FC<SwitchProps> = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
-    if (disabled || loading) return;
+    if (blocked) return;
     event.currentTarget.click();
   };
 
   const handleRipple = () => {
-    if (!ripple || disabled || loading) return;
-
+    if (!ripple || blocked) return;
+    clearTimeout(rippleTimer.current);
     setRippleActive(true);
-    setTimeout(() => setRippleActive(false), 400);
+    rippleTimer.current = setTimeout(
+      () => setRippleActive(false),
+      RIPPLE_DURATION,
+    );
   };
+
+  const isThemeColor = Object.prototype.hasOwnProperty.call(styles, color);
 
   const switchClasses = classNames(
     styles.switch,
     styles[size],
+    placementClass[labelPlacement],
     {
       [styles.checked]: isChecked,
       [styles.checkedLarge]: isChecked && size === "large",
@@ -92,63 +91,56 @@ const Switch: React.FC<SwitchProps> = ({
       [styles.loading]: loading,
       [styles.square]: shape === "square",
       [styles.ripple]: ripple && rippleActive,
-      [styles[color]]: Object.prototype.hasOwnProperty.call(styles, color),
+      [styles[color]]: isThemeColor,
     },
     className,
   );
 
   const computedThumbStyle = {
-    ...(isChecked &&
-    !disabled &&
-    !Object.prototype.hasOwnProperty.call(styles, color)
-      ? {
-          backgroundColor: color,
-          color: color,
-        }
+    ...(isChecked && !disabled && !isThemeColor
+      ? { backgroundColor: color, color }
       : {}),
     ...customThumbStyle,
   };
 
-  const renderLabel = () => {
-    if (!label) return null;
-    return <span className={styles.label}>{label}</span>;
-  };
-
-  const renderIcon = () => {
-    if (!icon) return null;
-    return <span className={styles.icon}>{icon}</span>;
-  };
+  const labelNode = label ? (
+    <span className={styles.label}>{label}</span>
+  ) : null;
+  const iconNode = icon ? <span className={styles.icon}>{icon}</span> : null;
+  // Label before the control for start/top, after it for end/bottom; the
+  // placement class only changes the flex direction (row vs column).
+  const labelFirst = labelPlacement === "start" || labelPlacement === "top";
 
   return (
-    <label
-      className={switchClasses}
-      style={labelStyle}
-      ref={switchRef}
-      onClick={handleRipple}
-    >
-      {labelPlacement === "start" && renderLabel()}
-      <div className={styles.switchBase}>
+    // The label wraps the input, so clicking anywhere on it toggles the
+    // switch; the click handler only drives the decorative ripple.
+    <label className={switchClasses} style={labelStyle} onClick={handleRipple}>
+      {labelFirst && labelNode}
+      <span className={styles.switchBase}>
         <input
+          ref={ref}
           type="checkbox"
           role="switch"
+          name={name}
+          aria-label={ariaLabel}
           aria-checked={isChecked}
-          aria-disabled={disabled || loading || undefined}
+          aria-disabled={blocked || undefined}
           aria-busy={loading || undefined}
           checked={isChecked}
-          disabled={disabled || loading}
+          disabled={blocked}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onFocus={onFocus}
           onBlur={onBlur}
         />
-        <div className={styles.track} style={trackStyle} />
-        <div className={styles.thumb} style={computedThumbStyle}>
-          {iconPlacement === "start" && renderIcon()}
-        </div>
-        {ripple && <div className={styles.rippleEffect} />}
-      </div>
-      {iconPlacement === "end" && renderIcon()}
-      {labelPlacement === "end" && renderLabel()}
+        <span className={styles.track} style={trackStyle} />
+        <span className={styles.thumb} style={computedThumbStyle}>
+          {iconPlacement === "start" && iconNode}
+        </span>
+        {ripple && <span className={styles.rippleEffect} />}
+      </span>
+      {iconPlacement === "end" && iconNode}
+      {!labelFirst && labelNode}
     </label>
   );
 };

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Pagination est contrôlé : conservez la page courante dans un état et mettez-la à jour dans onChange."
+      "description": "Sans current, Pagination gère la page elle-même (defaultCurrent fixe la première). Les autres démos sont contrôlées : elles gardent current dans un état et le mettent à jour dans onChange."
     },
     "many-pages": {
       "title": "Nombreuses pages",
@@ -45,10 +45,12 @@
   },
   "api": {
     "PaginationProps": {
-      "current": "Page courante (à partir de 1) ; mettez-la à jour dans onChange",
+      "current": "Page courante (à partir de 1, contrôlée) ; mettez-la à jour dans onChange",
+      "defaultCurrent": "Page initiale en mode non contrôlé (current non défini)",
       "total": "Nombre total d'éléments",
-      "pageSize": "Nombre d'éléments par page",
-      "onChange": "Appelé avec la nouvelle page et la taille de page lorsque l'une ou l'autre change",
+      "pageSize": "Nombre d’éléments par page (contrôlé) ; mettez-le à jour dans onChange",
+      "defaultPageSize": "Nombre initial d’éléments par page en mode non contrôlé (pageSize non défini)",
+      "onChange": "Appelé avec la nouvelle page et la taille de page lorsque l’une ou l’autre change (changer la taille revient à la page 1)",
       "disabled": "Désactive la pagination",
       "showQuickJumper": "Affiche un champ pour aller à une page",
       "showSizeChanger": "Affiche un sélecteur de taille de page",
@@ -63,11 +65,26 @@
       "variant": "Style visuel des éléments de page",
       "simple": "Mode simple : boutons précédent/suivant avec un champ de page",
       "responsive": "Adapte la mise en page aux petits écrans",
-      "icons": "Icônes personnalisées des boutons précédent, suivant et de saut"
+      "icons": "Icônes personnalisées des boutons précédent, suivant et de saut ; celles omises gardent l’icône par défaut",
+      "ref": "Ref vers l’élément racine <nav>",
+      "labels": "Textes du composant (libellés accessibles des boutons, du saut rapide et du sélecteur de taille) ; les entrées omises utilisent les valeurs par défaut localisées"
+    },
+    "PaginationLabels": {
+      "prev": "Libellé accessible du bouton page précédente",
+      "next": "Libellé accessible du bouton page suivante",
+      "jumpPrev": "Libellé de l'élément de saut en arrière",
+      "jumpNext": "Libellé de l'élément de saut en avant",
+      "page": "Renvoie le libellé accessible d'un bouton de page",
+      "jumpTo": "Texte visible du saut rapide",
+      "jumpToInput": "Libellé accessible du champ de saut rapide",
+      "pageSize": "Libellé accessible du sélecteur de taille de page",
+      "pageSizeOption": "Renvoie le texte d'une option de taille de page",
+      "currentPage": "Libellé accessible du champ de page en mode simple",
+      "nav": "Libellé accessible du repère de navigation"
     }
   },
   "a11y": {
     "title": "Prise en charge du clavier",
-    "body": "La pagination est un repère de navigation. Lorsqu'elle a le focus, ArrowLeft/ArrowRight passent à la page précédente/suivante et Home/End à la première/dernière page. Chaque élément est focalisable et s'active avec Entrée ou Espace ; la page courante est marquée avec aria-current=\"page\"."
+    "body": "La pagination est un repère <nav> composé de boutons natifs ; la page courante est marquée avec aria-current=\"page\" et les éléments indisponibles sont désactivés. Lorsqu’un élément a le focus, ArrowLeft/ArrowRight passent à la page précédente/suivante et Home/End à la première/dernière page, et le focus suit la page courante. Si le bouton focalisé devient désactivé, le focus passe à la page courante."
   }
 }

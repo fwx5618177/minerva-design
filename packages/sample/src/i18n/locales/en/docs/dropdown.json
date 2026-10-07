@@ -1,6 +1,6 @@
 {
   "title": "Dropdown",
-  "description": "Shows a menu of actions or options when its trigger is clicked.",
+  "description": "Shows a menu of actions or options when its trigger is clicked. Near the viewport edges the menu flips and shifts to stay visible.",
   "demos": {
     "basic": {
       "title": "Basic usage",
@@ -12,7 +12,7 @@
     },
     "directions": {
       "title": "Directions",
-      "description": "Open the menu below (default), above, to the left or to the right of the trigger."
+      "description": "direction is the preferred side: below (default), above, left or right of the trigger. Near the viewport edges the menu flips to the opposite side and shifts into view."
     },
     "disabled": {
       "title": "Disabled",
@@ -21,6 +21,10 @@
     "custom-menu": {
       "title": "Custom menu style",
       "description": "Customize the menu background, text color and shadow."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "open and onOpenChange control the menu from outside; defaultOpen sets the initial state when it is uncontrolled."
     }
   },
   "api": {
@@ -33,8 +37,12 @@
       "menuBgColor": "Menu background color",
       "menuTextColor": "Menu text color",
       "menuBoxShadow": "Menu box shadow",
-      "direction": "Side on which the menu opens",
-      "children": "Trigger element; a small \"Dropdown\" button is rendered when omitted"
+      "direction": "Preferred side on which the menu opens; it flips to the opposite side and shifts to stay inside the viewport",
+      "children": "Trigger element; a small \"Dropdown\" button is rendered when omitted",
+      "ref": "Ref to the root element",
+      "open": "Whether the menu is open (controlled; pair with onOpenChange)",
+      "defaultOpen": "Initial open state (uncontrolled)",
+      "onOpenChange": "Called when the menu requests to open or close"
     },
     "DropdownOption": {
       "label": "Text of the menu item",

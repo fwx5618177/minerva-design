@@ -1,3 +1,4 @@
+import { createRef, useState } from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -253,7 +254,7 @@ describe("TimePicker", () => {
     });
 
     expect(container.querySelector(".clearButton")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "icon button" }));
+    await user.click(screen.getByRole("button", { name: "Clear time" }));
 
     expect(onChange).toHaveBeenCalledWith(undefined);
     expect(getInput()).toHaveValue("");
@@ -283,5 +284,112 @@ describe("TimePicker", () => {
 
     await user.click(getInput());
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  describe("regressions", () => {
+    it("follows the controlled value after mount", () => {
+      const { rerender } = render(<TimePicker value={at(9, 0, 0)} />);
+      expect(getInput()).toHaveValue("09:00:00");
+      rerender(<TimePicker value={at(18, 45, 30)} />);
+      expect(getInput()).toHaveValue("18:45:30");
+      rerender(<TimePicker value={null} />);
+      expect(getInput()).toHaveValue("");
+    });
+
+    it("stays on the controlled value when the parent ignores onChange", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(<TimePicker value={at(10, 0, 0)} onChange={onChange} />);
+      const [hours] = await openPanel(user);
+      await user.click(within(hours).getByText("07"));
+      expect(lastDate(onChange)?.getHours()).toBe(7);
+      expect(getInput()).toHaveValue("10:00:00");
+    });
+
+    it("works as a controlled component driven by state", async () => {
+      const user = userEvent.setup();
+      const Controlled = () => {
+        const [time, setTime] = useState<Date | null>(at(8, 0, 0));
+        return (
+          <>
+            <TimePicker value={time} onChange={(d) => setTime(d ?? null)} />
+            <button type="button" onClick={() => setTime(at(12, 0, 0))}>
+              Noon
+            </button>
+          </>
+        );
+      };
+      render(<Controlled />);
+      await user.click(screen.getByRole("button", { name: "Noon" }));
+      expect(getInput()).toHaveValue("12:00:00");
+      await user.click(screen.getByRole("button", { name: "Clear time" }));
+      expect(getInput()).toHaveValue("");
+    });
+
+    it("labels the clear button and the input", () => {
+      renderTimePicker({ defaultValue: at(10, 0, 0) });
+      expect(
+        screen.getByRole("button", { name: "Clear time" }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "Time" })).toBe(getInput());
+      // the clock icon is decorative, not a button
+      expect(screen.getAllByRole("button")).toHaveLength(1);
+    });
+
+    it("is operable with the keyboard and returns focus on Escape", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderTimePicker({ defaultValue: at(10, 30, 0), onChange });
+      getInput().focus();
+      await user.keyboard("{ArrowDown}");
+      const hours = screen.getByRole("listbox", { name: "Hours" });
+      expect(within(hours).getByRole("option", { name: "10" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      within(hours).getByRole("option", { name: "10" }).focus();
+      await user.keyboard("{ArrowDown}{Enter}");
+      expect(lastDate(onChange)?.getHours()).toBe(11);
+      await user.keyboard("{ArrowRight}");
+      expect(
+        within(screen.getByRole("listbox", { name: "Minutes" })).getByRole(
+          "option",
+          { name: "30" },
+        ),
+      ).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(getInput()).toHaveFocus();
+    });
+
+    it("closes when clicking outside", async () => {
+      const user = userEvent.setup();
+      render(
+        <>
+          <TimePicker />
+          <p>Outside</p>
+        </>,
+      );
+      await openPanel(user);
+      await user.click(screen.getByText("Outside"));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("does not commit a half-typed time", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderTimePicker({ format: "HH:mm", onChange });
+      await user.type(getInput(), "12:3");
+      expect(onChange).not.toHaveBeenCalled();
+      await user.type(getInput(), "0", { skipClick: true });
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(lastDate(onChange)?.getMinutes()).toBe(30);
+    });
+
+    it("forwards ref to the input", () => {
+      const ref = createRef<HTMLInputElement>();
+      render(<TimePicker ref={ref} />);
+      expect(ref.current).toBe(getInput());
+    });
   });
 });

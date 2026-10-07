@@ -7,9 +7,20 @@ import React, {
   useRef,
   useState,
 } from "react";
+import classNames from "classnames";
 import styles from "./dropdown.module.scss";
-import { DropdownProps, DropdownOption } from "./types";
-import { Button } from "..";
+import type { DropdownProps, DropdownOption } from "./types";
+import Button from "../Button/Button";
+import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
+import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
+
+const DIRECTION_PLACEMENT = {
+  down: "bottom-start",
+  up: "top-start",
+  left: "left-start",
+  right: "right-start",
+} as const;
 
 /** Native elements that are already focusable / keyboard operable. */
 const INTERACTIVE_TAGS = new Set([
@@ -57,7 +68,11 @@ const findEnabledIndex = (
  * @param children - The trigger element for the dropdown
  * @returns A dropdown component
  */
-const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown = ({
+  ref,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   className = "",
   ariaLabel,
   disabled = false,
@@ -68,26 +83,44 @@ const Dropdown: React.FC<DropdownProps> = ({
   menuBoxShadow = "var(--shadow-md)",
   direction = "down",
   children,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
+}: DropdownProps) => {
+  const [isOpen, setIsOpen] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
   // Index of the item that owns focus (roving focus); -1 = none yet.
   const [activeIndex, setActiveIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const setDropdownRef = useMergedRefs(dropdownRef, ref);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const [triggerEl, setTriggerEl] = useState<HTMLDivElement | null>(null);
+  const setTriggerRef = useMergedRefs(triggerRef, setTriggerEl);
   const menuRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
   const baseId = useId().replace(/:/g, "");
   const menuId = `dropdown-menu-${baseId}`;
 
-  const openMenu = useCallback((focusIndex: number) => {
-    setIsOpen(true);
-    setActiveIndex(focusIndex);
-  }, []);
+  const { setFloating, floatingStyles, placement } = useAnchoredPosition({
+    open: isOpen,
+    anchor: triggerEl,
+    placement: DIRECTION_PLACEMENT[direction],
+    offset: { mainAxis: 4 },
+  });
+  const setMenuRef = useMergedRefs(menuRef, setFloating);
+
+  const openMenu = useCallback(
+    (focusIndex: number) => {
+      setIsOpen(true);
+      setActiveIndex(focusIndex);
+    },
+    [setIsOpen],
+  );
 
   const closeMenu = useCallback(() => {
     setIsOpen(false);
     setActiveIndex(-1);
-  }, []);
+  }, [setIsOpen]);
 
   const focusTrigger = () => {
     const wrapper = triggerRef.current;
@@ -195,6 +228,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -223,7 +257,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("focusout", handleFocusOut);
     };
-  }, [closeMenu]);
+  }, [isOpen, closeMenu]);
 
   const triggerA11yProps: TriggerA11yProps = {
     "aria-haspopup": "menu",
@@ -267,9 +301,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   const firstEnabledIndex = findEnabledIndex(items, 0, 1);
 
   return (
-    <div className={`${styles.dropdown} ${className}`} ref={dropdownRef}>
+    <div
+      className={classNames(styles.dropdown, className)}
+      ref={setDropdownRef}
+    >
       <div
-        ref={triggerRef}
+        ref={setTriggerRef}
         className={styles.trigger}
         onClick={handleToggle}
         onKeyDown={handleTriggerKeyDown}
@@ -280,9 +317,11 @@ const Dropdown: React.FC<DropdownProps> = ({
       </div>
       {isOpen && (
         <div
-          ref={menuRef}
-          className={`${styles.menu} ${styles[direction]}`}
+          ref={setMenuRef}
+          className={classNames(styles.menu, styles[direction])}
+          data-placement={placement}
           style={{
+            ...floatingStyles,
             backgroundColor: menuBgColor,
             boxShadow: menuBoxShadow,
           }}
@@ -300,7 +339,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 (activeIndex < 0 && index === firstEnabledIndex);
               return (
                 <li
-                  key={index}
+                  key={`${item.value}-${index}`}
                   ref={(el) => {
                     itemRefs.current[index] = el;
                   }}

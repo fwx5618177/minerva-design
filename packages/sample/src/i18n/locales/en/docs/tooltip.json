@@ -1,10 +1,10 @@
 {
   "title": "Tooltip",
-  "description": "A short text label shown when the user hovers over or focuses an element.",
+  "description": "A short text label shown when the user hovers over or focuses an element. Near the viewport edges it flips and shifts to stay visible.",
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Wrap a focusable element. The tooltip shows on hover and on keyboard focus, and Escape closes it."
+      "description": "Wrap a focusable element. The tooltip shows on hover and on keyboard focus, and Escape closes it, even when it was opened by hover."
     },
     "placements": {
       "title": "Placements",
@@ -24,7 +24,7 @@
     },
     "custom-colors": {
       "title": "Colors, arrow and offset",
-      "description": "bgColor accepts solid colors and CSS gradients; arrow adds a pointer; offset moves the tooltip away from the trigger."
+      "description": "bgColor accepts solid colors and CSS gradients; arrow adds a pointer to the trigger; offset sets the gap to the trigger (8px by default)."
     },
     "delays": {
       "title": "Delays and disabled",
@@ -36,7 +36,7 @@
     },
     "controlled": {
       "title": "Controlled and imperative",
-      "description": "Control visibility with open, or call open / close / toggle on a TooltipRef."
+      "description": "Control visibility with open and onOpenChange (hover, focus and Escape still request changes), or call open / close / toggle on a TooltipRef."
     },
     "events": {
       "title": "Events",
@@ -47,7 +47,7 @@
     "TooltipProps": {
       "content": "Content displayed inside the tooltip",
       "children": "The element that triggers the tooltip; prefer a focusable element",
-      "open": "Whether the tooltip is shown (controlled)",
+      "open": "Whether the tooltip is shown (controlled; pair with onOpenChange)",
       "defaultOpen": "Initial open state (uncontrolled)",
       "placement": "Placement relative to the trigger",
       "variant": "Color variant",
@@ -55,7 +55,7 @@
       "animation": "Show / hide animation",
       "enterDelay": "Delay before showing on hover, in milliseconds",
       "leaveDelay": "Delay before hiding on mouse leave, in milliseconds",
-      "offset": "Offset from the trigger as [x, y] in pixels",
+      "offset": "Offset as [x, y] in pixels. For top/bottom placements y is the gap to the trigger and x shifts along it; for left/right placements x is the gap and y shifts along it. Without it the tooltip sits 8px away",
       "followCursor": "Makes the tooltip follow the mouse cursor",
       "bgColor": "Custom background color (CSS gradients are supported)",
       "textColor": "Custom text color",
@@ -65,7 +65,9 @@
       "className": "Additional class name of the trigger wrapper",
       "onOpen": "Called when the tooltip opens from hover or focus",
       "onClose": "Called when the tooltip closes from mouse leave, blur or Escape",
-      "ariaLabel": "Accessible label of the tooltip element"
+      "ariaLabel": "Accessible label of the tooltip element",
+      "ref": "Imperative handle with open / close / toggle",
+      "onOpenChange": "Called with the requested open state (hover, focus, Escape, ref methods)"
     },
     "TooltipRef": {
       "open": "Opens the tooltip",

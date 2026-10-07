@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -111,5 +112,52 @@ describe("StatusIndicator", () => {
     await user.click(indicator);
 
     expect(indicator).not.toHaveClass("clicked");
+  });
+
+  it("restarts the feedback timer on repeated clicks", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<StatusIndicator />);
+    const indicator = screen.getByRole("status");
+    await user.click(indicator);
+    act(() => {
+      vi.advanceTimersByTime(800);
+    });
+    await user.click(indicator);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    // The first click's timer must not cut the second animation short
+    expect(indicator).toHaveClass("clicked");
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(indicator).not.toHaveClass("clicked");
+  });
+
+  it("clears the feedback timer on unmount", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const { unmount } = render(<StatusIndicator />);
+    await user.click(screen.getByRole("status"));
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("uses the presence text as accessible name when no ariaLabel is given", () => {
+    render(<StatusIndicator type="away" />);
+    expect(screen.getByRole("status", { name: "Away" })).toBeInTheDocument();
+  });
+
+  it("hides the status icon from assistive technologies", () => {
+    render(<StatusIndicator />);
+    expect(screen.getByRole("status").querySelector("svg")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
+  it("forwards ref to the root element", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<StatusIndicator ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("status").parentElement);
   });
 });

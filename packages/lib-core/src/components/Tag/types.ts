@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type TagVariant =
   "default" | "primary" | "success" | "warning" | "error" | "info";
 export type TagSize = "small" | "medium" | "large";
@@ -29,12 +31,15 @@ export interface TagProps {
   /** Called when the close button is clicked */
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
-   * Makes the tag behave like a button (focusable, activated with Enter / Space)
+   * Renders the tag content as a native button (focusable, activated with
+   * Enter / Space). With closable, the close button is a sibling button
    * @default false
    */
   clickable?: boolean;
   /** Called when the tag is activated (requires clickable) */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  /** Pressed state of a toggle tag (requires clickable); sets aria-pressed */
+  pressed?: boolean;
   /** Icon displayed before the content */
   icon?: React.ReactNode;
   /**
@@ -66,7 +71,7 @@ export interface TagProps {
   closeIcon?: React.ReactNode;
   /**
    * Accessible label of the close button
-   * @default "Close"
+   * @default "Close" (localized)
    */
   closeLabel?: string;
   /**
@@ -74,4 +79,6 @@ export interface TagProps {
    * @default true
    */
   ripple?: boolean;
+  /** Ref to the root element */
+  ref?: Ref<HTMLDivElement>;
 }

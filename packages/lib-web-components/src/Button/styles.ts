@@ -1,29 +1,56 @@
 import { css } from "lit";
 
 export default css`
+  /*
+   * Colors come from the same design tokens (CSS custom properties) as
+   * @minerva/lib-core. Custom properties inherit into the shadow root, so
+   * ConfigProvider / applyThemeStyles theme changes apply here too. The
+   * fallbacks match lib-core's light theme for pages without lib-core.
+   *
+   * Never declare the token names on :host: that would shadow the theme.
+   */
   :host {
     display: inline-block;
-    --primary-color: #3b82f6;
-    --primary-hover: #2563eb;
-    --secondary-color: #6b7280;
-    --secondary-hover: #4b5563;
-    --success-color: #10b981;
-    --success-hover: #059669;
-    --warning-color: #f59e0b;
-    --warning-hover: #d97706;
-    --error-color: #ef4444;
-    --error-hover: #dc2626;
-    --info-color: #3b82f6;
-    --info-hover: #2563eb;
-    --ghost-color: transparent;
-    --ghost-hover: rgba(0, 0, 0, 0.05);
-    --disabled-color: #e5e7eb;
-    --disabled-text: #9ca3af;
-    --ripple-color: rgba(255, 255, 255, 0.7);
-    --retry-color: #f59e0b;
-    --retry-hover: #d97706;
-    --back-color: #6b7280;
-    --back-hover: #4b5563;
+    --_primary: var(--primary-color, #2563eb);
+    --_primary-hover: var(
+      --primary-color-hover,
+      color-mix(in srgb, var(--_primary) 85%, #000)
+    );
+    --_secondary: var(--secondary-color, #475569);
+    --_secondary-hover: var(
+      --secondary-color-hover,
+      color-mix(in srgb, var(--_secondary) 85%, #000)
+    );
+    --_success: var(--success-color, #15803d);
+    --_success-hover: var(
+      --success-color-hover,
+      color-mix(in srgb, var(--_success) 85%, #000)
+    );
+    --_warning: var(--warning-color, #b45309);
+    --_warning-hover: var(
+      --warning-color-hover,
+      color-mix(in srgb, var(--_warning) 85%, #000)
+    );
+    --_danger: var(--danger-color, #dc2626);
+    --_danger-hover: var(
+      --danger-color-hover,
+      color-mix(in srgb, var(--_danger) 85%, #000)
+    );
+    --_info: var(--info-color, #0e7490);
+    --_info-hover: var(
+      --info-color-hover,
+      color-mix(in srgb, var(--_info) 85%, #000)
+    );
+    --_on-color: var(--text-inverse-color, #ffffff);
+    --_ghost-hover: var(--surface-muted-color, rgba(0, 0, 0, 0.05));
+    --_disabled-bg: var(--surface-muted-color, #e5e7eb);
+    --_disabled-text: var(--text-disabled-color, #9ca3af);
+    --_focus-ring: var(
+      --focus-ring-color,
+      color-mix(in srgb, var(--_primary) 45%, transparent)
+    );
+    --_radius: var(--radius-md, 0.375rem);
+    --_ripple: color-mix(in srgb, var(--_on-color) 70%, transparent);
   }
 
   .button {
@@ -32,6 +59,7 @@ export default css`
     align-items: center;
     justify-content: center;
     padding: 0.5rem 1rem;
+    font: inherit;
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.5;
@@ -43,86 +71,77 @@ export default css`
     user-select: none;
   }
 
+  .button:focus-visible {
+    outline: 2px solid var(--_focus-ring);
+    outline-offset: 2px;
+  }
+
   /* Variants */
   .variant-primary {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--_primary);
+    color: var(--_on-color);
   }
 
   .variant-primary:hover:not(:disabled) {
-    background-color: var(--primary-hover);
+    background-color: var(--_primary-hover);
   }
 
-  .variant-secondary {
-    background-color: var(--secondary-color);
-    color: white;
+  .variant-secondary,
+  .variant-back {
+    background-color: var(--_secondary);
+    color: var(--_on-color);
   }
 
-  .variant-secondary:hover:not(:disabled) {
-    background-color: var(--secondary-hover);
+  .variant-secondary:hover:not(:disabled),
+  .variant-back:hover:not(:disabled) {
+    background-color: var(--_secondary-hover);
   }
 
   .variant-success {
-    background-color: var(--success-color);
-    color: white;
+    background-color: var(--_success);
+    color: var(--_on-color);
   }
 
   .variant-success:hover:not(:disabled) {
-    background-color: var(--success-hover);
+    background-color: var(--_success-hover);
   }
 
-  .variant-warning {
-    background-color: var(--warning-color);
-    color: white;
+  .variant-warning,
+  .variant-retry {
+    background-color: var(--_warning);
+    color: var(--_on-color);
   }
 
-  .variant-warning:hover:not(:disabled) {
-    background-color: var(--warning-hover);
+  .variant-warning:hover:not(:disabled),
+  .variant-retry:hover:not(:disabled) {
+    background-color: var(--_warning-hover);
   }
 
   .variant-error {
-    background-color: var(--error-color);
-    color: white;
+    background-color: var(--_danger);
+    color: var(--_on-color);
   }
 
   .variant-error:hover:not(:disabled) {
-    background-color: var(--error-hover);
+    background-color: var(--_danger-hover);
   }
 
   .variant-info {
-    background-color: var(--info-color);
-    color: white;
+    background-color: var(--_info);
+    color: var(--_on-color);
   }
 
   .variant-info:hover:not(:disabled) {
-    background-color: var(--info-hover);
+    background-color: var(--_info-hover);
   }
 
   .variant-ghost {
-    background-color: var(--ghost-color);
-    color: var(--primary-color);
+    background-color: transparent;
+    color: var(--_primary);
   }
 
   .variant-ghost:hover:not(:disabled) {
-    background-color: var(--ghost-hover);
-  }
-
-  .variant-retry {
-    background-color: var(--retry-color);
-    color: white;
-  }
-
-  .variant-retry:hover:not(:disabled) {
-    background-color: var(--retry-hover);
-  }
-
-  .variant-back {
-    background-color: var(--back-color);
-    color: white;
-  }
-
-  .variant-back:hover:not(:disabled) {
-    background-color: var(--back-hover);
+    background-color: var(--_ghost-hover);
   }
 
   /* Sizes */
@@ -152,7 +171,7 @@ export default css`
   }
 
   .shape-rounded {
-    border-radius: 0.375rem;
+    border-radius: var(--_radius);
   }
 
   .shape-circle {
@@ -168,8 +187,8 @@ export default css`
   /* States */
   .disabled,
   :disabled {
-    background-color: var(--disabled-color) !important;
-    color: var(--disabled-text) !important;
+    background-color: var(--_disabled-bg) !important;
+    color: var(--_disabled-text) !important;
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -210,7 +229,7 @@ export default css`
   }
 
   .gradient {
-    background: linear-gradient(45deg, var(--primary-color), var(--info-color));
+    background: linear-gradient(45deg, var(--_primary), var(--_info));
   }
 
   .transparent {
@@ -269,7 +288,7 @@ export default css`
     border-radius: 50%;
     transform: scale(0);
     animation: ripple 0.6s linear;
-    background-color: var(--ripple-color);
+    background-color: var(--_ripple);
   }
 
   @keyframes spin {

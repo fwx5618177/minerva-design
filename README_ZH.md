@@ -20,7 +20,7 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 
 ## ✨ 特性
 
-- **React 组件**：30+ 个组件，支持 React 18 及以上版本
+- **React 组件**：30+ 个组件，基于 React 19（`ref` 作为普通 prop；入口带 `"use client"`，可用于 React Server Components）
 - **Web Components**：基于 Lit 的自定义元素，可在任意框架中使用，也可不依赖框架
 - **ESM + CommonJS**：同时提供两种模块格式
 - **TypeScript**：自带类型定义
@@ -29,11 +29,11 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 
 ## 📦 包
 
-| 包                            | 说明                                                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------------------- |
-| `@minerva/lib-core`           | React（>= 18）组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom`。 |
-| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                     |
-| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                         |
+| 包                            | 说明                                                                                          |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| `@minerva/lib-core`           | React 19 组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom` `^19.0.0`。 |
+| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                          |
+| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                              |
 
 ### 组件（`@minerva/lib-core`）
 
@@ -67,6 +67,8 @@ npm install @minerva/lib-core react react-dom
 ```bash
 yarn add @minerva/lib-core react react-dom
 ```
+
+需要 React 19（`react`、`react-dom` `^19.0.0`）。`@minerva/lib-core` 1.x 版本支持 React 18。包入口带有 `"use client"` 指令，可直接在 React Server Components 框架（如 Next.js App Router）中引入，无需额外包装。
 
 ### 基础用法
 
@@ -222,19 +224,21 @@ pnpm dev
 
 ### 脚本
 
-| 命令                                | 说明                                                     |
-| ----------------------------------- | -------------------------------------------------------- |
-| `pnpm dev`                          | 构建组件库，然后启动文档/演示站点                        |
-| `pnpm build`                        | 按顺序构建所有包：lib-core → lib-web-components → sample |
-| `pnpm test`                         | 在所有包中运行 Vitest                                    |
-| `pnpm test:coverage`                | 运行测试并生成覆盖率报告                                 |
-| `pnpm lint`                         | 运行 ESLint（flat config）                               |
-| `pnpm typecheck`                    | 对所有包进行类型检查                                     |
-| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                          |
-| `pnpm clean`                        | 清理构建产物                                             |
-| `pnpm changeset`                    | 添加描述本次改动的 changeset                             |
-| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG       |
-| `pnpm release`                      | 构建组件库并发布到 npm                                   |
+| 命令                                | 说明                                                      |
+| ----------------------------------- | --------------------------------------------------------- |
+| `pnpm dev`                          | 构建组件库，然后启动文档/演示站点                         |
+| `pnpm build`                        | 按顺序构建所有包：lib-core → lib-web-components → sample  |
+| `pnpm test`                         | 运行全部测试：单元测试（所有包、文档校验）与 e2e 用户流程 |
+| `pnpm test:unit` / `pnpm test:e2e`  | 只运行单元测试 / 只运行 e2e 用户流程（`tests/e2e`）       |
+| `pnpm test:dist`                    | 对构建后的 `@minerva/lib-core` 做冒烟测试（构建后运行）   |
+| `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）              |
+| `pnpm lint`                         | 运行 ESLint（flat config）                                |
+| `pnpm typecheck`                    | 对所有包进行类型检查                                      |
+| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                           |
+| `pnpm clean`                        | 清理构建产物                                              |
+| `pnpm changeset`                    | 添加描述本次改动的 changeset                              |
+| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG        |
+| `pnpm release`                      | 构建组件库并发布到 npm                                    |
 
 ### 工具链
 

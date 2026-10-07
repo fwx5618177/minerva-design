@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import type { VirtualListProps, VirtualItem } from "./types";
 import styles from "./virtualList.module.scss";
+import { useMergedRefs } from "../../internal/mergeRefs";
 import { ProgressIndicator } from "../ProgressIndicator";
 
 /**
@@ -22,9 +23,11 @@ import { ProgressIndicator } from "../ProgressIndicator";
  * @param loadMoreThreshold 触发加载更多的阈值(px)
  * @param highPerformance 是否启用高性能模式
  * @param loading 是否显示加载中状态
+ * @param ariaLabel 列表的无障碍名称
+ * @param ref 滚动容器根元素的 ref
  * @returns {React.ReactNode} 虚拟列表组件
  */
-const VirtualList: React.FC<VirtualListProps> = ({
+const VirtualList = ({
   items,
   itemHeight,
   maxHeight,
@@ -37,53 +40,51 @@ const VirtualList: React.FC<VirtualListProps> = ({
   highPerformance = false,
   loading = false,
   itemPadding = 8,
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  ariaLabel,
+  ref,
+}: VirtualListProps) => {
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const lastScrollTop = useRef(0);
   const isLoadingMore = useRef(false);
-  const rafRef = useRef<number>();
-  const idleCallbackRef = useRef<number>();
+  const rafRef = useRef<number | undefined>(undefined);
+  const idleCallbackRef = useRef<number | undefined>(undefined);
 
   // 测量得到的内容高度 (不含 padding), padding 在渲染时叠加,
-  // 这样 itemPadding 变化后无需重新测量也能生效
+  // 这样 itemPadding 变化后无需重新测量也能生效. 0 = 尚未测量
   const [measuredContentHeight, setMeasuredContentHeight] = useState(0);
-  const measureRef = useRef<HTMLDivElement>(null);
-  const hasMeasured = useRef(false);
+  const needsMeasure =
+    !itemHeight && measuredContentHeight === 0 && items.length > 0;
 
-  // 计算单个项目的高度
-  useEffect(() => {
-    if (itemHeight || hasMeasured.current) return;
-
-    const measure = () => {
-      if (measureRef.current) {
-        const height = measureRef.current.offsetHeight;
-        if (height > 0) {
-          setMeasuredContentHeight(height);
-          hasMeasured.current = true;
-        }
-      }
-    };
-
-    // 初次测量
-    measure();
-
-    // 监听内容变化
-    const resizeObserver = new ResizeObserver(() => {
-      if (!hasMeasured.current) {
-        measure();
+  // 容器高度: 挂载时读取并持续监听尺寸变化 (callback ref, 卸载时自动断开)
+  const observeContainer = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    setContainerHeight(node.clientHeight);
+    if (typeof ResizeObserver === "undefined") return;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerHeight(entry.contentRect.height);
       }
     });
+    resizeObserver.observe(node);
+    return () => resizeObserver.disconnect();
+  }, []);
+  const containerRef = useMergedRefs(observeContainer, ref);
 
-    if (measureRef.current) {
-      resizeObserver.observe(measureRef.current);
-    }
-
-    return () => {
-      resizeObserver.disconnect();
+  // 测量首个项目的高度. 测量元素只在需要时挂载 (包括 items 稍后才加载的情况),
+  // 测得高度后即被移除, observer 随之断开
+  const measureItem = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    const measure = () => {
+      const height = node.offsetHeight;
+      if (height > 0) setMeasuredContentHeight(height);
     };
-  }, [itemHeight]);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(node);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // 使用固定高度或计算出的高度
   const finalItemHeight =
@@ -165,52 +166,35 @@ const VirtualList: React.FC<VirtualListProps> = ({
   }, [visibleRange, finalItemHeight]);
 
   // 处理滚动
-  const handleScroll = useCallback(() => {
-    if (!containerRef.current) return;
+  const handleScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+      const isScrollingDown = scrollTop > lastScrollTop.current;
+      lastScrollTop.current = scrollTop;
 
-    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    const isScrollingDown = scrollTop > lastScrollTop.current;
-    lastScrollTop.current = scrollTop;
+      scheduleUpdate(() => {
+        setScrollTop(scrollTop);
 
-    scheduleUpdate(() => {
-      setScrollTop(scrollTop);
-
-      // 优化无限滚动触发逻辑
-      if (
-        isScrollingDown &&
-        onLoadMore &&
-        !isLoadingMore.current &&
-        !loading &&
-        scrollHeight - scrollTop - clientHeight < loadMoreThreshold &&
-        // 添加额外检查，防止重复触发
-        scrollHeight > clientHeight
-      ) {
-        isLoadingMore.current = true;
-        onLoadMore().finally(() => {
-          isLoadingMore.current = false;
-        });
-      }
-    });
-  }, [onLoadMore, loading, loadMoreThreshold, scheduleUpdate]);
-
-  // 监听容器大小变化
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setContainerHeight(entry.contentRect.height);
-      }
-    });
-
-    resizeObserver.observe(container);
-    setContainerHeight(container.clientHeight);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+        // 优化无限滚动触发逻辑
+        if (
+          isScrollingDown &&
+          onLoadMore &&
+          !isLoadingMore.current &&
+          !loading &&
+          scrollHeight - scrollTop - clientHeight < loadMoreThreshold &&
+          // 添加额外检查，防止重复触发
+          scrollHeight > clientHeight
+        ) {
+          isLoadingMore.current = true;
+          // Tolerate callbacks that do not return a promise
+          Promise.resolve(onLoadMore()).finally(() => {
+            isLoadingMore.current = false;
+          });
+        }
+      });
+    },
+    [onLoadMore, loading, loadMoreThreshold, scheduleUpdate],
+  );
 
   // 卸载时清理所有待执行的 RAF / idle 回调
   useEffect(() => cancelScheduled, [cancelScheduled]);
@@ -218,6 +202,9 @@ const VirtualList: React.FC<VirtualListProps> = ({
   return (
     <div
       ref={containerRef}
+      // Scrollable region: focusable so keyboard users can scroll it
+      tabIndex={0}
+      aria-busy={loading || undefined}
       className={`${styles.virtualList} ${className}`}
       style={{
         ...style,
@@ -227,8 +214,12 @@ const VirtualList: React.FC<VirtualListProps> = ({
       }}
       onScroll={handleScroll}
     >
-      {!itemHeight && !hasMeasured.current && items.length > 0 && (
-        <div ref={measureRef} className={styles.measureItem} aria-hidden="true">
+      {needsMeasure && (
+        <div
+          ref={measureItem}
+          className={styles.measureItem}
+          aria-hidden="true"
+        >
           {renderItem(items[0], 0)}
         </div>
       )}
@@ -239,6 +230,8 @@ const VirtualList: React.FC<VirtualListProps> = ({
           willChange: "transform",
         }}
         className={styles.virtualListContent}
+        role="list"
+        aria-label={ariaLabel}
       >
         {finalItemHeight > 0 &&
           virtualItems.map((virtualItem) => (
@@ -255,6 +248,10 @@ const VirtualList: React.FC<VirtualListProps> = ({
                 cursor: "pointer",
               }}
               className={styles.virtualListItem}
+              role="listitem"
+              // Only a window of items is in the DOM: expose the real position
+              aria-setsize={items.length}
+              aria-posinset={virtualItem.index + 1}
             >
               {renderItem(items[virtualItem.index], virtualItem.index)}
             </div>

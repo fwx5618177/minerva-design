@@ -1,3 +1,4 @@
+import { createRef, useState } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -41,7 +42,7 @@ const options: CascaderOption[] = [zhejiang, jiangsu, tibet];
 const renderCascader = (props: Partial<CascaderProps> = {}) =>
   render(<Cascader label="Area" name="area" options={options} {...props} />);
 
-const getInput = () => screen.getByRole("textbox");
+const getInput = () => screen.getByRole("combobox");
 const getDropdown = () => document.querySelector<HTMLElement>(".dropdown");
 const getColumns = () =>
   Array.from(document.querySelectorAll<HTMLElement>(".dropdown .column"));
@@ -109,13 +110,20 @@ describe("Cascader", () => {
     expect(getDropdown()).not.toBeInTheDocument();
   });
 
-  it("opens on keyboard focus and closes on a second input click", async () => {
+  it("does not open on focus alone; opens with ArrowDown and closes on a second click", async () => {
     const user = userEvent.setup();
     renderCascader();
 
     await user.tab();
     expect(getInput()).toHaveFocus();
+    expect(getDropdown()).not.toBeInTheDocument();
+    expect(getInput()).toHaveAttribute("aria-expanded", "false");
+
+    await user.keyboard("{ArrowDown}");
     expect(getDropdown()).toBeInTheDocument();
+    expect(getInput()).toHaveAttribute("aria-expanded", "true");
+    // focus moves into the first column
+    expect(screen.getByRole("option", { name: "Zhejiang" })).toHaveFocus();
 
     await user.click(getInput());
     expect(getDropdown()).not.toBeInTheDocument();
@@ -193,7 +201,10 @@ describe("Cascader", () => {
     await user.hover(screen.getByText("Jiangsu"));
 
     expect(getColumns()).toHaveLength(2);
-    expect(screen.getByText("Jiangsu").closest("li")).toHaveClass("hover");
+    expect(screen.getByText("Jiangsu").closest("li")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
 
     await user.click(screen.getByText("Nanjing"));
     expect(onChange).toHaveBeenCalledWith(
@@ -227,8 +238,10 @@ describe("Cascader", () => {
       screen.getByText("Zhejiang").closest("li")?.querySelector(".expandIcon"),
     ).toBeInTheDocument();
 
+    // at the last allowed level an option is selected instead of expanded
     await user.click(screen.getByText("Hangzhou"));
-    expect(getColumns()).toHaveLength(2);
+    expect(getDropdown()).not.toBeInTheDocument();
+    expect(getInput()).toHaveValue("Zhejiang / Hangzhou");
   });
 
   it("displays labels for defaultValue and clears them", async () => {
@@ -398,10 +411,14 @@ describe("Cascader", () => {
     await open(user);
     await user.click(screen.getByText("Lazy"));
     expect(loadData).toHaveBeenCalledWith([lazy]);
-    // An option without children is also selected immediately
-    expect(onChange).toHaveBeenCalledWith(["lazy"], [lazy]);
+    // A lazy option is expanded (children are loading), never selected
+    expect(onChange).not.toHaveBeenCalled();
+    expect(getDropdown()).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Lazy" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
 
-    await user.click(getInput());
     await user.click(screen.getByText("Leaf"));
     expect(loadData).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith(["leaf"], [leaf]);
@@ -458,7 +475,7 @@ describe("Cascader", () => {
           onChange={onChange}
         />,
       );
-      await user.click(screen.getByRole("textbox"));
+      await user.click(screen.getByRole("combobox"));
       const alpha = screen.getByRole("option", { name: "Alpha" });
       expect(alpha).toHaveAttribute("tabindex", "0");
       alpha.focus();
@@ -480,7 +497,7 @@ describe("Cascader", () => {
           options={[{ value: "a", label: "Alpha" }]}
         />,
       );
-      await user.click(screen.getByRole("textbox"));
+      await user.click(screen.getByRole("combobox"));
       expect(screen.getByRole("option", { name: "Alpha" })).toBeInTheDocument();
       await user.keyboard("{Escape}");
       expect(screen.queryByRole("option", { name: "Alpha" })).toBeNull();
@@ -498,10 +515,253 @@ describe("Cascader", () => {
           onChange={onChange}
         />,
       );
-      const clear = screen.getByRole("button", { name: "Clear" });
+      const clear = screen.getByRole("button", { name: "Clear selection" });
       clear.focus();
       await user.keyboard("{Enter}");
       expect(onChange).toHaveBeenCalledWith([], []);
+    });
+  });
+
+  describe("regressions", () => {
+    const LazyHarness = ({
+      onChange,
+    }: {
+      onChange?: CascaderProps["onChange"];
+    }) => {
+      const [opts, setOpts] = useState<CascaderOption[]>([
+        { value: "fe", label: "Frontend" },
+        { value: "docs", label: "Docs", isLeaf: true },
+      ]);
+      const loadData = (path: CascaderOption[]) => {
+        const target = path[path.length - 1];
+        setOpts((prev) =>
+          prev.map((o) =>
+            o.value === target.value ? { ...o, loading: true } : o,
+          ),
+        );
+        setTimeout(() => {
+          setOpts((prev) =>
+            prev.map((o) =>
+              o.value === target.value
+                ? {
+                    ...o,
+                    loading: false,
+                    children: [
+                      { value: "a", label: "Team A", isLeaf: true },
+                      { value: "b", label: "Team B", isLeaf: true },
+                    ],
+                  }
+                : o,
+            ),
+          );
+        }, 50);
+      };
+      return (
+        <Cascader
+          label="Team"
+          name="team"
+          options={opts}
+          loadData={loadData}
+          onChange={onChange}
+        />
+      );
+    };
+
+    it("loads children of a lazy option instead of selecting it", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(<LazyHarness onChange={onChange} />);
+      await open(user);
+      await user.click(screen.getByText("Frontend"));
+      expect(onChange).not.toHaveBeenCalled();
+      expect(getDropdown()).toBeInTheDocument();
+      expect(screen.getByText("Frontend").closest("li")).toHaveAttribute(
+        "aria-busy",
+        "true",
+      );
+      await screen.findByText("Team B");
+      expect(getColumns()).toHaveLength(2);
+      await user.click(screen.getByText("Team B"));
+      expect(onChange).toHaveBeenCalledWith(
+        ["fe", "b"],
+        [
+          expect.objectContaining({ value: "fe" }),
+          expect.objectContaining({ value: "b" }),
+        ],
+      );
+      expect(getInput()).toHaveValue("Frontend / Team B");
+    });
+
+    it("moves focus into a lazily loaded column with ArrowRight", async () => {
+      const user = userEvent.setup();
+      render(<LazyHarness />);
+      getInput().focus();
+      await user.keyboard("{ArrowDown}");
+      expect(screen.getByRole("option", { name: "Frontend" })).toHaveFocus();
+      await user.keyboard("{ArrowRight}");
+      await waitFor(() =>
+        expect(screen.getByRole("option", { name: "Team A" })).toHaveFocus(),
+      );
+    });
+
+    it("lets the dropdown grow with its columns instead of the field width", async () => {
+      const rect = (r: Partial<DOMRect>) =>
+        ({
+          x: 0,
+          y: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: 0,
+          height: 0,
+          toJSON: () => ({}),
+          ...r,
+        }) as DOMRect;
+      vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(
+        1200,
+      );
+      vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
+        800,
+      );
+      vi.spyOn(
+        HTMLElement.prototype,
+        "getBoundingClientRect",
+      ).mockImplementation(function (this: HTMLElement) {
+        return this.classList.contains("cascader")
+          ? rect({
+              top: 10,
+              bottom: 50,
+              left: 10,
+              right: 250,
+              width: 240,
+              height: 40,
+            })
+          : rect({});
+      });
+      const user = userEvent.setup();
+      renderCascader({ defaultValue: ["zhejiang", "hangzhou", "xihu"] });
+      await open(user);
+      const dropdown = getDropdown()!;
+      await waitFor(() => expect(dropdown.style.minWidth).toBe("240px"));
+      // previously forced to the field width (240px), squeezing 3 columns
+      expect(dropdown.style.width).toBe("");
+      expect(getColumns()).toHaveLength(3);
+      vi.restoreAllMocks();
+    });
+
+    it("navigates columns with the keyboard and returns focus to the input", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderCascader({ onChange });
+      getInput().focus();
+      await user.keyboard("{Enter}");
+      expect(screen.getByRole("option", { name: "Zhejiang" })).toHaveFocus();
+      await user.keyboard("{ArrowRight}");
+      expect(screen.getByRole("option", { name: "Hangzhou" })).toHaveFocus();
+      await user.keyboard("{ArrowLeft}");
+      expect(screen.getByRole("option", { name: "Zhejiang" })).toHaveFocus();
+      await user.keyboard("{ArrowRight}{ArrowDown}{Enter}");
+      expect(onChange).toHaveBeenCalledWith(
+        ["zhejiang", "ningbo"],
+        [zhejiang, ningbo],
+      );
+      expect(getDropdown()).not.toBeInTheDocument();
+      expect(getInput()).toHaveFocus();
+
+      await user.keyboard("{ArrowDown}");
+      // reopens on the selected path
+      expect(screen.getByRole("option", { name: "Ningbo" })).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(getDropdown()).not.toBeInTheDocument();
+      expect(getInput()).toHaveFocus();
+    });
+
+    it("stays on the controlled value when the parent rejects a change", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderCascader({ value: ["jiangsu", "nanjing"], onChange });
+      await open(user);
+      await user.click(screen.getByText("Zhejiang"));
+      await user.click(screen.getByText("Ningbo"));
+      expect(onChange).toHaveBeenCalledWith(
+        ["zhejiang", "ningbo"],
+        [zhejiang, ningbo],
+      );
+      expect(getInput()).toHaveValue("Jiangsu / Nanjing");
+    });
+
+    it("closes when focus leaves with Tab", async () => {
+      const user = userEvent.setup();
+      render(
+        <>
+          <Cascader label="Area" name="area" options={options} />
+          <button type="button">Next</button>
+        </>,
+      );
+      getInput().focus();
+      await user.keyboard("{ArrowDown}");
+      expect(getDropdown()).toBeInTheDocument();
+      await user.tab();
+      expect(getDropdown()).not.toBeInTheDocument();
+    });
+
+    it("forwards ref to the input", () => {
+      const ref = createRef<HTMLInputElement>();
+      render(<Cascader label="Area" name="area" options={options} ref={ref} />);
+      expect(ref.current).toBe(getInput());
+    });
+  });
+
+  describe("search keyboard", () => {
+    it("moves from the input into the results and selects with Enter", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderCascader({ showSearch: true, onChange });
+      await user.click(getInput());
+      await user.type(getInput(), "hang", { skipClick: true });
+      await user.keyboard("{ArrowDown}");
+      const results = screen.getAllByRole("option");
+      expect(results[0]).toHaveFocus();
+      await user.keyboard("{ArrowDown}");
+      expect(results[1]).toHaveFocus();
+      await user.keyboard("{ArrowUp}{ArrowUp}");
+      expect(results[1]).toHaveFocus();
+      await user.keyboard("{Enter}");
+      expect(onChange).toHaveBeenCalledWith(
+        ["zhejiang", "hangzhou", "xihu"],
+        [zhejiang, hangzhou, xihu],
+      );
+      expect(getInput()).toHaveFocus();
+    });
+
+    it("opens when typing into a closed searchable cascader", async () => {
+      const user = userEvent.setup();
+      renderCascader({ showSearch: true });
+      getInput().focus();
+      await user.keyboard("nan");
+      expect(getDropdown()).toBeInTheDocument();
+      expect(
+        screen.getByRole("option", { name: "Jiangsu / Nanjing" }),
+      ).toBeInTheDocument();
+      await user.keyboard("{Escape}");
+      expect(getDropdown()).not.toBeInTheDocument();
+      expect(getInput()).toHaveValue("");
+    });
+
+    it("supports Home / End and returns to the input with ArrowLeft on the first column", async () => {
+      const user = userEvent.setup();
+      renderCascader();
+      getInput().focus();
+      await user.keyboard(" ");
+      expect(screen.getByRole("option", { name: "Zhejiang" })).toHaveFocus();
+      await user.keyboard("{End}");
+      expect(screen.getByRole("option", { name: "Jiangsu" })).toHaveFocus();
+      await user.keyboard("{Home}");
+      expect(screen.getByRole("option", { name: "Zhejiang" })).toHaveFocus();
+      await user.keyboard("{ArrowLeft}");
+      expect(getDropdown()).not.toBeInTheDocument();
+      expect(getInput()).toHaveFocus();
     });
   });
 });

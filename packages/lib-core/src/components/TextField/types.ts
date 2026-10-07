@@ -1,13 +1,28 @@
+import type { Ref } from "react";
+
 export interface TextFieldProps {
-  /** Name of the input; also used as its id to link the label */
+  /** Name of the input; also used as its id (unless id is set) to link the label */
   name: string;
-  /** Floating label (hidden when a placeholder is set or the field is read-only) */
+  /** Id of the input; defaults to name */
+  id?: string;
+  /**
+   * Floating label. Hidden when a placeholder is set or the field is
+   * read-only; it then remains the input's accessible name
+   */
   label: string;
-  /** Current value; omit for an uncontrolled field */
+  /** Current value (controlled); omit for an uncontrolled field */
   value?: string;
+  /**
+   * Initial value of an uncontrolled field
+   * @default ""
+   */
+  defaultValue?: string;
   /** Placeholder text, replaces the floating label */
   placeholder?: string;
-  /** Error message shown below the field; switches it to the error state */
+  /**
+   * Error message shown below the field (linked with aria-describedby); switches
+   * it to the error state, focuses the input and shakes it briefly
+   */
   helperText?: string;
   /** Icon shown inside the field */
   icon?: React.ReactNode;
@@ -63,8 +78,23 @@ export interface TextFieldProps {
    * @default false
    */
   disabled?: boolean;
-  /** Accessible label of the input */
+  /** Accessible label of the input (defaults to label) */
   ariaLabel?: string;
+  /**
+   * Accessible label of the clear button
+   * @default "Clear" (localized)
+   */
+  clearLabel?: string;
+  /**
+   * Accessible label of the password toggle while the password is hidden
+   * @default "Show password" (localized)
+   */
+  showPasswordLabel?: string;
+  /**
+   * Accessible label of the password toggle while the password is visible
+   * @default "Hide password" (localized)
+   */
+  hidePasswordLabel?: string;
   /**
    * Makes the field read-only
    * @default false
@@ -87,4 +117,6 @@ export interface TextFieldProps {
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   /** Additional class name of the container */
   className?: string;
+  /** Ref to the underlying <input> element */
+  ref?: Ref<HTMLInputElement>;
 }

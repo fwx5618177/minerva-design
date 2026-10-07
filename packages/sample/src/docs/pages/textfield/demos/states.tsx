@@ -9,7 +9,6 @@ export default function StatesDemo() {
         label="Read-only"
         value="Read-only value"
         readOnly
-        ariaLabel="Read-only"
       />
     </>
   );

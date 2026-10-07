@@ -1,54 +1,65 @@
 import React from "react";
+import classNames from "classnames";
 import { FaSearch } from "react-icons/fa";
 import styles from "./searchButton.module.scss";
-import { SearchButtonProps } from "./types";
+import type { SearchButtonProps } from "./types";
+import useI18n from "../../hooks/useI18n";
 
 /**
- * SearchButton component
- * @param onClick - Function to be called when the button is clicked
- * @param className - Additional classes to be added to the button
- * @param ariaLabel - The aria-label attribute for the button, used for accessibility
- * @param disabled - Whether the button is disabled
- * @param shape - The shape of the button (circle, square, rounded)
- * @param variant - The style of the button (primary, warning, error, success, info)
- * @param animation - The animation of the button (none, expand, shrink，shake)
- * @param size - The size of the button (small, medium, large)
- * @param color - The color of text
- * @param iconColor - The color of the icon
- * @param bgColor - The background color of the button
- * @param loading - Whether the button is in loading state
- * @param children - The content of the button
- * @returns A search button component
+ * SearchButton: a button with a search icon and optional text.
+ * Icon-only buttons are labelled "Search" (localized) unless `ariaLabel` is given;
+ * `ref` reaches the <button>.
  */
-const SearchButton: React.FC<SearchButtonProps> = ({
+const SearchButton = ({
   onClick,
   className = "",
   ariaLabel,
   disabled = false,
-  shape = "circle", // 默认值为 circle
-  variant = "primary", // 默认值为 primary
-  animation = "none", // 默认值为 none
-  size = "medium", // 默认值为 medium
-  color, // 添加 color 属性
+  shape = "circle",
+  variant = "primary",
+  animation = "none",
+  size = "medium",
+  color,
   iconColor = "var(--text-inverse-color)", // text color on the primary fill
-  bgColor, // 添加 bgColor 属性
-  loading = false, // 添加 loading 属性
-  children, // 添加 children 属性
-}) => {
+  bgColor,
+  loading = false,
+  children,
+  type,
+  ref,
+}: SearchButtonProps) => {
+  const { t } = useI18n();
+  const hasChildren =
+    children !== undefined && children !== null && children !== false;
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!disabled && !loading && onClick) {
-      onClick(event);
+    if (loading) {
+      // also cancels the implicit form submission of a submit button
+      event.preventDefault();
+      return;
     }
+    if (!disabled) onClick?.(event);
   };
 
-  // 动态调整形状
-  const adjustedShape = children ? "square" : shape;
+  // Buttons with text are always square.
+  const adjustedShape = hasChildren ? "square" : shape;
 
   return (
     <button
-      className={`${styles.searchButton} ${styles[adjustedShape]} ${styles[variant]} ${styles[size]} ${animation !== "none" ? styles[animation] : ""} ${loading ? styles.loading : ""} ${className}`}
+      ref={ref}
+      type={type}
+      className={classNames(
+        styles.searchButton,
+        styles[adjustedShape],
+        styles[variant],
+        styles[size],
+        animation !== "none" && styles[animation],
+        loading && styles.loading,
+        className,
+      )}
       onClick={handleClick}
-      aria-label={ariaLabel}
+      aria-label={
+        ariaLabel ?? (hasChildren ? undefined : t("searchButton.search"))
+      }
       disabled={disabled}
       aria-busy={loading || undefined}
       style={{
@@ -58,11 +69,11 @@ const SearchButton: React.FC<SearchButtonProps> = ({
       }}
     >
       {loading ? (
-        <div className={styles.loader}></div>
+        <span className={styles.loader} aria-hidden />
       ) : (
-        <FaSearch className={styles.icon} color={iconColor} />
+        <FaSearch className={styles.icon} color={iconColor} aria-hidden />
       )}
-      {children && <span className={styles.children}>{children}</span>}
+      {hasChildren && <span className={styles.children}>{children}</span>}
     </button>
   );
 };

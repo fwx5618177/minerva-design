@@ -12,8 +12,8 @@
   },
   "react": {
     "title": "在 React 中使用",
-    "text": "为了副作用引入一次该包，并引用包内的类型声明，以便在 JSX 中检查属性类型。onClick 等 DOM 事件照常工作；无障碍名称请使用带连字符的 aria-label。",
-    "booleans": "React 18 会把自定义元素上的属性设置为字符串，因此 loading={false} 会变成 loading=\"false\"，仍然被视为存在。切换布尔属性时请传入 true 或 undefined（例如 loading={saving || undefined}）。React 19 会把它们设置为 property，可以直接使用布尔值。"
+    "text": "为了副作用引入一次该包，并引用包内的类型声明，以便在 JSX 中检查属性类型。需要 React 19。onClick 等 DOM 事件照常工作；无障碍名称请使用带连字符的 aria-label。",
+    "booleans": "React 19 会以 property 的形式把值传给自定义元素，因此布尔属性直接传布尔值即可：loading={saving} 或 disabled={false} 都会按预期工作。"
   },
   "other": {
     "title": "Vue 及其他框架",
@@ -21,11 +21,11 @@
   },
   "theming": {
     "title": "主题",
-    "text": "按钮读取自身的 CSS 自定义属性（--primary-color、--primary-hover、--error-color 等），其默认值声明在元素上，因此不会自动跟随 lib-core 的 ConfigProvider 主题。请在元素上（或在选中它的规则中）设置这些变量以匹配你的设计："
+    "text": "按钮使用 lib-core 的设计令牌（CSS 自定义属性，如 --primary-color、--danger-color、--text-inverse-color、--surface-muted-color、--focus-ring-color 和 --radius-md），并为未使用 lib-core 的页面提供内置回退值。自定义属性会继承进 shadow root，因此 ConfigProvider / applyThemeStyles 的主题变化同样会作用于它。若只想调整部分按钮的样式，请在元素或其祖先上设置这些令牌："
   },
   "a11y": {
     "title": "无障碍",
-    "text": "该元素在 shadow root 中渲染原生 <button>，因此可获得焦点并支持键盘操作。aria-label 属性会被转发到该按钮上；纯图标按钮请务必设置。加载中时按钮会设置 aria-busy 并忽略点击；禁用的按钮无法获得焦点。"
+    "text": "该元素在 shadow root 中渲染原生 <button>，因此可获得焦点并支持键盘操作，并带有可见的焦点环（--focus-ring-color）。aria-label 属性会被转发到该按钮上；纯图标按钮请务必设置。加载中时按钮会设置 aria-busy 并忽略点击；禁用的按钮无法获得焦点。"
   },
   "demos": {
     "basic": {
@@ -42,7 +42,7 @@
     },
     "states": {
       "title": "状态",
-      "description": "loading 显示加载指示并阻止点击；disabled 和 active 也是布尔属性。在 React 18 中请传 true 或 undefined，不要传 false。"
+      "description": "loading 显示加载动画并阻止点击；disabled 和 active 同样是布尔属性。在 React 19 中直接传布尔值，例如 loading={saving}。"
     }
   },
   "api": {

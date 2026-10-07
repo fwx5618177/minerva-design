@@ -136,6 +136,8 @@
     width: 100%;
     overflow: hidden;
     border-radius: 2px;
+    // Width is driven by the remaining time (updated every 50ms)
+    transition: width 50ms linear;
 
     &::after {
       content: "";
@@ -146,16 +148,12 @@
       height: 100%;
       background: currentColor;
       opacity: 1;
-      transform-origin: left;
-      animation: progressSlide 3s linear;
       border-radius: 2px;
       box-shadow: 0 0 4px 0 var(--shadow-color);
     }
 
     &.paused {
-      &::after {
-        animation-play-state: paused;
-      }
+      transition: none;
     }
   }
 
@@ -336,14 +334,5 @@
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes progressSlide {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
   }
 }

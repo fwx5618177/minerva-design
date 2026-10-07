@@ -1,7 +1,8 @@
-import React, { useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import { IconButtonProps } from "./types";
 import { Tooltip } from "../Tooltip";
 import { ProgressIndicator } from "../ProgressIndicator";
+import useI18n from "../../hooks/useI18n";
 import styles from "./iconButton.module.scss";
 
 /**
@@ -24,9 +25,10 @@ import styles from "./iconButton.module.scss";
  * @param fillColor - Custom fill color
  * @returns An icon button component
  */
-const IconButton: React.FC<IconButtonProps> = ({
+const IconButton = ({
+  ref,
   icon,
-  variant = "default",
+  variant,
   size = "medium",
   shape = "circle",
   disabled = false,
@@ -44,9 +46,8 @@ const IconButton: React.FC<IconButtonProps> = ({
   tabIndex = 0,
   ariaLabel,
   ...props
-}) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
+}: IconButtonProps) => {
+  const { t } = useI18n();
   // 使用 useMemo 缓存按钮样式
   const buttonStyle = useMemo(
     () =>
@@ -63,7 +64,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   // 使用 useMemo 缓存按钮类名
   const buttonClassName = useMemo(
     () =>
-      `${styles.iconButton} ${styles[variant]} ${styles[size]} ${styles[shape]} ${
+      `${styles.iconButton} ${styles[variant ?? "default"]} ${styles[size]} ${styles[shape]} ${
         disabled ? styles.disabled : ""
       } ${loading ? styles.loading : ""} ${active ? styles.active : ""} ${className}`,
     [variant, size, shape, disabled, loading, active, className],
@@ -71,22 +72,18 @@ const IconButton: React.FC<IconButtonProps> = ({
 
   const buttonContent = (
     <button
-      ref={buttonRef}
+      type="button"
+      ref={ref}
       className={buttonClassName}
       disabled={disabled || loading}
       onClick={onClick}
       tabIndex={disabled ? -1 : tabIndex}
-      aria-label={ariaLabel || "icon button"}
-      aria-disabled={disabled || loading}
-      role="button"
+      aria-label={ariaLabel || t("iconButton.default")}
+      aria-busy={loading || undefined}
       style={buttonStyle}
       {...props}
     >
-      {loading ? (
-        <ProgressIndicator size={size} type="spinner" ariaLabel="Loading" />
-      ) : (
-        icon
-      )}
+      {loading ? <ProgressIndicator size={size} type="spinner" /> : icon}
     </button>
   );
 

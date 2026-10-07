@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "传入任意图标元素。按钮只包含图标，请始终提供 ariaLabel。"
+      "description": "传入任意图标元素。按钮中只有图标，因此务必为它设置 ariaLabel。它渲染为 type=\"button\" 的原生按钮，因此不会提交表单。"
     },
     "variants": {
       "title": "变体",
@@ -16,7 +16,7 @@
     },
     "states": {
       "title": "状态",
-      "description": "loading 会用加载动画替换图标，active 表示已按下的切换状态，disabled 会将按钮移出 Tab 顺序。"
+      "description": "loading 用加载动画替换图标，active 表示已按下的切换状态，disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
     },
     "custom-colors": {
       "title": "自定义颜色",
@@ -28,11 +28,11 @@
     },
     "interactive": {
       "title": "InteractiveIconButton",
-      "description": "自行管理状态的切换按钮：通过 initialState 设置初始状态，通过 onChange 监听变化。"
+      "description": "通过 aria-pressed 暴露状态的切换按钮。可用 pressed 和 onChange 进行受控，也可用 defaultPressed 保持非受控。其无障碍名称保持不变（预设的标签，例如 \"Like\"），可通过 ariaLabel 覆盖。"
     },
     "interactive-types": {
       "title": "交互预设",
-      "description": "所有 InteractiveIconType，即 interactiveIconsMap 的全部键。每个预设定义了图标、颜色和提示文字。点击即可切换。"
+      "description": "所有 InteractiveIconType，即 interactiveIconsMap 的每个键。每个预设定义了图标、颜色、提示文字和无障碍标签。点击即可切换。"
     }
   },
   "api": {
@@ -41,7 +41,7 @@
       "variant": "颜色变体；未设置时使用中性样式",
       "size": "按钮尺寸",
       "shape": "按钮形状",
-      "disabled": "禁用按钮并将其移出 Tab 顺序",
+      "disabled": "禁用原生按钮并使其脱离 Tab 键顺序",
       "loading": "用加载动画替换图标并阻止交互",
       "active": "以激活（按下）状态渲染按钮",
       "className": "额外的类名",
@@ -52,16 +52,22 @@
       "fillColor": "自定义图标填充色",
       "tooltip": "提示配置（content、variant、shape、arrow）；需配合 showTooltip 使用",
       "showTooltip": "在悬停和聚焦时显示提示",
-      "ariaLabel": "无障碍标签；按钮只包含图标，请始终设置"
+      "ariaLabel": "无障碍标签；按钮只包含图标，请始终设置",
+      "ref": "<button> 元素的 ref"
     },
     "InteractiveIconProps": {
       "type": "定义图标、颜色和提示文字的预设（interactiveIconsMap 的键）",
       "onChange": "每次切换后以新状态调用",
-      "initialState": "初始激活状态（组件内部管理状态）",
+      "initialState": "已弃用，defaultPressed 的别名",
       "className": "额外的类名",
       "size": "按钮尺寸",
       "shape": "按钮形状",
-      "disabled": "禁用按钮"
+      "disabled": "禁用按钮",
+      "ref": "底层 <button> 元素的 ref",
+      "pressed": "激活（按下）状态（受控；与 onChange 搭配使用）；通过 aria-pressed 暴露",
+      "defaultPressed": "初始激活状态（非受控）",
+      "ariaLabel": "切换按钮的无障碍名称；按下状态会通过 aria-pressed 单独暴露，因此请保持名称不变。默认为预设的标签（例如 \"Favorite\"）",
+      "aria-label": "与 ariaLabel 相同（标准属性写法）"
     }
   }
 }

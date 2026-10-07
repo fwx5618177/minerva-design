@@ -99,4 +99,45 @@ describe("<minerva-button>", () => {
     expect(inner?.classList.contains("size-small")).toBe(true);
     expect(el.getAttribute("variant")).toBe("error");
   });
+
+  describe("theming", () => {
+    const css = () => Button.styles?.toString() ?? "";
+
+    it("consumes lib-core design tokens instead of redefining them", () => {
+      // Declaring a token on :host would shadow the theme set on <html>
+      for (const token of [
+        "--primary-color",
+        "--secondary-color",
+        "--success-color",
+        "--warning-color",
+        "--danger-color",
+        "--info-color",
+        "--text-inverse-color",
+      ]) {
+        expect(css()).not.toMatch(new RegExp(`${token}\\s*:`));
+        expect(css()).toContain(`var(${token},`);
+      }
+    });
+
+    it("follows a theme token set on the document root", async () => {
+      document.documentElement.style.setProperty(
+        "--primary-color",
+        "rgb(1, 2, 3)",
+      );
+      try {
+        const { el } = await mount("<minerva-button>x</minerva-button>");
+        expect(getComputedStyle(el).getPropertyValue("--_primary").trim()).toBe(
+          "rgb(1, 2, 3)",
+        );
+      } finally {
+        document.documentElement.style.removeProperty("--primary-color");
+      }
+    });
+
+    it("shows a visible focus ring", () => {
+      expect(css()).toMatch(
+        /\.button:focus-visible\s*\{[^}]*outline: 2px solid/,
+      );
+    });
+  });
 });

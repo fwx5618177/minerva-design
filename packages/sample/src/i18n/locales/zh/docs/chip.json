@@ -24,11 +24,11 @@
     },
     "deletable": {
       "title": "可删除",
-      "description": "提供 onDelete 即显示删除按钮；可用 deleteIcon 自定义图标，用 deleteLabel 设置其无障碍名称。"
+      "description": "提供 onDelete 会渲染删除按钮；用 deleteIcon 自定义图标，用 deleteLabel 设置其无障碍名称。第二个纸片同时可点击：纸片本身和删除按钮是两个独立的按钮。"
     },
     "clickable": {
       "title": "可点击与选中",
-      "description": "clickable 让 Chip 成为可聚焦的按钮，可用 Enter 或空格键触发；selected 高亮当前选中的筛选项。"
+      "description": "clickable 会将内容渲染为可聚焦的原生按钮，可用 Enter 或空格键触发；selected 会高亮当前筛选项，并以 aria-pressed 暴露。"
     },
     "states": {
       "title": "加载与禁用",
@@ -49,9 +49,10 @@
       "className": "额外的类名",
       "deleteIcon": "自定义删除图标",
       "deleteLabel": "删除按钮的无障碍标签",
-      "clickable": "让 Chip 成为可通过键盘操作的按钮",
+      "clickable": "将纸片内容渲染为原生按钮（可聚焦，可用 Enter / 空格键触发）。提供 onDelete 时，删除按钮是与之并列的独立按钮",
       "loading": "在标签前显示加载图标",
-      "selected": "显示选中状态"
+      "selected": "显示选中状态；在可点击的纸片上（设置时）还会以 aria-pressed 暴露",
+      "ref": "指向根元素的 ref"
     }
   }
 }

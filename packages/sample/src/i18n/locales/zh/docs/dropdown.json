@@ -1,6 +1,6 @@
 {
   "title": "Dropdown 下拉菜单",
-  "description": "点击触发元素时显示一组操作或选项的菜单。",
+  "description": "点击触发元素时显示操作或选项菜单。靠近视口边缘时菜单会翻转和平移以保持可见。",
   "demos": {
     "basic": {
       "title": "基础用法",
@@ -12,7 +12,7 @@
     },
     "directions": {
       "title": "弹出方向",
-      "description": "菜单可在触发元素的下方（默认）、上方、左侧或右侧打开。"
+      "description": "direction 是首选方向：触发元素的下方（默认）、上方、左侧或右侧。靠近视口边缘时菜单会翻转到另一侧并平移到可见区域。"
     },
     "disabled": {
       "title": "禁用",
@@ -21,6 +21,10 @@
     "custom-menu": {
       "title": "自定义菜单样式",
       "description": "自定义菜单的背景色、文字颜色和阴影。"
+    },
+    "controlled": {
+      "title": "受控",
+      "description": "open 和 onOpenChange 从外部控制菜单；非受控时可用 defaultOpen 设置初始状态。"
     }
   },
   "api": {
@@ -33,8 +37,12 @@
       "menuBgColor": "菜单背景色",
       "menuTextColor": "菜单文字颜色",
       "menuBoxShadow": "菜单阴影",
-      "direction": "菜单弹出的方向",
-      "children": "触发元素；不传时渲染一个小号的“Dropdown”按钮"
+      "direction": "菜单打开的首选方向；会翻转到另一侧并平移以保持在视口内",
+      "children": "触发元素；不传时渲染一个小号的“Dropdown”按钮",
+      "ref": "根元素的 ref",
+      "open": "菜单是否打开（受控；与 onOpenChange 搭配使用）",
+      "defaultOpen": "初始打开状态（非受控）",
+      "onOpenChange": "菜单请求打开或关闭时调用"
     },
     "DropdownOption": {
       "label": "菜单项文字",

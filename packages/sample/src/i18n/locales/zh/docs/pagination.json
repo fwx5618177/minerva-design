@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "Pagination 是受控组件：在 state 中保存当前页，并在 onChange 中更新。"
+      "description": "不传 current 时，Pagination 自行管理页码（defaultCurrent 设置初始页）。其余示例为受控用法：在 state 中保存 current，并在 onChange 中更新。"
     },
     "many-pages": {
       "title": "多页",
@@ -45,10 +45,12 @@
   },
   "api": {
     "PaginationProps": {
-      "current": "当前页码（从 1 开始）；在 onChange 中更新",
+      "current": "当前页码（从 1 开始，受控）；在 onChange 中更新",
+      "defaultCurrent": "非受控（未设置 current）时的初始页码",
       "total": "数据总数",
-      "pageSize": "每页条数",
-      "onChange": "页码或每页条数变化时，以新页码和每页条数调用",
+      "pageSize": "每页条数（受控）；在 onChange 中更新",
+      "defaultPageSize": "非受控（未设置 pageSize）时的初始每页条数",
+      "onChange": "页码或每页条数变化时，以新页码和每页条数调用（修改每页条数会回到第 1 页）",
       "disabled": "禁用分页",
       "showQuickJumper": "显示跳转到指定页的输入框",
       "showSizeChanger": "显示每页条数选择器",
@@ -63,11 +65,26 @@
       "variant": "页码项的视觉样式",
       "simple": "简洁模式：上一页/下一页按钮加页码输入框",
       "responsive": "在小屏幕上调整布局",
-      "icons": "上一页、下一页和跳转项的自定义图标"
+      "icons": "上一页、下一页和跳转项的自定义图标；未提供的保留默认图标",
+      "ref": "根 <nav> 元素的 ref",
+      "labels": "组件文案（按钮、快速跳转和每页条数选择器的无障碍标签）；未提供的项使用随语言切换的默认值"
+    },
+    "PaginationLabels": {
+      "prev": "上一页按钮的无障碍标签",
+      "next": "下一页按钮的无障碍标签",
+      "jumpPrev": "向前跳转多页项的标签",
+      "jumpNext": "向后跳转多页项的标签",
+      "page": "返回页码按钮的无障碍标签",
+      "jumpTo": "快速跳转的可见文字",
+      "jumpToInput": "快速跳转输入框的无障碍标签",
+      "pageSize": "每页条数选择器的无障碍标签",
+      "pageSizeOption": "返回每页条数选项的文字",
+      "currentPage": "简洁模式下页码输入框的无障碍标签",
+      "nav": "导航区域的无障碍标签"
     }
   },
   "a11y": {
     "title": "键盘支持",
-    "body": "分页组件是一个 navigation 地标。获得焦点时，ArrowLeft/ArrowRight 切换到上一页/下一页，Home/End 跳到第一页/最后一页。每一项均可聚焦，并可用 Enter 或空格激活；当前页带有 aria-current=\"page\" 标记。"
+    "body": "分页组件是由原生按钮组成的 <nav> 地标；当前页带有 aria-current=\"page\" 标记，不可用的项会被禁用。某一项获得焦点时，ArrowLeft/ArrowRight 切换到上一页/下一页，Home/End 跳到第一页/最后一页，焦点会跟随当前页。若获得焦点的按钮变为禁用，焦点会移到当前页。"
   }
 }

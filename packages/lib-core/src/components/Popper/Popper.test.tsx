@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createRef, useState } from "react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -57,6 +57,45 @@ afterEach(() => {
 });
 
 describe("Popper", () => {
+  it("forwards ref to the popper element and applies id", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<Harness initialVisible ref={ref} id="pop" />);
+    expect(ref.current).toBe(screen.getByRole("dialog"));
+    expect(ref.current).toHaveAttribute("id", "pop");
+  });
+
+  it("uses role tooltip for the tooltip type and accepts a custom role", () => {
+    const { rerender } = render(<Harness initialVisible type="tooltip" />);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+    rerender(<Harness initialVisible role="presentation" />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and returns focus to the anchor", async () => {
+    const user = userEvent.setup();
+    render(
+      <Harness initialVisible>
+        <button type="button">Inside</button>
+      </Harness>,
+    );
+    await user.click(screen.getByRole("button", { name: "Inside" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Anchor" })).toHaveFocus();
+  });
+
+  it("ignores Escape when closeOnEscape is false", async () => {
+    const user = userEvent.setup();
+    render(
+      <Harness initialVisible closeOnEscape={false}>
+        <button type="button">Inside</button>
+      </Harness>,
+    );
+    await user.click(screen.getByRole("button", { name: "Inside" }));
+    await user.keyboard("{Escape}");
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
   it("renders nothing when not visible", () => {
     render(<Harness />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -95,26 +134,26 @@ describe("Popper", () => {
     );
     const dialog = screen.getByRole("dialog", { name: "Details" });
     expect(dialog).toHaveAttribute("tabindex", "-1");
-    expect(dialog).toHaveAttribute("aria-hidden", "false");
     expect(dialog.style.zIndex).toBe("42");
   });
 
-  it("applies variant, type, size, multiline and custom classes", () => {
+  it("applies variant, type, size, multiline and custom classes", async () => {
     render(
       <Harness
         initialVisible
         variant="success"
-        type="tooltip"
+        type="select"
         size="small"
         multiline
         className="custom"
       />,
     );
     const dialog = screen.getByRole("dialog");
+    await waitFor(() => expect(dialog).toHaveClass("visible"));
     expect(dialog).toHaveClass(
       "popper",
       "success",
-      "tooltip",
+      "select",
       "small",
       "multiline",
       "visible",
@@ -288,7 +327,10 @@ describe("Popper", () => {
   });
 
   describe("positioning", () => {
-    it("positions below the anchor for bottom placement", async () => {
+    const mockLayout = (
+      anchor: Partial<DOMRect>,
+      popper: { width: number; height: number },
+    ) => {
       const root = document.documentElement;
       vi.spyOn(root, "clientWidth", "get").mockReturnValue(1024);
       vi.spyOn(root, "clientHeight", "get").mockReturnValue(768);
@@ -296,24 +338,129 @@ describe("Popper", () => {
         HTMLElement.prototype,
         "getBoundingClientRect",
       ).mockImplementation(function (this: HTMLElement) {
-        if (this.textContent === "Anchor") {
-          return rect({
-            top: 100,
-            left: 100,
-            width: 50,
-            height: 20,
-            bottom: 120,
-            right: 150,
-          });
-        }
-        return rect({ width: 20, height: 10 });
+        if (this.textContent === "Anchor") return rect(anchor);
+        if (this.getAttribute("role") === "dialog") return rect(popper);
+        return rect({});
       });
+      // floating-ui reads the floating element's size from offsetWidth/Height
+      const size = (dim: "width" | "height") =>
+        function (this: HTMLElement) {
+          return this.getAttribute("role") === "dialog" ? popper[dim] : 0;
+        };
+      vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(
+        size("width"),
+      );
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
+        size("height"),
+      );
+    };
 
+    it("positions below the anchor for bottom placement", async () => {
+      mockLayout(
+        { top: 100, left: 100, width: 50, height: 20, bottom: 120, right: 150 },
+        { width: 20, height: 10 },
+      );
       render(<Harness initialVisible trigger="manual" placement="bottom" />);
       const dialog = screen.getByRole("dialog");
-      // bottom: anchor.bottom + offset.y (8) + 8; centered horizontally
-      await waitFor(() => expect(dialog.style.top).toBe("136px"));
+      // bottom: anchor.bottom + 8px gap; centered horizontally
+      await waitFor(() => expect(dialog.style.top).toBe("128px"));
       expect(dialog.style.left).toBe("115px");
+      expect(dialog).toHaveAttribute("data-placement", "bottom");
+      expect(dialog).toHaveClass("visible");
+    });
+
+    it("flips to the opposite side when there is no room below", async () => {
+      // anchor near the bottom edge of a 768px viewport
+      mockLayout(
+        { top: 730, bottom: 750, left: 100, right: 150, width: 50, height: 20 },
+        { width: 100, height: 80 },
+      );
+      render(<Harness initialVisible trigger="manual" placement="bottom" />);
+      const dialog = screen.getByRole("dialog");
+      await waitFor(() =>
+        expect(dialog).toHaveAttribute("data-placement", "top"),
+      );
+      // anchor.top - popper.height - 8px gap
+      expect(dialog.style.top).toBe("642px");
+    });
+
+    it("shifts inside the viewport near the right edge", async () => {
+      mockLayout(
+        {
+          top: 100,
+          bottom: 120,
+          left: 990,
+          right: 1020,
+          width: 30,
+          height: 20,
+        },
+        { width: 200, height: 40 },
+      );
+      render(<Harness initialVisible trigger="manual" placement="bottom" />);
+      const dialog = screen.getByRole("dialog");
+      // centered would be 905px; shifted to 1024 - 200 - 8px viewport padding
+      await waitFor(() => expect(dialog.style.left).toBe("816px"));
+      expect(dialog).toHaveAttribute("data-placement", "bottom");
+    });
+
+    it("flips the alignment (start -> end) near the right edge", async () => {
+      mockLayout(
+        {
+          top: 100,
+          bottom: 120,
+          left: 990,
+          right: 1020,
+          width: 30,
+          height: 20,
+        },
+        { width: 200, height: 40 },
+      );
+      render(
+        <Harness initialVisible trigger="manual" placement="bottomStart" />,
+      );
+      const dialog = screen.getByRole("dialog");
+      await waitFor(() =>
+        expect(dialog).toHaveAttribute("data-placement", "bottomEnd"),
+      );
+      // end-aligned (820px), then kept 8px away from the viewport edge
+      expect(dialog.style.left).toBe("816px");
+    });
+
+    it("keeps the preferred side when flip is disabled", async () => {
+      mockLayout(
+        { top: 730, bottom: 750, left: 100, right: 150, width: 50, height: 20 },
+        { width: 100, height: 80 },
+      );
+      render(
+        <Harness
+          initialVisible
+          trigger="manual"
+          placement="bottom"
+          flip={false}
+        />,
+      );
+      const dialog = screen.getByRole("dialog");
+      await waitFor(() => expect(dialog.style.top).toBe("758px"));
+      expect(dialog).toHaveAttribute("data-placement", "bottom");
+    });
+
+    it("can match the anchor width", async () => {
+      mockLayout(
+        {
+          top: 100,
+          bottom: 120,
+          left: 100,
+          right: 400,
+          width: 300,
+          height: 20,
+        },
+        { width: 100, height: 40 },
+      );
+      render(
+        <Harness initialVisible trigger="manual" matchAnchorWidth="min" />,
+      );
+      const dialog = screen.getByRole("dialog");
+      await waitFor(() => expect(dialog.style.minWidth).toBe("300px"));
     });
 
     it("settles instead of re-measuring on every animation frame", async () => {

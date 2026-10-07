@@ -8,6 +8,8 @@ export default function BasicDemo() {
         name="Emma Wilson"
       />
       <Avatar name="Liam Chen" />
+      {/* The image cannot be decoded, so the initial is shown instead */}
+      <Avatar src="data:image/png;base64,broken" name="Noah Park" />
       <Avatar />
     </>
   );

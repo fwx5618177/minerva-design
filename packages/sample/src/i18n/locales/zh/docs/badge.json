@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "包裹一个元素并设置 content；请为徽标提供说明数字含义的 ariaLabel。"
+      "description": "包裹一个元素并设置 content。请为徽标提供描述数字含义的 ariaLabel。没有 children（或 children 为文本）时，徽标以行内方式渲染，例如放在一句话中。"
     },
     "variants": {
       "title": "变体",
@@ -33,12 +33,12 @@
   },
   "api": {
     "BadgeProps": {
-      "children": "徽标所附着的元素",
+      "children": "徽标所附着的元素。没有 children（或 children 为纯文本 / 数字，此时作为内容）时，徽标以行内方式在正常文档流中渲染，而不是定位到角上",
       "className": "徽标的额外类名",
       "variant": "徽标的配色",
       "size": "徽标尺寸",
       "content": "徽标内显示的内容（数字、短文本等）",
-      "position": "徽标位于 children 的哪个角",
+      "position": "徽标位于 children 的哪个角（独立徽标忽略此项）",
       "dot": "显示为小圆点而非内容",
       "bgColor": "自定义背景色",
       "textColor": "自定义文字颜色",
@@ -46,7 +46,8 @@
       "borderWidth": "自定义边框宽度（CSS 值）",
       "borderColor": "自定义边框颜色",
       "ariaLabel": "徽标的无障碍标签，例如“5 条未读消息”",
-      "icon": "内容前显示的图标"
+      "icon": "内容前显示的图标",
+      "ref": "指向根元素的 ref：附着于 children 时为包裹元素，否则为徽标本身"
     }
   }
 }

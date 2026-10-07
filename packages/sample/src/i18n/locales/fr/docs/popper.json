@@ -1,14 +1,14 @@
 {
   "title": "Popper",
-  "description": "Couche positionnée de bas niveau, ancrée à un élément, pour construire menus, listes déroulantes et popovers.",
+  "description": "Couche positionnée de bas niveau, ancrée à un élément, pour construire menus, listes déroulantes et popovers. Près des bords de la fenêtre, elle bascule du côté opposé et se décale pour rester visible, et elle suit l'ancre lors du défilement et du redimensionnement.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Popper est contrôlé : passez anchorEl et visible, mettez à jour la visibilité dans onVisibleChange et fermez avec onClickAway."
+      "description": "Popper est contrôlé : passez anchorEl et visible, mettez à jour la visibilité dans onVisibleChange et fermez-le avec onClickAway. Échap demande aussi la fermeture et rend le focus à l'ancre."
     },
     "placements": {
       "title": "Positions",
-      "description": "Douze positions autour de l’ancre. Avec trigger=\"manual\", c’est vous qui décidez quand l’ouvrir."
+      "description": "Douze positions autour de l'ancre ; près des bords de la fenêtre, le popper bascule et se décale. Avec trigger=\"manual\", vous décidez quand il s'ouvre."
     },
     "triggers": {
       "title": "Déclencheurs",
@@ -28,7 +28,11 @@
     },
     "custom-style": {
       "title": "Style personnalisé",
-      "description": "Personnalisez les couleurs, les dimensions, le décalage, la transition et le z-index."
+      "description": "Personnalisez couleurs, dimensions, décalage (ici un espace de 12px à droite de l'ancre), transition et z-index."
+    },
+    "anchor-width": {
+      "title": "Largeur de l'ancre",
+      "description": "matchAnchorWidth=\"exact\" donne au popper exactement la largeur de son ancre (\"min\" le rend au moins aussi large), et role remplace le rôle ARIA par défaut, ici listbox."
     }
   },
   "api": {
@@ -38,8 +42,8 @@
       "children": "Contenu du popper",
       "placement": "Position par rapport à l’ancre",
       "variant": "Variante de couleur",
-      "type": "Type fonctionnel ; \"menu\" définit role=\"menu\", sinon role=\"dialog\"",
-      "offset": "Décalage de position en pixels",
+      "type": "Type fonctionnel ; définit le rôle par défaut (\"menu\" pour menu, \"tooltip\" pour tooltip, sinon \"dialog\")",
+      "offset": "Décalage en pixels. Pour les positions top/bottom, y est l'espace avec l'ancre et x décale le long de celle-ci ; pour left/right, x est l'espace et y le décalage. Sans lui, le popper est à 8px de l'ancre",
       "animation": "Réglages de la transition",
       "arrow": "Affiche une flèche pointant vers l’ancre",
       "zIndex": "z-index du popper",
@@ -54,11 +58,18 @@
       "onVisibleChange": "Appelé avec la visibilité demandée lorsque le déclencheur se produit",
       "scrollable": "Permet au contenu de défiler lorsqu’il déborde",
       "width": "Largeur fixe, prioritaire sur la taille prédéfinie",
-      "height": "Hauteur fixe, prioritaire sur la taille prédéfinie"
+      "height": "Hauteur fixe, prioritaire sur la taille prédéfinie",
+      "ref": "Ref vers l'élément du popper (rendu dans un portail sur document.body)",
+      "id": "id de l'élément du popper, par exemple pour l'aria-controls de l'ancre",
+      "flip": "Bascule du côté opposé quand la position souhaitée déborderait de la fenêtre",
+      "shift": "Se décale le long de l'ancre pour rester dans la fenêtre",
+      "matchAnchorWidth": "Dimensionne le popper d'après l'ancre : \"min\" le rend au moins aussi large que l'ancre, \"exact\" exactement aussi large",
+      "closeOnEscape": "Demande la fermeture (onVisibleChange(false)) quand Échap est pressée dans le popper ou sur l'ancre ; le focus présent dans le popper revient à l'ancre",
+      "role": "Rôle ARIA de l'élément du popper ; par défaut \"menu\" pour type=\"menu\", \"tooltip\" pour type=\"tooltip\" et \"dialog\" sinon"
     },
     "PopperOffset": {
-      "x": "Décalage horizontal en pixels",
-      "y": "Décalage vertical en pixels"
+      "x": "Décalage horizontal en pixels : l'espace pour les positions left/right, le décalage le long de l'ancre pour top/bottom",
+      "y": "Décalage vertical en pixels : l'espace pour les positions top/bottom, le décalage le long de l'ancre pour left/right"
     },
     "PopperAnimation": {
       "duration": "Durée en millisecondes",

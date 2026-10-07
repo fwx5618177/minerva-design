@@ -1,7 +1,12 @@
+import type { Ref } from "react";
+
 export interface CheckboxProps {
   /** Checked state (controlled) */
   checked?: boolean;
-  /** Initial checked state (uncontrolled) */
+  /**
+   * Initial checked state (uncontrolled)
+   * @default false
+   */
   defaultChecked?: boolean;
   /**
    * Disables the checkbox
@@ -9,7 +14,8 @@ export interface CheckboxProps {
    */
   disabled?: boolean;
   /**
-   * Shows the indeterminate (partially checked) state
+   * Shows the indeterminate (partially checked) state. Controlled: it stays
+   * applied until this prop changes, also after the user clicks
    * @default false
    */
   indeterminate?: boolean;
@@ -32,6 +38,8 @@ export interface CheckboxProps {
   size?: "small" | "medium" | "large";
   /** Label text */
   label?: string;
+  /** Accessible label, required when there is no visible label */
+  ariaLabel?: string;
   /**
    * Additional class name
    * @default ""
@@ -43,7 +51,7 @@ export interface CheckboxProps {
   boxColor?: string;
   /** Custom box border color */
   boxBorderColor?: string;
-  /** Custom icon shown when checked (controlled mode only) */
+  /** Custom icon shown when checked */
   icon?: React.ReactNode;
   /**
    * Marks the input as required
@@ -60,7 +68,7 @@ export interface CheckboxProps {
    * @default <FaInfoCircle />
    */
   errorIcon?: React.ReactNode;
-  /** Helper or error text shown below the checkbox */
+  /** Helper or error text shown below the checkbox (linked with aria-describedby) */
   helperText?: string;
   /**
    * Position of the label relative to the box
@@ -68,5 +76,5 @@ export interface CheckboxProps {
    */
   labelPlacement?: "start" | "end" | "top" | "bottom";
   /** Ref to the underlying <input> element */
-  ref?: React.Ref<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>;
 }

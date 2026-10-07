@@ -1,127 +1,115 @@
-import React, { useEffect, useRef, forwardRef } from "react";
+import React, { useId, useLayoutEffect, useRef } from "react";
 import classNames from "classnames";
 import { FaInfoCircle } from "react-icons/fa";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useControllableState } from "../../internal/useControllableState";
 import styles from "./checkbox.module.scss";
-import { CheckboxProps } from "./types";
+import type { CheckboxProps } from "./types";
 
 /**
- * Checkbox component
- * @param checked - Controlled checked state
- * @param defaultChecked - Default checked state for uncontrolled component
- * @param disabled - Whether the checkbox is disabled
- * @param indeterminate - Whether the checkbox is in indeterminate state
- * @param name - Name attribute of the input element
- * @param onChange - Callback fired when the state changes
- * @param shape - Shape of the checkbox (square or circle)
- * @param size - Size of the checkbox
- * @param label - Label text
- * @param className - Additional class name
- * @param checkmarkColor - Custom color for the checkmark
- * @param boxColor - Custom color for the checkbox
- * @param boxBorderColor - Custom border color for the checkbox
- * @param icon - Custom icon to display when checked
- * @param required - Whether the checkbox is required
- * @param error - Whether to show error state
- * @param errorIcon - Custom error icon
- * @param helperText - Helper text to display below checkbox
- * @param labelPlacement - Placement of the label
+ * Checkbox: a native checkbox with label, helper text and indeterminate state.
+ * `ref` reaches the <input>.
  */
-const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  (
-    {
-      checked,
-      defaultChecked,
-      disabled = false,
-      indeterminate = false,
-      name,
-      onChange,
-      shape = "square",
-      size = "medium",
-      label,
-      className = "",
-      checkmarkColor,
-      boxColor,
-      boxBorderColor,
-      icon,
-      required = false,
-      error = false,
-      errorIcon = <FaInfoCircle />,
-      helperText,
-      labelPlacement = "end",
-    },
-    ref,
-  ) => {
-    const inputRef = useRef<HTMLInputElement>(null);
+const Checkbox = ({
+  checked,
+  defaultChecked = false,
+  disabled = false,
+  indeterminate = false,
+  name,
+  onChange,
+  shape = "square",
+  size = "medium",
+  label,
+  ariaLabel,
+  className = "",
+  checkmarkColor,
+  boxColor,
+  boxBorderColor,
+  icon,
+  required = false,
+  error = false,
+  errorIcon = <FaInfoCircle />,
+  helperText,
+  labelPlacement = "end",
+  ref,
+}: CheckboxProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const mergedRef = useMergedRefs(inputRef, ref);
+  const helperId = useId();
+  const [isChecked, setIsChecked] = useControllableState({
+    value: checked,
+    defaultValue: defaultChecked,
+  });
 
-    React.useImperativeHandle(ref, () => inputRef.current!, []);
+  // `indeterminate` only exists as a DOM property.
+  useLayoutEffect(() => {
+    if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+  }, [indeterminate]);
 
-    useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.indeterminate = indeterminate;
-      }
-    }, [indeterminate]);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // A click clears the native indeterminate flag; the prop is the source of
+    // truth, so re-apply it (the parent clears it when it wants to).
+    event.currentTarget.indeterminate = indeterminate;
+    setIsChecked(event.target.checked);
+    onChange?.(event.target.checked, event);
+  };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange?.(event.target.checked, event);
-    };
+  const checkmarkStyle = {
+    ...(boxColor && { backgroundColor: boxColor }),
+    ...(boxBorderColor && { borderColor: boxBorderColor }),
+    ...(checkmarkColor && { "--checkmark-color": checkmarkColor }),
+  } as React.CSSProperties;
 
-    const checkmarkStyle = {
-      ...(boxColor && { backgroundColor: boxColor }),
-      ...(boxBorderColor && { borderColor: boxBorderColor }),
-      ...(checkmarkColor && { "--checkmark-color": checkmarkColor }),
-    } as React.CSSProperties;
+  const labelClasses = classNames(
+    styles.checkbox,
+    styles[size],
+    styles[shape],
+    styles[
+      `label${labelPlacement.charAt(0).toUpperCase()}${labelPlacement.slice(1)}`
+    ],
+    disabled && styles.disabled,
+    error && styles.error,
+    className,
+  );
 
-    const labelClasses = classNames(
-      styles.checkbox,
-      styles[size],
-      styles[shape],
-      styles[
-        `label${labelPlacement.charAt(0).toUpperCase()}${labelPlacement.slice(1)}`
-      ],
-      disabled && styles.disabled,
-      error && styles.error,
-      className,
-    );
-
-    return (
-      <div
-        className={classNames(styles.checkboxWrapper, error && styles.error)}
-      >
-        <label className={labelClasses}>
-          <input
-            ref={inputRef}
-            type="checkbox"
-            className={styles.input}
-            checked={checked}
-            defaultChecked={defaultChecked}
-            disabled={disabled}
-            name={name}
-            onChange={handleChange}
-            required={required}
-          />
-          <span className={styles.checkmark} style={checkmarkStyle}>
-            {icon && checked && !indeterminate && icon}
-          </span>
-          {label && <span className={styles.label}>{label}</span>}
-        </label>
-        {helperText && (
-          <div className={styles.helperTextWrapper}>
-            {error && <span className={styles.errorIcon}>{errorIcon}</span>}
-            <span
-              className={classNames(
-                styles.helperText,
-                error && styles.errorText,
-              )}
-            >
-              {helperText}
+  return (
+    <div className={classNames(styles.checkboxWrapper, error && styles.error)}>
+      <label className={labelClasses}>
+        <input
+          ref={mergedRef}
+          type="checkbox"
+          className={styles.input}
+          checked={isChecked}
+          disabled={disabled}
+          name={name}
+          onChange={handleChange}
+          required={required}
+          aria-label={ariaLabel}
+          aria-invalid={error || undefined}
+          aria-describedby={helperText ? helperId : undefined}
+        />
+        <span className={styles.checkmark} style={checkmarkStyle}>
+          {icon && isChecked && !indeterminate && icon}
+        </span>
+        {label && <span className={styles.label}>{label}</span>}
+      </label>
+      {helperText && (
+        <div className={styles.helperTextWrapper}>
+          {error && (
+            <span className={styles.errorIcon} aria-hidden>
+              {errorIcon}
             </span>
-          </div>
-        )}
-      </div>
-    );
-  },
-);
-
-Checkbox.displayName = "Checkbox";
+          )}
+          <span
+            id={helperId}
+            className={classNames(styles.helperText, error && styles.errorText)}
+          >
+            {helperText}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default React.memo(Checkbox);

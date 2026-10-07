@@ -6,7 +6,12 @@ export default function ControlledDemo() {
 
   return (
     <div>
-      <RadioGroup name="plan" value={plan} onChange={(value) => setPlan(value)}>
+      <RadioGroup
+        name="plan"
+        label="Plan"
+        value={plan}
+        onChange={(value) => setPlan(value)}
+      >
         <Radio value="free" label="Free" />
         <Radio value="pro" label="Pro" />
         <Radio value="team" label="Team" />

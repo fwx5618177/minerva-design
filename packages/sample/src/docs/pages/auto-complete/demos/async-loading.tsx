@@ -5,11 +5,15 @@ const all = ["Apollo", "Artemis", "Gemini", "Mercury", "Skylab", "Voyager"];
 
 export default function AsyncLoadingDemo() {
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState<AutoCompleteOption[]>([]);
 
-  useEffect(() => {
+  const search = (next: string) => {
+    setQuery(next);
     setLoading(true);
+  };
+
+  useEffect(() => {
     // Simulate a request to a search API
     const timer = setTimeout(() => {
       setOptions(
@@ -29,7 +33,7 @@ export default function AsyncLoadingDemo() {
         label="Space mission"
         options={options}
         value={query}
-        onChange={setQuery}
+        onChange={search}
         loading={loading}
       />
     </div>

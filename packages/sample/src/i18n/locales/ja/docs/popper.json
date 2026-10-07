@@ -1,14 +1,14 @@
 {
   "title": "Popper ポッパー",
-  "description": "要素に固定して配置される低レベルのレイヤーで、メニュー、ドロップダウン、ポップオーバーの構築に使用します。",
+  "description": "要素にアンカーされる低レベルの配置レイヤーで、メニュー・ドロップダウン・ポップオーバーの構築に使います。ビューポートの端では反対側へ反転し、はみ出さないようにずれて表示され、スクロールやリサイズ時にはアンカーに追従します。",
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "Popper は制御コンポーネントです。anchorEl と visible を渡し、onVisibleChange で表示状態を更新し、onClickAway で閉じます。"
+      "description": "Popper は制御コンポーネントです。anchorEl と visible を渡し、onVisibleChange で表示状態を更新し、onClickAway で閉じます。Escape でも閉じる要求が送られ、フォーカスはアンカーに戻ります。"
     },
     "placements": {
       "title": "配置",
-      "description": "アンカーの周囲 12 か所の配置。trigger=\"manual\" の場合は開くタイミングを自分で決めます。"
+      "description": "アンカーの周囲に 12 種類の配置があります。ビューポートの端では反転・シフトします。trigger=\"manual\" を指定すると開くタイミングを自分で決められます。"
     },
     "triggers": {
       "title": "トリガー",
@@ -28,7 +28,11 @@
     },
     "custom-style": {
       "title": "カスタムスタイル",
-      "description": "色、サイズ、オフセット、トランジション、z-index をカスタマイズします。"
+      "description": "色・サイズ・オフセット（ここではアンカーの右側に 12px の間隔）・トランジション・z-index をカスタマイズします。"
+    },
+    "anchor-width": {
+      "title": "アンカーの幅に合わせる",
+      "description": "matchAnchorWidth=\"exact\" でポッパーの幅をアンカーと同じにします（\"min\" はアンカー以上の幅）。role で既定の ARIA ロールを上書きでき、ここでは listbox を指定しています。"
     }
   },
   "api": {
@@ -38,8 +42,8 @@
       "children": "ポッパーのコンテンツ",
       "placement": "アンカーに対する配置",
       "variant": "カラーバリアント",
-      "type": "機能の種類。\"menu\" は role=\"menu\"、それ以外は role=\"dialog\" を設定します",
-      "offset": "位置のオフセット（ピクセル）",
+      "type": "機能タイプ。既定のロールを決めます（menu は \"menu\"、tooltip は \"tooltip\"、それ以外は \"dialog\"）",
+      "offset": "ピクセル単位のオフセット。top/bottom 配置では y がアンカーとの間隔、x がアンカーに沿ったずれ。left/right 配置では x が間隔、y がずれです。未指定時はアンカーから 8px 離れます",
       "animation": "トランジションの設定",
       "arrow": "アンカーを指す矢印を表示する",
       "zIndex": "ポッパーの z-index",
@@ -54,11 +58,18 @@
       "onVisibleChange": "トリガー発火時に、要求された表示状態を引数に呼び出されます",
       "scrollable": "コンテンツがはみ出したときにスクロールを許可する",
       "width": "固定幅。プリセットサイズを上書きします",
-      "height": "固定の高さ。プリセットサイズを上書きします"
+      "height": "固定の高さ。プリセットサイズを上書きします",
+      "ref": "ポッパー要素への ref（document.body 上のポータルに描画）",
+      "id": "ポッパー要素の id。アンカーの aria-controls などに使用",
+      "flip": "希望する配置がビューポートからはみ出す場合に反対側へ反転します",
+      "shift": "ビューポート内に収まるようアンカーに沿ってずらします",
+      "matchAnchorWidth": "アンカーに合わせて幅を決めます。\"min\" はアンカー以上の幅、\"exact\" はアンカーと同じ幅",
+      "closeOnEscape": "ポッパー内またはアンカー上で Escape を押すと閉じる要求（onVisibleChange(false)）を送ります。ポッパー内のフォーカスはアンカーに戻ります",
+      "role": "ポッパー要素の ARIA ロール。既定では type=\"menu\" で \"menu\"、type=\"tooltip\" で \"tooltip\"、それ以外は \"dialog\""
     },
     "PopperOffset": {
-      "x": "水平方向のオフセット（ピクセル）",
-      "y": "垂直方向のオフセット（ピクセル）"
+      "x": "水平方向のオフセット（ピクセル）。left/right 配置では間隔、top/bottom 配置ではアンカーに沿ったずれ",
+      "y": "垂直方向のオフセット（ピクセル）。top/bottom 配置では間隔、left/right 配置ではアンカーに沿ったずれ"
     },
     "PopperAnimation": {
       "duration": "持続時間（ミリ秒）",

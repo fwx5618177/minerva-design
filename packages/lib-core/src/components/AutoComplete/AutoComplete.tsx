@@ -1,53 +1,44 @@
-import React, { useState, useRef, useMemo, useEffect, useId } from "react";
+import React, { useEffect, useId, useMemo, useState } from "react";
+import classNames from "classnames";
 import { IoClose } from "react-icons/io5";
 import { TextField } from "../TextField";
 import { Popper } from "../Popper";
 import { ProgressIndicator } from "../ProgressIndicator";
 import { Empty } from "../Empty";
 import type { AutoCompleteProps, AutoCompleteOption } from "./types";
+import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import useI18n from "../../hooks/useI18n";
 import styles from "./autoComplete.module.scss";
 
+const DEFAULT_OFFSET = Object.freeze({ x: 0, y: 4 });
+const EMPTY_OPTIONS: AutoCompleteOption[] = [];
+
+const PLACEMENT = {
+  top: "topStart",
+  bottom: "bottomStart",
+  left: "leftStart",
+  right: "rightStart",
+} as const;
+
 /**
- * AutoComplete 组件
- * 提供自动完成输入功能，支持基础和自定义两种模式
- * @param name - 输入框的名称
- * @param label - 输入框的标签
- * @param mode - 模式，可选 "basic" 或 "custom"
- * @param value - 输入框的值
- * @param onChange - 输入框值变化时的回调
- * @param options - 选项列表
- * @param defaultValue - 默认值
- * @param onSelect - 选择选项时的回调
- * @param filterOption - 自定义过滤逻辑
- * @param groupBy - 分组逻辑
- * @param multiple - 是否允许多选
- * @param maxTagCount - 最大标签数
- * @param renderOption - 自定义选项渲染
- * @param renderEmpty - 自定义空状态渲染
- * @param loading - 是否显示加载中状态
- * @param textFieldProps - TextField 组件的属性
- * @param emptyProps - Empty 组件的属性
- * @param placement - 下拉框位置
- * @param offset - 下拉框偏移量
- * @param dropdownBgColor - 下拉框背景色
- * @param highlightBgColor - 选项高亮背景色
- * @param hoverBgColor - 选项hover背景色
- * @param animation - 是否显示动画
- * @param sortOption - 自定义排序逻辑
- * @param onOptionClick - 选项点击事件
- * @param onDropdownVisibleChange - 下拉框显示/隐藏事件
- * @param popperProps - Popper 组件的属性
- * @returns 自动完成组件
+ * AutoComplete: a text input (combobox) that suggests options from a list.
+ * Supports single and multiple selection, grouping, custom rendering and
+ * async loading. Input text and multiple selection can be controlled or not.
  */
-const AutoComplete: React.FC<AutoCompleteProps> = ({
+const AutoComplete = ({
+  ref,
   name,
   label,
   mode = "basic",
   value,
   onChange,
-  options = [],
+  options = EMPTY_OPTIONS,
   defaultValue = "",
   onSelect,
+  selectedOptions: selectedOptionsProp,
+  defaultSelectedOptions = EMPTY_OPTIONS,
+  onSelectedOptionsChange,
   filterOption,
   groupBy,
   multiple = false,
@@ -58,10 +49,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   textFieldProps,
   emptyProps,
   placement = "bottom",
-  offset = {
-    x: 0,
-    y: 4,
-  },
+  offset = DEFAULT_OFFSET,
   dropdownBgColor,
   highlightBgColor,
   hoverBgColor,
@@ -70,66 +58,185 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   onOptionClick,
   onDropdownVisibleChange,
   popperProps,
-}) => {
-  const [visible, setVisible] = useState<boolean>(false);
-  const [innerValue, setInnerValue] = useState(defaultValue);
-  const [selectedTags, setSelectedTags] = useState<AutoCompleteOption[]>([]);
+}: AutoCompleteProps) => {
+  const { t } = useI18n();
+  const [inputValue, setInputValue] = useControllableState({
+    value,
+    defaultValue,
+    onChange,
+  });
+  const [selectedTags, setSelectedTags] = useControllableState({
+    value: selectedOptionsProp,
+    defaultValue: defaultSelectedOptions,
+    onChange: onSelectedOptionsChange,
+  });
+  const [visible, setVisible] = useControllableState({
+    defaultValue: false,
+    onChange: onDropdownVisibleChange,
+  });
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
+  const [hoveredIndex, setHoveredIndex] = useState(-1);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const [input, setInput] = useState<HTMLInputElement | null>(null);
+  const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
+  const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = `${useId()}-listbox`;
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Filter options
-  const filteredOptions = useMemo(() => {
-    const searchValue = value !== undefined ? value : innerValue;
-    return options.filter((option) =>
-      filterOption
-        ? filterOption(searchValue, option)
-        : option.label.toLowerCase().includes(searchValue.toLowerCase()),
-    );
-  }, [options, value, innerValue, filterOption]);
+  const open = () => setVisible(true);
+  const close = () => {
+    setVisible(false);
+    setFocusedIndex(-1);
+  };
 
-  /** 处理选项过滤和排序 */
   const processedOptions = useMemo(() => {
-    // 使用 filteredOptions 替代直接过滤
-    let result = filteredOptions;
+    const search = inputValue.toLowerCase();
+    const result = options.filter((option) =>
+      filterOption
+        ? filterOption(inputValue, option)
+        : option.label.toLowerCase().includes(search),
+    );
+    return sortOption ? [...result].sort(sortOption) : result;
+  }, [options, inputValue, filterOption, sortOption]);
 
-    // 排序
-    if (sortOption) {
-      result = [...result].sort(sortOption);
-    }
-
-    return result;
-  }, [filteredOptions, sortOption]);
-
-  /** 分组后的选项 (按首次出现顺序) */
+  /** Groups in order of first appearance */
   const groupedOptions = useMemo(() => {
     if (!groupBy) return null;
     const groups = new Map<string, AutoCompleteOption[]>();
     processedOptions.forEach((option) => {
       const group = groupBy(option);
       const list = groups.get(group);
-      if (list) {
-        list.push(option);
-      } else {
-        groups.set(group, [option]);
-      }
+      if (list) list.push(option);
+      else groups.set(group, [option]);
     });
     return Array.from(groups.entries());
   }, [processedOptions, groupBy]);
 
-  /** 按显示顺序排列的选项, 键盘导航和 hover 索引都基于它 */
+  /** Options in display order; keyboard / hover indexes refer to this list */
   const navigableOptions = useMemo(
     () =>
       groupedOptions
-        ? groupedOptions.flatMap(([, groupOptions]) => groupOptions)
+        ? groupedOptions.flatMap(([, list]) => list)
         : processedOptions,
     [groupedOptions, processedOptions],
   );
 
-  /** 渲染基础模式的选项 */
+  const isSelected = (option: AutoCompleteOption) =>
+    selectedTags.some((tag) => tag.value === option.value);
+
+  const moveFocus = (step: 1 | -1) => {
+    const count = navigableOptions.length;
+    if (count === 0) return;
+    // from "nothing focused", ArrowDown starts at the first option and
+    // ArrowUp at the last one
+    let index = focusedIndex >= 0 ? focusedIndex : step === 1 ? -1 : count;
+    for (let i = 0; i < count; i += 1) {
+      index = (index + step + count) % count;
+      if (!navigableOptions[index].disabled) {
+        setFocusedIndex(index);
+        return;
+      }
+    }
+  };
+
+  const handleOptionSelect = (option: AutoCompleteOption) => {
+    if (option.disabled) return;
+    if (multiple) {
+      setSelectedTags((prev) =>
+        prev.some((tag) => tag.value === option.value)
+          ? prev.filter((tag) => tag.value !== option.value)
+          : [...prev, option],
+      );
+      setInputValue("");
+      setFocusedIndex(-1);
+      // stay open so several options can be picked in a row
+    } else {
+      setInputValue(option.label);
+      close();
+    }
+    onSelect?.(option);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        if (!visible) open();
+        moveFocus(1);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        if (!visible) open();
+        moveFocus(-1);
+        break;
+      case "Enter": {
+        const option = visible ? navigableOptions[focusedIndex] : undefined;
+        if (option) {
+          event.preventDefault();
+          handleOptionSelect(option);
+        }
+        break;
+      }
+      case "Escape":
+        if (visible) {
+          event.preventDefault();
+          close();
+        }
+        break;
+      case "Backspace":
+        if (multiple && inputValue === "" && selectedTags.length > 0) {
+          handleOptionSelect(selectedTags[selectedTags.length - 1]);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleInputChange = (next: string) => {
+    setInputValue(next);
+    setFocusedIndex(-1);
+    open();
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const next = event.relatedTarget as Node | null;
+    if (next && (dropdown?.contains(next) || container?.contains(next))) return;
+    close();
+  };
+
+  const handleOptionClick = (option: AutoCompleteOption) => {
+    if (option.disabled) return;
+    handleOptionSelect(option);
+    onOptionClick?.(option);
+    input?.focus();
+  };
+
+  // Expose combobox semantics on the inner <input>
+  const activeOptionId =
+    visible && focusedIndex >= 0
+      ? `${listboxId}-option-${focusedIndex}`
+      : undefined;
+  useEffect(() => {
+    if (!input) return;
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-expanded", String(visible));
+    if (visible) input.setAttribute("aria-controls", listboxId);
+    else input.removeAttribute("aria-controls");
+    if (activeOptionId)
+      input.setAttribute("aria-activedescendant", activeOptionId);
+    else input.removeAttribute("aria-activedescendant");
+  }, [input, visible, listboxId, activeOptionId]);
+
+  // Keep the keyboard-focused option scrolled into view
+  useEffect(() => {
+    if (!activeOptionId) return;
+    document
+      .getElementById(activeOptionId)
+      ?.scrollIntoView?.({ block: "nearest" });
+  }, [activeOptionId]);
+
   const renderBasicOption = (option: AutoCompleteOption) => (
     <div className={styles.basicOption}>
       {option.icon && <span className={styles.icon}>{option.icon}</span>}
@@ -142,66 +249,44 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     </div>
   );
 
-  // 键盘事件映射
-  const keyboardActions = {
-    ArrowDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      setFocusedIndex((prev) =>
-        prev < navigableOptions.length - 1 ? prev + 1 : 0,
-      );
-    },
-    ArrowUp: (e: React.KeyboardEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      setFocusedIndex((prev) =>
-        prev > 0 ? prev - 1 : navigableOptions.length - 1,
-      );
-    },
-    Enter: () => {
-      const option = navigableOptions[focusedIndex];
-      if (option) {
-        handleOptionSelect(option);
-      }
-    },
-    Escape: () => setVisible(false),
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const action = keyboardActions[event.key as keyof typeof keyboardActions];
-    action?.(event);
-  };
-
-  const handleInputChange = (value: string) => {
-    setInnerValue(value);
-    onChange?.(value);
-    if (!visible) setVisible(true);
-  };
-
-  const handleOptionSelect = (option: AutoCompleteOption) => {
-    if (option.disabled) return;
-
-    if (multiple) {
-      const newTags = selectedTags.some((tag) => tag.value === option.value)
-        ? selectedTags.filter((tag) => tag.value !== option.value)
-        : [...selectedTags, option];
-      setSelectedTags(newTags);
-      setInnerValue("");
-      onChange?.("");
-    } else {
-      setInnerValue(option.label);
-      onChange?.(option.label);
-      setVisible(false);
-    }
-    onSelect?.(option);
+  const renderOptionItem = (option: AutoCompleteOption, index: number) => {
+    const selected = multiple ? isSelected(option) : focusedIndex === index;
+    return (
+      <div
+        key={option.value}
+        className={classNames(styles.optionItem, {
+          [styles.disabled]: option.disabled,
+          [styles.highlight]: option.highlight,
+          [styles.active]: hoveredIndex === index || focusedIndex === index,
+          [styles.selected]: multiple && selected,
+        })}
+        style={option.style}
+        role="option"
+        id={`${listboxId}-option-${index}`}
+        aria-selected={selected}
+        aria-disabled={option.disabled || undefined}
+        // keep focus (and the open dropdown) in the input while clicking
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => handleOptionClick(option)}
+        onMouseEnter={() => setHoveredIndex(index)}
+        onMouseLeave={() => setHoveredIndex(-1)}
+      >
+        {mode === "custom" && renderOption
+          ? renderOption(option)
+          : renderBasicOption(option)}
+      </div>
+    );
   };
 
   const renderTags = () => {
     if (!multiple || selectedTags.length === 0) return null;
-
-    const displayTags =
-      maxTagCount && selectedTags.length > maxTagCount
-        ? selectedTags.slice(0, maxTagCount)
-        : selectedTags;
-
+    const hidden =
+      maxTagCount !== undefined && selectedTags.length > maxTagCount
+        ? selectedTags.length - maxTagCount
+        : 0;
+    const displayTags = hidden
+      ? selectedTags.slice(0, maxTagCount)
+      : selectedTags;
     return (
       <div className={styles.tags}>
         {displayTags.map((tag) => (
@@ -210,161 +295,116 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
             <button
               type="button"
               className={styles.tagClose}
-              aria-label={`Remove ${tag.label}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOptionSelect(tag);
-              }}
+              aria-label={t("autoComplete.removeTag", { label: tag.label })}
+              onClick={() => handleOptionSelect(tag)}
             >
               <IoClose aria-hidden focusable={false} />
             </button>
           </span>
         ))}
-        {maxTagCount && selectedTags.length > maxTagCount && (
-          <span className={styles.more}>
-            +{selectedTags.length - maxTagCount}
+        {hidden > 0 && (
+          <span
+            className={styles.more}
+            aria-label={t("autoComplete.moreTags", { count: hidden })}
+          >
+            +{hidden}
           </span>
         )}
       </div>
     );
   };
 
-  // 处理选项点击
-  const handleOptionClick = (option: AutoCompleteOption) => {
-    if (option.disabled) return;
-    handleOptionSelect(option);
-    onOptionClick?.(option);
-  };
-
-  // 处理选项 hover
-  const handleOptionHover = (index: number) => {
-    setHoveredIndex(index);
-  };
-
-  /** 渲染单个选项; index 为其在 navigableOptions 中的位置 */
-  const renderOptionItem = (option: AutoCompleteOption, index: number) => (
-    <div
-      key={option.value}
-      className={`${styles.optionItem} ${
-        option.disabled ? styles.disabled : ""
-      } ${option.highlight ? styles.highlight : ""}`}
-      style={{
-        backgroundColor:
-          hoveredIndex === index || focusedIndex === index
-            ? hoverBgColor || "var(--surface-muted-color)"
-            : option.highlight
-              ? highlightBgColor || "var(--primary-color-subtle)"
-              : "transparent",
-      }}
-      role="option"
-      id={`${listboxId}-option-${index}`}
-      aria-selected={focusedIndex === index}
-      aria-disabled={option.disabled || undefined}
-      onClick={() => handleOptionClick(option)}
-      onMouseEnter={() => handleOptionHover(index)}
-      onMouseLeave={() => handleOptionHover(-1)}
-    >
-      {mode === "basic"
-        ? renderBasicOption(option)
-        : renderOption
-          ? renderOption(option)
-          : renderBasicOption(option)}
-    </div>
-  );
-
-  // 处理下拉框显示状态变化 (only when visibility changes, not when the
-  // parent passes a new callback identity)
-  const onDropdownVisibleChangeRef = useRef(onDropdownVisibleChange);
-  useEffect(() => {
-    onDropdownVisibleChangeRef.current = onDropdownVisibleChange;
-  });
-  useEffect(() => {
-    onDropdownVisibleChangeRef.current?.(visible);
-  }, [visible]);
-
-  // Expose combobox semantics on the inner <input> (TextField does not
-  // forward arbitrary ARIA props).
-  const activeOptionId =
-    visible && focusedIndex >= 0
-      ? `${listboxId}-option-${focusedIndex}`
-      : undefined;
-  useEffect(() => {
-    const input = inputRef.current;
-    if (!input) return;
-    input.setAttribute("role", "combobox");
-    input.setAttribute("aria-autocomplete", "list");
-    input.setAttribute("aria-expanded", String(visible));
-    if (visible) input.setAttribute("aria-controls", listboxId);
-    else input.removeAttribute("aria-controls");
-    if (activeOptionId)
-      input.setAttribute("aria-activedescendant", activeOptionId);
-    else input.removeAttribute("aria-activedescendant");
-  }, [visible, listboxId, activeOptionId]);
-
   return (
-    <div ref={containerRef} className={styles.autoComplete}>
+    <div ref={setContainer} className={styles.autoComplete}>
       {renderTags()}
       <TextField
         {...textFieldProps}
         label={label}
         name={name}
-        ref={inputRef}
-        value={value !== undefined ? value : innerValue}
+        ref={setInputRef}
+        value={inputValue}
         onChange={handleInputChange}
-        onFocus={() => setVisible(true)}
-        onBlur={() => setTimeout(() => setVisible(false), 200)}
-        onKeyDown={handleKeyDown}
+        onFocus={(e) => {
+          open();
+          textFieldProps?.onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          handleBlur(e);
+          textFieldProps?.onBlur?.(e);
+        }}
+        onKeyDown={(e) => {
+          handleKeyDown(e);
+          textFieldProps?.onKeyDown?.(e);
+        }}
       />
 
-      {visible && (
-        <Popper
-          anchorEl={containerRef.current}
-          visible={visible}
-          placement={placement}
-          offset={offset}
-          {...popperProps}
+      <Popper
+        type="select"
+        role="presentation"
+        tabIndex={-1}
+        trigger="manual"
+        matchAnchorWidth="min"
+        closeOnEscape={false}
+        onClickAway={close}
+        {...popperProps}
+        ref={setDropdown}
+        anchorEl={container}
+        visible={visible}
+        placement={PLACEMENT[placement]}
+        offset={offset}
+      >
+        <div
+          className={classNames(styles.dropdown, animation && styles.animated)}
+          style={
+            {
+              backgroundColor: dropdownBgColor,
+              "--hover-bg-color": hoverBgColor,
+              "--highlight-bg-color": highlightBgColor,
+            } as React.CSSProperties
+          }
         >
-          <div
-            className={styles.dropdown}
-            style={
-              {
-                backgroundColor: dropdownBgColor,
-                animation: animation ? "slideIn 0.2s ease-out" : "none",
-                "--hover-bg-color": hoverBgColor,
-                "--highlight-bg-color": highlightBgColor,
-              } as React.CSSProperties
-            }
-          >
-            {loading ? (
-              <div className={styles.loading}>
-                <ProgressIndicator />
-              </div>
-            ) : processedOptions.length > 0 ? (
-              <div className={styles.optionList} role="listbox" id={listboxId}>
-                {groupedOptions
-                  ? groupedOptions.map(([group, groupOptions]) => (
-                      <div key={group} className={styles.optionGroup}>
-                        <div className={styles.groupLabel}>{group}</div>
-                        {groupOptions.map((option) =>
-                          renderOptionItem(
-                            option,
-                            navigableOptions.indexOf(option),
-                          ),
-                        )}
+          {loading ? (
+            <div className={styles.loading}>
+              <ProgressIndicator />
+            </div>
+          ) : processedOptions.length > 0 ? (
+            <div
+              className={styles.optionList}
+              role="listbox"
+              id={listboxId}
+              aria-label={label}
+              aria-multiselectable={multiple || undefined}
+            >
+              {groupedOptions
+                ? groupedOptions.map(([group, groupOptions]) => (
+                    <div
+                      key={group}
+                      className={styles.optionGroup}
+                      role="group"
+                      aria-label={group}
+                    >
+                      <div className={styles.groupLabel} aria-hidden="true">
+                        {group}
                       </div>
-                    ))
-                  : processedOptions.map((option, index) =>
-                      renderOptionItem(option, index),
-                    )}
-              </div>
-            ) : (
-              <div className={styles.empty}>
-                {renderEmpty?.() || <Empty {...emptyProps} />}
-              </div>
-            )}
-          </div>
-        </Popper>
-      )}
+                      {groupOptions.map((option) =>
+                        renderOptionItem(
+                          option,
+                          navigableOptions.indexOf(option),
+                        ),
+                      )}
+                    </div>
+                  ))
+                : processedOptions.map((option, index) =>
+                    renderOptionItem(option, index),
+                  )}
+            </div>
+          ) : (
+            <div className={styles.empty}>
+              {renderEmpty?.() || <Empty {...emptyProps} />}
+            </div>
+          )}
+        </div>
+      </Popper>
     </div>
   );
 };

@@ -24,7 +24,7 @@
     },
     "multiple": {
       "title": "Sélection multiple",
-      "description": "Avec multiple, les options choisies deviennent des étiquettes supprimables ; maxTagCount regroupe le reste en « +N »."
+      "description": "Avec multiple, les options choisies deviennent des étiquettes supprimables et la liste reste ouverte entre les choix ; maxTagCount regroupe le reste en \"+N\". selectedOptions / onSelectedOptionsChange contrôlent la sélection."
     },
     "filter-sort": {
       "title": "Filtre et tri personnalisés",
@@ -36,28 +36,29 @@
     },
     "appearance": {
       "title": "Position et couleurs de la liste",
-      "description": "Personnalisez placement, offset, animation et les couleurs de fond de la liste, du survol et de la mise en avant."
+      "description": "Personnalisez la position, le décalage, l'animation et les couleurs de fond de la liste, du survol et de la mise en évidence. La liste est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre."
     }
   },
   "keyboard": {
     "title": "Clavier et accessibilité",
     "arrows": "Flèche bas / haut parcourent les options visibles (en boucle).",
-    "enter": "Entrée sélectionne l'option active ; les options désactivées ne peuvent pas être choisies.",
+    "enter": "Entrée sélectionne l'option active (les options désactivées sont ignorées) sans soumettre le formulaire englobant.",
     "escape": "Échap ferme la liste.",
-    "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox."
+    "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox.",
+    "backspace": "En mode multiple, Retour arrière dans un champ vide supprime la dernière étiquette."
   },
   "api": {
     "AutoCompleteProps": {
       "name": "Nom du champ",
       "label": "Libellé du champ",
       "mode": "\"basic\" affiche icône / libellé / description ; \"custom\" utilise renderOption",
-      "value": "Valeur du champ (contrôlé)",
+      "value": "Texte du champ (contrôlé ; à associer à onChange)",
       "onChange": "Appelé quand le texte change (saisie ou sélection d'une option)",
       "options": "Options proposées",
       "defaultValue": "Valeur initiale (non contrôlé)",
-      "onSelect": "Appelé quand une option est sélectionnée (souris ou clavier)",
+      "onSelect": "Appelé quand une option est choisie (souris ou clavier). En mode multiple, il est aussi appelé quand une option déjà choisie est choisie à nouveau (ce qui la désélectionne) ou retirée via son étiquette",
       "groupBy": "Renvoie le nom de groupe d'une option ; les options sont regroupées sous des titres",
-      "multiple": "Permet de choisir plusieurs options, affichées comme étiquettes supprimables",
+      "multiple": "Permet de sélectionner plusieurs options, affichées sous forme d'étiquettes supprimables ; la liste reste ouverte entre les choix",
       "maxTagCount": "Nombre maximal d'étiquettes affichées en mode multiple ; le reste est résumé en « +N »",
       "renderOption": "Rendu personnalisé des options (quand mode vaut \"custom\")",
       "renderEmpty": "Contenu affiché quand aucune option ne correspond",
@@ -65,8 +66,8 @@
       "textFieldProps": "Props transmises au TextField sous-jacent",
       "emptyProps": "Props transmises à l'état vide Empty par défaut",
       "popperProps": "Props transmises au Popper de la liste",
-      "placement": "Position de la liste",
-      "offset": "Décalage de la liste",
+      "placement": "Côté souhaité de la liste ; elle est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre",
+      "offset": "Décalage de la liste (voir l'offset de Popper)",
       "dropdownBgColor": "Couleur de fond de la liste",
       "highlightBgColor": "Couleur de fond des options mises en avant",
       "hoverBgColor": "Couleur de fond des options survolées ou actives au clavier",
@@ -74,7 +75,11 @@
       "filterOption": "Filtre personnalisé ; par défaut, les options dont le libellé contient la saisie (sans casse) sont affichées",
       "sortOption": "Fonction de comparaison pour trier les options filtrées",
       "onOptionClick": "Appelé quand une option est cliquée à la souris",
-      "onDropdownVisibleChange": "Appelé à l'ouverture ou à la fermeture de la liste"
+      "onDropdownVisibleChange": "Appelé quand la liste s'ouvre ou se ferme (pas au montage)",
+      "ref": "Ref vers l'élément <input> interne",
+      "selectedOptions": "Options sélectionnées en mode multiple (contrôlé ; à associer à onSelectedOptionsChange)",
+      "defaultSelectedOptions": "Options initialement sélectionnées en mode multiple (non contrôlé)",
+      "onSelectedOptionsChange": "Appelé avec la nouvelle sélection en mode multiple"
     },
     "AutoCompleteOption": {
       "label": "Texte de l'option, inséré dans le champ à la sélection",

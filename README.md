@@ -20,7 +20,7 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 
 ## ✨ Features
 
-- **React components**: 30+ components for React 18 and later
+- **React components**: 30+ components for React 19 (`ref` as a regular prop, `"use client"` entry for React Server Components)
 - **Web Components**: Lit-based custom elements that work with any framework, or none
 - **ESM + CommonJS**: both module formats are shipped
 - **TypeScript**: type definitions are included
@@ -29,11 +29,11 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 
 ## 📦 Packages
 
-| Package                       | Description                                                                                    |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- |
-| `@minerva/lib-core`           | React (>= 18) component library. ESM + CJS, TypeScript types. Peer deps: `react`, `react-dom`. |
-| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.            |
-| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                 |
+| Package                       | Description                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`. |
+| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.                    |
+| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                         |
 
 ### Components (`@minerva/lib-core`)
 
@@ -67,6 +67,8 @@ OR
 ```bash
 yarn add @minerva/lib-core react react-dom
 ```
+
+Requires React 19 (`react` and `react-dom` `^19.0.0`). Version 1.x of `@minerva/lib-core` supports React 18. The entry is marked `"use client"`, so it can be imported from React Server Components frameworks (e.g. the Next.js App Router) without a wrapper.
 
 ### Basic Usage
 
@@ -226,8 +228,10 @@ pnpm dev
 | ----------------------------------- | ------------------------------------------------------------------- |
 | `pnpm dev`                          | Build the libraries, then start the docs/demo site                  |
 | `pnpm build`                        | Build all packages in order: lib-core → lib-web-components → sample |
-| `pnpm test`                         | Run Vitest in all packages                                          |
-| `pnpm test:coverage`                | Run tests with coverage                                             |
+| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows  |
+| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)     |
+| `pnpm test:dist`                    | Smoke-test the built `@minerva/lib-core` package (run after build)  |
+| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                   |
 | `pnpm lint`                         | Run ESLint (flat config)                                            |
 | `pnpm typecheck`                    | Type-check all packages                                             |
 | `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                             |

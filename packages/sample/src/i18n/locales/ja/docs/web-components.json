@@ -12,8 +12,8 @@
   },
   "react": {
     "title": "React での使い方",
-    "text": "副作用のためにパッケージを一度インポートし、同梱の型定義を参照して JSX で属性を型チェックします。onClick などの DOM イベントは通常どおり動作します。アクセシブルな名前にはハイフン付きの aria-label を使います。",
-    "booleans": "React 18 はカスタム要素の属性を文字列として設定するため、loading={false} は loading=\"false\" になり、存在するものとして扱われます。ブール属性の切り替えには true か undefined を渡してください（例：loading={saving || undefined}）。React 19 ではプロパティとして設定されるため、そのままブール値を使えます。"
+    "text": "副作用のためにパッケージを一度インポートし、同梱の型定義を参照すると JSX で属性を型チェックできます。React 19 が必要です。onClick などの DOM イベントは通常どおり動作します。アクセシブルネームにはハイフン付きの aria-label を使います。",
+    "booleans": "React 19 はカスタム要素に値をプロパティとして渡すため、真偽値のプロパティにはそのまま真偽値を渡せます。loading={saving} や disabled={false} は期待どおりに動作します。"
   },
   "other": {
     "title": "Vue などのフレームワーク",
@@ -21,11 +21,11 @@
   },
   "theming": {
     "title": "テーマ",
-    "text": "ボタンは独自の CSS カスタムプロパティ（--primary-color、--primary-hover、--error-color など）を読み、既定値は要素自身に宣言されているため、lib-core の ConfigProvider のテーマには自動では追従しません。デザインに合わせるには、要素（またはそれを対象とするルール）で変数を設定してください："
+    "text": "ボタンは lib-core のデザイントークン（--primary-color、--danger-color、--text-inverse-color、--surface-muted-color、--focus-ring-color、--radius-md などの CSS カスタムプロパティ）を使い、lib-core のないページ向けにフォールバック値を内蔵しています。カスタムプロパティは shadow root に継承されるため、ConfigProvider / applyThemeStyles によるテーマ変更もこのボタンに反映されます。一部のボタンだけスタイルを変えるには、要素またはその祖先にトークンを設定します："
   },
   "a11y": {
     "title": "アクセシビリティ",
-    "text": "要素は shadow root 内にネイティブの <button> を描画するため、フォーカスでき、キーボードで操作できます。aria-label 属性はそのボタンに転送されます。アイコンのみのボタンには必ず設定してください。読み込み中は aria-busy が設定され、クリックは無視されます。無効なボタンはフォーカスできません。"
+    "text": "この要素は shadow root 内にネイティブの <button> を描画するため、フォーカス可能でキーボード操作に対応し、見やすいフォーカスリング（--focus-ring-color）を表示します。aria-label 属性はそのボタンに転送されます。アイコンのみのボタンには必ず設定してください。読み込み中は aria-busy を設定してクリックを無視し、無効なボタンはフォーカスを受け取りません。"
   },
   "demos": {
     "basic": {
@@ -42,7 +42,7 @@
     },
     "states": {
       "title": "状態",
-      "description": "loading はスピナーを表示してクリックを無効にします。disabled と active もブール属性です。React 18 では true か undefined を渡し、false は渡さないでください。"
+      "description": "loading はスピナーを表示してクリックを無効にします。disabled と active も真偽値のプロパティです。React 19 では loading={saving} のようにそのまま真偽値を渡します。"
     }
   },
   "api": {

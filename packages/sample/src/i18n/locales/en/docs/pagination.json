@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Pagination is controlled: keep the current page in state and update it in onChange."
+      "description": "Without current, Pagination manages the page itself (defaultCurrent sets the first one). The other demos are controlled: they keep current in state and update it in onChange."
     },
     "many-pages": {
       "title": "Many pages",
@@ -45,10 +45,12 @@
   },
   "api": {
     "PaginationProps": {
-      "current": "Current page (1-based); update it in onChange",
+      "current": "Current page (1-based, controlled); update it in onChange",
+      "defaultCurrent": "Initial page when uncontrolled (current not set)",
       "total": "Total number of items",
-      "pageSize": "Number of items per page",
-      "onChange": "Called with the new page and page size when the page or page size changes",
+      "pageSize": "Number of items per page (controlled); update it in onChange",
+      "defaultPageSize": "Initial number of items per page when uncontrolled (pageSize not set)",
+      "onChange": "Called with the new page and page size when the page or page size changes (changing the page size resets to page 1)",
       "disabled": "Disables the pagination",
       "showQuickJumper": "Shows an input to jump to a page",
       "showSizeChanger": "Shows a page size selector",
@@ -63,11 +65,26 @@
       "variant": "Visual style of the page items",
       "simple": "Simple mode: prev/next buttons with a page input",
       "responsive": "Adapts the layout to small screens",
-      "icons": "Custom icons for the prev, next and jump items"
+      "icons": "Custom icons for the prev, next and jump items; omitted ones keep the default icon",
+      "ref": "Ref to the root <nav> element",
+      "labels": "Texts of the component (accessible labels of the buttons, quick jumper and size changer); omitted entries use the localized defaults"
+    },
+    "PaginationLabels": {
+      "prev": "Accessible label of the previous-page button",
+      "next": "Accessible label of the next-page button",
+      "jumpPrev": "Label of the jump-backward item",
+      "jumpNext": "Label of the jump-forward item",
+      "page": "Returns the accessible label of a page button",
+      "jumpTo": "Visible text of the quick jumper",
+      "jumpToInput": "Accessible label of the quick jumper input",
+      "pageSize": "Accessible label of the page size select",
+      "pageSizeOption": "Returns the text of a page size option",
+      "currentPage": "Accessible label of the page input in simple mode",
+      "nav": "Accessible label of the navigation landmark"
     }
   },
   "a11y": {
     "title": "Keyboard support",
-    "body": "The pagination is a navigation landmark. When it has focus, ArrowLeft/ArrowRight go to the previous/next page and Home/End to the first/last page. Every item is focusable and can be activated with Enter or Space; the current page is marked with aria-current=\"page\"."
+    "body": "The pagination is a <nav> landmark made of native buttons; the current page is marked with aria-current=\"page\" and unavailable items are disabled. When an item has focus, ArrowLeft/ArrowRight go to the previous/next page and Home/End to the first/last page, and focus follows the current page. If the focused button becomes disabled, focus moves to the current page."
   }
 }

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Passez n'importe quel élément d'icône. Le bouton ne contient qu'une icône : donnez-lui toujours un ariaLabel."
+      "description": "Passez n'importe quel élément d'icône. Le bouton ne contient qu'une icône : donnez-lui toujours un ariaLabel. Il rend un bouton natif avec type=\"button\" et ne soumet donc jamais de formulaire."
     },
     "variants": {
       "title": "Variantes",
@@ -16,7 +16,7 @@
     },
     "states": {
       "title": "États",
-      "description": "loading remplace l'icône par un indicateur de chargement, active signale un bouton bascule enfoncé et disabled retire le bouton de l'ordre de tabulation."
+      "description": "loading remplace l'icône par un indicateur de chargement, active marque un bouton bascule enfoncé et disabled pose l'attribut natif disabled, qui retire le bouton de l'ordre de tabulation."
     },
     "custom-colors": {
       "title": "Couleurs personnalisées",
@@ -28,11 +28,11 @@
     },
     "interactive": {
       "title": "InteractiveIconButton",
-      "description": "Un bouton bascule qui gère son propre état : définissez l'état initial avec initialState et écoutez les changements avec onChange."
+      "description": "Un bouton bascule qui expose son état via aria-pressed. Contrôlez-le avec pressed et onChange, ou laissez-le non contrôlé avec defaultPressed. Son nom accessible reste stable (le libellé du préréglage, par ex. \"Like\") et peut être remplacé par ariaLabel."
     },
     "interactive-types": {
       "title": "Préréglages interactifs",
-      "description": "Tous les InteractiveIconType, c'est-à-dire toutes les clés de interactiveIconsMap. Chaque préréglage définit son icône, ses couleurs et ses infobulles. Cliquez pour basculer."
+      "description": "Tous les InteractiveIconType, c'est-à-dire toutes les clés de interactiveIconsMap. Chaque préréglage définit son icône, ses couleurs, ses infobulles et son libellé accessible. Cliquez pour basculer."
     }
   },
   "api": {
@@ -41,7 +41,7 @@
       "variant": "Variante de couleur ; un style neutre est utilisé si elle est omise",
       "size": "Taille du bouton",
       "shape": "Forme du bouton",
-      "disabled": "Désactive le bouton et le retire de l'ordre de tabulation",
+      "disabled": "Désactive le bouton natif et le retire de l'ordre de tabulation",
       "loading": "Remplace l'icône par un indicateur de chargement et bloque l'interaction",
       "active": "Affiche le bouton dans son état actif (enfoncé)",
       "className": "Nom de classe supplémentaire",
@@ -52,16 +52,22 @@
       "fillColor": "Couleur de remplissage personnalisée de l'icône",
       "tooltip": "Configuration de l'infobulle (content, variant, shape, arrow) ; nécessite showTooltip",
       "showTooltip": "Affiche l'infobulle au survol et au focus",
-      "ariaLabel": "Libellé accessible ; à toujours définir, car le bouton ne contient qu'une icône"
+      "ariaLabel": "Libellé accessible ; à toujours définir, car le bouton ne contient qu'une icône",
+      "ref": "Ref vers l'élément <button>"
     },
     "InteractiveIconProps": {
       "type": "Préréglage qui définit l'icône, les couleurs et les infobulles (une clé de interactiveIconsMap)",
       "onChange": "Appelé avec le nouvel état après chaque bascule",
-      "initialState": "État actif initial (le composant gère son état en interne)",
+      "initialState": "Alias obsolète de defaultPressed",
       "className": "Nom de classe supplémentaire",
       "size": "Taille du bouton",
       "shape": "Forme du bouton",
-      "disabled": "Désactive le bouton"
+      "disabled": "Désactive le bouton",
+      "ref": "Ref vers l'élément <button> sous-jacent",
+      "pressed": "État actif (enfoncé) (contrôlé ; à associer à onChange) ; exposé via aria-pressed",
+      "defaultPressed": "État actif initial (non contrôlé)",
+      "ariaLabel": "Nom accessible du bouton bascule ; gardez-le stable, car l'état enfoncé est exposé séparément via aria-pressed. Par défaut, le libellé du préréglage (par ex. \"Favorite\")",
+      "aria-label": "Identique à ariaLabel (orthographe standard de l'attribut)"
     }
   }
 }

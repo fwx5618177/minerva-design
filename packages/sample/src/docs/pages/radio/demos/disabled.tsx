@@ -5,6 +5,7 @@ export default function DisabledDemo() {
     <div style={{ display: "grid", gap: 12 }}>
       <RadioGroup
         name="partly-disabled"
+        label="Partly disabled"
         defaultValue="a"
         direction="horizontal"
       >
@@ -13,12 +14,13 @@ export default function DisabledDemo() {
       </RadioGroup>
       <RadioGroup
         name="all-disabled"
+        label="Disabled group"
         defaultValue="a"
         direction="horizontal"
         disabled
       >
-        <Radio value="a" label="Disabled group" />
-        <Radio value="b" label="Disabled group" />
+        <Radio value="a" label="Option A" />
+        <Radio value="b" label="Option B" />
       </RadioGroup>
     </div>
   );

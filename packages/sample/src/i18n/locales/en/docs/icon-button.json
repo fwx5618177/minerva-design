@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Pass any icon element. The button only contains an icon, so always give it an ariaLabel."
+      "description": "Pass any icon element. The button only contains an icon, so always give it an ariaLabel. It renders a native button with type=\"button\", so it never submits a form."
     },
     "variants": {
       "title": "Variants",
@@ -16,7 +16,7 @@
     },
     "states": {
       "title": "States",
-      "description": "Loading replaces the icon with a spinner, active marks a pressed toggle and disabled removes the button from the tab order."
+      "description": "Loading replaces the icon with a spinner, active marks a pressed toggle and disabled sets the native disabled attribute, which removes the button from the tab order."
     },
     "custom-colors": {
       "title": "Custom colors",
@@ -28,11 +28,11 @@
     },
     "interactive": {
       "title": "InteractiveIconButton",
-      "description": "A self-managed toggle: set the initial state with initialState and listen to changes with onChange."
+      "description": "A toggle button that exposes its state with aria-pressed. Control it with pressed and onChange, or leave it uncontrolled with defaultPressed. Its accessible name stays stable (the preset's label, e.g. \"Like\") and can be overridden with ariaLabel."
     },
     "interactive-types": {
       "title": "Interactive presets",
-      "description": "Every InteractiveIconType, i.e. every key of interactiveIconsMap. Each preset defines its icon, colors and tooltips. Click to toggle."
+      "description": "Every InteractiveIconType, i.e. every key of interactiveIconsMap. Each preset defines its icon, colors, tooltips and accessible label. Click to toggle."
     }
   },
   "api": {
@@ -41,7 +41,7 @@
       "variant": "Color variant; a neutral style is used when omitted",
       "size": "Button size",
       "shape": "Button shape",
-      "disabled": "Disables the button and removes it from the tab order",
+      "disabled": "Disables the native button and removes it from the tab order",
       "loading": "Replaces the icon with a spinner and blocks interaction",
       "active": "Renders the button in its active (pressed) state",
       "className": "Additional class name",
@@ -52,16 +52,22 @@
       "fillColor": "Custom fill color of the icon",
       "tooltip": "Tooltip configuration (content, variant, shape, arrow); requires showTooltip",
       "showTooltip": "Shows the tooltip on hover and focus",
-      "ariaLabel": "Accessible label; always set it, since the button only contains an icon"
+      "ariaLabel": "Accessible label; always set it, since the button only contains an icon",
+      "ref": "Ref to the <button> element"
     },
     "InteractiveIconProps": {
       "type": "Preset that defines the icon, colors and tooltips (a key of interactiveIconsMap)",
       "onChange": "Called with the new state after each toggle",
-      "initialState": "Initial active state (the component manages its state internally)",
+      "initialState": "Deprecated alias of defaultPressed",
       "className": "Additional class name",
       "size": "Button size",
       "shape": "Button shape",
-      "disabled": "Disables the button"
+      "disabled": "Disables the button",
+      "ref": "Ref to the underlying <button> element",
+      "pressed": "Active (pressed) state (controlled; pair with onChange); exposed as aria-pressed",
+      "defaultPressed": "Initial active state (uncontrolled)",
+      "ariaLabel": "Accessible name of the toggle; keep it stable, since the pressed state is exposed separately via aria-pressed. Defaults to the preset's label (e.g. \"Favorite\")",
+      "aria-label": "Same as ariaLabel (standard attribute spelling)"
     }
   }
 }

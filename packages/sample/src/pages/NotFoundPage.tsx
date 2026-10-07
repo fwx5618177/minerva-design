@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { IoHomeOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import styles from "@styles/pages/error.module.scss";

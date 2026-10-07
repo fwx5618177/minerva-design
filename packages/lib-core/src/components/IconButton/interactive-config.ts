@@ -1,10 +1,17 @@
-import { InteractiveIconState } from "./interactive-types";
+import type {
+  InteractiveIconState,
+  InteractiveIconType,
+} from "./interactive-types";
 
 // Active colors are intentional per-icon accents (heart = pink, star = amber,
 // ...). Backgrounds are translucent tints and inactive icons use the theme
 // text color so the presets read well on light and dark themes.
-export const interactiveIconsMap: Record<string, InteractiveIconState> = {
+export const interactiveIconsMap: Record<
+  InteractiveIconType,
+  InteractiveIconState
+> = {
   favorite: {
+    label: "Favorite",
     isActive: false,
     activeColor: "#e91e63",
     inactiveColor: "var(--text-secondary-color)",
@@ -18,6 +25,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Add to favorites",
   },
   bookmark: {
+    label: "Bookmark",
     isActive: false,
     activeColor: "#ffc107",
     inactiveColor: "var(--text-secondary-color)",
@@ -31,6 +39,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Add bookmark",
   },
   star: {
+    label: "Star",
     isActive: false,
     activeColor: "#ff9800",
     inactiveColor: "var(--text-secondary-color)",
@@ -44,6 +53,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Add star",
   },
   like: {
+    label: "Like",
     isActive: false,
     activeColor: "#e91e63",
     inactiveColor: "var(--text-secondary-color)",
@@ -57,6 +67,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Like",
   },
   follow: {
+    label: "Follow",
     isActive: false,
     activeColor: "#2196f3",
     inactiveColor: "var(--text-secondary-color)",
@@ -70,6 +81,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Follow",
   },
   share: {
+    label: "Share",
     isActive: false,
     activeColor: "#4caf50",
     inactiveColor: "var(--text-secondary-color)",
@@ -83,6 +95,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Share",
   },
   notification: {
+    label: "Notifications",
     isActive: false,
     activeColor: "#9c27b0",
     inactiveColor: "var(--text-secondary-color)",
@@ -96,6 +109,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Turn on notifications",
   },
   pin: {
+    label: "Pin",
     isActive: false,
     activeColor: "#f44336",
     inactiveColor: "var(--text-secondary-color)",
@@ -109,6 +123,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Pin",
   },
   archive: {
+    label: "Archive",
     isActive: false,
     activeColor: "#795548",
     inactiveColor: "var(--text-secondary-color)",
@@ -122,6 +137,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Archive",
   },
   lock: {
+    label: "Lock",
     isActive: false,
     activeColor: "#607d8b",
     inactiveColor: "var(--text-secondary-color)",
@@ -135,6 +151,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Lock",
   },
   download: {
+    label: "Download",
     isActive: false,
     activeColor: "#009688",
     inactiveColor: "var(--text-secondary-color)",
@@ -148,6 +165,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Download",
   },
   visibility: {
+    label: "Visibility",
     isActive: false,
     activeColor: "#3f51b5",
     inactiveColor: "var(--text-secondary-color)",
@@ -161,6 +179,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Show",
   },
   clock: {
+    label: "Reminder",
     isActive: false,
     activeColor: "#673ab7",
     inactiveColor: "var(--text-secondary-color)",
@@ -174,6 +193,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Add to history",
   },
   rate: {
+    label: "Rate",
     isActive: false,
     activeColor: "#ffd700",
     inactiveColor: "var(--text-secondary-color)",
@@ -187,6 +207,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Rate",
   },
   thumbDown: {
+    label: "Dislike",
     isActive: false,
     activeColor: "#f44336",
     inactiveColor: "var(--text-secondary-color)",
@@ -200,6 +221,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Dislike",
   },
   flag: {
+    label: "Flag",
     isActive: false,
     activeColor: "#ff5722",
     inactiveColor: "var(--text-secondary-color)",
@@ -213,6 +235,7 @@ export const interactiveIconsMap: Record<string, InteractiveIconState> = {
     inactiveTooltip: "Flag",
   },
   close: {
+    label: "Close",
     isActive: false,
     activeColor: "#757575",
     inactiveColor: "var(--text-secondary-color)",

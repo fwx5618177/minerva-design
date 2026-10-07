@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 
 export type TooltipPlacement =
   | "top"
@@ -23,12 +23,16 @@ export type TooltipAnimation =
   "fade" | "scale" | "shift-away" | "shift-toward" | "perspective";
 
 export interface TooltipProps {
+  /** Imperative handle with open / close / toggle */
+  ref?: Ref<TooltipRef>;
   /** Content displayed inside the tooltip */
   content: ReactNode;
   /** The element that triggers the tooltip; prefer a focusable element */
   children: ReactNode;
-  /** Whether the tooltip is shown (controlled) */
+  /** Whether the tooltip is shown (controlled; pair with onOpenChange) */
   open?: boolean;
+  /** Called with the requested open state (hover, focus, Escape, ref methods) */
+  onOpenChange?: (open: boolean) => void;
   /**
    * Initial open state (uncontrolled)
    * @default false
@@ -65,8 +69,9 @@ export interface TooltipProps {
    */
   leaveDelay?: number;
   /**
-   * Offset from the trigger as [x, y] in pixels
-   * @default [0, 8]
+   * Offset as [x, y] in pixels. For top/bottom placements `y` is the gap to
+   * the trigger and `x` shifts along it; for left/right placements `x` is the
+   * gap and `y` shifts along it. Without it the tooltip sits 8px away.
    */
   offset?: [number, number];
   /**

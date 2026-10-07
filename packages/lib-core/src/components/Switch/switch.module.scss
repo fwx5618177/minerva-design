@@ -13,45 +13,33 @@
     opacity: 0.5;
   }
 
-  &.label-start {
-    flex-direction: row-reverse;
-    .label {
-      margin-right: 12px;
-    }
+  // The label is rendered before the control for start/top and after it for
+  // end/bottom (DOM order = reading order); these only set the direction.
+  &.labelStart .label {
+    margin-right: 12px;
   }
 
-  &.label-end {
-    .label {
-      margin-left: 12px;
-    }
+  &.labelEnd .label {
+    margin-left: 12px;
   }
 
-  &.label-top {
+  &.labelTop,
+  &.labelBottom {
     flex-direction: column;
-    .label {
-      margin-bottom: 4px;
-    }
   }
 
-  &.label-bottom {
-    flex-direction: column-reverse;
-    .label {
-      margin-top: 4px;
-    }
+  &.labelTop .label {
+    margin-bottom: 4px;
+  }
+
+  &.labelBottom .label {
+    margin-top: 4px;
   }
 
   .label {
     font-size: 14px;
     color: var(--text-color);
     line-height: 1.4;
-  }
-
-  &:hover,
-  &:active {
-    .thumb {
-    }
-    &.checked .thumb {
-    }
   }
 }
 

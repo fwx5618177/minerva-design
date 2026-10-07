@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
 import { IoMenuOutline } from "react-icons/io5";
 import Sidebar from "./Sidebar";

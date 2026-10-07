@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface RadioProps {
   /** Whether the radio is checked (controlled). Ignored inside a RadioGroup */
   checked?: boolean;
@@ -29,6 +31,8 @@ export interface RadioProps {
   type?: "default" | "primary" | "success" | "warning" | "error";
   /** Text label displayed next to the radio */
   label?: string;
+  /** Accessible label, required when there is no visible label */
+  ariaLabel?: string;
   /**
    * Additional class name
    * @default ""
@@ -53,12 +57,12 @@ export interface RadioProps {
    * @default <FaInfoCircle />
    */
   errorIcon?: React.ReactNode;
-  /** Message shown below the radio when error is true */
+  /** Message shown below the radio when error is true (linked with aria-describedby) */
   errorMessage?: string;
-  /** Helper text shown below the radio */
+  /** Helper text shown below the radio (linked with aria-describedby) */
   helperText?: string;
-  /** Ref forwarded to the native input element */
-  ref?: React.Ref<HTMLInputElement>;
+  /** Ref to the native <input type="radio"> element */
+  ref?: Ref<HTMLInputElement>;
 }
 
 export interface RadioGroupProps {
@@ -66,8 +70,15 @@ export interface RadioGroupProps {
   value?: string | number;
   /** Initially selected value (uncontrolled) */
   defaultValue?: string | number;
-  /** Name shared by all radios of the group */
+  /**
+   * Name shared by all radios of the group (a unique name is generated when
+   * omitted, so arrow-key navigation always works)
+   */
   name?: string;
+  /** Visible label of the group; also its accessible name */
+  label?: React.ReactNode;
+  /** Accessible label of the group when there is no visible label */
+  ariaLabel?: string;
   /** Called with the newly selected value */
   onChange?: (
     value: string | number,
@@ -100,7 +111,7 @@ export interface RadioGroupProps {
    * @default false
    */
   error?: boolean;
-  /** Helper text shown below the group */
+  /** Helper text shown below the group (linked with aria-describedby) */
   helperText?: string;
   /**
    * Marks the group as required (aria-required)
@@ -112,4 +123,6 @@ export interface RadioGroupProps {
    * @default "var(--primary-color)"
    */
   color?: string;
+  /** Ref to the root wrapper element */
+  ref?: Ref<HTMLDivElement>;
 }

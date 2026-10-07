@@ -18,6 +18,7 @@ export default function ClickableDemo() {
           <Tag
             key={topic}
             clickable
+            pressed={selected.includes(topic)}
             variant={selected.includes(topic) ? "primary" : "default"}
             bordered
             onClick={() => toggle(topic)}

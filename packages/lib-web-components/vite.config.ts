@@ -37,6 +37,6 @@ export default defineConfig({
   test: {
     name: "lib-web-components",
     environment: "happy-dom",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
   },
 });

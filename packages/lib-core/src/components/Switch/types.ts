@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface SwitchProps {
   /** Whether the switch is on (controlled) */
   checked?: boolean;
@@ -28,6 +30,10 @@ export interface SwitchProps {
   shape?: "round" | "square";
   /** Label displayed next to the switch */
   label?: React.ReactNode;
+  /** Accessible label, required when the switch has no visible label */
+  ariaLabel?: string;
+  /** Name of the input, used in forms */
+  name?: string;
   /**
    * Position of the label relative to the switch
    * @default "end"
@@ -67,4 +73,6 @@ export interface SwitchProps {
    * @default "start"
    */
   iconPlacement?: "start" | "end";
+  /** Ref to the underlying <input role="switch"> element */
+  ref?: Ref<HTMLInputElement>;
 }

@@ -1,10 +1,10 @@
 {
   "title": "Tooltip",
-  "description": "Un court libellé affiché lorsque l’utilisateur survole ou met le focus sur un élément.",
+  "description": "Une courte étiquette de texte affichée quand l'utilisateur survole ou met le focus sur un élément. Près des bords de la fenêtre, elle bascule et se décale pour rester visible.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Enveloppez un élément focalisable. L’infobulle apparaît au survol et au focus clavier, et Échap la ferme."
+      "description": "Enveloppez un élément focalisable. L'infobulle s'affiche au survol et au focus clavier, et Échap la ferme, même si elle a été ouverte par le survol."
     },
     "placements": {
       "title": "Positions",
@@ -24,7 +24,7 @@
     },
     "custom-colors": {
       "title": "Couleurs, flèche et décalage",
-      "description": "bgColor accepte les couleurs unies et les dégradés CSS ; arrow ajoute une flèche ; offset éloigne l’infobulle du déclencheur."
+      "description": "bgColor accepte les couleurs unies et les dégradés CSS ; arrow ajoute une flèche vers le déclencheur ; offset définit l'espace avec le déclencheur (8px par défaut)."
     },
     "delays": {
       "title": "Délais et désactivation",
@@ -36,7 +36,7 @@
     },
     "controlled": {
       "title": "Contrôlé et impératif",
-      "description": "Contrôlez la visibilité avec open, ou appelez open / close / toggle sur un TooltipRef."
+      "description": "Contrôlez la visibilité avec open et onOpenChange (survol, focus et Échap demandent toujours des changements), ou appelez open / close / toggle sur un TooltipRef."
     },
     "events": {
       "title": "Événements",
@@ -47,7 +47,7 @@
     "TooltipProps": {
       "content": "Contenu affiché dans l’infobulle",
       "children": "L’élément qui déclenche l’infobulle ; privilégiez un élément focalisable",
-      "open": "Indique si l’infobulle est affichée (mode contrôlé)",
+      "open": "Indique si l'infobulle est affichée (contrôlé ; à associer à onOpenChange)",
       "defaultOpen": "État d’ouverture initial (mode non contrôlé)",
       "placement": "Position par rapport au déclencheur",
       "variant": "Variante de couleur",
@@ -55,7 +55,7 @@
       "animation": "Animation d’apparition / de disparition",
       "enterDelay": "Délai avant l’affichage au survol, en millisecondes",
       "leaveDelay": "Délai avant le masquage quand la souris quitte, en millisecondes",
-      "offset": "Décalage par rapport au déclencheur, [x, y] en pixels",
+      "offset": "Décalage [x, y] en pixels. Pour les positions top/bottom, y est l'espace avec le déclencheur et x décale le long de celui-ci ; pour left/right, x est l'espace et y le décalage. Sans lui, l'infobulle est à 8px",
       "followCursor": "L’infobulle suit le curseur de la souris",
       "bgColor": "Couleur de fond personnalisée (les dégradés CSS sont pris en charge)",
       "textColor": "Couleur de texte personnalisée",
@@ -65,7 +65,9 @@
       "className": "Classe CSS supplémentaire de l’enveloppe du déclencheur",
       "onOpen": "Appelé lorsque l’infobulle s’ouvre au survol ou au focus",
       "onClose": "Appelé lorsque l’infobulle se ferme quand la souris quitte, à la perte du focus ou avec Échap",
-      "ariaLabel": "Libellé accessible de l’élément infobulle"
+      "ariaLabel": "Libellé accessible de l’élément infobulle",
+      "ref": "Handle impératif avec open / close / toggle",
+      "onOpenChange": "Appelé avec l'état d'ouverture demandé (survol, focus, Échap, méthodes du ref)"
     },
     "TooltipRef": {
       "open": "Ouvre l’infobulle",

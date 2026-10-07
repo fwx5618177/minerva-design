@@ -1,10 +1,12 @@
+import type { Ref } from "react";
+
 export interface StatusIndicatorProps {
   /**
    * Additional class name
    * @default ""
    */
   className?: string;
-  /** Accessible label describing the status */
+  /** Accessible label describing the status; defaults to the presence text of type (e.g. "Online") */
   ariaLabel?: string;
   /**
    * Disables the click feedback animation
@@ -35,4 +37,6 @@ export interface StatusIndicatorProps {
   size?: "small" | "medium" | "large";
   /** Custom background color, applied when type is "custom" */
   color?: string;
+  /** Ref to the root (wrapper) <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

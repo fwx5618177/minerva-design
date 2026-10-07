@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { useTranslation } from "react-i18next";
 import { IoLayersOutline } from "react-icons/io5";
 import styles from "@styles/layout/sidebar.module.scss";

@@ -1,26 +1,21 @@
 import React from "react";
+import classNames from "classnames";
 import type { BadgeProps } from "./types";
 import styles from "./badge.module.scss";
+import useI18n from "../../hooks/useI18n";
+
+const isTextLike = (node: React.ReactNode): node is string | number =>
+  typeof node === "string" || typeof node === "number";
 
 /**
- * Badge component
- * @param children - The content of the badge
- * @param variant - The style of the badge (primary, secondary, success, danger, warning, info, light, dark)
- * @param size - The size of the badge (small, medium, large)
- * @param className - Additional classes to be added to the badge
- * @param ariaLabel - The aria-label attribute for the badge, used for accessibility
- * @param bgColor - Custom background color for the badge
- * @param textColor - Custom text color for the badge
- * @param icon - The icon to be displayed (can be a TSX SVG component, image URL, or other ReactNode)
- * @param content - The content to be displayed inside the badge
- * @param position - The position of the badge (top-right, top-left, bottom-right, bottom-left)
- * @param dot - Whether to display the badge as a dot
- * @param borderRadius - Custom border radius for the badge
- * @param borderWidth - Custom border width for the badge
- * @param borderColor - Custom border color for the badge
- * @returns A badge component
+ * Badge: a small count or status indicator.
+ *
+ * - With element children the badge is attached to a corner of them
+ *   (`position`), inside a relatively positioned wrapper.
+ * - Without children, or with plain text / number children, it is a
+ *   standalone badge rendered inline in the normal flow.
  */
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge = ({
   children,
   variant = "primary",
   size = "medium",
@@ -35,37 +30,54 @@ export const Badge: React.FC<BadgeProps> = ({
   borderRadius,
   borderWidth,
   borderColor,
-}) => {
-  const isValidElement = React.isValidElement(children);
-  const badgeContent = dot
-    ? null
-    : (content ?? (!isValidElement ? children : "Badge"));
+  ref,
+}: BadgeProps) => {
+  const { t } = useI18n();
+  const hasChildren =
+    children !== undefined && children !== null && children !== false;
+  // Text children are the badge's own content (rendered once, inline).
+  const textChildren = hasChildren && isTextLike(children);
+  const standalone = !hasChildren || (textChildren && content === undefined);
+
+  let badgeContent: React.ReactNode = null;
+  if (!dot) {
+    if (content !== undefined) badgeContent = content;
+    else if (textChildren) badgeContent = children;
+    else if (hasChildren) badgeContent = t("badge.default");
+  }
+
+  const badge = (
+    <span
+      ref={standalone ? (ref as React.Ref<HTMLSpanElement>) : undefined}
+      className={classNames(
+        styles.badge,
+        styles[variant],
+        styles[size],
+        standalone ? styles.standalone : styles[position],
+        dot && styles.dot,
+        className,
+      )}
+      aria-label={ariaLabel}
+      role="status"
+      style={{
+        backgroundColor: bgColor,
+        color: textColor,
+        borderRadius,
+        borderWidth,
+        borderColor,
+      }}
+    >
+      {icon && <span className={styles.icon}>{icon}</span>}
+      {badgeContent}
+    </span>
+  );
+
+  if (standalone) return badge;
 
   return (
-    <div className={styles.badgeWrapper}>
-      {children && <div className={styles.content}>{children}</div>}
-      <span
-        className={`
-          ${styles.badge} 
-          ${styles[variant]} 
-          ${styles[size]} 
-          ${styles[position]}
-          ${dot ? styles.dot : ""}
-          ${className}
-        `}
-        aria-label={ariaLabel}
-        role="status"
-        style={{
-          backgroundColor: bgColor,
-          color: textColor,
-          borderRadius,
-          borderWidth,
-          borderColor,
-        }}
-      >
-        {icon && <span className={styles.icon}>{icon}</span>}
-        {badgeContent}
-      </span>
+    <div ref={ref as React.Ref<HTMLDivElement>} className={styles.badgeWrapper}>
+      <div className={styles.content}>{children}</div>
+      {badge}
     </div>
   );
 };

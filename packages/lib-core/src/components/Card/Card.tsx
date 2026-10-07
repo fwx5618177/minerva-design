@@ -15,16 +15,22 @@ import styles from "./card.module.scss";
  * @param variant - The style of the card (default, outlined, shadow, elevated, filled)
  * @param type - The type of the card (default, noHeader, noFooter, noHeaderFooter)
  * @param className - Additional classes to be added to the card
+ * @param ref - Ref to the root <div> element
  * @returns A card component
  */
-export const Card: React.FC<CardProps> = ({
+export const Card = ({
   children,
   variant = "default",
   type = "default",
   className = "",
-}) => {
+  ref,
+}: CardProps) => {
   const cardClasses = `${styles.card} ${styles[variant]} ${styles[type]} ${className}`;
-  return <div className={cardClasses}>{children}</div>;
+  return (
+    <div ref={ref} className={cardClasses}>
+      {children}
+    </div>
+  );
 };
 
 /**
@@ -35,18 +41,23 @@ export const Card: React.FC<CardProps> = ({
  * @param textColor - Text color of the card header
  * @returns A card header component
  */
-export const CardHeader: React.FC<CardHeaderProps> = ({
+export const CardHeader = ({
   children,
   className = "",
   bgColor,
   textColor,
-}) => {
+  ref,
+}: CardHeaderProps) => {
   const headerStyle = {
     backgroundColor: bgColor,
     color: textColor,
   };
   return (
-    <div className={`${styles.cardHeader} ${className}`} style={headerStyle}>
+    <div
+      ref={ref}
+      className={`${styles.cardHeader} ${className}`}
+      style={headerStyle}
+    >
       {children}
     </div>
   );
@@ -58,11 +69,16 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
  * @param className - Additional classes to be added to the card title
  * @returns A card title component
  */
-export const CardTitle: React.FC<CardTitleProps> = ({
+export const CardTitle = ({
   children,
   className = "",
-}) => {
-  return <h3 className={`${styles.cardTitle} ${className}`}>{children}</h3>;
+  ref,
+}: CardTitleProps) => {
+  return (
+    <h3 ref={ref} className={`${styles.cardTitle} ${className}`}>
+      {children}
+    </h3>
+  );
 };
 
 /**
@@ -71,11 +87,16 @@ export const CardTitle: React.FC<CardTitleProps> = ({
  * @param className - Additional classes to be added to the card description
  * @returns A card description component
  */
-export const CardDescription: React.FC<CardDescriptionProps> = ({
+export const CardDescription = ({
   children,
   className = "",
-}) => {
-  return <p className={`${styles.cardDescription} ${className}`}>{children}</p>;
+  ref,
+}: CardDescriptionProps) => {
+  return (
+    <p ref={ref} className={`${styles.cardDescription} ${className}`}>
+      {children}
+    </p>
+  );
 };
 
 /**
@@ -87,20 +108,21 @@ export const CardDescription: React.FC<CardDescriptionProps> = ({
  * @param animation - Animation effect for the card content
  * @returns A card content component
  */
-export const CardContent: React.FC<CardContentProps> = ({
+export const CardContent = ({
   children,
   className = "",
   bgColor,
   textColor,
   animation,
-}) => {
+  ref,
+}: CardContentProps) => {
   const contentStyle = {
     backgroundColor: bgColor,
     color: textColor,
   };
   const contentClasses = `${styles.cardContent} ${animation ? styles[animation] : ""} ${className}`;
   return (
-    <div className={contentClasses} style={contentStyle}>
+    <div ref={ref} className={contentClasses} style={contentStyle}>
       {children}
     </div>
   );
@@ -114,18 +136,23 @@ export const CardContent: React.FC<CardContentProps> = ({
  * @param textColor - Text color of the card footer
  * @returns A card footer component
  */
-export const CardFooter: React.FC<CardFooterProps> = ({
+export const CardFooter = ({
   children,
   className = "",
   bgColor,
   textColor,
-}) => {
+  ref,
+}: CardFooterProps) => {
   const footerStyle = {
     backgroundColor: bgColor,
     color: textColor,
   };
   return (
-    <div className={`${styles.cardFooter} ${className}`} style={footerStyle}>
+    <div
+      ref={ref}
+      className={`${styles.cardFooter} ${className}`}
+      style={footerStyle}
+    >
       {children}
     </div>
   );

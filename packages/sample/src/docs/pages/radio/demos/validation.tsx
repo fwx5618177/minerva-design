@@ -8,6 +8,7 @@ export default function ValidationDemo() {
     <div style={{ display: "grid", gap: 16 }}>
       <RadioGroup
         name="t-shirt"
+        label="T-shirt size"
         value={size}
         onChange={(value) => setSize(value)}
         direction="horizontal"

@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { themes } from "@minerva/lib-core";
 
@@ -46,6 +47,14 @@ const getSystemScheme = (): "light" | "dark" =>
     ? "dark"
     : "light";
 
+const subscribeToScheme = (onChange: () => void) => {
+  if (typeof window === "undefined" || !window.matchMedia) return () => {};
+  const query = window.matchMedia(DARK_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+const subscribeNever = () => () => {};
+
 /** "#2563eb" -> "37, 99, 235" (null for non-hex values) */
 const hexToRgbTriplet = (hex: string): string | null => {
   const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex.trim());
@@ -76,18 +85,11 @@ export const ThemeModeProvider: React.FC<{
   children: (resolved: ResolvedThemeMode) => React.ReactNode;
 }> = ({ children }) => {
   const [mode, setModeState] = useState<ThemeMode>(readStoredMode);
-  const [systemScheme, setSystemScheme] = useState(getSystemScheme);
-
-  useEffect(() => {
-    if (mode !== "auto" || typeof window === "undefined" || !window.matchMedia)
-      return;
-    const query = window.matchMedia(DARK_QUERY);
-    const onChange = (e: MediaQueryListEvent) =>
-      setSystemScheme(e.matches ? "dark" : "light");
-    setSystemScheme(query.matches ? "dark" : "light");
-    query.addEventListener("change", onChange);
-    return () => query.removeEventListener("change", onChange);
-  }, [mode]);
+  const systemScheme = useSyncExternalStore(
+    mode === "auto" ? subscribeToScheme : subscribeNever,
+    getSystemScheme,
+    () => "light" as const,
+  );
 
   const setMode = useCallback((next: ThemeMode) => {
     setModeState(next);

@@ -1,6 +1,7 @@
-import { AutoComplete } from "@minerva/lib-core";
+import { useState } from "react";
+import { AutoComplete, type AutoCompleteOption } from "@minerva/lib-core";
 
-const options = [
+const options: AutoCompleteOption[] = [
   { label: "TypeScript", value: "ts" },
   { label: "JavaScript", value: "js" },
   { label: "Rust", value: "rust" },
@@ -9,6 +10,8 @@ const options = [
 ];
 
 export default function MultipleDemo() {
+  const [selected, setSelected] = useState<AutoCompleteOption[]>([options[0]]);
+
   return (
     <div style={{ width: 320 }}>
       <AutoComplete
@@ -17,7 +20,10 @@ export default function MultipleDemo() {
         options={options}
         multiple
         maxTagCount={2}
+        selectedOptions={selected}
+        onSelectedOptionsChange={setSelected}
       />
+      <p>Selected: {selected.map((o) => o.label).join(", ") || "none"}</p>
     </div>
   );
 }

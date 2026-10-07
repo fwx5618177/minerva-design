@@ -12,8 +12,8 @@
   },
   "react": {
     "title": "Utilisation avec React",
-    "text": "Importez le paquet une fois pour son effet de bord et référencez les typages fournis pour vérifier les attributs dans le JSX. onClick et les autres événements DOM fonctionnent normalement ; utilisez aria-label (avec un tiret) pour le nom accessible.",
-    "booleans": "React 18 définit les attributs des éléments personnalisés sous forme de chaînes : loading={false} devient loading=\"false\", qui compte toujours comme présent. Passez true ou undefined (par ex. loading={saving || undefined}) pour basculer un attribut booléen. React 19 les définit comme propriétés et accepte des booléens simples."
+    "text": "Importez le paquet une fois pour son effet de bord et référencez les typages fournis pour vérifier les attributs en JSX. React 19 est requis. onClick et les autres événements DOM fonctionnent normalement ; utilisez aria-label (avec un tiret) pour le nom accessible.",
+    "booleans": "React 19 transmet les valeurs aux éléments personnalisés sous forme de propriétés : les props booléennes acceptent donc de simples booléens, et loading={saving} ou disabled={false} fonctionnent comme prévu."
   },
   "other": {
     "title": "Vue et autres frameworks",
@@ -21,11 +21,11 @@
   },
   "theming": {
     "title": "Thème",
-    "text": "Le bouton lit ses propres propriétés personnalisées CSS (--primary-color, --primary-hover, --error-color, ...) dont les valeurs par défaut sont déclarées sur l'élément : il ne suit donc pas automatiquement le thème de ConfigProvider de lib-core. Définissez ces variables sur l'élément, ou dans une règle qui le cible, pour l'adapter à votre design :"
+    "text": "Le bouton utilise les jetons de design de lib-core (propriétés CSS personnalisées comme --primary-color, --danger-color, --text-inverse-color, --surface-muted-color, --focus-ring-color et --radius-md), avec des valeurs de repli intégrées pour les pages sans lib-core. Les propriétés personnalisées sont héritées dans le shadow root : les changements de thème de ConfigProvider / applyThemeStyles s'y appliquent donc aussi. Pour ne restyler que certains boutons, définissez les jetons sur l'élément ou sur un ancêtre :"
   },
   "a11y": {
     "title": "Accessibilité",
-    "text": "L'élément rend un <button> natif dans sa shadow root : il est focalisable et utilisable au clavier. L'attribut aria-label est transmis à ce bouton ; renseignez-le pour les boutons composés uniquement d'une icône. Pendant le chargement, le bouton définit aria-busy et ignore les clics ; un bouton désactivé n'est pas focalisable."
+    "text": "L'élément rend un <button> natif dans son shadow root : il est donc focalisable et utilisable au clavier, avec un anneau de focus visible (--focus-ring-color). L'attribut aria-label est transmis à ce bouton ; définissez-le sur les boutons ne contenant qu'une icône. Pendant le chargement, le bouton définit aria-busy et ignore les clics ; les boutons désactivés ne sont pas focalisables."
   },
   "demos": {
     "basic": {
@@ -42,7 +42,7 @@
     },
     "states": {
       "title": "États",
-      "description": "loading affiche un indicateur et bloque les clics ; disabled et active sont aussi des attributs booléens. Avec React 18, passez true ou undefined, jamais false."
+      "description": "loading affiche un indicateur et bloque les clics ; disabled et active sont aussi des propriétés booléennes. Avec React 19, passez de simples booléens, par ex. loading={saving}."
     }
   },
   "api": {

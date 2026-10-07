@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "仅含图标的搜索按钮。请提供 ariaLabel，以便屏幕阅读器朗读。"
+      "description": "仅图标的搜索按钮。默认会被读作 \"Search\"；可传入 ariaLabel 进行更具体的描述。"
     },
     "variants": {
       "title": "变体",
@@ -39,7 +39,7 @@
     "SearchButtonProps": {
       "onClick": "点击按钮时调用（禁用时不调用）",
       "className": "额外的类名",
-      "ariaLabel": "无障碍标签；按钮没有文字时必填",
+      "ariaLabel": "无障碍标签。仅图标的按钮默认为 \"Search\"；有 children 时使用可见文本",
       "disabled": "禁用按钮",
       "shape": "按钮形状；带 children 的按钮始终为方形",
       "variant": "颜色变体",
@@ -48,8 +48,10 @@
       "color": "文字颜色",
       "iconColor": "搜索图标的颜色",
       "bgColor": "自定义背景色",
-      "loading": "用加载动画替换图标",
-      "children": "显示在图标旁边的可选文字"
+      "loading": "用加载动画替换图标并阻止触发（包括表单提交）",
+      "children": "显示在图标旁边的可选文字",
+      "type": "原生按钮类型（在表单中浏览器默认为 \"submit\"）",
+      "ref": "指向 <button> 元素的 ref"
     }
   }
 }

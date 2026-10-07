@@ -58,6 +58,10 @@
 }
 
 .clearIcon {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,11 +106,15 @@
 
 .dropdown {
   position: fixed;
+  top: 0;
+  left: 0;
+  // grow with the columns (at least as wide as the field, capped by the
+  // viewport through the positioning logic)
+  width: max-content;
   background: var(--surface-elevated-color);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   box-shadow: var(--shadow-md);
-  margin-top: 4px;
   padding: 4px 0;
   overflow: auto;
   z-index: 1050;
@@ -121,8 +129,10 @@
 }
 
 .column {
+  // never squeeze a column; the dropdown scrolls horizontally instead
+  flex: 0 0 auto;
   min-width: 160px;
-  max-width: 220px;
+  max-width: 260px;
   border-right: 1px solid var(--border-color);
   margin: 0;
   padding: 4px 0;
@@ -196,10 +206,9 @@
     margin-left: 8px;
   }
 
-  &.loading {
-    .expandIcon {
-      animation: rotating 1s linear infinite;
-    }
+  .loadingIndicator {
+    margin-left: 8px;
+    color: var(--text-secondary-color);
   }
 }
 

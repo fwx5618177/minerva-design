@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type DividerVariant = "solid" | "dashed" | "dotted";
 export type DividerOrientation = "horizontal" | "vertical";
 export type DividerTextAlign = "left" | "center" | "right";
@@ -43,4 +45,6 @@ export interface DividerProps {
   className?: string;
   /** Inline styles */
   style?: React.CSSProperties;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

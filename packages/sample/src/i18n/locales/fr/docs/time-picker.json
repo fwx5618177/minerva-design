@@ -4,11 +4,11 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Cliquez sur le champ pour ouvrir le panneau. onChange reçoit une Date, ou undefined après effacement."
+      "description": "Cliquez sur le champ (ou appuyez sur Flèche bas) pour ouvrir le panneau. onChange reçoit une Date, ou undefined après effacement. Sans label, le champ est nommé \"Time\" (heure)."
     },
     "default-value": {
       "title": "Valeur par défaut et effacement",
-      "description": "defaultValue définit l'heure initiale. clearable={false} masque le bouton d'effacement."
+      "description": "defaultValue définit l'heure initiale. Le bouton d'effacement est libellé \"Clear time\" (effacer l'heure) ; utilisez clearable={false} pour le masquer."
     },
     "formats": {
       "title": "Formats",
@@ -33,18 +33,22 @@
     "disabled": {
       "title": "Désactivé",
       "description": "Un sélecteur désactivé ne peut être ni ouvert ni modifié."
+    },
+    "controlled": {
+      "title": "Contrôlé",
+      "description": "Passez value et mettez-la à jour dans onChange. null garde le sélecteur contrôlé mais vide, tandis qu'undefined le rend non contrôlé. label donne au champ une étiquette visible."
     }
   },
   "api": {
     "TimePickerProps": {
-      "value": "Heure sélectionnée (lue uniquement au montage ; la partie date est ignorée)",
+      "value": "Heure sélectionnée (contrôlé ; à associer à onChange). null signifie « aucune heure » tout en restant contrôlé ; undefined rend le sélecteur non contrôlé. La partie date est ignorée",
       "defaultValue": "Heure sélectionnée initialement (non contrôlé)",
       "onChange": "Appelé avec la nouvelle heure, ou undefined quand la valeur est effacée",
       "format": "Format d'affichage : \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" ou \"hh:mm a\"",
       "use12Hours": "Utilise le format 12 heures avec une colonne AM/PM",
-      "placeholder": "Texte indicatif du champ",
+      "placeholder": "Texte indicatif du champ ; par défaut \"Select time\" traduit selon la langue",
       "disabled": "Désactive le sélecteur",
-      "clearable": "Permet d'effacer la valeur avec le bouton de suffixe",
+      "clearable": "Permet d'effacer la valeur avec le bouton de suffixe (libellé \"Clear time\", traduit)",
       "size": "Taille du champ et du panneau",
       "className": "Classe CSS supplémentaire",
       "minTime": "Heure minimale sélectionnable ; les options antérieures sont désactivées",
@@ -52,7 +56,20 @@
       "showSecond": "Affiche la colonne des secondes",
       "hourStep": "Intervalle entre les options d'heure",
       "minuteStep": "Intervalle entre les options de minute",
-      "secondStep": "Intervalle entre les options de seconde"
+      "secondStep": "Intervalle entre les options de seconde",
+      "ref": "Ref vers l'élément <input>",
+      "label": "Étiquette visible du champ ; sans elle, le champ est libellé \"Time\" (traduit)",
+      "ariaLabel": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
+      "name": "Nom du champ",
+      "onOpenChange": "Appelé quand le panneau s'ouvre ou se ferme"
     }
+  },
+  "keyboard": {
+    "title": "Clavier et accessibilité",
+    "open": "Flèche bas sur le champ ouvre le panneau ; un clic à l'extérieur le ferme.",
+    "navigate": "Chaque colonne (heures, minutes, secondes, AM/PM) est une listbox : Flèche haut / Flèche bas, Début et Fin s'y déplacent, Flèche gauche / Flèche droite changent de colonne.",
+    "select": "Entrée ou Espace choisit l'option qui a le focus.",
+    "close": "Échap ferme le panneau et rend le focus au champ.",
+    "typing": "Le texte saisi n'est validé qu'une fois qu'il forme une heure complète et valide. À la perte du focus, une analyse plus souple est appliquée ; un texte vide efface la valeur et un texte illisible restaure la précédente."
   }
 }

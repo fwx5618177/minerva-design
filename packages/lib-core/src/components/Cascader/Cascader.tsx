@@ -1,16 +1,23 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import classNames from "classnames";
+import { IoChevronDown, IoClose } from "react-icons/io5";
 import { TextField } from "../TextField";
-import { IoClose } from "react-icons/io5";
-import { IoChevronDown } from "react-icons/io5";
 import CascaderPanel from "./CascaderPanel";
 import type { CascaderProps, CascaderOption } from "./types";
+import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
+import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useIsClient } from "../../internal/useIsClient";
+import useI18n from "../../hooks/useI18n";
 import styles from "./cascader.module.scss";
-import ReactDOM from "react-dom";
+
+type CascaderValue = (string | number)[];
 
 /** Resolve the option chain for a list of values (one value per level) */
 const findOptionsByValues = (
   opts: CascaderOption[],
-  values: (string | number)[],
+  values: CascaderValue,
 ): CascaderOption[] => {
   const result: CascaderOption[] = [];
   let level: CascaderOption[] | undefined = opts;
@@ -25,37 +32,33 @@ const findOptionsByValues = (
   return result;
 };
 
-/** Find the full path (ancestors + target) of an option in the tree */
-const findOptionPath = (
-  opts: CascaderOption[],
-  target: CascaderOption,
-): CascaderOption[] | null => {
-  for (const opt of opts) {
-    if (opt === target) return [opt];
-    if (opt.children) {
-      const subPath = findOptionPath(opt.children, target);
-      if (subPath) return [opt, ...subPath];
-    }
-  }
-  return null;
-};
-
-/** Stable default so effects depending on `options` don't re-run each render */
+/** Stable defaults so memos depending on them don't re-run each render */
 const EMPTY_OPTIONS: CascaderOption[] = [];
+const EMPTY_VALUE: CascaderValue = [];
 
 /** A flattened option together with the chain of options leading to it */
-type SearchResult = CascaderOption & { path: CascaderOption[] };
+type SearchResult = { option: CascaderOption; path: CascaderOption[] };
 
-/** Make a non-button element activate (via a native click) on Enter / Space. */
-const activateOnEnterOrSpace = (e: React.KeyboardEvent<HTMLElement>) => {
-  if (e.target !== e.currentTarget) return;
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    e.currentTarget.click();
-  }
-};
+const flattenOptions = (
+  opts: CascaderOption[],
+  path: CascaderOption[] = [],
+): SearchResult[] =>
+  opts.flatMap((option) => {
+    if (option.disabled) return [];
+    const current = [...path, option];
+    return [
+      { option, path: current },
+      ...(option.children ? flattenOptions(option.children, current) : []),
+    ];
+  });
 
-const Cascader: React.FC<CascaderProps> = ({
+/**
+ * Cascader: pick a value from a tree of options, one column per level.
+ * Supports search, lazy loading (loadData), hover expansion and full keyboard
+ * navigation. The value can be controlled or uncontrolled.
+ */
+const Cascader = ({
+  ref,
   label,
   name,
   options = EMPTY_OPTIONS,
@@ -64,7 +67,7 @@ const Cascader: React.FC<CascaderProps> = ({
   onChange,
   displayRender,
   disabled = false,
-  placeholder = "Please select",
+  placeholder,
   allowClear = true,
   expandTrigger = "click",
   className,
@@ -77,327 +80,315 @@ const Cascader: React.FC<CascaderProps> = ({
   maxLevel = 6,
   dropdownStyle,
   optionStyle,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<(string | number)[]>(
-    value || defaultValue || [],
+}: CascaderProps) => {
+  const { t } = useI18n();
+  const isClient = useIsClient();
+  const [selectedValue, setSelectedValue] = useControllableState<CascaderValue>(
+    { value, defaultValue: defaultValue ?? EMPTY_VALUE },
   );
-  const [selectedOptions, setSelectedOptions] = useState<CascaderOption[]>(() =>
-    findOptionsByValues(options, value || defaultValue || []),
+  const selectedOptions = useMemo(
+    () => findOptionsByValues(options, selectedValue),
+    [options, selectedValue],
   );
-  const anchorRef = useRef<HTMLDivElement>(null);
 
-  // Follow controlled `value` changes (and re-resolve labels when `options`
-  // change, e.g. after loadData). Compare by content so inline array
-  // literals from the parent don't reset local state on every render.
-  const syncedValueKeyRef = useRef(JSON.stringify(value ?? null));
-  const syncedOptionsRef = useRef(options);
-  useEffect(() => {
-    if (value === undefined) return;
-    const valueKey = JSON.stringify(value);
-    if (
-      valueKey === syncedValueKeyRef.current &&
-      options === syncedOptionsRef.current
-    ) {
+  const [isOpen, setIsOpen] = useState(false);
+  // Opened from the keyboard: move focus into the panel
+  const [focusPanel, setFocusPanel] = useState(false);
+  const [expandedValues, setExpandedValues] = useState<CascaderValue>([]);
+  const expandedPath = useMemo(
+    () => findOptionsByValues(options, expandedValues),
+    [options, expandedValues],
+  );
+  const [searchValue, setSearchValue] = useState("");
+
+  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
+  const [input, setInput] = useState<HTMLInputElement | null>(null);
+  const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { setFloating, floatingStyles, placement } = useAnchoredPosition({
+    open: isOpen,
+    anchor,
+    placement: "bottom-start",
+    offset: { mainAxis: 4 },
+    matchAnchorWidth: "min",
+  });
+  const setDropdownRef = useMergedRefs<HTMLDivElement>(
+    dropdownRef,
+    setFloating,
+  );
+
+  const searching = showSearch && searchValue !== "";
+  const searchResults = useMemo(() => {
+    if (!searching) return [];
+    const needle = searchValue.toLowerCase();
+    return flattenOptions(options).filter(({ path }) =>
+      filter
+        ? filter(searchValue, path)
+        : path.some((o) => String(o.label).toLowerCase().includes(needle)),
+    );
+  }, [searching, searchValue, options, filter]);
+
+  const openDropdown = (fromKeyboard = false) => {
+    if (disabled) return;
+    setExpandedValues(selectedValue);
+    setFocusPanel(fromKeyboard);
+    setIsOpen(true);
+  };
+
+  const closeDropdown = (returnFocus = false) => {
+    setIsOpen(false);
+    setSearchValue("");
+    if (returnFocus) input?.focus();
+  };
+
+  const select = (path: CascaderOption[]) => {
+    const next = path.map((o) => o.value);
+    setSelectedValue(next);
+    onChange?.(next, path);
+    closeDropdown(true);
+  };
+
+  const handleActivate = (path: CascaderOption[], level: number) => {
+    const option = path[path.length - 1];
+    if (option.disabled) return;
+    const atMaxLevel = level >= maxLevel - 1;
+    const hasChildren = Boolean(option.children?.length);
+    const lazy = Boolean(loadData) && !option.isLeaf && !option.children;
+    if (!atMaxLevel && (hasChildren || lazy)) {
+      setExpandedValues(path.map((o) => o.value));
+      if (lazy && !option.loading) loadData?.(path);
       return;
     }
-    syncedValueKeyRef.current = valueKey;
-    syncedOptionsRef.current = options;
-    setSelectedValue(value);
-    setSelectedOptions(findOptionsByValues(options, value));
-  }, [value, options]);
+    select(path);
+  };
 
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  // Open state captured on mousedown (before the input's focus handler opens
-  // the dropdown), so the following click toggles from the pre-click state
-  const openAtMouseDownRef = useRef(false);
+  const handleClear = () => {
+    setSelectedValue(EMPTY_VALUE);
+    onChange?.([], []);
+    setSearchValue("");
+    input?.focus();
+  };
 
-  const handleSelectorClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!disabled) {
-        setIsOpen(!openAtMouseDownRef.current);
-      }
-    },
-    [disabled],
-  );
-
-  // === 关键修改：去掉 setTimeout，直接在 isOpen 时添加/移除事件监听 ===
+  // Close on outside pointer down
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
+    const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node;
-      if (
-        anchorRef.current &&
-        !anchorRef.current.contains(target) &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target)
-      ) {
-        setIsOpen(false);
-        setSearchValue("");
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handleSelect = useCallback(
-    (newValue: (string | number)[], options: CascaderOption[]) => {
-      setSelectedValue(newValue);
-      setSelectedOptions(options);
-      setSearchValue("");
-      setSearchResults([]);
-      onChange?.(newValue, options);
-      setIsOpen(false);
-    },
-    [onChange],
-  );
-
-  const handleClear = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setSelectedValue([]);
-      setSelectedOptions([]);
-      onChange?.([], []);
-    },
-    [onChange],
-  );
-
-  const handleSearch = useCallback(
-    (value: string) => {
-      setSearchValue(value);
-      if (!value) {
-        setSearchResults([]);
+      if (anchor?.contains(target) || dropdownRef.current?.contains(target)) {
         return;
       }
+      setIsOpen(false);
+      setSearchValue("");
+    };
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [isOpen, anchor]);
 
-      const flattenOptions = (
-        opts: CascaderOption[],
-        path: CascaderOption[] = [],
-      ): SearchResult[] => {
-        return opts.reduce((acc, opt) => {
-          const currentPath = [...path, opt];
-          const currentOpt = { ...opt, path: currentPath };
-
-          if (!opt.disabled) {
-            acc.push(currentOpt);
-            if (opt.children) {
-              acc.push(...flattenOptions(opt.children, currentPath));
-            }
-          }
-
-          return acc;
-        }, [] as SearchResult[]);
-      };
-
-      const allOptions = flattenOptions(options);
-      const filtered = allOptions.filter((option) => {
-        if (filter) {
-          return filter(value, option.path);
-        }
-        return option.path.some((o) =>
-          o.label?.toString().toLowerCase().includes(value.toLowerCase()),
-        );
-      });
-
-      setSearchResults(filtered);
-    },
-    [options, filter],
-  );
-
-  const renderDisplayValue = () => {
-    if (searchValue && showSearch) {
-      return searchValue;
-    }
-    if (displayRender) {
-      const customLabel = displayRender(
-        selectedOptions.map((o) => String(o.label)),
-        selectedOptions,
-      );
-      return typeof customLabel === "string" ? customLabel : "";
-    }
-    return selectedOptions.map((o) => String(o.label)).join(" / ") || "";
-  };
-
-  // 修改下拉框位置计算逻辑，确保首次渲染时就有正确位置
-  const updateDropdownPosition = useCallback(() => {
-    if (!dropdownRef.current || !anchorRef.current) return;
-
-    const anchorRect = anchorRef.current.getBoundingClientRect();
-    const dropdownEl = dropdownRef.current;
-    const viewportHeight = window.innerHeight;
-
-    const { bottom, left, height } = anchorRect;
-    const dropdownHeight = dropdownEl.offsetHeight || 300;
-
-    const spaceBelow = viewportHeight - bottom;
-    const spaceAbove = bottom - height;
-    const showBelow = spaceBelow >= dropdownHeight || spaceBelow >= spaceAbove;
-
-    dropdownEl.style.position = "fixed";
-    dropdownEl.style.left = `${left}px`;
-    dropdownEl.style.width = `${anchorRect.width}px`;
-    dropdownEl.style.zIndex = "1000";
-
-    if (showBelow) {
-      dropdownEl.style.top = `${bottom}px`;
-      dropdownEl.style.bottom = "auto";
-      dropdownEl.style.maxHeight = `${spaceBelow - 8}px`;
-    } else {
-      dropdownEl.style.bottom = `${viewportHeight - (bottom - height)}px`;
-      dropdownEl.style.top = "auto";
-      dropdownEl.style.maxHeight = `${spaceAbove - 8}px`;
-    }
-  }, []);
-
-  // 修改下拉框渲染逻辑，使用 Portal
-  const renderDropdown = () => {
-    if (!isOpen) return null;
-
-    return ReactDOM.createPortal(
-      <div
-        ref={dropdownRef}
-        className={`${styles.dropdown} ${dropdownClassName || ""}`}
-        style={{
-          position: "fixed",
-          visibility: "hidden",
-          ...dropdownStyle,
-        }}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-      >
-        {searchValue && showSearch ? (
-          <div className={styles.searchResults} role="listbox">
-            {searchResults.length > 0 ? (
-              searchResults.map((option) => (
-                <div
-                  key={`${option.value}-${option.path.length}`}
-                  className={styles.searchOption}
-                  role="option"
-                  aria-selected={false}
-                  tabIndex={0}
-                  onKeyDown={activateOnEnterOrSpace}
-                  onClick={() => {
-                    const values = option.path.map((o) => o.value);
-                    handleSelect(values, option.path);
-                  }}
-                >
-                  {option.path.map((o) => o.label).join(" / ")}
-                </div>
-              ))
-            ) : (
-              <div className={styles.empty}>No results found</div>
-            )}
-          </div>
-        ) : (
-          <CascaderPanel
-            label={label}
-            name={name}
-            options={options}
-            activePath={selectedOptions}
-            expandTrigger={expandTrigger}
-            maxLevel={maxLevel}
-            optionStyle={optionStyle}
-            onLevelSelect={(option) => {
-              const newPath = findOptionPath(options, option) ?? [option];
-              if (!option.children || option.isLeaf) {
-                handleSelect(
-                  newPath.map((o) => o.value),
-                  newPath,
-                );
-              }
-              if (loadData && !option.children && !option.isLeaf) {
-                loadData(newPath);
-              }
-            }}
-            optionRender={optionRender}
-          />
-        )}
-      </div>,
-      document.body,
-    );
-  };
-
-  // 使用 RAF 确保位置计算在渲染后执行
+  // Combobox semantics on the inner <input>
   useEffect(() => {
-    if (!isOpen || !dropdownRef.current) return;
+    if (!input) return;
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-haspopup", "listbox");
+    input.setAttribute("aria-expanded", String(isOpen));
+    if (showSearch) input.setAttribute("aria-autocomplete", "list");
+  }, [input, isOpen, showSearch]);
 
-    const raf = requestAnimationFrame(() => {
-      if (dropdownRef.current) {
-        dropdownRef.current.style.visibility = "visible";
-        updateDropdownPosition();
-      }
-    });
+  /** Focus leaving both the field and the dropdown closes it */
+  const handleBlur = (event: React.FocusEvent) => {
+    const next = event.relatedTarget as Node | null;
+    if (!isOpen || !next) return;
+    if (anchor?.contains(next) || dropdownRef.current?.contains(next)) return;
+    closeDropdown();
+  };
 
-    return () => cancelAnimationFrame(raf);
-  }, [isOpen, updateDropdownPosition]);
+  const focusFirstSearchResult = () =>
+    dropdownRef.current?.querySelector<HTMLElement>('[role="option"]')?.focus();
 
-  return (
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        if (!isOpen) openDropdown(true);
+        else if (searching) focusFirstSearchResult();
+        else setFocusPanel(true);
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (!isOpen) openDropdown(true);
+        break;
+      case " ":
+        if (showSearch) break;
+        e.preventDefault();
+        if (!isOpen) openDropdown(true);
+        break;
+      case "Escape":
+        if (isOpen) {
+          e.preventDefault();
+          closeDropdown();
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const labels = selectedOptions.map((o) => String(o.label));
+  const displayValue = searching
+    ? searchValue
+    : displayRender
+      ? displayRender(labels, selectedOptions)
+      : labels.join(" / ");
+
+  const renderSearchResults = () => (
     <div
-      className={`${styles.cascader} ${className || ""}`}
-      ref={anchorRef}
-      style={{ width }}
+      className={styles.searchResults}
+      role="listbox"
+      aria-label={label}
       onKeyDown={(e) => {
-        // events from the portaled dropdown bubble here through React
-        if (e.key === "Escape" && isOpen) {
-          e.stopPropagation();
-          setIsOpen(false);
-          setSearchValue("");
+        const items = Array.from(
+          e.currentTarget.querySelectorAll<HTMLElement>('[role="option"]'),
+        );
+        const index = items.indexOf(e.target as HTMLElement);
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          const step = e.key === "ArrowDown" ? 1 : -1;
+          items[(index + step + items.length) % items.length]?.focus();
         }
       }}
     >
+      {searchResults.length > 0 ? (
+        searchResults.map(({ path }) => (
+          <div
+            key={path.map((o) => o.value).join("/")}
+            className={styles.searchOption}
+            role="option"
+            aria-selected={false}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                select(path);
+              }
+            }}
+            onClick={() => select(path)}
+          >
+            {path.map((o) => o.label).join(" / ")}
+          </div>
+        ))
+      ) : (
+        <div className={styles.empty} role="status">
+          {t("cascader.noResults")}
+        </div>
+      )}
+    </div>
+  );
+
+  const dropdown =
+    isOpen && isClient
+      ? createPortal(
+          <div
+            ref={setDropdownRef}
+            className={classNames(styles.dropdown, dropdownClassName)}
+            data-placement={placement}
+            style={{ ...floatingStyles, ...dropdownStyle }}
+            // keep focus where it is when clicking non-focusable areas
+            onMouseDown={(e) => {
+              if (!(e.target as HTMLElement).closest('[role="option"]')) {
+                e.preventDefault();
+              }
+            }}
+            onBlur={handleBlur}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                closeDropdown(true);
+              } else if (e.key === "Tab") {
+                closeDropdown();
+              }
+            }}
+          >
+            {searching ? (
+              renderSearchResults()
+            ) : (
+              <CascaderPanel
+                key={focusPanel ? "keyboard" : "pointer"}
+                label={label}
+                options={options}
+                expandedPath={expandedPath}
+                selectedPath={selectedOptions}
+                expandTrigger={expandTrigger}
+                maxLevel={maxLevel}
+                optionStyle={optionStyle}
+                optionRender={optionRender}
+                autoFocus={focusPanel}
+                onActivate={handleActivate}
+                onHoverExpand={(path) =>
+                  setExpandedValues(path.map((o) => o.value))
+                }
+                onExit={() => closeDropdown(true)}
+              />
+            )}
+          </div>,
+          document.body,
+        )
+      : null;
+
+  return (
+    <div
+      className={classNames(styles.cascader, className)}
+      ref={setAnchor}
+      style={{ width }}
+      onBlur={handleBlur}
+    >
       <div
-        className={`${styles.selector} ${disabled ? styles.disabled : ""} ${
-          isOpen ? styles.focused : ""
-        }`}
-        onMouseDown={() => {
-          openAtMouseDownRef.current = isOpen;
+        className={classNames(styles.selector, {
+          [styles.disabled]: disabled,
+          [styles.focused]: isOpen,
+        })}
+        onClick={() => {
+          if (disabled) return;
+          if (!isOpen) openDropdown();
+          else if (!showSearch) closeDropdown();
         }}
-        onClick={handleSelectorClick}
       >
         <TextField
+          ref={setInputRef}
           label={label}
           name={name}
-          value={renderDisplayValue()}
+          value={displayValue}
           readOnly={!showSearch}
           disabled={disabled}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("cascader.placeholder")}
           className={styles.input}
-          onChange={(value) => showSearch && handleSearch(value)}
-          onFocus={() => !disabled && setIsOpen(true)}
+          onChange={(next) => {
+            if (!showSearch) return;
+            setSearchValue(next);
+            if (!isOpen) openDropdown();
+          }}
+          onKeyDown={handleInputKeyDown}
         />
         {allowClear && selectedValue.length > 0 && !disabled && (
-          <span
+          <button
+            type="button"
             className={styles.clearIcon}
-            role="button"
-            tabIndex={0}
-            aria-label="Clear"
-            onKeyDown={activateOnEnterOrSpace}
+            aria-label={t("cascader.clear")}
             onClick={(e) => {
               e.stopPropagation();
-              handleClear(e);
-              setSearchValue("");
-              setSearchResults([]);
+              handleClear();
             }}
           >
             <IoClose className={styles.icon} aria-hidden focusable={false} />
-          </span>
+          </button>
         )}
-        <span className={`${styles.arrow} ${isOpen ? styles.open : ""}`}>
+        <span
+          className={classNames(styles.arrow, isOpen && styles.open)}
+          aria-hidden="true"
+        >
           <IoChevronDown className={styles.icon} />
         </span>
       </div>
-      {renderDropdown()}
+      {dropdown}
     </div>
   );
 };

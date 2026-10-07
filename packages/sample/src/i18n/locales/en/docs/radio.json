@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "An uncontrolled RadioGroup with a defaultValue. Each Radio is identified by its value."
+      "description": "An uncontrolled RadioGroup with a defaultValue. Each Radio is identified by its value; label names the group for assistive technologies."
     },
     "controlled": {
       "title": "Controlled",
@@ -42,20 +42,23 @@
       "size": "Radio size. Overridden by the RadioGroup size",
       "type": "Color scheme of the radio",
       "label": "Text label displayed next to the radio",
+      "ariaLabel": "Accessible label, required when there is no visible label",
       "className": "Additional class name",
       "color": "Custom color of the radio mark. Overridden by the RadioGroup color",
       "bgColor": "Custom background color of the radio mark",
       "required": "Marks the input as required",
       "error": "Shows the error state (errorMessage replaces helperText)",
       "errorIcon": "Icon shown before the error message",
-      "errorMessage": "Message shown below the radio when error is true",
-      "helperText": "Helper text shown below the radio",
-      "ref": "Ref forwarded to the native input element"
+      "errorMessage": "Message shown below the radio when error is true (linked with aria-describedby)",
+      "helperText": "Helper text shown below the radio (linked with aria-describedby)",
+      "ref": "Ref to the native <input type=\"radio\"> element"
     },
     "RadioGroupProps": {
       "value": "Value of the selected radio (controlled)",
       "defaultValue": "Initially selected value (uncontrolled)",
-      "name": "Name shared by all radios of the group",
+      "name": "Name shared by all radios of the group (a unique name is generated when omitted, so arrow-key navigation always works)",
+      "label": "Visible label of the group; also its accessible name",
+      "ariaLabel": "Accessible label of the group when there is no visible label",
       "onChange": "Called with the newly selected value",
       "disabled": "Disables every radio in the group",
       "children": "Radio elements",
@@ -63,9 +66,10 @@
       "direction": "Layout direction of the radios",
       "size": "Size applied to every radio in the group",
       "error": "Shows the error state",
-      "helperText": "Helper text shown below the group",
+      "helperText": "Helper text shown below the group (linked with aria-describedby)",
       "required": "Marks the group as required (aria-required)",
-      "color": "Color applied to every radio in the group"
+      "color": "Color applied to every radio in the group",
+      "ref": "Ref to the root wrapper element"
     }
   }
 }

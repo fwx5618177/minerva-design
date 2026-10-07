@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import type { EmptyProps } from "../Empty";
 import type { TextFieldProps } from "../TextField";
 import type { PopperProps } from "../Popper";
@@ -28,6 +29,8 @@ export interface AutoCompleteOption {
  * Props of the AutoComplete component
  */
 export interface AutoCompleteProps {
+  /** Ref to the inner <input> element */
+  ref?: Ref<HTMLInputElement>;
   /** Name of the input */
   name: string;
   /** Label of the input */
@@ -37,7 +40,7 @@ export interface AutoCompleteProps {
    * @default "basic"
    */
   mode?: "basic" | "custom";
-  /** Input value (controlled) */
+  /** Input text (controlled; pair with onChange) */
   value?: string;
   /** Called when the input text changes (typing or selecting an option) */
   onChange?: (value: string) => void;
@@ -51,12 +54,26 @@ export interface AutoCompleteProps {
    * @default ""
    */
   defaultValue?: string;
-  /** Called when an option is selected (mouse or keyboard) */
+  /**
+   * Called when an option is picked (mouse or keyboard). In multiple mode it
+   * is also called when a picked option is picked again (which deselects it)
+   * or removed through its tag
+   */
   onSelect?: (option: AutoCompleteOption) => void;
+  /** Selected options in multiple mode (controlled; pair with onSelectedOptionsChange) */
+  selectedOptions?: AutoCompleteOption[];
+  /**
+   * Initially selected options in multiple mode (uncontrolled)
+   * @default []
+   */
+  defaultSelectedOptions?: AutoCompleteOption[];
+  /** Called with the new selection in multiple mode */
+  onSelectedOptionsChange?: (options: AutoCompleteOption[]) => void;
   /** Returns the group name of an option; options are grouped under headings */
   groupBy?: (option: AutoCompleteOption) => string;
   /**
-   * Allows selecting several options, shown as removable tags
+   * Allows selecting several options, shown as removable tags; the dropdown
+   * stays open between picks
    * @default false
    */
   multiple?: boolean;
@@ -81,12 +98,14 @@ export interface AutoCompleteProps {
   /** Props forwarded to the dropdown Popper */
   popperProps?: Omit<PopperProps, "anchorEl" | "visible" | "children">;
   /**
-   * Dropdown placement
+   * Preferred dropdown side; the dropdown is aligned with the input's start
+   * edge, is at least as wide as the input, and flips / shifts to stay in the
+   * viewport
    * @default "bottom"
    */
   placement?: "top" | "bottom" | "left" | "right";
   /**
-   * Dropdown offset
+   * Dropdown offset (see Popper's offset)
    * @default { x: 0, y: 4 }
    */
   offset?: PopperProps["offset"];
@@ -112,7 +131,7 @@ export interface AutoCompleteProps {
 }
 
 /**
- * AutoComplete 输入框属性接口
+ * Props of the input rendered by AutoComplete
  */
 export interface AutoCompleteInputProps extends TextFieldProps {
   ref?: React.Ref<HTMLInputElement>;

@@ -1,5 +1,5 @@
 import React from "react";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router";
 import { I18nextProvider } from "react-i18next";
 import { ConfigProvider } from "@minerva/lib-core";
 import i18n from "@i18n/config";

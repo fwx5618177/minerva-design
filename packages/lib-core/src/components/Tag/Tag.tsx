@@ -1,34 +1,25 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { IoClose } from "react-icons/io5";
 import type { TagProps } from "./types";
 import styles from "./tag.module.scss";
+import useI18n from "../../hooks/useI18n";
+
+const RIPPLE_DURATION = 600;
+
+interface Ripple {
+  id: number;
+  style: React.CSSProperties;
+}
 
 /**
- * Tag 组件
- * 用于标记和分类的小标签
- * @param children - 标签内容
- * @param variant - 标签变体样式
- * @param size - 标签尺寸
- * @param shape - 标签形状
- * @param closable - 是否可关闭
- * @param onClose - 关闭回调
- * @param clickable - 是否可点击
- * @param onClick - 点击回调
- * @param icon - 自定义图标
- * @param bordered - 是否显示边框
- * @param elevation - 是否显示阴影
- * @param bgColor - 自定义背景色
- * @param textColor - 自定义文字颜色
- * @param borderColor - 自定义边框颜色
- * @param className - 自定义类名
- * @param style - 自定义样式
- * @param disabled - 是否禁用
- * @param closeIcon - 自定义关闭图标
- * @param closeLabel - 关闭按钮的无障碍标签
- * @param ripple - 是否显示波纹效果
+ * Tag: a small label for marking and categorizing.
+ *
+ * The root is a plain (non-interactive) element. When `clickable`, the content
+ * is rendered as a native <button>; when `closable`, the close control is a
+ * sibling <button>, so interactive elements are never nested.
  */
-const Tag: React.FC<TagProps> = ({
+const Tag = ({
   children,
   variant = "default",
   size = "medium",
@@ -37,6 +28,7 @@ const Tag: React.FC<TagProps> = ({
   onClose,
   clickable = false,
   onClick,
+  pressed,
   icon,
   bordered = false,
   elevation = false,
@@ -47,76 +39,63 @@ const Tag: React.FC<TagProps> = ({
   style,
   disabled = false,
   closeIcon,
-  closeLabel = "Close",
+  closeLabel,
   ripple = true,
-}) => {
-  // 处理关闭事件
-  const handleClose = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      if (!disabled && onClose) {
-        onClose(e);
-      }
-    },
-    [disabled, onClose],
-  );
+  ref,
+}: TagProps) => {
+  const { t } = useI18n();
+  const [ripples, setRipples] = useState<Ripple[]>([]);
+  const nextRippleId = useRef(0);
+  const rippleTimers = useRef(new Set<ReturnType<typeof setTimeout>>());
 
-  // 处理点击事件
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (!disabled && clickable && onClick) {
-        onClick(e);
-      }
-    },
-    [disabled, clickable, onClick],
-  );
+  useEffect(() => {
+    const timers = rippleTimers.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
 
-  // 处理波纹效果
-  const handleRipple = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (!ripple || disabled) return;
+  const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // The close button is not part of the tag's main action / ripple.
+    e.stopPropagation();
+    if (!disabled) onClose?.(e);
+  };
 
-      const element = e.currentTarget;
-      const rect = element.getBoundingClientRect();
-      // keyboard-activated clicks (detail === 0) ripple from the center
-      const fromKeyboard = e.detail === 0;
-      const rippleElement = document.createElement("span");
-      const diameter = Math.max(rect.width, rect.height);
-      const radius = diameter / 2;
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled) onClick?.(e);
+  };
 
-      rippleElement.style.width = rippleElement.style.height = `${diameter}px`;
-      rippleElement.style.left = fromKeyboard
-        ? `${rect.width / 2 - radius}px`
-        : `${e.clientX - rect.left - radius}px`;
-      rippleElement.style.top = fromKeyboard
-        ? `${rect.height / 2 - radius}px`
-        : `${e.clientY - rect.top - radius}px`;
-      rippleElement.className = styles.ripple;
+  const handleRipple = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ripple || disabled) return;
 
-      element.appendChild(rippleElement);
+    const rect = e.currentTarget.getBoundingClientRect();
+    // keyboard-activated clicks (detail === 0) ripple from the center
+    const fromKeyboard = e.detail === 0;
+    const diameter = Math.max(rect.width, rect.height);
+    const radius = diameter / 2;
+    const id = nextRippleId.current++;
+    const next: Ripple = {
+      id,
+      style: {
+        width: diameter,
+        height: diameter,
+        left: fromKeyboard
+          ? rect.width / 2 - radius
+          : e.clientX - rect.left - radius,
+        top: fromKeyboard
+          ? rect.height / 2 - radius
+          : e.clientY - rect.top - radius,
+      },
+    };
+    setRipples((prev) => [...prev, next]);
 
-      setTimeout(() => {
-        rippleElement.remove();
-      }, 600);
-    },
-    [ripple, disabled],
-  );
-
-  const interactive = clickable && !disabled;
-
-  // Clickable tags behave like buttons: Enter / Space activate them.
-  // Activation goes through a native click so `onClick` keeps receiving a
-  // MouseEvent. Keys pressed on the inner close button are ignored here.
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!interactive || e.target !== e.currentTarget) return;
-      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-        e.preventDefault(); // Space would otherwise scroll the page
-        if (!e.repeat) e.currentTarget.click();
-      }
-    },
-    [interactive],
-  );
+    const timer = setTimeout(() => {
+      rippleTimers.current.delete(timer);
+      setRipples((prev) => prev.filter((r) => r.id !== id));
+    }, RIPPLE_DURATION);
+    rippleTimers.current.add(timer);
+  };
 
   const tagStyles: React.CSSProperties = {
     ...style,
@@ -125,15 +104,25 @@ const Tag: React.FC<TagProps> = ({
     borderColor: borderColor,
   };
 
+  const content = (
+    <>
+      {icon && <span className={styles.icon}>{icon}</span>}
+      <span className={styles.content}>{children}</span>
+    </>
+  );
+
   return (
+    // The click handler only draws the decorative ripple; the actions live
+    // on the native buttons inside.
     <div
+      ref={ref}
       className={classNames(
         styles.tag,
         styles[variant],
         styles[size],
         styles[shape],
         {
-          [styles.clickable]: interactive,
+          [styles.clickable]: clickable && !disabled,
           [styles.bordered]: bordered,
           [styles.elevation]: elevation,
           [styles.disabled]: disabled,
@@ -141,28 +130,35 @@ const Tag: React.FC<TagProps> = ({
         className,
       )}
       style={tagStyles}
-      role={clickable ? "button" : undefined}
-      tabIndex={interactive ? 0 : undefined}
-      aria-disabled={clickable && disabled ? true : undefined}
-      onKeyDown={clickable ? handleKeyDown : undefined}
-      onClick={(e) => {
-        handleClick(e);
-        handleRipple(e);
-      }}
+      onClick={handleRipple}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
-      <span className={styles.content}>{children}</span>
+      {clickable ? (
+        <button
+          type="button"
+          className={styles.action}
+          onClick={handleClick}
+          disabled={disabled}
+          aria-pressed={pressed}
+        >
+          {content}
+        </button>
+      ) : (
+        content
+      )}
       {closable && (
         <button
           type="button"
           className={styles.closeIcon}
           onClick={handleClose}
           disabled={disabled}
-          aria-label={closeLabel}
+          aria-label={closeLabel ?? t("tag.close")}
         >
           {closeIcon || <IoClose aria-hidden focusable={false} />}
         </button>
       )}
+      {ripples.map((r) => (
+        <span key={r.id} className={styles.ripple} style={r.style} />
+      ))}
     </div>
   );
 };

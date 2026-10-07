@@ -28,11 +28,10 @@ export default defineConfig(
     plugins: {
       "react-hooks": reactHooks,
     },
-    // Classic hook rules. The React Compiler rules bundled in the plugin's
-    // "recommended" preset are not enabled because the compiler isn't used.
+    // Full React-Compiler-era rule set (refs during render, setState in
+    // effects, purity, immutability, ...) on top of the classic hook rules.
     rules: {
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      ...reactHooks.configs["recommended-latest"].rules,
     },
   },
   {

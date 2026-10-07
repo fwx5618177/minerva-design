@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useId, useState } from "react";
 import classNames from "classnames";
 import {
   IoInformationCircle,
@@ -10,6 +10,8 @@ import {
   IoChevronUp,
 } from "react-icons/io5";
 import type { AlertProps } from "./types";
+import useI18n from "../../hooks/useI18n";
+import { useControllableState } from "../../internal/useControllableState";
 import styles from "./alert.module.scss";
 
 const iconMap = {
@@ -38,10 +40,16 @@ const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
  * @param {boolean} rounded - 是否圆角
  * @param {number|string} borderRadius - 自定义圆角大小
  * @param {boolean} collapsible - 是否可以展开收起
- * @param {boolean} defaultExpanded - 默认是否展开
+ * @param {boolean} expanded - 是否展开（受控）
+ * @param {boolean} defaultExpanded - 默认是否展开（非受控）
  * @param {function} onExpand - 展开收起的回调函数
+ * @param {string} closeLabel - 关闭按钮的无障碍名称（默认本地化）
+ * @param {string} expandLabel - 展开按钮的无障碍名称（默认本地化）
+ * @param {string} collapseLabel - 收起按钮的无障碍名称（默认本地化）
+ * @param {string} iconLabel - 图标的无障碍名称（默认本地化）
+ * @param {Ref} ref - 根元素的 ref
  */
-const Alert: React.FC<AlertProps> = ({
+const Alert = ({
   title,
   children,
   variant = "info",
@@ -64,11 +72,25 @@ const Alert: React.FC<AlertProps> = ({
   rounded = true,
   borderRadius,
   collapsible = false,
+  expanded: expandedProp,
   defaultExpanded = true,
   onExpand,
-}) => {
+  closeLabel,
+  expandLabel,
+  collapseLabel,
+  iconLabel,
+  ref,
+}: AlertProps) => {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(true);
-  const [expanded, setExpanded] = useState(defaultExpanded);
+  const [expanded, setExpanded] = useControllableState({
+    value: expandedProp,
+    defaultValue: defaultExpanded,
+    onChange: onExpand,
+  });
+  const contentId = useId();
+  // The toggle lives in the title, so without a title nothing can be collapsed
+  const isCollapsible = collapsible && Boolean(title);
 
   const handleClose = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,12 +100,11 @@ const Alert: React.FC<AlertProps> = ({
     [onClose],
   );
 
+  // onExpand is called by the setter itself, never inside a state updater,
+  // so StrictMode's double-invoked updaters cannot call it twice.
   const handleExpand = useCallback(() => {
-    setExpanded((prev) => {
-      onExpand?.(!prev);
-      return !prev;
-    });
-  }, [onExpand]);
+    setExpanded((prev) => !prev);
+  }, [setExpanded]);
 
   if (!visible) return null;
 
@@ -104,27 +125,33 @@ const Alert: React.FC<AlertProps> = ({
       [styles.withElevation]: elevation,
       [styles.rounded]: rounded,
       [styles.expanded]: expanded,
-      [styles.collapsible]: collapsible,
+      [styles.collapsible]: isCollapsible,
     },
     className,
   );
 
   const customStyle = {
     ...style,
-    ...(borderRadius && { borderRadius }),
+    ...(borderRadius != null && { borderRadius }),
   };
 
   return (
     <div
+      ref={ref}
       className={classes}
       style={customStyle}
-      role="alert"
+      // Errors and warnings interrupt (alert); info and success are polite
+      role={variant === "error" || variant === "warning" ? "alert" : "status"}
       data-variant={variant}
       data-size={size}
       data-type={type}
     >
       {showIcon && (
-        <span className={styles.icon} role="img" aria-label={`${variant} icon`}>
+        <span
+          className={styles.icon}
+          role="img"
+          aria-label={iconLabel ?? t(`alert.icon.${variant}`)}
+        >
           {icon || iconMap[variant]}
         </span>
       )}
@@ -133,20 +160,28 @@ const Alert: React.FC<AlertProps> = ({
         {title && (
           <div className={styles.title}>
             {title}
-            {collapsible && (
+            {isCollapsible && (
               <button
+                type="button"
                 className={styles.expandButton}
                 onClick={handleExpand}
-                aria-label={expanded ? "Collapse" : "Expand"}
+                aria-label={
+                  expanded
+                    ? (collapseLabel ?? t("alert.collapse"))
+                    : (expandLabel ?? t("alert.expand"))
+                }
                 aria-expanded={expanded}
+                aria-controls={expanded ? contentId : undefined}
               >
                 {expanded ? <IoChevronUp /> : <IoChevronDown />}
               </button>
             )}
           </div>
         )}
-        {(!collapsible || expanded) && (
-          <div className={styles.message}>{children}</div>
+        {(!isCollapsible || expanded) && (
+          <div id={contentId} className={styles.message}>
+            {children}
+          </div>
         )}
       </div>
 
@@ -156,7 +191,7 @@ const Alert: React.FC<AlertProps> = ({
         <button
           className={styles.closeButton}
           onClick={handleClose}
-          aria-label="Close"
+          aria-label={closeLabel ?? t("alert.close")}
           type="button"
         >
           {closeIcon || <IoClose />}

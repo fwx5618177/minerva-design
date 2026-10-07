@@ -1,6 +1,7 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { createRef, useState } from "react";
+import type React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import AutoComplete from "./AutoComplete";
 import type { AutoCompleteOption, AutoCompleteProps } from "./types";
@@ -18,6 +19,13 @@ const renderAutoComplete = (props: Partial<AutoCompleteProps> = {}) =>
   );
 
 const getInput = () => screen.getByRole("combobox");
+/** The dropdown (Popper element, portaled to body) */
+const queryDropdown = () => document.body.querySelector<HTMLElement>(".popper");
+const getDropdown = () => {
+  const dropdown = queryDropdown();
+  if (!dropdown) throw new Error("dropdown is not open");
+  return dropdown;
+};
 
 describe("AutoComplete", () => {
   afterEach(() => {
@@ -31,7 +39,7 @@ describe("AutoComplete", () => {
     expect(input).toHaveAttribute("name", "fruit");
     expect(input).toHaveValue("");
     expect(screen.getByText("Fruit")).toBeInTheDocument();
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(queryDropdown()).not.toBeInTheDocument();
   });
 
   it("uses defaultValue as the initial input value", () => {
@@ -45,10 +53,11 @@ describe("AutoComplete", () => {
     const onDropdownVisibleChange = vi.fn();
     renderAutoComplete({ onDropdownVisibleChange });
 
-    expect(onDropdownVisibleChange).toHaveBeenLastCalledWith(false);
+    // not called on mount, only on actual changes
+    expect(onDropdownVisibleChange).not.toHaveBeenCalled();
     await user.click(getInput());
 
-    const dropdown = screen.getByRole("dialog");
+    const dropdown = getDropdown();
     expect(dropdown).toHaveTextContent("Apple");
     expect(dropdown).toHaveTextContent("Banana");
     expect(dropdown).toHaveTextContent("Cherry");
@@ -116,7 +125,7 @@ describe("AutoComplete", () => {
     expect(onOptionClick).toHaveBeenCalledWith(options[1]);
     expect(onChange).toHaveBeenLastCalledWith("Banana");
     expect(getInput()).toHaveValue("Banana");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(queryDropdown()).not.toBeInTheDocument();
   });
 
   it("ignores clicks on disabled options", async () => {
@@ -132,7 +141,7 @@ describe("AutoComplete", () => {
 
     expect(onSelect).not.toHaveBeenCalled();
     expect(onOptionClick).not.toHaveBeenCalled();
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(getDropdown()).toBeInTheDocument();
   });
 
   it("supports keyboard navigation with ArrowDown/ArrowUp and Enter", async () => {
@@ -171,30 +180,39 @@ describe("AutoComplete", () => {
     renderAutoComplete();
 
     await user.click(getInput());
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(getDropdown()).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(queryDropdown()).not.toBeInTheDocument();
 
     await user.keyboard("b");
-    expect(screen.getByRole("dialog")).toHaveTextContent("Banana");
+    expect(getDropdown()).toHaveTextContent("Banana");
   });
 
-  it("closes the dropdown 200ms after blur", async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    renderAutoComplete();
+  it("closes the dropdown when focus leaves the input", async () => {
+    const user = userEvent.setup();
+    const onDropdownVisibleChange = vi.fn();
+    renderAutoComplete({ onDropdownVisibleChange });
 
     await user.click(getInput());
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(getDropdown()).toBeInTheDocument();
 
     await user.tab();
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(queryDropdown()).not.toBeInTheDocument();
+    expect(onDropdownVisibleChange.mock.calls).toEqual([[true], [false]]);
+  });
 
-    act(() => {
-      vi.advanceTimersByTime(200);
-    });
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  it("closes when clicking outside", async () => {
+    const user = userEvent.setup();
+    render(
+      <div>
+        <AutoComplete name="fruit" label="Fruit" options={options} />
+        <p>Outside</p>
+      </div>,
+    );
+    await user.click(getInput());
+    await user.click(screen.getByText("Outside"));
+    expect(queryDropdown()).not.toBeInTheDocument();
   });
 
   it("filters by the controlled value", async () => {
@@ -235,9 +253,9 @@ describe("AutoComplete", () => {
     await user.type(getInput(), "ap");
 
     expect(filterOption).toHaveBeenCalledWith("ap", options[0]);
-    const labels = Array.from(
-      screen.getByRole("dialog").querySelectorAll(".label"),
-    ).map((el) => el.textContent);
+    const labels = Array.from(getDropdown().querySelectorAll(".label")).map(
+      (el) => el.textContent,
+    );
     expect(labels).toEqual(["Apricot", "Apple"]);
   });
 
@@ -271,13 +289,16 @@ describe("AutoComplete", () => {
     );
     const apricot = screen.getByText("Apricot").closest(".optionItem");
     await user.hover(apricot as HTMLElement);
-    const hovered = items.filter(
-      (item) => item.style.backgroundColor === "rgb(255, 0, 0)",
-    );
+    const hovered = items.filter((item) => item.classList.contains("active"));
     expect(hovered).toEqual([apricot]);
+    expect(
+      getDropdown()
+        .querySelector<HTMLElement>(".dropdown")!
+        .style.getPropertyValue("--hover-bg-color"),
+    ).toBe("rgb(255, 0, 0)");
 
     await user.unhover(apricot as HTMLElement);
-    expect(apricot).toHaveStyle({ backgroundColor: "transparent" });
+    expect(apricot).not.toHaveClass("active");
   });
 
   it("navigates grouped options by keyboard in display order", async () => {
@@ -325,13 +346,19 @@ describe("AutoComplete", () => {
     const apple = screen.getByText("Apple").closest(".optionItem");
     const banana = screen.getByText("Banana").closest(".optionItem");
     expect(apple).toHaveClass("highlight");
-    expect(apple).toHaveStyle({ backgroundColor: "rgb(0, 0, 255)" });
+    const dropdown = getDropdown().querySelector<HTMLElement>(".dropdown")!;
+    expect(dropdown.style.getPropertyValue("--highlight-bg-color")).toBe(
+      "rgb(0, 0, 255)",
+    );
+    expect(dropdown.style.getPropertyValue("--hover-bg-color")).toBe(
+      "rgb(255, 0, 0)",
+    );
 
     await user.hover(banana as HTMLElement);
-    expect(banana).toHaveStyle({ backgroundColor: "rgb(255, 0, 0)" });
+    expect(banana).toHaveClass("active");
 
     await user.unhover(banana as HTMLElement);
-    expect(banana).toHaveStyle({ backgroundColor: "transparent" });
+    expect(banana).not.toHaveClass("active");
   });
 
   it("supports multiple selection with removable tags", async () => {
@@ -345,6 +372,7 @@ describe("AutoComplete", () => {
     });
 
     await user.click(getInput());
+    await user.keyboard("ap");
     await user.click(screen.getByText("Apple"));
     // Dropdown stays open in multiple mode
     await user.click(screen.getByText("Banana"));
@@ -407,18 +435,18 @@ describe("AutoComplete", () => {
     await user.click(getInput());
     const dropdown = document.querySelector(".dropdown");
     expect(dropdown).toHaveStyle({ backgroundColor: "rgb(1, 2, 3)" });
-    expect((dropdown as HTMLElement).style.animation).toBe("none");
+    expect(dropdown).not.toHaveClass("animated");
   });
 
   it("forwards popperProps to the Popper", async () => {
     const user = userEvent.setup();
-    renderAutoComplete({ popperProps: { ariaLabel: "Fruit suggestions" } });
+    renderAutoComplete({ popperProps: { className: "my-popper", zIndex: 7 } });
 
     await user.click(getInput());
-    expect(
-      screen.getByRole("dialog", { name: "Fruit suggestions" }),
-    ).toBeInTheDocument();
+    expect(getDropdown()).toHaveClass("my-popper");
+    expect(getDropdown().style.zIndex).toBe("7");
   });
+
   it("exposes combobox / listbox semantics and the active option", async () => {
     const user = userEvent.setup();
     renderAutoComplete();
@@ -448,5 +476,138 @@ describe("AutoComplete", () => {
     expect(
       screen.getByRole("button", { name: "Remove Banana" }),
     ).toBeInTheDocument();
+  });
+
+  describe("regressions", () => {
+    it("keeps the dropdown open between picks in multiple mode", async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      renderAutoComplete({ multiple: true });
+
+      await user.click(getInput());
+      await user.click(screen.getByText("Apple"));
+      await act(() => vi.advanceTimersByTimeAsync(500));
+      expect(getDropdown()).toBeInTheDocument();
+      expect(getInput()).toHaveFocus();
+      await user.click(screen.getByText("Banana"));
+      await act(() => vi.advanceTimersByTimeAsync(500));
+      expect(getDropdown()).toBeInTheDocument();
+      expect(screen.getByRole("listbox")).toHaveAttribute(
+        "aria-multiselectable",
+        "true",
+      );
+      expect(screen.getByRole("option", { name: /^Apple/ })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+    });
+
+    it("aligns the dropdown with the input start edge and matches its width", async () => {
+      const rect = (r: Partial<DOMRect>) =>
+        ({
+          x: 0,
+          y: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: 0,
+          height: 0,
+          toJSON: () => ({}),
+          ...r,
+        }) as DOMRect;
+      vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(
+        1200,
+      );
+      vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
+        800,
+      );
+      vi.spyOn(
+        HTMLElement.prototype,
+        "getBoundingClientRect",
+      ).mockImplementation(function (this: HTMLElement) {
+        return this.classList.contains("autoComplete")
+          ? rect({
+              top: 100,
+              bottom: 140,
+              left: 200,
+              right: 600,
+              width: 400,
+              height: 40,
+            })
+          : rect({});
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(
+        function (this: HTMLElement) {
+          return this.classList.contains("popper") ? 260 : 0;
+        },
+      );
+      const user = userEvent.setup();
+      renderAutoComplete();
+      await user.click(getInput());
+      const dropdown = getDropdown();
+      // previously centered under the (wider) field: 200 + (400 - 260) / 2 = 270
+      await waitFor(() => expect(dropdown.style.left).toBe("200px"));
+      expect(dropdown.style.minWidth).toBe("400px");
+      vi.restoreAllMocks();
+    });
+
+    it("supports controlled selectedOptions", async () => {
+      const user = userEvent.setup();
+      const onSelectedOptionsChange = vi.fn();
+      const Controlled = () => {
+        const [selected, setSelected] = useState<AutoCompleteOption[]>([
+          options[1],
+        ]);
+        return (
+          <AutoComplete
+            name="fruit"
+            label="Fruit"
+            options={options}
+            multiple
+            selectedOptions={selected}
+            onSelectedOptionsChange={(next) => {
+              onSelectedOptionsChange(next);
+              setSelected(next);
+            }}
+          />
+        );
+      };
+      render(<Controlled />);
+      expect(
+        screen.getByRole("button", { name: "Remove Banana" }),
+      ).toBeInTheDocument();
+      await user.click(getInput());
+      await user.click(screen.getByText("Apple"));
+      expect(onSelectedOptionsChange).toHaveBeenLastCalledWith([
+        options[1],
+        options[0],
+      ]);
+      // Backspace in the empty input removes the last tag
+      await user.keyboard("{Backspace}");
+      expect(onSelectedOptionsChange).toHaveBeenLastCalledWith([options[1]]);
+    });
+
+    it("prevents form submission when Enter picks an option", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <AutoComplete name="fruit" label="Fruit" options={options} />
+        </form>,
+      );
+      await user.click(getInput());
+      await user.keyboard("{ArrowDown}{Enter}");
+      expect(getInput()).toHaveValue("Apple");
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("forwards ref to the input", () => {
+      const ref = createRef<HTMLInputElement>();
+      render(
+        <AutoComplete name="fruit" label="Fruit" options={options} ref={ref} />,
+      );
+      expect(ref.current).toBe(getInput());
+    });
   });
 });

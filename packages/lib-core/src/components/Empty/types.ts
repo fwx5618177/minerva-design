@@ -1,9 +1,11 @@
+import type { Ref } from "react";
+
 export interface EmptyProps {
   /** Custom icon, replacing the default one */
   icon?: React.ReactNode;
   /**
    * Description text
-   * @default "No Data"
+   * @default "No Data" (localized)
    */
   description?: React.ReactNode;
   /** Additional class name */
@@ -30,4 +32,6 @@ export interface EmptyProps {
   showShadow?: boolean;
   /** Text color */
   color?: string;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

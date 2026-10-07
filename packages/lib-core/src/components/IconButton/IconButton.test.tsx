@@ -1,7 +1,9 @@
+import { createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import IconButton from "./IconButton";
+import i18n from "../../config/i18n";
 
 const Icon = () => <svg data-testid="icon" />;
 
@@ -13,7 +15,8 @@ describe("IconButton", () => {
     expect(button).toContainElement(screen.getByTestId("icon"));
     expect(button).toHaveClass("iconButton", "default", "medium", "circle");
     expect(button).toBeEnabled();
-    expect(button).toHaveAttribute("aria-disabled", "false");
+    expect(button).toHaveAttribute("type", "button");
+    expect(button).not.toHaveAttribute("aria-disabled");
     expect(button).toHaveAttribute("tabindex", "0");
   });
 
@@ -96,7 +99,7 @@ describe("IconButton", () => {
     const button = screen.getByRole("button");
     expect(button).toBeDisabled();
     expect(button).toHaveClass("disabled");
-    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).toBeDisabled();
     expect(button).toHaveAttribute("tabindex", "-1");
 
     await user.click(button);
@@ -111,7 +114,7 @@ describe("IconButton", () => {
     const button = screen.getByRole("button", { name: "icon button" });
     expect(button).toBeDisabled();
     expect(button).toHaveClass("loading");
-    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).toBeDisabled();
     expect(
       screen.getByRole("progressbar", { name: "Loading" }),
     ).toBeInTheDocument();
@@ -246,6 +249,25 @@ describe("IconButton", () => {
       await user.keyboard("{Enter}");
       await user.keyboard(" ");
       expect(onClick).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it("forwards ref to the button (React 19 ref prop)", () => {
+    const ref = createRef<HTMLButtonElement>();
+    render(<IconButton icon={<Icon />} ariaLabel="Settings" ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("button", { name: "Settings" }));
+  });
+
+  it("localizes its default label", () => {
+    render(<IconButton icon={<Icon />} />);
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    expect(
+      screen.getByRole("button", { name: "图标按钮" }),
+    ).toBeInTheDocument();
+    act(() => {
+      i18n.changeLanguage("en");
     });
   });
 });

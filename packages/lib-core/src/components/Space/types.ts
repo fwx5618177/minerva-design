@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type SpaceSize = "small" | "medium" | "large";
 export type SpaceAlign = "start" | "end" | "center" | "baseline" | "stretch";
 export type SpaceDirection = "horizontal" | "vertical";
@@ -47,4 +49,6 @@ export interface SpaceProps {
   style?: React.CSSProperties;
   /** Items to space out */
   children?: React.ReactNode;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

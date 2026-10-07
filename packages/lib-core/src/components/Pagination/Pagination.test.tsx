@@ -1,6 +1,8 @@
-import { act, render, screen } from "@testing-library/react";
+import { StrictMode, createRef, useState, type FormEvent } from "react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import Pagination from "./Pagination";
 
 const pageButton = (page: number) =>
@@ -71,18 +73,11 @@ describe("Pagination", () => {
     it("disables prev on the first page and next on the last page", () => {
       const { rerender } = render(<Pagination total={50} current={1} />);
       const prev = screen.getByRole("button", { name: "Previous page" });
-      expect(prev).toHaveAttribute("aria-disabled", "true");
-      expect(prev).toHaveAttribute("tabindex", "-1");
-      expect(screen.getByRole("button", { name: "Next page" })).toHaveAttribute(
-        "aria-disabled",
-        "false",
-      );
+      expect(prev).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Next page" })).toBeEnabled();
 
       rerender(<Pagination total={50} current={5} />);
-      expect(screen.getByRole("button", { name: "Next page" })).toHaveAttribute(
-        "aria-disabled",
-        "true",
-      );
+      expect(screen.getByRole("button", { name: "Next page" })).toBeDisabled();
     });
 
     it("applies size, shape, variant, responsive and custom classes", () => {
@@ -302,8 +297,7 @@ describe("Pagination", () => {
         <Pagination total={50} current={2} disabled onChange={onChange} />,
       );
       expect(screen.getByRole("navigation")).toHaveClass("disabled");
-      expect(pageButton(3)).toHaveAttribute("aria-disabled", "true");
-      expect(pageButton(3)).toHaveAttribute("tabindex", "-1");
+      expect(pageButton(3)).toBeDisabled();
       await user.click(pageButton(3));
       await user.click(screen.getByRole("button", { name: "Next page" }));
       expect(onChange).not.toHaveBeenCalled();
@@ -315,8 +309,12 @@ describe("Pagination", () => {
       render(
         <Pagination total={50} current={2} disabled onChange={onChange} />,
       );
-      screen.getByRole("navigation").focus();
-      await user.keyboard("{ArrowRight}{ArrowLeft}{Home}{End}");
+      const nav = screen.getByRole("navigation");
+      ["ArrowRight", "ArrowLeft", "Home", "End"].forEach((key) =>
+        fireEvent.keyDown(nav, { key }),
+      );
+      await user.tab();
+      expect(document.body).toHaveFocus();
       expect(onChange).not.toHaveBeenCalled();
     });
   });
@@ -326,9 +324,7 @@ describe("Pagination", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(<Pagination total={100} current={5} onChange={onChange} />);
-      const nav = screen.getByRole("navigation");
-      expect(nav).toHaveAttribute("tabindex", "0");
-      nav.focus();
+      pageButton(5).focus();
 
       await user.keyboard("{ArrowRight}");
       expect(onChange).toHaveBeenLastCalledWith(6, 10);
@@ -345,7 +341,7 @@ describe("Pagination", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(<Pagination total={50} current={1} onChange={onChange} />);
-      screen.getByRole("navigation").focus();
+      pageButton(1).focus();
       await user.keyboard("{ArrowLeft}{Home}");
       expect(onChange).not.toHaveBeenCalled();
     });
@@ -513,5 +509,262 @@ describe("Pagination", () => {
       await user.click(screen.getByRole("button", { name: "Previous page" }));
       expect(onChange).toHaveBeenLastCalledWith(1, 10);
     });
+  });
+
+  describe("controlled / uncontrolled", () => {
+    it("changes page on its own when uncontrolled", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(<Pagination total={50} onChange={onChange} />);
+      expect(pageButton(1)).toHaveAttribute("aria-current", "page");
+      await user.click(pageButton(3));
+      expect(pageButton(3)).toHaveAttribute("aria-current", "page");
+      await user.click(screen.getByRole("button", { name: "Next page" }));
+      expect(pageButton(4)).toHaveAttribute("aria-current", "page");
+      expect(onChange.mock.calls).toEqual([
+        [3, 10],
+        [4, 10],
+      ]);
+    });
+
+    it("starts at defaultCurrent and defaultPageSize", () => {
+      render(
+        <Pagination
+          total={100}
+          defaultCurrent={3}
+          defaultPageSize={20}
+          showSizeChanger
+        />,
+      );
+      expect(pageButton(3)).toHaveAttribute("aria-current", "page");
+      expect(pageButton(5)).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "Page 6" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole("combobox", { name: "Items per page" }),
+      ).toHaveValue("20");
+    });
+
+    it("honors a controlled current that the parent does not update", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(<Pagination total={50} current={2} onChange={onChange} />);
+      await user.click(pageButton(4));
+      expect(onChange).toHaveBeenCalledExactlyOnceWith(4, 10);
+      expect(pageButton(2)).toHaveAttribute("aria-current", "page");
+    });
+
+    it("honors a controlled pageSize that the parent does not update", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <Pagination
+          total={100}
+          pageSize={10}
+          showSizeChanger
+          onChange={onChange}
+        />,
+      );
+      const select = screen.getByRole("combobox", { name: "Items per page" });
+      await user.selectOptions(select, "50");
+      expect(onChange).toHaveBeenCalledExactlyOnceWith(1, 50);
+      expect(select).toHaveValue("10");
+      expect(pageButton(10)).toBeInTheDocument();
+    });
+
+    it("works fully controlled under StrictMode with one onChange per click", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      const Controlled = () => {
+        const [state, setState] = useState({ page: 1, size: 10 });
+        return (
+          <Pagination
+            total={100}
+            current={state.page}
+            pageSize={state.size}
+            showSizeChanger
+            onChange={(page, size) => {
+              onChange(page, size);
+              setState({ page, size });
+            }}
+          />
+        );
+      };
+      render(
+        <StrictMode>
+          <Controlled />
+        </StrictMode>,
+      );
+      await user.click(pageButton(3));
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(pageButton(3)).toHaveAttribute("aria-current", "page");
+      await user.selectOptions(
+        screen.getByRole("combobox", { name: "Items per page" }),
+        "20",
+      );
+      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(onChange).toHaveBeenLastCalledWith(1, 20);
+      expect(pageButton(1)).toHaveAttribute("aria-current", "page");
+      expect(pageButton(5)).toBeInTheDocument();
+    });
+  });
+
+  describe("focus management", () => {
+    it("is not a tab stop itself", () => {
+      render(<Pagination total={50} />);
+      expect(screen.getByRole("navigation")).not.toHaveAttribute("tabindex");
+      expect(screen.getByRole("navigation").tagName).toBe("NAV");
+    });
+
+    it("keeps focus on the Next button across page changes", async () => {
+      const user = userEvent.setup();
+      render(<Pagination total={100} />);
+      const next = screen.getByRole("button", { name: "Next page" });
+      next.focus();
+      await user.keyboard("{Enter}");
+      await user.keyboard("{Enter}");
+      expect(pageButton(3)).toHaveAttribute("aria-current", "page");
+      expect(screen.getByRole("button", { name: "Next page" })).toHaveFocus();
+    });
+
+    it("moves focus to the active page when the focused button becomes disabled", async () => {
+      const user = userEvent.setup();
+      render(<Pagination total={20} />);
+      screen.getByRole("button", { name: "Next page" }).focus();
+      await user.keyboard("{Enter}");
+      expect(screen.getByRole("button", { name: "Next page" })).toBeDisabled();
+      expect(pageButton(2)).toHaveFocus();
+    });
+
+    it("moves focus to the new active page on arrow navigation", async () => {
+      const user = userEvent.setup();
+      render(<Pagination total={100} defaultCurrent={5} />);
+      pageButton(5).focus();
+      await user.keyboard("{ArrowRight}");
+      expect(pageButton(6)).toHaveFocus();
+      await user.keyboard("{End}");
+      expect(pageButton(10)).toHaveFocus();
+    });
+  });
+
+  it("keeps default icons for the ones not overridden", () => {
+    render(<Pagination total={30} icons={{ prev: <span>PREV</span> }} />);
+    expect(
+      screen.getByRole("button", { name: "Next page" }).querySelector("svg"),
+    ).toBeInTheDocument();
+  });
+
+  it("adds the current page size to the options when missing", () => {
+    render(
+      <Pagination
+        total={100}
+        defaultPageSize={15}
+        showSizeChanger
+        pageSizeOptions={[10, 20]}
+      />,
+    );
+    expect(
+      screen.getByRole("combobox", { name: "Items per page" }),
+    ).toHaveValue("15");
+    expect(
+      screen.getAllByRole("option").map((o) => o.getAttribute("value")),
+    ).toEqual(["10", "15", "20"]);
+  });
+
+  it("does not submit an enclosing form", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn((e: FormEvent) => e.preventDefault());
+    render(
+      <form onSubmit={onSubmit}>
+        <Pagination total={50} />
+      </form>,
+    );
+    await user.click(pageButton(2));
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("forwards ref to the nav element", () => {
+    const ref = createRef<HTMLElement>();
+    render(<Pagination total={50} ref={ref} />);
+    expect(ref.current).toBe(screen.getByRole("navigation"));
+  });
+});
+
+describe("Pagination localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+
+  it("translates the built-in labels with the library language", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <Pagination total={200} showTotal showQuickJumper showSizeChanger />,
+    );
+    expect(
+      screen.getByRole("navigation", { name: "分页" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "上一页" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "下一页" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "第 2 页" })).toBeInTheDocument();
+    expect(screen.getByText("共 200 条")).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: "跳转到指定页" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("跳至")).toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: "每页条数" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "10 条/页" }),
+    ).toBeInTheDocument();
+  });
+
+  it("re-renders when the language changes", () => {
+    render(<Pagination total={50} simple />);
+    expect(
+      screen.getByRole("textbox", { name: "Current page" }),
+    ).toBeInTheDocument();
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    expect(
+      screen.getByRole("textbox", { name: "Page actuelle" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Page suivante" }),
+    ).toBeInTheDocument();
+  });
+
+  it("lets the labels prop win over the translation", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <Pagination
+        total={50}
+        showSizeChanger
+        labels={{
+          prev: "Back",
+          page: (page) => `Go to page ${page}`,
+          pageSizeOption: (size) => `${size} rows`,
+          nav: "Results pages",
+        }}
+      />,
+    );
+    expect(
+      screen.getByRole("navigation", { name: "Results pages" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Back" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Go to page 3" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "20 rows" })).toBeInTheDocument();
+    // Entries that are not overridden keep the translation
+    expect(screen.getByRole("button", { name: "下一页" })).toBeInTheDocument();
   });
 });

@@ -150,17 +150,57 @@
         "description": "Lets the content be expanded and collapsed (requires a title)"
       },
       {
+        "name": "expanded",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the content is expanded (controlled); use together with onExpand"
+      },
+      {
         "name": "defaultExpanded",
         "type": "boolean",
         "required": false,
         "default": "true",
-        "description": "Whether the content is initially expanded"
+        "description": "Whether the content is initially expanded (uncontrolled)"
       },
       {
         "name": "onExpand",
         "type": "(expanded: boolean) => void",
         "required": false,
-        "description": "Called when the content is expanded or collapsed"
+        "description": "Called with the new state when the content is expanded or collapsed"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Close\" (localized)",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "expandLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Expand\" (localized)",
+        "description": "Accessible label of the toggle while the content is collapsed"
+      },
+      {
+        "name": "collapseLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Collapse\" (localized)",
+        "description": "Accessible label of the toggle while the content is expanded"
+      },
+      {
+        "name": "iconLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"{variant} icon\", e.g. \"info icon\" (localized)",
+        "description": "Accessible label of the variant icon"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -181,7 +221,7 @@
   },
   "AutoCompleteInputProps": {
     "source": "lib-core/src/components/AutoComplete/types.ts",
-    "description": "AutoComplete 输入框属性接口",
+    "description": "Props of the input rendered by AutoComplete",
     "kind": "interface",
     "extends": [
       "TextFieldProps"
@@ -277,6 +317,12 @@
     "extends": [],
     "props": [
       {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the inner <input> element"
+      },
+      {
         "name": "name",
         "type": "string",
         "required": true,
@@ -299,7 +345,7 @@
         "name": "value",
         "type": "string",
         "required": false,
-        "description": "Input value (controlled)"
+        "description": "Input text (controlled; pair with onChange)"
       },
       {
         "name": "onChange",
@@ -325,7 +371,26 @@
         "name": "onSelect",
         "type": "(option: AutoCompleteOption) => void",
         "required": false,
-        "description": "Called when an option is selected (mouse or keyboard)"
+        "description": "Called when an option is picked (mouse or keyboard). In multiple mode it is also called when a picked option is picked again (which deselects it) or removed through its tag"
+      },
+      {
+        "name": "selectedOptions",
+        "type": "AutoCompleteOption[]",
+        "required": false,
+        "description": "Selected options in multiple mode (controlled; pair with onSelectedOptionsChange)"
+      },
+      {
+        "name": "defaultSelectedOptions",
+        "type": "AutoCompleteOption[]",
+        "required": false,
+        "default": "[]",
+        "description": "Initially selected options in multiple mode (uncontrolled)"
+      },
+      {
+        "name": "onSelectedOptionsChange",
+        "type": "(options: AutoCompleteOption[]) => void",
+        "required": false,
+        "description": "Called with the new selection in multiple mode"
       },
       {
         "name": "groupBy",
@@ -338,7 +403,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Allows selecting several options, shown as removable tags"
+        "description": "Allows selecting several options, shown as removable tags; the dropdown stays open between picks"
       },
       {
         "name": "maxTagCount",
@@ -388,14 +453,14 @@
         "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
         "required": false,
         "default": "\"bottom\"",
-        "description": "Dropdown placement"
+        "description": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport"
       },
       {
         "name": "offset",
         "type": "PopperProps[\"offset\"]",
         "required": false,
         "default": "{ x: 0, y: 4 }",
-        "description": "Dropdown offset"
+        "description": "Dropdown offset (see Popper's offset)"
       },
       {
         "name": "dropdownBgColor",
@@ -471,6 +536,19 @@
         "type": "React.ReactNode",
         "required": false,
         "description": "Avatar elements"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Avatar group\" / \"Avatar group with {count} more\" (localized)",
+        "description": "Accessible label of the group"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -519,6 +597,12 @@
         "required": false,
         "default": "false",
         "description": "Uses tighter margins for overlapping avatars"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLSpanElement>",
+        "required": false,
+        "description": "Ref to the root <span> element"
       }
     ]
   },
@@ -531,7 +615,7 @@
         "name": "children",
         "type": "React.ReactNode",
         "required": false,
-        "description": "Element the badge is attached to"
+        "description": "Element the badge is attached to. Without children (or with plain text / number children, used as the content) the badge renders inline in the normal flow instead of being positioned on a corner"
       },
       {
         "name": "className",
@@ -565,7 +649,7 @@
         "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\"",
         "required": false,
         "default": "\"top-right\"",
-        "description": "Corner of the children the badge is placed on"
+        "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
       },
       {
         "name": "dot",
@@ -615,6 +699,12 @@
         "type": "React.ReactNode",
         "required": false,
         "description": "Icon displayed before the content"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLElement>",
+        "required": false,
+        "description": "Ref to the root element: the wrapper when attached to children, otherwise the badge itself"
       }
     ]
   },
@@ -675,7 +765,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Shows a spinner and blocks interaction"
+        "description": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost"
       },
       {
         "name": "active",
@@ -702,6 +792,12 @@
         "type": "React.CSSProperties",
         "required": false,
         "description": "Inline styles"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false,
+        "description": "Ref to the <button> element"
       }
     ]
   },
@@ -740,6 +836,12 @@
         "type": "\"fadeIn\" | \"slideIn\" | \"zoomIn\"",
         "required": false,
         "description": "Entrance animation of the content"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -760,6 +862,12 @@
         "required": false,
         "default": "\"\"",
         "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLParagraphElement>",
+        "required": false,
+        "description": "Ref to the root <p> element"
       }
     ]
   },
@@ -792,6 +900,12 @@
         "type": "string",
         "required": false,
         "description": "Footer text color"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -824,6 +938,12 @@
         "type": "string",
         "required": false,
         "description": "Header text color"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -858,6 +978,12 @@
         "required": false,
         "default": "\"\"",
         "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -878,6 +1004,12 @@
         "required": false,
         "default": "\"\"",
         "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLHeadingElement>",
+        "required": false,
+        "description": "Ref to the root <h3> element"
       }
     ]
   },
@@ -926,38 +1058,81 @@
   },
   "CascaderPanelProps": {
     "source": "lib-core/src/components/Cascader/types.ts",
+    "description": "Props of the internal column panel rendered in the Cascader dropdown",
     "kind": "interface",
-    "extends": [
-      "Omit< CascaderProps, \"value\" | \"defaultValue\" >"
-    ],
+    "extends": [],
     "props": [
       {
-        "name": "activePath",
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Label used to name the columns"
+      },
+      {
+        "name": "options",
         "type": "CascaderOption[]",
-        "required": false,
-        "description": "当前选中的路径"
+        "required": true,
+        "description": "Option tree"
       },
       {
-        "name": "activeLevel",
-        "type": "number",
-        "required": false,
-        "description": "面板展开的层级"
+        "name": "expandedPath",
+        "type": "CascaderOption[]",
+        "required": true,
+        "description": "Options of the expanded path (one per level)"
       },
       {
-        "name": "onLevelSelect",
-        "type": "(option: CascaderOption, level: number) => void",
+        "name": "selectedPath",
+        "type": "CascaderOption[]",
+        "required": true,
+        "description": "Options of the selected path (one per level)"
+      },
+      {
+        "name": "expandTrigger",
+        "type": "\"click\" | \"hover\"",
         "required": false,
-        "description": "选择某一级时的回调"
+        "description": "How sub-menus are expanded"
       },
       {
         "name": "maxLevel",
         "type": "number",
-        "required": false
+        "required": false,
+        "description": "Maximum number of levels shown"
+      },
+      {
+        "name": "optionRender",
+        "type": "(option: CascaderOption, level: number) => ReactNode",
+        "required": false,
+        "description": "Custom option renderer"
       },
       {
         "name": "optionStyle",
-        "type": "React.CSSProperties",
-        "required": false
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of every option"
+      },
+      {
+        "name": "autoFocus",
+        "type": "boolean",
+        "required": false,
+        "description": "Focus an option when mounted (keyboard opening)"
+      },
+      {
+        "name": "onActivate",
+        "type": "(path: CascaderOption[], level: number) => void",
+        "required": true,
+        "description": "Called when an option is clicked or activated with the keyboard"
+      },
+      {
+        "name": "onHoverExpand",
+        "type": "(path: CascaderOption[]) => void",
+        "required": false,
+        "description": "Called when an option is hovered (expandTrigger \"hover\")"
+      },
+      {
+        "name": "onExit",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the user leaves the first column with ArrowLeft / Escape"
       }
     ]
   },
@@ -966,6 +1141,12 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the inner <input> element"
+      },
       {
         "name": "label",
         "type": "string",
@@ -989,7 +1170,7 @@
         "name": "value",
         "type": "(string | number)[]",
         "required": false,
-        "description": "Selected path of values (controlled)"
+        "description": "Selected path of values (controlled; pair with onChange)"
       },
       {
         "name": "defaultValue",
@@ -1020,7 +1201,7 @@
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "default": "\"Please select\"",
+        "default": "\"Please select\" (localized)",
         "description": "Placeholder of the input"
       },
       {
@@ -1060,7 +1241,7 @@
         "name": "loadData",
         "type": "(selectedOptions: CascaderOption[]) => void",
         "required": false,
-        "description": "Loads children lazily for options without children that are not isLeaf; update options yourself"
+        "description": "Loads children lazily: clicking an option that has no children and is not isLeaf expands it and calls loadData with its path (instead of selecting it). Add the children to `options` yourself; set `loading` on the option meanwhile"
       },
       {
         "name": "dropdownClassName",
@@ -1090,13 +1271,13 @@
       },
       {
         "name": "dropdownStyle",
-        "type": "React.CSSProperties",
+        "type": "CSSProperties",
         "required": false,
         "description": "Inline styles of the dropdown"
       },
       {
         "name": "optionStyle",
-        "type": "React.CSSProperties",
+        "type": "CSSProperties",
         "required": false,
         "description": "Inline styles of every option"
       }
@@ -1117,6 +1298,7 @@
         "name": "defaultChecked",
         "type": "boolean",
         "required": false,
+        "default": "false",
         "description": "Initial checked state (uncontrolled)"
       },
       {
@@ -1131,7 +1313,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Shows the indeterminate (partially checked) state"
+        "description": "Shows the indeterminate (partially checked) state. Controlled: it stays applied until this prop changes, also after the user clicks"
       },
       {
         "name": "name",
@@ -1166,6 +1348,12 @@
         "description": "Label text"
       },
       {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label, required when there is no visible label"
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false,
@@ -1194,7 +1382,7 @@
         "name": "icon",
         "type": "React.ReactNode",
         "required": false,
-        "description": "Custom icon shown when checked (controlled mode only)"
+        "description": "Custom icon shown when checked"
       },
       {
         "name": "required",
@@ -1221,7 +1409,7 @@
         "name": "helperText",
         "type": "string",
         "required": false,
-        "description": "Helper or error text shown below the checkbox"
+        "description": "Helper or error text shown below the checkbox (linked with aria-describedby)"
       },
       {
         "name": "labelPlacement",
@@ -1232,7 +1420,7 @@
       },
       {
         "name": "ref",
-        "type": "React.Ref<HTMLInputElement>",
+        "type": "Ref<HTMLInputElement>",
         "required": false,
         "description": "Ref to the underlying <input> element"
       }
@@ -1290,7 +1478,7 @@
       },
       {
         "name": "onClick",
-        "type": "(e: React.MouseEvent<HTMLDivElement>) => void",
+        "type": "(e: React.MouseEvent<HTMLElement>) => void",
         "required": false,
         "description": "Called when the chip is clicked (requires clickable)"
       },
@@ -1318,7 +1506,7 @@
         "name": "deleteLabel",
         "type": "string",
         "required": false,
-        "default": "\"Remove {label}\"",
+        "default": "\"Remove {label}\" (localized)",
         "description": "Accessible label for the delete button"
       },
       {
@@ -1326,7 +1514,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Makes the chip a keyboard-operable button"
+        "description": "Renders the chip content as a native button (focusable, activated with Enter / Space). With onDelete, the delete button is a sibling button"
       },
       {
         "name": "loading",
@@ -1340,7 +1528,13 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Shows the selected state"
+        "description": "Shows the selected state; on clickable chips it is also exposed as aria-pressed (when set)"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root element"
       }
     ]
   },
@@ -1580,6 +1774,12 @@
         "type": "React.CSSProperties",
         "required": false,
         "description": "Inline styles"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -1623,6 +1823,31 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root element"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the menu is open (controlled; pair with onOpenChange)"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state (uncontrolled)"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false,
+        "description": "Called when the menu requests to open or close"
+      },
       {
         "name": "className",
         "type": "string",
@@ -1682,11 +1907,11 @@
         "type": "\"down\" | \"up\" | \"left\" | \"right\"",
         "required": false,
         "default": "\"down\"",
-        "description": "Side on which the menu opens"
+        "description": "Preferred side on which the menu opens; it flips to the opposite side and shifts to stay inside the viewport"
       },
       {
         "name": "children",
-        "type": "React.ReactNode",
+        "type": "ReactNode",
         "required": false,
         "description": "Trigger element; a small \"Dropdown\" button is rendered when omitted"
       }
@@ -1707,7 +1932,7 @@
         "name": "description",
         "type": "React.ReactNode",
         "required": false,
-        "default": "\"No Data\"",
+        "default": "\"No Data\" (localized)",
         "description": "Description text"
       },
       {
@@ -1765,6 +1990,12 @@
         "type": "string",
         "required": false,
         "description": "Text color"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -1775,6 +2006,12 @@
       "React.ButtonHTMLAttributes<HTMLButtonElement>"
     ],
     "props": [
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false,
+        "description": "Ref to the <button> element"
+      },
       {
         "name": "icon",
         "type": "React.ReactNode",
@@ -1876,7 +2113,7 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
-        "default": "\"icon button\"",
+        "default": "\"icon button\" (localized)",
         "description": "Accessible label; always set it, since the button only contains an icon"
       }
     ]
@@ -1893,6 +2130,25 @@
         "description": "Preset that defines the icon, colors and tooltips (a key of interactiveIconsMap)"
       },
       {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false,
+        "description": "Ref to the underlying <button> element"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Active (pressed) state (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultPressed",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial active state (uncontrolled)"
+      },
+      {
         "name": "onChange",
         "type": "(isActive: boolean) => void",
         "required": false,
@@ -1902,8 +2158,20 @@
         "name": "initialState",
         "type": "boolean",
         "required": false,
-        "default": "false",
-        "description": "Initial active state (the component manages its state internally)"
+        "description": "Initial active state (uncontrolled)"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "the preset's label, e.g. \"Favorite\"",
+        "description": "Accessible name of the toggle; the pressed state is exposed separately via aria-pressed, so keep it stable (e.g. \"Favorite\")"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Same as ariaLabel (standard attribute spelling)"
       },
       {
         "name": "className",
@@ -1939,6 +2207,12 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Stable accessible name of the toggle (its state is exposed via aria-pressed)"
+      },
       {
         "name": "isActive",
         "type": "boolean",
@@ -2016,8 +2290,38 @@
       }
     ]
   },
+  "MessageConfig": {
+    "source": "lib-core/src/components/Message/types.ts",
+    "description": "Global defaults set with `message.config()`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "required": false,
+        "default": "3000",
+        "description": "Default auto-close delay in milliseconds; 0 keeps messages open"
+      },
+      {
+        "name": "placement",
+        "type": "MessagePlacement",
+        "required": false,
+        "default": "\"topRight\"",
+        "description": "Default screen position"
+      },
+      {
+        "name": "maxCount",
+        "type": "number",
+        "required": false,
+        "default": "Infinity",
+        "description": "Maximum number of messages shown at once; the oldest ones close first"
+      }
+    ]
+  },
   "MessageInstance": {
     "source": "lib-core/src/components/Message/types.ts",
+    "description": "Internal bookkeeping of a rendered message",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -2035,6 +2339,18 @@
         "name": "root",
         "type": "ReturnType<typeof createRoot>",
         "required": true
+      },
+      {
+        "name": "element",
+        "type": "HTMLElement",
+        "required": true,
+        "description": "Wrapper element the message root renders into"
+      },
+      {
+        "name": "seq",
+        "type": "number",
+        "required": true,
+        "description": "Creation order"
       }
     ]
   },
@@ -2064,7 +2380,7 @@
         "name": "id",
         "type": "string",
         "required": true,
-        "description": "Unique id; generated automatically when omitted in MessageOptions"
+        "description": "Unique id; generated automatically when omitted in MessageOptions. Reusing the id of an open message replaces it"
       },
       {
         "name": "type",
@@ -2084,7 +2400,7 @@
         "type": "number",
         "required": false,
         "default": "3000",
-        "description": "Time in milliseconds before the message closes automatically; 0 keeps it open"
+        "description": "Time in milliseconds before the message closes automatically; 0 keeps it open. Defaults to message.config().duration"
       },
       {
         "name": "showClose",
@@ -2130,14 +2446,14 @@
         "type": "boolean",
         "required": false,
         "default": "true",
-        "description": "Pauses the countdown and progress bar while hovered"
+        "description": "Pauses the countdown and progress bar while hovered or while keyboard focus is inside the message"
       },
       {
         "name": "placement",
         "type": "MessagePlacement",
         "required": false,
         "default": "\"topRight\"",
-        "description": "Screen position of the message stack"
+        "description": "Screen position of the message stack. Defaults to message.config().placement"
       },
       {
         "name": "onClick",
@@ -2155,7 +2471,7 @@
         "name": "closeAriaLabel",
         "type": "string",
         "required": false,
-        "default": "\"Close\"",
+        "default": "\"Close\" (localized)",
         "description": "Accessible label of the close button"
       },
       {
@@ -2183,6 +2499,91 @@
     "kind": "alias",
     "type": "\"success\" | \"error\" | \"info\" | \"warning\" | \"loading\""
   },
+  "PaginationLabels": {
+    "source": "lib-core/src/components/Pagination/types.ts",
+    "description": "Texts of Pagination; every omitted entry uses the localized default",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "prev",
+        "type": "string",
+        "required": false,
+        "default": "\"Previous page\" (localized)",
+        "description": "Accessible label of the previous-page button"
+      },
+      {
+        "name": "next",
+        "type": "string",
+        "required": false,
+        "default": "\"Next page\" (localized)",
+        "description": "Accessible label of the next-page button"
+      },
+      {
+        "name": "jumpPrev",
+        "type": "string",
+        "required": false,
+        "default": "\"Previous 5 pages\" (localized)",
+        "description": "Label of the jump-backward item"
+      },
+      {
+        "name": "jumpNext",
+        "type": "string",
+        "required": false,
+        "default": "\"Next 5 pages\" (localized)",
+        "description": "Label of the jump-forward item"
+      },
+      {
+        "name": "page",
+        "type": "(page: number) => string",
+        "required": false,
+        "default": "(page) => `Page ${page}` (localized)",
+        "description": "Accessible label of a page button"
+      },
+      {
+        "name": "jumpTo",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"Go to\" (localized)",
+        "description": "Visible text of the quick jumper"
+      },
+      {
+        "name": "jumpToInput",
+        "type": "string",
+        "required": false,
+        "default": "\"Jump to page\" (localized)",
+        "description": "Accessible label of the quick jumper input"
+      },
+      {
+        "name": "pageSize",
+        "type": "string",
+        "required": false,
+        "default": "\"Items per page\" (localized)",
+        "description": "Accessible label of the page size selector"
+      },
+      {
+        "name": "pageSizeOption",
+        "type": "(size: number) => string",
+        "required": false,
+        "default": "(size) => `${size} / page` (localized)",
+        "description": "Text of a page size option"
+      },
+      {
+        "name": "currentPage",
+        "type": "string",
+        "required": false,
+        "default": "\"Current page\" (localized)",
+        "description": "Accessible label of the simple-mode page input"
+      },
+      {
+        "name": "nav",
+        "type": "string",
+        "required": false,
+        "default": "\"Pagination\" (localized)",
+        "description": "Accessible label of the <nav> landmark"
+      }
+    ]
+  },
   "PaginationProps": {
     "source": "lib-core/src/components/Pagination/types.ts",
     "kind": "interface",
@@ -2192,8 +2593,14 @@
         "name": "current",
         "type": "number",
         "required": false,
+        "description": "Current page (1-based, controlled); update it in onChange"
+      },
+      {
+        "name": "defaultCurrent",
+        "type": "number",
+        "required": false,
         "default": "1",
-        "description": "Current page (1-based); update it in onChange"
+        "description": "Initial page when uncontrolled (current not set)"
       },
       {
         "name": "total",
@@ -2206,14 +2613,20 @@
         "name": "pageSize",
         "type": "number",
         "required": false,
+        "description": "Number of items per page (controlled); update it in onChange"
+      },
+      {
+        "name": "defaultPageSize",
+        "type": "number",
+        "required": false,
         "default": "10",
-        "description": "Number of items per page"
+        "description": "Initial number of items per page when uncontrolled (pageSize not set)"
       },
       {
         "name": "onChange",
         "type": "(page: number, pageSize: number) => void",
         "required": false,
-        "description": "Called with the new page and page size when the page or page size changes"
+        "description": "Called with the new page and page size when the page or page size changes (changing the page size resets to page 1)"
       },
       {
         "name": "disabled",
@@ -2272,7 +2685,7 @@
         "name": "totalRender",
         "type": "(total: number, range: [number, number]) => ReactNode",
         "required": false,
-        "description": "Custom rendering of the total; range is the [first, last] item index of the current page"
+        "description": "Custom rendering of the total (default \"Total N items\", localized); range is the [first, last] item index of the current page"
       },
       {
         "name": "size",
@@ -2313,7 +2726,19 @@
         "name": "icons",
         "type": "{ prev?: ReactNode; next?: ReactNode; jumpPrev?: ReactNode; jumpNext?: ReactNode; }",
         "required": false,
-        "description": "Custom icons for the prev, next and jump items"
+        "description": "Custom icons for the prev, next and jump items; omitted ones keep the default icon"
+      },
+      {
+        "name": "labels",
+        "type": "PaginationLabels",
+        "required": false,
+        "description": "Custom texts and accessible labels. Each one overrides the localized default (English defaults shown below)"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLElement>",
+        "required": false,
+        "description": "Ref to the root <nav> element"
       }
     ]
   },
@@ -2437,6 +2862,18 @@
     "extends": [],
     "props": [
       {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the popper element (rendered in a portal on document.body)"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "id of the popper element, e.g. for the anchor's aria-controls"
+      },
+      {
         "name": "anchorEl",
         "type": "HTMLElement | null",
         "required": true,
@@ -2450,7 +2887,7 @@
       },
       {
         "name": "children",
-        "type": "React.ReactNode",
+        "type": "ReactNode",
         "required": true,
         "description": "Popper content"
       },
@@ -2473,14 +2910,47 @@
         "type": "PopperType",
         "required": false,
         "default": "\"default\"",
-        "description": "Functional type; \"menu\" sets role=\"menu\", otherwise role=\"dialog\""
+        "description": "Functional type; sets the default role: \"menu\" for \"menu\", \"tooltip\" for \"tooltip\", \"dialog\" otherwise"
       },
       {
         "name": "offset",
         "type": "PopperOffset",
         "required": false,
-        "default": "{ x: 0, y: 8 }",
-        "description": "Position offset in pixels"
+        "description": "Offset in pixels. For top/bottom placements `y` is the gap to the anchor and `x` shifts along it; for left/right placements `x` is the gap and `y` shifts along it. Without it the popper sits 8px away from the anchor."
+      },
+      {
+        "name": "flip",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Flips to the opposite side when the preferred placement would overflow the viewport"
+      },
+      {
+        "name": "shift",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shifts along the anchor to stay inside the viewport"
+      },
+      {
+        "name": "matchAnchorWidth",
+        "type": "false | \"min\" | \"exact\"",
+        "required": false,
+        "default": "false",
+        "description": "Sizes the popper after the anchor: \"min\" makes it at least as wide as the anchor, \"exact\" exactly as wide"
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Requests closing (onVisibleChange(false)) when Escape is pressed inside the popper or on the anchor; focus inside the popper returns to the anchor"
+      },
+      {
+        "name": "role",
+        "type": "AriaRole",
+        "required": false,
+        "description": "ARIA role of the popper element; defaults to \"menu\" for type=\"menu\", \"tooltip\" for type=\"tooltip\" and \"dialog\" otherwise"
       },
       {
         "name": "animation",
@@ -2636,6 +3106,7 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
+        "default": "\"Loading\" (localized)",
         "description": "Accessible label describing what is loading"
       },
       {
@@ -2657,6 +3128,12 @@
         "required": false,
         "default": "false",
         "description": "Stretches the indicator to the full width of its container"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -2681,7 +3158,19 @@
         "name": "name",
         "type": "string",
         "required": false,
-        "description": "Name shared by all radios of the group"
+        "description": "Name shared by all radios of the group (a unique name is generated when omitted, so arrow-key navigation always works)"
+      },
+      {
+        "name": "label",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Visible label of the group; also its accessible name"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the group when there is no visible label"
       },
       {
         "name": "onChange",
@@ -2734,7 +3223,7 @@
         "name": "helperText",
         "type": "string",
         "required": false,
-        "description": "Helper text shown below the group"
+        "description": "Helper text shown below the group (linked with aria-describedby)"
       },
       {
         "name": "required",
@@ -2749,6 +3238,12 @@
         "required": false,
         "default": "\"var(--primary-color)\"",
         "description": "Color applied to every radio in the group"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root wrapper element"
       }
     ]
   },
@@ -2815,6 +3310,12 @@
         "description": "Text label displayed next to the radio"
       },
       {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label, required when there is no visible label"
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false,
@@ -2858,19 +3359,19 @@
         "name": "errorMessage",
         "type": "string",
         "required": false,
-        "description": "Message shown below the radio when error is true"
+        "description": "Message shown below the radio when error is true (linked with aria-describedby)"
       },
       {
         "name": "helperText",
         "type": "string",
         "required": false,
-        "description": "Helper text shown below the radio"
+        "description": "Helper text shown below the radio (linked with aria-describedby)"
       },
       {
         "name": "ref",
-        "type": "React.Ref<HTMLInputElement>",
+        "type": "Ref<HTMLInputElement>",
         "required": false,
-        "description": "Ref forwarded to the native input element"
+        "description": "Ref to the native <input type=\"radio\"> element"
       }
     ]
   },
@@ -2896,7 +3397,7 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
-        "description": "Accessible label; required when the button has no text"
+        "description": "Accessible label. Icon-only buttons default to \"Search\" (localized); with children the visible text is used"
       },
       {
         "name": "disabled",
@@ -2957,13 +3458,25 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Replaces the icon with a loading spinner"
+        "description": "Replaces the icon with a loading spinner and blocks activation (including form submission)"
       },
       {
         "name": "children",
         "type": "React.ReactNode",
         "required": false,
         "description": "Optional text shown next to the icon"
+      },
+      {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "required": false,
+        "description": "Native button type (the browser default is \"submit\" inside a form)"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false,
+        "description": "Ref to the <button> element"
       }
     ]
   },
@@ -3188,6 +3701,19 @@
         "required": false,
         "default": "false",
         "description": "Shows a title placeholder (replaces the lines)"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Loading\" (localized)",
+        "description": "Accessible name of the loading placeholder (rendered as a busy status region)"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element; only attached while loading (children are rendered as-is otherwise)"
       }
     ]
   },
@@ -3286,6 +3812,12 @@
         "type": "React.ReactNode",
         "required": false,
         "description": "Items to space out"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> element"
       }
     ]
   },
@@ -3310,7 +3842,7 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
-        "description": "Accessible label describing the status"
+        "description": "Accessible label describing the status; defaults to the presence text of type (e.g. \"Online\")"
       },
       {
         "name": "disabled",
@@ -3358,6 +3890,12 @@
         "type": "string",
         "required": false,
         "description": "Custom background color, applied when type is \"custom\""
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root (wrapper) <div> element"
       }
     ]
   },
@@ -3423,6 +3961,18 @@
         "type": "React.ReactNode",
         "required": false,
         "description": "Label displayed next to the switch"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label, required when the switch has no visible label"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the input, used in forms"
       },
       {
         "name": "labelPlacement",
@@ -3499,6 +4049,12 @@
         "required": false,
         "default": "\"start\"",
         "description": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the underlying <input role=\"switch\"> element"
       }
     ]
   },
@@ -3552,13 +4108,19 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Makes the tag behave like a button (focusable, activated with Enter / Space)"
+        "description": "Renders the tag content as a native button (focusable, activated with Enter / Space). With closable, the close button is a sibling button"
       },
       {
         "name": "onClick",
         "type": "(e: React.MouseEvent<HTMLElement>) => void",
         "required": false,
         "description": "Called when the tag is activated (requires clickable)"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Pressed state of a toggle tag (requires clickable); sets aria-pressed"
       },
       {
         "name": "icon",
@@ -3627,7 +4189,7 @@
         "name": "closeLabel",
         "type": "string",
         "required": false,
-        "default": "\"Close\"",
+        "default": "\"Close\" (localized)",
         "description": "Accessible label of the close button"
       },
       {
@@ -3636,6 +4198,12 @@
         "required": false,
         "default": "true",
         "description": "Shows a ripple effect on click"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root element"
       }
     ]
   },
@@ -3663,19 +4231,32 @@
         "name": "name",
         "type": "string",
         "required": true,
-        "description": "Name of the input; also used as its id to link the label"
+        "description": "Name of the input; also used as its id (unless id is set) to link the label"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the input; defaults to name"
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "description": "Floating label (hidden when a placeholder is set or the field is read-only)"
+        "description": "Floating label. Hidden when a placeholder is set or the field is read-only; it then remains the input's accessible name"
       },
       {
         "name": "value",
         "type": "string",
         "required": false,
-        "description": "Current value; omit for an uncontrolled field"
+        "description": "Current value (controlled); omit for an uncontrolled field"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial value of an uncontrolled field"
       },
       {
         "name": "placeholder",
@@ -3687,7 +4268,7 @@
         "name": "helperText",
         "type": "string",
         "required": false,
-        "description": "Error message shown below the field; switches it to the error state"
+        "description": "Error message shown below the field (linked with aria-describedby); switches it to the error state, focuses the input and shakes it briefly"
       },
       {
         "name": "icon",
@@ -3775,7 +4356,28 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
-        "description": "Accessible label of the input"
+        "description": "Accessible label of the input (defaults to label)"
+      },
+      {
+        "name": "clearLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Clear\" (localized)",
+        "description": "Accessible label of the clear button"
+      },
+      {
+        "name": "showPasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Show password\" (localized)",
+        "description": "Accessible label of the password toggle while the password is hidden"
+      },
+      {
+        "name": "hidePasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Hide password\" (localized)",
+        "description": "Accessible label of the password toggle while the password is visible"
       },
       {
         "name": "readOnly",
@@ -3826,6 +4428,12 @@
         "type": "string",
         "required": false,
         "description": "Additional class name of the container"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the underlying <input> element"
       }
     ]
   },
@@ -3997,20 +4605,35 @@
   },
   "TimePickerPanelProps": {
     "source": "lib-core/src/components/TimePicker/types.ts",
+    "description": "Props of the internal panel rendered by TimePicker",
     "kind": "interface",
     "extends": [
-      "TimePickerProps"
+      "Omit<TimePickerProps, \"value\">"
     ],
     "props": [
       {
+        "name": "value",
+        "type": "Date",
+        "required": false,
+        "description": "Time shown as selected (the panel's reference time when nothing is selected)"
+      },
+      {
+        "name": "hasValue",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether a time is actually selected (otherwise nothing is highlighted)"
+      },
+      {
         "name": "onTimeChange",
         "type": "( type: \"hour\" | \"minute\" | \"second\" | \"ampm\", value: number, ) => void",
-        "required": true
+        "required": true,
+        "description": "Called when a unit is picked"
       },
       {
         "name": "visible",
         "type": "boolean",
-        "required": true
+        "required": true,
+        "description": "Whether the panel is visible"
       }
     ]
   },
@@ -4020,10 +4643,16 @@
     "extends": [],
     "props": [
       {
-        "name": "value",
-        "type": "Date",
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
         "required": false,
-        "description": "Selected time (only read on mount; the date part is ignored)"
+        "description": "Ref to the <input> element"
+      },
+      {
+        "name": "value",
+        "type": "Date | null",
+        "required": false,
+        "description": "Selected time (controlled; pair with onChange). `null` means \"no time\" while staying controlled; `undefined` makes the picker uncontrolled."
       },
       {
         "name": "defaultValue",
@@ -4055,8 +4684,33 @@
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "default": "\"Select time\"",
+        "default": "\"Select time\" (localized)",
         "description": "Placeholder of the input"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Visible label of the input; without it the input is labelled \"Time\" (localized)"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the input when no visible label is shown"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"time-picker\"",
+        "description": "Name of the input"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false,
+        "description": "Called when the panel opens or closes"
       },
       {
         "name": "disabled",
@@ -4166,6 +4820,12 @@
     "extends": [],
     "props": [
       {
+        "name": "ref",
+        "type": "Ref<TooltipRef>",
+        "required": false,
+        "description": "Imperative handle with open / close / toggle"
+      },
+      {
         "name": "content",
         "type": "ReactNode",
         "required": true,
@@ -4181,7 +4841,13 @@
         "name": "open",
         "type": "boolean",
         "required": false,
-        "description": "Whether the tooltip is shown (controlled)"
+        "description": "Whether the tooltip is shown (controlled; pair with onOpenChange)"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false,
+        "description": "Called with the requested open state (hover, focus, Escape, ref methods)"
       },
       {
         "name": "defaultOpen",
@@ -4236,8 +4902,7 @@
         "name": "offset",
         "type": "[number, number]",
         "required": false,
-        "default": "[0, 8]",
-        "description": "Offset from the trigger as [x, y] in pixels"
+        "description": "Offset as [x, y] in pixels. For top/bottom placements `y` is the gap to the trigger and `x` shifts along it; for left/right placements `x` is the gap and `y` shifts along it. Without it the tooltip sits 8px away."
       },
       {
         "name": "followCursor",
@@ -4447,9 +5112,9 @@
       },
       {
         "name": "onLoadMore",
-        "type": "() => Promise<void>",
+        "type": "() => Promise<void> | void",
         "required": false,
-        "description": "Called when scrolling near the bottom; return a promise that resolves once new items are loaded"
+        "description": "Called when scrolling near the bottom; return a promise that resolves once new items are loaded (no new call happens until it settles)"
       },
       {
         "name": "loadMoreThreshold",
@@ -4471,6 +5136,18 @@
         "required": false,
         "default": "false",
         "description": "Shows a loading indicator at the bottom of the list"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name of the list"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root (scroll container) <div> element"
       }
     ]
   },

@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import React, { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -109,7 +109,7 @@ describe("Button", () => {
 
     const button = screen.getByRole("button", { name: "Submitting" });
     expect(button).toHaveClass("loading");
-    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
     expect(container.querySelector(".loadingSpinner")).toBeInTheDocument();
 
     await user.click(button);
@@ -127,5 +127,59 @@ describe("Button", () => {
     const button = screen.getByTestId("btn");
     expect(button).toHaveAttribute("type", "submit");
     expect(ref.current).toBe(button);
+  });
+
+  describe("regressions", () => {
+    it("does not set a redundant role or tabindex", () => {
+      render(<Button>Save</Button>);
+      const button = screen.getByRole("button", { name: "Save" });
+      expect(button).not.toHaveAttribute("role");
+      expect(button).not.toHaveAttribute("tabindex");
+    });
+
+    it("never emits undefined or stray whitespace in the class name", () => {
+      render(<Button>Save</Button>);
+      const cls = screen.getByRole("button").getAttribute("class") ?? "";
+      expect(cls).not.toMatch(/undefined|false|\n/);
+      expect(cls).toBe(cls.trim());
+      expect(cls).not.toMatch(/\s{2,}/);
+    });
+
+    it("keeps focus and reports busy while loading, without activating", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      const { rerender } = render(
+        <form onSubmit={onSubmit}>
+          <Button type="submit" onClick={onClick}>
+            Save
+          </Button>
+        </form>,
+      );
+      const button = screen.getByRole("button", { name: "Save" });
+      button.focus();
+      rerender(
+        <form onSubmit={onSubmit}>
+          <Button type="submit" onClick={onClick} loading>
+            Save
+          </Button>
+        </form>,
+      );
+      expect(button).toHaveFocus();
+      expect(button).toHaveAttribute("aria-busy", "true");
+      expect(button).toHaveAttribute("aria-disabled", "true");
+      await user.click(button);
+      await user.keyboard("{Enter}");
+      expect(onClick).not.toHaveBeenCalled();
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("accepts a callback ref and cleans it up on unmount", () => {
+      const ref = vi.fn();
+      const { unmount } = render(<Button ref={ref}>Save</Button>);
+      expect(ref.mock.lastCall?.[0]).toBe(screen.getByRole("button"));
+      unmount();
+      expect(ref.mock.lastCall?.[0]).toBeNull();
+    });
   });
 });

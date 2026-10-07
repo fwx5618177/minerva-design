@@ -352,4 +352,87 @@ describe("Tooltip", () => {
     await act(() => new Promise((resolve) => setTimeout(resolve, 150)));
     expect(spy.mock.calls.length).toBe(settledCalls);
   });
+
+  describe("React 19 / positioning", () => {
+    const rect = (r: Partial<DOMRect>) =>
+      ({
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: 0,
+        height: 0,
+        toJSON: () => ({}),
+        ...r,
+      }) as DOMRect;
+
+    it("flips below the trigger when there is no room above", async () => {
+      vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(
+        1024,
+      );
+      vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
+        768,
+      );
+      vi.spyOn(
+        HTMLElement.prototype,
+        "getBoundingClientRect",
+      ).mockImplementation(function (this: HTMLElement) {
+        return this.classList.contains("tooltipTrigger")
+          ? rect({
+              top: 4,
+              bottom: 24,
+              left: 100,
+              right: 160,
+              width: 60,
+              height: 20,
+            })
+          : rect({});
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
+        function (this: HTMLElement) {
+          return this.getAttribute("role") === "tooltip" ? 30 : 0;
+        },
+      );
+      render(
+        <Tooltip content="Hello" defaultOpen placement="top">
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      const tooltip = screen.getByRole("tooltip");
+      await waitFor(() =>
+        expect(tooltip).toHaveAttribute("data-placement", "bottom"),
+      );
+      expect(tooltip.style.top).toBe("32px");
+    });
+
+    it("dismisses with Escape even when opened by hover (focus elsewhere)", async () => {
+      const user = setup();
+      render(
+        <Tooltip content="Hello" enterDelay={0}>
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      await user.hover(getTrigger());
+      await act(() => vi.advanceTimersByTimeAsync(10));
+      expect(screen.getByRole("tooltip")).toBeInTheDocument();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+
+    it("reports requested changes through onOpenChange when controlled", async () => {
+      const user = setup();
+      const onOpenChange = vi.fn();
+      render(
+        <Tooltip content="Hello" open={false} onOpenChange={onOpenChange}>
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      await user.tab();
+      expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(true);
+      // still controlled: stays closed until the parent says otherwise
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+  });
 });

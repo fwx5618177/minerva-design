@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Cliquez sur une option pour ouvrir le niveau suivant ; choisir une feuille termine la sélection."
+      "description": "Cliquez sur le champ (ou appuyez sur Entrée, Espace ou Flèche bas) pour ouvrir le panneau, puis cliquez sur une option pour ouvrir le niveau suivant ; choisir une feuille termine la sélection. La liste s'élargit avec ses colonnes."
     },
     "default-value": {
       "title": "Valeur par défaut",
@@ -32,11 +32,11 @@
     },
     "lazy-load": {
       "title": "Chargement à la demande",
-      "description": "loadData est appelé pour les options sans children qui ne sont pas isLeaf. Définissez loading sur l'option puis ajoutez ses children à options à la réception."
+      "description": "Cliquer sur une option sans enfants et sans isLeaf la déplie et appelle loadData au lieu de la sélectionner. Définissez loading sur l'option, ajoutez ses enfants à options à leur arrivée et marquez les feuilles chargées avec isLeaf: true pour qu'elles soient sélectionnables."
     },
     "custom-option": {
       "title": "Options et niveaux personnalisés",
-      "description": "optionRender affiche chaque option selon son niveau, maxLevel limite la profondeur et dropdownStyle / optionStyle ajustent le menu."
+      "description": "optionRender affiche chaque option avec son niveau, maxLevel limite la profondeur (une option du dernier niveau est sélectionnée), et dropdownStyle / optionStyle ajustent le menu."
     }
   },
   "api": {
@@ -44,24 +44,25 @@
       "label": "Libellé du champ",
       "name": "Nom du champ",
       "options": "Arbre des options",
-      "value": "Chemin de valeurs sélectionné (contrôlé)",
+      "value": "Chemin de valeurs sélectionné (contrôlé ; à associer à onChange)",
       "defaultValue": "Chemin de valeurs sélectionné initialement (non contrôlé)",
       "onChange": "Appelé quand une feuille est sélectionnée ou que la valeur est effacée",
       "displayRender": "Formate le texte affiché ; par défaut les libellés sont joints par \" / \"",
       "disabled": "Désactive le composant",
-      "placeholder": "Texte indicatif du champ",
-      "allowClear": "Affiche un bouton d'effacement quand une valeur est sélectionnée",
+      "placeholder": "Texte indicatif du champ ; par défaut \"Please select\" traduit selon la langue",
+      "allowClear": "Affiche un bouton d'effacement (libellé \"Clear selection\", traduit) quand une valeur est sélectionnée",
       "expandTrigger": "Mode d'ouverture des sous-menus",
       "className": "Classe CSS supplémentaire",
       "showSearch": "Permet de taper pour rechercher dans tous les chemins",
       "filter": "Prédicat de recherche personnalisé ; par défaut, les chemins dont un libellé contient la saisie correspondent",
-      "loadData": "Charge à la demande les enfants des options sans children et non isLeaf ; mettez à jour options vous-même",
+      "loadData": "Charge les enfants à la demande : cliquer sur une option sans enfants et sans isLeaf la déplie et appelle loadData avec son chemin (au lieu de la sélectionner). Ajoutez vous-même les enfants à options et définissez loading sur l'option entre-temps",
       "dropdownClassName": "Classe CSS supplémentaire du menu déroulant",
       "optionRender": "Rendu personnalisé des options",
       "width": "Largeur du composant",
-      "maxLevel": "Nombre maximal de niveaux affichés",
+      "maxLevel": "Nombre maximal de niveaux affichés ; une option du dernier niveau est sélectionnée",
       "dropdownStyle": "Styles en ligne du menu déroulant",
-      "optionStyle": "Styles en ligne de chaque option"
+      "optionStyle": "Styles en ligne de chaque option",
+      "ref": "Ref vers l'élément <input> interne"
     },
     "CascaderOption": {
       "value": "Valeur de l'option, unique parmi ses voisines",
@@ -71,5 +72,13 @@
       "isLeaf": "Marque l'option comme feuille (aucun enfant à charger) avec loadData",
       "loading": "Affiche un indicateur pendant le chargement de ses enfants"
     }
+  },
+  "keyboard": {
+    "title": "Clavier et accessibilité",
+    "open": "Entrée, Espace ou Flèche bas sur le champ ouvre le panneau et y déplace le focus ; donner simplement le focus au champ ne l'ouvre pas.",
+    "navigate": "Flèche haut / Flèche bas, Début et Fin se déplacent dans une colonne.",
+    "expand": "Flèche droite ou Entrée déplie la colonne suivante (aussi après un chargement différé) et Entrée sélectionne une feuille ; Flèche gauche revient à la colonne précédente.",
+    "close": "Échap ferme le panneau et rend le focus au champ ; Tab le ferme aussi.",
+    "aria": "Le champ a le rôle combobox. Son texte indicatif par défaut et le libellé du bouton \"Clear selection\" (effacer la sélection) suivent la langue de lib-core."
   }
 }

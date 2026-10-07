@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface SearchButtonProps {
   /** Called when the button is clicked (not called while disabled) */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -6,7 +8,10 @@ export interface SearchButtonProps {
    * @default ""
    */
   className?: string;
-  /** Accessible label; required when the button has no text */
+  /**
+   * Accessible label. Icon-only buttons default to "Search" (localized); with children the
+   * visible text is used
+   */
   ariaLabel?: string;
   /**
    * Disables the button
@@ -43,10 +48,15 @@ export interface SearchButtonProps {
   /** Custom background color */
   bgColor?: string;
   /**
-   * Replaces the icon with a loading spinner
+   * Replaces the icon with a loading spinner and blocks activation
+   * (including form submission)
    * @default false
    */
   loading?: boolean;
   /** Optional text shown next to the icon */
   children?: React.ReactNode;
+  /** Native button type (the browser default is "submit" inside a form) */
+  type?: "button" | "submit" | "reset";
+  /** Ref to the <button> element */
+  ref?: Ref<HTMLButtonElement>;
 }

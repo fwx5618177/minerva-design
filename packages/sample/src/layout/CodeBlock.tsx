@@ -22,15 +22,23 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 }) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
-  const [html, setHtml] = useState<string>();
   const source = formatCode(code);
+  // Highlighted HTML, tagged with what it was computed for so a stale result
+  // is never shown after `code` / `language` change.
+  const [highlighted, setHighlighted] = useState<{
+    key: string;
+    html: string;
+  }>();
+  const key = `${language}\n${source}`;
+  const html = highlighted?.key === key ? highlighted.html : undefined;
 
   useEffect(() => {
     let cancelled = false;
-    setHtml(undefined);
     highlight(source, language)
       .then((result) => {
-        if (!cancelled) setHtml(result);
+        if (!cancelled && result !== undefined) {
+          setHighlighted({ key: `${language}\n${source}`, html: result });
+        }
       })
       .catch(() => {
         // fall back to plain text

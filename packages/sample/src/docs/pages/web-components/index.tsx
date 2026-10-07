@@ -45,7 +45,7 @@ export function SaveButton({ saving }: { saving: boolean }) {
   return (
     <minerva-button
       variant="success"
-      loading={saving || undefined}
+      loading={saving}
       aria-label="Save document"
       onClick={() => console.log("save")}
     >
@@ -75,13 +75,17 @@ const vueTemplate = `<!-- Component.vue: null removes the attribute -->
   Save
 </minerva-button>`;
 
-const themingCode = `/* The button reads these custom properties; set them on the element
-   (or any ancestor rule that targets it) to restyle it */
-minerva-button {
+const themingCode = `/* <minerva-button> reads lib-core's design tokens, so ConfigProvider /
+   applyThemeStyles themes apply automatically. To restyle only some buttons,
+   set the tokens on the element or on an ancestor: */
+.brand-buttons {
   --primary-color: #7c3aed;
-  --primary-hover: #6d28d9;
-  --error-color: #dc2626;
-  --error-hover: #b91c1c;
+  --primary-color-hover: #6d28d9;
+  --danger-color: #dc2626;
+  --text-inverse-color: #ffffff;
+  --surface-muted-color: #f1f5f9; /* ghost hover and disabled background */
+  --focus-ring-color: rgba(124, 58, 237, 0.45);
+  --radius-md: 0.5rem;
 }`;
 
 const WebComponentsDoc: React.FC = () => {

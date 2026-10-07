@@ -1,11 +1,10 @@
 import React, {
-  useState,
   useCallback,
-  useMemo,
-  useRef,
   useEffect,
-  MouseEvent,
-  KeyboardEvent,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
 } from "react";
 import {
   IoChevronBack,
@@ -13,21 +12,56 @@ import {
   IoEllipsisHorizontal,
 } from "react-icons/io5";
 import classNames from "classnames";
-import { PaginationProps } from "./types";
+import type { PaginationProps } from "./types";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
+import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
 
-type PaginationType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
+type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
+
+/** Number of consecutive page buttons around the current page */
+const WINDOW_SIZE = 5;
+/** Pages skipped by the jump-prev / jump-next items */
+const JUMP_SIZE = 5;
+
+const DEFAULT_ICONS = {
+  prev: <IoChevronBack aria-hidden="true" />,
+  next: <IoChevronForward aria-hidden="true" />,
+  jumpPrev: <IoEllipsisHorizontal aria-hidden="true" />,
+  jumpNext: <IoEllipsisHorizontal aria-hidden="true" />,
+};
+
+interface Ripple {
+  x: number;
+  y: number;
+  id: number;
+  itemKey: string;
+}
+
+/** Window of page numbers centered on `current`, clamped to [1, totalPages] */
+const getPageRange = (current: number, totalPages: number) => {
+  let start = Math.max(1, current - Math.floor(WINDOW_SIZE / 2));
+  const end = Math.min(totalPages, start + WINDOW_SIZE - 1);
+  if (end - start + 1 < WINDOW_SIZE) {
+    start = Math.max(1, end - WINDOW_SIZE + 1);
+  }
+  const range: number[] = [];
+  for (let i = start; i <= end; i++) range.push(i);
+  return range;
+};
 
 /**
  * Pagination 分页组件
  *
  * @description 用于数据分页展示的导航组件,支持多种样式和交互方式
  *
- * @param current - 当前页
+ * @param current - 当前页（受控）
+ * @param defaultCurrent - 默认当前页（非受控）
  * @param total - 总数
- * @param pageSize - 每页显示数量
- * @param onChange - 页码改变回调
+ * @param pageSize - 每页显示数量（受控）
+ * @param defaultPageSize - 默认每页显示数量（非受控）
+ * @param onChange - 页码或每页数量改变回调
  * @param disabled - 是否禁用
  * @param showQuickJumper - 是否显示快速跳转
  * @param showSizeChanger - 是否显示页码大小改变
@@ -43,11 +77,15 @@ type PaginationType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
  * @param simple - 是否简单模式
  * @param responsive - 是否响应式
  * @param icons - 组件图标
+ * @param labels - 自定义文案（覆盖本地化的默认文案）
+ * @param ref - 根 <nav> 元素的 ref
  */
-const Pagination: React.FC<PaginationProps> = ({
-  current = 1,
+const Pagination = ({
+  current,
+  defaultCurrent = 1,
   total = 0,
-  pageSize = 10,
+  pageSize,
+  defaultPageSize = 10,
   onChange,
   disabled = false,
   showQuickJumper = false,
@@ -63,303 +101,291 @@ const Pagination: React.FC<PaginationProps> = ({
   variant = "filled",
   simple = false,
   responsive = false,
-  icons = {
-    prev: <IoChevronBack />,
-    next: <IoChevronForward />,
-    jumpPrev: <IoEllipsisHorizontal />,
-    jumpNext: <IoEllipsisHorizontal />,
-  },
-}) => {
-  // 内部状态
+  icons,
+  labels,
+  ref,
+}: PaginationProps) => {
   const { t } = useI18n();
+  const navRef = useRef<HTMLElement>(null);
+  const mergedRef = useMergedRefs(navRef, ref);
+
+  const [page, setPage] = useControllableState({
+    value: current,
+    defaultValue: defaultCurrent,
+  });
+  const [currentPageSize, setPageSize] = useControllableState({
+    value: pageSize,
+    defaultValue: defaultPageSize,
+  });
+
   const [jumpValue, setJumpValue] = useState("");
   // Draft text of the simple-mode page input while the user is typing
-  // (null when not editing, so the input mirrors `current`)
+  // (null when not editing, so the input mirrors the current page)
   const [simpleDraft, setSimpleDraft] = useState<string | null>(null);
-  const [currentPageSize, setCurrentPageSize] = useState(pageSize);
-  const [ripples, setRipples] = useState<
-    { x: number; y: number; id: number; itemKey: string }[]
-  >([]);
+  const [ripples, setRipples] = useState<Ripple[]>([]);
   const nextRippleId = useRef(0);
+  // Set when a page change should move focus to the active page button
+  // (keyboard navigation, or the focused button became disabled / removed)
+  const restoreFocus = useRef<{
+    mode: "active" | "if-lost";
+    page: number;
+  } | null>(null);
 
-  // Follow `pageSize` prop changes; local state still tracks size-changer
-  // selections when the parent does not update the prop.
-  useEffect(() => {
-    setCurrentPageSize(pageSize);
-  }, [pageSize]);
+  const mergedIcons = { ...DEFAULT_ICONS, ...icons };
+  const totalPages =
+    currentPageSize > 0 ? Math.ceil(total / currentPageSize) : 0;
 
-  // 计算总页数
-  const totalPages = Math.ceil(total / currentPageSize);
-
-  // 计算显示的页码范围
-  const getPageRange = useCallback(() => {
-    const range: number[] = [];
-    const showItems = 5; // 显示的页码数量
-    let start = Math.max(1, current - Math.floor(showItems / 2));
-    const end = Math.min(totalPages, start + showItems - 1);
-
-    if (end - start + 1 < showItems) {
-      start = Math.max(1, end - showItems + 1);
-    }
-
-    for (let i = start; i <= end; i++) {
-      range.push(i);
-    }
-
-    return range;
-  }, [current, totalPages]);
-
-  // 处理页码点击
-  const handlePageClick = useCallback(
-    (page: number, event?: MouseEvent<HTMLElement>, itemKey?: string) => {
-      if (page === current || page < 1 || page > totalPages || disabled) {
+  const changePage = useCallback(
+    (target: number, focus: "active" | "if-lost" = "if-lost") => {
+      if (disabled || target === page || target < 1 || target > totalPages) {
         return;
       }
-
-      if (event && itemKey) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const ripple = {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-          id: nextRippleId.current++,
-          itemKey,
-        };
-        setRipples((prev) => [...prev, ripple]);
-      }
-
-      onChange?.(page, currentPageSize);
+      restoreFocus.current = { mode: focus, page: target };
+      setPage(target);
+      onChange?.(target, currentPageSize);
     },
-    [current, totalPages, disabled, onChange, currentPageSize],
+    [disabled, page, totalPages, setPage, onChange, currentPageSize],
   );
 
-  // 处理快速跳转
-  const handleJump = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        const value = parseInt(jumpValue);
-        if (!isNaN(value) && value >= 1 && value <= totalPages) {
-          onChange?.(value, currentPageSize);
-          setJumpValue("");
-        }
-      }
-    },
-    [jumpValue, totalPages, onChange, currentPageSize],
-  );
+  // Focus management after a page change (runs after the DOM is updated)
+  useEffect(() => {
+    const request = restoreFocus.current;
+    restoreFocus.current = null;
+    const nav = navRef.current;
+    // Skip when a controlled parent did not accept the change
+    if (!request || !nav || request.page !== page) return;
+    const active = nav.ownerDocument.activeElement as HTMLElement | null;
+    const lost =
+      !active ||
+      !nav.contains(active) ||
+      (active as HTMLButtonElement).disabled === true;
+    if (request.mode === "active" || lost) {
+      const target =
+        nav.querySelector<HTMLElement>('[aria-current="page"]') ??
+        nav.querySelector<HTMLElement>("button:not(:disabled), input");
+      target?.focus();
+    }
+  });
 
-  // 处理页码大小改变
-  const handleSizeChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const newSize = parseInt(e.target.value);
-      setCurrentPageSize(newSize);
-      onChange?.(1, newSize);
-    },
-    [onChange],
-  );
+  const handleItemClick = (
+    target: number,
+    itemKey: string,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (disabled || target === page || target < 1 || target > totalPages) {
+      return;
+    }
+    // Ripple only for pointer clicks (keyboard-triggered clicks have detail 0)
+    if (event.detail > 0) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const ripple: Ripple = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        id: nextRippleId.current++,
+        itemKey,
+      };
+      setRipples((prev) => [...prev, ripple]);
+    }
+    changePage(target);
+  };
+
+  // 清理水波纹效果
+  useEffect(() => {
+    if (ripples.length === 0) return;
+    const timer = setTimeout(() => setRipples([]), 1000);
+    return () => clearTimeout(timer);
+  }, [ripples]);
+
+  // 快速跳转
+  const handleJump = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    const value = parseInt(jumpValue, 10);
+    if (!isNaN(value) && value >= 1 && value <= totalPages) {
+      changePage(value);
+      setJumpValue("");
+    }
+  };
+
+  // 页码大小改变: 回到第一页
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = parseInt(e.target.value, 10);
+    setPageSize(newSize);
+    setPage(1);
+    onChange?.(1, newSize);
+  };
 
   // 提交简单模式输入框的页码: 有效值夹取到合法范围, 无效值还原
-  const commitSimpleDraft = useCallback(() => {
+  const commitSimpleDraft = () => {
     if (simpleDraft === null) return;
     setSimpleDraft(null);
     const value = parseInt(simpleDraft, 10);
     if (isNaN(value) || totalPages < 1) return;
-    const page = Math.min(Math.max(value, 1), totalPages);
-    if (page !== current) {
-      onChange?.(page, currentPageSize);
+    changePage(Math.min(Math.max(value, 1), totalPages));
+  };
+
+  const itemLabel = (type: PaginationItemType, target: number) => {
+    switch (type) {
+      case "prev":
+        return labels?.prev ?? t("pagination.prev");
+      case "next":
+        return labels?.next ?? t("pagination.next");
+      case "jump-prev":
+        return labels?.jumpPrev ?? t("pagination.jumpPrev");
+      case "jump-next":
+        return labels?.jumpNext ?? t("pagination.jumpNext");
+      default:
+        return labels?.page?.(target) ?? t("pagination.page", { page: target });
     }
-  }, [simpleDraft, totalPages, current, onChange, currentPageSize]);
+  };
 
-  // 清理水波纹效果
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (ripples.length > 0) {
-        setRipples([]);
-      }
-    }, 1000);
+  const renderItem = (target: number, type: PaginationItemType) => {
+    const isActive = type === "page" && target === page;
+    const isDisabled =
+      disabled ||
+      (type === "prev"
+        ? page <= 1
+        : type === "next"
+          ? page >= totalPages
+          : false);
+    // Stable keys: the focused button must survive page changes
+    const itemKey = type === "page" ? `page-${target}` : type;
 
-    return () => clearTimeout(timer);
-  }, [ripples]);
+    let content: React.ReactNode;
+    switch (type) {
+      case "prev":
+        content = mergedIcons.prev;
+        break;
+      case "next":
+        content = mergedIcons.next;
+        break;
+      case "jump-prev":
+      case "jump-next":
+        content = (
+          <span className={styles.jumpWrapper}>
+            {type === "jump-prev" ? mergedIcons.jumpPrev : mergedIcons.jumpNext}
+            <span className={styles.jumpHint} aria-hidden="true">
+              {itemLabel(type, target)}
+            </span>
+          </span>
+        );
+        break;
+      default:
+        content = target;
+    }
+    if (itemRender) {
+      content = itemRender(target, type);
+    }
 
-  // 渲染页码项
-  const renderPageItem = useCallback(
-    (page: number, type: PaginationType) => {
-      const isDisabled =
-        disabled ||
-        (type === "prev"
-          ? current <= 1
-          : type === "next"
-            ? current >= totalPages
-            : false);
-      const itemClassName = classNames(styles.item, {
-        [styles.active]: type === "page" && page === current,
-        [styles.disabled]: isDisabled,
-        [styles.prev]: type === "prev",
-        [styles.next]: type === "next",
-        [styles.jump]: type === "jump-prev" || type === "jump-next",
-      });
+    return (
+      <button
+        key={itemKey}
+        type="button"
+        className={classNames(styles.item, {
+          [styles.active]: isActive,
+          [styles.disabled]: isDisabled,
+          [styles.prev]: type === "prev",
+          [styles.next]: type === "next",
+          [styles.jump]: type === "jump-prev" || type === "jump-next",
+        })}
+        disabled={isDisabled}
+        onClick={(e) => handleItemClick(target, itemKey, e)}
+        aria-label={itemLabel(type, target)}
+        aria-current={isActive ? "page" : undefined}
+      >
+        {content}
+        {ripples
+          .filter((ripple) => ripple.itemKey === itemKey)
+          .map((ripple) => (
+            <span
+              key={ripple.id}
+              className={styles.ripple}
+              style={{ left: ripple.x, top: ripple.y }}
+              aria-hidden="true"
+            />
+          ))}
+      </button>
+    );
+  };
 
-      let content: React.ReactNode;
-      switch (type) {
-        case "prev":
-          content = icons.prev;
-          break;
-        case "next":
-          content = icons.next;
-          break;
-        case "jump-prev":
-          content = (
-            <div className={styles.jumpWrapper}>
-              {icons.jumpPrev}
-              <div className={styles.jumpHint}>{t("pagination.jumpPrev")}</div>
-            </div>
-          );
-          break;
-        case "jump-next":
-          content = (
-            <div className={styles.jumpWrapper}>
-              {icons.jumpNext}
-              <div className={styles.jumpHint}>{t("pagination.jumpNext")}</div>
-            </div>
-          );
-          break;
-        default:
-          content = page;
-      }
-
-      if (itemRender) {
-        content = itemRender(page, type);
-      }
-
-      const itemKey = `${type}-${page}`;
-
-      return (
-        <div
-          key={itemKey}
-          className={itemClassName}
-          onClick={(e) => !isDisabled && handlePageClick(page, e, itemKey)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              if (!isDisabled) handlePageClick(page);
-            }
-          }}
-          role="button"
-          tabIndex={isDisabled ? -1 : 0}
-          aria-label={
-            type === "prev"
-              ? "Previous page"
-              : type === "next"
-                ? "Next page"
-                : type === "jump-prev"
-                  ? "Previous 5 pages"
-                  : type === "jump-next"
-                    ? "Next 5 pages"
-                    : `Page ${page}`
-          }
-          aria-current={
-            type === "page" && page === current ? "page" : undefined
-          }
-          aria-disabled={isDisabled}
-        >
-          {content}
-          {ripples
-            .filter((ripple) => ripple.itemKey === itemKey)
-            .map((ripple) => (
-              <span
-                key={ripple.id}
-                className={styles.ripple}
-                style={{
-                  left: ripple.x,
-                  top: ripple.y,
-                }}
-              />
-            ))}
-        </div>
-      );
-    },
-    [
-      current,
-      totalPages,
-      itemRender,
-      icons,
-      handlePageClick,
-      ripples,
-      disabled,
-      t,
-    ],
-  );
-
-  // 渲染页码列表
-  const renderPageList = useMemo(() => {
+  const renderPageList = () => {
     if (simple) {
       return (
         <>
-          {renderPageItem(current - 1, "prev")}
+          {renderItem(page - 1, "prev")}
           <div className={styles.simpleInput}>
             <input
-              value={simpleDraft ?? String(current)}
+              value={simpleDraft ?? String(page)}
               disabled={disabled}
-              aria-label="Current page"
+              aria-label={labels?.currentPage ?? t("pagination.currentPage")}
+              inputMode="numeric"
               onChange={(e) => setSimpleDraft(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  commitSimpleDraft();
-                }
+                if (e.key === "Enter") commitSimpleDraft();
               }}
               onBlur={commitSimpleDraft}
             />
-            <span className={styles.simpleDivider}>/</span>
+            <span className={styles.simpleDivider} aria-hidden="true">
+              /
+            </span>
             <span>{totalPages}</span>
           </div>
-          {renderPageItem(current + 1, "next")}
+          {renderItem(page + 1, "next")}
         </>
       );
     }
 
-    const range = getPageRange();
-    const items: React.ReactNode[] = [];
+    const range = getPageRange(page, totalPages);
+    const items: React.ReactNode[] = [renderItem(page - 1, "prev")];
 
-    // 上一页
-    items.push(renderPageItem(current - 1, "prev"));
-
-    // 第一页
-    if (range[0] > 1) {
-      items.push(renderPageItem(1, "page"));
+    if (range.length > 0 && range[0] > 1) {
+      items.push(renderItem(1, "page"));
       if (range[0] > 2) {
-        items.push(renderPageItem(Math.max(1, current - 5), "jump-prev"));
+        items.push(renderItem(Math.max(1, page - JUMP_SIZE), "jump-prev"));
       }
     }
 
-    // 页码列表
-    range.forEach((page) => {
-      items.push(renderPageItem(page, "page"));
-    });
+    range.forEach((p) => items.push(renderItem(p, "page")));
 
-    // 最后一页
-    if (range[range.length - 1] < totalPages) {
-      if (range[range.length - 1] < totalPages - 1) {
+    const last = range[range.length - 1];
+    if (range.length > 0 && last < totalPages) {
+      if (last < totalPages - 1) {
         items.push(
-          renderPageItem(Math.min(totalPages, current + 5), "jump-next"),
+          renderItem(Math.min(totalPages, page + JUMP_SIZE), "jump-next"),
         );
       }
-      items.push(renderPageItem(totalPages, "page"));
+      items.push(renderItem(totalPages, "page"));
     }
 
-    // 下一页
-    items.push(renderPageItem(current + 1, "next"));
-
+    items.push(renderItem(page + 1, "next"));
     return items;
-  }, [
-    current,
-    totalPages,
-    simple,
-    getPageRange,
-    renderPageItem,
-    simpleDraft,
-    commitSimpleDraft,
-    disabled,
-  ]);
+  };
 
-  // 组件类名
+  // 键盘导航: 方向键 / Home / End, 焦点随之移动到当前页
+  const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    if (disabled) return;
+    // Let text inputs / selects keep their own arrow/Home/End behaviour
+    const target = e.target as HTMLElement;
+    if (target.tagName === "INPUT" || target.tagName === "SELECT") return;
+
+    const destination =
+      e.key === "ArrowLeft"
+        ? page - 1
+        : e.key === "ArrowRight"
+          ? page + 1
+          : e.key === "Home"
+            ? 1
+            : e.key === "End"
+              ? totalPages
+              : null;
+    if (destination === null) return;
+    e.preventDefault();
+    changePage(destination, "active");
+  };
+
+  const sizeOptions = pageSizeOptions.includes(currentPageSize)
+    ? pageSizeOptions
+    : [...pageSizeOptions, currentPageSize].sort((a, b) => a - b);
+
   const componentClassName = classNames(
     styles.pagination,
     {
@@ -375,82 +401,59 @@ const Pagination: React.FC<PaginationProps> = ({
     className,
   );
 
-  // 键盘导航支持
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (disabled) return;
-      // Let text inputs / selects keep their own arrow/Home/End behaviour
-      const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "SELECT") return;
-
-      switch (e.key) {
-        case "ArrowLeft":
-          handlePageClick(current - 1);
-          break;
-        case "ArrowRight":
-          handlePageClick(current + 1);
-          break;
-        case "Home":
-          handlePageClick(1);
-          break;
-        case "End":
-          handlePageClick(totalPages);
-          break;
-      }
-    },
-    [current, totalPages, disabled, handlePageClick],
-  );
-
   return (
-    <div
+    <nav
+      ref={mergedRef}
       className={componentClassName}
       style={style}
-      role="navigation"
-      aria-label="Pagination"
+      aria-label={labels?.nav ?? t("pagination.nav")}
       onKeyDown={handleKeyDown}
-      tabIndex={0}
     >
       {showTotal && (
         <div className={styles.total}>
           {totalRender
             ? totalRender(total, [
-                (current - 1) * currentPageSize + 1,
-                Math.min(current * currentPageSize, total),
+                total > 0 ? (page - 1) * currentPageSize + 1 : 0,
+                Math.min(page * currentPageSize, total),
               ])
-            : `Total ${total} items`}
+            : t("pagination.total", { total })}
         </div>
       )}
 
-      {renderPageList}
+      {renderPageList()}
 
       {showQuickJumper && (
-        <div className={styles.jumper}>
-          Go to
+        <label className={styles.jumper}>
+          {labels?.jumpTo ?? t("pagination.jumpTo")}
           <input
             value={jumpValue}
+            disabled={disabled}
+            inputMode="numeric"
             onChange={(e) => setJumpValue(e.target.value)}
             onKeyDown={handleJump}
-            aria-label="Jump to page"
+            aria-label={labels?.jumpToInput ?? t("pagination.jumpToInput")}
           />
-        </div>
+        </label>
       )}
 
       {showSizeChanger && (
         <div className={styles.sizeChanger}>
           <select
             value={currentPageSize}
+            disabled={disabled}
             onChange={handleSizeChange}
-            aria-label="Items per page"
+            aria-label={labels?.pageSize ?? t("pagination.pageSize")}
           >
-            {pageSizeOptions.map((option) => (
+            {sizeOptions.map((option) => (
               <option key={option} value={option}>
-                {option} / page
+                {labels?.pageSizeOption?.(option) ??
+                  t("pagination.pageSizeOption", { size: option })}
               </option>
             ))}
           </select>
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 

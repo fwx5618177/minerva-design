@@ -11,9 +11,8 @@ export default function StatesDemo() {
 
   return (
     <>
-      {/* React 18 sets attributes as strings, and loading="false" would still
-          be "on": pass true, or undefined to remove the attribute */}
-      <minerva-button loading={loading || undefined} onClick={save}>
+      {/* React 19 sets booleans as properties: loading={false} turns it off */}
+      <minerva-button loading={loading} onClick={save}>
         {loading ? "Saving" : "Save"}
       </minerva-button>
       <minerva-button disabled>Disabled</minerva-button>

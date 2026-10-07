@@ -1,3 +1,5 @@
+import type { AriaRole, ReactNode, Ref } from "react";
+
 /**
  * Popper placement options
  */
@@ -59,12 +61,16 @@ export interface PopperAnimation {
  * Popper component props
  */
 export interface PopperProps {
+  /** Ref to the popper element (rendered in a portal on document.body) */
+  ref?: Ref<HTMLDivElement>;
+  /** id of the popper element, e.g. for the anchor's aria-controls */
+  id?: string;
   /** Element the popper is positioned against */
   anchorEl: HTMLElement | null;
   /** Whether the popper is visible (controlled) */
   visible: boolean;
   /** Popper content */
-  children: React.ReactNode;
+  children: ReactNode;
   /**
    * Placement relative to the anchor
    * @default "bottom"
@@ -76,15 +82,44 @@ export interface PopperProps {
    */
   variant?: PopperVariant;
   /**
-   * Functional type; "menu" sets role="menu", otherwise role="dialog"
+   * Functional type; sets the default role: "menu" for "menu", "tooltip" for "tooltip", "dialog" otherwise
    * @default "default"
    */
   type?: PopperType;
   /**
-   * Position offset in pixels
-   * @default { x: 0, y: 8 }
+   * Offset in pixels. For top/bottom placements `y` is the gap to the anchor
+   * and `x` shifts along it; for left/right placements `x` is the gap and `y`
+   * shifts along it. Without it the popper sits 8px away from the anchor.
    */
   offset?: PopperOffset;
+  /**
+   * Flips to the opposite side when the preferred placement would overflow
+   * the viewport
+   * @default true
+   */
+  flip?: boolean;
+  /**
+   * Shifts along the anchor to stay inside the viewport
+   * @default true
+   */
+  shift?: boolean;
+  /**
+   * Sizes the popper after the anchor: "min" makes it at least as wide as the
+   * anchor, "exact" exactly as wide
+   * @default false
+   */
+  matchAnchorWidth?: false | "min" | "exact";
+  /**
+   * Requests closing (onVisibleChange(false)) when Escape is pressed inside
+   * the popper or on the anchor; focus inside the popper returns to the anchor
+   * @default true
+   */
+  closeOnEscape?: boolean;
+  /**
+   * ARIA role of the popper element; defaults to "menu" for type="menu",
+   * "tooltip" for type="tooltip" and "dialog" otherwise
+   */
+  role?: AriaRole;
   /**
    * Transition settings
    * @default { duration: 200, easing: "ease" }

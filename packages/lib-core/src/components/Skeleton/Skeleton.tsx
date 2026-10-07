@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import type { SkeletonProps } from "./types";
 import styles from "./skeleton.module.scss";
+import useI18n from "../../hooks/useI18n";
 
 /**
  * @name Skeleton 骨架屏
@@ -22,8 +23,10 @@ import styles from "./skeleton.module.scss";
  * @param boolean active - 是否激活交互态
  * @param boolean paragraph - 是否显示段落
  * @param boolean title - 是否显示标题
+ * @param string ariaLabel - 加载中区域的无障碍名称
+ * @param Ref ref - 根元素的 ref (仅在 loading 时渲染)
  */
-const Skeleton: React.FC<SkeletonProps> = ({
+const Skeleton = ({
   variant = "text",
   animation = "pulse",
   width,
@@ -40,7 +43,10 @@ const Skeleton: React.FC<SkeletonProps> = ({
   active = false,
   paragraph = false,
   title = false,
-}) => {
+  ariaLabel,
+  ref,
+}: SkeletonProps) => {
+  const { t } = useI18n();
   if (!loading) {
     return <>{children}</>;
   }
@@ -48,7 +54,9 @@ const Skeleton: React.FC<SkeletonProps> = ({
   const renderLines = () => {
     if (paragraph || title) return null;
 
-    return Array(lines)
+    // Guard against negative / fractional / NaN counts (Array(-1) throws)
+    const count = Number.isFinite(lines) ? Math.max(0, Math.floor(lines)) : 0;
+    return Array(count)
       .fill(null)
       .map((_, index) => (
         <div
@@ -159,6 +167,10 @@ const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <div
+      ref={ref}
+      role="status"
+      aria-busy="true"
+      aria-label={ariaLabel ?? t("common.loading")}
       className={classNames(
         styles.skeletonRoot,
         {

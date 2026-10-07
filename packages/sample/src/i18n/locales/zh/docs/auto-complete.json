@@ -24,7 +24,7 @@
     },
     "multiple": {
       "title": "多选",
-      "description": "开启 multiple 后，选中项以可移除的标签展示；maxTagCount 将多余的标签折叠为“+N”。"
+      "description": "设置 multiple 后，选中的选项会变成可移除的标签，并且下拉框在多次选择之间保持打开；maxTagCount 会把其余标签折叠为 \"+N\"。selectedOptions / onSelectedOptionsChange 用于控制选中项。"
     },
     "filter-sort": {
       "title": "自定义过滤与排序",
@@ -36,28 +36,29 @@
     },
     "appearance": {
       "title": "下拉框位置与颜色",
-      "description": "自定义下拉框的 placement、offset、animation，以及下拉框、悬停和高亮背景色。"
+      "description": "自定义位置、偏移、动画以及下拉框、悬停和高亮的背景色。下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内。"
     }
   },
   "keyboard": {
     "title": "键盘与无障碍",
     "arrows": "↓ / ↑ 在可见选项间移动（首尾循环）。",
-    "enter": "Enter 选择当前选项，禁用的选项无法被选中。",
+    "enter": "Enter 选择当前激活的选项（跳过禁用选项），且不会提交所在的表单。",
     "escape": "Esc 关闭下拉框。",
-    "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。"
+    "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。",
+    "backspace": "多选模式下，在空输入框中按 Backspace 会移除最后一个标签。"
   },
   "api": {
     "AutoCompleteProps": {
       "name": "输入框的 name",
       "label": "输入框的标签",
       "mode": "\"basic\" 渲染图标 / 标签 / 描述；\"custom\" 使用 renderOption",
-      "value": "输入框的值（受控）",
+      "value": "输入框文本（受控；与 onChange 搭配使用）",
       "onChange": "输入文本变化时的回调（输入或选择选项）",
       "options": "提示的选项列表",
       "defaultValue": "初始输入值（非受控）",
-      "onSelect": "选中选项时的回调（鼠标或键盘）",
+      "onSelect": "选中某个选项时调用（鼠标或键盘）。多选模式下，再次选择已选选项（即取消选择）或通过标签移除时也会调用",
       "groupBy": "返回选项所属的分组名，选项将按分组显示",
-      "multiple": "允许多选，选中项以可移除标签显示",
+      "multiple": "允许选择多个选项，以可移除的标签显示；下拉框在多次选择之间保持打开",
       "maxTagCount": "多选模式下最多显示的标签数，其余显示为“+N”",
       "renderOption": "自定义选项渲染（mode 为 \"custom\" 时生效）",
       "renderEmpty": "无匹配选项时显示的自定义内容",
@@ -65,8 +66,8 @@
       "textFieldProps": "透传给内部 TextField 的属性",
       "emptyProps": "透传给默认 Empty 空状态的属性",
       "popperProps": "透传给下拉框 Popper 的属性",
-      "placement": "下拉框位置",
-      "offset": "下拉框偏移量",
+      "placement": "下拉框的首选方向；下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内",
+      "offset": "下拉框偏移（参见 Popper 的 offset）",
       "dropdownBgColor": "下拉框背景色",
       "highlightBgColor": "高亮选项的背景色",
       "hoverBgColor": "悬停或键盘聚焦选项的背景色",
@@ -74,7 +75,11 @@
       "filterOption": "自定义过滤逻辑；默认显示标签包含输入内容（不区分大小写）的选项",
       "sortOption": "对过滤后的选项排序的比较函数",
       "onOptionClick": "鼠标点击选项时的回调",
-      "onDropdownVisibleChange": "下拉框打开或关闭时的回调"
+      "onDropdownVisibleChange": "下拉框打开或关闭时调用（挂载时不会调用）",
+      "ref": "内部 <input> 元素的 ref",
+      "selectedOptions": "多选模式下的已选选项（受控；与 onSelectedOptionsChange 搭配使用）",
+      "defaultSelectedOptions": "多选模式下的初始已选选项（非受控）",
+      "onSelectedOptionsChange": "多选模式下以新的选中项调用"
     },
     "AutoCompleteOption": {
       "label": "选项显示的文本，选中后写入输入框",

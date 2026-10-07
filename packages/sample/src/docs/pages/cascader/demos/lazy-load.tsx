@@ -24,9 +24,19 @@ export default function LazyLoadDemo() {
     setTimeout(() => {
       update({
         loading: false,
+        // isLeaf: true marks the loaded options as selectable leaves;
+        // without it, clicking them would call loadData again
         children: [
-          { value: `${target.value}-team-a`, label: `${target.label} team A` },
-          { value: `${target.value}-team-b`, label: `${target.label} team B` },
+          {
+            value: `${target.value}-team-a`,
+            label: `${target.label} team A`,
+            isLeaf: true,
+          },
+          {
+            value: `${target.value}-team-b`,
+            label: `${target.label} team B`,
+            isLeaf: true,
+          },
         ],
       });
     }, 800);

@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import type { TooltipProps } from "../Tooltip";
 
 type TooltipVariant = Pick<
@@ -6,6 +7,8 @@ type TooltipVariant = Pick<
 >;
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Ref to the <button> element */
+  ref?: Ref<HTMLButtonElement>;
   /** Icon element to display */
   icon: React.ReactNode;
   /** Color variant; a neutral style is used when omitted */
@@ -59,7 +62,7 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   showTooltip?: boolean;
   /**
    * Accessible label; always set it, since the button only contains an icon
-   * @default "icon button"
+   * @default "icon button" (localized)
    */
   ariaLabel?: string;
 }

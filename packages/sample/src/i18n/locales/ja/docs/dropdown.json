@@ -1,6 +1,6 @@
 {
   "title": "Dropdown ドロップダウン",
-  "description": "トリガーをクリックすると、操作や選択肢のメニューを表示します。",
+  "description": "トリガーをクリックするとアクションや選択肢のメニューを表示します。ビューポートの端ではメニューが反転・シフトして表示を保ちます。",
   "demos": {
     "basic": {
       "title": "基本的な使い方",
@@ -12,7 +12,7 @@
     },
     "directions": {
       "title": "方向",
-      "description": "メニューをトリガーの下（デフォルト）、上、左、右に開きます。"
+      "description": "direction は希望する方向です：トリガーの下（既定）、上、左、右。ビューポートの端ではメニューが反対側へ反転し、見える位置へシフトします。"
     },
     "disabled": {
       "title": "無効",
@@ -21,6 +21,10 @@
     "custom-menu": {
       "title": "メニューのカスタムスタイル",
       "description": "メニューの背景色、文字色、影をカスタマイズします。"
+    },
+    "controlled": {
+      "title": "制御モード",
+      "description": "open と onOpenChange で外部からメニューを制御します。非制御の場合は defaultOpen で初期状態を設定します。"
     }
   },
   "api": {
@@ -33,8 +37,12 @@
       "menuBgColor": "メニューの背景色",
       "menuTextColor": "メニューの文字色",
       "menuBoxShadow": "メニューの影",
-      "direction": "メニューを開く方向",
-      "children": "トリガー要素。省略時は小さな「Dropdown」ボタンを表示する"
+      "direction": "メニューを開く希望の方向。ビューポート内に収まるよう反対側へ反転・シフトします",
+      "children": "トリガー要素。省略時は小さな「Dropdown」ボタンを表示する",
+      "ref": "ルート要素への ref",
+      "open": "メニューが開いているかどうか（制御モード。onOpenChange と組み合わせて使用）",
+      "defaultOpen": "初期の開閉状態（非制御）",
+      "onOpenChange": "メニューが開閉を要求したときに呼ばれます"
     },
     "DropdownOption": {
       "label": "メニュー項目のテキスト",

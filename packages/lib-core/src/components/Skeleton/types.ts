@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type SkeletonVariant =
   "text" | "circular" | "rectangular" | "rounded" | "button" | "image" | "card";
 
@@ -66,4 +68,11 @@ export interface SkeletonProps {
    * @default false
    */
   title?: boolean;
+  /**
+   * Accessible name of the loading placeholder (rendered as a busy status region)
+   * @default "Loading" (localized)
+   */
+  ariaLabel?: string;
+  /** Ref to the root <div> element; only attached while loading (children are rendered as-is otherwise) */
+  ref?: Ref<HTMLDivElement>;
 }

@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
@@ -33,7 +35,8 @@ export interface ButtonProps extends Omit<
    */
   disabled?: boolean;
   /**
-   * Shows a spinner and blocks interaction
+   * Shows a spinner and blocks activation (aria-busy / aria-disabled). The
+   * button stays focusable so keyboard focus is not lost
    * @default false
    */
   loading?: boolean;
@@ -52,4 +55,6 @@ export interface ButtonProps extends Omit<
     "none" | "small" | "medium" | "large" | "circle" | "square" | number;
   /** Inline styles */
   style?: React.CSSProperties;
+  /** Ref to the <button> element */
+  ref?: Ref<HTMLButtonElement>;
 }

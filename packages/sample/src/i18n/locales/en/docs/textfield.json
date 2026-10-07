@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "name and label are required. The label floats above the value; a placeholder replaces it."
+      "description": "name and label are required. The label floats above the value; a placeholder replaces it visually, and the label stays the accessible name."
     },
     "controlled": {
       "title": "Controlled",
@@ -20,7 +20,7 @@
     },
     "clearable-and-count": {
       "title": "Clearable and character count",
-      "description": "clearable shows a clear button when the field has a value; showCharCount displays the length."
+      "description": "clearable shows a clear button when the field has a value (focus returns to the field after clearing); showCharCount displays the length. defaultValue sets the initial value of an uncontrolled field."
     },
     "appearance": {
       "title": "Appearance",
@@ -36,7 +36,7 @@
     },
     "states": {
       "title": "States",
-      "description": "Disabled and read-only fields. Read-only fields hide the floating label, so give them an ariaLabel."
+      "description": "Disabled and read-only fields. The hidden floating label of a read-only field still names it for screen readers."
     },
     "validation": {
       "title": "Validation",
@@ -45,11 +45,13 @@
   },
   "api": {
     "TextFieldProps": {
-      "name": "Name of the input; also used as its id to link the label",
-      "label": "Floating label (hidden when a placeholder is set or the field is read-only)",
-      "value": "Current value; omit for an uncontrolled field",
+      "name": "Name of the input; also used as its id (unless id is set) to link the label",
+      "id": "Id of the input; defaults to name",
+      "label": "Floating label. Hidden when a placeholder is set or the field is read-only; it then remains the input's accessible name",
+      "value": "Current value (controlled); omit for an uncontrolled field",
+      "defaultValue": "Initial value of an uncontrolled field",
       "placeholder": "Placeholder text, replaces the floating label",
-      "helperText": "Error message shown below the field; switches it to the error state",
+      "helperText": "Error message shown below the field (linked with aria-describedby); switches it to the error state, focuses the input and shakes it briefly",
       "icon": "Icon shown inside the field",
       "iconPosition": "Side of the icon; with type=\"password\" a right icon becomes a show/hide toggle",
       "borderColor": "Custom border color",
@@ -62,7 +64,10 @@
       "fullWidth": "Takes the full width of the container (overrides width)",
       "width": "Width of the field (any CSS length)",
       "disabled": "Disables the field",
-      "ariaLabel": "Accessible label of the input",
+      "ariaLabel": "Accessible label of the input (defaults to label)",
+      "clearLabel": "Accessible label of the clear button",
+      "showPasswordLabel": "Accessible label of the password toggle while the password is hidden",
+      "hidePasswordLabel": "Accessible label of the password toggle while the password is visible",
       "readOnly": "Makes the field read-only",
       "size": "Field size",
       "suffix": "Content shown at the end of the field, e.g. a unit",
@@ -70,7 +75,8 @@
       "onBlur": "Called when the input loses focus",
       "onFocus": "Called when the input gains focus",
       "onKeyDown": "Called on key down in the input",
-      "className": "Additional class name of the container"
+      "className": "Additional class name of the container",
+      "ref": "Ref to the underlying <input> element"
     }
   }
 }

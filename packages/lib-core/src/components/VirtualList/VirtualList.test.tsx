@@ -1,3 +1,4 @@
+import { StrictMode, createRef } from "react";
 import {
   act,
   fireEvent,
@@ -15,6 +16,7 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
+import i18n from "../../config/i18n";
 import VirtualList from "./VirtualList";
 import type { VirtualListItem } from "./types";
 
@@ -447,5 +449,155 @@ describe("VirtualList", () => {
       scrollTo(scroller, 250);
       expect(onLoadMore).not.toHaveBeenCalled();
     });
+  });
+
+  describe("regressions", () => {
+    it("measures items that arrive after mounting with an empty list", async () => {
+      mockLayout({ offsetHeight: 30 });
+      const props = {
+        itemPadding: 5,
+        overscan: 0,
+        maxHeight: CONTAINER_HEIGHT,
+        renderItem,
+      };
+      const { container, rerender } = render(
+        <VirtualList {...props} items={[]} />,
+      );
+      rerender(<VirtualList {...props} items={makeItems(100)} />);
+      await waitFor(() => {
+        expect(
+          (container.querySelector(".virtualListContent") as HTMLElement).style
+            .height,
+        ).toBe("4000px");
+      });
+      expect(renderedLabels()).toEqual(["Item 0 @0", "Item 1 @1", "Item 2 @2"]);
+    });
+
+    it("tolerates an onLoadMore that does not return a promise", async () => {
+      mockLayout({ clientHeight: 100, scrollHeight: 400 });
+      const onLoadMore = vi.fn(() => undefined);
+      const { container } = render(
+        <VirtualList
+          items={makeItems(20)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          renderItem={renderItem}
+          onLoadMore={onLoadMore}
+        />,
+      );
+      const scroller = getScroller(container);
+      scrollTo(scroller, 250);
+      expect(onLoadMore).toHaveBeenCalledTimes(1);
+      await act(async () => {});
+      // The pending flag was released, so loading more works again
+      scrollTo(scroller, 290);
+      expect(onLoadMore).toHaveBeenCalledTimes(2);
+    });
+
+    it("disconnects its resize observers on unmount under StrictMode", () => {
+      mockLayout({ offsetHeight: 0 });
+      const observe = vi.spyOn(ResizeObserver.prototype, "observe");
+      const disconnect = vi.spyOn(ResizeObserver.prototype, "disconnect");
+      const { unmount } = render(
+        <StrictMode>
+          <VirtualList
+            items={makeItems(5)}
+            maxHeight={CONTAINER_HEIGHT}
+            renderItem={renderItem}
+          />
+        </StrictMode>,
+      );
+      unmount();
+      expect(observe.mock.calls.length).toBeGreaterThan(0);
+      expect(disconnect.mock.calls.length).toBe(observe.mock.calls.length);
+    });
+  });
+
+  describe("accessibility", () => {
+    it("exposes a labelled list whose items know their real position", () => {
+      render(
+        <VirtualList
+          items={makeItems(1000)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          overscan={0}
+          renderItem={renderItem}
+          ariaLabel="Contacts"
+        />,
+      );
+      const list = screen.getByRole("list", { name: "Contacts" });
+      const items = screen.getAllByRole("listitem");
+      expect(list).toContainElement(items[0]);
+      expect(items[0]).toHaveAttribute("aria-setsize", "1000");
+      expect(items[0]).toHaveAttribute("aria-posinset", "1");
+    });
+
+    it("makes the scroll container keyboard focusable", async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <VirtualList
+          items={makeItems(10)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          renderItem={renderItem}
+        />,
+      );
+      await user.tab();
+      expect(getScroller(container)).toHaveFocus();
+    });
+
+    it("names the loading indicator", () => {
+      render(
+        <VirtualList
+          items={makeItems(5)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          renderItem={renderItem}
+          loading
+        />,
+      );
+      expect(
+        screen.getByRole("progressbar", { name: "Loading" }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("forwards ref to the scroll container", () => {
+    const ref = createRef<HTMLDivElement>();
+    const { container } = render(
+      <VirtualList
+        ref={ref}
+        items={makeItems(5)}
+        itemHeight={ITEM_HEIGHT}
+        maxHeight={CONTAINER_HEIGHT}
+        renderItem={renderItem}
+      />,
+    );
+    expect(ref.current).toBe(getScroller(container));
+  });
+});
+
+describe("VirtualList localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the loading indicator label", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <VirtualList
+        items={makeItems(5)}
+        itemHeight={ITEM_HEIGHT}
+        maxHeight={CONTAINER_HEIGHT}
+        renderItem={renderItem}
+        loading
+      />,
+    );
+    expect(
+      screen.getByRole("progressbar", { name: "加载中" }),
+    ).toBeInTheDocument();
   });
 });

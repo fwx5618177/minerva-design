@@ -1,6 +1,6 @@
 {
   "title": "Dropdown",
-  "description": "Affiche un menu d'actions ou d'options lorsque l'on clique sur son déclencheur.",
+  "description": "Affiche un menu d'actions ou d'options quand on clique sur son déclencheur. Près des bords de la fenêtre, le menu bascule et se décale pour rester visible.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
@@ -12,7 +12,7 @@
     },
     "directions": {
       "title": "Directions",
-      "description": "Ouvrez le menu sous (par défaut), au-dessus, à gauche ou à droite du déclencheur."
+      "description": "direction est le côté souhaité : sous le déclencheur (par défaut), au-dessus, à gauche ou à droite. Près des bords de la fenêtre, le menu bascule du côté opposé et se décale pour rester visible."
     },
     "disabled": {
       "title": "Désactivé",
@@ -21,6 +21,10 @@
     "custom-menu": {
       "title": "Style du menu",
       "description": "Personnalisez le fond, la couleur du texte et l'ombre du menu."
+    },
+    "controlled": {
+      "title": "Contrôlé",
+      "description": "open et onOpenChange contrôlent le menu depuis l'extérieur ; defaultOpen définit l'état initial en mode non contrôlé."
     }
   },
   "api": {
@@ -33,8 +37,12 @@
       "menuBgColor": "Couleur de fond du menu",
       "menuTextColor": "Couleur du texte du menu",
       "menuBoxShadow": "Ombre du menu",
-      "direction": "Côté d'ouverture du menu",
-      "children": "Élément déclencheur ; un petit bouton « Dropdown » est affiché s'il est omis"
+      "direction": "Côté d'ouverture souhaité du menu ; il bascule du côté opposé et se décale pour rester dans la fenêtre",
+      "children": "Élément déclencheur ; un petit bouton « Dropdown » est affiché s'il est omis",
+      "ref": "Ref vers l'élément racine",
+      "open": "Indique si le menu est ouvert (contrôlé ; à associer à onOpenChange)",
+      "defaultOpen": "État d'ouverture initial (non contrôlé)",
+      "onOpenChange": "Appelé quand le menu demande à s'ouvrir ou à se fermer"
     },
     "DropdownOption": {
       "label": "Texte de l'élément",

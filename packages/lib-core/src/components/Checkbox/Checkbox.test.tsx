@@ -1,4 +1,4 @@
-import { createRef, useState } from "react";
+import { StrictMode, createRef, useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -243,5 +243,76 @@ describe("Checkbox", () => {
       "error",
       "mine",
     );
+  });
+
+  describe("regressions", () => {
+    it("shows the custom icon in uncontrolled mode", async () => {
+      const user = userEvent.setup();
+      render(
+        <Checkbox
+          label="Icon"
+          defaultChecked
+          icon={<span data-testid="custom-icon" />}
+        />,
+      );
+      expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
+      await user.click(screen.getByRole("checkbox"));
+      expect(screen.queryByTestId("custom-icon")).not.toBeInTheDocument();
+      await user.click(screen.getByRole("checkbox"));
+      expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
+    });
+
+    it("keeps the indeterminate prop applied after a click", async () => {
+      const user = userEvent.setup();
+      render(
+        <Checkbox
+          label="Select all"
+          checked={false}
+          indeterminate
+          onChange={() => {}}
+        />,
+      );
+      const checkbox = screen.getByRole<HTMLInputElement>("checkbox");
+      await user.click(checkbox);
+      // the parent did not change `indeterminate`, so it must stick
+      expect(checkbox.indeterminate).toBe(true);
+      expect(checkbox).not.toBeChecked();
+    });
+
+    it("links the helper text and flags errors for assistive tech", () => {
+      const { rerender } = render(
+        <Checkbox label="Terms" helperText="Please read them" />,
+      );
+      const checkbox = screen.getByRole("checkbox", { name: "Terms" });
+      expect(checkbox).toHaveAccessibleDescription("Please read them");
+      expect(checkbox).not.toHaveAttribute("aria-invalid");
+
+      rerender(<Checkbox label="Terms" helperText="Required" error />);
+      expect(checkbox).toHaveAccessibleDescription("Required");
+      expect(checkbox).toHaveAttribute("aria-invalid", "true");
+    });
+
+    it("calls onChange exactly once per toggle under StrictMode", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <StrictMode>
+          <Checkbox label="Strict" onChange={onChange} />
+        </StrictMode>,
+      );
+      await user.click(screen.getByRole("checkbox"));
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole("checkbox")).toBeChecked();
+    });
+
+    it("forwards the ref to the input together with a callback ref", () => {
+      const nodes: Array<HTMLInputElement | null> = [];
+      const { unmount } = render(
+        <Checkbox label="Ref" ref={(node) => void nodes.push(node)} />,
+      );
+      expect(nodes[0]).toBe(screen.getByRole("checkbox"));
+      unmount();
+      expect(nodes[nodes.length - 1]).toBeNull();
+    });
   });
 });

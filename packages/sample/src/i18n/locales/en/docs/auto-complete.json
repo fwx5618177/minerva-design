@@ -24,7 +24,7 @@
     },
     "multiple": {
       "title": "Multiple selection",
-      "description": "With multiple, selected options become removable tags; maxTagCount collapses the rest into \"+N\"."
+      "description": "With multiple, selected options become removable tags and the dropdown stays open between picks; maxTagCount collapses the rest into \"+N\". selectedOptions / onSelectedOptionsChange control the selection."
     },
     "filter-sort": {
       "title": "Custom filter and sort",
@@ -36,28 +36,29 @@
     },
     "appearance": {
       "title": "Dropdown placement and colors",
-      "description": "Customize placement, offset, animation and the dropdown, hover and highlight background colors."
+      "description": "Customize placement, offset, animation and the dropdown, hover and highlight background colors. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
     }
   },
   "keyboard": {
     "title": "Keyboard and accessibility",
     "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
-    "enter": "Enter selects the active option; disabled options are skipped on selection.",
+    "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
     "escape": "Escape closes the dropdown.",
-    "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+    "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options.",
+    "backspace": "In multiple mode, Backspace in an empty input removes the last tag."
   },
   "api": {
     "AutoCompleteProps": {
       "name": "Name of the input",
       "label": "Label of the input",
       "mode": "\"basic\" renders icon / label / description; \"custom\" uses renderOption",
-      "value": "Input value (controlled)",
+      "value": "Input text (controlled; pair with onChange)",
       "onChange": "Called when the input text changes (typing or selecting an option)",
       "options": "Options to suggest",
       "defaultValue": "Initial input value (uncontrolled)",
-      "onSelect": "Called when an option is selected (mouse or keyboard)",
+      "onSelect": "Called when an option is picked (mouse or keyboard). In multiple mode it is also called when a picked option is picked again (which deselects it) or removed through its tag",
       "groupBy": "Returns the group name of an option; options are grouped under headings",
-      "multiple": "Allows selecting several options, shown as removable tags",
+      "multiple": "Allows selecting several options, shown as removable tags; the dropdown stays open between picks",
       "maxTagCount": "Maximum number of tags shown in multiple mode; the rest are summarized as \"+N\"",
       "renderOption": "Custom option renderer (used when mode is \"custom\")",
       "renderEmpty": "Custom content shown when no option matches",
@@ -65,8 +66,8 @@
       "textFieldProps": "Props forwarded to the underlying TextField",
       "emptyProps": "Props forwarded to the default Empty state",
       "popperProps": "Props forwarded to the dropdown Popper",
-      "placement": "Dropdown placement",
-      "offset": "Dropdown offset",
+      "placement": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport",
+      "offset": "Dropdown offset (see Popper's offset)",
       "dropdownBgColor": "Background color of the dropdown",
       "highlightBgColor": "Background color of highlighted options",
       "hoverBgColor": "Background color of hovered / keyboard-focused options",
@@ -74,7 +75,11 @@
       "filterOption": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
       "sortOption": "Compare function used to sort the filtered options",
       "onOptionClick": "Called when an option is clicked with the mouse",
-      "onDropdownVisibleChange": "Called when the dropdown opens or closes"
+      "onDropdownVisibleChange": "Called when the dropdown opens or closes (not on mount)",
+      "ref": "Ref to the inner <input> element",
+      "selectedOptions": "Selected options in multiple mode (controlled; pair with onSelectedOptionsChange)",
+      "defaultSelectedOptions": "Initially selected options in multiple mode (uncontrolled)",
+      "onSelectedOptionsChange": "Called with the new selection in multiple mode"
     },
     "AutoCompleteOption": {
       "label": "Text displayed for the option and written to the input when selected",

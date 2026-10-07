@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCheck, FaTimes, FaExclamation, FaInfo } from "react-icons/fa";
 import styles from "./statusIndicator.module.scss";
-import { StatusIndicatorProps } from "./types";
+import type { StatusIndicatorProps } from "./types";
 import useI18n from "../../hooks/useI18n";
 
 /**
@@ -15,9 +15,10 @@ import useI18n from "../../hooks/useI18n";
  * @param showLabel - Whether to show the label
  * @param size - The size of the indicator (small, medium, large)
  * @param color - The custom color of the indicator
+ * @param ref - Ref to the root (wrapper) <div> element
  * @returns A status indicator component
  */
-const StatusIndicator: React.FC<StatusIndicatorProps> = ({
+const StatusIndicator = ({
   className = "",
   ariaLabel,
   disabled = false,
@@ -27,13 +28,24 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
   showLabel = false,
   size = "medium",
   color,
-}) => {
+  ref,
+}: StatusIndicatorProps) => {
   const { t } = useI18n();
+  // Click feedback: `clickCount` restarts the timer on every click
+  const [clicked, setClicked] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+
+  useEffect(() => {
+    if (!clicked) return;
+    const timer = setTimeout(() => setClicked(false), 1000);
+    return () => clearTimeout(timer);
+  }, [clicked, clickCount]);
+
   const iconMap = {
-    success: <FaCheck className={styles.icon} />,
-    error: <FaTimes className={styles.icon} />,
-    warning: <FaExclamation className={styles.icon} />,
-    info: <FaInfo className={styles.icon} />,
+    success: <FaCheck className={styles.icon} aria-hidden="true" />,
+    error: <FaTimes className={styles.icon} aria-hidden="true" />,
+    warning: <FaExclamation className={styles.icon} aria-hidden="true" />,
+    info: <FaInfo className={styles.icon} aria-hidden="true" />,
   };
 
   const typeTextMap: Partial<
@@ -45,31 +57,33 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
     busy: t("status.busy"),
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!disabled) {
-      const target = event.currentTarget;
-      target.classList.add(styles.clicked);
-      setTimeout(() => {
-        target.classList.remove(styles.clicked);
-      }, 1000);
-    }
+  const handleClick = () => {
+    if (disabled) return;
+    setClicked(true);
+    setClickCount((count) => count + 1);
   };
+
+  const typeText = type ? typeTextMap[type] : undefined;
 
   const customStyle =
     type === "custom" && color ? { backgroundColor: color } : {};
 
   return (
-    <div className={styles.wrapper}>
+    <div ref={ref} className={styles.wrapper}>
       <div
-        className={`
-          ${styles.statusIndicator} 
-          ${styles[status]} 
-          ${styles[shape]}
-          ${type ? styles[type] : ""} 
-          ${styles[size]}
-          ${className}
-        `}
-        aria-label={ariaLabel}
+        className={[
+          styles.statusIndicator,
+          styles[status],
+          styles[shape],
+          type ? styles[type] : "",
+          styles[size],
+          clicked ? styles.clicked : "",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        // Fall back to the presence text (e.g. "Online") as accessible name
+        aria-label={ariaLabel ?? typeText}
         role="status"
         tabIndex={0}
         aria-disabled={disabled}
@@ -79,8 +93,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
         {iconMap[status]}
         <div className={styles.stars}></div>
       </div>
-      {showLabel && type && typeTextMap[type] && (
-        <span className={styles.label}>{typeTextMap[type]}</span>
+      {showLabel && typeText && (
+        <span className={styles.label}>{typeText}</span>
       )}
     </div>
   );

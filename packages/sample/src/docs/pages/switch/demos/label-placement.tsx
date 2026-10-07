@@ -1,10 +1,18 @@
 import { Switch } from "@minerva/lib-core";
 
+const placements = ["start", "end", "top", "bottom"] as const;
+
 export default function LabelPlacementDemo() {
   return (
     <>
-      <Switch label="Label at start" labelPlacement="start" defaultChecked />
-      <Switch label="Label at end" labelPlacement="end" defaultChecked />
+      {placements.map((placement) => (
+        <Switch
+          key={placement}
+          label={`Label at ${placement}`}
+          labelPlacement={placement}
+          defaultChecked
+        />
+      ))}
     </>
   );
 }

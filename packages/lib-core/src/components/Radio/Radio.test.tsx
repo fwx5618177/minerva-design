@@ -208,4 +208,32 @@ describe("Radio", () => {
       "mine",
     );
   });
+
+  describe("regressions", () => {
+    it("links helper text / error message and flags errors", () => {
+      const { rerender } = render(
+        <Radio label="Yes" value="y" helperText="Recommended" />,
+      );
+      const radio = screen.getByRole("radio", { name: "Yes" });
+      expect(radio).toHaveAccessibleDescription("Recommended");
+      expect(radio).not.toHaveAttribute("aria-invalid");
+
+      rerender(
+        <Radio
+          label="Yes"
+          value="y"
+          helperText="Recommended"
+          error
+          errorMessage="Required"
+        />,
+      );
+      expect(radio).toHaveAccessibleDescription("Required");
+      expect(radio).toHaveAttribute("aria-invalid", "true");
+    });
+
+    it("supports ariaLabel when there is no visible label", () => {
+      render(<Radio value="y" ariaLabel="Yes" />);
+      expect(screen.getByRole("radio", { name: "Yes" })).toBeInTheDocument();
+    });
+  });
 });

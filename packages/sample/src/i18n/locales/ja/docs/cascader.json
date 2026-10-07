@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "選択肢をクリックすると次の階層が開き、末端の項目を選ぶと選択が確定します。"
+      "description": "入力欄をクリック（または Enter、Space、下矢印キー）してパネルを開き、選択肢をクリックして次の階層を開きます。末端の選択肢を選ぶと選択が完了します。ドロップダウンは列の数に応じて広がります。"
     },
     "default-value": {
       "title": "初期値",
@@ -32,11 +32,11 @@
     },
     "lazy-load": {
       "title": "遅延読み込み",
-      "description": "children がなく isLeaf でもない項目では loadData が呼ばれます。取得中は loading を設定し、取得後に children を options に追加します。"
+      "description": "子を持たず isLeaf でもない選択肢をクリックすると、選択する代わりに展開して loadData を呼びます。その選択肢に loading を設定し、届いた子を options に追加し、読み込んだ末端の選択肢には isLeaf: true を付けて選択できるようにします。"
     },
     "custom-option": {
       "title": "項目と階層のカスタマイズ",
-      "description": "optionRender で階層ごとに項目を描画し、maxLevel で深さを制限し、dropdownStyle / optionStyle でメニューを調整します。"
+      "description": "optionRender は各選択肢を階層とともに描画し、maxLevel は深さを制限し（最後の階層の選択肢は選択されます）、dropdownStyle / optionStyle でメニューを調整します。"
     }
   },
   "api": {
@@ -44,24 +44,25 @@
       "label": "入力欄のラベル",
       "name": "入力欄の name",
       "options": "選択肢のツリー",
-      "value": "選択された値のパス（制御）",
+      "value": "選択された値のパス（制御モード。onChange と組み合わせて使用）",
       "defaultValue": "初期選択の値のパス（非制御）",
       "onChange": "末端の項目が選択されたとき、または値がクリアされたときに呼び出されます",
       "displayRender": "入力欄の表示テキストを整形します。既定ではラベルを \" / \" で連結します",
       "disabled": "コンポーネントを無効にします",
-      "placeholder": "入力欄のプレースホルダー",
-      "allowClear": "値が選択されているときにクリアボタンを表示します",
+      "placeholder": "入力欄のプレースホルダー。既定はローカライズされた \"Please select\"（選択してください）",
+      "allowClear": "値が選択されているときにクリアボタン（ラベルはローカライズされた \"Clear selection\"）を表示します",
       "expandTrigger": "サブメニューの展開方法",
       "className": "追加のクラス名",
       "showSearch": "入力してすべてのパスを検索できるようにします",
       "filter": "カスタム検索条件。既定ではラベルに入力を含むパスが一致します",
-      "loadData": "children がなく isLeaf でない項目の子を遅延読み込みします。options は自分で更新してください",
+      "loadData": "子を遅延読み込みします。子を持たず isLeaf でもない選択肢をクリックすると、選択する代わりに展開し、そのパスで loadData を呼びます。子は自分で options に追加し、その間は選択肢に loading を設定してください",
       "dropdownClassName": "ドロップダウンの追加クラス名",
       "optionRender": "項目のカスタム描画",
       "width": "コンポーネントの幅",
-      "maxLevel": "表示する最大階層数",
+      "maxLevel": "表示する最大階層数。最後の階層の選択肢は選択されます",
       "dropdownStyle": "ドロップダウンのインラインスタイル",
-      "optionStyle": "各項目のインラインスタイル"
+      "optionStyle": "各項目のインラインスタイル",
+      "ref": "内部の <input> 要素への ref"
     },
     "CascaderOption": {
       "value": "項目の値（同じ階層内で一意）",
@@ -71,5 +72,13 @@
       "isLeaf": "loadData 使用時に末端項目（読み込む子がない）であることを示します",
       "loading": "子の読み込み中にインジケーターを表示します"
     }
+  },
+  "keyboard": {
+    "title": "キーボードとアクセシビリティ",
+    "open": "入力欄で Enter、Space、下矢印キーを押すとパネルが開き、フォーカスがパネル内へ移ります。入力欄にフォーカスするだけでは開きません。",
+    "navigate": "上下矢印キー、Home、End で列内を移動します。",
+    "expand": "右矢印キーまたは Enter で次の列を展開し（遅延読み込み後も同様）、Enter で末端の選択肢を選びます。左矢印キーで前の列に戻ります。",
+    "close": "Escape でパネルを閉じてフォーカスを入力欄に戻します。Tab でも閉じます。",
+    "aria": "入力欄は combobox ロールを持ちます。既定のプレースホルダーと \"Clear selection\"（選択をクリア）ボタンのラベルは lib-core のロケールに従います。"
   }
 }

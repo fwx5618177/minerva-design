@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface ChipProps {
   /** Text of the chip */
   label: string;
@@ -30,7 +32,7 @@ export interface ChipProps {
   /** Called when the delete button is clicked; providing it shows the delete button */
   onDelete?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   /** Called when the chip is clicked (requires clickable) */
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
    * Disables the chip and hides the delete button
    * @default false
@@ -45,11 +47,12 @@ export interface ChipProps {
   deleteIcon?: React.ReactNode;
   /**
    * Accessible label for the delete button
-   * @default "Remove {label}"
+   * @default "Remove {label}" (localized)
    */
   deleteLabel?: string;
   /**
-   * Makes the chip a keyboard-operable button
+   * Renders the chip content as a native button (focusable, activated with
+   * Enter / Space). With onDelete, the delete button is a sibling button
    * @default false
    */
   clickable?: boolean;
@@ -59,8 +62,11 @@ export interface ChipProps {
    */
   loading?: boolean;
   /**
-   * Shows the selected state
+   * Shows the selected state; on clickable chips it is also exposed as
+   * aria-pressed (when set)
    * @default false
    */
   selected?: boolean;
+  /** Ref to the root element */
+  ref?: Ref<HTMLDivElement>;
 }

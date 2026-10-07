@@ -2,24 +2,40 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    // Each package configures its own environment in its vite.config.ts
+    // Each project configures its own environment:
+    // - unit: packages/*/vite.config.ts
+    // - e2e: tests/e2e/vitest.config.ts (user flows across components)
     projects: [
       "packages/lib-core",
       "packages/lib-web-components",
       "packages/sample",
+      "tests/e2e",
     ],
     coverage: {
       provider: "v8",
-      include: ["packages/lib-*/src/**/*.{ts,tsx}"],
+      // Library sources only (the docs site is not measured)
+      include: [
+        "**/lib-core/src/**/*.{ts,tsx}",
+        "**/lib-web-components/src/**/*.{ts,tsx}",
+      ],
       exclude: [
         "**/*.test.{ts,tsx}",
         "**/types.ts",
+        "**/*-types.ts",
         "**/*.d.ts",
-        "**/index.ts",
-        "**/index.tsx",
+        // barrel files (lib-web-components keeps real code in Button/index.ts)
+        "**/lib-core/src/**/index.{ts,tsx}",
+        "**/lib-web-components/src/index.ts",
         "**/test-utils/**",
       ],
       reporter: ["text-summary", "html", "lcov"],
+      // `pnpm test:coverage` fails below these (current: ~94/92/97/96)
+      thresholds: {
+        statements: 92,
+        branches: 89,
+        functions: 95,
+        lines: 93,
+      },
     },
   },
 });

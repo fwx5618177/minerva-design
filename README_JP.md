@@ -20,7 +20,7 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ## ✨ 特徴
 
-- **React コンポーネント**：React 18 以降に対応した 30 以上のコンポーネント
+- **React コンポーネント**：React 19 対応の 30 以上のコンポーネント（`ref` は通常の prop、エントリーは `"use client"` 付きで React Server Components から利用可能）
 - **Web Components**：Lit ベースのカスタム要素。任意のフレームワーク、またはフレームワークなしで利用可能
 - **ESM + CommonJS**：両方のモジュール形式を提供
 - **TypeScript**：型定義を同梱
@@ -29,11 +29,11 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ## 📦 パッケージ
 
-| パッケージ                    | 説明                                                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `@minerva/lib-core`           | React（>= 18）コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom`。 |
-| `@minerva/lib-web-components` | Lit ベースの Web Components。現在は `<minerva-button>` カスタム要素を提供。                             |
-| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                             |
+| パッケージ                    | 説明                                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。 |
+| `@minerva/lib-web-components` | Lit ベースの Web Components。現在は `<minerva-button>` カスタム要素を提供。                                  |
+| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                  |
 
 ### コンポーネント（`@minerva/lib-core`）
 
@@ -67,6 +67,8 @@ npm install @minerva/lib-core react react-dom
 ```bash
 yarn add @minerva/lib-core react react-dom
 ```
+
+React 19（`react`・`react-dom` `^19.0.0`）が必要です。React 18 には `@minerva/lib-core` 1.x が対応しています。エントリーには `"use client"` ディレクティブが付いているため、React Server Components 対応フレームワーク（Next.js App Router など）からラッパーなしで読み込めます。
 
 ### 基本的な使用方法
 
@@ -222,19 +224,21 @@ pnpm dev
 
 ### スクリプト
 
-| コマンド                            | 説明                                                             |
-| ----------------------------------- | ---------------------------------------------------------------- |
-| `pnpm dev`                          | ライブラリをビルドしてから、ドキュメント/デモサイトを起動        |
-| `pnpm build`                        | 全パッケージを順にビルド：lib-core → lib-web-components → sample |
-| `pnpm test`                         | 全パッケージで Vitest を実行                                     |
-| `pnpm test:coverage`                | カバレッジ付きでテストを実行                                     |
-| `pnpm lint`                         | ESLint（flat config）を実行                                      |
-| `pnpm typecheck`                    | 全パッケージの型チェック                                         |
-| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                   |
-| `pnpm clean`                        | ビルド成果物を削除                                               |
-| `pnpm changeset`                    | 変更内容を記述した changeset を追加                              |
-| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成       |
-| `pnpm release`                      | ライブラリをビルドして npm に公開                                |
+| コマンド                            | 説明                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | ライブラリをビルドしてから、ドキュメント/デモサイトを起動                             |
+| `pnpm build`                        | 全パッケージを順にビルド：lib-core → lib-web-components → sample                      |
+| `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー |
+| `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                      |
+| `pnpm test:dist`                    | ビルド済み `@minerva/lib-core` のスモークテスト（ビルド後に実行）                     |
+| `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                                        |
+| `pnpm lint`                         | ESLint（flat config）を実行                                                           |
+| `pnpm typecheck`                    | 全パッケージの型チェック                                                              |
+| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                                        |
+| `pnpm clean`                        | ビルド成果物を削除                                                                    |
+| `pnpm changeset`                    | 変更内容を記述した changeset を追加                                                   |
+| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成                            |
+| `pnpm release`                      | ライブラリをビルドして npm に公開                                                     |
 
 ### ツール
 

@@ -36,6 +36,9 @@ export default defineConfig({
       external: isExternal,
       output: {
         exports: "named",
+        // Every component is client-side (state, effects, portals): mark the
+        // entry so React Server Components consumers can import it directly.
+        banner: '"use client";',
       },
     },
   },

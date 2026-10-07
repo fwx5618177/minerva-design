@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { SpaceProps } from "./types";
+import type { SpaceProps } from "./types";
 import styles from "./space.module.scss";
 
 /**
@@ -17,9 +17,10 @@ import styles from "./space.module.scss";
  * @param className 自定义类名
  * @param style 自定义样式
  * @param children 子组件
+ * @param ref 根元素的 ref
  * @returns 返回一个 div 元素，包含子组件和间距
  */
-const Space: React.FC<SpaceProps> = ({
+const Space = ({
   align,
   justify,
   direction = "horizontal",
@@ -31,7 +32,8 @@ const Space: React.FC<SpaceProps> = ({
   className,
   style,
   children,
-}) => {
+  ref,
+}: SpaceProps) => {
   // 过滤掉空节点
   const items = React.Children.toArray(children).filter(
     (child) => child !== null && child !== undefined,
@@ -69,14 +71,11 @@ const Space: React.FC<SpaceProps> = ({
   };
 
   return (
-    <div
-      className={spaceClass}
-      style={style}
-      role="group"
-      aria-orientation={direction}
-    >
+    <div ref={ref} className={spaceClass} style={style} role="group">
       {items.map((child, i) => (
-        <React.Fragment key={i}>
+        // toArray assigns stable keys (explicit key or original slot), so
+        // children keep their state when a sibling is conditionally removed
+        <React.Fragment key={React.isValidElement(child) ? child.key : i}>
           <div className={styles.item} style={itemStyle}>
             {child}
           </div>

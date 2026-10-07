@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface CardProps {
   /** Card content, usually CardHeader, CardContent and CardFooter */
   children: React.ReactNode;
@@ -16,6 +18,8 @@ export interface CardProps {
    * @default ""
    */
   className?: string;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 export interface CardHeaderProps {
@@ -30,6 +34,8 @@ export interface CardHeaderProps {
   bgColor?: string;
   /** Header text color */
   textColor?: string;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 export interface CardTitleProps {
@@ -40,6 +46,8 @@ export interface CardTitleProps {
    * @default ""
    */
   className?: string;
+  /** Ref to the root <h3> element */
+  ref?: Ref<HTMLHeadingElement>;
 }
 
 export interface CardDescriptionProps {
@@ -50,6 +58,8 @@ export interface CardDescriptionProps {
    * @default ""
    */
   className?: string;
+  /** Ref to the root <p> element */
+  ref?: Ref<HTMLParagraphElement>;
 }
 
 export interface CardContentProps {
@@ -66,6 +76,8 @@ export interface CardContentProps {
   textColor?: string;
   /** Entrance animation of the content */
   animation?: "fadeIn" | "slideIn" | "zoomIn";
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }
 
 export interface CardFooterProps {
@@ -80,4 +92,6 @@ export interface CardFooterProps {
   bgColor?: string;
   /** Footer text color */
   textColor?: string;
+  /** Ref to the root <div> element */
+  ref?: Ref<HTMLDivElement>;
 }

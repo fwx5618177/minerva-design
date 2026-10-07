@@ -8,7 +8,7 @@
     },
     "options": {
       "title": "配置项",
-      "description": "传入配置对象，可设置显示时长、关闭按钮、图标、进度条、悬停行为等。"
+      "description": "传入配置对象，可设置显示时长、关闭按钮、图标、进度条、悬停行为等。message.config({ maxCount }) 可限制同时显示的消息数量。"
     },
     "placements": {
       "title": "位置",
@@ -29,18 +29,18 @@
   },
   "api": {
     "MessageProps": {
-      "id": "唯一标识；在 MessageOptions 中省略时自动生成",
+      "id": "唯一 id；在 MessageOptions 中省略时自动生成。复用已打开消息的 id 会替换该消息",
       "type": "消息类型，决定颜色。由所调用的方法（message.success 等）设置",
       "content": "消息内容",
-      "duration": "自动关闭前的时间，单位毫秒；设为 0 时不自动关闭",
+      "duration": "消息自动关闭前的时间（毫秒）；为 0 时不自动关闭。默认取 message.config() 的 duration",
       "showClose": "显示关闭按钮",
       "icon": "显示在内容前的图标",
       "className": "额外的类名",
       "style": "内联样式",
       "onClose": "消息关闭时调用（无论何种原因），参数为消息 id",
       "showProgress": "显示倒计时进度条（仅在 duration > 0 时）",
-      "pauseOnHover": "悬停时暂停倒计时和进度条",
-      "placement": "消息堆叠在屏幕上的位置",
+      "pauseOnHover": "鼠标悬停或键盘焦点位于消息内时，暂停倒计时和进度条",
+      "placement": "消息堆叠在屏幕上的位置。默认取 message.config() 的 placement",
       "onClick": "点击消息时调用",
       "description": "提供给辅助技术的额外描述（aria-description）",
       "closeAriaLabel": "关闭按钮的无障碍标签",
@@ -69,14 +69,17 @@
       "hookShow": "显示消息并返回一个在消息关闭时完成的 Promise。该 Promise 还通过 messageId 暴露消息 id。",
       "hookManage": "与 message.update 和 message.destroy 相同的函数。",
       "options": "所有显示方法接受的配置项：即 MessageProps，但 id 可选。",
-      "promise": "useMessage 显示方法的返回值。"
+      "promise": "useMessage 显示方法的返回值。",
+      "config": "为之后创建的消息设置全局默认值（duration、placement、maxCount）；超过 maxCount 时最早的消息会被关闭。不传参数调用可恢复内置默认值。",
+      "configType": "message.config() 的选项。默认值：duration 3000，placement \"topRight\"，maxCount 不限。"
     },
     "notes": {
       "title": "注意事项",
       "id": "传入自定义 id 便于之后更新或关闭消息；否则请使用返回的 id（message-0、message-1……）。",
       "onClose": "每条消息的 onClose 只会被调用一次，无论是超时、点击关闭按钮还是通过 destroy 关闭。",
       "stacking": "每个位置都有独立的堆叠容器，挂载在 document.body 上；最后一条消息关闭后容器会被移除。",
-      "promise": "串联消息时，请 await Promise，或在 then() 中只返回 messageId：直接返回结果本身会连带等待下一条消息关闭。"
+      "promise": "串联消息时，请 await Promise，或在 then() 中只返回 messageId：直接返回结果本身会连带等待下一条消息关闭。",
+      "a11y": "error 和 warning 使用 role=\"alert\"（立即播报）；其他类型使用 role=\"status\"（礼貌播报）。启用 pauseOnHover 时，键盘焦点位于消息内也会暂停倒计时，便于及时操作关闭按钮。"
     }
   }
 }

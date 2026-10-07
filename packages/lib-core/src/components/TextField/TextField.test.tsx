@@ -1,7 +1,8 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createRef, useState } from "react";
+import { StrictMode, createRef, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import TextField from "./TextField";
 import type { TextFieldProps } from "./types";
 
@@ -374,5 +375,151 @@ describe("TextField", () => {
     await userEvent.type(input, "abc");
     await userEvent.click(screen.getByRole("button", { name: "Clear" }));
     expect(input).toHaveValue("");
+  });
+
+  describe("regressions", () => {
+    it("supports an uncontrolled defaultValue", async () => {
+      const user = userEvent.setup();
+      const { container } = renderField({ defaultValue: "hi" });
+      const input = screen.getByRole("textbox");
+      expect(input).toHaveValue("hi");
+      expect(container.querySelector(".textField")).toHaveClass("filled");
+      await user.type(input, "!");
+      expect(input).toHaveValue("hi!");
+    });
+
+    it("returns focus to the input after clearing", async () => {
+      const user = userEvent.setup();
+      renderField({ clearable: true, defaultValue: "abc" });
+      await user.click(screen.getByRole("button", { name: "Clear" }));
+      expect(screen.getByRole("textbox")).toHaveValue("");
+      expect(screen.getByRole("textbox")).toHaveFocus();
+    });
+
+    it("uses clearLabel as the clear button's accessible name", () => {
+      renderField({
+        clearable: true,
+        defaultValue: "abc",
+        clearLabel: "Effacer",
+      });
+      expect(
+        screen.getByRole("button", { name: "Effacer" }),
+      ).toBeInTheDocument();
+    });
+
+    it.each([
+      ["a placeholder", { placeholder: "you@example.com" }],
+      ["readOnly", { readOnly: true, value: "v" }],
+    ] as const)(
+      "keeps the label as accessible name when hidden by %s",
+      (_, extra) => {
+        renderField(extra);
+        expect(
+          screen.getByRole("textbox", { name: "Email" }),
+        ).toBeInTheDocument();
+      },
+    );
+
+    it("links the error message and sets aria-invalid", () => {
+      renderField({ helperText: "Required" });
+      const input = screen.getByRole("textbox", { name: "Email" });
+      expect(input).toHaveAttribute("aria-invalid", "true");
+      expect(input).toHaveAccessibleDescription("Required");
+    });
+
+    it("uses the id prop for the input and its label", () => {
+      render(
+        <>
+          <TextField name="email" id="email-a" label="Work email" />
+          <TextField name="email" id="email-b" label="Home email" />
+        </>,
+      );
+      expect(screen.getByLabelText("Work email")).toHaveAttribute(
+        "id",
+        "email-a",
+      );
+      expect(screen.getByLabelText("Home email")).toHaveAttribute(
+        "id",
+        "email-b",
+      );
+    });
+
+    it("calls onChange once per keystroke under StrictMode", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <StrictMode>
+          <Controlled onChange={onChange} />
+        </StrictMode>,
+      );
+      await user.type(screen.getByRole("textbox"), "ab");
+      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(screen.getByRole("textbox")).toHaveValue("ab");
+    });
+
+    it("reflects a controlled value change in the filled state immediately", () => {
+      const { container, rerender } = renderField({ value: "" });
+      const field = container.querySelector(".textField");
+      expect(field).not.toHaveClass("filled");
+      rerender(<TextField name="email" label="Email" value="x" />);
+      expect(field).toHaveClass("filled");
+      expect(screen.getByText("Email")).toHaveClass("shrink");
+    });
+
+    it("calls a callback ref with null on unmount", () => {
+      const ref = vi.fn();
+      const { unmount } = render(<TextField ref={ref} name="r" label="Ref" />);
+      expect(ref).toHaveBeenLastCalledWith(expect.any(HTMLInputElement));
+      unmount();
+      expect(ref).toHaveBeenLastCalledWith(null);
+    });
+  });
+});
+
+describe("TextField localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the clear and password toggle labels", async () => {
+    const user = userEvent.setup();
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(
+      <TextField
+        name="password"
+        label="Password"
+        type="password"
+        icon={<span />}
+        iconPosition="right"
+        clearable
+        defaultValue="secret"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "清除" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "显示密码" }));
+    expect(
+      screen.getByRole("button", { name: "隐藏密码" }),
+    ).toBeInTheDocument();
+  });
+
+  it("lets the label props win over the translation", () => {
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    render(
+      <TextField
+        name="name"
+        label="Name"
+        clearable
+        defaultValue="x"
+        clearLabel="Reset name"
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Reset name" }),
+    ).toBeInTheDocument();
   });
 });

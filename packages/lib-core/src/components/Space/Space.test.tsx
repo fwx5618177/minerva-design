@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import Space from "./Space";
 
@@ -15,7 +16,8 @@ describe("Space", () => {
       </Space>,
     );
     const group = screen.getByRole("group");
-    expect(group).toHaveAttribute("aria-orientation", "horizontal");
+    // aria-orientation is not a supported attribute of role="group"
+    expect(group).not.toHaveAttribute("aria-orientation");
     expect(group).toHaveClass("space", "horizontal");
     const items = getItems(group);
     expect(items).toHaveLength(2);
@@ -88,7 +90,7 @@ describe("Space", () => {
       </Space>,
     );
     const group = screen.getByRole("group");
-    expect(group).toHaveAttribute("aria-orientation", "vertical");
+    expect(group).toHaveClass("vertical");
     expect(group).toHaveClass("vertical");
     expect(group).not.toHaveClass("horizontal");
     const [item] = getItems(group);
@@ -146,5 +148,25 @@ describe("Space", () => {
   it("renders an empty group with no children", () => {
     render(<Space />);
     expect(screen.getByRole("group")).toBeEmptyDOMElement();
+  });
+
+  it("keeps children state when a preceding child is conditionally removed", async () => {
+    const user = userEvent.setup();
+    const Form = ({ showLabel }: { showLabel: boolean }) => (
+      <Space>
+        {showLabel && <span>Label</span>}
+        <input aria-label="Name" />
+      </Space>
+    );
+    const { rerender } = render(<Form showLabel />);
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "Ada");
+    rerender(<Form showLabel={false} />);
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Ada");
+  });
+
+  it("forwards ref to the root element", () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(<Space ref={ref}>A</Space>);
+    expect(ref.current).toBe(screen.getByRole("group"));
   });
 });

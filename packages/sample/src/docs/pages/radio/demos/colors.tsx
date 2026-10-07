@@ -18,6 +18,7 @@ export default function ColorsDemo() {
       </div>
       <RadioGroup
         name="custom-color"
+        ariaLabel="Custom color"
         defaultValue="violet"
         direction="horizontal"
         color="#7c3aed"

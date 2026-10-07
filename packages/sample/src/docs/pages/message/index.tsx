@@ -45,6 +45,12 @@ const ImperativeApi: React.FC = () => {
       returns: "void",
       description: t("docs.message.imperative.rows.destroy"),
     },
+    {
+      method: "message.config",
+      signature: "(options?: MessageConfig)",
+      returns: "void",
+      description: t("docs.message.imperative.rows.config"),
+    },
   ];
 
   const hookRows: ApiRow[] = [
@@ -80,6 +86,13 @@ const ImperativeApi: React.FC = () => {
       signature: "Promise<void> & { messageId: string }",
       returns: "-",
       description: t("docs.message.imperative.rows.promise"),
+    },
+    {
+      method: "MessageConfig",
+      signature:
+        "{ duration?: number; placement?: MessagePlacement; maxCount?: number }",
+      returns: "-",
+      description: t("docs.message.imperative.rows.configType"),
     },
   ];
 
@@ -170,6 +183,7 @@ const ImperativeApi: React.FC = () => {
           <li>{t("docs.message.imperative.notes.onClose")}</li>
           <li>{t("docs.message.imperative.notes.stacking")}</li>
           <li>{t("docs.message.imperative.notes.promise")}</li>
+          <li>{t("docs.message.imperative.notes.a11y")}</li>
         </ul>
       </div>
     </section>

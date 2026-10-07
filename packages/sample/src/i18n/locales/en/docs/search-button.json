@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "An icon-only search button. Give it an ariaLabel so screen readers can announce it."
+      "description": "An icon-only search button. It is announced as \"Search\" by default; pass ariaLabel to describe it more precisely."
     },
     "variants": {
       "title": "Variants",
@@ -39,7 +39,7 @@
     "SearchButtonProps": {
       "onClick": "Called when the button is clicked (not called while disabled)",
       "className": "Additional class name",
-      "ariaLabel": "Accessible label; required when the button has no text",
+      "ariaLabel": "Accessible label. Icon-only buttons default to \"Search\"; with children the visible text is used",
       "disabled": "Disables the button",
       "shape": "Button shape; buttons with children are always rendered square",
       "variant": "Color variant",
@@ -48,8 +48,10 @@
       "color": "Text color",
       "iconColor": "Color of the search icon",
       "bgColor": "Custom background color",
-      "loading": "Replaces the icon with a loading spinner",
-      "children": "Optional text shown next to the icon"
+      "loading": "Replaces the icon with a loading spinner and blocks activation (including form submission)",
+      "children": "Optional text shown next to the icon",
+      "type": "Native button type (the browser default is \"submit\" inside a form)",
+      "ref": "Ref to the <button> element"
     }
   }
 }

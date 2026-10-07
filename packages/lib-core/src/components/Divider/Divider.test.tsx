@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import type { ReactElement } from "react";
+import { createRef, type ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import Divider from "./Divider";
 
@@ -55,10 +55,33 @@ describe("Divider", () => {
     expect(divider.style.borderWidth).toBe("3px");
   });
 
-  it("does not set margins when spacing is 0", () => {
+  it("applies zero margins when spacing is 0 (overriding the stylesheet)", () => {
     const divider = renderDivider(<Divider spacing={0} />);
-    expect(divider.style.marginTop).toBe("");
-    expect(divider.style.marginBottom).toBe("");
+    expect(divider.style.marginTop).toBe("0px");
+    expect(divider.style.marginBottom).toBe("0px");
+
+    const vertical = renderDivider(
+      <Divider orientation="vertical" spacing={0} />,
+    );
+    expect(vertical.style.marginLeft).toBe("0px");
+    expect(vertical.style.marginRight).toBe("0px");
+  });
+
+  it("applies thickness 0", () => {
+    const divider = renderDivider(<Divider thickness={0} />);
+    expect(divider.style.borderWidth).toBe("0px");
+  });
+
+  it("renders 0 as text inside the text span", () => {
+    const divider = renderDivider(<Divider>{0}</Divider>);
+    expect(divider).toHaveClass("withText");
+    expect(divider.querySelector(".text")).toHaveTextContent("0");
+  });
+
+  it("forwards ref to the root element", () => {
+    const ref = createRef<HTMLDivElement>();
+    const divider = renderDivider(<Divider ref={ref} />);
+    expect(ref.current).toBe(divider);
   });
 
   it("renders text content centered by default", () => {

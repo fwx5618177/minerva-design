@@ -11,6 +11,7 @@ export default function ControlledDemo() {
         <Tooltip
           content="Controlled with the open prop"
           open={open}
+          onOpenChange={setOpen}
           placement="bottom"
         >
           <span>Controlled</span>

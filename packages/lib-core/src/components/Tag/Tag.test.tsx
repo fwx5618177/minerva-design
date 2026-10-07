@@ -1,7 +1,8 @@
-import React from "react";
+import React, { StrictMode, createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import Tag from "./Tag";
 
 const getTag = (text: string) =>
@@ -234,15 +235,15 @@ describe("Tag", () => {
     expect(screen.getByRole("button", { name: "Close" })).toBeDisabled();
   });
   describe("keyboard / a11y when clickable", () => {
-    it("exposes role=button and is focusable", () => {
+    it("renders the content as a native button", () => {
       render(
         <Tag clickable onClick={() => {}}>
           K
         </Tag>,
       );
-      const tag = screen.getByRole("button", { name: "K" });
-      expect(tag).toHaveAttribute("tabindex", "0");
-      expect(tag).toHaveClass("clickable");
+      const action = screen.getByRole("button", { name: "K" });
+      expect(action.tagName).toBe("BUTTON");
+      expect(getTag("K")).toHaveClass("clickable");
     });
 
     it("is not a button nor focusable when not clickable", () => {
@@ -266,24 +267,6 @@ describe("Tag", () => {
       expect(onClick).toHaveBeenCalledTimes(1);
     });
 
-    it("prevents the default action of Space (page scroll)", () => {
-      render(
-        <Tag clickable onClick={() => {}}>
-          K
-        </Tag>,
-      );
-      const tag = screen.getByRole("button", { name: "K" });
-      const event = new KeyboardEvent("keydown", {
-        key: " ",
-        bubbles: true,
-        cancelable: true,
-      });
-      act(() => {
-        tag.dispatchEvent(event);
-      });
-      expect(event.defaultPrevented).toBe(true);
-    });
-
     it("is not focusable and ignores keys when disabled", async () => {
       const onClick = vi.fn();
       render(
@@ -292,11 +275,130 @@ describe("Tag", () => {
         </Tag>,
       );
       const tag = screen.getByRole("button", { name: "K" });
-      expect(tag).toHaveAttribute("aria-disabled", "true");
-      expect(tag).not.toHaveAttribute("tabindex");
+      expect(tag).toBeDisabled();
       tag.focus();
+      expect(tag).not.toHaveFocus();
       await userEvent.keyboard("{Enter}");
       expect(onClick).not.toHaveBeenCalled();
     });
+  });
+
+  describe("clickable + closable (no nested interactive elements)", () => {
+    const renderBoth = () => {
+      const onClick = vi.fn();
+      const onClose = vi.fn();
+      const utils = render(
+        <StrictMode>
+          <Tag clickable closable onClick={onClick} onClose={onClose}>
+            T
+          </Tag>
+        </StrictMode>,
+      );
+      return { ...utils, onClick, onClose };
+    };
+
+    it("renders the action and the close control as sibling buttons", () => {
+      renderBoth();
+      const tag = getTag("T");
+      expect(tag).not.toHaveAttribute("role");
+      expect(tag).not.toHaveAttribute("tabindex");
+      const action = screen.getByRole("button", { name: "T" });
+      const close = screen.getByRole("button", { name: "Close" });
+      expect(action.tagName).toBe("BUTTON");
+      expect(action).toHaveAttribute("type", "button");
+      expect(action).not.toContainElement(close);
+      expect(close).not.toContainElement(action);
+      expect(action.parentElement).toBe(tag);
+      expect(close.parentElement).toBe(tag);
+      // no interactive element is nested inside another one
+      for (const el of screen.getAllByRole("button")) {
+        expect(el.parentElement?.closest("button, [role='button']")).toBeNull();
+      }
+    });
+
+    it("reaches both buttons with Tab and activates each independently", async () => {
+      const user = userEvent.setup();
+      const { onClick, onClose } = renderBoth();
+      await user.tab();
+      expect(screen.getByRole("button", { name: "T" })).toHaveFocus();
+      await user.keyboard("{Enter}");
+      expect(onClick).toHaveBeenCalledTimes(1);
+      await user.keyboard(" ");
+      expect(onClick).toHaveBeenCalledTimes(2);
+      expect(onClose).not.toHaveBeenCalled();
+
+      await user.tab();
+      expect(screen.getByRole("button", { name: "Close" })).toHaveFocus();
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      expect(onClose).toHaveBeenCalledTimes(2);
+      expect(onClick).toHaveBeenCalledTimes(2);
+    });
+
+    it("disables both buttons when disabled", () => {
+      render(
+        <Tag clickable closable disabled>
+          T
+        </Tag>,
+      );
+      expect(screen.getByRole("button", { name: "T" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Close" })).toBeDisabled();
+    });
+
+    it("exposes the pressed state of toggle tags", () => {
+      const { rerender } = render(
+        <Tag clickable pressed>
+          T
+        </Tag>,
+      );
+      expect(screen.getByRole("button", { name: "T" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      rerender(<Tag clickable>T</Tag>);
+      expect(screen.getByRole("button", { name: "T" })).not.toHaveAttribute(
+        "aria-pressed",
+      );
+    });
+
+    it("forwards the ref to the root element", () => {
+      const ref = createRef<HTMLDivElement>();
+      render(<Tag ref={ref}>T</Tag>);
+      expect(ref.current).toBe(getTag("T"));
+    });
+
+    it("clears pending ripple timers on unmount", async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const { unmount } = render(<Tag clickable>T</Tag>);
+      await user.click(screen.getByRole("button", { name: "T" }));
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    });
+  });
+});
+
+describe("Tag localization", () => {
+  afterEach(() => {
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+  it("translates the close label and lets closeLabel win", () => {
+    act(() => {
+      i18n.changeLanguage("fr");
+    });
+    const { rerender } = render(<Tag closable>React</Tag>);
+    expect(screen.getByRole("button", { name: "Fermer" })).toBeInTheDocument();
+
+    rerender(
+      <Tag closable closeLabel="Remove React">
+        React
+      </Tag>,
+    );
+    expect(
+      screen.getByRole("button", { name: "Remove React" }),
+    ).toBeInTheDocument();
   });
 });

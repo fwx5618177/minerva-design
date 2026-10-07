@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -128,5 +129,39 @@ describe("Card", () => {
 
     await user.click(screen.getByRole("button", { name: "Action" }));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards refs of Card and every subcomponent to their DOM nodes", () => {
+    const refs = {
+      card: createRef<HTMLDivElement>(),
+      memo: createRef<HTMLDivElement>(),
+      header: createRef<HTMLDivElement>(),
+      title: createRef<HTMLHeadingElement>(),
+      description: createRef<HTMLParagraphElement>(),
+      content: createRef<HTMLDivElement>(),
+      footer: createRef<HTMLDivElement>(),
+    };
+    render(
+      <>
+        <Card ref={refs.card}>
+          <CardHeader ref={refs.header}>
+            <CardTitle ref={refs.title}>Title</CardTitle>
+            <CardDescription ref={refs.description}>Desc</CardDescription>
+          </CardHeader>
+          <CardContent ref={refs.content}>Body</CardContent>
+          <CardFooter ref={refs.footer}>Foot</CardFooter>
+        </Card>
+        <MemoCard ref={refs.memo}>Memo</MemoCard>
+      </>,
+    );
+    expect(refs.card.current).toHaveClass("card");
+    expect(refs.memo.current).toHaveTextContent("Memo");
+    expect(refs.header.current).toHaveClass("cardHeader");
+    expect(refs.title.current).toBe(
+      screen.getByRole("heading", { name: "Title" }),
+    );
+    expect(refs.description.current?.tagName).toBe("P");
+    expect(refs.content.current).toHaveClass("cardContent");
+    expect(refs.footer.current).toHaveClass("cardFooter");
   });
 });
