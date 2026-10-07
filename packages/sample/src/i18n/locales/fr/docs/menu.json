@@ -1,29 +1,50 @@
 {
   "title": "Menu",
-  "description": "Un menu d’actions ouvert depuis un bouton (Menu) ou par clic droit (ContextMenu) : icônes, raccourcis, séparateurs, groupes, sous-menus, recherche à la frappe et prise en charge complète du clavier. Pour choisir une valeur dans une liste, utilisez Dropdown.",
+  "description": "Un menu d'actions ouvert depuis un bouton (Menu) ou par clic droit (ContextMenu) : icônes, raccourcis, séparateurs, groupes, éléments à cocher, groupes radio, sous-menus, recherche à la frappe et clavier complet (Entrée, Espace ou Flèche bas l'ouvrent sur le premier élément, Flèche haut sur le dernier ; les flèches bouclent et ignorent les éléments désactivés, Début / Fin, Tab le ferme, Échap rend le focus au déclencheur). Pour choisir une valeur dans une liste, utilisez Select.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
       "description": "Éléments avec icônes et raccourcis. onSelect reçoit l’objet d’origine, puis le menu se ferme et le focus revient au déclencheur."
     },
+    "triggers": {
+      "title": "Déclencheurs",
+      "description": "N’importe quel bouton peut servir de déclencheur, comme un Button ou un IconButton ; donnez un libellé aux déclencheurs à icône seule. ariaLabel nomme le panneau du menu."
+    },
     "groups": {
       "title": "Groupes, sous-menus et taille",
       "description": "Regroupez des entrées sous un libellé, séparez-les et imbriquez des sous-menus avec children. size=\"small\" resserre les éléments ; side et align positionnent le panneau."
     },
+    "submenus": {
+      "title": "Sous-menus",
+      "description": "Imbriquez des entrées avec children. Flèche droite, Entrée ou Espace ouvrent un sous-menu sur son premier élément ; Flèche gauche ou Échap ferment ce sous-menu seulement. Au pointeur, les sous-menus s'ouvrent au survol et restent ouverts pendant que le pointeur s'y dirige en diagonale. Avec dir=\"rtl\", ils s'ouvrent à gauche et les flèches sont inversées."
+    },
+    "checkbox-radio": {
+      "title": "Éléments à cocher et radio",
+      "description": "Les entrées type: \"checkbox\" se cochent (checked / defaultChecked + onCheckedChange) et les entrées type: \"radio-group\" regroupent des options exclusives (value / defaultValue + onValueChange). Elles laissent le menu ouvert pour modifier plusieurs options ; définissez closeOnSelect sur l'entrée pour le fermer."
+    },
+    "placement": {
+      "title": "Position",
+      "description": "side est le côté préféré par rapport au déclencheur et align l’alignement ; près des bords de la fenêtre, le menu bascule et se décale pour rester visible."
+    },
+    "disabled": {
+      "title": "Désactivé",
+      "description": "Désactivez des éléments individuels (ignorés par les flèches) ou le menu entier."
+    },
     "context-menu": {
       "title": "Menu contextuel",
-      "description": "ContextMenu ouvre les mêmes entrées sous le pointeur au clic droit, à l’appui long ou avec Maj+F10."
+      "description": "ContextMenu ouvre les mêmes entrées au pointeur sur clic droit ou appui long (un nouveau clic droit le déplace), et sur la zone avec Maj+F10 ou la touche Menu contextuel. Le focus va au premier élément et revient à la zone à la fermeture."
     },
     "controlled": {
       "title": "Contrôlé",
-      "description": "Contrôlez l’ouverture avec open et onOpenChange."
+      "description": "Contrôlez l’ouverture avec open et onOpenChange ; defaultOpen définit l’état initial en mode non contrôlé."
     }
   },
   "api": {
     "MenuProps": {
-      "children": "Élément déclencheur (bouton) ; un clic, Entrée, Espace et Flèche bas ouvrent le menu",
+      "children": "Élément déclencheur (bouton) ; clic, Entrée, Espace et Flèche bas ouvrent le menu (Flèche haut focalise le dernier élément)",
       "items": "Entrées du menu",
-      "onSelect": "Appelé avec l’objet d’origine quand une action est choisie ; le menu se ferme ensuite",
+      "onSelect": "Appelé avec l'objet d'origine de l'élément lorsqu'une action est sélectionnée",
+      "closeOnSelect": "Si la sélection d'une action ferme le menu (les éléments à cocher et radio le laissent ouvert sauf si leur entrée définit closeOnSelect)",
       "size": "Densité des éléments",
       "align": "Alignement du menu par rapport au déclencheur",
       "side": "Côté préféré ; le menu bascule s’il manque de place",
@@ -31,18 +52,23 @@
       "defaultOpen": "État d’ouverture initial (non contrôlé)",
       "onOpenChange": "Appelé quand le menu s’ouvre ou se ferme",
       "disabled": "Désactive le déclencheur",
-      "modal": "Un menu modal bloque les interactions extérieures et retient le focus tant qu’il est ouvert",
+      "modal": "Les menus modaux bloquent les interactions au pointeur à l'extérieur, piègent le focus, bloquent le défilement et masquent le reste de la page aux technologies d'assistance tant qu'ils sont ouverts",
+      "loop": "Les flèches bouclent du dernier élément au premier (et inversement)",
+      "dir": "Sens de lecture : en \"rtl\", les sous-menus s'ouvrent à gauche et Flèche gauche / Flèche droite sont inversées",
       "className": "Classe supplémentaire du panneau du menu",
-      "ariaLabel": "Libellé accessible du panneau du menu"
+      "ariaLabel": "Libellé accessible du panneau (par défaut celui du déclencheur)"
     },
     "ContextMenuProps": {
-      "children": "Zone qui ouvre le menu au clic droit / appui long / Maj+F10",
+      "children": "Zone qui ouvre le menu au clic droit / appui long / Maj+F10 / touche Menu contextuel",
       "items": "Entrées du menu",
-      "onSelect": "Appelé avec l’objet d’origine quand une action est choisie ; le menu se ferme ensuite",
+      "onSelect": "Appelé avec l'objet d'origine de l'élément lorsqu'une action est sélectionnée",
+      "closeOnSelect": "Si la sélection d'une action ferme le menu (les éléments à cocher et radio le laissent ouvert sauf si leur entrée définit closeOnSelect)",
       "size": "Densité des éléments",
       "onOpenChange": "Appelé quand le menu s’ouvre ou se ferme",
       "disabled": "Désactive le menu contextuel (le menu natif s’affiche à la place)",
-      "modal": "Un menu modal bloque les interactions extérieures et retient le focus tant qu’il est ouvert",
+      "modal": "Les menus modaux bloquent les interactions au pointeur à l'extérieur, piègent le focus, bloquent le défilement et masquent le reste de la page aux technologies d'assistance tant qu'ils sont ouverts",
+      "loop": "Les flèches bouclent du dernier élément au premier (et inversement)",
+      "dir": "Sens de lecture : en \"rtl\", les sous-menus s'ouvrent à gauche et Flèche gauche / Flèche droite sont inversées",
       "className": "Classe supplémentaire du panneau du menu",
       "ariaLabel": "Libellé accessible du panneau du menu"
     },
@@ -53,7 +79,37 @@
       "icon": "Icône affichée avant le libellé",
       "shortcut": "Indication de raccourci clavier affichée après le libellé (affichage seulement)",
       "disabled": "Désactive l’élément",
+      "closeOnSelect": "Si la sélection de cet élément ferme le menu (remplace le closeOnSelect du menu)",
       "children": "Entrées d’un sous-menu ouvert par cet élément"
+    },
+    "MenuCheckboxEntry": {
+      "type": "Type d'entrée",
+      "key": "Clé unique de l'élément",
+      "label": "Contenu de l'élément",
+      "textValue": "Texte utilisé pour la recherche à la frappe lorsque label n'est pas du texte brut",
+      "shortcut": "Raccourci clavier affiché après le libellé (affichage seulement)",
+      "disabled": "Désactive l'élément",
+      "checked": "Si l'élément est coché (contrôlé ; avec onCheckedChange)",
+      "defaultChecked": "État coché initial (non contrôlé)",
+      "onCheckedChange": "Appelé avec le nouvel état lorsque l'élément est basculé",
+      "closeOnSelect": "Si basculer l'élément ferme le menu"
+    },
+    "MenuRadioGroupEntry": {
+      "type": "Type d'entrée",
+      "key": "Clé unique du groupe",
+      "label": "Libellé affiché au-dessus du groupe (nomme aussi le groupe)",
+      "items": "Options du groupe",
+      "value": "Valeur sélectionnée (contrôlée ; avec onValueChange)",
+      "defaultValue": "Valeur sélectionnée initialement (non contrôlée)",
+      "onValueChange": "Appelé avec la valeur de l'option choisie",
+      "closeOnSelect": "Si le choix d'une option ferme le menu"
+    },
+    "MenuRadioItem": {
+      "value": "Valeur de l'option (unique dans le groupe)",
+      "label": "Contenu de l'option",
+      "textValue": "Texte utilisé pour la recherche à la frappe lorsque label n'est pas du texte brut",
+      "shortcut": "Raccourci clavier affiché après le libellé (affichage seulement)",
+      "disabled": "Désactive l'option"
     },
     "MenuSeparatorEntry": {
       "type": "Type d’entrée",

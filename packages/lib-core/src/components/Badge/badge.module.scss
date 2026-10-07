@@ -12,14 +12,21 @@
   justify-content: center;
 }
 
+// Colors are resolved through private custom properties set per color /
+// variant below; the public `--badge-bg`, `--badge-fg` and `--badge-border`
+// properties override them for a single badge or a whole subtree.
 .badge {
+  --_badge-bg: var(--primary-color);
+  --_badge-fg: var(--text-inverse-color);
+  --_badge-border: transparent;
+
   display: inline-block;
   padding: 0.25rem 0.5rem;
   font-size: 0.65rem; /* 调整默认字体大小 */
   font-weight: 600;
   line-height: 1;
-  color: var(--text-inverse-color); /* 实际的前景色 */
-  background-color: var(--secondary-color); /* 实际的背景色 */
+  color: var(--badge-fg, var(--_badge-fg));
+  background-color: var(--badge-bg, var(--_badge-bg));
   border-radius: 0.25rem;
   transition:
     background-color 0.3s ease,
@@ -34,67 +41,48 @@
     vertical-align: middle;
   }
 
-  // Class name -> design-token role (error is an alias of danger)
-  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+  // Semantic colors (solid variant is the default look)
+  @each $name in (primary, success, warning, danger, info) {
     &.#{$name} {
-      background-color: var(--#{$role}-color);
-      color: var(--text-inverse-color);
+      --_badge-bg: var(--#{$name}-color);
+      --_badge-fg: var(--text-inverse-color);
     }
-  }
-
-  &.light {
-    background-color: var(--surface-muted-color);
-    color: var(--text-color);
-  }
-
-  &.dark {
-    background-color: var(--dark-color);
-    color: var(--light-color);
   }
 
   &.neutral {
-    background-color: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
-    color: var(--text-inverse-color);
+    --_badge-bg: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+    --_badge-fg: var(--text-inverse-color);
   }
 
-  // Fill styles: subtle (tinted) and outline (bordered). The solid look above
-  // is the default.
+  // Variants: subtle (tinted) and outline (bordered)
   &.subtle,
   &.outline {
     box-shadow: none;
-    border: 1px solid transparent;
+    border: 1px solid var(--badge-border, var(--_badge-border));
   }
 
-  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+  @each $name in (primary, success, warning, danger, info) {
     &.#{$name}.subtle {
-      background-color: var(--#{$role}-color-subtle);
-      color: var(--#{$role}-color-text);
+      --_badge-bg: var(--#{$name}-color-subtle);
+      --_badge-fg: var(--#{$name}-color-text);
     }
 
     &.#{$name}.outline {
-      background-color: transparent;
-      border-color: var(--#{$role}-color);
-      color: var(--#{$role}-color-text);
+      --_badge-bg: transparent;
+      --_badge-fg: var(--#{$name}-color-text);
+      --_badge-border: var(--#{$name}-color);
     }
   }
 
-  &.neutral.subtle,
-  &.light.subtle {
-    background-color: var(--surface-muted-color);
-    color: var(--text-secondary-color);
+  &.neutral.subtle {
+    --_badge-bg: var(--surface-muted-color);
+    --_badge-fg: var(--text-secondary-color);
   }
 
-  &.dark.subtle {
-    background-color: color-mix(in srgb, var(--dark-color) 12%, transparent);
-    color: var(--text-color);
-  }
-
-  &.neutral.outline,
-  &.light.outline,
-  &.dark.outline {
-    background-color: transparent;
-    border-color: var(--border-strong-color);
-    color: var(--text-secondary-color);
+  &.neutral.outline {
+    --_badge-bg: transparent;
+    --_badge-fg: var(--text-secondary-color);
+    --_badge-border: var(--border-strong-color);
   }
 
   &.small {
@@ -186,14 +174,14 @@
     border-radius: 50%;
   }
 
-  // a dot is always filled with the full color, whatever the appearance
-  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+  // a dot is always filled with the full color, whatever the variant
+  @each $name in (primary, success, warning, danger, info) {
     &.#{$name}.dot {
-      background-color: var(--#{$role}-color);
+      --_badge-bg: var(--#{$name}-color);
     }
   }
 
   &.neutral.dot {
-    background-color: var(--text-muted-color);
+    --_badge-bg: var(--text-muted-color);
   }
 }

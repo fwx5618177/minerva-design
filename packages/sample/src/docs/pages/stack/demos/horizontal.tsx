@@ -5,7 +5,9 @@ export default function HorizontalDemo() {
     <HStack gap={2} justify="between" style={{ width: "100%" }}>
       <span>Unsaved changes</span>
       <HStack gap={2}>
-        <Button variant="secondary">Discard</Button>
+        <Button color="neutral" variant="outline">
+          Discard
+        </Button>
         <Button>Save</Button>
       </HStack>
     </HStack>

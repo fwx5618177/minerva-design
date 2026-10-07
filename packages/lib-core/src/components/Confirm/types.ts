@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
-
-/** Tone of the confirm action: "danger" renders a destructive (error) button. */
-export type ConfirmIntent = "primary" | "danger" | "warning";
+import type { ColorScheme } from "@minerva/core";
 
 /** Content of a confirmation, shared by `ConfirmDialog` and `confirm()`. */
 export interface ConfirmOptions {
@@ -9,17 +7,18 @@ export interface ConfirmOptions {
   title: ReactNode;
   /** Explanation below the title (the dialog's accessible description). */
   description?: ReactNode;
-  /** Label of the confirm button; defaults to the localized "Confirm", or "Delete" for `intent="danger"`. */
+  /** Label of the confirm button; defaults to the localized "Confirm", or "Delete" for `color="danger"`. */
   confirmLabel?: ReactNode;
   /** Label of the cancel button; defaults to the localized "Cancel". */
   cancelLabel?: ReactNode;
   /** Accessible label of the close (×) button; defaults to the localized "Close". */
   closeLabel?: string;
   /**
-   * Tone of the confirm button
+   * Semantic color of the confirm button; `danger` marks a destructive
+   * action (and defaults its label to "Delete")
    * @default "primary"
    */
-  intent?: ConfirmIntent;
+  color?: Extract<ColorScheme, "primary" | "danger" | "warning">;
   /**
    * Shows a spinner on the confirm button and disables cancel (e.g. while an async `onConfirm` runs)
    * @default false

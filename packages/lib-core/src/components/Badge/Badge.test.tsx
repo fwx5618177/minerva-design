@@ -49,14 +49,14 @@ describe("Badge", () => {
   it.each([
     ["success", "small", "bottom-left"],
     ["danger", "large", "top-left"],
-    ["dark", "medium", "bottom-right"],
+    ["neutral", "medium", "bottom-right"],
   ] as const)(
-    "applies variant %s, size %s and position %s",
-    (variant, size, position) => {
+    "applies color %s, size %s and position %s",
+    (color, size, position) => {
       render(
         <Badge
           content="x"
-          variant={variant}
+          color={color}
           size={size}
           position={position}
           className="custom"
@@ -65,7 +65,7 @@ describe("Badge", () => {
         </Badge>,
       );
       expect(screen.getByRole("status")).toHaveClass(
-        variant,
+        color,
         size,
         position,
         "custom",
@@ -80,23 +80,13 @@ describe("Badge", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Pro");
   });
 
-  it("applies custom colors and borders", () => {
-    render(
-      <Badge
-        content="1"
-        bgColor="rgb(1, 2, 3)"
-        textColor="rgb(4, 5, 6)"
-        borderRadius="2px"
-        borderWidth="3px"
-        borderColor="rgb(7, 8, 9)"
-      />,
-    );
+  it("applies custom border radius and width", () => {
+    render(<Badge content="1" borderRadius="2px" borderWidth="3px" />);
     const badge = screen.getByRole("status");
-    expect(badge.style.backgroundColor).toBe("rgb(1, 2, 3)");
-    expect(badge.style.color).toBe("rgb(4, 5, 6)");
     expect(badge.style.borderRadius).toBe("2px");
     expect(badge.style.borderWidth).toBe("3px");
-    expect(badge.style.borderColor).toBe("rgb(7, 8, 9)");
+    expect(badge.style.backgroundColor).toBe("");
+    expect(badge.style.color).toBe("");
   });
 
   it("is not a tab stop (non-interactive)", async () => {
@@ -179,5 +169,28 @@ describe("Badge localization", () => {
       </Badge>,
     );
     expect(screen.getByRole("status")).toHaveTextContent("徽标");
+  });
+});
+
+describe("Badge as a status dot", () => {
+  it.each(["success", "warning", "danger", "info", "neutral"] as const)(
+    "renders a standalone %s dot announced by its ariaLabel",
+    (color) => {
+      render(<Badge dot color={color} ariaLabel={`${color} status`} />);
+      const dot = screen.getByRole("status", { name: `${color} status` });
+      expect(dot).toHaveClass("badge", "dot", "standalone", color);
+      expect(dot).toBeEmptyDOMElement();
+    },
+  );
+
+  it("can be decorative next to a visible status label", () => {
+    const { container } = render(
+      <span>
+        <Badge dot color="success" role="presentation" />
+        Online
+      </span>,
+    );
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(container.querySelector(".dot")).toHaveClass("success");
   });
 });

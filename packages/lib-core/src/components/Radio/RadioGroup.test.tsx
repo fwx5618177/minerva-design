@@ -204,8 +204,13 @@ describe("RadioGroup", () => {
 
   it("applies direction class and propagates size and color to radios", () => {
     const { container } = render(
-      <RadioGroup direction="horizontal" size="small" color="red" className="g">
-        <Radio label="Apple" value="apple" size="large" />
+      <RadioGroup
+        direction="horizontal"
+        size="small"
+        color="warning"
+        className="g"
+      >
+        <Radio label="Apple" value="apple" size="large" color="success" />
       </RadioGroup>,
     );
 
@@ -214,10 +219,22 @@ describe("RadioGroup", () => {
       "horizontal",
     );
     expect(container.firstChild).toHaveClass("radioGroupWrapper", "g");
-    expect(container.querySelector(".radioWrapper")).toHaveClass("small");
-    expect(container.querySelector(".radioMark")).toHaveStyle({
-      color: "red",
-    });
+    const wrapper = container.querySelector(".radioWrapper");
+    expect(wrapper).toHaveClass("small", "warning");
+    expect(wrapper).not.toHaveClass("success");
+  });
+
+  it("keeps each radio's own color when the group sets none", () => {
+    const { container } = render(
+      <RadioGroup ariaLabel="Colors">
+        <Radio label="A" value="a" color="danger" />
+        <Radio label="B" value="b" />
+      </RadioGroup>,
+    );
+
+    const wrappers = container.querySelectorAll(".radioWrapper");
+    expect(wrappers[0]).toHaveClass("danger");
+    expect(wrappers[1]).toHaveClass("primary");
   });
 
   it("forwards the ref to the wrapper div", () => {

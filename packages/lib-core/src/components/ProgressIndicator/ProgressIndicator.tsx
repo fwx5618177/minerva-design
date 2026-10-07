@@ -1,80 +1,96 @@
-import React from "react";
-import styles from "./progressIndicator.module.scss";
-import type { ProgressIndicatorProps } from "./types";
-import useI18n from "../../hooks/useI18n";
+import React, { useId } from "react";
 import { FaSpinner, FaWaveSquare, FaCircleNotch } from "react-icons/fa";
+import { cn } from "../../utils/cn";
+import useI18n from "../../hooks/useI18n";
+import type { ProgressIndicatorProps } from "./types";
+import styles from "./progressIndicator.module.scss";
 
 /**
- * ProgressIndicator component
- * @param type - The type of progress indicator (spinner, bar, wave, circle, dottedBar)
- * @param size - The size of the progress indicator (small, medium, large)
- * @param icon - Optional icon to be displayed
- * @param ariaLabel - The aria-label attribute for the progress indicator, used for accessibility
- * @param className - Additional classes to be added to the progress indicator
- * @param width - The width of the progress indicator
- * @param full - Whether the progress indicator should take full width
- * @param ref - Ref to the root <div> element
- * @returns A progress indicator component
+ * ProgressIndicator: the indeterminate loading indicator (spinner, circle,
+ * wave, bar or dotted bar). It is a `progressbar` without a value, named by
+ * `ariaLabel`, by its visible `label`, or by the localized "Loading". It is
+ * never focusable, so it can sit inside buttons. Set `decorative` when a
+ * surrounding element already announces the loading state.
  */
 const ProgressIndicator = ({
-  type = "spinner",
+  variant = "spinner",
   size = "medium",
+  color = "primary",
   icon,
+  label,
   ariaLabel,
+  decorative = false,
   className = "",
   width,
   full = false,
+  style,
   ref,
+  ...rest
 }: ProgressIndicatorProps) => {
   const { t } = useI18n();
+  const labelId = useId();
   const indicatorMap = {
     spinner: (
-      <FaSpinner
-        className={`${styles.spinner} ${styles[size]}`}
-        aria-hidden="true"
-      />
+      <FaSpinner className={cn(styles.spinner, styles[size])} aria-hidden />
     ),
     bar: (
-      <div className={`${styles.barContainer} ${styles[size]}`}>
+      <div className={cn(styles.barContainer, styles[size])}>
         <div className={styles.bar}></div>
       </div>
     ),
     wave: (
-      <div className={`${styles.waveContainer} ${styles[size]}`}>
-        <FaWaveSquare className={styles.wave} aria-hidden="true" />
+      <div className={cn(styles.waveContainer, styles[size])}>
+        <FaWaveSquare className={styles.wave} aria-hidden />
       </div>
     ),
     circle: (
-      <FaCircleNotch
-        className={`${styles.circle} ${styles[size]}`}
-        aria-hidden="true"
-      />
+      <FaCircleNotch className={cn(styles.circle, styles[size])} aria-hidden />
     ),
     dottedBar: (
-      <div className={`${styles.dottedBarContainer} ${styles[size]}`}>
+      <div className={cn(styles.dottedBarContainer, styles[size])}>
         <div className={styles.dottedBar}></div>
       </div>
     ),
   };
 
+  const isBar = variant === "bar" || variant === "dottedBar";
   const widthClass = full
     ? styles.fullWidth
-    : !width
+    : !width && isBar
       ? styles.defaultWidth
       : "";
+  const hasLabel = label !== undefined && label !== null && label !== "";
+
+  const a11y = decorative
+    ? { "aria-hidden": true as const }
+    : {
+        // Indeterminate progressbar (no aria-valuenow). Not focusable: it is
+        // not interactive and is often rendered inside buttons.
+        role: "progressbar",
+        "aria-label": ariaLabel ?? (hasLabel ? undefined : t("common.loading")),
+        "aria-labelledby": ariaLabel || !hasLabel ? undefined : labelId,
+      };
 
   return (
-    // Indeterminate progressbar (no aria-valuenow). Not focusable: it is not
-    // interactive and is often rendered inside buttons (IconButton, Chip).
     <div
       ref={ref}
-      className={`${styles.progressIndicator} ${className} ${widthClass}`}
-      aria-label={ariaLabel ?? t("common.loading")}
-      role="progressbar"
-      style={{ width: width && !full ? width : undefined }}
+      className={cn(
+        styles.progressIndicator,
+        styles[color],
+        widthClass,
+        className,
+      )}
+      style={{ ...style, width: width && !full ? width : style?.width }}
+      {...a11y}
+      {...rest}
     >
       {icon && <span className={styles.icon}>{icon}</span>}
-      {indicatorMap[type] || null}
+      {indicatorMap[variant] ?? null}
+      {hasLabel && (
+        <span id={labelId} className={styles.label}>
+          {label}
+        </span>
+      )}
     </div>
   );
 };

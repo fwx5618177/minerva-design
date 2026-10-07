@@ -1,14 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@minerva/lib-core";
 
-const variants = [
-  "default",
-  "outlined",
-  "shadow",
-  "elevated",
-  "filled",
-  "subtle",
-  "ghost",
-] as const;
+const variants = ["default", "outline", "elevated", "filled", "ghost"] as const;
 
 export default function VariantsDemo() {
   return (
@@ -21,7 +13,7 @@ export default function VariantsDemo() {
       }}
     >
       {variants.map((variant) => (
-        <Card key={variant} variant={variant} type="noFooter">
+        <Card key={variant} variant={variant}>
           <CardHeader>
             <CardTitle>{variant}</CardTitle>
           </CardHeader>

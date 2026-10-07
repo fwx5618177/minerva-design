@@ -1,6 +1,6 @@
 {
   "title": "Stack",
-  "description": "Flex layout primitives (Stack, HStack, VStack) with token-based gaps. Unlike Space, children are not wrapped in item elements.",
+  "description": "Flex layout primitives (Stack, HStack, VStack) with token-based gaps, optional separators and attached groups. Children are not wrapped in item elements.",
   "demos": {
     "basic": {
       "title": "Vertical stack",
@@ -10,9 +10,21 @@
       "title": "Horizontal stack",
       "description": "HStack centers items on the cross axis; justify distributes them."
     },
+    "gap": {
+      "title": "Gap",
+      "description": "Numbers select spacing tokens (2 = 8px, 4 = 16px, 6 = 24px); other strings are CSS lengths."
+    },
     "wrap": {
       "title": "Wrap and semantics",
       "description": "wrap lets items flow onto new lines; as renders a list."
+    },
+    "separator": {
+      "title": "Separator",
+      "description": "separator is rendered between items, such as a vertical Divider; empty children get none."
+    },
+    "attached": {
+      "title": "Attached group",
+      "description": "attached joins items into one group with shared borders and outer corners only, like a segmented control."
     }
   },
   "api": {
@@ -23,7 +35,9 @@
       "gap": "Gap between items: numbers and numeric strings select spacing tokens, other strings are CSS values. No gap when omitted.",
       "align": "Cross-axis alignment (align-items); unset when omitted",
       "justify": "Main-axis distribution (justify-content); unset when omitted",
-      "wrap": "Wraps items onto multiple lines"
+      "wrap": "Wraps items onto multiple lines",
+      "separator": "Rendered between every two items (not before the first or after the last); empty children get no separator",
+      "attached": "Joins the items into one attached group: no gap, shared borders, outer-only corner radii and role=\"group\""
     }
   }
 }

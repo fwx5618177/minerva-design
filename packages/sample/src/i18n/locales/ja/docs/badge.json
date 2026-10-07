@@ -6,9 +6,13 @@
       "title": "基本的な使い方",
       "description": "要素をラップして content を設定します。数値の意味を説明する ariaLabel をバッジに指定してください。children がない場合（またはテキストの場合）、バッジは文中などにインライン表示されます。"
     },
+    "colors": {
+      "title": "カラー",
+      "description": "color でセマンティックカラーを指定します：primary（既定）、neutral、success、warning、danger、info。"
+    },
     "variants": {
-      "title": "バリエーション",
-      "description": "9 種類の配色。error は danger の別名です。"
+      "title": "バリアント",
+      "description": "variant で見た目のスタイルを指定します：solid（既定・塗りつぶし）、subtle（淡い背景）、outline（枠線）。どのバリアントもすべてのカラーと組み合わせられます。"
     },
     "positions": {
       "title": "位置",
@@ -28,31 +32,28 @@
     },
     "custom-style": {
       "title": "カスタムスタイル",
-      "description": "bgColor・textColor・borderWidth・borderColor・borderRadius で色・枠線・角丸を上書きします。"
+      "description": "borderRadius と borderWidth で形を調整します。色を変えるには CSS カスタムプロパティ --badge-bg・--badge-fg・--badge-border を（インライン、クラス、または親要素に）設定します。"
     },
-    "appearance": {
-      "title": "外観",
-      "description": "appearance で solid（既定）・subtle（淡色）・outline を切り替えます。neutral はグレーです。"
+    "status": {
+      "title": "ステータスドット",
+      "description": "単独のドットとテキストラベルで、項目の状態やユーザーのプレゼンスを表します。テキストが状態を示している場合はドットに role=\"presentation\" を、そうでなければ ariaLabel を指定します。"
     }
   },
   "api": {
     "BadgeProps": {
       "children": "バッジを付ける要素。children がない場合（またはテキスト / 数値の children の場合は内容として使用）、バッジは角に配置されず通常のフロー内にインライン表示されます",
       "className": "バッジの追加クラス名",
-      "variant": "バッジの配色",
+      "color": "バッジのセマンティックカラー",
+      "variant": "見た目のスタイル：solid（塗りつぶし）、subtle（淡い背景）、outline（枠線）",
       "size": "バッジのサイズ",
       "content": "バッジ内に表示する内容（数・短いテキスト・アイコン＋テキストなど）。単独バッジのリッチな内容は children ではなくこちらを使います",
       "position": "children のどの角にバッジを置くか（単独のバッジでは無視されます）",
       "dot": "内容の代わりに小さな点を表示します",
-      "bgColor": "カスタム背景色",
-      "textColor": "カスタム文字色",
       "borderRadius": "カスタム角丸（CSS の値）",
       "borderWidth": "カスタム枠線の太さ（CSS の値）",
-      "borderColor": "カスタム枠線の色",
       "ariaLabel": "バッジのアクセシブルなラベル（例：「未読メッセージ 5 件」）",
       "icon": "内容の前に表示するアイコン",
       "ref": "ルート要素への ref。children に付ける場合はラッパー、それ以外はバッジ自体",
-      "appearance": "塗りのスタイル",
       "role": "バッジ要素の ARIA ロール。ライブステータスとして読み上げたくない場合は \"presentation\" または \"none\" を指定"
     }
   }

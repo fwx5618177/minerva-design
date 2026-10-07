@@ -1,9 +1,10 @@
+// Theme application helpers live in @minerva/core (framework-agnostic).
 export {
   applyThemeStyles,
   generateCSSVariables,
   getSystemTheme,
   isBilingualTheme,
   resolveTheme,
-} from "./applyThemeStyles";
+} from "@minerva/core";
 export { cn } from "./cn";
-export type { ClassValue } from "./cn";
+export type { ClassValue, ClassDictionary } from "./cn";

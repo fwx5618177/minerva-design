@@ -6,9 +6,13 @@
       "title": "基础用法",
       "description": "包裹一个元素并设置 content。请为徽标提供描述数字含义的 ariaLabel。没有 children（或 children 为文本）时，徽标以行内方式渲染，例如放在一句话中。"
     },
+    "colors": {
+      "title": "颜色",
+      "description": "color 设置语义颜色：primary（默认）、neutral、success、warning、danger 和 info。"
+    },
     "variants": {
       "title": "变体",
-      "description": "九种配色，error 是 danger 的别名。"
+      "description": "variant 设置视觉样式：solid（默认，实心）、subtle（浅色背景）或 outline（描边）。每种变体都可与任意颜色组合。"
     },
     "positions": {
       "title": "位置",
@@ -28,31 +32,28 @@
     },
     "custom-style": {
       "title": "自定义样式",
-      "description": "通过 bgColor、textColor、borderWidth、borderColor 和 borderRadius 覆盖颜色、边框和圆角。"
+      "description": "borderRadius 和 borderWidth 调整形状。如需修改颜色，请设置 CSS 自定义属性 --badge-bg、--badge-fg 和 --badge-border（可写在行内样式、类名或父元素上）。"
     },
-    "appearance": {
-      "title": "填充样式",
-      "description": "appearance 可在 solid（默认）、subtle（浅色背景）与 outline（描边）之间切换；neutral 为灰色。"
+    "status": {
+      "title": "状态点",
+      "description": "独立的圆点配合文字标签，用于展示条目状态或用户在线状态。文字已说明状态时给圆点设置 role=\"presentation\"，否则提供 ariaLabel。"
     }
   },
   "api": {
     "BadgeProps": {
       "children": "徽标所附着的元素。没有 children（或 children 为纯文本 / 数字，此时作为内容）时，徽标以行内方式在正常文档流中渲染，而不是定位到角上",
       "className": "徽标的额外类名",
-      "variant": "徽标的配色",
+      "color": "徽标的语义颜色",
+      "variant": "视觉样式：solid（实心）、subtle（浅色背景）或 outline（描边）",
       "size": "徽标尺寸",
       "content": "徽标内显示的内容（数字、短文本、图标 + 文本…）。独立徽标的富内容请用它代替 children",
       "position": "徽标位于 children 的哪个角（独立徽标忽略此项）",
       "dot": "显示为小圆点而非内容",
-      "bgColor": "自定义背景色",
-      "textColor": "自定义文字颜色",
       "borderRadius": "自定义圆角（CSS 值）",
       "borderWidth": "自定义边框宽度（CSS 值）",
-      "borderColor": "自定义边框颜色",
       "ariaLabel": "徽标的无障碍标签，例如“5 条未读消息”",
       "icon": "内容前显示的图标",
       "ref": "指向根元素的 ref：附着于 children 时为包裹元素，否则为徽标本身",
-      "appearance": "填充样式",
       "role": "徽标元素的 ARIA 角色；不希望作为实时状态播报时设为 \"presentation\" 或 \"none\""
     }
   }

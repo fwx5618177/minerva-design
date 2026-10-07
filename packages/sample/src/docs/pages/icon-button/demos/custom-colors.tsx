@@ -1,29 +1,25 @@
+import type { CSSProperties } from "react";
 import { IconButton } from "@minerva/lib-core";
-import { IoFlash, IoLeaf, IoWater } from "react-icons/io5";
+import { IoFlash, IoWater } from "react-icons/io5";
+
+// CSS custom properties override the resolved colors; set them inline, in a
+// class, or on an ancestor to restyle a whole toolbar.
+const amber = {
+  "--icon-button-color": "#b45309",
+  "--icon-button-hover-bg": "rgba(245, 158, 11, 0.16)",
+} as CSSProperties;
+
+const sky = {
+  "--icon-button-color": "#0ea5e9",
+  "--icon-button-pressed-color": "#ffffff",
+  "--icon-button-pressed-bg": "#0369a1",
+} as CSSProperties;
 
 export default function CustomColorsDemo() {
   return (
     <>
-      <IconButton
-        icon={<IoFlash />}
-        color="#f59e0b"
-        bgColor="rgba(245, 158, 11, 0.12)"
-        hoverColor="rgba(245, 158, 11, 0.24)"
-        ariaLabel="Energy"
-      />
-      <IconButton
-        icon={<IoLeaf />}
-        color="#ffffff"
-        bgColor="#16a34a"
-        ariaLabel="Eco mode"
-      />
-      <IconButton
-        icon={<IoWater />}
-        color="#0ea5e9"
-        activeColor="#0369a1"
-        active
-        ariaLabel="Water"
-      />
+      <IconButton icon={<IoFlash />} style={amber} label="Energy" />
+      <IconButton icon={<IoWater />} style={sky} defaultPressed label="Water" />
     </>
   );
 }

@@ -15,7 +15,8 @@ export default function ViewportsDemo() {
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <Button
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         size="small"
         onClick={() =>
           setViewport((v) => (v === "mobile" ? "desktop" : "mobile"))

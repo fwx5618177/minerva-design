@@ -2,9 +2,13 @@
   "title": "Tag 标签",
   "description": "用于标记和分类内容的小标签，可关闭或可点击。",
   "demos": {
-    "basic": {
-      "title": "基础用法",
-      "description": "通过 variant 表达不同的含义。"
+    "colors": {
+      "title": "颜色",
+      "description": "通过 color 表达不同的含义：neutral（默认）、primary、success、warning、danger 和 info。"
+    },
+    "variants": {
+      "title": "变体",
+      "description": "variant 设置视觉样式：subtle（默认，浅色背景）、outline（增加边框）或 solid（以颜色填充）。elevation 可为任意变体添加阴影。"
     },
     "sizes-shapes": {
       "title": "尺寸与形状",
@@ -14,10 +18,6 @@
       "title": "带图标",
       "description": "icon 显示在内容之前。"
     },
-    "bordered-elevation": {
-      "title": "边框与阴影",
-      "description": "bordered 添加边框，elevation 添加阴影。"
-    },
     "closable": {
       "title": "可关闭",
       "description": "closable 会添加关闭按钮并调用 onClose，请在其中从状态中移除标签；closeIcon 和 closeLabel 用于自定义该按钮。第一个标签同时可点击：标签本身和关闭按钮是两个独立的按钮，都可以用 Tab 到达。"
@@ -26,9 +26,13 @@
       "title": "可点击（可选择）",
       "description": "clickable 会将内容渲染为原生按钮：用 Tab 聚焦，用点击、Enter 或空格键触发。这里标签用于切换选中状态，并通过 pressed 告知辅助技术。"
     },
+    "avatar-loading": {
+      "title": "头像与加载",
+      "description": "avatar 在内容前显示头像。loading 用加载动画替换图标 / 头像，将标签标记为忙碌，阻止其操作并隐藏关闭按钮。"
+    },
     "custom-colors": {
       "title": "自定义颜色",
-      "description": "bgColor、textColor 和 borderColor 覆盖变体颜色；ripple={false} 关闭点击涟漪效果。"
+      "description": "CSS 自定义属性 --tag-<color>-bg 和 --tag-<color>-text 可覆盖某个颜色的配色（可写在行内样式、类名或主题中）；ripple={false} 关闭点击涟漪效果。"
     },
     "disabled": {
       "title": "禁用",
@@ -44,20 +48,19 @@
   "api": {
     "TagProps": {
       "children": "标签内容",
-      "variant": "配色",
+      "color": "标签的语义颜色",
+      "variant": "视觉样式：subtle（浅色背景）、outline（浅色背景加边框）或 solid（以颜色填充，反色文字）",
       "size": "标签尺寸",
       "shape": "标签形状",
       "closable": "显示关闭按钮",
       "onClose": "点击关闭按钮时的回调",
       "clickable": "将标签内容渲染为原生按钮（可聚焦，可用 Enter / 空格键触发）。与 closable 同时使用时，关闭按钮是与之并列的独立按钮",
       "onClick": "标签被触发时的回调（需要 clickable）",
-      "pressed": "切换型标签的按下状态（需要 clickable），会设置 aria-pressed",
+      "pressed": "切换型标签的按下（选中）状态，例如可选择的筛选项（需要 clickable）；会设置 aria-pressed 和选中样式",
       "icon": "内容前显示的图标",
-      "bordered": "显示边框",
+      "avatar": "显示在内容之前的头像（例如小尺寸 Avatar 或图片）",
+      "loading": "用加载动画替换图标 / 头像，标记为忙碌并阻止操作；关闭按钮会被隐藏",
       "elevation": "显示阴影",
-      "bgColor": "自定义背景色",
-      "textColor": "自定义文字颜色",
-      "borderColor": "自定义边框颜色",
       "className": "额外的类名",
       "style": "内联样式",
       "disabled": "禁用标签及其关闭按钮",

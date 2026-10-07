@@ -4,24 +4,24 @@ export default function SizesShapesDemo() {
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <Tag size="small" variant="primary">
+        <Tag size="small" color="primary">
           Small
         </Tag>
-        <Tag size="medium" variant="primary">
+        <Tag size="medium" color="primary">
           Medium
         </Tag>
-        <Tag size="large" variant="primary">
+        <Tag size="large" color="primary">
           Large
         </Tag>
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <Tag shape="square" variant="info">
+        <Tag shape="square" color="info">
           Square
         </Tag>
-        <Tag shape="rounded" variant="info">
+        <Tag shape="rounded" color="info">
           Rounded
         </Tag>
-        <Tag shape="circle" variant="info">
+        <Tag shape="circle" color="info">
           Circle
         </Tag>
       </div>

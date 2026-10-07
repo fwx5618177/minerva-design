@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Options whose label contains the typed text are suggested; textFieldProps are forwarded to the input."
+      "description": "Options whose label contains the typed text are suggested; inputProps are forwarded to the input."
     },
     "controlled": {
       "title": "Controlled",
@@ -22,10 +22,6 @@
       "title": "Grouped options",
       "description": "groupBy returns a group name for each option; groups are shown under headings in order of appearance."
     },
-    "multiple": {
-      "title": "Multiple selection",
-      "description": "With multiple, selected options become removable tags and the dropdown stays open between picks; maxTagCount collapses the rest into \"+N\". selectedOptions / onSelectedOptionsChange control the selection."
-    },
     "filter-sort": {
       "title": "Custom filter and sort",
       "description": "filterOption replaces the default \"contains\" matching and sortOption orders the results."
@@ -36,7 +32,7 @@
     },
     "appearance": {
       "title": "Dropdown placement and colors",
-      "description": "Customize placement, offset, animation and the dropdown, hover and highlight background colors. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
+      "description": "Customize placement, offset and animation, and recolor the dropdown, hovered and highlighted options with the --autocomplete-dropdown-bg, --autocomplete-option-hover-bg and --autocomplete-option-highlight-bg CSS custom properties set through dropdownClassName. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
     },
     "search-box": {
       "title": "Search box",
@@ -47,9 +43,8 @@
     "title": "Keyboard and accessibility",
     "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
     "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
-    "escape": "Escape closes the dropdown.",
-    "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options.",
-    "backspace": "In multiple mode, Backspace in an empty input removes the last tag."
+    "escape": "Escape closes the dropdown and keeps focus in the input; inside a Modal or Popover only the dropdown closes.",
+    "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
   },
   "api": {
     "AutoCompleteProps": {
@@ -60,33 +55,25 @@
       "onChange": "Called when the input text changes (typing or selecting an option)",
       "options": "Options to suggest",
       "defaultValue": "Initial input value (uncontrolled)",
-      "onSelect": "Called when an option is picked (mouse or keyboard). In multiple mode it is also called when a picked option is picked again (which deselects it) or removed through its tag",
+      "onSelect": "Called when an option is picked (mouse or keyboard)",
       "groupBy": "Returns the group name of an option; options are grouped under headings",
-      "multiple": "Allows selecting several options, shown as removable tags; the dropdown stays open between picks",
-      "maxTagCount": "Maximum number of tags shown in multiple mode; the rest are summarized as \"+N\"",
       "renderOption": "Custom option renderer (used when mode is \"custom\")",
       "renderEmpty": "Custom content shown when no option matches",
       "loading": "Shows a loading indicator in the dropdown",
-      "textFieldProps": "Props forwarded to the underlying TextField",
+      "inputProps": "Props forwarded to the underlying Input (native attributes, aria-label, size, prefix / suffix, clearable...)",
       "emptyProps": "Props forwarded to the default Empty state",
-      "popperProps": "Props forwarded to the dropdown Popper",
+      "dropdownClassName": "Additional class name of the dropdown (portalled) element. It can set the --autocomplete-dropdown-bg, --autocomplete-option-hover-bg and --autocomplete-option-highlight-bg CSS custom properties to recolor the dropdown, hovered options and highlighted options",
       "placement": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport",
-      "offset": "Dropdown offset (see Popper's offset)",
-      "dropdownBgColor": "Background color of the dropdown",
-      "highlightBgColor": "Background color of highlighted options",
-      "hoverBgColor": "Background color of hovered / keyboard-focused options",
+      "offset": "Dropdown offset in pixels: for top / bottom placements y is the gap to the input and x shifts along it; for left / right placements x is the gap",
       "animation": "Animates the dropdown when it opens",
       "filterOption": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
       "sortOption": "Compare function used to sort the filtered options",
       "onOptionClick": "Called when an option is clicked with the mouse",
       "onDropdownVisibleChange": "Called when the dropdown opens or closes (not on mount)",
       "ref": "Ref to the inner <input> element",
-      "selectedOptions": "Selected options in multiple mode (controlled; pair with onSelectedOptionsChange)",
-      "defaultSelectedOptions": "Initially selected options in multiple mode (uncontrolled)",
-      "onSelectedOptionsChange": "Called with the new selection in multiple mode",
       "onSubmit": "Called with the trimmed text when Enter is pressed while no option is active (e.g. to search)",
       "autoHighlight": "Makes the first enabled option active whenever the dropdown opens or the options change",
-      "fillOnSelect": "Writes the label of the picked option into the input (single mode)",
+      "fillOnSelect": "Writes the label of the picked option into the input",
       "className": "Additional class name of the root element",
       "groupMode": "\"first\" groups options at their first appearance, \"adjacent\" groups runs of consecutive options; group \"\" has no heading"
     },

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import IconButton from "../IconButton/IconButton";
 import Tooltip from "../Tooltip/Tooltip";
@@ -125,7 +125,7 @@ export const PageTabs = ({
     <nav
       {...rest}
       aria-label={ariaLabel}
-      className={classNames(styles.pageTabs, className)}
+      className={cn(styles.pageTabs, className)}
       onFocusCapture={(event) => {
         // Portal events (e.g. a context menu) bubble through the nav: only
         // remember focus that is really inside it.
@@ -198,7 +198,7 @@ export const PageTab = ({
   <div
     {...rest}
     ref={ref}
-    className={classNames(styles.pageTab, className)}
+    className={cn(styles.pageTab, className)}
     data-value={value}
     data-active={active || undefined}
     data-disabled={disabled || undefined}
@@ -206,7 +206,7 @@ export const PageTab = ({
     <Tooltip
       content={label}
       placement="bottom-start"
-      variant="auto"
+      variant="glass"
       disabled={disabled}
       asChild
     >

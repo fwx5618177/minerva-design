@@ -1,30 +1,29 @@
 import { Button, Tooltip } from "@minerva/lib-core";
 
-const variants = [
-  "dark",
-  "light",
-  "info",
-  "success",
-  "warning",
-  "error",
-  "auto",
-  "fixedDark",
-  "fixedLight",
-] as const;
+const variants = ["solid", "subtle", "glass"] as const;
+const colors = ["neutral", "info", "danger"] as const;
 
 export default function VariantsDemo() {
   return (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <div style={{ display: "grid", gap: 8 }}>
       {variants.map((variant) => (
-        <Tooltip
+        <div
           key={variant}
-          content={`A ${variant} tooltip`}
-          variant={variant}
+          style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
         >
-          <Button variant="secondary" size="small">
-            {variant}
-          </Button>
-        </Tooltip>
+          {colors.map((color) => (
+            <Tooltip
+              key={color}
+              content={`${variant} · ${color}`}
+              variant={variant}
+              color={color}
+            >
+              <Button color="neutral" variant="outline" size="small">
+                {variant} {color}
+              </Button>
+            </Tooltip>
+          ))}
+        </div>
       ))}
     </div>
   );

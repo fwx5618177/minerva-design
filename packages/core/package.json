@@ -1,0 +1,57 @@
+{
+  "name": "@minerva/core",
+  "version": "0.0.0",
+  "description": "Framework-agnostic DOM primitives and theming for Minerva (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme tokens, ...)",
+  "license": "MIT",
+  "author": "fwx5618177 <fwx5618177@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fwx5618177/minerva.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://fwx5618177.github.io/minerva/",
+  "keywords": [
+    "dom",
+    "a11y",
+    "focus-trap",
+    "headless",
+    "primitives",
+    "design-tokens",
+    "theming"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0"
+  },
+  "devDependencies": {
+    "sass": "^1.105.1"
+  }
+}

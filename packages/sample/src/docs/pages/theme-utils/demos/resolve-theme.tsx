@@ -62,9 +62,9 @@ export default function ResolveThemeDemo() {
           gap: 8,
         }}
       >
-        getSystemTheme(): <Tag variant="info">{getSystemTheme()}</Tag>{" "}
+        getSystemTheme(): <Tag color="info">{getSystemTheme()}</Tag>{" "}
         isBilingualTheme(theme):{" "}
-        <Tag variant="info">{String(isBilingualTheme(theme))}</Tag>
+        <Tag color="info">{String(isBilingualTheme(theme))}</Tag>
       </div>
       <div
         style={{

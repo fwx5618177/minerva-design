@@ -1,7 +1,6 @@
 import type { Ref } from "react";
 import type { EmptyProps } from "../Empty";
-import type { TextFieldProps } from "../TextField";
-import type { PopperProps } from "../Popper";
+import type { InputProps } from "../Input";
 
 /**
  * An option of the AutoComplete dropdown
@@ -35,7 +34,7 @@ export interface AutoCompleteProps {
   name?: string;
   /**
    * Label of the input (without it, give the input an accessible name with
-   * textFieldProps.ariaLabel or an enclosing FormControl label)
+   * inputProps["aria-label"] or an enclosing FormControl label)
    */
   label?: string;
   /**
@@ -57,31 +56,10 @@ export interface AutoCompleteProps {
    * @default ""
    */
   defaultValue?: string;
-  /**
-   * Called when an option is picked (mouse or keyboard). In multiple mode it
-   * is also called when a picked option is picked again (which deselects it)
-   * or removed through its tag
-   */
+  /** Called when an option is picked (mouse or keyboard) */
   onSelect?: (option: AutoCompleteOption) => void;
-  /** Selected options in multiple mode (controlled; pair with onSelectedOptionsChange) */
-  selectedOptions?: AutoCompleteOption[];
-  /**
-   * Initially selected options in multiple mode (uncontrolled)
-   * @default []
-   */
-  defaultSelectedOptions?: AutoCompleteOption[];
-  /** Called with the new selection in multiple mode */
-  onSelectedOptionsChange?: (options: AutoCompleteOption[]) => void;
   /** Returns the group name of an option; options are grouped under headings */
   groupBy?: (option: AutoCompleteOption) => string;
-  /**
-   * Allows selecting several options, shown as removable tags; the dropdown
-   * stays open between picks
-   * @default false
-   */
-  multiple?: boolean;
-  /** Maximum number of tags shown in multiple mode; the rest are summarized as "+N" */
-  maxTagCount?: number;
   /** Custom option renderer (used when mode is "custom") */
   renderOption?: (option: AutoCompleteOption) => React.ReactNode;
   /** Custom content shown when no option matches */
@@ -91,15 +69,23 @@ export interface AutoCompleteProps {
    * @default false
    */
   loading?: boolean;
-  /** Props forwarded to the underlying TextField */
-  textFieldProps?: Omit<
-    TextFieldProps,
-    "value" | "onChange" | "name" | "label"
+  /**
+   * Props forwarded to the underlying Input (native attributes, aria-label,
+   * size, variant, prefix / suffix, clearable...)
+   */
+  inputProps?: Omit<
+    InputProps,
+    "value" | "defaultValue" | "onChange" | "name" | "ref"
   >;
   /** Props forwarded to the default Empty state */
   emptyProps?: Omit<EmptyProps, "children">;
-  /** Props forwarded to the dropdown Popper */
-  popperProps?: Omit<PopperProps, "anchorEl" | "visible" | "children">;
+  /**
+   * Additional class name of the dropdown (portalled) element. It can set the
+   * CSS custom properties `--autocomplete-dropdown-bg`,
+   * `--autocomplete-option-hover-bg` and `--autocomplete-option-highlight-bg`
+   * to recolor the dropdown, hovered options and highlighted options
+   */
+  dropdownClassName?: string;
   /**
    * Preferred dropdown side; the dropdown is aligned with the input's start
    * edge, is at least as wide as the input, and flips / shifts to stay in the
@@ -108,16 +94,12 @@ export interface AutoCompleteProps {
    */
   placement?: "top" | "bottom" | "left" | "right";
   /**
-   * Dropdown offset (see Popper's offset)
+   * Dropdown offset in pixels. For top / bottom placements `y` is the gap to
+   * the input and `x` shifts along it; for left / right placements `x` is
+   * the gap and `y` shifts along it
    * @default { x: 0, y: 4 }
    */
-  offset?: PopperProps["offset"];
-  /** Background color of the dropdown */
-  dropdownBgColor?: string;
-  /** Background color of highlighted options */
-  highlightBgColor?: string;
-  /** Background color of hovered / keyboard-focused options */
-  hoverBgColor?: string;
+  offset?: { x: number; y: number };
   /**
    * Animates the dropdown when it opens
    * @default true
@@ -143,7 +125,7 @@ export interface AutoCompleteProps {
    */
   autoHighlight?: boolean;
   /**
-   * Writes the label of the picked option into the input (single mode). Set
+   * Writes the label of the picked option into the input. Set
    * to false to keep the typed text, e.g. when picking navigates away
    * @default true
    */
@@ -157,15 +139,4 @@ export interface AutoCompleteProps {
    * @default "first"
    */
   groupMode?: "first" | "adjacent";
-}
-
-/**
- * Props of the input rendered by AutoComplete
- */
-export interface AutoCompleteInputProps extends TextFieldProps {
-  ref?: React.Ref<HTMLInputElement>;
-  value: string;
-  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  onFocus: React.FocusEventHandler<HTMLInputElement>;
-  onBlur: React.FocusEventHandler<HTMLInputElement>;
 }

@@ -24,7 +24,7 @@
   },
   "functions": {
     "title": "在服务端调用函数",
-    "text": "@minerva/lib-core/theme-utils 中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（message.success、Confirm、applyThemeStyles、各种 Hooks……）：它们在那里只是客户端引用。请在客户端组件和事件处理函数中调用它们。",
+    "text": "@minerva/lib-core/theme-utils 中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（toast.success、Confirm、applyThemeStyles、各种 Hooks……）：它们在那里只是客户端引用。请在客户端组件和事件处理函数中调用它们。",
     "imperative": "命令式 API 在客户端组件的 SSR 过程中同样安全：没有 document 时它们什么也不做，而 Confirm 这类基于 Promise 的对话框在服务端会 resolve 为 false。请在只会在浏览器中运行的事件处理函数或 effect 中触发它们。"
   },
   "css": {

@@ -10,17 +10,12 @@
     "useLocale": "ロケールを state に保持し、ConfigProvider の外では lib-core 内蔵テキストの言語（en、zh、ja、fr）を切り替えます。ロケールとその setter を返します。ConfigProvider の内側では state の管理だけを行い、グローバルな言語はルート Provider が管理します。",
     "useI18n": "t、t が翻訳する言語、lib-core が使う i18next インスタンスを返します。t は locale を指定した最も近い入れ子の ConfigProvider に従い、それがなければ lib-core のグローバルな言語を使います。プライベートなインスタンスなので、アプリケーション自身の i18next の設定には影響しません。",
     "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
-    "useDialogFocusReturn": "Radix の Trigger を使わず state から開くダイアログのためのフォーカス復帰。開く前にフォーカスされていた要素を記憶し、閉じた後に再びフォーカスします。open、contentRef、onCloseAutoFocus をダイアログに渡します。",
     "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
     "global": "useAutoTheme と useLocale がグローバルな状態（<html> の CSS 変数、lib-core の言語）を変更するのは、上に ConfigProvider がない場合だけです。このサイトはルートに Provider があるため、下のデモではフックの state を入れ子の ConfigProvider に渡し、プレビューにだけ適用しています。"
   },
   "standalone": {
     "title": "ConfigProvider なしでフックを使う",
     "text": "useConfig() が不要なら、Provider の代わりに useAutoTheme と useLocale を直接呼び出せます。Provider の内側では state を保持するだけなので、サブツリーに適用するには入れ子の ConfigProvider に渡してください。"
-  },
-  "focusReturn": {
-    "title": "ダイアログを閉じた後のフォーカス復帰",
-    "text": "Radix のダイアログは閉じるときに Trigger へフォーカスを戻します。state から開いたダイアログ（メニュー項目、キーボードショートカット、テーブル行）には Trigger がないため、フォーカスは <body> に落ちてしまいます。useDialogFocusReturn は開く前にフォーカスされていた要素を記録し、閉じるときに復元します："
   },
   "demos": {
     "use-auto-theme": {

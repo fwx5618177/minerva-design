@@ -13,7 +13,7 @@
     "build": "pnpm -r build",
     "preview": "pnpm --filter @minerva/sample preview",
     "test": "vitest run",
-    "test:unit": "vitest run --project lib-core --project lib-web-components --project sample",
+    "test:unit": "vitest run --project core --project lib-core --project lib-web-components --project sample",
     "test:e2e": "vitest run --project e2e",
     "test:dist": "pnpm --filter @minerva/lib-core test:dist",
     "test:watch": "vitest",
@@ -26,7 +26,7 @@
     "clean": "pnpm -r clean && rimraf node_modules coverage",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm --filter \"./packages/lib-*\" build && changeset publish",
+    "release": "pnpm --filter \"@minerva/core\" --filter \"./packages/lib-*\" build && changeset publish",
     "prepare": "husky"
   },
   "devDependencies": {

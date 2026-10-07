@@ -10,9 +10,13 @@
       "title": "位置",
       "description": "围绕触发元素的十二种位置。"
     },
+    "colors": {
+      "title": "颜色",
+      "description": "color 选择语义色：neutral（默认）、info、success、warning 或 danger。"
+    },
     "variants": {
       "title": "变体",
-      "description": "深色（默认，与主题形成对比）、浅色以及语义色；auto 跟随主题并使用磨砂表面，fixedDark / fixedLight 无论主题如何都保持固定颜色。"
+      "description": "variant 选择视觉样式：solid（默认，实心填充；neutral 为与主题形成对比的反色表面）、subtle（带边框的浅色调表面）或 glass（跟随主题的磨砂表面，颜色只为边框着色）。"
     },
     "shapes": {
       "title": "形状",
@@ -23,8 +27,8 @@
       "description": "选择提示出现和消失的动画。"
     },
     "custom-colors": {
-      "title": "颜色、箭头和偏移",
-      "description": "bgColor 支持纯色和 CSS 渐变；arrow 添加指向触发元素的箭头；offset 设置与触发元素的间距（默认 8px）。"
+      "title": "自定义颜色、箭头和偏移",
+      "description": "通过 contentClassName 在提示上设置 --tooltip-bg（支持纯色和 CSS 渐变）与 --tooltip-color 自定义属性；arrow 添加指向触发元素的箭头；offset 设置与触发元素的间距（默认 8px）。"
     },
     "delays": {
       "title": "延迟与禁用",
@@ -58,15 +62,14 @@
       "open": "是否显示提示（受控；与 onOpenChange 搭配使用）",
       "defaultOpen": "初始显示状态（非受控）",
       "placement": "相对于触发元素的位置",
-      "variant": "颜色变体",
+      "color": "提示的语义色。使用 glass 变体时颜色只为边框着色（neutral 保持普通磨砂表面）",
+      "variant": "视觉样式：solid（实心填充；neutral 为反色对比表面）、subtle（带边框的浅色调表面）或 glass（磨砂的浮层表面）",
       "shape": "提示的形状",
       "animation": "显示 / 隐藏动画",
       "enterDelay": "悬停后显示前的延迟，单位毫秒",
       "leaveDelay": "鼠标离开后隐藏前的延迟，单位毫秒",
       "offset": "以 [x, y] 表示的偏移（像素）。top/bottom 位置时 y 是与触发元素的间距，x 沿其平移；left/right 位置时 x 是间距，y 沿其平移。未设置时提示与触发元素相距 8px",
       "followCursor": "提示跟随鼠标指针移动",
-      "bgColor": "自定义背景色（支持 CSS 渐变）",
-      "textColor": "自定义文字颜色",
       "zIndex": "提示的 z-index",
       "arrow": "显示指向触发元素的箭头",
       "disabled": "禁用提示",
@@ -77,7 +80,7 @@
       "ref": "提供 open / close / toggle 的命令式句柄",
       "onOpenChange": "以请求的打开状态调用（悬停、聚焦、Escape、ref 方法）",
       "asChild": "将悬停 / 聚焦处理器、ref 和 className 直接挂到唯一的子元素上，而不是用 <div> 包裹（保持 flex 和 grid 布局）。子元素必须能接收 ref",
-      "contentClassName": "提示（浮层）元素的额外类名",
+      "contentClassName": "提示（浮层）元素的额外类名。如需自定义颜色，可在其上设置 --tooltip-bg（背景，支持渐变）和 --tooltip-color（文字）自定义属性",
       "contentRef": "指向提示（浮层）元素的 ref，在显示时设置"
     },
     "TooltipRef": {

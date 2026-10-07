@@ -1,4 +1,4 @@
-import type { ElementType, HTMLAttributes, Ref } from "react";
+import type { ElementType, HTMLAttributes, ReactNode, Ref } from "react";
 
 /** Flex direction of a Stack */
 export type StackDirection =
@@ -36,6 +36,19 @@ export interface StackProps extends HTMLAttributes<HTMLElement> {
    * @default false
    */
   wrap?: boolean;
+  /**
+   * Rendered between every two items (not before the first or after the
+   * last), e.g. a `<Divider orientation="vertical" />` or `"·"`. Empty
+   * children (null / undefined / booleans) do not get a separator.
+   */
+  separator?: ReactNode;
+  /**
+   * Joins the items into one attached group (e.g. a segmented row of buttons):
+   * no gap, shared borders and outer-only corner radii. The group gets
+   * `role="group"` unless a role is given; label it with `aria-label`.
+   * @default false
+   */
+  attached?: boolean;
 }
 
 /** Props of HStack / VStack: a Stack with a fixed direction */

@@ -27,7 +27,6 @@ const AutoCompleteDoc: React.FC = () => {
           <li>{t("docs.auto-complete.keyboard.arrows")}</li>
           <li>{t("docs.auto-complete.keyboard.enter")}</li>
           <li>{t("docs.auto-complete.keyboard.escape")}</li>
-          <li>{t("docs.auto-complete.keyboard.backspace")}</li>
           <li>{t("docs.auto-complete.keyboard.aria")}</li>
         </ul>
       </section>

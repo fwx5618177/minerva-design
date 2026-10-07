@@ -27,7 +27,7 @@ export default async function Page() {
   return posts.map((post) => (
     // serializable props only: strings, numbers, booleans, JSX children...
     <Card key={post.id} padding="medium">
-      <Tag variant="info">{post.category}</Tag>
+      <Tag color="info">{post.category}</Tag>
       <h2>{post.title}</h2>
       <SaveButton id={post.id} />
     </Card>
@@ -37,16 +37,16 @@ export default async function Page() {
 const clientWrapperCode = `// app/save-button.tsx
 "use client";
 
-import { Button, message } from "@minerva/lib-core";
+import { Button, toast } from "@minerva/lib-core";
 
 // Event handlers and imperative APIs live in a client component
 export function SaveButton({ id }: { id: string }) {
   return (
     <Button
-      variant="primary"
+      color="primary"
       onClick={async () => {
         await fetch(\`/api/save/\${id}\`, { method: "POST" });
-        message.success("Saved");
+        toast.success("Saved"); // shown by the ToastProvider in your layout
       }}
     >
       Save
@@ -78,8 +78,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 // Not on the server: main-entry functions are client references there
-// import { message } from "@minerva/lib-core";
-// message.success("Hi"); // call it from a client component instead`;
+// import { toast } from "@minerva/lib-core";
+// toast.success("Hi"); // call it from a client component instead`;
 
 const cssCode = `// Next.js App Router: import global CSS once, in the root layout
 // app/layout.tsx

@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ConfigProvider, useConfig } from "./ConfigProvider";
 import { ThemeProvider, useTheme } from "./ThemeProvider";
-import { dark, githubDark, light } from "../styles/themes";
+import { dark, githubDark, light } from "@minerva/core";
 import { mockColorScheme } from "../test-utils/matchMedia";
 
 const root = document.documentElement;

@@ -1,5 +1,5 @@
 import React, { useId, useLayoutEffect, useRef } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { FaInfoCircle } from "react-icons/fa";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useControllableState } from "../../internal/useControllableState";
@@ -32,9 +32,6 @@ const Checkbox = ({
   ariaDescribedBy,
   ariaLabel,
   className = "",
-  checkmarkColor,
-  boxColor,
-  boxBorderColor,
   icon,
   required,
   error = false,
@@ -85,15 +82,9 @@ const Checkbox = ({
     onChange?.(event.target.checked, event);
   };
 
-  const checkmarkStyle = {
-    ...(boxColor && { backgroundColor: boxColor }),
-    ...(boxBorderColor && { borderColor: boxBorderColor }),
-    ...(checkmarkColor && { "--checkmark-color": checkmarkColor }),
-  } as React.CSSProperties;
-
   const content = label ?? children;
 
-  const labelClasses = classNames(
+  const labelClasses = cn(
     styles.checkbox,
     styles[size],
     styles[shape],
@@ -108,9 +99,7 @@ const Checkbox = ({
   );
 
   return (
-    <div
-      className={classNames(styles.checkboxWrapper, isError && styles.error)}
-    >
+    <div className={cn(styles.checkboxWrapper, isError && styles.error)}>
       <label className={labelClasses}>
         <input
           ref={mergedRef}
@@ -130,7 +119,7 @@ const Checkbox = ({
           aria-readonly={field["aria-readonly"]}
           aria-describedby={field["aria-describedby"]}
         />
-        <span className={styles.checkmark} style={checkmarkStyle}>
+        <span className={styles.checkmark}>
           {icon && isChecked && !indeterminate && icon}
         </span>
         {content != null && content !== false && content !== "" && (
@@ -146,10 +135,7 @@ const Checkbox = ({
           )}
           <span
             id={helperId}
-            className={classNames(
-              styles.helperText,
-              isError && styles.errorText,
-            )}
+            className={cn(styles.helperText, isError && styles.errorText)}
           >
             {helperText}
           </span>

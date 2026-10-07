@@ -125,7 +125,8 @@ export const KeyValueEditor = ({
       <Button
         className={styles.add}
         type="button"
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         size="small"
         disabled={disabled}
         onClick={add}

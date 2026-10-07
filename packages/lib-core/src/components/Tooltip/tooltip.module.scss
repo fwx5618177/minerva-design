@@ -17,7 +17,8 @@
   font-size: 0.875rem;
   line-height: 1.5;
   z-index: 1500;
-  pointer-events: none;
+  // hoverable (WCAG 1.4.13): the pointer may rest on the tooltip
+  pointer-events: auto;
   box-shadow: var(--shadow-md);
   opacity: 0;
   transform: translate3d(0, 0, 0);
@@ -45,80 +46,53 @@
     }
   }
 
-  // Variants
-  // Intentionally inverted: dark-on-light in light themes, light-on-dark in dark themes.
-  &.dark {
-    background-color: color-mix(in srgb, var(--foreground-color) 90%, var(--background-color));
-    color: var(--background-color);
+  // Colors: each sets the solid / subtle / glass palette the variant picks.
+  &.neutral {
+    // Intentionally inverted: dark-on-light in light themes, light-on-dark in dark themes.
+    --_tooltip-solid-bg: color-mix(in srgb, var(--foreground-color) 90%, var(--background-color));
+    --_tooltip-solid-fg: var(--background-color);
+    --_tooltip-subtle-bg: var(--surface-elevated-color);
+    --_tooltip-subtle-fg: var(--text-color);
+    --_tooltip-subtle-border: var(--border-color);
+    --_tooltip-glass-border: color-mix(in srgb, var(--foreground-color) 14%, transparent);
   }
 
-  &.light {
-    background-color: var(--surface-elevated-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
+  @each $color in info, success, warning, danger {
+    &.#{$color} {
+      --_tooltip-solid-bg: var(--#{$color}-color);
+      --_tooltip-solid-fg: var(--text-inverse-color);
+      --_tooltip-subtle-bg: var(--#{$color}-color-subtle);
+      --_tooltip-subtle-fg: var(--#{$color}-color-text);
+      --_tooltip-subtle-border: var(--#{$color}-color-border);
+      --_tooltip-glass-border: color-mix(in srgb, var(--#{$color}-color) 45%, transparent);
+    }
   }
 
-  &.info {
-    background-color: var(--info-color);
-    color: var(--text-inverse-color);
+  // Variants. `--tooltip-bg` / `--tooltip-color` (set on the tooltip itself
+  // through contentClassName; it is portalled) override the background and
+  // text color.
+  &.solid {
+    background: var(--tooltip-bg, var(--_tooltip-solid-bg));
+    color: var(--tooltip-color, var(--_tooltip-solid-fg));
   }
 
-  &.success {
-    background-color: var(--success-color);
-    color: var(--text-inverse-color);
+  &.subtle {
+    background: var(--tooltip-bg, var(--_tooltip-subtle-bg));
+    color: var(--tooltip-color, var(--_tooltip-subtle-fg));
+    border: 1px solid var(--_tooltip-subtle-border);
   }
 
-  &.warning {
-    background-color: var(--warning-color);
-    color: var(--text-inverse-color);
-  }
-
-  &.error {
-    background-color: var(--danger-color);
-    color: var(--text-inverse-color);
-  }
-
-  // Follows the theme: frosted elevated surface.
-  &.auto {
-    background: color-mix(in srgb, var(--surface-elevated-color) 96%, transparent);
-    color: var(--text-color);
-    border: 1px solid color-mix(in srgb, var(--foreground-color) 14%, transparent);
+  // Follows the theme: frosted elevated surface; the color tints the border.
+  &.glass {
+    background: var(--tooltip-bg, color-mix(in srgb, var(--surface-elevated-color) 96%, transparent));
+    color: var(--tooltip-color, var(--text-color));
+    border: 1px solid var(--_tooltip-glass-border);
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(14px) saturate(1.12);
     font-weight: var(--font-weight-medium);
 
     &.arrow .tooltipArrow {
-      background: var(--surface-elevated-color);
-    }
-  }
-
-  // Theme independent surfaces. Fixed colors on purpose: they must not
-  // follow the theme tokens.
-  &.fixedDark {
-    background: linear-gradient(180deg, rgba(23, 29, 36, 0.96) 0%, rgba(8, 12, 18, 0.94) 100%);
-    color: #f8fafc;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow:
-      0 18px 44px rgba(2, 6, 12, 0.42),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    font-weight: var(--font-weight-medium);
-
-    &.arrow .tooltipArrow {
-      background: #0c1117;
-    }
-  }
-
-  &.fixedLight {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    color: #101418;
-    border: 1px solid rgba(17, 24, 39, 0.14);
-    box-shadow:
-      0 12px 32px rgba(17, 24, 39, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.78);
-    font-weight: var(--font-weight-medium);
-
-    &.arrow .tooltipArrow {
-      background: #ffffff;
+      background: var(--tooltip-bg, var(--surface-elevated-color));
     }
   }
 
@@ -162,6 +136,8 @@
 
   &.followCursor {
     transition: none;
+    // follows the pointer: never under it
+    pointer-events: none;
   }
 
   // Arrow

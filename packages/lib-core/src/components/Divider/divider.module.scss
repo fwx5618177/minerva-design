@@ -1,3 +1,5 @@
+// Override hook: `--divider-color` (line color, default `--border-color`),
+// set it through `className` or `style`.
 .divider {
   position: relative;
   flex-shrink: 0;
@@ -11,7 +13,7 @@
     width: 100%;
     border-top-style: solid;
     border-top-width: 1px;
-    border-color: var(--border-color);
+    border-color: var(--divider-color, var(--border-color));
   }
 
   &.vertical {
@@ -19,7 +21,7 @@
     height: 1em;
     border-left-style: solid;
     border-left-width: 1px;
-    border-color: var(--border-color);
+    border-color: var(--divider-color, var(--border-color));
     vertical-align: middle;
     margin: 0 8px;
   }
@@ -60,7 +62,7 @@
     &::after {
       content: "";
       flex: 1;
-      border-top: 1px solid var(--border-color);
+      border-top: 1px solid var(--divider-color, var(--border-color));
     }
   }
 

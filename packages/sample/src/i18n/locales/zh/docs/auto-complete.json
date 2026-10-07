@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "提示标签中包含输入内容的选项；textFieldProps 会透传给输入框。"
+      "description": "提示标签中包含输入内容的选项；inputProps 会透传给输入框。"
     },
     "controlled": {
       "title": "受控模式",
@@ -22,10 +22,6 @@
       "title": "选项分组",
       "description": "groupBy 为每个选项返回分组名，分组按首次出现顺序显示并带有标题。"
     },
-    "multiple": {
-      "title": "多选",
-      "description": "设置 multiple 后，选中的选项会变成可移除的标签，并且下拉框在多次选择之间保持打开；maxTagCount 会把其余标签折叠为 \"+N\"。selectedOptions / onSelectedOptionsChange 用于控制选中项。"
-    },
     "filter-sort": {
       "title": "自定义过滤与排序",
       "description": "filterOption 替换默认的“包含”匹配逻辑，sortOption 对结果排序。"
@@ -36,7 +32,7 @@
     },
     "appearance": {
       "title": "下拉框位置与颜色",
-      "description": "自定义位置、偏移、动画以及下拉框、悬停和高亮的背景色。下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内。"
+      "description": "自定义位置、偏移和动画，并通过 dropdownClassName 设置 CSS 自定义属性 --autocomplete-dropdown-bg、--autocomplete-option-hover-bg 和 --autocomplete-option-highlight-bg，改变下拉框、悬停选项和高亮选项的背景色。下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内。"
     },
     "search-box": {
       "title": "搜索框",
@@ -47,9 +43,8 @@
     "title": "键盘与无障碍",
     "arrows": "↓ / ↑ 在可见选项间移动（首尾循环）。",
     "enter": "Enter 选择当前激活的选项（跳过禁用选项），且不会提交所在的表单。",
-    "escape": "Esc 关闭下拉框。",
-    "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。",
-    "backspace": "多选模式下，在空输入框中按 Backspace 会移除最后一个标签。"
+    "escape": "Escape 关闭下拉层，焦点保留在输入框中；位于 Modal 或 Popover 内时只关闭下拉层。",
+    "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。"
   },
   "api": {
     "AutoCompleteProps": {
@@ -60,33 +55,25 @@
       "onChange": "输入文本变化时的回调（输入或选择选项）",
       "options": "提示的选项列表",
       "defaultValue": "初始输入值（非受控）",
-      "onSelect": "选中某个选项时调用（鼠标或键盘）。多选模式下，再次选择已选选项（即取消选择）或通过标签移除时也会调用",
+      "onSelect": "选中某个选项时调用（鼠标或键盘）",
       "groupBy": "返回选项所属的分组名，选项将按分组显示",
-      "multiple": "允许选择多个选项，以可移除的标签显示；下拉框在多次选择之间保持打开",
-      "maxTagCount": "多选模式下最多显示的标签数，其余显示为“+N”",
       "renderOption": "自定义选项渲染（mode 为 \"custom\" 时生效）",
       "renderEmpty": "无匹配选项时显示的自定义内容",
       "loading": "在下拉框中显示加载指示",
-      "textFieldProps": "透传给内部 TextField 的属性",
+      "inputProps": "透传给内部 Input 的属性（原生属性、aria-label、尺寸、前后缀、clearable 等）",
       "emptyProps": "透传给默认 Empty 空状态的属性",
-      "popperProps": "透传给下拉框 Popper 的属性",
+      "dropdownClassName": "下拉层（传送到 portal 的元素）的额外类名。可在其中设置 CSS 自定义属性 --autocomplete-dropdown-bg、--autocomplete-option-hover-bg 和 --autocomplete-option-highlight-bg，改变下拉框、悬停选项和高亮选项的颜色",
       "placement": "下拉框的首选方向；下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内",
-      "offset": "下拉框偏移（参见 Popper 的 offset）",
-      "dropdownBgColor": "下拉框背景色",
-      "highlightBgColor": "高亮选项的背景色",
-      "hoverBgColor": "悬停或键盘聚焦选项的背景色",
+      "offset": "下拉层偏移（像素）：上 / 下方向时 y 为与输入框的间距、x 为沿输入框的平移；左 / 右方向时 x 为间距",
       "animation": "打开下拉框时显示动画",
       "filterOption": "自定义过滤逻辑；默认显示标签包含输入内容（不区分大小写）的选项",
       "sortOption": "对过滤后的选项排序的比较函数",
       "onOptionClick": "鼠标点击选项时的回调",
       "onDropdownVisibleChange": "下拉框打开或关闭时调用（挂载时不会调用）",
       "ref": "内部 <input> 元素的 ref",
-      "selectedOptions": "多选模式下的已选选项（受控；与 onSelectedOptionsChange 搭配使用）",
-      "defaultSelectedOptions": "多选模式下的初始已选选项（非受控）",
-      "onSelectedOptionsChange": "多选模式下以新的选中项调用",
       "onSubmit": "无高亮选项时按回车，以去除首尾空格的文本调用（如执行搜索）",
       "autoHighlight": "下拉打开或选项变化时自动高亮第一个可用选项",
-      "fillOnSelect": "选中后将选项的 label 写入输入框（单选模式）",
+      "fillOnSelect": "将选中选项的 label 写入输入框",
       "className": "根元素的额外类名",
       "groupMode": "\"first\" 按首次出现分组，\"adjacent\" 按相邻的连续选项分组；分组为 \"\" 时不显示标题"
     },

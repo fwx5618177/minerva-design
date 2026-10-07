@@ -1,14 +1,22 @@
 {
   "title": "ProgressIndicator 加载指示器",
-  "description": "表示正在加载：ProgressIndicator 提供带 progressbar 角色的进度条与旋转图标，Spinner 是轻量的行内状态圆环。",
+  "description": "表示正在加载：以旋转图标、圆环、波浪、进度条或点状进度条呈现的不确定进度 progressbar。",
   "demos": {
-    "types": {
-      "title": "类型",
-      "description": "旋转图标（默认）、圆环、波浪、进度条和点状进度条。"
+    "variants": {
+      "title": "变体",
+      "description": "variant 选择样式：旋转图标（默认）、圆环、波浪、进度条或点状进度条。"
     },
     "sizes": {
       "title": "尺寸",
-      "description": "小、中（默认）、大三种尺寸。"
+      "description": "从 xsmall 到 xlarge 五档：圆形指示器的直径或进度条的粗细。"
+    },
+    "colors": {
+      "title": "颜色",
+      "description": "语义色：primary（默认）或 neutral；特殊值 current 跟随周围文字颜色（currentColor），例如在按钮中使用。"
+    },
+    "label": {
+      "title": "可见标签",
+      "description": "在指示器旁显示可见标签，同时作为 progressbar 的无障碍名称。"
     },
     "width": {
       "title": "宽度",
@@ -17,32 +25,21 @@
     "with-icon": {
       "title": "带图标",
       "description": "在指示器前显示图标。请始终通过 ariaLabel 说明正在加载的内容。"
-    },
-    "spinner": {
-      "title": "Spinner 旋转指示器",
-      "description": "轻量的行内旋转圈，是一个 polite 状态区域；颜色可跟随当前文字颜色。"
-    },
-    "spinner-sizes": {
-      "title": "Spinner 尺寸",
-      "description": "五档直径，从 12px 到 48px。"
     }
   },
   "api": {
     "ProgressIndicatorProps": {
-      "type": "指示器样式",
+      "variant": "指示器样式",
       "size": "指示器尺寸",
+      "color": "指示器的语义色：主题主色或中性灰。特殊值 current 跟随周围文字颜色（currentColor）",
       "icon": "显示在指示器前的图标",
+      "label": "显示在指示器旁的可见文本；未设置 ariaLabel 时也作为 progressbar 的名称",
       "ariaLabel": "说明正在加载内容的无障碍标签",
+      "decorative": "纯视觉用途：去掉 progressbar 角色并对辅助技术隐藏",
       "className": "额外的类名",
-      "width": "自定义宽度（设置 full 时无效）",
+      "width": "自定义宽度（设置 full 时无效）；进度条默认 200px",
       "full": "将指示器拉伸至容器全宽",
       "ref": "根 <div> 元素的 ref"
-    },
-    "SpinnerProps": {
-      "size": "直径档位",
-      "color": "圆环颜色；current 跟随周围文字颜色",
-      "label": "视觉隐藏、供读屏播报的文本；装饰用途时传空字符串",
-      "ref": "根 <span> 元素的 ref"
     }
   }
 }

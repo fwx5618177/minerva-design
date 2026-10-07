@@ -11,7 +11,7 @@ import {
   IoChevronForward,
   IoEllipsisHorizontal,
 } from "react-icons/io5";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { PaginationProps } from "./types";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -154,7 +154,7 @@ const Pagination = ({
   totalRender,
   size = "medium",
   shape = "rounded",
-  variant = "filled",
+  variant = "solid",
   simple = false,
   responsive = false,
   icons,
@@ -345,7 +345,7 @@ const Pagination = ({
         key={itemKey}
         type="button"
         onKeyDown={handleKeyDown}
-        className={classNames(styles.item, {
+        className={cn(styles.item, {
           [styles.active]: isActive,
           [styles.disabled]: isDisabled,
           [styles.prev]: type === "prev",
@@ -498,18 +498,15 @@ const Pagination = ({
     ? pageSizeOptions
     : [...pageSizeOptions, currentPageSize].sort((a, b) => a - b);
 
-  const componentClassName = classNames(
+  const componentClassName = cn(
     styles.pagination,
-    {
-      [styles.disabled]: disabled,
-      [styles.small]: size === "small",
-      [styles.large]: size === "large",
-      [styles.circle]: shape === "circle",
-      [styles.square]: shape === "square",
-      [styles.outlined]: variant === "outlined",
-      [styles.text]: variant === "text",
-      [styles.responsive]: responsive,
-    },
+    disabled && styles.disabled,
+    size === "small" && styles.small,
+    size === "large" && styles.large,
+    shape === "circle" && styles.circle,
+    shape === "square" && styles.square,
+    styles[variant],
+    responsive && styles.responsive,
     className,
   );
 

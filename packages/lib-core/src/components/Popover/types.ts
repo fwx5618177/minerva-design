@@ -1,5 +1,9 @@
-import type { ComponentPropsWithRef, ReactNode, Ref } from "react";
-import type { PopoverContentProps as RadixPopoverContentProps } from "@radix-ui/react-popover";
+import type {
+  ComponentPropsWithRef,
+  HTMLAttributes,
+  ReactNode,
+  Ref,
+} from "react";
 
 /** Side of the trigger the panel is placed on. */
 export type PopoverSide = "top" | "right" | "bottom" | "left";
@@ -19,7 +23,9 @@ export interface PopoverProps {
   /** Called with the requested open state (trigger, Escape, outside click, `PopoverClose`). */
   onOpenChange?: (open: boolean) => void;
   /**
-   * Modal mode: traps focus inside the panel and blocks outside interaction
+   * Modal mode: traps focus inside the panel, locks page scrolling, hides the
+   * rest of the page from assistive technology and blocks outside pointer
+   * interaction (an outside click still closes it)
    * @default false
    */
   modal?: boolean;
@@ -46,10 +52,7 @@ export interface PopoverAnchorProps extends ComponentPropsWithRef<"div"> {
 }
 
 /** Props of `PopoverContent`: the portalled, anchored panel (role="dialog"). */
-export interface PopoverContentProps extends Omit<
-  RadixPopoverContentProps,
-  "asChild" | "side" | "align" | "sideOffset"
-> {
+export interface PopoverContentProps extends HTMLAttributes<HTMLDivElement> {
   /** Ref to the panel element. */
   ref?: Ref<HTMLDivElement>;
   /**
@@ -68,13 +71,55 @@ export interface PopoverContentProps extends Omit<
    */
   sideOffset?: number;
   /**
+   * Skid along the trigger in pixels (positive = towards the end)
+   * @default 0
+   */
+  alignOffset?: number;
+  /**
+   * Minimum distance kept to the viewport edges in pixels when flipping,
+   * shifting and sizing the panel
+   * @default 8
+   */
+  collisionPadding?: number;
+  /**
+   * Sizes the panel after the trigger / anchor width: `"min"` at least as
+   * wide, `"exact"` exactly as wide (also caps the width to the viewport)
+   * @default false
+   */
+  matchAnchorWidth?: false | "min" | "exact";
+  /**
    * Renders an arrow pointing at the trigger
    * @default false
    */
   arrow?: boolean;
   /**
-   * Renders the panel into a portal on `document.body`
+   * Renders the panel into a portal (the theme-scoped container of a nested
+   * `ConfigProvider`, else `document.body`)
    * @default true
    */
   portal?: boolean;
+  /**
+   * Keeps the panel mounted while closed (`data-state="closed"`), e.g. for
+   * animation libraries
+   * @default false
+   */
+  forceMount?: boolean;
+  /**
+   * Before focus moves into the panel on open; `event.preventDefault()`
+   * keeps focus where it is.
+   */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Before focus returns to the trigger on close; `event.preventDefault()`
+   * skips it.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
+  /** Escape pressed while topmost; `event.preventDefault()` keeps it open. */
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  /** Pointer pressed outside; `event.preventDefault()` keeps it open. */
+  onPointerDownOutside?: (event: PointerEvent) => void;
+  /** Focus moved outside; `event.preventDefault()` keeps it open. */
+  onFocusOutside?: (event: FocusEvent) => void;
+  /** Pointer down or focus outside; `event.preventDefault()` keeps it open. */
+  onInteractOutside?: (event: PointerEvent | FocusEvent) => void;
 }

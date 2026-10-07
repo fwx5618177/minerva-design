@@ -51,7 +51,7 @@ describe("Switch slider", () => {
 
   it.each([
     ["large", "success"],
-    ["small", "error"],
+    ["small", "danger"],
     ["medium", "info"],
   ] as const)("maps size %s / color %s", (size, color) => {
     render(
@@ -64,12 +64,29 @@ describe("Switch slider", () => {
     );
   });
 
-  it("emits no theme color class for custom CSS colors", () => {
-    render(<Switch ariaLabel="x" color="#ff0000" />);
+  it("emits only the selected color class", () => {
+    render(<Switch ariaLabel="x" color="warning" />);
     const root = rootOf(screen.getByRole("switch"));
-    for (const role of ["primary", "success", "error", "info"]) {
+    expect(root).toHaveClass(styles.warning);
+    for (const role of ["primary", "success", "danger", "info"]) {
       expect(root).not.toHaveClass(styles[role]);
     }
+  });
+
+  it("applies the color class to the segmented variant", () => {
+    render(
+      <Switch
+        ariaLabel="Mode"
+        variant="segmented"
+        offLabel="Off"
+        onLabel="On"
+        color="success"
+      />,
+    );
+    expect(screen.getByRole("group", { name: "Mode" })).toHaveClass(
+      styles.segmented,
+      styles.success,
+    );
   });
 
   it("renders children as the label text", () => {

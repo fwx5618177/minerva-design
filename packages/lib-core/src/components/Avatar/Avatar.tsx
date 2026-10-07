@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { AvatarProps } from "./types";
 import styles from "./avatar.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -51,7 +51,7 @@ const Avatar = ({
   const rootProps = {
     ...rest,
     ref,
-    className: classNames(
+    className: cn(
       styles.avatar,
       styles[shape],
       !numericSize && styles[size],

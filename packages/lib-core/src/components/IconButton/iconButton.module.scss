@@ -1,5 +1,12 @@
 @use "../../styles/mixins" as *;
 
+// IconButton: each color sets the private --_ib-* tones, each variant
+// (ghost / solid / outline) consumes them. Public override hooks:
+//   --icon-button-color          icon color
+//   --icon-button-hover-bg       background on hover
+//   --icon-button-pressed-color  icon color of a pressed toggle
+//   --icon-button-pressed-bg     background of a pressed toggle
+
 .iconButton {
   position: relative;
   display: inline-flex;
@@ -14,7 +21,7 @@
 
   @include ripple-effect;
 
-  // Size variants
+  // ---- Sizes ----
   &.xsmall {
     width: 24px;
     height: 24px;
@@ -39,7 +46,7 @@
     font-size: 1.625rem;
   }
 
-  // Shape variants
+  // ---- Shapes ----
   &.circle {
     border-radius: 50%;
   }
@@ -48,81 +55,58 @@
     border-radius: 8px;
   }
 
-  // Style variants
-  &.default {
-    color: var(--text-secondary-color);
-    &:hover:not(.disabled):not(.loading) {
-      background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
-    }
-    &.active {
-      color: var(--text-color);
-      background-color: color-mix(in srgb, var(--text-color) 12%, transparent);
+  // ---- Colors ----
+  // neutral follows the shared recipe of Badge / Tag / Alert / Button
+  &.neutral {
+    --_ib-tone: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+    --_ib-tone-hover: color-mix(in srgb, var(--text-color) 88%, var(--background-color));
+    --_ib-tone-active: color-mix(in srgb, var(--text-color) 96%, var(--background-color));
+    --_ib-border: var(--border-strong-color);
+    --_ib-text: var(--text-secondary-color);
+    --_ib-text-pressed: var(--text-color);
+    --_ib-subtle: color-mix(in srgb, var(--text-color) 8%, transparent);
+    --_ib-subtle-pressed: color-mix(in srgb, var(--text-color) 12%, transparent);
+  }
+
+  @each $name in (primary, success, warning, danger, info) {
+    &.#{$name} {
+      --_ib-tone: var(--#{$name}-color);
+      --_ib-tone-hover: var(--#{$name}-color-hover);
+      --_ib-tone-active: var(--#{$name}-color-active);
+      --_ib-border: var(--#{$name}-color);
+      --_ib-text: var(--#{$name}-color-text);
+      --_ib-text-pressed: var(--#{$name}-color-active);
+      --_ib-subtle: var(--#{$name}-color-subtle);
+      --_ib-subtle-pressed: color-mix(in srgb, var(--#{$name}-color) 16%, transparent);
     }
   }
 
-  &.primary {
-    color: var(--primary-color-text);
+  // ---- Variants ----
+  &.variant-ghost,
+  &.variant-outline {
+    color: var(--icon-button-color, var(--_ib-text));
+
     &:hover:not(.disabled):not(.loading) {
-      background-color: var(--primary-color-subtle);
+      background-color: var(--icon-button-hover-bg, var(--_ib-subtle));
     }
-    &.active {
-      color: var(--primary-color-active);
-      background-color: color-mix(in srgb, var(--primary-color) 16%, transparent);
+
+    &.pressed {
+      color: var(--icon-button-pressed-color, var(--_ib-text-pressed));
+      background-color: var(--icon-button-pressed-bg, var(--_ib-subtle-pressed));
     }
   }
 
-  &.secondary {
-    color: var(--secondary-color-text);
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--secondary-color-subtle);
-    }
-    &.active {
-      color: var(--secondary-color-active);
-      background-color: color-mix(in srgb, var(--secondary-color) 16%, transparent);
-    }
-  }
+  &.variant-solid {
+    background-color: var(--_ib-tone);
+    color: var(--icon-button-color, var(--text-inverse-color));
 
-  &.success {
-    color: var(--success-color-text);
     &:hover:not(.disabled):not(.loading) {
-      background-color: var(--success-color-subtle);
+      background-color: var(--icon-button-hover-bg, var(--_ib-tone-hover));
     }
-    &.active {
-      color: var(--success-color-active);
-      background-color: color-mix(in srgb, var(--success-color) 16%, transparent);
-    }
-  }
 
-  &.error {
-    color: var(--danger-color-text);
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--danger-color-subtle);
-    }
-    &.active {
-      color: var(--danger-color-active);
-      background-color: color-mix(in srgb, var(--danger-color) 16%, transparent);
-    }
-  }
-
-  &.warning {
-    color: var(--warning-color-text);
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--warning-color-subtle);
-    }
-    &.active {
-      color: var(--warning-color-active);
-      background-color: color-mix(in srgb, var(--warning-color) 16%, transparent);
-    }
-  }
-
-  &.info {
-    color: var(--info-color-text);
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--info-color-subtle);
-    }
-    &.active {
-      color: var(--info-color-active);
-      background-color: color-mix(in srgb, var(--info-color) 16%, transparent);
+    &.pressed {
+      color: var(--icon-button-pressed-color, var(--text-inverse-color));
+      background-color: var(--icon-button-pressed-bg, var(--_ib-tone-active));
     }
   }
 
@@ -133,10 +117,43 @@
     justify-content: center;
   }
 
-  // States
+  svg {
+    fill: currentColor;
+    transition: fill 0.2s ease-in-out;
+  }
+
+  // ---- States ----
   &:focus-visible {
     outline: 2px solid var(--focus-ring-color);
     outline-offset: 2px;
+  }
+
+  &:hover:not(.disabled):not(.loading) {
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+
+  &:active:not(.disabled):not(.loading),
+  &.pressed {
+    box-shadow: var(--shadow-md);
+  }
+
+  // the 1px outline border (--<c>-color) is an inset shadow so the size does
+  // not change; it is kept in every state
+  &.variant-outline {
+    box-shadow: inset 0 0 0 1px var(--_ib-border);
+
+    &:hover:not(.disabled):not(.loading) {
+      box-shadow:
+        inset 0 0 0 1px var(--_ib-border),
+        0 2px 8px var(--shadow-color);
+    }
+
+    &:active:not(.disabled):not(.loading),
+    &.pressed {
+      box-shadow:
+        inset 0 0 0 1px var(--_ib-border),
+        var(--shadow-md);
+    }
   }
 
   &.disabled {
@@ -147,99 +164,5 @@
   &.loading {
     cursor: wait !important;
     pointer-events: none;
-  }
-
-  // Ripple effect
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple 600ms linear;
-    background-color: color-mix(in srgb, var(--text-color) 16%, transparent);
-    pointer-events: none;
-  }
-
-  @keyframes ripple {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-
-  &:hover:not(.disabled):not(.loading) {
-    box-shadow: 0 2px 8px var(--shadow-color);
-  }
-
-  &:active:not(.disabled):not(.loading) {
-    box-shadow: var(--shadow-md);
-  }
-
-  &.active {
-    box-shadow: var(--shadow-md);
-  }
-
-  // Add SVG fill color support
-  svg {
-    fill: currentColor;
-    transition: fill 0.2s ease-in-out;
-  }
-
-  &.active {
-    color: var(--active-color, currentColor);
-    background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 12%, transparent));
-
-    svg {
-      fill: var(--fill-color, currentColor);
-    }
-  }
-
-  // Custom colors
-  &:hover:not(.disabled):not(.loading) {
-    background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 8%, transparent));
-  }
-
-  // Override default variant styles when custom colors are used
-  &[style] {
-    &.active {
-      color: var(--active-color);
-      background-color: var(--hover-color, color-mix(in srgb, var(--text-color) 12%, transparent));
-    }
-
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--hover-color);
-    }
-  }
-}
-
-// Fill styles (appearance). The color comes from the variant classes through
-// --icon-button-tone; the neutral (default) variant uses the text color.
-.iconButton {
-  --icon-button-tone: var(--text-color);
-  --icon-button-tone-hover: color-mix(in srgb, var(--text-color) 88%, var(--background-color));
-
-  @each $name, $role in (primary: primary, secondary: secondary, success: success, warning: warning, error: danger, info: info) {
-    &.#{$name} {
-      --icon-button-tone: var(--#{$role}-color);
-      --icon-button-tone-hover: var(--#{$role}-color-hover);
-    }
-  }
-
-  &.solid {
-    background-color: var(--icon-button-tone);
-    color: var(--text-inverse-color);
-
-    &:hover:not(.disabled):not(.loading) {
-      background-color: var(--icon-button-tone-hover);
-    }
-  }
-
-  &.outline {
-    box-shadow: inset 0 0 0 1px currentColor;
-
-    &:hover:not(.disabled):not(.loading) {
-      box-shadow:
-        inset 0 0 0 1px currentColor,
-        0 2px 8px var(--shadow-color);
-    }
   }
 }

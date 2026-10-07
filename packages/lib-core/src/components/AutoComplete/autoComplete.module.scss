@@ -3,8 +3,30 @@
   width: 100%;
 }
 
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-secondary-color);
+  font-size: var(--font-size-sm);
+}
+
 // The dropdown is portaled to <body>, so its styles must not be nested
 // under .autoComplete.
+// Override hooks (set them on `dropdownClassName`):
+//   --autocomplete-dropdown-bg          dropdown background
+//   --autocomplete-option-hover-bg      hovered / keyboard-focused option
+//   --autocomplete-option-highlight-bg  options with `highlight: true`
+.popup {
+  z-index: 1000;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: var(--autocomplete-dropdown-bg, var(--surface-elevated-color));
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+}
+
 .dropdown {
   color: var(--text-color);
   max-height: 256px;
@@ -37,12 +59,7 @@
   transition: background-color 0.2s ease;
 
   &.active {
-    background-color: var(--hover-bg-color, var(--surface-muted-color));
-  }
-
-  &.selected {
-    color: var(--primary-color-text);
-    font-weight: 600;
+    background-color: var(--autocomplete-option-hover-bg, var(--surface-muted-color));
   }
 
   &.disabled {
@@ -51,7 +68,7 @@
   }
 
   &.highlight:not(.active) {
-    background-color: var(--highlight-bg-color, var(--primary-color-subtle));
+    background-color: var(--autocomplete-option-highlight-bg, var(--primary-color-subtle));
     color: var(--primary-color-text);
   }
 }
@@ -88,48 +105,6 @@
   font-size: 12px;
   color: var(--text-secondary-color);
   font-weight: 500;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 4px;
-}
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  background: var(--surface-muted-color);
-  color: var(--text-color);
-  border-radius: 16px;
-  padding: 4px 8px;
-  font-size: 14px;
-
-  .tagClose {
-    margin-left: 4px;
-    padding: 0;
-    background: none;
-    border: none;
-    color: var(--text-secondary-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-
-    &:hover {
-      color: var(--text-color);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
-    }
-  }
-}
-
-.more {
-  color: var(--text-secondary-color);
-  font-size: 14px;
 }
 
 .loading,

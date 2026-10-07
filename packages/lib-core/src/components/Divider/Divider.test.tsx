@@ -49,9 +49,15 @@ describe("Divider", () => {
     expect(divider.style.height).toBe("");
   });
 
-  it("applies color and thickness", () => {
-    const divider = renderDivider(<Divider color="red" thickness={3} />);
-    expect(divider.style.borderColor).toBe("red");
+  it("applies thickness and a --divider-color override from style", () => {
+    const divider = renderDivider(
+      <Divider
+        thickness={3}
+        style={{ "--divider-color": "red" } as React.CSSProperties}
+      />,
+    );
+    expect(divider.style.getPropertyValue("--divider-color")).toBe("red");
+    expect(divider.style.borderColor).toBe("");
     expect(divider.style.borderWidth).toBe("3px");
   });
 
@@ -109,10 +115,10 @@ describe("Divider", () => {
 
   it("merges custom style while computed props take precedence", () => {
     const divider = renderDivider(
-      <Divider color="blue" style={{ opacity: 0.5, borderColor: "green" }} />,
+      <Divider thickness={2} style={{ opacity: 0.5, borderWidth: 5 }} />,
     );
     expect(divider.style.opacity).toBe("0.5");
-    expect(divider.style.borderColor).toBe("blue");
+    expect(divider.style.borderWidth).toBe("2px");
   });
 
   it("exposes a horizontal separator role by default", () => {

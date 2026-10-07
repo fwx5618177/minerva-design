@@ -7,7 +7,7 @@ export default function CollapsibleDemo() {
   return (
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
       <Alert
-        variant="info"
+        color="info"
         title={`Release notes (${expanded ? "expanded" : "collapsed"})`}
         collapsible
         expanded={expanded}
@@ -16,7 +16,7 @@ export default function CollapsibleDemo() {
         Added dark mode, improved keyboard navigation and fixed several layout
         issues on small screens.
       </Alert>
-      <Alert variant="success" title="Uncontrolled" collapsible>
+      <Alert color="success" title="Uncontrolled" collapsible>
         defaultExpanded (true by default) sets the initial state; the alert then
         manages it on its own.
       </Alert>

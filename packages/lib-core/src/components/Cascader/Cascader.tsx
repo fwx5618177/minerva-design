@@ -1,17 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { IoChevronDown, IoClose } from "react-icons/io5";
-import { TextField } from "../TextField";
+import { Input } from "../Input";
 import CascaderPanel from "./CascaderPanel";
 import type { CascaderProps, CascaderOption } from "./types";
-import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
+import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
-import { useIsClient } from "../../internal/useIsClient";
 import useI18n from "../../hooks/useI18n";
 import styles from "./cascader.module.scss";
-import { usePortalContainer } from "../../internal/themeScope";
 
 type CascaderValue = (string | number)[];
 
@@ -83,8 +80,6 @@ const Cascader = ({
   optionStyle,
 }: CascaderProps) => {
   const { t } = useI18n();
-  const isClient = useIsClient();
-  const portalContainer = usePortalContainer();
   const [selectedValue, setSelectedValue] = useControllableState<CascaderValue>(
     { value, defaultValue: defaultValue ?? EMPTY_VALUE },
   );
@@ -107,17 +102,6 @@ const Cascader = ({
   const [input, setInput] = useState<HTMLInputElement | null>(null);
   const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { setFloating, floatingStyles, placement } = useAnchoredPosition({
-    open: isOpen,
-    anchor,
-    placement: "bottom-start",
-    offset: { mainAxis: 4 },
-    matchAnchorWidth: "min",
-  });
-  const setDropdownRef = useMergedRefs<HTMLDivElement>(
-    dropdownRef,
-    setFloating,
-  );
 
   const searching = showSearch && searchValue !== "";
   const searchResults = useMemo(() => {
@@ -171,21 +155,6 @@ const Cascader = ({
     input?.focus();
   };
 
-  // Close on outside pointer down
-  useEffect(() => {
-    if (!isOpen) return;
-    const handlePointerDown = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (anchor?.contains(target) || dropdownRef.current?.contains(target)) {
-        return;
-      }
-      setIsOpen(false);
-      setSearchValue("");
-    };
-    document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
-  }, [isOpen, anchor]);
-
   // Combobox semantics on the inner <input>
   useEffect(() => {
     if (!input) return;
@@ -222,12 +191,6 @@ const Cascader = ({
         if (showSearch) break;
         e.preventDefault();
         if (!isOpen) openDropdown(true);
-        break;
-      case "Escape":
-        if (isOpen) {
-          e.preventDefault();
-          closeDropdown();
-        }
         break;
       default:
         break;
@@ -288,68 +251,64 @@ const Cascader = ({
     </div>
   );
 
-  const dropdown =
-    isOpen && isClient
-      ? createPortal(
-          // The popup wrapper only delegates events bubbling up from the
-          // focusable listbox options inside it (Escape / Tab handling, and
-          // preventing focus loss on mousedown); it is not itself a control.
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-          <div
-            ref={setDropdownRef}
-            className={classNames(styles.dropdown, dropdownClassName)}
-            data-placement={placement}
-            style={{ ...floatingStyles, ...dropdownStyle }}
-            // keep focus where it is when clicking non-focusable areas
-            onMouseDown={(e) => {
-              if (!(e.target as HTMLElement).closest('[role="option"]')) {
-                e.preventDefault();
-              }
-            }}
-            onBlur={handleBlur}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                e.preventDefault();
-                e.stopPropagation();
-                closeDropdown(true);
-              } else if (e.key === "Tab") {
-                closeDropdown();
-              }
-            }}
-          >
-            {searching ? (
-              renderSearchResults()
-            ) : (
-              <CascaderPanel
-                key={focusPanel ? "keyboard" : "pointer"}
-                label={label}
-                options={options}
-                expandedPath={expandedPath}
-                selectedPath={selectedOptions}
-                expandTrigger={expandTrigger}
-                maxLevel={maxLevel}
-                optionStyle={optionStyle}
-                optionRender={optionRender}
-                // Not the DOM autoFocus attribute: the panel only moves focus
-                // into the listbox when the user opened it from the keyboard
-                // (combobox pattern), never on page load.
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus={focusPanel}
-                onActivate={handleActivate}
-                onHoverExpand={(path) =>
-                  setExpandedValues(path.map((o) => o.value))
-                }
-                onExit={() => closeDropdown(true)}
-              />
-            )}
-          </div>,
-          portalContainer ?? document.body,
-        )
-      : null;
+  const dropdown = (
+    // The popup only delegates events bubbling up from the focusable listbox
+    // options inside it (Tab handling, and preventing focus loss on
+    // mousedown); it is not itself a control. Escape / outside pointer down
+    // are handled by its dismissable layer.
+    <FloatingPanel
+      ref={dropdownRef}
+      open={isOpen}
+      anchor={anchor}
+      placement="bottom-start"
+      offset={{ mainAxis: 4 }}
+      matchAnchorWidth="min"
+      branches={() => [anchor]}
+      onDismiss={() => closeDropdown()}
+      returnFocusOnEscape={() => input}
+      focusable
+      className={cn(styles.dropdown, dropdownClassName)}
+      style={dropdownStyle}
+      // keep focus where it is when clicking non-focusable areas
+      onMouseDown={(e) => {
+        if (!(e.target as HTMLElement).closest('[role="option"]')) {
+          e.preventDefault();
+        }
+      }}
+      onBlur={handleBlur}
+      onKeyDown={(e) => {
+        if (e.key === "Tab") closeDropdown();
+      }}
+    >
+      {searching ? (
+        renderSearchResults()
+      ) : (
+        <CascaderPanel
+          key={focusPanel ? "keyboard" : "pointer"}
+          label={label}
+          options={options}
+          expandedPath={expandedPath}
+          selectedPath={selectedOptions}
+          expandTrigger={expandTrigger}
+          maxLevel={maxLevel}
+          optionStyle={optionStyle}
+          optionRender={optionRender}
+          // Not the DOM autoFocus attribute: the panel only moves focus
+          // into the listbox when the user opened it from the keyboard
+          // (combobox pattern), never on page load.
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus={focusPanel}
+          onActivate={handleActivate}
+          onHoverExpand={(path) => setExpandedValues(path.map((o) => o.value))}
+          onExit={() => closeDropdown(true)}
+        />
+      )}
+    </FloatingPanel>
+  );
 
   return (
     <div
-      className={classNames(styles.cascader, className)}
+      className={cn(styles.cascader, className)}
       ref={setAnchor}
       style={{ width }}
       onBlur={handleBlur}
@@ -359,7 +318,7 @@ const Cascader = ({
           (Enter / Space / ArrowDown / Escape in handleInputKeyDown). */}
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div
-        className={classNames(styles.selector, {
+        className={cn(styles.selector, {
           [styles.disabled]: disabled,
           [styles.focused]: isOpen,
         })}
@@ -369,18 +328,19 @@ const Cascader = ({
           else if (!showSearch) closeDropdown();
         }}
       >
-        <TextField
+        <Input
           ref={setInputRef}
-          label={label}
+          variant="unstyled"
+          aria-label={label}
           name={name}
           value={displayValue}
           readOnly={!showSearch}
           disabled={disabled}
           placeholder={placeholder ?? t("cascader.placeholder")}
           className={styles.input}
-          onChange={(next) => {
+          onChange={(e) => {
             if (!showSearch) return;
-            setSearchValue(next);
+            setSearchValue(e.target.value);
             if (!isOpen) openDropdown();
           }}
           onKeyDown={handleInputKeyDown}
@@ -399,7 +359,7 @@ const Cascader = ({
           </button>
         )}
         <span
-          className={classNames(styles.arrow, isOpen && styles.open)}
+          className={cn(styles.arrow, isOpen && styles.open)}
           aria-hidden="true"
         >
           <IoChevronDown className={styles.icon} />

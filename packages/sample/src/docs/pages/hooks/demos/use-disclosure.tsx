@@ -1,10 +1,11 @@
 import {
   Alert,
   Button,
-  Space,
-  Tag,
   cn,
+  HStack,
+  Tag,
   useDisclosure,
+  VStack,
 } from "@minerva/lib-core";
 
 // useDisclosure keeps an open / closed state (uncontrolled here; pass isOpen
@@ -13,25 +14,35 @@ export default function UseDisclosureDemo() {
   const panel = useDisclosure({ defaultIsOpen: true });
 
   return (
-    <Space direction="vertical" size="medium" style={{ width: "100%" }}>
-      <Space wrap align="center">
-        <Button size="small" variant="primary" onClick={panel.onToggle}>
+    <VStack gap={4}>
+      <HStack gap={4} wrap>
+        <Button size="small" color="primary" onClick={panel.onToggle}>
           Toggle
         </Button>
-        <Button size="small" variant="secondary" onClick={panel.onOpen}>
+        <Button
+          size="small"
+          color="neutral"
+          variant="outline"
+          onClick={panel.onOpen}
+        >
           Open
         </Button>
-        <Button size="small" variant="secondary" onClick={panel.onClose}>
+        <Button
+          size="small"
+          color="neutral"
+          variant="outline"
+          onClick={panel.onClose}
+        >
           Close
         </Button>
         isOpen:{" "}
-        <Tag variant={panel.isOpen ? "success" : "info"}>
+        <Tag color={panel.isOpen ? "success" : "info"}>
           {String(panel.isOpen)}
         </Tag>
-      </Space>
+      </HStack>
       {panel.isOpen && (
         <Alert
-          variant="info"
+          color="info"
           title="Details"
           className={cn("disclosure-panel", panel.isOpen && "is-open")}
         >
@@ -39,6 +50,6 @@ export default function UseDisclosureDemo() {
           &quot;
         </Alert>
       )}
-    </Space>
+    </VStack>
   );
 }

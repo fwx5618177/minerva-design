@@ -8,11 +8,16 @@ import pkg from "./package.json" with { type: "json" };
 
 // Everything the package depends on is resolved by the consumer, never bundled.
 // Matches bare ids and subpaths (e.g. react/jsx-runtime, react-icons/fa).
+// Stylesheets are the exception: CSS / SCSS imported from a dependency (the
+// `@minerva/core/tokens.css` design tokens) is bundled into style.css, so
+// consumers import a single stylesheet.
 const externalDeps = [
   ...Object.keys(pkg.dependencies ?? {}),
   ...Object.keys(pkg.peerDependencies ?? {}),
 ];
+const isStylesheet = (id: string) => /\.(css|scss|sass)$/.test(id);
 const isExternal = (id: string) =>
+  !isStylesheet(id) &&
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
 const src = (path: string) =>
@@ -81,6 +86,22 @@ export default defineConfig({
   },
   test: {
     name: "lib-core",
+    // Tests run against the @minerva/core sources (no build needed); the
+    // library build keeps it external like every other dependency.
+    alias: [
+      {
+        find: /^@minerva\/core\/tokens\.css$/,
+        replacement: fileURLToPath(
+          new URL("../core/src/theme/tokens.scss", import.meta.url),
+        ),
+      },
+      {
+        find: /^@minerva\/core$/,
+        replacement: fileURLToPath(
+          new URL("../core/src/index.ts", import.meta.url),
+        ),
+      },
+    ],
     // happy-dom by default; only the HtmlPreview sanitizer tests opt into
     // jsdom (file docblock), because DOMPurify needs a spec-compliant DOM.
     environment: "happy-dom",

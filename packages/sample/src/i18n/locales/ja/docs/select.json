@@ -15,6 +15,14 @@
       "description": "3 つのサイズと無効・無効化状態。FormControl 内ではトリガーがラベル・説明・必須状態を受け取ります。"
     }
   },
+  "behavior": {
+    "title": "動作とアクセシビリティ",
+    "keyboard": "トリガーは combobox ロールを持つボタンです（aria-haspopup=\"listbox\"）。クリック、Enter、Space、↓ / ↑、Home、End でリストを開き、選択中の候補（なければ最初の有効な候補）にフォーカスします。矢印キーは端で折り返さず、無効な候補を飛ばします。Home / End と Page Up / Page Down でジャンプできます。Enter または Space で選択して閉じ、フォーカスはトリガーに戻ります。Escape は選択せずに閉じ、Tab は閉じて次のフィールドへ進みます。",
+    "typeahead": "閉じたトリガー上で文字を入力すると、ネイティブの select と同様に選択が直接変わります。開いているときはハイライトが移動します。内容がプレーンテキストでない候補には textValue を指定してください。",
+    "positioning": "リストはトリガーの下に配置され、幅はトリガー以上です。下に十分な余白がないときは上に反転し、候補がビューポートに収まらないときはスクロールします。ライブラリの他のオーバーレイと同じ popper 配置で、タッチ端末や小さな画面でも予測しやすく、トリガーを隠しません。選択中の候補をトリガーに重ねて揃える配置（\"item-aligned\"）は macOS 特有の慣習のため、意図的に採用していません。",
+    "forms": "非表示のネイティブ select が name・required・disabled を持ちます。値は FormData に含まれ、required はネイティブの制約検証に参加し、フォームのリセットで defaultValue に戻ります。値が undefined または空文字列のときはプレースホルダーを表示します。",
+    "layers": "リストは最も近い ConfigProvider のテーマコンテナへポータルされます。Modal や Drawer の中では、Escape はリストだけを閉じます。"
+  },
   "api": {
     "SelectProps": {
       "value": "選択値（制御モード。onChange と併用）",

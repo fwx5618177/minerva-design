@@ -26,29 +26,42 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 - **TypeScript**: type definitions are included
 - **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
 - **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `style.css`, `prose.scss`
-- **i18n**: built-in locales for English, Chinese and French
+- **i18n**: built-in locales for English, Chinese, Japanese and French
+- **No headless dependency**: overlays, menus, select, tabs and `asChild` are built in house on `@minerva/core`; Floating UI is the only third-party interaction dependency
 
 ## 📦 Packages
 
-| Package                       | Description                                                                                            |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`. |
-| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.                    |
-| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                         |
+| Package                       | Description                                                                                                                                                                                        |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@minerva/core`               | Framework-agnostic interaction primitives (focus scope, dismissable layers, scroll lock, roving focus, positioning...), theme utilities, design tokens and i18n messages. Installed with lib-core. |
+| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`.                                                                                             |
+| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.                                                                                                                |
+| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                                                                                                                     |
+
+### Architecture
+
+```
+@minerva/core            framework-agnostic TypeScript (DOM only)
+  interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
+        ▲ React hooks                    ▲ Lit controllers (later)
+@minerva/lib-core               @minerva/lib-web-components
+```
+
+Every overlay of `@minerva/lib-core` (Modal, Drawer, Popover, Tooltip, Menu, ContextMenu, Select, AutoComplete, Cascader, TimePicker) is built on the same core primitives: one layer stack (Escape closes the innermost overlay first), one focus implementation (focus returns to the opener) and one positioning engine. See the [Architecture](https://fwx5618177.github.io/minerva/#/architecture) page.
 
 ### Components (`@minerva/lib-core`)
 
-| Category     | Components                                                                                                                                                                                                                                                                                                                        |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Theming      | `ConfigProvider`, `ThemeProvider` / `useTheme`, `ThemeToggle`, `PaletteToggle`                                                                                                                                                                                                                                                    |
-| General      | `Button`, `IconButton`, `InteractiveIconButton`, `SearchButton`                                                                                                                                                                                                                                                                   |
-| Layout       | `Box`, `Stack` / `HStack` / `VStack`, `Space`, `ResponsiveGrid` / `GridItem`, `SplitLayout`, `Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`, `AppShell`, `Card` (+ parts), `Divider`, `VirtualList`                                                                                                               |
-| Forms        | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`, `FormLayout`, `Input`, `TextField`, `Textarea`, `NumberInput`, `JsonField`, `KeyValueEditor`, `TagInput`, `AutoComplete`, `Select`, `Cascader`, `Checkbox`, `Radio` / `RadioGroup`, `Switch`, `TimePicker`, `Rating` / `RatingScale`, `Upload` |
-| Data display | `Avatar` / `AvatarGroup`, `Badge`, `Chip`, `Tag`, `Empty`, `StatusIndicator`, `Table` / `DataTable` (+ parts), `DescriptionList`, `List` / `ListItem`, `TextLink`, `CodeBlock`, `Prose`, `HtmlPreview`, `MonthCalendar`, `Tooltip` / `TooltipProvider`                                                                            |
-| Feedback     | `Alert`, `message` / `useMessage`, `toast` / `ToastProvider`, `ProgressIndicator`, `Spinner`, `Skeleton` / `SkeletonText`, `LoadingState`                                                                                                                                                                                         |
-| Overlays     | `Modal`, `Drawer`, `ConfirmDialog` / `confirm()` / `useConfirm`, `CommandDialog`, `Popover`, `Popper`, `Menu` / `ContextMenu`, `Dropdown`                                                                                                                                                                                         |
-| Navigation   | `Tabs`, `PageTabs`, `NavTree`, `Pagination`, `Steps`                                                                                                                                                                                                                                                                              |
-| Editors      | `MonacoCodeEditor` (`@minerva/lib-core/monaco`)                                                                                                                                                                                                                                                                                   |
+| Category     | Components                                                                                                                                                                                                                                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theming      | `ConfigProvider`, `ThemeProvider` / `useTheme`, `ThemeToggle`, `PaletteToggle`                                                                                                                                                                                                                                       |
+| General      | `Button`, `IconButton`                                                                                                                                                                                                                                                                                               |
+| Layout       | `Box`, `Stack` / `HStack` / `VStack`, `ResponsiveGrid` / `GridItem`, `SplitLayout`, `Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`, `AppShell`, `Card` (+ parts), `Divider`, `VirtualList`                                                                                                           |
+| Forms        | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`, `FormLayout`, `Input`, `Textarea`, `NumberInput`, `JsonField`, `KeyValueEditor`, `TagInput`, `AutoComplete`, `Select`, `Cascader`, `Checkbox`, `Radio` / `RadioGroup`, `Switch`, `TimePicker`, `Rating` / `RatingScale`, `Upload` |
+| Data display | `Avatar` / `AvatarGroup`, `Badge`, `Tag`, `Empty`, `Table` / `DataTable` (+ parts), `DescriptionList`, `List` / `ListItem`, `TextLink`, `CodeBlock`, `Prose`, `HtmlPreview`, `MonthCalendar`, `Tooltip` / `TooltipProvider`                                                                                          |
+| Feedback     | `Alert`, `toast` / `ToastProvider`, `ProgressIndicator`, `Skeleton` / `SkeletonText`, `LoadingState`                                                                                                                                                                                                                 |
+| Overlays     | `Modal`, `Drawer`, `ConfirmDialog` / `confirm()` / `useConfirm`, `CommandDialog`, `Popover`, `Menu` / `ContextMenu`                                                                                                                                                                                                  |
+| Navigation   | `Tabs`, `PageTabs`, `NavTree`, `Pagination`, `Steps`                                                                                                                                                                                                                                                                 |
+| Editors      | `MonacoCodeEditor` (`@minerva/lib-core/monaco`)                                                                                                                                                                                                                                                                      |
 
 Besides components, `@minerva/lib-core` exports `ConfigProvider`, `useConfig`, the hooks `useAutoTheme`, `useLocale` and `useI18n`, the utilities `applyThemeStyles` and `generateCSSVariables`, and the built-in `themes` map (`light`, `dark`, `github-dark`).
 
@@ -84,10 +97,12 @@ import {
   Alert,
   Button,
   ConfigProvider,
-  Space,
   Switch,
-  TextField,
-  message,
+  FormField,
+  Input,
+  ToastProvider,
+  VStack,
+  toast,
 } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
 
@@ -97,30 +112,33 @@ export default function App() {
 
   return (
     <ConfigProvider>
-      <Space direction="vertical" size="medium">
-        <Alert variant="info" title="Welcome" closable>
-          Minerva is ready.
-        </Alert>
-        <TextField
-          name="username"
-          label="Username"
-          placeholder="Enter username"
-          value={name}
-          onChange={setName}
-          clearable
-        />
-        <Switch
-          label="Subscribe"
-          checked={subscribed}
-          onChange={(checked) => setSubscribed(checked)}
-        />
-        <Button
-          variant="primary"
-          onClick={() => message.success(`Hello, ${name}`)}
-        >
-          Submit
-        </Button>
-      </Space>
+      <ToastProvider>
+        <VStack gap={4} align="start">
+          <Alert color="info" title="Welcome" closable>
+            Minerva is ready.
+          </Alert>
+          <FormField label="Username">
+            <Input
+              name="username"
+              placeholder="Enter username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              clearable
+            />
+          </FormField>
+          <Switch
+            label="Subscribe"
+            checked={subscribed}
+            onChange={(checked) => setSubscribed(checked)}
+          />
+          <Button
+            color="primary"
+            onClick={() => toast.success(`Hello, ${name}`)}
+          >
+            Submit
+          </Button>
+        </VStack>
+      </ToastProvider>
     </ConfigProvider>
   );
 }
@@ -187,19 +205,19 @@ export default async function Layout({ children }) {
 }
 ```
 
-### Message API
+### Toast API
 
 ```tsx
-import { Button, message, useMessage } from "@minerva/lib-core";
+import { Button, toast } from "@minerva/lib-core";
 
+// Rendered by the <ToastProvider> mounted near the root of the app
 export function SaveButton() {
-  const msg = useMessage();
-
-  const save = () => {
-    msg
-      .loading({ content: "Saving...", duration: 1000 })
-      .then(() => message.success("Saved"));
-  };
+  const save = () =>
+    toast.promise(fetch("/api/save", { method: "POST" }), {
+      loading: "Saving...",
+      success: "Saved",
+      error: "Could not save",
+    });
 
   return <Button onClick={save}>Save</Button>;
 }
@@ -258,21 +276,21 @@ pnpm dev
 
 ### Scripts
 
-| Command                             | Description                                                         |
-| ----------------------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`                          | Build the libraries, then start the docs/demo site                  |
-| `pnpm build`                        | Build all packages in order: lib-core → lib-web-components → sample |
-| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows  |
-| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)     |
-| `pnpm test:dist`                    | Smoke-test the built `@minerva/lib-core` package (run after build)  |
-| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                   |
-| `pnpm lint`                         | Run ESLint (flat config)                                            |
-| `pnpm typecheck`                    | Type-check all packages                                             |
-| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                             |
-| `pnpm clean`                        | Remove build output                                                 |
-| `pnpm changeset`                    | Add a changeset describing your change                              |
-| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs        |
-| `pnpm release`                      | Build the libraries and publish them to npm                         |
+| Command                             | Description                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `pnpm dev`                          | Build the libraries, then start the docs/demo site                         |
+| `pnpm build`                        | Build all packages in order: core → lib-core → lib-web-components → sample |
+| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows         |
+| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)            |
+| `pnpm test:dist`                    | Smoke-test the built `@minerva/lib-core` package (run after build)         |
+| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                          |
+| `pnpm lint`                         | Run ESLint (flat config)                                                   |
+| `pnpm typecheck`                    | Type-check all packages                                                    |
+| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                    |
+| `pnpm clean`                        | Remove build output                                                        |
+| `pnpm changeset`                    | Add a changeset describing your change                                     |
+| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs               |
+| `pnpm release`                      | Build the libraries and publish them to npm                                |
 
 ### Tooling
 
@@ -296,7 +314,7 @@ pnpm install            # refresh the lockfile if internal versions changed
 git commit -am "chore: release" && git push
 
 # 3. Publish (requires `npm login` with publish rights to the @minerva scope)
-pnpm release            # builds lib-core + lib-web-components, then `changeset publish`
+pnpm release            # builds core + lib-core + lib-web-components, then `changeset publish`
 git push --follow-tags  # push the tags created by changeset publish
 ```
 

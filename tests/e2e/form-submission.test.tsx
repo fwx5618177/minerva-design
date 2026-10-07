@@ -142,7 +142,7 @@ function CreateBookApp({ onCreate }: { onCreate: (book: Book) => void }) {
         />
         <Toolbar>
           <Button type="submit">创建</Button>
-          <Button type="reset" appearance="ghost">
+          <Button type="reset" variant="ghost">
             重置
           </Button>
         </Toolbar>

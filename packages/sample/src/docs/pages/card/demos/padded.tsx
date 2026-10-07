@@ -18,7 +18,7 @@ export default function PaddedDemo() {
         width: "100%",
       }}
     >
-      {(["outlined", "elevated", "subtle", "ghost"] as const).map((variant) => (
+      {(["outline", "elevated", "filled", "ghost"] as const).map((variant) => (
         <Card key={variant} variant={variant} padding="medium">
           <CardHeader>
             <CardTitle>{variant}</CardTitle>
@@ -26,7 +26,7 @@ export default function PaddedDemo() {
           </CardHeader>
           <CardContent>The card pads itself; sections sit flush.</CardContent>
           <CardFooter>
-            <Button size="small" variant="secondary">
+            <Button size="small" color="neutral" variant="outline">
               Details
             </Button>
           </CardFooter>

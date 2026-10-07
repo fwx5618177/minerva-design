@@ -28,7 +28,7 @@ const columns: TableColumn<Order>[] = [
     width: 110,
     fixed: "right",
     render: () => (
-      <Button size="small" variant="secondary">
+      <Button size="small" color="neutral" variant="outline">
         Details
       </Button>
     ),

@@ -10,7 +10,9 @@ export default function BasicDemo() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary">Filter</Button>
+        <Button color="neutral" variant="outline">
+          Filter
+        </Button>
       </PopoverTrigger>
       <PopoverContent aria-label="Filters" arrow>
         <label style={{ display: "block" }}>

@@ -10,9 +10,13 @@
       "title": "Positions",
       "description": "Douze positions autour du déclencheur."
     },
+    "colors": {
+      "title": "Couleurs",
+      "description": "color choisit la couleur sémantique : neutral (par défaut), info, success, warning ou danger."
+    },
     "variants": {
       "title": "Variantes",
-      "description": "Sombre (par défaut, en contraste avec le thème), claire et couleurs sémantiques ; auto suit le thème avec une surface givrée, fixedDark / fixedLight gardent leurs couleurs quel que soit le thème."
+      "description": "variant choisit le style : solid (par défaut ; rempli, la version neutral est une surface inversée qui contraste avec le thème), subtle (surface teintée avec une bordure) ou glass (surface givrée qui suit le thème ; la couleur ne teinte que la bordure)."
     },
     "shapes": {
       "title": "Formes",
@@ -23,8 +27,8 @@
       "description": "Choisissez comment l’infobulle apparaît et disparaît."
     },
     "custom-colors": {
-      "title": "Couleurs, flèche et décalage",
-      "description": "bgColor accepte les couleurs unies et les dégradés CSS ; arrow ajoute une flèche vers le déclencheur ; offset définit l'espace avec le déclencheur (8px par défaut)."
+      "title": "Couleurs personnalisées, flèche et décalage",
+      "description": "Définissez les propriétés personnalisées --tooltip-bg (couleurs unies et dégradés CSS) et --tooltip-color sur l’infobulle via contentClassName ; arrow ajoute une flèche vers le déclencheur ; offset définit l'espace avec le déclencheur (8px par défaut)."
     },
     "delays": {
       "title": "Délais et désactivation",
@@ -58,15 +62,14 @@
       "open": "Indique si l'infobulle est affichée (contrôlé ; à associer à onOpenChange)",
       "defaultOpen": "État d’ouverture initial (mode non contrôlé)",
       "placement": "Position par rapport au déclencheur",
-      "variant": "Variante de couleur",
+      "color": "Couleur sémantique de l’infobulle. Avec la variante glass, la couleur ne teinte que la bordure (neutral garde la simple surface givrée)",
+      "variant": "Style visuel : solid (rempli ; neutral est la surface inversée contrastée), subtle (surface teintée avec une bordure) ou glass (surface surélevée givrée)",
       "shape": "Forme de l’infobulle",
       "animation": "Animation d’apparition / de disparition",
       "enterDelay": "Délai avant l’affichage au survol, en millisecondes",
       "leaveDelay": "Délai avant le masquage quand la souris quitte, en millisecondes",
       "offset": "Décalage [x, y] en pixels. Pour les positions top/bottom, y est l'espace avec le déclencheur et x décale le long de celui-ci ; pour left/right, x est l'espace et y le décalage. Sans lui, l'infobulle est à 8px",
       "followCursor": "L’infobulle suit le curseur de la souris",
-      "bgColor": "Couleur de fond personnalisée (les dégradés CSS sont pris en charge)",
-      "textColor": "Couleur de texte personnalisée",
       "zIndex": "z-index de l’infobulle",
       "arrow": "Affiche une flèche pointant vers le déclencheur",
       "disabled": "Désactive l’infobulle",
@@ -77,7 +80,7 @@
       "ref": "Handle impératif avec open / close / toggle",
       "onOpenChange": "Appelé avec l'état d'ouverture demandé (survol, focus, Échap, méthodes du ref)",
       "asChild": "Attache les gestionnaires de survol / focus, la ref et className directement à l’unique élément enfant au lieu de l’envelopper dans un <div> (préserve les mises en page flex et grid). L’enfant doit accepter une ref",
-      "contentClassName": "Classe supplémentaire de l’élément de l’infobulle (flottant)",
+      "contentClassName": "Classe supplémentaire de l’élément de l’infobulle (flottant). Pour personnaliser les couleurs, définissez-y les propriétés personnalisées --tooltip-bg (fond, dégradés acceptés) et --tooltip-color (texte)",
       "contentRef": "Ref vers l’élément de l’infobulle (flottant), définie pendant son affichage"
     },
     "TooltipRef": {

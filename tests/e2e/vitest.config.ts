@@ -26,6 +26,14 @@ export default defineConfig({
         replacement: src("../../packages/lib-core/src/index.ts"),
       },
       {
+        find: /^@minerva\/core\/tokens\.css$/,
+        replacement: src("../../packages/core/src/theme/tokens.scss"),
+      },
+      {
+        find: /^@minerva\/core$/,
+        replacement: src("../../packages/core/src/index.ts"),
+      },
+      {
         find: /^@minerva\/lib-web-components$/,
         replacement: src("../../packages/lib-web-components/src/index.ts"),
       },

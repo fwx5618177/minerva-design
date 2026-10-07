@@ -23,14 +23,9 @@
     box-shadow: var(--shadow-sm);
   }
 
-  &.outlined {
+  &.outline {
     border: 1px solid var(--card-border-color, var(--border-color));
     box-shadow: none;
-  }
-
-  &.shadow {
-    border: none;
-    box-shadow: var(--shadow-md);
   }
 
   &.elevated {
@@ -44,29 +39,10 @@
     box-shadow: none;
   }
 
-  &.subtle {
-    border: 1px solid transparent;
-    background-color: var(--surface-subtle-color);
-    box-shadow: none;
-  }
-
   &.ghost {
     border: 1px solid transparent;
     background-color: transparent;
     box-shadow: none;
-  }
-
-  &.noHeader .cardHeader {
-    display: none;
-  }
-
-  &.noFooter .cardFooter {
-    display: none;
-  }
-
-  &.noHeaderFooter .cardHeader,
-  &.noHeaderFooter .cardFooter {
-    display: none;
   }
 
   .cardHeader {
@@ -107,38 +83,6 @@
     background-color: color-mix(in srgb, var(--surface-muted-color) 60%, transparent);
     text-align: right;
     border-top: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
-  }
-
-  .cardButton {
-    background-color: var(--primary-color);
-    color: var(--text-inverse-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition:
-      background-color 0.3s ease,
-      box-shadow 0.3s ease;
-
-    &:hover {
-      background-color: var(--primary-color-hover);
-      box-shadow: var(--shadow-sm);
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: var(--shadow-md);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
-    }
-
-    &:active {
-      background-color: var(--primary-color-active);
-      transform: translateY(2px);
-    }
   }
 
   // ── Padded layout (`padding` set): the card pads itself, sections sit flush
@@ -238,19 +182,17 @@
       transform var(--transition-fast);
 
     &.default:hover,
-    &.outlined:hover {
+    &.outline:hover {
       border-color: var(--border-strong-color);
       background-color: var(--surface-subtle-color);
     }
 
-    &.shadow:hover,
     &.elevated:hover {
       box-shadow: var(--shadow-lg);
       transform: translateY(-2px);
     }
 
     &.filled:hover,
-    &.subtle:hover,
     &.ghost:hover {
       background-color: var(--surface-muted-color);
     }
@@ -267,7 +209,6 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      &.shadow:hover,
       &.elevated:hover {
         transform: none;
       }

@@ -31,7 +31,7 @@ export default function PlacementsDemo() {
           placement={placement}
           arrow
         >
-          <Button variant="secondary" size="small">
+          <Button color="neutral" variant="outline" size="small">
             {placement}
           </Button>
         </Tooltip>

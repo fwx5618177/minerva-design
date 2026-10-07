@@ -83,14 +83,14 @@ function DictionarySettings({
         </Checkbox>
         <Button
           type="button"
-          appearance="outline"
+          variant="outline"
           onClick={() => setValue(LOSSLESS)}
         >
           Load sample
         </Button>
         <Button
           type="button"
-          appearance="outline"
+          variant="outline"
           onClick={() => setValue('{"markup":"<img src=x onerror=alert(1)>"}')}
         >
           Load markup

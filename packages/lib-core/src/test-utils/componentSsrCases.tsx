@@ -21,8 +21,9 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "HStack",
-    <lib.HStack>
+    <lib.HStack separator="·" attached aria-label="Group">
       <span>a</span>
+      <span>b</span>
     </lib.HStack>,
   ],
   [
@@ -64,7 +65,6 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
       Main
     </lib.AppShell>,
   ],
-  ["Spinner", <lib.Spinner />],
   ["LoadingState", <lib.LoadingState />],
   ["TextLink", <lib.TextLink href="/x">Link</lib.TextLink>],
   [

@@ -1,6 +1,6 @@
 {
   "title": "Popover 气泡卡片",
-  "description": "点击触发的浮层，承载筛选、账户菜单等可交互内容。与 Tooltip 不同，它可以包含可聚焦内容；与底层的 Popper 不同，它自行管理触发器、焦点、Escape 和外部点击。",
+  "description": "点击触发、锚定在触发器上的浮层面板，用于筛选器、账户菜单等可交互内容。与 Tooltip 不同，它可以包含可聚焦内容，并自行管理焦点、Escape 和外部点击；在 Modal 中会先于 Modal 关闭。",
   "demos": {
     "basic": {
       "title": "基础用法",
@@ -20,7 +20,7 @@
       "open": "受控的打开状态；不传（undefined）时为非受控",
       "defaultOpen": "非受控时的初始打开状态",
       "onOpenChange": "请求改变打开状态时调用（触发器、Escape、外部点击、PopoverClose）",
-      "modal": "模态模式：将焦点锁定在面板内并阻止外部交互",
+      "modal": "模态模式：锁定焦点、锁定页面滚动、对辅助技术隐藏页面其余部分并阻止外部指针交互（点击外部仍会关闭）",
       "children": "PopoverTrigger / PopoverAnchor 与 PopoverContent"
     },
     "PopoverContentProps": {
@@ -29,7 +29,17 @@
       "align": "沿触发器的对齐方式",
       "sideOffset": "与触发器的间距（像素）",
       "arrow": "显示指向触发器的箭头",
-      "portal": "将面板渲染到 document.body 上的 portal 中"
+      "portal": "把面板渲染到 portal 中（嵌套 ConfigProvider 的主题作用域容器，否则为 document.body）",
+      "alignOffset": "沿触发器方向的偏移像素（正值朝向末端）",
+      "collisionPadding": "与视口边缘的最小距离（像素）；目前固定为 8px，其他取值为保留值",
+      "matchAnchorWidth": "按触发器 / 锚点宽度设置面板尺寸：\"min\" 至少同宽，\"exact\" 完全同宽",
+      "forceMount": "关闭时仍保持挂载（data-state=\"closed\"），例如配合动画库使用",
+      "onOpenAutoFocus": "打开时焦点移入面板之前调用；event.preventDefault() 可让焦点保持原位",
+      "onCloseAutoFocus": "关闭时焦点回到打开者之前调用；event.preventDefault() 可跳过",
+      "onEscapeKeyDown": "作为最上层时按下 Escape；event.preventDefault() 可保持打开",
+      "onPointerDownOutside": "在外部按下指针；event.preventDefault() 可保持打开",
+      "onFocusOutside": "焦点移到外部；event.preventDefault() 可保持打开",
+      "onInteractOutside": "外部的指针按下或焦点移动；event.preventDefault() 可保持打开"
     },
     "PopoverTriggerProps": {
       "asChild": "把行为合并到唯一的子元素上，而不是渲染自己的元素"

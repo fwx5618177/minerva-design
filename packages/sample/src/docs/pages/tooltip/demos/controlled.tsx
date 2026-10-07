@@ -30,7 +30,8 @@ export default function ControlledDemo() {
         </Tooltip>
         <Button
           size="small"
-          variant="secondary"
+          color="neutral"
+          variant="outline"
           onClick={() => tooltipRef.current?.toggle()}
         >
           Toggle via ref

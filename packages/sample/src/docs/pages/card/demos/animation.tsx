@@ -34,7 +34,7 @@ export default function AnimationDemo() {
         }}
       >
         {animations.map((animation) => (
-          <Card key={animation} type="noFooter">
+          <Card key={animation}>
             <CardHeader>
               <CardTitle>{animation}</CardTitle>
             </CardHeader>

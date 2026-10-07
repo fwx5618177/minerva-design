@@ -1,14 +1,14 @@
-// A toolbar with overlays: Tooltip on an IconButton, a Popper "share" panel
-// and a Dropdown menu. Keyboard first: open, navigate, Escape, focus return.
-import { useState } from "react";
-import { render, screen } from "@testing-library/react";
+// A toolbar with overlays: Tooltip on an IconButton, a Popover "share" panel
+// and an action Menu. Keyboard first: open, navigate, Escape, focus return.
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import {
-  Dropdown,
   IconButton,
-  InteractiveIconButton,
-  Popper,
+  Menu,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Tooltip,
 } from "@minerva/lib-core";
 
@@ -19,42 +19,35 @@ const CogIcon = () => (
 );
 
 const Toolbar = ({ onAction }: { onAction: (action: string) => void }) => {
-  const [shareAnchor, setShareAnchor] = useState<HTMLButtonElement | null>(
-    null,
-  );
-  const [shareOpen, setShareOpen] = useState(false);
   return (
     <div role="toolbar" aria-label="Document">
       <Tooltip content="Open settings">
         <IconButton icon={<CogIcon />} ariaLabel="Settings" />
       </Tooltip>
-      <InteractiveIconButton type="favorite" />
-      <button ref={setShareAnchor} type="button" aria-expanded={shareOpen}>
-        Share
-      </button>
-      <Popper
-        anchorEl={shareAnchor}
-        visible={shareOpen}
-        onVisibleChange={setShareOpen}
-        onClickAway={() => setShareOpen(false)}
-        ariaLabel="Share options"
-        placement="bottomStart"
-      >
-        <button type="button" onClick={() => onAction("copy-link")}>
-          Copy link
-        </button>
-      </Popper>
-      <Dropdown
+      <IconButton
+        icon={<CogIcon />}
+        ariaLabel="Favorite"
+        defaultPressed={false}
+      />
+      <Popover>
+        <PopoverTrigger>Share</PopoverTrigger>
+        <PopoverContent aria-label="Share options" side="bottom" align="start">
+          <button type="button" onClick={() => onAction("copy-link")}>
+            Copy link
+          </button>
+        </PopoverContent>
+      </Popover>
+      <Menu
         ariaLabel="More actions"
         items={[
-          { label: "Rename", value: "rename" },
-          { label: "Archive", value: "archive", disabled: true },
-          { label: "Delete", value: "delete" },
+          { key: "rename", label: "Rename" },
+          { key: "archive", label: "Archive", disabled: true },
+          { key: "delete", label: "Delete" },
         ]}
-        onSelect={(item) => onAction(item.value)}
+        onSelect={(item) => onAction(item.key)}
       >
         <button type="button">More</button>
-      </Dropdown>
+      </Menu>
       <p>Outside content</p>
     </div>
   );
@@ -82,6 +75,32 @@ describe("e2e: overlays", () => {
     expect(settings).toHaveFocus();
   });
 
+  it("closes only the tooltip on the first Escape inside an open popover", async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover>
+        <PopoverTrigger>Format</PopoverTrigger>
+        <PopoverContent aria-label="Format options">
+          <Tooltip content="Make text bold">
+            <button type="button">Bold</button>
+          </Tooltip>
+        </PopoverContent>
+      </Popover>,
+    );
+    await user.click(screen.getByRole("button", { name: "Format" }));
+    // focus moves to the first tabbable: the tooltip shows on focus
+    const bold = screen.getByRole("button", { name: "Bold" });
+    await waitFor(() => expect(bold).toHaveFocus());
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Make text bold");
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("toggles the favorite button and exposes its pressed state", async () => {
     const { user } = setup();
     const favorite = screen.getByRole("button", { name: "Favorite" });
@@ -93,7 +112,7 @@ describe("e2e: overlays", () => {
     expect(favorite).toHaveAttribute("aria-pressed", "false");
   });
 
-  it("opens the share popper, closes it with Escape and returns focus", async () => {
+  it("opens the share popover, closes it with Escape and returns focus", async () => {
     const { user, onAction } = setup();
     const share = screen.getByRole("button", { name: "Share" });
     await user.click(share);
@@ -106,11 +125,11 @@ describe("e2e: overlays", () => {
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(share).toHaveFocus();
+    await waitFor(() => expect(share).toHaveFocus());
     expect(share).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("closes the share popper when clicking outside", async () => {
+  it("closes the share popover when clicking outside", async () => {
     const { user } = setup();
     await user.click(screen.getByRole("button", { name: "Share" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -118,7 +137,7 @@ describe("e2e: overlays", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("navigates the dropdown menu with the keyboard", async () => {
+  it("navigates the action menu with the keyboard", async () => {
     const { user, onAction } = setup();
     const more = screen.getByRole("button", { name: "More" });
     more.focus();
@@ -127,30 +146,37 @@ describe("e2e: overlays", () => {
     expect(
       screen.getByRole("menu", { name: "More actions" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveFocus(),
+    );
 
-    // disabled items are skipped, navigation wraps
+    // disabled items are skipped; Home / End jump to the ends
     await user.keyboard("{ArrowDown}");
     expect(screen.getByRole("menuitem", { name: "Delete" })).toHaveFocus();
-    await user.keyboard("{ArrowDown}");
+    await user.keyboard("{Home}");
     expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    expect(more).toHaveFocus();
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    await waitFor(() => expect(more).toHaveFocus());
 
-    await user.keyboard("{ArrowUp}");
-    expect(screen.getByRole("menuitem", { name: "Delete" })).toHaveFocus();
-    await user.keyboard("{Enter}");
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() =>
+      expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveFocus(),
+    );
+    await user.keyboard("{End}{Enter}");
     expect(onAction).toHaveBeenCalledWith("delete");
-    expect(more).toHaveFocus();
+    await waitFor(() => expect(more).toHaveFocus());
   });
 
-  it("closes the dropdown when focus leaves it", async () => {
-    const { user } = setup();
+  it("closes the menu when clicking outside", async () => {
+    // The modal menu blocks pointer events on the page; the click outside
+    // still dismisses it
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<Toolbar onAction={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "More" }));
     expect(screen.getByRole("menu")).toBeInTheDocument();
     await user.click(screen.getByText("Outside content"));
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
   });
 });

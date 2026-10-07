@@ -12,7 +12,11 @@ export default function BasicDemo() {
       <PageSection
         title="Recently added"
         icon={<LuBookOpen />}
-        actions={<Button variant="secondary">View all</Button>}
+        actions={
+          <Button color="neutral" variant="outline">
+            View all
+          </Button>
+        }
       >
         <p style={{ margin: 0 }}>Section content</p>
       </PageSection>

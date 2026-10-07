@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import Alert from "./Alert";
 
-/** Alerts are role="alert" (error / warning) or role="status" (info / success) */
+/** Alerts are role="alert" (danger / warning) or role="status" (info / success) */
 const getAlert = () => {
   const found = [
     ...screen.queryAllByRole("alert"),
@@ -25,12 +25,13 @@ describe("Alert", () => {
     expect(alert).toHaveTextContent("Something happened");
   });
 
-  it("applies default variant, size and type", () => {
+  it("applies default color, variant and size", () => {
     render(<Alert>Body</Alert>);
     const alert = getAlert();
     expect(alert).toHaveClass(
       "alert",
       "info",
+      "subtle",
       "medium",
       "rounded",
       "withIcon",
@@ -39,25 +40,23 @@ describe("Alert", () => {
     );
   });
 
-  it.each(["info", "success", "warning", "error"] as const)(
-    "renders %s variant with a labelled icon",
-    (variant) => {
-      render(<Alert variant={variant}>Body</Alert>);
+  it.each(["info", "success", "warning", "danger"] as const)(
+    "renders %s color with a labelled icon",
+    (color) => {
+      render(<Alert color={color}>Body</Alert>);
       const alert = getAlert();
-      expect(alert).toHaveClass(variant);
+      expect(alert).toHaveClass(color);
       expect(
-        screen.getByRole("img", { name: `${variant} icon` }),
+        screen.getByRole("img", { name: `${color} icon` }),
       ).toBeInTheDocument();
     },
   );
 
-  it("applies size, type and boolean style props", () => {
+  it("applies size, variant and boolean style props", () => {
     render(
       <Alert
         size="large"
-        type="outlined"
-        outlined
-        filled
+        variant="outline"
         banner
         elevation
         rounded={false}
@@ -69,8 +68,7 @@ describe("Alert", () => {
     const alert = getAlert();
     expect(alert).toHaveClass(
       "large",
-      "outlined",
-      "filled",
+      "outline",
       "banner",
       "withElevation",
       "custom",
@@ -313,12 +311,12 @@ describe("Alert", () => {
   });
 
   it.each([
-    ["error", "alert"],
+    ["danger", "alert"],
     ["warning", "alert"],
     ["info", "status"],
     ["success", "status"],
-  ] as const)("%s variant uses role=%s", (variant, role) => {
-    render(<Alert variant={variant}>Body</Alert>);
+  ] as const)("%s color uses role=%s", (color, role) => {
+    render(<Alert color={color}>Body</Alert>);
     expect(screen.getByRole(role)).toHaveTextContent("Body");
   });
 
@@ -340,7 +338,7 @@ describe("Alert localization", () => {
       i18n.changeLanguage("zh");
     });
     render(
-      <Alert title="Title" variant="success" closable collapsible>
+      <Alert title="Title" color="success" closable collapsible>
         Body
       </Alert>,
     );

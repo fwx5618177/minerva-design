@@ -28,7 +28,7 @@
     },
     "custom-style": {
       "title": "自定义样式",
-      "description": "自定义方框、边框和勾选标记的颜色，或在选中时显示自定义图标。"
+      "description": "通过 CSS 自定义属性 --checkbox-checked-color、--checkbox-checkmark-color、--checkbox-box-color 和 --checkbox-border-color（设置在 className 或祖先元素上）改变方框颜色，或在选中时显示自定义图标。"
     },
     "error": {
       "title": "错误状态",
@@ -36,7 +36,7 @@
     },
     "colors-and-form-control": {
       "title": "颜色与 FormControl",
-      "description": "color 设置选中颜色；children 可作为标签。在 FormControl 中会自动获取 id、描述、无效、必填与禁用状态。"
+      "description": "color 设置选中时的语义色（primary、success、info、warning 或 danger）；children 可作为标签。在 FormControl 中会自动获取 id、描述、无效、必填与禁用状态。"
     }
   },
   "api": {
@@ -52,9 +52,6 @@
       "label": "标签文字",
       "ariaLabel": "无障碍标签；没有可见标签时必填",
       "className": "额外的类名",
-      "checkmarkColor": "自定义对勾颜色",
-      "boxColor": "自定义方框背景色",
-      "boxBorderColor": "自定义方框边框颜色",
       "icon": "选中时显示的自定义图标",
       "required": "将输入标记为必填",
       "error": "显示错误状态",
@@ -63,7 +60,7 @@
       "labelPlacement": "标签相对方框的位置",
       "ref": "指向底层 <input> 元素的 ref",
       "children": "标签内容（label 的替代写法；未设置 label 时使用）",
-      "color": "选中 / 半选时方框的颜色",
+      "color": "选中 / 半选时方框的语义色。如需自定义外观，可在 className 或祖先元素上设置 CSS 自定义属性 --checkbox-checked-color、--checkbox-checkmark-color、--checkbox-box-color 和 --checkbox-border-color",
       "id": "input 的 id（默认取外层 FormControl 的 id）",
       "value": "选中时随表单提交的值",
       "ariaDescribedBy": "额外描述该复选框的元素 id（aria-describedby）"

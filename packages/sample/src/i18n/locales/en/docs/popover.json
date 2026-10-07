@@ -1,6 +1,6 @@
 {
   "title": "Popover",
-  "description": "A click-triggered floating panel for interactive content such as filters or account menus. Unlike Tooltip it holds focusable content; unlike the low-level Popper it manages its trigger, focus, Escape and outside clicks itself.",
+  "description": "A click-triggered floating panel for interactive content such as filters or account menus, anchored to its trigger. Unlike Tooltip it holds focusable content and manages focus, Escape and outside clicks itself; inside a Modal it closes first.",
   "demos": {
     "basic": {
       "title": "Basic usage",
@@ -20,7 +20,7 @@
       "open": "Controlled open state; leave undefined for uncontrolled",
       "defaultOpen": "Initial open state while uncontrolled",
       "onOpenChange": "Called with the requested open state (trigger, Escape, outside click, PopoverClose)",
-      "modal": "Modal mode: traps focus inside the panel and blocks outside interaction",
+      "modal": "Modal mode: traps focus, locks page scrolling, hides the rest of the page from assistive technology and blocks outside pointer interaction (an outside click still closes it)",
       "children": "PopoverTrigger / PopoverAnchor and PopoverContent"
     },
     "PopoverContentProps": {
@@ -29,7 +29,17 @@
       "align": "Alignment along the trigger",
       "sideOffset": "Gap to the trigger in pixels",
       "arrow": "Renders an arrow pointing at the trigger",
-      "portal": "Renders the panel into a portal on document.body"
+      "portal": "Renders the panel into a portal (the theme-scoped container of a nested ConfigProvider, else document.body)",
+      "alignOffset": "Skid along the trigger in pixels (positive = towards the end)",
+      "collisionPadding": "Minimum distance to the viewport edges in pixels; currently fixed at 8px, other values are reserved",
+      "matchAnchorWidth": "Sizes the panel after the trigger / anchor width: \"min\" at least as wide, \"exact\" exactly as wide",
+      "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+      "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+      "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+      "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+      "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+      "onFocusOutside": "Focus moved outside; event.preventDefault() keeps it open",
+      "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
     },
     "PopoverTriggerProps": {
       "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"

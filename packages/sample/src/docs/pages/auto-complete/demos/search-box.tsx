@@ -21,9 +21,10 @@ export default function SearchBoxDemo() {
         fillOnSelect={false}
         onSelect={(book) => setResult(`Open book #${book.value}`)}
         onSubmit={(text) => setResult(`Search for "${text}"`)}
-        textFieldProps={{
-          ariaLabel: "Search books",
+        inputProps={{
+          "aria-label": "Search books",
           placeholder: "Title or author",
+          clearable: true,
         }}
       />
       <span>{result}</span>

@@ -6,9 +6,13 @@
       "title": "Basic usage",
       "description": "Wrap an element and set content. Give the badge an ariaLabel that describes what the number means. Without children (or with text children) the badge is rendered inline, e.g. inside a sentence."
     },
+    "colors": {
+      "title": "Colors",
+      "description": "color sets the semantic color: primary (default), neutral, success, warning, danger and info."
+    },
     "variants": {
       "title": "Variants",
-      "description": "Nine color schemes; error is an alias of danger."
+      "description": "variant sets the visual style: solid (default), subtle (tinted background) or outline (bordered). Every variant works with every color."
     },
     "positions": {
       "title": "Positions",
@@ -28,31 +32,28 @@
     },
     "custom-style": {
       "title": "Custom styles",
-      "description": "Override colors, border and radius with bgColor, textColor, borderWidth, borderColor and borderRadius."
+      "description": "borderRadius and borderWidth adjust the shape. To change the colors, set the CSS custom properties --badge-bg, --badge-fg and --badge-border (inline, in a class or on a parent element)."
     },
-    "appearance": {
-      "title": "Appearance",
-      "description": "appearance switches between solid (default), subtle (tinted) and outline badges; neutral is a gray color."
+    "status": {
+      "title": "Status dot",
+      "description": "A standalone dot next to a text label shows the status of an item or the presence of a user. Give the dot role=\"presentation\" when the text already names the status, or an ariaLabel otherwise."
     }
   },
   "api": {
     "BadgeProps": {
       "children": "Element the badge is attached to. Without children (or with plain text / number children, used as the content) the badge renders inline in the normal flow instead of being positioned on a corner",
       "className": "Additional class name of the badge",
-      "variant": "Color scheme of the badge",
+      "color": "Semantic color of the badge",
+      "variant": "Visual style: solid (filled), subtle (tinted background) or outline (bordered)",
       "size": "Badge size",
       "content": "Content displayed inside the badge (count, short text, icon + text...). Use it instead of children for rich content of a standalone badge",
       "position": "Corner of the children the badge is placed on (ignored by standalone badges)",
       "dot": "Renders a small dot instead of content",
-      "bgColor": "Custom background color",
-      "textColor": "Custom text color",
       "borderRadius": "Custom border radius (CSS value)",
       "borderWidth": "Custom border width (CSS value)",
-      "borderColor": "Custom border color",
       "ariaLabel": "Accessible label of the badge, e.g. \"5 unread messages\"",
       "icon": "Icon displayed before the content",
       "ref": "Ref to the root element: the wrapper when attached to children, otherwise the badge itself",
-      "appearance": "Fill style",
       "role": "ARIA role of the badge element; set it to \"presentation\" or \"none\" when the badge must not be announced as a live status"
     }
   }

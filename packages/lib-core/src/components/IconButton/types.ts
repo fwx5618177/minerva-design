@@ -1,12 +1,22 @@
 import type { Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 import type { TooltipProps } from "../Tooltip";
 
-type TooltipVariant = Pick<
+type IconButtonTooltip = Pick<
   TooltipProps,
-  "content" | "variant" | "shape" | "arrow"
+  "content" | "color" | "variant" | "shape" | "arrow"
 >;
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+/**
+ * Styling hooks (CSS custom properties, set them on the button or an
+ * ancestor): `--icon-button-color` (icon color), `--icon-button-hover-bg`
+ * (hover background), `--icon-button-pressed-color` and
+ * `--icon-button-pressed-bg` (pressed toggle state).
+ */
+export interface IconButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "color"
+> {
   /** Ref to the <button> element */
   ref?: Ref<HTMLButtonElement>;
   /** Icon element to display (children are used when omitted) */
@@ -19,24 +29,16 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
    */
   label?: string;
   /**
-   * Color variant; a neutral style is used when omitted (`danger` is an
-   * alias of `error`)
+   * Semantic color of the button
+   * @default "neutral"
    */
-  variant?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "warning"
-    | "error"
-    | "danger"
-    | "info"
-    | "neutral";
+  color?: ColorScheme;
   /**
-   * Fill style: `ghost` (transparent until hovered, the default look),
-   * `solid` (filled with the variant color) or `outline` (bordered)
+   * Visual style: `ghost` (transparent until hovered), `solid` (filled with
+   * the color) or `outline` (bordered)
    * @default "ghost"
    */
-  appearance?: "ghost" | "solid" | "outline";
+  variant?: "ghost" | "solid" | "outline";
   /**
    * Button size
    * @default "medium"
@@ -58,27 +60,23 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
    */
   loading?: boolean;
   /**
-   * Renders the button in its active (pressed) state
-   * @default false
+   * Pressed state of a toggle button (controlled; pair with
+   * onPressedChange). Setting pressed, defaultPressed or onPressedChange
+   * makes the button a toggle: clicking flips the state and it is exposed
+   * as aria-pressed
    */
-  active?: boolean;
+  pressed?: boolean;
+  /** Initial pressed state of an uncontrolled toggle button */
+  defaultPressed?: boolean;
+  /** Called with the new pressed state when a toggle button is activated */
+  onPressedChange?: (pressed: boolean) => void;
   /**
    * Additional class name
    * @default ""
    */
   className?: string;
-  /** Custom icon color */
-  color?: string;
-  /** Custom icon color in the active state */
-  activeColor?: string;
-  /** Custom background color */
-  bgColor?: string;
-  /** Custom background color on hover */
-  hoverColor?: string;
-  /** Custom fill color of the icon */
-  fillColor?: string;
-  /** Tooltip configuration (content, variant, shape, arrow); requires showTooltip */
-  tooltip?: TooltipVariant;
+  /** Tooltip configuration (content, color, variant, shape, arrow); requires showTooltip */
+  tooltip?: IconButtonTooltip;
   /**
    * Shows the tooltip on hover and focus (its content is tooltip.content,
    * or the label)

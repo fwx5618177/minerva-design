@@ -22,10 +22,42 @@ export interface InputProps extends Omit<
    * @default false
    */
   invalid?: boolean;
-  /** Decorative content before the text, e.g. an icon or "@" */
+  /** Content before the text, e.g. an icon or "@" */
   prefix?: ReactNode;
-  /** Decorative content after the text, e.g. a unit */
+  /** Content after the text, e.g. a unit, an icon or a button */
   suffix?: ReactNode;
+  /**
+   * Shows a clear button while the field has a value (not when disabled or
+   * read-only). Clearing fires onChange with an empty value and keeps focus
+   * in the field
+   * @default false
+   */
+  clearable?: boolean;
+  /** Called after the clear button emptied the field */
+  onClear?: () => void;
+  /**
+   * Accessible label of the clear button
+   * @default "Clear" (localized)
+   */
+  clearLabel?: string;
+  /**
+   * Shows the number of characters (and maxLength, when set) after the text;
+   * the count is linked to the input with aria-describedby
+   * @default false
+   */
+  showCharCount?: boolean;
+  /**
+   * Accessible label of the password visibility toggle (shown for
+   * type="password") while the password is hidden
+   * @default "Show password" (localized)
+   */
+  showPasswordLabel?: string;
+  /**
+   * Accessible label of the password visibility toggle while the password
+   * is visible
+   * @default "Hide password" (localized)
+   */
+  hidePasswordLabel?: string;
   /** Class name of the outer wrapper (not the <input>) */
   className?: string;
   /** Ref to the <input> element */

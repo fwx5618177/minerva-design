@@ -11,8 +11,8 @@ export default function BasicDemo() {
         <FaEnvelope size={24} aria-label="Messages" />
       </Badge>
       <span>
-        Inbox <Badge content={12} variant="info" ariaLabel="12 unread" /> and
-        changelog <Badge variant="success">New</Badge>
+        Inbox <Badge content={12} color="info" ariaLabel="12 unread" /> and
+        changelog <Badge color="success">New</Badge>
       </span>
     </>
   );

@@ -1,5 +1,6 @@
-// Extracts prop tables from @minerva/lib-core type declarations so the docs
-// site's API tables are generated from the real `types.ts` files.
+// Extracts prop tables from @minerva/lib-core (and the theme types of
+// @minerva/core) so the docs site's API tables are generated from the real
+// `types.ts` files.
 //
 //   node scripts/generate-api.mjs          -> writes src/docs/api.generated.json
 //   node scripts/generate-api.mjs --check  -> exits 1 when the JSON is stale
@@ -14,6 +15,7 @@ import ts from "typescript";
 const here = dirname(fileURLToPath(import.meta.url));
 export const SAMPLE_ROOT = join(here, "..");
 const LIB_SRC = join(SAMPLE_ROOT, "../lib-core/src");
+const CORE_SRC = join(SAMPLE_ROOT, "../core/src");
 const WC_SRC = join(SAMPLE_ROOT, "../lib-web-components/src");
 /** Web-component types are keyed with this prefix to avoid name clashes */
 export const WC_PREFIX = "wc:";
@@ -23,10 +25,8 @@ const typeFilesIn = (componentsDir) => {
   const files = [];
   for (const dir of readdirSync(componentsDir, { withFileTypes: true })) {
     if (!dir.isDirectory()) continue;
-    for (const name of ["types.ts", "interactive-types.ts"]) {
-      const file = join(componentsDir, dir.name, name);
-      if (existsSync(file)) files.push(file);
-    }
+    const file = join(componentsDir, dir.name, "types.ts");
+    if (existsSync(file)) files.push(file);
   }
   return files.sort();
 };
@@ -38,10 +38,25 @@ const sourceFiles = () => [
     prefix: "",
   })),
   { file: join(LIB_SRC, "contexts/types.ts"), prefix: "" },
+  // Theme object types (ThemeProps, ...), re-exported by @minerva/lib-core
+  { file: join(CORE_SRC, "theme/types.ts"), prefix: "" },
+  // i18n types (SupportedLanguage, ...), re-exported by @minerva/lib-core
+  { file: join(CORE_SRC, "i18n/types.ts"), prefix: "" },
   ...typeFilesIn(WC_SRC).map((file) => ({ file, prefix: WC_PREFIX })),
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();
+
+/**
+ * Single-line rendering of a type written over several lines: collapses the
+ * whitespace and drops the padding / trailing commas / leading `|` that the
+ * line breaks leave inside brackets (`Extract<\n  A,\n  B\n>` -> `Extract<A, B>`).
+ */
+const cleanType = (text) =>
+  clean(text)
+    .replace(/([<(])\s*\|?\s*/g, "$1")
+    .replace(/,?\s+([>)])/g, "$1")
+    .replace(/^\|\s*/, "");
 
 const jsDocOf = (node) => {
   const docs = node.jsDoc ?? [];
@@ -83,7 +98,7 @@ const membersOf = (members, sourceFile) =>
       }
       const prop = {
         name: name.replace(/^["']|["']$/g, ""),
-        type: clean(type),
+        type: cleanType(type),
         required: !member.questionToken,
       };
       if (defaultValue !== undefined) prop.default = defaultValue;
@@ -112,7 +127,7 @@ export const generateApi = () => {
         entry = {
           kind: "interface",
           extends: (statement.heritageClauses ?? []).flatMap((clause) =>
-            clause.types.map((t) => clean(t.getText(sourceFile))),
+            clause.types.map((t) => cleanType(t.getText(sourceFile))),
           ),
           props: membersOf(statement.members, sourceFile),
         };
@@ -123,7 +138,10 @@ export const generateApi = () => {
               extends: [],
               props: membersOf(statement.type.members, sourceFile),
             }
-          : { kind: "alias", type: clean(statement.type.getText(sourceFile)) };
+          : {
+              kind: "alias",
+              type: cleanType(statement.type.getText(sourceFile)),
+            };
       } else {
         continue;
       }

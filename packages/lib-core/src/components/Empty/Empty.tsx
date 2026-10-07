@@ -57,9 +57,7 @@ const isRenderable = (node: React.ReactNode) =>
  * @param useSvg 是否用 svg 图标
  * @param width 宽度
  * @param height 高度
- * @param backgroundColor 背景颜色
  * @param showShadow 是否显示阴影
- * @param color 字体颜色
  * @param ref 根元素的 ref
  * @returns {React.ReactNode} 空状态组件
  */
@@ -76,9 +74,7 @@ const Empty = ({
   useSvg = false,
   width,
   height,
-  backgroundColor,
   showShadow,
-  color,
   ref,
   ...rest
 }: EmptyProps) => {
@@ -105,8 +101,6 @@ const Empty = ({
       style={{
         width,
         height,
-        backgroundColor,
-        color,
         ...style,
       }}
       role="status"

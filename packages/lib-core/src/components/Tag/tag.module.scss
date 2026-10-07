@@ -39,35 +39,44 @@
     border-radius: 100px;
   }
 
-  // Color variants
-  &.default {
-    background-color: var(--tag-default-bg, var(--surface-muted-color));
-    color: var(--tag-default-text, var(--text-color));
+  // Colors: `--tag-<color>-bg` / `--tag-<color>-text` override the theme
+  // tokens. The default (subtle) look is a tinted background.
+  @each $name in (primary, success, warning, danger, info) {
+    &.#{$name} {
+      background-color: var(--tag-#{$name}-bg, var(--#{$name}-color-subtle));
+      color: var(--tag-#{$name}-text, var(--#{$name}-color-text));
+    }
+
+    &.#{$name}.solid {
+      background-color: var(--#{$name}-color);
+      color: var(--text-inverse-color);
+    }
   }
 
-  &.primary {
-    background-color: var(--tag-primary-bg, var(--primary-color-subtle));
-    color: var(--tag-primary-text, var(--primary-color-text));
+  &.neutral {
+    background-color: var(--tag-neutral-bg, var(--surface-muted-color));
+    color: var(--tag-neutral-text, var(--text-color));
   }
 
-  &.success {
-    background-color: var(--tag-success-bg, var(--success-color-subtle));
-    color: var(--tag-success-text, var(--success-color-text));
+  &.neutral.solid {
+    background-color: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+    color: var(--text-inverse-color);
   }
 
-  &.warning {
-    background-color: var(--tag-warning-bg, var(--warning-color-subtle));
-    color: var(--tag-warning-text, var(--warning-color-text));
+  // Variants: outline is a transparent background with a colored border and
+  // text (same recipe as Badge / Alert / Button outline)
+  @each $name in (primary, success, warning, danger, info) {
+    &.#{$name}.outline {
+      background-color: transparent;
+      color: var(--#{$name}-color-text);
+      border: 1px solid var(--#{$name}-color);
+    }
   }
 
-  &.error {
-    background-color: var(--tag-error-bg, var(--danger-color-subtle));
-    color: var(--tag-error-text, var(--danger-color-text));
-  }
-
-  &.info {
-    background-color: var(--tag-info-bg, var(--info-color-subtle));
-    color: var(--tag-info-text, var(--info-color-text));
+  &.neutral.outline {
+    background-color: transparent;
+    color: var(--text-secondary-color);
+    border: 1px solid var(--border-strong-color);
   }
 
   // Modifiers
@@ -121,11 +130,6 @@
     }
   }
 
-  &.bordered {
-    border: 1px solid;
-    border-color: currentColor;
-  }
-
   &.elevation {
     box-shadow: 0 2px 4px var(--shadow-color);
   }
@@ -145,6 +149,45 @@
 
   .content {
     display: inline-block;
+  }
+
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25em;
+    height: 1.25em;
+    margin-inline-start: -0.25em;
+    border-radius: 50%;
+    overflow: hidden;
+
+    > * {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: tagSpin 0.75s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation-duration: 1.5s;
+    }
+  }
+
+  &.loading {
+    cursor: progress;
+  }
+
+  // Selected state of a toggle (pressed) tag
+  &.pressed {
+    box-shadow: inset 0 0 0 1px currentColor;
   }
 
   .closeIcon {
@@ -187,6 +230,12 @@
     transform: scale(0);
     animation: rippleAnimation 0.6s linear;
     background-color: color-mix(in srgb, currentColor 15%, transparent);
+  }
+}
+
+@keyframes tagSpin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

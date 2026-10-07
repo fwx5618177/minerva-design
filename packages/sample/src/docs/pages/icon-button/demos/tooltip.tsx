@@ -12,7 +12,7 @@ export default function TooltipDemo() {
       />
       <IconButton
         icon={<IoInformationCircleOutline />}
-        variant="info"
+        color="info"
         ariaLabel="More information"
         showTooltip
         tooltip={{ content: "Hover or focus to see me", arrow: true }}

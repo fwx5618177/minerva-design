@@ -14,7 +14,7 @@ export default function SizesDemo() {
         description="The first reader to write one will be featured here."
         action={<Button size="small">Write a review</Button>}
         secondaryAction={
-          <Button size="small" variant="secondary">
+          <Button size="small" color="neutral" variant="outline">
             Browse books
           </Button>
         }

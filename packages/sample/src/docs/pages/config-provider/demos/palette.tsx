@@ -31,9 +31,9 @@ export default function PaletteDemo() {
           >
             <strong>
               palette=&quot;{name}&quot;{" "}
-              {palette === name && <Tag variant="success">active</Tag>}
+              {palette === name && <Tag color="success">active</Tag>}
             </strong>
-            <Button size="small" variant="primary">
+            <Button size="small" color="primary">
               Primary
             </Button>
             <span style={{ color: "var(--text-muted-color)", fontSize: 13 }}>

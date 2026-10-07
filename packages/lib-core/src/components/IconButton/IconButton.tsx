@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { IconButtonProps } from "./types";
 import { Tooltip } from "../Tooltip";
 import { ProgressIndicator } from "../ProgressIndicator";
 import useI18n from "../../hooks/useI18n";
+import { useControllableState } from "../../internal/useControllableState";
 import styles from "./iconButton.module.scss";
 
 /**
@@ -11,85 +12,78 @@ import styles from "./iconButton.module.scss";
  *
  * - `label` (or `ariaLabel`) names the button; `label` is also shown as a
  *   tooltip on hover / focus.
- * - `variant` picks the color, `appearance` the fill style (ghost by default).
+ * - `color` picks the semantic color (neutral by default), `variant` the
+ *   visual style (ghost by default). The CSS custom properties
+ *   `--icon-button-color`, `--icon-button-hover-bg`,
+ *   `--icon-button-pressed-color` and `--icon-button-pressed-bg` override
+ *   the resolved colors.
  * - The icon is given via `icon` or as children and hidden from assistive
  *   technologies (the button's name describes it).
+ * - `pressed` / `defaultPressed` make it a toggle button (aria-pressed), e.g.
+ *   favorite, mute or bold; keep the label stable, the state is announced.
  */
 const IconButton = ({
   ref,
   icon,
   children,
   label,
-  variant,
-  appearance,
+  color = "neutral",
+  variant = "ghost",
   size = "medium",
   shape = "circle",
   disabled = false,
   loading = false,
-  active = false,
+  pressed,
+  defaultPressed,
+  onPressedChange,
   className = "",
   tooltip,
   showTooltip,
-  color,
-  activeColor,
-  bgColor,
-  hoverColor,
-  fillColor,
   onClick,
   tabIndex = 0,
   ariaLabel,
   ...props
 }: IconButtonProps) => {
   const { t } = useI18n();
-  const buttonStyle = useMemo(
-    () =>
-      ({
-        color,
-        backgroundColor: bgColor,
-        "--active-color": activeColor,
-        "--hover-color": hoverColor,
-        "--fill-color": fillColor,
-      }) as React.CSSProperties,
-    [color, bgColor, activeColor, hoverColor, fillColor],
-  );
-
-  const colorClass =
-    variant === undefined || variant === "neutral"
-      ? "default"
-      : variant === "danger"
-        ? "error"
-        : variant;
-
+  const isToggle =
+    pressed !== undefined ||
+    defaultPressed !== undefined ||
+    onPressedChange !== undefined;
+  const [isPressed, setPressed] = useControllableState({
+    value: pressed,
+    defaultValue: defaultPressed ?? false,
+    onChange: onPressedChange,
+  });
   const glyph = icon ?? children;
 
   const buttonContent = (
     <button
       type="button"
       ref={ref}
-      className={classNames(
+      className={cn(
         styles.iconButton,
-        styles[colorClass],
+        styles[color],
+        styles[`variant-${variant}`],
         styles[size],
         styles[shape],
-        appearance && appearance !== "ghost" && styles[appearance],
         disabled && styles.disabled,
         loading && styles.loading,
-        active && styles.active,
+        isToggle && isPressed && styles.pressed,
         className,
       )}
       disabled={disabled || loading}
-      onClick={onClick}
+      onClick={(e) => {
+        onClick?.(e);
+        if (isToggle && !e.defaultPrevented) setPressed(!isPressed);
+      }}
+      aria-pressed={isToggle ? isPressed : undefined}
       tabIndex={disabled ? -1 : tabIndex}
       aria-label={label ?? ariaLabel ?? t("iconButton.default")}
       aria-busy={loading || undefined}
-      style={buttonStyle}
       {...props}
     >
       {loading ? (
-        <ProgressIndicator
-          size={size === "xsmall" ? "small" : size}
-          type="spinner"
-        />
+        <ProgressIndicator size={size} variant="spinner" color="current" />
       ) : children !== undefined && icon === undefined ? (
         // Children icons are wrapped so they are always hidden from AT
         <span className={styles.glyph} aria-hidden="true">

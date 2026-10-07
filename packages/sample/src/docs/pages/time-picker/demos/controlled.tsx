@@ -22,7 +22,12 @@ export default function ControlledDemo() {
         <Button size="small" onClick={() => setTime(noon())}>
           Set to noon
         </Button>
-        <Button size="small" variant="secondary" onClick={() => setTime(null)}>
+        <Button
+          size="small"
+          color="neutral"
+          variant="outline"
+          onClick={() => setTime(null)}
+        >
           Reset
         </Button>
       </div>

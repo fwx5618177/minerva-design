@@ -11,15 +11,15 @@ import {
 export default function CustomColorsDemo() {
   return (
     <div style={{ width: 340 }}>
-      <Card variant="outlined">
-        <CardHeader bgColor="#4f46e5" textColor="#ffffff">
+      <Card variant="outline">
+        <CardHeader style={{ backgroundColor: "#4f46e5", color: "#ffffff" }}>
           <CardTitle>Pro plan</CardTitle>
           <CardDescription>Everything in Free, plus more</CardDescription>
         </CardHeader>
-        <CardContent bgColor="#eef2ff" textColor="#312e81">
+        <CardContent style={{ backgroundColor: "#eef2ff", color: "#312e81" }}>
           Unlimited projects, priority support and advanced analytics.
         </CardContent>
-        <CardFooter bgColor="#e0e7ff" textColor="#312e81">
+        <CardFooter style={{ backgroundColor: "#e0e7ff", color: "#312e81" }}>
           <Button size="small">Upgrade</Button>
         </CardFooter>
       </Card>

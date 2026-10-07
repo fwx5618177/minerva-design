@@ -261,7 +261,7 @@ const VirtualList = ({
       </div>
       {loading && (
         <div className={styles.loadingWrapper}>
-          <ProgressIndicator type="wave" size="small" />
+          <ProgressIndicator variant="wave" size="small" />
         </div>
       )}
     </div>

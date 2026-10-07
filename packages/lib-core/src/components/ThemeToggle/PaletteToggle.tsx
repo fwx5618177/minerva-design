@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { useTheme } from "../../contexts/ThemeProvider";
 import useI18n from "../../hooks/useI18n";
 import { PALETTES, type Palette } from "../../theme-utils";
@@ -26,7 +26,7 @@ const PaletteToggle = ({
   return (
     <div
       ref={ref}
-      className={classNames(styles.group, className)}
+      className={cn(styles.group, className)}
       role="group"
       aria-label={t("paletteToggle.label", {
         palette: palette ?? t("paletteToggle.default"),

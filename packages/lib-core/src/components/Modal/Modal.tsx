@@ -1,9 +1,13 @@
-import * as RadixDialog from "@radix-ui/react-dialog";
 import { LuX } from "react-icons/lu";
-import { useDialogFocusReturn } from "../../hooks/useDialogFocusReturn";
 import useI18n from "../../hooks/useI18n";
-import { useMergedRefs } from "../../internal/mergeRefs";
-import { useControllableState } from "../../internal/useControllableState";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../internal/Dialog";
 import { cn } from "../../utils/cn";
 import type {
   ModalBodyProps,
@@ -15,27 +19,26 @@ import type {
   ModalTriggerProps,
 } from "./types";
 import styles from "./modal.module.scss";
-import { usePortalContainer } from "../../internal/themeScope";
 
-/** Owns the open state of a compound modal (Radix Dialog root). */
-export const ModalRoot = (props: ModalRootProps) => (
-  <RadixDialog.Root {...props} />
-);
+/** Owns the open state of a compound modal. */
+export const ModalRoot = (props: ModalRootProps) => <DialogRoot {...props} />;
 
 /** Opens the modal; a `<button>` or, with `asChild`, the child element. */
 export const ModalTrigger = (props: ModalTriggerProps) => (
-  <RadixDialog.Trigger {...props} />
+  <DialogTrigger {...props} />
 );
 
 /** Closes the modal; a `<button>` or, with `asChild`, the child element. */
 export const ModalClose = (props: ModalTriggerProps) => (
-  <RadixDialog.Close {...props} />
+  <DialogClose {...props} />
 );
 
 /**
  * ModalContent: portalled overlay + centered dialog panel (a bottom sheet on
- * narrow screens). Focus trap, Escape and outside-click dismissal come from
- * Radix Dialog.
+ * narrow screens). Built on the internal dialog foundation: focus moves in
+ * and is trapped, Escape (topmost dialog only) and an overlay click close it,
+ * page scroll is locked, the rest of the page is hidden from assistive
+ * technology, and focus returns to the opener on close.
  */
 export const ModalContent = ({
   size = "medium",
@@ -48,50 +51,35 @@ export const ModalContent = ({
   ...rest
 }: ModalContentProps) => {
   const { t } = useI18n();
-  const portalContainer = usePortalContainer();
   return (
-    <RadixDialog.Portal container={portalContainer}>
-      <RadixDialog.Overlay className={cn(styles.overlay, overlayClassName)} />
-      <RadixDialog.Content
-        className={cn(styles.content, styles[size], className)}
-        {...rest}
-      >
-        {/* Radix links the Description to aria-describedby; an empty hidden
-            one keeps the link valid when no description is given. */}
-        {description ? (
-          <RadixDialog.Description className={styles.description}>
-            {description}
-          </RadixDialog.Description>
-        ) : (
-          <RadixDialog.Description className={styles.visuallyHidden} />
-        )}
-        {children}
-        {!hideCloseButton && (
-          <RadixDialog.Close
-            type="button"
-            className={cn(styles.close)}
-            aria-label={closeLabel ?? t("modal.close")}
-          >
-            <LuX size={16} aria-hidden="true" />
-          </RadixDialog.Close>
-        )}
-      </RadixDialog.Content>
-    </RadixDialog.Portal>
+    <DialogContent
+      overlayClassName={cn(styles.overlay, overlayClassName)}
+      className={cn(styles.content, styles[size], className)}
+      {...rest}
+    >
+      {description && (
+        <DialogDescription className={styles.description}>
+          {description}
+        </DialogDescription>
+      )}
+      {children}
+      {!hideCloseButton && (
+        <DialogClose
+          className={styles.close}
+          aria-label={closeLabel ?? t("modal.close")}
+        >
+          <LuX size={16} aria-hidden="true" />
+        </DialogClose>
+      )}
+    </DialogContent>
   );
 };
 
 /** ModalHeader: the dialog title (accessible name). */
-export const ModalHeader = ({
-  className,
-  children,
-  ref,
-  ...rest
-}: ModalHeaderProps) => (
-  <RadixDialog.Title asChild>
-    <div ref={ref} className={cn(styles.header, className)} {...rest}>
-      {children}
-    </div>
-  </RadixDialog.Title>
+export const ModalHeader = ({ className, ref, ...rest }: ModalHeaderProps) => (
+  <DialogTitle asChild>
+    <div ref={ref} className={cn(styles.header, className)} {...rest} />
+  </DialogTitle>
 );
 
 /** ModalBody: the scrollable content area. */
@@ -107,11 +95,11 @@ export const ModalFooter = ({ className, ref, ...rest }: ModalFooterProps) => (
 /**
  * Modal: a dialog with title, description and close button in one component.
  * Controlled (`open` + `onOpenChange`) or uncontrolled (`defaultOpen`,
- * `trigger`). When opened from state it restores focus to the element that
- * was focused before opening.
+ * `trigger`). Focus returns to the element focused before opening, also when
+ * opened from state without a trigger.
  */
 export const Modal = ({
-  open: openProp,
+  open,
   defaultOpen = false,
   onOpenChange,
   trigger,
@@ -120,39 +108,26 @@ export const Modal = ({
   size,
   hideCloseButton,
   closeLabel,
+  role = "dialog",
   className,
   ref,
   children,
-}: ModalProps) => {
-  const [open, setOpen] = useControllableState({
-    value: openProp,
-    defaultValue: defaultOpen,
-    onChange: onOpenChange,
-  });
-  const {
-    open: dialogOpen,
-    contentRef,
-    onCloseAutoFocus,
-  } = useDialogFocusReturn(open);
-  const mergedRef = useMergedRefs(contentRef, ref);
-
-  return (
-    <ModalRoot open={dialogOpen} onOpenChange={setOpen}>
-      {trigger && <ModalTrigger asChild>{trigger}</ModalTrigger>}
-      <ModalContent
-        ref={mergedRef}
-        size={size}
-        hideCloseButton={hideCloseButton}
-        closeLabel={closeLabel}
-        description={description}
-        className={className}
-        onCloseAutoFocus={onCloseAutoFocus}
-      >
-        {title && <ModalHeader>{title}</ModalHeader>}
-        {children}
-      </ModalContent>
-    </ModalRoot>
-  );
-};
+}: ModalProps) => (
+  <ModalRoot open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+    {trigger && <ModalTrigger asChild>{trigger}</ModalTrigger>}
+    <ModalContent
+      ref={ref}
+      size={size}
+      hideCloseButton={hideCloseButton}
+      closeLabel={closeLabel}
+      description={description}
+      role={role}
+      className={className}
+    >
+      {title && <ModalHeader>{title}</ModalHeader>}
+      {children}
+    </ModalContent>
+  </ModalRoot>
+);
 
 export default Modal;

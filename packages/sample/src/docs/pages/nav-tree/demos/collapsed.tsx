@@ -24,7 +24,8 @@ export default function CollapsedDemo() {
   return (
     <div style={{ display: "grid", gap: 12, justifyItems: "start" }}>
       <Button
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         size="small"
         onClick={() => setCollapsed((c) => !c)}
       >

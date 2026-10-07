@@ -1,54 +1,145 @@
-import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
-import MenuItems, { contentClassName } from "./MenuItems";
+import {
+  useCallback,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
+import { toPlacement } from "@minerva/core";
+import { Slot } from "../../internal/Slot";
+import { useControllableState } from "../../internal/useControllableState";
+import { useLayerParent } from "../../internal/useDismissableLayer";
+import { MenuRoot, type FocusIntent } from "./MenuItems";
 import type { MenuProps } from "./types";
-import { usePortalContainer } from "../../internal/themeScope";
+
+const OFFSET = { mainAxis: 6, crossAxis: 0 };
 
 /**
- * Menu: an action menu opened from a trigger button (Radix DropdownMenu).
- * Supports icons, shortcuts, separators, groups, submenus, typeahead and full
- * keyboard navigation. For a select-like list of options see Dropdown.
+ * Menu: an action menu opened from a trigger button (WAI-ARIA menu button).
+ * Supports icons, shortcuts, separators, groups, checkbox items, radio
+ * groups, submenus, typeahead and full keyboard navigation. For a
+ * select-like list of options see Select.
+ *
+ * - Trigger: click, Enter, Space or ArrowDown open the menu and focus the
+ *   first item (a pointer click focuses the panel); ArrowUp focuses the last.
+ * - Inside: arrows (wrapping with `loop`), Home / End, typeahead, Enter /
+ *   Space activate; Escape closes (a submenu only) and returns focus; Tab
+ *   closes the menu and moves on from the trigger.
+ * - Submenus open with ArrowRight (ArrowLeft in RTL), Enter, Space or hover,
+ *   and stay open while the pointer moves towards them.
+ * - `modal` (default): outside pointer events disabled, focus trapped,
+ *   scroll locked, the rest of the page hidden from assistive technology.
  */
 const Menu = ({
   children,
   items,
   onSelect,
+  closeOnSelect = true,
   size = "medium",
   align = "end",
   side = "bottom",
-  open,
-  defaultOpen,
+  open: openProp,
+  defaultOpen = false,
   onOpenChange,
   disabled = false,
   modal = true,
+  loop = true,
+  dir = "ltr",
   className,
   ariaLabel,
 }: MenuProps) => {
-  const portalContainer = usePortalContainer();
+  const [open, setOpen] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
+  const [trigger, setTrigger] = useState<HTMLElement | null>(null);
+  const tabContainer = useLayerParent();
+  const generatedId = useId();
+  const contentId = useId();
+  const childId = (children.props as { id?: string }).id;
+  const triggerId = childId ?? generatedId;
+
+  const intent = useRef<FocusIntent>("content");
+  const consumeIntent = useCallback(() => {
+    const value = intent.current;
+    intent.current = "content";
+    return value;
+  }, []);
+  const getRestoreTarget = useCallback(() => trigger, [trigger]);
+
+  const openWith = (next: FocusIntent) => {
+    intent.current = next;
+    setOpen(true);
+  };
+
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (disabled || event.defaultPrevented) return;
+    switch (event.key) {
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (open) setOpen(false);
+        else openWith("first");
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        openWith("first");
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        openWith("last");
+        break;
+    }
+  };
+
+  const onClick = (event: ReactMouseEvent<HTMLElement>) => {
+    if (disabled || event.defaultPrevented) return;
+    if (open) setOpen(false);
+    // detail 0: a keyboard / programmatic click
+    else openWith(event.detail === 0 ? "first" : "content");
+  };
+
   return (
-    <DropdownPrimitive.Root
-      open={open}
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
-      modal={modal}
-    >
-      <DropdownPrimitive.Trigger asChild disabled={disabled}>
+    <>
+      <Slot
+        ref={setTrigger}
+        id={triggerId}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-controls={open ? contentId : undefined}
+        data-state={open ? "open" : "closed"}
+        data-disabled={disabled ? "" : undefined}
+        {...{ disabled: disabled || undefined }}
+        onKeyDown={onKeyDown}
+        onClick={onClick}
+      >
         {children}
-      </DropdownPrimitive.Trigger>
-      <DropdownPrimitive.Portal container={portalContainer}>
-        <DropdownPrimitive.Content
-          className={contentClassName(size, className)}
-          aria-label={ariaLabel}
-          // An explicit label replaces the default "labelled by the trigger"
-          {...(ariaLabel ? { "aria-labelledby": undefined } : {})}
-          align={align}
-          side={side}
-          sideOffset={6}
-          collisionPadding={8}
-        >
-          <MenuItems items={items} onSelect={onSelect} size={size} />
-        </DropdownPrimitive.Content>
-      </DropdownPrimitive.Portal>
-    </DropdownPrimitive.Root>
+      </Slot>
+      <MenuRoot
+        items={items}
+        onSelect={onSelect}
+        closeOnSelect={closeOnSelect}
+        size={size}
+        loop={loop}
+        dir={dir}
+        modal={modal}
+        className={className}
+        ariaLabel={ariaLabel}
+        labelledBy={triggerId}
+        open={open && !disabled}
+        setOpen={setOpen}
+        anchor={trigger}
+        placement={toPlacement(side, align)}
+        offset={OFFSET}
+        contentId={contentId}
+        trigger={trigger}
+        getRestoreTarget={getRestoreTarget}
+        consumeIntent={consumeIntent}
+        tabContainer={tabContainer}
+      />
+    </>
   );
 };
 

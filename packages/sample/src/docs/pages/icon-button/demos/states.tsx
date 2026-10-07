@@ -15,16 +15,15 @@ export default function StatesDemo() {
     <>
       <IconButton
         icon={<IoCloudUploadOutline />}
-        variant="primary"
+        color="primary"
         loading={loading}
         onClick={upload}
         ariaLabel="Upload"
       />
       <IconButton
         icon={<IoMic />}
-        active={muted}
-        aria-pressed={muted}
-        onClick={() => setMuted((m) => !m)}
+        pressed={muted}
+        onPressedChange={setMuted}
         ariaLabel="Mute microphone"
       />
       <IconButton icon={<IoTrashOutline />} disabled ariaLabel="Delete" />

@@ -36,7 +36,7 @@
       "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
       "defaultOpen": "État d'ouverture initial en mode non contrôlé",
       "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
-      "modal": "Mode modal : piège le focus, bloque l'interaction extérieure et masque la page aux technologies d'assistance",
+      "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
       "children": "Déclencheur et contenu"
     },
     "DrawerContentProps": {
@@ -47,7 +47,14 @@
       "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
       "hiddenDescription": "Texte de la description masquée utilisée sans description ; par défaut « Contenu du tiroir » localisé",
       "description": "Description visible sous le titre ; sans elle une description générique masquée est rendue",
-      "overlayClassName": "Classe de la superposition (fond)"
+      "overlayClassName": "Classe de la superposition (fond)",
+      "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+      "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+      "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+      "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+      "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+      "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+      "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
     }
   }
 }

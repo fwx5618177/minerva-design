@@ -14,7 +14,9 @@ export default function PlacementDemo() {
       {SIDES.map((side) => (
         <Popover key={side}>
           <PopoverTrigger asChild>
-            <Button variant="secondary">{side}</Button>
+            <Button color="neutral" variant="outline">
+              {side}
+            </Button>
           </PopoverTrigger>
           <PopoverContent side={side} align="start" sideOffset={10} arrow>
             Placed on the {side}, aligned to the start.

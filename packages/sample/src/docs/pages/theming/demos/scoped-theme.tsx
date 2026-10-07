@@ -1,6 +1,13 @@
 import type React from "react";
 import { useState } from "react";
-import { Button, Checkbox, Space, Switch, Tag } from "@minerva/lib-core";
+import {
+  Button,
+  Checkbox,
+  HStack,
+  Switch,
+  Tag,
+  VStack,
+} from "@minerva/lib-core";
 
 const BRANDS = {
   violet: "#7c3aed",
@@ -35,7 +42,7 @@ export default function ScopedThemeDemo() {
   const [brand, setBrand] = useState<Brand>("violet");
 
   return (
-    <Space direction="vertical" size="medium">
+    <VStack gap={4} align="start">
       <div
         role="group"
         aria-label="Brand color"
@@ -45,7 +52,8 @@ export default function ScopedThemeDemo() {
           <Button
             key={name}
             size="small"
-            variant={name === brand ? "primary" : "secondary"}
+            color={name === brand ? "primary" : "neutral"}
+            variant={name === brand ? "solid" : "outline"}
             aria-pressed={name === brand}
             onClick={() => setBrand(name)}
           >
@@ -55,13 +63,13 @@ export default function ScopedThemeDemo() {
       </div>
 
       <div style={brandStyle(BRANDS[brand])}>
-        <Space wrap align="center">
-          <Button variant="primary">Scoped primary</Button>
+        <HStack gap={4} wrap>
+          <Button color="primary">Scoped primary</Button>
           <Switch label="Switch" defaultChecked />
           <Checkbox label="Checkbox" defaultChecked />
-          <Tag variant="primary">Tag</Tag>
-        </Space>
+          <Tag color="primary">Tag</Tag>
+        </HStack>
       </div>
-    </Space>
+    </VStack>
   );
 }

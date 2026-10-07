@@ -4,10 +4,10 @@ export default function DisabledDemo() {
   return (
     <>
       <Tag disabled>Disabled</Tag>
-      <Tag disabled closable variant="primary">
+      <Tag disabled closable color="primary">
         Disabled closable
       </Tag>
-      <Tag disabled clickable variant="info">
+      <Tag disabled clickable color="info">
         Disabled clickable
       </Tag>
     </>

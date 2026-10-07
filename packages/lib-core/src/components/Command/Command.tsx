@@ -6,7 +6,6 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
-import { useDialogFocusReturn } from "../../hooks/useDialogFocusReturn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { cn } from "../../utils/cn";
@@ -223,11 +222,6 @@ export const CommandDialog = ({
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
-  const {
-    open: dialogOpen,
-    contentRef,
-    onCloseAutoFocus,
-  } = useDialogFocusReturn(open);
 
   // Stable key so an inline array literal does not re-register the listener.
   const shortcutKey = normalizeShortcuts(shortcut).join("\n");
@@ -250,10 +244,8 @@ export const CommandDialog = ({
   };
 
   return (
-    <ModalRoot open={dialogOpen} onOpenChange={setOpen}>
+    <ModalRoot open={open} onOpenChange={setOpen}>
       <ModalContent
-        ref={contentRef}
-        onCloseAutoFocus={onCloseAutoFocus}
         className={cn(styles.dialog, className)}
         description={description ?? t("command.description")}
         hideCloseButton

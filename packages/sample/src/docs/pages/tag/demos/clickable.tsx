@@ -19,8 +19,8 @@ export default function ClickableDemo() {
             key={topic}
             clickable
             pressed={selected.includes(topic)}
-            variant={selected.includes(topic) ? "primary" : "default"}
-            bordered
+            color={selected.includes(topic) ? "primary" : "neutral"}
+            variant="outline"
             onClick={() => toggle(topic)}
           >
             {topic}

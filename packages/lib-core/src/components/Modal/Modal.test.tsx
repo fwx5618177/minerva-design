@@ -1,7 +1,6 @@
 import { createRef, useState } from "react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as RadixMenu from "@radix-ui/react-dropdown-menu";
 import { describe, expect, it, vi } from "vitest";
 import {
   Modal,
@@ -14,6 +13,7 @@ import {
   ModalTrigger,
 } from "./index";
 import styles from "./modal.module.scss";
+import { Popover, PopoverContent, PopoverTrigger } from "../Popover";
 import i18n from "../../config/i18n";
 
 const setup = () => userEvent.setup({ pointerEventsCheck: 0 });
@@ -29,7 +29,7 @@ describe("Modal (all-in-one)", () => {
     expect(screen.queryByText("body")).toBeNull();
   });
 
-  it("renders a dialog named by the title with size classes and a hidden description", () => {
+  it("renders a modal dialog named by the title with size classes and no description link", () => {
     render(
       <Modal open title="Delete record" size="large" className="extra">
         <ModalBody>The record is removed.</ModalBody>
@@ -46,9 +46,14 @@ describe("Modal (all-in-one)", () => {
     expect(
       screen.getByRole("button", { name: "OK" }).parentElement,
     ).toHaveClass(styles.footer);
-    const hidden = dialog.querySelector(`.${styles.visuallyHidden}`)!;
-    expect(hidden).not.toBeNull();
-    expect(dialog).toHaveAttribute("aria-describedby", hidden.id);
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(dialog).toHaveAttribute(
+      "aria-labelledby",
+      screen.getByText("Delete record").id,
+    );
+    // No description: no aria-describedby pointing at an empty element.
+    expect(dialog).not.toHaveAttribute("aria-describedby");
+    expect(dialog.querySelector(`.${styles.visuallyHidden}`)).toBeNull();
     expect(document.querySelector(`.${styles.overlay}`)).not.toBeNull();
   });
 
@@ -267,35 +272,36 @@ describe("Modal compound API", () => {
   });
 });
 
-// A Radix dropdown menu opened inside a modal must keep focus and consume
-// Escape itself; the Radix primitive is used directly here.
+// An overlay opened inside a modal is a child layer: it keeps focus and
+// consumes Escape itself.
 describe("Modal with nested layers", () => {
-  it("keeps menu focus and Escape inside an enclosing modal", async () => {
+  it("keeps popover focus and Escape inside an enclosing modal", async () => {
     const user = setup();
     const onOpenChange = vi.fn();
     render(
       <Modal open onOpenChange={onOpenChange} title="Settings">
-        <RadixMenu.Root>
-          <RadixMenu.Trigger>Nested actions</RadixMenu.Trigger>
-          <RadixMenu.Portal>
-            <RadixMenu.Content>
-              <RadixMenu.Item>Edit</RadixMenu.Item>
-            </RadixMenu.Content>
-          </RadixMenu.Portal>
-        </RadixMenu.Root>
+        <Popover>
+          <PopoverTrigger>Nested actions</PopoverTrigger>
+          <PopoverContent aria-label="Actions">
+            <button type="button">Edit</button>
+          </PopoverContent>
+        </Popover>
       </Modal>,
     );
     const trigger = screen.getByRole("button", { name: "Nested actions" });
     trigger.focus();
-    await user.keyboard("{ArrowDown}");
+    await user.keyboard("{Enter}");
     await waitFor(() =>
-      expect(document.activeElement).toHaveAttribute("role", "menuitem"),
+      expect(screen.getByRole("button", { name: "Edit" })).toHaveFocus(),
     );
     await user.keyboard("{Escape}");
-    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Actions" })).toBeNull(),
+    );
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(
       screen.getByRole("dialog", { name: "Settings" }),
     ).toBeInTheDocument();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 });

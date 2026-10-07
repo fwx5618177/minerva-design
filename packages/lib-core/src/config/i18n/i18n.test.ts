@@ -1,85 +1,42 @@
-import { describe, expect, it } from "vitest";
-import enBundle from "./en";
-import frBundle from "./fr";
-import jaBundle from "./ja";
-import zhBundle from "./zh";
-import { mergeMessages } from "./merge";
+import { afterEach, describe, expect, it } from "vitest";
+import { SUPPORTED_LANGUAGES, messages } from "@minerva/core";
+import i18n, { DEFAULT_LANGUAGE, resources } from ".";
 
-// Merged "index" namespace (index.json + groups/*.json)
-const en = enBundle.index;
-const fr = frBundle.index;
-const ja = jaBundle.index;
-const zh = zhBundle.index;
+// The message bundles themselves are tested in @minerva/core; this covers how
+// lib-core loads them into its private i18next instance.
+describe("lib-core i18next instance", () => {
+  afterEach(() => i18n.changeLanguage(DEFAULT_LANGUAGE));
 
-/** Flattens nested translations into sorted dot-separated keys */
-const flattenKeys = (value: unknown, prefix = ""): string[] => {
-  if (value === null || typeof value !== "object") return [prefix];
-  return Object.entries(value as Record<string, unknown>)
-    .flatMap(([key, child]) =>
-      flattenKeys(child, prefix ? `${prefix}.${key}` : key),
-    )
-    .sort();
-};
-
-/** Interpolation placeholders used by a translation, e.g. ["count"] */
-const placeholders = (text: string) =>
-  [...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map((match) => match[1]).sort();
-
-const lookup = (bundle: unknown, key: string) =>
-  key
-    .split(".")
-    .reduce<unknown>(
-      (node, part) => (node as Record<string, unknown>)[part],
-      bundle,
-    ) as string;
-
-describe("lib-core translations", () => {
-  const enKeys = flattenKeys(en);
-
-  it.each([
-    ["zh", zh],
-    ["fr", fr],
-    ["ja", ja],
-  ])("%s has exactly the same keys as en", (_, bundle) => {
-    expect(flattenKeys(bundle)).toEqual(enKeys);
-  });
-
-  it.each([
-    ["zh", zh],
-    ["fr", fr],
-    ["ja", ja],
-  ])("%s uses the same interpolation placeholders as en", (_, bundle) => {
-    for (const key of enKeys) {
-      expect(placeholders(lookup(bundle, key)), key).toEqual(
-        placeholders(lookup(en, key)),
+  it("loads @minerva/core's messages of every language as the index namespace", () => {
+    expect(Object.keys(resources).sort()).toEqual(
+      [...SUPPORTED_LANGUAGES].sort(),
+    );
+    for (const language of SUPPORTED_LANGUAGES) {
+      expect(resources[language].index).toBe(messages[language]);
+      expect(i18n.getResourceBundle(language, "index")).toEqual(
+        messages[language],
       );
     }
   });
 
-  it("has no empty translation", () => {
-    for (const bundle of [en, zh, fr, ja]) {
-      for (const key of flattenKeys(bundle)) {
-        expect(lookup(bundle, key).trim(), key).not.toBe("");
-      }
-    }
-  });
-});
+  it("starts in the default language and switches languages", async () => {
+    expect(DEFAULT_LANGUAGE).toBe("en");
+    expect(i18n.language).toBe("en");
+    expect(i18n.t("common.loading")).toBe("Loading");
+    // group strings (groups/*.json) are merged into the same namespace
+    expect(i18n.t("themeToggle.light")).not.toBe("themeToggle.light");
 
-describe("mergeMessages", () => {
-  it("deep-merges nested namespaces, later sources win", () => {
-    expect(
-      mergeMessages(
-        { a: { x: "1", y: "2" }, b: "b" },
-        { a: { y: "3", z: "4" } },
-        { c: "c" },
-      ),
-    ).toEqual({ a: { x: "1", y: "3", z: "4" }, b: "b", c: "c" });
+    await i18n.changeLanguage("zh");
+    expect(i18n.t("common.loading")).toBe("加载中");
   });
 
-  it("replaces a string with an object and vice versa", () => {
-    expect(mergeMessages({ a: "x" }, { a: { b: "y" } })).toEqual({
-      a: { b: "y" },
-    });
-    expect(mergeMessages({ a: { b: "y" } }, { a: "x" })).toEqual({ a: "x" });
+  it("falls back to the default language for unknown languages", async () => {
+    await i18n.changeLanguage("de");
+    expect(i18n.t("common.loading")).toBe("Loading");
+  });
+
+  it("is private: does not touch the global i18next instance", async () => {
+    const { default: globalI18next } = await import("i18next");
+    expect(i18n).not.toBe(globalI18next);
   });
 });

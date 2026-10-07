@@ -1,14 +1,18 @@
 {
   "title": "IconButton 图标按钮",
-  "description": "仅显示图标的紧凑按钮，以及可在两种状态间切换的 InteractiveIconButton 预设（收藏、点赞、书签等）。",
+  "description": "仅显示图标的紧凑按钮。设置 pressed / defaultPressed 后成为切换按钮（收藏、点赞、静音等）。",
   "demos": {
     "basic": {
       "title": "基础用法",
       "description": "传入任意图标元素。按钮中只有图标，因此务必为它设置 ariaLabel。它渲染为 type=\"button\" 的原生按钮，因此不会提交表单。"
     },
+    "colors": {
+      "title": "颜色",
+      "description": "color 设置语义颜色：neutral（默认）、primary、success、warning、danger 或 info。"
+    },
     "variants": {
       "title": "变体",
-      "description": "不设置 variant 时使用中性样式；variant 用于应用语义颜色。"
+      "description": "variant 设置视觉样式：ghost（默认，悬停前透明）、solid（以颜色填充）或 outline（描边）。"
     },
     "sizes-and-shapes": {
       "title": "尺寸与形状",
@@ -16,65 +20,48 @@
     },
     "states": {
       "title": "状态",
-      "description": "loading 用加载动画替换图标，active 表示已按下的切换状态，disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
+      "description": "loading 用加载动画替换图标，pressed 表示切换按钮处于开启状态，disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
+    },
+    "toggle": {
+      "title": "切换按钮",
+      "description": "设置 pressed（受控，配合 onPressedChange）或 defaultPressed（非受控）即成为切换按钮：点击会切换状态，并通过 aria-pressed 暴露。请保持标签不变（例如 \"Like\"），因为状态会单独播报。"
+    },
+    "search": {
+      "title": "搜索按钮",
+      "description": "搜索操作就是带搜索图标和标签的 IconButton；设置 type=\"submit\" 时会提交所在表单，loading 会在搜索进行时阻止再次触发。需要可见文字时请使用 Button。"
     },
     "custom-colors": {
       "title": "自定义颜色",
-      "description": "覆盖图标颜色、背景色、悬停背景色和激活颜色。"
+      "description": "通过 CSS 自定义属性覆盖计算出的颜色：--icon-button-color（图标）、--icon-button-hover-bg（悬停背景）、--icon-button-pressed-color 与 --icon-button-pressed-bg（切换按钮的按下状态）。可写在行内样式、类名或祖先元素上。"
     },
     "tooltip": {
       "title": "提示",
       "description": "设置 showTooltip 和 tooltip，在悬停和键盘聚焦时描述按钮的操作。"
     },
-    "interactive": {
-      "title": "InteractiveIconButton",
-      "description": "通过 aria-pressed 暴露状态的切换按钮。可用 pressed 和 onChange 进行受控，也可用 defaultPressed 保持非受控。其无障碍名称保持不变（预设的标签，例如 \"Like\"），可通过 ariaLabel 覆盖。"
-    },
-    "interactive-types": {
-      "title": "交互预设",
-      "description": "所有 InteractiveIconType，即 interactiveIconsMap 的每个键。每个预设定义了图标、颜色、提示文字和无障碍标签。点击即可切换。"
-    },
     "label": {
       "title": "标签与提示",
-      "description": "label 作为按钮的无障碍名称并显示为提示；图标可作为 children 传入。appearance 设置填充样式。"
+      "description": "label 作为按钮的无障碍名称并显示为提示；图标可作为 children 传入。variant 设置视觉样式，color 设置语义颜色。"
     }
   },
   "api": {
     "IconButtonProps": {
       "icon": "要显示的图标元素",
-      "variant": "颜色变体；未设置时使用中性样式",
+      "color": "按钮的语义颜色",
+      "variant": "视觉样式：ghost（悬停前透明）、solid（以颜色填充）或 outline（描边）",
       "size": "按钮尺寸",
       "shape": "按钮形状",
       "disabled": "禁用原生按钮并使其脱离 Tab 键顺序",
       "loading": "用加载动画替换图标并阻止交互",
-      "active": "以激活（按下）状态渲染按钮",
+      "pressed": "切换按钮的按下状态（受控，配合 onPressedChange 使用）；通过 aria-pressed 暴露",
+      "defaultPressed": "非受控切换按钮的初始按下状态",
+      "onPressedChange": "切换按钮被触发时，以新的按下状态调用",
       "className": "额外的类名",
-      "color": "自定义图标颜色",
-      "activeColor": "激活状态下的自定义图标颜色",
-      "bgColor": "自定义背景色",
-      "hoverColor": "悬停时的自定义背景色",
-      "fillColor": "自定义图标填充色",
-      "tooltip": "提示配置（content、variant、shape、arrow）；需配合 showTooltip 使用",
+      "tooltip": "提示配置（content、color、variant、shape、arrow）；需配合 showTooltip 使用",
       "showTooltip": "在悬停和聚焦时显示提示",
       "ariaLabel": "无障碍标签；按钮只包含图标，请始终设置",
       "ref": "<button> 元素的 ref",
       "children": "图标元素，可替代 icon 属性",
-      "label": "按钮的无障碍名称，同时显示为提示（除非 showTooltip 为 false）。优先于 ariaLabel",
-      "appearance": "填充样式：ghost（悬停前透明）、solid（以 variant 颜色填充）或 outline（描边）"
-    },
-    "InteractiveIconProps": {
-      "type": "定义图标、颜色和提示文字的预设（interactiveIconsMap 的键）",
-      "onChange": "每次切换后以新状态调用",
-      "initialState": "已弃用，defaultPressed 的别名",
-      "className": "额外的类名",
-      "size": "按钮尺寸",
-      "shape": "按钮形状",
-      "disabled": "禁用按钮",
-      "ref": "底层 <button> 元素的 ref",
-      "pressed": "激活（按下）状态（受控；与 onChange 搭配使用）；通过 aria-pressed 暴露",
-      "defaultPressed": "初始激活状态（非受控）",
-      "ariaLabel": "切换按钮的无障碍名称；按下状态会通过 aria-pressed 单独暴露，因此请保持名称不变。默认为预设的标签（例如 \"Favorite\"）",
-      "aria-label": "与 ariaLabel 相同（标准属性写法）"
+      "label": "按钮的无障碍名称，同时显示为提示（除非 showTooltip 为 false）。优先于 ariaLabel"
     }
   }
 }

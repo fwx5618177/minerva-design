@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { ConfigProvider, useConfig } from "./ConfigProvider";
 import { ThemeProvider } from "./ThemeProvider";
 import { Empty } from "../components/Empty";
-import { light } from "../styles/themes";
+import { light } from "@minerva/core";
 
 const Show = () => {
   const { resolvedMode, palette, locale } = useConfig();

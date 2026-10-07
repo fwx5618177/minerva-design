@@ -20,7 +20,12 @@ export default function DataTableDemo() {
   const rows = all.slice((page - 1) * 5, page * 5);
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      <Button variant="secondary" size="small" onClick={() => setFailed(true)}>
+      <Button
+        color="neutral"
+        variant="outline"
+        size="small"
+        onClick={() => setFailed(true)}
+      >
         Simulate an error
       </Button>
       <DataTable

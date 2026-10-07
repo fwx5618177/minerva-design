@@ -8,23 +8,26 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
-import classNames from "classnames";
-import { Slot } from "@radix-ui/react-slot";
+import { createPointerGrace, parsePlacement } from "@minerva/core";
+import { cn } from "../../utils/cn";
+import { Slot } from "../../internal/Slot";
 import type { TooltipProps } from "./types";
-import {
-  useAnchoredPosition,
-  type VirtualElement,
-} from "../../internal/useAnchoredPosition";
+import { useFloatingLayer } from "../../internal/FloatingPanel";
+import { Portal } from "../../internal/Portal";
+import type { VirtualElement } from "../../internal/useAnchoredPosition";
+import { LayerContext } from "../../internal/useDismissableLayer";
 import { useControllableState } from "../../internal/useControllableState";
-import { useIsClient } from "../../internal/useIsClient";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useTooltipConfig } from "./TooltipProvider";
 import styles from "./tooltip.module.scss";
-import { usePortalContainer } from "../../internal/themeScope";
 
 /** Extra gap so the arrow does not overlap the trigger. */
 const ARROW_GAP = 6;
+/**
+ * How long the pointer may travel from the trigger to the tooltip (through
+ * the gap between them) before the tooltip closes (WCAG 1.4.13 hoverable).
+ */
+const HOVER_GRACE_MS = 300;
 
 type TriggerChildProps = {
   "aria-describedby"?: string;
@@ -33,6 +36,11 @@ type TriggerChildProps = {
 /**
  * Tooltip: shows informative content when the wrapped element is hovered or
  * focused. Flips / shifts to stay inside the viewport.
+ *
+ * WCAG 1.4.13: dismissable with Escape (a non-modal layer: only when it is
+ * the topmost one, so in an open Popover the first Escape closes the
+ * tooltip only), hoverable (the pointer can move from the trigger onto the
+ * tooltip through the gap between them) and persistent.
  */
 const Tooltip = ({
   ref,
@@ -42,7 +50,8 @@ const Tooltip = ({
   defaultOpen = false,
   onOpenChange,
   placement = "top",
-  variant = "dark",
+  color = "neutral",
+  variant = "solid",
   shape = "default",
   animation = "fade",
   enterDelay: enterDelayProp,
@@ -52,8 +61,6 @@ const Tooltip = ({
   followCursor = false,
   className = "",
   zIndex = 1500,
-  bgColor,
-  textColor,
   arrow = false,
   onOpen,
   onClose,
@@ -62,8 +69,6 @@ const Tooltip = ({
   contentClassName,
   contentRef,
 }: TooltipProps) => {
-  const isClient = useIsClient();
-  const portalContainer = usePortalContainer();
   const config = useTooltipConfig();
   const enterDelay = enterDelayProp ?? config?.enterDelay ?? 200;
   const leaveDelay = leaveDelayProp ?? config?.leaveDelay ?? 0;
@@ -83,11 +88,21 @@ const Tooltip = ({
   );
   const tooltipId = `tooltip-${useId().replace(/:/g, "")}`;
 
+  // Pointer travelling from the trigger towards the tooltip
+  const [grace] = useState(() => createPointerGrace({ timeout: 0 }));
+
   const clearTimers = () => {
     clearTimeout(enterTimeoutRef.current);
     clearTimeout(leaveTimeoutRef.current);
+    grace.clear();
   };
-  useEffect(() => clearTimers, []);
+  useEffect(
+    () => () => {
+      clearTimeout(enterTimeoutRef.current);
+      clearTimeout(leaveTimeoutRef.current);
+    },
+    [],
+  );
 
   const show = () => {
     if (open) return;
@@ -131,14 +146,9 @@ const Tooltip = ({
   const isVertical =
     placement.startsWith("top") || placement.startsWith("bottom");
   const gap = arrow ? ARROW_GAP : 0;
-  const {
-    setFloating,
-    floatingStyles,
-    placement: finalPlacement,
-    isPositioned,
-    arrowStyles,
-  } = useAnchoredPosition({
-    open: open && !disabled,
+  const visible = open && !disabled;
+  const layer = useFloatingLayer({
+    open: visible,
     anchor: cursorAnchor ?? triggerEl,
     placement,
     offset: offset
@@ -148,8 +158,25 @@ const Tooltip = ({
         }
       : { mainAxis: 8 + gap },
     arrowElement: arrow ? arrowEl : null,
+    branches: () => [triggerEl],
+    // Escape only (topmost layer); hover / focus handle the rest
+    dismissOnPointerDownOutside: false,
+    dismissOnFocusOutside: false,
+    onDismiss: () => {
+      clearTimers();
+      hide();
+    },
   });
-  const setContentRef = useMergedRefs<HTMLDivElement>(setFloating, contentRef);
+  const {
+    floatingStyles,
+    placement: finalPlacement,
+    isPositioned,
+    arrowStyles,
+  } = layer;
+  const setContentRef = useMergedRefs<HTMLElement>(
+    layer.ref,
+    contentRef as React.Ref<HTMLElement>,
+  );
 
   // Track the cursor while open (followCursor)
   useEffect(() => {
@@ -160,22 +187,32 @@ const Tooltip = ({
     return () => document.removeEventListener("mousemove", handleMouseMove);
   }, [followCursor, open]);
 
-  // Escape dismisses the tooltip wherever focus is (WCAG 1.4.13)
-  const hideRef = useRef(hide);
+  const scheduleHide = () => {
+    clearTimeout(leaveTimeoutRef.current);
+    leaveTimeoutRef.current = setTimeout(hide, leaveDelay);
+  };
+
+  // Hoverable (WCAG 1.4.13): while the pointer heads from the trigger to the
+  // tooltip through the gap between them, keep it open.
   useEffect(() => {
-    hideRef.current = hide;
-  });
-  useEffect(() => {
-    if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        clearTimers();
-        hideRef.current();
+    if (!open || followCursor) return;
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!grace.getArea()) return;
+      const target = e.target as Node | null;
+      const floating = layer.element;
+      if (
+        target &&
+        (triggerEl?.contains(target) || floating?.contains(target))
+      ) {
+        return;
       }
+      if (grace.isInGraceArea({ x: e.clientX, y: e.clientY })) return;
+      grace.clear();
+      scheduleHide();
     };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open]);
+    document.addEventListener("pointermove", handlePointerMove);
+    return () => document.removeEventListener("pointermove", handlePointerMove);
+  });
 
   const handleMouseEnter = (e: React.MouseEvent) => {
     if (disabled) return;
@@ -189,10 +226,31 @@ const Tooltip = ({
     enterTimeoutRef.current = setTimeout(show, enterDelay);
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (e: React.MouseEvent) => {
     if (disabled) return;
     clearTimers();
-    leaveTimeoutRef.current = setTimeout(hide, leaveDelay);
+    const rect = layer.element?.getBoundingClientRect();
+    if (open && !followCursor && rect && rect.width > 0 && rect.height > 0) {
+      // Heading for the tooltip: keep it open while the pointer crosses the
+      // gap (pointermove above), at most HOVER_GRACE_MS.
+      grace.start(
+        { x: e.clientX, y: e.clientY },
+        rect,
+        parsePlacement(finalPlacement).side,
+      );
+      leaveTimeoutRef.current = setTimeout(
+        hide,
+        Math.max(leaveDelay, HOVER_GRACE_MS),
+      );
+      return;
+    }
+    scheduleHide();
+  };
+
+  // The pointer reached the tooltip: stay open until it leaves it
+  const handleContentMouseEnter = () => {
+    if (disabled) return;
+    clearTimers();
   };
 
   // Keyboard users get the tooltip when the wrapped (interactive) child
@@ -209,7 +267,6 @@ const Tooltip = ({
     hide();
   };
 
-  const visible = open && !disabled;
   const describedBy = visible ? tooltipId : undefined;
 
   // Point the interactive child at the tooltip; fall back to the wrapper
@@ -222,10 +279,6 @@ const Tooltip = ({
     [childProps["aria-describedby"], describedBy].filter(Boolean).join(" ") ||
     undefined;
   const useChildAsTrigger = asChild && isElementChild;
-
-  const background = bgColor?.includes("gradient")
-    ? { background: bgColor }
-    : { backgroundColor: bgColor };
 
   let triggerNode: React.ReactNode;
   if (useChildAsTrigger) {
@@ -248,7 +301,7 @@ const Tooltip = ({
     triggerNode = (
       <div
         ref={setTriggerEl}
-        className={classNames(styles.tooltipTrigger, className)}
+        className={cn(styles.tooltipTrigger, className)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
@@ -265,17 +318,19 @@ const Tooltip = ({
   return (
     <>
       {triggerNode}
-      {visible &&
-        isClient &&
-        createPortal(
+      {visible && (
+        <Portal>
           <div
             ref={setContentRef}
             id={tooltipId}
             role="tooltip"
             aria-label={ariaLabel}
             data-placement={finalPlacement}
-            className={classNames(
+            onMouseEnter={handleContentMouseEnter}
+            onMouseLeave={followCursor || disabled ? undefined : scheduleHide}
+            className={cn(
               styles.tooltip,
+              styles[color],
               styles[variant],
               styles[shape],
               styles[`animation-${animation}`],
@@ -286,22 +341,22 @@ const Tooltip = ({
             )}
             style={{
               ...floatingStyles,
-              ...background,
-              color: textColor,
               zIndex,
             }}
           >
-            {content}
+            <LayerContext.Provider value={layer.element}>
+              {content}
+            </LayerContext.Provider>
             {arrow && (
               <div
                 ref={setArrowEl}
                 className={styles.tooltipArrow}
-                style={{ ...background, ...arrowStyles }}
+                style={arrowStyles}
               />
             )}
-          </div>,
-          portalContainer ?? document.body,
-        )}
+          </div>
+        </Portal>
+      )}
     </>
   );
 };

@@ -4,8 +4,12 @@ export default function BasicDemo() {
   return (
     <VStack gap={3} style={{ maxWidth: 240 }}>
       <Button>First</Button>
-      <Button variant="secondary">Second</Button>
-      <Button variant="secondary">Third</Button>
+      <Button color="neutral" variant="outline">
+        Second
+      </Button>
+      <Button color="neutral" variant="outline">
+        Third
+      </Button>
     </VStack>
   );
 }

@@ -2,9 +2,13 @@
   "title": "Tag タグ",
   "description": "コンテンツのマーキングや分類に使う小さなラベル。閉じたりクリックしたりできます。",
   "demos": {
-    "basic": {
-      "title": "基本的な使い方",
-      "description": "variant で意味を表します。"
+    "colors": {
+      "title": "カラー",
+      "description": "color で意味を表します：neutral（既定）、primary、success、warning、danger、info。"
+    },
+    "variants": {
+      "title": "バリアント",
+      "description": "variant で見た目のスタイルを指定します：subtle（既定・淡い背景）、outline（枠線を追加）、solid（色で塗りつぶし）。elevation はどのバリアントにも影を付けます。"
     },
     "sizes-shapes": {
       "title": "サイズと形状",
@@ -14,10 +18,6 @@
       "title": "アイコン付き",
       "description": "icon は内容の前に表示されます。"
     },
-    "bordered-elevation": {
-      "title": "枠線と影",
-      "description": "bordered で枠線を、elevation で影を付けます。"
-    },
     "closable": {
       "title": "閉じられるタグ",
       "description": "closable で閉じるボタンが追加され、onClose が呼ばれます。そこで state からタグを削除してください。closeIcon と closeLabel でボタンをカスタマイズできます。最初のタグはクリックも可能で、タグ本体と閉じるボタンは別々のボタンとしてそれぞれ Tab で移動できます。"
@@ -26,9 +26,13 @@
       "title": "クリック可能（選択式）",
       "description": "clickable は内容をネイティブのボタンとして描画します。Tab でフォーカスし、クリック・Enter・Space で実行します。ここではタグで選択を切り替え、pressed で支援技術に状態を伝えます。"
     },
+    "avatar-loading": {
+      "title": "アバターと読み込み中",
+      "description": "avatar は内容の前にアバターを表示します。loading はアイコン / アバターをスピナーに置き換え、タグをビジー状態にして操作を無効にし、閉じるボタンを隠します。"
+    },
     "custom-colors": {
       "title": "カスタムカラー",
-      "description": "bgColor・textColor・borderColor で配色を上書きします。ripple={false} でクリック時のリップルを無効にします。"
+      "description": "CSS カスタムプロパティ --tag-<color>-bg と --tag-<color>-text で各カラーの配色を上書きします（インライン、クラス、テーマで指定可能）。ripple={false} でクリック時のリップルを無効にします。"
     },
     "disabled": {
       "title": "無効状態",
@@ -44,20 +48,19 @@
   "api": {
     "TagProps": {
       "children": "タグの内容",
-      "variant": "配色",
+      "color": "タグのセマンティックカラー",
+      "variant": "見た目のスタイル：subtle（淡い背景）、outline（淡い背景＋枠線）、solid（色で塗りつぶし、反転した文字色）",
       "size": "タグのサイズ",
       "shape": "タグの形状",
       "closable": "閉じるボタンを表示します",
       "onClose": "閉じるボタンのクリック時に呼び出されます",
       "clickable": "タグの内容をネイティブのボタンとして描画します（フォーカス可能、Enter / Space で実行）。closable と併用すると、閉じるボタンは兄弟要素の別ボタンになります",
       "onClick": "タグが実行されたときに呼び出されます（clickable が必要）",
-      "pressed": "トグル型タグの押下状態（clickable が必要）。aria-pressed を設定します",
+      "pressed": "トグル型タグの押下（選択）状態。選択式フィルターなどに使います（clickable が必要）。aria-pressed と選択スタイルを設定します",
       "icon": "内容の前に表示するアイコン",
-      "bordered": "枠線を表示します",
+      "avatar": "内容の前に表示するアバター（小さな Avatar や画像など）",
+      "loading": "アイコン / アバターの代わりにスピナーを表示し、ビジー状態にして操作を無効にします。閉じるボタンは非表示になります",
       "elevation": "影を表示します",
-      "bgColor": "カスタム背景色",
-      "textColor": "カスタム文字色",
-      "borderColor": "カスタム枠線の色",
       "className": "追加のクラス名",
       "style": "インラインスタイル",
       "disabled": "タグと閉じるボタンを無効にします",

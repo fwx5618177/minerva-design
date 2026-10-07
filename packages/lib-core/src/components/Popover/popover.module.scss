@@ -1,4 +1,10 @@
+// Positioned wrapper (fixed, left / top); the panel inside animates freely.
+.positioner {
+  z-index: var(--z-popover);
+}
+
 .content {
+  position: relative;
   background-color: var(--popover-surface, var(--surface-elevated-color));
   color: var(--text-color);
   border: 1px solid var(--popover-border, var(--border-color));
@@ -16,7 +22,37 @@
   }
 }
 
+// Arrow: a 10x5 downward triangle, rotated towards the trigger.
+.arrowWrapper {
+  position: absolute;
+  display: flex;
+  width: 10px;
+  height: 5px;
+  pointer-events: none;
+}
+
+.content[data-side="top"] > .arrowWrapper {
+  top: 100%;
+}
+
+.content[data-side="bottom"] > .arrowWrapper {
+  bottom: 100%;
+  transform: rotate(180deg);
+}
+
+// Rotating the 10x5 box about its center: offset by half the difference.
+.content[data-side="left"] > .arrowWrapper {
+  left: calc(100% - 2.5px);
+  transform: rotate(-90deg);
+}
+
+.content[data-side="right"] > .arrowWrapper {
+  right: calc(100% - 2.5px);
+  transform: rotate(90deg);
+}
+
 .arrow {
+  display: block;
   fill: var(--popover-surface, var(--surface-elevated-color));
   stroke: var(--popover-border, var(--border-color));
 }

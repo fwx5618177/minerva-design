@@ -1,6 +1,6 @@
 {
   "title": "Stack スタック",
-  "description": "トークンベースの間隔を持つ flex レイアウトプリミティブ（Stack、HStack、VStack）。Space と異なり、子要素はアイテム要素で包まれません。",
+  "description": "トークンベースの間隔、区切り、連結グループを備えたフレックスレイアウトの基本コンポーネント（Stack、HStack、VStack）。子要素はラッパーで包まれません。",
   "demos": {
     "basic": {
       "title": "縦方向のスタック",
@@ -10,9 +10,21 @@
       "title": "横方向のスタック",
       "description": "HStack は交差軸で中央揃えし、justify で配置を分配します。"
     },
+    "gap": {
+      "title": "間隔",
+      "description": "数値は間隔トークンを選びます（2 = 8px、4 = 16px、6 = 24px）。その他の文字列は CSS の長さです。"
+    },
     "wrap": {
       "title": "折り返しとセマンティクス",
       "description": "wrap でアイテムを折り返し、as でリストとして描画します。"
+    },
+    "separator": {
+      "title": "区切り",
+      "description": "separator は縦の Divider などを項目の間に表示します。空の子要素には付きません。"
+    },
+    "attached": {
+      "title": "連結グループ",
+      "description": "attached は項目を 1 つのグループにつなげ、境界線を共有し外側の角だけを丸めます（セグメントコントロールのように）。"
     }
   },
   "api": {
@@ -23,7 +35,9 @@
       "gap": "アイテム間の間隔：数値と数値文字列はスペーシングトークン、その他は CSS 値。省略時は間隔なし。",
       "align": "交差軸の整列（align-items）。省略時は未設定",
       "justify": "主軸の配置（justify-content）。省略時は未設定",
-      "wrap": "アイテムを複数行に折り返します"
+      "wrap": "アイテムを複数行に折り返します",
+      "separator": "各項目の間に表示（先頭の前と末尾の後には表示しない）。空の子要素には付きません",
+      "attached": "項目を連結した 1 つのグループにします：間隔なし、境界線の共有、外側だけの角丸、role=\"group\""
     }
   }
 }

@@ -101,16 +101,28 @@
   }
 }
 
-.content {
+// Positioned wrapper: core positioning sets `min-width` (trigger width),
+// `max-width` and `max-height` (space available in the viewport) inline. The
+// listbox inside shrinks to it and scrolls when the options do not fit.
+.positioner {
   z-index: var(--z-popover);
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  box-sizing: border-box;
+  min-height: 0;
+  padding: var(--space-2);
   background-color: var(--surface-elevated-color);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  min-width: var(--radix-select-trigger-width);
-  max-width: min(32rem, var(--radix-select-content-available-width, calc(100vw - 16px)));
-  max-height: min(320px, var(--radix-select-content-available-height, 320px));
-  overflow: hidden;
+  max-width: 32rem;
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
   color: var(--text-color);
   animation: selectFadeIn var(--transition-fast);
 }
@@ -127,14 +139,26 @@
   }
 }
 
+.content[data-side="top"] {
+  animation-name: selectFadeInUp;
+}
+
+@keyframes selectFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .content {
     animation: none;
   }
-}
-
-.viewport {
-  padding: var(--space-2);
 }
 
 // Neutral hover; the checked option gets the subtle primary fill + check icon.
@@ -204,14 +228,4 @@
   height: 1px;
   margin: var(--space-1) calc(-1 * var(--space-1));
   background-color: var(--border-color);
-}
-
-.scrollButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
-  background-color: var(--surface-elevated-color);
-  color: var(--text-secondary-color);
-  cursor: default;
 }

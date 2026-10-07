@@ -1,14 +1,22 @@
 {
   "title": "ProgressIndicator プログレスインジケーター",
-  "description": "読み込み中であることを示します。ProgressIndicator は progressbar ロールのバーやスピナー、Spinner は軽量なインラインのステータスリングです。",
+  "description": "読み込み中であることを示します。スピナー、サークル、ウェーブ、バー、ドットバーで描かれる不確定の progressbar です。",
   "demos": {
-    "types": {
-      "title": "種類",
-      "description": "スピナー（デフォルト）、サークル、ウェーブ、バー、ドットバー。"
+    "variants": {
+      "title": "バリアント",
+      "description": "variant でスタイルを選びます：スピナー（デフォルト）、サークル、ウェーブ、バー、ドットバー。"
     },
     "sizes": {
       "title": "サイズ",
-      "description": "small、medium（デフォルト）、large。"
+      "description": "xsmall から xlarge までの 5 段階。円形インジケーターの直径、またはバーの太さです。"
+    },
+    "colors": {
+      "title": "色",
+      "description": "セマンティックカラー：primary（デフォルト）または neutral。特別な値 current は周囲の文字色（currentColor）に従います（ボタン内など）。"
+    },
+    "label": {
+      "title": "表示ラベル",
+      "description": "インジケーターの横に表示ラベルを置き、progressbar のアクセシブルな名前にもなります。"
     },
     "width": {
       "title": "幅",
@@ -17,32 +25,21 @@
     "with-icon": {
       "title": "アイコン付き",
       "description": "インジケーターの前にアイコンを表示します。読み込み中の内容は必ず ariaLabel で説明してください。"
-    },
-    "spinner": {
-      "title": "Spinner",
-      "description": "軽量なインラインのリングで、polite なステータス領域です。色は現在の文字色に合わせられます。"
-    },
-    "spinner-sizes": {
-      "title": "Spinner のサイズ",
-      "description": "12px から 48px までの 5 段階の直径。"
     }
   },
   "api": {
     "ProgressIndicatorProps": {
-      "type": "インジケーターのスタイル",
+      "variant": "インジケーターのスタイル",
       "size": "インジケーターのサイズ",
+      "color": "インジケーターのセマンティックカラー：テーマのプライマリーまたはニュートラルグレー。特別な値 current は周囲の文字色（currentColor）に従います",
       "icon": "インジケーターの前に表示するアイコン",
+      "label": "インジケーターの横に表示するテキスト。ariaLabel がない場合は progressbar の名前にもなります",
       "ariaLabel": "読み込み中の内容を説明するアクセシブルなラベル",
+      "decorative": "視覚専用：progressbar ロールを外し、支援技術から隠します",
       "className": "追加のクラス名",
-      "width": "カスタム幅（full が設定されている場合は無視されます）",
+      "width": "カスタム幅（full が設定されている場合は無視）。バーの既定値は 200px",
       "full": "インジケーターをコンテナの全幅に広げる",
       "ref": "ルートの <div> 要素への ref"
-    },
-    "SpinnerProps": {
-      "size": "直径のプリセット",
-      "color": "リングの色。current は周囲の文字色に従います",
-      "label": "視覚的に隠され読み上げられるテキスト。装飾用なら空文字列を渡します",
-      "ref": "ルートの <span> 要素への ref"
     }
   }
 }

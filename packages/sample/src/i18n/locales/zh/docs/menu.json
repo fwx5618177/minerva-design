@@ -1,29 +1,50 @@
 {
   "title": "Menu 菜单",
-  "description": "通过按钮（Menu）或右键（ContextMenu）打开的操作菜单：支持图标、快捷键、分隔线、分组、子菜单、键入查找以及完整的键盘操作。如需从列表中选择一个值，请使用 Dropdown。",
+  "description": "从按钮（Menu）或右键（ContextMenu）打开的操作菜单：支持图标、快捷键、分隔线、分组、复选项、单选组、子菜单、输入查找和完整的键盘操作（Enter、Space 或 ArrowDown 打开并聚焦第一项，ArrowUp 聚焦最后一项；方向键循环并跳过禁用项，Home / End，Tab 关闭菜单，Escape 将焦点还给触发器）。如需从列表中选择值，请使用 Select。",
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "带图标和快捷键提示的条目。onSelect 接收原始条目对象，随后菜单关闭，焦点回到触发元素。"
+      "description": "带图标和快捷键提示的菜单项。onSelect 接收原始的菜单项对象，随后菜单关闭，焦点回到触发器。"
+    },
+    "triggers": {
+      "title": "触发器",
+      "description": "任何按钮都可以作为触发器，例如 Button 或 IconButton；纯图标触发器需要提供标签。通过 ariaLabel 为菜单面板命名。"
     },
     "groups": {
       "title": "分组、子菜单与尺寸",
       "description": "用带标签的分组组织条目、用分隔线分隔，并通过 children 嵌套子菜单。size=\"small\" 使条目更紧凑；side 和 align 控制面板位置。"
     },
+    "submenus": {
+      "title": "子菜单",
+      "description": "通过 children 嵌套条目。ArrowRight、Enter 或 Space 打开子菜单并聚焦其第一项，ArrowLeft 或 Escape 仅关闭该子菜单；使用指针时，悬停即可打开子菜单，并且指针沿对角线移向子菜单时它会保持打开。dir=\"rtl\" 时子菜单向左打开，左右方向键互换。"
+    },
+    "checkbox-radio": {
+      "title": "复选项与单选项",
+      "description": "type: \"checkbox\" 条目可切换（checked / defaultChecked + onCheckedChange），type: \"radio-group\" 条目包含互斥选项（value / defaultValue + onValueChange）。它们默认保持菜单打开，以便连续修改多个选项；在条目上设置 closeOnSelect 可在选择后关闭菜单。"
+    },
+    "placement": {
+      "title": "位置",
+      "description": "side 为相对触发器的首选方向，align 为对齐方式；靠近视口边缘时菜单会翻转并平移以保持可见。"
+    },
+    "disabled": {
+      "title": "禁用",
+      "description": "可以禁用单个菜单项（方向键会跳过它们），也可以禁用整个菜单。"
+    },
     "context-menu": {
       "title": "右键菜单",
-      "description": "ContextMenu 在右键、长按或 Shift+F10 时于指针处打开相同的条目。"
+      "description": "ContextMenu 在右键或长按时于指针处打开相同的条目（再次右键会移动菜单），按 Shift+F10 或 ContextMenu 键时在区域处打开。焦点移到第一项，关闭后回到该区域。"
     },
     "controlled": {
       "title": "受控",
-      "description": "通过 open 和 onOpenChange 控制打开状态。"
+      "description": "通过 open 与 onOpenChange 控制打开状态；非受控时 defaultOpen 设置初始状态。"
     }
   },
   "api": {
     "MenuProps": {
-      "children": "触发元素（按钮）；点击、Enter、Space 和 ArrowDown 打开菜单",
+      "children": "触发元素（按钮）；点击、Enter、Space 和 ArrowDown 打开菜单（ArrowUp 聚焦最后一项）",
       "items": "菜单条目",
-      "onSelect": "选择操作项时以原始条目对象调用，随后菜单关闭",
+      "onSelect": "选择操作项时以原始条目对象调用",
+      "closeOnSelect": "选择操作项后是否关闭菜单（复选项和单选项默认保持打开，除非其条目设置了 closeOnSelect）",
       "size": "条目密度",
       "align": "菜单相对触发元素的对齐方式",
       "side": "首选方向；空间不足时菜单会翻转",
@@ -31,18 +52,23 @@
       "defaultOpen": "初始打开状态（非受控）",
       "onOpenChange": "菜单打开或关闭时调用",
       "disabled": "禁用触发元素",
-      "modal": "模态菜单打开时阻止外部交互并限制焦点",
+      "modal": "模态菜单打开时阻止外部指针交互、限制焦点、锁定滚动，并对辅助技术隐藏页面其余部分",
+      "loop": "方向键在最后一项与第一项之间循环",
+      "dir": "阅读方向：为 \"rtl\" 时子菜单向左打开，ArrowLeft / ArrowRight 互换",
       "className": "菜单面板的额外类名",
-      "ariaLabel": "菜单面板的无障碍标签"
+      "ariaLabel": "菜单面板的无障碍标签（默认使用触发器的标签）"
     },
     "ContextMenuProps": {
-      "children": "右键 / 长按 / Shift+F10 打开菜单的区域",
+      "children": "通过右键 / 长按 / Shift+F10 / ContextMenu 键打开菜单的区域",
       "items": "菜单条目",
-      "onSelect": "选择操作项时以原始条目对象调用，随后菜单关闭",
+      "onSelect": "选择操作项时以原始条目对象调用",
+      "closeOnSelect": "选择操作项后是否关闭菜单（复选项和单选项默认保持打开，除非其条目设置了 closeOnSelect）",
       "size": "条目密度",
       "onOpenChange": "菜单打开或关闭时调用",
       "disabled": "禁用右键菜单（改为显示浏览器原生菜单）",
-      "modal": "模态菜单打开时阻止外部交互并限制焦点",
+      "modal": "模态菜单打开时阻止外部指针交互、限制焦点、锁定滚动，并对辅助技术隐藏页面其余部分",
+      "loop": "方向键在最后一项与第一项之间循环",
+      "dir": "阅读方向：为 \"rtl\" 时子菜单向左打开，ArrowLeft / ArrowRight 互换",
       "className": "菜单面板的额外类名",
       "ariaLabel": "菜单面板的无障碍标签"
     },
@@ -53,7 +79,37 @@
       "icon": "显示在标签前的图标",
       "shortcut": "显示在标签后的快捷键提示（仅展示）",
       "disabled": "禁用该条目",
+      "closeOnSelect": "选择该项后是否关闭菜单（覆盖菜单的 closeOnSelect）",
       "children": "由该条目打开的子菜单条目"
+    },
+    "MenuCheckboxEntry": {
+      "type": "条目类型",
+      "key": "条目的唯一键",
+      "label": "条目内容",
+      "textValue": "label 不是纯文本时用于输入查找的文本",
+      "shortcut": "显示在标签后的快捷键提示（仅展示）",
+      "disabled": "禁用该条目",
+      "checked": "是否选中（受控；与 onCheckedChange 搭配使用）",
+      "defaultChecked": "初始选中状态（非受控）",
+      "onCheckedChange": "切换时以新的选中状态调用",
+      "closeOnSelect": "切换后是否关闭菜单"
+    },
+    "MenuRadioGroupEntry": {
+      "type": "条目类型",
+      "key": "分组的唯一键",
+      "label": "显示在分组上方的标签（同时作为分组名称）",
+      "items": "分组中的选项",
+      "value": "选中的值（受控；与 onValueChange 搭配使用）",
+      "defaultValue": "初始选中的值（非受控）",
+      "onValueChange": "以所选选项的值调用",
+      "closeOnSelect": "选择选项后是否关闭菜单"
+    },
+    "MenuRadioItem": {
+      "value": "选项的值（在组内唯一）",
+      "label": "选项内容",
+      "textValue": "label 不是纯文本时用于输入查找的文本",
+      "shortcut": "显示在标签后的快捷键提示（仅展示）",
+      "disabled": "禁用该选项"
     },
     "MenuSeparatorEntry": {
       "type": "条目类型",

@@ -28,7 +28,12 @@ export function DataTable<T>({
         <div className={styles.error} role="alert">
           <div className={styles.errorTitle}>{error}</div>
           {onRetry && (
-            <Button variant="secondary" size="small" onClick={onRetry}>
+            <Button
+              color="neutral"
+              variant="outline"
+              size="small"
+              onClick={onRetry}
+            >
               <LuRefreshCw aria-hidden="true" className={styles.retryIcon} />
               {retryLabel ?? t("table.retry")}
             </Button>

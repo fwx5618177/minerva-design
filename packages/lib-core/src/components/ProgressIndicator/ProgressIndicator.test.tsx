@@ -12,9 +12,18 @@ describe("ProgressIndicator", () => {
     const progressbar = screen.getByRole("progressbar", {
       name: "Loading data",
     });
-    expect(progressbar).toHaveClass("progressIndicator", "defaultWidth");
+    expect(progressbar).toHaveClass("progressIndicator", "primary");
+    expect(progressbar).not.toHaveClass("defaultWidth");
     expect(progressbar.querySelector("svg.spinner")).toHaveClass("medium");
   });
+
+  it.each(["bar", "dottedBar"] as const)(
+    "gives the %s variant a default width",
+    (variant) => {
+      render(<ProgressIndicator variant={variant} />);
+      expect(screen.getByRole("progressbar")).toHaveClass("defaultWidth");
+    },
+  );
 
   it.each([
     ["spinner", "svg.spinner"],
@@ -22,24 +31,86 @@ describe("ProgressIndicator", () => {
     ["bar", ".barContainer > .bar"],
     ["wave", ".waveContainer svg.wave"],
     ["dottedBar", ".dottedBarContainer > .dottedBar"],
-  ] as const)("renders the %s type", (type, selector) => {
-    render(<ProgressIndicator type={type} />);
+  ] as const)("renders the %s variant", (variant, selector) => {
+    render(<ProgressIndicator variant={variant} />);
 
     expect(
       screen.getByRole("progressbar").querySelector(selector),
     ).toBeInTheDocument();
   });
 
-  it.each(["small", "medium", "large"] as const)(
+  it.each(["xsmall", "small", "medium", "large", "xlarge"] as const)(
     "applies the %s size class to the indicator",
     (size) => {
-      render(<ProgressIndicator type="bar" size={size} />);
-
+      const { rerender } = render(
+        <ProgressIndicator variant="bar" size={size} />,
+      );
       expect(
         screen.getByRole("progressbar").querySelector(".barContainer"),
       ).toHaveClass(size);
+
+      rerender(<ProgressIndicator size={size} />);
+      expect(
+        screen.getByRole("progressbar").querySelector("svg.spinner"),
+      ).toHaveClass(size);
     },
   );
+
+  it.each(["primary", "neutral", "current"] as const)(
+    "applies the %s color class",
+    (color) => {
+      render(<ProgressIndicator color={color} />);
+      expect(screen.getByRole("progressbar")).toHaveClass(color);
+    },
+  );
+
+  it("shows a visible label that names the progressbar", () => {
+    const { rerender } = render(<ProgressIndicator label="Saving draft" />);
+    const progressbar = screen.getByRole("progressbar", {
+      name: "Saving draft",
+    });
+    expect(progressbar).not.toHaveAttribute("aria-label");
+    expect(screen.getByText("Saving draft")).toHaveClass("label");
+
+    // ariaLabel still wins over the visible label
+    rerender(<ProgressIndicator label="Saving draft" ariaLabel="Saving" />);
+    expect(screen.getByRole("progressbar", { name: "Saving" })).toBe(
+      progressbar,
+    );
+
+    // An empty label falls back to the localized default name
+    rerender(<ProgressIndicator label="" />);
+    expect(
+      screen.getByRole("progressbar", { name: "Loading" }),
+    ).toBeInTheDocument();
+    expect(progressbar.querySelector(".label")).toBeNull();
+  });
+
+  it("is hidden from assistive technologies when decorative", () => {
+    render(<ProgressIndicator decorative data-testid="pi" label="Busy" />);
+    const el = screen.getByTestId("pi");
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(el).toHaveAttribute("aria-hidden", "true");
+    expect(el).not.toHaveAttribute("aria-label");
+    expect(el).not.toHaveAttribute("role");
+  });
+
+  it("forwards native attributes and merges style with width", () => {
+    render(
+      <ProgressIndicator
+        id="loader"
+        data-testid="pi"
+        title="Working"
+        style={{ margin: 4 }}
+        width="120px"
+      />,
+    );
+    const el = screen.getByTestId("pi");
+    expect(el).toBe(screen.getByRole("progressbar"));
+    expect(el.id).toBe("loader");
+    expect(el).toHaveAttribute("title", "Working");
+    expect(el).toHaveStyle({ margin: "4px", width: "120px" });
+  });
 
   it("renders an optional icon", () => {
     render(<ProgressIndicator icon={<span data-testid="custom-icon" />} />);
@@ -50,7 +121,7 @@ describe("ProgressIndicator", () => {
   });
 
   it("applies a custom width and drops the default width class", () => {
-    render(<ProgressIndicator width="200px" />);
+    render(<ProgressIndicator variant="bar" width="200px" />);
 
     const progressbar = screen.getByRole("progressbar");
     expect(progressbar).toHaveStyle({ width: "200px" });
@@ -126,6 +197,16 @@ describe("ProgressIndicator localization", () => {
     rerender(<ProgressIndicator ariaLabel="Uploading" />);
     expect(
       screen.getByRole("progressbar", { name: "Uploading" }),
+    ).toBeInTheDocument();
+  });
+
+  it("translates the default label in Chinese", () => {
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    render(<ProgressIndicator />);
+    expect(
+      screen.getByRole("progressbar", { name: "加载中" }),
     ).toBeInTheDocument();
   });
 });

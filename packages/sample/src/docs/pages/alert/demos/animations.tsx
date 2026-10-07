@@ -10,7 +10,8 @@ export default function AnimationsDemo() {
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
       <Button
         size="small"
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         onClick={() => setKey((k) => k + 1)}
       >
         Replay

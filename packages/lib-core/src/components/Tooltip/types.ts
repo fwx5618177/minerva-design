@@ -1,4 +1,5 @@
 import type { ReactNode, Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
 export type TooltipPlacement =
   | "top"
@@ -17,21 +18,12 @@ export type TooltipPlacement =
 export type TooltipShape = "default" | "rounded" | "thought" | "square";
 
 /**
- * Color variant. `dark` contrasts with the theme (dark in light themes, light
- * in dark themes) and `light` uses the elevated surface. `auto` follows the
- * theme with a frosted surface; `fixedDark` / `fixedLight` keep the same
- * colors whatever the theme.
+ * Visual style of a Tooltip. `solid` is a filled surface (the inverted,
+ * contrasting surface for the neutral color; the semantic color with inverse
+ * text otherwise), `subtle` a tinted surface with a border, `glass` a frosted
+ * elevated surface that follows the theme.
  */
-export type TooltipVariant =
-  | "light"
-  | "dark"
-  | "info"
-  | "success"
-  | "warning"
-  | "error"
-  | "auto"
-  | "fixedDark"
-  | "fixedLight";
+export type TooltipVariant = "solid" | "subtle" | "glass";
 
 export type TooltipAnimation =
   "fade" | "scale" | "shift-away" | "shift-toward" | "perspective";
@@ -58,8 +50,19 @@ export interface TooltipProps {
    */
   placement?: TooltipPlacement;
   /**
-   * Color variant
-   * @default "dark"
+   * Semantic color of the tooltip. With the `glass` variant the color only
+   * tints the border (neutral keeps the plain frosted surface)
+   * @default "neutral"
+   */
+  color?: Extract<
+    ColorScheme,
+    "neutral" | "info" | "success" | "warning" | "danger"
+  >;
+  /**
+   * Visual style: `solid` (filled; neutral is the inverted contrasting
+   * surface), `subtle` (tinted surface with a border) or `glass` (frosted
+   * elevated surface)
+   * @default "solid"
    */
   variant?: TooltipVariant;
   /**
@@ -93,10 +96,6 @@ export interface TooltipProps {
    * @default false
    */
   followCursor?: boolean;
-  /** Custom background color (CSS gradients are supported) */
-  bgColor?: string;
-  /** Custom text color */
-  textColor?: string;
   /**
    * z-index of the tooltip
    * @default 1500
@@ -130,7 +129,11 @@ export interface TooltipProps {
    * @default false
    */
   asChild?: boolean;
-  /** Additional class name of the tooltip (floating) element */
+  /**
+   * Additional class name of the tooltip (floating) element. To customize
+   * the colors, set the `--tooltip-bg` (background, gradients allowed) and
+   * `--tooltip-color` (text) custom properties on it
+   */
   contentClassName?: string;
   /** Ref to the tooltip (floating) element, set while it is shown */
   contentRef?: Ref<HTMLDivElement>;

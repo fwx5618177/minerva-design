@@ -1,15 +1,19 @@
-import { Button } from "@minerva/lib-core";
+import { Button, HStack, VStack } from "@minerva/lib-core";
+
+const variants = ["solid", "outline", "ghost", "link"] as const;
 
 export default function VariantsDemo() {
   return (
-    <>
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="success">Success</Button>
-      <Button variant="warning">Warning</Button>
-      <Button variant="error">Error</Button>
-      <Button variant="retry">Retry</Button>
-      <Button variant="back">Back</Button>
-    </>
+    <VStack gap={3}>
+      {(["primary", "neutral", "danger"] as const).map((color) => (
+        <HStack key={color} gap={2} wrap>
+          {variants.map((variant) => (
+            <Button key={variant} color={color} variant={variant}>
+              {variant}
+            </Button>
+          ))}
+        </HStack>
+      ))}
+    </VStack>
   );
 }

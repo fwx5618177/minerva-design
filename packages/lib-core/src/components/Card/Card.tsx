@@ -15,29 +15,18 @@ import styles from "./card.module.scss";
 const paddingClass = (padding: CardPadding | undefined) =>
   padding && styles[`pad-${padding}`];
 
-const colorStyle = (
-  bgColor: string | undefined,
-  textColor: string | undefined,
-  style: React.CSSProperties | undefined,
-): React.CSSProperties => ({
-  backgroundColor: bgColor,
-  color: textColor,
-  ...style,
-});
-
 /**
- * Card: a content container composed of CardHeader, CardContent and CardFooter.
- * `padding` switches to the padded layout (the card pads itself), `interactive`
+ * Card: a content container composed of CardHeader, CardContent and CardFooter
+ * (omit a section to leave it out). `padding` switches to the padded layout (the card pads itself), `interactive`
  * adds hover / focus feedback and `as` changes the root element (e.g. a link).
  */
 export const Card = ({
   children,
   variant = "default",
-  type = "default",
   padding,
   interactive = false,
   as,
-  htmlType,
+  type,
   className = "",
   ref,
   ...rest
@@ -46,11 +35,10 @@ export const Card = ({
   return (
     <Tag
       ref={ref}
-      type={Tag === "button" ? (htmlType ?? "button") : undefined}
+      type={Tag === "button" ? (type ?? "button") : undefined}
       className={cn(
         styles.card,
         styles[variant],
-        styles[type],
         padding && styles.padded,
         paddingClass(padding),
         interactive && styles.interactive,
@@ -69,10 +57,7 @@ export const Card = ({
 export const CardHeader = ({
   children,
   className = "",
-  bgColor,
-  textColor,
   padding,
-  style,
   ref,
   ...rest
 }: CardHeaderProps) => {
@@ -80,7 +65,6 @@ export const CardHeader = ({
     <div
       ref={ref}
       className={cn(styles.cardHeader, paddingClass(padding), className)}
-      style={colorStyle(bgColor, textColor, style)}
       {...rest}
     >
       {children}
@@ -127,11 +111,8 @@ export const CardDescription = ({
 export const CardContent = ({
   children,
   className = "",
-  bgColor,
-  textColor,
   animation,
   padding,
-  style,
   ref,
   ...rest
 }: CardContentProps) => {
@@ -144,7 +125,6 @@ export const CardContent = ({
         paddingClass(padding),
         className,
       )}
-      style={colorStyle(bgColor, textColor, style)}
       {...rest}
     >
       {children}
@@ -158,10 +138,7 @@ export const CardContent = ({
 export const CardFooter = ({
   children,
   className = "",
-  bgColor,
-  textColor,
   padding,
-  style,
   ref,
   ...rest
 }: CardFooterProps) => {
@@ -169,7 +146,6 @@ export const CardFooter = ({
     <div
       ref={ref}
       className={cn(styles.cardFooter, paddingClass(padding), className)}
-      style={colorStyle(bgColor, textColor, style)}
       {...rest}
     >
       {children}

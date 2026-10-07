@@ -3,7 +3,7 @@ import { act, render, renderHook, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ConfigProvider, useConfig } from "./ConfigProvider";
 import i18n from "../config/i18n";
-import { dark, githubDark } from "../styles/themes";
+import { dark, githubDark } from "@minerva/core";
 import { mockColorScheme } from "../test-utils/matchMedia";
 
 const ShowConfig = () => {

@@ -32,7 +32,7 @@ export default function UseThemeDemo() {
             <code>{label}</code>
           </dt>
           <dd style={{ margin: 0 }}>
-            <Tag variant="primary">{value}</Tag>
+            <Tag color="primary">{value}</Tag>
           </dd>
         </div>
       ))}

@@ -3,10 +3,10 @@ import { Alert, Button } from "@minerva/lib-core";
 export default function WithActionDemo() {
   return (
     <Alert
-      variant="error"
+      color="danger"
       title="Sync failed"
       action={
-        <Button size="small" variant="error">
+        <Button size="small" color="danger">
           Retry
         </Button>
       }

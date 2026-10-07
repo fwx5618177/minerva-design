@@ -1,21 +1,35 @@
 import type { HTMLAttributes, Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
-export type TagVariant =
-  "default" | "primary" | "success" | "warning" | "error" | "info";
 export type TagSize = "small" | "medium" | "large";
 export type TagShape = "square" | "rounded" | "circle";
 
+/**
+ * Props of the Tag.
+ *
+ * The colors of each `color` can be overridden with CSS custom properties
+ * (e.g. through `style`, a class or a theme): `--tag-<color>-bg` (background
+ * of the `subtle` and `outline` variants) and `--tag-<color>-text` (text and
+ * border color of those variants), e.g. `--tag-danger-bg`,
+ * `--tag-neutral-text`.
+ */
 export interface TagProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "children" | "onClick"
+  "children" | "onClick" | "color"
 > {
   /** Content of the tag */
   children?: React.ReactNode;
   /**
-   * Color scheme
-   * @default "default"
+   * Semantic color of the tag
+   * @default "neutral"
    */
-  variant?: TagVariant;
+  color?: ColorScheme;
+  /**
+   * Visual style: `subtle` (tinted background), `outline` (tinted background
+   * with a border) or `solid` (filled with the color, inverse text)
+   * @default "subtle"
+   */
+  variant?: "subtle" | "outline" | "solid";
   /**
    * Tag size
    * @default "medium"
@@ -41,26 +55,26 @@ export interface TagProps extends Omit<
   clickable?: boolean;
   /** Called when the tag is activated (requires clickable) */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  /** Pressed state of a toggle tag (requires clickable); sets aria-pressed */
+  /**
+   * Pressed (selected) state of a toggle tag, e.g. a selectable filter
+   * (requires clickable); sets aria-pressed and the selected style
+   */
   pressed?: boolean;
   /** Icon displayed before the content */
   icon?: React.ReactNode;
+  /** Avatar (e.g. a small Avatar or image) displayed before the content */
+  avatar?: React.ReactNode;
   /**
-   * Shows a border
+   * Shows a spinner instead of the icon / avatar, marks the tag busy and
+   * blocks its action; the close button is hidden
    * @default false
    */
-  bordered?: boolean;
+  loading?: boolean;
   /**
    * Shows a shadow
    * @default false
    */
   elevation?: boolean;
-  /** Custom background color */
-  bgColor?: string;
-  /** Custom text color */
-  textColor?: string;
-  /** Custom border color */
-  borderColor?: string;
   /** Additional class name */
   className?: string;
   /** Inline styles */

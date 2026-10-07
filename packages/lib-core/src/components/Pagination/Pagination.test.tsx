@@ -86,7 +86,7 @@ describe("Pagination", () => {
           total={50}
           size="small"
           shape="circle"
-          variant="outlined"
+          variant="outline"
           responsive
           className="custom"
           style={{ margin: 4 }}
@@ -97,22 +97,29 @@ describe("Pagination", () => {
         "pagination",
         "small",
         "circle",
-        "outlined",
+        "outline",
         "responsive",
         "custom",
       );
       expect(nav).toHaveStyle({ margin: "4px" });
     });
 
-    it("applies large/square/text classes", () => {
+    it("applies large/square/ghost classes", () => {
       render(
-        <Pagination total={50} size="large" shape="square" variant="text" />,
+        <Pagination total={50} size="large" shape="square" variant="ghost" />,
       );
       expect(screen.getByRole("navigation")).toHaveClass(
         "large",
         "square",
-        "text",
+        "ghost",
       );
+    });
+
+    it("applies the solid variant class by default", () => {
+      render(<Pagination total={50} />);
+      const nav = screen.getByRole("navigation");
+      expect(nav).toHaveClass("solid");
+      expect(nav).not.toHaveClass("outline", "ghost");
     });
 
     it("uses itemRender for custom content", () => {

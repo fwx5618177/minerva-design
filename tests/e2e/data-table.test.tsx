@@ -79,7 +79,7 @@ function BookListPage({ initialError = false }: { initialError?: boolean }) {
     {
       key: "score",
       header: (
-        <Button appearance="ghost" size="small" onClick={s.cycleSort}>
+        <Button variant="ghost" size="small" onClick={s.cycleSort}>
           {s.scoreLabel}
         </Button>
       ),

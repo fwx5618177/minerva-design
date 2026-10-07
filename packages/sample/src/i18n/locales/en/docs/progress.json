@@ -1,14 +1,22 @@
 {
   "title": "ProgressIndicator",
-  "description": "Indicates that something is loading: ProgressIndicator for bars and spinners with a progressbar role, Spinner for a lightweight inline status ring.",
+  "description": "Indicates that something is loading: an indeterminate progressbar drawn as a spinner, circle, wave, bar or dotted bar.",
   "demos": {
-    "types": {
-      "title": "Types",
-      "description": "Spinner (default), circle, wave, bar and dotted bar."
+    "variants": {
+      "title": "Variants",
+      "description": "variant picks the style: spinner (default), circle, wave, bar or dotted bar."
     },
     "sizes": {
       "title": "Sizes",
-      "description": "Small, medium (default) and large."
+      "description": "Five sizes from xsmall to xlarge: the diameter of round indicators or the thickness of bars."
+    },
+    "colors": {
+      "title": "Colors",
+      "description": "Semantic color: primary (default) or neutral; the special value current follows the surrounding text color (currentColor), e.g. inside buttons."
+    },
+    "label": {
+      "title": "Visible label",
+      "description": "A visible label sits next to the indicator and names the progressbar."
     },
     "width": {
       "title": "Width",
@@ -17,32 +25,21 @@
     "with-icon": {
       "title": "With icon",
       "description": "Show an icon before the indicator. Always describe what is loading with ariaLabel."
-    },
-    "spinner": {
-      "title": "Spinner",
-      "description": "A lightweight inline ring that is a polite status region; color can follow the current text color."
-    },
-    "spinner-sizes": {
-      "title": "Spinner sizes",
-      "description": "Five diameters from 12px to 48px."
     }
   },
   "api": {
     "ProgressIndicatorProps": {
-      "type": "Indicator style",
+      "variant": "Indicator style",
       "size": "Indicator size",
+      "color": "Semantic color of the indicator: theme primary or neutral gray. The special value current follows the surrounding text color (currentColor)",
       "icon": "Icon displayed before the indicator",
+      "label": "Visible text shown next to the indicator; it also names the progressbar unless ariaLabel is set",
       "ariaLabel": "Accessible label describing what is loading",
+      "decorative": "Purely visual: drops the progressbar role and hides the indicator from assistive technologies",
       "className": "Additional class name",
-      "width": "Custom width (ignored when full is set)",
+      "width": "Custom width (ignored when full is set); bars default to 200px",
       "full": "Stretches the indicator to the full width of its container",
       "ref": "Ref to the root <div> element"
-    },
-    "SpinnerProps": {
-      "size": "Diameter preset",
-      "color": "Ring color; current follows the surrounding text color",
-      "label": "Visually hidden announced text; pass an empty string when decorative",
-      "ref": "Ref to the root <span> element"
     }
   }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { IoChevronForward } from "react-icons/io5";
 import type { CascaderPanelProps, CascaderOption } from "./types";
 import useI18n from "../../hooks/useI18n";
@@ -147,7 +147,7 @@ const CascaderPanel = ({
               <li
                 key={option.value}
                 data-expanded={isExpanded || undefined}
-                className={classNames(styles.option, {
+                className={cn(styles.option, {
                   [styles.active]: isExpanded || isSelected,
                   [styles.disabled]: option.disabled,
                   [styles.loading]: option.loading,

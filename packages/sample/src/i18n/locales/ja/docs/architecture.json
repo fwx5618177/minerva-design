@@ -1,0 +1,40 @@
+{
+  "title": "アーキテクチャ",
+  "description": "Minerva のパッケージ構成：インタラクションのプリミティブを持つフレームワーク非依存のコア、その上に構築された React コンポーネント、そして Web Components。",
+  "packages": {
+    "title": "パッケージ",
+    "text": "Minerva は 3 つのライブラリを公開する pnpm モノレポです。インタラクションのロジック、テーマのデータ、翻訳は @minerva/core に一度だけ書かれ、各フレームワーク向けパッケージは描画だけを担当します。",
+    "package": "パッケージ",
+    "core": "フレームワーク非依存の TypeScript（DOM のみ、React や Lit なし）：フォーカススコープ、閉じられるレイヤーのスタック、スクロールロック、他要素の非表示、ロービングフォーカスとタイプアヘッド、位置決め、ポータルのホスト、ID と制御可能な状態、さらにテーマユーティリティ、パレット、デザイントークン（tokens.css）、i18n メッセージ。",
+    "libCore": "React 19 のコンポーネントライブラリ。コンポーネントはコアのプリミティブを包む薄いフック（src/internal）を使うため、すべてのオーバーレイが同じ実装を共有します。公開 API に含まれるテーマのヘルパーと型を再エクスポートし、コアのトークンを style.css に同梱します。",
+    "webComponents": "どのフレームワークでも、フレームワークなしでも使える Lit のカスタム要素。今後、Lit コントローラーを通して同じコアのプリミティブを再利用します。"
+  },
+  "primitives": {
+    "title": "コアのプリミティブ",
+    "text": "各プリミティブは DOM 要素を扱う小さな関数で、後片付け用の関数かコントローラーを返します。入れ子にも対応しており、どのオーバーレイが先に反応するかはスタックが決めます。",
+    "focusScope": "createFocusScope：開いたときのフォーカス、ループする Tab のトラップ、閉じたときに開いた要素へフォーカスを戻す。入れ子のスコープは外側を一時停止します。",
+    "dismissableLayer": "createDismissableLayer：Escape、外側でのポインター押下、外側へのフォーカス移動で閉じるのは最前面のレイヤーだけ。子レイヤー（サブメニュー、Modal 内の Select）でのクリックが親を閉じることはありません。",
+    "scrollLock": "lockScroll：参照カウント付きのページスクロールロック。スクロールバーの幅を補正します。",
+    "hideOthers": "hideOthers：モーダル以外を支援技術から隠し（aria-hidden または inert）、モーダルが入れ子になっても正しく元に戻します。",
+    "rovingFocus": "getNextIndex、createTypeahead、createRovingFocus：メニュー、リストボックス、タブ向けの矢印キー、Home / End、折り返し、方向、右から左、タイプアヘッド。",
+    "positioning": "computeAnchoredPosition / autoPosition：オフセット、反転、シフト、サイズ、矢印に対応したアンカー配置。スクロールやリサイズの間も位置を保ちます。",
+    "pointerGrace": "createPointerGrace：ポインターがサブメニューへ向かう間それを開いたままにするセーフトライアングル。",
+    "portal": "getPortalContainer / createPortalHost：オーバーレイの描画先。入れ子の ConfigProvider はテーマのスコープごとにポータルのホストを作ります。",
+    "state": "createId と createControllableState：フレームワークなしの一意な ID と、制御 / 非制御の状態。",
+    "theme": "テーマユーティリティ：Cookie の解析、ちらつき防止の初期化スクリプト、パレット、デザイントークン。"
+  },
+  "overlays": {
+    "title": "すべてのオーバーレイに 1 つの実装",
+    "p1": "Modal、Drawer、AppShell のモバイルナビゲーション、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker はすべて同じレイヤースタックに登録され、同じフォーカス処理と位置決めを使います。Escape は常に最も内側のオーバーレイから閉じ、フォーカスは元の場所へ戻ります。",
+    "p2": "どれも最も近いテーマスコープのポータルコンテナーに描画されるため、独自のテーマを持つ入れ子の ConfigProvider はそのポップアップにもテーマを適用します。"
+  },
+  "dependencies": {
+    "title": "依存関係",
+    "text": "Floating UI（@floating-ui/dom）が唯一のサードパーティのインタラクション依存で、コアの位置決めモジュール内でのみ使われます。Radix UI などのヘッドレスライブラリは使いません。Slot / asChild、Tabs、ダイアログ、メニュー、セレクトはこのリポジトリで開発され、Vitest、happy-dom、Testing Library、user-event でテストされています。"
+  },
+  "next": {
+    "title": "次のステップ",
+    "installation": "パッケージをインストールしてスタイルシートを読み込みます。",
+    "webComponents": "Lit ベースのカスタム要素を使います。"
+  }
+}

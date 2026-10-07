@@ -1,6 +1,6 @@
 {
   "title": "Input",
-  "description": "A bare single-line input with sizes, variants and prefix / suffix content. Use TextField for a self-contained labelled field.",
+  "description": "A single-line text input with sizes, variants, prefix / suffix content, a clear button, a character count and a password visibility toggle. Wrap it in a FormField for a label, helper text and error message.",
   "demos": {
     "basic": {
       "title": "Basic usage",
@@ -14,9 +14,21 @@
       "title": "Prefix and suffix",
       "description": "Decorative content such as icons, symbols or units."
     },
+    "clearable-and-count": {
+      "title": "Clear button and character count",
+      "description": "clearable shows a labelled clear button while the field has a value; clearing fires onChange with an empty value and keeps focus in the field. showCharCount shows the length (and maxLength) and links it to the input."
+    },
+    "password": {
+      "title": "Password",
+      "description": "type=\"password\" adds a show / hide toggle button with a localized label."
+    },
     "states": {
       "title": "States",
       "description": "invalid, disabled and readOnly; inside a FormField the state is inherited."
+    },
+    "validation": {
+      "title": "Validation",
+      "description": "Validate on submit and show the message with the FormField errorMessage: the input becomes invalid and is described by the message."
     }
   },
   "api": {
@@ -24,10 +36,16 @@
       "variant": "Visual style",
       "size": "Height and font size",
       "invalid": "Error state (also set by an invalid FormControl); sets aria-invalid",
-      "prefix": "Decorative content before the text, e.g. an icon or \"@\"",
-      "suffix": "Decorative content after the text, e.g. a unit",
+      "prefix": "Content before the text, e.g. an icon or \"@\"",
+      "suffix": "Content after the text, e.g. a unit, an icon or a button",
       "className": "Class name of the outer wrapper (not the <input>)",
-      "ref": "Ref to the <input> element"
+      "ref": "Ref to the <input> element",
+      "clearable": "Shows a clear button while the field has a value (not when disabled or read-only); clearing fires onChange with an empty value",
+      "onClear": "Called after the clear button emptied the field",
+      "clearLabel": "Accessible label of the clear button (defaults to a localized \"Clear\")",
+      "showCharCount": "Shows the number of characters (and maxLength, when set), linked to the input with aria-describedby",
+      "showPasswordLabel": "Accessible label of the password toggle while the password is hidden",
+      "hidePasswordLabel": "Accessible label of the password toggle while the password is visible"
     }
   }
 }

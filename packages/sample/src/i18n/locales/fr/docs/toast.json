@@ -1,14 +1,26 @@
 {
   "title": "Toast",
-  "description": "Notifications temporaires avec un titre, une description et un statut, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application. Contrairement à message, les toasts héritent du contexte de l’application (thème, langue) et afficher un toast avec un id existant le remplace. Compatible avec le rendu serveur.",
+  "description": "Notifications temporaires avec un titre, une description et une couleur sémantique, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application, si bien qu’elles héritent de son contexte (thème, langue). Chargement, suivi de promesse, mise à jour sur place, actions et nombre maximal sont intégrés. Compatible avec le rendu serveur.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Montez un ToastProvider près de la racine (cette démo monte celui utilisé sur cette page), puis appelez toast.success / error / warning / info."
+      "description": "Montez un ToastProvider près de la racine (cette démo monte celui utilisé sur cette page), puis appelez toast.success / danger / warning / info. position choisit le bord de l’écran ; max={3} ferme le plus ancien toast quand un quatrième apparaît. Plusieurs providers n’affichent jamais un toast deux fois : seul le plus externe (ou le premier monté) rend les toasts, avec ses propres position, max et portée de thème, et le suivant prend le relais quand il est démonté."
+    },
+    "colors": {
+      "title": "Couleurs",
+      "description": "color choisit la couleur sémantique : info (par défaut), success, warning ou danger. Elle définit l’accent, l’icône et le rôle : danger est annoncé comme une alerte, les autres comme un statut."
     },
     "options": {
       "title": "Options",
-      "description": "toast({ status, title, description, duration }) pour un contrôle complet ; duration 0 garde le toast jusqu’à sa fermeture. toast.dismiss(id) ferme un toast, toast.dismiss() tous. Survoler ou focaliser un toast suspend son minuteur."
+      "description": "toast({ color, title, description, duration }) pour un contrôle complet ; duration 0 garde le toast jusqu’à sa fermeture. toast.dismiss(id) ferme un toast, toast.dismiss() tous. Survoler ou focaliser un toast suspend son minuteur."
+    },
+    "loading": {
+      "title": "Chargement, mise à jour et promesse",
+      "description": "toast.loading (ou l’option loading: true, avec n’importe quelle couleur) affiche un spinner à la place de l’icône et reste ouvert ; toast.update(id, { loading: false, ... }) le transforme sur place en résultat. toast.promise(promise, { loading, success, error }) fait les deux pour une promesse."
+    },
+    "action": {
+      "title": "Action, icône et onClose",
+      "description": "action ajoute un bouton (par ex. Annuler) qui ferme aussi le toast ; icon remplace l’icône de la couleur ; closable: false masque le bouton de fermeture ; onClose est appelé une fois à la fermeture."
     },
     "dedupe": {
       "title": "Le même id remplace",
@@ -18,14 +30,24 @@
   "api": {
     "ToastOptions": {
       "id": "Identifiant du toast ; généré s’il est omis. Afficher un toast avec l’id d’un toast visible le remplace (et relance son minuteur) au lieu d’empiler un doublon",
-      "status": "Statut du toast",
+      "color": "Couleur sémantique du toast ; définit son accent, son icône et son rôle ARIA (danger est annoncé comme une alerte, les autres comme un statut)",
+      "loading": "Affiche un spinner à la place de l’icône et garde le toast ouvert (duration vaut 0 par défaut) jusqu’à sa mise à jour ou sa fermeture ; annoncé comme un statut",
       "title": "Texte principal",
       "description": "Texte secondaire sous le titre",
-      "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert"
+      "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert. 0 par défaut pour les toasts de chargement",
+      "icon": "Remplace l’icône de la couleur (ou le spinner de chargement) ; null la masque",
+      "closable": "Affiche le bouton de fermeture",
+      "action": "Bouton d’action affiché dans le toast (par ex. Annuler)",
+      "onClose": "Appelé une fois avec l’id du toast à sa fermeture, quelle qu’en soit la raison"
+    },
+    "ToastAction": {
+      "label": "Texte visible du bouton",
+      "onClick": "Appelé à l’activation du bouton, avant la fermeture du toast"
     },
     "ToastProviderProps": {
       "position": "Emplacement de la pile de toasts",
       "children": "Contenu de l’application ; la zone des toasts est rendue après lui",
+      "max": "Nombre maximal de toasts affichés à la fois ; au-delà, les plus anciens se ferment d’abord",
       "pauseOnHover": "Suspend le minuteur de fermeture automatique pendant le survol ou le focus d’un toast",
       "ariaLabel": "Libellé accessible de la région des toasts",
       "closeLabel": "Libellé accessible des boutons de fermeture"
@@ -34,8 +56,16 @@
       "info": "Affiche un toast d’information avec le titre donné",
       "success": "Affiche un toast de succès avec le titre donné",
       "warning": "Affiche un toast d’avertissement avec le titre donné",
-      "error": "Affiche un toast de danger avec le titre donné",
+      "danger": "Affiche un toast de danger avec le titre donné",
+      "loading": "Affiche un toast de chargement (spinner, sans fermeture automatique) avec le titre donné",
+      "promise": "Affiche un toast de chargement pendant la promesse, puis le transforme en toast de succès ou d’erreur ; renvoie la promesse donnée",
+      "update": "Modifie sur place un toast ouvert (en fusionnant les options) et relance son minuteur ; loading: false transforme un toast de chargement en toast normal (avec la durée par défaut sauf si une durée est donnée). Les id inconnus sont ignorés",
       "dismiss": "Ferme le toast ayant l’id donné, ou tous les toasts s’il est omis"
+    },
+    "ToastPromiseMessages": {
+      "loading": "Titre pendant que la promesse est en attente",
+      "success": "Titre une fois la promesse résolue (un nœud, ou une fonction de la valeur)",
+      "error": "Titre une fois la promesse rejetée (un nœud, ou une fonction de l’erreur)"
     }
   }
 }

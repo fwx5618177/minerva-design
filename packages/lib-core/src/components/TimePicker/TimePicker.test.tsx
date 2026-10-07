@@ -60,7 +60,9 @@ describe("TimePicker", () => {
   it("applies the size to the input", () => {
     const { container } = renderTimePicker({ size: "small" });
 
-    expect(container.querySelector(".textField")).toHaveClass("small");
+    expect(container.querySelector('[data-component="input"]')).toHaveClass(
+      "small",
+    );
   });
 
   it("opens the panel when the input is clicked and toggles closed on a second click", async () => {

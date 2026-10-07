@@ -1,6 +1,6 @@
 {
   "title": "Stack",
-  "description": "Primitives de mise en page flex (Stack, HStack, VStack) avec des espacements par jetons. Contrairement à Space, les enfants ne sont pas enveloppés.",
+  "description": "Primitives de mise en page flex (Stack, HStack, VStack) avec des espacements par jetons, des séparateurs et des groupes accolés. Les enfants ne sont pas enveloppés.",
   "demos": {
     "basic": {
       "title": "Pile verticale",
@@ -10,9 +10,21 @@
       "title": "Pile horizontale",
       "description": "HStack centre les éléments sur l'axe secondaire ; justify les répartit."
     },
+    "gap": {
+      "title": "Espacement",
+      "description": "Les nombres sélectionnent des jetons d’espacement (2 = 8 px, 4 = 16 px, 6 = 24 px) ; les autres chaînes sont des longueurs CSS."
+    },
     "wrap": {
       "title": "Retour à la ligne et sémantique",
       "description": "wrap permet le retour à la ligne ; as rend une liste."
+    },
+    "separator": {
+      "title": "Séparateur",
+      "description": "separator s’affiche entre les éléments, par exemple un Divider vertical ; les enfants vides n’en reçoivent pas."
+    },
+    "attached": {
+      "title": "Groupe accolé",
+      "description": "attached réunit les éléments en un seul groupe aux bordures partagées et aux seuls coins extérieurs arrondis, comme un contrôle segmenté."
     }
   },
   "api": {
@@ -23,7 +35,9 @@
       "gap": "Espace entre les éléments : nombres et chaînes numériques = jetons, autres chaînes = valeurs CSS. Aucun espace si omis.",
       "align": "Alignement sur l'axe secondaire (align-items) ; non défini si omis",
       "justify": "Répartition sur l'axe principal (justify-content) ; non défini si omis",
-      "wrap": "Fait passer les éléments sur plusieurs lignes"
+      "wrap": "Fait passer les éléments sur plusieurs lignes",
+      "separator": "Affiché entre deux éléments (ni avant le premier ni après le dernier) ; les enfants vides n’en reçoivent pas",
+      "attached": "Réunit les éléments en un groupe accolé : sans espacement, bordures partagées, coins extérieurs arrondis et role=\"group\""
     }
   }
 }

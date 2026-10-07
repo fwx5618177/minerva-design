@@ -150,24 +150,16 @@ describe("Checkbox", () => {
     expect(label).toHaveClass("mine");
   });
 
-  it("applies custom colors to the checkmark", () => {
+  it("colors the box through a semantic class, never inline styles", () => {
     const { container } = render(
-      <Checkbox
-        label="Colors"
-        boxColor="red"
-        boxBorderColor="blue"
-        checkmarkColor="green"
-      />,
+      <Checkbox label="Colors" color="success" className="brand" />,
     );
 
+    const label = screen.getByRole("checkbox").closest("label");
+    // Custom colors go through CSS custom properties set on `className`.
+    expect(label).toHaveClass("colorSuccess", "brand");
     const checkmark = container.querySelector<HTMLElement>(".checkmark");
-    expect(checkmark).toHaveStyle({
-      backgroundColor: "red",
-      borderColor: "blue",
-    });
-    expect(checkmark?.style.getPropertyValue("--checkmark-color")).toBe(
-      "green",
-    );
+    expect(checkmark?.getAttribute("style")).toBeNull();
   });
 
   it("renders helper text without error icon by default", () => {

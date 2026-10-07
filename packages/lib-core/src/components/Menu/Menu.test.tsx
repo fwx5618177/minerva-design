@@ -8,10 +8,10 @@ import {
   within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as Dialog from "@radix-ui/react-dialog";
 import { describe, expect, it, vi } from "vitest";
 import { ContextMenu, Menu, type MenuEntry, type MenuProps } from ".";
 import { IconButton } from "../IconButton";
+import { ModalContent, ModalHeader, ModalRoot } from "../Modal";
 import styles from "./menu.module.scss";
 
 const deleteItem = { key: "delete", label: "Delete" };
@@ -298,16 +298,14 @@ describe("Menu", () => {
   it("keeps menu focus and Escape inside an enclosing modal dialog", async () => {
     const onOpenChange = vi.fn();
     render(
-      <Dialog.Root open onOpenChange={onOpenChange}>
-        <Dialog.Portal>
-          <Dialog.Content aria-describedby={undefined}>
-            <Dialog.Title>Settings</Dialog.Title>
-            <Menu items={[{ key: "edit", label: "Edit" }]}>
-              <IconButton ariaLabel="Nested actions" icon="..." />
-            </Menu>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>,
+      <ModalRoot open onOpenChange={onOpenChange}>
+        <ModalContent hideCloseButton>
+          <ModalHeader>Settings</ModalHeader>
+          <Menu items={[{ key: "edit", label: "Edit" }]}>
+            <IconButton ariaLabel="Nested actions" icon="..." />
+          </Menu>
+        </ModalContent>
+      </ModalRoot>,
     );
     const trigger = screen.getByRole("button", { name: "Nested actions" });
     await act(async () => {
@@ -402,5 +400,169 @@ describe("ContextMenu", () => {
     );
     fireEvent.contextMenu(screen.getByText("Off"));
     expect(screen.queryByRole("menu")).toBeNull();
+  });
+});
+
+// Trigger keyboard, selection and dismissal behaviours.
+describe("Menu keyboard and dismissal", () => {
+  const actions: MenuEntry[] = [
+    { key: "edit", label: "Edit" },
+    { key: "archive", label: "Archive", disabled: true },
+    { key: "delete", label: "Delete" },
+    { key: "off", label: "Off", disabled: true },
+  ];
+
+  function setup(extra: Partial<MenuProps> = {}) {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const onSelect = vi.fn();
+    render(
+      <>
+        <Menu
+          items={actions}
+          onSelect={onSelect}
+          ariaLabel="Row actions"
+          {...extra}
+        >
+          <button type="button">Actions</button>
+        </Menu>
+        <button type="button">Outside</button>
+      </>,
+    );
+    return {
+      user,
+      onSelect,
+      trigger: screen.getByRole("button", { name: "Actions" }),
+    };
+  }
+  const item = (name: string) => screen.getByRole("menuitem", { name });
+
+  it.each(["{Enter}", " ", "{ArrowDown}"])(
+    "opens with %s and focuses the first enabled item",
+    async (key) => {
+      const { user, trigger } = setup();
+      await user.tab();
+      expect(trigger).toHaveFocus();
+      await user.keyboard(key);
+      expect(screen.getByRole("menu", { name: "Row actions" })).toBeVisible();
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+      await waitFor(() => expect(item("Edit")).toHaveFocus());
+    },
+  );
+
+  it("moves with arrows skipping disabled items, and Home / End jump to the ends", async () => {
+    const { user } = setup();
+    await user.tab();
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() => expect(item("Edit")).toHaveFocus());
+    expect(item("Archive")).toHaveAttribute("aria-disabled", "true");
+
+    await user.keyboard("{ArrowDown}");
+    expect(item("Delete")).toHaveFocus();
+    // "Off" is disabled: focus wraps around to the first enabled item (loop)
+    await user.keyboard("{ArrowDown}");
+    expect(item("Edit")).toHaveFocus();
+    await user.keyboard("{ArrowUp}");
+    expect(item("Delete")).toHaveFocus();
+    await user.keyboard("{ArrowUp}");
+    expect(item("Edit")).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(item("Delete")).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(item("Edit")).toHaveFocus();
+  });
+
+  it.each(["{Enter}", " "])(
+    "selects the active item with %s, closes and returns focus to the trigger",
+    async (key) => {
+      const { user, trigger, onSelect } = setup();
+      await user.tab();
+      await user.keyboard("{ArrowDown}");
+      await waitFor(() => expect(item("Edit")).toHaveFocus());
+      await user.keyboard("{ArrowDown}");
+      expect(item("Delete")).toHaveFocus();
+      await user.keyboard(key);
+      expect(onSelect).toHaveBeenCalledExactlyOnceWith(actions[2]);
+      await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+      await waitFor(() => expect(trigger).toHaveFocus());
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+    },
+  );
+
+  it("closes with Escape without selecting and returns focus to the trigger", async () => {
+    const { user, trigger, onSelect } = setup();
+    await user.tab();
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() => expect(item("Edit")).toHaveFocus());
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    await waitFor(() => expect(trigger).toHaveFocus());
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it("ignores clicks on disabled items without closing", async () => {
+    const { user, trigger, onSelect } = setup();
+    await user.click(trigger);
+    await user.click(item("Archive"));
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("toggles with the trigger and closes when clicking outside", async () => {
+    const { user, trigger } = setup();
+    await user.click(trigger);
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    await user.click(trigger);
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+
+    await user.click(trigger);
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    // Modal menus hide the rest of the page from assistive technologies
+    await user.click(
+      screen.getByRole("button", { name: "Outside", hidden: true }),
+    );
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("stays closed while controlled closed, reporting the open request", async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <Menu items={actions} open={false} onOpenChange={onOpenChange}>
+        <button type="button">Actions</button>
+      </Menu>,
+    );
+    await user.click(screen.getByRole("button", { name: "Actions" }));
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(true);
+    expect(screen.queryByRole("menu")).toBeNull();
+    rerender(
+      <Menu items={actions} open onOpenChange={onOpenChange}>
+        <button type="button">Actions</button>
+      </Menu>,
+    );
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+  });
+
+  it("keeps the trigger's own handlers", async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const onClick = vi.fn();
+    const onKeyDown = vi.fn();
+    render(
+      <Menu items={actions}>
+        <button type="button" onClick={onClick} onKeyDown={onKeyDown}>
+          Own
+        </button>
+      </Menu>,
+    );
+    await user.click(screen.getByRole("button", { name: "Own" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    screen.getByRole("button", { name: "Own" }).focus();
+    await user.keyboard("{ArrowDown}");
+    expect(onKeyDown).toHaveBeenCalled();
   });
 });

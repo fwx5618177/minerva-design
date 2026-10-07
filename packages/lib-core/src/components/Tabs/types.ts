@@ -4,6 +4,7 @@ import type {
   ReactNode,
   Ref,
 } from "react";
+import type { ColorScheme } from "@minerva/core";
 
 /**
  * Visual style: `line` (underline indicator), `enclosed` (browser-like
@@ -11,14 +12,10 @@ import type {
  */
 export type TabsVariant = "line" | "enclosed" | "soft" | "pills";
 
-/** Semantic color of the selection (and of explicitly colored tabs) */
-export type TabsColor =
-  "primary" | "neutral" | "success" | "warning" | "danger" | "info";
-
 /** Layout / keyboard direction of the tab list */
 export type TabsOrientation = "horizontal" | "vertical";
 
-/** Props of `Tabs`, the root of a tabs group (Radix Tabs) */
+/** Props of `Tabs`, the root of a tabs group */
 export interface TabsProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange" | "defaultValue" | "dir" | "color"
@@ -51,7 +48,7 @@ export interface TabsProps extends Omit<
    * Color of the selection
    * @default "primary"
    */
-  color?: TabsColor;
+  color?: ColorScheme;
   /** `TabList` and `TabPanel` elements */
   children?: ReactNode;
   /** Ref to the root `<div>` element */
@@ -87,7 +84,7 @@ export interface TabProps extends Omit<
    * Overrides the group color; an explicitly colored tab keeps a tinted
    * background while inactive
    */
-  color?: TabsColor;
+  color?: ColorScheme;
   /** Ref to the `<button>` element */
   ref?: Ref<HTMLButtonElement>;
 }

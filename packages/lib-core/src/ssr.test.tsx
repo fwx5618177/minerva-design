@@ -21,25 +21,17 @@ const {
   CardTitle,
   Cascader,
   Checkbox,
-  Chip,
   ConfigProvider,
   Divider,
-  Dropdown,
   Empty,
   IconButton,
-  InteractiveIconButton,
   Pagination,
-  Popper,
   ProgressIndicator,
   Radio,
   RadioGroup,
-  SearchButton,
   Skeleton,
-  Space,
-  StatusIndicator,
   Switch,
   Tag,
-  TextField,
   TimePicker,
   Tooltip,
   VirtualList,
@@ -48,7 +40,7 @@ const {
 const ownCases: Array<[string, React.ReactElement]> = [
   [
     "Alert",
-    <Alert variant="info" title="Title" closable>
+    <Alert color="info" title="Title" closable>
       Body
     </Alert>,
   ],
@@ -92,9 +84,7 @@ const ownCases: Array<[string, React.ReactElement]> = [
     />,
   ],
   ["Checkbox", <Checkbox label="Check" defaultChecked />],
-  ["Chip", <Chip label="Chip" onDelete={() => {}} />],
   ["Divider", <Divider>Text</Divider>],
-  ["Dropdown", <Dropdown items={[{ label: "One", value: "1" }]} defaultOpen />],
   ["Empty", <Empty />],
   [
     "IconButton",
@@ -105,16 +95,9 @@ const ownCases: Array<[string, React.ReactElement]> = [
       tooltip={{ content: "Tip" }}
     />,
   ],
-  ["InteractiveIconButton", <InteractiveIconButton type="favorite" />],
   [
     "Pagination",
     <Pagination total={100} showQuickJumper showSizeChanger showTotal />,
-  ],
-  [
-    "Popper",
-    <Popper anchorEl={null} visible>
-      Content
-    </Popper>,
   ],
   ["ProgressIndicator", <ProgressIndicator />],
   ["Radio", <Radio label="Radio" value="r" />],
@@ -124,16 +107,7 @@ const ownCases: Array<[string, React.ReactElement]> = [
       <Radio value="a" label="A" />
     </RadioGroup>,
   ],
-  ["SearchButton", <SearchButton />],
   ["Skeleton", <Skeleton loading />],
-  [
-    "Space",
-    <Space>
-      <span>a</span>
-      <span>b</span>
-    </Space>,
-  ],
-  ["StatusIndicator", <StatusIndicator type="online" />],
   ["Switch", <Switch label="Switch" defaultChecked />],
   [
     "Tag",
@@ -141,7 +115,6 @@ const ownCases: Array<[string, React.ReactElement]> = [
       Tag
     </Tag>,
   ],
-  ["TextField", <TextField name="t" label="T" defaultValue="v" clearable />],
   ["TimePicker", <TimePicker defaultValue={new Date(2024, 0, 1, 9, 30, 0)} />],
   [
     "Tooltip",

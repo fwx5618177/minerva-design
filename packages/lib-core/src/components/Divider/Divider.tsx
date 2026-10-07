@@ -1,13 +1,13 @@
 import React from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { DividerProps } from "./types";
 import styles from "./divider.module.scss";
 
 /**
- * Divider 分割线组件
+ * Divider 分割线组件。线条颜色读取 CSS 自定义属性 `--divider-color`
+ * (默认 `var(--border-color)`)，可通过 className / style 覆盖
  * @param variant - 分割线的样式变体
  * @param orientation - 分割线方向
- * @param color - 分割线颜色
  * @param thickness - 分割线粗细
  * @param length - 分割线长度
  * @param spacing - 分割线两端间距
@@ -22,7 +22,6 @@ import styles from "./divider.module.scss";
 const Divider = ({
   variant = "solid",
   orientation = "horizontal",
-  color,
   thickness = 1,
   length,
   spacing = 16,
@@ -44,7 +43,6 @@ const Divider = ({
     children !== "";
   const dividerStyle: React.CSSProperties = {
     ...style,
-    ...(color && { borderColor: color }),
     ...(thickness != null && { borderWidth: thickness }),
     ...(orientation === "vertical" && length != null && { height: length }),
     ...(orientation === "horizontal" && length != null && { width: length }),
@@ -56,7 +54,7 @@ const Divider = ({
     }),
   };
 
-  const dividerClasses = classNames(
+  const dividerClasses = cn(
     styles.divider,
     styles[variant],
     styles[orientation],

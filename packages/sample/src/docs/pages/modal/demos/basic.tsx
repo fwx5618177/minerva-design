@@ -15,10 +15,14 @@ export default function BasicDemo() {
       >
         <ModalBody>Other team members lose access immediately.</ModalBody>
         <ModalFooter>
-          <Button variant="secondary" onClick={() => setOpen(false)}>
+          <Button
+            color="neutral"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
             Cancel
           </Button>
-          <Button variant="error" onClick={() => setOpen(false)}>
+          <Button color="danger" onClick={() => setOpen(false)}>
             Delete
           </Button>
         </ModalFooter>

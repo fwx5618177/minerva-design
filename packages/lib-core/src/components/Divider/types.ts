@@ -4,6 +4,10 @@ export type DividerVariant = "solid" | "dashed" | "dotted";
 export type DividerOrientation = "horizontal" | "vertical";
 export type DividerTextAlign = "left" | "center" | "right";
 
+/**
+ * The line color comes from the `--divider-color` CSS custom property
+ * (default `var(--border-color)`); set it through `className` or `style`.
+ */
 export interface DividerProps extends Omit<
   HTMLAttributes<HTMLElement>,
   "children" | "color"
@@ -18,8 +22,6 @@ export interface DividerProps extends Omit<
    * @default "horizontal"
    */
   orientation?: DividerOrientation;
-  /** Line color */
-  color?: string;
   /**
    * Line thickness in pixels
    * @default 1

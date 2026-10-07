@@ -1,14 +1,26 @@
 {
   "title": "Toast トースト",
-  "description": "タイトル、説明、ステータスを持つ一時的な通知です。toast() でどこからでも表示でき（React コンテキスト不要）、アプリのツリー内の ToastProvider が描画します。message と異なり、トーストはアプリのコンテキスト（テーマ、ロケール）を引き継ぎ、既存の id で表示すると置き換わります。サーバーレンダリングにも対応します。",
+  "description": "タイトル、説明、セマンティックカラーを持つ一時的な通知です。toast() でどこからでも表示でき（React コンテキスト不要）、アプリのツリー内の ToastProvider が描画するため、アプリのコンテキスト（テーマ、ロケール）を引き継ぎます。読み込み表示、Promise の追跡、その場での更新、アクション、最大表示数を備えています。サーバーレンダリングにも対応します。",
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "ルート付近に ToastProvider を 1 つ配置し（このデモがこのページで使うものを配置しています）、toast.success / error / warning / info を呼び出します。"
+      "description": "ルート付近に ToastProvider を 1 つ配置し（このデモがこのページで使うものを配置しています）、toast.success / danger / warning / info を呼び出します。position で表示位置を選び、max={3} は 4 件目が表示されると最も古いトーストを閉じます。 ToastProvider が複数あってもトーストが二重に表示されることはありません。最も外側（または最初にマウントされた）プロバイダーだけが自身の position・max・テーマスコープで描画し、それがアンマウントされると次のプロバイダーが引き継ぎます。"
+    },
+    "colors": {
+      "title": "カラー",
+      "description": "color でセマンティックカラーを選びます：info（デフォルト）、success、warning、danger。アクセントカラー、アイコン、ロールが決まり、danger は alert、それ以外は status として読み上げられます。"
     },
     "options": {
       "title": "オプション",
-      "description": "toast({ status, title, description, duration }) で細かく制御できます。duration が 0 の場合は閉じるまで表示されます。toast.dismiss(id) で 1 件、toast.dismiss() ですべて閉じます。ホバーまたはフォーカス中はタイマーが一時停止します。"
+      "description": "toast({ color, title, description, duration }) で細かく制御できます。duration が 0 の場合は閉じるまで表示されます。toast.dismiss(id) で 1 件、toast.dismiss() ですべて閉じます。ホバーまたはフォーカス中はタイマーが一時停止します。"
+    },
+    "loading": {
+      "title": "読み込み・更新・Promise",
+      "description": "toast.loading（または任意の色と loading: true オプション）はアイコンの代わりにスピナーを表示し、自動では閉じません。toast.update(id, { loading: false, ... }) でその場で結果に変えられます。toast.promise(promise, { loading, success, error }) は Promise に対してこれを自動で行います。"
+    },
+    "action": {
+      "title": "アクション・アイコン・onClose",
+      "description": "action はトーストも閉じるボタン（「元に戻す」など）を追加します。icon はカラーのアイコンを置き換え、closable: false は閉じるボタンを隠し、onClose はトーストが閉じたときに 1 回呼ばれます。"
     },
     "dedupe": {
       "title": "同じ id は置き換え",
@@ -18,14 +30,24 @@
   "api": {
     "ToastOptions": {
       "id": "トーストの識別子。省略すると自動生成されます。表示中のトーストと同じ id で表示すると、重複せずに置き換わり（タイマーも再開）ます",
-      "status": "トーストのステータス",
+      "color": "トーストのセマンティックカラー。アクセントカラー、アイコン、ARIA ロールを決めます（danger は alert、それ以外は status として読み上げ）",
+      "loading": "アイコンの代わりにスピナーを表示し、更新または閉じられるまでトーストを開いたままにします（duration の既定値は 0）。status として読み上げられます",
       "title": "メインテキスト",
       "description": "タイトルの下の補足テキスト",
-      "duration": "自動的に閉じるまでのミリ秒数。0 の場合は開いたままです"
+      "duration": "自動で閉じるまでのミリ秒。0 で開いたまま。読み込みトーストの既定値は 0",
+      "icon": "カラーのアイコン（または読み込みスピナー）を置き換えます。null で非表示",
+      "closable": "閉じるボタンを表示する",
+      "action": "トースト内のアクションボタン（「元に戻す」など）",
+      "onClose": "理由を問わずトーストが閉じたときに id を渡して 1 回呼ばれます"
+    },
+    "ToastAction": {
+      "label": "ボタンの表示テキスト",
+      "onClick": "ボタンが押されたとき、トーストが閉じる前に呼ばれます"
     },
     "ToastProviderProps": {
       "position": "トーストを積み重ねる位置",
       "children": "アプリの内容。トーストのビューポートはその後に描画されます",
+      "max": "同時に表示するトーストの最大数。超えると古いものから閉じます",
       "pauseOnHover": "トーストのホバー中またはフォーカス中は自動クローズのタイマーを一時停止します",
       "ariaLabel": "トースト領域のアクセシブルなラベル",
       "closeLabel": "閉じるボタンのアクセシブルなラベル"
@@ -34,8 +56,16 @@
       "info": "指定したタイトルで情報トーストを表示します",
       "success": "指定したタイトルで成功トーストを表示します",
       "warning": "指定したタイトルで警告トーストを表示します",
-      "error": "指定したタイトルで危険トーストを表示します",
+      "danger": "指定したタイトルで危険トーストを表示します",
+      "loading": "指定したタイトルで読み込みトースト（スピナー、自動で閉じない）を表示します",
+      "promise": "Promise の待機中は読み込みトーストを表示し、その後成功またはエラーのトーストに変えます。渡した Promise を返します",
+      "update": "開いているトーストをその場で変更（オプションをマージ）し、タイマーを再開します。loading: false で読み込みトーストを通常のトーストに戻します（duration を指定しなければ既定の表示時間）。未知の id は無視されます",
       "dismiss": "指定した id のトーストを閉じます。省略するとすべて閉じます"
+    },
+    "ToastPromiseMessages": {
+      "loading": "Promise の待機中のタイトル",
+      "success": "Promise が解決したときのタイトル（ノード、または値を受け取る関数）",
+      "error": "Promise が拒否されたときのタイトル（ノード、またはエラーを受け取る関数）"
     }
   }
 }

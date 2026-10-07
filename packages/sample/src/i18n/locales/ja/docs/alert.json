@@ -2,17 +2,17 @@
   "title": "Alert アラート",
   "description": "システム通知や操作結果など、重要なメッセージをページ内に表示します。",
   "demos": {
+    "colors": {
+      "title": "カラー",
+      "description": "color で状態を指定します：info（既定）、success、warning、danger。アイコンと role もこれで決まります。"
+    },
     "variants": {
       "title": "バリアント",
-      "description": "情報（デフォルト）、成功、警告、エラー。"
+      "description": "variant で見た目のスタイルを指定します：subtle（既定・淡い背景）、outline（色付きの枠線）、solid（色で塗りつぶし）。"
     },
     "with-title": {
       "title": "タイトル付き",
       "description": "コンテンツの上にタイトルを追加します。showIcon={false} でアイコンを非表示にします。"
-    },
-    "types": {
-      "title": "スタイル",
-      "description": "デフォルト、アウトライン、塗りつぶしのスタイル。"
     },
     "sizes": {
       "title": "サイズ",
@@ -36,7 +36,7 @@
     },
     "appearance": {
       "title": "外観",
-      "description": "カスタムアイコン、影、アウトライン、塗りつぶし、角丸のオプション。"
+      "description": "カスタムアイコン、影、outline / solid バリアント、角丸のオプション。"
     },
     "animations": {
       "title": "アニメーション",
@@ -47,11 +47,11 @@
     "AlertProps": {
       "title": "アラートのタイトル",
       "children": "アラートのコンテンツ",
-      "variant": "色と既定アイコンを決める意味上のバリアント（danger は error の別名）",
+      "color": "セマンティック（状態）カラー。既定のアイコンと role も決まります",
+      "variant": "見た目のスタイル：subtle（淡い背景）、outline（透明な背景＋色付きの枠線）、solid（色で塗りつぶし）",
       "size": "アラートのサイズ",
-      "type": "見た目のスタイル",
-      "showIcon": "バリアントのアイコンを表示する",
-      "icon": "バリアントのアイコンを置き換えるカスタムアイコン",
+      "showIcon": "カラーに対応するステータスアイコンを表示する",
+      "icon": "ステータスアイコンを置き換えるカスタムアイコン",
       "closable": "閉じるボタンを表示する",
       "closeIcon": "カスタムの閉じるアイコン",
       "onClose": "閉じるボタンがクリックされたときに呼び出されます",
@@ -60,8 +60,6 @@
       "className": "追加のクラス名",
       "style": "インラインスタイル",
       "action": "右側に表示するアクション領域（例：ボタン）",
-      "outlined": "ボーダーを表示する",
-      "filled": "背景をバリアントの色で塗りつぶす",
       "banner": "バナーモード。ページ上部の通知に適しています",
       "elevation": "ドロップシャドウを追加する",
       "rounded": "角を丸くする",
@@ -74,8 +72,8 @@
       "closeLabel": "閉じるボタンのアクセシブルなラベル",
       "expandLabel": "内容が折りたたまれているときの切り替えボタンのアクセシブルなラベル",
       "collapseLabel": "内容が展開されているときの切り替えボタンのアクセシブルなラベル",
-      "iconLabel": "種類アイコンのアクセシブルなラベル",
-      "role": "アラートの ARIA ロール。エラーと警告は割り込み（\"alert\"）、情報と成功は控えめ（\"status\"）に読み上げられます"
+      "iconLabel": "ステータスアイコンのアクセシブルなラベル",
+      "role": "アラートの ARIA ロール。危険と警告は割り込み（\"alert\"）、情報と成功は控えめ（\"status\"）に読み上げられます"
     }
   }
 }

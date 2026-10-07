@@ -7,7 +7,7 @@ export default function ShapesDemo() {
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       {shapes.map((shape) => (
         <Tooltip key={shape} content={`Shape: ${shape}`} shape={shape}>
-          <Button variant="secondary" size="small">
+          <Button color="neutral" variant="outline" size="small">
             {shape}
           </Button>
         </Tooltip>

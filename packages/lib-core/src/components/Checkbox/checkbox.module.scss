@@ -10,9 +10,15 @@
   }
 }
 
+// Override hooks (set them on `className` or any ancestor):
+//   --checkbox-checked-color    background / border of the checked box
+//                               (defaults to the `color` prop's accent)
+//   --checkbox-checkmark-color  checkmark / indeterminate dash
+//   --checkbox-box-color        background of the unchecked box
+//   --checkbox-border-color     border of the unchecked box
 .checkbox {
-  // Checked color
-  --checkbox-active-color: var(--primary-color);
+  // Accent of the `color` prop (set by the color classes below)
+  --checkbox-accent: var(--primary-color);
 
   position: relative;
   display: inline-flex;
@@ -58,8 +64,8 @@
   margin: 0;
 
   &:checked ~ .checkmark {
-    background-color: var(--checkbox-active-color);
-    border: 1px solid var(--checkbox-active-color);
+    background-color: var(--checkbox-checked-color, var(--checkbox-accent));
+    border: 1px solid var(--checkbox-checked-color, var(--checkbox-accent));
 
     &:after {
       display: block;
@@ -82,8 +88,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-strong-color);
+  background-color: var(--checkbox-box-color, var(--surface-color));
+  border: 1px solid var(--checkbox-border-color, var(--border-strong-color));
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:after {
@@ -92,19 +98,9 @@
     display: none;
     width: 5px;
     height: 10px;
-    // `--checkmark-color` is set from TSX (checkmarkColor prop).
-    border: solid var(--checkmark-color, var(--text-inverse-color));
+    border: solid var(--checkbox-checkmark-color, var(--text-inverse-color));
     border-width: 0 2px 2px 0;
     transform: rotate(45deg) translate(-1px, -1px);
-  }
-
-  [style*="--custom-color"] & {
-    border-color: attr(style var(--custom-color));
-
-    &:checked {
-      background-color: attr(style var(--custom-color));
-      border-color: attr(style var(--custom-color));
-    }
   }
 }
 
@@ -189,8 +185,8 @@
 
 // Indeterminate state
 input:indeterminate ~ .checkmark {
-  background-color: var(--checkbox-active-color);
-  border-color: var(--checkbox-active-color);
+  background-color: var(--checkbox-checked-color, var(--checkbox-accent));
+  border-color: var(--checkbox-checked-color, var(--checkbox-accent));
 
   &:after {
     display: block;
@@ -198,7 +194,7 @@ input:indeterminate ~ .checkmark {
     width: 12px;
     height: 3px;
     border: 0;
-    background-color: var(--checkmark-color, var(--text-inverse-color));
+    background-color: var(--checkbox-checkmark-color, var(--text-inverse-color));
     top: 50%;
     left: 50%;
     margin: -1.5px 0 0 -6px;
@@ -210,26 +206,19 @@ input:indeterminate ~ .checkmark {
   @include ripple-effect;
 }
 
-// 当设置自定义颜色时更新边框颜色
-.checkbox {
-  &[style*="--checkbox-bg-color"] .checkmark {
-    border-color: var(--checkbox-bg-color);
-  }
-}
-
 // Colors of the checked / indeterminate box
 .colorSuccess {
-  --checkbox-active-color: var(--success-color);
+  --checkbox-accent: var(--success-color);
 }
 
 .colorInfo {
-  --checkbox-active-color: var(--info-color);
+  --checkbox-accent: var(--info-color);
 }
 
 .colorWarning {
-  --checkbox-active-color: var(--warning-color);
+  --checkbox-accent: var(--warning-color);
 }
 
 .colorDanger {
-  --checkbox-active-color: var(--danger-color);
+  --checkbox-accent: var(--danger-color);
 }

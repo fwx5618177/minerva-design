@@ -1,4 +1,5 @@
 import type { Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
 export interface RadioProps {
   /** Whether the radio is checked (controlled). Ignored inside a RadioGroup */
@@ -26,10 +27,11 @@ export interface RadioProps {
    */
   size?: "small" | "medium" | "large";
   /**
-   * Color scheme of the radio
-   * @default "default"
+   * Semantic color of the checked radio. Overridden by the RadioGroup color
+   * when the group sets one
+   * @default "primary"
    */
-  type?: "default" | "primary" | "success" | "warning" | "error";
+  color?: Extract<ColorScheme, "primary" | "success" | "warning" | "danger">;
   /** Label displayed next to the radio */
   label?: React.ReactNode;
   /** Label content (alternative to `label`; used when `label` is not set) */
@@ -41,10 +43,6 @@ export interface RadioProps {
    * @default ""
    */
   className?: string;
-  /** Custom color of the radio mark. Overridden by the RadioGroup color */
-  color?: string;
-  /** Custom background color of the radio mark */
-  bgColor?: string;
   /**
    * Marks the input as required
    * @default false
@@ -125,10 +123,10 @@ export interface RadioGroupProps {
    */
   required?: boolean;
   /**
-   * Color applied to every radio in the group
-   * @default "var(--primary-color)"
+   * Semantic color applied to every radio in the group (overrides the
+   * radios' own color); when not set each radio uses its own color
    */
-  color?: string;
+  color?: Extract<ColorScheme, "primary" | "success" | "warning" | "danger">;
   /** Ref to the root wrapper element */
   ref?: Ref<HTMLDivElement>;
 }

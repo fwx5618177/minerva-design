@@ -8,10 +8,13 @@ import {
 export default function ColorsAndFormControlDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <div style={{ display: "flex", gap: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
         <Checkbox defaultChecked>Primary</Checkbox>
         <Checkbox color="success" defaultChecked>
           Success
+        </Checkbox>
+        <Checkbox color="info" defaultChecked>
+          Info
         </Checkbox>
         <Checkbox color="warning" defaultChecked>
           Warning

@@ -26,29 +26,42 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 - **TypeScript**：自带类型定义
 - **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`@minerva/lib-core/theme-utils`，服务端安全）
 - **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
-- **国际化**：内置英文、中文和法文语言包
+- **国际化**：内置英文、中文、日文和法文语言包
+- **无 headless 依赖**：浮层、菜单、选择器、标签页和 `asChild` 都基于 `@minerva/core` 自主实现；Floating UI 是唯一的第三方交互依赖
 
 ## 📦 包
 
-| 包                            | 说明                                                                                          |
-| ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `@minerva/lib-core`           | React 19 组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom` `^19.0.0`。 |
-| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                          |
-| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                              |
+| 包                            | 说明                                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `@minerva/core`               | 框架无关的交互原语（焦点作用域、可关闭层、滚动锁定、漫游焦点、定位等）、主题工具、设计令牌和 i18n 文案。随 lib-core 一起安装。 |
+| `@minerva/lib-core`           | React 19 组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom` `^19.0.0`。                                  |
+| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                                                           |
+| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                                                               |
+
+### 架构
+
+```
+@minerva/core            framework-agnostic TypeScript (DOM only)
+  interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
+        ▲ React hooks                    ▲ Lit controllers (later)
+@minerva/lib-core               @minerva/lib-web-components
+```
+
+`@minerva/lib-core` 的所有浮层（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）都构建在同一套核心原语之上：同一个层栈（Escape 先关闭最内层浮层）、同一套焦点处理（焦点回到触发元素）和同一个定位引擎。详见文档站的[架构](https://fwx5618177.github.io/minerva/#/architecture)页面。
 
 ### 组件（`@minerva/lib-core`）
 
-| 分类     | 组件                                                                                                                                                                                                                                                                                                                              |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 主题     | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                                    |
-| 通用     | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                                                                                                                                                                   |
-| 布局     | `Box`、`Stack` / `HStack` / `VStack`、`Space`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（含子组件）、`Divider`、`VirtualList`                                                                                                             |
-| 表单     | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`TextField`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
-| 数据展示 | `Avatar` / `AvatarGroup`、`Badge`、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Table` / `DataTable`（含子组件）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                                          |
-| 反馈     | `Alert`、`message` / `useMessage`、`toast` / `ToastProvider`、`ProgressIndicator`、`Spinner`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                         |
-| 浮层     | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Popper`、`Menu` / `ContextMenu`、`Dropdown`                                                                                                                                                                                         |
-| 导航     | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                              |
-| 编辑器   | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                                  |
+| 分类     | 组件                                                                                                                                                                                                                                                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 主题     | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                       |
+| 通用     | `Button`、`IconButton`                                                                                                                                                                                                                                                                                               |
+| 布局     | `Box`、`Stack` / `HStack` / `VStack`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（含子组件）、`Divider`、`VirtualList`                                                                                                         |
+| 表单     | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
+| 数据展示 | `Avatar` / `AvatarGroup`、`Badge`、`Tag`、`Empty`、`Table` / `DataTable`（含子组件）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                                                        |
+| 反馈     | `Alert`、`toast` / `ToastProvider`、`ProgressIndicator`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                                                 |
+| 浮层     | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Menu` / `ContextMenu`                                                                                                                                                                                                  |
+| 导航     | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                 |
+| 编辑器   | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                     |
 
 除组件外，`@minerva/lib-core` 还导出 `ConfigProvider`、`useConfig`，Hooks `useAutoTheme`、`useLocale`、`useI18n`，工具函数 `applyThemeStyles`、`generateCSSVariables`，以及内置主题集合 `themes`（`light`、`dark`、`github-dark`）。
 
@@ -84,10 +97,12 @@ import {
   Alert,
   Button,
   ConfigProvider,
-  Space,
   Switch,
-  TextField,
-  message,
+  FormField,
+  Input,
+  ToastProvider,
+  VStack,
+  toast,
 } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
 
@@ -97,30 +112,33 @@ export default function App() {
 
   return (
     <ConfigProvider>
-      <Space direction="vertical" size="medium">
-        <Alert variant="info" title="Welcome" closable>
-          Minerva is ready.
-        </Alert>
-        <TextField
-          name="username"
-          label="Username"
-          placeholder="Enter username"
-          value={name}
-          onChange={setName}
-          clearable
-        />
-        <Switch
-          label="Subscribe"
-          checked={subscribed}
-          onChange={(checked) => setSubscribed(checked)}
-        />
-        <Button
-          variant="primary"
-          onClick={() => message.success(`Hello, ${name}`)}
-        >
-          Submit
-        </Button>
-      </Space>
+      <ToastProvider>
+        <VStack gap={4} align="start">
+          <Alert color="info" title="Welcome" closable>
+            Minerva is ready.
+          </Alert>
+          <FormField label="Username">
+            <Input
+              name="username"
+              placeholder="Enter username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              clearable
+            />
+          </FormField>
+          <Switch
+            label="Subscribe"
+            checked={subscribed}
+            onChange={(checked) => setSubscribed(checked)}
+          />
+          <Button
+            color="primary"
+            onClick={() => toast.success(`Hello, ${name}`)}
+          >
+            Submit
+          </Button>
+        </VStack>
+      </ToastProvider>
     </ConfigProvider>
   );
 }
@@ -161,19 +179,19 @@ export function Root() {
 
 服务端组件中用 `@minerva/lib-core/theme-utils` 的 `parseThemeCookies` 读取 cookie，并在 `<head>` 中内联 `THEME_INIT_SCRIPT`，再用 `ThemeProvider`（`defaultTheme` / `defaultPalette`）包裹应用即可避免首屏闪烁。详见文档站「主题与配色」页面。
 
-### Message API
+### Toast API
 
 ```tsx
-import { Button, message, useMessage } from "@minerva/lib-core";
+import { Button, toast } from "@minerva/lib-core";
 
+// Rendered by the <ToastProvider> mounted near the root of the app
 export function SaveButton() {
-  const msg = useMessage();
-
-  const save = () => {
-    msg
-      .loading({ content: "Saving...", duration: 1000 })
-      .then(() => message.success("Saved"));
-  };
+  const save = () =>
+    toast.promise(fetch("/api/save", { method: "POST" }), {
+      loading: "Saving...",
+      success: "Saved",
+      error: "Could not save",
+    });
 
   return <Button onClick={save}>Save</Button>;
 }
@@ -232,21 +250,21 @@ pnpm dev
 
 ### 脚本
 
-| 命令                                | 说明                                                      |
-| ----------------------------------- | --------------------------------------------------------- |
-| `pnpm dev`                          | 构建组件库，然后启动文档/演示站点                         |
-| `pnpm build`                        | 按顺序构建所有包：lib-core → lib-web-components → sample  |
-| `pnpm test`                         | 运行全部测试：单元测试（所有包、文档校验）与 e2e 用户流程 |
-| `pnpm test:unit` / `pnpm test:e2e`  | 只运行单元测试 / 只运行 e2e 用户流程（`tests/e2e`）       |
-| `pnpm test:dist`                    | 对构建后的 `@minerva/lib-core` 做冒烟测试（构建后运行）   |
-| `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）              |
-| `pnpm lint`                         | 运行 ESLint（flat config）                                |
-| `pnpm typecheck`                    | 对所有包进行类型检查                                      |
-| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                           |
-| `pnpm clean`                        | 清理构建产物                                              |
-| `pnpm changeset`                    | 添加描述本次改动的 changeset                              |
-| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG        |
-| `pnpm release`                      | 构建组件库并发布到 npm                                    |
+| 命令                                | 说明                                                            |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `pnpm dev`                          | 构建组件库，然后启动文档/演示站点                               |
+| `pnpm build`                        | 按顺序构建所有包：core → lib-core → lib-web-components → sample |
+| `pnpm test`                         | 运行全部测试：单元测试（所有包、文档校验）与 e2e 用户流程       |
+| `pnpm test:unit` / `pnpm test:e2e`  | 只运行单元测试 / 只运行 e2e 用户流程（`tests/e2e`）             |
+| `pnpm test:dist`                    | 对构建后的 `@minerva/lib-core` 做冒烟测试（构建后运行）         |
+| `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）                    |
+| `pnpm lint`                         | 运行 ESLint（flat config）                                      |
+| `pnpm typecheck`                    | 对所有包进行类型检查                                            |
+| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                                 |
+| `pnpm clean`                        | 清理构建产物                                                    |
+| `pnpm changeset`                    | 添加描述本次改动的 changeset                                    |
+| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG              |
+| `pnpm release`                      | 构建组件库并发布到 npm                                          |
 
 ### 工具链
 
@@ -270,7 +288,7 @@ pnpm install            # 若内部依赖版本变化，刷新 lockfile
 git commit -am "chore: release" && git push
 
 # 3. 发布（需要已 `npm login` 且拥有 @minerva scope 的发布权限）
-pnpm release            # 构建 lib-core 与 lib-web-components，然后执行 `changeset publish`
+pnpm release            # 构建 core、lib-core 与 lib-web-components，然后执行 `changeset publish`
 git push --follow-tags  # 推送 changeset publish 创建的 tag
 ```
 

@@ -1,6 +1,6 @@
 {
   "title": "Input",
-  "description": "Champ de saisie simple sur une ligne avec tailles, variantes et contenu avant / après. Utilisez TextField pour un champ autonome avec libellé.",
+  "description": "Champ de saisie sur une ligne avec tailles, variantes, contenu avant / après, bouton d'effacement, compteur de caractères et bascule de visibilité du mot de passe. Placez-le dans un FormField pour un libellé, une aide et un message d'erreur.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
@@ -14,9 +14,21 @@
       "title": "Préfixe et suffixe",
       "description": "Contenu décoratif comme des icônes, symboles ou unités."
     },
+    "clearable-and-count": {
+      "title": "Bouton d'effacement et compteur",
+      "description": "clearable affiche un bouton d'effacement libellé tant que le champ a une valeur ; l'effacement déclenche onChange avec une valeur vide et garde le focus dans le champ. showCharCount affiche la longueur (et maxLength) et la relie au champ."
+    },
+    "password": {
+      "title": "Mot de passe",
+      "description": "type=\"password\" ajoute un bouton afficher / masquer avec un libellé localisé."
+    },
     "states": {
       "title": "États",
       "description": "invalid, disabled et readOnly ; dans un FormField l’état est hérité."
+    },
+    "validation": {
+      "title": "Validation",
+      "description": "Validez à l'envoi et affichez le message avec errorMessage du FormField : le champ devient invalide et est décrit par le message."
     }
   },
   "api": {
@@ -24,10 +36,16 @@
       "variant": "Style visuel",
       "size": "Hauteur et taille de police",
       "invalid": "État d’erreur (aussi défini par un FormControl invalide) ; définit aria-invalid",
-      "prefix": "Contenu décoratif avant le texte, p. ex. une icône ou « @ »",
-      "suffix": "Contenu décoratif après le texte, p. ex. une unité",
+      "prefix": "Contenu avant le texte, par ex. une icône ou « @ »",
+      "suffix": "Contenu après le texte, par ex. une unité, une icône ou un bouton",
       "className": "Classe du conteneur externe (pas de l’<input>)",
-      "ref": "Ref vers l’élément <input>"
+      "ref": "Ref vers l’élément <input>",
+      "clearable": "Affiche un bouton d'effacement tant que le champ a une valeur (sauf désactivé ou en lecture seule) ; l'effacement déclenche onChange avec une valeur vide",
+      "onClear": "Appelé après que le bouton d'effacement a vidé le champ",
+      "clearLabel": "Libellé accessible du bouton d'effacement (par défaut « Effacer », localisé)",
+      "showCharCount": "Affiche le nombre de caractères (et maxLength s'il est défini), relié au champ par aria-describedby",
+      "showPasswordLabel": "Libellé accessible de la bascule quand le mot de passe est masqué",
+      "hidePasswordLabel": "Libellé accessible de la bascule quand le mot de passe est visible"
     }
   }
 }

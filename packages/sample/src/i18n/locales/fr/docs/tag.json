@@ -2,9 +2,13 @@
   "title": "Tag",
   "description": "Petites étiquettes pour marquer et catégoriser du contenu ; elles peuvent être fermables ou cliquables.",
   "demos": {
-    "basic": {
-      "title": "Utilisation de base",
-      "description": "Utilisez variant pour transmettre une signification."
+    "colors": {
+      "title": "Couleurs",
+      "description": "color transmet une signification : neutral (par défaut), primary, success, warning, danger et info."
+    },
+    "variants": {
+      "title": "Variantes",
+      "description": "variant définit le style visuel : subtle (par défaut, fond teinté), outline (ajoute une bordure) ou solid (rempli avec la couleur). elevation ajoute une ombre à n'importe quelle variante."
     },
     "sizes-shapes": {
       "title": "Tailles et formes",
@@ -14,10 +18,6 @@
       "title": "Avec icône",
       "description": "icon s'affiche avant le contenu."
     },
-    "bordered-elevation": {
-      "title": "Bordure et ombre",
-      "description": "Ajoutez une bordure avec bordered et une ombre avec elevation."
-    },
     "closable": {
       "title": "Fermable",
       "description": "closable ajoute un bouton de fermeture qui appelle onClose ; retirez-y le tag de votre état. closeIcon et closeLabel personnalisent le bouton. Le premier tag est aussi cliquable : le tag et son bouton de fermeture sont deux boutons distincts, chacun accessible avec Tab."
@@ -26,9 +26,13 @@
       "title": "Cliquable (sélectionnable)",
       "description": "clickable rend le contenu sous forme de bouton natif : focalisez-le avec Tab et activez-le par un clic, Entrée ou Espace. Ici les tags basculent une sélection, exposée aux technologies d'assistance via pressed."
     },
+    "avatar-loading": {
+      "title": "Avatar et chargement",
+      "description": "avatar affiche un avatar avant le contenu. loading remplace l'icône / l'avatar par un indicateur de chargement, marque le tag comme occupé, bloque son action et masque le bouton de fermeture."
+    },
     "custom-colors": {
       "title": "Couleurs personnalisées",
-      "description": "bgColor, textColor et borderColor remplacent les couleurs de la variante ; ripple={false} désactive l'effet d'onde."
+      "description": "Les propriétés personnalisées CSS --tag-<color>-bg et --tag-<color>-text remplacent les teintes d'une couleur (en ligne, dans une classe ou dans un thème) ; ripple={false} désactive l'effet d'onde."
     },
     "disabled": {
       "title": "Désactivé",
@@ -44,20 +48,19 @@
   "api": {
     "TagProps": {
       "children": "Contenu du tag",
-      "variant": "Palette de couleurs",
+      "color": "Couleur sémantique du tag",
+      "variant": "Style visuel : subtle (fond teinté), outline (fond teinté avec bordure) ou solid (rempli avec la couleur, texte inversé)",
       "size": "Taille du tag",
       "shape": "Forme du tag",
       "closable": "Affiche un bouton de fermeture",
       "onClose": "Appelé au clic sur le bouton de fermeture",
       "clickable": "Rend le contenu du tag sous forme de bouton natif (focalisable, activé par Entrée / Espace). Avec closable, le bouton de fermeture est un bouton frère",
       "onClick": "Appelé quand le tag est activé (nécessite clickable)",
-      "pressed": "État enfoncé d'un tag bascule (nécessite clickable) ; définit aria-pressed",
+      "pressed": "État enfoncé (sélectionné) d'un tag bascule, par ex. un filtre sélectionnable (nécessite clickable) ; définit aria-pressed et le style sélectionné",
       "icon": "Icône affichée avant le contenu",
-      "bordered": "Affiche une bordure",
+      "avatar": "Avatar (par ex. un petit Avatar ou une image) affiché avant le contenu",
+      "loading": "Affiche un indicateur de chargement à la place de l'icône / de l'avatar, marque le tag comme occupé et bloque son action ; le bouton de fermeture est masqué",
       "elevation": "Affiche une ombre",
-      "bgColor": "Couleur de fond personnalisée",
-      "textColor": "Couleur de texte personnalisée",
-      "borderColor": "Couleur de bordure personnalisée",
       "className": "Classe CSS supplémentaire",
       "style": "Styles en ligne",
       "disabled": "Désactive le tag et son bouton de fermeture",

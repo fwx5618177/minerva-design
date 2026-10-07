@@ -1,20 +1,22 @@
 import ToastProvider, { useToast } from "./Toast";
 import { toast } from "./store";
 import type {
+  ToastAction,
   ToastApi,
   ToastOptions,
   ToastPosition,
+  ToastPromiseMessages,
   ToastProviderProps,
-  ToastStatus,
 } from "./types";
 
 export { ToastProvider, toast, useToast };
 export type {
+  ToastAction,
   ToastApi,
   ToastOptions,
   ToastPosition,
+  ToastPromiseMessages,
   ToastProviderProps,
-  ToastStatus,
 };
 
 export default ToastProvider;

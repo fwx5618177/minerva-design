@@ -33,13 +33,13 @@ describe("Card", () => {
     expect(screen.getByText("Footer")).toHaveClass("cardFooter");
   });
 
-  it("applies default variant and type classes", () => {
+  it("applies the default variant class", () => {
     render(<Card>content</Card>);
 
     expect(screen.getByText("content")).toHaveClass("card", "default");
   });
 
-  it.each(["outlined", "shadow", "elevated", "filled"] as const)(
+  it.each(["outline", "elevated", "filled", "ghost"] as const)(
     "applies the %s variant class",
     (variant) => {
       render(<Card variant={variant}>content</Card>);
@@ -48,32 +48,43 @@ describe("Card", () => {
     },
   );
 
-  it("applies the type class and custom className", () => {
-    render(
-      <Card type="noHeaderFooter" className="mine">
-        content
+  it("applies a custom className", () => {
+    render(<Card className="mine">content</Card>);
+
+    expect(screen.getByText("content")).toHaveClass("card", "mine");
+  });
+
+  it("leaves out the sections that are not composed", () => {
+    const { container } = render(
+      <Card>
+        <CardContent>Only content</CardContent>
       </Card>,
     );
 
-    expect(screen.getByText("content")).toHaveClass("noHeaderFooter", "mine");
+    expect(container.querySelector(".cardHeader")).toBeNull();
+    expect(container.querySelector(".cardFooter")).toBeNull();
+    expect(screen.getByText("Only content")).toHaveClass("cardContent");
   });
 
   it("default export is the memoized Card and renders the same", () => {
-    render(<MemoCard variant="shadow">memo</MemoCard>);
+    render(<MemoCard variant="elevated">memo</MemoCard>);
 
-    expect(screen.getByText("memo")).toHaveClass("card", "shadow");
+    expect(screen.getByText("memo")).toHaveClass("card", "elevated");
   });
 
-  it("applies bgColor and textColor to header, content and footer", () => {
+  it("applies custom colors to header, content and footer via style", () => {
     render(
       <>
-        <CardHeader bgColor="red" textColor="blue" className="h">
+        <CardHeader
+          style={{ backgroundColor: "red", color: "blue" }}
+          className="h"
+        >
           header
         </CardHeader>
-        <CardContent bgColor="green" textColor="white">
+        <CardContent style={{ backgroundColor: "green", color: "white" }}>
           content
         </CardContent>
-        <CardFooter bgColor="black" textColor="yellow">
+        <CardFooter style={{ backgroundColor: "black", color: "yellow" }}>
           footer
         </CardFooter>
       </>,

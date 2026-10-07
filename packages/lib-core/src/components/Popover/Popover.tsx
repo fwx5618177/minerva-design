@@ -1,4 +1,27 @@
-import * as RadixPopover from "@radix-ui/react-popover";
+import {
+  createContext,
+  useContext,
+  useId,
+  useMemo,
+  useState,
+  type CSSProperties,
+  type Ref,
+} from "react";
+import { parsePlacement, toPlacement } from "@minerva/core";
+import { composeEventHandlers } from "../../internal/composeEventHandlers";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { Portal } from "../../internal/Portal";
+import { Slot } from "../../internal/Slot";
+import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
+import { useControllableState } from "../../internal/useControllableState";
+import {
+  LayerContext,
+  useDismissableLayer,
+} from "../../internal/useDismissableLayer";
+import { useFocusScope } from "../../internal/useFocusScope";
+import { useHideOthers } from "../../internal/useHideOthers";
+import { usePresence } from "../../internal/usePresence";
+import { useScrollLock } from "../../internal/useScrollLock";
 import { cn } from "../../utils/cn";
 import type {
   PopoverAnchorProps,
@@ -7,61 +30,284 @@ import type {
   PopoverTriggerProps,
 } from "./types";
 import styles from "./popover.module.scss";
-import { usePortalContainer } from "../../internal/themeScope";
+
+/** Size of the arrow (width x height, px). */
+const ARROW_WIDTH = 10;
+const ARROW_HEIGHT = 5;
+
+interface PopoverContextValue {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  modal: boolean;
+  contentId: string;
+  trigger: HTMLElement | null;
+  setTrigger: (node: HTMLElement | null) => void;
+  anchor: HTMLElement | null;
+  setAnchor: (node: HTMLElement | null) => void;
+}
+
+const PopoverContext = createContext<PopoverContextValue | null>(null);
+
+const usePopoverContext = (component: string) => {
+  const context = useContext(PopoverContext);
+  if (!context) {
+    throw new Error(`<${component}> must be used inside <Popover>`);
+  }
+  return context;
+};
 
 /**
- * Popover: a click-triggered, interactive floating panel (Radix Popover).
- * Unlike Tooltip it holds focusable content; unlike Popper it manages its own
- * trigger, focus, Escape and outside-click dismissal.
+ * Popover: a click-triggered, interactive floating panel anchored to its
+ * trigger (or a `PopoverAnchor`). The primary component for anchored panels:
+ * unlike Tooltip it holds focusable content and manages focus, Escape and
+ * outside-click dismissal itself.
  */
-export const Popover = (props: PopoverProps) => (
-  <RadixPopover.Root {...props} />
-);
+export const Popover = ({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  modal = false,
+  children,
+}: PopoverProps) => {
+  const [open, setOpen] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
+  const contentId = useId();
+  const [trigger, setTrigger] = useState<HTMLElement | null>(null);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const value = useMemo<PopoverContextValue>(
+    () => ({
+      open,
+      setOpen,
+      modal,
+      contentId,
+      trigger,
+      setTrigger,
+      anchor,
+      setAnchor,
+    }),
+    [open, setOpen, modal, contentId, trigger, anchor],
+  );
+  return (
+    <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>
+  );
+};
 
-/** Toggles the popover; a `<button>` or, with `asChild`, the child element. */
-export const PopoverTrigger = (props: PopoverTriggerProps) => (
-  <RadixPopover.Trigger {...props} />
-);
+/**
+ * Toggles the popover (`aria-haspopup="dialog"`, `aria-expanded`,
+ * `aria-controls` while open, `data-state`); a `<button>` or, with
+ * `asChild`, the child element. Clicking it while open closes the popover.
+ */
+export const PopoverTrigger = ({
+  asChild = false,
+  onClick,
+  ref,
+  ...rest
+}: PopoverTriggerProps) => {
+  const { open, setOpen, contentId, setTrigger } =
+    usePopoverContext("PopoverTrigger");
+  const mergedRef = useMergedRefs<HTMLElement>(
+    setTrigger,
+    ref as Ref<HTMLElement>,
+  );
+  const props = {
+    "aria-haspopup": "dialog" as const,
+    "aria-expanded": open,
+    "aria-controls": open ? contentId : undefined,
+    "data-state": open ? "open" : "closed",
+    ...rest,
+    onClick: composeEventHandlers(onClick, () => setOpen(!open)),
+  };
+  return asChild ? (
+    <Slot ref={mergedRef} {...props} />
+  ) : (
+    <button
+      type="button"
+      ref={mergedRef as Ref<HTMLButtonElement>}
+      {...props}
+    />
+  );
+};
 
 /** Positions the popover against this element instead of the trigger. */
-export const PopoverAnchor = (props: PopoverAnchorProps) => (
-  <RadixPopover.Anchor {...props} />
-);
+export const PopoverAnchor = ({
+  asChild = false,
+  ref,
+  ...rest
+}: PopoverAnchorProps) => {
+  const { setAnchor } = usePopoverContext("PopoverAnchor");
+  const mergedRef = useMergedRefs<HTMLElement>(
+    setAnchor,
+    ref as Ref<HTMLElement>,
+  );
+  return asChild ? (
+    <Slot ref={mergedRef} {...rest} />
+  ) : (
+    <div ref={mergedRef as Ref<HTMLDivElement>} {...rest} />
+  );
+};
 
 /** Closes the popover; a `<button>` or, with `asChild`, the child element. */
-export const PopoverClose = (props: PopoverTriggerProps) => (
-  <RadixPopover.Close {...props} />
-);
+export const PopoverClose = ({
+  asChild = false,
+  onClick,
+  ...rest
+}: PopoverTriggerProps) => {
+  const { setOpen } = usePopoverContext("PopoverClose");
+  const props = {
+    ...rest,
+    onClick: composeEventHandlers(onClick, () => setOpen(false)),
+  };
+  return asChild ? <Slot {...props} /> : <button type="button" {...props} />;
+};
 
-/** PopoverContent: the anchored panel; flips / shifts to stay in view. */
+/** Off-screen until the first position is computed (no flash at 0,0). */
+const UNPOSITIONED: CSSProperties = { transform: "translate(0, -200%)" };
+
+/**
+ * PopoverContent: the anchored panel (`role="dialog"`); flips / shifts to
+ * stay in view.
+ *
+ * - Focus moves to its first tabbable (or the panel) on open and returns to
+ *   the trigger on close.
+ * - Escape (topmost layer only), a pointer down outside or focus leaving it
+ *   close it; overlays opened inside it are child layers, and a Popover
+ *   inside a Modal is a child layer of the Modal.
+ * - `modal` (on the root): focus trap, scroll lock, the rest of the page
+ *   hidden from assistive technology, outside pointer events disabled.
+ * - Stays mounted during the `data-state="closed"` exit animation.
+ */
 export const PopoverContent = ({
+  ref,
   className,
+  style,
   children,
+  side = "bottom",
+  align = "center",
+  sideOffset = 6,
+  alignOffset = 0,
+  collisionPadding = 8,
+  matchAnchorWidth = false,
   arrow = false,
   portal = true,
-  sideOffset = 6,
-  collisionPadding = 8,
+  forceMount = false,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
+  onEscapeKeyDown,
+  onPointerDownOutside,
+  onFocusOutside,
+  onInteractOutside,
   ...rest
 }: PopoverContentProps) => {
-  const portalContainer = usePortalContainer();
-  const content = (
-    <RadixPopover.Content
-      sideOffset={sideOffset}
-      collisionPadding={collisionPadding}
-      className={cn(styles.content, className)}
-      {...rest}
+  const { open, setOpen, modal, contentId, trigger, anchor } =
+    usePopoverContext("PopoverContent");
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
+  const [arrowElement, setArrowElement] = useState<HTMLSpanElement | null>(
+    null,
+  );
+  const present = usePresence(open, element);
+  const active = open && !!element;
+
+  const {
+    setFloating,
+    floatingStyles,
+    placement: finalPlacement,
+    arrowStyles,
+    isPositioned,
+  } = useAnchoredPosition({
+    open: present,
+    anchor: anchor ?? trigger,
+    placement: toPlacement(side, align),
+    offset: {
+      mainAxis: sideOffset + (arrow ? ARROW_HEIGHT : 0),
+      crossAxis: alignOffset,
+    },
+    matchAnchorWidth,
+    padding: collisionPadding,
+    arrowElement: arrow ? arrowElement : null,
+  });
+  const contentRef = useMergedRefs<HTMLDivElement>(setElement, ref);
+  const placement = parsePlacement(finalPlacement);
+
+  useDismissableLayer(element, {
+    enabled: active,
+    disableOutsidePointerEvents: modal,
+    branches: () => [trigger],
+    onEscapeKeyDown,
+    onPointerDownOutside,
+    // Focus is trapped while modal: never dismiss on focus outside.
+    onFocusOutside: (event) => {
+      onFocusOutside?.(event);
+      if (modal) event.preventDefault();
+    },
+    onInteractOutside,
+    onDismiss: () => setOpen(false),
+  });
+  useFocusScope(element, {
+    enabled: active,
+    trapped: modal,
+    loop: true,
+    restoreFocus: () => trigger,
+    onMountAutoFocus: onOpenAutoFocus,
+    onUnmountAutoFocus: onCloseAutoFocus,
+  });
+  useScrollLock(active && modal);
+  useHideOthers(element, active && modal);
+
+  if (!present && !forceMount) return null;
+
+  const state = open ? "open" : "closed";
+  const panel = (
+    // The positioned wrapper keeps `transform` free for the panel animation.
+    <div
+      ref={setFloating}
+      className={styles.positioner}
+      style={
+        isPositioned ? floatingStyles : { ...floatingStyles, ...UNPOSITIONED }
+      }
+      data-side={placement.side}
+      data-align={placement.align}
     >
-      {children}
-      {arrow && <RadixPopover.Arrow className={styles.arrow} />}
-    </RadixPopover.Content>
+      <LayerContext.Provider value={element}>
+        <div
+          ref={contentRef}
+          id={contentId}
+          role="dialog"
+          aria-modal={modal || undefined}
+          tabIndex={-1}
+          data-state={state}
+          data-side={placement.side}
+          data-align={placement.align}
+          className={cn(styles.content, className)}
+          style={style}
+          {...rest}
+        >
+          {children}
+          {arrow && (
+            <span
+              ref={setArrowElement}
+              className={styles.arrowWrapper}
+              style={arrowStyles}
+              aria-hidden="true"
+            >
+              <svg
+                className={styles.arrow}
+                width={ARROW_WIDTH}
+                height={ARROW_HEIGHT}
+                viewBox="0 0 30 10"
+                preserveAspectRatio="none"
+              >
+                <polygon points="0,0 30,0 15,10" />
+              </svg>
+            </span>
+          )}
+        </div>
+      </LayerContext.Provider>
+    </div>
   );
-  return portal ? (
-    <RadixPopover.Portal container={portalContainer}>
-      {content}
-    </RadixPopover.Portal>
-  ) : (
-    content
-  );
+  return portal ? <Portal>{panel}</Portal> : panel;
 };
 
 export default Popover;

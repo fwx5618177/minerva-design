@@ -1,31 +1,27 @@
-import { Badge } from "@minerva/lib-core";
-import { FaBell } from "react-icons/fa";
+import { Badge, HStack, VStack } from "@minerva/lib-core";
 
-const variants = [
+const variants = ["solid", "subtle", "outline"] as const;
+const colors = [
   "primary",
-  "secondary",
+  "neutral",
   "success",
-  "danger",
   "warning",
-  "error",
+  "danger",
   "info",
-  "light",
-  "dark",
 ] as const;
 
 export default function VariantsDemo() {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      {variants.map((variant, index) => (
-        <Badge
-          key={variant}
-          variant={variant}
-          content={index + 1}
-          ariaLabel={`${variant} badge`}
-        >
-          <FaBell size={24} title={variant} />
-        </Badge>
+    <VStack gap={3}>
+      {variants.map((variant) => (
+        <HStack key={variant} gap={2} wrap>
+          {colors.map((color) => (
+            <Badge key={color} variant={variant} color={color}>
+              {variant} {color}
+            </Badge>
+          ))}
+        </HStack>
       ))}
-    </div>
+    </VStack>
   );
 }

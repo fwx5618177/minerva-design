@@ -1,4 +1,5 @@
 import type { Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
 /** Appearance of a Switch */
 export type SwitchVariant = "slider" | "segmented";
@@ -23,11 +24,14 @@ export interface SwitchProps {
    */
   size?: "small" | "medium" | "large";
   /**
-   * Color when on: a theme color name or any CSS color
+   * Semantic color of the "on" state (checked thumb and track, active side
+   * label / segment)
    * @default "primary"
    */
-  color?:
-    "primary" | "secondary" | "success" | "info" | "warning" | "error" | string;
+  color?: Extract<
+    ColorScheme,
+    "primary" | "success" | "info" | "warning" | "danger"
+  >;
   /**
    * Shape of the track and thumb
    * @default "round"

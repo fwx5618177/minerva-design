@@ -13,7 +13,7 @@ export default function AnimationsDemo() {
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       {animations.map((animation) => (
         <Tooltip key={animation} content={animation} animation={animation}>
-          <Button variant="secondary" size="small">
+          <Button color="neutral" variant="outline" size="small">
             {animation}
           </Button>
         </Tooltip>

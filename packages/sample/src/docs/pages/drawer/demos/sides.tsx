@@ -11,7 +11,11 @@ export default function SidesDemo() {
           side={side}
           size="small"
           title={`From the ${side}`}
-          trigger={<Button variant="secondary">{side}</Button>}
+          trigger={
+            <Button color="neutral" variant="outline">
+              {side}
+            </Button>
+          }
         >
           <DrawerBody>
             Sizes: small, medium (default), large and full.

@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../internal/Slot";
 import { cn } from "../../utils/cn";
 import type {
   PageHeaderProps,

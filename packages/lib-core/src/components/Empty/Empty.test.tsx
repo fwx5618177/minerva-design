@@ -92,14 +92,17 @@ describe("Empty", () => {
     expect(screen.getByRole("status")).not.toHaveClass("showShadow");
   });
 
-  it("applies size and color props as inline styles, with style taking precedence", () => {
+  it("applies size props as inline styles, with style taking precedence (also for colors)", () => {
     render(
       <Empty
         width="200px"
         height="100px"
-        backgroundColor="rgb(255, 0, 0)"
-        color="rgb(0, 0, 255)"
-        style={{ width: "300px", margin: "4px" }}
+        style={{
+          width: "300px",
+          margin: "4px",
+          backgroundColor: "rgb(255, 0, 0)",
+          color: "rgb(0, 0, 255)",
+        }}
       />,
     );
 

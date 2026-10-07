@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Checkbox,
-  Space,
-  Switch,
-  TextField,
   generateCSSVariables,
+  HStack,
+  Input,
   resolveTheme,
+  Switch,
   themes,
   type ThemeName,
 } from "@minerva/lib-core";
@@ -32,7 +32,8 @@ export default function ScopedPreviewDemo() {
           <Button
             key={n}
             size="small"
-            variant={n === name ? "primary" : "secondary"}
+            color={n === name ? "primary" : "neutral"}
+            variant={n === name ? "solid" : "outline"}
             aria-pressed={n === name}
             onClick={() => setName(n)}
           >
@@ -50,13 +51,15 @@ export default function ScopedPreviewDemo() {
           border: "1px solid var(--border-color)",
         }}
       >
-        <Space wrap align="center">
-          <Button variant="primary">Primary</Button>
-          <Button variant="success">Success</Button>
+        <HStack gap={4} wrap>
+          <Button color="primary">Primary</Button>
+          <Button color="success">Success</Button>
           <Switch label="Switch" defaultChecked />
           <Checkbox label="Checkbox" defaultChecked />
-          <TextField name="preview" label="Name" placeholder="Jane Doe" />
-        </Space>
+          <div style={{ width: 220 }}>
+            <Input name="preview" aria-label="Name" placeholder="Jane Doe" />
+          </div>
+        </HStack>
       </div>
     </div>
   );

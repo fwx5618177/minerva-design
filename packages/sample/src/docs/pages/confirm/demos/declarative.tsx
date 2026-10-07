@@ -12,7 +12,7 @@ export default function DeclarativeDemo() {
   };
   return (
     <>
-      <Button variant="warning" onClick={() => setOpen(true)}>
+      <Button color="warning" onClick={() => setOpen(true)}>
         Archive project
       </Button>
       <ConfirmDialog
@@ -20,7 +20,7 @@ export default function DeclarativeDemo() {
         onOpenChange={setOpen}
         onConfirm={archive}
         loading={loading}
-        intent="warning"
+        color="warning"
         title="Archive this project?"
         description="It becomes read-only for everyone."
         confirmLabel="Archive"

@@ -12,16 +12,9 @@ import useI18n from "../../hooks/useI18n";
 import type {
   ConfirmDialogProps,
   ConfirmFunction,
-  ConfirmIntent,
   ConfirmOptions,
   ConfirmProviderProps,
 } from "./types";
-
-const BUTTON_VARIANT: Record<ConfirmIntent, "primary" | "error" | "warning"> = {
-  primary: "primary",
-  danger: "error",
-  warning: "warning",
-};
 
 /**
  * ConfirmDialog: a small modal asking the user to confirm an action, a
@@ -36,7 +29,7 @@ export const ConfirmDialog = ({
   confirmLabel,
   cancelLabel,
   closeLabel,
-  intent = "primary",
+  color = "primary",
   loading = false,
   confirmDisabled = false,
 }: ConfirmDialogProps) => {
@@ -49,12 +42,16 @@ export const ConfirmDialog = ({
       description={description}
       size="small"
       closeLabel={closeLabel}
+      // A confirmation interrupts the user and needs a response; Radix links
+      // the title (aria-labelledby) and description (aria-describedby).
+      role="alertdialog"
     >
       <ModalBody />
       <ModalFooter>
         <Button
           type="button"
-          variant="secondary"
+          color="neutral"
+          variant="outline"
           onClick={() => onOpenChange(false)}
           disabled={loading}
         >
@@ -62,13 +59,14 @@ export const ConfirmDialog = ({
         </Button>
         <Button
           type="button"
-          variant={BUTTON_VARIANT[intent]}
+          color={color}
+          variant="solid"
           onClick={() => void onConfirm()}
           loading={loading}
           disabled={confirmDisabled}
         >
           {confirmLabel ??
-            (intent === "danger" ? t("confirm.delete") : t("confirm.confirm"))}
+            (color === "danger" ? t("confirm.delete") : t("confirm.confirm"))}
         </Button>
       </ModalFooter>
     </Modal>

@@ -1,11 +1,11 @@
 import {
   Button,
   ConfigProvider,
-  Space,
+  HStack,
   Tag,
+  type Theme,
   useAutoTheme,
   useConfig,
-  type Theme,
 } from "@minerva/lib-core";
 
 const OPTIONS: Theme[] = ["auto", "light", "dark", "github-dark"];
@@ -28,14 +28,20 @@ export default function UseAutoThemeDemo() {
           <Button
             key={String(option)}
             size="small"
-            variant={option === theme ? "primary" : "secondary"}
+            color={option === theme ? "primary" : "neutral"}
+            variant={option === theme ? "solid" : "outline"}
             aria-pressed={option === theme}
             onClick={() => setTheme(option)}
           >
             {String(option)}
           </Button>
         ))}
-        <Button size="small" variant="back" onClick={() => setTheme(appTheme)}>
+        <Button
+          size="small"
+          color="neutral"
+          variant="ghost"
+          onClick={() => setTheme(appTheme)}
+        >
           Reset
         </Button>
       </div>
@@ -48,10 +54,10 @@ export default function UseAutoThemeDemo() {
         }}
       >
         theme:{" "}
-        <Tag variant="primary">
+        <Tag color="primary">
           {typeof theme === "string" ? theme : "custom"}
         </Tag>{" "}
-        systemTheme: <Tag variant="info">{systemTheme}</Tag>
+        systemTheme: <Tag color="info">{systemTheme}</Tag>
       </div>
       <ConfigProvider theme={theme}>
         <div
@@ -63,11 +69,13 @@ export default function UseAutoThemeDemo() {
             color: "var(--text-color)",
           }}
         >
-          <Space wrap align="center">
-            <Button variant="primary">Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Tag variant="success">preview</Tag>
-          </Space>
+          <HStack gap={4} wrap>
+            <Button color="primary">Primary</Button>
+            <Button color="neutral" variant="outline">
+              Secondary
+            </Button>
+            <Tag color="success">preview</Tag>
+          </HStack>
         </div>
       </ConfigProvider>
     </div>

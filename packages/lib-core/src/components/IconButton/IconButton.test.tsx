@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { StrictMode, createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -13,7 +13,13 @@ describe("IconButton", () => {
 
     const button = screen.getByRole("button", { name: "icon button" });
     expect(button).toContainElement(screen.getByTestId("icon"));
-    expect(button).toHaveClass("iconButton", "default", "medium", "circle");
+    expect(button).toHaveClass(
+      "iconButton",
+      "neutral",
+      "variant-ghost",
+      "medium",
+      "circle",
+    );
     expect(button).toBeEnabled();
     expect(button).toHaveAttribute("type", "button");
     expect(button).not.toHaveAttribute("aria-disabled");
@@ -28,44 +34,57 @@ describe("IconButton", () => {
     ).toBeInTheDocument();
   });
 
-  it("applies variant, size, shape, active and className", () => {
+  it("applies color, variant, size, shape, pressed and className", () => {
     render(
       <IconButton
         icon={<Icon />}
-        variant="error"
+        color="danger"
+        variant="solid"
         size="large"
         shape="square"
-        active
+        pressed
         className="mine"
       />,
     );
 
     expect(screen.getByRole("button")).toHaveClass(
-      "error",
+      "danger",
+      "variant-solid",
       "large",
       "square",
-      "active",
+      "pressed",
       "mine",
     );
   });
 
-  it("applies custom colors as inline style and CSS variables", () => {
+  it("forwards style so the CSS custom property hooks can be set", () => {
     render(
       <IconButton
         icon={<Icon />}
-        color="red"
-        bgColor="blue"
-        activeColor="green"
-        hoverColor="yellow"
-        fillColor="black"
+        color="primary"
+        style={
+          {
+            "--icon-button-color": "red",
+            "--icon-button-hover-bg": "yellow",
+            "--icon-button-pressed-color": "green",
+            "--icon-button-pressed-bg": "blue",
+          } as React.CSSProperties
+        }
       />,
     );
 
     const button = screen.getByRole("button");
-    expect(button).toHaveStyle({ color: "red", backgroundColor: "blue" });
-    expect(button.style.getPropertyValue("--active-color")).toBe("green");
-    expect(button.style.getPropertyValue("--hover-color")).toBe("yellow");
-    expect(button.style.getPropertyValue("--fill-color")).toBe("black");
+    expect(button).not.toHaveAttribute("color");
+    expect(button.style.getPropertyValue("--icon-button-color")).toBe("red");
+    expect(button.style.getPropertyValue("--icon-button-hover-bg")).toBe(
+      "yellow",
+    );
+    expect(button.style.getPropertyValue("--icon-button-pressed-color")).toBe(
+      "green",
+    );
+    expect(button.style.getPropertyValue("--icon-button-pressed-bg")).toBe(
+      "blue",
+    );
   });
 
   it("calls onClick with the click event", async () => {
@@ -268,6 +287,167 @@ describe("IconButton", () => {
     ).toBeInTheDocument();
     act(() => {
       i18n.changeLanguage("en");
+    });
+  });
+
+  describe("toggle (pressed)", () => {
+    it("is not a toggle by default", () => {
+      render(<IconButton icon={<Icon />} ariaLabel="Mute" />);
+      expect(screen.getByRole("button")).not.toHaveAttribute("aria-pressed");
+    });
+
+    it("toggles on click with a stable name and reports the new state", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      const onClick = vi.fn();
+      render(
+        <IconButton
+          icon={<Icon />}
+          ariaLabel="Favorite"
+          defaultPressed={false}
+          onPressedChange={onPressedChange}
+          onClick={onClick}
+        />,
+      );
+      const button = screen.getByRole("button", { name: "Favorite" });
+      expect(button).toHaveAttribute("aria-pressed", "false");
+      await user.click(button);
+      expect(
+        screen.getByRole("button", { name: "Favorite", pressed: true }),
+      ).toBe(button);
+      expect(button).toHaveClass("pressed");
+      expect(onPressedChange).toHaveBeenNthCalledWith(1, true);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      await user.click(button);
+      expect(onPressedChange).toHaveBeenNthCalledWith(2, false);
+      expect(button).not.toHaveClass("pressed");
+    });
+
+    it("toggles with Enter and Space despite the tooltip wrapper", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      render(
+        <IconButton
+          icon={<Icon />}
+          label="Star"
+          onPressedChange={onPressedChange}
+        />,
+      );
+      await user.tab();
+      expect(screen.getByRole("button")).toHaveFocus();
+      expect(screen.getAllByRole("button")).toHaveLength(1);
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      expect(onPressedChange.mock.calls).toEqual([[true], [false]]);
+    });
+
+    it("reports exactly once per click under StrictMode", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      render(
+        <StrictMode>
+          <IconButton
+            icon={<Icon />}
+            ariaLabel="Like"
+            onPressedChange={onPressedChange}
+          />
+        </StrictMode>,
+      );
+      await user.click(screen.getByRole("button"));
+      expect(onPressedChange).toHaveBeenCalledExactlyOnceWith(true);
+    });
+
+    it("does not toggle when disabled", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      render(
+        <IconButton
+          icon={<Icon />}
+          ariaLabel="Pin"
+          disabled
+          onPressedChange={onPressedChange}
+        />,
+      );
+      await user.click(screen.getByRole("button"));
+      expect(onPressedChange).not.toHaveBeenCalled();
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      );
+    });
+
+    it("is controlled by pressed and only reports changes", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      const { rerender } = render(
+        <IconButton
+          icon={<Icon />}
+          ariaLabel="Star"
+          pressed={false}
+          onPressedChange={onPressedChange}
+        />,
+      );
+      await user.click(screen.getByRole("button"));
+      expect(onPressedChange).toHaveBeenCalledExactlyOnceWith(true);
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      );
+      rerender(
+        <IconButton
+          icon={<Icon />}
+          ariaLabel="Star"
+          pressed
+          onPressedChange={onPressedChange}
+        />,
+      );
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+    });
+
+    it("starts pressed with defaultPressed", () => {
+      render(<IconButton icon={<Icon />} ariaLabel="Pin" defaultPressed />);
+      expect(screen.getByRole("button", { pressed: true })).toHaveClass(
+        "pressed",
+      );
+    });
+
+    it("lets onClick cancel the toggle with preventDefault", async () => {
+      const user = userEvent.setup();
+      const onPressedChange = vi.fn();
+      render(
+        <IconButton
+          icon={<Icon />}
+          ariaLabel="Lock"
+          onClick={(e) => e.preventDefault()}
+          onPressedChange={onPressedChange}
+        />,
+      );
+      await user.click(screen.getByRole("button"));
+      expect(onPressedChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("search button", () => {
+    it("submits its form, but not while loading", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      const { rerender } = render(
+        <form onSubmit={onSubmit}>
+          <IconButton icon={<Icon />} label="Search" type="submit" />
+        </form>,
+      );
+      await user.click(screen.getByRole("button", { name: "Search" }));
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      rerender(
+        <form onSubmit={onSubmit}>
+          <IconButton icon={<Icon />} label="Search" type="submit" loading />
+        </form>,
+      );
+      await user.click(screen.getByRole("button", { name: "Search" }));
+      expect(onSubmit).toHaveBeenCalledTimes(1);
     });
   });
 });

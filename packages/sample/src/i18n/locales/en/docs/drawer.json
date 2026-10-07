@@ -36,7 +36,7 @@
       "open": "Controlled open state; leave undefined for uncontrolled",
       "defaultOpen": "Initial open state while uncontrolled",
       "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
-      "modal": "Modal mode: traps focus, blocks outside interaction and hides the page from assistive technology",
+      "modal": "Modal mode: renders the backdrop, traps focus, locks page scrolling, blocks outside interaction and hides the page from assistive technology",
       "children": "Trigger and content"
     },
     "DrawerContentProps": {
@@ -47,7 +47,14 @@
       "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
       "hiddenDescription": "Text of the visually hidden description used when description is not set; defaults to the localized \"Drawer content\"",
       "description": "Visible description below the title; without it a hidden generic description is rendered",
-      "overlayClassName": "Class name of the overlay (backdrop)"
+      "overlayClassName": "Class name of the overlay (backdrop)",
+      "role": "ARIA role of the panel; use \"alertdialog\" for confirmations that interrupt the user",
+      "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+      "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+      "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+      "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+      "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+      "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
     }
   }
 }

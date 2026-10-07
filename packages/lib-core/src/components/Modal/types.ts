@@ -4,7 +4,6 @@ import type {
   ReactNode,
   Ref,
 } from "react";
-import type { DialogContentProps } from "@radix-ui/react-dialog";
 
 /** Width preset of a Modal. */
 export type ModalSize = "small" | "medium" | "large" | "xlarge" | "full";
@@ -21,8 +20,9 @@ export interface ModalRootProps {
   /** Called with the requested open state (trigger, close button, Escape, overlay click). */
   onOpenChange?: (open: boolean) => void;
   /**
-   * Modal mode: traps focus, blocks outside interaction and hides the rest of
-   * the page from assistive technology
+   * Modal mode: renders the overlay, traps focus, locks page scrolling, blocks
+   * outside pointer interaction and hides the rest of the page from assistive
+   * technology. Non-modal dialogs close on outside click / focus instead.
    * @default true
    */
   modal?: boolean;
@@ -40,9 +40,37 @@ export interface ModalTriggerProps extends ComponentPropsWithRef<"button"> {
 }
 
 /** Props of `ModalContent`: the portalled overlay + dialog panel. */
-export interface ModalContentProps extends Omit<DialogContentProps, "asChild"> {
+export interface ModalContentProps extends HTMLAttributes<HTMLDivElement> {
   /** Ref to the dialog element. */
   ref?: Ref<HTMLDivElement>;
+  /**
+   * ARIA role of the dialog panel; use "alertdialog" for confirmations that
+   * interrupt the user
+   * @default "dialog"
+   */
+  role?: "dialog" | "alertdialog";
+  /**
+   * Keeps the panel mounted while closed (`data-state="closed"`), e.g. for
+   * animation libraries
+   * @default false
+   */
+  forceMount?: boolean;
+  /**
+   * Called before focus moves into the panel on open;
+   * `event.preventDefault()` keeps focus where it is
+   */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Called before focus returns to the opener on close;
+   * `event.preventDefault()` skips it
+   */
+  onCloseAutoFocus?: (event: Event) => void;
+  /** Escape pressed while it is the topmost layer; `event.preventDefault()` keeps it open. */
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  /** Pointer pressed outside (e.g. on the overlay); `event.preventDefault()` keeps it open. */
+  onPointerDownOutside?: (event: PointerEvent) => void;
+  /** Pointer down or focus outside; `event.preventDefault()` keeps it open. */
+  onInteractOutside?: (event: PointerEvent | FocusEvent) => void;
   /**
    * Width preset
    * @default "medium"
@@ -57,7 +85,7 @@ export interface ModalContentProps extends Omit<DialogContentProps, "asChild"> {
   closeLabel?: string;
   /**
    * Visible description below the title, also used as the dialog's accessible
-   * description. Without it a visually hidden empty description is rendered.
+   * description (`aria-describedby`, omitted without a description).
    */
   description?: ReactNode;
   /** Class name of the overlay (backdrop). */
@@ -111,6 +139,12 @@ export interface ModalProps {
   hideCloseButton?: boolean;
   /** Accessible label of the close button; defaults to the localized "Close". */
   closeLabel?: string;
+  /**
+   * ARIA role of the dialog panel; use "alertdialog" for confirmations that
+   * interrupt the user
+   * @default "dialog"
+   */
+  role?: "dialog" | "alertdialog";
   /** Additional class name of the dialog panel. */
   className?: string;
   /** Ref to the dialog element. */

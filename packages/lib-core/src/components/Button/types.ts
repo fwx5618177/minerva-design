@@ -1,28 +1,9 @@
 import type { Ref } from "react";
-
-/** Color role of a Button (`error` and `danger` are aliases) */
-export type ButtonColor =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "error"
-  | "danger"
-  | "info"
-  | "accent"
-  | "neutral"
-  | "retry"
-  | "back";
-
-/**
- * Fill style of a Button: `solid` (filled), `outline` (border only), `ghost`
- * (transparent until hovered) or `link` (text link look)
- */
-export type ButtonAppearance = "solid" | "outline" | "ghost" | "link";
+import type { ColorScheme } from "@minerva/core";
 
 export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "children"
+  "children" | "color"
 > {
   /** Called when the button is clicked (not called while disabled) */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -31,16 +12,16 @@ export interface ButtonProps extends Omit<
   /** Additional class name */
   className?: string;
   /**
-   * Color of the button. `retry` and `back` are gradient presets of the
-   * classic look; `accent` and `neutral` are best combined with `appearance`
+   * Semantic color of the button
    * @default "primary"
    */
-  variant?: ButtonColor;
+  color?: ColorScheme;
   /**
-   * Fill style. When omitted the classic filled look is used; set it to get
-   * the compact token-based design (solid, outline, ghost or link)
+   * Visual style: `solid` (filled), `outline` (border only), `ghost`
+   * (transparent until hovered) or `link` (text link look)
+   * @default "solid"
    */
-  appearance?: ButtonAppearance;
+  variant?: "solid" | "outline" | "ghost" | "link";
   /**
    * Button size
    * @default "medium"
@@ -78,8 +59,8 @@ export interface ButtonProps extends Omit<
   /** Preset shape of the button */
   shape?: "square" | "rounded" | "circle";
   /**
-   * Corner radius: a preset or a number of pixels
-   * @default "medium"
+   * Corner radius: a preset or a number of pixels. The theme radius
+   * (`--radius-md`) is used when omitted
    */
   borderRadius?:
     "none" | "small" | "medium" | "large" | "circle" | "square" | number;

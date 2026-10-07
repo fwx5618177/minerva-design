@@ -1,12 +1,12 @@
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
-import { Spinner } from "../Spinner";
+import { ProgressIndicator } from "../ProgressIndicator";
 import type { LoadingStateProps } from "./types";
 import styles from "./loadingState.module.scss";
 
 /**
  * LoadingState: page / route / section loading presentation. A decorative
- * Spinner next to a visible label, inside a single polite status region.
+ * ProgressIndicator spinner next to a visible label, inside a single polite status region.
  * It does not set aria-busy: mark the content container busy yourself.
  */
 export const LoadingState = ({
@@ -26,13 +26,10 @@ export const LoadingState = ({
       aria-atomic="true"
       {...rest}
     >
-      <Spinner
-        className={styles.spinner}
+      <ProgressIndicator
+        className={styles.indicator}
         color="current"
-        label=""
-        aria-hidden="true"
-        role="presentation"
-        aria-live="off"
+        decorative
       />
       <span className={styles.label}>{label ?? t("loadingState.label")}</span>
     </div>

@@ -2,6 +2,8 @@ import { createRef } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { act } from "react";
+import { isScrollLocked } from "@minerva/core";
 import {
   Popover,
   PopoverAnchor,
@@ -11,6 +13,9 @@ import {
 } from "./index";
 
 const setup = () => userEvent.setup({ pointerEventsCheck: 0 });
+
+/** Next tick: layers ignore the pointer down that opened them. */
+const ready = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
 function Basic(props: {
   arrow?: boolean;
@@ -182,5 +187,142 @@ describe("Popover", () => {
       await user.tab();
       expect(content).toContainElement(document.activeElement as HTMLElement);
     }
+  });
+
+  it("modal mode hides the page, locks scrolling, and still closes on an outside click", async () => {
+    const user = setup();
+    render(
+      <>
+        <main>page</main>
+        <Popover modal>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent aria-label="Modal panel">
+            <button type="button">Inside</button>
+          </PopoverContent>
+        </Popover>
+      </>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    const content = screen.getByRole("dialog", { name: "Modal panel" });
+    expect(content).toHaveAttribute("aria-modal", "true");
+    expect(
+      screen.getByText("page").closest('[aria-hidden="true"]'),
+    ).not.toBeNull();
+    expect(isScrollLocked()).toBe(true);
+    expect(document.body.style.pointerEvents).toBe("none");
+    await ready();
+    await user.click(screen.getByText("page"));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByText("page").closest("[aria-hidden]")).toBeNull();
+    expect(isScrollLocked()).toBe(false);
+    expect(document.body.style.pointerEvents).toBe("");
+  });
+
+  it("closes when focus leaves a non-modal popover", async () => {
+    const user = setup();
+    render(
+      <>
+        <Basic />
+        <input aria-label="Search" />
+      </>,
+    );
+    await user.click(screen.getByRole("button", { name: "Filter" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    act(() => screen.getByRole("textbox", { name: "Search" }).focus());
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByRole("textbox", { name: "Search" })).toHaveFocus();
+  });
+
+  it("lets handlers keep it open and cancel the auto focus", async () => {
+    const user = setup();
+    const onEscapeKeyDown = vi.fn((event: KeyboardEvent) =>
+      event.preventDefault(),
+    );
+    const onPointerDownOutside = vi.fn((event: PointerEvent) =>
+      event.preventDefault(),
+    );
+    const onOpenAutoFocus = vi.fn((event: Event) => event.preventDefault());
+    render(
+      <>
+        <button type="button">Elsewhere</button>
+        <Popover>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent
+            aria-label="Sticky"
+            onEscapeKeyDown={onEscapeKeyDown}
+            onPointerDownOutside={onPointerDownOutside}
+            onFocusOutside={(event) => event.preventDefault()}
+            onOpenAutoFocus={onOpenAutoFocus}
+          >
+            <button type="button">Inside</button>
+          </PopoverContent>
+        </Popover>
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "Open" });
+    await user.click(trigger);
+    expect(onOpenAutoFocus).toHaveBeenCalledTimes(1);
+    expect(trigger).toHaveFocus();
+    await ready();
+    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(onEscapeKeyDown).toHaveBeenCalledTimes(1);
+    expect(onPointerDownOutside).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("dialog", { name: "Sticky" })).toBeInTheDocument();
+  });
+
+  it("anchors to PopoverAnchor, sizes after it and positions the arrow", async () => {
+    render(
+      <Popover open>
+        <PopoverAnchor data-testid="anchor">field</PopoverAnchor>
+        <PopoverTrigger>T</PopoverTrigger>
+        <PopoverContent
+          aria-label="Anchored"
+          matchAnchorWidth="min"
+          side="right"
+          arrow
+        >
+          body
+        </PopoverContent>
+      </Popover>,
+    );
+    const content = screen.getByRole("dialog", { name: "Anchored" });
+    const positioner = content.parentElement!;
+    expect(positioner).toHaveClass("positioner");
+    expect(positioner.style.position).toBe("fixed");
+    // off-screen until the first position is computed, then placed
+    await waitFor(() => expect(positioner.style.transform).toBe(""));
+    expect(positioner.style.minWidth).toBe("0px");
+    expect(content).toHaveAttribute("data-side", "right");
+    expect(content.querySelector(".arrowWrapper")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
+  it("keeps a forceMount-ed panel mounted while closed", async () => {
+    const user = setup();
+    render(
+      <Popover>
+        <PopoverTrigger>T</PopoverTrigger>
+        <PopoverContent forceMount aria-label="Kept">
+          body
+        </PopoverContent>
+      </Popover>,
+    );
+    const content = screen.getByRole("dialog", { name: "Kept" });
+    expect(content).toHaveAttribute("data-state", "closed");
+    await user.click(screen.getByRole("button", { name: "T" }));
+    expect(content).toHaveAttribute("data-state", "open");
+    expect(screen.getByRole("button", { name: "T" })).toHaveAttribute(
+      "data-state",
+      "open",
+    );
+  });
+
+  it("requires the Popover root", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(() => render(<PopoverClose />)).toThrow(/inside <Popover>/);
+    vi.restoreAllMocks();
   });
 });

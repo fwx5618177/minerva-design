@@ -1,27 +1,24 @@
-import { IconButton } from "@minerva/lib-core";
+import { HStack, IconButton, VStack } from "@minerva/lib-core";
 import { IoHeart } from "react-icons/io5";
 
-const variants = [
-  "primary",
-  "secondary",
-  "success",
-  "warning",
-  "error",
-  "info",
-] as const;
+const variants = ["ghost", "solid", "outline"] as const;
 
 export default function VariantsDemo() {
   return (
-    <>
-      <IconButton icon={<IoHeart />} ariaLabel="Default" />
-      {variants.map((variant) => (
-        <IconButton
-          key={variant}
-          icon={<IoHeart />}
-          variant={variant}
-          ariaLabel={variant}
-        />
+    <VStack gap={3}>
+      {(["neutral", "primary", "danger"] as const).map((color) => (
+        <HStack key={color} gap={2} wrap>
+          {variants.map((variant) => (
+            <IconButton
+              key={variant}
+              icon={<IoHeart />}
+              color={color}
+              variant={variant}
+              label={`${color} ${variant}`}
+            />
+          ))}
+        </HStack>
       ))}
-    </>
+    </VStack>
   );
 }

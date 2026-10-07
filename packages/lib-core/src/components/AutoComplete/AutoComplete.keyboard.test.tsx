@@ -41,7 +41,7 @@ const Search = (props: Partial<AutoCompleteProps>) => (
     options={OPTIONS}
     autoHighlight
     fillOnSelect={false}
-    textFieldProps={{ ariaLabel: "search" }}
+    inputProps={{ "aria-label": "search" }}
     {...props}
   />
 );
@@ -56,7 +56,7 @@ const keyDown = (key: string, init: Partial<KeyboardEventInit> = {}) =>
   });
 
 describe("AutoComplete keyboard, submit and form integration", () => {
-  it("works without name / label (accessible name from ariaLabel)", () => {
+  it("works without name / label (accessible name from inputProps aria-label)", () => {
     render(<Search />);
     expect(input()).not.toHaveAttribute("name");
     act(() => input().focus());
@@ -190,12 +190,12 @@ describe("AutoComplete keyboard, submit and form integration", () => {
     act(() => input().focus());
     expect(options()).toHaveLength(3);
     rerender(
-      <Search textFieldProps={{ ariaLabel: "search", disabled: true }} />,
+      <Search inputProps={{ "aria-label": "search", disabled: true }} />,
     );
     expect(options()).toHaveLength(0);
     expect(input()).toBeDisabled();
     rerender(
-      <Search textFieldProps={{ ariaLabel: "search", readOnly: true }} />,
+      <Search inputProps={{ "aria-label": "search", readOnly: true }} />,
     );
     expect(input()).toHaveAttribute("readonly");
     act(() => input().focus());
@@ -277,15 +277,16 @@ describe("AutoComplete keyboard, submit and form integration", () => {
     expect(input()).toHaveAttribute("aria-activedescendant", options()[3].id);
   });
 
-  it("forwards native input props through textFieldProps.inputProps", () => {
+  it("forwards native input props through inputProps", () => {
     const onCompositionStart = vi.fn();
     render(
       <>
         <span id="hint">Type a title</span>
         <Search
-          textFieldProps={{
-            ariaLabel: "search",
-            inputProps: { "aria-describedby": "hint", onCompositionStart },
+          inputProps={{
+            "aria-label": "search",
+            "aria-describedby": "hint",
+            onCompositionStart,
           }}
         />
       </>,

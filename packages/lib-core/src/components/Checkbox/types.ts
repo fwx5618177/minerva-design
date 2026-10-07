@@ -1,8 +1,5 @@
 import type { Ref } from "react";
-
-/** Active (checked) color of a Checkbox */
-export type CheckboxColor =
-  "primary" | "success" | "info" | "warning" | "danger";
+import type { ColorScheme } from "@minerva/core";
 
 export interface CheckboxProps {
   /** Checked state (controlled) */
@@ -46,10 +43,16 @@ export interface CheckboxProps {
   /** Label content (alternative to `label`; used when `label` is not set) */
   children?: React.ReactNode;
   /**
-   * Color of the checked / indeterminate box
+   * Semantic color of the checked / indeterminate box. For a custom look, set
+   * the CSS custom properties `--checkbox-checked-color`,
+   * `--checkbox-checkmark-color`, `--checkbox-box-color` and
+   * `--checkbox-border-color` on `className` or an ancestor
    * @default "primary"
    */
-  color?: CheckboxColor;
+  color?: Extract<
+    ColorScheme,
+    "primary" | "success" | "info" | "warning" | "danger"
+  >;
   /** id of the input (defaults to the enclosing FormControl's id) */
   id?: string;
   /** Value submitted with the form when checked */
@@ -63,12 +66,6 @@ export interface CheckboxProps {
    * @default ""
    */
   className?: string;
-  /** Custom checkmark color */
-  checkmarkColor?: string;
-  /** Custom box background color */
-  boxColor?: string;
-  /** Custom box border color */
-  boxBorderColor?: string;
   /** Custom icon shown when checked */
   icon?: React.ReactNode;
   /**

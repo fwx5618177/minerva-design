@@ -25,23 +25,21 @@ import {
   type ThemeScope,
 } from "../internal/themeScope";
 import {
+  PALETTE_COOKIE_NAME,
+  THEME_COOKIE_NAME,
   generateCSSVariables,
   getSystemTheme,
   isBilingualTheme,
-  resolveTheme,
-} from "../utils/applyThemeStyles";
-import {
-  PALETTE_COOKIE_NAME,
-  THEME_COOKIE_NAME,
   isPalette,
   parsePaletteCookie,
   parseThemeCookie,
   readCookieValue,
+  resolveTheme,
   serializeThemeCookie,
   type Palette,
   type ResolvedThemeMode,
   type ThemeMode,
-} from "../theme-utils";
+} from "@minerva/core";
 
 export const ConfigContext = createContext<ConfigContextProps | undefined>(
   undefined,

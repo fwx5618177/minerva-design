@@ -13,7 +13,9 @@ export default function CompoundDemo() {
   return (
     <ModalRoot>
       <ModalTrigger asChild>
-        <Button variant="secondary">Open compound modal</Button>
+        <Button color="neutral" variant="outline">
+          Open compound modal
+        </Button>
       </ModalTrigger>
       <ModalContent size="large" description="Built from the individual parts.">
         <ModalHeader>Workspace settings</ModalHeader>

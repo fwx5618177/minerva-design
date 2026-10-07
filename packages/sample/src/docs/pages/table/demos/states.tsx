@@ -11,7 +11,8 @@ export default function StatesDemo() {
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <Button
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         size="small"
         onClick={() => setLoading((v) => !v)}
       >

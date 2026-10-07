@@ -18,7 +18,11 @@ export default function BasicDemo() {
           </label>
         </DrawerBody>
         <DrawerFooter>
-          <Button variant="secondary" onClick={() => setOpen(false)}>
+          <Button
+            color="neutral"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
             Reset
           </Button>
           <Button onClick={() => setOpen(false)}>Apply</Button>

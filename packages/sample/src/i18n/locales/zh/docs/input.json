@@ -1,6 +1,6 @@
 {
   "title": "Input 输入框",
-  "description": "基础单行输入框，支持尺寸、变体和前后缀内容。需要自带标签的完整字段请使用 TextField。",
+  "description": "单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。",
   "demos": {
     "basic": {
       "title": "基础用法",
@@ -14,9 +14,21 @@
       "title": "前缀与后缀",
       "description": "图标、符号或单位等装饰内容。"
     },
+    "clearable-and-count": {
+      "title": "清除按钮与字数统计",
+      "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+    },
+    "password": {
+      "title": "密码",
+      "description": "type=\"password\" 会添加一个带本地化标签的显示 / 隐藏切换按钮。"
+    },
     "states": {
       "title": "状态",
       "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。"
+    },
+    "validation": {
+      "title": "校验",
+      "description": "提交时校验，并通过 FormField 的 errorMessage 显示错误信息：输入框进入无效状态，并由该信息描述。"
     }
   },
   "api": {
@@ -24,10 +36,16 @@
       "variant": "视觉样式",
       "size": "高度与字号",
       "invalid": "错误状态（无效的 FormControl 也会设置）；设置 aria-invalid",
-      "prefix": "文本前的装饰内容，如图标或“@”",
-      "suffix": "文本后的装饰内容，如单位",
+      "prefix": "文本前的内容，例如图标或 \"@\"",
+      "suffix": "文本后的内容，例如单位、图标或按钮",
       "className": "外层容器（而非 <input>）的类名",
-      "ref": "<input> 元素的 ref"
+      "ref": "<input> 元素的 ref",
+      "clearable": "有值时显示清除按钮（禁用或只读时不显示）；清除时以空值触发 onChange",
+      "onClear": "清除按钮清空输入框后调用",
+      "clearLabel": "清除按钮的无障碍标签（默认为本地化的 \"清除\"）",
+      "showCharCount": "显示字符数（设置 maxLength 时一并显示），并通过 aria-describedby 与输入框关联",
+      "showPasswordLabel": "密码隐藏时切换按钮的无障碍标签",
+      "hidePasswordLabel": "密码可见时切换按钮的无障碍标签"
     }
   }
 }

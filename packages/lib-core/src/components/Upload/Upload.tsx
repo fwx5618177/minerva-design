@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { LuRotateCw, LuUpload, LuX } from "react-icons/lu";
 import type { UploadItem, UploadProps } from "./types";
 import styles from "./upload.module.scss";
@@ -102,7 +102,7 @@ const Upload = ({
     <div
       {...rest}
       ref={ref}
-      className={classNames(styles.upload, className)}
+      className={cn(styles.upload, className)}
       role="group"
       aria-labelledby={labelId}
       aria-busy={loading}
@@ -112,7 +112,7 @@ const Upload = ({
       </span>
       {/* Drop target only: the keyboard path is the select button inside */}
       <div
-        className={classNames(styles.dropzone, {
+        className={cn(styles.dropzone, {
           [styles.dragging]: dragging && !blocked,
         })}
         onDragOver={(event) => {
@@ -134,7 +134,7 @@ const Upload = ({
       >
         <Button
           type="button"
-          appearance="outline"
+          variant="outline"
           disabled={blocked}
           loading={loading}
           startIcon={<LuUpload aria-hidden="true" />}
@@ -159,7 +159,7 @@ const Upload = ({
         />
       </div>
       {error && (
-        <Alert variant="error" animation={false} className={styles.error}>
+        <Alert color="danger" animation={false} className={styles.error}>
           {error}
         </Alert>
       )}
@@ -174,7 +174,7 @@ const Upload = ({
                 <span>{item.name}</span>
                 <span
                   role={item.status === "error" ? "alert" : "status"}
-                  className={classNames(styles.status, {
+                  className={cn(styles.status, {
                     [styles.statusError]: item.status === "error",
                   })}
                 >

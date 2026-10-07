@@ -4,11 +4,32 @@ import { render, screen } from "@testing-library/react";
 import { compile } from "sass";
 import { describe, expect, it } from "vitest";
 import Alert from "./Alert";
-import type { AlertVariant } from "./types";
+import type { AlertProps } from "./types";
 import styles from "./alert.module.scss";
 
 describe("Alert layout", () => {
   const css = compile(join(import.meta.dirname, "alert.module.scss")).css;
+
+  it("styles every color for the subtle, outline and solid variants", () => {
+    for (const name of ["info", "success", "warning", "danger"]) {
+      expect(css).toMatch(
+        new RegExp(
+          `\\.alert\\.${name}\\s*\\{[^}]*var\\(--${name}-color-subtle\\)`,
+        ),
+      );
+      expect(css).toMatch(
+        new RegExp(
+          `\\.alert\\.${name}\\.solid\\s*\\{[^}]*background-color: var\\(--${name}-color\\)`,
+        ),
+      );
+      expect(css).toMatch(
+        new RegExp(
+          `\\.alert\\.${name}\\.outline\\s*\\{[^}]*background-color: transparent`,
+        ),
+      );
+    }
+    expect(css).not.toMatch(/\.(outlined|filled)\b/);
+  });
 
   it("allows the alert root to shrink inside flex and grid layouts", () => {
     expect(css).toMatch(/\.alert\s*\{[^}]*min-width:\s*0\s*;/);
@@ -23,45 +44,54 @@ describe("Alert structure and native attributes", () => {
   it("renders the default status classes and a description", () => {
     render(<Alert>Saved</Alert>);
     const alert = screen.getByRole("status");
-    expect(alert).toHaveClass(styles.alert, styles.info, styles.medium);
+    expect(alert).toHaveClass(
+      styles.alert,
+      styles.info,
+      styles.subtle,
+      styles.medium,
+    );
     expect(alert.querySelector(`.${styles.message}`)).toHaveTextContent(
       "Saved",
     );
     expect(alert.querySelector(`.${styles.title}`)).toBeNull();
   });
 
-  it.each<[AlertVariant, string]>([
+  it.each<[NonNullable<AlertProps["color"]>, string]>([
     ["info", "info"],
     ["success", "success"],
     ["warning", "warning"],
-    ["error", "error"],
-    ["danger", "error"],
-  ])("renders a default icon and the status class for %s", (variant, cls) => {
+    ["danger", "danger"],
+  ])("renders a default icon and the status class for %s", (color, cls) => {
     render(
-      <Alert variant={variant} type="filled" role="alert">
+      <Alert color={color} variant="solid" role="alert">
         Body
       </Alert>,
     );
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveClass(styles[cls], styles.filled);
+    expect(alert).toHaveClass(styles[cls], styles.solid);
     expect(alert.querySelector(`.${styles.icon} svg`)).not.toBeNull();
   });
 
-  it("treats danger as an alias of error", () => {
-    render(<Alert variant="danger">Boom</Alert>);
+  it("renders danger as an interrupting alert with a localized icon label", () => {
+    render(<Alert color="danger">Boom</Alert>);
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveClass("error");
-    expect(screen.getByRole("img", { name: "error icon" })).toBeInTheDocument();
+    expect(alert).toHaveClass("danger");
+    expect(
+      screen.getByRole("img", { name: "danger icon" }),
+    ).toBeInTheDocument();
   });
 
-  it.each([
-    [{ type: "outlined" as const }, "outlined"],
-    [{ outlined: true }, "outlined"],
-    [{ filled: true }, "filled"],
-  ])("maps %j to the %s class", (props, cls) => {
-    render(<Alert {...props}>x</Alert>);
-    expect(screen.getByRole("status")).toHaveClass(styles[cls]);
-  });
+  it.each(["subtle", "outline", "solid"] as const)(
+    "applies the %s variant class",
+    (variant) => {
+      render(<Alert variant={variant}>x</Alert>);
+      const alert = screen.getByRole("status");
+      expect(alert).toHaveClass(styles.info, styles[variant]);
+      for (const other of ["subtle", "outline", "solid"] as const) {
+        if (other !== variant) expect(alert).not.toHaveClass(styles[other]);
+      }
+    },
+  );
 
   it("renders a title above the description and omits description without children", () => {
     const { rerender } = render(
@@ -108,7 +138,8 @@ describe("Alert structure and native attributes", () => {
         className="extra"
         aria-live="assertive"
         title="T"
-        variant="warning"
+        color="warning"
+        variant="outline"
       >
         msg
       </Alert>,
@@ -120,6 +151,7 @@ describe("Alert structure and native attributes", () => {
     expect(alert).toHaveClass("extra", styles.alert);
     expect(alert).not.toHaveAttribute("title");
     expect(alert).not.toHaveAttribute("variant");
+    expect(alert).not.toHaveAttribute("color");
   });
 
   it("does not point aria-controls at missing content", () => {

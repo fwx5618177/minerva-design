@@ -4,8 +4,9 @@ import type { Ref } from "react";
 export type SelectSize = "small" | "medium" | "large";
 
 /**
- * Props of the Select component (a single-choice dropdown built on Radix
- * Select: combobox trigger + listbox popup with full keyboard support)
+ * Props of the Select component (a single-choice dropdown: select-only
+ * combobox trigger + listbox popup anchored below it, with full keyboard
+ * support and a hidden native select for forms)
  */
 export interface SelectProps {
   /** Selected value (controlled; pair with onChange) */

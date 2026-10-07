@@ -1,39 +1,38 @@
 import type { HTMLAttributes, Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
-/** Semantic variant of an Alert (`danger` is an alias of `error`) */
-export type AlertVariant = "info" | "success" | "warning" | "error" | "danger";
 export type AlertSize = "small" | "medium" | "large";
-export type AlertType = "default" | "outlined" | "filled";
 
 export interface AlertProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "title" | "children"
+  "title" | "children" | "color"
 > {
   /** Alert title */
   title?: React.ReactNode;
   /** Alert content */
   children?: React.ReactNode;
   /**
-   * Semantic variant, which sets the color and default icon
+   * Semantic (status) color, which also sets the default icon and the role
    * @default "info"
    */
-  variant?: AlertVariant;
+  color?: Extract<ColorScheme, "info" | "success" | "warning" | "danger">;
+  /**
+   * Visual style: `subtle` (tinted background), `outline` (transparent
+   * background with a colored border) or `solid` (filled with the color)
+   * @default "subtle"
+   */
+  variant?: "subtle" | "outline" | "solid";
   /**
    * Alert size
    * @default "medium"
    */
   size?: AlertSize;
   /**
-   * Visual style
-   * @default "default"
-   */
-  type?: AlertType;
-  /**
-   * Shows the variant icon
+   * Shows the status icon of the color
    * @default true
    */
   showIcon?: boolean;
-  /** Custom icon, replacing the variant icon */
+  /** Custom icon, replacing the status icon */
   icon?: React.ReactNode;
   /**
    * Shows a close button
@@ -60,16 +59,6 @@ export interface AlertProps extends Omit<
   style?: React.CSSProperties;
   /** Action area rendered on the right, e.g. buttons */
   action?: React.ReactNode;
-  /**
-   * Shows a border
-   * @default false
-   */
-  outlined?: boolean;
-  /**
-   * Fills the background with the variant color
-   * @default false
-   */
-  filled?: boolean;
   /**
    * Banner mode, suited to page-level notices at the top of a page
    * @default false
@@ -117,14 +106,14 @@ export interface AlertProps extends Omit<
    */
   collapseLabel?: string;
   /**
-   * Accessible label of the variant icon
-   * @default "{variant} icon", e.g. "info icon" (localized)
+   * Accessible label of the status icon
+   * @default "{color} icon", e.g. "info icon" (localized)
    */
   iconLabel?: string;
   /**
-   * ARIA role of the alert. Errors and warnings interrupt ("alert"), info
+   * ARIA role of the alert. Danger and warning interrupt ("alert"), info
    * and success are polite ("status")
-   * @default "alert" for error / warning, "status" otherwise
+   * @default "alert" for danger / warning, "status" otherwise
    */
   role?: React.AriaRole;
   /** Ref to the root <div> element */

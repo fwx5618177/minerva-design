@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { BadgeProps } from "./types";
 import styles from "./badge.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -17,20 +17,17 @@ const isTextLike = (node: React.ReactNode): node is string | number =>
  */
 export const Badge = ({
   children,
-  variant = "primary",
-  appearance = "solid",
+  color = "primary",
+  variant = "solid",
   size = "medium",
   className = "",
   ariaLabel,
-  bgColor,
-  textColor,
   icon,
   content,
   position = "top-right",
   dot = false,
   borderRadius,
   borderWidth,
-  borderColor,
   role = "status",
   style,
   ref,
@@ -53,12 +50,12 @@ export const Badge = ({
   const badge = (
     <span
       ref={standalone ? (ref as React.Ref<HTMLSpanElement>) : undefined}
-      className={classNames(
+      className={cn(
         styles.badge,
+        styles[color],
         styles[variant],
         styles[size],
         standalone ? styles.standalone : styles[position],
-        appearance !== "solid" && styles[appearance],
         dot && styles.dot,
         className,
       )}
@@ -66,11 +63,8 @@ export const Badge = ({
       role={role}
       {...rest}
       style={{
-        backgroundColor: bgColor,
-        color: textColor,
         borderRadius,
         borderWidth,
-        borderColor,
         ...style,
       }}
     >

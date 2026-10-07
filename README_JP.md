@@ -26,29 +26,42 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 - **TypeScript**：型定義を同梱
 - **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
 - **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
-- **国際化**：英語・中国語・フランス語のロケールを内蔵
+- **国際化**：英語・中国語・日本語・フランス語のロケールを内蔵
+- **ヘッドレスライブラリ不要**：オーバーレイ、メニュー、セレクト、タブ、`asChild` は `@minerva/core` 上で自前実装。サードパーティのインタラクション依存は Floating UI のみ
 
 ## 📦 パッケージ
 
-| パッケージ                    | 説明                                                                                                         |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。 |
-| `@minerva/lib-web-components` | Lit ベースの Web Components。現在は `<minerva-button>` カスタム要素を提供。                                  |
-| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                  |
+| パッケージ                    | 説明                                                                                                                                                                                                                                                 |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@minerva/core`               | フレームワーク非依存のインタラクションプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決めなど）、テーマユーティリティ、デザイントークン、i18n メッセージ。lib-core と一緒にインストールされます。 |
+| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。                                                                                                                                         |
+| `@minerva/lib-web-components` | Lit ベースの Web Components。現在は `<minerva-button>` カスタム要素を提供。                                                                                                                                                                          |
+| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                                                                                                                                                          |
+
+### アーキテクチャ
+
+```
+@minerva/core            framework-agnostic TypeScript (DOM only)
+  interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
+        ▲ React hooks                    ▲ Lit controllers (later)
+@minerva/lib-core               @minerva/lib-web-components
+```
+
+`@minerva/lib-core` のすべてのオーバーレイ（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）は同じコアのプリミティブの上に構築されています。レイヤースタックは 1 つ（Escape は最も内側のオーバーレイから閉じる）、フォーカス処理も 1 つ（フォーカスは開いた要素へ戻る）、位置決めエンジンも 1 つです。詳しくはドキュメントサイトの[アーキテクチャ](https://fwx5618177.github.io/minerva/#/architecture)ページを参照してください。
 
 ### コンポーネント（`@minerva/lib-core`）
 
-| カテゴリ       | コンポーネント                                                                                                                                                                                                                                                                                                                    |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| テーマ         | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                                    |
-| 汎用           | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                                                                                                                                                                   |
-| レイアウト     | `Box`、`Stack` / `HStack` / `VStack`、`Space`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（サブコンポーネント含む）、`Divider`、`VirtualList`                                                                                               |
-| フォーム       | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`TextField`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
-| データ表示     | `Avatar` / `AvatarGroup`、`Badge`、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Table` / `DataTable`（サブコンポーネント含む）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                            |
-| フィードバック | `Alert`、`message` / `useMessage`、`toast` / `ToastProvider`、`ProgressIndicator`、`Spinner`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                         |
-| オーバーレイ   | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Popper`、`Menu` / `ContextMenu`、`Dropdown`                                                                                                                                                                                         |
-| ナビゲーション | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                              |
-| エディター     | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                                  |
+| カテゴリ       | コンポーネント                                                                                                                                                                                                                                                                                                       |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| テーマ         | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                       |
+| 汎用           | `Button`、`IconButton`                                                                                                                                                                                                                                                                                               |
+| レイアウト     | `Box`、`Stack` / `HStack` / `VStack`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（サブコンポーネント含む）、`Divider`、`VirtualList`                                                                                           |
+| フォーム       | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
+| データ表示     | `Avatar` / `AvatarGroup`、`Badge`、`Tag`、`Empty`、`Table` / `DataTable`（サブコンポーネント含む）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                                          |
+| フィードバック | `Alert`、`toast` / `ToastProvider`、`ProgressIndicator`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                                                 |
+| オーバーレイ   | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Menu` / `ContextMenu`                                                                                                                                                                                                  |
+| ナビゲーション | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                 |
+| エディター     | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                     |
 
 コンポーネントのほかに、`@minerva/lib-core` は `ConfigProvider`、`useConfig`、フック `useAutoTheme`・`useLocale`・`useI18n`、ユーティリティ `applyThemeStyles`・`generateCSSVariables`、および組み込みテーマ集 `themes`（`light`、`dark`、`github-dark`）をエクスポートしています。
 
@@ -84,10 +97,12 @@ import {
   Alert,
   Button,
   ConfigProvider,
-  Space,
   Switch,
-  TextField,
-  message,
+  FormField,
+  Input,
+  ToastProvider,
+  VStack,
+  toast,
 } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
 
@@ -97,30 +112,33 @@ export default function App() {
 
   return (
     <ConfigProvider>
-      <Space direction="vertical" size="medium">
-        <Alert variant="info" title="Welcome" closable>
-          Minerva is ready.
-        </Alert>
-        <TextField
-          name="username"
-          label="Username"
-          placeholder="Enter username"
-          value={name}
-          onChange={setName}
-          clearable
-        />
-        <Switch
-          label="Subscribe"
-          checked={subscribed}
-          onChange={(checked) => setSubscribed(checked)}
-        />
-        <Button
-          variant="primary"
-          onClick={() => message.success(`Hello, ${name}`)}
-        >
-          Submit
-        </Button>
-      </Space>
+      <ToastProvider>
+        <VStack gap={4} align="start">
+          <Alert color="info" title="Welcome" closable>
+            Minerva is ready.
+          </Alert>
+          <FormField label="Username">
+            <Input
+              name="username"
+              placeholder="Enter username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              clearable
+            />
+          </FormField>
+          <Switch
+            label="Subscribe"
+            checked={subscribed}
+            onChange={(checked) => setSubscribed(checked)}
+          />
+          <Button
+            color="primary"
+            onClick={() => toast.success(`Hello, ${name}`)}
+          >
+            Submit
+          </Button>
+        </VStack>
+      </ToastProvider>
     </ConfigProvider>
   );
 }
@@ -161,19 +179,19 @@ export function Root() {
 
 サーバーコンポーネントで `@minerva/lib-core/theme-utils` の `parseThemeCookies` を使って cookie を読み、`<head>` に `THEME_INIT_SCRIPT` をインライン化し、`ThemeProvider`（`defaultTheme` / `defaultPalette`）でアプリを包むと、初回表示のちらつきを防げます。詳しくはドキュメントサイトの「テーマとパレット」ページを参照してください。
 
-### Message API
+### Toast API
 
 ```tsx
-import { Button, message, useMessage } from "@minerva/lib-core";
+import { Button, toast } from "@minerva/lib-core";
 
+// Rendered by the <ToastProvider> mounted near the root of the app
 export function SaveButton() {
-  const msg = useMessage();
-
-  const save = () => {
-    msg
-      .loading({ content: "Saving...", duration: 1000 })
-      .then(() => message.success("Saved"));
-  };
+  const save = () =>
+    toast.promise(fetch("/api/save", { method: "POST" }), {
+      loading: "Saving...",
+      success: "Saved",
+      error: "Could not save",
+    });
 
   return <Button onClick={save}>Save</Button>;
 }
@@ -235,7 +253,7 @@ pnpm dev
 | コマンド                            | 説明                                                                                  |
 | ----------------------------------- | ------------------------------------------------------------------------------------- |
 | `pnpm dev`                          | ライブラリをビルドしてから、ドキュメント/デモサイトを起動                             |
-| `pnpm build`                        | 全パッケージを順にビルド：lib-core → lib-web-components → sample                      |
+| `pnpm build`                        | 全パッケージを順にビルド：core → lib-core → lib-web-components → sample               |
 | `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー |
 | `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                      |
 | `pnpm test:dist`                    | ビルド済み `@minerva/lib-core` のスモークテスト（ビルド後に実行）                     |
@@ -270,7 +288,7 @@ pnpm install            # 内部依存のバージョンが変わった場合は
 git commit -am "chore: release" && git push
 
 # 3. 公開（@minerva スコープへの公開権限を持つアカウントで `npm login` が必要）
-pnpm release            # lib-core と lib-web-components をビルドし `changeset publish` を実行
+pnpm release            # core、lib-core、lib-web-components をビルドし `changeset publish` を実行
 git push --follow-tags  # changeset publish が作成したタグを push
 ```
 

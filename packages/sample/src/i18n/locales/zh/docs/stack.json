@@ -1,6 +1,6 @@
 {
   "title": "Stack 堆叠",
-  "description": "基于 token 间距的 flex 布局原语（Stack、HStack、VStack）。与 Space 不同，子元素不会被额外的元素包裹。",
+  "description": "弹性布局基础组件（Stack、HStack、VStack），支持基于令牌的间距、分隔符和相连组。子元素不会被额外包裹。",
   "demos": {
     "basic": {
       "title": "垂直堆叠",
@@ -10,9 +10,21 @@
       "title": "水平堆叠",
       "description": "HStack 在交叉轴上居中对齐；justify 控制主轴分布。"
     },
+    "gap": {
+      "title": "间距",
+      "description": "数字对应间距令牌（2 = 8px，4 = 16px，6 = 24px）；其他字符串作为 CSS 长度。"
+    },
     "wrap": {
       "title": "换行与语义",
       "description": "wrap 允许项目换行；as 可渲染为列表。"
+    },
+    "separator": {
+      "title": "分隔符",
+      "description": "separator 渲染在相邻项之间，例如竖向 Divider；空子节点不会产生分隔符。"
+    },
+    "attached": {
+      "title": "相连组",
+      "description": "attached 将各项合并为一组：共享边框、仅保留外侧圆角，类似分段控件。"
     }
   },
   "api": {
@@ -23,7 +35,9 @@
       "gap": "项目间距：数字和数字字符串对应间距 token，其他字符串为 CSS 值。省略时无间距。",
       "align": "交叉轴对齐（align-items）；省略时不设置",
       "justify": "主轴分布（justify-content）；省略时不设置",
-      "wrap": "允许项目换行"
+      "wrap": "允许项目换行",
+      "separator": "渲染在每两项之间（首项之前与末项之后不渲染）；空子节点不产生分隔符",
+      "attached": "将各项合并为相连的一组：无间距、共享边框、仅外侧圆角，并带 role=\"group\""
     }
   }
 }

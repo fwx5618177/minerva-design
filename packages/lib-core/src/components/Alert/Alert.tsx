@@ -1,5 +1,5 @@
 import React, { useCallback, useId, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import {
   IoInformationCircle,
   IoCheckmarkCircle,
@@ -18,7 +18,7 @@ const iconMap = {
   info: <IoInformationCircle />,
   success: <IoCheckmarkCircle />,
   warning: <IoWarning />,
-  error: <IoCloseCircle />,
+  danger: <IoCloseCircle />,
 };
 
 const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
@@ -26,9 +26,9 @@ const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
 /**
  * Alert 警告提示组件
  * @description 用于页面中展示重要的提示信息，适用于系统级通知、操作反馈等场景
- * @param {AlertVariant} variant - 警告提示的类型，可选值：info、success、warning、error
+ * @param {string} color - 警告提示的语义颜色（决定图标与 role），可选值：info、success、warning、danger
+ * @param {string} variant - 警告提示的视觉样式，可选值：subtle、outline、solid
  * @param {AlertSize} size - 警告提示的尺寸，可选值：small、medium、large
- * @param {AlertType} type - 警告提示的样式类型，可选值：default、outlined、filled
  * @param {boolean} showIcon - 是否显示图标
  * @param {ReactNode} icon - 自定义图标
  * @param {boolean} closable - 是否可关闭
@@ -52,9 +52,9 @@ const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
 const Alert = ({
   title,
   children,
-  variant: variantProp = "info",
+  color = "info",
+  variant = "subtle",
   size = "medium",
-  type = "default",
   showIcon = true,
   icon,
   closable = false,
@@ -65,8 +65,6 @@ const Alert = ({
   className,
   style,
   action,
-  outlined = false,
-  filled = false,
   banner = false,
   elevation = false,
   rounded = true,
@@ -84,7 +82,6 @@ const Alert = ({
   ...rest
 }: AlertProps) => {
   const { t } = useI18n();
-  const variant = variantProp === "danger" ? "error" : variantProp;
   const [visible, setVisible] = useState(true);
   const [expanded, setExpanded] = useControllableState({
     value: expandedProp,
@@ -111,16 +108,14 @@ const Alert = ({
 
   if (!visible) return null;
 
-  const classes = classNames(
+  const classes = cn(
     styles.alert,
+    styles[color],
     styles[variant],
     styles[size],
-    styles[type],
     {
       [styles.withIcon]: showIcon,
       [styles.withTitle]: title,
-      [styles.outlined]: outlined,
-      [styles.filled]: filled,
       [styles.banner]: banner,
       [styles.withAnimation]: animation,
       [styles[`animation-${animationName}`]]:
@@ -149,19 +144,18 @@ const Alert = ({
       ref={ref}
       className={classes}
       style={customStyle}
-      // Errors and warnings interrupt (alert); info and success are polite
+      // Danger and warning interrupt (alert); info and success are polite
       role={
-        role ??
-        (variant === "error" || variant === "warning" ? "alert" : "status")
+        role ?? (color === "danger" || color === "warning" ? "alert" : "status")
       }
     >
       {showIcon && (
         <span
           className={styles.icon}
           role="img"
-          aria-label={iconLabel ?? t(`alert.icon.${variant}`)}
+          aria-label={iconLabel ?? t(`alert.icon.${color}`)}
         >
-          {icon || iconMap[variant]}
+          {icon || iconMap[color]}
         </span>
       )}
 

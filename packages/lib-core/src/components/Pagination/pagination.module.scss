@@ -261,3 +261,48 @@
     }
   }
 }
+
+// Variants (shared vocabulary): `solid` is the default look of `.item`
+// above (active page filled with the primary color, inverse text).
+// outline: transparent active page with a primary border and primary text.
+.pagination.outline .item.active {
+  background: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color-text);
+
+  &:hover {
+    background: var(--primary-color-subtle);
+    border-color: var(--primary-color);
+    color: var(--primary-color-text);
+  }
+}
+
+// ghost: transparent items without border, tinted on hover; the active page
+// only differs by its primary text.
+.pagination.ghost .item {
+  background: transparent;
+  border-color: transparent;
+
+  &:hover {
+    background: var(--surface-muted-color);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &.active {
+    background: transparent;
+    border-color: transparent;
+    color: var(--primary-color-text);
+
+    &:hover {
+      background: var(--primary-color-subtle);
+      border-color: transparent;
+      color: var(--primary-color-text);
+      box-shadow: none;
+    }
+  }
+
+  &.disabled {
+    background: transparent;
+  }
+}

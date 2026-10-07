@@ -13,7 +13,9 @@ export default function CompoundDemo() {
   return (
     <DrawerRoot>
       <DrawerTrigger asChild>
-        <Button variant="secondary">Open compound drawer</Button>
+        <Button color="neutral" variant="outline">
+          Open compound drawer
+        </Button>
       </DrawerTrigger>
       <DrawerContent side="left" size="large" hideCloseButton>
         <DrawerHeader>Navigation</DrawerHeader>

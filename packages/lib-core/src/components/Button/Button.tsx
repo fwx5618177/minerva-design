@@ -1,19 +1,19 @@
 import React from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import styles from "./button.module.scss";
 import type { ButtonProps } from "./types";
 
 /**
- * Button: a native <button> with colors, fill styles (appearance), sizes,
- * shapes, icons and a loading state.
+ * Button: a native <button> with a semantic `color`, a visual `variant`
+ * (solid, outline, ghost, link), sizes, shapes, icons and a loading state.
  * Extra HTML attributes are forwarded; `ref` reaches the <button>.
  */
 const Button = ({
   onClick,
   children,
   className = "",
-  variant = "primary",
-  appearance,
+  color = "primary",
+  variant = "solid",
   size = "medium",
   ariaLabel,
   disabled = false,
@@ -39,40 +39,24 @@ const Button = ({
     if (!disabled) onClick?.(event);
   };
 
-  const modern = appearance !== undefined;
-  // The classic look always had a medium radius; the token-based look uses
-  // the theme radius unless a radius is asked for explicitly.
-  const radius = borderRadius ?? (modern ? undefined : "medium");
   const borderRadiusClass =
-    typeof radius === "string"
+    typeof borderRadius === "string"
       ? styles[
-          `borderRadius${radius.charAt(0).toUpperCase() + radius.slice(1)}`
+          `borderRadius${borderRadius.charAt(0).toUpperCase() + borderRadius.slice(1)}`
         ]
       : undefined;
 
   const customStyle = {
-    ...(typeof radius === "number" ? { borderRadius: `${radius}px` } : {}),
+    ...(typeof borderRadius === "number"
+      ? { borderRadius: `${borderRadius}px` }
+      : {}),
     ...style,
   };
 
-  // Structured content (icon / label slots) whenever a new capability is used;
-  // otherwise the historical markup is kept as is.
-  const structured =
-    modern || startIcon != null || endIcon != null || loadingText !== undefined;
-  const showLoadingText = loading && loadingText !== undefined;
   const spinner = <span className={styles.loadingSpinner} aria-hidden />;
 
   let content: React.ReactNode;
-  if (!structured) {
-    content = loading ? (
-      <span className={styles.loadingWrapper}>
-        {spinner}
-        {children}
-      </span>
-    ) : (
-      children
-    );
-  } else if (showLoadingText) {
+  if (loading && loadingText !== undefined) {
     content = (
       <>
         {spinner}
@@ -85,11 +69,11 @@ const Button = ({
       <>
         {loading && spinner}
         {startIcon != null && (
-          <span className={classNames(styles.icon, hidden)}>{startIcon}</span>
+          <span className={cn(styles.icon, hidden)}>{startIcon}</span>
         )}
-        <span className={classNames(styles.label, hidden)}>{children}</span>
+        <span className={cn(styles.label, hidden)}>{children}</span>
         {endIcon != null && (
-          <span className={classNames(styles.icon, hidden)}>{endIcon}</span>
+          <span className={cn(styles.icon, hidden)}>{endIcon}</span>
         )}
       </>
     );
@@ -98,15 +82,13 @@ const Button = ({
   return (
     <button
       ref={ref}
-      className={classNames(
+      className={cn(
         styles.customButton,
-        styles[variant],
+        styles[color],
+        styles[`variant-${variant}`],
         styles[size],
         borderRadiusClass,
         shape && styles[shape],
-        modern && styles.modern,
-        modern && styles[`appearance-${appearance}`],
-        structured && styles.structured,
         fullWidth && styles.fullWidth,
         active && styles.active,
         loading && styles.loading,

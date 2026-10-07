@@ -10,7 +10,7 @@ import i18n from "../config/i18n";
 import useI18n from "../hooks/useI18n";
 import { Modal } from "../components/Modal";
 import { Tooltip } from "../components/Tooltip";
-import { dark, githubDark, light } from "../styles/themes";
+import { dark, githubDark, light } from "@minerva/core";
 import { mockColorScheme } from "../test-utils/matchMedia";
 
 const html = document.documentElement;
@@ -256,7 +256,7 @@ describe("nested ConfigProvider", () => {
     expect(document.querySelector("[data-minerva-portal-host]")).toBeNull();
   });
 
-  it("scopes createPortal-based overlays too (Tooltip / Popper)", () => {
+  it("scopes Tooltip portals too", () => {
     render(
       <ConfigProvider theme="light">
         <ConfigProvider theme="dark">

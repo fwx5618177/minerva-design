@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import {
@@ -17,16 +17,6 @@ const placementClass = {
   top: styles.labelTop,
   bottom: styles.labelBottom,
 } as const;
-
-/** Colors styled by a role class; any other value is used as a CSS color. */
-const THEME_COLORS = new Set([
-  "primary",
-  "secondary",
-  "success",
-  "info",
-  "warning",
-  "error",
-]);
 
 const hasContent = (node: React.ReactNode) =>
   node != null && node !== false && node !== "";
@@ -59,7 +49,7 @@ const Switch = ({
   className,
   labelStyle,
   trackStyle,
-  thumbStyle: customThumbStyle,
+  thumbStyle,
   onChange,
   onFocus,
   onBlur,
@@ -126,7 +116,6 @@ const Switch = ({
 
   const bilateral = hasContent(offLabel) && hasContent(onLabel);
   const segmented = variant === "segmented" && bilateral;
-  const isThemeColor = THEME_COLORS.has(color);
 
   const input = (
     <input
@@ -162,10 +151,10 @@ const Switch = ({
       <span
         role="group"
         aria-label={ariaLabel}
-        className={classNames(
+        className={cn(
           styles.segmented,
           styles[size],
-          isThemeColor && styles[color],
+          styles[color],
           blocked && styles.disabled,
           className,
         )}
@@ -178,10 +167,7 @@ const Switch = ({
             <button
               key={String(segmentState)}
               type="button"
-              className={classNames(
-                styles.segment,
-                active && styles.segmentActive,
-              )}
+              className={cn(styles.segment, active && styles.segmentActive)}
               disabled={blocked}
               aria-pressed={active}
               onClick={() => setState(segmentState)}
@@ -194,10 +180,11 @@ const Switch = ({
     );
   }
 
-  const switchClasses = classNames(
+  const switchClasses = cn(
     styles.switch,
     styles[size],
     !bilateral && placementClass[labelPlacement],
+    styles[color],
     {
       [styles.checked]: isChecked,
       [styles.checkedLarge]: isChecked && size === "large",
@@ -205,24 +192,16 @@ const Switch = ({
       [styles.loading]: loading,
       [styles.square]: shape === "square",
       [styles.ripple]: ripple && rippleActive,
-      [styles[color]]: isThemeColor,
       [styles.bilateral]: bilateral,
     },
     className,
   );
 
-  const computedThumbStyle = {
-    ...(isChecked && !isDisabled && !isThemeColor
-      ? { backgroundColor: color, color }
-      : {}),
-    ...customThumbStyle,
-  };
-
   const control = (
     <span className={styles.switchBase}>
       {input}
       <span className={styles.track} style={trackStyle} />
-      <span className={styles.thumb} style={computedThumbStyle}>
+      <span className={styles.thumb} style={thumbStyle}>
         {iconPlacement === "start" && icon && (
           <span className={styles.icon}>{icon}</span>
         )}
@@ -241,7 +220,7 @@ const Switch = ({
       return (
         <button
           type="button"
-          className={classNames(styles.side, active && styles.sideActive)}
+          className={cn(styles.side, active && styles.sideActive)}
           disabled={blocked}
           onClick={() => setState(sideState)}
         >

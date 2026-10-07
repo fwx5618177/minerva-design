@@ -1,14 +1,22 @@
 {
   "title": "ProgressIndicator",
-  "description": "Indique un chargement : ProgressIndicator pour des barres et indicateurs avec le rôle progressbar, Spinner pour un anneau de statut en ligne léger.",
+  "description": "Indique un chargement : une progressbar indéterminée dessinée en spinner, cercle, vague, barre ou barre pointillée.",
   "demos": {
-    "types": {
-      "title": "Types",
-      "description": "Spinner (par défaut), cercle, vague, barre et barre pointillée."
+    "variants": {
+      "title": "Variantes",
+      "description": "variant choisit le style : spinner (par défaut), cercle, vague, barre ou barre pointillée."
     },
     "sizes": {
       "title": "Tailles",
-      "description": "Petite, moyenne (par défaut) et grande."
+      "description": "Cinq tailles de xsmall à xlarge : le diamètre des indicateurs ronds ou l’épaisseur des barres."
+    },
+    "colors": {
+      "title": "Couleurs",
+      "description": "Couleur sémantique : primary (par défaut) ou neutral ; la valeur spéciale current suit la couleur du texte environnant (currentColor), par exemple dans un bouton."
+    },
+    "label": {
+      "title": "Libellé visible",
+      "description": "Un libellé visible s’affiche à côté de l’indicateur et nomme la progressbar."
     },
     "width": {
       "title": "Largeur",
@@ -17,32 +25,21 @@
     "with-icon": {
       "title": "Avec icône",
       "description": "Affichez une icône avant l’indicateur. Décrivez toujours ce qui est en cours de chargement avec ariaLabel."
-    },
-    "spinner": {
-      "title": "Spinner",
-      "description": "Un anneau en ligne léger qui est une région de statut polie ; la couleur peut suivre celle du texte."
-    },
-    "spinner-sizes": {
-      "title": "Tailles du Spinner",
-      "description": "Cinq diamètres de 12 px à 48 px."
     }
   },
   "api": {
     "ProgressIndicatorProps": {
-      "type": "Style de l’indicateur",
+      "variant": "Style de l’indicateur",
       "size": "Taille de l’indicateur",
+      "color": "Couleur sémantique de l’indicateur : primary du thème ou gris neutral. La valeur spéciale current suit la couleur du texte environnant (currentColor)",
       "icon": "Icône affichée avant l’indicateur",
+      "label": "Texte visible affiché à côté de l’indicateur ; il nomme aussi la progressbar sauf si ariaLabel est défini",
       "ariaLabel": "Libellé accessible décrivant ce qui est en cours de chargement",
+      "decorative": "Purement visuel : retire le rôle progressbar et masque l’indicateur aux technologies d’assistance",
       "className": "Classe CSS supplémentaire",
-      "width": "Largeur personnalisée (ignorée si full est défini)",
+      "width": "Largeur personnalisée (ignorée si full est défini) ; 200 px par défaut pour les barres",
       "full": "Étire l’indicateur sur toute la largeur de son conteneur",
       "ref": "Ref vers l’élément racine <div>"
-    },
-    "SpinnerProps": {
-      "size": "Diamètre prédéfini",
-      "color": "Couleur de l'anneau ; current suit la couleur du texte environnant",
-      "label": "Texte masqué visuellement mais annoncé ; chaîne vide si décoratif",
-      "ref": "Ref vers l'élément <span> racine"
     }
   }
 }

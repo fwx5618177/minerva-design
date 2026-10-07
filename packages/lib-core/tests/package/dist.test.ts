@@ -25,27 +25,25 @@ const EXPECTED_EXPORTS = [
   "Card",
   "Cascader",
   "Checkbox",
-  "Chip",
   "ConfigProvider",
   "Divider",
-  "Dropdown",
   "Empty",
   "IconButton",
-  "InteractiveIconButton",
-  "message",
-  "useMessage",
+  "Input",
   "Pagination",
-  "Popper",
+  "Popover",
+  "PopoverContent",
+  "PopoverTrigger",
+  "Menu",
+  "Select",
+  "Modal",
+  "Tabs",
   "ProgressIndicator",
   "Radio",
   "RadioGroup",
-  "SearchButton",
   "Skeleton",
-  "Space",
-  "StatusIndicator",
   "Switch",
   "Tag",
-  "TextField",
   "TimePicker",
   "Tooltip",
   "VirtualList",
@@ -140,6 +138,14 @@ describe("@minerva/lib-core dist", () => {
     const style = readFileSync(dist(pkg.exports["./style.css"]), "utf8");
     expect(style).toMatch(/\[data-palette=("?)editorial\1\]/);
     expect(style).toContain("--space-4:");
+    // every design token of @minerva/core/tokens.css is bundled
+    const tokens = readFileSync(
+      require.resolve("@minerva/core/tokens.css"),
+      "utf8",
+    );
+    const names = new Set(tokens.match(/--[\w-]+(?=:)/g));
+    expect(names.size).toBeGreaterThan(100);
+    for (const name of names) expect(style, name).toContain(`${name}:`);
     const prose = readFileSync(dist(pkg.exports["./prose.scss"]), "utf8");
     expect(prose).toMatch(/@mixin/);
   });
@@ -169,7 +175,11 @@ describe("@minerva/lib-core dist", () => {
       .join("\n");
     expect(code).toMatch(/from "react"/);
     expect(code).not.toMatch(/react\.production|react-dom\.production/);
-    expect(code).toMatch(/from "@floating-ui\/react-dom"/);
+    // @minerva/core (primitives, theming) is a dependency, never inlined
+    expect(code).toMatch(/from "@minerva\/core"/);
+    expect(code).not.toMatch(/function createThemeInitScript/);
+    // ...but its design tokens are bundled into style.css, not imported
+    expect(code).not.toMatch(/tokens\.css/);
   });
 
   it("can be imported and server-rendered without a DOM", async () => {
@@ -180,11 +190,18 @@ describe("@minerva/lib-core dist", () => {
         { theme: "light" },
         createElement(lib.Button, null, "Hello"),
         createElement(lib.Tooltip, { content: "Tip" }, "Hover me"),
-        createElement(lib.Popper, { anchorEl: null, visible: true }, "pop"),
+        createElement(
+          lib.Popover,
+          { defaultOpen: true },
+          createElement(lib.PopoverTrigger, null, "Open"),
+          createElement(lib.PopoverContent, null, "pop"),
+        ),
       ),
     );
     expect(html).toContain("Hello");
     expect(html).toContain("Hover me");
+    // Portalled content is client-only: the trigger renders on the server
+    expect(html).toContain("Open");
   });
 
   it("exposes the Monaco editor from the monaco entry (ESM + CJS)", async () => {

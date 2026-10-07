@@ -6,16 +6,16 @@ import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
 import { categories, docPages } from "@/docs/registry";
 
-const quickLook = `import { Button, ConfigProvider, Space, Switch } from "@minerva/lib-core";
+const quickLook = `import { Button, ConfigProvider, HStack, Switch } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
 
 export default function App() {
   return (
     <ConfigProvider theme="auto">
-      <Space>
-        <Button variant="primary">Save</Button>
+      <HStack gap={4}>
+        <Button color="primary">Save</Button>
         <Switch label="Notifications" defaultChecked />
-      </Space>
+      </HStack>
     </ConfigProvider>
   );
 }`;

@@ -23,25 +23,21 @@ describe("Card (padded layout and polymorphic root)", () => {
     expect(card).toHaveTextContent("content");
   });
 
-  it.each<CardVariant>([
-    "outlined",
-    "elevated",
-    "subtle",
-    "ghost",
-    "shadow",
-    "filled",
-  ])("applies variant %s with the padded layout", (variant) => {
-    render(
-      <Card data-testid="card" variant={variant} padding="none">
-        x
-      </Card>,
-    );
-    expect(screen.getByTestId("card")).toHaveClass(
-      variant,
-      "padded",
-      "pad-none",
-    );
-  });
+  it.each<CardVariant>(["outline", "elevated", "ghost", "filled"])(
+    "applies variant %s with the padded layout",
+    (variant) => {
+      render(
+        <Card data-testid="card" variant={variant} padding="none">
+          x
+        </Card>,
+      );
+      expect(screen.getByTestId("card")).toHaveClass(
+        variant,
+        "padded",
+        "pad-none",
+      );
+    },
+  );
 
   it.each(["small", "medium", "large"] as const)(
     "maps padding %s to its padding class",
@@ -97,7 +93,7 @@ describe("Card (padded layout and polymorphic root)", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
 
     rerender(
-      <Card as="button" htmlType="submit" disabled onClick={onClick}>
+      <Card as="button" type="submit" disabled onClick={onClick}>
         Pick
       </Card>,
     );
@@ -156,21 +152,20 @@ describe("Card sections and padding overrides", () => {
     ).toBeInTheDocument();
   });
 
-  it("forwards native attributes and merges style with bgColor/textColor", () => {
+  it("forwards native attributes and style to every part", () => {
     render(
       <>
         <CardHeader
           data-testid="h"
           id="hd"
-          bgColor="red"
-          style={{ opacity: 0.5 }}
+          style={{ backgroundColor: "red", opacity: 0.5 }}
         />
-        <CardContent data-testid="c" aria-label="body" textColor="blue" />
-        <CardFooter
-          data-testid="f"
-          style={{ color: "green" }}
-          textColor="blue"
+        <CardContent
+          data-testid="c"
+          aria-label="body"
+          style={{ color: "blue" }}
         />
+        <CardFooter data-testid="f" style={{ color: "green" }} />
         <CardDescription data-testid="d" id="desc" />
         <CardTitle data-testid="t" id="title" />
       </>,

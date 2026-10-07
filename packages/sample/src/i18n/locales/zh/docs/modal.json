@@ -34,6 +34,7 @@
       "size": "宽度预设",
       "hideCloseButton": "隐藏关闭（×）按钮",
       "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
+      "role": "对话框面板的 ARIA 角色；需要打断用户的确认框请使用 \"alertdialog\"",
       "className": "面板的额外类名",
       "ref": "指向对话框元素的 ref",
       "children": "主体：通常是 ModalBody + ModalFooter，或包裹它们的 <form>"
@@ -42,7 +43,7 @@
       "open": "受控的打开状态；不传（undefined）时为非受控",
       "defaultOpen": "非受控时的初始打开状态",
       "onOpenChange": "请求改变打开状态时调用（触发器、关闭按钮、Escape、点击遮罩）",
-      "modal": "模态模式：锁定焦点、阻止外部交互，并对辅助技术隐藏页面其余部分",
+      "modal": "模态模式：渲染遮罩、锁定焦点、锁定页面滚动、阻止外部交互，并对辅助技术隐藏页面",
       "children": "触发器与内容"
     },
     "ModalTriggerProps": {
@@ -53,8 +54,15 @@
       "size": "宽度预设",
       "hideCloseButton": "隐藏关闭（×）按钮",
       "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
-      "description": "标题下方的可见描述；不传时渲染一个隐藏的空描述",
-      "overlayClassName": "遮罩层的类名"
+      "description": "标题下方的可见描述，作为无障碍描述关联（没有描述时不设置 aria-describedby）",
+      "overlayClassName": "遮罩层的类名",
+      "role": "面板的 ARIA 角色；打断用户的确认请使用 \"alertdialog\"",
+      "forceMount": "关闭时仍保持挂载（data-state=\"closed\"），例如配合动画库使用",
+      "onOpenAutoFocus": "打开时焦点移入面板之前调用；event.preventDefault() 可让焦点保持原位",
+      "onCloseAutoFocus": "关闭时焦点回到打开者之前调用；event.preventDefault() 可跳过",
+      "onEscapeKeyDown": "作为最上层时按下 Escape；event.preventDefault() 可保持打开",
+      "onPointerDownOutside": "在外部按下指针；event.preventDefault() 可保持打开",
+      "onInteractOutside": "外部的指针按下或焦点移动；event.preventDefault() 可保持打开"
     }
   }
 }

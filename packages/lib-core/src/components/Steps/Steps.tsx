@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { StepsProps } from "./types";
 import styles from "./steps.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -35,7 +35,7 @@ const Steps = ({
       aria-label={ariaLabel ?? t("steps.label")}
       {...rest}
       ref={ref}
-      className={classNames(styles.steps, className)}
+      className={cn(styles.steps, className)}
     >
       {items.map((item, index) => {
         const isCurrent = index === currentIndex;
@@ -43,7 +43,7 @@ const Steps = ({
         return (
           <li
             key={item.value}
-            className={classNames(styles.step, {
+            className={cn(styles.step, {
               [styles.current]: isCurrent,
               [styles.complete]: isComplete,
             })}

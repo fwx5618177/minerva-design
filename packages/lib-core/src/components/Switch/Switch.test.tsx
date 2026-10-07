@@ -139,13 +139,17 @@ describe("Switch", () => {
     expect(getRoot(screen.getByRole("switch"))).toHaveClass("square", "mine");
   });
 
-  it("applies a custom color to the thumb only when checked", async () => {
+  it("keeps the semantic color class while toggling, without inline thumb colors", async () => {
     const user = userEvent.setup();
-    const { container } = render(<Switch label="S" color="#123456" />);
+    const { container } = render(<Switch label="S" color="warning" />);
     const thumb = container.querySelector(".thumb") as HTMLElement;
-    expect(thumb.style.backgroundColor).toBe("");
+    expect(getRoot(screen.getByRole("switch"))).toHaveClass("warning");
     await user.click(screen.getByRole("switch"));
-    expect(thumb.style.backgroundColor).not.toBe("");
+    expect(getRoot(screen.getByRole("switch"))).toHaveClass(
+      "warning",
+      "checked",
+    );
+    expect(thumb.style.backgroundColor).toBe("");
   });
 
   it("applies custom label, track and thumb styles", () => {

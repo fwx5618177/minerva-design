@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { FaClock } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { Popper } from "../Popper";
-import { TextField } from "../TextField";
+import { Input } from "../Input";
 import { IconButton } from "../IconButton";
 import TimePickerPanel from "./TimePickerPanel";
 import type { TimePickerProps } from "./types";
 import { formatTime, parseTimeInput, startOfToday } from "./utils";
+import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import useI18n from "../../hooks/useI18n";
@@ -52,6 +52,7 @@ const TimePicker = ({
   // Text being typed; `null` = show the formatted value
   const [draft, setDraft] = useState<string | null>(null);
   const [input, setInput] = useState<HTMLInputElement | null>(null);
+  const [field, setField] = useState<HTMLDivElement | null>(null);
   const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
 
   const commit = (next: Date | null) => {
@@ -113,21 +114,21 @@ const TimePicker = ({
   return (
     // Clicking the input toggles the panel. The handler only reacts to clicks
     // on the inner <input>, which has its own keyboard support (ArrowDown
-    // opens the panel; Popper handles Escape), so the wrapper is not a control.
+    // opens the panel; Escape closes it), so the wrapper is not a control.
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
-      className={classNames(styles.timePicker, className)}
+      ref={setField}
+      className={cn(styles.timePicker, className)}
       onClick={(e) => {
         if (e.target === input) toggle();
       }}
     >
-      <TextField
+      <Input
         ref={setInputRef}
         value={displayValue}
         placeholder={placeholder ?? t("timePicker.placeholder")}
-        label={label ?? ""}
-        ariaLabel={label ? undefined : (ariaLabel ?? t("timePicker.label"))}
-        onChange={handleInputChange}
+        aria-label={label ?? ariaLabel ?? t("timePicker.label")}
+        onChange={(e) => handleInputChange(e.target.value)}
         onBlur={handleInputBlur}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown" && !open) {
@@ -154,17 +155,19 @@ const TimePicker = ({
           )
         }
       />
-      <Popper
-        visible={open && !disabled}
-        onVisibleChange={setOpen}
-        onClickAway={() => setOpen(false)}
-        trigger="manual"
-        placement="bottomStart"
-        type="select"
-        size={size}
+      <FloatingPanel
+        open={open && !disabled}
+        anchor={input}
+        placement="bottom-start"
+        // the field (input + clear button) is part of the popup layer
+        branches={() => [field]}
+        onDismiss={() => setOpen(false)}
+        returnFocusOnEscape={() => input}
+        focusable
+        role="dialog"
         tabIndex={-1}
-        ariaLabel={label ?? ariaLabel ?? t("timePicker.label")}
-        anchorEl={input}
+        aria-label={label ?? ariaLabel ?? t("timePicker.label")}
+        className={styles.popup}
       >
         <TimePickerPanel
           value={current ?? startOfToday()}
@@ -180,7 +183,7 @@ const TimePicker = ({
           onTimeChange={handleTimeChange}
           visible={open}
         />
-      </Popper>
+      </FloatingPanel>
     </div>
   );
 };

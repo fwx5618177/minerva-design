@@ -1,6 +1,6 @@
 // A sign-up form built from lib-core form controls, filled in by a user.
 import { useState } from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
@@ -9,22 +9,22 @@ import {
   Cascader,
   Checkbox,
   ConfigProvider,
+  FormField,
+  Input,
   Radio,
   RadioGroup,
   Switch,
-  TextField,
+  TagInput,
   TimePicker,
-  message,
-  type AutoCompleteOption,
+  ToastProvider,
+  toast,
   type CascaderOption,
 } from "@minerva/lib-core";
 
 const countries = ["France", "Germany", "Japan", "China", "Canada"].map(
   (name) => ({ label: name, value: name.toLowerCase() }),
 );
-const interests = ["Design", "React", "Accessibility", "Testing"].map(
-  (name) => ({ label: name, value: name.toLowerCase() }),
-);
+const interests = ["Design", "React", "Accessibility", "Testing"];
 
 const offices: CascaderOption[] = [
   {
@@ -54,7 +54,7 @@ const SignUpForm = ({ onSubmit }: { onSubmit: (data: SignUpData) => void }) => {
   const [email, setEmail] = useState("");
   const [plan, setPlan] = useState<string | number>("free");
   const [country, setCountry] = useState("");
-  const [picked, setPicked] = useState<AutoCompleteOption[]>([]);
+  const [picked, setPicked] = useState<string[]>([]);
   const [officeOptions, setOfficeOptions] = useState(offices);
   const [office, setOffice] = useState<(string | number)[]>([]);
   const [callTime, setCallTime] = useState<Date | null>(null);
@@ -91,16 +91,16 @@ const SignUpForm = ({ onSubmit }: { onSubmit: (data: SignUpData) => void }) => {
     if (!terms) next.terms = "You must accept the terms";
     setErrors(next);
     if (Object.keys(next).length > 0) {
-      message.error("Please fix the highlighted fields");
+      toast.danger("Please fix the highlighted fields");
       return;
     }
-    message.success(`Welcome aboard, ${name}!`);
+    toast.success(`Welcome aboard, ${name}!`);
     onSubmit({
       name,
       email,
       plan,
       country,
-      interests: picked.map((i) => String(i.value)),
+      interests: picked.map((i) => i.toLowerCase()),
       office,
       callTime: callTime
         ? `${String(callTime.getHours()).padStart(2, "0")}:${String(callTime.getMinutes()).padStart(2, "0")}`
@@ -111,21 +111,21 @@ const SignUpForm = ({ onSubmit }: { onSubmit: (data: SignUpData) => void }) => {
 
   return (
     <form aria-label="Sign up" noValidate onSubmit={submit}>
-      <TextField
-        name="name"
-        label="Full name"
-        value={name}
-        onChange={setName}
-        helperText={errors.name}
-      />
-      <TextField
-        name="email"
-        label="Email"
-        type="email"
-        value={email}
-        onChange={setEmail}
-        helperText={errors.email}
-      />
+      <FormField label="Full name" errorMessage={errors.name}>
+        <Input
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </FormField>
+      <FormField label="Email" errorMessage={errors.email}>
+        <Input
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </FormField>
       <RadioGroup label="Plan" name="plan" value={plan} onChange={setPlan}>
         <Radio value="free" label="Free" />
         <Radio value="pro" label="Pro" />
@@ -137,14 +137,14 @@ const SignUpForm = ({ onSubmit }: { onSubmit: (data: SignUpData) => void }) => {
         value={country}
         onChange={setCountry}
       />
-      <AutoComplete
-        name="interests"
-        label="Interests"
-        options={interests}
-        multiple
-        selectedOptions={picked}
-        onSelectedOptionsChange={setPicked}
-      />
+      <FormField label="Interests">
+        <TagInput
+          name="interests"
+          options={interests}
+          value={picked}
+          onChange={setPicked}
+        />
+      </FormField>
       <Cascader
         name="office"
         label="Office"
@@ -183,14 +183,16 @@ const renderApp = () => {
   const user = userEvent.setup();
   render(
     <ConfigProvider theme="light">
-      <SignUpForm onSubmit={onSubmit} />
+      <ToastProvider>
+        <SignUpForm onSubmit={onSubmit} />
+      </ToastProvider>
     </ConfigProvider>,
   );
   return { user, onSubmit };
 };
 
 afterEach(() => {
-  message.destroy();
+  act(() => toast.dismiss());
 });
 
 describe("e2e: sign-up form", () => {
@@ -237,13 +239,14 @@ describe("e2e: sign-up form", () => {
     expect(countryInput).toHaveValue("Japan");
     expect(countryInput).toHaveAttribute("aria-expanded", "false");
 
-    // AutoComplete multiple: the dropdown stays open between picks
+    // TagInput: pick several suggestions, remove one through its tag
     const interestsInput = screen.getByRole("combobox", { name: "Interests" });
     await user.click(interestsInput);
     await user.click(screen.getByRole("option", { name: "React" }));
+    await user.click(interestsInput);
     await user.click(screen.getByRole("option", { name: "Testing" }));
-    expect(interestsInput).toHaveAttribute("aria-expanded", "true");
     await user.click(screen.getByRole("button", { name: "Remove Testing" }));
+    expect(interestsInput).toHaveFocus();
     await user.keyboard("{Escape}");
 
     // Cascader with a lazily loaded branch, driven by the keyboard

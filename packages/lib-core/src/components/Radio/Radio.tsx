@@ -1,5 +1,5 @@
 import React, { useContext, useId } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { FaInfoCircle } from "react-icons/fa";
 import styles from "./radio.module.scss";
 import type { RadioProps } from "./types";
@@ -19,13 +19,11 @@ const Radio = ({
   value,
   onChange,
   size = "medium",
-  type = "default",
   label,
   children,
   ariaLabel,
   className = "",
-  color,
-  bgColor,
+  color = "primary",
   required = false,
   error = false,
   errorIcon = <FaInfoCircle />,
@@ -55,23 +53,21 @@ const Radio = ({
   const isDisabled = group ? group.disabled || ownDisabled : ownDisabled;
   const radioName = group ? group.name : name;
   const radioSize = group ? group.size || size : size;
-  const radioColor = group ? group.color || color : color;
+  const radioColor = group?.color ?? color;
   const helper = error ? errorMessage : helperText;
   const content = label ?? children;
 
   return (
     <div
-      className={classNames(
+      className={cn(
         styles.radioWrapper,
         styles[radioSize],
-        styles[type],
+        styles[radioColor],
         error && styles.error,
         className,
       )}
     >
-      <label
-        className={classNames(styles.radio, isDisabled && styles.disabled)}
-      >
+      <label className={cn(styles.radio, isDisabled && styles.disabled)}>
         <input
           type="radio"
           ref={ref}
@@ -86,13 +82,7 @@ const Radio = ({
           aria-describedby={helper ? helperId : undefined}
           className={styles.input}
         />
-        <span
-          className={styles.radioMark}
-          style={{
-            backgroundColor: bgColor,
-            color: radioColor,
-          }}
-        />
+        <span className={styles.radioMark} />
         {content != null && content !== false && content !== "" && (
           <span className={styles.label}>{content}</span>
         )}
@@ -106,7 +96,7 @@ const Radio = ({
           )}
           <span
             id={helperId}
-            className={classNames(styles.helperText, error && styles.errorText)}
+            className={cn(styles.helperText, error && styles.errorText)}
           >
             {helper}
           </span>

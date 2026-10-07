@@ -5,7 +5,6 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import {
   LuPanelLeftClose,
   LuPanelLeftOpen,
@@ -23,7 +22,13 @@ import type {
   AppShellProps,
 } from "./types";
 import styles from "./appShell.module.scss";
-import { usePortalContainer } from "../../internal/themeScope";
+import {
+  DialogClose,
+  DialogContent,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../internal/Dialog";
 
 const MOBILE_QUERY = "(max-width: 768px)";
 const canMatch = () =>
@@ -59,7 +64,6 @@ const AppShell = ({
   ...rest
 }: AppShellProps) => {
   const { t } = useI18n();
-  const portalContainer = usePortalContainer();
   const labels: AppShellLabels = {
     expand: overrides?.expand ?? t("appShell.expand"),
     collapse: overrides?.collapse ?? t("appShell.collapse"),
@@ -145,7 +149,7 @@ const AppShell = ({
   );
 
   return (
-    <Dialog.Root open={drawerOpen} onOpenChange={setMobileOpen}>
+    <DialogRoot open={drawerOpen} onOpenChange={setMobileOpen}>
       <div
         className={cn(styles.shell, className)}
         data-sidebar-mode={mode}
@@ -212,7 +216,7 @@ const AppShell = ({
         <div className={styles.workspace}>
           <header className={styles.header}>
             {isMobile ? (
-              <Dialog.Trigger asChild>
+              <DialogTrigger asChild>
                 <IconButton
                   ref={headerToggle}
                   size="small"
@@ -221,7 +225,7 @@ const AppShell = ({
                   ariaLabel={labels.openNavigation}
                   icon={<LuPanelLeftOpen aria-hidden="true" />}
                 />
-              </Dialog.Trigger>
+              </DialogTrigger>
             ) : (
               collapseControl(true)
             )}
@@ -232,28 +236,25 @@ const AppShell = ({
         </div>
       </div>
       {isMobile && (
-        <Dialog.Portal container={portalContainer}>
-          <Dialog.Overlay className={styles.overlay} />
-          <Dialog.Content
-            className={styles.drawer}
-            aria-describedby={undefined}
-            onCloseAutoFocus={(event) => {
-              event.preventDefault();
-              headerToggle.current?.focus();
-            }}
+        <DialogContent
+          overlayClassName={styles.overlay}
+          className={styles.drawer}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            headerToggle.current?.focus();
+          }}
+        >
+          <DialogTitle className={styles.drawerHeader}>{label}</DialogTitle>
+          <div className={styles.drawerBody}>{navigation(state)}</div>
+          <DialogClose
+            className={styles.drawerClose}
+            aria-label={labels.closeNavigation}
           >
-            <Dialog.Title className={styles.drawerHeader}>{label}</Dialog.Title>
-            <div className={styles.drawerBody}>{navigation(state)}</div>
-            <Dialog.Close
-              className={styles.drawerClose}
-              aria-label={labels.closeNavigation}
-            >
-              <LuX aria-hidden="true" />
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
+            <LuX aria-hidden="true" />
+          </DialogClose>
+        </DialogContent>
       )}
-    </Dialog.Root>
+    </DialogRoot>
   );
 };
 

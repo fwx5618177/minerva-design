@@ -1,34 +1,36 @@
 import { createRef } from "react";
+import { join } from "node:path";
+import { compile } from "sass";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Tag from "./Tag";
-import type { TagVariant } from "./types";
+import type { TagProps } from "./types";
 
-describe("Tag variants, close button and native attributes", () => {
-  it("renders children with the default variant/size and no close button", () => {
+describe("Tag colors, close button and native attributes", () => {
+  it("renders children with the default color/variant/size and no close button", () => {
     render(<Tag data-testid="tag">JavaScript</Tag>);
     const tag = screen.getByTestId("tag");
     expect(tag).toHaveTextContent("JavaScript");
-    expect(tag).toHaveClass("tag", "default", "medium");
+    expect(tag).toHaveClass("tag", "neutral", "subtle", "medium");
     expect(tag).toHaveAttribute("data-component", "tag");
     expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it.each<TagVariant>([
+  it.each<NonNullable<TagProps["color"]>>([
     "primary",
-    "default",
+    "neutral",
     "success",
     "warning",
-    "error",
+    "danger",
     "info",
-  ])("applies the %s variant class", (variant) => {
+  ])("applies the %s color class", (color) => {
     render(
-      <Tag data-testid="tag" variant={variant} size="large">
+      <Tag data-testid="tag" color={color} size="large">
         x
       </Tag>,
     );
-    expect(screen.getByTestId("tag")).toHaveClass(variant, "large");
+    expect(screen.getByTestId("tag")).toHaveClass(color, "large");
   });
 
   it("renders a labelled close button that calls onClose without bubbling the click", async () => {
@@ -105,5 +107,29 @@ describe("Tag variants, close button and native attributes", () => {
     expect(tag).toHaveAttribute("title", "hint");
     expect(tag).not.toHaveAttribute("disabled");
     expect(tag).not.toHaveAttribute("closeLabel");
+  });
+});
+
+describe("Tag styles", () => {
+  const css = compile(join(import.meta.dirname, "tag.module.scss")).css;
+
+  it("reads the per-color custom properties with token fallbacks", () => {
+    expect(css).toContain(
+      "background-color: var(--tag-danger-bg, var(--danger-color-subtle))",
+    );
+    expect(css).toContain("color: var(--tag-neutral-text, var(--text-color))");
+  });
+
+  it("fills solid tags and borders outline tags", () => {
+    expect(css).toMatch(
+      /\.tag\.success\.solid\s*\{[^}]*background-color: var\(--success-color\)/,
+    );
+    expect(css).toMatch(
+      /\.tag\.success\.outline\s*\{[^}]*background-color: transparent;[^}]*border: 1px solid var\(--success-color\)/,
+    );
+    expect(css).toMatch(
+      /\.tag\.neutral\.outline\s*\{[^}]*background-color: transparent;[^}]*border: 1px solid var\(--border-strong-color\)/,
+    );
+    expect(css).not.toMatch(/\.tag\.(default|bordered)\b/);
   });
 });

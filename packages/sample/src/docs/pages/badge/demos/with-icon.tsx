@@ -5,7 +5,7 @@ export default function WithIconDemo() {
   return (
     <div style={{ display: "flex", gap: 48 }}>
       <Badge
-        variant="success"
+        color="success"
         icon={<FaCheck />}
         content="OK"
         ariaLabel="Verified"
@@ -13,7 +13,7 @@ export default function WithIconDemo() {
         <FaUser size={24} />
       </Badge>
       <Badge
-        variant="warning"
+        color="warning"
         icon={<FaStar />}
         content="Top"
         ariaLabel="Top rated"

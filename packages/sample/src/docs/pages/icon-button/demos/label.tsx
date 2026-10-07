@@ -7,15 +7,10 @@ export default function LabelDemo() {
       <IconButton label="Refresh" shape="square">
         <LuRefreshCw />
       </IconButton>
-      <IconButton label="Edit" appearance="outline" variant="primary">
+      <IconButton label="Edit" variant="outline" color="primary">
         <LuPencil />
       </IconButton>
-      <IconButton
-        label="Delete"
-        appearance="solid"
-        variant="danger"
-        size="small"
-      >
+      <IconButton label="Delete" variant="solid" color="danger" size="small">
         <LuTrash2 />
       </IconButton>
     </>

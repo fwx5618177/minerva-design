@@ -1,14 +1,26 @@
 {
   "title": "Toast 通知",
-  "description": "带标题、描述和状态的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染。与 message 不同，toast 会继承应用的上下文（主题、语言），使用已存在的 id 再次显示会替换原通知。支持服务端渲染。",
+  "description": "带标题、描述和语义色的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染，因此会继承应用的上下文（主题、语言）。内置加载状态、Promise 跟踪、原地更新、操作按钮和最大数量限制。支持服务端渲染。",
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "在根部挂载一个 ToastProvider（本示例挂载了本页使用的那个），然后调用 toast.success / error / warning / info。"
+      "description": "在根部挂载一个 ToastProvider（本示例挂载了本页使用的那个），然后调用 toast.success / danger / warning / info。position 决定显示位置；max={3} 会在第四条出现时关闭最早的一条。页面上有多个 ToastProvider 时同一条通知也只会显示一次：只有最外层（或最先挂载）的那个负责渲染，并使用它自己的 position、max 和主题作用域；它卸载后由下一个接管。"
+    },
+    "colors": {
+      "title": "颜色",
+      "description": "color 选择语义色：info（默认）、success、warning 或 danger。它决定强调色、图标和角色：danger 以 alert 播报，其余以 status 播报。"
     },
     "options": {
       "title": "选项",
-      "description": "使用 toast({ status, title, description, duration }) 完全控制；duration 为 0 时通知会一直保留直到被关闭。toast.dismiss(id) 关闭单条，toast.dismiss() 关闭全部。悬停或聚焦通知会暂停其计时。"
+      "description": "使用 toast({ color, title, description, duration }) 完全控制；duration 为 0 时通知会一直保留直到被关闭。toast.dismiss(id) 关闭单条，toast.dismiss() 关闭全部。悬停或聚焦通知会暂停其计时。"
+    },
+    "loading": {
+      "title": "加载、更新与 Promise",
+      "description": "toast.loading（或任意颜色搭配 loading: true 选项）以旋转图标代替图标显示，且不会自动关闭；toast.update(id, { loading: false, ... }) 可原地将其变为结果。toast.promise(promise, { loading, success, error }) 会针对 Promise 自动完成这两步。"
+    },
+    "action": {
+      "title": "操作、图标与 onClose",
+      "description": "action 添加一个按钮（如“撤销”），点击后同时关闭通知；icon 替换颜色图标；closable: false 隐藏关闭按钮；onClose 在通知关闭时调用一次。"
     },
     "dedupe": {
       "title": "相同 id 替换",
@@ -18,14 +30,24 @@
   "api": {
     "ToastOptions": {
       "id": "通知的标识；省略时自动生成。使用可见通知的 id 再次显示会替换它（并重新计时），而不是叠加重复通知",
-      "status": "通知的状态",
+      "color": "通知的语义色；决定其强调色、图标和 ARIA 角色（danger 以 alert 播报，其余以 status 播报）",
+      "loading": "以旋转图标代替图标，并保持通知打开（duration 默认为 0），直到被更新或关闭；以 status 播报",
       "title": "主要文本",
       "description": "标题下方的辅助文本",
-      "duration": "自动关闭前的毫秒数；0 表示不自动关闭"
+      "duration": "自动关闭前的毫秒数；0 表示保持打开。加载通知默认为 0",
+      "icon": "替换颜色图标（或加载旋转图标）；传 null 时隐藏",
+      "closable": "显示关闭按钮",
+      "action": "通知中的操作按钮（如“撤销”）",
+      "onClose": "通知关闭时（无论何种原因）以其 id 调用一次"
+    },
+    "ToastAction": {
+      "label": "按钮的可见文字",
+      "onClick": "按钮被激活时调用，随后通知关闭"
     },
     "ToastProviderProps": {
       "position": "通知堆叠的位置",
       "children": "应用内容；通知视口渲染在其后",
+      "max": "同时显示的最大通知数；超出时最早的通知先关闭",
       "pauseOnHover": "悬停或聚焦通知时暂停自动关闭计时",
       "ariaLabel": "通知区域的无障碍标签",
       "closeLabel": "关闭按钮的无障碍标签"
@@ -34,8 +56,16 @@
       "info": "以给定标题显示一条信息通知",
       "success": "以给定标题显示一条成功通知",
       "warning": "以给定标题显示一条警告通知",
-      "error": "以给定标题显示一条危险通知",
+      "danger": "以给定标题显示一条危险通知",
+      "loading": "以给定标题显示加载通知（旋转图标，不自动关闭）",
+      "promise": "Promise 进行中显示加载通知，完成后将其变为成功或错误通知；返回传入的 Promise",
+      "update": "原地修改已打开的通知（合并选项）并重新计时；loading: false 会把加载通知变为普通通知（未指定 duration 时使用默认时长）。未知 id 会被忽略",
       "dismiss": "关闭指定 id 的通知；省略时关闭全部"
+    },
+    "ToastPromiseMessages": {
+      "loading": "Promise 进行中时的标题",
+      "success": "Promise 成功后的标题（节点，或接收结果的函数）",
+      "error": "Promise 失败后的标题（节点，或接收错误的函数）"
     }
   }
 }

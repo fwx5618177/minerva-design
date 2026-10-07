@@ -1,7 +1,7 @@
 import {
   Button,
   ConfigProvider,
-  StatusIndicator,
+  Empty,
   Tag,
   useI18n,
   useLocale,
@@ -26,11 +26,11 @@ function Preview() {
           gap: 8,
         }}
       >
-        useI18n().language: <Tag variant="primary">{language}</Tag> {AVATAR_KEY}
-        : <Tag variant="info">{t(AVATAR_KEY)}</Tag>
+        useI18n().language: <Tag color="primary">{language}</Tag> {AVATAR_KEY}:{" "}
+        <Tag color="info">{t(AVATAR_KEY)}</Tag>
       </div>
       {/* built-in component labels follow the language too */}
-      <StatusIndicator type="online" showLabel />
+      <Empty size="small" />
     </>
   );
 }
@@ -52,7 +52,8 @@ export default function UseLocaleDemo() {
           <Button
             key={language}
             size="small"
-            variant={language === locale.language ? "primary" : "secondary"}
+            color={language === locale.language ? "primary" : "neutral"}
+            variant={language === locale.language ? "solid" : "outline"}
             aria-pressed={language === locale.language}
             onClick={() => setLocale({ language })}
           >

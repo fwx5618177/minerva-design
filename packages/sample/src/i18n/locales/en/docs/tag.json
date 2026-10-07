@@ -2,9 +2,13 @@
   "title": "Tag",
   "description": "Small labels for marking and categorizing content; can be closable or clickable.",
   "demos": {
-    "basic": {
-      "title": "Basic usage",
-      "description": "Use variant to convey meaning."
+    "colors": {
+      "title": "Colors",
+      "description": "color conveys meaning: neutral (default), primary, success, warning, danger and info."
+    },
+    "variants": {
+      "title": "Variants",
+      "description": "variant sets the visual style: subtle (default, tinted background), outline (adds a border) or solid (filled with the color). elevation adds a shadow to any variant."
     },
     "sizes-shapes": {
       "title": "Sizes and shapes",
@@ -14,10 +18,6 @@
       "title": "With icon",
       "description": "icon is displayed before the content."
     },
-    "bordered-elevation": {
-      "title": "Border and shadow",
-      "description": "Add a border with bordered and a shadow with elevation."
-    },
     "closable": {
       "title": "Closable",
       "description": "closable adds a close button that calls onClose; remove the tag from your state there. closeIcon and closeLabel customize the button. The first tag is also clickable: the tag and its close button are two separate buttons, each reachable with Tab."
@@ -26,9 +26,13 @@
       "title": "Clickable (selectable)",
       "description": "clickable renders the content as a native button: focus it with Tab and activate it with a click, Enter or Space. Here the tags toggle a selection, exposed to assistive technologies with pressed."
     },
+    "avatar-loading": {
+      "title": "Avatar and loading",
+      "description": "avatar shows an avatar before the content. loading replaces the icon / avatar with a spinner, marks the tag busy, blocks its action and hides the close button."
+    },
     "custom-colors": {
       "title": "Custom colors",
-      "description": "bgColor, textColor and borderColor override the variant colors; ripple={false} disables the click ripple."
+      "description": "The CSS custom properties --tag-<color>-bg and --tag-<color>-text override the colors of a color (inline, in a class or in a theme); ripple={false} disables the click ripple."
     },
     "disabled": {
       "title": "Disabled",
@@ -44,20 +48,19 @@
   "api": {
     "TagProps": {
       "children": "Content of the tag",
-      "variant": "Color scheme",
+      "color": "Semantic color of the tag",
+      "variant": "Visual style: subtle (tinted background), outline (tinted background with a border) or solid (filled with the color, inverse text)",
       "size": "Tag size",
       "shape": "Tag shape",
       "closable": "Shows a close button",
       "onClose": "Called when the close button is clicked",
       "clickable": "Renders the tag content as a native button (focusable, activated with Enter / Space). With closable, the close button is a sibling button",
       "onClick": "Called when the tag is activated (requires clickable)",
-      "pressed": "Pressed state of a toggle tag (requires clickable); sets aria-pressed",
+      "pressed": "Pressed (selected) state of a toggle tag, e.g. a selectable filter (requires clickable); sets aria-pressed and the selected style",
       "icon": "Icon displayed before the content",
-      "bordered": "Shows a border",
+      "avatar": "Avatar (e.g. a small Avatar or image) displayed before the content",
+      "loading": "Shows a spinner instead of the icon / avatar, marks the tag busy and blocks its action; the close button is hidden",
       "elevation": "Shows a shadow",
-      "bgColor": "Custom background color",
-      "textColor": "Custom text color",
-      "borderColor": "Custom border color",
       "className": "Additional class name",
       "style": "Inline styles",
       "disabled": "Disables the tag and its close button",

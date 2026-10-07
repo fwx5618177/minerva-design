@@ -155,13 +155,13 @@ export const themeInitScript = createThemeInitScript({
 const scopedCode = `// A nested provider scopes a palette / mode to its subtree (and to the
 // overlays opened from it). <html> and the cookies are left to the root one.
 <ThemeProvider defaultTheme="dark" defaultPalette="tech">
-  <Button variant="primary">Always tech / dark</Button>
+  <Button color="primary">Always tech / dark</Button>
 </ThemeProvider>
 
 // Without a provider: palette token blocks match any element, not only
 // <html>. Set both attributes and give the wrapper a background.
 <div data-palette="tech" data-theme="dark" style={{ background: "var(--background-color)" }}>
-  <Button variant="primary">Always tech / dark</Button>
+  <Button color="primary">Always tech / dark</Button>
 </div>`;
 
 const SEMANTIC_TOKENS = [

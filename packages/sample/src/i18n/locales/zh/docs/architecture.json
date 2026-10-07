@@ -1,0 +1,40 @@
+{
+  "title": "架构",
+  "description": "Minerva 的包划分：承载交互原语的框架无关核心、基于它构建的 React 组件，以及 Web Components。",
+  "packages": {
+    "title": "包",
+    "text": "Minerva 是一个 pnpm monorepo，发布三个库。交互逻辑、主题数据和翻译只在 @minerva/core 中编写一次；各框架包只负责渲染。",
+    "package": "包",
+    "core": "框架无关的 TypeScript（只依赖 DOM，不含 React 或 Lit）：焦点作用域、可关闭层栈、滚动锁定、隐藏其他内容、漫游焦点与按键查找、定位、Portal 容器、id 与受控状态，以及主题工具、调色板、设计令牌（tokens.css）和 i18n 文案。",
+    "libCore": "React 19 组件库。组件通过 src/internal 中对核心原语的轻量 Hook 实现，所有浮层共享同一套实现。它重新导出公共 API 中的主题工具与类型，并把核心令牌打包进 style.css。",
+    "webComponents": "基于 Lit 的自定义元素，可用于任意框架或不用框架。之后会通过 Lit 控制器复用同样的核心原语。"
+  },
+  "primitives": {
+    "title": "核心原语",
+    "text": "每个原语都是作用于 DOM 元素的小函数，返回清理函数或控制器对象。它们支持嵌套：由一个栈决定哪个浮层先响应。",
+    "focusScope": "createFocusScope：打开时聚焦、Tab 循环约束焦点、关闭时把焦点还给触发元素；嵌套作用域会暂停外层。",
+    "dismissableLayer": "createDismissableLayer：Escape、外部指针按下和焦点移出只关闭最上层；在子层（子菜单、Modal 中的 Select）内点击不会关闭父层。",
+    "scrollLock": "lockScroll：带引用计数的页面滚动锁定，并补偿滚动条宽度。",
+    "hideOthers": "hideOthers：对辅助技术隐藏模态框以外的内容（aria-hidden 或 inert），嵌套模态框时也能正确恢复。",
+    "rovingFocus": "getNextIndex、createTypeahead、createRovingFocus：为菜单、列表框和标签页提供方向键、Home / End、循环、方向、从右到左和按键查找。",
+    "positioning": "computeAnchoredPosition / autoPosition：带偏移、翻转、平移、尺寸和箭头的锚定定位，滚动和缩放时保持位置。",
+    "pointerGrace": "createPointerGrace：指针向子菜单移动时保持其打开的安全三角区。",
+    "portal": "getPortalContainer / createPortalHost：浮层的渲染位置；嵌套的 ConfigProvider 会为每个主题作用域创建一个 Portal 容器。",
+    "state": "createId 与 createControllableState：无需框架的唯一 id 和受控 / 非受控状态。",
+    "theme": "主题工具：Cookie 解析、防闪烁初始化脚本、调色板和设计令牌。"
+  },
+  "overlays": {
+    "title": "所有浮层共用一套实现",
+    "p1": "Modal、Drawer、AppShell 移动端导航、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader 和 TimePicker 都注册到同一个层栈，使用相同的焦点处理和定位。Escape 总是先关闭最内层的浮层，焦点会回到原来的位置。",
+    "p2": "它们都渲染到最近主题作用域的 Portal 容器中，因此带有独立主题的嵌套 ConfigProvider 也会让其弹出内容使用该主题。"
+  },
+  "dependencies": {
+    "title": "依赖",
+    "text": "Floating UI（@floating-ui/dom）是唯一的第三方交互依赖，只在核心定位模块中使用。不使用 Radix UI 或其他 headless 库：Slot / asChild、Tabs、对话框、菜单和选择器都在本仓库中开发，并用 Vitest、happy-dom、Testing Library 和 user-event 测试。"
+  },
+  "next": {
+    "title": "下一步",
+    "installation": "安装各个包并引入样式表。",
+    "webComponents": "使用基于 Lit 的自定义元素。"
+  }
+}

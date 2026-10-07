@@ -20,19 +20,19 @@ export default function UseConfigDemo() {
     >
       <dt>theme</dt>
       <dd style={{ margin: 0 }}>
-        <Tag variant="primary">{describe(theme)}</Tag>
+        <Tag color="primary">{describe(theme)}</Tag>
       </dd>
       <dt>resolvedTheme</dt>
       <dd style={{ margin: 0 }}>
-        <Tag variant="info">{describe(resolvedTheme)}</Tag>
+        <Tag color="info">{describe(resolvedTheme)}</Tag>
       </dd>
       <dt>palette</dt>
       <dd style={{ margin: 0 }}>
-        <Tag variant="warning">{palette ?? "null"}</Tag>
+        <Tag color="warning">{palette ?? "null"}</Tag>
       </dd>
       <dt>locale.language</dt>
       <dd style={{ margin: 0 }}>
-        <Tag variant="success">{locale?.language ?? "en"}</Tag>
+        <Tag color="success">{locale?.language ?? "en"}</Tag>
       </dd>
     </dl>
   );

@@ -1,5 +1,5 @@
 import React, { createContext, useId } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
 import type { RadioGroupProps } from "./types";
 import styles from "./radio.module.scss";
@@ -14,7 +14,7 @@ export const RadioGroupContext = createContext<{
   disabled?: boolean;
   name: string;
   size?: "small" | "medium" | "large";
-  color?: string;
+  color?: RadioGroupProps["color"];
 } | null>(null);
 
 /**
@@ -36,7 +36,7 @@ const RadioGroup = ({
   error = false,
   helperText,
   required,
-  color = "var(--primary-color)",
+  color,
   ref,
 }: RadioGroupProps) => {
   const [selected, setSelected] = useControllableState<
@@ -76,7 +76,7 @@ const RadioGroup = ({
   return (
     <div
       ref={ref}
-      className={classNames(
+      className={cn(
         styles.radioGroupWrapper,
         isError && styles.error,
         className,
@@ -98,7 +98,7 @@ const RadioGroup = ({
         }}
       >
         <div
-          className={classNames(styles.radioGroup, styles[direction])}
+          className={cn(styles.radioGroup, styles[direction])}
           role="radiogroup"
           aria-labelledby={labelledBy}
           aria-label={label ? undefined : ariaLabel}
@@ -113,7 +113,7 @@ const RadioGroup = ({
       {helperText && (
         <div
           id={helperId}
-          className={classNames(styles.helperText, isError && styles.errorText)}
+          className={cn(styles.helperText, isError && styles.errorText)}
         >
           {helperText}
         </div>

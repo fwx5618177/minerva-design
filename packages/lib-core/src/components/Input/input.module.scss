@@ -125,14 +125,66 @@
   flex-shrink: 0;
   padding: 0 var(--space-3);
   color: var(--text-secondary-color);
-  pointer-events: none;
   font-size: 1em;
+}
+
+// Clear button / password toggle
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75em;
+  height: 1.75em;
+  margin-left: var(--space-1);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary-color);
+  font-size: 1em;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--text-color);
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // the last control before the edge keeps the field's inner spacing
+  &:last-child {
+    margin-right: calc(var(--input-pad-x) - var(--space-1));
+  }
+}
+
+// Character count
+.count {
+  flex-shrink: 0;
+  padding: 0 0 0 var(--space-2);
+  color: var(--text-muted-color);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+  &:last-child {
+    padding-right: var(--input-pad-x);
+  }
 }
 
 .start + .field {
   padding-left: 0;
 }
 
-.field:has(+ .end) {
+.field:has(+ .end),
+.field:has(+ .action),
+.field:has(+ .count) {
   padding-right: 0;
 }

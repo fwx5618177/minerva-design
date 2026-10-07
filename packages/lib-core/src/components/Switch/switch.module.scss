@@ -76,8 +76,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   .checked & {
-    // `--switch-accent` is set by the variant classes below; custom colors
-    // (painted on the thumb from TSX) keep the neutral track.
+    // `--switch-accent` is set by the color classes below.
     // Material-style: translucent accent track under a solid accent thumb.
     background-color: color-mix(in srgb, var(--switch-accent, var(--border-strong-color)) 45%, transparent);
   }
@@ -207,13 +206,9 @@
   }
 }
 
-// Variant roles: accent used by the checked thumb and (translucent) track.
+// Color roles: accent used by the checked thumb and (translucent) track.
 .primary {
   --switch-accent: var(--primary-color);
-}
-
-.secondary {
-  --switch-accent: var(--secondary-color);
 }
 
 .success {
@@ -228,7 +223,7 @@
   --switch-accent: var(--info-color);
 }
 
-.error {
+.danger {
   --switch-accent: var(--danger-color);
 }
 

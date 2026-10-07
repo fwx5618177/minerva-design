@@ -1,14 +1,26 @@
 {
   "title": "Toast",
-  "description": "Temporary notifications with a title, a description and a status, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree. Unlike message, toasts inherit your app's context (theme, locale) and showing a toast with an existing id replaces it. Server rendering is safe.",
+  "description": "Temporary notifications with a title, a description and a semantic color, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree, so they inherit your app's context (theme, locale). Loading toasts, promise tracking, in-place updates, actions and a maximum count are built in. Server rendering is safe.",
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Mount one ToastProvider near the root (this demo mounts the one used on this page), then call toast.success / error / warning / info."
+      "description": "Mount one ToastProvider near the root (this demo mounts the one used on this page), then call toast.success / danger / warning / info. position picks the screen edge; max={3} closes the oldest toast when a fourth appears. Several providers never show a toast twice: only the outermost (or first mounted) one renders the toasts, with its own position, max and theme scope, and the next one takes over when it unmounts."
+    },
+    "colors": {
+      "title": "Colors",
+      "description": "color picks the semantic color: info (default), success, warning or danger. It sets the accent, the icon and the role: danger is announced as an alert, the others as a status."
     },
     "options": {
       "title": "Options",
-      "description": "toast({ status, title, description, duration }) for full control; duration 0 keeps the toast until it is closed. toast.dismiss(id) closes one toast, toast.dismiss() all of them. Hovering or focusing a toast pauses its timer."
+      "description": "toast({ color, title, description, duration }) for full control; duration 0 keeps the toast until it is closed. toast.dismiss(id) closes one toast, toast.dismiss() all of them. Hovering or focusing a toast pauses its timer."
+    },
+    "loading": {
+      "title": "Loading, update and promise",
+      "description": "toast.loading (or the loading: true option, with any color) shows a spinner instead of the icon and stays open; toast.update(id, { loading: false, ... }) turns it into a result in place. toast.promise(promise, { loading, success, error }) does both for a promise."
+    },
+    "action": {
+      "title": "Action, icon and onClose",
+      "description": "action adds a button (e.g. Undo) that also closes the toast; icon replaces the color icon; closable: false hides the close button; onClose runs once when the toast closes."
     },
     "dedupe": {
       "title": "Same id replaces",
@@ -18,14 +30,24 @@
   "api": {
     "ToastOptions": {
       "id": "Identifier of the toast; generated when omitted. Showing a toast with the id of a visible one replaces it (and restarts its timer) instead of stacking a duplicate",
-      "status": "Status of the toast",
+      "color": "Semantic color of the toast; sets its accent, icon and ARIA role (danger is announced as an alert, the others as a status)",
+      "loading": "Shows a spinner instead of the icon and keeps the toast open (duration defaults to 0) until it is updated or dismissed; announced as a status",
       "title": "Main text",
       "description": "Secondary text under the title",
-      "duration": "Time in milliseconds before the toast closes automatically; 0 keeps it open"
+      "duration": "Time in milliseconds before the toast closes automatically; 0 keeps it open. Loading toasts default to 0",
+      "icon": "Replaces the color icon (or the loading spinner); null hides it",
+      "closable": "Shows the close button",
+      "action": "Action button rendered in the toast (e.g. Undo)",
+      "onClose": "Called once with the toast id when it closes, whatever the reason"
+    },
+    "ToastAction": {
+      "label": "Visible text of the button",
+      "onClick": "Called when the button is activated, before the toast closes"
     },
     "ToastProviderProps": {
       "position": "Where the toasts are stacked",
       "children": "Application content; the toast viewport is rendered after it",
+      "max": "Maximum number of toasts shown at once; when exceeded the oldest close first",
       "pauseOnHover": "Pauses the auto-close timer while a toast is hovered or focused",
       "ariaLabel": "Accessible label of the toast region",
       "closeLabel": "Accessible label of the close buttons"
@@ -34,8 +56,16 @@
       "info": "Shows an info toast with the given title",
       "success": "Shows a success toast with the given title",
       "warning": "Shows a warning toast with the given title",
-      "error": "Shows a danger toast with the given title",
+      "danger": "Shows a danger toast with the given title",
+      "loading": "Shows a loading toast (spinner, no auto-close) with the given title",
+      "promise": "Shows a loading toast while the promise is pending, then turns it into a success or danger toast; returns the given promise",
+      "update": "Changes an open toast in place (merging the options) and restarts its timer; loading: false turns a loading toast into a regular one (with the default duration unless one is given). Unknown ids are ignored",
       "dismiss": "Closes the toast with the given id, or every toast when omitted"
+    },
+    "ToastPromiseMessages": {
+      "loading": "Title while the promise is pending",
+      "success": "Title once the promise resolves (a node, or a function of the value)",
+      "error": "Title once the promise rejects (a node, or a function of the error)"
     }
   }
 }

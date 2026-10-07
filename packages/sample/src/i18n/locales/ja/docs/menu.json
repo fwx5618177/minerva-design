@@ -1,29 +1,50 @@
 {
   "title": "Menu メニュー",
-  "description": "ボタン（Menu）または右クリック（ContextMenu）で開くアクションメニュー。アイコン、ショートカット、区切り線、グループ、サブメニュー、先行入力検索、完全なキーボード操作に対応します。リストから値を選ぶ場合は Dropdown を使用してください。",
+  "description": "ボタン（Menu）または右クリック（ContextMenu）で開くアクションメニュー：アイコン、ショートカット、区切り線、グループ、チェックボックス項目、ラジオグループ、サブメニュー、タイプアヘッド、完全なキーボード操作（Enter、Space、ArrowDown で最初の項目、ArrowUp で最後の項目にフォーカスして開く。矢印キーは循環し無効な項目をスキップ、Home / End、Tab で閉じる、Escape でトリガーにフォーカスを戻す）に対応します。リストから値を選ぶには Select を使います。",
   "demos": {
     "basic": {
       "title": "基本的な使い方",
       "description": "アイコンとショートカットのヒント付きの項目。onSelect は元の項目オブジェクトを受け取り、その後メニューが閉じてフォーカスがトリガーに戻ります。"
     },
+    "triggers": {
+      "title": "トリガー",
+      "description": "Button や IconButton など任意のボタンをトリガーにできます。アイコンだけのトリガーにはラベルを付けてください。ariaLabel でメニューパネルに名前を付けます。"
+    },
     "groups": {
       "title": "グループ、サブメニュー、サイズ",
       "description": "ラベル付きのグループで項目をまとめ、区切り線で分け、children でサブメニューを入れ子にします。size=\"small\" で項目が詰まり、side と align でパネルの位置を決めます。"
     },
+    "submenus": {
+      "title": "サブメニュー",
+      "description": "children で項目を入れ子にします。ArrowRight、Enter、Space でサブメニューを開いて最初の項目にフォーカスし、ArrowLeft または Escape でそのサブメニューだけを閉じます。ポインターではホバーで開き、サブメニューへ斜めに移動している間は開いたままです。dir=\"rtl\" では左側に開き、左右の矢印キーが入れ替わります。"
+    },
+    "checkbox-radio": {
+      "title": "チェックボックスとラジオ項目",
+      "description": "type: \"checkbox\" の項目は切り替え可能（checked / defaultChecked + onCheckedChange）、type: \"radio-group\" の項目は排他的な選択肢を持ちます（value / defaultValue + onValueChange）。複数の設定を続けて変更できるようメニューは開いたままです。閉じるには項目に closeOnSelect を指定します。"
+    },
+    "placement": {
+      "title": "配置",
+      "description": "side はトリガーに対する優先方向、align はその揃え方です。ビューポートの端ではメニューが反転・移動して見える位置に収まります。"
+    },
+    "disabled": {
+      "title": "無効",
+      "description": "個々の項目（矢印キーでスキップされます）またはメニュー全体を無効にできます。"
+    },
     "context-menu": {
       "title": "コンテキストメニュー",
-      "description": "ContextMenu は右クリック、長押し、Shift+F10 で同じ項目をポインター位置に開きます。"
+      "description": "ContextMenu は右クリックまたは長押しでポインターの位置に同じ項目を開き（再度の右クリックで移動）、Shift+F10 または ContextMenu キーでは領域の位置に開きます。フォーカスは最初の項目に移り、閉じると領域に戻ります。"
     },
     "controlled": {
       "title": "制御モード",
-      "description": "open と onOpenChange で開閉状態を制御します。"
+      "description": "open と onOpenChange で開閉状態を制御します。非制御のときは defaultOpen で初期状態を設定します。"
     }
   },
   "api": {
     "MenuProps": {
-      "children": "トリガー要素（ボタン）。クリック、Enter、Space、ArrowDown でメニューが開きます",
+      "children": "トリガー要素（ボタン）。クリック、Enter、Space、ArrowDown でメニューを開きます（ArrowUp は最後の項目にフォーカス）",
       "items": "メニューの項目",
-      "onSelect": "アクションが選択されたときに元の項目オブジェクトで呼び出され、その後メニューが閉じます",
+      "onSelect": "アクションが選択されたときに元の項目オブジェクトで呼ばれます",
+      "closeOnSelect": "アクションの選択でメニューを閉じるか（チェックボックスとラジオ項目は、項目で closeOnSelect を指定しない限り開いたまま）",
       "size": "項目の密度",
       "align": "トリガーに対するメニューの揃え位置",
       "side": "優先する方向。十分なスペースがない場合は反転します",
@@ -31,18 +52,23 @@
       "defaultOpen": "初期の開閉状態（非制御）",
       "onOpenChange": "メニューが開閉したときに呼び出されます",
       "disabled": "トリガーを無効にします",
-      "modal": "モーダルメニューは開いている間、外部の操作をブロックしフォーカスを閉じ込めます",
+      "modal": "モーダルメニューは開いている間、外側のポインター操作を遮断し、フォーカスを閉じ込め、スクロールを固定し、ページの他の部分を支援技術から隠します",
+      "loop": "矢印キーで最後の項目から最初の項目へ（逆も）循環します",
+      "dir": "読み方向。\"rtl\" ではサブメニューが左に開き、ArrowLeft / ArrowRight が入れ替わります",
       "className": "メニューパネルの追加クラス名",
-      "ariaLabel": "メニューパネルのアクセシブルなラベル"
+      "ariaLabel": "メニューパネルのアクセシブルなラベル（既定はトリガーのラベル）"
     },
     "ContextMenuProps": {
-      "children": "右クリック / 長押し / Shift+F10 でメニューを開く領域",
+      "children": "右クリック / 長押し / Shift+F10 / ContextMenu キーでメニューを開く領域",
       "items": "メニューの項目",
-      "onSelect": "アクションが選択されたときに元の項目オブジェクトで呼び出され、その後メニューが閉じます",
+      "onSelect": "アクションが選択されたときに元の項目オブジェクトで呼ばれます",
+      "closeOnSelect": "アクションの選択でメニューを閉じるか（チェックボックスとラジオ項目は、項目で closeOnSelect を指定しない限り開いたまま）",
       "size": "項目の密度",
       "onOpenChange": "メニューが開閉したときに呼び出されます",
       "disabled": "コンテキストメニューを無効にします（ブラウザー標準のメニューが表示されます）",
-      "modal": "モーダルメニューは開いている間、外部の操作をブロックしフォーカスを閉じ込めます",
+      "modal": "モーダルメニューは開いている間、外側のポインター操作を遮断し、フォーカスを閉じ込め、スクロールを固定し、ページの他の部分を支援技術から隠します",
+      "loop": "矢印キーで最後の項目から最初の項目へ（逆も）循環します",
+      "dir": "読み方向。\"rtl\" ではサブメニューが左に開き、ArrowLeft / ArrowRight が入れ替わります",
       "className": "メニューパネルの追加クラス名",
       "ariaLabel": "メニューパネルのアクセシブルなラベル"
     },
@@ -53,7 +79,37 @@
       "icon": "ラベルの前に表示するアイコン",
       "shortcut": "ラベルの後に表示するショートカットのヒント（表示のみ）",
       "disabled": "項目を無効にします",
+      "closeOnSelect": "この項目の選択でメニューを閉じるか（メニューの closeOnSelect を上書き）",
       "children": "この項目で開くサブメニューの項目"
+    },
+    "MenuCheckboxEntry": {
+      "type": "項目の種類",
+      "key": "項目の一意なキー",
+      "label": "項目の内容",
+      "textValue": "label がプレーンテキストでない場合のタイプアヘッド用テキスト",
+      "shortcut": "ラベルの後に表示するショートカットのヒント（表示のみ）",
+      "disabled": "項目を無効にします",
+      "checked": "チェックされているか（制御。onCheckedChange と併用）",
+      "defaultChecked": "初期のチェック状態（非制御）",
+      "onCheckedChange": "切り替え時に新しいチェック状態で呼ばれます",
+      "closeOnSelect": "切り替えでメニューを閉じるか"
+    },
+    "MenuRadioGroupEntry": {
+      "type": "項目の種類",
+      "key": "グループの一意なキー",
+      "label": "グループの上に表示するラベル（グループ名にもなります）",
+      "items": "グループの選択肢",
+      "value": "選択された値（制御。onValueChange と併用）",
+      "defaultValue": "初期選択値（非制御）",
+      "onValueChange": "選ばれた選択肢の値で呼ばれます",
+      "closeOnSelect": "選択肢を選んだときにメニューを閉じるか"
+    },
+    "MenuRadioItem": {
+      "value": "選択肢の値（グループ内で一意）",
+      "label": "選択肢の内容",
+      "textValue": "label がプレーンテキストでない場合のタイプアヘッド用テキスト",
+      "shortcut": "ラベルの後に表示するショートカットのヒント（表示のみ）",
+      "disabled": "選択肢を無効にします"
     },
     "MenuSeparatorEntry": {
       "type": "項目の種類",

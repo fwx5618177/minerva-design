@@ -4,7 +4,7 @@ export default function DelaysDemo() {
   return (
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       <Tooltip content="Shows immediately" enterDelay={0}>
-        <Button variant="secondary" size="small">
+        <Button color="neutral" variant="outline" size="small">
           No delay
         </Button>
       </Tooltip>
@@ -13,12 +13,12 @@ export default function DelaysDemo() {
         enterDelay={800}
         leaveDelay={500}
       >
-        <Button variant="secondary" size="small">
+        <Button color="neutral" variant="outline" size="small">
           Slow
         </Button>
       </Tooltip>
       <Tooltip content="Never shown" disabled>
-        <Button variant="secondary" size="small">
+        <Button color="neutral" variant="outline" size="small">
           Disabled tooltip
         </Button>
       </Tooltip>

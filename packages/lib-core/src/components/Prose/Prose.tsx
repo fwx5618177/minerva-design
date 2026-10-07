@@ -1,4 +1,4 @@
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../internal/Slot";
 import { cn } from "../../utils/cn";
 import type { ProseProps } from "./types";
 import styles from "./prose.module.scss";

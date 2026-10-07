@@ -34,6 +34,7 @@
       "size": "Width preset",
       "hideCloseButton": "Hides the close (×) button",
       "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+      "role": "ARIA role of the dialog panel; use \"alertdialog\" for confirmations that interrupt the user",
       "className": "Additional class name of the panel",
       "ref": "Ref to the dialog element",
       "children": "Body: usually ModalBody + ModalFooter, or a <form> wrapping them"
@@ -42,7 +43,7 @@
       "open": "Controlled open state; leave undefined for uncontrolled",
       "defaultOpen": "Initial open state while uncontrolled",
       "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
-      "modal": "Modal mode: traps focus, blocks outside interaction and hides the page from assistive technology",
+      "modal": "Modal mode: renders the backdrop, traps focus, locks page scrolling, blocks outside interaction and hides the page from assistive technology",
       "children": "Trigger and content"
     },
     "ModalTriggerProps": {
@@ -53,8 +54,15 @@
       "size": "Width preset",
       "hideCloseButton": "Hides the close (×) button",
       "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
-      "description": "Visible description below the title; without it a hidden empty description is rendered",
-      "overlayClassName": "Class name of the overlay (backdrop)"
+      "description": "Visible description below the title, linked as the accessible description (aria-describedby is omitted without one)",
+      "overlayClassName": "Class name of the overlay (backdrop)",
+      "role": "ARIA role of the panel; use \"alertdialog\" for confirmations that interrupt the user",
+      "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+      "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+      "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+      "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+      "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+      "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
     }
   }
 }

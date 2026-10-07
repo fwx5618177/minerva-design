@@ -2,7 +2,7 @@ import { createElement, type ReactNode } from "react";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import useAutoTheme from "./useAutoTheme";
-import { dark, githubDark, light } from "../styles/themes";
+import { dark, githubDark, light } from "@minerva/core";
 import { mockColorScheme } from "../test-utils/matchMedia";
 import type { Theme } from "../contexts/types";
 import { ConfigProvider } from "../contexts/ConfigProvider";

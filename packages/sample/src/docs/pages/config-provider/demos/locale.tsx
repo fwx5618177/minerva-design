@@ -26,9 +26,9 @@ function Preview() {
           gap: 8,
         }}
       >
-        locale: <Tag variant="primary">{locale?.language}</Tag> {AVATAR_KEY}:{" "}
-        <Tag variant="info">{t(AVATAR_KEY)}</Tag> palette:{" "}
-        <Tag variant="success">{palette ?? "default"}</Tag>
+        locale: <Tag color="primary">{locale?.language}</Tag> {AVATAR_KEY}:{" "}
+        <Tag color="info">{t(AVATAR_KEY)}</Tag> palette:{" "}
+        <Tag color="success">{palette ?? "default"}</Tag>
       </div>
       <Pagination total={50} defaultCurrent={2} showTotal />
     </div>
@@ -52,7 +52,8 @@ export default function LocaleDemo() {
           <Button
             key={lng}
             size="small"
-            variant={lng === language ? "primary" : "secondary"}
+            color={lng === language ? "primary" : "neutral"}
+            variant={lng === language ? "solid" : "outline"}
             aria-pressed={lng === language}
             onClick={() => setLanguage(lng)}
           >

@@ -6,13 +6,17 @@
       "title": "基本的な使い方",
       "description": "クリックハンドラ付きのボタン。ネイティブの <button> 属性はすべて渡されます。"
     },
+    "colors": {
+      "title": "カラー",
+      "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+    },
     "variants": {
       "title": "バリアント",
-      "description": "variant でアクションの意図を伝えます。"
+      "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
     },
     "sizes": {
       "title": "サイズ",
-      "description": "small、medium（デフォルト）、large、xlarge の 4 種類。"
+      "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
     },
     "shapes": {
       "title": "形状と角丸",
@@ -24,11 +28,7 @@
     },
     "with-icon": {
       "title": "アイコン付き",
-      "description": "テキストとアイコンを組み合わせます。アイコンのみのボタンには ariaLabel を指定してください。"
-    },
-    "appearance": {
-      "title": "外観",
-      "description": "appearance（solid・outline・ghost・link）を指定すると、トークンベースのコンパクトなデザインになります。色は引き続き variant（accent・neutral を含む）で選びます。"
+      "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには ariaLabel を指定してください。"
     },
     "icons-loading": {
       "title": "アイコン・読み込みテキスト・全幅",
@@ -40,17 +40,17 @@
       "onClick": "クリック時に呼ばれます（無効時は呼ばれません）",
       "children": "ボタンの内容",
       "className": "追加のクラス名",
-      "variant": "ボタンの色。retry と back はクラシック外観のグラデーションプリセットです。accent と neutral は appearance との併用を推奨します",
+      "color": "ボタンのセマンティックカラー",
+      "variant": "見た目のスタイル：solid（塗りつぶし）、outline（枠線のみ）、ghost（ホバーまで透明）、link（テキストリンク風）",
       "size": "ボタンのサイズ",
       "ariaLabel": "アクセシブルなラベル。アイコンのみのボタンでは必須",
       "disabled": "ボタンを無効にします",
       "loading": "スピナーを表示し、実行をブロックします（aria-busy / aria-disabled）。ボタンはフォーカス可能なままなので、キーボードフォーカスが失われません",
       "active": "押下/アクティブ状態で表示します",
       "shape": "ボタンのプリセット形状",
-      "borderRadius": "角丸：プリセットまたはピクセル数",
+      "borderRadius": "角丸：プリセットまたはピクセル数。省略時はテーマの角丸（--radius-md）を使用します",
       "style": "インラインスタイル",
       "ref": "<button> 要素への ref",
-      "appearance": "塗りのスタイル。省略時はクラシックな塗りつぶし外観。指定するとトークンベースのコンパクトなデザイン（solid・outline・ghost・link）になります",
       "loadingText": "読み込み中に内容（とアイコン）の代わりに表示するテキスト",
       "startIcon": "内容の前に表示するアイコン",
       "endIcon": "内容の後に表示するアイコン",

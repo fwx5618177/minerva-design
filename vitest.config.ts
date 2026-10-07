@@ -6,6 +6,7 @@ export default defineConfig({
     // - unit: packages/*/vite.config.ts
     // - e2e: tests/e2e/vitest.config.ts (user flows across components)
     projects: [
+      "packages/core",
       "packages/lib-core",
       "packages/lib-web-components",
       "packages/sample",
@@ -15,6 +16,7 @@ export default defineConfig({
       provider: "v8",
       // Library sources only (the docs site is not measured)
       include: [
+        "**/core/src/**/*.ts",
         "**/lib-core/src/**/*.{ts,tsx}",
         "**/lib-web-components/src/**/*.{ts,tsx}",
       ],
@@ -25,6 +27,7 @@ export default defineConfig({
         "**/*.d.ts",
         // barrel files (lib-web-components keeps real code in Button/index.ts)
         "**/lib-core/src/**/index.{ts,tsx}",
+        "**/packages/core/src/index.ts",
         "**/lib-web-components/src/index.ts",
         "**/test-utils/**",
       ],

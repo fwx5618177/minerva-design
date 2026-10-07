@@ -1,7 +1,7 @@
 import {
   Button,
+  HStack,
   PaletteToggle,
-  Space,
   Switch,
   Tag,
   ThemeProvider,
@@ -34,17 +34,19 @@ function Preview() {
         fontFamily: "var(--font-family-sans)",
       }}
     >
-      <Space wrap align="center">
+      <HStack gap={4} wrap>
         <ThemeToggle />
         <PaletteToggle />
-      </Space>
-      <Space wrap align="center">
-        <Button variant="primary">Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Tag variant="primary">{palette ?? "default"}</Tag>
-        <Tag variant="info">{resolvedTheme}</Tag>
+      </HStack>
+      <HStack gap={4} wrap>
+        <Button color="primary">Primary</Button>
+        <Button color="neutral" variant="outline">
+          Secondary
+        </Button>
+        <Tag color="primary">{palette ?? "default"}</Tag>
+        <Tag color="info">{resolvedTheme}</Tag>
         <Switch label="Switch" defaultChecked />
-      </Space>
+      </HStack>
       <p style={{ margin: 0, color: "var(--text-muted-color)" }}>
         data-theme=&quot;{resolvedTheme}&quot; data-palette=&quot;
         {palette ?? ""}&quot;

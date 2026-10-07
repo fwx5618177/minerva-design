@@ -1,31 +1,30 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
-import classNames from "classnames";
-import { IoClose } from "react-icons/io5";
-import { TextField } from "../TextField";
-import { Popper } from "../Popper";
+import { cn } from "../../utils/cn";
+import { Input } from "../Input";
 import { ProgressIndicator } from "../ProgressIndicator";
 import { Empty } from "../Empty";
 import type { AutoCompleteProps, AutoCompleteOption } from "./types";
+import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useFormControlProps } from "../FormControl/context";
-import useI18n from "../../hooks/useI18n";
 import styles from "./autoComplete.module.scss";
 
 const DEFAULT_OFFSET = Object.freeze({ x: 0, y: 4 });
 const EMPTY_OPTIONS: AutoCompleteOption[] = [];
 
 const PLACEMENT = {
-  top: "topStart",
-  bottom: "bottomStart",
-  left: "leftStart",
-  right: "rightStart",
+  top: "top-start",
+  bottom: "bottom-start",
+  left: "left-start",
+  right: "right-start",
 } as const;
 
 /**
  * AutoComplete: a text input (combobox) that suggests options from a list.
- * Supports single and multiple selection, grouping, custom rendering and
- * async loading. Input text and multiple selection can be controlled or not.
+ * Supports grouping, custom rendering and async loading; the input text can
+ * be controlled or not. Focus stays in the input (`aria-activedescendant`).
+ * For picking several values use `TagInput`.
  */
 const AutoComplete = ({
   ref,
@@ -37,44 +36,30 @@ const AutoComplete = ({
   options = EMPTY_OPTIONS,
   defaultValue = "",
   onSelect,
-  selectedOptions: selectedOptionsProp,
-  defaultSelectedOptions = EMPTY_OPTIONS,
-  onSelectedOptionsChange,
   filterOption,
   groupBy,
-  multiple = false,
-  maxTagCount,
   renderOption,
   renderEmpty,
   loading = false,
-  textFieldProps,
+  inputProps,
   emptyProps,
   placement = "bottom",
   offset = DEFAULT_OFFSET,
-  dropdownBgColor,
-  highlightBgColor,
-  hoverBgColor,
   animation = true,
   sortOption,
   onOptionClick,
   onDropdownVisibleChange,
-  popperProps,
+  dropdownClassName,
   onSubmit,
   autoHighlight = false,
   fillOnSelect = true,
   className,
   groupMode = "first",
 }: AutoCompleteProps) => {
-  const { t } = useI18n();
   const [inputValue, setInputValue] = useControllableState({
     value,
     defaultValue,
     onChange,
-  });
-  const [selectedTags, setSelectedTags] = useControllableState({
-    value: selectedOptionsProp,
-    defaultValue: defaultSelectedOptions,
-    onChange: onSelectedOptionsChange,
   });
   const [visible, setVisible] = useControllableState({
     defaultValue: false,
@@ -86,18 +71,21 @@ const AutoComplete = ({
   const [input, setInput] = useState<HTMLInputElement | null>(null);
   const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
   const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
+  const vertical = placement === "top" || placement === "bottom";
 
-  const listboxId = `${useId()}-listbox`;
+  const baseId = useId();
+  const listboxId = `${baseId}-listbox`;
   // IME composition in progress: Enter / arrows belong to the IME.
   const composing = useRef(false);
 
   // FormControl wiring (id, disabled / read-only state, aria-*). The
-  // TextField's own disabled / readOnly props still apply.
+  // input's own disabled / readOnly props still apply.
   const field = useFormControlProps({
-    id: textFieldProps?.id,
-    disabled: textFieldProps?.disabled,
-    readOnly: textFieldProps?.readOnly,
+    id: inputProps?.id,
+    disabled: inputProps?.disabled,
+    readOnly: inputProps?.readOnly,
   });
+  const inputId = field.id ?? `${baseId}-input`;
   const blocked = !!field.disabled || !!field.readOnly;
   // A disabled / read-only field never shows (or keeps) the dropdown.
   const shown = visible && !blocked;
@@ -161,9 +149,6 @@ const AutoComplete = ({
         ? navigableOptions.findIndex((option) => !option.disabled)
         : -1;
 
-  const isSelected = (option: AutoCompleteOption) =>
-    selectedTags.some((tag) => tag.value === option.value);
-
   const moveFocus = (step: 1 | -1) => {
     const count = navigableOptions.length;
     if (count === 0) return;
@@ -181,19 +166,8 @@ const AutoComplete = ({
 
   const handleOptionSelect = (option: AutoCompleteOption) => {
     if (option.disabled) return;
-    if (multiple) {
-      setSelectedTags((prev) =>
-        prev.some((tag) => tag.value === option.value)
-          ? prev.filter((tag) => tag.value !== option.value)
-          : [...prev, option],
-      );
-      setInputValue("");
-      setFocusedIndex(-1);
-      // stay open so several options can be picked in a row
-    } else {
-      if (fillOnSelect) setInputValue(option.label);
-      close();
-    }
+    if (fillOnSelect) setInputValue(option.label);
+    close();
     onSelect?.(option);
   };
 
@@ -229,17 +203,7 @@ const AutoComplete = ({
         }
         break;
       }
-      case "Escape":
-        if (visible) {
-          event.preventDefault();
-          close();
-        }
-        break;
-      case "Backspace":
-        if (multiple && inputValue === "" && selectedTags.length > 0) {
-          handleOptionSelect(selectedTags[selectedTags.length - 1]);
-        }
-        break;
+      // Escape: handled by the dropdown's dismissable layer (topmost only)
       default:
         break;
     }
@@ -318,15 +282,13 @@ const AutoComplete = ({
 
   const renderOptionItem = (option: AutoCompleteOption, index: number) => {
     const active = activeIndex === index;
-    const selected = multiple ? isSelected(option) : active;
     return (
       <div
         key={option.value}
-        className={classNames(styles.optionItem, {
+        className={cn(styles.optionItem, {
           [styles.disabled]: option.disabled,
           [styles.highlight]: option.highlight,
           [styles.active]: hoveredIndex === index || active,
-          [styles.selected]: multiple && selected,
         })}
         style={option.style}
         role="option"
@@ -335,7 +297,7 @@ const AutoComplete = ({
         // focusable.
         tabIndex={-1}
         id={`${listboxId}-option-${index}`}
-        aria-selected={selected}
+        aria-selected={active}
         aria-disabled={option.disabled || undefined}
         // keep focus (and the open dropdown) in the input while clicking
         onMouseDown={(e) => e.preventDefault()}
@@ -355,46 +317,10 @@ const AutoComplete = ({
     );
   };
 
-  const renderTags = () => {
-    if (!multiple || selectedTags.length === 0) return null;
-    const hidden =
-      maxTagCount !== undefined && selectedTags.length > maxTagCount
-        ? selectedTags.length - maxTagCount
-        : 0;
-    const displayTags = hidden
-      ? selectedTags.slice(0, maxTagCount)
-      : selectedTags;
-    return (
-      <div className={styles.tags}>
-        {displayTags.map((tag) => (
-          <span key={tag.value} className={styles.tag}>
-            {tag.label}
-            <button
-              type="button"
-              className={styles.tagClose}
-              aria-label={t("autoComplete.removeTag", { label: tag.label })}
-              onClick={() => handleOptionSelect(tag)}
-            >
-              <IoClose aria-hidden focusable={false} />
-            </button>
-          </span>
-        ))}
-        {hidden > 0 && (
-          <span
-            className={styles.more}
-            aria-label={t("autoComplete.moreTags", { count: hidden })}
-          >
-            +{hidden}
-          </span>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div
       ref={setContainer}
-      className={classNames(styles.autoComplete, className)}
+      className={cn(styles.autoComplete, className)}
       onCompositionStart={() => {
         composing.current = true;
       }}
@@ -402,58 +328,55 @@ const AutoComplete = ({
         composing.current = false;
       }}
     >
-      {renderTags()}
-      <TextField
-        {...textFieldProps}
-        id={field.id}
+      {label && (
+        <label htmlFor={inputId} className={styles.label}>
+          {label}
+        </label>
+      )}
+      <Input
+        {...inputProps}
+        id={inputId}
         disabled={field.disabled}
         readOnly={field.readOnly}
-        label={label ?? ""}
-        // name / label are optional here (e.g. a search box labelled by
-        // textFieldProps.ariaLabel); TextField tolerates them being absent.
-        name={name as string}
+        name={name}
         ref={setInputRef}
         value={inputValue}
-        onChange={handleInputChange}
+        onChange={(e) => handleInputChange(e.target.value)}
         onFocus={(e) => {
           open();
-          textFieldProps?.onFocus?.(e);
+          inputProps?.onFocus?.(e);
         }}
         onBlur={(e) => {
           handleBlur(e);
-          textFieldProps?.onBlur?.(e);
+          inputProps?.onBlur?.(e);
         }}
         onKeyDown={(e) => {
           handleKeyDown(e);
-          textFieldProps?.onKeyDown?.(e);
+          inputProps?.onKeyDown?.(e);
         }}
       />
 
-      <Popper
-        type="select"
-        role="presentation"
-        tabIndex={-1}
-        trigger="manual"
-        matchAnchorWidth="min"
-        closeOnEscape={false}
-        onClickAway={close}
-        {...popperProps}
+      <FloatingPanel
         ref={setDropdown}
-        anchorEl={container}
-        visible={shown}
+        open={shown}
+        anchor={container}
         placement={PLACEMENT[placement]}
-        offset={offset}
+        offset={{
+          mainAxis: vertical ? offset.y : offset.x,
+          crossAxis: vertical ? offset.x : offset.y,
+        }}
+        matchAnchorWidth="min"
+        // the field (label, input, suffix) is part of the dropdown layer
+        branches={() => [container]}
+        onEscapeKeyDown={(event) => {
+          // Escape during IME composition cancels the composition only
+          if (composing.current || event.isComposing) event.preventDefault();
+        }}
+        onDismiss={close}
+        returnFocusOnEscape={() => input}
+        className={cn(styles.popup, dropdownClassName)}
       >
-        <div
-          className={classNames(styles.dropdown, animation && styles.animated)}
-          style={
-            {
-              backgroundColor: dropdownBgColor,
-              "--hover-bg-color": hoverBgColor,
-              "--highlight-bg-color": highlightBgColor,
-            } as React.CSSProperties
-          }
-        >
+        <div className={cn(styles.dropdown, animation && styles.animated)}>
           {/* While open the listbox always exists (aria-controls target);
               loading / empty states are presentational rows inside it. */}
           <div
@@ -461,7 +384,6 @@ const AutoComplete = ({
             role="listbox"
             id={listboxId}
             aria-label={label}
-            aria-multiselectable={multiple || undefined}
             aria-busy={loading || undefined}
           >
             {loading ? (
@@ -512,7 +434,7 @@ const AutoComplete = ({
             )}
           </div>
         </div>
-      </Popper>
+      </FloatingPanel>
     </div>
   );
 };

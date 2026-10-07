@@ -3,8 +3,9 @@
   box-sizing: border-box;
   min-width: min(12rem, calc(100vw - 1rem));
   max-width: min(22rem, calc(100vw - 1rem));
-  max-height: min(24rem, var(--radix-dropdown-menu-content-available-height, var(--radix-context-menu-content-available-height, 80vh)));
+  max-height: min(24rem, calc(100vh - 1rem));
   overflow: auto;
+  outline: none;
   padding: var(--space-1);
   border: 1px solid var(--border-strong-color);
   border-radius: var(--radius-lg);
@@ -64,6 +65,26 @@
 
 .chevron {
   flex-shrink: 0;
+}
+
+[dir="rtl"] .chevron {
+  transform: scaleX(-1);
+}
+
+// Checkbox / radio indicator (check mark or dot)
+.indicator {
+  display: inline-flex;
+  flex: 0 0 1rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .label {

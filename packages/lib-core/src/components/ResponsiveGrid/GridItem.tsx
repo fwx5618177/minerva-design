@@ -1,4 +1,4 @@
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "../../internal/Slot";
 import { cn } from "../../utils/cn";
 import type { GridItemProps } from "./types";
 import styles from "./responsiveGrid.module.scss";

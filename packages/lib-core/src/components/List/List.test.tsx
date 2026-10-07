@@ -42,8 +42,18 @@ afterEach(() => {
 /** Mounts the component styles (module + scale tokens) like a consumer app */
 function mountStyled(children: ReactNode) {
   css ??= [
-    compile(join(import.meta.dirname, "../../styles/scales.scss")).css,
-    compile(join(import.meta.dirname, "../../styles/default-theme.scss")).css,
+    compile(
+      join(
+        import.meta.dirname,
+        "../../../../core/src/theme/tokens/scales.scss",
+      ),
+    ).css,
+    compile(
+      join(
+        import.meta.dirname,
+        "../../../../core/src/theme/tokens/default-theme.scss",
+      ),
+    ).css,
     compile(join(import.meta.dirname, "list.module.scss")).css,
   ]
     .join("\n")
@@ -375,7 +385,11 @@ describe("List distributed styles", () => {
       <List style={{ width: 320 }}>
         <ListItem
           primary="Device"
-          actions={<Button variant="secondary">{label}</Button>}
+          actions={
+            <Button color="neutral" variant="outline">
+              {label}
+            </Button>
+          }
         />
       </List>,
     );

@@ -1,6 +1,8 @@
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { join } from "node:path";
+import { compile } from "sass";
 import { describe, expect, it, vi } from "vitest";
 import IconButton from "./IconButton";
 import styles from "./iconButton.module.scss";
@@ -16,7 +18,8 @@ describe("IconButton label and children", () => {
     expect(button).toHaveClass(
       styles.iconButton,
       styles.medium,
-      styles.default,
+      styles.neutral,
+      styles["variant-ghost"],
       styles.circle,
     );
     const wrapper = screen.getByTestId("glyph").parentElement;
@@ -29,7 +32,7 @@ describe("IconButton label and children", () => {
     expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();
   });
 
-  it("accepts variant/appearance overrides, forwards ref and handles clicks", async () => {
+  it("accepts color/variant overrides, forwards ref and handles clicks", async () => {
     const user = userEvent.setup();
     const ref = createRef<HTMLButtonElement>();
     const onClick = vi.fn();
@@ -37,8 +40,8 @@ describe("IconButton label and children", () => {
       <IconButton
         ref={ref}
         label="Remove"
-        appearance="solid"
-        variant="danger"
+        variant="solid"
+        color="danger"
         className="x"
         onClick={onClick}
       >
@@ -49,8 +52,8 @@ describe("IconButton label and children", () => {
     expect(ref.current).toBe(button);
     expect(button).toHaveClass(
       styles.iconButton,
-      styles.solid,
-      styles.error,
+      styles["variant-solid"],
+      styles.danger,
       "x",
     );
     await user.click(button);
@@ -65,24 +68,35 @@ describe("IconButton label and children", () => {
     },
   );
 
-  it("maps the error / neutral / primary variants and the outline appearance to classes", () => {
-    const { rerender } = render(
-      <IconButton
-        label="A"
-        variant="error"
-        appearance="outline"
-        icon={<svg />}
-      />,
-    );
-    expect(screen.getByRole("button")).toHaveClass(
-      styles.error,
-      styles.outline,
-    );
-    rerender(<IconButton label="A" variant="neutral" icon={<svg />} />);
-    expect(screen.getByRole("button")).toHaveClass(styles.default);
-    rerender(<IconButton label="A" variant="primary" icon={<svg />} />);
-    expect(screen.getByRole("button")).toHaveClass(styles.primary);
+  it.each([
+    "primary",
+    "neutral",
+    "success",
+    "warning",
+    "danger",
+    "info",
+  ] as const)("applies the %s color class", (color) => {
+    render(<IconButton label="A" color={color} icon={<svg />} />);
+    expect(screen.getByRole("button")).toHaveClass(styles[color]);
   });
+
+  it.each(["ghost", "solid", "outline"] as const)(
+    "applies the %s variant class",
+    (variant) => {
+      render(
+        <IconButton
+          label="A"
+          color="danger"
+          variant={variant}
+          icon={<svg />}
+        />,
+      );
+      expect(screen.getByRole("button")).toHaveClass(
+        styles.danger,
+        styles[`variant-${variant}`],
+      );
+    },
+  );
 
   it("shows the label as a tooltip on keyboard focus", async () => {
     const user = userEvent.setup();
@@ -138,5 +152,41 @@ describe("IconButton label and children", () => {
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(button).toBeDisabled();
     expect(button).toHaveClass(styles.loading);
+  });
+});
+
+describe("IconButton styles", () => {
+  const css = compile(join(import.meta.dirname, "iconButton.module.scss")).css;
+
+  it("follows the shared variant recipe", () => {
+    // solid: --<c>-color fill with inverse text
+    expect(css).toMatch(
+      /\.iconButton\.danger\s*\{[^}]*--_ib-tone:\s*var\(--danger-color\);[^}]*--_ib-border:\s*var\(--danger-color\);[^}]*--_ib-text:\s*var\(--danger-color-text\)/,
+    );
+    expect(css).toMatch(
+      /\.iconButton\.variant-solid\s*\{[^}]*background-color:\s*var\(--_ib-tone\);[^}]*color:\s*var\(--icon-button-color,\s*var\(--text-inverse-color\)\)/,
+    );
+    // outline: 1px --<c>-color border (inset) and --<c>-color-text text
+    expect(css).toMatch(
+      /\.iconButton\.variant-outline\s*\{[^}]*box-shadow:\s*inset 0 0 0 1px var\(--_ib-border\)/,
+    );
+    expect(css).toMatch(
+      /\.iconButton\.variant-ghost, \.iconButton\.variant-outline\s*\{[^}]*color:\s*var\(--icon-button-color,\s*var\(--_ib-text\)\)/,
+    );
+    // neutral: strong border, secondary text
+    expect(css).toMatch(
+      /\.iconButton\.neutral\s*\{[^}]*--_ib-border:\s*var\(--border-strong-color\);[^}]*--_ib-text:\s*var\(--text-secondary-color\)/,
+    );
+  });
+
+  it("exposes the documented CSS custom property hooks", () => {
+    for (const hook of [
+      "--icon-button-color",
+      "--icon-button-hover-bg",
+      "--icon-button-pressed-color",
+      "--icon-button-pressed-bg",
+    ]) {
+      expect(css).toContain(`var(${hook},`);
+    }
   });
 });

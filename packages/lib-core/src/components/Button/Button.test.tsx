@@ -10,15 +10,21 @@ describe("Button", () => {
 
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass("customButton", "primary", "medium");
-    expect(button).toHaveClass("borderRadiusMedium");
+    expect(button).toHaveClass(
+      "customButton",
+      "primary",
+      "variant-solid",
+      "medium",
+    );
+    expect(button).not.toHaveClass("borderRadiusMedium");
     expect(button).toBeEnabled();
   });
 
-  it("applies variant, size, shape, active and custom className", () => {
+  it("applies color, variant, size, shape, active and custom className", () => {
     render(
       <Button
-        variant="error"
+        color="danger"
+        variant="outline"
         size="xlarge"
         shape="circle"
         active
@@ -29,8 +35,15 @@ describe("Button", () => {
     );
 
     const button = screen.getByRole("button", { name: "Delete" });
-    expect(button).toHaveClass("error", "xlarge", "circle", "active", "extra");
-    expect(button).not.toHaveClass("primary");
+    expect(button).toHaveClass(
+      "danger",
+      "variant-outline",
+      "xlarge",
+      "circle",
+      "active",
+      "extra",
+    );
+    expect(button).not.toHaveClass("primary", "variant-solid");
   });
 
   it("maps named borderRadius values to classes", () => {

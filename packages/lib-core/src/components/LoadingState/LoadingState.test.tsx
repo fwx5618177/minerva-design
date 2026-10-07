@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { compile } from "sass";
 import { afterEach, expect, it } from "vitest";
 import i18n from "../../config/i18n";
-import spinnerStyles from "../Spinner/spinner.module.scss";
+import indicatorStyles from "../ProgressIndicator/progressIndicator.module.scss";
 import LoadingState from "./LoadingState";
 import styles from "./loadingState.module.scss";
 
@@ -32,12 +32,18 @@ it("renders the default visible label in one polite status region", () => {
   expect(
     container.querySelectorAll('[aria-live="polite"], [aria-live="assertive"]'),
   ).toHaveLength(1);
-  const spinner = status.querySelector(`.${spinnerStyles.spinner}`)!;
-  expect(spinner.getAttribute("role")).toBe("presentation");
-  expect(spinner.getAttribute("aria-hidden")).toBe("true");
-  expect(spinner.getAttribute("aria-live")).toBe("off");
-  expect(spinner).toHaveClass(spinnerStyles.medium, spinnerStyles.current);
-  expect(spinner.textContent).toBe("");
+  const indicator = status.querySelector<HTMLElement>(
+    `:scope > .${indicatorStyles.progressIndicator}`,
+  )!;
+  expect(indicator).toHaveClass(styles.indicator, indicatorStyles.current);
+  expect(indicator.hasAttribute("role")).toBe(false);
+  expect(indicator.getAttribute("aria-hidden")).toBe("true");
+  expect(indicator.hasAttribute("aria-label")).toBe(false);
+  expect(indicator.querySelector(`svg.${indicatorStyles.spinner}`)).toHaveClass(
+    indicatorStyles.medium,
+  );
+  expect(indicator.textContent).toBe("");
+  expect(screen.queryByRole("progressbar")).toBeNull();
 });
 
 it("updates the visible custom label without introducing another announcement source", () => {
@@ -146,8 +152,8 @@ it("ships bounded horizontal layout, muted typography and wrapping without a car
     expect(label).toContain(declaration);
 });
 
-it("disables animation only on its decorative Spinner under reduced motion", () => {
+it("disables animation only on its decorative indicator under reduced motion", () => {
   expect(css).toMatch(
-    /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.loadingState > \.spinner\s*\{[^}]*animation:\s*none\s*;/,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.loadingState > \.indicator \*\s*\{[^}]*animation:\s*none\s*;/,
   );
 });

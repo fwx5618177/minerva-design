@@ -20,16 +20,19 @@ const monacoInstall = `pnpm add @monaco-editor/react monaco-editor`;
 const monacoImport = `import { MonacoCodeEditor } from "@minerva/lib-core/monaco";`;
 
 const appCode = `import { createRoot } from "react-dom/client";
-import { Button, ConfigProvider, message } from "@minerva/lib-core";
+import { Button, ConfigProvider, ToastProvider, toast } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
 
 function App() {
   return (
     // theme: "auto" (default) | "light" | "dark" | "github-dark" | custom
     <ConfigProvider theme="auto" locale={{ language: "en" }}>
-      <Button variant="primary" onClick={() => message.success("Hello!")}>
-        Say hello
-      </Button>
+      {/* renders toast() calls inside the theme scope */}
+      <ToastProvider>
+        <Button color="primary" onClick={() => toast.success("Hello!")}>
+          Say hello
+        </Button>
+      </ToastProvider>
     </ConfigProvider>
   );
 }
@@ -51,7 +54,7 @@ const tsTypes = `import { themes } from "@minerva/lib-core";
 import type { ButtonProps, ComponentTheme } from "@minerva/lib-core";
 
 // every component exports its props type
-const saveButton: Partial<ButtonProps> = { variant: "success", size: "large" };
+const saveButton: Partial<ButtonProps> = { color: "success", size: "large" };
 
 // themes are typed too: missing or misspelled tokens are compile errors
 const brand: ComponentTheme = { ...themes.light, "primary-color": "#7c3aed" };`;

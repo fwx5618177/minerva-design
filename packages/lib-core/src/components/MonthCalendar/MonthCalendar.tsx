@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { LuCalendarDays, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useControllableState } from "../../internal/useControllableState";
 import useI18n from "../../hooks/useI18n";
@@ -181,7 +181,7 @@ const MonthCalendar = ({
   return (
     <section
       ref={ref}
-      className={classNames(styles.monthCalendar, className)}
+      className={cn(styles.monthCalendar, className)}
       aria-label={ariaLabel ?? t("monthCalendar.label")}
     >
       <div className={styles.toolbar}>
@@ -191,7 +191,7 @@ const MonthCalendar = ({
         <div className={styles.navigation}>
           <button
             type="button"
-            className={classNames(styles.navButton, styles.iconButton)}
+            className={cn(styles.navButton, styles.iconButton)}
             aria-label={previousMonthLabel ?? t("monthCalendar.previousMonth")}
             disabled={disabled}
             onClick={() => goToMonth(monthStart(month, -1))}
@@ -209,7 +209,7 @@ const MonthCalendar = ({
           </button>
           <button
             type="button"
-            className={classNames(styles.navButton, styles.iconButton)}
+            className={cn(styles.navButton, styles.iconButton)}
             aria-label={nextMonthLabel ?? t("monthCalendar.nextMonth")}
             disabled={disabled}
             onClick={() => goToMonth(monthStart(month, 1))}

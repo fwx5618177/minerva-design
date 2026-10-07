@@ -120,9 +120,9 @@ describe("Radio", () => {
     expect(radio).toBeRequired();
   });
 
-  it("applies size, type and className classes to the wrapper", () => {
+  it("applies size, color and className classes to the wrapper", () => {
     const { container } = render(
-      <Radio label="Styled" size="large" type="success" className="mine" />,
+      <Radio label="Styled" size="large" color="success" className="mine" />,
     );
 
     expect(container.firstChild).toHaveClass(
@@ -133,15 +133,20 @@ describe("Radio", () => {
     );
   });
 
-  it("applies custom color and bgColor to the radio mark", () => {
-    const { container } = render(
-      <Radio label="Colors" color="red" bgColor="blue" />,
-    );
+  it("styles the danger color without entering the error state", () => {
+    const { container } = render(<Radio label="Danger" color="danger" />);
 
-    expect(container.querySelector(".radioMark")).toHaveStyle({
-      color: "red",
-      backgroundColor: "blue",
-    });
+    expect(container.firstChild).toHaveClass("danger");
+    expect(container.firstChild).not.toHaveClass("error");
+  });
+
+  it("defaults to the primary color and never sets inline mark styles", () => {
+    const { container } = render(<Radio label="Colors" />);
+
+    expect(container.firstChild).toHaveClass("primary");
+    expect(
+      container.querySelector(".radioMark")?.getAttribute("style"),
+    ).toBeNull();
   });
 
   it("renders helper text when not in error", () => {
@@ -192,7 +197,7 @@ describe("Radio", () => {
       <Radio
         label="All"
         size="small"
-        type="primary"
+        color="primary"
         disabled
         error
         errorMessage="Bad"

@@ -15,6 +15,14 @@
       "description": "三种尺寸及无效、禁用状态；在 FormControl 中触发器会获得标签、描述与必填状态。"
     }
   },
+  "behavior": {
+    "title": "行为与无障碍",
+    "keyboard": "触发器是带 combobox 角色的按钮（aria-haspopup=\"listbox\"）。点击、Enter、空格、方向键上/下、Home 或 End 会打开列表并聚焦已选选项（无选中时聚焦第一个可用选项）。方向键移动时不会循环，并跳过禁用选项；Home / End 与 Page Up / Page Down 可快速跳转。Enter 或空格选中并关闭，焦点回到触发器；Escape 关闭且不选择；Tab 关闭并继续移动到下一个字段。",
+    "typeahead": "在关闭状态的触发器上输入字母会像原生 select 一样直接改变选中项；打开时则移动高亮项。选项内容不是纯文本时请设置 textValue。",
+    "positioning": "列表锚定在触发器下方，宽度不小于触发器；下方空间不足时翻转到上方，选项超出视口时可滚动。这与组件库其他浮层使用同一种 popper 定位：在触屏与小视口上可预期，并且不会遮挡触发器。将列表覆盖在触发器上并对齐已选项（\"item-aligned\"）是 macOS 的习惯，因此没有采用。",
+    "forms": "隐藏的原生 select 承载 name、required 与 disabled：值会出现在 FormData 中，required 参与原生约束校验，重置表单会恢复 defaultValue。值为 undefined 或空字符串时显示占位文本。",
+    "layers": "列表通过 Portal 渲染到最近的 ConfigProvider 的主题容器中。在 Modal 或 Drawer 内按 Escape 只会关闭列表。"
+  },
   "api": {
     "SelectProps": {
       "value": "选中值（受控，配合 onChange）",

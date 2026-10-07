@@ -81,104 +81,31 @@
     }
   }
 
-  // Type variants
-  &.info {
-    background-color: var(--info-color-subtle);
-    border: 1px solid var(--info-color-border);
-    color: var(--info-color-text);
-
-    .icon {
-      color: var(--info-color);
-    }
-
-    &.filled {
-      background-color: var(--info-color);
-      border-color: var(--info-color);
-      color: var(--text-inverse-color);
+  // Colors; the subtle variant (tinted background) is the default look
+  @each $name in (info, success, warning, danger) {
+    &.#{$name} {
+      background-color: var(--#{$name}-color-subtle);
+      border: 1px solid var(--#{$name}-color-border);
+      color: var(--#{$name}-color-text);
 
       .icon {
-        color: inherit;
+        color: var(--#{$name}-color);
       }
-    }
 
-    &.outlined {
-      background-color: transparent;
-      border: 1px solid var(--info-color);
-    }
-  }
+      &.solid {
+        background-color: var(--#{$name}-color);
+        border-color: var(--#{$name}-color);
+        color: var(--text-inverse-color);
 
-  &.success {
-    background-color: var(--success-color-subtle);
-    border: 1px solid var(--success-color-border);
-    color: var(--success-color-text);
-
-    .icon {
-      color: var(--success-color);
-    }
-
-    &.filled {
-      background-color: var(--success-color);
-      border-color: var(--success-color);
-      color: var(--text-inverse-color);
-
-      .icon {
-        color: inherit;
+        .icon {
+          color: inherit;
+        }
       }
-    }
 
-    &.outlined {
-      background-color: transparent;
-      border: 1px solid var(--success-color);
-    }
-  }
-
-  &.warning {
-    background-color: var(--warning-color-subtle);
-    border: 1px solid var(--warning-color-border);
-    color: var(--warning-color-text);
-
-    .icon {
-      color: var(--warning-color);
-    }
-
-    &.filled {
-      background-color: var(--warning-color);
-      border-color: var(--warning-color);
-      color: var(--text-inverse-color);
-
-      .icon {
-        color: inherit;
+      &.outline {
+        background-color: transparent;
+        border: 1px solid var(--#{$name}-color);
       }
-    }
-
-    &.outlined {
-      background-color: transparent;
-      border: 1px solid var(--warning-color);
-    }
-  }
-
-  &.error {
-    background-color: var(--danger-color-subtle);
-    border: 1px solid var(--danger-color-border);
-    color: var(--danger-color-text);
-
-    .icon {
-      color: var(--danger-color);
-    }
-
-    &.filled {
-      background-color: var(--danger-color);
-      border-color: var(--danger-color);
-      color: var(--text-inverse-color);
-
-      .icon {
-        color: inherit;
-      }
-    }
-
-    &.outlined {
-      background-color: transparent;
-      border: 1px solid var(--danger-color);
     }
   }
 

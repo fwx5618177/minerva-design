@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef, useState } from "react";
 import type React from "react";
@@ -19,8 +19,8 @@ const renderAutoComplete = (props: Partial<AutoCompleteProps> = {}) =>
   );
 
 const getInput = () => screen.getByRole("combobox");
-/** The dropdown (Popper element, portaled to body) */
-const queryDropdown = () => document.body.querySelector<HTMLElement>(".popper");
+/** The dropdown (floating panel, portalled to body) */
+const queryDropdown = () => document.body.querySelector<HTMLElement>(".popup");
 const getDropdown = () => {
   const dropdown = queryDropdown();
   if (!dropdown) throw new Error("dropdown is not open");
@@ -280,7 +280,6 @@ describe("AutoComplete", () => {
     const user = userEvent.setup();
     renderAutoComplete({
       groupBy: (option) => (option.label.startsWith("A") ? "A" : "Other"),
-      hoverBgColor: "rgb(255, 0, 0)",
     });
 
     await user.click(getInput());
@@ -291,11 +290,6 @@ describe("AutoComplete", () => {
     await user.hover(apricot as HTMLElement);
     const hovered = items.filter((item) => item.classList.contains("active"));
     expect(hovered).toEqual([apricot]);
-    expect(
-      getDropdown()
-        .querySelector<HTMLElement>(".dropdown")!
-        .style.getPropertyValue("--hover-bg-color"),
-    ).toBe("rgb(255, 0, 0)");
 
     await user.unhover(apricot as HTMLElement);
     expect(apricot).not.toHaveClass("active");
@@ -331,28 +325,23 @@ describe("AutoComplete", () => {
     expect(screen.getByText("custom-Apple")).toBeInTheDocument();
   });
 
-  it("applies highlight styling and hover background colors", async () => {
+  it("applies highlight styling and hover classes (colors come from CSS custom properties)", async () => {
     const user = userEvent.setup();
     renderAutoComplete({
       options: [
         { label: "Apple", value: "apple", highlight: true },
         { label: "Banana", value: "banana" },
       ],
-      highlightBgColor: "rgb(0, 0, 255)",
-      hoverBgColor: "rgb(255, 0, 0)",
+      dropdownClassName: "brand-dropdown",
     });
 
     await user.click(getInput());
     const apple = screen.getByText("Apple").closest(".optionItem");
     const banana = screen.getByText("Banana").closest(".optionItem");
     expect(apple).toHaveClass("highlight");
+    expect(getDropdown()).toHaveClass("brand-dropdown");
     const dropdown = getDropdown().querySelector<HTMLElement>(".dropdown")!;
-    expect(dropdown.style.getPropertyValue("--highlight-bg-color")).toBe(
-      "rgb(0, 0, 255)",
-    );
-    expect(dropdown.style.getPropertyValue("--hover-bg-color")).toBe(
-      "rgb(255, 0, 0)",
-    );
+    expect(dropdown.getAttribute("style")).toBeNull();
 
     await user.hover(banana as HTMLElement);
     expect(banana).toHaveClass("active");
@@ -361,90 +350,21 @@ describe("AutoComplete", () => {
     expect(banana).not.toHaveClass("active");
   });
 
-  it("supports multiple selection with removable tags", async () => {
+  it("disables the dropdown animation", async () => {
     const user = userEvent.setup();
-    const onSelect = vi.fn();
-    const onChange = vi.fn();
-    const { container } = renderAutoComplete({
-      multiple: true,
-      onSelect,
-      onChange,
-    });
-
-    await user.click(getInput());
-    await user.keyboard("ap");
-    await user.click(screen.getByText("Apple"));
-    // Dropdown stays open in multiple mode
-    await user.click(screen.getByText("Banana"));
-
-    expect(onSelect).toHaveBeenNthCalledWith(1, options[0]);
-    expect(onSelect).toHaveBeenNthCalledWith(2, options[1]);
-    expect(onChange).toHaveBeenLastCalledWith("");
-    expect(getInput()).toHaveValue("");
-
-    const tags = container.querySelectorAll(".tag");
-    expect(Array.from(tags).map((tag) => tag.textContent)).toEqual([
-      "Apple",
-      "Banana",
-    ]);
-
-    await user.click(tags[0].querySelector("button") as HTMLButtonElement);
-    expect(
-      Array.from(container.querySelectorAll(".tag")).map(
-        (tag) => tag.textContent,
-      ),
-    ).toEqual(["Banana"]);
-    expect(onSelect).toHaveBeenLastCalledWith(options[0]);
-  });
-
-  it("toggles a tag off when selecting an already selected option", async () => {
-    const user = userEvent.setup();
-    const { container } = renderAutoComplete({ multiple: true });
-
-    await user.click(getInput());
-    await user.click(screen.getByText("Apple"));
-    expect(container.querySelectorAll(".tag")).toHaveLength(1);
-
-    await user.click(screen.getAllByText("Apple")[1]);
-    expect(container.querySelectorAll(".tag")).toHaveLength(0);
-  });
-
-  it("limits visible tags with maxTagCount", async () => {
-    const user = userEvent.setup();
-    const { container } = renderAutoComplete({
-      multiple: true,
-      maxTagCount: 1,
-    });
-
-    await user.click(getInput());
-    await user.click(screen.getByText("Apple"));
-    await user.click(screen.getByText("Banana"));
-    await user.click(screen.getByText("Apricot"));
-
-    expect(container.querySelectorAll(".tag")).toHaveLength(1);
-    expect(container.querySelector(".more")).toHaveTextContent("+2");
-  });
-
-  it("applies dropdown background color and disables animation", async () => {
-    const user = userEvent.setup();
-    renderAutoComplete({
-      dropdownBgColor: "rgb(1, 2, 3)",
-      animation: false,
-    });
+    renderAutoComplete({ animation: false });
 
     await user.click(getInput());
     const dropdown = document.querySelector(".dropdown");
-    expect(dropdown).toHaveStyle({ backgroundColor: "rgb(1, 2, 3)" });
     expect(dropdown).not.toHaveClass("animated");
   });
 
-  it("forwards popperProps to the Popper", async () => {
+  it("adds dropdownClassName to the dropdown", async () => {
     const user = userEvent.setup();
-    renderAutoComplete({ popperProps: { className: "my-popper", zIndex: 7 } });
+    renderAutoComplete({ dropdownClassName: "my-dropdown" });
 
     await user.click(getInput());
-    expect(getDropdown()).toHaveClass("my-popper");
-    expect(getDropdown().style.zIndex).toBe("7");
+    expect(getDropdown()).toHaveClass("popup", "my-dropdown");
   });
 
   it("exposes combobox / listbox semantics and the active option", async () => {
@@ -468,40 +388,7 @@ describe("AutoComplete", () => {
     );
   });
 
-  it("labels the remove buttons of selected tags", async () => {
-    const user = userEvent.setup();
-    renderAutoComplete({ multiple: true });
-    await user.click(getInput());
-    await user.click(screen.getByText("Banana"));
-    expect(
-      screen.getByRole("button", { name: "Remove Banana" }),
-    ).toBeInTheDocument();
-  });
-
   describe("regressions", () => {
-    it("keeps the dropdown open between picks in multiple mode", async () => {
-      vi.useFakeTimers({ shouldAdvanceTime: true });
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-      renderAutoComplete({ multiple: true });
-
-      await user.click(getInput());
-      await user.click(screen.getByText("Apple"));
-      await act(() => vi.advanceTimersByTimeAsync(500));
-      expect(getDropdown()).toBeInTheDocument();
-      expect(getInput()).toHaveFocus();
-      await user.click(screen.getByText("Banana"));
-      await act(() => vi.advanceTimersByTimeAsync(500));
-      expect(getDropdown()).toBeInTheDocument();
-      expect(screen.getByRole("listbox")).toHaveAttribute(
-        "aria-multiselectable",
-        "true",
-      );
-      expect(screen.getByRole("option", { name: /^Apple/ })).toHaveAttribute(
-        "aria-selected",
-        "true",
-      );
-    });
-
     it("aligns the dropdown with the input start edge and matches its width", async () => {
       const rect = (r: Partial<DOMRect>) =>
         ({
@@ -539,7 +426,7 @@ describe("AutoComplete", () => {
       });
       vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(
         function (this: HTMLElement) {
-          return this.classList.contains("popper") ? 260 : 0;
+          return this.classList.contains("popup") ? 260 : 0;
         },
       );
       const user = userEvent.setup();
@@ -550,42 +437,6 @@ describe("AutoComplete", () => {
       await waitFor(() => expect(dropdown.style.left).toBe("200px"));
       expect(dropdown.style.minWidth).toBe("400px");
       vi.restoreAllMocks();
-    });
-
-    it("supports controlled selectedOptions", async () => {
-      const user = userEvent.setup();
-      const onSelectedOptionsChange = vi.fn();
-      const Controlled = () => {
-        const [selected, setSelected] = useState<AutoCompleteOption[]>([
-          options[1],
-        ]);
-        return (
-          <AutoComplete
-            name="fruit"
-            label="Fruit"
-            options={options}
-            multiple
-            selectedOptions={selected}
-            onSelectedOptionsChange={(next) => {
-              onSelectedOptionsChange(next);
-              setSelected(next);
-            }}
-          />
-        );
-      };
-      render(<Controlled />);
-      expect(
-        screen.getByRole("button", { name: "Remove Banana" }),
-      ).toBeInTheDocument();
-      await user.click(getInput());
-      await user.click(screen.getByText("Apple"));
-      expect(onSelectedOptionsChange).toHaveBeenLastCalledWith([
-        options[1],
-        options[0],
-      ]);
-      // Backspace in the empty input removes the last tag
-      await user.keyboard("{Backspace}");
-      expect(onSelectedOptionsChange).toHaveBeenLastCalledWith([options[1]]);
     });
 
     it("prevents form submission when Enter picks an option", async () => {

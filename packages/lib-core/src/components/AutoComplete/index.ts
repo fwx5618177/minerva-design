@@ -1,11 +1,7 @@
 import AutoComplete from "./AutoComplete";
-import type {
-  AutoCompleteProps,
-  AutoCompleteOption,
-  AutoCompleteInputProps,
-} from "./types";
+import type { AutoCompleteProps, AutoCompleteOption } from "./types";
 
 export { AutoComplete };
-export type { AutoCompleteProps, AutoCompleteOption, AutoCompleteInputProps };
+export type { AutoCompleteProps, AutoCompleteOption };
 
 export default AutoComplete;

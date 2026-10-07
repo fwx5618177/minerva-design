@@ -4,7 +4,6 @@ import type {
   ReactNode,
   Ref,
 } from "react";
-import type { DialogContentProps } from "@radix-ui/react-dialog";
 
 /** Edge of the viewport the drawer slides in from. */
 export type DrawerSide = "left" | "right" | "top" | "bottom";
@@ -24,7 +23,9 @@ export interface DrawerRootProps {
   /** Called with the requested open state (trigger, close button, Escape, overlay click). */
   onOpenChange?: (open: boolean) => void;
   /**
-   * Modal mode: traps focus and blocks interaction with the page behind
+   * Modal mode: renders the overlay, traps focus, locks page scrolling and
+   * blocks / hides the page behind. Non-modal drawers close on outside click /
+   * focus instead.
    * @default true
    */
   modal?: boolean;
@@ -42,12 +43,36 @@ export interface DrawerTriggerProps extends ComponentPropsWithRef<"button"> {
 }
 
 /** Props of `DrawerContent`: the portalled overlay + sliding panel. */
-export interface DrawerContentProps extends Omit<
-  DialogContentProps,
-  "asChild"
-> {
+export interface DrawerContentProps extends HTMLAttributes<HTMLDivElement> {
   /** Ref to the dialog element. */
   ref?: Ref<HTMLDivElement>;
+  /**
+   * ARIA role of the panel
+   * @default "dialog"
+   */
+  role?: "dialog" | "alertdialog";
+  /**
+   * Keeps the panel mounted while closed (`data-state="closed"`), e.g. for
+   * animation libraries
+   * @default false
+   */
+  forceMount?: boolean;
+  /**
+   * Called before focus moves into the panel on open;
+   * `event.preventDefault()` keeps focus where it is
+   */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Called before focus returns to the opener on close;
+   * `event.preventDefault()` skips it
+   */
+  onCloseAutoFocus?: (event: Event) => void;
+  /** Escape pressed while it is the topmost layer; `event.preventDefault()` keeps it open. */
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
+  /** Pointer pressed outside (e.g. on the overlay); `event.preventDefault()` keeps it open. */
+  onPointerDownOutside?: (event: PointerEvent) => void;
+  /** Pointer down or focus outside; `event.preventDefault()` keeps it open. */
+  onInteractOutside?: (event: PointerEvent | FocusEvent) => void;
   /**
    * Edge the panel slides in from
    * @default "right"

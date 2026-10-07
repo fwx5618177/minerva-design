@@ -1,5 +1,5 @@
 // Tooltip asChild triggers, TooltipProvider delays, content class / ref and
-// variants.
+// colors / variants.
 import { createRef } from "react";
 import {
   act,
@@ -11,7 +11,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Tooltip, TooltipProvider } from ".";
-import type { TooltipVariant } from ".";
+import type { TooltipProps, TooltipVariant } from ".";
 
 const contentEl = () => document.querySelector<HTMLElement>(".tooltip");
 
@@ -86,7 +86,7 @@ describe("Tooltip asChild and TooltipProvider", () => {
         content="L"
         placement="bottom-start"
         arrow
-        variant="auto"
+        variant="glass"
         contentClassName="extra"
         asChild
       >
@@ -97,25 +97,37 @@ describe("Tooltip asChild and TooltipProvider", () => {
     await screen.findByRole("tooltip");
     const content = contentEl()!;
     expect(ref.current).toBe(content);
-    expect(content).toHaveClass("tooltip", "auto", "arrow", "extra");
+    expect(content).toHaveClass("tooltip", "glass", "arrow", "extra");
     expect(content).toHaveAttribute("data-placement", "bottom-start");
     expect(content.querySelector(".tooltipArrow")).not.toBeNull();
   });
 
-  it.each<TooltipVariant>([
-    "auto",
-    "fixedDark",
-    "fixedLight",
-    "dark",
+  it.each<TooltipVariant>(["solid", "subtle", "glass"])(
+    "applies the %s variant class",
+    (variant) => {
+      render(
+        <Tooltip content="L" variant={variant} defaultOpen>
+          <button type="button">T</button>
+        </Tooltip>,
+      );
+      expect(contentEl()).toHaveClass("tooltip", "neutral", variant);
+      expect(contentEl()!.querySelector(".tooltipArrow")).toBeNull();
+    },
+  );
+
+  it.each<NonNullable<TooltipProps["color"]>>([
+    "neutral",
+    "info",
     "success",
-  ])("applies the %s variant class", (variant) => {
+    "warning",
+    "danger",
+  ])("applies the %s color class", (color) => {
     render(
-      <Tooltip content="L" variant={variant} defaultOpen>
+      <Tooltip content="L" color={color} defaultOpen>
         <button type="button">T</button>
       </Tooltip>,
     );
-    expect(contentEl()).toHaveClass("tooltip", variant);
-    expect(contentEl()!.querySelector(".tooltipArrow")).toBeNull();
+    expect(contentEl()).toHaveClass("tooltip", color, "solid");
   });
 
   it("renders only the child when disabled with asChild and never opens", async () => {

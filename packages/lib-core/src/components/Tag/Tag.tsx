@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { IoClose } from "react-icons/io5";
 import type { TagProps } from "./types";
 import styles from "./tag.module.scss";
@@ -18,11 +18,14 @@ interface Ripple {
  * The root is a plain (non-interactive) element. When `clickable`, the content
  * is rendered as a native <button> (which also draws the ripple); when
  * `closable`, the close control is a sibling <button>, so interactive
- * elements are never nested. Native attributes are forwarded to the root.
+ * elements are never nested. With `pressed` a clickable tag is a toggle
+ * (aria-pressed), e.g. a selectable filter. Native attributes are forwarded
+ * to the root.
  */
 const Tag = ({
   children,
-  variant = "default",
+  color = "neutral",
+  variant = "subtle",
   size = "medium",
   shape = "rounded",
   closable = false,
@@ -31,11 +34,9 @@ const Tag = ({
   onClick,
   pressed,
   icon,
-  bordered = false,
+  avatar,
+  loading = false,
   elevation = false,
-  bgColor,
-  textColor,
-  borderColor,
   className,
   style,
   disabled = false,
@@ -64,8 +65,10 @@ const Tag = ({
     if (!disabled) onClose?.(e);
   };
 
+  const inactive = disabled || loading;
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (disabled) return;
+    if (inactive) return;
     addRipple(e);
     onClick?.(e);
   };
@@ -103,16 +106,16 @@ const Tag = ({
     rippleTimers.current.add(timer);
   };
 
-  const tagStyles: React.CSSProperties = {
-    ...style,
-    backgroundColor: bgColor,
-    color: textColor,
-    borderColor: borderColor,
-  };
-
   const content = (
     <>
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {loading ? (
+        <span className={styles.spinner} aria-hidden="true" />
+      ) : (
+        <>
+          {icon && <span className={styles.icon}>{icon}</span>}
+          {avatar && <span className={styles.avatar}>{avatar}</span>}
+        </>
+      )}
       <span className={styles.content}>{children}</span>
     </>
   );
@@ -121,20 +124,23 @@ const Tag = ({
     <div
       {...rest}
       ref={ref}
-      className={classNames(
+      className={cn(
         styles.tag,
+        styles[color],
         styles[variant],
         styles[size],
         styles[shape],
         {
-          [styles.clickable]: clickable && !disabled,
-          [styles.bordered]: bordered,
+          [styles.clickable]: clickable && !inactive,
+          [styles.pressed]: clickable && pressed,
           [styles.elevation]: elevation,
           [styles.disabled]: disabled,
+          [styles.loading]: loading,
         },
         className,
       )}
-      style={tagStyles}
+      style={style}
+      aria-busy={loading || undefined}
       // Lets layouts such as PageSection keep the tag's width (page.module.scss)
       data-component="tag"
     >
@@ -143,7 +149,7 @@ const Tag = ({
           type="button"
           className={styles.action}
           onClick={handleClick}
-          disabled={disabled}
+          disabled={inactive}
           aria-pressed={pressed}
         >
           {content}
@@ -151,7 +157,7 @@ const Tag = ({
       ) : (
         content
       )}
-      {closable && (
+      {closable && !loading && (
         <button
           type="button"
           className={styles.closeIcon}

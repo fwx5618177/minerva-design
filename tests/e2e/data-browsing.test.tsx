@@ -1,20 +1,19 @@
-// A small catalogue: filter with a Dropdown and a search field, see the
-// active filters as removable Tag / Chip, page through results with
+// A small catalogue: filter with a Menu and a search field, see the
+// active filters as removable Tags, page through results with
 // Pagination, render the page in a VirtualList, and fall back to Empty.
 import { useMemo, useState } from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   Button,
-  Chip,
-  Dropdown,
   Empty,
   Pagination,
   Tag,
-  TextField,
+  Input,
+  Menu,
   VirtualList,
-  type DropdownOption,
+  type MenuAction,
 } from "@minerva/lib-core";
 
 const CATEGORIES = ["Books", "Games", "Music"] as const;
@@ -25,9 +24,9 @@ const products = Array.from({ length: 95 }, (_, i) => ({
 }));
 const PAGE_SIZE = 10;
 
-const categoryItems: DropdownOption[] = CATEGORIES.map((c) => ({
+const categoryItems: MenuAction[] = CATEGORIES.map((c) => ({
+  key: c,
   label: c,
-  value: c,
 }));
 
 const Catalogue = () => {
@@ -64,24 +63,25 @@ const Catalogue = () => {
           setPage(1);
         }}
       >
-        <TextField
+        <Input
           name="q"
-          label="Search products"
+          aria-label="Search products"
           value={query}
-          onChange={setQuery}
+          onChange={(e) => setQuery(e.target.value)}
         />
         <Button type="submit">Search</Button>
       </form>
-      <Dropdown
+      <Menu
         ariaLabel="Categories"
+        align="start"
         items={categoryItems}
         onSelect={(item) => {
-          setCategory(item.value);
+          setCategory(item.key);
           setPage(1);
         }}
       >
         <button type="button">Filter by category</button>
-      </Dropdown>
+      </Menu>
 
       <section aria-label="Active filters">
         {category && (
@@ -94,14 +94,16 @@ const Catalogue = () => {
           </Tag>
         )}
         {search && (
-          <Chip
-            label={`“${search}”`}
-            deleteLabel="Clear search"
-            onDelete={() => {
+          <Tag
+            closable
+            closeLabel="Clear search"
+            onClose={() => {
               setSearch("");
               setQuery("");
             }}
-          />
+          >
+            {`“${search}”`}
+          </Tag>
         )}
       </section>
 
@@ -185,10 +187,14 @@ describe("e2e: data browsing", () => {
     const trigger = screen.getByRole("button", { name: "Filter by category" });
     trigger.focus();
     await user.keyboard("{ArrowDown}");
-    expect(screen.getByRole("menuitem", { name: "Books" })).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.getByRole("menuitem", { name: "Books" })).toHaveFocus(),
+    );
     await user.keyboard("{ArrowDown}{Enter}");
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    expect(trigger).toHaveFocus();
+    await waitFor(() =>
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument(),
+    );
+    await waitFor(() => expect(trigger).toHaveFocus());
 
     expect(resultCount()).toHaveTextContent("32 results");
     expect(visibleProducts().every((t) => t?.includes("Games"))).toBe(true);
@@ -201,7 +207,7 @@ describe("e2e: data browsing", () => {
     expect(resultCount()).toHaveTextContent("95 results");
   });
 
-  it("searches, removes the search chip, and shows Empty with a recovery action", async () => {
+  it("searches, removes the search tag, and shows Empty with a recovery action", async () => {
     const user = userEvent.setup();
     render(<Catalogue />);
 

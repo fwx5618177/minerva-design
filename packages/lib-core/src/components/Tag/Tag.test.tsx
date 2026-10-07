@@ -17,15 +17,27 @@ describe("Tag", () => {
     render(<Tag>Label</Tag>);
     const tag = getTag("Label");
     expect(tag).toBeInTheDocument();
-    expect(tag).toHaveClass("tag", "default", "medium", "rounded");
+    expect(tag).toHaveClass("tag", "neutral", "subtle", "medium", "rounded");
     expect(tag).not.toHaveClass("clickable");
   });
 
-  it.each(["primary", "success", "warning", "error", "info"] as const)(
+  it.each(["primary", "success", "warning", "danger", "info"] as const)(
+    "applies the %s color class",
+    (color) => {
+      render(<Tag color={color}>V</Tag>);
+      expect(getTag("V")).toHaveClass(color);
+    },
+  );
+
+  it.each(["subtle", "outline", "solid"] as const)(
     "applies the %s variant class",
     (variant) => {
-      render(<Tag variant={variant}>V</Tag>);
-      expect(getTag("V")).toHaveClass(variant);
+      render(
+        <Tag color="success" variant={variant}>
+          V
+        </Tag>,
+      );
+      expect(getTag("V")).toHaveClass("success", variant);
     },
   );
 
@@ -42,36 +54,35 @@ describe("Tag", () => {
     },
   );
 
-  it("applies bordered, elevation, disabled and custom className", () => {
+  it("applies outline, elevation, disabled and custom className", () => {
     render(
-      <Tag bordered elevation disabled className="mine">
+      <Tag variant="outline" elevation disabled className="mine">
         T
       </Tag>,
     );
-    expect(getTag("T")).toHaveClass(
-      "bordered",
-      "elevation",
-      "disabled",
-      "mine",
-    );
+    expect(getTag("T")).toHaveClass("outline", "elevation", "disabled", "mine");
   });
 
-  it("applies custom colors over the style prop", () => {
+  it("forwards the style prop, including the color custom properties", () => {
     render(
       <Tag
-        style={{ margin: "4px" }}
-        bgColor="red"
-        textColor="blue"
-        borderColor="green"
+        color="danger"
+        style={
+          {
+            margin: "4px",
+            "--tag-danger-bg": "red",
+            "--tag-danger-text": "blue",
+          } as React.CSSProperties
+        }
       >
         T
       </Tag>,
     );
     const tag = getTag("T");
     expect(tag.style.margin).toBe("4px");
-    expect(tag.style.backgroundColor).toBe("red");
-    expect(tag.style.color).toBe("blue");
-    expect(tag.style.borderColor).toBe("green");
+    expect(tag.style.getPropertyValue("--tag-danger-bg")).toBe("red");
+    expect(tag.style.getPropertyValue("--tag-danger-text")).toBe("blue");
+    expect(tag.style.backgroundColor).toBe("");
   });
 
   it("renders an icon", () => {
@@ -409,5 +420,116 @@ describe("Tag localization", () => {
     expect(
       screen.getByRole("button", { name: "Remove React" }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Tag avatar, loading and selection", () => {
+  it("renders an avatar after the icon", () => {
+    render(
+      <Tag icon={<span data-testid="icon" />} avatar={<img alt="" />}>
+        Ada
+      </Tag>,
+    );
+    const tag = getTag("Ada");
+    const avatar = tag.querySelector(".avatar");
+    expect(avatar).toContainElement(tag.querySelector("img"));
+    expect(screen.getByTestId("icon").parentElement?.nextSibling).toBe(avatar);
+  });
+
+  it("shows a spinner instead of icon / avatar and marks the tag busy while loading", () => {
+    render(
+      <Tag
+        loading
+        icon={<span data-testid="icon" />}
+        avatar={<span data-testid="avatar" />}
+      >
+        Saving
+      </Tag>,
+    );
+    const tag = getTag("Saving");
+    expect(tag).toHaveClass("loading");
+    expect(tag).toHaveAttribute("aria-busy", "true");
+    expect(tag.querySelector(".spinner")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(screen.queryByTestId("icon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("avatar")).not.toBeInTheDocument();
+  });
+
+  it("blocks the action and hides the close button while loading", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const { rerender } = render(
+      <Tag clickable closable loading onClick={onClick}>
+        T
+      </Tag>,
+    );
+    const action = screen.getByRole("button", { name: "T" });
+    expect(action).toBeDisabled();
+    expect(
+      screen.queryByRole("button", { name: "Close" }),
+    ).not.toBeInTheDocument();
+    await user.click(action);
+    expect(onClick).not.toHaveBeenCalled();
+
+    rerender(
+      <Tag clickable closable onClick={onClick}>
+        T
+      </Tag>,
+    );
+    expect(getTag("T")).not.toHaveAttribute("aria-busy");
+    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+  });
+
+  it("styles a pressed (selected) toggle tag and exposes aria-pressed=false", () => {
+    const { rerender } = render(
+      <Tag clickable pressed>
+        Filter
+      </Tag>,
+    );
+    expect(getTag("Filter")).toHaveClass("pressed");
+    rerender(
+      <Tag clickable pressed={false}>
+        Filter
+      </Tag>,
+    );
+    expect(getTag("Filter")).not.toHaveClass("pressed");
+    expect(screen.getByRole("button", { name: "Filter" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  });
+
+  it("toggles a selectable filter tag with the keyboard", async () => {
+    const user = userEvent.setup();
+    const Filter = () => {
+      const [on, setOn] = React.useState(false);
+      return (
+        <Tag clickable pressed={on} onClick={() => setOn((v) => !v)}>
+          React
+        </Tag>
+      );
+    };
+    render(<Filter />);
+    await user.tab();
+    await user.keyboard(" ");
+    expect(screen.getByRole("button", { name: "React" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("button", { name: "React" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  });
+
+  it("never emits undefined or stray whitespace in the class name", () => {
+    render(<Tag>C</Tag>);
+    const cls = getTag("C").getAttribute("class") ?? "";
+    expect(cls).not.toMatch(/undefined|false/);
+    expect(cls).toBe(cls.trim());
+    expect(cls).not.toMatch(/\s{2,}/);
   });
 });

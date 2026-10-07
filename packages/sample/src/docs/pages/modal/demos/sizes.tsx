@@ -10,7 +10,11 @@ export default function SizesDemo() {
           key={size}
           size={size}
           title={`Size: ${size}`}
-          trigger={<Button variant="secondary">{size}</Button>}
+          trigger={
+            <Button color="neutral" variant="outline">
+              {size}
+            </Button>
+          }
         >
           <ModalBody>
             On narrow screens every size becomes a bottom sheet.

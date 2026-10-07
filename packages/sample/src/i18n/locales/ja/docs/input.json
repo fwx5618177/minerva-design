@@ -1,6 +1,6 @@
 {
   "title": "Input",
-  "description": "サイズ・バリアント・前後の装飾を備えたシンプルな一行入力。ラベル付きの完結したフィールドには TextField を使います。",
+  "description": "サイズ・バリアント・前後の装飾・クリアボタン・文字数カウント・パスワード表示切り替えを備えた一行テキスト入力。ラベル・ヘルプテキスト・エラーメッセージが必要なら FormField で囲みます。",
   "demos": {
     "basic": {
       "title": "基本",
@@ -14,9 +14,21 @@
       "title": "プレフィックスとサフィックス",
       "description": "アイコン・記号・単位などの装飾コンテンツ。"
     },
+    "clearable-and-count": {
+      "title": "クリアボタンと文字数",
+      "description": "clearable は値があるときにラベル付きのクリアボタンを表示します。クリアすると空の値で onChange が呼ばれ、フォーカスは入力欄に残ります。showCharCount は文字数（と maxLength）を表示し、入力欄に関連付けます。"
+    },
+    "password": {
+      "title": "パスワード",
+      "description": "type=\"password\" にすると、ローカライズされたラベル付きの表示 / 非表示切り替えボタンが追加されます。"
+    },
     "states": {
       "title": "状態",
       "description": "invalid・disabled・readOnly。FormField 内では状態を継承します。"
+    },
+    "validation": {
+      "title": "バリデーション",
+      "description": "送信時に検証し、FormField の errorMessage でメッセージを表示します。入力欄は無効状態になり、メッセージで説明されます。"
     }
   },
   "api": {
@@ -24,10 +36,16 @@
       "variant": "見た目のスタイル",
       "size": "高さとフォントサイズ",
       "invalid": "エラー状態（無効な FormControl でも設定）。aria-invalid を設定します",
-      "prefix": "テキスト前の装飾コンテンツ（アイコンや「@」など）",
-      "suffix": "テキスト後の装飾コンテンツ（単位など）",
+      "prefix": "テキストの前に置くコンテンツ（アイコンや \"@\" など）",
+      "suffix": "テキストの後に置くコンテンツ（単位、アイコン、ボタンなど）",
       "className": "外側ラッパー（<input> ではない）のクラス名",
-      "ref": "<input> 要素への ref"
+      "ref": "<input> 要素への ref",
+      "clearable": "値があるときにクリアボタンを表示します（無効・読み取り専用時を除く）。クリアすると空の値で onChange が呼ばれます",
+      "onClear": "クリアボタンで入力欄が空になった後に呼ばれます",
+      "clearLabel": "クリアボタンのアクセシブルラベル（既定はローカライズされた「クリア」）",
+      "showCharCount": "文字数（maxLength 指定時はその値も）を表示し、aria-describedby で入力欄に関連付けます",
+      "showPasswordLabel": "パスワードが隠れているときの切り替えボタンのアクセシブルラベル",
+      "hidePasswordLabel": "パスワードが表示されているときの切り替えボタンのアクセシブルラベル"
     }
   }
 }

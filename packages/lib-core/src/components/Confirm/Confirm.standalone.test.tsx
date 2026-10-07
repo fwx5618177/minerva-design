@@ -29,16 +29,18 @@ describe("confirm() without <ConfirmProvider>", () => {
     const { result } = await ask({
       title: "Delete book?",
       description: "This cannot be undone",
-      intent: "danger",
+      color: "danger",
     });
-    const dialog = await screen.findByRole("dialog", { name: "Delete book?" });
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "Delete book?",
+    });
     expect(dialog).toHaveAccessibleDescription("This cannot be undone");
     expect(hosts()).toHaveLength(1);
 
     await userEvent.click(screen.getByRole("button", { name: "Delete" }));
     await expect(result).resolves.toBe(true);
     await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
     );
     expect(warn).not.toHaveBeenCalled();
     expect(nativeConfirm).not.toHaveBeenCalled();
@@ -55,7 +57,7 @@ describe("confirm() without <ConfirmProvider>", () => {
     await expect(cancelled).resolves.toBe(false);
 
     const { result: escaped } = await ask({ title: "Confirm again" });
-    await screen.findByRole("dialog", { name: "Confirm again" });
+    await screen.findByRole("alertdialog", { name: "Confirm again" });
     await userEvent.keyboard("{Escape}");
     await expect(escaped).resolves.toBe(false);
     expect(hosts()).toHaveLength(1);
@@ -64,10 +66,10 @@ describe("confirm() without <ConfirmProvider>", () => {
   it("queues concurrent requests and shows them one at a time in call order", async () => {
     const { result: first } = await ask({ title: "First" });
     const { result: second } = await ask({ title: "Second" });
-    expect(await screen.findAllByRole("dialog")).toHaveLength(1);
+    expect(await screen.findAllByRole("alertdialog")).toHaveLength(1);
     await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
     await expect(first).resolves.toBe(true);
-    await screen.findByRole("dialog", { name: "Second" });
+    await screen.findByRole("alertdialog", { name: "Second" });
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     await expect(second).resolves.toBe(false);
   });
@@ -75,7 +77,7 @@ describe("confirm() without <ConfirmProvider>", () => {
   it("re-attaches the host when the page body was replaced", async () => {
     for (const host of hosts()) host.remove();
     const { result } = await ask({ title: "Remount" });
-    await screen.findByRole("dialog", { name: "Remount" });
+    await screen.findByRole("alertdialog", { name: "Remount" });
     expect(hosts()).toHaveLength(1);
     await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
     await expect(result).resolves.toBe(true);
@@ -97,7 +99,7 @@ describe("confirm() without <ConfirmProvider>", () => {
       </ConfirmProvider>,
     );
     const { result } = await ask({ title: "Provider first" });
-    const dialogs = await screen.findAllByRole("dialog");
+    const dialogs = await screen.findAllByRole("alertdialog");
     expect(dialogs).toHaveLength(1);
     // The provider's dialog is not in the standalone host's tree: its container stays empty.
     expect(hosts()[0]).toBeEmptyDOMElement();

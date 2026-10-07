@@ -3,7 +3,11 @@ import { Button, Modal, ModalBody } from "@minerva/lib-core";
 export default function UncontrolledDemo() {
   return (
     <Modal
-      trigger={<Button variant="secondary">Show details</Button>}
+      trigger={
+        <Button color="neutral" variant="outline">
+          Show details
+        </Button>
+      }
       title="Release notes"
     >
       <ModalBody>

@@ -15,6 +15,14 @@
       "description": "Three sizes, invalid and disabled states; inside a FormControl the trigger gets its label, description and required state."
     }
   },
+  "behavior": {
+    "title": "Behavior and accessibility",
+    "keyboard": "The trigger is a button with the combobox role (aria-haspopup=\"listbox\"). Click, Enter, Space, Arrow Down / Arrow Up, Home or End open the listbox and focus the selected option (or the first enabled one). Arrow keys move without wrapping and skip disabled options; Home / End and Page Up / Page Down jump. Enter or Space selects, closes and returns focus to the trigger; Escape closes without selecting; Tab closes and continues to the next field.",
+    "typeahead": "Typing letters on the closed trigger changes the selection directly, like a native select; while open it moves the highlight. Use textValue on options whose content is not plain text.",
+    "positioning": "The listbox is anchored below the trigger, at least as wide as it, flips above when there is not enough room and scrolls when its options do not fit the viewport. This is the same popper positioning as every other overlay of the library: it is predictable on touch screens and small viewports and keeps the trigger visible. Positioning the list over the trigger with the selected option aligned (\"item-aligned\") is a macOS idiom and was deliberately not used.",
+    "forms": "A hidden native select carries name, required and disabled: the value is part of FormData, required takes part in native constraint validation, and resetting the form restores defaultValue. The placeholder shows while the value is undefined or an empty string.",
+    "layers": "The listbox is portalled into the theme container of the closest ConfigProvider. Inside a Modal or Drawer, Escape closes only the listbox."
+  },
   "api": {
     "SelectProps": {
       "value": "Selected value (controlled; pair with onChange)",

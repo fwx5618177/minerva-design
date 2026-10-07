@@ -43,15 +43,11 @@ export interface EmptyProps extends Omit<
   width?: string | number;
   /** Height of the container */
   height?: string | number;
-  /** Background color */
-  backgroundColor?: string;
   /**
    * Adds a drop shadow
    * @default false
    */
   showShadow?: boolean;
-  /** Text color */
-  color?: string;
   /** Ref to the root <div> element */
   ref?: Ref<HTMLDivElement>;
 }

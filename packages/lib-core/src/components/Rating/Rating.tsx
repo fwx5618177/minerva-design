@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import { LuStar, LuStarHalf } from "react-icons/lu";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
@@ -12,7 +12,7 @@ const STARS = [0, 1, 2, 3, 4];
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
-  const className = classNames(styles.star, styles[fill]);
+  const className = cn(styles.star, styles[fill]);
   if (fill === "half") {
     // Empty outline with the filled left half drawn on top.
     return (
@@ -117,7 +117,7 @@ const Rating = ({
 
   const px = SIZE_PX[size];
   const label = ariaLabel ?? `${value.toFixed(1)} / ${max}`;
-  const rootClassName = classNames(
+  const rootClassName = cn(
     styles.rating,
     styles[size],
     interactive && styles.interactive,
@@ -207,7 +207,7 @@ const RatingScale = ({
   className,
   ref,
 }: RatingScaleProps) => (
-  <div ref={ref} className={classNames(styles.scale, className)}>
+  <div ref={ref} className={cn(styles.scale, className)}>
     {dimensions.map((dim) => (
       <div
         key={dim.key}

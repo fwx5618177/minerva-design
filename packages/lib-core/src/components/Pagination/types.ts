@@ -73,10 +73,13 @@ export interface PaginationProps extends Omit<
    */
   shape?: "circle" | "rounded" | "square";
   /**
-   * Visual style of the page items
-   * @default "filled"
+   * Visual style of the page items: `solid` (current page filled with the
+   * primary color), `outline` (current page with a primary border and text)
+   * or `ghost` (borderless transparent items, current page in primary text,
+   * tinted on hover)
+   * @default "solid"
    */
-  variant?: "filled" | "outlined" | "text";
+  variant?: "solid" | "outline" | "ghost";
   /**
    * Simple mode: prev/next buttons with a page input
    * @default false

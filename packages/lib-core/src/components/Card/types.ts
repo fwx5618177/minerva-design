@@ -8,13 +8,7 @@ import type {
 
 /** Visual style of a Card */
 export type CardVariant =
-  | "default"
-  | "outlined"
-  | "shadow"
-  | "elevated"
-  | "filled"
-  | "subtle"
-  | "ghost";
+  "default" | "outline" | "elevated" | "filled" | "ghost";
 
 /** Inner spacing preset of a Card or of one of its sections */
 export type CardPadding = "none" | "small" | "medium" | "large";
@@ -31,22 +25,18 @@ type CardRootAttributes = Omit<
     AnchorHTMLAttributes<HTMLAnchorElement>,
     "href" | "target" | "rel" | "download"
   > &
-  Pick<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "form">;
+  Pick<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "form" | "type">;
 
 export interface CardProps extends CardRootAttributes {
   /** Card content, usually CardHeader, CardContent and CardFooter */
   children?: React.ReactNode;
   /**
-   * Visual style of the card. `subtle` is a filled block without border,
-   * `ghost` is transparent until hovered (when interactive)
+   * Visual style of the card: bordered (`default`, `outline`), shadowed
+   * (`elevated`), a muted block (`filled`) or transparent until hovered
+   * when interactive (`ghost`)
    * @default "default"
    */
   variant?: CardVariant;
-  /**
-   * Hides the CardHeader and/or CardFooter (noHeader, noFooter, noHeaderFooter)
-   * @default "default"
-   */
-  type?: "default" | "noHeader" | "noFooter" | "noHeaderFooter";
   /**
    * Pads the card itself (sections then sit flush, separated by spacing and a
    * footer rule). When omitted the classic layout is used: each section pads
@@ -65,10 +55,10 @@ export interface CardProps extends CardRootAttributes {
    */
   as?: ElementType;
   /**
-   * Native `type` of the root when `as="button"` (`type` is the section layout)
+   * Native `type` of the root when `as="button"`
    * @default "button"
    */
-  htmlType?: "button" | "submit" | "reset";
+  type?: "button" | "submit" | "reset";
   /**
    * Additional class name
    * @default ""
@@ -89,10 +79,6 @@ export interface CardHeaderProps extends Omit<
    * @default ""
    */
   className?: string;
-  /** Header background color */
-  bgColor?: string;
-  /** Header text color */
-  textColor?: string;
   /** Overrides the inner spacing of this section */
   padding?: CardPadding;
   /** Ref to the root <div> element */
@@ -145,10 +131,6 @@ export interface CardContentProps extends Omit<
    * @default ""
    */
   className?: string;
-  /** Content background color */
-  bgColor?: string;
-  /** Content text color */
-  textColor?: string;
   /** Entrance animation of the content */
   animation?: "fadeIn" | "slideIn" | "zoomIn";
   /** Overrides the inner spacing of this section */
@@ -168,10 +150,6 @@ export interface CardFooterProps extends Omit<
    * @default ""
    */
   className?: string;
-  /** Footer background color */
-  bgColor?: string;
-  /** Footer text color */
-  textColor?: string;
   /** Overrides the inner spacing of this section */
   padding?: CardPadding;
   /** Ref to the root <div> element */

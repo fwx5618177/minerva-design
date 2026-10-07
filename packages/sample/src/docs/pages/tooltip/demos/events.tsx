@@ -12,7 +12,9 @@ export default function EventsDemo() {
         onOpen={() => setOpened((prev) => prev + 1)}
         onClose={() => setClosed((prev) => prev + 1)}
       >
-        <Button variant="secondary">Hover or focus me</Button>
+        <Button color="neutral" variant="outline">
+          Hover or focus me
+        </Button>
       </Tooltip>
       <span>
         onOpen: {opened} · onClose: {closed}

@@ -10,16 +10,9 @@ import userEvent from "@testing-library/user-event";
 import { join } from "node:path";
 import { compile } from "sass";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  Tab,
-  TabList,
-  TabPanel,
-  Tabs,
-  type TabsColor,
-  type TabsProps,
-} from ".";
+import { Tab, TabList, TabPanel, Tabs, type TabsProps } from ".";
 
-const COLORS: TabsColor[] = [
+const COLORS: NonNullable<TabsProps["color"]>[] = [
   "primary",
   "neutral",
   "success",
@@ -409,5 +402,323 @@ describe("Tabs styles", () => {
     } finally {
       style.remove();
     }
+  });
+});
+
+describe("Tabs keyboard, focus and accessibility", () => {
+  function Basic(
+    props: Partial<TabsProps> & {
+      loop?: boolean;
+      disabled?: string[];
+      forceMount?: boolean;
+    },
+  ) {
+    const { loop, disabled = [], forceMount, ...rest } = props;
+    return (
+      <Tabs defaultValue="a" {...rest}>
+        <TabList aria-label="Letters" loop={loop}>
+          {["a", "b", "c", "d"].map((v) => (
+            <Tab key={v} value={v} disabled={disabled.includes(v)}>
+              {v.toUpperCase()}
+            </Tab>
+          ))}
+        </TabList>
+        {["a", "b", "c", "d"].map((v) => (
+          <TabPanel key={v} value={v} forceMount={forceMount}>
+            Panel {v}
+          </TabPanel>
+        ))}
+      </Tabs>
+    );
+  }
+  const tab = (name: string) => screen.getByRole("tab", { name });
+  const selectedName = () =>
+    screen.getByRole("tab", { selected: true }).textContent;
+
+  it("moves with ArrowRight / ArrowLeft horizontally and ignores Up / Down", async () => {
+    const user = userEvent.setup();
+    render(<Basic />);
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{ArrowDown}{ArrowUp}");
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{ArrowLeft}");
+    expect(tab("A")).toHaveFocus();
+    expect(selectedName()).toBe("A");
+  });
+
+  it("moves with ArrowDown / ArrowUp vertically and ignores Left / Right", async () => {
+    const user = userEvent.setup();
+    render(<Basic orientation="vertical" />);
+    await user.tab();
+    await user.keyboard("{ArrowDown}");
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{ArrowRight}{ArrowLeft}");
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{ArrowUp}");
+    expect(tab("A")).toHaveFocus();
+  });
+
+  it("swaps Left / Right in RTL and sets dir on the root", async () => {
+    const user = userEvent.setup();
+    render(<Basic dir="rtl" data-testid="root" />);
+    expect(screen.getByTestId("root")).toHaveAttribute("dir", "rtl");
+    await user.tab();
+    await user.keyboard("{ArrowLeft}");
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(tab("A")).toHaveFocus();
+  });
+
+  it("Home / End jump to the first / last enabled tab", async () => {
+    const user = userEvent.setup();
+    render(<Basic disabled={["a", "d"]} defaultValue="b" />);
+    await user.tab();
+    expect(tab("B")).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(tab("C")).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(tab("B")).toHaveFocus();
+  });
+
+  it("wraps by default and stops at the ends with loop={false}", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Basic />);
+    await user.tab();
+    await user.keyboard("{ArrowLeft}");
+    expect(tab("D")).toHaveFocus();
+    unmount();
+
+    render(<Basic loop={false} />);
+    await user.tab();
+    await user.keyboard("{ArrowLeft}");
+    expect(tab("A")).toHaveFocus();
+    await user.keyboard("{End}{ArrowRight}");
+    expect(tab("D")).toHaveFocus();
+  });
+
+  it("skips disabled tabs in both directions", async () => {
+    const user = userEvent.setup();
+    render(<Basic disabled={["b", "c"]} />);
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(tab("D")).toHaveFocus();
+    await user.keyboard("{ArrowLeft}");
+    expect(tab("A")).toHaveFocus();
+    expect(tab("B")).toHaveAttribute("data-disabled", "");
+    expect(tab("A")).not.toHaveAttribute("data-disabled");
+  });
+
+  it("automatic activation selects the focused tab", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Basic onChange={onChange} />);
+    await user.tab();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith("b");
+    expect(selectedName()).toBe("B");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Panel b");
+  });
+
+  it("manual activation moves focus only; Enter / Space / click select", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Basic activationMode="manual" onChange={onChange} />);
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(tab("B")).toHaveFocus();
+    expect(selectedName()).toBe("A");
+    expect(onChange).not.toHaveBeenCalled();
+    await user.keyboard("{Enter}");
+    expect(selectedName()).toBe("B");
+    await user.keyboard("{ArrowRight}");
+    await user.keyboard(" ");
+    expect(selectedName()).toBe("C");
+    await user.click(tab("D"));
+    expect(selectedName()).toBe("D");
+    expect(onChange.mock.calls).toEqual([["b"], ["c"], ["d"]]);
+  });
+
+  it("selects on primary mouse down only (not right / ctrl click)", () => {
+    const onChange = vi.fn();
+    render(<Basic onChange={onChange} activationMode="manual" />);
+    fireEvent.mouseDown(tab("B"), { button: 2 });
+    fireEvent.mouseDown(tab("B"), { button: 0, ctrlKey: true });
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.mouseDown(tab("B"), { button: 0 });
+    expect(onChange).toHaveBeenCalledWith("b");
+  });
+
+  it("selects on an assistive-technology click (no mouse down)", () => {
+    render(<Basic activationMode="manual" />);
+    fireEvent.click(tab("C"), { detail: 0 });
+    expect(selectedName()).toBe("C");
+  });
+
+  it("lets consumers cancel built-in behaviour with preventDefault", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tabs defaultValue="a">
+        <TabList aria-label="L" onKeyDown={(e) => e.preventDefault()}>
+          <Tab value="a">A</Tab>
+          <Tab value="b" onMouseDown={(e) => e.preventDefault()}>
+            B
+          </Tab>
+        </TabList>
+      </Tabs>,
+    );
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(tab("A")).toHaveFocus();
+    fireEvent.mouseDown(tab("B"));
+    expect(selectedName()).toBe("A");
+  });
+
+  it("roves tabIndex: only the selected tab, else the first enabled tab, is tabbable", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Basic defaultValue="c" />);
+    expect(
+      screen.getAllByRole("tab").map((t) => t.getAttribute("tabindex")),
+    ).toEqual(["-1", "-1", "0", "-1"]);
+    await user.click(tab("B"));
+    expect(tab("B")).toHaveAttribute("tabindex", "0");
+    expect(tab("C")).toHaveAttribute("tabindex", "-1");
+    unmount();
+
+    render(<Basic defaultValue={undefined} disabled={["a"]} />);
+    expect(
+      screen.getAllByRole("tab").map((t) => t.getAttribute("tabindex")),
+    ).toEqual(["-1", "0", "-1", "-1"]);
+    await user.tab();
+    expect(tab("B")).toHaveFocus();
+  });
+
+  it("falls back to the first enabled tab when the selected tab is disabled", () => {
+    render(<Basic defaultValue="a" disabled={["a"]} />);
+    expect(tab("B")).toHaveAttribute("tabindex", "0");
+    expect(tab("A")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("updates the fallback tab stop when tabs are (un)disabled later", async () => {
+    const { rerender } = render(
+      <Basic defaultValue={undefined} disabled={["a"]} />,
+    );
+    expect(tab("B")).toHaveAttribute("tabindex", "0");
+    rerender(<Basic defaultValue={undefined} />);
+    await waitFor(() => expect(tab("A")).toHaveAttribute("tabindex", "0"));
+    expect(tab("B")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("wires aria ids, orientation and data attributes", () => {
+    render(<Basic orientation="vertical" data-testid="root" />);
+    const list = screen.getByRole("tablist");
+    expect(list).toHaveAttribute("aria-orientation", "vertical");
+    expect(list).toHaveAttribute("data-orientation", "vertical");
+    expect(screen.getByTestId("root")).toHaveAttribute(
+      "data-orientation",
+      "vertical",
+    );
+    const a = tab("A");
+    const panel = screen.getByRole("tabpanel");
+    expect(a.id).toBeTruthy();
+    expect(a).toHaveAttribute("type", "button");
+    expect(a).toHaveAttribute("aria-controls", panel.id);
+    expect(panel).toHaveAttribute("aria-labelledby", a.id);
+    expect(panel).toHaveAccessibleName("A");
+    expect(panel).toHaveAttribute("tabindex", "0");
+    expect(panel).toHaveAttribute("data-state", "active");
+    expect(panel).not.toHaveAttribute("hidden");
+    expect(a).toHaveAttribute("data-state", "active");
+    expect(a).toHaveAttribute("data-orientation", "vertical");
+    expect(tab("B")).toHaveAttribute("data-state", "inactive");
+    expect(tab("B")).toHaveAttribute("aria-selected", "false");
+    expect(tab("B").id).not.toBe(a.id);
+  });
+
+  it("unmounts inactive panels unless forceMount, which hides them", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Basic />);
+    expect(screen.queryByText("Panel b")).toBeNull();
+    unmount();
+
+    render(<Basic forceMount />);
+    const b = screen.getByText("Panel b");
+    expect(b).toHaveAttribute("hidden");
+    expect(b).toHaveAttribute("data-state", "inactive");
+    expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
+    await user.click(tab("B"));
+    expect(b).not.toHaveAttribute("hidden");
+    expect(screen.getByText("Panel a")).toHaveAttribute("hidden");
+  });
+
+  it("keeps a controlled selection when the parent ignores onChange", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Basic defaultValue={undefined} value="a" onChange={onChange} />);
+    await user.click(tab("C"));
+    await user.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenCalledWith("c");
+    expect(onChange).toHaveBeenCalledWith("d");
+    expect(selectedName()).toBe("A");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Panel a");
+  });
+
+  it("isolates nested Tabs: own selection, ids and keyboard", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tabs defaultValue="o1">
+        <TabList aria-label="Outer">
+          <Tab value="o1">O1</Tab>
+          <Tab value="o2">O2</Tab>
+        </TabList>
+        <TabPanel value="o1">
+          <Tabs defaultValue="o1">
+            <TabList aria-label="Inner">
+              <Tab value="o1">I1</Tab>
+              <Tab value="o2">I2</Tab>
+            </TabList>
+            <TabPanel value="o1">Inner one</TabPanel>
+            <TabPanel value="o2">Inner two</TabPanel>
+          </Tabs>
+        </TabPanel>
+        <TabPanel value="o2">Outer two</TabPanel>
+      </Tabs>,
+    );
+    // Same values, distinct ids.
+    expect(tab("O1").id).not.toBe(tab("I1").id);
+    expect(screen.getByRole("tabpanel", { name: "I1" })).toHaveTextContent(
+      "Inner one",
+    );
+    await user.click(tab("I1"));
+    await user.keyboard("{ArrowRight}");
+    expect(tab("I2")).toHaveFocus();
+    expect(tab("I2")).toHaveAttribute("aria-selected", "true");
+    expect(tab("O1")).toHaveAttribute("aria-selected", "true");
+    await user.keyboard("{End}{Home}");
+    expect(tab("I1")).toHaveFocus();
+    expect(tab("O1")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("Inner one")).toBeInTheDocument();
+  });
+
+  it("renders on the server with matching aria wiring", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const html = renderToString(<Basic forceMount />);
+    const host = document.createElement("div");
+    host.innerHTML = html;
+    const tabs = host.querySelectorAll('[role="tab"]');
+    const panels = host.querySelectorAll('[role="tabpanel"]');
+    expect(host.querySelector('[role="tablist"]')).toHaveAttribute(
+      "aria-orientation",
+      "horizontal",
+    );
+    expect(tabs).toHaveLength(4);
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[0]).toHaveAttribute("tabindex", "0");
+    expect(tabs[1]).toHaveAttribute("tabindex", "-1");
+    expect(tabs[0].getAttribute("aria-controls")).toBe(panels[0].id);
+    expect(panels[0].getAttribute("aria-labelledby")).toBe(tabs[0].id);
+    expect(panels[1]).toHaveAttribute("hidden");
   });
 });

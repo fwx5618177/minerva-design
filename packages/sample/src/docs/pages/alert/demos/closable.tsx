@@ -9,11 +9,11 @@ export default function ClosableDemo() {
   return (
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
       <div key={key} style={{ display: "grid", gap: 12, width: "100%" }}>
-        <Alert variant="info" closable onClose={() => setClosed((n) => n + 1)}>
+        <Alert color="info" closable onClose={() => setClosed((n) => n + 1)}>
           Close me with the button on the right.
         </Alert>
         <Alert
-          variant="warning"
+          color="warning"
           closable
           closeIcon={<IoCloseCircleOutline />}
           onClose={() => setClosed((n) => n + 1)}
@@ -24,7 +24,8 @@ export default function ClosableDemo() {
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <Button
           size="small"
-          variant="secondary"
+          color="neutral"
+          variant="outline"
           onClick={() => setKey((k) => k + 1)}
         >
           Reset

@@ -1,14 +1,18 @@
 {
   "title": "IconButton",
-  "description": "Un bouton compact qui n'affiche qu'une icône, ainsi que les préréglages InteractiveIconButton qui basculent entre deux états (favori, j'aime, signet...).",
+  "description": "Un bouton compact qui n'affiche qu'une icône. Avec pressed / defaultPressed, il devient un bouton bascule (favori, j'aime, muet...).",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
       "description": "Passez n'importe quel élément d'icône. Le bouton ne contient qu'une icône : donnez-lui toujours un ariaLabel. Il rend un bouton natif avec type=\"button\" et ne soumet donc jamais de formulaire."
     },
+    "colors": {
+      "title": "Couleurs",
+      "description": "color applique une couleur sémantique : neutral (par défaut), primary, success, warning, danger ou info."
+    },
     "variants": {
       "title": "Variantes",
-      "description": "Sans variant, le bouton utilise un style neutre ; variant applique une couleur sémantique."
+      "description": "variant définit le style visuel : ghost (par défaut, transparent jusqu'au survol), solid (rempli de la couleur) ou outline (bordé)."
     },
     "sizes-and-shapes": {
       "title": "Tailles et formes",
@@ -16,65 +20,48 @@
     },
     "states": {
       "title": "États",
-      "description": "loading remplace l'icône par un indicateur de chargement, active marque un bouton bascule enfoncé et disabled pose l'attribut natif disabled, qui retire le bouton de l'ordre de tabulation."
+      "description": "loading remplace l'icône par un indicateur de chargement, pressed marque une bascule comme active et disabled pose l'attribut natif disabled, qui retire le bouton de l'ordre de tabulation."
+    },
+    "toggle": {
+      "title": "Bouton bascule",
+      "description": "Définissez pressed (contrôlé, avec onPressedChange) ou defaultPressed (non contrôlé) pour obtenir une bascule : un clic inverse l'état, exposé via aria-pressed. Gardez un libellé stable (par ex. \"Like\"), car l'état est annoncé séparément."
+    },
+    "search": {
+      "title": "Bouton de recherche",
+      "description": "Une action de recherche est un IconButton avec une icône de recherche et un libellé ; avec type=\"submit\" il soumet son formulaire, et loading le bloque pendant la recherche. Utilisez un Button si l'action a besoin d'un texte visible."
     },
     "custom-colors": {
       "title": "Couleurs personnalisées",
-      "description": "Remplacez la couleur de l'icône, le fond, le fond au survol et la couleur active."
+      "description": "Remplacez les couleurs calculées avec des propriétés CSS personnalisées : --icon-button-color (icône), --icon-button-hover-bg (fond au survol), --icon-button-pressed-color et --icon-button-pressed-bg (bouton bascule enfoncé). Définissez-les en ligne, dans une classe ou sur un ancêtre."
     },
     "tooltip": {
       "title": "Infobulle",
       "description": "Définissez showTooltip et tooltip pour décrire l'action au survol et au focus clavier."
     },
-    "interactive": {
-      "title": "InteractiveIconButton",
-      "description": "Un bouton bascule qui expose son état via aria-pressed. Contrôlez-le avec pressed et onChange, ou laissez-le non contrôlé avec defaultPressed. Son nom accessible reste stable (le libellé du préréglage, par ex. \"Like\") et peut être remplacé par ariaLabel."
-    },
-    "interactive-types": {
-      "title": "Préréglages interactifs",
-      "description": "Tous les InteractiveIconType, c'est-à-dire toutes les clés de interactiveIconsMap. Chaque préréglage définit son icône, ses couleurs, ses infobulles et son libellé accessible. Cliquez pour basculer."
-    },
     "label": {
       "title": "Libellé et info-bulle",
-      "description": "label nomme le bouton et s’affiche comme info-bulle ; l’icône peut être passée en children. appearance définit le style de remplissage."
+      "description": "label nomme le bouton et s’affiche comme info-bulle ; l’icône peut être passée en children. variant définit le style visuel et color la couleur sémantique."
     }
   },
   "api": {
     "IconButtonProps": {
       "icon": "Élément d'icône à afficher",
-      "variant": "Variante de couleur ; un style neutre est utilisé si elle est omise",
+      "color": "Couleur sémantique du bouton",
+      "variant": "Style visuel : ghost (transparent jusqu’au survol), solid (rempli de la couleur) ou outline (bordé)",
       "size": "Taille du bouton",
       "shape": "Forme du bouton",
       "disabled": "Désactive le bouton natif et le retire de l'ordre de tabulation",
       "loading": "Remplace l'icône par un indicateur de chargement et bloque l'interaction",
-      "active": "Affiche le bouton dans son état actif (enfoncé)",
+      "pressed": "État enfoncé d'un bouton bascule (contrôlé ; à combiner avec onPressedChange) ; exposé via aria-pressed",
+      "defaultPressed": "État enfoncé initial d'un bouton bascule non contrôlé",
+      "onPressedChange": "Appelé avec le nouvel état enfoncé quand un bouton bascule est activé",
       "className": "Nom de classe supplémentaire",
-      "color": "Couleur personnalisée de l'icône",
-      "activeColor": "Couleur personnalisée de l'icône à l'état actif",
-      "bgColor": "Couleur de fond personnalisée",
-      "hoverColor": "Couleur de fond personnalisée au survol",
-      "fillColor": "Couleur de remplissage personnalisée de l'icône",
-      "tooltip": "Configuration de l'infobulle (content, variant, shape, arrow) ; nécessite showTooltip",
+      "tooltip": "Configuration de l'infobulle (content, color, variant, shape, arrow) ; nécessite showTooltip",
       "showTooltip": "Affiche l'infobulle au survol et au focus",
       "ariaLabel": "Libellé accessible ; à toujours définir, car le bouton ne contient qu'une icône",
       "ref": "Ref vers l'élément <button>",
       "children": "Élément d’icône, alternative à la prop icon",
-      "label": "Nom accessible du bouton, également affiché comme info-bulle (sauf si showTooltip vaut false). Prioritaire sur ariaLabel",
-      "appearance": "Style de remplissage : ghost (transparent jusqu’au survol), solid (rempli de la couleur du variant) ou outline (bordé)"
-    },
-    "InteractiveIconProps": {
-      "type": "Préréglage qui définit l'icône, les couleurs et les infobulles (une clé de interactiveIconsMap)",
-      "onChange": "Appelé avec le nouvel état après chaque bascule",
-      "initialState": "Alias obsolète de defaultPressed",
-      "className": "Nom de classe supplémentaire",
-      "size": "Taille du bouton",
-      "shape": "Forme du bouton",
-      "disabled": "Désactive le bouton",
-      "ref": "Ref vers l'élément <button> sous-jacent",
-      "pressed": "État actif (enfoncé) (contrôlé ; à associer à onChange) ; exposé via aria-pressed",
-      "defaultPressed": "État actif initial (non contrôlé)",
-      "ariaLabel": "Nom accessible du bouton bascule ; gardez-le stable, car l'état enfoncé est exposé séparément via aria-pressed. Par défaut, le libellé du préréglage (par ex. \"Favorite\")",
-      "aria-label": "Identique à ariaLabel (orthographe standard de l'attribut)"
+      "label": "Nom accessible du bouton, également affiché comme info-bulle (sauf si showTooltip vaut false). Prioritaire sur ariaLabel"
     }
   }
 }

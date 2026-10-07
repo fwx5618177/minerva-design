@@ -43,7 +43,7 @@ function SearchHeader() {
   return (
     <header>
       <AutoComplete
-        textFieldProps={{ ariaLabel: "搜索书籍" }}
+        inputProps={{ "aria-label": "搜索书籍" }}
         value={query}
         onChange={setQuery}
         options={BOOKS}

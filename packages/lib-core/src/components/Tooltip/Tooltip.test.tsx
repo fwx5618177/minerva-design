@@ -1,6 +1,12 @@
 import { createRef } from "react";
 import type React from "react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Tooltip from "./Tooltip";
@@ -287,18 +293,17 @@ describe("Tooltip", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
-  it("applies variant, shape, animation, arrow and style props", () => {
+  it("applies color, variant, shape, animation, arrow and style props", () => {
     render(
       <Tooltip
         content="Hello"
         ariaLabel="Trigger"
         defaultOpen
-        variant="success"
+        color="success"
+        variant="subtle"
         shape="rounded"
         animation="scale"
         arrow
-        bgColor="rgb(1, 2, 3)"
-        textColor="white"
         zIndex={99}
         className="custom-trigger"
       >
@@ -311,30 +316,33 @@ describe("Tooltip", () => {
     );
 
     const tooltip = screen.getByRole("tooltip", { name: "Trigger" });
-    expect(tooltip).toHaveClass("tooltip", "success", "rounded", "arrow");
+    expect(tooltip).toHaveClass(
+      "tooltip",
+      "success",
+      "subtle",
+      "rounded",
+      "arrow",
+    );
+    expect(tooltip).not.toHaveClass("neutral", "solid");
     expect(tooltip).toHaveClass("animation-scale");
-    expect(tooltip.style.backgroundColor).toBe("rgb(1, 2, 3)");
-    expect(tooltip.style.color).toBe("white");
     expect(tooltip.style.zIndex).toBe("99");
 
     const arrowEl = tooltip.querySelector(".tooltipArrow") as HTMLElement;
     expect(arrowEl).not.toBeNull();
-    expect(arrowEl.style.backgroundColor).toBe("rgb(1, 2, 3)");
+    // the arrow inherits the tooltip background (no inline color)
+    expect(arrowEl.style.background).toBe("");
   });
 
-  it("uses the background shorthand for gradient colors", () => {
+  it("defaults to the neutral solid tooltip without an arrow", () => {
     render(
-      <Tooltip
-        content="Hello"
-        ariaLabel="Trigger"
-        defaultOpen
-        bgColor="linear-gradient(red, blue)"
-      >
+      <Tooltip content="Hello" ariaLabel="Trigger" defaultOpen>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
     const tooltip = screen.getByRole("tooltip");
-    expect(tooltip.style.background).toContain("linear-gradient");
+    expect(tooltip).toHaveClass("tooltip", "neutral", "solid", "default");
+    expect(tooltip.style.background).toBe("");
+    expect(tooltip.style.color).toBe("");
     expect(tooltip.querySelector(".tooltipArrow")).toBeNull();
   });
 
@@ -498,6 +506,109 @@ describe("Tooltip", () => {
       expect(screen.getByRole("tooltip")).toBeInTheDocument();
       await user.keyboard("{Escape}");
       expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+
+    describe("hoverable (WCAG 1.4.13)", () => {
+      // Trigger 60x20 at (100, 200); the tooltip (placement top) 60x20 at
+      // (100, 150): a 30px gap between them.
+      const mockHoverLayout = () => {
+        vi.spyOn(
+          HTMLElement.prototype,
+          "getBoundingClientRect",
+        ).mockImplementation(function (this: HTMLElement) {
+          if (this.classList.contains("tooltipTrigger")) {
+            return rect({
+              x: 100,
+              y: 200,
+              top: 200,
+              bottom: 220,
+              left: 100,
+              right: 160,
+              width: 60,
+              height: 20,
+            });
+          }
+          if (this.getAttribute("role") === "tooltip") {
+            return rect({
+              x: 100,
+              y: 150,
+              top: 150,
+              bottom: 170,
+              left: 100,
+              right: 160,
+              width: 60,
+              height: 20,
+            });
+          }
+          return rect({});
+        });
+      };
+
+      const openByHover = async () => {
+        const user = setup();
+        render(
+          <Tooltip content="Hello" enterDelay={0} placement="top">
+            <button type="button">Trigger</button>
+          </Tooltip>,
+        );
+        await user.hover(getTrigger());
+        await act(() => vi.advanceTimersByTimeAsync(10));
+        return screen.getByRole("tooltip");
+      };
+
+      it("stays open while the pointer crosses the gap onto the tooltip", async () => {
+        mockHoverLayout();
+        const tooltip = await openByHover();
+        const wrapper = getTrigger().parentElement as HTMLElement;
+
+        fireEvent.mouseLeave(wrapper, { clientX: 130, clientY: 200 });
+        fireEvent.pointerMove(document.body, { clientX: 130, clientY: 185 });
+        act(() => {
+          vi.advanceTimersByTime(100);
+        });
+        expect(screen.getByRole("tooltip")).toBeInTheDocument();
+
+        fireEvent.mouseEnter(tooltip);
+        act(() => {
+          vi.advanceTimersByTime(1000);
+        });
+        expect(screen.getByRole("tooltip")).toBeInTheDocument();
+
+        fireEvent.mouseLeave(tooltip);
+        act(() => {
+          vi.advanceTimersByTime(0);
+        });
+        expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+      });
+
+      it("closes when the pointer moves away from the tooltip", async () => {
+        mockHoverLayout();
+        await openByHover();
+        const wrapper = getTrigger().parentElement as HTMLElement;
+
+        fireEvent.mouseLeave(wrapper, { clientX: 130, clientY: 220 });
+        fireEvent.pointerMove(document.body, { clientX: 130, clientY: 260 });
+        act(() => {
+          vi.advanceTimersByTime(0);
+        });
+        expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+      });
+
+      it("closes after the grace period when the pointer stops in the gap", async () => {
+        mockHoverLayout();
+        await openByHover();
+        const wrapper = getTrigger().parentElement as HTMLElement;
+
+        fireEvent.mouseLeave(wrapper, { clientX: 130, clientY: 200 });
+        act(() => {
+          vi.advanceTimersByTime(299);
+        });
+        expect(screen.getByRole("tooltip")).toBeInTheDocument();
+        act(() => {
+          vi.advanceTimersByTime(1);
+        });
+        expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+      });
     });
 
     it("reports requested changes through onOpenChange when controlled", async () => {

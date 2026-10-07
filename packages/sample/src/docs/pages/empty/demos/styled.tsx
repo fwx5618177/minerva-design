@@ -7,8 +7,7 @@ export default function StyledDemo() {
       showShadow
       width={320}
       height={200}
-      backgroundColor="#f0f7ff"
-      color="#1d4ed8"
+      style={{ backgroundColor: "#f0f7ff", color: "#1d4ed8" }}
       description="Inbox zero"
     />
   );

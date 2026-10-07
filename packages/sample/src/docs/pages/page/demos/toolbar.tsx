@@ -1,19 +1,25 @@
-import { Button, Divider, TextField, Toolbar } from "@minerva/lib-core";
+import { Button, Divider, Input, Toolbar } from "@minerva/lib-core";
 
 export default function ToolbarDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Toolbar aria-label="Filters">
-        <TextField name="query" label="Search books" />
-        <Button variant="secondary">Reset</Button>
+        <Input
+          name="query"
+          aria-label="Search books"
+          placeholder="Search books"
+        />
+        <Button color="neutral" variant="outline">
+          Reset
+        </Button>
         <Button>Apply</Button>
       </Toolbar>
       <Toolbar density="compact" wrap={false} aria-label="Formatting">
-        <Button size="small" variant="secondary">
+        <Button size="small" color="neutral" variant="outline">
           Bold
         </Button>
         <Divider orientation="vertical" />
-        <Button size="small" variant="secondary">
+        <Button size="small" color="neutral" variant="outline">
           Italic
         </Button>
       </Toolbar>

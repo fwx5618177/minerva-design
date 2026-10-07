@@ -1,14 +1,17 @@
 import type { HTMLAttributes, Ref } from "react";
+import type { ColorScheme } from "@minerva/core";
 
 /**
- * Fill style of a Badge: `solid` (filled), `subtle` (tinted background) or
- * `outline` (bordered)
+ * Props of the Badge.
+ *
+ * Colors come from the theme tokens of `color`. To override them for a single
+ * badge, set these CSS custom properties (e.g. through `style` or a class):
+ * `--badge-bg` (background), `--badge-fg` (text) and `--badge-border`
+ * (border color of the `outline` variant).
  */
-export type BadgeAppearance = "solid" | "subtle" | "outline";
-
 export interface BadgeProps extends Omit<
   HTMLAttributes<HTMLSpanElement>,
-  "children" | "content"
+  "children" | "content" | "color"
 > {
   /**
    * Element the badge is attached to. Without children (or with plain text /
@@ -22,25 +25,16 @@ export interface BadgeProps extends Omit<
    */
   className?: string;
   /**
-   * Color scheme of the badge
+   * Semantic color of the badge
    * @default "primary"
    */
-  variant?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "error"
-    | "info"
-    | "light"
-    | "dark"
-    | "neutral";
+  color?: ColorScheme;
   /**
-   * Fill style
+   * Visual style: `solid` (filled), `subtle` (tinted background) or
+   * `outline` (bordered)
    * @default "solid"
    */
-  appearance?: BadgeAppearance;
+  variant?: "solid" | "subtle" | "outline";
   /**
    * Badge size
    * @default "medium"
@@ -61,16 +55,10 @@ export interface BadgeProps extends Omit<
    * @default false
    */
   dot?: boolean;
-  /** Custom background color */
-  bgColor?: string;
-  /** Custom text color */
-  textColor?: string;
   /** Custom border radius (CSS value) */
   borderRadius?: string;
   /** Custom border width (CSS value) */
   borderWidth?: string;
-  /** Custom border color */
-  borderColor?: string;
   /** Accessible label of the badge, e.g. "5 unread messages" */
   ariaLabel?: string;
   /** Icon displayed before the content */

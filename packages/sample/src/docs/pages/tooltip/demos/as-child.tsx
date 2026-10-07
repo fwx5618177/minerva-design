@@ -4,16 +4,20 @@ export default function AsChildDemo() {
   return (
     <div style={{ display: "flex", gap: 8 }}>
       <Tooltip content="Attached to the button itself" asChild>
-        <Button variant="secondary">No wrapper</Button>
+        <Button color="neutral" variant="outline">
+          No wrapper
+        </Button>
       </Tooltip>
       <Tooltip
         content="Frosted, follows the theme"
-        variant="auto"
+        variant="glass"
         placement="bottom-start"
         contentClassName="my-tooltip"
         asChild
       >
-        <Button variant="secondary">Auto variant</Button>
+        <Button color="neutral" variant="outline">
+          Glass variant
+        </Button>
       </Tooltip>
     </div>
   );

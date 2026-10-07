@@ -15,7 +15,7 @@ export default function BasicDemo() {
         name="framework"
         label="Framework"
         options={options}
-        textFieldProps={{ placeholder: "Type to search…" }}
+        inputProps={{ placeholder: "Type to search…" }}
       />
     </div>
   );

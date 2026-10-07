@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { TimePickerPanelProps, TimeUnit } from "./types";
 import useI18n from "../../hooks/useI18n";
 import styles from "./timePickerPanel.module.scss";
@@ -212,7 +212,7 @@ const TimePickerPanel = ({
                     aria-selected={selected}
                     aria-disabled={unit.disabled || undefined}
                     tabIndex={unit.value === tabStop ? 0 : -1}
-                    className={classNames(styles.timeUnit, {
+                    className={cn(styles.timeUnit, {
                       [styles.selected]: selected,
                       [styles.disabled]: unit.disabled,
                     })}

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Les options dont le libellé contient le texte saisi sont proposées ; textFieldProps est transmis au champ."
+      "description": "Les options dont le libellé contient le texte saisi sont proposées ; inputProps est transmis au champ."
     },
     "controlled": {
       "title": "Mode contrôlé",
@@ -22,10 +22,6 @@
       "title": "Options groupées",
       "description": "groupBy renvoie un nom de groupe par option ; les groupes s'affichent sous des titres, dans l'ordre d'apparition."
     },
-    "multiple": {
-      "title": "Sélection multiple",
-      "description": "Avec multiple, les options choisies deviennent des étiquettes supprimables et la liste reste ouverte entre les choix ; maxTagCount regroupe le reste en \"+N\". selectedOptions / onSelectedOptionsChange contrôlent la sélection."
-    },
     "filter-sort": {
       "title": "Filtre et tri personnalisés",
       "description": "filterOption remplace la correspondance « contient » par défaut et sortOption trie les résultats."
@@ -36,7 +32,7 @@
     },
     "appearance": {
       "title": "Position et couleurs de la liste",
-      "description": "Personnalisez la position, le décalage, l'animation et les couleurs de fond de la liste, du survol et de la mise en évidence. La liste est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre."
+      "description": "Personnalisez la position, le décalage et l'animation, et recolorez la liste, les options survolées et les options mises en avant avec les propriétés personnalisées CSS --autocomplete-dropdown-bg, --autocomplete-option-hover-bg et --autocomplete-option-highlight-bg définies via dropdownClassName. La liste est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre."
     },
     "search-box": {
       "title": "Champ de recherche",
@@ -47,9 +43,8 @@
     "title": "Clavier et accessibilité",
     "arrows": "Flèche bas / haut parcourent les options visibles (en boucle).",
     "enter": "Entrée sélectionne l'option active (les options désactivées sont ignorées) sans soumettre le formulaire englobant.",
-    "escape": "Échap ferme la liste.",
-    "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox.",
-    "backspace": "En mode multiple, Retour arrière dans un champ vide supprime la dernière étiquette."
+    "escape": "Échap ferme la liste et laisse le focus dans le champ ; dans une Modal ou un Popover, seule la liste se ferme.",
+    "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox."
   },
   "api": {
     "AutoCompleteProps": {
@@ -60,33 +55,25 @@
       "onChange": "Appelé quand le texte change (saisie ou sélection d'une option)",
       "options": "Options proposées",
       "defaultValue": "Valeur initiale (non contrôlé)",
-      "onSelect": "Appelé quand une option est choisie (souris ou clavier). En mode multiple, il est aussi appelé quand une option déjà choisie est choisie à nouveau (ce qui la désélectionne) ou retirée via son étiquette",
+      "onSelect": "Appelé quand une option est choisie (souris ou clavier)",
       "groupBy": "Renvoie le nom de groupe d'une option ; les options sont regroupées sous des titres",
-      "multiple": "Permet de sélectionner plusieurs options, affichées sous forme d'étiquettes supprimables ; la liste reste ouverte entre les choix",
-      "maxTagCount": "Nombre maximal d'étiquettes affichées en mode multiple ; le reste est résumé en « +N »",
       "renderOption": "Rendu personnalisé des options (quand mode vaut \"custom\")",
       "renderEmpty": "Contenu affiché quand aucune option ne correspond",
       "loading": "Affiche un indicateur de chargement dans la liste",
-      "textFieldProps": "Props transmises au TextField sous-jacent",
+      "inputProps": "Props transmises à l'Input sous-jacent (attributs natifs, aria-label, taille, préfixe / suffixe, clearable…)",
       "emptyProps": "Props transmises à l'état vide Empty par défaut",
-      "popperProps": "Props transmises au Popper de la liste",
+      "dropdownClassName": "Classe supplémentaire de la liste déroulante (élément rendu dans un portail). Elle peut définir les propriétés personnalisées CSS --autocomplete-dropdown-bg, --autocomplete-option-hover-bg et --autocomplete-option-highlight-bg pour recolorer la liste, les options survolées et les options mises en avant",
       "placement": "Côté souhaité de la liste ; elle est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre",
-      "offset": "Décalage de la liste (voir l'offset de Popper)",
-      "dropdownBgColor": "Couleur de fond de la liste",
-      "highlightBgColor": "Couleur de fond des options mises en avant",
-      "hoverBgColor": "Couleur de fond des options survolées ou actives au clavier",
+      "offset": "Décalage de la liste en pixels : en haut / en bas, y est l'écart avec le champ et x le décalage le long de celui-ci ; à gauche / à droite, x est l'écart",
       "animation": "Anime la liste à l'ouverture",
       "filterOption": "Filtre personnalisé ; par défaut, les options dont le libellé contient la saisie (sans casse) sont affichées",
       "sortOption": "Fonction de comparaison pour trier les options filtrées",
       "onOptionClick": "Appelé quand une option est cliquée à la souris",
       "onDropdownVisibleChange": "Appelé quand la liste s'ouvre ou se ferme (pas au montage)",
       "ref": "Ref vers l'élément <input> interne",
-      "selectedOptions": "Options sélectionnées en mode multiple (contrôlé ; à associer à onSelectedOptionsChange)",
-      "defaultSelectedOptions": "Options initialement sélectionnées en mode multiple (non contrôlé)",
-      "onSelectedOptionsChange": "Appelé avec la nouvelle sélection en mode multiple",
       "onSubmit": "Appelé avec le texte nettoyé quand Entrée est pressée sans option active (ex. recherche)",
       "autoHighlight": "Active la première option disponible à l’ouverture ou au changement des options",
-      "fillOnSelect": "Écrit le libellé de l’option choisie dans le champ (mode simple)",
+      "fillOnSelect": "Écrit le libellé de l'option choisie dans le champ",
       "className": "Classe supplémentaire de l’élément racine",
       "groupMode": "\"first\" regroupe à la première apparition, \"adjacent\" regroupe les options consécutives ; le groupe \"\" n’a pas de titre"
     },

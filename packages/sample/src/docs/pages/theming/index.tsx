@@ -4,10 +4,11 @@ import {
   Alert,
   Button,
   Checkbox,
-  Space,
+  HStack,
+  Input,
   Switch,
   Tag,
-  TextField,
+  VStack,
 } from "@minerva/lib-core";
 import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
@@ -183,7 +184,8 @@ const ThemeSwitcherShowcase: React.FC = () => {
             <Button
               key={m}
               size="small"
-              variant={m === mode ? "primary" : "secondary"}
+              color={m === mode ? "primary" : "neutral"}
+              variant={m === mode ? "solid" : "outline"}
               aria-pressed={m === mode}
               onClick={() => setMode(m)}
             >
@@ -196,32 +198,45 @@ const ThemeSwitcherShowcase: React.FC = () => {
         </p>
       </div>
       <div className={styles.demoPreview}>
-        <Space direction="vertical" size="medium" style={{ width: "100%" }}>
-          <Space wrap>
-            <Button variant="primary">Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="success">Success</Button>
-            <Button variant="error">Error</Button>
-            <Tag variant="primary">Tag</Tag>
-            <Tag variant="success">Success</Tag>
-          </Space>
-          <Space wrap align="center">
+        <VStack gap={4}>
+          <HStack gap={4} wrap>
+            <Button color="primary">Primary</Button>
+            <Button color="neutral" variant="outline">
+              Secondary
+            </Button>
+            <Button color="success">Success</Button>
+            <Button color="danger">Danger</Button>
+            <Tag color="primary">Tag</Tag>
+            <Tag color="success">Success</Tag>
+          </HStack>
+          <HStack gap={4} wrap>
             <Switch label="Switch" defaultChecked />
             <Checkbox label="Checkbox" defaultChecked />
-            <TextField
-              name="theming-showcase"
-              label="Text field"
-              placeholder="Type here"
-            />
-          </Space>
-          <Alert variant="info" title="Alert">
+            <div style={{ width: 220 }}>
+              <Input
+                name="theming-showcase"
+                aria-label="Text field"
+                placeholder="Type here"
+              />
+            </div>
+          </HStack>
+          <Alert color="info" title="Alert">
             {t("docs.theming.live.alert")}
           </Alert>
-        </Space>
+        </VStack>
       </div>
     </div>
   );
 };
+
+const colorSchemeCode = `import type { ColorScheme } from "@minerva/lib-core";
+// "primary" | "neutral" | "success" | "warning" | "danger" | "info"
+
+<Button color="danger" variant="outline">Delete</Button>
+<Badge color="success" variant="subtle" content="Live" />
+<Alert color="warning" variant="solid" title="Quota almost reached" />
+<Tooltip color="info" content="Synced"><button>Status</button></Tooltip>
+toast.success("Saved"); // toast({ color: "success", title: "Saved" })`;
 
 const ThemingDoc: React.FC = () => {
   const { t } = useTranslation();
@@ -294,6 +309,13 @@ const ThemingDoc: React.FC = () => {
         <h2 id="custom-theme">{t("docs.theming.custom.title")}</h2>
         <p className={styles.prose}>{t("docs.theming.custom.text")}</p>
         <CodeBlock code={customCode} language="tsx" />
+      </section>
+
+      <section className={styles.section} aria-labelledby="color-variant">
+        <h2 id="color-variant">{t("docs.theming.colorProps.title")}</h2>
+        <p className={styles.prose}>{t("docs.theming.colorProps.color")}</p>
+        <p className={styles.prose}>{t("docs.theming.colorProps.variant")}</p>
+        <CodeBlock code={colorSchemeCode} language="tsx" />
       </section>
 
       <section className={styles.section} aria-labelledby="css-overrides">

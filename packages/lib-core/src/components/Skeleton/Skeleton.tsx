@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import type { SkeletonProps } from "./types";
 import styles from "./skeleton.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -66,7 +66,7 @@ const Skeleton = ({
         ref={ref}
         aria-hidden="true"
         {...rest}
-        className={classNames(
+        className={cn(
           styles.skeleton,
           styles.decorative,
           styles[variant],
@@ -93,7 +93,7 @@ const Skeleton = ({
       .map((_, index) => (
         <div
           key={index}
-          className={classNames(
+          className={cn(
             styles.skeleton,
             styles[variant],
             styles[`animation-${animation}`],
@@ -113,7 +113,7 @@ const Skeleton = ({
 
     return (
       <div
-        className={classNames(
+        className={cn(
           styles.skeleton,
           styles.avatar,
           styles[`animation-${animation}`],
@@ -144,10 +144,7 @@ const Skeleton = ({
         {paragraphLines.map((line, index) => (
           <div
             key={`p-${index}`}
-            className={classNames(
-              styles.skeleton,
-              styles[`animation-${animation}`],
-            )}
+            className={cn(styles.skeleton, styles[`animation-${animation}`])}
             style={{
               width: line.width,
               height: line.height,
@@ -163,7 +160,7 @@ const Skeleton = ({
 
     return (
       <div
-        className={classNames(
+        className={cn(
           styles.skeleton,
           styles.title,
           styles[`animation-${animation}`],
@@ -175,7 +172,7 @@ const Skeleton = ({
   const renderContent = () => {
     if (variant === "card") {
       return (
-        <div className={classNames(styles.card, { [styles.active]: active })}>
+        <div className={cn(styles.card, { [styles.active]: active })}>
           {renderAvatar()}
           <div className={styles.cardContent}>
             {renderTitle()}
@@ -203,11 +200,9 @@ const Skeleton = ({
       role="status"
       aria-busy="true"
       aria-label={ariaLabel ?? t("common.loading")}
-      className={classNames(
+      className={cn(
         styles.skeletonRoot,
-        {
-          [styles.withAvatar]: avatar,
-        },
+        avatar && styles.withAvatar,
         className,
       )}
       {...rest}

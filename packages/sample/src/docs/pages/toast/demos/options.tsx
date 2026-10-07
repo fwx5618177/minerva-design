@@ -4,10 +4,11 @@ export default function OptionsDemo() {
   return (
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       <Button
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         onClick={() =>
           toast({
-            status: "success",
+            color: "success",
             title: "Book published",
             description: "Readers can now find it in the catalog.",
             duration: 8000,
@@ -17,12 +18,13 @@ export default function OptionsDemo() {
         With description
       </Button>
       <Button
-        variant="secondary"
+        color="neutral"
+        variant="outline"
         onClick={() => toast.warning("Stays until closed", { duration: 0 })}
       >
         Persistent
       </Button>
-      <Button variant="secondary" onClick={() => toast.dismiss()}>
+      <Button color="neutral" variant="outline" onClick={() => toast.dismiss()}>
         Dismiss all
       </Button>
     </div>

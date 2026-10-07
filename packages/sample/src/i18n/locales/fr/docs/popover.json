@@ -1,6 +1,6 @@
 {
   "title": "Popover",
-  "description": "Un panneau flottant ouvert au clic pour du contenu interactif comme des filtres ou un menu de compte. Contrairement à Tooltip il peut contenir des éléments focalisables ; contrairement au Popper de bas niveau il gère lui-même le déclencheur, le focus, Échap et les clics extérieurs.",
+  "description": "Un panneau flottant ouvert au clic et ancré à son déclencheur, pour du contenu interactif comme des filtres ou un menu de compte. Contrairement à Tooltip, il contient des éléments focalisables et gère lui-même le focus, Échap et les clics extérieurs ; dans une Modal, il se ferme en premier.",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
@@ -20,7 +20,7 @@
       "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
       "defaultOpen": "État d'ouverture initial en mode non contrôlé",
       "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, Échap, clic extérieur, PopoverClose)",
-      "modal": "Mode modal : piège le focus dans le panneau et bloque l'interaction extérieure",
+      "modal": "Mode modal : piège le focus, bloque le défilement de la page, masque le reste de la page aux technologies d'assistance et bloque les interactions de pointeur extérieures (un clic extérieur le ferme toujours)",
       "children": "PopoverTrigger / PopoverAnchor et PopoverContent"
     },
     "PopoverContentProps": {
@@ -29,7 +29,17 @@
       "align": "Alignement le long du déclencheur",
       "sideOffset": "Écart avec le déclencheur en pixels",
       "arrow": "Affiche une flèche pointant vers le déclencheur",
-      "portal": "Rend le panneau dans un portail sur document.body"
+      "portal": "Rend le panneau dans un portail (le conteneur à thème d'un ConfigProvider imbriqué, sinon document.body)",
+      "alignOffset": "Décalage le long du déclencheur en pixels (positif = vers la fin)",
+      "collisionPadding": "Distance minimale aux bords de la fenêtre en pixels ; actuellement fixée à 8px, les autres valeurs sont réservées",
+      "matchAnchorWidth": "Dimensionne le panneau d'après la largeur du déclencheur / de l'ancre : \"min\" au moins aussi large, \"exact\" exactement aussi large",
+      "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+      "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+      "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+      "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+      "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+      "onFocusOutside": "Focus déplacé à l'extérieur ; event.preventDefault() le garde ouvert",
+      "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
     },
     "PopoverTriggerProps": {
       "asChild": "Fusionne le comportement sur l'unique élément enfant au lieu de rendre son propre élément"

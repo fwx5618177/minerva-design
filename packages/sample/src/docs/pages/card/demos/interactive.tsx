@@ -6,7 +6,7 @@ export default function InteractiveDemo() {
       <Card
         as="a"
         href="#books/1"
-        variant="outlined"
+        variant="outline"
         padding="small"
         interactive
       >

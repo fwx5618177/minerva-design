@@ -169,7 +169,8 @@ export const MonacoCodeEditor = ({
                 {unavailableText ?? t("monacoCodeEditor.unavailable")}
               </div>
               <Button
-                variant="secondary"
+                color="neutral"
+                variant="outline"
                 size="small"
                 ariaLabel={retryLabel ?? t("monacoCodeEditor.retryLabel")}
                 onClick={() => setAttempt((previous) => previous + 1)}

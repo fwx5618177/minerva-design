@@ -159,7 +159,10 @@ it.each([0.5, "0.5"])(
   "resolves fractional gap %s to a token declared by the compiled scale",
   (gap) => {
     const tokens = compile(
-      join(import.meta.dirname, "../../styles/scales.scss"),
+      join(
+        import.meta.dirname,
+        "../../../../core/src/theme/tokens/scales.scss",
+      ),
     ).css;
     const { container } = render(
       <SplitLayout aside="Properties" gap={gap}>

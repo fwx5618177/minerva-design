@@ -1,29 +1,50 @@
 {
   "title": "Menu",
-  "description": "An action menu opened from a button (Menu) or with a right click (ContextMenu): icons, shortcuts, separators, groups, submenus, typeahead and full keyboard support. To pick a value from a list, use Dropdown.",
+  "description": "An action menu opened from a button (Menu) or with a right click (ContextMenu): icons, shortcuts, separators, groups, checkbox items, radio groups, submenus, typeahead and full keyboard support (Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; arrows wrap around and skip disabled items, Home / End, Tab closes it, Escape returns focus to the trigger). To pick a value from a list, use Select.",
   "demos": {
     "basic": {
       "title": "Basic usage",
       "description": "Items with icons and shortcut hints. onSelect receives the original item object, then the menu closes and focus returns to the trigger."
     },
+    "triggers": {
+      "title": "Triggers",
+      "description": "Any button can be the trigger, such as a Button or an IconButton; label icon-only triggers. Pass ariaLabel to name the menu panel."
+    },
     "groups": {
       "title": "Groups, submenus and size",
       "description": "Group entries with a label, separate them, and nest submenus with children. size=\"small\" makes items denser; side and align position the panel."
     },
+    "submenus": {
+      "title": "Submenus",
+      "description": "Nest entries with children. ArrowRight, Enter or Space open a submenu on its first item and ArrowLeft or Escape close it only; with the pointer, submenus open on hover and stay open while the pointer moves diagonally towards them. With dir=\"rtl\" they open to the left and the arrow keys are swapped."
+    },
+    "checkbox-radio": {
+      "title": "Checkbox and radio items",
+      "description": "type: \"checkbox\" entries toggle (checked / defaultChecked + onCheckedChange) and type: \"radio-group\" entries hold mutually exclusive options (value / defaultValue + onValueChange). They keep the menu open so several options can be changed; set closeOnSelect on the entry to close it."
+    },
+    "placement": {
+      "title": "Placement",
+      "description": "side is the preferred side of the trigger and align the alignment against it; near the viewport edges the menu flips and shifts to stay visible."
+    },
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disable individual items (they are skipped by the arrow keys) or the whole menu."
+    },
     "context-menu": {
       "title": "Context menu",
-      "description": "ContextMenu opens the same entries at the pointer on right click, long press or Shift+F10."
+      "description": "ContextMenu opens the same entries at the pointer on right click or long press (a new right click moves it), and at the area with Shift+F10 or the ContextMenu key. Focus moves to the first item and returns to the area on close."
     },
     "controlled": {
       "title": "Controlled",
-      "description": "Control the open state with open and onOpenChange."
+      "description": "Control the open state with open and onOpenChange; defaultOpen sets the initial state when it is uncontrolled."
     }
   },
   "api": {
     "MenuProps": {
-      "children": "Trigger element (button); click, Enter, Space and ArrowDown open the menu",
+      "children": "Trigger element (button); click, Enter, Space and ArrowDown open the menu (ArrowUp focuses the last item)",
       "items": "Entries of the menu",
-      "onSelect": "Called with the original item object when an action is selected; the menu closes afterwards",
+      "onSelect": "Called with the original item object when an action is selected",
+      "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
       "size": "Density of the items",
       "align": "Alignment of the menu against the trigger",
       "side": "Preferred side; the menu flips when there is not enough room",
@@ -31,18 +52,23 @@
       "defaultOpen": "Initial open state (uncontrolled)",
       "onOpenChange": "Called when the menu opens or closes",
       "disabled": "Disables the trigger",
-      "modal": "Modal menus block interaction outside and trap focus while open",
+      "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+      "loop": "Arrow keys wrap around from the last item to the first (and back)",
+      "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
       "className": "Additional class name of the menu panel",
-      "ariaLabel": "Accessible label of the menu panel"
+      "ariaLabel": "Accessible label of the menu panel (defaults to the trigger's label)"
     },
     "ContextMenuProps": {
-      "children": "Area that opens the menu on right click / long press / Shift+F10",
+      "children": "Area that opens the menu on right click / long press / Shift+F10 / ContextMenu key",
       "items": "Entries of the menu",
-      "onSelect": "Called with the original item object when an action is selected; the menu closes afterwards",
+      "onSelect": "Called with the original item object when an action is selected",
+      "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
       "size": "Density of the items",
       "onOpenChange": "Called when the menu opens or closes",
       "disabled": "Disables the context menu (the native one shows instead)",
-      "modal": "Modal menus block interaction outside and trap focus while open",
+      "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+      "loop": "Arrow keys wrap around from the last item to the first (and back)",
+      "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
       "className": "Additional class name of the menu panel",
       "ariaLabel": "Accessible label of the menu panel"
     },
@@ -53,7 +79,37 @@
       "icon": "Icon displayed before the label",
       "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
       "disabled": "Disables the item",
+      "closeOnSelect": "Whether selecting this item closes the menu (overrides the menu's closeOnSelect)",
       "children": "Entries of a submenu opened by this item"
+    },
+    "MenuCheckboxEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the item",
+      "label": "Content of the item",
+      "textValue": "Text used for typeahead when label is not plain text",
+      "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+      "disabled": "Disables the item",
+      "checked": "Whether the item is checked (controlled; pair with onCheckedChange)",
+      "defaultChecked": "Initial checked state (uncontrolled)",
+      "onCheckedChange": "Called with the next checked state when the item is toggled",
+      "closeOnSelect": "Whether toggling the item closes the menu"
+    },
+    "MenuRadioGroupEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the group",
+      "label": "Label displayed above the group (also names the group)",
+      "items": "Options of the group",
+      "value": "Selected value (controlled; pair with onValueChange)",
+      "defaultValue": "Initially selected value (uncontrolled)",
+      "onValueChange": "Called with the value of the option that was chosen",
+      "closeOnSelect": "Whether choosing an option closes the menu"
+    },
+    "MenuRadioItem": {
+      "value": "Value of the option (unique within the group)",
+      "label": "Content of the option",
+      "textValue": "Text used for typeahead when label is not plain text",
+      "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+      "disabled": "Disables the option"
     },
     "MenuSeparatorEntry": {
       "type": "Entry type",

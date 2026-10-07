@@ -1,7 +1,7 @@
 import { useCallback, useContext, useMemo } from "react";
 import { ConfigContext, ConfigProvider } from "./ConfigProvider";
 import type { ThemeContextValue, ThemeProviderProps } from "./types";
-import type { ThemeMode } from "../theme-utils";
+import type { ThemeMode } from "@minerva/core";
 import { ThemeScopeContext } from "../internal/themeScope";
 
 /**

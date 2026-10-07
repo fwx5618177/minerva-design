@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+import { cn } from "../../utils/cn";
 import styles from "./avatarGroup.module.scss";
 import type { AvatarGroupProps } from "./types";
 import useI18n from "../../hooks/useI18n";
@@ -29,7 +29,7 @@ const AvatarGroup = ({
     <div
       ref={ref}
       role="group"
-      className={classNames(styles.avatarGroup, className)}
+      className={cn(styles.avatarGroup, className)}
       aria-label={
         ariaLabel ??
         (extra > 0

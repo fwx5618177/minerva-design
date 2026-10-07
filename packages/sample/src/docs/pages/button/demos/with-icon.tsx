@@ -1,16 +1,21 @@
 import { Button } from "@minerva/lib-core";
-import { IoAdd, IoSearch, IoTrash } from "react-icons/io5";
+import { IoAdd, IoArrowBack, IoRefresh, IoTrash } from "react-icons/io5";
 
 export default function WithIconDemo() {
   return (
     <>
-      <Button variant="primary">
-        <IoSearch aria-hidden /> Search
+      <Button startIcon={<IoAdd aria-hidden />}>Add</Button>
+      <Button color="danger" startIcon={<IoRefresh aria-hidden />}>
+        Retry
       </Button>
-      <Button variant="success">
-        <IoAdd aria-hidden /> Add
+      <Button
+        color="neutral"
+        variant="ghost"
+        startIcon={<IoArrowBack aria-hidden />}
+      >
+        Back
       </Button>
-      <Button variant="error" ariaLabel="Delete item">
+      <Button color="danger" variant="outline" ariaLabel="Delete item">
         <IoTrash aria-hidden />
       </Button>
     </>

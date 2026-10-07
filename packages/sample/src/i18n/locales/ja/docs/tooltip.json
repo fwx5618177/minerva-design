@@ -10,9 +10,13 @@
       "title": "配置",
       "description": "トリガーの周囲 12 か所の配置。"
     },
+    "colors": {
+      "title": "カラー",
+      "description": "color でセマンティックカラーを選びます：neutral（デフォルト）、info、success、warning、danger。"
+    },
     "variants": {
       "title": "バリアント",
-      "description": "ダーク（デフォルト、テーマとコントラストをなす）、ライト、セマンティックカラー。auto はすりガラス風の面でテーマに追従し、fixedDark / fixedLight はテーマに関係なく色を保ちます。"
+      "description": "variant で見た目のスタイルを選びます：solid（デフォルト。塗りつぶし。neutral はテーマと対照的な反転色の面）、subtle（枠線付きの淡い色合いの面）、glass（テーマに追従するすりガラス風の面。色は枠線にのみ付きます）。"
     },
     "shapes": {
       "title": "形状",
@@ -23,8 +27,8 @@
       "description": "ツールチップの表示・非表示のアニメーションを選択します。"
     },
     "custom-colors": {
-      "title": "色、矢印、オフセット",
-      "description": "bgColor は単色と CSS グラデーションに対応します。arrow はトリガーを指す矢印を追加し、offset はトリガーとの間隔（既定 8px）を設定します。"
+      "title": "カスタムカラー、矢印、オフセット",
+      "description": "contentClassName を使ってツールチップに --tooltip-bg（単色と CSS グラデーションに対応）と --tooltip-color のカスタムプロパティを設定します。arrow はトリガーを指す矢印を追加し、offset はトリガーとの間隔（既定 8px）を設定します。"
     },
     "delays": {
       "title": "遅延と無効化",
@@ -58,15 +62,14 @@
       "open": "ツールチップを表示するかどうか（制御モード。onOpenChange と組み合わせて使用）",
       "defaultOpen": "初期の表示状態（非制御モード）",
       "placement": "トリガーに対する配置",
-      "variant": "カラーバリアント",
+      "color": "ツールチップのセマンティックカラー。glass バリアントでは色は枠線にのみ付きます（neutral は通常のすりガラス風の面のまま）",
+      "variant": "見た目のスタイル：solid（塗りつぶし。neutral は反転したコントラストの面）、subtle（枠線付きの淡い色合いの面）、glass（すりガラス風の浮き上がった面）",
       "shape": "ツールチップの形状",
       "animation": "表示・非表示のアニメーション",
       "enterDelay": "ホバー後に表示するまでの遅延（ミリ秒）",
       "leaveDelay": "マウスが離れてから非表示にするまでの遅延（ミリ秒）",
       "offset": "[x, y] 形式のオフセット（ピクセル）。top/bottom 配置では y がトリガーとの間隔、x がそれに沿ったずれ。left/right 配置では x が間隔、y がずれです。未指定時はトリガーから 8px 離れます",
       "followCursor": "ツールチップをマウスカーソルに追従させる",
-      "bgColor": "カスタム背景色（CSS グラデーション対応）",
-      "textColor": "カスタム文字色",
       "zIndex": "ツールチップの z-index",
       "arrow": "トリガーを指す矢印を表示する",
       "disabled": "ツールチップを無効にする",
@@ -77,7 +80,7 @@
       "ref": "open / close / toggle を持つ命令的ハンドル",
       "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）",
       "asChild": "ホバー / フォーカスのハンドラー、ref、className を <div> で包む代わりに単一の子要素へ直接付けます（flex や grid のレイアウトを維持）。子要素は ref を受け取れる必要があります",
-      "contentClassName": "ツールチップ（フローティング）要素の追加クラス名",
+      "contentClassName": "ツールチップ（フローティング）要素の追加クラス名。色を変更するには、この要素に --tooltip-bg（背景。グラデーション可）と --tooltip-color（文字）のカスタムプロパティを設定します",
       "contentRef": "ツールチップ（フローティング）要素への ref。表示中に設定されます"
     },
     "TooltipRef": {

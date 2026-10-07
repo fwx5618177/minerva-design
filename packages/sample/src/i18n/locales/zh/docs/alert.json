@@ -2,17 +2,17 @@
   "title": "Alert 警告提示",
   "description": "在页面中展示重要信息，例如系统通知或操作结果。",
   "demos": {
+    "colors": {
+      "title": "颜色",
+      "description": "color 设置状态：info（默认）、success、warning 和 danger，同时决定图标与 role。"
+    },
     "variants": {
       "title": "变体",
-      "description": "信息（默认）、成功、警告和错误。"
+      "description": "variant 设置视觉样式：subtle（默认，浅色背景）、outline（彩色边框）或 solid（以颜色填充）。"
     },
     "with-title": {
       "title": "带标题",
       "description": "在内容上方添加标题。showIcon={false} 可隐藏图标。"
-    },
-    "types": {
-      "title": "样式",
-      "description": "默认、描边和填充三种样式。"
     },
     "sizes": {
       "title": "尺寸",
@@ -36,7 +36,7 @@
     },
     "appearance": {
       "title": "外观",
-      "description": "自定义图标、阴影、描边、填充和圆角等选项。"
+      "description": "自定义图标、阴影、outline 与 solid 变体以及圆角等选项。"
     },
     "animations": {
       "title": "动画",
@@ -47,11 +47,11 @@
     "AlertProps": {
       "title": "警告提示的标题",
       "children": "警告提示的内容",
-      "variant": "语义类型，决定颜色与默认图标（danger 是 error 的别名）",
+      "color": "语义（状态）颜色，同时决定默认图标和 role",
+      "variant": "视觉样式：subtle（浅色背景）、outline（透明背景加彩色边框）或 solid（以颜色填充）",
       "size": "警告提示的尺寸",
-      "type": "视觉样式",
-      "showIcon": "显示变体图标",
-      "icon": "自定义图标，替换变体图标",
+      "showIcon": "显示该颜色对应的状态图标",
+      "icon": "自定义图标，替换状态图标",
       "closable": "显示关闭按钮",
       "closeIcon": "自定义关闭图标",
       "onClose": "点击关闭按钮时调用",
@@ -60,8 +60,6 @@
       "className": "额外的类名",
       "style": "内联样式",
       "action": "渲染在右侧的操作区域，例如按钮",
-      "outlined": "显示边框",
-      "filled": "使用变体颜色填充背景",
       "banner": "横幅模式，适合页面顶部的全局通知",
       "elevation": "添加阴影",
       "rounded": "使用圆角",
@@ -74,8 +72,8 @@
       "closeLabel": "关闭按钮的无障碍标签",
       "expandLabel": "内容收起时展开按钮的无障碍标签",
       "collapseLabel": "内容展开时收起按钮的无障碍标签",
-      "iconLabel": "类型图标的无障碍标签",
-      "role": "提示的 ARIA 角色。错误与警告会打断播报（\"alert\"），信息与成功为礼貌播报（\"status\"）"
+      "iconLabel": "状态图标的无障碍标签",
+      "role": "提示的 ARIA 角色。危险与警告会打断播报（\"alert\"），信息与成功为礼貌播报（\"status\"）"
     }
   }
 }

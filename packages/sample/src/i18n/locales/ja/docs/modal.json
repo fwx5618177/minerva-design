@@ -34,6 +34,7 @@
       "size": "幅のプリセット",
       "hideCloseButton": "閉じる（×）ボタンを非表示にします",
       "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+      "role": "ダイアログパネルの ARIA ロール。ユーザーに割り込む確認には \"alertdialog\" を使います",
       "className": "パネルの追加クラス名",
       "ref": "ダイアログ要素への ref",
       "children": "本文：通常は ModalBody + ModalFooter、またはそれらを包む <form>"
@@ -42,7 +43,7 @@
       "open": "制御された開閉状態。undefined のままにすると非制御になります",
       "defaultOpen": "非制御時の初期の開閉状態",
       "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、閉じるボタン、Escape、背景クリック）",
-      "modal": "モーダルモード：フォーカスを閉じ込め、外部の操作を遮断し、支援技術からページを隠します",
+      "modal": "モーダルモード：背景を表示し、フォーカスを閉じ込め、ページのスクロールをロックし、外側の操作を無効にし、ページを支援技術から隠します",
       "children": "トリガーとコンテンツ"
     },
     "ModalTriggerProps": {
@@ -53,8 +54,15 @@
       "size": "幅のプリセット",
       "hideCloseButton": "閉じる（×）ボタンを非表示にします",
       "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
-      "description": "タイトルの下に表示される説明。省略すると非表示の空の説明が描画されます",
-      "overlayClassName": "オーバーレイ（背景）のクラス名"
+      "description": "タイトルの下に表示される説明で、アクセシブルな説明として関連付けられます（ない場合 aria-describedby は付きません）",
+      "overlayClassName": "オーバーレイ（背景）のクラス名",
+      "role": "パネルの ARIA ロール。ユーザーを中断する確認には \"alertdialog\" を使います",
+      "forceMount": "閉じている間もマウントしたままにします（data-state=\"closed\"）。アニメーションライブラリ向け",
+      "onOpenAutoFocus": "開くときフォーカスがパネルに移る前に呼ばれます。event.preventDefault() でフォーカスをそのままにします",
+      "onCloseAutoFocus": "閉じるときフォーカスが開いた要素に戻る前に呼ばれます。event.preventDefault() でスキップします",
+      "onEscapeKeyDown": "最前面のレイヤーで Escape が押されたとき。event.preventDefault() で開いたままにします",
+      "onPointerDownOutside": "外側でポインターが押されたとき。event.preventDefault() で開いたままにします",
+      "onInteractOutside": "外側でのポインター押下またはフォーカス移動。event.preventDefault() で開いたままにします"
     }
   }
 }

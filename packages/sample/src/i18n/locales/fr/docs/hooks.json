@@ -10,17 +10,12 @@
     "useLocale": "Conserve la locale dans l'état et, en dehors d'un ConfigProvider, change la langue des textes intégrés de lib-core (en, zh, ja ou fr). Renvoie la locale et son setter. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère la langue globale.",
     "useI18n": "Renvoie t, la langue dans laquelle il traduit et l'instance i18next utilisée par lib-core. t suit la locale du ConfigProvider imbriqué le plus proche qui en définit une, sinon la langue globale de lib-core. C'est une instance privée : la configuration i18next de votre application n'est jamais affectée.",
     "useDisclosure": "État ouvert / fermé des overlays (Modal, Drawer, Popover...), contrôlé (isOpen + onChange) ou non contrôlé (defaultIsOpen). Renvoie isOpen et des callbacks stables onOpen, onClose et onToggle.",
-    "useDialogFocusReturn": "Retour du focus pour les dialogues ouverts depuis un état, sans Trigger Radix. Mémorise l'élément qui avait le focus avant l'ouverture et le lui rend après la fermeture. Passez open, contentRef et onCloseAutoFocus au dialogue.",
     "cn": "Concatène des noms de classes en ignorant les valeurs falsy (false, null, undefined, 0, chaînes vides). Une petite alternative sans dépendance à classnames pour les classes conditionnelles.",
     "global": "useAutoTheme et useLocale ne modifient l'état global (variables CSS sur <html>, langue de lib-core) que lorsqu'aucun ConfigProvider ne se trouve au-dessus d'eux. Ce site en a un à la racine : les démos ci-dessous passent l'état du hook à un ConfigProvider imbriqué, qui ne l'applique qu'à l'aperçu."
   },
   "standalone": {
     "title": "Utiliser les hooks sans ConfigProvider",
     "text": "Si vous n'avez pas besoin de useConfig(), vous pouvez appeler useAutoTheme et useLocale directement, à la place d'un provider. Dans un provider, ils ne font que conserver l'état : passez-le à un ConfigProvider imbriqué pour l'appliquer à un sous-arbre."
-  },
-  "focusReturn": {
-    "title": "Rendre le focus après un dialogue",
-    "text": "Les dialogues Radix rendent le focus à leur Trigger à la fermeture. Un dialogue ouvert depuis un état (un élément de menu, un raccourci clavier, une ligne de tableau) n'a pas de Trigger : le focus retomberait sur <body>. useDialogFocusReturn mémorise l'élément qui avait le focus avant l'ouverture et le restaure à la fermeture :"
   },
   "demos": {
     "use-auto-theme": {

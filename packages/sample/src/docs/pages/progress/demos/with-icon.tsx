@@ -4,7 +4,7 @@ import { FiUploadCloud } from "react-icons/fi";
 export default function WithIconDemo() {
   return (
     <ProgressIndicator
-      type="bar"
+      variant="bar"
       icon={<FiUploadCloud />}
       ariaLabel="Uploading files"
     />

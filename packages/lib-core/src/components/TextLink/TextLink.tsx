@@ -1,4 +1,4 @@
-import { Slot, Slottable } from "@radix-ui/react-slot";
+import { Slot, Slottable } from "../../internal/Slot";
 import { LuChevronRight } from "react-icons/lu";
 import { cn } from "../../utils/cn";
 import type { TextLinkProps } from "./types";

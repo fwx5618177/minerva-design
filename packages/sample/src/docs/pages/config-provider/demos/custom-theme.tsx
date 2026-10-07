@@ -1,12 +1,13 @@
 import {
   Button,
   ConfigProvider,
+  HStack,
   Select,
   SelectItem,
-  Space,
   Switch,
   themes,
   type ComponentTheme,
+  VStack,
 } from "@minerva/lib-core";
 
 // A custom theme: start from a built-in one and override tokens.
@@ -37,12 +38,12 @@ export default function CustomThemeDemo() {
           color: "var(--text-color)",
         }}
       >
-        <Space direction="vertical" size="medium">
+        <VStack gap={4} align="start">
           <strong>Sepia theme</strong>
           <span>Only this container uses the custom theme.</span>
-          <Space wrap align="center">
-            <Button variant="primary">Primary</Button>
-            <Button variant="primary" disabled>
+          <HStack gap={4} wrap>
+            <Button color="primary">Primary</Button>
+            <Button color="primary" disabled>
               Disabled
             </Button>
             <Switch label="Reading mode" defaultChecked />
@@ -51,8 +52,8 @@ export default function CustomThemeDemo() {
               <SelectItem value="ivory">Ivory</SelectItem>
               <SelectItem value="kraft">Kraft</SelectItem>
             </Select>
-          </Space>
-        </Space>
+          </HStack>
+        </VStack>
       </div>
     </ConfigProvider>
   );

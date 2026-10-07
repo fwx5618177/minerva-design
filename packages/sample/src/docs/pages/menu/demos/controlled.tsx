@@ -13,7 +13,9 @@ export default function ControlledDemo() {
           { key: "b", label: "Move…" },
         ]}
       >
-        <Button variant="secondary">Menu</Button>
+        <Button color="neutral" variant="outline">
+          Menu
+        </Button>
       </Menu>
       <span>{open ? "Open" : "Closed"}</span>
     </div>

@@ -2,17 +2,17 @@
   "title": "Alert",
   "description": "Affiche un message important dans la page, comme une annonce système ou le résultat d’une action.",
   "demos": {
+    "colors": {
+      "title": "Couleurs",
+      "description": "color définit le statut : info (par défaut), success, warning et danger. Elle choisit aussi l’icône et le rôle."
+    },
     "variants": {
       "title": "Variantes",
-      "description": "Information (par défaut), succès, avertissement et erreur."
+      "description": "variant définit le style visuel : subtle (par défaut, fond teinté), outline (bordure colorée) ou solid (rempli avec la couleur)."
     },
     "with-title": {
       "title": "Avec titre",
       "description": "Ajoutez un titre au-dessus du contenu. showIcon={false} masque l’icône."
-    },
-    "types": {
-      "title": "Styles",
-      "description": "Styles par défaut, contour et plein."
     },
     "sizes": {
       "title": "Tailles",
@@ -36,7 +36,7 @@
     },
     "appearance": {
       "title": "Apparence",
-      "description": "Icône personnalisée, élévation, contour, fond plein et rayon des coins."
+      "description": "Icône personnalisée, élévation, variantes outline et solid et rayon des coins."
     },
     "animations": {
       "title": "Animations",
@@ -47,11 +47,11 @@
     "AlertProps": {
       "title": "Titre de l’alerte",
       "children": "Contenu de l’alerte",
-      "variant": "Variante sémantique qui définit la couleur et l’icône par défaut (danger est un alias de error)",
+      "color": "Couleur sémantique (statut), qui définit aussi l’icône par défaut et le rôle",
+      "variant": "Style visuel : subtle (fond teinté), outline (fond transparent et bordure colorée) ou solid (rempli avec la couleur)",
       "size": "Taille de l’alerte",
-      "type": "Style visuel",
-      "showIcon": "Affiche l’icône de la variante",
-      "icon": "Icône personnalisée, remplaçant celle de la variante",
+      "showIcon": "Affiche l’icône de statut de la couleur",
+      "icon": "Icône personnalisée, remplaçant l’icône de statut",
       "closable": "Affiche un bouton de fermeture",
       "closeIcon": "Icône de fermeture personnalisée",
       "onClose": "Appelé lors du clic sur le bouton de fermeture",
@@ -60,8 +60,6 @@
       "className": "Classe CSS supplémentaire",
       "style": "Styles en ligne",
       "action": "Zone d’action affichée à droite, par exemple des boutons",
-      "outlined": "Affiche une bordure",
-      "filled": "Remplit le fond avec la couleur de la variante",
       "banner": "Mode bannière, adapté aux annonces en haut de page",
       "elevation": "Ajoute une ombre portée",
       "rounded": "Arrondit les coins",
@@ -74,8 +72,8 @@
       "closeLabel": "Libellé accessible du bouton de fermeture",
       "expandLabel": "Libellé accessible du bouton de bascule lorsque le contenu est replié",
       "collapseLabel": "Libellé accessible du bouton de bascule lorsque le contenu est déplié",
-      "iconLabel": "Libellé accessible de l'icône de type",
-      "role": "Rôle ARIA de l’alerte. Erreurs et avertissements interrompent (\"alert\"), info et succès sont polis (\"status\")"
+      "iconLabel": "Libellé accessible de l’icône de statut",
+      "role": "Rôle ARIA de l’alerte. Danger et avertissements interrompent (\"alert\"), info et succès sont polis (\"status\")"
     }
   }
 }

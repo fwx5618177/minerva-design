@@ -1,5 +1,6 @@
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { join } from "node:path";
 import { compile } from "sass";
 import { describe, expect, it } from "vitest";
@@ -140,5 +141,109 @@ describe("HStack / VStack", () => {
     expect(el.style.gap).toBe("var(--space-2)");
     expect(el.style.justifyContent).toBe("space-between");
     expect(el).toHaveClass("actions", "wrap");
+  });
+});
+
+describe("Stack separator", () => {
+  it("renders the separator between items but not before the first or after the last", () => {
+    render(
+      <HStack separator={<span data-testid="sep">|</span>} data-testid="s">
+        <span>A</span>
+        <span>B</span>
+        <span>C</span>
+      </HStack>,
+    );
+    const el = screen.getByTestId("s");
+    expect(screen.getAllByTestId("sep")).toHaveLength(2);
+    expect(el.firstElementChild).toHaveTextContent("A");
+    expect(el.lastElementChild).toHaveTextContent("C");
+    expect(el.textContent).toBe("A|B|C");
+    // No wrapper elements: separators and items are direct flex children
+    expect(el.children).toHaveLength(5);
+  });
+
+  it("skips null, undefined and boolean children", () => {
+    render(
+      <Stack separator="·" data-testid="s">
+        <span>A</span>
+        {null}
+        {undefined}
+        {false}
+        {true}
+        <span>B</span>
+      </Stack>,
+    );
+    expect(screen.getByTestId("s").textContent).toBe("A·B");
+  });
+
+  it("renders nothing extra for a single child or no children", () => {
+    const { rerender } = render(
+      <Stack separator="·" data-testid="s">
+        <span>A</span>
+      </Stack>,
+    );
+    expect(screen.getByTestId("s").textContent).toBe("A");
+    rerender(<Stack separator="·" data-testid="s" />);
+    expect(screen.getByTestId("s")).toBeEmptyDOMElement();
+  });
+
+  it("keeps children state when a preceding child is conditionally removed", async () => {
+    const user = userEvent.setup();
+    const Form = ({ showLabel }: { showLabel: boolean }) => (
+      <HStack separator="/">
+        {showLabel && <span>Label</span>}
+        <input aria-label="Name" />
+      </HStack>
+    );
+    const { rerender } = render(<Form showLabel />);
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "Ada");
+    rerender(<Form showLabel={false} />);
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Ada");
+  });
+});
+
+describe("Stack attached", () => {
+  it("renders a labelled group without gap, even when gap is set", () => {
+    render(
+      <HStack attached gap={4} aria-label="Text alignment">
+        <button type="button">Left</button>
+        <button type="button">Right</button>
+      </HStack>,
+    );
+    const group = screen.getByRole("group", { name: "Text alignment" });
+    expect(group).toHaveClass("stack", "row", "attached");
+    expect(group.style.gap).toBe("");
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+  });
+
+  it("lets consumers override the group role", () => {
+    render(
+      <Stack attached role="toolbar" aria-label="Formatting">
+        <button type="button">Bold</button>
+      </Stack>,
+    );
+    expect(
+      screen.getByRole("toolbar", { name: "Formatting" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("group")).toBeNull();
+  });
+
+  it("is not a group when not attached", () => {
+    render(<Stack data-testid="s" />);
+    expect(screen.getByTestId("s")).not.toHaveAttribute("role");
+  });
+
+  it("ships shared borders and outer-only radii in its stylesheet", () => {
+    const { css } = compile(join(import.meta.dirname, "stack.module.scss"));
+    expect(css).toMatch(/\.attached\s*\{[^}]*gap:\s*0/);
+    expect(css).toMatch(
+      /\.attached\.row > \* \+ \*\s*\{[^}]*margin-inline-start:\s*-1px/,
+    );
+    expect(css).toMatch(
+      /\.attached\.row > \*:not\(:first-child\)[^{]*\{[^}]*border-start-start-radius:\s*0/,
+    );
+    expect(css).toMatch(
+      /\.attached\.column > \*:not\(:last-child\)[^{]*\{[^}]*border-end-start-radius:\s*0/,
+    );
   });
 });

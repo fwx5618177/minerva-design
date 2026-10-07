@@ -23,20 +23,13 @@ const extraCases: Array<[string, React.ReactElement]> = [
       Tag
     </lib.Tag>,
   ],
-  ["Chip", <lib.Chip label="Chip" onDelete={noop} />],
   [
     "Pagination",
     <lib.Pagination total={200} showQuickJumper showSizeChanger showTotal />,
   ],
   [
-    "TextField",
-    <lib.TextField
-      name="t"
-      label="T"
-      type="password"
-      defaultValue="v"
-      clearable
-    />,
+    "Input",
+    <lib.Input aria-label="T" type="password" defaultValue="v" clearable />,
   ],
   ["NumberInput", <lib.NumberInput defaultValue={2} />],
   ["JsonField", <lib.JsonField defaultValue='{"a":1}' />],

@@ -6,7 +6,7 @@ export default function ProviderDemo() {
       <div style={{ display: "flex", gap: 8 }}>
         {["Bold", "Italic", "Underline"].map((label) => (
           <Tooltip key={label} content={label} asChild>
-            <Button variant="secondary" size="small">
+            <Button color="neutral" variant="outline" size="small">
               {label[0]}
             </Button>
           </Tooltip>

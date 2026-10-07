@@ -60,7 +60,7 @@ function EditDocumentPage({
             {/* Button keeps the native default type (submit). */}
             <Button
               type="button"
-              appearance="ghost"
+              variant="ghost"
               onClick={() => setOpen(false)}
             >
               Cancel
@@ -249,7 +249,7 @@ function ReadingList() {
     const ok = await ask({
       title: `删除《${title}》？`,
       description: "此操作不可撤销",
-      intent: "danger",
+      color: "danger",
     });
     if (ok) setBooks((prev) => prev.filter((book) => book !== title));
   };
@@ -262,7 +262,7 @@ function ReadingList() {
           actions={
             <Button
               size="small"
-              variant="danger"
+              color="danger"
               onClick={() => void remove(title)}
             >
               删除{title}
@@ -300,31 +300,33 @@ describe.each<[string, (children: ReactNode) => ReactNode]>([
 
     const deleteSanti = screen.getByRole("button", { name: "删除三体" });
     await user.click(deleteSanti);
-    let dialog = await screen.findByRole("dialog", { name: "删除《三体》？" });
+    let dialog = await screen.findByRole("alertdialog", {
+      name: "删除《三体》？",
+    });
     expect(dialog).toHaveAccessibleDescription("此操作不可撤销");
     expect(dialog).toContainElement(document.activeElement as HTMLElement);
     await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
     await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
     );
     expect(shelfTitles()).toEqual(["诡秘之主", "三体", "雪中悍刀行"]);
 
     await user.click(deleteSanti);
-    await screen.findByRole("dialog", { name: "删除《三体》？" });
+    await screen.findByRole("alertdialog", { name: "删除《三体》？" });
     await user.keyboard("{Escape}");
     await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
     );
     await waitFor(() => expect(deleteSanti).toHaveFocus());
     expect(shelfTitles()).toHaveLength(3);
 
     await user.click(deleteSanti);
-    dialog = await screen.findByRole("dialog", { name: "删除《三体》？" });
+    dialog = await screen.findByRole("alertdialog", { name: "删除《三体》？" });
     await user.click(within(dialog).getByRole("button", { name: "Delete" }));
     await waitFor(() =>
       expect(shelfTitles()).toEqual(["诡秘之主", "雪中悍刀行"]),
     );
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
 
     expect(warn).not.toHaveBeenCalled();
     expect(nativeConfirm).not.toHaveBeenCalled();
@@ -343,16 +345,16 @@ describe.each<[string, (children: ReactNode) => ReactNode]>([
       second = confirm({ title: "清空缓存？", confirmLabel: "清空" });
     });
 
-    const firstDialog = await screen.findByRole("dialog", {
+    const firstDialog = await screen.findByRole("alertdialog", {
       name: "同步书架？",
     });
-    expect(screen.getAllByRole("dialog")).toHaveLength(1);
+    expect(screen.getAllByRole("alertdialog")).toHaveLength(1);
     await user.click(
       within(firstDialog).getByRole("button", { name: "Confirm" }),
     );
     await expect(first).resolves.toBe(true);
 
-    const secondDialog = await screen.findByRole("dialog", {
+    const secondDialog = await screen.findByRole("alertdialog", {
       name: "清空缓存？",
     });
     await user.click(
@@ -360,7 +362,7 @@ describe.each<[string, (children: ReactNode) => ReactNode]>([
     );
     await expect(second).resolves.toBe(false);
     await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
     );
 
     expect(warn).not.toHaveBeenCalled();
@@ -389,7 +391,7 @@ describe("ConfirmDialog (declarative)", () => {
             onOpenChange={setOpen}
             title="归档这本书？"
             confirmLabel="归档"
-            intent="warning"
+            color="warning"
             loading={busy}
             onConfirm={async () => {
               onConfirm();
@@ -408,7 +410,9 @@ describe("ConfirmDialog (declarative)", () => {
     render(<Page />);
 
     await user.click(screen.getByRole("button", { name: "归档" }));
-    const dialog = await screen.findByRole("dialog", { name: "归档这本书？" });
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "归档这本书？",
+    });
     await user.click(within(dialog).getByRole("button", { name: "归档" }));
     expect(
       within(dialog).getByRole("button", { name: "Cancel" }),
@@ -427,7 +431,7 @@ describe("ConfirmDialog (declarative)", () => {
       finish();
     });
     await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
     );
     expect(screen.getByText("已归档")).toBeInTheDocument();
   });

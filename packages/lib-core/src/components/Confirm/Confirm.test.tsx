@@ -15,7 +15,7 @@ function DeleteButton({ onResult }: { onResult: (ok: boolean) => void }) {
     <button
       type="button"
       onClick={async () =>
-        onResult(await ask({ title: "Delete comment?", intent: "danger" }))
+        onResult(await ask({ title: "Delete comment?", color: "danger" }))
       }
     >
       Delete comment
@@ -24,6 +24,32 @@ function DeleteButton({ onResult }: { onResult: (ok: boolean) => void }) {
 }
 
 describe("ConfirmDialog (declarative)", () => {
+  it("is an alertdialog labelled by its title and described by its description", () => {
+    render(
+      <ConfirmDialog
+        open
+        onOpenChange={() => {}}
+        onConfirm={() => {}}
+        title="Delete chapter?"
+        description="This cannot be undone"
+        color="danger"
+      />,
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    const titleId = dialog.getAttribute("aria-labelledby");
+    const descriptionId = dialog.getAttribute("aria-describedby");
+    expect(document.getElementById(titleId ?? "")).toHaveTextContent(
+      "Delete chapter?",
+    );
+    expect(document.getElementById(descriptionId ?? "")).toHaveTextContent(
+      "This cannot be undone",
+    );
+    expect(screen.getByRole("button", { name: "Delete" })).toHaveClass(
+      "danger",
+    );
+  });
+
   it("renders title/description and wires cancel + confirm buttons", async () => {
     const onOpenChange = vi.fn();
     const onConfirm = vi.fn();
@@ -38,7 +64,7 @@ describe("ConfirmDialog (declarative)", () => {
         closeLabel="Dismiss"
       />,
     );
-    const dialog = screen.getByRole("dialog", { name: "Publish chapter" });
+    const dialog = screen.getByRole("alertdialog", { name: "Publish chapter" });
     expect(dialog).toHaveAccessibleDescription("Readers will see it");
     expect(dialog).toHaveClass("small");
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
@@ -52,7 +78,7 @@ describe("ConfirmDialog (declarative)", () => {
     );
   });
 
-  it("defaults the confirm label by intent and locks cancel while loading", () => {
+  it("defaults the confirm label by color and locks cancel while loading", () => {
     const noop = () => {};
     const { rerender } = render(
       <ConfirmDialog
@@ -60,22 +86,33 @@ describe("ConfirmDialog (declarative)", () => {
         onOpenChange={noop}
         onConfirm={noop}
         title="A"
-        intent="danger"
+        color="danger"
       />,
     );
     const del = screen.getByRole("button", { name: "Delete" });
-    expect(del).toHaveClass("error");
+    expect(del).toHaveClass("danger", "variant-solid");
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveClass(
+      "neutral",
+      "variant-outline",
+    );
     rerender(
       <ConfirmDialog
         open
         onOpenChange={noop}
         onConfirm={noop}
         title="A"
-        intent="warning"
+        color="warning"
       />,
     );
     expect(screen.getByRole("button", { name: "Confirm" })).toHaveClass(
       "warning",
+    );
+    rerender(
+      <ConfirmDialog open onOpenChange={noop} onConfirm={noop} title="A" />,
+    );
+    expect(screen.getByRole("button", { name: "Confirm" })).toHaveClass(
+      "primary",
+      "variant-solid",
     );
     rerender(
       <ConfirmDialog
@@ -113,7 +150,7 @@ describe("ConfirmDialog (declarative)", () => {
           onOpenChange={noop}
           onConfirm={noop}
           title="A"
-          intent="danger"
+          color="danger"
         />,
       );
       expect(screen.getByRole("button", { name: "删除" })).toBeInTheDocument();
@@ -147,7 +184,7 @@ describe("<ConfirmProvider>", () => {
     await act(async () => {
       pending = confirm({ title: "Global call" });
     });
-    await screen.findByRole("dialog", { name: "Global call" });
+    await screen.findByRole("alertdialog", { name: "Global call" });
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     await expect(pending).resolves.toBe(false);
     expect(hosts()).toHaveLength(0);
@@ -163,7 +200,7 @@ describe("<ConfirmProvider>", () => {
     await act(async () => {
       pending = confirm({ title: "Unfinished" });
     });
-    await screen.findByRole("dialog", { name: "Unfinished" });
+    await screen.findByRole("alertdialog", { name: "Unfinished" });
     unmount();
     await expect(pending).resolves.toBe(false);
   });
@@ -190,7 +227,7 @@ describe("<ConfirmProvider>", () => {
     await act(async () => {
       pending = confirm({ title: "Outer" });
     });
-    await screen.findByRole("dialog", { name: "Outer" });
+    await screen.findByRole("alertdialog", { name: "Outer" });
     await userEvent.click(screen.getByRole("button", { name: "Confirm" }));
     await expect(pending).resolves.toBe(true);
     expect(hosts()).toHaveLength(0);
@@ -214,7 +251,7 @@ describe("<ConfirmProvider>", () => {
       ok.click();
     });
     await expect(first).resolves.toBe(true);
-    await screen.findByRole("dialog", { name: "Second" });
+    await screen.findByRole("alertdialog", { name: "Second" });
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     await expect(second).resolves.toBe(false);
   });
