@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     name: "lib-web-components-dist",
     environment: "node",
-    include: ["tests/dist/**/*.test.ts"],
+    include: ["tests/package/**/*.test.ts"],
     testTimeout: 60_000,
   },
 });
