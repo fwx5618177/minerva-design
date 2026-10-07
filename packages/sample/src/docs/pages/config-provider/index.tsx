@@ -75,6 +75,27 @@ function Settings() {
   );
 }`;
 
+const nestingCode = `import { ConfigProvider } from "@minerva/lib-core";
+
+export default function Root() {
+  return (
+    // root provider: owns <html>, the cookies and lib-core's global language
+    <ConfigProvider theme="system" palette="editorial" persist>
+      <App />
+
+      {/* inherits theme + palette, only this subtree is in Japanese */}
+      <ConfigProvider locale={{ language: "ja" }}>
+        <Sidebar />
+      </ConfigProvider>
+
+      {/* dark + inherited palette for this card and its overlays only */}
+      <ConfigProvider theme="dark">
+        <PreviewCard />
+      </ConfigProvider>
+    </ConfigProvider>
+  );
+}`;
+
 const contextCode = `import { useContext } from "react";
 import { ConfigContext } from "@minerva/lib-core";
 
@@ -107,6 +128,18 @@ const ConfigProviderDoc: React.FC = () => {
 
   return (
     <DocPage id="config-provider" demos={demos} intro={intro}>
+      <section className={styles.section} aria-labelledby="nesting">
+        <h2 id="nesting">{t("docs.config-provider.nesting.title")}</h2>
+        <p className={styles.prose}>{t("docs.config-provider.nesting.text")}</p>
+        <ul className={styles.prose}>
+          <li>{t("docs.config-provider.nesting.inherit")}</li>
+          <li>{t("docs.config-provider.nesting.scoped")}</li>
+          <li>{t("docs.config-provider.nesting.locale")}</li>
+          <li>{t("docs.config-provider.nesting.portal")}</li>
+          <li>{t("docs.config-provider.nesting.document")}</li>
+        </ul>
+        <CodeBlock code={nestingCode} language="tsx" />
+      </section>
       <section className={styles.section} aria-labelledby="config-context">
         <h2 id="config-context">{t("docs.config-provider.context.title")}</h2>
         <p className={styles.prose}>{t("docs.config-provider.context.text")}</p>

@@ -6,17 +6,17 @@
     "text": "All hooks and utilities are exported from @minerva/lib-core.",
     "hook": "Hook",
     "signature": "Signature",
-    "useAutoTheme": "Keeps the active theme in state and writes it as CSS variables on <html>. With \"auto\" or a { light, dark } pair it subscribes to prefers-color-scheme and unsubscribes on unmount. Returns the configured theme, its setter and the current system scheme.",
-    "useLocale": "Keeps the locale in state and switches the language of lib-core's built-in texts (en, zh or fr). Returns the locale and its setter.",
-    "useI18n": "Returns t and the i18next instance used by lib-core. It is a private instance, so your application's own i18next setup is never affected.",
+    "useAutoTheme": "Keeps the active theme in state and, outside of a ConfigProvider, writes it as CSS variables on <html>. With \"auto\" or a { light, dark } pair it subscribes to prefers-color-scheme and unsubscribes on unmount. Returns the configured theme, its setter and the current system scheme. Inside a ConfigProvider it only manages the state: the root provider owns <html>.",
+    "useLocale": "Keeps the locale in state and, outside of a ConfigProvider, switches the language of lib-core's built-in texts (en, zh, ja or fr). Returns the locale and its setter. Inside a ConfigProvider it only manages the state: the root provider owns the global language.",
+    "useI18n": "Returns t, the language it translates to and the i18next instance used by lib-core. t follows the locale of the closest nested ConfigProvider that sets one, otherwise lib-core's global language. It is a private instance, so your application's own i18next setup is never affected.",
     "useDisclosure": "Open / closed state for overlays (Modal, Drawer, Popover...), controlled (isOpen + onChange) or uncontrolled (defaultIsOpen). Returns isOpen and stable onOpen, onClose and onToggle callbacks.",
     "useDialogFocusReturn": "Focus return for dialogs opened from state, without a Radix Trigger. Remembers the element focused before opening and focuses it again after closing. Pass open, contentRef and onCloseAutoFocus to the dialog.",
     "cn": "Joins class names and skips falsy values (false, null, undefined, 0, empty strings). A tiny, dependency-free alternative to classnames for conditional classes.",
-    "global": "useAutoTheme and useLocale change global state (CSS variables on <html>, lib-core's language). The demos below start from the site's current settings and restore them when they unmount."
+    "global": "useAutoTheme and useLocale only change global state (CSS variables on <html>, lib-core's language) when no ConfigProvider is above them. This site has one at the root, so the demos below pass the hook state to a nested ConfigProvider, which applies it to the preview only."
   },
   "standalone": {
     "title": "Using the hooks without ConfigProvider",
-    "text": "ConfigProvider is a thin wrapper around useAutoTheme and useLocale. If you don't need useConfig(), you can call the hooks directly, instead of a provider rather than inside one."
+    "text": "If you don't need useConfig(), you can call useAutoTheme and useLocale directly, instead of a provider. Inside a provider they only hold state: pass it to a nested ConfigProvider to apply it to a subtree."
   },
   "focusReturn": {
     "title": "Returning focus after a dialog",
@@ -25,11 +25,11 @@
   "demos": {
     "use-auto-theme": {
       "title": "useAutoTheme",
-      "description": "Switch the theme of the page with setTheme. systemTheme always reports the operating system scheme. Reset (or leaving the page) restores the site's theme."
+      "description": "setTheme changes the theme of the preview, applied by a nested ConfigProvider; systemTheme always reports the operating system scheme. The rest of the page keeps the site's theme."
     },
     "use-locale": {
       "title": "useLocale and useI18n",
-      "description": "setLocale changes lib-core's language; t() from useI18n returns lib-core's built-in texts in that language."
+      "description": "setLocale changes the locale passed to a nested ConfigProvider; t() from useI18n returns lib-core's built-in texts in that language."
     },
     "use-disclosure": {
       "title": "useDisclosure and cn",

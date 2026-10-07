@@ -7,6 +7,7 @@ import type {
   PopoverTriggerProps,
 } from "./types";
 import styles from "./popover.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /**
  * Popover: a click-triggered, interactive floating panel (Radix Popover).
@@ -42,6 +43,7 @@ export const PopoverContent = ({
   collisionPadding = 8,
   ...rest
 }: PopoverContentProps) => {
+  const portalContainer = usePortalContainer();
   const content = (
     <RadixPopover.Content
       sideOffset={sideOffset}
@@ -54,7 +56,9 @@ export const PopoverContent = ({
     </RadixPopover.Content>
   );
   return portal ? (
-    <RadixPopover.Portal>{content}</RadixPopover.Portal>
+    <RadixPopover.Portal container={portalContainer}>
+      {content}
+    </RadixPopover.Portal>
   ) : (
     content
   );

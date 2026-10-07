@@ -15,6 +15,7 @@ import type {
   ModalTriggerProps,
 } from "./types";
 import styles from "./modal.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /** Owns the open state of a compound modal (Radix Dialog root). */
 export const ModalRoot = (props: ModalRootProps) => (
@@ -47,8 +48,9 @@ export const ModalContent = ({
   ...rest
 }: ModalContentProps) => {
   const { t } = useI18n();
+  const portalContainer = usePortalContainer();
   return (
-    <RadixDialog.Portal>
+    <RadixDialog.Portal container={portalContainer}>
       <RadixDialog.Overlay className={cn(styles.overlay, overlayClassName)} />
       <RadixDialog.Content
         className={cn(styles.content, styles[size], className)}

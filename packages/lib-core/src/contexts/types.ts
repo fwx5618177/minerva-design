@@ -200,7 +200,7 @@ export type ConfigProviderThemeProps =
 export type Theme = ConfigProviderThemeProps;
 
 /** Languages that lib-core ships translations for */
-export type SupportedLanguage = "en" | "zh" | "fr";
+export type SupportedLanguage = "en" | "zh" | "ja" | "fr";
 
 /** Locale settings of lib-core's built-in texts */
 export type Locale = {
@@ -224,9 +224,15 @@ export interface ConfigContextProps {
    * "auto" / "system" / `{ light, dark }` pairs, `undefined` for other themes
    */
   mode?: ThemeMode;
-  /** Applied color mode (`data-theme` on `<html>`), when it can be determined */
+  /**
+   * Applied color mode (`data-theme` on `<html>`, or on the scope element of a
+   * nested provider), when it can be determined
+   */
   resolvedMode?: ResolvedThemeMode;
-  /** Active palette (`data-palette` on `<html>`), `null` for Minerva's default look */
+  /**
+   * Active palette (`data-palette` on `<html>`, or on the scope element of a
+   * nested provider), `null` for Minerva's default look
+   */
   palette?: Palette | null;
   /** Change the theme (persisted to the `theme` cookie when `persist` is on) */
   setTheme?: (theme: ConfigProviderThemeProps) => void;
@@ -238,21 +244,25 @@ export interface ConfigContextProps {
 export interface ConfigContextProviderProps {
   /**
    * Theme to apply: "auto" (follows `prefers-color-scheme`), a built-in theme
-   * name, a theme object, or a `{ light, dark }` pair. Applied as CSS
-   * variables on the document root.
-   * @default "auto"
+   * name, a theme object, or a `{ light, dark }` pair. The root provider
+   * applies it to `<html>`; a nested provider inherits its parent's theme
+   * unless set, and applies an override to its own subtree only.
+   * @default "auto" (nested: the parent's theme)
    */
   theme?: ConfigProviderThemeProps;
   /**
    * Palette applied with the light / dark / system themes ("editorial",
-   * "tech", "graphite", "cool"); `null` keeps Minerva's default look. Sets
-   * `data-palette` on `<html>`; palette tokens come from `style.css`.
-   * @default null
+   * "tech", "graphite", "cool"); `null` keeps Minerva's default look. The root
+   * provider sets `data-palette` on `<html>`; a nested provider inherits its
+   * parent's palette unless set, and scopes an override to its subtree.
+   * Palette tokens come from `style.css`.
+   * @default null (nested: the parent's palette)
    */
   palette?: Palette | null;
   /**
    * Persist theme and palette changes in the `theme` / `palette` cookies and
-   * restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR)
+   * restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR).
+   * Root provider only: ignored by nested providers.
    * @default false
    */
   persist?: boolean;
@@ -261,8 +271,10 @@ export interface ConfigContextProviderProps {
   /** Called after `setPalette` changes the palette */
   onPaletteChange?: (palette: Palette | null) => void;
   /**
-   * Language of lib-core's built-in texts (changes it globally)
-   * @default { language: "en" }
+   * Language of lib-core's built-in texts. The root provider sets it globally;
+   * a nested provider inherits its parent's language unless set, and applies
+   * an override to its subtree only.
+   * @default { language: "en" } (nested: the parent's locale)
    */
   locale?: Locale;
   /** Application content */
@@ -288,17 +300,18 @@ export interface ThemeProviderProps {
   /**
    * Initial mode. For SSR pass the value parsed from the request cookie so
    * the server markup matches the client.
-   * @default "system"
+   * @default "system" (nested: the parent's theme)
    */
   defaultTheme?: ThemeMode;
   /**
    * Initial palette (`null` = Minerva's default look). For SSR pass the
    * parsed `palette` cookie.
-   * @default null
+   * @default null (nested: the parent's palette)
    */
   defaultPalette?: Palette | null;
   /**
-   * Do not read / write the theme cookies (tests, embedded previews)
+   * Do not read / write the theme cookies (tests, embedded previews). Nested
+   * providers never use the cookies.
    * @default false
    */
   disableStorage?: boolean;

@@ -17,6 +17,7 @@ import { useIsClient } from "../../internal/useIsClient";
 import { toast, toastStore, type ToastItem } from "./store";
 import type { ToastApi, ToastProviderProps, ToastStatus } from "./types";
 import styles from "./toast.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 const ICONS: Record<ToastStatus, ReactNode> = {
   info: <LuInfo aria-hidden="true" />,
@@ -107,6 +108,7 @@ const ToastProvider = ({
   );
   // SSR / hydration render nothing (the portal needs document.body)
   const isClient = useIsClient();
+  const portalContainer = usePortalContainer();
 
   // Defensive render-time de-duplication (the latest toast of an id wins) so
   // React keys never collide.
@@ -137,7 +139,7 @@ const ToastProvider = ({
               />
             ))}
           </div>,
-          document.body,
+          portalContainer ?? document.body,
         )}
     </>
   );

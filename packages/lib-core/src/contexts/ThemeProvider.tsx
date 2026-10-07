@@ -2,6 +2,7 @@ import { useCallback, useContext, useMemo } from "react";
 import { ConfigContext, ConfigProvider } from "./ConfigProvider";
 import type { ThemeContextValue, ThemeProviderProps } from "./types";
 import type { ThemeMode } from "../theme-utils";
+import { ThemeScopeContext } from "../internal/themeScope";
 
 /**
  * Theme + palette provider with cookie persistence: a thin preset over
@@ -15,19 +16,25 @@ import type { ThemeMode } from "../theme-utils";
  * For SSR pass the request cookies as defaults
  * (`parseThemeCookies(request.headers.get("cookie"))` from
  * `@minerva/lib-core/theme-utils`) and inline `THEME_INIT_SCRIPT` in `<head>`.
+ *
+ * Nested inside another provider it follows the `ConfigProvider` nesting
+ * rules: it inherits what it does not set, scopes `defaultTheme` /
+ * `defaultPalette` to its subtree and never touches `<html>` or the cookies.
  */
 export function ThemeProvider({
-  defaultTheme = "system",
-  defaultPalette = null,
+  defaultTheme,
+  defaultPalette,
   disableStorage = false,
   locale,
   onThemeChange,
   onPaletteChange,
   children,
 }: ThemeProviderProps) {
+  // Root default mode; nested providers inherit what is not set
+  const isRoot = useContext(ThemeScopeContext) === null;
   return (
     <ConfigProvider
-      theme={defaultTheme}
+      theme={defaultTheme ?? (isRoot ? "system" : undefined)}
       palette={defaultPalette}
       persist={!disableStorage}
       locale={locale}

@@ -1,14 +1,21 @@
 // Theme mode + palette switching persisted as cookies and <html> attributes,
 // and THEME_INIT_SCRIPT applying the stored preference before React renders
 // (English labels, no default palette).
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useState } from "react";
 import {
+  Button,
+  ConfigProvider,
+  Empty,
+  Modal,
   PaletteToggle,
   ThemeProvider,
   ThemeToggle,
+  useConfig,
   useTheme,
+  type SupportedLanguage,
 } from "@minerva/lib-core";
 import { THEME_INIT_SCRIPT } from "@minerva/lib-core/theme-utils";
 
@@ -247,6 +254,149 @@ describe("theme mode + palette", () => {
       expectNoPalette();
       document.cookie = "mytheme=; path=/; max-age=0";
       document.cookie = "xpalette=; path=/; max-age=0";
+    });
+  });
+
+  describe("nested providers (a docs page with live demos)", () => {
+    // Like the locale demo of the docs site: a nested provider that only
+    // changes lib-core's language for its subtree.
+    function LocaleDemo() {
+      const [language, setLanguage] = useState<SupportedLanguage>("en");
+      return (
+        <section aria-label="Locale demo">
+          {(["en", "ja", "fr"] as const).map((lng) => (
+            <Button key={lng} size="small" onClick={() => setLanguage(lng)}>
+              {`lang-${lng}`}
+            </Button>
+          ))}
+          <ConfigProvider locale={{ language }}>
+            <LocaleStatus />
+            <Empty />
+          </ConfigProvider>
+        </section>
+      );
+    }
+
+    function LocaleStatus() {
+      const { locale, palette, resolvedMode } = useConfig();
+      return (
+        <output aria-label="Demo config">
+          {`${locale?.language}/${resolvedMode}/${String(palette)}`}
+        </output>
+      );
+    }
+
+    // A scoped preview: dark theme for this subtree only, Modal included
+    function DarkPreview() {
+      const [open, setOpen] = useState(false);
+      return (
+        <ConfigProvider theme="dark">
+          <Button onClick={() => setOpen(true)}>Open preview dialog</Button>
+          <Modal open={open} onOpenChange={setOpen} title="Preview dialog">
+            body
+          </Modal>
+        </ConfigProvider>
+      );
+    }
+
+    function DocsPage() {
+      const [demo, setDemo] = useState<"none" | "locale" | "preview">("none");
+      return (
+        <ThemeProvider>
+          <header>
+            <ThemeToggle />
+            <PaletteToggle palettes={["editorial", "tech", "graphite"]} />
+          </header>
+          <CurrentTheme />
+          <Empty />
+          <nav>
+            <Button onClick={() => setDemo("locale")}>Locale demo</Button>
+            <Button onClick={() => setDemo("preview")}>Preview demo</Button>
+            <Button onClick={() => setDemo("none")}>Close demos</Button>
+          </nav>
+          {demo === "locale" && <LocaleDemo />}
+          {demo === "preview" && <DarkPreview />}
+        </ThemeProvider>
+      );
+    }
+
+    it("switching the palette at the root survives opening / using / closing the locale demo", async () => {
+      mockSystemScheme("light");
+      const user = userEvent.setup();
+      render(<DocsPage />);
+
+      await user.click(
+        await screen.findByRole("button", { name: labels.light }),
+      );
+      await user.click(screen.getByRole("button", { name: labels.tech }));
+      expect(html).toHaveAttribute("data-palette", "tech");
+      const cookies = readCookies();
+      const rootHtml = html.outerHTML.slice(0, html.outerHTML.indexOf(">"));
+
+      await user.click(screen.getByRole("button", { name: "Locale demo" }));
+      const demo = screen.getByRole("region", { name: "Locale demo" });
+      // the nested provider inherits the root's theme and palette
+      expect(
+        within(demo).getByRole("status", { name: "Demo config" }),
+      ).toHaveTextContent("en/light/tech");
+
+      await user.click(within(demo).getByRole("button", { name: "lang-ja" }));
+      expect(
+        within(demo).getByRole("status", { name: "Demo config" }),
+      ).toHaveTextContent("ja/light/tech");
+      expect(within(demo).getByText("データがありません")).toBeInTheDocument();
+      // only the demo is translated: the page keeps English built-in texts
+      expect(screen.getAllByText("No Data")).toHaveLength(1);
+
+      // <html> (palette, theme, tokens) and the cookies are untouched
+      expect(html).toHaveAttribute("data-palette", "tech");
+      expect(html).toHaveAttribute("data-theme", "light");
+      expect(html.outerHTML.slice(0, html.outerHTML.indexOf(">"))).toBe(
+        rootHtml,
+      );
+      expect(readCookies()).toEqual(cookies);
+
+      await user.click(screen.getByRole("button", { name: "Close demos" }));
+      expect(html).toHaveAttribute("data-palette", "tech");
+      expect(html.outerHTML.slice(0, html.outerHTML.indexOf(">"))).toBe(
+        rootHtml,
+      );
+      expect(status()).toHaveTextContent("light/light/tech");
+
+      // the root palette can still be switched afterwards
+      await user.click(screen.getByRole("button", { name: labels.graphite }));
+      expect(html).toHaveAttribute("data-palette", "graphite");
+      expect(readCookies().palette).toBe("graphite");
+    });
+
+    it("a scoped dark preview themes its dialog, not the page", async () => {
+      mockSystemScheme("light");
+      const user = userEvent.setup();
+      render(<DocsPage />);
+      await user.click(
+        await screen.findByRole("button", { name: labels.light }),
+      );
+      await user.click(screen.getByRole("button", { name: labels.tech }));
+
+      await user.click(screen.getByRole("button", { name: "Preview demo" }));
+      await user.click(
+        screen.getByRole("button", { name: "Open preview dialog" }),
+      );
+      const dialog = await screen.findByRole("dialog", {
+        name: "Preview dialog",
+      });
+      const scope = dialog.closest("[data-minerva-theme-scope]");
+      expect(scope).toHaveAttribute("data-theme", "dark");
+      // the preview inherits the root palette, in its own mode
+      expect(scope).toHaveAttribute("data-palette", "tech");
+      expect(html).toHaveAttribute("data-theme", "light");
+      expect(html).toHaveAttribute("data-palette", "tech");
+
+      await user.keyboard("{Escape}");
+      await user.click(screen.getByRole("button", { name: "Close demos" }));
+      expect(document.querySelector("[data-minerva-theme-scope]")).toBeNull();
+      expect(html).toHaveAttribute("data-theme", "light");
+      expect(html).toHaveAttribute("data-palette", "tech");
     });
   });
 });

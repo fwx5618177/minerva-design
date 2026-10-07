@@ -6,17 +6,17 @@
     "text": "Tous les hooks et utilitaires sont exportés depuis @minerva/lib-core.",
     "hook": "Hook",
     "signature": "Signature",
-    "useAutoTheme": "Conserve le thème actif dans un état et l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma actuel du système.",
-    "useLocale": "Conserve la locale dans un état et change la langue des textes intégrés de lib-core (en, zh ou fr). Renvoie la locale et son setter.",
-    "useI18n": "Renvoie t et l'instance i18next utilisée par lib-core. C'est une instance privée : la configuration i18next de votre application n'est jamais affectée.",
+    "useAutoTheme": "Conserve le thème actif dans l'état et, en dehors d'un ConfigProvider, l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma système actuel. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère <html>.",
+    "useLocale": "Conserve la locale dans l'état et, en dehors d'un ConfigProvider, change la langue des textes intégrés de lib-core (en, zh, ja ou fr). Renvoie la locale et son setter. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère la langue globale.",
+    "useI18n": "Renvoie t, la langue dans laquelle il traduit et l'instance i18next utilisée par lib-core. t suit la locale du ConfigProvider imbriqué le plus proche qui en définit une, sinon la langue globale de lib-core. C'est une instance privée : la configuration i18next de votre application n'est jamais affectée.",
     "useDisclosure": "État ouvert / fermé des overlays (Modal, Drawer, Popover...), contrôlé (isOpen + onChange) ou non contrôlé (defaultIsOpen). Renvoie isOpen et des callbacks stables onOpen, onClose et onToggle.",
     "useDialogFocusReturn": "Retour du focus pour les dialogues ouverts depuis un état, sans Trigger Radix. Mémorise l'élément qui avait le focus avant l'ouverture et le lui rend après la fermeture. Passez open, contentRef et onCloseAutoFocus au dialogue.",
     "cn": "Concatène des noms de classes en ignorant les valeurs falsy (false, null, undefined, 0, chaînes vides). Une petite alternative sans dépendance à classnames pour les classes conditionnelles.",
-    "global": "useAutoTheme et useLocale modifient un état global (variables CSS sur <html>, langue de lib-core). Les démos ci-dessous partent des réglages actuels du site et les rétablissent au démontage."
+    "global": "useAutoTheme et useLocale ne modifient l'état global (variables CSS sur <html>, langue de lib-core) que lorsqu'aucun ConfigProvider ne se trouve au-dessus d'eux. Ce site en a un à la racine : les démos ci-dessous passent l'état du hook à un ConfigProvider imbriqué, qui ne l'applique qu'à l'aperçu."
   },
   "standalone": {
     "title": "Utiliser les hooks sans ConfigProvider",
-    "text": "ConfigProvider n'est qu'une fine couche autour de useAutoTheme et useLocale. Si vous n'avez pas besoin de useConfig(), appelez directement les hooks, à la place d'un provider et non à l'intérieur."
+    "text": "Si vous n'avez pas besoin de useConfig(), vous pouvez appeler useAutoTheme et useLocale directement, à la place d'un provider. Dans un provider, ils ne font que conserver l'état : passez-le à un ConfigProvider imbriqué pour l'appliquer à un sous-arbre."
   },
   "focusReturn": {
     "title": "Rendre le focus après un dialogue",
@@ -25,11 +25,11 @@
   "demos": {
     "use-auto-theme": {
       "title": "useAutoTheme",
-      "description": "Changez le thème de la page avec setTheme. systemTheme indique toujours le schéma du système d'exploitation. Reset (ou quitter la page) rétablit le thème du site."
+      "description": "setTheme change le thème de l'aperçu, appliqué par un ConfigProvider imbriqué ; systemTheme indique toujours le schéma du système d'exploitation. Le reste de la page conserve le thème du site."
     },
     "use-locale": {
       "title": "useLocale et useI18n",
-      "description": "setLocale change la langue de lib-core ; t() de useI18n renvoie les textes intégrés de lib-core dans cette langue."
+      "description": "setLocale change la locale passée à un ConfigProvider imbriqué ; t() de useI18n renvoie les textes intégrés de lib-core dans cette langue."
     },
     "use-disclosure": {
       "title": "useDisclosure et cn",

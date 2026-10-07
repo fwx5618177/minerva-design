@@ -6,17 +6,17 @@
     "text": "所有 Hooks 和工具函数都从 @minerva/lib-core 导出。",
     "hook": "Hook",
     "signature": "签名",
-    "useAutoTheme": "在 state 中保存当前主题，并以 CSS 变量的形式写到 <html> 上。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其设置函数以及当前的系统配色。",
-    "useLocale": "在 state 中保存语言设置，并切换 lib-core 内置文案的语言（en、zh 或 fr）。返回 locale 及其设置函数。",
-    "useI18n": "返回 lib-core 使用的 t 函数和 i18next 实例。这是一个私有实例，因此绝不会影响应用自身的 i18next 配置。",
+    "useAutoTheme": "在状态中保存当前主题，并在 ConfigProvider 之外将其作为 CSS 变量写入 <html>。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其 setter 以及当前系统配色方案。在 ConfigProvider 内部它只管理状态：<html> 由根 Provider 负责。",
+    "useLocale": "在状态中保存 locale，并在 ConfigProvider 之外切换 lib-core 内置文案的语言（en、zh、ja 或 fr）。返回 locale 及其 setter。在 ConfigProvider 内部它只管理状态：全局语言由根 Provider 负责。",
+    "useI18n": "返回 t、t 所使用的语言以及 lib-core 使用的 i18next 实例。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 lib-core 的全局语言。这是一个私有实例，绝不会影响应用自身的 i18next 配置。",
     "useDisclosure": "浮层（Modal、Drawer、Popover……）的打开 / 关闭状态，支持受控（isOpen + onChange）和非受控（defaultIsOpen）两种用法。返回 isOpen 以及稳定的 onOpen、onClose 和 onToggle 回调。",
     "useDialogFocusReturn": "为通过 state 打开、没有 Radix Trigger 的对话框提供焦点归还。记住打开前获得焦点的元素，并在关闭后重新聚焦它。把 open、contentRef 和 onCloseAutoFocus 传给对话框即可。",
     "cn": "拼接类名并跳过假值（false、null、undefined、0、空字符串）。用于条件类名的极简、无依赖替代方案，可代替 classnames。",
-    "global": "useAutoTheme 和 useLocale 会修改全局状态（<html> 上的 CSS 变量、lib-core 的语言）。下面的示例从站点当前的设置开始，并在卸载时恢复。"
+    "global": "只有在上方没有 ConfigProvider 时，useAutoTheme 和 useLocale 才会修改全局状态（<html> 上的 CSS 变量、lib-core 的语言）。本站在根部有一个 Provider，因此下方示例把 Hook 的状态传给嵌套的 ConfigProvider，只作用于预览区域。"
   },
   "standalone": {
     "title": "不使用 ConfigProvider 时使用 Hooks",
-    "text": "ConfigProvider 只是对 useAutoTheme 和 useLocale 的轻量封装。如果不需要 useConfig()，可以直接调用这些 Hooks——用来替代 Provider，而不是在 Provider 内部使用。"
+    "text": "如果不需要 useConfig()，可以直接调用 useAutoTheme 和 useLocale 来代替 Provider。在 Provider 内部它们只保存状态：把状态传给嵌套的 ConfigProvider 即可作用于某个子树。"
   },
   "focusReturn": {
     "title": "对话框关闭后归还焦点",
@@ -25,11 +25,11 @@
   "demos": {
     "use-auto-theme": {
       "title": "useAutoTheme",
-      "description": "通过 setTheme 切换页面主题。systemTheme 始终反映操作系统的配色方案。点击 Reset（或离开页面）会恢复站点主题。"
+      "description": "setTheme 修改预览区域的主题，由嵌套的 ConfigProvider 应用；systemTheme 始终反映操作系统的配色方案。页面其余部分保持站点主题。"
     },
     "use-locale": {
       "title": "useLocale 与 useI18n",
-      "description": "setLocale 会改变 lib-core 的语言；useI18n 返回的 t() 会以该语言返回 lib-core 的内置文案。"
+      "description": "setLocale 修改传给嵌套 ConfigProvider 的 locale；useI18n 的 t() 以该语言返回 lib-core 的内置文案。"
     },
     "use-disclosure": {
       "title": "useDisclosure 与 cn",

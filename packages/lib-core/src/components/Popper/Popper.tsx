@@ -16,6 +16,7 @@ import {
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useIsClient } from "../../internal/useIsClient";
 import styles from "./popper.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /**
  * Stable default prop values, hoisted so omitting them does not create a new
@@ -73,6 +74,7 @@ const Popper = ({
   height,
 }: PopperProps) => {
   const isClient = useIsClient();
+  const portalContainer = usePortalContainer();
   const popperRef = useRef<HTMLDivElement>(null);
   const [arrowEl, setArrowEl] = useState<HTMLSpanElement | null>(null);
 
@@ -273,7 +275,7 @@ const Popper = ({
         />
       )}
     </div>,
-    document.body,
+    portalContainer ?? document.body,
   );
 };
 

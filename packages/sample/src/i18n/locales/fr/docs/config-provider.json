@@ -5,7 +5,7 @@
     "title": "Utilisation",
     "text": "Affichez un seul ConfigProvider à la racine de votre application. Il applique le thème sous forme de variables CSS sur <html>, définit la langue des textes intégrés de lib-core et fournit les deux à useConfig().",
     "dynamic": "Les deux props sont réactives : stockez-les dans un état pour permettre de changer de thème ou de langue à l'exécution.",
-    "global": "Le thème et la langue sont globaux : le provider écrit des variables CSS sur <html> et change la langue de l'instance i18next de lib-core. Un ConfigProvider imbriqué change donc le thème de toute la page, pas seulement de ses enfants. Pour thémer une seule zone, définissez plutôt les variables CSS sur un élément conteneur (voir l'exemple de thème personnalisé)."
+    "global": "Seul le ConfigProvider le plus externe modifie l'état global : il écrit data-theme, data-palette et les variables du thème sur <html>, enregistre les cookies et définit la langue globale de lib-core. Un provider imbriqué ne le fait jamais ; il applique ses propres réglages à son sous-arbre uniquement (voir Providers imbriqués)."
   },
   "palette": {
     "title": "Palette, persistance et callbacks",
@@ -15,29 +15,29 @@
   "demos": {
     "use-config": {
       "title": "Lire la configuration",
-      "description": "useConfig() renvoie le thème configuré, le thème résolu et la locale du provider le plus proche. Changez le thème du site dans l'en-tête pour le voir se mettre à jour."
+      "description": "useConfig() renvoie le thème configuré, le thème résolu, la palette et la locale du provider le plus proche. Changez le thème, la palette ou la langue du site dans l'en-tête pour voir les valeurs se mettre à jour."
     },
     "custom-theme": {
       "title": "Thème personnalisé",
-      "description": "Un thème personnalisé construit à partir de themes.light. Passé à ConfigProvider, il changerait le thème de la page ; ici ses jetons sont appliqués comme variables CSS sur un seul conteneur."
+      "description": "Un thème personnalisé construit à partir de themes.light et passé à un ConfigProvider imbriqué : seul ce conteneur change de thème, y compris le menu du Select rendu dans un portail."
     },
     "locale": {
       "title": "Langue",
-      "description": "La prop locale définit la langue des textes intégrés de lib-core (en, zh ou fr). La démo rétablit l'anglais lorsqu'elle est démontée, car la langue est globale."
+      "description": "Un ConfigProvider imbriqué qui ne définit que la locale (en, zh, ja ou fr) : les textes intégrés de son sous-arbre changent, tandis que le thème et la palette sont hérités du site et que <html> reste intact."
     },
     "palette": {
       "title": "Palettes",
-      "description": "Les quatre palettes côte à côte dans le mode actuel du site, avec data-palette et data-theme sur chaque carte. Avec la prop palette, les mêmes attributs sont posés sur <html>."
+      "description": "Chaque carte est un ConfigProvider imbriqué avec sa propre palette, dans le mode actuel du site. Le provider racine du site conserve data-palette sur <html>."
     }
   },
   "api": {
     "ConfigContextProviderProps": {
-      "theme": "Thème à appliquer : \"auto\" ou son alias \"system\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Appliqué en variables CSS sur la racine du document, ou via une palette quand palette est défini.",
-      "palette": "Palette appliquée avec les thèmes light, dark et system (\"editorial\", \"tech\", \"graphite\", \"cool\") ; null conserve l'apparence par défaut de Minerva. Définit data-palette sur <html> ; les tokens de la palette viennent de style.css.",
-      "persist": "Enregistrer les changements de thème et de palette dans les cookies theme et palette et les restaurer après l'hydratation (à combiner avec THEME_INIT_SCRIPT en SSR).",
+      "theme": "Thème à appliquer : \"auto\" ou son alias \"system\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Le provider racine l'applique à <html> ; un provider imbriqué hérite du thème de son parent s'il n'est pas défini, et n'applique sa redéfinition qu'à son propre sous-arbre.",
+      "palette": "Palette appliquée avec les thèmes light, dark et system (\"editorial\", \"tech\", \"graphite\", \"cool\") ; null conserve l'apparence par défaut de Minerva. Le provider racine définit data-palette sur <html> ; un provider imbriqué hérite de la palette de son parent si elle n'est pas définie, et limite sa redéfinition à son sous-arbre. Les tokens de palette proviennent de style.css.",
+      "persist": "Enregistre les changements de thème et de palette dans les cookies theme et palette et les restaure après l'hydratation (à associer à THEME_INIT_SCRIPT en SSR). Provider racine uniquement : les providers imbriqués l'ignorent.",
       "onThemeChange": "Appelé après que setTheme a changé le thème.",
       "onPaletteChange": "Appelé après que setPalette a changé la palette.",
-      "locale": "Langue des textes intégrés de lib-core (modifiée globalement).",
+      "locale": "Langue des textes intégrés de lib-core. Le provider racine la définit globalement ; un provider imbriqué hérite de la langue de son parent si elle n'est pas définie, et n'applique sa redéfinition qu'à son sous-arbre.",
       "children": "Contenu de l'application."
     },
     "ConfigContextProps": {
@@ -45,17 +45,26 @@
       "resolvedTheme": "Thème réellement appliqué après résolution de \"auto\" et des paires { light, dark } : un nom de thème intégré ou un objet de thème.",
       "locale": "Locale actuelle des textes intégrés de lib-core.",
       "mode": "Mode de couleur du thème : \"light\" ou \"dark\" pour ces thèmes, \"system\" pour \"auto\", \"system\" et les paires { light, dark }, undefined pour les autres thèmes.",
-      "resolvedMode": "Mode de couleur appliqué (data-theme sur <html>), quand il peut être déterminé.",
-      "palette": "Palette active (data-palette sur <html>), null pour l'apparence par défaut de Minerva.",
+      "resolvedMode": "Mode de couleur appliqué (data-theme sur <html>, ou sur l'élément de portée d'un provider imbriqué), lorsqu'il peut être déterminé.",
+      "palette": "Palette active (data-palette sur <html>, ou sur l'élément de portée d'un provider imbriqué), null pour l'apparence par défaut de Minerva.",
       "setTheme": "Change le thème (enregistré dans le cookie theme quand persist est activé).",
       "setPalette": "Change la palette (enregistrée dans le cookie palette quand persist est activé)."
     },
     "Locale": {
-      "language": "Langue des textes intégrés de lib-core : \"en\", \"zh\" ou \"fr\"."
+      "language": "Langue des textes intégrés de lib-core : \"en\", \"zh\", \"ja\" ou \"fr\"."
     }
   },
   "context": {
     "title": "ConfigContext",
     "text": "useConfig() lève une erreur s'il n'y a pas de ConfigProvider au-dessus, ce qui révèle tôt les erreurs de configuration. Lisez ConfigContext directement lorsque le provider est facultatif : il renvoie undefined au lieu de lever une erreur."
+  },
+  "nesting": {
+    "title": "Providers imbriqués",
+    "text": "Un ConfigProvider placé dans un autre est un provider imbriqué. Utilisez-le pour donner à une zone de la page, un aperçu ou une démo un autre thème, une autre palette ou une autre langue sans affecter le reste de la page.",
+    "inherit": "Héritage : il hérite du thème, de la palette et de la locale du provider le plus proche au-dessus de lui. Seules les props que vous définissez sont remplacées, et useConfig() en dessous renvoie les valeurs fusionnées. Les réglages hérités suivent le parent lorsqu'il change.",
+    "scoped": "Thème local : un thème ou une palette redéfini ne s'applique qu'à son sous-arbre. Le provider rend un élément conteneur en display: contents (la mise en page ne change pas) qui porte data-theme, data-palette et les variables du thème. Sans thème ni palette redéfini, aucun conteneur n'est rendu.",
+    "locale": "Langue locale : une locale redéfinie ne change que les textes intégrés de son sous-arbre. Un provider qui ne définit que la locale ne touche jamais au thème.",
+    "portal": "Surcouches : le contenu rendu dans un portail depuis un sous-arbre local (Modal, Drawer, Popover, Select, Menu, Tooltip, Toast…) est placé dans un conteneur sur <body> qui porte la même portée, si bien que les surcouches reçoivent aussi le thème local. Les API impératives rendues hors de l'arbre React, comme message() ou un confirm() autonome, utilisent le thème racine.",
+    "document": "État global : un provider imbriqué n'écrit jamais sur <html>, ne lit ni n'écrit les cookies (persist est ignoré) et ne change jamais la langue globale de lib-core. Le démonter laisse la page exactement telle que le provider racine l'a définie, et démonter le provider racine rétablit ce qu'il avait modifié. setTheme et setPalette d'un provider imbriqué changent sa propre valeur redéfinie, ou la valeur du parent pour un réglage qu'il ne redéfinit pas."
   }
 }

@@ -27,7 +27,7 @@
     "p2": "Palette blocks ([data-palette][data-theme]) beat the defaults declared on :root.",
     "p3": "The :root defaults of style.css, including the derived color-mix() tokens, apply when nothing else matches.",
     "p4": "The palette prop is ignored for github-dark and custom theme objects: those themes carry their own tokens.",
-    "global": "Like the theme itself, the palette is global: a provider writes to <html>, so a nested provider re-themes the whole page. To preview another palette in one region, use data-palette and data-theme on an element (see Scoped palettes below)."
+    "global": "Only the outermost provider writes to <html> and the cookies. A nested ThemeProvider or ConfigProvider inherits the mode and palette of its parent, and scopes its own defaultTheme / defaultPalette (or theme / palette) to its subtree and the overlays opened from it, without touching <html> (see Scoped palettes below)."
   },
   "persistence": {
     "title": "Cookie persistence",
@@ -66,7 +66,7 @@
   },
   "scoped": {
     "title": "Scoped palettes",
-    "text": "The palette blocks of style.css are attribute selectors, so they match any element, not only <html>. Put data-palette and data-theme on a wrapper to render a subtree with another palette, for example a preview card in a settings page or a theme picker. Always set both attributes and give the wrapper a background: the tokens change, but nothing paints them until an element uses them."
+    "text": "The palette blocks of style.css are attribute selectors, so they match any element, not only <html>. The simplest way to render a subtree with another palette or mode is a nested provider: <ThemeProvider defaultPalette=\"tech\"> or <ConfigProvider palette=\"tech\"> scopes it to its children and to their overlays. Without a provider, put data-palette and data-theme on a wrapper yourself: set both attributes and give the wrapper a background, because the tokens change but nothing paints them until an element uses them."
   },
   "tokens": {
     "title": "New tokens",
@@ -129,7 +129,7 @@
   "demos": {
     "toggles": {
       "title": "ThemeToggle and PaletteToggle",
-      "description": "The two toggles in a scoped preview: a local context drives them and the choice is applied with data-theme and data-palette on the preview element, so the rest of this site keeps its own theme."
+      "description": "The two toggles inside a nested ThemeProvider: its mode and palette apply to this preview only and are not saved in cookies, so the rest of the site keeps its own theme."
     },
     "palette-swatches": {
       "title": "All palettes",
@@ -142,10 +142,10 @@
   },
   "api": {
     "ThemeProviderProps": {
-      "defaultTheme": "Initial mode. For SSR pass the value parsed from the request cookie so the server markup matches the client.",
-      "defaultPalette": "Initial palette (null for Minerva's default look). For SSR pass the parsed palette cookie.",
-      "disableStorage": "Do not read or write the theme cookies (tests, embedded previews).",
-      "locale": "Language of lib-core's built-in texts.",
+      "defaultTheme": "Initial mode. For SSR pass the value parsed from the request cookie so the server markup matches the client. A nested provider inherits its parent's mode when it is not set.",
+      "defaultPalette": "Initial palette (null for Minerva's default look). For SSR pass the parsed palette cookie. A nested provider inherits its parent's palette when it is not set.",
+      "disableStorage": "Do not read or write the theme cookies (tests, embedded previews). Nested providers never use the cookies.",
+      "locale": "Language of lib-core's built-in texts (scoped to the subtree for a nested provider).",
       "onThemeChange": "Called when the mode changes.",
       "onPaletteChange": "Called when the palette changes.",
       "children": "Application content."

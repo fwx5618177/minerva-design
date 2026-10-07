@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import {
   Button,
+  ConfigProvider,
   StatusIndicator,
   Tag,
   useI18n,
@@ -10,20 +10,36 @@ import {
 
 // a key from lib-core's built-in translations
 const AVATAR_KEY = "avatar.default";
-const LANGUAGES: SupportedLanguage[] = ["en", "zh", "fr"];
+const LANGUAGES: SupportedLanguage[] = ["en", "zh", "ja", "fr"];
 
+function Preview() {
+  // t() translates lib-core's own strings with its private i18next instance,
+  // in the language of the closest ConfigProvider
+  const { t, language } = useI18n();
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        useI18n().language: <Tag variant="primary">{language}</Tag> {AVATAR_KEY}
+        : <Tag variant="info">{t(AVATAR_KEY)}</Tag>
+      </div>
+      {/* built-in component labels follow the language too */}
+      <StatusIndicator type="online" showLabel />
+    </>
+  );
+}
+
+// Inside a ConfigProvider (this site has one at the root) useLocale only
+// manages the state: the root provider owns lib-core's global language. The
+// chosen locale is applied to the preview with a nested ConfigProvider.
 export default function UseLocaleDemo() {
   const [locale, setLocale] = useLocale({ language: "en" });
-  // t() translates lib-core's own strings with its private i18next instance
-  const { t, i18n } = useI18n();
-
-  // The language of lib-core is global: restore the default when unmounting
-  useEffect(
-    () => () => {
-      void i18n.changeLanguage("en");
-    },
-    [i18n],
-  );
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
@@ -44,19 +60,9 @@ export default function UseLocaleDemo() {
           </Button>
         ))}
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        i18n.language: <Tag variant="primary">{i18n.language}</Tag> {AVATAR_KEY}
-        : <Tag variant="info">{t(AVATAR_KEY)}</Tag>
-      </div>
-      {/* built-in component labels follow the library language too */}
-      <StatusIndicator type="online" showLabel />
+      <ConfigProvider locale={locale}>
+        <Preview />
+      </ConfigProvider>
     </div>
   );
 }

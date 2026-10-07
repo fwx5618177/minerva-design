@@ -1,4 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useContext, useEffect, useState, useSyncExternalStore } from "react";
+import { ThemeScopeContext } from "../internal/themeScope";
 import {
   applyThemeStyles,
   getSystemTheme,
@@ -25,6 +26,10 @@ const getServerTheme = (): DefaultTheme => "light";
  * SSR-safe: renders as "light" on the server and touches the document only in
  * effects.
  *
+ * Inside a `ConfigProvider` the root provider owns `<html>`: the hook then only
+ * manages the state (pass it to a nested `<ConfigProvider theme={theme}>` to
+ * apply it to a subtree).
+ *
  * @returns `[theme, setTheme, systemTheme]`
  */
 const useAutoTheme = (initialTheme: Theme = "auto") => {
@@ -46,9 +51,11 @@ const useAutoTheme = (initialTheme: Theme = "auto") => {
     getServerTheme,
   );
 
+  const insideProvider = useContext(ThemeScopeContext) !== null;
   useEffect(() => {
+    if (insideProvider) return;
     applyThemeStyles(theme, systemTheme);
-  }, [theme, systemTheme]);
+  }, [insideProvider, theme, systemTheme]);
 
   return [theme, setTheme, systemTheme] as const;
 };

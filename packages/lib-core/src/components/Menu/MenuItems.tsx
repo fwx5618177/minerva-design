@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { LuChevronRight } from "react-icons/lu";
 import type { MenuAction, MenuEntry, MenuSize } from "./types";
 import styles from "./menu.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /** Classes of a menu panel (root menu or submenu). */
 export const contentClassName = (size: MenuSize, className?: string) =>
@@ -25,6 +26,7 @@ const MenuItems = ({
   size,
 }: MenuItemsProps) => {
   const P = context ? ContextPrimitive : DropdownPrimitive;
+  const portalContainer = usePortalContainer();
   return (
     <>
       {items.map((item) => {
@@ -73,7 +75,7 @@ const MenuItems = ({
                   aria-hidden="true"
                 />
               </P.SubTrigger>
-              <P.Portal>
+              <P.Portal container={portalContainer}>
                 <P.SubContent
                   className={contentClassName(size)}
                   collisionPadding={8}

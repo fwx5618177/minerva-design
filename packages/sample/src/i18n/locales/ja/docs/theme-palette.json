@@ -27,7 +27,7 @@
     "p2": "パレットブロック（[data-palette][data-theme]）は :root で宣言されたデフォルトより優先されます。",
     "p3": "ほかに一致するものがない場合は、color-mix() で派生するトークンを含む style.css の :root のデフォルトが適用されます。",
     "p4": "github-dark とカスタムテーマオブジェクトでは palette プロパティは無視されます。これらのテーマは独自のトークンを持っています。",
-    "global": "テーマと同様にパレットもグローバルです。プロバイダーは <html> に書き込むため、ネストしたプロバイダーはページ全体のテーマを変えてしまいます。一部の領域だけで別のパレットをプレビューするには、要素に data-palette と data-theme を指定します（下の「スコープ付きパレット」を参照）。"
+    "global": "<html> と Cookie に書き込むのは最も外側の Provider だけです。入れ子の ThemeProvider や ConfigProvider は親のモードとパレットを継承し、自身の defaultTheme / defaultPalette（または theme / palette）をサブツリーとそこから開くオーバーレイにだけ適用し、<html> には触れません（下の「スコープ付きパレット」を参照）。"
   },
   "persistence": {
     "title": "Cookie による永続化",
@@ -66,7 +66,7 @@
   },
   "scoped": {
     "title": "スコープ付きパレット",
-    "text": "style.css のパレットブロックは属性セレクターなので、<html> に限らずどの要素にも一致します。ラッパー要素に data-palette と data-theme を指定すると、そのサブツリーを別のパレットでレンダリングできます。たとえば設定ページのプレビューカードやテーマピッカーです。両方の属性を必ず指定し、ラッパーに背景を付けてください。トークンは変わりますが、それを使う要素がなければ何も描画されません。"
+    "text": "style.css のパレットブロックは属性セレクターなので、<html> だけでなく任意の要素にマッチします。サブツリーを別のパレットやモードで描画する最も簡単な方法は入れ子の Provider です。<ThemeProvider defaultPalette=\"tech\"> や <ConfigProvider palette=\"tech\"> は、子要素とそのオーバーレイにだけ適用されます。Provider を使わない場合は、ラッパー要素に data-palette と data-theme を自分で設定します。両方の属性を設定し、ラッパーに背景を指定してください。トークンは変わっても、要素が使うまでは何も描画されないためです。"
   },
   "tokens": {
     "title": "新しいトークン",
@@ -129,7 +129,7 @@
   "demos": {
     "toggles": {
       "title": "ThemeToggle と PaletteToggle",
-      "description": "スコープ付きプレビュー内の 2 つの切り替え。ローカルのコンテキストで動作し、選択はプレビュー要素の data-theme と data-palette で適用されるため、サイトのほかの部分は独自のテーマのままです。"
+      "description": "2 つのトグルを入れ子の ThemeProvider の中に置いています。そのモードとパレットはこのプレビューにだけ適用され、Cookie にも保存されないため、サイトの他の部分は自身のテーマを保ちます。"
     },
     "palette-swatches": {
       "title": "すべてのパレット",
@@ -142,10 +142,10 @@
   },
   "api": {
     "ThemeProviderProps": {
-      "defaultTheme": "初期モード。SSR ではリクエストの Cookie から解析した値を渡し、サーバーのマークアップをクライアントと一致させます。",
-      "defaultPalette": "初期パレット（null は Minerva のデフォルトの外観）。SSR では解析した palette Cookie を渡します。",
-      "disableStorage": "テーマの Cookie を読み書きしません（テスト、埋め込みプレビュー）。",
-      "locale": "lib-core の組み込みテキストの言語。",
+      "defaultTheme": "初期モード。SSR ではリクエストの Cookie から解析した値を渡し、サーバーのマークアップをクライアントと一致させます。入れ子の Provider で未指定の場合は親のモードを継承します。",
+      "defaultPalette": "初期パレット（null は Minerva のデフォルトの見た目）。SSR では解析した palette Cookie を渡します。入れ子の Provider で未指定の場合は親のパレットを継承します。",
+      "disableStorage": "テーマ Cookie を読み書きしません（テスト、埋め込みプレビュー向け）。入れ子の Provider は Cookie を使いません。",
+      "locale": "lib-core 内蔵テキストの言語（入れ子の Provider ではサブツリーにだけ適用）。",
       "onThemeChange": "モードが変わったときに呼ばれます。",
       "onPaletteChange": "パレットが変わったときに呼ばれます。",
       "children": "アプリケーションのコンテンツ。"

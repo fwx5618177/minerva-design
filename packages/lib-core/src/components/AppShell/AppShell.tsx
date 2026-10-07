@@ -23,6 +23,7 @@ import type {
   AppShellProps,
 } from "./types";
 import styles from "./appShell.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 const MOBILE_QUERY = "(max-width: 768px)";
 const canMatch = () =>
@@ -58,6 +59,7 @@ const AppShell = ({
   ...rest
 }: AppShellProps) => {
   const { t } = useI18n();
+  const portalContainer = usePortalContainer();
   const labels: AppShellLabels = {
     expand: overrides?.expand ?? t("appShell.expand"),
     collapse: overrides?.collapse ?? t("appShell.collapse"),
@@ -230,7 +232,7 @@ const AppShell = ({
         </div>
       </div>
       {isMobile && (
-        <Dialog.Portal>
+        <Dialog.Portal container={portalContainer}>
           <Dialog.Overlay className={styles.overlay} />
           <Dialog.Content
             className={styles.drawer}

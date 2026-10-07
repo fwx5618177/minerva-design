@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import enBundle from "./en";
 import frBundle from "./fr";
+import jaBundle from "./ja";
 import zhBundle from "./zh";
 import { mergeMessages } from "./merge";
 
 // Merged "index" namespace (index.json + groups/*.json)
 const en = enBundle.index;
 const fr = frBundle.index;
+const ja = jaBundle.index;
 const zh = zhBundle.index;
 
 /** Flattens nested translations into sorted dot-separated keys */
@@ -37,6 +39,7 @@ describe("lib-core translations", () => {
   it.each([
     ["zh", zh],
     ["fr", fr],
+    ["ja", ja],
   ])("%s has exactly the same keys as en", (_, bundle) => {
     expect(flattenKeys(bundle)).toEqual(enKeys);
   });
@@ -44,6 +47,7 @@ describe("lib-core translations", () => {
   it.each([
     ["zh", zh],
     ["fr", fr],
+    ["ja", ja],
   ])("%s uses the same interpolation placeholders as en", (_, bundle) => {
     for (const key of enKeys) {
       expect(placeholders(lookup(bundle, key)), key).toEqual(
@@ -53,7 +57,7 @@ describe("lib-core translations", () => {
   });
 
   it("has no empty translation", () => {
-    for (const bundle of [en, zh, fr]) {
+    for (const bundle of [en, zh, fr, ja]) {
       for (const key of flattenKeys(bundle)) {
         expect(lookup(bundle, key).trim(), key).not.toBe("");
       }

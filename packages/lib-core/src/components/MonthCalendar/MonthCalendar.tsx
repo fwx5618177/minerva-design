@@ -64,7 +64,7 @@ const MonthCalendar = ({
   className,
   ref,
 }: MonthCalendarProps) => {
-  const { t, i18n } = useI18n();
+  const { t, language } = useI18n();
   const headingId = useId();
   const [month, setMonth] = useControllableState<Date>({
     value: monthProp,
@@ -173,7 +173,7 @@ const MonthCalendar = ({
     if (!sameMonth(target, month)) goToMonth(target);
   };
 
-  const heading = new Intl.DateTimeFormat(locale ?? (i18n.language || "en"), {
+  const heading = new Intl.DateTimeFormat(locale ?? language, {
     year: "numeric",
     month: "long",
   }).format(first);

@@ -1,6 +1,7 @@
 import * as ContextPrimitive from "@radix-ui/react-context-menu";
 import MenuItems, { contentClassName } from "./MenuItems";
 import type { ContextMenuProps } from "./types";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /**
  * ContextMenu: the Menu entries opened at the pointer on right click
@@ -16,21 +17,24 @@ const ContextMenu = ({
   modal = true,
   className,
   ariaLabel,
-}: ContextMenuProps) => (
-  <ContextPrimitive.Root onOpenChange={onOpenChange} modal={modal}>
-    <ContextPrimitive.Trigger asChild disabled={disabled}>
-      {children}
-    </ContextPrimitive.Trigger>
-    <ContextPrimitive.Portal>
-      <ContextPrimitive.Content
-        className={contentClassName(size, className)}
-        aria-label={ariaLabel}
-        collisionPadding={8}
-      >
-        <MenuItems items={items} onSelect={onSelect} context size={size} />
-      </ContextPrimitive.Content>
-    </ContextPrimitive.Portal>
-  </ContextPrimitive.Root>
-);
+}: ContextMenuProps) => {
+  const portalContainer = usePortalContainer();
+  return (
+    <ContextPrimitive.Root onOpenChange={onOpenChange} modal={modal}>
+      <ContextPrimitive.Trigger asChild disabled={disabled}>
+        {children}
+      </ContextPrimitive.Trigger>
+      <ContextPrimitive.Portal container={portalContainer}>
+        <ContextPrimitive.Content
+          className={contentClassName(size, className)}
+          aria-label={ariaLabel}
+          collisionPadding={8}
+        >
+          <MenuItems items={items} onSelect={onSelect} context size={size} />
+        </ContextPrimitive.Content>
+      </ContextPrimitive.Portal>
+    </ContextPrimitive.Root>
+  );
+};
 
 export default ContextMenu;

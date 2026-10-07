@@ -1,9 +1,11 @@
+import { createElement, type ReactNode } from "react";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import useAutoTheme from "./useAutoTheme";
 import { dark, githubDark, light } from "../styles/themes";
 import { mockColorScheme } from "../test-utils/matchMedia";
 import type { Theme } from "../contexts/types";
+import { ConfigProvider } from "../contexts/ConfigProvider";
 
 const cssVar = (name: string) =>
   document.documentElement.style.getPropertyValue(`--${name}`);
@@ -84,5 +86,23 @@ describe("useAutoTheme", () => {
 
     rerender({ theme: "github-dark" });
     expect(cssVar("background-color")).toBe(githubDark["background-color"]);
+  });
+
+  it("only manages state inside a ConfigProvider (the root provider owns <html>)", () => {
+    mockColorScheme(false);
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(ConfigProvider, {
+        theme: "light",
+        palette: "tech",
+        children,
+      });
+    const { result } = renderHook(() => useAutoTheme("github-dark"), {
+      wrapper,
+    });
+    expect(result.current[0]).toBe("github-dark");
+    expect(cssVar("background-color")).toBe("");
+    expect(document.documentElement).toHaveAttribute("data-palette", "tech");
+    act(() => result.current[1]("dark"));
+    expect(cssVar("background-color")).toBe("");
   });
 });

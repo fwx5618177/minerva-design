@@ -7,7 +7,13 @@
 // Semantic tokens are derived from the base tokens with `color-mix()`, so they
 // follow any theme automatically (custom ones included). Themes may still set
 // them explicitly (the built-in dark themes do for surfaces and text).
-:root {
+//
+// The scope elements of nested ConfigProviders (`[data-minerva-theme-scope]`,
+// a `display: contents` wrapper and a portal container) redeclare every token:
+// custom properties resolve their `var()` references where they are declared,
+// so the derived tokens must be recomputed from the scope's own base tokens.
+:root,
+[data-minerva-theme-scope] {
   // ---- Base tokens (ThemeProps) ----
   --primary-color: #2563eb;
   --secondary-color: #475569;

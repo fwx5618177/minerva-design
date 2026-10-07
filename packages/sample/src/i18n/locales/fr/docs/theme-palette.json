@@ -27,7 +27,7 @@
     "p2": "Les blocs de palette ([data-palette][data-theme]) l'emportent sur les valeurs par défaut déclarées sur :root.",
     "p3": "Les valeurs par défaut de :root dans style.css, y compris les tokens dérivés avec color-mix(), s'appliquent quand rien d'autre ne correspond.",
     "p4": "La prop palette est ignorée pour github-dark et les objets de thème personnalisés : ces thèmes apportent leurs propres tokens.",
-    "global": "Comme le thème, la palette est globale : un provider écrit sur <html>, donc un provider imbriqué change le thème de toute la page. Pour prévisualiser une autre palette dans une zone, utilisez data-palette et data-theme sur un élément (voir Palettes locales ci-dessous)."
+    "global": "Seul le provider le plus externe écrit sur <html> et dans les cookies. Un ThemeProvider ou ConfigProvider imbriqué hérite du mode et de la palette de son parent, et limite ses propres defaultTheme / defaultPalette (ou theme / palette) à son sous-arbre et aux surcouches ouvertes depuis celui-ci, sans toucher à <html> (voir Palettes locales ci-dessous)."
   },
   "persistence": {
     "title": "Persistance par cookie",
@@ -66,7 +66,7 @@
   },
   "scoped": {
     "title": "Palettes locales",
-    "text": "Les blocs de palette de style.css sont des sélecteurs d'attributs : ils s'appliquent à n'importe quel élément, pas seulement à <html>. Placez data-palette et data-theme sur un conteneur pour rendre un sous-arbre avec une autre palette, par exemple une carte d'aperçu dans une page de réglages ou un sélecteur de thème. Définissez toujours les deux attributs et donnez un fond au conteneur : les tokens changent, mais rien ne les affiche tant qu'aucun élément ne les utilise."
+    "text": "Les blocs de palette de style.css sont des sélecteurs d'attributs : ils correspondent à n'importe quel élément, pas seulement à <html>. Le moyen le plus simple de rendre un sous-arbre avec une autre palette ou un autre mode est un provider imbriqué : <ThemeProvider defaultPalette=\"tech\"> ou <ConfigProvider palette=\"tech\"> l'applique à ses enfants et à leurs surcouches. Sans provider, placez vous-même data-palette et data-theme sur un conteneur : définissez les deux attributs et donnez un fond au conteneur, car les tokens changent mais rien ne les peint tant qu'aucun élément ne les utilise."
   },
   "tokens": {
     "title": "Nouveaux tokens",
@@ -129,7 +129,7 @@
   "demos": {
     "toggles": {
       "title": "ThemeToggle et PaletteToggle",
-      "description": "Les deux sélecteurs dans un aperçu local : un contexte local les pilote et le choix est appliqué avec data-theme et data-palette sur l'élément d'aperçu, si bien que le reste du site garde son propre thème."
+      "description": "Les deux sélecteurs dans un ThemeProvider imbriqué : son mode et sa palette ne s'appliquent qu'à cet aperçu et ne sont pas enregistrés dans les cookies, si bien que le reste du site conserve son propre thème."
     },
     "palette-swatches": {
       "title": "Toutes les palettes",
@@ -142,10 +142,10 @@
   },
   "api": {
     "ThemeProviderProps": {
-      "defaultTheme": "Mode initial. En SSR, passez la valeur lue dans le cookie de la requête pour que le balisage serveur corresponde au client.",
-      "defaultPalette": "Palette initiale (null pour l'apparence par défaut de Minerva). En SSR, passez le cookie palette analysé.",
-      "disableStorage": "Ne pas lire ni écrire les cookies de thème (tests, aperçus intégrés).",
-      "locale": "Langue des textes intégrés de lib-core.",
+      "defaultTheme": "Mode initial. En SSR, passez la valeur lue dans le cookie de la requête pour que le balisage serveur corresponde au client. Un provider imbriqué hérite du mode de son parent s'il n'est pas défini.",
+      "defaultPalette": "Palette initiale (null pour l'apparence par défaut de Minerva). En SSR, passez le cookie palette analysé. Un provider imbriqué hérite de la palette de son parent si elle n'est pas définie.",
+      "disableStorage": "Ne lit ni n'écrit les cookies de thème (tests, aperçus intégrés). Les providers imbriqués n'utilisent jamais les cookies.",
+      "locale": "Langue des textes intégrés de lib-core (limitée au sous-arbre pour un provider imbriqué).",
       "onThemeChange": "Appelé quand le mode change.",
       "onPaletteChange": "Appelé quand la palette change.",
       "children": "Contenu de l'application."

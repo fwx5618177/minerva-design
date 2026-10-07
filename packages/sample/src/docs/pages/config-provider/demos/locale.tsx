@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   ConfigProvider,
+  Pagination,
   Tag,
   useConfig,
   useI18n,
@@ -10,40 +11,36 @@ import {
 
 // a key from lib-core's built-in translations
 const AVATAR_KEY = "avatar.default";
-const LANGUAGES: SupportedLanguage[] = ["en", "zh", "fr"];
+const LANGUAGES: SupportedLanguage[] = ["en", "zh", "ja", "fr"];
 
 function Preview() {
-  const { locale } = useConfig();
+  const { locale, palette } = useConfig();
   const { t } = useI18n();
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        gap: 8,
-      }}
-    >
-      locale: <Tag variant="primary">{locale?.language}</Tag> {AVATAR_KEY}:{" "}
-      <Tag variant="info">{t(AVATAR_KEY)}</Tag>
+    <div style={{ display: "grid", gap: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        locale: <Tag variant="primary">{locale?.language}</Tag> {AVATAR_KEY}:{" "}
+        <Tag variant="info">{t(AVATAR_KEY)}</Tag> palette:{" "}
+        <Tag variant="success">{palette ?? "default"}</Tag>
+      </div>
+      <Pagination total={50} defaultCurrent={2} showTotal />
     </div>
   );
 }
 
 export default function LocaleDemo() {
-  // Reuse the outer provider's theme so the nested one doesn't change it
-  const { theme } = useConfig();
-  const { i18n } = useI18n();
   const [language, setLanguage] = useState<SupportedLanguage>("en");
 
-  // lib-core's language is global: restore the default when leaving
-  useEffect(
-    () => () => {
-      void i18n.changeLanguage("en");
-    },
-    [i18n],
-  );
-
+  // A nested provider that only sets `locale`: theme and palette are
+  // inherited from the site's provider, <html> is left alone, and the
+  // language only applies to this subtree.
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div
@@ -63,7 +60,7 @@ export default function LocaleDemo() {
           </Button>
         ))}
       </div>
-      <ConfigProvider theme={theme} locale={{ language }}>
+      <ConfigProvider locale={{ language }}>
         <Preview />
       </ConfigProvider>
     </div>

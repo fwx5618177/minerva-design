@@ -13,6 +13,7 @@ import type {
   DrawerTriggerProps,
 } from "./types";
 import styles from "./drawer.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /** Owns the open state of a compound drawer (Radix Dialog root). */
 export const DrawerRoot = (props: DrawerRootProps) => (
@@ -46,8 +47,9 @@ export const DrawerContent = ({
   ...rest
 }: DrawerContentProps) => {
   const { t } = useI18n();
+  const portalContainer = usePortalContainer();
   return (
-    <RadixDialog.Portal>
+    <RadixDialog.Portal container={portalContainer}>
       <RadixDialog.Overlay className={cn(styles.overlay, overlayClassName)} />
       <RadixDialog.Content
         className={cn(styles.content, styles[side], styles[size], className)}

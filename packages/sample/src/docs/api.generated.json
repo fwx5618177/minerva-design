@@ -2470,13 +2470,13 @@
         "name": "resolvedMode",
         "type": "ResolvedThemeMode",
         "required": false,
-        "description": "Applied color mode (`data-theme` on `<html>`), when it can be determined"
+        "description": "Applied color mode (`data-theme` on `<html>`, or on the scope element of a nested provider), when it can be determined"
       },
       {
         "name": "palette",
         "type": "Palette | null",
         "required": false,
-        "description": "Active palette (`data-palette` on `<html>`), `null` for Minerva's default look"
+        "description": "Active palette (`data-palette` on `<html>`, or on the scope element of a nested provider), `null` for Minerva's default look"
       },
       {
         "name": "setTheme",
@@ -2502,22 +2502,22 @@
         "name": "theme",
         "type": "ConfigProviderThemeProps",
         "required": false,
-        "default": "\"auto\"",
-        "description": "Theme to apply: \"auto\" (follows `prefers-color-scheme`), a built-in theme name, a theme object, or a `{ light, dark }` pair. Applied as CSS variables on the document root."
+        "default": "\"auto\" (nested: the parent's theme)",
+        "description": "Theme to apply: \"auto\" (follows `prefers-color-scheme`), a built-in theme name, a theme object, or a `{ light, dark }` pair. The root provider applies it to `<html>`; a nested provider inherits its parent's theme unless set, and applies an override to its own subtree only."
       },
       {
         "name": "palette",
         "type": "Palette | null",
         "required": false,
-        "default": "null",
-        "description": "Palette applied with the light / dark / system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look. Sets `data-palette` on `<html>`; palette tokens come from `style.css`."
+        "default": "null (nested: the parent's palette)",
+        "description": "Palette applied with the light / dark / system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look. The root provider sets `data-palette` on `<html>`; a nested provider inherits its parent's palette unless set, and scopes an override to its subtree. Palette tokens come from `style.css`."
       },
       {
         "name": "persist",
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Persist theme and palette changes in the `theme` / `palette` cookies and restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR)"
+        "description": "Persist theme and palette changes in the `theme` / `palette` cookies and restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR). Root provider only: ignored by nested providers."
       },
       {
         "name": "onThemeChange",
@@ -2535,8 +2535,8 @@
         "name": "locale",
         "type": "Locale",
         "required": false,
-        "default": "{ language: \"en\" }",
-        "description": "Language of lib-core's built-in texts (changes it globally)"
+        "default": "{ language: \"en\" } (nested: the parent's locale)",
+        "description": "Language of lib-core's built-in texts. The root provider sets it globally; a nested provider inherits its parent's language unless set, and applies an override to its subtree only."
       },
       {
         "name": "children",
@@ -8463,7 +8463,7 @@
     "source": "lib-core/src/contexts/types.ts",
     "description": "Languages that lib-core ships translations for",
     "kind": "alias",
-    "type": "\"en\" | \"zh\" | \"fr\""
+    "type": "\"en\" | \"zh\" | \"ja\" | \"fr\""
   },
   "SupportTheme": {
     "source": "lib-core/src/contexts/types.ts",
@@ -9995,14 +9995,14 @@
         "name": "defaultTheme",
         "type": "ThemeMode",
         "required": false,
-        "default": "\"system\"",
+        "default": "\"system\" (nested: the parent's theme)",
         "description": "Initial mode. For SSR pass the value parsed from the request cookie so the server markup matches the client."
       },
       {
         "name": "defaultPalette",
         "type": "Palette | null",
         "required": false,
-        "default": "null",
+        "default": "null (nested: the parent's palette)",
         "description": "Initial palette (`null` = Minerva's default look). For SSR pass the parsed `palette` cookie."
       },
       {
@@ -10010,7 +10010,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Do not read / write the theme cookies (tests, embedded previews)"
+        "description": "Do not read / write the theme cookies (tests, embedded previews). Nested providers never use the cookies."
       },
       {
         "name": "locale",

@@ -3,20 +3,27 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react";
 import type {
+  ComponentTheme,
   ConfigContextProps,
   ConfigContextProviderProps,
   ConfigProviderThemeProps,
   DefaultTheme,
+  Locale,
   ThemeMap,
 } from "./types";
-import useLocale from "../hooks/useLocale";
-import { DEFAULT_LANGUAGE } from "../config/i18n";
+import i18n, { DEFAULT_LANGUAGE } from "../config/i18n";
+import {
+  THEME_SCOPE_ATTRIBUTE,
+  ThemeScopeContext,
+  type ThemeScope,
+} from "../internal/themeScope";
 import {
   generateCSSVariables,
   getSystemTheme,
@@ -101,39 +108,91 @@ const writeCookie = (name: string, value: string | null) => {
       : serializeThemeCookie(name, value);
 };
 
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+/** Theme tokens as inline CSS custom properties (`--<key>`). */
+const themeVariables = (theme: ComponentTheme | ThemeMap) =>
+  Object.fromEntries(
+    Object.entries(theme)
+      .filter(
+        ([, value]) => value !== undefined && value !== null && value !== "",
+      )
+      .map(([key, value]) => [`--${key}`, String(value)]),
+  ) as React.CSSProperties;
+
+const setAttribute = (
+  element: HTMLElement,
+  name: string,
+  value: string | null | undefined,
+) => {
+  if (value === null || value === undefined) element.removeAttribute(name);
+  else element.setAttribute(name, value);
+};
+
 /**
  * Global configuration: theme (+ palette), and the language of lib-core's
  * built-in texts.
  *
- * Theme application:
+ * Root provider (no `ConfigProvider` above it) - owns the document:
  * - `data-theme` (resolved light / dark) and `color-scheme` on `<html>`
  * - with a `palette` and a light / dark / system theme: `data-palette` on
  *   `<html>`, tokens come from the palette blocks of `style.css`
  * - otherwise the theme's tokens are written as inline CSS variables
+ * - the `theme` / `palette` cookies (`persist`) and lib-core's global language
+ * Everything it wrote on `<html>` is restored when it unmounts.
+ *
+ * Nested provider - never touches `<html>`, cookies or the global language.
+ * It inherits every setting it does not override from its parent. When it
+ * overrides `theme` and / or `palette`, they are applied to its subtree only:
+ * a `display: contents` wrapper element carries `data-theme` / `data-palette`
+ * / the tokens, and portalled content (Modal, Popover, Select, Toast...) is
+ * rendered into a matching scope container on `document.body`. An overridden
+ * `locale` only applies to the components of its subtree.
  */
 export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
-  theme: themeProp = "auto",
-  palette: paletteProp = null,
+  theme: themeProp,
+  palette: paletteProp,
   persist = false,
   onThemeChange,
   onPaletteChange,
   locale,
   children,
 }) => {
-  const [theme, setThemeState] = useState<ConfigProviderThemeProps>(themeProp);
-  const [palette, setPaletteState] = useState<Palette | null>(paletteProp);
+  const parentScope = useContext(ThemeScopeContext);
+  const parent = useContext(ConfigContext);
+  const isRoot = parentScope === null;
+  const ownsTheme = isRoot || themeProp !== undefined;
+  const ownsPalette = isRoot || paletteProp !== undefined;
+  // a nested provider overriding the theme and / or palette of its subtree
+  const scoped = !isRoot && (ownsTheme || ownsPalette);
+
+  const [themeState, setThemeState] = useState<ConfigProviderThemeProps>(
+    themeProp ?? "auto",
+  );
+  const [paletteState, setPaletteState] = useState<Palette | null>(
+    paletteProp ?? null,
+  );
 
   // Follow new props (adjusting state while rendering avoids a stale render)
   const [prevThemeProp, setPrevThemeProp] = useState(themeProp);
   if (themeProp !== prevThemeProp) {
     setPrevThemeProp(themeProp);
-    setThemeState(themeProp);
+    setThemeState(themeProp ?? "auto");
   }
   const [prevPaletteProp, setPrevPaletteProp] = useState(paletteProp);
   if (paletteProp !== prevPaletteProp) {
     setPrevPaletteProp(paletteProp);
-    setPaletteState(paletteProp);
+    setPaletteState(paletteProp ?? null);
   }
+
+  // Settings that are not overridden follow the parent provider
+  const theme: ConfigProviderThemeProps = ownsTheme
+    ? themeState
+    : (parent?.theme ?? "auto");
+  const palette: Palette | null = ownsPalette
+    ? paletteState
+    : (parent?.palette ?? null);
 
   const followsSystem = themeModeOf(theme) === "system";
   const systemTheme = useSyncExternalStore<DefaultTheme>(
@@ -145,33 +204,56 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
   // Cookies are only readable in the browser and must not seed the initial
   // state (the server cannot see them -> hydration mismatch), so restore them
   // once after hydration. A no-op when the server already passed the values.
+  // Only the root provider persists.
+  const rootThemeProp = themeProp ?? "auto";
+  const rootPaletteProp = paletteProp ?? null;
   const persistedFor = useRef<string | null>(null);
   useEffect(() => {
-    if (!persist) return;
-    const key = `${String(themeModeOf(themeProp))}|${paletteProp}`;
+    if (!isRoot || !persist) return;
+    const key = `${String(themeModeOf(rootThemeProp))}|${rootPaletteProp}`;
     if (persistedFor.current === key) return;
     persistedFor.current = key;
     const storedTheme = readCookie(THEME_COOKIE_NAME);
     const storedPalette = readCookie(PALETTE_COOKIE_NAME);
     /* eslint-disable react-hooks/set-state-in-effect -- one-time sync with the browser cookie after hydration */
-    if (storedTheme !== undefined && themeModeOf(themeProp) !== undefined) {
-      const mode = parseThemeCookie(storedTheme, themeModeOf(themeProp));
+    if (storedTheme !== undefined && themeModeOf(rootThemeProp) !== undefined) {
+      const mode = parseThemeCookie(storedTheme, themeModeOf(rootThemeProp));
       setThemeState(
-        mode === "system" && themeModeOf(themeProp) === "system"
-          ? themeProp
+        mode === "system" && themeModeOf(rootThemeProp) === "system"
+          ? rootThemeProp
           : mode,
       );
     }
     if (storedPalette !== undefined) {
-      setPaletteState(parsePaletteCookie(storedPalette, paletteProp));
+      setPaletteState(parsePaletteCookie(storedPalette, rootPaletteProp));
     }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [persist, themeProp, paletteProp]);
+  }, [isRoot, persist, rootThemeProp, rootPaletteProp]);
 
   const resolvedMode = resolvedModeOf(theme, systemTheme);
   const activePalette = palette && supportsPalette(theme) ? palette : null;
 
+  // Root: remember what <html> looked like before, and restore it on unmount.
+  // (Declared before the effect below so it runs first.)
   useEffect(() => {
+    if (!isRoot) return;
+    const root = document.documentElement;
+    const initialTheme = root.getAttribute("data-theme");
+    const initialPalette = root.getAttribute("data-palette");
+    const initialScheme = root.style.getPropertyValue("color-scheme");
+    return () => {
+      setAttribute(root, "data-theme", initialTheme);
+      setAttribute(root, "data-palette", initialPalette);
+      if (initialScheme) root.style.setProperty("color-scheme", initialScheme);
+      else root.style.removeProperty("color-scheme");
+      generateCSSVariables(root.style, {} as ThemeMap);
+      if (!root.getAttribute("style")) root.removeAttribute("style");
+    };
+  }, [isRoot]);
+
+  // Root: apply the theme to <html>
+  useEffect(() => {
+    if (!isRoot) return;
     const root = document.documentElement;
     if (resolvedMode) {
       root.dataset.theme = resolvedMode;
@@ -188,9 +270,68 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       delete root.dataset.palette;
       generateCSSVariables(root.style, resolveTheme(theme, systemTheme));
     }
-  }, [theme, systemTheme, resolvedMode, activePalette]);
+  }, [isRoot, theme, systemTheme, resolvedMode, activePalette]);
 
-  const [currentLocale] = useLocale(locale ?? { language: DEFAULT_LANGUAGE });
+  // Language: the root provider sets lib-core's global language (also used by
+  // imperative APIs such as `message`), nested ones only their subtree.
+  const language =
+    locale?.language ??
+    (isRoot ? undefined : parent?.locale?.language) ??
+    DEFAULT_LANGUAGE;
+  const scopeLanguage =
+    !isRoot && locale?.language ? locale.language : parentScope?.language;
+
+  useEffect(() => {
+    if (!isRoot) return;
+    const initialLanguage = i18n.language;
+    return () => {
+      if (initialLanguage) void i18n.changeLanguage(initialLanguage);
+    };
+  }, [isRoot]);
+
+  useEffect(() => {
+    if (!isRoot) return;
+    void i18n.changeLanguage(language);
+  }, [isRoot, language]);
+
+  // Scoped theme: tokens / attributes of the subtree
+  const scopeVariables = useMemo(
+    () =>
+      scoped && !activePalette
+        ? themeVariables(resolveTheme(theme, systemTheme))
+        : undefined,
+    [scoped, activePalette, theme, systemTheme],
+  );
+
+  // Portal container of a scoped provider: carries the same scope attributes
+  // and tokens so portalled content gets the scoped theme.
+  const [portalHost, setPortalHost] = useState<HTMLElement | null>(null);
+  useIsomorphicLayoutEffect(() => {
+    if (!scoped) return;
+    const host = document.createElement("div");
+    host.setAttribute("data-minerva-portal-host", "");
+    host.setAttribute(THEME_SCOPE_ATTRIBUTE, "");
+    host.style.display = "contents";
+    document.body.appendChild(host);
+    setPortalHost(host);
+    return () => {
+      host.remove();
+      setPortalHost(null);
+    };
+  }, [scoped]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!portalHost) return;
+    setAttribute(portalHost, "data-theme", resolvedMode);
+    setAttribute(portalHost, "data-palette", activePalette);
+    if (resolvedMode)
+      portalHost.style.setProperty("color-scheme", resolvedMode);
+    else portalHost.style.removeProperty("color-scheme");
+    generateCSSVariables(
+      portalHost.style,
+      activePalette ? ({} as ThemeMap) : resolveTheme(theme, systemTheme),
+    );
+  }, [portalHost, resolvedMode, activePalette, theme, systemTheme]);
 
   const onThemeChangeRef = useRef(onThemeChange);
   const onPaletteChangeRef = useRef(onPaletteChange);
@@ -199,27 +340,41 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     onPaletteChangeRef.current = onPaletteChange;
   });
 
+  const parentSetTheme = parent?.setTheme;
+  const parentSetPalette = parent?.setPalette;
+
   const setTheme = useCallback(
     (next: ConfigProviderThemeProps) => {
+      // Not overridden here: the theme belongs to the parent provider
+      if (!ownsTheme) {
+        parentSetTheme?.(next);
+        return;
+      }
       setThemeState(next);
       const mode = themeModeOf(next);
-      if (persist && mode && typeof next === "string") {
+      if (isRoot && persist && mode && typeof next === "string") {
         writeCookie(THEME_COOKIE_NAME, mode);
       }
       onThemeChangeRef.current?.(next);
     },
-    [persist],
+    [ownsTheme, parentSetTheme, isRoot, persist],
   );
 
   const setPalette = useCallback(
     (next: Palette | null) => {
+      if (!ownsPalette) {
+        parentSetPalette?.(next);
+        return;
+      }
       const value = isPalette(next) ? next : null;
       setPaletteState(value);
-      if (persist) writeCookie(PALETTE_COOKIE_NAME, value);
+      if (isRoot && persist) writeCookie(PALETTE_COOKIE_NAME, value);
       onPaletteChangeRef.current?.(value);
     },
-    [persist],
+    [ownsPalette, parentSetPalette, isRoot, persist],
   );
+
+  const currentLocale = useMemo<Locale>(() => ({ language }), [language]);
 
   const value = useMemo<ConfigContextProps>(
     () => ({
@@ -248,7 +403,38 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     ],
   );
 
+  const portalContainer = scoped
+    ? portalHost
+    : (parentScope?.portalContainer ?? null);
+  const scope = useMemo<ThemeScope>(
+    () => ({
+      scoped: scoped || (parentScope?.scoped ?? false),
+      portalContainer,
+      language: scopeLanguage,
+    }),
+    [scoped, parentScope, portalContainer, scopeLanguage],
+  );
+
   return (
-    <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>
+    <ThemeScopeContext.Provider value={scope}>
+      <ConfigContext.Provider value={value}>
+        {scoped ? (
+          <div
+            {...{ [THEME_SCOPE_ATTRIBUTE]: "" }}
+            data-theme={resolvedMode}
+            data-palette={activePalette ?? undefined}
+            style={{
+              display: "contents",
+              colorScheme: resolvedMode,
+              ...scopeVariables,
+            }}
+          >
+            {children}
+          </div>
+        ) : (
+          children
+        )}
+      </ConfigContext.Provider>
+    </ThemeScopeContext.Provider>
   );
 };

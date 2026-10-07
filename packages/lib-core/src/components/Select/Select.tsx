@@ -13,6 +13,7 @@ import type {
   SelectProps,
   SelectSeparatorProps,
 } from "./types";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /**
  * Select: a single-choice dropdown. Radix Select provides the combobox /
@@ -42,6 +43,7 @@ const Select = ({
   children,
   ref,
 }: SelectProps) => {
+  const portalContainer = usePortalContainer();
   const fc = useFormControlContext();
   const field = useFormControlProps({
     id,
@@ -88,7 +90,7 @@ const Select = ({
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
 
-      <RadixSelect.Portal>
+      <RadixSelect.Portal container={portalContainer}>
         <RadixSelect.Content
           className={classNames(styles.content, contentClassName)}
           position="popper"

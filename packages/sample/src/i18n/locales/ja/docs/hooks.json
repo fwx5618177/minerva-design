@@ -6,17 +6,17 @@
     "text": "すべてのフックとユーティリティは @minerva/lib-core からエクスポートされています。",
     "hook": "フック",
     "signature": "シグネチャ",
-    "useAutoTheme": "現在のテーマを state に保持し、CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } のペアでは prefers-color-scheme を購読し、アンマウント時に解除します。設定されたテーマ、その setter、現在のシステム配色を返します。",
-    "useLocale": "ロケールを state に保持し、lib-core 内蔵テキストの言語（en、zh、fr）を切り替えます。locale とその setter を返します。",
-    "useI18n": "lib-core が使う t と i18next インスタンスを返します。専用のインスタンスなので、アプリ側の i18next 設定に影響することはありません。",
+    "useAutoTheme": "現在のテーマを state に保持し、ConfigProvider の外では CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } の組では prefers-color-scheme を購読し、アンマウント時に購読を解除します。設定されたテーマ、その setter、現在のシステムのカラースキームを返します。ConfigProvider の内側では state の管理だけを行い、<html> はルート Provider が管理します。",
+    "useLocale": "ロケールを state に保持し、ConfigProvider の外では lib-core 内蔵テキストの言語（en、zh、ja、fr）を切り替えます。ロケールとその setter を返します。ConfigProvider の内側では state の管理だけを行い、グローバルな言語はルート Provider が管理します。",
+    "useI18n": "t、t が翻訳する言語、lib-core が使う i18next インスタンスを返します。t は locale を指定した最も近い入れ子の ConfigProvider に従い、それがなければ lib-core のグローバルな言語を使います。プライベートなインスタンスなので、アプリケーション自身の i18next の設定には影響しません。",
     "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
     "useDialogFocusReturn": "Radix の Trigger を使わず state から開くダイアログのためのフォーカス復帰。開く前にフォーカスされていた要素を記憶し、閉じた後に再びフォーカスします。open、contentRef、onCloseAutoFocus をダイアログに渡します。",
     "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
-    "global": "useAutoTheme と useLocale はグローバルな状態（<html> の CSS 変数、lib-core の言語）を変更します。以下のデモはサイトの現在の設定から始まり、アンマウント時に元に戻します。"
+    "global": "useAutoTheme と useLocale がグローバルな状態（<html> の CSS 変数、lib-core の言語）を変更するのは、上に ConfigProvider がない場合だけです。このサイトはルートに Provider があるため、下のデモではフックの state を入れ子の ConfigProvider に渡し、プレビューにだけ適用しています。"
   },
   "standalone": {
     "title": "ConfigProvider なしでフックを使う",
-    "text": "ConfigProvider は useAutoTheme と useLocale の薄いラッパーです。useConfig() が不要なら、Provider の中ではなく Provider の代わりにフックを直接呼び出せます。"
+    "text": "useConfig() が不要なら、Provider の代わりに useAutoTheme と useLocale を直接呼び出せます。Provider の内側では state を保持するだけなので、サブツリーに適用するには入れ子の ConfigProvider に渡してください。"
   },
   "focusReturn": {
     "title": "ダイアログを閉じた後のフォーカス復帰",
@@ -25,11 +25,11 @@
   "demos": {
     "use-auto-theme": {
       "title": "useAutoTheme",
-      "description": "setTheme でページのテーマを切り替えます。systemTheme は常に OS の配色を返します。Reset（またはページ離脱）でサイトのテーマに戻ります。"
+      "description": "setTheme は入れ子の ConfigProvider が適用するプレビューのテーマを変更します。systemTheme は常に OS のカラースキームを示します。ページの他の部分はサイトのテーマのままです。"
     },
     "use-locale": {
       "title": "useLocale と useI18n",
-      "description": "setLocale は lib-core の言語を変更し、useI18n の t() はその言語で lib-core の内蔵テキストを返します。"
+      "description": "setLocale は入れ子の ConfigProvider に渡すロケールを変更します。useI18n の t() はその言語で lib-core の内蔵テキストを返します。"
     },
     "use-disclosure": {
       "title": "useDisclosure と cn",

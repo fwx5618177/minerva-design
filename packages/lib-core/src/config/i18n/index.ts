@@ -3,6 +3,7 @@ import type { SupportedLanguage } from "../../contexts/types";
 
 import en from "./en";
 import fr from "./fr";
+import ja from "./ja";
 import zh from "./zh";
 
 export const DEFAULT_LANGUAGE: SupportedLanguage = "en";
@@ -10,6 +11,7 @@ export const DEFAULT_LANGUAGE: SupportedLanguage = "en";
 export const resources = {
   en,
   fr,
+  ja,
   zh,
 } as const satisfies Record<SupportedLanguage, unknown>;
 

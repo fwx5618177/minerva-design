@@ -1,6 +1,8 @@
-import type React from "react";
 import {
   Button,
+  ConfigProvider,
+  Select,
+  SelectItem,
   Space,
   Switch,
   themes,
@@ -20,37 +22,38 @@ const sepia: ComponentTheme = {
   "focus-ring-color": "rgba(154, 52, 18, 0.45)",
 };
 
-// <ConfigProvider theme={sepia}> writes these tokens on <html> and re-themes
-// the whole page. To preview a theme in one container only, write the same
-// tokens as CSS custom properties on a wrapper element.
-const toCssVariables = (theme: ComponentTheme) =>
-  Object.fromEntries(
-    Object.entries(theme).map(([key, value]) => [`--${key}`, value]),
-  ) as React.CSSProperties;
-
+// A nested ConfigProvider applies its theme to its own subtree only (the
+// site's root provider keeps <html>). Portalled content opened from inside,
+// like the Select menu below, gets the same theme.
 export default function CustomThemeDemo() {
   return (
-    <div
-      style={{
-        ...toCssVariables(sepia),
-        padding: 16,
-        borderRadius: 8,
-        border: "1px solid var(--border-color)",
-        background: "var(--surface-color)",
-        color: "var(--text-color)",
-      }}
-    >
-      <Space direction="vertical" size="medium">
-        <strong>Sepia theme</strong>
-        <span>Only this container uses the custom theme.</span>
-        <Space wrap align="center">
-          <Button variant="primary">Primary</Button>
-          <Button variant="primary" disabled>
-            Disabled
-          </Button>
-          <Switch label="Reading mode" defaultChecked />
+    <ConfigProvider theme={sepia}>
+      <div
+        style={{
+          padding: 16,
+          borderRadius: 8,
+          border: "1px solid var(--border-color)",
+          background: "var(--surface-color)",
+          color: "var(--text-color)",
+        }}
+      >
+        <Space direction="vertical" size="medium">
+          <strong>Sepia theme</strong>
+          <span>Only this container uses the custom theme.</span>
+          <Space wrap align="center">
+            <Button variant="primary">Primary</Button>
+            <Button variant="primary" disabled>
+              Disabled
+            </Button>
+            <Switch label="Reading mode" defaultChecked />
+            <Select ariaLabel="Paper" defaultValue="cream">
+              <SelectItem value="cream">Cream</SelectItem>
+              <SelectItem value="ivory">Ivory</SelectItem>
+              <SelectItem value="kraft">Kraft</SelectItem>
+            </Select>
+          </Space>
         </Space>
-      </Space>
-    </div>
+      </div>
+    </ConfigProvider>
   );
 }

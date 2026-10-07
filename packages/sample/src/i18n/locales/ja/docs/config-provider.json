@@ -5,7 +5,7 @@
     "title": "使い方",
     "text": "アプリケーションのルートに ConfigProvider を 1 つ配置します。テーマを CSS 変数として <html> に適用し、lib-core 内蔵テキストの言語を設定し、両方を useConfig() に提供します。",
     "dynamic": "どちらのプロパティもリアクティブです。state に保持すれば、実行時にテーマや言語をユーザーが切り替えられます。",
-    "global": "テーマと言語はグローバルです。Provider は <html> に CSS 変数を書き込み、lib-core の i18next の言語を変更します。そのため入れ子の ConfigProvider は子要素だけでなくページ全体のテーマを変えます。特定の領域だけテーマを変えたい場合は、ラッパー要素に CSS 変数を設定してください（カスタムテーマの例を参照）。"
+    "global": "グローバルな状態を変更するのは最も外側の ConfigProvider だけです。<html> に data-theme、data-palette とテーマ変数を書き込み、Cookie を保存し、lib-core のグローバルな言語を設定します。入れ子の Provider はこれらを一切行わず、自身の設定をサブツリーにだけ適用します（「Provider の入れ子」を参照）。"
   },
   "palette": {
     "title": "パレット、永続化、コールバック",
@@ -15,29 +15,29 @@
   "demos": {
     "use-config": {
       "title": "設定の読み取り",
-      "description": "useConfig() は最も近い Provider の設定テーマ、解決済みテーマ、ロケールを返します。ヘッダーでサイトのテーマを変えると更新されます。"
+      "description": "useConfig() は最も近い Provider のテーマ、解決後のテーマ、パレット、ロケールを返します。ヘッダーでサイトのテーマ、パレット、言語を切り替えると値が更新されます。"
     },
     "custom-theme": {
       "title": "カスタムテーマ",
-      "description": "themes.light をもとにしたカスタムテーマ。ConfigProvider に渡すとページ全体のテーマが変わるため、ここではトークンを CSS 変数として 1 つのコンテナーにだけ適用しています。"
+      "description": "themes.light をもとにしたカスタムテーマを入れ子の ConfigProvider に渡しています。ポータルで描画される Select のメニューを含め、このコンテナだけにテーマが適用されます。"
     },
     "locale": {
       "title": "ロケール",
-      "description": "locale プロパティは lib-core 内蔵テキストの言語（en、zh、fr）を設定します。言語はグローバルなので、このデモはアンマウント時に英語へ戻します。"
+      "description": "locale（en、zh、ja、fr）だけを指定した入れ子の ConfigProvider です。サブツリーの内蔵テキストは変わりますが、テーマとパレットはサイトから継承され、<html> は変更されません。"
     },
     "palette": {
       "title": "パレット",
-      "description": "サイトの現在のモードで 4 つのパレットを並べてプレビューします。各カードに data-palette と data-theme を指定しています。palette プロパティを使うと、同じ属性が <html> に付きます。"
+      "description": "各カードは独自のパレットを持つ入れ子の ConfigProvider で、サイトの現在のモードで表示されます。サイトのルート Provider は <html> の data-palette を保持したままです。"
     }
   },
   "api": {
     "ConfigContextProviderProps": {
-      "theme": "適用するテーマ：\"auto\" またはその別名 \"system\"（prefers-color-scheme に従う）、組み込みテーマ名、テーマオブジェクト、{ light, dark } のペア。ドキュメントのルートに CSS 変数として適用されます。palette を指定した場合はパレットを通じて適用されます。",
-      "palette": "light、dark、system テーマとともに適用するパレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）。null の場合は Minerva のデフォルトの外観のままです。<html> に data-palette を設定し、パレットのトークンは style.css から供給されます。",
-      "persist": "テーマとパレットの変更を theme と palette の Cookie に保存し、ハイドレーション後に復元します（SSR では THEME_INIT_SCRIPT と組み合わせます）。",
+      "theme": "適用するテーマ：\"auto\" またはその別名 \"system\"（prefers-color-scheme に従う）、組み込みテーマ名、テーマオブジェクト、{ light, dark } の組。ルート Provider は <html> に適用し、入れ子の Provider は未指定なら親のテーマを継承し、指定した場合は自身のサブツリーにだけ適用します。",
+      "palette": "light、dark、system テーマと組み合わせるパレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）。null で Minerva のデフォルトの見た目になります。ルート Provider は <html> に data-palette を設定し、入れ子の Provider は未指定なら親のパレットを継承し、指定した場合はサブツリーにだけ適用します。パレットのトークンは style.css から提供されます。",
+      "persist": "テーマとパレットの変更を theme / palette Cookie に保存し、ハイドレーション後に復元します（SSR では THEME_INIT_SCRIPT と組み合わせます）。ルート Provider のみ有効で、入れ子の Provider では無視されます。",
       "onThemeChange": "setTheme がテーマを変更した後に呼ばれます。",
       "onPaletteChange": "setPalette がパレットを変更した後に呼ばれます。",
-      "locale": "lib-core 内蔵テキストの言語（グローバルに変更されます）。",
+      "locale": "lib-core 内蔵テキストの言語。ルート Provider はグローバルに設定し、入れ子の Provider は未指定なら親の言語を継承し、指定した場合はサブツリーにだけ適用します。",
       "children": "アプリケーションのコンテンツ。"
     },
     "ConfigContextProps": {
@@ -45,17 +45,26 @@
       "resolvedTheme": "\"auto\" や { light, dark } のペアを解決した後に実際に適用されているテーマ：内蔵テーマ名またはテーマオブジェクト。",
       "locale": "lib-core 内蔵テキストの現在のロケール。",
       "mode": "テーマのカラーモード：light / dark テーマでは \"light\" / \"dark\"、\"auto\"、\"system\"、{ light, dark } のペアでは \"system\"、その他のテーマでは undefined。",
-      "resolvedMode": "適用されているカラーモード（<html> の data-theme）。判定できる場合のみ。",
-      "palette": "有効なパレット（<html> の data-palette）。null は Minerva のデフォルトの外観。",
+      "resolvedMode": "適用されているカラーモード（<html>、または入れ子の Provider のスコープ要素の data-theme）。判定できる場合のみ。",
+      "palette": "有効なパレット（<html>、または入れ子の Provider のスコープ要素の data-palette）。null は Minerva のデフォルトの見た目です。",
       "setTheme": "テーマを変更します（persist が有効なら theme Cookie に保存）。",
       "setPalette": "パレットを変更します（persist が有効なら palette Cookie に保存）。"
     },
     "Locale": {
-      "language": "lib-core 内蔵テキストの言語：\"en\"、\"zh\"、\"fr\"。"
+      "language": "lib-core 内蔵テキストの言語：\"en\"、\"zh\"、\"ja\"、\"fr\"。"
     }
   },
   "context": {
     "title": "ConfigContext",
     "text": "上位に ConfigProvider がない場合、useConfig() は例外を投げるため、設定ミスを早期に発見できます。Provider が任意の場合は ConfigContext を直接読み取ってください。例外ではなく undefined が返ります。"
+  },
+  "nesting": {
+    "title": "Provider の入れ子",
+    "text": "別の ConfigProvider の内側にある ConfigProvider を入れ子の Provider と呼びます。ページの一部の領域、プレビュー、デモだけに別のテーマ・パレット・言語を適用したいときに使い、ページの他の部分には影響しません。",
+    "inherit": "継承：上にある最も近い Provider から theme、palette、locale を継承します。上書きされるのは指定した props だけで、その下の useConfig() はマージされた値を返します。継承した設定は親の変更に追従します。",
+    "scoped": "スコープ付きテーマ：theme や palette の上書きはサブツリーにだけ適用されます。Provider は display: contents のラッパー要素（レイアウトは変わりません）を描画し、そこに data-theme、data-palette とテーマ変数を設定します。theme も palette も上書きしない場合、ラッパーは描画されません。",
+    "locale": "スコープ付き言語：locale の上書きはサブツリーの内蔵テキストだけを変更します。locale だけを指定した Provider はテーマに一切触れません。",
+    "portal": "オーバーレイ：スコープ付きサブツリーからポータルで描画されるコンテンツ（Modal、Drawer、Popover、Select、Menu、Tooltip、Toast など）は、同じスコープを持つ <body> 上のコンテナに描画されるため、オーバーレイにもスコープ付きテーマが適用されます。React ツリーの外で描画される命令的 API（message() やスタンドアロンの confirm() など）はルートのテーマを使います。",
+    "document": "グローバルな状態：入れ子の Provider は <html> への書き込み、Cookie の読み書き（persist は無視されます）、lib-core のグローバルな言語の変更を一切行いません。アンマウントしてもページはルート Provider が設定した状態のままで、ルート Provider をアンマウントすると変更した内容が元に戻ります。入れ子の Provider の setTheme と setPalette は自身の上書き値を変更し、上書きしていない設定については親の値を変更します。"
   }
 }

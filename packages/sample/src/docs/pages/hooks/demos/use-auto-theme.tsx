@@ -1,8 +1,8 @@
-import { useEffect } from "react";
 import {
   Button,
+  ConfigProvider,
+  Space,
   Tag,
-  applyThemeStyles,
   useAutoTheme,
   useConfig,
   type Theme,
@@ -10,14 +10,12 @@ import {
 
 const OPTIONS: Theme[] = ["auto", "light", "dark", "github-dark"];
 
-// useAutoTheme writes the theme as CSS variables on <html>, so it re-themes
-// the whole page. This demo starts from the theme of the surrounding
-// ConfigProvider (mounting changes nothing) and restores it when unmounted.
+// Inside a ConfigProvider (this site has one at the root) useAutoTheme only
+// manages the state: the root provider owns <html>. The chosen theme is
+// applied to the preview below with a nested, scoped ConfigProvider.
 export default function UseAutoThemeDemo() {
   const { theme: appTheme = "auto" } = useConfig();
   const [theme, setTheme, systemTheme] = useAutoTheme(appTheme);
-
-  useEffect(() => () => applyThemeStyles(appTheme), [appTheme]);
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
@@ -55,6 +53,23 @@ export default function UseAutoThemeDemo() {
         </Tag>{" "}
         systemTheme: <Tag variant="info">{systemTheme}</Tag>
       </div>
+      <ConfigProvider theme={theme}>
+        <div
+          style={{
+            padding: 16,
+            borderRadius: 8,
+            border: "1px solid var(--border-color)",
+            background: "var(--background-color)",
+            color: "var(--text-color)",
+          }}
+        >
+          <Space wrap align="center">
+            <Button variant="primary">Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Tag variant="success">preview</Tag>
+          </Space>
+        </div>
+      </ConfigProvider>
     </div>
   );
 }

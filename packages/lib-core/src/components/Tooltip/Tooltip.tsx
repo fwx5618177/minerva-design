@@ -21,6 +21,7 @@ import { useIsClient } from "../../internal/useIsClient";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useTooltipConfig } from "./TooltipProvider";
 import styles from "./tooltip.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 /** Extra gap so the arrow does not overlap the trigger. */
 const ARROW_GAP = 6;
@@ -62,6 +63,7 @@ const Tooltip = ({
   contentRef,
 }: TooltipProps) => {
   const isClient = useIsClient();
+  const portalContainer = usePortalContainer();
   const config = useTooltipConfig();
   const enterDelay = enterDelayProp ?? config?.enterDelay ?? 200;
   const leaveDelay = leaveDelayProp ?? config?.leaveDelay ?? 0;
@@ -298,7 +300,7 @@ const Tooltip = ({
               />
             )}
           </div>,
-          document.body,
+          portalContainer ?? document.body,
         )}
     </>
   );

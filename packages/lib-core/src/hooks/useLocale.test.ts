@@ -1,8 +1,10 @@
+import { createElement, type ReactNode } from "react";
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import useLocale from "./useLocale";
 import useI18n from "./useI18n";
 import i18n from "../config/i18n";
+import { ConfigProvider } from "../contexts/ConfigProvider";
 
 describe("useLocale / useI18n", () => {
   it('defaults to English ("en")', () => {
@@ -25,8 +27,26 @@ describe("useLocale / useI18n", () => {
   });
 
   it("ships a translation for every supported language", () => {
-    for (const language of ["en", "zh", "fr"]) {
+    for (const language of ["en", "zh", "ja", "fr"]) {
       expect(i18n.hasResourceBundle(language, "index")).toBe(true);
     }
+  });
+
+  it("leaves the global language to the root ConfigProvider when inside one", () => {
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(ConfigProvider, { locale: { language: "ja" }, children });
+    const { result } = renderHook(
+      () => {
+        const [locale, setLocale] = useLocale({ language: "fr" });
+        const { t } = useI18n();
+        return { locale, setLocale, t };
+      },
+      { wrapper },
+    );
+    expect(result.current.locale.language).toBe("fr");
+    expect(i18n.language).toBe("ja");
+    expect(result.current.t("empty.description")).toBe("データがありません");
+    act(() => result.current.setLocale({ language: "zh" }));
+    expect(i18n.language).toBe("ja");
   });
 });

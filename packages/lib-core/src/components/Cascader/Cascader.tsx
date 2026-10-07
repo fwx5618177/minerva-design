@@ -11,6 +11,7 @@ import { useMergedRefs } from "../../internal/mergeRefs";
 import { useIsClient } from "../../internal/useIsClient";
 import useI18n from "../../hooks/useI18n";
 import styles from "./cascader.module.scss";
+import { usePortalContainer } from "../../internal/themeScope";
 
 type CascaderValue = (string | number)[];
 
@@ -83,6 +84,7 @@ const Cascader = ({
 }: CascaderProps) => {
   const { t } = useI18n();
   const isClient = useIsClient();
+  const portalContainer = usePortalContainer();
   const [selectedValue, setSelectedValue] = useControllableState<CascaderValue>(
     { value, defaultValue: defaultValue ?? EMPTY_VALUE },
   );
@@ -341,7 +343,7 @@ const Cascader = ({
               />
             )}
           </div>,
-          document.body,
+          portalContainer ?? document.body,
         )
       : null;
 
