@@ -17,6 +17,7 @@ import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import Select, { SelectItem } from "../Select/Select";
 
 type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
 
@@ -51,6 +52,58 @@ const getPageRange = (current: number, totalPages: number) => {
   return range;
 };
 
+type CompactItem = number | "ellipsis-start" | "ellipsis-end";
+
+const rangeOf = (start: number, end: number) => {
+  const out: number[] = [];
+  for (let i = start; i <= end; i++) out.push(i);
+  return out;
+};
+
+/**
+ * Compact page list: `boundary` pages at each end, `siblings` pages on each
+ * side of the current page and "…" gaps. Every page is listed when they fit.
+ */
+const getCompactItems = (
+  totalPages: number,
+  page: number,
+  siblings: number,
+  boundary: number,
+): CompactItem[] => {
+  // boundaries + current and its siblings + two gap slots
+  const totalSlots = boundary * 2 + siblings * 2 + 3;
+  if (totalPages <= totalSlots) return rangeOf(1, totalPages);
+
+  const leftSibling = Math.max(page - siblings, boundary + 1);
+  const rightSibling = Math.min(page + siblings, totalPages - boundary);
+  // a gap of a single page is shown as that page instead of "…"
+  const showStartGap = leftSibling > boundary + 2;
+  const showEndGap = rightSibling < totalPages - boundary - 1;
+  const clusterSize = boundary + siblings * 2 + 2;
+
+  if (!showStartGap) {
+    return [
+      ...rangeOf(1, clusterSize),
+      "ellipsis-end",
+      ...rangeOf(totalPages - boundary + 1, totalPages),
+    ];
+  }
+  if (!showEndGap) {
+    return [
+      ...rangeOf(1, boundary),
+      "ellipsis-start",
+      ...rangeOf(totalPages - clusterSize + 1, totalPages),
+    ];
+  }
+  return [
+    ...rangeOf(1, boundary),
+    "ellipsis-start",
+    ...rangeOf(leftSibling, rightSibling),
+    "ellipsis-end",
+    ...rangeOf(totalPages - boundary + 1, totalPages),
+  ];
+};
+
 /**
  * Pagination 分页组件
  *
@@ -77,6 +130,10 @@ const getPageRange = (current: number, totalPages: number) => {
  * @param simple - 是否简单模式
  * @param responsive - 是否响应式
  * @param icons - 组件图标
+ * @param siblingCount - 紧凑页码列表中当前页两侧的页数
+ * @param boundaryCount - 紧凑页码列表首尾保留的页数
+ * @param hideEdges - 隐藏上一页 / 下一页
+ * @param hideNumbers - 用「当前 / 总数」计数代替页码按钮
  * @param labels - 自定义文案（覆盖本地化的默认文案）
  * @param ref - 根 <nav> 元素的 ref
  */
@@ -103,7 +160,13 @@ const Pagination = ({
   responsive = false,
   icons,
   labels,
+  siblingCount,
+  boundaryCount,
+  hideEdges = false,
+  hideNumbers = false,
+  sizeChangerVariant = "native",
   ref,
+  ...rest
 }: PaginationProps) => {
   const { t } = useI18n();
   const navRef = useRef<HTMLElement>(null);
@@ -132,8 +195,11 @@ const Pagination = ({
   } | null>(null);
 
   const mergedIcons = { ...DEFAULT_ICONS, ...icons };
-  const totalPages =
-    currentPageSize > 0 ? Math.ceil(total / currentPageSize) : 0;
+  // There is always at least one (possibly empty) page
+  const totalPages = Math.max(
+    1,
+    currentPageSize > 0 ? Math.ceil(total / currentPageSize) : 0,
+  );
 
   const changePage = useCallback(
     (target: number, focus: "active" | "if-lost" = "if-lost") => {
@@ -207,8 +273,8 @@ const Pagination = ({
   };
 
   // 页码大小改变: 回到第一页
-  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSize = parseInt(e.target.value, 10);
+  const handleSizeChange = (value: string) => {
+    const newSize = parseInt(value, 10);
     setPageSize(newSize);
     setPage(1);
     onChange?.(1, newSize);
@@ -280,7 +346,9 @@ const Pagination = ({
       <button
         key={itemKey}
         type="button"
-        className={classNames(styles.item, {
+        onKeyDown={handleKeyDown}
+        data-active={isActive || undefined}
+        className={classNames(styles.item, "ui-pagination-item", {
           [styles.active]: isActive,
           [styles.disabled]: isDisabled,
           [styles.prev]: type === "prev",
@@ -307,11 +375,14 @@ const Pagination = ({
     );
   };
 
+  const renderEdge = (type: "prev" | "next") =>
+    hideEdges ? null : renderItem(type === "prev" ? page - 1 : page + 1, type);
+
   const renderPageList = () => {
     if (simple) {
       return (
         <>
-          {renderItem(page - 1, "prev")}
+          {renderEdge("prev")}
           <div className={styles.simpleInput}>
             <input
               value={simpleDraft ?? String(page)}
@@ -329,13 +400,54 @@ const Pagination = ({
             </span>
             <span>{totalPages}</span>
           </div>
-          {renderItem(page + 1, "next")}
+          {renderEdge("next")}
         </>
       );
     }
 
+    if (hideNumbers) {
+      return (
+        <>
+          {renderEdge("prev")}
+          <span
+            className={classNames(styles.counter, "ui-pagination-counter")}
+            aria-live="polite"
+          >
+            {page} / {totalPages}
+          </span>
+          {renderEdge("next")}
+        </>
+      );
+    }
+
+    if (siblingCount !== undefined || boundaryCount !== undefined) {
+      const compact = getCompactItems(
+        totalPages,
+        page,
+        Math.max(0, siblingCount ?? 1),
+        Math.max(1, boundaryCount ?? 1),
+      );
+      return [
+        renderEdge("prev"),
+        ...compact.map((item) =>
+          typeof item === "number" ? (
+            renderItem(item, "page")
+          ) : (
+            <span
+              key={item}
+              className={classNames(styles.ellipsis, "ui-pagination-ellipsis")}
+              aria-hidden="true"
+            >
+              …
+            </span>
+          ),
+        ),
+        renderEdge("next"),
+      ];
+    }
+
     const range = getPageRange(page, totalPages);
-    const items: React.ReactNode[] = [renderItem(page - 1, "prev")];
+    const items: React.ReactNode[] = [renderEdge("prev")];
 
     if (range.length > 0 && range[0] > 1) {
       items.push(renderItem(1, "page"));
@@ -356,17 +468,14 @@ const Pagination = ({
       items.push(renderItem(totalPages, "page"));
     }
 
-    items.push(renderItem(page + 1, "next"));
+    items.push(renderEdge("next"));
     return items;
   };
 
-  // 键盘导航: 方向键 / Home / End, 焦点随之移动到当前页
+  // 键盘导航 (on the page buttons only, so inputs / selects keep their own
+  // keys): 方向键 / Home / End, 焦点随之移动到当前页
+  // (disabled pagination: the buttons are disabled and receive no keys)
   const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    if (disabled) return;
-    // Let text inputs / selects keep their own arrow/Home/End behaviour
-    const target = e.target as HTMLElement;
-    if (target.tagName === "INPUT" || target.tagName === "SELECT") return;
-
     const destination =
       e.key === "ArrowLeft"
         ? page - 1
@@ -382,12 +491,28 @@ const Pagination = ({
     changePage(destination, "active");
   };
 
+  const shownPage = Math.min(Math.max(1, page), totalPages);
+  const visibleRange: [number, number] =
+    total > 0
+      ? [
+          (shownPage - 1) * currentPageSize + 1,
+          Math.min(shownPage * currentPageSize, total),
+        ]
+      : [0, 0];
+
+  const sizeLabel = labels?.pageSize ?? t("pagination.pageSize");
+  const sizeOptionLabel = (size: number) =>
+    labels?.pageSizeOption?.(size) ?? t("pagination.pageSizeOption", { size });
+
   const sizeOptions = pageSizeOptions.includes(currentPageSize)
     ? pageSizeOptions
     : [...pageSizeOptions, currentPageSize].sort((a, b) => a - b);
 
   const componentClassName = classNames(
     styles.pagination,
+    // Stable styling hooks (not used for styling by the library)
+    "ui-pagination",
+    simple && "ui-pagination-simple",
     {
       [styles.disabled]: disabled,
       [styles.small]: size === "small",
@@ -403,20 +528,23 @@ const Pagination = ({
 
   return (
     <nav
+      aria-label={labels?.nav ?? t("pagination.nav")}
+      {...rest}
       ref={mergedRef}
       className={componentClassName}
       style={style}
-      aria-label={labels?.nav ?? t("pagination.nav")}
-      onKeyDown={handleKeyDown}
     >
-      {showTotal && (
-        <div className={styles.total}>
-          {totalRender
-            ? totalRender(total, [
-                total > 0 ? (page - 1) * currentPageSize + 1 : 0,
-                Math.min(page * currentPageSize, total),
-              ])
-            : t("pagination.total", { total })}
+      {showTotal !== false && (
+        <div
+          className={classNames(styles.total, "ui-pagination-total")}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {typeof showTotal === "function"
+            ? showTotal(total, visibleRange)
+            : totalRender
+              ? totalRender(total, visibleRange)
+              : (labels?.total?.(total) ?? t("pagination.total", { total }))}
         </div>
       )}
 
@@ -437,20 +565,37 @@ const Pagination = ({
       )}
 
       {showSizeChanger && (
-        <div className={styles.sizeChanger}>
-          <select
-            value={currentPageSize}
-            disabled={disabled}
-            onChange={handleSizeChange}
-            aria-label={labels?.pageSize ?? t("pagination.pageSize")}
-          >
-            {sizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {labels?.pageSizeOption?.(option) ??
-                  t("pagination.pageSizeOption", { size: option })}
-              </option>
-            ))}
-          </select>
+        <div
+          className={classNames(styles.sizeChanger, "ui-pagination-page-size")}
+        >
+          {sizeChangerVariant === "select" ? (
+            <Select
+              size="small"
+              value={String(currentPageSize)}
+              disabled={disabled}
+              onChange={handleSizeChange}
+              ariaLabel={sizeLabel}
+            >
+              {sizeOptions.map((option) => (
+                <SelectItem key={option} value={String(option)}>
+                  {sizeOptionLabel(option)}
+                </SelectItem>
+              ))}
+            </Select>
+          ) : (
+            <select
+              value={currentPageSize}
+              disabled={disabled}
+              onChange={(e) => handleSizeChange(e.target.value)}
+              aria-label={sizeLabel}
+            >
+              {sizeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {sizeOptionLabel(option)}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       )}
     </nav>

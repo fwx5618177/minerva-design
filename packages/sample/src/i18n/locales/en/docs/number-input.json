@@ -1,0 +1,42 @@
+{
+  "title": "NumberInput",
+  "description": "Numeric field (spinbutton) with arrow-key stepping, an optional stepper, min / max clamping and fixed precision; values are committed on blur or Enter.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Out-of-range or non-numeric drafts are flagged and clamped / reverted when committed; clearing gives null."
+    },
+    "stepper-precision": {
+      "title": "Stepper and precision",
+      "description": "showStepper adds buttons; precision is inferred from step unless set; allowEmpty={false} falls back to min."
+    },
+    "form-control": {
+      "title": "With FormField",
+      "description": "The field provides the label, state and description; readOnly blocks typing and stepping."
+    }
+  },
+  "api": {
+    "NumberInputProps": {
+      "value": "Current value (controlled); `null` is an empty field. Omit for an uncontrolled field",
+      "defaultValue": "Initial value of an uncontrolled field",
+      "onChange": "Called with the committed value (on blur / Enter, stepping and stepper clicks), never while typing; `null` when the field is cleared",
+      "min": "Smallest allowed value; committed values are clamped to it",
+      "max": "Largest allowed value; committed values are clamped to it",
+      "step": "Amount added / removed by ArrowUp / ArrowDown and the stepper",
+      "precision": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)",
+      "size": "Field size",
+      "invalid": "Error state (also set by an invalid FormControl or an out-of-range draft)",
+      "disabled": "Disables the field (also set by FormControl)",
+      "readOnly": "Focusable and copyable, but typing and stepping do not change the value (also set by FormControl)",
+      "showStepper": "Shows increment / decrement buttons; the arrow keys always work",
+      "allowEmpty": "Clearing the field commits `null`; otherwise it falls back to min (or 0)",
+      "className": "Class name of the wrapper",
+      "incrementLabel": "Accessible label of the increment button",
+      "decrementLabel": "Accessible label of the decrement button",
+      "notANumberMessage": "Hint shown (as the wrapper title) while the draft is not a number",
+      "belowMinMessage": "Hint shown while the draft is below min",
+      "aboveMaxMessage": "Hint shown while the draft is above max",
+      "ref": "Ref to the <input> element"
+    }
+  }
+}

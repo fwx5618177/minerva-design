@@ -1,0 +1,38 @@
+{
+  "title": "PageTabs",
+  "description": "Une barre des pages ouvertes de l’application (navigation entre routes, pas une tablist ARIA) : l’application gère les routes, la fermeture et la protection des modifications non enregistrées. Les éléments sont des surfaces plates arrondies ; les titres longs sont tronqués et affichés en entier dans une infobulle ; la page courante reste visible et des boutons de défilement apparaissent quand la liste déborde.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Chaque PageTab a un bouton de libellé (aria-current=\"page\" quand il est actif) et une action séparée facultative, comme un bouton de fermeture. Quand l’élément ayant le focus est fermé, le focus passe à la page courante."
+    },
+    "context-menu": {
+      "title": "Menu contextuel et actions",
+      "description": "Enveloppez les éléments dans un ContextMenu pour des commandes par page ; actions affiche des contrôles globaux hors de la liste défilante."
+    },
+    "overflow": {
+      "title": "Débordement et désactivation",
+      "description": "Quand les pages débordent, des boutons de défilement apparaissent et la page active est ramenée dans la zone visible. Les pages désactivées ne peuvent pas être choisies et n’affichent pas d’infobulle."
+    }
+  },
+  "api": {
+    "PageTabsProps": {
+      "ariaLabel": "Libellé accessible du repère de navigation (par ex. « Pages ouvertes »)",
+      "activeValue": "Valeur de l’élément de la route courante. Quand elle (ou l’ensemble des éléments) change, l’élément actif est ramené dans la zone visible",
+      "children": "Éléments PageTab",
+      "actions": "Actions globales affichées après la liste défilante (par ex. un menu de pages)",
+      "scrollLeftLabel": "Libellé accessible du bouton « défiler vers la gauche »",
+      "scrollRightLabel": "Libellé accessible du bouton « défiler vers la droite »"
+    },
+    "PageTabProps": {
+      "ref": "Ref vers l’élément englobant de l’élément",
+      "value": "Identifiant de la page (exposé en data-value)",
+      "label": "Titre de la page ; tronqué par des points de suspension, affiché en entier dans une infobulle",
+      "active": "Marque l’élément comme page courante (aria-current=\"page\")",
+      "disabled": "Désactive le bouton de libellé (l’action séparée garde son propre état)",
+      "icon": "Icône affichée avant le libellé",
+      "action": "Contrôle séparé affiché à côté du libellé (par ex. un IconButton de fermeture)",
+      "onSelect": "Appelé quand le bouton de libellé est activé"
+    }
+  }
+}

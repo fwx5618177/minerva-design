@@ -546,6 +546,21 @@ describe("VirtualList", () => {
       expect(getScroller(container)).toHaveFocus();
     });
 
+    it("exposes the focusable scroll container as a labelled region", () => {
+      const { container } = render(
+        <VirtualList
+          items={makeItems(10)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          renderItem={renderItem}
+          ariaLabel="Contacts"
+        />,
+      );
+      expect(screen.getByRole("region", { name: "Contacts" })).toBe(
+        getScroller(container),
+      );
+    });
+
     it("names the loading indicator", () => {
       render(
         <VirtualList

@@ -1,0 +1,41 @@
+{
+  "title": "Toast",
+  "description": "Notifications temporaires avec un titre, une description et un statut, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application. Contrairement à message, les toasts héritent du contexte de l’application (thème, langue) et afficher un toast avec un id existant le remplace. Compatible avec le rendu serveur.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Montez un ToastProvider près de la racine (cette démo monte celui utilisé sur cette page), puis appelez toast.success / error / warning / info."
+    },
+    "options": {
+      "title": "Options",
+      "description": "toast({ status, title, description, duration }) pour un contrôle complet ; duration 0 garde le toast jusqu’à sa fermeture. toast.dismiss(id) ferme un toast, toast.dismiss() tous. Survoler ou focaliser un toast suspend son minuteur."
+    },
+    "dedupe": {
+      "title": "Le même id remplace",
+      "description": "Afficher un toast avec l’id d’un toast visible le remplace et relance son minuteur au lieu d’empiler des doublons (pratique pour les erreurs de polling). useToast renvoie la même fonction toast."
+    }
+  },
+  "api": {
+    "ToastOptions": {
+      "id": "Identifiant du toast ; généré s’il est omis. Afficher un toast avec l’id d’un toast visible le remplace (et relance son minuteur) au lieu d’empiler un doublon",
+      "status": "Statut du toast",
+      "title": "Texte principal",
+      "description": "Texte secondaire sous le titre",
+      "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert"
+    },
+    "ToastProviderProps": {
+      "position": "Emplacement de la pile de toasts",
+      "children": "Contenu de l’application ; la zone des toasts est rendue après lui",
+      "pauseOnHover": "Suspend le minuteur de fermeture automatique pendant le survol ou le focus d’un toast",
+      "ariaLabel": "Libellé accessible de la région des toasts",
+      "closeLabel": "Libellé accessible des boutons de fermeture"
+    },
+    "ToastApi": {
+      "info": "Affiche un toast d’information avec le titre donné",
+      "success": "Affiche un toast de succès avec le titre donné",
+      "warning": "Affiche un toast d’avertissement avec le titre donné",
+      "error": "Affiche un toast de danger avec le titre donné",
+      "dismiss": "Ferme le toast ayant l’id donné, ou tous les toasts s’il est omis"
+    }
+  }
+}

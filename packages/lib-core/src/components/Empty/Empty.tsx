@@ -1,7 +1,8 @@
 import React, { useId } from "react";
 import { RiInboxLine } from "react-icons/ri";
 import styles from "./empty.module.scss";
-import type { EmptyProps } from "./types";
+import type { EmptyProps, EmptySize } from "./types";
+import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 
 /** Default icon; decorative, the description names the empty state */
@@ -42,9 +43,20 @@ const DefaultSvg = () => (
 const isRenderable = (node: React.ReactNode) =>
   node != null && node !== false && node !== "";
 
+/** Stable `ui-empty-state-size-*` hook names (shared with @novel-isr/ui) */
+const HOOK_SIZE: Record<EmptySize, string> = {
+  small: "compact",
+  medium: "default",
+  large: "lg",
+};
+
 /**
  * 空状态组件
- * @param icon 自定义图标
+ * @param icon 自定义图标（null / false 不渲染图标）
+ * @param title 标题（作为无障碍名称）
+ * @param action 主操作
+ * @param secondaryAction 次要操作
+ * @param size 尺寸档位（无边框布局）
  * @param description 描述文字
  * @param className 自定义类名
  * @param style 自定义样式
@@ -60,7 +72,11 @@ const isRenderable = (node: React.ReactNode) =>
  */
 const Empty = ({
   icon,
+  title,
   description: descriptionProp,
+  action,
+  secondaryAction,
+  size,
   className,
   style,
   children,
@@ -71,18 +87,30 @@ const Empty = ({
   showShadow,
   color,
   ref,
+  ...rest
 }: EmptyProps) => {
   const { t } = useI18n();
   // Only an omitted description falls back to the default (null hides it)
   const description =
     descriptionProp === undefined ? t("empty.description") : descriptionProp;
   const descriptionId = useId();
+  const titleId = useId();
+  const hasTitle = isRenderable(title);
   const hasDescription = isRenderable(description);
+  const hideIcon = icon === null || icon === false;
 
   return (
     <div
       ref={ref}
-      className={`${styles.empty} ${showShadow ? styles.showShadow : ""} ${className || ""}`}
+      className={cn(
+        styles.empty,
+        showShadow && styles.showShadow,
+        size && styles.sized,
+        size && styles[`size-${size}`],
+        "ui-empty-state",
+        size && `ui-empty-state-size-${HOOK_SIZE[size]}`,
+        className,
+      )}
       style={{
         width,
         height,
@@ -91,15 +119,42 @@ const Empty = ({
         ...style,
       }}
       role="status"
-      // Named by the visible description, which may be any ReactNode
-      aria-labelledby={hasDescription ? descriptionId : undefined}
+      // Named by the visible title (or the description), which may be any
+      // ReactNode, unless the consumer names the region explicitly
+      aria-labelledby={
+        rest["aria-label"] !== undefined
+          ? undefined
+          : hasTitle
+            ? titleId
+            : hasDescription
+              ? descriptionId
+              : undefined
+      }
+      aria-describedby={hasTitle && hasDescription ? descriptionId : undefined}
+      {...rest}
     >
-      <div className={styles.iconWrapper}>
-        {icon || (useSvg ? <DefaultSvg /> : <DefaultIcon />)}
-      </div>
+      {!hideIcon && (
+        <div className={cn(styles.iconWrapper, "ui-empty-state-icon")}>
+          {icon || (useSvg ? <DefaultSvg /> : <DefaultIcon />)}
+        </div>
+      )}
+      {hasTitle && (
+        <div id={titleId} className={cn(styles.title, "ui-empty-state-title")}>
+          {title}
+        </div>
+      )}
       {hasDescription && (
-        <div id={descriptionId} className={styles.description}>
+        <div
+          id={descriptionId}
+          className={cn(styles.description, "ui-empty-state-description")}
+        >
           {description}
+        </div>
+      )}
+      {(isRenderable(action) || isRenderable(secondaryAction)) && (
+        <div className={cn(styles.actions, "ui-empty-state-actions")}>
+          {action}
+          {secondaryAction}
         </div>
       )}
       {isRenderable(children) && (

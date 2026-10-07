@@ -1,0 +1,38 @@
+{
+  "title": "PageTabs 页面标签",
+  "description": "已打开应用页面的标签栏（路由导航，而非 ARIA tablist）：路由、关闭和未保存更改的拦截由应用负责。条目为扁平的圆角表面；过长的标题会被截断并在提示中完整显示；当前页面始终保持可见，列表溢出时出现滚动按钮。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "每个 PageTab 包含一个标签按钮（激活时为 aria-current=\"page\"）和可选的独立操作，例如关闭按钮。关闭获得焦点的条目时，焦点会移到当前页面。"
+    },
+    "context-menu": {
+      "title": "右键菜单与操作",
+      "description": "用 ContextMenu 包裹条目以提供针对页面的命令；actions 在滚动列表之外渲染全局控件。"
+    },
+    "overflow": {
+      "title": "溢出与禁用",
+      "description": "页面溢出时会出现滚动按钮，并将当前页面滚动到可见区域。禁用的页面无法选择，也不显示提示。"
+    }
+  },
+  "api": {
+    "PageTabsProps": {
+      "ariaLabel": "导航地标的无障碍标签（例如“已打开的页面”）",
+      "activeValue": "当前路由对应条目的值。它（或条目集合）变化时，会将激活条目滚动到可见区域",
+      "children": "PageTab 条目",
+      "actions": "显示在滚动列表之后的全局操作（例如页面菜单）",
+      "scrollLeftLabel": "“向左滚动”按钮的无障碍标签",
+      "scrollRightLabel": "“向右滚动”按钮的无障碍标签"
+    },
+    "PageTabProps": {
+      "ref": "指向条目包裹元素的 ref",
+      "value": "页面标识（以 data-value 暴露）",
+      "label": "页面标题；超长时以省略号截断，并在提示中完整显示",
+      "active": "将条目标记为当前页面（aria-current=\"page\"）",
+      "disabled": "禁用标签按钮（独立操作保持自身状态）",
+      "icon": "显示在标签前的图标",
+      "action": "渲染在标签旁的独立控件（例如关闭用的 IconButton）",
+      "onSelect": "激活标签按钮时调用"
+    }
+  }
+}

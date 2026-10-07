@@ -1,0 +1,42 @@
+{
+  "title": "NumberInput 数字输入",
+  "description": "数字字段（spinbutton），支持方向键步进、可选步进按钮、min / max 限制和固定精度；值在失焦或按 Enter 时提交。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "超出范围或非数字的草稿会被标记，提交时被限制或还原；清空得到 null。"
+    },
+    "stepper-precision": {
+      "title": "步进与精度",
+      "description": "showStepper 添加按钮；未设置时精度由 step 推导；allowEmpty={false} 时回退到 min。"
+    },
+    "form-control": {
+      "title": "配合 FormField",
+      "description": "字段提供标签、状态和描述；readOnly 会阻止输入和步进。"
+    }
+  },
+  "api": {
+    "NumberInputProps": {
+      "value": "当前值（受控）；`null` 表示空。非受控时省略",
+      "defaultValue": "非受控字段的初始值",
+      "onChange": "以提交的值调用（失焦 / Enter、步进和步进按钮），输入过程中不调用；清空时为 `null`",
+      "min": "允许的最小值；提交的值会被限制到它",
+      "max": "允许的最大值；提交的值会被限制到它",
+      "step": "ArrowUp / ArrowDown 与步进按钮增减的量",
+      "precision": "值的小数位数；省略时由 step 推导（step 0.01 -> 2）",
+      "size": "字段尺寸",
+      "invalid": "错误状态（无效的 FormControl 或超出范围的草稿也会设置）",
+      "disabled": "禁用字段（FormControl 也可设置）",
+      "readOnly": "可聚焦、可复制，但输入和步进不会改变值（FormControl 也可设置）",
+      "showStepper": "显示增减按钮；方向键始终可用",
+      "allowEmpty": "清空字段时提交 `null`；否则回退到 min（或 0）",
+      "className": "外层容器的类名",
+      "incrementLabel": "增加按钮的无障碍标签",
+      "decrementLabel": "减少按钮的无障碍标签",
+      "notANumberMessage": "草稿不是数字时显示的提示（作为容器 title）",
+      "belowMinMessage": "草稿小于 min 时显示的提示",
+      "aboveMaxMessage": "草稿大于 max 时显示的提示",
+      "ref": "<input> 元素的 ref"
+    }
+  }
+}

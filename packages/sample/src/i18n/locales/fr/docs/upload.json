@@ -1,0 +1,51 @@
+{
+  "title": "Upload",
+  "description": "Sélectionne des fichiers par bouton ou glisser-déposer, les valide et les liste avec leur état de transfert. Le transfert lui-même reste dans votre code.",
+  "demos": {
+    "basic": {
+      "title": "Fichier unique",
+      "description": "onFilesSelected reçoit les fichiers conformes à accept et maxSize ; reflétez le transfert dans value. replace permet de remplacer le fichier actuel."
+    },
+    "multiple": {
+      "title": "Plusieurs fichiers",
+      "description": "multiple avec maxCount ; les éléments en échec affichent leur erreur et un bouton Réessayer si onRetry est défini."
+    }
+  },
+  "api": {
+    "UploadProps": {
+      "label": "Libellé visible du champ (nomme aussi le champ fichier)",
+      "value": "Fichiers à lister avec leur état de transfert (contrôlé)",
+      "onFilesSelected": "Appelé avec les fichiers choisis (ou déposés) conformes à accept, maxSize et maxCount. Transfert, annulation et URL persistées appartiennent à l’appelant",
+      "onRemove": "Appelé pour retirer un fichier ; affiche un bouton Retirer sur chaque élément",
+      "onRetry": "Appelé pour réessayer un fichier en échec ; affiche un bouton Réessayer sur ces éléments",
+      "accept": "Types de fichiers acceptés, comme pour <input accept>",
+      "multiple": "Autorise la sélection de plusieurs fichiers",
+      "replace": "Mode fichier unique : un nouveau fichier peut remplacer celui listé (qui ne compte pas dans maxCount)",
+      "maxCount": "Nombre maximal de fichiers, y compris ceux listés",
+      "maxSize": "Taille maximale d’un fichier, en octets",
+      "loading": "État occupé : bloque les nouvelles sélections et les nouvelles tentatives (le retrait reste possible) et définit aria-busy",
+      "disabled": "Désactive la sélection, les nouvelles tentatives et le retrait",
+      "labels": "Textes personnalisés ; chacun remplace la valeur localisée par défaut",
+      "className": "Classe CSS supplémentaire",
+      "ref": "Ref vers l’élément racine"
+    },
+    "UploadItem": {
+      "id": "Identifiant stable du fichier",
+      "name": "Nom affiché dans la liste",
+      "status": "État de transfert du fichier",
+      "error": "Message d’erreur affiché quand status vaut \"error\"",
+      "previewUrl": "URL d’aperçu de l’image (par ex. une object URL)"
+    },
+    "UploadLabels": {
+      "select": "Texte du bouton de sélection",
+      "uploading": "Texte d’état d’un fichier en cours d’envoi",
+      "done": "Texte d’état d’un fichier envoyé",
+      "failed": "Texte d’état d’un fichier en échec sans message propre",
+      "tooMany": "Erreur affichée quand trop de fichiers sont choisis",
+      "invalidType": "Erreur affichée quand un fichier ne correspond pas à accept",
+      "tooLarge": "Erreur affichée quand un fichier dépasse maxSize",
+      "retry": "Libellé accessible du bouton Réessayer d’un fichier",
+      "remove": "Libellé accessible du bouton Retirer d’un fichier"
+    }
+  }
+}

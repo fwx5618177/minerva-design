@@ -1,0 +1,30 @@
+{
+  "title": "MonacoCodeEditor",
+  "description": "A labelled Monaco editor running on a local engine (never a CDN) that follows the page theme. If the engine cannot load or mount in time, it degrades to an editable textarea with a retry button. Import it from @minerva/lib-core/monaco; @monaco-editor/react and monaco-editor are optional peer dependencies.",
+  "demos": {
+    "basic": {
+      "title": "Lazy-loaded editor",
+      "description": "The editor and the local engine (with its worker configured by the host) are loaded on demand. Without the engine the textarea fallback is shown."
+    }
+  },
+  "api": {
+    "MonacoCodeEditorProps": {
+      "monaco": "Local Monaco engine (import * as monaco from \"monaco-editor\"); one per application",
+      "value": "Source text (controlled)",
+      "onChange": "Called with the new source text",
+      "language": "Monaco language id",
+      "label": "Visible label, also the accessible name of the editor",
+      "height": "Height in pixels, clamped to [minHeight, maxHeight]",
+      "minHeight": "Minimum height in pixels",
+      "maxHeight": "Maximum height in pixels",
+      "disabled": "Makes the editor (and its fallback) read-only",
+      "theme": "Color theme; defaults to the page theme (data-theme on <html>, then ConfigProvider)",
+      "loadTimeout": "Milliseconds to wait for the engine before showing the fallback",
+      "unavailableText": "Message shown above the fallback textarea",
+      "retryText": "Text of the retry button",
+      "retryLabel": "Accessible label of the retry button",
+      "loadingLabel": "Accessible label of the loading indicator",
+      "className": "Additional class name"
+    }
+  }
+}

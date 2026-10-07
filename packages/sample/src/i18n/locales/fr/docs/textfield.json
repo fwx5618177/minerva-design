@@ -41,12 +41,16 @@
     "validation": {
       "title": "Validation",
       "description": "helperText affiche un message d'erreur et met le champ en état d'erreur. Soumettez une adresse e-mail invalide pour le voir."
+    },
+    "form-control": {
+      "title": "Dans un FormControl",
+      "description": "Dans un FormControl / FormField, le champ reprend son id, son état et ses attributs aria ; invalid affiche l’état d’erreur sans message."
     }
   },
   "api": {
     "TextFieldProps": {
       "name": "Nom de l'input ; sert aussi d'id (sauf si id est défini) pour lier le libellé",
-      "id": "Id de l'input ; vaut name par défaut",
+      "id": "Id du champ ; par défaut l’id du FormControl englobant, puis name",
       "label": "Libellé flottant. Masqué si un placeholder est défini ou si le champ est en lecture seule ; il reste alors le nom accessible de l'input",
       "value": "Valeur actuelle (contrôlée) ; à omettre pour un champ non contrôlé",
       "defaultValue": "Valeur initiale d'un champ non contrôlé",
@@ -64,6 +68,8 @@
       "fullWidth": "Occupe toute la largeur du conteneur (prioritaire sur width)",
       "width": "Largeur du champ (toute longueur CSS)",
       "disabled": "Désactive le champ",
+      "invalid": "État d’erreur sans message (aussi défini par un FormControl invalide) ; définit aria-invalid",
+      "required": "Marque le champ comme obligatoire (required natif ; un FormControl ajoute aria-required)",
       "ariaLabel": "Libellé accessible de l'input (label par défaut)",
       "clearLabel": "Libellé accessible du bouton d'effacement",
       "showPasswordLabel": "Libellé accessible du bouton d'affichage lorsque le mot de passe est masqué",
@@ -76,7 +82,8 @@
       "onFocus": "Appelé lorsque le champ reçoit le focus",
       "onKeyDown": "Appelé à l'appui d'une touche dans le champ",
       "className": "Nom de classe supplémentaire du conteneur",
-      "ref": "Ref vers l'élément <input> sous-jacent"
+      "ref": "Ref vers l'élément <input> sous-jacent",
+      "inputProps": "Attributs / gestionnaires natifs supplémentaires pour l’<input> ; les props gérées priment, aria-describedby est fusionné"
     }
   }
 }

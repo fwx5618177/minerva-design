@@ -3,9 +3,10 @@ import classNames from "classnames";
 import { useControllableState } from "../../internal/useControllableState";
 import type { RadioGroupProps } from "./types";
 import styles from "./radio.module.scss";
+import { useFormControlContext } from "../FormControl/context";
 
 export const RadioGroupContext = createContext<{
-  value?: string | number;
+  value?: string | number | null;
   onChange: (
     value: string | number,
     event: React.ChangeEvent<HTMLInputElement>,
@@ -27,29 +28,47 @@ const RadioGroup = ({
   label,
   ariaLabel,
   onChange,
-  disabled = false,
+  disabled,
   children,
   className = "",
   direction = "vertical",
-  size = "medium",
+  size,
   error = false,
   helperText,
-  required = false,
+  required,
   color = "var(--primary-color)",
   ref,
 }: RadioGroupProps) => {
   const [selected, setSelected] = useControllableState<
-    string | number | undefined
+    string | number | null | undefined
   >({ value, defaultValue });
   const generatedName = useId();
   const labelId = useId();
   const helperId = useId();
+  // FormControl wiring; explicit props win over the field's state.
+  const fc = useFormControlContext();
+  const isDisabled = disabled ?? fc?.disabled ?? false;
+  const isRequired = required ?? fc?.required ?? false;
+  const isError = error || !!fc?.invalid;
+  const describedBy =
+    [
+      helperText ? helperId : null,
+      fc?.invalid && fc.hasErrorMessage ? fc.errorId : null,
+      fc && !fc.invalid && fc.hasHelperText ? fc.helperId : null,
+    ]
+      .filter(Boolean)
+      .join(" ") || undefined;
+  const labelledBy = label
+    ? labelId
+    : !ariaLabel && fc
+      ? fc.labelId
+      : undefined;
 
   const handleChange = (
     val: string | number,
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    if (disabled) return;
+    if (isDisabled) return;
     setSelected(val);
     onChange?.(val, event);
   };
@@ -59,7 +78,7 @@ const RadioGroup = ({
       ref={ref}
       className={classNames(
         styles.radioGroupWrapper,
-        error && styles.error,
+        isError && styles.error,
         className,
       )}
     >
@@ -72,20 +91,26 @@ const RadioGroup = ({
         value={{
           value: selected,
           onChange: handleChange,
-          disabled,
+          disabled: isDisabled,
           name: name ?? generatedName,
           size,
           color,
         }}
       >
         <div
-          className={classNames(styles.radioGroup, styles[direction])}
+          className={classNames(
+            styles.radioGroup,
+            styles[direction],
+            "ui-radio-group",
+          )}
           role="radiogroup"
-          aria-labelledby={label ? labelId : undefined}
+          data-direction={direction === "horizontal" ? "row" : "column"}
+          aria-labelledby={labelledBy}
           aria-label={label ? undefined : ariaLabel}
-          aria-describedby={helperText ? helperId : undefined}
-          aria-required={required}
-          aria-invalid={error}
+          aria-describedby={describedBy}
+          aria-required={isRequired}
+          aria-invalid={isError}
+          aria-disabled={isDisabled || undefined}
         >
           {children}
         </div>
@@ -93,7 +118,7 @@ const RadioGroup = ({
       {helperText && (
         <div
           id={helperId}
-          className={classNames(styles.helperText, error && styles.errorText)}
+          className={classNames(styles.helperText, isError && styles.errorText)}
         >
           {helperText}
         </div>

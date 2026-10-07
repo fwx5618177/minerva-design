@@ -3,17 +3,24 @@
   "description": "ConfigProvider の内部で使われる低レベルのフック。テーマ、言語、lib-core の翻訳を自分で管理できます。",
   "reference": {
     "title": "リファレンス",
-    "text": "すべてのフックは @minerva/lib-core からエクスポートされています。",
+    "text": "すべてのフックとユーティリティは @minerva/lib-core からエクスポートされています。",
     "hook": "フック",
     "signature": "シグネチャ",
     "useAutoTheme": "現在のテーマを state に保持し、CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } のペアでは prefers-color-scheme を購読し、アンマウント時に解除します。設定されたテーマ、その setter、現在のシステム配色を返します。",
     "useLocale": "ロケールを state に保持し、lib-core 内蔵テキストの言語（en、zh、fr）を切り替えます。locale とその setter を返します。",
     "useI18n": "lib-core が使う t と i18next インスタンスを返します。専用のインスタンスなので、アプリ側の i18next 設定に影響することはありません。",
+    "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
+    "useDialogFocusReturn": "Radix の Trigger を使わず state から開くダイアログのためのフォーカス復帰。開く前にフォーカスされていた要素を記憶し、閉じた後に再びフォーカスします。open、contentRef、onCloseAutoFocus をダイアログに渡します。",
+    "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
     "global": "useAutoTheme と useLocale はグローバルな状態（<html> の CSS 変数、lib-core の言語）を変更します。以下のデモはサイトの現在の設定から始まり、アンマウント時に元に戻します。"
   },
   "standalone": {
     "title": "ConfigProvider なしでフックを使う",
     "text": "ConfigProvider は useAutoTheme と useLocale の薄いラッパーです。useConfig() が不要なら、Provider の中ではなく Provider の代わりにフックを直接呼び出せます。"
+  },
+  "focusReturn": {
+    "title": "ダイアログを閉じた後のフォーカス復帰",
+    "text": "Radix のダイアログは閉じるときに Trigger へフォーカスを戻します。state から開いたダイアログ（メニュー項目、キーボードショートカット、テーブル行）には Trigger がないため、フォーカスは <body> に落ちてしまいます。useDialogFocusReturn は開く前にフォーカスされていた要素を記録し、閉じるときに復元します："
   },
   "demos": {
     "use-auto-theme": {
@@ -23,6 +30,10 @@
     "use-locale": {
       "title": "useLocale と useI18n",
       "description": "setLocale は lib-core の言語を変更し、useI18n の t() はその言語で lib-core の内蔵テキストを返します。"
+    },
+    "use-disclosure": {
+      "title": "useDisclosure と cn",
+      "description": "useDisclosure が onToggle、onOpen、onClose でパネルを制御し、cn が条件付きの部分からクラス名を組み立てます。"
     }
   }
 }

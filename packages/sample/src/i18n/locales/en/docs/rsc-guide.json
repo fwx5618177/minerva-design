@@ -1,0 +1,41 @@
+{
+  "title": "Server Components",
+  "description": "Use Minerva with React Server Components: which entries are client boundaries, what can run on the server and where to import the CSS.",
+  "entries": {
+    "title": "Entries and the \"use client\" banner",
+    "text": "@minerva/lib-core is published as several entries. The entries that contain components start with a \"use client\" directive; the theme helper entries do not, so they can run inside Server Components.",
+    "entry": "Entry",
+    "banner": "\"use client\"",
+    "yes": "Yes",
+    "no": "No",
+    "main": "All components, providers, hooks and utilities.",
+    "monaco": "The Monaco-based code editor (optional peers: @monaco-editor/react and monaco-editor).",
+    "compat": "The @novel-isr/ui compatibility layer.",
+    "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names.",
+    "compatThemeUtils": "The same helpers with the @novel-isr/ui names and defaults (the editorial palette is always applied)."
+  },
+  "why": {
+    "title": "Why some entries are client boundaries",
+    "p1": "Every Minerva component uses state, effects, context or portals, so it must run in the browser. Because the main entry is marked \"use client\", a Server Component that imports it does not get the component code: it gets client references, placeholders that the bundler resolves to the client bundle. The components are still rendered to HTML on the server during SSR and hydrated in the browser.",
+    "p2": "A client reference is not a callable function on the server. That is fine for components, which are only rendered, but it means plain functions from a client entry cannot be executed in a Server Component. Functions needed on the server, such as parsing the theme cookie or building the init script, therefore live in a separate entry without the banner: @minerva/lib-core/theme-utils."
+  },
+  "render": {
+    "title": "Rendering components from a Server Component",
+    "text": "Import components from @minerva/lib-core directly in a Server Component, a layout or a page: no wrapper is needed, because the entry already is a client boundary.",
+    "props": "Props passed from a Server Component to a client component must be serializable: strings, numbers, booleans, plain objects, arrays and JSX. Functions are not, so event handlers such as onClick, render props and callbacks need a small client component of your own:"
+  },
+  "functions": {
+    "title": "Calling functions on the server",
+    "text": "Call the helpers of @minerva/lib-core/theme-utils (or @minerva/lib-core/compat/theme-utils) freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (message.success, Confirm, applyThemeStyles, the hooks...): they are client references there. Call them from client components and event handlers.",
+    "imperative": "Imperative APIs are also safe during SSR of client components: without a document they do nothing, and promise-based dialogs such as Confirm resolve to false on the server. Trigger them from event handlers or effects, which only run in the browser."
+  },
+  "css": {
+    "title": "Where to import the CSS",
+    "text": "Import @minerva/lib-core/style.css once. In the Next.js App Router, global CSS belongs in the root layout, which is a Server Component and may import CSS. In other setups, import it in the client entry file. compat.css and prose.scss are optional extras, imported the same way."
+  },
+  "next": {
+    "title": "Next steps",
+    "themePalette": "Server rendering without a theme flash: THEME_INIT_SCRIPT and theme cookies.",
+    "installation": "Packages, peer dependencies and stylesheets."
+  }
+}

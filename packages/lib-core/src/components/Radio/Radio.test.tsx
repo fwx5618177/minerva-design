@@ -228,7 +228,9 @@ describe("Radio", () => {
         />,
       );
       expect(radio).toHaveAccessibleDescription("Required");
-      expect(radio).toHaveAttribute("aria-invalid", "true");
+      // aria-invalid is not supported on role="radio" (it belongs on the
+      // radiogroup); the error message is announced as the description.
+      expect(radio).not.toHaveAttribute("aria-invalid");
     });
 
     it("supports ariaLabel when there is no visible label", () => {

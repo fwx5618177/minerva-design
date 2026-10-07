@@ -111,9 +111,12 @@ const TimePicker = ({
   const displayValue = draft ?? (current ? formatTime(current, format) : "");
 
   return (
+    // Clicking the input toggles the panel. The handler only reacts to clicks
+    // on the inner <input>, which has its own keyboard support (ArrowDown
+    // opens the panel; Popper handles Escape), so the wrapper is not a control.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
       className={classNames(styles.timePicker, className)}
-      // clicking the input toggles the panel
       onClick={(e) => {
         if (e.target === input) toggle();
       }}

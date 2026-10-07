@@ -41,12 +41,16 @@
     "validation": {
       "title": "校验",
       "description": "helperText 显示错误信息并将输入框切换为错误状态。提交无效的邮箱即可查看效果。"
+    },
+    "form-control": {
+      "title": "在 FormControl 中",
+      "description": "在 FormControl / FormField 中，字段会使用其 id、状态和 aria 关联；invalid 显示错误状态但不显示信息。"
     }
   },
   "api": {
     "TextFieldProps": {
       "name": "输入框的 name；（未设置 id 时）也用作其 id 以关联标签",
-      "id": "输入框的 id，默认为 name",
+      "id": "输入框的 id；默认为外层 FormControl 的 id，其次为 name",
       "label": "浮动标签。设置 placeholder 或只读时隐藏，但仍作为输入框的无障碍名称",
       "value": "当前值（受控）；非受控时省略",
       "defaultValue": "非受控输入框的初始值",
@@ -64,6 +68,8 @@
       "fullWidth": "占满容器宽度（覆盖 width）",
       "width": "输入框宽度（任意 CSS 长度）",
       "disabled": "禁用输入框",
+      "invalid": "无信息的错误状态（无效的 FormControl 也会设置）；设置 aria-invalid",
+      "required": "将输入标记为必填（原生 required；FormControl 会添加 aria-required）",
       "ariaLabel": "输入框的无障碍标签（默认为 label）",
       "clearLabel": "清除按钮的无障碍标签",
       "showPasswordLabel": "密码隐藏时密码切换按钮的无障碍标签",
@@ -76,7 +82,8 @@
       "onFocus": "输入框获得焦点时调用",
       "onKeyDown": "在输入框中按下按键时调用",
       "className": "容器的额外类名",
-      "ref": "指向底层 <input> 元素的 ref"
+      "ref": "指向底层 <input> 元素的 ref",
+      "inputProps": "传给 <input> 的额外原生属性 / 事件；组件管理的属性优先，aria-describedby 会合并"
     }
   }
 }

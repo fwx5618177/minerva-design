@@ -7,6 +7,11 @@
     "dynamic": "Les deux props sont réactives : stockez-les dans un état pour permettre de changer de thème ou de langue à l'exécution.",
     "global": "Le thème et la langue sont globaux : le provider écrit des variables CSS sur <html> et change la langue de l'instance i18next de lib-core. Un ConfigProvider imbriqué change donc le thème de toute la page, pas seulement de ses enfants. Pour thémer une seule zone, définissez plutôt les variables CSS sur un élément conteneur (voir l'exemple de thème personnalisé)."
   },
+  "palette": {
+    "title": "Palette, persistance et callbacks",
+    "text": "palette ajoute une palette de couleurs (\"editorial\", \"tech\", \"graphite\" ou \"cool\") au thème light, dark ou system. persist enregistre les changements de thème et de palette dans les cookies theme et palette et les restaure après l'hydratation. onThemeChange et onPaletteChange sont appelés après que setTheme et setPalette ont changé la valeur.",
+    "setters": "useConfig() renvoie aussi mode, resolvedMode et palette, ainsi que les setters setTheme et setPalette : n'importe quel composant peut changer le thème sans remonter l'état. Le rendu serveur, les cookies et le script d'initialisation anti-flash sont décrits dans"
+  },
   "demos": {
     "use-config": {
       "title": "Lire la configuration",
@@ -19,18 +24,31 @@
     "locale": {
       "title": "Langue",
       "description": "La prop locale définit la langue des textes intégrés de lib-core (en, zh ou fr). La démo rétablit l'anglais lorsqu'elle est démontée, car la langue est globale."
+    },
+    "palette": {
+      "title": "Palettes",
+      "description": "Les quatre palettes côte à côte dans le mode actuel du site, avec data-palette et data-theme sur chaque carte. Avec la prop palette, les mêmes attributs sont posés sur <html>."
     }
   },
   "api": {
     "ConfigContextProviderProps": {
-      "theme": "Thème à appliquer : \"auto\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Appliqué sous forme de variables CSS sur la racine du document.",
+      "theme": "Thème à appliquer : \"auto\" ou son alias \"system\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Appliqué en variables CSS sur la racine du document, ou via une palette quand palette est défini.",
+      "palette": "Palette appliquée avec les thèmes light, dark et system (\"editorial\", \"tech\", \"graphite\", \"cool\") ; null conserve l'apparence par défaut de Minerva. Définit data-palette sur <html> ; les tokens de la palette viennent de style.css.",
+      "persist": "Enregistrer les changements de thème et de palette dans les cookies theme et palette et les restaurer après l'hydratation (à combiner avec THEME_INIT_SCRIPT en SSR).",
+      "onThemeChange": "Appelé après que setTheme a changé le thème.",
+      "onPaletteChange": "Appelé après que setPalette a changé la palette.",
       "locale": "Langue des textes intégrés de lib-core (modifiée globalement).",
       "children": "Contenu de l'application."
     },
     "ConfigContextProps": {
       "theme": "Thème tel que configuré (peut être \"auto\" ou une paire { light, dark }).",
       "resolvedTheme": "Thème réellement appliqué après résolution de \"auto\" et des paires { light, dark } : un nom de thème intégré ou un objet de thème.",
-      "locale": "Locale actuelle des textes intégrés de lib-core."
+      "locale": "Locale actuelle des textes intégrés de lib-core.",
+      "mode": "Mode de couleur du thème : \"light\" ou \"dark\" pour ces thèmes, \"system\" pour \"auto\", \"system\" et les paires { light, dark }, undefined pour les autres thèmes.",
+      "resolvedMode": "Mode de couleur appliqué (data-theme sur <html>), quand il peut être déterminé.",
+      "palette": "Palette active (data-palette sur <html>), null pour l'apparence par défaut de Minerva.",
+      "setTheme": "Change le thème (enregistré dans le cookie theme quand persist est activé).",
+      "setPalette": "Change la palette (enregistrée dans le cookie palette quand persist est activé)."
     },
     "Locale": {
       "language": "Langue des textes intégrés de lib-core : \"en\", \"zh\" ou \"fr\"."

@@ -7,9 +7,12 @@ import {
   IoSunnyOutline,
 } from "react-icons/io5";
 import styles from "@styles/components/theme-switcher.module.scss";
+import { IoColorPaletteOutline } from "react-icons/io5";
 import {
+  PALETTE_CHOICES,
   THEME_MODES,
   useThemeMode,
+  type PaletteChoice,
   type ThemeMode,
 } from "../theme/ThemeModeContext";
 
@@ -54,6 +57,32 @@ const ThemeSwitcher: React.FC = () => {
         {THEME_MODES.map((m) => (
           <option key={m} value={m}>
             {t(LABEL_KEYS[m], { defaultValue: FALLBACK_LABELS[m] })}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+};
+
+/** Palette picker for the docs header: default / editorial / tech / graphite / cool. */
+export const PaletteSwitcher: React.FC = () => {
+  const { t } = useTranslation();
+  const { palette, setPalette } = useThemeMode();
+  const label = t("header.palette.label");
+
+  return (
+    <label className={styles.themeSwitcher}>
+      <IoColorPaletteOutline className={styles.icon} aria-hidden="true" />
+      <select
+        className={styles.select}
+        value={palette}
+        aria-label={label}
+        title={label}
+        onChange={(e) => setPalette(e.target.value as PaletteChoice)}
+      >
+        {PALETTE_CHOICES.map((p) => (
+          <option key={p} value={p}>
+            {t(`header.palette.${p}`)}
           </option>
         ))}
       </select>

@@ -1,0 +1,38 @@
+{
+  "title": "Confirm 确认框",
+  "description": "请用户确认某个操作，可替代 window.confirm 并跟随主题。可使用声明式的 ConfirmDialog，或在任意位置 await confirm()：挂载了 ConfirmProvider 时弹窗渲染在应用树内，没有时按需挂载独立宿主，服务端调用 confirm() 恒定返回 false。",
+  "demos": {
+    "imperative": {
+      "title": "命令式 confirm()",
+      "description": "await confirm({...}) 确认时返回 true，取消（按钮、Escape 或遮罩）时返回 false。无需 Provider。"
+    },
+    "provider": {
+      "title": "配合 ConfirmProvider",
+      "description": "useConfirm() 返回该 Provider 的 confirm，弹窗共享应用的 context。并发请求按顺序逐个显示。"
+    },
+    "declarative": {
+      "title": "声明式 ConfirmDialog",
+      "description": "受控弹窗；loading 在 onConfirm 执行期间显示加载动画并禁用取消。"
+    }
+  },
+  "api": {
+    "ConfirmDialogProps": {
+      "open": "弹窗是否打开（受控）",
+      "onOpenChange": "用户取消时以 false 调用（取消按钮、关闭、Escape、点击遮罩）",
+      "onConfirm": "点击确认按钮时调用；弹窗不会自行关闭"
+    },
+    "ConfirmOptions": {
+      "title": "标题（对话框的可访问名称）",
+      "description": "标题下方的说明（可访问描述）",
+      "confirmLabel": "确认按钮文案；默认为“确定”，intent=\"danger\" 时为“删除”",
+      "cancelLabel": "取消按钮文案；默认为本地化的“取消”",
+      "closeLabel": "关闭（×）按钮的可访问标签；默认为本地化的“关闭”",
+      "intent": "确认按钮的语气：primary、danger（危险）或 warning",
+      "loading": "在确认按钮上显示加载动画并禁用取消",
+      "confirmDisabled": "以原生方式禁用确认按钮（移出 Tab 顺序）；仅设置 loading 时按钮仍可聚焦，但无法再次触发"
+    },
+    "ConfirmProviderProps": {
+      "children": "应用子树；useConfirm() / confirm() 的弹窗渲染在这里"
+    }
+  }
+}

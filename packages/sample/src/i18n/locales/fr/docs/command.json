@@ -1,0 +1,42 @@
+{
+  "title": "Command",
+  "description": "Une palette de commandes avec recherche dans une modale. Tapez pour filtrer par titre, description, groupe et mots-clés, déplacez-vous avec les flèches, choisissez avec Entrée ou un clic. Un raccourci global optionnel l'ouvre.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Palette contrôlée ; onSelect reçoit l'élément choisi puis la palette se ferme."
+    },
+    "shortcut": {
+      "title": "Raccourci global",
+      "description": "shortcut=\"mod+k\" ouvre la palette avec Cmd+K sur macOS et Ctrl+K ailleurs ; shortcutLabel affiche l'indication."
+    }
+  },
+  "api": {
+    "CommandDialogProps": {
+      "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+      "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+      "onOpenChange": "Appelé avec l'état d'ouverture demandé (raccourci, sélection, Échap, clic sur le fond)",
+      "items": "Commandes à rechercher ; les éléments désactivés ne sont jamais affichés",
+      "onSelect": "Appelé avec l'élément choisi (clic ou Entrée) ; la palette se ferme ensuite",
+      "title": "Titre de la boîte ; par défaut « Palette de commandes » localisé",
+      "description": "Description accessible de la palette ; par défaut une indication localisée",
+      "placeholder": "Texte indicatif du champ de recherche ; par défaut une indication localisée",
+      "emptyText": "Affiché quand rien ne correspond",
+      "shortcutLabel": "Indication du raccourci rendue en <kbd> à côté du titre, p. ex. « ⌘K »",
+      "shortcut": "Raccourci(s) clavier global(aux) qui ouvrent la palette, p. ex. « mod+k » ; modificateurs : mod, ctrl, meta/cmd, shift, alt/option",
+      "maxResults": "Nombre maximal de résultats affichés",
+      "resultsLabel": "Libellé accessible de la liste de résultats",
+      "enterLabel": "Indication de touche affichée à la fin du champ de recherche ; par défaut « Entrée » localisé",
+      "getOptionId": "Identifiant DOM de chaque option de résultat, aussi utilisé comme aria-activedescendant du champ ; doit être unique dans le document. Par défaut, des identifiants générés propres à la boîte de dialogue",
+      "className": "Classe supplémentaire du panneau de dialogue"
+    },
+    "CommandItem": {
+      "id": "Identifiant unique, renvoyé par onSelect",
+      "title": "Libellé principal",
+      "description": "Ligne secondaire sous le titre",
+      "group": "Nom du groupe, affiché en badge et pris en compte par la recherche",
+      "keywords": "Termes de recherche supplémentaires (non affichés)",
+      "disabled": "Masque l'élément des résultats"
+    }
+  }
+}

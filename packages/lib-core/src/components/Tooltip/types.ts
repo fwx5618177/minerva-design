@@ -16,8 +16,22 @@ export type TooltipPlacement =
 
 export type TooltipShape = "default" | "rounded" | "thought" | "square";
 
+/**
+ * Color variant. `dark` contrasts with the theme (dark in light themes, light
+ * in dark themes) and `light` uses the elevated surface. `auto` follows the
+ * theme with a frosted surface; `fixedDark` / `fixedLight` keep the same
+ * colors whatever the theme.
+ */
 export type TooltipVariant =
-  "light" | "dark" | "info" | "success" | "warning" | "error";
+  | "light"
+  | "dark"
+  | "info"
+  | "success"
+  | "warning"
+  | "error"
+  | "auto"
+  | "fixedDark"
+  | "fixedLight";
 
 export type TooltipAnimation =
   "fade" | "scale" | "shift-away" | "shift-toward" | "perspective";
@@ -109,6 +123,38 @@ export interface TooltipProps {
   onClose?: () => void;
   /** Accessible label of the tooltip element */
   ariaLabel?: string;
+  /**
+   * Attaches the hover / focus handlers, the ref and `className` directly to
+   * the single child element instead of wrapping it in a `<div>` (keeps flex
+   * and grid layouts intact). The child must accept a `ref`.
+   * @default false
+   */
+  asChild?: boolean;
+  /** Additional class name of the tooltip (floating) element */
+  contentClassName?: string;
+  /** Ref to the tooltip (floating) element, set while it is shown */
+  contentRef?: Ref<HTMLDivElement>;
+}
+
+export interface TooltipProviderProps {
+  /**
+   * Default delay before showing on hover, in milliseconds, for every Tooltip
+   * inside that does not set `enterDelay`
+   */
+  enterDelay?: number;
+  /**
+   * Default delay before hiding on mouse leave, in milliseconds, for every
+   * Tooltip inside that does not set `leaveDelay`
+   */
+  leaveDelay?: number;
+  /**
+   * When another tooltip of the provider closed less than this many
+   * milliseconds ago, the next one opens without waiting for its enter delay
+   * @default 300
+   */
+  skipDelay?: number;
+  /** Content of the provider */
+  children?: ReactNode;
 }
 
 /** Imperative handle exposed through `ref` */

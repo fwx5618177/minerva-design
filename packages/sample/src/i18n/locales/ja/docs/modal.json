@@ -1,0 +1,60 @@
+{
+  "title": "Modal モーダル",
+  "description": "ページを中断して一つの作業に集中させるダイアログです。フォーカスは内部に閉じ込められ、Escape や背景クリックで閉じ、閉じるとフォーカスは開いた要素に戻ります。狭い画面ではボトムシートになります。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "open と onOpenChange で制御します。title がアクセシブルネーム、description がアクセシブルな説明になります。"
+    },
+    "uncontrolled": {
+      "title": "トリガー付きの非制御",
+      "description": "trigger を渡すとモーダルが自分で状態を管理します。"
+    },
+    "sizes": {
+      "title": "サイズ",
+      "description": "small、medium（既定）、large、xlarge、full。"
+    },
+    "form": {
+      "title": "フォーム",
+      "description": "モーダル直下の <form> でも本文はスクロールでき、フッターは表示されたままです。送信ボタンでフォームを送信します。"
+    },
+    "compound": {
+      "title": "コンポーネント API",
+      "description": "ModalRoot、ModalTrigger、ModalContent、ModalHeader、ModalBody、ModalFooter、ModalClose で構造を自由に組み立てます。"
+    }
+  },
+  "api": {
+    "ModalProps": {
+      "open": "制御された開閉状態。undefined のままにすると非制御になります",
+      "defaultOpen": "非制御時の初期の開閉状態",
+      "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、閉じるボタン、Escape、背景クリック）",
+      "trigger": "クリックで開く要素（単一要素、asChild で描画）",
+      "title": "タイトル。ダイアログのアクセシブルネームになります",
+      "description": "タイトルの下の説明。アクセシブルな説明になります",
+      "size": "幅のプリセット",
+      "hideCloseButton": "閉じる（×）ボタンを非表示にします",
+      "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+      "className": "パネルの追加クラス名",
+      "ref": "ダイアログ要素への ref",
+      "children": "本文：通常は ModalBody + ModalFooter、またはそれらを包む <form>"
+    },
+    "ModalRootProps": {
+      "open": "制御された開閉状態。undefined のままにすると非制御になります",
+      "defaultOpen": "非制御時の初期の開閉状態",
+      "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、閉じるボタン、Escape、背景クリック）",
+      "modal": "モーダルモード：フォーカスを閉じ込め、外部の操作を遮断し、支援技術からページを隠します",
+      "children": "トリガーとコンテンツ"
+    },
+    "ModalTriggerProps": {
+      "asChild": "独自の要素を描画せず、単一の子要素に振る舞いをマージします"
+    },
+    "ModalContentProps": {
+      "ref": "ダイアログ要素への ref",
+      "size": "幅のプリセット",
+      "hideCloseButton": "閉じる（×）ボタンを非表示にします",
+      "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+      "description": "タイトルの下に表示される説明。省略すると非表示の空の説明が描画されます",
+      "overlayClassName": "オーバーレイ（背景）のクラス名"
+    }
+  }
+}

@@ -1,6 +1,9 @@
-import type { CSSProperties, ReactNode, Ref } from "react";
+import type { CSSProperties, HTMLAttributes, ReactNode, Ref } from "react";
 
-export interface PaginationProps {
+export interface PaginationProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "onChange" | "children"
+> {
   /** Current page (1-based, controlled); update it in onChange */
   current?: number;
   /**
@@ -52,10 +55,11 @@ export interface PaginationProps {
   /** Inline styles */
   style?: CSSProperties;
   /**
-   * Shows the total number of items
+   * Shows the total number of items; a function renders it (same signature
+   * as totalRender)
    * @default false
    */
-  showTotal?: boolean;
+  showTotal?: boolean | ((total: number, range: [number, number]) => ReactNode);
   /** Custom rendering of the total (default "Total N items", localized); range is the [first, last] item index of the current page */
   totalRender?: (total: number, range: [number, number]) => ReactNode;
   /**
@@ -78,6 +82,35 @@ export interface PaginationProps {
    * @default false
    */
   simple?: boolean;
+  /**
+   * Number of pages shown on each side of the current page. Setting it (or
+   * boundaryCount) switches the page list to the compact layout: first /
+   * last pages, the pages around the current one and non-interactive "…"
+   * gaps, e.g. [1][…][4][5][6][…][10]
+   */
+  siblingCount?: number;
+  /**
+   * Number of pages always shown at the start and the end of the compact
+   * page list (see siblingCount)
+   */
+  boundaryCount?: number;
+  /**
+   * Hides the prev / next buttons
+   * @default false
+   */
+  hideEdges?: boolean;
+  /**
+   * Replaces the page buttons with a read-only "current / total" counter
+   * (announced politely), keeping the prev / next buttons
+   * @default false
+   */
+  hideNumbers?: boolean;
+  /**
+   * Control of the page size selector (showSizeChanger): a native <select>,
+   * or Minerva's Select popup (a combobox button opening a listbox)
+   * @default "native"
+   */
+  sizeChangerVariant?: "native" | "select";
   /**
    * Adapts the layout to small screens
    * @default false
@@ -151,6 +184,11 @@ export interface PaginationLabels {
    * @default "Current page" (localized)
    */
   currentPage?: string;
+  /**
+   * Text of the total (when showTotal is true and there is no totalRender)
+   * @default (total) => `Total ${total} items` (localized)
+   */
+  total?: (total: number) => string;
   /**
    * Accessible label of the <nav> landmark
    * @default "Pagination" (localized)

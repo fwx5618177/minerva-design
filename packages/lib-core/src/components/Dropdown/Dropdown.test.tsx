@@ -403,4 +403,30 @@ describe("Dropdown", () => {
       expect(ref.current).toBe(container.firstElementChild);
     });
   });
+
+  it("keeps the trigger child's own handlers", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const onKeyDown = vi.fn();
+    const onKeyUp = vi.fn();
+    render(
+      <Dropdown ariaLabel="Actions" items={items}>
+        <button
+          type="button"
+          onClick={onClick}
+          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
+        >
+          Own
+        </button>
+      </Dropdown>,
+    );
+    const trigger = screen.getByRole("button", { name: "Own" });
+    await user.click(trigger);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(getMenu()).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(onKeyDown).toHaveBeenCalled();
+    expect(onKeyUp).toHaveBeenCalled();
+  });
 });

@@ -1,0 +1,31 @@
+{
+  "title": "@novel-isr/ui からの移行",
+  "description": "@novel-isr/ui 0.1.40 の各エクスポートが Minerva にどう対応するか、すべてのプロパティ名と挙動の違いとともに説明します。",
+  "paths": {
+    "title": "2 つの移行方法",
+    "compat": "そのまま置き換え：コードはそのままに、インポートを @minerva/lib-core/compat に切り替えます（または @novel-isr/ui を再エクスポートのシムにします）。詳しくは",
+    "native": "ネイティブ：Minerva の API に移行します。下の表に Minerva での名前と、変更されたすべてのプロパティや挙動を示します。"
+  },
+  "summary": {
+    "title": "概要とプラットフォーム",
+    "text": "各エクスポートは NEW（Minerva の新コンポーネント）、MERGED（既存の Minerva コンポーネントに上位互換として統合、機能の欠落なし）、PLATFORM（テーマ基盤、フック、ユーティリティ、エントリー）に分類されます。"
+  },
+  "mapping": {
+    "title": "コンポーネント対応表",
+    "text": "リポジトリ内の docs/migration/novel-isr-ui.md（唯一の情報源）から生成しています。"
+  },
+  "behaviour": {
+    "title": "ネイティブ API の挙動の違い",
+    "names": "真偽値とサイズ：isOpen/onClose → open/onOpenChange、isInvalid → invalid、isLoading → loading、sm/md/lg → small/medium/large。",
+    "strings": "組み込みの文言は lib-core の i18n（en / zh / fr）を使い、常にプロパティで上書きできます。compat は novel の元の文言を明示的に渡します。",
+    "tooltip": "TooltipProvider の遅延が各ツールチップの既定値より優先されます（novel と compat では各ツールチップが自身の 300 ms を保持）。",
+    "inputs": "Checkbox、Radio、Switch はネイティブの input になり、ref は <input> を指します。",
+    "radio": "RadioGroup の direction は row/column → horizontal/vertical。value={null} は「制御・未選択」を意味します。",
+    "badge": "Badge の既定は solid で role=\"status\"。Alert の role はバリアントに従います（compat は novel のまま）。",
+    "navTree": "NavTree：無効なリーフはハンドラーを呼ばず href も保持しません。href のないリーフはボタンになります。",
+    "tabs": "Tabs：onValueChange → onChange、colorScheme → color。",
+    "toast": "ToastProvider の position はキャメルケース（topRight）。toast.dismiss() はすべて閉じ、ホバー中はタイマーが止まります。",
+    "statusIndicator": "StatusIndicator はフォーカスできなくなりました（role=\"status\" のライブリージョンです）。",
+    "full": "変更されたすべてのプロパティを含む完全な一覧は、上の表と docs/migration/novel-isr-ui.md にあります。"
+  }
+}

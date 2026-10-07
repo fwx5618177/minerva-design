@@ -17,6 +17,10 @@
     "group": {
       "title": "アバターグループ",
       "description": "アバターを AvatarGroup で囲み、stacked で重ねて表示します。count で残りの人数を表示します。"
+    },
+    "fallback": {
+      "title": "フォールバック・サイズ・max",
+      "description": "イニシャルは最初の 2 語の頭文字（または最初の漢字）です。fallback や children で置き換えられます。size はピクセル値も受け付け、AvatarGroup の max は残りを +N にまとめます。"
     }
   },
   "api": {
@@ -24,17 +28,22 @@
       "src": "画像の URL。省略すると name の頭文字を表示します",
       "name": "人物の名前。頭文字・代替テキスト・アクセシブルなラベルに使われます",
       "shape": "アバターの形状",
-      "size": "アバターのサイズ",
+      "size": "アバターのサイズ：プリセット（xsmall 24px・small 32px・medium 48px・large 64px・xlarge 80px・xxlarge 96px）またはピクセル数",
       "className": "追加のクラス名",
       "stacked": "重ねて表示するために余白を詰めます",
-      "ref": "ルートの <span> 要素への ref"
+      "ref": "ルートの <span> 要素への ref",
+      "alt": "画像の代替テキスト。装飾目的の場合は \"\" を指定",
+      "ariaLabel": "アバターのアクセシブルなラベル（画像の既定の代替テキストにもなります）",
+      "fallback": "画像がないときにイニシャルの代わりに表示するカスタム内容",
+      "children": "name がないときに使うフォールバック内容（アイコンなど）"
     },
     "AvatarGroupProps": {
       "count": "追加のアバター数。「+N」として表示されます",
       "className": "追加のクラス名",
       "children": "Avatar 要素",
       "ref": "ルートの <div> 要素への ref",
-      "ariaLabel": "グループのアクセシブルなラベル"
+      "ariaLabel": "グループのアクセシブルなラベル",
+      "max": "表示するアバターの最大数。残りは「+N」表示に含まれます（count に加算）"
     }
   }
 }

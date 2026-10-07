@@ -157,12 +157,13 @@ describe("Tag", () => {
     expect(screen.getByTestId("x").closest(".closeIcon")).toBeInTheDocument();
   });
 
-  it("adds a ripple on click and removes it after 600ms", async () => {
+  it("adds a ripple when activated and removes it after 600ms", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<Tag clickable>T</Tag>);
     const tag = getTag("T");
-    await user.click(tag);
+    // the ripple belongs to the tag's main action (its native button)
+    await user.click(screen.getByRole("button", { name: "T" }));
     expect(tag.querySelector(".ripple")).toBeInTheDocument();
     act(() => {
       vi.advanceTimersByTime(600);
@@ -170,9 +171,17 @@ describe("Tag", () => {
     expect(tag.querySelector(".ripple")).not.toBeInTheDocument();
   });
 
-  it("does not add a ripple when ripple is false or disabled", async () => {
+  it("does not add a ripple when ripple is false, disabled or not clickable", async () => {
     const user = userEvent.setup();
-    const { rerender } = render(<Tag ripple={false}>T</Tag>);
+    const { rerender } = render(
+      <Tag clickable ripple={false}>
+        T
+      </Tag>,
+    );
+    await user.click(screen.getByRole("button", { name: "T" }));
+    expect(getTag("T").querySelector(".ripple")).not.toBeInTheDocument();
+
+    rerender(<Tag>T</Tag>);
     await user.click(getTag("T"));
     expect(getTag("T").querySelector(".ripple")).not.toBeInTheDocument();
 

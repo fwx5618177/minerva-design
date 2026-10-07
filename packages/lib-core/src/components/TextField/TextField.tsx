@@ -8,6 +8,8 @@ import {
 } from "react-icons/fa";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useControllableState } from "../../internal/useControllableState";
+import { isAriaInvalid } from "../../internal/forms-field";
+import { useFormControlProps } from "../FormControl/context";
 import styles from "./textField.module.scss";
 import useI18n from "../../hooks/useI18n";
 import type { TextFieldProps } from "./types";
@@ -38,12 +40,14 @@ const TextField = ({
   clearable = false,
   fullWidth = false,
   width = "300px",
-  disabled = false,
+  disabled: disabledProp = false,
+  invalid = false,
+  required = false,
   ariaLabel,
   clearLabel,
   showPasswordLabel,
   hidePasswordLabel,
-  readOnly = false,
+  readOnly: readOnlyProp = false,
   size = "medium",
   suffix,
   onBlur,
@@ -51,12 +55,28 @@ const TextField = ({
   onKeyDown,
   className,
   ref,
+  inputProps,
 }: TextFieldProps) => {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const mergedRef = useMergedRefs(inputRef, ref);
   const errorId = useId();
-  const inputId = id ?? name;
+  // Inside a FormControl the field takes its id (FormLabel htmlFor), state
+  // and aria wiring; the error message stays linked as well.
+  const field = useFormControlProps({
+    id,
+    disabled: disabledProp,
+    readOnly: readOnlyProp,
+    "aria-describedby":
+      [helperText ? errorId : null, inputProps?.["aria-describedby"]]
+        .filter(Boolean)
+        .join(" ") || undefined,
+    "aria-invalid": helperText || invalid ? true : undefined,
+  });
+  const inputId = field.id ?? name;
+  const disabled = !!field.disabled;
+  const readOnly = !!field.readOnly;
+  const hasError = !!helperText || isAriaInvalid(field["aria-invalid"]);
 
   const [currentValue, setValue] = useControllableState({
     value,
@@ -115,7 +135,7 @@ const TextField = ({
     isFocused && styles.focused,
     isFilled && styles.filled,
     minimal && styles.minimal,
-    helperText && styles.error,
+    hasError && styles.error,
     hideBorder && styles.containerHideBorder,
     shake && styles.shake,
     disabled && styles.disabled,
@@ -159,6 +179,7 @@ const TextField = ({
             <span className={styles.iconLeft}>{icon}</span>
           )}
           <input
+            {...inputProps}
             ref={mergedRef}
             id={inputId}
             type={
@@ -178,11 +199,14 @@ const TextField = ({
             onKeyDown={onKeyDown}
             disabled={disabled}
             readOnly={readOnly}
+            required={required || undefined}
+            aria-required={field["aria-required"]}
+            aria-readonly={field["aria-readonly"]}
             aria-label={
               ariaLabel ?? (labelVisible ? undefined : label || undefined)
             }
-            aria-invalid={helperText ? true : undefined}
-            aria-describedby={helperText ? errorId : undefined}
+            aria-invalid={field["aria-invalid"]}
+            aria-describedby={field["aria-describedby"]}
             style={{
               paddingLeft: icon && iconPosition === "left" ? "2rem" : "",
               paddingRight:

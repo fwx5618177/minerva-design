@@ -1,0 +1,42 @@
+{
+  "title": "FormControl",
+  "description": "Conteneur de champ qui relie un libellé, un contrôle, un texte d’aide et un message d’erreur, et partage l’état invalide / obligatoire / désactivé / lecture seule avec le contrôle.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "FormLabel cible le contrôle, l’aide le décrit et le message d’erreur remplace l’aide quand le champ est invalide."
+    },
+    "form-field": {
+      "title": "FormField",
+      "description": "FormField combine FormControl, FormLabel, aide et message d’erreur ; errorMessage rend le champ invalide."
+    },
+    "states": {
+      "title": "États",
+      "description": "required ajoute un indicateur et aria-required ; disabled et readOnly sont transmis au contrôle."
+    },
+    "custom-control": {
+      "title": "Contrôle personnalisé",
+      "description": "useFormControlProps câble n’importe quel contrôle (id, attributs aria, disabled, readOnly) ; useFormControlContext lit l’état du champ."
+    }
+  },
+  "api": {
+    "FormControlProps": {
+      "invalid": "Marque le champ comme invalide : le contrôle reçoit aria-invalid et le message d’erreur remplace le texte d’aide",
+      "required": "Marque le champ comme obligatoire (aria-required sur le contrôle, indicateur sur le libellé)",
+      "disabled": "Désactive le contrôle du champ",
+      "readOnly": "Rend le contrôle du champ en lecture seule",
+      "id": "Id du contrôle ; les id du libellé, de l’aide et de l’erreur en dérivent (`${id}-label`, `${id}-helper`, `${id}-error`). Généré s’il est omis",
+      "children": "Contenu du champ : FormLabel, un contrôle, FormHelperText, FormErrorMessage",
+      "ref": "Ref vers le <div> conteneur"
+    },
+    "FormLabelProps": {
+      "requiredIndicator": "Indicateur affiché après le texte quand le champ est obligatoire (masqué aux technologies d’assistance, qui reçoivent aria-required)",
+      "ref": "Ref vers l’élément <label>"
+    },
+    "FormFieldProps": {
+      "label": "Libellé du champ",
+      "helperText": "Texte d’aide sous le contrôle (masqué quand le champ est invalide)",
+      "errorMessage": "Message d’erreur ; rend le champ invalide sauf si `invalid` est défini explicitement"
+    }
+  }
+}

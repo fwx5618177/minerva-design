@@ -1,0 +1,41 @@
+{
+  "title": "Toast",
+  "description": "Temporary notifications with a title, a description and a status, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree. Unlike message, toasts inherit your app's context (theme, locale) and showing a toast with an existing id replaces it. Server rendering is safe.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Mount one ToastProvider near the root (this demo mounts the one used on this page), then call toast.success / error / warning / info."
+    },
+    "options": {
+      "title": "Options",
+      "description": "toast({ status, title, description, duration }) for full control; duration 0 keeps the toast until it is closed. toast.dismiss(id) closes one toast, toast.dismiss() all of them. Hovering or focusing a toast pauses its timer."
+    },
+    "dedupe": {
+      "title": "Same id replaces",
+      "description": "Showing a toast with the id of a visible one replaces it and restarts its timer, instead of stacking duplicates (handy for polling errors). useToast returns the same toast function."
+    }
+  },
+  "api": {
+    "ToastOptions": {
+      "id": "Identifier of the toast; generated when omitted. Showing a toast with the id of a visible one replaces it (and restarts its timer) instead of stacking a duplicate",
+      "status": "Status of the toast",
+      "title": "Main text",
+      "description": "Secondary text under the title",
+      "duration": "Time in milliseconds before the toast closes automatically; 0 keeps it open"
+    },
+    "ToastProviderProps": {
+      "position": "Where the toasts are stacked",
+      "children": "Application content; the toast viewport is rendered after it",
+      "pauseOnHover": "Pauses the auto-close timer while a toast is hovered or focused",
+      "ariaLabel": "Accessible label of the toast region",
+      "closeLabel": "Accessible label of the close buttons"
+    },
+    "ToastApi": {
+      "info": "Shows an info toast with the given title",
+      "success": "Shows a success toast with the given title",
+      "warning": "Shows a warning toast with the given title",
+      "error": "Shows a danger toast with the given title",
+      "dismiss": "Closes the toast with the given id, or every toast when omitted"
+    }
+  }
+}

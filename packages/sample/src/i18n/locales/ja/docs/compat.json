@@ -1,0 +1,21 @@
+{
+  "title": "互換エントリー",
+  "description": "@minerva/lib-core/compat：Minerva で実装された、@novel-isr/ui と同一のエクスポート名とプロパティ形状。",
+  "entries": {
+    "title": "エントリー",
+    "text": "3 つの JavaScript エントリーが @novel-isr/ui のものに対応します：compat（クライアント、\"use client\" 付き）、compat/theme-utils（サーバー安全、バナーなし）、compat/monaco（任意の Monaco ピア依存）。--ui-* トークンのために style.css の後で compat.css を読み込みます。"
+  },
+  "usage": {
+    "title": "使い方"
+  },
+  "guarantees": {
+    "title": "compat が保証すること",
+    "names": "@novel-isr/ui のすべての実行時エクスポート（135）と型（163）を、同じ名前とプロパティ形状で提供します。",
+    "strings": "novel の元の組み込み文言（主に中国語）を明示的なプロパティとして渡すため、出力は lib-core の言語に依存しません。",
+    "hooks": "同じ ui-* クラス名、data-* 属性、コンポーネントのカスタムプロパティを出力するため、アプリのスタイルシートはそのまま動作します。",
+    "tokens": "compat.css はすべての --ui-* トークンを Minerva のトークンに対応付け（Minerva にトークンがない場合はパレットごとに novel の正確な値）、novel のリセットとモーションユーティリティも含みます。",
+    "sideEffects": "このエントリーには副作用がありません。インポートしても lib-core の言語やテーマは変わりません。",
+    "proof": "テストで証明しています：エクスポート網羅テスト、novel 自身のテストとアプリのプロパティを使った compat テスト、compat に対して実行する novel の e2e スイート。",
+    "note": "compat は移行のための補助です。新しいコードには Minerva のネイティブ API を使ってください。"
+  }
+}

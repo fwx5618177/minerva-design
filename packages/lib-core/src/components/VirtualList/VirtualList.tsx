@@ -203,6 +203,8 @@ const VirtualList = ({
     <div
       ref={containerRef}
       // Scrollable region: focusable so keyboard users can scroll it
+      role="region"
+      aria-label={ariaLabel}
       tabIndex={0}
       aria-busy={loading || undefined}
       className={`${styles.virtualList} ${className}`}

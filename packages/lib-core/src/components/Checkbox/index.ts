@@ -1,7 +1,7 @@
 import Checkbox from "./Checkbox";
-import type { CheckboxProps } from "./types";
+import type { CheckboxProps, CheckboxColor } from "./types";
 
 export { Checkbox };
-export type { CheckboxProps };
+export type { CheckboxProps, CheckboxColor };
 
 export default Checkbox;

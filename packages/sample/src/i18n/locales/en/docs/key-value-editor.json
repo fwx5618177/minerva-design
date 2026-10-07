@@ -1,0 +1,37 @@
+{
+  "title": "KeyValueEditor",
+  "description": "Edits an ordered list of string pairs with multi-line keys and values, add and remove actions; rows are tracked by a stable id.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Controlled entries with custom labels; newlines and duplicate keys are preserved."
+    },
+    "errors": {
+      "title": "Validation errors",
+      "description": "The consumer validates and passes errors by entry id; they stay attached across reordering."
+    }
+  },
+  "api": {
+    "KeyValueEditorProps": {
+      "entries": "Rows (controlled); omit for an uncontrolled editor",
+      "defaultEntries": "Initial rows of an uncontrolled editor",
+      "onChange": "Called with the next rows after an edit, an addition or a removal",
+      "disabled": "Disables every field and button",
+      "keyLabel": "Label of the key fields (followed by the row number for screen readers)",
+      "valueLabel": "Label of the value fields",
+      "addLabel": "Text of the add button",
+      "removeLabel": "Accessible label of the remove buttons (followed by the row number)",
+      "errors": "Field errors by entry id; validation belongs to the consumer",
+      "ref": "Ref to the container <div>"
+    },
+    "KeyValueEntry": {
+      "id": "Stable id of the row (React key, error lookup); keep it across edits",
+      "key": "Key text (whitespace and newlines are preserved)",
+      "value": "Value text (whitespace and newlines are preserved)"
+    },
+    "KeyValueEntryErrors": {
+      "key": "Error message of the key field",
+      "value": "Error message of the value field"
+    }
+  }
+}

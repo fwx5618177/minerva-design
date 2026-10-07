@@ -1,0 +1,38 @@
+{
+  "title": "Confirm",
+  "description": "Demande à l'utilisateur de confirmer une action : un remplaçant thématisé de window.confirm. Utilisez le ConfirmDialog déclaratif ou attendez confirm() depuis n'importe où ; avec un ConfirmProvider la boîte s'affiche dans l'arbre de l'application, sans lui un hôte autonome est monté à la demande, et côté serveur confirm() renvoie false.",
+  "demos": {
+    "imperative": {
+      "title": "confirm() impératif",
+      "description": "await confirm({...}) renvoie true si l'action est confirmée et false si elle est annulée (bouton, Échap ou fond). Aucun provider requis."
+    },
+    "provider": {
+      "title": "Avec ConfirmProvider",
+      "description": "useConfirm() renvoie le confirm du provider : les boîtes partagent le contexte de l'application. Les demandes simultanées s'affichent une par une."
+    },
+    "declarative": {
+      "title": "ConfirmDialog déclaratif",
+      "description": "Boîte contrôlée ; loading affiche un indicateur et bloque l'annulation pendant onConfirm."
+    }
+  },
+  "api": {
+    "ConfirmDialogProps": {
+      "open": "Indique si la boîte est ouverte (contrôlé)",
+      "onOpenChange": "Appelé avec false quand l'utilisateur annule (bouton d'annulation, fermeture, Échap, clic sur le fond)",
+      "onConfirm": "Appelé lors de l'appui sur le bouton de confirmation ; la boîte ne se ferme pas d'elle-même"
+    },
+    "ConfirmOptions": {
+      "title": "Titre (nom accessible de la boîte)",
+      "description": "Explication sous le titre (description accessible)",
+      "confirmLabel": "Libellé du bouton de confirmation ; par défaut « Confirmer », ou « Supprimer » avec intent=\"danger\"",
+      "cancelLabel": "Libellé du bouton d'annulation ; par défaut « Annuler » localisé",
+      "closeLabel": "Libellé accessible du bouton de fermeture (×) ; par défaut « Fermer » localisé",
+      "intent": "Tonalité du bouton de confirmation : primary, danger (destructif) ou warning",
+      "loading": "Affiche un indicateur sur le bouton de confirmation et désactive l'annulation",
+      "confirmDisabled": "Désactive nativement le bouton de confirmation (retiré de l'ordre de tabulation) ; avec loading seul il reste focalisable mais ne peut pas être réactivé"
+    },
+    "ConfirmProviderProps": {
+      "children": "Sous-arbre de l'application ; les boîtes de useConfirm() / confirm() s'y affichent"
+    }
+  }
+}

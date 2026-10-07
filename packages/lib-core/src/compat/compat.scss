@@ -1,0 +1,407 @@
+// @minerva/lib-core/compat.css — the @novel-isr/ui design-token layer.
+//
+// Generated once from @novel-isr/ui 0.1.40 (src/styles/tokens.scss). Load it
+// after "@minerva/lib-core/style.css" in apps that still use the `--ui-*`
+// variables or the `.ui-enter-*` / `.ui-stagger` utilities:
+//
+//   import "@minerva/lib-core/style.css";
+//   import "@minerva/lib-core/compat.css";
+//
+// 1. Every `--ui-*` token is an alias of a Minerva token, so it follows the
+//    active theme / palette (and custom themes) automatically.
+// 2. Scale steps Minerva has no token for (brand-100/300/400/800/900,
+//    accent-100..400, gray-*) are approximated with color-mix() and set to the
+//    exact @novel-isr/ui values for each palette.
+// 3. @novel-isr/ui's minimal global reset and motion utilities.
+
+:root,
+[data-palette],
+[data-theme] {
+  --ui-color-brand-500: var(--primary-color);
+  --ui-color-brand-600: var(--primary-color-hover);
+  --ui-color-brand-700: var(--primary-color-active);
+  --ui-color-brand-50: var(--primary-color-subtle);
+  --ui-color-brand-200: var(--primary-color-border);
+  --ui-color-accent-500: var(--accent-color);
+  --ui-color-accent-600: var(--accent-color-hover);
+  --ui-color-accent-700: var(--accent-color-text);
+  --ui-color-accent-50: var(--accent-color-subtle);
+  --ui-color-accent-200: var(--accent-color-border);
+  --ui-color-bg: var(--surface-color);
+  --ui-color-bg-subtle: var(--surface-subtle-color);
+  --ui-color-bg-muted: var(--surface-muted-color);
+  --ui-color-bg-emphasis: var(--foreground-color);
+  --ui-color-fg: var(--text-color);
+  --ui-color-fg-secondary: var(--text-secondary-color);
+  --ui-color-fg-muted: var(--text-muted-color);
+  --ui-color-fg-disabled: var(--text-disabled-color);
+  --ui-color-fg-inverse: var(--text-inverse-color);
+  --ui-color-border: var(--border-color);
+  --ui-color-border-strong: var(--border-strong-color);
+  --ui-color-overlay: var(--overlay-color);
+  --ui-color-canvas: var(--canvas-color);
+  --ui-color-surface: var(--surface-color);
+  --ui-color-surface-raised: var(--surface-elevated-color);
+  --ui-color-control: var(--control-color);
+  --ui-color-hover: var(--hover-color);
+  --ui-color-selected: var(--selected-color);
+  --ui-color-divider: var(--border-color);
+  --ui-color-focus-ring: var(--primary-color);
+  --ui-shadow-sm: var(--shadow-sm);
+  --ui-shadow-md: var(--shadow-md);
+  --ui-shadow-lg: var(--shadow-lg);
+  --ui-shadow-xl: var(--shadow-xl);
+  --ui-font-family-sans: var(--font-family-sans);
+  --ui-font-family-display: var(--font-family-display);
+  --ui-font-family-mono: var(--font-family-mono);
+  --ui-color-success-500: var(--success-color);
+  --ui-color-success-600: var(--success-color-hover);
+  --ui-color-success-700: var(--success-color-active);
+  --ui-color-success-50: var(--success-color-subtle);
+  --ui-color-warning-500: var(--warning-color);
+  --ui-color-warning-600: var(--warning-color-hover);
+  --ui-color-warning-700: var(--warning-color-active);
+  --ui-color-warning-50: var(--warning-color-subtle);
+  --ui-color-danger-500: var(--danger-color);
+  --ui-color-danger-600: var(--danger-color-hover);
+  --ui-color-danger-700: var(--danger-color-active);
+  --ui-color-danger-50: var(--danger-color-subtle);
+  --ui-color-info-500: var(--info-color);
+  --ui-color-info-600: var(--info-color-hover);
+  --ui-color-info-700: var(--info-color-active);
+  --ui-color-info-50: var(--info-color-subtle);
+  --ui-space-0: var(--space-0);
+  --ui-space-0-5: var(--space-0-5);
+  --ui-space-1: var(--space-1);
+  --ui-space-2: var(--space-2);
+  --ui-space-3: var(--space-3);
+  --ui-space-4: var(--space-4);
+  --ui-space-5: var(--space-5);
+  --ui-space-6: var(--space-6);
+  --ui-space-7: var(--space-7);
+  --ui-space-8: var(--space-8);
+  --ui-space-10: var(--space-10);
+  --ui-space-12: var(--space-12);
+  --ui-space-14: var(--space-14);
+  --ui-space-16: var(--space-16);
+  --ui-space-20: var(--space-20);
+  --ui-space-24: var(--space-24);
+  --ui-radius-none: var(--radius-none);
+  --ui-radius-sm: var(--radius-sm);
+  --ui-radius-md: var(--radius-md);
+  --ui-radius-lg: var(--radius-lg);
+  --ui-radius-xl: var(--radius-xl);
+  --ui-radius-2xl: var(--radius-2xl);
+  --ui-radius-full: var(--radius-full);
+  --ui-font-size-xs: var(--font-size-xs);
+  --ui-font-size-sm: var(--font-size-sm);
+  --ui-font-size-md: var(--font-size-md);
+  --ui-font-size-lg: var(--font-size-lg);
+  --ui-font-size-xl: var(--font-size-xl);
+  --ui-font-size-2xl: var(--font-size-2xl);
+  --ui-font-size-3xl: var(--font-size-3xl);
+  --ui-font-size-4xl: var(--font-size-4xl);
+  --ui-font-size-5xl: var(--font-size-5xl);
+  --ui-font-size-6xl: var(--font-size-6xl);
+  --ui-font-weight-regular: var(--font-weight-regular);
+  --ui-font-weight-medium: var(--font-weight-medium);
+  --ui-font-weight-semibold: var(--font-weight-semibold);
+  --ui-font-weight-bold: var(--font-weight-bold);
+  --ui-line-height-tight: var(--line-height-tight);
+  --ui-line-height-base: var(--line-height-base);
+  --ui-line-height-relaxed: var(--line-height-relaxed);
+  --ui-z-base: var(--z-base);
+  --ui-z-raised: var(--z-raised);
+  --ui-z-dropdown: var(--z-dropdown);
+  --ui-z-sticky: var(--z-sticky);
+  --ui-z-overlay: var(--z-overlay);
+  --ui-z-modal: var(--z-modal);
+  --ui-z-popover: var(--z-popover);
+  --ui-z-toast: var(--z-toast);
+  --ui-transition-fast: var(--transition-fast);
+  --ui-transition-base: var(--transition-base);
+  --ui-transition-slow: var(--transition-slow);
+  --ui-ease-out: var(--ease-out);
+  --ui-ease-spring: var(--ease-spring);
+  --ui-ease-in: var(--ease-in);
+  --ui-rhythm-section: var(--rhythm-section);
+  --ui-rhythm-block: var(--rhythm-block);
+  --ui-rhythm-tight: var(--rhythm-tight);
+  --ui-elevation-flat: var(--elevation-flat);
+  --ui-elevation-subtle: var(--elevation-subtle);
+  --ui-elevation-raised: var(--elevation-raised);
+  --ui-elevation-floating: var(--elevation-floating);
+  --ui-focus-ring-width: var(--focus-ring-width);
+  --ui-focus-ring-offset: var(--focus-ring-offset);
+  --ui-color-brand-100: color-mix(in srgb, var(--primary-color) 20%, var(--surface-color));
+  --ui-color-brand-300: color-mix(in srgb, var(--primary-color) 60%, var(--surface-color));
+  --ui-color-brand-400: color-mix(in srgb, var(--primary-color) 80%, var(--surface-color));
+  --ui-color-brand-800: color-mix(in srgb, var(--primary-color) 60%, var(--foreground-color));
+  --ui-color-brand-900: color-mix(in srgb, var(--primary-color) 45%, var(--foreground-color));
+  --ui-color-accent-100: color-mix(in srgb, var(--accent-color) 25%, var(--surface-color));
+  --ui-color-accent-300: color-mix(in srgb, var(--accent-color) 60%, var(--surface-color));
+  --ui-color-accent-400: color-mix(in srgb, var(--accent-color) 80%, var(--surface-color));
+  --ui-color-gray-50: color-mix(in srgb, var(--foreground-color) 2%, var(--background-color));
+  --ui-color-gray-100: color-mix(in srgb, var(--foreground-color) 6%, var(--background-color));
+  --ui-color-gray-200: color-mix(in srgb, var(--foreground-color) 12%, var(--background-color));
+  --ui-color-gray-300: color-mix(in srgb, var(--foreground-color) 22%, var(--background-color));
+  --ui-color-gray-400: color-mix(in srgb, var(--foreground-color) 38%, var(--background-color));
+  --ui-color-gray-500: color-mix(in srgb, var(--foreground-color) 55%, var(--background-color));
+  --ui-color-gray-600: color-mix(in srgb, var(--foreground-color) 68%, var(--background-color));
+  --ui-color-gray-700: color-mix(in srgb, var(--foreground-color) 78%, var(--background-color));
+  --ui-color-gray-800: color-mix(in srgb, var(--foreground-color) 88%, var(--background-color));
+  --ui-color-gray-900: color-mix(in srgb, var(--foreground-color) 96%, var(--background-color));
+}
+
+[data-palette="editorial"][data-theme="light"],
+[data-palette="editorial"]:not([data-theme="dark"]) {
+  --ui-color-brand-100: #d4dfeb;
+  --ui-color-brand-300: #7c9ec1;
+  --ui-color-brand-400: #4f7da9;
+  --ui-color-brand-800: #0a1d33;
+  --ui-color-brand-900: #061425;
+  --ui-color-accent-100: #f5cfb9;
+  --ui-color-accent-300: #d97c52;
+  --ui-color-accent-400: #c5613a;
+  --ui-color-gray-50: #faf8f5;
+  --ui-color-gray-100: #f0ece4;
+  --ui-color-gray-200: #e0dacb;
+  --ui-color-gray-300: #c8bfac;
+  --ui-color-gray-400: #a8a29e;
+  --ui-color-gray-500: #78716c;
+  --ui-color-gray-600: #57534e;
+  --ui-color-gray-700: #44403c;
+  --ui-color-gray-800: #292524;
+  --ui-color-gray-900: #1c1917;
+}
+
+[data-palette="editorial"][data-theme="dark"] {
+  --ui-color-brand-100: #0a1d33;
+  --ui-color-brand-300: #1f4174;
+  --ui-color-brand-400: #4d7faf;
+  --ui-color-brand-800: #d8e3ee;
+  --ui-color-brand-900: #eef3f8;
+  --ui-color-accent-100: #913e22;
+  --ui-color-accent-300: #c5613a;
+  --ui-color-accent-400: #d97c52;
+  --ui-color-gray-50: #1c1917;
+  --ui-color-gray-100: #292524;
+  --ui-color-gray-200: #3a342d;
+  --ui-color-gray-300: #52483e;
+  --ui-color-gray-400: #78716c;
+  --ui-color-gray-500: #a8a29e;
+  --ui-color-gray-600: #c8bfac;
+  --ui-color-gray-700: #e0dacb;
+  --ui-color-gray-800: #f0ece4;
+  --ui-color-gray-900: #faf8f5;
+}
+
+[data-palette="tech"][data-theme="light"],
+[data-palette="tech"]:not([data-theme="dark"]) {
+  --ui-color-brand-100: #c8defc;
+  --ui-color-brand-300: #5a99f1;
+  --ui-color-brand-400: #3479d8;
+  --ui-color-brand-800: #0f2c5b;
+  --ui-color-brand-900: #091d3c;
+  --ui-color-accent-100: #c8defc;
+  --ui-color-accent-300: #5a99f1;
+  --ui-color-accent-400: #3479d8;
+  --ui-color-gray-50: #f7f8fa;
+  --ui-color-gray-100: #eef0f4;
+  --ui-color-gray-200: #d8dde5;
+  --ui-color-gray-300: #b8c0cc;
+  --ui-color-gray-400: #8a94a3;
+  --ui-color-gray-500: #5d6877;
+  --ui-color-gray-600: #424c5c;
+  --ui-color-gray-700: #2f3845;
+  --ui-color-gray-800: #1f2630;
+  --ui-color-gray-900: #131820;
+}
+
+[data-palette="tech"][data-theme="dark"] {
+  --ui-color-brand-100: #0f2c5b;
+  --ui-color-brand-300: #1a4f9e;
+  --ui-color-brand-400: #2364c4;
+  --ui-color-brand-800: #c0d3f7;
+  --ui-color-brand-900: #e3edfb;
+  --ui-color-accent-100: #0f2c5b;
+  --ui-color-accent-300: #1a4f9e;
+  --ui-color-accent-400: #2364c4;
+  --ui-color-gray-50: #131820;
+  --ui-color-gray-100: #1f2630;
+  --ui-color-gray-200: #2f3845;
+  --ui-color-gray-300: #424c5c;
+  --ui-color-gray-400: #5d6877;
+  --ui-color-gray-500: #8a94a3;
+  --ui-color-gray-600: #b8c0cc;
+  --ui-color-gray-700: #d8dde5;
+  --ui-color-gray-800: #eef0f4;
+  --ui-color-gray-900: #f7f8fa;
+}
+
+[data-palette="graphite"][data-theme="light"],
+[data-palette="graphite"]:not([data-theme="dark"]) {
+  --ui-color-brand-100: #dbe5ff;
+  --ui-color-brand-300: #95adf5;
+  --ui-color-brand-400: #6486e3;
+  --ui-color-brand-800: #1b326b;
+  --ui-color-brand-900: #16295a;
+  --ui-color-accent-100: #dbe5ff;
+  --ui-color-accent-300: #95adf5;
+  --ui-color-accent-400: #6486e3;
+  --ui-color-gray-50: #f7f7f8;
+  --ui-color-gray-100: #eff0f2;
+  --ui-color-gray-200: #dfe1e5;
+  --ui-color-gray-300: #c6c9cf;
+  --ui-color-gray-400: #9ca1aa;
+  --ui-color-gray-500: #6f7680;
+  --ui-color-gray-600: #505761;
+  --ui-color-gray-700: #3b4149;
+  --ui-color-gray-800: #292d32;
+  --ui-color-gray-900: #1f2328;
+}
+
+[data-palette="graphite"][data-theme="dark"] {
+  --ui-color-brand-100: #202e50;
+  --ui-color-brand-300: #3f5e9e;
+  --ui-color-brand-400: #587bd2;
+  --ui-color-brand-800: #d5deff;
+  --ui-color-brand-900: #eef2ff;
+  --ui-color-accent-100: #202e50;
+  --ui-color-accent-300: #3f5e9e;
+  --ui-color-accent-400: #587bd2;
+  --ui-color-gray-50: #17181b;
+  --ui-color-gray-100: #1e2024;
+  --ui-color-gray-200: #25282d;
+  --ui-color-gray-300: #34383f;
+  --ui-color-gray-400: #494f59;
+  --ui-color-gray-500: #6f7680;
+  --ui-color-gray-600: #a7adb7;
+  --ui-color-gray-700: #c7ccd3;
+  --ui-color-gray-800: #e0e3e8;
+  --ui-color-gray-900: #f2f4f7;
+}
+
+[data-palette="cool"][data-theme="light"],
+[data-palette="cool"]:not([data-theme="dark"]) {
+  --ui-color-brand-100: #d9e8ff;
+  --ui-color-brand-300: #88b2f3;
+  --ui-color-brand-400: #568cde;
+  --ui-color-brand-800: #17366b;
+  --ui-color-brand-900: #122b56;
+  --ui-color-accent-100: #d9e8ff;
+  --ui-color-accent-300: #88b2f3;
+  --ui-color-accent-400: #568cde;
+  --ui-color-gray-50: #f5f8fb;
+  --ui-color-gray-100: #eaf0f5;
+  --ui-color-gray-200: #d6e0e9;
+  --ui-color-gray-300: #b8c6d3;
+  --ui-color-gray-400: #8fa0b0;
+  --ui-color-gray-500: #647687;
+  --ui-color-gray-600: #485a6b;
+  --ui-color-gray-700: #344554;
+  --ui-color-gray-800: #24323f;
+  --ui-color-gray-900: #17202b;
+}
+
+[data-palette="cool"][data-theme="dark"] {
+  --ui-color-brand-100: #1d3557;
+  --ui-color-brand-300: #3b659a;
+  --ui-color-brand-400: #5483c3;
+  --ui-color-brand-800: #d4e2ff;
+  --ui-color-brand-900: #edf4ff;
+  --ui-color-accent-100: #1d3557;
+  --ui-color-accent-300: #3b659a;
+  --ui-color-accent-400: #5483c3;
+  --ui-color-gray-50: #151a21;
+  --ui-color-gray-100: #1b222c;
+  --ui-color-gray-200: #222c38;
+  --ui-color-gray-300: #344354;
+  --ui-color-gray-400: #4a5d72;
+  --ui-color-gray-500: #708397;
+  --ui-color-gray-600: #a2afbd;
+  --ui-color-gray-700: #c5ced7;
+  --ui-color-gray-800: #dce4eb;
+  --ui-color-gray-900: #eef3f8;
+}
+
+// ---- Minimal global reset (as shipped by @novel-isr/ui styles.css) ----
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+textarea {
+  resize: none;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--ui-focus-ring-width) solid var(--ui-color-brand-500);
+  outline-offset: var(--ui-focus-ring-offset);
+}
+
+// ---- Motion utilities ----
+@keyframes ui-enter-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ui-enter-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ui-enter-up {
+  animation: ui-enter-up 360ms var(--ui-ease-out, ease-out) both;
+}
+
+.ui-enter-fade {
+  animation: ui-enter-fade 240ms var(--ui-ease-out, ease-out) both;
+}
+
+.ui-stagger > * {
+  animation: ui-enter-up 360ms var(--ui-ease-out, ease-out) both;
+}
+
+@for $i from 1 through 24 {
+  .ui-stagger > *:nth-child(#{$i}) {
+    animation-delay: calc((#{$i} - 1) * 35ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

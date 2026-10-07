@@ -65,6 +65,17 @@ const Message = ({
   // politely (status) so it does not cut off the screen reader.
   const role = type === "error" || type === "warning" ? "alert" : "status";
 
+  const body = (
+    <>
+      {icon && (
+        <span className={styles.icon} aria-hidden="true">
+          {icon}
+        </span>
+      )}
+      <span>{content}</span>
+    </>
+  );
+
   return (
     <div
       className={`${styles.message} ${styles[type]} ${className}`}
@@ -73,7 +84,6 @@ const Message = ({
         zIndex,
         ...style,
       }}
-      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setFocused(true)}
@@ -85,14 +95,19 @@ const Message = ({
       role={role}
       aria-description={description}
     >
-      <div className={styles.content}>
-        {icon && (
-          <span className={styles.icon} aria-hidden="true">
-            {icon}
-          </span>
-        )}
-        <span>{content}</span>
-      </div>
+      {onClick ? (
+        // Clickable messages expose their content as a real button so the
+        // action is reachable with the keyboard (Tab, Enter / Space).
+        <button
+          type="button"
+          className={`${styles.content} ${styles.contentButton}`}
+          onClick={onClick}
+        >
+          {body}
+        </button>
+      ) : (
+        <div className={styles.content}>{body}</div>
+      )}
       {showClose && (
         <button
           type="button"

@@ -1,5 +1,8 @@
 import type { Ref } from "react";
 
+/** Appearance of a Switch */
+export type SwitchVariant = "slider" | "segmented";
+
 export interface SwitchProps {
   /** Whether the switch is on (controlled) */
   checked?: boolean;
@@ -9,7 +12,8 @@ export interface SwitchProps {
    */
   defaultChecked?: boolean;
   /**
-   * Disables the switch
+   * Disables the switch. Inherited from an enclosing FormControl when not
+   * set; an explicit `false` overrides the FormControl
    * @default false
    */
   disabled?: boolean;
@@ -19,21 +23,43 @@ export interface SwitchProps {
    */
   size?: "small" | "medium" | "large";
   /**
-   * Color when on: a theme color name or any CSS color
+   * Color when on: a theme color name or any CSS color (the
+   * `--ui-switch-active-color` custom property overrides theme colors)
    * @default "primary"
    */
-  color?: "primary" | "secondary" | "success" | "warning" | "error" | string;
+  color?:
+    "primary" | "secondary" | "success" | "info" | "warning" | "error" | string;
   /**
    * Shape of the track and thumb
    * @default "round"
    */
   shape?: "round" | "square";
+  /**
+   * "slider" is the classic track + thumb; "segmented" renders two pressable
+   * segments (requires offLabel and onLabel, otherwise falls back to slider)
+   * @default "slider"
+   */
+  variant?: SwitchVariant;
   /** Label displayed next to the switch */
   label?: React.ReactNode;
+  /** Label content (alternative to `label`; used when `label` is not set) */
+  children?: React.ReactNode;
+  /**
+   * Label of the "off" state. With onLabel, both labels are rendered as
+   * buttons on each side of the slider (they replace `label`) or as the
+   * segments of the segmented variant
+   */
+  offLabel?: React.ReactNode;
+  /** Label of the "on" state (see offLabel) */
+  onLabel?: React.ReactNode;
   /** Accessible label, required when the switch has no visible label */
   ariaLabel?: string;
   /** Name of the input, used in forms */
   name?: string;
+  /** id of the input (defaults to the enclosing FormControl's id) */
+  id?: string;
+  /** Value submitted with the form when on */
+  value?: string;
   /**
    * Position of the label relative to the switch
    * @default "end"

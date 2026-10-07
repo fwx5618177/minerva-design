@@ -1,0 +1,50 @@
+{
+  "title": "Rating 评分",
+  "description": "以五颗星展示任意刻度的评分，并支持鼠标或键盘打分。",
+  "demos": {
+    "basic": {
+      "title": "展示",
+      "description": "10 分制或 5 分制的只读评分，可显示数值与评分人数。"
+    },
+    "interactive": {
+      "title": "可交互",
+      "description": "传入 onChange 后成为滑块：悬停预览，点击星星左半或右半，或使用方向键。"
+    },
+    "scale": {
+      "title": "多维评分",
+      "description": "RatingScale 在同一刻度上为多个维度评分。"
+    }
+  },
+  "api": {
+    "RatingProps": {
+      "value": "当前评分，范围 0..max",
+      "max": "满分；始终以 5 颗星展示",
+      "size": "星星尺寸：12px、16px 或 20px",
+      "showValue": "在星星后显示数值",
+      "ratingCount": "评分人数，显示在数值后",
+      "onChange": "使评分可交互（滑块）",
+      "readOnly": "即使传入 onChange 也强制只读",
+      "ariaLabel": "评分的无障碍标签",
+      "onKeyDown": "在内置步进前调用；调用 preventDefault() 可接管按键",
+      "className": "额外的类名",
+      "style": "根元素的内联样式",
+      "ref": "指向根 <span> 的 ref"
+    },
+    "RatingScaleProps": {
+      "dimensions": "要评分的维度，每个一行",
+      "max": "所有维度共享的满分",
+      "size": "星星尺寸",
+      "onChange": "使各行可交互；回调参数为维度 key 与新分数",
+      "readOnly": "强制只读",
+      "showValue": "在每行末尾显示数值",
+      "className": "额外的类名",
+      "ref": "指向根元素的 ref"
+    },
+    "RatingDimension": {
+      "key": "稳定的 key，回传给 onChange",
+      "label": "显示的标签",
+      "value": "该维度的当前分数",
+      "hint": "可选描述（字符串会作为该行的提示）"
+    }
+  }
+}

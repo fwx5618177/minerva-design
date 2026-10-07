@@ -173,14 +173,13 @@ const TimePickerPanel = ({
         e.preventDefault();
         focusColumn(Math.max(0, columnIndex - 1));
         break;
-      case "Enter":
-      case " ":
-        e.preventDefault();
-        target.click();
-        break;
       default:
         break;
     }
+  };
+
+  const pick = (kind: Kind, toValue: (v: number) => number, unit: TimeUnit) => {
+    if (!unit.disabled) onTimeChange(kind, toValue(unit.value));
   };
 
   return (
@@ -199,6 +198,9 @@ const TimePickerPanel = ({
               className={styles.timeColumn}
               role="listbox"
               aria-label={column.label}
+              // Roving tabindex lives on the options; the listbox is only a
+              // programmatic focus target.
+              tabIndex={-1}
               onKeyDown={(e) => handleKeyDown(e, columnIndex)}
             >
               {column.items.map((unit) => {
@@ -214,9 +216,11 @@ const TimePickerPanel = ({
                       [styles.selected]: selected,
                       [styles.disabled]: unit.disabled,
                     })}
-                    onClick={() => {
-                      if (!unit.disabled) {
-                        onTimeChange(column.kind, column.toValue(unit.value));
+                    onClick={() => pick(column.kind, column.toValue, unit)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        pick(column.kind, column.toValue, unit);
                       }
                     }}
                   >

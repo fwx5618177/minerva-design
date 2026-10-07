@@ -52,6 +52,51 @@
     color: var(--light-color);
   }
 
+  &.neutral {
+    background-color: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+    color: var(--text-inverse-color);
+  }
+
+  // Fill styles: subtle (tinted) and outline (bordered). The solid look above
+  // is the default.
+  &.subtle,
+  &.outline {
+    box-shadow: none;
+    border: 1px solid transparent;
+  }
+
+  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+    &.#{$name}.subtle {
+      background-color: var(--#{$role}-color-subtle);
+      color: var(--#{$role}-color-text);
+    }
+
+    &.#{$name}.outline {
+      background-color: transparent;
+      border-color: var(--#{$role}-color);
+      color: var(--#{$role}-color-text);
+    }
+  }
+
+  &.neutral.subtle,
+  &.light.subtle {
+    background-color: var(--surface-muted-color);
+    color: var(--text-secondary-color);
+  }
+
+  &.dark.subtle {
+    background-color: color-mix(in srgb, var(--dark-color) 12%, transparent);
+    color: var(--text-color);
+  }
+
+  &.neutral.outline,
+  &.light.outline,
+  &.dark.outline {
+    background-color: transparent;
+    border-color: var(--border-strong-color);
+    color: var(--text-secondary-color);
+  }
+
   &.small {
     padding: 0.2rem 0.4rem;
     font-size: 0.55rem; /* 调整小字体大小 */
@@ -135,7 +180,20 @@
   &.dot {
     width: 8px;
     height: 8px;
+    flex: 0 0 8px;
     padding: 0;
+    border: 0;
     border-radius: 50%;
+  }
+
+  // a dot is always filled with the full color, whatever the appearance
+  @each $name, $role in (primary: primary, secondary: secondary, success: success, danger: danger, warning: warning, info: info, error: danger) {
+    &.#{$name}.dot {
+      background-color: var(--#{$role}-color);
+    }
+  }
+
+  &.neutral.dot {
+    background-color: var(--text-muted-color);
   }
 }

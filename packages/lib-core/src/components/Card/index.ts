@@ -13,6 +13,8 @@ import type {
   CardDescriptionProps,
   CardContentProps,
   CardFooterProps,
+  CardVariant,
+  CardPadding,
 } from "./types";
 
 export {
@@ -30,6 +32,8 @@ export type {
   CardDescriptionProps,
   CardContentProps,
   CardFooterProps,
+  CardVariant,
+  CardPadding,
 };
 
 export default Card;

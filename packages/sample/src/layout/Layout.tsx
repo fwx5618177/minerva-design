@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { IoMenuOutline } from "react-icons/io5";
 import Sidebar from "./Sidebar";
 import LanguageSwitcher from "@components/LanguageSwitcher";
-import ThemeSwitcher from "@components/ThemeSwitcher";
+import ThemeSwitcher, { PaletteSwitcher } from "@components/ThemeSwitcher";
 import styles from "@styles/layout/layout.module.scss";
 
 const PageFallback: React.FC = () => {
@@ -56,6 +56,7 @@ const Layout: React.FC = () => {
         <div className={styles.header}>
           <div className={styles.headerControls}>
             <ThemeSwitcher />
+            <PaletteSwitcher />
             <LanguageSwitcher />
           </div>
         </div>

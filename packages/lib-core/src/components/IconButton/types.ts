@@ -9,15 +9,39 @@ type TooltipVariant = Pick<
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Ref to the <button> element */
   ref?: Ref<HTMLButtonElement>;
-  /** Icon element to display */
-  icon: React.ReactNode;
-  /** Color variant; a neutral style is used when omitted */
-  variant?: "primary" | "secondary" | "success" | "warning" | "error" | "info";
+  /** Icon element to display (children are used when omitted) */
+  icon?: React.ReactNode;
+  /** Icon element, alternative to the icon prop */
+  children?: React.ReactNode;
+  /**
+   * Accessible name of the button, also shown as its tooltip (unless
+   * showTooltip is false). Takes precedence over ariaLabel
+   */
+  label?: string;
+  /**
+   * Color variant; a neutral style is used when omitted (`danger` is an
+   * alias of `error`)
+   */
+  variant?:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "error"
+    | "danger"
+    | "info"
+    | "neutral";
+  /**
+   * Fill style: `ghost` (transparent until hovered, the default look),
+   * `solid` (filled with the variant color) or `outline` (bordered)
+   * @default "ghost"
+   */
+  appearance?: "ghost" | "solid" | "outline";
   /**
    * Button size
    * @default "medium"
    */
-  size?: "small" | "medium" | "large";
+  size?: "xsmall" | "small" | "medium" | "large";
   /**
    * Button shape
    * @default "circle"
@@ -56,8 +80,9 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   /** Tooltip configuration (content, variant, shape, arrow); requires showTooltip */
   tooltip?: TooltipVariant;
   /**
-   * Shows the tooltip on hover and focus
-   * @default false
+   * Shows the tooltip on hover and focus (its content is tooltip.content,
+   * or the label)
+   * @default true when label is set, otherwise false
    */
   showTooltip?: boolean;
   /**

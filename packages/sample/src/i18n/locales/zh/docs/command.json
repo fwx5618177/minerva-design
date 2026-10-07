@@ -1,0 +1,42 @@
+{
+  "title": "Command 命令面板",
+  "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+    },
+    "shortcut": {
+      "title": "全局快捷键",
+      "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+    }
+  },
+  "api": {
+    "CommandDialogProps": {
+      "open": "受控的打开状态；不传（undefined）时为非受控",
+      "defaultOpen": "非受控时的初始打开状态",
+      "onOpenChange": "请求改变打开状态时调用（快捷键、选择、Escape、点击遮罩）",
+      "items": "要搜索的命令；禁用的项目不会显示",
+      "onSelect": "以选中的项目调用（点击或回车），随后面板关闭",
+      "title": "对话框标题；默认为本地化的“命令面板”",
+      "description": "面板的可访问描述；默认为本地化提示",
+      "placeholder": "搜索框占位文本；默认为本地化提示",
+      "emptyText": "没有匹配结果时显示的内容",
+      "shortcutLabel": "以 <kbd> 显示在标题旁的快捷键提示，例如“⌘K”",
+      "shortcut": "打开面板的全局快捷键，例如“mod+k”；修饰键：mod、ctrl、meta/cmd、shift、alt/option",
+      "maxResults": "最多显示的结果数",
+      "resultsLabel": "结果列表的可访问标签",
+      "enterLabel": "显示在搜索框末尾的按键提示；默认为本地化的“Enter”",
+      "getOptionId": "每个结果选项的 DOM id，同时用作输入框的 aria-activedescendant；在文档中必须唯一。默认使用该对话框内自动生成的 id",
+      "className": "对话框面板的额外类名"
+    },
+    "CommandItem": {
+      "id": "唯一 id，通过 onSelect 传回",
+      "title": "主标签",
+      "description": "标题下方的次要文字",
+      "group": "分组名，以徽标显示并参与搜索",
+      "keywords": "额外的搜索词（不显示）",
+      "disabled": "从结果中隐藏该项目"
+    }
+  }
+}

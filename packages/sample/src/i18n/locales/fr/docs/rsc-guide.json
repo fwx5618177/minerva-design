@@ -1,0 +1,41 @@
+{
+  "title": "Server Components",
+  "description": "Utiliser Minerva avec les React Server Components : quels points d'entrée sont des frontières client, ce qui peut s'exécuter côté serveur et où importer le CSS.",
+  "entries": {
+    "title": "Points d'entrée et bannière \"use client\"",
+    "text": "@minerva/lib-core est publié en plusieurs points d'entrée. Ceux qui contiennent des composants commencent par la directive \"use client\" ; les points d'entrée des utilitaires de thème ne l'ont pas et peuvent donc s'exécuter dans des Server Components.",
+    "entry": "Point d'entrée",
+    "banner": "\"use client\"",
+    "yes": "Oui",
+    "no": "Non",
+    "main": "Tous les composants, providers, hooks et utilitaires.",
+    "monaco": "L'éditeur de code basé sur Monaco (dépendances pairs facultatives : @monaco-editor/react et monaco-editor).",
+    "compat": "La couche de compatibilité @novel-isr/ui.",
+    "themeUtils": "Utilitaires de thème compatibles serveur : THEME_INIT_SCRIPT, lecture et sérialisation des cookies, noms des palettes.",
+    "compatThemeUtils": "Les mêmes utilitaires avec les noms et valeurs par défaut de @novel-isr/ui (la palette editorial est toujours appliquée)."
+  },
+  "why": {
+    "title": "Pourquoi certains points d'entrée sont des frontières client",
+    "p1": "Chaque composant Minerva utilise de l'état, des effets, un contexte ou des portails : il doit donc s'exécuter dans le navigateur. Comme le point d'entrée principal est marqué \"use client\", un Server Component qui l'importe ne reçoit pas le code des composants mais des références client, des espaces réservés que le bundler résout vers le bundle client. Les composants sont malgré tout rendus en HTML sur le serveur pendant le SSR, puis hydratés dans le navigateur.",
+    "p2": "Une référence client n'est pas une fonction appelable côté serveur. Ce n'est pas un problème pour les composants, qui sont seulement rendus, mais cela signifie que les fonctions ordinaires d'un point d'entrée client ne peuvent pas s'exécuter dans un Server Component. Les fonctions utiles côté serveur, comme la lecture du cookie de thème ou la génération du script d'initialisation, se trouvent donc dans un point d'entrée séparé, sans bannière : @minerva/lib-core/theme-utils."
+  },
+  "render": {
+    "title": "Rendre des composants depuis un Server Component",
+    "text": "Importez les composants de @minerva/lib-core directement dans un Server Component, un layout ou une page : aucun wrapper n'est nécessaire, car le point d'entrée est déjà une frontière client.",
+    "props": "Les props transmises d'un Server Component à un composant client doivent être sérialisables : chaînes, nombres, booléens, objets simples, tableaux et JSX. Les fonctions ne le sont pas : les gestionnaires d'événements comme onClick, les render props et les callbacks nécessitent un petit composant client à vous :"
+  },
+  "functions": {
+    "title": "Appeler des fonctions côté serveur",
+    "text": "Appelez librement les utilitaires de @minerva/lib-core/theme-utils (ou @minerva/lib-core/compat/theme-utils) côté serveur : dans les layouts, les route handlers, les middlewares ou les fonctions edge. N'appelez pas les fonctions du point d'entrée principal dans un Server Component (message.success, Confirm, applyThemeStyles, les hooks...) : là, ce ne sont que des références client. Appelez-les depuis des composants client et des gestionnaires d'événements.",
+    "imperative": "Les API impératives sont aussi sûres pendant le SSR des composants client : sans document elles ne font rien, et les dialogues basés sur une promesse comme Confirm se résolvent à false côté serveur. Déclenchez-les depuis des gestionnaires d'événements ou des effets, qui ne s'exécutent que dans le navigateur."
+  },
+  "css": {
+    "title": "Où importer le CSS",
+    "text": "Importez @minerva/lib-core/style.css une seule fois. Avec le Next.js App Router, le CSS global se place dans le layout racine, qui est un Server Component et peut importer du CSS. Dans les autres configurations, importez-le dans le fichier d'entrée client. compat.css et prose.scss sont des feuilles facultatives, importées de la même façon."
+  },
+  "next": {
+    "title": "Étapes suivantes",
+    "themePalette": "Rendu serveur sans flash de thème : THEME_INIT_SCRIPT et cookies de thème.",
+    "installation": "Paquets, dépendances pairs et feuilles de style."
+  }
+}

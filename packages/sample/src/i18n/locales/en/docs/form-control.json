@@ -1,0 +1,42 @@
+{
+  "title": "FormControl",
+  "description": "Field container that links a label, a control, help text and an error message, and shares invalid / required / disabled / read-only state with the control.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "FormLabel targets the control, the helper text describes it, and the error message replaces the helper while invalid."
+    },
+    "form-field": {
+      "title": "FormField",
+      "description": "FormField combines FormControl, FormLabel, helper text and error message; errorMessage makes the field invalid."
+    },
+    "states": {
+      "title": "States",
+      "description": "required adds an indicator and aria-required; disabled and readOnly reach the control."
+    },
+    "custom-control": {
+      "title": "Custom control",
+      "description": "useFormControlProps wires any control (id, aria attributes, disabled, readOnly); useFormControlContext reads the field state."
+    }
+  },
+  "api": {
+    "FormControlProps": {
+      "invalid": "Marks the field as invalid: the control gets aria-invalid and the error message replaces the helper text",
+      "required": "Marks the field as required (aria-required on the control, indicator on the label)",
+      "disabled": "Disables the control inside the field",
+      "readOnly": "Makes the control inside the field read-only",
+      "id": "Id of the control; the label, helper and error ids derive from it (`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted",
+      "children": "Field content: FormLabel, a control, FormHelperText, FormErrorMessage",
+      "ref": "Ref to the container <div>"
+    },
+    "FormLabelProps": {
+      "requiredIndicator": "Indicator shown after the text when the field is required (hidden from assistive technology, which gets aria-required instead)",
+      "ref": "Ref to the <label> element"
+    },
+    "FormFieldProps": {
+      "label": "Label of the field",
+      "helperText": "Help text below the control (hidden while the field is invalid)",
+      "errorMessage": "Error message; makes the field invalid unless `invalid` is set explicitly"
+    }
+  }
+}

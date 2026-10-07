@@ -12,7 +12,7 @@
     },
     "variants": {
       "title": "Variantes",
-      "description": "Sombre (par défaut), claire et variantes de couleurs sémantiques."
+      "description": "Sombre (par défaut, en contraste avec le thème), claire et couleurs sémantiques ; auto suit le thème avec une surface givrée, fixedDark / fixedLight gardent leurs couleurs quel que soit le thème."
     },
     "shapes": {
       "title": "Formes",
@@ -41,6 +41,14 @@
     "events": {
       "title": "Événements",
       "description": "onOpen et onClose sont déclenchés au survol, au focus, à la perte du focus et avec Échap."
+    },
+    "as-child": {
+      "title": "asChild",
+      "description": "asChild attache l’infobulle à l’enfant lui-même, sans élément englobant, ce qui préserve les mises en page flex et grid. contentClassName stylise l’infobulle."
+    },
+    "provider": {
+      "title": "TooltipProvider",
+      "description": "Un TooltipProvider définit les délais par défaut des infobulles qu’il contient ; passer rapidement d’une infobulle à la suivante l’ouvre immédiatement."
     }
   },
   "api": {
@@ -67,12 +75,21 @@
       "onClose": "Appelé lorsque l’infobulle se ferme quand la souris quitte, à la perte du focus ou avec Échap",
       "ariaLabel": "Libellé accessible de l’élément infobulle",
       "ref": "Handle impératif avec open / close / toggle",
-      "onOpenChange": "Appelé avec l'état d'ouverture demandé (survol, focus, Échap, méthodes du ref)"
+      "onOpenChange": "Appelé avec l'état d'ouverture demandé (survol, focus, Échap, méthodes du ref)",
+      "asChild": "Attache les gestionnaires de survol / focus, la ref et className directement à l’unique élément enfant au lieu de l’envelopper dans un <div> (préserve les mises en page flex et grid). L’enfant doit accepter une ref",
+      "contentClassName": "Classe supplémentaire de l’élément de l’infobulle (flottant)",
+      "contentRef": "Ref vers l’élément de l’infobulle (flottant), définie pendant son affichage"
     },
     "TooltipRef": {
       "open": "Ouvre l’infobulle",
       "close": "Ferme l’infobulle",
       "toggle": "Bascule l’infobulle"
+    },
+    "TooltipProviderProps": {
+      "enterDelay": "Délai par défaut avant l’affichage au survol, en millisecondes, pour chaque Tooltip interne qui ne définit pas enterDelay",
+      "leaveDelay": "Délai par défaut avant le masquage quand la souris sort, en millisecondes, pour chaque Tooltip interne qui ne définit pas leaveDelay",
+      "skipDelay": "Si une autre infobulle du provider s’est fermée il y a moins de ce nombre de millisecondes, la suivante s’ouvre sans attendre son délai",
+      "children": "Contenu du provider"
     }
   }
 }

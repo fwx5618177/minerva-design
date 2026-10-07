@@ -41,12 +41,16 @@
     "validation": {
       "title": "バリデーション",
       "description": "helperText はエラーメッセージを表示し、フィールドをエラー状態にします。無効なメールアドレスを送信して確認してください。"
+    },
+    "form-control": {
+      "title": "FormControl 内で",
+      "description": "FormControl / FormField 内ではその id・状態・aria の関連付けを使います。invalid はメッセージなしでエラー状態を表示します。"
     }
   },
   "api": {
     "TextFieldProps": {
       "name": "input の name。id を指定しない場合はラベルを関連付ける id としても使われます",
-      "id": "input の id。デフォルトは name",
+      "id": "入力の id。既定は外側の FormControl の id、次に name",
       "label": "フローティングラベル。placeholder 指定時や読み取り専用時は非表示になりますが、input のアクセシブルな名前として残ります",
       "value": "現在の値（制御）。非制御の場合は省略します",
       "defaultValue": "非制御フィールドの初期値",
@@ -64,6 +68,8 @@
       "fullWidth": "コンテナの全幅に広げる（width より優先）",
       "width": "フィールドの幅（任意の CSS の長さ）",
       "disabled": "フィールドを無効にする",
+      "invalid": "メッセージなしのエラー状態（無効な FormControl でも設定）。aria-invalid を設定",
+      "required": "入力を必須にします（ネイティブ required。FormControl は aria-required を追加）",
       "ariaLabel": "input のアクセシブルなラベル（デフォルトは label）",
       "clearLabel": "クリアボタンのアクセシブルなラベル",
       "showPasswordLabel": "パスワードが非表示のときの切り替えボタンのアクセシブルなラベル",
@@ -76,7 +82,8 @@
       "onFocus": "入力欄がフォーカスを得たときに呼び出される",
       "onKeyDown": "入力欄でキーが押されたときに呼び出される",
       "className": "コンテナの追加クラス名",
-      "ref": "内部の <input> 要素への ref"
+      "ref": "内部の <input> 要素への ref",
+      "inputProps": "<input> に渡す追加のネイティブ属性 / ハンドラー。管理対象の props が優先され、aria-describedby は結合されます"
     }
   }
 }

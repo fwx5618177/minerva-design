@@ -1,0 +1,251 @@
+// Dimensions are public override hooks (set them on the shell or an ancestor):
+// --ui-shell-sidebar-width, --ui-shell-rail-width, --ui-shell-header-height.
+.shell {
+  --ui-shell-content-offset: var(--ui-shell-sidebar-width, 260px);
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  min-width: 0;
+  background: var(--canvas-color);
+  color: var(--text-color);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+  letter-spacing: 0;
+
+  &[data-sidebar-mode="compact"],
+  &[data-sidebar-mode="floating"] {
+    --ui-shell-content-offset: var(--ui-shell-rail-width, 70px);
+  }
+
+  // Compact rail: only the brand icon remains.
+  &:not([data-sidebar-expanded]) {
+    .brand {
+      padding: 0;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .brandLabel {
+      display: none;
+    }
+  }
+
+  // Floating rail expanded on hover / keyboard focus overlays the content.
+  &[data-sidebar-mode="floating"][data-sidebar-expanded] .sidebar {
+    width: var(--ui-shell-sidebar-width, 260px);
+    z-index: calc(var(--z-sticky) + 1);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--ui-shell-content-offset);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-color);
+  border-right: 1px solid var(--border-color);
+  z-index: var(--z-sticky);
+  transition: width var(--transition-base);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  min-height: var(--ui-shell-header-height, 60px);
+  flex-shrink: 0;
+  gap: var(--space-3);
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.brandIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 24px;
+  color: var(--primary-color);
+}
+
+.brandLabel {
+  min-width: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: anywhere;
+  padding-block: var(--space-2);
+}
+
+.navigation {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  padding: var(--space-3);
+  scrollbar-width: thin;
+}
+
+.sidebarActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-color);
+}
+
+.workspace {
+  min-width: 0;
+  margin-left: var(--ui-shell-content-offset);
+  width: calc(100% - var(--ui-shell-content-offset));
+  transition:
+    margin-left var(--transition-base),
+    width var(--transition-base);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--ui-shell-header-height, 60px);
+  padding: var(--space-2) var(--space-6);
+  background: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.control {
+  flex-shrink: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: var(--space-2);
+
+  :global(.ui-button-label) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+.content {
+  min-width: 0;
+}
+
+// Mobile navigation drawer (left side).
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--overlay-color);
+  z-index: var(--z-overlay);
+  animation: fade-in var(--transition-base);
+}
+
+.drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  height: 100dvh;
+  width: min(30rem, calc(100vw - 1rem));
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-left: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  animation: slide-in var(--transition-base);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.drawerHeader {
+  margin: 0;
+  padding: clamp(1rem, 3vw, 1.5rem) 3.5rem var(--space-3) clamp(1rem, 3vw, 1.5rem);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  flex-shrink: 0;
+}
+
+.drawerBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3);
+}
+
+.drawerClose {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--primary-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .shell[data-sidebar-mode] {
+    --ui-shell-content-offset: 0px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .header {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .workspace,
+  .overlay,
+  .drawer {
+    transition: none;
+    animation: none;
+  }
+}

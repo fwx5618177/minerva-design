@@ -244,6 +244,9 @@ const Cascader = ({
       className={styles.searchResults}
       role="listbox"
       aria-label={label}
+      // Focus lives on the options; the listbox itself is only a programmatic
+      // focus target so the composite widget is reachable as a whole.
+      tabIndex={-1}
       onKeyDown={(e) => {
         const items = Array.from(
           e.currentTarget.querySelectorAll<HTMLElement>('[role="option"]'),
@@ -286,6 +289,10 @@ const Cascader = ({
   const dropdown =
     isOpen && isClient
       ? createPortal(
+          // The popup wrapper only delegates events bubbling up from the
+          // focusable listbox options inside it (Escape / Tab handling, and
+          // preventing focus loss on mousedown); it is not itself a control.
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
           <div
             ref={setDropdownRef}
             className={classNames(styles.dropdown, dropdownClassName)}
@@ -321,6 +328,10 @@ const Cascader = ({
                 maxLevel={maxLevel}
                 optionStyle={optionStyle}
                 optionRender={optionRender}
+                // Not the DOM autoFocus attribute: the panel only moves focus
+                // into the listbox when the user opened it from the keyboard
+                // (combobox pattern), never on page load.
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={focusPanel}
                 onActivate={handleActivate}
                 onHoverExpand={(path) =>
@@ -341,6 +352,10 @@ const Cascader = ({
       style={{ width }}
       onBlur={handleBlur}
     >
+      {/* Pointer convenience: clicking anywhere on the selector toggles the
+          dropdown. Keyboard users get the same via the inner combobox input
+          (Enter / Space / ArrowDown / Escape in handleInputKeyDown). */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div
         className={classNames(styles.selector, {
           [styles.disabled]: disabled,

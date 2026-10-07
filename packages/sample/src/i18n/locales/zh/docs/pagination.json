@@ -41,6 +41,10 @@
     "responsive": {
       "title": "响应式",
       "description": "responsive 会在小屏幕上调整布局。"
+    },
+    "compact": {
+      "title": "紧凑页码与计数",
+      "description": "siblingCount / boundaryCount 切换为带不可交互省略号的紧凑页码；hideNumbers 显示「当前 / 总数」计数，hideEdges 隐藏上一页 / 下一页。"
     }
   },
   "api": {
@@ -58,7 +62,7 @@
       "itemRender": "自定义页码、上一页/下一页和跳转项的渲染",
       "className": "额外的类名",
       "style": "内联样式",
-      "showTotal": "显示数据总数",
+      "showTotal": "显示总条数；传入函数时由函数渲染（签名同 totalRender）",
       "totalRender": "自定义总数的渲染；range 为当前页数据的 [起始, 结束] 序号",
       "size": "分页尺寸",
       "shape": "页码项的形状",
@@ -67,7 +71,12 @@
       "responsive": "在小屏幕上调整布局",
       "icons": "上一页、下一页和跳转项的自定义图标；未提供的保留默认图标",
       "ref": "根 <nav> 元素的 ref",
-      "labels": "组件文案（按钮、快速跳转和每页条数选择器的无障碍标签）；未提供的项使用随语言切换的默认值"
+      "labels": "组件文案（按钮、快速跳转和每页条数选择器的无障碍标签）；未提供的项使用随语言切换的默认值",
+      "siblingCount": "当前页两侧显示的页数。设置它（或 boundaryCount）会切换为带不可交互「…」的紧凑布局",
+      "boundaryCount": "紧凑页码首尾始终显示的页数",
+      "hideEdges": "隐藏上一页 / 下一页按钮",
+      "hideNumbers": "用只读的「当前 / 总数」计数（礼貌播报）替代页码按钮，保留上一页 / 下一页",
+      "sizeChangerVariant": "每页条数选择器（showSizeChanger）的控件：原生 <select>，或 Minerva 的 Select 弹出层（打开列表框的组合框按钮）"
     },
     "PaginationLabels": {
       "prev": "上一页按钮的无障碍标签",
@@ -80,7 +89,8 @@
       "pageSize": "每页条数选择器的无障碍标签",
       "pageSizeOption": "返回每页条数选项的文字",
       "currentPage": "简洁模式下页码输入框的无障碍标签",
-      "nav": "导航区域的无障碍标签"
+      "nav": "导航区域的无障碍标签",
+      "total": "总数文字（showTotal 为 true 且没有 totalRender 时）"
     }
   },
   "a11y": {

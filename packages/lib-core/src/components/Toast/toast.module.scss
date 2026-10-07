@@ -1,0 +1,213 @@
+// --ui-toast-* custom properties are part of the public styling API
+// (inherited from novel-isr-ui): they are read as overrides.
+
+.viewport {
+  position: fixed;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  pointer-events: none;
+  width: min(420px, 100vw);
+  box-sizing: border-box;
+}
+
+.topRight {
+  top: 0;
+  right: 0;
+}
+
+.topLeft {
+  top: 0;
+  left: 0;
+}
+
+.topCenter {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bottomRight {
+  bottom: 0;
+  right: 0;
+  flex-direction: column-reverse;
+}
+
+.bottomLeft {
+  bottom: 0;
+  left: 0;
+  flex-direction: column-reverse;
+}
+
+.bottomCenter {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column-reverse;
+}
+
+.toast {
+  --toast-accent: var(--ui-toast-accent, var(--text-color));
+  --toast-tint: transparent;
+
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background:
+    linear-gradient(0deg, var(--ui-toast-tint-soft, var(--toast-tint)), var(--ui-toast-tint-soft, var(--toast-tint))),
+    var(--ui-toast-bg, color-mix(in srgb, var(--surface-elevated-color) 88%, transparent));
+  border: 1px solid var(--ui-toast-border, var(--toast-border, var(--border-color)));
+  border-radius: var(--radius-md);
+  box-shadow: var(--ui-toast-shadow, var(--shadow-lg));
+  pointer-events: auto;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  backdrop-filter: blur(20px) saturate(1.2);
+  animation: toastSlideIn var(--transition-base);
+
+  &[data-state="closing"] {
+    animation: toastSlideOut var(--transition-base);
+    opacity: 0;
+  }
+
+  &:hover .progress,
+  &:focus-within .progress {
+    animation-play-state: paused;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--toast-accent);
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.description {
+  color: var(--text-secondary-color);
+  margin-top: 2px;
+}
+
+.close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    background-color: var(--surface-muted-color);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--primary-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// Shrinks from full width to 0 over the duration (GPU-friendly scaleX)
+.progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--toast-accent);
+  opacity: 0.55;
+  transform-origin: left center;
+  animation: toastProgress var(--ui-toast-duration, 4000ms) linear forwards;
+}
+
+.info {
+  --toast-border: color-mix(in srgb, var(--info-color) 32%, var(--border-color));
+  --toast-tint: color-mix(in srgb, var(--info-color) 7%, transparent);
+  --toast-accent: var(--ui-toast-accent, var(--info-color));
+}
+
+.success {
+  --toast-border: color-mix(in srgb, var(--success-color) 32%, var(--border-color));
+  --toast-tint: color-mix(in srgb, var(--success-color) 7%, transparent);
+  --toast-accent: var(--ui-toast-accent, var(--success-color));
+}
+
+.warning {
+  --toast-border: color-mix(in srgb, var(--warning-color) 32%, var(--border-color));
+  --toast-tint: color-mix(in srgb, var(--warning-color) 7%, transparent);
+  --toast-accent: var(--ui-toast-accent, var(--warning-color));
+}
+
+.danger {
+  --toast-border: color-mix(in srgb, var(--danger-color) 36%, var(--border-color));
+  --toast-tint: color-mix(in srgb, var(--danger-color) 8%, transparent);
+  --toast-accent: var(--ui-toast-accent, var(--danger-color));
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes toastProgress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast[data-state="closing"] {
+    animation: none;
+  }
+}

@@ -265,37 +265,78 @@ const Dropdown = ({
     "aria-controls": isOpen ? menuId : undefined,
   };
 
-  // The trigger child stays the interactive element; it receives the menu
-  // button semantics. Plain text children fall back to the wrapper.
-  let trigger: React.ReactNode;
-  let wrapperA11yProps: Partial<TriggerA11yProps> = {};
+  // Toggle / keyboard handlers live on the interactive element itself (the
+  // child, the default button, or the wrapper acting as a button for plain
+  // text), which also receives the menu button semantics.
+  const triggerHandlers = {
+    onClick: handleToggle,
+    onKeyDown: handleTriggerKeyDown,
+    onKeyUp: handleTriggerKeyUp,
+  };
+  type TriggerChildProps = Partial<TriggerA11yProps> & {
+    onClick?: (event: React.MouseEvent) => void;
+    onKeyDown?: (event: React.KeyboardEvent) => void;
+    onKeyUp?: (event: React.KeyboardEvent) => void;
+  };
+
+  let triggerWrapper: React.ReactNode;
   if (children === undefined || children === null) {
-    trigger = (
-      <Button size="small" disabled={disabled} {...triggerA11yProps}>
-        Dropdown
-      </Button>
+    triggerWrapper = (
+      <div ref={setTriggerRef} className={styles.trigger}>
+        <Button
+          size="small"
+          disabled={disabled}
+          {...triggerA11yProps}
+          {...triggerHandlers}
+        >
+          Dropdown
+        </Button>
+      </div>
     );
-  } else if (isValidElement<Partial<TriggerA11yProps>>(children)) {
+  } else if (isValidElement<TriggerChildProps>(children)) {
+    const childProps = children.props;
     const isNonInteractiveTag =
       typeof children.type === "string" && !INTERACTIVE_TAGS.has(children.type);
-    trigger = cloneElement(children, {
-      ...triggerA11yProps,
-      ...(isNonInteractiveTag
-        ? {
-            role: children.props.role ?? "button",
-            tabIndex: disabled ? -1 : (children.props.tabIndex ?? 0),
-            "aria-disabled": disabled || undefined,
-          }
-        : {}),
-    });
+    triggerWrapper = (
+      <div ref={setTriggerRef} className={styles.trigger}>
+        {cloneElement(children, {
+          ...triggerA11yProps,
+          ...(isNonInteractiveTag
+            ? {
+                role: childProps.role ?? "button",
+                tabIndex: disabled ? -1 : (childProps.tabIndex ?? 0),
+                "aria-disabled": disabled || undefined,
+              }
+            : {}),
+          onClick: (event: React.MouseEvent) => {
+            childProps.onClick?.(event);
+            handleToggle();
+          },
+          onKeyDown: (event: React.KeyboardEvent) => {
+            childProps.onKeyDown?.(event);
+            handleTriggerKeyDown(event);
+          },
+          onKeyUp: (event: React.KeyboardEvent) => {
+            childProps.onKeyUp?.(event);
+            handleTriggerKeyUp(event);
+          },
+        })}
+      </div>
+    );
   } else {
-    trigger = children;
-    wrapperA11yProps = {
-      ...triggerA11yProps,
-      role: "button",
-      tabIndex: disabled ? -1 : 0,
-      "aria-disabled": disabled || undefined,
-    };
+    triggerWrapper = (
+      <div
+        ref={setTriggerRef}
+        className={styles.trigger}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled || undefined}
+        {...triggerA11yProps}
+        {...triggerHandlers}
+      >
+        {children}
+      </div>
+    );
   }
 
   const firstEnabledIndex = findEnabledIndex(items, 0, 1);
@@ -305,16 +346,7 @@ const Dropdown = ({
       className={classNames(styles.dropdown, className)}
       ref={setDropdownRef}
     >
-      <div
-        ref={setTriggerRef}
-        className={styles.trigger}
-        onClick={handleToggle}
-        onKeyDown={handleTriggerKeyDown}
-        onKeyUp={handleTriggerKeyUp}
-        {...wrapperA11yProps}
-      >
-        {trigger}
-      </div>
+      {triggerWrapper}
       {isOpen && (
         <div
           ref={setMenuRef}
@@ -331,7 +363,6 @@ const Dropdown = ({
             className={styles.menuList}
             role="menu"
             aria-label={ariaLabel}
-            onKeyDown={handleMenuKeyDown}
           >
             {items.map((item, index) => {
               const isTabStop =
@@ -346,6 +377,7 @@ const Dropdown = ({
                   id={`${menuId}-item-${index}`}
                   className={`${styles.menuItem} ${item.disabled ? styles.disabled : ""}`}
                   onClick={() => handleSelect(item)}
+                  onKeyDown={handleMenuKeyDown}
                   onFocus={() => {
                     if (!item.disabled) setActiveIndex(index);
                   }}

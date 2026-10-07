@@ -1,0 +1,38 @@
+{
+  "title": "Confirm 確認",
+  "description": "操作の確認をユーザーに求めます。テーマに合わせた window.confirm の代替です。宣言的な ConfirmDialog を使うか、どこからでも confirm() を await できます。ConfirmProvider があればダイアログはアプリのツリー内に描画され、なければ独立したホストを必要に応じてマウントし、サーバーでは confirm() は false を返します。",
+  "demos": {
+    "imperative": {
+      "title": "命令的な confirm()",
+      "description": "await confirm({...}) は確認で true、キャンセル（ボタン、Escape、背景）で false を返します。プロバイダーは不要です。"
+    },
+    "provider": {
+      "title": "ConfirmProvider と併用",
+      "description": "useConfirm() はプロバイダーの confirm を返すため、ダイアログはアプリのコンテキストを共有します。同時の要求は順番に一つずつ表示されます。"
+    },
+    "declarative": {
+      "title": "宣言的な ConfirmDialog",
+      "description": "制御されたダイアログ。loading は onConfirm の実行中にスピナーを表示し、キャンセルを無効にします。"
+    }
+  },
+  "api": {
+    "ConfirmDialogProps": {
+      "open": "ダイアログが開いているかどうか（制御）",
+      "onOpenChange": "ユーザーがキャンセルしたとき false で呼ばれます（キャンセルボタン、閉じる、Escape、背景クリック）",
+      "onConfirm": "確認ボタンが押されたときに呼ばれます。ダイアログは自動では閉じません"
+    },
+    "ConfirmOptions": {
+      "title": "タイトル（ダイアログのアクセシブルネーム）",
+      "description": "タイトルの下の説明（アクセシブルな説明）",
+      "confirmLabel": "確認ボタンのラベル。既定は「確認」、intent=\"danger\" では「削除」",
+      "cancelLabel": "キャンセルボタンのラベル。既定はローカライズされた「キャンセル」",
+      "closeLabel": "閉じる（×）ボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+      "intent": "確認ボタンのトーン：primary、danger（破壊的）、warning",
+      "loading": "確認ボタンにスピナーを表示し、キャンセルを無効にします",
+      "confirmDisabled": "確認ボタンをネイティブに無効化します（タブ順から外れます）。loading のみの場合はフォーカス可能なままですが、再度実行はできません"
+    },
+    "ConfirmProviderProps": {
+      "children": "アプリのサブツリー。useConfirm() / confirm() のダイアログはここに描画されます"
+    }
+  }
+}

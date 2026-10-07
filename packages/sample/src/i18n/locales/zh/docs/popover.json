@@ -1,0 +1,38 @@
+{
+  "title": "Popover 气泡卡片",
+  "description": "点击触发的浮层，承载筛选、账户菜单等可交互内容。与 Tooltip 不同，它可以包含可聚焦内容；与底层的 Popper 不同，它自行管理触发器、焦点、Escape 和外部点击。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "PopoverTrigger 切换面板；焦点移入面板，关闭后回到触发器。PopoverClose 用于关闭。"
+    },
+    "placement": {
+      "title": "位置",
+      "description": "side、align 和 sideOffset 决定面板位置；空间不足时会翻转并平移以保持可见。arrow 显示指向触发器的箭头。"
+    },
+    "controlled": {
+      "title": "受控与锚点",
+      "description": "open + onOpenChange 控制状态；PopoverAnchor 让面板相对另一个元素定位。"
+    }
+  },
+  "api": {
+    "PopoverProps": {
+      "open": "受控的打开状态；不传（undefined）时为非受控",
+      "defaultOpen": "非受控时的初始打开状态",
+      "onOpenChange": "请求改变打开状态时调用（触发器、Escape、外部点击、PopoverClose）",
+      "modal": "模态模式：将焦点锁定在面板内并阻止外部交互",
+      "children": "PopoverTrigger / PopoverAnchor 与 PopoverContent"
+    },
+    "PopoverContentProps": {
+      "ref": "指向面板元素的 ref",
+      "side": "首选方向；空间不足时翻转",
+      "align": "沿触发器的对齐方式",
+      "sideOffset": "与触发器的间距（像素）",
+      "arrow": "显示指向触发器的箭头",
+      "portal": "将面板渲染到 document.body 上的 portal 中"
+    },
+    "PopoverTriggerProps": {
+      "asChild": "把行为合并到唯一的子元素上，而不是渲染自己的元素"
+    }
+  }
+}

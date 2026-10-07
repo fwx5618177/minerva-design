@@ -1,0 +1,83 @@
+{
+  "title": "Table",
+  "description": "Displays rows of data. Use Table with columns and data for the common case, TableRoot and its parts for custom headers or merged cells, and DataTable for pagination, loading and error states.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Each column reads row[key] unless it has a render function. Give rows a stable rowKey."
+    },
+    "variants": {
+      "title": "Variants and sizes",
+      "description": "Simple, striped or bordered rows, in small, medium or large density, optionally highlighted on hover."
+    },
+    "fixed-columns": {
+      "title": "Fixed columns and scrolling",
+      "description": "scroll.x sets a minimum width, scroll.y bounds the height with a sticky header. Fixed columns need a width and must be declared at the start (left) or end (right); ellipsis truncates long text."
+    },
+    "states": {
+      "title": "Loading and empty states",
+      "description": "loading renders skeleton rows (hidden from assistive technologies); an empty data array renders emptyText."
+    },
+    "data-table": {
+      "title": "DataTable",
+      "description": "Adds pagination under the table and replaces it with an alert and a retry button when error is set. Rows must already be paginated."
+    },
+    "compound": {
+      "title": "Compound parts",
+      "description": "TableRoot, TableHead, TableBody, TableRow, TableHeader and TableCell render native table elements for multi-row headers or merged cells."
+    },
+    "cell-content": {
+      "title": "Cell content",
+      "description": "TableCellContent bounds and wraps long content, with an optional muted secondary line or monospace primary text."
+    }
+  },
+  "api": {
+    "TableProps": {
+      "columns": "Column definitions",
+      "data": "Rows to render",
+      "rowKey": "Extracts a stable key from a row (defaults to the row index)",
+      "emptyText": "Content of the single row shown when data is empty",
+      "loading": "Renders placeholder skeleton rows instead of the data",
+      "loadingRows": "Number of skeleton rows rendered while loading"
+    },
+    "TableColumn": {
+      "key": "Unique key of the column; also the default field read from each row",
+      "header": "Header content",
+      "render": "Renders a cell; defaults to row[key]",
+      "width": "Column width (numbers are pixels), applied as width and min-width; required for fixed columns",
+      "align": "Horizontal alignment of the header and cells",
+      "ellipsis": "Truncates the content on a single line with an ellipsis",
+      "fixed": "Sticks the column to the left or right edge while scrolling horizontally"
+    },
+    "DataTableProps": {
+      "pagination": "Pagination props rendered under the table (rows must already be paginated)",
+      "error": "Error message; replaces the table and pagination with an alert",
+      "onRetry": "Called by the retry button shown with error",
+      "retryLabel": "Text of the retry button"
+    },
+    "TableRootProps": {
+      "size": "Density of the cells",
+      "variant": "Visual style: plain rows, zebra stripes or bordered cells",
+      "hoverable": "Highlights body rows on hover",
+      "scroll": "Horizontal minimum width / vertical maximum height of the scroll area",
+      "ref": "Ref to the <table> element"
+    },
+    "TableScrollConfig": {
+      "x": "Minimum width of the table; the wrapper scrolls horizontally when narrower",
+      "y": "Maximum visible height; the wrapper scrolls vertically and the header sticks"
+    },
+    "TableCellContentProps": {
+      "primary": "Main content",
+      "secondary": "Secondary, muted content under the primary content",
+      "monospace": "Renders the primary content as <code> in the monospace font",
+      "maxWidth": "Maximum width (numbers are pixels); long content wraps",
+      "ref": "Ref to the root <div> element"
+    },
+    "FixedColumnLayout": {
+      "leftOffsets": "Left offset (px) of every left-fixed column, by column key",
+      "rightOffsets": "Right offset (px) of every right-fixed column, by column key",
+      "lastLeftFixedKey": "Last column of the leading left-fixed block (gets the edge shadow)",
+      "firstRightFixedKey": "First column of the trailing right-fixed block (gets the edge shadow)"
+    }
+  }
+}

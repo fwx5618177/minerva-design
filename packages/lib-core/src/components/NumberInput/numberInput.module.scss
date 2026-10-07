@@ -1,0 +1,156 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-base),
+    background-color var(--transition-fast);
+
+  &:hover:not(.disabled):not(.invalid) {
+    border-color: var(--primary-color);
+  }
+
+  &:focus-within:not(.invalid) {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 22%, transparent);
+  }
+}
+
+.invalid {
+  border-color: var(--danger-color);
+
+  // An error stays red while focused.
+  &:focus-within {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 22%, transparent);
+  }
+
+  .field {
+    color: var(--danger-color-text);
+  }
+}
+
+// Plays once when the draft becomes invalid: "input rejected" feedback.
+.shake .field {
+  animation: number-input-shake 220ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake .field {
+    animation: none;
+  }
+}
+
+@keyframes number-input-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-1.5px);
+  }
+  80% {
+    transform: translateX(1.5px);
+  }
+}
+
+.disabled {
+  background-color: var(--surface-subtle-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+  padding: 0 var(--space-3);
+
+  &::placeholder {
+    color: var(--text-muted-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.small {
+  height: 32px;
+  font-size: var(--font-size-sm);
+}
+
+.medium {
+  height: 40px;
+  font-size: var(--font-size-md);
+}
+
+.large {
+  height: 48px;
+  font-size: var(--font-size-lg);
+}
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  width: 22px;
+  border-left: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.step {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted-color);
+  padding: 0;
+  line-height: 1;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background-color: var(--hover-color);
+    color: var(--text-color);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--selected-color);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.stepUp {
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0 calc(var(--radius-md) - 1px) 0 0;
+}
+
+.stepDown {
+  border-radius: 0 0 calc(var(--radius-md) - 1px) 0;
+}

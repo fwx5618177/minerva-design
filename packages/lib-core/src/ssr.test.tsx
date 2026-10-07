@@ -4,6 +4,7 @@
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
+import { portedCases } from "./test-utils/portedSsrCases";
 
 const {
   Alert,
@@ -44,7 +45,7 @@ const {
   VirtualList,
 } = lib;
 
-const cases: Array<[string, React.ReactElement]> = [
+const ownCases: Array<[string, React.ReactElement]> = [
   [
     "Alert",
     <Alert variant="info" title="Title" closable>
@@ -158,6 +159,8 @@ const cases: Array<[string, React.ReactElement]> = [
     />,
   ],
 ];
+
+const cases = [...ownCases, ...portedCases];
 
 describe("SSR", () => {
   it("runs without a DOM", () => {

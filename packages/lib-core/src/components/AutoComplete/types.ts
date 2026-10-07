@@ -32,9 +32,12 @@ export interface AutoCompleteProps {
   /** Ref to the inner <input> element */
   ref?: Ref<HTMLInputElement>;
   /** Name of the input */
-  name: string;
-  /** Label of the input */
-  label: string;
+  name?: string;
+  /**
+   * Label of the input (without it, give the input an accessible name with
+   * textFieldProps.ariaLabel or an enclosing FormControl label)
+   */
+  label?: string;
   /**
    * "basic" renders icon / label / description; "custom" uses renderOption
    * @default "basic"
@@ -128,6 +131,43 @@ export interface AutoCompleteProps {
   onOptionClick?: (option: AutoCompleteOption) => void;
   /** Called when the dropdown opens or closes */
   onDropdownVisibleChange?: (visible: boolean) => void;
+  /**
+   * Called with the trimmed input text when Enter is pressed while no option
+   * is active (e.g. to run a search); the dropdown closes
+   */
+  onSubmit?: (value: string) => void;
+  /**
+   * Makes the first enabled option active whenever the dropdown opens or the
+   * options change, so Enter picks it right away
+   * @default false
+   */
+  autoHighlight?: boolean;
+  /**
+   * Writes the label of the picked option into the input (single mode). Set
+   * to false to keep the typed text, e.g. when picking navigates away
+   * @default true
+   */
+  fillOnSelect?: boolean;
+  /** Additional class name of the root element */
+  className?: string;
+  /**
+   * How `loading` is shown: "replace" shows a spinner instead of the
+   * options; "append" keeps the options and adds a loading row at the end
+   * @default "replace"
+   */
+  loadingMode?: "replace" | "append";
+  /**
+   * Text of the loading row (loadingMode "append")
+   * @default "Loading…" (translated)
+   */
+  loadingText?: React.ReactNode;
+  /**
+   * How groupBy groups options: "first" collects each group at its first
+   * appearance; "adjacent" groups runs of consecutive options (a group can
+   * appear several times). Options whose group is "" get no heading
+   * @default "first"
+   */
+  groupMode?: "first" | "adjacent";
 }
 
 /**

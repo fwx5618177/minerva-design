@@ -6,6 +6,8 @@ const variants = [
   "shadow",
   "elevated",
   "filled",
+  "subtle",
+  "ghost",
 ] as const;
 
 export default function VariantsDemo() {

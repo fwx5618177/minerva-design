@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
@@ -42,6 +43,38 @@ export default function Root() {
   );
 }`;
 
+const paletteCode = `import { ConfigProvider, useConfig } from "@minerva/lib-core";
+
+export default function Root() {
+  return (
+    // "system" is an alias of "auto". palette applies with light / dark / system.
+    <ConfigProvider
+      theme="system"
+      palette="editorial"
+      persist // restore / save the "theme" and "palette" cookies
+      onThemeChange={(theme) => analytics.track("theme", theme)}
+      onPaletteChange={(palette) => analytics.track("palette", palette)}
+    >
+      <App />
+    </ConfigProvider>
+  );
+}
+
+function Settings() {
+  const { mode, resolvedMode, palette, setTheme, setPalette } = useConfig();
+  // mode: "light" | "dark" | "system"; resolvedMode: "light" | "dark"
+  return (
+    <>
+      <button onClick={() => setTheme(resolvedMode === "dark" ? "light" : "dark")}>
+        {mode}
+      </button>
+      <button onClick={() => setPalette(palette === "tech" ? null : "tech")}>
+        {palette ?? "default"}
+      </button>
+    </>
+  );
+}`;
+
 const contextCode = `import { useContext } from "react";
 import { ConfigContext } from "@minerva/lib-core";
 
@@ -62,6 +95,13 @@ const ConfigProviderDoc: React.FC = () => {
       <p className={styles.prose}>{t("docs.config-provider.usage.dynamic")}</p>
       <CodeBlock code={switchCode} language="tsx" />
       <p className={styles.callout}>{t("docs.config-provider.usage.global")}</p>
+      <h3>{t("docs.config-provider.palette.title")}</h3>
+      <p className={styles.prose}>{t("docs.config-provider.palette.text")}</p>
+      <CodeBlock code={paletteCode} language="tsx" />
+      <p className={styles.prose}>
+        {t("docs.config-provider.palette.setters")}{" "}
+        <Link to="/theme-palette">{t("docs.theme-palette.title")}</Link>
+      </p>
     </section>
   );
 

@@ -1,4 +1,8 @@
 .card {
+  min-width: 0;
+  text-decoration: none; // as="a"
+  font: inherit; // as="button"
+  text-align: inherit;
   background-color: var(--card-bg-color, var(--surface-color));
   color: var(--text-color);
   border-radius: 0.25rem; /* 替换为原生值 */
@@ -37,6 +41,18 @@
   &.filled {
     border: none;
     background-color: var(--surface-muted-color);
+    box-shadow: none;
+  }
+
+  &.subtle {
+    border: 1px solid transparent;
+    background-color: var(--surface-subtle-color);
+    box-shadow: none;
+  }
+
+  &.ghost {
+    border: 1px solid transparent;
+    background-color: transparent;
     box-shadow: none;
   }
 
@@ -122,6 +138,139 @@
     &:active {
       background-color: var(--primary-color-active);
       transform: translateY(2px);
+    }
+  }
+
+  // ── Padded layout (`padding` set): the card pads itself, sections sit flush
+  &.padded {
+    display: block;
+    min-width: 0;
+    overflow: visible;
+    border-radius: var(--radius-lg);
+
+    > .cardHeader,
+    > .cardContent,
+    > .cardFooter {
+      padding: 0;
+      border: 0;
+      background-color: transparent;
+      text-align: start;
+      white-space: normal;
+      overflow: visible;
+    }
+
+    > .cardHeader + .cardContent {
+      margin-top: var(--space-3);
+    }
+
+    > .cardContent + .cardFooter,
+    > .cardHeader + .cardFooter {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--card-border-color, var(--border-color));
+    }
+
+    .cardTitle {
+      margin: 0;
+      font-family: var(--font-family-sans);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+      white-space: normal;
+    }
+
+    .cardDescription {
+      margin: var(--space-1) 0 0;
+      font-family: var(--font-family-sans);
+      line-height: var(--line-height-base);
+      white-space: normal;
+    }
+  }
+
+  &.pad-none {
+    padding: 0;
+  }
+  &.pad-small {
+    padding: var(--space-3);
+  }
+  &.pad-medium {
+    padding: var(--space-5);
+  }
+  &.pad-large {
+    padding: var(--space-8);
+  }
+
+  @media (max-width: 48rem) {
+    &.pad-medium {
+      padding: var(--space-4);
+    }
+    &.pad-large {
+      padding: var(--space-5);
+    }
+  }
+
+  // Section padding overrides win over both layouts
+  .cardHeader,
+  .cardContent,
+  .cardFooter {
+    &.pad-none {
+      padding: 0;
+    }
+    &.pad-small {
+      padding: var(--space-3);
+    }
+    &.pad-medium {
+      padding: var(--space-5);
+    }
+    &.pad-large {
+      padding: var(--space-8);
+    }
+  }
+
+  // ── Interactive (clickable) cards
+  &.interactive {
+    cursor: pointer;
+    outline: none;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+
+    &.default:hover,
+    &.outlined:hover {
+      border-color: var(--border-strong-color);
+      background-color: var(--surface-subtle-color);
+    }
+
+    &.shadow:hover,
+    &.elevated:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    &.filled:hover,
+    &.subtle:hover,
+    &.ghost:hover {
+      background-color: var(--surface-muted-color);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--surface-color),
+        0 0 0 4px var(--primary-color);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &.shadow:hover,
+      &.elevated:hover {
+        transform: none;
+      }
     }
   }
 

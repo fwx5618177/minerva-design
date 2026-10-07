@@ -1,0 +1,60 @@
+{
+  "title": "ナビゲーションツリー",
+  "description": "セクション、展開できる分岐、アクティブ項目、アイコンのみのコンパクトモードを備えたサイドバーナビゲーションです。矢印キーで項目間を移動し、分岐を開閉できます。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "アクティブ項目を含む分岐は自動で開き、閉じた操作は記憶されます。項目にはアイコン・説明・末尾の内容を付けられます。"
+    },
+    "collapsed": {
+      "title": "コンパクトモードと折り返し",
+      "description": "collapsed はアイコンのみを表示し、wrapLabels は長いラベルを省略せず折り返します。"
+    },
+    "custom-link": {
+      "title": "ルーターのリンク",
+      "description": "renderLink で葉の項目をルーターのリンクとして描画し、state.className を付けます。展開状態は制御できます。"
+    }
+  },
+  "api": {
+    "NavTreeProps": {
+      "sections": "項目のセクション",
+      "activeId": "アクティブ（現在のページ）項目の id。祖先は展開されます",
+      "collapsed": "コンパクトモード：アイコンのみ",
+      "wrapLabels": "長いラベルと説明を省略せず折り返します",
+      "defaultExpandedIds": "最初に展開する分岐の id（非制御）",
+      "expandedIds": "展開している分岐の id（制御。onExpandedChange と併用）",
+      "onExpandedChange": "分岐の開閉時に展開中の id で呼ばれます",
+      "onItemSelect": "葉のリンクまたは分岐が選択されたときに呼ばれます",
+      "renderLink": "葉のリンクの独自描画（ルーターの Link など）。state.className を付けます",
+      "className": "追加のクラス名",
+      "style": "インラインスタイル",
+      "ariaLabel": "<nav> ランドマークのアクセシブルな名前",
+      "ref": "<nav> 要素への ref"
+    },
+    "NavTreeSection": {
+      "id": "セクションの一意な id",
+      "title": "任意のセクション見出し",
+      "items": "セクションの項目"
+    },
+    "NavTreeItem": {
+      "id": "一意な id（activeId や展開 id と照合）",
+      "label": "表示ラベル",
+      "description": "ラベルの下の補足行（入れ子の項目では非表示）",
+      "href": "葉の項目のリンク先",
+      "icon": "先頭のアイコン",
+      "endContent": "末尾の内容（バッジや件数など）",
+      "disabled": "項目を無効にします",
+      "children": "子項目。項目は展開できる分岐になります"
+    },
+    "NavTreeItemState": {
+      "active": "項目がアクティブです",
+      "ancestorActive": "子孫の項目がアクティブです",
+      "expanded": "分岐が展開されています",
+      "depth": "入れ子の深さ（最上位は 0）",
+      "collapsed": "ツリーがコンパクトモードです",
+      "hasChildren": "項目に子があります",
+      "disabled": "項目が無効です",
+      "className": "描画するリンクに付けるクラス名"
+    }
+  }
+}

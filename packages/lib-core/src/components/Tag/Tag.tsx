@@ -7,6 +7,19 @@ import useI18n from "../../hooks/useI18n";
 
 const RIPPLE_DURATION = 600;
 
+/** Short size names used by the stable `ui-tag-size-*` styling hooks */
+const SIZE_HOOK = { small: "sm", medium: "md", large: "lg" } as const;
+
+/** Color names used by the stable `ui-tag-color-*` styling hooks */
+const COLOR_HOOK = {
+  default: "gray",
+  primary: "brand",
+  success: "success",
+  warning: "warning",
+  error: "danger",
+  info: "info",
+} as const;
+
 interface Ripple {
   id: number;
   style: React.CSSProperties;
@@ -16,8 +29,9 @@ interface Ripple {
  * Tag: a small label for marking and categorizing.
  *
  * The root is a plain (non-interactive) element. When `clickable`, the content
- * is rendered as a native <button>; when `closable`, the close control is a
- * sibling <button>, so interactive elements are never nested.
+ * is rendered as a native <button> (which also draws the ripple); when
+ * `closable`, the close control is a sibling <button>, so interactive
+ * elements are never nested. Native attributes are forwarded to the root.
  */
 const Tag = ({
   children,
@@ -42,6 +56,7 @@ const Tag = ({
   closeLabel,
   ripple = true,
   ref,
+  ...rest
 }: TagProps) => {
   const { t } = useI18n();
   const [ripples, setRipples] = useState<Ripple[]>([]);
@@ -63,13 +78,17 @@ const Tag = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!disabled) onClick?.(e);
+    if (disabled) return;
+    addRipple(e);
+    onClick?.(e);
   };
 
-  const handleRipple = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ripple || disabled) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
+  // The ripple is drawn over the whole tag, from where its main action (the
+  // native button) was pressed.
+  const addRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!ripple) return;
+    const tag = e.currentTarget.parentElement as HTMLElement;
+    const rect = tag.getBoundingClientRect();
     // keyboard-activated clicks (detail === 0) ripple from the center
     const fromKeyboard = e.detail === 0;
     const diameter = Math.max(rect.width, rect.height);
@@ -112,9 +131,8 @@ const Tag = ({
   );
 
   return (
-    // The click handler only draws the decorative ripple; the actions live
-    // on the native buttons inside.
     <div
+      {...rest}
       ref={ref}
       className={classNames(
         styles.tag,
@@ -127,10 +145,13 @@ const Tag = ({
           [styles.elevation]: elevation,
           [styles.disabled]: disabled,
         },
+        // Stable styling hooks (not used for styling by the library)
+        "ui-tag",
+        `ui-tag-size-${SIZE_HOOK[size]}`,
+        `ui-tag-color-${COLOR_HOOK[variant]}`,
         className,
       )}
       style={tagStyles}
-      onClick={handleRipple}
     >
       {clickable ? (
         <button
@@ -148,10 +169,11 @@ const Tag = ({
       {closable && (
         <button
           type="button"
-          className={styles.closeIcon}
+          className={classNames(styles.closeIcon, "ui-tag-close")}
           onClick={handleClose}
           disabled={disabled}
           aria-label={closeLabel ?? t("tag.close")}
+          title={closeLabel ?? t("tag.close")}
         >
           {closeIcon || <IoClose aria-hidden focusable={false} />}
         </button>

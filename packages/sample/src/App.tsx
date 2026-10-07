@@ -10,8 +10,8 @@ const App: React.FC = () => {
   return (
     <I18nextProvider i18n={i18n}>
       <ThemeModeProvider>
-        {(resolvedTheme) => (
-          <ConfigProvider theme={resolvedTheme}>
+        {(resolvedTheme, palette) => (
+          <ConfigProvider theme={resolvedTheme} palette={palette}>
             <RouterProvider router={router} />
           </ConfigProvider>
         )}

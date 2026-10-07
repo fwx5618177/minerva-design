@@ -1,0 +1,42 @@
+{
+  "title": "FormControl 表单控件",
+  "description": "字段容器：关联标签、控件、帮助文本和错误信息，并将无效 / 必填 / 禁用 / 只读状态共享给控件。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "FormLabel 指向控件，帮助文本描述它，无效时错误信息替换帮助文本。"
+    },
+    "form-field": {
+      "title": "FormField",
+      "description": "FormField 组合了 FormControl、FormLabel、帮助文本和错误信息；errorMessage 会使字段无效。"
+    },
+    "states": {
+      "title": "状态",
+      "description": "required 添加标记和 aria-required；disabled 与 readOnly 会传递给控件。"
+    },
+    "custom-control": {
+      "title": "自定义控件",
+      "description": "useFormControlProps 为任意控件接入 id、aria 属性、disabled、readOnly；useFormControlContext 读取字段状态。"
+    }
+  },
+  "api": {
+    "FormControlProps": {
+      "invalid": "将字段标记为无效：控件获得 aria-invalid，错误信息替换帮助文本",
+      "required": "将字段标记为必填（控件上的 aria-required，标签上的标记）",
+      "disabled": "禁用字段内的控件",
+      "readOnly": "使字段内的控件只读",
+      "id": "控件的 id；标签、帮助和错误的 id 由它派生（`${id}-label`、`${id}-helper`、`${id}-error`）。省略时自动生成",
+      "children": "字段内容：FormLabel、控件、FormHelperText、FormErrorMessage",
+      "ref": "容器 <div> 的 ref"
+    },
+    "FormLabelProps": {
+      "requiredIndicator": "字段必填时显示在文字后的标记（对辅助技术隐藏，辅助技术改用 aria-required）",
+      "ref": "<label> 元素的 ref"
+    },
+    "FormFieldProps": {
+      "label": "字段标签",
+      "helperText": "控件下方的帮助文本（字段无效时隐藏）",
+      "errorMessage": "错误信息；除非显式设置 `invalid`，否则会使字段无效"
+    }
+  }
+}

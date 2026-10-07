@@ -198,6 +198,18 @@ describe("message API", () => {
     expect(onClick.mock.calls[0][0]).toHaveProperty("type", "click");
   });
 
+  it("exposes a clickable message as a keyboard operable button", async () => {
+    const user = setupUser();
+    const onClick = vi.fn();
+    show("info", { content: "Open details", duration: 0, onClick });
+    const button = screen.getByRole("button", { name: "Open details" });
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard("{Enter}");
+    await user.keyboard(" ");
+    expect(onClick).toHaveBeenCalledTimes(2);
+  });
+
   it("pauses while hovered and resumes the remaining time afterwards", async () => {
     const user = setupUser();
     const onClose = vi.fn();

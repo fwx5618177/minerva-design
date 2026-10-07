@@ -14,6 +14,7 @@
 
 export type DocCategory =
   | "gettingStarted"
+  | "theming"
   | "configuration"
   | "general"
   | "layout"
@@ -21,6 +22,9 @@ export type DocCategory =
   | "dataDisplay"
   | "feedback"
   | "navigation"
+  | "overlays"
+  | "editors"
+  | "migration"
   | "webComponents";
 
 export interface DocPageMeta {
@@ -39,13 +43,17 @@ export interface DocPageMeta {
 
 export const categories: DocCategory[] = [
   "gettingStarted",
+  "theming",
   "configuration",
   "general",
   "layout",
   "dataEntry",
   "dataDisplay",
   "feedback",
+  "overlays",
   "navigation",
+  "editors",
+  "migration",
   "webComponents",
 ];
 
@@ -54,6 +62,7 @@ export const docPages: DocPageMeta[] = [
   { id: "overview", category: "gettingStarted" },
   { id: "installation", category: "gettingStarted" },
   { id: "introduction", category: "gettingStarted" },
+  { id: "rsc-guide", category: "gettingStarted" },
   { id: "theming", category: "gettingStarted", demos: ["scoped-theme"] },
 
   // Configuration: ConfigProvider, hooks and theme utilities
@@ -62,13 +71,20 @@ export const docPages: DocPageMeta[] = [
     category: "configuration",
     exports: ["ConfigProvider", "useConfig", "ConfigContext"],
     api: ["ConfigContextProviderProps", "ConfigContextProps", "Locale"],
-    demos: ["use-config", "custom-theme", "locale"],
+    demos: ["use-config", "custom-theme", "locale", "palette"],
   },
   {
     id: "hooks",
     category: "configuration",
-    exports: ["useAutoTheme", "useLocale", "useI18n"],
-    demos: ["use-auto-theme", "use-locale"],
+    exports: [
+      "useAutoTheme",
+      "useLocale",
+      "useI18n",
+      "useDisclosure",
+      "useDialogFocusReturn",
+      "cn",
+    ],
+    demos: ["use-auto-theme", "use-locale", "use-disclosure"],
   },
   {
     id: "theme-utils",
@@ -94,7 +110,16 @@ export const docPages: DocPageMeta[] = [
     category: "general",
     exports: ["Button"],
     api: ["ButtonProps"],
-    demos: ["basic", "variants", "sizes", "shapes", "states", "with-icon"],
+    demos: [
+      "basic",
+      "variants",
+      "sizes",
+      "shapes",
+      "states",
+      "with-icon",
+      "appearance",
+      "icons-loading",
+    ],
   },
   {
     id: "icon-button",
@@ -110,6 +135,7 @@ export const docPages: DocPageMeta[] = [
       "tooltip",
       "interactive",
       "interactive-types",
+      "label",
     ],
   },
   {
@@ -150,7 +176,14 @@ export const docPages: DocPageMeta[] = [
     category: "layout",
     exports: ["Divider"],
     api: ["DividerProps"],
-    demos: ["basic", "variants", "with-text", "vertical", "custom-style"],
+    demos: [
+      "basic",
+      "variants",
+      "with-text",
+      "vertical",
+      "flex-item",
+      "custom-style",
+    ],
   },
   {
     id: "card",
@@ -171,7 +204,15 @@ export const docPages: DocPageMeta[] = [
       "CardContentProps",
       "CardFooterProps",
     ],
-    demos: ["basic", "variants", "types", "custom-colors", "animation"],
+    demos: [
+      "basic",
+      "variants",
+      "padded",
+      "interactive",
+      "types",
+      "custom-colors",
+      "animation",
+    ],
   },
   {
     id: "virtual-list",
@@ -198,6 +239,7 @@ export const docPages: DocPageMeta[] = [
       "width-and-suffix",
       "states",
       "validation",
+      "form-control",
     ],
   },
   {
@@ -214,6 +256,7 @@ export const docPages: DocPageMeta[] = [
       "states",
       "custom-style",
       "error",
+      "colors-and-form-control",
     ],
   },
   {
@@ -245,6 +288,7 @@ export const docPages: DocPageMeta[] = [
       "states",
       "icons",
       "custom-style",
+      "bilateral-and-segmented",
     ],
   },
   {
@@ -262,6 +306,7 @@ export const docPages: DocPageMeta[] = [
       "filter-sort",
       "async-loading",
       "appearance",
+      "search-box",
     ],
   },
   {
@@ -305,7 +350,7 @@ export const docPages: DocPageMeta[] = [
     category: "dataDisplay",
     exports: ["Avatar", "AvatarGroup"],
     api: ["AvatarProps", "AvatarGroupProps"],
-    demos: ["basic", "shapes", "sizes", "group"],
+    demos: ["basic", "shapes", "sizes", "group", "fallback"],
   },
   {
     id: "badge",
@@ -320,6 +365,7 @@ export const docPages: DocPageMeta[] = [
       "dot",
       "with-icon",
       "custom-style",
+      "appearance",
     ],
   },
   {
@@ -373,13 +419,13 @@ export const docPages: DocPageMeta[] = [
     category: "dataDisplay",
     exports: ["Empty"],
     api: ["EmptyProps"],
-    demos: ["basic", "svg", "custom-icon", "with-action", "styled"],
+    demos: ["basic", "svg", "custom-icon", "with-action", "sizes", "styled"],
   },
   {
     id: "tooltip",
     category: "dataDisplay",
-    exports: ["Tooltip"],
-    api: ["TooltipProps", "TooltipRef"],
+    exports: ["Tooltip", "TooltipProvider"],
+    api: ["TooltipProps", "TooltipRef", "TooltipProviderProps"],
     demos: [
       "basic",
       "placements",
@@ -391,6 +437,8 @@ export const docPages: DocPageMeta[] = [
       "follow-cursor",
       "controlled",
       "events",
+      "as-child",
+      "provider",
     ],
   },
   {
@@ -451,15 +499,15 @@ export const docPages: DocPageMeta[] = [
   {
     id: "progress",
     category: "feedback",
-    exports: ["ProgressIndicator"],
-    api: ["ProgressIndicatorProps"],
-    demos: ["types", "sizes", "width", "with-icon"],
+    exports: ["ProgressIndicator", "Spinner"],
+    api: ["ProgressIndicatorProps", "SpinnerProps"],
+    demos: ["types", "sizes", "width", "with-icon", "spinner", "spinner-sizes"],
   },
   {
     id: "skeleton",
     category: "feedback",
-    exports: ["Skeleton"],
-    api: ["SkeletonProps"],
+    exports: ["Skeleton", "SkeletonText"],
+    api: ["SkeletonProps", "SkeletonTextProps"],
     demos: [
       "basic",
       "variants",
@@ -467,6 +515,8 @@ export const docPages: DocPageMeta[] = [
       "composition",
       "card",
       "loading",
+      "decorative",
+      "skeleton-text",
     ],
   },
 
@@ -501,8 +551,390 @@ export const docPages: DocPageMeta[] = [
       "custom-render",
       "disabled",
       "responsive",
+      "compact",
     ],
   },
+
+  // Layout (ported from @novel-isr/ui)
+  {
+    id: "box",
+    category: "layout",
+    exports: ["Box"],
+    api: ["BoxProps"],
+    demos: ["basic", "sizing", "polymorphic"],
+  },
+  {
+    id: "stack",
+    category: "layout",
+    exports: ["Stack", "HStack", "VStack"],
+    api: ["StackProps"],
+    demos: ["basic", "horizontal", "wrap"],
+  },
+  {
+    id: "responsive-grid",
+    category: "layout",
+    exports: ["ResponsiveGrid", "GridItem"],
+    api: ["ResponsiveGridProps", "GridItemProps"],
+    demos: ["basic", "full-width"],
+  },
+  {
+    id: "split-layout",
+    category: "layout",
+    exports: ["SplitLayout"],
+    api: ["SplitLayoutProps"],
+    demos: ["basic", "options"],
+  },
+  {
+    id: "page",
+    category: "layout",
+    exports: ["Page", "PageHeader", "PageSection", "StatCard", "Toolbar"],
+    api: [
+      "PageProps",
+      "PageHeaderProps",
+      "PageSectionProps",
+      "StatCardProps",
+      "ToolbarProps",
+    ],
+    demos: ["basic", "stat-cards", "toolbar"],
+  },
+  {
+    id: "app-shell",
+    category: "layout",
+    exports: ["AppShell"],
+    api: ["AppShellProps", "AppShellNavigationState", "AppShellLabels"],
+    demos: ["basic", "controlled"],
+  },
+
+  // Overlays (ported from @novel-isr/ui)
+  {
+    id: "modal",
+    category: "overlays",
+    exports: [
+      "Modal",
+      "ModalRoot",
+      "ModalTrigger",
+      "ModalClose",
+      "ModalContent",
+      "ModalHeader",
+      "ModalBody",
+      "ModalFooter",
+    ],
+    api: [
+      "ModalProps",
+      "ModalRootProps",
+      "ModalTriggerProps",
+      "ModalContentProps",
+    ],
+    demos: ["basic", "uncontrolled", "sizes", "form", "compound"],
+  },
+  {
+    id: "confirm",
+    category: "overlays",
+    exports: ["ConfirmDialog", "ConfirmProvider", "confirm", "useConfirm"],
+    api: ["ConfirmDialogProps", "ConfirmOptions", "ConfirmProviderProps"],
+    demos: ["imperative", "provider", "declarative"],
+  },
+  {
+    id: "drawer",
+    category: "overlays",
+    exports: [
+      "Drawer",
+      "DrawerRoot",
+      "DrawerTrigger",
+      "DrawerClose",
+      "DrawerContent",
+      "DrawerHeader",
+      "DrawerBody",
+      "DrawerFooter",
+    ],
+    api: ["DrawerProps", "DrawerRootProps", "DrawerContentProps"],
+    demos: ["basic", "sides", "compound"],
+  },
+  {
+    id: "command",
+    category: "overlays",
+    exports: ["CommandDialog", "normalizeShortcuts", "matchesShortcut"],
+    api: ["CommandDialogProps", "CommandItem"],
+    demos: ["basic", "shortcut"],
+  },
+  {
+    id: "popover",
+    category: "overlays",
+    exports: [
+      "Popover",
+      "PopoverTrigger",
+      "PopoverAnchor",
+      "PopoverClose",
+      "PopoverContent",
+    ],
+    api: ["PopoverProps", "PopoverContentProps", "PopoverTriggerProps"],
+    demos: ["basic", "placement", "controlled"],
+  },
+
+  {
+    id: "menu",
+    category: "overlays",
+    exports: ["Menu", "ContextMenu"],
+    api: [
+      "MenuProps",
+      "ContextMenuProps",
+      "MenuAction",
+      "MenuSeparatorEntry",
+      "MenuGroupEntry",
+    ],
+    demos: ["basic", "groups", "context-menu", "controlled"],
+  },
+  {
+    id: "toast",
+    category: "feedback",
+    exports: ["ToastProvider", "toast", "useToast"],
+    api: ["ToastOptions", "ToastProviderProps", "ToastApi"],
+    demos: ["basic", "options", "dedupe"],
+  },
+  {
+    id: "page-tabs",
+    category: "navigation",
+    exports: ["PageTabs", "PageTab"],
+    api: ["PageTabsProps", "PageTabProps"],
+    demos: ["basic", "context-menu", "overflow"],
+  },
+
+  // Forms (ported from @novel-isr/ui)
+  {
+    id: "form-control",
+    category: "dataEntry",
+    exports: [
+      "FormControl",
+      "FormLabel",
+      "FormHelperText",
+      "FormErrorMessage",
+      "FormField",
+      "useFormControlContext",
+      "useFormControlProps",
+    ],
+    api: ["FormControlProps", "FormLabelProps", "FormFieldProps"],
+    demos: ["basic", "form-field", "states", "custom-control"],
+  },
+  {
+    id: "form-layout",
+    category: "dataEntry",
+    exports: ["FormLayout"],
+    api: ["FormLayoutProps"],
+    demos: ["basic", "gaps"],
+  },
+  {
+    id: "input",
+    category: "dataEntry",
+    exports: ["Input"],
+    api: ["InputProps"],
+    demos: ["basic", "sizes-variants", "addons", "states"],
+  },
+  {
+    id: "textarea",
+    category: "dataEntry",
+    exports: ["Textarea"],
+    api: ["TextareaProps"],
+    demos: ["basic", "sizes-variants", "form-control"],
+  },
+  {
+    id: "number-input",
+    category: "dataEntry",
+    exports: ["NumberInput"],
+    api: ["NumberInputProps"],
+    demos: ["basic", "stepper-precision", "form-control"],
+  },
+  {
+    id: "json-field",
+    category: "dataEntry",
+    exports: ["JsonField"],
+    api: ["JsonFieldProps"],
+    demos: ["basic", "indent", "form-control"],
+  },
+  {
+    id: "key-value-editor",
+    category: "dataEntry",
+    exports: ["KeyValueEditor"],
+    api: ["KeyValueEditorProps", "KeyValueEntry", "KeyValueEntryErrors"],
+    demos: ["basic", "errors"],
+  },
+  {
+    id: "tag-input",
+    category: "dataEntry",
+    exports: ["TagInput"],
+    api: ["TagInputProps"],
+    demos: ["basic", "form-control"],
+  },
+
+  {
+    id: "loading-state",
+    category: "feedback",
+    exports: ["LoadingState"],
+    api: ["LoadingStateProps"],
+    demos: ["basic", "sizes"],
+  },
+  {
+    id: "text-link",
+    category: "dataDisplay",
+    exports: ["TextLink"],
+    api: ["TextLinkProps"],
+    demos: ["variants", "as-child"],
+  },
+  {
+    id: "description-list",
+    category: "dataDisplay",
+    exports: ["DescriptionList"],
+    api: ["DescriptionListProps", "DescriptionListItem"],
+    demos: ["basic"],
+  },
+  {
+    id: "list",
+    category: "dataDisplay",
+    exports: ["List", "ListItem"],
+    api: ["ListProps", "ListItemProps"],
+    demos: ["basic", "compact"],
+  },
+  {
+    id: "code-block",
+    category: "dataDisplay",
+    exports: ["CodeBlock"],
+    api: ["CodeBlockProps"],
+    demos: ["basic", "no-wrap"],
+  },
+  {
+    id: "prose",
+    category: "dataDisplay",
+    exports: ["Prose"],
+    api: ["ProseProps"],
+    demos: ["basic", "as-child"],
+  },
+  {
+    id: "theme-palette",
+    category: "theming",
+    exports: [
+      "ThemeProvider",
+      "useTheme",
+      "ThemeToggle",
+      "PaletteToggle",
+      "palettes",
+    ],
+    api: [
+      "ThemeProviderProps",
+      "ThemeContextValue",
+      "ThemeToggleProps",
+      "PaletteToggleProps",
+    ],
+    demos: ["toggles", "palette-swatches", "use-theme"],
+  },
+  {
+    id: "table",
+    category: "dataDisplay",
+    exports: [
+      "Table",
+      "TableRoot",
+      "TableHead",
+      "TableBody",
+      "TableRow",
+      "TableHeader",
+      "TableCell",
+      "TableCellContent",
+      "DataTable",
+      "computeFixedColumnLayout",
+    ],
+    api: [
+      "TableProps",
+      "TableColumn",
+      "DataTableProps",
+      "TableRootProps",
+      "TableScrollConfig",
+      "TableCellContentProps",
+      "FixedColumnLayout",
+    ],
+    demos: [
+      "basic",
+      "variants",
+      "fixed-columns",
+      "states",
+      "data-table",
+      "compound",
+      "cell-content",
+    ],
+  },
+  {
+    id: "nav-tree",
+    category: "navigation",
+    exports: ["NavTree"],
+    api: ["NavTreeProps", "NavTreeSection", "NavTreeItem", "NavTreeItemState"],
+    demos: ["basic", "collapsed", "custom-link"],
+  },
+  {
+    id: "tabs",
+    category: "navigation",
+    exports: ["Tabs", "TabList", "Tab", "TabPanel"],
+    api: ["TabsProps", "TabListProps", "TabProps", "TabPanelProps"],
+    demos: ["basic", "variants", "colors", "vertical"],
+  },
+  {
+    id: "html-preview",
+    category: "dataDisplay",
+    exports: ["HtmlPreview"],
+    api: ["HtmlPreviewProps"],
+    demos: ["basic", "viewports"],
+  },
+  {
+    id: "monaco-code-editor",
+    category: "editors",
+    api: ["MonacoCodeEditorProps"],
+    demos: ["basic"],
+  },
+  {
+    id: "steps",
+    category: "navigation",
+    exports: ["Steps"],
+    api: ["StepsProps", "StepsItem"],
+    demos: ["basic", "read-only"],
+  },
+  {
+    id: "upload",
+    category: "dataEntry",
+    exports: ["Upload"],
+    api: ["UploadProps", "UploadItem", "UploadLabels"],
+    demos: ["basic", "multiple"],
+  },
+  {
+    id: "select",
+    category: "dataEntry",
+    exports: [
+      "Select",
+      "SelectItem",
+      "SelectGroup",
+      "SelectLabel",
+      "SelectSeparator",
+    ],
+    api: [
+      "SelectProps",
+      "SelectItemProps",
+      "SelectGroupProps",
+      "SelectLabelProps",
+      "SelectSeparatorProps",
+    ],
+    demos: ["basic", "groups", "sizes-and-states"],
+  },
+  {
+    id: "rating",
+    category: "dataEntry",
+    exports: ["Rating", "RatingScale"],
+    api: ["RatingProps", "RatingScaleProps", "RatingDimension"],
+    demos: ["basic", "interactive", "scale"],
+  },
+  {
+    id: "month-calendar",
+    category: "dataDisplay",
+    exports: ["MonthCalendar"],
+    api: ["MonthCalendarProps", "MonthCalendarEvent"],
+    demos: ["basic"],
+  },
+  { id: "migration", category: "migration" },
+  { id: "compat", category: "migration" },
 
   // Web Components
   {

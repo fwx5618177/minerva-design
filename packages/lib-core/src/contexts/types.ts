@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Palette, ResolvedThemeMode, ThemeMode } from "../theme-utils";
 
 /**
  * Base design tokens. Every key is written to the document root as a CSS
@@ -53,7 +54,13 @@ export interface ThemeProps {
 
 /** Status / accent roles that get a full set of derived tokens. */
 export type ThemeColorRole =
-  "primary" | "secondary" | "success" | "warning" | "danger" | "info";
+  | "primary"
+  | "accent"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info";
 
 /**
  * Derived tokens for each role `R` (`--R-color-hover`, `--R-color-active`, ...).
@@ -88,6 +95,18 @@ export interface SemanticThemeProps extends ThemeRoleTokens {
   "surface-muted-color"?: string;
   /** Popovers, menus, dropdowns, tooltips. */
   "surface-elevated-color"?: string;
+  /** Very soft background (sidebars, table headers, code blocks). */
+  "surface-subtle-color"?: string;
+  /** Application background behind surfaces (e.g. AppShell canvas). */
+  "canvas-color"?: string;
+  /** Background of form controls (inputs, selects). */
+  "control-color"?: string;
+  /** Hovered rows and items. */
+  "hover-color"?: string;
+  /** Selected rows, items and tabs. */
+  "selected-color"?: string;
+  /** Secondary accent (CTAs, ratings, highlights). Defaults to the primary color. */
+  "accent-color"?: string;
   /** Backdrop / modal overlay. */
   "overlay-color"?: string;
   /** Higher-contrast border (inputs, hovered borders). */
@@ -96,6 +115,8 @@ export interface SemanticThemeProps extends ThemeRoleTokens {
   "text-color"?: string;
   /** Secondary text (descriptions, helper text). */
   "text-secondary-color"?: string;
+  /** Low-emphasis text (captions, helper text). */
+  "text-muted-color"?: string;
   /** Disabled text. */
   "text-disabled-color"?: string;
   /** Text drawn on filled role backgrounds (e.g. a primary button). */
@@ -107,6 +128,13 @@ export interface SemanticThemeProps extends ThemeRoleTokens {
   "shadow-sm"?: string;
   "shadow-md"?: string;
   "shadow-lg"?: string;
+  "shadow-xl"?: string;
+  /** Body font stack. */
+  "font-family-sans"?: string;
+  /** Headings / display font stack. */
+  "font-family-display"?: string;
+  /** Code font stack. */
+  "font-family-mono"?: string;
   "radius-sm"?: string;
   "radius-md"?: string;
   "radius-lg"?: string;
@@ -157,8 +185,17 @@ export type ThemeMap = {
   [key in keyof ComponentTheme]: ComponentTheme[key];
 };
 
+/**
+ * Accepted `theme` values: "auto" / "system" (follow `prefers-color-scheme`),
+ * a built-in theme name, a theme object, or a `{ light, dark }` pair.
+ */
 export type ConfigProviderThemeProps =
-  "auto" | CustomBilingualTheme | SupportTheme | ThemeMap | DefaultTheme;
+  | "auto"
+  | "system"
+  | CustomBilingualTheme
+  | SupportTheme
+  | ThemeMap
+  | DefaultTheme;
 
 export type Theme = ConfigProviderThemeProps;
 
@@ -182,6 +219,19 @@ export interface ConfigContextProps {
   resolvedTheme?: ThemeName | ComponentTheme;
   /** Current locale of lib-core's built-in texts */
   locale?: Locale;
+  /**
+   * Color mode of the theme: "light" / "dark" for those themes, "system" for
+   * "auto" / "system" / `{ light, dark }` pairs, `undefined` for other themes
+   */
+  mode?: ThemeMode;
+  /** Applied color mode (`data-theme` on `<html>`), when it can be determined */
+  resolvedMode?: ResolvedThemeMode;
+  /** Active palette (`data-palette` on `<html>`), `null` for Minerva's default look */
+  palette?: Palette | null;
+  /** Change the theme (persisted to the `theme` cookie when `persist` is on) */
+  setTheme?: (theme: ConfigProviderThemeProps) => void;
+  /** Change the palette (persisted to the `palette` cookie when `persist` is on) */
+  setPalette?: (palette: Palette | null) => void;
 }
 
 /** Props of `ConfigProvider` */
@@ -194,10 +244,70 @@ export interface ConfigContextProviderProps {
    */
   theme?: ConfigProviderThemeProps;
   /**
+   * Palette applied with the light / dark / system themes ("editorial",
+   * "tech", "graphite", "cool"); `null` keeps Minerva's default look. Sets
+   * `data-palette` on `<html>`; palette tokens come from `style.css`.
+   * @default null
+   */
+  palette?: Palette | null;
+  /**
+   * Persist theme and palette changes in the `theme` / `palette` cookies and
+   * restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR)
+   * @default false
+   */
+  persist?: boolean;
+  /** Called after `setTheme` changes the theme */
+  onThemeChange?: (theme: ConfigProviderThemeProps) => void;
+  /** Called after `setPalette` changes the palette */
+  onPaletteChange?: (palette: Palette | null) => void;
+  /**
    * Language of lib-core's built-in texts (changes it globally)
    * @default { language: "en" }
    */
   locale?: Locale;
+  /** Application content */
+  children: ReactNode;
+}
+
+/** Value returned by `useTheme()` */
+export interface ThemeContextValue {
+  /** Mode chosen by the user ("system" follows the OS) */
+  theme: ThemeMode;
+  /** Mode actually applied ("light" / "dark") */
+  resolvedTheme: ResolvedThemeMode;
+  /** Active palette, `null` for Minerva's default look */
+  palette: Palette | null;
+  /** Change the mode (writes the `theme` cookie unless storage is disabled) */
+  setTheme: (theme: ThemeMode) => void;
+  /** Change the palette (writes the `palette` cookie unless storage is disabled) */
+  setPalette: (palette: Palette | null) => void;
+}
+
+/** Props of `ThemeProvider` */
+export interface ThemeProviderProps {
+  /**
+   * Initial mode. For SSR pass the value parsed from the request cookie so
+   * the server markup matches the client.
+   * @default "system"
+   */
+  defaultTheme?: ThemeMode;
+  /**
+   * Initial palette (`null` = Minerva's default look). For SSR pass the
+   * parsed `palette` cookie.
+   * @default null
+   */
+  defaultPalette?: Palette | null;
+  /**
+   * Do not read / write the theme cookies (tests, embedded previews)
+   * @default false
+   */
+  disableStorage?: boolean;
+  /** Language of lib-core's built-in texts */
+  locale?: Locale;
+  /** Called when the mode changes */
+  onThemeChange?: (theme: ThemeMode) => void;
+  /** Called when the palette changes */
+  onPaletteChange?: (palette: Palette | null) => void;
   /** Application content */
   children: ReactNode;
 }

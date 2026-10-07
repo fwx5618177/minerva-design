@@ -1,0 +1,41 @@
+{
+  "title": "Toast 通知",
+  "description": "带标题、描述和状态的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染。与 message 不同，toast 会继承应用的上下文（主题、语言），使用已存在的 id 再次显示会替换原通知。支持服务端渲染。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "在根部挂载一个 ToastProvider（本示例挂载了本页使用的那个），然后调用 toast.success / error / warning / info。"
+    },
+    "options": {
+      "title": "选项",
+      "description": "使用 toast({ status, title, description, duration }) 完全控制；duration 为 0 时通知会一直保留直到被关闭。toast.dismiss(id) 关闭单条，toast.dismiss() 关闭全部。悬停或聚焦通知会暂停其计时。"
+    },
+    "dedupe": {
+      "title": "相同 id 替换",
+      "description": "使用可见通知的 id 再次显示会替换它并重新计时，而不是叠加重复通知（适合轮询报错）。useToast 返回同一个 toast 函数。"
+    }
+  },
+  "api": {
+    "ToastOptions": {
+      "id": "通知的标识；省略时自动生成。使用可见通知的 id 再次显示会替换它（并重新计时），而不是叠加重复通知",
+      "status": "通知的状态",
+      "title": "主要文本",
+      "description": "标题下方的辅助文本",
+      "duration": "自动关闭前的毫秒数；0 表示不自动关闭"
+    },
+    "ToastProviderProps": {
+      "position": "通知堆叠的位置",
+      "children": "应用内容；通知视口渲染在其后",
+      "pauseOnHover": "悬停或聚焦通知时暂停自动关闭计时",
+      "ariaLabel": "通知区域的无障碍标签",
+      "closeLabel": "关闭按钮的无障碍标签"
+    },
+    "ToastApi": {
+      "info": "以给定标题显示一条信息通知",
+      "success": "以给定标题显示一条成功通知",
+      "warning": "以给定标题显示一条警告通知",
+      "error": "以给定标题显示一条危险通知",
+      "dismiss": "关闭指定 id 的通知；省略时关闭全部"
+    }
+  }
+}

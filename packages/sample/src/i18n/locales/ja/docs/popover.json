@@ -1,0 +1,38 @@
+{
+  "title": "Popover ポップオーバー",
+  "description": "クリックで開く浮動パネルで、フィルターやアカウントメニューなどの操作可能なコンテンツに使います。Tooltip と違いフォーカス可能な内容を持てます。低レベルの Popper と違い、トリガー、フォーカス、Escape、外部クリックを自分で管理します。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "PopoverTrigger でパネルを切り替えます。フォーカスは内部に移り、閉じるとトリガーに戻ります。PopoverClose で閉じます。"
+    },
+    "placement": {
+      "title": "配置",
+      "description": "side、align、sideOffset でパネルを配置します。収まらない場合は反転・移動して表示を保ちます。arrow はトリガーを指す矢印です。"
+    },
+    "controlled": {
+      "title": "アンカー付きの制御",
+      "description": "open + onOpenChange で状態を制御し、PopoverAnchor で別の要素を基準に配置します。"
+    }
+  },
+  "api": {
+    "PopoverProps": {
+      "open": "制御された開閉状態。undefined のままにすると非制御になります",
+      "defaultOpen": "非制御時の初期の開閉状態",
+      "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、Escape、外部クリック、PopoverClose）",
+      "modal": "モーダルモード：パネル内にフォーカスを閉じ込め、外部の操作を遮断します",
+      "children": "PopoverTrigger / PopoverAnchor と PopoverContent"
+    },
+    "PopoverContentProps": {
+      "ref": "パネル要素への ref",
+      "side": "優先する側。余白が足りないと反転します",
+      "align": "トリガーに沿った揃え位置",
+      "sideOffset": "トリガーとの間隔（ピクセル）",
+      "arrow": "トリガーを指す矢印を表示します",
+      "portal": "パネルを document.body のポータルに描画します"
+    },
+    "PopoverTriggerProps": {
+      "asChild": "独自の要素を描画せず、単一の子要素に振る舞いをマージします"
+    }
+  }
+}

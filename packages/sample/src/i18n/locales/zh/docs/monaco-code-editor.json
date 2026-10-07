@@ -1,0 +1,30 @@
+{
+  "title": "Monaco 代码编辑器",
+  "description": "带标签的 Monaco 编辑器，使用本地引擎（不走 CDN）并跟随页面主题。引擎无法及时加载或挂载时，降级为可编辑的文本框并提供重试按钮。从 @minerva/lib-core/monaco 引入；@monaco-editor/react 与 monaco-editor 为可选 peer 依赖。",
+  "demos": {
+    "basic": {
+      "title": "懒加载编辑器",
+      "description": "编辑器与本地引擎（其 worker 由宿主配置）按需加载。没有引擎时显示文本框降级方案。"
+    }
+  },
+  "api": {
+    "MonacoCodeEditorProps": {
+      "monaco": "本地 Monaco 引擎（import * as monaco from \"monaco-editor\"），每个应用一个",
+      "value": "源码文本（受控）",
+      "onChange": "以新的源码文本调用",
+      "language": "Monaco 语言 id",
+      "label": "可见标签，也是编辑器的无障碍名称",
+      "height": "高度（像素），限制在 [minHeight, maxHeight]",
+      "minHeight": "最小高度（像素）",
+      "maxHeight": "最大高度（像素）",
+      "disabled": "编辑器（及降级文本框）只读",
+      "theme": "颜色主题，默认跟随页面主题（<html> 的 data-theme，其次 ConfigProvider）",
+      "loadTimeout": "显示降级方案前等待引擎的毫秒数",
+      "unavailableText": "降级文本框上方的提示",
+      "retryText": "重试按钮文本",
+      "retryLabel": "重试按钮的无障碍标签",
+      "loadingLabel": "加载指示器的无障碍标签",
+      "className": "额外的类名"
+    }
+  }
+}

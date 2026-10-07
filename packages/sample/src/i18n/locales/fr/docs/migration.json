@@ -1,0 +1,31 @@
+{
+  "title": "Migrer depuis @novel-isr/ui",
+  "description": "Comment chaque export de @novel-isr/ui 0.1.40 correspond à Minerva, avec toutes les différences de noms de props et de comportement.",
+  "paths": {
+    "title": "Deux façons de migrer",
+    "compat": "Remplacement direct : gardez votre code et importez depuis @minerva/lib-core/compat (ou faites de @novel-isr/ui une simple ré-exportation). Voir",
+    "native": "Natif : passez à l'API de Minerva. Les tableaux ci-dessous donnent le nom Minerva et chaque prop renommée ou comportement modifié."
+  },
+  "summary": {
+    "title": "Synthèse et plateforme",
+    "text": "Chaque export est classé NEW (nouveau composant Minerva), MERGED (fusionné en sur-ensemble dans un composant Minerva existant, sans perte de fonctionnalité) ou PLATFORM (plateforme de thèmes, hooks, utilitaires, points d'entrée)."
+  },
+  "mapping": {
+    "title": "Correspondance des composants",
+    "text": "Généré à partir de docs/migration/novel-isr-ui.md dans le dépôt (source unique de vérité)."
+  },
+  "behaviour": {
+    "title": "Différences de comportement de l'API native",
+    "names": "Booléens et tailles : isOpen/onClose → open/onOpenChange, isInvalid → invalid, isLoading → loading, sm/md/lg → small/medium/large.",
+    "strings": "Les textes intégrés passent par l'i18n de lib-core (en / zh / fr) et peuvent toujours être remplacés par une prop ; compat transmet explicitement les textes d'origine de novel.",
+    "tooltip": "Le délai d'un TooltipProvider l'emporte sur la valeur par défaut de chaque infobulle (dans novel et compat, chaque infobulle garde ses 300 ms).",
+    "inputs": "Checkbox, Radio et Switch sont des inputs natifs : ref pointe vers l'<input>.",
+    "radio": "RadioGroup : direction row/column → horizontal/vertical ; value={null} signifie contrôlé sans sélection.",
+    "badge": "Badge est solid par défaut avec role=\"status\" ; le role d'Alert suit sa variante (compat garde celui de novel).",
+    "navTree": "NavTree : une feuille désactivée ne déclenche plus son gestionnaire et perd son href ; une feuille sans href est un bouton.",
+    "tabs": "Tabs : onValueChange → onChange, colorScheme → color.",
+    "toast": "La position de ToastProvider est en camelCase (topRight) ; toast.dismiss() ferme tout ; le survol met les minuteries en pause.",
+    "statusIndicator": "StatusIndicator n'est plus focalisable (c'est une région live role=\"status\").",
+    "full": "La liste complète, avec chaque prop renommée, se trouve dans les tableaux ci-dessus et dans docs/migration/novel-isr-ui.md."
+  }
+}

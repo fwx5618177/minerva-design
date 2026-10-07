@@ -70,6 +70,11 @@ const StatusIndicator = ({
 
   return (
     <div ref={ref} className={styles.wrapper}>
+      {/* role="status" is a non-interactive live region, so it is neither
+          focusable nor disabled-able. The click only plays a decorative
+          feedback animation (no state or action is exposed), so there is no
+          functionality a keyboard equivalent would need to provide. */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <div
         className={[
           styles.statusIndicator,
@@ -85,8 +90,7 @@ const StatusIndicator = ({
         // Fall back to the presence text (e.g. "Online") as accessible name
         aria-label={ariaLabel ?? typeText}
         role="status"
-        tabIndex={0}
-        aria-disabled={disabled}
+        data-disabled={disabled}
         onClick={handleClick}
         style={customStyle}
       >

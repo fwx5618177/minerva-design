@@ -1,7 +1,7 @@
 import Empty from "./Empty";
-import type { EmptyProps } from "./types";
+import type { EmptyProps, EmptySize } from "./types";
 
 export { Empty };
-export type { EmptyProps };
+export type { EmptyProps, EmptySize };
 
 export default Empty;

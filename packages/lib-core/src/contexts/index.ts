@@ -1,4 +1,5 @@
 export { ConfigContext, ConfigProvider, useConfig } from "./ConfigProvider";
+export { ThemeProvider, useTheme } from "./ThemeProvider";
 export type {
   ThemeProps,
   ComponentThemeProps,
@@ -17,4 +18,6 @@ export type {
   Locale,
   ConfigContextProps,
   ConfigContextProviderProps,
+  ThemeContextValue,
+  ThemeProviderProps,
 } from "./types";

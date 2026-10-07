@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import type { SkeletonProps } from "./types";
+import type { SkeletonProps, SkeletonVariant } from "./types";
 import styles from "./skeleton.module.scss";
 import useI18n from "../../hooks/useI18n";
 
@@ -24,8 +24,19 @@ import useI18n from "../../hooks/useI18n";
  * @param boolean paragraph - 是否显示段落
  * @param boolean title - 是否显示标题
  * @param string ariaLabel - 加载中区域的无障碍名称
+ * @param boolean decorative - 只渲染单个装饰性占位块（aria-hidden span）
+ * @param number | string size - 装饰性圆形占位的边长
  * @param Ref ref - 根元素的 ref (仅在 loading 时渲染)
  */
+const toCss = (value: number | string | undefined) =>
+  typeof value === "number" ? `${value}px` : value;
+
+/** Stable `ui-skeleton-variant-*` hook names (shared with @novel-isr/ui) */
+const HOOK_VARIANT: Partial<Record<SkeletonVariant, string>> = {
+  circular: "circle",
+  rectangular: "rect",
+};
+
 const Skeleton = ({
   variant = "text",
   animation = "pulse",
@@ -44,11 +55,41 @@ const Skeleton = ({
   paragraph = false,
   title = false,
   ariaLabel,
+  decorative = false,
+  size,
   ref,
+  ...rest
 }: SkeletonProps) => {
   const { t } = useI18n();
   if (!loading) {
     return <>{children}</>;
+  }
+
+  if (decorative) {
+    const dim = variant === "circular" ? toCss(size ?? width ?? 32) : undefined;
+    return (
+      <span
+        ref={ref}
+        aria-hidden="true"
+        {...rest}
+        className={classNames(
+          styles.skeleton,
+          styles.decorative,
+          styles[variant],
+          styles[`animation-${animation}`],
+          "ui-skeleton",
+          `ui-skeleton-variant-${HOOK_VARIANT[variant] ?? variant}`,
+          animation === "false" && "ui-skeleton-static",
+          className,
+        )}
+        style={{
+          width: dim ?? toCss(width),
+          height: dim ?? toCss(height),
+          borderRadius,
+          ...style,
+        }}
+      />
+    );
   }
 
   const renderLines = () => {
@@ -167,7 +208,7 @@ const Skeleton = ({
 
   return (
     <div
-      ref={ref}
+      ref={ref as React.Ref<HTMLDivElement>}
       role="status"
       aria-busy="true"
       aria-label={ariaLabel ?? t("common.loading")}
@@ -178,6 +219,7 @@ const Skeleton = ({
         },
         className,
       )}
+      {...rest}
     >
       {renderContent()}
     </div>

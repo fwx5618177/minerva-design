@@ -362,6 +362,30 @@ describe("TimePicker", () => {
       expect(getInput()).toHaveFocus();
     });
 
+    it("picks a unit with Space and ignores Enter/Space on disabled units", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      renderTimePicker({
+        defaultValue: at(10, 30, 0),
+        minTime: at(9, 0, 0),
+        onChange,
+      });
+      getInput().focus();
+      await user.keyboard("{ArrowDown}");
+      const hours = screen.getByRole("listbox", { name: "Hours" });
+      within(hours).getByRole("option", { name: "12" }).focus();
+      await user.keyboard(" ");
+      expect(lastDate(onChange)?.getHours()).toBe(12);
+
+      const disabled = within(hours).getByRole("option", { name: "08" });
+      expect(disabled).toHaveAttribute("aria-disabled", "true");
+      onChange.mockClear();
+      disabled.focus();
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
     it("closes when clicking outside", async () => {
       const user = userEvent.setup();
       render(

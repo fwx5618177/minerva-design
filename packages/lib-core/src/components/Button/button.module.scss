@@ -126,6 +126,11 @@
     font-size: clamp(1.125rem, 2vw, 1.25rem); // 使用 clamp 调整字体大小
   }
 
+  &.xsmall {
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+  }
+
   &.borderRadiusNone {
     border-radius: 0;
   }
@@ -209,6 +214,28 @@
     }
   }
 
+  &.accent {
+    background-color: var(--accent-color);
+    color: var(--text-inverse-color);
+
+    &:hover {
+      background-color: var(--accent-color-hover);
+    }
+
+    &:active {
+      background-color: var(--accent-color-active);
+    }
+  }
+
+  &.neutral {
+    background-color: var(--surface-muted-color);
+    color: var(--text-color);
+
+    &:hover {
+      background-color: var(--hover-color, var(--surface-subtle-color));
+    }
+  }
+
   // after every variant so disabled styling wins over .secondary/.success
   &:disabled {
     background: var(--surface-muted-color);
@@ -287,5 +314,252 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Structured content (icon / label slots, loading text)
+// ---------------------------------------------------------------------------
+.structured {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-width: 0;
+
+  .icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+
+  // the legacy loading styles are nested in .loading; keep the spinner inline
+  &.loading .loadingSpinner {
+    flex: 0 0 auto;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// Token-based design (`appearance`): solid / outline / ghost / link.
+// Each color sets the --btn-tone-* variables; the appearance consumes them.
+// Selectors are doubled with .customButton to win over the classic look.
+// ---------------------------------------------------------------------------
+@each $name, $role in (primary: primary, secondary: secondary, success: success, warning: warning, error: danger, danger: danger, info: info, accent: accent, retry: danger, back: info) {
+  .customButton.modern.#{$name} {
+    --btn-tone: var(--#{$role}-color);
+    --btn-tone-hover: var(--#{$role}-color-hover);
+    --btn-tone-active: var(--#{$role}-color-active);
+    --btn-tone-subtle: var(--#{$role}-color-subtle);
+    --btn-tone-text: var(--#{$role}-color-text);
+    --btn-tone-border: var(--#{$role}-color);
+    --btn-tone-on: var(--text-inverse-color);
+  }
+}
+
+.customButton.modern.neutral {
+  --btn-tone: var(--text-color);
+  --btn-tone-hover: color-mix(in srgb, var(--text-color) 88%, var(--background-color));
+  --btn-tone-active: color-mix(in srgb, var(--text-color) 78%, var(--background-color));
+  --btn-tone-subtle: var(--surface-subtle-color);
+  --btn-tone-text: var(--text-color);
+  --btn-tone-border: var(--border-strong-color);
+  --btn-tone-on: var(--text-inverse-color);
+}
+
+.customButton.modern {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0 var(--space-4);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+
+  // no ripple bar in the token-based design
+  &::before {
+    content: none;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+
+  // outline (not box-shadow) so the solid shadow survives focus
+  &:focus-visible {
+    outline: var(--focus-ring-width, 2px) solid var(--primary-color);
+    outline-offset: var(--focus-ring-offset, 2px);
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.98);
+    transition-duration: 60ms;
+    transition-timing-function: var(--ease-spring, ease-out);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &.xsmall {
+    min-height: 1.5rem;
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  &.small {
+    min-height: 2rem;
+    padding: 0 var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  &.medium {
+    min-height: 2.5rem;
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-md);
+  }
+
+  &.large {
+    min-height: 3rem;
+    padding: 0 var(--space-5);
+    font-size: var(--font-size-lg);
+  }
+
+  &.xlarge {
+    min-height: 3.5rem;
+    padding: 0 var(--space-6);
+    font-size: var(--font-size-xl);
+  }
+
+  &.loading {
+    opacity: 1;
+  }
+
+  &.appearance-solid {
+    background: var(--btn-tone);
+    color: var(--btn-tone-on);
+    border-color: var(--btn-tone);
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--shadow-color) 60%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--text-inverse-color) 14%, transparent);
+
+    &:not(:disabled):hover {
+      background: var(--btn-tone-hover);
+      border-color: var(--btn-tone-hover);
+    }
+
+    &:not(:disabled):active,
+    &.active {
+      background: var(--btn-tone-active);
+    }
+  }
+
+  &.appearance-outline {
+    background: transparent;
+    color: var(--btn-tone-text);
+    border-color: var(--btn-tone-border);
+
+    &:not(:disabled):hover {
+      background: var(--btn-tone-subtle);
+      color: var(--btn-tone-text);
+      border-color: var(--btn-tone-hover);
+    }
+  }
+
+  &.appearance-ghost {
+    background: transparent;
+    color: var(--btn-tone-text);
+    border-color: transparent;
+
+    &:not(:disabled):hover,
+    &.active {
+      background: var(--btn-tone-subtle);
+      color: var(--btn-tone-text);
+    }
+  }
+
+  &.appearance-link {
+    background: transparent;
+    color: var(--btn-tone-text);
+    border-color: transparent;
+    min-height: 0;
+    height: auto;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:not(:disabled):hover {
+      background: transparent;
+      color: var(--btn-tone-hover);
+    }
+  }
+
+  &.circle {
+    aspect-ratio: 1;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  &.rounded {
+    border-radius: var(--radius-full, 9999px);
+  }
+
+  // explicit borderRadius presets win over the theme radius
+  &.borderRadiusNone,
+  &.borderRadiusSquare {
+    border-radius: 0;
+  }
+
+  &.borderRadiusSmall {
+    border-radius: var(--radius-sm);
+  }
+
+  &.borderRadiusMedium {
+    border-radius: var(--radius-md);
+  }
+
+  &.borderRadiusLarge {
+    border-radius: var(--radius-lg);
+  }
+
+  &.borderRadiusCircle {
+    border-radius: 50%;
+  }
+
+  &.loading {
+    cursor: wait;
   }
 }

@@ -17,6 +17,10 @@
     "group": {
       "title": "头像组",
       "description": "用 AvatarGroup 包裹头像，并使用 stacked 让头像叠放；count 显示剩余人数。"
+    },
+    "fallback": {
+      "title": "回退内容、尺寸与 max",
+      "description": "首字母取前两个单词的首字母（或第一个汉字）；fallback 或 children 可替代它。size 也接受像素值，AvatarGroup 的 max 会把其余头像折叠为 +N。"
     }
   },
   "api": {
@@ -24,17 +28,22 @@
       "src": "图片地址，未提供时显示 name 的首字母",
       "name": "用户名，用于首字母、替代文本和无障碍标签",
       "shape": "头像形状",
-      "size": "头像尺寸",
+      "size": "头像尺寸：预设值（xsmall 24px、small 32px、medium 48px、large 64px、xlarge 80px、xxlarge 96px）或像素数",
       "className": "额外的类名",
       "stacked": "使用更紧凑的间距以叠放头像",
-      "ref": "根 <span> 元素的 ref"
+      "ref": "根 <span> 元素的 ref",
+      "alt": "图片的替代文字；传入 \"\" 表示装饰性头像",
+      "ariaLabel": "头像的无障碍名称（也是图片的默认替代文字）",
+      "fallback": "没有图片时代替首字母显示的自定义内容",
+      "children": "没有 name 时使用的回退内容（例如图标）"
     },
     "AvatarGroupProps": {
       "count": "额外头像的数量，显示为“+N”",
       "className": "额外的类名",
       "children": "Avatar 子元素",
       "ref": "根 <div> 元素的 ref",
-      "ariaLabel": "头像组的无障碍标签"
+      "ariaLabel": "头像组的无障碍标签",
+      "max": "最多显示的头像数；其余头像计入「+N」指示（与 count 相加）"
     }
   }
 }

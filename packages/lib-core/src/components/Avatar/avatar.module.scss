@@ -1,7 +1,10 @@
 @use "../../styles/mixins" as *;
 
 .avatar {
+  --avatar-size: 3rem;
   display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--avatar-border-color, var(--border-color));
@@ -24,20 +27,32 @@
     border-radius: 0.25rem;
   }
 
+  &.xsmall {
+    --avatar-size: 1.5rem;
+  }
+
   &.small {
-    width: 2rem;
-    height: 2rem;
+    --avatar-size: 2rem;
   }
 
   &.medium {
-    width: 3rem;
-    height: 3rem;
+    --avatar-size: 3rem;
   }
 
   &.large {
-    width: 4rem;
-    height: 4rem;
+    --avatar-size: 4rem;
   }
+
+  &.xlarge {
+    --avatar-size: 5rem;
+  }
+
+  &.xxlarge {
+    --avatar-size: 6rem;
+  }
+
+  width: var(--avatar-size);
+  height: var(--avatar-size);
 
   // Background variants (overridable via --avatar-bg-color-<role>)
   @each $role in (primary, secondary, success, warning, danger, info) {
@@ -88,16 +103,15 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    font-size: clamp(2rem, 2vw, 2.8rem);
+    // scales with the avatar so two-letter initials always fit
+    font-size: calc(var(--avatar-size) * 0.4);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1;
     color: var(--avatar-text-color, var(--text-inverse-color));
     text-align: center;
-    transform: translate(-50%, -50%) scale(0.65);
+    transform: translate(-50%, -50%);
     white-space: nowrap;
     user-select: none;
-
-    @media (max-width: 576px) {
-      font-size: clamp(1.5rem, 1.5vw, 2rem);
-    }
   }
 
   @include ripple-effect;

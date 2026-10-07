@@ -8,7 +8,7 @@
     },
     "variants": {
       "title": "バリアント",
-      "description": "5 つの見た目：default、outlined、shadow、elevated、filled。"
+      "description": "7 種類のスタイル：default、outlined、shadow、elevated、filled、subtle、ghost。"
     },
     "types": {
       "title": "ヘッダーとフッター",
@@ -21,6 +21,14 @@
     "animation": {
       "title": "コンテンツのアニメーション",
       "description": "CardContent では fadeIn、slideIn、zoomIn の登場アニメーションを再生できます。"
+    },
+    "padded": {
+      "title": "パディングレイアウト",
+      "description": "padding を指定するとカード自体に余白が付き、各セクションは間隔とフッターの区切り線で並びます。subtle や ghost を含むすべてのバリアントで使えます。"
+    },
+    "interactive": {
+      "title": "インタラクティブカード",
+      "description": "interactive はホバーとフォーカス表示のフィードバックを追加し、as でカードをリンクやボタンとして描画します。"
     }
   },
   "api": {
@@ -29,19 +37,25 @@
       "variant": "カードの見た目",
       "type": "CardHeader や CardFooter を非表示にする（noHeader、noFooter、noHeaderFooter）",
       "className": "追加のクラス名",
-      "ref": "ルートの <div> 要素への ref"
+      "ref": "ルートの <div> 要素への ref",
+      "padding": "カード自体の余白（パディングレイアウト）。省略すると各セクションが自身で余白を持つ従来のレイアウトになります",
+      "interactive": "クリック可能なカードにホバーとフォーカス表示のフィードバックを追加します",
+      "as": "ルートとして描画する要素またはコンポーネント（a、button、article など）",
+      "htmlType": "button として描画するときのルートのネイティブ type"
     },
     "CardHeaderProps": {
       "children": "ヘッダーの内容。通常は CardTitle と CardDescription",
       "className": "追加のクラス名",
       "bgColor": "ヘッダーの背景色",
       "textColor": "ヘッダーの文字色",
-      "ref": "ルートの <div> 要素への ref"
+      "ref": "ルートの <div> 要素への ref",
+      "padding": "このセクションの余白を上書きします"
     },
     "CardTitleProps": {
       "children": "タイトルのテキスト（<h3> として表示）",
       "className": "追加のクラス名",
-      "ref": "ルートの <h3> 要素への ref"
+      "ref": "ルートの <h3> 要素への ref",
+      "as": "描画する見出しレベル"
     },
     "CardDescriptionProps": {
       "children": "タイトルの下に表示する補足テキスト",
@@ -54,14 +68,16 @@
       "bgColor": "コンテンツの背景色",
       "textColor": "コンテンツの文字色",
       "animation": "コンテンツの登場アニメーション",
-      "ref": "ルートの <div> 要素への ref"
+      "ref": "ルートの <div> 要素への ref",
+      "padding": "このセクションの余白を上書きします"
     },
     "CardFooterProps": {
       "children": "フッターの内容（操作ボタンなど）",
       "className": "追加のクラス名",
       "bgColor": "フッターの背景色",
       "textColor": "フッターの文字色",
-      "ref": "ルートの <div> 要素への ref"
+      "ref": "ルートの <div> 要素への ref",
+      "padding": "このセクションの余白を上書きします"
     }
   }
 }

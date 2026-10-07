@@ -1,0 +1,31 @@
+{
+  "title": "Steps",
+  "description": "Shows the stages of a workflow and lets the user move between them.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Earlier steps are marked complete and the current one has aria-current=\"step\". onChange only reports navigation: validation stays in your code. Disable steps that cannot be reached yet."
+    },
+    "read-only": {
+      "title": "Read-only progress",
+      "description": "Without onChange the steps are a read-only progress indicator."
+    }
+  },
+  "api": {
+    "StepsProps": {
+      "items": "Steps, in order",
+      "value": "Value of the current step (controlled; pair with onChange)",
+      "defaultValue": "Value of the initial current step (uncontrolled)",
+      "onChange": "Called with the value of the step the user navigates to. Steps only report navigation: validation and workflow transitions belong to the caller",
+      "readOnly": "Renders the steps as a read-only progress indicator (every step button disabled)",
+      "ariaLabel": "Accessible label of the list",
+      "className": "Additional class name",
+      "ref": "Ref to the root <ol> element"
+    },
+    "StepsItem": {
+      "value": "Unique value of the step, matched against the Steps value",
+      "label": "Visible label of the step",
+      "disabled": "Prevents navigating to this step (e.g. a terminal state that is not reached yet)"
+    }
+  }
+}

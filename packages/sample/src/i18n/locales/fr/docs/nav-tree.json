@@ -1,0 +1,60 @@
+{
+  "title": "NavTree",
+  "description": "Navigation latérale avec sections, branches dépliables, élément actif et mode compact à icônes. Les flèches déplacent le focus et ouvrent ou ferment les branches.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Les branches contenant l'élément actif s'ouvrent automatiquement ; une fermeture manuelle est mémorisée. Les éléments acceptent icône, description et contenu de fin."
+    },
+    "collapsed": {
+      "title": "Mode compact et retour à la ligne",
+      "description": "collapsed n'affiche que les icônes ; wrapLabels renvoie les libellés longs à la ligne au lieu de les tronquer."
+    },
+    "custom-link": {
+      "title": "Liens de routeur",
+      "description": "renderLink rend les feuilles avec le lien de votre routeur ; conservez state.className. Les branches dépliées peuvent être contrôlées."
+    }
+  },
+  "api": {
+    "NavTreeProps": {
+      "sections": "Sections d'éléments",
+      "activeId": "Id de l'élément actif (page courante) ; ses ancêtres se déplient",
+      "collapsed": "Mode compact : icônes seules",
+      "wrapLabels": "Renvoie à la ligne les libellés et descriptions longs au lieu de les tronquer",
+      "defaultExpandedIds": "Ids des branches dépliées au départ (non contrôlé)",
+      "expandedIds": "Ids des branches dépliées (contrôlé ; avec onExpandedChange)",
+      "onExpandedChange": "Appelée avec les ids dépliés quand une branche bascule",
+      "onItemSelect": "Appelée quand un lien ou une branche est activé",
+      "renderLink": "Rendu personnalisé des liens (p. ex. un Link de routeur) ; ajoutez-y state.className",
+      "className": "Classe supplémentaire",
+      "style": "Styles en ligne",
+      "ariaLabel": "Nom accessible du repère <nav>",
+      "ref": "Ref vers l'élément <nav>"
+    },
+    "NavTreeSection": {
+      "id": "Id unique de la section",
+      "title": "Titre facultatif de la section",
+      "items": "Éléments de la section"
+    },
+    "NavTreeItem": {
+      "id": "Id unique (comparé à activeId / aux ids dépliés)",
+      "label": "Libellé visible",
+      "description": "Ligne secondaire sous le libellé (masquée pour les éléments imbriqués)",
+      "href": "Cible du lien d'une feuille",
+      "icon": "Icône de début",
+      "endContent": "Contenu de fin, p. ex. un badge ou un compteur",
+      "disabled": "Désactive l'élément",
+      "children": "Éléments enfants ; l'élément devient une branche dépliable"
+    },
+    "NavTreeItemState": {
+      "active": "L'élément est actif",
+      "ancestorActive": "Un descendant de l'élément est actif",
+      "expanded": "La branche est dépliée",
+      "depth": "Profondeur d'imbrication (0 au premier niveau)",
+      "collapsed": "L'arbre est en mode compact",
+      "hasChildren": "L'élément a des enfants",
+      "disabled": "L'élément est désactivé",
+      "className": "Classes à mettre sur le lien rendu"
+    }
+  }
+}

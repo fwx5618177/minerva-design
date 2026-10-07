@@ -9,6 +9,10 @@
 }
 
 .empty {
+  // Bounded so unbroken text (e.g. error messages) wraps in narrow containers
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,6 +46,118 @@
 
   .footer {
     margin-top: 16px;
+  }
+
+  .title {
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    text-align: center;
+  }
+
+  .actions {
+    min-width: 0;
+    max-width: 100%;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    // Long Button labels wrap instead of widening narrow error pages
+    :global(.ui-button-label) {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // ── Sized (unframed) layout
+  &.sized {
+    gap: var(--space-3);
+    color: var(--text-color);
+    background: transparent;
+    font-family: var(--font-family-sans);
+    text-align: center;
+
+    .iconWrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+      margin: 0;
+      color: var(--text-muted-color);
+      opacity: 0.7;
+    }
+
+    .title {
+      margin: 0;
+    }
+
+    .description {
+      max-width: 36ch;
+      margin: 0;
+      color: var(--text-secondary-color);
+      line-height: var(--line-height-base);
+    }
+
+    .actions {
+      margin-top: var(--space-2);
+    }
+
+    .footer {
+      margin: 0;
+    }
+  }
+
+  &.size-small {
+    padding: var(--space-4) var(--space-3);
+
+    .iconWrapper svg {
+      width: 28px;
+      height: 28px;
+    }
+    .title {
+      font-size: var(--font-size-sm);
+    }
+    .description {
+      font-size: var(--font-size-xs);
+    }
+  }
+
+  &.size-medium {
+    padding: var(--space-8) var(--space-4);
+
+    .iconWrapper svg {
+      width: 40px;
+      height: 40px;
+    }
+    .title {
+      font-size: var(--font-size-md);
+    }
+    .description {
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  &.size-large {
+    padding: var(--space-12) var(--space-6);
+
+    .iconWrapper svg {
+      width: 56px;
+      height: 56px;
+    }
+    .title {
+      font-size: var(--font-size-xl);
+    }
+    .description {
+      font-size: var(--font-size-md);
+    }
   }
 
   @include ripple-effect;

@@ -1,0 +1,42 @@
+{
+  "title": "Command コマンドパレット",
+  "description": "モーダル内の検索可能なコマンドパレットです。入力するとタイトル、説明、グループ、キーワードで絞り込み、矢印キーで移動し、Enter またはクリックで選択します。任意のグローバルショートカットで開けます。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "制御されたパレット。onSelect が選択された項目を受け取り、パレットは閉じます。"
+    },
+    "shortcut": {
+      "title": "グローバルショートカット",
+      "description": "shortcut=\"mod+k\" は macOS では Cmd+K、それ以外では Ctrl+K でパレットを開きます。shortcutLabel がヒントを表示します。"
+    }
+  },
+  "api": {
+    "CommandDialogProps": {
+      "open": "制御された開閉状態。undefined のままにすると非制御になります",
+      "defaultOpen": "非制御時の初期の開閉状態",
+      "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（ショートカット、選択、Escape、背景クリック）",
+      "items": "検索対象のコマンド。無効な項目は表示されません",
+      "onSelect": "選択された項目で呼ばれます（クリックまたは Enter）。その後パレットは閉じます",
+      "title": "ダイアログのタイトル。既定はローカライズされた「コマンドパレット」",
+      "description": "パレットのアクセシブルな説明。既定はローカライズされたヒント",
+      "placeholder": "検索入力のプレースホルダー。既定はローカライズされたヒント",
+      "emptyText": "一致する結果がないときの表示",
+      "shortcutLabel": "タイトルの横に <kbd> で表示するショートカットのヒント（例：「⌘K」）",
+      "shortcut": "パレットを開くグローバルショートカット（例：「mod+k」）。修飾キー：mod、ctrl、meta/cmd、shift、alt/option",
+      "maxResults": "表示する結果の最大数",
+      "resultsLabel": "結果リストのアクセシブルラベル",
+      "enterLabel": "検索入力の末尾に表示するキーのヒント。既定はローカライズされた「Enter」",
+      "getOptionId": "各結果オプションの DOM id。入力の aria-activedescendant にも使われ、ドキュメント内で一意である必要があります。既定はダイアログ内で生成される id",
+      "className": "ダイアログパネルの追加クラス名"
+    },
+    "CommandItem": {
+      "id": "一意な id。onSelect で返されます",
+      "title": "メインのラベル",
+      "description": "タイトルの下の補足行",
+      "group": "グループ名。バッジとして表示され、検索対象になります",
+      "keywords": "追加の検索語（表示されません）",
+      "disabled": "結果から項目を隠します"
+    }
+  }
+}

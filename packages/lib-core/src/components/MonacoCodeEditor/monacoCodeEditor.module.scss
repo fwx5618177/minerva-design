@@ -1,0 +1,82 @@
+.root {
+  width: 100%;
+  min-width: 0;
+  font-family: var(--font-family-sans);
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
+}
+
+.surface {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--warning-color-subtle);
+  overflow-wrap: anywhere;
+}
+
+.message {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  color: var(--warning-color-text);
+}
+
+.retryIcon {
+  margin-right: var(--space-1-5);
+  vertical-align: -0.125em;
+}
+
+.fallback {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin: 0;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  background: var(--control-color, var(--surface-color));
+  color: var(--text-color);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--primary-color);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: var(--text-disabled-color);
+    cursor: not-allowed;
+  }
+}

@@ -12,6 +12,16 @@ const installYarn = `yarn add @minerva/lib-core react react-dom`;
 const styleImport = `// main.tsx (your entry file) — import the stylesheet exactly once
 import "@minerva/lib-core/style.css";`;
 
+const extraStyles = `// optional: @novel-isr/ui compatibility tokens (for @minerva/lib-core/compat)
+import "@minerva/lib-core/compat.css";
+
+// optional, in your own .scss: long-form typography mixins
+@use "@minerva/lib-core/prose.scss" as prose;`;
+
+const monacoInstall = `pnpm add @monaco-editor/react monaco-editor`;
+
+const monacoImport = `import { MonacoCodeEditor } from "@minerva/lib-core/monaco";`;
+
 const appCode = `import { createRoot } from "react-dom/client";
 import { Button, ConfigProvider, message } from "@minerva/lib-core";
 import "@minerva/lib-core/style.css";
@@ -77,6 +87,18 @@ const InstallationDoc: React.FC = () => {
         <p className={styles.prose}>{t("docs.installation.styles.text")}</p>
         <CodeBlock code={styleImport} language="tsx" />
         <p className={styles.callout}>{t("docs.installation.styles.note")}</p>
+        <p className={styles.prose}>{t("docs.installation.styles.extras")}</p>
+        <CodeBlock code={extraStyles} language="scss" />
+      </section>
+
+      <section className={styles.section} aria-labelledby="optional-entries">
+        <h2 id="optional-entries">{t("docs.installation.optional.title")}</h2>
+        <p className={styles.prose}>{t("docs.installation.optional.text")}</p>
+        <CodeBlock code={monacoInstall} language="bash" />
+        <CodeBlock code={monacoImport} language="tsx" />
+        <p className={styles.prose}>
+          <Link to="/rsc-guide">{t("docs.installation.optional.rsc")}</Link>
+        </p>
       </section>
 
       <section className={styles.section} aria-labelledby="first-app">

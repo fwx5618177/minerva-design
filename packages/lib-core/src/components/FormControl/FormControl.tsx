@@ -1,0 +1,182 @@
+import { useId, useLayoutEffect, useMemo, useState } from "react";
+import { cn } from "../../utils/cn";
+import {
+  FormControlContext,
+  useFormControlContext,
+  type FormControlContextValue,
+} from "./context";
+import type {
+  FormControlProps,
+  FormErrorMessageProps,
+  FormFieldProps,
+  FormHelperTextProps,
+  FormLabelProps,
+} from "./types";
+import styles from "./formControl.module.scss";
+
+/**
+ * FormControl: field container that shares id / invalid / required /
+ * disabled / read-only state with its label, control, helper text and error
+ * message. Controls inside read it with `useFormControlProps`.
+ */
+export const FormControl = ({
+  invalid = false,
+  required = false,
+  disabled = false,
+  readOnly = false,
+  id: idProp,
+  className,
+  children,
+  ref,
+  ...rest
+}: FormControlProps) => {
+  const autoId = useId();
+  const id = idProp ?? `field-${autoId}`;
+  const [hasHelperText, registerHelperText] = useState(false);
+  const [hasErrorMessage, registerErrorMessage] = useState(false);
+
+  const ctx = useMemo<FormControlContextValue>(
+    () => ({
+      id,
+      labelId: `${id}-label`,
+      helperId: `${id}-helper`,
+      errorId: `${id}-error`,
+      invalid,
+      required,
+      disabled,
+      readOnly,
+      hasHelperText,
+      hasErrorMessage,
+      registerHelperText,
+      registerErrorMessage,
+    }),
+    [id, invalid, required, disabled, readOnly, hasHelperText, hasErrorMessage],
+  );
+
+  return (
+    <FormControlContext.Provider value={ctx}>
+      <div
+        ref={ref}
+        className={cn(styles.root, "ui-form-control", className)}
+        data-invalid={invalid || undefined}
+        data-disabled={disabled || undefined}
+        data-readonly={readOnly || undefined}
+        {...rest}
+      >
+        {children}
+      </div>
+    </FormControlContext.Provider>
+  );
+};
+
+/** Label of the closest FormControl's control, with a required indicator. */
+export const FormLabel = ({
+  requiredIndicator = "*",
+  className,
+  children,
+  htmlFor,
+  ref,
+  ...rest
+}: FormLabelProps) => {
+  const ctx = useFormControlContext();
+  return (
+    <label
+      ref={ref}
+      id={ctx?.labelId}
+      htmlFor={htmlFor ?? ctx?.id}
+      className={cn(styles.label, "ui-form-label", className)}
+      {...rest}
+    >
+      {children}
+      {ctx?.required && (
+        <span
+          className={cn(styles.required, "ui-form-required")}
+          aria-hidden="true"
+        >
+          {requiredIndicator}
+        </span>
+      )}
+    </label>
+  );
+};
+
+/**
+ * Registers a rendered helper / error element so aria-describedby only
+ * references ids that exist (layout effect: correct before paint).
+ */
+function useRegistration(
+  register: ((present: boolean) => void) | undefined,
+  present: boolean,
+) {
+  useLayoutEffect(() => {
+    if (!register || !present) return;
+    register(true);
+    return () => register(false);
+  }, [register, present]);
+}
+
+/** Help text of the field; replaced by FormErrorMessage while invalid. */
+export const FormHelperText = ({
+  className,
+  children,
+  ref,
+  ...rest
+}: FormHelperTextProps) => {
+  const ctx = useFormControlContext();
+  const visible = !ctx?.invalid;
+  useRegistration(ctx?.registerHelperText, visible);
+  if (!visible) return null;
+  return (
+    <div
+      ref={ref}
+      id={ctx?.helperId}
+      className={cn(styles.helper, "ui-form-helper", className)}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
+/** Error message of the field; only rendered while the FormControl is invalid. */
+export const FormErrorMessage = ({
+  className,
+  children,
+  ref,
+  ...rest
+}: FormErrorMessageProps) => {
+  const ctx = useFormControlContext();
+  const visible = Boolean(ctx?.invalid);
+  useRegistration(ctx?.registerErrorMessage, visible);
+  if (!ctx || !visible) return null;
+  return (
+    <div
+      ref={ref}
+      id={ctx.errorId}
+      role="alert"
+      className={cn(styles.error, "ui-form-error", className)}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
+/** FormControl + FormLabel + helper text + error message in one component. */
+export const FormField = ({
+  label,
+  helperText,
+  errorMessage,
+  children,
+  invalid = Boolean(errorMessage),
+  ...rest
+}: FormFieldProps) => (
+  <FormControl invalid={invalid} {...rest}>
+    <FormLabel>{label}</FormLabel>
+    {children}
+    {helperText && <FormHelperText>{helperText}</FormHelperText>}
+    {errorMessage && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
+  </FormControl>
+);
+
+export default FormControl;

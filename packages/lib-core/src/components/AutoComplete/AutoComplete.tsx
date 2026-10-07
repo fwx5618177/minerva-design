@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo, useState } from "react";
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import classNames from "classnames";
 import { IoClose } from "react-icons/io5";
 import { TextField } from "../TextField";
@@ -8,6 +8,7 @@ import { Empty } from "../Empty";
 import type { AutoCompleteProps, AutoCompleteOption } from "./types";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { useFormControlProps } from "../FormControl/context";
 import useI18n from "../../hooks/useI18n";
 import styles from "./autoComplete.module.scss";
 
@@ -58,6 +59,13 @@ const AutoComplete = ({
   onOptionClick,
   onDropdownVisibleChange,
   popperProps,
+  onSubmit,
+  autoHighlight = false,
+  fillOnSelect = true,
+  className,
+  loadingMode = "replace",
+  loadingText,
+  groupMode = "first",
 }: AutoCompleteProps) => {
   const { t } = useI18n();
   const [inputValue, setInputValue] = useControllableState({
@@ -82,8 +90,23 @@ const AutoComplete = ({
   const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
 
   const listboxId = `${useId()}-listbox`;
+  // IME composition in progress: Enter / arrows belong to the IME.
+  const composing = useRef(false);
 
-  const open = () => setVisible(true);
+  // FormControl wiring (id, disabled / read-only state, aria-*). The
+  // TextField's own disabled / readOnly props still apply.
+  const field = useFormControlProps({
+    id: textFieldProps?.id,
+    disabled: textFieldProps?.disabled,
+    readOnly: textFieldProps?.readOnly,
+  });
+  const blocked = !!field.disabled || !!field.readOnly;
+  // A disabled / read-only field never shows (or keeps) the dropdown.
+  const shown = visible && !blocked;
+
+  const open = () => {
+    if (!blocked) setVisible(true);
+  };
   const close = () => {
     setVisible(false);
     setFocusedIndex(-1);
@@ -99,9 +122,19 @@ const AutoComplete = ({
     return sortOption ? [...result].sort(sortOption) : result;
   }, [options, inputValue, filterOption, sortOption]);
 
-  /** Groups in order of first appearance */
+  /** Groups in order of first appearance, or runs of adjacent options */
   const groupedOptions = useMemo(() => {
     if (!groupBy) return null;
+    if (groupMode === "adjacent") {
+      const runs: [string, AutoCompleteOption[]][] = [];
+      processedOptions.forEach((option) => {
+        const group = groupBy(option);
+        const last = runs[runs.length - 1];
+        if (last && last[0] === group) last[1].push(option);
+        else runs.push([group, [option]]);
+      });
+      return runs;
+    }
     const groups = new Map<string, AutoCompleteOption[]>();
     processedOptions.forEach((option) => {
       const group = groupBy(option);
@@ -110,7 +143,7 @@ const AutoComplete = ({
       else groups.set(group, [option]);
     });
     return Array.from(groups.entries());
-  }, [processedOptions, groupBy]);
+  }, [processedOptions, groupBy, groupMode]);
 
   /** Options in display order; keyboard / hover indexes refer to this list */
   const navigableOptions = useMemo(
@@ -121,6 +154,15 @@ const AutoComplete = ({
     [groupedOptions, processedOptions],
   );
 
+  // With autoHighlight the first enabled option is active until the user
+  // moves the highlight.
+  const activeIndex =
+    focusedIndex >= 0
+      ? focusedIndex
+      : autoHighlight && shown
+        ? navigableOptions.findIndex((option) => !option.disabled)
+        : -1;
+
   const isSelected = (option: AutoCompleteOption) =>
     selectedTags.some((tag) => tag.value === option.value);
 
@@ -129,7 +171,7 @@ const AutoComplete = ({
     if (count === 0) return;
     // from "nothing focused", ArrowDown starts at the first option and
     // ArrowUp at the last one
-    let index = focusedIndex >= 0 ? focusedIndex : step === 1 ? -1 : count;
+    let index = activeIndex >= 0 ? activeIndex : step === 1 ? -1 : count;
     for (let i = 0; i < count; i += 1) {
       index = (index + step + count) % count;
       if (!navigableOptions[index].disabled) {
@@ -151,13 +193,20 @@ const AutoComplete = ({
       setFocusedIndex(-1);
       // stay open so several options can be picked in a row
     } else {
-      setInputValue(option.label);
+      if (fillOnSelect) setInputValue(option.label);
       close();
     }
     onSelect?.(option);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      blocked ||
+      composing.current ||
+      event.nativeEvent.isComposing ||
+      event.keyCode === 229
+    )
+      return;
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
@@ -170,10 +219,15 @@ const AutoComplete = ({
         moveFocus(-1);
         break;
       case "Enter": {
-        const option = visible ? navigableOptions[focusedIndex] : undefined;
+        const option = shown ? navigableOptions[activeIndex] : undefined;
         if (option) {
           event.preventDefault();
           handleOptionSelect(option);
+        } else if (onSubmit && inputValue.trim()) {
+          // No active option: submit the typed text (e.g. a search).
+          event.preventDefault();
+          onSubmit(inputValue.trim());
+          close();
         }
         break;
       }
@@ -206,7 +260,7 @@ const AutoComplete = ({
   };
 
   const handleOptionClick = (option: AutoCompleteOption) => {
-    if (option.disabled) return;
+    if (option.disabled || composing.current) return;
     handleOptionSelect(option);
     onOptionClick?.(option);
     input?.focus();
@@ -214,20 +268,45 @@ const AutoComplete = ({
 
   // Expose combobox semantics on the inner <input>
   const activeOptionId =
-    visible && focusedIndex >= 0
-      ? `${listboxId}-option-${focusedIndex}`
+    shown && activeIndex >= 0
+      ? `${listboxId}-option-${activeIndex}`
       : undefined;
   useEffect(() => {
     if (!input) return;
     input.setAttribute("role", "combobox");
     input.setAttribute("aria-autocomplete", "list");
-    input.setAttribute("aria-expanded", String(visible));
-    if (visible) input.setAttribute("aria-controls", listboxId);
+    input.setAttribute("aria-expanded", String(shown));
+    if (shown) input.setAttribute("aria-controls", listboxId);
     else input.removeAttribute("aria-controls");
     if (activeOptionId)
       input.setAttribute("aria-activedescendant", activeOptionId);
     else input.removeAttribute("aria-activedescendant");
-  }, [input, visible, listboxId, activeOptionId]);
+  }, [input, shown, listboxId, activeOptionId]);
+
+  const appendLoading = loading && loadingMode === "append";
+  const loadingRow = (
+    <div
+      className={classNames(styles.loadingRow, "ui-autocomplete-loading")}
+      role="status"
+    >
+      {loadingText ?? t("autoComplete.loading")}
+    </div>
+  );
+
+  // Clicking the still-focused input (after a pick or Escape) reopens the
+  // dropdown; focus alone does not fire again.
+  const reopenRef = useRef(() => {});
+  useEffect(() => {
+    reopenRef.current = () => {
+      if (!visible) open();
+    };
+  });
+  useEffect(() => {
+    if (!input) return;
+    const onClick = () => reopenRef.current();
+    input.addEventListener("click", onClick);
+    return () => input.removeEventListener("click", onClick);
+  }, [input]);
 
   // Keep the keyboard-focused option scrolled into view
   useEffect(() => {
@@ -241,33 +320,57 @@ const AutoComplete = ({
     <div className={styles.basicOption}>
       {option.icon && <span className={styles.icon}>{option.icon}</span>}
       <div className={styles.content}>
-        <div className={styles.label}>{option.label}</div>
+        <div className={classNames(styles.label, "ui-autocomplete-item-label")}>
+          {option.label}
+        </div>
         {option.description && (
-          <div className={styles.description}>{option.description}</div>
+          <div
+            className={classNames(
+              styles.description,
+              "ui-autocomplete-item-hint",
+            )}
+          >
+            {option.description}
+          </div>
         )}
       </div>
     </div>
   );
 
   const renderOptionItem = (option: AutoCompleteOption, index: number) => {
-    const selected = multiple ? isSelected(option) : focusedIndex === index;
+    const active = activeIndex === index;
+    const selected = multiple ? isSelected(option) : active;
     return (
       <div
         key={option.value}
-        className={classNames(styles.optionItem, {
-          [styles.disabled]: option.disabled,
-          [styles.highlight]: option.highlight,
-          [styles.active]: hoveredIndex === index || focusedIndex === index,
-          [styles.selected]: multiple && selected,
-        })}
+        className={classNames(
+          styles.optionItem,
+          {
+            [styles.disabled]: option.disabled,
+            [styles.highlight]: option.highlight,
+            [styles.active]: hoveredIndex === index || active,
+            [styles.selected]: multiple && selected,
+          },
+          "ui-autocomplete-item",
+        )}
         style={option.style}
         role="option"
+        // Focus stays in the input (aria-activedescendant); -1 keeps the
+        // option out of the tab order while making it programmatically
+        // focusable.
+        tabIndex={-1}
         id={`${listboxId}-option-${index}`}
         aria-selected={selected}
         aria-disabled={option.disabled || undefined}
+        data-active={active || undefined}
         // keep focus (and the open dropdown) in the input while clicking
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => handleOptionClick(option)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          e.preventDefault();
+          handleOptionClick(option);
+        }}
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(-1)}
       >
@@ -315,12 +418,31 @@ const AutoComplete = ({
   };
 
   return (
-    <div ref={setContainer} className={styles.autoComplete}>
+    <div
+      ref={setContainer}
+      className={classNames(
+        styles.autoComplete,
+        "ui-autocomplete-root",
+        className,
+      )}
+      data-open={shown || undefined}
+      onCompositionStart={() => {
+        composing.current = true;
+      }}
+      onCompositionEnd={() => {
+        composing.current = false;
+      }}
+    >
       {renderTags()}
       <TextField
         {...textFieldProps}
-        label={label}
-        name={name}
+        id={field.id}
+        disabled={field.disabled}
+        readOnly={field.readOnly}
+        label={label ?? ""}
+        // name / label are optional here (e.g. a search box labelled by
+        // textFieldProps.ariaLabel); TextField tolerates them being absent.
+        name={name as string}
         ref={setInputRef}
         value={inputValue}
         onChange={handleInputChange}
@@ -349,7 +471,7 @@ const AutoComplete = ({
         {...popperProps}
         ref={setDropdown}
         anchorEl={container}
-        visible={visible}
+        visible={shown}
         placement={PLACEMENT[placement]}
         offset={offset}
       >
@@ -363,46 +485,79 @@ const AutoComplete = ({
             } as React.CSSProperties
           }
         >
-          {loading ? (
-            <div className={styles.loading}>
-              <ProgressIndicator />
-            </div>
-          ) : processedOptions.length > 0 ? (
-            <div
-              className={styles.optionList}
-              role="listbox"
-              id={listboxId}
-              aria-label={label}
-              aria-multiselectable={multiple || undefined}
-            >
-              {groupedOptions
-                ? groupedOptions.map(([group, groupOptions]) => (
-                    <div
-                      key={group}
-                      className={styles.optionGroup}
-                      role="group"
-                      aria-label={group}
-                    >
-                      <div className={styles.groupLabel} aria-hidden="true">
-                        {group}
-                      </div>
-                      {groupOptions.map((option) =>
-                        renderOptionItem(
-                          option,
-                          navigableOptions.indexOf(option),
-                        ),
-                      )}
-                    </div>
-                  ))
-                : processedOptions.map((option, index) =>
-                    renderOptionItem(option, index),
-                  )}
-            </div>
-          ) : (
-            <div className={styles.empty}>
-              {renderEmpty?.() || <Empty {...emptyProps} />}
-            </div>
-          )}
+          {/* While open the listbox always exists (aria-controls target);
+              loading / empty states are presentational rows inside it. */}
+          <div
+            className={classNames(styles.optionList, "ui-autocomplete-list")}
+            role="listbox"
+            id={listboxId}
+            aria-label={label}
+            aria-multiselectable={multiple || undefined}
+            aria-busy={loading || undefined}
+          >
+            {loading && !appendLoading ? (
+              <div
+                role="presentation"
+                className={classNames(
+                  styles.loading,
+                  "ui-autocomplete-loading",
+                )}
+              >
+                <ProgressIndicator />
+              </div>
+            ) : processedOptions.length > 0 ? (
+              <>
+                {groupedOptions
+                  ? groupedOptions.map(([group, groupOptions], groupIndex) =>
+                      group === "" ? (
+                        // ungrouped options: no heading
+                        <React.Fragment key={`${groupIndex}-`}>
+                          {groupOptions.map((option) =>
+                            renderOptionItem(
+                              option,
+                              navigableOptions.indexOf(option),
+                            ),
+                          )}
+                        </React.Fragment>
+                      ) : (
+                        <div
+                          key={`${groupIndex}-${group}`}
+                          className={styles.optionGroup}
+                          role="group"
+                          aria-label={group}
+                        >
+                          <div
+                            className={classNames(
+                              styles.groupLabel,
+                              "ui-autocomplete-group",
+                            )}
+                            aria-hidden="true"
+                          >
+                            {group}
+                          </div>
+                          {groupOptions.map((option) =>
+                            renderOptionItem(
+                              option,
+                              navigableOptions.indexOf(option),
+                            ),
+                          )}
+                        </div>
+                      ),
+                    )
+                  : processedOptions.map((option, index) =>
+                      renderOptionItem(option, index),
+                    )}
+              </>
+            ) : appendLoading ? null : (
+              <div
+                role="presentation"
+                className={classNames(styles.empty, "ui-autocomplete-empty")}
+              >
+                {renderEmpty?.() || <Empty {...emptyProps} />}
+              </div>
+            )}
+          </div>
+          {appendLoading && loadingRow}
         </div>
       </Popper>
     </div>

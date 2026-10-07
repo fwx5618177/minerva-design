@@ -3,17 +3,24 @@
   "description": "Les hooks de bas niveau utilisés par ConfigProvider : gérez vous-même le thème, la langue et les traductions de lib-core.",
   "reference": {
     "title": "Référence",
-    "text": "Tous les hooks sont exportés par @minerva/lib-core.",
+    "text": "Tous les hooks et utilitaires sont exportés depuis @minerva/lib-core.",
     "hook": "Hook",
     "signature": "Signature",
     "useAutoTheme": "Conserve le thème actif dans un état et l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma actuel du système.",
     "useLocale": "Conserve la locale dans un état et change la langue des textes intégrés de lib-core (en, zh ou fr). Renvoie la locale et son setter.",
     "useI18n": "Renvoie t et l'instance i18next utilisée par lib-core. C'est une instance privée : la configuration i18next de votre application n'est jamais affectée.",
+    "useDisclosure": "État ouvert / fermé des overlays (Modal, Drawer, Popover...), contrôlé (isOpen + onChange) ou non contrôlé (defaultIsOpen). Renvoie isOpen et des callbacks stables onOpen, onClose et onToggle.",
+    "useDialogFocusReturn": "Retour du focus pour les dialogues ouverts depuis un état, sans Trigger Radix. Mémorise l'élément qui avait le focus avant l'ouverture et le lui rend après la fermeture. Passez open, contentRef et onCloseAutoFocus au dialogue.",
+    "cn": "Concatène des noms de classes en ignorant les valeurs falsy (false, null, undefined, 0, chaînes vides). Une petite alternative sans dépendance à classnames pour les classes conditionnelles.",
     "global": "useAutoTheme et useLocale modifient un état global (variables CSS sur <html>, langue de lib-core). Les démos ci-dessous partent des réglages actuels du site et les rétablissent au démontage."
   },
   "standalone": {
     "title": "Utiliser les hooks sans ConfigProvider",
     "text": "ConfigProvider n'est qu'une fine couche autour de useAutoTheme et useLocale. Si vous n'avez pas besoin de useConfig(), appelez directement les hooks, à la place d'un provider et non à l'intérieur."
+  },
+  "focusReturn": {
+    "title": "Rendre le focus après un dialogue",
+    "text": "Les dialogues Radix rendent le focus à leur Trigger à la fermeture. Un dialogue ouvert depuis un état (un élément de menu, un raccourci clavier, une ligne de tableau) n'a pas de Trigger : le focus retomberait sur <body>. useDialogFocusReturn mémorise l'élément qui avait le focus avant l'ouverture et le restaure à la fermeture :"
   },
   "demos": {
     "use-auto-theme": {
@@ -23,6 +30,10 @@
     "use-locale": {
       "title": "useLocale et useI18n",
       "description": "setLocale change la langue de lib-core ; t() de useI18n renvoie les textes intégrés de lib-core dans cette langue."
+    },
+    "use-disclosure": {
+      "title": "useDisclosure et cn",
+      "description": "useDisclosure pilote un panneau avec onToggle, onOpen et onClose ; cn construit son nom de classe à partir de parties conditionnelles."
     }
   }
 }

@@ -20,11 +20,12 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 
 ## ✨ 特性
 
-- **React 组件**：30+ 个组件，基于 React 19（`ref` 作为普通 prop；入口带 `"use client"`，可用于 React Server Components）
+- **React 组件**：100+ 个组件，基于 React 19（`ref` 作为普通 prop；客户端入口带 `"use client"`，可用于 React Server Components）
 - **Web Components**：基于 Lit 的自定义元素，可在任意框架中使用，也可不依赖框架
 - **ESM + CommonJS**：同时提供两种模块格式
 - **TypeScript**：自带类型定义
-- **主题**：支持 light、dark、`github-dark` 或自定义主题，基于 CSS 自定义属性实现；默认跟随系统配色
+- **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`@minerva/lib-core/theme-utils`，服务端安全）
+- **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`/compat`（与 `@novel-isr/ui` 完全兼容的 API）、`style.css`、`compat.css`、`prose.scss`
 - **国际化**：内置英文、中文和法文语言包
 
 ## 📦 包
@@ -37,14 +38,17 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 
 ### 组件（`@minerva/lib-core`）
 
-| 分类     | 组件                                                                                                                                                                                          |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 通用     | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                               |
-| 布局     | `Space`、`Divider`                                                                                                                                                                            |
-| 数据录入 | `TextField`、`AutoComplete`、`Cascader`、`Checkbox`、`Radio`、`RadioGroup`、`Switch`、`TimePicker`                                                                                            |
-| 数据展示 | `Avatar`、`AvatarGroup`、`Badge`、`Card`（`CardHeader`、`CardTitle`、`CardDescription`、`CardContent`、`CardFooter`）、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Pagination`、`VirtualList` |
-| 反馈     | `Alert`、`message` / `useMessage`、`ProgressIndicator`、`Skeleton`                                                                                                                            |
-| 浮层     | `Dropdown`、`Popper`、`Tooltip`                                                                                                                                                               |
+| 分类     | 组件                                                                                                                                                                                                                                                                                                                              |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 主题     | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                                    |
+| 通用     | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                                                                                                                                                                   |
+| 布局     | `Box`、`Stack` / `HStack` / `VStack`、`Space`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（含子组件）、`Divider`、`VirtualList`                                                                                                             |
+| 表单     | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`TextField`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
+| 数据展示 | `Avatar` / `AvatarGroup`、`Badge`、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Table` / `DataTable`（含子组件）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                                          |
+| 反馈     | `Alert`、`message` / `useMessage`、`toast` / `ToastProvider`、`ProgressIndicator`、`Spinner`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                         |
+| 浮层     | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Popper`、`Menu` / `ContextMenu`、`Dropdown`                                                                                                                                                                                         |
+| 导航     | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                              |
+| 编辑器   | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                                  |
 
 除组件外，`@minerva/lib-core` 还导出 `ConfigProvider`、`useConfig`，Hooks `useAutoTheme`、`useLocale`、`useI18n`，工具函数 `applyThemeStyles`、`generateCSSVariables`，以及内置主题集合 `themes`（`light`、`dark`、`github-dark`）。
 
@@ -152,6 +156,12 @@ export function Root() {
 ```
 
 传入 `theme="github-dark"`（或 `"light"` / `"dark"`）即可直接使用内置主题。
+
+### 主题、配色与 SSR
+
+服务端组件中用 `@minerva/lib-core/theme-utils` 的 `parseThemeCookies` 读取 cookie，并在 `<head>` 中内联 `THEME_INIT_SCRIPT`，再用 `ThemeProvider`（`defaultTheme` / `defaultPalette`）包裹应用即可避免首屏闪烁。详见文档站「主题与配色」页面。
+
+从 `@novel-isr/ui` 迁移？参见 [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md)：`@minerva/lib-core/compat` 提供完全相同的 API。
 
 ### Message API
 

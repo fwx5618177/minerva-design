@@ -20,11 +20,12 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ## ✨ 特徴
 
-- **React コンポーネント**：React 19 対応の 30 以上のコンポーネント（`ref` は通常の prop、エントリーは `"use client"` 付きで React Server Components から利用可能）
+- **React コンポーネント**：React 19 対応の 100 以上のコンポーネント（`ref` は通常の prop、クライアント用エントリーは `"use client"` 付き）
 - **Web Components**：Lit ベースのカスタム要素。任意のフレームワーク、またはフレームワークなしで利用可能
 - **ESM + CommonJS**：両方のモジュール形式を提供
 - **TypeScript**：型定義を同梱
-- **テーマ**：light、dark、`github-dark`、または独自テーマに対応。CSS カスタムプロパティで実現し、デフォルトではシステムのカラースキームに追従
+- **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
+- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`/compat`（`@novel-isr/ui` 互換 API）、`style.css`、`compat.css`、`prose.scss`
 - **国際化**：英語・中国語・フランス語のロケールを内蔵
 
 ## 📦 パッケージ
@@ -37,14 +38,17 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ### コンポーネント（`@minerva/lib-core`）
 
-| カテゴリ       | コンポーネント                                                                                                                                                                                |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 汎用           | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                               |
-| レイアウト     | `Space`、`Divider`                                                                                                                                                                            |
-| データ入力     | `TextField`、`AutoComplete`、`Cascader`、`Checkbox`、`Radio`、`RadioGroup`、`Switch`、`TimePicker`                                                                                            |
-| データ表示     | `Avatar`、`AvatarGroup`、`Badge`、`Card`（`CardHeader`、`CardTitle`、`CardDescription`、`CardContent`、`CardFooter`）、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Pagination`、`VirtualList` |
-| フィードバック | `Alert`、`message` / `useMessage`、`ProgressIndicator`、`Skeleton`                                                                                                                            |
-| オーバーレイ   | `Dropdown`、`Popper`、`Tooltip`                                                                                                                                                               |
+| カテゴリ       | コンポーネント                                                                                                                                                                                                                                                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| テーマ         | `ConfigProvider`、`ThemeProvider` / `useTheme`、`ThemeToggle`、`PaletteToggle`                                                                                                                                                                                                                                                    |
+| 汎用           | `Button`、`IconButton`、`InteractiveIconButton`、`SearchButton`                                                                                                                                                                                                                                                                   |
+| レイアウト     | `Box`、`Stack` / `HStack` / `VStack`、`Space`、`ResponsiveGrid` / `GridItem`、`SplitLayout`、`Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`、`AppShell`、`Card`（サブコンポーネント含む）、`Divider`、`VirtualList`                                                                                               |
+| フォーム       | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`、`FormLayout`、`Input`、`TextField`、`Textarea`、`NumberInput`、`JsonField`、`KeyValueEditor`、`TagInput`、`AutoComplete`、`Select`、`Cascader`、`Checkbox`、`Radio` / `RadioGroup`、`Switch`、`TimePicker`、`Rating` / `RatingScale`、`Upload` |
+| データ表示     | `Avatar` / `AvatarGroup`、`Badge`、`Chip`、`Tag`、`Empty`、`StatusIndicator`、`Table` / `DataTable`（サブコンポーネント含む）、`DescriptionList`、`List` / `ListItem`、`TextLink`、`CodeBlock`、`Prose`、`HtmlPreview`、`MonthCalendar`、`Tooltip` / `TooltipProvider`                                                            |
+| フィードバック | `Alert`、`message` / `useMessage`、`toast` / `ToastProvider`、`ProgressIndicator`、`Spinner`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                         |
+| オーバーレイ   | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Popper`、`Menu` / `ContextMenu`、`Dropdown`                                                                                                                                                                                         |
+| ナビゲーション | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                              |
+| エディター     | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                                  |
 
 コンポーネントのほかに、`@minerva/lib-core` は `ConfigProvider`、`useConfig`、フック `useAutoTheme`・`useLocale`・`useI18n`、ユーティリティ `applyThemeStyles`・`generateCSSVariables`、および組み込みテーマ集 `themes`（`light`、`dark`、`github-dark`）をエクスポートしています。
 
@@ -152,6 +156,12 @@ export function Root() {
 ```
 
 組み込みテーマをそのまま使う場合は `theme="github-dark"`（または `"light"` / `"dark"`）を指定します。
+
+### テーマ・パレットと SSR
+
+サーバーコンポーネントで `@minerva/lib-core/theme-utils` の `parseThemeCookies` を使って cookie を読み、`<head>` に `THEME_INIT_SCRIPT` をインライン化し、`ThemeProvider`（`defaultTheme` / `defaultPalette`）でアプリを包むと、初回表示のちらつきを防げます。詳しくはドキュメントサイトの「テーマとパレット」ページを参照してください。
+
+`@novel-isr/ui` から移行する場合は [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md) を参照してください。`@minerva/lib-core/compat` が同一の API を提供します。
 
 ### Message API
 

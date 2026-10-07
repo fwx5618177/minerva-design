@@ -1,0 +1,138 @@
+// Every visible line is drawn with box-shadow (inset 1px as border + outer
+// focus halo) so rounded corners stay crisp: a real border and a box-shadow
+// rasterize differently and leave 1px notches at the corners at 1x DPR.
+.root {
+  --input-border: var(--ui-input-border, var(--border-color));
+  --input-focus-ring: var(--ui-input-focus-ring, color-mix(in srgb, var(--primary-color) 16%, transparent));
+  --input-focus-ring-width: var(--ui-input-focus-ring-width, 3px);
+  --input-pad-x: var(--space-3);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  background-color: var(--surface-color);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 0 1px var(--input-border);
+  color: var(--text-color);
+  transition:
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+
+  &:hover:not(.disabled) {
+    --input-border: var(--primary-color);
+  }
+
+  &:focus-within {
+    --input-border: var(--primary-color);
+    box-shadow:
+      inset 0 0 0 1px var(--input-border),
+      0 0 0 var(--input-focus-ring-width) var(--input-focus-ring);
+  }
+}
+
+.small {
+  min-height: 2rem;
+  font-size: var(--font-size-sm);
+}
+
+.medium {
+  min-height: 2.5rem;
+  font-size: var(--font-size-md);
+}
+
+.large {
+  min-height: 3rem;
+  font-size: var(--font-size-lg);
+  --input-pad-x: var(--space-4);
+}
+
+.outline {
+  // the base style
+  min-width: 0;
+}
+
+.filled {
+  --input-border: transparent;
+  background-color: var(--surface-muted-color);
+
+  &:focus-within {
+    background-color: var(--surface-color);
+  }
+}
+
+.unstyled {
+  --input-border: transparent;
+  background: transparent;
+  box-shadow: none;
+
+  &:hover:not(.disabled) {
+    --input-border: transparent;
+  }
+
+  &:focus-within {
+    box-shadow: none;
+  }
+}
+
+.invalid {
+  --input-border: var(--danger-color);
+
+  &:hover:not(.disabled) {
+    --input-border: var(--danger-color);
+  }
+
+  &:focus-within {
+    --input-border: var(--danger-color);
+    box-shadow:
+      inset 0 0 0 1px var(--input-border),
+      0 0 0 var(--input-focus-ring-width) color-mix(in srgb, var(--danger-color) 16%, transparent);
+  }
+}
+
+.disabled {
+  background-color: var(--surface-subtle-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.field {
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 var(--input-pad-x);
+  font: inherit;
+  color: inherit;
+
+  &::placeholder {
+    color: var(--text-muted-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.addon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 var(--space-3);
+  color: var(--text-secondary-color);
+  pointer-events: none;
+  font-size: 1em;
+}
+
+.start + .field {
+  padding-left: 0;
+}
+
+.field:has(+ .end) {
+  padding-right: 0;
+}

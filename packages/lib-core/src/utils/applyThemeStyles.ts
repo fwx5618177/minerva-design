@@ -39,11 +39,11 @@ export const resolveTheme = (
   theme: Theme,
   systemTheme: DefaultTheme = getSystemTheme(),
 ): ComponentTheme | ThemeMap => {
-  if (theme === "auto") return themes[systemTheme];
+  if (theme === "auto" || theme === "system") return themes[systemTheme];
   if (typeof theme === "string") {
     if (!isThemeName(theme)) {
       throw new Error(
-        `Unsupported theme "${theme}", expected one of: auto, ${Object.keys(themes).join(", ")}`,
+        `Unsupported theme "${theme}", expected one of: auto, system, ${Object.keys(themes).join(", ")}`,
       );
     }
     return themes[theme];

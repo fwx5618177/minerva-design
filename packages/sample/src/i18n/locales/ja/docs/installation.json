@@ -3,7 +3,7 @@
   "description": "React プロジェクトに Minerva を追加し、スタイルシートを読み込み、必要に応じて Web Components を登録します。",
   "requirements": {
     "title": "動作要件",
-    "react": "React と React DOM 18 以上（@minerva/lib-core の peer 依存）。",
+    "react": "React と React DOM 19 以上（@minerva/lib-core の peer 依存）。",
     "bundler": "ES モジュールと CSS のインポートを扱えるバンドラー（Vite、webpack、Rspack、Next.js など）。CommonJS ビルドも同梱しています。",
     "browsers": "モダンなエバーグリーンブラウザ：テーマトークンは CSS カスタムプロパティと color-mix() を使用します。"
   },
@@ -15,7 +15,13 @@
   "styles": {
     "title": "スタイルシートの読み込み",
     "text": "コンポーネントのスタイルとデフォルトのテーマトークンは 1 つの CSS ファイルにまとめられています。アプリのエントリーファイルで一度だけ読み込んでください：",
-    "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。読み込みは一度で十分です。複数のモジュールから読み込んでも問題はありませんが不要です。"
+    "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。読み込みは一度で十分です。複数のモジュールから読み込んでも問題はありませんが不要です。",
+    "extras": "同じ場所に任意のスタイルシートが 2 つ公開されています。@minerva/lib-core/compat.css は compat エントリ向けに @novel-isr/ui の --ui-* トークンレイヤーとユーティリティを追加し、@minerva/lib-core/prose.scss は長文タイポグラフィ用の mixin を含む Sass ファイルで、独自の Sass から @use で読み込みます。"
+  },
+  "optional": {
+    "title": "任意のエントリとピア依存",
+    "text": "Monaco ベースのコードエディターは別エントリ @minerva/lib-core/monaco として公開されているため、メインエントリが Monaco を読み込むことはありません。ピア依存の @monaco-editor/react と monaco-editor は任意で、そのエントリをインポートする場合にのみインストールしてください。",
+    "rsc": "Next.js などの React Server Components フレームワークを使っていますか？どのエントリがクライアント境界かは Server Components のページを参照してください。"
   },
   "app": {
     "title": "最初のコンポーネント",

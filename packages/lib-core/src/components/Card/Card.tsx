@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "../../utils/cn";
 import type {
   CardProps,
   CardHeaderProps,
@@ -6,57 +7,107 @@ import type {
   CardDescriptionProps,
   CardContentProps,
   CardFooterProps,
+  CardPadding,
+  CardVariant,
 } from "./types";
 import styles from "./card.module.scss";
 
+/** Stable `ui-card-*` hook names (shared with @novel-isr/ui) */
+const HOOK_PADDING: Record<CardPadding, string> = {
+  none: "none",
+  small: "sm",
+  medium: "md",
+  large: "lg",
+};
+const hookVariant = (variant: CardVariant) =>
+  variant === "outlined" ? "outline" : variant;
+
+/** Module + hook classes of a section padding override */
+const sectionPadding = (padding: CardPadding | undefined) =>
+  padding && [
+    styles[`pad-${padding}`],
+    `ui-card-padding-${HOOK_PADDING[padding]}`,
+  ];
+
+const colorStyle = (
+  bgColor: string | undefined,
+  textColor: string | undefined,
+  style: React.CSSProperties | undefined,
+): React.CSSProperties => ({
+  backgroundColor: bgColor,
+  color: textColor,
+  ...style,
+});
+
 /**
- * Card component
- * @param children - The content of the card
- * @param variant - The style of the card (default, outlined, shadow, elevated, filled)
- * @param type - The type of the card (default, noHeader, noFooter, noHeaderFooter)
- * @param className - Additional classes to be added to the card
- * @param ref - Ref to the root <div> element
- * @returns A card component
+ * Card: a content container composed of CardHeader, CardContent and CardFooter.
+ * `padding` switches to the padded layout (the card pads itself), `interactive`
+ * adds hover / focus feedback and `as` changes the root element (e.g. a link).
  */
 export const Card = ({
   children,
   variant = "default",
   type = "default",
+  padding,
+  interactive = false,
+  as,
+  htmlType,
   className = "",
   ref,
+  ...rest
 }: CardProps) => {
-  const cardClasses = `${styles.card} ${styles[variant]} ${styles[type]} ${className}`;
+  const Tag: React.ElementType = as ?? "div";
+  const pad = sectionPadding(padding);
   return (
-    <div ref={ref} className={cardClasses}>
+    <Tag
+      ref={ref}
+      type={Tag === "button" ? (htmlType ?? "button") : undefined}
+      className={cn(
+        styles.card,
+        styles[variant],
+        styles[type],
+        padding && styles.padded,
+        pad && pad[0],
+        interactive && styles.interactive,
+        "ui-card",
+        `ui-card-variant-${hookVariant(variant)}`,
+        pad && pad[1],
+        interactive && "ui-card-interactive",
+        className,
+      )}
+      {...rest}
+    >
       {children}
-    </div>
+    </Tag>
   );
 };
 
 /**
- * CardHeader component
- * @param children - The content of the card header
- * @param className - Additional classes to be added to the card header
- * @param bgColor - Background color of the card header
- * @param textColor - Text color of the card header
- * @returns A card header component
+ * CardHeader: top section, usually holding CardTitle and CardDescription.
  */
 export const CardHeader = ({
   children,
   className = "",
   bgColor,
   textColor,
+  padding,
+  style,
   ref,
+  ...rest
 }: CardHeaderProps) => {
-  const headerStyle = {
-    backgroundColor: bgColor,
-    color: textColor,
-  };
+  const pad = sectionPadding(padding);
   return (
     <div
       ref={ref}
-      className={`${styles.cardHeader} ${className}`}
-      style={headerStyle}
+      className={cn(
+        styles.cardHeader,
+        pad && pad[0],
+        "ui-card-header",
+        pad && pad[1],
+        className,
+      )}
+      style={colorStyle(bgColor, textColor, style)}
+      {...rest}
     >
       {children}
     </div>
@@ -64,49 +115,48 @@ export const CardHeader = ({
 };
 
 /**
- * CardTitle component
- * @param children - The content of the card title
- * @param className - Additional classes to be added to the card title
- * @returns A card title component
+ * CardTitle: heading of the card (h3 by default).
  */
 export const CardTitle = ({
   children,
+  as: Heading = "h3",
   className = "",
   ref,
+  ...rest
 }: CardTitleProps) => {
   return (
-    <h3 ref={ref} className={`${styles.cardTitle} ${className}`}>
+    <Heading
+      ref={ref}
+      className={cn(styles.cardTitle, "ui-card-title", className)}
+      {...rest}
+    >
       {children}
-    </h3>
+    </Heading>
   );
 };
 
 /**
- * CardDescription component
- * @param children - The content of the card description
- * @param className - Additional classes to be added to the card description
- * @returns A card description component
+ * CardDescription: secondary text shown below the title.
  */
 export const CardDescription = ({
   children,
   className = "",
   ref,
+  ...rest
 }: CardDescriptionProps) => {
   return (
-    <p ref={ref} className={`${styles.cardDescription} ${className}`}>
+    <p
+      ref={ref}
+      className={cn(styles.cardDescription, "ui-card-description", className)}
+      {...rest}
+    >
       {children}
     </p>
   );
 };
 
 /**
- * CardContent component
- * @param children - The content of the card content
- * @param className - Additional classes to be added to the card content
- * @param bgColor - Background color of the card content
- * @param textColor - Text color of the card content
- * @param animation - Animation effect for the card content
- * @returns A card content component
+ * CardContent: main body of the card.
  */
 export const CardContent = ({
   children,
@@ -114,44 +164,57 @@ export const CardContent = ({
   bgColor,
   textColor,
   animation,
+  padding,
+  style,
   ref,
+  ...rest
 }: CardContentProps) => {
-  const contentStyle = {
-    backgroundColor: bgColor,
-    color: textColor,
-  };
-  const contentClasses = `${styles.cardContent} ${animation ? styles[animation] : ""} ${className}`;
+  const pad = sectionPadding(padding);
   return (
-    <div ref={ref} className={contentClasses} style={contentStyle}>
+    <div
+      ref={ref}
+      className={cn(
+        styles.cardContent,
+        animation && styles[animation],
+        pad && pad[0],
+        "ui-card-body",
+        pad && pad[1],
+        className,
+      )}
+      style={colorStyle(bgColor, textColor, style)}
+      {...rest}
+    >
       {children}
     </div>
   );
 };
 
 /**
- * CardFooter component
- * @param children - The content of the card footer
- * @param className - Additional classes to be added to the card footer
- * @param bgColor - Background color of the card footer
- * @param textColor - Text color of the card footer
- * @returns A card footer component
+ * CardFooter: bottom section, e.g. for actions.
  */
 export const CardFooter = ({
   children,
   className = "",
   bgColor,
   textColor,
+  padding,
+  style,
   ref,
+  ...rest
 }: CardFooterProps) => {
-  const footerStyle = {
-    backgroundColor: bgColor,
-    color: textColor,
-  };
+  const pad = sectionPadding(padding);
   return (
     <div
       ref={ref}
-      className={`${styles.cardFooter} ${className}`}
-      style={footerStyle}
+      className={cn(
+        styles.cardFooter,
+        pad && pad[0],
+        "ui-card-footer",
+        pad && pad[1],
+        className,
+      )}
+      style={colorStyle(bgColor, textColor, style)}
+      {...rest}
     >
       {children}
     </div>

@@ -41,6 +41,10 @@
     "responsive": {
       "title": "Responsive",
       "description": "responsive adapts the layout on small screens."
+    },
+    "compact": {
+      "title": "Compact page list and counter",
+      "description": "siblingCount / boundaryCount switch to a compact list with non-interactive gaps; hideNumbers shows a \"current / total\" counter and hideEdges removes prev / next."
     }
   },
   "api": {
@@ -58,7 +62,7 @@
       "itemRender": "Custom rendering of the page, prev/next and jump items",
       "className": "Additional class name",
       "style": "Inline styles",
-      "showTotal": "Shows the total number of items",
+      "showTotal": "Shows the total number of items; a function renders it (same signature as totalRender)",
       "totalRender": "Custom rendering of the total; range is the [first, last] item index of the current page",
       "size": "Pagination size",
       "shape": "Shape of the page items",
@@ -67,7 +71,12 @@
       "responsive": "Adapts the layout to small screens",
       "icons": "Custom icons for the prev, next and jump items; omitted ones keep the default icon",
       "ref": "Ref to the root <nav> element",
-      "labels": "Texts of the component (accessible labels of the buttons, quick jumper and size changer); omitted entries use the localized defaults"
+      "labels": "Texts of the component (accessible labels of the buttons, quick jumper and size changer); omitted entries use the localized defaults",
+      "siblingCount": "Number of pages shown on each side of the current page. Setting it (or boundaryCount) switches to the compact layout with non-interactive \"…\" gaps",
+      "boundaryCount": "Number of pages always shown at the start and the end of the compact page list",
+      "hideEdges": "Hides the prev / next buttons",
+      "hideNumbers": "Replaces the page buttons with a read-only \"current / total\" counter (announced politely), keeping prev / next",
+      "sizeChangerVariant": "Control of the page size selector (showSizeChanger): a native <select>, or Minerva's Select popup (a combobox button opening a listbox)"
     },
     "PaginationLabels": {
       "prev": "Accessible label of the previous-page button",
@@ -80,7 +89,8 @@
       "pageSize": "Accessible label of the page size select",
       "pageSizeOption": "Returns the text of a page size option",
       "currentPage": "Accessible label of the page input in simple mode",
-      "nav": "Accessible label of the navigation landmark"
+      "nav": "Accessible label of the navigation landmark",
+      "total": "Text of the total (when showTotal is true and there is no totalRender)"
     }
   },
   "a11y": {

@@ -209,23 +209,27 @@
 
 // Variant roles: accent used by the checked thumb and (translucent) track.
 .primary {
-  --switch-accent: var(--primary-color);
+  --switch-accent: var(--ui-switch-active-color, var(--primary-color));
 }
 
 .secondary {
-  --switch-accent: var(--secondary-color);
+  --switch-accent: var(--ui-switch-active-color, var(--secondary-color));
 }
 
 .success {
-  --switch-accent: var(--success-color);
+  --switch-accent: var(--ui-switch-active-color, var(--success-color));
 }
 
 .warning {
-  --switch-accent: var(--warning-color);
+  --switch-accent: var(--ui-switch-active-color, var(--warning-color));
+}
+
+.info {
+  --switch-accent: var(--ui-switch-active-color, var(--info-color));
 }
 
 .error {
-  --switch-accent: var(--danger-color);
+  --switch-accent: var(--ui-switch-active-color, var(--danger-color));
 }
 
 .icon {
@@ -274,4 +278,118 @@
   &:not(.checked) .track {
     background-color: var(--border-color);
   }
+}
+
+// Bilateral labels: [off] [slider] [on]; the active side is highlighted.
+.bilateral {
+  gap: var(--space-3);
+}
+
+.side {
+  background: transparent;
+  border: none;
+  padding: 2px var(--space-1);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted-color);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    color: var(--text-color);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--switch-accent, var(--primary-color));
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.sideActive {
+  color: var(--switch-accent, var(--primary-color));
+  font-weight: var(--font-weight-semibold);
+}
+
+// Segmented: two buttons sharing one pill; the active half is filled.
+.segmented {
+  position: relative;
+  display: inline-flex;
+  background: var(--surface-muted-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  user-select: none;
+  vertical-align: middle;
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segment {
+  background: transparent;
+  border: none;
+  padding: 4px var(--space-3);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary-color);
+  border-radius: calc(var(--radius-md) - 2px);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  white-space: nowrap;
+
+  &:hover:not(:disabled):not(.segmentActive) {
+    color: var(--text-color);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--switch-accent, var(--primary-color));
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.segmentActive {
+  background-color: var(--switch-accent, var(--primary-color));
+  color: var(--text-inverse-color);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-sm);
+}
+
+.segmented.small .segment {
+  padding: 2px var(--space-2);
+  font-size: 12px;
+}
+
+.segmented.large .segment {
+  padding: 6px var(--space-4);
+  font-size: 16px;
 }

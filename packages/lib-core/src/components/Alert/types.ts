@@ -1,10 +1,14 @@
-import type { Ref } from "react";
+import type { HTMLAttributes, Ref } from "react";
 
-export type AlertVariant = "info" | "success" | "warning" | "error";
+/** Semantic variant of an Alert (`danger` is an alias of `error`) */
+export type AlertVariant = "info" | "success" | "warning" | "error" | "danger";
 export type AlertSize = "small" | "medium" | "large";
 export type AlertType = "default" | "outlined" | "filled";
 
-export interface AlertProps {
+export interface AlertProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title" | "children"
+> {
   /** Alert title */
   title?: React.ReactNode;
   /** Alert content */
@@ -117,6 +121,12 @@ export interface AlertProps {
    * @default "{variant} icon", e.g. "info icon" (localized)
    */
   iconLabel?: string;
+  /**
+   * ARIA role of the alert. Errors and warnings interrupt ("alert"), info
+   * and success are polite ("status")
+   * @default "alert" for error / warning, "status" otherwise
+   */
+  role?: React.AriaRole;
   /** Ref to the root <div> element */
   ref?: Ref<HTMLDivElement>;
 }

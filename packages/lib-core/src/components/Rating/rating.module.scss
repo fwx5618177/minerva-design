@@ -1,0 +1,120 @@
+// Stars use the accent color so they read as the same brand signal as CTAs;
+// consumers can recolor them with --ui-rating-color.
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ui-rating-color, var(--accent-color));
+  font-family: var(--font-family-sans);
+  vertical-align: middle;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 1px;
+  line-height: 0;
+}
+
+.star {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.empty {
+  color: var(--border-strong-color);
+}
+
+.half {
+  position: relative;
+}
+
+.halfBase {
+  position: absolute;
+  inset: 0;
+  color: var(--border-strong-color);
+}
+
+.halfFill {
+  position: absolute;
+  inset: 0;
+}
+
+// Interactive: the whole rating is the focus target (role="slider").
+.interactive {
+  outline: none;
+  border-radius: var(--radius-sm);
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+}
+
+.starButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;
+  transition: transform var(--transition-fast);
+
+  &:hover {
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starButton:hover {
+    transform: none;
+  }
+}
+
+.value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+
+  strong {
+    font-weight: var(--font-weight-semibold);
+    color: var(--warning-color-text);
+  }
+
+  .small & {
+    font-size: var(--font-size-xs);
+  }
+
+  .large & {
+    font-size: var(--font-size-md);
+  }
+}
+
+.count {
+  color: var(--text-muted-color);
+  font-size: var(--font-size-xs);
+}
+
+// RatingScale
+.scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-family: var(--font-family-sans);
+}
+
+.scaleRow {
+  display: grid;
+  grid-template-columns: minmax(64px, auto) 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.scaleLabel {
+  color: var(--text-secondary-color);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import classNames from "classnames";
 import { IoChevronForward } from "react-icons/io5";
 import type { CascaderPanelProps, CascaderOption } from "./types";
@@ -24,6 +24,8 @@ const CascaderPanel = ({
 }: CascaderPanelProps) => {
   const { t } = useI18n();
   const panelRef = useRef<HTMLDivElement>(null);
+  const idPrefix = useId();
+  const columnId = (level: number) => `${idPrefix}-column-${level}`;
   // Column that should receive focus once rendered (keyboard expansion; the
   // column of a lazily loaded option appears later). -1 = deepest column,
   // used when the panel is opened from the keyboard.
@@ -126,6 +128,7 @@ const CascaderPanel = ({
       {columns.map((columnOptions, level) => (
         <ul
           key={level}
+          id={columnId(level)}
           data-level={level}
           className={styles.column}
           role="listbox"
@@ -154,7 +157,13 @@ const CascaderPanel = ({
                 aria-selected={isSelected}
                 aria-disabled={option.disabled || undefined}
                 aria-busy={option.loading || undefined}
-                aria-expanded={expandable ? isExpanded : undefined}
+                // `option` does not support aria-expanded: point the expanded
+                // option at the column listing its children instead.
+                aria-controls={
+                  isExpanded && level + 1 < columns.length
+                    ? columnId(level + 1)
+                    : undefined
+                }
                 tabIndex={option.disabled ? -1 : 0}
                 onKeyDown={(e) => handleKeyDown(e, option, level)}
                 onClick={() => {

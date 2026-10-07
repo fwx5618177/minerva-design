@@ -20,11 +20,12 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 
 ## ✨ Features
 
-- **React components**: 30+ components for React 19 (`ref` as a regular prop, `"use client"` entry for React Server Components)
+- **React components**: 100+ components for React 19 (`ref` as a regular prop, `"use client"` entries for React Server Components)
 - **Web Components**: Lit-based custom elements that work with any framework, or none
 - **ESM + CommonJS**: both module formats are shipped
 - **TypeScript**: type definitions are included
-- **Theming**: light, dark, `github-dark` or your own theme, driven by CSS custom properties; follows the system color scheme by default
+- **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
+- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `/compat` (drop-in `@novel-isr/ui` API), `style.css`, `compat.css`, `prose.scss`
 - **i18n**: built-in locales for English, Chinese and French
 
 ## 📦 Packages
@@ -37,14 +38,17 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 
 ### Components (`@minerva/lib-core`)
 
-| Category     | Components                                                                                                                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| General      | `Button`, `IconButton`, `InteractiveIconButton`, `SearchButton`                                                                                                                              |
-| Layout       | `Space`, `Divider`                                                                                                                                                                           |
-| Data entry   | `TextField`, `AutoComplete`, `Cascader`, `Checkbox`, `Radio`, `RadioGroup`, `Switch`, `TimePicker`                                                                                           |
-| Data display | `Avatar`, `AvatarGroup`, `Badge`, `Card` (`CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`), `Chip`, `Tag`, `Empty`, `StatusIndicator`, `Pagination`, `VirtualList` |
-| Feedback     | `Alert`, `message` / `useMessage`, `ProgressIndicator`, `Skeleton`                                                                                                                           |
-| Overlay      | `Dropdown`, `Popper`, `Tooltip`                                                                                                                                                              |
+| Category     | Components                                                                                                                                                                                                                                                                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theming      | `ConfigProvider`, `ThemeProvider` / `useTheme`, `ThemeToggle`, `PaletteToggle`                                                                                                                                                                                                                                                    |
+| General      | `Button`, `IconButton`, `InteractiveIconButton`, `SearchButton`                                                                                                                                                                                                                                                                   |
+| Layout       | `Box`, `Stack` / `HStack` / `VStack`, `Space`, `ResponsiveGrid` / `GridItem`, `SplitLayout`, `Page` / `PageHeader` / `PageSection` / `StatCard` / `Toolbar`, `AppShell`, `Card` (+ parts), `Divider`, `VirtualList`                                                                                                               |
+| Forms        | `FormControl` / `FormField` / `FormLabel` / `FormHelperText` / `FormErrorMessage`, `FormLayout`, `Input`, `TextField`, `Textarea`, `NumberInput`, `JsonField`, `KeyValueEditor`, `TagInput`, `AutoComplete`, `Select`, `Cascader`, `Checkbox`, `Radio` / `RadioGroup`, `Switch`, `TimePicker`, `Rating` / `RatingScale`, `Upload` |
+| Data display | `Avatar` / `AvatarGroup`, `Badge`, `Chip`, `Tag`, `Empty`, `StatusIndicator`, `Table` / `DataTable` (+ parts), `DescriptionList`, `List` / `ListItem`, `TextLink`, `CodeBlock`, `Prose`, `HtmlPreview`, `MonthCalendar`, `Tooltip` / `TooltipProvider`                                                                            |
+| Feedback     | `Alert`, `message` / `useMessage`, `toast` / `ToastProvider`, `ProgressIndicator`, `Spinner`, `Skeleton` / `SkeletonText`, `LoadingState`                                                                                                                                                                                         |
+| Overlays     | `Modal`, `Drawer`, `ConfirmDialog` / `confirm()` / `useConfirm`, `CommandDialog`, `Popover`, `Popper`, `Menu` / `ContextMenu`, `Dropdown`                                                                                                                                                                                         |
+| Navigation   | `Tabs`, `PageTabs`, `NavTree`, `Pagination`, `Steps`                                                                                                                                                                                                                                                                              |
+| Editors      | `MonacoCodeEditor` (`@minerva/lib-core/monaco`)                                                                                                                                                                                                                                                                                   |
 
 Besides components, `@minerva/lib-core` exports `ConfigProvider`, `useConfig`, the hooks `useAutoTheme`, `useLocale` and `useI18n`, the utilities `applyThemeStyles` and `generateCSSVariables`, and the built-in `themes` map (`light`, `dark`, `github-dark`).
 
@@ -152,6 +156,38 @@ export function Root() {
 ```
 
 Pass `theme="github-dark"` (or `"light"` / `"dark"`) to use a built-in theme as-is.
+
+### Theme, palette and SSR
+
+```tsx
+// app/layout.tsx (React Server Component)
+import {
+  THEME_INIT_SCRIPT,
+  parseThemeCookies,
+} from "@minerva/lib-core/theme-utils";
+import { ThemeProvider } from "@minerva/lib-core";
+
+export default async function Layout({ children }) {
+  const { theme, palette } = parseThemeCookies((await headers()).get("cookie"));
+  return (
+    <html suppressHydrationWarning>
+      <head>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
+      </head>
+      <body>
+        <ThemeProvider defaultTheme={theme} defaultPalette={palette}>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+Migrating from `@novel-isr/ui`? See [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md): `@minerva/lib-core/compat` exposes its exact API.
 
 ### Message API
 

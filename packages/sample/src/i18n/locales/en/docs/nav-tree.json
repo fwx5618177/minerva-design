@@ -1,0 +1,60 @@
+{
+  "title": "NavTree",
+  "description": "Sidebar navigation with sections, expandable branches, an active item and a compact icon-only mode. Arrow keys move between items and open or close branches.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Branches containing the active item open automatically; collapsing one is remembered. Items can have icons, descriptions and trailing content."
+    },
+    "collapsed": {
+      "title": "Compact mode and wrapping",
+      "description": "collapsed shows icons only; wrapLabels wraps long labels instead of truncating them."
+    },
+    "custom-link": {
+      "title": "Router links",
+      "description": "renderLink renders leaf items with your router's link; keep state.className on it. Expanded branches can be controlled."
+    }
+  },
+  "api": {
+    "NavTreeProps": {
+      "sections": "Sections of items",
+      "activeId": "Id of the active (current page) item; its ancestors expand",
+      "collapsed": "Compact mode: icons only",
+      "wrapLabels": "Wraps long labels and descriptions instead of truncating them",
+      "defaultExpandedIds": "Initially expanded branch ids (uncontrolled)",
+      "expandedIds": "Expanded branch ids (controlled; pair with onExpandedChange)",
+      "onExpandedChange": "Called with the expanded branch ids when a branch is toggled",
+      "onItemSelect": "Called when a leaf link or a branch is activated",
+      "renderLink": "Custom rendering of leaf links (e.g. a router Link); put state.className on it",
+      "className": "Additional class name",
+      "style": "Inline styles",
+      "ariaLabel": "Accessible name of the <nav> landmark",
+      "ref": "Ref to the <nav> element"
+    },
+    "NavTreeSection": {
+      "id": "Unique id of the section",
+      "title": "Optional section heading",
+      "items": "Items of the section"
+    },
+    "NavTreeItem": {
+      "id": "Unique id (matched against activeId / expanded ids)",
+      "label": "Visible label",
+      "description": "Secondary line under the label (hidden for nested items)",
+      "href": "Link target of a leaf item",
+      "icon": "Leading icon",
+      "endContent": "Trailing content, e.g. a badge or a count",
+      "disabled": "Disables the item",
+      "children": "Child items; the item becomes an expandable branch"
+    },
+    "NavTreeItemState": {
+      "active": "The item is the active one",
+      "ancestorActive": "A descendant of the item is active",
+      "expanded": "The branch is expanded",
+      "depth": "Nesting depth (0 for top-level items)",
+      "collapsed": "The tree is in compact mode",
+      "hasChildren": "The item has children",
+      "disabled": "The item is disabled",
+      "className": "Class names to put on the rendered link"
+    }
+  }
+}

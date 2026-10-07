@@ -1,0 +1,60 @@
+{
+  "title": "导航树",
+  "description": "侧边栏导航：分组、可展开分支、当前项高亮以及仅图标的紧凑模式。方向键可在项目间移动并展开或收起分支。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "包含当前项的分支会自动展开，手动收起后会被记住。项目可带图标、描述和尾部内容。"
+    },
+    "collapsed": {
+      "title": "紧凑模式与换行",
+      "description": "collapsed 仅显示图标；wrapLabels 让长标签换行而非截断。"
+    },
+    "custom-link": {
+      "title": "路由链接",
+      "description": "renderLink 用路由的链接组件渲染叶子项，并保留 state.className。展开状态可受控。"
+    }
+  },
+  "api": {
+    "NavTreeProps": {
+      "sections": "项目分组",
+      "activeId": "当前项（当前页）的 id，其祖先分支会展开",
+      "collapsed": "紧凑模式：仅显示图标",
+      "wrapLabels": "长标签和描述换行而非截断",
+      "defaultExpandedIds": "初始展开的分支 id（非受控）",
+      "expandedIds": "展开的分支 id（受控，配合 onExpandedChange）",
+      "onExpandedChange": "切换分支时以展开的 id 调用",
+      "onItemSelect": "激活叶子链接或分支时调用",
+      "renderLink": "自定义叶子链接渲染（如路由 Link），需带上 state.className",
+      "className": "额外的类名",
+      "style": "内联样式",
+      "ariaLabel": "<nav> 地标的无障碍名称",
+      "ref": "<nav> 元素的 ref"
+    },
+    "NavTreeSection": {
+      "id": "分组的唯一 id",
+      "title": "可选的分组标题",
+      "items": "分组中的项目"
+    },
+    "NavTreeItem": {
+      "id": "唯一 id（与 activeId / 展开 id 匹配）",
+      "label": "可见标签",
+      "description": "标签下方的次要文本（嵌套项不显示）",
+      "href": "叶子项的链接地址",
+      "icon": "前置图标",
+      "endContent": "尾部内容，如徽标或计数",
+      "disabled": "禁用该项",
+      "children": "子项目，使该项成为可展开分支"
+    },
+    "NavTreeItemState": {
+      "active": "该项为当前项",
+      "ancestorActive": "该项的某个后代为当前项",
+      "expanded": "分支已展开",
+      "depth": "嵌套深度（顶层为 0）",
+      "collapsed": "导航树处于紧凑模式",
+      "hasChildren": "该项有子项",
+      "disabled": "该项已禁用",
+      "className": "需加到渲染链接上的类名"
+    }
+  }
+}

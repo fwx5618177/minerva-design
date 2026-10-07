@@ -1,0 +1,38 @@
+{
+  "title": "Confirm",
+  "description": "Asks the user to confirm an action: a themed replacement for window.confirm. Use the declarative ConfirmDialog or await confirm() from anywhere; with a ConfirmProvider the dialog renders inside your app tree, without one a standalone host is mounted on demand, and on the server confirm() resolves false.",
+  "demos": {
+    "imperative": {
+      "title": "Imperative confirm()",
+      "description": "await confirm({...}) resolves true when confirmed and false when cancelled (button, Escape or backdrop). No provider needed."
+    },
+    "provider": {
+      "title": "With ConfirmProvider",
+      "description": "useConfirm() returns the provider's confirm, so dialogs share your app's context. Concurrent requests are shown one at a time."
+    },
+    "declarative": {
+      "title": "Declarative ConfirmDialog",
+      "description": "Controlled dialog; loading shows a spinner and locks cancel while onConfirm runs."
+    }
+  },
+  "api": {
+    "ConfirmDialogProps": {
+      "open": "Whether the dialog is open (controlled)",
+      "onOpenChange": "Called with false when the user cancels (cancel button, close, Escape, backdrop click)",
+      "onConfirm": "Called when the confirm button is pressed; the dialog does not close by itself"
+    },
+    "ConfirmOptions": {
+      "title": "Title (the dialog's accessible name)",
+      "description": "Explanation below the title (accessible description)",
+      "confirmLabel": "Label of the confirm button; defaults to \"Confirm\", or \"Delete\" for intent=\"danger\"",
+      "cancelLabel": "Label of the cancel button; defaults to the localized \"Cancel\"",
+      "closeLabel": "Accessible label of the close (×) button; defaults to the localized \"Close\"",
+      "intent": "Tone of the confirm button: primary, danger (destructive) or warning",
+      "loading": "Shows a spinner on the confirm button and disables cancel",
+      "confirmDisabled": "Natively disables the confirm button (removes it from the tab order); with loading alone it stays focusable but cannot be activated again"
+    },
+    "ConfirmProviderProps": {
+      "children": "Application subtree; useConfirm() / confirm() render their dialogs here"
+    }
+  }
+}

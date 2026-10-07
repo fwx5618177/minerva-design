@@ -17,6 +17,10 @@
     "group": {
       "title": "Avatar group",
       "description": "Wrap avatars in AvatarGroup and use stacked for overlapping; count shows how many more people there are."
+    },
+    "fallback": {
+      "title": "Fallbacks, sizes and max",
+      "description": "Initials use the first letters of two words (or the first CJK character); fallback or children replace them. size also accepts pixels, and AvatarGroup max collapses the rest into +N."
     }
   },
   "api": {
@@ -24,17 +28,22 @@
       "src": "Image URL. When omitted, the first letter of name is shown",
       "name": "Name of the person; used for the initial, alt text and accessible label",
       "shape": "Avatar shape",
-      "size": "Avatar size",
+      "size": "Avatar size: a preset (xsmall 24px, small 32px, medium 48px, large 64px, xlarge 80px, xxlarge 96px) or a number of pixels",
       "className": "Additional class name",
       "stacked": "Uses tighter margins for overlapping avatars",
-      "ref": "Ref to the root <span> element"
+      "ref": "Ref to the root <span> element",
+      "alt": "Alternative text of the image; pass \"\" for a decorative avatar",
+      "ariaLabel": "Accessible label of the avatar (and default alt text of its image)",
+      "fallback": "Custom fallback content shown instead of the initials when there is no image",
+      "children": "Fallback content used when there is no name (e.g. an icon)"
     },
     "AvatarGroupProps": {
       "count": "Number of additional avatars, shown as a \"+N\" indicator",
       "className": "Additional class name",
       "children": "Avatar elements",
       "ref": "Ref to the root <div> element",
-      "ariaLabel": "Accessible label of the group"
+      "ariaLabel": "Accessible label of the group",
+      "max": "Maximum number of avatars to display; the others are counted in the \"+N\" indicator (added to count)"
     }
   }
 }

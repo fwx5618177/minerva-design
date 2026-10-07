@@ -3,7 +3,7 @@ import type { Ref } from "react";
 export interface TextFieldProps {
   /** Name of the input; also used as its id (unless id is set) to link the label */
   name: string;
-  /** Id of the input; defaults to name */
+  /** Id of the input; defaults to the surrounding FormControl id, then to name */
   id?: string;
   /**
    * Floating label. Hidden when a placeholder is set or the field is
@@ -74,10 +74,20 @@ export interface TextFieldProps {
    */
   width?: string;
   /**
-   * Disables the field
+   * Disables the field (also set by a surrounding FormControl)
    * @default false
    */
   disabled?: boolean;
+  /**
+   * Error state without a message (also set by an invalid FormControl); sets aria-invalid
+   * @default false
+   */
+  invalid?: boolean;
+  /**
+   * Marks the input as required (native required; a FormControl adds aria-required)
+   * @default false
+   */
+  required?: boolean;
   /** Accessible label of the input (defaults to label) */
   ariaLabel?: string;
   /**
@@ -96,7 +106,7 @@ export interface TextFieldProps {
    */
   hidePasswordLabel?: string;
   /**
-   * Makes the field read-only
+   * Makes the field read-only (also set by a surrounding FormControl)
    * @default false
    */
   readOnly?: boolean;
@@ -119,4 +129,26 @@ export interface TextFieldProps {
   className?: string;
   /** Ref to the underlying <input> element */
   ref?: Ref<HTMLInputElement>;
+  /**
+   * Extra native attributes / handlers for the <input> (e.g.
+   * onCompositionStart, aria-describedby, autoComplete). Props managed by
+   * TextField win; aria-describedby is merged with the field's own ids
+   */
+  inputProps?: Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    | "value"
+    | "defaultValue"
+    | "onChange"
+    | "type"
+    | "id"
+    | "name"
+    | "disabled"
+    | "readOnly"
+    | "placeholder"
+    | "onFocus"
+    | "onBlur"
+    | "onKeyDown"
+    | "className"
+    | "style"
+  >;
 }

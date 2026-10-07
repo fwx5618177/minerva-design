@@ -1,11 +1,14 @@
-import type { Ref } from "react";
+import type { HTMLAttributes, Ref } from "react";
 
 export type SkeletonVariant =
   "text" | "circular" | "rectangular" | "rounded" | "button" | "image" | "card";
 
 export type SkeletonAnimation = "pulse" | "wave" | "false";
 
-export interface SkeletonProps {
+export interface SkeletonProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "children" | "title" | "style" | "className"
+> {
   /**
    * Shape of the placeholder
    * @default "text"
@@ -16,6 +19,19 @@ export interface SkeletonProps {
    * @default "pulse"
    */
   animation?: SkeletonAnimation;
+  /**
+   * Renders one bare decorative placeholder (`<span aria-hidden>`) instead of
+   * the announced loading region. Use it to compose your own skeleton layout
+   * inside a container that already exposes the busy state
+   * @default false
+   */
+  decorative?: boolean;
+  /**
+   * Edge length of a decorative circular placeholder (numbers are pixels);
+   * wins over width/height
+   * @default 32
+   */
+  size?: number | string;
   /** Width of each line (numbers are pixels) */
   width?: number | string;
   /** Height of each line (numbers are pixels) */
@@ -73,6 +89,42 @@ export interface SkeletonProps {
    * @default "Loading" (localized)
    */
   ariaLabel?: string;
-  /** Ref to the root <div> element; only attached while loading (children are rendered as-is otherwise) */
+  /**
+   * Ref to the root element (<div>, or the <span> when decorative); only
+   * attached while loading (children are rendered as-is otherwise)
+   */
+  ref?: Ref<HTMLElement>;
+}
+
+export interface SkeletonTextProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
+  /**
+   * Number of text lines
+   * @default 3
+   */
+  lines?: number;
+  /**
+   * Height of each line (numbers are pixels)
+   * @default "1em"
+   */
+  lineHeight?: number | string;
+  /**
+   * Space between lines: a spacing-scale step (2 -> var(--space-2)) or any CSS length
+   * @default 2
+   */
+  gap?: number | string;
+  /**
+   * Shrinks the last line to 70% width so the block reads like real text
+   * @default true
+   */
+  shrinkLast?: boolean;
+  /**
+   * Loading animation; "false" disables it
+   * @default "pulse"
+   */
+  animation?: SkeletonAnimation;
+  /** Ref to the root <div> element */
   ref?: Ref<HTMLDivElement>;
 }

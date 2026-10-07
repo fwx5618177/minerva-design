@@ -1,0 +1,41 @@
+{
+  "title": "Toast トースト",
+  "description": "タイトル、説明、ステータスを持つ一時的な通知です。toast() でどこからでも表示でき（React コンテキスト不要）、アプリのツリー内の ToastProvider が描画します。message と異なり、トーストはアプリのコンテキスト（テーマ、ロケール）を引き継ぎ、既存の id で表示すると置き換わります。サーバーレンダリングにも対応します。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "ルート付近に ToastProvider を 1 つ配置し（このデモがこのページで使うものを配置しています）、toast.success / error / warning / info を呼び出します。"
+    },
+    "options": {
+      "title": "オプション",
+      "description": "toast({ status, title, description, duration }) で細かく制御できます。duration が 0 の場合は閉じるまで表示されます。toast.dismiss(id) で 1 件、toast.dismiss() ですべて閉じます。ホバーまたはフォーカス中はタイマーが一時停止します。"
+    },
+    "dedupe": {
+      "title": "同じ id は置き換え",
+      "description": "表示中のトーストと同じ id で表示すると、重複して積み重ねずに置き換えてタイマーを再開します（ポーリングのエラーに便利）。useToast は同じ toast 関数を返します。"
+    }
+  },
+  "api": {
+    "ToastOptions": {
+      "id": "トーストの識別子。省略すると自動生成されます。表示中のトーストと同じ id で表示すると、重複せずに置き換わり（タイマーも再開）ます",
+      "status": "トーストのステータス",
+      "title": "メインテキスト",
+      "description": "タイトルの下の補足テキスト",
+      "duration": "自動的に閉じるまでのミリ秒数。0 の場合は開いたままです"
+    },
+    "ToastProviderProps": {
+      "position": "トーストを積み重ねる位置",
+      "children": "アプリの内容。トーストのビューポートはその後に描画されます",
+      "pauseOnHover": "トーストのホバー中またはフォーカス中は自動クローズのタイマーを一時停止します",
+      "ariaLabel": "トースト領域のアクセシブルなラベル",
+      "closeLabel": "閉じるボタンのアクセシブルなラベル"
+    },
+    "ToastApi": {
+      "info": "指定したタイトルで情報トーストを表示します",
+      "success": "指定したタイトルで成功トーストを表示します",
+      "warning": "指定したタイトルで警告トーストを表示します",
+      "error": "指定したタイトルで危険トーストを表示します",
+      "dismiss": "指定した id のトーストを閉じます。省略するとすべて閉じます"
+    }
+  }
+}

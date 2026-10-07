@@ -17,6 +17,10 @@
     "group": {
       "title": "Groupe d'avatars",
       "description": "Placez les avatars dans un AvatarGroup et utilisez stacked pour les superposer ; count indique le nombre de personnes restantes."
+    },
+    "fallback": {
+      "title": "Repli, tailles et max",
+      "description": "Les initiales reprennent la première lettre de deux mots (ou le premier caractère CJK) ; fallback ou children les remplacent. size accepte aussi des pixels et max d’AvatarGroup regroupe le reste en +N."
     }
   },
   "api": {
@@ -24,17 +28,22 @@
       "src": "URL de l'image. Si absente, la première lettre de name est affichée",
       "name": "Nom de la personne ; sert pour l'initiale, le texte alternatif et le libellé accessible",
       "shape": "Forme de l'avatar",
-      "size": "Taille de l'avatar",
+      "size": "Taille de l’avatar : un préréglage (xsmall 24px, small 32px, medium 48px, large 64px, xlarge 80px, xxlarge 96px) ou un nombre de pixels",
       "className": "Classe CSS supplémentaire",
       "stacked": "Réduit les marges pour superposer les avatars",
-      "ref": "Ref vers l’élément racine <span>"
+      "ref": "Ref vers l’élément racine <span>",
+      "alt": "Texte alternatif de l’image ; passez \"\" pour un avatar décoratif",
+      "ariaLabel": "Libellé accessible de l’avatar (et texte alternatif par défaut de son image)",
+      "fallback": "Contenu de repli affiché à la place des initiales quand il n’y a pas d’image",
+      "children": "Contenu de repli utilisé sans name (par ex. une icône)"
     },
     "AvatarGroupProps": {
       "count": "Nombre d'avatars supplémentaires, affiché sous la forme « +N »",
       "className": "Classe CSS supplémentaire",
       "children": "Éléments Avatar",
       "ref": "Ref vers l’élément racine <div>",
-      "ariaLabel": "Libellé accessible du groupe"
+      "ariaLabel": "Libellé accessible du groupe",
+      "max": "Nombre maximal d’avatars affichés ; les autres sont comptés dans l’indicateur « +N » (ajoutés à count)"
     }
   }
 }

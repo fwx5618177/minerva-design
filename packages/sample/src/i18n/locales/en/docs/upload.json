@@ -1,0 +1,51 @@
+{
+  "title": "Upload",
+  "description": "Selects files by button or drag and drop, validates them and lists them with their transfer state. The transfer itself stays in your code.",
+  "demos": {
+    "basic": {
+      "title": "Single file",
+      "description": "onFilesSelected receives files that pass accept and maxSize; reflect the transfer in value. replace lets a new file replace the current one."
+    },
+    "multiple": {
+      "title": "Multiple files",
+      "description": "multiple with maxCount; failed items show their error and a retry button when onRetry is set."
+    }
+  },
+  "api": {
+    "UploadProps": {
+      "label": "Visible label of the upload field (also names the file input)",
+      "value": "Files to list, with their transfer state (controlled)",
+      "onFilesSelected": "Called with the selected (or dropped) files once they pass accept, maxSize and maxCount. Transfer, cancellation and persisted URLs belong to the caller",
+      "onRemove": "Called to remove a file; shows a remove button on every item",
+      "onRetry": "Called to retry a failed file; shows a retry button on failed items",
+      "accept": "Accepted file types, as for <input accept>",
+      "multiple": "Allows selecting several files",
+      "replace": "Single-file mode: lets a new file replace the listed one (the existing file does not count toward maxCount)",
+      "maxCount": "Maximum number of files, including the listed ones",
+      "maxSize": "Maximum size of a file, in bytes",
+      "loading": "Busy state: blocks new selections and retries (removal stays possible) and sets aria-busy",
+      "disabled": "Disables selection, retry and removal",
+      "labels": "Custom texts; each one overrides the localized default",
+      "className": "Additional class name",
+      "ref": "Ref to the root element"
+    },
+    "UploadItem": {
+      "id": "Stable identifier of the file",
+      "name": "File name shown in the list",
+      "status": "Transfer state of the file",
+      "error": "Error message shown when status is \"error\"",
+      "previewUrl": "Image preview URL (e.g. an object URL)"
+    },
+    "UploadLabels": {
+      "select": "Text of the select button",
+      "uploading": "Status text of an uploading file",
+      "done": "Status text of an uploaded file",
+      "failed": "Status text of a failed file without its own error message",
+      "tooMany": "Error shown when too many files are selected",
+      "invalidType": "Error shown when a file does not match accept",
+      "tooLarge": "Error shown when a file exceeds maxSize",
+      "retry": "Accessible label of the retry button of a file",
+      "remove": "Accessible label of the remove button of a file"
+    }
+  }
+}

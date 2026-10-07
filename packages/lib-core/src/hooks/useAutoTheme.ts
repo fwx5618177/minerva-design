@@ -38,7 +38,8 @@ const useAutoTheme = (initialTheme: Theme = "auto") => {
     setTheme(initialTheme);
   }
 
-  const followsSystem = theme === "auto" || isBilingualTheme(theme);
+  const followsSystem =
+    theme === "auto" || theme === "system" || isBilingualTheme(theme);
   const systemTheme = useSyncExternalStore<DefaultTheme>(
     followsSystem ? subscribeToScheme : subscribeNever,
     getSystemTheme,

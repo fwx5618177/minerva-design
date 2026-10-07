@@ -1,5 +1,9 @@
 import type { Ref } from "react";
 
+/** Active (checked) color of a Checkbox */
+export type CheckboxColor =
+  "primary" | "success" | "info" | "warning" | "danger";
+
 export interface CheckboxProps {
   /** Checked state (controlled) */
   checked?: boolean;
@@ -9,7 +13,8 @@ export interface CheckboxProps {
    */
   defaultChecked?: boolean;
   /**
-   * Disables the checkbox
+   * Disables the checkbox. Inherited from an enclosing FormControl when not
+   * set; an explicit `false` overrides the FormControl
    * @default false
    */
   disabled?: boolean;
@@ -36,8 +41,22 @@ export interface CheckboxProps {
    * @default "medium"
    */
   size?: "small" | "medium" | "large";
-  /** Label text */
-  label?: string;
+  /** Label content */
+  label?: React.ReactNode;
+  /** Label content (alternative to `label`; used when `label` is not set) */
+  children?: React.ReactNode;
+  /**
+   * Color of the checked / indeterminate box (the
+   * `--ui-checkbox-active-color` custom property overrides it)
+   * @default "primary"
+   */
+  color?: CheckboxColor;
+  /** id of the input (defaults to the enclosing FormControl's id) */
+  id?: string;
+  /** Value submitted with the form when checked */
+  value?: string;
+  /** Extra ids of elements describing the checkbox (aria-describedby) */
+  ariaDescribedBy?: string;
   /** Accessible label, required when there is no visible label */
   ariaLabel?: string;
   /**
@@ -54,12 +73,12 @@ export interface CheckboxProps {
   /** Custom icon shown when checked */
   icon?: React.ReactNode;
   /**
-   * Marks the input as required
+   * Marks the input as required (inherited from an enclosing FormControl)
    * @default false
    */
   required?: boolean;
   /**
-   * Shows the error state
+   * Shows the error state (also set by an invalid enclosing FormControl)
    * @default false
    */
   error?: boolean;

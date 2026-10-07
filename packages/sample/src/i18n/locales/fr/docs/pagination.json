@@ -41,6 +41,10 @@
     "responsive": {
       "title": "Adaptatif",
       "description": "responsive adapte la mise en page sur les petits écrans."
+    },
+    "compact": {
+      "title": "Liste compacte et compteur",
+      "description": "siblingCount / boundaryCount passent à une liste compacte avec des ellipses non interactives ; hideNumbers affiche un compteur « actuelle / total » et hideEdges masque précédent / suivant."
     }
   },
   "api": {
@@ -58,7 +62,7 @@
       "itemRender": "Rendu personnalisé des pages, des boutons précédent/suivant et des sauts",
       "className": "Nom de classe supplémentaire",
       "style": "Styles en ligne",
-      "showTotal": "Affiche le nombre total d'éléments",
+      "showTotal": "Affiche le nombre total d’éléments ; une fonction le rend (même signature que totalRender)",
       "totalRender": "Rendu personnalisé du total ; range correspond aux index [premier, dernier] des éléments de la page courante",
       "size": "Taille de la pagination",
       "shape": "Forme des éléments de page",
@@ -67,7 +71,12 @@
       "responsive": "Adapte la mise en page aux petits écrans",
       "icons": "Icônes personnalisées des boutons précédent, suivant et de saut ; celles omises gardent l’icône par défaut",
       "ref": "Ref vers l’élément racine <nav>",
-      "labels": "Textes du composant (libellés accessibles des boutons, du saut rapide et du sélecteur de taille) ; les entrées omises utilisent les valeurs par défaut localisées"
+      "labels": "Textes du composant (libellés accessibles des boutons, du saut rapide et du sélecteur de taille) ; les entrées omises utilisent les valeurs par défaut localisées",
+      "siblingCount": "Nombre de pages de chaque côté de la page courante. Le définir (ou boundaryCount) active la disposition compacte avec des « … » non interactifs",
+      "boundaryCount": "Nombre de pages toujours affichées au début et à la fin de la liste compacte",
+      "hideEdges": "Masque les boutons précédent / suivant",
+      "hideNumbers": "Remplace les boutons de page par un compteur « actuelle / total » en lecture seule (annoncé poliment), en gardant précédent / suivant",
+      "sizeChangerVariant": "Contrôle du sélecteur de taille de page (showSizeChanger) : un <select> natif ou la fenêtre Select de Minerva (un bouton combobox ouvrant une listbox)"
     },
     "PaginationLabels": {
       "prev": "Libellé accessible du bouton page précédente",
@@ -80,7 +89,8 @@
       "pageSize": "Libellé accessible du sélecteur de taille de page",
       "pageSizeOption": "Renvoie le texte d'une option de taille de page",
       "currentPage": "Libellé accessible du champ de page en mode simple",
-      "nav": "Libellé accessible du repère de navigation"
+      "nav": "Libellé accessible du repère de navigation",
+      "total": "Texte du total (quand showTotal vaut true sans totalRender)"
     }
   },
   "a11y": {

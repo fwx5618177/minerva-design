@@ -1,0 +1,51 @@
+{
+  "title": "Upload 上传",
+  "description": "通过按钮或拖放选择文件，进行校验，并列出文件及其传输状态。实际传输由你的代码负责。",
+  "demos": {
+    "basic": {
+      "title": "单个文件",
+      "description": "onFilesSelected 接收通过 accept 与 maxSize 校验的文件；在 value 中反映传输状态。replace 允许新文件替换当前文件。"
+    },
+    "multiple": {
+      "title": "多个文件",
+      "description": "multiple 配合 maxCount；失败的文件显示错误信息，并在设置 onRetry 时显示重试按钮。"
+    }
+  },
+  "api": {
+    "UploadProps": {
+      "label": "上传字段的可见标签（也作为文件输入框的名称）",
+      "value": "要列出的文件及其传输状态（受控）",
+      "onFilesSelected": "选择（或拖放）的文件通过 accept、maxSize 与 maxCount 校验后调用。传输、取消与持久化 URL 由调用方负责",
+      "onRemove": "移除文件时调用；每个文件显示移除按钮",
+      "onRetry": "重试失败文件时调用；失败的文件显示重试按钮",
+      "accept": "接受的文件类型，同 <input accept>",
+      "multiple": "允许选择多个文件",
+      "replace": "单文件模式：允许新文件替换已列出的文件（已有文件不计入 maxCount）",
+      "maxCount": "文件数量上限（含已列出的文件）",
+      "maxSize": "单个文件的大小上限（字节）",
+      "loading": "忙碌状态：阻止新的选择与重试（仍可移除），并设置 aria-busy",
+      "disabled": "禁用选择、重试与移除",
+      "labels": "自定义文案；每一项覆盖本地化的默认值",
+      "className": "额外的类名",
+      "ref": "根元素的 ref"
+    },
+    "UploadItem": {
+      "id": "文件的稳定标识",
+      "name": "列表中显示的文件名",
+      "status": "文件的传输状态",
+      "error": "status 为 \"error\" 时显示的错误信息",
+      "previewUrl": "图片预览 URL（例如 object URL）"
+    },
+    "UploadLabels": {
+      "select": "选择按钮的文字",
+      "uploading": "上传中文件的状态文字",
+      "done": "已上传文件的状态文字",
+      "failed": "失败且无自身错误信息的文件的状态文字",
+      "tooMany": "选择文件过多时显示的错误",
+      "invalidType": "文件不符合 accept 时显示的错误",
+      "tooLarge": "文件超过 maxSize 时显示的错误",
+      "retry": "文件重试按钮的无障碍名称",
+      "remove": "文件移除按钮的无障碍名称"
+    }
+  }
+}

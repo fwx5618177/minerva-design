@@ -7,6 +7,11 @@
     "dynamic": "どちらのプロパティもリアクティブです。state に保持すれば、実行時にテーマや言語をユーザーが切り替えられます。",
     "global": "テーマと言語はグローバルです。Provider は <html> に CSS 変数を書き込み、lib-core の i18next の言語を変更します。そのため入れ子の ConfigProvider は子要素だけでなくページ全体のテーマを変えます。特定の領域だけテーマを変えたい場合は、ラッパー要素に CSS 変数を設定してください（カスタムテーマの例を参照）。"
   },
+  "palette": {
+    "title": "パレット、永続化、コールバック",
+    "text": "palette は light、dark、system テーマの上に配色パレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）を重ねます。persist はテーマとパレットの変更を theme と palette の Cookie に保存し、ハイドレーション後に復元します。onThemeChange と onPaletteChange は setTheme と setPalette が値を変更した後に呼ばれます。",
+    "setters": "useConfig() は mode、resolvedMode、palette と、setTheme、setPalette のセッターも返すので、state を持ち上げなくてもどのコンポーネントからでもテーマを切り替えられます。サーバーレンダリング、Cookie、ちらつき防止の初期化スクリプトについては次のページを参照してください："
+  },
   "demos": {
     "use-config": {
       "title": "設定の読み取り",
@@ -19,18 +24,31 @@
     "locale": {
       "title": "ロケール",
       "description": "locale プロパティは lib-core 内蔵テキストの言語（en、zh、fr）を設定します。言語はグローバルなので、このデモはアンマウント時に英語へ戻します。"
+    },
+    "palette": {
+      "title": "パレット",
+      "description": "サイトの現在のモードで 4 つのパレットを並べてプレビューします。各カードに data-palette と data-theme を指定しています。palette プロパティを使うと、同じ属性が <html> に付きます。"
     }
   },
   "api": {
     "ConfigContextProviderProps": {
-      "theme": "適用するテーマ：\"auto\"（prefers-color-scheme に追従）、内蔵テーマ名、テーマオブジェクト、または { light, dark } のペア。ドキュメントのルートに CSS 変数として適用されます。",
+      "theme": "適用するテーマ：\"auto\" またはその別名 \"system\"（prefers-color-scheme に従う）、組み込みテーマ名、テーマオブジェクト、{ light, dark } のペア。ドキュメントのルートに CSS 変数として適用されます。palette を指定した場合はパレットを通じて適用されます。",
+      "palette": "light、dark、system テーマとともに適用するパレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）。null の場合は Minerva のデフォルトの外観のままです。<html> に data-palette を設定し、パレットのトークンは style.css から供給されます。",
+      "persist": "テーマとパレットの変更を theme と palette の Cookie に保存し、ハイドレーション後に復元します（SSR では THEME_INIT_SCRIPT と組み合わせます）。",
+      "onThemeChange": "setTheme がテーマを変更した後に呼ばれます。",
+      "onPaletteChange": "setPalette がパレットを変更した後に呼ばれます。",
       "locale": "lib-core 内蔵テキストの言語（グローバルに変更されます）。",
       "children": "アプリケーションのコンテンツ。"
     },
     "ConfigContextProps": {
       "theme": "設定されたテーマ（\"auto\" や { light, dark } のペアの場合があります）。",
       "resolvedTheme": "\"auto\" や { light, dark } のペアを解決した後に実際に適用されているテーマ：内蔵テーマ名またはテーマオブジェクト。",
-      "locale": "lib-core 内蔵テキストの現在のロケール。"
+      "locale": "lib-core 内蔵テキストの現在のロケール。",
+      "mode": "テーマのカラーモード：light / dark テーマでは \"light\" / \"dark\"、\"auto\"、\"system\"、{ light, dark } のペアでは \"system\"、その他のテーマでは undefined。",
+      "resolvedMode": "適用されているカラーモード（<html> の data-theme）。判定できる場合のみ。",
+      "palette": "有効なパレット（<html> の data-palette）。null は Minerva のデフォルトの外観。",
+      "setTheme": "テーマを変更します（persist が有効なら theme Cookie に保存）。",
+      "setPalette": "パレットを変更します（persist が有効なら palette Cookie に保存）。"
     },
     "Locale": {
       "language": "lib-core 内蔵テキストの言語：\"en\"、\"zh\"、\"fr\"。"

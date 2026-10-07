@@ -12,7 +12,7 @@
     },
     "variants": {
       "title": "变体",
-      "description": "深色（默认）、浅色以及多种语义色变体。"
+      "description": "深色（默认，与主题形成对比）、浅色以及语义色；auto 跟随主题并使用磨砂表面，fixedDark / fixedLight 无论主题如何都保持固定颜色。"
     },
     "shapes": {
       "title": "形状",
@@ -41,6 +41,14 @@
     "events": {
       "title": "事件",
       "description": "onOpen 和 onClose 会在悬停、聚焦、失焦及按下 Escape 时触发。"
+    },
+    "as-child": {
+      "title": "asChild",
+      "description": "asChild 将提示直接挂到子元素上，不额外包裹元素，因此不会破坏 flex 和 grid 布局。contentClassName 用于设置提示的样式。"
+    },
+    "provider": {
+      "title": "TooltipProvider",
+      "description": "TooltipProvider 为内部的提示设置默认延迟；在提示之间快速移动时，下一个提示会立即打开。"
     }
   },
   "api": {
@@ -67,12 +75,21 @@
       "onClose": "因鼠标离开、失焦或按下 Escape 关闭提示时调用",
       "ariaLabel": "提示元素的无障碍标签",
       "ref": "提供 open / close / toggle 的命令式句柄",
-      "onOpenChange": "以请求的打开状态调用（悬停、聚焦、Escape、ref 方法）"
+      "onOpenChange": "以请求的打开状态调用（悬停、聚焦、Escape、ref 方法）",
+      "asChild": "将悬停 / 聚焦处理器、ref 和 className 直接挂到唯一的子元素上，而不是用 <div> 包裹（保持 flex 和 grid 布局）。子元素必须能接收 ref",
+      "contentClassName": "提示（浮层）元素的额外类名",
+      "contentRef": "指向提示（浮层）元素的 ref，在显示时设置"
     },
     "TooltipRef": {
       "open": "打开提示",
       "close": "关闭提示",
       "toggle": "切换提示的显示状态"
+    },
+    "TooltipProviderProps": {
+      "enterDelay": "内部未设置 enterDelay 的提示在悬停后显示前的默认延迟（毫秒）",
+      "leaveDelay": "内部未设置 leaveDelay 的提示在鼠标离开后隐藏前的默认延迟（毫秒）",
+      "skipDelay": "若该 provider 的另一个提示在此毫秒数内刚关闭，下一个提示将不等待进入延迟直接打开",
+      "children": "provider 的内容"
     }
   }
 }

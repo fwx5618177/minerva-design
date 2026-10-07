@@ -1,0 +1,83 @@
+{
+  "title": "表格",
+  "description": "展示数据行。常规场景用 Table（columns + data），自定义表头或合并单元格用 TableRoot 及其子组件，需要分页、加载与错误状态时用 DataTable。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "每列默认读取 row[key]，也可提供 render 函数。请为行提供稳定的 rowKey。"
+    },
+    "variants": {
+      "title": "变体与尺寸",
+      "description": "普通、斑马纹或带边框的行，三种密度（small / medium / large），可选悬停高亮。"
+    },
+    "fixed-columns": {
+      "title": "固定列与滚动",
+      "description": "scroll.x 设置最小宽度，scroll.y 限制高度并固定表头。固定列必须设置 width，并连续声明在开头（left）或末尾（right）；ellipsis 截断长文本。"
+    },
+    "states": {
+      "title": "加载与空状态",
+      "description": "loading 渲染骨架行（对辅助技术隐藏）；data 为空时渲染 emptyText。"
+    },
+    "data-table": {
+      "title": "DataTable",
+      "description": "在表格下方添加分页；设置 error 时以提示和重试按钮替换表格。行数据需预先分页。"
+    },
+    "compound": {
+      "title": "组合子组件",
+      "description": "TableRoot、TableHead、TableBody、TableRow、TableHeader 与 TableCell 渲染原生表格元素，可实现多行表头或合并单元格。"
+    },
+    "cell-content": {
+      "title": "单元格内容",
+      "description": "TableCellContent 限制宽度并换行长内容，可附带弱化的第二行或等宽主文本。"
+    }
+  },
+  "api": {
+    "TableProps": {
+      "columns": "列定义",
+      "data": "要渲染的行",
+      "rowKey": "从行中提取稳定的 key（默认为行索引）",
+      "emptyText": "data 为空时显示的单行内容",
+      "loading": "以骨架占位行替代数据",
+      "loadingRows": "加载时渲染的骨架行数"
+    },
+    "TableColumn": {
+      "key": "列的唯一 key，也是默认读取的行字段",
+      "header": "表头内容",
+      "render": "渲染单元格，默认为 row[key]",
+      "width": "列宽（数字为像素），同时作为 width 与 min-width；固定列必填",
+      "align": "表头与单元格的水平对齐",
+      "ellipsis": "单行截断并显示省略号",
+      "fixed": "水平滚动时将列固定在左侧或右侧"
+    },
+    "DataTableProps": {
+      "pagination": "表格下方分页的属性（行数据需预先分页）",
+      "error": "错误信息，以提示替换表格与分页",
+      "onRetry": "错误状态下重试按钮的回调",
+      "retryLabel": "重试按钮文本"
+    },
+    "TableRootProps": {
+      "size": "单元格密度",
+      "variant": "视觉样式：普通、斑马纹或带边框",
+      "hoverable": "悬停时高亮行",
+      "scroll": "滚动区域的最小宽度 / 最大高度",
+      "ref": "<table> 元素的 ref"
+    },
+    "TableScrollConfig": {
+      "x": "表格最小宽度，容器更窄时水平滚动",
+      "y": "最大可见高度，容器垂直滚动且表头固定"
+    },
+    "TableCellContentProps": {
+      "primary": "主内容",
+      "secondary": "主内容下方的弱化次要内容",
+      "monospace": "以等宽字体的 <code> 渲染主内容",
+      "maxWidth": "最大宽度（数字为像素），长内容换行",
+      "ref": "根 <div> 元素的 ref"
+    },
+    "FixedColumnLayout": {
+      "leftOffsets": "每个左固定列的左偏移（px），按列 key 索引",
+      "rightOffsets": "每个右固定列的右偏移（px），按列 key 索引",
+      "lastLeftFixedKey": "开头左固定区的最后一列（显示边界阴影）",
+      "firstRightFixedKey": "末尾右固定区的第一列（显示边界阴影）"
+    }
+  }
+}

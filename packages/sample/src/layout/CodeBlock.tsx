@@ -85,7 +85,12 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         </span>
       </div>
       <div className={styles.codeWrapper}>
-        <pre className={`${styles.pre} language-${language}`} tabIndex={0}>
+        <pre
+          className={`${styles.pre} language-${language}`}
+          tabIndex={0}
+          role="region"
+          aria-label={t("doc.codeRegion", { language })}
+        >
           {html !== undefined ? (
             <code
               className={`language-${language}`}

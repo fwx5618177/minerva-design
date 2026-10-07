@@ -7,6 +7,9 @@ const variants = [
   "success",
   "warning",
   "error",
+  "auto",
+  "fixedDark",
+  "fixedLight",
 ] as const;
 
 export default function VariantsDemo() {

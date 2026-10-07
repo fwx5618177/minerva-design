@@ -13,7 +13,7 @@ describe("StatusIndicator", () => {
     vi.useRealTimers();
   });
 
-  it("renders a focusable status element with default classes", () => {
+  it("renders a non-focusable status element with default classes", () => {
     render(<StatusIndicator ariaLabel="Build status" />);
 
     const indicator = screen.getByRole("status", { name: "Build status" });
@@ -23,8 +23,10 @@ describe("StatusIndicator", () => {
       "circle",
       "medium",
     );
-    expect(indicator).toHaveAttribute("tabindex", "0");
-    expect(indicator).toHaveAttribute("aria-disabled", "false");
+    // A status live region is not interactive: no tab stop, no aria-disabled
+    expect(indicator).not.toHaveAttribute("tabindex");
+    expect(indicator).not.toHaveAttribute("aria-disabled");
+    expect(indicator).toHaveAttribute("data-disabled", "false");
     expect(indicator.querySelector("svg.icon")).toBeInTheDocument();
   });
 
@@ -108,7 +110,7 @@ describe("StatusIndicator", () => {
     render(<StatusIndicator disabled />);
 
     const indicator = screen.getByRole("status");
-    expect(indicator).toHaveAttribute("aria-disabled", "true");
+    expect(indicator).toHaveAttribute("data-disabled", "true");
     await user.click(indicator);
 
     expect(indicator).not.toHaveClass("clicked");

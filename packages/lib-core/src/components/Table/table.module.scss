@@ -1,0 +1,234 @@
+// Table. Default table-layout: auto (antd / arco / mantine): content-driven
+// column widths, and every column width is also written as min-width on the
+// cells, so the table grows past the wrapper and the wrapper scrolls.
+
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-color);
+  -webkit-overflow-scrolling: touch;
+}
+
+.dataTable {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  > nav {
+    flex-wrap: wrap;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-sans);
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+
+  th,
+  td {
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    vertical-align: middle;
+    line-height: var(--line-height-base);
+  }
+
+  thead th {
+    background-color: var(--surface-muted-color);
+    color: var(--text-secondary-color);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-strong-color);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-strong-color);
+    transition: background-color var(--transition-fast);
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  // Ellipsis columns: single line, truncated
+  th[data-ellipsis="true"],
+  td[data-ellipsis="true"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  // Fixed columns: sticky, offsets are written inline. Opaque background so
+  // the scrolled columns do not show through.
+  th[data-fixed],
+  td[data-fixed] {
+    position: sticky;
+    z-index: 2;
+    background-color: var(--surface-color);
+  }
+
+  thead th[data-fixed] {
+    z-index: 3;
+    background-color: var(--surface-muted-color);
+  }
+
+  th[data-fixed-edge="left"],
+  td[data-fixed-edge="left"] {
+    box-shadow: 4px 0 4px -2px color-mix(in srgb, var(--shadow-color, #000) 12%, transparent);
+  }
+
+  th[data-fixed-edge="right"],
+  td[data-fixed-edge="right"] {
+    box-shadow: -4px 0 4px -2px color-mix(in srgb, var(--shadow-color, #000) 12%, transparent);
+  }
+}
+
+// Explicit scroll-x mode (scroll={{ x }}): same layout as the default, the
+// min-width is written inline. Kept as a styling hook.
+.table:global(.ui-table-scroll-x) {
+  table-layout: auto;
+}
+
+// Scroll-y mode: the wrapper height is bounded inline; the header sticks.
+.wrapperScrollY .table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.wrapperScrollY .table thead th[data-fixed] {
+  z-index: 4;
+}
+
+// Variants
+.striped tbody tr:nth-child(odd),
+.striped tbody tr:nth-child(odd) td[data-fixed] {
+  background-color: var(--surface-subtle-color);
+}
+
+.wrapperBordered .table th + th,
+.wrapperBordered .table td + td {
+  border-left: 1px solid var(--border-color);
+}
+
+.hoverable tbody tr:hover,
+.hoverable tbody tr:hover td[data-fixed] {
+  background-color: var(--hover-color);
+}
+
+// Sizes
+.small {
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.medium {
+  th,
+  td {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-md);
+  }
+}
+
+.large {
+  th,
+  td {
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-lg);
+  }
+}
+
+.table td.empty {
+  text-align: center;
+  padding: var(--space-10);
+  color: var(--text-muted-color);
+}
+
+.skeleton {
+  display: block;
+  width: 80%;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-muted-color);
+  animation: tableSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes tableSkeletonPulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+// DataTable error state
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-color);
+  text-align: center;
+}
+
+.errorTitle {
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
+}
+
+.retryIcon {
+  margin-right: var(--space-1-5);
+  vertical-align: -0.125em;
+}
+
+// TableCellContent
+.cellContent {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: inherit;
+  font: inherit;
+}
+
+.cellPrimary {
+  display: block;
+}
+
+.cellStrong {
+  font-weight: var(--font-weight-semibold);
+}
+
+.cellMono {
+  font-family: var(--font-family-mono);
+}
+
+.cellSecondary {
+  margin-top: var(--space-1);
+  color: var(--text-muted-color);
+}
+
+@media (max-width: 48rem) {
+  .table th,
+  .table td {
+    padding: var(--space-2) var(--space-3);
+  }
+}

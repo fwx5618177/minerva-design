@@ -4,6 +4,13 @@ import { StrictMode, createRef, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import TextField from "./TextField";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormField,
+  FormHelperText,
+  FormLabel,
+} from "../FormControl";
 import type { TextFieldProps } from "./types";
 
 const renderField = (props: Partial<TextFieldProps> = {}) =>
@@ -521,5 +528,96 @@ describe("TextField localization", () => {
     expect(
       screen.getByRole("button", { name: "Reset name" }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("TextField inside FormControl", () => {
+  it("takes the FormControl id so FormLabel labels it, and is described by the helper", () => {
+    render(
+      <FormControl id="mail" required>
+        <FormLabel>Mail address</FormLabel>
+        <TextField name="email" label="Email" />
+        <FormHelperText>Used to sign in</FormHelperText>
+      </FormControl>,
+    );
+    const input = screen.getByLabelText(/Mail address/);
+    expect(input).toHaveAttribute("id", "mail");
+    expect(input).toHaveAttribute("name", "email");
+    expect(input).toHaveAttribute("aria-required", "true");
+    expect(input).toHaveAccessibleDescription("Used to sign in");
+    expect(input).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("keeps an explicit id", () => {
+    render(
+      <FormControl id="mail">
+        <TextField name="email" id="own" label="Email" />
+      </FormControl>,
+    );
+    expect(screen.getByRole("textbox")).toHaveAttribute("id", "own");
+  });
+
+  it("inherits invalid, disabled and read-only state", () => {
+    const { container, rerender } = render(
+      <FormField label="Email" errorMessage="Bad email">
+        <TextField name="email" label="Email" />
+      </FormField>,
+    );
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAccessibleDescription("Bad email");
+    expect(container.querySelector(".textField")).toHaveClass("error");
+    rerender(
+      <FormField label="Email" disabled>
+        <TextField name="email" label="Email" />
+      </FormField>,
+    );
+    expect(screen.getByRole("textbox")).toBeDisabled();
+    expect(container.querySelector(".textField")).toHaveClass("disabled");
+    rerender(
+      <FormField label="Email" readOnly>
+        <TextField name="email" label="Email" />
+      </FormField>,
+    );
+    expect(screen.getByRole("textbox")).toHaveAttribute("readonly");
+    expect(screen.getByRole("textbox")).toHaveAttribute(
+      "aria-readonly",
+      "true",
+    );
+  });
+
+  it("links both the FormControl error and its own helperText", () => {
+    render(
+      <FormControl invalid>
+        <TextField name="email" label="Email" helperText="Own error" />
+        <FormErrorMessage>Field error</FormErrorMessage>
+      </FormControl>,
+    );
+    const ids = screen
+      .getByRole("textbox")
+      .getAttribute("aria-describedby")!
+      .split(" ");
+    expect(ids).toHaveLength(2);
+    expect(ids.map((id) => document.getElementById(id)?.textContent)).toEqual([
+      "Field error",
+      "Own error",
+    ]);
+  });
+});
+
+describe("TextField invalid and required", () => {
+  it("shows the error state without a message", () => {
+    const { container } = renderField({ invalid: true });
+    expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByRole("textbox")).not.toHaveAttribute("aria-describedby");
+    expect(container.querySelector(".textField")).toHaveClass("error");
+    expect(container.querySelector(".errorMessage")).toBeNull();
+  });
+
+  it("sets the native required attribute", () => {
+    const { rerender } = renderField({ required: true });
+    expect(screen.getByRole("textbox")).toBeRequired();
+    rerender(<TextField name="email" label="Email" />);
+    expect(screen.getByRole("textbox")).not.toBeRequired();
   });
 });

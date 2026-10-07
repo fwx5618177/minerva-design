@@ -1,0 +1,76 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  container-type: inline-size;
+  font-family: var(--font-family-sans);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+  align-items: start;
+  gap: var(--space-2);
+  min-width: 0;
+
+  label,
+  [role="alert"] {
+    overflow-wrap: anywhere;
+  }
+}
+
+.key {
+  min-height: 32px;
+}
+
+.remove {
+  width: 32px;
+  height: 32px;
+  // Aligns the button with the fields, below their labels.
+  margin-top: calc(var(--font-size-sm) * var(--line-height-tight) + var(--space-2));
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  align-self: flex-start;
+  max-width: 100%;
+  height: auto;
+  min-height: 32px;
+  white-space: normal;
+
+  > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@container (max-width: 400px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) 32px;
+
+    > :not(.remove) {
+      grid-column: 1;
+    }
+  }
+
+  .remove {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

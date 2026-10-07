@@ -7,6 +7,11 @@
     "dynamic": "两个属性都是响应式的：把它们存放在 state 中，即可让用户在运行时切换主题或语言。",
     "global": "主题和语言都是全局的：Provider 会在 <html> 上写入 CSS 变量，并修改 lib-core 的 i18next 语言。因此嵌套的 ConfigProvider 会重新设置整个页面的主题，而不仅仅是它的子元素。若只想为某个区域设置主题，请改为在包裹元素上设置 CSS 变量（见自定义主题示例）。"
   },
+  "palette": {
+    "title": "调色板、持久化与回调",
+    "text": "palette 在 light、dark 或 system 主题之上叠加一套配色调色板（\"editorial\"、\"tech\"、\"graphite\" 或 \"cool\"）。persist 会把主题和调色板的变更保存到 theme 与 palette Cookie 中，并在水合后恢复。setTheme 和 setPalette 改变取值后会调用 onThemeChange 和 onPaletteChange。",
+    "setters": "useConfig() 还会返回 mode、resolvedMode、palette 以及 setTheme 和 setPalette 两个设置函数，任何组件都能切换主题，无需提升状态。服务端渲染、Cookie 和防闪烁初始化脚本详见"
+  },
   "demos": {
     "use-config": {
       "title": "读取配置",
@@ -19,18 +24,31 @@
     "locale": {
       "title": "语言",
       "description": "locale 属性设置 lib-core 内置文案的语言（en、zh 或 fr）。由于语言是全局的，示例在卸载时会恢复为英文。"
+    },
+    "palette": {
+      "title": "调色板",
+      "description": "以站点当前模式并排预览四个调色板，每张卡片上都设置了 data-palette 和 data-theme。使用 palette 属性时，相同的属性会设置在 <html> 上。"
     }
   },
   "api": {
     "ConfigContextProviderProps": {
-      "theme": "要应用的主题：\"auto\"（跟随 prefers-color-scheme）、内置主题名称、主题对象，或 { light, dark } 组合。以 CSS 变量形式应用在文档根元素上。",
+      "theme": "要应用的主题：\"auto\" 或其别名 \"system\"（跟随 prefers-color-scheme）、内置主题名称、主题对象或 { light, dark } 组合。以 CSS 变量形式写到文档根元素上；设置了 palette 时则通过调色板生效。",
+      "palette": "与 light、dark 和 system 主题搭配使用的调色板（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）；null 保持 Minerva 默认外观。会在 <html> 上设置 data-palette；调色板令牌来自 style.css。",
+      "persist": "把主题和调色板的变更持久化到 theme 和 palette Cookie，并在水合后恢复（SSR 时请配合 THEME_INIT_SCRIPT 使用）。",
+      "onThemeChange": "setTheme 改变主题后调用。",
+      "onPaletteChange": "setPalette 改变调色板后调用。",
       "locale": "lib-core 内置文案的语言（全局生效）。",
       "children": "应用内容。"
     },
     "ConfigContextProps": {
       "theme": "配置的主题（可能是 \"auto\" 或 { light, dark } 组合）。",
       "resolvedTheme": "解析 \"auto\" 和 { light, dark } 组合后当前实际应用的主题：内置主题名称或主题对象。",
-      "locale": "lib-core 内置文案的当前语言设置。"
+      "locale": "lib-core 内置文案的当前语言设置。",
+      "mode": "主题的颜色模式：light、dark 主题分别为 \"light\"、\"dark\"；\"auto\"、\"system\" 和 { light, dark } 组合为 \"system\"；其他主题为 undefined。",
+      "resolvedMode": "实际应用的颜色模式（<html> 上的 data-theme），在可确定时提供。",
+      "palette": "当前调色板（<html> 上的 data-palette），null 表示 Minerva 默认外观。",
+      "setTheme": "切换主题（开启 persist 时保存到 theme Cookie）。",
+      "setPalette": "切换调色板（开启 persist 时保存到 palette Cookie）。"
     },
     "Locale": {
       "language": "lib-core 内置文案的语言：\"en\"、\"zh\" 或 \"fr\"。"

@@ -1,0 +1,42 @@
+{
+  "title": "Command",
+  "description": "A searchable command palette in a modal. Type to filter by title, description, group and keywords, move with the arrow keys, choose with Enter or a click. An optional global shortcut opens it.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Controlled palette; onSelect receives the chosen item and the palette closes."
+    },
+    "shortcut": {
+      "title": "Global shortcut",
+      "description": "shortcut=\"mod+k\" opens the palette with Cmd+K on macOS and Ctrl+K elsewhere; shortcutLabel shows the hint."
+    }
+  },
+  "api": {
+    "CommandDialogProps": {
+      "open": "Controlled open state; leave undefined for uncontrolled",
+      "defaultOpen": "Initial open state while uncontrolled",
+      "onOpenChange": "Called with the requested open state (shortcut, selection, Escape, backdrop click)",
+      "items": "Commands to search; disabled items are never shown",
+      "onSelect": "Called with the chosen item (click or Enter); the palette then closes",
+      "title": "Title of the dialog; defaults to the localized \"Command palette\"",
+      "description": "Accessible description of the palette; defaults to a localized hint",
+      "placeholder": "Placeholder of the search input; defaults to a localized hint",
+      "emptyText": "Shown when nothing matches",
+      "shortcutLabel": "Shortcut hint rendered as <kbd> next to the title, e.g. \"⌘K\"",
+      "shortcut": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\"; modifiers: mod, ctrl, meta/cmd, shift, alt/option",
+      "maxResults": "Maximum number of results shown",
+      "resultsLabel": "Accessible label of the results list",
+      "enterLabel": "Key hint shown at the end of the search input; defaults to the localized \"Enter\"",
+      "getOptionId": "DOM id of each result option, also used as the input's aria-activedescendant; must be unique in the document. Defaults to generated ids scoped to the dialog",
+      "className": "Additional class name of the dialog panel"
+    },
+    "CommandItem": {
+      "id": "Unique id, passed back through onSelect",
+      "title": "Main label",
+      "description": "Secondary line below the title",
+      "group": "Group name, shown as a badge and matched by the search",
+      "keywords": "Extra search terms (not displayed)",
+      "disabled": "Hides the item from the results"
+    }
+  }
+}

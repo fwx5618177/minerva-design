@@ -1,0 +1,172 @@
+{
+  "title": "Thème et palette",
+  "description": "Deux axes indépendants, un mode clair / sombre / système et une palette de couleurs, avec persistance par cookie et rendu serveur sans flash.",
+  "axes": {
+    "title": "Deux axes : mode et palette",
+    "text": "Le mode choisit entre clair et sombre. La palette définit l'apparence : couleurs, surfaces, ombres et polices. Chaque palette fonctionne avec chaque mode, si bien que quatre palettes donnent huit thèmes complets, en plus de l'apparence par défaut de Minerva lorsqu'aucune palette n'est définie.",
+    "value": "Valeur",
+    "modeFixed": "Mode : toujours clair ou toujours sombre.",
+    "modeSystem": "Mode : suit prefers-color-scheme et se met à jour en direct quand le réglage du système change. ConfigProvider accepte aussi \"auto\", un alias conservé pour la compatibilité.",
+    "editorial": "Palette : fonds papier chaleureux, primaire bleu encre et accent rouille, pour les pages riches en contenu.",
+    "tech": "Palette : surfaces neutres et nettes avec un primaire bleu vif, pour les tableaux de bord et les outils de développement.",
+    "graphite": "Palette : gris monochromes avec un accent discret, pour les interfaces professionnelles et denses.",
+    "cool": "Palette : surfaces gris-bleu froides avec un primaire bleu sarcelle, calme et aérée.",
+    "none": "Aucune palette : l'apparence par défaut de Minerva (les thèmes clair et sombre intégrés, écrits en variables inline)."
+  },
+  "provider": {
+    "title": "ThemeProvider et useTheme",
+    "text": "ThemeProvider est le moyen le plus court d'obtenir les deux axes : il rend un ConfigProvider avec le mode et la palette donnés, enregistre les changements dans des cookies et expose le tout via useTheme(). ThemeToggle et PaletteToggle sont des sélecteurs prêts à l'emploi reliés au provider le plus proche.",
+    "config": "ThemeProvider est un préréglage de ConfigProvider : les deux partagent une seule source de vérité. Utilisez directement ConfigProvider si vous avez aussi besoin de thèmes intégrés comme github-dark, d'objets de thème personnalisés ou d'une prop theme contrôlée :",
+    "hook": "useTheme() renvoie le mode choisi, le mode appliqué, la palette et leurs setters. Il fonctionne sous ThemeProvider comme sous ConfigProvider, et lève une erreur en dehors des deux."
+  },
+  "applied": {
+    "title": "Comment le thème est appliqué",
+    "text": "Le provider écrit toujours le mode résolu dans data-theme et color-scheme sur <html>. Avec une palette et un thème light, dark ou system, il définit aussi data-palette : les tokens viennent alors des blocs de palette inclus dans style.css et les variables de thème inline sont supprimées. Sans palette, ou avec github-dark ou un objet de thème personnalisé, les tokens du thème sont écrits en variables CSS inline sur <html>, comme auparavant.",
+    "precedence": "Quand plusieurs sources définissent le même token, la plus spécifique l'emporte :",
+    "p1": "Les variables CSS inline sur <html> (objets de thème personnalisés, github-dark ou absence de palette) l'emportent sur tout ce qui est déclaré dans une feuille de style.",
+    "p2": "Les blocs de palette ([data-palette][data-theme]) l'emportent sur les valeurs par défaut déclarées sur :root.",
+    "p3": "Les valeurs par défaut de :root dans style.css, y compris les tokens dérivés avec color-mix(), s'appliquent quand rien d'autre ne correspond.",
+    "p4": "La prop palette est ignorée pour github-dark et les objets de thème personnalisés : ces thèmes apportent leurs propres tokens.",
+    "global": "Comme le thème, la palette est globale : un provider écrit sur <html>, donc un provider imbriqué change le thème de toute la page. Pour prévisualiser une autre palette dans une zone, utilisez data-palette et data-theme sur un élément (voir Palettes locales ci-dessous)."
+  },
+  "persistence": {
+    "title": "Persistance par cookie",
+    "text": "ThemeProvider (et ConfigProvider avec persist) enregistre le choix dans deux cookies : theme (\"light\", \"dark\" ou \"system\") et palette (un nom de palette ; supprimé pour l'apparence par défaut). Ils durent un an, utilisent path=/ et SameSite=Lax et sont lisibles côté serveur, ce qui rend possible un SSR sans flash. Après l'hydratation, le provider restaure une fois les valeurs des cookies. Passez disableStorage à ThemeProvider (ou laissez persist désactivé) pour garder le choix en mémoire seulement. Les mêmes utilitaires sont disponibles pour votre propre code serveur :"
+  },
+  "ssr": {
+    "title": "Rendu serveur sans flash",
+    "text": "Le serveur ne connaît pas le schéma de couleurs du système du visiteur, et React n'applique le thème qu'après l'hydratation. Deux éléments comblent cet écart : lire les cookies côté serveur et les passer comme valeurs par défaut au provider, et insérer THEME_INIT_SCRIPT en ligne dans <head>. Ce petit script bloquant lit les cookies (avec prefers-color-scheme en repli) et définit data-theme, data-palette et color-scheme avant le premier affichage : la page n'affiche jamais le mauvais thème, même un instant.",
+    "next": "Next.js App Router",
+    "generic": "Toute autre configuration SSR",
+    "hydration": "Le script d'initialisation modifie les attributs de <html> avant l'hydratation de React : le balisage serveur et le DOM diffèrent donc volontairement. Ajoutez suppressHydrationWarning à <html> et à l'élément <script> ; cela ne masque que les avertissements d'attributs de cet élément, pas ceux de ses enfants. Importez tout ce qui sert côté serveur depuis @minerva/lib-core/theme-utils : ce point d'entrée n'a pas de bannière \"use client\" et peut être appelé dans un Server Component."
+  },
+  "init": {
+    "title": "createThemeInitScript",
+    "text": "THEME_INIT_SCRIPT correspond à createThemeInitScript() avec les options par défaut. Générez le vôtre quand les valeurs par défaut doivent changer :",
+    "option": "Option",
+    "default": "Défaut",
+    "defaultTheme": "Mode utilisé quand le cookie theme est absent ou invalide. \"system\" se résout en clair ou sombre selon prefers-color-scheme.",
+    "defaultPalette": "Palette utilisée quand le cookie palette est absent ou invalide et que <html> n'a pas encore de data-palette valide. null laisse data-palette non défini (apparence par défaut de Minerva).",
+    "order": "Ordre de résolution du script : le cookie theme, sinon defaultTheme. Le cookie palette, sinon un data-palette valide déjà rendu sur <html>, sinon defaultPalette. Gardez le script inline (ni async ni defer) et avant la feuille de style pour qu'il s'exécute avant le premier affichage."
+  },
+  "helpers": {
+    "title": "Utilitaires compatibles serveur",
+    "text": "Tous proviennent de @minerva/lib-core/theme-utils, un petit point d'entrée sans React et sans \"use client\". Ils s'utilisent sans risque dans les Server Components, les middlewares et les fonctions edge.",
+    "name": "Export",
+    "initScript": "Script d'initialisation par défaut, sous forme de chaîne : mode du cookie (sinon système), palette du cookie (sinon le data-palette déjà présent sur <html>, sinon aucune). À insérer en ligne dans <head>.",
+    "create": "Génère un script d'initialisation avec d'autres valeurs par défaut (voir les options ci-dessus).",
+    "parseAll": "Analyse les deux cookies d'un en-tête Cookie et renvoie { theme, palette }, avec des valeurs par défaut facultatives pour les valeurs manquantes.",
+    "parseTheme": "Valide la valeur brute du cookie theme ; une valeur invalide ou absente renvoie la valeur de repli (\"system\").",
+    "parsePalette": "Valide la valeur brute du cookie palette ; une valeur invalide ou absente renvoie la valeur de repli (null).",
+    "read": "Lit et décode (URI) un cookie depuis un en-tête Cookie ou document.cookie ; undefined s'il est absent.",
+    "serialize": "Renvoie une chaîne au format Set-Cookie (path=/, un an, SameSite=Lax) pour une valeur de thème ou de palette.",
+    "guards": "Gardes de type pour les valeurs ThemeMode et Palette.",
+    "palettes": "Les noms des palettes intégrées, dans l'ordre : editorial, tech, graphite, cool.",
+    "cookieNames": "Noms des cookies (\"theme\", \"palette\") et leur durée de vie en secondes (un an)."
+  },
+  "scoped": {
+    "title": "Palettes locales",
+    "text": "Les blocs de palette de style.css sont des sélecteurs d'attributs : ils s'appliquent à n'importe quel élément, pas seulement à <html>. Placez data-palette et data-theme sur un conteneur pour rendre un sous-arbre avec une autre palette, par exemple une carte d'aperçu dans une page de réglages ou un sélecteur de thème. Définissez toujours les deux attributs et donnez un fond au conteneur : les tokens changent, mais rien ne les affiche tant qu'aucun élément ne les utilise."
+  },
+  "tokens": {
+    "title": "Nouveaux tokens",
+    "text": "Les palettes ont introduit quelques tokens de couleur sémantiques et un ensemble de tokens d'échelle. Chaque token a une valeur par défaut dans style.css : ils fonctionnent avec ou sans palette, et avec les thèmes personnalisés.",
+    "semantic": "Tokens de couleur sémantiques",
+    "variable": "Variable",
+    "items": {
+      "surface-subtle-color": "Fond très doux pour les barres latérales, les en-têtes de tableau et les blocs de code.",
+      "canvas-color": "Fond de l'application derrière les surfaces, comme le canevas d'un app shell. Vaut par défaut la surface douce.",
+      "control-color": "Fond des contrôles de formulaire comme les champs et les listes. Vaut par défaut la surface douce.",
+      "hover-color": "Fond des lignes et éléments survolés. Vaut par défaut la surface atténuée.",
+      "selected-color": "Fond des lignes, éléments et onglets sélectionnés : une teinte légère de la couleur primaire.",
+      "text-muted-color": "Texte peu accentué pour les légendes et textes d'aide, entre le texte secondaire et le texte désactivé.",
+      "accent-color": "Accent secondaire pour les appels à l'action, les notes et les mises en avant. Vaut par défaut la couleur primaire ; les palettes définissent la leur."
+    },
+    "accentRole": "accent est aussi un rôle de couleur complet, comme primary ou success : --accent-color-hover, -active, -subtle, -border et -text sont dérivés automatiquement.",
+    "scales": "Tokens d'échelle",
+    "scalesText": "Les tokens d'échelle ne changent pas avec le mode (les palettes ne peuvent remplacer que les polices). Les composants les utilisent via des variables CSS, et les props numériques gap ou padding se résolvent en var(--space-<n>).",
+    "group": "Groupe",
+    "variables": "Variables",
+    "groups": {
+      "spacing": {
+        "name": "Espacements",
+        "text": "Une échelle en rem basée sur 4px. Les pas fractionnaires utilisent un tiret : --space-0-5 vaut 0.125rem."
+      },
+      "radius": {
+        "name": "Rayons",
+        "text": "Rayons supplémentaires à côté de --radius-sm, -md et -lg, qui restent des tokens de thème."
+      },
+      "fontSize": {
+        "name": "Tailles de police",
+        "text": "De 0.75rem (xs) à 3.75rem (6xl) ; md (0.875rem) est la taille du texte des composants."
+      },
+      "fontWeight": {
+        "name": "Graisses et interlignages",
+        "text": "Graisses de 400 à 700 et trois hauteurs de ligne."
+      },
+      "fontFamily": {
+        "name": "Familles de polices",
+        "text": "Polices du texte, des titres et à chasse fixe. Les palettes les remplacent."
+      },
+      "zIndex": {
+        "name": "Superposition",
+        "text": "Niveaux de z-index utilisés par les menus déroulants, les éléments collants, les voiles, les modales, les popovers et les toasts."
+      },
+      "motion": {
+        "name": "Animations",
+        "text": "Durées de transition et courbes d'accélération."
+      },
+      "rhythm": {
+        "name": "Rythme et élévation",
+        "text": "Espacements verticaux fluides entre sections et blocs, et alias d'élévation des tokens d'ombre."
+      },
+      "focus": {
+        "name": "Focus",
+        "text": "Épaisseur et décalage de l'anneau de focus."
+      }
+    }
+  },
+  "demos": {
+    "toggles": {
+      "title": "ThemeToggle et PaletteToggle",
+      "description": "Les deux sélecteurs dans un aperçu local : un contexte local les pilote et le choix est appliqué avec data-theme et data-palette sur l'élément d'aperçu, si bien que le reste du site garde son propre thème."
+    },
+    "palette-swatches": {
+      "title": "Toutes les palettes",
+      "description": "Chaque palette en mode clair et sombre, rendue à partir de l'objet palettes exporté (palettes[name][mode] est un ComponentTheme complet)."
+    },
+    "use-theme": {
+      "title": "Lire le thème",
+      "description": "useTheme() et useConfig() du provider de ce site. Changez le thème ou la palette dans l'en-tête pour voir les valeurs se mettre à jour."
+    }
+  },
+  "api": {
+    "ThemeProviderProps": {
+      "defaultTheme": "Mode initial. En SSR, passez la valeur lue dans le cookie de la requête pour que le balisage serveur corresponde au client.",
+      "defaultPalette": "Palette initiale (null pour l'apparence par défaut de Minerva). En SSR, passez le cookie palette analysé.",
+      "disableStorage": "Ne pas lire ni écrire les cookies de thème (tests, aperçus intégrés).",
+      "locale": "Langue des textes intégrés de lib-core.",
+      "onThemeChange": "Appelé quand le mode change.",
+      "onPaletteChange": "Appelé quand la palette change.",
+      "children": "Contenu de l'application."
+    },
+    "ThemeContextValue": {
+      "theme": "Mode choisi par l'utilisateur (\"system\" suit le système d'exploitation).",
+      "resolvedTheme": "Mode réellement appliqué : \"light\" ou \"dark\".",
+      "palette": "Palette active, null pour l'apparence par défaut de Minerva.",
+      "setTheme": "Change le mode (et écrit le cookie theme sauf si le stockage est désactivé).",
+      "setPalette": "Change la palette (et écrit le cookie palette sauf si le stockage est désactivé)."
+    },
+    "ThemeToggleProps": {
+      "showSystem": "Afficher l'option \"system\", qui suit le système d'exploitation.",
+      "labels": "Remplacer les libellés des boutons par mode ; par défaut ils viennent de la locale de lib-core.",
+      "ref": "Ref vers l'élément de groupe."
+    },
+    "PaletteToggleProps": {
+      "palettes": "Palettes proposées, dans l'ordre.",
+      "showDefault": "Proposer aussi l'apparence par défaut de Minerva (sans palette) comme première option.",
+      "labels": "Remplacer les libellés des boutons ; la clé default désigne l'option sans palette.",
+      "ref": "Ref vers l'élément de groupe."
+    }
+  }
+}

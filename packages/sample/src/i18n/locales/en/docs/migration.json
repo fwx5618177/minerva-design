@@ -1,0 +1,31 @@
+{
+  "title": "Migration from @novel-isr/ui",
+  "description": "How every export of @novel-isr/ui 0.1.40 maps to Minerva, with all prop-name and behaviour differences.",
+  "paths": {
+    "title": "Two migration paths",
+    "compat": "Drop-in: keep your code and switch the imports to @minerva/lib-core/compat (or turn @novel-isr/ui into a re-export shim). See",
+    "native": "Native: move to Minerva's API. The tables below give the Minerva name and every renamed prop or changed behaviour."
+  },
+  "summary": {
+    "title": "Summary and platform",
+    "text": "Each export is classified as NEW (a new Minerva component), MERGED (merged as a superset into an existing Minerva component, no capability lost) or PLATFORM (theme platform, hooks, utilities, entries)."
+  },
+  "mapping": {
+    "title": "Component mapping",
+    "text": "Generated from docs/migration/novel-isr-ui.md in the repository (the single source of truth)."
+  },
+  "behaviour": {
+    "title": "Behaviour differences of the native API",
+    "names": "Booleans and sizes: isOpen/onClose → open/onOpenChange, isInvalid → invalid, isLoading → loading, sm/md/lg → small/medium/large.",
+    "strings": "Built-in strings use lib-core's i18n (en / zh / fr) and can always be overridden by a prop; compat passes novel's original strings explicitly.",
+    "tooltip": "A TooltipProvider delay wins over the per-tooltip default (in novel and compat each tooltip keeps its own 300 ms).",
+    "inputs": "Checkbox, Radio and Switch are native inputs: ref points to the <input>.",
+    "radio": "RadioGroup direction row/column → horizontal/vertical; value={null} means controlled with no selection.",
+    "badge": "Badge defaults to solid with role=\"status\"; Alert's role follows its variant (compat keeps novel's).",
+    "navTree": "NavTree: a disabled leaf neither fires its handler nor keeps its href; a leaf without href is a button.",
+    "tabs": "Tabs: onValueChange → onChange, colorScheme → color.",
+    "toast": "ToastProvider position is camelCase (topRight); toast.dismiss() closes all toasts; hover pauses timers.",
+    "statusIndicator": "StatusIndicator is no longer focusable (it is a role=\"status\" live region).",
+    "full": "The complete list, including every renamed prop, is in the tables above and in docs/migration/novel-isr-ui.md."
+  }
+}

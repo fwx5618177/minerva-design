@@ -12,7 +12,7 @@
     },
     "variants": {
       "title": "バリアント",
-      "description": "ダーク（デフォルト）、ライト、およびセマンティックカラーのバリアント。"
+      "description": "ダーク（デフォルト、テーマとコントラストをなす）、ライト、セマンティックカラー。auto はすりガラス風の面でテーマに追従し、fixedDark / fixedLight はテーマに関係なく色を保ちます。"
     },
     "shapes": {
       "title": "形状",
@@ -41,6 +41,14 @@
     "events": {
       "title": "イベント",
       "description": "onOpen と onClose はホバー、フォーカス、ブラー、Escape で発火します。"
+    },
+    "as-child": {
+      "title": "asChild",
+      "description": "asChild はラッパー要素を追加せず子要素自体にツールチップを付けるため、flex や grid のレイアウトが崩れません。contentClassName でツールチップにスタイルを当てられます。"
+    },
+    "provider": {
+      "title": "TooltipProvider",
+      "description": "TooltipProvider は内側のツールチップの既定の遅延を設定します。ツールチップ間を素早く移動すると次のものはすぐに開きます。"
     }
   },
   "api": {
@@ -67,12 +75,21 @@
       "onClose": "マウスアウト、ブラー、Escape でツールチップが閉じたときに呼び出されます",
       "ariaLabel": "ツールチップ要素のアクセシブルなラベル",
       "ref": "open / close / toggle を持つ命令的ハンドル",
-      "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）"
+      "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）",
+      "asChild": "ホバー / フォーカスのハンドラー、ref、className を <div> で包む代わりに単一の子要素へ直接付けます（flex や grid のレイアウトを維持）。子要素は ref を受け取れる必要があります",
+      "contentClassName": "ツールチップ（フローティング）要素の追加クラス名",
+      "contentRef": "ツールチップ（フローティング）要素への ref。表示中に設定されます"
     },
     "TooltipRef": {
       "open": "ツールチップを開く",
       "close": "ツールチップを閉じる",
       "toggle": "ツールチップの表示を切り替える"
+    },
+    "TooltipProviderProps": {
+      "enterDelay": "enterDelay を指定していない内側のツールチップが、ホバー後に表示されるまでの既定の遅延（ミリ秒）",
+      "leaveDelay": "leaveDelay を指定していない内側のツールチップが、マウスが離れてから非表示になるまでの既定の遅延（ミリ秒）",
+      "skipDelay": "同じプロバイダーの別のツールチップがこのミリ秒数以内に閉じた場合、次のツールチップは遅延を待たずに開きます",
+      "children": "プロバイダーの内容"
     }
   }
 }

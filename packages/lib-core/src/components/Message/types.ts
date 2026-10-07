@@ -81,7 +81,7 @@ export interface MessageProps {
    * @default "topRight"
    */
   placement?: MessagePlacement;
-  /** Called when the message is clicked */
+  /** Called when the message content is activated; the content then renders as a keyboard operable button */
   onClick?: (e: MouseEvent) => void;
   /** Extra description exposed to assistive technologies (aria-description) */
   description?: string;

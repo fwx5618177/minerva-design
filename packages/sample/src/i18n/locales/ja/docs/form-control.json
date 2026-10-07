@@ -1,0 +1,42 @@
+{
+  "title": "FormControl",
+  "description": "ラベル・コントロール・ヘルプテキスト・エラーメッセージを結び付け、無効 / 必須 / 無効化 / 読み取り専用の状態をコントロールと共有するフィールドコンテナ。",
+  "demos": {
+    "basic": {
+      "title": "基本",
+      "description": "FormLabel がコントロールを指し、ヘルプテキストが説明し、無効時はエラーメッセージがヘルプを置き換えます。"
+    },
+    "form-field": {
+      "title": "FormField",
+      "description": "FormField は FormControl・FormLabel・ヘルプ・エラーをまとめます。errorMessage でフィールドが無効になります。"
+    },
+    "states": {
+      "title": "状態",
+      "description": "required は印と aria-required を追加し、disabled と readOnly はコントロールに伝わります。"
+    },
+    "custom-control": {
+      "title": "カスタムコントロール",
+      "description": "useFormControlProps は任意のコントロールに id・aria 属性・disabled・readOnly を接続し、useFormControlContext はフィールド状態を読み取ります。"
+    }
+  },
+  "api": {
+    "FormControlProps": {
+      "invalid": "フィールドを無効にします。コントロールに aria-invalid が付き、エラーメッセージがヘルプテキストを置き換えます",
+      "required": "フィールドを必須にします（コントロールに aria-required、ラベルに印）",
+      "disabled": "フィールド内のコントロールを無効化します",
+      "readOnly": "フィールド内のコントロールを読み取り専用にします",
+      "id": "コントロールの id。ラベル・ヘルプ・エラーの id はこれから派生します（`${id}-label`、`${id}-helper`、`${id}-error`）。省略時は自動生成",
+      "children": "フィールドの内容：FormLabel、コントロール、FormHelperText、FormErrorMessage",
+      "ref": "コンテナ <div> への ref"
+    },
+    "FormLabelProps": {
+      "requiredIndicator": "必須フィールドでテキストの後に表示される印（支援技術からは隠され、代わりに aria-required を使用）",
+      "ref": "<label> 要素への ref"
+    },
+    "FormFieldProps": {
+      "label": "フィールドのラベル",
+      "helperText": "コントロール下のヘルプテキスト（無効時は非表示）",
+      "errorMessage": "エラーメッセージ。`invalid` を明示しない限りフィールドを無効にします"
+    }
+  }
+}

@@ -127,3 +127,43 @@
     background-position: 0 50%;
   }
 }
+
+// ── Decorative primitives (`decorative`, SkeletonText)
+.skeleton.decorative {
+  display: block;
+  margin: 0;
+  vertical-align: middle;
+  user-select: none;
+
+  &.text {
+    width: 100%;
+    height: 1em;
+    margin: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  &.rectangular,
+  &.rounded,
+  &.image,
+  &.button {
+    border-radius: var(--radius-md);
+  }
+
+  &.circular {
+    display: inline-block;
+    border-radius: var(--radius-full);
+  }
+}
+
+.skeletonText {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animation-pulse,
+  .animation-wave {
+    animation: none;
+  }
+}

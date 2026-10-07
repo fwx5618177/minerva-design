@@ -1,0 +1,31 @@
+{
+  "title": "从 @novel-isr/ui 迁移",
+  "description": "@novel-isr/ui 0.1.40 的每个导出如何映射到 Minerva，以及全部属性名与行为差异。",
+  "paths": {
+    "title": "两种迁移路径",
+    "compat": "无缝替换：保留业务代码，把导入改为 @minerva/lib-core/compat（或把 @novel-isr/ui 变成再导出的薄壳）。参见",
+    "native": "原生迁移：改用 Minerva 的 API。下表给出 Minerva 中的名称，以及每个改名的属性和变化的行为。"
+  },
+  "summary": {
+    "title": "汇总与平台能力",
+    "text": "每个导出分为 NEW（Minerva 新组件）、MERGED（以超集方式合并进已有的 Minerva 组件，不丢失任何能力）或 PLATFORM（主题平台、hooks、工具函数、入口）。"
+  },
+  "mapping": {
+    "title": "组件映射",
+    "text": "由仓库中的 docs/migration/novel-isr-ui.md 生成（唯一事实来源）。"
+  },
+  "behaviour": {
+    "title": "原生 API 的行为差异",
+    "names": "布尔值与尺寸：isOpen/onClose → open/onOpenChange，isInvalid → invalid，isLoading → loading，sm/md/lg → small/medium/large。",
+    "strings": "内置文案走 lib-core 的 i18n（en / zh / fr），并且总能通过属性覆盖；compat 会显式传入 novel 的原始文案。",
+    "tooltip": "TooltipProvider 的延迟优先于单个提示的默认值（在 novel 与 compat 中，每个提示保持自己的 300 毫秒）。",
+    "inputs": "Checkbox、Radio、Switch 改为原生 input：ref 指向 <input>。",
+    "radio": "RadioGroup 的 direction 由 row/column 改为 horizontal/vertical；value={null} 表示受控且未选中。",
+    "badge": "Badge 默认为 solid 且 role=\"status\"；Alert 的 role 随类型变化（compat 保持 novel 的行为）。",
+    "navTree": "NavTree：禁用的叶子节点既不触发回调也不保留 href；没有 href 的叶子节点渲染为按钮。",
+    "tabs": "Tabs：onValueChange → onChange，colorScheme → color。",
+    "toast": "ToastProvider 的 position 改为驼峰（topRight）；toast.dismiss() 关闭全部；悬停时暂停计时。",
+    "statusIndicator": "StatusIndicator 不再可聚焦（它是 role=\"status\" 的实时区域）。",
+    "full": "完整列表（包括每个改名的属性）见上方表格和 docs/migration/novel-isr-ui.md。"
+  }
+}

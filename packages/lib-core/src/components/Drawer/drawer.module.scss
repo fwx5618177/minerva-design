@@ -1,0 +1,297 @@
+$gutter: clamp(1rem, 3vw, 1.5rem);
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--overlay-color);
+  z-index: var(--z-overlay);
+  animation: drawer-fade-in var(--transition-base);
+
+  &[data-state="closed"] {
+    animation: drawer-fade-out var(--transition-base);
+  }
+}
+
+.content {
+  position: fixed;
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// ---- side ----
+.right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100dvh;
+  max-width: calc(100vw - 1rem);
+  border-right: 0;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  animation: drawer-slide-right-in var(--transition-base);
+
+  &[data-state="closed"] {
+    animation: drawer-slide-right-out var(--transition-base);
+  }
+}
+.left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100dvh;
+  max-width: calc(100vw - 1rem);
+  border-left: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  animation: drawer-slide-left-in var(--transition-base);
+
+  &[data-state="closed"] {
+    animation: drawer-slide-left-out var(--transition-base);
+  }
+}
+.top {
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-height: calc(100dvh - 1rem);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  animation: drawer-slide-top-in var(--transition-base);
+
+  &[data-state="closed"] {
+    animation: drawer-slide-top-out var(--transition-base);
+  }
+}
+.bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-height: calc(100dvh - 1rem);
+  border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  animation: drawer-slide-bottom-in var(--transition-base);
+
+  &[data-state="closed"] {
+    animation: drawer-slide-bottom-out var(--transition-base);
+  }
+}
+
+// ---- size ----
+.left,
+.right {
+  &.small {
+    width: min(20rem, calc(100vw - 1rem));
+  }
+  &.medium {
+    width: min(30rem, calc(100vw - 1rem));
+  }
+  &.large {
+    width: min(45rem, calc(100vw - 1rem));
+  }
+  &.full {
+    width: 100vw;
+    max-width: none;
+  }
+}
+
+.top,
+.bottom {
+  &.small {
+    height: min(15rem, calc(100dvh - 1rem));
+  }
+  &.medium {
+    height: min(25rem, calc(100dvh - 1rem));
+  }
+  &.large {
+    height: 70vh;
+  }
+  &.full {
+    height: 100dvh;
+    max-height: none;
+  }
+}
+
+.header,
+.description,
+.body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.content:has(> .close) .header {
+  padding-right: calc(2rem + var(--space-3) + var(--space-3));
+}
+
+// The description comes first in the DOM but is displayed below the title.
+.header {
+  order: -1;
+  padding: $gutter $gutter var(--space-3);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  flex-shrink: 0;
+}
+
+.description {
+  order: 0;
+  margin: 0;
+  padding: 0 $gutter var(--space-3);
+  color: var(--text-secondary-color);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  flex-shrink: 0;
+}
+
+.body {
+  order: 1;
+  padding: var(--space-3) $gutter;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  order: 2;
+  padding: var(--space-4) $gutter $gutter;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--surface-muted-color);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--primary-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+.visuallyHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .content {
+    animation: none !important;
+  }
+}
+
+@keyframes drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes drawer-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes drawer-slide-right-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes drawer-slide-right-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes drawer-slide-left-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes drawer-slide-left-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes drawer-slide-top-in {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes drawer-slide-top-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes drawer-slide-bottom-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes drawer-slide-bottom-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}

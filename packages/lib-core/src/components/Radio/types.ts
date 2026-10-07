@@ -6,7 +6,8 @@ export interface RadioProps {
   /** Initial checked state (uncontrolled). Ignored inside a RadioGroup */
   defaultChecked?: boolean;
   /**
-   * Disables the radio
+   * Disables the radio. Inherited from an enclosing FormControl when not set;
+   * an explicit `false` overrides the FormControl
    * @default false
    */
   disabled?: boolean;
@@ -20,7 +21,7 @@ export interface RadioProps {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => void;
   /**
-   * Radio size. Overridden by the RadioGroup size
+   * Radio size. Overridden by the RadioGroup size when the group sets one
    * @default "medium"
    */
   size?: "small" | "medium" | "large";
@@ -29,8 +30,10 @@ export interface RadioProps {
    * @default "default"
    */
   type?: "default" | "primary" | "success" | "warning" | "error";
-  /** Text label displayed next to the radio */
-  label?: string;
+  /** Label displayed next to the radio */
+  label?: React.ReactNode;
+  /** Label content (alternative to `label`; used when `label` is not set) */
+  children?: React.ReactNode;
   /** Accessible label, required when there is no visible label */
   ariaLabel?: string;
   /**
@@ -48,7 +51,8 @@ export interface RadioProps {
    */
   required?: boolean;
   /**
-   * Shows the error state (errorMessage replaces helperText)
+   * Shows the error state (errorMessage replaces helperText and describes the
+   * radio)
    * @default false
    */
   error?: boolean;
@@ -66,8 +70,8 @@ export interface RadioProps {
 }
 
 export interface RadioGroupProps {
-  /** Value of the selected radio (controlled) */
-  value?: string | number;
+  /** Value of the selected radio (controlled; `null` = controlled with no selection) */
+  value?: string | number | null;
   /** Initially selected value (uncontrolled) */
   defaultValue?: string | number;
   /**
@@ -85,7 +89,8 @@ export interface RadioGroupProps {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => void;
   /**
-   * Disables every radio in the group
+   * Disables every radio in the group (inherited from an enclosing
+   * FormControl when not set)
    * @default false
    */
   disabled?: boolean;
@@ -102,19 +107,20 @@ export interface RadioGroupProps {
    */
   direction?: "horizontal" | "vertical";
   /**
-   * Size applied to every radio in the group
-   * @default "medium"
+   * Size applied to every radio in the group; when not set each radio uses
+   * its own size
    */
   size?: "small" | "medium" | "large";
   /**
-   * Shows the error state
+   * Shows the error state (also set by an invalid enclosing FormControl)
    * @default false
    */
   error?: boolean;
   /** Helper text shown below the group (linked with aria-describedby) */
   helperText?: string;
   /**
-   * Marks the group as required (aria-required)
+   * Marks the group as required (aria-required; inherited from an enclosing
+   * FormControl)
    * @default false
    */
   required?: boolean;

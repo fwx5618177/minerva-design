@@ -1,0 +1,60 @@
+{
+  "title": "Modal",
+  "description": "A dialog that interrupts the page for a focused task. Focus is trapped inside, Escape and a backdrop click close it, and focus returns to the opener. On narrow screens it becomes a bottom sheet.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Controlled with open and onOpenChange. title becomes the accessible name, description the accessible description."
+    },
+    "uncontrolled": {
+      "title": "Uncontrolled with a trigger",
+      "description": "Pass trigger to let the modal manage its own state."
+    },
+    "sizes": {
+      "title": "Sizes",
+      "description": "small, medium (default), large, xlarge and full."
+    },
+    "form": {
+      "title": "Form",
+      "description": "A <form> directly inside the modal keeps the body scrollable and the footer visible; the submit button submits it."
+    },
+    "compound": {
+      "title": "Compound API",
+      "description": "ModalRoot, ModalTrigger, ModalContent, ModalHeader, ModalBody, ModalFooter and ModalClose for full control."
+    }
+  },
+  "api": {
+    "ModalProps": {
+      "open": "Controlled open state; leave undefined for uncontrolled",
+      "defaultOpen": "Initial open state while uncontrolled",
+      "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+      "trigger": "Element that opens it on click (single element, rendered with asChild)",
+      "title": "Title, used as the dialog's accessible name",
+      "description": "Description below the title, used as the accessible description",
+      "size": "Width preset",
+      "hideCloseButton": "Hides the close (×) button",
+      "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+      "className": "Additional class name of the panel",
+      "ref": "Ref to the dialog element",
+      "children": "Body: usually ModalBody + ModalFooter, or a <form> wrapping them"
+    },
+    "ModalRootProps": {
+      "open": "Controlled open state; leave undefined for uncontrolled",
+      "defaultOpen": "Initial open state while uncontrolled",
+      "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+      "modal": "Modal mode: traps focus, blocks outside interaction and hides the page from assistive technology",
+      "children": "Trigger and content"
+    },
+    "ModalTriggerProps": {
+      "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"
+    },
+    "ModalContentProps": {
+      "ref": "Ref to the dialog element",
+      "size": "Width preset",
+      "hideCloseButton": "Hides the close (×) button",
+      "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+      "description": "Visible description below the title; without it a hidden empty description is rendered",
+      "overlayClassName": "Class name of the overlay (backdrop)"
+    }
+  }
+}

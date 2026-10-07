@@ -1,0 +1,42 @@
+{
+  "title": "NumberInput",
+  "description": "矢印キーでのステップ、任意のステッパー、min / max の制限、固定精度を備えた数値フィールド（spinbutton）。値はフォーカス喪失または Enter で確定します。",
+  "demos": {
+    "basic": {
+      "title": "基本",
+      "description": "範囲外や数値でない入力は警告され、確定時に制限または元に戻されます。クリアすると null。"
+    },
+    "stepper-precision": {
+      "title": "ステッパーと精度",
+      "description": "showStepper でボタンを追加。精度は指定がなければ step から推定。allowEmpty={false} では min に戻ります。"
+    },
+    "form-control": {
+      "title": "FormField と併用",
+      "description": "フィールドがラベル・状態・説明を提供し、readOnly は入力とステップを防ぎます。"
+    }
+  },
+  "api": {
+    "NumberInputProps": {
+      "value": "現在の値（制御）。`null` は空。非制御の場合は省略",
+      "defaultValue": "非制御フィールドの初期値",
+      "onChange": "確定した値で呼ばれます（フォーカス喪失 / Enter、ステップ、ステッパー）。入力中は呼ばれません。クリア時は `null`",
+      "min": "許容される最小値。確定値はこれに制限されます",
+      "max": "許容される最大値。確定値はこれに制限されます",
+      "step": "ArrowUp / ArrowDown とステッパーで増減する量",
+      "precision": "値の小数桁数。省略時は step から推定（step 0.01 -> 2）",
+      "size": "フィールドのサイズ",
+      "invalid": "エラー状態（無効な FormControl や範囲外の入力でも設定）",
+      "disabled": "フィールドを無効化（FormControl でも設定）",
+      "readOnly": "フォーカス・コピー可能だが、入力やステップで値は変わりません（FormControl でも設定）",
+      "showStepper": "増減ボタンを表示。矢印キーは常に有効",
+      "allowEmpty": "クリアすると `null` を確定。それ以外は min（または 0）に戻ります",
+      "className": "ラッパーのクラス名",
+      "incrementLabel": "増加ボタンのアクセシブルラベル",
+      "decrementLabel": "減少ボタンのアクセシブルラベル",
+      "notANumberMessage": "入力が数値でないときに表示されるヒント（ラッパーの title）",
+      "belowMinMessage": "入力が min 未満のときのヒント",
+      "aboveMaxMessage": "入力が max を超えるときのヒント",
+      "ref": "<input> 要素への ref"
+    }
+  }
+}

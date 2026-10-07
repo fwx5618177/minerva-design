@@ -1,0 +1,83 @@
+{
+  "title": "テーブル",
+  "description": "データの行を表示します。一般的な用途には columns と data を渡す Table、独自の見出しやセル結合には TableRoot とその部品、ページネーション・読み込み・エラー状態には DataTable を使います。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "各列は render 関数がなければ row[key] を表示します。行には安定した rowKey を指定してください。"
+    },
+    "variants": {
+      "title": "バリアントとサイズ",
+      "description": "シンプル・ストライプ・罫線付きの行を small / medium / large の密度で表示し、ホバー時の強調も選べます。"
+    },
+    "fixed-columns": {
+      "title": "固定列とスクロール",
+      "description": "scroll.x は最小幅、scroll.y は高さの上限を設定し、見出しを固定します。固定列には width が必要で、先頭（left）または末尾（right）に連続して宣言します。ellipsis は長いテキストを省略します。"
+    },
+    "states": {
+      "title": "読み込みと空の状態",
+      "description": "loading はスケルトン行（支援技術からは非表示）を表示し、data が空のときは emptyText を表示します。"
+    },
+    "data-table": {
+      "title": "DataTable",
+      "description": "表の下にページネーションを追加し、error が設定されると表をアラートと再試行ボタンに置き換えます。行はあらかじめページ分割しておきます。"
+    },
+    "compound": {
+      "title": "構成部品",
+      "description": "TableRoot・TableHead・TableBody・TableRow・TableHeader・TableCell はネイティブの表要素を描画し、複数行の見出しやセル結合に使えます。"
+    },
+    "cell-content": {
+      "title": "セルの内容",
+      "description": "TableCellContent は長い内容の幅を制限して折り返し、控えめな 2 行目や等幅の主テキストを表示できます。"
+    }
+  },
+  "api": {
+    "TableProps": {
+      "columns": "列の定義",
+      "data": "表示する行",
+      "rowKey": "行から安定したキーを取り出します（既定は行インデックス）",
+      "emptyText": "data が空のときに表示する 1 行の内容",
+      "loading": "データの代わりにスケルトン行を表示します",
+      "loadingRows": "読み込み中に表示するスケルトン行の数"
+    },
+    "TableColumn": {
+      "key": "列の一意なキー。各行から既定で読み取るフィールドでもあります",
+      "header": "見出しの内容",
+      "render": "セルを描画します。既定は row[key]",
+      "width": "列幅（数値はピクセル）。width と min-width に適用され、固定列では必須です",
+      "align": "見出しとセルの水平方向の配置",
+      "ellipsis": "内容を 1 行に収め、省略記号で切り詰めます",
+      "fixed": "横スクロール時に列を左端または右端に固定します"
+    },
+    "DataTableProps": {
+      "pagination": "表の下に表示するページネーションの props（行は事前にページ分割）",
+      "error": "エラーメッセージ。表とページネーションをアラートに置き換えます",
+      "onRetry": "エラー時に表示される再試行ボタンのコールバック",
+      "retryLabel": "再試行ボタンのテキスト"
+    },
+    "TableRootProps": {
+      "size": "セルの密度",
+      "variant": "見た目：シンプル、ストライプ、罫線付き",
+      "hoverable": "ホバー時に行を強調します",
+      "scroll": "スクロール領域の最小幅／最大高さ",
+      "ref": "<table> 要素への ref"
+    },
+    "TableScrollConfig": {
+      "x": "表の最小幅。コンテナが狭いと横スクロールします",
+      "y": "表示する高さの上限。縦スクロールし、見出しは固定されます"
+    },
+    "TableCellContentProps": {
+      "primary": "主な内容",
+      "secondary": "主な内容の下に表示する控えめな補足",
+      "monospace": "主な内容を等幅フォントの <code> で表示します",
+      "maxWidth": "最大幅（数値はピクセル）。長い内容は折り返します",
+      "ref": "ルート <div> 要素への ref"
+    },
+    "FixedColumnLayout": {
+      "leftOffsets": "左固定列ごとの左オフセット（px）、列キー別",
+      "rightOffsets": "右固定列ごとの右オフセット（px）、列キー別",
+      "lastLeftFixedKey": "先頭の左固定ブロックの最後の列（境界に影）",
+      "firstRightFixedKey": "末尾の右固定ブロックの最初の列（境界に影）"
+    }
+  }
+}

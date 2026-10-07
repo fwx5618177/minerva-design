@@ -3,7 +3,7 @@
   "description": "在 React 项目中添加 Minerva、引入样式表，并可选地注册 Web Components。",
   "requirements": {
     "title": "环境要求",
-    "react": "React 与 React DOM 18 或更高版本（@minerva/lib-core 的 peer 依赖）。",
+    "react": "React 与 React DOM 19 或更高版本（@minerva/lib-core 的 peer 依赖）。",
     "bundler": "支持 ES 模块和 CSS 导入的构建工具，例如 Vite、webpack、Rspack 或 Next.js。同时也提供 CommonJS 构建。",
     "browsers": "现代常青浏览器：主题令牌依赖 CSS 自定义属性和 color-mix()。"
   },
@@ -15,7 +15,13 @@
   "styles": {
     "title": "引入样式表",
     "text": "组件样式和默认主题令牌被打包在同一个 CSS 文件中。请在应用的入口文件中引入一次：",
-    "note": "缺少 @minerva/lib-core/style.css 时组件将没有样式。只需引入一次；在多个模块中重复引入不会出错，但没有必要。"
+    "note": "缺少 @minerva/lib-core/style.css 时组件将没有样式。只需引入一次；在多个模块中重复引入不会出错，但没有必要。",
+    "extras": "同目录下还发布了两个可选样式表：@minerva/lib-core/compat.css 为 compat 入口提供 @novel-isr/ui 的 --ui-* 令牌层和工具类；@minerva/lib-core/prose.scss 是一个包含长文排版 mixin 的 Sass 文件，可在你自己的 Sass 中通过 @use 引入。"
+  },
+  "optional": {
+    "title": "可选入口与 peer 依赖",
+    "text": "基于 Monaco 的代码编辑器作为独立入口 @minerva/lib-core/monaco 发布，因此主入口永远不会引入 Monaco。它的 peer 依赖 @monaco-editor/react 和 monaco-editor 是可选的：只有导入该入口时才需要安装。",
+    "rsc": "使用 Next.js 或其他 React Server Components 框架？请参阅 Server Components，了解哪些入口是客户端边界。"
   },
   "app": {
     "title": "第一个组件",

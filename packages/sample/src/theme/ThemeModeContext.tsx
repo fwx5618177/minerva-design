@@ -8,7 +8,8 @@ import React, {
   useState,
   useSyncExternalStore,
 } from "react";
-import { themes } from "@minerva/lib-core";
+import { palettes, themes } from "@minerva/lib-core";
+import { PALETTES, type Palette } from "@minerva/lib-core/theme-utils";
 
 /** Theme choice offered by the docs site ("auto" follows the OS setting). */
 export type ThemeMode = "auto" | "light" | "dark" | "github-dark";
@@ -23,6 +24,28 @@ export const THEME_MODES: readonly ThemeMode[] = [
 ];
 
 export const THEME_STORAGE_KEY = "minerva-docs-theme";
+export const PALETTE_STORAGE_KEY = "minerva-docs-palette";
+
+/** Palette choice offered by the docs site ("default" = no palette). */
+export type PaletteChoice = Palette | "default";
+export const PALETTE_CHOICES: readonly PaletteChoice[] = [
+  "default",
+  ...PALETTES,
+];
+
+const readStoredPalette = (): PaletteChoice => {
+  try {
+    const stored =
+      typeof localStorage !== "undefined"
+        ? localStorage.getItem(PALETTE_STORAGE_KEY)
+        : null;
+    return (PALETTE_CHOICES as readonly string[]).includes(stored ?? "")
+      ? (stored as PaletteChoice)
+      : "default";
+  } catch {
+    return "default";
+  }
+};
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 
 const isThemeMode = (value: unknown): value is ThemeMode =>
@@ -75,6 +98,9 @@ export interface ThemeModeContextValue {
   setMode: (mode: ThemeMode) => void;
   /** The built-in theme currently applied. */
   resolved: ResolvedThemeMode;
+  /** Palette choice (persisted in localStorage). */
+  palette: PaletteChoice;
+  setPalette: (palette: PaletteChoice) => void;
 }
 
 const ThemeModeContext = createContext<ThemeModeContextValue | undefined>(
@@ -82,9 +108,13 @@ const ThemeModeContext = createContext<ThemeModeContextValue | undefined>(
 );
 
 export const ThemeModeProvider: React.FC<{
-  children: (resolved: ResolvedThemeMode) => React.ReactNode;
+  children: (
+    resolved: ResolvedThemeMode,
+    palette: Palette | null,
+  ) => React.ReactNode;
 }> = ({ children }) => {
   const [mode, setModeState] = useState<ThemeMode>(readStoredMode);
+  const [palette, setPaletteState] = useState<PaletteChoice>(readStoredPalette);
   const systemScheme = useSyncExternalStore(
     mode === "auto" ? subscribeToScheme : subscribeNever,
     getSystemScheme,
@@ -100,25 +130,42 @@ export const ThemeModeProvider: React.FC<{
     }
   }, []);
 
+  const setPalette = useCallback((next: PaletteChoice) => {
+    setPaletteState(next);
+    try {
+      localStorage.setItem(PALETTE_STORAGE_KEY, next);
+    } catch {
+      // storage unavailable: keep the in-memory choice
+    }
+  }, []);
+
   const resolved: ResolvedThemeMode = mode === "auto" ? systemScheme : mode;
+  // Palettes apply to the light / dark themes (github-dark has its own tokens)
+  const activePalette: Palette | null =
+    palette !== "default" && resolved !== "github-dark" ? palette : null;
 
   // Keep <html data-theme> (light/dark) and sample-only helpers in sync.
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute("data-theme", resolved === "light" ? "light" : "dark");
     root.setAttribute("data-theme-name", resolved);
-    const rgb = hexToRgbTriplet(String(themes[resolved]["primary-color"]));
+    const primary = activePalette
+      ? palettes[activePalette][resolved === "light" ? "light" : "dark"][
+          "primary-color"
+        ]
+      : themes[resolved]["primary-color"];
+    const rgb = hexToRgbTriplet(String(primary));
     if (rgb) root.style.setProperty("--primary-rgb", rgb);
-  }, [resolved]);
+  }, [resolved, activePalette]);
 
   const value = useMemo(
-    () => ({ mode, setMode, resolved }),
-    [mode, setMode, resolved],
+    () => ({ mode, setMode, resolved, palette, setPalette }),
+    [mode, setMode, resolved, palette, setPalette],
   );
 
   return (
     <ThemeModeContext.Provider value={value}>
-      {children(resolved)}
+      {children(resolved, activePalette)}
     </ThemeModeContext.Provider>
   );
 };

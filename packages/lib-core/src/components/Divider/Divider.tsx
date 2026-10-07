@@ -14,6 +14,7 @@ import styles from "./divider.module.scss";
  * @param children - 分割线中的文字内容
  * @param textAlign - 文字对齐方式
  * @param elevation - 是否带投影
+ * @param flexItem - 在 flex 容器中拉伸的竖向分割线
  * @param className - 自定义类名
  * @param style - 自定义样式
  * @param ref - 根元素的 ref
@@ -28,12 +29,19 @@ const Divider = ({
   children,
   textAlign = "center",
   elevation = false,
+  flexItem = false,
   className,
   style,
   ref,
+  ...rest
 }: DividerProps) => {
-  // `0` is a valid thickness / spacing / text, so only skip null-ish values
-  const hasText = children != null && children !== false && children !== "";
+  // `0` is a valid thickness / spacing / text, so only skip null-ish values.
+  // Text is only rendered by horizontal dividers.
+  const hasText =
+    orientation === "horizontal" &&
+    children != null &&
+    children !== false &&
+    children !== "";
   const dividerStyle: React.CSSProperties = {
     ...style,
     ...(color && { borderColor: color }),
@@ -56,19 +64,38 @@ const Divider = ({
     hasText &&
       styles[`text${textAlign.charAt(0).toUpperCase() + textAlign.slice(1)}`],
     elevation && styles.elevation,
+    flexItem && styles.flexItem,
+    // Stable hooks shared with @novel-isr/ui
+    hasText
+      ? "ui-divider-with-label"
+      : ["ui-divider", `ui-divider-${orientation}`],
     className,
   );
 
+  if (hasText) {
+    return (
+      <div
+        ref={ref as React.Ref<HTMLDivElement>}
+        role="separator"
+        aria-orientation={orientation}
+        {...rest}
+        className={dividerClasses}
+        style={dividerStyle}
+      >
+        <span className={styles.text}>{children}</span>
+      </div>
+    );
+  }
+
+  // A native <hr> is an implicit separator
   return (
-    <div
-      ref={ref}
+    <hr
+      ref={ref as React.Ref<HTMLHRElement>}
+      aria-orientation={orientation}
+      {...rest}
       className={dividerClasses}
       style={dividerStyle}
-      role="separator"
-      aria-orientation={orientation}
-    >
-      {hasText && <span className={styles.text}>{children}</span>}
-    </div>
+    />
   );
 };
 

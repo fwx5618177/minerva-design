@@ -1,0 +1,217 @@
+// Select trigger follows the Input border strategy: a transparent 1px border
+// reserves the box, the visible border is an inset box-shadow (no sub-pixel
+// seams at the rounded corners) and focus adds a soft 4px halo.
+.trigger {
+  --select-border: var(--border-color);
+  --select-focus-ring: var(--focus-ring-color);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background-color: var(--surface-color);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 0 1px var(--select-border);
+  font-family: inherit;
+  color: var(--text-color);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    --select-border: var(--primary-color);
+  }
+
+  &:focus-visible,
+  &[data-state="open"] {
+    outline: none;
+    --select-border: var(--primary-color);
+    box-shadow:
+      inset 0 0 0 1px var(--select-border),
+      0 0 0 4px var(--select-focus-ring);
+  }
+
+  &[data-placeholder] {
+    color: var(--text-muted-color);
+  }
+
+  &:disabled {
+    background-color: var(--surface-subtle-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.small {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.medium {
+  height: 40px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-md);
+}
+
+.large {
+  height: 48px;
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.invalid {
+  --select-border: var(--danger-color);
+
+  &:hover:not(:disabled) {
+    --select-border: var(--danger-color);
+  }
+
+  &:focus-visible,
+  &[data-state="open"] {
+    --select-border: var(--danger-color);
+    box-shadow:
+      inset 0 0 0 1px var(--select-border),
+      0 0 0 4px var(--danger-color-subtle);
+  }
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--text-secondary-color);
+  transition: transform var(--transition-fast);
+
+  .trigger[data-state="open"] & {
+    transform: rotate(180deg);
+  }
+}
+
+.content {
+  z-index: var(--z-popover);
+  background-color: var(--surface-elevated-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: var(--radix-select-trigger-width);
+  max-width: min(32rem, var(--radix-select-content-available-width, calc(100vw - 16px)));
+  max-height: min(320px, var(--radix-select-content-available-height, 320px));
+  overflow: hidden;
+  color: var(--text-color);
+  animation: selectFadeIn var(--transition-fast);
+}
+
+@keyframes selectFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}
+
+.viewport {
+  padding: var(--space-2);
+}
+
+// Neutral hover; the checked option gets the subtle primary fill + check icon.
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--text-color);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+
+  &[data-highlighted] {
+    background-color: var(--hover-color);
+  }
+
+  &[data-state="checked"] {
+    color: var(--primary-color-text);
+    font-weight: var(--font-weight-medium);
+    background-color: var(--primary-color-subtle);
+  }
+
+  &[data-state="checked"][data-highlighted] {
+    background-color: color-mix(in srgb, var(--primary-color) 18%, var(--surface-color));
+  }
+
+  &[data-disabled] {
+    color: var(--text-disabled-color);
+    cursor: not-allowed;
+  }
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.itemIndicator {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-1) calc(-1 * var(--space-1));
+  background-color: var(--border-color);
+}
+
+.scrollButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  background-color: var(--surface-elevated-color);
+  color: var(--text-secondary-color);
+  cursor: default;
+}

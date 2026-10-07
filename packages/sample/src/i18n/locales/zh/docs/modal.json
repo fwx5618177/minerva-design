@@ -1,0 +1,60 @@
+{
+  "title": "Modal 模态框",
+  "description": "打断页面、聚焦单一任务的对话框。焦点被锁定在内部，Escape 和点击遮罩可关闭，关闭后焦点回到打开它的元素。窄屏下以底部弹层呈现。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "通过 open 和 onOpenChange 受控。title 作为可访问名称，description 作为可访问描述。"
+    },
+    "uncontrolled": {
+      "title": "带触发器的非受控用法",
+      "description": "传入 trigger，让模态框自行管理状态。"
+    },
+    "sizes": {
+      "title": "尺寸",
+      "description": "small、medium（默认）、large、xlarge 和 full。"
+    },
+    "form": {
+      "title": "表单",
+      "description": "直接放在模态框里的 <form> 保持主体可滚动、底部可见；提交按钮会提交表单。"
+    },
+    "compound": {
+      "title": "组合式 API",
+      "description": "使用 ModalRoot、ModalTrigger、ModalContent、ModalHeader、ModalBody、ModalFooter 和 ModalClose 完全掌控结构。"
+    }
+  },
+  "api": {
+    "ModalProps": {
+      "open": "受控的打开状态；不传（undefined）时为非受控",
+      "defaultOpen": "非受控时的初始打开状态",
+      "onOpenChange": "请求改变打开状态时调用（触发器、关闭按钮、Escape、点击遮罩）",
+      "trigger": "点击后打开的元素（单个元素，以 asChild 方式渲染）",
+      "title": "标题，作为对话框的可访问名称",
+      "description": "标题下方的描述，作为可访问描述",
+      "size": "宽度预设",
+      "hideCloseButton": "隐藏关闭（×）按钮",
+      "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
+      "className": "面板的额外类名",
+      "ref": "指向对话框元素的 ref",
+      "children": "主体：通常是 ModalBody + ModalFooter，或包裹它们的 <form>"
+    },
+    "ModalRootProps": {
+      "open": "受控的打开状态；不传（undefined）时为非受控",
+      "defaultOpen": "非受控时的初始打开状态",
+      "onOpenChange": "请求改变打开状态时调用（触发器、关闭按钮、Escape、点击遮罩）",
+      "modal": "模态模式：锁定焦点、阻止外部交互，并对辅助技术隐藏页面其余部分",
+      "children": "触发器与内容"
+    },
+    "ModalTriggerProps": {
+      "asChild": "把行为合并到唯一的子元素上，而不是渲染自己的元素"
+    },
+    "ModalContentProps": {
+      "ref": "指向对话框元素的 ref",
+      "size": "宽度预设",
+      "hideCloseButton": "隐藏关闭（×）按钮",
+      "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
+      "description": "标题下方的可见描述；不传时渲染一个隐藏的空描述",
+      "overlayClassName": "遮罩层的类名"
+    }
+  }
+}

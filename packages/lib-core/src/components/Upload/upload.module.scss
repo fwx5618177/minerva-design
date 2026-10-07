@@ -1,0 +1,79 @@
+.upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  color: var(--text-color);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+}
+
+.label {
+  font-weight: var(--font-weight-medium);
+}
+
+.dropzone {
+  padding: var(--space-4);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  transition: border-color var(--transition-fast);
+
+  &.dragging {
+    border-color: var(--primary-color);
+    background: var(--primary-color-subtle);
+  }
+}
+
+// the Alert's own bottom margin is replaced by the column gap
+.upload .error {
+  margin-bottom: 0;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.preview {
+  width: 72px;
+  height: 48px;
+  flex: 0 0 72px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.status {
+  color: var(--text-muted-color);
+  font-size: var(--font-size-xs);
+
+  &.statusError {
+    color: var(--danger-color-text);
+  }
+}
+
+.actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--space-1);
+}

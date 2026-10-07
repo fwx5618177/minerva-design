@@ -201,10 +201,9 @@ describe("Cascader", () => {
     await user.hover(screen.getByText("Jiangsu"));
 
     expect(getColumns()).toHaveLength(2);
-    expect(screen.getByText("Jiangsu").closest("li")).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    const jiangsuOption = screen.getByText("Jiangsu").closest("li");
+    expect(jiangsuOption).toHaveAttribute("data-expanded", "true");
+    expect(jiangsuOption).toHaveAttribute("aria-controls", getColumns()[1].id);
 
     await user.click(screen.getByText("Nanjing"));
     expect(onChange).toHaveBeenCalledWith(
@@ -415,7 +414,7 @@ describe("Cascader", () => {
     expect(onChange).not.toHaveBeenCalled();
     expect(getDropdown()).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Lazy" })).toHaveAttribute(
-      "aria-expanded",
+      "data-expanded",
       "true",
     );
 

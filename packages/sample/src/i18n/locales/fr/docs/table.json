@@ -1,0 +1,83 @@
+{
+  "title": "Tableau",
+  "description": "Affiche des lignes de données. Utilisez Table avec columns et data dans le cas courant, TableRoot et ses parties pour des en-têtes personnalisés ou des cellules fusionnées, et DataTable pour la pagination et les états de chargement et d'erreur.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Chaque colonne affiche row[key] sauf si elle a une fonction render. Donnez aux lignes un rowKey stable."
+    },
+    "variants": {
+      "title": "Variantes et tailles",
+      "description": "Lignes simples, zébrées ou bordées, en densité small, medium ou large, avec surbrillance au survol en option."
+    },
+    "fixed-columns": {
+      "title": "Colonnes fixes et défilement",
+      "description": "scroll.x fixe une largeur minimale, scroll.y limite la hauteur avec un en-tête collant. Les colonnes fixes exigent une largeur et doivent être déclarées au début (left) ou à la fin (right) ; ellipsis tronque les textes longs."
+    },
+    "states": {
+      "title": "États de chargement et vide",
+      "description": "loading affiche des lignes squelettes (masquées aux technologies d'assistance) ; un tableau data vide affiche emptyText."
+    },
+    "data-table": {
+      "title": "DataTable",
+      "description": "Ajoute une pagination sous le tableau et le remplace par une alerte et un bouton Réessayer quand error est défini. Les lignes doivent déjà être paginées."
+    },
+    "compound": {
+      "title": "Parties composées",
+      "description": "TableRoot, TableHead, TableBody, TableRow, TableHeader et TableCell rendent des éléments de tableau natifs pour des en-têtes sur plusieurs lignes ou des cellules fusionnées."
+    },
+    "cell-content": {
+      "title": "Contenu de cellule",
+      "description": "TableCellContent borne et renvoie à la ligne les contenus longs, avec une seconde ligne atténuée ou un texte principal à chasse fixe en option."
+    }
+  },
+  "api": {
+    "TableProps": {
+      "columns": "Définitions des colonnes",
+      "data": "Lignes à afficher",
+      "rowKey": "Extrait une clé stable d'une ligne (par défaut l'index de la ligne)",
+      "emptyText": "Contenu de la ligne unique affichée quand data est vide",
+      "loading": "Affiche des lignes squelettes à la place des données",
+      "loadingRows": "Nombre de lignes squelettes pendant le chargement"
+    },
+    "TableColumn": {
+      "key": "Clé unique de la colonne ; aussi le champ lu par défaut dans chaque ligne",
+      "header": "Contenu de l'en-tête",
+      "render": "Rend une cellule ; par défaut row[key]",
+      "width": "Largeur de colonne (nombres en pixels), appliquée en width et min-width ; obligatoire pour les colonnes fixes",
+      "align": "Alignement horizontal de l'en-tête et des cellules",
+      "ellipsis": "Tronque le contenu sur une seule ligne avec des points de suspension",
+      "fixed": "Fixe la colonne au bord gauche ou droit pendant le défilement horizontal"
+    },
+    "DataTableProps": {
+      "pagination": "Props de la pagination affichée sous le tableau (les lignes doivent déjà être paginées)",
+      "error": "Message d'erreur ; remplace le tableau et la pagination par une alerte",
+      "onRetry": "Appelée par le bouton Réessayer affiché avec error",
+      "retryLabel": "Texte du bouton Réessayer"
+    },
+    "TableRootProps": {
+      "size": "Densité des cellules",
+      "variant": "Style : lignes simples, zébrées ou cellules bordées",
+      "hoverable": "Met en surbrillance les lignes au survol",
+      "scroll": "Largeur minimale / hauteur maximale de la zone de défilement",
+      "ref": "Ref vers l'élément <table>"
+    },
+    "TableScrollConfig": {
+      "x": "Largeur minimale du tableau ; le conteneur défile horizontalement s'il est plus étroit",
+      "y": "Hauteur visible maximale ; le conteneur défile verticalement et l'en-tête reste collé"
+    },
+    "TableCellContentProps": {
+      "primary": "Contenu principal",
+      "secondary": "Contenu secondaire atténué sous le contenu principal",
+      "monospace": "Rend le contenu principal en <code> à chasse fixe",
+      "maxWidth": "Largeur maximale (nombres en pixels) ; le contenu long revient à la ligne",
+      "ref": "Ref vers l'élément <div> racine"
+    },
+    "FixedColumnLayout": {
+      "leftOffsets": "Décalage gauche (px) de chaque colonne fixée à gauche, par clé",
+      "rightOffsets": "Décalage droit (px) de chaque colonne fixée à droite, par clé",
+      "lastLeftFixedKey": "Dernière colonne du bloc fixé à gauche (reçoit l'ombre de bord)",
+      "firstRightFixedKey": "Première colonne du bloc fixé à droite (reçoit l'ombre de bord)"
+    }
+  }
+}

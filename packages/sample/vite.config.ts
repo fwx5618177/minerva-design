@@ -28,11 +28,21 @@ export default defineConfig({
     // Each docs page is its own chunk; keep vendor code in a stable chunk
     rolldownOptions: {
       output: {
+        // Split chunks (the Monaco engine below) must still evaluate their
+        // modules in import order, across chunk boundaries.
+        strictExecutionOrder: true,
         codeSplitting: {
           groups: [
             {
               name: "react-vendor",
               test: /node_modules[\\/](react|react-dom|scheduler|react-router|@remix-run)[\\/]/,
+            },
+            {
+              // The Monaco engine (lazy-loaded by the Monaco demo only) is
+              // ~2 MB: split it into cacheable chunks below the 500 kB limit.
+              name: "monaco-engine",
+              test: /node_modules[\\/]monaco-editor[\\/]/,
+              maxSize: 450 * 1024,
             },
           ],
         },

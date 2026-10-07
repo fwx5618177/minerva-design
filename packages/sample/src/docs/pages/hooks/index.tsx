@@ -37,6 +37,24 @@ export function ThemeAndLanguage() {
   );
 }`;
 
+const focusReturnCode = `import * as Dialog from "@radix-ui/react-dialog";
+import { useDialogFocusReturn } from "@minerva/lib-core";
+
+// A dialog opened from state (no Radix Trigger): focus goes back to the
+// element that was focused before opening, e.g. a row's menu item.
+function EditDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { open, contentRef, onCloseAutoFocus } = useDialogFocusReturn(isOpen);
+  return (
+    <Dialog.Root open={open} onOpenChange={(next) => !next && onClose()}>
+      <Dialog.Portal>
+        <Dialog.Content ref={contentRef} onCloseAutoFocus={onCloseAutoFocus}>
+          ...
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}`;
+
 const HooksDoc: React.FC = () => {
   const { t } = useTranslation();
 
@@ -57,6 +75,23 @@ const HooksDoc: React.FC = () => {
       name: "useI18n",
       signature: "() => { t: TFunction; i18n: i18n }",
       description: t("docs.hooks.reference.useI18n"),
+    },
+    {
+      name: "useDisclosure",
+      signature:
+        "(props?: { isOpen?: boolean; defaultIsOpen?: boolean; onChange?: (isOpen: boolean) => void }) => { isOpen: boolean; onOpen: () => void; onClose: () => void; onToggle: () => void }",
+      description: t("docs.hooks.reference.useDisclosure"),
+    },
+    {
+      name: "useDialogFocusReturn",
+      signature:
+        "(isOpen: boolean) => { open: boolean; contentRef: RefObject<HTMLDivElement | null>; onCloseAutoFocus: (event: Event) => void }",
+      description: t("docs.hooks.reference.useDialogFocusReturn"),
+    },
+    {
+      name: "cn",
+      signature: "(...inputs: ClassValue[]) => string",
+      description: t("docs.hooks.reference.cn"),
     },
   ];
 
@@ -103,6 +138,12 @@ const HooksDoc: React.FC = () => {
         <h2 id="standalone">{t("docs.hooks.standalone.title")}</h2>
         <p className={styles.prose}>{t("docs.hooks.standalone.text")}</p>
         <CodeBlock code={standaloneCode} language="tsx" />
+      </section>
+
+      <section className={styles.section} aria-labelledby="focus-return">
+        <h2 id="focus-return">{t("docs.hooks.focusReturn.title")}</h2>
+        <p className={styles.prose}>{t("docs.hooks.focusReturn.text")}</p>
+        <CodeBlock code={focusReturnCode} language="tsx" />
       </section>
     </DocPage>
   );

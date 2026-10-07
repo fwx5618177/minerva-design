@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import classNames from "classnames";
+import { Slot } from "@radix-ui/react-slot";
 import type { TooltipProps } from "./types";
 import {
   useAnchoredPosition,
@@ -17,10 +18,25 @@ import {
 } from "../../internal/useAnchoredPosition";
 import { useControllableState } from "../../internal/useControllableState";
 import { useIsClient } from "../../internal/useIsClient";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useTooltipConfig } from "./TooltipProvider";
 import styles from "./tooltip.module.scss";
 
 /** Extra gap so the arrow does not overlap the trigger. */
 const ARROW_GAP = 6;
+
+/** Stable `ui-tooltip-tone-*` styling hook for each variant. */
+const TONE_HOOK: Partial<Record<string, string>> = {
+  auto: "auto",
+  fixedDark: "dark",
+  fixedLight: "light",
+};
+
+type OpenState = "delayed-open" | "instant-open";
+
+type TriggerChildProps = {
+  "aria-describedby"?: string;
+};
 
 /**
  * Tooltip: shows informative content when the wrapped element is hovered or
@@ -37,8 +53,8 @@ const Tooltip = ({
   variant = "dark",
   shape = "default",
   animation = "fade",
-  enterDelay = 200,
-  leaveDelay = 0,
+  enterDelay: enterDelayProp,
+  leaveDelay: leaveDelayProp,
   offset,
   disabled = false,
   followCursor = false,
@@ -50,14 +66,21 @@ const Tooltip = ({
   onOpen,
   onClose,
   ariaLabel,
+  asChild = false,
+  contentClassName,
+  contentRef,
 }: TooltipProps) => {
   const isClient = useIsClient();
+  const config = useTooltipConfig();
+  const enterDelay = enterDelayProp ?? config?.enterDelay ?? 200;
+  const leaveDelay = leaveDelayProp ?? config?.leaveDelay ?? 0;
+  const [openState, setOpenState] = useState<OpenState>("instant-open");
   const [open, setOpen] = useControllableState({
     value: openProp,
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
-  const [triggerEl, setTriggerEl] = useState<HTMLDivElement | null>(null);
+  const [triggerEl, setTriggerEl] = useState<HTMLElement | null>(null);
   const [arrowEl, setArrowEl] = useState<HTMLDivElement | null>(null);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
   const enterTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -74,13 +97,15 @@ const Tooltip = ({
   };
   useEffect(() => clearTimers, []);
 
-  const show = () => {
+  const show = (state: OpenState = "instant-open") => {
     if (open) return;
+    setOpenState(state);
     setOpen(true);
     onOpen?.();
   };
   const hide = () => {
     if (!open) return;
+    config?.markClosed();
     setOpen(false);
     onClose?.();
   };
@@ -133,6 +158,7 @@ const Tooltip = ({
       : { mainAxis: 8 + gap },
     arrowElement: arrow ? arrowEl : null,
   });
+  const setContentRef = useMergedRefs<HTMLDivElement>(setFloating, contentRef);
 
   // Track the cursor while open (followCursor)
   useEffect(() => {
@@ -164,7 +190,15 @@ const Tooltip = ({
     if (disabled) return;
     if (followCursor) setCursor({ x: e.clientX, y: e.clientY });
     clearTimers();
-    enterTimeoutRef.current = setTimeout(show, enterDelay);
+    // Within a provider, moving quickly between tooltips skips the delay
+    if (enterDelay <= 0 || config?.shouldSkipDelay()) {
+      show();
+      return;
+    }
+    enterTimeoutRef.current = setTimeout(
+      () => show("delayed-open"),
+      enterDelay,
+    );
   };
 
   const handleMouseLeave = () => {
@@ -192,21 +226,39 @@ const Tooltip = ({
 
   // Point the interactive child at the tooltip; fall back to the wrapper
   // when children is not a single element (e.g. plain text).
-  const trigger = isValidElement<{ "aria-describedby"?: string }>(children)
-    ? cloneElement(children, {
-        "aria-describedby":
-          [children.props["aria-describedby"], describedBy]
-            .filter(Boolean)
-            .join(" ") || undefined,
-      })
-    : children;
+  const isElementChild = isValidElement<TriggerChildProps>(children);
+  const childProps: TriggerChildProps = isElementChild
+    ? (children.props as TriggerChildProps)
+    : {};
+  const childDescribedBy =
+    [childProps["aria-describedby"], describedBy].filter(Boolean).join(" ") ||
+    undefined;
+  const useChildAsTrigger = asChild && isElementChild;
 
   const background = bgColor?.includes("gradient")
     ? { background: bgColor }
     : { backgroundColor: bgColor };
 
-  return (
-    <>
+  let triggerNode: React.ReactNode;
+  if (useChildAsTrigger) {
+    // Disabled: render the child untouched (no handlers, no state hooks)
+    triggerNode = disabled ? (
+      children
+    ) : (
+      <Slot
+        ref={setTriggerEl}
+        className={className || undefined}
+        data-state={visible ? openState : "closed"}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      >
+        {cloneElement(children, { "aria-describedby": childDescribedBy })}
+      </Slot>
+    );
+  } else {
+    triggerNode = (
       <div
         ref={setTriggerEl}
         className={classNames(styles.tooltipTrigger, className)}
@@ -214,20 +266,35 @@ const Tooltip = ({
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        aria-describedby={isValidElement(children) ? undefined : describedBy}
+        aria-describedby={isElementChild ? undefined : describedBy}
       >
-        {trigger}
+        {isElementChild
+          ? cloneElement(children, { "aria-describedby": childDescribedBy })
+          : children}
       </div>
+    );
+  }
+
+  const [side, align = "center"] = finalPlacement.split("-");
+
+  return (
+    <>
+      {triggerNode}
       {visible &&
         isClient &&
         createPortal(
           <div
-            ref={setFloating}
+            ref={setContentRef}
             id={tooltipId}
             role="tooltip"
             aria-label={ariaLabel}
             data-placement={finalPlacement}
+            data-side={side}
+            data-align={align}
+            data-state={openState}
             className={classNames(
+              "ui-tooltip-content",
+              `ui-tooltip-tone-${TONE_HOOK[variant] ?? variant}`,
               styles.tooltip,
               styles[variant],
               styles[shape],
@@ -235,6 +302,7 @@ const Tooltip = ({
               followCursor && styles.followCursor,
               arrow && styles.arrow,
               isPositioned && styles.show,
+              contentClassName,
             )}
             style={{
               ...floatingStyles,
@@ -247,7 +315,7 @@ const Tooltip = ({
             {arrow && (
               <div
                 ref={setArrowEl}
-                className={styles.tooltipArrow}
+                className={classNames(styles.tooltipArrow, "ui-tooltip-arrow")}
                 style={{ ...background, ...arrowStyles }}
               />
             )}

@@ -1,23 +1,46 @@
-import type { Ref } from "react";
+import type { HTMLAttributes, ReactNode, Ref } from "react";
 
-export interface AvatarProps {
-  /** Image URL. When omitted, the first letter of name is shown */
+/** Preset size of an Avatar, or a size in pixels */
+export type AvatarSize =
+  "xsmall" | "small" | "medium" | "large" | "xlarge" | "xxlarge" | number;
+
+export interface AvatarProps extends Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  "children"
+> {
+  /** Image URL. When omitted (or when it fails to load), the initials of name are shown */
   src?: string;
   /**
-   * Name of the person; used for the initial, alt text and accessible label
+   * Name of the person; used for the initials (first letters of the first two
+   * words, or the first CJK character), the alt text and the accessible label
    * @default ""
    */
   name?: string;
+  /**
+   * Alternative text of the image; pass "" for a decorative avatar
+   * @default name, or "avatar" (localized)
+   */
+  alt?: string;
+  /**
+   * Accessible label of the avatar (and default alt text of its image)
+   * @default name, or "avatar" (localized)
+   */
+  ariaLabel?: string;
+  /** Custom fallback content shown instead of the initials when there is no image */
+  fallback?: ReactNode;
+  /** Fallback content used when there is no name (e.g. an icon) */
+  children?: ReactNode;
   /**
    * Avatar shape
    * @default "circle"
    */
   shape?: "circle" | "square" | "rounded";
   /**
-   * Avatar size
+   * Avatar size: a preset (xsmall 24px, small 32px, medium 48px, large 64px,
+   * xlarge 80px, xxlarge 96px) or a number of pixels
    * @default "medium"
    */
-  size?: "small" | "medium" | "large";
+  size?: AvatarSize;
   /**
    * Additional class name
    * @default ""
@@ -32,16 +55,24 @@ export interface AvatarProps {
   ref?: Ref<HTMLSpanElement>;
 }
 
-export interface AvatarGroupProps {
+export interface AvatarGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   /** Number of additional avatars, shown as a "+N" indicator */
   count?: number;
+  /**
+   * Maximum number of avatars to display; the others are counted in the
+   * "+N" indicator (added to count)
+   */
+  max?: number;
   /**
    * Additional class name
    * @default ""
    */
   className?: string;
   /** Avatar elements */
-  children?: React.ReactNode;
+  children?: ReactNode;
   /**
    * Accessible label of the group
    * @default "Avatar group" / "Avatar group with {count} more" (localized)

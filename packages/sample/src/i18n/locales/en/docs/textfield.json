@@ -41,12 +41,16 @@
     "validation": {
       "title": "Validation",
       "description": "helperText shows an error message and switches the field to the error state. Submit an invalid email to see it."
+    },
+    "form-control": {
+      "title": "Inside a FormControl",
+      "description": "Inside a FormControl / FormField the field takes its id, state and aria wiring; invalid shows the error state without a message."
     }
   },
   "api": {
     "TextFieldProps": {
       "name": "Name of the input; also used as its id (unless id is set) to link the label",
-      "id": "Id of the input; defaults to name",
+      "id": "Id of the input; defaults to the surrounding FormControl id, then to name",
       "label": "Floating label. Hidden when a placeholder is set or the field is read-only; it then remains the input's accessible name",
       "value": "Current value (controlled); omit for an uncontrolled field",
       "defaultValue": "Initial value of an uncontrolled field",
@@ -64,6 +68,8 @@
       "fullWidth": "Takes the full width of the container (overrides width)",
       "width": "Width of the field (any CSS length)",
       "disabled": "Disables the field",
+      "invalid": "Error state without a message (also set by an invalid FormControl); sets aria-invalid",
+      "required": "Marks the input as required (native required; a FormControl adds aria-required)",
       "ariaLabel": "Accessible label of the input (defaults to label)",
       "clearLabel": "Accessible label of the clear button",
       "showPasswordLabel": "Accessible label of the password toggle while the password is hidden",
@@ -76,7 +82,8 @@
       "onFocus": "Called when the input gains focus",
       "onKeyDown": "Called on key down in the input",
       "className": "Additional class name of the container",
-      "ref": "Ref to the underlying <input> element"
+      "ref": "Ref to the underlying <input> element",
+      "inputProps": "Extra native attributes / handlers for the <input>; managed props win, aria-describedby is merged"
     }
   }
 }

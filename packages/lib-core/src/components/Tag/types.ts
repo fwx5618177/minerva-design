@@ -1,11 +1,14 @@
-import type { Ref } from "react";
+import type { HTMLAttributes, Ref } from "react";
 
 export type TagVariant =
   "default" | "primary" | "success" | "warning" | "error" | "info";
 export type TagSize = "small" | "medium" | "large";
 export type TagShape = "square" | "rounded" | "circle";
 
-export interface TagProps {
+export interface TagProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children" | "onClick"
+> {
   /** Content of the tag */
   children?: React.ReactNode;
   /**
@@ -75,7 +78,7 @@ export interface TagProps {
    */
   closeLabel?: string;
   /**
-   * Shows a ripple effect on click
+   * Shows a ripple effect when a clickable tag is activated
    * @default true
    */
   ripple?: boolean;

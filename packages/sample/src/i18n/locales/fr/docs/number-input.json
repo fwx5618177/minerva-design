@@ -1,0 +1,42 @@
+{
+  "title": "NumberInput",
+  "description": "Champ numérique (spinbutton) avec pas au clavier, boutons optionnels, bornes min / max et précision fixe ; la valeur est validée à la perte du focus ou sur Entrée.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Les saisies hors bornes ou non numériques sont signalées puis bornées / annulées à la validation ; vider donne null."
+    },
+    "stepper-precision": {
+      "title": "Boutons et précision",
+      "description": "showStepper ajoute des boutons ; la précision découle de step sauf si définie ; allowEmpty={false} revient à min."
+    },
+    "form-control": {
+      "title": "Avec FormField",
+      "description": "Le champ fournit libellé, état et description ; readOnly bloque la saisie et les pas."
+    }
+  },
+  "api": {
+    "NumberInputProps": {
+      "value": "Valeur actuelle (contrôlée) ; `null` = champ vide. À omettre pour un champ non contrôlé",
+      "defaultValue": "Valeur initiale d’un champ non contrôlé",
+      "onChange": "Appelé avec la valeur validée (perte de focus / Entrée, pas et boutons), jamais pendant la saisie ; `null` quand le champ est vidé",
+      "min": "Valeur minimale ; les valeurs validées y sont ramenées",
+      "max": "Valeur maximale ; les valeurs validées y sont ramenées",
+      "step": "Pas ajouté / retiré par Flèche haut / bas et les boutons",
+      "precision": "Nombre de décimales ; déduit de step s’il est omis (step 0.01 -> 2)",
+      "size": "Taille du champ",
+      "invalid": "État d’erreur (aussi défini par un FormControl invalide ou une saisie hors bornes)",
+      "disabled": "Désactive le champ (aussi défini par FormControl)",
+      "readOnly": "Focalisable et copiable, mais la saisie et les pas ne modifient pas la valeur (aussi défini par FormControl)",
+      "showStepper": "Affiche les boutons d’incrément / décrément ; les flèches fonctionnent toujours",
+      "allowEmpty": "Vider le champ valide `null` ; sinon retour à min (ou 0)",
+      "className": "Classe du conteneur",
+      "incrementLabel": "Libellé accessible du bouton d’incrément",
+      "decrementLabel": "Libellé accessible du bouton de décrément",
+      "notANumberMessage": "Indication affichée (title du conteneur) quand la saisie n’est pas un nombre",
+      "belowMinMessage": "Indication affichée quand la saisie est inférieure à min",
+      "aboveMaxMessage": "Indication affichée quand la saisie dépasse max",
+      "ref": "Ref vers l’élément <input>"
+    }
+  }
+}

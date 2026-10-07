@@ -1,0 +1,39 @@
+// The outer element is a named inline-size container; the inner grid splits
+// once the container (not the viewport) reaches the chosen breakpoint.
+// --ui-split-layout-aside-width / --ui-split-layout-gap are set inline and are
+// public override hooks.
+.root {
+  container: ui-split-layout / inline-size;
+  width: 100%;
+  min-width: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--ui-split-layout-gap);
+  min-width: 0;
+}
+
+.main,
+.aside {
+  min-width: 0;
+}
+
+// Match the inner grid itself so every query uses its nearest named container.
+@container ui-split-layout (min-width: 768px) {
+  .grid.md.hasAside {
+    grid-template-columns:
+      minmax(0, 1fr)
+      min(var(--ui-split-layout-aside-width), 50%);
+  }
+}
+
+@container ui-split-layout (min-width: 1200px) {
+  .grid.lg.hasAside {
+    grid-template-columns:
+      minmax(0, 1fr)
+      min(var(--ui-split-layout-aside-width), 50%);
+  }
+}

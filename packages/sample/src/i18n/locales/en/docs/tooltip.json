@@ -12,7 +12,7 @@
     },
     "variants": {
       "title": "Variants",
-      "description": "Dark (default), light and semantic color variants."
+      "description": "Dark (default, contrasts with the theme), light and semantic colors; auto follows the theme with a frosted surface, fixedDark / fixedLight keep their colors whatever the theme."
     },
     "shapes": {
       "title": "Shapes",
@@ -41,6 +41,14 @@
     "events": {
       "title": "Events",
       "description": "onOpen and onClose fire on hover, focus, blur and Escape."
+    },
+    "as-child": {
+      "title": "asChild",
+      "description": "asChild attaches the tooltip to the child itself, without a wrapper element, so flex and grid layouts stay intact. contentClassName styles the tooltip."
+    },
+    "provider": {
+      "title": "TooltipProvider",
+      "description": "A TooltipProvider sets default delays for the tooltips inside; moving quickly from one tooltip to the next opens it immediately."
     }
   },
   "api": {
@@ -67,12 +75,21 @@
       "onClose": "Called when the tooltip closes from mouse leave, blur or Escape",
       "ariaLabel": "Accessible label of the tooltip element",
       "ref": "Imperative handle with open / close / toggle",
-      "onOpenChange": "Called with the requested open state (hover, focus, Escape, ref methods)"
+      "onOpenChange": "Called with the requested open state (hover, focus, Escape, ref methods)",
+      "asChild": "Attaches the hover / focus handlers, the ref and className directly to the single child element instead of wrapping it in a <div> (keeps flex and grid layouts intact). The child must accept a ref",
+      "contentClassName": "Additional class name of the tooltip (floating) element",
+      "contentRef": "Ref to the tooltip (floating) element, set while it is shown"
     },
     "TooltipRef": {
       "open": "Opens the tooltip",
       "close": "Closes the tooltip",
       "toggle": "Toggles the tooltip"
+    },
+    "TooltipProviderProps": {
+      "enterDelay": "Default delay before showing on hover, in milliseconds, for every Tooltip inside that does not set enterDelay",
+      "leaveDelay": "Default delay before hiding on mouse leave, in milliseconds, for every Tooltip inside that does not set leaveDelay",
+      "skipDelay": "When another tooltip of the provider closed less than this many milliseconds ago, the next one opens without waiting for its enter delay",
+      "children": "Content of the provider"
     }
   }
 }

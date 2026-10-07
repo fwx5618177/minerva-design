@@ -1,41 +1,61 @@
 import React from "react";
+import classNames from "classnames";
 import styles from "./avatarGroup.module.scss";
 import type { AvatarGroupProps } from "./types";
 import useI18n from "../../hooks/useI18n";
 
 /**
- * AvatarGroup component
- * @param count - The count of additional avatars
- * @param className - Additional classes to be added to the avatar group
- * @param children - The avatars to be displayed in the group
- * @param ariaLabel - Accessible label of the group (localized default)
- * @param ref - Ref to the root <div> element
- * @returns An avatar group component
+ * AvatarGroup: overlapping avatars with an optional "+N" indicator.
+ *
+ * `max` limits the visible avatars (the hidden ones are added to the
+ * indicator); `count` adds a number of avatars that are not rendered at all.
  */
 const AvatarGroup = ({
   count,
+  max,
   className = "",
   children,
   ariaLabel,
   ref,
+  ...rest
 }: AvatarGroupProps) => {
   const { t } = useI18n();
+  // null / false / undefined children (conditional avatars) are not counted
+  const avatars = React.Children.toArray(children);
+  const visible = max === undefined ? avatars : avatars.slice(0, max);
+  const extra = (count ?? 0) + avatars.length - visible.length;
+
   return (
     <div
       ref={ref}
       role="group"
-      className={`${styles.avatarGroup} ${className}`}
+      className={classNames(styles.avatarGroup, "ui-avatar-group", className)}
       aria-label={
         ariaLabel ??
-        (count ? t("avatar.groupWithMore", { count }) : t("avatar.group"))
+        (extra > 0
+          ? t("avatar.groupWithMore", { count: extra })
+          : t("avatar.group"))
       }
+      {...rest}
     >
-      {React.Children.map(children, (child) => (
-        <div className={styles.avatarGroupItem}>{child}</div>
+      {visible.map((child, index) => (
+        <div
+          key={React.isValidElement(child) ? (child.key ?? index) : index}
+          className={styles.avatarGroupItem}
+        >
+          {child}
+        </div>
       ))}
-      {count ? (
-        <div className={styles.count} aria-hidden="true">
-          +{count}
+      {extra > 0 ? (
+        <div
+          className={classNames(
+            styles.count,
+            "ui-avatar",
+            "ui-avatar-overflow",
+          )}
+          aria-hidden="true"
+        >
+          +{extra}
         </div>
       ) : null}
     </div>

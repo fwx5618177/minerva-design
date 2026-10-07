@@ -1,7 +1,18 @@
 import Skeleton from "./Skeleton";
-import type { SkeletonProps } from "./types";
+import { SkeletonText } from "./SkeletonText";
+import type {
+  SkeletonProps,
+  SkeletonTextProps,
+  SkeletonVariant,
+  SkeletonAnimation,
+} from "./types";
 
-export { Skeleton };
-export type { SkeletonProps };
+export { Skeleton, SkeletonText };
+export type {
+  SkeletonProps,
+  SkeletonTextProps,
+  SkeletonVariant,
+  SkeletonAnimation,
+};
 
 export default Skeleton;

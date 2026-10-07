@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import {
+  useFormControlContext,
+  useFormControlProps,
+} from "../FormControl/context";
 import type { SwitchProps } from "./types";
 import styles from "./switch.module.scss";
 
@@ -13,20 +18,42 @@ const placementClass = {
   bottom: styles.labelBottom,
 } as const;
 
+/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
+const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
+const UI_COLOR: Record<string, string> = {
+  primary: "brand",
+  secondary: "secondary",
+  success: "success",
+  info: "info",
+  warning: "warning",
+  error: "danger",
+};
+
+const hasContent = (node: React.ReactNode) =>
+  node != null && node !== false && node !== "";
+
 /**
  * Switch: toggles between two mutually exclusive states.
  * Renders a native checkbox with role="switch"; `ref` reaches the <input>.
+ * `offLabel` + `onLabel` add clickable labels on both sides of the slider, or
+ * build a two-segment control with `variant="segmented"`.
  */
 const Switch = ({
   checked,
   defaultChecked = false,
-  disabled = false,
+  disabled,
   size = "medium",
   color = "primary",
   shape = "round",
+  variant = "slider",
   label,
+  children,
+  offLabel,
+  onLabel,
   ariaLabel,
   name,
+  id,
+  value,
   labelPlacement = "end",
   loading = false,
   ripple = true,
@@ -49,10 +76,17 @@ const Switch = ({
   const rippleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  const inputRef = useRef<HTMLInputElement>(null);
+  const mergedRef = useMergedRefs(inputRef, ref);
 
   useEffect(() => () => clearTimeout(rippleTimer.current), []);
 
-  const blocked = disabled || loading;
+  // FormControl wiring; an explicit `disabled` wins (so `false` opts out).
+  const fc = useFormControlContext();
+  const field = useFormControlProps({ id });
+  const isDisabled = disabled ?? fc?.disabled ?? false;
+  const readOnly = !!fc?.readOnly;
+  const blocked = isDisabled || loading || readOnly;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (blocked) return;
@@ -68,7 +102,13 @@ const Switch = ({
     event.currentTarget.click();
   };
 
-  const handleRipple = () => {
+  // Clicks reach the input also when the wrapping label is clicked, and the
+  // Space key fires a click too: the ripple follows every toggle.
+  const handleClick = (event: React.MouseEvent<HTMLInputElement>) => {
+    if (readOnly) {
+      event.preventDefault();
+      return;
+    }
     if (!ripple || blocked) return;
     clearTimeout(rippleTimer.current);
     setRippleActive(true);
@@ -78,68 +118,198 @@ const Switch = ({
     );
   };
 
+  // Side labels / segments set a state directly: they click the input so the
+  // regular change event (and onChange) fires.
+  const setState = (next: boolean) => {
+    if (blocked || next === isChecked) return;
+    inputRef.current?.click();
+  };
+
+  const bilateral = hasContent(offLabel) && hasContent(onLabel);
+  const segmented = variant === "segmented" && bilateral;
   const isThemeColor = Object.prototype.hasOwnProperty.call(styles, color);
+  const uiColor = UI_COLOR[color];
+  const state = isChecked ? "checked" : "unchecked";
+
+  const input = (
+    <input
+      ref={mergedRef}
+      type="checkbox"
+      role={segmented ? undefined : "switch"}
+      className={segmented ? styles.hiddenInput : "ui-switch-control"}
+      id={segmented ? id : field.id}
+      name={name}
+      value={value}
+      aria-label={segmented ? undefined : ariaLabel}
+      aria-checked={segmented ? undefined : isChecked}
+      aria-disabled={segmented ? undefined : isDisabled || loading || undefined}
+      aria-busy={loading || undefined}
+      aria-invalid={segmented ? undefined : field["aria-invalid"]}
+      aria-required={segmented ? undefined : field["aria-required"]}
+      aria-readonly={segmented ? undefined : field["aria-readonly"]}
+      aria-describedby={segmented ? undefined : field["aria-describedby"]}
+      aria-hidden={segmented || undefined}
+      tabIndex={segmented ? -1 : undefined}
+      data-state={state}
+      checked={isChecked}
+      disabled={isDisabled || loading}
+      onChange={handleChange}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  );
+
+  if (segmented) {
+    return (
+      <span
+        role="group"
+        aria-label={ariaLabel}
+        className={classNames(
+          styles.segmented,
+          styles[size],
+          isThemeColor && styles[color],
+          blocked && styles.disabled,
+          "ui-switch-segmented",
+          `ui-switch-segmented-size-${UI_SIZE[size]}`,
+          uiColor && `ui-switch-color-${uiColor}`,
+          className,
+        )}
+        style={labelStyle}
+        data-state={state}
+        data-disabled={blocked || undefined}
+      >
+        {input}
+        {[false, true].map((segmentState) => {
+          const active = isChecked === segmentState;
+          return (
+            <button
+              key={String(segmentState)}
+              type="button"
+              className={classNames(
+                styles.segment,
+                active && styles.segmentActive,
+                "ui-switch-segment",
+                active && "ui-switch-segment-active",
+              )}
+              disabled={blocked}
+              aria-pressed={active}
+              onClick={() => setState(segmentState)}
+            >
+              {segmentState ? onLabel : offLabel}
+            </button>
+          );
+        })}
+      </span>
+    );
+  }
 
   const switchClasses = classNames(
     styles.switch,
     styles[size],
-    placementClass[labelPlacement],
+    !bilateral && placementClass[labelPlacement],
     {
       [styles.checked]: isChecked,
       [styles.checkedLarge]: isChecked && size === "large",
-      [styles.disabled]: disabled,
+      [styles.disabled]: isDisabled,
       [styles.loading]: loading,
       [styles.square]: shape === "square",
       [styles.ripple]: ripple && rippleActive,
       [styles[color]]: isThemeColor,
+      [styles.bilateral]: bilateral,
     },
+    "ui-switch-root",
+    `ui-switch-size-${UI_SIZE[size]}`,
+    uiColor && `ui-switch-color-${uiColor}`,
+    bilateral && "ui-switch-bilateral",
     className,
   );
 
   const computedThumbStyle = {
-    ...(isChecked && !disabled && !isThemeColor
+    ...(isChecked && !isDisabled && !isThemeColor
       ? { backgroundColor: color, color }
       : {}),
     ...customThumbStyle,
   };
 
-  const labelNode = label ? (
-    <span className={styles.label}>{label}</span>
+  const control = (
+    <span className={styles.switchBase}>
+      {input}
+      <span className={styles.track} style={trackStyle} />
+      <span
+        className={classNames(styles.thumb, "ui-switch-thumb")}
+        style={computedThumbStyle}
+      >
+        {iconPlacement === "start" && icon && (
+          <span className={styles.icon}>{icon}</span>
+        )}
+      </span>
+      {ripple && <span className={styles.rippleEffect} />}
+    </span>
+  );
+  const iconNode =
+    iconPlacement === "end" && icon ? (
+      <span className={styles.icon}>{icon}</span>
+    ) : null;
+
+  if (bilateral) {
+    const side = (sideState: boolean) => {
+      const active = isChecked === sideState;
+      return (
+        <button
+          type="button"
+          className={classNames(
+            styles.side,
+            active && styles.sideActive,
+            "ui-switch-side",
+            sideState ? "ui-switch-side-on" : "ui-switch-side-off",
+            active && "ui-switch-side-active",
+          )}
+          disabled={blocked}
+          onClick={() => setState(sideState)}
+        >
+          {sideState ? onLabel : offLabel}
+        </button>
+      );
+    };
+    // A <span> root: the side buttons must not sit inside the input's label.
+    return (
+      <span
+        className={switchClasses}
+        style={labelStyle}
+        data-state={state}
+        data-disabled={isDisabled || undefined}
+      >
+        {side(false)}
+        {control}
+        {side(true)}
+        {iconNode}
+      </span>
+    );
+  }
+
+  const content = label ?? children;
+  const labelNode = hasContent(content) ? (
+    <span className={classNames(styles.label, "ui-switch-text")}>
+      {content}
+    </span>
   ) : null;
-  const iconNode = icon ? <span className={styles.icon}>{icon}</span> : null;
   // Label before the control for start/top, after it for end/bottom; the
   // placement class only changes the flex direction (row vs column).
   const labelFirst = labelPlacement === "start" || labelPlacement === "top";
 
   return (
-    // The label wraps the input, so clicking anywhere on it toggles the
-    // switch; the click handler only drives the decorative ripple.
-    <label className={switchClasses} style={labelStyle} onClick={handleRipple}>
+    // The label wraps the input, so clicking anywhere on it toggles the switch.
+    <label
+      className={switchClasses}
+      style={labelStyle}
+      data-state={state}
+      data-disabled={isDisabled || undefined}
+    >
       {labelFirst && labelNode}
-      <span className={styles.switchBase}>
-        <input
-          ref={ref}
-          type="checkbox"
-          role="switch"
-          name={name}
-          aria-label={ariaLabel}
-          aria-checked={isChecked}
-          aria-disabled={blocked || undefined}
-          aria-busy={loading || undefined}
-          checked={isChecked}
-          disabled={blocked}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onFocus={onFocus}
-          onBlur={onBlur}
-        />
-        <span className={styles.track} style={trackStyle} />
-        <span className={styles.thumb} style={computedThumbStyle}>
-          {iconPlacement === "start" && iconNode}
-        </span>
-        {ripple && <span className={styles.rippleEffect} />}
-      </span>
-      {iconPlacement === "end" && iconNode}
+      {control}
+      {iconNode}
       {!labelFirst && labelNode}
     </label>
   );
