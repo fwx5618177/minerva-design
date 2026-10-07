@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -17,6 +16,7 @@ import { getDirection } from "../../internal/dom";
 import { IconChevronDown } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** Content accepted for icons, trailing content and custom links */
 export type NavTreeContent = string | Node | TemplateResult;
@@ -124,7 +124,7 @@ export class MinervaNavTree extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Sections of items */

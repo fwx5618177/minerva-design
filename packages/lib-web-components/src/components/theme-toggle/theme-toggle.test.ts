@@ -291,7 +291,7 @@ describe("<minerva-palette-toggle>", () => {
   });
 
   it("warns in development about unknown palettes", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-palette-toggle palettes="tech neon"></minerva-palette-toggle>`,
     );

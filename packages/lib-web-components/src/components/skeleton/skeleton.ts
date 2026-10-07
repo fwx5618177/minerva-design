@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -7,6 +7,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type SkeletonVariant =
   "text" | "circular" | "rectangular" | "rounded" | "button" | "image" | "card";
@@ -27,7 +28,7 @@ const resolveSpace = (value: string | number) =>
     ? value
     : `var(--space-${String(value).replace(".", "-")})`;
 
-const sharedStyles = [
+const skeletonStyles = [
   hostStyles,
   css`
     /* lib-core reverses the wave from a page-level [dir=rtl] ancestor */
@@ -53,7 +54,7 @@ const sharedStyles = [
 export class MinervaSkeleton extends MinervaElement {
   static override tagName = "minerva-skeleton";
   static override styles = [
-    ...sharedStyles,
+    ...skeletonStyles,
     css`
       :host {
         display: block;
@@ -63,7 +64,7 @@ export class MinervaSkeleton extends MinervaElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Shape of the placeholder */
@@ -256,13 +257,13 @@ export class MinervaSkeleton extends MinervaElement {
 export class MinervaSkeletonText extends MinervaElement {
   static override tagName = "minerva-skeleton-text";
   static override styles = [
-    ...sharedStyles,
+    ...skeletonStyles,
     css`
       :host {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Number of text lines */

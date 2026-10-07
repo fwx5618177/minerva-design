@@ -1,4 +1,4 @@
-import { css, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { html, unsafeStatic } from "lit/static-html.js";
@@ -8,6 +8,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { closestComposed } from "../../internal/dom";
 import { attachInternals } from "../../internal/form";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** Visual style of a card */
 export type CardVariant =
@@ -88,7 +89,7 @@ export class MinervaCard extends MinervaElement {
         padding: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Visual style: bordered, shadowed, a muted block or transparent */

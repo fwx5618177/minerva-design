@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS } from "lit";
+import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/LoadingState/loadingState.module.scss?inline";
@@ -6,6 +6,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { MinervaProgress } from "../progress/progress";
+import { sharedStyles } from "../../internal/styles";
 
 /** Minimum-height preset (64 / 160 / 240 px) */
 export type LoadingStateSize = "small" | "medium" | "large";
@@ -35,7 +36,7 @@ export class MinervaLoadingState extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Visible text, also announced by the status region (default: localized "Loading...") */

@@ -337,7 +337,7 @@ describe("<minerva-pagination>", () => {
   });
 
   it("warns in development when current is beyond the last page", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-pagination total="20" current="9"></minerva-pagination>`,
     );

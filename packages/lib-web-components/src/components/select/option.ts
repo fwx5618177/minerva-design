@@ -1,9 +1,10 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/Select/select.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { IconCheck } from "../../internal/icons";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 let nextLabelId = 0;
 
@@ -29,7 +30,7 @@ export class MinervaOption extends MinervaElement {
         outline: none;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value of the option (must not be empty) */
@@ -183,7 +184,7 @@ export class MinervaSelectLabel extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   protected override render() {
@@ -208,7 +209,7 @@ export class MinervaSelectSeparator extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   override connectedCallback(): void {

@@ -11,6 +11,8 @@ import {
   type ToastId,
 } from "../../elements/toast";
 import "../../elements/config";
+import "../../elements/modal";
+import type { MinervaModal } from "../modal/modal";
 import { resetDevWarnings } from "../../internal/dev";
 import { mount, settle, wait } from "../../../tests/utils";
 
@@ -49,6 +51,48 @@ const setup = (attrs = "") =>
     `<minerva-toast-region ${attrs}></minerva-toast-region>`,
     "minerva-toast-region",
   );
+
+describe("toast region while a modal is open (same as lib-core)", () => {
+  it("is hidden from assistive technologies by the modal's hide-others, and exposed again on close", async () => {
+    document.body.innerHTML = `<main id="page"><button>Open</button></main>
+      <minerva-toast-region></minerva-toast-region>
+      <minerva-modal label="Settings">Body</minerva-modal>`;
+    await settle();
+    const region = document.querySelector<MinervaToastRegion>(
+      "minerva-toast-region",
+    )!;
+    const modal = document.querySelector<MinervaModal>("minerva-modal")!;
+    toast.success("Saved", { duration: 0 });
+    modal.open = true;
+    await settle();
+    expect(document.getElementById("page")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(region).toHaveAttribute("aria-hidden", "true");
+    expect(modal).not.toHaveAttribute("aria-hidden");
+    // still rendered (and announced again once the modal closes)
+    expect(toastsOf(region)).toHaveLength(1);
+    modal.open = false;
+    await settle();
+    await wait(50);
+    expect(region).not.toHaveAttribute("aria-hidden");
+    expect(document.getElementById("page")).not.toHaveAttribute("aria-hidden");
+  });
+
+  it("can opt out with data-minerva-keep-visible", async () => {
+    document.body.innerHTML = `<minerva-toast-region data-minerva-keep-visible></minerva-toast-region>
+      <minerva-modal label="Settings">Body</minerva-modal>`;
+    await settle();
+    const region = document.querySelector("minerva-toast-region")!;
+    const modal = document.querySelector<MinervaModal>("minerva-modal")!;
+    modal.open = true;
+    await settle();
+    expect(region).not.toHaveAttribute("aria-hidden");
+    modal.open = false;
+    await settle();
+  });
+});
 
 describe("toast store", () => {
   it("same id replaces; ids auto-increment; shortcuts map to colors / defaults", () => {
@@ -122,7 +166,7 @@ describe("<minerva-toast-region>", () => {
     expect(region.classList).toContain("bottomLeft");
     expect(region).toHaveAttribute("popover", "manual");
     expect(region).not.toHaveAttribute("tabindex");
-    expect(el).toHaveAttribute("data-minerva-keep-visible");
+    expect(el).not.toHaveAttribute("data-minerva-keep-visible");
     const [item] = toastsOf(el);
     expect(item).toHaveAttribute("role", "status");
     expect(item.classList).toContain("toast");
@@ -715,7 +759,7 @@ describe("several regions and scopes", () => {
 
 describe("dev warnings", () => {
   it("warns about an invalid position and an unknown region id", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await setup(`position="middle"`);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining('invalid position "middle"'),

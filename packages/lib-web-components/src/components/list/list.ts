@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/List/list.module.scss?inline";
@@ -6,6 +6,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { attachInternals } from "../../internal/form";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** Row density: 56px or 40px minimum row height */
 export type ListDensity = "default" | "compact";
@@ -59,7 +60,7 @@ export class MinervaList extends MinervaElement {
         border-top: 1px solid var(--list-divider-color, var(--border-color));
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Minimum row height and vertical padding of the items */
@@ -127,7 +128,7 @@ export class MinervaListItem extends MinervaElement {
   static override tagName = "minerva-list-item";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;

@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS } from "lit";
+import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import gridStyles from "@lib-core-styles/components/ResponsiveGrid/responsiveGrid.module.scss?inline";
@@ -10,6 +10,7 @@ import {
   gridVariables,
   type ResponsiveGridColumns,
 } from "../responsive-grid/responsive-grid";
+import { sharedStyles } from "../../internal/styles";
 
 /**
  * Lays the fields of a form out on a responsive column grid
@@ -46,8 +47,8 @@ export class MinervaFormLayout extends MinervaElement {
     // Both modules name their root `.root`: the single root element below
     // gets the grid container rules and the form box rules, as lib-core's
     // nested <form class="root"><div class="root"> pair (same content box).
-    unsafeCSS(gridStyles),
-    unsafeCSS(styles),
+    sharedStyles(gridStyles),
+    sharedStyles(styles),
   ];
 
   /**

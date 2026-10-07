@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import iconButtonStyles from "@lib-core-styles/components/IconButton/iconButton.module.scss?inline";
@@ -15,6 +15,7 @@ import { hostStyles } from "../../internal/minerva-element";
 import { MinervaButton } from "../button/button";
 import { MinervaFormControl } from "../form-control/form-control";
 import { MinervaTextarea } from "../textarea/textarea";
+import { sharedStyles } from "../../internal/styles";
 
 /** One row of a `<minerva-key-value-editor>` */
 export interface KeyValueEntry {
@@ -81,8 +82,8 @@ export class MinervaKeyValueEditor extends FormAssociatedElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
     css`
       /* lib-core sizes the key <textarea>; reach it through its variable */
       .key {

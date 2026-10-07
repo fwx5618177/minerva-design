@@ -290,7 +290,7 @@ describe("<minerva-popover>", () => {
   });
 
   it("warns when there is neither a trigger nor an anchor", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-popover><p>x</p></minerva-popover>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("trigger"));
   });

@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -17,6 +16,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { IconWaveSquare } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** An item of a virtual list */
 export interface VirtualListItem {
@@ -76,8 +76,8 @@ export class MinervaVirtualList extends MinervaElement {
         display: inline-flex;
       }
     `,
-    unsafeCSS(progressStyles),
-    unsafeCSS(styles),
+    sharedStyles(progressStyles),
+    sharedStyles(styles),
   ];
 
   /** Items to render */

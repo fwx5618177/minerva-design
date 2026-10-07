@@ -71,7 +71,7 @@ describe("<minerva-text-link>", () => {
   });
 
   it("warns without href", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-text-link>x</minerva-text-link>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("href"));
   });

@@ -5,11 +5,16 @@ import { fileURLToPath } from "node:url";
 import type { Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
 import { writeEsmDeclarations } from "../../scripts/dual-declarations.mjs";
+import { minifyTemplatesPlugin } from "./scripts/minify-templates.mjs";
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
-// Dependencies (lit, @minerva/core) are resolved by the consumer, never bundled.
-const externalDeps = Object.keys(pkg.dependencies ?? {});
+// Dependencies (lit, @minerva/core) and the optional peers (monaco-editor,
+// for the code-editor entry) are resolved by the consumer, never bundled.
+const externalDeps = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+];
 const isExternal = (id: string) =>
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
@@ -48,6 +53,8 @@ const designTokens = (): Plugin => ({
 
 export default defineConfig({
   plugins: [
+    // whitespace of the css / html templates (build only)
+    minifyTemplatesPlugin(),
     designTokens(),
     dts({
       tsconfigPath: "./tsconfig.build.json",
@@ -90,6 +97,9 @@ export default defineConfig({
   },
   test: {
     name: "lib-web-components",
+    // happy-dom, except the two HtmlPreview files (html-preview.test.ts,
+    // sanitizer-environment.test.ts): they run under jsdom (file docblock)
+    // because the real DOMPurify needs a spec-compliant DOM.
     environment: "happy-dom",
     include: [
       "src/**/*.test.ts",

@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/Popover/popover.module.scss?inline";
 import {
@@ -19,6 +19,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { getDirection, hideTopLayer, showTopLayer } from "../../internal/dom";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
+import { sharedStyles } from "../../internal/styles";
 
 /** Side of the anchor the popover opens on */
 export type PopoverSide = "top" | "right" | "bottom" | "left";
@@ -94,7 +95,7 @@ export class MinervaPopover extends MinervaElement {
         display: contents;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Whether the popover is open */

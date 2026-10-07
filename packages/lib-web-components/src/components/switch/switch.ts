@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -13,6 +13,7 @@ import {
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type SwitchVariant = "slider" | "segmented";
 export type SwitchSize = "small" | "medium" | "large";
@@ -72,7 +73,7 @@ export class MinervaSwitch extends FormAssociatedElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Whether the switch is on (property; the `checked` attribute sets `defaultChecked`) */

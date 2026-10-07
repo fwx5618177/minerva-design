@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/PageTabs/pageTabs.module.scss?inline";
@@ -10,6 +10,7 @@ import { IconChevronLeft, IconChevronRight, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 interface ScrollState {
   overflow: boolean;
@@ -59,8 +60,8 @@ export class MinervaPageTabs extends MinervaElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
   ];
 
   /**
@@ -352,8 +353,8 @@ export class MinervaPageTab extends MinervaElement {
         height: 16px;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
   ];
 
   /** Identifier of the page */

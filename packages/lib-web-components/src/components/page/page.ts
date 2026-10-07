@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -8,6 +8,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
 import { numberOrString, resolveSize } from "../box/space";
+import { sharedStyles } from "../../internal/styles";
 
 /** Spacing density of a toolbar */
 export type ToolbarDensity = "default" | "compact";
@@ -26,7 +27,7 @@ export class MinervaPage extends MinervaElement {
   static override tagName = "minerva-page";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;
@@ -69,7 +70,7 @@ export class MinervaPageHeader extends MinervaElement {
   static override tagName = "minerva-page-header";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;
@@ -153,7 +154,7 @@ export class MinervaPageSection extends MinervaPageHeader {
   static override tagName = "minerva-page-section";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;
@@ -220,7 +221,7 @@ export class MinervaToolbar extends MinervaElement {
   static override tagName = "minerva-toolbar";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;
@@ -301,7 +302,7 @@ export class MinervaStatCard extends MinervaElement {
   static override tagName = "minerva-stat-card";
   static override styles = [
     hostStyles,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;

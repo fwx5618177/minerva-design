@@ -21,6 +21,22 @@ const setup = () =>
   );
 
 describe("<minerva-modal>", () => {
+  it("presence: stays rendered with data-state=closed until the exit animation ends", async () => {
+    const el = await setup();
+    el.open = true;
+    await settle();
+    const dialog = panel(el)!;
+    dialog.style.animationName = "modal-zoom-out";
+    dialog.style.animationDuration = "150ms";
+    el.open = false;
+    await settle();
+    expect(panel(el)).toBe(dialog);
+    expect(dialog).toHaveAttribute("data-state", "closed");
+    dialog.dispatchEvent(new Event("animationend"));
+    await settle();
+    expect(panel(el)).toBeNull();
+  });
+
   it("is closed by default and opens from its trigger slot", async () => {
     const el = await setup();
     expect(panel(el)).toBeNull();

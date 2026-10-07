@@ -574,7 +574,7 @@ describe("<minerva-autocomplete> forms", () => {
 
 describe("<minerva-autocomplete> dev warnings", () => {
   it("warns about duplicate option values", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup('aria-label="search"', [
       { value: "a", label: "A" },
       { value: "a", label: "A again" },

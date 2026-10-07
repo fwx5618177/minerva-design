@@ -59,7 +59,7 @@
   },
   "dev": {
     "title": "开发警告",
-    "text": "无效的 attribute 组合和常见错误（值不匹配任何选项、min 大于 max、纯图标按钮缺少 aria-label、包被加载了两次……）会通过 console.warn 报告，每条消息只报告一次，并以 [minerva] 和标签名作为前缀。这些检查受 process.env.NODE_ENV !== \"production\" 保护，构建工具会替换该表达式：生产构建会移除这些检查。没有构建工具时（CDN 构建，或在不存在 process 的环境中加载模块），警告处于关闭状态。"
+    "text": "无效的 attribute 组合和常见错误（值不匹配任何选项、min 大于 max、纯图标按钮缺少 aria-label、包被加载了两次……）会通过 console.error 报告（与 React 组件的警告以及 React 自身的 prop 警告使用同一通道），每条消息只报告一次，格式与 lib-core 相同：\"[minerva] <minerva-tag>: message\"。这些检查受 process.env.NODE_ENV !== \"production\" 保护，构建工具会替换该表达式：生产构建会移除这些检查。没有构建工具时（CDN 构建，或在不存在 process 的环境中加载模块），警告处于关闭状态。"
   },
   "authoring": {
     "title": "编写你自己的元素",

@@ -194,7 +194,7 @@ describe("<minerva-virtual-list>", () => {
   });
 
   it("warns in development without renderItem / max-height", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaVirtualList>(
       `<minerva-virtual-list item-height="20"></minerva-virtual-list>`,
     );

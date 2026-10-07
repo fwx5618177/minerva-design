@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -9,6 +9,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** Preset size of an avatar (24 / 32 / 48 / 64 / 80 / 96 px) */
 export type AvatarSizePreset =
@@ -82,7 +83,7 @@ export class MinervaAvatar extends MinervaElement {
         line-height: 1;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Image URL; the initials of `name` are shown without it or when it fails to load */
@@ -215,7 +216,7 @@ export class MinervaAvatarGroup extends MinervaElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(groupStyles),
+    sharedStyles(groupStyles),
   ];
 
   /** Number of additional avatars, shown in the "+N" indicator */

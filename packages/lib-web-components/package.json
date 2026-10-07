@@ -72,6 +72,10 @@
       "types": "./dist/elements/code-block.d.ts",
       "default": "./dist/elements/code-block.js"
     },
+    "./code-editor": {
+      "types": "./dist/elements/code-editor.d.ts",
+      "default": "./dist/elements/code-editor.js"
+    },
     "./command": {
       "types": "./dist/elements/command.d.ts",
       "default": "./dist/elements/command.js"
@@ -295,7 +299,8 @@
     "*.css"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "(cd ../core && vite build) && vite build && vite build --config vite.cdn.config.ts && node scripts/generate-typings.mjs",
@@ -314,17 +319,27 @@
     "jsonc-parser": "^3.3.1",
     "lit": "^3.3.0"
   },
+  "peerDependencies": {
+    "monaco-editor": ">=0.52.0"
+  },
+  "peerDependenciesMeta": {
+    "monaco-editor": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.11.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.7",
     "element-internals-polyfill": "^3.0.2",
+    "jsdom": "^30.1.2",
+    "monaco-editor": "0.52.2",
     "rolldown": "1.2.12",
     "typescript": "~6.0.3"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
-  "customElements": "/tmp/cem/custom-elements.json"
+  "customElements": "custom-elements.json"
 }

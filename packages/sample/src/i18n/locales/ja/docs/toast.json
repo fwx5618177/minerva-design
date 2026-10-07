@@ -4,7 +4,8 @@
   "usage": {
     "title": "使い分け：useToast() か toast() か",
     "hook": "コンポーネント内では useToast() を呼びます。表示されるトーストは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、そのポータルホストにテーマ・パレット・トークン付きで描画され、組み込みラベルはその言語になります。描画するのは引き続きオーナーの ToastProvider で、position・max・ラベルもそのままです。",
-    "function": "React の外（イベントバス、API クライアント、ストアなどコンポーネント以外のモジュール）では toast() を直接インポートします。そこではフックが使えず、トーストは ToastProvider のスコープ（通常はルートのテーマと言語）を使います。"
+    "function": "React の外（イベントバス、API クライアント、ストアなどコンポーネント以外のモジュール）では toast() を直接インポートします。そこではフックが使えず、トーストは ToastProvider のスコープ（通常はルートのテーマと言語）を使います。",
+    "modal": "モーダルダイアログ（Modal、Drawer、ConfirmDialog、Command、モーダルな Popover や Menu）が開いている間、その hide-others 処理はページの他の部分と同様にトーストのビューポートにも適用されます。ビューポートには aria-hidden=\"true\" が付き、ダイアログが閉じるまで支援技術にはダイアログだけが見えます。<minerva-toast-region> も同じ動作です（data-minerva-keep-visible でリージョンごとに除外できます）。"
   },
   "demos": {
     "basic": {
@@ -96,7 +97,7 @@
     "demos": {
       "basic": {
         "title": "基本的な使い方",
-        "description": "<minerva-toast-region> がトーストを描画します。region.toast はこの領域に紐づいた toast() API です（info、success、warning、danger）。position でスタックの位置を決めます。"
+        "description": "<minerva-toast-region> がトーストを描画します。region.toast はこの領域に紐づいた toast() API です（info、success、warning、danger）。position でスタックの位置を決めます。 React の ToastProvider と同様に、モーダルダイアログが開いている間はリージョンが支援技術から隠されます（aria-hidden）。"
       },
       "options": {
         "title": "オプションとアクション",

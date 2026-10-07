@@ -49,7 +49,7 @@ describe("page elements", () => {
   });
 
   it("<minerva-page-header> warns without a heading", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-page-header></minerva-page-header>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("heading"));
   });

@@ -12,7 +12,8 @@ import { mergeMessages, type Messages } from "../../merge";
 
 // Strings of each component group live in groups/<group>.json and are merged
 // (deeply) on top of index.json into a single message tree.
-const messages: Messages = mergeMessages<Messages>(
+// Pure: unused bundles are tree-shaken by the consumer's bundler.
+const messages: Messages = /* @__PURE__ */ mergeMessages<Messages>(
   jaIndex,
   data,
   display,

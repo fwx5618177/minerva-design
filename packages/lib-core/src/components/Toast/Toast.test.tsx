@@ -9,6 +9,7 @@ import userEvent from "@testing-library/user-event";
 import type React from "react";
 import i18n from "../../config/i18n";
 import { ConfigProvider } from "../../contexts/ConfigProvider";
+import { Modal } from "../Modal/Modal";
 
 afterEach(() => {
   store.reset();
@@ -137,6 +138,42 @@ describe("toast store: same id replaces", () => {
     unsubscribe();
     toast.success("again");
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("toast viewport while a modal is open (same as <minerva-toast-region>)", () => {
+  it("is hidden from assistive technologies by the modal's hide-others, and exposed again on close", async () => {
+    const view = render(
+      <ToastProvider>
+        <Modal open={false} onOpenChange={() => {}} title="Settings">
+          Body
+        </Modal>
+      </ToastProvider>,
+    );
+    act(() => {
+      toast.success("Saved", { duration: 0 });
+    });
+    const viewport = screen.getByRole("region", { name: /Notifications/ });
+    expect(viewport).not.toHaveAttribute("aria-hidden");
+    view.rerender(
+      <ToastProvider>
+        <Modal open onOpenChange={() => {}} title="Settings">
+          Body
+        </Modal>
+      </ToastProvider>,
+    );
+    expect(viewport).toHaveAttribute("aria-hidden", "true");
+    // still rendered, announced again once the modal closes
+    expect(viewport.querySelector('[role="status"]')).not.toBeNull();
+    view.rerender(
+      <ToastProvider>
+        <Modal open={false} onOpenChange={() => {}} title="Settings">
+          Body
+        </Modal>
+      </ToastProvider>,
+    );
+    expect(viewport).not.toHaveAttribute("aria-hidden");
+    view.unmount();
   });
 });
 

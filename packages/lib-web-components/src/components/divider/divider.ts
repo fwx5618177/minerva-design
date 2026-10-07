@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS } from "lit";
+import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -6,6 +6,7 @@ import styles from "@lib-core-styles/components/Divider/divider.module.scss?inli
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type DividerVariant = "solid" | "dashed" | "dotted";
 export type DividerOrientation = "horizontal" | "vertical";
@@ -47,7 +48,7 @@ export class MinervaDivider extends MinervaElement {
         align-self: stretch;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Line style */

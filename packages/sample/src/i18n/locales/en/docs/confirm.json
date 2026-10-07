@@ -60,7 +60,11 @@
       },
       "imperative": {
         "title": "Imperative confirm()",
-        "description": "confirm({ title, ... }) appends a dialog, resolves true or false and removes it once closed: a themed replacement for window.confirm. Concurrent calls are queued."
+        "description": "confirm({ title, ... }) appends a dialog, resolves true or false and removes it once closed: a themed replacement for window.confirm. Concurrent calls are queued. Without a host and without a <minerva-confirm-provider>, the dialog is appended to document.body (root theme and language)."
+      },
+      "scoped": {
+        "title": "Scoped confirm and provider",
+        "description": "confirm({ host }) (or confirmFor(host)) is the equivalent of useConfirm(): the dialog renders inside the host's <minerva-config> scope (dark, tech palette, Chinese labels) and is queued by the closest <minerva-confirm-provider>. confirm() without a host renders in the provider's own scope (here the root theme and language), like the global confirm()."
       }
     },
     "minerva-confirm-dialog": {
@@ -101,6 +105,14 @@
       "methods": {
         "show": "Opens the dialog.",
         "hide": "Closes the dialog (no event)."
+      }
+    },
+    "minerva-confirm-provider": {
+      "props": {
+        "confirm": "Asks for a confirmation rendered by this provider (its scope, or the scope of options.host); resolves true when confirmed (read-only)."
+      },
+      "slots": {
+        "default": "Application content: confirm({ host }) / confirmFor(host) calls from inside are queued here."
       }
     }
   }

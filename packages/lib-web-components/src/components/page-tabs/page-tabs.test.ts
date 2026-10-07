@@ -218,7 +218,7 @@ describe("<minerva-page-tabs>", () => {
   });
 
   it("warns in development without an accessible name", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-page-tabs active-value="a">
       <minerva-page-tab value="a" label="A"></minerva-page-tab>
     </minerva-page-tabs>`);

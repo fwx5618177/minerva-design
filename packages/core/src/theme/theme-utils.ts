@@ -181,4 +181,5 @@ export function createThemeInitScript(
  * Default init script: cookie mode (else system), cookie palette (else the
  * `data-palette` already rendered on `<html>`, else none).
  */
-export const THEME_INIT_SCRIPT: string = createThemeInitScript();
+export const THEME_INIT_SCRIPT: string =
+  /* @__PURE__ */ createThemeInitScript();

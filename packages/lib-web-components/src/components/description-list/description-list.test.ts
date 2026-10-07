@@ -77,7 +77,7 @@ describe("<minerva-description-list>", () => {
   });
 
   it("warns about unsupported children", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-description-list><p>x</p></minerva-description-list>`,
     );

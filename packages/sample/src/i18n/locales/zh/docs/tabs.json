@@ -45,7 +45,7 @@
     },
     "TabPanelProps": {
       "value": "面板所属标签的值",
-      "forceMount": "标签未选中时仍保持面板挂载（隐藏）",
+      "forceMount": "在其标签页未选中时保持面板挂载（隐藏）。不设置时，非活动面板会被卸载。<minerva-tab-panel> 的普通子元素始终挂载（等同 forceMount），对 <template> 内容可用 force-mount 属性做同样选择",
       "ref": "面板 <div> 元素的 ref"
     }
   },
@@ -76,6 +76,10 @@
       "controlled": {
         "title": "取消切换",
         "description": "minerva-change 可取消：勾选复选框时，preventDefault() 会保留当前标签。取消勾选即可切换。"
+      },
+      "panels": {
+        "title": "非活动面板：是否挂载",
+        "description": "React 的 <TabPanel> 默认会卸载非活动面板，设置 forceMount 时才保留（隐藏）。light DOM 子元素属于页面，<minerva-tab-panel> 无法卸载它们：普通子元素的行为等同于 forceMount（隐藏、保留状态、表单字段仍会提交）。若要获得 React 的默认行为，把内容放进 <template>（激活时创建，离开后移除）；再加上 force-mount 则在隐藏时也保持挂载。"
       }
     },
     "minerva-tabs": {
@@ -117,6 +121,9 @@
       },
       "parts": {
         "base": "面板容器。"
+      },
+      "props": {
+        "forceMount": "即使面板处于非活动状态（隐藏）也挂载 <template> 子元素的内容，等同于 React 的 forceMount。普通子元素始终处于挂载状态。"
       }
     }
   }

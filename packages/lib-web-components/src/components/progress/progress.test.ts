@@ -98,7 +98,7 @@ describe("<minerva-progress>", () => {
   });
 
   it("warns when width and full are combined", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-progress full width="10px"></minerva-progress>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("width"));
   });

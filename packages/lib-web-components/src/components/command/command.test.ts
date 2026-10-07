@@ -380,7 +380,7 @@ describe("<minerva-command-dialog>", () => {
   });
 
   it("warns in development about duplicate item ids", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await setup("");
     el.items = [...ITEMS, { id: "books", title: "Books again" }];
     await settle();

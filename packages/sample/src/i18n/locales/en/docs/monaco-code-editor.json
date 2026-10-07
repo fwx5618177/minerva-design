@@ -1,6 +1,6 @@
 {
   "title": "MonacoCodeEditor",
-  "description": "A labelled Monaco editor running on a local engine (never a CDN) that follows the page theme. If the engine cannot load or mount in time, it degrades to an editable textarea with a retry button. Import it from @minerva/lib-core/monaco; @monaco-editor/react and monaco-editor are optional peer dependencies.",
+  "description": "A labelled Monaco editor running on a local engine (never a CDN) that follows the page theme. If the engine cannot load or mount in time, it degrades to an editable textarea with a retry button. Import it from @minerva/lib-core/monaco; @monaco-editor/react and monaco-editor are optional peer dependencies. The Web Component <minerva-code-editor> is published as the optional entry @minerva/lib-web-components/code-editor (outside the all-in-one entry and the CDN bundle), with monaco-editor as its optional peer dependency.",
   "demos": {
     "basic": {
       "title": "Lazy-loaded editor",
@@ -34,5 +34,63 @@
     "--monaco-code-editor-bg": "Background color of the editor surface",
     "--monaco-code-editor-label-gap": "Space between the label and the editor",
     "--monaco-code-editor-font-size": "Font size of the label, the messages and the plain-text fallback"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Local engine, theme and form",
+        "description": "Load the optional entry @minerva/lib-web-components/code-editor and the application's own Monaco engine, then set it as the monaco property. The editor follows the page / <minerva-config> theme, fires minerva-input on each edit (React's onChange) and submits its value with the form."
+      },
+      "fallback": {
+        "title": "Loading, fallback and late engine",
+        "description": "Without an engine the editor shows its loading state, then after load-timeout an editable textarea with a Retry button (minerva-error fires). Providing the engine later loads the editor with the latest value."
+      }
+    },
+    "minerva-code-editor": {
+      "props": {
+        "name": "Name under which the value is submitted with the form.",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only).",
+        "defaultValue": "Initial source text (the value attribute), restored by form.reset(). Changing it also changes value until the user edits the code.",
+        "resolvedTheme": "Theme actually applied: theme, else the closest data-theme (a <minerva-config> scope, then <html>) (read-only).",
+        "monaco": "Local Monaco engine (import * as monaco from \"monaco-editor\"), set as a property; one per application. Never loaded from a CDN.",
+        "value": "Source text (property; the value attribute sets defaultValue). Updated on each edit; setting it applies the text as an undoable edit.",
+        "theme": "Color theme (light or dark); defaults to the theme of the element's scope (closest data-theme: a <minerva-config>, then <html>), followed live.",
+        "disabled": "Makes the editor (and its fallback) read-only; not submitted, not validated.",
+        "loadTimeout": "Milliseconds to wait for the engine and the editor before showing the textarea fallback (also when no engine is set yet)."
+      },
+      "events": {
+        "input": "The value changed (each edit; composed).",
+        "change": "The value was committed: the editor lost focus after an edit.",
+        "minerva-input": "Same as input, with detail: { value } (React's onChange).",
+        "minerva-change": "Same as change, with detail: { value }.",
+        "minerva-error": "The editor became unavailable (no engine in time, invalid engine, or it threw) and the textarea fallback is shown."
+      },
+      "slots": {
+        "editor": "Created by the element: the light DOM <div> Monaco renders into, so the stylesheets Monaco adds to the document apply. Do not fill it yourself."
+      },
+      "parts": {
+        "base": "The role=\"group\" root, named by label.",
+        "label": "The visible label.",
+        "surface": "The editor surface, sized by height.",
+        "fallback": "The fallback <textarea>.",
+        "retry-button": "The Retry <minerva-button>."
+      },
+      "methods": {
+        "focus": "Focuses the editor (or its fallback textarea).",
+        "retry": "Tries to load the editor again (what the Retry button does).",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

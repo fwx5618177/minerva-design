@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -9,6 +9,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { attachInternals } from "../../internal/form";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type ButtonVariant = "solid" | "outline" | "ghost" | "link";
 export type ButtonSize = "xsmall" | "small" | "medium" | "large" | "xlarge";
@@ -51,7 +52,7 @@ export class MinervaButton extends MinervaElement {
         width: 100%;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Semantic color */

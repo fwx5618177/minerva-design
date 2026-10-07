@@ -71,7 +71,7 @@ describe("<minerva-icon-button>", () => {
   });
 
   it("falls back to a localized default name and warns in development", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     document.documentElement.lang = "en";
     const el = await mount<MinervaIconButton>(
       `<minerva-icon-button></minerva-icon-button>`,
@@ -204,7 +204,7 @@ describe("<minerva-icon-button>", () => {
   });
 
   it("follows the locale for built-in strings", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaIconButton>(
       `<minerva-config locale="fr"><minerva-icon-button loading></minerva-icon-button></minerva-config>`,
       "minerva-icon-button",

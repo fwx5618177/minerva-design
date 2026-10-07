@@ -845,7 +845,7 @@ describe("<minerva-tag-input> locale", () => {
 
 describe("<minerva-tag-input> dev warnings", () => {
   it("warns when value contains duplicate tags", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaTagInput>(
       `<minerva-tag-input></minerva-tag-input>`,
     );
@@ -857,7 +857,7 @@ describe("<minerva-tag-input> dev warnings", () => {
   });
 
   it("warns when a JSON list attribute cannot be parsed", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaTagInput>(
       `<minerva-tag-input options='["a",'></minerva-tag-input>`,
     );

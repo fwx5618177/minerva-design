@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -22,6 +22,7 @@ import {
 import { IconPlus, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type TagInputSize = "small" | "medium" | "large";
 
@@ -142,13 +143,13 @@ export class MinervaTagInput extends FormAssociatedElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(tagStyles),
-    unsafeCSS(iconButtonStyles),
+    sharedStyles(tagStyles),
+    sharedStyles(iconButtonStyles),
     // Input's sheet has generic top-level classes (.root, .medium,
     // .disabled...): scope it to the text field (CSS nesting) so it does not
     // style the wrapper, the tags or the buttons.
-    unsafeCSS(`.combobox { ${inputStyles.replace(/@charset[^;]*;/g, "")} }`),
-    unsafeCSS(styles),
+    sharedStyles(`.combobox { ${inputStyles.replace(/@charset[^;]*;/g, "")} }`),
+    sharedStyles(styles),
     css`
       /* the wrapper's .root rules (column flow) must not reach the field */
       .combobox > .root {

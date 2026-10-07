@@ -76,7 +76,7 @@ describe("<minerva-list>", () => {
   });
 
   it("warns about non-item children", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-list><li>x</li></minerva-list>`);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("minerva-list-item"),

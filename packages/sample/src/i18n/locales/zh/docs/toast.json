@@ -4,7 +4,8 @@
   "usage": {
     "title": "如何选择：useToast() 还是 toast()",
     "hook": "在组件内调用 useToast()：它显示的通知跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，通知渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，内置文案使用其语言。通知仍由持有者 ToastProvider 渲染，沿用它的 position、max 和文案。",
-    "function": "在 React 之外（事件总线、API 客户端、store 等非组件模块）直接导入 toast()：那里无法使用 hook，其通知使用 ToastProvider 的作用域，通常即根主题和根语言。"
+    "function": "在 React 之外（事件总线、API 客户端、store 等非组件模块）直接导入 toast()：那里无法使用 hook，其通知使用 ToastProvider 的作用域，通常即根主题和根语言。",
+    "modal": "当模态对话框打开时（Modal、Drawer、ConfirmDialog、Command、模态 Popover 或 Menu），它的 hide-others 处理会像页面其余部分一样覆盖 Toast 视口：视口会获得 aria-hidden=\"true\"，在对话框关闭之前辅助技术只能看到对话框。<minerva-toast-region> 的行为相同（可在某个区域上用 data-minerva-keep-visible 退出）。"
   },
   "demos": {
     "basic": {
@@ -96,7 +97,7 @@
     "demos": {
       "basic": {
         "title": "基础用法",
-        "description": "<minerva-toast-region> 负责渲染提示；region.toast 是绑定到该区域的 toast() API（info、success、warning、danger）。position 决定堆叠位置。"
+        "description": "<minerva-toast-region> 负责渲染提示；region.toast 是绑定到该区域的 toast() API（info、success、warning、danger）。position 决定堆叠位置。 与 React 的 ToastProvider 一样，打开的模态对话框会在关闭前对辅助技术隐藏该区域（aria-hidden）。"
       },
       "options": {
         "title": "选项与操作按钮",

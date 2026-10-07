@@ -160,7 +160,7 @@ describe("<minerva-button>", () => {
   });
 
   it("warns in development about icon-only circle buttons without a name", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount<MinervaButton>(
       `<minerva-button shape="circle"></minerva-button>`,
     );

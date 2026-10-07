@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { contains } from "@minerva/core";
@@ -20,6 +20,7 @@ import {
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /**
  * Desktop sidebar mode: `expanded` (full width), `compact` (icon rail) or
@@ -93,8 +94,8 @@ export class MinervaAppShell extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
   ];
 
   /** Brand text shown at the top of the sidebar (or use the `brand` slot) */

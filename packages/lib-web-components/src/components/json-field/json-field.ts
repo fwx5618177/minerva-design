@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -19,6 +19,7 @@ import {
 } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 type Validation =
   { status: "empty" | "valid" } | { status: "invalid"; error: string };
@@ -102,9 +103,9 @@ export class MinervaJsonField extends FormAssociatedElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(textareaStyles),
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(textareaStyles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
     css`
       /* the textarea's size classes are global here: keep the icon button's own size */
       .toolbar .iconButton {

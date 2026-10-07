@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import {
   PALETTES,
@@ -17,6 +17,7 @@ import { closestComposed } from "../../internal/dom";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import type { MinervaConfig } from "../config/config";
+import { sharedStyles } from "../../internal/styles";
 
 export type { Palette, ThemeMode } from "@minerva/core";
 
@@ -60,7 +61,7 @@ abstract class ThemeScopeElement extends MinervaElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /**

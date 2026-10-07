@@ -285,7 +285,7 @@ pnpm dev
 | `pnpm build`                        | 按顺序构建所有包：core → lib-core → lib-web-components → sample |
 | `pnpm test`                         | 运行全部测试：单元测试（所有包、文档校验）与 e2e 用户流程       |
 | `pnpm test:unit` / `pnpm test:e2e`  | 只运行单元测试 / 只运行 e2e 用户流程（`tests/e2e`）             |
-| `pnpm test:dist`                    | 对构建后的 `@minerva/lib-core` 做冒烟测试（构建后运行）         |
+| `pnpm test:dist`                    | 测试构建产物（lib-core 与 lib-web-components，构建后运行）      |
 | `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）                    |
 | `pnpm lint`                         | 运行 ESLint（flat config）                                      |
 | `pnpm typecheck`                    | 对所有包进行类型检查                                            |
@@ -301,27 +301,57 @@ pnpm dev
 - 测试：Vitest、Testing Library、happy-dom
 - 代码检查与格式化：ESLint 10 + typescript-eslint、Prettier
 - Git Hooks：Husky、lint-staged、commitlint（Conventional Commits）
+- CI：`.github/workflows/ci.yml` 在每次推送到 `main` 和每个 Pull Request 时，于 Node 22 下运行 lint、类型检查、格式检查、带覆盖率的测试、构建、构建产物测试和包检查
 - 文档部署：`.github/workflows/deploy.yml` 在每次推送到 `main` 时构建文档站点并发布到 GitHub Pages
 
-### 发布
+### 发布（手动发布到 npm）
 
-版本与变更日志由 [Changesets](https://github.com/changesets/changesets) 管理，发布由维护者在本地手动完成：
+版本与变更日志由 [Changesets](https://github.com/changesets/changesets) 管理。发布是**手动**的，由维护者在本机完成：CI 中没有发布流程（`.github/workflows/ci.yml` 只做校验，`deploy.yml` 只部署文档站点）。
 
-```bash
-# 1. 在 PR 中：描述改动（选择包和语义化版本级别）
-pnpm changeset
+1. **为每个改动写 changeset**（在对应 PR 中）：`pnpm changeset`，选择包和语义化版本级别，并提交生成的 `.changeset/*.md`。
+2. **更新版本**（在最新的 `main` 上，工作区干净）：
 
-# 2. 发布时，在最新的 main 分支上：
-pnpm version-packages   # 更新版本号、写入 CHANGELOG.md，并消费 .changeset/*.md
-pnpm install            # 若内部依赖版本变化，刷新 lockfile
-git commit -am "chore: release" && git push
+   ```bash
+   pnpm version-packages   # changeset version：更新版本号、写入 CHANGELOG.md，并消费 .changeset/*.md
+   pnpm install            # 刷新 lockfile（内部依赖范围可能已变化）
+   ```
 
-# 3. 发布（需要已 `npm login` 且拥有 @minerva scope 的发布权限）
-pnpm release            # 构建 core、lib-core 与 lib-web-components，然后执行 `changeset publish`
-git push --follow-tags  # 推送 changeset publish 创建的 tag
-```
+3. **审查**，确认无误后再发布：`git diff`（版本号、CHANGELOG 条目、lib-core / lib-web-components 中的 `@minerva/core` 版本范围），然后在 Node 22（`.nvmrc`）下运行与 CI 相同的检查：
 
-发布前请确认 `pnpm lint && pnpm typecheck && pnpm test && pnpm build` 全部通过。
+   ```bash
+   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm -r publish --dry-run --no-git-checks   # 查看将发布的内容，不会上传任何东西
+   git commit -am "chore: release" && git push
+   ```
+
+4. **登录 npm**：使用拥有 `@minerva` scope 发布权限、并已开启双重验证（2FA）的账号：
+
+   ```bash
+   npm login --registry https://registry.npmjs.org/
+   npm whoami --registry https://registry.npmjs.org/
+   ```
+
+   每个包的 `publishConfig.registry` 都指向 `https://registry.npmjs.org/`，因此即使 `~/.npmrc` 配置了镜像（如 npmmirror），发布也不会走镜像。
+
+5. **发布**：
+
+   ```bash
+   pnpm release            # 构建 core、lib-core 与 lib-web-components，然后执行 `changeset publish`
+   git push --follow-tags  # 推送 changeset publish 创建的 <包名>@<版本> tag
+   ```
+
+   `changeset publish` 只发布 npm 上尚不存在该版本的包，并按依赖顺序发布（先 `@minerva/core`，再 `@minerva/lib-core` 与 `@minerva/lib-web-components`），同时把 `workspace:*` 替换为实际版本号。开启写操作 2FA 时，npm 会提示输入一次性密码（也可以直接传入：`pnpm release --otp <code>`，该参数会转发给 `changeset publish`）。
+
+各包发布的内容（由各自 `package.json` 的 `files` 决定；测试、源码和文档站点不会被发布）：
+
+| 包                            | 内容                                                                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@minerva/core`               | `dist/`（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）、`README.md`、`LICENSE`                                                                                                                         |
+| `@minerva/lib-core`           | `dist/`（按模块的 ESM + CJS、类型、`style.css`、按组件的 `styles/*.css`、`prose.scss`、`./monaco` 与 `./theme-utils` 入口）、`README.md`、`LICENSE`                                                    |
+| `@minerva/lib-web-components` | `dist/`（每个元素的 ESM、`elements/*` 入口（含可选的 `code-editor`）、`cdn/minerva.js`、`tokens.css`、`types/` 中的框架类型、`html-custom-data.json`）、`custom-elements.json`、`README.md`、`LICENSE` |
+
+`@minerva/sample`（文档站点）是私有包，永远不会发布。
 
 ## 🤝 贡献
 

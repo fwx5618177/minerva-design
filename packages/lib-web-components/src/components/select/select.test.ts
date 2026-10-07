@@ -535,7 +535,7 @@ describe("<minerva-select> layering", () => {
 
 describe("<minerva-select> dev warnings", () => {
   it("warns when the value matches no option and on duplicate values", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-select value="xx"><minerva-option value="a">A</minerva-option><minerva-option value="a">A2</minerva-option></minerva-select>`,
     );

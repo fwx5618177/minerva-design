@@ -135,7 +135,7 @@ describe("<minerva-tag>", () => {
   });
 
   it("warns when pressed is used without clickable", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-tag pressed>x</minerva-tag>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("clickable"));
   });

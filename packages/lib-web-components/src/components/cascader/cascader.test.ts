@@ -807,7 +807,7 @@ describe("<minerva-cascader> forms", () => {
 
 describe("<minerva-cascader> dev warnings", () => {
   it("warns when the value is not a path of the options", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await setup();
     el.value = ["zhejiang", "nowhere"];
     await settle();
@@ -817,7 +817,7 @@ describe("<minerva-cascader> dev warnings", () => {
   });
 
   it("warns about duplicate sibling values", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup("", [
       { value: "a", label: "A" },
       { value: "a", label: "A again" },
@@ -828,7 +828,7 @@ describe("<minerva-cascader> dev warnings", () => {
   });
 
   it("does not warn for a valid tree and value", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup('value="zhejiang,hangzhou,xihu"');
     expect(warn).not.toHaveBeenCalled();
   });

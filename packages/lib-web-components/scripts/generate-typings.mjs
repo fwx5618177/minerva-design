@@ -8,7 +8,7 @@
 // (HTMLElementTagNameMap ships with each element's own declarations.)
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { MANIFEST, ROOT, elementsOf } from "./manifest.mjs";
+import { MANIFEST, ROOT, elementsOf, optionalEntryOf } from "./manifest.mjs";
 
 /** Settable properties of an element (keys of its class) */
 const propsOf = (element) =>
@@ -24,8 +24,21 @@ const camel = (name) => name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 const header = (title) =>
   `// ${title}\n// Generated from custom-elements.json by scripts/generate-typings.mjs: do not edit.\n`;
 
-const importLine = (elements) =>
-  `import type {\n${elements.map((e) => `  ${e.name},`).join("\n")}\n} from "../index.js";\n`;
+/** Type imports: the all-in-one entry, plus the optional entries' modules */
+const importLine = (elements) => {
+  const groups = new Map();
+  for (const e of elements) {
+    const entry = optionalEntryOf(e);
+    const from = entry ? `../elements/${entry}.js` : "../index.js";
+    groups.set(from, [...(groups.get(from) ?? []), e.name]);
+  }
+  return [...groups]
+    .map(
+      ([from, names]) =>
+        `import type {\n${names.map((n) => `  ${n},`).join("\n")}\n} from "${from}";\n`,
+    )
+    .join("");
+};
 
 const pick = (element) => {
   const props = propsOf(element);

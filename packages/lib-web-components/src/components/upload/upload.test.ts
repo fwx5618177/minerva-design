@@ -256,7 +256,7 @@ describe("<minerva-upload>", () => {
   });
 
   it("warns in development when max-count is set without multiple", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-upload label="F" max-count="3"></minerva-upload>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("max-count"));
   });

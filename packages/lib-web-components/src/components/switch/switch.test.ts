@@ -166,7 +166,7 @@ describe("<minerva-switch>", () => {
   });
 
   it("warns in development when segmented lacks labels", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaSwitch>(
       `<minerva-switch variant="segmented" label="x"></minerva-switch>`,
     );

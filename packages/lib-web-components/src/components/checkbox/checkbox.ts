@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -14,6 +14,7 @@ import { IconCircleInfoFilled } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type CheckboxShape = "square" | "circle" | "rounded";
 export type CheckboxSize = "small" | "medium" | "large";
@@ -70,7 +71,7 @@ export class MinervaCheckbox extends FormAssociatedElement {
         color: var(--checkbox-checkmark-color, var(--text-inverse-color));
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Checked state (property; the `checked` attribute sets `defaultChecked`) */

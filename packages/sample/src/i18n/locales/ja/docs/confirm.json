@@ -60,7 +60,11 @@
       },
       "imperative": {
         "title": "命令的な confirm()",
-        "description": "confirm({ title, ... }) はダイアログを追加し、true か false で解決して、閉じたら削除します。テーマ対応の window.confirm の代替です。同時呼び出しは順番に表示されます。"
+        "description": "confirm({ title, ... }) はダイアログを追加し、true か false で解決して、閉じたら削除します。テーマ対応の window.confirm の代替です。同時呼び出しは順番に表示されます。 host も <minerva-confirm-provider> もない場合、ダイアログは document.body に追加されます（ルートのテーマと言語）。"
+      },
+      "scoped": {
+        "title": "スコープ付き確認とプロバイダー",
+        "description": "confirm({ host })（または confirmFor(host)）は useConfirm() に相当します。ダイアログは host の <minerva-config> スコープ内（ダーク、tech パレット、中国語ラベル）に描画され、最も近い <minerva-confirm-provider> がキューに入れます。host なしの confirm() はプロバイダー自身のスコープ（ここではルートのテーマと言語）に描画され、グローバルな confirm() と同じです。"
       }
     },
     "minerva-confirm-dialog": {
@@ -101,6 +105,14 @@
       "methods": {
         "show": "ダイアログを開きます。",
         "hide": "ダイアログを閉じます（イベントなし）。"
+      }
+    },
+    "minerva-confirm-provider": {
+      "props": {
+        "confirm": "このプロバイダーが描画する確認を求めます（そのスコープ、または options.host のスコープ）。確認されると true で解決します（読み取り専用）。"
+      },
+      "slots": {
+        "default": "アプリのコンテンツ：内部からの confirm({ host }) / confirmFor(host) の呼び出しはここでキューに入ります。"
       }
     }
   }

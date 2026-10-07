@@ -54,7 +54,7 @@ describe("<minerva-divider>", () => {
   });
 
   it("vertical: inline-axis spacing, length as height, flex-item, no text (dev warning)", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaDivider>(
       `<minerva-divider orientation="vertical" length="40" spacing="4" thickness="2" flex-item variant="dashed">x</minerva-divider>`,
     );

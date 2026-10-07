@@ -1,8 +1,9 @@
-import { css, html, unsafeCSS, type TemplateResult } from "lit";
+import { css, html, type TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/DescriptionList/descriptionList.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** Renderable content of a term / description */
 export type DescriptionListContent = string | number | Node | TemplateResult;
@@ -78,7 +79,7 @@ export class MinervaDescriptionList extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Rows rendered before the declarative `<minerva-description-item>` children */

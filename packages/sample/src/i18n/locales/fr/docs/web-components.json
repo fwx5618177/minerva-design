@@ -59,7 +59,7 @@
   },
   "dev": {
     "title": "Avertissements de développement",
-    "text": "Les combinaisons d'attributs invalides et les erreurs courantes (une valeur qui ne correspond à aucune option, min supérieur à max, un bouton composé uniquement d'une icône sans aria-label, le paquet chargé deux fois...) sont signalées avec console.warn, une fois par message, préfixées par [minerva] et le nom de la balise. Les vérifications sont protégées par process.env.NODE_ENV !== \"production\", que les bundlers remplacent : les builds de production les suppriment. Sans bundler (le build CDN, ou un module chargé là où process n'existe pas), les avertissements sont désactivés."
+    "text": "Les combinaisons d'attributs invalides et les erreurs courantes (une valeur qui ne correspond à aucune option, min supérieur à max, un bouton composé uniquement d'une icône sans aria-label, le paquet chargé deux fois...) sont signalées avec console.error (le canal des avertissements des composants React, comme les avertissements de props de React), une fois par message, au même format que lib-core : \"[minerva] <minerva-tag>: message\". Les vérifications sont protégées par process.env.NODE_ENV !== \"production\", que les bundlers remplacent : les builds de production les suppriment. Sans bundler (le build CDN, ou un module chargé là où process n'existe pas), les avertissements sont désactivés."
   },
   "authoring": {
     "title": "Créer vos propres éléments",

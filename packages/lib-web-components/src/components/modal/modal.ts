@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/Modal/modal.module.scss?inline";
@@ -13,6 +13,7 @@ import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type ModalSize = "small" | "medium" | "large" | "xlarge" | "full";
 
@@ -62,7 +63,7 @@ export class MinervaModal extends MinervaElement {
         flex: 1 1 auto;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Whether the modal is open */

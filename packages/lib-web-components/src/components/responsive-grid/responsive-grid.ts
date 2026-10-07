@@ -1,10 +1,11 @@
-import { css, html, unsafeCSS } from "lit";
+import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import styles from "@lib-core-styles/components/ResponsiveGrid/responsiveGrid.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { numberOrString, resolveSpace } from "../box/space";
+import { sharedStyles } from "../../internal/styles";
 
 /**
  * Column counts (integers 1-12): one number for every width, or per container
@@ -112,7 +113,7 @@ export class MinervaResponsiveGrid extends MinervaElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /**

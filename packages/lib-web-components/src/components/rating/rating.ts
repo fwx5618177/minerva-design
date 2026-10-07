@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -13,6 +13,7 @@ import {
 import { IconStar, IconStarHalf } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type RatingSize = "small" | "medium" | "large";
 
@@ -94,7 +95,7 @@ export class MinervaRating extends FormAssociatedElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
     starStyles,
   ];
 
@@ -386,7 +387,7 @@ export class MinervaRatingScale extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Dimensions to rate, one row each */

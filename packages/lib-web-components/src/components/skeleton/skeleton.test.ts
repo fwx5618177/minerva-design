@@ -111,7 +111,7 @@ describe("<minerva-skeleton>", () => {
   });
 
   it("warns about invalid line counts", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaSkeleton>(
       `<minerva-skeleton lines="-2"></minerva-skeleton>`,
     );
@@ -148,7 +148,7 @@ describe("<minerva-skeleton-text>", () => {
   });
 
   it("warns about invalid line counts", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-skeleton-text lines="1.5"></minerva-skeleton-text>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("lines"));
   });

@@ -36,6 +36,7 @@ const ToastDoc: React.FC = () => {
       <ul className={styles.prose}>
         <li>{t("docs.toast.usage.hook")}</li>
         <li>{t("docs.toast.usage.function")}</li>
+        <li>{t("docs.toast.usage.modal")}</li>
       </ul>
       <CodeBlock code={usageCode} language="tsx" />
     </section>

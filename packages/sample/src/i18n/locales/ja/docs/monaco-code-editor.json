@@ -1,6 +1,6 @@
 {
   "title": "Monaco コードエディター",
-  "description": "ローカルエンジン（CDN は使いません）で動作し、ページのテーマに追従するラベル付き Monaco エディターです。エンジンが時間内に読み込めない場合は、再試行ボタン付きの編集可能なテキストエリアに切り替わります。@minerva/lib-core/monaco からインポートします。@monaco-editor/react と monaco-editor は任意の peer 依存です。",
+  "description": "ローカルエンジン（CDN は使いません）で動作し、ページのテーマに追従するラベル付き Monaco エディターです。エンジンが時間内に読み込めない場合は、再試行ボタン付きの編集可能なテキストエリアに切り替わります。@minerva/lib-core/monaco からインポートします。@monaco-editor/react と monaco-editor は任意の peer 依存です。 Web Component の <minerva-code-editor> はオプションのエントリ @minerva/lib-web-components/code-editor として公開され（オールインワンのエントリと CDN バンドルには含まれません）、monaco-editor がオプションの peer 依存関係です。",
   "demos": {
     "basic": {
       "title": "遅延読み込みのエディター",
@@ -34,5 +34,63 @@
     "--monaco-code-editor-bg": "エディター枠の背景色",
     "--monaco-code-editor-label-gap": "ラベルとエディターの間隔",
     "--monaco-code-editor-font-size": "ラベル・メッセージ・プレーンテキスト代替のフォントサイズ"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "ローカルエンジン、テーマ、フォーム",
+        "description": "オプションのエントリ @minerva/lib-web-components/code-editor とアプリ自身の Monaco エンジンを読み込み、monaco プロパティに設定します。エディターはページ / <minerva-config> のテーマに従い、編集ごとに minerva-input（React の onChange）を発火し、フォームと一緒に値を送信します。"
+      },
+      "fallback": {
+        "title": "読み込み、フォールバック、後からのエンジン",
+        "description": "エンジンがない間は読み込み状態を表示し、load-timeout 後に編集可能な textarea と再試行ボタンを表示します（minerva-error が発火）。後からエンジンを渡すと最新の値でエディターが読み込まれます。"
+      }
+    },
+    "minerva-code-editor": {
+      "props": {
+        "name": "フォーム送信時に値を送る名前。",
+        "required": "フォームを送信するには値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。",
+        "defaultValue": "初期のソーステキスト（value 属性）。form.reset() で復元されます。ユーザーが編集するまでは変更すると value も変わります。",
+        "resolvedTheme": "実際に適用されるテーマ：theme、なければ最も近い data-theme（<minerva-config> スコープ、次に <html>）（読み取り専用）。",
+        "monaco": "ローカルの Monaco エンジン（import * as monaco from \"monaco-editor\"）。プロパティで設定し、アプリにつき 1 つ。CDN からは読み込みません。",
+        "value": "ソーステキスト（プロパティ。value 属性は defaultValue を設定）。編集ごとに更新され、設定すると元に戻せる編集として反映されます。",
+        "theme": "カラーテーマ（light または dark）。既定では要素のスコープのテーマ（最も近い data-theme：<minerva-config>、次に <html>）にライブで追従します。",
+        "disabled": "エディター（とフォールバック）を読み取り専用にします。送信・検証の対象外です。",
+        "loadTimeout": "textarea のフォールバックを表示するまでエンジンとエディターを待つミリ秒数（エンジンが未設定の場合も同じ）。"
+      },
+      "events": {
+        "input": "値が変わった（編集ごと。composed）。",
+        "change": "値が確定した：編集後にエディターからフォーカスが外れた。",
+        "minerva-input": "input と同じで、detail: { value } 付き（React の onChange）。",
+        "minerva-change": "change と同じで、detail: { value } 付き。",
+        "minerva-error": "エディターが利用できなくなり（期限内にエンジンがない、無効なエンジン、例外）、textarea のフォールバックが表示された。"
+      },
+      "slots": {
+        "editor": "要素が作成します：Monaco が描画する light DOM の <div>。Monaco がドキュメントに追加するスタイルシートが適用されます。自分で中身を入れないでください。"
+      },
+      "parts": {
+        "base": "label で名前が付く role=\"group\" のルート。",
+        "label": "表示ラベル。",
+        "surface": "height でサイズが決まるエディター領域。",
+        "fallback": "フォールバックの <textarea>。",
+        "retry-button": "再試行の <minerva-button>。"
+      },
+      "methods": {
+        "focus": "エディター（またはフォールバックの textarea）にフォーカスします。",
+        "retry": "エディターの読み込みを再試行します（再試行ボタンと同じ）。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

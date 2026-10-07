@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { ColorScheme, Placement } from "@minerva/core";
@@ -14,6 +14,7 @@ import { attachInternals } from "../../internal/form";
 import { IconSpinner } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type IconButtonVariant = "ghost" | "solid" | "outline";
 export type IconButtonSize = "xsmall" | "small" | "medium" | "large";
@@ -103,8 +104,8 @@ export class MinervaIconButton extends MinervaElement {
         }
       }
     `,
-    unsafeCSS(styles),
-    unsafeCSS(tooltipStyles),
+    sharedStyles(styles),
+    sharedStyles(tooltipStyles),
   ];
 
   /**

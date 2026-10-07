@@ -144,7 +144,7 @@ describe("<minerva-json-field>", () => {
   });
 
   it("warns in development about an out-of-range indent", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-json-field indent="20"></minerva-json-field>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("indent"));
   });

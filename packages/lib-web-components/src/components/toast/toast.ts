@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -38,6 +38,7 @@ import {
   type ToastLifecycleEvent,
   type ToastPosition,
 } from "./toast-store";
+import { sharedStyles } from "../../internal/styles";
 
 const ICONS: Record<ToastColor, unknown> = {
   info: IconInfo,
@@ -137,8 +138,14 @@ const onDocumentKeyDown = (event: KeyboardEvent) => {
  *   `<body>` (and removed again when a page region connects).
  * - The stack is shown in the top layer (Popover API, `popover="manual"`)
  *   and raised again when a toast appears or a Minerva overlay opens, so
- *   toasts stay above modals and stay clickable. It is kept exposed to
- *   assistive technologies while a modal hides the rest of the page.
+ *   toasts stay above modals and stay clickable. Like lib-core's
+ *   `ToastProvider` viewport, the region is treated like any other page
+ *   content by a modal's hide-others: while a modal dialog (modal, drawer,
+ *   confirm, command, modal popover / menu) is open, the region (or its
+ *   ancestor next to the dialog) gets `aria-hidden="true"` and assistive
+ *   technologies only see the dialog; it is exposed again when the dialog
+ *   closes. Opt out on a given region with the `data-minerva-keep-visible`
+ *   attribute (core's hide-others never hides such elements).
  *
  * @summary Toast stack (viewport) rendering the toasts of the `toast()` API.
  * @tag minerva-toast-region
@@ -188,7 +195,7 @@ export class MinervaToastRegion extends MinervaElement {
         }
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Where the toasts are stacked */
@@ -240,10 +247,6 @@ export class MinervaToastRegion extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    // Live content: never hidden by a modal's hide-others
-    if (!this.hasAttribute("data-minerva-keep-visible")) {
-      this.setAttribute("data-minerva-keep-visible", "");
-    }
     this.cleanups = [
       toastStore.subscribe(() => this.refresh()),
       toastRegions.subscribe(() => this.refresh()),

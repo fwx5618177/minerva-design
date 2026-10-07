@@ -248,7 +248,7 @@ describe("<minerva-radio-group> / <minerva-radio>", () => {
   });
 
   it("warns in development when value matches no radio", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(fruits('value="kiwi"'));
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("kiwi"));
   });

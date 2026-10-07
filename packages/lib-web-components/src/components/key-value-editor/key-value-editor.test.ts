@@ -181,7 +181,7 @@ describe("<minerva-key-value-editor>", () => {
   });
 
   it("warns in development about duplicate ids", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaKeyValueEditor>(
       `<minerva-key-value-editor></minerva-key-value-editor>`,
     );

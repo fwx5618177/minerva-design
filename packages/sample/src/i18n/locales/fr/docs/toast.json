@@ -4,7 +4,8 @@
   "usage": {
     "title": "Lequel choisir : useToast() ou toast()",
     "hook": "Dans un composant, appelez useToast() : ses toasts suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, ils sont rendus dans son conteneur de portail, avec son thème, sa palette et ses tokens, et leurs libellés intégrés utilisent sa langue. Le ToastProvider propriétaire les affiche toujours, avec sa position, son max et ses libellés.",
-    "function": "Hors de React (bus d’événements, clients d’API, stores et autres modules non composants), importez directement toast() : aucun hook n’y est disponible, et ses toasts utilisent la portée du ToastProvider, en général le thème et la langue racines."
+    "function": "Hors de React (bus d’événements, clients d’API, stores et autres modules non composants), importez directement toast() : aucun hook n’y est disponible, et ses toasts utilisent la portée du ToastProvider, en général le thème et la langue racines.",
+    "modal": "Tant qu'une boîte de dialogue modale est ouverte (Modal, Drawer, ConfirmDialog, Command, un Popover ou un Menu modal), son traitement hide-others couvre la zone des toasts comme le reste de la page : elle reçoit aria-hidden=\"true\" et les technologies d'assistance ne voient que la boîte de dialogue jusqu'à sa fermeture. <minerva-toast-region> se comporte de la même façon (désactivable sur une région avec data-minerva-keep-visible)."
   },
   "demos": {
     "basic": {
@@ -96,7 +97,7 @@
     "demos": {
       "basic": {
         "title": "Utilisation de base",
-        "description": "Un <minerva-toast-region> affiche les toasts ; region.toast est l'API toast() liée à cette région (info, success, warning, danger). position place la pile."
+        "description": "Un <minerva-toast-region> affiche les toasts ; region.toast est l'API toast() liée à cette région (info, success, warning, danger). position place la pile. Comme avec le ToastProvider de React, une boîte de dialogue modale ouverte masque la région aux technologies d'assistance (aria-hidden) jusqu'à sa fermeture."
       },
       "options": {
         "title": "Options et action",

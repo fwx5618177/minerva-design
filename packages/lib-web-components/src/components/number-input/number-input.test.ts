@@ -255,7 +255,7 @@ describe("<minerva-number-input>", () => {
   });
 
   it("warns in development when min > max", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup('min="5" max="1"');
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("min (5)"));
   });

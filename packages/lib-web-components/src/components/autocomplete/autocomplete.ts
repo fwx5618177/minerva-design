@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -26,6 +25,7 @@ import { IconInbox, IconSpinner } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** Content a render callback may return */
 export type AutoCompleteRenderResult = string | Node | TemplateResult;
@@ -107,8 +107,8 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   static override styles = [
     hostStyles,
     popoverResetStyles,
-    unsafeCSS(inputStyles),
-    unsafeCSS(styles),
+    sharedStyles(inputStyles),
+    sharedStyles(styles),
     css`
       :host {
         display: block;

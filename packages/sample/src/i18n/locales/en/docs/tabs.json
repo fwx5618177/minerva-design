@@ -45,7 +45,7 @@
     },
     "TabPanelProps": {
       "value": "Value of the tab this panel belongs to",
-      "forceMount": "Keeps the panel mounted (hidden) while its tab is not selected",
+      "forceMount": "Keeps the panel mounted (hidden) while its tab is not selected. Without it, inactive panels are unmounted. <minerva-tab-panel> keeps regular children mounted (like forceMount) and offers this choice for <template> content with its force-mount attribute",
       "ref": "Ref to the panel <div> element"
     }
   },
@@ -76,6 +76,10 @@
       "controlled": {
         "title": "Cancelling a change",
         "description": "minerva-change is cancelable: while the box is checked, preventDefault() keeps the current tab. Uncheck it to switch tabs."
+      },
+      "panels": {
+        "title": "Inactive panels: mounted or not",
+        "description": "React's <TabPanel> unmounts inactive panels by default and keeps them (hidden) with forceMount. Light DOM children belong to the page, so <minerva-tab-panel> cannot unmount them: regular children behave like forceMount (hidden, state kept, form fields still submitted). Put the content in a <template> for React's default (created while active, removed afterwards), and add force-mount to keep it mounted while hidden."
       }
     },
     "minerva-tabs": {
@@ -117,6 +121,9 @@
       },
       "parts": {
         "base": "The panel wrapper."
+      },
+      "props": {
+        "forceMount": "Mounts the content of a <template> child even while the panel is inactive (hidden), like React's forceMount. Regular children are always mounted."
       }
     }
   }

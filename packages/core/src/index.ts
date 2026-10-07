@@ -10,5 +10,6 @@ export * from "./portal";
 export * from "./positioning";
 export * from "./pointer-grace";
 export * from "./presence";
+export * from "./dev-message";
 export * from "./theme";
 export * from "./i18n";

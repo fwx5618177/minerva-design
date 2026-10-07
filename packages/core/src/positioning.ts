@@ -225,12 +225,17 @@ export function toPlacement(side: Side, align: Align = "center"): Placement {
   return (align === "center" ? side : `${side}-${align}`) as Placement;
 }
 
-const CAMEL_TO_PLACEMENT: Record<string, Placement> = {};
-for (const side of ["top", "bottom", "left", "right"] as const) {
-  CAMEL_TO_PLACEMENT[side] = side;
-  CAMEL_TO_PLACEMENT[`${side}Start`] = `${side}-start`;
-  CAMEL_TO_PLACEMENT[`${side}End`] = `${side}-end`;
-}
+// A pure IIFE (not a top-level loop) so bundlers can drop it when
+// `fromCamelPlacement` is unused.
+const CAMEL_TO_PLACEMENT: Record<string, Placement> = /* @__PURE__ */ (() => {
+  const map: Record<string, Placement> = {};
+  for (const side of ["top", "bottom", "left", "right"] as const) {
+    map[side] = side;
+    map[`${side}Start`] = `${side}-start`;
+    map[`${side}End`] = `${side}-end`;
+  }
+  return map;
+})();
 
 /** `"bottomStart"` -> `"bottom-start"` (kebab-case is returned as is). */
 export function fromCamelPlacement(value: string): Placement {

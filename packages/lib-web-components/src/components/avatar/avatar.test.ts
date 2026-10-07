@@ -106,7 +106,7 @@ describe("<minerva-avatar>", () => {
   });
 
   it("warns about unknown size presets", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-avatar size="huge"></minerva-avatar>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("unknown size"));
   });
@@ -159,7 +159,7 @@ describe("<minerva-avatar-group>", () => {
   });
 
   it("warns about an invalid max", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-avatar-group max="-1"></minerva-avatar-group>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("max"));
   });

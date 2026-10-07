@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -20,6 +19,7 @@ import {
 } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** Kind of a pagination item (`itemRender` second argument) */
 export type PaginationItemType =
@@ -165,7 +165,7 @@ export class MinervaPagination extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Current page (1-based) */

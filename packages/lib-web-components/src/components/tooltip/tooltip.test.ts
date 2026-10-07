@@ -545,7 +545,7 @@ describe("<minerva-tooltip>", () => {
 
   describe("dev warnings", () => {
     it("warns about a tooltip without content", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await setup("");
       await wait(5);
       expect(warn).toHaveBeenCalledWith(
@@ -554,7 +554,7 @@ describe("<minerva-tooltip>", () => {
     });
 
     it("warns about a trigger keyboard users cannot reach", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await mount(
         `<minerva-tooltip content="Hi"><span>icon</span></minerva-tooltip>`,
       );
@@ -565,7 +565,7 @@ describe("<minerva-tooltip>", () => {
     });
 
     it("does not warn for a focusable trigger with content", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await setup();
       await wait(5);
       expect(warn).not.toHaveBeenCalled();

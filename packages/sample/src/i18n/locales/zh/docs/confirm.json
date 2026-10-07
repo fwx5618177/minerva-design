@@ -60,7 +60,11 @@
       },
       "imperative": {
         "title": "命令式 confirm()",
-        "description": "confirm({ title, ... }) 会追加一个对话框，解析为 true 或 false，并在关闭后移除它：带主题的 window.confirm 替代品。并发调用会排队依次显示。"
+        "description": "confirm({ title, ... }) 会追加一个对话框，解析为 true 或 false，并在关闭后移除它：带主题的 window.confirm 替代品。并发调用会排队依次显示。 没有 host 且没有 <minerva-confirm-provider> 时，对话框会追加到 document.body（根主题和语言）。"
+      },
+      "scoped": {
+        "title": "作用域确认与 Provider",
+        "description": "confirm({ host })（或 confirmFor(host)）等价于 useConfirm()：对话框渲染在 host 所在的 <minerva-config> 作用域内（深色、tech 调色板、中文标签），并由最近的 <minerva-confirm-provider> 排队。不带 host 的 confirm() 渲染在 provider 自身的作用域中（这里是根主题和语言），与全局 confirm() 相同。"
       }
     },
     "minerva-confirm-dialog": {
@@ -101,6 +105,14 @@
       "methods": {
         "show": "打开对话框。",
         "hide": "关闭对话框（不触发事件）。"
+      }
+    },
+    "minerva-confirm-provider": {
+      "props": {
+        "confirm": "请求一个由此 provider 渲染的确认（在其作用域中，或 options.host 的作用域中）；确认时 resolve 为 true（只读）。"
+      },
+      "slots": {
+        "default": "应用内容：其中发起的 confirm({ host }) / confirmFor(host) 调用会在此排队。"
       }
     }
   }

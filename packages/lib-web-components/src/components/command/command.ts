@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { live } from "lit/directives/live.js";
 import modalStyles from "@lib-core-styles/components/Modal/modal.module.scss?inline";
@@ -23,6 +23,7 @@ export {
   normalizeShortcuts,
   type CommandShortcutEvent,
 } from "./shortcuts";
+import { sharedStyles } from "../../internal/styles";
 
 /** One entry of the command palette (same shape as lib-core's `CommandItem`). */
 export interface CommandItem {
@@ -98,8 +99,8 @@ export class MinervaCommandDialog extends MinervaElement {
         display: contents;
       }
     `,
-    unsafeCSS(modalStyles),
-    unsafeCSS(styles),
+    sharedStyles(modalStyles),
+    sharedStyles(styles),
   ];
 
   /** Whether the palette is open */

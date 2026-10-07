@@ -258,7 +258,7 @@ describe("<minerva-nav-tree>", () => {
   });
 
   it("warns in development about duplicate ids", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup([
       {
         id: "s",

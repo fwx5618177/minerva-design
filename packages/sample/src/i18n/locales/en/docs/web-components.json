@@ -59,7 +59,7 @@
   },
   "dev": {
     "title": "Development warnings",
-    "text": "Invalid attribute combinations and common mistakes (a value that matches no option, min greater than max, an icon-only button without aria-label, the package loaded twice...) are reported with console.warn, once per message, prefixed with [minerva] and the tag name. The checks are guarded by process.env.NODE_ENV !== \"production\", which bundlers replace: production builds drop them. Without a bundler (the CDN build, or a module loaded where process does not exist), warnings are off."
+    "text": "Invalid attribute combinations and common mistakes (a value that matches no option, min greater than max, an icon-only button without aria-label, the package loaded twice...) are reported with console.error (the channel of the React components' warnings, like React's own prop warnings), once per message, in the same format as lib-core: \"[minerva] <minerva-tag>: message\". The checks are guarded by process.env.NODE_ENV !== \"production\", which bundlers replace: production builds drop them. Without a bundler (the CDN build, or a module loaded where process does not exist), warnings are off."
   },
   "authoring": {
     "title": "Authoring your own elements",

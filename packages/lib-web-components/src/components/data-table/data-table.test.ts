@@ -560,7 +560,7 @@ describe("<minerva-data-table>", () => {
   });
 
   it("warns in development about duplicate row keys", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup({ rows: [people[0], people[0]] });
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("duplicate"));
   });

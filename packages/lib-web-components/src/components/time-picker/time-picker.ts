@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -31,6 +31,7 @@ import {
   startOfToday,
   toTimeValue,
 } from "./utils";
+import { sharedStyles } from "../../internal/styles";
 
 export type TimePickerSize = "small" | "medium" | "large";
 /** Display formats of lib-core's TimePicker (any HH / H / hh / h / mm / m / ss / s / a pattern works) */
@@ -132,10 +133,10 @@ export class MinervaTimePicker extends FormAssociatedElement {
         width: 100%;
       }
     `,
-    unsafeCSS(inputStyles),
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
-    unsafeCSS(panelStyles),
+    sharedStyles(inputStyles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
+    sharedStyles(panelStyles),
   ];
 
   /** Current value: 24-hour `HH:mm:ss` / `HH:mm` (`""` = no time). The `value` attribute sets `defaultValue` */

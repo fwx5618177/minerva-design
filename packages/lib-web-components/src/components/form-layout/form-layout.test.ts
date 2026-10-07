@@ -48,7 +48,7 @@ describe("<minerva-form-layout>", () => {
   });
 
   it("warns about invalid columns", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-form-layout columns="0"></minerva-form-layout>`);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("minerva-form-layout"),

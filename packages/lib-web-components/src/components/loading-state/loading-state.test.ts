@@ -56,7 +56,7 @@ describe("<minerva-loading-state>", () => {
   });
 
   it("warns about unknown sizes", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-loading-state size="huge"></minerva-loading-state>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("unknown size"));
   });

@@ -179,6 +179,20 @@ export const serializeManifest = (manifest) =>
   `${JSON.stringify(manifest, null, 2)}\n`;
 
 /** Every element of the manifest: `{ tagName, name, path, ...declaration }` */
+/**
+ * Optional define entries (optional peer dependencies): published as
+ * `@minerva/lib-web-components/<entry>` only, not part of the all-in-one
+ * entry nor of the CDN bundle. Their elements live in
+ * `src/components/<entry>/`.
+ */
+export const OPTIONAL_ENTRIES = ["code-editor"];
+
+/** Optional entry of a manifest element (`undefined`: all-in-one). */
+export const optionalEntryOf = (element) =>
+  OPTIONAL_ENTRIES.find((entry) =>
+    (element.path ?? "").startsWith(`src/components/${entry}/`),
+  );
+
 export const elementsOf = (manifest) =>
   manifest.modules.flatMap((module) =>
     module.declarations.map((d) => ({ ...d, path: module.path })),

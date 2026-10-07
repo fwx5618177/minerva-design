@@ -709,8 +709,8 @@ export const docPages: DocPageMeta[] = [
     demos: ["imperative", "colors", "provider", "declarative", "scoped"],
     wc: {
       entry: "confirm",
-      tags: ["minerva-confirm-dialog"],
-      demos: ["basic", "async", "imperative"],
+      tags: ["minerva-confirm-dialog", "minerva-confirm-provider"],
+      demos: ["basic", "async", "imperative", "scoped"],
     },
   },
   {
@@ -1148,7 +1148,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "tabs",
       tags: ["minerva-tabs", "minerva-tab", "minerva-tab-panel"],
-      demos: ["basic", "variants", "vertical", "controlled"],
+      demos: ["basic", "variants", "vertical", "controlled", "panels"],
     },
   },
   {
@@ -1170,6 +1170,12 @@ export const docPages: DocPageMeta[] = [
     category: "editors",
     api: ["MonacoCodeEditorProps"],
     demos: ["basic"],
+    wc: {
+      // optional entry (not in the all-in-one entry nor the CDN bundle)
+      entry: "code-editor",
+      tags: ["minerva-code-editor"],
+      demos: ["basic", "fallback"],
+    },
   },
   {
     id: "steps",
@@ -1286,6 +1292,10 @@ export const docPages: DocPageMeta[] = [
       "SUBMENU_OPEN_DELAY",
       "LONG_PRESS_DELAY",
       "MinervaContextMenu",
+      // imperative confirmation (documented on the Confirm page)
+      "confirm",
+      "confirmFor",
+      "confirmScopeOf",
     ],
     demos: ["react"],
   },

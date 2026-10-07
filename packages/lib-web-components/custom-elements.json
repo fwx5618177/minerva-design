@@ -5394,6 +5394,653 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/code-editor/code-editor.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A labelled Monaco code editor running on a local engine (never loaded\nfrom a CDN), following the theme of its scope (lib-core's\n`MonacoCodeEditor`, published from `@minerva/lib-core/monaco`). When the\nengine is missing, cannot create the editor in time (`load-timeout`) or\nthrows, it degrades to an editable `<textarea>` with a Retry button.\n\nPublished as the optional entry `@minerva/lib-web-components/code-editor`\n(not part of the all-in-one entry nor the CDN bundle): it requires the\noptional peer dependency `monaco-editor`. Pass the engine as a property:\n`editor.monaco = monaco` (`import * as monaco from \"monaco-editor\"`; one\nengine per application, configure its workers in the host). Until it is\nset the element shows its loading state; without it after `load-timeout`\nit falls back to the textarea, and setting it later loads the editor.\n\nMonaco renders into a light DOM child (`<div slot=\"editor\">`, created by\nthe element) so the stylesheets Monaco injects into the document apply.\n\nTheme: the `theme` attribute, else the closest `data-theme` (a\n`<minerva-config>` scope, then `<html>`), followed live. Monaco themes are\nglobal to the engine (as with lib-core): the last editor to apply its\ntheme wins for all editors of the page.\n\nForm-associated: submits `value` under `name`, supports `required`,\n`form.reset()` (back to the `value` attribute) and `<fieldset disabled>`.",
+          "name": "MinervaCodeEditor",
+          "cssParts": [
+            {
+              "description": "The `role=\"group\"` root",
+              "name": "base"
+            },
+            {
+              "description": "The visible label",
+              "name": "label"
+            },
+            {
+              "description": "The editor surface (sized by `height`)",
+              "name": "surface"
+            },
+            {
+              "description": "The fallback `<textarea>`",
+              "name": "fallback"
+            },
+            {
+              "description": "The Retry `<minerva-button>`",
+              "name": "retry-button"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Created by the element: the light DOM container Monaco renders into",
+              "name": "editor"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "monaco",
+              "type": {
+                "text": "CodeEditorEngine | undefined"
+              },
+              "description": "Local Monaco engine (`import * as monaco from \"monaco-editor\"`); never\nloaded from a CDN"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Source text (property; the `value` attribute sets `defaultValue`)"
+            },
+            {
+              "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initial source text, restored by `form.reset()` (the `value` attribute)",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "language",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"plaintext\"",
+              "description": "Monaco language id",
+              "attribute": "language",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Visible label, also the accessible name of the editor",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "420",
+              "description": "Height of the editor in pixels, clamped to [min-height, max-height]",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "minHeight",
+              "type": {
+                "text": "number"
+              },
+              "default": "160",
+              "description": "Minimum height in pixels",
+              "attribute": "min-height"
+            },
+            {
+              "kind": "field",
+              "name": "maxHeight",
+              "type": {
+                "text": "number"
+              },
+              "default": "800",
+              "description": "Maximum height in pixels",
+              "attribute": "max-height"
+            },
+            {
+              "kind": "field",
+              "name": "theme",
+              "type": {
+                "text": "\"light\" | \"dark\" | undefined"
+              },
+              "description": "Color theme; defaults to the theme of the element's scope",
+              "attribute": "theme",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "loadTimeout",
+              "type": {
+                "text": "number"
+              },
+              "default": "10000",
+              "description": "Milliseconds to wait for the engine and the editor before showing the\ntextarea fallback",
+              "attribute": "load-timeout"
+            },
+            {
+              "kind": "field",
+              "name": "unavailableText",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Message shown above the fallback (default: localized \"The editor is unavailable\")",
+              "attribute": "unavailable-text"
+            },
+            {
+              "kind": "field",
+              "name": "retryText",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the retry button (default: localized \"Retry\")",
+              "attribute": "retry-text"
+            },
+            {
+              "kind": "field",
+              "name": "retryLabel",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible label of the retry button (default: localized \"Retry editor\")",
+              "attribute": "retry-label"
+            },
+            {
+              "kind": "field",
+              "name": "loadingLabel",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible label of the loading indicator (default: localized \"Loading editor\")",
+              "attribute": "loading-label"
+            },
+            {
+              "kind": "field",
+              "name": "resolvedTheme",
+              "type": {
+                "text": "\"light\" | \"dark\""
+              },
+              "description": "Theme actually applied: `theme`, else the scope's.",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "retry",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Tries to load the editor again (what the Retry button does)."
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "attribute": "name",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "attribute": "disabled",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "attribute": "required",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDisabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the control is disabled (itself or by a disabled fieldset).",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "description": "The form owning the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "NodeList | null"
+              },
+              "description": "`<label>` elements associated with the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState | undefined"
+              },
+              "description": "Validity state (same as `<input>.validity`)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "description": "Message describing the current validation error (empty when valid)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the element is a candidate for constraint validation",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity; fires `invalid` when invalid.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity and shows the browser's validation message.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets (or clears, with `\"\"`) a custom validation error.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "disabled",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formStateRestoreCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "string | File | FormData | null"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "input",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The value changed (each edit; composed)"
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The value was committed (the editor lost focus after an edit)"
+            },
+            {
+              "description": "Same as `input`, with `detail: { value }` (lib-core's `onChange`)",
+              "name": "minerva-input"
+            },
+            {
+              "description": "Same as `change`, with `detail: { value }`",
+              "name": "minerva-change"
+            },
+            {
+              "description": "The editor became unavailable and the textarea fallback is shown",
+              "name": "minerva-error"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initial source text, restored by `form.reset()` (the `value` attribute)",
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "language",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"plaintext\"",
+              "description": "Monaco language id",
+              "fieldName": "language"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Visible label, also the accessible name of the editor",
+              "fieldName": "label"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "420",
+              "description": "Height of the editor in pixels, clamped to [min-height, max-height]",
+              "fieldName": "height"
+            },
+            {
+              "name": "min-height",
+              "type": {
+                "text": "number"
+              },
+              "default": "160",
+              "description": "Minimum height in pixels",
+              "fieldName": "minHeight"
+            },
+            {
+              "name": "max-height",
+              "type": {
+                "text": "number"
+              },
+              "default": "800",
+              "description": "Maximum height in pixels",
+              "fieldName": "maxHeight"
+            },
+            {
+              "name": "theme",
+              "type": {
+                "text": "\"light\" | \"dark\" | undefined"
+              },
+              "description": "Color theme; defaults to the theme of the element's scope",
+              "fieldName": "theme"
+            },
+            {
+              "name": "load-timeout",
+              "type": {
+                "text": "number"
+              },
+              "default": "10000",
+              "description": "Milliseconds to wait for the engine and the editor before showing the\ntextarea fallback",
+              "fieldName": "loadTimeout"
+            },
+            {
+              "name": "unavailable-text",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Message shown above the fallback (default: localized \"The editor is unavailable\")",
+              "fieldName": "unavailableText"
+            },
+            {
+              "name": "retry-text",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the retry button (default: localized \"Retry\")",
+              "fieldName": "retryText"
+            },
+            {
+              "name": "retry-label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible label of the retry button (default: localized \"Retry editor\")",
+              "fieldName": "retryLabel"
+            },
+            {
+              "name": "loading-label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible label of the loading indicator (default: localized \"Loading editor\")",
+              "fieldName": "loadingLabel"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "fieldName": "name",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "fieldName": "disabled",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "fieldName": "required",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-code-editor",
+          "customElement": true,
+          "summary": "Monaco code editor (local engine) with theme sync and a textarea fallback.",
+          "cssProperties": [
+            {
+              "name": "--monaco-code-editor-radius",
+              "description": "Corner radius of the editor surface (defaults to --radius-md)"
+            },
+            {
+              "name": "--monaco-code-editor-border-color",
+              "description": "Border color of the editor surface"
+            },
+            {
+              "name": "--monaco-code-editor-bg",
+              "description": "Background color of the editor surface"
+            },
+            {
+              "name": "--monaco-code-editor-label-gap",
+              "description": "Space between the label and the editor"
+            },
+            {
+              "name": "--monaco-code-editor-font-size",
+              "description": "Font size of the label, the messages and the plain-text fallback"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaCodeEditor",
+          "declaration": {
+            "name": "MinervaCodeEditor",
+            "module": "src/components/code-editor/code-editor.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/command/command.ts",
       "declarations": [
         {
@@ -5943,6 +6590,48 @@
           "declaration": {
             "name": "MinervaConfig",
             "module": "src/components/config/config.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/confirm/confirm-provider.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Renders the imperative confirmations of its subtree (lib-core's\n`ConfirmProvider`): `confirm({ host })` / `confirmFor(host)` called with an\nelement inside it are queued here and their dialogs are appended inside it\n(or inside the host's nested `<minerva-config>` scope), so they use its\ntheme, palette and language. `confirm()` without a host uses the most\nrecently connected provider. Disconnecting the provider cancels its\npending confirmations (they resolve `false`). Optional: without a\nprovider, confirmations render on `document.body`.\n\nIt renders as `display: contents`.",
+          "name": "MinervaConfirmProvider",
+          "slots": [
+            {
+              "description": "Application content",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "confirm",
+              "type": {
+                "text": "ConfirmFunction"
+              },
+              "readonly": true,
+              "description": "Asks for a confirmation rendered by this provider (its scope, or the\nscope of `options.host`); resolves `true` when confirmed."
+            }
+          ],
+          "tagName": "minerva-confirm-provider",
+          "customElement": true,
+          "summary": "Scope that renders the imperative confirm() dialogs of its subtree (ConfirmProvider).",
+          "attributes": []
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaConfirmProvider",
+          "declaration": {
+            "name": "MinervaConfirmProvider",
+            "module": "src/components/confirm/confirm-provider.ts"
           }
         }
       ]
@@ -19278,7 +19967,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A flex container laying out its children in a row or column with a\ntoken-based gap (`<Stack>` of lib-core). Children are not wrapped; a\n`separator` is inserted between them, and `attached` joins them into one\ngroup (shared borders, outer corners only, `role=\"group\"`).\n\nShadow DOM notes: the children stay in the light DOM and are slotted into\nlib-core's `.stack` flex container. Separators are interleaved with manual\nslot assignment (one slot per child); where `HTMLSlotElement.assign()` is\nmissing (older browsers) the children are slotted together and separators\nare not shown. The `attached` rules style the children through\n`::slotted()` (top-level children only); their radius rules reach\nelements whose own box has the radius (native buttons / inputs), not the\ninner control of a custom element.",
+          "description": "A flex container laying out its children in a row or column with a\ntoken-based gap (`<Stack>` of lib-core). Children are not wrapped; a\n`separator` is inserted between them, and `attached` joins them into one\ngroup (shared borders, outer corners only, `role=\"group\"`).\n\nShadow DOM notes: the children stay in the light DOM and are slotted into\nlib-core's `.stack` flex container. Separators are interleaved with manual\nslot assignment (one slot per child). Where `HTMLSlotElement.assign()` is\nmissing (Safari < 16.4 and other older engines) the stack falls back to\nnamed slots: each element child gets a `slot=\"minerva-stack-item-<n>\"`\nattribute (only while a separator is set; removed again afterwards), so\nseparators render between element children in both modes. Bare text\nchildren cannot carry a `slot` attribute: in the fallback they render\nafter the element children without separators (wrap them in an element,\ne.g. a `<span>`). The `attached` rules style the children through\n`::slotted()` (top-level children only); their radius rules reach\nelements whose own box has the radius (native buttons / inputs), not the\ninner control of a custom element.",
           "name": "MinervaStack",
           "cssParts": [
             {
@@ -21147,7 +21836,7 @@
         },
         {
           "kind": "class",
-          "description": "The `role=\"tabpanel\"` content of the tab with the same `value`\n(`<TabPanel>` of lib-core). Inactive panels are `hidden`.",
+          "description": "The `role=\"tabpanel\"` content of the tab with the same `value`\n(`<TabPanel>` of lib-core).\n\nInactive panels: React's `<TabPanel>` unmounts them by default and keeps\nthem in the DOM with `hidden` only with `forceMount`. Light DOM children\nbelong to the page, so a custom element cannot unmount them: regular\nchildren behave like React's `forceMount` (the panel is `hidden`, its\ncontent stays in the DOM, keeps its state and its form fields are still\nsubmitted). For React's default semantics, put the content in a\n`<template>` child: it is stamped while the panel is active and removed\nwhen it becomes inactive (state reset, elements disconnected, nothing\nsubmitted); add `force-mount` to keep it mounted (hidden) while inactive,\nlike `forceMount`.",
           "name": "MinervaTabPanel",
           "cssParts": [
             {
@@ -21157,7 +21846,7 @@
           ],
           "slots": [
             {
-              "description": "Panel content",
+              "description": "Panel content (or a `<template>` stamped only while active)",
               "name": ""
             }
           ],
@@ -21172,6 +21861,17 @@
               "description": "Value of the tab this panel belongs to",
               "attribute": "value",
               "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "forceMount",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Mounts the content of a `<template>` child even while the panel is\ninactive (hidden), like React's `forceMount`. Regular children are\nalways mounted",
+              "attribute": "force-mount",
+              "reflects": true
             }
           ],
           "attributes": [
@@ -21183,6 +21883,15 @@
               "default": "\"\"",
               "description": "Value of the tab this panel belongs to",
               "fieldName": "value"
+            },
+            {
+              "name": "force-mount",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Mounts the content of a `<template>` child even while the panel is\ninactive (hidden), like React's `forceMount`. Regular children are\nalways mounted",
+              "fieldName": "forceMount"
             }
           ],
           "tagName": "minerva-tab-panel",
@@ -24254,7 +24963,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Toast region (lib-core's `ToastProvider` viewport): renders the toasts\nshown with the `toast()` API, stacked at `position`, with the same DOM,\nclasses, roles and keyboard behaviour as lib-core.\n\n- Each toast is a live region: `role=\"status\"`, or `role=\"alert\"` for\n  danger toasts (loading toasts stay a polite status). The stack is a\n  `role=\"region\"` labelled \"Notifications (F8)\" (localized).\n- Toasts close after `duration` (default 4000 ms; loading toasts stay\n  open); the countdown pauses while a toast is hovered or holds focus.\n- The hotkey (F8 by default) moves focus to the region; Escape closes the\n  focused toast; closing a focused toast moves focus to the next toast,\n  else back where it came from (never to `<body>`).\n- Toasts without an explicit region render in the first connected region\n  (document order); `toast.region(el)` / `{ region }` target another one,\n  e.g. inside a `<minerva-config>` scope (its theme and language apply).\n  When `toast()` runs with no region on the page, one is appended to\n  `<body>` (and removed again when a page region connects).\n- The stack is shown in the top layer (Popover API, `popover=\"manual\"`)\n  and raised again when a toast appears or a Minerva overlay opens, so\n  toasts stay above modals and stay clickable. It is kept exposed to\n  assistive technologies while a modal hides the rest of the page.",
+          "description": "Toast region (lib-core's `ToastProvider` viewport): renders the toasts\nshown with the `toast()` API, stacked at `position`, with the same DOM,\nclasses, roles and keyboard behaviour as lib-core.\n\n- Each toast is a live region: `role=\"status\"`, or `role=\"alert\"` for\n  danger toasts (loading toasts stay a polite status). The stack is a\n  `role=\"region\"` labelled \"Notifications (F8)\" (localized).\n- Toasts close after `duration` (default 4000 ms; loading toasts stay\n  open); the countdown pauses while a toast is hovered or holds focus.\n- The hotkey (F8 by default) moves focus to the region; Escape closes the\n  focused toast; closing a focused toast moves focus to the next toast,\n  else back where it came from (never to `<body>`).\n- Toasts without an explicit region render in the first connected region\n  (document order); `toast.region(el)` / `{ region }` target another one,\n  e.g. inside a `<minerva-config>` scope (its theme and language apply).\n  When `toast()` runs with no region on the page, one is appended to\n  `<body>` (and removed again when a page region connects).\n- The stack is shown in the top layer (Popover API, `popover=\"manual\"`)\n  and raised again when a toast appears or a Minerva overlay opens, so\n  toasts stay above modals and stay clickable. Like lib-core's\n  `ToastProvider` viewport, the region is treated like any other page\n  content by a modal's hide-others: while a modal dialog (modal, drawer,\n  confirm, command, modal popover / menu) is open, the region (or its\n  ancestor next to the dialog) gets `aria-hidden=\"true\"` and assistive\n  technologies only see the dialog; it is exposed again when the dialog\n  closes. Opt out on a given region with the `data-minerva-keep-visible`\n  attribute (core's hide-others never hides such elements).",
           "name": "MinervaToastRegion",
           "cssParts": [
             {

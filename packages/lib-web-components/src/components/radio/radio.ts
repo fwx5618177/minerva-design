@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { ColorScheme } from "@minerva/core";
@@ -15,6 +15,7 @@ import { IconCircleInfoFilled } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 export type RadioSize = "small" | "medium" | "large";
 export type RadioColor = Extract<
@@ -72,7 +73,7 @@ export class MinervaRadio extends MinervaElement {
         }
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value of the radio; identifies it within its group */
@@ -263,7 +264,7 @@ export class MinervaRadioGroup extends FormAssociatedElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value of the selected radio (property; the `value` attribute sets `defaultValue`) */

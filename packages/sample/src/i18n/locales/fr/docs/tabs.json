@@ -45,7 +45,7 @@
     },
     "TabPanelProps": {
       "value": "Valeur de l'onglet auquel appartient le panneau",
-      "forceMount": "Garde le panneau monté (masqué) quand son onglet n'est pas sélectionné",
+      "forceMount": "Garde le panneau monté (masqué) tant que son onglet n'est pas sélectionné. Sans cela, les panneaux inactifs sont démontés. <minerva-tab-panel> garde ses enfants ordinaires montés (comme forceMount) et offre ce choix pour le contenu d'un <template> avec son attribut force-mount",
       "ref": "Ref vers l'élément <div> du panneau"
     }
   },
@@ -76,6 +76,10 @@
       "controlled": {
         "title": "Annuler un changement",
         "description": "minerva-change est annulable : tant que la case est cochée, preventDefault() conserve l’onglet courant. Décochez-la pour changer d’onglet."
+      },
+      "panels": {
+        "title": "Panneaux inactifs : montés ou non",
+        "description": "Le <TabPanel> de React démonte par défaut les panneaux inactifs et ne les garde (masqués) qu'avec forceMount. Les enfants du light DOM appartiennent à la page : <minerva-tab-panel> ne peut pas les démonter, et les enfants ordinaires se comportent comme forceMount (masqués, état conservé, champs de formulaire toujours envoyés). Placez le contenu dans un <template> pour le comportement par défaut de React (créé quand le panneau est actif, retiré ensuite), et ajoutez force-mount pour le garder monté pendant qu'il est masqué."
       }
     },
     "minerva-tabs": {
@@ -117,6 +121,9 @@
       },
       "parts": {
         "base": "Le conteneur du panneau."
+      },
+      "props": {
+        "forceMount": "Monte le contenu d'un enfant <template> même quand le panneau est inactif (masqué), comme forceMount de React. Les enfants ordinaires sont toujours montés."
       }
     }
   }

@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import type { ColorScheme } from "@minerva/core";
 import styles from "@lib-core-styles/components/Modal/modal.module.scss?inline";
@@ -15,6 +15,7 @@ import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
 import { HasSlotController } from "../../internal/slots";
 import { MinervaButton } from "../button/button";
+import { sharedStyles } from "../../internal/styles";
 
 /** Semantic color of the confirm button (`danger` = destructive action) */
 export type ConfirmColor = Extract<
@@ -77,7 +78,7 @@ export class MinervaConfirmDialog extends MinervaElement {
         flex: 1 1 auto;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Whether the dialog is open */

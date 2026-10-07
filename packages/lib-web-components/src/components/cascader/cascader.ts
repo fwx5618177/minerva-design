@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -25,6 +24,7 @@ import {
 import { IconChevronDown, IconChevronRight, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** One node of the option tree (same shape as lib-core's `CascaderOption`) */
 export interface CascaderOption {
@@ -238,7 +238,7 @@ export class MinervaCascader extends FormAssociatedElement {
         transform: scaleX(-1);
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Option tree (property only) */

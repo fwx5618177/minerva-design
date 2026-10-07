@@ -1,4 +1,5 @@
-// Test setup of @minerva/lib-web-components (happy-dom).
+// Test setup of @minerva/lib-web-components (happy-dom; the HtmlPreview
+// sanitizer tests run under jsdom, see vite.config.ts).
 //
 // happy-dom workarounds (documented here once, used by every test):
 // - happy-dom has no `ElementInternals` (`attachInternals`): the

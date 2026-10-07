@@ -45,7 +45,7 @@
     },
     "TabPanelProps": {
       "value": "このパネルが属するタブの値",
-      "forceMount": "タブが非選択でもパネルをマウントしたまま（非表示）にします",
+      "forceMount": "タブが選択されていない間もパネルを（非表示で）マウントしたままにします。指定しない場合、非アクティブなパネルはアンマウントされます。<minerva-tab-panel> は通常の子を常にマウントし（forceMount と同じ）、<template> のコンテンツについては force-mount 属性で同じ選択ができます",
       "ref": "パネルの <div> 要素への ref"
     }
   },
@@ -76,6 +76,10 @@
       "controlled": {
         "title": "変更のキャンセル",
         "description": "minerva-change はキャンセル可能です。チェックボックスがオンの間は preventDefault() で現在のタブを維持します。オフにするとタブを切り替えられます。"
+      },
+      "panels": {
+        "title": "非アクティブなパネル：マウントするかどうか",
+        "description": "React の <TabPanel> は既定で非アクティブなパネルをアンマウントし、forceMount のときだけ（非表示で）残します。light DOM の子はページに属するため <minerva-tab-panel> はアンマウントできません。通常の子は forceMount と同じ動作です（非表示、状態は保持、フォームのフィールドは送信される）。React の既定動作にするにはコンテンツを <template> に入れます（アクティブな間だけ作成し、その後削除）。force-mount を付けると非表示の間もマウントされたままになります。"
       }
     },
     "minerva-tabs": {
@@ -117,6 +121,9 @@
       },
       "parts": {
         "base": "パネルのラッパー。"
+      },
+      "props": {
+        "forceMount": "パネルが非アクティブ（非表示）の間も <template> の子のコンテンツをマウントします（React の forceMount と同じ）。通常の子は常にマウントされています。"
       }
     }
   }

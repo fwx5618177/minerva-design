@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import {
@@ -18,6 +18,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { closestComposed, getDirection } from "../../internal/dom";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type TooltipPlacement =
   | "top"
@@ -170,7 +171,7 @@ export class MinervaTooltip extends MinervaElement {
         display: inline-flex;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Text of the tooltip (or use the `content` slot for rich content) */

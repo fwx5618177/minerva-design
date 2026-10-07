@@ -695,7 +695,7 @@ describe("<minerva-time-picker>", () => {
 
   describe("dev warnings", () => {
     it("warns when min-time is later than max-time", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await mount(
         `<minerva-time-picker min-time="18:00" max-time="09:00"></minerva-time-picker>`,
       );
@@ -705,7 +705,7 @@ describe("<minerva-time-picker>", () => {
     });
 
     it("warns about a value that is not a 24-hour time", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await mount(`<minerva-time-picker value="9am"></minerva-time-picker>`);
       expect(warn).toHaveBeenCalledWith(
         expect.stringContaining('value "9am" is not a valid time'),
@@ -713,7 +713,7 @@ describe("<minerva-time-picker>", () => {
     });
 
     it("does not warn for valid attributes", async () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "error").mockImplementation(() => {});
       await mount(
         `<minerva-time-picker value="10:00" min-time="09:00" max-time="18:00"></minerva-time-picker>`,
       );

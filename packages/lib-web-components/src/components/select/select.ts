@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { createTypeahead, getNextIndex, parsePlacement } from "@minerva/core";
@@ -17,6 +17,7 @@ import { IconCheck, IconChevronDown } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { MinervaOption } from "./option";
+import { sharedStyles } from "../../internal/styles";
 
 export type SelectSize = "small" | "medium" | "large";
 
@@ -122,7 +123,7 @@ export class MinervaSelect extends FormAssociatedElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Selected value (property; the `value` attribute sets `defaultValue`) */

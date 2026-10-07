@@ -175,7 +175,7 @@ describe("<minerva-input>", () => {
   });
 
   it("warns in development when minlength > maxlength", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-input minlength="5" maxlength="2"></minerva-input>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("minlength"));
   });

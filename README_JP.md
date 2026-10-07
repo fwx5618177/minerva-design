@@ -285,7 +285,7 @@ pnpm dev
 | `pnpm build`                        | 全パッケージを順にビルド：core → lib-core → lib-web-components → sample               |
 | `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー |
 | `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                      |
-| `pnpm test:dist`                    | ビルド済み `@minerva/lib-core` のスモークテスト（ビルド後に実行）                     |
+| `pnpm test:dist`                    | ビルド成果物のテスト（lib-core と lib-web-components、ビルド後に実行）                |
 | `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                                        |
 | `pnpm lint`                         | ESLint（flat config）を実行                                                           |
 | `pnpm typecheck`                    | 全パッケージの型チェック                                                              |
@@ -301,27 +301,57 @@ pnpm dev
 - テスト：Vitest、Testing Library、happy-dom
 - リント・フォーマット：ESLint 10 + typescript-eslint、Prettier
 - Git フック：Husky、lint-staged、commitlint（Conventional Commits）
+- CI：`.github/workflows/ci.yml` が `main` への push とすべての Pull Request で、Node 22 上で lint、型チェック、整形チェック、カバレッジ付きテスト、ビルド、ビルド成果物のテスト、パッケージチェックを実行
 - ドキュメントのデプロイ：`.github/workflows/deploy.yml` が `main` への push ごとにドキュメントサイトをビルドし GitHub Pages に公開
 
-### リリース
+### リリース（npm への手動公開）
 
-バージョンと変更履歴は [Changesets](https://github.com/changesets/changesets) で管理しています。公開はメンテナーがローカルで手動で行います：
+バージョンと変更履歴は [Changesets](https://github.com/changesets/changesets) で管理しています。公開は**手動**で、メンテナーのマシンから行います。CI に公開ワークフローはありません（`.github/workflows/ci.yml` は検証のみ、`deploy.yml` はドキュメントサイトのデプロイのみ）。
 
-```bash
-# 1. PR で：変更内容を記述（パッケージと semver の種類を選択）
-pnpm changeset
+1. **変更ごとに changeset を書く**（その PR で）：`pnpm changeset` でパッケージと semver の種類を選び、生成された `.changeset/*.md` をコミットします。
+2. **バージョン更新**（最新の `main`、作業ツリーがクリーンな状態で）：
 
-# 2. リリース時、最新の main ブランチで：
-pnpm version-packages   # バージョン更新、CHANGELOG.md の更新、.changeset/*.md の消費
-pnpm install            # 内部依存のバージョンが変わった場合は lockfile を更新
-git commit -am "chore: release" && git push
+   ```bash
+   pnpm version-packages   # changeset version：バージョン更新、CHANGELOG.md の書き込み、.changeset/*.md の消費
+   pnpm install            # lockfile を更新（内部依存の範囲が変わることがあります）
+   ```
 
-# 3. 公開（@minerva スコープへの公開権限を持つアカウントで `npm login` が必要）
-pnpm release            # core、lib-core、lib-web-components をビルドし `changeset publish` を実行
-git push --follow-tags  # changeset publish が作成したタグを push
-```
+3. **レビュー**してから公開します：`git diff`（バージョン、CHANGELOG の内容、lib-core / lib-web-components の `@minerva/core` の範囲）を確認し、Node 22（`.nvmrc`）で CI と同じチェックを実行します：
 
-公開前に `pnpm lint && pnpm typecheck && pnpm test && pnpm build` がすべて成功することを確認してください。
+   ```bash
+   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm -r publish --dry-run --no-git-checks   # 公開される内容を確認（何もアップロードされません）
+   git commit -am "chore: release" && git push
+   ```
+
+4. **npm にログイン**：`@minerva` スコープへの公開権限があり、二要素認証（2FA）を有効にしたアカウントを使います：
+
+   ```bash
+   npm login --registry https://registry.npmjs.org/
+   npm whoami --registry https://registry.npmjs.org/
+   ```
+
+   各パッケージの `publishConfig.registry` は `https://registry.npmjs.org/` を指しているため、`~/.npmrc` にミラー（npmmirror など）を設定していても公開には使われません。
+
+5. **公開**：
+
+   ```bash
+   pnpm release            # core、lib-core、lib-web-components をビルドし `changeset publish` を実行
+   git push --follow-tags  # changeset publish が作成した <パッケージ>@<バージョン> タグを push
+   ```
+
+   `changeset publish` は npm にまだ存在しないバージョンのパッケージだけを、依存関係の順（`@minerva/core` → `@minerva/lib-core` と `@minerva/lib-web-components`）で公開し、`workspace:*` を実際のバージョンに置き換えます。書き込みに 2FA を有効にしている場合はワンタイムパスワードを求められます（事前に渡す場合：`pnpm release --otp <code>`。引数は `changeset publish` に渡されます）。
+
+各パッケージが公開する内容（各 `package.json` の `files`。テスト、ソース、ドキュメントサイトは含まれません）：
+
+| パッケージ                    | 内容                                                                                                                                                                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@minerva/core`               | `dist/`（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）、`README.md`、`LICENSE`                                                                                                                                              |
+| `@minerva/lib-core`           | `dist/`（モジュールごとの ESM + CJS、型、`style.css`、コンポーネントごとの `styles/*.css`、`prose.scss`、`./monaco` と `./theme-utils` エントリ）、`README.md`、`LICENSE`                                                   |
+| `@minerva/lib-web-components` | `dist/`（要素ごとの ESM、`elements/*` エントリ（オプションの `code-editor` を含む）、`cdn/minerva.js`、`tokens.css`、`types/` のフレームワーク型、`html-custom-data.json`）、`custom-elements.json`、`README.md`、`LICENSE` |
+
+`@minerva/sample`（ドキュメントサイト）は private で、公開されることはありません。
 
 ## 🤝 コントリビューション
 

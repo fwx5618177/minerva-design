@@ -96,22 +96,10 @@ export function getEventTarget(event: Event): EventTarget | null {
   return (path && path.length > 0 ? path[0] : event.target) ?? null;
 }
 
-const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "area[href]",
-  "button",
-  "input",
-  "select",
-  "textarea",
-  "iframe",
-  "object",
-  "embed",
-  "audio[controls]",
-  "video[controls]",
-  "summary",
-  "[contenteditable]",
-  "[tabindex]",
-].join(",");
+// Written without a top-level call so bundlers can drop it when unused.
+const FOCUSABLE_SELECTOR =
+  "a[href],area[href],button,input,select,textarea,iframe,object,embed," +
+  "audio[controls],video[controls],summary,[contenteditable],[tabindex]";
 
 function isDisabled(el: Element): boolean {
   if ((el as HTMLButtonElement).disabled === true) return true;

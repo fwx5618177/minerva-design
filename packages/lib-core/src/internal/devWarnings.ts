@@ -1,5 +1,8 @@
+import { formatDevMessage } from "@minerva/core";
+
 /**
- * Development-only warnings ("[minerva] <Component>: ...").
+ * Development-only warnings ("[minerva] <Component>: ...", core's
+ * `formatDevMessage`, the format shared with @minerva/lib-web-components).
  *
  * Every check is wrapped in `process.env.NODE_ENV !== "production"`, written
  * literally (at the call site and in these helpers): the library build keeps
@@ -62,21 +65,27 @@ export function warnControlledProps(
     if (defaultProp && defaultValue !== undefined) {
       warnOnce(
         `${component}:${prop}:both`,
-        `[minerva] ${component}: both \`${prop}\` and \`${defaultProp}\` were provided. ` +
-          `A component is either controlled (\`${prop}\`) or uncontrolled (\`${defaultProp}\`); ` +
-          `\`${defaultProp}\` is ignored while \`${prop}\` is set. Remove one of them.`,
+        formatDevMessage(
+          component,
+          `both \`${prop}\` and \`${defaultProp}\` were provided. ` +
+            `A component is either controlled (\`${prop}\`) or uncontrolled (\`${defaultProp}\`); ` +
+            `\`${defaultProp}\` is ignored while \`${prop}\` is set. Remove one of them.`,
+        ),
       );
     }
     if (handlerProp && check.handler === undefined && !check.locked) {
       warnOnce(
         `${component}:${prop}:handler`,
-        `[minerva] ${component}: \`${prop}\` was provided without an \`${handlerProp}\` handler, ` +
-          `so user changes are ignored. Add \`${handlerProp}\`` +
-          (defaultProp
-            ? `, or use \`${defaultProp}\` for an uncontrolled component`
-            : "") +
-          (check.lockHint ? `, or ${check.lockHint}` : "") +
-          ".",
+        formatDevMessage(
+          component,
+          `\`${prop}\` was provided without an \`${handlerProp}\` handler, ` +
+            `so user changes are ignored. Add \`${handlerProp}\`` +
+            (defaultProp
+              ? `, or use \`${defaultProp}\` for an uncontrolled component`
+              : "") +
+            (check.lockHint ? `, or ${check.lockHint}` : "") +
+            ".",
+        ),
       );
     }
   }
@@ -92,8 +101,11 @@ export function warnLengthBounds(
     if (minLength != null && maxLength != null && minLength > maxLength) {
       warnOnce(
         `${component}:length`,
-        `[minerva] ${component}: \`minLength\` (${minLength}) is greater than \`maxLength\` (${maxLength}), ` +
-          "so no value can be valid. Fix the bounds.",
+        formatDevMessage(
+          component,
+          `\`minLength\` (${minLength}) is greater than \`maxLength\` (${maxLength}), ` +
+            "so no value can be valid. Fix the bounds.",
+        ),
       );
     }
   }
@@ -112,10 +124,11 @@ export function controlledSwitchMessage(
   const cause = nowControlled
     ? "from undefined to a defined value"
     : "from a defined value to undefined";
-  return (
-    `[minerva] ${component}: the component is changing from ${from} to ${to} \`${prop}\`. ` +
-    `This is likely caused by \`${prop}\` changing ${cause}, which should not happen. ` +
-    `Decide between a controlled \`${prop}\` and an uncontrolled \`${defaultProp}\` ` +
-    `for the lifetime of the component (use \`null\` rather than \`undefined\` for "no value" where supported).`
+  return formatDevMessage(
+    component,
+    `the component is changing from ${from} to ${to} \`${prop}\`. ` +
+      `This is likely caused by \`${prop}\` changing ${cause}, which should not happen. ` +
+      `Decide between a controlled \`${prop}\` and an uncontrolled \`${defaultProp}\` ` +
+      `for the lifetime of the component (use \`null\` rather than \`undefined\` for "no value" where supported).`,
   );
 }

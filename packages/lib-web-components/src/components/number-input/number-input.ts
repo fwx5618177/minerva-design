@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -12,6 +12,7 @@ import {
 import { IconChevronDown, IconChevronUp } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type NumberInputSize = "small" | "medium" | "large";
 
@@ -96,7 +97,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
         vertical-align: middle;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Committed value; `null` is an empty field (property; the `value` attribute sets `defaultValue`) */

@@ -55,7 +55,7 @@ describe("<minerva-split-layout>", () => {
   });
 
   it("warns about an invalid aside width and falls back to 320", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaSplitLayout>(
       `<minerva-split-layout aside-width="-5"></minerva-split-layout>`,
     );

@@ -90,7 +90,7 @@ describe("<minerva-empty>", () => {
   });
 
   it("warns when a description is hidden", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-empty description="x" hide-description></minerva-empty>`,
     );

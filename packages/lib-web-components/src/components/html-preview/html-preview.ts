@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -7,6 +7,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { previewDocument } from "./preview-document";
+import { sharedStyles } from "../../internal/styles";
 
 /** Simulated viewport */
 export type HtmlPreviewViewport = "desktop" | "mobile";
@@ -37,7 +38,7 @@ export class MinervaHtmlPreview extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Untrusted HTML to preview (sanitized in the browser) */

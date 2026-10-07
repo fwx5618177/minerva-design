@@ -2,7 +2,6 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type TemplateResult,
 } from "lit";
@@ -25,6 +24,7 @@ import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { MinervaPagination } from "../pagination/pagination";
 import { computeFixedColumnLayout } from "./fixed-columns";
+import { sharedStyles } from "../../internal/styles";
 
 export type TableSize = "small" | "medium" | "large";
 export type TableVariant = "simple" | "striped" | "bordered";
@@ -198,8 +198,8 @@ export class MinervaDataTable<
         display: inline-flex;
       }
     `,
-    unsafeCSS(buttonStyles),
-    unsafeCSS(styles),
+    sharedStyles(buttonStyles),
+    sharedStyles(styles),
   ];
 
   /** Column definitions */
@@ -743,7 +743,7 @@ export class MinervaTableCellContent extends MinervaElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Primary line */

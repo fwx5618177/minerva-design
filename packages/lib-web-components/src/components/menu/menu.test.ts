@@ -926,7 +926,7 @@ describe("<minerva-menu> modality and layers", () => {
   });
 
   it("warns about duplicate keys and a missing trigger", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const { el } = await renderMenu(simple);
     el.items = [
       { key: "x", label: "One" },
@@ -1086,5 +1086,105 @@ describe("<minerva-context-menu>", () => {
     await settle();
     expect(el.open).toBe(false);
     expect(area).toHaveAttribute("data-disabled");
+  });
+});
+
+describe("<minerva-menu> presence (exit animation, like lib-core)", () => {
+  /** Gives a panel an exit animation (what lib-core's CSS declares). */
+  const animate = (panel: HTMLElement) => {
+    panel.style.animationName = "menu-fade-out";
+    panel.style.animationDuration = "150ms";
+  };
+  const end = (panel: HTMLElement) =>
+    panel.dispatchEvent(new Event("animationend"));
+
+  it("keeps the closed panel rendered with data-state=closed until its exit animation ends", async () => {
+    const { el, trigger } = await renderMenu(simple);
+    await openWithKeyboard();
+    const [panel] = menus(el);
+    expect(panel).toHaveAttribute("data-state", "open");
+    animate(panel);
+    await user().keyboard("{Escape}");
+    await settle();
+    expect(el.open).toBe(false);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    // same element, closed, still rendered while it animates out
+    expect(menus(el)).toEqual([panel]);
+    expect(panel).toHaveAttribute("data-state", "closed");
+    // no longer a layer: focus went back to the trigger, scroll unlocked
+    expect(focused()).toBe(trigger);
+    expect(isScrollLocked()).toBe(false);
+    end(panel);
+    await settle();
+    expect(menus(el)).toEqual([]);
+  });
+
+  it("removes the panel right away without an exit animation (none declared, reduced motion)", async () => {
+    const { el } = await renderMenu(simple);
+    await openWithKeyboard();
+    const [panel] = menus(el);
+    // what `@media (prefers-reduced-motion: reduce)` resolves to
+    panel.style.animationName = "none";
+    el.open = false;
+    await el.updateComplete;
+    expect(menus(el)).toEqual([]);
+  });
+
+  it("reopening during the exit animation reuses the open panel", async () => {
+    const { el } = await renderMenu(simple);
+    await openWithKeyboard();
+    const [panel] = menus(el);
+    animate(panel);
+    el.open = false;
+    await settle();
+    expect(panel).toHaveAttribute("data-state", "closed");
+    el.open = true;
+    await settle();
+    expect(menus(el)).toEqual([panel]);
+    expect(panel).toHaveAttribute("data-state", "open");
+    // the stale animation end no longer removes it
+    end(panel);
+    await settle();
+    expect(menus(el)).toEqual([panel]);
+    expect(panel).toHaveAttribute("data-state", "open");
+  });
+
+  it("animates closing submenus out too, and drops exiting panels on disconnect", async () => {
+    const { el } = await renderMenu(nested);
+    await openWithKeyboard();
+    item(el, "Share").focus();
+    await user().keyboard("{ArrowRight}");
+    await settle();
+    const [, sub] = menus(el);
+    expect(sub).toHaveAttribute("data-state", "open");
+    animate(sub);
+    await user().keyboard("{ArrowLeft}");
+    await settle();
+    expect(menus(el)).toHaveLength(2);
+    expect(sub).toHaveAttribute("data-state", "closed");
+    expect(menus(el)[0]).toHaveAttribute("data-state", "open");
+    end(sub);
+    await settle();
+    expect(menus(el)).toHaveLength(1);
+    // closing the menu with the root animating, then disconnecting
+    animate(menus(el)[0]);
+    el.open = false;
+    await settle();
+    expect(menus(el)).toHaveLength(1);
+    el.remove();
+    await settle();
+    expect(menus(el)).toEqual([]);
+  });
+
+  it("ships lib-core's enter / exit animation with a reduced-motion override", async () => {
+    const css = (MinervaMenu.styles as unknown as Array<{ cssText: string }>)
+      .map((s) => s.cssText)
+      .join("");
+    expect(css).toMatch(
+      /\.content\[data-state=["']?closed["']?\]\s*\{\s*animation:\s*menu-fade-out/,
+    );
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.content\s*\{\s*animation:\s*none\s*!important/,
+    );
   });
 });

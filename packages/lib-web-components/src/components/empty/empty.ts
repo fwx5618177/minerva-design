@@ -1,4 +1,4 @@
-import { css, html, nothing, svg, unsafeCSS } from "lit";
+import { css, html, nothing, svg } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -8,6 +8,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** Size preset of the unframed layout */
 export type EmptySize = "small" | "medium" | "large";
@@ -51,7 +52,7 @@ export class MinervaEmpty extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Heading of the empty state; also its accessible name (lib-core's `title`) */

@@ -75,7 +75,7 @@ describe("<minerva-box>", () => {
   });
 
   it("warns about unknown surface aliases in development", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount<MinervaBox>(`<minerva-box bg="bg.nope"></minerva-box>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("bg.nope"));
   });

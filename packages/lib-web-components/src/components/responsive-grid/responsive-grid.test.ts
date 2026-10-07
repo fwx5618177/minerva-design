@@ -61,7 +61,7 @@ describe("<minerva-responsive-grid>", () => {
   });
 
   it("warns about invalid column counts and keeps the previous one", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaResponsiveGrid>(
       `<minerva-responsive-grid columns="2 13"></minerva-responsive-grid>`,
     );

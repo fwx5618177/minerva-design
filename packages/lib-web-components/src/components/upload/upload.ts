@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -14,6 +14,7 @@ import { IconRotateCw, IconUpload, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { MinervaButton } from "../button/button";
+import { sharedStyles } from "../../internal/styles";
 
 /** Transfer state of an uploaded file */
 export type UploadItemStatus = "uploading" | "done" | "error";
@@ -117,8 +118,8 @@ export class MinervaUpload extends FormAssociatedElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
     css`
       /* lib-core renders an Alert (color="danger") */
       .error {

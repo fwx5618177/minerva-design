@@ -311,7 +311,7 @@ pnpm dev
 | `pnpm build`                        | Build all packages in order: core → lib-core → lib-web-components → sample |
 | `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows         |
 | `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)            |
-| `pnpm test:dist`                    | Smoke-test the built `@minerva/lib-core` package (run after build)         |
+| `pnpm test:dist`                    | Test the built lib-core and lib-web-components packages (run after build)  |
 | `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                          |
 | `pnpm lint`                         | Run ESLint (flat config)                                                   |
 | `pnpm typecheck`                    | Type-check all packages                                                    |
@@ -327,27 +327,57 @@ pnpm dev
 - Testing: Vitest, Testing Library, happy-dom
 - Linting and formatting: ESLint 10 + typescript-eslint, Prettier
 - Git hooks: Husky, lint-staged, commitlint (Conventional Commits)
+- CI: `.github/workflows/ci.yml` runs lint, typecheck, format check, tests with coverage, build, built-package tests and package checks on Node 22 for every push to `main` and every pull request
 - Docs deployment: `.github/workflows/deploy.yml` builds the docs site and publishes it to GitHub Pages on every push to `main`
 
-### Releasing
+### Releasing (manual npm publishing)
 
-Versioning and changelogs are managed with [Changesets](https://github.com/changesets/changesets). Publishing is done manually from a maintainer's machine:
+Versioning and changelogs are managed with [Changesets](https://github.com/changesets/changesets). Publishing is **manual**, from a maintainer's machine: there is no publish workflow in CI (`.github/workflows/ci.yml` only verifies, `deploy.yml` only deploys the docs site).
 
-```bash
-# 1. In your PR: describe the change (choose packages + semver bump)
-pnpm changeset
+1. **Describe each change** (in its PR): `pnpm changeset`, pick the packages and the semver bump; commit the generated `.changeset/*.md`.
+2. **Version** (on an up-to-date `main`, clean working tree):
 
-# 2. When releasing, on an up-to-date main branch:
-pnpm version-packages   # bumps versions, updates CHANGELOG.md files, consumes .changeset/*.md
-pnpm install            # refresh the lockfile if internal versions changed
-git commit -am "chore: release" && git push
+   ```bash
+   pnpm version-packages   # changeset version: bumps versions, writes CHANGELOG.md, consumes .changeset/*.md
+   pnpm install            # refresh the lockfile (internal dependency ranges may have changed)
+   ```
 
-# 3. Publish (requires `npm login` with publish rights to the @minerva scope)
-pnpm release            # builds core + lib-core + lib-web-components, then `changeset publish`
-git push --follow-tags  # push the tags created by changeset publish
-```
+3. **Review** the result before anything leaves your machine: `git diff` (versions, CHANGELOG entries, `@minerva/core` ranges in lib-core / lib-web-components), then run the same checks as CI on Node 22 (`.nvmrc`):
 
-Before publishing, make sure `pnpm lint && pnpm typecheck && pnpm test && pnpm build` pass.
+   ```bash
+   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm -r publish --dry-run --no-git-checks   # what would be published, nothing is uploaded
+   git commit -am "chore: release" && git push
+   ```
+
+4. **Log in to npm** with an account that can publish to the `@minerva` scope, with two-factor authentication enabled:
+
+   ```bash
+   npm login --registry https://registry.npmjs.org/
+   npm whoami --registry https://registry.npmjs.org/
+   ```
+
+   Each package sets `publishConfig.registry` to `https://registry.npmjs.org/`, so a mirror configured in `~/.npmrc` (e.g. npmmirror) is not used for publishing.
+
+5. **Publish**:
+
+   ```bash
+   pnpm release            # builds core + lib-core + lib-web-components, then `changeset publish`
+   git push --follow-tags  # push the <package>@<version> tags created by changeset publish
+   ```
+
+   `changeset publish` only publishes packages whose version is not on npm yet, in dependency order (`@minerva/core` before `@minerva/lib-core` and `@minerva/lib-web-components`), and replaces `workspace:*` with the real version. With 2FA enabled for writes, npm prompts for a one-time password (or pass it up front: `pnpm release --otp <code>`, the argument is forwarded to `changeset publish`).
+
+What each package publishes (`files` in its `package.json`; tests, sources and the docs site are never included):
+
+| Package                       | Contents                                                                                                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@minerva/core`               | `dist/` (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`), `README.md`, `LICENSE`                                                                                                                                            |
+| `@minerva/lib-core`           | `dist/` (ESM + CJS per module, types, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco` and `./theme-utils` entries), `README.md`, `LICENSE`                                                       |
+| `@minerva/lib-web-components` | `dist/` (ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, `tokens.css`, framework typings in `types/`, `html-custom-data.json`), `custom-elements.json`, `README.md`, `LICENSE` |
+
+`@minerva/sample` (the docs site) is private and never published.
 
 ## 🤝 Contributing
 

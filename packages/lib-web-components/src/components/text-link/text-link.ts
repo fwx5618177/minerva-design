@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/TextLink/textLink.module.scss?inline";
@@ -6,6 +6,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { IconChevronRight } from "../../internal/icons";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** default: underlined inline link; subtle: quiet with a chevron; action: full-width row */
 export type TextLinkVariant = "default" | "subtle" | "action";
@@ -41,7 +42,7 @@ export class MinervaTextLink extends MinervaElement {
         display: inline-flex;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Visual style */

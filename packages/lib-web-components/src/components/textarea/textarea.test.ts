@@ -117,7 +117,7 @@ describe("<minerva-textarea>", () => {
   });
 
   it("warns in development when minlength > maxlength", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-textarea minlength="5" maxlength="2"></minerva-textarea>`,
     );

@@ -249,7 +249,7 @@ describe("<minerva-drawer>", () => {
   });
 
   it("warns about an invalid side in development", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await setup(`side="middle" open`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("invalid side"));
     expect(panel(el)!.classList).toContain("right");

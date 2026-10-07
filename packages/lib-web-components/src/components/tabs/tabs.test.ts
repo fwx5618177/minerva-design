@@ -148,7 +148,7 @@ describe("<minerva-tabs>", () => {
   });
 
   it("warns in development when value matches no tab", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(basic("", { value: "zzz" }));
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('"zzz"'));
   });
@@ -385,5 +385,69 @@ describe("<minerva-tabs> keyboard, focus and accessibility", () => {
     input.focus();
     await user.keyboard("{ArrowRight}");
     expect(input).toHaveFocus();
+  });
+});
+
+describe("<minerva-tab-panel> inactive panels (React's unmount / forceMount)", () => {
+  const lazy = (attrs = "") => `<minerva-tabs value="a" label="Lazy">
+    <minerva-tab value="a">A</minerva-tab><minerva-tab value="b">B</minerva-tab>
+    <minerva-tab-panel value="a"><template><input id="field-a" name="a" /></template></minerva-tab-panel>
+    <minerva-tab-panel value="b" ${attrs}><template><input id="field-b" name="b" /></template></minerva-tab-panel>
+    <minerva-tab-panel value="c"><p id="plain">always mounted</p></minerva-tab-panel>
+  </minerva-tabs>`;
+  const field = (id: string) => document.getElementById(id);
+
+  it("regular children stay mounted and hidden (React's forceMount)", async () => {
+    await mount(lazy());
+    const plain = field("plain")!;
+    expect(plain.isConnected).toBe(true);
+    expect(plain.closest("minerva-tab-panel")!.hidden).toBe(true);
+    expect(plain.closest("minerva-tab-panel")!.getAttribute("data-state")).toBe(
+      "inactive",
+    );
+  });
+
+  it("<template> content is mounted only while active (React's default)", async () => {
+    const tabs = await mount<MinervaTabs>(lazy());
+    expect(field("field-a")).not.toBeNull();
+    expect(field("field-b")).toBeNull();
+    const a = field("field-a") as HTMLInputElement;
+    a.value = "typed";
+    tabs.value = "b";
+    await settle();
+    // unmounted: state reset, nothing left to submit
+    expect(a.isConnected).toBe(false);
+    expect(field("field-a")).toBeNull();
+    expect(field("field-b")).not.toBeNull();
+    tabs.value = "a";
+    await settle();
+    expect((field("field-a") as HTMLInputElement).value).toBe("");
+    expect(field("field-b")).toBeNull();
+    // the template itself stays for the next activation
+    expect(
+      document.querySelectorAll("minerva-tab-panel template"),
+    ).toHaveLength(2);
+  });
+
+  it("force-mount mounts the template content while inactive (hidden), like forceMount", async () => {
+    const tabs = await mount<MinervaTabs>(lazy("force-mount"));
+    const panelB = document.querySelector<MinervaTabPanel>(
+      'minerva-tab-panel[value="b"]',
+    )!;
+    expect(panelB.forceMount).toBe(true);
+    const b = field("field-b") as HTMLInputElement;
+    expect(b).not.toBeNull();
+    expect(panelB.hidden).toBe(true);
+    b.value = "kept";
+    tabs.value = "b";
+    await settle();
+    tabs.value = "a";
+    await settle();
+    expect(field("field-b")).toBe(b);
+    expect(b.value).toBe("kept");
+    // turning it off unmounts the inactive content
+    panelB.forceMount = false;
+    await settle();
+    expect(field("field-b")).toBeNull();
   });
 });

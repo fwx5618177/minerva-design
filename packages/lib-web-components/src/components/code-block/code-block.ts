@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -10,6 +10,7 @@ import { IconCheck, IconCopy, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** How long the "Copied" / "Copy failed" feedback stays visible (ms). */
 const COPY_FEEDBACK_MS = 2000;
@@ -72,8 +73,8 @@ export class MinervaCodeBlock extends MinervaElement {
         height: 16px;
       }
     `,
-    unsafeCSS(iconButtonStyles),
-    unsafeCSS(styles),
+    sharedStyles(iconButtonStyles),
+    sharedStyles(styles),
   ];
 
   /** Source text (default: the element's text content) */

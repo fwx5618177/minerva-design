@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   MANIFEST,
+  OPTIONAL_ENTRIES,
   elementsOf,
   generateManifest,
   serializeManifest,
@@ -37,14 +38,22 @@ describe("generated files", () => {
     );
   });
 
-  it("the all-in-one entry re-exports every define entry", () => {
+  it("the all-in-one entry re-exports every define entry but the optional ones", () => {
     const index = readFileSync(join(root, "src/index.ts"), "utf8");
     const entries = readdirSync(join(root, "src/elements"))
-      .filter((f) => f.endsWith(".ts"))
+      .filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))
       .map((f) => f.replace(/\.ts$/, ""));
     expect(
-      entries.filter((e) => !index.includes(`from "./elements/${e}"`)),
+      entries.filter(
+        (e) =>
+          !OPTIONAL_ENTRIES.includes(e) &&
+          !index.includes(`from "./elements/${e}"`),
+      ),
     ).toEqual([]);
+    // optional entries (optional peer dependencies) stay out of it
+    for (const entry of OPTIONAL_ENTRIES) {
+      expect(index).not.toContain(`./elements/${entry}`);
+    }
   });
 
   it("every element is documented with a tag, a summary and described attributes", () => {

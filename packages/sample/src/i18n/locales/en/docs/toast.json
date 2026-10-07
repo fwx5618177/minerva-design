@@ -4,7 +4,8 @@
   "usage": {
     "title": "When to use which: useToast() or toast()",
     "hook": "Inside components, call useToast(): the toasts it shows follow the nearest ConfigProvider scope. Under a nested provider they are rendered into its portal host, with its theme, palette and tokens, and their built-in labels use its language. The owning ToastProvider still renders them, with its position, max and labels.",
-    "function": "Outside React (event buses, API clients, stores and other non-component modules), import toast() directly: no hook is available there, and its toasts use the scope of the ToastProvider, usually the root theme and language."
+    "function": "Outside React (event buses, API clients, stores and other non-component modules), import toast() directly: no hook is available there, and its toasts use the scope of the ToastProvider, usually the root theme and language.",
+    "modal": "While a modal dialog is open (Modal, Drawer, ConfirmDialog, Command, a modal Popover or Menu), its hide-others treatment covers the toast viewport like the rest of the page: the viewport gets aria-hidden=\"true\" and assistive technologies only see the dialog until it closes. <minerva-toast-region> behaves the same way (opt out on a region with data-minerva-keep-visible)."
   },
   "demos": {
     "basic": {
@@ -96,7 +97,7 @@
     "demos": {
       "basic": {
         "title": "Basic usage",
-        "description": "A <minerva-toast-region> renders the toasts; region.toast is the toast() API bound to it (info, success, warning, danger). position places the stack."
+        "description": "A <minerva-toast-region> renders the toasts; region.toast is the toast() API bound to it (info, success, warning, danger). position places the stack. As with React's ToastProvider, an open modal dialog hides the region from assistive technologies (aria-hidden) until it closes."
       },
       "options": {
         "title": "Options and action",

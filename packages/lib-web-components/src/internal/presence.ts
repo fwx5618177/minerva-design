@@ -5,7 +5,11 @@ import { waitForExitAnimation } from "@minerva/core";
  * Keeps an overlay rendered while its exit animation runs (lib-core's
  * `usePresence`): `present` turns true when `open` does, and false once the
  * CSS animation / transition of the element returned by `getElement` has
- * ended after closing (immediately when there is none).
+ * ended after closing. The element gets `data-state="closed"` before its
+ * animation is measured (what lib-core measures after its commit); without
+ * an exit animation (none declared, reduced motion, test DOM) `present`
+ * turns false right after the closing update (a microtask, no timer), once
+ * the overlay released focus and its layers.
  */
 export class PresenceController implements ReactiveController {
   /** Whether the overlay should be rendered */
@@ -32,6 +36,7 @@ export class PresenceController implements ReactiveController {
       this.present = false;
       return;
     }
+    el.setAttribute("data-state", "closed");
     void waitForExitAnimation(el).then(() => {
       if (token !== this.token) return;
       this.present = false;

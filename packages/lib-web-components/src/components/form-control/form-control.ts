@@ -1,9 +1,10 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/FormControl/formControl.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 type Control = HTMLElement & Record<string, unknown>;
 
@@ -62,7 +63,7 @@ export class MinervaFormControl extends MinervaElement {
         cursor: default;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Label text (alternative to the `label` slot) */

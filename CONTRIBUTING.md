@@ -19,10 +19,10 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes (`pnpm test`) and the build works (`pnpm build`).
 5. Make sure your code lints, type-checks and is formatted (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`).
-6. If your change affects a published package (`@minerva/lib-core`, `@minerva/lib-web-components`), add a changeset with `pnpm changeset`.
+6. If your change affects a published package (`@minerva/core`, `@minerva/lib-core`, `@minerva/lib-web-components`), add a changeset with `pnpm changeset`.
 7. Issue that pull request!
 
-Run all checks locally before pushing — the only GitHub workflow builds and deploys the docs site, it does not run tests.
+`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. `deploy.yml` builds and deploys the docs site.
 
 ## Development setup
 
@@ -32,15 +32,32 @@ Run all checks locally before pushing — the only GitHub workflow builds and de
 
 ## Releasing (maintainers)
 
-Releases are published manually with [Changesets](https://github.com/changesets/changesets):
+Releases are versioned with [Changesets](https://github.com/changesets/changesets) and **published to npm by hand** from a maintainer's machine. There is no publish automation: CI never publishes.
 
 ```bash
-pnpm version-packages   # apply pending changesets: bump versions + write CHANGELOG.md
-pnpm install            # refresh the lockfile if internal versions changed
+# 0. Node 22 (.nvmrc), up-to-date main, clean working tree
+# 1. Version: apply pending .changeset/*.md (bump versions + write CHANGELOG.md)
+pnpm version-packages
+pnpm install            # refresh the lockfile (internal dependency ranges may change)
+
+# 2. Review: git diff (versions, changelogs, @minerva/core ranges), then the CI checks
+pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
+pnpm build && pnpm test:dist && pnpm check:package
+pnpm -r publish --dry-run --no-git-checks   # lists what would be published, uploads nothing
 git commit -am "chore: release" && git push
-pnpm release            # build lib-core + lib-web-components and run `changeset publish` (requires npm login)
-git push --follow-tags
+
+# 3. Log in to npm (account with publish rights on @minerva, 2FA enabled)
+npm login --registry https://registry.npmjs.org/
+npm whoami --registry https://registry.npmjs.org/
+
+# 4. Publish: builds core + lib-core + lib-web-components, then `changeset publish`
+pnpm release            # add `--otp <code>` to pass the 2FA one-time password up front
+git push --follow-tags  # push the <package>@<version> tags
 ```
+
+- `changeset publish` publishes only the packages whose new version is not on npm yet, in dependency order (`@minerva/core` first, then `@minerva/lib-core` and `@minerva/lib-web-components`), and rewrites `workspace:*` to real versions.
+- Every published package sets `publishConfig.registry` to `https://registry.npmjs.org/` (a registry mirror in `~/.npmrc` is ignored for publishing) and `access: public`.
+- Published files come from `files` in each `package.json`: `dist/` (plus `custom-elements.json` for lib-web-components), `README.md` and `LICENSE`; tests and sources are never included. `@minerva/sample` is private. See the [README](./README.md#releasing-manual-npm-publishing) for the per-package contents.
 
 ## Any contributions you make will be under the MIT Software License
 

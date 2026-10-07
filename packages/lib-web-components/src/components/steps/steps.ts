@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type TemplateResult } from "lit";
+import { css, html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -7,6 +7,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** One step */
 export interface StepsItem {
@@ -45,7 +46,7 @@ export class MinervaSteps extends MinervaElement {
         display: block;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Steps, in order */

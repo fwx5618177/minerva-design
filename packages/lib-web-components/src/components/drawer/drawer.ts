@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/Drawer/drawer.module.scss?inline";
@@ -14,6 +14,7 @@ import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
 import { HasSlotController } from "../../internal/slots";
+import { sharedStyles } from "../../internal/styles";
 
 /** Edge of the viewport the drawer slides in from */
 export type DrawerSide = "left" | "right" | "top" | "bottom";
@@ -71,7 +72,7 @@ export class MinervaDrawer extends MinervaElement {
         display: contents;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Whether the drawer is open */

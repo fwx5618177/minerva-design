@@ -114,7 +114,7 @@ describe("<minerva-card>", () => {
   });
 
   it("is not focusable by default, even when interactive (dev warning)", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaCard>(
       `<minerva-card interactive>Static</minerva-card>`,
     );
@@ -155,7 +155,7 @@ describe("<minerva-card>", () => {
   });
 
   it('as="a": a link with href / target / rel; warns without href', async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaCard>(
       `<minerva-card as="a" href="/plans" target="_blank" rel="noopener">Plans</minerva-card>`,
     );

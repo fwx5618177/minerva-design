@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { getActiveElement, getLayerStack } from "@minerva/core";
-import { MinervaConfirmDialog, confirm } from "../../elements/confirm";
+import {
+  MinervaConfirmDialog,
+  MinervaConfirmProvider,
+  confirm,
+  confirmFor,
+  confirmScopeOf,
+} from "../../elements/confirm";
 import type { MinervaButton } from "../button/button";
 import type { MinervaModal } from "../modal/modal";
 import "../../elements/modal";
@@ -247,7 +253,7 @@ describe("<minerva-confirm-dialog> (declarative)", () => {
   });
 
   it("warns in development when the dialog has no accessible name", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-confirm-dialog open></minerva-confirm-dialog>`);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("<minerva-confirm-dialog>: set `label`"),
@@ -318,7 +324,7 @@ describe("Confirm keyboard (APG alertdialog)", () => {
 describe("confirm()", () => {
   it("appends a dialog to document.body, resolves true on confirm and removes it", async () => {
     document.body.innerHTML = "";
-    const warn = vi.spyOn(console, "warn");
+    const warn = vi.spyOn(console, "error");
     const result = confirm({
       title: "Delete book?",
       description: "This cannot be undone",
@@ -420,7 +426,7 @@ describe("confirm()", () => {
 
   it("warns and falls back to document.body for a disconnected container", async () => {
     document.body.innerHTML = "";
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const result = confirm({
       title: "Detached",
       container: document.createElement("div"),
@@ -464,5 +470,166 @@ describe("confirm()", () => {
     await userEvent.keyboard("{Escape}");
     await settle();
     expect(modal.open).toBe(false);
+  });
+});
+
+describe("scoped confirm (lib-core's useConfirm / ConfirmProvider)", () => {
+  const answer = async (el: MinervaConfirmDialog, ok: boolean) => {
+    await userEvent.click(native(ok ? confirmButton(el) : cancelButton(el)));
+    await settle();
+  };
+
+  it("registers <minerva-confirm-provider> (display: contents)", () => {
+    expect(customElements.get("minerva-confirm-provider")).toBe(
+      MinervaConfirmProvider,
+    );
+  });
+
+  it("confirm({ host }) renders in the host's <minerva-config> scope with its language", async () => {
+    document.body.innerHTML = `
+      <minerva-config id="scope" theme="dark" locale="zh">
+        <section><button id="ask">ask</button></section>
+      </minerva-config>`;
+    await settle();
+    const scope = document.getElementById("scope")!;
+    const ask = document.getElementById("ask")!;
+    expect(confirmScopeOf(ask)).toBe(scope);
+    const result = confirm({ title: "Scoped", host: ask });
+    const el = await current();
+    expect(el.parentElement).toBe(scope);
+    expect(el.closest("[data-theme]")).toHaveAttribute("data-theme", "dark");
+    expect(cancelButton(el).textContent?.trim()).toBe("取消");
+    await answer(el, true);
+    await expect(result).resolves.toBe(true);
+  });
+
+  it("crosses shadow roots and carries a host language that its scope does not set", async () => {
+    document.body.innerHTML = `
+      <div id="scope" data-theme="dark">
+        <div lang="fr"><div id="shadow-host"></div></div>
+      </div>`;
+    const shadowHost = document.getElementById("shadow-host")!;
+    const inner = document.createElement("button");
+    shadowHost.attachShadow({ mode: "open" }).append(inner);
+    const result = confirmFor(inner)({ title: "Question" });
+    const el = await current();
+    expect(el.parentElement).toBe(document.getElementById("scope"));
+    expect(el).toHaveAttribute("lang", "fr");
+    expect(cancelButton(el).textContent?.trim()).toBe("Annuler");
+    await answer(el, false);
+    await expect(result).resolves.toBe(false);
+  });
+
+  it("without a scope: document.body (root scope); <html> / <body> attributes are the root", async () => {
+    document.body.innerHTML = `<button id="ask">ask</button>`;
+    document.body.setAttribute("data-theme", "light");
+    try {
+      const ask = document.getElementById("ask")!;
+      expect(confirmScopeOf(ask)).toBeNull();
+      const result = confirm({ title: "Root", host: ask });
+      const el = await current();
+      expect(el.parentElement).toBe(document.body);
+      expect(el.hasAttribute("lang")).toBe(false);
+      await answer(el, true);
+      await expect(result).resolves.toBe(true);
+    } finally {
+      document.body.removeAttribute("data-theme");
+    }
+  });
+
+  it("a provider renders confirm() calls in itself; the host's nested scope wins", async () => {
+    document.body.innerHTML = `
+      <minerva-confirm-provider id="provider">
+        <button id="plain">plain</button>
+        <minerva-config id="nested" theme="dark"><button id="ask">ask</button></minerva-config>
+      </minerva-confirm-provider>`;
+    await settle();
+    const provider = document.getElementById(
+      "provider",
+    ) as MinervaConfirmProvider;
+    // no host: the latest provider, in its own scope
+    let result = confirm({ title: "Provider" });
+    let el = await current();
+    expect(el.parentElement).toBe(provider);
+    await answer(el, true);
+    await expect(result).resolves.toBe(true);
+    // a host inside a nested scope: the provider's queue, the nested scope
+    result = confirm({
+      title: "Nested",
+      host: document.getElementById("ask"),
+    });
+    el = await current();
+    expect(el.parentElement).toBe(document.getElementById("nested"));
+    await answer(el, false);
+    await expect(result).resolves.toBe(false);
+    // the provider's own confirm method
+    result = provider.confirm({ title: "Method" });
+    el = await current();
+    expect(el.parentElement).toBe(provider);
+    await answer(el, true);
+    await expect(result).resolves.toBe(true);
+  });
+
+  it("the closest provider of the host queues it; one dialog at a time per queue", async () => {
+    document.body.innerHTML = `
+      <minerva-confirm-provider id="a"><button id="in-a">a</button></minerva-confirm-provider>
+      <minerva-confirm-provider id="b"><button id="in-b">b</button></minerva-confirm-provider>`;
+    await settle();
+    const a = document.getElementById("a")!;
+    const first = confirm({
+      title: "First",
+      host: document.getElementById("in-a"),
+    });
+    const second = confirmFor(document.getElementById("in-a")!)({
+      title: "Second",
+    });
+    await settle();
+    expect(dialogs()).toHaveLength(1);
+    expect(dialogs()[0].parentElement).toBe(a);
+    expect((dialogs()[0] as MinervaConfirmDialog).label).toBe("First");
+    await answer(dialogs()[0] as MinervaConfirmDialog, true);
+    await expect(first).resolves.toBe(true);
+    await settle();
+    await wait(5);
+    expect((dialogs()[0] as MinervaConfirmDialog).label).toBe("Second");
+    await answer(dialogs()[0] as MinervaConfirmDialog, false);
+    await expect(second).resolves.toBe(false);
+  });
+
+  it("disconnecting the provider cancels its pending confirmations", async () => {
+    document.body.innerHTML = `<minerva-confirm-provider id="p"><button id="in">x</button></minerva-confirm-provider>`;
+    await settle();
+    const host = document.getElementById("in")!;
+    const shown = confirm({ title: "Shown", host });
+    const queued = confirm({ title: "Queued", host });
+    await settle();
+    expect(dialogs()).toHaveLength(1);
+    document.getElementById("p")!.remove();
+    await expect(shown).resolves.toBe(false);
+    await expect(queued).resolves.toBe(false);
+    await settle();
+    expect(dialogs()).toHaveLength(0);
+    // later calls fall back to document.body
+    const later = confirm({ title: "Later" });
+    const el = await current();
+    expect(el.parentElement).toBe(document.body);
+    await answer(el, true);
+    await expect(later).resolves.toBe(true);
+  });
+
+  it("an explicit container still wins over the host scope", async () => {
+    document.body.innerHTML = `
+      <minerva-config id="scope" theme="dark"><button id="ask">ask</button></minerva-config>
+      <div id="target"></div>`;
+    await settle();
+    const result = confirm({
+      title: "Explicit",
+      host: document.getElementById("ask"),
+      container: document.getElementById("target"),
+    });
+    const el = await current();
+    expect(el.parentElement).toBe(document.getElementById("target"));
+    await answer(el, true);
+    await expect(result).resolves.toBe(true);
   });
 });

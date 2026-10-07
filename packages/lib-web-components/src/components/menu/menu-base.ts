@@ -2,14 +2,13 @@ import {
   css,
   html,
   nothing,
-  unsafeCSS,
   type PropertyValues,
   type ReactiveControllerHost,
   type TemplateResult,
 } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { keyed } from "lit/directives/keyed.js";
+import { repeat } from "lit/directives/repeat.js";
 import styles from "@lib-core-styles/components/Menu/menu.module.scss?inline";
 import {
   contains,
@@ -17,6 +16,7 @@ import {
   createTypeahead,
   focusElement,
   getActiveElement,
+  getExitAnimationDuration,
   getLayerStack,
   getNextIndex,
   getTabbables,
@@ -25,6 +25,7 @@ import {
   type Placement,
   type PointerGrace,
   type Typeahead,
+  waitForExitAnimation,
 } from "@minerva/core";
 import { AnchoredPositionController } from "../../controllers/anchored-position";
 import { DismissableLayerController } from "../../controllers/dismissable-layer";
@@ -45,6 +46,7 @@ import {
   type MenuRadioGroupEntry,
   type MenuRadioItem,
 } from "./menu-items";
+import { sharedStyles } from "../../internal/styles";
 
 /** Where focus goes when a menu panel opens */
 export type FocusIntent = "first" | "last" | "content" | "none";
@@ -85,6 +87,18 @@ const focusNoScroll = (el: HTMLElement | null | undefined) =>
 const plainText = (label: MenuContent | undefined): string | undefined =>
   typeof label === "string" ? label : undefined;
 
+/** Key of a rendered panel: the submenu trigger uids leading to it. */
+const panelKey = (path: readonly string[]) => path.join("/");
+
+/** A closed panel kept rendered (`data-state="closed"`) while it animates out. */
+interface ExitingPanel {
+  id: number;
+  depth: number;
+  path: string[];
+}
+
+let exitIds = 0;
+
 /** Runtime state of one open panel (root menu or a submenu). */
 class PanelLevel {
   readonly position: AnchoredPositionController;
@@ -97,6 +111,8 @@ class PanelLevel {
   element: HTMLElement | null = null;
   /** Submenu trigger uid ("" for the root) */
   uid: string | null = null;
+  /** Submenu trigger uids leading to this panel (`[]` for the root) */
+  path: string[] = [];
 
   constructor(host: ReactiveControllerHost, menu: MenuBase, depth: number) {
     this.position = new AnchoredPositionController(host, () =>
@@ -145,7 +161,7 @@ export abstract class MenuBase extends MinervaElement {
         display: contents;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Entries of the menu (alternative to the declarative child elements) */
@@ -186,6 +202,13 @@ export abstract class MenuBase extends MinervaElement {
   /** Uids of the submenu triggers whose submenu is open, by depth */
   @state()
   private openPath: string[] = [];
+
+  /**
+   * Closed panels still rendered with `data-state="closed"` until their CSS
+   * exit animation ends (lib-core's presence: `usePresence`)
+   */
+  @state()
+  private exiting: ExitingPanel[] = [];
 
   /** Uncontrolled checkbox / radio state of `items`, by entry key */
   private stored = new Map<string, unknown>();
@@ -356,18 +379,26 @@ export abstract class MenuBase extends MinervaElement {
     };
   }
 
-  /** Stops the panels from `depth` on (deepest first). */
-  private closeLevels(from = 0) {
+  /**
+   * Stops the panels from `depth` on (deepest first). With `animate`, a
+   * panel whose CSS declares an exit animation for `data-state="closed"`
+   * stays rendered (frozen in place, no longer interactive as a layer) until
+   * the animation ends, like lib-core's presence; reduced motion
+   * (`animation: none`) or no animation removes it right away.
+   */
+  private closeLevels(from = 0, animate = true) {
     for (let depth = this.levels.length - 1; depth >= from; depth--) {
       const level = this.levels[depth];
-      if (!level.element) continue;
+      const element = level.element;
+      if (!element) continue;
       level.clearTimer();
       level.grace.clear();
       level.typeahead.reset();
       level.scope.deactivate();
       level.layer.deactivate();
       level.position.end();
-      hideTopLayer(level.element);
+      if (animate && this.isConnected) this.exit(element, depth, level.path);
+      else hideTopLayer(element);
       level.element = null;
       level.uid = null;
       if (depth === 0) {
@@ -375,6 +406,39 @@ export abstract class MenuBase extends MinervaElement {
         this.scheduleRestore();
       }
     }
+  }
+
+  /** Keeps `element` rendered while its exit animation runs. */
+  private exit(element: HTMLElement, depth: number, path: string[]) {
+    element.setAttribute("data-state", "closed");
+    if (getExitAnimationDuration(element) <= 0) {
+      hideTopLayer(element);
+      return;
+    }
+    const id = ++exitIds;
+    const key = panelKey(path);
+    this.exiting = [
+      ...this.exiting.filter((panel) => panelKey(panel.path) !== key),
+      { id, depth, path },
+    ];
+    void waitForExitAnimation(element).then(() => {
+      if (!this.exiting.some((panel) => panel.id === id)) return;
+      hideTopLayer(element);
+      this.exiting = this.exiting.filter((panel) => panel.id !== id);
+    });
+  }
+
+  /** Drops the exiting panels (disconnect): removed without animation. */
+  private clearExiting() {
+    if (this.exiting.length === 0) return;
+    for (const panel of this.exiting) {
+      hideTopLayer(
+        this.renderRoot.querySelector<HTMLElement>(
+          `[data-panel-key="${panelKey(panel.path)}"]`,
+        ),
+      );
+    }
+    this.exiting = [];
   }
 
   private scheduleRestore() {
@@ -401,7 +465,7 @@ export abstract class MenuBase extends MinervaElement {
     for (let depth = 0; depth < wanted; depth++) {
       const uid = depth === 0 ? "" : this.openPath[depth - 1];
       const element = this.renderRoot.querySelector<HTMLElement>(
-        `[data-level="${depth}"]`,
+        `[data-panel-key="${panelKey(this.openPath.slice(0, depth))}"]`,
       );
       if (!element) return;
       const level = this.level(depth);
@@ -412,6 +476,9 @@ export abstract class MenuBase extends MinervaElement {
       if (!anchor) return;
       level.element = element;
       level.uid = uid;
+      level.path = this.openPath.slice(0, depth);
+      // reopened while animating out: the same element, open again
+      element.setAttribute("data-state", "open");
       showTopLayer(element);
       level.position.start(anchor, element);
       if (depth === 0 && this.isModal) this.modalController.activate(this);
@@ -743,7 +810,8 @@ export abstract class MenuBase extends MinervaElement {
     super.disconnectedCallback();
     this.observer?.disconnect();
     this.observer = null;
-    this.closeLevels();
+    this.closeLevels(0, false);
+    this.clearExiting();
   }
 
   protected override willUpdate(changed: PropertyValues<this>): void {
@@ -757,6 +825,34 @@ export abstract class MenuBase extends MinervaElement {
       this.direction = this.isConnected ? getDirection(from) : "ltr";
     }
     if (changed.has("open") && !this.open) this.openPath = [];
+    // Panels no longer wanted start closing before they leave the template,
+    // so the ones with an exit animation stay rendered (presence).
+    const wanted = this.open && !this.disabled ? this.openPath.length + 1 : 0;
+    const stale = this.levels.findIndex(
+      (level, depth) =>
+        level.element !== null &&
+        (depth >= wanted ||
+          panelKey(level.path) !== panelKey(this.openPath.slice(0, depth))),
+    );
+    if (stale !== -1) this.closeLevels(stale);
+    if (this.exiting.length) {
+      const open = this.openKeys();
+      if (this.exiting.some((panel) => open.has(panelKey(panel.path)))) {
+        this.exiting = this.exiting.filter(
+          (panel) => !open.has(panelKey(panel.path)),
+        );
+      }
+    }
+  }
+
+  /** Keys of the panels that are open (root + open submenus). */
+  private openKeys(): Set<string> {
+    if (!this.open || this.disabled) return new Set();
+    return new Set(
+      [[], ...this.openPath.map((_, i) => this.openPath.slice(0, i + 1))].map(
+        panelKey,
+      ),
+    );
   }
 
   private checkKeys(entries: MenuEntry[], seen = new Set<string>()) {
@@ -795,29 +891,68 @@ export abstract class MenuBase extends MinervaElement {
   /* -------------------------------------------------------------- render */
 
   protected renderPanels(): unknown {
-    if (!this.open || this.disabled) return nothing;
+    const open = this.open && !this.disabled;
+    if (!open && this.exiting.length === 0) return nothing;
     this.itemActions.clear();
-    const panels: unknown[] = [
-      this.renderPanel(0, "", this.entries, this.rootLabel()),
-    ];
+    const panels: Array<{
+      key: string;
+      depth: number;
+      path: string[];
+      state: "open" | "closed";
+    }> = [];
+    if (open) {
+      panels.push({ key: "", depth: 0, path: [], state: "open" });
+      this.openPath.forEach((_, depth) => {
+        const path = this.openPath.slice(0, depth + 1);
+        panels.push({
+          key: panelKey(path),
+          depth: depth + 1,
+          path,
+          state: "open",
+        });
+      });
+    }
+    const keys = new Set(panels.map((panel) => panel.key));
+    for (const panel of this.exiting) {
+      const key = panelKey(panel.path);
+      if (keys.has(key)) continue;
+      keys.add(key);
+      panels.push({
+        key,
+        depth: panel.depth,
+        path: panel.path,
+        state: "closed",
+      });
+    }
+    return repeat(
+      panels,
+      (panel) => panel.key,
+      (panel) => this.renderPanelAt(panel.depth, panel.path, panel.state),
+    );
+  }
+
+  /** The panel reached through the submenu triggers `path` (null: gone). */
+  private renderPanelAt(
+    depth: number,
+    path: string[],
+    state: "open" | "closed",
+  ): unknown {
     let entries = this.entries;
-    this.openPath.forEach((uid, depth) => {
-      const found = this.findSubmenu(entries, uid, `${depth}:`);
-      if (!found) return;
+    let label = depth === 0 ? this.rootLabel() : undefined;
+    for (const [index, uid] of path.entries()) {
+      const found = this.findSubmenu(entries, uid, `${index}:`);
+      if (!found) return nothing;
       entries = found.children ?? [];
-      panels.push(
-        keyed(
-          uid,
-          this.renderPanel(
-            depth + 1,
-            uid,
-            entries,
-            plainText(found.label) ?? found.textValue,
-          ),
-        ),
-      );
-    });
-    return panels;
+      label = plainText(found.label) ?? found.textValue;
+    }
+    return this.renderPanel(
+      depth,
+      path.at(-1) ?? "",
+      entries,
+      label,
+      state,
+      panelKey(path),
+    );
   }
 
   /** The submenu entry with `uid` among `entries` (groups included). */
@@ -845,6 +980,8 @@ export abstract class MenuBase extends MinervaElement {
     uid: string,
     entries: MenuEntry[],
     label: string | undefined,
+    state: "open" | "closed",
+    key: string,
   ): TemplateResult {
     const parentId = depth === 0 ? "" : `item-${uid}`;
     return html`<div
@@ -858,8 +995,9 @@ export abstract class MenuBase extends MinervaElement {
       aria-labelledby=${depth > 0 ? parentId : nothing}
       tabindex="-1"
       dir=${this.direction}
-      data-state="open"
+      data-state=${state}
       data-level=${depth}
+      data-panel-key=${key}
       @keydown=${this.onPanelKeyDown}
       @focusin=${this.onPanelFocusIn}
       @focusout=${this.onPanelFocusOut}

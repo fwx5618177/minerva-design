@@ -75,15 +75,27 @@ The CDN bundle is self-contained (every element, Lit and `@minerva/core`, minifi
 
 ## Entries
 
-| Entry                                                               | Contents                                                                                             |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `@minerva/lib-web-components`                                       | Registers every element; exports the element classes, their types and the authoring utilities        |
-| `@minerva/lib-web-components/<name>`                                | Registers one element (and its parts / dependencies), e.g. `/button`, `/select`, `/modal`, `/config` |
-| `@minerva/lib-web-components/cdn`                                   | Self-contained ES module bundle (`dist/cdn/minerva.js`)                                              |
-| `@minerva/lib-web-components/tokens.css`                            | Design tokens (same file as `@minerva/core/tokens.css`)                                              |
-| `@minerva/lib-web-components/custom-elements.json`                  | [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest)                |
-| `@minerva/lib-web-components/html-custom-data.json`                 | VS Code HTML custom data                                                                             |
-| `@minerva/lib-web-components/react` · `/vue` · `/svelte` · `/solid` | Template typings (types only)                                                                        |
+| Entry                                                               | Contents                                                                                              |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `@minerva/lib-web-components`                                       | Registers every element; exports the element classes, their types and the authoring utilities         |
+| `@minerva/lib-web-components/<name>`                                | Registers one element (and its parts / dependencies), e.g. `/button`, `/select`, `/modal`, `/config`  |
+| `@minerva/lib-web-components/cdn`                                   | Self-contained ES module bundle (`dist/cdn/minerva.js`)                                               |
+| `@minerva/lib-web-components/code-editor`                           | Optional: `<minerva-code-editor>` (Monaco), needs the optional peer `monaco-editor`; not in `.` / CDN |
+| `@minerva/lib-web-components/tokens.css`                            | Design tokens (same file as `@minerva/core/tokens.css`)                                               |
+| `@minerva/lib-web-components/custom-elements.json`                  | [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest)                 |
+| `@minerva/lib-web-components/html-custom-data.json`                 | VS Code HTML custom data                                                                              |
+| `@minerva/lib-web-components/react` · `/vue` · `/svelte` · `/solid` | Template typings (types only)                                                                         |
+
+The code editor runs on your own Monaco engine (never loaded from a CDN) and follows the theme of its scope; until the engine is set (or if it fails) it shows a loading state, then an editable textarea fallback:
+
+```ts
+import "@minerva/lib-web-components/code-editor";
+import * as monaco from "monaco-editor"; // configure its workers (MonacoEnvironment) in your app
+
+document.querySelector("minerva-code-editor")!.monaco = monaco;
+```
+
+Imperative confirmations: `confirm({ title, host: button })` (or `const ask = confirmFor(button)`, then `ask({ title })`) renders the dialog in the caller's `<minerva-config>` scope, like lib-core's `useConfirm()`; wrap the app in `<minerva-confirm-provider>` to queue them per subtree (lib-core's `ConfirmProvider`).
 
 `defineElement()` is idempotent and does nothing without a `customElements` registry, so the entries can be imported during server-side rendering.
 
@@ -114,7 +126,7 @@ VS Code (plain HTML):
 
 ## Development warnings
 
-Invalid attribute combinations and common mistakes are logged with `console.warn` (`[minerva] <minerva-x>: ...`), once per message, when `process.env.NODE_ENV !== "production"`. Bundlers replace that expression, so production builds drop the checks; the CDN bundle is built for production.
+Invalid attribute combinations and common mistakes are logged with `console.error` (the channel and `[minerva] <subject>: ...` format of the React components of `@minerva/lib-core`: `[minerva] <minerva-x>: ...`), once per message, when `process.env.NODE_ENV !== "production"`. Bundlers replace that expression, so production builds drop the checks; the CDN bundle is built for production.
 
 ## Links
 

@@ -165,7 +165,7 @@ describe("<minerva-form-control>", () => {
   });
 
   it("warns in development when several controls are slotted", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(
       `<minerva-form-control label="x"><input /><input /></minerva-form-control>`,
     );

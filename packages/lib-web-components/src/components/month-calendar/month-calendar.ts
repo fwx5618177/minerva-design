@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/MonthCalendar/monthCalendar.module.scss?inline";
 import { AriaController } from "../../internal/aria";
@@ -11,6 +11,7 @@ import {
 } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /** An event shown in the calendar */
 export interface MonthCalendarEvent {
@@ -103,7 +104,7 @@ export class MinervaMonthCalendar extends MinervaElement {
         flex-shrink: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Displayed month (any day of it; attribute "YYYY-MM"); defaults to the current month */

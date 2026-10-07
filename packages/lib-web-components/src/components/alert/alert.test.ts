@@ -189,7 +189,7 @@ describe("<minerva-alert>", () => {
   });
 
   it("warns when collapsible has no heading", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaAlert>(
       `<minerva-alert collapsible>Body</minerva-alert>`,
     );

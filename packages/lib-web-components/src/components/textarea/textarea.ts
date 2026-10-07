@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS } from "lit";
+import { css, html, nothing } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
@@ -12,6 +12,7 @@ import {
 } from "../../internal/form";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 export type TextareaVariant = "outline" | "filled" | "unstyled";
 export type TextareaSize = "small" | "medium" | "large";
@@ -49,7 +50,7 @@ export class MinervaTextarea extends FormAssociatedElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Current value (property; the `value` attribute sets `defaultValue`) */

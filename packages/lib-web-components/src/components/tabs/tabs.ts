@@ -1,4 +1,4 @@
-import { css, html, nothing, unsafeCSS, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { ColorScheme } from "@minerva/core";
@@ -8,6 +8,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { sharedStyles } from "../../internal/styles";
 
 /**
  * Visual style: `line` (underline indicator), `enclosed` (browser-like
@@ -59,7 +60,7 @@ export class MinervaTabs extends MinervaElement {
         min-width: 0;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value of the selected tab */
@@ -292,7 +293,7 @@ export class MinervaTab extends MinervaElement {
         cursor: not-allowed;
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value identifying the tab and its panel (must not contain whitespace) */
@@ -401,11 +402,22 @@ export class MinervaTab extends MinervaElement {
 
 /**
  * The `role="tabpanel"` content of the tab with the same `value`
- * (`<TabPanel>` of lib-core). Inactive panels are `hidden`.
+ * (`<TabPanel>` of lib-core).
+ *
+ * Inactive panels: React's `<TabPanel>` unmounts them by default and keeps
+ * them in the DOM with `hidden` only with `forceMount`. Light DOM children
+ * belong to the page, so a custom element cannot unmount them: regular
+ * children behave like React's `forceMount` (the panel is `hidden`, its
+ * content stays in the DOM, keeps its state and its form fields are still
+ * submitted). For React's default semantics, put the content in a
+ * `<template>` child: it is stamped while the panel is active and removed
+ * when it becomes inactive (state reset, elements disconnected, nothing
+ * submitted); add `force-mount` to keep it mounted (hidden) while inactive,
+ * like `forceMount`.
  *
  * @summary A `role="tabpanel"` of `<minerva-tabs>`.
  * @tag minerva-tab-panel
- * @slot - Panel content
+ * @slot - Panel content (or a `<template>` stamped only while active)
  * @csspart base - The panel wrapper
  */
 export class MinervaTabPanel extends MinervaElement {
@@ -424,24 +436,67 @@ export class MinervaTabPanel extends MinervaElement {
         outline-offset: var(--focus-ring-offset);
       }
     `,
-    unsafeCSS(styles),
+    sharedStyles(styles),
   ];
 
   /** Value of the tab this panel belongs to */
   @property({ reflect: true })
   value = "";
 
+  /**
+   * Mounts the content of a `<template>` child even while the panel is
+   * inactive (hidden), like React's `forceMount`. Regular children are
+   * always mounted
+   * @default false
+   */
+  @property({ type: Boolean, reflect: true, attribute: "force-mount" })
+  forceMount = false;
+
   private orientation: TabsOrientation = "horizontal";
+  private selected = false;
+  /** Nodes stamped from the `<template>` child */
+  private stamped: Node[] = [];
+
+  /** The `<template>` child holding lazily mounted content, if any. */
+  private get template(): HTMLTemplateElement | null {
+    return (
+      Array.from(this.children).find(
+        (child): child is HTMLTemplateElement =>
+          child instanceof HTMLTemplateElement,
+      ) ?? null
+    );
+  }
+
+  /** Mounts / unmounts the `<template>` content (React's unmounting). */
+  private syncContent() {
+    const template = this.template;
+    if (this.selected || this.forceMount) {
+      if (template && !this.stamped.length) {
+        const content = this.ownerDocument.importNode(template.content, true);
+        this.stamped = Array.from(content.childNodes);
+        template.after(content);
+      }
+      return;
+    }
+    for (const node of this.stamped) node.parentNode?.removeChild(node);
+    this.stamped = [];
+  }
 
   /** @internal Called by the owning `<minerva-tabs>`. */
   sync(group: MinervaTabs, selected: boolean, tabId?: string): void {
     this.orientation = group.orientation;
+    this.selected = selected;
     this.hidden = !selected;
+    this.syncContent();
     this.setAttribute("data-state", selected ? "active" : "inactive");
     this.setAttribute("data-orientation", group.orientation);
     if (tabId) this.setAttribute("aria-labelledby", tabId);
     else this.removeAttribute("aria-labelledby");
     this.requestUpdate();
+  }
+
+  protected override willUpdate(changed: PropertyValues<this>): void {
+    if (changed.has("forceMount") && this.hasUpdated) this.syncContent();
   }
 
   override connectedCallback(): void {

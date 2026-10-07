@@ -1,6 +1,6 @@
 {
   "title": "Monaco 代码编辑器",
-  "description": "带标签的 Monaco 编辑器，使用本地引擎（不走 CDN）并跟随页面主题。引擎无法及时加载或挂载时，降级为可编辑的文本框并提供重试按钮。从 @minerva/lib-core/monaco 引入；@monaco-editor/react 与 monaco-editor 为可选 peer 依赖。",
+  "description": "带标签的 Monaco 编辑器，使用本地引擎（不走 CDN）并跟随页面主题。引擎无法及时加载或挂载时，降级为可编辑的文本框并提供重试按钮。从 @minerva/lib-core/monaco 引入；@monaco-editor/react 与 monaco-editor 为可选 peer 依赖。 Web Component <minerva-code-editor> 以可选入口 @minerva/lib-web-components/code-editor 发布（不在一体化入口和 CDN 包中），monaco-editor 是其可选 peer 依赖。",
   "demos": {
     "basic": {
       "title": "懒加载编辑器",
@@ -34,5 +34,63 @@
     "--monaco-code-editor-bg": "编辑器外框的背景色",
     "--monaco-code-editor-label-gap": "标签与编辑器之间的间距",
     "--monaco-code-editor-font-size": "标签、提示信息与纯文本回退编辑框的字号"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "本地引擎、主题与表单",
+        "description": "加载可选入口 @minerva/lib-web-components/code-editor 和应用自己的 Monaco 引擎，然后将其设置为 monaco 属性。编辑器跟随页面 / <minerva-config> 主题，每次编辑触发 minerva-input（对应 React 的 onChange），并随表单提交其值。"
+      },
+      "fallback": {
+        "title": "加载、降级与延迟提供引擎",
+        "description": "没有引擎时，编辑器先显示加载状态，load-timeout 之后显示可编辑的 textarea 和“重试”按钮（触发 minerva-error）。之后再提供引擎会以最新的值加载编辑器。"
+      }
+    },
+    "minerva-code-editor": {
+      "props": {
+        "name": "随表单提交时使用的字段名。",
+        "required": "必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。",
+        "defaultValue": "初始源码（value 特性），由 form.reset() 恢复。在用户编辑之前修改它也会修改 value。",
+        "resolvedTheme": "实际应用的主题：theme，否则为最近的 data-theme（<minerva-config> 作用域，然后是 <html>）（只读）。",
+        "monaco": "本地 Monaco 引擎（import * as monaco from \"monaco-editor\"），以属性设置；每个应用一个。从不从 CDN 加载。",
+        "value": "源码（属性；value 特性设置的是 defaultValue）。每次编辑都会更新；设置它会以可撤销编辑的方式写入文本。",
+        "theme": "颜色主题（light 或 dark）；默认跟随元素所在作用域的主题（最近的 data-theme：<minerva-config>，然后是 <html>），实时同步。",
+        "disabled": "使编辑器（及其降级 textarea）只读；不提交、不参与校验。",
+        "loadTimeout": "显示 textarea 降级之前等待引擎和编辑器的毫秒数（尚未设置引擎时同样适用）。"
+      },
+      "events": {
+        "input": "值已改变（每次编辑；可穿透 shadow DOM）。",
+        "change": "值已提交：编辑后编辑器失去焦点。",
+        "minerva-input": "同 input，附带 detail: { value }（对应 React 的 onChange）。",
+        "minerva-change": "同 change，附带 detail: { value }。",
+        "minerva-error": "编辑器不可用（引擎未按时提供、引擎无效或抛出错误），已显示 textarea 降级。"
+      },
+      "slots": {
+        "editor": "由元素创建：Monaco 渲染所用的 light DOM <div>，以便 Monaco 添加到文档中的样式表生效。请勿自行填充。"
+      },
+      "parts": {
+        "base": "role=\"group\" 根元素，由 label 命名。",
+        "label": "可见标签。",
+        "surface": "编辑器区域，尺寸由 height 决定。",
+        "fallback": "降级用的 <textarea>。",
+        "retry-button": "“重试”<minerva-button>。"
+      },
+      "methods": {
+        "focus": "聚焦编辑器（或其降级 textarea）。",
+        "retry": "重新尝试加载编辑器（与“重试”按钮相同）。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

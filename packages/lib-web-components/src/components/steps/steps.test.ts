@@ -101,7 +101,7 @@ describe("<minerva-steps>", () => {
   });
 
   it("warns when the value matches no step", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup(`<minerva-steps value="nope"></minerva-steps>`);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("matches no step"),

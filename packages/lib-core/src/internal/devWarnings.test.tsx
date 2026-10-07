@@ -2,7 +2,13 @@ import { useState } from "react";
 import { act, render, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { resetWarnings, warnOnce } from "./devWarnings";
+import { DEV_MESSAGE_PREFIX, formatDevMessage } from "@minerva/core";
+import {
+  controlledSwitchMessage,
+  resetWarnings,
+  warnControlledProps,
+  warnOnce,
+} from "./devWarnings";
 import { useControllableState } from "./useControllableState";
 import { useDisclosure } from "../hooks/useDisclosure";
 import {
@@ -50,6 +56,30 @@ const warnings = () =>
     .filter((message: string) => message.startsWith("[minerva]"));
 
 const noop = () => {};
+
+describe("channel and format (shared with @minerva/lib-web-components)", () => {
+  it("logs with console.error, never console.warn, as `[minerva] <Component>: ...`", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    warnControlledProps("Input", {
+      prop: "value",
+      value: "a",
+      handlerProp: "onChange",
+    });
+    expect(warn).not.toHaveBeenCalled();
+    expect(warnings()).toHaveLength(1);
+    expect(warnings()[0].startsWith(`${DEV_MESSAGE_PREFIX} Input: `)).toBe(
+      true,
+    );
+    expect(controlledSwitchMessage("Tabs", "value", "defaultValue", true)).toBe(
+      formatDevMessage(
+        "Tabs",
+        controlledSwitchMessage("Tabs", "value", "defaultValue", true).slice(
+          "[minerva] Tabs: ".length,
+        ),
+      ),
+    );
+  });
+});
 
 describe("warnOnce", () => {
   it("logs a key once until reset", () => {

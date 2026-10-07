@@ -135,7 +135,7 @@ describe("<minerva-code-block>", () => {
   });
 
   it("warns when copyable has nothing to copy", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-code-block copyable></minerva-code-block>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("copyable"));
   });

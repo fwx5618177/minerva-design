@@ -91,7 +91,7 @@ describe("<minerva-badge>", () => {
   });
 
   it("warns about unlabeled announced dots", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-badge dot></minerva-badge>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("aria-label"));
   });

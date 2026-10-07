@@ -60,7 +60,11 @@
       },
       "imperative": {
         "title": "confirm() impératif",
-        "description": "confirm({ title, ... }) ajoute une boîte de dialogue, se résout en true ou false et la retire une fois fermée : un remplaçant thémé de window.confirm. Les appels simultanés sont mis en file."
+        "description": "confirm({ title, ... }) ajoute une boîte de dialogue, se résout en true ou false et la retire une fois fermée : un remplaçant thémé de window.confirm. Les appels simultanés sont mis en file. Sans hôte ni <minerva-confirm-provider>, la boîte de dialogue est ajoutée à document.body (thème et langue racine)."
+      },
+      "scoped": {
+        "title": "Confirmation dans une portée et fournisseur",
+        "description": "confirm({ host }) (ou confirmFor(host)) est l'équivalent de useConfirm() : la boîte de dialogue s'affiche dans la portée <minerva-config> de l'hôte (thème sombre, palette tech, libellés en chinois) et est mise en file par le <minerva-confirm-provider> le plus proche. confirm() sans hôte s'affiche dans la portée du fournisseur (ici le thème et la langue racine), comme le confirm() global."
       }
     },
     "minerva-confirm-dialog": {
@@ -101,6 +105,14 @@
       "methods": {
         "show": "Ouvre la boîte de dialogue.",
         "hide": "Ferme la boîte de dialogue (sans événement)."
+      }
+    },
+    "minerva-confirm-provider": {
+      "props": {
+        "confirm": "Demande une confirmation affichée par ce fournisseur (dans sa portée, ou celle de options.host) ; se résout à true si elle est confirmée (lecture seule)."
+      },
+      "slots": {
+        "default": "Contenu de l'application : les appels confirm({ host }) / confirmFor(host) faits à l'intérieur sont mis en file ici."
       }
     }
   }

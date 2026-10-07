@@ -172,7 +172,7 @@ describe("<minerva-app-shell> (desktop)", () => {
   });
 
   it("warns in development when the navigation slot is empty", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-app-shell brand="X"></minerva-app-shell>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("navigation"));
   });

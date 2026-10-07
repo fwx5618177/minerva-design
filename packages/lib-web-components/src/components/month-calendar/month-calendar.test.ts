@@ -326,7 +326,7 @@ describe("<minerva-month-calendar>", () => {
   });
 
   it("warns about a malformed value", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup(`month="2024-02" value="2024/02/03"`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("YYYY-MM-DD"));
   });

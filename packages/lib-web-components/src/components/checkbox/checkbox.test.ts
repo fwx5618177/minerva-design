@@ -182,7 +182,7 @@ describe("<minerva-checkbox>", () => {
   });
 
   it("warns in development without a label", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await mount(`<minerva-checkbox></minerva-checkbox>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("no label"));
   });

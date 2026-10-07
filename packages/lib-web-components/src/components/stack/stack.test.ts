@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { html } from "lit";
 import { MinervaHStack, MinervaStack, MinervaVStack } from "./stack";
 import "../../elements/stack";
@@ -73,8 +73,134 @@ describe("<minerva-stack>", () => {
     expect(el.shadowRoot!.querySelectorAll("slot")).toHaveLength(3);
   });
 
+  it("uses manual slot assignment where slot.assign() exists (no light DOM changes)", async () => {
+    expect(typeof HTMLSlotElement.prototype.assign).toBe("function");
+    const el = await mount<MinervaStack>(
+      `<minerva-stack separator="|"><b>a</b><b>b</b></minerva-stack>`,
+    );
+    expect(el.shadowRoot!.querySelectorAll("slot")).toHaveLength(2);
+    for (const child of Array.from(el.children)) {
+      expect(child.hasAttribute("slot")).toBe(false);
+    }
+  });
+
+  describe("without slot.assign() (named-slot fallback)", () => {
+    const assign = Object.getOwnPropertyDescriptor(
+      HTMLSlotElement.prototype,
+      "assign",
+    )!;
+    beforeEach(() => {
+      // An engine without manual slot assignment (e.g. Safari < 16.4)
+      delete (HTMLSlotElement.prototype as Partial<HTMLSlotElement>).assign;
+    });
+    afterEach(() => {
+      Object.defineProperty(HTMLSlotElement.prototype, "assign", assign);
+    });
+
+    const named = (el: Element) =>
+      Array.from(
+        el.shadowRoot!.querySelectorAll<HTMLSlotElement>("slot[name]"),
+      );
+
+    it("interleaves separators between element children through named slots", async () => {
+      const el = await mount<MinervaStack>(
+        `<minerva-stack separator="·"><span>a</span> <span>b</span><span>c</span></minerva-stack>`,
+      );
+      await settle();
+      expect(el.shadowRoot!.mode).toBe("open");
+      const slots = named(el);
+      expect(slots.map((s) => s.name)).toEqual([
+        "minerva-stack-item-0",
+        "minerva-stack-item-1",
+        "minerva-stack-item-2",
+      ]);
+      const spans = Array.from(el.querySelectorAll("span"));
+      spans.forEach((span, i) => {
+        expect(span.getAttribute("slot")).toBe(`minerva-stack-item-${i}`);
+        expect(slots[i].assignedElements()).toEqual([span]);
+      });
+      expect(base(el).textContent!.match(/·/g)).toHaveLength(2);
+      // separators sit between the slots, in order
+      const nodes = Array.from(base(el).childNodes).filter(
+        (n) => n.nodeType === 1 || (n.nodeType === 3 && n.textContent!.trim()),
+      );
+      expect(
+        nodes.map((n) =>
+          n.nodeType === 1
+            ? (n as HTMLSlotElement).name || "default"
+            : n.textContent!.trim(),
+        ),
+      ).toEqual([
+        "minerva-stack-item-0",
+        "·",
+        "minerva-stack-item-1",
+        "·",
+        "minerva-stack-item-2",
+        "default",
+      ]);
+    });
+
+    it("follows child changes, function separators and releases its slot attributes", async () => {
+      const el = await mount<MinervaStack>(
+        `<minerva-stack><i>a</i><i>b</i></minerva-stack>`,
+      );
+      // no separator: plain default slot, children untouched
+      expect(named(el)).toHaveLength(0);
+      expect(el.querySelector("i")!.hasAttribute("slot")).toBe(false);
+      el.separator = () => html`<hr class="sep" />`;
+      await settle();
+      expect(el.shadowRoot!.querySelectorAll(".sep")).toHaveLength(1);
+      el.append(document.createElement("i"));
+      await settle();
+      expect(el.shadowRoot!.querySelectorAll(".sep")).toHaveLength(2);
+      expect(named(el)).toHaveLength(3);
+      // a removed child gets its attribute back
+      const removed = el.querySelector("i")!;
+      removed.remove();
+      await settle();
+      expect(named(el)).toHaveLength(2);
+      expect(el.querySelector("i")!.getAttribute("slot")).toBe(
+        "minerva-stack-item-0",
+      );
+      // children with their own slot are left alone
+      const own = document.createElement("i");
+      own.slot = "custom";
+      el.append(own);
+      await settle();
+      expect(own.slot).toBe("custom");
+      expect(named(el)).toHaveLength(2);
+      el.separator = undefined;
+      await settle();
+      expect(named(el)).toHaveLength(0);
+      expect(
+        Array.from(el.querySelectorAll("i")).map((i) => i.getAttribute("slot")),
+      ).toEqual([null, null, "custom"]);
+    });
+
+    it("keeps bare text children in a trailing default slot; cleans up on disconnect", async () => {
+      const el = await mount<MinervaStack>(
+        `<minerva-stack separator="|"><b>a</b>text<b>b</b></minerva-stack>`,
+      );
+      await settle();
+      const fallback =
+        el.shadowRoot!.querySelector<HTMLSlotElement>("slot:not([name])")!;
+      expect(
+        fallback.assignedNodes().map((n) => n.textContent!.trim()),
+      ).toContain("text");
+      expect(named(el)).toHaveLength(2);
+      const parent = el.parentNode!;
+      el.remove();
+      expect(el.querySelector("b")!.hasAttribute("slot")).toBe(false);
+      parent.append(el);
+      await settle();
+      expect(el.querySelector("b")!.getAttribute("slot")).toBe(
+        "minerva-stack-item-0",
+      );
+    });
+  });
+
   it("attached: role=group named by aria-label, no gap; warns without a name", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     const el = await mount<MinervaStack>(
       `<minerva-stack attached gap="4" direction="row"><button>A</button><button>B</button></minerva-stack>`,
     );

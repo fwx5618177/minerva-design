@@ -210,7 +210,7 @@ describe("<minerva-rating>", () => {
   });
 
   it("warns in development when the value is out of range", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup('value="12" max="10"');
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("outside"));
   });

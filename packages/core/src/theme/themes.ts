@@ -122,16 +122,21 @@ export const githubDark: ComponentTheme = {
   "focus-ring-color": "rgba(31, 111, 235, 0.6)",
 };
 
+/** Union of the keys of `themes` (pure: dropped when `themeKeys` is unused). */
+function uniqueKeys(...themes: object[]): string[] {
+  const keys = new Set<string>();
+  for (const theme of themes) for (const key in theme) keys.add(key);
+  return Array.from(keys);
+}
+
 /**
  * Every CSS custom property name (without the leading `--`) that a built-in
  * theme may write. Used to clear stale inline variables when switching themes.
  */
-export const themeKeys: readonly string[] = Array.from(
-  new Set([
-    ...Object.keys(light),
-    ...Object.keys(dark),
-    ...Object.keys(githubDark),
-  ]),
+export const themeKeys: readonly string[] = /* @__PURE__ */ uniqueKeys(
+  light,
+  dark,
+  githubDark,
 );
 
 /**
