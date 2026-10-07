@@ -38,5 +38,63 @@
     "--key-value-editor-gap": "Space between the rows and the add button",
     "--key-value-editor-column-gap": "Space between the key, the value and the remove button of a row",
     "--key-value-editor-control-height": "Size of the remove button and minimum height of the key field and of the add button (defaults to the density's small control height)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Initial rows from a JSON object in the value attribute, custom column labels; the value property (rows with stable ids) is shown after each minerva-change."
+      },
+      "errors": {
+        "title": "Validation and errors",
+        "description": "Validation belongs to the page: errors (by row id) shows messages under empty or duplicate keys, and setCustomValidity() makes the element invalid in forms."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The rows are submitted under name as one JSON string; required blocks an editor without rows (remove the row to try it), and reset restores the rows of the value attribute."
+      }
+    },
+    "minerva-key-value-editor": {
+      "props": {
+        "defaultValue": "Initial rows (the value attribute, JSON: an array of { key, value } or a { \"key\": \"value\" } object), restored by form.reset().",
+        "name": "Name under which the rows are submitted, as a JSON array of { key, value }.",
+        "required": "An editor without rows is invalid (valueMissing).",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "A row was committed (field blur), added or removed.",
+        "minerva-input": "A key or value is being typed; detail: { value } (the entries).",
+        "minerva-change": "A row was committed, added or removed; detail: { value } (the entries)."
+      },
+      "parts": {
+        "base": "The container.",
+        "row": "Each row.",
+        "remove-button": "The remove button of a row.",
+        "add-button": "The add button."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the inner icon buttons.",
+        "--icon-button-hover-bg": "Background of the inner icon buttons on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed inner icon button.",
+        "--icon-button-pressed-bg": "Background of a pressed inner icon button.",
+        "--icon-button-size": "Width and height of the inner icon buttons (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Font size of the icons of the inner icon buttons.",
+        "--icon-button-radius": "Corner radius of the inner icon buttons (defaults to --radius-lg)."
+      },
+      "methods": {
+        "focus": "Focuses the first key field, else the add button.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

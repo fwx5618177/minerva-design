@@ -58,5 +58,66 @@
     "--tabs-radius": "enclosed / soft / pills 标签的圆角（默认 --radius-md）",
     "--tabs-indicator-width": "线条指示器的粗细",
     "--tabs-panel-padding": "面板的内边距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "<minerva-tab> 元素会自动放入标签列表；每个 <minerva-tab-panel> 与 value 相同的标签关联。label 为标签列表命名，方向键会跳过禁用的标签。"
+      },
+      "variants": {
+        "title": "变体与颜色",
+        "description": "variant 可选 line、enclosed、soft 或 pills；color 设置选中态的颜色，<minerva-tab> 上的 color 使该标签在未选中时也保持着色。"
+      },
+      "vertical": {
+        "title": "垂直方向与手动激活",
+        "description": "orientation=\"vertical\" 将标签纵向排列（ArrowUp / ArrowDown）。activation-mode=\"manual\" 时焦点移动不会选中标签，需按 Enter 或空格；no-loop 使方向键停在第一个 / 最后一个标签。"
+      },
+      "controlled": {
+        "title": "取消切换",
+        "description": "minerva-change 可取消：勾选复选框时，preventDefault() 会保留当前标签。取消勾选即可切换。"
+      }
+    },
+    "minerva-tabs": {
+      "props": {
+        "noLoop": "方向键在第一个 / 最后一个标签处停止，而不是循环。",
+        "label": "标签列表的无障碍名称（也可在元素上使用 aria-label / aria-labelledby）。",
+        "tabs": "本组的 <minerva-tab> 元素，不含嵌套组中的标签（只读）。",
+        "panels": "本组的 <minerva-tab-panel> 元素（只读）。"
+      },
+      "events": {
+        "minerva-change": "用户选择了一个标签（detail: { value }）。可取消：preventDefault() 会保留当前选中项。"
+      },
+      "slots": {
+        "default": "<minerva-tab-panel> 元素。",
+        "tab": "<minerva-tab> 元素（自动分配）。"
+      },
+      "parts": {
+        "base": "根容器。",
+        "tablist": "role=\"tablist\" 的容器。"
+      },
+      "methods": {
+        "select": "选中指定 value 的标签，并先触发 minerva-change（标签在点击、Enter / 空格或获得焦点时调用）。"
+      }
+    },
+    "minerva-tab": {
+      "props": {
+        "selected": "该标签是否被选中（由 <minerva-tabs> 设置）。"
+      },
+      "slots": {
+        "default": "标签文字。"
+      },
+      "parts": {
+        "base": "可视的触发器。"
+      }
+    },
+    "minerva-tab-panel": {
+      "slots": {
+        "default": "面板内容。"
+      },
+      "parts": {
+        "base": "面板容器。"
+      }
+    }
   }
 }

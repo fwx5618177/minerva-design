@@ -12,3 +12,8 @@ export declare const generateCssVars: () => Record<
     vars: { name: string; description: string }[];
   }
 >;
+export declare const generateElements: () => Record<string, unknown>;
+export declare const OUTPUT_WC: string;
+export declare const sortKeys: <T>(
+  entries: Record<string, T>,
+) => Record<string, T>;

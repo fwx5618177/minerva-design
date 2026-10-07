@@ -76,5 +76,50 @@
     "--tag-font-size": "字号（所有尺寸）",
     "--tag-radius": "rounded 形状的圆角（默认 --radius-sm）",
     "--tag-gap": "图标、文字与关闭按钮之间的间距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "小型标签；color 设置其语义色调。"
+      },
+      "variants-sizes": {
+        "title": "变体、尺寸与内容",
+        "description": "三种变体、尺寸和形状，elevation，icon 与 avatar 插槽，以及 loading 和 disabled 状态。"
+      },
+      "closable": {
+        "title": "可关闭",
+        "description": "closable 添加一个触发 minerva-close 的关闭按钮：在监听器中移除标签，并将焦点移到相邻元素。close-label 和 close-icon 插槽可自定义该按钮。"
+      },
+      "toggle": {
+        "title": "切换筛选",
+        "description": "clickable toggle 标签是切换按钮（aria-pressed）：点击会翻转 pressed 并触发 minerva-change。普通可点击标签触发 click。"
+      }
+    },
+    "minerva-tag": {
+      "props": {
+        "toggle": "使可点击标签成为切换按钮：点击翻转 pressed 并触发 minerva-change。",
+        "noRipple": "禁用可点击标签的波纹效果。"
+      },
+      "events": {
+        "minerva-close": "关闭按钮被激活。",
+        "minerva-change": "切换标签被切换（detail: { pressed }）。"
+      },
+      "slots": {
+        "default": "标签文字。",
+        "icon": "显示在文字前的图标。",
+        "avatar": "显示在文字前的头像（小号 <minerva-avatar> 或图片）。",
+        "close-icon": "自定义关闭图标。"
+      },
+      "parts": {
+        "base": "标签根元素。",
+        "action": "可点击标签的原生 <button>。",
+        "label": "文字容器。",
+        "close-button": "关闭按钮。"
+      },
+      "methods": {
+        "focus": "聚焦标签的按钮（可点击标签的操作按钮，否则为关闭按钮）。"
+      }
+    }
   }
 }

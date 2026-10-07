@@ -71,6 +71,8 @@ const ContextMenu = ({
   const [open, setOpen] = useControllableState({
     defaultValue: false,
     onChange: onOpenChange,
+    name: "ContextMenu",
+    prop: "open",
   });
   const [area, setArea] = useState<HTMLElement | null>(null);
   // Without `dir`, the menu follows the direction inherited by the area.

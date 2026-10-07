@@ -1,0 +1,43 @@
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+  <minerva-button
+    id="outer-light"
+    size="small"
+    variant="outline"
+    color="neutral"
+    >Outer: light</minerva-button
+  >
+  <minerva-button id="outer-dark" size="small" variant="outline" color="neutral"
+    >Outer: dark</minerva-button
+  >
+  <minerva-button
+    id="outer-system"
+    size="small"
+    variant="outline"
+    color="neutral"
+    >Outer: system</minerva-button
+  >
+  <output id="mode" aria-live="polite"></output>
+</div>
+<minerva-config id="outer" theme="dark">
+  <minerva-card variant="outline" padding="medium" style="margin-top: 12px">
+    <minerva-card-header>
+      <minerva-card-title>Outer scope</minerva-card-title>
+      <minerva-card-description
+        >Follows the buttons above.</minerva-card-description
+      >
+    </minerva-card-header>
+    <minerva-card-content>
+      <minerva-config theme="light" palette="cool">
+        <minerva-card variant="elevated" padding="small">
+          <minerva-card-content>
+            Nested scope: always light with the cool palette (the closest scope
+            wins).
+            <minerva-button size="small" style="margin-top: 8px"
+              >Nested button</minerva-button
+            >
+          </minerva-card-content>
+        </minerva-card>
+      </minerva-config>
+    </minerva-card-content>
+  </minerva-card>
+</minerva-config>

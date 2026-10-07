@@ -34,5 +34,36 @@
     "--steps-indicator-size": "Diameter of the numbered indicator",
     "--steps-accent-color": "Color of the current / completed indicators (defaults to --primary-color)",
     "--steps-current-background": "Background of the current step's indicator"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Read-only progress",
+        "description": "Steps come from the items property; earlier steps are complete and the current one has aria-current=\"step\"."
+      },
+      "navigable": {
+        "title": "Navigable wizard",
+        "description": "navigable turns each step into a button. minerva-change is cancelable: the caller validates the transition (accept the terms to leave the first step)."
+      },
+      "styling": {
+        "title": "Styling",
+        "description": "CSS variables set the accent color, indicator size and gap; ::part(label) styles the labels."
+      }
+    },
+    "minerva-steps": {
+      "props": {
+        "navigable": "Renders each step as a button the user can navigate with (default: read-only)."
+      },
+      "events": {
+        "minerva-change": "The user navigated to a step (detail: { value }); cancelable: preventDefault() keeps the current step."
+      },
+      "parts": {
+        "base": "The <ol>.",
+        "step": "Each <li>.",
+        "button": "The button (or static wrapper) of each step.",
+        "number": "The numbered indicator.",
+        "label": "The label of each step."
+      }
+    }
   }
 }

@@ -55,5 +55,69 @@
     "--app-shell-sidebar-background": "侧边栏与移动端导航抽屉的背景",
     "--app-shell-header-background": "吸顶页头的背景",
     "--app-shell-drawer-width": "移动端导航抽屉的宽度"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "包含品牌和 navigation 插槽的侧边栏、固定页头（header-actions 插槽），以及承载默认插槽的 main 地标。在 768px 及以下，导航会移到从页头打开的模态抽屉中。"
+      },
+      "sidebar-modes": {
+        "title": "侧边栏模式与插槽",
+        "description": "sidebar-mode=\"compact\" 以图标栏开始；侧边栏按钮可将其展开或固定为浮动栏。collapsed 属性用于设置导航样式（这里隐藏了文字）；brand-icon 在图标栏中依然可见，page-navigation 位于页头和 main 之间。"
+      },
+      "controlled": {
+        "title": "事件、方法与标签",
+        "description": "minerva-sidebar-mode-change 和 minerva-open-change 都可以取消（锁定模式即可看到效果）。expandNavigation() 和 focusMain() 直接控制外壳；*-label 和 skip-link 属性用于重命名控件。"
+      }
+    },
+    "minerva-app-shell": {
+      "props": {
+        "noSkipLink": "移除“跳到内容”链接。",
+        "expandLabel": "展开侧边栏的切换按钮名称。",
+        "collapseLabel": "收起侧边栏的切换按钮名称。",
+        "enableFloatingLabel": "浮动模式关闭时图钉按钮的名称。",
+        "disableFloatingLabel": "浮动模式开启时图钉按钮的名称。",
+        "openNavigationLabel": "打开移动端导航的页头按钮名称。",
+        "closeNavigationLabel": "移动端导航关闭按钮的名称。",
+        "mobile": "只读：移动端布局已启用（视口宽度不超过 768px）。"
+      },
+      "events": {
+        "minerva-sidebar-mode-change": "用户更改了侧边栏模式（detail: { mode }）。可取消：preventDefault() 保持当前模式。",
+        "minerva-open-change": "移动端抽屉打开或关闭（detail: { open }）。由用户触发时可取消。"
+      },
+      "slots": {
+        "default": "页面内容，位于 main 地标内。",
+        "navigation": "导航（桌面端在侧边栏，移动端在抽屉中）。",
+        "brand": "品牌（brand 属性的替代方式）。",
+        "brand-icon": "装饰性品牌图标，在紧凑图标栏中依然可见。",
+        "header-actions": "页头栏内容（账户菜单、搜索等）。",
+        "page-navigation": "渲染在页头和 main 之间（例如页面标签页）。"
+      },
+      "parts": {
+        "shell": "外壳根元素。",
+        "skip-link": "跳转链接。",
+        "sidebar": "桌面端侧边栏（<aside>）。",
+        "header": "页头栏。",
+        "main": "<main> 元素。",
+        "overlay": "抽屉遮罩。",
+        "drawer": "移动端抽屉（role=\"dialog\"）。"
+      },
+      "cssVars": {
+        "--icon-button-color": "外壳控件（侧边栏切换、菜单按钮）的图标颜色。",
+        "--icon-button-hover-bg": "外壳控件悬停时的背景。",
+        "--icon-button-pressed-color": "按下状态的图钉按钮图标颜色。",
+        "--icon-button-pressed-bg": "按下状态的图钉按钮背景。",
+        "--icon-button-size": "外壳控件的宽度和高度。",
+        "--icon-button-icon-size": "外壳控件的图标尺寸。",
+        "--icon-button-radius": "外壳控件的圆角半径。"
+      },
+      "methods": {
+        "openNavigation": "打开移动端导航抽屉（仅限移动端布局）。",
+        "closeNavigation": "关闭移动端导航抽屉（选择项目后调用）。",
+        "expandNavigation": "将侧边栏切换为展开状态（例如在紧凑栏中打开分组时）。",
+        "focusMain": "将焦点移到 main 地标。"
+      }
+    }
   }
 }

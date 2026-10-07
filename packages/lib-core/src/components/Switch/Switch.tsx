@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import {
@@ -30,7 +31,7 @@ const hasContent = (node: React.ReactNode) =>
  */
 const Switch = ({
   checked,
-  defaultChecked = false,
+  defaultChecked,
   disabled,
   size = "medium",
   color = "primary",
@@ -64,7 +65,9 @@ const Switch = ({
   const dataAttributes = pickDataAttributes(rest);
   const [isChecked, setIsChecked] = useControllableState({
     value: checked,
-    defaultValue: defaultChecked,
+    defaultValue: defaultChecked ?? false,
+    name: "Switch",
+    prop: "checked",
   });
   const [rippleActive, setRippleActive] = useState(false);
   const rippleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -85,6 +88,18 @@ const Switch = ({
   const readOnly = !!fc?.readOnly;
   const blocked = isDisabled || loading || readOnly;
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Switch", {
+      prop: "checked",
+      value: checked,
+      defaultProp: "defaultChecked",
+      defaultValue: defaultChecked,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: blocked,
+      lockHint: "set `disabled`",
+    });
+  }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (blocked) return;
     setIsChecked(event.target.checked);

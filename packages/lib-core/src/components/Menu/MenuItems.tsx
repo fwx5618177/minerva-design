@@ -23,9 +23,11 @@ import {
   type VirtualElement,
 } from "@minerva/core";
 import { IconCheck, IconChevronRight } from "../../internal/icons";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { Portal } from "../../internal/Portal";
 import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
+import { useControlledSwitchWarning } from "../../internal/useControllableState";
 import {
   LayerContext,
   useDismissableLayer,
@@ -618,6 +620,18 @@ const ActionItem = ({ entry }: { entry: MenuAction }) => {
 const CheckboxItem = ({ entry }: { entry: MenuCheckboxEntry }) => {
   const root = useMenuRoot();
   const controlled = entry.checked !== undefined;
+  useControlledSwitchWarning(controlled, "Menu", "checked");
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Menu", {
+      prop: "checked",
+      value: entry.checked,
+      defaultProp: "defaultChecked",
+      defaultValue: entry.defaultChecked,
+      handlerProp: "onCheckedChange",
+      handler: entry.onCheckedChange,
+      locked: entry.disabled,
+    });
+  }
   const checked = controlled
     ? !!entry.checked
     : root.getStored(entry.key, entry.defaultChecked ?? false);
@@ -691,6 +705,17 @@ const RadioGroup = ({ entry }: { entry: MenuRadioGroupEntry }) => {
   const root = useMenuRoot();
   const labelId = useId();
   const controlled = entry.value !== undefined;
+  useControlledSwitchWarning(controlled, "Menu", "value");
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Menu", {
+      prop: "value",
+      value: entry.value,
+      defaultProp: "defaultValue",
+      defaultValue: entry.defaultValue,
+      handlerProp: "onValueChange",
+      handler: entry.onValueChange,
+    });
+  }
   const value = controlled
     ? entry.value
     : root.getStored<string | undefined>(entry.key, entry.defaultValue);

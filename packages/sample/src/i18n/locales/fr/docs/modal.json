@@ -73,5 +73,55 @@
     "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl)",
     "--modal-background": "Fond du panneau",
     "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Le slot trigger ouvre la modale ; label et description la nomment et la décrivent. Le focus est piégé, Échap et un clic sur l'overlay la ferment, et le focus revient à l'élément d'origine."
+      },
+      "sizes": {
+        "title": "Tailles",
+        "description": "Cinq tailles prédéfinies, réglées avant d'appeler show(). Ici, le titre vient du slot header."
+      },
+      "form": {
+        "title": "Formulaire dans une modale",
+        "description": "Un bouton submit du pied cible le formulaire par son id ; le navigateur le valide, puis le gestionnaire submit enregistre et appelle hide()."
+      },
+      "events": {
+        "title": "Événements et fermeture bloquée",
+        "description": "minerva-open-change est annulable : tant que « Unsaved changes » est coché, preventDefault() garde la modale ouverte. Le journal affiche la raison et les événements after-open / after-close."
+      }
+    },
+    "minerva-modal": {
+      "props": {
+        "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+        "dialogRole": "Rôle ARIA du panneau ; \"alertdialog\" pour les confirmations qui interrompent."
+      },
+      "events": {
+        "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+        "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+      },
+      "slots": {
+        "default": "Contenu du corps.",
+        "header": "Titre (alternative à l'attribut label).",
+        "footer": "Rangée d'actions.",
+        "trigger": "Élément qui ouvre le panneau au clic."
+      },
+      "parts": {
+        "overlay": "Le fond (overlay).",
+        "panel": "Le panneau de dialogue (role=\"dialog\").",
+        "header": "Le conteneur du titre.",
+        "description": "La description.",
+        "body": "Le conteneur du corps.",
+        "footer": "Le conteneur du pied.",
+        "close-button": "Le bouton de fermeture (×)."
+      },
+      "methods": {
+        "show": "Ouvre la modale.",
+        "hide": "Ferme la modale."
+      }
+    }
   }
 }

@@ -17,6 +17,7 @@ import { logicalArrowKey } from "../../internal/direction";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 
 type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
@@ -139,10 +140,10 @@ const getCompactItems = (
  */
 const Pagination = ({
   current,
-  defaultCurrent = 1,
+  defaultCurrent,
   total = 0,
   pageSize,
-  defaultPageSize = 10,
+  defaultPageSize,
   onChange,
   disabled = false,
   showQuickJumper = false,
@@ -171,13 +172,40 @@ const Pagination = ({
   const navRef = useRef<HTMLElement>(null);
   const mergedRef = useMergedRefs(navRef, ref);
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Pagination", {
+      prop: "current",
+      value: current,
+      defaultProp: "defaultCurrent",
+      defaultValue: defaultCurrent,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled,
+      lockHint: "set `disabled`",
+    });
+  }
   const [page, setPage] = useControllableState({
     value: current,
-    defaultValue: defaultCurrent,
+    defaultValue: defaultCurrent ?? 1,
+    name: "Pagination",
+    prop: "current",
   });
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Pagination", {
+      prop: "pageSize",
+      value: pageSize,
+      defaultProp: "defaultPageSize",
+      defaultValue: defaultPageSize,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled || !showSizeChanger,
+    });
+  }
   const [currentPageSize, setPageSize] = useControllableState({
     value: pageSize,
-    defaultValue: defaultPageSize,
+    defaultValue: defaultPageSize ?? 10,
+    name: "Pagination",
+    prop: "pageSize",
   });
 
   const [jumpValue, setJumpValue] = useState("");
@@ -199,6 +227,22 @@ const Pagination = ({
     1,
     currentPageSize > 0 ? Math.ceil(total / currentPageSize) : 0,
   );
+
+  if (process.env.NODE_ENV !== "production") {
+    // `total = 0` usually means "not loaded yet": only out-of-range pages of
+    // a known total are reported.
+    if (
+      !Number.isInteger(page) ||
+      page < 1 ||
+      (total > 0 && page > totalPages)
+    ) {
+      warnOnce(
+        "Pagination:range",
+        `[minerva] Pagination: the current page (${page}) is out of range 1..${totalPages} ` +
+          `(total ${total}, page size ${currentPageSize}). Clamp \`current\` / \`defaultCurrent\` to a valid page.`,
+      );
+    }
+  }
 
   const changePage = useCallback(
     (target: number, focus: "active" | "if-lost" = "if-lost") => {

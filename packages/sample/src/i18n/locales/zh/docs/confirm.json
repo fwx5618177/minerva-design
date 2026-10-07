@@ -47,5 +47,61 @@
     "ConfirmProviderProps": {
       "children": "应用子树；useConfirm() / confirm() 的弹窗渲染在这里（useConfirm() 的弹窗位于调用方的 ConfigProvider 作用域中）"
     }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "声明式的 <minerva-confirm-dialog>，通过 show() 打开。color=\"danger\" 表示破坏性操作；minerva-confirm 与 minerva-cancel（附带原因）报告用户的选择。"
+      },
+      "async": {
+        "title": "异步确认",
+        "description": "onConfirm 可以返回 Promise：在其完成前确认按钮显示加载状态，若被拒绝则对话框保持打开。额外内容放在默认插槽中。"
+      },
+      "imperative": {
+        "title": "命令式 confirm()",
+        "description": "confirm({ title, ... }) 会追加一个对话框，解析为 true 或 false，并在关闭后移除它：带主题的 window.confirm 替代品。并发调用会排队依次显示。"
+      }
+    },
+    "minerva-confirm-dialog": {
+      "props": {
+        "label": "标题（或使用 header 插槽）；作为对话框的可访问名称。"
+      },
+      "events": {
+        "minerva-confirm": "按下了确认按钮；可取消：preventDefault() 会保持对话框打开（需自行关闭）。",
+        "minerva-cancel": "确认被取消且对话框已关闭（detail: { reason }）。",
+        "minerva-open-change": "用户请求关闭（detail: { open, reason }）；可取消：preventDefault() 保持打开。",
+        "minerva-after-open": "面板已打开且焦点已移入后触发。",
+        "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+      },
+      "slots": {
+        "default": "描述下方的可选额外内容。",
+        "header": "标题（label 属性的替代方式）。"
+      },
+      "parts": {
+        "overlay": "背景遮罩。",
+        "panel": "对话框面板（role=\"alertdialog\"）。",
+        "header": "标题容器。",
+        "description": "描述文本。",
+        "body": "主体容器。",
+        "footer": "操作按钮行。",
+        "close-button": "关闭（×）按钮。",
+        "cancel-button": "「取消」<minerva-button>。",
+        "confirm-button": "「确认」<minerva-button>。"
+      },
+      "cssVars": {
+        "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+        "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+        "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+        "--modal-radius": "面板圆角（默认 --radius-xl）。",
+        "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+        "--modal-background": "面板背景。",
+        "--modal-z-index": "面板层级（默认 --z-modal）。"
+      },
+      "methods": {
+        "show": "打开对话框。",
+        "hide": "关闭对话框（不触发事件）。"
+      }
+    }
   }
 }

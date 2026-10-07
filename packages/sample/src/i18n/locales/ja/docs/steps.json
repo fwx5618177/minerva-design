@@ -34,5 +34,36 @@
     "--steps-indicator-size": "番号インジケーターの直径",
     "--steps-accent-color": "現在 / 完了インジケーターの色（既定値は --primary-color）",
     "--steps-current-background": "現在のステップのインジケーターの背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "読み取り専用の進捗",
+        "description": "ステップは items プロパティから生成されます。前のステップは完了扱いになり、現在のステップには aria-current=\"step\" が付きます。"
+      },
+      "navigable": {
+        "title": "操作できるウィザード",
+        "description": "navigable で各ステップがボタンになります。minerva-change はキャンセル可能で、遷移の検証は呼び出し側が行います（最初のステップを離れるには規約への同意が必要）。"
+      },
+      "styling": {
+        "title": "スタイリング",
+        "description": "CSS 変数でアクセントカラー、インジケーターのサイズ、間隔を設定し、::part(label) でラベルをスタイルします。"
+      }
+    },
+    "minerva-steps": {
+      "props": {
+        "navigable": "各ステップを、ユーザーが移動に使えるボタンとして描画します（既定：読み取り専用）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーがステップに移動しました（detail: { value }）。キャンセル可能：preventDefault() で現在のステップを維持します。"
+      },
+      "parts": {
+        "base": "<ol> 要素。",
+        "step": "各 <li>。",
+        "button": "各ステップのボタン（または静的なラッパー）。",
+        "number": "番号付きインジケーター。",
+        "label": "各ステップのラベル。"
+      }
+    }
   }
 }

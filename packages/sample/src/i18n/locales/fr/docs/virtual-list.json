@@ -52,5 +52,47 @@
     "--virtual-list-hover-shadow": "Ombre au survol (par défaut --shadow-md)",
     "--virtual-list-scrollbar-size": "Largeur de la barre de défilement (WebKit / Blink)",
     "--virtual-list-loading-padding": "Marge intérieure de la ligne de l'indicateur de chargement"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Définissez les propriétés items et renderItem en JavaScript : seules les lignes visibles sont rendues, même avec 10 000 éléments. Nommez la liste avec aria-label."
+      },
+      "clickable-rows": {
+        "title": "Lignes cliquables",
+        "description": "clickable rend les lignes focalisables et déclenche minerva-item-click au clic, avec Entrée ou Espace. scrollToIndex() fait défiler par programme."
+      },
+      "infinite-scroll": {
+        "title": "Défilement infini",
+        "description": "minerva-load-more est déclenché près du bas (load-more-threshold) ; définissez loading pendant le chargement de la page suivante."
+      }
+    },
+    "minerva-virtual-list": {
+      "props": {
+        "clickable": "Rend les lignes focalisables et cliquables (curseur pointeur, Entrée / Espace) et déclenche minerva-item-click.",
+        "scrollContainer": "L'élément conteneur de défilement (lecture seule), par exemple pour faire défiler par programme."
+      },
+      "events": {
+        "minerva-item-click": "Une ligne cliquable a été cliquée ou activée avec Entrée / Espace (detail : { item, index }).",
+        "minerva-load-more": "La liste a défilé à moins de load-more-threshold pixels du bas."
+      },
+      "parts": {
+        "base": "Le conteneur de défilement (role=\"region\").",
+        "list": "La liste (role=\"list\").",
+        "item": "Une ligne (role=\"listitem\").",
+        "loading": "La ligne de l'indicateur de chargement."
+      },
+      "cssVars": {
+        "--progress-width": "Largeur de l'indicateur de chargement.",
+        "--progress-bar-height": "Épaisseur de la barre de chargement.",
+        "--progress-track-color": "Couleur de la piste de l'indicateur de chargement.",
+        "--progress-radius": "Rayon des coins de la piste de l'indicateur de chargement.",
+        "--progress-size": "Taille de l'indicateur de chargement circulaire."
+      },
+      "methods": {
+        "scrollToIndex": "Fait défiler pour placer la ligne d'indice index en haut de la liste."
+      }
+    }
   }
 }

@@ -98,5 +98,68 @@
     "--cascader-dropdown-max-height": "Hauteur maximale des colonnes avant défilement",
     "--cascader-option-padding-y": "Marge intérieure verticale d'une option (suit la marge de ligne de la densité)",
     "--cascader-option-padding-x": "Marge intérieure horizontale d'une option (suit la marge de ligne de la densité)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "L'arbre d'options est la propriété options ; l'attribut value définit le chemin par défaut (séparé par des virgules ou tableau JSON). minerva-change indique le chemin sélectionné."
+      },
+      "search-hover": {
+        "title": "Recherche, survol et affichage",
+        "description": "show-search filtre tous les chemins pendant la saisie, expand-trigger=\"hover\" ouvre les sous-menus au survol et displayRender formate le champ (ici seulement le dernier libellé). Les options désactivées ne peuvent pas être choisies."
+      },
+      "lazy": {
+        "title": "Chargement différé",
+        "description": "Avec loadData, activer une option sans enfants la déplie et charge ses enfants : définissez loading, ajoutez children puis réaffectez options."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "L'élément est associé aux formulaires : il soumet le texte affiché sous name, required empêche une sélection vide et form.reset() rétablit l'attribut value."
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "Indique si le panneau est ouvert.",
+        "readonly": "Affiche la valeur sans permettre de la modifier (le panneau ne s'ouvre pas).",
+        "hideClearButton": "Masque le bouton d'effacement (allowClear={false} en React).",
+        "selectedOptions": "Options du chemin sélectionné, une par niveau (lecture seule).",
+        "isDisabled": "Indique si le contrôle est désactivé (lui-même ou par un <fieldset> désactivé).",
+        "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l'élément.",
+        "validity": "État de validité (identique à <input>.validity).",
+        "validationMessage": "Message décrivant l'erreur de validation actuelle (vide si la valeur est valide).",
+        "willValidate": "Indique si l'élément participe à la validation des contraintes."
+      },
+      "events": {
+        "change": "Identique à minerva-change, sans detail.",
+        "minerva-change": "Un chemin a été sélectionné ou la valeur effacée (detail : { value, selectedOptions }).",
+        "minerva-clear": "Le bouton d'effacement a vidé la valeur.",
+        "minerva-input": "Le texte de recherche a changé (show-search ; detail : { value }).",
+        "minerva-open-change": "L'utilisateur demande d'ouvrir ou de fermer le panneau (detail : { open }) ; annulable : preventDefault() conserve l'état actuel."
+      },
+      "parts": {
+        "base": "Le conteneur racine.",
+        "selector": "Le champ.",
+        "input": "L'<input role=\"combobox\"> natif.",
+        "clear-button": "Le bouton d'effacement.",
+        "arrow": "Le chevron.",
+        "dropdown": "Le panneau déroulant.",
+        "column": "Une colonne d'options (role=\"listbox\").",
+        "option": "Une option (option de colonne ou résultat de recherche)."
+      },
+      "methods": {
+        "focus": "Donne le focus au champ interne.",
+        "blur": "Retire le focus du champ interne.",
+        "show": "Ouvre le panneau.",
+        "hide": "Ferme le panneau.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur n'est pas valide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée (une chaîne vide l'efface).",
+        "formResetCallback": "Appelée par le navigateur lors de form.reset() : rétablit la valeur de l'attribut value.",
+        "formDisabledCallback": "Appelée par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Appelée par le navigateur pour restaurer la valeur (cache de navigation, saisie automatique)."
+      }
+    }
   }
 }

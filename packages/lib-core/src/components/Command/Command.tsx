@@ -8,6 +8,7 @@ import {
 } from "react";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { cn } from "../../utils/cn";
 import { ModalContent, ModalHeader, ModalRoot } from "../Modal/Modal";
 import type {
@@ -223,7 +224,7 @@ const CommandPanel = ({
  */
 export const CommandDialog = ({
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   items,
   onSelect,
@@ -239,10 +240,22 @@ export const CommandDialog = ({
   className,
 }: CommandDialogProps) => {
   const { t } = useI18n();
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("CommandDialog", {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+      handlerProp: "onOpenChange",
+      handler: onOpenChange,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: "CommandDialog",
+    prop: "open",
   });
 
   // Stable key so an inline array literal does not re-register the listener.

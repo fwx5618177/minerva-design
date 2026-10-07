@@ -11,6 +11,7 @@ import { pickDataAttributes } from "../../internal/dataAttributes";
 import useI18n from "../../hooks/useI18n";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useFormControlContext } from "../FormControl/context";
 import { IconButton } from "../IconButton";
 import { Input } from "../Input/Input";
@@ -50,7 +51,7 @@ interface Suggestion {
  */
 export const TagInput = ({
   value,
-  defaultValue = EMPTY,
+  defaultValue: defaultValueProp,
   onChange,
   options = EMPTY,
   commitOnBlur = true,
@@ -87,10 +88,23 @@ export const TagInput = ({
   const navigating = useRef(false);
   const listId = useId();
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("TagInput", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue: defaultValueProp,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: blocked,
+      lockHint: "set `disabled` / `readOnly`",
+    });
+  }
   const [tags, setTags] = useControllableState<readonly string[]>({
     value,
-    defaultValue,
+    defaultValue: defaultValueProp ?? EMPTY,
     onChange: onChange as ((next: readonly string[]) => void) | undefined,
+    name: "TagInput",
   });
   const [draft, setDraft] = useState("");
   const [requestedOpen, setOpen] = useState(false);

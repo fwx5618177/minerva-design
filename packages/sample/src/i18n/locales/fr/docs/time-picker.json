@@ -53,7 +53,7 @@
       "className": "Classe CSS supplémentaire",
       "minTime": "Heure minimale sélectionnable ; les options antérieures sont désactivées",
       "maxTime": "Heure maximale sélectionnable ; les options postérieures sont désactivées",
-      "showSecond": "Affiche la colonne des secondes",
+      "showSecond": "Affiche les secondes. false les retire aussi de format (\"HH:mm:ss\" → \"HH:mm\") : le format utilisé décide de la colonne des secondes, du texte et de l’analyse.",
       "hourStep": "Intervalle entre les options d'heure",
       "minuteStep": "Intervalle entre les options de minute",
       "secondStep": "Intervalle entre les options de seconde",
@@ -88,5 +88,85 @@
     "--time-picker-cell-height": "Hauteur d'une cellule horaire (par défaut la hauteur de contrôle small de la densité)",
     "--time-picker-cell-padding-x": "Marge intérieure horizontale d'une cellule horaire (suit la marge de ligne de la densité)",
     "--time-picker-selected-background": "Fond de la cellule horaire sélectionnée"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Saisissez une heure ou choisissez-la dans le panneau. L'attribut value définit l'heure initiale ; minerva-change est émis quand une heure est validée et valueAsDate la renvoie sous forme de Date."
+      },
+      "formats": {
+        "title": "Formats, tailles et états",
+        "description": "format et use-12-hours règlent l'affichage (hide-second masque la colonne des secondes quand le format n'en a pas) ; trois tailles ; états lecture seule, désactivé et invalide."
+      },
+      "range-steps": {
+        "title": "Plage et pas",
+        "description": "min-time et max-time désactivent les options hors de la plage ; hour-step, minute-step et second-step espacent les options."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "L'élément est associé aux formulaires : il soumet une valeur sur 24 heures sous name, required empêche un champ vide et form.reset() rétablit l'attribut value."
+      }
+    },
+    "minerva-time-picker": {
+      "props": {
+        "open": "Indique si le panneau est ouvert.",
+        "readonly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement).",
+        "hideClearButton": "Masque le bouton d'effacement (clearable={false} en React).",
+        "hideSecond": "Masque la colonne des secondes (showSecond={false} en React).",
+        "valueAsDate": "La valeur sous forme de Date (à la date du jour), null si vide ou invalide.",
+        "isDisabled": "Indique si le contrôle est désactivé (lui-même ou par un <fieldset> désactivé).",
+        "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l'élément.",
+        "validity": "État de validité (identique à <input>.validity).",
+        "validationMessage": "Message décrivant l'erreur de validation actuelle (vide si la valeur est valide).",
+        "willValidate": "Indique si l'élément participe à la validation des contraintes."
+      },
+      "events": {
+        "change": "Identique à minerva-change (comme l'événement natif, il remonte).",
+        "minerva-change": "L'heure a été validée (choisie, saisie, normalisée à la perte du focus ou effacée), detail : { value } (\"\" si effacée).",
+        "minerva-input": "Le texte du champ a changé pendant la saisie, detail : { value } (le texte saisi).",
+        "minerva-open-change": "L'utilisateur a ouvert ou fermé le panneau, detail : { open } ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-clear": "Le bouton d'effacement a vidé le champ."
+      },
+      "parts": {
+        "base": "Le conteneur du champ.",
+        "control": "La zone de saisie.",
+        "input": "L'<input> natif.",
+        "clear-button": "Le bouton d'effacement.",
+        "icon": "L'icône d'horloge (affichée en l'absence de bouton d'effacement).",
+        "panel": "Le panneau déroulant (role=\"dialog\").",
+        "column": "Une colonne des heures, minutes, secondes ou AM/PM (role=\"listbox\").",
+        "item": "Une unité de temps (role=\"option\")."
+      },
+      "cssVars": {
+        "--input-height": "Hauteur minimale du champ (par défaut, la hauteur de contrôle de la densité pour la taille).",
+        "--input-padding-x": "Marge intérieure horizontale du texte.",
+        "--input-radius": "Rayon des coins du champ (par défaut --radius-lg).",
+        "--input-font-size": "Taille de police du champ.",
+        "--input-background": "Couleur de fond du champ.",
+        "--input-border-color": "Couleur de bordure au repos.",
+        "--input-focus-color": "Couleur de bordure au survol ou au focus.",
+        "--icon-button-color": "Couleur de l'icône du bouton d'effacement.",
+        "--icon-button-hover-bg": "Fond du bouton d'effacement au survol.",
+        "--icon-button-pressed-color": "Couleur de l'icône du bouton d'effacement lorsqu'il est enfoncé.",
+        "--icon-button-pressed-bg": "Fond du bouton d'effacement lorsqu'il est enfoncé.",
+        "--icon-button-size": "Largeur et hauteur du bouton d'effacement (par défaut selon les hauteurs de contrôle de la densité).",
+        "--icon-button-icon-size": "Taille de l'icône du bouton d'effacement.",
+        "--icon-button-radius": "Rayon des coins du bouton d'effacement (par défaut --radius-lg)."
+      },
+      "methods": {
+        "focus": "Donne le focus au champ interne.",
+        "blur": "Retire le focus du champ interne.",
+        "show": "Ouvre le panneau (sans événement).",
+        "hide": "Ferme le panneau (sans événement).",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur n'est pas valide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée (une chaîne vide l'efface).",
+        "formResetCallback": "Appelée par le navigateur lors de form.reset() : rétablit la valeur de l'attribut value.",
+        "formDisabledCallback": "Appelée par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Appelée par le navigateur pour restaurer la valeur (cache de navigation, saisie automatique)."
+      }
+    }
   }
 }

@@ -1,0 +1,22 @@
+{
+  "title": "Plain HTML",
+  "description": "A complete page without a build step: the CDN bundle, the design tokens, <minerva-config>, a validated form and event listeners. Import maps for the per-element modules.",
+  "page": {
+    "title": "A complete page",
+    "text": "Two tags in the <head> are enough: the design tokens stylesheet and the self-contained module bundle (every element, Lit and @minerva/core). Copy this file and open it in a browser:",
+    "tokens": "tokens.css defines the design tokens (colors, spacing, radii, fonts) that the elements and your own CSS can use with var().",
+    "config": "<minerva-config> with root applies the theme (here following the operating system), the palette and the language of the built-in texts to the whole document.",
+    "form": "The controls are form-associated: name, required, the value / checked attributes, <label for>, type=\"submit\" and type=\"reset\" buttons, FormData and the browser's validation work as with native inputs. The submit event only fires once every control is valid.",
+    "events": "minerva-* events bubble, so a single listener on the form (or on document) receives the changes of every control; event.target is the element and event.detail holds the new value.",
+    "modal": "Setting a property from script (modal.open = true) never fires an event; the close button and Escape close the modal and fire minerva-open-change."
+  },
+  "importMaps": {
+    "title": "Per-element modules with an import map",
+    "text": "The CDN bundle contains every element. To download only the elements a page uses, load the per-element modules of the package (dist/elements/<name>.js) instead. They are the files bundlers use, with bare imports of their dependencies, which an import map resolves in the browser:",
+    "deps": "The modules import lit (including lit/decorators.js and lit/directives/*, hence the \"lit/\" prefix), @minerva/core (which itself depends on @floating-ui/dom), and, for the HTML preview and JSON field only, dompurify and jsonc-parser. esm.sh resolves the dependencies of those packages for you; when you host the files yourself, map @floating-ui/dom, @floating-ui/core and @floating-ui/utils as well.",
+    "note": "Use exact versions in production, and make sure every module loads the same copy of lit and @minerva/core: mixing the CDN bundle with the per-element modules on one page downloads the shared code twice, and each tag keeps the first definition that registered it."
+  },
+  "next": {
+    "title": "Next steps"
+  }
+}

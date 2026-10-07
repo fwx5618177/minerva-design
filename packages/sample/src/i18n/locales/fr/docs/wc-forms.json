@@ -1,0 +1,35 @@
+{
+  "title": "Formulaires",
+  "description": "Les contrôles Minerva sont des éléments personnalisés associés aux formulaires : FormData, required et validation par contraintes, setCustomValidity, form.reset(), <fieldset disabled>, <label for>, :invalid et messages localisés.",
+  "association": {
+    "title": "Éléments associés aux formulaires",
+    "text": "Les contrôles de formulaire sont des éléments personnalisés associés aux formulaires, construits sur ElementInternals : dans un <form>, ils se comportent comme des champs natifs, sans champ caché ni conteneur. Ces éléments participent aux formulaires :",
+    "buttons": "<minerva-button> est lui aussi associé aux formulaires : type=\"submit\" soumet le formulaire parent via requestSubmit() (la validation et les écouteurs submit s'exécutent donc) et type=\"reset\" le réinitialise. Le type par défaut est \"button\", qui ne fait rien."
+  },
+  "formData": {
+    "title": "Noms, valeurs et FormData",
+    "text": "Donnez un name à chaque contrôle. Sa valeur fait partie de new FormData(form) et d'une soumission native, exactement comme un <input> :",
+    "name": "name est la clé de la valeur soumise. Les cases à cocher et les interrupteurs ne soumettent leur value (\"on\" par défaut) que lorsqu'ils sont cochés : plusieurs cases à cocher portant le même name produisent donc une liste (FormData.getAll()).",
+    "values": "L'attribut value (checked pour les cases à cocher et les interrupteurs) est la valeur initiale ; la propriété value / checked est la valeur courante. Certains contrôles soumettent plusieurs entrées (la saisie de tags en soumet une par tag) ; chaque page de composant précise ce que soumet son contrôle.",
+    "disabled": "disabled sur un contrôle, ou sur un <fieldset> ancêtre, le rend non modifiable et l'exclut de la soumission et de la validation (isDisabled tient compte des deux).",
+    "restore": "Les valeurs sont restaurées par le navigateur lorsque l'utilisateur revient sur la page (bfcache) et par le remplissage automatique, grâce aux callbacks d'association aux formulaires."
+  },
+  "labels": {
+    "title": "Libellés",
+    "text": "<label for=\"id\"> et les éléments <label> englobants nomment le contrôle, comme pour les champs natifs : la propriété labels de l'élément les liste, le texte du libellé est transmis au contrôle dans la shadow root, et un clic sur le libellé lui donne le focus. aria-label, aria-labelledby et aria-describedby sur l'élément fonctionnent aussi (les id sont résolus en texte, puisqu'ils ne peuvent pas traverser les shadow roots)."
+  },
+  "validation": {
+    "title": "Validation par contraintes",
+    "text": "required, minlength / maxlength, pattern, min / max et type (email, url...) fonctionnent comme sur les champs natifs. Chaque élément expose l'API de validation par contraintes (validity, validationMessage, willValidate, checkValidity(), reportValidity(), setCustomValidity()), et form.checkValidity(), form.reportValidity() ainsi que la soumission tiennent compte des contrôles Minerva : un contrôle invalide bloque l'événement submit et le navigateur affiche son message à côté du contrôle.",
+    "reset": "form.reset() restaure chaque contrôle à son attribut value ou checked et efface les messages définis avec setCustomValidity() ; écoutez l'événement reset du formulaire pour effacer vos propres styles d'erreur."
+  },
+  "styling": {
+    "title": "Styler les contrôles invalides",
+    "text": "Les pseudo-classes :invalid et :valid s'appliquent aux éléments associés aux formulaires comme aux champs natifs : vous pouvez donc les styler depuis la page. Pour éviter des champs en rouge avant toute action de l'utilisateur, appliquez les styles une fois qu'une soumission a été tentée :",
+    "formControl": "L'état d'erreur intégré est une propriété : invalid sur les champs texte, les listes de sélection, les interrupteurs et les autres contrôles, error sur les cases à cocher et les boutons radio. Il affiche la bordure rouge et définit aria-invalid. <minerva-form-control> enveloppe un contrôle avec un libellé, un texte d'aide et un message d'erreur, et transmet son état invalid / required / disabled au contrôle."
+  },
+  "messages": {
+    "title": "Messages localisés",
+    "text": "Les contrôles sans équivalent natif (liste de sélection, case à cocher, interrupteur, groupe de boutons radio, notation, envoi de fichiers, sélecteur d'heure, cascader...) renvoient les messages de validation propres à Minerva (\"Please select an item in the list.\", \"Please check this box if you want to proceed.\"...), traduits dans toutes les langues prises en charge et suivant l'attribut lang ou le <minerva-config locale> de leur portée. Les champs texte délèguent à leur champ natif interne, dont les messages sont fournis par le navigateur dans sa propre langue."
+  }
+}

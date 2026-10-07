@@ -8,6 +8,7 @@ import {
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import {
   IconChevronDown,
   IconChevronUp,
@@ -208,7 +209,7 @@ export function Table<T>({
   loading = false,
   loadingRows = 5,
   sortState: sortStateProp,
-  defaultSortState = null,
+  defaultSortState,
   onSortChange,
   manualSort = false,
   rowSelection,
@@ -222,18 +223,43 @@ export function Table<T>({
   const selectionFixed = hasSelection && columns[0]?.fixed === "left";
   const leftShift = selectionFixed ? SELECTION_WIDTH : 0;
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Table", {
+      prop: "sortState",
+      value: sortStateProp,
+      defaultProp: "defaultSortState",
+      defaultValue: defaultSortState,
+      handlerProp: "onSortChange",
+      handler: onSortChange,
+    });
+  }
   const [sortState, setSortState] = useControllableState<TableSortState | null>(
     {
       value: sortStateProp,
-      defaultValue: defaultSortState,
+      defaultValue: defaultSortState ?? null,
       onChange: (next) => {
         if (next) onSortChange?.(next);
       },
+      name: "Table",
+      prop: "sortState",
     },
   );
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Table", {
+      prop: "rowSelection.selectedRowKeys",
+      value: rowSelection?.selectedRowKeys,
+      defaultProp: "rowSelection.defaultSelectedRowKeys",
+      defaultValue: rowSelection?.defaultSelectedRowKeys,
+      handlerProp: "rowSelection.onChange",
+      handler: rowSelection?.onChange,
+    });
+  }
   const [selectedKeys, setSelectedKeys] = useControllableState<TableRowKey[]>({
     value: rowSelection?.selectedRowKeys,
     defaultValue: rowSelection?.defaultSelectedRowKeys ?? [],
+    name: "Table",
+    prop: "rowSelection.selectedRowKeys",
+    defaultProp: "rowSelection.defaultSelectedRowKeys",
   });
 
   // Row keys come from the position in `data`, so they survive sorting.

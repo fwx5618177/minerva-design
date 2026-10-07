@@ -15,6 +15,7 @@ import {
   type RefObject,
 } from "react";
 import { composeEventHandlers } from "./composeEventHandlers";
+import { warnControlledProps } from "./devWarnings";
 import { useMergedRefs } from "./mergeRefs";
 import { Portal } from "./Portal";
 import { Slot } from "./Slot";
@@ -113,15 +114,31 @@ const OpenerCapture = ({
  */
 export const DialogRoot = ({
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   modal = true,
   children,
-}: DialogRootProps) => {
+  componentName = "Dialog",
+}: DialogRootProps & {
+  /** Public component name used by the development warnings. */
+  componentName?: string;
+}) => {
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps(componentName, {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+      handlerProp: "onOpenChange",
+      handler: onOpenChange,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: componentName,
+    prop: "open",
   });
   const id = useId();
   const [titles, setTitles] = useState(0);

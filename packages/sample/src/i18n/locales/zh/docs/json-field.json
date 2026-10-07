@@ -35,5 +35,76 @@
     "--json-field-font-size": "编辑区字号",
     "--json-field-tab-size": "编辑区中制表符的显示宽度",
     "--json-field-status-font-size": "校验状态行的字号"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "通过 value 属性设置初始 JSON。状态行在失焦时出现；minerva-change 在失焦与格式化后触发，validity 反映语法是否正确。"
+      },
+      "options": {
+        "title": "缩进、工具栏与文案",
+        "description": "indent=\"4\" 并由外部按钮调用 formatValue()，无工具栏的只读字段，以及自定义格式化 / 状态文案。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "无效 JSON 为 badInput（聚焦时也是），因此在文本可被解析前表单无法提交；修正内容后即可发送。reset 恢复 value 属性。"
+      }
+    },
+    "minerva-json-field": {
+      "props": {
+        "invalid": "错误状态；失焦后存在语法错误时也会被设置。",
+        "readonly": "只读：可聚焦并会提交，不可编辑也不可格式化。",
+        "placeholder": "字段为空时显示的占位文本。",
+        "name": "随表单提交时使用的字段名。",
+        "disabled": "禁用控件：不可聚焦、不提交、不参与校验。",
+        "required": "必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "文本已提交（失焦）或已格式化。",
+        "input": "文本已改变（原生事件，可穿透 shadow DOM）。",
+        "minerva-input": "文本因输入或格式化而改变；detail: { value }。",
+        "minerva-change": "文本已提交（失焦）或已格式化；detail: { value }。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "format-button": "格式化按钮。",
+        "textarea": "原生 <textarea>。",
+        "status": "校验状态行。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部图标按钮的图标颜色。",
+        "--icon-button-hover-bg": "内部图标按钮悬停时的背景。",
+        "--icon-button-pressed-color": "内部图标按钮按下时的图标颜色。",
+        "--icon-button-pressed-bg": "内部图标按钮按下时的背景。",
+        "--icon-button-size": "内部图标按钮的宽高（默认跟随密度的控件高度）。",
+        "--icon-button-icon-size": "内部图标按钮中图标的字号。",
+        "--icon-button-radius": "内部图标按钮的圆角（默认 --radius-lg）。",
+        "--textarea-min-height": "文本区域的最小高度。",
+        "--textarea-padding-y": "文本的垂直内边距。",
+        "--textarea-padding-x": "文本的水平内边距（默认取密度的小号控件内边距）。",
+        "--textarea-radius": "文本区域的圆角（默认 --radius-md）。",
+        "--textarea-font-size": "文本字号。",
+        "--textarea-background": "文本区域的背景色。",
+        "--textarea-border-color": "文本区域静止状态的边框颜色。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "formatValue": "按 indent 个空格重新缩进文本（仅对有效 JSON 生效）；不触发事件。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

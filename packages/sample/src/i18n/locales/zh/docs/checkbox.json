@@ -77,5 +77,63 @@
     "--checkbox-radius": "square 与 rounded 形状下方框的圆角",
     "--checkbox-gap": "方框与标签之间的间距",
     "--checkbox-label-font-size": "标签字号（所有尺寸）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "通过 label 属性或默认插槽设置标签，支持初始选中、半选和禁用状态。按空格键切换已聚焦的复选框。"
+      },
+      "select-all": {
+        "title": "全选（半选状态）",
+        "description": "父复选框通过 minerva-change 跟随子项：全部选中时为选中，部分选中时为半选（aria-checked=\"mixed\"）。"
+      },
+      "styles-states": {
+        "title": "样式与状态",
+        "description": "尺寸、形状、颜色、标签位置、icon 插槽中的自定义图标，以及带辅助文本的只读和错误状态。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "表单关联：选中时以 name 提交 value，required 在勾选前阻止提交，reset 恢复 checked 属性。"
+      }
+    },
+    "minerva-checkbox": {
+      "props": {
+        "readonly": "只读：可聚焦并会提交，但用户无法切换。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "选中状态已改变（由内部 input 重新派发）。",
+        "minerva-change": "用户切换了复选框；detail: { checked, value }。"
+      },
+      "slots": {
+        "default": "标签内容（可替代 label 属性）。",
+        "icon": "选中时显示在框内的自定义图标。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "control": "包裹复选框与标签的 <label>。",
+        "input": "原生 <input type=\"checkbox\">。",
+        "checkmark": "可视的方框。",
+        "label": "标签文本。",
+        "helper-text": "辅助或错误文本。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "click": "点击内部控件（未禁用或只读时会切换状态）。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

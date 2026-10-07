@@ -31,5 +31,63 @@
     "--textarea-font-size": "字号（所有尺寸）",
     "--textarea-background": "outline 变体的背景色",
     "--textarea-border-color": "静止时的边框颜色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "rows 设置可见高度（禁用手动调整大小）；minerva-input 报告每次变化，此处用于统计字数。"
+      },
+      "sizes-variants": {
+        "title": "尺寸、变体与状态",
+        "description": "尺寸、filled 变体，以及只读、禁用和无效状态。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "required、minlength 与 maxlength 在提交时由浏览器校验；值以 name 提交，reset 恢复 value 属性。"
+      }
+    },
+    "minerva-textarea": {
+      "props": {
+        "defaultValue": "初始值（value 属性），由 form.reset() 恢复。与 <textarea> 相同，在用户编辑之前修改它也会修改 value。",
+        "placeholder": "字段为空时显示的占位文本。",
+        "readonly": "只读：可聚焦并会提交，但不可编辑。",
+        "rows": "可见的文本行数。",
+        "minlength": "值的最小长度（由浏览器校验）。",
+        "maxlength": "值的最大长度。",
+        "autocomplete": "内部 <textarea> 的自动填充提示。",
+        "wrap": "提交时的文本换行方式：soft、hard 或 off。",
+        "name": "随表单提交时使用的字段名。",
+        "disabled": "禁用控件：不可聚焦、不提交、不参与校验。",
+        "required": "必须有值，表单才能提交。",
+        "value": "当前值（属性；value 特性设置的是 defaultValue）。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "值已提交（失焦），由内部 textarea 重新派发。",
+        "input": "值已改变（每次按键；原生事件，可穿透 shadow DOM）。",
+        "minerva-input": "同 input，附带 detail: { value }。",
+        "minerva-change": "同 change，附带 detail: { value }。"
+      },
+      "parts": {
+        "textarea": "原生 <textarea>。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "select": "选中全部文本。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

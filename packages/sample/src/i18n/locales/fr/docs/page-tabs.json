@@ -44,5 +44,82 @@
     "--page-tabs-item-max-width": "Largeur maximale d'un onglet (le libellé est tronqué)",
     "--page-tabs-item-radius": "Rayon des coins d'un onglet (par défaut --radius-lg)",
     "--page-tabs-selected-background": "Fond de l'onglet actif"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "active-value marque la page courante et suit minerva-select. closable ajoute un bouton de fermeture qui émet minerva-close : supprimez l’élément pour fermer la page. Le slot icon affiche une icône avant le libellé."
+      },
+      "actions": {
+        "title": "Actions",
+        "description": "Le slot actions affiche des contrôles globaux hors de la liste défilante (ici, un bouton qui ouvre une nouvelle page) ; le slot action d’un élément contient son propre contrôle, comme un bouton d’épinglage."
+      },
+      "overflow": {
+        "title": "Débordement et désactivation",
+        "description": "Quand les pages débordent, des boutons de défilement apparaissent (nommés par scroll-left-label / scroll-right-label) et la page active est ramenée dans la vue. Les pages désactivées ne peuvent pas être sélectionnées."
+      }
+    },
+    "minerva-page-tabs": {
+      "props": {
+        "items": "Les enfants <minerva-page-tab> (lecture seule)."
+      },
+      "events": {
+        "minerva-select": "Remonte d’un <minerva-page-tab> : une page a été choisie (detail: { value }).",
+        "minerva-close": "Remonte d’un <minerva-page-tab> : le bouton de fermeture d’une page a été activé (detail: { value })."
+      },
+      "slots": {
+        "default": "Éléments <minerva-page-tab>.",
+        "actions": "Actions globales après la liste défilante (par ex. un menu des pages)."
+      },
+      "parts": {
+        "base": "Le repère <nav>.",
+        "viewport": "La zone de défilement.",
+        "list": "La liste des éléments.",
+        "scroll-button": "Les boutons de défilement gauche / droite.",
+        "actions": "Le conteneur des actions."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+        "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+        "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+        "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+        "--icon-button-icon-size": "Taille de police de leurs icônes.",
+        "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+      }
+    },
+    "minerva-page-tab": {
+      "props": {
+        "closable": "Affiche un bouton de fermeture intégré qui émet minerva-close.",
+        "closeLabel": "Libellé accessible du bouton de fermeture (par défaut « Fermer <label> » localisé)."
+      },
+      "events": {
+        "minerva-select": "Le bouton du libellé a été activé (detail: { value }). Annulable : preventDefault() conserve l’active-value de la barre.",
+        "minerva-close": "Le bouton de fermeture intégré a été activé (detail: { value }) ; supprimez l’élément pour fermer la page."
+      },
+      "slots": {
+        "icon": "Icône affichée avant le libellé.",
+        "action": "Contrôle séparé à côté du libellé (par ex. un bouton de fermeture ou d’épinglage)."
+      },
+      "parts": {
+        "base": "Le conteneur de l’élément.",
+        "trigger": "Le <button> du libellé.",
+        "label": "Le libellé (tronqué).",
+        "close-button": "Le bouton de fermeture intégré (closable)."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+        "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+        "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+        "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+        "--icon-button-icon-size": "Taille de police de leurs icônes.",
+        "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton du libellé."
+      }
+    }
   }
 }

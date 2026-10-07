@@ -82,5 +82,67 @@
     "--switch-checked-color": "开启时滑块、轨道及激活分段的强调色（默认取 color 属性的强调色）",
     "--switch-label-gap": "开关与标签之间的间距",
     "--switch-label-font-size": "标签字号（所有尺寸）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "带 role=\"switch\" 的原生复选框：空格和回车均可切换，minerva-change 报告新状态。"
+      },
+      "styles-states": {
+        "title": "样式与状态",
+        "description": "尺寸、方形、颜色、标签位置、滑块中的图标，以及只读、无效和无波纹效果。切换 Sync 可查看加载状态。"
+      },
+      "side-labels": {
+        "title": "两侧标签与分段",
+        "description": "off-label 与 on-label 在滑块两侧添加可点击的标签；variant=\"segmented\" 将其变为两段式控件。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "与复选框相同：开启时提交 value，required 在开启前使表单无效，reset 恢复 checked 属性。"
+      }
+    },
+    "minerva-switch": {
+      "props": {
+        "noRipple": "禁用点击时的波纹效果。",
+        "readonly": "只读：可聚焦并会提交，但用户无法切换。",
+        "invalid": "错误状态（设置 aria-invalid）。",
+        "required": "开关必须处于开启状态，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "状态已改变（由内部 input 重新派发）。",
+        "minerva-change": "用户切换了开关；detail: { checked, value }。"
+      },
+      "slots": {
+        "default": "标签内容（可替代 label 属性）。",
+        "icon": "滑块内（icon-placement=\"start\"）或开关之后（\"end\"）的图标。"
+      },
+      "parts": {
+        "base": "根元素：<label>，带两侧标签或分段时为 <span>。",
+        "input": "原生 <input type=\"checkbox\" role=\"switch\">。",
+        "track": "轨道。",
+        "thumb": "滑块。",
+        "label": "标签文本。",
+        "side": "关 / 开两侧的标签（按钮）。",
+        "segment": "关 / 开分段（按钮）。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "click": "点击内部 input（未被阻止时切换开关）。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

@@ -33,5 +33,51 @@
     "--code-block-border-color": "Couleur de la bordure",
     "--code-block-font-size": "Taille de police du code",
     "--code-block-max-height": "Hauteur maximale avant défilement (par défaut none)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Le contenu texte est affiché tel quel (échappez < dans le balisage) ; language affiche une étiquette. Chaque bloc est une région nommée et focalisable."
+      },
+      "copy": {
+        "title": "Copier dans le presse-papiers",
+        "description": "La propriété code contient le texte ; copyable ajoute un bouton de copie, copy() copie depuis l'extérieur et minerva-copy signale le résultat."
+      },
+      "overflow": {
+        "title": "Lignes longues et hauteur",
+        "description": "no-wrap fait défiler les longues lignes horizontalement et max-height limite la hauteur ; la région défile aussi au clavier."
+      }
+    },
+    "minerva-code-block": {
+      "props": {
+        "code": "Texte source (par défaut : le contenu texte de l'élément).",
+        "language": "Langage du code, affiché en étiquette (par ex. « json », « bash »).",
+        "noWrap": "Fait défiler les longues lignes horizontalement au lieu de les replier (wrap={false} de lib-core).",
+        "text": "Le texte affiché et copié (lecture seule)."
+      },
+      "events": {
+        "minerva-copy": "Le bouton de copie a été utilisé (detail : { value, success })."
+      },
+      "parts": {
+        "base": "Le conteneur externe (blocs copiables ou étiquetés).",
+        "region": "La région <pre>.",
+        "code": "L'élément <code>.",
+        "language": "L'étiquette du langage.",
+        "copy-button": "Le bouton de copie."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur de l'icône du bouton de copie.",
+        "--icon-button-hover-bg": "Fond du bouton de copie au survol.",
+        "--icon-button-pressed-color": "Couleur de l'icône du bouton de copie enfoncé.",
+        "--icon-button-pressed-bg": "Fond du bouton de copie enfoncé.",
+        "--icon-button-size": "Largeur et hauteur du bouton de copie.",
+        "--icon-button-icon-size": "Taille de police de l'icône de copie.",
+        "--icon-button-radius": "Rayon des coins du bouton de copie."
+      },
+      "methods": {
+        "copy": "Copie le texte dans le presse-papiers ; se résout avec la réussite ou non de l'opération."
+      }
+    }
   }
 }

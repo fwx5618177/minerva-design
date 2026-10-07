@@ -118,5 +118,82 @@
     "--table-selected-bg": "Background color of the selected rows (row selection)",
     "--table-sort-icon-color": "Color of the sort indicator of an unsorted sortable column",
     "--table-focus-ring-color": "Outline color of the focused scroll region"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "columns and rows are JS properties set from a script; row-key names the key field. A cell render function may return a DOM node, here a two-line <minerva-table-cell-content>."
+      },
+      "sorting": {
+        "title": "Sorting",
+        "description": "sortable: true sorts by the row field, a function is a custom comparator. Clicking a header cycles ascending, descending and unsorted, and fires minerva-sort-change; sortState sets the initial sort."
+      },
+      "selection": {
+        "title": "Row selection",
+        "description": "selectable adds a checkbox column with a select-all header. isRowDisabled locks paid invoices, getRowLabel names each checkbox, and minerva-selection-change reports the selected keys."
+      },
+      "pagination": {
+        "title": "Pagination and loading",
+        "description": "The pagination property renders a <minerva-pagination> under the table. Rows are not sliced: load the requested page on minerva-page-change; loading shows skeleton rows meanwhile."
+      }
+    },
+    "minerva-data-table": {
+      "props": {
+        "selectable": "Adds a checkbox column to select rows.",
+        "scrollX": "Horizontal scroll: minimum table width (px number or CSS length).",
+        "scrollY": "Vertical scroll: maximum height of the wrapper; the header sticks.",
+        "retryable": "Shows a retry button in the error state (fires minerva-retry).",
+        "rows": "Row data.",
+        "isRowDisabled": "Returns true for rows whose checkbox is disabled."
+      },
+      "events": {
+        "minerva-sort-change": "The user changed the sort (detail: { key, order }, order null = unsorted). Cancelable: preventDefault() keeps the current sort.",
+        "minerva-selection-change": "The user changed the selected rows (detail: { selectedRowKeys, selectedRows }). Cancelable: preventDefault() keeps the current selection.",
+        "minerva-page-change": "Re-dispatched from the pagination (detail: { page, pageSize }). Cancelable.",
+        "minerva-retry": "The retry button of the error state was activated."
+      },
+      "slots": {
+        "empty": "Content of the empty state (default: empty-text or the localized \"No data\").",
+        "error": "Content of the error state (default: the error text)."
+      },
+      "parts": {
+        "base": "The outer wrapper.",
+        "wrapper": "The scroll wrapper.",
+        "table": "The <table>.",
+        "sort-button": "The sort buttons of sortable headers.",
+        "checkbox": "The selection checkboxes.",
+        "error": "The error state.",
+        "retry-button": "The retry button.",
+        "pagination": "The <minerva-pagination>."
+      },
+      "cssVars": {
+        "--button-height": "Minimum height of the retry button.",
+        "--button-padding-x": "Horizontal padding of the retry button.",
+        "--button-radius": "Corner radius of the retry button.",
+        "--button-font-size": "Font size of the retry button.",
+        "--button-font-weight": "Font weight of the retry button.",
+        "--button-gap": "Space between the icon and the label of the retry button.",
+        "--button-label-white-space": "White-space of the retry button label: nowrap (default, truncates) or normal (wraps)."
+      }
+    },
+    "minerva-table-cell-content": {
+      "slots": {
+        "default": "Primary content (alternative to the primary attribute).",
+        "secondary": "Secondary line (alternative to the secondary attribute)."
+      },
+      "parts": {
+        "base": "The wrapper."
+      },
+      "cssVars": {
+        "--button-height": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-padding-x": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-radius": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-font-size": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-font-weight": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-gap": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+        "--button-label-white-space": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it."
+      }
+    }
   }
 }

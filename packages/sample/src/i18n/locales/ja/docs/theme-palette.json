@@ -177,5 +177,46 @@
     "--theme-toggle-item-height": "選択肢の最小の高さ（密度のコントロールの高さに連動）",
     "--theme-toggle-item-min-width": "選択肢の最小幅",
     "--theme-toggle-active-background": "選択中の選択肢の背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "テーマ切り替え",
+        "description": "ライト / ダーク / システムのボタン（aria-pressed）は、最も近い <minerva-config> のテーマに連動します。ない場合は <html data-theme> を操作します。"
+      },
+      "palette": {
+        "title": "パレット切り替え",
+        "description": "パレットはモードとは独立しています。show-default で Minerva の既定の見た目を追加し、hide-system でライトとダークだけにします。"
+      },
+      "events": {
+        "title": "ラベルとイベント",
+        "description": "palettes で選択肢を指定し、labels プロパティで名前を変え、minerva-change はキャンセル可能です（Lock をチェックするとテーマが固定されます）。"
+      }
+    },
+    "minerva-theme-toggle": {
+      "props": {
+        "hideSystem": "「システム」（OS に従う）オプションを隠します。",
+        "persist": "切り替えが <html> を操作する場合（<minerva-config> がない場合）、選択を theme / palette クッキーに保存します（lib-core の ThemeProvider と同様）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーがテーマを選びました（detail: { value }）。キャンセル可能：preventDefault() で現在のテーマを維持します。"
+      },
+      "parts": {
+        "base": "role=\"group\" のラッパー。",
+        "item": "各オプションのボタン。"
+      }
+    },
+    "minerva-palette-toggle": {
+      "props": {
+        "persist": "切り替えが <html> を操作する場合（<minerva-config> がない場合）、選択を theme / palette クッキーに保存します（lib-core の ThemeProvider と同様）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーがパレットを選びました（detail: { value }、null は既定の見た目）。キャンセル可能：preventDefault() で現在のパレットを維持します。"
+      },
+      "parts": {
+        "base": "role=\"group\" のラッパー。",
+        "item": "各オプションのボタン。"
+      }
+    }
   }
 }

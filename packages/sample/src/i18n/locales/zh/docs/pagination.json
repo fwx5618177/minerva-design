@@ -103,5 +103,47 @@
     "--pagination-font-size": "字号",
     "--pagination-active-background": "当前页的背景（solid 变体）",
     "--pagination-active-color": "当前页的文字颜色（solid 变体）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "total 和 page-size 决定页数。元素会自行更新 current，并触发携带新页码和每页条数的 minerva-page-change；调用 preventDefault() 即可改为受控。"
+      },
+      "total-and-jumper": {
+        "title": "总数、每页条数与快速跳转",
+        "description": "show-total、show-size-changer（选项来自 page-size-options=\"10,20,50\"）和 show-quick-jumper。JS 属性 totalRender 可自定义总数文本。"
+      },
+      "appearance": {
+        "title": "尺寸、形状与变体",
+        "description": "size、shape 和 variant 设置页码项的样式；sibling-count / boundary-count 切换为紧凑页码列表；disabled 禁用所有交互。"
+      },
+      "simple": {
+        "title": "简洁模式、计数器与图标",
+        "description": "simple 显示上一页 / 下一页按钮和页码输入框，hide-numbers 显示“当前 / 总数”计数器。prev-icon、next-icon、jump-prev-icon 和 jump-next-icon 插槽可替换图标；responsive 适配小屏幕。"
+      }
+    },
+    "minerva-pagination": {
+      "props": {
+        "totalPages": "总页数，至少为 1（只读）。"
+      },
+      "events": {
+        "minerva-page-change": "用户更改了页码或每页条数（detail: { page, pageSize }）。可取消：preventDefault() 会保留当前页码和每页条数。"
+      },
+      "slots": {
+        "prev-icon": "上一页按钮的图标。",
+        "next-icon": "下一页按钮的图标。",
+        "jump-prev-icon": "向前跳转项的图标。",
+        "jump-next-icon": "向后跳转项的图标。"
+      },
+      "parts": {
+        "base": "<nav> 地标。",
+        "item": "所有页码、上一页 / 下一页及跳转按钮。",
+        "total": "总数文本。",
+        "jumper": "快速跳转的标签。",
+        "size-changer": "每页条数的 <select>。",
+        "simple-input": "简洁模式下的页码输入框。"
+      }
+    }
   }
 }

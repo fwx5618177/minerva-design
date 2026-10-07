@@ -72,5 +72,36 @@
     "locale": "作用域语言：覆盖的 locale 只改变其子树中的内置文案。只设置 locale 的 Provider 完全不会影响主题。",
     "portal": "浮层：从作用域子树中通过 Portal 渲染的内容（Modal、Drawer、Popover、Select、Menu、Tooltip、Toast 等）会挂载到 <body> 上一个带有相同作用域的容器中，因此浮层也会使用作用域主题。在 React 树之外渲染的命令式 API（如独立的 confirm()）使用根主题。",
     "document": "全局状态：嵌套 Provider 从不写入 <html>，从不读写 Cookie（persist 会被忽略），也从不修改 lib-core 的全局语言。卸载它后页面保持根 Provider 设置的状态不变；卸载根 Provider 时会还原它所做的修改。嵌套 Provider 的 setTheme 和 setPalette 修改它自己的覆盖值；对于未覆盖的设置，则修改父级的值。"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "<minerva-config> 以 display: contents 渲染，为其内部所有内容限定主题作用域：这里并排展示一个浅色和一个深色作用域。"
+      },
+      "palette-design": {
+        "title": "调色板与设计",
+        "description": "palette、design（预设）以及 density / radius / shadow / font-scale 覆盖项只作用于该子树。"
+      },
+      "locale": {
+        "title": "语言",
+        "description": "locale 设置内部元素内置文本的语言（分页总数、空状态）。切换语言即可实时看到更新。"
+      },
+      "nested": {
+        "title": "嵌套作用域与主题事件",
+        "description": "作用域可以嵌套，最近的作用域生效：内层始终为浅色，外层跟随按钮切换。minerva-theme-change 报告解析后的模式，theme=\"system\" 时同样适用。"
+      }
+    },
+    "minerva-config": {
+      "props": {
+        "root": "将属性写到 <html> 上（作用于整个页面），而不是该子树。"
+      },
+      "events": {
+        "minerva-theme-change": "解析后的浅色 / 深色模式发生变化（detail: { mode }），例如 theme=\"system\" 时系统偏好改变。"
+      },
+      "slots": {
+        "default": "作用域内的内容。"
+      }
+    }
   }
 }

@@ -53,7 +53,7 @@
       "className": "追加のクラス名",
       "minTime": "選択可能な最も早い時刻。それより前の選択肢は無効になります",
       "maxTime": "選択可能な最も遅い時刻。それより後の選択肢は無効になります",
-      "showSecond": "秒の列を表示します",
+      "showSecond": "秒を表示します。false にすると format からも秒が除かれます（\"HH:mm:ss\" → \"HH:mm\"）。実際に使われる形式が秒の列・表示テキスト・解析を決めます。",
       "hourStep": "時の選択肢の間隔",
       "minuteStep": "分の選択肢の間隔",
       "secondStep": "秒の選択肢の間隔",
@@ -88,5 +88,85 @@
     "--time-picker-cell-height": "時刻セルの高さ（既定は密度に応じた small のコントロール高さ）",
     "--time-picker-cell-padding-x": "時刻セルの左右パディング（密度の行パディングに従う）",
     "--time-picker-selected-background": "選択された時刻セルの背景色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "時刻を入力するか、パネルから選択します。value 属性で初期時刻を設定し、時刻が確定すると minerva-change が発火します。valueAsDate は Date として返します。"
+      },
+      "formats": {
+        "title": "形式・サイズ・状態",
+        "description": "format と use-12-hours で表示を制御します（形式に秒がない場合、hide-second で秒の列を隠します）。3 つのサイズと、読み取り専用・無効・エラーの状態。"
+      },
+      "range-steps": {
+        "title": "範囲とステップ",
+        "description": "min-time と max-time で範囲外の選択肢を無効にし、hour-step・minute-step・second-step で選択肢の間隔を設定します。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "この要素はフォーム関連要素です。24 時間制の値を name で送信し、required は空欄での送信を防ぎ、form.reset() は value 属性の時刻に戻します。"
+      }
+    },
+    "minerva-time-picker": {
+      "props": {
+        "open": "パネルが開いているかどうか。",
+        "readonly": "値を表示するだけで変更はできません（入力・パネル・クリア不可）。",
+        "hideClearButton": "クリアボタンを非表示にします（React の clearable={false} に相当）。",
+        "hideSecond": "秒の列を非表示にします（React の showSecond={false} に相当）。",
+        "valueAsDate": "値を Date として返します（日付は今日）。空または無効なときは null。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素。",
+        "validity": "バリデーション状態（<input>.validity と同じ）。",
+        "validationMessage": "現在のバリデーションエラーを説明するメッセージ（有効なときは空）。",
+        "willValidate": "要素が制約バリデーションの対象かどうか。"
+      },
+      "events": {
+        "change": "minerva-change と同じです（ネイティブ同様にバブリングします）。",
+        "minerva-change": "時刻が確定しました（選択・入力・フォーカス喪失時の正規化・クリア）。detail: { value }（クリア時は \"\"）。",
+        "minerva-input": "入力中にテキストが変わりました。detail: { value }（入力されたテキスト）。",
+        "minerva-open-change": "ユーザーがパネルを開閉しました。detail: { open }。キャンセル可能で、preventDefault() で現在の状態を維持します。",
+        "minerva-clear": "クリアボタンでフィールドが空になりました。"
+      },
+      "parts": {
+        "base": "フィールドのラッパー。",
+        "control": "入力ボックス。",
+        "input": "ネイティブの <input>。",
+        "clear-button": "クリアボタン。",
+        "icon": "時計アイコン（クリアボタンがないときに表示）。",
+        "panel": "ポップアップパネル（role=\"dialog\"）。",
+        "column": "時・分・秒・午前/午後の列（role=\"listbox\"）。",
+        "item": "時刻の単位（role=\"option\"）。"
+      },
+      "cssVars": {
+        "--input-height": "フィールドの最小の高さ（既定値は密度とサイズに応じたコントロールの高さ）。",
+        "--input-padding-x": "テキストの左右の余白。",
+        "--input-radius": "フィールドの角の半径（既定値は --radius-lg）。",
+        "--input-font-size": "フィールドのフォントサイズ。",
+        "--input-background": "フィールドの背景色。",
+        "--input-border-color": "通常時の枠線の色。",
+        "--input-focus-color": "ホバー時・フォーカス時の枠線の色。",
+        "--icon-button-color": "クリアボタンのアイコンの色。",
+        "--icon-button-hover-bg": "ホバー時のクリアボタンの背景。",
+        "--icon-button-pressed-color": "押下時のクリアボタンのアイコンの色。",
+        "--icon-button-pressed-bg": "押下時のクリアボタンの背景。",
+        "--icon-button-size": "クリアボタンの幅と高さ（既定値は密度のコントロールの高さに従う）。",
+        "--icon-button-icon-size": "クリアボタンのアイコンのサイズ。",
+        "--icon-button-radius": "クリアボタンの角の半径（既定値は --radius-lg）。"
+      },
+      "methods": {
+        "focus": "内部の入力欄にフォーカスします。",
+        "blur": "内部の入力欄からフォーカスを外します。",
+        "show": "パネルを開きます（イベントは発火しません）。",
+        "hide": "パネルを閉じます（イベントは発火しません）。",
+        "checkValidity": "有効性を確認します。無効な場合は invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザのバリデーションメッセージを表示します。",
+        "setCustomValidity": "カスタムのバリデーションエラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザから呼ばれ、value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザから呼ばれます。",
+        "formStateRestoreCallback": "値を復元するためにブラウザから呼ばれます（bfcache、自動入力）。"
+      }
+    }
   }
 }

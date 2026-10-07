@@ -77,5 +77,63 @@
     "--checkbox-radius": "Corner radius of the box for the square and rounded shapes",
     "--checkbox-gap": "Space between the box and the label",
     "--checkbox-label-font-size": "Font size of the label (every size)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Label through the label attribute or the default slot, initial checked state, indeterminate and disabled. Space toggles the focused box."
+      },
+      "select-all": {
+        "title": "Select all (indeterminate)",
+        "description": "The parent box follows its children through minerva-change: checked when all are, indeterminate (aria-checked=\"mixed\") when only some are."
+      },
+      "styles-states": {
+        "title": "Styles and states",
+        "description": "Sizes, shapes, colors, label placement, a custom icon in the icon slot, read-only and error states with helper text."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "Form-associated: a checked box submits its value under name, required blocks submission until it is checked, and reset restores the checked attributes."
+      }
+    },
+    "minerva-checkbox": {
+      "props": {
+        "readonly": "Read-only: focusable and submitted, but the user cannot toggle it.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The checked state changed (re-dispatched from the inner input).",
+        "minerva-change": "The user toggled the box; detail: { checked, value }."
+      },
+      "slots": {
+        "default": "Label content (alternative to the label attribute).",
+        "icon": "Custom icon shown inside the box when checked."
+      },
+      "parts": {
+        "base": "The wrapper.",
+        "control": "The <label> wrapping the box and the label.",
+        "input": "The native <input type=\"checkbox\">.",
+        "checkmark": "The visual box.",
+        "label": "The label text.",
+        "helper-text": "The helper or error text."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "click": "Clicks the inner control (toggles it unless disabled or read-only).",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

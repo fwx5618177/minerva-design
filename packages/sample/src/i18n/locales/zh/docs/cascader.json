@@ -98,5 +98,68 @@
     "--cascader-dropdown-max-height": "各列开始滚动前的最大高度",
     "--cascader-option-padding-y": "选项的垂直内边距（跟随密度的行内边距）",
     "--cascader-option-padding-x": "选项的水平内边距（跟随密度的行内边距）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "选项树通过 options 属性设置；value 特性设置默认路径（逗号分隔或 JSON 数组）。minerva-change 事件返回所选路径。"
+      },
+      "search-hover": {
+        "title": "搜索、悬停展开与显示格式",
+        "description": "show-search 在输入时筛选所有路径，expand-trigger=\"hover\" 在悬停时展开子菜单，displayRender 自定义输入框文本（此处只显示最后一级）。禁用的选项无法选择。"
+      },
+      "lazy": {
+        "title": "动态加载",
+        "description": "设置 loadData 后，激活没有子项的选项会展开它并加载子项：先设置 loading，再添加 children，最后重新赋值 options。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "该元素可关联表单：以 name 提交显示的文本，required 会阻止空选择提交，form.reset() 恢复 value 特性中的路径。"
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "面板是否打开。",
+        "readonly": "只显示值而不允许修改（面板不会打开）。",
+        "hideClearButton": "隐藏清除按钮（相当于 React 中的 allowClear={false}）。",
+        "selectedOptions": "所选路径上的选项，每级一个（只读）。",
+        "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与该元素关联的 <label> 元素。",
+        "validity": "有效性状态（与 <input>.validity 相同）。",
+        "validationMessage": "描述当前校验错误的消息（有效时为空）。",
+        "willValidate": "该元素是否参与约束校验。"
+      },
+      "events": {
+        "change": "与 minerva-change 相同，但不带 detail。",
+        "minerva-change": "选择了路径或清空了值（detail: { value, selectedOptions }）。",
+        "minerva-clear": "清除按钮清空了值。",
+        "minerva-input": "搜索文本发生变化（show-search；detail: { value }）。",
+        "minerva-open-change": "用户请求打开或关闭面板（detail: { open }）；可取消：preventDefault() 会保持当前状态。"
+      },
+      "parts": {
+        "base": "根容器。",
+        "selector": "输入区域。",
+        "input": "原生 <input role=\"combobox\">。",
+        "clear-button": "清除按钮。",
+        "arrow": "下拉箭头。",
+        "dropdown": "弹出面板。",
+        "column": "一列选项（role=\"listbox\"）。",
+        "option": "一个选项（列中的选项或搜索结果）。"
+      },
+      "methods": {
+        "focus": "聚焦内部输入框。",
+        "blur": "使内部输入框失去焦点。",
+        "show": "打开面板。",
+        "hide": "关闭面板。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误（传入空字符串则清除）。",
+        "formResetCallback": "表单 reset() 时由浏览器调用：恢复 value 属性中的值。",
+        "formDisabledCallback": "祖先 <fieldset> 被禁用或启用时由浏览器调用。",
+        "formStateRestoreCallback": "由浏览器调用以恢复值（往返缓存、自动填充）。"
+      }
+    }
   }
 }

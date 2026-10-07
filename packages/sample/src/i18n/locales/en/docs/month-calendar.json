@@ -45,5 +45,44 @@
     "--month-calendar-radius": "Corner radius of the buttons, days and events (defaults to --radius-sm)",
     "--month-calendar-selected-background": "Background of the selected day",
     "--month-calendar-today-color": "Border color marking today"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "month (\"YYYY-MM\") and value (\"YYYY-MM-DD\") are attributes, events a property. One tab stop: arrows, Home / End and PageUp / PageDown move through the grid."
+      },
+      "events": {
+        "title": "Events",
+        "description": "minerva-change reports the selected day, minerva-month-change the displayed month; with clickable-events, minerva-event-click fires for an event."
+      },
+      "localized": {
+        "title": "Localization and states",
+        "description": "locale and the label attributes translate the calendar, weekdayLabels / getDayLabel / getEventsLabel are properties. Right: hide-events and disabled."
+      }
+    },
+    "minerva-month-calendar": {
+      "props": {
+        "clickableEvents": "Renders the selected day's events as buttons firing minerva-event-click.",
+        "hideEvents": "Hides the list of the selected day's events (lib-core's showSelectedDayEvents={false})."
+      },
+      "events": {
+        "minerva-change": "The user selected a day (detail: { value }, \"YYYY-MM-DD\").",
+        "minerva-month-change": "The user displayed another month (detail: { month }, its first day at local midnight).",
+        "minerva-event-click": "An event of the selected day was activated (detail: { event }; requires clickable-events)."
+      },
+      "parts": {
+        "base": "The calendar <section>.",
+        "heading": "The month heading.",
+        "nav-button": "The previous / today / next buttons.",
+        "grid": "The role=\"grid\" element.",
+        "day": "Each day cell.",
+        "events": "The selected day's events section.",
+        "event": "Each event (a button with clickable-events)."
+      },
+      "methods": {
+        "focus": "Focuses the active day cell."
+      }
+    }
   }
 }

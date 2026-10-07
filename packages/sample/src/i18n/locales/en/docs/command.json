@@ -45,5 +45,52 @@
     "--command-item-padding-y": "Vertical padding of a result row (follows the density's row padding)",
     "--command-item-padding-x": "Horizontal padding of a result row (follows the density's row padding)",
     "--command-item-active-background": "Background of the hovered / active row (defaults to a 10% primary tint)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "items is a JS property (id, title, description, group, keywords, disabled). Type to filter, move with the arrow keys, choose with Enter or a click; minerva-select gives the chosen id."
+      },
+      "shortcut": {
+        "title": "Global shortcut",
+        "description": "shortcut takes a comma-separated list (\"mod+k, /\"; mod is Ctrl, or ⌘ on macOS) and opens the palette from anywhere, except while typing in a field. max-results caps the list."
+      }
+    },
+    "minerva-command-dialog": {
+      "props": {
+        "label": "Title of the dialog (default: localized \"Command palette\")."
+      },
+      "events": {
+        "minerva-select": "A command was chosen (detail: { value, item }, value = the item's id); the palette then closes.",
+        "minerva-open-change": "The user asked to open (shortcut) / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-after-open": "The palette is open and focus moved to the search input.",
+        "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+      },
+      "parts": {
+        "overlay": "The backdrop.",
+        "panel": "The dialog panel (role=\"dialog\").",
+        "header": "The title row.",
+        "description": "The description.",
+        "search": "The search field wrapper.",
+        "input": "The search input (role=\"combobox\").",
+        "listbox": "The results list (role=\"listbox\").",
+        "item": "A result (role=\"option\").",
+        "empty": "The empty state."
+      },
+      "cssVars": {
+        "--modal-width": "Width of the panel (defaults to the width of the size, capped by the viewport).",
+        "--modal-max-height": "Maximum height of the panel (the body scrolls beyond).",
+        "--modal-padding": "Horizontal padding of the header, description, body and footer.",
+        "--modal-radius": "Corner radius of the panel (defaults to --radius-xl).",
+        "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl).",
+        "--modal-background": "Background of the panel.",
+        "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)."
+      },
+      "methods": {
+        "show": "Opens the palette.",
+        "hide": "Closes the palette."
+      }
+    }
   }
 }

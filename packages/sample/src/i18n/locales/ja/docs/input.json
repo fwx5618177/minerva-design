@@ -56,5 +56,80 @@
     "--input-background": "outline バリアントの背景色",
     "--input-border-color": "通常時の枠線色",
     "--input-focus-color": "ホバー / フォーカス時の枠線色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "<label for> で名前を付けます。キー入力ごとに detail.value 付きの minerva-input が発火します。"
+      },
+      "sizes-variants": {
+        "title": "サイズ・バリアント・状態",
+        "description": "3 つのサイズ、outline・filled・unstyled のバリアント、読み取り専用・無効・不正な値の状態。"
+      },
+      "addons": {
+        "title": "アドオン・クリア・文字数・パスワード",
+        "description": "prefix・suffix スロット、クリアボタン（clearable）、maxlength に連動する文字数カウント、パスワード表示の切り替え。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "required・type=\"email\"・minlength・pattern は送信時にブラウザーの検証を使います。不正なフィールドは修正されるまで invalid になり、リセットで元に戻ります。"
+      }
+    },
+    "minerva-input": {
+      "props": {
+        "defaultValue": "初期値（value 属性）。form.reset() で復元されます。<input> と同様、ユーザーが編集するまでは変更すると value も変わります。",
+        "type": "内部の <input> の type（text・email・password・search・url・number・date など）。",
+        "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+        "readonly": "読み取り専用：フォーカス可能で送信されますが、編集できません。",
+        "minlength": "値の最小文字数（ブラウザーが検証）。",
+        "maxlength": "値の最大文字数。文字数カウントの上限にもなります。",
+        "pattern": "値が一致すべき正規表現。",
+        "min": "最小値（number・日付タイプ）。",
+        "max": "最大値（number・日付タイプ）。",
+        "step": "ステップ（number・日付タイプ）。",
+        "autocomplete": "内部の <input> の自動入力ヒント。",
+        "inputmode": "仮想キーボードのヒント（numeric・email・tel など）。",
+        "name": "フォーム送信時に値を送る名前。",
+        "disabled": "コントロールを無効にします（フォーカス不可・送信されず・検証されない）。",
+        "required": "フォームを送信するには値が必要です。",
+        "value": "現在の値（プロパティ。value 属性は defaultValue を設定します）。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "値が確定した（フォーカスアウトまたは Enter）。内部の input から再送出。",
+        "input": "値が変わった（キー入力ごと。ネイティブ・composed）。",
+        "minerva-input": "input と同じで、detail: { value } 付き。",
+        "minerva-change": "change と同じで、detail: { value } 付き。",
+        "minerva-clear": "クリアボタンでフィールドが空になった。"
+      },
+      "slots": {
+        "prefix": "テキストの前の内容（アイコン・「@」・プロトコルなど）。",
+        "suffix": "テキストの後の内容（単位・アイコン・ボタン）。"
+      },
+      "parts": {
+        "base": "フィールドのラッパー。",
+        "input": "ネイティブの <input>。",
+        "clear-button": "クリアボタン。",
+        "password-toggle": "パスワード表示の切り替えボタン。",
+        "count": "文字数カウンター。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "select": "テキスト全体を選択します。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

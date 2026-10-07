@@ -50,5 +50,87 @@
     "--tag-input-list-radius": "候補リストの角丸（既定は --radius-md）",
     "--tag-input-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
     "--tag-input-option-padding-x": "候補の左右パディング（密度の行パディングに従う）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "タグを入力して Enter を押すか、矢印キーで候補を選びます。value はプロパティで、リストが変わるたびに minerva-change が発火します。"
+      },
+      "separators": {
+        "title": "区切り文字",
+        "description": "separators=\", ; Enter\" で入力・貼り付けたテキストをタグに分割します。no-commit-on-blur を付けると、フォーカスが外れても下書きはテキストのまま残ります。"
+      },
+      "states": {
+        "title": "サイズと状態",
+        "description": "3 つのサイズと、invalid、readonly（編集コントロールなしでタグを表示し、送信はされる）、disabled。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "この要素はフォーム関連要素です。各タグは name の下に個別の項目として送信され、required は空のリストを拒否し、リセットで value 属性の値に戻ります。"
+      }
+    },
+    "minerva-tag-input": {
+      "props": {
+        "noCommitOnBlur": "フィールドからフォーカスが外れても、入力中の下書きをタグとして追加しません。",
+        "readonly": "編集コントロールなしでタグを表示します。フォームには送信されます。",
+        "required": "フォームを送信するには値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "検証状態。<input>.validity と同じです（読み取り専用）。",
+        "validationMessage": "現在の検証エラーを説明するメッセージ。有効な場合は空です（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "minerva-change": "タグが変わった（追加・削除・クリア）。detail: { value }。",
+        "minerva-input": "入力中のテキスト（下書き）が変わった。detail: { value } は下書きです。",
+        "minerva-open-change": "候補リストが開閉しようとしている（detail: { open }）。キャンセル可能で、preventDefault() で現在の状態を保ちます。",
+        "minerva-clear": "クリアボタンですべてのタグが削除された。"
+      },
+      "parts": {
+        "base": "ラッパー。",
+        "tags": "タグのリスト。",
+        "tag": "個々のタグ。",
+        "remove-button": "タグの削除ボタン。",
+        "field": "テキストフィールドのラッパー。",
+        "input": "ネイティブのテキスト <input>（role=\"combobox\"）。",
+        "listbox": "候補リスト。",
+        "option": "個々の候補。",
+        "add-button": "追加ボタン。",
+        "clear-button": "クリアボタン。"
+      },
+      "cssVars": {
+        "--icon-button-color": "追加・クリアボタンのアイコンの色。",
+        "--icon-button-hover-bg": "ホバー時の追加・クリアボタンの背景。",
+        "--icon-button-pressed-color": "押下状態のアイコンボタンのアイコンの色。",
+        "--icon-button-pressed-bg": "押下状態のアイコンボタンの背景。",
+        "--icon-button-size": "追加・クリアボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+        "--icon-button-icon-size": "ボタンアイコンのフォントサイズ。",
+        "--icon-button-radius": "追加・クリアボタンの角丸（既定は --radius-lg）。",
+        "--input-height": "テキストフィールドの最小の高さ（既定はサイズに応じた密度のコントロール高さ）。",
+        "--input-padding-x": "テキストの左右の余白。",
+        "--input-radius": "テキストフィールドの角丸（既定は --radius-lg）。",
+        "--input-font-size": "テキストフィールドのフォントサイズ。",
+        "--input-background": "テキストフィールドの背景色。",
+        "--input-border-color": "通常時のテキストフィールドの枠線の色。",
+        "--input-focus-color": "ホバー・フォーカス時のテキストフィールドの枠線の色。",
+        "--tag-height": "タグの最小の高さ（既定は内容の高さ）。",
+        "--tag-padding-x": "タグの左右の余白。",
+        "--tag-font-size": "タグのフォントサイズ。",
+        "--tag-radius": "タグの角丸（既定は --radius-sm）。",
+        "--tag-gap": "タグのラベルと削除ボタンの間隔。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "checkValidity": "有効性をチェックし、無効なら invalid を発火します。",
+        "reportValidity": "有効性をチェックし、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォーム関連コールバック。既定値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォーム関連コールバック。",
+        "formStateRestoreCallback": "ブラウザーが値を復元するとき（戻る操作、自動入力）に呼ばれるフォーム関連コールバック。"
+      }
+    }
   }
 }

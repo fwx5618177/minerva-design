@@ -72,5 +72,61 @@
     "--icon-button-size": "Largeur et hauteur du bouton (toutes tailles ; par défaut suit les hauteurs de contrôle de la densité)",
     "--icon-button-icon-size": "Taille de police de l'icône (toutes tailles)",
     "--icon-button-radius": "Rayon des coins de la forme square (par défaut --radius-lg)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "label nomme le bouton qui ne contient qu'une icône et s'affiche en infobulle au survol et au focus (Échap la ferme). Ghost et neutral par défaut."
+      },
+      "sizes-shapes": {
+        "title": "Tailles, formes et couleurs",
+        "description": "Quatre tailles, formes cercle ou carré, et les couleurs sémantiques partagées avec les variantes solid / outline / ghost."
+      },
+      "toggle": {
+        "title": "Boutons bascule",
+        "description": "toggle expose aria-pressed ; l'activation inverse pressed et émet un minerva-pressed-change annulable. L'épingle ne peut pas être désactivée (preventDefault)."
+      },
+      "states": {
+        "title": "Chargement, désactivé et infobulles",
+        "description": "Cliquez sur Actualiser pour voir l'état de chargement (toujours focalisable, activation ignorée). tooltip remplace le texte de l'infobulle, tooltip-placement la déplace, no-tooltip la supprime."
+      }
+    },
+    "minerva-icon-button": {
+      "props": {
+        "toggle": "En fait un bouton bascule (expose aria-pressed).",
+        "tooltipPlacement": "Position préférée de l'infobulle.",
+        "noTooltip": "Masque l'infobulle (le label nomme toujours le bouton).",
+        "type": "Rôle du bouton dans son formulaire : aucun (button), envoi ou réinitialisation.",
+        "form": "Le formulaire du bouton (lecture seule)."
+      },
+      "events": {
+        "minerva-pressed-change": "Un bouton bascule a été activé (detail: { pressed }, le nouvel état). Annulable : preventDefault() conserve l'état actuel."
+      },
+      "slots": {
+        "default": "L'icône (masquée aux technologies d'assistance)."
+      },
+      "parts": {
+        "button": "Le <button> natif.",
+        "glyph": "Le conteneur de l'icône.",
+        "spinner": "L'indicateur de chargement.",
+        "tooltip": "L'infobulle (role=\"tooltip\")."
+      },
+      "cssVars": {
+        "--tooltip-max-width": "Largeur maximale de l'infobulle (limitée par la fenêtre).",
+        "--tooltip-padding": "Marge intérieure de l'infobulle.",
+        "--tooltip-radius": "Rayon des coins de l'infobulle.",
+        "--tooltip-font-size": "Taille de police de l'infobulle.",
+        "--tooltip-bg": "Fond de l'infobulle (dégradés acceptés).",
+        "--tooltip-color": "Couleur du texte de l'infobulle.",
+        "--tooltip-shadow": "Ombre de l'infobulle (--shadow-md par défaut).",
+        "--tooltip-z-index": "Ordre d'empilement de l'infobulle (--z-popover par défaut)."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton interne.",
+        "blur": "Retire le focus du bouton interne.",
+        "click": "Clique sur le bouton interne (ignoré s'il est désactivé ou en chargement)."
+      }
+    }
   }
 }

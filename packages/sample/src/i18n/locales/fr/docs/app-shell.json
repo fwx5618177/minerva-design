@@ -55,5 +55,69 @@
     "--app-shell-sidebar-background": "Fond de la barre latérale et du tiroir de navigation mobile",
     "--app-shell-header-background": "Fond de l'en-tête collant",
     "--app-shell-drawer-width": "Largeur du tiroir de navigation mobile"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Une barre latérale avec la marque et le slot navigation, un en-tête fixe (slot header-actions) et le repère main pour le slot par défaut. À 768px et moins, la navigation passe dans un tiroir modal ouvert depuis l'en-tête."
+      },
+      "sidebar-modes": {
+        "title": "Modes de la barre latérale et slots",
+        "description": "sidebar-mode=\"compact\" démarre avec le rail d'icônes ; les boutons de la barre latérale le déplient ou l'épinglent en rail flottant. L'attribut collapsed sert à styliser la navigation (libellés masqués ici) ; brand-icon reste visible dans le rail et page-navigation se place entre l'en-tête et main."
+      },
+      "controlled": {
+        "title": "Événements, méthodes et libellés",
+        "description": "minerva-sidebar-mode-change et minerva-open-change sont annulables (verrouillez le mode pour le voir). expandNavigation() et focusMain() pilotent le shell ; les attributs *-label et skip-link renomment les contrôles."
+      }
+    },
+    "minerva-app-shell": {
+      "props": {
+        "noSkipLink": "Supprime le lien « Aller au contenu ».",
+        "expandLabel": "Nom du bouton qui déplie la barre latérale.",
+        "collapseLabel": "Nom du bouton qui replie la barre latérale.",
+        "enableFloatingLabel": "Nom du bouton épingle quand le mode flottant est désactivé.",
+        "disableFloatingLabel": "Nom du bouton épingle quand le mode flottant est activé.",
+        "openNavigationLabel": "Nom du bouton de l'en-tête qui ouvre la navigation mobile.",
+        "closeNavigationLabel": "Nom du bouton de fermeture de la navigation mobile.",
+        "mobile": "Lecture seule : la mise en page mobile est active (fenêtre de 768px ou moins)."
+      },
+      "events": {
+        "minerva-sidebar-mode-change": "L'utilisateur a changé le mode de la barre latérale (detail: { mode }). Annulable : preventDefault() conserve le mode actuel.",
+        "minerva-open-change": "Le tiroir mobile s'est ouvert ou fermé (detail: { open }). Annulable quand l'utilisateur l'a demandé."
+      },
+      "slots": {
+        "default": "Contenu de la page, dans le repère main.",
+        "navigation": "Navigation (barre latérale sur ordinateur, tiroir sur mobile).",
+        "brand": "Marque (alternative à l'attribut brand).",
+        "brand-icon": "Icône décorative de la marque, toujours visible dans le rail compact.",
+        "header-actions": "Contenu de la barre d'en-tête (menu du compte, recherche...).",
+        "page-navigation": "Affiché entre l'en-tête et main (par exemple des onglets de page)."
+      },
+      "parts": {
+        "shell": "La racine du shell.",
+        "skip-link": "Le lien d'évitement.",
+        "sidebar": "La barre latérale sur ordinateur (<aside>).",
+        "header": "La barre d'en-tête.",
+        "main": "L'élément <main>.",
+        "overlay": "Le fond du tiroir.",
+        "drawer": "Le tiroir mobile (role=\"dialog\")."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur d'icône des contrôles du shell (bascules de la barre latérale, bouton de menu).",
+        "--icon-button-hover-bg": "Fond des contrôles du shell au survol.",
+        "--icon-button-pressed-color": "Couleur d'icône du bouton épingle enfoncé.",
+        "--icon-button-pressed-bg": "Fond du bouton épingle enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des contrôles du shell.",
+        "--icon-button-icon-size": "Taille d'icône des contrôles du shell.",
+        "--icon-button-radius": "Rayon des coins des contrôles du shell."
+      },
+      "methods": {
+        "openNavigation": "Ouvre le tiroir de navigation mobile (mise en page mobile uniquement).",
+        "closeNavigation": "Ferme le tiroir de navigation mobile (à appeler quand un élément est choisi).",
+        "expandNavigation": "Passe la barre latérale en mode déplié (par exemple quand un groupe est ouvert dans le rail compact).",
+        "focusMain": "Déplace le focus sur le repère main."
+      }
+    }
   }
 }

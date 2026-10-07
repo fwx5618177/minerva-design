@@ -17,6 +17,7 @@ import { Portal } from "../../internal/Portal";
 import type { VirtualElement } from "../../internal/useAnchoredPosition";
 import { LayerContext } from "../../internal/useDismissableLayer";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useTooltipConfig } from "./TooltipProvider";
 import styles from "./tooltip.module.scss";
@@ -47,7 +48,7 @@ const Tooltip = ({
   content,
   children,
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   placement = "top",
   color = "neutral",
@@ -72,10 +73,20 @@ const Tooltip = ({
   const config = useTooltipConfig();
   const enterDelay = enterDelayProp ?? config?.enterDelay ?? 200;
   const leaveDelay = leaveDelayProp ?? config?.leaveDelay ?? 0;
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Tooltip", {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: "Tooltip",
+    prop: "open",
   });
   const [triggerEl, setTriggerEl] = useState<HTMLElement | null>(null);
   const [arrowEl, setArrowEl] = useState<HTMLDivElement | null>(null);

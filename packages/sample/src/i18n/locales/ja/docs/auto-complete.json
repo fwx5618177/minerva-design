@@ -97,5 +97,87 @@
     "--auto-complete-option-padding-x": "候補とグループ見出しの左右パディング",
     "--auto-complete-option-hover-background": "ホバー中 / キーボードでフォーカス中の候補の背景色",
     "--auto-complete-option-highlight-background": "highlight: true の候補の背景色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "JS プロパティ options を設定すると、入力に応じてラベルで絞り込まれます。選択肢を選ぶと入力欄に反映され minerva-select が発火し、アクティブな選択肢がない状態で Enter を押すと入力テキストとともに minerva-submit が発火します。"
+      },
+      "rich-options": {
+        "title": "リッチな選択肢とグループ",
+        "description": "選択肢にはアイコン・説明・ハイライトを付けたり、無効にしたりできます。groupBy で見出しごとにまとめます。auto-highlight は最初の有効な選択肢をアクティブにするので Enter ですぐ選べます。variant と size で入力欄の見た目を指定します。"
+      },
+      "custom-render": {
+        "title": "カスタム描画と絞り込み",
+        "description": "mode=\"custom\" のとき、renderOption が各選択肢の内容（文字列、DOM ノード、Lit テンプレート）を返します。ここでは filterOption がメールアドレスにも一致し、sortOption が名前順に並べ、renderEmpty が空の状態を置き換えます。"
+      },
+      "async-loading": {
+        "title": "非同期読み込み",
+        "description": "minerva-input を監視して入力中に候補を取得し、その間は loading を設定します。prefix スロットにアイコンを置き、minerva-change が確定したテキストを通知します。"
+      }
+    },
+    "minerva-autocomplete": {
+      "props": {
+        "open": "ドロップダウンが開いているかどうか。",
+        "placeholder": "入力欄のプレースホルダー。",
+        "size": "入力欄のサイズ。",
+        "variant": "入力欄の見た目：outline、filled、unstyled。",
+        "invalid": "エラー状態。aria-invalid を設定します。",
+        "readonly": "読み取り専用：フォーカス可能でフォーム送信もされますが、ドロップダウンは表示しません。",
+        "noAnimation": "開くときのアニメーションを無効にします。",
+        "noFillOnSelect": "選択肢を選んでも入力済みのテキストを保持します（反映しません）。",
+        "required": "フォームを送信するにはコントロールに値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な fieldset による、読み取り専用）。",
+        "form": "この要素が属するフォーム（読み取り専用）。",
+        "labels": "この要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "有効性の状態。<input>.validity と同じ（読み取り専用）。",
+        "validationMessage": "現在の検証エラーを説明するメッセージ。有効なときは空（読み取り専用）。",
+        "willValidate": "この要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "入力欄のネイティブ change をホストから再発行したもの（編集後のフォーカス喪失時）。",
+        "minerva-input": "入力テキストが変わった：入力、選択肢の選択、Escape によるクリア（detail: { value }）。",
+        "minerva-change": "テキストが確定した：選択肢による反映、Escape によるクリア、またはフォーカス喪失時のネイティブ change（detail: { value }）。",
+        "minerva-select": "マウスまたはキーボードで選択肢が選ばれた（detail: { value, option }）。",
+        "minerva-submit": "アクティブな選択肢がなく、テキストが空白でない状態で Enter が押された（detail: { value }、前後の空白は除去）。",
+        "minerva-open-change": "ドロップダウンが開閉する（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を保ちます。"
+      },
+      "slots": {
+        "prefix": "テキストの前に置く内容（アイコン）。",
+        "suffix": "テキストの後に置く内容。"
+      },
+      "parts": {
+        "base": "ルートのラッパー。",
+        "label": "表示されるラベル。",
+        "field": "入力欄のラッパー。",
+        "input": "ネイティブの <input>。",
+        "popup": "位置決めされたドロップダウン。",
+        "listbox": "role=\"listbox\" のリスト。",
+        "option": "選択肢。",
+        "group-label": "グループの見出し。",
+        "empty": "空の状態。",
+        "loading": "読み込み中の状態。"
+      },
+      "cssVars": {
+        "--input-height": "フィールドの最小の高さ。全サイズに適用（既定は密度に応じたそのサイズのコントロールの高さ）。",
+        "--input-padding-x": "テキストの左右の余白。全サイズに適用。",
+        "--input-radius": "角の丸み（既定は --radius-lg）。",
+        "--input-font-size": "フォントサイズ。全サイズに適用。",
+        "--input-background": "outline バリアントの背景色。",
+        "--input-border-color": "通常時の枠線の色。",
+        "--input-focus-color": "ホバー中またはフォーカス中の枠線の色。"
+      },
+      "methods": {
+        "focus": "入力欄にフォーカスします。",
+        "blur": "入力欄からフォーカスを外します。",
+        "checkValidity": "有効性を確認し、無効なら invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザの検証メッセージを表示します。",
+        "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザが呼ぶフォームのライフサイクルコールバック。value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザが呼ぶフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "値を復元するとき（バック/フォワードキャッシュ、自動入力）にブラウザが呼ぶフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

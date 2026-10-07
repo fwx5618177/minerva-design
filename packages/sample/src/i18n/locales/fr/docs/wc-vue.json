@@ -1,0 +1,29 @@
+{
+  "title": "Vue",
+  "description": "Les éléments personnalisés Minerva dans Vue 3 et Nuxt : configuration du compilateur, liaison des propriétés et des événements, pattern contrôlé et typages Volar.",
+  "setup": {
+    "title": "Configuration",
+    "text": "Vue prend en charge les éléments personnalisés sans configuration particulière. Indiquez à son compilateur de templates que les balises minerva-* sont des éléments personnalisés, afin qu'il n'essaie pas de les résoudre comme des composants Vue (et n'émette pas d'avertissement à leur sujet) :",
+    "register": "Enregistrez ensuite les éléments et chargez les design tokens une fois, dans votre fichier d'entrée :"
+  },
+  "binding": {
+    "title": "Lier propriétés et événements",
+    "text": "Liez avec :prop et écoutez avec @minerva-*, comme pour les éléments natifs. Une liaison bidirectionnelle à la v-model se compose d'une liaison :value (ou :checked) et de l'événement correspondant :",
+    "properties": "Vue définit une valeur liée comme propriété DOM lorsque l'élément possède une propriété de ce nom, et comme attribut sinon. Enregistrez les éléments avant de monter l'application, afin qu'ils soient définis lorsque Vue les rend et que les tableaux, objets et fonctions (options, items, callbacks de rendu) parviennent tels quels à l'élément.",
+    "booleans": "Les booléens sont de simples booléens (:disabled=\"busy\") ; les attributs booléens statiques s'écrivent sans valeur (clearable, required). Ajoutez le modificateur .attr pour forcer un attribut, et .prop pour forcer une propriété.",
+    "events": "Les noms d'événements sont en kebab-case et s'utilisent tels quels : @minerva-change, @minerva-open-change. $event est le CustomEvent ; lisez le nouvel état dans $event.detail. Les événements natifs (@click, @focus, @input, @change) fonctionnent aussi.",
+    "vModel": "v-model est conçu pour les champs natifs et les composants Vue : utilisez donc la paire explicite :value + @minerva-input pour les champs texte (à chaque frappe) ou @minerva-change (valeur validée), et :checked + @minerva-change pour les cases à cocher et les interrupteurs."
+  },
+  "controlled": {
+    "title": "État d'ouverture contrôlé",
+    "text": "L'élément met à jour son propre état lorsque l'utilisateur agit, puis déclenche l'événement. Les événements qui annoncent un changement demandé par l'utilisateur (minerva-open-change, sélection d'onglet) sont annulables : appelez preventDefault() pour conserver l'état actuel, et mettez à jour votre ref sinon :"
+  },
+  "types": {
+    "title": "Typages (Volar)",
+    "text": "Le paquet fournit des typages pour les GlobalComponents de Vue, générés à partir de son Custom Elements Manifest : les attributs, propriétés et événements de chaque balise <minerva-*> sont vérifiés et complétés dans les templates par Vue - Official (Volar) et vue-tsc. Ajoutez-les aux types de votre tsconfig :"
+  },
+  "nuxt": {
+    "title": "Nuxt",
+    "text": "Configurez le compilateur dans nuxt.config et enregistrez les éléments dans un plugin exécuté uniquement côté client. Les balises sont rendues côté serveur en HTML simple avec leurs attributs, puis mises à niveau dans le navigateur une fois le plugin exécuté (importer le paquet côté serveur est également sans danger : les modules ne touchent pas au DOM lors de leur chargement)."
+  }
+}

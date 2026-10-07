@@ -1,0 +1,30 @@
+{
+  "title": "Angular",
+  "description": "Angular で Minerva のカスタム要素を使う：CUSTOM_ELEMENTS_SCHEMA、プロパティとイベントのバインディング、テンプレート駆動フォームとリアクティブフォーム向けの ControlValueAccessor、変更検知、SSR。",
+  "setup": {
+    "title": "セットアップ",
+    "text": "ブートストラップの前に要素を一度だけ登録し（すべての要素、または要素ごとのエントリー）、ビルドのグローバルスタイルにデザイントークンを追加します："
+  },
+  "binding": {
+    "title": "バインディング",
+    "text": "テンプレートで <minerva-*> タグを使うコンポーネント（または NgModule）に CUSTOM_ELEMENTS_SCHEMA を追加します。これにより Angular は未知のタグを受け入れ、ネイティブ要素と同様にプロパティとイベントをバインドします。",
+    "properties": "[value]、[checked]、[disabled]、[open]、[options]... は DOM プロパティを設定するため、真偽値、配列、オブジェクト、関数がそのまま要素に渡ります。Signal も通常のバインディングと同様に動作します。",
+    "attributes": "静的な属性（aria-label=\"Name\"、clearable）はそのまま記述します。aria-*、data-*、slot など、プロパティではない属性をバインドするには [attr.name] を使います。",
+    "events": "(minerva-change)、(minerva-input)、(minerva-open-change)... でカスタムイベントを受け取ります。$event は CustomEvent で（strict テンプレートでは $any() で囲みます）、新しい状態は $event.detail にあります。(click) などのネイティブイベントは通常どおり動作します。"
+  },
+  "forms": {
+    "title": "フォーム",
+    "text": "ngModel、formControl、formControlName には ControlValueAccessor が必要ですが、Angular はネイティブの input 向けにしか提供していません。小さなディレクティブで Minerva のテキストフィールドとセレクトを橋渡しします。このディレクティブは value プロパティを書き込み（イベントは発火しません）、ユーザーによる変更を minerva-* イベントから通知します：",
+    "usage": "ReactiveFormsModule（ngModel の場合は FormsModule）と並べてディレクティブをインポートします。これで Angular のバリデーターとフォームの状態（dirty、touched、invalid）がネイティブの input と同様に動作します：",
+    "checked": "<minerva-checkbox> と <minerva-switch> には、checked プロパティと minerva-change の detail.checked を扱う 2 つ目のアクセサーを書きます。その他のコントロールでは、各イベントのドキュメントに記載された値の形式を使ってください。",
+    "native": "Angular のフォームを使わなくても、要素はフォーム関連付け要素です。通常の <form> 内では name と value が FormData に含まれ、required とブラウザの制約検証が適用され、form.reset() で初期値に戻ります。「フォーム」を参照してください。"
+  },
+  "zones": {
+    "title": "変更検知",
+    "text": "テンプレートのイベントバインディングは、zone.js を使うアプリでもゾーンレスのアプリでも Angular の変更検知を実行するため、(minerva-change) から signal やフィールドを更新するだけで十分です。zone.js を使う場合、要素が内部で使うタイマーやオブザーバー（アニメーション、ポップアップの位置計算）もパッチされるため、追加の変更検知が走ることがありますが、特別な対応は不要です。ゾーンレスのアプリでは、addEventListener で自分で追加したリスナーから signal を更新して、ビューが再描画されるようにしてください。"
+  },
+  "ssr": {
+    "title": "サーバーサイドレンダリング",
+    "text": "Angular SSR では main.ts はブラウザでのみ実行されるため、要素はクライアントで登録されます。サーバーでも実行されるコード（共有コンポーネント、main.server.ts）からパッケージをインポートしても安全です。モジュールは読み込み時に DOM に触れず、登録は冪等です。サーバーはタグを属性と light DOM のコンテンツ付きの HTML として描画し、ブラウザがそれらをアップグレードします。"
+  }
+}

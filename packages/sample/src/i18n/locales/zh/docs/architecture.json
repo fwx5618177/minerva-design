@@ -7,7 +7,7 @@
     "package": "包",
     "core": "框架无关的 TypeScript（只依赖 DOM，不含 React 或 Lit）：焦点作用域、可关闭层栈、滚动锁定、隐藏其他内容、漫游焦点与按键查找、定位、Portal 容器、id 与受控状态，以及主题工具、调色板、设计令牌（tokens.css）、i18n 文案和轻量翻译器（createTranslator）。",
     "libCore": "React 19 组件库。组件通过 src/internal 中对核心原语的轻量 Hook 实现，所有浮层共享同一套实现。它重新导出公共 API 中的主题工具与类型，并把核心令牌打包进 style.css。",
-    "webComponents": "基于 Lit 的自定义元素，可用于任意框架或不用框架。之后会通过 Lit 控制器复用同样的核心原语。"
+    "webComponents": "基于 Lit 的自定义元素，实现完整的组件集，可用于任意框架或不用框架。它们通过 Lit 控制器复用同样的核心原语，并将 lib-core 的样式表编译进 shadow root，因此两个库的外观和行为一致。"
   },
   "primitives": {
     "title": "核心原语",
@@ -35,6 +35,6 @@
   "next": {
     "title": "下一步",
     "installation": "安装各个包并引入样式表。",
-    "webComponents": "使用基于 Lit 的自定义元素。"
+    "webComponents": "在纯 HTML、Vue、Angular 或 Svelte 中使用自定义元素。"
   }
 }

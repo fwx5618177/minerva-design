@@ -47,5 +47,61 @@
     "--number-input-background": "背景色",
     "--number-input-border-color": "通常時の枠線色（ステッパーの区切り線にも使用）",
     "--number-input-stepper-width": "増減ボタン列の幅"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "ステッパー付きの min / max。上下矢印キーでステップ、PageUp / PageDown で 10 ステップ、Home / End で上下限へ移動します。minerva-change が確定した値を通知します。"
+      },
+      "precision": {
+        "title": "ステップ・精度・メソッド",
+        "description": "小数のステップ、小数点以下 2 桁固定、no-empty。外部のボタンが stepUp() / stepDown() を呼びます。読み取り専用・無効・サイズの例も含みます。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "required と範囲外の値は、ローカライズ済みまたは独自のメッセージ（below-min-message・above-max-message）で送信を止めます。リセットで value 属性の値に戻ります。"
+      }
+    },
+    "minerva-number-input": {
+      "props": {
+        "readonly": "フォーカス可能で送信されますが、入力やステップ操作で値は変わりません。",
+        "noEmpty": "フィールドを空にすると null ではなく min（または 0）に戻ります。",
+        "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+        "name": "フォーム送信時に値を送る名前。",
+        "required": "フォームを送信するには値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "値が確定した（フォーカスアウト・Enter・ステップ操作）。",
+        "input": "入力中のテキストが変わった（ネイティブ・composed）。",
+        "minerva-input": "入力中のテキストが変わった。detail: { value } は解析した値（数値でなければ null）。",
+        "minerva-change": "新しい値が確定した。detail: { value }（空にした場合は null）。"
+      },
+      "parts": {
+        "base": "フィールドのラッパー。",
+        "input": "ネイティブの <input>（role=\"spinbutton\"）。",
+        "stepper": "増減ボタンの列。",
+        "increment": "増加ボタン。",
+        "decrement": "減少ボタン。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "stepUp": "値に step を加えます（max で制限）。イベントは発火しません。",
+        "stepDown": "値から step を引きます（min で制限）。イベントは発火しません。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

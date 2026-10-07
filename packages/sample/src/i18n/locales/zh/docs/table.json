@@ -118,5 +118,82 @@
     "--table-selected-bg": "选中行的背景色（行选择）",
     "--table-sort-icon-color": "未排序的可排序列的排序指示器颜色",
     "--table-focus-ring-color": "聚焦的滚动区域的轮廓颜色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "columns 和 rows 是通过脚本设置的 JS 属性；row-key 指定作为键的字段。单元格的 render 函数可以返回 DOM 节点，这里返回一个两行的 <minerva-table-cell-content>。"
+      },
+      "sorting": {
+        "title": "排序",
+        "description": "sortable: true 按行字段排序，传入函数则作为自定义比较器。点击表头在升序、降序和不排序之间循环，并触发 minerva-sort-change；sortState 设置初始排序。"
+      },
+      "selection": {
+        "title": "行选择",
+        "description": "selectable 会添加一列复选框，表头带全选。isRowDisabled 锁定已支付的发票，getRowLabel 为每个复选框提供名称，minerva-selection-change 报告选中的键。"
+      },
+      "pagination": {
+        "title": "分页与加载",
+        "description": "pagination 属性会在表格下方渲染一个 <minerva-pagination>。表格不会切分 rows：请在 minerva-page-change 时加载对应页的数据；期间 loading 显示骨架行。"
+      }
+    },
+    "minerva-data-table": {
+      "props": {
+        "selectable": "添加一列复选框用于选择行。",
+        "scrollX": "横向滚动：表格的最小宽度（像素数值或 CSS 长度）。",
+        "scrollY": "纵向滚动：容器的最大高度；表头保持固定。",
+        "retryable": "在错误状态下显示重试按钮（触发 minerva-retry）。",
+        "rows": "行数据。",
+        "isRowDisabled": "对复选框被禁用的行返回 true。"
+      },
+      "events": {
+        "minerva-sort-change": "用户更改了排序（detail: { key, order }，order 为 null 表示不排序）。可取消：preventDefault() 保持当前排序。",
+        "minerva-selection-change": "用户更改了选中的行（detail: { selectedRowKeys, selectedRows }）。可取消：preventDefault() 保持当前选择。",
+        "minerva-page-change": "从分页组件转发的事件（detail: { page, pageSize }）。可取消。",
+        "minerva-retry": "错误状态中的重试按钮被激活。"
+      },
+      "slots": {
+        "empty": "空状态的内容（默认：empty-text 或本地化的“暂无数据”）。",
+        "error": "错误状态的内容（默认：error 文本）。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "wrapper": "滚动容器。",
+        "table": "<table> 元素。",
+        "sort-button": "可排序表头中的排序按钮。",
+        "checkbox": "选择用的复选框。",
+        "error": "错误状态。",
+        "retry-button": "重试按钮。",
+        "pagination": "<minerva-pagination> 元素。"
+      },
+      "cssVars": {
+        "--button-height": "重试按钮的最小高度。",
+        "--button-padding-x": "重试按钮的水平内边距。",
+        "--button-radius": "重试按钮的圆角半径。",
+        "--button-font-size": "重试按钮的字号。",
+        "--button-font-weight": "重试按钮的字重。",
+        "--button-gap": "重试按钮中图标与文字之间的间距。",
+        "--button-label-white-space": "重试按钮文字的 white-space：nowrap（默认，截断）或 normal（换行）。"
+      }
+    },
+    "minerva-table-cell-content": {
+      "slots": {
+        "default": "主要内容（可替代 primary 属性）。",
+        "secondary": "次要行（可替代 secondary 属性）。"
+      },
+      "parts": {
+        "base": "外层容器。"
+      },
+      "cssVars": {
+        "--button-height": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-padding-x": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-radius": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-font-size": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-font-weight": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-gap": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+        "--button-label-white-space": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。"
+      }
+    }
   }
 }

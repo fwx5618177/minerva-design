@@ -44,5 +44,82 @@
     "--page-tabs-item-max-width": "标签的最大宽度（标签文字截断）",
     "--page-tabs-item-radius": "标签的圆角（默认 --radius-lg）",
     "--page-tabs-selected-background": "激活标签的背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "active-value 标记当前页面，并随 minerva-select 更新。closable 添加关闭按钮并触发 minerva-close：移除该元素即可关闭页面。icon 插槽在标签前显示图标。"
+      },
+      "actions": {
+        "title": "操作",
+        "description": "actions 插槽在滚动列表之外渲染全局控件（此处为新建页面按钮）；项目的 action 插槽放置独立的控件，例如固定切换按钮。"
+      },
+      "overflow": {
+        "title": "溢出与禁用",
+        "description": "页面溢出时会出现滚动按钮（由 scroll-left-label / scroll-right-label 命名），当前页面会自动滚动到可见区域。禁用的页面无法选中。"
+      }
+    },
+    "minerva-page-tabs": {
+      "props": {
+        "items": "<minerva-page-tab> 子元素（只读）。"
+      },
+      "events": {
+        "minerva-select": "从 <minerva-page-tab> 冒泡：选择了某个页面（detail: { value }）。",
+        "minerva-close": "从 <minerva-page-tab> 冒泡：某个页面的关闭按钮被激活（detail: { value }）。"
+      },
+      "slots": {
+        "default": "<minerva-page-tab> 项目。",
+        "actions": "滚动列表之后的全局操作（例如页面菜单）。"
+      },
+      "parts": {
+        "base": "<nav> 地标。",
+        "viewport": "滚动视口。",
+        "list": "项目列表。",
+        "scroll-button": "向左 / 向右滚动按钮。",
+        "actions": "操作区容器。"
+      },
+      "cssVars": {
+        "--icon-button-color": "关闭 / 滚动按钮的图标颜色。",
+        "--icon-button-hover-bg": "关闭 / 滚动按钮悬停时的背景。",
+        "--icon-button-pressed-color": "按下状态切换按钮的图标颜色。",
+        "--icon-button-pressed-bg": "按下状态切换按钮的背景。",
+        "--icon-button-size": "关闭 / 滚动按钮的宽度和高度。",
+        "--icon-button-icon-size": "按钮图标的字号。",
+        "--icon-button-radius": "方形按钮的圆角半径（默认 --radius-lg）。"
+      }
+    },
+    "minerva-page-tab": {
+      "props": {
+        "closable": "渲染内置关闭按钮，点击时触发 minerva-close。",
+        "closeLabel": "关闭按钮的无障碍标签（默认为本地化的“关闭 <label>”）。"
+      },
+      "events": {
+        "minerva-select": "标签按钮被激活（detail: { value }）。可取消：preventDefault() 会保留标签栏的 active-value。",
+        "minerva-close": "内置关闭按钮被激活（detail: { value }）；移除该元素即可关闭页面。"
+      },
+      "slots": {
+        "icon": "显示在标签前的图标。",
+        "action": "标签旁的独立控件（例如关闭或固定按钮）。"
+      },
+      "parts": {
+        "base": "项目容器。",
+        "trigger": "标签 <button>。",
+        "label": "（可截断的）标签文字。",
+        "close-button": "内置关闭按钮（closable）。"
+      },
+      "cssVars": {
+        "--icon-button-color": "关闭 / 滚动按钮的图标颜色。",
+        "--icon-button-hover-bg": "关闭 / 滚动按钮悬停时的背景。",
+        "--icon-button-pressed-color": "按下状态切换按钮的图标颜色。",
+        "--icon-button-pressed-bg": "按下状态切换按钮的背景。",
+        "--icon-button-size": "关闭 / 滚动按钮的宽度和高度。",
+        "--icon-button-icon-size": "按钮图标的字号。",
+        "--icon-button-radius": "方形按钮的圆角半径（默认 --radius-lg）。"
+      },
+      "methods": {
+        "focus": "聚焦标签按钮。"
+      }
+    }
   }
 }

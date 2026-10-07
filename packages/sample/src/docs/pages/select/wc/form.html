@@ -1,0 +1,32 @@
+<form id="order" style="display: grid; gap: 12px; max-width: 320px">
+  <fieldset
+    id="fields"
+    style="display: grid; gap: 12px; border: 0; padding: 0; margin: 0"
+  >
+    <label style="display: grid; gap: 4px">
+      Shipping
+      <minerva-select name="shipping" value="standard">
+        <minerva-option value="standard">Standard (3–5 days)</minerva-option>
+        <minerva-option value="express">Express (1–2 days)</minerva-option>
+      </minerva-select>
+    </label>
+    <label style="display: grid; gap: 4px">
+      Gift wrap (required)
+      <minerva-select name="wrap" placeholder="Choose a wrap" required>
+        <minerva-option value="none">No wrap</minerva-option>
+        <minerva-option value="paper">Paper</minerva-option>
+        <minerva-option value="box">Box</minerva-option>
+      </minerva-select>
+    </label>
+  </fieldset>
+  <label style="display: flex; gap: 6px; align-items: center">
+    <input id="disable" type="checkbox" /> Disable the fieldset
+  </label>
+  <div style="display: flex; gap: 8px">
+    <minerva-button type="submit">Order</minerva-button>
+    <minerva-button type="reset" variant="ghost" color="neutral"
+      >Reset</minerva-button
+    >
+  </div>
+  <output id="result"></output>
+</form>

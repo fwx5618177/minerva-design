@@ -50,5 +50,91 @@
     "--page-section-gap": "セクション内ブロックの間隔",
     "--page-stat-card-padding": "統計カードの内側パディング",
     "--page-stat-card-radius": "統計カードの角丸（既定値は --radius-lg）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "<minerva-page> はパディング付きの列（max-width で幅を制限）です。<minerva-page-header> は説明とアクション付きの h1 を、<minerva-page-section> は h2 でラベル付けされた領域を描画します。lib-core の title はここでは heading です。"
+      },
+      "stat-cards": {
+        "title": "統計カード",
+        "description": "<minerva-stat-card> は label / value / description 属性またはスロットからラベル付きの指標（<dl>）を描画し、icon スロットも使えます。セクションにもアイコンを付けられます。"
+      },
+      "toolbar": {
+        "title": "ツールバー",
+        "description": "<minerva-toolbar> はコントロールを折り返し可能な行にまとめます（role=\"group\"、aria-label で名前を付ける）。入力欄は伸び、density=\"compact\" は間隔を詰めて垂直の区切り線を中央に揃え、nowrap は 1 行に保ちます。"
+      }
+    },
+    "minerva-page": {
+      "slots": {
+        "default": "ページのコンテンツ（ヘッダー、セクションなど）。"
+      },
+      "parts": {
+        "base": "ページの列。"
+      }
+    },
+    "minerva-page-header": {
+      "props": {
+        "heading": "ページの h1 のテキスト（lib-core の title）。"
+      },
+      "slots": {
+        "heading": "見出しのコンテンツ（heading 属性の代わり）。",
+        "description": "補足テキスト（description 属性の代わり）。",
+        "actions": "見出しの横のアクション（狭い幅では見出しの下に折り返し）。"
+      },
+      "parts": {
+        "base": "<header> 要素。",
+        "heading": "<h1> 要素。",
+        "description": "説明の段落。",
+        "actions": "アクションのラッパー。"
+      }
+    },
+    "minerva-page-section": {
+      "props": {
+        "heading": "セクションの h2 のテキスト（lib-core の title）。"
+      },
+      "slots": {
+        "default": "セクションのコンテンツ。",
+        "heading": "見出しのコンテンツ（heading 属性の代わり）。",
+        "description": "補足テキスト（description 属性の代わり）。",
+        "actions": "見出しの横のアクション。",
+        "icon": "装飾用のアイコン（支援技術からは隠されます）。"
+      },
+      "parts": {
+        "base": "<section> 要素。",
+        "header": "見出しの行。",
+        "heading": "<h2> 要素。",
+        "description": "説明の段落。",
+        "actions": "アクションのラッパー。",
+        "icon": "アイコンのラッパー。"
+      }
+    },
+    "minerva-toolbar": {
+      "props": {
+        "nowrap": "折り返さずにコントロールを 1 行に収めます。"
+      },
+      "slots": {
+        "default": "コントロール。"
+      },
+      "parts": {
+        "base": "グループ（role=\"group\"）。"
+      }
+    },
+    "minerva-stat-card": {
+      "slots": {
+        "label": "指標の名前（label 属性の代わり）。",
+        "value": "指標の値（value 属性の代わり）。",
+        "description": "値の下の説明テキスト。",
+        "icon": "装飾用のアイコン（支援技術からは隠されます）。"
+      },
+      "parts": {
+        "base": "カード。",
+        "icon": "アイコンのラッパー。",
+        "label": "<dt>（名前）。",
+        "value": "<dd>（値）。",
+        "description": "説明の段落。"
+      }
+    }
   }
 }

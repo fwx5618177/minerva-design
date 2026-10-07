@@ -29,9 +29,10 @@ const layersCode = `@minerva/core            framework-agnostic TypeScript, DOM 
   ├─ positioning (the only place @floating-ui/dom is used)
   └─ theme utilities, palettes, design tokens (tokens.css), i18n messages + translator
         ▲                                ▲
-        │ thin React hooks               │ Lit controllers (later)
+        │ thin React hooks               │ Lit controllers
 @minerva/lib-core                 @minerva/lib-web-components
-  React 19 components               Web Components (Lit)`;
+  React 19 components               Web Components (Lit custom elements)
+  + style.css                       + tokens.css, CDN bundle`;
 
 const coreCode = `import { createDismissableLayer, createFocusScope, lockScroll } from "@minerva/core";
 

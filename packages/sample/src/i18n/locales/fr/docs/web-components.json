@@ -1,60 +1,90 @@
 {
   "title": "Web Components",
-  "description": "<minerva-button> : un élément personnalisé indépendant du framework, construit avec Lit, utilisable en HTML pur, avec React, Vue ou tout autre framework.",
+  "description": "Prise en main : l'ensemble des composants Minerva sous forme d'éléments personnalisés standard, pour du HTML simple, Vue, Angular, Svelte, Solid, React ou tout autre framework.",
   "what": {
     "title": "De quoi s'agit-il",
-    "p1": "@minerva/lib-web-components fournit des composants Minerva sous forme d'éléments personnalisés standard. Importer le paquet une fois les enregistre auprès du navigateur ; ils se comportent ensuite comme des balises HTML natives dans n'importe quelle page ou framework.",
-    "p2": "Les éléments sont rendus dans une shadow root : leurs styles internes ne débordent pas sur votre page (et ne peuvent pas être cassés par elle). Ils se configurent avec des attributs HTML et émettent des événements DOM classiques comme click."
+    "p1": "@minerva/lib-web-components implémente chaque composant Minerva sous forme d'élément personnalisé standard (<minerva-button>, <minerva-select>, <minerva-modal>...), construit avec Lit. Une fois enregistrés, les éléments se comportent comme des balises HTML natives : ils fonctionnent dans une page statique, dans un template rendu côté serveur et dans tout framework qui produit du HTML.",
+    "p2": "Ce ne sont pas des enveloppes autour des composants React : ils rendent la même structure DOM et compilent les mêmes feuilles de style dans leur shadow root ; ils ont donc exactement le même aspect, lisent les mêmes design tokens et exposent les mêmes variables CSS --<component>-*. Le comportement du clavier et du focus (zones de focus, pile de couches refermables, focus itinérant, recherche par saisie, positionnement) provient des mêmes primitives de @minerva/core, avec les mêmes rôles et états ARIA.",
+    "p3": "L'API reprend le vocabulaire de React : color, variant, size, disabled, open, value... deviennent des attributs et des propriétés, les props ReactNode deviennent des slots, les callbacks deviennent des événements minerva-*, et les contrôles de formulaire participent aux <form> natifs."
   },
-  "html": {
-    "title": "Utilisation en HTML",
-    "text": "Chargez le paquet comme module ES (via votre bundler), puis utilisez les balises n'importe où dans le document. Les attributs booléens comme loading ou disabled sont actifs dès qu'ils sont présents. Dans un <form>, le bouton ne fait rien par défaut (type=\"button\") ; utilisez type=\"submit\" ou type=\"reset\" pour soumettre ou réinitialiser le formulaire englobant."
+  "install": {
+    "title": "Installation",
+    "text": "Le paquet est ESM uniquement et n'a aucune dépendance pair : Lit, @minerva/core (avec Floating UI), DOMPurify et jsonc-parser sont des dépendances ordinaires. React n'est pas nécessaire."
+  },
+  "load": {
+    "title": "Charger les éléments",
+    "bundler": "Avec un bundler, importez le paquet une fois (par exemple dans votre fichier d'entrée) pour enregistrer tous les éléments :",
+    "perElement": "Ou importez une entrée par élément pour des bundles plus légers. Chaque entrée enregistre son élément, ses sous-éléments et les éléments Minerva qu'il affiche, et rien d'autre ; les modules sont par ailleurs sans effet de bord, si bien que les éléments inutilisés ne sont jamais embarqués. Importer un élément deux fois (ou l'entrée globale ensuite) est sans danger.",
+    "cdn": "Sans aucune étape de build, chargez le bundle autonome depuis un CDN avec un script de type module. Il contient tous les éléments, Lit et @minerva/core, minifiés :",
+    "esm": "En production, fixez une version dans les URL du CDN. Le bundle est aussi publié sous l'export ./cdn (@minerva/lib-web-components/cdn) si vous souhaitez l'héberger vous-même."
+  },
+  "tokens": {
+    "title": "Design tokens",
+    "text": "Les éléments se stylent eux-mêmes (leur CSS vit dans leur shadow root), mais lisent les design tokens (--primary-color, --radius-md, --space-2, ...) depuis la page. Chargez @minerva/lib-web-components/tokens.css une fois, via une balise link de feuille de style ou un import CSS. C'est le même fichier que @minerva/core/tokens.css : si la page charge déjà @minerva/lib-core/style.css (React et Web Components côte à côte), les tokens sont déjà présents. Consultez Thèmes pour les thèmes, les palettes et les variables par composant."
+  },
+  "attributes": {
+    "title": "Attributs et propriétés",
+    "text": "Chaque option est une propriété (en camelCase, n'importe quelle valeur JavaScript) et, lorsqu'il s'agit d'une chaîne, d'un nombre ou d'un booléen, également un attribut (en kebab-case : full-width, close-label, activation-mode). Les attributs booléens sont actifs dès qu'ils sont présents ; les options dont la valeur par défaut en React est true sont inversées (hide-close-button, no-loop). Les attributs d'état (open, disabled, variant, size, color, checked...) sont reflétés, afin que le CSS puisse les cibler. Les tableaux, objets et fonctions (options, items, columns, callbacks de rendu) sont uniquement des propriétés.",
+    "value": "Les contrôles de formulaire suivent les champs natifs : l'attribut value (ou checked) est la valeur initiale, restaurée par form.reset(), tandis que la propriété value / checked est la valeur courante. Définissez la propriété pour la modifier depuis un script."
+  },
+  "events": {
+    "title": "Événements",
+    "text": "Les éléments signalent les actions de l'utilisateur avec des CustomEvent nommés minerva-<ce qui s'est passé>. Ils remontent (bubbles) et sont composés (ils traversent les shadow roots), et transportent le nouvel état dans event.detail :",
+    "change": "minerva-change : un changement de valeur validé ({ value }, ou { checked, value } pour les cases à cocher et les interrupteurs).",
+    "input": "minerva-input : la valeur change pendant que l'utilisateur tape ({ value }).",
+    "open": "minerva-open-change : l'utilisateur a demandé à ouvrir ou fermer une fenêtre contextuelle ({ open, ... }). Il est annulable : preventDefault() conserve l'état actuel, l'équivalent d'une prop open contrôlée en React. Les changements de sélection des onglets sont aussi annulables.",
+    "other": "Les événements plus spécifiques suivent le même schéma : minerva-select, minerva-close, minerva-clear, minerva-page-change, minerva-sort-change, minerva-selection-change, minerva-after-open, minerva-after-close... Chaque page de composant liste les événements de ses éléments.",
+    "native": "Les événements natifs gardent leur sens lorsqu'un élément reproduit un contrôle natif : click, focus, blur, input et change (redéclenchés sur l'hôte).",
+    "programmatic": "Définir une propriété depuis un script ne déclenche jamais d'événement : un événement signifie toujours que l'utilisateur a fait quelque chose, de sorte que synchroniser un état vers un élément ne peut pas créer de boucle."
+  },
+  "slots": {
+    "title": "Slots et parts",
+    "text": "Le contenu riche se place dans des slots : le slot par défaut pour le contenu principal, et des slots nommés (slot=\"footer\", \"prefix\", \"start\", \"icon\"...) là où le composant React prend un ReactNode. Les éléments exposent leurs parties internes clés sous forme de parts CSS (base, control, panel, item, label, icon...), que vous pouvez styler depuis la page avec ::part() sans dépendre de leurs noms de classes internes. Les slots et les parts sont listés sur chaque page de composant."
+  },
+  "typings": {
+    "title": "TypeScript et prise en charge par l'éditeur",
+    "text": "Chaque classe d'élément s'ajoute à HTMLElementTagNameMap : document.querySelector et createElement renvoient donc le bon type. Les classes et leurs unions de littéraux de chaîne sont exportées par le paquet.",
+    "frameworks": "Les typages pour les templates de framework sont générés à partir du Custom Elements Manifest (custom-elements.json, également publié) : les attributs, propriétés et événements sont vérifiés dans les templates React, Vue, Svelte et Solid. Référencez une fois le fichier correspondant à votre framework :",
+    "vscode": "Pour les fichiers HTML simples, indiquez à VS Code les données HTML personnalisées fournies pour obtenir la complétion des balises et des attributs, avec leur documentation :"
   },
   "react": {
-    "title": "Utilisation avec React",
-    "text": "Importez le paquet une fois pour son effet de bord et référencez les typages fournis pour vérifier les attributs en JSX. React 19 est requis. onClick et les autres événements DOM fonctionnent normalement ; utilisez aria-label (avec un tiret) pour le nom accessible.",
-    "booleans": "React 19 transmet les valeurs aux éléments personnalisés sous forme de propriétés : les props booléennes acceptent donc de simples booléens, et loading={saving} ou disabled={false} fonctionnent comme prévu."
+    "title": "Utilisation depuis React 19",
+    "text": "React 19 prend en charge nativement les éléments personnalisés : les props qui existent sur l'élément sont définies comme propriétés (les booléens, tableaux et objets fonctionnent donc tels quels) et les props nommées on + le nom de l'événement s'abonnent aux événements personnalisés, par ex. onminerva-change. onClick et les autres événements standard fonctionnent comme avec les éléments natifs.",
+    "note": "Dans une application React, les composants React de @minerva/lib-core sont généralement plus adaptés. Les éléments personnalisés sont utiles lorsque les mêmes widgets sont partagés avec du code non React (micro-frontends, contenu de CMS, templates serveur)."
   },
-  "other": {
-    "title": "Vue et autres frameworks",
-    "text": "Tout framework capable de rendre du HTML peut utiliser ces éléments. Avec Vue, déclarez les balises minerva-* comme éléments personnalisés pour que le compilateur ne cherche pas à les résoudre comme composants Vue, et liez null pour retirer un attribut booléen. Angular nécessite CUSTOM_ELEMENTS_SCHEMA ; Svelte, Solid et Lit fonctionnent sans configuration."
+  "ssr": {
+    "title": "Rendu côté serveur",
+    "text": "Les modules peuvent être importés dans Node (Next.js, Nuxt, SvelteKit, Angular SSR, Astro...) : rien ne touche au DOM au moment de l'import, et defineElement() est idempotent et ne fait rien lorsque l'environnement n'a pas de registre customElements. Les éléments ne sont pas pré-rendus (pas de shadow DOM déclaratif) : le serveur envoie les balises avec leurs attributs et leur contenu light DOM, et le navigateur les met à niveau dès que les définitions sont chargées.",
+    "fouc": "Masquez les éléments non définis avec :not(:defined) pour éviter un flash de contenu non stylé."
   },
-  "theming": {
-    "title": "Thème",
-    "text": "Le bouton utilise les jetons de design de lib-core (propriétés CSS personnalisées comme --primary-color, --danger-color, --text-inverse-color, --surface-muted-color, --focus-ring-color et --radius-md), avec des valeurs de repli intégrées pour les pages sans lib-core. Les propriétés personnalisées sont héritées dans le shadow root : les changements de thème de ConfigProvider / applyThemeStyles s'y appliquent donc aussi. Pour ne restyler que certains boutons, définissez les jetons sur l'élément ou sur un ancêtre :"
+  "dev": {
+    "title": "Avertissements de développement",
+    "text": "Les combinaisons d'attributs invalides et les erreurs courantes (une valeur qui ne correspond à aucune option, min supérieur à max, un bouton composé uniquement d'une icône sans aria-label, le paquet chargé deux fois...) sont signalées avec console.warn, une fois par message, préfixées par [minerva] et le nom de la balise. Les vérifications sont protégées par process.env.NODE_ENV !== \"production\", que les bundlers remplacent : les builds de production les suppriment. Sans bundler (le build CDN, ou un module chargé là où process n'existe pas), les avertissements sont désactivés."
   },
-  "a11y": {
-    "title": "Accessibilité",
-    "text": "L'élément rend un <button> natif dans son shadow root : il est donc focalisable et utilisable au clavier, avec un anneau de focus visible (--focus-ring-color). L'attribut aria-label est transmis à ce bouton ; définissez-le sur les boutons ne contenant qu'une icône. Pendant le chargement, le bouton définit aria-busy et ignore les clics ; les boutons désactivés ne sont pas focalisables."
-  },
-  "demos": {
-    "basic": {
-      "title": "Utilisation de base",
-      "description": "Importez le paquet une fois, puis utilisez <minerva-button> comme n'importe quel élément. Le onClick de React fonctionne comme sur les éléments natifs."
-    },
-    "variants": {
-      "title": "Variantes",
-      "description": "Neuf variantes : primary, secondary, success, warning, error, info, ghost, retry et back."
-    },
-    "sizes-shapes": {
-      "title": "Tailles et formes",
-      "description": "Quatre tailles (de tiny à large) et quatre formes. Les boutons ronds composés d'une icône ont besoin d'un aria-label."
-    },
-    "states": {
-      "title": "États",
-      "description": "loading affiche un indicateur et bloque les clics ; disabled et active sont aussi des propriétés booléennes. Avec React 19, passez de simples booléens, par ex. loading={saving}."
+  "authoring": {
+    "title": "Créer vos propres éléments",
+    "text": "Les briques des éléments Minerva sont exportées : vos propres éléments personnalisés peuvent ainsi partager leurs conventions, leur portée de thème et leur comportement d'accessibilité :",
+    "exports": {
+      "defineElement": "defineElement(Class) : enregistre un élément et ses dépendances statiques ; idempotent, avertit en développement lorsqu'une autre classe possède déjà la balise, sans effet en l'absence de customElements.",
+      "emit": "emit(target, name, detail, { cancelable }) : déclenche un CustomEvent minerva-* qui remonte et est composé, et renvoie false lorsqu'un écouteur a appelé preventDefault().",
+      "MinervaElement": "MinervaElement : la classe de base LitElement (static tagName, static dependencies, this.emit()).",
+      "hostStyles": "hostStyles : règles :host partagées (box-sizing, l'attribut hidden, un utilitaire .visually-hidden).",
+      "FormAssociatedElement": "FormAssociatedElement : classe de base des contrôles de formulaire reposant sur ElementInternals (name, disabled, required, validité, validité personnalisée, réinitialisation, fieldset et restauration de l'état).",
+      "LocaleController": "LocaleController : les textes intégrés via le traducteur de core (this.locale.t(\"modal.close\")), en suivant lang et <minerva-config locale>.",
+      "resolveLanguage": "resolveLanguage(element) : la langue prise en charge dans la portée d'un élément.",
+      "AriaController": "AriaController : transmet aria-label / aria-labelledby / aria-describedby et <label for> de l'hôte vers un contrôle interne (les id ne peuvent pas traverser les shadow roots).",
+      "HasSlotController": "HasSlotController : indique si un slot nommé a du contenu, pour supprimer les conteneurs vides.",
+      "controllers": "Des contrôleurs Lit au-dessus des primitives de core : FloatingLayerController (fenêtre contextuelle ancrée : position, couche refermable, zone de focus facultative), AnchoredPositionController, DismissableLayerController, FocusScopeController, ModalController (blocage du défilement et masquage du reste de la page), RovingFocusController et TypeaheadController.",
+      "popoverResetStyles": "popoverResetStyles : réinitialise les styles du navigateur d'un panneau popover=\"manual\" rendu dans la top layer."
     }
   },
-  "api": {
-    "wc_ButtonProps": {
-      "variant": "Style visuel du bouton (reflété dans l'attribut variant).",
-      "size": "Taille du bouton.",
-      "shape": "Forme des angles du bouton.",
-      "disabled": "Désactive le bouton (attribut booléen).",
-      "loading": "Affiche un indicateur à la place du contenu et bloque les clics ; définit aria-busy.",
-      "active": "Affiche le bouton dans son style enfoncé / actif.",
-      "ariaLabel": "Libellé accessible transmis au <button> interne ; à définir avec l'attribut aria-label. Obligatoire pour les boutons composés uniquement d'une icône.",
-      "type": "Effet du bouton dans un <form> englobant : aucun (button), le soumettre (submit, via requestSubmit() pour exécuter la validation et les écouteurs submit) ou le réinitialiser (reset)."
+  "guides": {
+    "title": "Guides"
+  },
+  "demos": {
+    "react": {
+      "title": "React 19",
+      "description": "Des éléments personnalisés Minerva rendus à partir de l'état React : value, checked et disabled sont passés comme propriétés, et onminerva-input / onminerva-change s'abonnent aux événements personnalisés."
     }
   }
 }

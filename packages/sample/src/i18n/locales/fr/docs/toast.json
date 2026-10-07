@@ -91,5 +91,45 @@
     "--toast-shadow": "Ombre d'une notification (par défaut --shadow-lg)",
     "--toast-background": "Fond de base d'une notification (sous la teinte de couleur)",
     "--toast-z-index": "Ordre d'empilement de la pile (par défaut --z-toast)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Un <minerva-toast-region> affiche les toasts ; region.toast est l'API toast() liée à cette région (info, success, warning, danger). position place la pile."
+      },
+      "options": {
+        "title": "Options et action",
+        "description": "Un toast avec titre, description, durée plus longue et action Annuler. max ne garde que les plus récents ; minerva-close indique pourquoi chaque toast s'est fermé."
+      },
+      "loading": {
+        "title": "Chargement et promesses",
+        "description": "toast.promise() suit une promesse dans un seul toast ; loading() puis update() font de même à la main. Les toasts de chargement restent ouverts jusqu'à leur mise à jour ; dismiss() ferme tous les toasts."
+      }
+    },
+    "minerva-toast-region": {
+      "props": {
+        "noPauseOnHover": "Le compte à rebours continue quand un toast est survolé ou a le focus.",
+        "toast": "L'API toast liée à cette région : region.toast.success(\"Saved\") s'affiche dans cet élément (lecture seule)."
+      },
+      "events": {
+        "minerva-close": "Un toast de cette région commence à se fermer (detail : { id, reason } ; reason : timeout, close-button, action, escape, dismiss ou overflow).",
+        "minerva-after-close": "Un toast de cette région a été retiré après son animation de sortie (detail : { id })."
+      },
+      "parts": {
+        "viewport": "La pile fixe (role=\"region\").",
+        "toast": "Un toast.",
+        "icon": "Le conteneur de l'icône d'un toast.",
+        "content": "Le conteneur du titre / de la description.",
+        "title": "Le titre.",
+        "description": "La description.",
+        "action": "Le bouton d'action.",
+        "close-button": "Le bouton de fermeture (×).",
+        "progress": "La barre de compte à rebours."
+      },
+      "methods": {
+        "focus": "Déplace le focus sur la région (comme le raccourci)."
+      }
+    }
   }
 }

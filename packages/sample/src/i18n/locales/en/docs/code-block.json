@@ -33,5 +33,51 @@
     "--code-block-border-color": "Border color",
     "--code-block-font-size": "Font size of the code",
     "--code-block-max-height": "Maximum height before the block scrolls (default: none)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The text content is rendered verbatim (escape < in markup); language shows a label. Each block is a named, focusable region."
+      },
+      "copy": {
+        "title": "Copy to clipboard",
+        "description": "The code property holds the text; copyable adds a copy button, copy() copies from outside and minerva-copy reports the result."
+      },
+      "overflow": {
+        "title": "Long lines and height",
+        "description": "no-wrap scrolls long lines horizontally and max-height caps the block; the region scrolls with the keyboard too."
+      }
+    },
+    "minerva-code-block": {
+      "props": {
+        "code": "Source text (default: the element's text content).",
+        "language": "Language of the code, shown as a label (e.g. \"json\", \"bash\").",
+        "noWrap": "Scrolls long lines horizontally instead of wrapping them (lib-core's wrap={false}).",
+        "text": "The text shown and copied (read-only)."
+      },
+      "events": {
+        "minerva-copy": "The copy button was used (detail: { value, success })."
+      },
+      "parts": {
+        "base": "The outer wrapper (copyable or labelled blocks).",
+        "region": "The <pre> region.",
+        "code": "The <code> element.",
+        "language": "The language label.",
+        "copy-button": "The copy button."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the copy button.",
+        "--icon-button-hover-bg": "Background of the copy button on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed copy button.",
+        "--icon-button-pressed-bg": "Background of a pressed copy button.",
+        "--icon-button-size": "Width and height of the copy button.",
+        "--icon-button-icon-size": "Font size of the copy icon.",
+        "--icon-button-radius": "Corner radius of the copy button."
+      },
+      "methods": {
+        "copy": "Copies the text to the clipboard; resolves with whether it worked."
+      }
+    }
   }
 }

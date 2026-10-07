@@ -54,5 +54,76 @@
     "--rating-gap": "星星与数值之间的间距",
     "--rating-value-font-size": "数值的字号（所有尺寸）",
     "--rating-scale-gap": "RatingScale 各行之间的间距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "展示",
+        "description": "未设置 interactive 时星级仅用于展示（role=\"img\"），与未传 onChange 的 React Rating 一致：任意 0..max 分数绘制在 5 颗星上，可在后面显示 show-value 和 rating-count。"
+      },
+      "interactive": {
+        "title": "交互",
+        "description": "默认可交互：点击星星的左半或右半，或聚焦后使用方向键、PageUp / PageDown 以及 Home / End。minerva-change 会报告新分数。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "该元素与表单关联：分数以 name 提交，required 会拒绝 0 分，重置会恢复 value 属性的初始值。"
+      },
+      "scale": {
+        "title": "多维评分",
+        "description": "<minerva-rating-scale> 在同一刻度上为多个维度评分。dimensions 是 JS 属性；minerva-change 携带维度 key 和更新后的列表，这里同步到一个 readonly、hide-value 的副本。"
+      }
+    },
+    "minerva-rating": {
+      "props": {
+        "defaultValue": "初始分数，由 form.reset() 恢复（即 value 属性）。",
+        "readonly": "即使设置了 interactive 也强制为展示模式。",
+        "name": "随表单数据提交的名称。",
+        "disabled": "禁用控件：不可聚焦、不提交、不校验。",
+        "required": "控件必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，与 <input>.validity 相同（只读）。",
+        "validationMessage": "描述当前校验错误的消息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。",
+        "interactive": "使评分成为可交互的滑块（对应 React 中传入 onChange）；默认仅展示。"
+      },
+      "events": {
+        "change": "用户修改了分数。",
+        "minerva-change": "用户修改了分数；detail: { value }。"
+      },
+      "parts": {
+        "base": "根元素（role=\"slider\"，只读时为 role=\"img\"）。",
+        "stars": "星星所在的行。",
+        "star": "每颗星星。",
+        "value": "分数与评分人数。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入 \"\" 则清除。",
+        "formResetCallback": "表单关联回调，由 form.reset() 调用：恢复默认值。",
+        "formDisabledCallback": "表单关联回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单关联回调，在浏览器恢复值时调用（返回导航、自动填充）。"
+      }
+    },
+    "minerva-rating-scale": {
+      "props": {
+        "readonly": "即使设置了 interactive 也强制为展示模式。",
+        "hideValue": "隐藏每行末尾的分数。",
+        "interactive": "使各行可交互（对应 React 中传入 onChange）。"
+      },
+      "events": {
+        "minerva-change": "用户为某个维度评分；detail: { key, value, dimensions }（dimensions 已更新）。"
+      },
+      "parts": {
+        "base": "行列表。",
+        "row": "每一行。",
+        "label": "行的标签。"
+      }
+    }
   }
 }

@@ -203,9 +203,29 @@ function runHandlers<E extends Event>(
 ): boolean {
   const wasPrevented = event.defaultPrevented;
   let cancelled = false;
-  for (const handler of handlers) {
-    if (handler?.(event) === false) cancelled = true;
+  // `focusin` (and synthetic events) are not cancelable: `preventDefault()`
+  // would be a no-op and could not keep the layer open. Record the call
+  // instead, so the documented contract holds for every event type.
+  let preventedUncancelable = false;
+  const restore = !event.cancelable;
+  if (restore) {
+    const native = event.preventDefault;
+    Object.defineProperty(event, "preventDefault", {
+      configurable: true,
+      value() {
+        preventedUncancelable = true;
+        native.call(event);
+      },
+    });
   }
+  try {
+    for (const handler of handlers) {
+      if (handler?.(event) === false) cancelled = true;
+    }
+  } finally {
+    if (restore) delete (event as { preventDefault?: unknown }).preventDefault;
+  }
+  if (preventedUncancelable) cancelled = true;
   return !cancelled && (wasPrevented || !event.defaultPrevented);
 }
 

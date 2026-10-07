@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useControllableState } from "../internal/useControllableState";
+import { warnControlledProps } from "../internal/devWarnings";
 
 export interface UseDisclosureProps {
   /** Controlled open state; leave `undefined` for uncontrolled. */
@@ -35,11 +36,24 @@ export interface UseDisclosureReturn {
 export function useDisclosure(
   props: UseDisclosureProps = {},
 ): UseDisclosureReturn {
-  const { isOpen: isOpenProp, defaultIsOpen = false, onChange } = props;
+  const { isOpen: isOpenProp, defaultIsOpen, onChange } = props;
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("useDisclosure", {
+      prop: "isOpen",
+      value: isOpenProp,
+      defaultProp: "defaultIsOpen",
+      defaultValue: defaultIsOpen,
+      handlerProp: "onChange",
+      handler: onChange,
+    });
+  }
   const [isOpen, setIsOpen] = useControllableState({
     value: isOpenProp,
-    defaultValue: defaultIsOpen,
+    defaultValue: defaultIsOpen ?? false,
     onChange,
+    name: "useDisclosure",
+    prop: "isOpen",
+    defaultProp: "defaultIsOpen",
   });
   const onOpen = useCallback(() => setIsOpen(true), [setIsOpen]);
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);

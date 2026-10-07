@@ -1,0 +1,30 @@
+{
+  "title": "Angular",
+  "description": "在 Angular 中使用 Minerva 自定义元素：CUSTOM_ELEMENTS_SCHEMA、property 与事件绑定、用于模板驱动表单和响应式表单的 ControlValueAccessor、变更检测以及 SSR。",
+  "setup": {
+    "title": "配置",
+    "text": "在启动应用之前注册一次元素（全部注册，或按元素引入各自的入口），并把设计令牌添加到构建的全局样式中："
+  },
+  "binding": {
+    "title": "绑定",
+    "text": "在模板中使用 <minerva-*> 标签的组件（或 NgModule）中添加 CUSTOM_ELEMENTS_SCHEMA：之后 Angular 会接受这些未知标签，并像原生元素一样绑定它们的 property 和事件。",
+    "properties": "[value]、[checked]、[disabled]、[open]、[options]……设置的是 DOM property，因此布尔值、数组、对象和函数都能原样传递给元素。Signal 与任何绑定一样可以使用。",
+    "attributes": "静态 attribute（aria-label=\"Name\"、clearable）按原样书写；对于不是 property 的 attribute，例如 aria-*、data-* 或 slot，请使用 [attr.name] 绑定。",
+    "events": "(minerva-change)、(minerva-input)、(minerva-open-change)……用于监听自定义事件；$event 是 CustomEvent（启用严格模板时用 $any() 包裹），新状态位于 $event.detail 中。(click) 和其他原生事件照常工作。"
+  },
+  "forms": {
+    "title": "表单",
+    "text": "ngModel、formControl 和 formControlName 需要 ControlValueAccessor，而 Angular 只为原生输入框提供了它。一个小型指令即可桥接 Minerva 的文本字段和选择器：它写入 value property（不会触发事件），并通过 minerva-* 事件上报用户的修改：",
+    "usage": "把该指令与 ReactiveFormsModule（使用 ngModel 时为 FormsModule）一起导入。之后 Angular 的校验器和表单状态（dirty、touched、invalid）就会像原生输入框一样工作：",
+    "checked": "对于 <minerva-checkbox> 和 <minerva-switch>，请基于 checked property 和 minerva-change 的 detail.checked 再编写一个 accessor；对于其他控件，请使用其事件文档中列出的值结构。",
+    "native": "即使不使用 Angular 表单，这些元素本身也是表单关联的：在普通 <form> 中，它们的 name 和 value 会成为 FormData 的一部分，required 和浏览器的约束校验同样生效，form.reset() 会恢复它们的初始值。参见表单。"
+  },
+  "zones": {
+    "title": "变更检测",
+    "text": "无论使用 zone.js 还是 zoneless 应用，模板中的事件绑定都会触发 Angular 的变更检测，因此在 (minerva-change) 中更新 signal 或字段就足够了。使用 zone.js 时，元素内部使用的定时器和观察器（动画、弹出层定位）也会被打补丁，这可能会安排额外的变更检测，但无需特殊处理。在 zoneless 应用中，你自己通过 addEventListener 添加的监听器应当更新 signal，以便刷新视图。"
+  },
+  "ssr": {
+    "title": "服务端渲染",
+    "text": "使用 Angular SSR 时，main.ts 只在浏览器中运行，因此元素会在客户端注册。从同样会在服务端运行的代码（共享组件、main.server.ts）中引入该包也是安全的：模块加载时不会访问 DOM，且注册是幂等的。服务端会把标签连同其 attribute 和 light DOM 内容渲染为 HTML，再由浏览器升级它们。"
+  }
+}

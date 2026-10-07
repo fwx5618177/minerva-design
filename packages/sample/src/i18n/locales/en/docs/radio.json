@@ -88,5 +88,72 @@
     "--radio-gap": "Space between the mark and the label",
     "--radio-label-font-size": "Font size of the label (every size)",
     "--radio-group-gap": "Space between the radios of a RadioGroup"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A labelled group with a preselected value and a disabled option. The group is one Tab stop; arrow keys move and select. minerva-change reports the new value."
+      },
+      "styles-states": {
+        "title": "Styles and states",
+        "description": "Horizontal direction, group sizes and colors, per-radio helper and error messages, and a disabled group."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The group is the form control: it submits the selected value under name, required blocks submission while nothing is selected, and reset restores the value attribute."
+      }
+    },
+    "minerva-radio": {
+      "props": {
+        "group": "The <minerva-radio-group> the radio belongs to (read-only).",
+        "isDisabled": "Whether the radio cannot be checked, by itself or through its group (read-only)."
+      },
+      "events": {
+        "minerva-change": "A standalone radio was checked by the user; detail: { checked: true, value }. Inside a group, the group fires it."
+      },
+      "slots": {
+        "default": "Label content (alternative to the label attribute)."
+      },
+      "parts": {
+        "base": "The wrapper.",
+        "mark": "The visual radio mark.",
+        "label": "The label text.",
+        "helper-text": "The helper or error text."
+      }
+    },
+    "minerva-radio-group": {
+      "props": {
+        "radios": "The <minerva-radio> children of the group (read-only).",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The user selected another radio (like native radios).",
+        "minerva-change": "The user selected another radio; detail: { value }."
+      },
+      "slots": {
+        "default": "The <minerva-radio> options."
+      },
+      "parts": {
+        "base": "The wrapper.",
+        "label": "The visible group label.",
+        "group": "The element with role=\"radiogroup\".",
+        "helper-text": "The helper text."
+      },
+      "methods": {
+        "focus": "Focuses the checked radio, else the first enabled one.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

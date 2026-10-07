@@ -79,5 +79,101 @@
     "--select-dropdown-max-height": "Maximum height of the listbox before it scrolls",
     "--select-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
     "--select-option-padding-x": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "<minerva-option> children are the options; a wrapping <label> or aria-label names the select. size sets the trigger size, a disabled option cannot be picked."
+      },
+      "groups": {
+        "title": "Groups and rich options",
+        "description": "<minerva-option-group> with a <minerva-select-label> heading groups options, <minerva-select-separator> divides them. For options with rich content, label sets the text shown in the trigger and text-value the typeahead text."
+      },
+      "options-property": {
+        "title": "Options from data and events",
+        "description": "The options JS property takes flat options and labelled groups. minerva-change reports the picked value; minerva-open-change is cancelable — check the box to keep the listbox closed."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: it submits its value under name, required blocks submission while empty, Reset restores the value attribute and a disabled <fieldset> disables it."
+      }
+    },
+    "minerva-option": {
+      "props": {
+        "label": "Text shown in the select's trigger when selected (default: the text content).",
+        "selected": "Whether the option is the selected one (managed by the select).",
+        "highlighted": "Whether the option is highlighted (managed by the select).",
+        "text": "Text of the option: textValue, else label, else its text content (read-only).",
+        "displayLabel": "Label shown in the trigger: label, else the text content (read-only)."
+      },
+      "slots": {
+        "default": "Content of the option (text, icon…)."
+      },
+      "parts": {
+        "base": "The option row.",
+        "label": "The content wrapper.",
+        "indicator": "The check mark of the selected option."
+      }
+    },
+    "minerva-option-group": {
+      "slots": {
+        "default": "A <minerva-select-label> and <minerva-option> elements."
+      }
+    },
+    "minerva-select-label": {
+      "slots": {
+        "default": "Label text."
+      },
+      "parts": {
+        "base": "The label."
+      }
+    },
+    "minerva-select-separator": {
+      "parts": {
+        "base": "The line."
+      }
+    },
+    "minerva-select": {
+      "props": {
+        "options": "Options (or labelled groups) rendered before the <minerva-option> children; JS property only.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled fieldset (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "<label> elements associated with the element (read-only).",
+        "validity": "Validity state, as <input>.validity (read-only).",
+        "validationMessage": "Message describing the current validation error, empty when valid (read-only).",
+        "willValidate": "Whether the element is a candidate for constraint validation (read-only)."
+      },
+      "events": {
+        "input": "The value changed (native-like, composed).",
+        "change": "The value changed (native-like).",
+        "minerva-change": "The user selected an option (detail: { value }).",
+        "minerva-open-change": "The user opened or closed the listbox (detail: { open }); cancelable: preventDefault() keeps the current state."
+      },
+      "slots": {
+        "default": "<minerva-option>, <minerva-option-group> and <minerva-select-separator> elements."
+      },
+      "parts": {
+        "trigger": "The combobox <button>.",
+        "value": "The selected label or placeholder.",
+        "icon": "The chevron.",
+        "positioner": "The positioned popup wrapper.",
+        "listbox": "The role=\"listbox\" popup.",
+        "option": "An option rendered from the options property.",
+        "group-label": "A group heading rendered from the options property."
+      },
+      "methods": {
+        "focus": "Focuses the trigger.",
+        "blur": "Removes focus from the trigger.",
+        "show": "Opens the listbox.",
+        "hide": "Closes the listbox.",
+        "checkValidity": "Checks validity; fires invalid when invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets (or clears, with \"\") a custom validation error.",
+        "formResetCallback": "Form lifecycle callback called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Form lifecycle callback called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
   }
 }

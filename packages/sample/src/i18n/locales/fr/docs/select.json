@@ -79,5 +79,101 @@
     "--select-dropdown-max-height": "Hauteur maximale de la liste avant défilement",
     "--select-option-padding-y": "Marge intérieure verticale d'une option (suit la marge de ligne de la densité)",
     "--select-option-padding-x": "Marge intérieure horizontale d'une option et d'un libellé de groupe (suit la marge de ligne de la densité)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Les enfants <minerva-option> sont les options ; un <label> englobant ou aria-label nomme le select. size règle la taille du déclencheur, une option désactivée ne peut pas être choisie."
+      },
+      "groups": {
+        "title": "Groupes et options enrichies",
+        "description": "<minerva-option-group> avec un titre <minerva-select-label> regroupe les options, <minerva-select-separator> les sépare. Pour les options au contenu riche, label définit le texte affiché dans le déclencheur et text-value celui de la recherche par saisie."
+      },
+      "options-property": {
+        "title": "Options issues de données et événements",
+        "description": "La propriété JS options accepte des options simples et des groupes titrés. minerva-change indique la valeur choisie ; minerva-open-change est annulable : cochez la case pour garder la liste fermée."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "L'élément est associé aux formulaires : il soumet sa valeur sous name, required bloque l'envoi tant qu'il est vide, Réinitialiser restaure l'attribut value et un <fieldset> désactivé le désactive."
+      }
+    },
+    "minerva-option": {
+      "props": {
+        "label": "Texte affiché dans le déclencheur du select quand l'option est choisie (par défaut : son contenu textuel).",
+        "selected": "Indique si l'option est celle sélectionnée (géré par le select).",
+        "highlighted": "Indique si l'option est mise en surbrillance (géré par le select).",
+        "text": "Texte de l'option : textValue, sinon label, sinon son contenu textuel (lecture seule).",
+        "displayLabel": "Libellé affiché dans le déclencheur : label, sinon le contenu textuel (lecture seule)."
+      },
+      "slots": {
+        "default": "Contenu de l'option (texte, icône…)."
+      },
+      "parts": {
+        "base": "La ligne de l'option.",
+        "label": "Le conteneur du contenu.",
+        "indicator": "La coche de l'option sélectionnée."
+      }
+    },
+    "minerva-option-group": {
+      "slots": {
+        "default": "Un <minerva-select-label> et des éléments <minerva-option>."
+      }
+    },
+    "minerva-select-label": {
+      "slots": {
+        "default": "Texte du titre."
+      },
+      "parts": {
+        "base": "Le titre."
+      }
+    },
+    "minerva-select-separator": {
+      "parts": {
+        "base": "La ligne."
+      }
+    },
+    "minerva-select": {
+      "props": {
+        "options": "Options (ou groupes titrés) affichées avant les enfants <minerva-option> ; propriété JS uniquement.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un fieldset désactivé (lecture seule).",
+        "form": "Le formulaire propriétaire de l'élément (lecture seule).",
+        "labels": "Éléments <label> associés à l'élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message décrivant l'erreur de validation courante, vide si valide (lecture seule).",
+        "willValidate": "Indique si l'élément est candidat à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "input": "La valeur a changé (comme en natif, composed).",
+        "change": "La valeur a changé (comme en natif).",
+        "minerva-change": "L'utilisateur a choisi une option (detail: { value }).",
+        "minerva-open-change": "L'utilisateur a ouvert ou fermé la liste (detail: { open }) ; annulable : preventDefault() conserve l'état actuel."
+      },
+      "slots": {
+        "default": "Éléments <minerva-option>, <minerva-option-group> et <minerva-select-separator>."
+      },
+      "parts": {
+        "trigger": "Le <button> combobox.",
+        "value": "Le libellé choisi ou le texte indicatif.",
+        "icon": "Le chevron.",
+        "positioner": "Le conteneur positionné de la fenêtre.",
+        "listbox": "La fenêtre role=\"listbox\".",
+        "option": "Une option rendue depuis la propriété options.",
+        "group-label": "Un titre de groupe rendu depuis la propriété options."
+      },
+      "methods": {
+        "focus": "Donne le focus au déclencheur.",
+        "blur": "Retire le focus du déclencheur.",
+        "show": "Ouvre la liste.",
+        "hide": "Ferme la liste.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit (ou efface, avec \"\") une erreur de validation personnalisée.",
+        "formResetCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur lors de form.reset() : restaure l'attribut value.",
+        "formDisabledCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur pour restaurer la valeur (cache précédent/suivant, remplissage automatique)."
+      }
+    }
   }
 }

@@ -1,0 +1,43 @@
+<form
+  id="fc-form"
+  novalidate
+  style="display: grid; gap: 16px; max-width: 360px"
+>
+  <minerva-form-control
+    label="Email"
+    required
+    error-message="Enter a valid email address."
+  >
+    <minerva-input name="email" type="email"></minerva-input>
+  </minerva-form-control>
+  <minerva-form-control
+    label="Seats"
+    helper-text="Between 1 and 20."
+    error-message="Choose between 1 and 20 seats."
+  >
+    <minerva-number-input
+      name="seats"
+      value="1"
+      min="1"
+      max="20"
+      show-stepper
+    ></minerva-number-input>
+  </minerva-form-control>
+  <minerva-form-control
+    label="Terms"
+    required
+    error-message="Accept the terms to continue."
+  >
+    <minerva-checkbox
+      name="terms"
+      label="I accept the terms"
+    ></minerva-checkbox>
+  </minerva-form-control>
+  <div style="display: flex; gap: 8px">
+    <minerva-button type="submit">Create account</minerva-button>
+    <minerva-button type="reset" variant="ghost" color="neutral"
+      >Reset</minerva-button
+    >
+  </div>
+  <output id="fc-form-result"></output>
+</form>

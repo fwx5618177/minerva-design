@@ -31,5 +31,63 @@
     "--textarea-font-size": "Taille de police (toutes tailles)",
     "--textarea-background": "Couleur de fond de la variante outline",
     "--textarea-border-color": "Couleur de bordure au repos"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "rows fixe la hauteur visible (le redimensionnement manuel est désactivé) ; minerva-input signale chaque modification, ici pour compter les mots."
+      },
+      "sizes-variants": {
+        "title": "Tailles, variantes et états",
+        "description": "Tailles, variante filled, et états lecture seule, désactivé et invalide."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "required, minlength et maxlength sont validés par le navigateur à l’envoi ; la valeur est envoyée sous name et reset restaure l’attribut value."
+      }
+    },
+    "minerva-textarea": {
+      "props": {
+        "defaultValue": "Valeur initiale (l’attribut value), restaurée par form.reset(). Comme pour <textarea>, la modifier change aussi value tant que l’utilisateur n’a pas édité le champ.",
+        "placeholder": "Texte indicatif affiché tant que le champ est vide.",
+        "readonly": "Lecture seule : focalisable et envoyé, mais non modifiable.",
+        "rows": "Nombre de lignes de texte visibles.",
+        "minlength": "Longueur minimale de la valeur (validée par le navigateur).",
+        "maxlength": "Longueur maximale de la valeur.",
+        "autocomplete": "Indication de saisie automatique du <textarea> interne.",
+        "wrap": "Retour à la ligne du texte à l’envoi : soft, hard ou off.",
+        "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+        "disabled": "Désactive le contrôle : ni focalisable, ni envoyé, ni validé.",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+        "value": "Valeur courante (propriété ; l’attribut value définit defaultValue).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "La valeur a été validée (perte du focus), réémis depuis le textarea interne.",
+        "input": "La valeur a changé (à chaque frappe ; natif, composed).",
+        "minerva-input": "Identique à input, avec detail : { value }.",
+        "minerva-change": "Identique à change, avec detail : { value }."
+      },
+      "parts": {
+        "textarea": "L’élément natif <textarea>."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "select": "Sélectionne tout le texte.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

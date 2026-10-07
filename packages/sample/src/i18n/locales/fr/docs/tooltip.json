@@ -104,5 +104,49 @@
     "--tooltip-color": "Couleur du texte (toutes les variantes)",
     "--tooltip-shadow": "Ombre (par défaut --shadow-md, --shadow-lg pour la variante glass)",
     "--tooltip-z-index": "Ordre d'empilement (par défaut --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Entourez un déclencheur focalisable : l'attribut content s'affiche au survol et au focus. placement accepte 12 positions, arrow ajoute une flèche et disabled désactive l'infobulle."
+      },
+      "styles": {
+        "title": "Couleurs, variantes, formes et animations",
+        "description": "color définit la teinte sémantique, variant la surface (solid, subtle, glass), shape la forme et animation la transition d'entrée / sortie."
+      },
+      "provider": {
+        "title": "Provider et contenu riche",
+        "description": "<minerva-tooltip-provider> donne aux infobulles qu'il contient des délais communs ; passer à la suivante dans le délai skip-delay l'ouvre aussitôt. Le slot content accepte du balisage."
+      },
+      "controlled": {
+        "title": "Méthodes, événements et suivi du pointeur",
+        "description": "show(), hide() et toggle() pilotent directement l'infobulle (sans événement) ; le survol et le focus émettent minerva-open-change, annulable. follow-cursor suit le pointeur, offset règle l'écart."
+      }
+    },
+    "minerva-tooltip-provider": {
+      "slots": {
+        "default": "Contenu contenant des infobulles."
+      }
+    },
+    "minerva-tooltip": {
+      "events": {
+        "minerva-open-change": "Le survol, le focus, la perte de focus, la sortie du pointeur ou Échap demandent l'ouverture / la fermeture (detail : { open }) ; annulable : preventDefault() conserve l'état actuel."
+      },
+      "slots": {
+        "default": "Le déclencheur ; préférez un seul élément focalisable (bouton, lien...).",
+        "content": "Contenu riche de l'infobulle (alternative à l'attribut content)."
+      },
+      "parts": {
+        "trigger": "Le conteneur autour du déclencheur.",
+        "tooltip": "Le panneau de l'infobulle (role=\"tooltip\").",
+        "arrow": "La flèche (avec l'attribut arrow)."
+      },
+      "methods": {
+        "show": "Affiche l'infobulle (sans émettre minerva-open-change).",
+        "hide": "Masque l'infobulle (sans émettre minerva-open-change).",
+        "toggle": "Bascule l'infobulle (sans émettre minerva-open-change)."
+      }
+    }
   }
 }

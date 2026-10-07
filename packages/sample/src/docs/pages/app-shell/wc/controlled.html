@@ -1,0 +1,42 @@
+<div
+  style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+  "
+>
+  <label><input id="lock" type="checkbox" /> Lock sidebar mode</label>
+  <minerva-button id="expand" size="small" variant="outline" color="neutral"
+    >expandNavigation()</minerva-button
+  >
+  <minerva-button id="focus-main" size="small" variant="outline" color="neutral"
+    >focusMain()</minerva-button
+  >
+  <output id="log" aria-live="polite"></output>
+</div>
+<div style="height: 360px; overflow: auto; transform: translateZ(0)">
+  <minerva-app-shell
+    id="shell"
+    brand="Minerva"
+    skip-link="Jump to the page"
+    collapse-label="Shrink the sidebar"
+    expand-label="Grow the sidebar"
+    enable-floating-label="Float the rail"
+    disable-floating-label="Stop floating"
+    open-navigation-label="Show menu"
+    close-navigation-label="Hide menu"
+  >
+    <nav slot="navigation">
+      <a href="#inbox" style="display: block; padding: 6px 8px">Inbox</a>
+      <a href="#archive" style="display: block; padding: 6px 8px">Archive</a>
+    </nav>
+    <minerva-page>
+      <minerva-page-header
+        heading="Inbox"
+        description="Sidebar changes are reported above."
+      ></minerva-page-header>
+    </minerva-page>
+  </minerva-app-shell>
+</div>

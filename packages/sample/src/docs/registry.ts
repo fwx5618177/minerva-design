@@ -44,6 +44,22 @@ export interface DocPageMeta {
    * section
    */
   cssVars?: string[];
+  /**
+   * Web Component counterpart shown in the page's "Web Components" tab:
+   * the define entry (`@minerva/lib-web-components/<entry>`), the custom
+   * elements documented on the page (API tables from custom-elements.json)
+   * and the demo ids (`pages/<id>/wc/<demo>.html` + optional `<demo>.ts`)
+   */
+  wc?: WcMeta;
+}
+
+export interface WcMeta {
+  /** Define entry: `@minerva/lib-web-components/<entry>` */
+  entry: string;
+  /** Tag names documented on the page, in display order */
+  tags: string[];
+  /** Demo ids, in display order */
+  demos: string[];
 }
 
 export const categories: DocCategory[] = [
@@ -77,6 +93,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["ConfigProvider", "useConfig", "ConfigContext"],
     api: ["ConfigContextProviderProps", "ConfigContextProps", "Locale"],
     demos: ["use-config", "custom-theme", "locale", "palette"],
+    wc: {
+      entry: "config",
+      tags: ["minerva-config"],
+      demos: ["basic", "palette-design", "locale", "nested"],
+    },
   },
   {
     id: "hooks",
@@ -120,6 +141,11 @@ export const docPages: DocPageMeta[] = [
       "icons-loading",
       "form",
     ],
+    wc: {
+      entry: "button",
+      tags: ["minerva-button"],
+      demos: ["basic", "colors-variants", "sizes-shapes", "states", "form"],
+    },
   },
   {
     id: "icon-button",
@@ -139,6 +165,11 @@ export const docPages: DocPageMeta[] = [
       "tooltip",
       "label",
     ],
+    wc: {
+      entry: "icon-button",
+      tags: ["minerva-icon-button"],
+      demos: ["basic", "sizes-shapes", "toggle", "states"],
+    },
   },
 
   // Layout
@@ -156,6 +187,11 @@ export const docPages: DocPageMeta[] = [
       "flex-item",
       "custom-style",
     ],
+    wc: {
+      entry: "divider",
+      tags: ["minerva-divider"],
+      demos: ["basic", "variants", "vertical"],
+    },
   },
   {
     id: "card",
@@ -185,6 +221,18 @@ export const docPages: DocPageMeta[] = [
       "custom-colors",
       "animation",
     ],
+    wc: {
+      entry: "card",
+      tags: [
+        "minerva-card",
+        "minerva-card-header",
+        "minerva-card-content",
+        "minerva-card-footer",
+        "minerva-card-title",
+        "minerva-card-description",
+      ],
+      demos: ["basic", "variants", "padded", "interactive"],
+    },
   },
   {
     id: "virtual-list",
@@ -199,6 +247,11 @@ export const docPages: DocPageMeta[] = [
       "high-performance",
       "clickable-rows",
     ],
+    wc: {
+      entry: "virtual-list",
+      tags: ["minerva-virtual-list"],
+      demos: ["basic", "clickable-rows", "infinite-scroll"],
+    },
   },
 
   // Data entry
@@ -219,6 +272,11 @@ export const docPages: DocPageMeta[] = [
       "error",
       "colors-and-form-control",
     ],
+    wc: {
+      entry: "checkbox",
+      tags: ["minerva-checkbox"],
+      demos: ["basic", "select-all", "styles-states", "form"],
+    },
   },
   {
     id: "radio",
@@ -235,6 +293,11 @@ export const docPages: DocPageMeta[] = [
       "disabled",
       "validation",
     ],
+    wc: {
+      entry: "radio",
+      tags: ["minerva-radio", "minerva-radio-group"],
+      demos: ["basic", "styles-states", "form"],
+    },
   },
   {
     id: "switch",
@@ -253,6 +316,11 @@ export const docPages: DocPageMeta[] = [
       "custom-style",
       "bilateral-and-segmented",
     ],
+    wc: {
+      entry: "switch",
+      tags: ["minerva-switch"],
+      demos: ["basic", "styles-states", "side-labels", "form"],
+    },
   },
   {
     id: "auto-complete",
@@ -271,6 +339,11 @@ export const docPages: DocPageMeta[] = [
       "appearance",
       "search-box",
     ],
+    wc: {
+      entry: "autocomplete",
+      tags: ["minerva-autocomplete"],
+      demos: ["basic", "rich-options", "custom-render", "async-loading"],
+    },
   },
   {
     id: "cascader",
@@ -289,6 +362,11 @@ export const docPages: DocPageMeta[] = [
       "lazy-load",
       "custom-option",
     ],
+    wc: {
+      entry: "cascader",
+      tags: ["minerva-cascader"],
+      demos: ["basic", "search-hover", "lazy", "form"],
+    },
   },
   {
     id: "time-picker",
@@ -307,6 +385,11 @@ export const docPages: DocPageMeta[] = [
       "sizes",
       "disabled",
     ],
+    wc: {
+      entry: "time-picker",
+      tags: ["minerva-time-picker"],
+      demos: ["basic", "formats", "range-steps", "form"],
+    },
   },
 
   // Data display
@@ -317,6 +400,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Avatar", "AvatarGroup"],
     api: ["AvatarProps", "AvatarGroupProps"],
     demos: ["basic", "shapes", "sizes", "group", "fallback"],
+    wc: {
+      entry: "avatar",
+      tags: ["minerva-avatar", "minerva-avatar-group"],
+      demos: ["basic", "shapes-sizes", "group", "fallback"],
+    },
   },
   {
     id: "badge",
@@ -335,6 +423,11 @@ export const docPages: DocPageMeta[] = [
       "custom-style",
       "status",
     ],
+    wc: {
+      entry: "badge",
+      tags: ["minerva-badge"],
+      demos: ["basic", "colors-variants", "positions", "slots"],
+    },
   },
   {
     id: "tag",
@@ -353,6 +446,11 @@ export const docPages: DocPageMeta[] = [
       "custom-colors",
       "disabled",
     ],
+    wc: {
+      entry: "tag",
+      tags: ["minerva-tag"],
+      demos: ["basic", "variants-sizes", "closable", "toggle"],
+    },
   },
   {
     id: "empty",
@@ -361,6 +459,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Empty"],
     api: ["EmptyProps"],
     demos: ["basic", "svg", "custom-icon", "with-action", "sizes", "styled"],
+    wc: {
+      entry: "empty",
+      tags: ["minerva-empty"],
+      demos: ["basic", "actions", "sizes-styles"],
+    },
   },
   {
     id: "tooltip",
@@ -383,6 +486,11 @@ export const docPages: DocPageMeta[] = [
       "as-child",
       "provider",
     ],
+    wc: {
+      entry: "tooltip",
+      tags: ["minerva-tooltip-provider", "minerva-tooltip"],
+      demos: ["basic", "styles", "provider", "controlled"],
+    },
   },
 
   // Feedback
@@ -405,6 +513,11 @@ export const docPages: DocPageMeta[] = [
       "animations",
       "return-focus",
     ],
+    wc: {
+      entry: "alert",
+      tags: ["minerva-alert"],
+      demos: ["basic", "variants-sizes", "closable", "collapsible"],
+    },
   },
   {
     id: "progress",
@@ -413,6 +526,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["ProgressIndicator"],
     api: ["ProgressIndicatorProps"],
     demos: ["variants", "sizes", "colors", "label", "width", "with-icon"],
+    wc: {
+      entry: "progress",
+      tags: ["minerva-progress"],
+      demos: ["basic", "sizes-colors", "label-width"],
+    },
   },
   {
     id: "skeleton",
@@ -430,6 +548,11 @@ export const docPages: DocPageMeta[] = [
       "decorative",
       "skeleton-text",
     ],
+    wc: {
+      entry: "skeleton",
+      tags: ["minerva-skeleton", "minerva-skeleton-text"],
+      demos: ["basic", "variants", "loading", "composition"],
+    },
   },
 
   // Navigation
@@ -452,6 +575,11 @@ export const docPages: DocPageMeta[] = [
       "responsive",
       "compact",
     ],
+    wc: {
+      entry: "pagination",
+      tags: ["minerva-pagination"],
+      demos: ["basic", "total-and-jumper", "appearance", "simple"],
+    },
   },
 
   // Layout
@@ -461,6 +589,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Box"],
     api: ["BoxProps"],
     demos: ["basic", "sizing", "polymorphic"],
+    wc: {
+      entry: "box",
+      tags: ["minerva-box"],
+      demos: ["basic", "spacing-sizing", "surfaces"],
+    },
   },
   {
     id: "stack",
@@ -469,6 +602,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Stack", "HStack", "VStack"],
     api: ["StackProps"],
     demos: ["basic", "horizontal", "gap", "wrap", "separator", "attached"],
+    wc: {
+      entry: "stack",
+      tags: ["minerva-stack", "minerva-hstack", "minerva-vstack"],
+      demos: ["basic", "hstack-vstack", "wrap-separator", "attached"],
+    },
   },
   {
     id: "responsive-grid",
@@ -477,6 +615,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["ResponsiveGrid", "GridItem"],
     api: ["ResponsiveGridProps", "GridItemProps"],
     demos: ["basic", "full-width"],
+    wc: {
+      entry: "responsive-grid",
+      tags: ["minerva-responsive-grid", "minerva-grid-item"],
+      demos: ["basic", "container", "full-width"],
+    },
   },
   {
     id: "split-layout",
@@ -485,6 +628,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["SplitLayout"],
     api: ["SplitLayoutProps"],
     demos: ["basic", "options"],
+    wc: {
+      entry: "split-layout",
+      tags: ["minerva-split-layout"],
+      demos: ["basic", "options"],
+    },
   },
   {
     id: "page",
@@ -499,6 +647,17 @@ export const docPages: DocPageMeta[] = [
       "ToolbarProps",
     ],
     demos: ["basic", "stat-cards", "toolbar"],
+    wc: {
+      entry: "page",
+      tags: [
+        "minerva-page",
+        "minerva-page-header",
+        "minerva-page-section",
+        "minerva-toolbar",
+        "minerva-stat-card",
+      ],
+      demos: ["basic", "stat-cards", "toolbar"],
+    },
   },
   {
     id: "app-shell",
@@ -507,6 +666,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["AppShell"],
     api: ["AppShellProps", "AppShellNavigationState", "AppShellLabels"],
     demos: ["basic", "controlled", "skip-link"],
+    wc: {
+      entry: "app-shell",
+      tags: ["minerva-app-shell"],
+      demos: ["basic", "sidebar-modes", "controlled"],
+    },
   },
 
   // Overlays
@@ -531,6 +695,11 @@ export const docPages: DocPageMeta[] = [
       "ModalContentProps",
     ],
     demos: ["basic", "uncontrolled", "sizes", "form", "compound"],
+    wc: {
+      entry: "modal",
+      tags: ["minerva-modal"],
+      demos: ["basic", "sizes", "form", "events"],
+    },
   },
   {
     id: "confirm",
@@ -538,6 +707,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["ConfirmDialog", "ConfirmProvider", "confirm", "useConfirm"],
     api: ["ConfirmDialogProps", "ConfirmOptions", "ConfirmProviderProps"],
     demos: ["imperative", "colors", "provider", "declarative", "scoped"],
+    wc: {
+      entry: "confirm",
+      tags: ["minerva-confirm-dialog"],
+      demos: ["basic", "async", "imperative"],
+    },
   },
   {
     id: "drawer",
@@ -555,6 +729,11 @@ export const docPages: DocPageMeta[] = [
     ],
     api: ["DrawerProps", "DrawerRootProps", "DrawerContentProps"],
     demos: ["basic", "sides", "compound"],
+    wc: {
+      entry: "drawer",
+      tags: ["minerva-drawer"],
+      demos: ["basic", "sides", "non-modal"],
+    },
   },
   {
     id: "command",
@@ -563,6 +742,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["CommandDialog", "normalizeShortcuts", "matchesShortcut"],
     api: ["CommandDialogProps", "CommandItem"],
     demos: ["basic", "shortcut"],
+    wc: {
+      entry: "command",
+      tags: ["minerva-command-dialog"],
+      demos: ["basic", "shortcut"],
+    },
   },
   {
     id: "popover",
@@ -577,6 +761,11 @@ export const docPages: DocPageMeta[] = [
     ],
     api: ["PopoverProps", "PopoverContentProps", "PopoverTriggerProps"],
     demos: ["basic", "placement", "controlled"],
+    wc: {
+      entry: "popover",
+      tags: ["minerva-popover"],
+      demos: ["basic", "placement", "anchor"],
+    },
   },
 
   {
@@ -605,6 +794,20 @@ export const docPages: DocPageMeta[] = [
       "context-menu",
       "controlled",
     ],
+    wc: {
+      entry: "menu",
+      tags: [
+        "minerva-context-menu",
+        "minerva-menu-item",
+        "minerva-menu-checkbox-item",
+        "minerva-menu-radio-item",
+        "minerva-menu-group",
+        "minerva-menu-separator",
+        "minerva-menu-label",
+        "minerva-menu",
+      ],
+      demos: ["basic", "checkbox-radio", "items", "context-menu"],
+    },
   },
   {
     id: "toast",
@@ -628,6 +831,11 @@ export const docPages: DocPageMeta[] = [
       "scoped",
       "keyboard",
     ],
+    wc: {
+      entry: "toast",
+      tags: ["minerva-toast-region"],
+      demos: ["basic", "options", "loading"],
+    },
   },
   {
     id: "page-tabs",
@@ -636,6 +844,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["PageTabs", "PageTab"],
     api: ["PageTabsProps", "PageTabProps"],
     demos: ["basic", "context-menu", "overflow"],
+    wc: {
+      entry: "page-tabs",
+      tags: ["minerva-page-tabs", "minerva-page-tab"],
+      demos: ["basic", "actions", "overflow"],
+    },
   },
 
   // Forms
@@ -654,6 +867,11 @@ export const docPages: DocPageMeta[] = [
     ],
     api: ["FormControlProps", "FormLabelProps", "FormFieldProps"],
     demos: ["basic", "form-field", "states", "custom-control"],
+    wc: {
+      entry: "form-control",
+      tags: ["minerva-form-control"],
+      demos: ["basic", "states", "slots", "form"],
+    },
   },
   {
     id: "form-layout",
@@ -662,6 +880,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["FormLayout"],
     api: ["FormLayoutProps"],
     demos: ["basic", "gaps"],
+    wc: {
+      entry: "form-layout",
+      tags: ["minerva-form-layout"],
+      demos: ["basic", "gaps"],
+    },
   },
   {
     id: "input",
@@ -678,6 +901,11 @@ export const docPages: DocPageMeta[] = [
       "states",
       "validation",
     ],
+    wc: {
+      entry: "input",
+      tags: ["minerva-input"],
+      demos: ["basic", "sizes-variants", "addons", "form"],
+    },
   },
   {
     id: "textarea",
@@ -686,6 +914,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Textarea"],
     api: ["TextareaProps"],
     demos: ["basic", "sizes-variants", "form-control"],
+    wc: {
+      entry: "textarea",
+      tags: ["minerva-textarea"],
+      demos: ["basic", "sizes-variants", "form"],
+    },
   },
   {
     id: "number-input",
@@ -694,6 +927,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["NumberInput"],
     api: ["NumberInputProps"],
     demos: ["basic", "stepper-precision", "form-control"],
+    wc: {
+      entry: "number-input",
+      tags: ["minerva-number-input"],
+      demos: ["basic", "precision", "form"],
+    },
   },
   {
     id: "json-field",
@@ -702,6 +940,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["JsonField"],
     api: ["JsonFieldProps"],
     demos: ["basic", "indent", "form-control"],
+    wc: {
+      entry: "json-field",
+      tags: ["minerva-json-field"],
+      demos: ["basic", "options", "form"],
+    },
   },
   {
     id: "key-value-editor",
@@ -710,6 +953,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["KeyValueEditor"],
     api: ["KeyValueEditorProps", "KeyValueEntry", "KeyValueEntryErrors"],
     demos: ["basic", "errors"],
+    wc: {
+      entry: "key-value-editor",
+      tags: ["minerva-key-value-editor"],
+      demos: ["basic", "errors", "form"],
+    },
   },
   {
     id: "tag-input",
@@ -718,6 +966,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["TagInput"],
     api: ["TagInputProps"],
     demos: ["basic", "form-control", "separators"],
+    wc: {
+      entry: "tag-input",
+      tags: ["minerva-tag-input"],
+      demos: ["basic", "separators", "states", "form"],
+    },
   },
 
   {
@@ -727,6 +980,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["LoadingState"],
     api: ["LoadingStateProps"],
     demos: ["basic", "sizes"],
+    wc: {
+      entry: "loading-state",
+      tags: ["minerva-loading-state"],
+      demos: ["basic", "sizes", "section"],
+    },
   },
   {
     id: "text-link",
@@ -735,6 +993,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["TextLink"],
     api: ["TextLinkProps"],
     demos: ["variants", "as-child"],
+    wc: {
+      entry: "text-link",
+      tags: ["minerva-text-link"],
+      demos: ["basic", "variants", "styling"],
+    },
   },
   {
     id: "description-list",
@@ -743,6 +1006,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["DescriptionList"],
     api: ["DescriptionListProps", "DescriptionListItem"],
     demos: ["basic"],
+    wc: {
+      entry: "description-list",
+      tags: ["minerva-description-item", "minerva-description-list"],
+      demos: ["basic", "items", "styling"],
+    },
   },
   {
     id: "list",
@@ -751,6 +1019,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["List", "ListItem"],
     api: ["ListProps", "ListItemProps"],
     demos: ["basic", "compact"],
+    wc: {
+      entry: "list",
+      tags: ["minerva-list", "minerva-list-item"],
+      demos: ["basic", "slots", "density"],
+    },
   },
   {
     id: "code-block",
@@ -759,6 +1032,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["CodeBlock"],
     api: ["CodeBlockProps"],
     demos: ["basic", "no-wrap", "copyable"],
+    wc: {
+      entry: "code-block",
+      tags: ["minerva-code-block"],
+      demos: ["basic", "copy", "overflow"],
+    },
   },
   {
     id: "prose",
@@ -767,6 +1045,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Prose"],
     api: ["ProseProps"],
     demos: ["basic", "as-child"],
+    wc: {
+      entry: "prose",
+      tags: ["minerva-prose"],
+      demos: ["basic", "rich-content", "scopes"],
+    },
   },
   {
     id: "design-presets",
@@ -792,6 +1075,11 @@ export const docPages: DocPageMeta[] = [
       "PaletteToggleProps",
     ],
     demos: ["toggles", "palette-swatches", "use-theme"],
+    wc: {
+      entry: "theme-toggle",
+      tags: ["minerva-theme-toggle", "minerva-palette-toggle"],
+      demos: ["basic", "palette", "events"],
+    },
   },
   {
     id: "table",
@@ -831,6 +1119,11 @@ export const docPages: DocPageMeta[] = [
       "sorting",
       "selection",
     ],
+    wc: {
+      entry: "data-table",
+      tags: ["minerva-data-table", "minerva-table-cell-content"],
+      demos: ["basic", "pagination", "selection", "sorting"],
+    },
   },
   {
     id: "nav-tree",
@@ -839,6 +1132,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["NavTree"],
     api: ["NavTreeProps", "NavTreeSection", "NavTreeItem", "NavTreeItemState"],
     demos: ["basic", "collapsed", "custom-link"],
+    wc: {
+      entry: "nav-tree",
+      tags: ["minerva-nav-tree"],
+      demos: ["basic", "collapsed", "expansion"],
+    },
   },
   {
     id: "tabs",
@@ -847,6 +1145,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Tabs", "TabList", "Tab", "TabPanel"],
     api: ["TabsProps", "TabListProps", "TabProps", "TabPanelProps"],
     demos: ["basic", "variants", "colors", "vertical"],
+    wc: {
+      entry: "tabs",
+      tags: ["minerva-tabs", "minerva-tab", "minerva-tab-panel"],
+      demos: ["basic", "variants", "vertical", "controlled"],
+    },
   },
   {
     id: "html-preview",
@@ -855,6 +1158,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["HtmlPreview"],
     api: ["HtmlPreviewProps"],
     demos: ["basic", "viewports"],
+    wc: {
+      entry: "html-preview",
+      tags: ["minerva-html-preview"],
+      demos: ["basic", "viewport", "sanitized"],
+    },
   },
   {
     id: "monaco-code-editor",
@@ -870,6 +1178,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Steps"],
     api: ["StepsProps", "StepsItem"],
     demos: ["basic", "read-only"],
+    wc: {
+      entry: "steps",
+      tags: ["minerva-steps"],
+      demos: ["basic", "navigable", "styling"],
+    },
   },
   {
     id: "upload",
@@ -878,6 +1191,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Upload"],
     api: ["UploadProps", "UploadItem", "UploadLabels"],
     demos: ["basic", "multiple"],
+    wc: {
+      entry: "upload",
+      tags: ["minerva-upload"],
+      demos: ["basic", "transfer", "form"],
+    },
   },
   {
     id: "select",
@@ -898,6 +1216,17 @@ export const docPages: DocPageMeta[] = [
       "SelectSeparatorProps",
     ],
     demos: ["basic", "groups", "sizes-and-states"],
+    wc: {
+      entry: "select",
+      tags: [
+        "minerva-option",
+        "minerva-option-group",
+        "minerva-select-label",
+        "minerva-select-separator",
+        "minerva-select",
+      ],
+      demos: ["basic", "groups", "options-property", "form"],
+    },
   },
   {
     id: "rating",
@@ -906,6 +1235,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["Rating", "RatingScale"],
     api: ["RatingProps", "RatingScaleProps", "RatingDimension"],
     demos: ["basic", "interactive", "scale"],
+    wc: {
+      entry: "rating",
+      tags: ["minerva-rating", "minerva-rating-scale"],
+      demos: ["basic", "interactive", "form", "scale"],
+    },
   },
   {
     id: "month-calendar",
@@ -914,17 +1248,53 @@ export const docPages: DocPageMeta[] = [
     exports: ["MonthCalendar"],
     api: ["MonthCalendarProps", "MonthCalendarEvent"],
     demos: ["basic"],
+    wc: {
+      entry: "month-calendar",
+      tags: ["minerva-month-calendar"],
+      demos: ["basic", "events", "localized"],
+    },
   },
 
-  // Web Components
+  // Web Components (guides; every component page has a "Web Components" tab)
   {
     id: "web-components",
     category: "webComponents",
     package: "@minerva/lib-web-components",
-    exports: ["Button"],
-    api: ["wc:ButtonProps"],
-    demos: ["basic", "variants", "sizes-shapes", "states"],
+    // Utilities of the package (the elements are documented on their pages)
+    exports: [
+      "defineElement",
+      "emit",
+      "MinervaElement",
+      "hostStyles",
+      "FormAssociatedElement",
+      "LocaleController",
+      "resolveLanguage",
+      "AriaController",
+      "HasSlotController",
+      "AnchoredPositionController",
+      "DismissableLayerController",
+      "FocusScopeController",
+      "ModalController",
+      "RovingFocusController",
+      "TypeaheadController",
+      "FloatingLayerController",
+      "popoverResetStyles",
+      // helpers re-exported next to their elements
+      "matchesShortcut",
+      "normalizeShortcuts",
+      "computeFixedColumnLayout",
+      "SUBMENU_OPEN_DELAY",
+      "LONG_PRESS_DELAY",
+      "MinervaContextMenu",
+    ],
+    demos: ["react"],
   },
+  { id: "wc-plain-html", category: "webComponents" },
+  { id: "wc-vue", category: "webComponents" },
+  { id: "wc-angular", category: "webComponents" },
+  { id: "wc-svelte", category: "webComponents" },
+  { id: "wc-forms", category: "webComponents" },
+  { id: "wc-theming", category: "webComponents" },
 ];
 
 export const getDocPage = (id: string) => docPages.find((p) => p.id === id);

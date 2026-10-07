@@ -47,5 +47,61 @@
     "--number-input-background": "背景色",
     "--number-input-border-color": "静止时的边框颜色（也用于步进按钮的分隔线）",
     "--number-input-stepper-width": "增减按钮列的宽度"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "带步进按钮的 min / max。上下方向键步进，PageUp / PageDown 一次 10 步，Home / End 跳到边界；minerva-change 报告每次提交的值。"
+      },
+      "precision": {
+        "title": "步长、精度与方法",
+        "description": "小数步长、固定两位小数和 no-empty；外部按钮调用 stepUp() / stepDown()。另含只读、禁用与尺寸示例。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "required 和超出范围的值会以本地化或自定义信息（below-min-message、above-max-message）阻止提交；reset 恢复 value 属性。"
+      }
+    },
+    "minerva-number-input": {
+      "props": {
+        "readonly": "可聚焦并会提交，但输入和步进都不会改变值。",
+        "noEmpty": "清空字段时回退到 min（或 0），而不是提交 null。",
+        "placeholder": "字段为空时显示的占位文本。",
+        "name": "随表单提交时使用的字段名。",
+        "required": "必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "已提交一个值（失焦、回车或步进）。",
+        "input": "草稿文本已改变（原生事件，可穿透 shadow DOM）。",
+        "minerva-input": "草稿文本已改变；detail: { value } 为解析后的草稿（非数字时为 null）。",
+        "minerva-change": "提交了新值；detail: { value }（清空时为 null）。"
+      },
+      "parts": {
+        "base": "字段外层容器。",
+        "input": "原生 <input>（role=\"spinbutton\"）。",
+        "stepper": "增减按钮所在的列。",
+        "increment": "增加按钮。",
+        "decrement": "减少按钮。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "stepUp": "将值增加一个 step（不超过 max）；不触发事件。",
+        "stepDown": "将值减少一个 step（不低于 min）；不触发事件。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

@@ -11267,7 +11267,7 @@
         "type": "boolean",
         "required": false,
         "default": "true",
-        "description": "Shows the seconds column"
+        "description": "Shows seconds. `false` also removes the seconds token from `format` (\"HH:mm:ss\" -> \"HH:mm\"): the format in use is the single source of truth of the seconds column, the displayed text and parsing"
       },
       {
         "name": "hourStep",
@@ -12218,84 +12218,5 @@
     "description": "Props of VStack: a Stack with a fixed column direction",
     "kind": "alias",
     "type": "Omit<StackProps, \"direction\">"
-  },
-  "wc:ButtonProps": {
-    "source": "lib-web-components/src/Button/types.ts",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "variant",
-        "type": "ButtonVariant",
-        "required": false,
-        "default": "\"primary\"",
-        "description": "Visual style of the button (reflected to the `variant` attribute)"
-      },
-      {
-        "name": "size",
-        "type": "ButtonSize",
-        "required": false,
-        "default": "\"medium\"",
-        "description": "Button size"
-      },
-      {
-        "name": "shape",
-        "type": "ButtonShape",
-        "required": false,
-        "default": "\"rounded\"",
-        "description": "Corner shape of the button"
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Disables the button (boolean attribute)"
-      },
-      {
-        "name": "loading",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Shows a spinner instead of the content and blocks clicks; sets `aria-busy`"
-      },
-      {
-        "name": "active",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Renders the button in its pressed / active style"
-      },
-      {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "\"\"",
-        "description": "Accessible label forwarded to the inner `<button>`; set it with the `aria-label` attribute. Required for icon-only buttons."
-      },
-      {
-        "name": "type",
-        "type": "\"button\" | \"submit\" | \"reset\"",
-        "required": false,
-        "default": "\"button\"",
-        "description": "What the button does in an enclosing `<form>`: nothing (`\"button\"`), submit it (`\"submit\"`, through `requestSubmit()` so validation and `submit` listeners run) or reset it (`\"reset\"`)"
-      }
-    ]
-  },
-  "wc:ButtonShape": {
-    "source": "lib-web-components/src/Button/types.ts",
-    "kind": "alias",
-    "type": "\"square\" | \"rounded\" | \"circle\" | \"pill\""
-  },
-  "wc:ButtonSize": {
-    "source": "lib-web-components/src/Button/types.ts",
-    "kind": "alias",
-    "type": "\"tiny\" | \"small\" | \"medium\" | \"large\""
-  },
-  "wc:ButtonVariant": {
-    "source": "lib-web-components/src/Button/types.ts",
-    "description": "Public attributes of `<minerva-button>`. Values mirror the classes defined in `./styles.ts`; keep both in sync.",
-    "kind": "alias",
-    "type": "\"primary\" | \"secondary\" | \"success\" | \"warning\" | \"error\" | \"info\" | \"ghost\" | \"retry\" | \"back\""
   }
 }

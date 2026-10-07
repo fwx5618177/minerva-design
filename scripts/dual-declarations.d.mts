@@ -7,3 +7,6 @@ export declare function rewriteSpecifiers(
 export declare function writeDualDeclarations(
   emittedFiles: Map<string, string>,
 ): void;
+export declare function writeEsmDeclarations(
+  emittedFiles: Map<string, string>,
+): void;

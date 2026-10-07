@@ -45,5 +45,52 @@
     "--command-item-padding-y": "结果行的垂直内边距（跟随密度的行内边距）",
     "--command-item-padding-x": "结果行的水平内边距（跟随密度的行内边距）",
     "--command-item-active-background": "悬停 / 激活行的背景（默认 10% 主色调）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+      },
+      "shortcut": {
+        "title": "全局快捷键",
+        "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+      }
+    },
+    "minerva-command-dialog": {
+      "props": {
+        "label": "对话框标题（默认：本地化的「命令面板」）。"
+      },
+      "events": {
+        "minerva-select": "选择了一个命令（detail: { value, item }，value 为该项的 id）；随后面板关闭。",
+        "minerva-open-change": "用户请求打开（快捷键）/ 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+        "minerva-after-open": "面板已打开，焦点已移至搜索框。",
+        "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+      },
+      "parts": {
+        "overlay": "背景遮罩。",
+        "panel": "对话框面板（role=\"dialog\"）。",
+        "header": "标题行。",
+        "description": "描述文本。",
+        "search": "搜索框容器。",
+        "input": "搜索输入框（role=\"combobox\"）。",
+        "listbox": "结果列表（role=\"listbox\"）。",
+        "item": "一条结果（role=\"option\"）。",
+        "empty": "空状态。"
+      },
+      "cssVars": {
+        "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+        "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+        "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+        "--modal-radius": "面板圆角（默认 --radius-xl）。",
+        "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+        "--modal-background": "面板背景。",
+        "--modal-z-index": "面板层级（默认 --z-modal）。"
+      },
+      "methods": {
+        "show": "打开命令面板。",
+        "hide": "关闭命令面板。"
+      }
+    }
   }
 }

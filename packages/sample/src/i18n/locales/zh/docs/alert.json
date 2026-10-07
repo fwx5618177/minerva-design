@@ -89,5 +89,55 @@
     "--alert-gap": "图标、内容与操作之间的间距",
     "--alert-shadow": "带阴影提示的阴影（默认 --shadow-sm）",
     "--alert-margin-bottom": "提示下方的间距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "带标题的四种状态颜色。danger 和 warning 使用 role=\"alert\"，info 和 success 使用 role=\"status\"。"
+      },
+      "variants-sizes": {
+        "title": "变体、尺寸与外观",
+        "description": "三种变体和尺寸、hide-icon、elevation、直角、animation-name / no-animation、自定义 icon 插槽以及横幅模式。"
+      },
+      "closable": {
+        "title": "可关闭",
+        "description": "closable 触发可取消的 minerva-close：调用 preventDefault() 会保留提示，否则它会将焦点移出并隐藏自身。action 插槽用于放置按钮。"
+      },
+      "collapsible": {
+        "title": "可折叠",
+        "description": "collapsible（需有标题）添加切换按钮；collapsed 设置初始状态，minerva-expanded-change 报告每次变化。"
+      }
+    },
+    "minerva-alert": {
+      "props": {
+        "heading": "标题文字（或使用 heading 插槽）。",
+        "hideIcon": "隐藏状态图标。",
+        "noAnimation": "禁用入场动画。",
+        "square": "直角。",
+        "collapsed": "消息是否折叠。",
+        "alertRole": "ARIA 角色（默认：danger / warning 为 \"alert\"，其他为 \"status\"）。"
+      },
+      "events": {
+        "minerva-close": "关闭按钮被激活；可取消：preventDefault() 会让提示保持可见。",
+        "minerva-expanded-change": "用户展开 / 折叠了消息（detail: { expanded }）；可取消。"
+      },
+      "slots": {
+        "default": "消息。",
+        "heading": "标题（heading 属性的替代方式）。",
+        "icon": "替换状态图标的自定义图标。",
+        "action": "末尾的操作区域（例如按钮）。",
+        "close-icon": "自定义关闭图标。"
+      },
+      "parts": {
+        "base": "提示根元素。",
+        "icon": "图标容器。",
+        "heading": "标题。",
+        "message": "消息容器。",
+        "action": "操作容器。",
+        "close-button": "关闭按钮。",
+        "toggle": "展开 / 折叠按钮。"
+      }
+    }
   }
 }

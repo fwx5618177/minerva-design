@@ -31,5 +31,63 @@
     "--textarea-font-size": "Font size (every size)",
     "--textarea-background": "Background color of the outline variant",
     "--textarea-border-color": "Border color at rest"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "rows sets the visible height (manual resizing is disabled); minerva-input reports every change, here to count words."
+      },
+      "sizes-variants": {
+        "title": "Sizes, variants and states",
+        "description": "Sizes, the filled variant, and the read-only, disabled and invalid states."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "required, minlength and maxlength are validated by the browser on submit; the value is submitted under name and reset restores the value attribute."
+      }
+    },
+    "minerva-textarea": {
+      "props": {
+        "defaultValue": "Initial value (the value attribute), restored by form.reset(). Like <textarea>, changing it also changes value until the user edits the field.",
+        "placeholder": "Placeholder text shown while the field is empty.",
+        "readonly": "Read-only: focusable and submitted, but not editable.",
+        "rows": "Number of visible text lines.",
+        "minlength": "Minimum length of the value (validated by the browser).",
+        "maxlength": "Maximum length of the value.",
+        "autocomplete": "Autocomplete hint of the inner <textarea>.",
+        "wrap": "How the text is wrapped when submitted: soft, hard or off.",
+        "name": "Name under which the value is submitted with the form.",
+        "disabled": "Disables the control: not focusable, not submitted, not validated.",
+        "required": "The control must have a value for the form to be submitted.",
+        "value": "Current value (property; the value attribute sets defaultValue).",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The value was committed (blur), re-dispatched from the inner textarea.",
+        "input": "The value changed (each keystroke; native, composed).",
+        "minerva-input": "Same as input, with detail: { value }.",
+        "minerva-change": "Same as change, with detail: { value }."
+      },
+      "parts": {
+        "textarea": "The native <textarea>."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "select": "Selects the whole text.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@ import CascaderPanel from "./CascaderPanel";
 import type { CascaderProps, CascaderOption } from "./types";
 import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import useI18n from "../../hooks/useI18n";
 import { pickDataAttributes } from "../../internal/dataAttributes";
@@ -111,8 +112,20 @@ const Cascader = ({
   // target exists, and is ignored when it does not).
   const labelledBy =
     ariaLabelledBy ?? (fc && !ariaLabel ? fc.labelId : undefined);
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Cascader", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled || readOnly,
+      lockHint: "set `disabled` / `readOnly`",
+    });
+  }
   const [selectedValue, setSelectedValue] = useControllableState<CascaderValue>(
-    { value, defaultValue: defaultValue ?? EMPTY_VALUE },
+    { value, defaultValue: defaultValue ?? EMPTY_VALUE, name: "Cascader" },
   );
   const selectedOptions = useMemo(
     () => findOptionsByValues(options, selectedValue),

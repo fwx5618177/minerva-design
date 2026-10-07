@@ -1,0 +1,30 @@
+{
+  "title": "Angular",
+  "description": "Les éléments personnalisés Minerva dans Angular : CUSTOM_ELEMENTS_SCHEMA, liaisons de propriétés et d'événements, un ControlValueAccessor pour les formulaires template-driven et réactifs, détection des changements et SSR.",
+  "setup": {
+    "title": "Configuration",
+    "text": "Enregistrez les éléments une fois avant le bootstrap (tous, ou une entrée par élément), et ajoutez les design tokens aux styles globaux du build :"
+  },
+  "binding": {
+    "title": "Liaisons",
+    "text": "Ajoutez CUSTOM_ELEMENTS_SCHEMA aux composants (ou NgModules) dont les templates utilisent des balises <minerva-*> : Angular accepte alors ces balises inconnues et lie leurs propriétés et événements comme ceux des éléments natifs.",
+    "properties": "[value], [checked], [disabled], [open], [options]... définissent des propriétés DOM : les booléens, tableaux, objets et fonctions parviennent donc tels quels à l'élément. Les signals fonctionnent comme avec n'importe quelle liaison.",
+    "attributes": "Les attributs statiques (aria-label=\"Name\", clearable) s'écrivent tels quels ; utilisez [attr.name] pour lier un attribut qui n'est pas une propriété, comme aria-*, data-* ou slot.",
+    "events": "(minerva-change), (minerva-input), (minerva-open-change)... écoutent les événements personnalisés ; $event est un CustomEvent (à envelopper dans $any() avec les templates stricts) et le nouvel état se trouve dans $event.detail. (click) et les autres événements natifs fonctionnent comme d'habitude."
+  },
+  "forms": {
+    "title": "Formulaires",
+    "text": "ngModel, formControl et formControlName nécessitent un ControlValueAccessor, qu'Angular ne fournit que pour les champs natifs. Une petite directive fait le pont avec les champs texte et les listes de sélection Minerva : elle écrit la propriété value (ce qui ne déclenche aucun événement) et remonte les changements de l'utilisateur à partir des événements minerva-* :",
+    "usage": "Importez la directive à côté de ReactiveFormsModule (ou de FormsModule pour ngModel). Les validateurs d'Angular et l'état du formulaire (dirty, touched, invalid) fonctionnent alors comme avec les champs natifs :",
+    "checked": "Pour <minerva-checkbox> et <minerva-switch>, écrivez un second accessor sur la propriété checked et sur detail.checked de minerva-change ; pour les autres contrôles, utilisez la forme de valeur indiquée dans la documentation de leurs événements.",
+    "native": "Même sans les formulaires Angular, les éléments sont associés aux formulaires : dans un simple <form>, leur name et leur value font partie de FormData, required et la validation par contraintes du navigateur s'appliquent, et form.reset() restaure leurs valeurs initiales. Consultez Formulaires."
+  },
+  "zones": {
+    "title": "Détection des changements",
+    "text": "Les liaisons d'événements des templates déclenchent la détection des changements d'Angular, avec zone.js comme dans les applications zoneless : mettre à jour un signal ou un champ depuis (minerva-change) suffit donc. Avec zone.js, les timers et observers que les éléments utilisent en interne (animations, positionnement des fenêtres contextuelles) sont aussi patchés, ce qui peut programmer des cycles de détection supplémentaires mais ne demande aucun traitement particulier. Dans les applications zoneless, les écouteurs que vous ajoutez vous-même avec addEventListener doivent mettre à jour des signals pour que la vue se rafraîchisse."
+  },
+  "ssr": {
+    "title": "Rendu côté serveur",
+    "text": "Avec Angular SSR, main.ts ne s'exécute que dans le navigateur : les éléments sont donc enregistrés côté client. Importer le paquet depuis du code qui s'exécute aussi sur le serveur (un composant partagé, main.server.ts) est également sans danger : les modules ne touchent pas au DOM lors de leur chargement et l'enregistrement est idempotent. Le serveur rend les balises en HTML avec leurs attributs et leur contenu light DOM, puis le navigateur les met à niveau."
+  }
+}

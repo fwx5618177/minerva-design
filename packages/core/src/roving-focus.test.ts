@@ -361,3 +361,25 @@ describe("createRovingFocus", () => {
     roving = null;
   });
 });
+
+describe("createRovingFocus with shadow DOM items", () => {
+  it("resolves the item from a target inside the item's shadow root", () => {
+    document.body.innerHTML = `<div id="list"><x-item data-minerva-item></x-item><x-item data-minerva-item></x-item></div>`;
+    const list = document.getElementById("list")!;
+    const items = Array.from(list.children) as HTMLElement[];
+    const inner = items.map((item) => {
+      const shadow = item.attachShadow({ mode: "open" });
+      shadow.innerHTML = `<span tabindex="-1">x</span>`;
+      return shadow.firstElementChild as HTMLElement;
+    });
+    const onActiveChange = vi.fn();
+    const roving = createRovingFocus(list, { onActiveChange });
+    inner[1].dispatchEvent(
+      new FocusEvent("focusin", { bubbles: true, composed: true }),
+    );
+    expect(roving.getActive()).toBe(items[1]);
+    expect(onActiveChange).toHaveBeenCalledWith(items[1], 1);
+    roving.destroy();
+    document.body.innerHTML = "";
+  });
+});

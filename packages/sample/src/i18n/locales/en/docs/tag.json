@@ -76,5 +76,50 @@
     "--tag-font-size": "Font size (every size)",
     "--tag-radius": "Corner radius of the rounded shape (defaults to --radius-sm)",
     "--tag-gap": "Space between the icon, the label and the close button"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A small label; color sets its semantic tone."
+      },
+      "variants-sizes": {
+        "title": "Variants, sizes and content",
+        "description": "Three variants, sizes and shapes, elevation, the icon and avatar slots, loading and disabled."
+      },
+      "closable": {
+        "title": "Closable",
+        "description": "closable adds a close button that fires minerva-close: remove the tag in the listener and move focus to a neighbour. close-label and the close-icon slot customize it."
+      },
+      "toggle": {
+        "title": "Toggle filters",
+        "description": "clickable toggle tags are toggle buttons (aria-pressed): a click flips pressed and fires minerva-change. A plain clickable tag fires click."
+      }
+    },
+    "minerva-tag": {
+      "props": {
+        "toggle": "Makes a clickable tag a toggle: clicks flip pressed and fire minerva-change.",
+        "noRipple": "Disables the ripple effect of clickable tags."
+      },
+      "events": {
+        "minerva-close": "The close button was activated.",
+        "minerva-change": "A toggle tag was toggled (detail: { pressed })."
+      },
+      "slots": {
+        "default": "Label of the tag.",
+        "icon": "Icon displayed before the label.",
+        "avatar": "Avatar (small <minerva-avatar> or image) before the label.",
+        "close-icon": "Custom close icon."
+      },
+      "parts": {
+        "base": "The tag root.",
+        "action": "The native <button> of a clickable tag.",
+        "label": "The label wrapper.",
+        "close-button": "The close button."
+      },
+      "methods": {
+        "focus": "Focuses the tag's button (the action button of a clickable tag, else the close button)."
+      }
+    }
   }
 }

@@ -3,6 +3,7 @@ import { IconPlus, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { Button } from "../Button";
 import { FormField } from "../FormControl/FormControl";
 import { IconButton } from "../IconButton";
@@ -21,7 +22,7 @@ const EMPTY: KeyValueEntry[] = [];
  */
 export const KeyValueEditor = ({
   entries: entriesProp,
-  defaultEntries = EMPTY,
+  defaultEntries: defaultEntriesProp,
   onChange,
   disabled = false,
   keyLabel,
@@ -36,10 +37,24 @@ export const KeyValueEditor = ({
   const { t } = useI18n();
   const editorId = useId();
   const nextId = useRef(0);
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("KeyValueEditor", {
+      prop: "entries",
+      value: entriesProp,
+      defaultProp: "defaultEntries",
+      defaultValue: defaultEntriesProp,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled,
+      lockHint: "set `disabled`",
+    });
+  }
   const [entries, setEntries] = useControllableState({
     value: entriesProp,
-    defaultValue: defaultEntries,
+    defaultValue: defaultEntriesProp ?? EMPTY,
     onChange,
+    name: "KeyValueEditor",
+    prop: "entries",
   });
   const keyText = keyLabel ?? t("keyValueEditor.key");
   const valueText = valueLabel ?? t("keyValueEditor.value");

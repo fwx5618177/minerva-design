@@ -52,5 +52,47 @@
     "--virtual-list-hover-shadow": "悬停时的阴影（默认 --shadow-md）",
     "--virtual-list-scrollbar-size": "滚动条宽度（WebKit / Blink）",
     "--virtual-list-loading-padding": "加载指示行的内边距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "通过 JavaScript 设置 items 和 renderItem 属性：即使有 10,000 项，也只渲染可见的行。用 aria-label 为列表命名。"
+      },
+      "clickable-rows": {
+        "title": "可点击的行",
+        "description": "clickable 让行可获得焦点，并在点击、Enter 或空格时触发 minerva-item-click。scrollToIndex() 可编程滚动。"
+      },
+      "infinite-scroll": {
+        "title": "无限滚动",
+        "description": "滚动到接近底部（load-more-threshold）时触发 minerva-load-more；加载下一页期间设置 loading。"
+      }
+    },
+    "minerva-virtual-list": {
+      "props": {
+        "clickable": "使行可获得焦点和点击（指针光标、Enter / 空格），并触发 minerva-item-click。",
+        "scrollContainer": "滚动容器元素（只读），例如用于编程滚动。"
+      },
+      "events": {
+        "minerva-item-click": "可点击的行被点击或通过 Enter / 空格激活（detail: { item, index }）。",
+        "minerva-load-more": "列表滚动到距底部 load-more-threshold 像素以内。"
+      },
+      "parts": {
+        "base": "滚动容器（role=\"region\"）。",
+        "list": "列表（role=\"list\"）。",
+        "item": "一行（role=\"listitem\"）。",
+        "loading": "加载指示器所在的行。"
+      },
+      "cssVars": {
+        "--progress-width": "加载指示器的宽度。",
+        "--progress-bar-height": "加载指示条的粗细。",
+        "--progress-track-color": "加载指示器轨道的颜色。",
+        "--progress-radius": "加载指示器轨道的圆角半径。",
+        "--progress-size": "圆形加载指示器的尺寸。"
+      },
+      "methods": {
+        "scrollToIndex": "滚动使第 index 行位于列表顶部。"
+      }
+    }
   }
 }

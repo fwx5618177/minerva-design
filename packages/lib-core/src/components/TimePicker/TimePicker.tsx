@@ -5,11 +5,18 @@ import { Input } from "../Input";
 import { IconButton } from "../IconButton";
 import TimePickerPanel from "./TimePickerPanel";
 import type { TimePickerProps } from "./types";
-import { formatTime, parseTimeInput, startOfToday } from "./utils";
+import {
+  formatHasSeconds,
+  formatTime,
+  parseTimeInput,
+  resolveTimeFormat,
+  startOfToday,
+} from "./utils";
 import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useLayerParent } from "../../internal/useDismissableLayer";
 import { adjacentTabbable, tabLeavesPanel } from "../../internal/tabbing";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import useI18n from "../../hooks/useI18n";
 import { pickDataAttributes } from "../../internal/dataAttributes";
@@ -32,7 +39,7 @@ const TimePicker = ({
   value,
   defaultValue,
   onChange,
-  format = "HH:mm:ss",
+  format: formatProp = "HH:mm:ss",
   use12Hours = false,
   placeholder,
   label,
@@ -51,13 +58,16 @@ const TimePicker = ({
   style,
   minTime,
   maxTime,
-  showSecond = true,
+  showSecond: showSecondProp = true,
   hourStep = 1,
   minuteStep = 1,
   secondStep = 1,
   onOpenChange,
   ...rest
 }: TimePickerProps) => {
+  // One source of truth: the format in use decides the seconds column
+  const format = resolveTimeFormat(formatProp, showSecondProp);
+  const showSecond = formatHasSeconds(format);
   const { t } = useI18n();
   const fc = useFormControlContext();
   const fieldProps = useFormControlProps({
@@ -74,13 +84,28 @@ const TimePicker = ({
   // exists, and is ignored when it does not).
   const labelledBy =
     ariaLabelledBy ?? (fc && !label && !ariaLabel ? fc.labelId : undefined);
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("TimePicker", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled || readOnly,
+      lockHint: "set `disabled` / `readOnly`",
+    });
+  }
   const [current, setCurrent] = useControllableState<Date | null>({
     value,
     defaultValue: defaultValue ?? null,
+    name: "TimePicker",
   });
   const [open, setOpen] = useControllableState({
     defaultValue: false,
     onChange: onOpenChange,
+    name: "TimePicker",
+    prop: "open",
   });
   // Text being typed; `null` = show the formatted value
   const [draft, setDraft] = useState<string | null>(null);

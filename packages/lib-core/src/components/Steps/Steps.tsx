@@ -3,6 +3,7 @@ import type { StepsProps } from "./types";
 import styles from "./steps.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 
 /**
  * Steps: the stages of a workflow as an ordered list (<ol> / <li>). Earlier
@@ -25,10 +26,19 @@ const Steps = ({
 }: StepsProps) => {
   const { t } = useI18n();
   // "" matches no step: nothing is current until a value is given
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Steps", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue,
+    });
+  }
   const [current, setCurrent] = useControllableState<string>({
     value,
     defaultValue: defaultValue ?? "",
     onChange,
+    name: "Steps",
   });
   const currentIndex = items.findIndex((item) => item.value === current);
 

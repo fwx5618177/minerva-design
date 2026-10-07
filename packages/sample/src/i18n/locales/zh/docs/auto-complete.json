@@ -97,5 +97,87 @@
     "--auto-complete-option-padding-x": "选项与分组标题的水平内边距",
     "--auto-complete-option-hover-background": "悬停 / 键盘聚焦选项的背景色",
     "--auto-complete-option-highlight-background": "highlight: true 选项的背景色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "设置 JS 属性 options；输入时按标签过滤选项。选中选项会填入输入框并触发 minerva-select；没有活动选项时按 Enter 会以输入的文本触发 minerva-submit。"
+      },
+      "rich-options": {
+        "title": "富内容与分组选项",
+        "description": "选项可以带图标、描述、高亮，也可以被禁用；groupBy 将它们归入不同标题下。auto-highlight 使第一个可用选项处于活动状态，按 Enter 即可选中；variant 和 size 设置输入框样式。"
+      },
+      "custom-render": {
+        "title": "自定义渲染与过滤",
+        "description": "mode=\"custom\" 时，renderOption 返回每个选项的内容（字符串、DOM 节点或 Lit 模板）。此处 filterOption 还会匹配邮箱，sortOption 按姓名排序，renderEmpty 替换空状态。"
+      },
+      "async-loading": {
+        "title": "异步加载",
+        "description": "监听 minerva-input，在用户输入时获取匹配项，并在加载期间设置 loading。prefix 插槽放置图标；minerva-change 报告已提交的文本。"
+      }
+    },
+    "minerva-autocomplete": {
+      "props": {
+        "open": "下拉框是否打开。",
+        "placeholder": "输入框的占位文本。",
+        "size": "输入框尺寸。",
+        "variant": "输入框的视觉样式：outline、filled 或 unstyled。",
+        "invalid": "错误状态；会设置 aria-invalid。",
+        "readonly": "只读：可聚焦并随表单提交，但不显示下拉框。",
+        "noAnimation": "禁用打开动画。",
+        "noFillOnSelect": "选中选项时保留已输入的文本（不填入）。",
+        "required": "控件必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身禁用或因所在 fieldset 被禁用，只读）。",
+        "form": "该元素所属的表单（只读）。",
+        "labels": "与该元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "描述当前校验错误的消息，有效时为空（只读）。",
+        "willValidate": "该元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "输入框的原生 change 事件，由宿主元素重新派发（编辑后失焦时）。",
+        "minerva-input": "输入文本已改变：输入、选中选项或按 Escape 清空（detail: { value }）。",
+        "minerva-change": "文本已提交：选项填入、Escape 清空，或失焦时的原生 change（detail: { value }）。",
+        "minerva-select": "通过鼠标或键盘选中了一个选项（detail: { value, option }）。",
+        "minerva-submit": "在没有活动选项且文本非空时按下了 Enter（detail: { value }，已去除首尾空白）。",
+        "minerva-open-change": "下拉框打开或关闭（detail: { open }）；可取消：调用 preventDefault() 保持当前状态。"
+      },
+      "slots": {
+        "prefix": "文本前的内容（图标）。",
+        "suffix": "文本后的内容。"
+      },
+      "parts": {
+        "base": "根包装元素。",
+        "label": "可见标签。",
+        "field": "输入框包装元素。",
+        "input": "原生 <input>。",
+        "popup": "定位后的下拉框。",
+        "listbox": "role=\"listbox\" 的列表。",
+        "option": "一个选项。",
+        "group-label": "分组标题。",
+        "empty": "空状态。",
+        "loading": "加载状态。"
+      },
+      "cssVars": {
+        "--input-height": "输入区域的最小高度，作用于所有尺寸（默认为当前密度下该尺寸的控件高度）。",
+        "--input-padding-x": "文本的水平内边距，作用于所有尺寸。",
+        "--input-radius": "圆角半径（默认为 --radius-lg）。",
+        "--input-font-size": "字号，作用于所有尺寸。",
+        "--input-background": "outline 变体的背景色。",
+        "--input-border-color": "默认状态下的边框颜色。",
+        "--input-focus-color": "悬停或聚焦时的边框颜色。"
+      },
+      "methods": {
+        "focus": "聚焦输入框。",
+        "blur": "使输入框失去焦点。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置（或用 \"\" 清除）自定义校验错误。",
+        "formResetCallback": "浏览器在 form.reset() 时调用的表单生命周期回调：恢复 value 属性的值。",
+        "formDisabledCallback": "浏览器在祖先 <fieldset> 被禁用或启用时调用的表单生命周期回调。",
+        "formStateRestoreCallback": "浏览器在恢复值时（前进/后退缓存、自动填充）调用的表单生命周期回调。"
+      }
+    }
   }
 }

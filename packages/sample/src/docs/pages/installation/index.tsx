@@ -47,14 +47,21 @@ createRoot(document.getElementById("root")!).render(<App />);`;
 
 const wcInstall = `pnpm add @minerva/lib-web-components`;
 
-const wcImport = `// registers <minerva-button> (and future custom elements) once
-import "@minerva/lib-web-components";`;
+const wcImport = `// every element at once...
+import "@minerva/lib-web-components";
+// ...or only the elements you use (each entry registers one element and its parts)
+import "@minerva/lib-web-components/select";
 
-const wcTypes = `// src/global.d.ts — JSX typings for <minerva-button> in React
+// design tokens, once (already included in @minerva/lib-core/style.css)
+import "@minerva/lib-web-components/tokens.css";`;
+
+const wcCdn = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"></script>`;
+
+const wcTypes = `// React 19 JSX (global.d.ts)
 /// <reference types="@minerva/lib-web-components/react" />
-
-// or, in a module file:
-import type {} from "@minerva/lib-web-components/react";`;
+// Svelte: ".../svelte", Solid: ".../solid"
+// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types`;
 
 const tsTypes = `import { themes } from "@minerva/lib-core";
 import type { ButtonProps, ComponentTheme } from "@minerva/lib-core";
@@ -124,11 +131,23 @@ const InstallationDoc: React.FC = () => {
           {t("docs.installation.webComponents.text")}
         </p>
         <CodeBlock code={wcInstall} language="bash" />
-        <CodeBlock code={wcImport} language="tsx" />
+        <p className={styles.prose}>
+          {t("docs.installation.webComponents.entries")}
+        </p>
+        <CodeBlock code={wcImport} language="ts" />
+        <p className={styles.prose}>
+          {t("docs.installation.webComponents.cdn")}
+        </p>
+        <CodeBlock code={wcCdn} language="html" />
         <p className={styles.prose}>
           {t("docs.installation.webComponents.typings")}
         </p>
-        <CodeBlock code={wcTypes} language="tsx" />
+        <CodeBlock code={wcTypes} language="ts" />
+        <p className={styles.prose}>
+          <Link to="/web-components">
+            {t("docs.installation.webComponents.more")}
+          </Link>
+        </p>
       </section>
 
       <section className={styles.section} aria-labelledby="typescript">

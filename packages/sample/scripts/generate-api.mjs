@@ -12,6 +12,12 @@
 // component, declared in its SCSS files as
 //   // @css-var --button-height Height of the button (every size)
 // under the key `css:<ComponentFolder>`.
+//
+// Web Components: the API of every custom element of
+// @minerva/lib-web-components (attributes, properties, events, slots, CSS
+// parts, CSS custom properties, methods) is read from its Custom Elements
+// Manifest (packages/lib-web-components/custom-elements.json) and recorded
+// under `wc:<tag-name>`.
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,10 +27,15 @@ const here = dirname(fileURLToPath(import.meta.url));
 export const SAMPLE_ROOT = join(here, "..");
 const LIB_SRC = join(SAMPLE_ROOT, "../lib-core/src");
 const CORE_SRC = join(SAMPLE_ROOT, "../core/src");
-const WC_SRC = join(SAMPLE_ROOT, "../lib-web-components/src");
-/** Web-component types are keyed with this prefix to avoid name clashes */
+const WC_MANIFEST = join(
+  SAMPLE_ROOT,
+  "../lib-web-components/custom-elements.json",
+);
+/** Web-component elements are keyed with this prefix (`wc:minerva-button`) */
 export const WC_PREFIX = "wc:";
 export const OUTPUT = join(SAMPLE_ROOT, "src/docs/api.generated.json");
+/** Web Component APIs: a separate file, loaded only by the "Web Components" tabs */
+export const OUTPUT_WC = join(SAMPLE_ROOT, "src/docs/api.wc.generated.json");
 
 const typeFilesIn = (componentsDir) => {
   const files = [];
@@ -49,7 +60,6 @@ const sourceFiles = () => [
   { file: join(CORE_SRC, "theme/design.ts"), prefix: "" },
   // i18n types (SupportedLanguage, ...), re-exported by @minerva/lib-core
   { file: join(CORE_SRC, "i18n/types.ts"), prefix: "" },
-  ...typeFilesIn(WC_SRC).map((file) => ({ file, prefix: WC_PREFIX })),
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();
@@ -202,23 +212,109 @@ export const generateCssVars = () => {
   return result;
 };
 
+/** One line of JSDoc text (manifest descriptions keep their line breaks) */
+const oneLine = (text) => (text ? clean(text) : undefined);
+
+const compact = (entry) =>
+  Object.fromEntries(
+    Object.entries(entry).filter(([, value]) => value !== undefined),
+  );
+
+/** API of every custom element, from the Custom Elements Manifest */
+export const generateElements = () => {
+  const manifest = JSON.parse(readFileSync(WC_MANIFEST, "utf8"));
+  const result = {};
+  for (const module of manifest.modules) {
+    for (const element of module.declarations ?? []) {
+      if (!element.tagName) continue;
+      const attributes = new Map(
+        (element.attributes ?? []).map((a) => [a.fieldName ?? a.name, a]),
+      );
+      const fields = (element.members ?? []).filter((m) => m.kind === "field");
+      result[WC_PREFIX + element.tagName] = {
+        kind: "element",
+        source: `lib-web-components/${module.path}`,
+        className: element.name,
+        summary: oneLine(element.summary),
+        description: oneLine(element.description),
+        // Properties with an attribute first (declaration order), then JS-only ones
+        properties: [
+          ...fields.filter((f) => attributes.has(f.name)),
+          ...fields.filter((f) => !attributes.has(f.name)),
+        ].map((field) =>
+          compact({
+            name: field.name,
+            attribute: attributes.get(field.name)?.name,
+            type: field.type?.text ? cleanType(field.type.text) : undefined,
+            default: field.default,
+            readonly: field.readonly || undefined,
+            description: oneLine(field.description),
+          }),
+        ),
+        methods: (element.members ?? [])
+          .filter((m) => m.kind === "method")
+          .map((method) =>
+            compact({
+              name: method.name,
+              signature: `(${(method.parameters ?? [])
+                .map((p) =>
+                  p.type?.text
+                    ? `${p.name}${p.optional ? "?" : ""}: ${cleanType(p.type.text)}`
+                    : p.name,
+                )
+                .join(
+                  ", ",
+                )}) => ${cleanType(method.return?.type?.text ?? "void")}`,
+              description: oneLine(method.description),
+            }),
+          ),
+        events: (element.events ?? []).map((e) =>
+          compact({ name: e.name, description: oneLine(e.description) }),
+        ),
+        slots: (element.slots ?? []).map((s) =>
+          compact({ name: s.name, description: oneLine(s.description) }),
+        ),
+        parts: (element.cssParts ?? []).map((p) =>
+          compact({ name: p.name, description: oneLine(p.description) }),
+        ),
+        cssProperties: (element.cssProperties ?? []).map((p) =>
+          compact({ name: p.name, description: oneLine(p.description) }),
+        ),
+      };
+    }
+  }
+  return result;
+};
+
+/** Entries sorted by key (stable output) */
+export const sortKeys = (entries) =>
+  Object.fromEntries(
+    Object.entries(entries).sort(([a], [b]) => a.localeCompare(b)),
+  );
+
 export const serialize = (api) => `${JSON.stringify(api, null, 2)}\n`;
 
 const isMain =
   process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
-  const next = serialize(generateApi());
-  if (process.argv.includes("--check")) {
-    const current = existsSync(OUTPUT) ? readFileSync(OUTPUT, "utf8") : "";
-    if (current !== next) {
-      console.error(
-        "api.generated.json is out of date. Run: pnpm --filter @minerva/sample gen:api",
-      );
-      process.exit(1);
+  const outputs = [
+    [OUTPUT, serialize(generateApi())],
+    [OUTPUT_WC, serialize(sortKeys(generateElements()))],
+  ];
+  for (const [file, next] of outputs) {
+    const name = relative(SAMPLE_ROOT, file);
+    if (process.argv.includes("--check")) {
+      const current = existsSync(file) ? readFileSync(file, "utf8") : "";
+      if (current !== next) {
+        console.error(
+          `${name} is out of date. Run: pnpm --filter @minerva/sample gen:api`,
+        );
+        process.exit(1);
+      }
+      console.log(`${name} is up to date`);
+    } else {
+      writeFileSync(file, next);
+      console.log(`Wrote ${name}`);
     }
-    console.log("api.generated.json is up to date");
-  } else {
-    writeFileSync(OUTPUT, next);
-    console.log(`Wrote ${relative(SAMPLE_ROOT, OUTPUT)}`);
   }
 }

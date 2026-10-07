@@ -54,5 +54,47 @@
     "--popover-border-color": "Border color of the panel and its arrow",
     "--popover-shadow": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)",
     "--popover-z-index": "Stacking order of the panel (defaults to --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The trigger slot toggles an interactive panel; focus moves in and returns on close. Escape, an outside click or an element with data-popover-close closes it."
+      },
+      "placement": {
+        "title": "Placement",
+        "description": "side and align place the panel around the trigger, side-offset sets the gap and arrow points at it; it flips and shifts to stay in the viewport."
+      },
+      "anchor": {
+        "title": "Anchor and modal",
+        "description": "anchor positions the panel against another element (by id) while any button opens it with show(); modal traps focus and blocks the rest of the page."
+      }
+    },
+    "minerva-popover": {
+      "props": {
+        "label": "Accessible name of the panel (or set aria-label on the element).",
+        "anchor": "Id of the element (same tree) to anchor to.",
+        "anchorElement": "Element the panel is positioned against instead of the trigger; takes precedence over anchor."
+      },
+      "events": {
+        "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-after-open": "The popover is open.",
+        "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+      },
+      "slots": {
+        "default": "Panel content.",
+        "trigger": "Element that toggles the popover when clicked."
+      },
+      "parts": {
+        "positioner": "The positioned wrapper (top layer).",
+        "panel": "The dialog panel.",
+        "arrow": "The arrow wrapper."
+      },
+      "methods": {
+        "show": "Opens the popover.",
+        "hide": "Closes the popover.",
+        "toggle": "Toggles the popover."
+      }
+    }
   }
 }

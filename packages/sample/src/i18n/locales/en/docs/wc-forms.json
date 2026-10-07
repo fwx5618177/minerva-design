@@ -1,0 +1,35 @@
+{
+  "title": "Forms",
+  "description": "Minerva controls are form-associated custom elements: FormData, required and constraint validation, setCustomValidity, form.reset(), <fieldset disabled>, <label for>, :invalid and localized messages.",
+  "association": {
+    "title": "Form-associated elements",
+    "text": "The form controls are form-associated custom elements built on ElementInternals: inside a <form> they behave like native inputs, without hidden inputs or wrappers. These elements take part in forms:",
+    "buttons": "<minerva-button> is form-associated too: type=\"submit\" submits the owning form through requestSubmit() (so validation and submit listeners run) and type=\"reset\" resets it. The default type is \"button\", which does nothing."
+  },
+  "formData": {
+    "title": "Names, values and FormData",
+    "text": "Give each control a name. Its value is part of new FormData(form) and of a native submission, exactly like an <input>:",
+    "name": "name is the key of the submitted value. Checkboxes and switches submit their value (\"on\" by default) only when checked, so several checkboxes with the same name produce a list (FormData.getAll()).",
+    "values": "The value attribute (checked for checkboxes and switches) is the initial value; the value / checked property is the current value. Some controls submit several entries (the tag input submits one per tag); each component page documents what its control submits.",
+    "disabled": "disabled on a control, or on an ancestor <fieldset>, makes it non-editable and excludes it from submission and validation (isDisabled reports both).",
+    "restore": "Values are restored by the browser when the user navigates back to the page (bfcache) and by autofill, through the form-associated callbacks."
+  },
+  "labels": {
+    "title": "Labels",
+    "text": "<label for=\"id\"> and wrapping <label> elements name the control, as with native inputs: the element's labels property lists them, the label text is forwarded to the control inside the shadow root, and clicking the label focuses it. aria-label, aria-labelledby and aria-describedby on the element work too (ids are resolved to text, since they cannot cross shadow roots)."
+  },
+  "validation": {
+    "title": "Constraint validation",
+    "text": "required, minlength / maxlength, pattern, min / max and type (email, url...) work as on native inputs. Each element exposes the constraint validation API (validity, validationMessage, willValidate, checkValidity(), reportValidity(), setCustomValidity()), and form.checkValidity(), form.reportValidity() and submission take the Minerva controls into account: an invalid control blocks the submit event and the browser shows its message next to the control.",
+    "reset": "form.reset() restores every control to its value or checked attribute and clears the messages set with setCustomValidity(); listen to the form's reset event to clear your own error styles."
+  },
+  "styling": {
+    "title": "Styling invalid controls",
+    "text": "The :invalid and :valid pseudo-classes match form-associated elements like native inputs, so they can be styled from the page. To avoid red fields before the user did anything, apply the styles once a submission was attempted:",
+    "formControl": "The built-in error state is a property: invalid on text fields, selects, switches and the other controls, error on checkboxes and radios. It shows the red border and sets aria-invalid. <minerva-form-control> wraps one control with a label, a helper text and an error message, and passes its invalid / required / disabled state to the control."
+  },
+  "messages": {
+    "title": "Localized messages",
+    "text": "Controls without a native equivalent (select, checkbox, switch, radio group, rating, upload, time picker, cascader...) report Minerva's own validation messages (\"Please select an item in the list.\", \"Please check this box if you want to proceed.\"...), translated in every supported language and following the lang attribute or <minerva-config locale> of their scope. Text fields delegate to their inner native input, whose messages come from the browser in its own language."
+  }
+}

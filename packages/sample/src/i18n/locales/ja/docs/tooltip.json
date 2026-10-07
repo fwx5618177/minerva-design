@@ -104,5 +104,49 @@
     "--tooltip-color": "文字色（全バリアント共通）",
     "--tooltip-shadow": "影（既定値は --shadow-md、glass バリアントは --shadow-lg）",
     "--tooltip-z-index": "重なり順（既定値は --z-popover）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "フォーカス可能なトリガーを囲みます。ホバーやフォーカスで content 属性が表示されます。placement は 12 の位置を受け付け、arrow で矢印を付け、disabled でツールチップを無効にします。"
+      },
+      "styles": {
+        "title": "色・バリアント・形状・アニメーション",
+        "description": "color で意味的な色調を、variant で表面（solid、subtle、glass）を、shape で形を、animation で表示 / 非表示のトランジションを指定します。"
+      },
+      "provider": {
+        "title": "プロバイダーとリッチコンテンツ",
+        "description": "<minerva-tooltip-provider> は内部のツールチップに共通の遅延を与えます。skip-delay 以内に次のツールチップへ移るとすぐに開きます。content スロットにはマークアップを入れられます。"
+      },
+      "controlled": {
+        "title": "メソッド・イベント・カーソル追従",
+        "description": "show()、hide()、toggle() でツールチップを直接制御します（イベントは発火しません）。ホバーやフォーカスはキャンセル可能な minerva-open-change を発火します。follow-cursor はポインターに追従し、offset で間隔を指定します。"
+      }
+    },
+    "minerva-tooltip-provider": {
+      "slots": {
+        "default": "ツールチップを含むコンテンツ。"
+      }
+    },
+    "minerva-tooltip": {
+      "events": {
+        "minerva-open-change": "ホバー、フォーカス、ブラー、ポインターの離脱、Escape が開閉を要求しました（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+      },
+      "slots": {
+        "default": "トリガー。フォーカス可能な要素 1 つ（ボタン、リンクなど）を推奨します。",
+        "content": "リッチなツールチップの内容（content 属性の代わり）。"
+      },
+      "parts": {
+        "trigger": "トリガーを囲むラッパー。",
+        "tooltip": "ツールチップのパネル（role=\"tooltip\"）。",
+        "arrow": "矢印（arrow 属性がある場合）。"
+      },
+      "methods": {
+        "show": "ツールチップを表示します（minerva-open-change は発火しません）。",
+        "hide": "ツールチップを隠します（minerva-open-change は発火しません）。",
+        "toggle": "ツールチップを切り替えます（minerva-open-change は発火しません）。"
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@ import { Empty } from "../Empty";
 import type { AutoCompleteProps, AutoCompleteOption } from "./types";
 import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useFormControlProps } from "../FormControl/context";
 import styles from "./autoComplete.module.scss";
@@ -35,7 +36,7 @@ const AutoComplete = ({
   value,
   onChange,
   options = EMPTY_OPTIONS,
-  defaultValue = "",
+  defaultValue: defaultValueProp,
   onSelect,
   filterOption,
   groupBy,
@@ -59,12 +60,15 @@ const AutoComplete = ({
 }: AutoCompleteProps) => {
   const [inputValue, setInputValue] = useControllableState({
     value,
-    defaultValue,
+    defaultValue: defaultValueProp ?? "",
     onChange,
+    name: "AutoComplete",
   });
   const [visible, setVisible] = useControllableState({
     defaultValue: false,
     onChange: onDropdownVisibleChange,
+    name: "AutoComplete",
+    prop: "open",
   });
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [hoveredIndex, setHoveredIndex] = useState(-1);
@@ -88,6 +92,18 @@ const AutoComplete = ({
   });
   const inputId = field.id ?? `${baseId}-input`;
   const blocked = !!field.disabled || !!field.readOnly;
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("AutoComplete", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue: defaultValueProp,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: blocked,
+      lockHint: "set `inputProps.disabled` / `inputProps.readOnly`",
+    });
+  }
   // A disabled / read-only field never shows (or keeps) the dropdown.
   const shown = visible && !blocked;
 

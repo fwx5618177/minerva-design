@@ -58,5 +58,66 @@
     "--tabs-radius": "Rayon des coins des onglets enclosed / soft / pills (par défaut --radius-md)",
     "--tabs-indicator-width": "Épaisseur de l'indicateur en ligne",
     "--tabs-panel-padding": "Marge intérieure du panneau"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Les éléments <minerva-tab> rejoignent automatiquement la liste d’onglets ; chaque <minerva-tab-panel> est lié à l’onglet de même value. label nomme la liste ; les flèches ignorent les onglets désactivés."
+      },
+      "variants": {
+        "title": "Variantes et couleurs",
+        "description": "variant choisit line, enclosed, soft ou pills ; color teinte la sélection, et un color sur un <minerva-tab> le garde teinté même inactif."
+      },
+      "vertical": {
+        "title": "Vertical et activation manuelle",
+        "description": "orientation=\"vertical\" empile les onglets (ArrowUp / ArrowDown). Avec activation-mode=\"manual\", le focus se déplace sans sélectionner jusqu’à Entrée ou Espace ; no-loop s’arrête au premier / dernier onglet."
+      },
+      "controlled": {
+        "title": "Annuler un changement",
+        "description": "minerva-change est annulable : tant que la case est cochée, preventDefault() conserve l’onglet courant. Décochez-la pour changer d’onglet."
+      }
+    },
+    "minerva-tabs": {
+      "props": {
+        "noLoop": "Arrête les flèches au premier / dernier onglet au lieu de boucler.",
+        "label": "Nom accessible de la liste d’onglets (aria-label / aria-labelledby sur l’élément fonctionnent aussi).",
+        "tabs": "Les éléments <minerva-tab> de ce groupe, hors groupes imbriqués (lecture seule).",
+        "panels": "Les éléments <minerva-tab-panel> de ce groupe (lecture seule)."
+      },
+      "events": {
+        "minerva-change": "L’utilisateur a sélectionné un onglet (detail: { value }). Annulable : preventDefault() conserve la sélection courante."
+      },
+      "slots": {
+        "default": "Éléments <minerva-tab-panel>.",
+        "tab": "Éléments <minerva-tab> (assignés automatiquement)."
+      },
+      "parts": {
+        "base": "Le conteneur racine.",
+        "tablist": "Le conteneur role=\"tablist\"."
+      },
+      "methods": {
+        "select": "Sélectionne l’onglet de la value donnée en émettant d’abord minerva-change (appelé par les onglets au clic, à Entrée / Espace ou au focus)."
+      }
+    },
+    "minerva-tab": {
+      "props": {
+        "selected": "Indique si l’onglet est sélectionné (défini par <minerva-tabs>)."
+      },
+      "slots": {
+        "default": "Libellé de l’onglet."
+      },
+      "parts": {
+        "base": "Le déclencheur visuel."
+      }
+    },
+    "minerva-tab-panel": {
+      "slots": {
+        "default": "Contenu du panneau."
+      },
+      "parts": {
+        "base": "Le conteneur du panneau."
+      }
+    }
   }
 }

@@ -56,5 +56,80 @@
     "--input-background": "Background color of the outline variant",
     "--input-border-color": "Border color at rest",
     "--input-focus-color": "Border color while hovered / focused"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Named with <label for>; minerva-input fires on every keystroke with detail.value."
+      },
+      "sizes-variants": {
+        "title": "Sizes, variants and states",
+        "description": "Three sizes, the outline, filled and unstyled variants, and the read-only, disabled and invalid states."
+      },
+      "addons": {
+        "title": "Addons, clear, count and password",
+        "description": "prefix and suffix slots, a clear button (clearable), a character count bound to maxlength, and the password visibility toggle."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "required, type=\"email\", minlength and pattern use the browser's validation on submit; the failed fields get invalid until they are fixed, and reset restores them."
+      }
+    },
+    "minerva-input": {
+      "props": {
+        "defaultValue": "Initial value (the value attribute), restored by form.reset(). Like <input>, changing it also changes value until the user edits the field.",
+        "type": "Type of the inner <input> (text, email, password, search, url, number, date…).",
+        "placeholder": "Placeholder text shown while the field is empty.",
+        "readonly": "Read-only: focusable and submitted, but not editable.",
+        "minlength": "Minimum length of the value (validated by the browser).",
+        "maxlength": "Maximum length of the value; also the limit of the character count.",
+        "pattern": "Regular expression the value must match.",
+        "min": "Minimum value (number and date types).",
+        "max": "Maximum value (number and date types).",
+        "step": "Step (number and date types).",
+        "autocomplete": "Autocomplete hint of the inner <input>.",
+        "inputmode": "Virtual keyboard hint (numeric, email, tel…).",
+        "name": "Name under which the value is submitted with the form.",
+        "disabled": "Disables the control: not focusable, not submitted, not validated.",
+        "required": "The control must have a value for the form to be submitted.",
+        "value": "Current value (property; the value attribute sets defaultValue).",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The value was committed (blur or Enter), re-dispatched from the inner input.",
+        "input": "The value changed (each keystroke; native, composed).",
+        "minerva-input": "Same as input, with detail: { value }.",
+        "minerva-change": "Same as change, with detail: { value }.",
+        "minerva-clear": "The clear button emptied the field."
+      },
+      "slots": {
+        "prefix": "Content before the text (icon, \"@\", protocol…).",
+        "suffix": "Content after the text (unit, icon, button)."
+      },
+      "parts": {
+        "base": "The field wrapper.",
+        "input": "The native <input>.",
+        "clear-button": "The clear button.",
+        "password-toggle": "The password visibility toggle.",
+        "count": "The character counter."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "select": "Selects the whole text.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

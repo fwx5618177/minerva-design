@@ -53,7 +53,7 @@
       "className": "Additional class name",
       "minTime": "Earliest selectable time; earlier options are disabled",
       "maxTime": "Latest selectable time; later options are disabled",
-      "showSecond": "Shows the seconds column",
+      "showSecond": "Shows seconds. false also removes the seconds from format (\"HH:mm:ss\" → \"HH:mm\"): the format in use decides the seconds column, the text and parsing.",
       "hourStep": "Interval between hour options",
       "minuteStep": "Interval between minute options",
       "secondStep": "Interval between second options",
@@ -88,5 +88,85 @@
     "--time-picker-cell-height": "Height of a time cell (defaults to the density's small control height)",
     "--time-picker-cell-padding-x": "Horizontal padding of a time cell (follows the density's row padding)",
     "--time-picker-selected-background": "Background of the selected time cell"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Type a time or pick it from the panel. The value attribute sets the initial time; minerva-change fires when a time is committed, and valueAsDate returns it as a Date."
+      },
+      "formats": {
+        "title": "Formats, sizes and states",
+        "description": "format and use-12-hours control the display (hide-second hides the seconds column when the format has none); three sizes; read-only, disabled and invalid states."
+      },
+      "range-steps": {
+        "title": "Range and steps",
+        "description": "min-time and max-time disable options outside the range; hour-step, minute-step and second-step space the options."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: it submits a 24-hour value under name, required blocks an empty field, and form.reset() restores the value attribute."
+      }
+    },
+    "minerva-time-picker": {
+      "props": {
+        "open": "Whether the panel is open.",
+        "readonly": "Shows the value without allowing changes (typing, panel, clearing).",
+        "hideClearButton": "Hides the clear button (clearable={false} in React).",
+        "hideSecond": "Hides the seconds column (showSecond={false} in React).",
+        "valueAsDate": "The value as a Date (today's date), null when empty or invalid.",
+        "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element.",
+        "validity": "Validity state (same as <input>.validity).",
+        "validationMessage": "Message describing the current validation error (empty when valid).",
+        "willValidate": "Whether the element takes part in constraint validation."
+      },
+      "events": {
+        "change": "Same as minerva-change (native-like, bubbles).",
+        "minerva-change": "The time was committed (picked, typed, normalized on blur or cleared), detail: { value } (\"\" when cleared).",
+        "minerva-input": "The text of the input changed while typing, detail: { value } (the typed text).",
+        "minerva-open-change": "The user opened or closed the panel, detail: { open }; cancelable: preventDefault() keeps the current state.",
+        "minerva-clear": "The clear button emptied the field."
+      },
+      "parts": {
+        "base": "The field wrapper.",
+        "control": "The input box.",
+        "input": "The native <input>.",
+        "clear-button": "The clear button.",
+        "icon": "The clock icon (shown when there is no clear button).",
+        "panel": "The popup panel (role=\"dialog\").",
+        "column": "An hours, minutes, seconds or AM/PM column (role=\"listbox\").",
+        "item": "A time unit (role=\"option\")."
+      },
+      "cssVars": {
+        "--input-height": "Minimum height of the field (defaults to the density's control height for the size).",
+        "--input-padding-x": "Horizontal padding of the text.",
+        "--input-radius": "Corner radius of the field (defaults to --radius-lg).",
+        "--input-font-size": "Font size of the field.",
+        "--input-background": "Background color of the field.",
+        "--input-border-color": "Border color at rest.",
+        "--input-focus-color": "Border color while hovered or focused.",
+        "--icon-button-color": "Color of the clear button icon.",
+        "--icon-button-hover-bg": "Background of the clear button on hover.",
+        "--icon-button-pressed-color": "Icon color of the clear button while pressed.",
+        "--icon-button-pressed-bg": "Background of the clear button while pressed.",
+        "--icon-button-size": "Width and height of the clear button (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Size of the clear button icon.",
+        "--icon-button-radius": "Corner radius of the clear button (defaults to --radius-lg)."
+      },
+      "methods": {
+        "focus": "Focuses the inner input.",
+        "blur": "Removes focus from the inner input.",
+        "show": "Opens the panel (no event).",
+        "hide": "Closes the panel (no event).",
+        "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+        "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
   }
 }

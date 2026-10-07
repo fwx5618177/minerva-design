@@ -35,5 +35,76 @@
     "--json-field-font-size": "Font size of the editor",
     "--json-field-tab-size": "Rendered width of a tab character in the editor",
     "--json-field-status-font-size": "Font size of the validation status line"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Initial JSON from the value attribute. The status line appears on blur; minerva-change fires on blur and after formatting, and validity reflects the syntax."
+      },
+      "options": {
+        "title": "Indent, toolbar and labels",
+        "description": "indent=\"4\" with formatValue() called from an external button, a read-only field without toolbar, and custom format / status labels."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "Invalid JSON is badInput (also while focused), so the form cannot be submitted until the text parses; fix the payload to send it. Reset restores the value attribute."
+      }
+    },
+    "minerva-json-field": {
+      "props": {
+        "invalid": "Error state; also set by a syntax error after blur.",
+        "readonly": "Read-only: focusable and submitted, neither editable nor formattable.",
+        "placeholder": "Placeholder text shown while the field is empty.",
+        "name": "Name under which the value is submitted with the form.",
+        "disabled": "Disables the control: not focusable, not submitted, not validated.",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The text was committed (blur) or formatted.",
+        "input": "The text changed (native, composed).",
+        "minerva-input": "The text changed by typing or formatting; detail: { value }.",
+        "minerva-change": "The text was committed (blur) or formatted; detail: { value }."
+      },
+      "parts": {
+        "base": "The wrapper.",
+        "format-button": "The format button.",
+        "textarea": "The native <textarea>.",
+        "status": "The validation status line."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the inner icon buttons.",
+        "--icon-button-hover-bg": "Background of the inner icon buttons on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed inner icon button.",
+        "--icon-button-pressed-bg": "Background of a pressed inner icon button.",
+        "--icon-button-size": "Width and height of the inner icon buttons (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Font size of the icons of the inner icon buttons.",
+        "--icon-button-radius": "Corner radius of the inner icon buttons (defaults to --radius-lg).",
+        "--textarea-min-height": "Minimum height of the text area.",
+        "--textarea-padding-y": "Vertical padding of the text.",
+        "--textarea-padding-x": "Horizontal padding of the text (defaults to the density's small control padding).",
+        "--textarea-radius": "Corner radius of the text area (defaults to --radius-md).",
+        "--textarea-font-size": "Font size of the text.",
+        "--textarea-background": "Background color of the text area.",
+        "--textarea-border-color": "Border color of the text area at rest."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "formatValue": "Re-indents the text with indent spaces (no-op unless it is valid JSON); does not emit events.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

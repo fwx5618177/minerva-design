@@ -91,5 +91,45 @@
     "--toast-shadow": "Shadow of a toast (defaults to --shadow-lg)",
     "--toast-background": "Base background of a toast (under the color tint)",
     "--toast-z-index": "Stacking order of the stack (defaults to --z-toast)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A <minerva-toast-region> renders the toasts; region.toast is the toast() API bound to it (info, success, warning, danger). position places the stack."
+      },
+      "options": {
+        "title": "Options and action",
+        "description": "A toast with a title, a description, a longer duration and an Undo action. max keeps the newest toasts only; minerva-close tells why each toast closed."
+      },
+      "loading": {
+        "title": "Loading and promises",
+        "description": "toast.promise() follows a promise in one toast; loading() then update() do the same by hand. Loading toasts stay open until updated; dismiss() closes every toast."
+      }
+    },
+    "minerva-toast-region": {
+      "props": {
+        "noPauseOnHover": "Keeps the countdown running while a toast is hovered or focused.",
+        "toast": "The toast API bound to this region: region.toast.success(\"Saved\") renders in this element (read-only)."
+      },
+      "events": {
+        "minerva-close": "A toast of this region started closing (detail: { id, reason }; reason: timeout, close-button, action, escape, dismiss or overflow).",
+        "minerva-after-close": "A toast of this region was removed after its exit animation (detail: { id })."
+      },
+      "parts": {
+        "viewport": "The fixed stack (role=\"region\").",
+        "toast": "A toast.",
+        "icon": "The icon wrapper of a toast.",
+        "content": "The title / description wrapper.",
+        "title": "The title.",
+        "description": "The description.",
+        "action": "The action button.",
+        "close-button": "The close (×) button.",
+        "progress": "The countdown bar."
+      },
+      "methods": {
+        "focus": "Moves focus to the region (as the hotkey does)."
+      }
+    }
   }
 }

@@ -1,0 +1,24 @@
+{
+  "title": "Svelte",
+  "description": "Minerva custom elements in Svelte 5 and SvelteKit: properties and attributes, onminerva-* event attributes, bind:this, typings and server-side rendering.",
+  "setup": {
+    "title": "Setup",
+    "text": "Svelte needs no configuration for custom elements. Register the elements and load the design tokens once, in your entry file (or in the root layout with SvelteKit, see below):"
+  },
+  "binding": {
+    "title": "Properties, events and bind:this",
+    "text": "Write the tags in your markup like native elements:",
+    "properties": "Svelte sets a prop as a DOM property when the element has a property with that name (value, checked, disabled, options...), and as an attribute otherwise. Arrays, objects and functions therefore reach the element as they are; register the elements before the component renders.",
+    "events": "Svelte 5 event attributes are case-sensitive and take the event name as written: onminerva-change, onminerva-input, onminerva-open-change. The handler receives the CustomEvent, with the new state in event.detail. onclick and other native events work as usual.",
+    "bindThis": "bind:this gives you the element instance, to call its methods (show(), hide(), focus()) or read its properties. Its type is the exported element class.",
+    "bindValue": "bind:value and bind:checked are meant for native inputs: write the value prop and update your state from the event, as above (minerva-input for each keystroke, minerva-change for a committed value)."
+  },
+  "types": {
+    "title": "Typings",
+    "text": "The package ships typings for svelte/elements, generated from its Custom Elements Manifest: attributes, properties and onminerva-* events of every tag are checked by svelte-check and completed by the Svelte extension. Reference them once:"
+  },
+  "kit": {
+    "title": "SvelteKit and server-side rendering",
+    "text": "Pages are rendered on the server first. Importing the elements there is safe (the modules do not touch the DOM when they load), but they only work in the browser, so register them in onMount (which never runs on the server) or behind the browser flag. The server sends the tags with their attributes and slotted content; the browser upgrades them when the import resolves."
+  }
+}

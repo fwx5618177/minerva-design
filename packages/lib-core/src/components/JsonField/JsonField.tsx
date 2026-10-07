@@ -8,6 +8,7 @@ import {
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useFormControlContext } from "../FormControl/context";
 import { IconButton } from "../IconButton";
 import { Textarea } from "../Textarea/Textarea";
@@ -64,7 +65,7 @@ function formatJson(value: string, indent: number): string {
  */
 export const JsonField = ({
   value,
-  defaultValue = "",
+  defaultValue: defaultValueProp,
   onChange,
   rows = 8,
   hideToolbar = false,
@@ -90,10 +91,23 @@ export const JsonField = ({
   const readOnly = Boolean(readOnlyProp || field?.readOnly);
   const required = Boolean(requiredProp || field?.required);
   const statusId = `json-status-${useId()}`;
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("JsonField", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue: defaultValueProp,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled || readOnly,
+      lockHint: "set `disabled` / `readOnly`",
+    });
+  }
   const [text, setText] = useControllableState({
     value,
-    defaultValue,
+    defaultValue: defaultValueProp ?? "",
     onChange,
+    name: "JsonField",
   });
   const [focused, setFocused] = useState(false);
   const validation: Validation = focused ? { status: "empty" } : validate(text);

@@ -57,5 +57,73 @@
     "--upload-dropzone-background": "Fond de la zone de dépôt au repos",
     "--upload-preview-width": "Largeur d'un aperçu d'image dans la liste des fichiers",
     "--upload-preview-height": "Hauteur d'un aperçu d'image dans la liste des fichiers"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Choisissez ou déposez des fichiers. accept et max-size rejettent les fichiers invalides avec un message ; replace remplace le fichier unique, multiple + max-count en autorisent plusieurs, et removable ajoute des boutons de suppression."
+      },
+      "transfer": {
+        "title": "Progression et nouvelle tentative",
+        "description": "Annuler minerva-files-selected laisse la page gérer items : les fichiers apparaissent en cours d’envoi, puis terminés ou en échec (un fichier sur deux échoue une fois) ; retryable affiche un bouton de nouvelle tentative qui émet minerva-retry."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Chaque fichier listé est envoyé sous name (FormData multipart) ; required bloque l’envoi sans fichier et reset vide la liste."
+      }
+    },
+    "minerva-upload": {
+      "props": {
+        "removable": "Affiche un bouton de suppression sur chaque élément.",
+        "retryable": "Affiche un bouton de nouvelle tentative sur les éléments en échec.",
+        "required": "Un envoi sans fichier est invalide (valueMissing).",
+        "items": "Fichiers listés avec leur état de transfert : un tableau de { id, name, status, error?, previewUrl?, file? } (propriété).",
+        "texts": "Textes personnalisés (la prop labels de lib-core, renommée car labels est la liste des <label> du contrôle) ; chacun remplace la valeur localisée par défaut.",
+        "files": "Les fichiers des éléments listés, envoyés avec le formulaire (lecture seule).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "L’utilisateur a modifié les fichiers listés.",
+        "minerva-files-selected": "Des fichiers valides ont été choisis ou déposés ; detail : { files }. Annulable : les fichiers ne sont alors pas listés.",
+        "minerva-change": "L’utilisateur a modifié les fichiers listés ; detail : { value } (les éléments).",
+        "minerva-remove": "Le bouton de suppression d’un élément a été activé ; detail : { item }. Annulable : l’élément est alors conservé.",
+        "minerva-retry": "Le bouton de nouvelle tentative d’un élément en échec a été activé ; detail : { item }."
+      },
+      "parts": {
+        "base": "Le conteneur (role=\"group\").",
+        "label": "Le libellé visible.",
+        "dropzone": "La zone de dépôt.",
+        "select-button": "Le bouton de sélection.",
+        "error": "L’erreur de sélection.",
+        "list": "La liste des fichiers.",
+        "item": "Chaque fichier.",
+        "remove-button": "Le bouton de suppression d’un fichier.",
+        "retry-button": "Le bouton de nouvelle tentative d’un fichier en échec."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur d’icône des boutons-icônes internes.",
+        "--icon-button-hover-bg": "Fond des boutons-icônes internes au survol.",
+        "--icon-button-pressed-color": "Couleur d’icône d’un bouton-icône interne enfoncé.",
+        "--icon-button-pressed-bg": "Fond d’un bouton-icône interne enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons-icônes internes (par défaut, hauteurs de contrôle de la densité).",
+        "--icon-button-icon-size": "Taille de police des icônes des boutons-icônes internes.",
+        "--icon-button-radius": "Rayon des coins des boutons-icônes internes (par défaut --radius-lg)."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton de sélection.",
+        "showPicker": "Ouvre le sélecteur de fichiers.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

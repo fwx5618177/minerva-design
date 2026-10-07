@@ -54,5 +54,47 @@
     "--popover-border-color": "Couleur de bordure du panneau et de sa flèche",
     "--popover-shadow": "Ombre du panneau (par défaut --shadow-lg, --shadow-xl en thème sombre)",
     "--popover-z-index": "Ordre d'empilement du panneau (par défaut --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Le slot trigger ouvre ou ferme un panneau interactif ; le focus y entre puis revient à la fermeture. Échap, un clic à l'extérieur ou un élément data-popover-close le ferment."
+      },
+      "placement": {
+        "title": "Placement",
+        "description": "side et align placent le panneau autour du déclencheur, side-offset règle l'écart et arrow ajoute une flèche ; il se retourne et se décale pour rester visible."
+      },
+      "anchor": {
+        "title": "Ancre et modale",
+        "description": "anchor positionne le panneau contre un autre élément (par id) tandis qu'un bouton quelconque l'ouvre avec show() ; modal piège le focus et bloque le reste de la page."
+      }
+    },
+    "minerva-popover": {
+      "props": {
+        "label": "Nom accessible du panneau (ou aria-label sur l'élément).",
+        "anchor": "Id de l'élément (même arbre) servant d'ancre.",
+        "anchorElement": "Élément contre lequel le panneau est positionné au lieu du déclencheur ; prioritaire sur anchor."
+      },
+      "events": {
+        "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-after-open": "Le popover est ouvert.",
+        "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+      },
+      "slots": {
+        "default": "Contenu du panneau.",
+        "trigger": "Élément qui ouvre ou ferme le popover au clic."
+      },
+      "parts": {
+        "positioner": "Le conteneur positionné (top layer).",
+        "panel": "Le panneau de dialogue.",
+        "arrow": "Le conteneur de la flèche."
+      },
+      "methods": {
+        "show": "Ouvre le popover.",
+        "hide": "Ferme le popover.",
+        "toggle": "Ouvre ou ferme le popover."
+      }
+    }
   }
 }

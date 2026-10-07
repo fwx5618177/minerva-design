@@ -47,5 +47,61 @@
     "--number-input-background": "Background color",
     "--number-input-border-color": "Border color at rest (also the stepper separators)",
     "--number-input-stepper-width": "Width of the increment / decrement column"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "min / max with the stepper. ArrowUp / ArrowDown step, PageUp / PageDown step by 10, Home / End jump to the bounds; minerva-change reports each committed value."
+      },
+      "precision": {
+        "title": "Step, precision and methods",
+        "description": "A decimal step with two fixed decimals and no-empty; the external buttons call stepUp() / stepDown(). Also read-only, disabled and sizes."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "required and out-of-range values block submission with localized or custom messages (below-min-message, above-max-message); reset restores the value attribute."
+      }
+    },
+    "minerva-number-input": {
+      "props": {
+        "readonly": "Focusable and submitted, but typing and stepping do not change the value.",
+        "noEmpty": "Clearing the field falls back to min (or 0) instead of committing null.",
+        "placeholder": "Placeholder text shown while the field is empty.",
+        "name": "Name under which the value is submitted with the form.",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "A value was committed (blur, Enter or stepping).",
+        "input": "The draft text changed (native, composed).",
+        "minerva-input": "The draft text changed; detail: { value } is the parsed draft (null when it is not a number).",
+        "minerva-change": "A new value was committed; detail: { value } (null when cleared)."
+      },
+      "parts": {
+        "base": "The field wrapper.",
+        "input": "The native <input> (role=\"spinbutton\").",
+        "stepper": "The increment / decrement column.",
+        "increment": "The increment button.",
+        "decrement": "The decrement button."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "stepUp": "Adds step to the value (clamped to max); does not emit events.",
+        "stepDown": "Subtracts step from the value (clamped to min); does not emit events.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

@@ -79,3 +79,17 @@ export const startOfToday = () => {
   date.setHours(0, 0, 0, 0);
   return date;
 };
+
+/** Whether a display format contains a seconds token (`ss` / `s`) */
+export const formatHasSeconds = (format: string): boolean =>
+  /(^|[^a-zA-Z])s{1,2}([^a-zA-Z]|$)/.test(format);
+
+/**
+ * The single source of truth of the seconds column: the format actually
+ * used. Hiding seconds (`showSecond={false}` / `hide-second`) removes the
+ * seconds token (and its separator) from the format, so the column, the
+ * displayed text, parsing and the value always agree:
+ * `"HH:mm:ss"` -> `"HH:mm"`, `"hh:mm:ss a"` -> `"hh:mm a"`.
+ */
+export const resolveTimeFormat = (format: string, showSecond: boolean) =>
+  showSecond ? format : format.replace(/[:.\s]?s{1,2}(?![a-zA-Z])/, "");

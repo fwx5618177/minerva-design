@@ -52,5 +52,47 @@
     "--virtual-list-hover-shadow": "ホバー時の影（既定値は --shadow-md）",
     "--virtual-list-scrollbar-size": "スクロールバーの幅（WebKit / Blink）",
     "--virtual-list-loading-padding": "読み込みインジケーター行のパディング"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "JavaScript から items と renderItem プロパティを設定します。10,000 件あっても、表示中の行だけが描画されます。aria-label でリストに名前を付けてください。"
+      },
+      "clickable-rows": {
+        "title": "クリック可能な行",
+        "description": "clickable で行がフォーカス可能になり、クリック・Enter・Space で minerva-item-click を発火します。scrollToIndex() でプログラムからスクロールできます。"
+      },
+      "infinite-scroll": {
+        "title": "無限スクロール",
+        "description": "下端付近（load-more-threshold）で minerva-load-more が発火します。次のページを取得する間は loading を設定します。"
+      }
+    },
+    "minerva-virtual-list": {
+      "props": {
+        "clickable": "行をフォーカス・クリック可能にし（ポインターカーソル、Enter / Space）、minerva-item-click を発火します。",
+        "scrollContainer": "スクロールコンテナー要素（読み取り専用）。プログラムからのスクロールなどに使います。"
+      },
+      "events": {
+        "minerva-item-click": "クリック可能な行がクリック、または Enter / Space で実行されました（detail: { item, index }）。",
+        "minerva-load-more": "リストが下端から load-more-threshold ピクセル以内までスクロールされました。"
+      },
+      "parts": {
+        "base": "スクロールコンテナー（role=\"region\"）。",
+        "list": "リスト（role=\"list\"）。",
+        "item": "行（role=\"listitem\"）。",
+        "loading": "読み込みインジケーターの行。"
+      },
+      "cssVars": {
+        "--progress-width": "読み込みインジケーターの幅。",
+        "--progress-bar-height": "読み込みバーの太さ。",
+        "--progress-track-color": "読み込みインジケーターのトラックの色。",
+        "--progress-radius": "読み込みインジケーターのトラックの角丸半径。",
+        "--progress-size": "円形の読み込みインジケーターのサイズ。"
+      },
+      "methods": {
+        "scrollToIndex": "index の行がリストの先頭に来るようにスクロールします。"
+      }
+    }
   }
 }

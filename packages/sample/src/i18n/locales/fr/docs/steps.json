@@ -34,5 +34,36 @@
     "--steps-indicator-size": "Diamètre de l'indicateur numéroté",
     "--steps-accent-color": "Couleur des indicateurs courant / terminés (par défaut --primary-color)",
     "--steps-current-background": "Fond de l'indicateur de l'étape courante"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Progression en lecture seule",
+        "description": "Les étapes viennent de la propriété items ; les précédentes sont terminées et la courante porte aria-current=\"step\"."
+      },
+      "navigable": {
+        "title": "Assistant navigable",
+        "description": "navigable transforme chaque étape en bouton. minerva-change est annulable : l'appelant valide la transition (acceptez les conditions pour quitter la première étape)."
+      },
+      "styling": {
+        "title": "Personnalisation",
+        "description": "Des variables CSS règlent la couleur d'accent, la taille de l'indicateur et l'espacement ; ::part(label) style les libellés."
+      }
+    },
+    "minerva-steps": {
+      "props": {
+        "navigable": "Affiche chaque étape comme un bouton de navigation (par défaut : lecture seule)."
+      },
+      "events": {
+        "minerva-change": "L'utilisateur est allé à une étape (detail : { value }) ; annulable : preventDefault() conserve l'étape courante."
+      },
+      "parts": {
+        "base": "Le <ol>.",
+        "step": "Chaque <li>.",
+        "button": "Le bouton (ou conteneur statique) de chaque étape.",
+        "number": "L'indicateur numéroté.",
+        "label": "Le libellé de chaque étape."
+      }
+    }
   }
 }

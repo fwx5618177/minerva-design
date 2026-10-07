@@ -35,5 +35,76 @@
     "--json-field-font-size": "エディターのフォントサイズ",
     "--json-field-tab-size": "エディターでのタブ文字の表示幅",
     "--json-field-status-font-size": "検証ステータス行のフォントサイズ"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "value 属性で初期 JSON を指定します。ステータス行はフォーカスアウト時に表示され、minerva-change はフォーカスアウトと整形の後に発火し、validity が構文の正しさを表します。"
+      },
+      "options": {
+        "title": "インデント・ツールバー・ラベル",
+        "description": "indent=\"4\" と外部ボタンから呼ぶ formatValue()、ツールバーなしの読み取り専用フィールド、整形・ステータスのカスタムラベル。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "不正な JSON は badInput（フォーカス中も）となるため、解析できるまでフォームは送信できません。ペイロードを直すと送信できます。リセットで value 属性の値に戻ります。"
+      }
+    },
+    "minerva-json-field": {
+      "props": {
+        "invalid": "エラー状態。フォーカスアウト後に構文エラーがある場合にも設定されます。",
+        "readonly": "読み取り専用：フォーカス可能で送信されますが、編集も整形もできません。",
+        "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+        "name": "フォーム送信時に値を送る名前。",
+        "disabled": "コントロールを無効にします（フォーカス不可・送信されず・検証されない）。",
+        "required": "フォームを送信するには値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "テキストが確定した（フォーカスアウト）か整形された。",
+        "input": "テキストが変わった（ネイティブ・composed）。",
+        "minerva-input": "入力または整形でテキストが変わった。detail: { value }。",
+        "minerva-change": "テキストが確定した（フォーカスアウト）か整形された。detail: { value }。"
+      },
+      "parts": {
+        "base": "ラッパー。",
+        "format-button": "整形ボタン。",
+        "textarea": "ネイティブの <textarea>。",
+        "status": "検証ステータスの行。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部のアイコンボタンのアイコン色。",
+        "--icon-button-hover-bg": "ホバー時の内部アイコンボタンの背景。",
+        "--icon-button-pressed-color": "押下状態の内部アイコンボタンのアイコン色。",
+        "--icon-button-pressed-bg": "押下状態の内部アイコンボタンの背景。",
+        "--icon-button-size": "内部アイコンボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+        "--icon-button-icon-size": "内部アイコンボタンのアイコンのフォントサイズ。",
+        "--icon-button-radius": "内部アイコンボタンの角丸（既定値は --radius-lg）。",
+        "--textarea-min-height": "テキストエリアの最小の高さ。",
+        "--textarea-padding-y": "テキストの上下パディング。",
+        "--textarea-padding-x": "テキストの左右パディング（既定値は密度の小サイズのコントロールのパディング）。",
+        "--textarea-radius": "テキストエリアの角丸（既定値は --radius-md）。",
+        "--textarea-font-size": "テキストのフォントサイズ。",
+        "--textarea-background": "テキストエリアの背景色。",
+        "--textarea-border-color": "通常時のテキストエリアの枠線の色。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "formatValue": "indent 個の空白でテキストを再インデントします（有効な JSON のときのみ）。イベントは発火しません。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

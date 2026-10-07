@@ -319,3 +319,29 @@ describe("createFocusScope", () => {
     expect(getFocusScopeCount()).toBe(before);
   });
 });
+
+describe("createFocusScope in a shadow root", () => {
+  it("keeps focus moved into the trapped container when focusout reports the (retargeted) shadow host", () => {
+    document.body.innerHTML = `<button id="outside">o</button><div id="host"></div>`;
+    const host = document.getElementById("host")!;
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.innerHTML = `<div id="panel"><button id="item">i</button></div>`;
+    const panel = shadow.getElementById("panel")!;
+    const item = shadow.getElementById("item")!;
+    const outside = document.getElementById("outside")!;
+    outside.focus();
+    const scope = createFocusScope(panel, { trapped: true, autoFocus: false });
+    scope.activate();
+    // focus leaving `outside` for `item`: browsers retarget relatedTarget to
+    // the host for document listeners, and focusout fires before focusin
+    outside.dispatchEvent(
+      new FocusEvent("focusout", { bubbles: true, relatedTarget: host }),
+    );
+    // the scope must not hijack the move (it used to focus the container)
+    expect(shadow.activeElement).not.toBe(panel);
+    item.focus();
+    expect(shadow.activeElement).toBe(item);
+    scope.deactivate();
+    document.body.innerHTML = "";
+  });
+});

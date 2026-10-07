@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { cn } from "../../utils/cn";
 import { IconStar, IconStarHalf } from "../../internal/icons";
 import { logicalArrowKey } from "../../internal/direction";
+import { warnOnce } from "../../internal/devWarnings";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
 
@@ -69,6 +70,19 @@ const Rating = ({
   ...rest
 }: RatingProps) => {
   const interactive = !!onChange && !readOnly;
+  if (process.env.NODE_ENV !== "production") {
+    if (!(max > 0)) {
+      warnOnce(
+        "Rating:max",
+        `[minerva] Rating: \`max\` must be a positive number, got ${max}.`,
+      );
+    } else if (value < 0 || value > max) {
+      warnOnce(
+        "Rating:range",
+        `[minerva] Rating: \`value\` (${value}) should be between 0 and \`max\` (${max}).`,
+      );
+    }
+  }
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half star.

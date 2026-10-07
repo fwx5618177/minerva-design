@@ -89,5 +89,55 @@
     "--alert-gap": "Space between the icon, the content and the actions",
     "--alert-shadow": "Shadow of the elevated alert (defaults to --shadow-sm)",
     "--alert-margin-bottom": "Space below the alert"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Four status colors with a heading. Danger and warning alerts use role=\"alert\", info and success role=\"status\"."
+      },
+      "variants-sizes": {
+        "title": "Variants, sizes and appearance",
+        "description": "Three variants and sizes, hide-icon, elevation, square corners, animation-name / no-animation, a custom icon slot and banner mode."
+      },
+      "closable": {
+        "title": "Closable",
+        "description": "closable fires a cancelable minerva-close: preventDefault() keeps the alert, otherwise it moves focus out and hides itself. The action slot holds buttons."
+      },
+      "collapsible": {
+        "title": "Collapsible",
+        "description": "collapsible (with a heading) adds a toggle; collapsed sets the initial state and minerva-expanded-change reports each change."
+      }
+    },
+    "minerva-alert": {
+      "props": {
+        "heading": "Title text (or use the heading slot).",
+        "hideIcon": "Hides the status icon.",
+        "noAnimation": "Disables the entrance animation.",
+        "square": "Square corners.",
+        "collapsed": "Whether the message is collapsed.",
+        "alertRole": "ARIA role (default: \"alert\" for danger / warning, \"status\" otherwise)."
+      },
+      "events": {
+        "minerva-close": "The close button was activated; cancelable: preventDefault() keeps the alert visible.",
+        "minerva-expanded-change": "The user expanded / collapsed the message (detail: { expanded }); cancelable."
+      },
+      "slots": {
+        "default": "Message.",
+        "heading": "Title (alternative to the heading attribute).",
+        "icon": "Custom icon replacing the status icon.",
+        "action": "Action area (e.g. buttons) at the end.",
+        "close-icon": "Custom close icon."
+      },
+      "parts": {
+        "base": "The alert root.",
+        "icon": "The icon wrapper.",
+        "heading": "The title.",
+        "message": "The message wrapper.",
+        "action": "The action wrapper.",
+        "close-button": "The close button.",
+        "toggle": "The expand / collapse button."
+      }
+    }
   }
 }

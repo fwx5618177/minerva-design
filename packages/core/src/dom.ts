@@ -56,7 +56,9 @@ export function getActiveElement(
 
 /**
  * Like `Node.contains`, but also returns `true` when `child` lives inside a
- * shadow tree hosted (at any depth) by `parent`.
+ * shadow tree hosted (at any depth) by `parent`, or is rendered inside
+ * `parent` through a `<slot>` (flat tree: light DOM content slotted into a
+ * shadow tree, e.g. the body of a custom element dialog).
  */
 export function contains(
   parent: Node | null | undefined,
@@ -69,7 +71,19 @@ export function contains(
     const root = node.getRootNode();
     node = isShadowRoot(root) ? root.host : null;
   }
+  for (let flat = flatParentNode(child); flat; flat = flatParentNode(flat)) {
+    if (flat === parent) return true;
+  }
   return false;
+}
+
+/** Parent of `node` in the flat tree (slot of slotted content, host of a shadow root). */
+function flatParentNode(node: Node): Node | null {
+  const parent = node.parentNode;
+  if (!parent) return null;
+  if (isShadowRoot(parent)) return parent.host;
+  const shadow = (parent as Element).shadowRoot;
+  return shadow ? slotOf(node, shadow) : parent;
 }
 
 function isShadowRoot(node: Node): node is ShadowRoot {
@@ -111,11 +125,40 @@ function isDisabled(el: Element): boolean {
   return false;
 }
 
+/** Slot of a shadow root that `node` (a light child of its host) renders in. */
+function slotOf(node: Node, shadow: ShadowRoot): HTMLSlotElement | null {
+  const assigned = (node as Element | Text).assignedSlot;
+  if (assigned) return assigned;
+  // DOMs without slot assignment (e.g. happy-dom): match by slot name.
+  const name =
+    node.nodeType === 1 ? ((node as Element).getAttribute("slot") ?? "") : "";
+  return (
+    Array.from(shadow.querySelectorAll("slot")).find(
+      (slot) => (slot.getAttribute("name") ?? "") === name,
+    ) ?? null
+  );
+}
+
+/**
+ * Parent in the flat (rendered) tree: the slot an element is assigned to,
+ * else its parent element, else the host of its shadow root. `false` when
+ * the element is a light child of a shadow host that is not slotted (not
+ * rendered at all).
+ */
+function flatParent(el: Element): Element | null | false {
+  const parent = el.parentElement;
+  if (parent?.shadowRoot) return slotOf(el, parent.shadowRoot) ?? false;
+  if (parent) return parent;
+  const root = el.parentNode;
+  return root && isShadowRoot(root) ? root.host : null;
+}
+
 function isHiddenByStyle(el: Element): boolean {
   const win = el.ownerDocument.defaultView;
   if (!win) return false;
-  // `hidden` / display:none on any ancestor removes the whole subtree.
-  for (let node: Element | null = el; node; node = node.parentElement) {
+  // `hidden` / display:none on any ancestor (in the flat tree, so through
+  // slots and shadow roots) removes the whole subtree.
+  for (let node: Element | null = el; node;) {
     if ((node as HTMLElement).hidden) return true;
     if (win.getComputedStyle(node).display === "none") return true;
     // closed <details>: only its <summary> is rendered
@@ -127,6 +170,9 @@ function isHiddenByStyle(el: Element): boolean {
       const summary = node.querySelector(":scope > summary");
       if (!summary || !summary.contains(el)) return true;
     }
+    const parent = flatParent(node);
+    if (parent === false) return true;
+    node = parent;
   }
   const visibility = win.getComputedStyle(el).visibility;
   return visibility === "hidden" || visibility === "collapse";
@@ -169,12 +215,37 @@ export function isTabbable(el: Element): boolean {
   return isFocusable(el) && getTabIndex(el) >= 0;
 }
 
-/** Collects candidates in DOM order, descending into open shadow roots. */
+/**
+ * Collects candidates in rendering (flat tree) order: open shadow roots are
+ * walked instead of their host's light children, and a `<slot>` contributes
+ * its assigned elements (or its fallback content when nothing is assigned).
+ * Light children of a shadow host that are not slotted are not rendered, so
+ * they are skipped, like the browser's sequential focus navigation does.
+ */
 function collect(root: ParentNode, out: Element[]): void {
-  for (const el of Array.from(root.querySelectorAll("*"))) {
-    out.push(el);
-    if (el.shadowRoot) collect(el.shadowRoot, out);
+  for (const el of Array.from(root.children)) visit(el, out);
+}
+
+function visit(el: Element, out: Element[]): void {
+  out.push(el);
+  if (el.shadowRoot) {
+    collect(el.shadowRoot, out);
+    return;
   }
+  if (el.tagName === "SLOT") {
+    const assigned =
+      (el as HTMLSlotElement).assignedElements?.({ flatten: true }) ?? [];
+    if (assigned.length > 0) {
+      for (const child of assigned) visit(child, out);
+      return;
+    }
+  }
+  collect(el, out);
+}
+
+/** The node whose descendants are rendered: a host's open shadow root. */
+function renderRoot(container: Element | ShadowRoot): ParentNode {
+  return (container as Element).shadowRoot ?? container;
 }
 
 export interface TabbableOptions {
@@ -188,8 +259,9 @@ export interface TabbableOptions {
 }
 
 /**
- * Focusable elements inside `container` (DOM order, open shadow roots
- * included), including `tabindex="-1"` ones.
+ * Focusable elements inside `container` (flat tree order: open shadow roots
+ * and slotted content included; a shadow host is walked through its shadow
+ * root), including `tabindex="-1"` ones.
  */
 export function getFocusables(
   container: Element | ShadowRoot,
@@ -199,7 +271,7 @@ export function getFocusables(
   if (options.includeContainer && container.nodeType === 1) {
     all.push(container as Element);
   }
-  collect(container, all);
+  collect(renderRoot(container), all);
   return all.filter(
     (el): el is HTMLElement => isHTMLElement(el) && isFocusable(el),
   );

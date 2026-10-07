@@ -10,11 +10,20 @@ import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import {
   OUTPUT,
+  OUTPUT_WC,
   generateApi,
   generateCssVars,
+  generateElements,
   serialize,
+  sortKeys,
 } from "../../scripts/generate-api.mjs";
 import { docPages } from "./registry";
+import {
+  WC_SECTIONS,
+  wcDescriptionKeys,
+  wcMembers,
+  type ApiElement,
+} from "./api";
 
 type Json = { [key: string]: Json } | string;
 
@@ -110,6 +119,9 @@ const valueExports = (file: string, seen = new Set<string>()): string[] => {
 describe("docs: API tables", () => {
   it("api.generated.json matches the current types (run `pnpm --filter @minerva/sample gen:api`)", () => {
     expect(readFileSync(OUTPUT, "utf8")).toBe(serialize(generateApi()));
+    expect(readFileSync(OUTPUT_WC, "utf8")).toBe(
+      serialize(sortKeys(generateElements())),
+    );
   });
 
   const api = generateApi() as Record<
@@ -173,6 +185,135 @@ describe("docs: CSS variables", () => {
         expect(en.has(path), `missing description key ${path}`).toBe(true);
       }
     }
+  });
+});
+
+describe("docs: Web Components", () => {
+  const elements = generateElements() as Record<string, ApiElement>;
+  const tags = Object.keys(elements).map((key) => key.replace(/^wc:/, ""));
+  const wcPages = docPages.filter((p) => p.wc);
+
+  it("documents every custom element on exactly one page", () => {
+    const listed = wcPages.flatMap((p) => p.wc!.tags);
+    expect(
+      tags.filter((tag) => !listed.includes(tag)),
+      "undocumented",
+    ).toEqual([]);
+    expect(
+      listed.filter((tag) => !tags.includes(tag)),
+      "unknown",
+    ).toEqual([]);
+    expect(
+      listed.filter((tag, i) => listed.indexOf(tag) !== i),
+      "listed twice",
+    ).toEqual([]);
+  });
+
+  it.each(wcPages.map((p) => [p.id, p] as const))(
+    "%s: define entry, demos and translated API descriptions",
+    (id, page) => {
+      const wc = page.wc!;
+      expect(
+        existsSync(
+          join(PACKAGES, `lib-web-components/src/elements/${wc.entry}.ts`),
+        ),
+        `entry ${wc.entry}`,
+      ).toBe(true);
+      expect(wc.demos.length, "at least one demo").toBeGreaterThan(0);
+      const demoDir = join(SRC, "docs/pages", id, "wc");
+      const files = existsSync(demoDir)
+        ? readdirSync(demoDir)
+            .filter((f) => f.endsWith(".html"))
+            .map((f) => f.replace(/\.html$/, ""))
+            .sort()
+        : [];
+      expect(files, "wc/*.html must match registry `wc.demos`").toEqual(
+        [...wc.demos].sort(),
+      );
+      for (const demo of wc.demos) {
+        for (const field of ["title", "description"]) {
+          const key = `docs.${id}.wc.demos.${demo}.${field}`;
+          expect(en.has(key), key).toBe(true);
+        }
+      }
+      const missing: string[] = [];
+      for (const tag of wc.tags) {
+        const api = elements[`wc:${tag}`];
+        for (const section of WC_SECTIONS) {
+          for (const member of wcMembers(api, section)) {
+            const keys = wcDescriptionKeys(
+              id,
+              tag,
+              section,
+              member.name,
+              page.api,
+            );
+            if (!keys.some((k) => en.has(k))) missing.push(keys[0]);
+          }
+        }
+      }
+      expect(missing, "missing descriptions").toEqual([]);
+    },
+  );
+});
+
+describe("Web Components defaults match the React components", () => {
+  const api = { ...generateApi(), ...generateElements() } as Record<
+    string,
+    {
+      kind: string;
+      props?: { name: string; default?: string }[];
+      properties?: { name: string; default?: string }[];
+    }
+  >;
+  /** Literal defaults only (`"medium"`, `3`, `true`); numbers may be quoted */
+  const literal = (value?: string) => {
+    const text = value?.trim();
+    if (!text || !/^("[^"]*"|-?\d+(\.\d+)?|true|false|null)$/.test(text)) {
+      return undefined;
+    }
+    return text.replace(/^"(-?\d+(\.\d+)?)"$/, "$1");
+  };
+  const pascal = (tag: string) =>
+    tag
+      .replace(/^minerva-/, "")
+      .replace(/(^|-)(\w)/g, (_, __, c: string) => c.toUpperCase());
+  /**
+   * Same behaviour, different representation (documented in the element):
+   * the default is resolved at runtime instead of declared.
+   */
+  const RESOLVED_AT_RUNTIME = new Set([
+    "minerva-app-shell.skipLink", // text of the always-rendered skip link (React: boolean | text)
+    "minerva-skeleton.size", // circular placeholder falls back to 32px
+    "minerva-tooltip.enterDelay", // provider, then 200ms
+    "minerva-tooltip.leaveDelay", // provider, then 0ms
+  ]);
+
+  it("every same-named property has the same literal default", () => {
+    const mismatches: string[] = [];
+    for (const [key, element] of Object.entries(api)) {
+      if (element.kind !== "element") continue;
+      const tag = key.slice(3);
+      const react = api[`${pascal(tag)}Props`];
+      if (!react?.props) continue;
+      for (const property of element.properties ?? []) {
+        const prop = react.props.find((p) => p.name === property.name);
+        const expected = literal(prop?.default);
+        if (!prop || expected === undefined) continue;
+        if (RESOLVED_AT_RUNTIME.has(`${tag}.${property.name}`)) continue;
+        const actual =
+          literal(property.default) ??
+          (expected === "false" && property.default === undefined
+            ? "false"
+            : property.default);
+        if (actual !== expected) {
+          mismatches.push(
+            `${tag}.${property.name}: ${property.default} (React ${prop.default})`,
+          );
+        }
+      }
+    }
+    expect(mismatches).toEqual([]);
   });
 });
 

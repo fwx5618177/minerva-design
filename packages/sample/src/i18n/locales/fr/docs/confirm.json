@@ -47,5 +47,61 @@
     "ConfirmProviderProps": {
       "children": "Sous-arbre de l'application ; les boîtes de useConfirm() / confirm() s'y affichent (celles de useConfirm() dans la portée ConfigProvider de l’appelant)"
     }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Un <minerva-confirm-dialog> déclaratif ouvert avec show(). color=\"danger\" signale une action destructive ; minerva-confirm et minerva-cancel (avec sa raison) indiquent la réponse."
+      },
+      "async": {
+        "title": "Confirmation asynchrone",
+        "description": "onConfirm peut renvoyer une promesse : le bouton Confirmer affiche son état de chargement jusqu'à son règlement, et un rejet garde la boîte ouverte. Le contenu supplémentaire va dans le slot par défaut."
+      },
+      "imperative": {
+        "title": "confirm() impératif",
+        "description": "confirm({ title, ... }) ajoute une boîte de dialogue, se résout en true ou false et la retire une fois fermée : un remplaçant thémé de window.confirm. Les appels simultanés sont mis en file."
+      }
+    },
+    "minerva-confirm-dialog": {
+      "props": {
+        "label": "Titre (ou le slot header) ; nomme la boîte de dialogue."
+      },
+      "events": {
+        "minerva-confirm": "Le bouton Confirmer a été pressé ; annulable : preventDefault() garde la boîte ouverte (à fermer vous-même).",
+        "minerva-cancel": "La confirmation a été annulée et la boîte fermée (detail : { reason }).",
+        "minerva-open-change": "L'utilisateur demande la fermeture (detail : { open, reason }) ; annulable : preventDefault() la garde ouverte.",
+        "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+        "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+      },
+      "slots": {
+        "default": "Contenu supplémentaire facultatif sous la description.",
+        "header": "Titre (alternative à l'attribut label)."
+      },
+      "parts": {
+        "overlay": "Le fond (overlay).",
+        "panel": "Le panneau de dialogue (role=\"alertdialog\").",
+        "header": "Le conteneur du titre.",
+        "description": "La description.",
+        "body": "Le conteneur du corps.",
+        "footer": "La rangée d'actions.",
+        "close-button": "Le bouton de fermeture (×).",
+        "cancel-button": "Le <minerva-button> Annuler.",
+        "confirm-button": "Le <minerva-button> Confirmer."
+      },
+      "cssVars": {
+        "--modal-width": "Largeur du panneau (par défaut celle de la taille, limitée par la fenêtre).",
+        "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà).",
+        "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied.",
+        "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl).",
+        "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl).",
+        "--modal-background": "Arrière-plan du panneau.",
+        "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)."
+      },
+      "methods": {
+        "show": "Ouvre la boîte de dialogue.",
+        "hide": "Ferme la boîte de dialogue (sans événement)."
+      }
+    }
   }
 }

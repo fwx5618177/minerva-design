@@ -82,5 +82,67 @@
     "--switch-checked-color": "Accent du curseur, du rail et du segment actif à l'état activé (par défaut l'accent de la prop color)",
     "--switch-label-gap": "Espace entre l'interrupteur et son libellé",
     "--switch-label-font-size": "Taille de police du libellé (toutes tailles)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Une case native avec role=\"switch\" : Espace et Entrée la basculent, et minerva-change signale le nouvel état."
+      },
+      "styles-states": {
+        "title": "Styles et états",
+        "description": "Tailles, forme carrée, couleurs, position du libellé, icône dans le curseur, et variantes lecture seule, invalide et sans onde. Basculer Sync montre l’état de chargement."
+      },
+      "side-labels": {
+        "title": "Libellés latéraux et segments",
+        "description": "off-label et on-label ajoutent des libellés cliquables de part et d’autre du curseur ; variant=\"segmented\" en fait un contrôle à deux segments."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Comme une case à cocher : un interrupteur activé envoie sa value, required rend le formulaire invalide tant qu’il est désactivé, et reset restaure les attributs checked."
+      }
+    },
+    "minerva-switch": {
+      "props": {
+        "noRipple": "Désactive l’effet d’onde au clic.",
+        "readonly": "Lecture seule : focalisable et envoyé, mais l’utilisateur ne peut pas le basculer.",
+        "invalid": "État d’erreur (définit aria-invalid).",
+        "required": "L’interrupteur doit être activé pour que le formulaire soit envoyé.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "L’état a changé (réémis depuis l’input interne).",
+        "minerva-change": "L’utilisateur a basculé l’interrupteur ; detail : { checked, value }."
+      },
+      "slots": {
+        "default": "Contenu du libellé (alternative à l’attribut label).",
+        "icon": "Icône dans le curseur (icon-placement=\"start\") ou après l’interrupteur (\"end\")."
+      },
+      "parts": {
+        "base": "La racine : un <label>, ou un <span> avec libellés latéraux ou segments.",
+        "input": "L’élément natif <input type=\"checkbox\" role=\"switch\">.",
+        "track": "Le rail.",
+        "thumb": "Le curseur.",
+        "label": "Le texte du libellé.",
+        "side": "Les libellés latéraux désactivé / activé (boutons).",
+        "segment": "Les segments désactivé / activé (boutons)."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "click": "Clique sur l’input interne (bascule l’interrupteur s’il n’est pas bloqué).",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

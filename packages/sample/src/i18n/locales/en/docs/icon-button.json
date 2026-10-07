@@ -72,5 +72,61 @@
     "--icon-button-size": "Width and height of the button (every size; defaults follow the density's control heights)",
     "--icon-button-icon-size": "Font size of the icon (every size)",
     "--icon-button-radius": "Corner radius of the square shape (defaults to --radius-lg)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "label names the icon-only button and is shown as its tooltip on hover and focus (Escape closes it). Ghost and neutral by default."
+      },
+      "sizes-shapes": {
+        "title": "Sizes, shapes and colors",
+        "description": "Four sizes, circle or square shapes, and the shared semantic colors with the solid / outline / ghost variants."
+      },
+      "toggle": {
+        "title": "Toggle buttons",
+        "description": "toggle exposes aria-pressed; activation flips pressed and fires a cancelable minerva-pressed-change. The pin cannot be turned off (preventDefault)."
+      },
+      "states": {
+        "title": "Loading, disabled and tooltips",
+        "description": "Click Refresh to see the loading state (still focusable, activation ignored). tooltip overrides the tooltip text, tooltip-placement moves it, no-tooltip removes it."
+      }
+    },
+    "minerva-icon-button": {
+      "props": {
+        "toggle": "Makes it a toggle button (exposes aria-pressed).",
+        "tooltipPlacement": "Preferred placement of the tooltip.",
+        "noTooltip": "Hides the tooltip (the label still names the button).",
+        "type": "What the button does in its form: nothing (button), submit or reset.",
+        "form": "The form owning the button (read-only)."
+      },
+      "events": {
+        "minerva-pressed-change": "A toggle button was activated (detail: { pressed }, the new state). Cancelable: preventDefault() keeps the current state."
+      },
+      "slots": {
+        "default": "The icon (hidden from assistive technologies)."
+      },
+      "parts": {
+        "button": "The native <button>.",
+        "glyph": "The icon wrapper.",
+        "spinner": "The loading indicator.",
+        "tooltip": "The tooltip (role=\"tooltip\")."
+      },
+      "cssVars": {
+        "--tooltip-max-width": "Maximum width of the tooltip (capped by the viewport).",
+        "--tooltip-padding": "Padding of the tooltip.",
+        "--tooltip-radius": "Corner radius of the tooltip.",
+        "--tooltip-font-size": "Font size of the tooltip.",
+        "--tooltip-bg": "Background of the tooltip (gradients allowed).",
+        "--tooltip-color": "Text color of the tooltip.",
+        "--tooltip-shadow": "Shadow of the tooltip (defaults to --shadow-md).",
+        "--tooltip-z-index": "Stacking order of the tooltip (defaults to --z-popover)."
+      },
+      "methods": {
+        "focus": "Focuses the inner button.",
+        "blur": "Removes focus from the inner button.",
+        "click": "Clicks the inner button (ignored while disabled or loading)."
+      }
+    }
   }
 }

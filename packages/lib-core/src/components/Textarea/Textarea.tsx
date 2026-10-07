@@ -1,5 +1,6 @@
 import { cn } from "../../utils/cn";
 import { isAriaInvalid } from "../../internal/forms-field";
+import { warnLengthBounds } from "../../internal/devWarnings";
 import { useFormControlProps } from "../FormControl/context";
 import type { TextareaProps } from "./types";
 import styles from "./textarea.module.scss";
@@ -18,6 +19,10 @@ export const Textarea = ({
   ...rest
 }: TextareaProps) => {
   const field = useFormControlProps(rest);
+  if (process.env.NODE_ENV !== "production") {
+    // Controlled `value` misuse is reported by React (native <textarea>).
+    warnLengthBounds("Textarea", rest.minLength, rest.maxLength);
+  }
   const isInvalid = invalid || isAriaInvalid(field["aria-invalid"]);
 
   return (

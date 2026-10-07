@@ -50,5 +50,91 @@
     "--page-section-gap": "分区内各块之间的间距",
     "--page-stat-card-padding": "统计卡片的内边距",
     "--page-stat-card-radius": "统计卡片的圆角（默认 --radius-lg）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "<minerva-page> 是带内边距的列（max-width 限制宽度）；<minerva-page-header> 渲染带描述和操作的 h1，<minerva-page-section> 渲染由其 h2 标注的区域。lib-core 的 title 在这里叫 heading。"
+      },
+      "stat-cards": {
+        "title": "统计卡片",
+        "description": "<minerva-stat-card> 通过 label / value / description 属性或插槽渲染带标签的指标（<dl>），并可使用 icon 插槽。区块同样可以带图标。"
+      },
+      "toolbar": {
+        "title": "工具栏",
+        "description": "<minerva-toolbar> 将控件分组为可换行的一行（role=\"group\"，请用 aria-label 命名）；输入框会自动伸展，density=\"compact\" 缩小间距并让垂直分割线居中，nowrap 保持单行。"
+      }
+    },
+    "minerva-page": {
+      "slots": {
+        "default": "页面内容（页头、区块等）。"
+      },
+      "parts": {
+        "base": "页面列。"
+      }
+    },
+    "minerva-page-header": {
+      "props": {
+        "heading": "页面 h1 的文本（即 lib-core 的 title）。"
+      },
+      "slots": {
+        "heading": "标题内容（heading 属性的替代方式）。",
+        "description": "辅助文本（description 属性的替代方式）。",
+        "actions": "标题旁的操作（窄宽度下换行到标题下方）。"
+      },
+      "parts": {
+        "base": "<header> 元素。",
+        "heading": "<h1> 元素。",
+        "description": "描述段落。",
+        "actions": "操作容器。"
+      }
+    },
+    "minerva-page-section": {
+      "props": {
+        "heading": "区块 h2 的文本（即 lib-core 的 title）。"
+      },
+      "slots": {
+        "default": "区块内容。",
+        "heading": "标题内容（heading 属性的替代方式）。",
+        "description": "辅助文本（description 属性的替代方式）。",
+        "actions": "标题旁的操作。",
+        "icon": "装饰性图标（对辅助技术隐藏）。"
+      },
+      "parts": {
+        "base": "<section> 元素。",
+        "header": "标题行。",
+        "heading": "<h2> 元素。",
+        "description": "描述段落。",
+        "actions": "操作容器。",
+        "icon": "图标容器。"
+      }
+    },
+    "minerva-toolbar": {
+      "props": {
+        "nowrap": "让控件保持在一行有界的行内，而不是换行。"
+      },
+      "slots": {
+        "default": "控件。"
+      },
+      "parts": {
+        "base": "分组（role=\"group\"）。"
+      }
+    },
+    "minerva-stat-card": {
+      "slots": {
+        "label": "指标名称（label 属性的替代方式）。",
+        "value": "指标数值（value 属性的替代方式）。",
+        "description": "数值下方的说明文本。",
+        "icon": "装饰性图标（对辅助技术隐藏）。"
+      },
+      "parts": {
+        "base": "卡片。",
+        "icon": "图标容器。",
+        "label": "<dt>（名称）。",
+        "value": "<dd>（数值）。",
+        "description": "描述段落。"
+      }
+    }
   }
 }

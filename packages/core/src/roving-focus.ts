@@ -1,4 +1,4 @@
-import { focusElement, getEventTarget } from "./dom";
+import { contains, focusElement, getEventTarget } from "./dom";
 
 export type Orientation = "horizontal" | "vertical" | "both";
 export type Direction = "ltr" | "rtl";
@@ -309,9 +309,7 @@ export function createRovingFocus(
   const itemFromEvent = (event: Event, items: HTMLElement[]) => {
     const target = getEventTarget(event);
     if (!(target instanceof Node)) return null;
-    return (
-      items.find((item) => item === target || item.contains(target)) ?? null
-    );
+    return items.find((item) => contains(item, target)) ?? null;
   };
 
   const onKeyDown = (event: KeyboardEvent) => {

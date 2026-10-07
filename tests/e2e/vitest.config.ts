@@ -37,6 +37,11 @@ export default defineConfig({
         find: /^@minerva\/lib-web-components$/,
         replacement: src("../../packages/lib-web-components/src/index.ts"),
       },
+      // lib-core stylesheets compiled into the Web Components' shadow roots
+      {
+        find: /^@lib-core-styles\//,
+        replacement: src("../../packages/lib-core/src/"),
+      },
     ],
   },
   test: {
@@ -57,6 +62,8 @@ export default defineConfig({
     include: ["**/*.test.tsx"],
     setupFiles: ["./setup.ts"],
     css: {
+      // only the stylesheets compiled into Web Components (`?inline`)
+      include: [/\.scss\?inline$/],
       modules: { classNameStrategy: "non-scoped" },
     },
   },

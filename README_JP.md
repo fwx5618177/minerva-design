@@ -21,8 +21,8 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 ## ✨ 特徴
 
 - **React コンポーネント**：React 19 対応の 100 以上のコンポーネント（`ref` は通常の prop、クライアント用エントリーは `"use client"` 付き）
-- **Web Components**：Lit ベースのカスタム要素。任意のフレームワーク、またはフレームワークなしで利用可能
-- **ESM + CommonJS**：両方のモジュール形式を提供
+- **Web Components**：全コンポーネントを標準のカスタム要素（Lit）として提供。素の HTML、Vue、Angular、Svelte、Solid、React で利用でき、見た目・トークン・キーボード操作・ARIA は React 版と同じ。フォーム関連付け対応のフォームコントロール、CDN バンドル、自動生成のフレームワーク向け型定義付き
+- **ESM + CommonJS**：React ライブラリは両方のモジュール形式を提供（Web Components は ESM のみ）
 - **TypeScript**：型定義を同梱
 - **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
 - **デザインプリセット**：`<ConfigProvider preset="editorial">`（控えめで読みやすさ重視）や `density` / `radius` / `shadow` / `fontScale` の各軸でアプリ全体の見た目を切り替え。SSR 対応（`designAttributes()`、`createThemeInitScript({ design })`）で、ネストした provider でスコープを限定可能
@@ -33,19 +33,19 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ## 📦 パッケージ
 
-| パッケージ                    | 説明                                                                                                                                                                                                                                                 |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@minerva/core`               | フレームワーク非依存のインタラクションプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決めなど）、テーマユーティリティ、デザイントークン、i18n メッセージ。lib-core と一緒にインストールされます。 |
-| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。                                                                                                                                         |
-| `@minerva/lib-web-components` | Lit ベースの Web Components。現在は `<minerva-button>` カスタム要素を提供。                                                                                                                                                                          |
-| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                                                                                                                                                          |
+| パッケージ                    | 説明                                                                                                                                                                                                                                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@minerva/core`               | フレームワーク非依存のインタラクションプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決めなど）、テーマユーティリティ、デザイントークン、i18n メッセージ。lib-core と一緒にインストールされます。                                |
+| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。                                                                                                                                                                        |
+| `@minerva/lib-web-components` | フレームワーク非依存の Web Components（Lit）：すべての Minerva コンポーネントをカスタム要素として提供（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>` など）。ESM のみ。要素ごとのエントリー、CDN バンドル、`tokens.css`、React・Vue・Svelte・Solid 向けの型定義を同梱。 |
+| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                                                                                                                                                                                         |
 
 ### アーキテクチャ
 
 ```
 @minerva/core            framework-agnostic TypeScript (DOM only)
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
-        ▲ React hooks                    ▲ Lit controllers (later)
+        ▲ React hooks                    ▲ Lit controllers
 @minerva/lib-core               @minerva/lib-web-components
 ```
 
@@ -201,43 +201,70 @@ export function SaveButton() {
 
 ### Web Components
 
+同じコンポーネントを標準のカスタム要素として、どのフレームワークでも（フレームワークなしでも）使えます。shadow root に lib-core と同じ DOM とスタイルを描画し、`@minerva/core` のプリミティブを再利用するため、見た目も挙動も React コンポーネントと同じです。
+
 ```bash
 pnpm add @minerva/lib-web-components
 ```
 
-カスタム要素を一度だけ登録します：
-
 ```ts
+// every element...
 import "@minerva/lib-web-components";
+// ...or only the ones you use (one entry per element)
+import "@minerva/lib-web-components/select";
+
+// design tokens, once (already included in @minerva/lib-core/style.css)
+import "@minerva/lib-web-components/tokens.css";
 ```
 
-その後、任意の HTML で使用できます：
+ビルドなしで CDN から読み込むこともできます：
 
 ```html
-<minerva-button variant="primary" size="medium" shape="pill">
-  Click me
-</minerva-button>
-<minerva-button variant="ghost" loading>Loading</minerva-button>
-<minerva-button variant="error" disabled aria-label="Delete">
-  Delete
-</minerva-button>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css"
+/>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"
+></script>
 ```
 
-`<minerva-button>` の属性：
+あとはネイティブ要素と同じようにタグを使います。フォームコントロールはフォームに関連付けられ（`name`、`required`、`FormData`、`form.reset()`）、イベントはバブリングして shadow root を越える `minerva-*` の CustomEvent（`minerva-change`、`minerva-open-change` など）です：
 
-| 属性                            | 値                                                                                      |
-| ------------------------------- | --------------------------------------------------------------------------------------- |
-| `variant`                       | `primary`、`secondary`、`success`、`warning`、`error`、`info`、`ghost`、`retry`、`back` |
-| `size`                          | `tiny`、`small`、`medium`、`large`                                                      |
-| `shape`                         | `square`、`rounded`、`circle`、`pill`                                                   |
-| `loading`、`disabled`、`active` | 真偽値                                                                                  |
-| `aria-label`                    | 文字列                                                                                  |
+```html
+<minerva-config theme="system" locale="en">
+  <form>
+    <label for="plan">Plan</label>
+    <minerva-select id="plan" name="plan" value="pro" required>
+      <minerva-option value="free">Free</minerva-option>
+      <minerva-option value="pro">Pro</minerva-option>
+    </minerva-select>
+    <minerva-switch name="newsletter" checked>Newsletter</minerva-switch>
+    <minerva-button type="submit">Save</minerva-button>
+  </form>
+</minerva-config>
 
-React プロジェクトで JSX の型を利用するには、以下を追加します：
+<script type="module">
+  document
+    .querySelector("minerva-select")
+    .addEventListener("minerva-change", (event) => {
+      console.log(event.detail.value);
+    });
+</script>
+```
+
+型定義：すべての要素は `HTMLElementTagNameMap` に登録されています。テンプレートの型チェックには次を参照します：
 
 ```ts
-/// <reference types="@minerva/lib-web-components/react" />
+/// <reference types="@minerva/lib-web-components/react" />  // React 19 JSX
+/// <reference types="@minerva/lib-web-components/svelte" /> // Svelte 5
+/// <reference types="@minerva/lib-web-components/solid" />  // Solid
+// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types
+// VS Code: "html.customData": ["./node_modules/@minerva/lib-web-components/dist/html-custom-data.json"]
 ```
+
+素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
 ## 🧑‍💻 開発者向けクイックスタート
 

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { formatTime, parseTimeInput, startOfToday } from "./utils";
+import {
+  formatHasSeconds,
+  formatTime,
+  parseTimeInput,
+  resolveTimeFormat,
+  startOfToday,
+} from "./utils";
 
 const at = (h: number, m: number, s: number) => new Date(2024, 0, 1, h, m, s);
 const hms = (d: Date | undefined) =>
@@ -48,5 +54,17 @@ describe("TimePicker utils", () => {
 
   it("starts today at midnight", () => {
     expect(hms(startOfToday())).toEqual([0, 0, 0]);
+  });
+});
+
+describe("resolveTimeFormat / formatHasSeconds", () => {
+  it.each([
+    ["HH:mm:ss", true, "HH:mm:ss"],
+    ["HH:mm:ss", false, "HH:mm"],
+    ["hh:mm:ss a", false, "hh:mm a"],
+    ["HH:mm", true, "HH:mm"],
+  ])("resolveTimeFormat(%s, %s) = %s", (format, show, expected) => {
+    expect(resolveTimeFormat(format, show)).toBe(expected);
+    expect(formatHasSeconds(expected)).toBe(expected.includes("s"));
   });
 });

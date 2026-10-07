@@ -65,5 +65,52 @@
     "--drawer-shadow": "パネルの影（既定値は --shadow-xl）",
     "--drawer-background": "パネルの背景",
     "--drawer-z-index": "パネルの重なり順（既定値は --z-modal）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "trigger スロットで開くサイドパネルです。data-drawer-close を持つ light DOM 要素（ここではフッターのボタン）で閉じます。"
+      },
+      "sides": {
+        "title": "表示位置",
+        "description": "side でドロワーがスライドインする端を選びます。size は左右のドロワーでは幅、上下では高さです。"
+      },
+      "non-modal": {
+        "title": "非モーダル",
+        "description": "non-modal ではページを操作できたままです。オーバーレイやフォーカストラップはなく、外側をクリックすると閉じます。minerva-open-change が理由を伝えます。"
+      }
+    },
+    "minerva-drawer": {
+      "props": {
+        "label": "タイトルテキスト（または header スロット）。ダイアログのアクセシブルな名前になります。",
+        "dialogRole": "パネルの ARIA ロール。",
+        "nonModal": "非モーダル：オーバーレイ、フォーカストラップ、スクロールロックなし。外側でのポインター操作やフォーカスで閉じます。"
+      },
+      "events": {
+        "minerva-open-change": "ユーザーが開閉を要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-after-open": "パネルが開き、フォーカスが内部に移動した後に発火します。",
+        "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+      },
+      "slots": {
+        "default": "本文コンテンツ。",
+        "header": "タイトル（label 属性の代わり）。",
+        "footer": "アクションの行。",
+        "trigger": "クリックするとパネルを開く要素。"
+      },
+      "parts": {
+        "overlay": "背景のオーバーレイ。",
+        "panel": "ダイアログパネル（role=\"dialog\"）。",
+        "header": "タイトルのラッパー。",
+        "description": "説明文。",
+        "body": "本文のラッパー。",
+        "footer": "フッターのラッパー。",
+        "close-button": "閉じる（×）ボタン。"
+      },
+      "methods": {
+        "show": "ドロワーを開きます。",
+        "hide": "ドロワーを閉じます。"
+      }
+    }
   }
 }

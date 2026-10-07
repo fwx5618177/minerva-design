@@ -88,5 +88,72 @@
     "--radio-gap": "标记与标签之间的间距",
     "--radio-label-font-size": "标签字号（所有尺寸）",
     "--radio-group-gap": "RadioGroup 中各单选框之间的间距"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "带标签的单选组，预选一个值并包含禁用选项。整个组只占一个 Tab 停靠点，方向键移动并选择。minerva-change 报告新值。"
+      },
+      "styles-states": {
+        "title": "样式与状态",
+        "description": "水平排列、组的尺寸与颜色、单个选项的辅助与错误信息，以及禁用的组。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "单选组本身就是表单控件：以 name 提交选中的值，required 在未选择时阻止提交，reset 恢复 value 属性。"
+      }
+    },
+    "minerva-radio": {
+      "props": {
+        "group": "单选框所属的 <minerva-radio-group>（只读）。",
+        "isDisabled": "单选框是否不可选（自身或其所在组禁用，只读）。"
+      },
+      "events": {
+        "minerva-change": "独立的单选框被用户选中；detail: { checked: true, value }。在组内时由组触发。"
+      },
+      "slots": {
+        "default": "标签内容（可替代 label 属性）。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "mark": "可视的单选圆点。",
+        "label": "标签文本。",
+        "helper-text": "辅助或错误文本。"
+      }
+    },
+    "minerva-radio-group": {
+      "props": {
+        "radios": "组内的 <minerva-radio> 子元素（只读）。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "用户选择了另一个单选项（同原生单选框）。",
+        "minerva-change": "用户选择了另一个单选项；detail: { value }。"
+      },
+      "slots": {
+        "default": "<minerva-radio> 选项。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "label": "可见的组标签。",
+        "group": "带有 role=\"radiogroup\" 的元素。",
+        "helper-text": "辅助文本。"
+      },
+      "methods": {
+        "focus": "聚焦已选中的单选框，否则聚焦第一个可用的。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

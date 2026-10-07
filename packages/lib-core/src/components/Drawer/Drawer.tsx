@@ -19,7 +19,9 @@ import type {
 import styles from "./drawer.module.scss";
 
 /** Owns the open state of a compound drawer. */
-export const DrawerRoot = (props: DrawerRootProps) => <DialogRoot {...props} />;
+export const DrawerRoot = (props: DrawerRootProps) => (
+  <DialogRoot componentName="Drawer" {...props} />
+);
 
 /** Opens the drawer; a `<button>` or, with `asChild`, the child element. */
 export const DrawerTrigger = (props: DrawerTriggerProps) => (
@@ -105,7 +107,7 @@ export const DrawerFooter = ({
  */
 export const Drawer = ({
   open,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   trigger,
   side,

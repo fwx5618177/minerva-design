@@ -131,5 +131,120 @@
     "--menu-shadow": "Ombre du panneau de menu (par défaut --shadow-md)",
     "--menu-item-height": "Hauteur minimale d'un élément (toutes les tailles ; par défaut la hauteur de contrôle de la densité)",
     "--menu-z-index": "Ordre d'empilement du panneau de menu (par défaut --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Les éléments enfants décrivent les entrées : éléments avec slot icon et raccourci affiché, sous-menu imbriqué, séparateur, groupe libellé et élément désactivé. minerva-select donne la valeur choisie."
+      },
+      "checkbox-radio": {
+        "title": "Cases à cocher et options radio",
+        "description": "Les cases à cocher basculent et les options radio d'un <minerva-menu-group> s'excluent mutuellement ; toutes gardent le menu ouvert et émettent minerva-change."
+      },
+      "items": {
+        "title": "Entrées depuis des données",
+        "description": "La propriété items accepte les objets MenuEntry de lib-core (groupe radio, séparateur, case à cocher, action) au lieu d'éléments enfants. side / align placent le menu, no-loop arrête les flèches aux extrémités."
+      },
+      "context-menu": {
+        "title": "Menu contextuel",
+        "description": "<minerva-context-menu> ouvre ses entrées au pointeur sur clic droit ou appui long, ou sur la zone avec Maj+F10. La zone est son autre contenu."
+      }
+    },
+    "minerva-context-menu": {
+      "props": {
+        "keepOpen": "Choisir une action garde le menu ouvert.",
+        "nonModal": "Menu non modal : la page reste interactive, le focus n'est pas piégé et le défilement n'est pas bloqué.",
+        "noLoop": "Les flèches s'arrêtent au premier / dernier élément au lieu de boucler.",
+        "direction": "Sens de lecture relevé à l'ouverture du menu (depuis l'attribut dir le plus proche).",
+        "isModal": "Indique si le menu se comporte actuellement en modal (lecture seule).",
+        "entries": "Entrées effectives : items s'il est défini, sinon celles lues dans les éléments enfants (lecture seule)."
+      },
+      "events": {
+        "minerva-open-change": "Le menu s'ouvre / demande à se fermer (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-select": "Une action a été choisie (detail : { value, item }) ; annulable : preventDefault() garde le menu ouvert.",
+        "minerva-change": "Une case à cocher a été basculée (detail : { value, checked, item }) ou une option radio choisie (detail : { value, group, item }) ; annulable : preventDefault() conserve l'état précédent."
+      },
+      "slots": {
+        "default": "La zone (et les entrées de menu déclaratives, qui ne sont pas affichées)."
+      },
+      "parts": {
+        "menu": "Un panneau de menu (menu racine et sous-menus).",
+        "item": "Un élément de menu.",
+        "icon": "L'icône d'un élément.",
+        "label": "Un libellé de groupe / section.",
+        "separator": "Un séparateur."
+      },
+      "methods": {
+        "rootPlacement": "Placement du panneau racine (interne, utilisé pour le positionnement).",
+        "rootOffset": "Décalage du panneau racine (interne, utilisé pour le positionnement).",
+        "show": "Ouvre le menu.",
+        "hide": "Ferme le menu (et ses sous-menus).",
+        "rootLayerOptions": "Options de calque du panneau racine (interne).",
+        "subLayerOptions": "Options de calque des sous-menus (interne)."
+      }
+    },
+    "minerva-menu-item": {
+      "props": {
+        "keepOpen": "Choisir cet élément garde le menu ouvert."
+      },
+      "slots": {
+        "default": "Libellé, et éléments de menu imbriqués formant un sous-menu.",
+        "icon": "Icône affichée avant le libellé."
+      }
+    },
+    "minerva-menu-checkbox-item": {
+      "slots": {
+        "default": "Libellé."
+      }
+    },
+    "minerva-menu-radio-item": {
+      "slots": {
+        "default": "Libellé."
+      }
+    },
+    "minerva-menu-group": {
+      "slots": {
+        "default": "Entrées du groupe."
+      }
+    },
+    "minerva-menu-label": {
+      "slots": {
+        "default": "Texte du libellé."
+      }
+    },
+    "minerva-menu": {
+      "props": {
+        "keepOpen": "Choisir une action garde le menu ouvert.",
+        "nonModal": "Menu non modal : la page reste interactive, le focus n'est pas piégé et le défilement n'est pas bloqué.",
+        "noLoop": "Les flèches s'arrêtent au premier / dernier élément au lieu de boucler.",
+        "direction": "Sens de lecture relevé à l'ouverture du menu (depuis l'attribut dir le plus proche).",
+        "isModal": "Indique si le menu se comporte actuellement en modal (lecture seule).",
+        "entries": "Entrées effectives : items s'il est défini, sinon celles lues dans les éléments enfants (lecture seule)."
+      },
+      "events": {
+        "minerva-open-change": "Le menu s'ouvre / demande à se fermer (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-select": "Une action a été choisie (detail : { value, item }, value = la clé / l'attribut value de l'élément) ; annulable : preventDefault() garde le menu ouvert.",
+        "minerva-change": "Une case à cocher a été basculée (detail : { value, checked, item }) ou une option radio choisie (detail : { value, group, item }) ; annulable : preventDefault() conserve l'état précédent."
+      },
+      "slots": {
+        "trigger": "Le bouton qui ouvre le menu (reçoit aria-haspopup=\"menu\", aria-expanded et data-state)."
+      },
+      "parts": {
+        "menu": "Un panneau de menu (menu racine et sous-menus).",
+        "item": "Un élément de menu.",
+        "icon": "L'icône d'un élément.",
+        "label": "Un libellé de groupe / section.",
+        "separator": "Un séparateur."
+      },
+      "methods": {
+        "rootPlacement": "Placement du panneau racine (interne, utilisé pour le positionnement).",
+        "rootOffset": "Décalage du panneau racine (interne, utilisé pour le positionnement).",
+        "show": "Ouvre le menu.",
+        "hide": "Ferme le menu (et ses sous-menus).",
+        "rootLayerOptions": "Options de calque du panneau racine (interne).",
+        "subLayerOptions": "Options de calque des sous-menus (interne)."
+      }
+    }
   }
 }

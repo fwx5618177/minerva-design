@@ -55,5 +55,69 @@
     "--app-shell-sidebar-background": "Background of the sidebar and the mobile navigation drawer",
     "--app-shell-header-background": "Background of the sticky header",
     "--app-shell-drawer-width": "Width of the mobile navigation drawer"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A sidebar with the brand and the navigation slot, a sticky header (header-actions slot) and the main landmark for the default slot. At 768px and below the navigation moves into a modal drawer opened from the header."
+      },
+      "sidebar-modes": {
+        "title": "Sidebar modes and slots",
+        "description": "sidebar-mode=\"compact\" starts with the icon rail; the sidebar buttons expand it or pin it as a floating rail. The collapsed attribute styles the navigation (labels hidden here); brand-icon stays visible in the rail and page-navigation sits between the header and main."
+      },
+      "controlled": {
+        "title": "Events, methods and labels",
+        "description": "minerva-sidebar-mode-change and minerva-open-change are cancelable (lock the mode to see it). expandNavigation() and focusMain() drive the shell; the *-label and skip-link attributes rename the controls."
+      }
+    },
+    "minerva-app-shell": {
+      "props": {
+        "noSkipLink": "Removes the \"Skip to content\" link.",
+        "expandLabel": "Name of the toggle that expands the sidebar.",
+        "collapseLabel": "Name of the toggle that collapses the sidebar.",
+        "enableFloatingLabel": "Name of the pin toggle when floating mode is off.",
+        "disableFloatingLabel": "Name of the pin toggle when floating mode is on.",
+        "openNavigationLabel": "Name of the header button that opens the mobile navigation.",
+        "closeNavigationLabel": "Name of the close button of the mobile navigation.",
+        "mobile": "Read-only: the mobile layout is active (viewport of 768px or less)."
+      },
+      "events": {
+        "minerva-sidebar-mode-change": "The user changed the sidebar mode (detail: { mode }). Cancelable: preventDefault() keeps the current mode.",
+        "minerva-open-change": "The mobile drawer opened or closed (detail: { open }). Cancelable when the user asked for it."
+      },
+      "slots": {
+        "default": "Page content, inside the main landmark.",
+        "navigation": "Navigation (sidebar on desktop, drawer on mobile).",
+        "brand": "Brand (alternative to the brand attribute).",
+        "brand-icon": "Decorative brand icon, still visible in the compact rail.",
+        "header-actions": "Content of the header bar (account menu, search...).",
+        "page-navigation": "Rendered between the header and main (e.g. page tabs)."
+      },
+      "parts": {
+        "shell": "The shell root.",
+        "skip-link": "The skip link.",
+        "sidebar": "The desktop sidebar (<aside>).",
+        "header": "The header bar.",
+        "main": "The <main> element.",
+        "overlay": "The drawer backdrop.",
+        "drawer": "The mobile drawer (role=\"dialog\")."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the shell controls (sidebar toggles, menu button).",
+        "--icon-button-hover-bg": "Background of the shell controls on hover.",
+        "--icon-button-pressed-color": "Icon color of the pressed pin toggle.",
+        "--icon-button-pressed-bg": "Background of the pressed pin toggle.",
+        "--icon-button-size": "Width and height of the shell controls.",
+        "--icon-button-icon-size": "Icon size of the shell controls.",
+        "--icon-button-radius": "Corner radius of the shell controls."
+      },
+      "methods": {
+        "openNavigation": "Opens the mobile navigation drawer (mobile layout only).",
+        "closeNavigation": "Closes the mobile navigation drawer (call it when an item is chosen).",
+        "expandNavigation": "Switches the sidebar to expanded (e.g. when a group is opened in the compact rail).",
+        "focusMain": "Moves focus to the main landmark."
+      }
+    }
   }
 }

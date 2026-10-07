@@ -80,6 +80,24 @@ describe("shadow DOM awareness", () => {
     expect(contains(outer, null)).toBe(false);
   });
 
+  it("contains() follows slots (flat tree)", () => {
+    const outer = render(
+      `<div id="host"><b id="slotted">s</b><i id="named" slot="side">n</i><u id="lost" slot="nowhere">u</u></div>`,
+    );
+    const host = outer.querySelector("#host")!;
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.innerHTML = `<div id="panel"><slot></slot></div><aside id="side"><slot name="side"></slot></aside>`;
+    const panel = shadow.querySelector("#panel")!;
+    const side = shadow.querySelector("#side")!;
+    const slotted = outer.querySelector("#slotted")!;
+    expect(contains(panel, slotted)).toBe(true);
+    expect(contains(panel, slotted.firstChild)).toBe(true);
+    expect(contains(side, outer.querySelector("#named"))).toBe(true);
+    expect(contains(panel, outer.querySelector("#named"))).toBe(false);
+    expect(contains(panel, outer.querySelector("#lost"))).toBe(false);
+    expect(contains(side, slotted)).toBe(false);
+  });
+
   it("getEventTarget returns the composed target", () => {
     const outer = render(`<div id="host"></div>`);
     const shadow = outer.querySelector("#host")!.attachShadow({ mode: "open" });
@@ -169,6 +187,37 @@ describe("getTabbables / getFocusables", () => {
       "a",
       "shadowed",
     ]);
+  });
+
+  it("walks the flat tree: slotted content in place of the <slot>, shadow internals of a host container", () => {
+    const root = render(
+      `<div id="host"><button id="slotted">s</button><button id="unslotted" slot="nowhere">u</button></div>`,
+    );
+    const host = root.querySelector<HTMLElement>("#host")!;
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.innerHTML = `<button id="before">b</button><slot></slot><div><slot name="empty"><button id="fallback">f</button></slot></div><button id="after">a</button>`;
+    // the host itself as container: its shadow root is walked, not its light children
+    expect(ids(getTabbables(host))).toEqual([
+      "before",
+      "slotted",
+      "fallback",
+      "after",
+    ]);
+    expect(ids(getTabbables(root))).toEqual([
+      "before",
+      "slotted",
+      "fallback",
+      "after",
+    ]);
+  });
+
+  it("treats slotted content of a hidden shadow wrapper as hidden", () => {
+    const root = render(`<div id="host"><button id="slotted">s</button></div>`);
+    const shadow = root
+      .querySelector<HTMLElement>("#host")!
+      .attachShadow({ mode: "open" });
+    shadow.innerHTML = `<div hidden><slot></slot></div>`;
+    expect(isFocusable(root.querySelector("#slotted")!)).toBe(false);
   });
 
   it("isFocusable / isTabbable", () => {

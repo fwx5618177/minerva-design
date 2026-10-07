@@ -54,5 +54,76 @@
     "--rating-gap": "星と数値の間隔",
     "--rating-value-font-size": "数値のフォントサイズ（全サイズ）",
     "--rating-scale-gap": "RatingScale の行同士の間隔"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "表示のみ",
+        "description": "interactive を付けない場合、星は表示専用（role=\"img\"）で、onChange なしの React Rating と同じです。0..max の任意のスコアを 5 つの星で表し、後ろに show-value と rating-count を表示できます。"
+      },
+      "interactive": {
+        "title": "インタラクティブ",
+        "description": "既定で操作可能です。星の左半分・右半分をクリックするか、フォーカスして矢印キー、PageUp / PageDown、Home / End を使います。新しいスコアは minerva-change で通知されます。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "この要素はフォーム関連要素です。スコアは name で送信され、required は 0 点を拒否し、リセットで value 属性の値に戻ります。"
+      },
+      "scale": {
+        "title": "評価スケール",
+        "description": "<minerva-rating-scale> は複数の項目を同じスケールで評価します。dimensions は JS プロパティで、minerva-change はキーと更新後のリストを渡します。ここでは readonly・hide-value のコピーに反映しています。"
+      }
+    },
+    "minerva-rating": {
+      "props": {
+        "defaultValue": "初期スコア。form.reset() で復元されます（value 属性）。",
+        "readonly": "interactive が設定されていても表示モードに固定します。",
+        "name": "フォームデータと共に送信される名前。",
+        "disabled": "コントロールを無効にします。フォーカス・送信・検証の対象外になります。",
+        "required": "フォームを送信するには値が必要です。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "検証状態。<input>.validity と同じです（読み取り専用）。",
+        "validationMessage": "現在の検証エラーを説明するメッセージ。有効な場合は空です（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。",
+        "interactive": "評価を操作可能なスライダーにします（React で onChange を渡すのに相当）。既定は表示のみ。"
+      },
+      "events": {
+        "change": "ユーザーがスコアを変更した。",
+        "minerva-change": "ユーザーがスコアを変更した。detail: { value }。"
+      },
+      "parts": {
+        "base": "ルート要素（role=\"slider\"、読み取り専用時は role=\"img\"）。",
+        "stars": "星の並び。",
+        "star": "個々の星。",
+        "value": "スコアと評価件数。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "checkValidity": "有効性をチェックし、無効なら invalid を発火します。",
+        "reportValidity": "有効性をチェックし、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォーム関連コールバック。既定値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォーム関連コールバック。",
+        "formStateRestoreCallback": "ブラウザーが値を復元するとき（戻る操作、自動入力）に呼ばれるフォーム関連コールバック。"
+      }
+    },
+    "minerva-rating-scale": {
+      "props": {
+        "readonly": "interactive が設定されていても表示モードに固定します。",
+        "hideValue": "各行の末尾のスコアを非表示にします。",
+        "interactive": "各行を操作可能にします（React で onChange を渡すのに相当）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーが項目を評価した。detail: { key, value, dimensions }（dimensions は更新済み）。"
+      },
+      "parts": {
+        "base": "行のリスト。",
+        "row": "各行。",
+        "label": "行のラベル。"
+      }
+    }
   }
 }

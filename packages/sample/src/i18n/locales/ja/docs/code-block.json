@@ -33,5 +33,51 @@
     "--code-block-border-color": "枠線の色",
     "--code-block-font-size": "コードのフォントサイズ",
     "--code-block-max-height": "スクロールするまでの最大高さ（既定値は none）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "テキスト内容はそのまま表示されます（マークアップでは < をエスケープ）。language はラベルを表示します。各ブロックは名前付きのフォーカス可能な領域です。"
+      },
+      "copy": {
+        "title": "クリップボードへコピー",
+        "description": "code プロパティがテキストを保持します。copyable でコピーボタンを追加し、copy() で外部からコピーし、minerva-copy が結果を通知します。"
+      },
+      "overflow": {
+        "title": "長い行と高さ",
+        "description": "no-wrap で長い行を横スクロールにし、max-height で高さを制限します。領域はキーボードでもスクロールできます。"
+      }
+    },
+    "minerva-code-block": {
+      "props": {
+        "code": "ソーステキスト（既定：要素のテキスト内容）。",
+        "language": "コードの言語。ラベルとして表示されます（例：\"json\"、\"bash\"）。",
+        "noWrap": "長い行を折り返さず横スクロールします（lib-core の wrap={false} に相当）。",
+        "text": "表示・コピーされるテキスト（読み取り専用）。"
+      },
+      "events": {
+        "minerva-copy": "コピーボタンが使われました（detail: { value, success }）。"
+      },
+      "parts": {
+        "base": "外側のラッパー（コピー可能またはラベル付きのブロック）。",
+        "region": "<pre> 領域。",
+        "code": "<code> 要素。",
+        "language": "言語ラベル。",
+        "copy-button": "コピーボタン。"
+      },
+      "cssVars": {
+        "--icon-button-color": "コピーボタンのアイコンの色。",
+        "--icon-button-hover-bg": "ホバー時のコピーボタンの背景。",
+        "--icon-button-pressed-color": "押下状態のコピーボタンのアイコンの色。",
+        "--icon-button-pressed-bg": "押下状態のコピーボタンの背景。",
+        "--icon-button-size": "コピーボタンの幅と高さ。",
+        "--icon-button-icon-size": "コピーアイコンのフォントサイズ。",
+        "--icon-button-radius": "コピーボタンの角丸の半径。"
+      },
+      "methods": {
+        "copy": "テキストをクリップボードにコピーし、成功したかどうかで解決します。"
+      }
+    }
   }
 }

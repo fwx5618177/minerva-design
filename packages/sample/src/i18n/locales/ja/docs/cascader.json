@@ -98,5 +98,68 @@
     "--cascader-dropdown-max-height": "スクロールが始まる前の列の最大高さ",
     "--cascader-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
     "--cascader-option-padding-x": "候補の左右パディング（密度の行パディングに従う）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "選択肢のツリーは options プロパティで渡します。value 属性は既定のパス（カンマ区切りまたは JSON 配列）を設定します。minerva-change で選択されたパスを受け取れます。"
+      },
+      "search-hover": {
+        "title": "検索・ホバー展開・表示形式",
+        "description": "show-search は入力に応じてすべてのパスを絞り込み、expand-trigger=\"hover\" はホバーでサブメニューを開き、displayRender はフィールドの表示を整形します（ここでは最後のラベルのみ）。無効な選択肢は選べません。"
+      },
+      "lazy": {
+        "title": "遅延読み込み",
+        "description": "loadData を設定すると、子を持たない選択肢をアクティブにしたときに展開して子を読み込みます。loading を設定し、children を追加してから options を再代入します。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "この要素はフォーム関連要素です。表示テキストを name で送信し、required は未選択での送信を防ぎ、form.reset() は value 属性のパスに戻します。"
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "パネルが開いているかどうか。",
+        "readonly": "値を表示するだけで変更はできません（パネルは開きません）。",
+        "hideClearButton": "クリアボタンを非表示にします（React の allowClear={false} に相当）。",
+        "selectedOptions": "選択されたパスの選択肢（階層ごとに 1 つ、読み取り専用）。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素。",
+        "validity": "バリデーション状態（<input>.validity と同じ）。",
+        "validationMessage": "現在のバリデーションエラーを説明するメッセージ（有効なときは空）。",
+        "willValidate": "要素が制約バリデーションの対象かどうか。"
+      },
+      "events": {
+        "change": "minerva-change と同じですが detail はありません。",
+        "minerva-change": "パスが選択された、または値がクリアされました（detail: { value, selectedOptions }）。",
+        "minerva-clear": "クリアボタンで値が空になりました。",
+        "minerva-input": "検索テキストが変わりました（show-search、detail: { value }）。",
+        "minerva-open-change": "ユーザーがパネルの開閉を要求しました（detail: { open }）。キャンセル可能で、preventDefault() で現在の状態を維持します。"
+      },
+      "parts": {
+        "base": "ルートのラッパー。",
+        "selector": "フィールド部分。",
+        "input": "ネイティブの <input role=\"combobox\">。",
+        "clear-button": "クリアボタン。",
+        "arrow": "シェブロン（矢印）。",
+        "dropdown": "ポップアップパネル。",
+        "column": "選択肢の列（role=\"listbox\"）。",
+        "option": "選択肢（列の選択肢または検索結果）。"
+      },
+      "methods": {
+        "focus": "内部の入力欄にフォーカスします。",
+        "blur": "内部の入力欄からフォーカスを外します。",
+        "show": "パネルを開きます。",
+        "hide": "パネルを閉じます。",
+        "checkValidity": "有効性を確認します。無効な場合は invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザのバリデーションメッセージを表示します。",
+        "setCustomValidity": "カスタムのバリデーションエラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザから呼ばれ、value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザから呼ばれます。",
+        "formStateRestoreCallback": "値を復元するためにブラウザから呼ばれます（bfcache、自動入力）。"
+      }
+    }
   }
 }

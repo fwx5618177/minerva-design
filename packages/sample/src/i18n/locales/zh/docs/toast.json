@@ -91,5 +91,45 @@
     "--toast-shadow": "通知的阴影（默认 --shadow-lg）",
     "--toast-background": "通知的基础背景（位于颜色色调之下）",
     "--toast-z-index": "堆栈的层级（默认 --z-toast）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "<minerva-toast-region> 负责渲染提示；region.toast 是绑定到该区域的 toast() API（info、success、warning、danger）。position 决定堆叠位置。"
+      },
+      "options": {
+        "title": "选项与操作按钮",
+        "description": "带标题、描述、更长显示时长和「撤销」操作的提示。max 只保留最新的若干条；minerva-close 说明每条提示关闭的原因。"
+      },
+      "loading": {
+        "title": "加载与 Promise",
+        "description": "toast.promise() 用一条提示跟踪 Promise 的状态；loading() 加 update() 可手动实现同样效果。加载中的提示会一直显示直到被更新；dismiss() 关闭所有提示。"
+      }
+    },
+    "minerva-toast-region": {
+      "props": {
+        "noPauseOnHover": "悬停或聚焦提示时倒计时仍继续。",
+        "toast": "绑定到此区域的 toast API：region.toast.success(\"Saved\") 会渲染在该元素中（只读）。"
+      },
+      "events": {
+        "minerva-close": "该区域的某条提示开始关闭（detail: { id, reason }；reason 为 timeout、close-button、action、escape、dismiss 或 overflow）。",
+        "minerva-after-close": "该区域的某条提示在退出动画后被移除（detail: { id }）。"
+      },
+      "parts": {
+        "viewport": "固定定位的堆叠容器（role=\"region\"）。",
+        "toast": "一条提示。",
+        "icon": "提示的图标容器。",
+        "content": "标题 / 描述容器。",
+        "title": "标题。",
+        "description": "描述。",
+        "action": "操作按钮。",
+        "close-button": "关闭（×）按钮。",
+        "progress": "倒计时进度条。"
+      },
+      "methods": {
+        "focus": "将焦点移至该区域（与快捷键效果相同）。"
+      }
+    }
   }
 }

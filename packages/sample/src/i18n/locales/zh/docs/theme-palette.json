@@ -177,5 +177,46 @@
     "--theme-toggle-item-height": "选项的最小高度（跟随密度的控件高度）",
     "--theme-toggle-item-min-width": "选项的最小宽度",
     "--theme-toggle-active-background": "选中选项的背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "主题切换",
+        "description": "浅色 / 深色 / 跟随系统按钮（aria-pressed），绑定到最近的 <minerva-config> 的主题；没有时则控制 <html data-theme>。"
+      },
+      "palette": {
+        "title": "调色板切换",
+        "description": "调色板与明暗模式相互独立：show-default 增加 Minerva 默认外观选项，hide-system 只保留浅色和深色。"
+      },
+      "events": {
+        "title": "标签与事件",
+        "description": "palettes 选择要提供的选项，labels 属性重命名选项，minerva-change 可取消（勾选 Lock 以保持当前主题）。"
+      }
+    },
+    "minerva-theme-toggle": {
+      "props": {
+        "hideSystem": "隐藏“跟随系统”选项。",
+        "persist": "当切换器控制 <html>（无 <minerva-config>）时，将选择保存到 theme / palette cookie 中（与 lib-core 的 ThemeProvider 相同）。"
+      },
+      "events": {
+        "minerva-change": "用户选择了主题（detail: { value }）；可取消：preventDefault() 保持当前主题。"
+      },
+      "parts": {
+        "base": "role=\"group\" 容器。",
+        "item": "每个选项按钮。"
+      }
+    },
+    "minerva-palette-toggle": {
+      "props": {
+        "persist": "当切换器控制 <html>（无 <minerva-config>）时，将选择保存到 theme / palette cookie 中（与 lib-core 的 ThemeProvider 相同）。"
+      },
+      "events": {
+        "minerva-change": "用户选择了调色板（detail: { value }，null 表示默认外观）；可取消：preventDefault() 保持当前调色板。"
+      },
+      "parts": {
+        "base": "role=\"group\" 容器。",
+        "item": "每个选项按钮。"
+      }
+    }
   }
 }

@@ -256,6 +256,23 @@ describe("createDismissableLayer", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
+  it("preventDefault() in onFocusOutside keeps the layer open (focusin is not cancelable)", () => {
+    const onDismiss = vi.fn();
+    const dialog = el("dialog");
+    const outside = el("outside");
+    layer(dialog, {
+      onDismiss,
+      onFocusOutside: (event) => event.preventDefault(),
+    });
+    outside.querySelector("button")!.focus();
+    expect(onDismiss).not.toHaveBeenCalled();
+    // the instance override is removed after the handlers ran
+    const event = new FocusEvent("focusin");
+    expect(Object.prototype.hasOwnProperty.call(event, "preventDefault")).toBe(
+      false,
+    );
+  });
+
   it("handles touch on the following click", async () => {
     const onDismiss = vi.fn();
     const outside = el("outside");

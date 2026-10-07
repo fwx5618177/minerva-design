@@ -54,5 +54,47 @@
     "--popover-border-color": "パネルと矢印の枠線の色",
     "--popover-shadow": "パネルの影（既定値は --shadow-lg、ダークテーマでは --shadow-xl）",
     "--popover-z-index": "パネルの重なり順（既定値は --z-popover）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "trigger スロットでインタラクティブなパネルを切り替えます。開くとフォーカスが移動し、閉じると戻ります。Escape、外側のクリック、data-popover-close を持つ要素で閉じます。"
+      },
+      "placement": {
+        "title": "配置",
+        "description": "side と align でトリガーに対するパネルの位置を決め、side-offset で間隔を、arrow で矢印を指定します。ビューポート内に収まるよう反転・移動します。"
+      },
+      "anchor": {
+        "title": "アンカーとモーダル",
+        "description": "anchor で別の要素（id で指定）を基準にパネルを配置し、任意のボタンから show() で開きます。modal はフォーカスを閉じ込め、ページの他の部分を操作できなくします。"
+      }
+    },
+    "minerva-popover": {
+      "props": {
+        "label": "パネルのアクセシブルな名前（または要素に aria-label を設定）。",
+        "anchor": "基準にする要素の id（同じツリー内）。",
+        "anchorElement": "トリガーの代わりにパネルの位置の基準とする要素。anchor より優先されます。"
+      },
+      "events": {
+        "minerva-open-change": "ユーザーが開閉を要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-after-open": "ポップオーバーが開きました。",
+        "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+      },
+      "slots": {
+        "default": "パネルの内容。",
+        "trigger": "クリックでポップオーバーを切り替える要素。"
+      },
+      "parts": {
+        "positioner": "位置決めされるラッパー（トップレイヤー）。",
+        "panel": "ダイアログパネル。",
+        "arrow": "矢印のラッパー。"
+      },
+      "methods": {
+        "show": "ポップオーバーを開きます。",
+        "hide": "ポップオーバーを閉じます。",
+        "toggle": "ポップオーバーを切り替えます。"
+      }
+    }
   }
 }

@@ -118,5 +118,82 @@
     "--table-selected-bg": "選択された行の背景色（行の選択）",
     "--table-sort-icon-color": "並べ替えられていない並べ替え可能な列のインジケーターの色",
     "--table-focus-ring-color": "フォーカスされたスクロール領域のアウトラインの色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "columns と rows はスクリプトから設定する JS プロパティです。row-key でキーとなるフィールドを指定します。セルの render 関数は DOM ノードを返せます（ここでは 2 行の <minerva-table-cell-content>）。"
+      },
+      "sorting": {
+        "title": "並べ替え",
+        "description": "sortable: true は行のフィールドで並べ替え、関数を渡すとカスタム比較関数になります。ヘッダーをクリックすると昇順・降順・並べ替えなしが順に切り替わり、minerva-sort-change が発火します。sortState で初期の並び順を設定します。"
+      },
+      "selection": {
+        "title": "行の選択",
+        "description": "selectable を付けると、全選択ヘッダー付きのチェックボックス列が追加されます。isRowDisabled で支払済みの請求書をロックし、getRowLabel で各チェックボックスに名前を付け、minerva-selection-change で選択されたキーを受け取ります。"
+      },
+      "pagination": {
+        "title": "ページネーションと読み込み",
+        "description": "pagination プロパティを設定すると、テーブルの下に <minerva-pagination> が表示されます。rows は分割されないため、minerva-page-change で該当ページを読み込みます。その間 loading がスケルトン行を表示します。"
+      }
+    },
+    "minerva-data-table": {
+      "props": {
+        "selectable": "行を選択するチェックボックス列を追加します。",
+        "scrollX": "横スクロール：テーブルの最小幅（px の数値または CSS の長さ）。",
+        "scrollY": "縦スクロール：ラッパーの最大高さ。ヘッダーは固定されます。",
+        "retryable": "エラー状態で再試行ボタンを表示します（minerva-retry を発火）。",
+        "rows": "行データ。",
+        "isRowDisabled": "チェックボックスを無効にする行で true を返します。"
+      },
+      "events": {
+        "minerva-sort-change": "ユーザーが並び順を変更しました（detail: { key, order }、order が null なら並べ替えなし）。キャンセル可能：preventDefault() で現在の並び順を維持します。",
+        "minerva-selection-change": "ユーザーが選択行を変更しました（detail: { selectedRowKeys, selectedRows }）。キャンセル可能：preventDefault() で現在の選択を維持します。",
+        "minerva-page-change": "ページネーションから再送出されるイベント（detail: { page, pageSize }）。キャンセル可能。",
+        "minerva-retry": "エラー状態の再試行ボタンが押されました。"
+      },
+      "slots": {
+        "empty": "空状態の内容（既定：empty-text またはローカライズされた「データがありません」）。",
+        "error": "エラー状態の内容（既定：error のテキスト）。"
+      },
+      "parts": {
+        "base": "外側のラッパー。",
+        "wrapper": "スクロールするラッパー。",
+        "table": "<table> 要素。",
+        "sort-button": "並べ替え可能なヘッダーの並べ替えボタン。",
+        "checkbox": "選択用のチェックボックス。",
+        "error": "エラー状態。",
+        "retry-button": "再試行ボタン。",
+        "pagination": "<minerva-pagination> 要素。"
+      },
+      "cssVars": {
+        "--button-height": "再試行ボタンの最小の高さ。",
+        "--button-padding-x": "再試行ボタンの左右の余白。",
+        "--button-radius": "再試行ボタンの角の半径。",
+        "--button-font-size": "再試行ボタンのフォントサイズ。",
+        "--button-font-weight": "再試行ボタンのフォントの太さ。",
+        "--button-gap": "再試行ボタンのアイコンとラベルの間隔。",
+        "--button-label-white-space": "再試行ボタンのラベルの white-space：nowrap（既定、省略表示）または normal（折り返し）。"
+      }
+    },
+    "minerva-table-cell-content": {
+      "slots": {
+        "default": "メインの内容（primary 属性の代わり）。",
+        "secondary": "補足の行（secondary 属性の代わり）。"
+      },
+      "parts": {
+        "base": "ラッパー。"
+      },
+      "cssVars": {
+        "--button-height": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-padding-x": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-radius": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-font-size": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-font-weight": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-gap": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。",
+        "--button-label-white-space": "モジュールがテーブルと Button のスタイルシートを共有しているため表示される Button の変数です。この要素では使用されません。"
+      }
+    }
   }
 }

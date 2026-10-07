@@ -72,5 +72,36 @@
     "locale": "スコープ付き言語：locale の上書きはサブツリーの内蔵テキストだけを変更します。locale だけを指定した Provider はテーマに一切触れません。",
     "portal": "オーバーレイ：スコープ付きサブツリーからポータルで描画されるコンテンツ（Modal、Drawer、Popover、Select、Menu、Tooltip、Toast など）は、同じスコープを持つ <body> 上のコンテナに描画されるため、オーバーレイにもスコープ付きテーマが適用されます。React ツリーの外で描画される命令的 API（スタンドアロンの confirm() など）はルートのテーマを使います。",
     "document": "グローバルな状態：入れ子の Provider は <html> への書き込み、Cookie の読み書き（persist は無視されます）、lib-core のグローバルな言語の変更を一切行いません。アンマウントしてもページはルート Provider が設定した状態のままで、ルート Provider をアンマウントすると変更した内容が元に戻ります。入れ子の Provider の setTheme と setPalette は自身の上書き値を変更し、上書きしていない設定については親の値を変更します。"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "<minerva-config> は display: contents で描画され、内側のすべてのテーマをスコープします。ここではライトとダークのスコープを並べています。"
+      },
+      "palette-design": {
+        "title": "パレットとデザイン",
+        "description": "palette、design（プリセット）、および density / radius / shadow / font-scale の上書きはサブツリーにのみ適用されます。"
+      },
+      "locale": {
+        "title": "ロケール",
+        "description": "locale は内側の要素の組み込みテキスト（ページネーションの合計、空状態）の言語を設定します。切り替えるとその場で更新されます。"
+      },
+      "nested": {
+        "title": "ネストしたスコープとテーマイベント",
+        "description": "スコープはネストでき、最も近いものが優先されます。内側のスコープは常にライトのまま、外側はボタンに従います。minerva-theme-change は解決後のモードを通知します（theme=\"system\" でも同様）。"
+      }
+    },
+    "minerva-config": {
+      "props": {
+        "root": "属性をこのサブツリーではなく <html>（ページ全体）に書き込みます。"
+      },
+      "events": {
+        "minerva-theme-change": "解決後のライト / ダークモードが変わりました（detail: { mode }）。例：theme=\"system\" でのシステム設定の変更。"
+      },
+      "slots": {
+        "default": "スコープされるコンテンツ。"
+      }
+    }
   }
 }

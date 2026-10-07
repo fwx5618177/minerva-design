@@ -50,5 +50,91 @@
     "--page-section-gap": "Space between the blocks of a section",
     "--page-stat-card-padding": "Inner padding of a stat card",
     "--page-stat-card-radius": "Corner radius of a stat card (defaults to --radius-lg)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "<minerva-page> is the padded column (max-width caps it); <minerva-page-header> renders the h1 with a description and actions, <minerva-page-section> a region labelled by its h2. lib-core's title is heading here."
+      },
+      "stat-cards": {
+        "title": "Stat cards",
+        "description": "<minerva-stat-card> renders a labelled metric (<dl>) from label / value / description attributes or slots, with an optional icon slot. The section also has an icon."
+      },
+      "toolbar": {
+        "title": "Toolbar",
+        "description": "<minerva-toolbar> groups controls in a wrapping row (role=\"group\", name it with aria-label); inputs grow, density=\"compact\" tightens the gap and centers vertical dividers, nowrap keeps one row."
+      }
+    },
+    "minerva-page": {
+      "slots": {
+        "default": "Page content (headers, sections...)."
+      },
+      "parts": {
+        "base": "The page column."
+      }
+    },
+    "minerva-page-header": {
+      "props": {
+        "heading": "Text of the page's h1 (lib-core's title)."
+      },
+      "slots": {
+        "heading": "Heading content (alternative to the heading attribute).",
+        "description": "Supporting text (alternative to the description attribute).",
+        "actions": "Actions next to the heading (they wrap below it on narrow widths)."
+      },
+      "parts": {
+        "base": "The <header>.",
+        "heading": "The <h1>.",
+        "description": "The description paragraph.",
+        "actions": "The actions wrapper."
+      }
+    },
+    "minerva-page-section": {
+      "props": {
+        "heading": "Text of the section's h2 (lib-core's title)."
+      },
+      "slots": {
+        "default": "Section content.",
+        "heading": "Heading content (alternative to the heading attribute).",
+        "description": "Supporting text (alternative to the description attribute).",
+        "actions": "Actions next to the heading.",
+        "icon": "Decorative icon (hidden from assistive technologies)."
+      },
+      "parts": {
+        "base": "The <section>.",
+        "header": "The heading row.",
+        "heading": "The <h2>.",
+        "description": "The description paragraph.",
+        "actions": "The actions wrapper.",
+        "icon": "The icon wrapper."
+      }
+    },
+    "minerva-toolbar": {
+      "props": {
+        "nowrap": "Keeps the controls on one bounded row instead of wrapping."
+      },
+      "slots": {
+        "default": "Controls."
+      },
+      "parts": {
+        "base": "The group (role=\"group\")."
+      }
+    },
+    "minerva-stat-card": {
+      "slots": {
+        "label": "Metric name (alternative to the label attribute).",
+        "value": "Metric value (alternative to the value attribute).",
+        "description": "Explanatory text under the value.",
+        "icon": "Decorative icon (hidden from assistive technologies)."
+      },
+      "parts": {
+        "base": "The card.",
+        "icon": "The icon wrapper.",
+        "label": "The <dt> (label).",
+        "value": "The <dd> (value).",
+        "description": "The description paragraph."
+      }
+    }
   }
 }

@@ -52,5 +52,47 @@
     "--virtual-list-hover-shadow": "Shadow while hovered (defaults to --shadow-md)",
     "--virtual-list-scrollbar-size": "Width of the scrollbar (WebKit / Blink)",
     "--virtual-list-loading-padding": "Padding of the loading indicator row"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Set the items and renderItem properties from JavaScript: only the rows in view are rendered, even with 10,000 items. Name the list with aria-label."
+      },
+      "clickable-rows": {
+        "title": "Clickable rows",
+        "description": "clickable makes rows focusable and fires minerva-item-click on click, Enter or Space. scrollToIndex() scrolls programmatically."
+      },
+      "infinite-scroll": {
+        "title": "Infinite scroll",
+        "description": "minerva-load-more fires near the bottom (load-more-threshold); set loading while the next page is fetched."
+      }
+    },
+    "minerva-virtual-list": {
+      "props": {
+        "clickable": "Makes rows focusable and clickable (pointer cursor, Enter / Space) and fires minerva-item-click.",
+        "scrollContainer": "The scroll container element (read-only), e.g. to scroll programmatically."
+      },
+      "events": {
+        "minerva-item-click": "A clickable row was clicked or activated with Enter / Space (detail: { item, index }).",
+        "minerva-load-more": "The list was scrolled within load-more-threshold pixels of the bottom."
+      },
+      "parts": {
+        "base": "The scroll container (role=\"region\").",
+        "list": "The list (role=\"list\").",
+        "item": "A row (role=\"listitem\").",
+        "loading": "The loading indicator row."
+      },
+      "cssVars": {
+        "--progress-width": "Width of the loading indicator.",
+        "--progress-bar-height": "Thickness of the loading indicator bar.",
+        "--progress-track-color": "Track color of the loading indicator.",
+        "--progress-radius": "Corner radius of the loading indicator track.",
+        "--progress-size": "Size of the round loading indicator."
+      },
+      "methods": {
+        "scrollToIndex": "Scrolls so that the row at index is at the top of the list."
+      }
+    }
   }
 }

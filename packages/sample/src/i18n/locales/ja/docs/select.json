@@ -79,5 +79,101 @@
     "--select-dropdown-max-height": "スクロールが始まる前のリストボックスの最大高さ",
     "--select-option-padding-y": "選択肢の上下パディング（密度の行パディングに従う）",
     "--select-option-padding-x": "選択肢とグループ見出しの左右パディング（密度の行パディングに従う）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "子要素の <minerva-option> が選択肢です。外側の <label> または aria-label でセレクトに名前を付けます。size でトリガーのサイズを指定し、無効な選択肢は選べません。"
+      },
+      "groups": {
+        "title": "グループとリッチな選択肢",
+        "description": "<minerva-option-group> と見出しの <minerva-select-label> で選択肢をグループ化し、<minerva-select-separator> で区切ります。リッチな内容の選択肢では、label がトリガーに表示するテキストを、text-value が先行入力検索用のテキストを指定します。"
+      },
+      "options-property": {
+        "title": "データからの選択肢とイベント",
+        "description": "JS プロパティ options はフラットな選択肢とラベル付きグループを受け取ります。minerva-change は選ばれた値を通知し、minerva-open-change はキャンセル可能です。チェックボックスをオンにするとリストボックスは閉じたままになります。"
+      },
+      "form": {
+        "title": "フォーム内での使用",
+        "description": "この要素はフォーム関連要素です。name の名前で値を送信し、required では空のとき送信を阻止し、リセットで value 属性の値に戻り、無効な <fieldset> によって無効化されます。"
+      }
+    },
+    "minerva-option": {
+      "props": {
+        "label": "選択時にセレクトのトリガーに表示するテキスト（既定：テキスト内容）。",
+        "selected": "選択中の選択肢かどうか（セレクトが管理）。",
+        "highlighted": "選択肢がハイライトされているかどうか（セレクトが管理）。",
+        "text": "選択肢のテキスト：textValue、なければ label、なければテキスト内容（読み取り専用）。",
+        "displayLabel": "トリガーに表示するラベル：label、なければテキスト内容（読み取り専用）。"
+      },
+      "slots": {
+        "default": "選択肢の内容（テキスト、アイコンなど）。"
+      },
+      "parts": {
+        "base": "選択肢の行。",
+        "label": "内容のラッパー。",
+        "indicator": "選択中の選択肢のチェックマーク。"
+      }
+    },
+    "minerva-option-group": {
+      "slots": {
+        "default": "<minerva-select-label> 1 つと <minerva-option> 要素。"
+      }
+    },
+    "minerva-select-label": {
+      "slots": {
+        "default": "ラベルのテキスト。"
+      },
+      "parts": {
+        "base": "ラベル要素。"
+      }
+    },
+    "minerva-select-separator": {
+      "parts": {
+        "base": "区切り線。"
+      }
+    },
+    "minerva-select": {
+      "props": {
+        "options": "<minerva-option> 子要素より前に描画される選択肢（またはラベル付きグループ）。JS プロパティのみ。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な fieldset による、読み取り専用）。",
+        "form": "この要素が属するフォーム（読み取り専用）。",
+        "labels": "この要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "有効性の状態。<input>.validity と同じ（読み取り専用）。",
+        "validationMessage": "現在の検証エラーを説明するメッセージ。有効なときは空（読み取り専用）。",
+        "willValidate": "この要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "input": "値が変わった（ネイティブ同様、composed）。",
+        "change": "値が変わった（ネイティブ同様）。",
+        "minerva-change": "ユーザーが選択肢を選んだ（detail: { value }）。",
+        "minerva-open-change": "ユーザーがリストボックスを開閉した（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を保ちます。"
+      },
+      "slots": {
+        "default": "<minerva-option>、<minerva-option-group>、<minerva-select-separator> 要素。"
+      },
+      "parts": {
+        "trigger": "combobox ロールの <button>。",
+        "value": "選択中のラベルまたはプレースホルダー。",
+        "icon": "シェブロンアイコン。",
+        "positioner": "位置決めされたポップアップのラッパー。",
+        "listbox": "role=\"listbox\" のポップアップ。",
+        "option": "options プロパティから描画された選択肢。",
+        "group-label": "options プロパティから描画されたグループ見出し。"
+      },
+      "methods": {
+        "focus": "トリガーにフォーカスします。",
+        "blur": "トリガーからフォーカスを外します。",
+        "show": "リストボックスを開きます。",
+        "hide": "リストボックスを閉じます。",
+        "checkValidity": "有効性を確認し、無効なら invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザの検証メッセージを表示します。",
+        "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザが呼ぶフォームのライフサイクルコールバック。value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザが呼ぶフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "値を復元するとき（バック/フォワードキャッシュ、自動入力）にブラウザが呼ぶフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

@@ -24,7 +24,11 @@ import { useFloatingLayer } from "../../internal/FloatingPanel";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import { Portal } from "../../internal/Portal";
-import { useControllableState } from "../../internal/useControllableState";
+import {
+  useControllableState,
+  useControlledSwitchWarning,
+} from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { LayerContext } from "../../internal/useDismissableLayer";
 import styles from "./select.module.scss";
 import type {
@@ -149,7 +153,7 @@ const Select = ({
   defaultValue,
   onChange,
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   placeholder,
   size = "medium",
@@ -182,11 +186,35 @@ const Select = ({
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const isControlled = valueProp !== undefined;
   const value = isControlled ? valueProp : internalValue;
+  useControlledSwitchWarning(isControlled, "Select");
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Select", {
+      prop: "value",
+      value: valueProp,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: isDisabled,
+      lockHint: "set `disabled`",
+    });
+    warnControlledProps("Select", {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+      handlerProp: "onOpenChange",
+      handler: onOpenChange,
+      locked: isDisabled,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: "Select",
+    prop: "open",
   });
 
   const listboxId = useId();

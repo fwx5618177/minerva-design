@@ -177,5 +177,46 @@
     "--theme-toggle-item-height": "Hauteur minimale d'une option (suit la hauteur de contrôle de la densité)",
     "--theme-toggle-item-min-width": "Largeur minimale d'une option",
     "--theme-toggle-active-background": "Fond de l'option sélectionnée"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Sélecteur de thème",
+        "description": "Boutons clair / sombre / système (aria-pressed) liés au thème du <minerva-config> le plus proche ; sans lui, ils pilotent <html data-theme>."
+      },
+      "palette": {
+        "title": "Sélecteur de palette",
+        "description": "La palette est indépendante du mode : show-default ajoute l'apparence par défaut de Minerva, hide-system ne garde que clair et sombre."
+      },
+      "events": {
+        "title": "Libellés et événements",
+        "description": "palettes choisit les options, la propriété labels les renomme et minerva-change est annulable (cochez Lock pour garder le thème)."
+      }
+    },
+    "minerva-theme-toggle": {
+      "props": {
+        "hideSystem": "Masque l'option « système » (suivre l'OS).",
+        "persist": "Enregistre le choix dans les cookies theme / palette (comme le ThemeProvider de lib-core) lorsque le sélecteur pilote <html> (sans <minerva-config>)."
+      },
+      "events": {
+        "minerva-change": "L'utilisateur a choisi un thème (detail : { value }) ; annulable : preventDefault() conserve le thème courant."
+      },
+      "parts": {
+        "base": "Le conteneur role=\"group\".",
+        "item": "Chaque bouton d'option."
+      }
+    },
+    "minerva-palette-toggle": {
+      "props": {
+        "persist": "Enregistre le choix dans les cookies theme / palette (comme le ThemeProvider de lib-core) lorsque le sélecteur pilote <html> (sans <minerva-config>)."
+      },
+      "events": {
+        "minerva-change": "L'utilisateur a choisi une palette (detail : { value }, null = apparence par défaut) ; annulable : preventDefault() conserve la palette courante."
+      },
+      "parts": {
+        "base": "Le conteneur role=\"group\".",
+        "item": "Chaque bouton d'option."
+      }
+    }
   }
 }

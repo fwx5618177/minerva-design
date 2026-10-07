@@ -50,5 +50,87 @@
     "--tag-input-list-radius": "建议列表的圆角（默认 --radius-md）",
     "--tag-input-option-padding-y": "建议项的垂直内边距（跟随密度的行内边距）",
     "--tag-input-option-padding-x": "建议项的水平内边距（跟随密度的行内边距）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "输入标签后按 Enter，或用方向键选择建议。value 是属性；每次列表变化都会触发 minerva-change。"
+      },
+      "separators": {
+        "title": "分隔符",
+        "description": "separators=\", ; Enter\" 会把输入或粘贴的文本拆分为多个标签。设置 no-commit-on-blur 后，离开输入框时草稿仍保留为文本。"
+      },
+      "states": {
+        "title": "尺寸与状态",
+        "description": "三种尺寸，以及 invalid、readonly（显示标签但不提供编辑控件，仍会提交）和 disabled。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "该元素与表单关联：每个标签都以 name 单独提交一项，required 会拒绝空列表，重置会恢复 value 属性的初始值。"
+      }
+    },
+    "minerva-tag-input": {
+      "props": {
+        "noCommitOnBlur": "输入框失去焦点时，不把已输入的草稿添加为标签。",
+        "readonly": "仅显示标签，不提供编辑控件；仍会随表单提交。",
+        "required": "控件必须有值，表单才能提交。",
+        "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，与 <input>.validity 相同（只读）。",
+        "validationMessage": "描述当前校验错误的消息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "minerva-change": "标签发生变化（添加、移除、清空）；detail: { value }。",
+        "minerva-input": "输入的文本（草稿）发生变化；detail: { value } 为草稿内容。",
+        "minerva-open-change": "建议列表即将打开或关闭（detail: { open }）；可取消：调用 preventDefault() 保持当前状态。",
+        "minerva-clear": "清除按钮移除了所有标签。"
+      },
+      "parts": {
+        "base": "外层容器。",
+        "tags": "标签列表。",
+        "tag": "单个标签。",
+        "remove-button": "标签的移除按钮。",
+        "field": "文本框的外层容器。",
+        "input": "原生文本 <input>（role=\"combobox\"）。",
+        "listbox": "建议列表。",
+        "option": "单个建议项。",
+        "add-button": "添加按钮。",
+        "clear-button": "清除按钮。"
+      },
+      "cssVars": {
+        "--icon-button-color": "添加和清除按钮的图标颜色。",
+        "--icon-button-hover-bg": "添加和清除按钮悬停时的背景。",
+        "--icon-button-pressed-color": "按下状态图标按钮的图标颜色。",
+        "--icon-button-pressed-bg": "按下状态图标按钮的背景。",
+        "--icon-button-size": "添加和清除按钮的宽高（默认跟随密度的控件高度）。",
+        "--icon-button-icon-size": "按钮图标的字号。",
+        "--icon-button-radius": "添加和清除按钮的圆角（默认 --radius-lg）。",
+        "--input-height": "文本框的最小高度（默认取对应尺寸在当前密度下的控件高度）。",
+        "--input-padding-x": "文本的水平内边距。",
+        "--input-radius": "文本框的圆角（默认 --radius-lg）。",
+        "--input-font-size": "文本框的字号。",
+        "--input-background": "文本框的背景色。",
+        "--input-border-color": "文本框静止时的边框颜色。",
+        "--input-focus-color": "文本框悬停或聚焦时的边框颜色。",
+        "--tag-height": "标签的最小高度（默认取内容高度）。",
+        "--tag-padding-x": "标签的水平内边距。",
+        "--tag-font-size": "标签的字号。",
+        "--tag-radius": "标签的圆角（默认 --radius-sm）。",
+        "--tag-gap": "标签文字与移除按钮之间的间距。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入 \"\" 则清除。",
+        "formResetCallback": "表单关联回调，由 form.reset() 调用：恢复默认值。",
+        "formDisabledCallback": "表单关联回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单关联回调，在浏览器恢复值时调用（返回导航、自动填充）。"
+      }
+    }
   }
 }

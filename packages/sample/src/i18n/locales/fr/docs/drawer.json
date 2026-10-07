@@ -65,5 +65,52 @@
     "--drawer-shadow": "Ombre du panneau (par défaut --shadow-xl)",
     "--drawer-background": "Fond du panneau",
     "--drawer-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Un panneau latéral ouvert par son slot trigger. Tout élément du light DOM portant data-drawer-close (ici les boutons du pied) le ferme."
+      },
+      "sides": {
+        "title": "Côtés",
+        "description": "side choisit le bord d'où glisse le tiroir ; size est une largeur pour gauche / droite et une hauteur pour haut / bas."
+      },
+      "non-modal": {
+        "title": "Non modal",
+        "description": "Avec non-modal la page reste interactive : pas d'overlay ni de piège de focus, et un clic à l'extérieur ferme le tiroir. minerva-open-change indique la raison."
+      }
+    },
+    "minerva-drawer": {
+      "props": {
+        "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+        "dialogRole": "Rôle ARIA du panneau.",
+        "nonModal": "Non modal : pas d'overlay, ni piège de focus, ni blocage du défilement ; se ferme sur un clic ou un focus à l'extérieur."
+      },
+      "events": {
+        "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+        "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+      },
+      "slots": {
+        "default": "Contenu du corps.",
+        "header": "Titre (alternative à l'attribut label).",
+        "footer": "Rangée d'actions.",
+        "trigger": "Élément qui ouvre le panneau au clic."
+      },
+      "parts": {
+        "overlay": "Le fond (overlay).",
+        "panel": "Le panneau de dialogue (role=\"dialog\").",
+        "header": "Le conteneur du titre.",
+        "description": "La description.",
+        "body": "Le conteneur du corps.",
+        "footer": "Le conteneur du pied.",
+        "close-button": "Le bouton de fermeture (×)."
+      },
+      "methods": {
+        "show": "Ouvre le tiroir.",
+        "hide": "Ferme le tiroir."
+      }
+    }
   }
 }

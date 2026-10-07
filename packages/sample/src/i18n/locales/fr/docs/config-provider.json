@@ -72,5 +72,36 @@
     "locale": "Langue locale : une locale redéfinie ne change que les textes intégrés de son sous-arbre. Un provider qui ne définit que la locale ne touche jamais au thème.",
     "portal": "Surcouches : le contenu rendu dans un portail depuis un sous-arbre local (Modal, Drawer, Popover, Select, Menu, Tooltip, Toast…) est placé dans un conteneur sur <body> qui porte la même portée, si bien que les surcouches reçoivent aussi le thème local. Les API impératives rendues hors de l'arbre React, comme un confirm() autonome, utilisent le thème racine.",
     "document": "État global : un provider imbriqué n'écrit jamais sur <html>, ne lit ni n'écrit les cookies (persist est ignoré) et ne change jamais la langue globale de lib-core. Le démonter laisse la page exactement telle que le provider racine l'a définie, et démonter le provider racine rétablit ce qu'il avait modifié. setTheme et setPalette d'un provider imbriqué changent sa propre valeur redéfinie, ou la valeur du parent pour un réglage qu'il ne redéfinit pas."
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "<minerva-config> s'affiche en display: contents et délimite le thème de tout son contenu : ici une portée claire et une portée sombre côte à côte."
+      },
+      "palette-design": {
+        "title": "Palette et design",
+        "description": "palette, design (préréglage) et les surcharges density / radius / shadow / font-scale ne s'appliquent qu'au sous-arbre."
+      },
+      "locale": {
+        "title": "Langue",
+        "description": "locale définit la langue des textes intégrés des éléments contenus (total de la pagination, état vide). Changez-la pour les voir se mettre à jour en direct."
+      },
+      "nested": {
+        "title": "Portées imbriquées et événements de thème",
+        "description": "Les portées s'imbriquent et la plus proche l'emporte : la portée interne reste claire tandis que l'externe suit les boutons. minerva-theme-change signale le mode résolu, y compris avec theme=\"system\"."
+      }
+    },
+    "minerva-config": {
+      "props": {
+        "root": "Écrit les attributs sur <html> (toute la page) au lieu de ce sous-arbre."
+      },
+      "events": {
+        "minerva-theme-change": "Le mode clair / sombre résolu a changé (detail: { mode }), par exemple la préférence système avec theme=\"system\"."
+      },
+      "slots": {
+        "default": "Contenu de la portée."
+      }
+    }
   }
 }

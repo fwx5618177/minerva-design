@@ -38,6 +38,13 @@ export default defineConfig({
               test: /node_modules[\\/](react|react-dom|scheduler|react-router|@remix-run)[\\/]/,
             },
             {
+              // Every Minerva custom element (lazy-loaded by the "Web
+              // Components" tabs): split into cacheable chunks below 500 kB.
+              name: "minerva-web-components",
+              test: /lib-web-components[\\/]dist[\\/]/,
+              maxSize: 400 * 1024,
+            },
+            {
               // The Monaco engine (lazy-loaded by the Monaco demo only) is
               // ~2 MB: split it into cacheable chunks below the 500 kB limit.
               name: "monaco-engine",

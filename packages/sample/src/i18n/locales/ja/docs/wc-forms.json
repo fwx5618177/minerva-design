@@ -1,0 +1,35 @@
+{
+  "title": "フォーム",
+  "description": "Minerva のコントロールはフォーム関連付けカスタム要素です：FormData、required と制約検証、setCustomValidity、form.reset()、<fieldset disabled>、<label for>、:invalid、ローカライズされたメッセージ。",
+  "association": {
+    "title": "フォーム関連付け要素",
+    "text": "フォームコントロールは ElementInternals に基づくフォーム関連付けカスタム要素です。<form> 内では、隠し input やラッパーなしでネイティブの input と同様に振る舞います。次の要素がフォームに参加します：",
+    "buttons": "<minerva-button> もフォーム関連付け要素です。type=\"submit\" は requestSubmit() を通じて所属するフォームを送信し（そのため検証と submit リスナーが実行されます）、type=\"reset\" はフォームをリセットします。既定の type は \"button\" で、何もしません。"
+  },
+  "formData": {
+    "title": "name、値、FormData",
+    "text": "各コントロールに name を指定します。その値は <input> とまったく同じように、new FormData(form) とネイティブの送信に含まれます：",
+    "name": "name は送信される値のキーです。チェックボックスとスイッチは、チェックされているときにのみ value（既定は \"on\"）を送信するため、同じ name を持つ複数のチェックボックスはリストになります（FormData.getAll()）。",
+    "values": "value 属性（チェックボックスとスイッチでは checked）は初期値で、value / checked プロパティは現在の値です。複数のエントリーを送信するコントロールもあります（タグ入力はタグごとに 1 つ送信します）。各コントロールが送信する内容は、それぞれのコンポーネントのページに記載されています。",
+    "disabled": "コントロール、または祖先の <fieldset> に disabled を指定すると、編集できなくなり、送信と検証の対象から外れます（isDisabled はその両方を反映します）。",
+    "restore": "ユーザーがページに戻ったとき（bfcache）や自動入力の際には、フォーム関連付けのコールバックを通じてブラウザが値を復元します。"
+  },
+  "labels": {
+    "title": "ラベル",
+    "text": "ネイティブの input と同様に、<label for=\"id\"> や要素を囲む <label> がコントロールの名前になります。要素の labels プロパティにそれらが一覧され、ラベルのテキストは shadow root 内のコントロールに転送され、ラベルをクリックするとコントロールにフォーカスが移ります。要素に指定した aria-label、aria-labelledby、aria-describedby も動作します（id は shadow root を越えられないため、テキストに解決されます）。"
+  },
+  "validation": {
+    "title": "制約検証",
+    "text": "required、minlength / maxlength、pattern、min / max、type（email、url...）はネイティブの input と同様に動作します。各要素は制約検証 API（validity、validationMessage、willValidate、checkValidity()、reportValidity()、setCustomValidity()）を公開しており、form.checkValidity()、form.reportValidity()、および送信は Minerva のコントロールも考慮します。無効なコントロールがあると submit イベントはブロックされ、ブラウザがコントロールの横にメッセージを表示します。",
+    "reset": "form.reset() はすべてのコントロールを value または checked 属性の値に戻し、setCustomValidity() で設定したメッセージをクリアします。独自のエラースタイルを解除するには、フォームの reset イベントを監視してください。"
+  },
+  "styling": {
+    "title": "無効なコントロールのスタイル",
+    "text": ":invalid と :valid 疑似クラスはネイティブの input と同様にフォーム関連付け要素にもマッチするため、ページからスタイルを指定できます。ユーザーが何も操作していないうちからフィールドが赤くならないように、送信が試みられた後にスタイルを適用します：",
+    "formControl": "組み込みのエラー状態はプロパティで指定します。テキストフィールド、セレクト、スイッチなどのコントロールでは invalid、チェックボックスとラジオでは error です。赤い枠線を表示し、aria-invalid を設定します。<minerva-form-control> は 1 つのコントロールをラベル、ヘルパーテキスト、エラーメッセージで囲み、invalid / required / disabled の状態をコントロールに渡します。"
+  },
+  "messages": {
+    "title": "ローカライズされたメッセージ",
+    "text": "ネイティブに相当するものがないコントロール（セレクト、チェックボックス、スイッチ、ラジオグループ、評価、アップロード、時刻ピッカー、カスケーダー...）は、Minerva 独自の検証メッセージ（\"Please select an item in the list.\"、\"Please check this box if you want to proceed.\"...）を報告します。これらはサポートするすべての言語に翻訳されており、スコープの lang 属性または <minerva-config locale> に従います。テキストフィールドは内部のネイティブ input に委譲するため、メッセージはブラウザの言語でブラウザから提供されます。"
+  }
+}

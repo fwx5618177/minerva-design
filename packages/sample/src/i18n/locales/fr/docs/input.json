@@ -56,5 +56,80 @@
     "--input-background": "Couleur de fond de la variante outline",
     "--input-border-color": "Couleur de bordure au repos",
     "--input-focus-color": "Couleur de bordure au survol / au focus"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Nommé par <label for> ; minerva-input est émis à chaque frappe avec detail.value."
+      },
+      "sizes-variants": {
+        "title": "Tailles, variantes et états",
+        "description": "Trois tailles, les variantes outline, filled et unstyled, et les états lecture seule, désactivé et invalide."
+      },
+      "addons": {
+        "title": "Compléments, effacement, compteur et mot de passe",
+        "description": "Slots prefix et suffix, bouton d’effacement (clearable), compteur de caractères lié à maxlength et bouton d’affichage du mot de passe."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "required, type=\"email\", minlength et pattern utilisent la validation du navigateur à l’envoi ; les champs en échec passent en invalid jusqu’à correction, et reset les restaure."
+      }
+    },
+    "minerva-input": {
+      "props": {
+        "defaultValue": "Valeur initiale (l’attribut value), restaurée par form.reset(). Comme pour <input>, la modifier change aussi value tant que l’utilisateur n’a pas édité le champ.",
+        "type": "Type de l’<input> interne (text, email, password, search, url, number, date…).",
+        "placeholder": "Texte indicatif affiché tant que le champ est vide.",
+        "readonly": "Lecture seule : focalisable et envoyé, mais non modifiable.",
+        "minlength": "Longueur minimale de la valeur (validée par le navigateur).",
+        "maxlength": "Longueur maximale de la valeur ; c’est aussi la limite du compteur de caractères.",
+        "pattern": "Expression régulière à laquelle la valeur doit correspondre.",
+        "min": "Valeur minimale (types number et date).",
+        "max": "Valeur maximale (types number et date).",
+        "step": "Pas (types number et date).",
+        "autocomplete": "Indication de saisie automatique de l’<input> interne.",
+        "inputmode": "Indication de clavier virtuel (numeric, email, tel…).",
+        "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+        "disabled": "Désactive le contrôle : ni focalisable, ni envoyé, ni validé.",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+        "value": "Valeur courante (propriété ; l’attribut value définit defaultValue).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "La valeur a été validée (perte du focus ou Entrée), réémis depuis l’input interne.",
+        "input": "La valeur a changé (à chaque frappe ; natif, composed).",
+        "minerva-input": "Identique à input, avec detail : { value }.",
+        "minerva-change": "Identique à change, avec detail : { value }.",
+        "minerva-clear": "Le bouton d’effacement a vidé le champ."
+      },
+      "slots": {
+        "prefix": "Contenu avant le texte (icône, « @ », protocole…).",
+        "suffix": "Contenu après le texte (unité, icône, bouton)."
+      },
+      "parts": {
+        "base": "Le conteneur du champ.",
+        "input": "L’élément natif <input>.",
+        "clear-button": "Le bouton d’effacement.",
+        "password-toggle": "Le bouton d’affichage du mot de passe.",
+        "count": "Le compteur de caractères."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "select": "Sélectionne tout le texte.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

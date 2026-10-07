@@ -45,5 +45,44 @@
     "--form-control-label-color": "ラベルの色",
     "--form-control-helper-font-size": "ヘルプテキストとエラーテキストのフォントサイズ",
     "--form-control-required-color": "必須マークの色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "Minerva またはネイティブのコントロールを 1 つ囲みます。ラベルが名前を、補助テキストが説明を与え、required で必須マークを付けます。ラベルをクリックするとコントロールにフォーカスするか、スイッチが切り替わります。"
+      },
+      "states": {
+        "title": "状態",
+        "description": "invalid は補助テキストをエラーメッセージに置き換えてコントロールに印を付けます。readonly・disabled・required はコントロールに引き継がれ、required-indicator でマークを変更できます。"
+      },
+      "slots": {
+        "title": "リッチコンテンツのスロット",
+        "description": "label・helper-text・error-message スロットには、テキスト属性の代わりにマークアップを入れられます。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "novalidate を指定し、送信ハンドラーで各コントロールの checkValidity() を確認して、ブラウザーの吹き出しの代わりにフィールド自身のエラーメッセージ（invalid）を表示します。編集すると消え、リセットですべてクリアされます。"
+      }
+    },
+    "minerva-form-control": {
+      "props": {
+        "readonly": "スロットのコントロールを読み取り専用にします（readonly / readOnly と aria-readonly）。",
+        "controlElement": "スロットに入れたコントロール（読み取り専用）。"
+      },
+      "slots": {
+        "default": "コントロール：Minerva のフォームコントロール、またはネイティブの <input> / <select> / <textarea> を 1 つ。",
+        "label": "リッチなラベルの内容（label 属性の代わり）。",
+        "helper-text": "リッチな補助テキスト（helper-text の代わり）。",
+        "error-message": "リッチなエラーメッセージ（error-message の代わり）。"
+      },
+      "parts": {
+        "base": "フィールドのコンテナー。",
+        "label": "<label> 要素。",
+        "required-indicator": "必須マーク。",
+        "helper-text": "補助テキスト。",
+        "error-message": "エラーメッセージ（role=\"alert\"）。"
+      }
+    }
   }
 }

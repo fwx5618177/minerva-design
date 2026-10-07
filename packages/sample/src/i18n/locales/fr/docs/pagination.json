@@ -103,5 +103,47 @@
     "--pagination-font-size": "Taille de police",
     "--pagination-active-background": "Fond de la page courante (variante solid)",
     "--pagination-active-color": "Couleur du texte de la page courante (variante solid)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "total et page-size déterminent le nombre de pages. L’élément met à jour current lui-même et émet minerva-page-change avec la nouvelle page et la taille de page ; appelez preventDefault() pour le contrôler."
+      },
+      "total-and-jumper": {
+        "title": "Total, taille de page et saut rapide",
+        "description": "show-total, show-size-changer (options issues de page-size-options=\"10,20,50\") et show-quick-jumper. totalRender, une propriété JS, personnalise le texte du total."
+      },
+      "appearance": {
+        "title": "Tailles, formes et variantes",
+        "description": "size, shape et variant stylent les éléments ; sibling-count / boundary-count passent à une liste de pages compacte ; disabled bloque toute interaction."
+      },
+      "simple": {
+        "title": "Mode simple, compteur et icônes",
+        "description": "simple affiche précédent / suivant avec un champ de page, hide-numbers un compteur « page / total ». Les slots prev-icon, next-icon, jump-prev-icon et jump-next-icon remplacent les icônes ; responsive s’adapte aux petits écrans."
+      }
+    },
+    "minerva-pagination": {
+      "props": {
+        "totalPages": "Nombre de pages, au moins 1 (lecture seule)."
+      },
+      "events": {
+        "minerva-page-change": "L’utilisateur a changé de page ou de taille de page (detail: { page, pageSize }). Annulable : preventDefault() conserve la page et la taille courantes."
+      },
+      "slots": {
+        "prev-icon": "Icône du bouton page précédente.",
+        "next-icon": "Icône du bouton page suivante.",
+        "jump-prev-icon": "Icône de l’élément de saut en arrière.",
+        "jump-next-icon": "Icône de l’élément de saut en avant."
+      },
+      "parts": {
+        "base": "Le repère <nav>.",
+        "item": "Chaque bouton de page, précédent / suivant et de saut.",
+        "total": "Le texte du total.",
+        "jumper": "Le libellé du saut rapide.",
+        "size-changer": "Le <select> de taille de page.",
+        "simple-input": "Le champ de page du mode simple."
+      }
+    }
   }
 }

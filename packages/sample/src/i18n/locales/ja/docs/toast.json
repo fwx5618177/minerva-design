@@ -91,5 +91,45 @@
     "--toast-shadow": "トーストの影（既定値は --shadow-lg）",
     "--toast-background": "トーストの基本背景（色の色合いの下）",
     "--toast-z-index": "スタックの重なり順（既定値は --z-toast）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "<minerva-toast-region> がトーストを描画します。region.toast はこの領域に紐づいた toast() API です（info、success、warning、danger）。position でスタックの位置を決めます。"
+      },
+      "options": {
+        "title": "オプションとアクション",
+        "description": "タイトル、説明、長めの表示時間、元に戻すアクションを持つトーストです。max で新しいものだけを残し、minerva-close が各トーストが閉じた理由を伝えます。"
+      },
+      "loading": {
+        "title": "ローディングと Promise",
+        "description": "toast.promise() は 1 つのトーストで Promise を追跡します。loading() と update() で同じことを手動で行えます。ローディング中のトーストは更新されるまで開いたままで、dismiss() はすべてのトーストを閉じます。"
+      }
+    },
+    "minerva-toast-region": {
+      "props": {
+        "noPauseOnHover": "トーストにホバーやフォーカスがあってもカウントダウンを止めません。",
+        "toast": "この領域に紐づいた toast API：region.toast.success(\"Saved\") はこの要素に表示されます（読み取り専用）。"
+      },
+      "events": {
+        "minerva-close": "この領域のトーストが閉じ始めました（detail: { id, reason }。reason は timeout、close-button、action、escape、dismiss、overflow）。",
+        "minerva-after-close": "この領域のトーストが終了アニメーションの後に削除されました（detail: { id }）。"
+      },
+      "parts": {
+        "viewport": "固定配置のスタック（role=\"region\"）。",
+        "toast": "トースト 1 件。",
+        "icon": "トーストのアイコンのラッパー。",
+        "content": "タイトル / 説明のラッパー。",
+        "title": "タイトル。",
+        "description": "説明文。",
+        "action": "アクションボタン。",
+        "close-button": "閉じる（×）ボタン。",
+        "progress": "カウントダウンのバー。"
+      },
+      "methods": {
+        "focus": "領域にフォーカスを移します（ホットキーと同じ動作）。"
+      }
+    }
   }
 }

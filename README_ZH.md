@@ -21,8 +21,8 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 ## ✨ 特性
 
 - **React 组件**：100+ 个组件，基于 React 19（`ref` 作为普通 prop；客户端入口带 `"use client"`，可用于 React Server Components）
-- **Web Components**：基于 Lit 的自定义元素，可在任意框架中使用，也可不依赖框架
-- **ESM + CommonJS**：同时提供两种模块格式
+- **Web Components**：以标准自定义元素（Lit）提供完整组件集，可用于纯 HTML、Vue、Angular、Svelte、Solid 或 React：外观、令牌、键盘与 ARIA 行为一致，表单控件支持原生表单关联，并提供 CDN 包和自动生成的框架类型声明
+- **ESM + CommonJS**：React 组件库同时提供两种模块格式（Web Components 仅提供 ESM）
 - **TypeScript**：自带类型定义
 - **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`@minerva/lib-core/theme-utils`，服务端安全）
 - **设计预设**：通过 `<ConfigProvider preset="editorial">`（克制、以阅读为主）或 `density` / `radius` / `shadow` / `fontScale` 维度切换整个应用的外观；支持 SSR（`designAttributes()`、`createThemeInitScript({ design })`），并可由嵌套 provider 限定作用域
@@ -33,19 +33,19 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 
 ## 📦 包
 
-| 包                            | 说明                                                                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `@minerva/core`               | 框架无关的交互原语（焦点作用域、可关闭层、滚动锁定、漫游焦点、定位等）、主题工具、设计令牌和 i18n 文案。随 lib-core 一起安装。 |
-| `@minerva/lib-core`           | React 19 组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom` `^19.0.0`。                                  |
-| `@minerva/lib-web-components` | 基于 Lit 的 Web Components。目前提供 `<minerva-button>` 自定义元素。                                                           |
-| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                                                               |
+| 包                            | 说明                                                                                                                                                                                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@minerva/core`               | 框架无关的交互原语（焦点作用域、可关闭层、滚动锁定、漫游焦点、定位等）、主题工具、设计令牌和 i18n 文案。随 lib-core 一起安装。                                                                                                      |
+| `@minerva/lib-core`           | React 19 组件库。ESM + CJS，包含 TypeScript 类型。Peer 依赖：`react`、`react-dom` `^19.0.0`。                                                                                                                                       |
+| `@minerva/lib-web-components` | 与框架无关的 Web Components（Lit）：每个 Minerva 组件都有对应的自定义元素（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>`……）。仅 ESM；提供按元素入口、CDN 包、`tokens.css`，以及 React、Vue、Svelte、Solid 的类型声明。 |
+| `@minerva/sample`（私有）     | 基于 Vite 的文档/演示站点，部署在 GitHub Pages。                                                                                                                                                                                    |
 
 ### 架构
 
 ```
 @minerva/core            framework-agnostic TypeScript (DOM only)
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
-        ▲ React hooks                    ▲ Lit controllers (later)
+        ▲ React hooks                    ▲ Lit controllers
 @minerva/lib-core               @minerva/lib-web-components
 ```
 
@@ -201,43 +201,70 @@ export function SaveButton() {
 
 ### Web Components
 
+以标准自定义元素提供同一套组件，可用于任意框架，也可不依赖框架。它们在 shadow root 中渲染与 lib-core 相同的 DOM 和样式，并复用 `@minerva/core` 的原语，因此外观和行为与 React 组件一致。
+
 ```bash
 pnpm add @minerva/lib-web-components
 ```
 
-注册一次自定义元素：
-
 ```ts
+// every element...
 import "@minerva/lib-web-components";
+// ...or only the ones you use (one entry per element)
+import "@minerva/lib-web-components/select";
+
+// design tokens, once (already included in @minerva/lib-core/style.css)
+import "@minerva/lib-web-components/tokens.css";
 ```
 
-之后即可在任意 HTML 中使用：
+无需构建步骤时，也可以从 CDN 加载：
 
 ```html
-<minerva-button variant="primary" size="medium" shape="pill">
-  Click me
-</minerva-button>
-<minerva-button variant="ghost" loading>Loading</minerva-button>
-<minerva-button variant="error" disabled aria-label="Delete">
-  Delete
-</minerva-button>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css"
+/>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"
+></script>
 ```
 
-`<minerva-button>` 属性：
+之后像原生元素一样使用这些标签。表单控件支持表单关联（`name`、`required`、`FormData`、`form.reset()`），事件是会冒泡并穿过 shadow root 的 `minerva-*` CustomEvent（`minerva-change`、`minerva-open-change`……）：
 
-| 属性                            | 取值                                                                                    |
-| ------------------------------- | --------------------------------------------------------------------------------------- |
-| `variant`                       | `primary`、`secondary`、`success`、`warning`、`error`、`info`、`ghost`、`retry`、`back` |
-| `size`                          | `tiny`、`small`、`medium`、`large`                                                      |
-| `shape`                         | `square`、`rounded`、`circle`、`pill`                                                   |
-| `loading`、`disabled`、`active` | 布尔值                                                                                  |
-| `aria-label`                    | 字符串                                                                                  |
+```html
+<minerva-config theme="system" locale="en">
+  <form>
+    <label for="plan">Plan</label>
+    <minerva-select id="plan" name="plan" value="pro" required>
+      <minerva-option value="free">Free</minerva-option>
+      <minerva-option value="pro">Pro</minerva-option>
+    </minerva-select>
+    <minerva-switch name="newsletter" checked>Newsletter</minerva-switch>
+    <minerva-button type="submit">Save</minerva-button>
+  </form>
+</minerva-config>
 
-在 React 项目中如需 JSX 类型提示，请添加：
+<script type="module">
+  document
+    .querySelector("minerva-select")
+    .addEventListener("minerva-change", (event) => {
+      console.log(event.detail.value);
+    });
+</script>
+```
+
+类型：所有元素都已声明在 `HTMLElementTagNameMap` 中；模板类型可通过以下方式启用：
 
 ```ts
-/// <reference types="@minerva/lib-web-components/react" />
+/// <reference types="@minerva/lib-web-components/react" />  // React 19 JSX
+/// <reference types="@minerva/lib-web-components/svelte" /> // Svelte 5
+/// <reference types="@minerva/lib-web-components/solid" />  // Solid
+// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types
+// VS Code: "html.customData": ["./node_modules/@minerva/lib-web-components/dist/html-custom-data.json"]
 ```
+
+纯 HTML、Vue、Angular、Svelte、表单和主题的使用指南见 [Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
 ## 🧑‍💻 开发者快速开始
 

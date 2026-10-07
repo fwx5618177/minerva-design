@@ -89,5 +89,55 @@
     "--alert-gap": "Espace entre l'icône, le contenu et les actions",
     "--alert-shadow": "Ombre de l'alerte surélevée (par défaut --shadow-sm)",
     "--alert-margin-bottom": "Espace sous l'alerte"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Quatre couleurs de statut avec un titre. Les alertes danger et warning utilisent role=\"alert\", info et success role=\"status\"."
+      },
+      "variants-sizes": {
+        "title": "Variantes, tailles et apparence",
+        "description": "Trois variantes et tailles, hide-icon, elevation, coins carrés, animation-name / no-animation, un slot icon personnalisé et le mode bannière."
+      },
+      "closable": {
+        "title": "Fermable",
+        "description": "closable déclenche un minerva-close annulable : preventDefault() conserve l'alerte, sinon elle sort le focus et se masque. Le slot action accueille des boutons."
+      },
+      "collapsible": {
+        "title": "Repliable",
+        "description": "collapsible (avec un titre) ajoute une bascule ; collapsed définit l'état initial et minerva-expanded-change signale chaque changement."
+      }
+    },
+    "minerva-alert": {
+      "props": {
+        "heading": "Texte du titre (ou utilisez le slot heading).",
+        "hideIcon": "Masque l'icône de statut.",
+        "noAnimation": "Désactive l'animation d'entrée.",
+        "square": "Coins carrés.",
+        "collapsed": "Indique si le message est replié.",
+        "alertRole": "Rôle ARIA (par défaut : \"alert\" pour danger / warning, \"status\" sinon)."
+      },
+      "events": {
+        "minerva-close": "Le bouton de fermeture a été activé ; annulable : preventDefault() garde l'alerte visible.",
+        "minerva-expanded-change": "L'utilisateur a déplié / replié le message (detail : { expanded }) ; annulable."
+      },
+      "slots": {
+        "default": "Message.",
+        "heading": "Titre (alternative à l'attribut heading).",
+        "icon": "Icône personnalisée remplaçant l'icône de statut.",
+        "action": "Zone d'actions (par exemple des boutons) à la fin.",
+        "close-icon": "Icône de fermeture personnalisée."
+      },
+      "parts": {
+        "base": "La racine de l'alerte.",
+        "icon": "Le conteneur de l'icône.",
+        "heading": "Le titre.",
+        "message": "Le conteneur du message.",
+        "action": "Le conteneur des actions.",
+        "close-button": "Le bouton de fermeture.",
+        "toggle": "Le bouton déplier / replier."
+      }
+    }
   }
 }

@@ -15,7 +15,7 @@ import {
   type SupportedLanguage,
 } from "@minerva/lib-core";
 import "@minerva/lib-web-components";
-import type {} from "../../packages/lib-web-components/src/react";
+import type {} from "../../packages/lib-web-components/tests/e2e/jsx";
 
 /** Controllable prefers-color-scheme */
 const mockScheme = (initialDark: boolean) => {
@@ -79,14 +79,23 @@ const App = () => {
         options={[{ value: "a", label: "A" }]}
       />
       <TimePicker defaultValue={new Date(2024, 0, 1, 9, 0, 0)} />
-      <minerva-button variant="primary">Web component</minerva-button>
+      <minerva-button color="primary">Web component</minerva-button>
     </ConfigProvider>
   );
 };
 
-const minervaButtonToken = (token: string) => {
-  const el = document.querySelector("minerva-button") as HTMLElement;
-  return getComputedStyle(el).getPropertyValue(token).trim();
+/**
+ * A token as resolved inside <minerva-button>'s shadow root: lib-core's
+ * button stylesheet maps the theme tokens to `--btn-tone` (fill) and
+ * `--btn-tone-on` (text) on the inner <button>.
+ */
+const minervaButtonToken = async (token: "--btn-tone" | "--btn-tone-on") => {
+  const host = document.querySelector("minerva-button") as HTMLElement & {
+    updateComplete: Promise<unknown>;
+  };
+  await host.updateComplete;
+  const inner = host.shadowRoot!.querySelector("button")!;
+  return getComputedStyle(inner).getPropertyValue(token).trim();
 };
 
 describe("e2e: theming and locale", () => {
@@ -98,7 +107,7 @@ describe("e2e: theming and locale", () => {
     const user = userEvent.setup();
     render(<App />);
     expect(rootVar("background-color")).toBe(themes.light["background-color"]);
-    expect(minervaButtonToken("--_primary")).toBe(
+    expect(await minervaButtonToken("--btn-tone")).toBe(
       themes.light["primary-color"],
     );
 
@@ -107,8 +116,10 @@ describe("e2e: theming and locale", () => {
       screen.getByRole("status", { name: "Resolved theme" }),
     ).toHaveTextContent("dark");
     expect(rootVar("background-color")).toBe(themes.dark["background-color"]);
-    expect(minervaButtonToken("--_primary")).toBe(themes.dark["primary-color"]);
-    expect(minervaButtonToken("--_on-color")).toBe(
+    expect(await minervaButtonToken("--btn-tone")).toBe(
+      themes.dark["primary-color"],
+    );
+    expect(await minervaButtonToken("--btn-tone-on")).toBe(
       themes.dark["text-inverse-color"],
     );
 
@@ -116,7 +127,7 @@ describe("e2e: theming and locale", () => {
     expect(rootVar("primary-color")).toBe(
       themes["github-dark"]["primary-color"],
     );
-    expect(minervaButtonToken("--_primary")).toBe(
+    expect(await minervaButtonToken("--btn-tone")).toBe(
       themes["github-dark"]["primary-color"],
     );
   });
@@ -133,7 +144,9 @@ describe("e2e: theming and locale", () => {
     scheme.setDark(true);
     expect(resolved).toHaveTextContent("dark");
     expect(rootVar("background-color")).toBe(themes.dark["background-color"]);
-    expect(minervaButtonToken("--_primary")).toBe(themes.dark["primary-color"]);
+    expect(await minervaButtonToken("--btn-tone")).toBe(
+      themes.dark["primary-color"],
+    );
 
     // a fixed theme stops following the system
     await user.click(screen.getByRole("button", { name: "light" }));

@@ -58,5 +58,66 @@
     "--tabs-radius": "enclosed / soft / pills タブの角丸（既定値は --radius-md）",
     "--tabs-indicator-width": "ラインインジケーターの太さ",
     "--tabs-panel-padding": "パネルの内側の余白"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "<minerva-tab> 要素は自動的にタブリストに配置され、各 <minerva-tab-panel> は同じ value のタブに関連付けられます。label でタブリストに名前を付けます。矢印キーは無効なタブをスキップします。"
+      },
+      "variants": {
+        "title": "バリアントとカラー",
+        "description": "variant で line、enclosed、soft、pills を選びます。color は選択状態の色で、<minerva-tab> に color を指定すると非選択時も色が付きます。"
+      },
+      "vertical": {
+        "title": "縦方向と手動アクティベーション",
+        "description": "orientation=\"vertical\" でタブを縦に並べます（ArrowUp / ArrowDown）。activation-mode=\"manual\" ではフォーカスを移動しても Enter または Space を押すまで選択されません。no-loop で最初 / 最後のタブで止まります。"
+      },
+      "controlled": {
+        "title": "変更のキャンセル",
+        "description": "minerva-change はキャンセル可能です。チェックボックスがオンの間は preventDefault() で現在のタブを維持します。オフにするとタブを切り替えられます。"
+      }
+    },
+    "minerva-tabs": {
+      "props": {
+        "noLoop": "矢印キーを先頭 / 末尾のタブで止め、ループさせません。",
+        "label": "タブリストのアクセシブルな名前（要素の aria-label / aria-labelledby も使えます）。",
+        "tabs": "このグループの <minerva-tab> 要素（入れ子のグループは除く、読み取り専用）。",
+        "panels": "このグループの <minerva-tab-panel> 要素（読み取り専用）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーがタブを選択しました（detail: { value }）。キャンセル可能：preventDefault() で現在の選択を維持します。"
+      },
+      "slots": {
+        "default": "<minerva-tab-panel> 要素。",
+        "tab": "<minerva-tab> 要素（自動的に割り当て）。"
+      },
+      "parts": {
+        "base": "ルートのラッパー。",
+        "tablist": "role=\"tablist\" のコンテナ。"
+      },
+      "methods": {
+        "select": "指定した value のタブを選択します。先に minerva-change を発火します（クリック、Enter / Space、フォーカス時にタブから呼ばれます）。"
+      }
+    },
+    "minerva-tab": {
+      "props": {
+        "selected": "選択中のタブかどうか（<minerva-tabs> が設定）。"
+      },
+      "slots": {
+        "default": "タブのラベル。"
+      },
+      "parts": {
+        "base": "見た目のトリガー。"
+      }
+    },
+    "minerva-tab-panel": {
+      "slots": {
+        "default": "パネルの内容。"
+      },
+      "parts": {
+        "base": "パネルのラッパー。"
+      }
+    }
   }
 }

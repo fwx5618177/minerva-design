@@ -4,6 +4,7 @@ import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { isAriaInvalid } from "../../internal/forms-field";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useFormControlProps } from "../FormControl/context";
 import type { NumberInputProps } from "./types";
 import styles from "./numberInput.module.scss";
@@ -47,7 +48,7 @@ function parseDraft(input: string): number | null {
  */
 export const NumberInput = ({
   value,
-  defaultValue = null,
+  defaultValue: defaultValueProp,
   onChange,
   min,
   max,
@@ -76,10 +77,35 @@ export const NumberInput = ({
   const isLocked = isDisabled || !!field.readOnly;
   const precision = precisionProp ?? inferPrecision(step);
 
+  if (process.env.NODE_ENV !== "production") {
+    if (min !== undefined && max !== undefined && min > max) {
+      warnOnce(
+        "NumberInput:min>max",
+        `[minerva] NumberInput: \`min\` (${min}) is greater than \`max\` (${max}); clamping cannot satisfy both. Swap or fix the bounds.`,
+      );
+    }
+    if (!(step > 0)) {
+      warnOnce(
+        "NumberInput:step",
+        `[minerva] NumberInput: \`step\` must be a positive number, got ${step}.`,
+      );
+    }
+    warnControlledProps("NumberInput", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue: defaultValueProp,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: isLocked,
+      lockHint: "set `disabled` / `readOnly`",
+    });
+  }
   const [current, setCurrent] = useControllableState<number | null>({
     value,
-    defaultValue,
+    defaultValue: defaultValueProp ?? null,
     onChange,
+    name: "NumberInput",
   });
 
   const [draft, setDraft] = useState(() => valueToString(current, precision));

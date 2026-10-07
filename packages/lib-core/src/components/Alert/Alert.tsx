@@ -12,6 +12,7 @@ import {
 import type { AlertProps } from "./types";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import {
   isFocusInsideOrLost,
@@ -77,7 +78,7 @@ const Alert = ({
   borderRadius,
   collapsible = false,
   expanded: expandedProp,
-  defaultExpanded = true,
+  defaultExpanded,
   onExpand,
   closeLabel,
   expandLabel,
@@ -92,10 +93,23 @@ const Alert = ({
   const [visible, setVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const mergedRef = useMergedRefs(rootRef, ref);
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Alert", {
+      prop: "expanded",
+      value: expandedProp,
+      defaultProp: "defaultExpanded",
+      defaultValue: defaultExpanded,
+      handlerProp: "onExpand",
+      handler: onExpand,
+      locked: !collapsible,
+    });
+  }
   const [expanded, setExpanded] = useControllableState({
     value: expandedProp,
-    defaultValue: defaultExpanded,
+    defaultValue: defaultExpanded ?? true,
     onChange: onExpand,
+    name: "Alert",
+    prop: "expanded",
   });
   const contentId = useId();
   // The toggle lives in the title, so without a title nothing can be collapsed

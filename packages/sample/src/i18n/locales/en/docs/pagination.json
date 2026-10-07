@@ -103,5 +103,47 @@
     "--pagination-font-size": "Font size",
     "--pagination-active-background": "Background of the current page (solid variant)",
     "--pagination-active-color": "Text color of the current page (solid variant)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "total and page-size set the number of pages. The element updates current itself and fires minerva-page-change with the new page and page size; call preventDefault() to control it."
+      },
+      "total-and-jumper": {
+        "title": "Total, size changer and quick jumper",
+        "description": "show-total, show-size-changer (options from page-size-options=\"10,20,50\") and show-quick-jumper. totalRender, a JS property, customizes the total text."
+      },
+      "appearance": {
+        "title": "Sizes, shapes and variants",
+        "description": "size, shape and variant style the items; sibling-count / boundary-count switch to a compact page list; disabled blocks every interaction."
+      },
+      "simple": {
+        "title": "Simple mode, counter and icons",
+        "description": "simple shows prev / next with a page input, hide-numbers a \"current / total\" counter. The prev-icon, next-icon, jump-prev-icon and jump-next-icon slots replace the icons; responsive adapts to small screens."
+      }
+    },
+    "minerva-pagination": {
+      "props": {
+        "totalPages": "Number of pages, at least 1 (read-only)."
+      },
+      "events": {
+        "minerva-page-change": "The user changed the page or the page size (detail: { page, pageSize }). Cancelable: preventDefault() keeps the current page and size."
+      },
+      "slots": {
+        "prev-icon": "Icon of the previous-page button.",
+        "next-icon": "Icon of the next-page button.",
+        "jump-prev-icon": "Icon of the jump-backward item.",
+        "jump-next-icon": "Icon of the jump-forward item."
+      },
+      "parts": {
+        "base": "The <nav> landmark.",
+        "item": "Every page, prev / next and jump button.",
+        "total": "The total text.",
+        "jumper": "The quick jumper label.",
+        "size-changer": "The page size <select>.",
+        "simple-input": "The page input of the simple mode."
+      }
+    }
   }
 }

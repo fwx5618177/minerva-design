@@ -31,5 +31,63 @@
     "--textarea-font-size": "フォントサイズ（全サイズ）",
     "--textarea-background": "outline バリアントの背景色",
     "--textarea-border-color": "通常時の枠線色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "rows で表示の高さを決めます（手動リサイズは無効）。minerva-input が変更のたびに通知し、ここでは単語数を数えます。"
+      },
+      "sizes-variants": {
+        "title": "サイズ・バリアント・状態",
+        "description": "サイズ、filled バリアント、読み取り専用・無効・不正な値の状態。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "required・minlength・maxlength は送信時にブラウザーが検証します。値は name で送信され、リセットで value 属性の値に戻ります。"
+      }
+    },
+    "minerva-textarea": {
+      "props": {
+        "defaultValue": "初期値（value 属性）。form.reset() で復元されます。<textarea> と同様、ユーザーが編集するまでは変更すると value も変わります。",
+        "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+        "readonly": "読み取り専用：フォーカス可能で送信されますが、編集できません。",
+        "rows": "表示するテキストの行数。",
+        "minlength": "値の最小文字数（ブラウザーが検証）。",
+        "maxlength": "値の最大文字数。",
+        "autocomplete": "内部の <textarea> の自動入力ヒント。",
+        "wrap": "送信時のテキストの折り返し：soft・hard・off。",
+        "name": "フォーム送信時に値を送る名前。",
+        "disabled": "コントロールを無効にします（フォーカス不可・送信されず・検証されない）。",
+        "required": "フォームを送信するには値が必要です。",
+        "value": "現在の値（プロパティ。value 属性は defaultValue を設定します）。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "値が確定した（フォーカスアウト）。内部の textarea から再送出。",
+        "input": "値が変わった（キー入力ごと。ネイティブ・composed）。",
+        "minerva-input": "input と同じで、detail: { value } 付き。",
+        "minerva-change": "change と同じで、detail: { value } 付き。"
+      },
+      "parts": {
+        "textarea": "ネイティブの <textarea>。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "select": "テキスト全体を選択します。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

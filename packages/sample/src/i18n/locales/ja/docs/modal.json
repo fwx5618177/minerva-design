@@ -73,5 +73,55 @@
     "--modal-shadow": "パネルの影（既定値は --shadow-xl）",
     "--modal-background": "パネルの背景",
     "--modal-z-index": "パネルの重なり順（既定値は --z-modal）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "trigger スロットでモーダルを開きます。label と description が名前と説明になります。フォーカスは内部に閉じ込められ、Escape やオーバーレイのクリックで閉じ、フォーカスは開いた要素に戻ります。"
+      },
+      "sizes": {
+        "title": "サイズ",
+        "description": "5 種類のサイズを show() を呼ぶ前に設定します。ここではタイトルを header スロットで指定しています。"
+      },
+      "form": {
+        "title": "モーダル内のフォーム",
+        "description": "フッターの送信ボタンは id でフォームを指定します。ブラウザが検証した後、submit ハンドラーが保存して hide() を呼びます。"
+      },
+      "events": {
+        "title": "イベントと閉じる操作のガード",
+        "description": "minerva-open-change はキャンセル可能です。「Unsaved changes」がオンの間は preventDefault() でモーダルを開いたままにします。ログには理由と after-open / after-close イベントが表示されます。"
+      }
+    },
+    "minerva-modal": {
+      "props": {
+        "label": "タイトルテキスト（または header スロット）。ダイアログのアクセシブルな名前になります。",
+        "dialogRole": "パネルの ARIA ロール。割り込み型の確認には \"alertdialog\" を使います。"
+      },
+      "events": {
+        "minerva-open-change": "ユーザーが開閉を要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-after-open": "パネルが開き、フォーカスが内部に移動した後に発火します。",
+        "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+      },
+      "slots": {
+        "default": "本文コンテンツ。",
+        "header": "タイトル（label 属性の代わり）。",
+        "footer": "アクションの行。",
+        "trigger": "クリックするとパネルを開く要素。"
+      },
+      "parts": {
+        "overlay": "背景のオーバーレイ。",
+        "panel": "ダイアログパネル（role=\"dialog\"）。",
+        "header": "タイトルのラッパー。",
+        "description": "説明文。",
+        "body": "本文のラッパー。",
+        "footer": "フッターのラッパー。",
+        "close-button": "閉じる（×）ボタン。"
+      },
+      "methods": {
+        "show": "モーダルを開きます。",
+        "hide": "モーダルを閉じます。"
+      }
+    }
   }
 }

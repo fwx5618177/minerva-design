@@ -57,5 +57,73 @@
     "--upload-dropzone-background": "通常時のドロップゾーンの背景色",
     "--upload-preview-width": "ファイル一覧の画像プレビューの幅",
     "--upload-preview-height": "ファイル一覧の画像プレビューの高さ"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "ファイルを選択またはドロップします。accept と max-size は不正なファイルをメッセージ付きで拒否し、replace は 1 つのファイルを置き換え、multiple + max-count で複数を許可し、removable で削除ボタンを追加します。"
+      },
+      "transfer": {
+        "title": "アップロードの進行と再試行",
+        "description": "minerva-files-selected をキャンセルするとページが items を管理します。ファイルはアップロード中として表示された後、完了または失敗になります（2 つ目ごとに 1 回失敗）。retryable で minerva-retry を発火する再試行ボタンを表示します。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "一覧のすべてのファイルが name で送信されます（multipart の FormData）。required はファイルがない場合に送信を止め、リセットで一覧が空になります。"
+      }
+    },
+    "minerva-upload": {
+      "props": {
+        "removable": "各項目に削除ボタンを表示します。",
+        "retryable": "失敗した項目に再試行ボタンを表示します。",
+        "required": "ファイルがない場合は無効になります（valueMissing）。",
+        "items": "一覧のファイルと転送状態：{ id, name, status, error?, previewUrl?, file? } の配列（プロパティ）。",
+        "texts": "カスタムテキスト（lib-core の labels プロパティ。labels はフォームコントロールの <label> 一覧のため改名）。各項目がローカライズ済みの既定値を上書きします。",
+        "files": "一覧の項目のファイル。フォームと一緒に送信されます（読み取り専用）。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "ユーザーが一覧のファイルを変更した。",
+        "minerva-files-selected": "有効なファイルが選択またはドロップされた。detail: { files }。キャンセル可能（キャンセルするとファイルは一覧に追加されません）。",
+        "minerva-change": "ユーザーが一覧のファイルを変更した。detail: { value }（項目）。",
+        "minerva-remove": "項目の削除ボタンが押された。detail: { item }。キャンセル可能（キャンセルすると項目は残ります）。",
+        "minerva-retry": "失敗した項目の再試行ボタンが押された。detail: { item }。"
+      },
+      "parts": {
+        "base": "コンテナー（role=\"group\"）。",
+        "label": "表示されるラベル。",
+        "dropzone": "ドロップ領域。",
+        "select-button": "選択ボタン。",
+        "error": "選択エラー。",
+        "list": "ファイル一覧。",
+        "item": "各ファイル。",
+        "remove-button": "ファイルの削除ボタン。",
+        "retry-button": "失敗したファイルの再試行ボタン。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部のアイコンボタンのアイコン色。",
+        "--icon-button-hover-bg": "ホバー時の内部アイコンボタンの背景。",
+        "--icon-button-pressed-color": "押下状態の内部アイコンボタンのアイコン色。",
+        "--icon-button-pressed-bg": "押下状態の内部アイコンボタンの背景。",
+        "--icon-button-size": "内部アイコンボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+        "--icon-button-icon-size": "内部アイコンボタンのアイコンのフォントサイズ。",
+        "--icon-button-radius": "内部アイコンボタンの角丸（既定値は --radius-lg）。"
+      },
+      "methods": {
+        "focus": "選択ボタンにフォーカスします。",
+        "showPicker": "ファイル選択ダイアログを開きます。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

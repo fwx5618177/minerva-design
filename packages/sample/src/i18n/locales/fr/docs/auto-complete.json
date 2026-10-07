@@ -97,5 +97,87 @@
     "--auto-complete-option-padding-x": "Marge intérieure horizontale d'une option et d'un libellé de groupe",
     "--auto-complete-option-hover-background": "Arrière-plan de l'option survolée / active au clavier",
     "--auto-complete-option-highlight-background": "Arrière-plan des options avec highlight: true"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Renseignez la propriété JS options ; la saisie les filtre par libellé. Choisir une option remplit le champ et déclenche minerva-select ; Entrée sans option active déclenche minerva-submit avec le texte saisi."
+      },
+      "rich-options": {
+        "title": "Options enrichies et groupées",
+        "description": "Les options peuvent avoir une icône, une description, une mise en avant ou être désactivées ; groupBy les range sous des titres. auto-highlight rend active la première option disponible pour la choisir avec Entrée ; variant et size stylent le champ."
+      },
+      "custom-render": {
+        "title": "Rendu et filtrage personnalisés",
+        "description": "Avec mode=\"custom\", renderOption renvoie le contenu de chaque option (chaîne, nœud DOM ou template Lit). Ici filterOption cherche aussi dans l'e-mail, sortOption trie par nom et renderEmpty remplace l'état vide."
+      },
+      "async-loading": {
+        "title": "Chargement asynchrone",
+        "description": "Écoutez minerva-input pour récupérer les résultats pendant la saisie et activez loading en attendant. Le slot prefix contient une icône ; minerva-change indique le texte validé."
+      }
+    },
+    "minerva-autocomplete": {
+      "props": {
+        "open": "Indique si la liste déroulante est ouverte.",
+        "placeholder": "Texte indicatif du champ.",
+        "size": "Taille du champ.",
+        "variant": "Style visuel du champ : outline, filled ou unstyled.",
+        "invalid": "État d'erreur ; définit aria-invalid.",
+        "readonly": "Lecture seule : focalisable et soumis, mais sans liste déroulante.",
+        "noAnimation": "Désactive l'animation d'ouverture.",
+        "noFillOnSelect": "Conserve le texte saisi quand une option est choisie (pas de remplissage).",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire soit soumis.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un fieldset désactivé (lecture seule).",
+        "form": "Le formulaire propriétaire de l'élément (lecture seule).",
+        "labels": "Éléments <label> associés à l'élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message décrivant l'erreur de validation courante, vide si valide (lecture seule).",
+        "willValidate": "Indique si l'élément est candidat à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "Le change natif du champ, réémis depuis l'hôte (à la perte du focus après modification).",
+        "minerva-input": "Le texte a changé : saisie, choix d'une option ou effacement par Échap (detail: { value }).",
+        "minerva-change": "Le texte a été validé : rempli par une option, effacé par Échap, ou change natif à la perte du focus (detail: { value }).",
+        "minerva-select": "Une option a été choisie à la souris ou au clavier (detail: { value, option }).",
+        "minerva-submit": "Entrée a été pressée sans option active avec un texte non vide (detail: { value }, sans espaces superflus).",
+        "minerva-open-change": "La liste s'ouvre ou se ferme (detail: { open }) ; annulable : preventDefault() conserve l'état actuel."
+      },
+      "slots": {
+        "prefix": "Contenu avant le texte (icône).",
+        "suffix": "Contenu après le texte."
+      },
+      "parts": {
+        "base": "Le conteneur racine.",
+        "label": "Le libellé visible.",
+        "field": "Le conteneur du champ.",
+        "input": "L'<input> natif.",
+        "popup": "La liste déroulante positionnée.",
+        "listbox": "La liste role=\"listbox\".",
+        "option": "Une option.",
+        "group-label": "Un titre de groupe.",
+        "empty": "L'état vide.",
+        "loading": "L'état de chargement."
+      },
+      "cssVars": {
+        "--input-height": "Hauteur minimale du champ, pour toutes les tailles (par défaut la hauteur de contrôle de la taille selon la densité).",
+        "--input-padding-x": "Marge intérieure horizontale du texte, pour toutes les tailles.",
+        "--input-radius": "Rayon des coins (par défaut --radius-lg).",
+        "--input-font-size": "Taille de police, pour toutes les tailles.",
+        "--input-background": "Couleur de fond de la variante outline.",
+        "--input-border-color": "Couleur de bordure au repos.",
+        "--input-focus-color": "Couleur de bordure au survol ou au focus."
+      },
+      "methods": {
+        "focus": "Donne le focus au champ.",
+        "blur": "Retire le focus du champ.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit (ou efface, avec \"\") une erreur de validation personnalisée.",
+        "formResetCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur lors de form.reset() : restaure l'attribut value.",
+        "formDisabledCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie de formulaire appelé par le navigateur pour restaurer la valeur (cache précédent/suivant, remplissage automatique)."
+      }
+    }
   }
 }

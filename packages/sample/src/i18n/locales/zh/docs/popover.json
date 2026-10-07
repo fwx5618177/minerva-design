@@ -54,5 +54,47 @@
     "--popover-border-color": "面板及其箭头的边框颜色",
     "--popover-shadow": "面板阴影（默认 --shadow-lg，深色主题为 --shadow-xl）",
     "--popover-z-index": "面板的层级（默认 --z-popover）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "trigger 插槽切换一个可交互面板；打开时焦点移入，关闭后返回。Escape、点击外部或带 data-popover-close 的元素都会关闭它。"
+      },
+      "placement": {
+        "title": "位置",
+        "description": "side 和 align 决定面板相对触发器的位置，side-offset 设置间距，arrow 显示指向箭头；面板会翻转和平移以保持在视口内。"
+      },
+      "anchor": {
+        "title": "锚点与模态",
+        "description": "anchor 让面板相对另一个元素（通过 id）定位，任意按钮都可通过 show() 打开它；modal 会锁定焦点并阻止与页面其余部分交互。"
+      }
+    },
+    "minerva-popover": {
+      "props": {
+        "label": "面板的可访问名称（或在元素上设置 aria-label）。",
+        "anchor": "要锚定到的元素 id（同一 DOM 树内）。",
+        "anchorElement": "代替触发器作为面板定位基准的元素；优先于 anchor。"
+      },
+      "events": {
+        "minerva-open-change": "用户请求打开 / 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+        "minerva-after-open": "弹出层已打开。",
+        "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+      },
+      "slots": {
+        "default": "面板内容。",
+        "trigger": "点击时切换弹出层的元素。"
+      },
+      "parts": {
+        "positioner": "负责定位的容器（顶层）。",
+        "panel": "对话框面板。",
+        "arrow": "箭头容器。"
+      },
+      "methods": {
+        "show": "打开弹出层。",
+        "hide": "关闭弹出层。",
+        "toggle": "切换弹出层。"
+      }
+    }
   }
 }

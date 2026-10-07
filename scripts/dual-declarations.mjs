@@ -59,3 +59,21 @@ export function writeDualDeclarations(emittedFiles) {
     );
   }
 }
+
+/**
+ * `afterBuild` hook for ESM-only packages: fix the relative specifiers of
+ * every `.d.ts` (explicit `.js` paths), without `.d.cts` twins.
+ * @param {Map<string, string>} emittedFiles
+ */
+export function writeEsmDeclarations(emittedFiles) {
+  const declarations = new Set(
+    [...emittedFiles.keys()]
+      .filter((file) => file.endsWith(".d.ts"))
+      .map((file) => normalize(file)),
+  );
+  for (const [file, content] of emittedFiles) {
+    if (!file.endsWith(".d.ts")) continue;
+    const path = normalize(file);
+    writeFileSync(path, rewriteSpecifiers(content, path, declarations, ".js"));
+  }
+}

@@ -3,6 +3,11 @@ import { IconEye, IconEyeOff, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import { isAriaInvalid } from "../../internal/forms-field";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import {
+  warnControlledProps,
+  warnLengthBounds,
+} from "../../internal/devWarnings";
+import { useControlledSwitchWarning } from "../../internal/useControllableState";
 import { useFormControlProps } from "../FormControl/context";
 import useI18n from "../../hooks/useI18n";
 import type { InputProps } from "./types";
@@ -67,6 +72,19 @@ export const Input = ({
   const currentValue = isControlled
     ? String(rest.value ?? "")
     : uncontrolledValue;
+  useControlledSwitchWarning(isControlled, "Input");
+  if (process.env.NODE_ENV !== "production") {
+    // Both `value` and `defaultValue`: React itself warns (native <input>).
+    warnControlledProps("Input", {
+      prop: "value",
+      value: rest.value,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: isDisabled || isReadOnly,
+      lockHint: "set `readOnly`",
+    });
+    warnLengthBounds("Input", rest.minLength, rest.maxLength);
+  }
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const isPassword = type === "password";

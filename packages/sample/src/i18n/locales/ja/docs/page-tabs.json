@@ -44,5 +44,82 @@
     "--page-tabs-item-max-width": "タブの最大幅（ラベルは省略表示）",
     "--page-tabs-item-radius": "タブの角丸（既定値は --radius-lg）",
     "--page-tabs-selected-background": "アクティブなタブの背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "active-value は現在のページを示し、minerva-select に追従します。closable は minerva-close を発火する閉じるボタンを追加します。ページを閉じるには要素を削除します。icon スロットはラベルの前にアイコンを表示します。"
+      },
+      "actions": {
+        "title": "アクション",
+        "description": "actions スロットはスクロールするリストの外にグローバルな操作を表示します（ここでは新しいページを開くボタン）。各項目の action スロットにはピン留めトグルなど独立した操作を置けます。"
+      },
+      "overflow": {
+        "title": "オーバーフローと無効化",
+        "description": "ページがあふれるとスクロールボタンが表示され（scroll-left-label / scroll-right-label で名前を付けます）、アクティブなページが表示範囲にスクロールされます。無効なページは選択できません。"
+      }
+    },
+    "minerva-page-tabs": {
+      "props": {
+        "items": "子要素の <minerva-page-tab>（読み取り専用）。"
+      },
+      "events": {
+        "minerva-select": "<minerva-page-tab> からバブリング：ページが選択されました（detail: { value }）。",
+        "minerva-close": "<minerva-page-tab> からバブリング：ページの閉じるボタンが押されました（detail: { value }）。"
+      },
+      "slots": {
+        "default": "<minerva-page-tab> 項目。",
+        "actions": "スクロールリストの後に置くグローバルな操作（ページメニューなど）。"
+      },
+      "parts": {
+        "base": "<nav> ランドマーク。",
+        "viewport": "スクロールするビューポート。",
+        "list": "項目のリスト。",
+        "scroll-button": "左 / 右スクロールボタン。",
+        "actions": "アクションのラッパー。"
+      },
+      "cssVars": {
+        "--icon-button-color": "閉じる / スクロールボタンのアイコン色。",
+        "--icon-button-hover-bg": "閉じる / スクロールボタンのホバー時の背景。",
+        "--icon-button-pressed-color": "押下状態のトグルのアイコン色。",
+        "--icon-button-pressed-bg": "押下状態のトグルの背景。",
+        "--icon-button-size": "閉じる / スクロールボタンの幅と高さ。",
+        "--icon-button-icon-size": "ボタン内アイコンのフォントサイズ。",
+        "--icon-button-radius": "square 形状の角丸半径（既定は --radius-lg）。"
+      }
+    },
+    "minerva-page-tab": {
+      "props": {
+        "closable": "minerva-close を発火する組み込みの閉じるボタンを表示します。",
+        "closeLabel": "閉じるボタンのアクセシブルなラベル（既定はローカライズされた「<label> を閉じる」）。"
+      },
+      "events": {
+        "minerva-select": "ラベルボタンが押されました（detail: { value }）。キャンセル可能：preventDefault() でストリップの active-value を維持します。",
+        "minerva-close": "組み込みの閉じるボタンが押されました（detail: { value }）。ページを閉じるには要素を削除します。"
+      },
+      "slots": {
+        "icon": "ラベルの前に表示するアイコン。",
+        "action": "ラベルの横に置く独立した操作（閉じる・ピン留めボタンなど）。"
+      },
+      "parts": {
+        "base": "項目のラッパー。",
+        "trigger": "ラベルの <button>。",
+        "label": "（省略表示される）ラベル。",
+        "close-button": "組み込みの閉じるボタン（closable）。"
+      },
+      "cssVars": {
+        "--icon-button-color": "閉じる / スクロールボタンのアイコン色。",
+        "--icon-button-hover-bg": "閉じる / スクロールボタンのホバー時の背景。",
+        "--icon-button-pressed-color": "押下状態のトグルのアイコン色。",
+        "--icon-button-pressed-bg": "押下状態のトグルの背景。",
+        "--icon-button-size": "閉じる / スクロールボタンの幅と高さ。",
+        "--icon-button-icon-size": "ボタン内アイコンのフォントサイズ。",
+        "--icon-button-radius": "square 形状の角丸半径（既定は --radius-lg）。"
+      },
+      "methods": {
+        "focus": "ラベルボタンにフォーカスします。"
+      }
+    }
   }
 }

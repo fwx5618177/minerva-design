@@ -77,5 +77,63 @@
     "--checkbox-radius": "square / rounded 形状のボックスの角丸",
     "--checkbox-gap": "ボックスとラベルの間隔",
     "--checkbox-label-font-size": "ラベルのフォントサイズ（全サイズ）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "label 属性またはデフォルトスロットでラベルを指定し、初期チェック・中間状態・無効状態を設定します。フォーカス中のボックスはスペースキーで切り替わります。"
+      },
+      "select-all": {
+        "title": "すべて選択（中間状態）",
+        "description": "親のボックスは minerva-change で子に追従します。すべてチェック時はチェック、一部のみなら中間状態（aria-checked=\"mixed\"）になります。"
+      },
+      "styles-states": {
+        "title": "スタイルと状態",
+        "description": "サイズ、形、色、ラベルの位置、icon スロットのカスタムアイコン、補助テキスト付きの読み取り専用・エラー状態。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "フォーム関連付け要素：チェック時に name で value を送信し、required はチェックされるまで送信を止め、リセットで checked 属性の状態に戻ります。"
+      }
+    },
+    "minerva-checkbox": {
+      "props": {
+        "readonly": "読み取り専用：フォーカス可能で送信されますが、ユーザーは切り替えられません。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "チェック状態が変わった（内部の input から再送出）。",
+        "minerva-change": "ユーザーがボックスを切り替えた。detail: { checked, value }。"
+      },
+      "slots": {
+        "default": "ラベルの内容（label 属性の代わり）。",
+        "icon": "チェック時にボックス内に表示するカスタムアイコン。"
+      },
+      "parts": {
+        "base": "ラッパー。",
+        "control": "ボックスとラベルを囲む <label>。",
+        "input": "ネイティブの <input type=\"checkbox\">。",
+        "checkmark": "見た目のボックス。",
+        "label": "ラベルのテキスト。",
+        "helper-text": "補助テキストまたはエラーテキスト。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "click": "内部のコントロールをクリックします（無効・読み取り専用でなければ切り替わります）。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

@@ -98,5 +98,68 @@
     "--cascader-dropdown-max-height": "Maximum height of the columns before they scroll",
     "--cascader-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
     "--cascader-option-padding-x": "Horizontal padding of an option (follows the density's row padding)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The option tree is the options property; the value attribute sets the default path (comma-separated or JSON array). minerva-change reports the selected path."
+      },
+      "search-hover": {
+        "title": "Search, hover and display",
+        "description": "show-search filters every path as you type, expand-trigger=\"hover\" opens sub-menus on hover, and displayRender formats the field (here only the last label). Disabled options cannot be picked."
+      },
+      "lazy": {
+        "title": "Lazy loading",
+        "description": "With loadData, activating an option without children expands it and loads its children: set loading, add children, then reassign options."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: it submits the displayed text under name, required blocks an empty selection, and form.reset() restores the value attribute."
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "Whether the panel is open.",
+        "readonly": "Shows the value without allowing changes (the panel does not open).",
+        "hideClearButton": "Hides the clear button (allowClear={false} in React).",
+        "selectedOptions": "Options of the selected path, one per level (read-only).",
+        "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element.",
+        "validity": "Validity state (same as <input>.validity).",
+        "validationMessage": "Message describing the current validation error (empty when valid).",
+        "willValidate": "Whether the element takes part in constraint validation."
+      },
+      "events": {
+        "change": "Same as minerva-change, without detail.",
+        "minerva-change": "A path was selected or the value was cleared (detail: { value, selectedOptions }).",
+        "minerva-clear": "The clear button emptied the value.",
+        "minerva-input": "The search text changed (show-search; detail: { value }).",
+        "minerva-open-change": "The user asked to open or close the panel (detail: { open }); cancelable: preventDefault() keeps the current state."
+      },
+      "parts": {
+        "base": "The root wrapper.",
+        "selector": "The field.",
+        "input": "The native <input role=\"combobox\">.",
+        "clear-button": "The clear button.",
+        "arrow": "The chevron.",
+        "dropdown": "The popup panel.",
+        "column": "A column of options (role=\"listbox\").",
+        "option": "An option (column option or search result)."
+      },
+      "methods": {
+        "focus": "Focuses the inner input.",
+        "blur": "Removes focus from the inner input.",
+        "show": "Opens the panel.",
+        "hide": "Closes the panel.",
+        "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+        "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
   }
 }

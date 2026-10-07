@@ -1,0 +1,30 @@
+{
+  "title": "Angular",
+  "description": "Minerva custom elements in Angular: CUSTOM_ELEMENTS_SCHEMA, property and event bindings, a ControlValueAccessor for template-driven and reactive forms, change detection and SSR.",
+  "setup": {
+    "title": "Setup",
+    "text": "Register the elements once before bootstrapping (all of them, or one entry per element), and add the design tokens to the global styles of the build:"
+  },
+  "binding": {
+    "title": "Bindings",
+    "text": "Add CUSTOM_ELEMENTS_SCHEMA to the components (or NgModules) whose templates use <minerva-*> tags: Angular then accepts the unknown tags and binds their properties and events like those of native elements.",
+    "properties": "[value], [checked], [disabled], [open], [options]... set DOM properties, so booleans, arrays, objects and functions reach the element as they are. Signals work as with any binding.",
+    "attributes": "Static attributes (aria-label=\"Name\", clearable) are written as they are; use [attr.name] to bind an attribute that is not a property, such as aria-*, data-* or slot.",
+    "events": "(minerva-change), (minerva-input), (minerva-open-change)... listen to the custom events; $event is a CustomEvent (wrap it in $any() with strict templates) and the new state is in $event.detail. (click) and other native events work as usual."
+  },
+  "forms": {
+    "title": "Forms",
+    "text": "ngModel, formControl and formControlName need a ControlValueAccessor, which Angular only provides for native inputs. A small directive bridges the Minerva text fields and selects: it writes the value property (which fires no event) and reports the user's changes from the minerva-* events:",
+    "usage": "Import the directive next to ReactiveFormsModule (or FormsModule for ngModel). Angular's validators and the form state (dirty, touched, invalid) then work as with native inputs:",
+    "checked": "For <minerva-checkbox> and <minerva-switch>, write a second accessor on the checked property and the detail.checked of minerva-change; for the other controls, use the value shape listed in their event documentation.",
+    "native": "Without Angular forms, the elements are form-associated anyway: inside a plain <form>, their name and value are part of FormData, required and the browser's constraint validation apply, and form.reset() restores their initial values. See Forms."
+  },
+  "zones": {
+    "title": "Change detection",
+    "text": "Template event bindings run Angular's change detection, with zone.js as well as in zoneless applications, so updating a signal or a field from (minerva-change) is enough. With zone.js, the timers and observers that elements use internally (animations, popup positioning) are patched too, which can schedule extra change detection runs but needs no special handling. In zoneless applications, listeners you add yourself with addEventListener should update signals so that the view refreshes."
+  },
+  "ssr": {
+    "title": "Server-side rendering",
+    "text": "With Angular SSR, main.ts runs in the browser only, so the elements are registered on the client. Importing the package from code that also runs on the server (a shared component, main.server.ts) is safe as well: the modules do not touch the DOM when they load and registration is idempotent. The server renders the tags as HTML with their attributes and light DOM content, and the browser upgrades them."
+  }
+}

@@ -72,5 +72,61 @@
     "--icon-button-size": "ボタンの幅と高さ（全サイズ。既定は密度に応じたコントロール高さに従う）",
     "--icon-button-icon-size": "アイコンのフォントサイズ（全サイズ）",
     "--icon-button-radius": "square 形状の角丸（既定は --radius-lg）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "label はアイコンのみのボタンに名前を付け、ホバーやフォーカス時にツールチップとして表示されます（Escape で閉じる）。既定は ghost・neutral です。"
+      },
+      "sizes-shapes": {
+        "title": "サイズ・形状・色",
+        "description": "4 つのサイズ、円形または四角形、共通のセマンティックカラーと solid / outline / ghost のバリアント。"
+      },
+      "toggle": {
+        "title": "トグルボタン",
+        "description": "toggle は aria-pressed を公開し、操作すると pressed を反転してキャンセル可能な minerva-pressed-change を発火します。ピンはオフにできません（preventDefault）。"
+      },
+      "states": {
+        "title": "読み込み・無効・ツールチップ",
+        "description": "更新をクリックすると読み込み状態になります（フォーカス可能なまま操作は無視）。tooltip はテキストを上書きし、tooltip-placement は位置を変え、no-tooltip は非表示にします。"
+      }
+    },
+    "minerva-icon-button": {
+      "props": {
+        "toggle": "トグルボタンにします（aria-pressed を公開）。",
+        "tooltipPlacement": "ツールチップの優先配置。",
+        "noTooltip": "ツールチップを表示しません（label は引き続きボタンの名前になります）。",
+        "type": "フォーム内での動作：なし（button）、送信、リセット。",
+        "form": "ボタンが属するフォーム（読み取り専用）。"
+      },
+      "events": {
+        "minerva-pressed-change": "トグルボタンが操作されました（detail: { pressed } は新しい状態）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+      },
+      "slots": {
+        "default": "アイコン（支援技術からは隠されます）。"
+      },
+      "parts": {
+        "button": "ネイティブの <button>。",
+        "glyph": "アイコンのラッパー。",
+        "spinner": "読み込みインジケーター。",
+        "tooltip": "ツールチップ（role=\"tooltip\"）。"
+      },
+      "cssVars": {
+        "--tooltip-max-width": "ツールチップの最大幅（ビューポートで制限）。",
+        "--tooltip-padding": "ツールチップのパディング。",
+        "--tooltip-radius": "ツールチップの角丸の半径。",
+        "--tooltip-font-size": "ツールチップのフォントサイズ。",
+        "--tooltip-bg": "ツールチップの背景（グラデーション可）。",
+        "--tooltip-color": "ツールチップの文字色。",
+        "--tooltip-shadow": "ツールチップの影（既定値は --shadow-md）。",
+        "--tooltip-z-index": "ツールチップの重なり順（既定値は --z-popover）。"
+      },
+      "methods": {
+        "focus": "内部のボタンにフォーカスします。",
+        "blur": "内部のボタンからフォーカスを外します。",
+        "click": "内部のボタンをクリックします（無効または読み込み中は無視）。"
+      }
+    }
   }
 }

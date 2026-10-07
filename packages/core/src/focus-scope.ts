@@ -173,6 +173,18 @@ export function createFocusScope(
     // `null`: the window lost focus or the focused element was removed;
     // the latter is handled by the MutationObserver below.
     if (next === null) return;
+    // `relatedTarget` is retargeted to the listener's tree: focus moving
+    // into a shadow root reports the shadow host. When that host contains
+    // the container, the real target is unknown here; the following
+    // `focusin` (which carries the real target in its composed path) pulls
+    // focus back if it really left.
+    if (
+      next instanceof Node &&
+      (next as Element).shadowRoot &&
+      contains(next, container)
+    ) {
+      return;
+    }
     if (!(next instanceof Node) || !contains(container, next)) focusInside();
   };
 

@@ -77,5 +77,63 @@
     "--checkbox-radius": "Rayon des coins de la case pour les formes square et rounded",
     "--checkbox-gap": "Espace entre la case et le libellé",
     "--checkbox-label-font-size": "Taille de police du libellé (toutes tailles)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Libellé via l’attribut label ou le slot par défaut, état coché initial, indéterminé et désactivé. Espace bascule la case ayant le focus."
+      },
+      "select-all": {
+        "title": "Tout sélectionner (indéterminé)",
+        "description": "La case parente suit ses enfants via minerva-change : cochée quand ils le sont tous, indéterminée (aria-checked=\"mixed\") quand seuls certains le sont."
+      },
+      "styles-states": {
+        "title": "Styles et états",
+        "description": "Tailles, formes, couleurs, position du libellé, icône personnalisée dans le slot icon, états lecture seule et erreur avec texte d’aide."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Associée au formulaire : une case cochée envoie sa value sous name, required bloque l’envoi tant qu’elle n’est pas cochée, et reset restaure les attributs checked."
+      }
+    },
+    "minerva-checkbox": {
+      "props": {
+        "readonly": "Lecture seule : focalisable et envoyée, mais l’utilisateur ne peut pas la cocher.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "L’état coché a changé (réémis depuis l’input interne).",
+        "minerva-change": "L’utilisateur a basculé la case ; detail : { checked, value }."
+      },
+      "slots": {
+        "default": "Contenu du libellé (alternative à l’attribut label).",
+        "icon": "Icône personnalisée affichée dans la case lorsqu’elle est cochée."
+      },
+      "parts": {
+        "base": "Le conteneur.",
+        "control": "Le <label> qui entoure la case et le libellé.",
+        "input": "L’élément natif <input type=\"checkbox\">.",
+        "checkmark": "La case visuelle.",
+        "label": "Le texte du libellé.",
+        "helper-text": "Le texte d’aide ou d’erreur."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "click": "Clique sur le contrôle interne (le bascule sauf s’il est désactivé ou en lecture seule).",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

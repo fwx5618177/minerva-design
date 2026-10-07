@@ -177,5 +177,46 @@
     "--theme-toggle-item-height": "Minimum height of an option (follows the density's control height)",
     "--theme-toggle-item-min-width": "Minimum width of an option",
     "--theme-toggle-active-background": "Background of the selected option"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Theme toggle",
+        "description": "Light / dark / system buttons (aria-pressed) bound to the theme of the closest <minerva-config>; without one they drive <html data-theme>."
+      },
+      "palette": {
+        "title": "Palette toggle",
+        "description": "The palette is orthogonal to the mode: show-default adds Minerva's default look, hide-system keeps light and dark only."
+      },
+      "events": {
+        "title": "Labels and events",
+        "description": "palettes picks the options, the labels property renames them, and minerva-change is cancelable (check Lock to keep the theme)."
+      }
+    },
+    "minerva-theme-toggle": {
+      "props": {
+        "hideSystem": "Hides the \"system\" (follow the OS) option.",
+        "persist": "Stores the choice in the theme / palette cookies (like lib-core's ThemeProvider) when the toggle drives <html> (no <minerva-config>)."
+      },
+      "events": {
+        "minerva-change": "The user picked a theme (detail: { value }); cancelable: preventDefault() keeps the current theme."
+      },
+      "parts": {
+        "base": "The role=\"group\" wrapper.",
+        "item": "Every option button."
+      }
+    },
+    "minerva-palette-toggle": {
+      "props": {
+        "persist": "Stores the choice in the theme / palette cookies (like lib-core's ThemeProvider) when the toggle drives <html> (no <minerva-config>)."
+      },
+      "events": {
+        "minerva-change": "The user picked a palette (detail: { value }, null = default look); cancelable: preventDefault() keeps the current palette."
+      },
+      "parts": {
+        "base": "The role=\"group\" wrapper.",
+        "item": "Every option button."
+      }
+    }
   }
 }

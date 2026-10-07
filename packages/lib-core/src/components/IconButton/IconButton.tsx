@@ -5,6 +5,7 @@ import { Tooltip } from "../Tooltip";
 import { ProgressIndicator } from "../ProgressIndicator";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import styles from "./iconButton.module.scss";
 
 /**
@@ -52,10 +53,32 @@ const IconButton = ({
     pressed !== undefined ||
     defaultPressed !== undefined ||
     onPressedChange !== undefined;
+  if (process.env.NODE_ENV !== "production") {
+    if (!label && !ariaLabel && !props["aria-labelledby"]) {
+      warnOnce(
+        "IconButton:label",
+        "[minerva] IconButton: an icon-only button needs an accessible name. " +
+          "Set `label` (also shown as a tooltip), `aria-label` or `aria-labelledby`; " +
+          "the generic fallback name does not describe the action.",
+      );
+    }
+    // An `onClick` that toggles the parent state also handles `pressed`.
+    warnControlledProps("IconButton", {
+      prop: "pressed",
+      value: pressed,
+      defaultProp: "defaultPressed",
+      defaultValue: defaultPressed,
+      handlerProp: "onPressedChange",
+      handler: onPressedChange ?? onClick,
+      locked: disabled,
+    });
+  }
   const [isPressed, setPressed] = useControllableState({
     value: pressed,
     defaultValue: defaultPressed ?? false,
     onChange: onPressedChange,
+    name: "IconButton",
+    prop: "pressed",
   });
   const glyph = icon ?? children;
 

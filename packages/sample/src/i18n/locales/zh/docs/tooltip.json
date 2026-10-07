@@ -104,5 +104,49 @@
     "--tooltip-color": "文字颜色（所有变体）",
     "--tooltip-shadow": "阴影（默认 --shadow-md，glass 变体为 --shadow-lg）",
     "--tooltip-z-index": "层级（默认 --z-popover）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "包裹一个可聚焦的触发器：悬停和聚焦时显示 content 属性。placement 支持 12 个位置，arrow 添加箭头，disabled 关闭提示。"
+      },
+      "styles": {
+        "title": "颜色、变体、形状与动画",
+        "description": "color 设置语义色调，variant 设置表面样式（solid、subtle、glass），shape 设置外形，animation 设置进入 / 退出过渡。"
+      },
+      "provider": {
+        "title": "Provider 与富内容",
+        "description": "<minerva-tooltip-provider> 为其中的提示提供统一的延迟；在 skip-delay 内移到下一个提示时会立即打开。content 插槽可放置富文本标记。"
+      },
+      "controlled": {
+        "title": "方法、事件与跟随指针",
+        "description": "show()、hide() 和 toggle() 直接控制提示（不触发事件）；悬停和聚焦会触发可取消的 minerva-open-change。follow-cursor 让提示跟随指针，offset 设置间距。"
+      }
+    },
+    "minerva-tooltip-provider": {
+      "slots": {
+        "default": "包含提示的内容。"
+      }
+    },
+    "minerva-tooltip": {
+      "events": {
+        "minerva-open-change": "悬停、聚焦、失焦、指针离开或 Escape 请求打开 / 关闭（detail: { open }）；可取消：preventDefault() 保持当前状态。"
+      },
+      "slots": {
+        "default": "触发器；建议使用单个可聚焦元素（按钮、链接等）。",
+        "content": "富文本提示内容（content 属性的替代方式）。"
+      },
+      "parts": {
+        "trigger": "包裹触发器的容器。",
+        "tooltip": "提示面板（role=\"tooltip\"）。",
+        "arrow": "箭头（设置 arrow 属性时）。"
+      },
+      "methods": {
+        "show": "显示提示（不触发 minerva-open-change）。",
+        "hide": "隐藏提示（不触发 minerva-open-change）。",
+        "toggle": "切换提示（不触发 minerva-open-change）。"
+      }
+    }
   }
 }

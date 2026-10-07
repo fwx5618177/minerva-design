@@ -82,5 +82,67 @@
     "--switch-checked-color": "オン時のつまみ・トラック・アクティブなセグメントのアクセント（既定は color プロパティのアクセント）",
     "--switch-label-gap": "スイッチとラベルの間隔",
     "--switch-label-font-size": "ラベルのフォントサイズ（全サイズ）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "role=\"switch\" を持つネイティブのチェックボックス。スペースと Enter で切り替わり、minerva-change が新しい状態を通知します。"
+      },
+      "styles-states": {
+        "title": "スタイルと状態",
+        "description": "サイズ、四角形、色、ラベルの位置、つまみ内のアイコン、読み取り専用・無効値・リップルなし。Sync を切り替えるとローディング状態になります。"
+      },
+      "side-labels": {
+        "title": "両側ラベルとセグメント",
+        "description": "off-label と on-label でスライダーの両側にクリックできるラベルを追加し、variant=\"segmented\" で 2 つのセグメントからなるコントロールにします。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "チェックボックスと同様、オンのときに value を送信し、required はオンになるまでフォームを無効にし、リセットで checked 属性の状態に戻ります。"
+      }
+    },
+    "minerva-switch": {
+      "props": {
+        "noRipple": "クリック時のリップル効果を無効にします。",
+        "readonly": "読み取り専用：フォーカス可能で送信されますが、ユーザーは切り替えられません。",
+        "invalid": "エラー状態（aria-invalid を設定）。",
+        "required": "フォームを送信するにはスイッチがオンである必要があります。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "状態が変わった（内部の input から再送出）。",
+        "minerva-change": "ユーザーがスイッチを切り替えた。detail: { checked, value }。"
+      },
+      "slots": {
+        "default": "ラベルの内容（label 属性の代わり）。",
+        "icon": "つまみの中（icon-placement=\"start\"）またはスイッチの後ろ（\"end\"）のアイコン。"
+      },
+      "parts": {
+        "base": "ルート：<label>、または両側ラベルやセグメントがある場合は <span>。",
+        "input": "ネイティブの <input type=\"checkbox\" role=\"switch\">。",
+        "track": "トラック。",
+        "thumb": "つまみ。",
+        "label": "ラベルのテキスト。",
+        "side": "オフ / オンの両側ラベル（ボタン）。",
+        "segment": "オフ / オンのセグメント（ボタン）。"
+      },
+      "methods": {
+        "focus": "内部のコントロールにフォーカスします。",
+        "blur": "内部のコントロールからフォーカスを外します。",
+        "click": "内部の input をクリックします（ブロックされていなければ切り替わります）。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ import { toPlacement } from "@minerva/core";
 import { Slot } from "../../internal/Slot";
 import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useLayerParent } from "../../internal/useDismissableLayer";
 import { MenuRoot, type FocusIntent } from "./MenuItems";
 import type { MenuProps } from "./types";
@@ -41,7 +42,7 @@ const Menu = ({
   align = "end",
   side = "bottom",
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   disabled = false,
   modal = true,
@@ -50,10 +51,23 @@ const Menu = ({
   className,
   "aria-label": ariaLabel,
 }: MenuProps) => {
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Menu", {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+      handlerProp: "onOpenChange",
+      handler: onOpenChange,
+      locked: disabled,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: "Menu",
+    prop: "open",
   });
   const [trigger, setTrigger] = useState<HTMLElement | null>(null);
   // Without `dir`, the menu (portalled out of the trigger's subtree) follows

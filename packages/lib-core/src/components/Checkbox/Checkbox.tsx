@@ -4,6 +4,7 @@ import { IconCircleInfoFilled } from "../../internal/icons";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import {
   useFormControlContext,
   useFormControlProps,
@@ -18,7 +19,7 @@ import type { CheckboxProps } from "./types";
  */
 const Checkbox = ({
   checked,
-  defaultChecked = false,
+  defaultChecked,
   disabled,
   indeterminate = false,
   name,
@@ -49,7 +50,9 @@ const Checkbox = ({
   const helperId = useId();
   const [isChecked, setIsChecked] = useControllableState({
     value: checked,
-    defaultValue: defaultChecked,
+    defaultValue: defaultChecked ?? false,
+    name: "Checkbox",
+    prop: "checked",
   });
 
   // FormControl wiring. An explicit `disabled` / `required` prop wins over
@@ -67,6 +70,18 @@ const Checkbox = ({
   const isError = error || !!fc?.invalid;
   const isReadOnly = !!fc?.readOnly;
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Checkbox", {
+      prop: "checked",
+      value: checked,
+      defaultProp: "defaultChecked",
+      defaultValue: defaultChecked,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: isDisabled || isReadOnly,
+      lockHint: "set `disabled`",
+    });
+  }
   // `indeterminate` only exists as a DOM property.
   useLayoutEffect(() => {
     if (inputRef.current) inputRef.current.indeterminate = indeterminate;

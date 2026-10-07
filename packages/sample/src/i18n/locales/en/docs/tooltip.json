@@ -104,5 +104,49 @@
     "--tooltip-color": "Text color (every variant)",
     "--tooltip-shadow": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)",
     "--tooltip-z-index": "Stacking order (defaults to --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Wrap a focusable trigger: the content attribute is shown on hover and focus. placement accepts 12 positions, arrow adds an arrow and disabled turns the tooltip off."
+      },
+      "styles": {
+        "title": "Colors, variants, shapes and animations",
+        "description": "color sets the semantic tone, variant the surface (solid, subtle, glass), shape the outline and animation the enter / exit transition."
+      },
+      "provider": {
+        "title": "Provider and rich content",
+        "description": "<minerva-tooltip-provider> gives the tooltips inside shared delays; moving to the next tooltip within skip-delay opens it at once. The content slot holds markup."
+      },
+      "controlled": {
+        "title": "Methods, events and follow cursor",
+        "description": "show(), hide() and toggle() drive a tooltip directly (without firing events); hover and focus fire the cancelable minerva-open-change. follow-cursor tracks the pointer, offset sets the gap."
+      }
+    },
+    "minerva-tooltip-provider": {
+      "slots": {
+        "default": "Content containing tooltips."
+      }
+    },
+    "minerva-tooltip": {
+      "events": {
+        "minerva-open-change": "Hover, focus, blur, pointer leave or Escape asked to open / close (detail: { open }); cancelable: preventDefault() keeps the current state."
+      },
+      "slots": {
+        "default": "The trigger; prefer a single focusable element (button, link...).",
+        "content": "Rich tooltip content (alternative to the content attribute)."
+      },
+      "parts": {
+        "trigger": "The wrapper around the trigger.",
+        "tooltip": "The tooltip panel (role=\"tooltip\").",
+        "arrow": "The arrow (with the arrow attribute)."
+      },
+      "methods": {
+        "show": "Shows the tooltip (does not fire minerva-open-change).",
+        "hide": "Hides the tooltip (does not fire minerva-open-change).",
+        "toggle": "Toggles the tooltip (does not fire minerva-open-change)."
+      }
+    }
   }
 }

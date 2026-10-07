@@ -1,0 +1,29 @@
+<form id="ni-form" style="display: grid; gap: 8px; max-width: 280px">
+  <label for="ni-form-qty">Quantity (1 to 99)</label>
+  <minerva-number-input
+    id="ni-form-qty"
+    name="quantity"
+    required
+    min="1"
+    max="99"
+    show-stepper
+    below-min-message="Order at least one item."
+    above-max-message="99 items at most per order."
+  ></minerva-number-input>
+  <label for="ni-form-discount">Discount (%)</label>
+  <minerva-number-input
+    id="ni-form-discount"
+    name="discount"
+    value="5"
+    min="0"
+    max="50"
+    step="0.5"
+  ></minerva-number-input>
+  <div style="display: flex; gap: 8px">
+    <minerva-button type="submit">Order</minerva-button>
+    <minerva-button type="reset" variant="ghost" color="neutral"
+      >Reset</minerva-button
+    >
+  </div>
+  <output id="ni-form-result"></output>
+</form>

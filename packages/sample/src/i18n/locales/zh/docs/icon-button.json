@@ -72,5 +72,61 @@
     "--icon-button-size": "按钮的宽高（所有尺寸；默认跟随当前密度的控件高度）",
     "--icon-button-icon-size": "图标字号（所有尺寸）",
     "--icon-button-radius": "square 形状的圆角（默认 --radius-lg）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "label 为纯图标按钮提供名称，并在悬停和聚焦时作为提示显示（Escape 关闭）。默认为 ghost 样式和 neutral 颜色。"
+      },
+      "sizes-shapes": {
+        "title": "尺寸、形状与颜色",
+        "description": "四种尺寸、圆形或方形，以及搭配 solid / outline / ghost 变体的通用语义颜色。"
+      },
+      "toggle": {
+        "title": "切换按钮",
+        "description": "toggle 会暴露 aria-pressed；激活时翻转 pressed 并触发可取消的 minerva-pressed-change。图钉无法取消（preventDefault）。"
+      },
+      "states": {
+        "title": "加载、禁用与提示",
+        "description": "点击刷新查看加载状态（仍可聚焦，但忽略激活）。tooltip 覆盖提示文本，tooltip-placement 调整位置，no-tooltip 移除提示。"
+      }
+    },
+    "minerva-icon-button": {
+      "props": {
+        "toggle": "使其成为切换按钮（暴露 aria-pressed）。",
+        "tooltipPlacement": "提示框的首选位置。",
+        "noTooltip": "隐藏提示框（label 仍为按钮命名）。",
+        "type": "按钮在表单中的行为：无（button）、提交或重置。",
+        "form": "按钮所属的表单（只读）。"
+      },
+      "events": {
+        "minerva-pressed-change": "切换按钮被激活（detail: { pressed }，即新状态）。可取消：preventDefault() 保持当前状态。"
+      },
+      "slots": {
+        "default": "图标（对辅助技术隐藏）。"
+      },
+      "parts": {
+        "button": "原生 <button>。",
+        "glyph": "图标容器。",
+        "spinner": "加载指示器。",
+        "tooltip": "提示框（role=\"tooltip\"）。"
+      },
+      "cssVars": {
+        "--tooltip-max-width": "提示框的最大宽度（受视口限制）。",
+        "--tooltip-padding": "提示框的内边距。",
+        "--tooltip-radius": "提示框的圆角半径。",
+        "--tooltip-font-size": "提示框的字号。",
+        "--tooltip-bg": "提示框的背景（支持渐变）。",
+        "--tooltip-color": "提示框的文字颜色。",
+        "--tooltip-shadow": "提示框的阴影（默认 --shadow-md）。",
+        "--tooltip-z-index": "提示框的层叠顺序（默认 --z-popover）。"
+      },
+      "methods": {
+        "focus": "聚焦内部按钮。",
+        "blur": "使内部按钮失去焦点。",
+        "click": "点击内部按钮（禁用或加载时忽略）。"
+      }
+    }
   }
 }

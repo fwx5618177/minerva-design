@@ -65,5 +65,52 @@
     "--drawer-shadow": "Shadow of the panel (defaults to --shadow-xl)",
     "--drawer-background": "Background of the panel",
     "--drawer-z-index": "Stacking order of the panel (defaults to --z-modal)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A side panel opened by its trigger slot. Any light DOM element with data-drawer-close (here the footer buttons) closes it."
+      },
+      "sides": {
+        "title": "Sides",
+        "description": "side picks the edge the drawer slides in from; size is a width for left / right drawers and a height for top / bottom ones."
+      },
+      "non-modal": {
+        "title": "Non-modal",
+        "description": "With non-modal the page stays interactive: no overlay, no focus trap, and an outside click closes the drawer. minerva-open-change reports the reason."
+      }
+    },
+    "minerva-drawer": {
+      "props": {
+        "label": "Title text (or use the header slot); names the dialog.",
+        "dialogRole": "ARIA role of the panel.",
+        "nonModal": "Non-modal: no overlay, no focus trap, no scroll lock; closes on outside pointer down / focus."
+      },
+      "events": {
+        "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+        "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+      },
+      "slots": {
+        "default": "Body content.",
+        "header": "Title (alternative to the label attribute).",
+        "footer": "Actions row.",
+        "trigger": "Element that opens the panel when clicked."
+      },
+      "parts": {
+        "overlay": "The backdrop.",
+        "panel": "The dialog panel (role=\"dialog\").",
+        "header": "The title wrapper.",
+        "description": "The description.",
+        "body": "The body wrapper.",
+        "footer": "The footer wrapper.",
+        "close-button": "The close (×) button."
+      },
+      "methods": {
+        "show": "Opens the drawer.",
+        "hide": "Closes the drawer."
+      }
+    }
   }
 }

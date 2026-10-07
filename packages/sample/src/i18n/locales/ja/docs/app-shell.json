@@ -55,5 +55,69 @@
     "--app-shell-sidebar-background": "サイドバーとモバイルのナビゲーションドロワーの背景",
     "--app-shell-header-background": "固定ヘッダーの背景",
     "--app-shell-drawer-width": "モバイルのナビゲーションドロワーの幅"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "ブランドと navigation スロットを持つサイドバー、固定ヘッダー（header-actions スロット）、デフォルトスロットを入れる main ランドマーク。768px 以下ではナビゲーションがヘッダーから開くモーダルドロワーに移ります。"
+      },
+      "sidebar-modes": {
+        "title": "サイドバーのモードとスロット",
+        "description": "sidebar-mode=\"compact\" はアイコンレールで始まります。サイドバーのボタンで展開したり、フローティングレールとして固定したりできます。collapsed 属性でナビゲーションをスタイル指定し（ここではラベルを非表示）、brand-icon はレールでも表示され、page-navigation はヘッダーと main の間に入ります。"
+      },
+      "controlled": {
+        "title": "イベント・メソッド・ラベル",
+        "description": "minerva-sidebar-mode-change と minerva-open-change はキャンセル可能です（モードをロックして確認）。expandNavigation() と focusMain() でシェルを操作し、*-label と skip-link 属性でコントロールの名前を変更します。"
+      }
+    },
+    "minerva-app-shell": {
+      "props": {
+        "noSkipLink": "「コンテンツへスキップ」リンクを削除します。",
+        "expandLabel": "サイドバーを展開するトグルの名前。",
+        "collapseLabel": "サイドバーを折りたたむトグルの名前。",
+        "enableFloatingLabel": "フローティングモードがオフのときのピントグルの名前。",
+        "disableFloatingLabel": "フローティングモードがオンのときのピントグルの名前。",
+        "openNavigationLabel": "モバイルナビゲーションを開くヘッダーボタンの名前。",
+        "closeNavigationLabel": "モバイルナビゲーションの閉じるボタンの名前。",
+        "mobile": "読み取り専用：モバイルレイアウトが有効です（ビューポート 768px 以下）。"
+      },
+      "events": {
+        "minerva-sidebar-mode-change": "ユーザーがサイドバーのモードを変更しました（detail: { mode }）。キャンセル可能：preventDefault() で現在のモードを維持します。",
+        "minerva-open-change": "モバイルドロワーが開閉しました（detail: { open }）。ユーザー操作によるものはキャンセル可能です。"
+      },
+      "slots": {
+        "default": "main ランドマーク内のページコンテンツ。",
+        "navigation": "ナビゲーション（デスクトップではサイドバー、モバイルではドロワー）。",
+        "brand": "ブランド（brand 属性の代わり）。",
+        "brand-icon": "装飾用のブランドアイコン（コンパクトレールでも表示）。",
+        "header-actions": "ヘッダーバーのコンテンツ（アカウントメニュー、検索など）。",
+        "page-navigation": "ヘッダーと main の間に描画されます（ページタブなど）。"
+      },
+      "parts": {
+        "shell": "シェルのルート。",
+        "skip-link": "スキップリンク。",
+        "sidebar": "デスクトップのサイドバー（<aside>）。",
+        "header": "ヘッダーバー。",
+        "main": "<main> 要素。",
+        "overlay": "ドロワーの背景。",
+        "drawer": "モバイルドロワー（role=\"dialog\"）。"
+      },
+      "cssVars": {
+        "--icon-button-color": "シェルのコントロール（サイドバーのトグル、メニューボタン）のアイコン色。",
+        "--icon-button-hover-bg": "ホバー時のシェルのコントロールの背景。",
+        "--icon-button-pressed-color": "押された状態のピントグルのアイコン色。",
+        "--icon-button-pressed-bg": "押された状態のピントグルの背景。",
+        "--icon-button-size": "シェルのコントロールの幅と高さ。",
+        "--icon-button-icon-size": "シェルのコントロールのアイコンサイズ。",
+        "--icon-button-radius": "シェルのコントロールの角丸の半径。"
+      },
+      "methods": {
+        "openNavigation": "モバイルナビゲーションのドロワーを開きます（モバイルレイアウトのみ）。",
+        "closeNavigation": "モバイルナビゲーションのドロワーを閉じます（項目が選ばれたときに呼び出します）。",
+        "expandNavigation": "サイドバーを展開状態に切り替えます（コンパクトレールでグループを開いたときなど）。",
+        "focusMain": "main ランドマークにフォーカスを移します。"
+      }
+    }
   }
 }

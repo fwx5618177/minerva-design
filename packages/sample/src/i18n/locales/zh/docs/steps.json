@@ -34,5 +34,36 @@
     "--steps-indicator-size": "序号指示器的直径",
     "--steps-accent-color": "当前 / 已完成指示器的颜色（默认 --primary-color）",
     "--steps-current-background": "当前步骤指示器的背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "只读进度",
+        "description": "步骤来自 items 属性；之前的步骤标记为已完成，当前步骤带有 aria-current=\"step\"。"
+      },
+      "navigable": {
+        "title": "可导航的向导",
+        "description": "navigable 将每个步骤变为按钮。minerva-change 可取消：由调用方校验切换（接受条款后才能离开第一步）。"
+      },
+      "styling": {
+        "title": "样式定制",
+        "description": "CSS 变量设置强调色、指示器尺寸和间距；::part(label) 用于定制标签样式。"
+      }
+    },
+    "minerva-steps": {
+      "props": {
+        "navigable": "将每个步骤渲染为可供用户导航的按钮（默认：只读）。"
+      },
+      "events": {
+        "minerva-change": "用户导航到某个步骤（detail: { value }）；可取消：preventDefault() 保持当前步骤。"
+      },
+      "parts": {
+        "base": "<ol> 元素。",
+        "step": "每个 <li>。",
+        "button": "每个步骤的按钮（或静态容器）。",
+        "number": "编号指示器。",
+        "label": "每个步骤的标签。"
+      }
+    }
   }
 }

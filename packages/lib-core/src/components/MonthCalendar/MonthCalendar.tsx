@@ -6,6 +6,7 @@ import {
   IconChevronRight,
 } from "../../internal/icons";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import useI18n from "../../hooks/useI18n";
 import { logicalArrowKey } from "../../internal/direction";
 import styles from "./monthCalendar.module.scss";
@@ -73,17 +74,44 @@ const MonthCalendar = ({
 }: MonthCalendarProps) => {
   const { t, language } = useI18n();
   const headingId = useId();
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("MonthCalendar", {
+      prop: "month",
+      value: monthProp,
+      defaultProp: "defaultMonth",
+      defaultValue: defaultMonth,
+      handlerProp: "onMonthChange",
+      handler: onMonthChange,
+      locked: disabled,
+      lockHint: "set `disabled`",
+    });
+  }
   const [month, setMonth] = useControllableState<Date>({
     value: monthProp,
     defaultValue: () => monthStart(defaultMonth ?? new Date()),
     onChange: onMonthChange,
+    name: "MonthCalendar",
+    prop: "month",
   });
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("MonthCalendar", {
+      prop: "value",
+      value: valueProp,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: disabled,
+      lockHint: "set `disabled`",
+    });
+  }
   const [value, setValue] = useControllableState<string | undefined>({
     value: valueProp,
     defaultValue,
     onChange: (next) => {
       if (next !== undefined) onChange?.(next);
     },
+    name: "MonthCalendar",
   });
   const [focusedKey, setFocusedKey] = useState("");
   const cells = useRef(new Map<string, HTMLDivElement>());

@@ -21,8 +21,8 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 ## ✨ Features
 
 - **React components**: 100+ components for React 19 (`ref` as a regular prop, `"use client"` entries for React Server Components)
-- **Web Components**: Lit-based custom elements that work with any framework, or none
-- **ESM + CommonJS**: both module formats are shipped
+- **Web Components**: the whole component set as standard custom elements (Lit) for plain HTML, Vue, Angular, Svelte, Solid or React: same look, tokens, keyboard and ARIA behaviour, form-associated controls, a CDN bundle and generated framework typings
+- **ESM + CommonJS**: both module formats are shipped for the React library (the Web Components are ESM only)
 - **TypeScript**: type definitions are included
 - **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
 - **Design presets**: switch the whole app's look with `<ConfigProvider preset="editorial">` (restrained, reading-oriented) or the `density` / `radius` / `shadow` / `fontScale` axes; SSR-ready (`designAttributes()`, `createThemeInitScript({ design })`) and scoped by nested providers
@@ -33,19 +33,19 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 
 ## 📦 Packages
 
-| Package                       | Description                                                                                                                                                                                        |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@minerva/core`               | Framework-agnostic interaction primitives (focus scope, dismissable layers, scroll lock, roving focus, positioning...), theme utilities, design tokens and i18n messages. Installed with lib-core. |
-| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`.                                                                                             |
-| `@minerva/lib-web-components` | Lit-based Web Components. Currently provides the `<minerva-button>` custom element.                                                                                                                |
-| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                                                                                                                     |
+| Package                       | Description                                                                                                                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@minerva/core`               | Framework-agnostic interaction primitives (focus scope, dismissable layers, scroll lock, roving focus, positioning...), theme utilities, design tokens and i18n messages. Installed with lib-core.                                                           |
+| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`.                                                                                                                                                       |
+| `@minerva/lib-web-components` | Framework-agnostic Web Components (Lit): every Minerva component as a custom element (`<minerva-button>`, `<minerva-select>`, `<minerva-modal>`...). ESM only; per-element entries, a CDN bundle, `tokens.css` and typings for React, Vue, Svelte and Solid. |
+| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                                                                                                                                                                               |
 
 ### Architecture
 
 ```
 @minerva/core            framework-agnostic TypeScript (DOM only)
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
-        ▲ React hooks                    ▲ Lit controllers (later)
+        ▲ React hooks                    ▲ Lit controllers
 @minerva/lib-core               @minerva/lib-web-components
 ```
 
@@ -227,43 +227,70 @@ export function SaveButton() {
 
 ### Web Components
 
+The same components as standard custom elements, for any framework or none. They render the lib-core DOM and styles in their shadow root and reuse the `@minerva/core` primitives, so they look and behave like the React components.
+
 ```bash
 pnpm add @minerva/lib-web-components
 ```
 
-Register the custom elements once:
-
 ```ts
+// every element...
 import "@minerva/lib-web-components";
+// ...or only the ones you use (one entry per element)
+import "@minerva/lib-web-components/select";
+
+// design tokens, once (already included in @minerva/lib-core/style.css)
+import "@minerva/lib-web-components/tokens.css";
 ```
 
-Then use them in any HTML:
+Or, without a build step, from a CDN:
 
 ```html
-<minerva-button variant="primary" size="medium" shape="pill">
-  Click me
-</minerva-button>
-<minerva-button variant="ghost" loading>Loading</minerva-button>
-<minerva-button variant="error" disabled aria-label="Delete">
-  Delete
-</minerva-button>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css"
+/>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"
+></script>
 ```
 
-`<minerva-button>` attributes:
+Then use the tags like native elements. Form controls are form-associated (`name`, `required`, `FormData`, `form.reset()`), events are `minerva-*` CustomEvents (`minerva-change`, `minerva-open-change`...) that bubble and cross shadow roots:
 
-| Attribute                       | Values                                                                                  |
-| ------------------------------- | --------------------------------------------------------------------------------------- |
-| `variant`                       | `primary`, `secondary`, `success`, `warning`, `error`, `info`, `ghost`, `retry`, `back` |
-| `size`                          | `tiny`, `small`, `medium`, `large`                                                      |
-| `shape`                         | `square`, `rounded`, `circle`, `pill`                                                   |
-| `loading`, `disabled`, `active` | boolean                                                                                 |
-| `aria-label`                    | string                                                                                  |
+```html
+<minerva-config theme="system" locale="en">
+  <form>
+    <label for="plan">Plan</label>
+    <minerva-select id="plan" name="plan" value="pro" required>
+      <minerva-option value="free">Free</minerva-option>
+      <minerva-option value="pro">Pro</minerva-option>
+    </minerva-select>
+    <minerva-switch name="newsletter" checked>Newsletter</minerva-switch>
+    <minerva-button type="submit">Save</minerva-button>
+  </form>
+</minerva-config>
 
-For JSX typings in a React project, add:
+<script type="module">
+  document
+    .querySelector("minerva-select")
+    .addEventListener("minerva-change", (event) => {
+      console.log(event.detail.value);
+    });
+</script>
+```
+
+Typings: every element is in `HTMLElementTagNameMap`; templates are typed with
 
 ```ts
-/// <reference types="@minerva/lib-web-components/react" />
+/// <reference types="@minerva/lib-web-components/react" />  // React 19 JSX
+/// <reference types="@minerva/lib-web-components/svelte" /> // Svelte 5
+/// <reference types="@minerva/lib-web-components/solid" />  // Solid
+// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types
+// VS Code: "html.customData": ["./node_modules/@minerva/lib-web-components/dist/html-custom-data.json"]
 ```
+
+Guides for plain HTML, Vue, Angular, Svelte, forms and theming: [Web Components](https://fwx5618177.github.io/minerva/#/web-components).
 
 ## 🧑‍💻 Developer Quick Start
 

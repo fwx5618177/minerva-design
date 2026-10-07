@@ -131,5 +131,120 @@
     "--menu-shadow": "Shadow of the menu panel (defaults to --shadow-md)",
     "--menu-item-height": "Minimum height of an item (every size; defaults to the density's control height)",
     "--menu-z-index": "Stacking order of the menu panel (defaults to --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Child elements describe the entries: items with an icon slot and a shortcut hint, a nested submenu, a separator, a labelled group and a disabled item. minerva-select gives the chosen value."
+      },
+      "checkbox-radio": {
+        "title": "Checkbox and radio items",
+        "description": "Checkbox items toggle and radio items of a <minerva-menu-group> are mutually exclusive; both keep the menu open and fire minerva-change."
+      },
+      "items": {
+        "title": "Entries from data",
+        "description": "The items property takes lib-core's MenuEntry objects (radio group, separator, checkbox, action) instead of child elements. side / align place the menu, no-loop stops the arrow keys at the ends."
+      },
+      "context-menu": {
+        "title": "Context menu",
+        "description": "<minerva-context-menu> opens its entries at the pointer on right click or long press, or at the area with Shift+F10. The area is its other content."
+      }
+    },
+    "minerva-context-menu": {
+      "props": {
+        "keepOpen": "Selecting an action keeps the menu open.",
+        "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+        "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+        "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+        "isModal": "Whether the menu currently behaves as modal (read-only).",
+        "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+      },
+      "events": {
+        "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-select": "An action item was chosen (detail: { value, item }); cancelable: preventDefault() keeps the menu open.",
+        "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+      },
+      "slots": {
+        "default": "The area (and the declarative menu entries, which are not displayed)."
+      },
+      "parts": {
+        "menu": "A menu panel (root menu and submenus).",
+        "item": "A menu item.",
+        "icon": "The icon of an item.",
+        "label": "A group / section label.",
+        "separator": "A separator."
+      },
+      "methods": {
+        "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+        "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+        "show": "Opens the menu.",
+        "hide": "Closes the menu (and its submenus).",
+        "rootLayerOptions": "Layer options of the root panel (internal).",
+        "subLayerOptions": "Layer options of the submenus (internal)."
+      }
+    },
+    "minerva-menu-item": {
+      "props": {
+        "keepOpen": "Selecting this item keeps the menu open."
+      },
+      "slots": {
+        "default": "Label, and nested menu elements forming a submenu.",
+        "icon": "Icon displayed before the label."
+      }
+    },
+    "minerva-menu-checkbox-item": {
+      "slots": {
+        "default": "Label."
+      }
+    },
+    "minerva-menu-radio-item": {
+      "slots": {
+        "default": "Label."
+      }
+    },
+    "minerva-menu-group": {
+      "slots": {
+        "default": "Entries of the group."
+      }
+    },
+    "minerva-menu-label": {
+      "slots": {
+        "default": "Label text."
+      }
+    },
+    "minerva-menu": {
+      "props": {
+        "keepOpen": "Selecting an action keeps the menu open.",
+        "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+        "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+        "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+        "isModal": "Whether the menu currently behaves as modal (read-only).",
+        "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+      },
+      "events": {
+        "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-select": "An action item was chosen (detail: { value, item }, value = the item key / value attribute); cancelable: preventDefault() keeps the menu open.",
+        "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+      },
+      "slots": {
+        "trigger": "The button opening the menu (gets aria-haspopup=\"menu\", aria-expanded and data-state)."
+      },
+      "parts": {
+        "menu": "A menu panel (root menu and submenus).",
+        "item": "A menu item.",
+        "icon": "The icon of an item.",
+        "label": "A group / section label.",
+        "separator": "A separator."
+      },
+      "methods": {
+        "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+        "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+        "show": "Opens the menu.",
+        "hide": "Closes the menu (and its submenus).",
+        "rootLayerOptions": "Layer options of the root panel (internal).",
+        "subLayerOptions": "Layer options of the submenus (internal)."
+      }
+    }
   }
 }

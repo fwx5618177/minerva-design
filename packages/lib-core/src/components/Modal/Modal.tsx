@@ -21,7 +21,9 @@ import type {
 import styles from "./modal.module.scss";
 
 /** Owns the open state of a compound modal. */
-export const ModalRoot = (props: ModalRootProps) => <DialogRoot {...props} />;
+export const ModalRoot = (props: ModalRootProps) => (
+  <DialogRoot componentName="Modal" {...props} />
+);
 
 /** Opens the modal; a `<button>` or, with `asChild`, the child element. */
 export const ModalTrigger = (props: ModalTriggerProps) => (
@@ -100,7 +102,7 @@ export const ModalFooter = ({ className, ref, ...rest }: ModalFooterProps) => (
  */
 export const Modal = ({
   open,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   trigger,
   title,

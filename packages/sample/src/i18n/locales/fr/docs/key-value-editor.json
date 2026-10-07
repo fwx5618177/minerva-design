@@ -38,5 +38,63 @@
     "--key-value-editor-gap": "Espace entre les lignes et le bouton d'ajout",
     "--key-value-editor-column-gap": "Espace entre la clé, la valeur et le bouton de suppression d'une ligne",
     "--key-value-editor-control-height": "Taille du bouton de suppression et hauteur minimale du champ clé et du bouton d'ajout (par défaut la hauteur de contrôle small de la densité)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Lignes initiales depuis un objet JSON dans l’attribut value, libellés de colonnes personnalisés ; la propriété value (lignes avec id stables) est affichée après chaque minerva-change."
+      },
+      "errors": {
+        "title": "Validation et erreurs",
+        "description": "La validation revient à la page : errors (par id de ligne) affiche des messages sous les clés vides ou en double, et setCustomValidity() rend l’élément invalide dans les formulaires."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Les lignes sont envoyées sous name en une seule chaîne JSON ; required bloque un éditeur sans ligne (supprimez la ligne pour essayer), et reset restaure les lignes de l’attribut value."
+      }
+    },
+    "minerva-key-value-editor": {
+      "props": {
+        "defaultValue": "Lignes initiales (l’attribut value, en JSON : un tableau de { key, value } ou un objet { \"key\": \"value\" }), restaurées par form.reset().",
+        "name": "Nom sous lequel les lignes sont envoyées, sous forme de tableau JSON de { key, value }.",
+        "required": "Un éditeur sans ligne est invalide (valueMissing).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "Une ligne a été validée (perte du focus d’un champ), ajoutée ou supprimée.",
+        "minerva-input": "Une clé ou une valeur est en cours de saisie ; detail : { value } (les entrées).",
+        "minerva-change": "Une ligne a été validée, ajoutée ou supprimée ; detail : { value } (les entrées)."
+      },
+      "parts": {
+        "base": "Le conteneur.",
+        "row": "Chaque ligne.",
+        "remove-button": "Le bouton de suppression d’une ligne.",
+        "add-button": "Le bouton d’ajout."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur d’icône des boutons-icônes internes.",
+        "--icon-button-hover-bg": "Fond des boutons-icônes internes au survol.",
+        "--icon-button-pressed-color": "Couleur d’icône d’un bouton-icône interne enfoncé.",
+        "--icon-button-pressed-bg": "Fond d’un bouton-icône interne enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons-icônes internes (par défaut, hauteurs de contrôle de la densité).",
+        "--icon-button-icon-size": "Taille de police des icônes des boutons-icônes internes.",
+        "--icon-button-radius": "Rayon des coins des boutons-icônes internes (par défaut --radius-lg)."
+      },
+      "methods": {
+        "focus": "Donne le focus au premier champ de clé, sinon au bouton d’ajout.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

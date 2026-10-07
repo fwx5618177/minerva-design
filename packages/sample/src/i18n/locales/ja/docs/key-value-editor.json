@@ -38,5 +38,63 @@
     "--key-value-editor-gap": "行と追加ボタンの間隔",
     "--key-value-editor-column-gap": "行内のキー・値・削除ボタンの間隔",
     "--key-value-editor-control-height": "削除ボタンのサイズと、キー欄・追加ボタンの最小高さ（既定は密度に応じた small のコントロール高さ）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "value 属性の JSON オブジェクトで初期の行を指定し、列のラベルをカスタマイズします。minerva-change のたびに value プロパティ（安定した id を持つ行）を表示します。"
+      },
+      "errors": {
+        "title": "検証とエラー",
+        "description": "検証はページ側の責務です。errors（行 id ごと）が空や重複したキーの下にメッセージを表示し、setCustomValidity() でフォーム内の要素を無効にします。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "行は 1 つの JSON 文字列として name で送信されます。required は行がない状態での送信を止め（行を削除して試せます）、リセットで value 属性の行に戻ります。"
+      }
+    },
+    "minerva-key-value-editor": {
+      "props": {
+        "defaultValue": "初期の行（value 属性。JSON：{ key, value } の配列または { \"key\": \"value\" } オブジェクト）。form.reset() で復元されます。",
+        "name": "行を { key, value } の JSON 配列として送信するときの名前。",
+        "required": "行が 1 つもない場合は無効になります（valueMissing）。",
+        "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+        "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+        "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+        "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+      },
+      "events": {
+        "change": "行が確定（フィールドのフォーカスアウト）、追加、または削除された。",
+        "minerva-input": "キーまたは値の入力中。detail: { value }（エントリー）。",
+        "minerva-change": "行が確定・追加・削除された。detail: { value }（エントリー）。"
+      },
+      "parts": {
+        "base": "コンテナー。",
+        "row": "各行。",
+        "remove-button": "行の削除ボタン。",
+        "add-button": "追加ボタン。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部のアイコンボタンのアイコン色。",
+        "--icon-button-hover-bg": "ホバー時の内部アイコンボタンの背景。",
+        "--icon-button-pressed-color": "押下状態の内部アイコンボタンのアイコン色。",
+        "--icon-button-pressed-bg": "押下状態の内部アイコンボタンの背景。",
+        "--icon-button-size": "内部アイコンボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+        "--icon-button-icon-size": "内部アイコンボタンのアイコンのフォントサイズ。",
+        "--icon-button-radius": "内部アイコンボタンの角丸（既定値は --radius-lg）。"
+      },
+      "methods": {
+        "focus": "最初のキーのフィールドに、なければ追加ボタンにフォーカスします。",
+        "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+        "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+        "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+        "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+      }
+    }
   }
 }

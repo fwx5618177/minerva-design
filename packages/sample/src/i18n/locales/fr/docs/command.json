@@ -45,5 +45,52 @@
     "--command-item-padding-y": "Marge intérieure verticale d'une ligne de résultat (suit celle des lignes de la densité)",
     "--command-item-padding-x": "Marge intérieure horizontale d'une ligne de résultat (suit celle des lignes de la densité)",
     "--command-item-active-background": "Fond de la ligne survolée / active (par défaut une teinte primaire à 10 %)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "items est une propriété JS (id, title, description, group, keywords, disabled). Tapez pour filtrer, déplacez-vous avec les flèches, choisissez avec Entrée ou un clic ; minerva-select donne l'id choisi."
+      },
+      "shortcut": {
+        "title": "Raccourci global",
+        "description": "shortcut accepte une liste séparée par des virgules (\"mod+k, /\" ; mod vaut Ctrl, ou ⌘ sur macOS) et ouvre la palette depuis n'importe où, sauf pendant la saisie dans un champ. max-results limite la liste."
+      }
+    },
+    "minerva-command-dialog": {
+      "props": {
+        "label": "Titre de la boîte de dialogue (par défaut : « Palette de commandes » localisé)."
+      },
+      "events": {
+        "minerva-select": "Une commande a été choisie (detail : { value, item }, value = l'id de l'élément) ; la palette se ferme ensuite.",
+        "minerva-open-change": "L'utilisateur demande l'ouverture (raccourci) / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-after-open": "La palette est ouverte et le focus est dans le champ de recherche.",
+        "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+      },
+      "parts": {
+        "overlay": "Le fond (overlay).",
+        "panel": "Le panneau de dialogue (role=\"dialog\").",
+        "header": "La ligne du titre.",
+        "description": "La description.",
+        "search": "Le conteneur du champ de recherche.",
+        "input": "Le champ de recherche (role=\"combobox\").",
+        "listbox": "La liste des résultats (role=\"listbox\").",
+        "item": "Un résultat (role=\"option\").",
+        "empty": "L'état vide."
+      },
+      "cssVars": {
+        "--modal-width": "Largeur du panneau (par défaut celle de la taille, limitée par la fenêtre).",
+        "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà).",
+        "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied.",
+        "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl).",
+        "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl).",
+        "--modal-background": "Arrière-plan du panneau.",
+        "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)."
+      },
+      "methods": {
+        "show": "Ouvre la palette.",
+        "hide": "Ferme la palette."
+      }
+    }
   }
 }

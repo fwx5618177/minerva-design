@@ -1,0 +1,35 @@
+{
+  "title": "表单",
+  "description": "Minerva 控件是表单关联的自定义元素：支持 FormData、required 与约束校验、setCustomValidity、form.reset()、<fieldset disabled>、<label for>、:invalid 以及本地化消息。",
+  "association": {
+    "title": "表单关联元素",
+    "text": "表单控件是基于 ElementInternals 构建的表单关联自定义元素：在 <form> 中它们的行为与原生输入框一致，无需隐藏输入框或包裹元素。以下元素可参与表单：",
+    "buttons": "<minerva-button> 同样是表单关联的：type=\"submit\" 会通过 requestSubmit() 提交所在表单（因此会执行校验和 submit 监听器），type=\"reset\" 会重置表单。默认类型为 \"button\"，不执行任何操作。"
+  },
+  "formData": {
+    "title": "名称、值与 FormData",
+    "text": "为每个控件设置 name。它的值会成为 new FormData(form) 和原生提交的一部分，与 <input> 完全相同：",
+    "name": "name 是提交值的键。复选框和开关只在选中时提交其 value（默认为 \"on\"），因此多个同名复选框会产生一个列表（FormData.getAll()）。",
+    "values": "value 属性（复选框和开关为 checked）是初始值；value / checked property 是当前值。有些控件会提交多个条目（标签输入框为每个标签提交一条）；每个组件页面都说明了其控件提交的内容。",
+    "disabled": "在控件或其祖先 <fieldset> 上设置 disabled，会使控件不可编辑，并将其排除在提交和校验之外（isDisabled 会同时反映这两种情况）。",
+    "restore": "当用户返回页面时（bfcache）以及自动填充时，浏览器会通过表单关联回调恢复这些值。"
+  },
+  "labels": {
+    "title": "标签",
+    "text": "与原生输入框一样，<label for=\"id\"> 和包裹式 <label> 元素会为控件命名：元素的 labels property 会列出它们，标签文本会被转发到 shadow root 内的控件，点击标签会让控件获得焦点。元素上的 aria-label、aria-labelledby 和 aria-describedby 同样有效（由于 id 无法穿越 shadow root，它们会被解析为文本）。"
+  },
+  "validation": {
+    "title": "约束校验",
+    "text": "required、minlength / maxlength、pattern、min / max 和 type（email、url……）的效果与原生输入框相同。每个元素都暴露了约束校验 API（validity、validationMessage、willValidate、checkValidity()、reportValidity()、setCustomValidity()），而 form.checkValidity()、form.reportValidity() 和表单提交都会将 Minerva 控件纳入考虑：无效的控件会阻止 submit 事件，浏览器会在控件旁显示其消息。",
+    "reset": "form.reset() 会把每个控件恢复为其 value 或 checked 属性的值，并清除通过 setCustomValidity() 设置的消息；监听表单的 reset 事件即可清除你自己的错误样式。"
+  },
+  "styling": {
+    "title": "为无效控件设置样式",
+    "text": ":invalid 和 :valid 伪类会像匹配原生输入框一样匹配表单关联元素，因此可以在页面中为它们设置样式。为了避免用户还没做任何操作时字段就显示为红色，请在尝试提交之后再应用这些样式：",
+    "formControl": "内置的错误状态是一个属性：文本字段、选择器、开关和其他控件使用 invalid，复选框和单选框使用 error。它会显示红色边框并设置 aria-invalid。<minerva-form-control> 用标签、辅助文本和错误消息包裹一个控件，并把自身的 invalid / required / disabled 状态传递给该控件。"
+  },
+  "messages": {
+    "title": "本地化消息",
+    "text": "没有原生对应元素的控件（选择器、复选框、开关、单选组、评分、上传、时间选择器、级联选择器……）会报告 Minerva 自己的校验消息（\"Please select an item in the list.\"、\"Please check this box if you want to proceed.\"……），这些消息已翻译为所有受支持的语言，并跟随其作用域内的 lang 属性或 <minerva-config locale>。文本字段则委托给内部的原生输入框，其消息由浏览器以自身语言提供。"
+  }
+}

@@ -56,5 +56,80 @@
     "--input-background": "outline 变体的背景色",
     "--input-border-color": "静止时的边框颜色",
     "--input-focus-color": "悬停 / 聚焦时的边框颜色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "通过 <label for> 命名；每次按键都会触发带 detail.value 的 minerva-input。"
+      },
+      "sizes-variants": {
+        "title": "尺寸、变体与状态",
+        "description": "三种尺寸，outline、filled、unstyled 三种变体，以及只读、禁用和无效状态。"
+      },
+      "addons": {
+        "title": "附加内容、清除、计数与密码",
+        "description": "prefix 与 suffix 插槽、清除按钮（clearable）、与 maxlength 关联的字符计数，以及密码可见性切换。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "required、type=\"email\"、minlength 与 pattern 在提交时使用浏览器校验；未通过的字段会被设为 invalid 直到修正，reset 将其恢复。"
+      }
+    },
+    "minerva-input": {
+      "props": {
+        "defaultValue": "初始值（value 属性），由 form.reset() 恢复。与 <input> 相同，在用户编辑之前修改它也会修改 value。",
+        "type": "内部 <input> 的类型（text、email、password、search、url、number、date 等）。",
+        "placeholder": "字段为空时显示的占位文本。",
+        "readonly": "只读：可聚焦并会提交，但不可编辑。",
+        "minlength": "值的最小长度（由浏览器校验）。",
+        "maxlength": "值的最大长度；同时作为字符计数的上限。",
+        "pattern": "值必须匹配的正则表达式。",
+        "min": "最小值（number 与日期类型）。",
+        "max": "最大值（number 与日期类型）。",
+        "step": "步长（number 与日期类型）。",
+        "autocomplete": "内部 <input> 的自动填充提示。",
+        "inputmode": "虚拟键盘提示（numeric、email、tel 等）。",
+        "name": "随表单提交时使用的字段名。",
+        "disabled": "禁用控件：不可聚焦、不提交、不参与校验。",
+        "required": "必须有值，表单才能提交。",
+        "value": "当前值（属性；value 特性设置的是 defaultValue）。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "值已提交（失焦或回车），由内部 input 重新派发。",
+        "input": "值已改变（每次按键；原生事件，可穿透 shadow DOM）。",
+        "minerva-input": "同 input，附带 detail: { value }。",
+        "minerva-change": "同 change，附带 detail: { value }。",
+        "minerva-clear": "清除按钮清空了字段。"
+      },
+      "slots": {
+        "prefix": "文本之前的内容（图标、“@”、协议等）。",
+        "suffix": "文本之后的内容（单位、图标、按钮）。"
+      },
+      "parts": {
+        "base": "字段外层容器。",
+        "input": "原生 <input>。",
+        "clear-button": "清除按钮。",
+        "password-toggle": "密码可见性切换按钮。",
+        "count": "字符计数。"
+      },
+      "methods": {
+        "focus": "聚焦内部控件。",
+        "blur": "使内部控件失去焦点。",
+        "select": "选中全部文本。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

@@ -15,6 +15,7 @@ import { Portal } from "../../internal/Portal";
 import { Slot } from "../../internal/Slot";
 import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import {
   LayerContext,
   useDismissableLayer,
@@ -68,15 +69,27 @@ const usePopoverContext = (component: string) => {
  */
 export const Popover = ({
   open: openProp,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   modal = false,
   children,
 }: PopoverProps) => {
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Popover", {
+      prop: "open",
+      value: openProp,
+      defaultProp: "defaultOpen",
+      defaultValue: defaultOpen,
+      handlerProp: "onOpenChange",
+      handler: onOpenChange,
+    });
+  }
   const [open, setOpen] = useControllableState({
     value: openProp,
-    defaultValue: defaultOpen,
+    defaultValue: defaultOpen ?? false,
     onChange: onOpenChange,
+    name: "Popover",
+    prop: "open",
   });
   const contentId = useId();
   const [trigger, setTrigger] = useState<HTMLElement | null>(null);

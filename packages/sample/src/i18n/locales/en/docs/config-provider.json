@@ -72,5 +72,36 @@
     "locale": "Scoped language: a locale override only changes the built-in texts of its subtree. A provider that only sets locale never touches the theme.",
     "portal": "Overlays: content rendered in a portal from a scoped subtree (Modal, Drawer, Popover, Select, Menu, Tooltip, Toast…) goes into a container on <body> that carries the same scope, so overlays get the scoped theme too. Imperative APIs rendered outside the React tree, such as a standalone confirm(), use the root theme.",
     "document": "Global state: a nested provider never writes to <html>, never reads or writes the cookies (persist is ignored) and never changes lib-core's global language. Unmounting it leaves the page exactly as the root provider set it, and unmounting the root provider restores what it changed. setTheme and setPalette of a nested provider change its own override, or the parent's value for a setting it does not override."
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "<minerva-config> renders as display: contents and scopes the theme of everything inside it: here one light and one dark scope side by side."
+      },
+      "palette-design": {
+        "title": "Palette and design",
+        "description": "palette, design (preset) and the density / radius / shadow / font-scale overrides apply to the subtree only."
+      },
+      "locale": {
+        "title": "Locale",
+        "description": "locale sets the language of the built-in texts of the elements inside (pagination total, empty state). Change it to see them update live."
+      },
+      "nested": {
+        "title": "Nested scopes and theme events",
+        "description": "Scopes nest and the closest one wins: the inner scope stays light while the outer one follows the buttons. minerva-theme-change reports the resolved mode, also for theme=\"system\"."
+      }
+    },
+    "minerva-config": {
+      "props": {
+        "root": "Writes the attributes on <html> (whole page) instead of this subtree."
+      },
+      "events": {
+        "minerva-theme-change": "The resolved light / dark mode changed (detail: { mode }), e.g. the system preference with theme=\"system\"."
+      },
+      "slots": {
+        "default": "Scoped content."
+      }
+    }
   }
 }

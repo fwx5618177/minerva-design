@@ -25,10 +25,13 @@ export default defineConfig({
         "**/types.ts",
         "**/*-types.ts",
         "**/*.d.ts",
-        // barrel files (lib-web-components keeps real code in Button/index.ts)
+        // barrel files
         "**/lib-core/src/**/index.{ts,tsx}",
         "**/packages/core/src/index.ts",
         "**/lib-web-components/src/index.ts",
+        "**/lib-web-components/src/controllers/index.ts",
+        // generated from lib-core's icons (no logic)
+        "**/lib-web-components/src/internal/icons.ts",
         "**/test-utils/**",
       ],
       reporter: ["text-summary", "html", "lcov"],

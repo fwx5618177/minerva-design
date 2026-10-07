@@ -73,5 +73,55 @@
     "--modal-shadow": "面板阴影（默认 --shadow-xl）",
     "--modal-background": "面板背景",
     "--modal-z-index": "面板的层级（默认 --z-modal）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "trigger 插槽打开模态框；label 和 description 为其命名并描述。焦点被锁定在内部，Escape 或点击遮罩关闭，焦点随后回到打开者。"
+      },
+      "sizes": {
+        "title": "尺寸",
+        "description": "五种尺寸预设，在调用 show() 前设置。这里的标题来自 header 插槽。"
+      },
+      "form": {
+        "title": "模态框中的表单",
+        "description": "底部的提交按钮通过 id 关联表单；浏览器先校验，再由提交处理函数保存并调用 hide()。"
+      },
+      "events": {
+        "title": "事件与阻止关闭",
+        "description": "minerva-open-change 可取消：勾选「Unsaved changes」时，preventDefault() 会保持模态框打开。日志显示关闭原因以及 after-open / after-close 事件。"
+      }
+    },
+    "minerva-modal": {
+      "props": {
+        "label": "标题文本（或使用 header 插槽）；作为对话框的可访问名称。",
+        "dialogRole": "面板的 ARIA 角色；打断式确认请使用 \"alertdialog\"。"
+      },
+      "events": {
+        "minerva-open-change": "用户请求打开 / 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+        "minerva-after-open": "面板已打开且焦点已移入后触发。",
+        "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+      },
+      "slots": {
+        "default": "主体内容。",
+        "header": "标题（label 属性的替代方式）。",
+        "footer": "操作按钮行。",
+        "trigger": "点击时打开面板的元素。"
+      },
+      "parts": {
+        "overlay": "背景遮罩。",
+        "panel": "对话框面板（role=\"dialog\"）。",
+        "header": "标题容器。",
+        "description": "描述文本。",
+        "body": "主体容器。",
+        "footer": "底部容器。",
+        "close-button": "关闭（×）按钮。"
+      },
+      "methods": {
+        "show": "打开模态框。",
+        "hide": "关闭模态框。"
+      }
+    }
   }
 }

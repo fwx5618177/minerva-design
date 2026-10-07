@@ -73,5 +73,55 @@
     "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl)",
     "--modal-background": "Background of the panel",
     "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The trigger slot opens the modal; label and description name and describe it. Focus is trapped, Escape and an overlay click close it, and focus returns to the opener."
+      },
+      "sizes": {
+        "title": "Sizes",
+        "description": "Five size presets, set before calling show(). The title comes from the header slot here."
+      },
+      "form": {
+        "title": "Form in a modal",
+        "description": "A footer submit button targets the form by id; the browser validates it, then the submit handler saves and calls hide()."
+      },
+      "events": {
+        "title": "Events and guarded close",
+        "description": "minerva-open-change is cancelable: while \"Unsaved changes\" is checked, preventDefault() keeps the modal open. The log shows the reason and the after-open / after-close events."
+      }
+    },
+    "minerva-modal": {
+      "props": {
+        "label": "Title text (or use the header slot); names the dialog.",
+        "dialogRole": "ARIA role of the panel; \"alertdialog\" for interrupting confirmations."
+      },
+      "events": {
+        "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+        "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+      },
+      "slots": {
+        "default": "Body content.",
+        "header": "Title (alternative to the label attribute).",
+        "footer": "Actions row.",
+        "trigger": "Element that opens the panel when clicked."
+      },
+      "parts": {
+        "overlay": "The backdrop.",
+        "panel": "The dialog panel (role=\"dialog\").",
+        "header": "The title wrapper.",
+        "description": "The description.",
+        "body": "The body wrapper.",
+        "footer": "The footer wrapper.",
+        "close-button": "The close (×) button."
+      },
+      "methods": {
+        "show": "Opens the modal.",
+        "hide": "Closes the modal."
+      }
+    }
   }
 }

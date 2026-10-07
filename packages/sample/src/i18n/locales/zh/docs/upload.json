@@ -57,5 +57,73 @@
     "--upload-dropzone-background": "拖放区静止时的背景色",
     "--upload-preview-width": "文件列表中图片预览的宽度",
     "--upload-preview-height": "文件列表中图片预览的高度"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "选择或拖入文件。accept 与 max-size 会以提示拒绝无效文件；replace 替换单个文件，multiple + max-count 允许多个文件，removable 添加删除按钮。"
+      },
+      "transfer": {
+        "title": "上传进度与重试",
+        "description": "取消 minerva-files-selected 后由页面管理 items：文件先显示为上传中，然后成功或失败（每隔一个文件失败一次）；retryable 显示触发 minerva-retry 的重试按钮。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "每个列出的文件都以 name 提交（multipart FormData）；required 在没有文件时阻止提交，reset 清空列表。"
+      }
+    },
+    "minerva-upload": {
+      "props": {
+        "removable": "在每个条目上显示删除按钮。",
+        "retryable": "在失败的条目上显示重试按钮。",
+        "required": "没有文件时为无效（valueMissing）。",
+        "items": "列出的文件及其传输状态：{ id, name, status, error?, previewUrl?, file? } 数组（属性）。",
+        "texts": "自定义文案（即 lib-core 的 labels 属性；因 labels 已是表单控件的 <label> 列表而改名）；每项覆盖本地化默认值。",
+        "files": "列出条目中的文件，会随表单提交（只读）。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "用户改变了列出的文件。",
+        "minerva-files-selected": "选择或拖入了有效文件；detail: { files }。可取消：取消后文件不会被列出。",
+        "minerva-change": "用户改变了列出的文件；detail: { value }（所有条目）。",
+        "minerva-remove": "某条目的删除按钮被触发；detail: { item }。可取消：取消后保留该条目。",
+        "minerva-retry": "失败条目的重试按钮被触发；detail: { item }。"
+      },
+      "parts": {
+        "base": "容器（role=\"group\"）。",
+        "label": "可见标签。",
+        "dropzone": "拖放区域。",
+        "select-button": "选择按钮。",
+        "error": "选择错误提示。",
+        "list": "文件列表。",
+        "item": "每个文件。",
+        "remove-button": "文件的删除按钮。",
+        "retry-button": "失败文件的重试按钮。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部图标按钮的图标颜色。",
+        "--icon-button-hover-bg": "内部图标按钮悬停时的背景。",
+        "--icon-button-pressed-color": "内部图标按钮按下时的图标颜色。",
+        "--icon-button-pressed-bg": "内部图标按钮按下时的背景。",
+        "--icon-button-size": "内部图标按钮的宽高（默认跟随密度的控件高度）。",
+        "--icon-button-icon-size": "内部图标按钮中图标的字号。",
+        "--icon-button-radius": "内部图标按钮的圆角（默认 --radius-lg）。"
+      },
+      "methods": {
+        "focus": "聚焦选择按钮。",
+        "showPicker": "打开文件选择器。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

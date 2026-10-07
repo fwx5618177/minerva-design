@@ -45,5 +45,44 @@
     "--form-control-label-color": "标签颜色",
     "--form-control-helper-font-size": "帮助文字与错误文字的字号",
     "--form-control-required-color": "必填标记的颜色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "包裹一个 Minerva 或原生控件：标签为其命名，辅助文本为其提供描述，required 添加必填标记。点击标签会聚焦控件或切换开关。"
+      },
+      "states": {
+        "title": "状态",
+        "description": "invalid 用错误信息替换辅助文本并标记控件；readonly、disabled 与 required 会传递给控件，required-indicator 用于修改必填标记。"
+      },
+      "slots": {
+        "title": "富文本插槽",
+        "description": "label、helper-text 与 error-message 插槽可使用标记内容，代替纯文本属性。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "使用 novalidate 时，提交处理函数会检查每个控件的 checkValidity()，并显示字段自己的错误信息（invalid）替代浏览器气泡；编辑后清除，reset 清除全部。"
+      }
+    },
+    "minerva-form-control": {
+      "props": {
+        "readonly": "使插槽中的控件只读（readonly / readOnly 与 aria-readonly）。",
+        "controlElement": "插槽中的控件（只读）。"
+      },
+      "slots": {
+        "default": "控件：一个 Minerva 表单控件或原生 <input> / <select> / <textarea>。",
+        "label": "富文本标签内容（可替代 label 属性）。",
+        "helper-text": "富文本辅助文本（可替代 helper-text）。",
+        "error-message": "富文本错误信息（可替代 error-message）。"
+      },
+      "parts": {
+        "base": "字段容器。",
+        "label": "<label> 元素。",
+        "required-indicator": "必填标记。",
+        "helper-text": "辅助文本。",
+        "error-message": "错误信息（role=\"alert\"）。"
+      }
+    }
   }
 }

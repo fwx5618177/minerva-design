@@ -45,5 +45,44 @@
     "--month-calendar-radius": "Rayon des coins des boutons, des jours et des événements (par défaut --radius-sm)",
     "--month-calendar-selected-background": "Fond du jour sélectionné",
     "--month-calendar-today-color": "Couleur de bordure marquant aujourd'hui"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "month (« YYYY-MM ») et value (« YYYY-MM-DD ») sont des attributs, events une propriété. Un seul arrêt de tabulation : flèches, Début / Fin et Page préc. / suiv. parcourent la grille."
+      },
+      "events": {
+        "title": "Événements",
+        "description": "minerva-change signale le jour choisi, minerva-month-change le mois affiché ; avec clickable-events, minerva-event-click se déclenche pour un événement."
+      },
+      "localized": {
+        "title": "Localisation et états",
+        "description": "locale et les attributs de libellés traduisent le calendrier, weekdayLabels / getDayLabel / getEventsLabel sont des propriétés. À droite : hide-events et disabled."
+      }
+    },
+    "minerva-month-calendar": {
+      "props": {
+        "clickableEvents": "Affiche les événements du jour choisi sous forme de boutons qui déclenchent minerva-event-click.",
+        "hideEvents": "Masque la liste des événements du jour choisi (showSelectedDayEvents={false} de lib-core)."
+      },
+      "events": {
+        "minerva-change": "L'utilisateur a choisi un jour (detail : { value }, « YYYY-MM-DD »).",
+        "minerva-month-change": "L'utilisateur a affiché un autre mois (detail : { month }, son premier jour à minuit local).",
+        "minerva-event-click": "Un événement du jour choisi a été activé (detail : { event } ; nécessite clickable-events)."
+      },
+      "parts": {
+        "base": "La <section> du calendrier.",
+        "heading": "Le titre du mois.",
+        "nav-button": "Les boutons précédent / aujourd'hui / suivant.",
+        "grid": "L'élément role=\"grid\".",
+        "day": "Chaque cellule de jour.",
+        "events": "La section des événements du jour choisi.",
+        "event": "Chaque événement (un bouton avec clickable-events)."
+      },
+      "methods": {
+        "focus": "Donne le focus à la cellule du jour actif."
+      }
+    }
   }
 }

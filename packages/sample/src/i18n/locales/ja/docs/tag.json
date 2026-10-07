@@ -76,5 +76,50 @@
     "--tag-font-size": "フォントサイズ（全サイズ）",
     "--tag-radius": "rounded 形状の角丸（既定値は --radius-sm）",
     "--tag-gap": "アイコン・ラベル・閉じるボタンの間隔"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "小さなラベル。color で意味的な色調を設定します。"
+      },
+      "variants-sizes": {
+        "title": "バリアント・サイズ・内容",
+        "description": "3 種類のバリアント、サイズ、形状、elevation、icon と avatar スロット、loading と disabled。"
+      },
+      "closable": {
+        "title": "閉じられるタグ",
+        "description": "closable は minerva-close を発火する閉じるボタンを追加します。リスナーでタグを削除し、フォーカスを隣の要素に移してください。close-label と close-icon スロットでカスタマイズできます。"
+      },
+      "toggle": {
+        "title": "トグルフィルター",
+        "description": "clickable toggle のタグはトグルボタン（aria-pressed）です。クリックで pressed が反転し minerva-change が発火します。通常のクリック可能なタグは click を発火します。"
+      }
+    },
+    "minerva-tag": {
+      "props": {
+        "toggle": "クリック可能なタグをトグルにします。クリックで pressed が反転し minerva-change が発火します。",
+        "noRipple": "クリック可能なタグのリップル効果を無効にします。"
+      },
+      "events": {
+        "minerva-close": "閉じるボタンが実行されました。",
+        "minerva-change": "トグルタグが切り替えられました（detail: { pressed }）。"
+      },
+      "slots": {
+        "default": "タグのラベル。",
+        "icon": "ラベルの前に表示するアイコン。",
+        "avatar": "ラベルの前のアバター（小さな <minerva-avatar> または画像）。",
+        "close-icon": "カスタムの閉じるアイコン。"
+      },
+      "parts": {
+        "base": "タグのルート。",
+        "action": "クリック可能なタグのネイティブ <button>。",
+        "label": "ラベルのラッパー。",
+        "close-button": "閉じるボタン。"
+      },
+      "methods": {
+        "focus": "タグのボタン（クリック可能なタグならアクションボタン、それ以外は閉じるボタン）にフォーカスします。"
+      }
+    }
   }
 }

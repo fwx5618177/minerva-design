@@ -131,5 +131,120 @@
     "--menu-shadow": "メニューパネルの影（既定値は --shadow-md）",
     "--menu-item-height": "項目の最小の高さ（全サイズ共通。既定値は密度のコントロールの高さ）",
     "--menu-z-index": "メニューパネルの重なり順（既定値は --z-popover）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "子要素で項目を記述します。icon スロットとショートカット表示付きの項目、入れ子のサブメニュー、区切り線、ラベル付きグループ、無効な項目。minerva-select が選ばれた value を返します。"
+      },
+      "checkbox-radio": {
+        "title": "チェックボックスとラジオ項目",
+        "description": "チェックボックス項目は切り替わり、<minerva-menu-group> 内のラジオ項目は排他的です。どちらもメニューを開いたままにし、minerva-change を発火します。"
+      },
+      "items": {
+        "title": "データからの項目",
+        "description": "items プロパティは子要素の代わりに lib-core の MenuEntry オブジェクト（ラジオグループ、区切り線、チェックボックス、アクション）を受け取ります。side / align で位置を決め、no-loop で矢印キーが端で止まります。"
+      },
+      "context-menu": {
+        "title": "コンテキストメニュー",
+        "description": "<minerva-context-menu> は右クリックや長押しでポインター位置に、Shift+F10 で領域の位置にメニューを開きます。領域はそれ以外の子コンテンツです。"
+      }
+    },
+    "minerva-context-menu": {
+      "props": {
+        "keepOpen": "アクションを選択してもメニューを開いたままにします。",
+        "nonModal": "非モーダルのメニュー：ページは操作可能なままで、フォーカスもスクロールもロックしません。",
+        "noLoop": "矢印キーは折り返さず、最初 / 最後の項目で止まります。",
+        "direction": "メニューを開いたときに取得する文字方向（最も近い dir 属性から）。",
+        "isModal": "メニューが現在モーダルとして動作しているか（読み取り専用）。",
+        "entries": "実際の項目：items があればそれを、なければ子要素から読み取った項目（読み取り専用）。"
+      },
+      "events": {
+        "minerva-open-change": "メニューが開く / 閉じることを要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-select": "アクション項目が選択されました（detail: { value, item }）。キャンセル可能：preventDefault() でメニューを開いたままにします。",
+        "minerva-change": "チェックボックス項目が切り替えられた（detail: { value, checked, item }）か、ラジオ項目が選ばれました（detail: { value, group, item }）。キャンセル可能：preventDefault() で以前の状態を維持します。"
+      },
+      "slots": {
+        "default": "対象の領域（と、表示されない宣言的なメニュー項目）。"
+      },
+      "parts": {
+        "menu": "メニューパネル（ルートメニューとサブメニュー）。",
+        "item": "メニュー項目。",
+        "icon": "項目のアイコン。",
+        "label": "グループ / セクションのラベル。",
+        "separator": "区切り線。"
+      },
+      "methods": {
+        "rootPlacement": "ルートパネルの配置（位置決めで使う内部メソッド）。",
+        "rootOffset": "ルートパネルのオフセット（位置決めで使う内部メソッド）。",
+        "show": "メニューを開きます。",
+        "hide": "メニュー（とサブメニュー）を閉じます。",
+        "rootLayerOptions": "ルートパネルのレイヤー設定（内部）。",
+        "subLayerOptions": "サブメニューのレイヤー設定（内部）。"
+      }
+    },
+    "minerva-menu-item": {
+      "props": {
+        "keepOpen": "この項目を選択してもメニューを開いたままにします。"
+      },
+      "slots": {
+        "default": "ラベルと、サブメニューを構成する入れ子のメニュー要素。",
+        "icon": "ラベルの前に表示するアイコン。"
+      }
+    },
+    "minerva-menu-checkbox-item": {
+      "slots": {
+        "default": "ラベル。"
+      }
+    },
+    "minerva-menu-radio-item": {
+      "slots": {
+        "default": "ラベル。"
+      }
+    },
+    "minerva-menu-group": {
+      "slots": {
+        "default": "グループの項目。"
+      }
+    },
+    "minerva-menu-label": {
+      "slots": {
+        "default": "ラベルのテキスト。"
+      }
+    },
+    "minerva-menu": {
+      "props": {
+        "keepOpen": "アクションを選択してもメニューを開いたままにします。",
+        "nonModal": "非モーダルのメニュー：ページは操作可能なままで、フォーカスもスクロールもロックしません。",
+        "noLoop": "矢印キーは折り返さず、最初 / 最後の項目で止まります。",
+        "direction": "メニューを開いたときに取得する文字方向（最も近い dir 属性から）。",
+        "isModal": "メニューが現在モーダルとして動作しているか（読み取り専用）。",
+        "entries": "実際の項目：items があればそれを、なければ子要素から読み取った項目（読み取り専用）。"
+      },
+      "events": {
+        "minerva-open-change": "メニューが開く / 閉じることを要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-select": "アクション項目が選択されました（detail: { value, item }、value は項目の key / value 属性）。キャンセル可能：preventDefault() でメニューを開いたままにします。",
+        "minerva-change": "チェックボックス項目が切り替えられた（detail: { value, checked, item }）か、ラジオ項目が選ばれました（detail: { value, group, item }）。キャンセル可能：preventDefault() で以前の状態を維持します。"
+      },
+      "slots": {
+        "trigger": "メニューを開くボタン（aria-haspopup=\"menu\"、aria-expanded、data-state が付与されます）。"
+      },
+      "parts": {
+        "menu": "メニューパネル（ルートメニューとサブメニュー）。",
+        "item": "メニュー項目。",
+        "icon": "項目のアイコン。",
+        "label": "グループ / セクションのラベル。",
+        "separator": "区切り線。"
+      },
+      "methods": {
+        "rootPlacement": "ルートパネルの配置（位置決めで使う内部メソッド）。",
+        "rootOffset": "ルートパネルのオフセット（位置決めで使う内部メソッド）。",
+        "show": "メニューを開きます。",
+        "hide": "メニュー（とサブメニュー）を閉じます。",
+        "rootLayerOptions": "ルートパネルのレイヤー設定（内部）。",
+        "subLayerOptions": "サブメニューのレイヤー設定（内部）。"
+      }
+    }
   }
 }

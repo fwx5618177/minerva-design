@@ -97,5 +97,87 @@
     "--auto-complete-option-padding-x": "Horizontal padding of an option and of a group label",
     "--auto-complete-option-hover-background": "Background of the hovered / keyboard-focused option",
     "--auto-complete-option-highlight-background": "Background of options with highlight: true"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Set the options JS property; typing filters them by label. Picking an option fills the input and fires minerva-select; Enter with no active option fires minerva-submit with the typed text."
+      },
+      "rich-options": {
+        "title": "Rich and grouped options",
+        "description": "Options can have an icon, a description, a highlight or be disabled; groupBy puts them under headings. auto-highlight makes the first enabled option active so Enter picks it; variant and size style the input."
+      },
+      "custom-render": {
+        "title": "Custom rendering and filtering",
+        "description": "With mode=\"custom\", renderOption returns each option's content (string, DOM node or Lit template). filterOption here also matches the email, sortOption orders by name and renderEmpty replaces the empty state."
+      },
+      "async-loading": {
+        "title": "Asynchronous loading",
+        "description": "Listen to minerva-input to fetch matches as the user types and set loading meanwhile. The prefix slot holds an icon; minerva-change reports the committed text."
+      }
+    },
+    "minerva-autocomplete": {
+      "props": {
+        "open": "Whether the dropdown is open.",
+        "placeholder": "Placeholder of the input.",
+        "size": "Size of the input.",
+        "variant": "Visual style of the input: outline, filled or unstyled.",
+        "invalid": "Error state; sets aria-invalid.",
+        "readonly": "Read-only: focusable and submitted, but no dropdown.",
+        "noAnimation": "Disables the opening animation.",
+        "noFillOnSelect": "Keeps the typed text when an option is picked (no fill-in).",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled fieldset (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "<label> elements associated with the element (read-only).",
+        "validity": "Validity state, as <input>.validity (read-only).",
+        "validationMessage": "Message describing the current validation error, empty when valid (read-only).",
+        "willValidate": "Whether the element is a candidate for constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The native change of the input, re-dispatched from the host (on blur after editing).",
+        "minerva-input": "The input text changed: typing, picking an option or Escape clearing (detail: { value }).",
+        "minerva-change": "The text was committed: an option filled it in, Escape cleared it, or the native change on blur (detail: { value }).",
+        "minerva-select": "An option was picked with the mouse or the keyboard (detail: { value, option }).",
+        "minerva-submit": "Enter was pressed with no active option and non-blank text (detail: { value }, trimmed).",
+        "minerva-open-change": "The dropdown opens or closes (detail: { open }); cancelable: preventDefault() keeps the current state."
+      },
+      "slots": {
+        "prefix": "Content before the text (icon).",
+        "suffix": "Content after the text."
+      },
+      "parts": {
+        "base": "The root wrapper.",
+        "label": "The visible label.",
+        "field": "The input wrapper.",
+        "input": "The native <input>.",
+        "popup": "The positioned dropdown.",
+        "listbox": "The role=\"listbox\" list.",
+        "option": "An option.",
+        "group-label": "A group heading.",
+        "empty": "The empty state.",
+        "loading": "The loading state."
+      },
+      "cssVars": {
+        "--input-height": "Minimum height of the field, for every size (defaults to the density's control height of the size).",
+        "--input-padding-x": "Horizontal padding of the text, for every size.",
+        "--input-radius": "Corner radius (defaults to --radius-lg).",
+        "--input-font-size": "Font size, for every size.",
+        "--input-background": "Background color of the outline variant.",
+        "--input-border-color": "Border color at rest.",
+        "--input-focus-color": "Border color while hovered or focused."
+      },
+      "methods": {
+        "focus": "Focuses the input.",
+        "blur": "Removes focus from the input.",
+        "checkValidity": "Checks validity; fires invalid when invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets (or clears, with \"\") a custom validation error.",
+        "formResetCallback": "Form lifecycle callback called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Form lifecycle callback called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
   }
 }

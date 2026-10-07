@@ -1,6 +1,7 @@
 import React, { createContext, useId } from "react";
 import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import type { RadioGroupProps } from "./types";
 import styles from "./radio.module.scss";
@@ -47,7 +48,7 @@ const RadioGroup = ({
 }: RadioGroupProps) => {
   const [selected, setSelected] = useControllableState<
     string | number | null | undefined
-  >({ value, defaultValue });
+  >({ value, defaultValue, name: "RadioGroup" });
   const generatedName = useId();
   const labelId = useId();
   const helperId = useId();
@@ -65,6 +66,18 @@ const RadioGroup = ({
     ]
       .filter(Boolean)
       .join(" ") || undefined;
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("RadioGroup", {
+      prop: "value",
+      value,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+      locked: isDisabled,
+      lockHint: "set `disabled`",
+    });
+  }
   const labelledBy = ariaLabelledBy
     ? ariaLabelledBy
     : label

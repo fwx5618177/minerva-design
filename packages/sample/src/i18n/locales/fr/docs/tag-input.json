@@ -50,5 +50,87 @@
     "--tag-input-list-radius": "Rayon des coins de la liste de suggestions (par défaut --radius-md)",
     "--tag-input-option-padding-y": "Marge intérieure verticale d'une suggestion (suit la marge de ligne de la densité)",
     "--tag-input-option-padding-x": "Marge intérieure horizontale d'une suggestion (suit la marge de ligne de la densité)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Saisissez un tag puis Entrée, ou choisissez une suggestion avec les flèches. value est une propriété ; minerva-change signale chaque nouvelle liste."
+      },
+      "separators": {
+        "title": "Séparateurs",
+        "description": "separators=\", ; Enter\" découpe le texte saisi ou collé en tags. Avec no-commit-on-blur, quitter le champ garde le brouillon sous forme de texte."
+      },
+      "states": {
+        "title": "Tailles et états",
+        "description": "Trois tailles, invalid, readonly (tags affichés sans contrôles d'édition, toujours envoyés) et disabled."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "L'élément est associé aux formulaires : chaque tag est envoyé comme une entrée distincte sous name, required refuse une liste vide et Réinitialiser rétablit l'attribut value."
+      }
+    },
+    "minerva-tag-input": {
+      "props": {
+        "noCommitOnBlur": "N'ajoute pas le brouillon saisi comme tag quand le champ perd le focus.",
+        "readonly": "Affiche les tags sans contrôles d'édition ; ils sont toujours envoyés.",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire puisse être envoyé.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l'élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message décrivant l'erreur de validation actuelle ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l'élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "minerva-change": "Les tags ont changé (ajout, suppression, effacement) ; detail: { value }.",
+        "minerva-input": "Le texte saisi (brouillon) a changé ; detail: { value } contient le brouillon.",
+        "minerva-open-change": "La liste de suggestions va s'ouvrir ou se fermer (detail: { open }) ; annulable : preventDefault() conserve l'état actuel.",
+        "minerva-clear": "Le bouton d'effacement a supprimé tous les tags."
+      },
+      "parts": {
+        "base": "Le conteneur.",
+        "tags": "La liste des tags.",
+        "tag": "Un tag.",
+        "remove-button": "Le bouton de suppression d'un tag.",
+        "field": "Le conteneur du champ de texte.",
+        "input": "L'<input> texte natif (role=\"combobox\").",
+        "listbox": "La liste de suggestions.",
+        "option": "Une suggestion.",
+        "add-button": "Le bouton d'ajout.",
+        "clear-button": "Le bouton d'effacement."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur de l'icône des boutons d'ajout et d'effacement.",
+        "--icon-button-hover-bg": "Fond des boutons d'ajout et d'effacement au survol.",
+        "--icon-button-pressed-color": "Couleur de l'icône d'un bouton-icône enfoncé.",
+        "--icon-button-pressed-bg": "Fond d'un bouton-icône enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons d'ajout et d'effacement (par défaut, les hauteurs de contrôle de la densité).",
+        "--icon-button-icon-size": "Taille de police des icônes des boutons.",
+        "--icon-button-radius": "Rayon des coins des boutons d'ajout et d'effacement (par défaut --radius-lg).",
+        "--input-height": "Hauteur minimale du champ de texte (par défaut, la hauteur de contrôle de la densité pour la taille).",
+        "--input-padding-x": "Marge intérieure horizontale du texte.",
+        "--input-radius": "Rayon des coins du champ de texte (par défaut --radius-lg).",
+        "--input-font-size": "Taille de police du champ de texte.",
+        "--input-background": "Couleur de fond du champ de texte.",
+        "--input-border-color": "Couleur de bordure du champ de texte au repos.",
+        "--input-focus-color": "Couleur de bordure du champ de texte au survol ou au focus.",
+        "--tag-height": "Hauteur minimale d'un tag (par défaut, la hauteur du contenu).",
+        "--tag-padding-x": "Marge intérieure horizontale d'un tag.",
+        "--tag-font-size": "Taille de police d'un tag.",
+        "--tag-radius": "Rayon des coins d'un tag (par défaut --radius-sm).",
+        "--tag-gap": "Espace entre le libellé d'un tag et son bouton de suppression."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l'efface avec \"\".",
+        "formResetCallback": "Rappel de formulaire appelé par form.reset() : rétablit la valeur par défaut.",
+        "formDisabledCallback": "Rappel de formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel de formulaire appelé quand le navigateur restaure la valeur (retour arrière, saisie automatique)."
+      }
+    }
   }
 }

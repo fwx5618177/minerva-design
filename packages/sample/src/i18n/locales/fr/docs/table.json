@@ -118,5 +118,82 @@
     "--table-selected-bg": "Couleur de fond des lignes sélectionnées (sélection de lignes)",
     "--table-sort-icon-color": "Couleur de l’indicateur de tri d’une colonne triable non triée",
     "--table-focus-ring-color": "Couleur du contour de la zone de défilement focalisée"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "columns et rows sont des propriétés JS définies depuis un script ; row-key désigne le champ servant de clé. Une fonction render de cellule peut renvoyer un nœud DOM, ici un <minerva-table-cell-content> sur deux lignes."
+      },
+      "sorting": {
+        "title": "Tri",
+        "description": "sortable: true trie selon le champ de la ligne, une fonction sert de comparateur personnalisé. Un clic sur l'en-tête alterne entre croissant, décroissant et non trié, et déclenche minerva-sort-change ; sortState définit le tri initial."
+      },
+      "selection": {
+        "title": "Sélection de lignes",
+        "description": "selectable ajoute une colonne de cases à cocher avec un en-tête « tout sélectionner ». isRowDisabled verrouille les factures payées, getRowLabel nomme chaque case et minerva-selection-change indique les clés sélectionnées."
+      },
+      "pagination": {
+        "title": "Pagination et chargement",
+        "description": "La propriété pagination affiche un <minerva-pagination> sous le tableau. Les lignes ne sont pas découpées : chargez la page demandée sur minerva-page-change ; loading affiche des lignes squelettes pendant ce temps."
+      }
+    },
+    "minerva-data-table": {
+      "props": {
+        "selectable": "Ajoute une colonne de cases à cocher pour sélectionner les lignes.",
+        "scrollX": "Défilement horizontal : largeur minimale du tableau (nombre en px ou longueur CSS).",
+        "scrollY": "Défilement vertical : hauteur maximale du conteneur ; l'en-tête reste fixe.",
+        "retryable": "Affiche un bouton « Réessayer » dans l'état d'erreur (déclenche minerva-retry).",
+        "rows": "Données des lignes.",
+        "isRowDisabled": "Renvoie true pour les lignes dont la case à cocher est désactivée."
+      },
+      "events": {
+        "minerva-sort-change": "L'utilisateur a changé le tri (detail : { key, order }, order null = non trié). Annulable : preventDefault() conserve le tri actuel.",
+        "minerva-selection-change": "L'utilisateur a changé les lignes sélectionnées (detail : { selectedRowKeys, selectedRows }). Annulable : preventDefault() conserve la sélection actuelle.",
+        "minerva-page-change": "Réémis depuis la pagination (detail : { page, pageSize }). Annulable.",
+        "minerva-retry": "Le bouton « Réessayer » de l'état d'erreur a été activé."
+      },
+      "slots": {
+        "empty": "Contenu de l'état vide (par défaut : empty-text ou « Aucune donnée » localisé).",
+        "error": "Contenu de l'état d'erreur (par défaut : le texte de error)."
+      },
+      "parts": {
+        "base": "Le conteneur extérieur.",
+        "wrapper": "Le conteneur de défilement.",
+        "table": "L'élément <table>.",
+        "sort-button": "Les boutons de tri des en-têtes triables.",
+        "checkbox": "Les cases à cocher de sélection.",
+        "error": "L'état d'erreur.",
+        "retry-button": "Le bouton « Réessayer ».",
+        "pagination": "L'élément <minerva-pagination>."
+      },
+      "cssVars": {
+        "--button-height": "Hauteur minimale du bouton « Réessayer ».",
+        "--button-padding-x": "Marge intérieure horizontale du bouton « Réessayer ».",
+        "--button-radius": "Rayon des coins du bouton « Réessayer ».",
+        "--button-font-size": "Taille de police du bouton « Réessayer ».",
+        "--button-font-weight": "Graisse de police du bouton « Réessayer ».",
+        "--button-gap": "Espace entre l'icône et le libellé du bouton « Réessayer ».",
+        "--button-label-white-space": "white-space du libellé du bouton « Réessayer » : nowrap (par défaut, tronque) ou normal (retour à la ligne)."
+      }
+    },
+    "minerva-table-cell-content": {
+      "slots": {
+        "default": "Contenu principal (alternative à l'attribut primary).",
+        "secondary": "Ligne secondaire (alternative à l'attribut secondary)."
+      },
+      "parts": {
+        "base": "Le conteneur."
+      },
+      "cssVars": {
+        "--button-height": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-padding-x": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-radius": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-font-size": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-font-weight": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-gap": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+        "--button-label-white-space": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas."
+      }
+    }
   }
 }

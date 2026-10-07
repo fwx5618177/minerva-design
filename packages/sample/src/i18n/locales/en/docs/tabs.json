@@ -58,5 +58,66 @@
     "--tabs-radius": "Corner radius of enclosed / soft / pill tabs (defaults to --radius-md)",
     "--tabs-indicator-width": "Thickness of the line indicator",
     "--tabs-panel-padding": "Padding of the panel"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "<minerva-tab> elements go to the tab list automatically; each <minerva-tab-panel> is linked to the tab with the same value. label names the tab list; arrow keys skip disabled tabs."
+      },
+      "variants": {
+        "title": "Variants and colors",
+        "description": "variant picks line, enclosed, soft or pills; color tints the selection, and a color on a <minerva-tab> keeps it tinted while inactive."
+      },
+      "vertical": {
+        "title": "Vertical and manual activation",
+        "description": "orientation=\"vertical\" stacks the tabs (ArrowUp / ArrowDown). With activation-mode=\"manual\", focus moves without selecting until Enter or Space; no-loop stops at the first / last tab."
+      },
+      "controlled": {
+        "title": "Cancelling a change",
+        "description": "minerva-change is cancelable: while the box is checked, preventDefault() keeps the current tab. Uncheck it to switch tabs."
+      }
+    },
+    "minerva-tabs": {
+      "props": {
+        "noLoop": "Stops arrow keys at the first / last tab instead of wrapping around.",
+        "label": "Accessible name of the tab list (aria-label / aria-labelledby on the element work too).",
+        "tabs": "The <minerva-tab> elements of this group, nested groups excluded (read-only).",
+        "panels": "The <minerva-tab-panel> elements of this group (read-only)."
+      },
+      "events": {
+        "minerva-change": "The user selected a tab (detail: { value }). Cancelable: preventDefault() keeps the current selection."
+      },
+      "slots": {
+        "default": "<minerva-tab-panel> elements.",
+        "tab": "<minerva-tab> elements (assigned automatically)."
+      },
+      "parts": {
+        "base": "The root wrapper.",
+        "tablist": "The role=\"tablist\" container."
+      },
+      "methods": {
+        "select": "Selects the tab with the given value, firing minerva-change first (used by the tabs on click, Enter / Space or focus)."
+      }
+    },
+    "minerva-tab": {
+      "props": {
+        "selected": "Whether the tab is the selected one (set by <minerva-tabs>)."
+      },
+      "slots": {
+        "default": "Tab label."
+      },
+      "parts": {
+        "base": "The visual trigger."
+      }
+    },
+    "minerva-tab-panel": {
+      "slots": {
+        "default": "Panel content."
+      },
+      "parts": {
+        "base": "The panel wrapper."
+      }
+    }
   }
 }

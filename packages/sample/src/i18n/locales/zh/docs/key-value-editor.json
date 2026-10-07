@@ -38,5 +38,63 @@
     "--key-value-editor-gap": "各行与添加按钮之间的间距",
     "--key-value-editor-column-gap": "一行中键、值与删除按钮之间的间距",
     "--key-value-editor-control-height": "删除按钮的尺寸，以及键字段与添加按钮的最小高度（默认取当前密度的小号控件高度）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "通过 value 属性中的 JSON 对象设置初始行，并自定义列标签；每次 minerva-change 后显示 value 属性（带稳定 id 的行）。"
+      },
+      "errors": {
+        "title": "校验与错误",
+        "description": "校验由页面负责：errors（按行 id）在空键或重复键下显示信息，setCustomValidity() 使元素在表单中无效。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "各行以一个 JSON 字符串按 name 提交；required 阻止没有行的编辑器提交（删除该行即可尝试），reset 恢复 value 属性中的行。"
+      }
+    },
+    "minerva-key-value-editor": {
+      "props": {
+        "defaultValue": "初始行（value 属性，JSON：{ key, value } 数组或 { \"key\": \"value\" } 对象），由 form.reset() 恢复。",
+        "name": "以 { key, value } JSON 数组形式提交各行时使用的字段名。",
+        "required": "没有任何行时为无效（valueMissing）。",
+        "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+        "willValidate": "元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "change": "某行已提交（字段失焦）、新增或删除。",
+        "minerva-input": "正在输入键或值；detail: { value }（所有条目）。",
+        "minerva-change": "某行已提交、新增或删除；detail: { value }（所有条目）。"
+      },
+      "parts": {
+        "base": "容器。",
+        "row": "每一行。",
+        "remove-button": "行的删除按钮。",
+        "add-button": "添加按钮。"
+      },
+      "cssVars": {
+        "--icon-button-color": "内部图标按钮的图标颜色。",
+        "--icon-button-hover-bg": "内部图标按钮悬停时的背景。",
+        "--icon-button-pressed-color": "内部图标按钮按下时的图标颜色。",
+        "--icon-button-pressed-bg": "内部图标按钮按下时的背景。",
+        "--icon-button-size": "内部图标按钮的宽高（默认跟随密度的控件高度）。",
+        "--icon-button-icon-size": "内部图标按钮中图标的字号。",
+        "--icon-button-radius": "内部图标按钮的圆角（默认 --radius-lg）。"
+      },
+      "methods": {
+        "focus": "聚焦第一个键字段，否则聚焦添加按钮。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+        "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+        "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+        "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+      }
+    }
   }
 }

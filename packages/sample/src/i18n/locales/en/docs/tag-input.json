@@ -50,5 +50,87 @@
     "--tag-input-list-radius": "Corner radius of the suggestion list (defaults to --radius-md)",
     "--tag-input-option-padding-y": "Vertical padding of a suggestion (follows the density's row padding)",
     "--tag-input-option-padding-x": "Horizontal padding of a suggestion (follows the density's row padding)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Type a tag and press Enter, or pick a suggestion with the arrow keys. value is a property; minerva-change reports each new list."
+      },
+      "separators": {
+        "title": "Separators",
+        "description": "separators=\", ; Enter\" splits typed or pasted text into tags. With no-commit-on-blur, leaving the field keeps the draft as text."
+      },
+      "states": {
+        "title": "Sizes and states",
+        "description": "Three sizes, invalid, readonly (tags shown without editing controls, still submitted) and disabled."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: each tag is submitted as its own entry under name, required rejects an empty list and Reset restores the value attribute."
+      }
+    },
+    "minerva-tag-input": {
+      "props": {
+        "noCommitOnBlur": "Does not add the typed draft as a tag when the field loses focus.",
+        "readonly": "Shows the tags without editing controls; they are still submitted.",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message describing the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "minerva-change": "The tags changed (addition, removal, clearing); detail: { value }.",
+        "minerva-input": "The typed text (draft) changed; detail: { value } is the draft.",
+        "minerva-open-change": "The suggestion list is about to open or close (detail: { open }); cancelable: preventDefault() keeps the current state.",
+        "minerva-clear": "The clear button removed every tag."
+      },
+      "parts": {
+        "base": "The wrapper.",
+        "tags": "The list of tags.",
+        "tag": "A tag.",
+        "remove-button": "The remove button of a tag.",
+        "field": "The text field wrapper.",
+        "input": "The native text <input> (role=\"combobox\").",
+        "listbox": "The suggestion list.",
+        "option": "A suggestion.",
+        "add-button": "The add button.",
+        "clear-button": "The clear button."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the add and clear buttons.",
+        "--icon-button-hover-bg": "Background of the add and clear buttons on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed icon button.",
+        "--icon-button-pressed-bg": "Background of a pressed icon button.",
+        "--icon-button-size": "Width and height of the add and clear buttons (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Font size of the button icons.",
+        "--icon-button-radius": "Corner radius of the add and clear buttons (defaults to --radius-lg).",
+        "--input-height": "Minimum height of the text field (defaults to the density's control height of the size).",
+        "--input-padding-x": "Horizontal padding of the text.",
+        "--input-radius": "Corner radius of the text field (defaults to --radius-lg).",
+        "--input-font-size": "Font size of the text field.",
+        "--input-background": "Background color of the text field.",
+        "--input-border-color": "Border color of the text field at rest.",
+        "--input-focus-color": "Border color of the text field while hovered or focused.",
+        "--tag-height": "Minimum height of a tag (default: the content height).",
+        "--tag-padding-x": "Horizontal padding of a tag.",
+        "--tag-font-size": "Font size of a tag.",
+        "--tag-radius": "Corner radius of a tag (defaults to --radius-sm).",
+        "--tag-gap": "Space between a tag's label and its remove button."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "checkValidity": "Checks validity; fires invalid when invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with \"\".",
+        "formResetCallback": "Form-associated callback called by form.reset(): restores the default value.",
+        "formDisabledCallback": "Form-associated callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form-associated callback called when the browser restores the value (back navigation, autofill)."
+      }
+    }
   }
 }

@@ -82,5 +82,67 @@
     "--switch-checked-color": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)",
     "--switch-label-gap": "Space between the switch and its label",
     "--switch-label-font-size": "Font size of the label (every size)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A native checkbox with role=\"switch\": Space and Enter toggle it, and minerva-change reports the new state."
+      },
+      "styles-states": {
+        "title": "Styles and states",
+        "description": "Sizes, square shape, colors, label placement, an icon in the thumb, and the read-only, invalid and no-ripple variants. Toggling Sync shows the loading state."
+      },
+      "side-labels": {
+        "title": "Side labels and segments",
+        "description": "off-label and on-label add clickable labels on both sides of the slider; variant=\"segmented\" turns them into a two-segment control."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "Like a checkbox: a switch that is on submits its value, required keeps the form invalid until it is on, and reset restores the checked attributes."
+      }
+    },
+    "minerva-switch": {
+      "props": {
+        "noRipple": "Disables the ripple effect on click.",
+        "readonly": "Read-only: focusable and submitted, but the user cannot toggle it.",
+        "invalid": "Error state (sets aria-invalid).",
+        "required": "The switch must be on for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The state changed (re-dispatched from the inner input).",
+        "minerva-change": "The user toggled the switch; detail: { checked, value }."
+      },
+      "slots": {
+        "default": "Label content (alternative to the label attribute).",
+        "icon": "Icon inside the thumb (icon-placement=\"start\") or after the switch (\"end\")."
+      },
+      "parts": {
+        "base": "The root: a <label>, or a <span> with side labels or segments.",
+        "input": "The native <input type=\"checkbox\" role=\"switch\">.",
+        "track": "The track.",
+        "thumb": "The thumb.",
+        "label": "The label text.",
+        "side": "The off / on side labels (buttons).",
+        "segment": "The off / on segments (buttons)."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "click": "Clicks the inner input (toggles the switch unless it is blocked).",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
   }
 }

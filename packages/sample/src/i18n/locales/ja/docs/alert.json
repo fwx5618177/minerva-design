@@ -89,5 +89,55 @@
     "--alert-gap": "アイコン・内容・アクション間の間隔",
     "--alert-shadow": "浮き上がった表示の影（既定値は --shadow-sm）",
     "--alert-margin-bottom": "アラート下側の余白"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "見出し付きの 4 つのステータス色。danger と warning は role=\"alert\"、info と success は role=\"status\" を使います。"
+      },
+      "variants-sizes": {
+        "title": "バリアント・サイズ・外観",
+        "description": "3 種類のバリアントとサイズ、hide-icon、elevation、角丸なし、animation-name / no-animation、カスタム icon スロット、バナーモード。"
+      },
+      "closable": {
+        "title": "閉じられるアラート",
+        "description": "closable はキャンセル可能な minerva-close を発火します。preventDefault() でアラートを残せます。そうでなければフォーカスを外に移して自身を非表示にします。action スロットにボタンを置けます。"
+      },
+      "collapsible": {
+        "title": "折りたたみ",
+        "description": "collapsible（見出しが必要）でトグルが追加されます。collapsed で初期状態を設定し、minerva-expanded-change が変化を通知します。"
+      }
+    },
+    "minerva-alert": {
+      "props": {
+        "heading": "タイトルのテキスト（または heading スロット）。",
+        "hideIcon": "ステータスアイコンを非表示にします。",
+        "noAnimation": "登場アニメーションを無効にします。",
+        "square": "角を丸めません。",
+        "collapsed": "メッセージが折りたたまれているかどうか。",
+        "alertRole": "ARIA ロール（既定値: danger / warning は \"alert\"、それ以外は \"status\"）。"
+      },
+      "events": {
+        "minerva-close": "閉じるボタンが実行されました。キャンセル可能：preventDefault() でアラートを表示したままにします。",
+        "minerva-expanded-change": "ユーザーがメッセージを展開 / 折りたたみました（detail: { expanded }）。キャンセル可能。"
+      },
+      "slots": {
+        "default": "メッセージ。",
+        "heading": "タイトル（heading 属性の代替）。",
+        "icon": "ステータスアイコンを置き換えるカスタムアイコン。",
+        "action": "末尾のアクション領域（ボタンなど）。",
+        "close-icon": "カスタムの閉じるアイコン。"
+      },
+      "parts": {
+        "base": "アラートのルート。",
+        "icon": "アイコンのラッパー。",
+        "heading": "タイトル。",
+        "message": "メッセージのラッパー。",
+        "action": "アクションのラッパー。",
+        "close-button": "閉じるボタン。",
+        "toggle": "展開 / 折りたたみボタン。"
+      }
+    }
   }
 }

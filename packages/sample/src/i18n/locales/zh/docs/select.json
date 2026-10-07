@@ -79,5 +79,101 @@
     "--select-dropdown-max-height": "列表框开始滚动前的最大高度",
     "--select-option-padding-y": "选项的垂直内边距（跟随密度的行内边距）",
     "--select-option-padding-x": "选项与分组标题的水平内边距（跟随密度的行内边距）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "<minerva-option> 子元素即选项；用外层 <label> 或 aria-label 为选择器命名。size 设置触发器尺寸，禁用的选项无法被选中。"
+      },
+      "groups": {
+        "title": "分组与富内容选项",
+        "description": "<minerva-option-group> 搭配 <minerva-select-label> 标题对选项分组，<minerva-select-separator> 用于分隔。对于富内容选项，label 设置触发器中显示的文本，text-value 设置键入查找所用的文本。"
+      },
+      "options-property": {
+        "title": "数据驱动的选项与事件",
+        "description": "JS 属性 options 接受普通选项和带标题的分组。minerva-change 报告所选值；minerva-open-change 可取消——勾选复选框即可让列表保持关闭。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "该元素与表单关联：以 name 提交其值，设置 required 时为空则阻止提交，重置会恢复 value 属性的值，禁用的 <fieldset> 也会禁用它。"
+      }
+    },
+    "minerva-option": {
+      "props": {
+        "label": "选中时在选择器触发器中显示的文本（默认：文本内容）。",
+        "selected": "该选项是否为选中项（由选择器管理）。",
+        "highlighted": "该选项是否处于高亮状态（由选择器管理）。",
+        "text": "选项的文本：优先 textValue，其次 label，最后为文本内容（只读）。",
+        "displayLabel": "触发器中显示的标签：优先 label，否则为文本内容（只读）。"
+      },
+      "slots": {
+        "default": "选项内容（文本、图标等）。"
+      },
+      "parts": {
+        "base": "选项行。",
+        "label": "内容包装元素。",
+        "indicator": "选中项的对勾标记。"
+      }
+    },
+    "minerva-option-group": {
+      "slots": {
+        "default": "一个 <minerva-select-label> 和若干 <minerva-option> 元素。"
+      }
+    },
+    "minerva-select-label": {
+      "slots": {
+        "default": "标签文本。"
+      },
+      "parts": {
+        "base": "标签元素。"
+      }
+    },
+    "minerva-select-separator": {
+      "parts": {
+        "base": "分隔线。"
+      }
+    },
+    "minerva-select": {
+      "props": {
+        "options": "在 <minerva-option> 子元素之前渲染的选项（或带标题的分组）；仅可作为 JS 属性设置。",
+        "isDisabled": "控件是否被禁用（自身禁用或因所在 fieldset 被禁用，只读）。",
+        "form": "该元素所属的表单（只读）。",
+        "labels": "与该元素关联的 <label> 元素（只读）。",
+        "validity": "有效性状态，同 <input>.validity（只读）。",
+        "validationMessage": "描述当前校验错误的消息，有效时为空（只读）。",
+        "willValidate": "该元素是否参与约束校验（只读）。"
+      },
+      "events": {
+        "input": "值已改变（类似原生事件，可穿越 shadow DOM）。",
+        "change": "值已改变（类似原生事件）。",
+        "minerva-change": "用户选择了一个选项（detail: { value }）。",
+        "minerva-open-change": "用户打开或关闭了列表（detail: { open }）；可取消：调用 preventDefault() 保持当前状态。"
+      },
+      "slots": {
+        "default": "<minerva-option>、<minerva-option-group> 和 <minerva-select-separator> 元素。"
+      },
+      "parts": {
+        "trigger": "combobox 角色的 <button>。",
+        "value": "已选标签或占位文本。",
+        "icon": "下拉箭头图标。",
+        "positioner": "负责定位的弹出层包装元素。",
+        "listbox": "role=\"listbox\" 的弹出列表。",
+        "option": "由 options 属性渲染的选项。",
+        "group-label": "由 options 属性渲染的分组标题。"
+      },
+      "methods": {
+        "focus": "聚焦触发器。",
+        "blur": "使触发器失去焦点。",
+        "show": "打开列表。",
+        "hide": "关闭列表。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置（或用 \"\" 清除）自定义校验错误。",
+        "formResetCallback": "浏览器在 form.reset() 时调用的表单生命周期回调：恢复 value 属性的值。",
+        "formDisabledCallback": "浏览器在祖先 <fieldset> 被禁用或启用时调用的表单生命周期回调。",
+        "formStateRestoreCallback": "浏览器在恢复值时（前进/后退缓存、自动填充）调用的表单生命周期回调。"
+      }
+    }
   }
 }

@@ -65,5 +65,52 @@
     "--drawer-shadow": "面板阴影（默认 --shadow-xl）",
     "--drawer-background": "面板背景",
     "--drawer-z-index": "面板的层级（默认 --z-modal）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "由 trigger 插槽打开的侧边面板。任何带有 data-drawer-close 的 light DOM 元素（这里是底部按钮）都会关闭它。"
+      },
+      "sides": {
+        "title": "方向",
+        "description": "side 决定抽屉滑入的边缘；size 对左 / 右抽屉表示宽度，对上 / 下抽屉表示高度。"
+      },
+      "non-modal": {
+        "title": "非模态",
+        "description": "设置 non-modal 后页面保持可交互：无遮罩、不锁定焦点，点击外部即可关闭抽屉。minerva-open-change 会给出原因。"
+      }
+    },
+    "minerva-drawer": {
+      "props": {
+        "label": "标题文本（或使用 header 插槽）；作为对话框的可访问名称。",
+        "dialogRole": "面板的 ARIA 角色。",
+        "nonModal": "非模态：无遮罩、不锁定焦点和滚动；在外部按下指针或聚焦时关闭。"
+      },
+      "events": {
+        "minerva-open-change": "用户请求打开 / 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+        "minerva-after-open": "面板已打开且焦点已移入后触发。",
+        "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+      },
+      "slots": {
+        "default": "主体内容。",
+        "header": "标题（label 属性的替代方式）。",
+        "footer": "操作按钮行。",
+        "trigger": "点击时打开面板的元素。"
+      },
+      "parts": {
+        "overlay": "背景遮罩。",
+        "panel": "对话框面板（role=\"dialog\"）。",
+        "header": "标题容器。",
+        "description": "描述文本。",
+        "body": "主体容器。",
+        "footer": "底部容器。",
+        "close-button": "关闭（×）按钮。"
+      },
+      "methods": {
+        "show": "打开抽屉。",
+        "hide": "关闭抽屉。"
+      }
+    }
   }
 }

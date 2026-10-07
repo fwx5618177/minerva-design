@@ -54,5 +54,76 @@
     "--rating-gap": "Space between the stars and the value",
     "--rating-value-font-size": "Font size of the numeric value (every size)",
     "--rating-scale-gap": "Space between the rows of a RatingScale"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Display",
+        "description": "Without interactive the stars are display-only (role=\"img\"), like the React Rating without onChange: any 0..max score on 5 stars, with show-value and rating-count after them."
+      },
+      "interactive": {
+        "title": "Interactive",
+        "description": "Interactive by default: click the left or right half of a star, or focus it and use the arrows, PageUp / PageDown and Home / End. minerva-change reports the new score."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: the score is submitted under name, required rejects a 0 score and Reset restores the value attribute."
+      },
+      "scale": {
+        "title": "Rating scale",
+        "description": "<minerva-rating-scale> rates several dimensions on one scale. dimensions is a JS property; minerva-change carries the key and the updated list, mirrored here in a readonly, hide-value copy."
+      }
+    },
+    "minerva-rating": {
+      "props": {
+        "defaultValue": "Initial score, restored by form.reset() (the value attribute).",
+        "readonly": "Forces display mode even when interactive is set.",
+        "name": "Name submitted with the form data.",
+        "disabled": "Disables the control: not focusable, not submitted, not validated.",
+        "required": "The control must have a value for the form to be submitted.",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message describing the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only).",
+        "interactive": "Makes the rating an interactive slider (React: passing onChange); display-only by default."
+      },
+      "events": {
+        "change": "The user changed the score.",
+        "minerva-change": "The user changed the score; detail: { value }."
+      },
+      "parts": {
+        "base": "The root (role=\"slider\", or role=\"img\" when read-only).",
+        "stars": "The row of stars.",
+        "star": "Each star.",
+        "value": "The score and the number of ratings."
+      },
+      "methods": {
+        "focus": "Focuses the inner control.",
+        "blur": "Removes focus from the inner control.",
+        "checkValidity": "Checks validity; fires invalid when invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with \"\".",
+        "formResetCallback": "Form-associated callback called by form.reset(): restores the default value.",
+        "formDisabledCallback": "Form-associated callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form-associated callback called when the browser restores the value (back navigation, autofill)."
+      }
+    },
+    "minerva-rating-scale": {
+      "props": {
+        "readonly": "Forces display mode even when interactive is set.",
+        "hideValue": "Hides the score at the end of each row.",
+        "interactive": "Makes the rows interactive (React: passing onChange)."
+      },
+      "events": {
+        "minerva-change": "The user rated a dimension; detail: { key, value, dimensions } (dimensions is already updated)."
+      },
+      "parts": {
+        "base": "The list of rows.",
+        "row": "Each row.",
+        "label": "The label of a row."
+      }
+    }
   }
 }

@@ -45,5 +45,44 @@
     "--month-calendar-radius": "按钮、日期与事件的圆角（默认 --radius-sm）",
     "--month-calendar-selected-background": "选中日期的背景色",
     "--month-calendar-today-color": "标记今天的边框颜色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "month（\"YYYY-MM\"）和 value（\"YYYY-MM-DD\"）是特性，events 是属性。只有一个 Tab 停靠点：方向键、Home / End 和 PageUp / PageDown 在网格中移动。"
+      },
+      "events": {
+        "title": "事件",
+        "description": "minerva-change 报告选中的日期，minerva-month-change 报告显示的月份；启用 clickable-events 后，点击事件项会触发 minerva-event-click。"
+      },
+      "localized": {
+        "title": "本地化与状态",
+        "description": "locale 和各标签特性用于翻译日历，weekdayLabels / getDayLabel / getEventsLabel 是属性。右侧：hide-events 与 disabled。"
+      }
+    },
+    "minerva-month-calendar": {
+      "props": {
+        "clickableEvents": "将选中日期的事件渲染为按钮，点击时触发 minerva-event-click。",
+        "hideEvents": "隐藏选中日期的事件列表（相当于 lib-core 的 showSelectedDayEvents={false}）。"
+      },
+      "events": {
+        "minerva-change": "用户选择了某一天（detail: { value }，\"YYYY-MM-DD\"）。",
+        "minerva-month-change": "用户切换到另一个月份（detail: { month }，该月第一天的本地零点）。",
+        "minerva-event-click": "选中日期的某个事件被激活（detail: { event }；需要 clickable-events）。"
+      },
+      "parts": {
+        "base": "日历的 <section>。",
+        "heading": "月份标题。",
+        "nav-button": "上一月 / 今天 / 下一月按钮。",
+        "grid": "role=\"grid\" 元素。",
+        "day": "每个日期单元格。",
+        "events": "选中日期的事件区域。",
+        "event": "每个事件（启用 clickable-events 时为按钮）。"
+      },
+      "methods": {
+        "focus": "聚焦当前活动的日期单元格。"
+      }
+    }
   }
 }

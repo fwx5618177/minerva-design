@@ -47,5 +47,61 @@
     "--number-input-background": "Couleur de fond",
     "--number-input-border-color": "Couleur de bordure au repos (aussi pour les séparateurs des boutons de pas)",
     "--number-input-stepper-width": "Largeur de la colonne d'incrément / de décrément"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "min / max avec les boutons de pas. Flèches haut / bas pour un pas, Page préc. / suiv. pour 10 pas, Début / Fin pour les bornes ; minerva-change signale chaque valeur validée."
+      },
+      "precision": {
+        "title": "Pas, précision et méthodes",
+        "description": "Pas décimal avec deux décimales fixes et no-empty ; les boutons externes appellent stepUp() / stepDown(). Également lecture seule, désactivé et tailles."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "required et les valeurs hors limites bloquent l’envoi avec des messages localisés ou personnalisés (below-min-message, above-max-message) ; reset restaure l’attribut value."
+      }
+    },
+    "minerva-number-input": {
+      "props": {
+        "readonly": "Focalisable et envoyé, mais ni la saisie ni les pas ne changent la valeur.",
+        "noEmpty": "Vider le champ revient à min (ou 0) au lieu de valider null.",
+        "placeholder": "Texte indicatif affiché tant que le champ est vide.",
+        "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "Une valeur a été validée (perte du focus, Entrée ou pas).",
+        "input": "Le texte en cours de saisie a changé (natif, composed).",
+        "minerva-input": "Le texte en cours de saisie a changé ; detail : { value } est la saisie analysée (null si ce n’est pas un nombre).",
+        "minerva-change": "Une nouvelle valeur a été validée ; detail : { value } (null si le champ a été vidé)."
+      },
+      "parts": {
+        "base": "Le conteneur du champ.",
+        "input": "L’élément natif <input> (role=\"spinbutton\").",
+        "stepper": "La colonne incrément / décrément.",
+        "increment": "Le bouton d’incrément.",
+        "decrement": "Le bouton de décrément."
+      },
+      "methods": {
+        "focus": "Donne le focus au contrôle interne.",
+        "blur": "Retire le focus du contrôle interne.",
+        "stepUp": "Ajoute step à la valeur (limitée à max) ; n’émet pas d’événement.",
+        "stepDown": "Retire step de la valeur (limitée à min) ; n’émet pas d’événement.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

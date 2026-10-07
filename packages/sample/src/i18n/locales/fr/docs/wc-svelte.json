@@ -1,0 +1,24 @@
+{
+  "title": "Svelte",
+  "description": "Les éléments personnalisés Minerva dans Svelte 5 et SvelteKit : propriétés et attributs, attributs d'événement onminerva-*, bind:this, typages et rendu côté serveur.",
+  "setup": {
+    "title": "Configuration",
+    "text": "Svelte ne nécessite aucune configuration pour les éléments personnalisés. Enregistrez les éléments et chargez les design tokens une fois, dans votre fichier d'entrée (ou dans le layout racine avec SvelteKit, voir plus bas) :"
+  },
+  "binding": {
+    "title": "Propriétés, événements et bind:this",
+    "text": "Écrivez les balises dans votre markup comme des éléments natifs :",
+    "properties": "Svelte définit une prop comme propriété DOM lorsque l'élément possède une propriété de ce nom (value, checked, disabled, options...), et comme attribut sinon. Les tableaux, objets et fonctions parviennent donc tels quels à l'élément ; enregistrez les éléments avant le rendu du composant.",
+    "events": "Les attributs d'événement de Svelte 5 sont sensibles à la casse et reprennent le nom de l'événement tel quel : onminerva-change, onminerva-input, onminerva-open-change. Le gestionnaire reçoit le CustomEvent, avec le nouvel état dans event.detail. onclick et les autres événements natifs fonctionnent comme d'habitude.",
+    "bindThis": "bind:this vous donne l'instance de l'élément, pour appeler ses méthodes (show(), hide(), focus()) ou lire ses propriétés. Son type est la classe d'élément exportée.",
+    "bindValue": "bind:value et bind:checked sont destinés aux champs natifs : écrivez la prop value et mettez à jour votre état depuis l'événement, comme ci-dessus (minerva-input à chaque frappe, minerva-change pour une valeur validée)."
+  },
+  "types": {
+    "title": "Typages",
+    "text": "Le paquet fournit des typages pour svelte/elements, générés à partir de son Custom Elements Manifest : les attributs, propriétés et événements onminerva-* de chaque balise sont vérifiés par svelte-check et complétés par l'extension Svelte. Référencez-les une fois :"
+  },
+  "kit": {
+    "title": "SvelteKit et rendu côté serveur",
+    "text": "Les pages sont d'abord rendues sur le serveur. Y importer les éléments est sans danger (les modules ne touchent pas au DOM lors de leur chargement), mais ils ne fonctionnent que dans le navigateur : enregistrez-les donc dans onMount (qui ne s'exécute jamais sur le serveur) ou derrière le flag browser. Le serveur envoie les balises avec leurs attributs et leur contenu placé dans les slots ; le navigateur les met à niveau une fois l'import résolu."
+  }
+}

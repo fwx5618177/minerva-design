@@ -16,6 +16,7 @@ import { IconButton } from "../IconButton";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import type {
   AppShellLabels,
   AppShellNavigationState,
@@ -59,7 +60,7 @@ const AppShell = ({
   pageNavigation,
   children,
   sidebarMode,
-  defaultSidebarMode = "expanded",
+  defaultSidebarMode,
   onSidebarModeChange,
   labels: overrides,
   skipLink = true,
@@ -79,10 +80,22 @@ const AppShell = ({
   };
   const label = navigationLabel ?? t("appShell.navigation");
 
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("AppShell", {
+      prop: "sidebarMode",
+      value: sidebarMode,
+      defaultProp: "defaultSidebarMode",
+      defaultValue: defaultSidebarMode,
+      handlerProp: "onSidebarModeChange",
+      handler: onSidebarModeChange,
+    });
+  }
   const [mode, setMode] = useControllableState({
     value: sidebarMode,
-    defaultValue: defaultSidebarMode,
+    defaultValue: defaultSidebarMode ?? "expanded",
     onChange: onSidebarModeChange,
+    name: "AppShell",
+    prop: "sidebarMode",
   });
   const isMobile = useSyncExternalStore(
     subscribeMobile,

@@ -45,5 +45,44 @@
     "--month-calendar-radius": "ボタン・日付・イベントの角丸（既定は --radius-sm）",
     "--month-calendar-selected-background": "選択された日の背景色",
     "--month-calendar-today-color": "今日を示す枠線の色"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "month（\"YYYY-MM\"）と value（\"YYYY-MM-DD\"）は属性、events はプロパティです。タブストップは 1 つで、矢印キー、Home / End、PageUp / PageDown でグリッド内を移動します。"
+      },
+      "events": {
+        "title": "イベント",
+        "description": "minerva-change は選択した日、minerva-month-change は表示中の月を通知します。clickable-events を付けると、予定をクリックしたときに minerva-event-click が発火します。"
+      },
+      "localized": {
+        "title": "ローカライズと状態",
+        "description": "locale とラベル属性でカレンダーを翻訳し、weekdayLabels / getDayLabel / getEventsLabel はプロパティです。右側は hide-events と disabled。"
+      }
+    },
+    "minerva-month-calendar": {
+      "props": {
+        "clickableEvents": "選択した日の予定を、minerva-event-click を発火するボタンとして描画します。",
+        "hideEvents": "選択した日の予定一覧を隠します（lib-core の showSelectedDayEvents={false} に相当）。"
+      },
+      "events": {
+        "minerva-change": "ユーザーが日を選択しました（detail: { value }、\"YYYY-MM-DD\"）。",
+        "minerva-month-change": "ユーザーが別の月を表示しました（detail: { month }、その月の初日のローカル午前 0 時）。",
+        "minerva-event-click": "選択した日の予定が実行されました（detail: { event }。clickable-events が必要）。"
+      },
+      "parts": {
+        "base": "カレンダーの <section>。",
+        "heading": "月の見出し。",
+        "nav-button": "前月 / 今日 / 翌月ボタン。",
+        "grid": "role=\"grid\" の要素。",
+        "day": "各日のセル。",
+        "events": "選択した日の予定セクション。",
+        "event": "各予定（clickable-events 指定時はボタン）。"
+      },
+      "methods": {
+        "focus": "アクティブな日のセルにフォーカスします。"
+      }
+    }
   }
 }

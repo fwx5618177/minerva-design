@@ -12,6 +12,7 @@ import { cn } from "../../utils/cn";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import type { NavTreeItem, NavTreeItemState, NavTreeProps } from "./types";
 import { logicalArrowKey } from "../../internal/direction";
@@ -124,10 +125,22 @@ export const NavTree = ({
     nav.addEventListener("keydown", handleNavKeyDown);
     return () => nav.removeEventListener("keydown", handleNavKeyDown);
   }, []);
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("NavTree", {
+      prop: "expandedIds",
+      value: expandedIds,
+      defaultProp: "defaultExpandedIds",
+      defaultValue: defaultExpandedIds,
+      handlerProp: "onExpandedChange",
+      handler: onExpandedChange,
+    });
+  }
   const [expanded, setExpanded] = useControllableState<string[]>({
     value: expandedIds,
     defaultValue: () => defaultExpandedIds ?? [],
     onChange: onExpandedChange,
+    name: "NavTree",
+    prop: "expandedIds",
   });
   // Branches the user explicitly collapsed. An active descendant expands its
   // ancestors by default; once the user collapses such a branch, that intent

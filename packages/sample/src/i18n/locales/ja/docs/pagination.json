@@ -103,5 +103,47 @@
     "--pagination-font-size": "フォントサイズ",
     "--pagination-active-background": "現在のページの背景（solid バリアント）",
     "--pagination-active-color": "現在のページの文字色（solid バリアント）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "total と page-size でページ数が決まります。要素は current を自身で更新し、新しいページとページサイズを含む minerva-page-change を発火します。制御するには preventDefault() を呼びます。"
+      },
+      "total-and-jumper": {
+        "title": "合計、サイズ切り替え、クイックジャンプ",
+        "description": "show-total、show-size-changer（選択肢は page-size-options=\"10,20,50\"）、show-quick-jumper。JS プロパティの totalRender で合計のテキストをカスタマイズできます。"
+      },
+      "appearance": {
+        "title": "サイズ、形状、バリアント",
+        "description": "size、shape、variant で項目のスタイルを指定します。sibling-count / boundary-count でコンパクトなページリストになり、disabled はすべての操作を無効にします。"
+      },
+      "simple": {
+        "title": "シンプルモード、カウンター、アイコン",
+        "description": "simple は前へ / 次へとページ入力を、hide-numbers は「現在 / 合計」のカウンターを表示します。prev-icon、next-icon、jump-prev-icon、jump-next-icon スロットでアイコンを置き換えられ、responsive は小さな画面に対応します。"
+      }
+    },
+    "minerva-pagination": {
+      "props": {
+        "totalPages": "ページ数（最小 1、読み取り専用）。"
+      },
+      "events": {
+        "minerva-page-change": "ユーザーがページまたはページサイズを変更しました（detail: { page, pageSize }）。キャンセル可能：preventDefault() で現在のページとサイズを維持します。"
+      },
+      "slots": {
+        "prev-icon": "前のページボタンのアイコン。",
+        "next-icon": "次のページボタンのアイコン。",
+        "jump-prev-icon": "後方ジャンプ項目のアイコン。",
+        "jump-next-icon": "前方ジャンプ項目のアイコン。"
+      },
+      "parts": {
+        "base": "<nav> ランドマーク。",
+        "item": "すべてのページ、前へ / 次へ、ジャンプのボタン。",
+        "total": "合計のテキスト。",
+        "jumper": "クイックジャンプのラベル。",
+        "size-changer": "ページサイズの <select>。",
+        "simple-input": "シンプルモードのページ入力。"
+      }
+    }
   }
 }

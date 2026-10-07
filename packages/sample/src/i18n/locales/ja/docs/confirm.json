@@ -47,5 +47,61 @@
     "ConfirmProviderProps": {
       "children": "アプリのサブツリー。useConfirm() / confirm() のダイアログはここに描画されます（useConfirm() のダイアログは呼び出し元の ConfigProvider スコープ内）"
     }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "宣言的な <minerva-confirm-dialog> を show() で開きます。color=\"danger\" は破壊的な操作を示し、minerva-confirm と minerva-cancel（理由付き）が結果を伝えます。"
+      },
+      "async": {
+        "title": "非同期の確認",
+        "description": "onConfirm は Promise を返せます。確定するまで確認ボタンはローディング状態になり、reject されるとダイアログは開いたままです。追加の内容はデフォルトスロットに入れます。"
+      },
+      "imperative": {
+        "title": "命令的な confirm()",
+        "description": "confirm({ title, ... }) はダイアログを追加し、true か false で解決して、閉じたら削除します。テーマ対応の window.confirm の代替です。同時呼び出しは順番に表示されます。"
+      }
+    },
+    "minerva-confirm-dialog": {
+      "props": {
+        "label": "タイトル（または header スロット）。ダイアログの名前になります。"
+      },
+      "events": {
+        "minerva-confirm": "確認ボタンが押されました。キャンセル可能：preventDefault() でダイアログを開いたままにします（自分で閉じてください）。",
+        "minerva-cancel": "確認がキャンセルされ、ダイアログが閉じました（detail: { reason }）。",
+        "minerva-open-change": "ユーザーが閉じることを要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で開いたままにします。",
+        "minerva-after-open": "パネルが開き、フォーカスが内部に移動した後に発火します。",
+        "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+      },
+      "slots": {
+        "default": "説明の下に置く任意の追加コンテンツ。",
+        "header": "タイトル（label 属性の代わり）。"
+      },
+      "parts": {
+        "overlay": "背景のオーバーレイ。",
+        "panel": "ダイアログパネル（role=\"alertdialog\"）。",
+        "header": "タイトルのラッパー。",
+        "description": "説明文。",
+        "body": "本文のラッパー。",
+        "footer": "アクションの行。",
+        "close-button": "閉じる（×）ボタン。",
+        "cancel-button": "キャンセルの <minerva-button>。",
+        "confirm-button": "確認の <minerva-button>。"
+      },
+      "cssVars": {
+        "--modal-width": "パネルの幅（既定はサイズに応じた幅で、ビューポートで制限）。",
+        "--modal-max-height": "パネルの最大高さ（超えると本文がスクロール）。",
+        "--modal-padding": "ヘッダー・説明・本文・フッターの左右パディング。",
+        "--modal-radius": "パネルの角丸（既定は --radius-xl）。",
+        "--modal-shadow": "パネルの影（既定は --shadow-xl）。",
+        "--modal-background": "パネルの背景。",
+        "--modal-z-index": "パネルの重なり順（既定は --z-modal）。"
+      },
+      "methods": {
+        "show": "ダイアログを開きます。",
+        "hide": "ダイアログを閉じます（イベントなし）。"
+      }
+    }
   }
 }

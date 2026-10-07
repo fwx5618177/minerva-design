@@ -1,0 +1,29 @@
+{
+  "title": "Vue",
+  "description": "Vue 3 と Nuxt で Minerva のカスタム要素を使う：コンパイラーの設定、プロパティとイベントのバインディング、制御パターン、Volar の型定義。",
+  "setup": {
+    "title": "セットアップ",
+    "text": "Vue は標準でカスタム要素をサポートしています。テンプレートコンパイラーに minerva-* タグがカスタム要素であることを伝え、Vue コンポーネントとして解決しようとしない（警告も出さない）ようにします：",
+    "register": "次に、エントリーファイルで要素を登録し、デザイントークンを一度だけ読み込みます："
+  },
+  "binding": {
+    "title": "プロパティとイベントのバインディング",
+    "text": "ネイティブ要素と同様に、:prop でバインドし、@minerva-* でイベントを受け取ります。v-model のような双方向バインディングは、:value（または :checked）のバインディングと対応するイベントの組み合わせで実現します：",
+    "properties": "Vue は、要素にその名前のプロパティがある場合はバインドされた値を DOM プロパティとして、そうでない場合は属性として設定します。アプリをマウントする前に要素を登録しておくと、Vue が描画する時点で要素が定義済みとなり、配列、オブジェクト、関数（options、items、レンダーコールバック）がそのまま要素に渡ります。",
+    "booleans": "真偽値は通常の真偽値として渡します（:disabled=\"busy\"）。静的なブール属性は値なしで記述します（clearable、required）。属性として強制するには .attr 修飾子を、プロパティとして強制するには .prop 修飾子を付けます。",
+    "events": "イベント名は kebab-case で、そのまま使います：@minerva-change、@minerva-open-change。$event は CustomEvent なので、新しい状態は $event.detail から読み取ります。ネイティブイベント（@click、@focus、@input、@change）も動作します。",
+    "vModel": "v-model はネイティブの input と Vue コンポーネント向けに設計されているため、明示的な組み合わせを使います。テキストフィールドでは :value + @minerva-input（キー入力ごと）または @minerva-change（確定した値）、チェックボックスとスイッチでは :checked + @minerva-change です。"
+  },
+  "controlled": {
+    "title": "制御された開閉状態",
+    "text": "要素はユーザーの操作に応じて自身の状態を更新し、その後イベントを発火します。ユーザーが要求した変更を通知するイベント（minerva-open-change、タブの選択）はキャンセル可能です。現在の状態を維持するには preventDefault() を呼び、そうでなければ ref を更新します："
+  },
+  "types": {
+    "title": "型定義（Volar）",
+    "text": "パッケージには Custom Elements Manifest から生成された Vue の GlobalComponents 向けの型定義が同梱されています。すべての <minerva-*> タグの属性・プロパティ・イベントが、Vue - Official（Volar）と vue-tsc によってテンプレート内で型チェック・補完されます。tsconfig の types に追加してください："
+  },
+  "nuxt": {
+    "title": "Nuxt",
+    "text": "nuxt.config でコンパイラーを設定し、クライアント専用のプラグインで要素を登録します。タグは属性付きの通常の HTML としてサーバーレンダリングされ、プラグインの実行後にブラウザでアップグレードされます（サーバーでパッケージをインポートしても安全です。モジュールは読み込み時に DOM に触れません）。"
+  }
+}

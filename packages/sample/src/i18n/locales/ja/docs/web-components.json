@@ -1,60 +1,90 @@
 {
   "title": "Web Components",
-  "description": "<minerva-button>：Lit で構築されたフレームワーク非依存のカスタム要素。素の HTML、React、Vue などあらゆるフレームワークで使えます。",
+  "description": "はじめに：Minerva のコンポーネント一式を標準のカスタム要素として提供します。素の HTML、Vue、Angular、Svelte、Solid、React など、あらゆるフレームワークで使えます。",
   "what": {
     "title": "概要",
-    "p1": "@minerva/lib-web-components は Minerva のコンポーネントを標準のカスタム要素として提供します。パッケージを一度インポートするとブラウザに登録され、以降はどのページやフレームワークでも組み込みの HTML タグのように使えます。",
-    "p2": "要素は shadow root 内に描画されるため、内部のスタイルがページに漏れたり、ページのスタイルで崩れたりしません。HTML 属性で設定し、click などの通常の DOM イベントを発行します。"
+    "p1": "@minerva/lib-web-components は、Minerva のすべてのコンポーネントを Lit で構築した標準のカスタム要素（<minerva-button>、<minerva-select>、<minerva-modal>...）として実装しています。一度登録すれば、要素は組み込みの HTML タグと同じように振る舞います。静的なページでも、サーバーレンダリングされたテンプレートでも、HTML を描画するあらゆるフレームワークでも動作します。",
+    "p2": "これらは React コンポーネントのラッパーではありません。同じ DOM 構造を描画し、同じスタイルシートを shadow root 内にコンパイルするため、見た目は同一で、同じデザイントークンを読み取り、同じ --<component>-* CSS 変数を公開します。キーボードとフォーカスの挙動（フォーカススコープ、閉じられるレイヤーのスタック、ロービングフォーカス、タイプアヘッド、位置計算）は同じ @minerva/core プリミティブに基づいており、ARIA のロールと状態も同じです。",
+    "p3": "API は React の用語に従っています。color、variant、size、disabled、open、value... は属性およびプロパティになり、ReactNode のプロパティはスロットに、コールバックは minerva-* イベントになります。フォームコントロールはネイティブの <form> に参加します。"
   },
-  "html": {
-    "title": "HTML での使い方",
-    "text": "パッケージを（バンドラー経由で）ES モジュールとして読み込み、ドキュメント内のどこでもタグを使えます。loading や disabled などのブール属性は、指定されていれば有効です。<form> 内では既定でボタンは何もしません（type=\"button\"）。囲んでいるフォームを送信・リセットするには type=\"submit\" または type=\"reset\" を指定します。"
+  "install": {
+    "title": "インストール",
+    "text": "パッケージは ESM のみで、peer 依存はありません。Lit、@minerva/core（Floating UI を含む）、DOMPurify、jsonc-parser は通常の依存関係です。React は不要です。"
+  },
+  "load": {
+    "title": "要素の読み込み",
+    "bundler": "バンドラーを使う場合は、パッケージを一度（たとえばエントリーファイルで）インポートすると、すべての要素が登録されます：",
+    "perElement": "バンドルを小さくしたい場合は、要素ごとのエントリーをインポートします。各エントリーは、その要素とそのパーツ、およびその要素が描画する Minerva 要素だけを登録します。それ以外にモジュールは副作用を持たないため、使われていない要素がバンドルに含まれることはありません。同じ要素を 2 回インポートしても（あとからオールインワンのエントリーをインポートしても）問題ありません。",
+    "cdn": "ビルドステップなしで使う場合は、自己完結型のバンドルを CDN から module スクリプトで読み込みます。すべての要素、Lit、@minerva/core を含み、minify されています：",
+    "esm": "本番環境では CDN の URL でバージョンを固定してください。自分でホストしたい場合、このバンドルは ./cdn エクスポート（@minerva/lib-web-components/cdn）としても公開されています。"
+  },
+  "tokens": {
+    "title": "デザイントークン",
+    "text": "要素は自身のスタイルを持っています（CSS は shadow root 内にあります）が、デザイントークン（--primary-color、--radius-md、--space-2 など）はページから読み取ります。@minerva/lib-web-components/tokens.css を、スタイルシートの link または CSS のインポートで一度だけ読み込んでください。これは @minerva/core/tokens.css と同じファイルです。ページですでに @minerva/lib-core/style.css を読み込んでいる場合（React と Web Components を併用する場合）は、トークンはすでに読み込まれています。テーマ、パレット、コンポーネントごとの変数については「テーマ」を参照してください。"
+  },
+  "attributes": {
+    "title": "属性とプロパティ",
+    "text": "すべてのオプションはプロパティ（camelCase、任意の JavaScript 値）であり、文字列・数値・真偽値の場合は属性（kebab-case：full-width、close-label、activation-mode）にもなります。ブール属性は指定されていれば有効です。React での既定値が true のオプションは反転した名前になります（hide-close-button、no-loop）。状態を表す属性（open、disabled、variant、size、color、checked...）は反映されるため、CSS で選択できます。配列、オブジェクト、関数（options、items、columns、レンダーコールバック）はプロパティとしてのみ指定できます。",
+    "value": "フォームコントロールはネイティブの input に倣います。value（または checked）属性は初期値で form.reset() で復元され、value / checked プロパティは現在の値です。スクリプトから値を変更するにはプロパティを設定します。"
+  },
+  "events": {
+    "title": "イベント",
+    "text": "要素はユーザーの操作を minerva-<起きたこと> という名前の CustomEvent で通知します。イベントはバブリングし、composed である（shadow root を越える）ため、新しい状態を event.detail に格納して伝えます：",
+    "change": "minerva-change：値の変更が確定しました（{ value }、チェックボックスとスイッチでは { checked, value }）。",
+    "input": "minerva-input：ユーザーの入力中に値が変化しています（{ value }）。",
+    "open": "minerva-open-change：ユーザーがポップアップの開閉を要求しました（{ open, ... }）。キャンセル可能で、preventDefault() を呼ぶと現在の状態が維持されます。これは React における制御された open プロパティに相当します。タブの選択変更もキャンセル可能です。",
+    "other": "より具体的なイベントも同じ命名規則に従います：minerva-select、minerva-close、minerva-clear、minerva-page-change、minerva-sort-change、minerva-selection-change、minerva-after-open、minerva-after-close... 各コンポーネントのページに、その要素のイベントが一覧されています。",
+    "native": "要素がネイティブのコントロールに相当する場合、ネイティブイベントは本来の意味を保ちます：click、focus、blur、input、change（ホスト上で再ディスパッチされます）。",
+    "programmatic": "スクリプトからプロパティを設定してもイベントは発火しません。イベントは常にユーザーの操作を意味するため、状態を要素に同期してもループすることはありません。"
+  },
+  "slots": {
+    "title": "スロットとパーツ",
+    "text": "リッチなコンテンツはスロットに入れます。メインのコンテンツには既定のスロットを、React コンポーネントが ReactNode を受け取る箇所には名前付きスロット（slot=\"footer\"、\"prefix\"、\"start\"、\"icon\"...）を使います。要素は主要な内部構造を CSS パーツ（base、control、panel、item、label、icon...）として公開しており、内部のクラス名に依存せずに ::part() でページからスタイルを指定できます。スロットとパーツは各コンポーネントのページに一覧されています。"
+  },
+  "typings": {
+    "title": "TypeScript とエディターのサポート",
+    "text": "すべての要素クラスは自身を HTMLElementTagNameMap に追加するため、document.querySelector と createElement は正しい型を返します。クラスとその文字列リテラルのユニオン型はパッケージからエクスポートされています。",
+    "frameworks": "フレームワークのテンプレート向けの型定義は Custom Elements Manifest（custom-elements.json。これも公開されています）から生成されており、React、Vue、Svelte、Solid のテンプレートで属性・プロパティ・イベントが型チェックされます。お使いのフレームワークに対応するファイルを一度参照してください：",
+    "vscode": "素の HTML ファイルでは、同梱の HTML カスタムデータを VS Code に指定すると、ドキュメント付きでタグと属性の補完が得られます："
   },
   "react": {
-    "title": "React での使い方",
-    "text": "副作用のためにパッケージを一度インポートし、同梱の型定義を参照すると JSX で属性を型チェックできます。React 19 が必要です。onClick などの DOM イベントは通常どおり動作します。アクセシブルネームにはハイフン付きの aria-label を使います。",
-    "booleans": "React 19 はカスタム要素に値をプロパティとして渡すため、真偽値のプロパティにはそのまま真偽値を渡せます。loading={saving} や disabled={false} は期待どおりに動作します。"
+    "title": "React 19 から使う",
+    "text": "React 19 はカスタム要素をネイティブにサポートしています。要素に存在するプロパティはプロパティとして設定され（そのため真偽値、配列、オブジェクトはそのまま動作します）、on + イベント名のプロパティ（例：onminerva-change）はカスタムイベントを購読します。onClick などの標準イベントはネイティブ要素と同様に動作します。",
+    "note": "React アプリでは通常、@minerva/lib-core の React コンポーネントの方が適しています。カスタム要素は、同じウィジェットを React 以外のコード（マイクロフロントエンド、CMS コンテンツ、サーバーテンプレート）と共有する場合に役立ちます。"
   },
-  "other": {
-    "title": "Vue などのフレームワーク",
-    "text": "HTML を描画できるフレームワークならどれでも利用できます。Vue では minerva-* タグをカスタム要素として宣言し、コンパイラーが Vue コンポーネントとして解決しないようにします。ブール属性を外すには null をバインドします。Angular では CUSTOM_ELEMENTS_SCHEMA が必要で、Svelte、Solid、Lit は設定不要です。"
+  "ssr": {
+    "title": "サーバーサイドレンダリング",
+    "text": "モジュールは Node（Next.js、Nuxt、SvelteKit、Angular SSR、Astro...）でインポートできます。インポート時に DOM には一切触れず、defineElement() は冪等で、customElements レジストリのない環境では何もしません。要素は事前レンダリングされません（宣言的 shadow DOM は使いません）。サーバーは属性と light DOM のコンテンツを持つタグを送信し、定義が読み込まれるとブラウザがそれらをアップグレードします。",
+    "fouc": "スタイルが適用されていないコンテンツのちらつきを避けるには、:not(:defined) で未定義の要素を非表示にします。"
   },
-  "theming": {
-    "title": "テーマ",
-    "text": "ボタンは lib-core のデザイントークン（--primary-color、--danger-color、--text-inverse-color、--surface-muted-color、--focus-ring-color、--radius-md などの CSS カスタムプロパティ）を使い、lib-core のないページ向けにフォールバック値を内蔵しています。カスタムプロパティは shadow root に継承されるため、ConfigProvider / applyThemeStyles によるテーマ変更もこのボタンに反映されます。一部のボタンだけスタイルを変えるには、要素またはその祖先にトークンを設定します："
+  "dev": {
+    "title": "開発時の警告",
+    "text": "無効な属性の組み合わせやよくある間違い（どのオプションにも一致しない value、max より大きい min、aria-label のないアイコンのみのボタン、パッケージの二重読み込み...）は、[minerva] とタグ名を先頭に付けて、メッセージごとに一度だけ console.warn で報告されます。これらのチェックは process.env.NODE_ENV !== \"production\" で囲まれており、バンドラーがこれを置換するため本番ビルドでは除去されます。バンドラーを使わない場合（CDN ビルドや、process が存在しない環境で読み込まれたモジュール）は警告は無効です。"
   },
-  "a11y": {
-    "title": "アクセシビリティ",
-    "text": "この要素は shadow root 内にネイティブの <button> を描画するため、フォーカス可能でキーボード操作に対応し、見やすいフォーカスリング（--focus-ring-color）を表示します。aria-label 属性はそのボタンに転送されます。アイコンのみのボタンには必ず設定してください。読み込み中は aria-busy を設定してクリックを無視し、無効なボタンはフォーカスを受け取りません。"
-  },
-  "demos": {
-    "basic": {
-      "title": "基本的な使い方",
-      "description": "パッケージを一度インポートすれば、<minerva-button> を通常の要素のように使えます。React の onClick もネイティブ要素と同様に動作します。"
-    },
-    "variants": {
-      "title": "バリアント",
-      "description": "primary、secondary、success、warning、error、info、ghost、retry、back の 9 種類。"
-    },
-    "sizes-shapes": {
-      "title": "サイズと形状",
-      "description": "4 つのサイズ（tiny〜large）と 4 つの形状。アイコンのみの円形ボタンには aria-label が必要です。"
-    },
-    "states": {
-      "title": "状態",
-      "description": "loading はスピナーを表示してクリックを無効にします。disabled と active も真偽値のプロパティです。React 19 では loading={saving} のようにそのまま真偽値を渡します。"
+  "authoring": {
+    "title": "独自の要素を作成する",
+    "text": "Minerva 要素の構成部品はエクスポートされているため、独自のカスタム要素でもその規約、テーマスコープ、アクセシビリティの挙動を共有できます：",
+    "exports": {
+      "defineElement": "defineElement(Class)：要素とその静的な依存関係を登録します。冪等で、開発時に別のクラスがすでにタグを所有していると警告し、customElements がない環境では何もしません。",
+      "emit": "emit(target, name, detail, { cancelable })：バブリングし composed な minerva-* の CustomEvent をディスパッチし、リスナーが preventDefault() を呼んだ場合は false を返します。",
+      "MinervaElement": "MinervaElement：LitElement の基底クラスです（static tagName、static dependencies、this.emit()）。",
+      "hostStyles": "hostStyles：共通の :host ルールです（box-sizing、hidden 属性、.visually-hidden ヘルパー）。",
+      "FormAssociatedElement": "FormAssociatedElement：ElementInternals に基づくフォームコントロールの基底クラスです（name、disabled、required、validity、カスタムバリデーション、リセット、fieldset、状態の復元）。",
+      "LocaleController": "LocaleController：コアのトランスレーターを通じて組み込みテキストを提供します（this.locale.t(\"modal.close\")）。lang と <minerva-config locale> に従います。",
+      "resolveLanguage": "resolveLanguage(element)：要素のスコープでサポートされている言語を返します。",
+      "AriaController": "AriaController：aria-label / aria-labelledby / aria-describedby と <label for> をホストから内部のコントロールに転送します（id は shadow root を越えられないため）。",
+      "HasSlotController": "HasSlotController：名前付きスロットにコンテンツがあるかを判定し、空のラッパーを省けるようにします。",
+      "controllers": "コアプリミティブを利用した Lit コントローラー：FloatingLayerController（アンカー付きポップアップ：位置計算、閉じられるレイヤー、任意のフォーカススコープ）、AnchoredPositionController、DismissableLayerController、FocusScopeController、ModalController（スクロールロックと他要素の非表示）、RovingFocusController、TypeaheadController。",
+      "popoverResetStyles": "popoverResetStyles：トップレイヤーに描画される popover=\"manual\" パネルの UA スタイルをリセットします。"
     }
   },
-  "api": {
-    "wc_ButtonProps": {
-      "variant": "ボタンの見た目（variant 属性に反映されます）。",
-      "size": "ボタンのサイズ。",
-      "shape": "ボタンの角の形状。",
-      "disabled": "ボタンを無効にします（ブール属性）。",
-      "loading": "内容の代わりにスピナーを表示し、クリックを無効にします。aria-busy も設定します。",
-      "active": "押下中／アクティブのスタイルで表示します。",
-      "ariaLabel": "内部の <button> に転送されるアクセシブルなラベル。aria-label 属性で指定します。アイコンのみのボタンでは必須です。",
-      "type": "囲んでいる <form> での動作：何もしない（button）、送信する（submit。requestSubmit() 経由なので検証と submit リスナーが動きます）、リセットする（reset）。"
+  "guides": {
+    "title": "ガイド"
+  },
+  "demos": {
+    "react": {
+      "title": "React 19",
+      "description": "React の state から描画される Minerva のカスタム要素です。value、checked、disabled はプロパティとして渡され、onminerva-input / onminerva-change でカスタムイベントを購読します。"
     }
   }
 }

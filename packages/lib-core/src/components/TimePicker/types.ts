@@ -93,7 +93,9 @@ export interface TimePickerProps extends DataAttributes {
   /** Latest selectable time; later options are disabled */
   maxTime?: Date;
   /**
-   * Shows the seconds column
+   * Shows seconds. `false` also removes the seconds token from `format`
+   * ("HH:mm:ss" -> "HH:mm"): the format in use is the single source of truth
+   * of the seconds column, the displayed text and parsing
    * @default true
    */
   showSecond?: boolean;

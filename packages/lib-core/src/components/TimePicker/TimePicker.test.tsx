@@ -117,6 +117,25 @@ describe("TimePicker", () => {
     expect(columns).toHaveLength(2);
   });
 
+  it("showSecond={false} removes the seconds from the format too (one source of truth)", async () => {
+    const user = userEvent.setup();
+    renderTimePicker({
+      showSecond: false,
+      format: "HH:mm:ss",
+      defaultValue: new Date(2024, 0, 1, 9, 5, 7),
+    });
+    expect(getInput()).toHaveValue("09:05");
+    const columns = await openPanel(user);
+    expect(columns).toHaveLength(2);
+  });
+
+  it("a format without seconds hides the seconds column", async () => {
+    const user = userEvent.setup();
+    renderTimePicker({ format: "HH:mm" });
+    const columns = await openPanel(user);
+    expect(columns).toHaveLength(2);
+  });
+
   it("respects hour, minute and second steps", async () => {
     const user = userEvent.setup();
     renderTimePicker({ hourStep: 2, minuteStep: 15, secondStep: 30 });

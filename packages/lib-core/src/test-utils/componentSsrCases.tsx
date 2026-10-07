@@ -176,13 +176,13 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "Modal",
-    <lib.Modal open title="Title">
+    <lib.Modal open onOpenChange={noop} title="Title">
       Body
     </lib.Modal>,
   ],
   [
     "ModalRoot",
-    <lib.ModalRoot open>
+    <lib.ModalRoot open onOpenChange={noop}>
       <lib.ModalTrigger>Open</lib.ModalTrigger>
       <lib.ModalContent>
         <lib.ModalHeader>H</lib.ModalHeader>
@@ -213,7 +213,7 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "ModalHeader",
-    <lib.ModalRoot open>
+    <lib.ModalRoot open onOpenChange={noop}>
       <lib.ModalContent>
         <lib.ModalHeader>H</lib.ModalHeader>
       </lib.ModalContent>
@@ -233,13 +233,13 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ["ConfirmProvider", <lib.ConfirmProvider>x</lib.ConfirmProvider>],
   [
     "Drawer",
-    <lib.Drawer open title="Filters">
+    <lib.Drawer open onOpenChange={noop} title="Filters">
       Body
     </lib.Drawer>,
   ],
   [
     "DrawerRoot",
-    <lib.DrawerRoot open>
+    <lib.DrawerRoot open onOpenChange={noop}>
       <lib.DrawerTrigger>Open</lib.DrawerTrigger>
       <lib.DrawerContent>
         <lib.DrawerHeader>H</lib.DrawerHeader>
@@ -270,7 +270,7 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "DrawerHeader",
-    <lib.DrawerRoot open>
+    <lib.DrawerRoot open onOpenChange={noop}>
       <lib.DrawerContent>
         <lib.DrawerHeader>H</lib.DrawerHeader>
       </lib.DrawerContent>
@@ -282,6 +282,7 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     "CommandDialog",
     <lib.CommandDialog
       open
+      onOpenChange={noop}
       items={[{ id: "a", title: "Alpha" }]}
       onSelect={noop}
     />,
@@ -316,7 +317,7 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "PopoverContent",
-    <lib.Popover open>
+    <lib.Popover open onOpenChange={noop}>
       <lib.PopoverContent>C</lib.PopoverContent>
     </lib.Popover>,
   ],

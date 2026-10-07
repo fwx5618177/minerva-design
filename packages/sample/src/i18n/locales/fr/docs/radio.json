@@ -88,5 +88,72 @@
     "--radio-gap": "Espace entre la marque et le libellé",
     "--radio-label-font-size": "Taille de police du libellé (toutes tailles)",
     "--radio-group-gap": "Espace entre les boutons radio d'un RadioGroup"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Un groupe libellé avec une valeur présélectionnée et une option désactivée. Le groupe est un seul arrêt de tabulation ; les flèches déplacent et sélectionnent. minerva-change signale la nouvelle valeur."
+      },
+      "styles-states": {
+        "title": "Styles et états",
+        "description": "Direction horizontale, tailles et couleurs du groupe, messages d’aide et d’erreur par option, et groupe désactivé."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Le groupe est le contrôle de formulaire : il envoie la valeur sélectionnée sous name, required bloque l’envoi tant que rien n’est choisi, et reset restaure l’attribut value."
+      }
+    },
+    "minerva-radio": {
+      "props": {
+        "group": "Le <minerva-radio-group> auquel appartient le bouton radio (lecture seule).",
+        "isDisabled": "Indique si le bouton radio ne peut pas être coché, par lui-même ou via son groupe (lecture seule)."
+      },
+      "events": {
+        "minerva-change": "Un bouton radio isolé a été coché par l’utilisateur ; detail : { checked: true, value }. Dans un groupe, c’est le groupe qui l’émet."
+      },
+      "slots": {
+        "default": "Contenu du libellé (alternative à l’attribut label)."
+      },
+      "parts": {
+        "base": "Le conteneur.",
+        "mark": "La pastille visuelle du bouton radio.",
+        "label": "Le texte du libellé.",
+        "helper-text": "Le texte d’aide ou d’erreur."
+      }
+    },
+    "minerva-radio-group": {
+      "props": {
+        "radios": "Les enfants <minerva-radio> du groupe (lecture seule).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "L’utilisateur a sélectionné un autre bouton radio (comme les radios natifs).",
+        "minerva-change": "L’utilisateur a sélectionné un autre bouton radio ; detail : { value }."
+      },
+      "slots": {
+        "default": "Les options <minerva-radio>."
+      },
+      "parts": {
+        "base": "Le conteneur.",
+        "label": "Le libellé visible du groupe.",
+        "group": "L’élément portant role=\"radiogroup\".",
+        "helper-text": "Le texte d’aide."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton radio coché, sinon au premier actif.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
   }
 }

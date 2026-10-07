@@ -1,0 +1,29 @@
+{
+  "title": "Vue",
+  "description": "Minerva custom elements in Vue 3 and Nuxt: compiler setup, property and event binding, the controlled pattern and Volar typings.",
+  "setup": {
+    "title": "Setup",
+    "text": "Vue supports custom elements out of the box. Tell its template compiler that minerva-* tags are custom elements, so it does not try to resolve them as Vue components (and does not warn about them):",
+    "register": "Then register the elements and load the design tokens once, in your entry file:"
+  },
+  "binding": {
+    "title": "Binding properties and events",
+    "text": "Bind with :prop and listen with @minerva-*, as with native elements. A v-model-like two-way binding is a :value (or :checked) binding plus the matching event:",
+    "properties": "Vue sets a bound value as a DOM property when the element has a property with that name, and as an attribute otherwise. Register the elements before mounting the app, so that they are defined when Vue renders them, and arrays, objects and functions (options, items, render callbacks) reach the element as they are.",
+    "booleans": "Booleans are plain booleans (:disabled=\"busy\"); static boolean attributes are written without a value (clearable, required). Add the .attr modifier to force an attribute, and .prop to force a property.",
+    "events": "Event names are kebab-case and used as they are: @minerva-change, @minerva-open-change. $event is the CustomEvent; read the new state from $event.detail. Native events (@click, @focus, @input, @change) work too.",
+    "vModel": "v-model is designed for native inputs and Vue components, so use the explicit pair: :value + @minerva-input for text fields (each keystroke) or @minerva-change (committed value), :checked + @minerva-change for checkboxes and switches."
+  },
+  "controlled": {
+    "title": "Controlled open state",
+    "text": "The element updates its own state when the user acts, then fires the event. Events that announce a change requested by the user (minerva-open-change, tab selection) are cancelable: call preventDefault() to keep the current state, and update your ref otherwise:"
+  },
+  "types": {
+    "title": "Typings (Volar)",
+    "text": "The package ships typings for Vue's GlobalComponents, generated from its Custom Elements Manifest: attributes, properties and events of every <minerva-*> tag are type-checked and completed in templates by Vue - Official (Volar) and vue-tsc. Add them to the types of your tsconfig:"
+  },
+  "nuxt": {
+    "title": "Nuxt",
+    "text": "Configure the compiler in nuxt.config and register the elements in a client-only plugin. The tags are server-rendered as plain HTML with their attributes and upgraded in the browser once the plugin has run (importing the package on the server is safe too: the modules do not touch the DOM when they load)."
+  }
+}

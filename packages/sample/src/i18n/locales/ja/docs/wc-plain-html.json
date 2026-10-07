@@ -1,0 +1,22 @@
+{
+  "title": "素の HTML",
+  "description": "ビルドステップなしの完全なページ：CDN バンドル、デザイントークン、<minerva-config>、検証付きフォーム、イベントリスナー。要素ごとのモジュール向けのインポートマップも紹介します。",
+  "page": {
+    "title": "完全なページ",
+    "text": "<head> 内のタグは 2 つで十分です。デザイントークンのスタイルシートと、自己完結型のモジュールバンドル（すべての要素、Lit、@minerva/core）です。このファイルをコピーしてブラウザで開いてください：",
+    "tokens": "tokens.css はデザイントークン（色、余白、角丸、フォント）を定義し、要素や独自の CSS から var() で利用できます。",
+    "config": "root を指定した <minerva-config> は、テーマ（ここでは OS に追従）、パレット、組み込みテキストの言語をドキュメント全体に適用します。",
+    "form": "コントロールはフォーム関連付け要素です。name、required、value / checked 属性、<label for>、type=\"submit\" と type=\"reset\" のボタン、FormData、ブラウザの検証がネイティブの input と同様に動作します。submit イベントはすべてのコントロールが有効になったときにのみ発火します。",
+    "events": "minerva-* イベントはバブリングするため、フォーム（または document）上の 1 つのリスナーですべてのコントロールの変更を受け取れます。event.target は要素で、event.detail に新しい値が入っています。",
+    "modal": "スクリプトからプロパティを設定しても（modal.open = true）イベントは発火しません。閉じるボタンと Escape キーはモーダルを閉じて minerva-open-change を発火します。"
+  },
+  "importMaps": {
+    "title": "インポートマップで要素ごとのモジュールを使う",
+    "text": "CDN バンドルにはすべての要素が含まれています。ページで使う要素だけをダウンロードするには、代わりにパッケージの要素ごとのモジュール（dist/elements/<name>.js）を読み込みます。これらはバンドラーが使うファイルで、依存関係を bare import で参照しているため、ブラウザではインポートマップで解決します：",
+    "deps": "モジュールは lit（lit/decorators.js と lit/directives/* を含むため \"lit/\" プレフィックスが必要です）、@minerva/core（これ自体は @floating-ui/dom に依存します）、そして HTML プレビューと JSON フィールドに限り dompurify と jsonc-parser をインポートします。esm.sh はこれらのパッケージの依存関係を自動的に解決します。ファイルを自分でホストする場合は、@floating-ui/dom、@floating-ui/core、@floating-ui/utils もマッピングしてください。",
+    "note": "本番環境では正確なバージョンを指定し、すべてのモジュールが lit と @minerva/core の同じコピーを読み込むようにしてください。1 つのページで CDN バンドルと要素ごとのモジュールを混在させると共有コードが 2 回ダウンロードされ、各タグは最初に登録された定義を使い続けます。"
+  },
+  "next": {
+    "title": "次のステップ"
+  }
+}

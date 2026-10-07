@@ -47,5 +47,61 @@
     "ConfirmProviderProps": {
       "children": "Application subtree; useConfirm() / confirm() render their dialogs here (useConfirm() dialogs inside the caller's ConfigProvider scope)"
     }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A declarative <minerva-confirm-dialog> opened with show(). color=\"danger\" marks a destructive action; minerva-confirm and minerva-cancel (with its reason) report the answer."
+      },
+      "async": {
+        "title": "Async confirmation",
+        "description": "onConfirm may return a promise: the Confirm button shows its loading state until it settles, and a rejection keeps the dialog open. Extra content goes in the default slot."
+      },
+      "imperative": {
+        "title": "Imperative confirm()",
+        "description": "confirm({ title, ... }) appends a dialog, resolves true or false and removes it once closed: a themed replacement for window.confirm. Concurrent calls are queued."
+      }
+    },
+    "minerva-confirm-dialog": {
+      "props": {
+        "label": "Title (or use the header slot); names the dialog."
+      },
+      "events": {
+        "minerva-confirm": "The Confirm button was pressed; cancelable: preventDefault() keeps the dialog open (close it yourself).",
+        "minerva-cancel": "The confirmation was cancelled and the dialog closed (detail: { reason }).",
+        "minerva-open-change": "The user asked to close (detail: { open, reason }); cancelable: preventDefault() keeps it open.",
+        "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+        "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+      },
+      "slots": {
+        "default": "Optional extra content below the description.",
+        "header": "Title (alternative to the label attribute)."
+      },
+      "parts": {
+        "overlay": "The backdrop.",
+        "panel": "The dialog panel (role=\"alertdialog\").",
+        "header": "The title wrapper.",
+        "description": "The description.",
+        "body": "The body wrapper.",
+        "footer": "The actions row.",
+        "close-button": "The close (×) button.",
+        "cancel-button": "The Cancel <minerva-button>.",
+        "confirm-button": "The Confirm <minerva-button>."
+      },
+      "cssVars": {
+        "--modal-width": "Width of the panel (defaults to the width of the size, capped by the viewport).",
+        "--modal-max-height": "Maximum height of the panel (the body scrolls beyond).",
+        "--modal-padding": "Horizontal padding of the header, description, body and footer.",
+        "--modal-radius": "Corner radius of the panel (defaults to --radius-xl).",
+        "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl).",
+        "--modal-background": "Background of the panel.",
+        "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)."
+      },
+      "methods": {
+        "show": "Opens the dialog.",
+        "hide": "Closes the dialog (no event)."
+      }
+    }
   }
 }

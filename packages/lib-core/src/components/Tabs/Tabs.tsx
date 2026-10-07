@@ -13,6 +13,7 @@ import { getNextIndex } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useControllableState } from "../../internal/useControllableState";
+import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { composeEventHandlers } from "../../internal/composeEventHandlers";
 import type {
   TabListProps,
@@ -80,10 +81,21 @@ export const Tabs = ({
   ...rest
 }: TabsProps) => {
   const baseId = useId();
+  if (process.env.NODE_ENV !== "production") {
+    warnControlledProps("Tabs", {
+      prop: "value",
+      value: valueProp,
+      defaultProp: "defaultValue",
+      defaultValue,
+      handlerProp: "onChange",
+      handler: onChange,
+    });
+  }
   const [value, setValue] = useControllableState<string | undefined>({
     value: valueProp,
     defaultValue,
     onChange: onChange as ((value: string | undefined) => void) | undefined,
+    name: "Tabs",
   });
 
   return (
@@ -151,6 +163,23 @@ export const TabList = ({
       );
     };
     update();
+    if (process.env.NODE_ENV !== "production") {
+      // Checked when the value or the list changes, not on later mutations
+      // (tabs loaded asynchronously).
+      const tabs = getOwnTabs(list);
+      const selectedId = value === undefined ? undefined : tabId(baseId, value);
+      if (
+        selectedId &&
+        tabs.length > 0 &&
+        !tabs.some((t) => t.id === selectedId)
+      ) {
+        warnOnce(
+          "Tabs:value",
+          `[minerva] Tabs: \`value\` "${value}" does not match any Tab. ` +
+            "Pass the `value` of one of the rendered tabs.",
+        );
+      }
+    }
     // Tabs added, removed or (un)disabled without a selection change.
     const observer = new MutationObserver(update);
     observer.observe(list, {

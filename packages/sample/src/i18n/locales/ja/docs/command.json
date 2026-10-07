@@ -45,5 +45,52 @@
     "--command-item-padding-y": "結果行の上下の余白（密度の行余白に連動）",
     "--command-item-padding-x": "結果行の左右の余白（密度の行余白に連動）",
     "--command-item-active-background": "ホバー / アクティブ行の背景（既定値はプライマリ色 10% の色合い）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "items は JS プロパティです（id、title、description、group、keywords、disabled）。入力で絞り込み、矢印キーで移動し、Enter かクリックで選択します。minerva-select が選ばれた id を返します。"
+      },
+      "shortcut": {
+        "title": "グローバルショートカット",
+        "description": "shortcut はカンマ区切りのリストを受け取り（\"mod+k, /\"。mod は Ctrl、macOS では ⌘）、入力欄での入力中を除き、どこからでもパレットを開きます。max-results で件数を制限します。"
+      }
+    },
+    "minerva-command-dialog": {
+      "props": {
+        "label": "ダイアログのタイトル（既定：ローカライズされた「コマンドパレット」）。"
+      },
+      "events": {
+        "minerva-select": "コマンドが選択されました（detail: { value, item }、value は項目の id）。その後パレットは閉じます。",
+        "minerva-open-change": "ユーザーが開く（ショートカット）/ 閉じることを要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+        "minerva-after-open": "パレットが開き、フォーカスが検索欄に移動しました。",
+        "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+      },
+      "parts": {
+        "overlay": "背景のオーバーレイ。",
+        "panel": "ダイアログパネル（role=\"dialog\"）。",
+        "header": "タイトルの行。",
+        "description": "説明文。",
+        "search": "検索フィールドのラッパー。",
+        "input": "検索入力欄（role=\"combobox\"）。",
+        "listbox": "結果のリスト（role=\"listbox\"）。",
+        "item": "結果の 1 項目（role=\"option\"）。",
+        "empty": "空の状態。"
+      },
+      "cssVars": {
+        "--modal-width": "パネルの幅（既定はサイズに応じた幅で、ビューポートで制限）。",
+        "--modal-max-height": "パネルの最大高さ（超えると本文がスクロール）。",
+        "--modal-padding": "ヘッダー・説明・本文・フッターの左右パディング。",
+        "--modal-radius": "パネルの角丸（既定は --radius-xl）。",
+        "--modal-shadow": "パネルの影（既定は --shadow-xl）。",
+        "--modal-background": "パネルの背景。",
+        "--modal-z-index": "パネルの重なり順（既定は --z-modal）。"
+      },
+      "methods": {
+        "show": "パレットを開きます。",
+        "hide": "パレットを閉じます。"
+      }
+    }
   }
 }
