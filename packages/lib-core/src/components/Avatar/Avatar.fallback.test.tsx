@@ -1,19 +1,20 @@
-// Ported from @novel-isr/ui src/components/Avatar/__test__/Avatar.test.tsx
 import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import Avatar from "./Avatar";
 import AvatarGroup from "./AvatarGroup";
+import styles from "./avatar.module.scss";
+import groupStyles from "./avatarGroup.module.scss";
 
-describe("Avatar (merged capabilities)", () => {
-  it("renders an image with alt text and the default styling hooks", () => {
+describe("Avatar image and fallback", () => {
+  it("renders an image with alt text and the default size and shape", () => {
     const { container } = render(<Avatar src="/a.png" alt="Alice" />);
     const root = container.firstElementChild as HTMLElement;
-    expect(root).toHaveClass("ui-avatar", "ui-avatar-size-md");
-    expect(root).not.toHaveClass("ui-avatar-shape-square");
+    expect(root).toHaveClass(styles.avatar, styles.medium, styles.circle);
+    expect(root).not.toHaveClass(styles.square);
     const img = screen.getByRole("img", { name: "Alice" });
     expect(img).toHaveAttribute("src", "/a.png");
-    expect(img).toHaveClass("ui-avatar-img");
+    expect(img).toHaveClass(styles.avatarImg);
   });
 
   it("falls back to name for alt text and supports an explicit decorative alt", () => {
@@ -59,7 +60,7 @@ describe("Avatar (merged capabilities)", () => {
     expect(screen.getByRole("img", { name: "avatar" })).toBeInTheDocument();
   });
 
-  it("applies sizes and the square hook, forwards ref and native attributes", () => {
+  it("applies size and shape classes, forwards ref and native attributes", () => {
     const ref = createRef<HTMLSpanElement>();
     render(
       <Avatar
@@ -74,32 +75,25 @@ describe("Avatar (merged capabilities)", () => {
     );
     const root = screen.getByTestId("av");
     expect(ref.current).toBe(root);
-    expect(root).toHaveClass(
-      "ui-avatar-size-2xl",
-      "xxlarge",
-      "ui-avatar-shape-square",
-      "c",
-    );
+    expect(root).toHaveClass(styles.xxlarge, styles.rounded, "c");
     expect(root).toHaveAttribute("title", "X user");
     expect(root).not.toHaveAttribute("name");
   });
 
-  it.each([
-    ["xsmall", "xs"],
-    ["small", "sm"],
-    ["large", "lg"],
-    ["xlarge", "xl"],
-  ] as const)("maps size %s to ui-avatar-size-%s", (size, hook) => {
-    render(<Avatar name="S" size={size} />);
-    expect(screen.getByRole("img")).toHaveClass(`ui-avatar-size-${hook}`);
-  });
+  it.each(["xsmall", "small", "large", "xlarge"] as const)(
+    "applies the %s size class",
+    (size) => {
+      render(<Avatar name="S" size={size} />);
+      expect(screen.getByRole("img")).toHaveClass(styles[size]);
+    },
+  );
 
   it("accepts a size in pixels", () => {
     render(<Avatar name="P" size={40} style={{ color: "red" }} />);
     const root = screen.getByRole("img", { name: "P" });
     expect(root).toHaveStyle({ width: "40px", height: "40px", color: "red" });
     expect(root.style.getPropertyValue("--avatar-size")).toBe("40px");
-    expect(root.className).not.toMatch(/ui-avatar-size-/);
+    expect(root).not.toHaveClass(styles.medium);
   });
 
   it("retries the image when src changes after a load error", () => {
@@ -114,7 +108,7 @@ describe("Avatar (merged capabilities)", () => {
   });
 });
 
-describe("AvatarGroup (merged capabilities)", () => {
+describe("AvatarGroup overflow", () => {
   it("renders all children when max is not set", () => {
     const { container } = render(
       <AvatarGroup>
@@ -124,8 +118,8 @@ describe("AvatarGroup (merged capabilities)", () => {
       </AvatarGroup>,
     );
     const group = container.firstElementChild as HTMLElement;
-    expect(group).toHaveClass("ui-avatar-group");
-    expect(group.querySelectorAll(".ui-avatar")).toHaveLength(3);
+    expect(group).toHaveClass(groupStyles.avatarGroup);
+    expect(group.querySelectorAll(`.${styles.avatar}`)).toHaveLength(3);
     expect(screen.queryByText(/^\+/)).toBeNull();
   });
 
@@ -138,12 +132,14 @@ describe("AvatarGroup (merged capabilities)", () => {
         <Avatar name="D" />
       </AvatarGroup>,
     );
-    const avatars = container.querySelectorAll(".ui-avatar");
-    expect(avatars).toHaveLength(3);
+    const avatars = container.querySelectorAll(`.${styles.avatar}`);
+    expect(avatars).toHaveLength(2);
     expect(screen.getByText("A")).toBeInTheDocument();
     expect(screen.getByText("B")).toBeInTheDocument();
     expect(screen.queryByText("C")).toBeNull();
-    expect(avatars[2]).toHaveTextContent("+2");
+    expect(container.querySelector(`.${groupStyles.count}`)).toHaveTextContent(
+      "+2",
+    );
     expect(
       screen.getByRole("group", { name: "Avatar group with 2 more" }),
     ).toBeInTheDocument();
@@ -170,7 +166,7 @@ describe("AvatarGroup (merged capabilities)", () => {
       </AvatarGroup>,
     );
     expect(ref.current).toBe(screen.getByTestId("g"));
-    expect(container.querySelectorAll(".ui-avatar")).toHaveLength(2);
+    expect(container.querySelectorAll(`.${styles.avatar}`)).toHaveLength(2);
     expect(screen.queryByText(/^\+/)).toBeNull();
 
     rerender(
@@ -178,7 +174,7 @@ describe("AvatarGroup (merged capabilities)", () => {
         <Avatar name="Solo" />
       </AvatarGroup>,
     );
-    expect(container.querySelectorAll(".ui-avatar")).toHaveLength(1);
+    expect(container.querySelectorAll(`.${styles.avatar}`)).toHaveLength(1);
     expect(screen.getByText("S")).toBeInTheDocument();
   });
 });

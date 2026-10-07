@@ -17,7 +17,7 @@ const hasContent = (node: ReactNode) =>
 /** Page: the padded, vertically spaced column of a screen's content. */
 export const Page = ({ className, maxWidth, style, ...props }: PageProps) => (
   <div
-    className={cn(styles.page, "ui-page", className)}
+    className={cn(styles.page, className)}
     style={{ maxWidth, ...style }}
     {...props}
   />
@@ -31,14 +31,12 @@ export const PageHeader = ({
   className,
   ...props
 }: PageHeaderProps) => (
-  <header className={cn(styles.header, "ui-page-header", className)} {...props}>
-    <div className={cn(styles.heading, "ui-page-heading")}>
+  <header className={cn(styles.header, className)} {...props}>
+    <div className={styles.heading}>
       <h1>{title}</h1>
       {hasContent(description) && <p>{description}</p>}
     </div>
-    {hasContent(actions) && (
-      <div className={cn(styles.actions, "ui-page-actions")}>{actions}</div>
-    )}
+    {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
   </header>
 );
 
@@ -56,11 +54,11 @@ export const PageSection = ({
   return (
     <section
       aria-labelledby={headingId}
-      className={cn(styles.section, "ui-page-section", className)}
+      className={cn(styles.section, className)}
       {...props}
     >
-      <div className={cn(styles.sectionHeader, "ui-page-section-header")}>
-        <div className={cn(styles.heading, "ui-page-heading")}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.heading}>
           <h2 id={headingId}>
             {hasContent(icon) && (
               <span className={styles.sectionIcon} aria-hidden="true">
@@ -71,9 +69,7 @@ export const PageSection = ({
           </h2>
           {hasContent(description) && <p>{description}</p>}
         </div>
-        {hasContent(actions) && (
-          <div className={cn(styles.actions, "ui-page-actions")}>{actions}</div>
-        )}
+        {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
       </div>
       {children}
     </section>
@@ -99,9 +95,6 @@ export const Toolbar = ({
         styles.toolbar,
         density === "compact" && styles.compact,
         !wrap && styles.nowrap,
-        "ui-toolbar",
-        density === "compact" && "ui-toolbar-compact",
-        !wrap && "ui-toolbar-nowrap",
         className,
       )}
       {...props}
@@ -118,21 +111,19 @@ export const StatCard = ({
   className,
   ...props
 }: StatCardProps) => (
-  <div className={cn(styles.statCard, "ui-stat-card", className)} {...props}>
+  <div className={cn(styles.statCard, className)} {...props}>
     {hasContent(icon) && (
-      <span className={cn(styles.statIcon, "ui-stat-icon")} aria-hidden="true">
+      <span className={styles.statIcon} aria-hidden="true">
         {icon}
       </span>
     )}
-    <div className={cn(styles.statContent, "ui-stat-content")}>
+    <div className={styles.statContent}>
       <dl>
         <dt>{label}</dt>
         <dd>{value}</dd>
       </dl>
       {description != null && (
-        <p className={cn(styles.statDescription, "ui-stat-description")}>
-          {description}
-        </p>
+        <p className={styles.statDescription}>{description}</p>
       )}
     </div>
   </div>

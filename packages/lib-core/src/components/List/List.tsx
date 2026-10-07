@@ -21,9 +21,6 @@ export const List = ({
       styles.list,
       density === "compact" && styles.compact,
       dividers && styles.dividers,
-      "ui-list",
-      `ui-list-density-${density}`,
-      dividers && "ui-list-dividers",
       className,
     )}
     {...rest}

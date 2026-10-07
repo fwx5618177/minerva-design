@@ -19,31 +19,19 @@ export const ListItem = ({
   ref,
   ...rest
 }: ListItemProps) => (
-  <li
-    ref={ref}
-    className={cn(styles.item, "ui-list-item", className)}
-    {...rest}
-  >
+  <li ref={ref} className={cn(styles.item, className)} {...rest}>
     {hasContent(icon) && (
-      <div className={cn(styles.icon, "ui-list-item-icon")} aria-hidden="true">
+      <div className={styles.icon} aria-hidden="true">
         {icon}
       </div>
     )}
-    <div className={cn(styles.content, "ui-list-item-content")}>
-      <div className={cn(styles.primary, "ui-list-item-primary")}>
-        {primary}
-      </div>
+    <div className={styles.content}>
+      <div className={styles.primary}>{primary}</div>
       {hasContent(secondary) && (
-        <div className={cn(styles.secondary, "ui-list-item-secondary")}>
-          {secondary}
-        </div>
+        <div className={styles.secondary}>{secondary}</div>
       )}
     </div>
-    {hasContent(actions) && (
-      <div className={cn(styles.actions, "ui-list-item-actions")}>
-        {actions}
-      </div>
-    )}
+    {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
   </li>
 );
 

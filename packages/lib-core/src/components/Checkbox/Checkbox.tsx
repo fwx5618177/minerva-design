@@ -10,16 +10,6 @@ import {
 import styles from "./checkbox.module.scss";
 import type { CheckboxProps } from "./types";
 
-/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
-const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
-const UI_COLOR = {
-  primary: "brand",
-  success: "success",
-  info: "info",
-  warning: "warning",
-  danger: "danger",
-} as const;
-
 /**
  * Checkbox: a native checkbox with label, helper text and indeterminate state.
  * Inside a FormControl it picks up the field's id, description, invalid,
@@ -101,11 +91,6 @@ const Checkbox = ({
     ...(checkmarkColor && { "--checkmark-color": checkmarkColor }),
   } as React.CSSProperties;
 
-  const state = indeterminate
-    ? "indeterminate"
-    : isChecked
-      ? "checked"
-      : "unchecked";
   const content = label ?? children;
 
   const labelClasses = classNames(
@@ -119,10 +104,6 @@ const Checkbox = ({
       styles[`color${color.charAt(0).toUpperCase()}${color.slice(1)}`],
     isDisabled && styles.disabled,
     isError && styles.error,
-    "ui-checkbox-root",
-    `ui-checkbox-size-${UI_SIZE[size]}`,
-    `ui-checkbox-color-${UI_COLOR[color]}`,
-    isError && "ui-checkbox-error",
     className,
   );
 
@@ -130,11 +111,11 @@ const Checkbox = ({
     <div
       className={classNames(styles.checkboxWrapper, isError && styles.error)}
     >
-      <label className={labelClasses} data-disabled={isDisabled || undefined}>
+      <label className={labelClasses}>
         <input
           ref={mergedRef}
           type="checkbox"
-          className={classNames(styles.input, "ui-checkbox-control")}
+          className={styles.input}
           id={field.id}
           value={value}
           checked={isChecked}
@@ -143,24 +124,17 @@ const Checkbox = ({
           onClick={handleClick}
           onChange={handleChange}
           required={isRequired}
-          data-state={state}
           aria-checked={indeterminate ? "mixed" : undefined}
           aria-label={ariaLabel}
           aria-invalid={isError || undefined}
           aria-readonly={field["aria-readonly"]}
           aria-describedby={field["aria-describedby"]}
         />
-        <span
-          className={classNames(styles.checkmark, "ui-checkbox-indicator")}
-          style={checkmarkStyle}
-          data-state={state}
-        >
+        <span className={styles.checkmark} style={checkmarkStyle}>
           {icon && isChecked && !indeterminate && icon}
         </span>
         {content != null && content !== false && content !== "" && (
-          <span className={classNames(styles.label, "ui-checkbox-text")}>
-            {content}
-          </span>
+          <span className={styles.label}>{content}</span>
         )}
       </label>
       {helperText && (

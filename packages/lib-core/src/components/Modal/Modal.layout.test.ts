@@ -1,6 +1,6 @@
-// Ported from novel-isr-ui src/components/__test__/Modal.layout.test.ts
-// (layout contract of docs/modal-presentation.md; happy-dom has no layout engine,
-// so the rules are asserted on the compiled stylesheet).
+// Modal layout contract (see the rules at the top of modal.module.scss).
+// happy-dom has no layout engine, so the rules are asserted on the compiled
+// stylesheet.
 import { join } from "node:path";
 import { compile } from "sass";
 import { expect, it } from "vitest";

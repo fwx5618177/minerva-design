@@ -68,7 +68,6 @@ interface CommandPanelProps {
   emptyText: ReactNode;
   resultsLabel: string;
   enterLabel: ReactNode;
-  getOptionId?: (item: CommandItem, index: number) => string;
   onSelect: (item: CommandItem) => void;
 }
 
@@ -83,7 +82,6 @@ const CommandPanel = ({
   emptyText,
   resultsLabel,
   enterLabel,
-  getOptionId,
   onSelect,
 }: CommandPanelProps) => {
   const [query, setQuery] = useState("");
@@ -99,8 +97,7 @@ const CommandPanel = ({
       .slice(0, maxResults);
   }, [items, maxResults, query]);
 
-  const optionId = (index: number) =>
-    getOptionId?.(results[index], index) ?? `${baseId}-option-${index}`;
+  const optionId = (index: number) => `${baseId}-option-${index}`;
   const activeId = results[activeIndex] ? optionId(activeIndex) : undefined;
 
   useEffect(() => {
@@ -130,12 +127,12 @@ const CommandPanel = ({
 
   return (
     <>
-      <div className={cn(styles.search, "ui-command-search")}>
+      <div className={styles.search}>
         <span className={styles.searchIcon} aria-hidden="true">
           ⌕
         </span>
         <input
-          className={cn(styles.input, "ui-command-input")}
+          className={styles.input}
           type="text"
           role="combobox"
           aria-label={placeholder}
@@ -159,14 +156,12 @@ const CommandPanel = ({
       </div>
       <div
         id={listId}
-        className={cn(styles.results, "ui-command-results")}
+        className={styles.results}
         role="listbox"
         aria-label={resultsLabel}
       >
         {results.length === 0 ? (
-          <div className={cn(styles.empty, "ui-command-empty")}>
-            {emptyText}
-          </div>
+          <div className={styles.empty}>{emptyText}</div>
         ) : (
           results.map((item, index) => {
             const active = index === activeIndex;
@@ -180,19 +175,16 @@ const CommandPanel = ({
                 tabIndex={-1}
                 aria-selected={active}
                 data-active={active || undefined}
-                data-command-id={item.id}
-                className={cn(styles.item, "ui-command-item")}
+                className={styles.item}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => onSelect(item)}
               >
-                <span className={cn(styles.copy, "ui-command-item-copy")}>
+                <span className={styles.copy}>
                   <strong>{item.title}</strong>
                   {item.description && <small>{item.description}</small>}
                 </span>
                 {item.group && (
-                  <span className={cn(styles.group, "ui-command-item-group")}>
-                    {item.group}
-                  </span>
+                  <span className={styles.group}>{item.group}</span>
                 )}
               </button>
             );
@@ -223,7 +215,6 @@ export const CommandDialog = ({
   maxResults = 12,
   resultsLabel,
   enterLabel,
-  getOptionId,
   className,
 }: CommandDialogProps) => {
   const { t } = useI18n();
@@ -263,12 +254,12 @@ export const CommandDialog = ({
       <ModalContent
         ref={contentRef}
         onCloseAutoFocus={onCloseAutoFocus}
-        className={cn(styles.dialog, "ui-command-dialog", className)}
+        className={cn(styles.dialog, className)}
         description={description ?? t("command.description")}
         hideCloseButton
         size="large"
       >
-        <ModalHeader className={cn(styles.header, "ui-command-header")}>
+        <ModalHeader className={styles.header}>
           <span>{title ?? t("command.title")}</span>
           {shortcutLabel && <kbd className={styles.kbd}>{shortcutLabel}</kbd>}
         </ModalHeader>
@@ -279,7 +270,6 @@ export const CommandDialog = ({
           emptyText={emptyText ?? t("command.empty")}
           resultsLabel={resultsLabel ?? t("command.results")}
           enterLabel={enterLabel ?? t("command.enter")}
-          getOptionId={getOptionId}
           onSelect={select}
         />
       </ModalContent>

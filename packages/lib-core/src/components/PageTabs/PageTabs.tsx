@@ -7,6 +7,8 @@ import useI18n from "../../hooks/useI18n";
 import type { PageTabProps, PageTabsProps } from "./types";
 import styles from "./pageTabs.module.scss";
 
+const TAB_SELECTOR = `.${styles.pageTab}`;
+
 interface ScrollState {
   overflow: boolean;
   left: boolean;
@@ -63,7 +65,7 @@ export const PageTabs = ({
     const el = viewport.current;
     if (!el) return;
     const active = list.current?.querySelector<HTMLElement>(
-      ".ui-page-tab[data-active]",
+      `${TAB_SELECTOR}[data-active]`,
     );
     if (active) {
       const view = el.getBoundingClientRect();
@@ -84,7 +86,7 @@ export const PageTabs = ({
     const items = JSON.stringify([
       activeValue,
       ...Array.from(
-        list.current?.querySelectorAll<HTMLElement>(".ui-page-tab") ?? [],
+        list.current?.querySelectorAll<HTMLElement>(TAB_SELECTOR) ?? [],
         (item) => [item.dataset.value, item.dataset.active],
       ),
     ]);
@@ -123,22 +125,22 @@ export const PageTabs = ({
     <nav
       {...rest}
       aria-label={ariaLabel}
-      className={classNames("ui-page-tabs", styles.pageTabs, className)}
+      className={classNames(styles.pageTabs, className)}
       onFocusCapture={(event) => {
         // Portal events (e.g. a context menu) bubble through the nav: only
         // remember focus that is really inside it.
         if (event.currentTarget.contains(event.target)) {
-          focused.current = event.target.closest(".ui-page-tab")
+          focused.current = event.target.closest(TAB_SELECTOR)
             ? event.target
             : null;
         }
         onFocusCapture?.(event);
       }}
       onContextMenuCapture={(event) => {
-        const item = (event.target as Element).closest(".ui-page-tab");
+        const item = (event.target as Element).closest(TAB_SELECTOR);
         if (item) {
           focused.current = item.querySelector<HTMLButtonElement>(
-            ".ui-page-tab-trigger",
+            `.${styles.trigger}`,
           );
         }
         onContextMenuCapture?.(event);
@@ -146,7 +148,7 @@ export const PageTabs = ({
     >
       {scroll.overflow && (
         <IconButton
-          className={classNames("ui-page-tabs-scroll", styles.scroll)}
+          className={styles.scroll}
           ariaLabel={scrollLeftLabel ?? t("pageTabs.scrollLeft")}
           size="small"
           shape="square"
@@ -155,21 +157,14 @@ export const PageTabs = ({
           icon={<LuChevronLeft size={18} aria-hidden="true" />}
         />
       )}
-      <div
-        ref={viewport}
-        className={classNames("ui-page-tabs-viewport", styles.viewport)}
-        onScroll={measure}
-      >
-        <div
-          ref={list}
-          className={classNames("ui-page-tabs-list", styles.list)}
-        >
+      <div ref={viewport} className={styles.viewport} onScroll={measure}>
+        <div ref={list} className={styles.list}>
           {children}
         </div>
       </div>
       {scroll.overflow && (
         <IconButton
-          className={classNames("ui-page-tabs-scroll", styles.scroll)}
+          className={styles.scroll}
           ariaLabel={scrollRightLabel ?? t("pageTabs.scrollRight")}
           size="small"
           shape="square"
@@ -178,11 +173,7 @@ export const PageTabs = ({
           icon={<LuChevronRight size={18} aria-hidden="true" />}
         />
       )}
-      {actions && (
-        <div className={classNames("ui-page-tabs-actions", styles.actions)}>
-          {actions}
-        </div>
-      )}
+      {actions && <div className={styles.actions}>{actions}</div>}
     </nav>
   );
 };
@@ -207,7 +198,7 @@ export const PageTab = ({
   <div
     {...rest}
     ref={ref}
-    className={classNames("ui-page-tab", styles.pageTab, className)}
+    className={classNames(styles.pageTab, className)}
     data-value={value}
     data-active={active || undefined}
     data-disabled={disabled || undefined}
@@ -221,29 +212,20 @@ export const PageTab = ({
     >
       <button
         type="button"
-        className={classNames("ui-page-tab-trigger", styles.trigger)}
+        className={styles.trigger}
         aria-current={active ? "page" : undefined}
         disabled={disabled}
         onClick={onSelect}
       >
         {icon && (
-          <span
-            className={classNames("ui-page-tab-icon", styles.icon)}
-            aria-hidden="true"
-          >
+          <span className={styles.icon} aria-hidden="true">
             {icon}
           </span>
         )}
-        <span className={classNames("ui-page-tab-label", styles.label)}>
-          {label}
-        </span>
+        <span className={styles.label}>{label}</span>
       </button>
     </Tooltip>
-    {action && (
-      <span className={classNames("ui-page-tab-action", styles.action)}>
-        {action}
-      </span>
-    )}
+    {action && <span className={styles.action}>{action}</span>}
   </div>
 );
 

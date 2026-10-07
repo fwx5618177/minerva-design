@@ -23,8 +23,7 @@ export interface SwitchProps {
    */
   size?: "small" | "medium" | "large";
   /**
-   * Color when on: a theme color name or any CSS color (the
-   * `--ui-switch-active-color` custom property overrides theme colors)
+   * Color when on: a theme color name or any CSS color
    * @default "primary"
    */
   color?:

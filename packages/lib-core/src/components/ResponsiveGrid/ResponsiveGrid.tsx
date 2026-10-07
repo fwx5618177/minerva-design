@@ -32,21 +32,19 @@ const ResponsiveGrid = ({
         "ResponsiveGrid columns must be integers from 1 to 12",
       );
     }
-    variables[`--ui-grid-${key}`] = value;
+    variables[`--grid-columns-${key}`] = value;
     previous = value;
   }
-  variables["--ui-grid-row-gap"] = resolveSpace(rowGap);
-  variables["--ui-grid-column-gap"] = resolveSpace(columnGap);
+  variables["--grid-row-gap"] = resolveSpace(rowGap);
+  variables["--grid-column-gap"] = resolveSpace(columnGap);
 
   return (
     <Tag
-      className={cn(styles.root, "ui-responsive-grid", className)}
+      className={cn(styles.root, className)}
       style={{ ...variables, ...style } as CSSProperties}
       {...rest}
     >
-      <div className={cn(styles.layout, "ui-responsive-grid-layout")}>
-        {children}
-      </div>
+      <div className={styles.layout}>{children}</div>
     </Tag>
   );
 };

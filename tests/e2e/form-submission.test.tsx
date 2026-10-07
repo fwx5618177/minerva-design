@@ -1,11 +1,6 @@
-// Ported from @novel-isr/ui tests/e2e/form-submission.test.tsx.
-//
 // "新建书籍" form — a consumer composes FormLayout + FormField + inputs,
 // validates on submit, shows a toast on success and can reset. Driven only
-// through user-event. Native Minerva API with lib-core's default (English)
-// built-in strings; consumer strings stay as in the original. A compact
-// block at the end replays a scenario through @minerva/lib-core/compat with
-// novel's prop names and Chinese defaults.
+// through user-event, with lib-core's default (English) built-in strings.
 import { useState, type FormEvent } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -26,7 +21,6 @@ import {
   Toolbar,
   toast,
 } from "@minerva/lib-core";
-import * as compat from "@minerva/lib-core/compat";
 
 interface Book {
   title: string;
@@ -270,10 +264,8 @@ describe("create-book form flow", () => {
     const chapters = screen.getByRole("spinbutton", { name: /章节数/ });
 
     await user.type(chapters, "9999");
-    expect(chapters.closest("[data-invalid]")).toHaveAttribute(
-      "title",
-      "Maximum 5000",
-    );
+    expect(chapters).toHaveAttribute("aria-invalid", "true");
+    expect(chapters.parentElement).toHaveAttribute("title", "Maximum 5000");
     await user.tab();
     expect(chapters).toHaveValue("5000");
     expect(chapters).toHaveAttribute("aria-valuenow", "5000");
@@ -318,7 +310,7 @@ describe("create-book form flow", () => {
     ).toHaveAccessibleDescription("公开展示的标题");
   });
 
-  // Ported from tests/browser/form-layout.mjs (behavioral part; grid geometry dropped).
+  // Behavioural layout checks (happy-dom has no grid geometry).
   it("uncontrolled FormLayout: label focuses field, Tab order, Enter/external submit and reset buttons", async () => {
     const user = userEvent.setup();
     const submissions: Record<string, FormDataEntryValue>[] = [];
@@ -377,201 +369,5 @@ describe("create-book form flow", () => {
     await user.click(screen.getByRole("button", { name: "Reset" }));
     expect(title).toHaveValue("Draft");
     expect(resets).toBe(1);
-  });
-});
-
-// ─── The original novel app, verbatim through the compat entry ──────────────
-
-function CompatCreateBookApp({ onCreate }: { onCreate: (book: Book) => void }) {
-  const { book, errors, set, submit, reset } = useBookForm(onCreate);
-
-  return (
-    <compat.ToastProvider>
-      <compat.FormLayout
-        aria-label="新建书籍"
-        noValidate
-        onSubmit={submit}
-        onReset={reset}
-      >
-        <compat.FormField
-          label="书名"
-          isRequired
-          helperText="公开展示的标题"
-          errorMessage={errors.title}
-        >
-          <compat.Input
-            name="title"
-            value={book.title}
-            onChange={(e) => set("title", e.target.value)}
-          />
-        </compat.FormField>
-        <compat.FormField label="简介" errorMessage={errors.synopsis}>
-          <compat.Textarea
-            name="synopsis"
-            value={book.synopsis}
-            onChange={(e) => set("synopsis", e.target.value)}
-          />
-        </compat.FormField>
-        <compat.FormField
-          label="章节数"
-          isRequired
-          errorMessage={errors.chapters}
-        >
-          <compat.NumberInput
-            value={book.chapters}
-            onChange={(v) => set("chapters", v)}
-            min={1}
-            max={5000}
-          />
-        </compat.FormField>
-        <compat.FormField label="分类" isRequired errorMessage={errors.genre}>
-          <compat.Select
-            value={book.genre}
-            onValueChange={(v) => set("genre", v)}
-            placeholder="选择分类"
-          >
-            <compat.SelectItem value="fantasy">玄幻</compat.SelectItem>
-            <compat.SelectItem value="scifi">科幻</compat.SelectItem>
-            <compat.SelectItem value="mystery">悬疑</compat.SelectItem>
-          </compat.Select>
-        </compat.FormField>
-        <compat.FormField label="标签">
-          <compat.TagInput
-            value={book.tags}
-            onValueChange={(v) => set("tags", v)}
-            options={["长篇", "完结", "爽文"]}
-          />
-        </compat.FormField>
-        <compat.Checkbox
-          checked={book.mature}
-          onCheckedChange={(v) => set("mature", v === true)}
-        >
-          含成人内容
-        </compat.Checkbox>
-        <compat.Switch
-          aria-label="立即发布"
-          checked={book.publish}
-          onCheckedChange={(v) => set("publish", v)}
-        />
-        <compat.Toolbar>
-          <compat.Button type="submit">创建</compat.Button>
-          <compat.Button type="reset" variant="ghost">
-            重置
-          </compat.Button>
-        </compat.Toolbar>
-      </compat.FormLayout>
-    </compat.ToastProvider>
-  );
-}
-
-describe("via @minerva/lib-core/compat", () => {
-  function compatSetup() {
-    const created: Book[] = [];
-    const user = userEvent.setup();
-    render(<CompatCreateBookApp onCreate={(book) => created.push(book)} />);
-    return { user, created };
-  }
-
-  it("blocks an empty submit with accessible field errors, then submits after the user fixes them", async () => {
-    const { user, created } = compatSetup();
-
-    const title = screen.getByRole("textbox", { name: /书名/ });
-    expect(title).toHaveAccessibleDescription("公开展示的标题");
-    expect(title).toBeRequired();
-
-    await user.click(screen.getByRole("button", { name: "创建" }));
-
-    expect(created).toHaveLength(0);
-    expect(screen.getAllByRole("alert").map((n) => n.textContent)).toEqual([
-      "请填写书名",
-      "简介至少 10 个字",
-      "请填写章节数",
-      "请选择分类",
-    ]);
-    expect(title).toBeInvalid();
-    expect(screen.getByRole("spinbutton", { name: /章节数/ })).toBeInvalid();
-    expect(screen.getByRole("combobox", { name: /分类/ })).toHaveAttribute(
-      "aria-invalid",
-      "true",
-    );
-
-    await user.type(title, "诡秘之主");
-    await user.type(
-      screen.getByRole("textbox", { name: "简介" }),
-      "蒸汽与机械的浪潮中，谁能触及非凡？",
-    );
-    const chapters = screen.getByRole("spinbutton", { name: /章节数/ });
-    await user.type(chapters, "1393");
-    await user.keyboard("{ArrowUp}");
-    expect(chapters).toHaveValue("1394");
-
-    const genre = screen.getByRole("combobox", { name: /分类/ });
-    genre.focus();
-    await user.keyboard("{Enter}");
-    await user.click(await screen.findByRole("option", { name: "玄幻" }));
-    expect(genre).toHaveTextContent("玄幻");
-
-    const tags = screen.getByRole("combobox", { name: "标签" });
-    await user.type(tags, "克苏鲁{Enter}");
-    await user.type(tags, "完");
-    await user.click(await screen.findByRole("option", { name: "完结" }));
-    expect(
-      screen.getByRole("button", { name: "Remove 克苏鲁" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Remove 完结" }),
-    ).toBeInTheDocument();
-
-    await user.click(screen.getByRole("checkbox", { name: "含成人内容" }));
-    await user.click(screen.getByRole("switch", { name: "立即发布" }));
-    expect(screen.getByRole("switch", { name: "立即发布" })).toBeChecked();
-
-    await user.click(screen.getByRole("button", { name: "创建" }));
-
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(created).toEqual([
-      {
-        title: "诡秘之主",
-        synopsis: "蒸汽与机械的浪潮中，谁能触及非凡？",
-        chapters: 1394,
-        genre: "fantasy",
-        tags: ["克苏鲁", "完结"],
-        mature: true,
-        publish: true,
-      },
-    ]);
-
-    // novel's built-in Chinese region / close labels
-    const status = await within(
-      screen.getByRole("region", { name: "通知" }),
-    ).findByRole("status");
-    expect(status).toHaveTextContent("《诡秘之主》已创建");
-    expect(status).toHaveTextContent("1394 章 · 克苏鲁, 完结");
-
-    await dismissToasts(user, "通知", "关闭");
-  });
-
-  it("clamps out-of-range chapter counts on blur and Enter-in-field submits the form", async () => {
-    const { user, created } = compatSetup();
-    const chapters = screen.getByRole("spinbutton", { name: /章节数/ });
-
-    await user.type(chapters, "9999");
-    expect(chapters.closest("[data-invalid]")).toHaveAttribute(
-      "title",
-      "最大值 5000",
-    );
-    await user.tab();
-    expect(chapters).toHaveValue("5000");
-    expect(chapters).toHaveAttribute("aria-valuenow", "5000");
-
-    await user.type(
-      screen.getByRole("textbox", { name: /书名/ }),
-      "三体{Enter}",
-    );
-    expect(created).toHaveLength(0);
-    expect(screen.getAllByRole("alert").map((n) => n.textContent)).toEqual([
-      "简介至少 10 个字",
-      "请选择分类",
-    ]);
   });
 });

@@ -7,9 +7,27 @@ import { FormLayout } from ".";
 import { FormField } from "../FormControl";
 import { GridItem } from "../ResponsiveGrid";
 import { Input } from "../Input";
+import controlStyles from "../FormControl/formControl.module.scss";
+import gridStyles from "../ResponsiveGrid/responsiveGrid.module.scss";
+import styles from "./formLayout.module.scss";
 
 const grid = (container: HTMLElement) =>
-  container.querySelector<HTMLElement>(".ui-responsive-grid")!;
+  container.querySelector<HTMLElement>(`form > .${gridStyles.root}`)!;
+
+/**
+ * Value of the inline custom property ResponsiveGrid sets for `key`
+ * (a breakpoint such as "base" / "lg", or "row-gap" / "column-gap").
+ */
+const gridVar = (el: HTMLElement, key: string) => {
+  const match = (el.getAttribute("style") ?? "")
+    .split(";")
+    .map((declaration) => declaration.split(/:(.*)/s))
+    .find(
+      ([name]) =>
+        name?.trim().startsWith("--") && name.trim().endsWith(`-${key}`),
+    );
+  return match?.[1]?.trim() ?? "";
+};
 
 describe("FormLayout", () => {
   it("forwards native form props and ref while consuming grid props", () => {
@@ -40,7 +58,7 @@ describe("FormLayout", () => {
     const form = ref.current!;
     expect(form).toBeInstanceOf(HTMLFormElement);
     expect(form).toBe(container.querySelector("form"));
-    expect(form).toHaveClass("root", "ui-form-layout", "consumer");
+    expect(form).toHaveClass(styles.root, "consumer");
     expect(form.id).toBe("metadata");
     expect(form.getAttribute("name")).toBe("metadata");
     expect(form.getAttribute("action")).toBe("/save");
@@ -52,16 +70,12 @@ describe("FormLayout", () => {
     expect(form.getAttribute("aria-label")).toBe("Metadata");
     expect(form.dataset.owner).toBe("editor");
     expect(form.style.maxWidth).toBe("720px");
-    const layout = form.querySelector<HTMLElement>(".ui-responsive-grid")!;
+    const layout = form.querySelector<HTMLElement>(`.${gridStyles.root}`)!;
     expect(
-      ["base", "sm", "md", "lg"].map((key) =>
-        layout.style.getPropertyValue(`--ui-grid-${key}`),
-      ),
+      ["base", "sm", "md", "lg"].map((key) => gridVar(layout, key)),
     ).toEqual(["1", "2", "2", "3"]);
-    expect(layout.style.getPropertyValue("--ui-grid-row-gap")).toBe(
-      "var(--space-2)",
-    );
-    expect(layout.style.getPropertyValue("--ui-grid-column-gap")).toBe("20px");
+    expect(gridVar(layout, "row-gap")).toBe("var(--space-2)");
+    expect(gridVar(layout, "column-gap")).toBe("20px");
     expect(form.querySelector("input")?.form).toBe(form);
     expect(
       container.querySelector("[columns], [gap], [rowgap], [columngap]"),
@@ -73,35 +87,24 @@ describe("FormLayout", () => {
   it("passes numeric columns and gap through to ResponsiveGrid", () => {
     const { container } = render(<FormLayout columns={2} gap={5} />);
     const el = grid(container);
-    expect(el.style.getPropertyValue("--ui-grid-base")).toBe("2");
-    expect(el.style.getPropertyValue("--ui-grid-lg")).toBe("2");
-    expect(el.style.getPropertyValue("--ui-grid-row-gap")).toBe(
-      "var(--space-5)",
-    );
-    expect(el.style.getPropertyValue("--ui-grid-column-gap")).toBe(
-      "var(--space-5)",
-    );
+    expect(gridVar(el, "base")).toBe("2");
+    expect(gridVar(el, "lg")).toBe("2");
+    expect(gridVar(el, "row-gap")).toBe("var(--space-5)");
+    expect(gridVar(el, "column-gap")).toBe("var(--space-5)");
   });
 
-  // from novel LayoutSpacing.test (FormLayout rows)
   it.each([0.5, "0.5"])("maps %j to the half-step spacing token", (gap) => {
     const { container } = render(<FormLayout gap={gap} />);
-    for (const property of ["--ui-grid-row-gap", "--ui-grid-column-gap"]) {
-      expect(grid(container).style.getPropertyValue(property)).toBe(
-        "var(--space-0-5)",
-      );
+    for (const key of ["row-gap", "column-gap"]) {
+      expect(gridVar(grid(container), key)).toBe("var(--space-0-5)");
     }
   });
 
   it("defaults to one column and spacing token 4", () => {
     const { container } = render(<FormLayout />);
-    expect(grid(container).style.getPropertyValue("--ui-grid-base")).toBe("1");
-    expect(grid(container).style.getPropertyValue("--ui-grid-row-gap")).toBe(
-      "var(--space-4)",
-    );
-    expect(grid(container).style.getPropertyValue("--ui-grid-column-gap")).toBe(
-      "var(--space-4)",
-    );
+    expect(gridVar(grid(container), "base")).toBe("1");
+    expect(gridVar(grid(container), "row-gap")).toBe("var(--space-4)");
+    expect(gridVar(grid(container), "column-gap")).toBe("var(--space-4)");
   });
 
   it("preserves independent grid row and column gaps", () => {
@@ -109,19 +112,11 @@ describe("FormLayout", () => {
       <FormLayout gap={4} rowGap={0.5} columnGap="0.5" />,
     );
     const el = grid(container);
-    expect(el.style.getPropertyValue("--ui-grid-row-gap")).toBe(
-      "var(--space-0-5)",
-    );
-    expect(el.style.getPropertyValue("--ui-grid-column-gap")).toBe(
-      "var(--space-0-5)",
-    );
+    expect(gridVar(el, "row-gap")).toBe("var(--space-0-5)");
+    expect(gridVar(el, "column-gap")).toBe("var(--space-0-5)");
     rerender(<FormLayout gap={0.5} rowGap={0} columnGap="calc(1rem + 2px)" />);
-    expect(el.style.getPropertyValue("--ui-grid-row-gap")).toBe(
-      "var(--space-0)",
-    );
-    expect(el.style.getPropertyValue("--ui-grid-column-gap")).toBe(
-      "calc(1rem + 2px)",
-    );
+    expect(gridVar(el, "row-gap")).toBe("var(--space-0)");
+    expect(gridVar(el, "column-gap")).toBe("calc(1rem + 2px)");
   });
 
   it("leaves submit cancellation to the consumer, including when no handler is supplied", () => {
@@ -296,10 +291,10 @@ describe("FormLayout", () => {
     );
     const field = fieldRef.current!;
     expect(itemRef.current).toBe(field);
-    expect(field.parentElement).toHaveClass("ui-responsive-grid-layout");
+    expect(field.parentElement).toHaveClass(gridStyles.layout);
     expect(field).toHaveClass(
-      "ui-form-control",
-      "ui-grid-item-full-width",
+      controlStyles.root,
+      gridStyles.fullWidth,
       "item",
       "field",
     );

@@ -7,19 +7,6 @@ import useI18n from "../../hooks/useI18n";
 
 const RIPPLE_DURATION = 600;
 
-/** Short size names used by the stable `ui-tag-size-*` styling hooks */
-const SIZE_HOOK = { small: "sm", medium: "md", large: "lg" } as const;
-
-/** Color names used by the stable `ui-tag-color-*` styling hooks */
-const COLOR_HOOK = {
-  default: "gray",
-  primary: "brand",
-  success: "success",
-  warning: "warning",
-  error: "danger",
-  info: "info",
-} as const;
-
 interface Ripple {
   id: number;
   style: React.CSSProperties;
@@ -145,13 +132,11 @@ const Tag = ({
           [styles.elevation]: elevation,
           [styles.disabled]: disabled,
         },
-        // Stable styling hooks (not used for styling by the library)
-        "ui-tag",
-        `ui-tag-size-${SIZE_HOOK[size]}`,
-        `ui-tag-color-${COLOR_HOOK[variant]}`,
         className,
       )}
       style={tagStyles}
+      // Lets layouts such as PageSection keep the tag's width (page.module.scss)
+      data-component="tag"
     >
       {clickable ? (
         <button
@@ -169,7 +154,7 @@ const Tag = ({
       {closable && (
         <button
           type="button"
-          className={classNames(styles.closeIcon, "ui-tag-close")}
+          className={styles.closeIcon}
           onClick={handleClose}
           disabled={disabled}
           aria-label={closeLabel ?? t("tag.close")}

@@ -66,7 +66,6 @@ export const ConfirmDialog = ({
           onClick={() => void onConfirm()}
           loading={loading}
           disabled={confirmDisabled}
-          data-intent={intent}
         >
           {confirmLabel ??
             (intent === "danger" ? t("confirm.delete") : t("confirm.confirm"))}
@@ -171,7 +170,7 @@ let standalone: { queue: ConfirmQueue; container: HTMLElement } | null = null;
 const standaloneRequest: ConfirmFunction = (options) => {
   if (!standalone) {
     const container = document.createElement("div");
-    container.setAttribute("data-ui-confirm-host", "");
+    container.setAttribute("data-confirm-host", "");
     const queue = new ConfirmQueue();
     createRoot(container).render(<ConfirmQueueView queue={queue} />);
     standalone = { queue, container };

@@ -1,4 +1,3 @@
-// Ported from novel-isr-ui src/components/__test__/Modal.focus.test.tsx
 /* eslint-disable jsx-a11y/no-autofocus -- focus return with an autoFocus child is the behaviour under test */
 import { act, createRef, StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";

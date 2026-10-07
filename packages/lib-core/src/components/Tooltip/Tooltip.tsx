@@ -25,15 +25,6 @@ import styles from "./tooltip.module.scss";
 /** Extra gap so the arrow does not overlap the trigger. */
 const ARROW_GAP = 6;
 
-/** Stable `ui-tooltip-tone-*` styling hook for each variant. */
-const TONE_HOOK: Partial<Record<string, string>> = {
-  auto: "auto",
-  fixedDark: "dark",
-  fixedLight: "light",
-};
-
-type OpenState = "delayed-open" | "instant-open";
-
 type TriggerChildProps = {
   "aria-describedby"?: string;
 };
@@ -74,7 +65,6 @@ const Tooltip = ({
   const config = useTooltipConfig();
   const enterDelay = enterDelayProp ?? config?.enterDelay ?? 200;
   const leaveDelay = leaveDelayProp ?? config?.leaveDelay ?? 0;
-  const [openState, setOpenState] = useState<OpenState>("instant-open");
   const [open, setOpen] = useControllableState({
     value: openProp,
     defaultValue: defaultOpen,
@@ -97,9 +87,8 @@ const Tooltip = ({
   };
   useEffect(() => clearTimers, []);
 
-  const show = (state: OpenState = "instant-open") => {
+  const show = () => {
     if (open) return;
-    setOpenState(state);
     setOpen(true);
     onOpen?.();
   };
@@ -195,10 +184,7 @@ const Tooltip = ({
       show();
       return;
     }
-    enterTimeoutRef.current = setTimeout(
-      () => show("delayed-open"),
-      enterDelay,
-    );
+    enterTimeoutRef.current = setTimeout(show, enterDelay);
   };
 
   const handleMouseLeave = () => {
@@ -248,7 +234,6 @@ const Tooltip = ({
       <Slot
         ref={setTriggerEl}
         className={className || undefined}
-        data-state={visible ? openState : "closed"}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
@@ -275,8 +260,6 @@ const Tooltip = ({
     );
   }
 
-  const [side, align = "center"] = finalPlacement.split("-");
-
   return (
     <>
       {triggerNode}
@@ -289,12 +272,7 @@ const Tooltip = ({
             role="tooltip"
             aria-label={ariaLabel}
             data-placement={finalPlacement}
-            data-side={side}
-            data-align={align}
-            data-state={openState}
             className={classNames(
-              "ui-tooltip-content",
-              `ui-tooltip-tone-${TONE_HOOK[variant] ?? variant}`,
               styles.tooltip,
               styles[variant],
               styles[shape],
@@ -315,7 +293,7 @@ const Tooltip = ({
             {arrow && (
               <div
                 ref={setArrowEl}
-                className={classNames(styles.tooltipArrow, "ui-tooltip-arrow")}
+                className={styles.tooltipArrow}
                 style={{ ...background, ...arrowStyles }}
               />
             )}

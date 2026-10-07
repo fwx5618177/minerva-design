@@ -1,11 +1,11 @@
-// SSR cases for the components ported from @novel-isr/ui (used by
-// ssr.test.tsx, which renders every case in a DOM-less Node environment).
+// Shared SSR cases for lib-core components (used by ssr.test.tsx, which renders
+// every case in a DOM-less Node environment, and internal-buttons.test.tsx).
 import type { ReactElement } from "react";
 import * as lib from "../index";
 
 const noop = () => {};
 
-export const portedCases: Array<[string, ReactElement]> = [
+export const componentSsrCases: Array<[string, ReactElement]> = [
   ["ThemeToggle", <lib.ThemeToggle />],
   ["PaletteToggle", <lib.PaletteToggle />],
   [

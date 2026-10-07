@@ -65,10 +65,6 @@ const Divider = ({
       styles[`text${textAlign.charAt(0).toUpperCase() + textAlign.slice(1)}`],
     elevation && styles.elevation,
     flexItem && styles.flexItem,
-    // Stable hooks shared with @novel-isr/ui
-    hasText
-      ? "ui-divider-with-label"
-      : ["ui-divider", `ui-divider-${orientation}`],
     className,
   );
 

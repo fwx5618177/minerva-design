@@ -181,24 +181,14 @@ const MonthCalendar = ({
   return (
     <section
       ref={ref}
-      className={classNames(
-        styles.monthCalendar,
-        "ui-month-calendar",
-        className,
-      )}
+      className={classNames(styles.monthCalendar, className)}
       aria-label={ariaLabel ?? t("monthCalendar.label")}
-      data-disabled={disabled || undefined}
     >
-      <div className={classNames(styles.toolbar, "ui-month-calendar-toolbar")}>
+      <div className={styles.toolbar}>
         <h2 id={headingId} className={styles.heading} aria-live="polite">
           {heading}
         </h2>
-        <div
-          className={classNames(
-            styles.navigation,
-            "ui-month-calendar-navigation",
-          )}
-        >
+        <div className={styles.navigation}>
           <button
             type="button"
             className={classNames(styles.navButton, styles.iconButton)}
@@ -228,15 +218,8 @@ const MonthCalendar = ({
           </button>
         </div>
       </div>
-      <div
-        role="grid"
-        aria-labelledby={headingId}
-        className={classNames(styles.grid, "ui-month-calendar-grid")}
-      >
-        <div
-          role="row"
-          className={classNames(styles.week, "ui-month-calendar-week")}
-        >
+      <div role="grid" aria-labelledby={headingId} className={styles.grid}>
+        <div role="row" className={styles.week}>
           {WEEKDAYS.map((day, index) => (
             <div role="columnheader" key={day} className={styles.weekday}>
               {weekdayLabels?.[index] ?? t(`monthCalendar.weekdays.${day}`)}
@@ -244,11 +227,7 @@ const MonthCalendar = ({
           ))}
         </div>
         {Array.from({ length: 6 }, (_, week) => (
-          <div
-            role="row"
-            className={classNames(styles.week, "ui-month-calendar-week")}
-            key={week}
-          >
+          <div role="row" className={styles.week} key={week}>
             {days.slice(week * 7, week * 7 + 7).map((date) => {
               const key = dayKey(date);
               const count = counts.get(key) ?? 0;
@@ -262,7 +241,7 @@ const MonthCalendar = ({
                 >
                   <button
                     type="button"
-                    className={classNames(styles.day, "ui-month-calendar-day")}
+                    className={styles.day}
                     ref={(element) => {
                       if (element) buttons.current.set(key, element);
                       else buttons.current.delete(key);
@@ -288,13 +267,7 @@ const MonthCalendar = ({
                     onKeyDown={(event) => handleKeyDown(event, date)}
                   >
                     <span>{date.getDate()}</span>
-                    <span
-                      className={classNames(
-                        styles.count,
-                        "ui-month-calendar-count",
-                      )}
-                      aria-hidden
-                    >
+                    <span className={styles.count} aria-hidden>
                       {count ? (count > 99 ? "99+" : count) : " "}
                     </span>
                   </button>
@@ -306,7 +279,7 @@ const MonthCalendar = ({
       </div>
       {showSelectedDayEvents && value && (
         <section
-          className={classNames(styles.events, "ui-month-calendar-events")}
+          className={styles.events}
           aria-label={
             getEventsLabel
               ? getEventsLabel(value)

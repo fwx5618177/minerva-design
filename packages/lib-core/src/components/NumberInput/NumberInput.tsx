@@ -2,7 +2,7 @@ import { useState, type FocusEvent, type KeyboardEvent } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
-import { fieldSizeHook, isAriaInvalid } from "../../internal/forms-field";
+import { isAriaInvalid } from "../../internal/forms-field";
 import { useControllableState } from "../../internal/useControllableState";
 import { useFormControlProps } from "../FormControl/context";
 import type { NumberInputProps } from "./types";
@@ -170,23 +170,15 @@ export const NumberInput = ({
         isInvalid && styles.invalid,
         internalInvalid && styles.shake,
         isDisabled && styles.disabled,
-        "ui-number-input-root",
-        `ui-number-input-size-${fieldSizeHook[size]}`,
-        isInvalid && "ui-number-input-error",
-        internalInvalid && "ui-number-input-shake",
-        isDisabled && "ui-number-input-disabled",
-        !showStepper && "ui-number-input-no-stepper",
         className,
       )}
-      data-invalid={isInvalid || undefined}
-      data-disabled={isDisabled || undefined}
       title={errorMessage}
     >
       <input
         ref={ref}
         inputMode="decimal"
         type="text"
-        className={cn(styles.field, "ui-number-input-field")}
+        className={styles.field}
         {...field}
         // min / max / now + arrow-key stepping is the WAI-ARIA spinbutton pattern.
         role="spinbutton"
@@ -201,17 +193,10 @@ export const NumberInput = ({
       />
       {showStepper && (
         // Pointer convenience only: keyboard users step with the arrow keys.
-        <div
-          className={cn(styles.stepper, "ui-number-input-stepper")}
-          aria-hidden="true"
-        >
+        <div className={styles.stepper} aria-hidden="true">
           <button
             type="button"
-            className={cn(
-              styles.step,
-              styles.stepUp,
-              "ui-number-input-step ui-number-input-step-up",
-            )}
+            className={cn(styles.step, styles.stepUp)}
             tabIndex={-1}
             disabled={isLocked || (max !== undefined && (current ?? 0) >= max)}
             onClick={() => adjust(step)}
@@ -221,11 +206,7 @@ export const NumberInput = ({
           </button>
           <button
             type="button"
-            className={cn(
-              styles.step,
-              styles.stepDown,
-              "ui-number-input-step ui-number-input-step-down",
-            )}
+            className={cn(styles.step, styles.stepDown)}
             tabIndex={-1}
             disabled={isLocked || (min !== undefined && (current ?? 0) <= min)}
             onClick={() => adjust(-step)}

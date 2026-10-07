@@ -6,6 +6,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { NavTree, type NavTreeSection } from ".";
+import styles from "./navTree.module.scss";
 
 const scssPath = join(import.meta.dirname, "navTree.module.scss");
 
@@ -48,28 +49,23 @@ describe("NavTree", () => {
     ];
     try {
       const { container, rerender } = render(<NavTree sections={sections} />);
-      const label = () => container.querySelector(".ui-nav-tree-label")!;
+      const label = () => container.querySelector(`.${styles.label}`)!;
       expect(getComputedStyle(label()).whiteSpace).toBe("nowrap");
       rerender(<NavTree key="wrapped" sections={sections} wrapLabels />);
       expect(getComputedStyle(label()).whiteSpace).toBe("normal");
       expect(getComputedStyle(label()).overflowWrap).toBe("anywhere");
-      expect(container.querySelector(".ui-nav-tree-end")?.textContent).toBe(
+      expect(container.querySelector(`.${styles.end}`)?.textContent).toBe(
         "Preview",
       );
-      expect(container.querySelector("nav")).toHaveClass(
-        "ui-nav-tree-wrap-labels",
-      );
+      expect(container.querySelector("nav")).toHaveClass(styles.wrapLabels);
       rerender(
         <NavTree key="compact" sections={sections} wrapLabels collapsed />,
       );
       expect(
-        getComputedStyle(container.querySelector(".ui-nav-tree-copy")!).display,
+        getComputedStyle(container.querySelector(`.${styles.copy}`)!).display,
       ).toBe("none");
-      expect(container.querySelector("nav")).toHaveAttribute(
-        "data-collapsed",
-        "true",
-      );
-      expect(container.querySelector(".ui-nav-tree-end")).toBeNull();
+      expect(container.querySelector("nav")).toHaveClass(styles.collapsed);
+      expect(container.querySelector(`.${styles.end}`)).toBeNull();
     } finally {
       style.remove();
     }
@@ -94,14 +90,14 @@ describe("NavTree", () => {
         ]}
       />,
     );
-    const activeItem = container.querySelector(".ui-nav-tree-item-active");
+    const activeItem = container.querySelector(`.${styles.active}`);
     expect(activeItem?.textContent).toContain("访问统计");
     expect(activeItem).toHaveAttribute("aria-current", "page");
     expect(activeItem).toHaveClass("active");
     expect(
       activeItem?.querySelector('[data-testid="status"]')?.textContent,
     ).toBe("3");
-    expect(activeItem?.querySelector(".ui-nav-tree-icon")).toHaveAttribute(
+    expect(activeItem?.querySelector(`.${styles.icon}`)).toHaveAttribute(
       "aria-hidden",
       "true",
     );
@@ -145,7 +141,7 @@ describe("NavTree", () => {
       expect.objectContaining({ id: "operations" }),
     );
     // Compact mode never renders children
-    expect(container.querySelector(".ui-nav-tree-children")).toBeNull();
+    expect(container.querySelector(`.${styles.children}`)).toBeNull();
   });
 
   it("lets controlled expanded ids reopen an explicitly collapsed active branch", () => {
@@ -199,15 +195,15 @@ describe("NavTree", () => {
     );
     const branch = screen.getByRole("button", { name: "运营" });
     expect(branch).toHaveAttribute("aria-expanded", "false");
-    expect(branch).toHaveClass("ui-nav-tree-trigger", "ui-nav-tree-depth-0");
+    expect(branch).toHaveClass(styles.item);
+    expect(branch).not.toHaveClass(styles.nested);
     await user.click(branch);
     expect(branch).toHaveAttribute("aria-expanded", "true");
     expect(branch).toHaveAttribute("data-expanded", "true");
     expect(onExpandedChange).toHaveBeenLastCalledWith(["operations"]);
     expect(screen.getByRole("link", { name: "访问统计" })).toHaveClass(
-      "ui-nav-tree-link",
-      "ui-nav-tree-depth-1",
-      "nested",
+      styles.item,
+      styles.nested,
     );
     await user.click(branch);
     expect(onExpandedChange).toHaveBeenLastCalledWith([]);
@@ -236,16 +232,16 @@ describe("NavTree", () => {
     expect(screen.getByRole("navigation", { name: "Navigation" })).toBe(
       ref.current,
     );
-    expect(ref.current).toHaveClass("ui-nav-tree", "navTree", "consumer");
+    expect(ref.current).toHaveClass(styles.navTree, "consumer");
     expect(ref.current?.style.width).toBe("240px");
-    expect(container.querySelectorAll(".ui-nav-tree-section")).toHaveLength(2);
+    expect(container.querySelectorAll(`.${styles.section}`)).toHaveLength(2);
     expect(
       screen.getByRole("heading", { level: 2, name: "Workspace" }),
-    ).toHaveClass("ui-nav-tree-section-title");
+    ).toHaveClass(styles.sectionTitle);
     const alpha = screen.getByRole("link", { name: /Alpha/ });
     expect(alpha).toHaveAttribute("title", "Alpha / First");
     expect(alpha).toHaveAttribute("href", "/a");
-    expect(alpha.querySelector(".ui-nav-tree-description")?.textContent).toBe(
+    expect(alpha.querySelector(`.${styles.description}`)?.textContent).toBe(
       "First",
     );
     render(<NavTree ariaLabel="Admin" sections={[]} />);
@@ -279,9 +275,8 @@ describe("NavTree", () => {
     const link = screen.getByRole("link", { name: "Archived" });
     expect(link.tagName).toBe("SPAN");
     expect(link).toHaveAttribute("aria-disabled", "true");
-    expect(link).toHaveAttribute("data-disabled", "true");
     expect(link).not.toHaveAttribute("href");
-    expect(link).toHaveClass("ui-nav-tree-item-disabled");
+    expect(link).toHaveClass(styles.disabled);
     await user.click(link);
     expect(onItemSelect).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Branch" })).toBeDisabled();
@@ -310,7 +305,7 @@ describe("NavTree", () => {
     );
     const home = screen.getByRole("link", { name: "Home" });
     expect(home).toHaveAttribute("href", "#/home");
-    expect(home).toHaveClass("ui-nav-tree-item", "ui-nav-tree-item-active");
+    expect(home).toHaveClass(styles.item, styles.active);
     expect(home).toHaveAttribute("data-is-active", "true");
     render(<NavTree onItemSelect={onItemSelect} sections={tree} />);
     await user.click(screen.getAllByRole("link", { name: "Settings" })[1]);
@@ -374,7 +369,8 @@ describe("NavTree", () => {
       />,
     );
     const action = screen.getByRole("button", { name: "Log out" });
-    expect(action).toHaveClass("ui-nav-tree-item", "ui-nav-tree-link");
+    expect(action).toHaveClass(styles.item);
+    expect(action).not.toHaveAttribute("aria-expanded");
     expect(action).toHaveAttribute("type", "button");
     await user.click(action);
     expect(onItemSelect).toHaveBeenCalledWith(

@@ -6,7 +6,6 @@ import { compile } from "sass";
 import { expect, it } from "vitest";
 import { SplitLayout } from ".";
 
-// Ported from novel-isr-ui components/__test__/SplitLayout.test.tsx.
 it("forwards native div attributes, styles, events and ref without leaking layout props", () => {
   const ref = createRef<HTMLDivElement>();
   const clicks: HTMLDivElement[] = [];
@@ -41,17 +40,14 @@ it("forwards native div attributes, styles, events and ref without leaking layou
   expect(layout.dataset.owner).toBe("article");
   expect(layout.title).toBe("Editor");
   expect(layout.tabIndex).toBe(-1);
-  expect(layout).toHaveClass("root", "ui-split-layout", "consumer");
+  expect(layout).toHaveClass("root", "consumer");
   expect(layout.style.maxWidth).toBe("960px");
   expect(layout.style.padding).toBe("8px");
-  expect(layout.style.getPropertyValue("--ui-split-layout-aside-width")).toBe(
+  expect(layout.style.getPropertyValue("--split-layout-aside-width")).toBe(
     "280px",
   );
-  expect(layout.style.getPropertyValue("--ui-split-layout-gap")).toBe("20px");
-  expect(layout.firstElementChild).toHaveClass(
-    "lg",
-    "ui-split-layout-grid--lg",
-  );
+  expect(layout.style.getPropertyValue("--split-layout-gap")).toBe("20px");
+  expect(layout.firstElementChild).toHaveClass("lg");
   expect(
     container.querySelector("[aside], [asidewidth], [collapsebelow], [gap]"),
   ).toBeNull();
@@ -73,25 +69,18 @@ it("renders main before aside once and defaults to a 320px aside, md collapse an
   );
   const layout = container.firstElementChild as HTMLElement;
   const grid = layout.firstElementChild!;
-  expect(grid).toHaveClass(
-    "grid",
-    "md",
-    "hasAside",
-    "ui-split-layout-grid",
-    "ui-split-layout-grid--md",
-    "ui-split-layout-grid--has-aside",
-  );
+  expect(grid).toHaveClass("grid", "md", "hasAside");
   expect(Array.from(grid.children, (child) => child.className)).toEqual([
-    "main ui-split-layout-main",
-    "aside ui-split-layout-aside",
+    "main",
+    "aside",
   ]);
   expect(
     Array.from(layout.querySelectorAll("input, button"), (n) => n.tagName),
   ).toEqual(["INPUT", "BUTTON"]);
-  expect(layout.style.getPropertyValue("--ui-split-layout-aside-width")).toBe(
+  expect(layout.style.getPropertyValue("--split-layout-aside-width")).toBe(
     "320px",
   );
-  expect(layout.style.getPropertyValue("--ui-split-layout-gap")).toBe(
+  expect(layout.style.getPropertyValue("--split-layout-gap")).toBe(
     "var(--space-6)",
   );
 });
@@ -100,23 +89,18 @@ it.each([null, undefined, false])(
   "omits the aside and split columns when aside is %s",
   (aside) => {
     const { container } = render(<SplitLayout aside={aside}>Main</SplitLayout>);
-    const grid = container.querySelector(".ui-split-layout-grid")!;
+    const grid = container.querySelector(".grid")!;
     expect(grid.children).toHaveLength(1);
     expect(grid.firstElementChild?.textContent).toBe("Main");
-    expect(grid).not.toHaveClass("ui-split-layout-grid--has-aside");
     expect(grid).not.toHaveClass("hasAside");
-    expect(container.querySelector(".ui-split-layout-aside")).toBeNull();
+    expect(container.querySelector(".aside")).toBeNull();
   },
 );
 
 it("preserves zero as valid aside content", () => {
   const { container } = render(<SplitLayout aside={0}>Main</SplitLayout>);
-  expect(container.querySelector(".ui-split-layout-aside")?.textContent).toBe(
-    "0",
-  );
-  expect(
-    container.querySelector(".ui-split-layout-grid--has-aside"),
-  ).not.toBeNull();
+  expect(container.querySelector(".aside")?.textContent).toBe("0");
+  expect(container.querySelector(".grid.hasAside")).not.toBeNull();
 });
 
 it.each([0, -1, NaN, Infinity, -Infinity])(
@@ -142,7 +126,7 @@ it.each([0.5, 280, 10000])(
     );
     expect(
       (container.firstElementChild as HTMLElement).style.getPropertyValue(
-        "--ui-split-layout-aside-width",
+        "--split-layout-aside-width",
       ),
     ).toBe(`${asideWidth}px`);
   },
@@ -166,7 +150,7 @@ it.each([
   );
   expect(
     (container.firstElementChild as HTMLElement).style.getPropertyValue(
-      "--ui-split-layout-gap",
+      "--split-layout-gap",
     ),
   ).toBe(expected);
 });
@@ -184,7 +168,7 @@ it.each([0.5, "0.5"])(
     );
     const reference = (
       container.firstElementChild as HTMLElement
-    ).style.getPropertyValue("--ui-split-layout-gap");
+    ).style.getPropertyValue("--split-layout-gap");
     const variable = /^var\((--[a-z0-9-]+)\)$/.exec(reference)?.[1];
     expect(variable).toBe("--space-0-5");
     const declared = new RegExp(`${variable}:\\s*([^;]+);`)
@@ -210,18 +194,16 @@ it("resets nested layout defaults independently of the outer width, gap and brea
   );
   const outer = container.querySelector<HTMLElement>("#outer")!;
   const inner = container.querySelector<HTMLElement>("#inner")!;
-  expect(inner.closest(".ui-split-layout-main")?.parentElement).toBe(
-    outer.firstElementChild,
-  );
-  expect(inner.style.getPropertyValue("--ui-split-layout-aside-width")).toBe(
+  expect(inner.closest(".main")?.parentElement).toBe(outer.firstElementChild);
+  expect(inner.style.getPropertyValue("--split-layout-aside-width")).toBe(
     "320px",
   );
-  expect(inner.style.getPropertyValue("--ui-split-layout-gap")).toBe(
+  expect(inner.style.getPropertyValue("--split-layout-gap")).toBe(
     "var(--space-6)",
   );
-  expect(inner.firstElementChild).toHaveClass("ui-split-layout-grid--md");
-  expect(inner.firstElementChild).not.toHaveClass("ui-split-layout-grid--lg");
-  expect(outer.firstElementChild).toHaveClass("ui-split-layout-grid--lg");
+  expect(inner.firstElementChild).toHaveClass("md");
+  expect(inner.firstElementChild).not.toHaveClass("lg");
+  expect(outer.firstElementChild).toHaveClass("lg");
 });
 
 it("preserves main input state when the aside is removed, restored or reconfigured", () => {
@@ -245,10 +227,10 @@ it("preserves main input state when the aside is removed, restored or reconfigur
 it("ships the container-query split rules in its stylesheet", () => {
   const css = compile(join(import.meta.dirname, "splitLayout.module.scss")).css;
   expect(css).toMatch(
-    /\.root\s*\{[^}]*container:\s*ui-split-layout\s*\/\s*inline-size/,
+    /\.root\s*\{[^}]*container:\s*minerva-split-layout\s*\/\s*inline-size/,
   );
   expect(css).toMatch(
-    /\.grid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\);[^}]*gap:\s*var\(--ui-split-layout-gap\)/,
+    /\.grid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\);[^}]*gap:\s*var\(--split-layout-gap\)/,
   );
   for (const [width, key] of [
     ["768px", "md"],
@@ -256,7 +238,7 @@ it("ships the container-query split rules in its stylesheet", () => {
   ]) {
     expect(css).toMatch(
       new RegExp(
-        `@container ui-split-layout \\(min-width: ${width}\\)\\s*\\{\\s*\\.grid\\.${key}\\.hasAside\\s*\\{\\s*grid-template-columns:\\s*minmax\\(0, 1fr\\) min\\(var\\(--ui-split-layout-aside-width\\), 50%\\)`,
+        `@container minerva-split-layout \\(min-width: ${width}\\)\\s*\\{\\s*\\.grid\\.${key}\\.hasAside\\s*\\{\\s*grid-template-columns:\\s*minmax\\(0, 1fr\\) min\\(var\\(--split-layout-aside-width\\), 50%\\)`,
       ),
     );
   }

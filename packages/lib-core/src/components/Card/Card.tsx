@@ -8,26 +8,12 @@ import type {
   CardContentProps,
   CardFooterProps,
   CardPadding,
-  CardVariant,
 } from "./types";
 import styles from "./card.module.scss";
 
-/** Stable `ui-card-*` hook names (shared with @novel-isr/ui) */
-const HOOK_PADDING: Record<CardPadding, string> = {
-  none: "none",
-  small: "sm",
-  medium: "md",
-  large: "lg",
-};
-const hookVariant = (variant: CardVariant) =>
-  variant === "outlined" ? "outline" : variant;
-
-/** Module + hook classes of a section padding override */
-const sectionPadding = (padding: CardPadding | undefined) =>
-  padding && [
-    styles[`pad-${padding}`],
-    `ui-card-padding-${HOOK_PADDING[padding]}`,
-  ];
+/** Module class of a padding override */
+const paddingClass = (padding: CardPadding | undefined) =>
+  padding && styles[`pad-${padding}`];
 
 const colorStyle = (
   bgColor: string | undefined,
@@ -57,7 +43,6 @@ export const Card = ({
   ...rest
 }: CardProps) => {
   const Tag: React.ElementType = as ?? "div";
-  const pad = sectionPadding(padding);
   return (
     <Tag
       ref={ref}
@@ -67,12 +52,8 @@ export const Card = ({
         styles[variant],
         styles[type],
         padding && styles.padded,
-        pad && pad[0],
+        paddingClass(padding),
         interactive && styles.interactive,
-        "ui-card",
-        `ui-card-variant-${hookVariant(variant)}`,
-        pad && pad[1],
-        interactive && "ui-card-interactive",
         className,
       )}
       {...rest}
@@ -95,17 +76,10 @@ export const CardHeader = ({
   ref,
   ...rest
 }: CardHeaderProps) => {
-  const pad = sectionPadding(padding);
   return (
     <div
       ref={ref}
-      className={cn(
-        styles.cardHeader,
-        pad && pad[0],
-        "ui-card-header",
-        pad && pad[1],
-        className,
-      )}
+      className={cn(styles.cardHeader, paddingClass(padding), className)}
       style={colorStyle(bgColor, textColor, style)}
       {...rest}
     >
@@ -125,11 +99,7 @@ export const CardTitle = ({
   ...rest
 }: CardTitleProps) => {
   return (
-    <Heading
-      ref={ref}
-      className={cn(styles.cardTitle, "ui-card-title", className)}
-      {...rest}
-    >
+    <Heading ref={ref} className={cn(styles.cardTitle, className)} {...rest}>
       {children}
     </Heading>
   );
@@ -145,11 +115,7 @@ export const CardDescription = ({
   ...rest
 }: CardDescriptionProps) => {
   return (
-    <p
-      ref={ref}
-      className={cn(styles.cardDescription, "ui-card-description", className)}
-      {...rest}
-    >
+    <p ref={ref} className={cn(styles.cardDescription, className)} {...rest}>
       {children}
     </p>
   );
@@ -169,16 +135,13 @@ export const CardContent = ({
   ref,
   ...rest
 }: CardContentProps) => {
-  const pad = sectionPadding(padding);
   return (
     <div
       ref={ref}
       className={cn(
         styles.cardContent,
         animation && styles[animation],
-        pad && pad[0],
-        "ui-card-body",
-        pad && pad[1],
+        paddingClass(padding),
         className,
       )}
       style={colorStyle(bgColor, textColor, style)}
@@ -202,17 +165,10 @@ export const CardFooter = ({
   ref,
   ...rest
 }: CardFooterProps) => {
-  const pad = sectionPadding(padding);
   return (
     <div
       ref={ref}
-      className={cn(
-        styles.cardFooter,
-        pad && pad[0],
-        "ui-card-footer",
-        pad && pad[1],
-        className,
-      )}
+      className={cn(styles.cardFooter, paddingClass(padding), className)}
       style={colorStyle(bgColor, textColor, style)}
       {...rest}
     >

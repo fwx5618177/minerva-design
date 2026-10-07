@@ -10,18 +10,9 @@ import type {
   DrawerProps,
   DrawerRootProps,
   DrawerSectionProps,
-  DrawerSize,
   DrawerTriggerProps,
 } from "./types";
 import styles from "./drawer.module.scss";
-
-/** Minerva size -> novel-isr-ui size suffix of the `ui-drawer-size-*` hook. */
-const SIZE_HOOK: Record<DrawerSize, string> = {
-  small: "sm",
-  medium: "md",
-  large: "lg",
-  full: "full",
-};
 
 /** Owns the open state of a compound drawer (Radix Dialog root). */
 export const DrawerRoot = (props: DrawerRootProps) => (
@@ -57,29 +48,13 @@ export const DrawerContent = ({
   const { t } = useI18n();
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay
-        className={cn(styles.overlay, "ui-drawer-overlay", overlayClassName)}
-      />
+      <RadixDialog.Overlay className={cn(styles.overlay, overlayClassName)} />
       <RadixDialog.Content
-        className={cn(
-          styles.content,
-          styles[side],
-          styles[size],
-          "ui-drawer-content",
-          `ui-drawer-side-${side}`,
-          `ui-drawer-size-${SIZE_HOOK[size]}`,
-          className,
-        )}
-        data-side={side}
-        data-size={size}
+        className={cn(styles.content, styles[side], styles[size], className)}
         {...rest}
       >
         <RadixDialog.Description
-          className={
-            description
-              ? cn(styles.description, "ui-drawer-description")
-              : cn(styles.visuallyHidden, "ui-visually-hidden")
-          }
+          className={description ? styles.description : styles.visuallyHidden}
         >
           {description ?? hiddenDescription ?? t("drawer.description")}
         </RadixDialog.Description>
@@ -87,7 +62,7 @@ export const DrawerContent = ({
         {!hideCloseButton && (
           <RadixDialog.Close
             type="button"
-            className={cn(styles.close, "ui-drawer-close")}
+            className={cn(styles.close)}
             aria-label={closeLabel ?? t("drawer.close")}
           >
             <LuX size={16} aria-hidden="true" />
@@ -106,11 +81,7 @@ export const DrawerHeader = ({
   ...rest
 }: DrawerSectionProps) => (
   <RadixDialog.Title asChild>
-    <div
-      ref={ref}
-      className={cn(styles.header, "ui-drawer-header", className)}
-      {...rest}
-    >
+    <div ref={ref} className={cn(styles.header, className)} {...rest}>
       {children}
     </div>
   </RadixDialog.Title>
@@ -118,11 +89,7 @@ export const DrawerHeader = ({
 
 /** DrawerBody: the scrollable content area. */
 export const DrawerBody = ({ className, ref, ...rest }: DrawerSectionProps) => (
-  <div
-    ref={ref}
-    className={cn(styles.body, "ui-drawer-body", className)}
-    {...rest}
-  />
+  <div ref={ref} className={cn(styles.body, className)} {...rest} />
 );
 
 /** DrawerFooter: right-aligned, wrapping action row. */
@@ -131,11 +98,7 @@ export const DrawerFooter = ({
   ref,
   ...rest
 }: DrawerSectionProps) => (
-  <div
-    ref={ref}
-    className={cn(styles.footer, "ui-drawer-footer", className)}
-    {...rest}
-  />
+  <div ref={ref} className={cn(styles.footer, className)} {...rest} />
 );
 
 /**

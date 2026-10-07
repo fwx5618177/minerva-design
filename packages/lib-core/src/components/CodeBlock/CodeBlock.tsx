@@ -30,7 +30,7 @@ export const CodeBlock = ({
       aria-label={ariaLabel ?? (named ? undefined : t("codeBlock.label"))}
       data-wrap={String(wrap)}
       {...rest}
-      className={cn(styles.codeBlock, "ui-code-block", className)}
+      className={cn(styles.codeBlock, className)}
       style={{ maxHeight, ...style }}
     >
       <code>{children}</code>

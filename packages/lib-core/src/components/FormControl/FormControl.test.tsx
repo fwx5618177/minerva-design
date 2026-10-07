@@ -12,9 +12,10 @@ import {
 } from ".";
 import type { FormControlProps } from ".";
 import { Input } from "../Input";
+import styles from "./formControl.module.scss";
 
 describe("FormControl", () => {
-  it("renders a div container with data flags, className and native attributes", () => {
+  it("renders a div container with className and native attributes", () => {
     const ref = createRef<HTMLDivElement>();
     render(
       <FormControl
@@ -32,19 +33,15 @@ describe("FormControl", () => {
     );
     const el = screen.getByTestId("fc");
     expect(ref.current).toBe(el);
-    expect(el).toHaveClass("root", "ui-form-control", "consumer");
-    expect(el).toHaveAttribute("data-invalid", "true");
-    expect(el).toHaveAttribute("data-disabled", "true");
-    expect(el).toHaveAttribute("data-readonly", "true");
+    expect(el).toHaveClass(styles.root, "consumer");
     expect(el).toHaveAttribute("role", "group");
   });
 
-  it("omits data flags by default and does not leak state props or the id to the DOM", () => {
+  it("does not leak state props or the id to the DOM", () => {
     render(<FormControl data-testid="fc" />);
     const el = screen.getByTestId("fc");
-    expect(el).not.toHaveAttribute("data-invalid");
-    expect(el).not.toHaveAttribute("data-disabled");
     expect(el).not.toHaveAttribute("invalid");
+    expect(el).not.toHaveAttribute("readonly");
     expect(el).not.toHaveAttribute("id");
   });
 
@@ -60,7 +57,7 @@ describe("FormControl", () => {
     expect(label).toHaveAttribute("for", "email");
     expect(label).toHaveAttribute("id", "email-label");
     expect(screen.getByText("help")).toHaveAttribute("id", "email-helper");
-    expect(screen.getByText("help")).toHaveClass("ui-form-helper");
+    expect(screen.getByText("help")).toHaveClass(styles.helper);
     expect(screen.queryByRole("alert")).toBeNull();
 
     rerender(
@@ -74,7 +71,7 @@ describe("FormControl", () => {
     const alert = screen.getByRole("alert");
     expect(alert).toHaveTextContent("bad");
     expect(alert).toHaveAttribute("id", "email-error");
-    expect(alert).toHaveClass("ui-form-error");
+    expect(alert).toHaveClass(styles.error);
   });
 
   it("generates unique ids per control", () => {
@@ -104,20 +101,20 @@ describe("FormLabel", () => {
         <FormLabel>Name</FormLabel>
       </FormControl>,
     );
-    expect(document.querySelector(".ui-form-required")).toBeNull();
+    expect(document.querySelector(`.${styles.required}`)).toBeNull();
     rerender(
       <FormControl required>
         <FormLabel>Name</FormLabel>
       </FormControl>,
     );
-    expect(screen.getByText("*")).toHaveClass("ui-form-required");
+    expect(screen.getByText("*")).toHaveClass(styles.required);
     rerender(
       <FormControl required>
         <FormLabel requiredIndicator="(required)">Name</FormLabel>
       </FormControl>,
     );
     const indicator = screen.getByText("(required)");
-    expect(indicator).toHaveClass("required", "ui-form-required");
+    expect(indicator).toHaveClass(styles.required);
     expect(indicator).toHaveAttribute("aria-hidden", "true");
   });
 
@@ -137,7 +134,7 @@ describe("FormLabel", () => {
     expect(ref.current).toBe(screen.getByText("Out"));
     expect(ref.current).not.toHaveAttribute("for");
     expect(ref.current).not.toHaveAttribute("id");
-    expect(ref.current).toHaveClass("ui-form-label", "c");
+    expect(ref.current).toHaveClass(styles.label, "c");
   });
 });
 
@@ -167,7 +164,7 @@ describe("FormField", () => {
     const input = screen.getByRole("textbox", { name: /Title/ });
     expect(input).toHaveAccessibleDescription("Public title");
     expect(input).toHaveAttribute("aria-required", "true");
-    expect(ref.current).toHaveClass("ui-form-control");
+    expect(ref.current).toHaveClass(styles.root);
   });
 
   it("becomes invalid automatically when errorMessage is given, hiding helper text", () => {

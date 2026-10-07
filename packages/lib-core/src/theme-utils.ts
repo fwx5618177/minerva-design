@@ -28,7 +28,7 @@ export type ThemeMode = "light" | "dark" | "system";
 /** Color mode actually applied. */
 export type ResolvedThemeMode = "light" | "dark";
 
-/** Built-in palettes, ported from @novel-isr/ui. */
+/** Built-in palettes (orthogonal to the light / dark mode). */
 export const PALETTES = ["editorial", "tech", "graphite", "cool"] as const;
 
 /** A built-in palette name. */

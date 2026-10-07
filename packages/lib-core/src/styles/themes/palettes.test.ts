@@ -79,7 +79,7 @@ describe("palettes", () => {
     );
   });
 
-  it("ports the @novel-isr/ui brand colors", () => {
+  it("keeps the brand colors of each palette", () => {
     expect(palettes.editorial.light["primary-color"]).toBe("#1e3a5f");
     expect(palettes.editorial.light["background-color"]).toBe("#fdfbf6");
     expect(palettes.tech.dark["primary-color"]).toBe("#5c8ee6");

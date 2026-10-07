@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/Menu/__test__/Menu.test.tsx and the
-// Menu part of src/components/__test__/AdminPrimitives.test.tsx.
 import { useState } from "react";
 import {
   act,
@@ -14,6 +12,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { describe, expect, it, vi } from "vitest";
 import { ContextMenu, Menu, type MenuEntry, type MenuProps } from ".";
 import { IconButton } from "../IconButton";
+import styles from "./menu.module.scss";
 
 const deleteItem = { key: "delete", label: "Delete" };
 const items: MenuEntry[] = [
@@ -56,35 +55,28 @@ describe("Menu", () => {
     await user.click(trigger);
     const menu = screen.getByRole("menu");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(menu).toHaveClass(
-      "ui-menu-content",
-      "ui-menu-size-sm",
-      "content",
-      "small",
-    );
+    expect(menu).toHaveClass(styles.content, styles.small);
     expect(menu).toHaveAttribute("data-side", "bottom");
     expect(menu).toHaveAttribute("data-align", "end");
 
     const menuItems = within(menu).getAllByRole("menuitem");
     expect(
-      menuItems.map((i) => i.querySelector(".ui-menu-text")?.textContent),
+      menuItems.map((i) => i.querySelector(`.${styles.text}`)?.textContent),
     ).toEqual(["Edit", "Duplicate", "Delete"]);
     const edit = menuItems[0]!;
-    expect(edit).toHaveClass("ui-menu-item", "item");
-    expect(edit.querySelector(".ui-menu-icon")).toHaveAttribute(
+    expect(edit).toHaveClass(styles.item);
+    expect(edit.querySelector(`.${styles.icon}`)).toHaveAttribute(
       "aria-hidden",
       "true",
     );
     expect(within(edit).getByTestId("edit-icon")).toBeInTheDocument();
-    expect(edit.querySelector(".ui-menu-shortcut")).toHaveTextContent("⌘E");
-    expect(menuItems[1]!.querySelector(".ui-menu-icon")).toBeNull();
-    expect(menuItems[1]!.querySelector(".ui-menu-shortcut")).toBeNull();
+    expect(edit.querySelector(`.${styles.shortcut}`)).toHaveTextContent("⌘E");
+    expect(menuItems[1]!.querySelector(`.${styles.icon}`)).toBeNull();
+    expect(menuItems[1]!.querySelector(`.${styles.shortcut}`)).toBeNull();
 
-    expect(within(menu).getByRole("separator")).toHaveClass(
-      "ui-menu-separator",
-    );
+    expect(within(menu).getByRole("separator")).toHaveClass(styles.separator);
     const group = within(menu).getByRole("group");
-    expect(within(group).getByText("Danger zone")).toHaveClass("ui-menu-label");
+    expect(within(group).getByText("Danger zone")).toHaveClass(styles.label);
     expect(
       within(group).getByRole("menuitem", { name: "Delete" }),
     ).toBeInTheDocument();
@@ -100,8 +92,8 @@ describe("Menu", () => {
     });
     await user.click(trigger);
     const menu = screen.getByRole("menu", { name: "Row actions" });
-    expect(menu).toHaveClass("ui-menu-size-md", "extra");
-    expect(menu).not.toHaveClass("small");
+    expect(menu).toHaveClass(styles.content, "extra");
+    expect(menu).not.toHaveClass(styles.small);
     expect(menu).toHaveAttribute("data-side", "top");
     expect(menu).toHaveAttribute("data-align", "start");
   });
@@ -174,12 +166,13 @@ describe("Menu", () => {
     await user.click(screen.getByRole("button", { name: "More" }));
     const sub = screen.getByRole("menuitem", { name: "Export" });
     expect(sub).toHaveAttribute("aria-haspopup", "menu");
-    expect(sub.querySelector(".ui-menu-chevron")).not.toBeNull();
+    expect(sub.querySelector(`.${styles.chevron}`)).not.toBeNull();
     sub.focus();
     await user.keyboard("{ArrowRight}");
     const menus = await screen.findAllByRole("menu");
     expect(menus).toHaveLength(2);
-    expect(menus[1]).toHaveClass("ui-menu-content", "ui-menu-size-md");
+    expect(menus[1]).toHaveClass(styles.content);
+    expect(menus[1]).not.toHaveClass(styles.small);
     await waitFor(() =>
       expect(
         within(menus[1]!).getByRole("menuitem", { name: "CSV" }),
@@ -352,11 +345,9 @@ describe("ContextMenu", () => {
     fireEvent.contextMenu(screen.getByText("Row"));
     const menu = await screen.findByRole("menu", { name: "Row menu" });
     expect(onOpenChange).toHaveBeenCalledWith(true);
-    expect(menu).toHaveClass("ui-menu-content", "ui-menu-size-sm");
-    expect(within(menu).getByRole("separator")).toHaveClass(
-      "ui-menu-separator",
-    );
-    expect(within(menu).getByText("Danger zone")).toHaveClass("ui-menu-label");
+    expect(menu).toHaveClass(styles.content, styles.small);
+    expect(within(menu).getByRole("separator")).toHaveClass(styles.separator);
+    expect(within(menu).getByText("Danger zone")).toHaveClass(styles.label);
 
     await user.click(within(menu).getByRole("menuitem", { name: /Duplicate/ }));
     expect(onSelect).toHaveBeenCalledWith(items[1]);

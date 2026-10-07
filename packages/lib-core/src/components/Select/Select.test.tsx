@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui: Select/__test__/Select.test.tsx and the Select
-// part of __test__/ResponsiveDataLayout.test.tsx.
 import React, { createRef, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { render, screen } from "@testing-library/react";
@@ -61,33 +59,20 @@ describe("Select", () => {
     const t = trigger();
     expect(t).toHaveTextContent("Pick one");
     expect(t).toHaveAttribute("aria-expanded", "false");
-    expect(t).toHaveClass(
-      "trigger",
-      "medium",
-      "ui-select-trigger",
-      "ui-select-size-md",
-    );
+    expect(t).toHaveClass("trigger", "medium");
+    expect(t).toHaveAttribute("data-component", "select");
     expect(t).not.toHaveAttribute("aria-invalid");
-    expect(t.querySelector("[data-ui-select-value]")).not.toBeNull();
-    expect(t.querySelector(".ui-select-icon svg")).not.toBeNull();
+    expect(t.querySelector(".value")).toHaveTextContent("Pick one");
+    expect(t.querySelector(".icon svg")).not.toBeNull();
     expect(screen.queryByRole("listbox")).toBeNull();
   });
 
-  it.each([
-    ["small", "ui-select-size-sm"],
-    ["large", "ui-select-size-lg"],
-  ] as const)(
+  it.each(["small", "large"] as const)(
     "applies size %s, className and the invalid state",
-    (size, cls) => {
+    (size) => {
       render(<Langs size={size} className="consumer" invalid />);
       const t = trigger();
-      expect(t).toHaveClass(
-        size,
-        cls,
-        "consumer",
-        "invalid",
-        "ui-select-error",
-      );
+      expect(t).toHaveClass(size, "consumer", "invalid");
       expect(t).toHaveAttribute("aria-invalid", "true");
     },
   );
@@ -98,24 +83,21 @@ describe("Select", () => {
     render(<Langs onChange={onChange} contentClassName="popup" />);
     await user.click(trigger());
     const listbox = await screen.findByRole("listbox");
-    expect(listbox.closest(".ui-select-content")).toHaveClass(
-      "content",
-      "popup",
-    );
+    expect(listbox.closest(".content")).toHaveClass("popup");
     expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual([
       "Chinese",
       "English",
       "Japanese",
     ]);
-    expect(screen.getAllByRole("option")[0]).toHaveClass("ui-select-item");
+    expect(screen.getAllByRole("option")[0]).toHaveClass("item");
     expect(
-      screen
-        .getAllByRole("option")[0]
-        .querySelector("[data-ui-select-item-text]"),
-    ).not.toBeNull();
-    expect(screen.getByText("Experimental")).toHaveClass("ui-select-label");
-    expect(screen.getByTestId("sep")).toHaveClass("ui-select-separator");
-    expect(screen.getByTestId("group")).toHaveClass("ui-select-group");
+      screen.getAllByRole("option")[0].querySelector(".itemText"),
+    ).toHaveTextContent("Chinese");
+    expect(screen.getByText("Experimental")).toHaveClass("label");
+    expect(screen.getByTestId("sep")).toHaveClass("separator");
+    expect(screen.getByTestId("group")).toContainElement(
+      screen.getByText("Experimental"),
+    );
     await user.click(screen.getByRole("option", { name: "English" }));
     expect(onChange).toHaveBeenCalledWith("en");
     expect(screen.queryByRole("listbox")).toBeNull();
@@ -129,7 +111,7 @@ describe("Select", () => {
     await user.click(trigger());
     const zh = await screen.findByRole("option", { name: "Chinese" });
     expect(zh).toHaveAttribute("aria-selected", "true");
-    expect(zh.querySelector(".ui-select-item-indicator")).not.toBeNull();
+    expect(zh.querySelector(".itemIndicator")).not.toBeNull();
   });
 
   it("is controllable via value / onChange", async () => {
@@ -229,14 +211,14 @@ describe("Select", () => {
     expect(new FormData(form).get("lang")).toBe("en");
   });
 
-  it("server-renders the value hook (ResponsiveDataLayout regression)", () => {
+  it("server-renders the trigger and its value slot", () => {
     const html = renderToStaticMarkup(
-      <Select ariaLabel="Event">
+      <Select ariaLabel="Event" placeholder="Pick">
         <SelectItem value="a">A</SelectItem>
       </Select>,
     );
-    expect(html).toContain("data-ui-select-value");
-    expect(html).toContain("ui-select-trigger");
+    expect(html).toContain('data-component="select"');
+    expect(html).toMatch(/<span class="value"><span[^>]*>Pick<\/span>/);
   });
 
   it("inherits id, invalid and disabled from a FormControl", () => {
@@ -253,7 +235,7 @@ describe("Select", () => {
     const t = screen.getByRole("combobox", { name: "Lang" });
     expect(t).toHaveAttribute("id", "lang");
     expect(t).toHaveAttribute("aria-invalid", "true");
-    expect(t).toHaveClass("ui-select-error");
+    expect(t).toHaveClass("invalid");
     expect(t).toBeDisabled();
   });
 

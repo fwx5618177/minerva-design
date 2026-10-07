@@ -5,14 +5,13 @@ import { compile } from "sass";
 import { describe, expect, it } from "vitest";
 import { HStack, Stack, VStack } from ".";
 
-// Ported from novel-isr-ui Stack/__test__/Stack.test.tsx.
 describe("Stack", () => {
   it("defaults to a column div without inline alignment", () => {
     render(<Stack data-testid="s">x</Stack>);
     const el = screen.getByTestId("s");
     expect(el.tagName).toBe("DIV");
-    expect(el).toHaveClass("stack", "column", "ui-stack", "ui-stack-column");
-    expect(el).not.toHaveClass("ui-stack-wrap");
+    expect(el).toHaveClass("stack", "column");
+    expect(el).not.toHaveClass("wrap");
     expect(el.style.alignItems).toBe("");
     expect(el.style.justifyContent).toBe("");
     expect(el.style.gap).toBe("");
@@ -22,10 +21,7 @@ describe("Stack", () => {
     "applies direction %s as a class",
     (direction) => {
       render(<Stack data-testid="s" direction={direction} />);
-      expect(screen.getByTestId("s")).toHaveClass(
-        direction,
-        `ui-stack-${direction}`,
-      );
+      expect(screen.getByTestId("s")).toHaveClass(direction);
     },
   );
 
@@ -69,7 +65,7 @@ describe("Stack", () => {
     const el = screen.getByTestId("s");
     expect(el.tagName).toBe("UL");
     expect(ref.current).toBe(el);
-    expect(el).toHaveClass("ui-stack", "wrap", "ui-stack-wrap", "consumer");
+    expect(el).toHaveClass("stack", "wrap", "consumer");
     expect(el).toHaveAttribute("aria-label", "Items");
     for (const attr of ["wrap", "direction", "as"]) {
       expect(el).not.toHaveAttribute(attr);
@@ -91,14 +87,14 @@ describe("HStack / VStack", () => {
   it("HStack is a row centered on the cross axis by default", () => {
     render(<HStack data-testid="h" />);
     const el = screen.getByTestId("h");
-    expect(el).toHaveClass("ui-stack-row");
+    expect(el).toHaveClass("row");
     expect(el.style.alignItems).toBe("center");
   });
 
   it("VStack is a column stretched on the cross axis by default", () => {
     render(<VStack data-testid="v" />);
     const el = screen.getByTestId("v");
-    expect(el).toHaveClass("ui-stack-column");
+    expect(el).toHaveClass("column");
     expect(el.style.alignItems).toBe("stretch");
   });
 
@@ -143,6 +139,6 @@ describe("HStack / VStack", () => {
     const el = screen.getByTestId("h");
     expect(el.style.gap).toBe("var(--space-2)");
     expect(el.style.justifyContent).toBe("space-between");
-    expect(el).toHaveClass("actions", "ui-stack-wrap");
+    expect(el).toHaveClass("actions", "wrap");
   });
 });

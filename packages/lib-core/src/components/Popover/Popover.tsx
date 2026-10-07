@@ -46,13 +46,11 @@ export const PopoverContent = ({
     <RadixPopover.Content
       sideOffset={sideOffset}
       collisionPadding={collisionPadding}
-      className={cn(styles.content, "ui-popover-content", className)}
+      className={cn(styles.content, className)}
       {...rest}
     >
       {children}
-      {arrow && (
-        <RadixPopover.Arrow className={cn(styles.arrow, "ui-popover-arrow")} />
-      )}
+      {arrow && <RadixPopover.Arrow className={styles.arrow} />}
     </RadixPopover.Content>
   );
   return portal ? (

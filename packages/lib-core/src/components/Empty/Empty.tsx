@@ -1,7 +1,7 @@
 import React, { useId } from "react";
 import { RiInboxLine } from "react-icons/ri";
 import styles from "./empty.module.scss";
-import type { EmptyProps, EmptySize } from "./types";
+import type { EmptyProps } from "./types";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 
@@ -42,13 +42,6 @@ const DefaultSvg = () => (
 
 const isRenderable = (node: React.ReactNode) =>
   node != null && node !== false && node !== "";
-
-/** Stable `ui-empty-state-size-*` hook names (shared with @novel-isr/ui) */
-const HOOK_SIZE: Record<EmptySize, string> = {
-  small: "compact",
-  medium: "default",
-  large: "lg",
-};
 
 /**
  * 空状态组件
@@ -107,8 +100,6 @@ const Empty = ({
         showShadow && styles.showShadow,
         size && styles.sized,
         size && styles[`size-${size}`],
-        "ui-empty-state",
-        size && `ui-empty-state-size-${HOOK_SIZE[size]}`,
         className,
       )}
       style={{
@@ -134,25 +125,22 @@ const Empty = ({
       {...rest}
     >
       {!hideIcon && (
-        <div className={cn(styles.iconWrapper, "ui-empty-state-icon")}>
+        <div className={styles.iconWrapper}>
           {icon || (useSvg ? <DefaultSvg /> : <DefaultIcon />)}
         </div>
       )}
       {hasTitle && (
-        <div id={titleId} className={cn(styles.title, "ui-empty-state-title")}>
+        <div id={titleId} className={styles.title}>
           {title}
         </div>
       )}
       {hasDescription && (
-        <div
-          id={descriptionId}
-          className={cn(styles.description, "ui-empty-state-description")}
-        >
+        <div id={descriptionId} className={styles.description}>
           {description}
         </div>
       )}
       {(isRenderable(action) || isRenderable(secondaryAction)) && (
-        <div className={cn(styles.actions, "ui-empty-state-actions")}>
+        <div className={styles.actions}>
           {action}
           {secondaryAction}
         </div>

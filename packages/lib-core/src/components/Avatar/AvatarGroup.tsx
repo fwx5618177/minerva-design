@@ -29,7 +29,7 @@ const AvatarGroup = ({
     <div
       ref={ref}
       role="group"
-      className={classNames(styles.avatarGroup, "ui-avatar-group", className)}
+      className={classNames(styles.avatarGroup, className)}
       aria-label={
         ariaLabel ??
         (extra > 0
@@ -47,14 +47,7 @@ const AvatarGroup = ({
         </div>
       ))}
       {extra > 0 ? (
-        <div
-          className={classNames(
-            styles.count,
-            "ui-avatar",
-            "ui-avatar-overflow",
-          )}
-          aria-hidden="true"
-        >
+        <div className={styles.count} aria-hidden="true">
           +{extra}
         </div>
       ) : null}

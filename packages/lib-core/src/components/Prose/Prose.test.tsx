@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/__test__/Prose.test.tsx
-// and src/styles/__test__/prose.test.ts
 import { act, createRef } from "react";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -54,7 +52,7 @@ describe("Prose component", () => {
       </Prose>,
     );
     expect(ref.current?.tagName).toBe("DIV");
-    expect(ref.current).toHaveClass("prose", "ui-prose", "consumer");
+    expect(ref.current).toHaveClass("prose", "consumer");
     expect(ref.current?.getAttribute("aria-label")).toBe("Article");
     expect(ref.current?.dataset.owner).toBe("test");
     act(() => ref.current?.click());
@@ -85,9 +83,7 @@ describe("Prose component", () => {
     );
     expect(container.children).toHaveLength(1);
     expect(parentRef.current).toBe(childRef.current);
-    expect(childRef.current?.className).toBe(
-      "prose ui-prose parent editor-host",
-    );
+    expect(childRef.current?.className).toBe("prose parent editor-host");
     expect(childRef.current?.hasAttribute("aschild")).toBe(false);
     act(() => childRef.current?.click());
     expect(calls).toEqual(["child", "parent"]);

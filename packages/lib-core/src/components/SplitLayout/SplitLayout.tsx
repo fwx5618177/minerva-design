@@ -28,11 +28,11 @@ const SplitLayout = ({
 
   return (
     <div
-      className={cn(styles.root, "ui-split-layout", className)}
+      className={cn(styles.root, className)}
       style={
         {
-          "--ui-split-layout-aside-width": `${asideWidth}px`,
-          "--ui-split-layout-gap": resolveSpace(gap),
+          "--split-layout-aside-width": `${asideWidth}px`,
+          "--split-layout-gap": resolveSpace(gap),
           ...style,
         } as CSSProperties
       }
@@ -43,19 +43,10 @@ const SplitLayout = ({
           styles.grid,
           styles[collapseBelow],
           hasAside && styles.hasAside,
-          "ui-split-layout-grid",
-          `ui-split-layout-grid--${collapseBelow}`,
-          hasAside && "ui-split-layout-grid--has-aside",
         )}
       >
-        <div className={cn(styles.main, "ui-split-layout-main")}>
-          {children}
-        </div>
-        {hasAside && (
-          <div className={cn(styles.aside, "ui-split-layout-aside")}>
-            {aside}
-          </div>
-        )}
+        <div className={styles.main}>{children}</div>
+        {hasAside && <div className={styles.aside}>{aside}</div>}
       </div>
     </div>
   );

@@ -106,12 +106,6 @@ export interface PaginationProps extends Omit<
    */
   hideNumbers?: boolean;
   /**
-   * Control of the page size selector (showSizeChanger): a native <select>,
-   * or Minerva's Select popup (a combobox button opening a listbox)
-   * @default "native"
-   */
-  sizeChangerVariant?: "native" | "select";
-  /**
    * Adapts the layout to small screens
    * @default false
    */

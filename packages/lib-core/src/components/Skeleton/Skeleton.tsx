@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import type { SkeletonProps, SkeletonVariant } from "./types";
+import type { SkeletonProps } from "./types";
 import styles from "./skeleton.module.scss";
 import useI18n from "../../hooks/useI18n";
 
@@ -30,12 +30,6 @@ import useI18n from "../../hooks/useI18n";
  */
 const toCss = (value: number | string | undefined) =>
   typeof value === "number" ? `${value}px` : value;
-
-/** Stable `ui-skeleton-variant-*` hook names (shared with @novel-isr/ui) */
-const HOOK_VARIANT: Partial<Record<SkeletonVariant, string>> = {
-  circular: "circle",
-  rectangular: "rect",
-};
 
 const Skeleton = ({
   variant = "text",
@@ -77,9 +71,6 @@ const Skeleton = ({
           styles.decorative,
           styles[variant],
           styles[`animation-${animation}`],
-          "ui-skeleton",
-          `ui-skeleton-variant-${HOOK_VARIANT[variant] ?? variant}`,
-          animation === "false" && "ui-skeleton-static",
           className,
         )}
         style={{

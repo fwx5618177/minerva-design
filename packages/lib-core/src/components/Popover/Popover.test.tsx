@@ -1,4 +1,3 @@
-// Ported from novel-isr-ui src/components/Popover/__test__/Popover.test.tsx
 import { createRef } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -49,9 +48,9 @@ describe("Popover", () => {
     const content = screen.getByRole("dialog", { name: "Filters" });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(trigger).toHaveAttribute("aria-controls", content.id);
-    expect(content).toHaveClass("content", "ui-popover-content", "extra");
+    expect(content).toHaveClass("content", "extra");
     expect(content).toHaveAttribute("data-side", "bottom");
-    expect(content.querySelector(".ui-popover-arrow")).toBeNull();
+    expect(content.querySelector(".arrow")).toBeNull();
   });
 
   it("moves focus into the content, closes on Escape and returns focus to the trigger", async () => {
@@ -131,7 +130,7 @@ describe("Popover", () => {
     const content = screen.getByRole("dialog");
     expect(ref.current).toBe(content);
     expect(content).toHaveAttribute("data-k", "v");
-    expect(content.querySelector(".ui-popover-arrow")).toHaveClass("arrow");
+    expect(content.querySelector("svg")).toHaveClass("arrow");
   });
 
   it("opens initially with defaultOpen and passes side / align through", () => {

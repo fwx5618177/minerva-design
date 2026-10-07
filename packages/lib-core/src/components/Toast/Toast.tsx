@@ -15,12 +15,7 @@ import {
 import useI18n from "../../hooks/useI18n";
 import { useIsClient } from "../../internal/useIsClient";
 import { toast, toastStore, type ToastItem } from "./store";
-import type {
-  ToastApi,
-  ToastPosition,
-  ToastProviderProps,
-  ToastStatus,
-} from "./types";
+import type { ToastApi, ToastProviderProps, ToastStatus } from "./types";
 import styles from "./toast.module.scss";
 
 const ICONS: Record<ToastStatus, ReactNode> = {
@@ -28,16 +23,6 @@ const ICONS: Record<ToastStatus, ReactNode> = {
   success: <LuCircleCheck aria-hidden="true" />,
   warning: <LuTriangleAlert aria-hidden="true" />,
   danger: <LuCircleX aria-hidden="true" />,
-};
-
-/** `data-position` styling hook (kebab-case, as in novel-isr-ui). */
-const POSITION_HOOK: Record<ToastPosition, string> = {
-  topRight: "top-right",
-  topLeft: "top-left",
-  topCenter: "top-center",
-  bottomRight: "bottom-right",
-  bottomLeft: "bottom-left",
-  bottomCenter: "bottom-center",
 };
 
 const NO_TOASTS: ToastItem[] = [];
@@ -66,17 +51,12 @@ const ToastViewItem = ({
   const closing = item.state === "closing";
   return (
     <div
-      className={classNames(
-        "ui-toast",
-        `ui-toast-status-${item.status}`,
-        styles.toast,
-        styles[item.status],
-      )}
+      className={classNames(styles.toast, styles[item.status])}
       data-state={closing ? "closing" : "open"}
       role={item.status === "danger" ? "alert" : "status"}
       style={
         item.duration > 0
-          ? ({ "--ui-toast-duration": `${item.duration}ms` } as CSSProperties)
+          ? ({ "--toast-duration": `${item.duration}ms` } as CSSProperties)
           : undefined
       }
       onMouseEnter={pause}
@@ -86,36 +66,23 @@ const ToastViewItem = ({
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) resume();
       }}
     >
-      <span className={classNames("ui-toast-icon", styles.icon)}>
-        {ICONS[item.status]}
-      </span>
-      <div className={classNames("ui-toast-content", styles.content)}>
-        {item.title && (
-          <div className={classNames("ui-toast-title", styles.title)}>
-            {item.title}
-          </div>
-        )}
+      <span className={styles.icon}>{ICONS[item.status]}</span>
+      <div className={styles.content}>
+        {item.title && <div className={styles.title}>{item.title}</div>}
         {item.description && (
-          <div
-            className={classNames("ui-toast-description", styles.description)}
-          >
-            {item.description}
-          </div>
+          <div className={styles.description}>{item.description}</div>
         )}
       </div>
       <button
         type="button"
-        className={classNames("ui-toast-close", styles.close)}
+        className={styles.close}
         aria-label={closeLabel}
         onClick={() => toastStore.dismiss(item.id)}
       >
         <LuX aria-hidden="true" />
       </button>
       {item.duration > 0 && !closing && (
-        <span
-          className={classNames("ui-toast-progress", styles.progress)}
-          aria-hidden="true"
-        />
+        <span className={styles.progress} aria-hidden="true" />
       )}
     </div>
   );
@@ -157,12 +124,7 @@ const ToastProvider = ({
       {isClient &&
         createPortal(
           <div
-            className={classNames(
-              "ui-toast-viewport",
-              styles.viewport,
-              styles[position],
-            )}
-            data-position={POSITION_HOOK[position]}
+            className={classNames(styles.viewport, styles[position])}
             role="region"
             aria-label={ariaLabel ?? t("toast.region")}
           >

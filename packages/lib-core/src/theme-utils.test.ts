@@ -1,7 +1,6 @@
-// Ported from @novel-isr/ui src/components/__test__/theme-utils.test.ts and
-// extended for Minerva's optional palette. These helpers are shared by the
-// server (cookie parsing, inline script) and the client (ThemeProvider), so
-// any drift causes hydration mismatches or a flash of the wrong theme.
+// Theme and palette helpers are shared by the server (cookie parsing, inline
+// script) and the client (ThemeProvider), so any drift causes hydration
+// mismatches or a flash of the wrong theme.
 import { afterEach, describe, expect, it } from "vitest";
 import {
   PALETTES,

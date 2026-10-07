@@ -7,10 +7,8 @@ import { HStack, Stack, VStack } from ".";
 import { SplitLayout } from "../SplitLayout";
 import { ResponsiveGrid } from "../ResponsiveGrid";
 
-// Ported from novel-isr-ui components/__test__/LayoutSpacing.test.tsx (the
-// FormLayout rows belong to the forms group). Minerva resolves every spacing
-// prop with one rule: numbers / numeric strings -> var(--space-N), decimal
-// points become "-" (novel kept "1.5" unhyphenated outside SplitLayout).
+// Minerva resolves every spacing prop with one rule: numbers / numeric
+// strings -> var(--space-N), decimal points become "-".
 type Space = string | number | undefined;
 const layouts = [
   {
@@ -23,21 +21,21 @@ const layouts = [
   {
     name: "Stack",
     render: (gap: Space) => <Stack gap={gap} />,
-    selector: ".ui-stack",
+    selector: ".stack",
     properties: ["gap"],
     defaultValue: "",
   },
   {
     name: "HStack",
     render: (gap: Space) => <HStack gap={gap} />,
-    selector: ".ui-stack",
+    selector: ".stack",
     properties: ["gap"],
     defaultValue: "",
   },
   {
     name: "VStack",
     render: (gap: Space) => <VStack gap={gap} />,
-    selector: ".ui-stack",
+    selector: ".stack",
     properties: ["gap"],
     defaultValue: "",
   },
@@ -48,15 +46,15 @@ const layouts = [
         Main
       </SplitLayout>
     ),
-    selector: ".ui-split-layout",
-    properties: ["--ui-split-layout-gap"],
+    selector: ".root",
+    properties: ["--split-layout-gap"],
     defaultValue: "var(--space-6)",
   },
   {
     name: "ResponsiveGrid",
     render: (gap: Space) => <ResponsiveGrid gap={gap} />,
-    selector: ".ui-responsive-grid",
-    properties: ["--ui-grid-row-gap", "--ui-grid-column-gap"],
+    selector: ".root",
+    properties: ["--grid-row-gap", "--grid-column-gap"],
     defaultValue: "var(--space-4)",
   },
 ];
@@ -162,20 +160,18 @@ it("preserves independent grid row and column gaps", () => {
   const { container, rerender } = render(
     <ResponsiveGrid gap={4} rowGap={0.5} columnGap="0.5" />,
   );
-  const grid = container.querySelector<HTMLElement>(".ui-responsive-grid")!;
-  expect(grid.style.getPropertyValue("--ui-grid-row-gap")).toBe(
+  const grid = container.firstElementChild as HTMLElement;
+  expect(grid.style.getPropertyValue("--grid-row-gap")).toBe(
     "var(--space-0-5)",
   );
-  expect(grid.style.getPropertyValue("--ui-grid-column-gap")).toBe(
+  expect(grid.style.getPropertyValue("--grid-column-gap")).toBe(
     "var(--space-0-5)",
   );
   rerender(
     <ResponsiveGrid gap={0.5} rowGap={0} columnGap="calc(1rem + 2px)" />,
   );
-  expect(grid.style.getPropertyValue("--ui-grid-row-gap")).toBe(
-    "var(--space-0)",
-  );
-  expect(grid.style.getPropertyValue("--ui-grid-column-gap")).toBe(
+  expect(grid.style.getPropertyValue("--grid-row-gap")).toBe("var(--space-0)");
+  expect(grid.style.getPropertyValue("--grid-column-gap")).toBe(
     "calc(1rem + 2px)",
   );
 });
@@ -184,28 +180,30 @@ it("preserves grid and split layout variable overrides", () => {
   const { container } = render(
     <>
       <ResponsiveGrid
+        id="grid"
         gap={0.5}
         style={
           {
-            "--ui-grid-row-gap": "9px",
-            "--ui-grid-column-gap": "7px",
+            "--grid-row-gap": "9px",
+            "--grid-column-gap": "7px",
           } as CSSProperties
         }
       />
       <SplitLayout
+        id="split"
         aside="Aside"
         gap={0.5}
-        style={{ "--ui-split-layout-gap": "11px" } as CSSProperties}
+        style={{ "--split-layout-gap": "11px" } as CSSProperties}
       />
     </>,
   );
-  const grid = container.querySelector<HTMLElement>(".ui-responsive-grid")!;
-  expect(grid.style.getPropertyValue("--ui-grid-row-gap")).toBe("9px");
-  expect(grid.style.getPropertyValue("--ui-grid-column-gap")).toBe("7px");
+  const grid = container.querySelector<HTMLElement>("#grid")!;
+  expect(grid.style.getPropertyValue("--grid-row-gap")).toBe("9px");
+  expect(grid.style.getPropertyValue("--grid-column-gap")).toBe("7px");
   expect(
     container
-      .querySelector<HTMLElement>(".ui-split-layout")!
-      .style.getPropertyValue("--ui-split-layout-gap"),
+      .querySelector<HTMLElement>("#split")!
+      .style.getPropertyValue("--split-layout-gap"),
   ).toBe("11px");
 });
 
@@ -218,8 +216,8 @@ it("keeps spacing references dynamic for consumer token overrides", () => {
   const { container } = render(
     <Box p={0.5} m={4} style={style}>
       <Stack gap="0.5" />
-      <ResponsiveGrid gap={99} />
-      <SplitLayout aside="Aside" gap="4" />
+      <ResponsiveGrid id="grid" gap={99} />
+      <SplitLayout id="split" aside="Aside" gap="4" />
     </Box>,
   );
   const box = container.firstElementChild as HTMLElement;
@@ -228,17 +226,17 @@ it("keeps spacing references dynamic for consumer token overrides", () => {
   expect(box.style.getPropertyValue("--space-99")).toBe("23px");
   expect(box.style.padding).toBe("var(--space-0-5)");
   expect(box.style.margin).toBe("var(--space-4)");
-  expect(container.querySelector<HTMLElement>(".ui-stack")!.style.gap).toBe(
+  expect(container.querySelector<HTMLElement>(".stack")!.style.gap).toBe(
     "var(--space-0-5)",
   );
   expect(
     container
-      .querySelector<HTMLElement>(".ui-responsive-grid")!
-      .style.getPropertyValue("--ui-grid-row-gap"),
+      .querySelector<HTMLElement>("#grid")!
+      .style.getPropertyValue("--grid-row-gap"),
   ).toBe("var(--space-99)");
   expect(
     container
-      .querySelector<HTMLElement>(".ui-split-layout")!
-      .style.getPropertyValue("--ui-split-layout-gap"),
+      .querySelector<HTMLElement>("#split")!
+      .style.getPropertyValue("--split-layout-gap"),
   ).toBe("var(--space-4)");
 });

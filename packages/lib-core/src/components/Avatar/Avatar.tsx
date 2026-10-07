@@ -4,16 +4,6 @@ import type { AvatarProps } from "./types";
 import styles from "./avatar.module.scss";
 import useI18n from "../../hooks/useI18n";
 
-/** Short size names used by the stable `ui-avatar-size-*` styling hooks */
-const SIZE_HOOK = {
-  xsmall: "xs",
-  small: "sm",
-  medium: "md",
-  large: "lg",
-  xlarge: "xl",
-  xxlarge: "2xl",
-} as const;
-
 const CJK = /[\u3400-\u9fff\uf900-\ufaff]/;
 
 /**
@@ -66,10 +56,6 @@ const Avatar = ({
       styles[shape],
       !numericSize && styles[size],
       stacked && styles.stacked,
-      // Stable styling hooks (not used for styling by the library)
-      "ui-avatar",
-      !numericSize && `ui-avatar-size-${SIZE_HOOK[size]}`,
-      shape !== "circle" && "ui-avatar-shape-square",
       className,
     ),
     style: numericSize
@@ -87,7 +73,7 @@ const Avatar = ({
       <span {...rootProps}>
         <img
           alt={alt ?? label}
-          className={classNames(styles.avatarImg, "ui-avatar-img")}
+          className={styles.avatarImg}
           src={src}
           draggable={false}
           onError={() => setFailedSrc(src)}

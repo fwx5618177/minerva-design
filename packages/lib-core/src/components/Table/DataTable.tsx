@@ -1,5 +1,4 @@
 import { LuRefreshCw } from "react-icons/lu";
-import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import Button from "../Button/Button";
 import Pagination from "../Pagination/Pagination";
@@ -24,22 +23,15 @@ export function DataTable<T>({
   const showError = Boolean(error) && !loading;
 
   return (
-    <div
-      className={cn(styles.dataTable, "ui-data-table")}
-      aria-busy={loading || undefined}
-    >
+    <div className={styles.dataTable} aria-busy={loading || undefined}>
       {showError ? (
-        <div className={cn(styles.error, "ui-empty-state")} role="alert">
-          <div className={cn(styles.errorTitle, "ui-empty-state-title")}>
-            {error}
-          </div>
+        <div className={styles.error} role="alert">
+          <div className={styles.errorTitle}>{error}</div>
           {onRetry && (
-            <div className="ui-empty-state-actions">
-              <Button variant="secondary" size="small" onClick={onRetry}>
-                <LuRefreshCw aria-hidden="true" className={styles.retryIcon} />
-                {retryLabel ?? t("table.retry")}
-              </Button>
-            </div>
+            <Button variant="secondary" size="small" onClick={onRetry}>
+              <LuRefreshCw aria-hidden="true" className={styles.retryIcon} />
+              {retryLabel ?? t("table.retry")}
+            </Button>
           )}
         </div>
       ) : (

@@ -21,19 +21,6 @@ const iconMap = {
   error: <IoCloseCircle />,
 };
 
-/** Names used by the stable `ui-alert-*` styling hooks */
-const STATUS_HOOK = {
-  info: "info",
-  success: "success",
-  warning: "warning",
-  error: "danger",
-} as const;
-const TYPE_HOOK = {
-  default: "subtle",
-  filled: "solid",
-  outlined: "outline",
-} as const;
-
 const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
 
 /**
@@ -143,10 +130,6 @@ const Alert = ({
       [styles.expanded]: expanded,
       [styles.collapsible]: isCollapsible,
     },
-    // Stable styling hooks (not used for styling by the library)
-    "ui-alert",
-    `ui-alert-status-${STATUS_HOOK[variant]}`,
-    `ui-alert-variant-${filled ? "solid" : outlined ? "outline" : TYPE_HOOK[type]}`,
     className,
   );
   const hasContent =
@@ -171,13 +154,10 @@ const Alert = ({
         role ??
         (variant === "error" || variant === "warning" ? "alert" : "status")
       }
-      data-variant={variant}
-      data-size={size}
-      data-type={type}
     >
       {showIcon && (
         <span
-          className={classNames(styles.icon, "ui-alert-icon")}
+          className={styles.icon}
           role="img"
           aria-label={iconLabel ?? t(`alert.icon.${variant}`)}
         >
@@ -185,9 +165,9 @@ const Alert = ({
         </span>
       )}
 
-      <div className={classNames(styles.content, "ui-alert-content")}>
+      <div className={styles.content}>
         {title && (
-          <div className={classNames(styles.title, "ui-alert-title")}>
+          <div className={styles.title}>
             {title}
             {isCollapsible && (
               <button
@@ -208,10 +188,7 @@ const Alert = ({
           </div>
         )}
         {hasContent && (!isCollapsible || expanded) && (
-          <div
-            id={contentId}
-            className={classNames(styles.message, "ui-alert-description")}
-          >
+          <div id={contentId} className={styles.message}>
             {children}
           </div>
         )}

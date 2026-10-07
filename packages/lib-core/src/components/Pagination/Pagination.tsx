@@ -17,7 +17,6 @@ import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
-import Select, { SelectItem } from "../Select/Select";
 
 type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
 
@@ -164,7 +163,6 @@ const Pagination = ({
   boundaryCount,
   hideEdges = false,
   hideNumbers = false,
-  sizeChangerVariant = "native",
   ref,
   ...rest
 }: PaginationProps) => {
@@ -347,8 +345,7 @@ const Pagination = ({
         key={itemKey}
         type="button"
         onKeyDown={handleKeyDown}
-        data-active={isActive || undefined}
-        className={classNames(styles.item, "ui-pagination-item", {
+        className={classNames(styles.item, {
           [styles.active]: isActive,
           [styles.disabled]: isDisabled,
           [styles.prev]: type === "prev",
@@ -409,10 +406,7 @@ const Pagination = ({
       return (
         <>
           {renderEdge("prev")}
-          <span
-            className={classNames(styles.counter, "ui-pagination-counter")}
-            aria-live="polite"
-          >
+          <span className={styles.counter} aria-live="polite">
             {page} / {totalPages}
           </span>
           {renderEdge("next")}
@@ -433,11 +427,7 @@ const Pagination = ({
           typeof item === "number" ? (
             renderItem(item, "page")
           ) : (
-            <span
-              key={item}
-              className={classNames(styles.ellipsis, "ui-pagination-ellipsis")}
-              aria-hidden="true"
-            >
+            <span key={item} className={styles.ellipsis} aria-hidden="true">
               …
             </span>
           ),
@@ -510,9 +500,6 @@ const Pagination = ({
 
   const componentClassName = classNames(
     styles.pagination,
-    // Stable styling hooks (not used for styling by the library)
-    "ui-pagination",
-    simple && "ui-pagination-simple",
     {
       [styles.disabled]: disabled,
       [styles.small]: size === "small",
@@ -535,11 +522,7 @@ const Pagination = ({
       style={style}
     >
       {showTotal !== false && (
-        <div
-          className={classNames(styles.total, "ui-pagination-total")}
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div className={styles.total} aria-live="polite" aria-atomic="true">
           {typeof showTotal === "function"
             ? showTotal(total, visibleRange)
             : totalRender
@@ -565,37 +548,19 @@ const Pagination = ({
       )}
 
       {showSizeChanger && (
-        <div
-          className={classNames(styles.sizeChanger, "ui-pagination-page-size")}
-        >
-          {sizeChangerVariant === "select" ? (
-            <Select
-              size="small"
-              value={String(currentPageSize)}
-              disabled={disabled}
-              onChange={handleSizeChange}
-              ariaLabel={sizeLabel}
-            >
-              {sizeOptions.map((option) => (
-                <SelectItem key={option} value={String(option)}>
-                  {sizeOptionLabel(option)}
-                </SelectItem>
-              ))}
-            </Select>
-          ) : (
-            <select
-              value={currentPageSize}
-              disabled={disabled}
-              onChange={(e) => handleSizeChange(e.target.value)}
-              aria-label={sizeLabel}
-            >
-              {sizeOptions.map((option) => (
-                <option key={option} value={option}>
-                  {sizeOptionLabel(option)}
-                </option>
-              ))}
-            </select>
-          )}
+        <div className={styles.sizeChanger}>
+          <select
+            value={currentPageSize}
+            disabled={disabled}
+            onChange={(e) => handleSizeChange(e.target.value)}
+            aria-label={sizeLabel}
+          >
+            {sizeOptions.map((option) => (
+              <option key={option} value={option}>
+                {sizeOptionLabel(option)}
+              </option>
+            ))}
+          </select>
         </div>
       )}
     </nav>

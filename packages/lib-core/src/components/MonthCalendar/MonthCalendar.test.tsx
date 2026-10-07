@@ -1,9 +1,9 @@
-// Ported from @novel-isr/ui: MonthCalendar/__test__/MonthCalendar.test.tsx
 import React, { act, createRef, useState } from "react";
 import { render as rtlRender, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MonthCalendar, type MonthCalendarProps } from ".";
 import i18n from "../../config/i18n";
+import styles from "./monthCalendar.module.scss";
 
 const events = [
   { id: "a", date: "2024-02-29", title: "Release" },
@@ -79,21 +79,19 @@ describe("MonthCalendar", () => {
     ).toHaveLength(1);
   });
 
-  it("renders ui-* hooks, a localized heading and event counts", () => {
+  it("renders the calendar structure, a localized heading and event counts", () => {
     const ref = createRef<HTMLElement>();
     render({ className: "c", ref });
     const root = screen.getByRole("region", { name: "Month calendar" });
     expect(ref.current).toBe(root);
-    expect(root).toHaveClass("ui-month-calendar", "monthCalendar", "c");
-    expect(root.querySelector(".ui-month-calendar-toolbar")).not.toBeNull();
-    expect(root.querySelector(".ui-month-calendar-navigation")).not.toBeNull();
+    expect(root).toHaveClass(styles.monthCalendar, "c");
+    expect(root.querySelector(`.${styles.toolbar}`)).not.toBeNull();
+    expect(root.querySelector(`.${styles.navigation}`)).not.toBeNull();
     expect(screen.getByRole("grid", { name: "February 2024" })).toHaveClass(
-      "ui-month-calendar-grid",
+      styles.grid,
     );
-    expect(container.querySelectorAll(".ui-month-calendar-week")).toHaveLength(
-      7,
-    );
-    expect(day("2024-02-29")).toHaveClass("ui-month-calendar-day");
+    expect(screen.getAllByRole("row")).toHaveLength(7);
+    expect(day("2024-02-29")).toHaveClass(styles.day);
     expect(day("2024-02-29")).toHaveAttribute(
       "aria-label",
       "2024-02-29, 1 event",
@@ -105,7 +103,7 @@ describe("MonthCalendar", () => {
     expect(day("2024-03-01")).toHaveAttribute("data-outside", "true");
     expect(day("2024-02-28")).toHaveAttribute("aria-label", "2024-02-28");
     expect(
-      day("2024-02-29").querySelector(".ui-month-calendar-count"),
+      day("2024-02-29").querySelector(`.${styles.count}`),
     ).toHaveTextContent("1");
   });
 
@@ -117,7 +115,7 @@ describe("MonthCalendar", () => {
     }));
     render({ events: many });
     expect(
-      day("2024-02-10").querySelector(".ui-month-calendar-count"),
+      day("2024-02-10").querySelector(`.${styles.count}`),
     ).toHaveTextContent("99+");
   });
 
@@ -163,7 +161,7 @@ describe("MonthCalendar", () => {
       "true",
     );
     const list = screen.getByRole("region", { name: "Events on 2024-02-29" });
-    expect(list).toHaveClass("ui-month-calendar-events");
+    expect(list).toHaveClass(styles.events);
     expect(list.textContent).toContain("Release");
     expect(list.textContent).not.toContain("Review");
     act(() => screen.getByRole("button", { name: "Release" }).click());
@@ -282,10 +280,6 @@ describe("MonthCalendar", () => {
       onChange,
       onEventClick,
     });
-    expect(container.querySelector(".ui-month-calendar")).toHaveAttribute(
-      "data-disabled",
-      "true",
-    );
     for (const element of container.querySelectorAll("button")) {
       expect(element.disabled).toBe(true);
       act(() => element.click());
@@ -325,7 +319,7 @@ describe("MonthCalendar", () => {
     ).toBeInTheDocument();
   });
 
-  it("follows the library language (zh: novel-isr-ui strings)", async () => {
+  it("follows the library language (zh)", async () => {
     await act(() => i18n.changeLanguage("zh"));
     try {
       render({ value: "2024-02-29" });

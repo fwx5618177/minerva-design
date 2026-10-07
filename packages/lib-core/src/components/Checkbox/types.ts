@@ -46,8 +46,7 @@ export interface CheckboxProps {
   /** Label content (alternative to `label`; used when `label` is not set) */
   children?: React.ReactNode;
   /**
-   * Color of the checked / indeterminate box (the
-   * `--ui-checkbox-active-color` custom property overrides it)
+   * Color of the checked / indeterminate box
    * @default "primary"
    */
   color?: CheckboxColor;

@@ -5,8 +5,6 @@ import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppShell, type AppShellNavigationState, type AppShellProps } from ".";
 
-// Ported from novel-isr-ui AppShell/__test__/AppShell.test.tsx and
-// components/__test__/AppShell.test.tsx.
 let mobile = false;
 const listeners = new Set<() => void>();
 
@@ -60,7 +58,7 @@ const navigation = (state: AppShellNavigationState) => (
 
 const shell = (props: Partial<AppShellProps> = {}) => (
   <AppShell
-    brand="Novel Admin"
+    brand="Minerva Admin"
     brandIcon={<svg data-testid="brand-icon" />}
     navigation={navigation}
     data-testid="shell"
@@ -85,7 +83,7 @@ describe("AppShell", () => {
     });
     expect(
       screen.getByRole("complementary", { name: "Site navigation" }),
-    ).toHaveTextContent("Novel Admin");
+    ).toHaveTextContent("Minerva Admin");
     expect(screen.getByRole("banner")).toContainElement(
       screen.getByRole("button", { name: "Account" }),
     );
@@ -112,11 +110,10 @@ describe("AppShell", () => {
     renderShell({ className: "consumer", id: "shell", ref });
     const root = screen.getByTestId("shell");
     expect(ref.current).toBe(root);
-    expect(root).toHaveClass("shell", "ui-app-shell", "consumer");
+    expect(root).toHaveClass("shell", "consumer");
     expect(root).toHaveAttribute("id", "shell");
     expect(root).toHaveAttribute("data-sidebar-mode", "expanded");
     expect(root).toHaveAttribute("data-sidebar-expanded", "true");
-    expect(root).not.toHaveAttribute("data-mobile");
     expect(root).not.toHaveAttribute("brand");
     expect(screen.getAllByTestId("navigation")).toHaveLength(1);
     expect(collapsed()).toBe("false");
@@ -247,12 +244,10 @@ describe("AppShell", () => {
     expect(collapsed()).toBe("true");
   });
 
-  it("marks mobile layout and lets navigation close the drawer via closeNavigation", async () => {
+  it("switches to the mobile layout and lets navigation close the drawer via closeNavigation", async () => {
     const user = userEvent.setup();
     mobile = true;
     renderShell();
-    const root = screen.getByTestId("shell");
-    expect(root).toHaveAttribute("data-mobile", "true");
     expect(screen.queryByRole("complementary")).toBeNull();
     expect(screen.queryByTestId("navigation")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Open navigation" }));
@@ -262,7 +257,7 @@ describe("AppShell", () => {
       "data-collapsed",
       "false",
     );
-    expect(dialog).toHaveClass("drawer", "ui-drawer-content");
+    expect(dialog).toHaveClass("drawer");
     await user.click(screen.getByRole("link", { name: "Books" }));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
@@ -329,6 +324,6 @@ describe("AppShell", () => {
     const html = renderToString(shell());
     expect(html).toContain('data-sidebar-mode="expanded"');
     expect(html).toContain("<aside");
-    expect(html).not.toContain('data-mobile="true"');
+    expect(html).not.toContain("Open navigation");
   });
 });

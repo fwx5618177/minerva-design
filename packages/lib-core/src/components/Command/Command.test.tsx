@@ -8,6 +8,7 @@ import {
   normalizeShortcuts,
   type CommandItem,
 } from "./index";
+import styles from "./command.module.scss";
 
 const ITEMS: CommandItem[] = [
   { id: "books", title: "Books", description: "/books", group: "Content" },
@@ -32,7 +33,6 @@ const key = (
   ...mods,
 });
 
-// Ported from novel-isr-ui Command/__test__/Command.test.ts
 describe("Command shortcut handling", () => {
   it("ignores empty runtime shortcut values", () => {
     expect(
@@ -67,7 +67,7 @@ describe("Command shortcut handling", () => {
 });
 
 describe("CommandDialog", () => {
-  it("renders the palette with localized defaults, hooks and the shortcut label", () => {
+  it("renders the palette with localized defaults and the shortcut label", () => {
     render(
       <CommandDialog
         open
@@ -77,7 +77,7 @@ describe("CommandDialog", () => {
       />,
     );
     const dialog = screen.getByRole("dialog", { name: /Command palette/ });
-    expect(dialog).toHaveClass("ui-command-dialog", "ui-modal-size-lg");
+    expect(dialog).toHaveClass(styles.dialog, "large");
     expect(dialog).toHaveAccessibleDescription(
       "Search and jump to modules, settings pages or actions.",
     );
@@ -97,9 +97,9 @@ describe("CommandDialog", () => {
       "SEO",
     ]);
     expect(options[0]).toHaveAttribute("aria-selected", "true");
-    expect(options[0]).toHaveClass("ui-command-item");
+    expect(options[0]).toHaveClass(styles.item);
     expect(input).toHaveAttribute("aria-activedescendant", options[0].id);
-    expect(screen.getByText("Content")).toHaveClass("ui-command-item-group");
+    expect(screen.getByText("Content")).toHaveClass(styles.group);
   });
 
   it("focuses the search input when opened", async () => {
@@ -128,7 +128,7 @@ describe("CommandDialog", () => {
     await user.clear(input);
     await user.type(input, "hidden");
     expect(screen.queryAllByRole("option")).toHaveLength(0);
-    expect(screen.getByText("Nothing here")).toHaveClass("ui-command-empty");
+    expect(screen.getByText("Nothing here")).toHaveClass(styles.empty);
     expect(input).not.toHaveAttribute("aria-activedescendant");
     // Enter with no result does nothing.
     await user.keyboard("{Enter}");
@@ -255,27 +255,17 @@ describe("CommandDialog", () => {
     expect(screen.getAllByRole("option")).toHaveLength(3);
   });
 
-  it("uses getOptionId for option ids and aria-activedescendant", async () => {
+  it("generates unique option ids for aria-activedescendant", async () => {
     const user = setup();
-    render(
-      <CommandDialog
-        open
-        items={ITEMS}
-        onSelect={() => {}}
-        getOptionId={(item, index) => `cmd-${item.id}-${index}`}
-      />,
-    );
+    render(<CommandDialog open items={ITEMS} onSelect={() => {}} />);
     const input = screen.getByRole("combobox");
-    const options = screen.getAllByRole("option");
-    expect(options.map((o) => o.id)).toEqual([
-      "cmd-books-0",
-      "cmd-users-1",
-      "cmd-seo-2",
-    ]);
-    expect(input).toHaveAttribute("aria-activedescendant", "cmd-books-0");
+    const ids = screen.getAllByRole("option").map((o) => o.id);
+    expect(new Set(ids).size).toBe(3);
+    ids.forEach((id, index) => expect(id).toMatch(`-option-${index}`));
+    expect(input).toHaveAttribute("aria-activedescendant", ids[0]);
     input.focus();
     await user.keyboard("{ArrowDown}");
-    expect(input).toHaveAttribute("aria-activedescendant", "cmd-users-1");
+    expect(input).toHaveAttribute("aria-activedescendant", ids[1]);
   });
 
   it("does not listen without a shortcut and accepts custom texts", () => {

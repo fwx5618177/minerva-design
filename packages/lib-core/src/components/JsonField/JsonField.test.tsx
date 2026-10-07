@@ -4,6 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import { JsonField } from ".";
 import { FormField } from "../FormControl";
+import textareaStyles from "../Textarea/textarea.module.scss";
+import styles from "./jsonField.module.scss";
 
 const input = () => document.querySelector("textarea")!;
 const button = () => document.querySelector("button")!;
@@ -19,7 +21,6 @@ describe("JsonField", () => {
         onChange={(value) => changes.push(value)}
       />,
     );
-    expect(button()).toHaveClass("ui-json-field-format");
     expect(button()).toHaveAttribute("aria-label", "Format JSON");
     expect(button().tabIndex).toBe(0);
     expect(button().type).toBe("button");
@@ -39,15 +40,16 @@ describe("JsonField", () => {
     expect(onChange).toHaveBeenLastCalledWith("[]");
   });
 
-  it("renders the novel-isr-ui structure hooks", () => {
+  it("renders the root, textarea and an invalid status", () => {
     const { container } = render(
       <JsonField value="{" onChange={() => {}} className="consumer" />,
     );
     const root = container.firstElementChild!;
-    expect(root).toHaveClass("ui-json-field", "consumer");
-    expect(input()).toHaveClass("ui-textarea", "ui-json-field-textarea");
-    expect(container.querySelector(".ui-json-field-status")).toHaveClass(
-      "ui-json-field-status-invalid",
+    expect(root).toHaveClass(styles.root, "consumer");
+    expect(input()).toHaveClass(textareaStyles.textarea, styles.textarea);
+    expect(screen.getByRole("status")).toHaveClass(
+      styles.status,
+      styles.statusInvalid,
     );
   });
 
@@ -271,7 +273,7 @@ describe("JsonField", () => {
   it("reflects explicit invalid state to assistive technology without losing a business error", () => {
     render(<JsonField value="{}" onChange={() => {}} invalid />);
     expect(input().getAttribute("aria-invalid")).toBe("true");
-    expect(input().classList.contains("ui-textarea-error")).toBe(true);
+    expect(input()).toHaveClass(textareaStyles.invalid);
   });
 
   it('passes a child aria-invalid through and normalizes "false"', () => {
@@ -301,7 +303,7 @@ describe("JsonField localization", () => {
     });
   });
 
-  it("uses novel-isr-ui's Chinese strings", () => {
+  it("uses the Chinese strings", () => {
     act(() => {
       i18n.changeLanguage("zh");
     });

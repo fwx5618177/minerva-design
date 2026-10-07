@@ -1,10 +1,10 @@
-// Ported from @novel-isr/ui src/components/Badge/__test__/Badge.test.ts
 import { createRef } from "react";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { compile } from "sass";
 import { describe, expect, it } from "vitest";
 import Badge from "./Badge";
+import styles from "./badge.module.scss";
 import type { BadgeAppearance, BadgeProps } from "./types";
 
 describe("Badge styles", () => {
@@ -28,25 +28,22 @@ describe("Badge styles", () => {
   });
 });
 
-describe("Badge appearance and styling hooks", () => {
-  it("renders a span with the solid primary hooks by default", () => {
+describe("Badge appearance and native attributes", () => {
+  it("renders a solid primary span by default", () => {
     render(<Badge>NEW</Badge>);
     const badge = screen.getByText("NEW");
     expect(badge.tagName).toBe("SPAN");
-    expect(badge).toHaveClass(
-      "ui-badge",
-      "ui-badge-variant-solid",
-      "ui-badge-color-brand",
-    );
+    expect(badge).toHaveClass(styles.badge, styles.primary, styles.medium);
+    expect(badge).not.toHaveClass(styles.subtle, styles.outline);
   });
 
-  it.each<[BadgeAppearance | "dot", BadgeProps["variant"], string]>([
-    ["solid", "success", "success"],
-    ["outline", "warning", "warning"],
-    ["dot", "danger", "danger"],
-    ["subtle", "neutral", "gray"],
-    ["subtle", "error", "danger"],
-  ])("applies appearance %s and color %s", (appearance, variant, hook) => {
+  it.each<[BadgeAppearance | "dot", NonNullable<BadgeProps["variant"]>]>([
+    ["solid", "success"],
+    ["outline", "warning"],
+    ["dot", "danger"],
+    ["subtle", "neutral"],
+    ["subtle", "error"],
+  ])("applies appearance %s and color %s", (appearance, variant) => {
     render(
       appearance === "dot" ? (
         <Badge variant={variant} dot data-testid="b" />
@@ -57,12 +54,9 @@ describe("Badge appearance and styling hooks", () => {
       ),
     );
     const badge = screen.getByTestId("b");
-    expect(badge).toHaveClass(
-      `ui-badge-variant-${appearance}`,
-      `ui-badge-color-${hook}`,
-    );
-    if (appearance !== "solid" && appearance !== "dot") {
-      expect(badge).toHaveClass(appearance);
+    expect(badge).toHaveClass(styles[variant]);
+    if (appearance !== "solid") {
+      expect(badge).toHaveClass(styles[appearance]);
     }
   });
 
@@ -97,7 +91,7 @@ describe("Badge appearance and styling hooks", () => {
     );
     const badge = screen.getByRole("status", { name: "3 unread" });
     expect(ref.current).toBe(badge);
-    expect(badge).toHaveClass("ui-badge", "consumer");
+    expect(badge).toHaveClass(styles.badge, "consumer");
     expect(badge).toHaveAttribute("title", "unread");
     expect(badge).toHaveStyle({ margin: "2px" });
     expect(badge).not.toHaveAttribute("variant");

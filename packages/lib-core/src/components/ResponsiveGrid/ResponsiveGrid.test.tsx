@@ -11,11 +11,9 @@ const css = compile(
 ).css;
 const variables = (element: HTMLElement) =>
   ["base", "sm", "md", "lg"].map((key) =>
-    element.style.getPropertyValue(`--ui-grid-${key}`),
+    element.style.getPropertyValue(`--grid-columns-${key}`),
   );
 
-// Ported from novel-isr-ui components/__test__/ResponsiveDataLayout.test.tsx
-// (ResponsiveGrid parts) and the GridItem part of FormLayout.test.tsx.
 describe("ResponsiveGrid", () => {
   it("renders an accessible grid with normalized spacing and forwarded attributes", () => {
     const ref = createRef<HTMLElement>();
@@ -38,18 +36,15 @@ describe("ResponsiveGrid", () => {
     const grid = ref.current!;
     expect(grid.tagName).toBe("SECTION");
     expect(grid).toBe(screen.getByRole("region", { name: "Metrics" }));
-    expect(grid).toHaveClass("root", "ui-responsive-grid", "consumer");
+    expect(grid).toHaveClass("root", "consumer");
     expect(grid.getAttribute("role")).toBeNull();
     expect(grid.hasAttribute("columns")).toBe(false);
     expect(variables(grid)).toEqual(["1", "2", "4", "4"]);
-    expect(grid.style.getPropertyValue("--ui-grid-row-gap")).toBe(
+    expect(grid.style.getPropertyValue("--grid-row-gap")).toBe(
       "var(--space-2)",
     );
-    expect(grid.style.getPropertyValue("--ui-grid-column-gap")).toBe("20px");
-    expect(grid.firstElementChild).toHaveClass(
-      "layout",
-      "ui-responsive-grid-layout",
-    );
+    expect(grid.style.getPropertyValue("--grid-column-gap")).toBe("20px");
+    expect(grid.firstElementChild).toHaveClass("layout");
     expect(
       Array.from(container.querySelectorAll("button"), (n) => n.textContent),
     ).toEqual(["First", "Second"]);
@@ -60,7 +55,7 @@ describe("ResponsiveGrid", () => {
     const grid = container.firstElementChild as HTMLElement;
     expect(grid.tagName).toBe("DIV");
     expect(variables(grid)).toEqual(["1", "1", "1", "1"]);
-    expect(grid.style.getPropertyValue("--ui-grid-row-gap")).toBe(
+    expect(grid.style.getPropertyValue("--grid-row-gap")).toBe(
       "var(--space-4)",
     );
   });
@@ -97,16 +92,16 @@ describe("ResponsiveGrid", () => {
       renderToStaticMarkup(<ResponsiveGrid columns={{ md: 0 }} />),
     ).toThrow(/columns/);
     expect(renderToStaticMarkup(<ResponsiveGrid columns={12} />)).toContain(
-      "--ui-grid-lg:12",
+      "--grid-columns-lg:12",
     );
   });
 
   it("ships the container query layout in its stylesheet", () => {
     expect(css).toMatch(
-      /\.root\s*\{[^}]*container:\s*ui-grid\s*\/\s*inline-size/,
+      /\.root\s*\{[^}]*container:\s*minerva-grid\s*\/\s*inline-size/,
     );
     expect(css).toMatch(
-      /\.layout\s*\{[^}]*grid-template-columns:\s*repeat\(var\(--ui-grid-base\), minmax\(0, 1fr\)\)/,
+      /\.layout\s*\{[^}]*grid-template-columns:\s*repeat\(var\(--grid-columns-base\), minmax\(0, 1fr\)\)/,
     );
     for (const [width, key] of [
       ["480px", "sm"],
@@ -115,7 +110,7 @@ describe("ResponsiveGrid", () => {
     ]) {
       expect(css).toMatch(
         new RegExp(
-          `@container ui-grid \\(min-width: ${width}\\)\\s*\\{\\s*\\.layout\\s*\\{\\s*grid-template-columns:\\s*repeat\\(var\\(--ui-grid-${key}\\)`,
+          `@container minerva-grid \\(min-width: ${width}\\)\\s*\\{\\s*\\.layout\\s*\\{\\s*grid-template-columns:\\s*repeat\\(var\\(--grid-columns-${key}\\)`,
         ),
       );
     }
@@ -149,16 +144,17 @@ describe("GridItem", () => {
     expect(item.getAttribute("aria-label")).toBe("Group");
     expect(item.dataset.owner).toBe("editor");
     expect(item.style.padding).toBe("8px");
-    const items = Array.from(container.querySelectorAll(".ui-grid-item"));
+    const items = Array.from(container.querySelectorAll(".item"));
     expect(items.map((i) => i.textContent)).toEqual([
       "Regular",
       "Full row",
       "Regular again",
     ]);
-    expect(
-      items.map((i) => i.classList.contains("ui-grid-item-full-width")),
-    ).toEqual([false, true, false]);
-    expect(items[1]).toHaveClass("fullWidth");
+    expect(items.map((i) => i.classList.contains("fullWidth"))).toEqual([
+      false,
+      true,
+      false,
+    ]);
     expect(container.querySelector("[fullwidth], [aschild]")).toBeNull();
   });
 
@@ -195,13 +191,8 @@ describe("GridItem", () => {
     );
     const field = itemRef.current!;
     expect(field.tagName).toBe("BUTTON");
-    expect(field.parentElement).toHaveClass("ui-responsive-grid-layout");
-    expect(field).toHaveClass(
-      "ui-grid-item",
-      "ui-grid-item-full-width",
-      "item-class",
-      "field",
-    );
+    expect(field.parentElement).toHaveClass("layout");
+    expect(field).toHaveClass("item", "fullWidth", "item-class", "field");
     expect(field.dataset.owner).toBe("layout");
     expect(field.dataset.child).toBe("kept");
     expect(field.style.padding).toBe("8px");

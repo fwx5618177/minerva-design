@@ -7,13 +7,7 @@ import styles from "./menu.module.scss";
 
 /** Classes of a menu panel (root menu or submenu). */
 export const contentClassName = (size: MenuSize, className?: string) =>
-  classNames(
-    "ui-menu-content",
-    `ui-menu-size-${size === "small" ? "sm" : "md"}`,
-    styles.content,
-    size === "small" && styles.small,
-    className,
-  );
+  classNames(styles.content, size === "small" && styles.small, className);
 
 interface MenuItemsProps {
   items: MenuEntry[];
@@ -36,18 +30,11 @@ const MenuItems = ({
       {items.map((item) => {
         if ("type" in item) {
           if (item.type === "separator") {
-            return (
-              <P.Separator
-                key={item.key}
-                className={classNames("ui-menu-separator", styles.separator)}
-              />
-            );
+            return <P.Separator key={item.key} className={styles.separator} />;
           }
           return (
             <P.Group key={item.key}>
-              <P.Label className={classNames("ui-menu-label", styles.label)}>
-                {item.label}
-              </P.Label>
+              <P.Label className={styles.label}>{item.label}</P.Label>
               <MenuItems
                 items={item.items}
                 onSelect={onSelect}
@@ -60,24 +47,17 @@ const MenuItems = ({
         const content = (
           <>
             {item.icon && (
-              <span
-                className={classNames("ui-menu-icon", styles.icon)}
-                aria-hidden="true"
-              >
+              <span className={styles.icon} aria-hidden="true">
                 {item.icon}
               </span>
             )}
-            <span className={classNames("ui-menu-text", styles.text)}>
-              {item.label}
-            </span>
+            <span className={styles.text}>{item.label}</span>
             {item.shortcut && (
-              <span className={classNames("ui-menu-shortcut", styles.shortcut)}>
-                {item.shortcut}
-              </span>
+              <span className={styles.shortcut}>{item.shortcut}</span>
             )}
           </>
         );
-        const itemClassName = classNames("ui-menu-item", styles.item);
+        const itemClassName = styles.item;
         if (item.children?.length) {
           return (
             <P.Sub key={item.key}>
@@ -88,7 +68,7 @@ const MenuItems = ({
               >
                 {content}
                 <LuChevronRight
-                  className={classNames("ui-menu-chevron", styles.chevron)}
+                  className={styles.chevron}
                   size={16}
                   aria-hidden="true"
                 />

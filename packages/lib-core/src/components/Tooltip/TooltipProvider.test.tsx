@@ -1,6 +1,5 @@
-// Ported from @novel-isr/ui src/components/Tooltip/__test__/Tooltip.test.tsx
-// (Radix based Tooltip merged into the Minerva Tooltip: asChild, provider,
-// content class / ref, side / align data attributes, tones).
+// Tooltip asChild triggers, TooltipProvider delays, content class / ref and
+// variants.
 import { createRef } from "react";
 import {
   act,
@@ -14,10 +13,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { Tooltip, TooltipProvider } from ".";
 import type { TooltipVariant } from ".";
 
-const contentEl = () =>
-  document.querySelector<HTMLElement>(".ui-tooltip-content");
+const contentEl = () => document.querySelector<HTMLElement>(".tooltip");
 
-describe("Tooltip (novel-isr-ui capabilities)", () => {
+describe("Tooltip asChild and TooltipProvider", () => {
   afterEach(() => {
     vi.useRealTimers();
   });
@@ -32,7 +30,7 @@ describe("Tooltip (novel-isr-ui capabilities)", () => {
     const trigger = screen.getByRole("button", { name: "Save" });
     // no wrapper element
     expect(container.firstElementChild).toBe(trigger);
-    expect(trigger).toHaveAttribute("data-state", "closed");
+    expect(trigger).not.toHaveAttribute("aria-describedby");
     expect(screen.queryByRole("tooltip")).toBeNull();
 
     await user.tab();
@@ -41,8 +39,6 @@ describe("Tooltip (novel-isr-ui capabilities)", () => {
     expect(tooltip).toHaveTextContent("Save draft");
     expect(trigger).toHaveAttribute("aria-describedby", tooltip.id);
     expect(trigger).toHaveAccessibleDescription("Save draft");
-    expect(trigger).toHaveAttribute("data-state", "instant-open");
-    expect(tooltip).toHaveAttribute("data-state", "instant-open");
   });
 
   it("closes on Escape and on blur", async () => {
@@ -79,13 +75,9 @@ describe("Tooltip (novel-isr-ui capabilities)", () => {
     expect(screen.queryByRole("tooltip")).toBeNull();
     act(() => vi.advanceTimersByTime(1));
     expect(screen.getByRole("tooltip")).toHaveTextContent("Delayed");
-    expect(screen.getByRole("tooltip")).toHaveAttribute(
-      "data-state",
-      "delayed-open",
-    );
   });
 
-  it("applies side/align data attributes, content class, arrow hook and the content ref", async () => {
+  it("applies the placement, content class, arrow and the content ref", async () => {
     const user = userEvent.setup();
     const ref = createRef<HTMLDivElement>();
     render(
@@ -105,41 +97,25 @@ describe("Tooltip (novel-isr-ui capabilities)", () => {
     await screen.findByRole("tooltip");
     const content = contentEl()!;
     expect(ref.current).toBe(content);
-    expect(content).toHaveClass(
-      "ui-tooltip-content",
-      "ui-tooltip-tone-auto",
-      "auto",
-      "extra",
-    );
-    expect(content).toHaveAttribute("data-side", "bottom");
-    expect(content).toHaveAttribute("data-align", "start");
-    expect(content.querySelector(".ui-tooltip-arrow")).not.toBeNull();
+    expect(content).toHaveClass("tooltip", "auto", "arrow", "extra");
+    expect(content).toHaveAttribute("data-placement", "bottom-start");
+    expect(content.querySelector(".tooltipArrow")).not.toBeNull();
   });
 
-  it("reports center alignment for placements without a suffix", () => {
-    render(
-      <Tooltip content="L" placement="left" defaultOpen>
-        <button type="button">T</button>
-      </Tooltip>,
-    );
-    expect(contentEl()).toHaveAttribute("data-side", "left");
-    expect(contentEl()).toHaveAttribute("data-align", "center");
-  });
-
-  it.each<[TooltipVariant, string]>([
-    ["auto", "auto"],
-    ["fixedDark", "dark"],
-    ["fixedLight", "light"],
-    ["dark", "dark"],
-    ["success", "success"],
-  ])("maps variant=%s to the %s tone hook", (variant, tone) => {
+  it.each<TooltipVariant>([
+    "auto",
+    "fixedDark",
+    "fixedLight",
+    "dark",
+    "success",
+  ])("applies the %s variant class", (variant) => {
     render(
       <Tooltip content="L" variant={variant} defaultOpen>
         <button type="button">T</button>
       </Tooltip>,
     );
-    expect(contentEl()).toHaveClass(`ui-tooltip-tone-${tone}`, variant);
-    expect(contentEl()!.querySelector(".ui-tooltip-arrow")).toBeNull();
+    expect(contentEl()).toHaveClass("tooltip", variant);
+    expect(contentEl()!.querySelector(".tooltipArrow")).toBeNull();
   });
 
   it("renders only the child when disabled with asChild and never opens", async () => {
@@ -155,7 +131,6 @@ describe("Tooltip (novel-isr-ui capabilities)", () => {
     expect(trigger).toHaveFocus();
     expect(screen.queryByRole("tooltip")).toBeNull();
     expect(trigger).not.toHaveAttribute("aria-describedby");
-    expect(trigger).not.toHaveAttribute("data-state");
   });
 
   it("keeps the child's own handlers, ref and className with asChild", async () => {

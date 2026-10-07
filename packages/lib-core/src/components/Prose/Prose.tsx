@@ -16,11 +16,7 @@ export const Prose = ({
 }: ProseProps) => {
   const Component = asChild ? Slot : "div";
   return (
-    <Component
-      ref={ref}
-      className={cn(styles.prose, "ui-prose", className)}
-      {...rest}
-    />
+    <Component ref={ref} className={cn(styles.prose, className)} {...rest} />
   );
 };
 

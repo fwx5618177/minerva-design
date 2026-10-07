@@ -1,10 +1,6 @@
-// Ported from @novel-isr/ui tests/e2e/navigation.test.tsx.
-//
 // E2E: navigation — Tabs keyboard model, PageTabs route strip, CommandDialog
-// palette, NavTree sidebar. Runs through Minerva's native API (English
-// built-in strings: "Command palette", "No matching results"); a final block
-// replays a novel scenario verbatim through @minerva/lib-core/compat (novel
-// prop names + Chinese defaults).
+// palette, NavTree sidebar (English built-in strings: "Command palette",
+// "No matching results").
 import { useState } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -23,7 +19,6 @@ import {
   type CommandItem,
   type NavTreeSection,
 } from "@minerva/lib-core";
-import * as compat from "@minerva/lib-core/compat";
 
 describe("Tabs", () => {
   function BookDetail() {
@@ -81,7 +76,7 @@ describe("Tabs", () => {
     expect(screen.getByRole("tabpanel")).toHaveTextContent("数据内容");
   });
 
-  // Ported from tests/browser/language-tabs.mjs (keyboard + panel linkage; colors/geometry dropped).
+  // Keyboard model and tab/panel linkage.
   it("manual activation: arrows move focus only, Enter selects; panel is linked via aria-controls", async () => {
     const user = userEvent.setup();
     const languages = ["en", "ja", "disabled", "zh-hans", "fr", "ko"];
@@ -130,7 +125,7 @@ describe("Tabs", () => {
 });
 
 describe("PageTabs", () => {
-  // Ported from tests/browser/page-tabs-presentation.mjs (tooltip/aria, close action, disabled; geometry dropped).
+  // Tooltip/aria, close action and disabled tabs.
   function Workspace() {
     const [pages, setPages] = useState([
       "home",
@@ -460,150 +455,6 @@ describe("NavTree", () => {
     );
     const link = screen.getByRole("link", { name: "仪表盘" });
     expect(link).toHaveAttribute("href", "#dashboard");
-    expect(link).toHaveAttribute("aria-current", "page");
-  });
-});
-
-describe("via @minerva/lib-core/compat", () => {
-  it("Tabs: manual activation with novel onValueChange; Enter selects", async () => {
-    const user = userEvent.setup();
-    function Languages() {
-      const [value, setValue] = useState("en");
-      return (
-        <compat.Tabs
-          value={value}
-          onValueChange={setValue}
-          variant="pills"
-          activationMode="manual"
-        >
-          <compat.TabList aria-label="Languages">
-            {["en", "ja", "ko"].map((lang) => (
-              <compat.Tab key={lang} value={lang}>
-                {lang}
-              </compat.Tab>
-            ))}
-          </compat.TabList>
-          <compat.TabPanel value={value}>Notes for {value}</compat.TabPanel>
-        </compat.Tabs>
-      );
-    }
-    render(<Languages />);
-    const list = screen.getByRole("tablist", { name: "Languages" });
-    await user.click(within(list).getByRole("tab", { name: "en" }));
-    await user.keyboard("{ArrowRight}");
-    expect(within(list).getByRole("tab", { selected: true })).toHaveTextContent(
-      "en",
-    );
-    await user.keyboard("{Enter}");
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("Notes for ja");
-  });
-
-  it("CommandDialog: matches keywords, shows the empty state, resets the query on reopen, and Escape closes", async () => {
-    const user = userEvent.setup();
-    function AdminShell() {
-      const [open, setOpen] = useState(false);
-      const [route, setRoute] = useState("/admin");
-      return (
-        <>
-          <compat.Button onClick={() => setOpen(true)}>
-            打开命令面板
-          </compat.Button>
-          <p>当前路由：{route}</p>
-          <compat.CommandDialog
-            isOpen={open}
-            onOpenChange={setOpen}
-            items={COMMAND_ITEMS}
-            shortcut="mod+k"
-            shortcutLabel="⌘K"
-            onSelect={(item) => setRoute(item.description ?? item.id)}
-          />
-        </>
-      );
-    }
-    render(<AdminShell />);
-
-    await user.click(screen.getByRole("button", { name: "打开命令面板" }));
-    let dialog = await screen.findByRole("dialog", { name: /命令面板/ });
-    const search = within(dialog).getByRole("combobox");
-    await waitFor(() => expect(search).toHaveFocus());
-
-    // novel-isr-ui uses each item's id as the option id / active descendant.
-    await user.type(search, "admin");
-    await user.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}");
-    expect(within(dialog).getAllByRole("option")[2]).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-    expect(search).toHaveAttribute("aria-activedescendant", "cmd-users");
-    await user.keyboard("{ArrowUp}");
-    expect(search).toHaveAttribute("aria-activedescendant", "cmd-reviews");
-    await user.clear(search);
-
-    await user.type(search, "MODERATION");
-    expect(within(dialog).getAllByRole("option")).toHaveLength(1);
-    await user.clear(search);
-    await user.type(search, "删除");
-    expect(within(dialog).queryByRole("option")).not.toBeInTheDocument();
-    expect(within(dialog).getByText("没有匹配结果")).toBeInTheDocument();
-
-    await user.keyboard("{Escape}");
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    expect(screen.getByText("当前路由：/admin")).toBeInTheDocument();
-    await waitFor(() =>
-      expect(
-        screen.getByRole("button", { name: "打开命令面板" }),
-      ).toHaveFocus(),
-    );
-
-    await user.click(screen.getByRole("button", { name: "打开命令面板" }));
-    dialog = await screen.findByRole("dialog", { name: /命令面板/ });
-    expect(within(dialog).getByRole("combobox")).toHaveValue("");
-    await user.click(within(dialog).getByRole("option", { name: /用户列表/ }));
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    expect(screen.getByText("当前路由：/admin/users")).toBeInTheDocument();
-  });
-
-  it("PageTabs + NavTree: novel label / aria-label / IconButton size props", () => {
-    render(
-      <>
-        <compat.PageTabs
-          label="Open pages"
-          activeValue="home"
-          actions={<compat.IconButton label="Page menu">⋯</compat.IconButton>}
-        >
-          <compat.PageTab
-            value="home"
-            label="home"
-            active
-            action={
-              <compat.IconButton size="xs" label="Close home">
-                ×
-              </compat.IconButton>
-            }
-          />
-        </compat.PageTabs>
-        <compat.NavTree
-          aria-label="站点"
-          sections={NAV_SECTIONS}
-          activeId="dashboard"
-        />
-      </>,
-    );
-    const nav = screen.getByRole("navigation", { name: "Open pages" });
-    expect(within(nav).getByRole("button", { name: "home" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-    expect(
-      within(nav).getByRole("button", { name: "Close home" }),
-    ).toBeInTheDocument();
-    const link = within(
-      screen.getByRole("navigation", { name: "站点" }),
-    ).getByRole("link", { name: "仪表盘" });
     expect(link).toHaveAttribute("aria-current", "page");
   });
 });

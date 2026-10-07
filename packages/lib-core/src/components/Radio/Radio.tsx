@@ -6,9 +6,6 @@ import type { RadioProps } from "./types";
 import { RadioGroupContext } from "./RadioGroup";
 import { useFormControlContext } from "../FormControl/context";
 
-/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
-const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
-
 /**
  * Radio: a native radio input. Inside a RadioGroup, the group drives its
  * checked state, name, size, color and disabled state. `ref` reaches the
@@ -73,13 +70,7 @@ const Radio = ({
       )}
     >
       <label
-        className={classNames(
-          styles.radio,
-          isDisabled && styles.disabled,
-          "ui-radio-root",
-          `ui-radio-size-${UI_SIZE[radioSize]}`,
-        )}
-        data-disabled={isDisabled || undefined}
+        className={classNames(styles.radio, isDisabled && styles.disabled)}
       >
         <input
           type="radio"
@@ -93,8 +84,7 @@ const Radio = ({
           required={required}
           aria-label={ariaLabel}
           aria-describedby={helper ? helperId : undefined}
-          className={classNames(styles.input, "ui-radio-control")}
-          data-state={isChecked ? "checked" : "unchecked"}
+          className={styles.input}
         />
         <span
           className={styles.radioMark}

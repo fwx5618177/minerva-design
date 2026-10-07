@@ -208,7 +208,7 @@ describe("Table (declarative rendering)", () => {
   it("renders a single spanning empty row with default and custom text", () => {
     const { rerender } = render(<Table columns={bookColumns} data={[]} />);
     const cell = screen.getByRole("cell", { name: "No data" });
-    expect(cell).toHaveClass("ui-table-empty", "empty");
+    expect(cell).toHaveClass("empty");
     expect(cell).toHaveAttribute("colspan", "2");
     rerender(
       <Table
@@ -230,7 +230,7 @@ describe("Table (declarative rendering)", () => {
     );
     expect(skeletonRows).toHaveLength(5);
     expect(skeletonRows[0].querySelectorAll("td")).toHaveLength(2);
-    expect(skeletonRows[0].querySelector(".ui-table-skeleton")).not.toBeNull();
+    expect(skeletonRows[0].querySelector(".skeleton")).not.toBeNull();
     expect(screen.queryByText("Dune")).toBeNull();
     rerender(<Table columns={bookColumns} data={[]} loading loadingRows={2} />);
     skeletonRows = container.querySelectorAll('tbody tr[aria-hidden="true"]');
@@ -324,25 +324,16 @@ describe("Table (declarative rendering)", () => {
     );
     const table = screen.getByRole("table", { name: "Books" });
     expect(table).toHaveClass(
-      "ui-table",
-      "ui-table-size-sm",
-      "ui-table-variant-bordered",
-      "ui-table-hoverable",
       "consumer",
       "table",
       "small",
       "bordered",
       "hoverable",
     );
-    expect(table.parentElement).toHaveClass(
-      "ui-table-wrapper",
-      "ui-table-variant-bordered",
-      "wrapper",
-      "wrapperBordered",
-    );
+    expect(table.parentElement).toHaveClass("wrapper", "wrapperBordered");
   });
 
-  it("maps large / striped to the stable hooks", () => {
+  it("maps large / striped to their classes", () => {
     render(
       <Table
         columns={bookColumns}
@@ -352,23 +343,18 @@ describe("Table (declarative rendering)", () => {
         aria-label="Books"
       />,
     );
-    expect(screen.getByRole("table")).toHaveClass(
-      "ui-table-size-lg",
-      "ui-table-variant-striped",
-      "large",
-      "striped",
-    );
+    expect(screen.getByRole("table")).toHaveClass("large", "striped");
     expect(screen.getByRole("table").parentElement).not.toHaveClass(
-      "ui-table-variant-bordered",
+      "wrapperBordered",
     );
   });
 
   it("defaults to medium simple non-hoverable without scroll modes", () => {
     render(<Table columns={bookColumns} data={books} aria-label="Books" />);
     const table = screen.getByRole("table");
-    expect(table).toHaveClass("ui-table-size-md", "ui-table-variant-simple");
-    expect(table).not.toHaveClass("ui-table-hoverable");
-    expect(table).not.toHaveClass("ui-table-scroll-x");
+    expect(table).toHaveClass("medium", "simple");
+    expect(table).not.toHaveClass("hoverable");
+    expect(table).not.toHaveClass("scrollX");
     expect(table.parentElement?.getAttribute("style") ?? "").toBe("");
     expect(table.getAttribute("style")).toBeNull();
   });
@@ -382,10 +368,9 @@ describe("TableRoot scroll and compound parts", () => {
       </TableRoot>,
     );
     const table = screen.getByRole("table");
-    expect(table).toHaveClass("ui-table-scroll-x");
+    expect(table).toHaveClass("scrollX");
     expect(table.style.minWidth).toBe("900px");
     expect(table.style.color).toBe("red");
-    expect(table.parentElement).toHaveClass("ui-table-wrapper-scroll-x");
   });
 
   it("bounds the wrapper height in scroll-y mode", () => {
@@ -395,7 +380,7 @@ describe("TableRoot scroll and compound parts", () => {
       </TableRoot>,
     );
     const wrapper = screen.getByRole("table").parentElement as HTMLElement;
-    expect(wrapper).toHaveClass("ui-table-wrapper-scroll-y", "wrapperScrollY");
+    expect(wrapper).toHaveClass("wrapperScrollY");
     expect(wrapper.style.maxHeight).toBe("50vh");
     expect(wrapper.style.overflowY).toBe("auto");
   });
@@ -444,7 +429,7 @@ describe("DataTable", () => {
       <DataTable columns={bookColumns} data={books} loading error="Boom" />,
     );
     expect(container.firstElementChild).toHaveAttribute("aria-busy", "true");
-    expect(container.firstElementChild).toHaveClass("ui-data-table");
+    expect(container.firstElementChild).toHaveClass("dataTable");
     expect(screen.queryByRole("alert")).toBeNull();
     expect(
       container.querySelectorAll('tbody tr[aria-hidden="true"]'),
@@ -533,17 +518,19 @@ describe("DataTable", () => {
 });
 
 describe("TableCellContent", () => {
-  it("flags secondary content and defaults maxWidth to 360px", () => {
+  it("renders the secondary line only when set and defaults maxWidth to 360px", () => {
     const { container, rerender } = render(
       <TableCellContent primary="Dune" secondary="Herbert" />,
     );
     const root = container.firstElementChild as HTMLElement;
-    expect(root).toHaveClass("ui-table-cell-content", "cellContent");
-    expect(root).toHaveAttribute("data-secondary", "true");
+    expect(root).toHaveClass("cellContent");
+    expect(root.querySelector(".cellPrimary")).toHaveClass("cellStrong");
+    expect(root.querySelector(".cellSecondary")).toHaveTextContent("Herbert");
     expect(root.style.maxWidth).toBe("360px");
     rerender(<TableCellContent primary="Dune" />);
-    expect(root).not.toHaveAttribute("data-secondary");
-    expect(root.querySelector(".ui-table-cell-primary")?.tagName).toBe("DIV");
+    expect(root.querySelector(".cellSecondary")).toBeNull();
+    expect(root.querySelector(".cellPrimary")).not.toHaveClass("cellStrong");
+    expect(root.querySelector(".cellPrimary")?.tagName).toBe("DIV");
   });
 
   it("accepts string maxWidth, lets style override it and forwards attributes", () => {
@@ -575,17 +562,13 @@ describe("TableCellContent", () => {
       <TableCellContent ref={ref} primary={0} secondary={0} maxWidth={240} />,
     );
     expect(ref.current?.style.maxWidth).toBe("240px");
-    expect(container.querySelector(".ui-table-cell-primary")?.textContent).toBe(
-      "0",
-    );
-    expect(
-      container.querySelector(".ui-table-cell-secondary")?.textContent,
-    ).toBe("0");
+    expect(container.querySelector(".cellPrimary")?.textContent).toBe("0");
+    expect(container.querySelector(".cellSecondary")?.textContent).toBe("0");
     rerender(<TableCellContent primary={"<img src=x>"} monospace />);
     expect(container.querySelector("code")?.textContent).toBe("<img src=x>");
     expect(container.querySelector("code")).toHaveClass("cellMono");
     expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector(".ui-table-cell-secondary")).toBeNull();
+    expect(container.querySelector(".cellSecondary")).toBeNull();
   });
 });
 
@@ -604,6 +587,10 @@ describe("Table styles", () => {
     expect(css).toMatch(
       /\.wrapperScrollY \.table thead th\s*\{[^}]*position:\s*sticky[^}]*top:\s*0/,
     );
+  });
+
+  it("styles the scroll-x mode through a module class", () => {
+    expect(css).toMatch(/\.table\.scrollX\s*\{[^}]*table-layout:\s*auto/);
   });
 
   it("truncates ellipsis columns on a single line", () => {

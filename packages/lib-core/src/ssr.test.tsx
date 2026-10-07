@@ -4,7 +4,7 @@
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
-import { portedCases } from "./test-utils/portedSsrCases";
+import { componentSsrCases } from "./test-utils/componentSsrCases";
 
 const {
   Alert,
@@ -160,7 +160,7 @@ const ownCases: Array<[string, React.ReactElement]> = [
   ],
 ];
 
-const cases = [...ownCases, ...portedCases];
+const cases = [...ownCases, ...componentSsrCases];
 
 describe("SSR", () => {
   it("runs without a DOM", () => {

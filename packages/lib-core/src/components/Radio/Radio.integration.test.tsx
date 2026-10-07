@@ -1,5 +1,5 @@
-// Behaviours ported from @novel-isr/ui's Radio tests (children labels, ui-*
-// hooks, per-item size, keyboard, FormControl integration).
+// Radio inside RadioGroup: children labels, per-item size, keyboard and
+// FormControl integration.
 import React, { createRef, useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 import Radio from "./Radio";
 import RadioGroup from "./RadioGroup";
 import type { RadioGroupProps } from "./types";
+import styles from "./radio.module.scss";
 import {
   FormControlContext,
   type FormControlContextValue,
@@ -40,12 +41,11 @@ function Sizes(props: Omit<RadioGroupProps, "children">) {
   );
 }
 
-describe("RadioGroup / Radio (merged capabilities)", () => {
-  it("renders a radiogroup with children-labelled radios and ui-* hooks", () => {
+describe("RadioGroup / Radio integration", () => {
+  it("renders a vertical radiogroup with children-labelled medium radios", () => {
     render(<Sizes />);
     const group = screen.getByRole("radiogroup", { name: "Size" });
-    expect(group).toHaveClass("ui-radio-group");
-    expect(group).toHaveAttribute("data-direction", "column");
+    expect(group).toHaveClass(styles.radioGroup, styles.vertical);
     const radios = screen.getAllByRole("radio");
     expect(radios.map((r) => r.closest("label")!.textContent)).toEqual([
       "Small",
@@ -54,12 +54,9 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
     ]);
     radios.forEach((r) => {
       expect(r).not.toBeChecked();
-      expect(r).toHaveClass("ui-radio-control");
-      expect(r).toHaveAttribute("data-state", "unchecked");
-      expect(r.closest("label")).toHaveClass(
-        "ui-radio-root",
-        "ui-radio-size-md",
-      );
+      expect(r).toHaveClass(styles.input);
+      expect(r.closest("label")).toHaveClass(styles.radio);
+      expect(r.closest("label")!.parentElement).toHaveClass(styles.medium);
     });
   });
 
@@ -69,13 +66,10 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
         <Radio value="a">A</Radio>
       </RadioGroup>,
     );
-    expect(screen.getByRole("radiogroup")).toHaveAttribute(
-      "data-direction",
-      "row",
-    );
-    expect(screen.getByRole("radio").closest("label")).toHaveClass(
-      "ui-radio-size-lg",
-    );
+    expect(screen.getByRole("radiogroup")).toHaveClass(styles.horizontal);
+    expect(
+      screen.getByRole("radio").closest("label")!.parentElement,
+    ).toHaveClass(styles.large);
     rerender(
       <RadioGroup ariaLabel="g">
         <Radio value="a" size="small">
@@ -83,9 +77,9 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
         </Radio>
       </RadioGroup>,
     );
-    expect(screen.getByRole("radio").closest("label")).toHaveClass(
-      "ui-radio-size-sm",
-    );
+    expect(
+      screen.getByRole("radio").closest("label")!.parentElement,
+    ).toHaveClass(styles.small);
   });
 
   it("selects by clicking the label text and reports the value", async () => {
@@ -95,10 +89,6 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
     expect(screen.getByRole("radio", { name: "Small" })).toBeChecked();
     await user.click(screen.getByText("Large"));
     expect(screen.getByRole("radio", { name: "Large" })).toBeChecked();
-    expect(screen.getByRole("radio", { name: "Large" })).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
     expect(screen.getByRole("radio", { name: "Small" })).not.toBeChecked();
     expect(onChange).toHaveBeenLastCalledWith("l", expect.anything());
   });
@@ -154,7 +144,7 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
     );
     const radio = screen.getByRole("radio", { name: "A" });
     expect(radio).toBeDisabled();
-    expect(radio.closest("label")).toHaveAttribute("data-disabled", "true");
+    expect(radio.closest("label")).toHaveClass(styles.disabled);
     await user.click(radio);
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -197,7 +187,7 @@ describe("RadioGroup / Radio (merged capabilities)", () => {
     expect(group).toHaveAccessibleDescription("Required");
     screen.getAllByRole("radio").forEach((r) => {
       expect(r).toBeDisabled();
-      expect(r.closest("label")).toHaveAttribute("data-disabled", "true");
+      expect(r.closest("label")).toHaveClass(styles.disabled);
     });
   });
 

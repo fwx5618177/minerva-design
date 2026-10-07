@@ -1,6 +1,5 @@
-// Ported from @novel-isr/ui src/components/__test__/ThemeProvider.test.tsx,
-// plus Minerva's ConfigProvider integration (palette, persistence, one
-// source of truth).
+// ThemeProvider, plus its ConfigProvider integration (palette, persistence,
+// one source of truth).
 import { act, render, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";

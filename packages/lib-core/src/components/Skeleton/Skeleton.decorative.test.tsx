@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui src/components/Skeleton/__test__/Skeleton.test.tsx
 import { createRef } from "react";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -12,15 +11,7 @@ describe("Skeleton decorative", () => {
     expect(el.tagName).toBe("SPAN");
     expect(el).toHaveAttribute("aria-hidden", "true");
     expect(el).not.toHaveAttribute("role");
-    expect(el).toHaveClass(
-      "skeleton",
-      "decorative",
-      "text",
-      "animation-pulse",
-      "ui-skeleton",
-      "ui-skeleton-variant-text",
-    );
-    expect(el).not.toHaveClass("ui-skeleton-static");
+    expect(el).toHaveClass("skeleton", "decorative", "text", "animation-pulse");
     expect(el.style.width).toBe("");
     expect(el.style.height).toBe("");
   });
@@ -30,7 +21,7 @@ describe("Skeleton decorative", () => {
       <Skeleton decorative variant="rectangular" width={120} height="12rem" />,
     );
     const el = container.firstElementChild as HTMLElement;
-    expect(el).toHaveClass("rectangular", "ui-skeleton-variant-rect");
+    expect(el).toHaveClass("rectangular");
     expect(el.style.width).toBe("120px");
     expect(el.style.height).toBe("12rem");
 
@@ -50,7 +41,7 @@ describe("Skeleton decorative", () => {
       />,
     );
     const el = container.firstElementChild as HTMLElement;
-    expect(el).toHaveClass("circular", "ui-skeleton-variant-circle");
+    expect(el).toHaveClass("circular");
     expect(el.style.width).toBe("40px");
     expect(el.style.height).toBe("40px");
 
@@ -78,27 +69,26 @@ describe("Skeleton decorative", () => {
     );
     const el = container.firstElementChild as HTMLElement;
     expect(ref.current).toBe(el);
-    expect(el).toHaveClass("ui-skeleton-static", "c");
+    expect(el).toHaveClass("skeleton", "c");
     expect(el).not.toHaveClass("animation-pulse");
+    expect(el).not.toHaveClass("animation-wave");
     expect(el).toHaveAttribute("data-id", "s");
     expect(el.style.width).toBe("50px");
     expect(el.style.opacity).toBe("0.5");
   });
 
-  it("keeps other variants' names as hooks and renders children when not loading", () => {
+  it("applies the variant class and renders children when not loading", () => {
     const { container, rerender } = render(
       <Skeleton decorative variant="rounded" />,
     );
-    expect(container.firstElementChild).toHaveClass(
-      "ui-skeleton-variant-rounded",
-    );
+    expect(container.firstElementChild).toHaveClass("rounded");
     rerender(
       <Skeleton decorative loading={false}>
         <p>Loaded</p>
       </Skeleton>,
     );
     expect(container.querySelector("p")).toHaveTextContent("Loaded");
-    expect(container.querySelector(".ui-skeleton")).toBeNull();
+    expect(container.querySelector(".skeleton")).toBeNull();
   });
 
   it("forwards native attributes to the loading status region", () => {
@@ -112,9 +102,9 @@ describe("SkeletonText", () => {
   it("renders 3 lines by default with the last line shrunk to 70%", () => {
     const { container } = render(<SkeletonText />);
     const root = container.firstElementChild as HTMLElement;
-    expect(root).toHaveClass("skeletonText", "ui-skeleton-text");
+    expect(root).toHaveClass("skeletonText");
     expect(root).toHaveAttribute("aria-hidden", "true");
-    const lines = root.querySelectorAll<HTMLElement>(".ui-skeleton");
+    const lines = root.querySelectorAll<HTMLElement>(".skeleton");
     expect(lines).toHaveLength(3);
     expect(lines[0]!.style.width).toBe("100%");
     expect(lines[1]!.style.width).toBe("100%");
@@ -135,12 +125,12 @@ describe("SkeletonText", () => {
     );
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.gap).toBe("4px");
-    const lines = root.querySelectorAll<HTMLElement>(".ui-skeleton");
+    const lines = root.querySelectorAll<HTMLElement>(".skeleton");
     expect(lines).toHaveLength(5);
     lines.forEach((line) => {
       expect(line.style.width).toBe("100%");
       expect(line.style.height).toBe("12px");
-      expect(line).toHaveClass("ui-skeleton-static");
+      expect(line).not.toHaveClass("animation-pulse");
     });
   });
 
@@ -159,7 +149,7 @@ describe("SkeletonText", () => {
     const root = container.firstElementChild as HTMLElement;
     expect(ref.current).toBe(root);
     expect(root).toHaveAttribute("id", "st");
-    expect(root).toHaveClass("ui-skeleton-text", "extra");
+    expect(root).toHaveClass("skeletonText", "extra");
     expect(root.children).toHaveLength(0);
     rerender(<SkeletonText lines={Number.NaN} />);
     expect(root.children).toHaveLength(0);

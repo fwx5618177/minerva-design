@@ -1,5 +1,5 @@
-// Tabs. `--ui-tabs-accent`, `--ui-tabs-selected-bg` and `--ui-tabs-selected-fg`
-// are part of the public styling API (set them on a Tabs root or a Tab).
+// Tabs. The color classes set `--tabs-accent`, `--tabs-selected-bg` and
+// `--tabs-selected-fg`, read by every variant below.
 
 .tabs {
   display: flex;
@@ -14,23 +14,23 @@
 
 // Semantic colors (on the root and on explicitly colored tabs)
 .primary {
-  --ui-tabs-accent: var(--primary-color);
-  --ui-tabs-selected-bg: var(--primary-color-subtle);
-  --ui-tabs-selected-fg: var(--primary-color-text);
+  --tabs-accent: var(--primary-color);
+  --tabs-selected-bg: var(--primary-color-subtle);
+  --tabs-selected-fg: var(--primary-color-text);
 }
 
 @each $role in success, warning, danger, info {
   .#{$role} {
-    --ui-tabs-accent: var(--#{$role}-color);
-    --ui-tabs-selected-bg: var(--#{$role}-color-subtle);
-    --ui-tabs-selected-fg: var(--#{$role}-color-text);
+    --tabs-accent: var(--#{$role}-color);
+    --tabs-selected-bg: var(--#{$role}-color-subtle);
+    --tabs-selected-fg: var(--#{$role}-color-text);
   }
 }
 
 .neutral {
-  --ui-tabs-accent: var(--text-secondary-color);
-  --ui-tabs-selected-bg: var(--surface-muted-color);
-  --ui-tabs-selected-fg: var(--text-color);
+  --tabs-accent: var(--text-secondary-color);
+  --tabs-selected-bg: var(--surface-muted-color);
+  --tabs-selected-fg: var(--text-color);
 }
 
 .list {
@@ -79,12 +79,12 @@
   }
 
   &:focus-visible {
-    outline: var(--focus-ring-width) solid var(--ui-tabs-accent);
+    outline: var(--focus-ring-width) solid var(--tabs-accent);
     outline-offset: -2px;
   }
 
   &[data-state="active"] {
-    color: var(--ui-tabs-selected-fg);
+    color: var(--tabs-selected-fg);
   }
 
   &:disabled {
@@ -104,7 +104,7 @@
   padding-inline: var(--space-2);
 
   &[data-state="active"] {
-    border-bottom-color: var(--ui-tabs-accent);
+    border-bottom-color: var(--tabs-accent);
   }
 }
 
@@ -122,7 +122,7 @@
   text-align: left;
 
   &[data-state="active"] {
-    border-right-color: var(--ui-tabs-accent);
+    border-right-color: var(--tabs-accent);
   }
 }
 
@@ -181,26 +181,26 @@
   }
 
   &[data-state="active"] {
-    background-color: var(--ui-tabs-selected-bg);
-    color: var(--ui-tabs-selected-fg);
+    background-color: var(--tabs-selected-bg);
+    color: var(--tabs-selected-fg);
   }
 }
 
 // Explicitly colored tabs stay tinted in every state
 .trigger.colored {
-  background-color: var(--ui-tabs-selected-bg);
-  color: var(--ui-tabs-selected-fg);
+  background-color: var(--tabs-selected-bg);
+  color: var(--tabs-selected-fg);
   border-bottom: 2px solid transparent;
 
   &:hover:not(:disabled):not([data-state="active"]) {
-    background-color: var(--ui-tabs-selected-bg);
-    color: var(--ui-tabs-selected-fg);
+    background-color: var(--tabs-selected-bg);
+    color: var(--tabs-selected-fg);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
   &[data-state="active"] {
-    border-bottom-color: var(--ui-tabs-selected-fg);
+    border-bottom-color: var(--tabs-selected-fg);
   }
 }
 
@@ -208,7 +208,7 @@
   border-bottom: none;
 
   &[data-state="active"] {
-    border-right-color: var(--ui-tabs-selected-fg);
+    border-right-color: var(--tabs-selected-fg);
   }
 }
 
@@ -221,8 +221,8 @@
   }
 
   &[data-state="active"] {
-    background-color: var(--ui-tabs-selected-fg);
-    color: var(--ui-tabs-selected-bg);
+    background-color: var(--tabs-selected-fg);
+    color: var(--tabs-selected-bg);
 
     &:focus-visible {
       outline-color: currentColor;

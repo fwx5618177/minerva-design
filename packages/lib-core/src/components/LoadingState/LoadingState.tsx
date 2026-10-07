@@ -1,15 +1,8 @@
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { Spinner } from "../Spinner";
-import type { LoadingStateProps, LoadingStateSize } from "./types";
+import type { LoadingStateProps } from "./types";
 import styles from "./loadingState.module.scss";
-
-/** Stable `ui-loading-state-size-*` hook names (shared with @novel-isr/ui) */
-const HOOK_SIZE: Record<LoadingStateSize, string> = {
-  small: "compact",
-  medium: "default",
-  large: "lg",
-};
 
 /**
  * LoadingState: page / route / section loading presentation. A decorative
@@ -27,13 +20,7 @@ export const LoadingState = ({
   return (
     <div
       ref={ref}
-      className={cn(
-        styles.loadingState,
-        styles[size],
-        "ui-loading-state",
-        `ui-loading-state-size-${HOOK_SIZE[size]}`,
-        className,
-      )}
+      className={cn(styles.loadingState, styles[size], className)}
       role="status"
       aria-live="polite"
       aria-atomic="true"
@@ -47,9 +34,7 @@ export const LoadingState = ({
         role="presentation"
         aria-live="off"
       />
-      <span className={cn(styles.label, "ui-loading-state-label")}>
-        {label ?? t("loadingState.label")}
-      </span>
+      <span className={styles.label}>{label ?? t("loadingState.label")}</span>
     </div>
   );
 };

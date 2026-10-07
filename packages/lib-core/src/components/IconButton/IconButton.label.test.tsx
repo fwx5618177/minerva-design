@@ -1,11 +1,9 @@
-// Ported from @novel-isr/ui src/components/Button/__test__/Button.test.tsx
-// (IconButton) and the IconButton assertions of src/components/__test__/
-// {AdminPrimitives,List,PageTabs}.test.tsx.
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import IconButton from "./IconButton";
+import styles from "./iconButton.module.scss";
 
 describe("IconButton label and children", () => {
   it("uses label as accessible name and hides children icons from AT", () => {
@@ -16,15 +14,14 @@ describe("IconButton label and children", () => {
     );
     const button = screen.getByRole("button", { name: "Delete" });
     expect(button).toHaveClass(
-      "ui-button",
-      "ui-icon-button",
-      "ui-button-variant-ghost",
-      "ui-button-size-md",
-      "ui-button-color-neutral",
+      styles.iconButton,
+      styles.medium,
+      styles.default,
+      styles.circle,
     );
     const wrapper = screen.getByTestId("glyph").parentElement;
     expect(wrapper).toHaveAttribute("aria-hidden", "true");
-    expect(wrapper).toHaveClass("ui-button-label", "glyph");
+    expect(wrapper).toHaveClass(styles.glyph);
   });
 
   it("label wins over ariaLabel", () => {
@@ -51,30 +48,24 @@ describe("IconButton label and children", () => {
     const button = screen.getByRole("button", { name: "Remove" });
     expect(ref.current).toBe(button);
     expect(button).toHaveClass(
-      "ui-button-variant-solid",
-      "ui-button-color-danger",
-      "ui-icon-button",
-      "solid",
-      "error",
+      styles.iconButton,
+      styles.solid,
+      styles.error,
       "x",
     );
     await user.click(button);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
-    ["xsmall", "xs"],
-    ["small", "sm"],
-    ["large", "lg"],
-  ] as const)("maps size %s to the ui-button-size-%s hook", (size, hook) => {
-    render(<IconButton label="A" size={size} icon={<svg />} />);
-    expect(screen.getByRole("button")).toHaveClass(
-      `ui-button-size-${hook}`,
-      size,
-    );
-  });
+  it.each(["xsmall", "small", "large"] as const)(
+    "applies the %s size class",
+    (size) => {
+      render(<IconButton label="A" size={size} icon={<svg />} />);
+      expect(screen.getByRole("button")).toHaveClass(styles[size]);
+    },
+  );
 
-  it("maps the error / primary variants and the outline appearance to hooks", () => {
+  it("maps the error / neutral / primary variants and the outline appearance to classes", () => {
     const { rerender } = render(
       <IconButton
         label="A"
@@ -84,17 +75,13 @@ describe("IconButton label and children", () => {
       />,
     );
     expect(screen.getByRole("button")).toHaveClass(
-      "ui-button-color-danger",
-      "ui-button-variant-outline",
-      "outline",
+      styles.error,
+      styles.outline,
     );
     rerender(<IconButton label="A" variant="neutral" icon={<svg />} />);
-    expect(screen.getByRole("button")).toHaveClass(
-      "default",
-      "ui-button-color-neutral",
-    );
+    expect(screen.getByRole("button")).toHaveClass(styles.default);
     rerender(<IconButton label="A" variant="primary" icon={<svg />} />);
-    expect(screen.getByRole("button")).toHaveClass("ui-button-color-primary");
+    expect(screen.getByRole("button")).toHaveClass(styles.primary);
   });
 
   it("shows the label as a tooltip on keyboard focus", async () => {
@@ -120,7 +107,7 @@ describe("IconButton label and children", () => {
     expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
-  it("is a non-submitting button that can be disabled (AdminPrimitives)", () => {
+  it("is a non-submitting button that can be disabled", () => {
     render(
       <IconButton label="Refresh" disabled>
         R
@@ -131,7 +118,7 @@ describe("IconButton label and children", () => {
     expect(button).toBeDisabled();
   });
 
-  it("keeps caller-owned descriptions (List)", () => {
+  it("keeps caller-owned descriptions", () => {
     render(
       <>
         <span id="device-first">first</span>
@@ -145,10 +132,11 @@ describe("IconButton label and children", () => {
     expect(button).toHaveAccessibleDescription("first");
   });
 
-  it("marks the loading state with data-loading and the loading hook", () => {
+  it("marks the loading state as busy and disabled", () => {
     render(<IconButton label="Busy" loading icon={<svg />} size="xsmall" />);
     const button = screen.getByRole("button", { name: "Busy" });
-    expect(button).toHaveAttribute("data-loading", "true");
-    expect(button).toHaveClass("ui-button-loading");
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button).toBeDisabled();
+    expect(button).toHaveClass(styles.loading);
   });
 });

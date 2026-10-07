@@ -1,5 +1,4 @@
-// Store tests ported from @novel-isr/ui src/components/Toast/__test__/Toast.test.ts
-// (same-id replacement semantics), plus rendering / provider tests.
+// Store tests (same-id replacement semantics), plus rendering / provider tests.
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -138,7 +137,7 @@ describe("ToastProvider", () => {
     expect(result.current).toBe(toast);
   });
 
-  it("renders toasts in a labelled region with novel-isr-ui hooks", () => {
+  it("renders toasts in a labelled region with status and position classes", () => {
     render(
       <ToastProvider position="bottomLeft">
         <p>App</p>
@@ -149,18 +148,15 @@ describe("ToastProvider", () => {
       toast.success("Saved", { description: "All good", duration: 3000 });
     });
     const region = screen.getByRole("region", { name: "Notifications" });
-    expect(region).toHaveClass("ui-toast-viewport", "viewport", "bottomLeft");
-    expect(region).toHaveAttribute("data-position", "bottom-left");
+    expect(region).toHaveClass("viewport", "bottomLeft");
     const item = within(region).getByRole("status");
-    expect(item).toHaveClass("ui-toast", "ui-toast-status-success", "success");
+    expect(item).toHaveClass("toast", "success");
     expect(item).toHaveAttribute("data-state", "open");
-    expect(item.style.getPropertyValue("--ui-toast-duration")).toBe("3000ms");
-    expect(item.querySelector(".ui-toast-title")).toHaveTextContent("Saved");
-    expect(item.querySelector(".ui-toast-description")).toHaveTextContent(
-      "All good",
-    );
-    expect(item.querySelector(".ui-toast-icon svg")).not.toBeNull();
-    expect(item.querySelector(".ui-toast-progress")).not.toBeNull();
+    expect(item.style.getPropertyValue("--toast-duration")).toBe("3000ms");
+    expect(item.querySelector(".title")).toHaveTextContent("Saved");
+    expect(item.querySelector(".description")).toHaveTextContent("All good");
+    expect(item.querySelector(".icon svg")).not.toBeNull();
+    expect(item.querySelector(".progress")).not.toBeNull();
   });
 
   it("uses role=alert for danger, hides empty parts and the progress of persistent toasts", () => {
@@ -169,12 +165,13 @@ describe("ToastProvider", () => {
       toast({ status: "danger", description: "Only description", duration: 0 });
     });
     const alert = screen.getByRole("alert");
-    expect(alert.querySelector(".ui-toast-title")).toBeNull();
-    expect(alert.querySelector(".ui-toast-progress")).toBeNull();
-    expect(alert.style.getPropertyValue("--ui-toast-duration")).toBe("");
-    expect(
-      screen.getByRole("region", { name: "Notifications" }),
-    ).toHaveAttribute("data-position", "top-right");
+    expect(alert.querySelector(".title")).toBeNull();
+    expect(alert.querySelector(".progress")).toBeNull();
+    expect(alert.style.getPropertyValue("--toast-duration")).toBe("");
+    expect(screen.getByRole("region", { name: "Notifications" })).toHaveClass(
+      "viewport",
+      "topRight",
+    );
   });
 
   it("closes with the close button", () => {
@@ -238,6 +235,7 @@ describe("ToastProvider", () => {
       </ToastProvider>,
     );
     expect(html).toContain("content");
-    expect(html).not.toContain("ui-toast");
+    expect(html).not.toContain("viewport");
+    expect(html).not.toContain("server");
   });
 });

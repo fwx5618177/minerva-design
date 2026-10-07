@@ -1,5 +1,5 @@
-// --ui-toast-* custom properties are part of the public styling API
-// (inherited from novel-isr-ui): they are read as overrides.
+// Each status sets --toast-accent / --toast-border / --toast-tint; the item
+// sets --toast-duration inline to time the progress bar.
 
 .viewport {
   position: fixed;
@@ -49,7 +49,7 @@
 }
 
 .toast {
-  --toast-accent: var(--ui-toast-accent, var(--text-color));
+  --toast-accent: var(--text-color);
   --toast-tint: transparent;
 
   position: relative;
@@ -58,12 +58,10 @@
   align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  background:
-    linear-gradient(0deg, var(--ui-toast-tint-soft, var(--toast-tint)), var(--ui-toast-tint-soft, var(--toast-tint))),
-    var(--ui-toast-bg, color-mix(in srgb, var(--surface-elevated-color) 88%, transparent));
-  border: 1px solid var(--ui-toast-border, var(--toast-border, var(--border-color)));
+  background: linear-gradient(0deg, var(--toast-tint), var(--toast-tint)), color-mix(in srgb, var(--surface-elevated-color) 88%, transparent);
+  border: 1px solid var(--toast-border, var(--border-color));
   border-radius: var(--radius-md);
-  box-shadow: var(--ui-toast-shadow, var(--shadow-lg));
+  box-shadow: var(--shadow-lg);
   pointer-events: auto;
   font-family: var(--font-family-sans);
   font-size: var(--font-size-sm);
@@ -147,31 +145,31 @@
   background: var(--toast-accent);
   opacity: 0.55;
   transform-origin: left center;
-  animation: toastProgress var(--ui-toast-duration, 4000ms) linear forwards;
+  animation: toastProgress var(--toast-duration, 4000ms) linear forwards;
 }
 
 .info {
   --toast-border: color-mix(in srgb, var(--info-color) 32%, var(--border-color));
   --toast-tint: color-mix(in srgb, var(--info-color) 7%, transparent);
-  --toast-accent: var(--ui-toast-accent, var(--info-color));
+  --toast-accent: var(--info-color);
 }
 
 .success {
   --toast-border: color-mix(in srgb, var(--success-color) 32%, var(--border-color));
   --toast-tint: color-mix(in srgb, var(--success-color) 7%, transparent);
-  --toast-accent: var(--ui-toast-accent, var(--success-color));
+  --toast-accent: var(--success-color);
 }
 
 .warning {
   --toast-border: color-mix(in srgb, var(--warning-color) 32%, var(--border-color));
   --toast-tint: color-mix(in srgb, var(--warning-color) 7%, transparent);
-  --toast-accent: var(--ui-toast-accent, var(--warning-color));
+  --toast-accent: var(--warning-color);
 }
 
 .danger {
   --toast-border: color-mix(in srgb, var(--danger-color) 36%, var(--border-color));
   --toast-tint: color-mix(in srgb, var(--danger-color) 8%, transparent);
-  --toast-accent: var(--ui-toast-accent, var(--danger-color));
+  --toast-accent: var(--danger-color);
 }
 
 @keyframes toastSlideIn {

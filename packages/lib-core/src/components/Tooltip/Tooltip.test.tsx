@@ -407,6 +407,85 @@ describe("Tooltip", () => {
       expect(tooltip.style.top).toBe("32px");
     });
 
+    const mockLayout = () => {
+      vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(
+        1024,
+      );
+      vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
+        768,
+      );
+      // Trigger: 60x20 at (100, 200); the tooltip measures 0x30.
+      vi.spyOn(
+        HTMLElement.prototype,
+        "getBoundingClientRect",
+      ).mockImplementation(function (this: HTMLElement) {
+        return this.classList.contains("tooltipTrigger")
+          ? rect({
+              x: 100,
+              y: 200,
+              top: 200,
+              bottom: 220,
+              left: 100,
+              right: 160,
+              width: 60,
+              height: 20,
+            })
+          : rect({});
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
+        function (this: HTMLElement) {
+          return this.getAttribute("role") === "tooltip" ? 30 : 0;
+        },
+      );
+    };
+
+    it("uses offset [x, y] as cross / main axis for top placements", async () => {
+      mockLayout();
+      render(
+        <Tooltip content="Hello" defaultOpen placement="top" offset={[12, 20]}>
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      const tooltip = screen.getByRole("tooltip");
+      // top: 200 - 30 (height) - 20 (y gap); left: 130 (trigger center) + 12
+      await waitFor(() => expect(tooltip.style.top).toBe("150px"));
+      expect(tooltip).toHaveAttribute("data-placement", "top");
+      expect(tooltip.style.left).toBe("142px");
+    });
+
+    it("uses offset [x, y] as main / cross axis for right placements", async () => {
+      mockLayout();
+      render(
+        <Tooltip content="Hello" defaultOpen placement="right" offset={[16, 4]}>
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      const tooltip = screen.getByRole("tooltip");
+      // left: 160 (trigger right) + 16 (x gap); top: 210 - 15 (half height) + 4
+      await waitFor(() => expect(tooltip.style.left).toBe("176px"));
+      expect(tooltip).toHaveAttribute("data-placement", "right");
+      expect(tooltip.style.top).toBe("199px");
+    });
+
+    it("adds the arrow gap to the offset main axis", async () => {
+      mockLayout();
+      render(
+        <Tooltip
+          content="Hello"
+          defaultOpen
+          placement="top"
+          offset={[0, 20]}
+          arrow
+        >
+          <button type="button">Trigger</button>
+        </Tooltip>,
+      );
+      const tooltip = screen.getByRole("tooltip");
+      // 200 - 30 - (20 + 6 arrow gap)
+      await waitFor(() => expect(tooltip.style.top).toBe("144px"));
+      expect(tooltip.style.left).toBe("130px");
+    });
+
     it("dismisses with Escape even when opened by hover (focus elsewhere)", async () => {
       const user = setup();
       render(

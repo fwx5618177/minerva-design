@@ -63,8 +63,6 @@ const AutoComplete = ({
   autoHighlight = false,
   fillOnSelect = true,
   className,
-  loadingMode = "replace",
-  loadingText,
   groupMode = "first",
 }: AutoCompleteProps) => {
   const { t } = useI18n();
@@ -283,16 +281,6 @@ const AutoComplete = ({
     else input.removeAttribute("aria-activedescendant");
   }, [input, shown, listboxId, activeOptionId]);
 
-  const appendLoading = loading && loadingMode === "append";
-  const loadingRow = (
-    <div
-      className={classNames(styles.loadingRow, "ui-autocomplete-loading")}
-      role="status"
-    >
-      {loadingText ?? t("autoComplete.loading")}
-    </div>
-  );
-
   // Clicking the still-focused input (after a pick or Escape) reopens the
   // dropdown; focus alone does not fire again.
   const reopenRef = useRef(() => {});
@@ -320,18 +308,9 @@ const AutoComplete = ({
     <div className={styles.basicOption}>
       {option.icon && <span className={styles.icon}>{option.icon}</span>}
       <div className={styles.content}>
-        <div className={classNames(styles.label, "ui-autocomplete-item-label")}>
-          {option.label}
-        </div>
+        <div className={styles.label}>{option.label}</div>
         {option.description && (
-          <div
-            className={classNames(
-              styles.description,
-              "ui-autocomplete-item-hint",
-            )}
-          >
-            {option.description}
-          </div>
+          <div className={styles.description}>{option.description}</div>
         )}
       </div>
     </div>
@@ -343,16 +322,12 @@ const AutoComplete = ({
     return (
       <div
         key={option.value}
-        className={classNames(
-          styles.optionItem,
-          {
-            [styles.disabled]: option.disabled,
-            [styles.highlight]: option.highlight,
-            [styles.active]: hoveredIndex === index || active,
-            [styles.selected]: multiple && selected,
-          },
-          "ui-autocomplete-item",
-        )}
+        className={classNames(styles.optionItem, {
+          [styles.disabled]: option.disabled,
+          [styles.highlight]: option.highlight,
+          [styles.active]: hoveredIndex === index || active,
+          [styles.selected]: multiple && selected,
+        })}
         style={option.style}
         role="option"
         // Focus stays in the input (aria-activedescendant); -1 keeps the
@@ -362,7 +337,6 @@ const AutoComplete = ({
         id={`${listboxId}-option-${index}`}
         aria-selected={selected}
         aria-disabled={option.disabled || undefined}
-        data-active={active || undefined}
         // keep focus (and the open dropdown) in the input while clicking
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => handleOptionClick(option)}
@@ -420,12 +394,7 @@ const AutoComplete = ({
   return (
     <div
       ref={setContainer}
-      className={classNames(
-        styles.autoComplete,
-        "ui-autocomplete-root",
-        className,
-      )}
-      data-open={shown || undefined}
+      className={classNames(styles.autoComplete, className)}
       onCompositionStart={() => {
         composing.current = true;
       }}
@@ -488,21 +457,15 @@ const AutoComplete = ({
           {/* While open the listbox always exists (aria-controls target);
               loading / empty states are presentational rows inside it. */}
           <div
-            className={classNames(styles.optionList, "ui-autocomplete-list")}
+            className={styles.optionList}
             role="listbox"
             id={listboxId}
             aria-label={label}
             aria-multiselectable={multiple || undefined}
             aria-busy={loading || undefined}
           >
-            {loading && !appendLoading ? (
-              <div
-                role="presentation"
-                className={classNames(
-                  styles.loading,
-                  "ui-autocomplete-loading",
-                )}
-              >
+            {loading ? (
+              <div role="presentation" className={styles.loading}>
                 <ProgressIndicator />
               </div>
             ) : processedOptions.length > 0 ? (
@@ -526,13 +489,7 @@ const AutoComplete = ({
                           role="group"
                           aria-label={group}
                         >
-                          <div
-                            className={classNames(
-                              styles.groupLabel,
-                              "ui-autocomplete-group",
-                            )}
-                            aria-hidden="true"
-                          >
+                          <div className={styles.groupLabel} aria-hidden="true">
                             {group}
                           </div>
                           {groupOptions.map((option) =>
@@ -548,16 +505,12 @@ const AutoComplete = ({
                       renderOptionItem(option, index),
                     )}
               </>
-            ) : appendLoading ? null : (
-              <div
-                role="presentation"
-                className={classNames(styles.empty, "ui-autocomplete-empty")}
-              >
+            ) : (
+              <div role="presentation" className={styles.empty}>
                 {renderEmpty?.() || <Empty {...emptyProps} />}
               </div>
             )}
           </div>
-          {appendLoading && loadingRow}
         </div>
       </Popper>
     </div>

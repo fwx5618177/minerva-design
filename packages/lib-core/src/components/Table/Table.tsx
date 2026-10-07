@@ -11,16 +11,8 @@ import type {
   TableProps,
   TableRootProps,
   TableRowProps,
-  TableSize,
 } from "./types";
 import styles from "./table.module.scss";
-
-/** Stable `ui-table-size-*` hook names (kept from @novel-isr/ui) */
-const SIZE_HOOK: Record<TableSize, string> = {
-  small: "sm",
-  medium: "md",
-  large: "lg",
-};
 
 const toLength = (value: number | string | undefined): string | undefined =>
   value === undefined
@@ -60,10 +52,6 @@ export const TableRoot = ({
         styles.wrapper,
         variant === "bordered" && styles.wrapperBordered,
         scrollY && styles.wrapperScrollY,
-        "ui-table-wrapper",
-        variant === "bordered" && "ui-table-variant-bordered",
-        scrollX && "ui-table-wrapper-scroll-x",
-        scrollY && "ui-table-wrapper-scroll-y",
       )}
       style={wrapperStyle}
     >
@@ -74,11 +62,7 @@ export const TableRoot = ({
           styles[size],
           styles[variant],
           hoverable && styles.hoverable,
-          "ui-table",
-          `ui-table-size-${SIZE_HOOK[size]}`,
-          `ui-table-variant-${variant}`,
-          hoverable && "ui-table-hoverable",
-          scrollX && "ui-table-scroll-x",
+          scrollX && styles.scrollX,
           className,
         )}
         style={tableStyle}
@@ -167,7 +151,7 @@ export function Table<T>({
             {...cellPropsFor(col)}
             data-ellipsis={undefined}
           >
-            <span className={cn(styles.skeleton, "ui-table-skeleton")} />
+            <span className={styles.skeleton} />
           </TableCell>
         ))}
       </TableRow>
@@ -175,10 +159,7 @@ export function Table<T>({
   } else if (data.length === 0) {
     body = (
       <TableRow>
-        <TableCell
-          colSpan={columns.length}
-          className={cn(styles.empty, "ui-table-empty")}
-        >
+        <TableCell colSpan={columns.length} className={styles.empty}>
           {emptyText ?? t("table.empty")}
         </TableCell>
       </TableRow>

@@ -4,9 +4,6 @@ import { describe, expect, it } from "vitest";
 import { IconButton } from "../IconButton";
 import { Page, PageHeader, PageSection, StatCard } from ".";
 
-// Ported from novel-isr-ui Page/__test__/Page.test.tsx, the PageHeader part of
-// components/__test__/AdminPrimitives.test.tsx, the StatCard part of
-// ReadingPrimitives.test.tsx and the Page part of ResponsiveDataLayout.test.tsx.
 describe("Page", () => {
   it("forwards ref, className and attributes and lets style override maxWidth", () => {
     const ref = createRef<HTMLDivElement>();
@@ -23,7 +20,7 @@ describe("Page", () => {
     );
     const page = screen.getByTestId("page");
     expect(ref.current).toBe(page);
-    expect(page).toHaveClass("page", "ui-page", "consumer");
+    expect(page).toHaveClass("page", "consumer");
     expect(page).toHaveAttribute("id", "page");
     expect(page.style.maxWidth).toBe("60rem");
     rerender(
@@ -61,20 +58,20 @@ describe("PageHeader", () => {
     );
     const header = screen.getByRole("banner");
     expect(ref.current).toBe(header);
-    expect(header).toHaveClass("header", "ui-page-header", "consumer");
+    expect(header).toHaveClass("header", "consumer");
     expect(
       screen.getByRole("heading", { level: 1, name: "Books" }),
     ).toBeInTheDocument();
     expect(screen.getByText("All titles").tagName).toBe("P");
     expect(
       screen.getByRole("button", { name: "New" }).parentElement,
-    ).toHaveClass("actions", "ui-page-actions");
+    ).toHaveClass("actions");
   });
 
   it("omits the description and actions containers when not provided", () => {
     const { container } = render(<PageHeader title="Books" />);
     expect(container.querySelector("p")).toBeNull();
-    expect(container.querySelector(".ui-page-actions")).toBeNull();
+    expect(container.querySelector(".actions")).toBeNull();
     expect(container.querySelector("header")).not.toHaveAttribute("title");
   });
 
@@ -149,7 +146,7 @@ describe("PageSection", () => {
     );
     const region = screen.getByRole("region", { name: "T" });
     expect(ref.current).toBe(region);
-    expect(region).toHaveClass("section", "ui-page-section", "consumer");
+    expect(region).toHaveClass("section", "consumer");
     expect(region).toHaveAttribute("data-owner", "x");
     expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
   });
@@ -170,7 +167,7 @@ describe("StatCard", () => {
     );
     const card = screen.getByTestId("card");
     expect(ref.current).toBe(card);
-    expect(card).toHaveClass("statCard", "ui-stat-card", "consumer");
+    expect(card).toHaveClass("statCard", "consumer");
     expect(screen.getByTestId("icon").parentElement).toHaveAttribute(
       "aria-hidden",
       "true",
@@ -180,8 +177,8 @@ describe("StatCard", () => {
 
   it("omits the icon and description when not provided", () => {
     const { container } = render(<StatCard label="Reads" value={3} />);
-    expect(container.querySelector(".ui-stat-icon")).toBeNull();
-    expect(container.querySelector(".ui-stat-description")).toBeNull();
+    expect(container.querySelector(".statIcon")).toBeNull();
+    expect(container.querySelector(".statDescription")).toBeNull();
   });
 
   it("separates a metric value from its explanatory text, including a real zero", () => {
@@ -190,7 +187,7 @@ describe("StatCard", () => {
     );
     expect(container.querySelector("dt")?.textContent).toBe("Articles");
     expect(container.querySelector("dd")?.textContent).toBe("0");
-    expect(container.querySelector(".ui-stat-description")?.textContent).toBe(
+    expect(container.querySelector(".statDescription")?.textContent).toBe(
       "No drafts",
     );
     expect(container.querySelector("[description]")).toBeNull();
@@ -202,10 +199,8 @@ describe("optional slots (regression)", () => {
     const { container } = render(
       <PageHeader title="Books" description={0} actions={0} />,
     );
-    expect(container.querySelector(".ui-page-heading p")).toHaveTextContent(
-      "0",
-    );
-    expect(container.querySelector(".ui-page-actions")).toHaveTextContent("0");
+    expect(container.querySelector(".heading p")).toHaveTextContent("0");
+    expect(container.querySelector(".actions")).toHaveTextContent("0");
     const header = container.querySelector("header")!;
     expect(
       Array.from(header.childNodes).every(
@@ -218,8 +213,8 @@ describe("optional slots (regression)", () => {
     const { container } = render(
       <PageSection title="Stats" icon={false} description="" actions={null} />,
     );
-    expect(container.querySelector(".ui-page-actions")).toBeNull();
-    expect(container.querySelector(".ui-page-heading p")).toBeNull();
+    expect(container.querySelector(".actions")).toBeNull();
+    expect(container.querySelector(".heading p")).toBeNull();
     expect(container.querySelector("h2 span")).toBeNull();
   });
 });

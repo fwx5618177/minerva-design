@@ -3,16 +3,14 @@
   "description": "Use Minerva with React Server Components: which entries are client boundaries, what can run on the server and where to import the CSS.",
   "entries": {
     "title": "Entries and the \"use client\" banner",
-    "text": "@minerva/lib-core is published as several entries. The entries that contain components start with a \"use client\" directive; the theme helper entries do not, so they can run inside Server Components.",
+    "text": "@minerva/lib-core is published as several entries. The entries that contain components start with a \"use client\" directive; the theme helper entry does not, so it can run inside Server Components.",
     "entry": "Entry",
     "banner": "\"use client\"",
     "yes": "Yes",
     "no": "No",
     "main": "All components, providers, hooks and utilities.",
     "monaco": "The Monaco-based code editor (optional peers: @monaco-editor/react and monaco-editor).",
-    "compat": "The @novel-isr/ui compatibility layer.",
-    "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names.",
-    "compatThemeUtils": "The same helpers with the @novel-isr/ui names and defaults (the editorial palette is always applied)."
+    "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names."
   },
   "why": {
     "title": "Why some entries are client boundaries",
@@ -26,12 +24,12 @@
   },
   "functions": {
     "title": "Calling functions on the server",
-    "text": "Call the helpers of @minerva/lib-core/theme-utils (or @minerva/lib-core/compat/theme-utils) freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (message.success, Confirm, applyThemeStyles, the hooks...): they are client references there. Call them from client components and event handlers.",
+    "text": "Call the helpers of @minerva/lib-core/theme-utils freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (message.success, Confirm, applyThemeStyles, the hooks...): they are client references there. Call them from client components and event handlers.",
     "imperative": "Imperative APIs are also safe during SSR of client components: without a document they do nothing, and promise-based dialogs such as Confirm resolve to false on the server. Trigger them from event handlers or effects, which only run in the browser."
   },
   "css": {
     "title": "Where to import the CSS",
-    "text": "Import @minerva/lib-core/style.css once. In the Next.js App Router, global CSS belongs in the root layout, which is a Server Component and may import CSS. In other setups, import it in the client entry file. compat.css and prose.scss are optional extras, imported the same way."
+    "text": "Import @minerva/lib-core/style.css once. In the Next.js App Router, global CSS belongs in the root layout, which is a Server Component and may import CSS. In other setups, import it in the client entry file. prose.scss is an optional extra, loaded the same way from your own Sass."
   },
   "next": {
     "title": "Next steps",

@@ -4,8 +4,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Box, type BoxProps } from ".";
 
-// Ported from novel-isr-ui Box/__test__/Box.test.tsx and the Box parts of
-// components/__test__/LayoutSpacing.test.tsx.
 describe("Box", () => {
   it("renders a div by default and a custom element via as", () => {
     const { rerender } = render(<Box data-testid="box">x</Box>);

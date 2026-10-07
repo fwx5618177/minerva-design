@@ -16,13 +16,7 @@ const GridItem = ({
   const Component = asChild ? Slot : "div";
   return (
     <Component
-      className={cn(
-        styles.item,
-        fullWidth && styles.fullWidth,
-        "ui-grid-item",
-        fullWidth && "ui-grid-item-full-width",
-        className,
-      )}
+      className={cn(styles.item, fullWidth && styles.fullWidth, className)}
       {...rest}
     />
   );

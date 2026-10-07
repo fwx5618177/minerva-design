@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui src/components/Spinner/__test__/Spinner.test.tsx
 import { createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
@@ -13,41 +12,21 @@ describe("Spinner", () => {
     expect(status.tagName).toBe("SPAN");
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(status).toHaveTextContent("Loading…");
-    expect(status).toHaveClass(
-      "spinner",
-      "medium",
-      "primary",
-      "ui-spinner",
-      "ui-spinner-size-md",
-      "ui-spinner-color-brand",
-    );
-    expect(status.querySelector(".ui-spinner-label")).toHaveTextContent(
-      "Loading…",
-    );
+    expect(status).toHaveClass("spinner", "medium", "primary");
+    expect(status.querySelector(".label")).toHaveTextContent("Loading…");
   });
 
-  it.each<[SpinnerSize, string]>([
-    ["xsmall", "xs"],
-    ["small", "sm"],
-    ["medium", "md"],
-    ["large", "lg"],
-    ["xlarge", "xl"],
-  ])("applies size class for %s", (size, hook) => {
-    render(<Spinner size={size} color="current" />);
-    expect(screen.getByRole("status")).toHaveClass(
-      size,
-      `ui-spinner-size-${hook}`,
-      "current",
-      "ui-spinner-color-current",
-    );
-  });
+  it.each<SpinnerSize>(["xsmall", "small", "medium", "large", "xlarge"])(
+    "applies size class for %s",
+    (size) => {
+      render(<Spinner size={size} color="current" />);
+      expect(screen.getByRole("status")).toHaveClass(size, "current");
+    },
+  );
 
-  it("maps the neutral color to the gray hook", () => {
+  it("applies the neutral color class", () => {
     render(<Spinner color="neutral" />);
-    expect(screen.getByRole("status")).toHaveClass(
-      "neutral",
-      "ui-spinner-color-gray",
-    );
+    expect(screen.getByRole("status")).toHaveClass("neutral");
   });
 
   it("uses a custom label, including an empty one", () => {
@@ -72,7 +51,7 @@ describe("Spinner", () => {
     const el = screen.getByTestId("sp");
     expect(ref.current).toBe(el);
     expect(el.tagName).toBe("SPAN");
-    expect(el).toHaveClass("ui-spinner", "x");
+    expect(el).toHaveClass("spinner", "x");
     expect(el).toHaveAttribute("role", "presentation");
     expect(screen.queryByRole("status")).toBeNull();
   });

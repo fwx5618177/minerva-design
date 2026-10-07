@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/Upload/__test__/Upload.test.tsx and
-// the Upload part of src/components/__test__/UploadSteps.test.tsx
 import { createRef } from "react";
 import {
   act,
@@ -28,7 +26,7 @@ function setup(props: Partial<UploadProps> = {}) {
     />,
   );
   const group = screen.getByRole("group", { name: "Attachments" });
-  const dropzone = group.querySelector<HTMLElement>(".ui-upload-dropzone")!;
+  const dropzone = group.querySelector<HTMLElement>(".dropzone")!;
   const input =
     utils.container.querySelector<HTMLInputElement>('input[type="file"]')!;
   return { ...utils, onFilesSelected, group, dropzone, input };
@@ -43,11 +41,9 @@ const pick = (input: HTMLInputElement, files: File[]) => {
 describe("Upload", () => {
   it("renders a labelled group with a select button and a hidden labelled file input", () => {
     const { group, input } = setup({ accept: "image/*", multiple: true });
-    expect(group).toHaveClass("ui-upload", "upload");
+    expect(group).toHaveClass("upload");
     expect(group).toHaveAttribute("aria-busy", "false");
-    expect(group.querySelector(".ui-upload-label")).toHaveTextContent(
-      "Attachments",
-    );
+    expect(group.querySelector(".label")).toHaveTextContent("Attachments");
     expect(screen.getByRole("button", { name: "Select files" })).toBeEnabled();
     expect(input).toHaveAttribute("aria-label", "Attachments");
     expect(input).toHaveAttribute("accept", "image/*");
@@ -79,7 +75,7 @@ describe("Upload", () => {
   it("toggles the dragging state on dragover/dragleave and clears it on drop", () => {
     const { dropzone } = setup();
     fireEvent.dragOver(dropzone);
-    expect(dropzone).toHaveClass("is-dragging", "dragging");
+    expect(dropzone).toHaveClass("dragging");
     // happy-dom's DragEvent ignores `relatedTarget` in its init dict, so define it explicitly.
     const dragLeave = (relatedTarget: Node) => {
       const event = createEvent.dragLeave(dropzone);
@@ -87,12 +83,12 @@ describe("Upload", () => {
       fireEvent(dropzone, event);
     };
     dragLeave(screen.getByRole("button"));
-    expect(dropzone).toHaveClass("is-dragging");
+    expect(dropzone).toHaveClass("dragging");
     dragLeave(document.body);
-    expect(dropzone).not.toHaveClass("is-dragging");
+    expect(dropzone).not.toHaveClass("dragging");
     fireEvent.dragOver(dropzone);
     fireEvent.drop(dropzone, { dataTransfer: { files: [] } });
-    expect(dropzone).not.toHaveClass("is-dragging");
+    expect(dropzone).not.toHaveClass("dragging");
   });
 
   it("ignores drag highlighting and drops when disabled", () => {
@@ -100,7 +96,7 @@ describe("Upload", () => {
     expect(screen.getByRole("button", { name: "Select files" })).toBeDisabled();
     expect(input).toBeDisabled();
     fireEvent.dragOver(dropzone);
-    expect(dropzone).not.toHaveClass("is-dragging");
+    expect(dropzone).not.toHaveClass("dragging");
     fireEvent.drop(dropzone, { dataTransfer: { files: [png()] } });
     expect(onFilesSelected).not.toHaveBeenCalled();
     expect(screen.queryByRole("alert")).toBeNull();
@@ -259,7 +255,7 @@ describe("Upload", () => {
     const { container } = setup({ value, multiple: true, onRemove, onRetry });
     const items = screen.getAllByRole("listitem");
     expect(items).toHaveLength(3);
-    expect(items[0]).toHaveClass("ui-upload-item");
+    expect(items[0]).toHaveClass("item");
     expect(items[0]).toHaveTextContent("Uploading");
     expect(items[1]).toHaveTextContent("Uploaded");
     expect(items[2]).toHaveTextContent("Upload failed");
@@ -268,8 +264,8 @@ describe("Upload", () => {
     );
     const failed = screen.getByRole("alert");
     expect(failed).toHaveTextContent("Upload failed");
-    expect(failed).toHaveClass("ui-upload-status", "is-error");
-    const preview = container.querySelector("img.ui-upload-preview");
+    expect(failed).toHaveClass("status", "statusError");
+    const preview = container.querySelector("img.preview");
     expect(preview).toHaveAttribute("src", "blob:up");
     expect(preview).toHaveAttribute("alt", "");
     expect(screen.getAllByRole("button", { name: /^Retry/ })).toHaveLength(1);
@@ -399,7 +395,7 @@ describe("Upload localization", () => {
     });
   });
 
-  it("uses the novel-isr-ui Chinese strings", () => {
+  it("uses the Chinese strings with the zh locale", () => {
     act(() => {
       i18n.changeLanguage("zh");
     });

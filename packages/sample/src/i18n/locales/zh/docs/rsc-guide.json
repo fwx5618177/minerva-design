@@ -10,9 +10,7 @@
     "no": "否",
     "main": "全部组件、Provider、Hooks 和工具函数。",
     "monaco": "基于 Monaco 的代码编辑器（可选 peer 依赖：@monaco-editor/react 和 monaco-editor）。",
-    "compat": "@novel-isr/ui 兼容层。",
-    "themeUtils": "服务端安全的主题辅助函数：THEME_INIT_SCRIPT、Cookie 解析与序列化、调色板名称。",
-    "compatThemeUtils": "同一组辅助函数，使用 @novel-isr/ui 的命名和默认值（始终应用 editorial 调色板）。"
+    "themeUtils": "服务端安全的主题辅助函数：THEME_INIT_SCRIPT、Cookie 解析与序列化、调色板名称。"
   },
   "why": {
     "title": "为什么有些入口是客户端边界",
@@ -26,12 +24,12 @@
   },
   "functions": {
     "title": "在服务端调用函数",
-    "text": "@minerva/lib-core/theme-utils（或 @minerva/lib-core/compat/theme-utils）中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（message.success、Confirm、applyThemeStyles、各种 Hooks……）：它们在那里只是客户端引用。请在客户端组件和事件处理函数中调用它们。",
+    "text": "@minerva/lib-core/theme-utils 中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（message.success、Confirm、applyThemeStyles、各种 Hooks……）：它们在那里只是客户端引用。请在客户端组件和事件处理函数中调用它们。",
     "imperative": "命令式 API 在客户端组件的 SSR 过程中同样安全：没有 document 时它们什么也不做，而 Confirm 这类基于 Promise 的对话框在服务端会 resolve 为 false。请在只会在浏览器中运行的事件处理函数或 effect 中触发它们。"
   },
   "css": {
     "title": "在哪里导入 CSS",
-    "text": "@minerva/lib-core/style.css 只需导入一次。在 Next.js App Router 中，全局 CSS 应放在根 layout 中，它是 Server Component，可以导入 CSS。在其他方案中，请在客户端入口文件中导入。compat.css 和 prose.scss 是可选的附加样式，导入方式相同。"
+    "text": "@minerva/lib-core/style.css 只需导入一次。在 Next.js App Router 中，全局 CSS 应放在根 layout 中，它是 Server Component，可以导入 CSS。在其他方案中，请在客户端入口文件中导入。prose.scss 是可选的附加样式，在你自己的 Sass 中以同样方式引入。"
   },
   "next": {
     "title": "下一步",

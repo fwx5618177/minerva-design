@@ -1,8 +1,8 @@
-// Generated from @novel-isr/ui 0.1.40 src/styles/tokens.scss (palette x mode
-// blocks), mapped onto Minerva's token names. `styles/palettes.scss` declares the
-// same values under [data-palette][data-theme] selectors (kept in sync by
-// `palettes.test.ts`), so the SSR init script can select a palette before
-// hydration without any JavaScript theme application.
+// Minerva's built-in palettes (palette x mode) as theme token values.
+// `styles/palettes.scss` declares the same values under
+// [data-palette][data-theme] selectors (kept in sync by `palettes.test.ts`), so
+// the SSR init script can select a palette before hydration without any
+// JavaScript theme application.
 import type { ComponentTheme } from "../../contexts/types";
 import type { Palette, ResolvedThemeMode } from "../../theme-utils";
 

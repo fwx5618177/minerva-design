@@ -1,7 +1,6 @@
 /**
  * @vitest-environment node
  *
- * Ported from novel-isr-ui Confirm/__test__/Confirm.server.test.ts.
  * On the server (RSC / SSR render) there is no document: confirm() must
  * resolve false deterministically, without throwing or hanging.
  */

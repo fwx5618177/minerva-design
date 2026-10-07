@@ -35,7 +35,7 @@ const Steps = ({
       aria-label={ariaLabel ?? t("steps.label")}
       {...rest}
       ref={ref}
-      className={classNames(styles.steps, "ui-steps", className)}
+      className={classNames(styles.steps, className)}
     >
       {items.map((item, index) => {
         const isCurrent = index === currentIndex;
@@ -43,11 +43,9 @@ const Steps = ({
         return (
           <li
             key={item.value}
-            className={classNames(styles.step, "ui-step", {
+            className={classNames(styles.step, {
               [styles.current]: isCurrent,
               [styles.complete]: isComplete,
-              "is-current": isCurrent,
-              "is-complete": isComplete,
             })}
           >
             <button
@@ -59,10 +57,7 @@ const Steps = ({
                 if (!isCurrent) setCurrent(item.value);
               }}
             >
-              <span
-                className={classNames(styles.number, "ui-step-number")}
-                aria-hidden="true"
-              >
+              <span className={styles.number} aria-hidden="true">
                 {index + 1}
               </span>
               <span className={styles.label}>{item.label}</span>

@@ -8,6 +8,7 @@ import {
   type KeyValueEntry,
   type KeyValueEntryErrors,
 } from ".";
+import styles from "./keyValueEditor.module.scss";
 
 const initial: KeyValueEntry[] = [
   { id: "first", key: "duplicate", value: "one" },
@@ -42,7 +43,7 @@ function fixture(props: Partial<KeyValueEditorProps> = {}) {
 }
 
 describe("KeyValueEditor", () => {
-  it("renders the novel-isr-ui hooks and keeps all editor textareas non-resizable", () => {
+  it("renders rows, controls and non-resizable editor textareas", () => {
     const ref = createRef<HTMLDivElement>();
     const { container } = render(
       <KeyValueEditor
@@ -53,25 +54,14 @@ describe("KeyValueEditor", () => {
       />,
     );
     expect(ref.current).toBe(container.firstElementChild);
-    expect(ref.current).toHaveClass("ui-key-value-editor", "consumer");
+    expect(ref.current).toHaveClass(styles.root, "consumer");
     expect(ref.current).toHaveAttribute("data-owner", "x");
-    expect(container.querySelectorAll(".ui-key-value-editor-row")).toHaveLength(
-      2,
-    );
-    expect(container.querySelectorAll(".ui-key-value-editor-key")).toHaveLength(
-      2,
-    );
-    expect(container.querySelector(".ui-key-value-editor-add")).not.toBeNull();
-    expect(
-      container.querySelectorAll(".ui-key-value-editor-remove"),
-    ).toHaveLength(2);
+    expect(container.querySelectorAll(`.${styles.row}`)).toHaveLength(2);
+    expect(container.querySelectorAll(`.${styles.key}`)).toHaveLength(2);
+    expect(container.querySelector(`.${styles.add}`)).not.toBeNull();
+    expect(container.querySelectorAll(`.${styles.remove}`)).toHaveLength(2);
     const fields = inputs();
     expect(fields).toHaveLength(4);
-    expect(
-      fields.every((field) =>
-        field.classList.contains("ui-textarea-resize-none"),
-      ),
-    ).toBe(true);
     expect(fields.every((field) => field.style.resize === "none")).toBe(true);
   });
 
@@ -225,11 +215,7 @@ describe("KeyValueEditor", () => {
   });
 
   it("disables every input and mutation control", () => {
-    const { changed, container } = fixture({ disabled: true });
-    expect(container.firstElementChild).toHaveAttribute(
-      "data-disabled",
-      "true",
-    );
+    const { changed } = fixture({ disabled: true });
     expect(inputs().every((el) => el.disabled)).toBe(true);
     for (const control of document.querySelectorAll("button")) {
       expect(control.disabled).toBe(true);
@@ -314,8 +300,8 @@ describe("KeyValueEditor localization", () => {
     render(<KeyValueEditor entries={initial.slice(0, 1)} />);
     expect(button("删除条目 1")).toBeDefined();
     expect(document.querySelector("label")?.textContent).toBe("键 1");
-    expect(
-      document.querySelector(".ui-key-value-editor-add")?.textContent,
-    ).toBe("添加条目");
+    expect(document.querySelector(`.${styles.add}`)?.textContent).toBe(
+      "添加条目",
+    );
   });
 });

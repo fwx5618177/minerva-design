@@ -1,4 +1,3 @@
-// Ported from novel-isr-ui Confirm/__test__/Confirm.standalone.test.tsx.
 // The tests share one module instance in order: once the standalone host is
 // mounted lazily, later tests reuse it (that is the behaviour under test).
 import { act, render, screen, waitFor } from "@testing-library/react";
@@ -8,7 +7,7 @@ import { ConfirmProvider, confirm, useConfirm } from "./index";
 import type { ConfirmOptions } from "./index";
 
 function hosts() {
-  return document.querySelectorAll("[data-ui-confirm-host]");
+  return document.querySelectorAll("[data-confirm-host]");
 }
 
 /** Starts confirm() inside act and wraps the promise (so awaiting does not wait for the answer). */

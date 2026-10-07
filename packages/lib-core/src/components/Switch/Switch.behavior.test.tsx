@@ -1,11 +1,12 @@
-// Behaviours ported from @novel-isr/ui's Switch tests (ui-* hooks, children
-// label, bilateral labels, segmented variant, FormControl integration).
+// Switch behaviour: size/color classes, children label, bilateral labels,
+// segmented variant and FormControl integration.
 import React, { createRef, useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Switch from "./Switch";
 import type { SwitchProps } from "./types";
+import styles from "./switch.module.scss";
 import {
   FormControlContext,
   type FormControlContextValue,
@@ -36,59 +37,57 @@ function Controlled(props: SwitchProps) {
   );
 }
 
-const rootOf = (el: HTMLElement) => el.closest(".ui-switch-root")!;
+const rootOf = (el: HTMLElement) =>
+  el.closest<HTMLElement>(`.${styles.switch}`)!;
 
-describe("Switch slider (merged capabilities)", () => {
-  it("renders ui-* hooks and data-state", () => {
+describe("Switch slider", () => {
+  it("renders the default size / color classes and a thumb", () => {
     render(<Switch ariaLabel="Dark" />);
     const sw = screen.getByRole("switch", { name: "Dark" });
-    expect(sw).toHaveClass("ui-switch-control");
-    expect(rootOf(sw)).toHaveClass(
-      "ui-switch-size-md",
-      "ui-switch-color-brand",
-    );
-    expect(rootOf(sw)).toHaveAttribute("data-state", "unchecked");
-    expect(rootOf(sw).querySelector(".ui-switch-thumb")).not.toBeNull();
+    expect(rootOf(sw)).toHaveClass(styles.medium, styles.primary);
+    expect(sw).not.toBeChecked();
+    expect(rootOf(sw).querySelector(`.${styles.thumb}`)).not.toBeNull();
   });
 
   it.each([
-    ["large", "success", "ui-switch-size-lg", "ui-switch-color-success"],
-    ["small", "error", "ui-switch-size-sm", "ui-switch-color-danger"],
-    ["medium", "info", "ui-switch-size-md", "ui-switch-color-info"],
-  ] as const)("maps size %s / color %s", (size, color, sizeCls, colorCls) => {
+    ["large", "success"],
+    ["small", "error"],
+    ["medium", "info"],
+  ] as const)("maps size %s / color %s", (size, color) => {
     render(
       <Switch ariaLabel="x" size={size} color={color} className="consumer" />,
     );
     expect(rootOf(screen.getByRole("switch"))).toHaveClass(
-      sizeCls,
-      colorCls,
+      styles[size],
+      styles[color],
       "consumer",
     );
   });
 
-  it("emits no ui color class for custom CSS colors", () => {
+  it("emits no theme color class for custom CSS colors", () => {
     render(<Switch ariaLabel="x" color="#ff0000" />);
-    expect(rootOf(screen.getByRole("switch")).className).not.toMatch(
-      /ui-switch-color/,
-    );
+    const root = rootOf(screen.getByRole("switch"));
+    for (const role of ["primary", "success", "error", "info"]) {
+      expect(root).not.toHaveClass(styles[role]);
+    }
   });
 
   it("renders children as the label text", () => {
     render(<Switch>Dark mode</Switch>);
-    expect(screen.getByText("Dark mode")).toHaveClass("ui-switch-text");
+    expect(screen.getByText("Dark mode")).toHaveClass(styles.label);
     expect(
       screen.getByRole("switch", { name: "Dark mode" }),
     ).toBeInTheDocument();
   });
 
-  it("reflects controlled state on the root data-state", async () => {
+  it("reflects controlled state on the root class", async () => {
     const user = userEvent.setup();
     render(<Controlled ariaLabel="x" />);
     const sw = screen.getByRole("switch");
+    expect(rootOf(sw)).not.toHaveClass(styles.checked);
     await user.click(sw);
     expect(sw).toBeChecked();
-    expect(rootOf(sw)).toHaveAttribute("data-state", "checked");
-    expect(sw).toHaveAttribute("data-state", "checked");
+    expect(rootOf(sw)).toHaveClass(styles.checked);
   });
 
   it("bilateral labels set the state directly and highlight the active side", async () => {
@@ -113,21 +112,17 @@ describe("Switch slider (merged capabilities)", () => {
     const sw = screen.getByRole("switch", { name: "Mode" });
     const off = screen.getByRole("button", { name: "BFF" });
     const on = screen.getByRole("button", { name: "Mock" });
-    expect(rootOf(sw)).toHaveClass("ui-switch-bilateral", "bilateral");
+    expect(rootOf(sw)).toHaveClass(styles.bilateral);
     expect(rootOf(sw).tagName).toBe("SPAN");
-    expect(off).toHaveClass(
-      "ui-switch-side",
-      "ui-switch-side-off",
-      "ui-switch-side-active",
-    );
+    expect(off).toHaveClass(styles.side, styles.sideActive);
     await user.click(on);
     expect(sw).toBeChecked();
     expect(onChange).toHaveBeenLastCalledWith(
       true,
       expect.objectContaining({ type: "change" }),
     );
-    expect(on).toHaveClass("ui-switch-side-on", "ui-switch-side-active");
-    expect(off).not.toHaveClass("ui-switch-side-active");
+    expect(on).toHaveClass(styles.side, styles.sideActive);
+    expect(off).not.toHaveClass(styles.sideActive);
     await user.click(on);
     expect(onChange).toHaveBeenCalledTimes(1);
     await user.click(off);
@@ -139,12 +134,9 @@ describe("Switch slider (merged capabilities)", () => {
     render(<Switch ariaLabel="x" offLabel="Off" onLabel="On" />);
     await user.click(screen.getByRole("button", { name: "On" }));
     expect(screen.getByRole("switch")).toBeChecked();
-    expect(rootOf(screen.getByRole("switch"))).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
+    expect(rootOf(screen.getByRole("switch"))).toHaveClass(styles.checked);
     expect(screen.getByRole("button", { name: "On" })).toHaveClass(
-      "ui-switch-side-active",
+      styles.sideActive,
     );
   });
 
@@ -174,7 +166,7 @@ describe("Switch slider (merged capabilities)", () => {
     );
     const sw = screen.getByRole("switch");
     expect(sw).toBeDisabled();
-    expect(rootOf(sw)).toHaveAttribute("data-disabled", "true");
+    expect(rootOf(sw)).toHaveClass(styles.disabled);
     expect(screen.getByRole("button", { name: "On" })).toBeDisabled();
     expect(screen.getByTestId("end-icon")).toBeInTheDocument();
     await user.click(sw);
@@ -255,11 +247,7 @@ describe("Switch segmented", () => {
     );
     expect(screen.queryByRole("switch")).toBeNull();
     const group = screen.getByRole("group", { name: "Source" });
-    expect(group).toHaveClass(
-      "ui-switch-segmented",
-      "ui-switch-segmented-size-md",
-      "ui-switch-color-brand",
-    );
+    expect(group).toHaveClass(styles.segmented, styles.medium, styles.primary);
     expect(screen.getByRole("button", { name: "BFF" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -276,8 +264,10 @@ describe("Switch segmented", () => {
     await user.click(screen.getByRole("button", { name: "Mock" }));
     const mock = screen.getByRole("button", { name: "Mock" });
     expect(mock).toHaveAttribute("aria-pressed", "true");
-    expect(mock).toHaveClass("ui-switch-segment-active", "segmentActive");
-    expect(screen.getByRole("group")).toHaveAttribute("data-state", "checked");
+    expect(mock).toHaveClass(styles.segmentActive);
+    expect(screen.getByRole("button", { name: "BFF" })).not.toHaveClass(
+      styles.segmentActive,
+    );
   });
 
   it("submits its value with a name through a hidden input", async () => {
@@ -296,7 +286,7 @@ describe("Switch segmented", () => {
   it("disables both segments when disabled", () => {
     render(<Switch variant="segmented" offLabel="A" onLabel="B" disabled />);
     screen.getAllByRole("button").forEach((b) => expect(b).toBeDisabled());
-    expect(screen.getByRole("group")).toHaveAttribute("data-disabled", "true");
+    expect(screen.getByRole("group")).toHaveClass(styles.disabled);
   });
 
   it("falls back to a slider when either label is missing", () => {

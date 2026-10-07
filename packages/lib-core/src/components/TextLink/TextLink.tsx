@@ -20,13 +20,7 @@ export const TextLink = ({
   return (
     <Component
       ref={ref}
-      className={cn(
-        styles.textLink,
-        styles[variant],
-        "ui-text-link",
-        `ui-text-link-${variant}`,
-        className,
-      )}
+      className={cn(styles.textLink, styles[variant], className)}
       {...rest}
     >
       <Slottable>{children}</Slottable>

@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui src/components/__test__/PageTabs.test.tsx
 import { act, createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { compile } from "sass";
@@ -7,6 +6,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { PageTab, PageTabs } from ".";
 import { IconButton } from "../IconButton";
 import { ContextMenu } from "../Menu";
+import styles from "./pageTabs.module.scss";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -21,14 +21,13 @@ it("uses the shared tooltip on keyboard focus instead of a duplicate native titl
     <PageTab value="article" label="Complete article title" active />,
   );
   const trigger = container.querySelector<HTMLButtonElement>(
-    ".ui-page-tab-trigger",
+    `.${styles.trigger}`,
   )!;
   expect(trigger.hasAttribute("title")).toBe(false);
   await act(async () => trigger.focus());
   const tooltip = document.querySelector('[role="tooltip"]');
   expect(tooltip?.textContent).toBe("Complete article title");
-  expect(tooltip).toHaveAttribute("data-side", "bottom");
-  expect(tooltip).toHaveAttribute("data-align", "start");
+  expect(tooltip).toHaveAttribute("data-placement", "bottom-start");
   expect(trigger.getAttribute("aria-describedby")).toBe(tooltip?.id);
   expect(trigger.getAttribute("aria-current")).toBe("page");
   await act(async () => trigger.blur());
@@ -45,10 +44,12 @@ it("exposes disabled presentation state without changing the action control", as
     />,
   );
   expect(
-    container.querySelector(".ui-page-tab")?.hasAttribute("data-disabled"),
+    container
+      .querySelector(`.${styles.pageTab}`)
+      ?.hasAttribute("data-disabled"),
   ).toBe(true);
   const trigger = container.querySelector<HTMLButtonElement>(
-    ".ui-page-tab-trigger",
+    `.${styles.trigger}`,
   )!;
   expect(trigger.disabled).toBe(true);
   await act(async () => trigger.focus());
@@ -80,7 +81,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
   );
   const nav = container.querySelector("nav")!;
   expect(nav.getAttribute("aria-label")).toBe("Open pages");
-  expect(nav).toHaveClass("ui-page-tabs");
+  expect(nav).toHaveClass(styles.pageTabs);
   expect(
     container.querySelector('[role="tablist"], [role="tabpanel"]'),
   ).toBeNull();
@@ -89,7 +90,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
   )!;
   expect(trigger.textContent).toBe("Article");
   expect(trigger.querySelector("button")).toBeNull();
-  expect(trigger.querySelector(".ui-page-tab-icon")).toHaveAttribute(
+  expect(trigger.querySelector(`.${styles.icon}`)).toHaveAttribute(
     "aria-hidden",
     "true",
   );
@@ -105,7 +106,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
   expect(close).toHaveBeenCalledTimes(1);
   expect(select).toHaveBeenCalledTimes(1);
   expect(
-    container.querySelector(".ui-page-tab-action [aria-label='Close Article']"),
+    container.querySelector(`.${styles.action} [aria-label='Close Article']`),
   ).not.toBeNull();
 });
 
@@ -125,7 +126,7 @@ it("forwards context-menu events to the item wrapper and supports disabled selec
   expect(select).not.toHaveBeenCalled();
   act(() => {
     container
-      .querySelector(".ui-page-tab")!
+      .querySelector(`.${styles.pageTab}`)!
       .dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }));
   });
   expect(context).toHaveBeenCalledTimes(1);
@@ -143,10 +144,10 @@ it("keeps global actions outside the scrollable list and hides unnecessary scrol
     </PageTabs>,
   );
   expect(
-    container.querySelector('.ui-page-tabs-list [aria-label="Page menu"]'),
+    container.querySelector(`.${styles.list} [aria-label="Page menu"]`),
   ).toBeNull();
   expect(
-    container.querySelector('.ui-page-tabs-actions [aria-label="Page menu"]'),
+    container.querySelector(`.${styles.actions} [aria-label="Page menu"]`),
   ).not.toBeNull();
   expect(
     container.querySelector('[aria-label="Scroll pages left"]'),
@@ -159,20 +160,19 @@ it("keeps global actions outside the scrollable list and hides unnecessary scrol
 function scrollingGeometry(viewWidth = 200, itemWidth = 200) {
   vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockImplementation(
     function (this: HTMLElement) {
-      return this.classList.contains("ui-page-tabs-viewport") ? viewWidth : 0;
+      return this.classList.contains(styles.viewport) ? viewWidth : 0;
     },
   );
   vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockImplementation(
     function (this: HTMLElement) {
-      return this.classList.contains("ui-page-tabs-viewport") ? 600 : 0;
+      return this.classList.contains(styles.viewport) ? 600 : 0;
     },
   );
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
     function (this: HTMLElement) {
-      const item = this.classList.contains("ui-page-tab");
+      const item = this.classList.contains(styles.pageTab);
       const x = item
-        ? 400 -
-          (document.querySelector(".ui-page-tabs-viewport")?.scrollLeft || 0)
+        ? 400 - (document.querySelector(`.${styles.viewport}`)?.scrollLeft || 0)
         : 0;
       const width = item ? itemWidth : viewWidth;
       return {
@@ -198,7 +198,7 @@ it("reveals the active page within its own viewport and updates overflow control
     </PageTabs>,
   );
   const viewport = container.querySelector<HTMLDivElement>(
-    ".ui-page-tabs-viewport",
+    `.${styles.viewport}`,
   )!;
   expect(viewport.scrollLeft).toBe(400);
   const left = screen.getByRole("button", { name: "Scroll pages left" });
@@ -222,7 +222,7 @@ it("scrolls an item that is left of the viewport back into view", () => {
   vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(600);
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
     function (this: HTMLElement) {
-      const item = this.classList.contains("ui-page-tab");
+      const item = this.classList.contains(styles.pageTab);
       const x = item ? -50 : 0;
       return {
         x,
@@ -243,7 +243,7 @@ it("scrolls an item that is left of the viewport back into view", () => {
     </PageTabs>,
   );
   const viewport = container.querySelector<HTMLDivElement>(
-    ".ui-page-tabs-viewport",
+    `.${styles.viewport}`,
   )!;
   // moved left by the 50px the item sticks out
   expect(viewport.scrollLeft).toBe(-50);
@@ -305,7 +305,7 @@ it("preserves manual scrolling through unrelated parent rerenders", () => {
   );
   const { container, rerender } = render(tabs());
   act(() => screen.getByRole("button", { name: "Scroll pages left" }).click());
-  const viewport = container.querySelector(".ui-page-tabs-viewport")!;
+  const viewport = container.querySelector(`.${styles.viewport}`)!;
   expect(viewport.scrollLeft).toBe(240);
   rerender(tabs());
   expect(viewport.scrollLeft).toBe(240);
@@ -330,9 +330,7 @@ it("aligns an oversized active item consistently instead of alternating its edge
       <PageTab value="last" label="Last" active />
     </PageTabs>,
   );
-  expect(container.querySelector(".ui-page-tabs-viewport")!.scrollLeft).toBe(
-    400,
-  );
+  expect(container.querySelector(`.${styles.viewport}`)!.scrollLeft).toBe(400);
 });
 
 it("re-measures when the viewport or list resizes", () => {
@@ -356,9 +354,7 @@ it("re-measures when the viewport or list resizes", () => {
   expect(callbacks).toHaveLength(1);
   scrollingGeometry();
   act(() => callbacks[0]([], {} as ResizeObserver));
-  expect(container.querySelector(".ui-page-tabs-viewport")!.scrollLeft).toBe(
-    400,
-  );
+  expect(container.querySelector(`.${styles.viewport}`)!.scrollLeft).toBe(400);
   unmount();
   expect(disconnect).toHaveBeenCalled();
   vi.unstubAllGlobals();
@@ -393,7 +389,7 @@ it("calls the consumer's capture handlers and ignores focus from portals", () =>
   );
   fireEvent.focus(screen.getByTestId("other"));
   fireEvent.contextMenu(screen.getByTestId("other"));
-  fireEvent.contextMenu(container.querySelector(".ui-page-tab-trigger")!);
+  fireEvent.contextMenu(container.querySelector(`.${styles.trigger}`)!);
   expect(onFocusCapture).toHaveBeenCalledTimes(1);
   expect(onContextMenuCapture).toHaveBeenCalledTimes(2);
 });

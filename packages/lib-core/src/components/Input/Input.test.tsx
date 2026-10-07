@@ -16,17 +16,10 @@ describe("Input", () => {
   it("renders a textbox inside a root with default variant/size classes", () => {
     render(<Input aria-label="Name" />);
     const input = screen.getByRole("textbox", { name: "Name" });
-    expect(input).toHaveClass("field", "ui-input-field");
-    expect(root(input)).toHaveClass(
-      "root",
-      "outline",
-      "medium",
-      "ui-input-root",
-      "ui-input-variant-outline",
-      "ui-input-size-md",
-    );
-    expect(root(input)).not.toHaveAttribute("data-invalid");
-    expect(root(input)).not.toHaveAttribute("data-disabled");
+    expect(input).toHaveClass("field");
+    expect(root(input)).toHaveClass("root", "outline", "medium");
+    expect(root(input)).toHaveAttribute("data-component", "input");
+    expect(root(input)).not.toHaveClass("invalid", "disabled");
     expect(input).not.toHaveAttribute("aria-invalid");
   });
 
@@ -40,21 +33,10 @@ describe("Input", () => {
       />,
     );
     const input = screen.getByRole("textbox");
-    expect(root(input)).toHaveClass(
-      "consumer",
-      "filled",
-      "large",
-      "ui-input-variant-filled",
-      "ui-input-size-lg",
-    );
+    expect(root(input)).toHaveClass("consumer", "filled", "large");
     expect(input).not.toHaveClass("consumer");
     rerender(<Input aria-label="Name" variant="unstyled" size="small" />);
-    expect(root(input)).toHaveClass(
-      "unstyled",
-      "small",
-      "ui-input-variant-unstyled",
-      "ui-input-size-sm",
-    );
+    expect(root(input)).toHaveClass("unstyled", "small");
   });
 
   it("works uncontrolled with defaultValue", async () => {
@@ -91,14 +73,10 @@ describe("Input", () => {
     render(<Input aria-label="Price" prefix="$" suffix="USD" />);
     const input = screen.getByRole("textbox");
     const [start, field, end] = Array.from(root(input).children);
-    expect(start).toHaveClass(
-      "addon",
-      "ui-input-addon",
-      "ui-input-addon-start",
-    );
+    expect(start).toHaveClass("addon", "start");
     expect(start).toHaveTextContent("$");
     expect(field).toBe(input);
-    expect(end).toHaveClass("ui-input-addon", "ui-input-addon-end");
+    expect(end).toHaveClass("addon", "end");
     expect(end).toHaveTextContent("USD");
   });
 
@@ -110,8 +88,7 @@ describe("Input", () => {
   it("invalid marks the root as error and announces it", () => {
     render(<Input aria-label="Name" invalid />);
     const input = screen.getByRole("textbox");
-    expect(root(input)).toHaveClass("invalid", "ui-input-error");
-    expect(root(input)).toHaveAttribute("data-invalid", "true");
+    expect(root(input)).toHaveClass("invalid");
     expect(input).toHaveAttribute("aria-invalid", "true");
   });
 
@@ -121,9 +98,9 @@ describe("Input", () => {
     );
     const input = screen.getByRole("textbox");
     expect(input).toHaveAttribute("aria-invalid", "grammar");
-    expect(root(input)).toHaveClass("ui-input-error");
+    expect(root(input)).toHaveClass("invalid");
     rerender(<Input aria-label="Name" aria-invalid="false" />);
-    expect(root(input)).not.toHaveClass("ui-input-error");
+    expect(root(input)).not.toHaveClass("invalid");
   });
 
   it("disabled prevents typing and marks the root", async () => {
@@ -131,8 +108,7 @@ describe("Input", () => {
     render(<Input aria-label="Name" disabled />);
     const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
-    expect(root(input)).toHaveClass("disabled", "ui-input-disabled");
-    expect(root(input)).toHaveAttribute("data-disabled", "true");
+    expect(root(input)).toHaveClass("disabled");
     await user.type(input, "x");
     expect(input).toHaveValue("");
   });
@@ -197,7 +173,7 @@ describe("Input", () => {
       expect(input).toHaveAttribute("aria-required", "true");
       expect(input).toBeDisabled();
       expect(input).toHaveAccessibleDescription("Bad email");
-      expect(root(input)).toHaveClass("ui-input-error", "ui-input-disabled");
+      expect(root(input)).toHaveClass("invalid", "disabled");
     });
 
     it("keeps an explicit id and merges an incoming aria-describedby", () => {

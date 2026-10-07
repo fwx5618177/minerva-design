@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui src/components/__test__/List.test.tsx
 import {
   act,
   createRef,
@@ -24,6 +23,7 @@ import { IconButton } from "../IconButton";
 import List from "./List";
 import ListItem from "./ListItem";
 import type { ListItemProps, ListProps } from "./types";
+import styles from "./list.module.scss";
 
 let container: HTMLDivElement;
 let style: HTMLStyleElement | undefined;
@@ -92,18 +92,18 @@ describe("List public contract", () => {
       "LI",
       "LI",
     ]);
+    expect(list.querySelector(`.${styles.primary} strong`)?.textContent).toBe(
+      "Record title",
+    );
+    expect(list.querySelector(`.${styles.secondary} code`)?.textContent).toBe(
+      "Metadata",
+    );
     expect(
-      list.querySelector(".ui-list-item-primary strong")?.textContent,
-    ).toBe("Record title");
-    expect(
-      list.querySelector(".ui-list-item-secondary code")?.textContent,
-    ).toBe("Metadata");
-    expect(
-      list.querySelector(".ui-list-item-icon")?.getAttribute("aria-hidden"),
+      list.querySelector(`.${styles.icon}`)?.getAttribute("aria-hidden"),
     ).toBe("true");
-    expect(
-      list.querySelector(".ui-list-item-actions button")?.textContent,
-    ).toBe("Edit");
+    expect(list.querySelector(`.${styles.actions} button`)?.textContent).toBe(
+      "Edit",
+    );
     expect(list.querySelector("li")?.getAttribute("role")).toBeNull();
     expect(list.querySelector("li")?.hasAttribute("tabindex")).toBe(false);
     expect(list.querySelector("[aria-selected], [aria-pressed]")).toBeNull();
@@ -119,22 +119,20 @@ describe("List public contract", () => {
       </List>,
     );
     const rows = container.querySelectorAll("li");
-    expect(rows[0]?.querySelector(".ui-list-item-primary")?.textContent).toBe(
+    expect(rows[0]?.querySelector(`.${styles.primary}`)?.textContent).toBe("0");
+    expect(rows[0]?.querySelector(`.${styles.secondary}`)?.textContent).toBe(
       "0",
     );
-    expect(rows[0]?.querySelector(".ui-list-item-secondary")?.textContent).toBe(
-      "0",
-    );
-    expect(rows[1]?.querySelector(".ui-list-item-primary")?.textContent).toBe(
+    expect(rows[1]?.querySelector(`.${styles.primary}`)?.textContent).toBe(
       unsafe,
     );
-    expect(rows[1]?.querySelector(".ui-list-item-secondary")?.textContent).toBe(
+    expect(rows[1]?.querySelector(`.${styles.secondary}`)?.textContent).toBe(
       unsafe,
     );
     expect(container.querySelector("img")).toBeNull();
-    expect(rows[2]?.querySelector(".ui-list-item-secondary")).toBeNull();
+    expect(rows[2]?.querySelector(`.${styles.secondary}`)).toBeNull();
     expect(
-      container.querySelector(".ui-list-item-icon, .ui-list-item-actions"),
+      container.querySelector(`.${styles.icon}, .${styles.actions}`),
     ).toBeNull();
   });
 
@@ -172,10 +170,10 @@ describe("List public contract", () => {
     expect(list.id).toBe("records");
     expect(list.title).toBe("Records");
     expect(list.dataset.source).toBe("consumer");
-    expect(list).toHaveClass("consumer-list", "list", "ui-list");
+    expect(list).toHaveClass("consumer-list", styles.list);
     expect(list.style.maxWidth).toBe("320px");
     expect(item.value).toBe(7);
-    expect(item).toHaveClass("consumer-item", "item", "ui-list-item");
+    expect(item).toHaveClass("consumer-item", styles.item);
     expect(item.getAttribute("aria-label")).toBe("Named record");
     expect(item.style.marginTop).toBe("2px");
     act(() => item.click());
@@ -200,7 +198,7 @@ describe("List public contract", () => {
     );
     expect(
       container.querySelector(
-        ".ui-list-item-secondary, .ui-list-item-icon, .ui-list-item-actions",
+        `.${styles.secondary}, .${styles.icon}, .${styles.actions}`,
       ),
     ).toBeNull();
   });
@@ -272,7 +270,7 @@ describe("List public contract", () => {
         button.getAttribute("aria-describedby")!,
       );
       expect(description?.textContent).toBe(id);
-      expect(description?.closest(".ui-list-item-content")).not.toBeNull();
+      expect(description?.closest(`.${styles.content}`)).not.toBeNull();
     }
   });
 
@@ -282,19 +280,16 @@ describe("List public contract", () => {
         <ListItem primary="One" />
       </List>,
     );
-    expect(container.querySelector("ul")).toHaveClass(
-      "ui-list-density-default",
-      "ui-list-dividers",
-      "dividers",
-    );
+    expect(container.querySelector("ul")).toHaveClass(styles.dividers);
+    expect(container.querySelector("ul")).not.toHaveClass(styles.compact);
     container.innerHTML = renderToStaticMarkup(
       <List density="compact" dividers={false} role="presentation">
         <ListItem primary="One" />
       </List>,
     );
     const list = container.querySelector("ul")!;
-    expect(list).toHaveClass("ui-list-density-compact", "compact");
-    expect(list).not.toHaveClass("ui-list-density-default", "ui-list-dividers");
+    expect(list).toHaveClass(styles.compact);
+    expect(list).not.toHaveClass(styles.dividers);
     expect(list.getAttribute("role")).toBe("presentation");
     expect(list.hasAttribute("density")).toBe(false);
     expect(list.hasAttribute("dividers")).toBe(false);
@@ -310,10 +305,10 @@ describe("List distributed styles", () => {
     );
     const list = getComputedStyle(container.querySelector("ul")!);
     const primary = getComputedStyle(
-      container.querySelector(".ui-list-item-primary")!,
+      container.querySelector(`.${styles.primary}`)!,
     );
     const secondary = getComputedStyle(
-      container.querySelector(".ui-list-item-secondary")!,
+      container.querySelector(`.${styles.secondary}`)!,
     );
     expect(list.listStyle).toBe("none");
     expect(list.margin).toBe("0px");
@@ -380,24 +375,20 @@ describe("List distributed styles", () => {
       <List style={{ width: 320 }}>
         <ListItem
           primary="Device"
-          actions={
-            <Button variant="secondary">
-              <span className="ui-button-label">{label}</span>
-            </Button>
-          }
+          actions={<Button variant="secondary">{label}</Button>}
         />
       </List>,
     );
-    const buttonLabel = container.querySelector(
-      ".ui-list-item-actions .ui-button-label",
-    )!;
-    expect(buttonLabel.textContent).toBe(label);
-    const labelStyle = getComputedStyle(buttonLabel);
-    expect(labelStyle.whiteSpace).toBe("normal");
-    expect(labelStyle.overflowWrap).toBe("anywhere");
-    expect(labelStyle.overflow).toBe("visible");
-    expect(labelStyle.textOverflow).toBe("clip");
-    expect(labelStyle.minWidth).toBe("0");
+    const button = container.querySelector(`.${styles.actions} button`)!;
+    expect(button.textContent).toBe(label);
+    const buttonStyle = getComputedStyle(button);
+    expect(buttonStyle.whiteSpace).toBe("normal");
+    expect(buttonStyle.overflowWrap).toBe("anywhere");
+    expect(buttonStyle.minWidth).toBe("0");
+    // Button reads this variable for its own label white-space
+    expect(css).toMatch(
+      /\.actions\s*\{[^}]*--button-label-white-space:\s*normal/,
+    );
   });
 
   it("allows long metadata to wrap and reserves bounded trailing action space", () => {
@@ -420,16 +411,16 @@ describe("List distributed styles", () => {
     expect(row.display).toBe("flex");
     expect(row.minWidth).toBe("0");
     for (const selector of [
-      ".ui-list-item-content",
-      ".ui-list-item-primary",
-      ".ui-list-item-secondary",
+      `.${styles.content}`,
+      `.${styles.primary}`,
+      `.${styles.secondary}`,
     ]) {
       const text = getComputedStyle(container.querySelector(selector)!);
       expect(text.minWidth).toBe("0");
       expect(text.overflowWrap).toBe("anywhere");
     }
     const actions = getComputedStyle(
-      container.querySelector(".ui-list-item-actions")!,
+      container.querySelector(`.${styles.actions}`)!,
     );
     expect(actions.flexShrink).toBe("0");
     expect(actions.flexWrap).toBe("wrap");

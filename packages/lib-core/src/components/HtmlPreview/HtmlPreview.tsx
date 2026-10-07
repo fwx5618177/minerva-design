@@ -31,12 +31,7 @@ export const HtmlPreview = ({
   const frameHeight = Number.isFinite(height) && height > 0 ? height : 600;
 
   return (
-    <div
-      ref={ref}
-      className={cn(styles.preview, "ui-html-preview", className)}
-      style={style}
-      data-viewport={viewport}
-    >
+    <div ref={ref} className={cn(styles.preview, className)} style={style}>
       {/* A new key replaces the browsing context, so an initial empty srcdoc
           can never finish loading after the real document. */}
       <iframe
@@ -45,7 +40,7 @@ export const HtmlPreview = ({
         sandbox=""
         referrerPolicy="no-referrer"
         srcDoc={doc}
-        className={cn(styles.frame, "ui-html-preview-frame")}
+        className={styles.frame}
         style={{
           width: viewport === "mobile" ? width : "100%",
           height: frameHeight,

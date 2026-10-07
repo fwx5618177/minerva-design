@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/TextLink/__test__/TextLink.test.tsx
-// and the TextLink parts of src/components/__test__/ReadingPrimitives.test.tsx
 import { createRef, type MouseEvent } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -12,12 +10,7 @@ describe("TextLink", () => {
     const link = screen.getByRole("link", { name: "Books" });
     expect(link.tagName).toBe("A");
     expect(link).toHaveAttribute("href", "/books");
-    expect(link).toHaveClass(
-      "textLink",
-      "default",
-      "ui-text-link",
-      "ui-text-link-default",
-    );
+    expect(link).toHaveClass("textLink", "default");
     expect(link.querySelector("svg")).toBeNull();
   });
 
@@ -30,8 +23,8 @@ describe("TextLink", () => {
         </TextLink>,
       );
       expect(screen.getByRole("link", { name: "Go" })).toHaveClass(
+        "textLink",
         variant,
-        `ui-text-link-${variant}`,
       );
     },
   );
@@ -75,7 +68,7 @@ describe("TextLink", () => {
     );
     const link = screen.getByRole("link", { name: "External" });
     expect(ref.current).toBe(link);
-    expect(link).toHaveClass("ui-text-link", "consumer");
+    expect(link).toHaveClass("textLink", "consumer");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noreferrer");
     await user.click(link);
@@ -94,7 +87,7 @@ describe("TextLink", () => {
     expect(container.querySelectorAll("a")).toHaveLength(1);
     const link = screen.getByRole("link", { name: "Routed" });
     expect(ref.current).toBe(link);
-    expect(link).toHaveClass("ui-text-link", "ui-text-link-subtle", "consumer");
+    expect(link).toHaveClass("textLink", "subtle", "consumer");
     expect(link).toHaveAttribute("data-router", "yes");
     expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
     expect(link.textContent).toBe("Routed");
@@ -112,7 +105,7 @@ describe("TextLink", () => {
     const link = container.querySelector("a")!;
     expect(container.querySelectorAll("a")).toHaveLength(1);
     expect(link.getAttribute("href")).toBe("/settings");
-    expect(link).toHaveClass("ui-text-link", "router-link");
+    expect(link).toHaveClass("textLink", "action", "router-link");
     expect(link.querySelector("button, a")).toBeNull();
     expect(ref.current).toBe(link);
   });

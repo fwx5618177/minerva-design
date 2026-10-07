@@ -2,7 +2,7 @@ import type { CSSProperties, ElementType } from "react";
 import { resolveSpace } from "../../internal/space";
 import type { BoxProps, BoxSize } from "./types";
 
-/** Surface aliases accepted by `bg` (novel `bg.*` names -> Minerva tokens) */
+/** Surface aliases accepted by `bg` (`bg.*` shorthands -> surface tokens) */
 const backgrounds: Record<string, string> = {
   bg: "var(--surface-color)",
   "bg.subtle": "var(--surface-subtle-color)",

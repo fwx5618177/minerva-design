@@ -56,9 +56,6 @@ export const Stack = ({
         styles.stack,
         styles[direction],
         wrap && styles.wrap,
-        "ui-stack",
-        `ui-stack-${direction}`,
-        wrap && "ui-stack-wrap",
         className,
       )}
       style={computed}

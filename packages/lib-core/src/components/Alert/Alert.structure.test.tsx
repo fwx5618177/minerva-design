@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/Alert/__test__/Alert.test.tsx and
-// src/components/__test__/Alert.layout.test.ts
 import { createRef } from "react";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
@@ -7,6 +5,7 @@ import { compile } from "sass";
 import { describe, expect, it } from "vitest";
 import Alert from "./Alert";
 import type { AlertVariant } from "./types";
+import styles from "./alert.module.scss";
 
 describe("Alert layout", () => {
   const css = compile(join(import.meta.dirname, "alert.module.scss")).css;
@@ -20,56 +19,48 @@ describe("Alert layout", () => {
   });
 });
 
-describe("Alert styling hooks and native attributes", () => {
-  it("renders the default status/variant hooks and a description", () => {
+describe("Alert structure and native attributes", () => {
+  it("renders the default status classes and a description", () => {
     render(<Alert>Saved</Alert>);
     const alert = screen.getByRole("status");
-    expect(alert).toHaveClass(
-      "ui-alert",
-      "ui-alert-status-info",
-      "ui-alert-variant-subtle",
-    );
-    expect(alert.querySelector(".ui-alert-description")).toHaveTextContent(
+    expect(alert).toHaveClass(styles.alert, styles.info, styles.medium);
+    expect(alert.querySelector(`.${styles.message}`)).toHaveTextContent(
       "Saved",
     );
-    expect(alert.querySelector(".ui-alert-title")).toBeNull();
+    expect(alert.querySelector(`.${styles.title}`)).toBeNull();
   });
 
   it.each<[AlertVariant, string]>([
     ["info", "info"],
     ["success", "success"],
     ["warning", "warning"],
-    ["error", "danger"],
-    ["danger", "danger"],
-  ])("renders a default icon and the status hook for %s", (variant, hook) => {
+    ["error", "error"],
+    ["danger", "error"],
+  ])("renders a default icon and the status class for %s", (variant, cls) => {
     render(
       <Alert variant={variant} type="filled" role="alert">
         Body
       </Alert>,
     );
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveClass(
-      `ui-alert-status-${hook}`,
-      "ui-alert-variant-solid",
-    );
-    expect(alert.querySelector(".ui-alert-icon svg")).not.toBeNull();
+    expect(alert).toHaveClass(styles[cls], styles.filled);
+    expect(alert.querySelector(`.${styles.icon} svg`)).not.toBeNull();
   });
 
   it("treats danger as an alias of error", () => {
     render(<Alert variant="danger">Boom</Alert>);
     const alert = screen.getByRole("alert");
     expect(alert).toHaveClass("error");
-    expect(alert).toHaveAttribute("data-variant", "error");
     expect(screen.getByRole("img", { name: "error icon" })).toBeInTheDocument();
   });
 
   it.each([
-    [{ type: "outlined" as const }, "outline"],
-    [{ outlined: true }, "outline"],
-    [{ filled: true }, "solid"],
-  ])("maps %j to the ui-alert-variant-%s hook", (props, hook) => {
+    [{ type: "outlined" as const }, "outlined"],
+    [{ outlined: true }, "outlined"],
+    [{ filled: true }, "filled"],
+  ])("maps %j to the %s class", (props, cls) => {
     render(<Alert {...props}>x</Alert>);
-    expect(screen.getByRole("status")).toHaveClass(`ui-alert-variant-${hook}`);
+    expect(screen.getByRole("status")).toHaveClass(styles[cls]);
   });
 
   it("renders a title above the description and omits description without children", () => {
@@ -78,14 +69,14 @@ describe("Alert styling hooks and native attributes", () => {
     );
     const content = screen
       .getByRole("status")
-      .querySelector(".ui-alert-content")!;
-    expect(content.children[0]).toHaveClass("ui-alert-title");
+      .querySelector(`.${styles.content}`)!;
+    expect(content.children[0]).toHaveClass(styles.title);
     expect(content.children[0]).toHaveTextContent("Error");
-    expect(content.children[1]).toHaveClass("ui-alert-description");
+    expect(content.children[1]).toHaveClass(styles.message);
 
     rerender(<Alert title="Only title" />);
     expect(
-      screen.getByRole("status").querySelector(".ui-alert-description"),
+      screen.getByRole("status").querySelector(`.${styles.message}`),
     ).toBeNull();
   });
 
@@ -94,7 +85,7 @@ describe("Alert styling hooks and native attributes", () => {
       <Alert icon={<span data-testid="custom-icon">!</span>}>x</Alert>,
     );
     expect(screen.getByTestId("custom-icon").parentElement).toHaveClass(
-      "ui-alert-icon",
+      styles.icon,
     );
     rerender(
       <Alert showIcon={false} icon={<span data-testid="custom-icon">!</span>}>
@@ -103,7 +94,7 @@ describe("Alert styling hooks and native attributes", () => {
     );
     expect(screen.queryByTestId("custom-icon")).toBeNull();
     expect(
-      screen.getByRole("status").querySelector(".ui-alert-icon"),
+      screen.getByRole("status").querySelector(`.${styles.icon}`),
     ).toBeNull();
   });
 
@@ -126,7 +117,7 @@ describe("Alert styling hooks and native attributes", () => {
     expect(ref.current).toBe(alert);
     expect(alert).toHaveAttribute("id", "a1");
     expect(alert).toHaveAttribute("aria-live", "assertive");
-    expect(alert).toHaveClass("extra", "ui-alert");
+    expect(alert).toHaveClass("extra", styles.alert);
     expect(alert).not.toHaveAttribute("title");
     expect(alert).not.toHaveAttribute("variant");
   });

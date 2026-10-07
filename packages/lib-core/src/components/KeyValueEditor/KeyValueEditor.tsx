@@ -73,19 +73,11 @@ export const KeyValueEditor = ({
   );
 
   return (
-    <div
-      ref={ref}
-      {...rest}
-      className={cn(styles.root, "ui-key-value-editor", className)}
-      data-disabled={disabled || undefined}
-    >
+    <div ref={ref} {...rest} className={cn(styles.root, className)}>
       {entries.map((entry, index) => {
         const error = errors?.[entry.id];
         return (
-          <div
-            className={cn(styles.row, "ui-key-value-editor-row")}
-            key={entry.id}
-          >
+          <div className={styles.row} key={entry.id}>
             <FormField
               label={numbered(keyText, index)}
               disabled={disabled}
@@ -93,7 +85,7 @@ export const KeyValueEditor = ({
               errorMessage={error?.key}
             >
               <Textarea
-                className={cn(styles.key, "ui-key-value-editor-key")}
+                className={styles.key}
                 size="small"
                 rows={1}
                 value={entry.key}
@@ -118,7 +110,7 @@ export const KeyValueEditor = ({
               />
             </FormField>
             <IconButton
-              className={cn(styles.remove, "ui-key-value-editor-remove")}
+              className={styles.remove}
               type="button"
               label={`${removeText} ${index + 1}`}
               size="small"
@@ -131,7 +123,7 @@ export const KeyValueEditor = ({
         );
       })}
       <Button
-        className={cn(styles.add, "ui-key-value-editor-add")}
+        className={styles.add}
         type="button"
         variant="secondary"
         size="small"

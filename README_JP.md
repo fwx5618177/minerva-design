@@ -25,7 +25,7 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 - **ESM + CommonJS**：両方のモジュール形式を提供
 - **TypeScript**：型定義を同梱
 - **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
-- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`/compat`（`@novel-isr/ui` 互換 API）、`style.css`、`compat.css`、`prose.scss`
+- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
 - **国際化**：英語・中国語・フランス語のロケールを内蔵
 
 ## 📦 パッケージ
@@ -160,8 +160,6 @@ export function Root() {
 ### テーマ・パレットと SSR
 
 サーバーコンポーネントで `@minerva/lib-core/theme-utils` の `parseThemeCookies` を使って cookie を読み、`<head>` に `THEME_INIT_SCRIPT` をインライン化し、`ThemeProvider`（`defaultTheme` / `defaultPalette`）でアプリを包むと、初回表示のちらつきを防げます。詳しくはドキュメントサイトの「テーマとパレット」ページを参照してください。
-
-`@novel-isr/ui` から移行する場合は [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md) を参照してください。`@minerva/lib-core/compat` が同一の API を提供します。
 
 ### Message API
 

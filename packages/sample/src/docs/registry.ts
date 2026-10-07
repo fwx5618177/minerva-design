@@ -24,7 +24,6 @@ export type DocCategory =
   | "navigation"
   | "overlays"
   | "editors"
-  | "migration"
   | "webComponents";
 
 export interface DocPageMeta {
@@ -53,7 +52,6 @@ export const categories: DocCategory[] = [
   "overlays",
   "navigation",
   "editors",
-  "migration",
   "webComponents",
 ];
 
@@ -555,7 +553,7 @@ export const docPages: DocPageMeta[] = [
     ],
   },
 
-  // Layout (ported from @novel-isr/ui)
+  // Layout
   {
     id: "box",
     category: "layout",
@@ -605,7 +603,7 @@ export const docPages: DocPageMeta[] = [
     demos: ["basic", "controlled"],
   },
 
-  // Overlays (ported from @novel-isr/ui)
+  // Overlays
   {
     id: "modal",
     category: "overlays",
@@ -699,7 +697,7 @@ export const docPages: DocPageMeta[] = [
     demos: ["basic", "context-menu", "overflow"],
   },
 
-  // Forms (ported from @novel-isr/ui)
+  // Forms
   {
     id: "form-control",
     category: "dataEntry",
@@ -933,8 +931,6 @@ export const docPages: DocPageMeta[] = [
     api: ["MonthCalendarProps", "MonthCalendarEvent"],
     demos: ["basic"],
   },
-  { id: "migration", category: "migration" },
-  { id: "compat", category: "migration" },
 
   // Web Components
   {

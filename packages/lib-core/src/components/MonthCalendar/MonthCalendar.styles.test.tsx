@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui: MonthCalendar/__test__/MonthCalendar.styles.test.tsx
 import React from "react";
 import { join } from "node:path";
 import { Window } from "happy-dom";
@@ -6,6 +5,7 @@ import { compile } from "sass";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MonthCalendar } from ".";
+import styles from "./monthCalendar.module.scss";
 
 // CSS modules are non-scoped in tests: the markup uses the raw class names.
 const css = compile(join(import.meta.dirname, "monthCalendar.module.scss")).css;
@@ -27,7 +27,7 @@ describe("MonthCalendar responsive styles", () => {
           events={[]}
         />,
       );
-      const rows = document.querySelectorAll(".ui-month-calendar-week");
+      const rows = document.querySelectorAll(`.${styles.week}`);
       expect(rows).toHaveLength(7);
       for (const row of rows) {
         expect(window.getComputedStyle(row).gridTemplateColumns).toBe(
@@ -35,7 +35,7 @@ describe("MonthCalendar responsive styles", () => {
         );
         expect(row.children).toHaveLength(7);
       }
-      const button = document.querySelector(".ui-month-calendar-day")!;
+      const button = document.querySelector(`.${styles.day}`)!;
       expect(window.getComputedStyle(button).height).toBe(
         width <= 512 ? "52px" : "64px",
       );

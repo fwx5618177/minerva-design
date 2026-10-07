@@ -14,9 +14,6 @@ import type {
   SelectSeparatorProps,
 } from "./types";
 
-/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
-const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
-
 /**
  * Select: a single-choice dropdown. Radix Select provides the combobox /
  * listbox semantics, typeahead, keyboard navigation and focus management; a
@@ -77,51 +74,33 @@ const Select = ({
           styles.trigger,
           styles[size],
           isInvalid && styles.invalid,
-          "ui-select-trigger",
-          `ui-select-size-${UI_SIZE[size]}`,
-          isInvalid && "ui-select-error",
           className,
         )}
+        // Lets layouts such as Toolbar size the trigger (see page.module.scss)
+        data-component="select"
       >
-        <RadixSelect.Value
-          className={styles.value}
-          data-ui-select-value=""
-          placeholder={placeholder}
-        />
-        <RadixSelect.Icon className={classNames(styles.icon, "ui-select-icon")}>
+        {/* Radix Select.Value drops className: the ellipsis wrapper is ours */}
+        <span className={styles.value}>
+          <RadixSelect.Value placeholder={placeholder} />
+        </span>
+        <RadixSelect.Icon className={styles.icon}>
           <LuChevronDown aria-hidden focusable={false} />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
 
       <RadixSelect.Portal>
         <RadixSelect.Content
-          className={classNames(
-            styles.content,
-            "ui-select-content",
-            contentClassName,
-          )}
+          className={classNames(styles.content, contentClassName)}
           position="popper"
           sideOffset={4}
         >
-          <RadixSelect.ScrollUpButton
-            className={classNames(
-              styles.scrollButton,
-              "ui-select-scroll-button",
-            )}
-          >
+          <RadixSelect.ScrollUpButton className={styles.scrollButton}>
             <LuChevronUp aria-hidden focusable={false} />
           </RadixSelect.ScrollUpButton>
-          <RadixSelect.Viewport
-            className={classNames(styles.viewport, "ui-select-viewport")}
-          >
+          <RadixSelect.Viewport className={styles.viewport}>
             {children}
           </RadixSelect.Viewport>
-          <RadixSelect.ScrollDownButton
-            className={classNames(
-              styles.scrollButton,
-              "ui-select-scroll-button",
-            )}
-          >
+          <RadixSelect.ScrollDownButton className={styles.scrollButton}>
             <LuChevronDown aria-hidden focusable={false} />
           </RadixSelect.ScrollDownButton>
         </RadixSelect.Content>
@@ -134,18 +113,14 @@ const Select = ({
 const SelectItem = ({ className, children, ref, ...rest }: SelectItemProps) => (
   <RadixSelect.Item
     ref={ref}
-    className={classNames(styles.item, "ui-select-item", className)}
+    className={classNames(styles.item, className)}
     {...rest}
   >
-    <RadixSelect.ItemText
-      className={styles.itemText}
-      data-ui-select-item-text=""
-    >
-      {children}
-    </RadixSelect.ItemText>
-    <RadixSelect.ItemIndicator
-      className={classNames(styles.itemIndicator, "ui-select-item-indicator")}
-    >
+    {/* Radix Select.ItemText drops className: wrap it to style the text */}
+    <span className={styles.itemText}>
+      <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
+    </span>
+    <RadixSelect.ItemIndicator className={styles.itemIndicator}>
       <LuCheck aria-hidden focusable={false} />
     </RadixSelect.ItemIndicator>
   </RadixSelect.Item>
@@ -153,18 +128,14 @@ const SelectItem = ({ className, children, ref, ...rest }: SelectItemProps) => (
 
 /** SelectGroup: groups options under a SelectLabel. */
 const SelectGroup = ({ className, ref, ...rest }: SelectGroupProps) => (
-  <RadixSelect.Group
-    ref={ref}
-    className={classNames("ui-select-group", className)}
-    {...rest}
-  />
+  <RadixSelect.Group ref={ref} className={className} {...rest} />
 );
 
 /** SelectLabel: the (non-selectable) heading of a SelectGroup. */
 const SelectLabel = ({ className, ref, ...rest }: SelectLabelProps) => (
   <RadixSelect.Label
     ref={ref}
-    className={classNames(styles.label, "ui-select-label", className)}
+    className={classNames(styles.label, className)}
     {...rest}
   />
 );
@@ -173,7 +144,7 @@ const SelectLabel = ({ className, ref, ...rest }: SelectLabelProps) => (
 const SelectSeparator = ({ className, ref, ...rest }: SelectSeparatorProps) => (
   <RadixSelect.Separator
     ref={ref}
-    className={classNames(styles.separator, "ui-select-separator", className)}
+    className={classNames(styles.separator, className)}
     {...rest}
   />
 );

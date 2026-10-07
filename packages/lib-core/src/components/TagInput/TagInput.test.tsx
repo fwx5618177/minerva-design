@@ -59,19 +59,14 @@ function fixture(props: Partial<TagInputProps> = {}) {
 }
 
 describe("TagInput", () => {
-  it("renders the novel-isr-ui structure hooks and combobox semantics", () => {
+  it("renders the tag list, the entry field and combobox semantics", () => {
     fixture({ className: "consumer" });
     const root = view.container.firstElementChild!;
-    expect(root).toHaveClass("ui-tag-input", "consumer");
-    expect(
-      root.querySelector(".ui-tag-input-values .ui-tag-input-label"),
-    ).toHaveTextContent("React");
-    expect(input().closest(".ui-tag-input-entry")).not.toBeNull();
-    expect(input().closest(".ui-autocomplete-root")).not.toBeNull();
-    expect(input().parentElement).toHaveClass(
-      "ui-input-root",
-      "ui-input-size-md",
-    );
+    expect(root).toHaveClass("root", "consumer");
+    expect(root.querySelector(".values .label")).toHaveTextContent("React");
+    expect(input().closest(".entry .combobox")).not.toBeNull();
+    expect(input().parentElement).toHaveAttribute("data-component", "input");
+    expect(input().parentElement).toHaveClass("medium");
     expect(input()).toHaveAttribute("role", "combobox");
     expect(input()).toHaveAttribute("aria-expanded", "false");
     expect(input()).toHaveAttribute("aria-autocomplete", "list");
@@ -199,9 +194,9 @@ describe("TagInput", () => {
   it("shows the empty text when no suggestion is left", () => {
     fixture({ options: [] });
     act(() => input().focus());
-    expect(
-      view.container.querySelector(".ui-autocomplete-empty"),
-    ).toHaveTextContent("No matches");
+    expect(view.container.querySelector(".empty")).toHaveTextContent(
+      "No matches",
+    );
     key("ArrowDown");
     expect(options()).toHaveLength(0);
   });
@@ -270,9 +265,7 @@ describe("TagInput", () => {
     type("b");
     key("Enter");
     expect(onChange).toHaveBeenLastCalledWith(["a", "b"]);
-    expect(view.container.querySelectorAll(".ui-tag-input-label")).toHaveLength(
-      2,
-    );
+    expect(view.container.querySelectorAll(".values .label")).toHaveLength(2);
   });
 
   it("uses composition lifecycle when the confirming key lacks isComposing", () => {
@@ -308,16 +301,8 @@ describe("TagInput", () => {
     expect(ref.current).toBe(input());
     expect(input().id).toBe(view.container.querySelector("label")?.htmlFor);
     expect(input().getAttribute("aria-invalid")).toBe("true");
-    expect(input().parentElement?.classList.contains("ui-input-error")).toBe(
-      true,
-    );
-    expect(input().parentElement?.classList.contains("ui-input-disabled")).toBe(
-      true,
-    );
+    expect(input().parentElement).toHaveClass("invalid", "disabled");
     expect(input().disabled).toBe(true);
-    expect(
-      view.container.firstElementChild?.querySelector(".ui-tag-input"),
-    ).toHaveAttribute("data-disabled", "true");
     expect(
       Array.from(view.container.querySelectorAll("button")).every(
         (b) => b.disabled,
@@ -358,10 +343,7 @@ describe("TagInput", () => {
     expect(input().placeholder).toBe("Add a tag");
     expect(input()).toHaveAttribute("aria-describedby", "hint");
     expect(input()).toHaveAttribute("aria-invalid", "true");
-    expect(input().parentElement).toHaveClass(
-      "ui-input-error",
-      "ui-input-size-sm",
-    );
+    expect(input().parentElement).toHaveClass("invalid", "small");
   });
 
   it("reopens suggestions when the still-focused input is clicked after selecting one", () => {
@@ -394,9 +376,7 @@ describe("TagInput", () => {
       view.container.querySelector('[aria-label="Drop React"]'),
     ).not.toBeNull();
     act(() => input().focus());
-    expect(
-      view.container.querySelector(".ui-autocomplete-empty"),
-    ).toHaveTextContent("Nothing");
+    expect(view.container.querySelector(".empty")).toHaveTextContent("Nothing");
   });
 });
 

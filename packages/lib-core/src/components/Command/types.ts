@@ -64,12 +64,6 @@ export interface CommandDialogProps {
   resultsLabel?: string;
   /** Key hint shown at the end of the search input; defaults to the localized "Enter". */
   enterLabel?: ReactNode;
-  /**
-   * DOM id of each result option (also used as the input's
-   * `aria-activedescendant`). Must be unique in the document. Defaults to
-   * generated ids scoped to this dialog.
-   */
-  getOptionId?: (item: CommandItem, index: number) => string;
   /** Additional class name of the dialog panel. */
   className?: string;
 }

@@ -25,7 +25,7 @@ const ThemeToggle = ({
   return (
     <div
       ref={ref}
-      className={classNames(styles.group, "ui-theme-toggle", className)}
+      className={classNames(styles.group, className)}
       role="group"
       aria-label={t("themeToggle.label", { theme: resolvedTheme })}
       {...rest}
@@ -34,7 +34,7 @@ const ThemeToggle = ({
         <button
           key={item}
           type="button"
-          className={classNames(styles.item, "ui-theme-toggle-item")}
+          className={styles.item}
           data-active={theme === item || undefined}
           aria-pressed={theme === item}
           onClick={() => setTheme(item)}

@@ -14,7 +14,8 @@ import { useMergedRefs } from "../../internal/mergeRefs";
 import type { NavTreeItem, NavTreeItemState, NavTreeProps } from "./types";
 import styles from "./navTree.module.scss";
 
-const ITEM_SELECTOR = ".ui-nav-tree-item";
+const ITEM_SELECTOR = `.${styles.item}`;
+const CHILDREN_SELECTOR = `.${styles.children}`;
 
 function collectActiveAncestors(
   items: NavTreeItem[],
@@ -70,7 +71,7 @@ function handleNavKeyDown(event: globalThis.KeyboardEvent) {
       // nested item moves to its parent branch.
       if (current.getAttribute("aria-expanded") === "true") return;
       next = current
-        .closest(".ui-nav-tree-children")
+        .closest(CHILDREN_SELECTOR)
         ?.parentElement?.querySelector<HTMLElement>(
           `:scope > ${ITEM_SELECTOR}`,
         );
@@ -173,11 +174,6 @@ export const NavTree = ({
       depth > 0 && styles.nested,
       active && styles.active,
       disabled && styles.disabled,
-      "ui-nav-tree-item",
-      hasChildren ? "ui-nav-tree-trigger" : "ui-nav-tree-link",
-      `ui-nav-tree-depth-${depth}`,
-      active && "ui-nav-tree-item-active",
-      disabled && "ui-nav-tree-item-disabled",
     );
     const state: NavTreeItemState = {
       active,
@@ -194,36 +190,22 @@ export const NavTree = ({
       : item.label;
     const content = (
       <>
-        <span
-          className={cn(styles.icon, "ui-nav-tree-icon")}
-          aria-hidden="true"
-        >
+        <span className={styles.icon} aria-hidden="true">
           {item.icon}
         </span>
-        <span className={cn(styles.copy, "ui-nav-tree-copy")}>
-          <span className={cn(styles.label, "ui-nav-tree-label")}>
-            {item.label}
-          </span>
+        <span className={styles.copy}>
+          <span className={styles.label}>{item.label}</span>
           {item.description && (
-            <small
-              className={cn(styles.description, "ui-nav-tree-description")}
-            >
-              {item.description}
-            </small>
+            <small className={styles.description}>{item.description}</small>
           )}
         </span>
         {!collapsed && (item.endContent || hasChildren) && (
-          <span className={cn(styles.trailing, "ui-nav-tree-trailing")}>
+          <span className={styles.trailing}>
             {item.endContent && (
-              <span className={cn(styles.end, "ui-nav-tree-end")}>
-                {item.endContent}
-              </span>
+              <span className={styles.end}>{item.endContent}</span>
             )}
             {hasChildren && (
-              <span
-                className={cn(styles.chevron, "ui-nav-tree-chevron")}
-                aria-hidden="true"
-              >
+              <span className={styles.chevron} aria-hidden="true">
                 <LuChevronDown size={16} strokeWidth={2} />
               </span>
             )}
@@ -241,7 +223,7 @@ export const NavTree = ({
           else
             event.currentTarget.parentElement
               ?.querySelector<HTMLElement>(
-                `.ui-nav-tree-children ${ITEM_SELECTOR}`,
+                `${CHILDREN_SELECTOR} ${ITEM_SELECTOR}`,
               )
               ?.focus();
         } else if (event.key === "ArrowLeft" && open) {
@@ -250,7 +232,7 @@ export const NavTree = ({
         }
       };
       return (
-        <div className={cn(styles.branch, "ui-nav-tree-branch")} key={item.id}>
+        <div className={styles.branch} key={item.id}>
           <button
             className={itemClassName}
             type="button"
@@ -266,7 +248,7 @@ export const NavTree = ({
             {content}
           </button>
           {open && !collapsed && (
-            <div className={cn(styles.children, "ui-nav-tree-children")}>
+            <div className={styles.children}>
               {item.children?.map((child) => renderItem(child, depth + 1))}
             </div>
           )}
@@ -285,7 +267,7 @@ export const NavTree = ({
     // A disabled entry is not a navigable link: no href, no handler.
     if (disabled) {
       return (
-        <span {...common} role="link" aria-disabled="true" data-disabled="true">
+        <span {...common} role="link" aria-disabled="true">
           {content}
         </span>
       );
@@ -322,28 +304,17 @@ export const NavTree = ({
         styles.navTree,
         collapsed && styles.collapsed,
         wrapLabels && !collapsed && styles.wrapLabels,
-        "ui-nav-tree",
-        collapsed && "ui-nav-tree-collapsed",
-        wrapLabels && "ui-nav-tree-wrap-labels",
         className,
       )}
       style={style}
       aria-label={ariaLabel ?? t("navTree.label")}
-      data-collapsed={collapsed || undefined}
     >
       {sections.map((section) => (
-        <section
-          className={cn(styles.section, "ui-nav-tree-section")}
-          key={section.id}
-        >
+        <section className={styles.section} key={section.id}>
           {section.title && (
-            <h2
-              className={cn(styles.sectionTitle, "ui-nav-tree-section-title")}
-            >
-              {section.title}
-            </h2>
+            <h2 className={styles.sectionTitle}>{section.title}</h2>
           )}
-          <div className={cn(styles.list, "ui-nav-tree-list")}>
+          <div className={styles.list}>
             {section.items.map((item) => renderItem(item, 0))}
           </div>
         </section>

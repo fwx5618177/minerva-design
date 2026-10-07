@@ -98,13 +98,8 @@ const RadioGroup = ({
         }}
       >
         <div
-          className={classNames(
-            styles.radioGroup,
-            styles[direction],
-            "ui-radio-group",
-          )}
+          className={classNames(styles.radioGroup, styles[direction])}
           role="radiogroup"
-          data-direction={direction === "horizontal" ? "row" : "column"}
           aria-labelledby={labelledBy}
           aria-label={label ? undefined : ariaLabel}
           aria-describedby={describedBy}

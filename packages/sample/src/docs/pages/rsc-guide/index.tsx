@@ -8,20 +8,14 @@ import styles from "@/docs/components/docs.module.scss";
 const ENTRIES = [
   { entry: "@minerva/lib-core", client: true, key: "main" },
   { entry: "@minerva/lib-core/monaco", client: true, key: "monaco" },
-  { entry: "@minerva/lib-core/compat", client: true, key: "compat" },
   { entry: "@minerva/lib-core/theme-utils", client: false, key: "themeUtils" },
-  {
-    entry: "@minerva/lib-core/compat/theme-utils",
-    client: false,
-    key: "compatThemeUtils",
-  },
 ] as const;
 
-const bannerCode = `// dist/index.js, dist/monaco.js, dist/compat.js start with
+const bannerCode = `// dist/index.js and dist/monaco.js start with
 "use client";
 
-// dist/theme-utils.js and dist/compat/theme-utils.js do not:
-// they are plain functions and strings, safe to run on the server`;
+// dist/theme-utils.js does not: it holds plain functions and strings,
+// safe to run on the server`;
 
 const serverRenderCode = `// app/page.tsx: a Server Component (no "use client")
 import { Card, Tag } from "@minerva/lib-core";
@@ -90,8 +84,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 const cssCode = `// Next.js App Router: import global CSS once, in the root layout
 // app/layout.tsx
 import "@minerva/lib-core/style.css";
-// optional: the @novel-isr/ui compatibility tokens
-import "@minerva/lib-core/compat.css";
 
 // Vite / other setups: import it in the client entry file (main.tsx)`;
 

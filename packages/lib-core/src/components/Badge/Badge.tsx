@@ -4,20 +4,6 @@ import type { BadgeProps } from "./types";
 import styles from "./badge.module.scss";
 import useI18n from "../../hooks/useI18n";
 
-/** Color names used by the stable `ui-badge-color-*` styling hooks */
-const COLOR_HOOK: Record<NonNullable<BadgeProps["variant"]>, string> = {
-  primary: "brand",
-  secondary: "secondary",
-  success: "success",
-  danger: "danger",
-  warning: "warning",
-  error: "danger",
-  info: "info",
-  light: "light",
-  dark: "dark",
-  neutral: "gray",
-};
-
 const isTextLike = (node: React.ReactNode): node is string | number =>
   typeof node === "string" || typeof node === "number";
 
@@ -74,10 +60,6 @@ export const Badge = ({
         standalone ? styles.standalone : styles[position],
         appearance !== "solid" && styles[appearance],
         dot && styles.dot,
-        // Stable styling hooks (not used for styling by the library)
-        "ui-badge",
-        `ui-badge-variant-${dot ? "dot" : appearance}`,
-        `ui-badge-color-${COLOR_HOOK[variant]}`,
         className,
       )}
       aria-label={ariaLabel}

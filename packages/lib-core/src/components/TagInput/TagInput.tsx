@@ -166,12 +166,9 @@ export const TagInput = ({
   const optionId = (index: number) => `${listId}-option-${index}`;
 
   return (
-    <div
-      className={cn(styles.root, "ui-tag-input", className)}
-      data-disabled={disabled || undefined}
-    >
+    <div className={cn(styles.root, className)}>
       {tags.length > 0 && (
-        <div className={cn(styles.values, "ui-tag-input-values")}>
+        <div className={styles.values}>
           {tags.map((tag, index) => (
             <Tag
               key={`${index}-${tag}`}
@@ -186,18 +183,13 @@ export const TagInput = ({
                 inputRef.current?.focus();
               }}
             >
-              <span className={cn(styles.label, "ui-tag-input-label")}>
-                {tag}
-              </span>
+              <span className={styles.label}>{tag}</span>
             </Tag>
           ))}
         </div>
       )}
-      <div className={cn(styles.entry, "ui-tag-input-entry")}>
-        <div
-          className={cn(styles.combobox, "ui-autocomplete-root")}
-          data-open={open || undefined}
-        >
+      <div className={styles.entry}>
+        <div className={styles.combobox}>
           <Input
             ref={mergedRef}
             id={id}
@@ -249,13 +241,10 @@ export const TagInput = ({
               id={listId}
               role="listbox"
               aria-label={ariaLabel}
-              className={cn(styles.list, "ui-autocomplete-list")}
+              className={styles.list}
             >
               {filtered.length === 0 && (
-                <li
-                  className={cn(styles.empty, "ui-autocomplete-empty")}
-                  role="presentation"
-                >
+                <li className={styles.empty} role="presentation">
                   {emptyText ?? t("tagInput.empty")}
                 </li>
               )}
@@ -266,7 +255,7 @@ export const TagInput = ({
                   role="option"
                   aria-selected={index === highlight}
                   tabIndex={-1}
-                  className={cn(styles.option, "ui-autocomplete-item")}
+                  className={styles.option}
                   data-active={index === highlight || undefined}
                   // mousedown runs before the input blurs: keep focus in the input.
                   onMouseDown={(event) => {
@@ -275,9 +264,7 @@ export const TagInput = ({
                   }}
                   onMouseEnter={() => setHighlight(index)}
                 >
-                  <span className="ui-autocomplete-item-label">
-                    {suggestion.label}
-                  </span>
+                  {suggestion.label}
                 </li>
               ))}
             </ul>
@@ -286,7 +273,6 @@ export const TagInput = ({
         {!readOnly && (
           <>
             <IconButton
-              className="ui-tag-input-add"
               type="button"
               label={addLabel ?? t("tagInput.add")}
               shape="square"
@@ -299,7 +285,6 @@ export const TagInput = ({
               }}
             />
             <IconButton
-              className="ui-tag-input-clear"
               type="button"
               label={clearLabel ?? t("tagInput.clear")}
               shape="square"

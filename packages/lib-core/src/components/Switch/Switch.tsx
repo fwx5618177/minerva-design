@@ -18,16 +18,15 @@ const placementClass = {
   bottom: styles.labelBottom,
 } as const;
 
-/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
-const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
-const UI_COLOR: Record<string, string> = {
-  primary: "brand",
-  secondary: "secondary",
-  success: "success",
-  info: "info",
-  warning: "warning",
-  error: "danger",
-};
+/** Colors styled by a role class; any other value is used as a CSS color. */
+const THEME_COLORS = new Set([
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "error",
+]);
 
 const hasContent = (node: React.ReactNode) =>
   node != null && node !== false && node !== "";
@@ -127,16 +126,14 @@ const Switch = ({
 
   const bilateral = hasContent(offLabel) && hasContent(onLabel);
   const segmented = variant === "segmented" && bilateral;
-  const isThemeColor = Object.prototype.hasOwnProperty.call(styles, color);
-  const uiColor = UI_COLOR[color];
-  const state = isChecked ? "checked" : "unchecked";
+  const isThemeColor = THEME_COLORS.has(color);
 
   const input = (
     <input
       ref={mergedRef}
       type="checkbox"
       role={segmented ? undefined : "switch"}
-      className={segmented ? styles.hiddenInput : "ui-switch-control"}
+      className={segmented ? styles.hiddenInput : undefined}
       id={segmented ? id : field.id}
       name={name}
       value={value}
@@ -150,7 +147,6 @@ const Switch = ({
       aria-describedby={segmented ? undefined : field["aria-describedby"]}
       aria-hidden={segmented || undefined}
       tabIndex={segmented ? -1 : undefined}
-      data-state={state}
       checked={isChecked}
       disabled={isDisabled || loading}
       onChange={handleChange}
@@ -171,14 +167,9 @@ const Switch = ({
           styles[size],
           isThemeColor && styles[color],
           blocked && styles.disabled,
-          "ui-switch-segmented",
-          `ui-switch-segmented-size-${UI_SIZE[size]}`,
-          uiColor && `ui-switch-color-${uiColor}`,
           className,
         )}
         style={labelStyle}
-        data-state={state}
-        data-disabled={blocked || undefined}
       >
         {input}
         {[false, true].map((segmentState) => {
@@ -190,8 +181,6 @@ const Switch = ({
               className={classNames(
                 styles.segment,
                 active && styles.segmentActive,
-                "ui-switch-segment",
-                active && "ui-switch-segment-active",
               )}
               disabled={blocked}
               aria-pressed={active}
@@ -219,10 +208,6 @@ const Switch = ({
       [styles[color]]: isThemeColor,
       [styles.bilateral]: bilateral,
     },
-    "ui-switch-root",
-    `ui-switch-size-${UI_SIZE[size]}`,
-    uiColor && `ui-switch-color-${uiColor}`,
-    bilateral && "ui-switch-bilateral",
     className,
   );
 
@@ -237,10 +222,7 @@ const Switch = ({
     <span className={styles.switchBase}>
       {input}
       <span className={styles.track} style={trackStyle} />
-      <span
-        className={classNames(styles.thumb, "ui-switch-thumb")}
-        style={computedThumbStyle}
-      >
+      <span className={styles.thumb} style={computedThumbStyle}>
         {iconPlacement === "start" && icon && (
           <span className={styles.icon}>{icon}</span>
         )}
@@ -259,13 +241,7 @@ const Switch = ({
       return (
         <button
           type="button"
-          className={classNames(
-            styles.side,
-            active && styles.sideActive,
-            "ui-switch-side",
-            sideState ? "ui-switch-side-on" : "ui-switch-side-off",
-            active && "ui-switch-side-active",
-          )}
+          className={classNames(styles.side, active && styles.sideActive)}
           disabled={blocked}
           onClick={() => setState(sideState)}
         >
@@ -275,12 +251,7 @@ const Switch = ({
     };
     // A <span> root: the side buttons must not sit inside the input's label.
     return (
-      <span
-        className={switchClasses}
-        style={labelStyle}
-        data-state={state}
-        data-disabled={isDisabled || undefined}
-      >
+      <span className={switchClasses} style={labelStyle}>
         {side(false)}
         {control}
         {side(true)}
@@ -291,9 +262,7 @@ const Switch = ({
 
   const content = label ?? children;
   const labelNode = hasContent(content) ? (
-    <span className={classNames(styles.label, "ui-switch-text")}>
-      {content}
-    </span>
+    <span className={styles.label}>{content}</span>
   ) : null;
   // Label before the control for start/top, after it for end/bottom; the
   // placement class only changes the flex direction (row vs column).
@@ -301,12 +270,7 @@ const Switch = ({
 
   return (
     // The label wraps the input, so clicking anywhere on it toggles the switch.
-    <label
-      className={switchClasses}
-      style={labelStyle}
-      data-state={state}
-      data-disabled={isDisabled || undefined}
-    >
+    <label className={switchClasses} style={labelStyle}>
       {labelFirst && labelNode}
       {control}
       {iconNode}

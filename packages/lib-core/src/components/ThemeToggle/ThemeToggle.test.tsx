@@ -1,6 +1,5 @@
-// Ported from @novel-isr/ui ThemeToggle/__test__/ThemeToggle.test.tsx and
-// PaletteToggle/__test__/PaletteToggle.test.tsx (English is lib-core's default
-// language; the Chinese labels are covered by the zh locale tests below).
+// ThemeToggle and PaletteToggle (English is lib-core's default language; the
+// Chinese labels are covered by the zh locale tests below).
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -140,7 +139,7 @@ describe("ThemeToggle", () => {
     const ref = { current: null as HTMLDivElement | null };
     renderToggle({ className: "consumer", id: "mode", ref });
     const wrapper = screen.getByTestId("toggle");
-    expect(wrapper).toHaveClass("ui-theme-toggle", "consumer");
+    expect(wrapper).toHaveClass("group", "consumer");
     expect(wrapper).toHaveAttribute("id", "mode");
     expect(wrapper).not.toHaveAttribute("showsystem");
     expect(ref.current).toBe(wrapper);
@@ -170,7 +169,7 @@ describe("ThemeToggle", () => {
     );
   });
 
-  it("uses @novel-isr/ui's Chinese labels with the zh locale", async () => {
+  it("uses the Chinese labels with the zh locale", async () => {
     render(
       <ThemeProvider
         defaultTheme="dark"
@@ -225,10 +224,7 @@ describe("PaletteToggle", () => {
       "Graphite",
       "Cool",
     ]);
-    expect(screen.getByTestId("palette")).toHaveClass(
-      "ui-theme-toggle",
-      "consumer",
-    );
+    expect(screen.getByTestId("palette")).toHaveClass("group", "consumer");
   });
 
   it("marks the active palette and reflects it in the group label", async () => {
@@ -289,7 +285,7 @@ describe("PaletteToggle", () => {
     ).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("uses @novel-isr/ui's Chinese labels with the zh locale", async () => {
+  it("uses the Chinese labels with the zh locale", async () => {
     render(
       <ThemeProvider
         defaultPalette="editorial"

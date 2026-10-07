@@ -12,10 +12,7 @@ const installYarn = `yarn add @minerva/lib-core react react-dom`;
 const styleImport = `// main.tsx (your entry file) — import the stylesheet exactly once
 import "@minerva/lib-core/style.css";`;
 
-const extraStyles = `// optional: @novel-isr/ui compatibility tokens (for @minerva/lib-core/compat)
-import "@minerva/lib-core/compat.css";
-
-// optional, in your own .scss: long-form typography mixins
+const extraStyles = `// optional, in your own .scss: long-form typography mixins
 @use "@minerva/lib-core/prose.scss" as prose;`;
 
 const monacoInstall = `pnpm add @monaco-editor/react monaco-editor`;

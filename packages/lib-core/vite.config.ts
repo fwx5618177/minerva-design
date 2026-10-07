@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { compile } from "sass";
 import type { Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
 
@@ -21,32 +20,23 @@ const src = (path: string) =>
 
 /**
  * Package entries. Client entries get a `"use client"` banner so React Server
- * Components can import them; the theme-utils entries are server-safe (pure
+ * Components can import them; the theme-utils entry is server-safe (pure
  * functions / constants used by root layouts) and must NOT carry it.
  */
 const entries = {
   index: src("index.ts"),
   "theme-utils": src("theme-utils.ts"),
   monaco: src("monaco.ts"),
-  compat: src("compat/index.ts"),
-  "compat/theme-utils": src("compat/theme-utils.ts"),
-  "compat/monaco": src("compat/monaco.tsx"),
 };
-const CLIENT_ENTRIES = new Set(["index", "monaco", "compat", "compat/monaco"]);
+const CLIENT_ENTRIES = new Set(["index", "monaco"]);
 
 /**
- * Stand-alone stylesheets published next to `style.css`:
- * - `compat.css`: the @novel-isr/ui `--ui-*` token layer + utilities
- * - `prose.scss`: Sass adapter (mixins) for long-form typography
+ * Stand-alone stylesheet published next to `style.css`:
+ * `prose.scss`, the Sass adapter (mixins) for long-form typography.
  */
 const extraAssets = (): Plugin => ({
   name: "minerva-extra-assets",
   generateBundle() {
-    this.emitFile({
-      type: "asset",
-      fileName: "compat.css",
-      source: compile(src("compat/compat.scss"), { style: "compressed" }).css,
-    });
     this.emitFile({
       type: "asset",
       fileName: "prose.scss",

@@ -101,11 +101,10 @@ export const JsonField = ({
   };
 
   return (
-    <div className={cn(styles.root, "ui-json-field", className)}>
+    <div className={cn(styles.root, className)}>
       {!hideToolbar && (
-        <div className={cn(styles.toolbar, "ui-json-field-toolbar")}>
+        <div className={styles.toolbar}>
           <IconButton
-            className="ui-json-field-format"
             type="button"
             label={formatLabel ?? t("jsonField.format")}
             size="small"
@@ -124,7 +123,7 @@ export const JsonField = ({
         readOnly={readOnly}
         required={required}
         spellCheck={spellCheck}
-        className={cn(styles.textarea, "ui-json-field-textarea")}
+        className={styles.textarea}
         aria-invalid={
           syntaxInvalid || invalid
             ? true
@@ -153,12 +152,7 @@ export const JsonField = ({
         id={statusId}
         role="status"
         aria-live="polite"
-        className={cn(
-          styles.status,
-          syntaxInvalid && styles.statusInvalid,
-          "ui-json-field-status",
-          syntaxInvalid && "ui-json-field-status-invalid",
-        )}
+        className={cn(styles.status, syntaxInvalid && styles.statusInvalid)}
       >
         {validation.status === "valid" && (
           <>

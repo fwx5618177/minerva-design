@@ -1,13 +1,9 @@
-// Ported from @novel-isr/ui tests/e2e/data-table.test.tsx.
-//
 // A "book list" page — Input filter + DataTable + Pagination (with page-size
 // Select). The page owns slicing/filtering/sorting; DataTable renders the
 // already-paginated rows.
-// Native suite: Minerva's API with lib-core's default English built-in texts
-// ("Pagination", "Previous page", "Page 1", "Items per page", "5 / page",
-// "Retry"); consumer strings (titles, headers, total, empty text) stay as in
-// the original. The compat block runs the original scenario verbatim through
-// @minerva/lib-core/compat (novel props + Chinese defaults).
+// Uses lib-core's default English built-in texts ("Pagination",
+// "Previous page", "Page 1", "Items per page", "5 / page", "Retry"); titles,
+// headers, total and empty text are consumer strings.
 import { useMemo, useState } from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,7 +15,6 @@ import {
   Input,
   type TableColumn,
 } from "@minerva/lib-core";
-import * as compat from "@minerva/lib-core/compat";
 
 interface Book {
   id: number;
@@ -191,8 +186,7 @@ describe("book list data table", () => {
     const sizeSelect = within(pager()).getByRole("combobox", {
       name: "Items per page",
     });
-    // Minerva's size changer is a native <select> (novel: the lib's custom
-    // Select listbox opened with Enter), so the option is picked with
+    // The size changer is a native <select>, so the option is picked with
     // selectOptions and the shown value read with toHaveDisplayValue.
     expect(sizeSelect).toHaveDisplayValue("5 / page");
 
@@ -280,152 +274,6 @@ describe("book list data table", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
     expect(screen.getByRole("alert")).toHaveTextContent("加载失败");
     await user.click(screen.getByRole("button", { name: "Retry" }));
-
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(bodyTitles()).toHaveLength(5);
-  });
-});
-
-// ─── The original novel page, verbatim through the compat entry ──────────
-
-function CompatBookListPage({
-  initialError = false,
-}: {
-  initialError?: boolean;
-}) {
-  const s = useBookList(initialError);
-  const columns: compat.TableColumn<Book>[] = [
-    { key: "title", header: "书名" },
-    {
-      key: "score",
-      header: (
-        <compat.Button variant="ghost" size="sm" onClick={s.cycleSort}>
-          {s.scoreLabel}
-        </compat.Button>
-      ),
-      align: "right",
-    },
-  ];
-
-  return (
-    <main>
-      <compat.FormField label="搜索书名">
-        <compat.Input
-          type="search"
-          value={s.query}
-          onChange={(e) => {
-            s.setQuery(e.target.value);
-            s.setPage(1);
-          }}
-        />
-      </compat.FormField>
-      <compat.DataTable
-        aria-label="书籍"
-        columns={columns}
-        data={s.rows}
-        rowKey={(row) => row.id}
-        emptyText={`没有匹配「${s.query}」的书`}
-        error={s.error ? "加载失败" : undefined}
-        onRetry={() => s.setError(false)}
-        pagination={{
-          total: s.filtered.length,
-          page: s.page,
-          pageSize: s.pageSize,
-          onPageChange: s.setPage,
-          pageSizeOptions: [5, 10, 20],
-          onPageSizeChange: (size) => {
-            s.setPageSize(size);
-            s.setPage(1);
-          },
-          showTotal: (total, [from, to]) =>
-            `第 ${from}-${to} 条，共 ${total} 条`,
-        }}
-      />
-    </main>
-  );
-}
-
-describe("via @minerva/lib-core/compat", () => {
-  const pager = () => screen.getByRole("navigation", { name: "分页" });
-
-  it("paginates with next / previous / page-number buttons", async () => {
-    const user = userEvent.setup();
-    render(<CompatBookListPage />);
-
-    expect(bodyTitles()).toEqual([
-      "星辰卷 01",
-      "江湖卷 02",
-      "星辰卷 03",
-      "江湖卷 04",
-      "星辰卷 05",
-    ]);
-    expect(
-      within(pager()).getByText("第 1-5 条，共 23 条"),
-    ).toBeInTheDocument();
-    expect(
-      within(pager()).getByRole("button", { name: "上一页" }),
-    ).toBeDisabled();
-    expect(within(pager()).getByRole("button", { name: "1" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-
-    await user.click(within(pager()).getByRole("button", { name: "下一页" }));
-    expect(bodyTitles()[0]).toBe("江湖卷 06");
-    expect(within(pager()).getByRole("button", { name: "2" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-
-    await user.click(within(pager()).getByRole("button", { name: "5" }));
-    expect(bodyTitles()).toEqual(["星辰卷 21", "江湖卷 22", "星辰卷 23"]);
-    expect(
-      within(pager()).getByText("第 21-23 条，共 23 条"),
-    ).toBeInTheDocument();
-    expect(
-      within(pager()).getByRole("button", { name: "下一页" }),
-    ).toBeDisabled();
-
-    await user.click(within(pager()).getByRole("button", { name: "上一页" }));
-    expect(bodyTitles()[0]).toBe("江湖卷 16");
-    expect(
-      within(pager()).getByRole("button", { name: "1" }),
-    ).not.toHaveAttribute("aria-current");
-  });
-
-  it("changes page size from the pager select and returns to page 1", async () => {
-    const user = userEvent.setup();
-    render(<CompatBookListPage />);
-
-    await user.click(within(pager()).getByRole("button", { name: "3" }));
-    const sizeSelect = within(pager()).getByRole("combobox", {
-      name: "每页显示条数",
-    });
-    expect(sizeSelect).toHaveTextContent("5 条 / 页");
-
-    sizeSelect.focus();
-    await user.keyboard("{Enter}");
-    await user.click(await screen.findByRole("option", { name: "10 条 / 页" }));
-
-    expect(sizeSelect).toHaveTextContent("10 条 / 页");
-    expect(bodyTitles()).toHaveLength(10);
-    expect(
-      within(pager()).getByText("第 1-10 条，共 23 条"),
-    ).toBeInTheDocument();
-    expect(
-      within(pager())
-        .getAllByRole("button", { name: /^\d+$/ })
-        .map((b) => b.textContent),
-    ).toEqual(["1", "2", "3"]);
-  });
-
-  it("shows an error state with a retry action that recovers the table", async () => {
-    const user = userEvent.setup();
-    render(<CompatBookListPage initialError />);
-
-    expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.getByRole("alert")).toHaveTextContent("加载失败");
-    await user.click(screen.getByRole("button", { name: "重试" }));
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(bodyTitles()).toHaveLength(5);

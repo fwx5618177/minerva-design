@@ -21,8 +21,7 @@ export const TableCellContent = ({
   return (
     <div
       ref={ref}
-      className={cn(styles.cellContent, "ui-table-cell-content", className)}
-      data-secondary={hasSecondary || undefined}
+      className={cn(styles.cellContent, className)}
       style={{ maxWidth, ...style }}
       {...rest}
     >
@@ -31,16 +30,11 @@ export const TableCellContent = ({
           styles.cellPrimary,
           monospace && styles.cellMono,
           hasSecondary && styles.cellStrong,
-          "ui-table-cell-primary",
         )}
       >
         {primary}
       </Primary>
-      {hasSecondary && (
-        <div className={cn(styles.cellSecondary, "ui-table-cell-secondary")}>
-          {secondary}
-        </div>
-      )}
+      {hasSecondary && <div className={styles.cellSecondary}>{secondary}</div>}
     </div>
   );
 };

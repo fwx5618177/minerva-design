@@ -1,5 +1,5 @@
 import { cn } from "../../utils/cn";
-import { fieldSizeHook, isAriaInvalid } from "../../internal/forms-field";
+import { isAriaInvalid } from "../../internal/forms-field";
 import { useFormControlProps } from "../FormControl/context";
 import type { InputProps } from "./types";
 import styles from "./input.module.scss";
@@ -32,44 +32,23 @@ export const Input = ({
         styles[size],
         isInvalid && styles.invalid,
         isDisabled && styles.disabled,
-        "ui-input-root",
-        `ui-input-variant-${variant}`,
-        `ui-input-size-${fieldSizeHook[size]}`,
-        isInvalid && "ui-input-error",
-        isDisabled && "ui-input-disabled",
         className,
       )}
-      data-invalid={isInvalid || undefined}
-      data-disabled={isDisabled || undefined}
+      // Lets layouts such as Toolbar size text fields (see page.module.scss)
+      data-component="input"
     >
       {prefix != null && prefix !== false && (
-        <span
-          className={cn(
-            styles.addon,
-            styles.start,
-            "ui-input-addon ui-input-addon-start",
-          )}
-        >
-          {prefix}
-        </span>
+        <span className={cn(styles.addon, styles.start)}>{prefix}</span>
       )}
       <input
         ref={ref}
-        className={cn(styles.field, "ui-input-field")}
+        className={styles.field}
         suppressHydrationWarning
         {...field}
         aria-invalid={invalid ? true : field["aria-invalid"]}
       />
       {suffix != null && suffix !== false && (
-        <span
-          className={cn(
-            styles.addon,
-            styles.end,
-            "ui-input-addon ui-input-addon-end",
-          )}
-        >
-          {suffix}
-        </span>
+        <span className={cn(styles.addon, styles.end)}>{suffix}</span>
       )}
     </div>
   );

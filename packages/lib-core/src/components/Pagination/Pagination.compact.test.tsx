@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/Pagination/__test__/Pagination.test.tsx
-// (compact page list, hideEdges / hideNumbers, showTotal function, hooks).
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import Pagination from "./Pagination";
 import type { PaginationProps } from "./types";
+import styles from "./pagination.module.scss";
 
 describe("Pagination totals", () => {
   it("renders an optional total without leaking the prop to the DOM", () => {
@@ -14,7 +13,7 @@ describe("Pagination totals", () => {
       <Pagination total={27} pageSize={10} current={2} showTotal />,
     );
     expect(html).toContain("Total 27 items");
-    expect(html).toContain("ui-pagination-total");
+    expect(html).toContain('aria-live="polite"');
     expect(html).not.toContain("showTotal=");
   });
 
@@ -46,7 +45,8 @@ describe("Pagination totals", () => {
     const html = renderToStaticMarkup(
       <Pagination total={27} pageSize={10} current={1} />,
     );
-    expect(html).not.toContain("ui-pagination-total");
+    expect(html).not.toContain("Total 27 items");
+    expect(html).not.toContain('aria-live="polite"');
   });
 });
 
@@ -70,7 +70,7 @@ function renderPager(props: Partial<PaginationProps> = {}) {
 function sequence(container: HTMLElement) {
   return Array.from(
     container.querySelectorAll(
-      ".ui-pagination-item:not(.prev):not(.next), .ui-pagination-ellipsis",
+      `.${styles.item}:not(.${styles.prev}):not(.${styles.next}), .${styles.ellipsis}`,
     ),
     (node) => node.textContent,
   );
@@ -126,19 +126,19 @@ describe("Pagination compact page list", () => {
 
   it("hides gaps from assistive tech and marks the current page", () => {
     const { container } = renderPager({ current: 5 });
-    const gaps = container.querySelectorAll(".ui-pagination-ellipsis");
+    const gaps = container.querySelectorAll(`.${styles.ellipsis}`);
     expect(gaps).toHaveLength(2);
     for (const gap of gaps) {
       expect(gap).toHaveAttribute("aria-hidden", "true");
     }
     const current = screen.getByRole("button", { name: "Page 5" });
     expect(current).toHaveAttribute("aria-current", "page");
-    expect(current).toHaveAttribute("data-active", "true");
+    expect(current).toHaveClass(styles.active);
     expect(screen.getByRole("button", { name: "Page 4" })).not.toHaveAttribute(
       "aria-current",
     );
-    expect(screen.getByRole("button", { name: "Page 4" })).not.toHaveAttribute(
-      "data-active",
+    expect(screen.getByRole("button", { name: "Page 4" })).not.toHaveClass(
+      styles.active,
     );
   });
 
@@ -185,22 +185,12 @@ describe("Pagination compact interaction", () => {
 describe("Pagination modes and attributes", () => {
   it("hideNumbers shows a live counter instead of page numbers", () => {
     const { container } = renderPager({ hideNumbers: true, current: 2 });
-    expect(container.querySelector("nav")).not.toHaveClass(
-      "ui-pagination-simple",
-    );
+    expect(screen.queryByRole("textbox")).toBeNull();
     expect(sequence(container)).toEqual([]);
-    const counter = container.querySelector(".ui-pagination-counter");
+    const counter = container.querySelector(`.${styles.counter}`);
     expect(counter).toHaveTextContent("2 / 10");
     expect(counter).toHaveAttribute("aria-live", "polite");
     expect(screen.getByRole("button", { name: "Next page" })).toBeEnabled();
-  });
-
-  it("simple mode adds the ui-pagination-simple hook", () => {
-    const { container } = renderPager({ simple: true, current: 3 });
-    expect(container.querySelector("nav")).toHaveClass(
-      "ui-pagination",
-      "ui-pagination-simple",
-    );
   });
 
   it("hideEdges removes prev/next in every mode", () => {
@@ -215,10 +205,11 @@ describe("Pagination modes and attributes", () => {
     expect(screen.queryByRole("button", { name: "Next page" })).toBeNull();
   });
 
-  it("wraps the page-size selector in the ui-pagination-page-size hook", () => {
+  it("renders the page-size selector as a native select", () => {
     renderPager({ showSizeChanger: true, pageSizeOptions: [10, 20] });
     const select = screen.getByRole("combobox", { name: "Items per page" });
-    expect(select.parentElement).toHaveClass("ui-pagination-page-size");
+    expect(select.tagName).toBe("SELECT");
+    expect(select.parentElement).toHaveClass(styles.sizeChanger);
   });
 
   it("is a labelled navigation landmark that forwards ref and attributes", () => {
@@ -226,7 +217,7 @@ describe("Pagination modes and attributes", () => {
     renderPager({ ref, className: "consumer", id: "pager", title: "pages" });
     const nav = screen.getByRole("navigation", { name: "Pagination" });
     expect(ref.current).toBe(nav);
-    expect(nav).toHaveClass("ui-pagination", "consumer");
+    expect(nav).toHaveClass(styles.pagination, "consumer");
     expect(nav).toHaveAttribute("id", "pager");
     expect(nav).toHaveAttribute("title", "pages");
     expect(nav).not.toHaveAttribute("pagesize");
@@ -239,48 +230,10 @@ describe("Pagination modes and attributes", () => {
     ).toBeInTheDocument();
   });
 
-  it("marks every page item with the ui-pagination-item hook", () => {
+  it("gives every page item the item class", () => {
     const { container } = renderPager();
     const items = container.querySelectorAll("button");
     expect(items.length).toBeGreaterThan(2);
-    items.forEach((item) => expect(item).toHaveClass("ui-pagination-item"));
-  });
-});
-
-describe("Pagination size changer variant", () => {
-  it("renders Minerva's Select popup with sizeChangerVariant='select'", async () => {
-    const user = userEvent.setup({ pointerEventsCheck: 0 });
-    const onChange = vi.fn();
-    render(
-      <Pagination
-        total={100}
-        current={3}
-        showSizeChanger
-        pageSizeOptions={[10, 20]}
-        sizeChangerVariant="select"
-        onChange={onChange}
-      />,
-    );
-    const trigger = screen.getByRole("combobox", { name: "Items per page" });
-    expect(trigger.tagName).toBe("BUTTON");
-    expect(trigger).toHaveTextContent("10 / page");
-    expect(trigger.closest(".ui-pagination-page-size")).not.toBeNull();
-    trigger.focus();
-    await user.keyboard("{Enter}");
-    await user.click(await screen.findByRole("option", { name: "20 / page" }));
-    expect(onChange).toHaveBeenCalledWith(1, 20);
-    expect(screen.getByRole("combobox")).toHaveTextContent("20 / page");
-  });
-
-  it("disables the Select popup with the pagination", () => {
-    render(
-      <Pagination
-        total={100}
-        showSizeChanger
-        sizeChangerVariant="select"
-        disabled
-      />,
-    );
-    expect(screen.getByRole("combobox")).toBeDisabled();
+    items.forEach((item) => expect(item).toHaveClass(styles.item));
   });
 });

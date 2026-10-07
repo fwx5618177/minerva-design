@@ -13,6 +13,7 @@ import {
   ModalRoot,
   ModalTrigger,
 } from "./index";
+import styles from "./modal.module.scss";
 import i18n from "../../config/i18n";
 
 const setup = () => userEvent.setup({ pointerEventsCheck: 0 });
@@ -28,7 +29,7 @@ describe("Modal (all-in-one)", () => {
     expect(screen.queryByText("body")).toBeNull();
   });
 
-  it("renders a dialog named by the title with hooks, size and a hidden description", () => {
+  it("renders a dialog named by the title with size classes and a hidden description", () => {
     render(
       <Modal open title="Delete record" size="large" className="extra">
         <ModalBody>The record is removed.</ModalBody>
@@ -38,48 +39,30 @@ describe("Modal (all-in-one)", () => {
       </Modal>,
     );
     const dialog = screen.getByRole("dialog", { name: "Delete record" });
-    expect(dialog).toHaveClass(
-      "content",
-      "large",
-      "ui-modal-content",
-      "ui-modal-size-lg",
-      "extra",
-    );
-    expect(dialog).toHaveAttribute("data-size", "large");
+    expect(dialog).toHaveClass(styles.content, styles.large, "extra");
     expect(dialog).toHaveAttribute("data-state", "open");
-    expect(screen.getByText("Delete record")).toHaveClass(
-      "header",
-      "ui-modal-header",
-    );
-    expect(screen.getByText("The record is removed.")).toHaveClass(
-      "body",
-      "ui-modal-body",
-    );
+    expect(screen.getByText("Delete record")).toHaveClass(styles.header);
+    expect(screen.getByText("The record is removed.")).toHaveClass(styles.body);
     expect(
       screen.getByRole("button", { name: "OK" }).parentElement,
-    ).toHaveClass("footer", "ui-modal-footer");
-    const hidden = dialog.querySelector(".ui-visually-hidden")!;
-    expect(hidden).toHaveClass("visuallyHidden");
+    ).toHaveClass(styles.footer);
+    const hidden = dialog.querySelector(`.${styles.visuallyHidden}`)!;
+    expect(hidden).not.toBeNull();
     expect(dialog).toHaveAttribute("aria-describedby", hidden.id);
-    expect(document.querySelector(".ui-modal-overlay")).toHaveClass("overlay");
+    expect(document.querySelector(`.${styles.overlay}`)).not.toBeNull();
   });
 
-  it.each([
-    ["small", "sm"],
-    ["medium", "md"],
-    ["xlarge", "xl"],
-    ["full", "full"],
-  ] as const)("maps size %s to the ui-modal-size-%s hook", (size, hook) => {
-    render(<Modal open title="T" size={size} />);
-    expect(screen.getByRole("dialog")).toHaveClass(
-      size,
-      `ui-modal-size-${hook}`,
-    );
-  });
+  it.each(["small", "medium", "xlarge", "full"] as const)(
+    "applies the %s size class",
+    (size) => {
+      render(<Modal open title="T" size={size} />);
+      expect(screen.getByRole("dialog")).toHaveClass(styles[size]);
+    },
+  );
 
   it("defaults to the medium size", () => {
     render(<Modal open title="T" />);
-    expect(screen.getByRole("dialog")).toHaveClass("ui-modal-size-md");
+    expect(screen.getByRole("dialog")).toHaveClass(styles.medium);
   });
 
   it("renders a visible accessible description", () => {
@@ -88,8 +71,7 @@ describe("Modal (all-in-one)", () => {
       "Cannot be undone",
     );
     expect(screen.getByText("Cannot be undone")).toHaveClass(
-      "description",
-      "ui-modal-description",
+      styles.description,
     );
   });
 
@@ -103,12 +85,14 @@ describe("Modal (all-in-one)", () => {
     );
     const close = screen.getByRole("button", { name: "Close" });
     expect(close).toHaveAttribute("type", "button");
-    expect(close).toHaveClass("close", "ui-modal-close");
+    expect(close).toHaveClass(styles.close);
     await user.click(close);
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledTimes(2);
-    await user.click(document.querySelector<HTMLElement>(".ui-modal-overlay")!);
+    await user.click(
+      document.querySelector<HTMLElement>(`.${styles.overlay}`)!,
+    );
     expect(onOpenChange).toHaveBeenCalledTimes(3);
     // Controlled: stays open until the parent changes `open`.
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -249,12 +233,12 @@ describe("Modal compound API", () => {
     await user.click(trigger);
     const dialog = screen.getByRole("dialog", { name: "Panel" });
     expect(contentRef.current).toBe(dialog);
-    expect(dialog).toHaveClass("ui-modal-size-sm", "c");
+    expect(dialog).toHaveClass(styles.small, "c");
     expect(dialog).toHaveAttribute("data-k", "v");
-    expect(document.querySelector(".ui-modal-overlay")).toHaveClass("o");
-    expect(headerRef.current).toHaveClass("ui-modal-header", "h");
-    expect(bodyRef.current).toHaveClass("ui-modal-body", "b");
-    expect(footerRef.current).toHaveClass("ui-modal-footer", "f");
+    expect(document.querySelector(`.${styles.overlay}`)).toHaveClass("o");
+    expect(headerRef.current).toHaveClass(styles.header, "h");
+    expect(bodyRef.current).toHaveClass(styles.body, "b");
+    expect(footerRef.current).toHaveClass(styles.footer, "f");
 
     await user.click(screen.getByRole("button", { name: "Done" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
@@ -283,9 +267,8 @@ describe("Modal compound API", () => {
   });
 });
 
-// Ported from novel-isr-ui src/components/__test__/AdminPrimitives.test.tsx
-// ("keeps menu focus and Escape inside an enclosing modal"). novel's Menu is a
-// Radix dropdown menu; the Radix primitive is used directly here.
+// A Radix dropdown menu opened inside a modal must keep focus and consume
+// Escape itself; the Radix primitive is used directly here.
 describe("Modal with nested layers", () => {
   it("keeps menu focus and Escape inside an enclosing modal", async () => {
     const user = setup();

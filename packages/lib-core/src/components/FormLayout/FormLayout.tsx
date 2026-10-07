@@ -18,11 +18,7 @@ export const FormLayout = ({
   ref,
   ...rest
 }: FormLayoutProps) => (
-  <form
-    ref={ref}
-    className={cn(styles.root, "ui-form-layout", className)}
-    {...rest}
-  >
+  <form ref={ref} className={cn(styles.root, className)} {...rest}>
     <ResponsiveGrid
       columns={columns}
       gap={gap}

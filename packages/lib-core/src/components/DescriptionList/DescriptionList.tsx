@@ -12,13 +12,9 @@ export const DescriptionList = ({
   ref,
   ...rest
 }: DescriptionListProps) => (
-  <dl
-    ref={ref}
-    className={cn(styles.descriptionList, "ui-description-list", className)}
-    {...rest}
-  >
+  <dl ref={ref} className={cn(styles.descriptionList, className)} {...rest}>
     {items.map((item) => (
-      <div className={cn(styles.row, "ui-description-row")} key={item.key}>
+      <div className={styles.row} key={item.key}>
         <dt>{item.label}</dt>
         <dd>{item.value}</dd>
       </div>

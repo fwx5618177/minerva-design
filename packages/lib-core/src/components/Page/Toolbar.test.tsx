@@ -6,11 +6,13 @@ import { compile } from "sass";
 import { expect, it } from "vitest";
 import { Card } from "../Card";
 import { Divider } from "../Divider";
+import { Input } from "../Input";
+import { Select, SelectItem } from "../Select";
+import { Tag } from "../Tag";
+import { PageSection } from "./Page";
 import { Toolbar } from ".";
 
-// Ported from novel-isr-ui components/__test__/Toolbar.test.tsx and the Toolbar
-// part of ResponsiveDataLayout.test.tsx. Stylesheet contracts are checked on
-// the component module instead of novel's global style entry.
+// Stylesheet contracts are checked on the compiled component module.
 const css = compile(join(import.meta.dirname, "page.module.scss"))
   .css.replace(/:global\(([^)]*)\)/g, "$1")
   .replace(/\s+/g, " ");
@@ -31,9 +33,7 @@ it("keeps the default div group and its children without adding keyboard navigat
   const toolbar = container.firstElementChild!;
   expect(toolbar.tagName).toBe("DIV");
   expect(toolbar.getAttribute("role")).toBe("group");
-  expect(Array.from(toolbar.classList).sort()).toEqual(
-    ["toolbar", "ui-toolbar"].sort(),
-  );
+  expect(Array.from(toolbar.classList)).toEqual(["toolbar"]);
   expect(toolbar.hasAttribute("tabindex")).toBe(false);
   const first = screen.getByRole("button", { name: "First" });
   expect(
@@ -49,37 +49,20 @@ it("keeps the default div group and its children without adding keyboard navigat
 });
 
 it.each([
-  ["default", true, ["ui-toolbar"], ["toolbar"]],
-  [
-    "default",
-    false,
-    ["ui-toolbar", "ui-toolbar-nowrap"],
-    ["toolbar", "nowrap"],
-  ],
-  [
-    "compact",
-    true,
-    ["ui-toolbar", "ui-toolbar-compact"],
-    ["toolbar", "compact"],
-  ],
-  [
-    "compact",
-    false,
-    ["ui-toolbar", "ui-toolbar-compact", "ui-toolbar-nowrap"],
-    ["toolbar", "compact", "nowrap"],
-  ],
+  ["default", true, ["toolbar"]],
+  ["default", false, ["toolbar", "nowrap"]],
+  ["compact", true, ["toolbar", "compact"]],
+  ["compact", false, ["toolbar", "compact", "nowrap"]],
 ] as const)(
   "supports density=%s and wrap=%s without leaking control props",
-  (density, wrap, hooks, modules) => {
+  (density, wrap, modules) => {
     const { container } = render(
       <Toolbar density={density} wrap={wrap} asChild={false}>
         <span>Actions</span>
       </Toolbar>,
     );
     const toolbar = container.firstElementChild!;
-    expect(Array.from(toolbar.classList).sort()).toEqual(
-      [...hooks, ...modules].sort(),
-    );
+    expect(Array.from(toolbar.classList).sort()).toEqual([...modules].sort());
     expect(toolbar.textContent).toBe("Actions");
     expect(container.querySelector("[density], [wrap], [aschild]")).toBeNull();
   },
@@ -93,7 +76,7 @@ it("renders an explicit no-wrap mode on the server without a wrap attribute", ()
       </select>
     </Toolbar>,
   );
-  expect(html).toContain("ui-toolbar-nowrap");
+  expect(html).toContain("nowrap");
   expect(html).not.toMatch(/ wrap=/);
 });
 
@@ -176,9 +159,9 @@ it("slots into one child element and preserves child props, both refs and handle
   expect(toolbarRef.current).toBe(child);
   expect(child.children).toHaveLength(2);
   expect(child).toHaveClass(
-    "ui-toolbar",
-    "ui-toolbar-compact",
-    "ui-toolbar-nowrap",
+    "toolbar",
+    "compact",
+    "nowrap",
     "parent-class",
     "child-class",
   );
@@ -210,26 +193,19 @@ it("slots an elevated Card into one element sharing classes and ref", () => {
   const card = container.firstElementChild as HTMLElement;
   expect(container.childElementCount).toBe(1);
   expect(toolbarRef.current).toBe(card);
-  expect(card).toHaveClass(
-    "card",
-    "elevated",
-    "ui-toolbar",
-    "ui-toolbar-compact",
-    "parent",
-  );
-  expect(card.querySelector(".ui-toolbar")).toBeNull();
+  expect(card).toHaveClass("card", "elevated", "toolbar", "compact", "parent");
+  expect(card.querySelector(".toolbar")).toBeNull();
   expect(card.querySelector('[aria-orientation="vertical"]')).not.toBeNull();
 });
 
 it("ships compact gap and direct-child vertical divider sizing", () => {
   expect(rule(".compact")).toContain("gap: var(--space-1);");
   const divider = rule(
-    ".compact > .ui-divider-vertical, .compact > [aria-orientation=vertical]:is(hr, [role=separator])",
+    ".compact > [aria-orientation=vertical]:is(hr, [role=separator])",
   );
   expect(divider).toContain("height: var(--space-5);");
   expect(divider).toContain("align-self: center;");
   expect(divider).toContain("flex: 0 0 auto;");
-  expect(css).not.toMatch(/\.compact \.ui-divider-vertical\s*[{,]/);
 });
 
 it("retains the default toolbar, nowrap and input/select sizing contracts", () => {
@@ -245,7 +221,44 @@ it("retains the default toolbar, nowrap and input/select sizing contracts", () =
     expect(toolbar).toContain(value);
   }
   expect(rule(".nowrap")).toContain("flex-wrap: nowrap;");
-  expect(rule(".toolbar > .ui-input-root")).toContain("flex: 1 1 16rem;");
-  expect(rule(".toolbar > .ui-select-trigger")).toContain("flex: 0 1 12rem;");
-  expect(rule(".nowrap > .ui-select-trigger")).toContain("width: 12rem;");
+  expect(rule(".toolbar > [data-component=input]")).toContain(
+    "flex: 1 1 16rem;",
+  );
+  expect(rule(".toolbar > [data-component=select]")).toContain(
+    "flex: 0 1 12rem;",
+  );
+  expect(rule(".nowrap > [data-component=select]")).toContain("width: 12rem;");
+});
+
+it("matches direct Input / Select children through their data-component attribute", () => {
+  const { container } = render(
+    <Toolbar>
+      <Input aria-label="Search" />
+      <Select ariaLabel="Status">
+        <SelectItem value="open">Open</SelectItem>
+      </Select>
+    </Toolbar>,
+  );
+  const toolbar = container.firstElementChild!;
+  expect(
+    toolbar.querySelector(':scope > [data-component="input"]'),
+  ).toContainElement(screen.getByRole("textbox", { name: "Search" }));
+  expect(toolbar.querySelector(':scope > [data-component="select"]')).toBe(
+    screen.getByRole("combobox", { name: "Status" }),
+  );
+});
+
+it("keeps a Tag directly inside a PageSection at its intrinsic width", () => {
+  render(
+    <PageSection title="Release">
+      <Tag>Beta</Tag>
+    </PageSection>,
+  );
+  const region = screen.getByRole("region", { name: "Release" });
+  expect(
+    region.querySelector(':scope > [data-component="tag"]'),
+  ).toHaveTextContent("Beta");
+  expect(rule(".section > [data-component=tag]")).toContain(
+    "align-self: flex-start;",
+  );
 });

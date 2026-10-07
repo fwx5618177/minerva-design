@@ -151,17 +151,6 @@ export interface AutoCompleteProps {
   /** Additional class name of the root element */
   className?: string;
   /**
-   * How `loading` is shown: "replace" shows a spinner instead of the
-   * options; "append" keeps the options and adds a loading row at the end
-   * @default "replace"
-   */
-  loadingMode?: "replace" | "append";
-  /**
-   * Text of the loading row (loadingMode "append")
-   * @default "Loading…" (translated)
-   */
-  loadingText?: React.ReactNode;
-  /**
    * How groupBy groups options: "first" collects each group at its first
    * appearance; "adjacent" groups runs of consecutive options (a group can
    * appear several times). Options whose group is "" get no heading

@@ -16,15 +16,7 @@ describe("Textarea", () => {
     render(<Textarea aria-label="Bio" />);
     const textarea = screen.getByRole("textbox", { name: "Bio" });
     expect(textarea.tagName).toBe("TEXTAREA");
-    expect(textarea).toHaveClass(
-      "textarea",
-      "outline",
-      "medium",
-      "ui-textarea",
-      "ui-textarea-variant-outline",
-      "ui-textarea-size-md",
-      "ui-textarea-resize-none",
-    );
+    expect(textarea).toHaveClass("textarea", "outline", "medium");
     expect(textarea.style.resize).toBe("none");
   });
 
@@ -40,15 +32,10 @@ describe("Textarea", () => {
     expect(screen.getByRole("textbox")).toHaveClass(
       "filled",
       "large",
-      "ui-textarea-variant-filled",
-      "ui-textarea-size-lg",
       "consumer",
     );
     rerender(<Textarea aria-label="Bio" variant="unstyled" size="small" />);
-    expect(screen.getByRole("textbox")).toHaveClass(
-      "ui-textarea-variant-unstyled",
-      "ui-textarea-size-sm",
-    );
+    expect(screen.getByRole("textbox")).toHaveClass("unstyled", "small");
   });
 
   it("prevents inline styles from re-enabling manual resize while keeping other styles", () => {
@@ -92,10 +79,7 @@ describe("Textarea", () => {
 
   it("invalid adds the error class and aria-invalid", () => {
     render(<Textarea aria-label="Bio" invalid />);
-    expect(screen.getByRole("textbox")).toHaveClass(
-      "invalid",
-      "ui-textarea-error",
-    );
+    expect(screen.getByRole("textbox")).toHaveClass("invalid");
     expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");
   });
 
@@ -139,7 +123,7 @@ describe("Textarea", () => {
     );
     let textarea = screen.getByRole("textbox", { name: "Bio" });
     expect(textarea).toHaveAccessibleDescription("Short intro");
-    expect(textarea).not.toHaveClass("ui-textarea-error");
+    expect(textarea).not.toHaveClass("invalid");
 
     rerender(
       <FormControl invalid disabled required>
@@ -150,14 +134,13 @@ describe("Textarea", () => {
       </FormControl>,
     );
     textarea = screen.getByRole("textbox", { name: "Bio" });
-    expect(textarea).toHaveClass("ui-textarea-error");
+    expect(textarea).toHaveClass("invalid");
     expect(textarea).toHaveAttribute("aria-invalid", "true");
     expect(textarea).toHaveAttribute("aria-required", "true");
     expect(textarea).toBeDisabled();
     expect(textarea).toHaveAccessibleDescription("Too long");
   });
 
-  // from novel JsonField.test: FormField and explicit child aria-invalid
   it("FormField preserves explicit child aria-invalid while its own error takes precedence", () => {
     const { rerender } = render(
       <FormField label="Text">
@@ -186,6 +169,6 @@ describe("Textarea", () => {
       "aria-invalid",
       "false",
     );
-    expect(screen.getByRole("textbox")).not.toHaveClass("ui-textarea-error");
+    expect(screen.getByRole("textbox")).not.toHaveClass("invalid");
   });
 });

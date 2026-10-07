@@ -78,44 +78,47 @@
     color: var(--text-inverse-color);
   }
 
-  // Follows the theme: frosted elevated surface (novel-isr-ui "auto" tone).
-  // --ui-tooltip-* custom properties stay supported as overrides.
+  // Follows the theme: frosted elevated surface.
   &.auto {
-    background: var(--ui-tooltip-bg, color-mix(in srgb, var(--surface-elevated-color) 96%, transparent));
-    color: var(--ui-tooltip-fg, var(--text-color));
-    border: 1px solid var(--ui-tooltip-border, color-mix(in srgb, var(--foreground-color) 14%, transparent));
-    box-shadow: var(--ui-tooltip-shadow, var(--shadow-lg));
+    background: color-mix(in srgb, var(--surface-elevated-color) 96%, transparent);
+    color: var(--text-color);
+    border: 1px solid color-mix(in srgb, var(--foreground-color) 14%, transparent);
+    box-shadow: var(--shadow-lg);
     backdrop-filter: blur(14px) saturate(1.12);
     font-weight: var(--font-weight-medium);
 
     &.arrow .tooltipArrow {
-      background: var(--ui-tooltip-arrow-bg, var(--surface-elevated-color));
+      background: var(--surface-elevated-color);
     }
   }
 
   // Theme independent surfaces. Fixed colors on purpose: they must not
   // follow the theme tokens.
   &.fixedDark {
-    background: var(--ui-tooltip-bg, linear-gradient(180deg, rgba(23, 29, 36, 0.96) 0%, rgba(8, 12, 18, 0.94) 100%));
-    color: var(--ui-tooltip-fg, #f8fafc);
-    border: 1px solid var(--ui-tooltip-border, rgba(255, 255, 255, 0.14));
-    box-shadow: var(--ui-tooltip-shadow, 0 18px 44px rgba(2, 6, 12, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08));
+    background: linear-gradient(180deg, rgba(23, 29, 36, 0.96) 0%, rgba(8, 12, 18, 0.94) 100%);
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 18px 44px rgba(2, 6, 12, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
     font-weight: var(--font-weight-medium);
 
     &.arrow .tooltipArrow {
-      background: var(--ui-tooltip-arrow-bg, #0c1117);
+      background: #0c1117;
     }
   }
 
   &.fixedLight {
-    background: var(--ui-tooltip-bg, linear-gradient(180deg, #ffffff 0%, #f8fafc 100%));
-    color: var(--ui-tooltip-fg, #101418);
-    border: 1px solid var(--ui-tooltip-border, rgba(17, 24, 39, 0.14));
-    box-shadow: var(--ui-tooltip-shadow, 0 12px 32px rgba(17, 24, 39, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.78));
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    color: #101418;
+    border: 1px solid rgba(17, 24, 39, 0.14);
+    box-shadow:
+      0 12px 32px rgba(17, 24, 39, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.78);
     font-weight: var(--font-weight-medium);
 
     &.arrow .tooltipArrow {
-      background: var(--ui-tooltip-arrow-bg, #ffffff);
+      background: #ffffff;
     }
   }
 

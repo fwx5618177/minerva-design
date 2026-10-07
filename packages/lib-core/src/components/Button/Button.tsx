@@ -1,31 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import styles from "./button.module.scss";
-import type { ButtonColor, ButtonProps } from "./types";
-
-/** Short size names used by the stable `ui-button-size-*` styling hooks */
-const SIZE_HOOK = {
-  xsmall: "xs",
-  small: "sm",
-  medium: "md",
-  large: "lg",
-  xlarge: "xl",
-} as const;
-
-/** Color names used by the stable `ui-button-color-*` styling hooks */
-const COLOR_HOOK: Record<ButtonColor, string> = {
-  primary: "primary",
-  secondary: "secondary",
-  success: "success",
-  warning: "warning",
-  error: "danger",
-  danger: "danger",
-  info: "info",
-  accent: "accent",
-  neutral: "neutral",
-  retry: "danger",
-  back: "info",
-};
+import type { ButtonProps } from "./types";
 
 /**
  * Button: a native <button> with colors, fill styles (appearance), sizes,
@@ -84,51 +60,36 @@ const Button = ({
   const structured =
     modern || startIcon != null || endIcon != null || loadingText !== undefined;
   const showLoadingText = loading && loadingText !== undefined;
-  const spinner = (
-    <span
-      className={classNames(styles.loadingSpinner, "ui-button-spinner")}
-      aria-hidden
-    />
-  );
+  const spinner = <span className={styles.loadingSpinner} aria-hidden />;
 
   let content: React.ReactNode;
   if (!structured) {
-    // Unstyled hook span around the content (classic markup otherwise)
-    const label = <span className="ui-button-label">{children}</span>;
     content = loading ? (
       <span className={styles.loadingWrapper}>
         {spinner}
-        {label}
+        {children}
       </span>
     ) : (
-      label
+      children
     );
   } else if (showLoadingText) {
     content = (
       <>
         {spinner}
-        <span className={classNames(styles.label, "ui-button-label")}>
-          {loadingText}
-        </span>
+        <span className={styles.label}>{loadingText}</span>
       </>
     );
   } else {
-    const hidden = loading && classNames(styles.hidden, "ui-button-hidden");
+    const hidden = loading && styles.hidden;
     content = (
       <>
         {loading && spinner}
         {startIcon != null && (
-          <span className={classNames(styles.icon, "ui-button-icon", hidden)}>
-            {startIcon}
-          </span>
+          <span className={classNames(styles.icon, hidden)}>{startIcon}</span>
         )}
-        <span className={classNames(styles.label, "ui-button-label", hidden)}>
-          {children}
-        </span>
+        <span className={classNames(styles.label, hidden)}>{children}</span>
         {endIcon != null && (
-          <span className={classNames(styles.icon, "ui-button-icon", hidden)}>
-            {endIcon}
-          </span>
+          <span className={classNames(styles.icon, hidden)}>{endIcon}</span>
         )}
       </>
     );
@@ -149,20 +110,12 @@ const Button = ({
         fullWidth && styles.fullWidth,
         active && styles.active,
         loading && styles.loading,
-        // Stable styling hooks (not used for styling by the library)
-        "ui-button",
-        `ui-button-variant-${appearance ?? "solid"}`,
-        `ui-button-size-${SIZE_HOOK[size]}`,
-        `ui-button-color-${COLOR_HOOK[variant]}`,
-        fullWidth && "ui-button-fullwidth",
-        loading && "ui-button-loading",
         className,
       )}
       onClick={handleClick}
       aria-label={ariaLabel}
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
-      data-loading={loading || undefined}
       disabled={disabled}
       style={customStyle}
       {...restProps}

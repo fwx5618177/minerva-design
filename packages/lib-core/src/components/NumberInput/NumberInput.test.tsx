@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import { NumberInput, type NumberInputProps } from ".";
 import { FormControl, FormHelperText, FormLabel } from "../FormControl";
+import styles from "./numberInput.module.scss";
 
 type Extra = Omit<NumberInputProps, "value" | "onChange">;
 
@@ -47,12 +48,8 @@ describe("NumberInput", () => {
     expect(input).toHaveAttribute("aria-valuenow", "5");
     expect(input).toHaveAttribute("type", "text");
     expect(input).toHaveAttribute("inputmode", "decimal");
-    expect(input).toHaveClass("ui-number-input-field");
-    expect(rootOf(input)).toHaveClass(
-      "ui-number-input-root",
-      "ui-number-input-size-md",
-      "medium",
-    );
+    expect(input).toHaveClass(styles.field);
+    expect(rootOf(input)).toHaveClass(styles.root, styles.medium);
     expect(input).toHaveValue("5");
   });
 
@@ -128,7 +125,7 @@ describe("NumberInput", () => {
     render(<Controlled step={0.1} />);
     await user.type(field(), "1.");
     expect(field()).toHaveValue("1.");
-    expect(rootOf(field())).not.toHaveAttribute("data-invalid");
+    expect(rootOf(field())).not.toHaveClass(styles.invalid);
     await user.type(field(), "25");
     await user.tab();
     expect(field()).toHaveValue("1.3");
@@ -148,13 +145,12 @@ describe("NumberInput", () => {
     const spy = vi.fn();
     render(<Controlled spy={spy} min={0} max={10} />);
     await user.type(field(), "99");
-    expect(rootOf(field())).toHaveAttribute("data-invalid", "true");
-    expect(rootOf(field())).toHaveClass("ui-number-input-shake");
+    expect(rootOf(field())).toHaveClass(styles.invalid, styles.shake);
     expect(rootOf(field())).toHaveAttribute("title", "Maximum 10");
     await user.tab();
     expect(spy).toHaveBeenLastCalledWith(10);
     expect(field()).toHaveValue("10");
-    expect(rootOf(field())).not.toHaveAttribute("data-invalid");
+    expect(rootOf(field())).not.toHaveClass(styles.invalid);
 
     await user.clear(field());
     await user.type(field(), "3.7");
@@ -176,7 +172,7 @@ describe("NumberInput", () => {
     render(<Controlled initial={3} spy={spy} />);
     await user.clear(field());
     await user.type(field(), "abc");
-    expect(rootOf(field())).toHaveClass("ui-number-input-error");
+    expect(rootOf(field())).toHaveClass(styles.invalid);
     expect(rootOf(field())).toHaveAttribute("title", "Enter a number");
     await user.tab();
     expect(spy).not.toHaveBeenCalled();
@@ -273,18 +269,18 @@ describe("NumberInput", () => {
     const user = userEvent.setup();
     const spy = vi.fn();
     const { container, unmount } = render(<Controlled initial={1} spy={spy} />);
-    expect(container.querySelector(".ui-number-input-stepper")).toBeNull();
-    expect(rootOf(field())).toHaveClass("ui-number-input-no-stepper");
+    expect(container.querySelector(`.${styles.stepper}`)).toBeNull();
+    expect(container.querySelectorAll("button")).toHaveLength(0);
     unmount();
 
     const view = render(
       <Controlled initial={1} spy={spy} showStepper max={2} min={1} />,
     );
     const up = view.container.querySelector<HTMLButtonElement>(
-      ".ui-number-input-step-up",
+      `.${styles.stepUp}`,
     )!;
     const down = view.container.querySelector<HTMLButtonElement>(
-      ".ui-number-input-step-down",
+      `.${styles.stepDown}`,
     )!;
     expect(up.parentElement).toHaveAttribute("aria-hidden", "true");
     expect(up).toHaveAttribute("tabindex", "-1");
@@ -316,8 +312,7 @@ describe("NumberInput", () => {
       <Controlled initial={1} spy={spy} disabled showStepper />,
     );
     expect(field()).toBeDisabled();
-    expect(rootOf(field())).toHaveAttribute("data-disabled", "true");
-    expect(rootOf(field())).toHaveClass("ui-number-input-disabled");
+    expect(rootOf(field())).toHaveClass(styles.disabled);
     container
       .querySelectorAll("button")
       .forEach((b) => expect(b).toBeDisabled());
@@ -338,12 +333,8 @@ describe("NumberInput", () => {
       />,
     );
     const root = rootOf(field());
-    expect(root).toHaveClass(
-      "ui-number-input-error",
-      "ui-number-input-size-lg",
-      "c",
-    );
-    expect(root).toHaveAttribute("data-invalid", "true");
+    expect(root).toHaveClass(styles.invalid, styles.large, "c");
+    expect(root).not.toHaveClass(styles.shake);
     expect(root).not.toHaveAttribute("title");
     expect(field()).toHaveAttribute("aria-invalid", "true");
   });
@@ -379,8 +370,7 @@ describe("NumberInput", () => {
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("aria-required", "true");
     expect(input).toBeDisabled();
-    expect(rootOf(input)).toHaveAttribute("data-invalid", "true");
-    expect(rootOf(input)).toHaveAttribute("data-disabled", "true");
+    expect(rootOf(input)).toHaveClass(styles.invalid, styles.disabled);
   });
 
   it("lets label props override the built-in strings", async () => {
@@ -451,7 +441,7 @@ describe("NumberInput localization", () => {
     });
   });
 
-  it("uses novel-isr-ui's Chinese strings", async () => {
+  it("uses the Chinese strings", async () => {
     const user = userEvent.setup();
     act(() => {
       i18n.changeLanguage("zh");

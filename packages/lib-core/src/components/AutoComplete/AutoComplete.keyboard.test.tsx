@@ -1,11 +1,11 @@
-// Behaviours ported from @novel-isr/ui's Autocomplete tests (onSubmit,
-// autoHighlight, IME safety, reopen on click, disabled / read-only, ui-*
-// hooks, FormControl integration), expressed with Minerva's AutoComplete API.
+// onSubmit, autoHighlight, IME safety, reopen on click, disabled / read-only
+// and FormControl integration.
 import React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AutoComplete from "./AutoComplete";
+import styles from "./autoComplete.module.scss";
 import type { AutoCompleteOption, AutoCompleteProps } from "./types";
 import {
   FormControlContext,
@@ -55,7 +55,7 @@ const keyDown = (key: string, init: Partial<KeyboardEventInit> = {}) =>
     );
   });
 
-describe("AutoComplete (merged capabilities)", () => {
+describe("AutoComplete keyboard, submit and form integration", () => {
   it("works without name / label (accessible name from ariaLabel)", () => {
     render(<Search />);
     expect(input()).not.toHaveAttribute("name");
@@ -63,26 +63,22 @@ describe("AutoComplete (merged capabilities)", () => {
     expect(options()).toHaveLength(3);
   });
 
-  it("renders ui-* hooks and highlights the first option with autoHighlight", () => {
+  it("renders its parts and highlights the first option with autoHighlight", () => {
     const { container } = render(<Search className="consumer" />);
     const root = container.firstElementChild!;
-    expect(root).toHaveClass("ui-autocomplete-root", "consumer");
-    expect(root).not.toHaveAttribute("data-open");
+    expect(root).toHaveClass(styles.autoComplete, "consumer");
+    expect(input()).toHaveAttribute("aria-expanded", "false");
     act(() => input().focus());
-    expect(root).toHaveAttribute("data-open", "true");
-    expect(screen.getByRole("listbox")).toHaveClass("ui-autocomplete-list");
+    expect(input()).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("listbox")).toHaveClass(styles.optionList);
     const [first, second] = options();
-    expect(first).toHaveClass("ui-autocomplete-item");
-    expect(first).toHaveAttribute("data-active", "true");
+    expect(first).toHaveClass(styles.optionItem, styles.active);
     expect(first).toHaveAttribute("aria-selected", "true");
-    expect(second).not.toHaveAttribute("data-active");
+    expect(second).not.toHaveClass(styles.active);
+    expect(second).toHaveAttribute("aria-selected", "false");
     expect(input()).toHaveAttribute("aria-activedescendant", first.id);
-    expect(screen.getByText("Lord of Mysteries")).toHaveClass(
-      "ui-autocomplete-item-label",
-    );
-    expect(screen.getByText("Cuttlefish")).toHaveClass(
-      "ui-autocomplete-item-hint",
-    );
+    expect(screen.getByText("Lord of Mysteries")).toHaveClass(styles.label);
+    expect(screen.getByText("Cuttlefish")).toHaveClass(styles.description);
   });
 
   it("Enter picks the highlighted option without filling the input", () => {
@@ -220,11 +216,11 @@ describe("AutoComplete (merged capabilities)", () => {
       />,
     );
     await user.click(input());
-    expect(screen.getByText("Recent")).toHaveClass("ui-autocomplete-group");
+    expect(screen.getByText("Recent")).toHaveClass(styles.groupLabel);
     rerender(<Search options={[]} renderEmpty={() => "Nothing"} />);
-    expect(screen.getByText("Nothing")).toHaveClass("ui-autocomplete-empty");
+    expect(screen.getByText("Nothing")).toHaveClass(styles.empty);
     rerender(<Search loading />);
-    expect(document.querySelector(".ui-autocomplete-loading")).not.toBeNull();
+    expect(document.querySelector(`.${styles.loading}`)).not.toBeNull();
   });
 
   it("takes id, description, invalid, required and disabled from a FormControl", () => {
@@ -253,24 +249,6 @@ describe("AutoComplete (merged capabilities)", () => {
     expect(input()).toBeDisabled();
   });
 
-  it("loadingMode='append' keeps the options and adds a loading row", () => {
-    const { rerender } = render(<Search loading loadingMode="append" />);
-    act(() => input().focus());
-    expect(options()).toHaveLength(3);
-    expect(screen.getByRole("status")).toHaveTextContent("Loading…");
-    expect(screen.getByRole("status")).toHaveClass("ui-autocomplete-loading");
-    rerender(
-      <Search
-        loading
-        loadingMode="append"
-        loadingText="Fetching"
-        options={[]}
-      />,
-    );
-    expect(screen.getByRole("status")).toHaveTextContent("Fetching");
-    expect(document.querySelector(".ui-autocomplete-empty")).toBeNull();
-  });
-
   it("groupMode='adjacent' groups runs of consecutive options; '' has no heading", () => {
     render(
       <Search
@@ -286,7 +264,7 @@ describe("AutoComplete (merged capabilities)", () => {
     );
     act(() => input().focus());
     const headings = Array.from(
-      document.querySelectorAll(".ui-autocomplete-group"),
+      document.querySelectorAll(`.${styles.groupLabel}`),
     ).map((el) => el.textContent);
     expect(headings).toEqual(["Recent", "Popular", "Recent"]);
     expect(options().map((o) => o.textContent)).toEqual([
@@ -296,7 +274,7 @@ describe("AutoComplete (merged capabilities)", () => {
       "Delta",
     ]);
     keyDown("ArrowUp");
-    expect(options()[3]).toHaveAttribute("data-active", "true");
+    expect(input()).toHaveAttribute("aria-activedescendant", options()[3].id);
   });
 
   it("forwards native input props through textFieldProps.inputProps", () => {

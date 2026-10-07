@@ -55,14 +55,7 @@ export const FormControl = ({
 
   return (
     <FormControlContext.Provider value={ctx}>
-      <div
-        ref={ref}
-        className={cn(styles.root, "ui-form-control", className)}
-        data-invalid={invalid || undefined}
-        data-disabled={disabled || undefined}
-        data-readonly={readOnly || undefined}
-        {...rest}
-      >
+      <div ref={ref} className={cn(styles.root, className)} {...rest}>
         {children}
       </div>
     </FormControlContext.Provider>
@@ -84,15 +77,12 @@ export const FormLabel = ({
       ref={ref}
       id={ctx?.labelId}
       htmlFor={htmlFor ?? ctx?.id}
-      className={cn(styles.label, "ui-form-label", className)}
+      className={cn(styles.label, className)}
       {...rest}
     >
       {children}
       {ctx?.required && (
-        <span
-          className={cn(styles.required, "ui-form-required")}
-          aria-hidden="true"
-        >
+        <span className={styles.required} aria-hidden="true">
           {requiredIndicator}
         </span>
       )}
@@ -130,7 +120,7 @@ export const FormHelperText = ({
     <div
       ref={ref}
       id={ctx?.helperId}
-      className={cn(styles.helper, "ui-form-helper", className)}
+      className={cn(styles.helper, className)}
       {...rest}
     >
       {children}
@@ -154,7 +144,7 @@ export const FormErrorMessage = ({
       ref={ref}
       id={ctx.errorId}
       role="alert"
-      className={cn(styles.error, "ui-form-error", className)}
+      className={cn(styles.error, className)}
       {...rest}
     >
       {children}

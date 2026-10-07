@@ -127,7 +127,7 @@ const AppShell = ({
       ref={inHeader ? headerToggle : undefined}
       size="small"
       shape="square"
-      className={cn(styles.control, "ui-icon-button")}
+      className={styles.control}
       ariaLabel={compactMode ? labels.expand : labels.collapse}
       aria-controls={sidebarId}
       aria-expanded={!collapsed}
@@ -145,16 +145,15 @@ const AppShell = ({
   return (
     <Dialog.Root open={drawerOpen} onOpenChange={setMobileOpen}>
       <div
-        className={cn(styles.shell, "ui-app-shell", className)}
+        className={cn(styles.shell, className)}
         data-sidebar-mode={mode}
-        data-mobile={isMobile || undefined}
         data-sidebar-expanded={!collapsed || undefined}
         {...rest}
       >
         {!isMobile && (
           <aside
             id={sidebarId}
-            className={cn(styles.sidebar, "ui-app-shell-sidebar")}
+            className={styles.sidebar}
             aria-label={label}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -173,35 +172,21 @@ const AppShell = ({
               }
             }}
           >
-            <div className={cn(styles.brand, "ui-app-shell-brand")}>
+            <div className={styles.brand}>
               {brandIcon && (
-                <span
-                  className={cn(styles.brandIcon, "ui-app-shell-brand-icon")}
-                  aria-hidden="true"
-                >
+                <span className={styles.brandIcon} aria-hidden="true">
                   {brandIcon}
                 </span>
               )}
-              <span
-                className={cn(styles.brandLabel, "ui-app-shell-brand-label")}
-              >
-                {brand}
-              </span>
+              <span className={styles.brandLabel}>{brand}</span>
             </div>
-            <div className={cn(styles.navigation, "ui-app-shell-navigation")}>
-              {navigation(state)}
-            </div>
-            <div
-              className={cn(
-                styles.sidebarActions,
-                "ui-app-shell-sidebar-actions",
-              )}
-            >
+            <div className={styles.navigation}>{navigation(state)}</div>
+            <div className={styles.sidebarActions}>
               {collapseControl(false)}
               <IconButton
                 size="small"
                 shape="square"
-                className={cn(styles.control, "ui-icon-button")}
+                className={styles.control}
                 aria-pressed={mode === "floating"}
                 ariaLabel={
                   mode === "floating"
@@ -222,15 +207,15 @@ const AppShell = ({
             </div>
           </aside>
         )}
-        <div className={cn(styles.workspace, "ui-app-shell-workspace")}>
-          <header className={cn(styles.header, "ui-app-shell-header")}>
+        <div className={styles.workspace}>
+          <header className={styles.header}>
             {isMobile ? (
               <Dialog.Trigger asChild>
                 <IconButton
                   ref={headerToggle}
                   size="small"
                   shape="square"
-                  className={cn(styles.control, "ui-icon-button")}
+                  className={styles.control}
                   ariaLabel={labels.openNavigation}
                   icon={<LuPanelLeftOpen aria-hidden="true" />}
                 />
@@ -238,53 +223,27 @@ const AppShell = ({
             ) : (
               collapseControl(true)
             )}
-            <div
-              className={cn(
-                styles.headerActions,
-                "ui-app-shell-header-actions",
-              )}
-            >
-              {headerActions}
-            </div>
+            <div className={styles.headerActions}>{headerActions}</div>
           </header>
           {pageNavigation}
-          <main className={cn(styles.content, "ui-app-shell-content")}>
-            {children}
-          </main>
+          <main className={styles.content}>{children}</main>
         </div>
       </div>
       {isMobile && (
         <Dialog.Portal>
-          <Dialog.Overlay className={cn(styles.overlay, "ui-drawer-overlay")} />
+          <Dialog.Overlay className={styles.overlay} />
           <Dialog.Content
-            className={cn(
-              styles.drawer,
-              "ui-drawer-content",
-              "ui-drawer-side-left",
-              "ui-drawer-size-md",
-            )}
+            className={styles.drawer}
             aria-describedby={undefined}
             onCloseAutoFocus={(event) => {
               event.preventDefault();
               headerToggle.current?.focus();
             }}
           >
-            <Dialog.Title
-              className={cn(styles.drawerHeader, "ui-drawer-header")}
-            >
-              {label}
-            </Dialog.Title>
-            <div
-              className={cn(
-                styles.drawerBody,
-                "ui-drawer-body",
-                "ui-app-shell-mobile-navigation",
-              )}
-            >
-              {navigation(state)}
-            </div>
+            <Dialog.Title className={styles.drawerHeader}>{label}</Dialog.Title>
+            <div className={styles.drawerBody}>{navigation(state)}</div>
             <Dialog.Close
-              className={cn(styles.drawerClose, "ui-drawer-close")}
+              className={styles.drawerClose}
               aria-label={labels.closeNavigation}
             >
               <LuX aria-hidden="true" />

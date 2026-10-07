@@ -18,14 +18,6 @@ export default defineConfig({
         replacement: src("../../packages/lib-core/src/theme-utils.ts"),
       },
       {
-        find: /^@minerva\/lib-core\/compat\/theme-utils$/,
-        replacement: src("../../packages/lib-core/src/compat/theme-utils.ts"),
-      },
-      {
-        find: /^@minerva\/lib-core\/compat$/,
-        replacement: src("../../packages/lib-core/src/compat/index.ts"),
-      },
-      {
         find: /^@minerva\/lib-core\/monaco$/,
         replacement: src("../../packages/lib-core/src/monaco.ts"),
       },

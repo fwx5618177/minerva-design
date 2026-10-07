@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/CodeBlock/__test__/CodeBlock.test.tsx
-// and the CodeBlock part of src/components/__test__/ResponsiveDataLayout.test.tsx
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -17,7 +15,7 @@ describe("CodeBlock", () => {
     );
     const region = screen.getByRole("region", { name: "Payload" });
     expect(region.tagName).toBe("PRE");
-    expect(region).toHaveClass("codeBlock", "ui-code-block");
+    expect(region).toHaveClass("codeBlock");
     await user.tab();
     await user.tab();
     expect(region).toHaveFocus();
@@ -59,7 +57,7 @@ describe("CodeBlock", () => {
       </CodeBlock>,
     );
     const pre = screen.getByRole("region", { name: "Log" });
-    expect(pre).toHaveClass("ui-code-block", "consumer");
+    expect(pre).toHaveClass("codeBlock", "consumer");
     expect(pre.style.maxHeight).toBe("10rem");
     expect(pre.style.color).toBe("red");
     rerender(

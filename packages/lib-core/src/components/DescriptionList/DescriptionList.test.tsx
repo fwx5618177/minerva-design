@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/DescriptionList/__test__/DescriptionList.test.tsx
-// and the DescriptionList part of src/components/__test__/ReadingPrimitives.test.tsx
 import { createRef } from "react";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
@@ -17,8 +15,8 @@ describe("DescriptionList", () => {
   it("renders a dl with one dt/dd pair per item in order", () => {
     const { container } = render(<DescriptionList items={items} />);
     const dl = container.querySelector("dl")!;
-    expect(dl).toHaveClass("descriptionList", "ui-description-list");
-    const rows = dl.querySelectorAll(":scope > .ui-description-row");
+    expect(dl).toHaveClass("descriptionList");
+    const rows = dl.querySelectorAll(":scope > .row");
     expect(rows).toHaveLength(3);
     expect(
       Array.from(dl.querySelectorAll("dt"), (node) => node.textContent),
@@ -78,7 +76,7 @@ describe("DescriptionList", () => {
     );
     const dl = screen.getByTestId("dl");
     expect(ref.current).toBe(dl);
-    expect(dl).toHaveClass("ui-description-list", "consumer");
+    expect(dl).toHaveClass("descriptionList", "consumer");
     expect(dl).toHaveAttribute("aria-label", "Book facts");
     expect(dl).not.toHaveAttribute("items");
   });

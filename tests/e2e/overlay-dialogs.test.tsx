@@ -1,14 +1,8 @@
 /* eslint-disable jsx-a11y/no-autofocus -- initial focus on an autoFocus field inside the dialog is the behaviour under test */
-// Ported from @novel-isr/ui tests/e2e/overlays.test.tsx (renamed to
-// overlay-dialogs.test.tsx because Minerva already has an unrelated
-// tests/e2e/overlays.test.tsx for Tooltip / Popper / Dropdown).
-//
 // Modal, Drawer, ConfirmDialog / confirm(): focus management (initial focus,
 // trap, return to opener), Escape, and a delete-with-confirm list.
-// Uses Minerva's native API with lib-core's default (English) built-in texts
-// ("Close", "Cancel", "Confirm", "Delete"); consumer-provided strings stay as
-// in the original. A final block replays representative scenarios verbatim
-// through @minerva/lib-core/compat (novel prop names + Chinese defaults).
+// Uses lib-core's default (English) built-in texts ("Close", "Cancel",
+// "Confirm", "Delete").
 import { useState, type ReactNode } from "react";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,7 +24,6 @@ import {
   confirm,
   useConfirm,
 } from "@minerva/lib-core";
-import * as compat from "@minerva/lib-core/compat";
 
 function EditDocumentPage({
   onSubmit,
@@ -64,7 +57,7 @@ function EditDocumentPage({
             </FormField>
           </ModalBody>
           <ModalFooter>
-            {/* Minerva's Button keeps the native default type (submit), novel's defaulted to "button". */}
+            {/* Button keeps the native default type (submit). */}
             <Button
               type="button"
               appearance="ghost"
@@ -284,7 +277,7 @@ function ReadingList() {
 const shelfTitles = () =>
   within(screen.getByRole("list", { name: "书架" }))
     .getAllByRole("listitem")
-    .map((item) => item.querySelector(".ui-list-item-primary")?.textContent);
+    .map((item) => item.querySelector(".content > .primary")?.textContent);
 
 function spyOnFallbacks() {
   const warn = vi.spyOn(console, "warn");
@@ -377,9 +370,8 @@ describe.each<[string, (children: ReactNode) => ReactNode]>([
 });
 
 describe("ConfirmDialog (declarative)", () => {
-  // novel-isr-ui disabled the confirm button natively while confirming (see the
-  // compat block). Minerva's loading buttons stay focusable instead
-  // (aria-disabled + aria-busy) but cannot be activated a second time.
+  // Loading buttons stay focusable (aria-disabled + aria-busy) but cannot be
+  // activated a second time.
   it("shows a busy confirm button that ignores repeated activation while the async action runs", async () => {
     const user = userEvent.setup();
     let finish: () => void = () => {};
@@ -430,187 +422,6 @@ describe("ConfirmDialog (declarative)", () => {
     confirmButton.focus();
     await user.keyboard("{Enter}");
     expect(onConfirm).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      finish();
-    });
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    expect(screen.getByText("已归档")).toBeInTheDocument();
-  });
-});
-
-// ---- The original novel scenarios, verbatim through the compat API ----
-
-describe("via @minerva/lib-core/compat", () => {
-  function CompatEditDocumentPage() {
-    const [open, setOpen] = useState(false);
-    return (
-      <>
-        <compat.Button onClick={() => setOpen(true)}>Open dialog</compat.Button>
-        <compat.Modal
-          isOpen={open}
-          onClose={() => setOpen(false)}
-          title="Edit document"
-          description="Document metadata"
-        >
-          <form onSubmit={(event) => event.preventDefault()}>
-            <compat.ModalBody>
-              <compat.FormField label="Field 1">
-                <compat.Input name="field1" autoFocus defaultValue="Value 1" />
-              </compat.FormField>
-              <compat.FormField label="Field 2">
-                <compat.Input name="field2" defaultValue="Value 2" />
-              </compat.FormField>
-            </compat.ModalBody>
-            <compat.ModalFooter>
-              <compat.Button variant="ghost" onClick={() => setOpen(false)}>
-                Cancel
-              </compat.Button>
-              <compat.Button type="submit">Save changes</compat.Button>
-            </compat.ModalFooter>
-          </form>
-        </compat.Modal>
-      </>
-    );
-  }
-
-  it("Modal: moves focus inside, traps Tab, closes on Escape and restores focus to the opener", async () => {
-    const user = userEvent.setup();
-    render(<CompatEditDocumentPage />);
-    const opener = screen.getByRole("button", { name: "Open dialog" });
-
-    await user.click(opener);
-    const dialog = await screen.findByRole("dialog", { name: "Edit document" });
-    expect(dialog).toHaveAccessibleDescription("Document metadata");
-    const field1 = within(dialog).getByRole("textbox", { name: "Field 1" });
-    expect(field1).toHaveFocus();
-
-    await user.tab();
-    expect(
-      within(dialog).getByRole("textbox", { name: "Field 2" }),
-    ).toHaveFocus();
-    await user.tab();
-    expect(
-      within(dialog).getByRole("button", { name: "Cancel" }),
-    ).toHaveFocus();
-    await user.tab();
-    expect(
-      within(dialog).getByRole("button", { name: "Save changes" }),
-    ).toHaveFocus();
-    await user.tab();
-    expect(within(dialog).getByRole("button", { name: "关闭" })).toHaveFocus();
-    // Wraps instead of escaping to the page.
-    await user.tab();
-    expect(field1).toHaveFocus();
-    await user.tab({ shift: true });
-    expect(within(dialog).getByRole("button", { name: "关闭" })).toHaveFocus();
-
-    await user.keyboard("{Escape}");
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    await waitFor(() => expect(opener).toHaveFocus());
-  });
-
-  function CompatReadingList() {
-    const ask = compat.useConfirm();
-    const [books, setBooks] = useState(["诡秘之主", "三体", "雪中悍刀行"]);
-    const remove = async (title: string) => {
-      const ok = await ask({
-        title: `删除《${title}》？`,
-        description: "此操作不可撤销",
-        intent: "danger",
-      });
-      if (ok) setBooks((prev) => prev.filter((book) => book !== title));
-    };
-    return (
-      <compat.List aria-label="书架">
-        {books.map((title) => (
-          <compat.ListItem
-            key={title}
-            primary={title}
-            actions={
-              <compat.Button
-                size="sm"
-                intent="danger"
-                onClick={() => void remove(title)}
-              >
-                删除{title}
-              </compat.Button>
-            }
-          />
-        ))}
-      </compat.List>
-    );
-  }
-
-  it("confirm before delete: 取消 keeps the row; the danger action (删除) deletes it", async () => {
-    const user = userEvent.setup();
-    render(
-      <compat.ConfirmProvider>
-        <CompatReadingList />
-      </compat.ConfirmProvider>,
-    );
-
-    const deleteSanti = screen.getByRole("button", { name: "删除三体" });
-    await user.click(deleteSanti);
-    let dialog = await screen.findByRole("dialog", { name: "删除《三体》？" });
-    expect(dialog).toHaveAccessibleDescription("此操作不可撤销");
-    await user.click(within(dialog).getByRole("button", { name: "取消" }));
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    expect(shelfTitles()).toEqual(["诡秘之主", "三体", "雪中悍刀行"]);
-
-    await user.click(deleteSanti);
-    dialog = await screen.findByRole("dialog", { name: "删除《三体》？" });
-    await user.click(within(dialog).getByRole("button", { name: "删除" }));
-    await waitFor(() =>
-      expect(shelfTitles()).toEqual(["诡秘之主", "雪中悍刀行"]),
-    );
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
-  it("ConfirmDialog: the confirm button is natively disabled while confirming", async () => {
-    const user = userEvent.setup();
-    let finish: () => void = () => {};
-    function Page() {
-      const [open, setOpen] = useState(false);
-      const [busy, setBusy] = useState(false);
-      const [done, setDone] = useState(false);
-      return (
-        <>
-          <compat.Button onClick={() => setOpen(true)}>归档</compat.Button>
-          {done && <p>已归档</p>}
-          <compat.ConfirmDialog
-            isOpen={open}
-            onClose={() => setOpen(false)}
-            title="归档这本书？"
-            confirmLabel="归档"
-            intent="warning"
-            isConfirming={busy}
-            onConfirm={async () => {
-              setBusy(true);
-              await new Promise<void>((resolve) => {
-                finish = resolve;
-              });
-              setBusy(false);
-              setDone(true);
-              setOpen(false);
-            }}
-          />
-        </>
-      );
-    }
-    render(<Page />);
-
-    await user.click(screen.getByRole("button", { name: "归档" }));
-    const dialog = await screen.findByRole("dialog", { name: "归档这本书？" });
-    await user.click(within(dialog).getByRole("button", { name: "归档" }));
-    expect(within(dialog).getByRole("button", { name: "取消" })).toBeDisabled();
-    expect(within(dialog).getByRole("button", { name: /归档/ })).toBeDisabled();
 
     await act(async () => {
       finish();

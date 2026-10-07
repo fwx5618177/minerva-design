@@ -1,10 +1,11 @@
-// Behaviours ported from @novel-isr/ui's Checkbox tests (children label,
-// color, ui-* styling hooks, data-state, FormControl integration).
+// Children label, colors, sizes, checked / indeterminate state and
+// FormControl integration.
 import React, { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Checkbox from "./Checkbox";
+import styles from "./checkbox.module.scss";
 import {
   FormControlContext,
   type FormControlContextValue,
@@ -42,18 +43,15 @@ const InField = ({
 
 const root = (el: HTMLElement) => el.closest("label")!;
 
-describe("Checkbox (merged capabilities)", () => {
-  it("renders children as the label with ui-* hooks", () => {
+describe("Checkbox labels, state and form integration", () => {
+  it("renders children as the label with the default size", () => {
     render(<Checkbox>Agree</Checkbox>);
     const box = screen.getByRole("checkbox", { name: "Agree" });
-    expect(box).toHaveClass("ui-checkbox-control");
-    expect(box).toHaveAttribute("data-state", "unchecked");
-    expect(root(box)).toHaveClass(
-      "ui-checkbox-root",
-      "ui-checkbox-size-md",
-      "ui-checkbox-color-brand",
-    );
-    expect(screen.getByText("Agree")).toHaveClass("ui-checkbox-text");
+    expect(box).toHaveClass(styles.input);
+    expect(box).not.toBeChecked();
+    expect(root(box)).toHaveClass(styles.checkbox, styles.medium);
+    expect(root(box)).not.toHaveClass(styles.colorDanger);
+    expect(screen.getByText("Agree")).toHaveClass(styles.label);
   });
 
   it("prefers label over children and omits the text span without content", () => {
@@ -62,20 +60,19 @@ describe("Checkbox (merged capabilities)", () => {
     );
     expect(screen.queryByText("Child")).toBeNull();
     rerender(<Checkbox ariaLabel="Bare" />);
-    expect(container.querySelector(".ui-checkbox-text")).toBeNull();
+    expect(container.querySelector(`.${styles.label}`)).toBeNull();
   });
 
-  it("maps size, color and error to ui-* hooks and module classes", () => {
+  it("maps size, color and error to module classes", () => {
     render(
       <Checkbox size="large" color="danger" error className="consumer">
         X
       </Checkbox>,
     );
     expect(root(screen.getByRole("checkbox"))).toHaveClass(
-      "ui-checkbox-size-lg",
-      "ui-checkbox-color-danger",
-      "ui-checkbox-error",
-      "colorDanger",
+      styles.large,
+      styles.error,
+      styles.colorDanger,
       "consumer",
     );
   });
@@ -86,10 +83,7 @@ describe("Checkbox (merged capabilities)", () => {
     ["warning", "colorWarning"],
   ] as const)("applies the %s color class", (color, cls) => {
     render(<Checkbox color={color}>X</Checkbox>);
-    expect(root(screen.getByRole("checkbox"))).toHaveClass(
-      cls,
-      `ui-checkbox-color-${color}`,
-    );
+    expect(root(screen.getByRole("checkbox"))).toHaveClass(styles[cls]);
   });
 
   it("toggles when the label text is clicked", async () => {
@@ -98,10 +92,6 @@ describe("Checkbox (merged capabilities)", () => {
     render(<Checkbox onChange={onChange}>Agree</Checkbox>);
     await user.click(screen.getByText("Agree"));
     expect(screen.getByRole("checkbox")).toBeChecked();
-    expect(screen.getByRole("checkbox")).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
     expect(onChange).toHaveBeenLastCalledWith(true, expect.anything());
   });
 
@@ -122,22 +112,17 @@ describe("Checkbox (merged capabilities)", () => {
         </Checkbox>
       );
     }
-    const { container } = render(<App />);
-    const box = screen.getByRole("checkbox");
+    render(<App />);
+    const box = screen.getByRole("checkbox") as HTMLInputElement;
     expect(box).toHaveAttribute("aria-checked", "mixed");
     expect(box).toBePartiallyChecked();
-    expect(container.querySelector(".ui-checkbox-indicator")).toHaveAttribute(
-      "data-state",
-      "indeterminate",
-    );
+    expect(box.indeterminate).toBe(true);
   });
 
-  it("marks the root data-disabled", () => {
+  it("marks the root disabled", () => {
     render(<Checkbox disabled>A</Checkbox>);
-    expect(root(screen.getByRole("checkbox"))).toHaveAttribute(
-      "data-disabled",
-      "true",
-    );
+    expect(screen.getByRole("checkbox")).toBeDisabled();
+    expect(root(screen.getByRole("checkbox"))).toHaveClass(styles.disabled);
   });
 
   it("passes id, value and aria-describedby to the input", () => {
@@ -165,8 +150,7 @@ describe("Checkbox (merged capabilities)", () => {
     const box = screen.getByRole("checkbox");
     expect(box).toBeDisabled();
     expect(box).toHaveAttribute("aria-invalid", "true");
-    expect(root(box)).toHaveClass("ui-checkbox-error", "error");
-    expect(root(box)).toHaveAttribute("data-disabled", "true");
+    expect(root(box)).toHaveClass(styles.error, styles.disabled);
   });
 
   it("lets an explicit disabled={false} override the FormControl", () => {

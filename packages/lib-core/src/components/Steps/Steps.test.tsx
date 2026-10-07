@@ -1,5 +1,3 @@
-// Ported from @novel-isr/ui src/components/Steps/__test__/Steps.test.tsx and
-// the Steps part of src/components/__test__/UploadSteps.test.tsx
 import { createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,7 +17,7 @@ describe("Steps", () => {
     render(<Steps items={items} value="draft" onChange={() => {}} />);
     const list = screen.getByRole("list", { name: "Steps" });
     expect(list.tagName).toBe("OL");
-    expect(list).toHaveClass("ui-steps", "steps");
+    expect(list).toHaveClass("steps");
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
     const buttons = screen.getAllByRole("button");
     expect(buttons.map((b) => b.textContent)).toEqual([
@@ -27,7 +25,7 @@ describe("Steps", () => {
       "2Review",
       "3Publish",
     ]);
-    expect(buttons[0].querySelector(".ui-step-number")).toHaveAttribute(
+    expect(buttons[0].querySelector(".number")).toHaveAttribute(
       "aria-hidden",
       "true",
     );
@@ -47,12 +45,12 @@ describe("Steps", () => {
     );
     expect(screen.getByRole("list", { name: "Publishing" })).toHaveClass("c");
     const [first, second, third] = screen.getAllByRole("listitem");
-    expect(first).toHaveClass("ui-step", "is-complete", "complete");
-    expect(first).not.toHaveClass("is-current");
-    expect(second).toHaveClass("is-current", "current");
-    expect(second).not.toHaveClass("is-complete");
-    expect(third).not.toHaveClass("is-current");
-    expect(third).not.toHaveClass("is-complete");
+    expect(first).toHaveClass("step", "complete");
+    expect(first).not.toHaveClass("current");
+    expect(second).toHaveClass("current");
+    expect(second).not.toHaveClass("complete");
+    expect(third).not.toHaveClass("current");
+    expect(third).not.toHaveClass("complete");
     expect(screen.getByRole("button", { name: "Review" })).toHaveAttribute(
       "aria-current",
       "step",
@@ -154,14 +152,14 @@ describe("Steps", () => {
     render(<Steps items={items} defaultValue="draft" onChange={onChange} />);
     await user.click(screen.getByRole("button", { name: "Publish" }));
     expect(onChange).toHaveBeenCalledWith("publish");
-    expect(screen.getAllByRole("listitem")[1]).toHaveClass("is-complete");
+    expect(screen.getAllByRole("listitem")[1]).toHaveClass("complete");
   });
 
   it("marks no step current when value matches nothing", () => {
     render(<Steps items={items} value="unknown" onChange={() => {}} />);
     screen.getAllByRole("listitem").forEach((li) => {
-      expect(li).not.toHaveClass("is-current");
-      expect(li).not.toHaveClass("is-complete");
+      expect(li).not.toHaveClass("current");
+      expect(li).not.toHaveClass("complete");
     });
     screen
       .getAllByRole("button")

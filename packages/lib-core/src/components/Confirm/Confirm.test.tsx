@@ -1,4 +1,3 @@
-// Ported from novel-isr-ui Confirm/__test__/Confirm.provider.test.tsx
 import { StrictMode } from "react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,7 +6,7 @@ import { ConfirmDialog, ConfirmProvider, confirm, useConfirm } from "./index";
 import i18n from "../../config/i18n";
 
 function hosts() {
-  return document.querySelectorAll("[data-ui-confirm-host]");
+  return document.querySelectorAll("[data-confirm-host]");
 }
 
 function DeleteButton({ onResult }: { onResult: (ok: boolean) => void }) {
@@ -41,7 +40,7 @@ describe("ConfirmDialog (declarative)", () => {
     );
     const dialog = screen.getByRole("dialog", { name: "Publish chapter" });
     expect(dialog).toHaveAccessibleDescription("Readers will see it");
-    expect(dialog).toHaveClass("ui-modal-size-sm");
+    expect(dialog).toHaveClass("small");
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
     await userEvent.click(screen.getByRole("button", { name: "Publish" }));
@@ -66,7 +65,6 @@ describe("ConfirmDialog (declarative)", () => {
     );
     const del = screen.getByRole("button", { name: "Delete" });
     expect(del).toHaveClass("error");
-    expect(del).toHaveAttribute("data-intent", "danger");
     rerender(
       <ConfirmDialog
         open

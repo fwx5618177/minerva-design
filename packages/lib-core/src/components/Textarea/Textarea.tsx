@@ -1,5 +1,5 @@
 import { cn } from "../../utils/cn";
-import { fieldSizeHook, isAriaInvalid } from "../../internal/forms-field";
+import { isAriaInvalid } from "../../internal/forms-field";
 import { useFormControlProps } from "../FormControl/context";
 import type { TextareaProps } from "./types";
 import styles from "./textarea.module.scss";
@@ -28,11 +28,6 @@ export const Textarea = ({
         styles[variant],
         styles[size],
         isInvalid && styles.invalid,
-        "ui-textarea",
-        `ui-textarea-variant-${variant}`,
-        `ui-textarea-size-${fieldSizeHook[size]}`,
-        "ui-textarea-resize-none",
-        isInvalid && "ui-textarea-error",
         className,
       )}
       {...field}

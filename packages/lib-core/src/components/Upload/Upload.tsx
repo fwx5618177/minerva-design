@@ -102,22 +102,18 @@ const Upload = ({
     <div
       {...rest}
       ref={ref}
-      className={classNames(styles.upload, "ui-upload", className)}
+      className={classNames(styles.upload, className)}
       role="group"
       aria-labelledby={labelId}
       aria-busy={loading}
     >
-      <span
-        id={labelId}
-        className={classNames(styles.label, "ui-upload-label")}
-      >
+      <span id={labelId} className={styles.label}>
         {label}
       </span>
       {/* Drop target only: the keyboard path is the select button inside */}
       <div
-        className={classNames(styles.dropzone, "ui-upload-dropzone", {
+        className={classNames(styles.dropzone, {
           [styles.dragging]: dragging && !blocked,
-          "is-dragging": dragging && !blocked,
         })}
         onDragOver={(event) => {
           event.preventDefault();
@@ -168,32 +164,24 @@ const Upload = ({
         </Alert>
       )}
       {value.length > 0 && (
-        <ul className={classNames(styles.list, "ui-upload-list")}>
+        <ul className={styles.list}>
           {value.map((item) => (
-            <li
-              key={item.id}
-              className={classNames(styles.item, "ui-upload-item")}
-            >
+            <li key={item.id} className={styles.item}>
               {item.previewUrl && (
-                <img
-                  src={item.previewUrl}
-                  alt=""
-                  className={classNames(styles.preview, "ui-upload-preview")}
-                />
+                <img src={item.previewUrl} alt="" className={styles.preview} />
               )}
-              <div className={classNames(styles.info, "ui-upload-info")}>
+              <div className={styles.info}>
                 <span>{item.name}</span>
                 <span
                   role={item.status === "error" ? "alert" : "status"}
-                  className={classNames(styles.status, "ui-upload-status", {
+                  className={classNames(styles.status, {
                     [styles.statusError]: item.status === "error",
-                    "is-error": item.status === "error",
                   })}
                 >
                   {statusText(item)}
                 </span>
               </div>
-              <div className={classNames(styles.actions, "ui-upload-actions")}>
+              <div className={styles.actions}>
                 {item.status === "error" && onRetry && (
                   <IconButton
                     label={

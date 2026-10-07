@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { HtmlPreview } from ".";
 import { previewDocument } from "./previewDocument";
+import styles from "./htmlPreview.module.scss";
 
 // Runs under the default happy-dom environment, whose DOM is not conforming
 // enough for DOMPurify (see HtmlPreview.test.tsx): the preview must fail
@@ -25,7 +26,7 @@ describe("HtmlPreview (happy-dom)", () => {
     expect(previewDocument("")).toContain("<body></body>");
   });
 
-  it("renders the hooks, forwards root props and normalizes invalid sizes", () => {
+  it("renders the preview frame, forwards root props and normalizes invalid sizes", () => {
     const ref = createRef<HTMLDivElement>();
     const { container } = render(
       <HtmlPreview
@@ -39,11 +40,10 @@ describe("HtmlPreview (happy-dom)", () => {
         height={Number.NaN}
       />,
     );
-    expect(ref.current).toHaveClass("ui-html-preview", "preview", "consumer");
-    expect(ref.current).toHaveAttribute("data-viewport", "mobile");
+    expect(ref.current).toHaveClass(styles.preview, "consumer");
     expect(ref.current?.style.maxWidth).toBe("800px");
     const frame = container.querySelector("iframe")!;
-    expect(frame).toHaveClass("ui-html-preview-frame", "frame");
+    expect(frame).toHaveClass(styles.frame);
     expect(frame.style.width).toBe("375px");
     expect(frame.style.height).toBe("600px");
     expect(frame.getAttribute("sandbox")).toBe("");

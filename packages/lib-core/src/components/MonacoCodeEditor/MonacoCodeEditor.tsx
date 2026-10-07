@@ -151,27 +151,20 @@ export const MonacoCodeEditor = ({
   const busy = status === "loading" || status === "ready";
 
   return (
-    <div
-      className={cn(styles.root, "ui-monaco-code-editor", className)}
-      role="group"
-      aria-label={label}
-    >
+    <div className={cn(styles.root, className)} role="group" aria-label={label}>
       {/* Labels the fallback textarea, or Monaco's own input once mounted
           (its id is set in onMount), so clicking it focuses the editor. */}
-      <label
-        className={cn(styles.label, "ui-monaco-code-editor-label")}
-        htmlFor={inputId}
-      >
+      <label className={styles.label} htmlFor={inputId}>
         {label}
       </label>
       <div
-        className={cn(styles.surface, "ui-monaco-code-editor-surface")}
+        className={styles.surface}
         style={{ height: editorHeight }}
         aria-busy={busy}
       >
         {status === "error" ? (
           <>
-            <div className={cn(styles.error, "ui-monaco-code-editor-error")}>
+            <div className={styles.error}>
               <div className={styles.message} role="alert">
                 {unavailableText ?? t("monacoCodeEditor.unavailable")}
               </div>
@@ -191,7 +184,7 @@ export const MonacoCodeEditor = ({
               value={value}
               disabled={disabled}
               spellCheck={false}
-              className={cn(styles.fallback, "ui-monaco-code-editor-fallback")}
+              className={styles.fallback}
               onChange={(event) => {
                 if (!disabled) onChange(event.target.value);
               }}
@@ -200,10 +193,7 @@ export const MonacoCodeEditor = ({
         ) : (
           <>
             {busy && (
-              <div
-                className={cn(styles.loading, "ui-monaco-code-editor-loading")}
-                role="status"
-              >
+              <div className={styles.loading} role="status">
                 <ProgressIndicator
                   size="small"
                   ariaLabel={loadingLabel ?? t("monacoCodeEditor.loading")}

@@ -5,7 +5,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
-import { portedCases } from "./test-utils/portedSsrCases";
+import { componentSsrCases } from "./test-utils/componentSsrCases";
 
 const noop = () => {};
 
@@ -76,7 +76,7 @@ const isButtonComponent = (name: string) =>
 
 describe("internal buttons never submit an enclosing form", () => {
   it.each(
-    [...portedCases, ...extraCases].filter(
+    [...componentSsrCases, ...extraCases].filter(
       ([name]) => !isButtonComponent(name),
     ),
   )("%s", (_, element) => {

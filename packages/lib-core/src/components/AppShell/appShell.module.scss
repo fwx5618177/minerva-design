@@ -1,7 +1,7 @@
-// Dimensions are public override hooks (set them on the shell or an ancestor):
-// --ui-shell-sidebar-width, --ui-shell-rail-width, --ui-shell-header-height.
+// Dimensions can be overridden on the shell or an ancestor:
+// --shell-sidebar-width, --shell-rail-width, --shell-header-height.
 .shell {
-  --ui-shell-content-offset: var(--ui-shell-sidebar-width, 260px);
+  --shell-content-offset: var(--shell-sidebar-width, 260px);
 
   min-height: 100vh;
   min-height: 100dvh;
@@ -16,7 +16,7 @@
 
   &[data-sidebar-mode="compact"],
   &[data-sidebar-mode="floating"] {
-    --ui-shell-content-offset: var(--ui-shell-rail-width, 70px);
+    --shell-content-offset: var(--shell-rail-width, 70px);
   }
 
   // Compact rail: only the brand icon remains.
@@ -34,7 +34,7 @@
 
   // Floating rail expanded on hover / keyboard focus overlays the content.
   &[data-sidebar-mode="floating"][data-sidebar-expanded] .sidebar {
-    width: var(--ui-shell-sidebar-width, 260px);
+    width: var(--shell-sidebar-width, 260px);
     z-index: calc(var(--z-sticky) + 1);
     box-shadow: var(--shadow-lg);
   }
@@ -43,7 +43,7 @@
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
-  width: var(--ui-shell-content-offset);
+  width: var(--shell-content-offset);
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -56,7 +56,7 @@
 .brand {
   display: flex;
   align-items: center;
-  min-height: var(--ui-shell-header-height, 60px);
+  min-height: var(--shell-header-height, 60px);
   flex-shrink: 0;
   gap: var(--space-3);
   padding: 0 var(--space-5);
@@ -99,8 +99,8 @@
 
 .workspace {
   min-width: 0;
-  margin-left: var(--ui-shell-content-offset);
-  width: calc(100% - var(--ui-shell-content-offset));
+  margin-left: var(--shell-content-offset);
+  width: calc(100% - var(--shell-content-offset));
   transition:
     margin-left var(--transition-base),
     width var(--transition-base);
@@ -114,7 +114,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  min-height: var(--ui-shell-header-height, 60px);
+  min-height: var(--shell-header-height, 60px);
   padding: var(--space-2) var(--space-6);
   background: var(--surface-color);
   border-bottom: 1px solid var(--border-color);
@@ -132,10 +132,8 @@
   min-width: 0;
   gap: var(--space-2);
 
-  :global(.ui-button-label) {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
+  // Long Button labels wrap
+  --button-label-white-space: normal;
 }
 
 .content {
@@ -228,7 +226,7 @@
 
 @media (max-width: 768px) {
   .shell[data-sidebar-mode] {
-    --ui-shell-content-offset: 0px;
+    --shell-content-offset: 0px;
   }
 
   .sidebar {

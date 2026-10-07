@@ -1,11 +1,12 @@
-// Ported from @novel-isr/ui src/components/__test__/LoadingState.test.tsx
 import { act, createRef } from "react";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { compile } from "sass";
 import { afterEach, expect, it } from "vitest";
 import i18n from "../../config/i18n";
+import spinnerStyles from "../Spinner/spinner.module.scss";
 import LoadingState from "./LoadingState";
+import styles from "./loadingState.module.scss";
 
 const css = compile(join(import.meta.dirname, "loadingState.module.scss")).css;
 
@@ -22,12 +23,8 @@ it("renders the default visible label in one polite status region", () => {
   expect(status.getAttribute("aria-live")).toBe("polite");
   expect(status.getAttribute("aria-atomic")).toBe("true");
   expect(status.hasAttribute("aria-busy")).toBe(false);
-  expect(status).toHaveClass(
-    "ui-loading-state",
-    "ui-loading-state-size-default",
-    "medium",
-  );
-  const label = status.querySelector<HTMLElement>(".ui-loading-state-label")!;
+  expect(status).toHaveClass(styles.loadingState, styles.medium);
+  const label = status.querySelector<HTMLElement>(`:scope > .${styles.label}`)!;
   expect(label.textContent).toBe("Loading...");
   expect(label.hidden).toBe(false);
   expect(label.closest('[aria-hidden="true"]')).toBeNull();
@@ -35,11 +32,11 @@ it("renders the default visible label in one polite status region", () => {
   expect(
     container.querySelectorAll('[aria-live="polite"], [aria-live="assertive"]'),
   ).toHaveLength(1);
-  const spinner = status.querySelector(".ui-spinner")!;
+  const spinner = status.querySelector(`.${spinnerStyles.spinner}`)!;
   expect(spinner.getAttribute("role")).toBe("presentation");
   expect(spinner.getAttribute("aria-hidden")).toBe("true");
   expect(spinner.getAttribute("aria-live")).toBe("off");
-  expect(spinner).toHaveClass("ui-spinner-size-md", "ui-spinner-color-current");
+  expect(spinner).toHaveClass(spinnerStyles.medium, spinnerStyles.current);
   expect(spinner.textContent).toBe("");
 });
 
@@ -87,7 +84,7 @@ it("forwards the div ref, class, style, native attributes and event handlers", (
   const status = ref.current!;
   expect(status).toBeInstanceOf(HTMLDivElement);
   expect(status).toBe(screen.getByRole("status"));
-  expect(status).toHaveClass("ui-loading-state", "consumer");
+  expect(status).toHaveClass(styles.loadingState, "consumer");
   expect(status.style.minHeight).toBe("200px");
   expect(status.id).toBe("pending");
   expect(status.title).toBe("Pending records");
@@ -102,15 +99,15 @@ it("forwards the div ref, class, style, native attributes and event handlers", (
 });
 
 it.each([
-  ["small", "compact", "64px"],
-  ["medium", "default", "160px"],
-  ["large", "lg", "240px"],
+  ["small", "64px"],
+  ["medium", "160px"],
+  ["large", "240px"],
 ] as const)(
-  "renders size %s (hook %s) with the shipped minimum height %s",
-  (size, hook, minHeight) => {
+  "renders size %s with the shipped minimum height %s",
+  (size, minHeight) => {
     render(<LoadingState size={size} />);
     const status = screen.getByRole("status");
-    expect(status).toHaveClass(size, `ui-loading-state-size-${hook}`);
+    expect(status).toHaveClass(styles[size]);
     expect(status.hasAttribute("size")).toBe(false);
     expect(css).toMatch(
       new RegExp(`\\.${size}\\s*\\{[^}]*min-height:\\s*${minHeight}\\s*;`),

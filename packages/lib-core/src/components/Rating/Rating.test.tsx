@@ -1,20 +1,23 @@
-// Ported from @novel-isr/ui: Rating/__test__/Rating.test.tsx
 import React, { createRef, useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Rating, RatingScale } from ".";
+import styles from "./rating.module.scss";
 
+/** Fill of each star ("full" | "half" | "empty"), in order. */
 const fills = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll(".ui-rating-stars > *")).map((el) =>
-    ["full", "half", "empty"].find((f) =>
-      el.classList.contains(`ui-rating-star-${f}`),
-    ),
+  Array.from(container.querySelectorAll(`.${styles.star}`)).map((el) =>
+    el.classList.contains(styles.half)
+      ? "half"
+      : el.classList.contains(styles.empty)
+        ? "empty"
+        : "full",
   );
 
 function starButton(container: HTMLElement, index: number): HTMLButtonElement {
   const el = container.querySelectorAll<HTMLButtonElement>(
-    ".ui-rating-star-btn",
+    `.${styles.starButton}`,
   )[index];
   if (!el) throw new Error(`star button ${index} not found`);
   return el;
@@ -27,9 +30,9 @@ describe("Rating (read-only)", () => {
     expect(r).toHaveAttribute("aria-label", "8.0 / 10");
     expect(r).toHaveAttribute("role", "img");
     expect(r).not.toHaveAttribute("tabindex");
-    expect(r).toHaveClass("ui-rating", "ui-rating-size-md", "rating", "medium");
-    expect(r).not.toHaveClass("ui-rating-interactive");
-    expect(container.querySelector(".ui-rating-stars")).toHaveAttribute(
+    expect(r).toHaveClass(styles.rating, styles.medium);
+    expect(r).not.toHaveClass(styles.interactive);
+    expect(container.querySelector(`.${styles.stars}`)).toHaveAttribute(
       "aria-hidden",
       "true",
     );
@@ -60,9 +63,7 @@ describe("Rating (read-only)", () => {
       "empty",
       "empty",
     ]);
-    expect(container.querySelectorAll(".ui-rating-star-half svg")).toHaveLength(
-      2,
-    );
+    expect(container.querySelectorAll(`.${styles.half} svg`)).toHaveLength(2);
   });
 
   it("shows value and formatted rating count", () => {
@@ -70,22 +71,22 @@ describe("Rating (read-only)", () => {
       <Rating value={8.64} showValue ratingCount={3214} />,
     );
     expect(
-      container.querySelector(".ui-rating-value strong"),
+      container.querySelector(`.${styles.value} strong`),
     ).toHaveTextContent("8.6");
-    expect(screen.getByText("(3,214)")).toHaveClass("ui-rating-count");
+    expect(screen.getByText("(3,214)")).toHaveClass(styles.count);
   });
 
   it("shows the value without a count", () => {
     const { container } = render(<Rating value={8} showValue />);
-    expect(container.querySelector(".ui-rating-value")).toHaveTextContent(
+    expect(container.querySelector(`.${styles.value}`)).toHaveTextContent(
       "8.0",
     );
-    expect(container.querySelector(".ui-rating-count")).toBeNull();
+    expect(container.querySelector(`.${styles.count}`)).toBeNull();
   });
 
   it("hides the value by default", () => {
     const { container } = render(<Rating value={8} ratingCount={3} />);
-    expect(container.querySelector(".ui-rating-value")).toBeNull();
+    expect(container.querySelector(`.${styles.value}`)).toBeNull();
   });
 
   it("uses a custom ariaLabel, size and className, and forwards ref", () => {
@@ -102,7 +103,7 @@ describe("Rating (read-only)", () => {
     );
     const r = screen.getByLabelText("Four");
     expect(ref.current).toBe(r);
-    expect(r).toHaveClass("ui-rating-size-lg", "c");
+    expect(r).toHaveClass(styles.large, "c");
     expect(r).toHaveStyle({ margin: "4px" });
     expect(r.querySelector("svg")).toHaveAttribute("width", "20");
   });
@@ -110,7 +111,7 @@ describe("Rating (read-only)", () => {
   it("uses 12px stars when small", () => {
     const { container } = render(<Rating value={4} size="small" />);
     expect(container.querySelector("svg")).toHaveAttribute("width", "12");
-    expect(container.firstElementChild).toHaveClass("ui-rating-size-sm");
+    expect(container.firstElementChild).toHaveClass(styles.small);
   });
 });
 
@@ -122,7 +123,7 @@ describe("Rating (interactive)", () => {
     expect(slider).toHaveAttribute("aria-valuemin", "0");
     expect(slider).toHaveAttribute("aria-valuemax", "10");
     expect(slider).toHaveAttribute("tabindex", "0");
-    expect(slider).toHaveClass("ui-rating-interactive", "interactive");
+    expect(slider).toHaveClass(styles.interactive);
   });
 
   it("readOnly forces display mode even with onChange", async () => {
@@ -195,7 +196,7 @@ describe("Rating (interactive)", () => {
     const onChange = vi.fn();
     const { container } = render(<Rating value={0} onChange={onChange} />);
     const buttons = container.querySelectorAll<HTMLButtonElement>(
-      ".ui-rating-star-btn",
+      `.${styles.starButton}`,
     );
     expect(buttons).toHaveLength(5);
     buttons.forEach((b) => expect(b).toHaveAttribute("tabindex", "-1"));
@@ -258,16 +259,16 @@ describe("RatingScale", () => {
     const { container } = render(
       <RatingScale ref={ref} dimensions={dims} className="c" />,
     );
-    expect(container.firstElementChild).toHaveClass("ui-rating-scale", "c");
+    expect(container.firstElementChild).toHaveClass(styles.scale, "c");
     expect(ref.current).toBe(container.firstElementChild);
-    const rows = container.querySelectorAll(".ui-rating-scale-row");
+    const rows = container.querySelectorAll(`.${styles.scaleRow}`);
     expect(rows).toHaveLength(2);
     expect(rows[0]).toHaveAttribute("title", "Story quality");
     expect(rows[1]).not.toHaveAttribute("title");
-    expect(screen.getByText("Plot")).toHaveClass("ui-rating-scale-label");
+    expect(screen.getByText("Plot")).toHaveClass(styles.scaleLabel);
     expect(screen.getByLabelText("Plot 8.2 / 10")).toBeInTheDocument();
     expect(screen.getByLabelText("Writing 7.5 / 10")).toBeInTheDocument();
-    expect(container.querySelectorAll(".ui-rating-value")).toHaveLength(2);
+    expect(container.querySelectorAll(`.${styles.value}`)).toHaveLength(2);
     expect(screen.queryByRole("slider")).toBeNull();
   });
 

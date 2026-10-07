@@ -26,7 +26,7 @@ const PaletteToggle = ({
   return (
     <div
       ref={ref}
-      className={classNames(styles.group, "ui-theme-toggle", className)}
+      className={classNames(styles.group, className)}
       role="group"
       aria-label={t("paletteToggle.label", {
         palette: palette ?? t("paletteToggle.default"),
@@ -40,7 +40,7 @@ const PaletteToggle = ({
           <button
             key={key}
             type="button"
-            className={classNames(styles.item, "ui-theme-toggle-item")}
+            className={styles.item}
             data-active={active || undefined}
             aria-pressed={active}
             onClick={() => setPalette(item)}

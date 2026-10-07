@@ -1,5 +1,4 @@
-// Ported from @novel-isr/ui src/components/Button/__test__/Button.test.tsx
-// (appearance / icons / loadingText / fullWidth / styling hooks).
+// Token-based appearance, icons, loadingText, fullWidth, sizes and colors.
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,62 +6,55 @@ import { join } from "node:path";
 import { compile } from "sass";
 import { describe, expect, it, vi } from "vitest";
 import Button from "./Button";
+import styles from "./button.module.scss";
 import type { ButtonColor } from "./types";
 
-describe("Button styling hooks", () => {
-  it("renders the stable ui-button hooks with default variant/size/color", () => {
+describe("Button sizes and colors", () => {
+  it("defaults to the primary color and medium size", () => {
     render(<Button>Save</Button>);
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toHaveClass(
-      "ui-button",
-      "ui-button-variant-solid",
-      "ui-button-size-md",
-      "ui-button-color-primary",
+      styles.customButton,
+      styles.primary,
+      styles.medium,
     );
-    expect(button).not.toHaveAttribute("data-loading");
+    expect(button).not.toHaveAttribute("aria-busy");
   });
 
-  it.each([
-    ["xsmall", "xs"],
-    ["small", "sm"],
-    ["medium", "md"],
-    ["large", "lg"],
-    ["xlarge", "xl"],
-  ] as const)("maps size %s to ui-button-size-%s", (size, hook) => {
-    render(<Button size={size}>X</Button>);
-    expect(screen.getByRole("button")).toHaveClass(
-      `ui-button-size-${hook}`,
-      size,
-    );
-  });
+  it.each(["xsmall", "small", "medium", "large", "xlarge"] as const)(
+    "applies the %s size class",
+    (size) => {
+      render(<Button size={size}>X</Button>);
+      expect(screen.getByRole("button")).toHaveClass(styles[size]);
+    },
+  );
 
-  it.each<[ButtonColor, string]>([
-    ["primary", "primary"],
-    ["secondary", "secondary"],
-    ["success", "success"],
-    ["warning", "warning"],
-    ["error", "danger"],
-    ["danger", "danger"],
-    ["info", "info"],
-    ["accent", "accent"],
-    ["neutral", "neutral"],
-    ["retry", "danger"],
-    ["back", "info"],
-  ])("maps variant %s to ui-button-color-%s", (variant, hook) => {
+  it.each<ButtonColor>([
+    "primary",
+    "secondary",
+    "success",
+    "warning",
+    "error",
+    "danger",
+    "info",
+    "accent",
+    "neutral",
+    "retry",
+    "back",
+  ])("applies the %s color class", (variant) => {
     render(<Button variant={variant}>X</Button>);
-    expect(screen.getByRole("button")).toHaveClass(
-      `ui-button-color-${hook}`,
-      variant,
-    );
+    expect(screen.getByRole("button")).toHaveClass(styles[variant]);
   });
 });
 
-describe("Button label hook", () => {
-  it("wraps the content in span.ui-button-label in the classic look too", () => {
+describe("Button classic markup", () => {
+  it("renders the content directly, and next to the spinner while loading", () => {
     const { rerender } = render(<Button>Plain</Button>);
-    expect(screen.getByText("Plain")).toHaveClass("ui-button-label");
+    expect(screen.getByText("Plain")).toBe(screen.getByRole("button"));
     rerender(<Button loading>Busy</Button>);
-    expect(screen.getByText("Busy")).toHaveClass("ui-button-label");
+    const wrapper = screen.getByText("Busy");
+    expect(wrapper).toHaveClass(styles.loadingWrapper);
+    expect(wrapper.firstElementChild).toHaveClass(styles.loadingSpinner);
   });
 });
 
@@ -77,9 +69,7 @@ describe("Button appearance", () => {
     expect(button).toHaveClass(
       "modern",
       "appearance-outline",
-      "ui-button-variant-outline",
-      "ui-button-size-lg",
-      "ui-button-fullwidth",
+      "large",
       "fullWidth",
       "consumer",
     );
@@ -152,9 +142,9 @@ describe("Button icons and loading", () => {
     const button = screen.getByRole("button", { name: "Label" });
     const children = Array.from(button.children);
     expect(children).toHaveLength(3);
-    expect(children[0]).toHaveClass("ui-button-icon", "icon");
-    expect(children[1]).toHaveClass("ui-button-label", "label");
-    expect(children[2]).toHaveClass("ui-button-icon");
+    expect(children[0]).toHaveClass(styles.icon);
+    expect(children[1]).toHaveClass(styles.label);
+    expect(children[2]).toHaveClass(styles.icon);
     expect(children[0]).toContainElement(screen.getByTestId("left"));
     expect(children[2]).toContainElement(screen.getByTestId("right"));
     expect(button).toHaveClass("structured");
@@ -176,19 +166,13 @@ describe("Button icons and loading", () => {
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(button).toHaveAttribute("aria-disabled", "true");
-    expect(button).toHaveAttribute("data-loading", "true");
-    expect(button).toHaveClass("ui-button-loading");
-    expect(button.querySelector(".ui-button-spinner")).toHaveAttribute(
+    expect(button).toHaveClass(styles.loading);
+    expect(button.querySelector(`.${styles.loadingSpinner}`)).toHaveAttribute(
       "aria-hidden",
       "true",
     );
-    expect(button.querySelector(".ui-button-label")).toHaveClass(
-      "ui-button-hidden",
-      "hidden",
-    );
-    expect(screen.getByTestId("icon").parentElement).toHaveClass(
-      "ui-button-hidden",
-    );
+    expect(screen.getByText("Save")).toHaveClass(styles.label, styles.hidden);
+    expect(screen.getByTestId("icon").parentElement).toHaveClass(styles.hidden);
     await user.click(button);
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -207,7 +191,7 @@ describe("Button icons and loading", () => {
     expect(button).toHaveTextContent("Saving...");
     expect(button).not.toHaveTextContent("Save$");
     expect(screen.queryByTestId("icon")).toBeNull();
-    expect(button.querySelector(".ui-button-spinner")).not.toBeNull();
+    expect(button.querySelector(`.${styles.loadingSpinner}`)).not.toBeNull();
 
     rerender(
       <Button loadingText="Saving..." startIcon={<i data-testid="icon" />}>
@@ -216,7 +200,7 @@ describe("Button icons and loading", () => {
     );
     expect(screen.getByRole("button")).toHaveTextContent("Save");
     expect(screen.getByTestId("icon")).toBeInTheDocument();
-    expect(button.querySelector(".ui-button-spinner")).toBeNull();
+    expect(button.querySelector(`.${styles.loadingSpinner}`)).toBeNull();
   });
 
   it("forwards ref and native attributes", () => {
@@ -256,6 +240,15 @@ describe("Button styles", () => {
   it("lets the label shrink and ellipsize inside the button", () => {
     expect(css).toMatch(
       /\.structured \.label\s*\{[^}]*min-width:\s*0;[^}]*text-overflow:\s*ellipsis/,
+    );
+  });
+
+  it("lets containers make labels wrap through --button-label-white-space", () => {
+    expect(css).toMatch(
+      /\.structured \.label\s*\{[^}]*white-space:\s*var\(--button-label-white-space,\s*nowrap\)/,
+    );
+    expect(css).toMatch(
+      /\.customButton\.modern\s*\{[^}]*white-space:\s*var\(--button-label-white-space,\s*nowrap\)/,
     );
   });
 

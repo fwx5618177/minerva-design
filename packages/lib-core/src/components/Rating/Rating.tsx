@@ -7,19 +7,12 @@ import type { RatingProps, RatingScaleProps } from "./types";
 type StarFill = "full" | "half" | "empty";
 
 const SIZE_PX = { small: 12, medium: 16, large: 20 } as const;
-/** `ui-*` styling hooks (stable class names shared with @novel-isr/ui). */
-const UI_SIZE = { small: "sm", medium: "md", large: "lg" } as const;
 const STARS = [0, 1, 2, 3, 4];
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
-  const className = classNames(
-    styles.star,
-    styles[fill],
-    "ui-rating-star",
-    `ui-rating-star-${fill}`,
-  );
+  const className = classNames(styles.star, styles[fill]);
   if (fill === "half") {
     // Empty outline with the filled left half drawn on top.
     return (
@@ -128,25 +121,18 @@ const Rating = ({
     styles.rating,
     styles[size],
     interactive && styles.interactive,
-    "ui-rating",
-    `ui-rating-size-${UI_SIZE[size]}`,
-    interactive && "ui-rating-interactive",
     className,
   );
 
   const stars = (
-    <span className={classNames(styles.stars, "ui-rating-stars")} aria-hidden>
+    <span className={styles.stars} aria-hidden>
       {STARS.map((i) =>
         interactive ? (
           <button
             key={i}
             type="button"
             tabIndex={-1}
-            className={classNames(
-              styles.starButton,
-              "ui-rating-star-btn",
-              `ui-rating-star-${fillOf(i)}`,
-            )}
+            className={styles.starButton}
             onClick={(event) => handleStarClick(event, i)}
             onMouseEnter={() => setHoverIndex(i + 1)}
           >
@@ -160,10 +146,10 @@ const Rating = ({
   );
 
   const valueNode = showValue && (
-    <span className={classNames(styles.value, "ui-rating-value")}>
+    <span className={styles.value}>
       <strong>{value.toFixed(1)}</strong>
       {ratingCount !== undefined && (
-        <span className={classNames(styles.count, "ui-rating-count")}>
+        <span className={styles.count}>
           ({ratingCount.toLocaleString("en-US")})
         </span>
       )}
@@ -221,21 +207,14 @@ const RatingScale = ({
   className,
   ref,
 }: RatingScaleProps) => (
-  <div
-    ref={ref}
-    className={classNames(styles.scale, "ui-rating-scale", className)}
-  >
+  <div ref={ref} className={classNames(styles.scale, className)}>
     {dimensions.map((dim) => (
       <div
         key={dim.key}
-        className={classNames(styles.scaleRow, "ui-rating-scale-row")}
+        className={styles.scaleRow}
         title={typeof dim.hint === "string" ? dim.hint : undefined}
       >
-        <span
-          className={classNames(styles.scaleLabel, "ui-rating-scale-label")}
-        >
-          {dim.label}
-        </span>
+        <span className={styles.scaleLabel}>{dim.label}</span>
         <Rating
           value={dim.value}
           max={max}

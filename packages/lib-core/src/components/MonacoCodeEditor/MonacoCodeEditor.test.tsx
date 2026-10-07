@@ -5,6 +5,7 @@ import type { EditorProps, Monaco } from "@monaco-editor/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ConfigProvider } from "../../contexts";
 import { MonacoCodeEditor, type MonacoCodeEditorProps } from ".";
+import styles from "./monacoCodeEditor.module.scss";
 
 const adapter = vi.hoisted(() => ({
   props: {} as EditorProps,
@@ -99,17 +100,18 @@ describe("MonacoCodeEditor", () => {
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
-  it("renders the stable hooks and a labelled group; the label targets the mounted editor input", async () => {
+  it("renders a labelled group and editor surface; the label targets the mounted editor input", async () => {
     adapter.dom = document.createElement("div");
     const input = document.createElement("textarea");
     adapter.dom.append(input);
     await render({ className: "consumer" });
     const group = container.querySelector('[role="group"]')!;
-    expect(group).toHaveClass("ui-monaco-code-editor", "root", "consumer");
+    expect(group).toHaveClass(styles.root, "consumer");
     expect(group.getAttribute("aria-label")).toBe("HTML source");
-    expect(
-      container.querySelector(".ui-monaco-code-editor-surface"),
-    ).toHaveAttribute("aria-busy", "false");
+    expect(container.querySelector(`.${styles.surface}`)).toHaveAttribute(
+      "aria-busy",
+      "false",
+    );
     expect(input.id).not.toBe("");
     expect(container.querySelector("label")!.htmlFor).toBe(input.id);
   });
@@ -304,7 +306,7 @@ describe("MonacoCodeEditor", () => {
     adapter.init.mockReturnValue(new Promise(() => {}));
     await render({ height: 900, maxHeight: 500 });
     const surface = () =>
-      container.querySelector<HTMLElement>(".ui-monaco-code-editor-surface")!;
+      container.querySelector<HTMLElement>(`.${styles.surface}`)!;
     expect(surface().style.height).toBe("500px");
     await render({ height: 20, minHeight: 160, maxHeight: 500 });
     expect(surface().style.height).toBe("160px");

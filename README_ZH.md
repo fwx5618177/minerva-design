@@ -25,7 +25,7 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 - **ESM + CommonJS**：同时提供两种模块格式
 - **TypeScript**：自带类型定义
 - **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`@minerva/lib-core/theme-utils`，服务端安全）
-- **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`/compat`（与 `@novel-isr/ui` 完全兼容的 API）、`style.css`、`compat.css`、`prose.scss`
+- **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
 - **国际化**：内置英文、中文和法文语言包
 
 ## 📦 包
@@ -160,8 +160,6 @@ export function Root() {
 ### 主题、配色与 SSR
 
 服务端组件中用 `@minerva/lib-core/theme-utils` 的 `parseThemeCookies` 读取 cookie，并在 `<head>` 中内联 `THEME_INIT_SCRIPT`，再用 `ThemeProvider`（`defaultTheme` / `defaultPalette`）包裹应用即可避免首屏闪烁。详见文档站「主题与配色」页面。
-
-从 `@novel-isr/ui` 迁移？参见 [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md)：`@minerva/lib-core/compat` 提供完全相同的 API。
 
 ### Message API
 

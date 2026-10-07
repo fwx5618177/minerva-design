@@ -1,16 +1,7 @@
-// Ported from @novel-isr/ui tests/e2e/settings-editors.test.tsx.
-//
 // A "translation settings" admin page: JsonField + KeyValueEditor inside a
-// FormLayout, a command Toolbar and a List with row actions. Runs through
-// Minerva's native API (English; every string here is consumer-provided),
-// then representative scenarios verbatim through @minerva/lib-core/compat
-// with @novel-isr/ui's exact prop names.
-//
-// Port adaptations: FormField is*-flags -> invalid/required/disabled/readOnly,
-// Checkbox onCheckedChange -> onChange, Button variant="outline" ->
-// appearance="outline" (plus an explicit type="button", since the native
-// Button does not default it), IconButton size "sm" -> "small",
-// EmptyState -> Empty.
+// FormLayout, a command Toolbar and a List with row actions (every string
+// here is consumer-provided). Buttons outside the submit action set an
+// explicit type="button", since the native Button does not default it.
 import { useState } from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,7 +21,6 @@ import {
   Toolbar,
   type KeyValueEntry,
 } from "@minerva/lib-core";
-import * as compat from "@minerva/lib-core/compat";
 
 const LOSSLESS =
   '{"n":9007199254740993,"exponent":1e400,"escaped":"\\u0061","duplicate":1,"duplicate":2}';
@@ -421,172 +411,5 @@ describe("List rows and Toolbar commands (native keyboard activation)", () => {
     expect(await screen.findByRole("tooltip")).toHaveTextContent("Command 1");
     await user.keyboard(" ");
     expect(activated).toEqual([0, 1]);
-  });
-});
-
-// ── @novel-isr/ui API through the compat layer ──────────────────────────────
-
-function CompatDictionarySettings({
-  onSave,
-}: {
-  onSave: (data: Record<string, FormDataEntryValue>) => void;
-}) {
-  const [value, setValue] = useState('{"title":"Draft"}');
-  const [writes, setWrites] = useState(0);
-  const [disabled, setDisabled] = useState(false);
-  const [readOnly, setReadOnly] = useState(false);
-  const [businessError, setBusinessError] = useState(false);
-  return (
-    <compat.FormLayout
-      aria-label="Settings"
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSave(Object.fromEntries(new FormData(event.currentTarget)));
-      }}
-    >
-      <compat.FormField
-        label="Dictionary"
-        helperText="Translations"
-        isRequired
-        isDisabled={disabled}
-        isReadOnly={readOnly}
-        isInvalid={businessError}
-        errorMessage={
-          businessError ? "Dictionary must contain string values" : undefined
-        }
-      >
-        <compat.JsonField
-          name="dictionary"
-          rows={6}
-          value={value}
-          onChange={(next) => {
-            setWrites((n) => n + 1);
-            setValue(next);
-          }}
-          aria-describedby="external-help"
-        />
-      </compat.FormField>
-      <span id="external-help">JSON object</span>
-      <p>Writes: {writes}</p>
-      <compat.Toolbar aria-label="Dictionary options">
-        <compat.Checkbox
-          checked={disabled}
-          onCheckedChange={(v) => setDisabled(v === true)}
-        >
-          Disable field
-        </compat.Checkbox>
-        <compat.Checkbox
-          checked={readOnly}
-          onCheckedChange={(v) => setReadOnly(v === true)}
-        >
-          Read only
-        </compat.Checkbox>
-        <compat.Checkbox
-          checked={businessError}
-          onCheckedChange={(v) => setBusinessError(v === true)}
-        >
-          Server rejected
-        </compat.Checkbox>
-        <compat.Button variant="outline" onClick={() => setValue(LOSSLESS)}>
-          Load sample
-        </compat.Button>
-        <compat.Button type="submit">Save</compat.Button>
-      </compat.Toolbar>
-    </compat.FormLayout>
-  );
-}
-
-describe("via @minerva/lib-core/compat", () => {
-  it("label focus, Shift+Tab to the format button, Enter formats without submitting; no-op format is not a write (Chinese defaults)", async () => {
-    const user = userEvent.setup();
-    const saves: Record<string, FormDataEntryValue>[] = [];
-    render(<CompatDictionarySettings onSave={(data) => saves.push(data)} />);
-    const field = screen.getByRole("textbox", { name: /Dictionary/ });
-    const format = screen.getByRole("button", { name: "格式化 JSON" });
-
-    expect(screen.getByRole("status")).toHaveTextContent("JSON 语法正确");
-    await user.click(screen.getByText("Dictionary"));
-    expect(field).toHaveFocus();
-    expect(screen.getByRole("status")).not.toHaveTextContent(/JSON 语法/);
-
-    await user.tab({ shift: true });
-    expect(format).toHaveFocus();
-    await user.keyboard("{Enter}");
-    expect(field).toHaveValue('{\n  "title": "Draft"\n}');
-    expect(screen.getByText("Writes: 1")).toBeInTheDocument();
-    expect(saves).toEqual([]);
-
-    await user.keyboard(" ");
-    expect(screen.getByText("Writes: 1")).toBeInTheDocument();
-
-    await user.hover(format);
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("格式化 JSON");
-  });
-
-  it("flags syntax errors on blur; business errors render as an alert; read-only values are still submitted", async () => {
-    const user = userEvent.setup();
-    const saves: Record<string, FormDataEntryValue>[] = [];
-    render(<CompatDictionarySettings onSave={(data) => saves.push(data)} />);
-    const field = screen.getByRole("textbox", { name: /Dictionary/ });
-
-    await user.clear(field);
-    await user.type(field, "{{");
-    await user.tab();
-    expect(field).toBeInvalid();
-    expect(screen.getByRole("status")).toHaveTextContent("JSON 语法错误");
-    expect(field.getAttribute("aria-describedby")?.split(" ")).toContain(
-      "external-help",
-    );
-
-    await user.click(screen.getByRole("button", { name: "Load sample" }));
-    expect(field).not.toBeInvalid();
-    await user.click(screen.getByRole("checkbox", { name: "Server rejected" }));
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Dictionary must contain string values",
-    );
-    await user.click(screen.getByRole("checkbox", { name: "Server rejected" }));
-
-    await user.click(screen.getByRole("checkbox", { name: "Read only" }));
-    expect(field).toHaveAttribute("readonly");
-    expect(screen.getByRole("button", { name: "格式化 JSON" })).toBeDisabled();
-    await user.click(screen.getByRole("button", { name: "Save" }));
-    expect(saves.at(-1)).toEqual({ dictionary: LOSSLESS });
-  });
-
-  it("KeyValueEditor and EmptyState keep novel's prop shapes", async () => {
-    const user = userEvent.setup();
-    const actions: string[] = [];
-    function Headers() {
-      const [entries, setEntries] = useState<compat.KeyValueEntry[]>([
-        { id: "first", key: "legacy\nkey", value: "Hello\nworld" },
-      ]);
-      return (
-        <>
-          <compat.KeyValueEditor entries={entries} onChange={setEntries} />
-          <compat.EmptyState
-            role="alert"
-            title="Render error"
-            action={
-              <compat.Button onClick={() => actions.push("retry")}>
-                Retry
-              </compat.Button>
-            }
-          />
-        </>
-      );
-    }
-    render(<Headers />);
-
-    await user.click(screen.getByRole("button", { name: "Add entry" }));
-    await user.type(screen.getByRole("textbox", { name: "Key 2" }), "x-new");
-    expect(screen.getByRole("textbox", { name: "Key 2" })).toHaveValue("x-new");
-    await user.click(screen.getByRole("button", { name: "Remove entry 1" }));
-    expect(screen.getByRole("textbox", { name: "Key 1" })).toHaveValue("x-new");
-
-    await user.click(
-      within(screen.getByRole("alert")).getByRole("button", { name: "Retry" }),
-    );
-    expect(actions).toEqual(["retry"]);
   });
 });

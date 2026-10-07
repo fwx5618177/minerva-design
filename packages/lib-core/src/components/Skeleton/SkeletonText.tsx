@@ -26,7 +26,7 @@ export const SkeletonText = ({
       ref={ref}
       aria-hidden="true"
       {...rest}
-      className={cn(styles.skeletonText, "ui-skeleton-text", className)}
+      className={cn(styles.skeletonText, className)}
       style={{ gap: resolveSpace(gap), ...style }}
     >
       {Array.from({ length: count }, (_, index) => (

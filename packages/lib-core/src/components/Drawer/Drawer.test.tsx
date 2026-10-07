@@ -1,4 +1,3 @@
-// Ported from novel-isr-ui src/components/Drawer/__test__/Drawer.test.tsx
 import { createRef, useState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -13,6 +12,7 @@ import {
   DrawerRoot,
   DrawerTrigger,
 } from "./index";
+import styles from "./drawer.module.scss";
 
 const setup = () => userEvent.setup({ pointerEventsCheck: 0 });
 
@@ -34,25 +34,13 @@ describe("Drawer (all-in-one)", () => {
       </Drawer>,
     );
     const dialog = screen.getByRole("dialog", { name: "Filters" });
-    expect(dialog).toHaveClass(
-      "content",
-      "left",
-      "large",
-      "ui-drawer-content",
-      "ui-drawer-side-left",
-      "ui-drawer-size-lg",
-    );
-    expect(dialog).toHaveAttribute("data-side", "left");
-    expect(dialog).toHaveAttribute("data-size", "large");
-    expect(screen.getByText("Filters")).toHaveClass(
-      "header",
-      "ui-drawer-header",
-    );
+    expect(dialog).toHaveClass(styles.content, styles.left, styles.large);
+    expect(screen.getByText("Filters")).toHaveClass(styles.header);
     const desc = screen.getByText("Drawer content");
-    expect(desc).toHaveClass("visuallyHidden", "ui-visually-hidden");
+    expect(desc).toHaveClass(styles.visuallyHidden);
     expect(dialog).toHaveAttribute("aria-describedby", desc.id);
-    expect(screen.getByText("body")).toHaveClass("body", "ui-drawer-body");
-    expect(document.querySelector(".ui-drawer-overlay")).toHaveClass("overlay");
+    expect(screen.getByText("body")).toHaveClass(styles.body);
+    expect(document.querySelector(`.${styles.overlay}`)).not.toBeNull();
   });
 
   it("defaults to right/medium and renders a visible description when provided", () => {
@@ -62,24 +50,14 @@ describe("Drawer (all-in-one)", () => {
       </Drawer>,
     );
     const dialog = screen.getByRole("dialog");
-    expect(dialog).toHaveClass("ui-drawer-side-right", "ui-drawer-size-md");
-    expect(screen.getByText("Narrow the list")).toHaveClass(
-      "description",
-      "ui-drawer-description",
-    );
+    expect(dialog).toHaveClass(styles.right, styles.medium);
+    expect(screen.getByText("Narrow the list")).toHaveClass(styles.description);
     expect(dialog).toHaveAccessibleDescription("Narrow the list");
   });
 
-  it.each([
-    ["small", "sm"],
-    ["full", "full"],
-  ] as const)("maps size %s to the ui-drawer-size-%s hook", (size, hook) => {
+  it.each(["small", "full"] as const)("applies the %s size class", (size) => {
     render(<Drawer open title="T" side="top" size={size} />);
-    expect(screen.getByRole("dialog")).toHaveClass(
-      "top",
-      size,
-      `ui-drawer-size-${hook}`,
-    );
+    expect(screen.getByRole("dialog")).toHaveClass(styles.top, styles[size]);
   });
 
   it("requests closing from the close button, Escape and outside overlay click", async () => {
@@ -92,13 +70,13 @@ describe("Drawer (all-in-one)", () => {
     );
     const close = screen.getByRole("button", { name: "Close" });
     expect(close).toHaveAttribute("type", "button");
-    expect(close).toHaveClass("close", "ui-drawer-close");
+    expect(close).toHaveClass(styles.close);
     await user.click(close);
     expect(onOpenChange).toHaveBeenNthCalledWith(1, false);
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledTimes(2);
     await user.click(
-      document.querySelector<HTMLElement>(".ui-drawer-overlay")!,
+      document.querySelector<HTMLElement>(`.${styles.overlay}`)!,
     );
     expect(onOpenChange).toHaveBeenCalledTimes(3);
   });
@@ -212,17 +190,13 @@ describe("Drawer composable API", () => {
     const dialog = screen.getByRole("dialog", { name: "Panel" });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(contentRef.current).toBe(dialog);
-    expect(dialog).toHaveClass(
-      "ui-drawer-side-bottom",
-      "ui-drawer-size-full",
-      "extra",
-    );
+    expect(dialog).toHaveClass(styles.bottom, styles.full, "extra");
     expect(dialog).toHaveAttribute("data-k", "v");
-    expect(document.querySelector(".ui-drawer-overlay")).toHaveClass("ov");
-    expect(headerRef.current).toHaveClass("ui-drawer-header", "h");
-    expect(footerRef.current).toHaveClass("ui-drawer-footer", "f");
+    expect(document.querySelector(`.${styles.overlay}`)).toHaveClass("ov");
+    expect(headerRef.current).toHaveClass(styles.header, "h");
+    expect(footerRef.current).toHaveClass(styles.footer, "f");
     expect(screen.getByRole("button", { name: "Dismiss" })).toHaveClass(
-      "ui-drawer-close",
+      styles.close,
     );
 
     await user.click(screen.getByRole("button", { name: "Done" }));

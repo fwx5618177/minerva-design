@@ -10,9 +10,7 @@
     "no": "なし",
     "main": "すべてのコンポーネント、プロバイダー、フック、ユーティリティ。",
     "monaco": "Monaco ベースのコードエディター（任意のピア依存：@monaco-editor/react と monaco-editor）。",
-    "compat": "@novel-isr/ui 互換レイヤー。",
-    "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。",
-    "compatThemeUtils": "@novel-isr/ui の名前とデフォルトを使う同じヘルパー（editorial パレットが常に適用されます）。"
+    "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。"
   },
   "why": {
     "title": "一部のエントリがクライアント境界である理由",
@@ -26,12 +24,12 @@
   },
   "functions": {
     "title": "サーバーで関数を呼び出す",
-    "text": "@minerva/lib-core/theme-utils（または @minerva/lib-core/compat/theme-utils）のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（message.success、Confirm、applyThemeStyles、各フックなど）は Server Component で呼び出さないでください。そこではクライアント参照にすぎません。クライアントコンポーネントやイベントハンドラーから呼び出してください。",
+    "text": "@minerva/lib-core/theme-utils のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（message.success、Confirm、applyThemeStyles、各フックなど）は Server Component で呼び出さないでください。そこではクライアント参照にすぎません。クライアントコンポーネントやイベントハンドラーから呼び出してください。",
     "imperative": "命令的な API はクライアントコンポーネントの SSR 中でも安全です。document がない場合は何もせず、Confirm のような Promise ベースのダイアログはサーバーでは false に解決されます。ブラウザーでのみ実行されるイベントハンドラーやエフェクトから呼び出してください。"
   },
   "css": {
     "title": "CSS をインポートする場所",
-    "text": "@minerva/lib-core/style.css は一度だけインポートします。Next.js App Router では、グローバル CSS はルートレイアウトに置きます。ルートレイアウトは Server Component で、CSS をインポートできます。その他の構成では、クライアントのエントリファイルでインポートしてください。compat.css と prose.scss は任意の追加スタイルで、同じ方法でインポートします。"
+    "text": "@minerva/lib-core/style.css は一度だけインポートします。Next.js App Router では、グローバル CSS はルートレイアウトに置きます。ルートレイアウトは Server Component で、CSS をインポートできます。その他の構成では、クライアントのエントリファイルでインポートしてください。prose.scss は任意の追加スタイルで、独自の Sass から同じ方法で読み込みます。"
   },
   "next": {
     "title": "次のステップ",

@@ -49,30 +49,23 @@ describe("Tabs", () => {
   it("wires tablist, tabs and the default panel accessibly", () => {
     renderTabs();
     expect(screen.getByRole("tablist", { name: "Book sections" })).toHaveClass(
-      "ui-tabs-list",
       "list",
       "lineList",
     );
     const overview = screen.getByRole("tab", { name: "Overview" });
     expect(overview).toHaveAttribute("aria-selected", "true");
-    expect(overview).toHaveClass("ui-tabs-trigger", "trigger", "lineTrigger");
+    expect(overview).toHaveClass("trigger", "lineTrigger");
     const panel = screen.getByRole("tabpanel", { name: "Overview" });
     expect(panel).toHaveTextContent("Overview panel");
-    expect(panel).toHaveClass("ui-tabs-content", "panel");
+    expect(panel).toHaveClass("panel");
     expect(overview).toHaveAttribute("aria-controls", panel.id);
     expect(screen.queryByText("Reviews panel")).toBeNull();
   });
 
   it("applies default variant, color and orientation classes", () => {
     renderTabs();
-    expect(screen.getByTestId("tabs")).toHaveClass(
-      "ui-tabs",
-      "ui-tabs-variant-line",
-      "ui-tabs-color-brand",
-      "ui-tabs-orientation-horizontal",
-      "tabs",
-      "primary",
-    );
+    expect(screen.getByTestId("tabs")).toHaveClass("tabs", "primary");
+    expect(screen.getByTestId("tabs")).not.toHaveClass("vertical");
   });
 
   it("switches panels on click in uncontrolled mode and reports the value", async () => {
@@ -115,13 +108,7 @@ describe("Tabs", () => {
   it("uses vertical orientation for keyboard navigation and classes", async () => {
     const user = userEvent.setup();
     renderTabs({ orientation: "vertical", variant: "pills", color: "danger" });
-    expect(screen.getByTestId("tabs")).toHaveClass(
-      "ui-tabs-orientation-vertical",
-      "ui-tabs-variant-pills",
-      "ui-tabs-color-danger",
-      "vertical",
-      "danger",
-    );
+    expect(screen.getByTestId("tabs")).toHaveClass("vertical", "danger");
     expect(screen.getByRole("tablist")).toHaveAttribute(
       "aria-orientation",
       "vertical",
@@ -156,7 +143,7 @@ describe("Tabs", () => {
         </TabPanel>
       </Tabs>,
     );
-    expect(rootRef.current).toHaveClass("ui-tabs");
+    expect(rootRef.current).toHaveClass("tabs");
     expect(listRef.current).toBe(screen.getByRole("tablist"));
     expect(tabRef.current).toBe(screen.getByRole("tab", { name: "A" }));
     expect(panelRef.current).toBe(screen.getByRole("tabpanel"));
@@ -207,16 +194,11 @@ describe("Tabs", () => {
       </Tabs>,
     );
     const tabs = screen.getAllByRole<HTMLButtonElement>("tab");
-    const hooks = ["brand", "gray", "success", "warning", "danger", "info"];
     COLORS.forEach((color, index) => {
-      expect(tabs[index]).toHaveClass(
-        `ui-tabs-color-${hooks[index]}`,
-        color,
-        "colored",
-      );
+      expect(tabs[index]).toHaveClass(color, "colored");
       expect(tabs[index].hasAttribute("color")).toBe(false);
     });
-    expect(tabs[6].className).not.toMatch(/ui-tabs-color-|colored/);
+    expect(tabs[6]).not.toHaveClass("colored", "danger");
     fireEvent.keyDown(tabs[2], { key: "Enter" });
     expect(onChange).toHaveBeenCalledWith("success");
     expect(tabs[0].getAttribute("aria-selected")).toBe("true");
@@ -236,7 +218,8 @@ describe("Tabs", () => {
         </Tabs>,
       );
       const root = container.firstElementChild as HTMLElement;
-      expect(root).toHaveClass("ui-tabs-variant-pills", color);
+      expect(root).toHaveClass(color);
+      expect(screen.getByRole("tablist")).toHaveClass("pillsList");
       expect(root.hasAttribute("color")).toBe(false);
       unmount();
     }
@@ -356,27 +339,27 @@ describe("Tabs styles", () => {
     style: "compressed",
   }).css;
 
-  it("maps every color to Minerva role tokens and keeps the public custom properties", () => {
+  it("maps every color to Minerva role tokens through the tabs custom properties", () => {
     expect(css).toContain(
-      ".primary{--ui-tabs-accent: var(--primary-color);--ui-tabs-selected-bg: var(--primary-color-subtle);--ui-tabs-selected-fg: var(--primary-color-text)}",
+      ".primary{--tabs-accent: var(--primary-color);--tabs-selected-bg: var(--primary-color-subtle);--tabs-selected-fg: var(--primary-color-text)}",
     );
     for (const role of ["success", "warning", "danger", "info"]) {
       expect(css).toContain(
-        `.${role}{--ui-tabs-accent: var(--${role}-color);--ui-tabs-selected-bg: var(--${role}-color-subtle);--ui-tabs-selected-fg: var(--${role}-color-text)}`,
+        `.${role}{--tabs-accent: var(--${role}-color);--tabs-selected-bg: var(--${role}-color-subtle);--tabs-selected-fg: var(--${role}-color-text)}`,
       );
     }
     expect(css).toContain(
-      ".neutral{--ui-tabs-accent: var(--text-secondary-color)",
+      ".neutral{--tabs-accent: var(--text-secondary-color)",
     );
   });
 
   it("keeps explicit colors readable and selection distinct: colored pills invert without borders", () => {
     expect(css).toMatch(
-      /\.trigger\.colored\{background-color:var\(--ui-tabs-selected-bg\);color:var\(--ui-tabs-selected-fg\)/,
+      /\.trigger\.colored\{background-color:var\(--tabs-selected-bg\);color:var\(--tabs-selected-fg\)/,
     );
     expect(css).toMatch(/\.trigger\.colored\.pillsTrigger\{border:none\}/);
     expect(css).toMatch(
-      /\.trigger\.colored\.pillsTrigger\[data-state=active\]\{background-color:var\(--ui-tabs-selected-fg\);color:var\(--ui-tabs-selected-bg\)\}/,
+      /\.trigger\.colored\.pillsTrigger\[data-state=active\]\{background-color:var\(--tabs-selected-fg\);color:var\(--tabs-selected-bg\)\}/,
     );
     expect(css).toMatch(/\.trigger:disabled\{opacity:\.5/);
   });

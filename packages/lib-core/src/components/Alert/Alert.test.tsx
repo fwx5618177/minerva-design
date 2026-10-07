@@ -28,9 +28,6 @@ describe("Alert", () => {
   it("applies default variant, size and type", () => {
     render(<Alert>Body</Alert>);
     const alert = getAlert();
-    expect(alert).toHaveAttribute("data-variant", "info");
-    expect(alert).toHaveAttribute("data-size", "medium");
-    expect(alert).toHaveAttribute("data-type", "default");
     expect(alert).toHaveClass(
       "alert",
       "info",
@@ -48,7 +45,6 @@ describe("Alert", () => {
       render(<Alert variant={variant}>Body</Alert>);
       const alert = getAlert();
       expect(alert).toHaveClass(variant);
-      expect(alert).toHaveAttribute("data-variant", variant);
       expect(
         screen.getByRole("img", { name: `${variant} icon` }),
       ).toBeInTheDocument();
@@ -71,8 +67,6 @@ describe("Alert", () => {
       </Alert>,
     );
     const alert = getAlert();
-    expect(alert).toHaveAttribute("data-size", "large");
-    expect(alert).toHaveAttribute("data-type", "outlined");
     expect(alert).toHaveClass(
       "large",
       "outlined",

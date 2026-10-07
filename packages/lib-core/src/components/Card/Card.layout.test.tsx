@@ -1,4 +1,3 @@
-// Ported from @novel-isr/ui src/components/Card/__test__/Card.test.tsx
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -18,29 +17,20 @@ describe("Card (padded layout and polymorphic root)", () => {
     render(<Card data-testid="card">content</Card>);
     const card = screen.getByTestId("card");
     expect(card.tagName).toBe("DIV");
-    expect(card).toHaveClass(
-      "card",
-      "default",
-      "ui-card",
-      "ui-card-variant-default",
-    );
-    expect(card).not.toHaveClass(
-      "padded",
-      "interactive",
-      "ui-card-interactive",
-    );
-    expect(card.className).not.toMatch(/ui-card-padding-/);
+    expect(card).toHaveClass("card", "default");
+    expect(card).not.toHaveClass("padded", "interactive");
+    expect(card.className).not.toMatch(/pad-/);
     expect(card).toHaveTextContent("content");
   });
 
-  it.each<[CardVariant, string]>([
-    ["outlined", "outline"],
-    ["elevated", "elevated"],
-    ["subtle", "subtle"],
-    ["ghost", "ghost"],
-    ["shadow", "shadow"],
-    ["filled", "filled"],
-  ])("applies variant %s with hook ui-card-variant-%s", (variant, hook) => {
+  it.each<CardVariant>([
+    "outlined",
+    "elevated",
+    "subtle",
+    "ghost",
+    "shadow",
+    "filled",
+  ])("applies variant %s with the padded layout", (variant) => {
     render(
       <Card data-testid="card" variant={variant} padding="none">
         x
@@ -50,18 +40,12 @@ describe("Card (padded layout and polymorphic root)", () => {
       variant,
       "padded",
       "pad-none",
-      `ui-card-variant-${hook}`,
-      "ui-card-padding-none",
     );
   });
 
-  it.each([
-    ["small", "sm"],
-    ["medium", "md"],
-    ["large", "lg"],
-  ] as const)(
-    "maps padding %s to the ui-card-padding-%s hook",
-    (padding, hook) => {
+  it.each(["small", "medium", "large"] as const)(
+    "maps padding %s to its padding class",
+    (padding) => {
       render(
         <Card data-testid="card" padding={padding}>
           x
@@ -70,7 +54,6 @@ describe("Card (padded layout and polymorphic root)", () => {
       expect(screen.getByTestId("card")).toHaveClass(
         "padded",
         `pad-${padding}`,
-        `ui-card-padding-${hook}`,
       );
     },
   );
@@ -95,7 +78,7 @@ describe("Card (padded layout and polymorphic root)", () => {
     expect(link).toHaveAttribute("href", "/books/1");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noreferrer");
-    expect(link).toHaveClass("interactive", "ui-card-interactive", "extra");
+    expect(link).toHaveClass("interactive", "extra");
     expect(link).not.toHaveAttribute("interactive");
     expect(link).not.toHaveAttribute("type");
   });
@@ -130,14 +113,12 @@ describe("Card (padded layout and polymorphic root)", () => {
         r
       </Card>,
     );
-    expect(screen.getByRole("article", { name: "Review" })).toHaveClass(
-      "ui-card",
-    );
+    expect(screen.getByRole("article", { name: "Review" })).toHaveClass("card");
   });
 });
 
-describe("Card sections (hooks and padding overrides)", () => {
-  it("renders header/body/footer with hook classes and optional padding override", () => {
+describe("Card sections and padding overrides", () => {
+  it("renders header/body/footer with their classes and optional padding override", () => {
     render(
       <Card padding="medium">
         <CardHeader data-testid="h">
@@ -153,17 +134,12 @@ describe("Card sections (hooks and padding overrides)", () => {
       </Card>,
     );
     const header = screen.getByTestId("h");
-    expect(header).toHaveClass("cardHeader", "ui-card-header");
-    expect(header.className).not.toMatch(/ui-card-padding-|pad-/);
-    expect(screen.getByTestId("b")).toHaveClass(
-      "ui-card-body",
-      "pad-large",
-      "ui-card-padding-lg",
-    );
+    expect(header).toHaveClass("cardHeader");
+    expect(header.className).not.toMatch(/pad-/);
+    expect(screen.getByTestId("b")).toHaveClass("cardContent", "pad-large");
     expect(screen.getByTestId("f")).toHaveClass(
-      "ui-card-footer",
+      "cardFooter",
       "pad-small",
-      "ui-card-padding-sm",
       "ft",
     );
     expect(screen.getByTestId("b")).not.toHaveAttribute("padding");
@@ -172,7 +148,7 @@ describe("Card sections (hooks and padding overrides)", () => {
   it("renders CardTitle as h3 by default and accepts a heading level override", () => {
     const { rerender } = render(<CardTitle>T</CardTitle>);
     expect(screen.getByRole("heading", { level: 3, name: "T" })).toHaveClass(
-      "ui-card-title",
+      "cardTitle",
     );
     rerender(<CardTitle as="h2">T</CardTitle>);
     expect(
@@ -228,12 +204,12 @@ describe("Card sections (hooks and padding overrides)", () => {
         </CardDescription>
       </>,
     );
-    expect(refs.header.current).toHaveClass("ui-card-header");
-    expect(refs.body.current).toHaveClass("ui-card-body");
-    expect(refs.footer.current).toHaveClass("ui-card-footer");
+    expect(refs.header.current).toHaveClass("cardHeader");
+    expect(refs.body.current).toHaveClass("cardContent");
+    expect(refs.footer.current).toHaveClass("cardFooter");
     expect(refs.title.current?.tagName).toBe("H3");
     expect(refs.desc.current?.tagName).toBe("P");
-    expect(screen.getByText("desc")).toHaveClass("ui-card-description", "d");
+    expect(screen.getByText("desc")).toHaveClass("cardDescription", "d");
   });
 });
 

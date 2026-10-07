@@ -6,22 +6,11 @@ import type {
   TabListProps,
   TabPanelProps,
   TabProps,
-  TabsColor,
   TabsOrientation,
   TabsProps,
   TabsVariant,
 } from "./types";
 import styles from "./tabs.module.scss";
-
-/** Stable `ui-tabs-color-*` hook names (kept from @novel-isr/ui) */
-const COLOR_HOOK: Record<TabsColor, string> = {
-  primary: "brand",
-  neutral: "gray",
-  success: "success",
-  warning: "warning",
-  danger: "danger",
-  info: "info",
-};
 
 interface TabsContextValue {
   variant: TabsVariant;
@@ -62,10 +51,6 @@ export const Tabs = ({
         styles.tabs,
         styles[color],
         orientation === "vertical" && styles.vertical,
-        "ui-tabs",
-        `ui-tabs-variant-${variant}`,
-        `ui-tabs-color-${COLOR_HOOK[color]}`,
-        `ui-tabs-orientation-${orientation}`,
         className,
       )}
       {...rest}
@@ -131,7 +116,6 @@ export const TabList = ({ className, ref, ...rest }: TabListProps) => {
         styles.list,
         styles[`${variant}List`],
         orientation === "vertical" && styles.verticalList,
-        "ui-tabs-list",
         className,
       )}
       {...rest}
@@ -151,8 +135,6 @@ export const Tab = ({ className, children, color, ref, ...rest }: TabProps) => {
         orientation === "vertical" && styles.verticalTrigger,
         color && styles[color],
         color && styles.colored,
-        "ui-tabs-trigger",
-        color && `ui-tabs-color-${COLOR_HOOK[color]}`,
         className,
       )}
       {...rest}
@@ -172,7 +154,7 @@ export const TabPanel = ({
   <RadixTabs.Content
     ref={ref}
     forceMount={forceMount || undefined}
-    className={cn(styles.panel, "ui-tabs-content", className)}
+    className={cn(styles.panel, className)}
     {...rest}
   />
 );

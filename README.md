@@ -25,7 +25,7 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 - **ESM + CommonJS**: both module formats are shipped
 - **TypeScript**: type definitions are included
 - **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
-- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `/compat` (drop-in `@novel-isr/ui` API), `style.css`, `compat.css`, `prose.scss`
+- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `style.css`, `prose.scss`
 - **i18n**: built-in locales for English, Chinese and French
 
 ## 📦 Packages
@@ -186,8 +186,6 @@ export default async function Layout({ children }) {
   );
 }
 ```
-
-Migrating from `@novel-isr/ui`? See [docs/migration/novel-isr-ui.md](./docs/migration/novel-isr-ui.md): `@minerva/lib-core/compat` exposes its exact API.
 
 ### Message API
 
