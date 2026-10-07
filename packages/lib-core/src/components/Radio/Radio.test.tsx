@@ -238,9 +238,32 @@ describe("Radio", () => {
       expect(radio).not.toHaveAttribute("aria-invalid");
     });
 
-    it("supports ariaLabel when there is no visible label", () => {
-      render(<Radio value="y" ariaLabel="Yes" />);
+    it("supports aria-label when there is no visible label", () => {
+      render(<Radio value="y" aria-label="Yes" />);
       expect(screen.getByRole("radio", { name: "Yes" })).toBeInTheDocument();
     });
+  });
+});
+
+describe("Radio native attributes", () => {
+  it("forwards aria-labelledby to the input and style / data-* to the root", () => {
+    const { container } = render(
+      <>
+        <span id="r-label">Express</span>
+        <Radio
+          value="x"
+          aria-labelledby="r-label"
+          style={{ margin: "3px" }}
+          data-testid="radio"
+        />
+      </>,
+    );
+    const input = screen.getByRole("radio", { name: "Express" });
+    const root = container.querySelector(
+      '[data-testid="radio"]',
+    ) as HTMLElement;
+    expect(root).toContainElement(input);
+    expect(root.style.margin).toBe("3px");
+    expect(input).not.toHaveAttribute("data-testid");
   });
 });

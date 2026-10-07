@@ -8,7 +8,7 @@
     "signature": "签名",
     "useAutoTheme": "在状态中保存当前主题，并在 ConfigProvider 之外将其作为 CSS 变量写入 <html>。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其 setter 以及当前系统配色方案。在 ConfigProvider 内部它只管理状态：<html> 由根 Provider 负责。",
     "useLocale": "在状态中保存 locale，并在 ConfigProvider 之外切换 lib-core 内置文案的语言（en、zh、ja 或 fr）。返回 locale 及其 setter。在 ConfigProvider 内部它只管理状态：全局语言由根 Provider 负责。",
-    "useI18n": "返回 t、t 所使用的语言以及 lib-core 使用的 i18next 实例。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 lib-core 的全局语言。这是一个私有实例，绝不会影响应用自身的 i18next 配置。",
+    "useI18n": "返回 { t, language }：t 使用 lib-core 内置的轻量翻译器翻译 lib-core 自带的文案（支持嵌套 key、占位符插值、基于 count 的复数形式和 defaultValue），language 为 t 所使用的语言。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 lib-core 的全局语言。lib-core 不依赖任何 i18n 库，因此绝不会影响应用自身的 i18n 配置。",
     "useDisclosure": "浮层（Modal、Drawer、Popover……）的打开 / 关闭状态，支持受控（isOpen + onChange）和非受控（defaultIsOpen）两种用法。返回 isOpen 以及稳定的 onOpen、onClose 和 onToggle 回调。",
     "cn": "拼接类名并跳过假值（false、null、undefined、0、空字符串）。用于条件类名的极简、无依赖替代方案，可代替 classnames。",
     "global": "只有在上方没有 ConfigProvider 时，useAutoTheme 和 useLocale 才会修改全局状态（<html> 上的 CSS 变量、lib-core 的语言）。本站在根部有一个 Provider，因此下方示例把 Hook 的状态传给嵌套的 ConfigProvider，只作用于预览区域。"

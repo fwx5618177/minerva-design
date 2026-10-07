@@ -88,7 +88,7 @@ export interface SkeletonProps extends Omit<
    * Accessible name of the loading placeholder (rendered as a busy status region)
    * @default "Loading" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Ref to the root element (<div>, or the <span> when decorative); only
    * attached while loading (children are rendered as-is otherwise)

@@ -522,7 +522,7 @@ describe("VirtualList", () => {
           maxHeight={CONTAINER_HEIGHT}
           overscan={0}
           renderItem={renderItem}
-          ariaLabel="Contacts"
+          aria-label="Contacts"
         />,
       );
       const list = screen.getByRole("list", { name: "Contacts" });
@@ -553,7 +553,7 @@ describe("VirtualList", () => {
           itemHeight={ITEM_HEIGHT}
           maxHeight={CONTAINER_HEIGHT}
           renderItem={renderItem}
-          ariaLabel="Contacts"
+          aria-label="Contacts"
         />,
       );
       expect(screen.getByRole("region", { name: "Contacts" })).toBe(

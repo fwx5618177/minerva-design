@@ -3,7 +3,7 @@ import { Steps } from "@minerva/lib-core";
 export default function ReadOnlyDemo() {
   return (
     <Steps
-      ariaLabel="Order progress"
+      aria-label="Order progress"
       value="shipped"
       items={[
         { value: "paid", label: "Paid" },

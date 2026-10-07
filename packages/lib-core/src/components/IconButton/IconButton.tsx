@@ -10,7 +10,7 @@ import styles from "./iconButton.module.scss";
 /**
  * IconButton: a button that only contains an icon.
  *
- * - `label` (or `ariaLabel`) names the button; `label` is also shown as a
+ * - `label` (or `aria-label`) names the button; `label` is also shown as a
  *   tooltip on hover / focus.
  * - `color` picks the semantic color (neutral by default), `variant` the
  *   visual style (ghost by default). The CSS custom properties
@@ -21,6 +21,9 @@ import styles from "./iconButton.module.scss";
  *   technologies (the button's name describes it).
  * - `pressed` / `defaultPressed` make it a toggle button (aria-pressed), e.g.
  *   favorite, mute or bold; keep the label stable, the state is announced.
+ * - While `loading` it stays focusable (aria-disabled + aria-busy instead of
+ *   the native disabled attribute) but ignores activation, including the
+ *   implicit form submission of `type="submit"`.
  */
 const IconButton = ({
   ref,
@@ -41,7 +44,7 @@ const IconButton = ({
   showTooltip,
   onClick,
   tabIndex = 0,
-  ariaLabel,
+  "aria-label": ariaLabel,
   ...props
 }: IconButtonProps) => {
   const { t } = useI18n();
@@ -71,8 +74,13 @@ const IconButton = ({
         isToggle && isPressed && styles.pressed,
         className,
       )}
-      disabled={disabled || loading}
+      disabled={disabled}
       onClick={(e) => {
+        if (loading) {
+          // Busy buttons keep focus but must not activate (nor submit)
+          e.preventDefault();
+          return;
+        }
         onClick?.(e);
         if (isToggle && !e.defaultPrevented) setPressed(!isPressed);
       }}
@@ -80,6 +88,7 @@ const IconButton = ({
       tabIndex={disabled ? -1 : tabIndex}
       aria-label={label ?? ariaLabel ?? t("iconButton.default")}
       aria-busy={loading || undefined}
+      aria-disabled={(loading && !disabled) || undefined}
       {...props}
     >
       {loading ? (

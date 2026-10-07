@@ -9,7 +9,7 @@ export default function VariantsDemo() {
         <ProgressIndicator
           key={variant}
           variant={variant}
-          ariaLabel={`Loading (${variant})`}
+          aria-label={`Loading (${variant})`}
         />
       ))}
     </div>

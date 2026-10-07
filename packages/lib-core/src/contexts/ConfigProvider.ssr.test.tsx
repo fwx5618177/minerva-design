@@ -47,10 +47,10 @@ describe("nested ConfigProvider (SSR)", () => {
     expect(markup).toContain("データがありません");
     expect(markup).toContain(`--background-color:${light["background-color"]}`);
     expect(markup).toMatch(
-      /<div data-minerva-theme-scope="" data-theme="light" style="display:contents;color-scheme:light;/,
+      /<div data-minerva-theme-scope="" data-theme="light" data-density="standard" data-radius="medium" data-shadow="standard" data-font-scale="standard" style="display:contents;color-scheme:light;/,
     );
     expect(markup).toContain(
-      '<div data-minerva-theme-scope="" data-theme="dark" data-palette="editorial" style="display:contents;color-scheme:dark">',
+      '<div data-minerva-theme-scope="" data-theme="dark" data-palette="editorial" data-density="standard" data-radius="medium" data-shadow="standard" data-font-scale="standard" style="display:contents;color-scheme:dark">',
     );
     expect(markup).toContain("dark/editorial/en");
   });

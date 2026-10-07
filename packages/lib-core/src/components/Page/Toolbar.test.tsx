@@ -234,7 +234,7 @@ it("matches direct Input / Select children through their data-component attribut
   const { container } = render(
     <Toolbar>
       <Input aria-label="Search" />
-      <Select ariaLabel="Status">
+      <Select aria-label="Status">
         <SelectItem value="open">Open</SelectItem>
       </Select>
     </Toolbar>,

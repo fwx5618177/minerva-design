@@ -54,4 +54,11 @@ export interface ButtonProps {
    * @default ""
    */
   ariaLabel?: string;
+  /**
+   * What the button does in an enclosing `<form>`: nothing (`"button"`),
+   * submit it (`"submit"`, through `requestSubmit()` so validation and
+   * `submit` listeners run) or reset it (`"reset"`)
+   * @default "button"
+   */
+  type?: "button" | "submit" | "reset";
 }

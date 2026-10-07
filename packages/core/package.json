@@ -25,9 +25,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./tokens.css": "./dist/tokens.css",
     "./package.json": "./package.json"
@@ -46,12 +51,16 @@
     "watch": "vite build --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist coverage"
+    "clean": "rimraf dist coverage",
+    "check:package": "publint && attw --pack . --exclude-entrypoints ./tokens.css"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0"
   },
   "devDependencies": {
     "sass": "^1.105.1"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

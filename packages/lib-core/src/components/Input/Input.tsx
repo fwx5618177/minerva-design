@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type ChangeEvent } from "react";
-import { IoClose, IoEye, IoEyeOff } from "react-icons/io5";
+import { IconEye, IconEyeOff, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import { isAriaInvalid } from "../../internal/forms-field";
 import { useMergedRefs } from "../../internal/mergeRefs";
@@ -123,7 +123,7 @@ export const Input = ({
           onClick={handleClear}
           aria-label={clearLabel ?? t("input.clear")}
         >
-          <IoClose aria-hidden focusable={false} />
+          <IconX aria-hidden focusable={false} />
         </button>
       )}
       {isPassword && (
@@ -135,9 +135,9 @@ export const Input = ({
           disabled={isDisabled}
         >
           {passwordVisible ? (
-            <IoEyeOff aria-hidden focusable={false} />
+            <IconEyeOff aria-hidden focusable={false} />
           ) : (
-            <IoEye aria-hidden focusable={false} />
+            <IconEye aria-hidden focusable={false} />
           )}
         </button>
       )}

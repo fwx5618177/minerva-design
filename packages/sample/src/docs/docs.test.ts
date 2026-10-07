@@ -8,7 +8,12 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
-import { OUTPUT, generateApi, serialize } from "../../scripts/generate-api.mjs";
+import {
+  OUTPUT,
+  generateApi,
+  generateCssVars,
+  serialize,
+} from "../../scripts/generate-api.mjs";
 import { docPages } from "./registry";
 
 type Json = { [key: string]: Json } | string;
@@ -129,6 +134,46 @@ describe("docs: API tables", () => {
       }
     },
   );
+});
+
+describe("docs: CSS variables", () => {
+  const cssVars = generateCssVars();
+  const componentsDir = join(PACKAGES, "lib-core/src/components");
+  const styledFolders = readdirSync(componentsDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .filter((name) =>
+      readdirSync(join(componentsDir, name)).some((f) =>
+        f.endsWith(".module.scss"),
+      ),
+    )
+    .sort();
+
+  it("every styled component declares its CSS variables and has them documented", () => {
+    const listed = docPages.flatMap((p) => p.cssVars ?? []);
+    expect(
+      styledFolders.filter((name) => !cssVars[`css:${name}`]),
+      "folders without `// @css-var` declarations",
+    ).toEqual([]);
+    expect(
+      styledFolders.filter((name) => !listed.includes(name)),
+      "folders not listed in a page's `cssVars`",
+    ).toEqual([]);
+  });
+
+  it.each(
+    docPages.filter((p) => p.cssVars?.length).map((p) => [p.id, p] as const),
+  )("%s: every CSS variable is described in all locales", (id, page) => {
+    for (const folder of page.cssVars ?? []) {
+      const entry = cssVars[`css:${folder}`];
+      expect(entry, `${folder} declares no CSS variables`).toBeDefined();
+      for (const { name } of entry.vars) {
+        expect(name).toMatch(/^--[a-z][a-z0-9-]*$/);
+        const path = `docs.${id}.cssVars.${name}`;
+        expect(en.has(path), `missing description key ${path}`).toBe(true);
+      }
+    }
+  });
 });
 
 describe("docs: coverage of public exports", () => {

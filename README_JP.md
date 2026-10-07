@@ -25,7 +25,9 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 - **ESM + CommonJS**：両方のモジュール形式を提供
 - **TypeScript**：型定義を同梱
 - **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
-- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
+- **デザインプリセット**：`<ConfigProvider preset="editorial">`（控えめで読みやすさ重視）や `density` / `radius` / `shadow` / `fontScale` の各軸でアプリ全体の見た目を切り替え。SSR 対応（`designAttributes()`、`createThemeInitScript({ design })`）で、ネストした provider でスコープを限定可能
+- **カスタマイズ**：各コンポーネントが安定した CSS カスタムプロパティ（`--button-height`、`--modal-width` など）を公開
+- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`（またはコンポーネント単位の `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`。コンポーネント単位で tree-shaking 可能で、アイコン / i18n の実行時依存なし
 - **国際化**：英語・中国語・日本語・フランス語のロケールを内蔵
 - **ヘッドレスライブラリ不要**：オーバーレイ、メニュー、セレクト、タブ、`asChild` は `@minerva/core` 上で自前実装。サードパーティのインタラクション依存は Floating UI のみ
 
@@ -85,7 +87,7 @@ npm install @minerva/lib-core react react-dom
 yarn add @minerva/lib-core react react-dom
 ```
 
-React 19（`react`・`react-dom` `^19.0.0`）が必要です。React 18 には `@minerva/lib-core` 1.x が対応しています。エントリーには `"use client"` ディレクティブが付いているため、React Server Components 対応フレームワーク（Next.js App Router など）からラッパーなしで読み込めます。
+React 19（`react`・`react-dom` `^19.0.0`）が必要です。React 18 はサポートしていません（`ref` を通常のプロパティとして使うなど React 19 の API を利用）。すべてのクライアントモジュールに `"use client"` ディレクティブが付いているため、React Server Components 対応フレームワーク（Next.js App Router など）からラッパーなしで読み込めます。
 
 ### 基本的な使用方法
 

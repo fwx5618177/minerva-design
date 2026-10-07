@@ -76,7 +76,10 @@ export interface ToastPromiseMessages<T> {
   error: ReactNode | ((error: unknown) => ReactNode);
 }
 
-/** The `toast` function (also returned by useToast) */
+/**
+ * The `toast` function, and the API returned by `useToast()` (bound to the
+ * caller's ConfigProvider scope)
+ */
 export interface ToastApi {
   /** Shows a toast and returns its id */
   (options: ToastOptions): string | number;
@@ -129,13 +132,23 @@ export interface ToastProviderProps {
    */
   pauseOnHover?: boolean;
   /**
-   * Accessible label of the toast region
-   * @default "Notifications" (localized)
+   * Accessible label of the toast region (used as is; the default one
+   * includes the hotkey)
+   * @default "Notifications (F8)" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Accessible label of the close buttons
    * @default "Close" (localized)
    */
   closeLabel?: string;
+  /**
+   * Keys pressed together to move focus to the toast region (the first one
+   * holding toasts): key codes (`"F8"`, `"KeyT"`), keys or modifiers
+   * (`"altKey"`, `"ctrlKey"`, `"metaKey"`, `"shiftKey"`). Shown in the
+   * default region label, e.g. "Notifications (F8)". An empty array
+   * disables it
+   * @default ["F8"]
+   */
+  hotkey?: string[];
 }

@@ -1,6 +1,11 @@
 {
   "title": "Toast 通知",
   "description": "带标题、描述和语义色的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染，因此会继承应用的上下文（主题、语言）。内置加载状态、Promise 跟踪、原地更新、操作按钮和最大数量限制。支持服务端渲染。",
+  "usage": {
+    "title": "如何选择：useToast() 还是 toast()",
+    "hook": "在组件内调用 useToast()：它显示的通知跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，通知渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，内置文案使用其语言。通知仍由持有者 ToastProvider 渲染，沿用它的 position、max 和文案。",
+    "function": "在 React 之外（事件总线、API 客户端、store 等非组件模块）直接导入 toast()：那里无法使用 hook，其通知使用 ToastProvider 的作用域，通常即根主题和根语言。"
+  },
   "demos": {
     "basic": {
       "title": "基础用法",
@@ -24,7 +29,15 @@
     },
     "dedupe": {
       "title": "相同 id 替换",
-      "description": "使用可见通知的 id 再次显示会替换它并重新计时，而不是叠加重复通知（适合轮询报错）。useToast 返回同一个 toast 函数。"
+      "description": "使用可见通知的 id 再次显示会替换它并重新计时，而不是叠加重复通知（适合轮询报错）。"
+    },
+    "scoped": {
+      "title": "作用域：useToast() 与 toast()",
+      "description": "两个按钮都位于嵌套的 ConfigProvider 中（暗色主题、tech 配色、中文）。useToast() 在该作用域中渲染通知（暗色 token、中文关闭按钮，在相同位置拥有独立的通知区域）；toast() 渲染在根部，使用页面的主题和语言。"
+    },
+    "keyboard": {
+      "title": "键盘",
+      "description": "F8（hotkey 属性，也会出现在区域标签“通知（F8）”中）将焦点移到通知。Escape 关闭当前聚焦的通知；关闭一条后，焦点移到下一条通知的关闭按钮，最后回到进入通知前的位置。"
     }
   },
   "api": {
@@ -49,8 +62,9 @@
       "children": "应用内容；通知视口渲染在其后",
       "max": "同时显示的最大通知数；超出时最早的通知先关闭",
       "pauseOnHover": "悬停或聚焦通知时暂停自动关闭计时",
-      "ariaLabel": "通知区域的无障碍标签",
-      "closeLabel": "关闭按钮的无障碍标签"
+      "aria-label": "通知区域的无障碍标签，按原样使用（默认标签包含快捷键）",
+      "closeLabel": "关闭按钮的无障碍标签",
+      "hotkey": "同时按下以将焦点移到通知区域（第一个包含通知的区域）的按键：按键码（F8、KeyT）、按键或修饰键（altKey、ctrlKey、metaKey、shiftKey）。显示在默认区域标签中，如“通知（F8）”；空数组表示禁用"
     },
     "ToastApi": {
       "info": "以给定标题显示一条信息通知",
@@ -67,5 +81,15 @@
       "success": "Promise 成功后的标题（节点，或接收结果的函数）",
       "error": "Promise 失败后的标题（节点，或接收错误的函数）"
     }
+  },
+  "cssVars": {
+    "--toast-width": "通知堆栈的宽度（受视口限制）",
+    "--toast-gap": "堆叠通知之间的间距",
+    "--toast-offset": "堆栈与视口边缘的距离",
+    "--toast-padding": "通知的内边距",
+    "--toast-radius": "通知的圆角（默认 --radius-md）",
+    "--toast-shadow": "通知的阴影（默认 --shadow-lg）",
+    "--toast-background": "通知的基础背景（位于颜色色调之下）",
+    "--toast-z-index": "堆栈的层级（默认 --z-toast）"
   }
 }

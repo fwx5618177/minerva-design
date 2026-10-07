@@ -1,3 +1,31 @@
+// Public CSS variables (set them on `className` or any ancestor):
+// @css-var --switch-track-width Width of the track (every size)
+// @css-var --switch-track-height Height of the track (every size)
+// @css-var --switch-thumb-size Width and height of the thumb (every size)
+// @css-var --switch-track-color Background of the unchecked track
+// @css-var --switch-thumb-color Background of the unchecked thumb
+// @css-var --switch-checked-color Accent of the checked thumb, track and active segment (defaults to the color prop's accent)
+// @css-var --switch-label-gap Space between the switch and its label
+// @css-var --switch-label-font-size Font size of the label (every size)
+//
+// Internal plumbing uses the --_switch-* prefix (per-size dimensions, color
+// accent, reading direction).
+.switch,
+.segmented {
+  --_switch-track-w: 36px;
+  --_switch-track-h: 14px;
+  --_switch-thumb: 20px;
+  --_switch-dir: 1;
+}
+
+.switch:dir(rtl) {
+  --_switch-dir: -1;
+}
+
+[dir="rtl"] .switch {
+  --_switch-dir: -1;
+}
+
 .switch {
   display: inline-flex;
   align-items: center;
@@ -16,11 +44,11 @@
   // The label is rendered before the control for start/top and after it for
   // end/bottom (DOM order = reading order); these only set the direction.
   &.labelStart .label {
-    margin-right: 12px;
+    margin-inline-end: var(--switch-label-gap, var(--space-3));
   }
 
   &.labelEnd .label {
-    margin-left: 12px;
+    margin-inline-start: var(--switch-label-gap, var(--space-3));
   }
 
   &.labelTop,
@@ -29,15 +57,15 @@
   }
 
   &.labelTop .label {
-    margin-bottom: 4px;
+    margin-bottom: var(--space-1);
   }
 
   &.labelBottom .label {
-    margin-top: 4px;
+    margin-top: var(--space-1);
   }
 
   .label {
-    font-size: 14px;
+    font-size: var(--switch-label-font-size, var(--font-size-md));
     color: var(--text-color);
     line-height: 1.4;
   }
@@ -47,7 +75,7 @@
   position: relative;
   display: inline-flex;
   padding: 3px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
 
   input {
     position: absolute;
@@ -69,70 +97,72 @@
 }
 
 .track {
-  width: 36px;
-  height: 14px;
-  border-radius: 7px;
-  background-color: var(--border-strong-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: var(--switch-track-width, var(--_switch-track-w));
+  height: var(--switch-track-height, var(--_switch-track-h));
+  border-radius: var(--radius-full);
+  background-color: var(--switch-track-color, var(--border-strong-color));
+  transition: all var(--transition-base);
 
   .checked & {
-    // `--switch-accent` is set by the color classes below.
+    // `--_switch-accent` is set by the color classes below.
     // Material-style: translucent accent track under a solid accent thumb.
-    background-color: color-mix(in srgb, var(--switch-accent, var(--border-strong-color)) 45%, transparent);
+    background-color: color-mix(in srgb, var(--switch-checked-color, var(--_switch-accent, var(--border-strong-color))) 45%, transparent);
   }
 }
 
 .thumb {
   position: absolute;
   top: 50%;
-  left: 2px;
-  width: 20px;
-  height: 20px;
+  inset-inline-start: 2px;
+  width: var(--switch-thumb-size, var(--_switch-thumb));
+  height: var(--switch-thumb-size, var(--_switch-thumb));
   // Thin ring keeps the thumb visible against the page/track in dark themes.
-  --switch-thumb-ring: var(--border-strong-color);
-  background-color: var(--surface-color);
-  color: var(--switch-accent, var(--text-secondary-color));
+  --_switch-thumb-ring: var(--border-strong-color);
+  // Travel of the checked thumb: track width - thumb size, mirrored in RTL.
+  --_switch-travel: calc(var(--_switch-dir) * (var(--switch-track-width, var(--_switch-track-w)) - var(--switch-thumb-size, var(--_switch-thumb))));
+  background-color: var(--switch-thumb-color, var(--surface-color));
+  color: var(--switch-checked-color, var(--_switch-accent, var(--text-secondary-color)));
   border-radius: 50%;
   transform: translateY(-50%);
   box-shadow:
-    0 0 0 1px var(--switch-thumb-ring),
+    0 0 0 1px var(--_switch-thumb-ring),
     var(--shadow-sm);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
   display: flex;
   align-items: center;
   justify-content: center;
 
   .checked & {
-    --switch-thumb-ring: transparent;
+    --_switch-thumb-ring: transparent;
     // Solid accent thumb stays visible on light and dark pages alike.
-    background-color: var(--switch-accent, var(--surface-color));
-    transform: translate(16px, -50%);
+    background-color: var(--switch-checked-color, var(--_switch-accent, var(--surface-color)));
+    transform: translate(var(--_switch-travel), -50%);
     box-shadow:
-      0 0 0 1px var(--switch-thumb-ring),
+      0 0 0 1px var(--_switch-thumb-ring),
       var(--shadow-md);
   }
 
   .checkedLarge & {
-    transform: translate(24px, -50%);
+    transform: translate(var(--_switch-travel), -50%);
     box-shadow:
-      0 0 0 1px var(--switch-thumb-ring),
+      0 0 0 1px var(--_switch-thumb-ring),
       var(--shadow-md);
   }
 
   .switch:not(.disabled):hover & {
     box-shadow:
-      0 0 0 1px var(--switch-thumb-ring),
+      0 0 0 1px var(--_switch-thumb-ring),
       var(--shadow-md);
   }
 
   .switch:not(.disabled):active & {
     box-shadow:
-      0 0 0 1px var(--switch-thumb-ring),
+      0 0 0 1px var(--_switch-thumb-ring),
       var(--shadow-sm);
   }
 
   .square & {
-    border-radius: 2px;
+    border-radius: calc(var(--radius-sm) / 2);
   }
 
   .loading & {
@@ -145,6 +175,10 @@
       border-top-color: currentColor;
       border-radius: 50%;
       animation: switchLoading 0.8s linear infinite;
+
+      @media (prefers-reduced-motion: reduce) {
+        animation-duration: 2.4s;
+      }
     }
   }
 }
@@ -156,10 +190,10 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: color-mix(in srgb, var(--switch-accent, var(--text-color)) 12%, transparent);
+  background-color: color-mix(in srgb, var(--switch-checked-color, var(--_switch-accent, var(--text-color))) 12%, transparent);
   opacity: 0;
   transform: translate(-50%, -50%) scale(0);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-slow);
 
   .ripple & {
     opacity: 0.12;
@@ -168,63 +202,47 @@
 }
 
 .small {
+  --_switch-track-w: 28px;
+  --_switch-track-h: 12px;
+  --_switch-thumb: 16px;
+
   .switchBase {
     padding: 2px;
   }
-  .track {
-    width: 28px;
-    height: 12px;
-  }
-  .thumb {
-    width: 16px;
-    height: 16px;
-  }
-  &.checked .thumb {
-    transform: translate(12px, -50%);
-  }
   .label {
-    font-size: 12px;
+    font-size: var(--switch-label-font-size, var(--font-size-xs));
   }
 }
 
 .large {
-  .track {
-    width: 48px;
-    height: 18px;
-  }
-  .thumb {
-    width: 24px;
-    height: 24px;
+  --_switch-track-w: 48px;
+  --_switch-track-h: 18px;
+  --_switch-thumb: 24px;
 
-    &.checked,
-    .checked {
-      transform: translate(24px, -50%);
-    }
-  }
   .label {
-    font-size: 16px;
+    font-size: var(--switch-label-font-size, var(--font-size-lg));
   }
 }
 
 // Color roles: accent used by the checked thumb and (translucent) track.
 .primary {
-  --switch-accent: var(--primary-color);
+  --_switch-accent: var(--primary-color);
 }
 
 .success {
-  --switch-accent: var(--success-color);
+  --_switch-accent: var(--success-color);
 }
 
 .warning {
-  --switch-accent: var(--warning-color);
+  --_switch-accent: var(--warning-color);
 }
 
 .info {
-  --switch-accent: var(--info-color);
+  --_switch-accent: var(--info-color);
 }
 
 .danger {
-  --switch-accent: var(--danger-color);
+  --_switch-accent: var(--danger-color);
 }
 
 .icon {
@@ -283,10 +301,10 @@
 .side {
   background: transparent;
   border: none;
-  padding: 2px var(--space-1);
+  padding: var(--space-0-5) var(--space-1);
   cursor: pointer;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--switch-label-font-size, var(--font-size-md));
   font-weight: var(--font-weight-medium);
   color: var(--text-muted-color);
   border-radius: var(--radius-sm);
@@ -298,7 +316,7 @@
   }
 
   &:focus-visible {
-    outline: var(--focus-ring-width) solid var(--switch-accent, var(--primary-color));
+    outline: var(--focus-ring-width) solid var(--switch-checked-color, var(--_switch-accent, var(--primary-color)));
     outline-offset: 1px;
   }
 
@@ -308,7 +326,7 @@
 }
 
 .sideActive {
-  color: var(--switch-accent, var(--primary-color));
+  color: var(--switch-checked-color, var(--_switch-accent, var(--primary-color)));
   font-weight: var(--font-weight-semibold);
 }
 
@@ -319,7 +337,7 @@
   background: var(--surface-muted-color);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 2px;
+  padding: var(--space-0-5);
   user-select: none;
   vertical-align: middle;
 
@@ -345,10 +363,10 @@
 .segment {
   background: transparent;
   border: none;
-  padding: 4px var(--space-3);
+  padding: var(--space-1) var(--space-3);
   cursor: pointer;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--switch-label-font-size, var(--font-size-md));
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary-color);
   border-radius: calc(var(--radius-md) - 2px);
@@ -363,7 +381,7 @@
   }
 
   &:focus-visible {
-    outline: var(--focus-ring-width) solid var(--switch-accent, var(--primary-color));
+    outline: var(--focus-ring-width) solid var(--switch-checked-color, var(--_switch-accent, var(--primary-color)));
     outline-offset: 1px;
   }
 
@@ -373,18 +391,66 @@
 }
 
 .segmentActive {
-  background-color: var(--switch-accent, var(--primary-color));
+  background-color: var(--switch-checked-color, var(--_switch-accent, var(--primary-color)));
   color: var(--text-inverse-color);
   font-weight: var(--font-weight-semibold);
   box-shadow: var(--shadow-sm);
 }
 
 .segmented.small .segment {
-  padding: 2px var(--space-2);
-  font-size: 12px;
+  padding: var(--space-0-5) var(--space-2);
+  font-size: var(--switch-label-font-size, var(--font-size-xs));
 }
 
 .segmented.large .segment {
-  padding: 6px var(--space-4);
-  font-size: 16px;
+  padding: var(--space-1-5) var(--space-4);
+  font-size: var(--switch-label-font-size, var(--font-size-lg));
+}
+
+// Forced colors drop backgrounds and box-shadows: draw the track, the thumb
+// and the active segment with system colors (checked = Highlight).
+@media (forced-colors: active) {
+  .track {
+    forced-color-adjust: none;
+    background-color: Canvas;
+    outline: 1px solid ButtonText;
+
+    .checked & {
+      background-color: Highlight;
+      outline-color: Highlight;
+    }
+  }
+
+  .thumb {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+    color: Canvas;
+    box-shadow: none;
+
+    .checked & {
+      background-color: HighlightText;
+      color: Highlight;
+      outline: 1px solid Highlight;
+    }
+  }
+
+  .switchBase input:focus-visible ~ .thumb {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .disabled .track,
+  .disabled .thumb {
+    outline-color: GrayText;
+  }
+
+  .segmentActive {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .sideActive {
+    text-decoration: underline;
+  }
 }

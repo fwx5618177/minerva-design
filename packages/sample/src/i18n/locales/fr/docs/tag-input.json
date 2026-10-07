@@ -9,6 +9,10 @@
     "form-control": {
       "title": "Formulaires",
       "description": "name soumet chaque étiquette via un champ caché ; FormField fournit le libellé et l’état lecture seule."
+    },
+    "separators": {
+      "title": "Séparateurs",
+      "description": "separators liste les chaînes qui découpent le texte saisi ou collé en étiquettes ; \"Enter\" valide avec la touche Entrée et découpe le texte collé par ligne."
     }
   },
   "api": {
@@ -18,10 +22,12 @@
       "onChange": "Appelé avec les nouvelles étiquettes après un ajout, une suppression ou un effacement",
       "options": "Suggestions ; les étiquettes déjà choisies sont masquées et les doublons fusionnés",
       "commitOnBlur": "Ajoute la saisie comme étiquette à la perte du focus",
+      "separators": "Touches qui valident la saisie : une chaîne littérale (par ex. \",\" ou \";\") découpe le texte saisi ou collé en étiquettes ; \"Enter\" valide avec la touche Entrée (et découpe aussi le texte collé aux sauts de ligne)",
       "id": "Id du champ texte (id du FormControl par défaut)",
       "name": "Soumet chaque étiquette sous ce nom (champs cachés) ; la saisie en cours n’est pas soumise",
       "placeholder": "Texte indicatif du champ texte",
       "aria-label": "Nom accessible du champ texte sans libellé de FormControl",
+      "aria-labelledby": "Ids des éléments qui étiquettent le champ texte (prioritaires sur le libellé du FormControl)",
       "aria-describedby": "Id supplémentaires décrivant le champ texte",
       "disabled": "Désactive le champ (aussi défini par FormControl)",
       "readOnly": "Affiche les étiquettes sans commandes d’édition (aussi défini par FormControl)",
@@ -33,7 +39,16 @@
       "removeLabel": "Libellé accessible du bouton de retrait d’une étiquette",
       "createLabel": "Texte de la suggestion « créer cette étiquette »",
       "className": "Classe du conteneur",
+      "style": "Style en ligne du conteneur",
       "ref": "Ref vers l’<input> texte"
     }
+  },
+  "cssVars": {
+    "--tag-input-gap": "Espace entre les étiquettes et entre les étiquettes et la ligne de saisie",
+    "--tag-input-tag-min-height": "Hauteur minimale d'une étiquette (par défaut la hauteur de contrôle small de la densité)",
+    "--tag-input-list-max-height": "Hauteur maximale de la liste de suggestions avant défilement",
+    "--tag-input-list-radius": "Rayon des coins de la liste de suggestions (par défaut --radius-md)",
+    "--tag-input-option-padding-y": "Marge intérieure verticale d'une suggestion (suit la marge de ligne de la densité)",
+    "--tag-input-option-padding-x": "Marge intérieure horizontale d'une suggestion (suit la marge de ligne de la densité)"
   }
 }

@@ -59,9 +59,16 @@
       "secondStep": "秒选项的间隔",
       "ref": "<input> 元素的 ref",
       "label": "输入框的可见标签；未设置时输入框的标签为本地化的 \"Time\"（时间）",
-      "ariaLabel": "未显示可见标签时输入框的无障碍标签",
+      "aria-label": "未显示可见标签时输入框的无障碍标签",
       "name": "输入框的 name",
-      "onOpenChange": "面板打开或关闭时调用"
+      "onOpenChange": "面板打开或关闭时调用",
+      "style": "根元素的内联样式",
+      "aria-labelledby": "为输入框提供标签的元素 id（可多个）；在 FormControl 中默认指向 FormLabel（除非设置了 label / aria-label）",
+      "aria-describedby": "描述输入框的元素 id（可多个）；会与外层 FormControl 的帮助/错误文本合并",
+      "id": "输入框的 id；默认使用外层 FormControl 的 id",
+      "required": "将输入框标记为必填；默认继承外层 FormControl 的状态",
+      "readOnly": "只显示值而不允许修改（输入、面板、清除均不可用）；默认继承外层 FormControl 的状态",
+      "invalid": "将输入框标记为无效（aria-invalid）；默认继承外层 FormControl 的状态"
     }
   },
   "keyboard": {
@@ -69,7 +76,17 @@
     "open": "在输入框上按向下箭头打开面板；点击外部关闭面板。",
     "navigate": "每一列（时、分、秒、上午/下午）都是 listbox：向上 / 向下箭头、Home 和 End 在列内移动，向左 / 向右箭头切换列。",
     "select": "Enter 或 Space 选择当前聚焦的选项。",
-    "close": "Escape 关闭面板并把焦点还给输入框。",
+    "close": "Escape 关闭面板并把焦点还给输入框。在最后一列按 Tab 会关闭面板并移到下一个字段；在第一列按 Shift+Tab 会关闭面板并回到输入框。",
     "typing": "输入的文本只有在构成完整且有效的时间时才会提交。失焦时会采用更宽松的解析；文本为空则清除值，无法解析则恢复之前的值。"
+  },
+  "cssVars": {
+    "--time-picker-width": "输入框宽度",
+    "--time-picker-panel-radius": "面板圆角（默认 --radius-sm）",
+    "--time-picker-panel-padding": "面板内边距",
+    "--time-picker-column-width": "时 / 分 / 秒每一列的宽度",
+    "--time-picker-column-height": "各列开始滚动前的高度",
+    "--time-picker-cell-height": "时间单元格高度（默认取当前密度的小号控件高度）",
+    "--time-picker-cell-padding-x": "时间单元格的水平内边距（跟随密度的行内边距）",
+    "--time-picker-selected-background": "选中时间单元格的背景色"
   }
 }

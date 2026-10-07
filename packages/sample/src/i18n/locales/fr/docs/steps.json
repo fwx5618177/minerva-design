@@ -8,7 +8,7 @@
     },
     "read-only": {
       "title": "Progression en lecture seule",
-      "description": "Sans onChange, les étapes sont un indicateur de progression en lecture seule."
+      "description": "Sans onChange, les étapes sont un indicateur de progression en lecture seule : une liste ordonnée simple (sans boutons) dont l’élément courant porte aria-current=\"step\"."
     }
   },
   "api": {
@@ -17,8 +17,8 @@
       "value": "Valeur de l’étape courante (contrôlée ; avec onChange)",
       "defaultValue": "Valeur de l’étape courante initiale (non contrôlée)",
       "onChange": "Appelé avec la valeur de l’étape choisie. Signale seulement la navigation : validation et transitions appartiennent à l’appelant",
-      "readOnly": "Affiche les étapes comme un indicateur de progression en lecture seule (tous les boutons désactivés)",
-      "ariaLabel": "Libellé accessible de la liste",
+      "readOnly": "Affiche les étapes comme un indicateur de progression en lecture seule : des éléments de liste sans boutons, l’élément courant marqué aria-current=\"step\"",
+      "aria-label": "Libellé accessible de la liste",
       "className": "Classe CSS supplémentaire",
       "ref": "Ref vers l’élément racine <ol>"
     },
@@ -27,5 +27,12 @@
       "label": "Libellé visible de l’étape",
       "disabled": "Empêche d’aller à cette étape (par ex. un état final pas encore atteint)"
     }
+  },
+  "cssVars": {
+    "--steps-gap": "Espace entre les étapes (lignes et colonnes)",
+    "--steps-font-size": "Taille de police des libellés",
+    "--steps-indicator-size": "Diamètre de l'indicateur numéroté",
+    "--steps-accent-color": "Couleur des indicateurs courant / terminés (par défaut --primary-color)",
+    "--steps-current-background": "Fond de l'indicateur de l'étape courante"
   }
 }

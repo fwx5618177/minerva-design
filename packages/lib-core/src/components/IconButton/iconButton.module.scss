@@ -1,11 +1,16 @@
 @use "../../styles/mixins" as *;
 
 // IconButton: each color sets the private --_ib-* tones, each variant
-// (ghost / solid / outline) consumes them. Public override hooks:
-//   --icon-button-color          icon color
-//   --icon-button-hover-bg       background on hover
-//   --icon-button-pressed-color  icon color of a pressed toggle
-//   --icon-button-pressed-bg     background of a pressed toggle
+// (ghost / solid / outline) consumes them.
+//
+// Public CSS variables (set them on the button or any ancestor):
+// @css-var --icon-button-color Icon color
+// @css-var --icon-button-hover-bg Background on hover
+// @css-var --icon-button-pressed-color Icon color of a pressed toggle
+// @css-var --icon-button-pressed-bg Background of a pressed toggle
+// @css-var --icon-button-size Width and height of the button (every size; defaults follow the density's control heights)
+// @css-var --icon-button-icon-size Font size of the icon (every size)
+// @css-var --icon-button-radius Corner radius of the square shape (defaults to --radius-lg)
 
 .iconButton {
   position: relative;
@@ -14,7 +19,7 @@
   justify-content: center;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all var(--transition-base);
   overflow: hidden;
   padding: 0;
   background-color: transparent;
@@ -22,28 +27,30 @@
   @include ripple-effect;
 
   // ---- Sizes ----
+  // xsmall = control height; the others are 4px above the control height
+  // of the size below so a toggle has a comfortable hit area.
   &.xsmall {
-    width: 24px;
-    height: 24px;
-    font-size: 0.875rem;
+    width: var(--icon-button-size, var(--control-height-xs));
+    height: var(--icon-button-size, var(--control-height-xs));
+    font-size: var(--icon-button-icon-size, 0.875rem);
   }
 
   &.small {
-    width: 36px;
-    height: 36px;
-    font-size: 1.125rem;
+    width: var(--icon-button-size, calc(var(--control-height-sm) + var(--space-1)));
+    height: var(--icon-button-size, calc(var(--control-height-sm) + var(--space-1)));
+    font-size: var(--icon-button-icon-size, 1.125rem);
   }
 
   &.medium {
-    width: 44px;
-    height: 44px;
-    font-size: 1.375rem;
+    width: var(--icon-button-size, calc(var(--control-height-md) + var(--space-1)));
+    height: var(--icon-button-size, calc(var(--control-height-md) + var(--space-1)));
+    font-size: var(--icon-button-icon-size, 1.375rem);
   }
 
   &.large {
-    width: 52px;
-    height: 52px;
-    font-size: 1.625rem;
+    width: var(--icon-button-size, calc(var(--control-height-lg) + var(--space-1)));
+    height: var(--icon-button-size, calc(var(--control-height-lg) + var(--space-1)));
+    font-size: var(--icon-button-icon-size, 1.625rem);
   }
 
   // ---- Shapes ----
@@ -52,7 +59,7 @@
   }
 
   &.square {
-    border-radius: 8px;
+    border-radius: var(--icon-button-radius, var(--radius-lg));
   }
 
   // ---- Colors ----
@@ -119,7 +126,7 @@
 
   svg {
     fill: currentColor;
-    transition: fill 0.2s ease-in-out;
+    transition: fill var(--transition-base);
   }
 
   // ---- States ----
@@ -129,7 +136,7 @@
   }
 
   &:hover:not(.disabled):not(.loading) {
-    box-shadow: 0 2px 8px var(--shadow-color);
+    box-shadow: var(--shadow-sm);
   }
 
   &:active:not(.disabled):not(.loading),
@@ -145,7 +152,7 @@
     &:hover:not(.disabled):not(.loading) {
       box-shadow:
         inset 0 0 0 1px var(--_ib-border),
-        0 2px 8px var(--shadow-color);
+        var(--shadow-sm);
     }
 
     &:active:not(.disabled):not(.loading),
@@ -164,5 +171,26 @@
   &.loading {
     cursor: wait !important;
     pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconButton::before {
+    animation: none !important;
+  }
+}
+
+// Forced colors drop backgrounds and box-shadows: the pressed toggle gets a
+// system-colored fill and the outline variant a real outline.
+@media (forced-colors: active) {
+  .iconButton.pressed {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .iconButton.variant-outline:not(:focus-visible) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
   }
 }

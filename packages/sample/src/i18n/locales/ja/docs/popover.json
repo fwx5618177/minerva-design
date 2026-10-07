@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "PopoverTrigger でパネルを切り替えます。フォーカスは内部に移り、閉じるとトリガーに戻ります。PopoverClose で閉じます。"
+      "description": "PopoverTrigger でパネルを切り替えます。フォーカスは内部に移り、閉じるとトリガーに戻ります。PopoverClose で閉じます。非モーダルでは、最後の要素で Tab（最初の要素で Shift+Tab）を押すとパネルが閉じ、フォーカスはトリガーの次（前）の要素へ移ります。パネル内でループしません。"
     },
     "placement": {
       "title": "配置",
@@ -20,7 +20,7 @@
       "open": "制御された開閉状態。undefined のままにすると非制御になります",
       "defaultOpen": "非制御時の初期の開閉状態",
       "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、Escape、外部クリック、PopoverClose）",
-      "modal": "モーダルモード：フォーカスを閉じ込め、ページのスクロールをロックし、ページの他の部分を支援技術から隠し、外側のポインター操作を無効にします（外側クリックでは閉じます）",
+      "modal": "モーダルモード：フォーカスを閉じ込め（Tab はパネル内でループ）、ページのスクロールをロックし、ページの他の部分を支援技術から隠し、外側のポインター操作を無効にします（外側クリックでは閉じます）",
       "children": "PopoverTrigger / PopoverAnchor と PopoverContent"
     },
     "PopoverContentProps": {
@@ -44,5 +44,15 @@
     "PopoverTriggerProps": {
       "asChild": "独自の要素を描画せず、単一の子要素に振る舞いをマージします"
     }
+  },
+  "cssVars": {
+    "--popover-min-width": "パネルの最小幅",
+    "--popover-max-width": "パネルの最大幅",
+    "--popover-padding": "パネルの内側の余白",
+    "--popover-radius": "パネルの角丸（既定値は --radius-lg）",
+    "--popover-background": "パネルと矢印の背景",
+    "--popover-border-color": "パネルと矢印の枠線の色",
+    "--popover-shadow": "パネルの影（既定値は --shadow-lg、ダークテーマでは --shadow-xl）",
+    "--popover-z-index": "パネルの重なり順（既定値は --z-popover）"
   }
 }

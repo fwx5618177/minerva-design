@@ -17,6 +17,10 @@
     "high-performance": {
       "title": "高パフォーマンスモード",
       "description": "highPerformance は requestAnimationFrame と requestIdleCallback でスクロール更新をまとめます。この例は 100,000 行です。"
+    },
+    "clickable-rows": {
+      "title": "クリック可能な行とネイティブ属性",
+      "description": "onItemClick で行がクリック可能になります（ポインターカーソル、フォーカス可能、Enter / Space で実行）。指定しない場合は既定のカーソルのままです。id、data-*、aria-* などのネイティブ属性はルート要素に渡されます。"
     }
   },
   "api": {
@@ -33,12 +37,20 @@
       "loadMoreThreshold": "onLoadMore を発火させる末尾からの距離（px）",
       "highPerformance": "requestAnimationFrame と requestIdleCallback でスクロール更新をまとめる",
       "loading": "リストの末尾にローディング表示を出す",
-      "ariaLabel": "リストのアクセシブルな名前",
-      "ref": "ルート（スクロールコンテナ）の <div> 要素への ref"
+      "aria-label": "リストのアクセシブルな名前",
+      "ref": "ルート（スクロールコンテナ）の <div> 要素への ref",
+      "onItemClick": "行がクリックされたとき、または行自体にフォーカスがある状態で Enter / Space が押されたときに呼ばれます。行をクリック可能（フォーカス可能でポインターカーソル）にします"
     },
     "VirtualListItem": {
       "id": "項目の一意なキー",
       "metadata": "renderItem で使う任意のデータ"
     }
+  },
+  "cssVars": {
+    "--virtual-list-radius": "角丸（既定値は --radius-sm）",
+    "--virtual-list-shadow": "通常時の影（既定値は --shadow-sm）",
+    "--virtual-list-hover-shadow": "ホバー時の影（既定値は --shadow-md）",
+    "--virtual-list-scrollbar-size": "スクロールバーの幅（WebKit / Blink）",
+    "--virtual-list-loading-padding": "読み込みインジケーター行のパディング"
   }
 }

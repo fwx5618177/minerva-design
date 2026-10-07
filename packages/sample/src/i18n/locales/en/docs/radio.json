@@ -41,7 +41,7 @@
       "onChange": "Called when the checked state changes (standalone radios only; inside a group use RadioGroup's onChange)",
       "size": "Radio size. Overridden by the RadioGroup size",
       "label": "Text label displayed next to the radio",
-      "ariaLabel": "Accessible label, required when there is no visible label",
+      "aria-label": "Accessible label, required when there is no visible label",
       "className": "Additional class name",
       "color": "Semantic color of the checked radio. Overridden by the RadioGroup color when the group sets one",
       "required": "Marks the input as required",
@@ -50,14 +50,18 @@
       "errorMessage": "Message shown below the radio when error is true (linked with aria-describedby)",
       "helperText": "Helper text shown below the radio (linked with aria-describedby)",
       "ref": "Ref to the native <input type=\"radio\"> element",
-      "children": "Label content (alternative to label; used when label is not set)"
+      "children": "Label content (alternative to label; used when label is not set)",
+      "aria-labelledby": "id(s) of the element(s) labelling the radio",
+      "aria-describedby": "Extra ids of elements describing the radio (merged with the helper / error text)",
+      "id": "id of the radio",
+      "style": "Inline styles of the root wrapper"
     },
     "RadioGroupProps": {
       "value": "Value of the selected radio (controlled)",
       "defaultValue": "Initially selected value (uncontrolled)",
       "name": "Name shared by all radios of the group (a unique name is generated when omitted, so arrow-key navigation always works)",
       "label": "Visible label of the group; also its accessible name",
-      "ariaLabel": "Accessible label of the group when there is no visible label",
+      "aria-label": "Accessible label of the group when there is no visible label",
       "onChange": "Called with the newly selected value",
       "disabled": "Disables every radio in the group",
       "children": "Radio elements",
@@ -68,7 +72,21 @@
       "helperText": "Helper text shown below the group (linked with aria-describedby)",
       "required": "Marks the group as required (aria-required)",
       "color": "Semantic color applied to every radio in the group (overrides the radios' own color); when not set each radio uses its own color",
-      "ref": "Ref to the root wrapper element"
+      "ref": "Ref to the root wrapper element",
+      "aria-labelledby": "id(s) of the element(s) labelling the group (takes precedence over label)",
+      "aria-describedby": "Extra ids of elements describing the group (merged with the helper / error text)",
+      "id": "id of the element with role=\"radiogroup\"",
+      "style": "Inline styles of the root wrapper"
     }
+  },
+  "cssVars": {
+    "--radio-checked-color": "Color of the checked mark (defaults to the color prop's accent)",
+    "--radio-dot-color": "Color of the inner dot of the checked mark",
+    "--radio-border-color": "Border of the unchecked mark",
+    "--radio-background": "Background of the unchecked mark",
+    "--radio-size": "Width and height of the mark (every size)",
+    "--radio-gap": "Space between the mark and the label",
+    "--radio-label-font-size": "Font size of the label (every size)",
+    "--radio-group-gap": "Space between the radios of a RadioGroup"
   }
 }

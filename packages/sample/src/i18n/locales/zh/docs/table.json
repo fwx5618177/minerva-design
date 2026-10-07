@@ -29,6 +29,14 @@
     "cell-content": {
       "title": "单元格内容",
       "description": "TableCellContent 限制宽度并换行长内容，可附带弱化的第二行或等宽主文本。"
+    },
+    "sorting": {
+      "title": "排序",
+      "description": "sortable 让表头变成按钮，依次切换升序、降序和不排序（aria-sort 同步）。true 比较 row[key]；函数则比较两行。通过 sortState 和 onSortChange 受控，或用 manualSort 交由服务端排序。"
+    },
+    "selection": {
+      "title": "行选择",
+      "description": "rowSelection 添加复选框列和全选复选框（部分选中时为半选状态）。全选会跳过禁用行；选中行带有 aria-selected 和高亮。"
     }
   },
   "api": {
@@ -38,7 +46,12 @@
       "rowKey": "从行中提取稳定的 key（默认为行索引）",
       "emptyText": "data 为空时显示的单行内容",
       "loading": "以骨架占位行替代数据",
-      "loadingRows": "加载时渲染的骨架行数"
+      "loadingRows": "加载时渲染的骨架行数",
+      "sortState": "排序状态（受控）；null 表示不排序",
+      "defaultSortState": "初始排序状态（非受控）",
+      "onSortChange": "激活可排序表头时以下一个排序状态调用",
+      "manualSort": "跳过本地排序：按原样渲染 data（由数据持有方如服务端排序），表头仍反映排序状态",
+      "rowSelection": "添加用于选择行的首列复选框"
     },
     "TableColumn": {
       "key": "列的唯一 key，也是默认读取的行字段",
@@ -47,7 +60,8 @@
       "width": "列宽（数字为像素），同时作为 width 与 min-width；固定列必填",
       "align": "表头与单元格的水平对齐",
       "ellipsis": "单行截断并显示省略号",
-      "fixed": "水平滚动时将列固定在左侧或右侧"
+      "fixed": "水平滚动时将列固定在左侧或右侧",
+      "sortable": "使列可排序：true 比较 row[key]（空值排在最后），函数 (a, b) => number 按升序比较两行"
     },
     "DataTableProps": {
       "pagination": "表格下方分页的属性（行数据需预先分页）",
@@ -59,12 +73,24 @@
       "size": "单元格密度",
       "variant": "视觉样式：普通、斑马纹或带边框",
       "hoverable": "悬停时高亮行",
-      "scroll": "滚动区域的最小宽度 / 最大高度",
+      "scroll": "滚动区域的横向最小宽度 / 纵向最大高度；滚动容器会成为以表格命名的可聚焦区域（默认：“可滚动表格”）",
       "ref": "<table> 元素的 ref"
     },
     "TableScrollConfig": {
       "x": "表格最小宽度，容器更窄时水平滚动",
       "y": "最大可见高度，容器垂直滚动且表头固定"
+    },
+    "TableSortState": {
+      "key": "排序列的 key",
+      "order": "排序方向（\"ascend\" 或 \"descend\"）；null 表示不排序"
+    },
+    "TableRowSelection": {
+      "type": "选择模式（复选框多选）",
+      "selectedRowKeys": "选中行的 key（受控）",
+      "defaultSelectedRowKeys": "初始选中行的 key（非受控）",
+      "onChange": "以新的选中 key 和 data 中对应的行调用",
+      "getCheckboxProps": "每行复选框的选项；禁用行无法切换且会被全选跳过",
+      "getRowLabel": "在行复选框的无障碍标签中命名该行（“选择行 {name}”）；默认为行 key"
     },
     "TableCellContentProps": {
       "primary": "主内容",
@@ -79,5 +105,18 @@
       "lastLeftFixedKey": "开头左固定区的最后一列（显示边界阴影）",
       "firstRightFixedKey": "末尾右固定区的第一列（显示边界阴影）"
     }
+  },
+  "cssVars": {
+    "--table-cell-padding-y": "单元格垂直内边距（所有尺寸；默认跟随密度）",
+    "--table-cell-padding-x": "单元格水平内边距（所有尺寸；默认跟随密度）",
+    "--table-font-size": "表体单元格字号（所有尺寸）",
+    "--table-header-bg": "表头行的背景色",
+    "--table-border-color": "行分隔线的颜色",
+    "--table-radius": "外层容器的圆角（默认 --radius-lg）",
+    "--table-stripe-bg": "斑马纹表格奇数行的背景色",
+    "--table-hover-bg": "可悬停表格中悬停行的背景色",
+    "--table-selected-bg": "选中行的背景色（行选择）",
+    "--table-sort-icon-color": "未排序的可排序列的排序指示器颜色",
+    "--table-focus-ring-color": "聚焦的滚动区域的轮廓颜色"
   }
 }

@@ -124,13 +124,13 @@ describe("Empty layout styles", () => {
 
   it("applies the padding of each size", () => {
     expect(css).toMatch(
-      /\.empty\.size-small\s*\{[^}]*padding:\s*var\(--space-4\) var\(--space-3\)/,
+      /\.empty\.size-small\s*\{[^}]*padding:\s*var\(--empty-padding,\s*var\(--space-4\) var\(--space-3\)\)/,
     );
     expect(css).toMatch(
-      /\.empty\.size-medium\s*\{[^}]*padding:\s*var\(--space-8\) var\(--space-4\)/,
+      /\.empty\.size-medium\s*\{[^}]*padding:\s*var\(--empty-padding,\s*var\(--space-8\) var\(--space-4\)\)/,
     );
     expect(css).toMatch(
-      /\.empty\.size-large\s*\{[^}]*padding:\s*var\(--space-12\) var\(--space-6\)/,
+      /\.empty\.size-large\s*\{[^}]*padding:\s*var\(--empty-padding,\s*var\(--space-12\) var\(--space-6\)\)/,
     );
   });
 });

@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import useLocale from "./useLocale";
 import useI18n from "./useI18n";
-import i18n from "../config/i18n";
+import i18n, { messages } from "../config/i18n";
 import { ConfigProvider } from "../contexts/ConfigProvider";
 
 describe("useLocale / useI18n", () => {
@@ -28,7 +28,7 @@ describe("useLocale / useI18n", () => {
 
   it("ships a translation for every supported language", () => {
     for (const language of ["en", "zh", "ja", "fr"]) {
-      expect(i18n.hasResourceBundle(language, "index")).toBe(true);
+      expect(messages).toHaveProperty(language);
     }
   });
 

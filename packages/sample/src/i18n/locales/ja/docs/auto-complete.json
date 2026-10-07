@@ -32,7 +32,7 @@
     },
     "appearance": {
       "title": "ドロップダウンの位置と色",
-      "description": "配置、オフセット、アニメーションをカスタマイズし、dropdownClassName で設定する CSS カスタムプロパティ --autocomplete-dropdown-bg・--autocomplete-option-hover-bg・--autocomplete-option-highlight-bg でドロップダウン、ホバー中の候補、強調表示された候補の背景色を変更します。ドロップダウンは入力欄の開始端にそろい、入力欄以上の幅を持ち、ビューポート内に収まるよう反転 / シフトします。"
+      "description": "配置、オフセット、アニメーションをカスタマイズし、dropdownClassName で設定する CSS カスタムプロパティ --auto-complete-dropdown-background・--auto-complete-option-hover-background・--auto-complete-option-highlight-background でドロップダウン、ホバー中の候補、強調表示された候補の背景色を変更します。ドロップダウンは入力欄の開始端にそろい、入力欄以上の幅を持ち、ビューポート内に収まるよう反転 / シフトします。"
     },
     "search-box": {
       "title": "検索ボックス",
@@ -43,7 +43,7 @@
     "title": "キーボードとアクセシビリティ",
     "arrows": "↓ / ↑ キーで表示中の候補を移動します（端で折り返します）。",
     "enter": "Enter でアクティブな選択肢を選びます（無効な選択肢はスキップ）。周囲のフォームは送信されません。",
-    "escape": "Escape でドロップダウンを閉じ、フォーカスは入力欄に残ります。Modal や Popover の中ではドロップダウンだけが閉じます。",
+    "escape": "Escape でドロップダウンを閉じ、フォーカスは入力欄に残ります。ドロップダウンが閉じている状態で Escape を押すとテキストを消去します（onChange は \"\" を受け取ります）。Modal や Popover の中ではドロップダウンだけが閉じます。",
     "aria": "入力欄は combobox ロールを持ち、aria-expanded・aria-controls・aria-activedescendant で listbox の候補と関連付けられます。"
   },
   "api": {
@@ -62,7 +62,7 @@
       "loading": "ドロップダウンに読み込み中インジケーターを表示します",
       "inputProps": "内部の Input に渡す props（ネイティブ属性、aria-label、サイズ、前後の装飾、clearable など）",
       "emptyProps": "既定の Empty（空状態）に渡す props",
-      "dropdownClassName": "ドロップダウン（ポータルに描画される要素）の追加クラス名。CSS カスタムプロパティ --autocomplete-dropdown-bg・--autocomplete-option-hover-bg・--autocomplete-option-highlight-bg を設定して、ドロップダウン、ホバー中の候補、強調表示された候補の色を変更できます",
+      "dropdownClassName": "ドロップダウン（ポータルに描画される要素）の追加クラス名。CSS カスタムプロパティ --auto-complete-dropdown-background・--auto-complete-option-hover-background・--auto-complete-option-highlight-background を設定して、ドロップダウン、ホバー中の候補、強調表示された候補の色を変更できます",
       "placement": "ドロップダウンの希望する方向。入力欄の開始端にそろい、入力欄以上の幅を持ち、ビューポート内に収まるよう反転 / シフトします",
       "offset": "ドロップダウンのオフセット（px）。上 / 下配置では y が入力との間隔、x が沿う方向のずれ。左 / 右配置では x が間隔",
       "animation": "ドロップダウンを開くときにアニメーションします",
@@ -87,5 +87,15 @@
       "group": "自由形式のグループ識別子。通常は groupBy で参照します",
       "style": "候補のインラインスタイル"
     }
+  },
+  "cssVars": {
+    "--auto-complete-dropdown-background": "ドロップダウンの背景色",
+    "--auto-complete-dropdown-radius": "ドロップダウンの角丸（既定は --radius-lg）",
+    "--auto-complete-dropdown-max-height": "スクロールが始まる前の候補リストの最大高さ",
+    "--auto-complete-font-size": "ドロップダウンのフォントサイズ",
+    "--auto-complete-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
+    "--auto-complete-option-padding-x": "候補とグループ見出しの左右パディング",
+    "--auto-complete-option-hover-background": "ホバー中 / キーボードでフォーカス中の候補の背景色",
+    "--auto-complete-option-highlight-background": "highlight: true の候補の背景色"
   }
 }

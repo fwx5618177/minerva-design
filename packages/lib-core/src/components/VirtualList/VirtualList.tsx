@@ -5,10 +5,11 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import type { VirtualListProps, VirtualItem } from "./types";
+import type { VirtualListItem, VirtualListProps, VirtualItem } from "./types";
 import styles from "./virtualList.module.scss";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { ProgressIndicator } from "../ProgressIndicator";
+import { cn } from "../../utils/cn";
 
 /**
  * 虚拟列表组件
@@ -23,7 +24,8 @@ import { ProgressIndicator } from "../ProgressIndicator";
  * @param loadMoreThreshold 触发加载更多的阈值(px)
  * @param highPerformance 是否启用高性能模式
  * @param loading 是否显示加载中状态
- * @param ariaLabel 列表的无障碍名称
+ * @param onItemClick 行点击回调 (提供时行可点击: 可聚焦并显示指针光标)
+ * @param aria-label 列表的无障碍名称
  * @param ref 滚动容器根元素的 ref
  * @returns {React.ReactNode} 虚拟列表组件
  */
@@ -40,8 +42,11 @@ const VirtualList = ({
   highPerformance = false,
   loading = false,
   itemPadding = 8,
-  ariaLabel,
+  onItemClick,
+  "aria-label": ariaLabel,
+  onScroll,
   ref,
+  ...rest
 }: VirtualListProps) => {
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
@@ -49,6 +54,19 @@ const VirtualList = ({
   const isLoadingMore = useRef(false);
   const rafRef = useRef<number | undefined>(undefined);
   const idleCallbackRef = useRef<number | undefined>(undefined);
+  // Id of the item containing focus: it stays mounted when it is scrolled out
+  // of the window, otherwise unmounting it would drop focus to <body>
+  // (WCAG 2.4.3). Tracked by id so it follows the item when the data changes.
+  const [focusedId, setFocusedId] = useState<VirtualListItem["id"] | null>(
+    null,
+  );
+  const focusedIndex = useMemo(
+    () =>
+      focusedId === null
+        ? null
+        : items.findIndex((item) => item.id === focusedId),
+    [focusedId, items],
+  );
 
   // 测量得到的内容高度 (不含 padding), padding 在渲染时叠加,
   // 这样 itemPadding 变化后无需重新测量也能生效. 0 = 尚未测量
@@ -162,8 +180,22 @@ const VirtualList = ({
         height: finalItemHeight,
       });
     }
+    // Keep the focused item rendered (at its real position) outside the window
+    if (
+      focusedIndex !== null &&
+      focusedIndex >= 0 &&
+      (focusedIndex < visibleRange.start || focusedIndex >= visibleRange.end)
+    ) {
+      const focusedItem = {
+        index: focusedIndex,
+        start: focusedIndex * finalItemHeight,
+        height: finalItemHeight,
+      };
+      if (focusedIndex < visibleRange.start) result.unshift(focusedItem);
+      else result.push(focusedItem);
+    }
     return result;
-  }, [visibleRange, finalItemHeight]);
+  }, [visibleRange, finalItemHeight, focusedIndex]);
 
   // 处理滚动
   const handleScroll = useCallback(
@@ -195,26 +227,31 @@ const VirtualList = ({
     },
     [onLoadMore, loading, loadMoreThreshold, scheduleUpdate],
   );
+  const handleRootScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    onScroll?.(event);
+    handleScroll(event);
+  };
 
   // 卸载时清理所有待执行的 RAF / idle 回调
   useEffect(() => cancelScheduled, [cancelScheduled]);
 
   return (
     <div
+      {...rest}
       ref={containerRef}
       // Scrollable region: focusable so keyboard users can scroll it
       role="region"
       aria-label={ariaLabel}
       tabIndex={0}
       aria-busy={loading || undefined}
-      className={`${styles.virtualList} ${className}`}
+      className={cn(styles.virtualList, className)}
       style={{
         ...style,
         maxHeight,
         overflow: "auto",
         position: "relative",
       }}
-      onScroll={handleScroll}
+      onScroll={handleRootScroll}
     >
       {needsMeasure && (
         <div
@@ -237,6 +274,10 @@ const VirtualList = ({
       >
         {finalItemHeight > 0 &&
           virtualItems.map((virtualItem) => (
+            /* Clickable rows (onItemClick) stay list items for the list
+               semantics, made focusable and activatable with Enter / Space
+               so the click handler is not pointer-only. */
+            /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */
             <div
               key={items[virtualItem.index].id}
               style={{
@@ -247,16 +288,51 @@ const VirtualList = ({
                 height: finalItemHeight,
                 willChange: "transform",
                 padding: itemPadding,
-                cursor: "pointer",
               }}
-              className={styles.virtualListItem}
+              className={cn(
+                styles.virtualListItem,
+                onItemClick && styles.clickable,
+              )}
+              tabIndex={onItemClick ? 0 : undefined}
+              onClick={
+                onItemClick
+                  ? (event) =>
+                      onItemClick(
+                        items[virtualItem.index],
+                        virtualItem.index,
+                        event,
+                      )
+                  : undefined
+              }
+              onKeyDown={
+                onItemClick
+                  ? (event) => {
+                      // Only the row itself: keys of its content are theirs
+                      if (event.target !== event.currentTarget) return;
+                      if (event.key !== "Enter" && event.key !== " ") return;
+                      event.preventDefault();
+                      onItemClick(
+                        items[virtualItem.index],
+                        virtualItem.index,
+                        event,
+                      );
+                    }
+                  : undefined
+              }
               role="listitem"
               // Only a window of items is in the DOM: expose the real position
               aria-setsize={items.length}
               aria-posinset={virtualItem.index + 1}
+              onFocus={() => setFocusedId(items[virtualItem.index].id)}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                  setFocusedId(null);
+                }
+              }}
             >
               {renderItem(items[virtualItem.index], virtualItem.index)}
             </div>
+            /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */
           ))}
       </div>
       {loading && (

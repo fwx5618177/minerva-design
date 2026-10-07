@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 const closeButton = (label: string) => (
-  <IconButton ariaLabel={label} icon="x" />
+  <IconButton aria-label={label} icon="x" />
 );
 
 it("uses the shared tooltip on keyboard focus instead of a duplicate native title", async () => {
@@ -65,7 +65,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
   const close = vi.fn();
   const ref = createRef<HTMLDivElement>();
   const { container } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="article">
+    <PageTabs aria-label="Open pages" activeValue="article">
       <PageTab
         value="article"
         label="Article"
@@ -74,7 +74,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
         ref={ref}
         icon={<svg data-testid="icon" />}
         action={
-          <IconButton ariaLabel="Close Article" icon="x" onClick={close} />
+          <IconButton aria-label="Close Article" icon="x" onClick={close} />
         }
       />
     </PageTabs>,
@@ -136,7 +136,7 @@ it("forwards context-menu events to the item wrapper and supports disabled selec
 it("keeps global actions outside the scrollable list and hides unnecessary scroll controls", () => {
   const { container } = render(
     <PageTabs
-      ariaLabel="Open pages"
+      aria-label="Open pages"
       activeValue="draft"
       actions={closeButton("Page menu")}
     >
@@ -193,7 +193,7 @@ function scrollingGeometry(viewWidth = 200, itemWidth = 200) {
 it("reveals the active page within its own viewport and updates overflow controls when scrolling", () => {
   scrollingGeometry();
   const { container } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="last">
+    <PageTabs aria-label="Open pages" activeValue="last">
       <PageTab value="last" label="Last" active />
     </PageTabs>,
   );
@@ -238,7 +238,7 @@ it("scrolls an item that is left of the viewport back into view", () => {
     },
   );
   const { container } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="first">
+    <PageTabs aria-label="Open pages" activeValue="first">
       <PageTab value="first" label="First" active />
     </PageTabs>,
   );
@@ -253,7 +253,7 @@ it("uses custom scroll labels", () => {
   scrollingGeometry();
   render(
     <PageTabs
-      ariaLabel="Open pages"
+      aria-label="Open pages"
       activeValue="last"
       scrollLeftLabel="Prev"
       scrollRightLabel="Next"
@@ -267,7 +267,7 @@ it("uses custom scroll labels", () => {
 
 it("returns focus to the current page when a focused item is removed, without stealing unrelated focus", () => {
   const tabs = (removed = false) => (
-    <PageTabs ariaLabel="Open pages" activeValue={removed ? "home" : "draft"}>
+    <PageTabs aria-label="Open pages" activeValue={removed ? "home" : "draft"}>
       <PageTab key="home" value="home" label="Home" active={removed} />
       {!removed && (
         <PageTab
@@ -299,7 +299,7 @@ it("returns focus to the current page when a focused item is removed, without st
 it("preserves manual scrolling through unrelated parent rerenders", () => {
   scrollingGeometry();
   const tabs = () => (
-    <PageTabs ariaLabel="Open pages" activeValue="last">
+    <PageTabs aria-label="Open pages" activeValue="last">
       <PageTab value="last" label="Last" active />
     </PageTabs>
   );
@@ -314,7 +314,7 @@ it("preserves manual scrolling through unrelated parent rerenders", () => {
 it("measures overflowing pages even when the current route has no active item", () => {
   scrollingGeometry();
   const { container } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="">
+    <PageTabs aria-label="Open pages" activeValue="">
       <PageTab value="last" label="Last" />
     </PageTabs>,
   );
@@ -326,7 +326,7 @@ it("measures overflowing pages even when the current route has no active item", 
 it("aligns an oversized active item consistently instead of alternating its edges", () => {
   scrollingGeometry(150, 200);
   const { container } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="last">
+    <PageTabs aria-label="Open pages" activeValue="last">
       <PageTab value="last" label="Last" active />
     </PageTabs>,
   );
@@ -347,7 +347,7 @@ it("re-measures when the viewport or list resizes", () => {
     },
   );
   const { container, unmount } = render(
-    <PageTabs ariaLabel="Open pages" activeValue="a">
+    <PageTabs aria-label="Open pages" activeValue="a">
       <PageTab value="a" label="A" active />
     </PageTabs>,
   );
@@ -363,7 +363,7 @@ it("re-measures when the viewport or list resizes", () => {
 it("works without ResizeObserver", () => {
   vi.stubGlobal("ResizeObserver", undefined);
   render(
-    <PageTabs ariaLabel="Open pages" activeValue="a">
+    <PageTabs aria-label="Open pages" activeValue="a">
       <PageTab value="a" label="A" active />
     </PageTabs>,
   );
@@ -376,7 +376,7 @@ it("calls the consumer's capture handlers and ignores focus from portals", () =>
   const onContextMenuCapture = vi.fn();
   const { container } = render(
     <PageTabs
-      ariaLabel="Open pages"
+      aria-label="Open pages"
       activeValue="a"
       onFocusCapture={onFocusCapture}
       onContextMenuCapture={onContextMenuCapture}
@@ -397,7 +397,7 @@ it("calls the consumer's capture handlers and ignores focus from portals", () =>
 it("restores the current page focus after removal through a portaled context menu", async () => {
   let removed = false;
   const tabs = () => (
-    <PageTabs ariaLabel="Open pages" activeValue={removed ? "home" : "draft"}>
+    <PageTabs aria-label="Open pages" activeValue={removed ? "home" : "draft"}>
       <PageTab key="home" value="home" label="Home" active={removed} />
       {!removed && (
         <ContextMenu
@@ -433,8 +433,15 @@ it("restores the current page focus after removal through a portaled context men
 
 it("keeps the documented geometry (48px nav, 36px items, 8px gaps)", () => {
   const css = compile(join(import.meta.dirname, "pageTabs.module.scss")).css;
-  expect(css).toMatch(/\.pageTabs \{[^}]*height: 48px/);
-  expect(css).toMatch(/\.pageTab \{[^}]*height: 36px/);
-  expect(css).toMatch(/\.list \{[^}]*gap: var\(--space-2\)/);
+  // Standard density: --control-height-lg = 48px, --control-height-md = 40px
+  expect(css).toMatch(
+    /\.pageTabs \{[^}]*height: var\(--page-tabs-height, var\(--control-height-lg\)\)/,
+  );
+  expect(css).toMatch(
+    /\.pageTab \{[^}]*height: var\(--page-tabs-item-height, calc\(var\(--control-height-md\) - var\(--space-1\)\)\)/,
+  );
+  expect(css).toMatch(
+    /\.list \{[^}]*gap: var\(--page-tabs-gap, var\(--space-2\)\)/,
+  );
   expect(css).toMatch(/\.label \{[^}]*text-overflow: ellipsis/);
 });

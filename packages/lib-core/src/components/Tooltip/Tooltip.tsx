@@ -64,7 +64,7 @@ const Tooltip = ({
   arrow = false,
   onOpen,
   onClose,
-  ariaLabel,
+  "aria-label": ariaLabel,
   asChild = false,
   contentClassName,
   contentRef,
@@ -322,6 +322,7 @@ const Tooltip = ({
         <Portal>
           <div
             ref={setContentRef}
+            dir={layer.dir}
             id={tooltipId}
             role="tooltip"
             aria-label={ariaLabel}

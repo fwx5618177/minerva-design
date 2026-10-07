@@ -8,6 +8,9 @@
 // `@minerva/lib-core/style.css` or a ThemeProvider for theming) and fall back
 // to the default light theme values when a token is not defined.
 //
+// Public CSS variables (with token fallbacks): --prose-font-size,
+// --prose-border-color, --prose-code-bg, --prose-pre-bg and --prose-radius.
+//
 // `$css-modules: true` wraps the highlight.js class selectors in `:global()`
 // so the mixin can be included from a CSS Modules stylesheet.
 
@@ -15,11 +18,12 @@
 
 $_fg: var(--text-color, #1f2937);
 $_muted: var(--text-muted-color, #6b7280);
-$_border: var(--border-color, #d9dde3);
+$_border: var(--prose-border-color, var(--border-color, #d9dde3));
 $_link: var(--primary-color-text, #1e4fbd);
 $_focus: var(--primary-color, #2563eb);
-$_control: var(--control-color, #f6f7f9);
-$_raised: var(--surface-elevated-color, #ffffff);
+$_control: var(--prose-code-bg, var(--control-color, #f6f7f9));
+$_raised: var(--prose-pre-bg, var(--surface-elevated-color, #ffffff));
+$_radius: var(--prose-radius, var(--radius-sm, 4px));
 $_success-text: var(--success-color-text, #15803d);
 $_success-subtle: var(--success-color-subtle, #e7f6ec);
 $_warning-text: var(--warning-color-text, #b45309);
@@ -49,7 +53,7 @@ $_bold: var(--font-weight-bold, 700);
   max-width: 100%;
   color: $_fg;
   font-family: $_sans;
-  font-size: var(--font-size-lg, 1rem);
+  font-size: var(--prose-font-size, var(--font-size-lg, 1rem));
   font-weight: $_regular;
   font-style: normal;
   line-height: var(--line-height-relaxed, 1.7);
@@ -147,7 +151,7 @@ $_bold: var(--font-weight-bold, 700);
   }
   :where(code) {
     padding: 0.12em 0.3em;
-    border-radius: 3px;
+    border-radius: calc(#{$_radius} - 1px);
     background: $_control;
   }
   :where(pre) {
@@ -155,7 +159,7 @@ $_bold: var(--font-weight-bold, 700);
     overflow-x: auto;
     padding: var(--space-4, 1rem);
     border: 1px solid $_border;
-    border-radius: 4px;
+    border-radius: $_radius;
     background: $_raised;
     color: $_fg;
     font-family: $_mono;
@@ -260,5 +264,19 @@ $_bold: var(--font-weight-bold, 700);
   :where(sub, sup) {
     font-size: 0.75em;
     line-height: 0;
+  }
+
+  // Print the whole code and keep blocks on one page where possible.
+  @media print {
+    :where(pre) {
+      overflow: visible;
+    }
+    :where(pre, pre code) {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    :where(pre, blockquote, figure, img, tr) {
+      break-inside: avoid;
+    }
   }
 }

@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 import { fileURLToPath } from "node:url";
 import pkg from "./package.json" with { type: "json" };
+import { writeDualDeclarations } from "../../scripts/dual-declarations.mjs";
 
 // lit (and its subpaths such as lit/decorators.js) is resolved by the consumer.
 const externalDeps = Object.keys(pkg.dependencies ?? {});
@@ -15,6 +16,8 @@ export default defineConfig({
       entryRoot: "src",
       // ships src/react.d.ts (optional React JSX typings) as dist/react.d.ts
       copyDtsFiles: true,
+      // .d.ts for ESM, .d.cts for CJS (see scripts/dual-declarations.mjs)
+      afterBuild: writeDualDeclarations,
     }),
   ],
   build: {

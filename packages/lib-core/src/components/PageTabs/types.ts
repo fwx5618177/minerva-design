@@ -5,7 +5,7 @@ export interface PageTabsProps extends Omit<
   "children"
 > {
   /** Accessible label of the navigation landmark (e.g. "Open pages") */
-  ariaLabel: string;
+  "aria-label": string;
   /**
    * Value of the current route's item. When it (or the set of items)
    * changes, the active item is scrolled into view

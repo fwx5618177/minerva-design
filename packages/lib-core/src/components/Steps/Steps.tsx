@@ -5,10 +5,12 @@ import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 
 /**
- * Steps: the stages of a workflow as an ordered list. Earlier steps are
- * marked complete and the current one with aria-current="step". Each step is
- * a native button, so navigating between steps works with the keyboard;
- * without onChange the steps are a read-only progress indicator.
+ * Steps: the stages of a workflow as an ordered list (<ol> / <li>). Earlier
+ * steps are marked complete and the current one with aria-current="step".
+ * When navigable, each step is a native button inside its list item (the
+ * current button carries aria-current), so moving between steps works with
+ * the keyboard. Without onChange (or with readOnly) the steps are a plain
+ * read-only progress indicator: no buttons, aria-current sits on the <li>.
  */
 const Steps = ({
   items,
@@ -16,7 +18,7 @@ const Steps = ({
   defaultValue,
   onChange,
   readOnly = onChange === undefined,
-  ariaLabel,
+  "aria-label": ariaLabel,
   className,
   ref,
   ...rest
@@ -40,6 +42,14 @@ const Steps = ({
       {items.map((item, index) => {
         const isCurrent = index === currentIndex;
         const isComplete = currentIndex > -1 && index < currentIndex;
+        const content = (
+          <>
+            <span className={styles.number} aria-hidden="true">
+              {index + 1}
+            </span>
+            <span className={styles.label}>{item.label}</span>
+          </>
+        );
         return (
           <li
             key={item.value}
@@ -47,21 +57,25 @@ const Steps = ({
               [styles.current]: isCurrent,
               [styles.complete]: isComplete,
             })}
+            aria-current={readOnly && isCurrent ? "step" : undefined}
           >
-            <button
-              type="button"
-              className={styles.button}
-              disabled={item.disabled || readOnly}
-              aria-current={isCurrent ? "step" : undefined}
-              onClick={() => {
-                if (!isCurrent) setCurrent(item.value);
-              }}
-            >
-              <span className={styles.number} aria-hidden="true">
-                {index + 1}
+            {readOnly ? (
+              <span className={cn(styles.button, styles.static)}>
+                {content}
               </span>
-              <span className={styles.label}>{item.label}</span>
-            </button>
+            ) : (
+              <button
+                type="button"
+                className={styles.button}
+                disabled={item.disabled}
+                aria-current={isCurrent ? "step" : undefined}
+                onClick={() => {
+                  if (!isCurrent) setCurrent(item.value);
+                }}
+              >
+                {content}
+              </button>
+            )}
           </li>
         );
       })}

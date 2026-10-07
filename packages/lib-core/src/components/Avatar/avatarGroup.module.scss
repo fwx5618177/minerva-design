@@ -1,3 +1,8 @@
+// Public CSS variables (set them on the group or any ancestor):
+// @css-var --avatar-group-overlap How far each avatar overlaps the previous one
+// @css-var --avatar-group-count-bg-color Background color of the "+N" counter
+// @css-var --avatar-group-count-text-color Text color of the "+N" counter
+
 .avatarGroup {
   position: relative;
   display: flex;
@@ -9,7 +14,7 @@
   }
 
   .avatarGroupItem {
-    margin-left: -1.5rem;
+    margin-inline-start: calc(-1 * var(--avatar-group-overlap, 1.5rem));
     transition: transform 0.3s ease;
     cursor: pointer;
 
@@ -19,7 +24,15 @@
     }
 
     &:first-child {
-      margin-left: 0;
+      margin-inline-start: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
     }
   }
 
@@ -31,11 +44,11 @@
     width: clamp(1.5rem, 2vw, 2rem);
     height: clamp(1.5rem, 2vw, 2rem);
     border-radius: 50%;
-    background-color: var(--secondary-color);
-    color: var(--text-inverse-color);
+    background-color: var(--avatar-group-count-bg-color, var(--secondary-color));
+    color: var(--avatar-group-count-text-color, var(--text-inverse-color));
     border: 1px solid var(--surface-color);
     position: absolute;
-    right: -0.5rem;
+    inset-inline-end: -0.5rem;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -46,7 +59,7 @@
 // 响应式支持
 @media (max-width: 576px) {
   .avatarGroupItem {
-    margin-left: 0;
+    margin-inline-start: 0;
     margin-bottom: 1rem;
     width: 100%; // 确保在移动端时宽度不会消失
   }

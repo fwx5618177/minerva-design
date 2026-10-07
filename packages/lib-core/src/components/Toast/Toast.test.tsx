@@ -156,7 +156,7 @@ describe("ToastProvider", () => {
     act(() => {
       toast.success("Saved", { description: "All good", duration: 3000 });
     });
-    const region = screen.getByRole("region", { name: "Notifications" });
+    const region = screen.getByRole("region", { name: "Notifications (F8)" });
     expect(region).toHaveClass("viewport", "bottomLeft");
     const item = within(region).getByRole("status");
     expect(item).toHaveClass("toast", "success");
@@ -178,15 +178,14 @@ describe("ToastProvider", () => {
     expect(alert.querySelector(".title")).toBeNull();
     expect(alert.querySelector(".progress")).toBeNull();
     expect(alert.style.getPropertyValue("--toast-duration")).toBe("");
-    expect(screen.getByRole("region", { name: "Notifications" })).toHaveClass(
-      "viewport",
-      "topRight",
-    );
+    expect(
+      screen.getByRole("region", { name: "Notifications (F8)" }),
+    ).toHaveClass("viewport", "topRight");
   });
 
   it("closes with the close button", () => {
     vi.useFakeTimers();
-    render(<ToastProvider closeLabel="Dismiss" ariaLabel="Alerts" />);
+    render(<ToastProvider closeLabel="Dismiss" aria-label="Alerts" />);
     act(() => {
       toast.info("Bye", { duration: 0 });
     });
@@ -588,7 +587,7 @@ describe("toast: loading, update, promise, max and options", () => {
   ] as const)("stacks toasts at %s", (position) => {
     render(<ToastProvider position={position} />);
     show(() => toast.info("Placed", { duration: 0 }));
-    const region = screen.getByRole("region", { name: "Notifications" });
+    const region = screen.getByRole("region", { name: "Notifications (F8)" });
     expect(region).toHaveClass("viewport", position);
     expect(region).toContainElement(screen.getByRole("status"));
   });
@@ -619,8 +618,8 @@ describe("several ToastProviders", () => {
   it("renders each toast once when two providers are mounted", () => {
     render(
       <>
-        <ToastProvider ariaLabel="First" />
-        <ToastProvider ariaLabel="Second" />
+        <ToastProvider aria-label="First" />
+        <ToastProvider aria-label="Second" />
       </>,
     );
     act(() => {
@@ -637,8 +636,8 @@ describe("several ToastProviders", () => {
 
   it("lets the outermost of nested providers render the toasts", () => {
     render(
-      <ToastProvider ariaLabel="Outer" position="bottomLeft">
-        <ToastProvider ariaLabel="Inner" position="topCenter" />
+      <ToastProvider aria-label="Outer" position="bottomLeft">
+        <ToastProvider aria-label="Inner" position="topCenter" />
       </ToastProvider>,
     );
     act(() => {
@@ -656,8 +655,8 @@ describe("several ToastProviders", () => {
   it("hands the toasts over to the remaining provider when the owner unmounts", () => {
     const Page = ({ first }: { first: boolean }) => (
       <>
-        {first && <ToastProvider ariaLabel="First" />}
-        <ToastProvider ariaLabel="Second" />
+        {first && <ToastProvider aria-label="First" />}
+        <ToastProvider aria-label="Second" />
       </>
     );
     const { rerender } = render(<Page first />);
@@ -685,8 +684,8 @@ describe("several ToastProviders", () => {
   it("keeps a provider mounted later from taking over a live owner", () => {
     const Page = ({ second }: { second: boolean }) => (
       <>
-        <ToastProvider ariaLabel="First" />
-        {second && <ToastProvider ariaLabel="Second" />}
+        <ToastProvider aria-label="First" />
+        {second && <ToastProvider aria-label="Second" />}
       </>
     );
     const { rerender } = render(<Page second={false} />);
@@ -704,9 +703,9 @@ describe("several ToastProviders", () => {
     render(
       <ConfigProvider theme="light">
         <ConfigProvider theme="dark">
-          <ToastProvider ariaLabel="Scoped" />
+          <ToastProvider aria-label="Scoped" />
         </ConfigProvider>
-        <ToastProvider ariaLabel="Later" />
+        <ToastProvider aria-label="Later" />
       </ConfigProvider>,
     );
     act(() => {

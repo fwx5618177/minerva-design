@@ -8,7 +8,7 @@
     },
     "read-only": {
       "title": "只读进度",
-      "description": "不传 onChange 时，步骤条为只读的进度指示。"
+      "description": "不传 onChange 时，步骤条为只读的进度指示：一个不含按钮的有序列表，当前项带有 aria-current=\"step\"。"
     }
   },
   "api": {
@@ -17,8 +17,8 @@
       "value": "当前步骤的值（受控，配合 onChange）",
       "defaultValue": "初始当前步骤的值（非受控）",
       "onChange": "用户切换到某步骤时以其值调用。只报告导航，校验与流程流转由调用方负责",
-      "readOnly": "以只读进度指示渲染（所有步骤按钮禁用）",
-      "ariaLabel": "列表的无障碍名称",
+      "readOnly": "以只读进度指示渲染：普通列表项、不含按钮，当前项标记 aria-current=\"step\"",
+      "aria-label": "列表的无障碍名称",
       "className": "额外的类名",
       "ref": "根 <ol> 元素的 ref"
     },
@@ -27,5 +27,12 @@
       "label": "步骤的可见文字",
       "disabled": "禁止切换到该步骤（例如尚未到达的终态）"
     }
+  },
+  "cssVars": {
+    "--steps-gap": "步骤之间的间距（行距与列距）",
+    "--steps-font-size": "标签的字号",
+    "--steps-indicator-size": "序号指示器的直径",
+    "--steps-accent-color": "当前 / 已完成指示器的颜色（默认 --primary-color）",
+    "--steps-current-background": "当前步骤指示器的背景"
   }
 }

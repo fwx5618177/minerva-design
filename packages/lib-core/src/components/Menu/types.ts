@@ -189,13 +189,13 @@ export interface MenuProps {
   loop?: boolean;
   /**
    * Reading direction: in "rtl" submenus open to the left and ArrowLeft / ArrowRight are swapped
-   * @default "ltr"
+   * @default inherited from the nearest `dir` attribute of the trigger (else "ltr")
    */
   dir?: MenuDirection;
   /** Additional class name of the menu panel */
   className?: string;
   /** Accessible label of the menu panel (defaults to the trigger's label) */
-  ariaLabel?: string;
+  "aria-label"?: string;
 }
 
 export interface ContextMenuProps {
@@ -234,11 +234,11 @@ export interface ContextMenuProps {
   loop?: boolean;
   /**
    * Reading direction: in "rtl" submenus open to the left and ArrowLeft / ArrowRight are swapped
-   * @default "ltr"
+   * @default inherited from the nearest `dir` attribute of the trigger (else "ltr")
    */
   dir?: MenuDirection;
   /** Additional class name of the menu panel */
   className?: string;
   /** Accessible label of the menu panel */
-  ariaLabel?: string;
+  "aria-label"?: string;
 }

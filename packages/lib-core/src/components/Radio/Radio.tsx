@@ -1,6 +1,7 @@
 import React, { useContext, useId } from "react";
 import { cn } from "../../utils/cn";
-import { FaInfoCircle } from "react-icons/fa";
+import { IconCircleInfoFilled } from "../../internal/icons";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import styles from "./radio.module.scss";
 import type { RadioProps } from "./types";
 import { RadioGroupContext } from "./RadioGroup";
@@ -21,15 +22,20 @@ const Radio = ({
   size = "medium",
   label,
   children,
-  ariaLabel,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  id,
+  "aria-describedby": ariaDescribedBy,
   className = "",
+  style,
   color = "primary",
   required = false,
   error = false,
-  errorIcon = <FaInfoCircle />,
+  errorIcon = <IconCircleInfoFilled />,
   errorMessage,
   helperText,
   ref,
+  ...rest
 }: RadioProps) => {
   const group = useContext(RadioGroupContext);
   const fc = useFormControlContext();
@@ -66,6 +72,8 @@ const Radio = ({
         error && styles.error,
         className,
       )}
+      style={style}
+      {...pickDataAttributes(rest)}
     >
       <label className={cn(styles.radio, isDisabled && styles.disabled)}>
         <input
@@ -79,7 +87,14 @@ const Radio = ({
           onChange={handleChange}
           required={required}
           aria-label={ariaLabel}
-          aria-describedby={helper ? helperId : undefined}
+          aria-labelledby={ariaLabelledBy}
+          id={id}
+          // Consumer descriptions are merged with the helper / error text.
+          aria-describedby={
+            [helper ? helperId : null, ariaDescribedBy]
+              .filter(Boolean)
+              .join(" ") || undefined
+          }
           className={styles.input}
         />
         <span className={styles.radioMark} />

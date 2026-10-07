@@ -3,20 +3,21 @@
   "description": "Add Minerva to a React project, load the stylesheet, and optionally register the Web Components.",
   "requirements": {
     "title": "Requirements",
-    "react": "React and React DOM 19 or later (peer dependencies of @minerva/lib-core).",
+    "react": "React and React DOM 19 (peer dependencies of @minerva/lib-core). React 18 is not supported: the components rely on React 19 APIs such as ref as a regular prop, and are tested with StrictMode and React DOM 19's server renderer.",
     "bundler": "A bundler that understands ES modules and CSS imports, such as Vite, webpack, Rspack or Next.js. A CommonJS build is shipped as well.",
     "browsers": "A modern evergreen browser: the theme tokens rely on CSS custom properties and color-mix()."
   },
   "core": {
     "title": "Install the React components",
     "text": "Install @minerva/lib-core with your package manager. Add react and react-dom if your project does not have them yet.",
-    "peers": "react and react-dom are peer dependencies (>= 19) so your app keeps a single copy of React. i18next, react-i18next, react-icons and classnames are installed automatically as regular dependencies."
+    "peers": "react and react-dom are peer dependencies (^19) so your app keeps a single copy of React. The only runtime dependencies are @minerva/core (primitives, design tokens and a tiny translator), DOMPurify (HtmlPreview) and jsonc-parser (JsonField): no icon, class-name or i18n library is installed. Icons are inline SVGs."
   },
   "styles": {
     "title": "Import the stylesheet",
     "text": "The component styles and the default theme tokens are bundled in a single CSS file. Import it once, in your application's entry file:",
     "note": "Without @minerva/lib-core/style.css the components render unstyled. Import it only once; importing it from several modules is harmless but unnecessary.",
-    "extras": "An optional Sass file is published next to it: @minerva/lib-core/prose.scss contains mixins for long-form typography, to @use from your own Sass."
+    "extras": "An optional Sass file is published next to it: @minerva/lib-core/prose.scss contains mixins for long-form typography, to @use from your own Sass.",
+    "perComponent": "Only using a few components? Import the design tokens once and the stylesheet of each component you use instead of style.css. Each file contains the styles of the component and of the components it renders (e.g. confirm.css includes the Button and Modal styles); the file name is the kebab-case component folder (tag-input.css, time-picker.css, ...). The JavaScript is tree-shaken per component as well: every module is published separately and the package is side-effect free except for its CSS."
   },
   "optional": {
     "title": "Optional entries and peers",

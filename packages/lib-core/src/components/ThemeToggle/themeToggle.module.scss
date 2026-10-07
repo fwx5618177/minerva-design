@@ -1,16 +1,25 @@
+// Public CSS variables (set them on the toggle or any ancestor):
+// @css-var --theme-toggle-gap Space between the options
+// @css-var --theme-toggle-padding Inner padding of the group
+// @css-var --theme-toggle-radius Corner radius of the group (defaults to --radius-lg; options use --radius-md)
+// @css-var --theme-toggle-background Background of the group
+// @css-var --theme-toggle-item-height Minimum height of an option (follows the density's control height)
+// @css-var --theme-toggle-item-min-width Minimum width of an option
+// @css-var --theme-toggle-active-background Background of the selected option
+
 .group {
   display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: var(--radius-lg);
-  background: var(--control-color);
+  gap: var(--theme-toggle-gap, 2px);
+  padding: var(--theme-toggle-padding, 3px);
+  border-radius: var(--theme-toggle-radius, var(--radius-lg));
+  background: var(--theme-toggle-background, var(--control-color));
   box-shadow: 0 0 0 1px var(--border-color);
   font-family: var(--font-family-sans);
 }
 
 .item {
-  min-width: 36px;
-  min-height: 28px;
+  min-width: var(--theme-toggle-item-min-width, 36px);
+  min-height: var(--theme-toggle-item-height, calc(var(--control-height-sm) - var(--space-1)));
   padding: 0 var(--space-2);
   border: none;
   border-radius: var(--radius-md);
@@ -35,8 +44,20 @@
   }
 
   &[data-active="true"] {
-    background: var(--surface-elevated-color);
+    background: var(--theme-toggle-active-background, var(--surface-elevated-color));
     color: var(--text-color);
     box-shadow: 0 0 0 1px var(--border-color);
+  }
+}
+
+// Forced colors drop the box-shadow borders and the selected fill.
+@media (forced-colors: active) {
+  .group {
+    outline: 1px solid CanvasText;
+  }
+
+  .item[data-active="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
   }
 }

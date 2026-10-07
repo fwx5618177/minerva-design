@@ -32,7 +32,7 @@
     },
     "appearance": {
       "title": "Position et couleurs de la liste",
-      "description": "Personnalisez la position, le décalage et l'animation, et recolorez la liste, les options survolées et les options mises en avant avec les propriétés personnalisées CSS --autocomplete-dropdown-bg, --autocomplete-option-hover-bg et --autocomplete-option-highlight-bg définies via dropdownClassName. La liste est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre."
+      "description": "Personnalisez la position, le décalage et l'animation, et recolorez la liste, les options survolées et les options mises en avant avec les propriétés personnalisées CSS --auto-complete-dropdown-background, --auto-complete-option-hover-background et --auto-complete-option-highlight-background définies via dropdownClassName. La liste est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre."
     },
     "search-box": {
       "title": "Champ de recherche",
@@ -43,7 +43,7 @@
     "title": "Clavier et accessibilité",
     "arrows": "Flèche bas / haut parcourent les options visibles (en boucle).",
     "enter": "Entrée sélectionne l'option active (les options désactivées sont ignorées) sans soumettre le formulaire englobant.",
-    "escape": "Échap ferme la liste et laisse le focus dans le champ ; dans une Modal ou un Popover, seule la liste se ferme.",
+    "escape": "Échap ferme la liste et laisse le focus dans le champ ; liste déjà fermée, il efface le texte (onChange reçoit \"\"). Dans une Modal ou un Popover, seule la liste se ferme.",
     "aria": "Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox."
   },
   "api": {
@@ -62,7 +62,7 @@
       "loading": "Affiche un indicateur de chargement dans la liste",
       "inputProps": "Props transmises à l'Input sous-jacent (attributs natifs, aria-label, taille, préfixe / suffixe, clearable…)",
       "emptyProps": "Props transmises à l'état vide Empty par défaut",
-      "dropdownClassName": "Classe supplémentaire de la liste déroulante (élément rendu dans un portail). Elle peut définir les propriétés personnalisées CSS --autocomplete-dropdown-bg, --autocomplete-option-hover-bg et --autocomplete-option-highlight-bg pour recolorer la liste, les options survolées et les options mises en avant",
+      "dropdownClassName": "Classe supplémentaire de la liste déroulante (élément rendu dans un portail). Elle peut définir les propriétés personnalisées CSS --auto-complete-dropdown-background, --auto-complete-option-hover-background et --auto-complete-option-highlight-background pour recolorer la liste, les options survolées et les options mises en avant",
       "placement": "Côté souhaité de la liste ; elle est alignée sur le bord de début du champ, au moins aussi large que lui, et bascule / se décale pour rester dans la fenêtre",
       "offset": "Décalage de la liste en pixels : en haut / en bas, y est l'écart avec le champ et x le décalage le long de celui-ci ; à gauche / à droite, x est l'écart",
       "animation": "Anime la liste à l'ouverture",
@@ -87,5 +87,15 @@
       "group": "Identifiant de groupe libre, généralement lu par groupBy",
       "style": "Styles en ligne de l'option"
     }
+  },
+  "cssVars": {
+    "--auto-complete-dropdown-background": "Arrière-plan de la liste déroulante",
+    "--auto-complete-dropdown-radius": "Rayon des coins de la liste déroulante (par défaut --radius-lg)",
+    "--auto-complete-dropdown-max-height": "Hauteur maximale de la liste d'options avant défilement",
+    "--auto-complete-font-size": "Taille de police de la liste déroulante",
+    "--auto-complete-option-padding-y": "Marge intérieure verticale d'une option (suit la marge de ligne de la densité)",
+    "--auto-complete-option-padding-x": "Marge intérieure horizontale d'une option et d'un libellé de groupe",
+    "--auto-complete-option-hover-background": "Arrière-plan de l'option survolée / active au clavier",
+    "--auto-complete-option-highlight-background": "Arrière-plan des options avec highlight: true"
   }
 }

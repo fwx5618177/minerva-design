@@ -1,14 +1,38 @@
 // Table. Default table-layout: auto (antd / arco / mantine): content-driven
 // column widths, and every column width is also written as min-width on the
 // cells, so the table grows past the wrapper and the wrapper scrolls.
+//
+// Cell padding follows the density row tokens: small = --row-padding-y/x,
+// medium (default) = + --space-1, large = + --space-2 (standard density:
+// 0.5/0.75rem, 0.75/1rem, 1/1.25rem).
+//
+// Public CSS variables (set them on the table or any ancestor):
+// @css-var --table-cell-padding-y Vertical padding of the cells (every size; follows the density by default)
+// @css-var --table-cell-padding-x Horizontal padding of the cells (every size; follows the density by default)
+// @css-var --table-font-size Font size of the body cells (every size)
+// @css-var --table-header-bg Background color of the header row
+// @css-var --table-border-color Color of the row separators
+// @css-var --table-radius Corner radius of the wrapper (defaults to --radius-lg)
+// @css-var --table-stripe-bg Background color of the odd rows of a striped table
+// @css-var --table-hover-bg Background color of the hovered row of a hoverable table
+// @css-var --table-selected-bg Background color of the selected rows (row selection)
+// @css-var --table-sort-icon-color Color of the sort indicator of an unsorted sortable column
+// @css-var --table-focus-ring-color Outline color of the focused scroll region
 
 .wrapper {
   width: 100%;
   overflow-x: auto;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--table-radius, var(--radius-lg));
   background-color: var(--surface-color);
   -webkit-overflow-scrolling: touch;
+}
+
+// Scrolling wrapper: a focusable region (tabIndex 0) so it can be scrolled
+// with the keyboard.
+.wrapper:focus-visible {
+  outline: 2px solid var(--table-focus-ring-color, var(--focus-ring-color));
+  outline-offset: 2px;
 }
 
 .dataTable {
@@ -31,22 +55,22 @@
 
   th,
   td {
-    text-align: left;
-    padding: var(--space-3) var(--space-4);
+    text-align: start;
+    padding: var(--table-cell-padding-y, calc(var(--row-padding-y) + var(--space-1))) var(--table-cell-padding-x, calc(var(--row-padding-x) + var(--space-1)));
     vertical-align: middle;
     line-height: var(--line-height-base);
   }
 
   thead th {
-    background-color: var(--surface-muted-color);
+    background-color: var(--table-header-bg, var(--surface-muted-color));
     color: var(--text-secondary-color);
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-sm);
-    border-bottom: 1px solid var(--border-strong-color);
+    border-bottom: 1px solid var(--table-border-color, var(--border-strong-color));
   }
 
   tbody tr {
-    border-bottom: 1px solid var(--border-strong-color);
+    border-bottom: 1px solid var(--table-border-color, var(--border-strong-color));
     transition: background-color var(--transition-fast);
   }
 
@@ -75,7 +99,7 @@
 
   thead th[data-fixed] {
     z-index: 3;
-    background-color: var(--surface-muted-color);
+    background-color: var(--table-header-bg, var(--surface-muted-color));
   }
 
   th[data-fixed-edge="left"],
@@ -109,41 +133,112 @@
 // Variants
 .striped tbody tr:nth-child(odd),
 .striped tbody tr:nth-child(odd) td[data-fixed] {
-  background-color: var(--surface-subtle-color);
+  background-color: var(--table-stripe-bg, var(--surface-subtle-color));
 }
 
 .wrapperBordered .table th + th,
 .wrapperBordered .table td + td {
-  border-left: 1px solid var(--border-color);
+  border-inline-start: 1px solid var(--border-color);
 }
 
 .hoverable tbody tr:hover,
 .hoverable tbody tr:hover td[data-fixed] {
-  background-color: var(--hover-color);
+  background-color: var(--table-hover-bg, var(--hover-color));
 }
 
-// Sizes
+// Selected rows (row selection)
+.table tbody tr[data-selected],
+.table tbody tr[data-selected] td[data-fixed] {
+  background-color: var(--table-selected-bg, var(--selected-color));
+}
+
+// Selection column
+.table .selectionCell {
+  text-align: center;
+  padding-inline: var(--space-2);
+}
+
+.checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  vertical-align: middle;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+// Sortable header: a button filling the header cell
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+.sortLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sortIcon {
+  flex: none;
+  color: var(--table-sort-icon-color, var(--text-muted-color));
+}
+
+.sortButton[data-sort-order] .sortIcon {
+  color: var(--primary-color);
+}
+
+// Sizes (padding: see the header comment)
 .small {
   th,
   td {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--font-size-sm);
+    padding: var(--table-cell-padding-y, var(--row-padding-y)) var(--table-cell-padding-x, var(--row-padding-x));
+    font-size: var(--table-font-size, var(--font-size-sm));
   }
 }
 
 .medium {
   th,
   td {
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--font-size-md);
+    padding: var(--table-cell-padding-y, calc(var(--row-padding-y) + var(--space-1))) var(--table-cell-padding-x, calc(var(--row-padding-x) + var(--space-1)));
+    font-size: var(--table-font-size, var(--font-size-md));
   }
 }
 
 .large {
   th,
   td {
-    padding: var(--space-4) var(--space-5);
-    font-size: var(--font-size-lg);
+    padding: var(--table-cell-padding-y, calc(var(--row-padding-y) + var(--space-2))) var(--table-cell-padding-x, calc(var(--row-padding-x) + var(--space-2)));
+    font-size: var(--table-font-size, var(--font-size-lg));
   }
 }
 
@@ -195,7 +290,7 @@
 }
 
 .retryIcon {
-  margin-right: var(--space-1-5);
+  margin-inline-end: var(--space-1-5);
   vertical-align: -0.125em;
 }
 
@@ -229,6 +324,47 @@
 @media (max-width: 48rem) {
   .table th,
   .table td {
-    padding: var(--space-2) var(--space-3);
+    padding: var(--table-cell-padding-y, var(--row-padding-y)) var(--table-cell-padding-x, var(--row-padding-x));
+  }
+}
+
+// Forced colors: the sticky-column edge shadows disappear, draw a border
+// instead (fixed-column offsets are physical left / right, set inline).
+@media (forced-colors: active) {
+  .table th[data-fixed-edge="left"],
+  .table td[data-fixed-edge="left"] {
+    border-right: 1px solid CanvasText;
+  }
+
+  .table th[data-fixed-edge="right"],
+  .table td[data-fixed-edge="right"] {
+    border-left: 1px solid CanvasText;
+  }
+
+  // The selected-row background is dropped: mark the rows with an outline.
+  .table tbody tr[data-selected] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+// Print: the whole table, no scroll container, no sticky cells, rows kept whole.
+@media print {
+  .wrapper {
+    overflow: visible;
+    max-height: none !important; // scroll.y is written inline
+  }
+
+  .table {
+    th[data-fixed],
+    td[data-fixed],
+    thead th {
+      position: static;
+      box-shadow: none;
+    }
+
+    tr {
+      break-inside: avoid;
+    }
   }
 }

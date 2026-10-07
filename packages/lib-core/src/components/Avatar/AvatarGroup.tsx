@@ -15,7 +15,7 @@ const AvatarGroup = ({
   max,
   className = "",
   children,
-  ariaLabel,
+  "aria-label": ariaLabel,
   ref,
   ...rest
 }: AvatarGroupProps) => {

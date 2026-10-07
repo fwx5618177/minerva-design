@@ -15,7 +15,7 @@ export default function WithIconDemo() {
       >
         Back
       </Button>
-      <Button color="danger" variant="outline" ariaLabel="Delete item">
+      <Button color="danger" variant="outline" aria-label="Delete item">
         <IoTrash aria-hidden />
       </Button>
     </>

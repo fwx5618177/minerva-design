@@ -15,6 +15,12 @@ import "@minerva/lib-core/style.css";`;
 const extraStyles = `// optional, in your own .scss: long-form typography mixins
 @use "@minerva/lib-core/prose.scss" as prose;`;
 
+const perComponentStyles = `// main.tsx — instead of "@minerva/lib-core/style.css":
+import "@minerva/lib-core/styles/tokens.css"; // design tokens, once
+import "@minerva/lib-core/styles/button.css";
+import "@minerva/lib-core/styles/input.css";
+import "@minerva/lib-core/styles/modal.css";`;
+
 const monacoInstall = `pnpm add @monaco-editor/react monaco-editor`;
 
 const monacoImport = `import { MonacoCodeEditor } from "@minerva/lib-core/monaco";`;
@@ -87,6 +93,10 @@ const InstallationDoc: React.FC = () => {
         <p className={styles.prose}>{t("docs.installation.styles.text")}</p>
         <CodeBlock code={styleImport} language="tsx" />
         <p className={styles.callout}>{t("docs.installation.styles.note")}</p>
+        <p className={styles.prose}>
+          {t("docs.installation.styles.perComponent")}
+        </p>
+        <CodeBlock code={perComponentStyles} language="tsx" />
         <p className={styles.prose}>{t("docs.installation.styles.extras")}</p>
         <CodeBlock code={extraStyles} language="scss" />
       </section>

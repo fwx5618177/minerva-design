@@ -38,6 +38,12 @@ export interface DocPageMeta {
   api?: string[];
   /** Demo ids, in display order; each maps to `pages/<id>/demos/<demo>.tsx` */
   demos?: string[];
+  /**
+   * Component folders of @minerva/lib-core whose CSS custom properties
+   * (`// @css-var` comments in their SCSS) are listed in a "CSS variables"
+   * section
+   */
+  cssVars?: string[];
 }
 
 export const categories: DocCategory[] = [
@@ -99,6 +105,7 @@ export const docPages: DocPageMeta[] = [
   // General
   {
     id: "button",
+    cssVars: ["Button"],
     category: "general",
     exports: ["Button"],
     api: ["ButtonProps"],
@@ -111,10 +118,12 @@ export const docPages: DocPageMeta[] = [
       "states",
       "with-icon",
       "icons-loading",
+      "form",
     ],
   },
   {
     id: "icon-button",
+    cssVars: ["IconButton"],
     category: "general",
     exports: ["IconButton"],
     api: ["IconButtonProps"],
@@ -135,6 +144,7 @@ export const docPages: DocPageMeta[] = [
   // Layout
   {
     id: "divider",
+    cssVars: ["Divider"],
     category: "layout",
     exports: ["Divider"],
     api: ["DividerProps"],
@@ -149,6 +159,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "card",
+    cssVars: ["Card"],
     category: "layout",
     exports: [
       "Card",
@@ -177,15 +188,23 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "virtual-list",
+    cssVars: ["VirtualList"],
     category: "layout",
     exports: ["VirtualList"],
     api: ["VirtualListProps", "VirtualListItem"],
-    demos: ["basic", "auto-height", "infinite-scroll", "high-performance"],
+    demos: [
+      "basic",
+      "auto-height",
+      "infinite-scroll",
+      "high-performance",
+      "clickable-rows",
+    ],
   },
 
   // Data entry
   {
     id: "checkbox",
+    cssVars: ["Checkbox"],
     category: "dataEntry",
     exports: ["Checkbox"],
     api: ["CheckboxProps"],
@@ -203,6 +222,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "radio",
+    cssVars: ["Radio"],
     category: "dataEntry",
     exports: ["Radio", "RadioGroup"],
     api: ["RadioProps", "RadioGroupProps"],
@@ -218,6 +238,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "switch",
+    cssVars: ["Switch"],
     category: "dataEntry",
     exports: ["Switch"],
     api: ["SwitchProps"],
@@ -235,6 +256,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "auto-complete",
+    cssVars: ["AutoComplete"],
     category: "dataEntry",
     exports: ["AutoComplete"],
     api: ["AutoCompleteProps", "AutoCompleteOption"],
@@ -252,6 +274,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "cascader",
+    cssVars: ["Cascader"],
     category: "dataEntry",
     exports: ["Cascader"],
     api: ["CascaderProps", "CascaderOption"],
@@ -269,6 +292,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "time-picker",
+    cssVars: ["TimePicker"],
     category: "dataEntry",
     exports: ["TimePicker"],
     api: ["TimePickerProps"],
@@ -288,6 +312,7 @@ export const docPages: DocPageMeta[] = [
   // Data display
   {
     id: "avatar",
+    cssVars: ["Avatar"],
     category: "dataDisplay",
     exports: ["Avatar", "AvatarGroup"],
     api: ["AvatarProps", "AvatarGroupProps"],
@@ -295,6 +320,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "badge",
+    cssVars: ["Badge"],
     category: "dataDisplay",
     exports: ["Badge"],
     api: ["BadgeProps"],
@@ -312,6 +338,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "tag",
+    cssVars: ["Tag"],
     category: "dataDisplay",
     exports: ["Tag"],
     api: ["TagProps"],
@@ -329,6 +356,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "empty",
+    cssVars: ["Empty"],
     category: "dataDisplay",
     exports: ["Empty"],
     api: ["EmptyProps"],
@@ -336,6 +364,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "tooltip",
+    cssVars: ["Tooltip"],
     category: "dataDisplay",
     exports: ["Tooltip", "TooltipProvider"],
     api: ["TooltipProps", "TooltipRef", "TooltipProviderProps"],
@@ -359,6 +388,7 @@ export const docPages: DocPageMeta[] = [
   // Feedback
   {
     id: "alert",
+    cssVars: ["Alert"],
     category: "feedback",
     exports: ["Alert"],
     api: ["AlertProps"],
@@ -373,10 +403,12 @@ export const docPages: DocPageMeta[] = [
       "banner",
       "appearance",
       "animations",
+      "return-focus",
     ],
   },
   {
     id: "progress",
+    cssVars: ["ProgressIndicator"],
     category: "feedback",
     exports: ["ProgressIndicator"],
     api: ["ProgressIndicatorProps"],
@@ -384,6 +416,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "skeleton",
+    cssVars: ["Skeleton"],
     category: "feedback",
     exports: ["Skeleton", "SkeletonText"],
     api: ["SkeletonProps", "SkeletonTextProps"],
@@ -402,6 +435,7 @@ export const docPages: DocPageMeta[] = [
   // Navigation
   {
     id: "pagination",
+    cssVars: ["Pagination"],
     category: "navigation",
     exports: ["Pagination"],
     api: ["PaginationProps", "PaginationLabels"],
@@ -430,6 +464,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "stack",
+    cssVars: ["Stack"],
     category: "layout",
     exports: ["Stack", "HStack", "VStack"],
     api: ["StackProps"],
@@ -437,6 +472,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "responsive-grid",
+    cssVars: ["ResponsiveGrid"],
     category: "layout",
     exports: ["ResponsiveGrid", "GridItem"],
     api: ["ResponsiveGridProps", "GridItemProps"],
@@ -444,6 +480,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "split-layout",
+    cssVars: ["SplitLayout"],
     category: "layout",
     exports: ["SplitLayout"],
     api: ["SplitLayoutProps"],
@@ -451,6 +488,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "page",
+    cssVars: ["Page"],
     category: "layout",
     exports: ["Page", "PageHeader", "PageSection", "StatCard", "Toolbar"],
     api: [
@@ -464,15 +502,17 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "app-shell",
+    cssVars: ["AppShell"],
     category: "layout",
     exports: ["AppShell"],
     api: ["AppShellProps", "AppShellNavigationState", "AppShellLabels"],
-    demos: ["basic", "controlled"],
+    demos: ["basic", "controlled", "skip-link"],
   },
 
   // Overlays
   {
     id: "modal",
+    cssVars: ["Modal"],
     category: "overlays",
     exports: [
       "Modal",
@@ -497,10 +537,11 @@ export const docPages: DocPageMeta[] = [
     category: "overlays",
     exports: ["ConfirmDialog", "ConfirmProvider", "confirm", "useConfirm"],
     api: ["ConfirmDialogProps", "ConfirmOptions", "ConfirmProviderProps"],
-    demos: ["imperative", "colors", "provider", "declarative"],
+    demos: ["imperative", "colors", "provider", "declarative", "scoped"],
   },
   {
     id: "drawer",
+    cssVars: ["Drawer"],
     category: "overlays",
     exports: [
       "Drawer",
@@ -517,6 +558,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "command",
+    cssVars: ["Command"],
     category: "overlays",
     exports: ["CommandDialog", "normalizeShortcuts", "matchesShortcut"],
     api: ["CommandDialogProps", "CommandItem"],
@@ -524,6 +566,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "popover",
+    cssVars: ["Popover"],
     category: "overlays",
     exports: [
       "Popover",
@@ -538,6 +581,7 @@ export const docPages: DocPageMeta[] = [
 
   {
     id: "menu",
+    cssVars: ["Menu"],
     category: "overlays",
     exports: ["Menu", "ContextMenu"],
     api: [
@@ -564,6 +608,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "toast",
+    cssVars: ["Toast"],
     category: "feedback",
     exports: ["ToastProvider", "toast", "useToast"],
     api: [
@@ -573,10 +618,20 @@ export const docPages: DocPageMeta[] = [
       "ToastApi",
       "ToastPromiseMessages",
     ],
-    demos: ["basic", "colors", "options", "loading", "action", "dedupe"],
+    demos: [
+      "basic",
+      "colors",
+      "options",
+      "loading",
+      "action",
+      "dedupe",
+      "scoped",
+      "keyboard",
+    ],
   },
   {
     id: "page-tabs",
+    cssVars: ["PageTabs"],
     category: "navigation",
     exports: ["PageTabs", "PageTab"],
     api: ["PageTabsProps", "PageTabProps"],
@@ -586,6 +641,7 @@ export const docPages: DocPageMeta[] = [
   // Forms
   {
     id: "form-control",
+    cssVars: ["FormControl"],
     category: "dataEntry",
     exports: [
       "FormControl",
@@ -601,6 +657,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "form-layout",
+    cssVars: ["FormLayout"],
     category: "dataEntry",
     exports: ["FormLayout"],
     api: ["FormLayoutProps"],
@@ -608,6 +665,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "input",
+    cssVars: ["Input"],
     category: "dataEntry",
     exports: ["Input"],
     api: ["InputProps"],
@@ -623,6 +681,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "textarea",
+    cssVars: ["Textarea"],
     category: "dataEntry",
     exports: ["Textarea"],
     api: ["TextareaProps"],
@@ -630,6 +689,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "number-input",
+    cssVars: ["NumberInput"],
     category: "dataEntry",
     exports: ["NumberInput"],
     api: ["NumberInputProps"],
@@ -637,6 +697,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "json-field",
+    cssVars: ["JsonField"],
     category: "dataEntry",
     exports: ["JsonField"],
     api: ["JsonFieldProps"],
@@ -644,6 +705,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "key-value-editor",
+    cssVars: ["KeyValueEditor"],
     category: "dataEntry",
     exports: ["KeyValueEditor"],
     api: ["KeyValueEditorProps", "KeyValueEntry", "KeyValueEntryErrors"],
@@ -651,14 +713,16 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "tag-input",
+    cssVars: ["TagInput"],
     category: "dataEntry",
     exports: ["TagInput"],
     api: ["TagInputProps"],
-    demos: ["basic", "form-control"],
+    demos: ["basic", "form-control", "separators"],
   },
 
   {
     id: "loading-state",
+    cssVars: ["LoadingState"],
     category: "feedback",
     exports: ["LoadingState"],
     api: ["LoadingStateProps"],
@@ -666,6 +730,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "text-link",
+    cssVars: ["TextLink"],
     category: "dataDisplay",
     exports: ["TextLink"],
     api: ["TextLinkProps"],
@@ -673,6 +738,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "description-list",
+    cssVars: ["DescriptionList"],
     category: "dataDisplay",
     exports: ["DescriptionList"],
     api: ["DescriptionListProps", "DescriptionListItem"],
@@ -680,6 +746,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "list",
+    cssVars: ["List"],
     category: "dataDisplay",
     exports: ["List", "ListItem"],
     api: ["ListProps", "ListItemProps"],
@@ -687,20 +754,29 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "code-block",
+    cssVars: ["CodeBlock"],
     category: "dataDisplay",
     exports: ["CodeBlock"],
     api: ["CodeBlockProps"],
-    demos: ["basic", "no-wrap"],
+    demos: ["basic", "no-wrap", "copyable"],
   },
   {
     id: "prose",
+    cssVars: ["Prose"],
     category: "dataDisplay",
     exports: ["Prose"],
     api: ["ProseProps"],
     demos: ["basic", "as-child"],
   },
   {
+    id: "design-presets",
+    category: "theming",
+    api: ["DesignOptions"],
+    demos: ["presets", "axes"],
+  },
+  {
     id: "theme-palette",
+    cssVars: ["ThemeToggle"],
     category: "theming",
     exports: [
       "ThemeProvider",
@@ -719,6 +795,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "table",
+    cssVars: ["Table"],
     category: "dataDisplay",
     exports: [
       "Table",
@@ -738,6 +815,8 @@ export const docPages: DocPageMeta[] = [
       "DataTableProps",
       "TableRootProps",
       "TableScrollConfig",
+      "TableSortState",
+      "TableRowSelection",
       "TableCellContentProps",
       "FixedColumnLayout",
     ],
@@ -749,10 +828,13 @@ export const docPages: DocPageMeta[] = [
       "data-table",
       "compound",
       "cell-content",
+      "sorting",
+      "selection",
     ],
   },
   {
     id: "nav-tree",
+    cssVars: ["NavTree"],
     category: "navigation",
     exports: ["NavTree"],
     api: ["NavTreeProps", "NavTreeSection", "NavTreeItem", "NavTreeItemState"],
@@ -760,6 +842,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "tabs",
+    cssVars: ["Tabs"],
     category: "navigation",
     exports: ["Tabs", "TabList", "Tab", "TabPanel"],
     api: ["TabsProps", "TabListProps", "TabProps", "TabPanelProps"],
@@ -767,6 +850,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "html-preview",
+    cssVars: ["HtmlPreview"],
     category: "dataDisplay",
     exports: ["HtmlPreview"],
     api: ["HtmlPreviewProps"],
@@ -774,12 +858,14 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "monaco-code-editor",
+    cssVars: ["MonacoCodeEditor"],
     category: "editors",
     api: ["MonacoCodeEditorProps"],
     demos: ["basic"],
   },
   {
     id: "steps",
+    cssVars: ["Steps"],
     category: "navigation",
     exports: ["Steps"],
     api: ["StepsProps", "StepsItem"],
@@ -787,6 +873,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "upload",
+    cssVars: ["Upload"],
     category: "dataEntry",
     exports: ["Upload"],
     api: ["UploadProps", "UploadItem", "UploadLabels"],
@@ -794,6 +881,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "select",
+    cssVars: ["Select"],
     category: "dataEntry",
     exports: [
       "Select",
@@ -813,6 +901,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "rating",
+    cssVars: ["Rating"],
     category: "dataEntry",
     exports: ["Rating", "RatingScale"],
     api: ["RatingProps", "RatingScaleProps", "RatingDimension"],
@@ -820,6 +909,7 @@ export const docPages: DocPageMeta[] = [
   },
   {
     id: "month-calendar",
+    cssVars: ["MonthCalendar"],
     category: "dataDisplay",
     exports: ["MonthCalendar"],
     api: ["MonthCalendarProps", "MonthCalendarEvent"],

@@ -7,7 +7,7 @@ export default function SizesDemo() {
     <div style={{ display: "grid", gap: 24, width: "100%" }}>
       <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
         {sizes.map((size) => (
-          <ProgressIndicator key={size} size={size} ariaLabel="Loading" />
+          <ProgressIndicator key={size} size={size} aria-label="Loading" />
         ))}
       </div>
       {sizes.map((size) => (
@@ -16,7 +16,7 @@ export default function SizesDemo() {
           variant="bar"
           size={size}
           full
-          ariaLabel="Loading"
+          aria-label="Loading"
         />
       ))}
     </div>

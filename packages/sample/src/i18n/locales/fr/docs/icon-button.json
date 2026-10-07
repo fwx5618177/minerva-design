@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Passez n'importe quel élément d'icône. Le bouton ne contient qu'une icône : donnez-lui toujours un ariaLabel. Il rend un bouton natif avec type=\"button\" et ne soumet donc jamais de formulaire."
+      "description": "Passez n'importe quel élément d'icône. Le bouton ne contient qu'une icône : donnez-lui toujours un aria-label. Il rend un bouton natif avec type=\"button\" et ne soumet donc jamais de formulaire."
     },
     "colors": {
       "title": "Couleurs",
@@ -20,7 +20,7 @@
     },
     "states": {
       "title": "États",
-      "description": "loading remplace l'icône par un indicateur de chargement, pressed marque une bascule comme active et disabled pose l'attribut natif disabled, qui retire le bouton de l'ordre de tabulation."
+      "description": "loading remplace l'icône par un indicateur de chargement et garde le bouton focalisable (aria-busy + aria-disabled) tout en ignorant l'activation, pressed marque une bascule comme active et disabled pose l'attribut natif disabled, qui retire le bouton de l'ordre de tabulation."
     },
     "toggle": {
       "title": "Bouton bascule",
@@ -51,17 +51,26 @@
       "size": "Taille du bouton",
       "shape": "Forme du bouton",
       "disabled": "Désactive le bouton natif et le retire de l'ordre de tabulation",
-      "loading": "Remplace l'icône par un indicateur de chargement et bloque l'interaction",
+      "loading": "Remplace l'icône par un indicateur de chargement et ignore l'activation (clic, Entrée, Espace, envoi de formulaire) tout en restant focalisable : exposé par aria-busy + aria-disabled au lieu de l'attribut natif disabled",
       "pressed": "État enfoncé d'un bouton bascule (contrôlé ; à combiner avec onPressedChange) ; exposé via aria-pressed",
       "defaultPressed": "État enfoncé initial d'un bouton bascule non contrôlé",
       "onPressedChange": "Appelé avec le nouvel état enfoncé quand un bouton bascule est activé",
       "className": "Nom de classe supplémentaire",
       "tooltip": "Configuration de l'infobulle (content, color, variant, shape, arrow) ; nécessite showTooltip",
       "showTooltip": "Affiche l'infobulle au survol et au focus",
-      "ariaLabel": "Libellé accessible ; à toujours définir, car le bouton ne contient qu'une icône",
+      "aria-label": "Libellé accessible ; à toujours définir, car le bouton ne contient qu'une icône",
       "ref": "Ref vers l'élément <button>",
       "children": "Élément d’icône, alternative à la prop icon",
-      "label": "Nom accessible du bouton, également affiché comme info-bulle (sauf si showTooltip vaut false). Prioritaire sur ariaLabel"
+      "label": "Nom accessible du bouton, également affiché comme info-bulle (sauf si showTooltip vaut false). Prioritaire sur aria-label"
     }
+  },
+  "cssVars": {
+    "--icon-button-color": "Couleur de l'icône",
+    "--icon-button-hover-bg": "Arrière-plan au survol",
+    "--icon-button-pressed-color": "Couleur de l'icône d'un bouton bascule enfoncé",
+    "--icon-button-pressed-bg": "Arrière-plan d'un bouton bascule enfoncé",
+    "--icon-button-size": "Largeur et hauteur du bouton (toutes tailles ; par défaut suit les hauteurs de contrôle de la densité)",
+    "--icon-button-icon-size": "Taille de police de l'icône (toutes tailles)",
+    "--icon-button-radius": "Rayon des coins de la forme square (par défaut --radius-lg)"
   }
 }

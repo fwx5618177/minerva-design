@@ -185,6 +185,12 @@
         "description": "Accessible label of the status icon"
       },
       {
+        "name": "returnFocus",
+        "type": "FocusTarget",
+        "required": false,
+        "description": "Element receiving focus after the alert is closed with its close button: an element, a ref or a getter. Without it focus moves to the next focusable element after the alert (else the previous one, else its container), never to <body>"
+      },
+      {
         "name": "role",
         "type": "React.AriaRole",
         "required": false,
@@ -366,6 +372,13 @@
         "type": "Partial<AppShellLabels>",
         "required": false,
         "description": "Overrides of the control names (localized defaults)"
+      },
+      {
+        "name": "skipLink",
+        "type": "boolean | string",
+        "required": false,
+        "default": "true",
+        "description": "\"Skip to content\" link rendered as the first focusable element (visually hidden until focused); it moves focus to `main`. A string replaces its text, `false` removes it"
       }
     ]
   },
@@ -535,7 +548,7 @@
         "name": "dropdownClassName",
         "type": "string",
         "required": false,
-        "description": "Additional class name of the dropdown (portalled) element. It can set the CSS custom properties `--autocomplete-dropdown-bg`, `--autocomplete-option-hover-bg` and `--autocomplete-option-highlight-bg` to recolor the dropdown, hovered options and highlighted options"
+        "description": "Additional class name of the dropdown (portalled) element. It can set the CSS custom properties `--auto-complete-dropdown-background`, `--auto-complete-option-hover-background` and `--auto-complete-option-highlight-background` to recolor the dropdown, hovered options and highlighted options"
       },
       {
         "name": "placement",
@@ -650,7 +663,7 @@
         "description": "Avatar elements"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Avatar group\" / \"Avatar group with {count} more\" (localized)",
@@ -692,7 +705,7 @@
         "description": "Alternative text of the image; pass \"\" for a decorative avatar"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "name, or \"avatar\" (localized)",
@@ -827,7 +840,7 @@
         "description": "Custom border width (CSS value)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the badge, e.g. \"5 unread messages\""
@@ -1039,6 +1052,13 @@
     ],
     "props": [
       {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "required": false,
+        "default": "\"button\"",
+        "description": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use `type=\"submit\"` for submit buttons and `\"reset\"` for reset buttons"
+      },
+      {
         "name": "onClick",
         "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
         "required": false,
@@ -1078,7 +1098,7 @@
         "description": "Button size"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label, required when the button only contains an icon"
@@ -1525,8 +1545,11 @@
   },
   "CascaderProps": {
     "source": "lib-core/src/components/Cascader/types.ts",
+    "description": "Props of Cascader; `data-*` attributes are forwarded to the root element",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "ref",
@@ -1582,7 +1605,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Disables the cascader"
+        "description": "Disables the cascader; defaults to the enclosing FormControl's state"
       },
       {
         "name": "placeholder",
@@ -1610,6 +1633,54 @@
         "type": "string",
         "required": false,
         "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the input; overrides `label` and the label of an enclosing FormControl"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) labelling the input"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the input; defaults to the id of an enclosing FormControl"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as required (aria-required); defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows the value without allowing changes (the dropdown does not open); defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
       },
       {
         "name": "showSearch",
@@ -1672,8 +1743,11 @@
   },
   "CheckboxProps": {
     "source": "lib-core/src/components/Checkbox/types.ts",
+    "description": "`className`, `style` and `data-*` attributes go to the <label> wrapping the box; `id`, `name` and `aria-*` go to the native <input>.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "checked",
@@ -1760,23 +1834,35 @@
         "description": "Value submitted with the form when checked"
       },
       {
-        "name": "ariaDescribedBy",
+        "name": "aria-describedby",
         "type": "string",
         "required": false,
         "description": "Extra ids of elements describing the checkbox (aria-describedby)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label, required when there is no visible label"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the checkbox"
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
         "default": "\"\"",
-        "description": "Additional class name"
+        "description": "Additional class name of the label element"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the label element"
       },
       {
         "name": "icon",
@@ -1802,7 +1888,7 @@
         "name": "errorIcon",
         "type": "React.ReactNode",
         "required": false,
-        "default": "<FaInfoCircle />",
+        "default": "a filled info-circle icon",
         "description": "Icon shown before the helper text in the error state"
       },
       {
@@ -1828,6 +1914,7 @@
   },
   "CodeBlockProps": {
     "source": "lib-core/src/components/CodeBlock/types.ts",
+    "description": "DOM placement: without `copyable` the root is the <pre> region and it receives `className`, `style`, `ref` and every native attribute. With `copyable` the <pre> is wrapped in a positioned <div> (the copy button cannot live inside <pre>); `className`, `style` (including the `maxHeight` cap) and native attributes then go to that outermost <div>, while `ref`, `tabIndex`, `aria-label`, `aria-labelledby` and `aria-describedby` stay on the <pre> region.",
     "kind": "interface",
     "extends": [
       "Omit<HTMLAttributes<HTMLPreElement>, \"children\">"
@@ -1840,7 +1927,7 @@
         "description": "Source text, rendered verbatim (never parsed as HTML)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Code\" (localized)",
@@ -1868,10 +1955,17 @@
         "description": "Tab order of the region; it is focusable by default so keyboard users can scroll it"
       },
       {
+        "name": "copyable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a copy button in the top-right corner that writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for about two seconds and the result is announced through a polite live region. When set, the <pre> is wrapped in a <div> (see the interface description)"
+      },
+      {
         "name": "ref",
         "type": "Ref<HTMLPreElement>",
         "required": false,
-        "description": "Ref to the <pre> element"
+        "description": "Ref to the <pre> element (also when copyable)"
       }
     ]
   },
@@ -2161,6 +2255,12 @@
         "description": "Active palette (`data-palette` on `<html>`, or on the scope element of a nested provider), `null` for Minerva's default look"
       },
       {
+        "name": "design",
+        "type": "ResolvedDesign",
+        "required": false,
+        "description": "Applied design axes (`data-density` / `data-radius` / `data-shadow` / `data-font-scale`) and the preset they come from"
+      },
+      {
         "name": "setTheme",
         "type": "(theme: ConfigProviderThemeProps) => void",
         "required": false,
@@ -2219,6 +2319,41 @@
         "required": false,
         "default": "{ language: \"en\" } (nested: the parent's locale)",
         "description": "Language of lib-core's built-in texts. The root provider sets it globally; a nested provider inherits its parent's language unless set, and applies an override to its subtree only."
+      },
+      {
+        "name": "preset",
+        "type": "DesignPreset",
+        "required": false,
+        "default": "\"minerva\" (nested: the parent's design)",
+        "description": "Design preset: a named combination of the design axes below and a default palette. \"minerva\" (default look), \"editorial\" (restrained, reading-oriented: editorial palette, comfortable density, small radius, subtle shadows, large type) or \"compact\" (dense, data-heavy screens). Explicit axes and `palette` win over the preset. A nested provider inherits its parent's design unless set; a nested preset resets every axis it does not set."
+      },
+      {
+        "name": "density",
+        "type": "Density",
+        "required": false,
+        "default": "\"standard\" (or the preset's)",
+        "description": "Spacing density of controls (heights, paddings) and rows (menus, lists, tables): `data-density`"
+      },
+      {
+        "name": "radius",
+        "type": "RadiusScale",
+        "required": false,
+        "default": "\"medium\" (or the preset's)",
+        "description": "Corner radius scale (`--radius-sm` ... `--radius-2xl`): `data-radius`"
+      },
+      {
+        "name": "shadow",
+        "type": "ShadowScale",
+        "required": false,
+        "default": "\"standard\" (or the preset's)",
+        "description": "Elevation shadows (`--shadow-sm` ... `--shadow-xl`): `data-shadow`. \"standard\" keeps the theme / palette shadows"
+      },
+      {
+        "name": "fontScale",
+        "type": "FontScale",
+        "required": false,
+        "default": "\"standard\" (or the preset's)",
+        "description": "Type scale (`--font-size-*`, line heights): `data-font-scale`. \"large\" is reading-oriented"
       },
       {
         "name": "children",
@@ -2337,7 +2472,7 @@
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "description": "Application subtree; `useConfirm()` / `confirm()` render their dialogs here."
+        "description": "Application subtree; `useConfirm()` / `confirm()` render their dialogs here (`useConfirm()` dialogs inside the caller's ConfigProvider scope)."
       }
     ]
   },
@@ -2409,7 +2544,7 @@
         "name": "dir",
         "type": "MenuDirection",
         "required": false,
-        "default": "\"ltr\"",
+        "default": "inherited from the nearest `dir` attribute of the trigger (else \"ltr\")",
         "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped"
       },
       {
@@ -2419,10 +2554,1788 @@
         "description": "Additional class name of the menu panel"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the menu panel"
+      }
+    ]
+  },
+  "css:Alert": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Alert",
+    "vars": [
+      {
+        "name": "--alert-padding",
+        "description": "Padding (every size; defaults to the padding of the size)"
+      },
+      {
+        "name": "--alert-radius",
+        "description": "Corner radius (defaults to --radius-sm, --radius-lg when rounded)"
+      },
+      {
+        "name": "--alert-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--alert-icon-size",
+        "description": "Size of the status icon (every size)"
+      },
+      {
+        "name": "--alert-gap",
+        "description": "Space between the icon, the content and the actions"
+      },
+      {
+        "name": "--alert-shadow",
+        "description": "Shadow of the elevated alert (defaults to --shadow-sm)"
+      },
+      {
+        "name": "--alert-margin-bottom",
+        "description": "Space below the alert"
+      }
+    ]
+  },
+  "css:AppShell": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/AppShell",
+    "vars": [
+      {
+        "name": "--app-shell-sidebar-width",
+        "description": "Width of the expanded sidebar"
+      },
+      {
+        "name": "--app-shell-rail-width",
+        "description": "Width of the compact / floating rail"
+      },
+      {
+        "name": "--app-shell-header-height",
+        "description": "Minimum height of the header and the sidebar brand row"
+      },
+      {
+        "name": "--app-shell-background",
+        "description": "Background of the page area"
+      },
+      {
+        "name": "--app-shell-sidebar-background",
+        "description": "Background of the sidebar and the mobile navigation drawer"
+      },
+      {
+        "name": "--app-shell-header-background",
+        "description": "Background of the sticky header"
+      },
+      {
+        "name": "--app-shell-drawer-width",
+        "description": "Width of the mobile navigation drawer"
+      }
+    ]
+  },
+  "css:AutoComplete": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/AutoComplete",
+    "vars": [
+      {
+        "name": "--auto-complete-dropdown-background",
+        "description": "Background of the dropdown"
+      },
+      {
+        "name": "--auto-complete-dropdown-radius",
+        "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+      },
+      {
+        "name": "--auto-complete-dropdown-max-height",
+        "description": "Maximum height of the option list before it scrolls"
+      },
+      {
+        "name": "--auto-complete-font-size",
+        "description": "Font size of the dropdown"
+      },
+      {
+        "name": "--auto-complete-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--auto-complete-option-padding-x",
+        "description": "Horizontal padding of an option and of a group label"
+      },
+      {
+        "name": "--auto-complete-option-hover-background",
+        "description": "Background of the hovered / keyboard-focused option"
+      },
+      {
+        "name": "--auto-complete-option-highlight-background",
+        "description": "Background of options with `highlight: true`"
+      }
+    ]
+  },
+  "css:Avatar": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Avatar",
+    "vars": [
+      {
+        "name": "--avatar-size",
+        "description": "Width and height of every avatar (overrides the size presets; a numeric size prop wins)"
+      },
+      {
+        "name": "--avatar-radius",
+        "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+      },
+      {
+        "name": "--avatar-bg-color",
+        "description": "Background color when no color is set (defaults to --info-color)"
+      },
+      {
+        "name": "--avatar-text-color",
+        "description": "Color of the initials"
+      },
+      {
+        "name": "--avatar-border-color",
+        "description": "Border color"
+      },
+      {
+        "name": "--avatar-stacked-overlap",
+        "description": "How far a stacked avatar overlaps the previous one"
+      },
+      {
+        "name": "--avatar-group-overlap",
+        "description": "How far each avatar overlaps the previous one"
+      },
+      {
+        "name": "--avatar-group-count-bg-color",
+        "description": "Background color of the \"+N\" counter"
+      },
+      {
+        "name": "--avatar-group-count-text-color",
+        "description": "Text color of the \"+N\" counter"
+      }
+    ]
+  },
+  "css:Badge": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Badge",
+    "vars": [
+      {
+        "name": "--badge-bg",
+        "description": "Background color (overrides the color and variant)"
+      },
+      {
+        "name": "--badge-fg",
+        "description": "Text color (overrides the color and variant)"
+      },
+      {
+        "name": "--badge-border",
+        "description": "Border color of the subtle and outline variants"
+      },
+      {
+        "name": "--badge-radius",
+        "description": "Corner radius (defaults to --radius-sm)"
+      },
+      {
+        "name": "--badge-padding-y",
+        "description": "Vertical padding (every size)"
+      },
+      {
+        "name": "--badge-padding-x",
+        "description": "Horizontal padding (every size)"
+      },
+      {
+        "name": "--badge-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--badge-dot-size",
+        "description": "Diameter of the dot badge"
+      }
+    ]
+  },
+  "css:Button": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Button",
+    "vars": [
+      {
+        "name": "--button-height",
+        "description": "Minimum height (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--button-padding-x",
+        "description": "Horizontal padding (every size)"
+      },
+      {
+        "name": "--button-radius",
+        "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+      },
+      {
+        "name": "--button-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--button-font-weight",
+        "description": "Font weight"
+      },
+      {
+        "name": "--button-gap",
+        "description": "Space between the icons and the label"
+      },
+      {
+        "name": "--button-label-white-space",
+        "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+      }
+    ]
+  },
+  "css:Card": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Card",
+    "vars": [
+      {
+        "name": "--card-bg-color",
+        "description": "Background color of the card"
+      },
+      {
+        "name": "--card-bg-color-content",
+        "description": "Background color of the content section (sections layout)"
+      },
+      {
+        "name": "--card-border-color",
+        "description": "Color of the border and of the section dividers"
+      },
+      {
+        "name": "--card-radius",
+        "description": "Corner radius (defaults to --radius-sm, --radius-lg with the padding prop)"
+      },
+      {
+        "name": "--card-shadow",
+        "description": "Shadow of the default and elevated variants (defaults to --shadow-sm / --shadow-lg)"
+      },
+      {
+        "name": "--card-padding",
+        "description": "Padding of the header, content and footer sections (sections layout; the padding props win)"
+      },
+      {
+        "name": "--card-header-bg-color",
+        "description": "Background color of the header section (sections layout)"
+      },
+      {
+        "name": "--card-title-font-size",
+        "description": "Font size of the title"
+      }
+    ]
+  },
+  "css:Cascader": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Cascader",
+    "vars": [
+      {
+        "name": "--cascader-height",
+        "description": "Minimum height of the field (defaults to the density's small control height)"
+      },
+      {
+        "name": "--cascader-radius",
+        "description": "Corner radius of the field, the dropdown and the options (defaults to --radius-sm)"
+      },
+      {
+        "name": "--cascader-font-size",
+        "description": "Font size of the field and of the options"
+      },
+      {
+        "name": "--cascader-border-color",
+        "description": "Border color of the field at rest"
+      },
+      {
+        "name": "--cascader-column-min-width",
+        "description": "Minimum width of a column of options"
+      },
+      {
+        "name": "--cascader-dropdown-max-height",
+        "description": "Maximum height of the columns before they scroll"
+      },
+      {
+        "name": "--cascader-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--cascader-option-padding-x",
+        "description": "Horizontal padding of an option (follows the density's row padding)"
+      }
+    ]
+  },
+  "css:Checkbox": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Checkbox",
+    "vars": [
+      {
+        "name": "--checkbox-checked-color",
+        "description": "Background / border of the checked or indeterminate box (defaults to the color prop's accent)"
+      },
+      {
+        "name": "--checkbox-checkmark-color",
+        "description": "Color of the checkmark / indeterminate dash"
+      },
+      {
+        "name": "--checkbox-box-color",
+        "description": "Background of the unchecked box"
+      },
+      {
+        "name": "--checkbox-border-color",
+        "description": "Border of the unchecked box"
+      },
+      {
+        "name": "--checkbox-size",
+        "description": "Width and height of the box (every size)"
+      },
+      {
+        "name": "--checkbox-radius",
+        "description": "Corner radius of the box for the square and rounded shapes"
+      },
+      {
+        "name": "--checkbox-gap",
+        "description": "Space between the box and the label"
+      },
+      {
+        "name": "--checkbox-label-font-size",
+        "description": "Font size of the label (every size)"
+      }
+    ]
+  },
+  "css:CodeBlock": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/CodeBlock",
+    "vars": [
+      {
+        "name": "--code-block-padding",
+        "description": "Inner padding"
+      },
+      {
+        "name": "--code-block-radius",
+        "description": "Corner radius (defaults to --radius-md)"
+      },
+      {
+        "name": "--code-block-bg",
+        "description": "Background color"
+      },
+      {
+        "name": "--code-block-border-color",
+        "description": "Border color"
+      },
+      {
+        "name": "--code-block-font-size",
+        "description": "Font size of the code"
+      },
+      {
+        "name": "--code-block-max-height",
+        "description": "Maximum height before the block scrolls (default: none)"
+      }
+    ]
+  },
+  "css:Command": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Command",
+    "vars": [
+      {
+        "name": "--command-search-height",
+        "description": "Minimum height of the search field (defaults to --control-height-md)"
+      },
+      {
+        "name": "--command-results-max-height",
+        "description": "Maximum height of the scrolling result list"
+      },
+      {
+        "name": "--command-item-min-height",
+        "description": "Minimum height of a result row"
+      },
+      {
+        "name": "--command-item-padding-y",
+        "description": "Vertical padding of a result row (follows the density's row padding)"
+      },
+      {
+        "name": "--command-item-padding-x",
+        "description": "Horizontal padding of a result row (follows the density's row padding)"
+      },
+      {
+        "name": "--command-item-active-background",
+        "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+      }
+    ]
+  },
+  "css:DescriptionList": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/DescriptionList",
+    "vars": [
+      {
+        "name": "--description-list-row-padding-y",
+        "description": "Vertical padding of a row (follows the density's row padding)"
+      },
+      {
+        "name": "--description-list-gap",
+        "description": "Space between the term and the description"
+      },
+      {
+        "name": "--description-list-term-color",
+        "description": "Text color of the terms"
+      },
+      {
+        "name": "--description-list-border-color",
+        "description": "Color of the row separators"
+      },
+      {
+        "name": "--description-list-font-size",
+        "description": "Font size"
+      }
+    ]
+  },
+  "css:Divider": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Divider",
+    "vars": [
+      {
+        "name": "--divider-color",
+        "description": "Line color (defaults to --border-color)"
+      },
+      {
+        "name": "--divider-thickness",
+        "description": "Line thickness"
+      },
+      {
+        "name": "--divider-spacing",
+        "description": "Inline margin around a vertical divider"
+      },
+      {
+        "name": "--divider-text-gap",
+        "description": "Space between the text and the lines"
+      },
+      {
+        "name": "--divider-text-font-size",
+        "description": "Font size of the text"
+      }
+    ]
+  },
+  "css:Drawer": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Drawer",
+    "vars": [
+      {
+        "name": "--drawer-width",
+        "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+      },
+      {
+        "name": "--drawer-height",
+        "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+      },
+      {
+        "name": "--drawer-padding",
+        "description": "Horizontal padding of the header, description, body and footer"
+      },
+      {
+        "name": "--drawer-radius",
+        "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+      },
+      {
+        "name": "--drawer-shadow",
+        "description": "Shadow of the panel (defaults to --shadow-xl)"
+      },
+      {
+        "name": "--drawer-background",
+        "description": "Background of the panel"
+      },
+      {
+        "name": "--drawer-z-index",
+        "description": "Stacking order of the panel (defaults to --z-modal)"
+      }
+    ]
+  },
+  "css:Empty": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Empty",
+    "vars": [
+      {
+        "name": "--empty-padding",
+        "description": "Padding (every size; defaults to the padding of the size)"
+      },
+      {
+        "name": "--empty-gap",
+        "description": "Space between the icon, title, description and actions (sized layout)"
+      },
+      {
+        "name": "--empty-icon-size",
+        "description": "Size of the illustration icon (every size)"
+      },
+      {
+        "name": "--empty-color",
+        "description": "Text color of the description"
+      },
+      {
+        "name": "--empty-background",
+        "description": "Background of the framed (unsized) layout"
+      },
+      {
+        "name": "--empty-radius",
+        "description": "Corner radius of the framed (unsized) layout (defaults to --radius-sm)"
+      },
+      {
+        "name": "--empty-description-max-width",
+        "description": "Maximum width of the description (sized layout)"
+      }
+    ]
+  },
+  "css:FormControl": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/FormControl",
+    "vars": [
+      {
+        "name": "--form-control-gap",
+        "description": "Space between the label, the field and the helper / error text"
+      },
+      {
+        "name": "--form-control-label-font-size",
+        "description": "Font size of the label"
+      },
+      {
+        "name": "--form-control-label-color",
+        "description": "Color of the label"
+      },
+      {
+        "name": "--form-control-helper-font-size",
+        "description": "Font size of the helper and error texts"
+      },
+      {
+        "name": "--form-control-required-color",
+        "description": "Color of the required marker"
+      }
+    ]
+  },
+  "css:FormLayout": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/FormLayout",
+    "vars": [
+      {
+        "name": "--form-layout-max-width",
+        "description": "Maximum width of the form (none by default)"
+      },
+      {
+        "name": "--form-layout-margin-inline",
+        "description": "Inline margin of the form (set auto with a max width to center it)"
+      },
+      {
+        "name": "--form-layout-padding",
+        "description": "Inner padding of the form"
+      }
+    ]
+  },
+  "css:HtmlPreview": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/HtmlPreview",
+    "vars": [
+      {
+        "name": "--html-preview-bg",
+        "description": "Background color around the frame"
+      },
+      {
+        "name": "--html-preview-frame-bg",
+        "description": "Background color of the frame"
+      },
+      {
+        "name": "--html-preview-frame-border-color",
+        "description": "Border color of the frame"
+      }
+    ]
+  },
+  "css:IconButton": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/IconButton",
+    "vars": [
+      {
+        "name": "--icon-button-color",
+        "description": "Icon color"
+      },
+      {
+        "name": "--icon-button-hover-bg",
+        "description": "Background on hover"
+      },
+      {
+        "name": "--icon-button-pressed-color",
+        "description": "Icon color of a pressed toggle"
+      },
+      {
+        "name": "--icon-button-pressed-bg",
+        "description": "Background of a pressed toggle"
+      },
+      {
+        "name": "--icon-button-size",
+        "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+      },
+      {
+        "name": "--icon-button-icon-size",
+        "description": "Font size of the icon (every size)"
+      },
+      {
+        "name": "--icon-button-radius",
+        "description": "Corner radius of the square shape (defaults to --radius-lg)"
+      }
+    ]
+  },
+  "css:Input": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Input",
+    "vars": [
+      {
+        "name": "--input-height",
+        "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--input-padding-x",
+        "description": "Horizontal padding of the text (every size)"
+      },
+      {
+        "name": "--input-radius",
+        "description": "Corner radius (defaults to --radius-lg)"
+      },
+      {
+        "name": "--input-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--input-background",
+        "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--input-border-color",
+        "description": "Border color at rest"
+      },
+      {
+        "name": "--input-focus-color",
+        "description": "Border color while hovered / focused"
+      }
+    ]
+  },
+  "css:JsonField": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/JsonField",
+    "vars": [
+      {
+        "name": "--json-field-gap",
+        "description": "Space between the toolbar, the editor and the status line"
+      },
+      {
+        "name": "--json-field-font-family",
+        "description": "Font family of the editor (defaults to the monospace stack)"
+      },
+      {
+        "name": "--json-field-font-size",
+        "description": "Font size of the editor"
+      },
+      {
+        "name": "--json-field-tab-size",
+        "description": "Rendered width of a tab character in the editor"
+      },
+      {
+        "name": "--json-field-status-font-size",
+        "description": "Font size of the validation status line"
+      }
+    ]
+  },
+  "css:KeyValueEditor": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/KeyValueEditor",
+    "vars": [
+      {
+        "name": "--key-value-editor-gap",
+        "description": "Space between the rows and the add button"
+      },
+      {
+        "name": "--key-value-editor-column-gap",
+        "description": "Space between the key, the value and the remove button of a row"
+      },
+      {
+        "name": "--key-value-editor-control-height",
+        "description": "Size of the remove button and minimum height of the key field and of the add button (defaults to the density's small control height)"
+      }
+    ]
+  },
+  "css:List": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/List",
+    "vars": [
+      {
+        "name": "--list-item-min-height",
+        "description": "Minimum height of an item (follows the density; compact lists are shorter)"
+      },
+      {
+        "name": "--list-item-padding-y",
+        "description": "Vertical padding of an item (follows the density's row padding)"
+      },
+      {
+        "name": "--list-item-padding-x",
+        "description": "Horizontal padding of an item (follows the density's row padding)"
+      },
+      {
+        "name": "--list-item-gap",
+        "description": "Space between the icon, the content and the actions"
+      },
+      {
+        "name": "--list-divider-color",
+        "description": "Color of the dividers between items"
+      },
+      {
+        "name": "--list-icon-size",
+        "description": "Size of the leading icon slot"
+      }
+    ]
+  },
+  "css:LoadingState": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/LoadingState",
+    "vars": [
+      {
+        "name": "--loading-state-gap",
+        "description": "Space between the spinner and the label"
+      },
+      {
+        "name": "--loading-state-padding",
+        "description": "Padding"
+      },
+      {
+        "name": "--loading-state-min-height",
+        "description": "Minimum height (every size; defaults to the height of the size)"
+      },
+      {
+        "name": "--loading-state-color",
+        "description": "Color of the label and the spinner"
+      },
+      {
+        "name": "--loading-state-font-size",
+        "description": "Font size of the label"
+      }
+    ]
+  },
+  "css:Menu": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Menu",
+    "vars": [
+      {
+        "name": "--menu-min-width",
+        "description": "Minimum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-width",
+        "description": "Maximum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-height",
+        "description": "Maximum height of the menu panel (scrolls beyond)"
+      },
+      {
+        "name": "--menu-padding",
+        "description": "Inner padding of the menu panel"
+      },
+      {
+        "name": "--menu-radius",
+        "description": "Corner radius of the menu panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--menu-shadow",
+        "description": "Shadow of the menu panel (defaults to --shadow-md)"
+      },
+      {
+        "name": "--menu-item-height",
+        "description": "Minimum height of an item (every size; defaults to the density's control height)"
+      },
+      {
+        "name": "--menu-z-index",
+        "description": "Stacking order of the menu panel (defaults to --z-popover)"
+      }
+    ]
+  },
+  "css:Modal": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Modal",
+    "vars": [
+      {
+        "name": "--modal-width",
+        "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+      },
+      {
+        "name": "--modal-max-height",
+        "description": "Maximum height of the panel (the body scrolls beyond)"
+      },
+      {
+        "name": "--modal-padding",
+        "description": "Horizontal padding of the header, description, body and footer"
+      },
+      {
+        "name": "--modal-radius",
+        "description": "Corner radius of the panel (defaults to --radius-xl)"
+      },
+      {
+        "name": "--modal-shadow",
+        "description": "Shadow of the panel (defaults to --shadow-xl)"
+      },
+      {
+        "name": "--modal-background",
+        "description": "Background of the panel"
+      },
+      {
+        "name": "--modal-z-index",
+        "description": "Stacking order of the panel (defaults to --z-modal)"
+      }
+    ]
+  },
+  "css:MonacoCodeEditor": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/MonacoCodeEditor",
+    "vars": [
+      {
+        "name": "--monaco-code-editor-radius",
+        "description": "Corner radius of the editor surface (defaults to --radius-md)"
+      },
+      {
+        "name": "--monaco-code-editor-border-color",
+        "description": "Border color of the editor surface"
+      },
+      {
+        "name": "--monaco-code-editor-bg",
+        "description": "Background color of the editor surface"
+      },
+      {
+        "name": "--monaco-code-editor-label-gap",
+        "description": "Space between the label and the editor"
+      },
+      {
+        "name": "--monaco-code-editor-font-size",
+        "description": "Font size of the label, the messages and the plain-text fallback"
+      }
+    ]
+  },
+  "css:MonthCalendar": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/MonthCalendar",
+    "vars": [
+      {
+        "name": "--month-calendar-font-size",
+        "description": "Base font size"
+      },
+      {
+        "name": "--month-calendar-gap",
+        "description": "Space between the day cells"
+      },
+      {
+        "name": "--month-calendar-day-height",
+        "description": "Height of a day cell (defaults to 4rem, 3.25rem on narrow screens)"
+      },
+      {
+        "name": "--month-calendar-nav-height",
+        "description": "Height of the toolbar buttons (defaults to the density's small control height)"
+      },
+      {
+        "name": "--month-calendar-radius",
+        "description": "Corner radius of the buttons, days and events (defaults to --radius-sm)"
+      },
+      {
+        "name": "--month-calendar-selected-background",
+        "description": "Background of the selected day"
+      },
+      {
+        "name": "--month-calendar-today-color",
+        "description": "Border color marking today"
+      }
+    ]
+  },
+  "css:NavTree": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/NavTree",
+    "vars": [
+      {
+        "name": "--nav-tree-gap",
+        "description": "Space between the sections"
+      },
+      {
+        "name": "--nav-tree-item-height",
+        "description": "Minimum height of a top-level row (defaults to the density's control height)"
+      },
+      {
+        "name": "--nav-tree-item-padding-x",
+        "description": "Horizontal padding of a row (follows the density's row padding)"
+      },
+      {
+        "name": "--nav-tree-item-radius",
+        "description": "Corner radius of a row (defaults to --radius-md)"
+      },
+      {
+        "name": "--nav-tree-indent",
+        "description": "Indentation of nested rows"
+      },
+      {
+        "name": "--nav-tree-active-background",
+        "description": "Background of the active row"
+      },
+      {
+        "name": "--nav-tree-active-color",
+        "description": "Accent color of the active row's icon"
+      }
+    ]
+  },
+  "css:NumberInput": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/NumberInput",
+    "vars": [
+      {
+        "name": "--number-input-height",
+        "description": "Height (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--number-input-padding-x",
+        "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+      },
+      {
+        "name": "--number-input-radius",
+        "description": "Corner radius (defaults to --radius-md)"
+      },
+      {
+        "name": "--number-input-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--number-input-background",
+        "description": "Background color"
+      },
+      {
+        "name": "--number-input-border-color",
+        "description": "Border color at rest (also the stepper separators)"
+      },
+      {
+        "name": "--number-input-stepper-width",
+        "description": "Width of the increment / decrement column"
+      }
+    ]
+  },
+  "css:Page": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Page",
+    "vars": [
+      {
+        "name": "--page-padding",
+        "description": "Padding around the page content (smaller on narrow screens by default)"
+      },
+      {
+        "name": "--page-gap",
+        "description": "Space between the header and the sections"
+      },
+      {
+        "name": "--page-title-font-size",
+        "description": "Font size of the page title"
+      },
+      {
+        "name": "--page-section-gap",
+        "description": "Space between the blocks of a section"
+      },
+      {
+        "name": "--page-stat-card-padding",
+        "description": "Inner padding of a stat card"
+      },
+      {
+        "name": "--page-stat-card-radius",
+        "description": "Corner radius of a stat card (defaults to --radius-lg)"
+      }
+    ]
+  },
+  "css:PageTabs": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/PageTabs",
+    "vars": [
+      {
+        "name": "--page-tabs-height",
+        "description": "Height of the tab bar"
+      },
+      {
+        "name": "--page-tabs-background",
+        "description": "Background of the tab bar"
+      },
+      {
+        "name": "--page-tabs-gap",
+        "description": "Space between the tabs"
+      },
+      {
+        "name": "--page-tabs-item-height",
+        "description": "Height of a tab"
+      },
+      {
+        "name": "--page-tabs-item-min-width",
+        "description": "Minimum width of a tab"
+      },
+      {
+        "name": "--page-tabs-item-max-width",
+        "description": "Maximum width of a tab (the label truncates)"
+      },
+      {
+        "name": "--page-tabs-item-radius",
+        "description": "Corner radius of a tab (defaults to --radius-lg)"
+      },
+      {
+        "name": "--page-tabs-selected-background",
+        "description": "Background of the active tab"
+      }
+    ]
+  },
+  "css:Pagination": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Pagination",
+    "vars": [
+      {
+        "name": "--pagination-item-size",
+        "description": "Height and minimum width of the page buttons (every size; defaults to the density's control height)"
+      },
+      {
+        "name": "--pagination-item-radius",
+        "description": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)"
+      },
+      {
+        "name": "--pagination-gap",
+        "description": "Space between the items"
+      },
+      {
+        "name": "--pagination-font-size",
+        "description": "Font size"
+      },
+      {
+        "name": "--pagination-active-background",
+        "description": "Background of the current page (solid variant)"
+      },
+      {
+        "name": "--pagination-active-color",
+        "description": "Text color of the current page (solid variant)"
+      }
+    ]
+  },
+  "css:Popover": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Popover",
+    "vars": [
+      {
+        "name": "--popover-min-width",
+        "description": "Minimum width of the panel"
+      },
+      {
+        "name": "--popover-max-width",
+        "description": "Maximum width of the panel"
+      },
+      {
+        "name": "--popover-padding",
+        "description": "Inner padding of the panel"
+      },
+      {
+        "name": "--popover-radius",
+        "description": "Corner radius of the panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--popover-background",
+        "description": "Background of the panel and its arrow"
+      },
+      {
+        "name": "--popover-border-color",
+        "description": "Border color of the panel and its arrow"
+      },
+      {
+        "name": "--popover-shadow",
+        "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+      },
+      {
+        "name": "--popover-z-index",
+        "description": "Stacking order of the panel (defaults to --z-popover)"
+      }
+    ]
+  },
+  "css:ProgressIndicator": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/ProgressIndicator",
+    "vars": [
+      {
+        "name": "--progress-width",
+        "description": "Width of a linear indicator with the default width"
+      },
+      {
+        "name": "--progress-bar-height",
+        "description": "Thickness of the bar (every size)"
+      },
+      {
+        "name": "--progress-track-color",
+        "description": "Color of the bar track"
+      },
+      {
+        "name": "--progress-radius",
+        "description": "Corner radius of the bar track (defaults to --radius-sm)"
+      },
+      {
+        "name": "--progress-size",
+        "description": "Size of the round indicators (spinner / circle / wave; every size)"
+      }
+    ]
+  },
+  "css:Prose": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Prose",
+    "vars": [
+      {
+        "name": "--prose-font-size",
+        "description": "Base font size of the body text"
+      },
+      {
+        "name": "--prose-border-color",
+        "description": "Color of the blockquote, table, code block and rule borders"
+      },
+      {
+        "name": "--prose-code-bg",
+        "description": "Background color of inline code and table headers"
+      },
+      {
+        "name": "--prose-pre-bg",
+        "description": "Background color of code blocks"
+      },
+      {
+        "name": "--prose-radius",
+        "description": "Corner radius of code blocks (defaults to --radius-sm)"
+      }
+    ]
+  },
+  "css:Radio": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Radio",
+    "vars": [
+      {
+        "name": "--radio-checked-color",
+        "description": "Color of the checked mark (defaults to the color prop's accent)"
+      },
+      {
+        "name": "--radio-dot-color",
+        "description": "Color of the inner dot of the checked mark"
+      },
+      {
+        "name": "--radio-border-color",
+        "description": "Border of the unchecked mark"
+      },
+      {
+        "name": "--radio-background",
+        "description": "Background of the unchecked mark"
+      },
+      {
+        "name": "--radio-size",
+        "description": "Width and height of the mark (every size)"
+      },
+      {
+        "name": "--radio-gap",
+        "description": "Space between the mark and the label"
+      },
+      {
+        "name": "--radio-label-font-size",
+        "description": "Font size of the label (every size)"
+      },
+      {
+        "name": "--radio-group-gap",
+        "description": "Space between the radios of a RadioGroup"
+      }
+    ]
+  },
+  "css:Rating": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Rating",
+    "vars": [
+      {
+        "name": "--rating-color",
+        "description": "Color of the filled stars (defaults to --accent-color)"
+      },
+      {
+        "name": "--rating-empty-color",
+        "description": "Color of the empty stars and of the unfilled half"
+      },
+      {
+        "name": "--rating-star-gap",
+        "description": "Space between the stars"
+      },
+      {
+        "name": "--rating-gap",
+        "description": "Space between the stars and the value"
+      },
+      {
+        "name": "--rating-value-font-size",
+        "description": "Font size of the numeric value (every size)"
+      },
+      {
+        "name": "--rating-scale-gap",
+        "description": "Space between the rows of a RatingScale"
+      }
+    ]
+  },
+  "css:ResponsiveGrid": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/ResponsiveGrid",
+    "vars": [
+      {
+        "name": "--responsive-grid-align-items",
+        "description": "Vertical alignment of the items in their row (default: stretch)"
+      },
+      {
+        "name": "--responsive-grid-justify-items",
+        "description": "Horizontal alignment of the items in their column (default: stretch)"
+      }
+    ]
+  },
+  "css:Select": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Select",
+    "vars": [
+      {
+        "name": "--select-height",
+        "description": "Height of the trigger (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--select-padding-x",
+        "description": "Horizontal padding of the trigger (every size)"
+      },
+      {
+        "name": "--select-radius",
+        "description": "Corner radius of the trigger and of the listbox (defaults to --radius-lg)"
+      },
+      {
+        "name": "--select-font-size",
+        "description": "Font size of the trigger (every size)"
+      },
+      {
+        "name": "--select-border-color",
+        "description": "Border color of the trigger at rest"
+      },
+      {
+        "name": "--select-dropdown-max-height",
+        "description": "Maximum height of the listbox before it scrolls"
+      },
+      {
+        "name": "--select-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--select-option-padding-x",
+        "description": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+      }
+    ]
+  },
+  "css:Skeleton": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Skeleton",
+    "vars": [
+      {
+        "name": "--skeleton-color",
+        "description": "Base color of the placeholder blocks"
+      },
+      {
+        "name": "--skeleton-highlight-color",
+        "description": "Color of the moving highlight (wave animation)"
+      },
+      {
+        "name": "--skeleton-radius",
+        "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+      },
+      {
+        "name": "--skeleton-text-height",
+        "description": "Height of a text line"
+      },
+      {
+        "name": "--skeleton-gap",
+        "description": "Space between the lines of a paragraph and next to the avatar"
+      }
+    ]
+  },
+  "css:SplitLayout": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/SplitLayout",
+    "vars": [
+      {
+        "name": "--split-layout-align-items",
+        "description": "Vertical alignment of the main and aside columns (default: start)"
+      }
+    ]
+  },
+  "css:Stack": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Stack",
+    "vars": [
+      {
+        "name": "--stack-gap",
+        "description": "Space between the children when the gap prop is not set (default: 0)"
+      }
+    ]
+  },
+  "css:Steps": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Steps",
+    "vars": [
+      {
+        "name": "--steps-gap",
+        "description": "Space between the steps (row and column gap)"
+      },
+      {
+        "name": "--steps-font-size",
+        "description": "Font size of the labels"
+      },
+      {
+        "name": "--steps-indicator-size",
+        "description": "Diameter of the numbered indicator"
+      },
+      {
+        "name": "--steps-accent-color",
+        "description": "Color of the current / completed indicators (defaults to --primary-color)"
+      },
+      {
+        "name": "--steps-current-background",
+        "description": "Background of the current step's indicator"
+      }
+    ]
+  },
+  "css:Switch": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Switch",
+    "vars": [
+      {
+        "name": "--switch-track-width",
+        "description": "Width of the track (every size)"
+      },
+      {
+        "name": "--switch-track-height",
+        "description": "Height of the track (every size)"
+      },
+      {
+        "name": "--switch-thumb-size",
+        "description": "Width and height of the thumb (every size)"
+      },
+      {
+        "name": "--switch-track-color",
+        "description": "Background of the unchecked track"
+      },
+      {
+        "name": "--switch-thumb-color",
+        "description": "Background of the unchecked thumb"
+      },
+      {
+        "name": "--switch-checked-color",
+        "description": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)"
+      },
+      {
+        "name": "--switch-label-gap",
+        "description": "Space between the switch and its label"
+      },
+      {
+        "name": "--switch-label-font-size",
+        "description": "Font size of the label (every size)"
+      }
+    ]
+  },
+  "css:Table": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Table",
+    "vars": [
+      {
+        "name": "--table-cell-padding-y",
+        "description": "Vertical padding of the cells (every size; follows the density by default)"
+      },
+      {
+        "name": "--table-cell-padding-x",
+        "description": "Horizontal padding of the cells (every size; follows the density by default)"
+      },
+      {
+        "name": "--table-font-size",
+        "description": "Font size of the body cells (every size)"
+      },
+      {
+        "name": "--table-header-bg",
+        "description": "Background color of the header row"
+      },
+      {
+        "name": "--table-border-color",
+        "description": "Color of the row separators"
+      },
+      {
+        "name": "--table-radius",
+        "description": "Corner radius of the wrapper (defaults to --radius-lg)"
+      },
+      {
+        "name": "--table-stripe-bg",
+        "description": "Background color of the odd rows of a striped table"
+      },
+      {
+        "name": "--table-hover-bg",
+        "description": "Background color of the hovered row of a hoverable table"
+      },
+      {
+        "name": "--table-selected-bg",
+        "description": "Background color of the selected rows (row selection)"
+      },
+      {
+        "name": "--table-sort-icon-color",
+        "description": "Color of the sort indicator of an unsorted sortable column"
+      },
+      {
+        "name": "--table-focus-ring-color",
+        "description": "Outline color of the focused scroll region"
+      }
+    ]
+  },
+  "css:Tabs": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Tabs",
+    "vars": [
+      {
+        "name": "--tabs-gap",
+        "description": "Space between the tabs of the list"
+      },
+      {
+        "name": "--tabs-font-size",
+        "description": "Font size of the tabs"
+      },
+      {
+        "name": "--tabs-trigger-padding-x",
+        "description": "Horizontal padding of a tab (every variant)"
+      },
+      {
+        "name": "--tabs-trigger-padding-y",
+        "description": "Vertical padding of a tab (every variant)"
+      },
+      {
+        "name": "--tabs-trigger-min-height",
+        "description": "Minimum height of a tab (pills default to the density's control height minus 4px)"
+      },
+      {
+        "name": "--tabs-radius",
+        "description": "Corner radius of enclosed / soft / pill tabs (defaults to --radius-md)"
+      },
+      {
+        "name": "--tabs-indicator-width",
+        "description": "Thickness of the line indicator"
+      },
+      {
+        "name": "--tabs-panel-padding",
+        "description": "Padding of the panel"
+      }
+    ]
+  },
+  "css:Tag": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Tag",
+    "vars": [
+      {
+        "name": "--tag-height",
+        "description": "Minimum height (every size; default: the content height)"
+      },
+      {
+        "name": "--tag-padding-x",
+        "description": "Horizontal padding (every size)"
+      },
+      {
+        "name": "--tag-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--tag-radius",
+        "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+      },
+      {
+        "name": "--tag-gap",
+        "description": "Space between the icon, the label and the close button"
+      }
+    ]
+  },
+  "css:TagInput": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/TagInput",
+    "vars": [
+      {
+        "name": "--tag-input-gap",
+        "description": "Space between the tags and between the tags and the entry row"
+      },
+      {
+        "name": "--tag-input-tag-min-height",
+        "description": "Minimum height of a tag (defaults to the density's small control height)"
+      },
+      {
+        "name": "--tag-input-list-max-height",
+        "description": "Maximum height of the suggestion list before it scrolls"
+      },
+      {
+        "name": "--tag-input-list-radius",
+        "description": "Corner radius of the suggestion list (defaults to --radius-md)"
+      },
+      {
+        "name": "--tag-input-option-padding-y",
+        "description": "Vertical padding of a suggestion (follows the density's row padding)"
+      },
+      {
+        "name": "--tag-input-option-padding-x",
+        "description": "Horizontal padding of a suggestion (follows the density's row padding)"
+      }
+    ]
+  },
+  "css:Textarea": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Textarea",
+    "vars": [
+      {
+        "name": "--textarea-min-height",
+        "description": "Minimum height (every size)"
+      },
+      {
+        "name": "--textarea-padding-y",
+        "description": "Vertical padding of the text"
+      },
+      {
+        "name": "--textarea-padding-x",
+        "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+      },
+      {
+        "name": "--textarea-radius",
+        "description": "Corner radius (defaults to --radius-md)"
+      },
+      {
+        "name": "--textarea-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--textarea-background",
+        "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--textarea-border-color",
+        "description": "Border color at rest"
+      }
+    ]
+  },
+  "css:TextLink": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/TextLink",
+    "vars": [
+      {
+        "name": "--text-link-color",
+        "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+      },
+      {
+        "name": "--text-link-font-weight",
+        "description": "Font weight"
+      },
+      {
+        "name": "--text-link-text-decoration",
+        "description": "Text decoration of the default variant (default: underline)"
+      },
+      {
+        "name": "--text-link-underline-offset",
+        "description": "Distance between the text and its underline"
+      },
+      {
+        "name": "--text-link-action-min-height",
+        "description": "Minimum height of the action variant"
+      }
+    ]
+  },
+  "css:ThemeToggle": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/ThemeToggle",
+    "vars": [
+      {
+        "name": "--theme-toggle-gap",
+        "description": "Space between the options"
+      },
+      {
+        "name": "--theme-toggle-padding",
+        "description": "Inner padding of the group"
+      },
+      {
+        "name": "--theme-toggle-radius",
+        "description": "Corner radius of the group (defaults to --radius-lg; options use --radius-md)"
+      },
+      {
+        "name": "--theme-toggle-background",
+        "description": "Background of the group"
+      },
+      {
+        "name": "--theme-toggle-item-height",
+        "description": "Minimum height of an option (follows the density's control height)"
+      },
+      {
+        "name": "--theme-toggle-item-min-width",
+        "description": "Minimum width of an option"
+      },
+      {
+        "name": "--theme-toggle-active-background",
+        "description": "Background of the selected option"
+      }
+    ]
+  },
+  "css:TimePicker": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/TimePicker",
+    "vars": [
+      {
+        "name": "--time-picker-width",
+        "description": "Width of the field"
+      },
+      {
+        "name": "--time-picker-panel-radius",
+        "description": "Corner radius of the panel (defaults to --radius-sm)"
+      },
+      {
+        "name": "--time-picker-panel-padding",
+        "description": "Inner padding of the panel"
+      },
+      {
+        "name": "--time-picker-column-width",
+        "description": "Width of an hours / minutes / seconds column"
+      },
+      {
+        "name": "--time-picker-column-height",
+        "description": "Height of the columns before they scroll"
+      },
+      {
+        "name": "--time-picker-cell-height",
+        "description": "Height of a time cell (defaults to the density's small control height)"
+      },
+      {
+        "name": "--time-picker-cell-padding-x",
+        "description": "Horizontal padding of a time cell (follows the density's row padding)"
+      },
+      {
+        "name": "--time-picker-selected-background",
+        "description": "Background of the selected time cell"
+      }
+    ]
+  },
+  "css:Toast": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Toast",
+    "vars": [
+      {
+        "name": "--toast-width",
+        "description": "Width of the toast stack (capped by the viewport)"
+      },
+      {
+        "name": "--toast-gap",
+        "description": "Space between stacked toasts"
+      },
+      {
+        "name": "--toast-offset",
+        "description": "Distance between the stack and the viewport edges"
+      },
+      {
+        "name": "--toast-padding",
+        "description": "Padding of a toast"
+      },
+      {
+        "name": "--toast-radius",
+        "description": "Corner radius of a toast (defaults to --radius-md)"
+      },
+      {
+        "name": "--toast-shadow",
+        "description": "Shadow of a toast (defaults to --shadow-lg)"
+      },
+      {
+        "name": "--toast-background",
+        "description": "Base background of a toast (under the color tint)"
+      },
+      {
+        "name": "--toast-z-index",
+        "description": "Stacking order of the stack (defaults to --z-toast)"
+      }
+    ]
+  },
+  "css:Tooltip": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Tooltip",
+    "vars": [
+      {
+        "name": "--tooltip-max-width",
+        "description": "Maximum width (capped by the viewport)"
+      },
+      {
+        "name": "--tooltip-padding",
+        "description": "Padding (every shape)"
+      },
+      {
+        "name": "--tooltip-radius",
+        "description": "Corner radius (defaults to the radius of the shape)"
+      },
+      {
+        "name": "--tooltip-font-size",
+        "description": "Font size"
+      },
+      {
+        "name": "--tooltip-bg",
+        "description": "Background (gradients allowed; every variant)"
+      },
+      {
+        "name": "--tooltip-color",
+        "description": "Text color (every variant)"
+      },
+      {
+        "name": "--tooltip-shadow",
+        "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+      },
+      {
+        "name": "--tooltip-z-index",
+        "description": "Stacking order (defaults to --z-popover)"
+      }
+    ]
+  },
+  "css:Upload": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/Upload",
+    "vars": [
+      {
+        "name": "--upload-gap",
+        "description": "Space between the label, the dropzone, the error and the file list"
+      },
+      {
+        "name": "--upload-font-size",
+        "description": "Font size"
+      },
+      {
+        "name": "--upload-dropzone-padding",
+        "description": "Inner padding of the dropzone"
+      },
+      {
+        "name": "--upload-dropzone-radius",
+        "description": "Corner radius of the dropzone (defaults to --radius-md)"
+      },
+      {
+        "name": "--upload-dropzone-border-color",
+        "description": "Dashed border color of the dropzone at rest"
+      },
+      {
+        "name": "--upload-dropzone-background",
+        "description": "Background of the dropzone at rest"
+      },
+      {
+        "name": "--upload-preview-width",
+        "description": "Width of an image preview in the file list"
+      },
+      {
+        "name": "--upload-preview-height",
+        "description": "Height of an image preview in the file list"
+      }
+    ]
+  },
+  "css:VirtualList": {
+    "kind": "cssVars",
+    "source": "lib-core/src/components/VirtualList",
+    "vars": [
+      {
+        "name": "--virtual-list-radius",
+        "description": "Corner radius (defaults to --radius-sm)"
+      },
+      {
+        "name": "--virtual-list-shadow",
+        "description": "Shadow at rest (defaults to --shadow-sm)"
+      },
+      {
+        "name": "--virtual-list-hover-shadow",
+        "description": "Shadow while hovered (defaults to --shadow-md)"
+      },
+      {
+        "name": "--virtual-list-scrollbar-size",
+        "description": "Width of the scrollbar (WebKit / Blink)"
+      },
+      {
+        "name": "--virtual-list-loading-padding",
+        "description": "Padding of the loading indicator row"
       }
     ]
   },
@@ -2471,6 +4384,12 @@
     "kind": "alias",
     "type": "\"light\" | \"dark\""
   },
+  "Density": {
+    "source": "core/src/theme/design.ts",
+    "description": "Spacing density of controls and rows.",
+    "kind": "alias",
+    "type": "(typeof DENSITIES)[number]"
+  },
   "DescriptionListItem": {
     "source": "lib-core/src/components/DescriptionList/types.ts",
     "description": "One term / description pair of a DescriptionList",
@@ -2515,6 +4434,85 @@
         "type": "Ref<HTMLDListElement>",
         "required": false,
         "description": "Ref to the <dl> element"
+      }
+    ]
+  },
+  "DesignOptions": {
+    "source": "core/src/theme/design.ts",
+    "description": "Design axes chosen by the app; unset axes come from the preset.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "preset",
+        "type": "DesignPreset",
+        "required": false,
+        "default": "\"minerva\"",
+        "description": "Named combination of the axes below and a default palette: \"minerva\" (default look), \"editorial\" (restrained, reading-oriented) or \"compact\" (dense, data-heavy screens)"
+      },
+      {
+        "name": "density",
+        "type": "Density",
+        "required": false,
+        "description": "Spacing density of controls and rows"
+      },
+      {
+        "name": "radius",
+        "type": "RadiusScale",
+        "required": false,
+        "description": "Corner radius scale"
+      },
+      {
+        "name": "shadow",
+        "type": "ShadowScale",
+        "required": false,
+        "description": "Elevation shadow scale"
+      },
+      {
+        "name": "fontScale",
+        "type": "FontScale",
+        "required": false,
+        "description": "Type scale"
+      }
+    ]
+  },
+  "DesignPreset": {
+    "source": "core/src/theme/design.ts",
+    "description": "A built-in design preset.",
+    "kind": "alias",
+    "type": "(typeof DESIGN_PRESETS)[number]"
+  },
+  "DesignPresetDefinition": {
+    "source": "core/src/theme/design.ts",
+    "description": "Axis values and default palette of a preset.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "density",
+        "type": "Density",
+        "required": true
+      },
+      {
+        "name": "radius",
+        "type": "RadiusScale",
+        "required": true
+      },
+      {
+        "name": "shadow",
+        "type": "ShadowScale",
+        "required": true
+      },
+      {
+        "name": "fontScale",
+        "type": "FontScale",
+        "required": true
+      },
+      {
+        "name": "palette",
+        "type": "Palette | null",
+        "required": true,
+        "description": "Palette used when the app does not choose one (`null` = default look)"
       }
     ]
   },
@@ -3042,6 +5040,12 @@
       }
     ]
   },
+  "FontScale": {
+    "source": "core/src/theme/design.ts",
+    "description": "Type scale (\"large\" is reading-oriented).",
+    "kind": "alias",
+    "type": "(typeof FONT_SCALES)[number]"
+  },
   "FormControlProps": {
     "source": "lib-core/src/components/FormControl/types.ts",
     "kind": "interface",
@@ -3254,9 +5258,11 @@
   },
   "HtmlPreviewProps": {
     "source": "lib-core/src/components/HtmlPreview/types.ts",
-    "description": "Props of `HtmlPreview`. The iframe itself is not configurable: it is always sandboxed (`sandbox=\"\"`), has no referrer and renders a sanitized document behind a strict Content-Security-Policy.",
+    "description": "Props of `HtmlPreview`. The iframe itself is not configurable: it is always sandboxed (`sandbox=\"\"`), has no referrer and renders a sanitized document behind a strict Content-Security-Policy. `data-*` attributes go to the root.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "html",
@@ -3347,7 +5353,7 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "description": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over ariaLabel"
+        "description": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over aria-label"
       },
       {
         "name": "color",
@@ -3389,7 +5395,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Replaces the icon with a spinner and blocks interaction"
+        "description": "Replaces the icon with a spinner and ignores activation (click, Enter, Space, form submission) while staying focusable: exposed as aria-busy + aria-disabled instead of the native disabled attribute"
       },
       {
         "name": "pressed",
@@ -3430,7 +5436,7 @@
         "description": "Shows the tooltip on hover and focus (its content is tooltip.content, or the label)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"icon button\" (localized)",
@@ -4142,7 +6148,7 @@
         "name": "dir",
         "type": "MenuDirection",
         "required": false,
-        "default": "\"ltr\"",
+        "default": "inherited from the nearest `dir` attribute of the trigger (else \"ltr\")",
         "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped"
       },
       {
@@ -4152,7 +6158,7 @@
         "description": "Additional class name of the menu panel"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the menu panel (defaults to the trigger's label)"
@@ -4584,7 +6590,9 @@
     "source": "lib-core/src/components/MonacoCodeEditor/types.ts",
     "description": "Props of `MonacoCodeEditor` (published from `@minerva/lib-core/monaco`)",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "monaco",
@@ -4690,7 +6698,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "description": "Additional class name"
+        "description": "Additional class name of the root element"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
       }
     ]
   },
@@ -4797,7 +6811,7 @@
         "description": "Lists the events of the selected day below the grid"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Month calendar\" (translated)",
@@ -4988,9 +7002,11 @@
   },
   "NavTreeProps": {
     "source": "lib-core/src/components/NavTree/types.ts",
-    "description": "Props of `NavTree`, a sidebar navigation tree",
+    "description": "Props of `NavTree`, a sidebar navigation tree. `className`, `style`, `id`, `aria-*` and `data-*` attributes go to the `<nav>` element",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "sections",
@@ -5061,11 +7077,23 @@
         "description": "Inline styles"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Navigation\" (localized)",
         "description": "Accessible name of the `<nav>` landmark"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) naming the `<nav>` landmark (replaces the default label)"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "id of the `<nav>` element"
       },
       {
         "name": "ref",
@@ -5384,7 +7412,7 @@
     ],
     "props": [
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": true,
         "description": "Accessible label of the navigation landmark (e.g. \"Open pages\")"
@@ -5975,10 +8003,10 @@
         "name": "label",
         "type": "ReactNode",
         "required": false,
-        "description": "Visible text shown next to the indicator; it also names the progressbar unless ariaLabel is set"
+        "description": "Visible text shown next to the indicator; it also names the progressbar unless aria-label is set"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Loading\" (localized)",
@@ -6055,8 +8083,11 @@
   },
   "RadioGroupProps": {
     "source": "lib-core/src/components/Radio/types.ts",
+    "description": "`className`, `style` and `data-*` attributes go to the root wrapper; `id` and `aria-*` go to the element with role=\"radiogroup\".",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "value",
@@ -6083,10 +8114,28 @@
         "description": "Visible label of the group; also its accessible name"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the group when there is no visible label"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the group (takes precedence over the visible `label` and the enclosing FormControl label)"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Extra ids describing the group (merged with its helper / error text)"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "id of the element with role=\"radiogroup\""
       },
       {
         "name": "onChange",
@@ -6112,7 +8161,13 @@
         "type": "string",
         "required": false,
         "default": "\"\"",
-        "description": "Additional class name"
+        "description": "Additional class name of the root wrapper"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root wrapper"
       },
       {
         "name": "direction",
@@ -6163,8 +8218,11 @@
   },
   "RadioProps": {
     "source": "lib-core/src/components/Radio/types.ts",
+    "description": "`className`, `style` and `data-*` attributes go to the root wrapper; `id`, `name` and `aria-*` go to the native <input>.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "checked",
@@ -6230,17 +8288,41 @@
         "description": "Label content (alternative to `label`; used when `label` is not set)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label, required when there is no visible label"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the radio"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the native <input> (e.g. for an external <label htmlFor>)"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Extra ids describing the radio (merged with its helper / error text)"
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
         "default": "\"\"",
-        "description": "Additional class name"
+        "description": "Additional class name of the root wrapper"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root wrapper"
       },
       {
         "name": "required",
@@ -6260,7 +8342,7 @@
         "name": "errorIcon",
         "type": "React.ReactNode",
         "required": false,
-        "default": "<FaInfoCircle />",
+        "default": "a filled info-circle icon",
         "description": "Icon shown before the error message"
       },
       {
@@ -6282,6 +8364,12 @@
         "description": "Ref to the native <input type=\"radio\"> element"
       }
     ]
+  },
+  "RadiusScale": {
+    "source": "core/src/theme/design.ts",
+    "description": "Corner radius scale.",
+    "kind": "alias",
+    "type": "(typeof RADIUS_SCALES)[number]"
   },
   "RatingDimension": {
     "source": "lib-core/src/components/Rating/types.ts",
@@ -6368,7 +8456,7 @@
         "description": "Forces display mode even when onChange is set"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"<value> / <max>\"",
@@ -6465,6 +8553,39 @@
     "description": "Size of the Rating stars",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "ResolvedDesign": {
+    "source": "core/src/theme/design.ts",
+    "description": "Fully resolved design axes.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "preset",
+        "type": "DesignPreset",
+        "required": true
+      },
+      {
+        "name": "density",
+        "type": "Density",
+        "required": true
+      },
+      {
+        "name": "radius",
+        "type": "RadiusScale",
+        "required": true
+      },
+      {
+        "name": "shadow",
+        "type": "ShadowScale",
+        "required": true
+      },
+      {
+        "name": "fontScale",
+        "type": "FontScale",
+        "required": true
+      }
+    ]
   },
   "ResponsiveGridColumns": {
     "source": "lib-core/src/components/ResponsiveGrid/types.ts",
@@ -6619,9 +8740,11 @@
   },
   "SelectProps": {
     "source": "lib-core/src/components/Select/types.ts",
-    "description": "Props of the Select component (a single-choice dropdown: select-only combobox trigger + listbox popup anchored below it, with full keyboard support and a hidden native select for forms)",
+    "description": "Props of the Select component (a single-choice dropdown: select-only combobox trigger + listbox popup anchored below it, with full keyboard support and a hidden native select for forms). `id`, `className`, `style`, `aria-*` and `data-*` attributes go to the trigger <button>.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "value",
@@ -6707,13 +8830,19 @@
         "description": "id of the trigger (defaults to the enclosing FormControl's id)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the trigger, required when there is no visible label"
       },
       {
-        "name": "ariaDescribedBy",
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the trigger (also names the listbox)"
+      },
+      {
+        "name": "aria-describedby",
         "type": "string",
         "required": false,
         "description": "Extra ids of elements describing the trigger (aria-describedby)"
@@ -6723,6 +8852,12 @@
         "type": "string",
         "required": false,
         "description": "Additional class name of the trigger"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the trigger"
       },
       {
         "name": "contentClassName",
@@ -6935,6 +9070,12 @@
       }
     ]
   },
+  "ShadowScale": {
+    "source": "core/src/theme/design.ts",
+    "description": "Elevation shadow scale (\"standard\" keeps the theme / palette shadows).",
+    "kind": "alias",
+    "type": "(typeof SHADOW_SCALES)[number]"
+  },
   "SkeletonAnimation": {
     "source": "lib-core/src/components/Skeleton/types.ts",
     "kind": "alias",
@@ -7068,7 +9209,7 @@
         "description": "Shows a title placeholder (replaces the lines)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Loading\" (localized)",
@@ -7372,10 +9513,10 @@
         "type": "boolean",
         "required": false,
         "default": "true when onChange is not set, otherwise false",
-        "description": "Renders the steps as a read-only progress indicator (every step button disabled)"
+        "description": "Renders the steps as a read-only progress indicator: plain list items without buttons, the current <li> marked aria-current=\"step\""
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "default": "\"Steps\" (localized)",
@@ -7408,8 +9549,11 @@
   },
   "SwitchProps": {
     "source": "lib-core/src/components/Switch/types.ts",
+    "description": "`data-*` attributes are forwarded to the root element.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "checked",
@@ -7484,10 +9628,22 @@
         "description": "Label of the \"on\" state (see offLabel)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
-        "description": "Accessible label, required when the switch has no visible label"
+        "description": "Accessible label, required when the switch has no visible label. Set on the switch input (on the segment group for the segmented variant)"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the switch (on the segment group for the segmented variant). Defaults to the enclosing FormControl's label for the segmented variant"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Extra id(s) of elements describing the switch, merged with the enclosing FormControl's helper / error text"
       },
       {
         "name": "name",
@@ -7535,10 +9691,10 @@
         "description": "Additional class name"
       },
       {
-        "name": "labelStyle",
+        "name": "style",
         "type": "React.CSSProperties",
         "required": false,
-        "description": "Inline styles of the root label element"
+        "description": "Inline styles of the root element"
       },
       {
         "name": "trackStyle",
@@ -7719,6 +9875,13 @@
         "type": "TableColumnFixed",
         "required": false,
         "description": "Sticks the column to the left or right edge while scrolling horizontally. Fixed columns must be declared contiguously at the start (left) or end (right) of `columns`"
+      },
+      {
+        "name": "sortable",
+        "type": "boolean | TableSortCompare<T>",
+        "required": false,
+        "default": "false",
+        "description": "Makes the column sortable: its header becomes a button cycling ascending → descending → unsorted. `true` compares `row[key]` (numbers, dates, then strings with a locale / numeric collation; empty values last); a function `(a, b) => number` compares two rows for the ascending order"
       }
     ]
   },
@@ -7788,7 +9951,7 @@
       },
       {
         "name": "rowKey",
-        "type": "(row: T, index: number) => string | number",
+        "type": "(row: T, index: number) => TableRowKey",
         "required": false,
         "description": "Extracts a stable key from a row (defaults to the row index)"
       },
@@ -7812,6 +9975,38 @@
         "required": false,
         "default": "5",
         "description": "Number of skeleton rows rendered while loading"
+      },
+      {
+        "name": "sortState",
+        "type": "TableSortState | null",
+        "required": false,
+        "description": "Sort state (controlled); `null` means unsorted. Use with `onSortChange`"
+      },
+      {
+        "name": "defaultSortState",
+        "type": "TableSortState | null",
+        "required": false,
+        "default": "null",
+        "description": "Initial sort state (uncontrolled)"
+      },
+      {
+        "name": "onSortChange",
+        "type": "(sortState: TableSortState) => void",
+        "required": false,
+        "description": "Called with the next sort state when a sortable header is activated"
+      },
+      {
+        "name": "manualSort",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Skips local sorting: `data` is rendered as given (sorted by the data owner, e.g. a server) while the headers still reflect the sort state"
+      },
+      {
+        "name": "rowSelection",
+        "type": "TableRowSelection<T>",
+        "required": false,
+        "description": "Adds a leading checkbox column to select rows"
       }
     ]
   },
@@ -7848,7 +10043,7 @@
         "name": "scroll",
         "type": "TableScrollConfig",
         "required": false,
-        "description": "Horizontal minimum width / vertical maximum height of the scroll area"
+        "description": "Horizontal minimum width / vertical maximum height of the scroll area. When set (or when the content overflows), the scroll area becomes a focusable region named by the table's `aria-label` / `aria-labelledby` (default: \"Scrollable table\", localized) so keyboard users can scroll it"
       },
       {
         "name": "ref",
@@ -7857,6 +10052,12 @@
         "description": "Ref to the `<table>` element"
       }
     ]
+  },
+  "TableRowKey": {
+    "source": "lib-core/src/components/Table/types.ts",
+    "description": "Key identifying a row (returned by `rowKey`)",
+    "kind": "alias",
+    "type": "string | number"
   },
   "TableRowProps": {
     "source": "lib-core/src/components/Table/types.ts",
@@ -7871,6 +10072,53 @@
         "type": "Ref<HTMLTableRowElement>",
         "required": false,
         "description": "Ref to the `<tr>` element"
+      }
+    ]
+  },
+  "TableRowSelection": {
+    "source": "lib-core/src/components/Table/types.ts",
+    "description": "Row selection configuration of a `Table` (leading checkbox column)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"checkbox\"",
+        "required": false,
+        "default": "\"checkbox\"",
+        "description": "Selection mode (multiple selection with checkboxes)"
+      },
+      {
+        "name": "selectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "description": "Keys of the selected rows (controlled)"
+      },
+      {
+        "name": "defaultSelectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "default": "[]",
+        "description": "Keys of the initially selected rows (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(selectedRowKeys: TableRowKey[], selectedRows: T[]) => void",
+        "required": false,
+        "description": "Called with the new selected keys and the matching rows of `data`"
+      },
+      {
+        "name": "getCheckboxProps",
+        "type": "(row: T) => { disabled?: boolean }",
+        "required": false,
+        "description": "Per-row checkbox options; disabled rows cannot be toggled and are skipped by the select-all checkbox"
+      },
+      {
+        "name": "getRowLabel",
+        "type": "(row: T, index: number) => string",
+        "required": false,
+        "default": "the row key",
+        "description": "Names a row in the accessible label of its checkbox (\"Select row {name}\")"
       }
     ]
   },
@@ -7899,6 +10147,38 @@
     "description": "Density of the table cells",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "TableSortCompare": {
+    "source": "lib-core/src/components/Table/types.ts",
+    "description": "Compares two rows for the ascending order (like `Array.prototype.sort`)",
+    "kind": "alias",
+    "type": "(a: T, b: T) => number"
+  },
+  "TableSortOrder": {
+    "source": "lib-core/src/components/Table/types.ts",
+    "description": "Direction of a sorted column",
+    "kind": "alias",
+    "type": "\"ascend\" | \"descend\""
+  },
+  "TableSortState": {
+    "source": "lib-core/src/components/Table/types.ts",
+    "description": "Sort state of a `Table`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "Key of the sorted column"
+      },
+      {
+        "name": "order",
+        "type": "TableSortOrder | null",
+        "required": true,
+        "description": "Sort direction; `null` means unsorted"
+      }
+    ]
   },
   "TableVariant": {
     "source": "lib-core/src/components/Table/types.ts",
@@ -8087,8 +10367,11 @@
   },
   "TagInputProps": {
     "source": "lib-core/src/components/TagInput/types.ts",
+    "description": "`data-*` attributes are forwarded to the wrapper.",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "value",
@@ -8124,6 +10407,13 @@
         "description": "Adds the typed draft as a tag when the input loses focus"
       },
       {
+        "name": "separators",
+        "type": "readonly string[]",
+        "required": false,
+        "default": "[\",\", \"Enter\"]",
+        "description": "Keys that commit the draft: a literal string (e.g. \",\" or \";\") splits the typed or pasted text into tags; \"Enter\" commits on the Enter key (and also splits pasted text on line breaks)"
+      },
+      {
         "name": "id",
         "type": "string",
         "required": false,
@@ -8146,6 +10436,12 @@
         "type": "string",
         "required": false,
         "description": "Accessible name of the text input when there is no FormControl label"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Ids of the elements labelling the text input (wins over the FormControl label)"
       },
       {
         "name": "aria-describedby",
@@ -8221,6 +10517,12 @@
         "type": "string",
         "required": false,
         "description": "Class name of the wrapper"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the wrapper"
       },
       {
         "name": "ref",
@@ -8362,10 +10664,10 @@
       },
       {
         "name": "closeLabel",
-        "type": "string",
+        "type": "string | ((label: string) => string)",
         "required": false,
-        "default": "\"Close\" (localized)",
-        "description": "Accessible label of the close button"
+        "default": "\"Remove {label}\" (localized), or \"Close\" when the tag has no text",
+        "description": "Accessible label of the close button: a string, or a function of the tag's text label (the text of its children)"
       },
       {
         "name": "ripple",
@@ -8790,13 +11092,23 @@
         "type": "boolean",
         "required": true,
         "description": "Whether the panel is visible"
+      },
+      {
+        "name": "focusOnOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Move focus to the first column's selected (or first enabled) unit when the panel becomes visible (opened from the keyboard)."
       }
     ]
   },
   "TimePickerProps": {
     "source": "lib-core/src/components/TimePicker/types.ts",
+    "description": "Props of TimePicker; `data-*` attributes are forwarded to the root element",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "DataAttributes"
+    ],
     "props": [
       {
         "name": "ref",
@@ -8850,10 +11162,46 @@
         "description": "Visible label of the input; without it the input is labelled \"Time\" (localized)"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the input when no visible label is shown"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the input; defaults to the id of an enclosing FormControl"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as required; defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
       },
       {
         "name": "name",
@@ -8873,7 +11221,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Disables the picker"
+        "description": "Disables the picker; defaults to the enclosing FormControl's state"
       },
       {
         "name": "clearable",
@@ -8895,6 +11243,12 @@
         "required": false,
         "default": "\"\"",
         "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
       },
       {
         "name": "minTime",
@@ -8982,7 +11336,7 @@
   },
   "ToastApi": {
     "source": "lib-core/src/components/Toast/types.ts",
-    "description": "The `toast` function (also returned by useToast)",
+    "description": "The `toast` function, and the API returned by `useToast()` (bound to the caller's ConfigProvider scope)",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -9173,11 +11527,11 @@
         "description": "Pauses the auto-close timer while a toast is hovered or focused"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
-        "default": "\"Notifications\" (localized)",
-        "description": "Accessible label of the toast region"
+        "default": "\"Notifications (F8)\" (localized)",
+        "description": "Accessible label of the toast region (used as is; the default one includes the hotkey)"
       },
       {
         "name": "closeLabel",
@@ -9185,6 +11539,13 @@
         "required": false,
         "default": "\"Close\" (localized)",
         "description": "Accessible label of the close buttons"
+      },
+      {
+        "name": "hotkey",
+        "type": "string[]",
+        "required": false,
+        "default": "[\"F8\"]",
+        "description": "Keys pressed together to move focus to the toast region (the first one holding toasts): key codes (`\"F8\"`, `\"KeyT\"`), keys or modifiers (`\"altKey\"`, `\"ctrlKey\"`, `\"metaKey\"`, `\"shiftKey\"`). Shown in the default region label, e.g. \"Notifications (F8)\". An empty array disables it"
       }
     ]
   },
@@ -9385,7 +11746,7 @@
         "description": "Called when the tooltip closes from mouse leave, blur or Escape"
       },
       {
-        "name": "ariaLabel",
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible label of the tooltip element"
@@ -9748,9 +12109,11 @@
   },
   "VirtualListProps": {
     "source": "lib-core/src/components/VirtualList/types.ts",
-    "description": "VirtualList props",
+    "description": "VirtualList props. Other native <div> attributes (id, data-*, aria-*, event handlers...) are forwarded to the root (scroll container) element",
     "kind": "interface",
-    "extends": [],
+    "extends": [
+      "Omit<HTMLAttributes<HTMLDivElement>, \"children\" | \"role\" | \"tabIndex\">"
+    ],
     "props": [
       {
         "name": "items",
@@ -9831,7 +12194,13 @@
         "description": "Shows a loading indicator at the bottom of the list"
       },
       {
-        "name": "ariaLabel",
+        "name": "onItemClick",
+        "type": "(item: VirtualListItem, index: number, event: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => void",
+        "required": false,
+        "description": "Called when a row is clicked, or activated with Enter / Space while the row itself has focus. Makes the rows clickable: focusable and shown with a pointer cursor"
+      },
+      {
+        "name": "aria-label",
         "type": "string",
         "required": false,
         "description": "Accessible name of the list"
@@ -9903,6 +12272,13 @@
         "required": false,
         "default": "\"\"",
         "description": "Accessible label forwarded to the inner `<button>`; set it with the `aria-label` attribute. Required for icon-only buttons."
+      },
+      {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "required": false,
+        "default": "\"button\"",
+        "description": "What the button does in an enclosing `<form>`: nothing (`\"button\"`), submit it (`\"submit\"`, through `requestSubmit()` so validation and `submit` listeners run) or reset it (`\"reset\"`)"
       }
     ]
   },

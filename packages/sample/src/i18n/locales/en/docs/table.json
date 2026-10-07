@@ -29,6 +29,14 @@
     "cell-content": {
       "title": "Cell content",
       "description": "TableCellContent bounds and wraps long content, with an optional muted secondary line or monospace primary text."
+    },
+    "sorting": {
+      "title": "Sorting",
+      "description": "sortable makes a header a button cycling ascending, descending and unsorted (aria-sort follows). true compares row[key]; a function compares two rows. Control the state with sortState and onSortChange, or use manualSort to sort on a server."
+    },
+    "selection": {
+      "title": "Row selection",
+      "description": "rowSelection adds a checkbox column with a select-all checkbox (indeterminate when partially selected). Disabled rows are skipped by select-all; selected rows get aria-selected and a highlight."
     }
   },
   "api": {
@@ -38,7 +46,12 @@
       "rowKey": "Extracts a stable key from a row (defaults to the row index)",
       "emptyText": "Content of the single row shown when data is empty",
       "loading": "Renders placeholder skeleton rows instead of the data",
-      "loadingRows": "Number of skeleton rows rendered while loading"
+      "loadingRows": "Number of skeleton rows rendered while loading",
+      "sortState": "Sort state (controlled); null means unsorted",
+      "defaultSortState": "Initial sort state (uncontrolled)",
+      "onSortChange": "Called with the next sort state when a sortable header is activated",
+      "manualSort": "Skips local sorting: data is rendered as given (sorted by its owner, e.g. a server) while the headers reflect the sort state",
+      "rowSelection": "Adds a leading checkbox column to select rows"
     },
     "TableColumn": {
       "key": "Unique key of the column; also the default field read from each row",
@@ -47,7 +60,8 @@
       "width": "Column width (numbers are pixels), applied as width and min-width; required for fixed columns",
       "align": "Horizontal alignment of the header and cells",
       "ellipsis": "Truncates the content on a single line with an ellipsis",
-      "fixed": "Sticks the column to the left or right edge while scrolling horizontally"
+      "fixed": "Sticks the column to the left or right edge while scrolling horizontally",
+      "sortable": "Makes the column sortable: true compares row[key] (empty values last), a function (a, b) => number compares two rows for the ascending order"
     },
     "DataTableProps": {
       "pagination": "Pagination props rendered under the table (rows must already be paginated)",
@@ -59,12 +73,24 @@
       "size": "Density of the cells",
       "variant": "Visual style: plain rows, zebra stripes or bordered cells",
       "hoverable": "Highlights body rows on hover",
-      "scroll": "Horizontal minimum width / vertical maximum height of the scroll area",
+      "scroll": "Horizontal minimum width / vertical maximum height of the scroll area; a scrolling wrapper becomes a focusable region named after the table (default: \"Scrollable table\")",
       "ref": "Ref to the <table> element"
     },
     "TableScrollConfig": {
       "x": "Minimum width of the table; the wrapper scrolls horizontally when narrower",
       "y": "Maximum visible height; the wrapper scrolls vertically and the header sticks"
+    },
+    "TableSortState": {
+      "key": "Key of the sorted column",
+      "order": "Sort direction (\"ascend\" or \"descend\"); null means unsorted"
+    },
+    "TableRowSelection": {
+      "type": "Selection mode (multiple selection with checkboxes)",
+      "selectedRowKeys": "Keys of the selected rows (controlled)",
+      "defaultSelectedRowKeys": "Keys of the initially selected rows (uncontrolled)",
+      "onChange": "Called with the new selected keys and the matching rows of data",
+      "getCheckboxProps": "Per-row checkbox options; disabled rows cannot be toggled and are skipped by select-all",
+      "getRowLabel": "Names a row in the accessible label of its checkbox (\"Select row {name}\"); defaults to the row key"
     },
     "TableCellContentProps": {
       "primary": "Main content",
@@ -79,5 +105,18 @@
       "lastLeftFixedKey": "Last column of the leading left-fixed block (gets the edge shadow)",
       "firstRightFixedKey": "First column of the trailing right-fixed block (gets the edge shadow)"
     }
+  },
+  "cssVars": {
+    "--table-cell-padding-y": "Vertical padding of the cells (every size; follows the density by default)",
+    "--table-cell-padding-x": "Horizontal padding of the cells (every size; follows the density by default)",
+    "--table-font-size": "Font size of the body cells (every size)",
+    "--table-header-bg": "Background color of the header row",
+    "--table-border-color": "Color of the row separators",
+    "--table-radius": "Corner radius of the wrapper (defaults to --radius-lg)",
+    "--table-stripe-bg": "Background color of the odd rows of a striped table",
+    "--table-hover-bg": "Background color of the hovered row of a hoverable table",
+    "--table-selected-bg": "Background color of the selected rows (row selection)",
+    "--table-sort-icon-color": "Color of the sort indicator of an unsorted sortable column",
+    "--table-focus-ring-color": "Outline color of the focused scroll region"
   }
 }

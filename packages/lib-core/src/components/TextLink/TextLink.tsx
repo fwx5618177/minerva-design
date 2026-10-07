@@ -1,5 +1,5 @@
 import { Slot, Slottable } from "../../internal/Slot";
-import { LuChevronRight } from "react-icons/lu";
+import { IconChevronRight } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import type { TextLinkProps } from "./types";
 import styles from "./textLink.module.scss";
@@ -24,7 +24,7 @@ export const TextLink = ({
       {...rest}
     >
       <Slottable>{children}</Slottable>
-      {variant === "subtle" && <LuChevronRight aria-hidden="true" />}
+      {variant === "subtle" && <IconChevronRight aria-hidden="true" />}
     </Component>
   );
 };

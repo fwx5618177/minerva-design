@@ -28,6 +28,9 @@ export class Button extends LitElement {
   @property({ type: String, attribute: "aria-label" })
   ariaLabel = "";
 
+  @property({ type: String })
+  type: NonNullable<ButtonProps["type"]> = "button";
+
   private handleClick(e: MouseEvent) {
     if (this.disabled || this.loading) {
       e.preventDefault();
@@ -36,6 +39,11 @@ export class Button extends LitElement {
     }
 
     this.createRippleEffect(e);
+
+    // The inner <button> lives in the shadow root and cannot reach a light
+    // DOM form: submit / reset the enclosing form explicitly when asked to.
+    if (this.type === "submit") this.closest("form")?.requestSubmit();
+    else if (this.type === "reset") this.closest("form")?.reset();
   }
 
   private createRippleEffect(e: MouseEvent) {
@@ -67,6 +75,7 @@ export class Button extends LitElement {
   render() {
     return html`
       <button
+        type="button"
         class=${this.generateClasses()}
         ?disabled=${this.disabled}
         aria-label=${this.ariaLabel || nothing}

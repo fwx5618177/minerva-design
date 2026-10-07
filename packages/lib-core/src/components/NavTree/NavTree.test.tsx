@@ -106,10 +106,10 @@ describe("NavTree", () => {
   it("uses semantic theme tokens for the active state", () => {
     const css = readFileSync(scssPath, "utf8");
     expect(css).toMatch(
-      /\.active\s*\{[^}]*background:\s*var\(--selected-color\)[^}]*color:\s*var\(--text-color\)/s,
+      /\.active\s*\{[^}]*background:\s*var\(--nav-tree-active-background,\s*var\(--selected-color\)\)[^}]*color:\s*var\(--text-color\)/s,
     );
     expect(css).toMatch(
-      /\.active \.icon\s*\{[^}]*color:\s*var\(--primary-color\)/s,
+      /\.active \.icon\s*\{[^}]*color:\s*var\(--nav-tree-active-color,\s*var\(--primary-color\)\)/s,
     );
     expect(css).toMatch(/\.active:hover/);
     expect(css).toMatch(/\.active:focus-visible/);
@@ -244,7 +244,7 @@ describe("NavTree", () => {
     expect(alpha.querySelector(`.${styles.description}`)?.textContent).toBe(
       "First",
     );
-    render(<NavTree ariaLabel="Admin" sections={[]} />);
+    render(<NavTree aria-label="Admin" sections={[]} />);
     expect(
       screen.getByRole("navigation", { name: "Admin" }),
     ).toBeInTheDocument();
@@ -383,5 +383,25 @@ describe("NavTree", () => {
     const branch = screen.getByRole("button", { name: "运营" });
     fireEvent.keyDown(branch, { key: "ArrowRight" });
     expect(branch).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
+describe("NavTree native attributes", () => {
+  it("forwards id, aria-labelledby and data-* to the nav landmark", () => {
+    render(
+      <>
+        <h2 id="nav-title">Docs</h2>
+        <NavTree
+          sections={tree}
+          id="docs-nav"
+          aria-labelledby="nav-title"
+          data-testid="nav"
+        />
+      </>,
+    );
+    const nav = screen.getByRole("navigation", { name: "Docs" });
+    expect(nav).toHaveAttribute("id", "docs-nav");
+    expect(nav).toHaveAttribute("data-testid", "nav");
+    expect(nav).not.toHaveAttribute("aria-label");
   });
 });

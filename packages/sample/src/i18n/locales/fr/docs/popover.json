@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "PopoverTrigger bascule le panneau ; le focus y entre puis revient au déclencheur à la fermeture. PopoverClose le ferme."
+      "description": "PopoverTrigger bascule le panneau ; le focus y entre puis revient au déclencheur à la fermeture. PopoverClose le ferme. En mode non modal, Tab après le dernier élément (Maj+Tab avant le premier) le ferme et place le focus sur l’élément suivant (précédent) le déclencheur ; le focus ne boucle jamais dans le panneau."
     },
     "placement": {
       "title": "Placement",
@@ -20,7 +20,7 @@
       "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
       "defaultOpen": "État d'ouverture initial en mode non contrôlé",
       "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, Échap, clic extérieur, PopoverClose)",
-      "modal": "Mode modal : piège le focus, bloque le défilement de la page, masque le reste de la page aux technologies d'assistance et bloque les interactions de pointeur extérieures (un clic extérieur le ferme toujours)",
+      "modal": "Mode modal : piège le focus (Tab boucle dans le panneau), bloque le défilement de la page, masque le reste de la page aux technologies d'assistance et bloque les interactions de pointeur extérieures (un clic extérieur le ferme toujours)",
       "children": "PopoverTrigger / PopoverAnchor et PopoverContent"
     },
     "PopoverContentProps": {
@@ -44,5 +44,15 @@
     "PopoverTriggerProps": {
       "asChild": "Fusionne le comportement sur l'unique élément enfant au lieu de rendre son propre élément"
     }
+  },
+  "cssVars": {
+    "--popover-min-width": "Largeur minimale du panneau",
+    "--popover-max-width": "Largeur maximale du panneau",
+    "--popover-padding": "Marge intérieure du panneau",
+    "--popover-radius": "Rayon des coins du panneau (par défaut --radius-lg)",
+    "--popover-background": "Fond du panneau et de sa flèche",
+    "--popover-border-color": "Couleur de bordure du panneau et de sa flèche",
+    "--popover-shadow": "Ombre du panneau (par défaut --shadow-lg, --shadow-xl en thème sombre)",
+    "--popover-z-index": "Ordre d'empilement du panneau (par défaut --z-popover)"
   }
 }

@@ -51,7 +51,7 @@ export interface MonthCalendarProps {
    * Accessible label of the calendar
    * @default "Month calendar" (translated)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Label of the previous-month button
    * @default "Previous month" (translated)

@@ -1,14 +1,21 @@
+// Public CSS variables (set them on the editor or any ancestor):
+// @css-var --monaco-code-editor-radius Corner radius of the editor surface (defaults to --radius-md)
+// @css-var --monaco-code-editor-border-color Border color of the editor surface
+// @css-var --monaco-code-editor-bg Background color of the editor surface
+// @css-var --monaco-code-editor-label-gap Space between the label and the editor
+// @css-var --monaco-code-editor-font-size Font size of the label, the messages and the plain-text fallback
+
 .root {
   width: 100%;
   min-width: 0;
   font-family: var(--font-family-sans);
   color: var(--text-color);
-  font-size: var(--font-size-sm);
+  font-size: var(--monaco-code-editor-font-size, var(--font-size-sm));
 }
 
 .label {
   display: block;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--monaco-code-editor-label-gap, var(--space-2));
   font-weight: var(--font-weight-medium);
   overflow-wrap: anywhere;
 }
@@ -19,9 +26,9 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--surface-color);
+  border: 1px solid var(--monaco-code-editor-border-color, var(--border-color));
+  border-radius: var(--monaco-code-editor-radius, var(--radius-md));
+  background: var(--monaco-code-editor-bg, var(--surface-color));
 }
 
 .loading {
@@ -51,7 +58,7 @@
 }
 
 .retryIcon {
-  margin-right: var(--space-1-5);
+  margin-inline-end: var(--space-1-5);
   vertical-align: -0.125em;
 }
 
@@ -67,7 +74,7 @@
   background: var(--control-color, var(--surface-color));
   color: var(--text-color);
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
+  font-size: var(--monaco-code-editor-font-size, var(--font-size-sm));
   line-height: var(--line-height-base);
 
   &:focus-visible {

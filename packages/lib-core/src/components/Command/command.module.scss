@@ -1,3 +1,11 @@
+// Public CSS variables (set them on the dialog or any ancestor):
+// @css-var --command-search-height Minimum height of the search field (defaults to --control-height-md)
+// @css-var --command-results-max-height Maximum height of the scrolling result list
+// @css-var --command-item-min-height Minimum height of a result row
+// @css-var --command-item-padding-y Vertical padding of a result row (follows the density's row padding)
+// @css-var --command-item-padding-x Horizontal padding of a result row (follows the density's row padding)
+// @css-var --command-item-active-background Background of the hovered / active row (defaults to a 10% primary tint)
+
 // Brand tint used for hover / active rows (primary color at 10%).
 $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
 
@@ -48,7 +56,7 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
   gap: var(--space-2);
   margin: var(--space-4) var(--space-5) var(--space-3);
   padding: 0 var(--space-3);
-  min-height: 2.5rem;
+  min-height: var(--command-search-height, var(--control-height-md));
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--control-color, var(--surface-color));
@@ -84,7 +92,7 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
 
 .results {
   display: grid;
-  max-height: min(440px, 58vh);
+  max-height: var(--command-results-max-height, min(440px, 58vh));
   margin: 0 var(--space-5) var(--space-5);
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
@@ -97,9 +105,10 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 56px;
+  min-height: var(--command-item-min-height, 56px);
   width: 100%;
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  padding-block: var(--command-item-padding-y, calc(var(--row-padding-y) + var(--space-1)));
+  padding-inline: var(--command-item-padding-x, calc(var(--row-padding-x) + var(--space-1))) var(--command-item-padding-x, var(--row-padding-x));
   border: 0;
   border-bottom: 1px solid var(--border-color);
   border-radius: 0;
@@ -107,7 +116,7 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
   color: var(--text-color);
   font: inherit;
   cursor: pointer;
-  text-align: left;
+  text-align: start;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
@@ -118,7 +127,8 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
 
   &::before {
     position: absolute;
-    inset: 10px auto 10px 0;
+    inset-block: 10px;
+    inset-inline-start: 0;
     width: 3px;
     border-radius: var(--radius-full);
     background: transparent;
@@ -128,10 +138,18 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
 
   &:hover,
   &[data-active="true"] {
-    background: $tint;
+    background: var(--command-item-active-background, #{$tint});
 
     &::before {
       background: var(--primary-color);
+    }
+  }
+
+  @media (forced-colors: active) {
+    &:hover,
+    &[data-active="true"] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
     }
   }
 }

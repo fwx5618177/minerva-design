@@ -28,22 +28,27 @@
     },
     "with-icon": {
       "title": "With icons",
-      "description": "Combine text and icons with startIcon / endIcon, e.g. a danger retry or a neutral ghost back button. Give icon-only buttons an ariaLabel."
+      "description": "Combine text and icons with startIcon / endIcon, e.g. a danger retry or a neutral ghost back button. Give icon-only buttons an aria-label."
     },
     "icons-loading": {
       "title": "Icons, loading text and full width",
       "description": "startIcon / endIcon render icons around the label, loadingText replaces the content while loading and fullWidth stretches the button."
+    },
+    "form": {
+      "title": "In a form: type",
+      "description": "Button defaults to type=\"button\", so a Button inside a <form> (preview, add row, open dialog...) never submits it by accident. Pass type=\"submit\" for the submit button and type=\"reset\" to reset the form."
     }
   },
   "api": {
     "ButtonProps": {
+      "type": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use type=\"submit\" for submit buttons and \"reset\" for reset buttons",
       "onClick": "Called when the button is clicked (not called while disabled)",
       "children": "Button content",
       "className": "Additional class name",
       "color": "Semantic color of the button",
       "variant": "Visual style: solid (filled), outline (border only), ghost (transparent until hovered) or link (text link look)",
       "size": "Button size",
-      "ariaLabel": "Accessible label, required when the button only contains an icon",
+      "aria-label": "Accessible label, required when the button only contains an icon",
       "disabled": "Disables the button",
       "loading": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost",
       "active": "Renders the button in its pressed/active state",
@@ -56,5 +61,14 @@
       "endIcon": "Icon rendered after the content",
       "fullWidth": "Stretches the button to the full width of its container"
     }
+  },
+  "cssVars": {
+    "--button-height": "Minimum height (every size; defaults to the density's control height of the size)",
+    "--button-padding-x": "Horizontal padding (every size)",
+    "--button-radius": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)",
+    "--button-font-size": "Font size (every size)",
+    "--button-font-weight": "Font weight",
+    "--button-gap": "Space between the icons and the label",
+    "--button-label-white-space": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
   }
 }

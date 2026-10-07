@@ -1,8 +1,9 @@
 import React, { useEffect, useId, useRef } from "react";
 import { cn } from "../../utils/cn";
-import { IoChevronForward } from "react-icons/io5";
+import { IconChevronRight } from "../../internal/icons";
 import type { CascaderPanelProps, CascaderOption } from "./types";
 import useI18n from "../../hooks/useI18n";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./cascader.module.scss";
 
 const OPTION_SELECTOR = '[role="option"]:not([aria-disabled="true"])';
@@ -83,7 +84,8 @@ const CascaderPanel = ({
     const index = items.indexOf(e.currentTarget);
     const focusAt = (i: number) =>
       items[(i + items.length) % items.length]?.focus();
-    switch (e.key) {
+    // RTL: columns open towards the left, so ArrowLeft expands.
+    switch (logicalArrowKey(e.key, e.currentTarget)) {
       case "ArrowDown":
         e.preventDefault();
         focusAt(index + 1);
@@ -192,7 +194,7 @@ const CascaderPanel = ({
                       </span>
                     ) : (
                       showExpandIcon && (
-                        <IoChevronForward
+                        <IconChevronRight
                           className={styles.expandIcon}
                           aria-hidden
                         />

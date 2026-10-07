@@ -1,7 +1,12 @@
-import type { Ref } from "react";
+import type { CSSProperties, Ref } from "react";
 import type { ColorScheme } from "@minerva/core";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
-export interface RadioProps {
+/**
+ * `className`, `style` and `data-*` attributes go to the root wrapper; `id`,
+ * `name` and `aria-*` go to the native <input>.
+ */
+export interface RadioProps extends DataAttributes {
   /** Whether the radio is checked (controlled). Ignored inside a RadioGroup */
   checked?: boolean;
   /** Initial checked state (uncontrolled). Ignored inside a RadioGroup */
@@ -37,12 +42,20 @@ export interface RadioProps {
   /** Label content (alternative to `label`; used when `label` is not set) */
   children?: React.ReactNode;
   /** Accessible label, required when there is no visible label */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /** id(s) of the element(s) labelling the radio */
+  "aria-labelledby"?: string;
+  /** Id of the native <input> (e.g. for an external <label htmlFor>) */
+  id?: string;
+  /** Extra ids describing the radio (merged with its helper / error text) */
+  "aria-describedby"?: string;
   /**
-   * Additional class name
+   * Additional class name of the root wrapper
    * @default ""
    */
   className?: string;
+  /** Inline styles of the root wrapper */
+  style?: CSSProperties;
   /**
    * Marks the input as required
    * @default false
@@ -56,7 +69,7 @@ export interface RadioProps {
   error?: boolean;
   /**
    * Icon shown before the error message
-   * @default <FaInfoCircle />
+   * @default a filled info-circle icon
    */
   errorIcon?: React.ReactNode;
   /** Message shown below the radio when error is true (linked with aria-describedby) */
@@ -67,7 +80,11 @@ export interface RadioProps {
   ref?: Ref<HTMLInputElement>;
 }
 
-export interface RadioGroupProps {
+/**
+ * `className`, `style` and `data-*` attributes go to the root wrapper; `id`
+ * and `aria-*` go to the element with role="radiogroup".
+ */
+export interface RadioGroupProps extends DataAttributes {
   /** Value of the selected radio (controlled; `null` = controlled with no selection) */
   value?: string | number | null;
   /** Initially selected value (uncontrolled) */
@@ -80,7 +97,16 @@ export interface RadioGroupProps {
   /** Visible label of the group; also its accessible name */
   label?: React.ReactNode;
   /** Accessible label of the group when there is no visible label */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /**
+   * id(s) of the element(s) labelling the group (takes precedence over the
+   * visible `label` and the enclosing FormControl label)
+   */
+  "aria-labelledby"?: string;
+  /** Extra ids describing the group (merged with its helper / error text) */
+  "aria-describedby"?: string;
+  /** id of the element with role="radiogroup" */
+  id?: string;
   /** Called with the newly selected value */
   onChange?: (
     value: string | number,
@@ -95,10 +121,12 @@ export interface RadioGroupProps {
   /** Radio elements */
   children?: React.ReactNode;
   /**
-   * Additional class name
+   * Additional class name of the root wrapper
    * @default ""
    */
   className?: string;
+  /** Inline styles of the root wrapper */
+  style?: CSSProperties;
   /**
    * Layout direction of the radios
    * @default "vertical"

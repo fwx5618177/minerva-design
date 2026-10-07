@@ -1,6 +1,6 @@
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
-import { LuRotateCw, LuUpload, LuX } from "react-icons/lu";
+import { IconRotateCw, IconUpload, IconX } from "../../internal/icons";
 import type { UploadItem, UploadProps } from "./types";
 import styles from "./upload.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -51,6 +51,21 @@ const Upload = ({
   const id = useId();
   const labelId = `${id}-label`;
   const input = useRef<HTMLInputElement>(null);
+  const selectButton = useRef<HTMLButtonElement>(null);
+  const removeButtons = useRef(new Map<string, HTMLButtonElement>());
+  // The parent removes the item (possibly later); the focused remove button
+  // then unmounts and focus would fall to <body>. Move it to the next item's
+  // remove button (else the select button) once the item is gone.
+  const pendingRemoval = useRef<{ id: string; nextId?: string } | null>(null);
+  useEffect(() => {
+    const pending = pendingRemoval.current;
+    if (!pending || value.some((item) => item.id === pending.id)) return;
+    pendingRemoval.current = null;
+    const active = document.activeElement;
+    if (active && active !== document.body) return; // focus moved on: keep it
+    const next = pending.nextId && removeButtons.current.get(pending.nextId);
+    (next || selectButton.current)?.focus();
+  }, [value]);
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
 
@@ -137,7 +152,8 @@ const Upload = ({
           variant="outline"
           disabled={blocked}
           loading={loading}
-          startIcon={<LuUpload aria-hidden="true" />}
+          ref={selectButton}
+          startIcon={<IconUpload aria-hidden="true" />}
           onClick={() => input.current?.click()}
         >
           {labels?.select ?? t("upload.select")}
@@ -146,6 +162,9 @@ const Upload = ({
           ref={input}
           type="file"
           hidden
+          // Never a tab stop (even if [hidden] is restyled): the select button
+          // is the keyboard path to the picker.
+          tabIndex={-1}
           aria-label={label}
           disabled={blocked}
           accept={accept}
@@ -192,7 +211,7 @@ const Upload = ({
                     shape="square"
                     disabled={disabled || loading}
                     onClick={() => onRetry(item)}
-                    icon={<LuRotateCw aria-hidden="true" />}
+                    icon={<IconRotateCw aria-hidden="true" />}
                   />
                 )}
                 {onRemove && (
@@ -204,8 +223,20 @@ const Upload = ({
                     size="small"
                     shape="square"
                     disabled={disabled}
-                    onClick={() => onRemove(item)}
-                    icon={<LuX aria-hidden="true" />}
+                    ref={(node) => {
+                      if (node) removeButtons.current.set(item.id, node);
+                      else removeButtons.current.delete(item.id);
+                    }}
+                    onClick={() => {
+                      const index = value.indexOf(item);
+                      const neighbour = value[index + 1] ?? value[index - 1];
+                      pendingRemoval.current = {
+                        id: item.id,
+                        nextId: neighbour?.id,
+                      };
+                      onRemove(item);
+                    }}
+                    icon={<IconX aria-hidden="true" />}
                   />
                 )}
               </div>

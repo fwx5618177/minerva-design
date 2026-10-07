@@ -7,7 +7,7 @@ export default function OverflowDemo() {
   const [active, setActive] = useState(pages[9]);
   return (
     <div style={{ maxWidth: 520 }}>
-      <PageTabs ariaLabel="Chapters" activeValue={active}>
+      <PageTabs aria-label="Chapters" activeValue={active}>
         {pages.map((page) => (
           <PageTab
             key={page}

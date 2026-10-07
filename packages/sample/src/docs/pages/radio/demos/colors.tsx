@@ -18,7 +18,7 @@ export default function ColorsDemo() {
       </div>
       <RadioGroup
         name="group-color"
-        ariaLabel="Group color"
+        aria-label="Group color"
         defaultValue="approve"
         direction="horizontal"
         color="success"

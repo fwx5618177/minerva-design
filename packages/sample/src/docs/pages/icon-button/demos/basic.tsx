@@ -6,11 +6,11 @@ export default function BasicDemo() {
     <>
       <IconButton
         icon={<IoAdd />}
-        ariaLabel="Add"
+        aria-label="Add"
         onClick={() => alert("Add")}
       />
-      <IconButton icon={<IoSettingsOutline />} ariaLabel="Settings" />
-      <IconButton icon={<IoTrashOutline />} ariaLabel="Delete" />
+      <IconButton icon={<IoSettingsOutline />} aria-label="Settings" />
+      <IconButton icon={<IoTrashOutline />} aria-label="Delete" />
     </>
   );
 }

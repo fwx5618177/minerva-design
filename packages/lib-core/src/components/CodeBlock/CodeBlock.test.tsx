@@ -1,8 +1,10 @@
-import { createRef } from "react";
+import { act, createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import i18n from "../../config/i18n";
 import CodeBlock from "./CodeBlock";
+import styles from "./codeBlock.module.scss";
 
 describe("CodeBlock", () => {
   it("exposes a named, keyboard-focusable region for scrolling", async () => {
@@ -21,8 +23,8 @@ describe("CodeBlock", () => {
     expect(region).toHaveFocus();
   });
 
-  it("names the region from ariaLabel, aria-labelledby or the localized default", () => {
-    const { rerender } = render(<CodeBlock ariaLabel="Config">x</CodeBlock>);
+  it("names the region from aria-label, aria-labelledby or the localized default", () => {
+    const { rerender } = render(<CodeBlock aria-label="Config">x</CodeBlock>);
     expect(screen.getByRole("region", { name: "Config" })).toBeInTheDocument();
     rerender(
       <>
@@ -115,5 +117,141 @@ describe("CodeBlock", () => {
     );
     expect(container.querySelector("pre")?.dataset.wrap).toBe("false");
     expect(container.querySelector("pre")?.style.maxHeight).toBe("200px");
+  });
+});
+
+describe("CodeBlock copyable", () => {
+  const original = Object.getOwnPropertyDescriptor(navigator, "clipboard");
+
+  const mockClipboard = (value: unknown) => {
+    Object.defineProperty(navigator, "clipboard", {
+      value,
+      configurable: true,
+    });
+  };
+
+  afterEach(() => {
+    if (original) Object.defineProperty(navigator, "clipboard", original);
+    else delete (navigator as { clipboard?: unknown }).clipboard;
+    vi.useRealTimers();
+    act(() => {
+      i18n.changeLanguage("en");
+    });
+  });
+
+  const liveRegion = (container: HTMLElement) =>
+    container.querySelector('[aria-live="polite"]');
+
+  it("renders no button by default", () => {
+    const { container } = render(<CodeBlock aria-label="Code">x</CodeBlock>);
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(liveRegion(container)).toBeNull();
+    expect(container.firstElementChild?.tagName).toBe("PRE");
+  });
+
+  it("wraps the region and puts className, style and native attributes on the wrapper", () => {
+    const ref = createRef<HTMLPreElement>();
+    const { container } = render(
+      <CodeBlock
+        copyable
+        ref={ref}
+        aria-label="Log"
+        className="consumer"
+        style={{ color: "red" }}
+        id="log"
+        maxHeight="10rem"
+      >
+        x
+      </CodeBlock>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    const region = screen.getByRole("region", { name: "Log" });
+    expect(root.tagName).toBe("DIV");
+    expect(root).toHaveClass(styles.root, "consumer");
+    expect(root).toHaveAttribute("id", "log");
+    expect(root.style.color).toBe("red");
+    expect(root.style.maxHeight).toBe("10rem");
+    expect(ref.current).toBe(region);
+    expect(region.tagName).toBe("PRE");
+    expect(region).toHaveAttribute("tabindex", "0");
+    expect(region.querySelector("button")).toBeNull();
+  });
+
+  it("copies the text and announces success, then resets", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    mockClipboard({ writeText });
+    const { container } = render(
+      <CodeBlock copyable aria-label="Snippet">
+        {"npm i minerva"}
+      </CodeBlock>,
+    );
+    const button = screen.getByRole("button", { name: "Copy code" });
+    expect(button).toHaveAttribute("type", "button");
+    expect(liveRegion(container)).toHaveTextContent("");
+    await user.click(button);
+    expect(writeText).toHaveBeenCalledWith("npm i minerva");
+    expect(
+      await screen.findByRole("button", { name: "Copied" }),
+    ).toBeInTheDocument();
+    expect(liveRegion(container)).toHaveTextContent("Copied");
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(
+      screen.getByRole("button", { name: "Copy code" }),
+    ).toBeInTheDocument();
+    expect(liveRegion(container)).toHaveTextContent("");
+  });
+
+  it("reports a failure when writeText rejects", async () => {
+    const user = userEvent.setup();
+    mockClipboard({ writeText: vi.fn().mockRejectedValue(new Error("no")) });
+    const { container } = render(<CodeBlock copyable>x</CodeBlock>);
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    expect(
+      await screen.findByRole("button", { name: "Copy failed" }),
+    ).toBeInTheDocument();
+    expect(liveRegion(container)).toHaveTextContent("Copy failed");
+  });
+
+  it("reports a failure when the clipboard API is missing", async () => {
+    const user = userEvent.setup();
+    mockClipboard(undefined);
+    const { container } = render(<CodeBlock copyable>x</CodeBlock>);
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    expect(
+      await screen.findByRole("button", { name: "Copy failed" }),
+    ).toBeInTheDocument();
+    expect(liveRegion(container)).toHaveTextContent("Copy failed");
+  });
+
+  it("clears the feedback timer on unmount", async () => {
+    const user = userEvent.setup();
+    mockClipboard({ writeText: vi.fn().mockResolvedValue(undefined) });
+    const clear = vi.spyOn(globalThis, "clearTimeout");
+    const { unmount } = render(<CodeBlock copyable>x</CodeBlock>);
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    await screen.findByRole("button", { name: "Copied" });
+    clear.mockClear();
+    unmount();
+    expect(clear).toHaveBeenCalled();
+    clear.mockRestore();
+  });
+
+  it("localizes the button and the announcement", async () => {
+    const user = userEvent.setup();
+    mockClipboard({ writeText: vi.fn().mockResolvedValue(undefined) });
+    act(() => {
+      i18n.changeLanguage("zh");
+    });
+    const { container } = render(<CodeBlock copyable>x</CodeBlock>);
+    expect(screen.getByRole("region", { name: "代码" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "复制代码" }));
+    expect(
+      await screen.findByRole("button", { name: "已复制" }),
+    ).toBeInTheDocument();
+    expect(liveRegion(container)).toHaveTextContent("已复制");
   });
 });

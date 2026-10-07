@@ -16,7 +16,7 @@ export default function TriggersDemo() {
           Account ▾
         </Button>
       </Menu>
-      <Menu items={items} ariaLabel="More actions">
+      <Menu items={items} aria-label="More actions">
         <IconButton icon={<IoEllipsisVertical />} label="More actions" />
       </Menu>
     </HStack>

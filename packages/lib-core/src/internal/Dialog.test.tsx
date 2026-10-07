@@ -289,7 +289,7 @@ describe("Dialog foundation", () => {
     render(
       <Modal open onOpenChange={onModal} title="Language">
         <ModalBody>
-          <Select ariaLabel="Language" onChange={onChange}>
+          <Select aria-label="Language" onChange={onChange}>
             <SelectItem value="en">English</SelectItem>
             <SelectItem value="fr">French</SelectItem>
           </Select>

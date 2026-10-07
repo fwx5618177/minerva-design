@@ -1,14 +1,22 @@
+// Public CSS variables (set them on the textarea or any ancestor):
+// @css-var --textarea-min-height Minimum height (every size)
+// @css-var --textarea-padding-y Vertical padding of the text
+// @css-var --textarea-padding-x Horizontal padding of the text (defaults to the density's small control padding)
+// @css-var --textarea-radius Corner radius (defaults to --radius-md)
+// @css-var --textarea-font-size Font size (every size)
+// @css-var --textarea-background Background color of the outline variant
+// @css-var --textarea-border-color Border color at rest
 .textarea {
   display: block;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  background-color: var(--textarea-background, var(--surface-color));
+  border: 1px solid var(--textarea-border-color, var(--border-color));
+  border-radius: var(--textarea-radius, var(--radius-md));
   font-family: inherit;
   color: var(--text-color);
-  padding: var(--space-2) var(--space-3);
+  padding: var(--textarea-padding-y, var(--space-2)) var(--textarea-padding-x, var(--control-padding-x-sm));
   line-height: var(--line-height-base);
   resize: none;
   transition:
@@ -38,18 +46,18 @@
 }
 
 .small {
-  font-size: var(--font-size-sm);
-  min-height: 64px;
+  font-size: var(--textarea-font-size, var(--font-size-sm));
+  min-height: var(--textarea-min-height, 64px);
 }
 
 .medium {
-  font-size: var(--font-size-md);
-  min-height: 80px;
+  font-size: var(--textarea-font-size, var(--font-size-md));
+  min-height: var(--textarea-min-height, 80px);
 }
 
 .large {
-  font-size: var(--font-size-lg);
-  min-height: 96px;
+  font-size: var(--textarea-font-size, var(--font-size-lg));
+  min-height: var(--textarea-min-height, 96px);
 }
 
 .outline {
@@ -90,5 +98,13 @@
   &:focus {
     border-color: var(--danger-color);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 16%, transparent);
+  }
+}
+
+// Forced colors drop the focus halo: draw a system-colored outline instead.
+@media (forced-colors: active) {
+  .textarea:focus {
+    outline: 2px solid Highlight;
+    outline-offset: 1px;
   }
 }

@@ -1,3 +1,13 @@
+// Public CSS variables (set them on the card or any ancestor):
+// @css-var --card-bg-color Background color of the card
+// @css-var --card-bg-color-content Background color of the content section (sections layout)
+// @css-var --card-border-color Color of the border and of the section dividers
+// @css-var --card-radius Corner radius (defaults to --radius-sm, --radius-lg with the padding prop)
+// @css-var --card-shadow Shadow of the default and elevated variants (defaults to --shadow-sm / --shadow-lg)
+// @css-var --card-padding Padding of the header, content and footer sections (sections layout; the padding props win)
+// @css-var --card-header-bg-color Background color of the header section (sections layout)
+// @css-var --card-title-font-size Font size of the title
+
 .card {
   min-width: 0;
   text-decoration: none; // as="a"
@@ -5,7 +15,7 @@
   text-align: inherit;
   background-color: var(--card-bg-color, var(--surface-color));
   color: var(--text-color);
-  border-radius: 0.25rem; /* 替换为原生值 */
+  border-radius: var(--card-radius, var(--radius-sm));
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -20,7 +30,7 @@
 
   &.default {
     border: 1px solid var(--card-border-color, var(--border-color));
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--card-shadow, var(--shadow-sm));
   }
 
   &.outline {
@@ -30,7 +40,7 @@
 
   &.elevated {
     border: none;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--card-shadow, var(--shadow-lg));
   }
 
   &.filled {
@@ -46,14 +56,14 @@
   }
 
   .cardHeader {
-    padding: 1rem;
-    background-color: var(--surface-muted-color);
+    padding: var(--card-padding, var(--space-4));
+    background-color: var(--card-header-bg-color, var(--surface-muted-color));
     border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
   }
 
   .cardTitle {
-    font-size: 1.25rem;
-    font-weight: bold;
+    font-size: var(--card-title-font-size, 1.25rem);
+    font-weight: var(--font-weight-bold);
     color: var(--text-color);
     white-space: nowrap;
     overflow: hidden;
@@ -61,7 +71,7 @@
   }
 
   .cardDescription {
-    font-size: 0.875rem; /* 替换为原生值 */
+    font-size: var(--font-size-md);
     color: var(--text-secondary-color);
     white-space: nowrap;
     overflow: hidden;
@@ -69,19 +79,19 @@
   }
 
   .cardContent {
-    padding: 1rem;
+    padding: var(--card-padding, var(--space-4));
     flex: 1;
     background-color: var(--card-bg-color-content, var(--surface-color));
     border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    // Content wraps (only the title / description truncate)
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .cardFooter {
-    padding: 1rem;
+    padding: var(--card-padding, var(--space-4));
     background-color: color-mix(in srgb, var(--surface-muted-color) 60%, transparent);
-    text-align: right;
+    text-align: end;
     border-top: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
   }
 
@@ -90,7 +100,7 @@
     display: block;
     min-width: 0;
     overflow: visible;
-    border-radius: var(--radius-lg);
+    border-radius: var(--card-radius, var(--radius-lg));
 
     > .cardHeader,
     > .cardContent,
@@ -117,7 +127,7 @@
     .cardTitle {
       margin: 0;
       font-family: var(--font-family-sans);
-      font-size: var(--font-size-lg);
+      font-size: var(--card-title-font-size, var(--font-size-lg));
       font-weight: var(--font-weight-semibold);
       line-height: var(--line-height-tight);
       white-space: normal;
@@ -188,7 +198,7 @@
     }
 
     &.elevated:hover {
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--card-shadow, var(--shadow-lg));
       transform: translateY(-2px);
     }
 
@@ -197,8 +207,10 @@
       background-color: var(--surface-muted-color);
     }
 
+    // transparent outline: invisible normally, drawn in forced-colors mode
+    // where the box-shadow ring is removed
     &:focus-visible {
-      outline: none;
+      outline: 2px solid transparent;
       box-shadow:
         0 0 0 2px var(--surface-color),
         0 0 0 4px var(--primary-color);
@@ -209,6 +221,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
       &.elevated:hover {
         transform: none;
       }
@@ -251,6 +265,33 @@
     }
     100% {
       transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fadeIn,
+    .slideIn,
+    .zoomIn {
+      animation: none;
+    }
+  }
+
+  // Forced colors: shadows and fills are dropped, so the borderless variants
+  // get a real border to keep the card boundary visible.
+  @media (forced-colors: active) {
+    &.elevated,
+    &.filled {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  @media print {
+    break-inside: avoid;
+    box-shadow: none;
+
+    &.elevated,
+    &.filled {
+      border: 1px solid var(--card-border-color, var(--border-color));
     }
   }
 }

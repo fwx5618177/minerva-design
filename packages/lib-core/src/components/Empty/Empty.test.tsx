@@ -30,7 +30,7 @@ describe("Empty", () => {
     expect(container.querySelector(".description")).toBeNull();
   });
 
-  it("renders the default react-icon when useSvg is false", () => {
+  it("renders the default inbox icon when useSvg is false", () => {
     const { container } = render(<Empty />);
 
     const icon = container.querySelector(".iconWrapper svg");

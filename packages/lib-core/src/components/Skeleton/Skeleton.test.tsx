@@ -149,7 +149,7 @@ describe("Skeleton", () => {
     const { rerender } = render(<Skeleton />);
     const status = screen.getByRole("status", { name: "Loading" });
     expect(status).toHaveAttribute("aria-busy", "true");
-    rerender(<Skeleton ariaLabel="Loading profile" />);
+    rerender(<Skeleton aria-label="Loading profile" />);
     expect(
       screen.getByRole("status", { name: "Loading profile" }),
     ).toBeInTheDocument();
@@ -173,14 +173,14 @@ describe("Skeleton localization", () => {
       i18n.changeLanguage("en");
     });
   });
-  it("translates the default label and lets ariaLabel win", () => {
+  it("translates the default label and lets aria-label win", () => {
     act(() => {
       i18n.changeLanguage("zh");
     });
     const { rerender } = render(<Skeleton />);
     expect(screen.getByRole("status", { name: "加载中" })).toBeInTheDocument();
 
-    rerender(<Skeleton ariaLabel="Loading profile" />);
+    rerender(<Skeleton aria-label="Loading profile" />);
     expect(
       screen.getByRole("status", { name: "Loading profile" }),
     ).toBeInTheDocument();

@@ -28,22 +28,27 @@
     },
     "with-icon": {
       "title": "Avec icônes",
-      "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un ariaLabel aux boutons composés uniquement d'une icône."
+      "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un aria-label aux boutons composés uniquement d'une icône."
     },
     "icons-loading": {
       "title": "Icônes, texte de chargement et pleine largeur",
       "description": "startIcon / endIcon affichent des icônes autour du libellé, loadingText remplace le contenu pendant le chargement et fullWidth étire le bouton."
+    },
+    "form": {
+      "title": "Dans un formulaire : type",
+      "description": "Button vaut type=\"button\" par défaut : un Button placé dans un <form> (aperçu, ajout de ligne, ouverture d’une boîte de dialogue...) ne le soumet jamais par accident. Passez type=\"submit\" pour le bouton d’envoi et type=\"reset\" pour réinitialiser le formulaire."
     }
   },
   "api": {
     "ButtonProps": {
+      "type": "Type natif du bouton. Vaut \"button\" par défaut (contrairement au \"submit\" du HTML), si bien qu’un Button dans un formulaire ne le soumet jamais par accident : utilisez type=\"submit\" pour les boutons d’envoi et \"reset\" pour les boutons de réinitialisation",
       "onClick": "Appelé au clic (jamais lorsque le bouton est désactivé)",
       "children": "Contenu du bouton",
       "className": "Classe CSS supplémentaire",
       "color": "Couleur sémantique du bouton",
       "variant": "Style visuel : solid (plein), outline (bordure seule), ghost (transparent jusqu'au survol) ou link (aspect de lien texte)",
       "size": "Taille du bouton",
-      "ariaLabel": "Libellé accessible, obligatoire pour un bouton contenant uniquement une icône",
+      "aria-label": "Libellé accessible, obligatoire pour un bouton contenant uniquement une icône",
       "disabled": "Désactive le bouton",
       "loading": "Affiche un indicateur de chargement et bloque l'activation (aria-busy / aria-disabled). Le bouton reste focalisable pour ne pas perdre le focus clavier",
       "active": "Affiche le bouton à l'état pressé/actif",
@@ -56,5 +61,14 @@
       "endIcon": "Icône affichée après le contenu",
       "fullWidth": "Étire le bouton sur toute la largeur de son conteneur"
     }
+  },
+  "cssVars": {
+    "--button-height": "Hauteur minimale (toutes tailles ; par défaut la hauteur de contrôle de la taille selon la densité)",
+    "--button-padding-x": "Marge intérieure horizontale (toutes tailles)",
+    "--button-radius": "Rayon des coins (--radius-md par défaut ; les props shape / borderRadius l'emportent)",
+    "--button-font-size": "Taille de police (toutes tailles)",
+    "--button-font-weight": "Graisse de police",
+    "--button-gap": "Espace entre les icônes et le libellé",
+    "--button-label-white-space": "white-space du libellé : nowrap (défaut, tronque) ou normal (retour à la ligne)"
   }
 }

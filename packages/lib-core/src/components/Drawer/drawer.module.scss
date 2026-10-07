@@ -1,4 +1,14 @@
-$gutter: clamp(1rem, 3vw, 1.5rem);
+// Public CSS variables (set them on the drawer or any ancestor):
+// @css-var --drawer-width Width of a left / right drawer (every size; defaults to the width of the size)
+// @css-var --drawer-height Height of a top / bottom drawer (every size; defaults to the height of the size)
+// @css-var --drawer-padding Horizontal padding of the header, description, body and footer
+// @css-var --drawer-radius Corner radius of the inner edge (defaults to --radius-lg)
+// @css-var --drawer-shadow Shadow of the panel (defaults to --shadow-xl)
+// @css-var --drawer-background Background of the panel
+// @css-var --drawer-z-index Stacking order of the panel (defaults to --z-modal)
+
+$gutter: var(--drawer-padding, clamp(1rem, 3vw, 1.5rem));
+$radius: var(--drawer-radius, var(--radius-lg));
 
 .overlay {
   position: fixed;
@@ -14,11 +24,11 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 
 .content {
   position: fixed;
-  background-color: var(--surface-color);
+  background-color: var(--drawer-background, var(--surface-color));
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-xl);
-  z-index: var(--z-modal);
+  box-shadow: var(--drawer-shadow, var(--shadow-xl));
+  z-index: var(--drawer-z-index, var(--z-modal));
   display: flex;
   flex-direction: column;
 
@@ -35,7 +45,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   height: 100dvh;
   max-width: calc(100vw - 1rem);
   border-right: 0;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border-radius: $radius 0 0 $radius;
   animation: drawer-slide-right-in var(--transition-base);
 
   &[data-state="closed"] {
@@ -49,7 +59,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   height: 100dvh;
   max-width: calc(100vw - 1rem);
   border-left: 0;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  border-radius: 0 $radius $radius 0;
   animation: drawer-slide-left-in var(--transition-base);
 
   &[data-state="closed"] {
@@ -63,7 +73,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   width: 100vw;
   max-height: calc(100dvh - 1rem);
   border-top: 0;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-radius: 0 0 $radius $radius;
   animation: drawer-slide-top-in var(--transition-base);
 
   &[data-state="closed"] {
@@ -77,7 +87,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   width: 100vw;
   max-height: calc(100dvh - 1rem);
   border-bottom: 0;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: $radius $radius 0 0;
   animation: drawer-slide-bottom-in var(--transition-base);
 
   &[data-state="closed"] {
@@ -89,13 +99,13 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 .left,
 .right {
   &.small {
-    width: min(20rem, calc(100vw - 1rem));
+    width: var(--drawer-width, min(20rem, calc(100vw - 1rem)));
   }
   &.medium {
-    width: min(30rem, calc(100vw - 1rem));
+    width: var(--drawer-width, min(30rem, calc(100vw - 1rem)));
   }
   &.large {
-    width: min(45rem, calc(100vw - 1rem));
+    width: var(--drawer-width, min(45rem, calc(100vw - 1rem)));
   }
   &.full {
     width: 100vw;
@@ -106,13 +116,13 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 .top,
 .bottom {
   &.small {
-    height: min(15rem, calc(100dvh - 1rem));
+    height: var(--drawer-height, min(15rem, calc(100dvh - 1rem)));
   }
   &.medium {
-    height: min(25rem, calc(100dvh - 1rem));
+    height: var(--drawer-height, min(25rem, calc(100dvh - 1rem)));
   }
   &.large {
-    height: 70vh;
+    height: var(--drawer-height, 70vh);
   }
   &.full {
     height: 100dvh;
@@ -128,7 +138,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 }
 
 .content:has(> .close) .header {
-  padding-right: calc(2rem + var(--space-3) + var(--space-3));
+  padding-inline-end: calc(2rem + var(--space-3) + var(--space-3));
 }
 
 // The description comes first in the DOM but is displayed below the title.
@@ -172,7 +182,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 .close {
   position: absolute;
   top: var(--space-3);
-  right: var(--space-3);
+  inset-inline-end: var(--space-3);
   width: 2rem;
   height: 2rem;
   display: inline-flex;

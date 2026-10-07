@@ -32,7 +32,7 @@
     },
     "appearance": {
       "title": "下拉框位置与颜色",
-      "description": "自定义位置、偏移和动画，并通过 dropdownClassName 设置 CSS 自定义属性 --autocomplete-dropdown-bg、--autocomplete-option-hover-bg 和 --autocomplete-option-highlight-bg，改变下拉框、悬停选项和高亮选项的背景色。下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内。"
+      "description": "自定义位置、偏移和动画，并通过 dropdownClassName 设置 CSS 自定义属性 --auto-complete-dropdown-background、--auto-complete-option-hover-background 和 --auto-complete-option-highlight-background，改变下拉框、悬停选项和高亮选项的背景色。下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内。"
     },
     "search-box": {
       "title": "搜索框",
@@ -43,7 +43,7 @@
     "title": "键盘与无障碍",
     "arrows": "↓ / ↑ 在可见选项间移动（首尾循环）。",
     "enter": "Enter 选择当前激活的选项（跳过禁用选项），且不会提交所在的表单。",
-    "escape": "Escape 关闭下拉层，焦点保留在输入框中；位于 Modal 或 Popover 内时只关闭下拉层。",
+    "escape": "Escape 关闭下拉层，焦点保留在输入框中；下拉层已关闭时再按 Escape 会清空文本（onChange 收到 \"\"）。位于 Modal 或 Popover 内时只关闭下拉层。",
     "aria": "输入框使用 combobox 角色，并通过 aria-expanded、aria-controls 和 aria-activedescendant 关联 listbox 中的选项。"
   },
   "api": {
@@ -62,7 +62,7 @@
       "loading": "在下拉框中显示加载指示",
       "inputProps": "透传给内部 Input 的属性（原生属性、aria-label、尺寸、前后缀、clearable 等）",
       "emptyProps": "透传给默认 Empty 空状态的属性",
-      "dropdownClassName": "下拉层（传送到 portal 的元素）的额外类名。可在其中设置 CSS 自定义属性 --autocomplete-dropdown-bg、--autocomplete-option-hover-bg 和 --autocomplete-option-highlight-bg，改变下拉框、悬停选项和高亮选项的颜色",
+      "dropdownClassName": "下拉层（传送到 portal 的元素）的额外类名。可在其中设置 CSS 自定义属性 --auto-complete-dropdown-background、--auto-complete-option-hover-background 和 --auto-complete-option-highlight-background，改变下拉框、悬停选项和高亮选项的颜色",
       "placement": "下拉框的首选方向；下拉框与输入框的起始边对齐，宽度至少与输入框相同，并会翻转 / 平移以保持在视口内",
       "offset": "下拉层偏移（像素）：上 / 下方向时 y 为与输入框的间距、x 为沿输入框的平移；左 / 右方向时 x 为间距",
       "animation": "打开下拉框时显示动画",
@@ -87,5 +87,15 @@
       "group": "自由定义的分组标识，通常由 groupBy 读取",
       "style": "选项的内联样式"
     }
+  },
+  "cssVars": {
+    "--auto-complete-dropdown-background": "下拉框背景色",
+    "--auto-complete-dropdown-radius": "下拉框圆角（默认 --radius-lg）",
+    "--auto-complete-dropdown-max-height": "选项列表开始滚动前的最大高度",
+    "--auto-complete-font-size": "下拉框字号",
+    "--auto-complete-option-padding-y": "选项的垂直内边距（跟随密度的行内边距）",
+    "--auto-complete-option-padding-x": "选项与分组标题的水平内边距",
+    "--auto-complete-option-hover-background": "悬停 / 键盘聚焦选项的背景色",
+    "--auto-complete-option-highlight-background": "highlight: true 选项的背景色"
   }
 }

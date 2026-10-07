@@ -33,7 +33,7 @@ const field = (
 
 function Sizes(props: Omit<RadioGroupProps, "children">) {
   return (
-    <RadioGroup ariaLabel="Size" {...props}>
+    <RadioGroup aria-label="Size" {...props}>
       <Radio value="s">Small</Radio>
       <Radio value="m">Medium</Radio>
       <Radio value="l">Large</Radio>
@@ -62,7 +62,7 @@ describe("RadioGroup / Radio integration", () => {
 
   it("propagates the group size; items use their own size when the group has none", () => {
     const { rerender } = render(
-      <RadioGroup size="large" direction="horizontal" ariaLabel="g">
+      <RadioGroup size="large" direction="horizontal" aria-label="g">
         <Radio value="a">A</Radio>
       </RadioGroup>,
     );
@@ -71,7 +71,7 @@ describe("RadioGroup / Radio integration", () => {
       screen.getByRole("radio").closest("label")!.parentElement,
     ).toHaveClass(styles.large);
     rerender(
-      <RadioGroup ariaLabel="g">
+      <RadioGroup aria-label="g">
         <Radio value="a" size="small">
           A
         </Radio>
@@ -136,7 +136,7 @@ describe("RadioGroup / Radio integration", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <RadioGroup ariaLabel="g" onChange={onChange}>
+      <RadioGroup aria-label="g" onChange={onChange}>
         <Radio value="a" disabled>
           A
         </Radio>
@@ -153,7 +153,7 @@ describe("RadioGroup / Radio integration", () => {
     const groupRef = createRef<HTMLDivElement>();
     const itemRef = createRef<HTMLInputElement>();
     render(
-      <RadioGroup ref={groupRef} ariaLabel="g">
+      <RadioGroup ref={groupRef} aria-label="g">
         <Radio ref={itemRef} value="a">
           A
         </Radio>
@@ -195,7 +195,7 @@ describe("RadioGroup / Radio integration", () => {
     render(
       <FormControlContext.Provider value={field({ hasHelperText: true })}>
         <span id="field-helper">Pick one</span>
-        <RadioGroup ariaLabel="g" disabled={false}>
+        <RadioGroup aria-label="g" disabled={false}>
           <Radio value="s">Small</Radio>
         </RadioGroup>
       </FormControlContext.Provider>,

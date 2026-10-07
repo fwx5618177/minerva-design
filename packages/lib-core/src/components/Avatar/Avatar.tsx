@@ -29,7 +29,7 @@ const Avatar = ({
   src,
   name = "",
   alt,
-  ariaLabel,
+  "aria-label": ariaLabel,
   fallback,
   children,
   shape = "circle",

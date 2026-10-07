@@ -37,7 +37,7 @@ export interface ProgressIndicatorProps extends Omit<
   icon?: ReactNode;
   /**
    * Visible text shown next to the indicator; it also names the progressbar
-   * unless ariaLabel is set
+   * unless aria-label is set
    */
   label?: ReactNode;
   /**
@@ -45,7 +45,7 @@ export interface ProgressIndicatorProps extends Omit<
    * visible label)
    * @default "Loading" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Purely visual: drops the progressbar role and hides the indicator from
    * assistive technologies. Use it when a surrounding element (a status

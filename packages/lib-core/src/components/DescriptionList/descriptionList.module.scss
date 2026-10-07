@@ -1,9 +1,16 @@
+// Public CSS variables (set them on the list or any ancestor):
+// @css-var --description-list-row-padding-y Vertical padding of a row (follows the density's row padding)
+// @css-var --description-list-gap Space between the term and the description
+// @css-var --description-list-term-color Text color of the terms
+// @css-var --description-list-border-color Color of the row separators
+// @css-var --description-list-font-size Font size
+
 .descriptionList {
   margin: 0;
   min-width: 0;
   color: var(--text-color);
   font-family: var(--font-family-sans);
-  font-size: var(--font-size-md);
+  font-size: var(--description-list-font-size, var(--font-size-md));
   line-height: var(--line-height-base);
   letter-spacing: 0;
 }
@@ -11,9 +18,11 @@
 .row {
   display: grid;
   grid-template-columns: minmax(7rem, 24%) minmax(0, 1fr);
-  gap: var(--space-4);
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--border-color);
+  gap: var(--description-list-gap, var(--space-4));
+  // standard density: --row-padding-y (0.5rem) + 0.5rem = 1rem
+  padding-block: var(--description-list-row-padding-y, calc(var(--row-padding-y) + var(--space-2)));
+  padding-inline: 0;
+  border-bottom: 1px solid var(--description-list-border-color, var(--border-color));
 
   &:last-child {
     border-bottom: 0;
@@ -27,7 +36,7 @@
   }
 
   dt {
-    color: var(--text-muted-color);
+    color: var(--description-list-term-color, var(--text-muted-color));
   }
 
   dd {
@@ -44,5 +53,11 @@
   .row {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-2);
+  }
+}
+
+@media print {
+  .row {
+    break-inside: avoid;
   }
 }

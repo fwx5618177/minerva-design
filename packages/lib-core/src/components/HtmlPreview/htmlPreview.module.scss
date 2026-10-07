@@ -1,13 +1,28 @@
+// Public CSS variables (set them on the preview or any ancestor):
+// @css-var --html-preview-bg Background color around the frame
+// @css-var --html-preview-frame-bg Background color of the frame
+// @css-var --html-preview-frame-border-color Border color of the frame
+
 .preview {
   width: 100%;
   min-width: 0;
   overflow: auto;
-  background: var(--surface-subtle-color);
+  background: var(--html-preview-bg, var(--surface-subtle-color));
 }
 
 .frame {
   display: block;
   margin-inline: auto;
-  border: 1px solid var(--border-color);
-  background: var(--surface-color);
+  border: 1px solid var(--html-preview-frame-border-color, var(--border-color));
+  background: var(--html-preview-frame-bg, var(--surface-color));
+}
+
+@media print {
+  .preview {
+    overflow: visible;
+  }
+
+  .frame {
+    break-inside: avoid;
+  }
 }

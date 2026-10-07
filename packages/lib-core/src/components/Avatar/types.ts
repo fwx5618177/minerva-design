@@ -25,7 +25,7 @@ export interface AvatarProps extends Omit<
    * Accessible label of the avatar (and default alt text of its image)
    * @default name, or "avatar" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /** Custom fallback content shown instead of the initials when there is no image */
   fallback?: ReactNode;
   /** Fallback content used when there is no name (e.g. an icon) */
@@ -77,7 +77,7 @@ export interface AvatarGroupProps extends Omit<
    * Accessible label of the group
    * @default "Avatar group" / "Avatar group with {count} more" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /** Ref to the root <div> element */
   ref?: Ref<HTMLDivElement>;
 }

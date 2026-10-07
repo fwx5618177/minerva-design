@@ -1,6 +1,8 @@
-import type { Ref } from "react";
+import type { CSSProperties, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
-export interface TimePickerProps {
+/** Props of TimePicker; `data-*` attributes are forwarded to the root element */
+export interface TimePickerProps extends DataAttributes {
   /** Ref to the <input> element */
   ref?: Ref<HTMLInputElement>;
   /**
@@ -30,7 +32,33 @@ export interface TimePickerProps {
   /** Visible label of the input; without it the input is labelled "Time" (localized) */
   label?: string;
   /** Accessible label of the input when no visible label is shown */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /**
+   * Id(s) of the element(s) labelling the input; inside a FormControl it
+   * defaults to the FormLabel (unless `label` / `aria-label` is set)
+   */
+  "aria-labelledby"?: string;
+  /**
+   * Id(s) of the element(s) describing the input; merged with the helper /
+   * error text of an enclosing FormControl
+   */
+  "aria-describedby"?: string;
+  /** Id of the input; defaults to the id of an enclosing FormControl */
+  id?: string;
+  /**
+   * Marks the input as required; defaults to the enclosing FormControl's state
+   */
+  required?: boolean;
+  /**
+   * Shows the value without allowing changes (typing, panel, clearing);
+   * defaults to the enclosing FormControl's state
+   */
+  readOnly?: boolean;
+  /**
+   * Marks the input as invalid (aria-invalid); defaults to the enclosing
+   * FormControl's state
+   */
+  invalid?: boolean;
   /**
    * Name of the input
    * @default "time-picker"
@@ -39,7 +67,7 @@ export interface TimePickerProps {
   /** Called when the panel opens or closes */
   onOpenChange?: (open: boolean) => void;
   /**
-   * Disables the picker
+   * Disables the picker; defaults to the enclosing FormControl's state
    * @default false
    */
   disabled?: boolean;
@@ -58,6 +86,8 @@ export interface TimePickerProps {
    * @default ""
    */
   className?: string;
+  /** Inline styles of the root element */
+  style?: CSSProperties;
   /** Earliest selectable time; earlier options are disabled */
   minTime?: Date;
   /** Latest selectable time; later options are disabled */
@@ -103,4 +133,9 @@ export interface TimePickerPanelProps extends Omit<TimePickerProps, "value"> {
   ) => void;
   /** Whether the panel is visible */
   visible: boolean;
+  /**
+   * Move focus to the first column's selected (or first enabled) unit when
+   * the panel becomes visible (opened from the keyboard). @default false
+   */
+  focusOnOpen?: boolean;
 }

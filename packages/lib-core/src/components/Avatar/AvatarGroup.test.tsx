@@ -92,7 +92,7 @@ describe("AvatarGroup localization", () => {
       i18n.changeLanguage("en");
     });
   });
-  it("translates the group label and lets ariaLabel win", () => {
+  it("translates the group label and lets aria-label win", () => {
     act(() => {
       i18n.changeLanguage("zh");
     });
@@ -106,7 +106,7 @@ describe("AvatarGroup localization", () => {
     ).toBeInTheDocument();
 
     rerender(
-      <AvatarGroup count={3} ariaLabel="Team">
+      <AvatarGroup count={3} aria-label="Team">
         <Avatar name="A" />
       </AvatarGroup>,
     );

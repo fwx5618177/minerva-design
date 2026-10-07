@@ -25,7 +25,7 @@ pnpm add @minerva/core
 | `presence`          | `waitForExitAnimation(el)`                                                                        |
 | `theme`             | theme types, `light` / `dark` / `githubDark` / `themes`, `palettes`, `applyThemeStyles`, ...      |
 | `theme/theme-utils` | `THEME_INIT_SCRIPT`, `parseThemeCookies`, `serializeThemeCookie`, `PALETTES`, ... (server-safe)   |
-| `i18n`              | `messages`, `SUPPORTED_LANGUAGES`, `DEFAULT_LANGUAGE`, `isSupportedLanguage`, `mergeMessages`     |
+| `i18n`              | `messages`, `SUPPORTED_LANGUAGES`, `mergeMessages`, `createTranslator`, `translate`, ...          |
 
 ```ts
 import {
@@ -80,7 +80,7 @@ import "@minerva/core/tokens.css";
 ## Translations
 
 The `i18n` module ships the built-in strings of the components as plain data
-(no i18n runtime): one message tree per language (`en`, `zh`, `ja`, `fr`),
+plus a tiny translator: one message tree per language (`en`, `zh`, `ja`, `fr`),
 assembled from `src/i18n/locales/<lng>/index.json` plus the per-group
 `groups/*.json` files. Keys are identical across languages; interpolations use
 `{{name}}`.
@@ -101,8 +101,27 @@ const custom: Messages = mergeMessages(messages.en, {
 });
 ```
 
-`@minerva/lib-core` loads these bundles into its private i18next instance
-(the `index` namespace); other adapters can feed them to any i18n library.
+`createTranslator` (or the one-shot `translate(config, key, options)`) turns
+the bundles into a `t` function. It supports nested keys (`"a.b.c"`),
+`{{name}}` interpolation (no HTML escaping — renderers escape), plurals picked
+by `count` through `Intl.PluralRules` (`key_zero`, `key_one`, `key_two`,
+`key_few`, `key_many`, `key_other`), and falls back to the base language
+(`fr-CA` → `fr`), then `fallbackLanguage` (default `"en"`), then
+`defaultValue`, then the key itself. It is pure and server-safe (no DOM, no
+globals; plural rules are cached per language).
+
+```ts
+import { createTranslator, messages } from "@minerva/core";
+
+const t = createTranslator({ messages, language: "fr" });
+t("pagination.page", { page: 2 }); // "Page 2"
+t("monthCalendar.dayWithEvents", { date: "1 mai", count: 3 }); // "1 mai, 3 événements"
+t("missing.key", { defaultValue: "Fallback" }); // "Fallback"
+```
+
+`@minerva/lib-core` uses this translator (no i18n library dependency) together with
+its own global language store; other adapters can use it too or feed the
+bundles to any i18n library.
 
 ## License
 

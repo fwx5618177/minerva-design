@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "PopoverTrigger 切换面板；焦点移入面板，关闭后回到触发器。PopoverClose 用于关闭。"
+      "description": "PopoverTrigger 切换面板；焦点移入面板，关闭后回到触发器。PopoverClose 用于关闭。非模态时，在最后一个元素上按 Tab（在第一个元素上按 Shift+Tab）会关闭面板并把焦点移到触发器之后（之前）的元素；焦点不会在面板内循环。"
     },
     "placement": {
       "title": "位置",
@@ -20,7 +20,7 @@
       "open": "受控的打开状态；不传（undefined）时为非受控",
       "defaultOpen": "非受控时的初始打开状态",
       "onOpenChange": "请求改变打开状态时调用（触发器、Escape、外部点击、PopoverClose）",
-      "modal": "模态模式：锁定焦点、锁定页面滚动、对辅助技术隐藏页面其余部分并阻止外部指针交互（点击外部仍会关闭）",
+      "modal": "模态模式：锁定焦点（Tab 在面板内循环）、锁定页面滚动、对辅助技术隐藏页面其余部分并阻止外部指针交互（点击外部仍会关闭）",
       "children": "PopoverTrigger / PopoverAnchor 与 PopoverContent"
     },
     "PopoverContentProps": {
@@ -44,5 +44,15 @@
     "PopoverTriggerProps": {
       "asChild": "把行为合并到唯一的子元素上，而不是渲染自己的元素"
     }
+  },
+  "cssVars": {
+    "--popover-min-width": "面板的最小宽度",
+    "--popover-max-width": "面板的最大宽度",
+    "--popover-padding": "面板的内边距",
+    "--popover-radius": "面板圆角（默认 --radius-lg）",
+    "--popover-background": "面板及其箭头的背景",
+    "--popover-border-color": "面板及其箭头的边框颜色",
+    "--popover-shadow": "面板阴影（默认 --shadow-lg，深色主题为 --shadow-xl）",
+    "--popover-z-index": "面板的层级（默认 --z-popover）"
   }
 }

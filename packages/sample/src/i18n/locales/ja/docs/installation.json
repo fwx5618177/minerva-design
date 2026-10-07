@@ -3,20 +3,21 @@
   "description": "React プロジェクトに Minerva を追加し、スタイルシートを読み込み、必要に応じて Web Components を登録します。",
   "requirements": {
     "title": "動作要件",
-    "react": "React と React DOM 19 以上（@minerva/lib-core の peer 依存）。",
+    "react": "React と React DOM 19（@minerva/lib-core の peer 依存）。React 18 はサポートしていません。コンポーネントは ref を通常のプロパティとして受け取るなど React 19 の API に依存しており、StrictMode と React DOM 19 のサーバーレンダラーでテストされています。",
     "bundler": "ES モジュールと CSS のインポートを扱えるバンドラー（Vite、webpack、Rspack、Next.js など）。CommonJS ビルドも同梱しています。",
     "browsers": "モダンなエバーグリーンブラウザ：テーマトークンは CSS カスタムプロパティと color-mix() を使用します。"
   },
   "core": {
     "title": "React コンポーネントのインストール",
     "text": "お使いのパッケージマネージャーで @minerva/lib-core をインストールします。react と react-dom が未導入なら一緒に追加してください。",
-    "peers": "react と react-dom は peer 依存（>= 18）なので、アプリ内の React は 1 つに保たれます。i18next、react-i18next、react-icons、classnames は通常の依存として自動でインストールされます。"
+    "peers": "react と react-dom は peer 依存（^19）なので、アプリ内の React は 1 つに保たれます。実行時の依存は @minerva/core（プリミティブ、デザイントークン、軽量トランスレーター）、DOMPurify（HtmlPreview）、jsonc-parser（JsonField）だけで、アイコン・クラス名・i18n のライブラリはインストールされません。アイコンはインライン SVG です。"
   },
   "styles": {
     "title": "スタイルシートの読み込み",
     "text": "コンポーネントのスタイルとデフォルトのテーマトークンは 1 つの CSS ファイルにまとめられています。アプリのエントリーファイルで一度だけ読み込んでください：",
     "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。読み込みは一度で十分です。複数のモジュールから読み込んでも問題はありませんが不要です。",
-    "extras": "同じ場所に任意の Sass ファイルが公開されています。@minerva/lib-core/prose.scss は長文タイポグラフィ用の mixin を含み、独自の Sass から @use で読み込みます。"
+    "extras": "同じ場所に任意の Sass ファイルが公開されています。@minerva/lib-core/prose.scss は長文タイポグラフィ用の mixin を含み、独自の Sass から @use で読み込みます。",
+    "perComponent": "一部のコンポーネントしか使わない場合は、style.css の代わりにデザイントークンを一度読み込み、使うコンポーネントごとのスタイルシートを読み込めます。各ファイルにはそのコンポーネントと、内部で描画するコンポーネントのスタイルが含まれます（例：confirm.css には Button と Modal のスタイルも含まれます）。ファイル名はコンポーネントフォルダー名の kebab-case です（tag-input.css、time-picker.css など）。JavaScript もコンポーネント単位で tree-shaking されます。各モジュールは個別に公開され、CSS 以外に副作用はありません。"
   },
   "optional": {
     "title": "任意のエントリとピア依存",

@@ -1,11 +1,22 @@
+// Public CSS variables (set them on the time picker or any ancestor; the
+// panel is portaled, so set its variables on :root or the popup class).
+// The panel variables are consumed in timePickerPanel.module.scss.
+// @css-var --time-picker-width Width of the field
+// @css-var --time-picker-panel-radius Corner radius of the panel (defaults to --radius-sm)
+// @css-var --time-picker-panel-padding Inner padding of the panel
+// @css-var --time-picker-column-width Width of an hours / minutes / seconds column
+// @css-var --time-picker-column-height Height of the columns before they scroll
+// @css-var --time-picker-cell-height Height of a time cell (defaults to the density's small control height)
+// @css-var --time-picker-cell-padding-x Horizontal padding of a time cell (follows the density's row padding)
+// @css-var --time-picker-selected-background Background of the selected time cell
 .timePicker {
   display: inline-block;
   position: relative;
-  width: 200px;
+  width: var(--time-picker-width, 200px);
 
   .clearButton {
     opacity: 0.45;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-base);
     color: var(--text-secondary-color);
 
     &:hover,
@@ -27,13 +38,13 @@
   .clockIcon {
     display: inline-flex;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 var(--space-1-5);
     color: var(--text-secondary-color);
   }
 }
 
 // The panel popup is portalled, so it is not nested under .timePicker.
 .popup {
-  z-index: 1000;
+  z-index: var(--z-dropdown);
   outline: none;
 }

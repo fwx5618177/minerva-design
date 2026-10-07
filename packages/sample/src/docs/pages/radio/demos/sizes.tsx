@@ -9,7 +9,7 @@ export default function SizesDemo() {
         <RadioGroup
           key={size}
           name={`size-${size}`}
-          ariaLabel={`${size} options`}
+          aria-label={`${size} options`}
           defaultValue="a"
           direction="horizontal"
           size={size}

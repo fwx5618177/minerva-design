@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { cn } from "../../utils/cn";
 import type { TimePickerPanelProps, TimeUnit } from "./types";
 import useI18n from "../../hooks/useI18n";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./timePickerPanel.module.scss";
 
 type Kind = "hour" | "minute" | "second" | "ampm";
@@ -39,6 +40,7 @@ const TimePickerPanel = ({
   maxTime,
   onTimeChange,
   visible,
+  focusOnOpen = false,
 }: TimePickerPanelProps) => {
   const { t } = useI18n();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -131,6 +133,16 @@ const TimePickerPanel = ({
       .forEach((el) => el.scrollIntoView?.({ block: "nearest" }));
   }, [visible]);
 
+  // Opened from the keyboard: the portalled panel is not in the input's Tab
+  // sequence, so focus moves to the first column's tab stop (APG combobox
+  // with a dialog popup: ArrowDown opens it and moves focus into it).
+  useEffect(() => {
+    if (!visible || !focusOnOpen) return;
+    panelRef.current
+      ?.querySelector<HTMLElement>('[role="option"][tabindex="0"]')
+      ?.focus();
+  }, [visible, focusOnOpen]);
+
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLDivElement>,
     columnIndex: number,
@@ -148,7 +160,8 @@ const TimePickerPanel = ({
         panelRef.current?.querySelectorAll<HTMLElement>('[role="listbox"]')[i];
       column?.querySelector<HTMLElement>('[tabindex="0"]')?.focus();
     };
-    switch (e.key) {
+    // RTL: columns are laid out right to left, so ArrowLeft is the next one.
+    switch (logicalArrowKey(e.key, e.currentTarget)) {
       case "ArrowDown":
         e.preventDefault();
         enabled[Math.min(enabled.length - 1, index + 1)]?.focus();

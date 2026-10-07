@@ -21,6 +21,15 @@ describe("theme re-exports", () => {
       "parseThemeCookies",
       "readCookieValue",
       "serializeThemeCookie",
+      "DENSITIES",
+      "DESIGN_ATTRIBUTES",
+      "DESIGN_PRESETS",
+      "FONT_SCALES",
+      "RADIUS_SCALES",
+      "SHADOW_SCALES",
+      "designAttributes",
+      "designPresets",
+      "resolveDesign",
     ] as const;
     expect(Object.keys(themeUtils).sort()).toEqual([...names].sort());
     for (const name of names) expect(themeUtils[name], name).toBe(core[name]);

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "传入任意图标元素。按钮中只有图标，因此务必为它设置 ariaLabel。它渲染为 type=\"button\" 的原生按钮，因此不会提交表单。"
+      "description": "传入任意图标元素。按钮中只有图标，因此务必为它设置 aria-label。它渲染为 type=\"button\" 的原生按钮，因此不会提交表单。"
     },
     "colors": {
       "title": "颜色",
@@ -20,7 +20,7 @@
     },
     "states": {
       "title": "状态",
-      "description": "loading 用加载动画替换图标，pressed 表示切换按钮处于开启状态，disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
+      "description": "loading 用加载动画替换图标，并在忽略激活的同时保持按钮可聚焦（aria-busy + aria-disabled）；pressed 表示切换按钮处于开启状态；disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
     },
     "toggle": {
       "title": "切换按钮",
@@ -51,17 +51,26 @@
       "size": "按钮尺寸",
       "shape": "按钮形状",
       "disabled": "禁用原生按钮并使其脱离 Tab 键顺序",
-      "loading": "用加载动画替换图标并阻止交互",
+      "loading": "用加载指示器替换图标，并忽略激活（点击、Enter、Space、表单提交），同时保持可聚焦：以 aria-busy + aria-disabled 表示，而不是原生 disabled 属性",
       "pressed": "切换按钮的按下状态（受控，配合 onPressedChange 使用）；通过 aria-pressed 暴露",
       "defaultPressed": "非受控切换按钮的初始按下状态",
       "onPressedChange": "切换按钮被触发时，以新的按下状态调用",
       "className": "额外的类名",
       "tooltip": "提示配置（content、color、variant、shape、arrow）；需配合 showTooltip 使用",
       "showTooltip": "在悬停和聚焦时显示提示",
-      "ariaLabel": "无障碍标签；按钮只包含图标，请始终设置",
+      "aria-label": "无障碍标签；按钮只包含图标，请始终设置",
       "ref": "<button> 元素的 ref",
       "children": "图标元素，可替代 icon 属性",
-      "label": "按钮的无障碍名称，同时显示为提示（除非 showTooltip 为 false）。优先于 ariaLabel"
+      "label": "按钮的无障碍名称，同时显示为提示（除非 showTooltip 为 false）。优先于 aria-label"
     }
+  },
+  "cssVars": {
+    "--icon-button-color": "图标颜色",
+    "--icon-button-hover-bg": "悬停时的背景色",
+    "--icon-button-pressed-color": "按下状态切换按钮的图标颜色",
+    "--icon-button-pressed-bg": "按下状态切换按钮的背景色",
+    "--icon-button-size": "按钮的宽高（所有尺寸；默认跟随当前密度的控件高度）",
+    "--icon-button-icon-size": "图标字号（所有尺寸）",
+    "--icon-button-radius": "square 形状的圆角（默认 --radius-lg）"
   }
 }

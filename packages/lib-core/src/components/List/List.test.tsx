@@ -255,7 +255,7 @@ describe("List public contract", () => {
             primary={<span id={`device-${id}`}>{id}</span>}
             actions={
               <IconButton
-                ariaLabel="Delete device"
+                aria-label="Delete device"
                 showTooltip={false}
                 aria-describedby={`device-${id}`}
               >
@@ -306,6 +306,22 @@ describe("List public contract", () => {
   });
 });
 
+// The row defaults derive from the density tokens through calc(), which
+// happy-dom returns unresolved: evaluate the simple sums / products it reports.
+const toPx = (value: string): number =>
+  value
+    .replace(/^calc\((.*)\)$/, "$1")
+    .split(" + ")
+    .reduce(
+      (sum, term) =>
+        sum +
+        term.split(" * ").reduce((product, factor) => {
+          const n = parseFloat(factor);
+          return product * (factor.endsWith("rem") ? n * 16 : n);
+        }, 1),
+      0,
+    );
+
 describe("List distributed styles", () => {
   it("resets list markers and uses the existing operational typography tokens", () => {
     mountStyled(
@@ -349,11 +365,11 @@ describe("List distributed styles", () => {
       </>,
     );
     const rows = container.querySelectorAll("li");
-    expect(getComputedStyle(rows[0]!).paddingTop).toMatch(/^(12px|0\.75rem)$/);
+    expect(toPx(getComputedStyle(rows[0]!).paddingTop)).toBe(12);
     // happy-dom exposes logical padding without mapping it onto paddingTop.
-    expect(getComputedStyle(rows[2]!).getPropertyValue("padding-block")).toBe(
-      "0.5rem",
-    );
+    expect(
+      toPx(getComputedStyle(rows[2]!).getPropertyValue("padding-block")),
+    ).toBe(8);
     expect(getComputedStyle(rows[0]!).borderTopWidth).not.toBe("1px");
     expect(getComputedStyle(rows[1]!).borderTopWidth).toBe("1px");
     expect(getComputedStyle(rows[3]!).borderTopWidth).not.toBe("1px");
@@ -371,8 +387,8 @@ describe("List distributed styles", () => {
       </>,
     );
     const rows = container.querySelectorAll("li");
-    expect(getComputedStyle(rows[0]!).minHeight).toMatch(/^(56px|3\.5rem)$/);
-    expect(getComputedStyle(rows[1]!).minHeight).toMatch(/^(40px|2\.5rem)$/);
+    expect(toPx(getComputedStyle(rows[0]!).minHeight)).toBe(56);
+    expect(toPx(getComputedStyle(rows[1]!).minHeight)).toBe(40);
     for (const row of rows) {
       expect(getComputedStyle(row).height).toMatch(/^(auto)?$/);
       expect(getComputedStyle(row).maxHeight).toMatch(/^(none)?$/);

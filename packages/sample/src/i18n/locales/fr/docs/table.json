@@ -29,6 +29,14 @@
     "cell-content": {
       "title": "Contenu de cellule",
       "description": "TableCellContent borne et renvoie à la ligne les contenus longs, avec une seconde ligne atténuée ou un texte principal à chasse fixe en option."
+    },
+    "sorting": {
+      "title": "Tri",
+      "description": "sortable transforme l’en-tête en bouton qui alterne entre tri croissant, décroissant et aucun tri (aria-sort suit). true compare row[key] ; une fonction compare deux lignes. Contrôlez l’état avec sortState et onSortChange, ou utilisez manualSort pour trier côté serveur."
+    },
+    "selection": {
+      "title": "Sélection de lignes",
+      "description": "rowSelection ajoute une colonne de cases à cocher et une case « tout sélectionner » (indéterminée en cas de sélection partielle). Les lignes désactivées sont ignorées par « tout sélectionner » ; les lignes sélectionnées reçoivent aria-selected et une mise en évidence."
     }
   },
   "api": {
@@ -38,7 +46,12 @@
       "rowKey": "Extrait une clé stable d'une ligne (par défaut l'index de la ligne)",
       "emptyText": "Contenu de la ligne unique affichée quand data est vide",
       "loading": "Affiche des lignes squelettes à la place des données",
-      "loadingRows": "Nombre de lignes squelettes pendant le chargement"
+      "loadingRows": "Nombre de lignes squelettes pendant le chargement",
+      "sortState": "État du tri (contrôlé) ; null signifie aucun tri",
+      "defaultSortState": "État initial du tri (non contrôlé)",
+      "onSortChange": "Appelé avec l’état de tri suivant lorsqu’un en-tête triable est activé",
+      "manualSort": "Désactive le tri local : data est affiché tel quel (trié par son propriétaire, par ex. un serveur) tandis que les en-têtes reflètent l’état du tri",
+      "rowSelection": "Ajoute une première colonne de cases à cocher pour sélectionner les lignes"
     },
     "TableColumn": {
       "key": "Clé unique de la colonne ; aussi le champ lu par défaut dans chaque ligne",
@@ -47,7 +60,8 @@
       "width": "Largeur de colonne (nombres en pixels), appliquée en width et min-width ; obligatoire pour les colonnes fixes",
       "align": "Alignement horizontal de l'en-tête et des cellules",
       "ellipsis": "Tronque le contenu sur une seule ligne avec des points de suspension",
-      "fixed": "Fixe la colonne au bord gauche ou droit pendant le défilement horizontal"
+      "fixed": "Fixe la colonne au bord gauche ou droit pendant le défilement horizontal",
+      "sortable": "Rend la colonne triable : true compare row[key] (valeurs vides en dernier), une fonction (a, b) => number compare deux lignes pour l’ordre croissant"
     },
     "DataTableProps": {
       "pagination": "Props de la pagination affichée sous le tableau (les lignes doivent déjà être paginées)",
@@ -59,12 +73,24 @@
       "size": "Densité des cellules",
       "variant": "Style : lignes simples, zébrées ou cellules bordées",
       "hoverable": "Met en surbrillance les lignes au survol",
-      "scroll": "Largeur minimale / hauteur maximale de la zone de défilement",
+      "scroll": "Largeur minimale horizontale / hauteur maximale verticale de la zone de défilement ; un conteneur qui défile devient une région focalisable nommée d’après le tableau (par défaut : « Tableau défilant »)",
       "ref": "Ref vers l'élément <table>"
     },
     "TableScrollConfig": {
       "x": "Largeur minimale du tableau ; le conteneur défile horizontalement s'il est plus étroit",
       "y": "Hauteur visible maximale ; le conteneur défile verticalement et l'en-tête reste collé"
+    },
+    "TableSortState": {
+      "key": "Clé de la colonne triée",
+      "order": "Sens du tri (\"ascend\" ou \"descend\") ; null signifie aucun tri"
+    },
+    "TableRowSelection": {
+      "type": "Mode de sélection (sélection multiple par cases à cocher)",
+      "selectedRowKeys": "Clés des lignes sélectionnées (contrôlé)",
+      "defaultSelectedRowKeys": "Clés des lignes sélectionnées au départ (non contrôlé)",
+      "onChange": "Appelé avec les nouvelles clés sélectionnées et les lignes correspondantes de data",
+      "getCheckboxProps": "Options de la case de chaque ligne ; les lignes désactivées ne peuvent pas être basculées et sont ignorées par « tout sélectionner »",
+      "getRowLabel": "Nomme une ligne dans le libellé accessible de sa case (« Sélectionner la ligne {name} ») ; par défaut la clé de la ligne"
     },
     "TableCellContentProps": {
       "primary": "Contenu principal",
@@ -79,5 +105,18 @@
       "lastLeftFixedKey": "Dernière colonne du bloc fixé à gauche (reçoit l'ombre de bord)",
       "firstRightFixedKey": "Première colonne du bloc fixé à droite (reçoit l'ombre de bord)"
     }
+  },
+  "cssVars": {
+    "--table-cell-padding-y": "Marge intérieure verticale des cellules (toutes les tailles ; suit la densité par défaut)",
+    "--table-cell-padding-x": "Marge intérieure horizontale des cellules (toutes les tailles ; suit la densité par défaut)",
+    "--table-font-size": "Taille de police des cellules du corps (toutes les tailles)",
+    "--table-header-bg": "Couleur de fond de la ligne d'en-tête",
+    "--table-border-color": "Couleur des séparateurs de lignes",
+    "--table-radius": "Rayon des coins du conteneur (par défaut --radius-lg)",
+    "--table-stripe-bg": "Couleur de fond des lignes impaires d'un tableau rayé",
+    "--table-hover-bg": "Couleur de fond de la ligne survolée d'un tableau survolable",
+    "--table-selected-bg": "Couleur de fond des lignes sélectionnées (sélection de lignes)",
+    "--table-sort-icon-color": "Couleur de l’indicateur de tri d’une colonne triable non triée",
+    "--table-focus-ring-color": "Couleur du contour de la zone de défilement focalisée"
   }
 }

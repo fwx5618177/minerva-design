@@ -1,9 +1,17 @@
+// Public CSS variables (set them on the calendar or any ancestor):
+// @css-var --month-calendar-font-size Base font size
+// @css-var --month-calendar-gap Space between the day cells
+// @css-var --month-calendar-day-height Height of a day cell (defaults to 4rem, 3.25rem on narrow screens)
+// @css-var --month-calendar-nav-height Height of the toolbar buttons (defaults to the density's small control height)
+// @css-var --month-calendar-radius Corner radius of the buttons, days and events (defaults to --radius-sm)
+// @css-var --month-calendar-selected-background Background of the selected day
+// @css-var --month-calendar-today-color Border color marking today
 .monthCalendar {
   width: 100%;
   min-width: 0;
   color: var(--text-color);
   font-family: var(--font-family-sans);
-  font-size: var(--font-size-sm);
+  font-size: var(--month-calendar-font-size, var(--font-size-sm));
 }
 
 .toolbar {
@@ -34,7 +42,7 @@
   justify-content: center;
   gap: var(--space-1);
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--month-calendar-radius, var(--radius-sm));
   background: transparent;
   color: inherit;
   font: inherit;
@@ -60,13 +68,22 @@
 
 .navButton {
   @extend %ghost-button;
-  height: 2rem;
+  height: var(--month-calendar-nav-height, var(--control-height-sm));
   padding: 0 var(--space-2);
 }
 
 .iconButton {
-  width: 2rem;
+  width: var(--month-calendar-nav-height, var(--control-height-sm));
   padding: 0;
+
+  // Previous / next chevrons point along the reading direction.
+  [dir="rtl"] & svg {
+    transform: scaleX(-1);
+  }
+
+  &:dir(rtl) svg {
+    transform: scaleX(-1);
+  }
 }
 
 .grid {
@@ -77,7 +94,7 @@
 .week {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--space-1);
+  gap: var(--month-calendar-gap, var(--space-1));
   margin-bottom: var(--space-1);
 }
 
@@ -87,15 +104,13 @@
   color: var(--text-muted-color);
 }
 
-.cell {
-  min-width: 0;
-}
-
+// Day cell (role="gridcell", focusable itself)
 .day {
   @extend %ghost-button;
   flex-direction: column;
+  min-width: 0;
   width: 100%;
-  height: 4rem;
+  height: var(--month-calendar-day-height, 4rem);
   padding: var(--space-1);
   font-variant-numeric: tabular-nums;
 
@@ -104,16 +119,29 @@
   }
 
   &[aria-current="date"] {
-    border-color: var(--primary-color);
+    border-color: var(--month-calendar-today-color, var(--primary-color));
   }
 
-  &[aria-pressed="true"] {
-    background: var(--selected-color);
+  &[aria-selected="true"] {
+    background: var(--month-calendar-selected-background, var(--selected-color));
     color: var(--text-color);
   }
 
   &:focus-visible {
     outline-offset: -2px;
+  }
+
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    &[aria-selected="true"] {
+      background: var(--month-calendar-selected-background, var(--selected-color));
+    }
   }
 }
 
@@ -151,7 +179,7 @@
   width: 100%;
   justify-content: flex-start;
   padding: var(--space-1) var(--space-2);
-  text-align: left;
+  text-align: start;
   white-space: normal;
   overflow-wrap: anywhere;
 }
@@ -163,6 +191,19 @@
 
 @media (max-width: 32rem) {
   .day {
-    height: 3.25rem;
+    height: var(--month-calendar-day-height, 3.25rem);
+  }
+}
+
+// Forced colors: every ghost button shows its border, so today gets a
+// thicker one and the selected day (a background) an outline.
+@media (forced-colors: active) {
+  .day[aria-current="date"] {
+    border-width: 2px;
+  }
+
+  .day[aria-selected="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
   }
 }

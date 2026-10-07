@@ -1,7 +1,12 @@
 // The outer element is a named inline-size container; the inner element owns
 // the grid, so breakpoints follow the grid's own width, not the viewport.
 // Column counts and gaps come from the --grid-columns-* / --grid-*-gap custom
-// properties set inline from the props.
+// properties set inline from the props (always set, so they are internal).
+//
+// Public CSS variables (set them on the grid or any ancestor):
+// @css-var --responsive-grid-align-items Vertical alignment of the items in their row (default: stretch)
+// @css-var --responsive-grid-justify-items Horizontal alignment of the items in their column (default: stretch)
+
 .root {
   container: minerva-grid / inline-size;
   width: 100%;
@@ -14,6 +19,8 @@
   grid-template-columns: repeat(var(--grid-columns-base), minmax(0, 1fr));
   row-gap: var(--grid-row-gap);
   column-gap: var(--grid-column-gap);
+  align-items: var(--responsive-grid-align-items, stretch);
+  justify-items: var(--responsive-grid-justify-items, stretch);
 
   > * {
     min-width: 0;

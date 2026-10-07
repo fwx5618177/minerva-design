@@ -226,7 +226,7 @@ describe("RadioGroup", () => {
 
   it("keeps each radio's own color when the group sets none", () => {
     const { container } = render(
-      <RadioGroup ariaLabel="Colors">
+      <RadioGroup aria-label="Colors">
         <Radio label="A" value="a" color="danger" />
         <Radio label="B" value="b" />
       </RadioGroup>,
@@ -306,7 +306,7 @@ describe("RadioGroup", () => {
       expect(banana).toBeChecked();
     });
 
-    it("gets an accessible name from label or ariaLabel", () => {
+    it("gets an accessible name from label or aria-label", () => {
       const { rerender } = render(
         <RadioGroup label="Favourite fruit">
           <Radio label="Apple" value="apple" />
@@ -318,7 +318,7 @@ describe("RadioGroup", () => {
       expect(screen.getByText("Favourite fruit")).toBeVisible();
 
       rerender(
-        <RadioGroup ariaLabel="Fruit">
+        <RadioGroup aria-label="Fruit">
           <Radio label="Apple" value="apple" />
         </RadioGroup>,
       );
@@ -372,5 +372,36 @@ describe("RadioGroup", () => {
       await user.click(screen.getByRole("button", { name: "pick banana" }));
       expect(screen.getByRole("radio", { name: "Banana" })).toBeChecked();
     });
+  });
+});
+
+describe("RadioGroup native attributes", () => {
+  it("forwards id / aria-* to the radiogroup and style / data-* to the root", () => {
+    const { container } = render(
+      <>
+        <h3 id="g-label">Shipping</h3>
+        <p id="g-desc">Choose one</p>
+        <RadioGroup
+          id="shipping"
+          label="Visible"
+          aria-labelledby="g-label"
+          aria-describedby="g-desc"
+          helperText="Help"
+          style={{ padding: "1px" }}
+          data-testid="group-root"
+        >
+          <Radio value="a" label="A" />
+        </RadioGroup>
+      </>,
+    );
+    const group = screen.getByRole("radiogroup", { name: "Shipping" });
+    expect(group).toHaveAttribute("id", "shipping");
+    expect(group.getAttribute("aria-describedby")).toContain("g-desc");
+    expect(group).toHaveAccessibleDescription("Help Choose one");
+    const root = container.querySelector(
+      '[data-testid="group-root"]',
+    ) as HTMLElement;
+    expect(root).toContainElement(group);
+    expect(root.style.padding).toBe("1px");
   });
 });

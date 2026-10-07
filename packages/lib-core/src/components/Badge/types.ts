@@ -60,7 +60,7 @@ export interface BadgeProps extends Omit<
   /** Custom border width (CSS value) */
   borderWidth?: string;
   /** Accessible label of the badge, e.g. "5 unread messages" */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /** Icon displayed before the content */
   icon?: React.ReactNode;
   /**

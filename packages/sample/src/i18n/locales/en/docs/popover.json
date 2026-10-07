@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "PopoverTrigger toggles the panel; focus moves inside and returns to the trigger on close. PopoverClose closes it."
+      "description": "PopoverTrigger toggles the panel; focus moves inside and returns to the trigger on close. PopoverClose closes it. In a non-modal popover, Tab past the last element (Shift+Tab before the first) closes it and moves focus to the element after (before) the trigger; focus never loops inside."
     },
     "placement": {
       "title": "Placement",
@@ -20,7 +20,7 @@
       "open": "Controlled open state; leave undefined for uncontrolled",
       "defaultOpen": "Initial open state while uncontrolled",
       "onOpenChange": "Called with the requested open state (trigger, Escape, outside click, PopoverClose)",
-      "modal": "Modal mode: traps focus, locks page scrolling, hides the rest of the page from assistive technology and blocks outside pointer interaction (an outside click still closes it)",
+      "modal": "Modal mode: traps focus (Tab loops inside the panel), locks page scrolling, hides the rest of the page from assistive technology and blocks outside pointer interaction (an outside click still closes it)",
       "children": "PopoverTrigger / PopoverAnchor and PopoverContent"
     },
     "PopoverContentProps": {
@@ -44,5 +44,15 @@
     "PopoverTriggerProps": {
       "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"
     }
+  },
+  "cssVars": {
+    "--popover-min-width": "Minimum width of the panel",
+    "--popover-max-width": "Maximum width of the panel",
+    "--popover-padding": "Inner padding of the panel",
+    "--popover-radius": "Corner radius of the panel (defaults to --radius-lg)",
+    "--popover-background": "Background of the panel and its arrow",
+    "--popover-border-color": "Border color of the panel and its arrow",
+    "--popover-shadow": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)",
+    "--popover-z-index": "Stacking order of the panel (defaults to --z-popover)"
   }
 }

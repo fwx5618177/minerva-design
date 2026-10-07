@@ -73,4 +73,11 @@ export interface AppShellProps extends Omit<
   onSidebarModeChange?: (mode: AppShellSidebarMode) => void;
   /** Overrides of the control names (localized defaults) */
   labels?: Partial<AppShellLabels>;
+  /**
+   * "Skip to content" link rendered as the first focusable element (visually
+   * hidden until focused); it moves focus to `main`. A string replaces its
+   * text, `false` removes it
+   * @default true
+   */
+  skipLink?: boolean | string;
 }

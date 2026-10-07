@@ -327,3 +327,14 @@ describe("MonacoCodeEditor", () => {
     expect(html).toContain('role="status"');
   });
 });
+
+describe("MonacoCodeEditor native attributes", () => {
+  it("forwards style and data-* to the root group", async () => {
+    await render({ style: { margin: "2px" }, "data-testid": "editor" });
+    const group = container.querySelector(
+      '[data-testid="editor"]',
+    ) as HTMLElement;
+    expect(group.getAttribute("role")).toBe("group");
+    expect(group.style.margin).toBe("2px");
+  });
+});

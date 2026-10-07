@@ -1,7 +1,7 @@
 // Every button that a lib-core component renders for its own controls (clear,
 // stepper, format, add / remove, close, pagination, password toggle, ...) must
 // be type="button": inside a <form> a bare <button> submits the form.
-// Only <Button> itself keeps the native default (documented behaviour).
+// <Button> / <IconButton> default to type="button" too (submit is opt-in).
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
@@ -64,15 +64,8 @@ const extraCases: Array<[string, React.ReactElement]> = [
   ],
 ];
 
-const isButtonComponent = (name: string) =>
-  name === "Button" || name === "IconButton";
-
 describe("internal buttons never submit an enclosing form", () => {
-  it.each(
-    [...componentSsrCases, ...extraCases].filter(
-      ([name]) => !isButtonComponent(name),
-    ),
-  )("%s", (_, element) => {
+  it.each([...componentSsrCases, ...extraCases])("%s", (_, element) => {
     render(
       <lib.ConfigProvider theme="light">
         <form aria-label="host">{element}</form>

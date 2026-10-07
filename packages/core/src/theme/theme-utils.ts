@@ -23,6 +23,8 @@
  *     ...
  */
 
+import { designAttributes, presetPalette, type DesignOptions } from "./design";
+
 /** Color mode chosen by the user ("system" follows the OS). */
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -129,6 +131,12 @@ export interface ThemeInitScriptOptions {
    * default look). @default null
    */
   defaultPalette?: Palette | null;
+  /**
+   * Design axes (preset / density / radius / shadow / font scale) written on
+   * `<html>` as data attributes before the first paint. The preset's palette
+   * is used as `defaultPalette` unless one is given.
+   */
+  design?: DesignOptions;
 }
 
 const escapeRegExp = (value: string) =>
@@ -144,8 +152,15 @@ export function createThemeInitScript(
   options: ThemeInitScriptOptions = {},
 ): string {
   const defaultTheme = parseThemeCookie(options.defaultTheme);
-  const defaultPalette = isPalette(options.defaultPalette)
-    ? options.defaultPalette
+  const fallbackPalette =
+    options.defaultPalette === undefined
+      ? presetPalette(options.design?.preset)
+      : options.defaultPalette;
+  const defaultPalette = isPalette(fallbackPalette) ? fallbackPalette : "";
+  const design = options.design
+    ? Object.entries(designAttributes(options.design))
+        .map(([name, value]) => `d.setAttribute('${name}','${value}');`)
+        .join("")
     : "";
   const palettes = `[${PALETTES.map((p) => `'${p}'`).join(",")}]`;
   const themeRe = `/(?:^|; )${escapeRegExp(THEME_COOKIE_NAME)}=([^;]+)/`;
@@ -158,7 +173,7 @@ export function createThemeInitScript(
     `d.dataset.theme=t;d.style.colorScheme=t;` +
     `var hp=d.dataset.palette;var f=P.indexOf(hp)>-1?hp:'${defaultPalette}';` +
     `var pm=c.match(${paletteRe});var p=pm?pm[1]:f;if(P.indexOf(p)<0)p=f;` +
-    `if(p)d.dataset.palette=p;else delete d.dataset.palette;}catch(e){}})();`
+    `if(p)d.dataset.palette=p;else delete d.dataset.palette;${design}}catch(e){}})();`
   );
 }
 

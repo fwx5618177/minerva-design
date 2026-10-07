@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -9,6 +10,11 @@ import { createRoot } from "react-dom/client";
 import Button from "../Button/Button";
 import { Modal, ModalBody, ModalFooter } from "../Modal/Modal";
 import useI18n from "../../hooks/useI18n";
+import {
+  ThemeScopeContext,
+  useThemeScope,
+  type ThemeScope,
+} from "../../internal/themeScope";
 import type {
   ConfirmDialogProps,
   ConfirmFunction,
@@ -79,7 +85,22 @@ interface ConfirmRequest {
   id: number;
   options: ConfirmOptions;
   resolve: (value: boolean) => void;
+  /**
+   * Theme scope of the caller (`useConfirm()` inside a nested
+   * ConfigProvider): the dialog portals into its host and uses its language.
+   * `undefined` = the scope the queue is rendered in.
+   */
+  scope?: ThemeScope;
 }
+
+/**
+ * Keeps a scope only when it changes something: a scoped portal container or
+ * a scoped language.
+ */
+const callerScopeOf = (
+  scope: ThemeScope | null | undefined,
+): ThemeScope | undefined =>
+  scope && (scope.portalContainer || scope.language) ? scope : undefined;
 
 /**
  * FIFO request queue (external store). The provider and the standalone host
@@ -100,14 +121,20 @@ class ConfirmQueue {
 
   readonly getSnapshot = (): readonly ConfirmRequest[] => this.requests;
 
-  readonly request: ConfirmFunction = (options) =>
+  /** Queues a confirmation rendered in `scope` (see `ConfirmRequest.scope`). */
+  readonly enqueue = (
+    options: ConfirmOptions,
+    scope?: ThemeScope,
+  ): Promise<boolean> =>
     new Promise<boolean>((resolve) => {
       this.requests = [
         ...this.requests,
-        { id: ++this.nextId, options, resolve },
+        { id: ++this.nextId, options, resolve, scope },
       ];
       this.emit();
     });
+
+  readonly request: ConfirmFunction = (options) => this.enqueue(options);
 
   /** Settles the head request; ignores stale ids so each promise resolves once. */
   settle(id: number, value: boolean): void {
@@ -143,7 +170,7 @@ const ConfirmQueueView = ({ queue }: { queue: ConfirmQueue }) => {
   );
   const top = requests[0];
   if (!top) return null;
-  return (
+  const dialog = (
     <ConfirmDialog
       // One instance per request: consecutive confirmations never share state.
       key={top.id}
@@ -155,17 +182,29 @@ const ConfirmQueueView = ({ queue }: { queue: ConfirmQueue }) => {
       onConfirm={() => queue.settle(top.id, true)}
     />
   );
+  // The Modal portals into the caller's scoped host and the labels use its
+  // language.
+  return top.scope ? (
+    <ThemeScopeContext.Provider key={top.id} value={top.scope}>
+      {dialog}
+    </ThemeScopeContext.Provider>
+  ) : (
+    dialog
+  );
 };
 
-const ConfirmContext = createContext<ConfirmFunction | null>(null);
+const ConfirmContext = createContext<ConfirmQueue | null>(null);
 
-/** Mounted providers; the most recently mounted one wins. */
-const providerStack: ConfirmFunction[] = [];
+/** Mounted providers' queues; the most recently mounted one wins. */
+const providerStack: ConfirmQueue[] = [];
 
 /** Host used when no provider is mounted: mounted lazily, then reused. */
 let standalone: { queue: ConfirmQueue; container: HTMLElement } | null = null;
 
-const standaloneRequest: ConfirmFunction = (options) => {
+const standaloneRequest = (
+  options: ConfirmOptions,
+  scope?: ThemeScope,
+): Promise<boolean> => {
   if (!standalone) {
     const container = document.createElement("div");
     container.setAttribute("data-confirm-host", "");
@@ -177,7 +216,18 @@ const standaloneRequest: ConfirmFunction = (options) => {
   if (!standalone.container.isConnected) {
     document.body.append(standalone.container);
   }
-  return standalone.queue.request(options);
+  return standalone.queue.enqueue(options, scope);
+};
+
+/** Routes a confirmation to the latest provider or the standalone host. */
+const requestConfirm = (
+  options: ConfirmOptions,
+  scope?: ThemeScope,
+): Promise<boolean> => {
+  const provider = providerStack[providerStack.length - 1];
+  if (provider) return provider.enqueue(options, scope);
+  if (typeof document === "undefined") return Promise.resolve(false);
+  return standaloneRequest(options, scope);
 };
 
 /**
@@ -185,20 +235,32 @@ const standaloneRequest: ConfirmFunction = (options) => {
  * - with a mounted `ConfirmProvider` the most recent provider renders it
  * - otherwise a standalone host is mounted lazily on `document.body`
  * - on the server (no `document`) it resolves `false`, like a cancel
+ *
+ * Meant for code outside React components (event buses, API clients,
+ * non-component modules): the dialog uses the root theme and language (or
+ * the provider's). Inside components, prefer `useConfirm()`, which follows
+ * the nearest ConfigProvider scope.
  */
-export const confirm: ConfirmFunction = (options) => {
-  const provider = providerStack[providerStack.length - 1];
-  if (provider) return provider(options);
-  if (typeof document === "undefined") return Promise.resolve(false);
-  return standaloneRequest(options);
-};
+export const confirm: ConfirmFunction = (options) => requestConfirm(options);
 
 /**
- * Returns the confirm function of the nearest `ConfirmProvider`, or the
- * global `confirm` outside of one.
+ * Returns a confirm function bound to the calling component's scope: its
+ * dialogs are rendered by the nearest `ConfirmProvider` (or, outside of one,
+ * like `confirm()`), but inside the nearest ConfigProvider scope, so the
+ * modal portals into the scoped host (theme, palette, tokens) and its labels
+ * use the scoped language. Outside any nested scope it returns the
+ * provider's confirm, or the global `confirm` itself.
  */
-export const useConfirm = (): ConfirmFunction =>
-  useContext(ConfirmContext) ?? confirm;
+export const useConfirm = (): ConfirmFunction => {
+  const queue = useContext(ConfirmContext);
+  const scope = callerScopeOf(useThemeScope());
+  return useMemo<ConfirmFunction>(() => {
+    if (queue) {
+      return scope ? (options) => queue.enqueue(options, scope) : queue.request;
+    }
+    return scope ? (options) => requestConfirm(options, scope) : confirm;
+  }, [queue, scope]);
+};
 
 /**
  * ConfirmProvider: renders confirmations inside the application tree (shared
@@ -209,17 +271,16 @@ export const ConfirmProvider = ({ children }: ConfirmProviderProps) => {
   const [queue] = useState(() => new ConfirmQueue());
 
   useEffect(() => {
-    const request = queue.request;
-    providerStack.push(request);
+    providerStack.push(queue);
     return () => {
-      const index = providerStack.lastIndexOf(request);
+      const index = providerStack.lastIndexOf(queue);
       if (index >= 0) providerStack.splice(index, 1);
       queue.cancelAll();
     };
   }, [queue]);
 
   return (
-    <ConfirmContext.Provider value={queue.request}>
+    <ConfirmContext.Provider value={queue}>
       {children}
       <ConfirmQueueView queue={queue} />
     </ConfirmContext.Provider>

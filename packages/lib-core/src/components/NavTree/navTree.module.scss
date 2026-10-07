@@ -1,7 +1,16 @@
+// Public CSS variables (set them on the nav tree or any ancestor):
+// @css-var --nav-tree-gap Space between the sections
+// @css-var --nav-tree-item-height Minimum height of a top-level row (defaults to the density's control height)
+// @css-var --nav-tree-item-padding-x Horizontal padding of a row (follows the density's row padding)
+// @css-var --nav-tree-item-radius Corner radius of a row (defaults to --radius-md)
+// @css-var --nav-tree-indent Indentation of nested rows
+// @css-var --nav-tree-active-background Background of the active row
+// @css-var --nav-tree-active-color Accent color of the active row's icon
+
 .navTree {
   display: grid;
   align-content: start;
-  gap: var(--space-4);
+  gap: var(--nav-tree-gap, var(--space-4));
   width: 100%;
 }
 
@@ -35,9 +44,9 @@
 }
 
 .children {
-  margin-left: 0;
-  padding-left: calc(var(--space-3) + 10px);
-  border-left: 0;
+  margin-inline-start: 0;
+  padding-inline-start: var(--nav-tree-indent, calc(var(--space-3) + 10px));
+  border-inline-start: 0;
 }
 
 .item {
@@ -46,16 +55,16 @@
   grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-2);
-  min-height: 40px;
+  min-height: var(--nav-tree-item-height, var(--control-height-md));
   width: 100%;
-  padding: 0 var(--space-2);
+  padding: 0 var(--nav-tree-item-padding-x, calc(var(--row-padding-x) - var(--space-1)));
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--nav-tree-item-radius, var(--radius-md));
   background: transparent;
   color: var(--text-muted-color);
   cursor: pointer;
   font: inherit;
-  text-align: left;
+  text-align: start;
   text-decoration: none;
   outline: none;
   transition:
@@ -76,13 +85,13 @@
 }
 
 .active {
-  background: var(--selected-color);
+  background: var(--nav-tree-active-background, var(--selected-color));
   color: var(--text-color);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-color) 24%, transparent);
 }
 
 .active:hover {
-  background: var(--selected-color);
+  background: var(--nav-tree-active-background, var(--selected-color));
   color: var(--text-color);
 }
 
@@ -112,8 +121,8 @@
 }
 
 .active .icon {
-  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
-  color: var(--primary-color);
+  background: color-mix(in srgb, var(--nav-tree-active-color, var(--primary-color)) 14%, transparent);
+  color: var(--nav-tree-active-color, var(--primary-color));
 }
 
 .copy {
@@ -146,7 +155,7 @@
 
 .wrapLabels {
   .item {
-    padding-block: var(--space-2);
+    padding-block: var(--row-padding-y);
   }
 
   .label,
@@ -190,6 +199,11 @@
   > svg {
     display: block;
   }
+
+  // Collapsed branches point to the inline end.
+  [dir="rtl"] & {
+    transform: rotate(90deg);
+  }
 }
 
 .item[data-expanded="true"] .chevron {
@@ -203,7 +217,7 @@
 }
 
 .nested {
-  min-height: 34px;
+  min-height: calc(var(--control-height-sm) + var(--space-0-5));
   grid-template-columns: 26px minmax(0, 1fr) auto;
 
   .icon {
@@ -266,5 +280,22 @@
   .item,
   .chevron {
     transition: none;
+  }
+}
+
+// Forced colors drop backgrounds and box-shadows (active fill, focus ring).
+@media (forced-colors: active) {
+  .active {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .item:focus-visible {
+    outline: 2px solid CanvasText;
+    outline-offset: 1px;
+  }
+
+  .disabled {
+    color: GrayText;
   }
 }

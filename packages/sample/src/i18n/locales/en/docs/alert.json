@@ -41,6 +41,10 @@
     "animations": {
       "title": "Animations",
       "description": "Choose the entrance animation or turn it off."
+    },
+    "return-focus": {
+      "title": "Focus after closing",
+      "description": "Closing an alert with its close button never drops focus to the page: it moves to the next focusable element after the alert (else the previous one, else its container), or to returnFocus (an element, a ref or a function)."
     }
   },
   "api": {
@@ -73,7 +77,17 @@
       "expandLabel": "Accessible label of the toggle while the content is collapsed",
       "collapseLabel": "Accessible label of the toggle while the content is expanded",
       "iconLabel": "Accessible label of the status icon",
-      "role": "ARIA role of the alert. Danger and warning interrupt (\"alert\"), info and success are polite (\"status\")"
+      "role": "ARIA role of the alert. Danger and warning interrupt (\"alert\"), info and success are polite (\"status\")",
+      "returnFocus": "Element receiving focus after the alert is closed with its close button: an element, a ref or a function. Without it focus moves to the next focusable element after the alert (else the previous one, else its container), never to <body>"
     }
+  },
+  "cssVars": {
+    "--alert-padding": "Padding (every size; defaults to the padding of the size)",
+    "--alert-radius": "Corner radius (defaults to --radius-sm, --radius-lg when rounded)",
+    "--alert-font-size": "Font size (every size)",
+    "--alert-icon-size": "Size of the status icon (every size)",
+    "--alert-gap": "Space between the icon, the content and the actions",
+    "--alert-shadow": "Shadow of the elevated alert (defaults to --shadow-sm)",
+    "--alert-margin-bottom": "Space below the alert"
   }
 }

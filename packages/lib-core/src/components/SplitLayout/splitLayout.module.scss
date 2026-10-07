@@ -1,6 +1,11 @@
 // The outer element is a named inline-size container; the inner grid splits
 // once the container (not the viewport) reaches the chosen breakpoint.
-// --split-layout-aside-width / --split-layout-gap are set inline from the props.
+// --split-layout-aside-width / --split-layout-gap are set inline from the props
+// (always set, so use the asideWidth / gap props to change them).
+//
+// Public CSS variables (set them on the layout or any ancestor):
+// @css-var --split-layout-align-items Vertical alignment of the main and aside columns (default: start)
+
 .root {
   container: minerva-split-layout / inline-size;
   width: 100%;
@@ -10,7 +15,7 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  align-items: start;
+  align-items: var(--split-layout-align-items, start);
   gap: var(--split-layout-gap);
   min-width: 0;
 }

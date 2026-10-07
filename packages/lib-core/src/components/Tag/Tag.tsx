@@ -1,11 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  Children,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { cn } from "../../utils/cn";
-import { IoClose } from "react-icons/io5";
+import { IconX } from "../../internal/icons";
 import type { TagProps } from "./types";
 import styles from "./tag.module.scss";
 import useI18n from "../../hooks/useI18n";
 
 const RIPPLE_DURATION = 600;
+
+/** Plain text of `node` (strings / numbers, also inside elements). */
+const textOf = (node: ReactNode): string =>
+  Children.toArray(node)
+    .map((child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        return String(child);
+      }
+      if (isValidElement<{ children?: ReactNode }>(child)) {
+        return textOf(child.props.children);
+      }
+      return "";
+    })
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
 
 interface Ripple {
   id: number;
@@ -66,6 +89,14 @@ const Tag = ({
   };
 
   const inactive = disabled || loading;
+
+  // The close button names the tag it removes: "Remove {label}"
+  const label = closable ? textOf(children) : "";
+  const resolvedCloseLabel =
+    typeof closeLabel === "function"
+      ? closeLabel(label)
+      : (closeLabel ??
+        (label ? t("tag.closeWithLabel", { label }) : t("tag.close")));
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (inactive) return;
@@ -163,10 +194,10 @@ const Tag = ({
           className={styles.closeIcon}
           onClick={handleClose}
           disabled={disabled}
-          aria-label={closeLabel ?? t("tag.close")}
-          title={closeLabel ?? t("tag.close")}
+          aria-label={resolvedCloseLabel}
+          title={resolvedCloseLabel}
         >
-          {closeIcon || <IoClose aria-hidden focusable={false} />}
+          {closeIcon || <IconX aria-hidden focusable={false} />}
         </button>
       )}
       {ripples.map((r) => (

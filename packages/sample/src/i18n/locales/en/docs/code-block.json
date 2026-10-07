@@ -9,16 +9,29 @@
     "no-wrap": {
       "title": "Scrolling logs",
       "description": "wrap={false} keeps lines intact and scrolls horizontally; maxHeight bounds the block."
+    },
+    "copyable": {
+      "title": "Copy button",
+      "description": "copyable adds a copy button in the top-right corner; the result (\"Copied\" / \"Copy failed\") is shown on the button and announced to screen readers."
     }
   },
   "api": {
     "CodeBlockProps": {
       "children": "Source text, rendered verbatim",
-      "ariaLabel": "Accessible name of the code region",
+      "aria-label": "Accessible name of the code region",
       "wrap": "Wraps long lines instead of scrolling horizontally",
       "maxHeight": "Maximum height before the block scrolls",
       "tabIndex": "Tab order of the region (focusable by default)",
+      "copyable": "Shows a copy button that writes the text to the clipboard and announces the result",
       "ref": "Ref to the <pre> element"
     }
+  },
+  "cssVars": {
+    "--code-block-padding": "Inner padding",
+    "--code-block-radius": "Corner radius (defaults to --radius-md)",
+    "--code-block-bg": "Background color",
+    "--code-block-border-color": "Border color",
+    "--code-block-font-size": "Font size of the code",
+    "--code-block-max-height": "Maximum height before the block scrolls (default: none)"
   }
 }

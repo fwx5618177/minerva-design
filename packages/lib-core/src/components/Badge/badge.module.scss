@@ -1,3 +1,13 @@
+// Public CSS variables (set them on the badge or any ancestor):
+// @css-var --badge-bg Background color (overrides the color and variant)
+// @css-var --badge-fg Text color (overrides the color and variant)
+// @css-var --badge-border Border color of the subtle and outline variants
+// @css-var --badge-radius Corner radius (defaults to --radius-sm)
+// @css-var --badge-padding-y Vertical padding (every size)
+// @css-var --badge-padding-x Horizontal padding (every size)
+// @css-var --badge-font-size Font size (every size)
+// @css-var --badge-dot-size Diameter of the dot badge
+
 // Attached badge: the wrapper is the positioning context of the corner badge.
 // It is not interactive, so it has no hover / active / focus styles.
 .badgeWrapper {
@@ -21,18 +31,18 @@
   --_badge-border: transparent;
 
   display: inline-block;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem; /* 调整默认字体大小 */
-  font-weight: 600;
+  padding: var(--badge-padding-y, 0.25rem) var(--badge-padding-x, 0.5rem);
+  font-size: var(--badge-font-size, 0.65rem);
+  font-weight: var(--font-weight-semibold);
   line-height: 1;
   color: var(--badge-fg, var(--_badge-fg));
   background-color: var(--badge-bg, var(--_badge-bg));
-  border-radius: 0.25rem;
+  border-radius: var(--badge-radius, var(--radius-sm));
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px color-mix(in srgb, var(--shadow-color) 70%, transparent);
+  box-shadow: var(--shadow-sm);
   position: relative;
 
   // Standalone badge: inline, in the normal flow (never absolutely positioned)
@@ -86,22 +96,22 @@
   }
 
   &.small {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.55rem; /* 调整小字体大小 */
+    padding: var(--badge-padding-y, 0.2rem) var(--badge-padding-x, 0.4rem);
+    font-size: var(--badge-font-size, 0.55rem);
   }
 
   &.medium {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem; /* 调整中等字体大小 */
+    padding: var(--badge-padding-y, 0.25rem) var(--badge-padding-x, 0.5rem);
+    font-size: var(--badge-font-size, var(--font-size-xs));
   }
 
   &.large {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.85rem; /* 调整大字体大小 */
+    padding: var(--badge-padding-y, 0.3rem) var(--badge-padding-x, 0.6rem);
+    font-size: var(--badge-font-size, 0.85rem);
   }
 
   .icon {
-    margin-right: 0.25rem;
+    margin-inline-end: var(--space-1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,15 +119,15 @@
 
   @media (max-width: 576px) {
     &.small {
-      font-size: 0.45rem; /* 调整小字体大小 */
+      font-size: var(--badge-font-size, 0.45rem);
     }
 
     &.medium {
-      font-size: 0.65rem; /* 调整中等字体大小 */
+      font-size: var(--badge-font-size, 0.65rem);
     }
 
     &.large {
-      font-size: 0.75rem; /* 调整大字体大小 */
+      font-size: var(--badge-font-size, 0.75rem);
     }
   }
 
@@ -166,9 +176,9 @@
   }
 
   &.dot {
-    width: 8px;
-    height: 8px;
-    flex: 0 0 8px;
+    width: var(--badge-dot-size, 8px);
+    height: var(--badge-dot-size, 8px);
+    flex: 0 0 var(--badge-dot-size, 8px);
     padding: 0;
     border: 0;
     border-radius: 50%;
@@ -183,5 +193,25 @@
 
   &.neutral.dot {
     --_badge-bg: var(--text-muted-color);
+  }
+}
+
+// Forced colors: backgrounds are replaced by the system canvas, so solid and
+// subtle badges get a visible border and dots keep a solid system color.
+@media (forced-colors: active) {
+  .badge {
+    border: 1px solid CanvasText;
+
+    &.dot {
+      border: 0;
+      background-color: CanvasText;
+      forced-color-adjust: none;
+    }
+  }
+}
+
+@media print {
+  .badge {
+    box-shadow: none;
   }
 }

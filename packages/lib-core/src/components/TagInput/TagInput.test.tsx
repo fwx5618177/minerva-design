@@ -380,6 +380,35 @@ describe("TagInput", () => {
   });
 });
 
+describe("TagInput root and labelling props", () => {
+  it("forwards style and data-* attributes to the root", () => {
+    fixture({ style: { maxWidth: 320 }, "data-testid": "tags", "data-x": 1 });
+    const root = view.container.firstElementChild as HTMLElement;
+    expect(root).toHaveStyle({ maxWidth: "320px" });
+    expect(root).toHaveAttribute("data-testid", "tags");
+    expect(root).toHaveAttribute("data-x", "1");
+    expect(input()).not.toHaveAttribute("data-testid");
+  });
+
+  it("labels the input and the suggestion list with aria-labelledby", () => {
+    view = render(
+      <>
+        <span id="ext-label">Topics</span>
+        <FormField label="Article tags">
+          <TagInput aria-labelledby="ext-label" options={["Vue"]} />
+        </FormField>
+      </>,
+    );
+    expect(input()).toHaveAttribute("aria-labelledby", "ext-label");
+    expect(input()).toHaveAccessibleName("Topics");
+    act(() => input().focus());
+    expect(view.container.querySelector('[role="listbox"]')).toHaveAttribute(
+      "aria-labelledby",
+      "ext-label",
+    );
+  });
+});
+
 describe("TagInput localization", () => {
   afterEach(() => {
     act(() => {

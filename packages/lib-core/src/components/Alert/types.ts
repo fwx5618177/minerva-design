@@ -1,4 +1,5 @@
 import type { HTMLAttributes, Ref } from "react";
+import type { FocusTarget } from "../../internal/focusAfterRemoval";
 import type { ColorScheme } from "@minerva/core";
 
 export type AlertSize = "small" | "medium" | "large";
@@ -110,6 +111,13 @@ export interface AlertProps extends Omit<
    * @default "{color} icon", e.g. "info icon" (localized)
    */
   iconLabel?: string;
+  /**
+   * Element receiving focus after the alert is closed with its close button:
+   * an element, a ref or a getter. Without it focus moves to the next
+   * focusable element after the alert (else the previous one, else its
+   * container), never to <body>
+   */
+  returnFocus?: FocusTarget;
   /**
    * ARIA role of the alert. Danger and warning interrupt ("alert"), info
    * and success are polite ("status")

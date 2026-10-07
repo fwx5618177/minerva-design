@@ -1,5 +1,14 @@
 @use "../../styles/mixins" as *;
 
+// Public CSS variables (set them on the empty state or any ancestor):
+// @css-var --empty-padding Padding (every size; defaults to the padding of the size)
+// @css-var --empty-gap Space between the icon, title, description and actions (sized layout)
+// @css-var --empty-icon-size Size of the illustration icon (every size)
+// @css-var --empty-color Text color of the description
+// @css-var --empty-background Background of the framed (unsized) layout
+// @css-var --empty-radius Corner radius of the framed (unsized) layout (defaults to --radius-sm)
+// @css-var --empty-description-max-width Maximum width of the description (sized layout)
+
 .showShadow {
   box-shadow: var(--shadow-md);
 
@@ -17,17 +26,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px;
-  color: var(--text-secondary-color);
-  background: var(--surface-color);
-  border-radius: 4px;
+  padding: var(--empty-padding, var(--space-8));
+  color: var(--empty-color, var(--text-secondary-color));
+  background: var(--empty-background, var(--surface-color));
+  border-radius: var(--empty-radius, var(--radius-sm));
   transition:
     box-shadow 0.3s ease,
     transform 0.1s ease;
 
   .iconWrapper {
-    height: 40px;
-    margin-bottom: 16px;
+    height: var(--empty-icon-size, 40px);
+    margin-bottom: var(--space-4);
     opacity: 0.45;
     transition: opacity 0.3s;
 
@@ -37,19 +46,19 @@
   }
 
   .description {
-    font-size: 14px;
+    font-size: var(--font-size-md);
     line-height: 1.5;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-4);
     pointer-events: none;
   }
 
   .footer {
-    margin-top: 16px;
+    margin-top: var(--space-4);
   }
 
   .title {
-    margin-bottom: 8px;
+    margin-bottom: var(--space-2);
     color: var(--text-color);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
@@ -75,7 +84,7 @@
 
   // ── Sized (unframed) layout
   &.sized {
-    gap: var(--space-3);
+    gap: var(--empty-gap, var(--space-3));
     color: var(--text-color);
     background: transparent;
     font-family: var(--font-family-sans);
@@ -96,9 +105,9 @@
     }
 
     .description {
-      max-width: 36ch;
+      max-width: var(--empty-description-max-width, 36ch);
       margin: 0;
-      color: var(--text-secondary-color);
+      color: var(--empty-color, var(--text-secondary-color));
       line-height: var(--line-height-base);
     }
 
@@ -112,11 +121,11 @@
   }
 
   &.size-small {
-    padding: var(--space-4) var(--space-3);
+    padding: var(--empty-padding, var(--space-4) var(--space-3));
 
     .iconWrapper svg {
-      width: 28px;
-      height: 28px;
+      width: var(--empty-icon-size, 28px);
+      height: var(--empty-icon-size, 28px);
     }
     .title {
       font-size: var(--font-size-sm);
@@ -127,11 +136,11 @@
   }
 
   &.size-medium {
-    padding: var(--space-8) var(--space-4);
+    padding: var(--empty-padding, var(--space-8) var(--space-4));
 
     .iconWrapper svg {
-      width: 40px;
-      height: 40px;
+      width: var(--empty-icon-size, 40px);
+      height: var(--empty-icon-size, 40px);
     }
     .title {
       font-size: var(--font-size-md);
@@ -142,11 +151,11 @@
   }
 
   &.size-large {
-    padding: var(--space-12) var(--space-6);
+    padding: var(--empty-padding, var(--space-12) var(--space-6));
 
     .iconWrapper svg {
-      width: 56px;
-      height: 56px;
+      width: var(--empty-icon-size, 56px);
+      height: var(--empty-icon-size, 56px);
     }
     .title {
       font-size: var(--font-size-xl);
@@ -162,7 +171,7 @@
 .defaultIcon {
   color: currentColor;
 
-  // 针对 react-icons
+  // 针对内置图标 (internal/icons)
   &,
   & > * {
     fill: currentColor;

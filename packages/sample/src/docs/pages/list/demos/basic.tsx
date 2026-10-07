@@ -17,7 +17,7 @@ export default function BasicDemo() {
           secondary={device.lastUsed}
           actions={
             <IconButton
-              ariaLabel="Delete device"
+              aria-label="Delete device"
               aria-describedby={`device-${device.id}`}
             >
               <LuTrash2 />

@@ -42,7 +42,7 @@ afterEach(() => {
 const button = (label: string) =>
   container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
 const day = (key: string) =>
-  container.querySelector<HTMLButtonElement>(`button[data-date="${key}"]`)!;
+  container.querySelector<HTMLElement>(`[data-date="${key}"]`)!;
 const key = (
   element: HTMLElement,
   value: string,
@@ -66,7 +66,7 @@ describe("MonthCalendar", () => {
     [new Date(2026, 1, 1), "2026-01-26", "2026-03-08"],
   ])("renders six Monday-first weeks for %s", (month, first, last) => {
     render({ month });
-    const days = container.querySelectorAll("button[data-date]");
+    const days = container.querySelectorAll("[data-date]");
     expect(days).toHaveLength(42);
     expect(days[0].getAttribute("data-date")).toBe(first);
     expect(days[41].getAttribute("data-date")).toBe(last);
@@ -75,7 +75,7 @@ describe("MonthCalendar", () => {
       "Mon",
     );
     expect(
-      container.querySelectorAll('button[data-date][tabindex="0"]'),
+      container.querySelectorAll('[data-date][tabindex="0"]'),
     ).toHaveLength(1);
   });
 
@@ -155,11 +155,13 @@ describe("MonthCalendar", () => {
     render({ value: "2024-02-29", onChange, onEventClick });
     act(() => day("2024-03-01").click());
     expect(onChange).toHaveBeenCalledWith("2024-03-01");
-    expect(day("2024-02-29").getAttribute("aria-pressed")).toBe("true");
-    expect(day("2024-02-29").parentElement).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    // One semantic: the gridcell itself is selected, nothing nested is
+    // "pressed" (no double announcement).
+    expect(day("2024-02-29")).toHaveAttribute("role", "gridcell");
+    expect(day("2024-02-29")).toHaveAttribute("aria-selected", "true");
+    expect(day("2024-03-01")).toHaveAttribute("aria-selected", "false");
+    expect(day("2024-02-29").querySelector("button")).toBeNull();
+    expect(container.querySelector("[aria-pressed]")).toBeNull();
     const list = screen.getByRole("region", { name: "Events on 2024-02-29" });
     expect(list).toHaveClass(styles.events);
     expect(list.textContent).toContain("Release");
@@ -206,12 +208,12 @@ describe("MonthCalendar", () => {
     expect(
       screen.getByRole("grid", { name: "March 2024" }),
     ).toBeInTheDocument();
-    const target = document.querySelector<HTMLButtonElement>(
-      'button[data-date="2024-03-05"]',
+    const target = document.querySelector<HTMLElement>(
+      '[data-date="2024-03-05"]',
     )!;
     act(() => target.click());
     expect(onChange).toHaveBeenCalledWith("2024-03-05");
-    expect(target).toHaveAttribute("aria-pressed", "true");
+    expect(target).toHaveAttribute("aria-selected", "true");
   });
 
   it("defaults to the current month", () => {
@@ -246,11 +248,11 @@ describe("MonthCalendar", () => {
     key(day("2024-01-31"), "PageDown");
     expect(document.activeElement).toBe(day("2024-02-29"));
     key(day("2024-02-29"), "Enter");
-    expect(day("2024-02-29").getAttribute("aria-pressed")).toBe("true");
+    expect(day("2024-02-29").getAttribute("aria-selected")).toBe("true");
     key(day("2024-02-29"), "ArrowDown");
     expect(document.activeElement).toBe(day("2024-03-07"));
     key(day("2024-03-07"), " ");
-    expect(day("2024-03-07").getAttribute("aria-pressed")).toBe("true");
+    expect(day("2024-03-07").getAttribute("aria-selected")).toBe("true");
     key(day("2024-03-07"), "PageUp");
     expect(document.activeElement).toBe(day("2024-02-07"));
     key(day("2024-02-07"), "ArrowUp");
@@ -284,6 +286,12 @@ describe("MonthCalendar", () => {
       expect(element.disabled).toBe(true);
       act(() => element.click());
     }
+    expect(screen.getByRole("grid")).toHaveAttribute("aria-disabled", "true");
+    for (const cell of container.querySelectorAll<HTMLElement>("[data-date]")) {
+      expect(cell).toHaveAttribute("aria-disabled", "true");
+      expect(cell).toHaveAttribute("tabindex", "-1");
+    }
+    act(() => day("2024-03-01").click());
     key(day("2024-02-29"), "ArrowRight");
     key(day("2024-02-29"), "Enter");
     expect(onMonthChange).not.toHaveBeenCalled();
@@ -298,7 +306,7 @@ describe("MonthCalendar", () => {
       weekdayLabels: ["一", "二", "三", "四", "五", "六", "日"],
       getDayLabel: (d, n) => `${d}#${n}`,
       getEventsLabel: (d) => `${d} list`,
-      ariaLabel: "Schedule",
+      "aria-label": "Schedule",
       previousMonthLabel: "Prev",
       nextMonthLabel: "Next",
       todayLabel: "Now",

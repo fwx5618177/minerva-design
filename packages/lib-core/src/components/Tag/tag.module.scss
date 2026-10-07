@@ -1,3 +1,11 @@
+// Public CSS variables (set them on the tag or any ancestor; the per-color
+// --tag-<color>-bg / --tag-<color>-text overrides are described on TagProps):
+// @css-var --tag-height Minimum height (every size; default: the content height)
+// @css-var --tag-padding-x Horizontal padding (every size)
+// @css-var --tag-font-size Font size (every size)
+// @css-var --tag-radius Corner radius of the rounded shape (defaults to --radius-sm)
+// @css-var --tag-gap Space between the icon, the label and the close button
+
 .tag {
   display: inline-flex;
   align-items: center;
@@ -5,24 +13,25 @@
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: default;
-  gap: 4px;
+  gap: var(--tag-gap, var(--space-1));
+  min-height: var(--tag-height, auto);
 
   // Size variants
   &.small {
-    padding: 2px 8px;
-    font-size: 12px;
+    padding: 2px var(--tag-padding-x, 8px);
+    font-size: var(--tag-font-size, var(--font-size-xs));
     line-height: 20px;
   }
 
   &.medium {
-    padding: 4px 12px;
-    font-size: 14px;
+    padding: 4px var(--tag-padding-x, 12px);
+    font-size: var(--tag-font-size, var(--font-size-md));
     line-height: 22px;
   }
 
   &.large {
-    padding: 6px 16px;
-    font-size: 16px;
+    padding: 6px var(--tag-padding-x, 16px);
+    font-size: var(--tag-font-size, var(--font-size-lg));
     line-height: 24px;
   }
 
@@ -32,11 +41,11 @@
   }
 
   &.rounded {
-    border-radius: 4px;
+    border-radius: var(--tag-radius, var(--radius-sm));
   }
 
   &.circle {
-    border-radius: 100px;
+    border-radius: var(--radius-full);
   }
 
   // Colors: `--tag-<color>-bg` / `--tag-<color>-text` override the theme
@@ -98,7 +107,7 @@
   .action {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--tag-gap, var(--space-1));
     padding: 0;
     margin: 0;
     border: 0;
@@ -131,7 +140,7 @@
   }
 
   &.elevation {
-    box-shadow: 0 2px 4px var(--shadow-color);
+    box-shadow: var(--shadow-sm);
   }
 
   &.disabled {
@@ -214,7 +223,7 @@
     &:focus-visible {
       outline: 2px solid var(--focus-ring-color);
       outline-offset: 1px;
-      border-radius: 2px;
+      border-radius: calc(var(--radius-sm) / 2);
     }
 
     &:disabled {
@@ -230,6 +239,33 @@
     transform: scale(0);
     animation: rippleAnimation 0.6s linear;
     background-color: color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    .ripple {
+      display: none;
+    }
+  }
+
+  // Forced colors: tinted / solid fills become the canvas, so every tag gets
+  // an outline (no layout shift), and the pressed state (an inset shadow
+  // otherwise) a thicker highlighted one.
+  @media (forced-colors: active) {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+
+    &.pressed {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+
+  @media print {
+    &.elevation {
+      box-shadow: none;
+    }
   }
 }
 

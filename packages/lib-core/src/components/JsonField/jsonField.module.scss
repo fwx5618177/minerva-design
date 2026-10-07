@@ -1,7 +1,13 @@
+// Public CSS variables (set them on the JSON field or any ancestor):
+// @css-var --json-field-gap Space between the toolbar, the editor and the status line
+// @css-var --json-field-font-family Font family of the editor (defaults to the monospace stack)
+// @css-var --json-field-font-size Font size of the editor
+// @css-var --json-field-tab-size Rendered width of a tab character in the editor
+// @css-var --json-field-status-font-size Font size of the validation status line
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--json-field-gap, var(--space-2));
   width: 100%;
   min-width: 0;
 }
@@ -12,12 +18,12 @@
 }
 
 .textarea {
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-md);
+  font-family: var(--json-field-font-family, var(--font-family-mono));
+  font-size: var(--json-field-font-size, var(--font-size-md));
   line-height: var(--line-height-base);
   white-space: pre;
   overflow-x: auto;
-  tab-size: 2;
+  tab-size: var(--json-field-tab-size, 2);
 }
 
 .status {
@@ -27,13 +33,13 @@
   min-height: 1.5em;
   color: var(--text-muted-color);
   font-family: var(--font-family-sans);
-  font-size: var(--font-size-sm);
+  font-size: var(--json-field-status-font-size, var(--font-size-sm));
   line-height: var(--line-height-base);
   overflow-wrap: anywhere;
 
   > svg {
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: var(--space-0-5);
   }
 
   > span {

@@ -5,6 +5,7 @@ import { getDocPage } from "../registry";
 import { importSnippet, type DemoEntry } from "../demos";
 import DemoBlock from "./DemoBlock";
 import PropsTable from "./PropsTable";
+import CssVarsTable from "./CssVarsTable";
 import styles from "./docs.module.scss";
 
 export interface DocPageProps {
@@ -89,6 +90,16 @@ const DocPage: React.FC<DocPageProps> = ({
           <h2 id="api">{t("doc.api")}</h2>
           {meta.api.map((name) => (
             <PropsTable key={name} page={id} name={name} />
+          ))}
+        </section>
+      )}
+
+      {meta.cssVars && meta.cssVars.length > 0 && (
+        <section className={styles.section} aria-labelledby="css-variables">
+          <h2 id="css-variables">{t("doc.cssVars")}</h2>
+          <p>{t("doc.cssVarsIntro")}</p>
+          {meta.cssVars.map((folder) => (
+            <CssVarsTable key={folder} page={id} folder={folder} />
           ))}
         </section>
       )}

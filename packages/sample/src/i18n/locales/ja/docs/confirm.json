@@ -1,6 +1,11 @@
 {
   "title": "Confirm 確認",
   "description": "操作の確認をユーザーに求めます。テーマに合わせた window.confirm の代替です。宣言的な ConfirmDialog を使うか、どこからでも confirm() を await できます。ConfirmProvider があればダイアログはアプリのツリー内に描画され、なければ独立したホストを必要に応じてマウントし、サーバーでは confirm() は false を返します。",
+  "usage": {
+    "title": "使い分け：useConfirm() か confirm() か",
+    "hook": "コンポーネント内では useConfirm() を呼びます。ダイアログは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、モーダルがそのホストにテーマ・パレット・トークン付きでポータルされ、既定のボタンラベルはその言語になります。ConfirmProvider があれば引き続きそれが描画します。",
+    "function": "React の外（イベントバス、API クライアント、ルーターガードなどコンポーネント以外のモジュール）では confirm() を直接インポートします。そこではフックが使えず、ダイアログはルートのテーマと言語を使います。"
+  },
   "demos": {
     "imperative": {
       "title": "命令的な confirm()",
@@ -12,11 +17,15 @@
     },
     "provider": {
       "title": "ConfirmProvider と併用",
-      "description": "useConfirm() はプロバイダーの confirm を返すため、ダイアログはアプリのコンテキストを共有します。同時の要求は順番に一つずつ表示されます。"
+      "description": "useConfirm() はプロバイダーが（呼び出し元の ConfigProvider スコープ内に）描画する confirm を返すため、ダイアログはアプリのコンテキストを共有します。同時の要求は順番に一つずつ表示されます。"
     },
     "declarative": {
       "title": "宣言的な ConfirmDialog",
       "description": "制御されたダイアログ。loading は onConfirm の実行中にスピナーを表示し、キャンセルを無効にします。"
+    },
+    "scoped": {
+      "title": "スコープ：useConfirm() と confirm()",
+      "description": "両方のボタンはネストした ConfigProvider（ダークテーマ、tech パレット、中国語）の中にあります。useConfirm() はそのスコープ内でダイアログを開き（ダークのトークン、中国語のボタンラベル）、confirm() はページのテーマと言語でルートに開きます。"
     }
   },
   "api": {
@@ -36,7 +45,7 @@
       "confirmDisabled": "確認ボタンをネイティブに無効化します（タブ順から外れます）。loading のみの場合はフォーカス可能なままですが、再度実行はできません"
     },
     "ConfirmProviderProps": {
-      "children": "アプリのサブツリー。useConfirm() / confirm() のダイアログはここに描画されます"
+      "children": "アプリのサブツリー。useConfirm() / confirm() のダイアログはここに描画されます（useConfirm() のダイアログは呼び出し元の ConfigProvider スコープ内）"
     }
   }
 }

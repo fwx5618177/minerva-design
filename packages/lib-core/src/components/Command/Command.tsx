@@ -60,6 +60,28 @@ export function matchesShortcut(
   return true;
 }
 
+/** Text inputs, textareas, selects and contenteditable hosts. */
+const isEditableTarget = (target: EventTarget | null): boolean => {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+  if (target instanceof HTMLTextAreaElement) return true;
+  if (target instanceof HTMLSelectElement) return true;
+  if (target instanceof HTMLInputElement) {
+    return ![
+      "button",
+      "checkbox",
+      "color",
+      "file",
+      "image",
+      "radio",
+      "range",
+      "reset",
+      "submit",
+    ].includes(target.type);
+  }
+  return false;
+};
+
 interface CommandPanelProps {
   items: CommandItem[];
   maxResults: number;
@@ -229,6 +251,15 @@ export const CommandDialog = ({
     if (!shortcutKey) return;
     const shortcuts = shortcutKey.split("\n");
     const onKeyDown = (event: KeyboardEvent) => {
+      // A shortcut without Ctrl / Meta / Alt (e.g. "/") is a printable key:
+      // while typing in a text field (including the palette's own search)
+      // it must reach the field instead of being swallowed.
+      const editable =
+        isEditableTarget(event.target) &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey;
+      if (editable || event.isComposing) return;
       if (!shortcuts.some((value) => matchesShortcut(event, value))) return;
       event.preventDefault();
       event.stopPropagation();

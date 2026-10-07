@@ -1,7 +1,14 @@
 // onSubmit, autoHighlight, IME safety, reopen on click, disabled / read-only
 // and FormControl integration.
 import React from "react";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import AutoComplete from "./AutoComplete";
@@ -11,6 +18,7 @@ import {
   FormControlContext,
   type FormControlContextValue,
 } from "../FormControl/context";
+import { Modal } from "../Modal";
 
 const OPTIONS: AutoCompleteOption[] = [
   { value: "1", label: "Lord of Mysteries", description: "Cuttlefish" },
@@ -311,5 +319,126 @@ describe("AutoComplete keyboard, submit and form integration", () => {
       "aria-controls",
       screen.getByRole("listbox").id,
     );
+  });
+});
+
+// APG combobox: Escape closes the listbox and keeps focus in the input; in a
+// Modal only the listbox (the topmost layer) closes.
+describe("AutoComplete keyboard with userEvent", () => {
+  it("Tab focuses the input, ArrowDown / ArrowUp wrap, Enter picks, Escape closes and keeps focus", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(<Search autoHighlight={false} onSelect={onSelect} />);
+    await user.tab();
+    expect(input()).toHaveFocus();
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await user.keyboard("{ArrowUp}");
+    expect(input()).toHaveAttribute("aria-activedescendant", options()[2].id);
+    await user.keyboard("{ArrowDown}");
+    expect(input()).toHaveAttribute("aria-activedescendant", options()[0].id);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(input()).toHaveAttribute("aria-expanded", "false");
+    expect(input()).not.toHaveAttribute("aria-activedescendant");
+    expect(input()).toHaveFocus();
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+    expect(onSelect).toHaveBeenCalledWith(OPTIONS[1]);
+    expect(input()).toHaveFocus();
+  });
+
+  it("Escape closes an open list without clearing; Escape on a closed list clears the input", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Search onChange={onChange} />);
+    await user.click(input());
+    await user.keyboard("Sword");
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    onChange.mockClear();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(input()).toHaveValue("Sword");
+    expect(onChange).not.toHaveBeenCalled();
+    await user.keyboard("{Escape}");
+    expect(input()).toHaveValue("");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith("");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(input()).toHaveFocus();
+    // already empty: nothing to report
+    await user.keyboard("{Escape}");
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("controlled: Escape on a closed list asks for an empty value via onChange", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const Controlled = () => {
+      const [text, setText] = React.useState("Lord");
+      return (
+        <Search
+          value={text}
+          onChange={(next) => {
+            onChange(next);
+            setText(next);
+          }}
+        />
+      );
+    };
+    const { unmount } = render(<Controlled />);
+    act(() => input().focus());
+    // focusing opens the list: the first Escape only closes it
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.keyboard("{Escape}");
+    expect(onChange).toHaveBeenCalledWith("");
+    expect(input()).toHaveValue("");
+    unmount();
+
+    // a parent that ignores onChange keeps its value
+    const fixed = vi.fn();
+    render(<Search value="Lord" onChange={fixed} />);
+    act(() => input().focus());
+    await user.keyboard("{Escape}{Escape}");
+    expect(fixed).toHaveBeenCalledWith("");
+    expect(input()).toHaveValue("Lord");
+  });
+
+  it("inside a Modal, Escape closes only the listbox, a second Escape the Modal", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Modal open onOpenChange={onOpenChange} title="Find a book">
+        <Search />
+      </Modal>,
+    );
+    await waitFor(() => expect(input()).toHaveFocus());
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(input()).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("inside a Modal, Escape on a closed list with text clears it and keeps the Modal open", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Modal open onOpenChange={onOpenChange} title="Find a book">
+        <Search />
+      </Modal>,
+    );
+    await waitFor(() => expect(input()).toHaveFocus());
+    await user.keyboard("Sword");
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    await user.keyboard("{Escape}");
+    expect(input()).toHaveValue("");
+    expect(onOpenChange).not.toHaveBeenCalled();
+    // now empty: Escape reaches the Modal
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });

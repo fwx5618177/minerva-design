@@ -26,8 +26,8 @@ describe("IconButton", () => {
     expect(button).toHaveAttribute("tabindex", "0");
   });
 
-  it("uses ariaLabel as the accessible name", () => {
-    render(<IconButton icon={<Icon />} ariaLabel="Delete item" />);
+  it("uses aria-label as the accessible name", () => {
+    render(<IconButton icon={<Icon />} aria-label="Delete item" />);
 
     expect(
       screen.getByRole("button", { name: "Delete item" }),
@@ -131,9 +131,9 @@ describe("IconButton", () => {
     render(<IconButton icon={<Icon />} onClick={onClick} loading />);
 
     const button = screen.getByRole("button", { name: "icon button" });
-    expect(button).toBeDisabled();
+    expect(button).toBeEnabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
     expect(button).toHaveClass("loading");
-    expect(button).toBeDisabled();
     expect(
       screen.getByRole("progressbar", { name: "Loading" }),
     ).toBeInTheDocument();
@@ -171,7 +171,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Info"
+          aria-label="Info"
           showTooltip
           tooltip={{ content: "More information" }}
         />,
@@ -191,7 +191,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Info"
+          aria-label="Info"
           disabled
           showTooltip
           tooltip={{ content: "More information" }}
@@ -208,26 +208,26 @@ describe("IconButton", () => {
 
     it("can toggle showTooltip between renders", () => {
       const { rerender } = render(
-        <IconButton icon={<Icon />} ariaLabel="Info" />,
+        <IconButton icon={<Icon />} aria-label="Info" />,
       );
 
       rerender(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Info"
+          aria-label="Info"
           showTooltip
           tooltip={{ content: "Hint" }}
         />,
       );
       expect(screen.getByRole("button", { name: "Info" })).toBeInTheDocument();
 
-      rerender(<IconButton icon={<Icon />} ariaLabel="Info" />);
+      rerender(<IconButton icon={<Icon />} aria-label="Info" />);
       expect(screen.getAllByRole("button")).toHaveLength(1);
     });
 
     it("survives toggling showTooltip and tooltip in every combination", () => {
       const { rerender } = render(
-        <IconButton icon={<Icon />} ariaLabel="Info" showTooltip />,
+        <IconButton icon={<Icon />} aria-label="Info" showTooltip />,
       );
       const variants = [
         { showTooltip: true, tooltip: { content: "Hint" } },
@@ -239,7 +239,7 @@ describe("IconButton", () => {
       variants.forEach((variant) => {
         expect(() =>
           rerender(
-            <IconButton icon={<Icon />} ariaLabel="Info" {...variant} />,
+            <IconButton icon={<Icon />} aria-label="Info" {...variant} />,
           ),
         ).not.toThrow();
         expect(screen.getAllByRole("button")).toHaveLength(1);
@@ -252,7 +252,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Info"
+          aria-label="Info"
           showTooltip
           tooltip={{ content: "More information" }}
           onClick={onClick}
@@ -273,7 +273,7 @@ describe("IconButton", () => {
 
   it("forwards ref to the button (React 19 ref prop)", () => {
     const ref = createRef<HTMLButtonElement>();
-    render(<IconButton icon={<Icon />} ariaLabel="Settings" ref={ref} />);
+    render(<IconButton icon={<Icon />} aria-label="Settings" ref={ref} />);
     expect(ref.current).toBe(screen.getByRole("button", { name: "Settings" }));
   });
 
@@ -292,7 +292,7 @@ describe("IconButton", () => {
 
   describe("toggle (pressed)", () => {
     it("is not a toggle by default", () => {
-      render(<IconButton icon={<Icon />} ariaLabel="Mute" />);
+      render(<IconButton icon={<Icon />} aria-label="Mute" />);
       expect(screen.getByRole("button")).not.toHaveAttribute("aria-pressed");
     });
 
@@ -303,7 +303,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Favorite"
+          aria-label="Favorite"
           defaultPressed={false}
           onPressedChange={onPressedChange}
           onClick={onClick}
@@ -348,7 +348,7 @@ describe("IconButton", () => {
         <StrictMode>
           <IconButton
             icon={<Icon />}
-            ariaLabel="Like"
+            aria-label="Like"
             onPressedChange={onPressedChange}
           />
         </StrictMode>,
@@ -363,7 +363,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Pin"
+          aria-label="Pin"
           disabled
           onPressedChange={onPressedChange}
         />,
@@ -382,7 +382,7 @@ describe("IconButton", () => {
       const { rerender } = render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Star"
+          aria-label="Star"
           pressed={false}
           onPressedChange={onPressedChange}
         />,
@@ -396,7 +396,7 @@ describe("IconButton", () => {
       rerender(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Star"
+          aria-label="Star"
           pressed
           onPressedChange={onPressedChange}
         />,
@@ -408,7 +408,7 @@ describe("IconButton", () => {
     });
 
     it("starts pressed with defaultPressed", () => {
-      render(<IconButton icon={<Icon />} ariaLabel="Pin" defaultPressed />);
+      render(<IconButton icon={<Icon />} aria-label="Pin" defaultPressed />);
       expect(screen.getByRole("button", { pressed: true })).toHaveClass(
         "pressed",
       );
@@ -420,7 +420,7 @@ describe("IconButton", () => {
       render(
         <IconButton
           icon={<Icon />}
-          ariaLabel="Lock"
+          aria-label="Lock"
           onClick={(e) => e.preventDefault()}
           onPressedChange={onPressedChange}
         />,
@@ -448,6 +448,69 @@ describe("IconButton", () => {
       );
       await user.click(screen.getByRole("button", { name: "Search" }));
       expect(onSubmit).toHaveBeenCalledTimes(1);
+      await user.keyboard("{Enter}");
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("loading", () => {
+    it("stays focusable and ignores Enter, Space and clicks", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      const onPressedChange = vi.fn();
+      render(
+        <>
+          <button type="button">Before</button>
+          <IconButton
+            icon={<Icon />}
+            label="Save"
+            loading
+            onClick={onClick}
+            onPressedChange={onPressedChange}
+          />
+        </>,
+      );
+      const button = screen.getByRole("button", { name: "Save" });
+      await user.click(screen.getByRole("button", { name: "Before" }));
+      await user.tab();
+      expect(button).toHaveFocus();
+      expect(button).not.toHaveAttribute("disabled");
+      expect(button).toHaveAttribute("aria-disabled", "true");
+      expect(button).toHaveAttribute("aria-busy", "true");
+      await user.keyboard("{Enter}");
+      await user.keyboard(" ");
+      await user.click(button);
+      expect(onClick).not.toHaveBeenCalled();
+      expect(onPressedChange).not.toHaveBeenCalled();
+      expect(button).toHaveFocus();
+    });
+
+    it("keeps focus when loading starts and activates again once done", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      const { rerender } = render(
+        <IconButton icon={<Icon />} label="Sync" onClick={onClick} />,
+      );
+      const button = screen.getByRole("button", { name: "Sync" });
+      await user.tab();
+      rerender(
+        <IconButton icon={<Icon />} label="Sync" onClick={onClick} loading />,
+      );
+      expect(button).toHaveFocus();
+      await user.keyboard("{Enter}");
+      expect(onClick).not.toHaveBeenCalled();
+      rerender(<IconButton icon={<Icon />} label="Sync" onClick={onClick} />);
+      expect(button).not.toHaveAttribute("aria-disabled");
+      expect(button).not.toHaveAttribute("aria-busy");
+      await user.keyboard("{Enter}");
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("uses the native disabled attribute when also disabled", () => {
+      render(<IconButton icon={<Icon />} label="Off" loading disabled />);
+      const button = screen.getByRole("button", { name: "Off" });
+      expect(button).toBeDisabled();
+      expect(button).not.toHaveAttribute("aria-disabled");
     });
   });
 });

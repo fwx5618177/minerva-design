@@ -1,6 +1,7 @@
 import React, { createContext, useId } from "react";
 import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import type { RadioGroupProps } from "./types";
 import styles from "./radio.module.scss";
 import { useFormControlContext } from "../FormControl/context";
@@ -26,11 +27,15 @@ const RadioGroup = ({
   defaultValue,
   name,
   label,
-  ariaLabel,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  id,
   onChange,
   disabled,
   children,
   className = "",
+  style,
   direction = "vertical",
   size,
   error = false,
@@ -38,6 +43,7 @@ const RadioGroup = ({
   required,
   color,
   ref,
+  ...rest
 }: RadioGroupProps) => {
   const [selected, setSelected] = useControllableState<
     string | number | null | undefined
@@ -55,14 +61,17 @@ const RadioGroup = ({
       helperText ? helperId : null,
       fc?.invalid && fc.hasErrorMessage ? fc.errorId : null,
       fc && !fc.invalid && fc.hasHelperText ? fc.helperId : null,
+      ariaDescribedBy,
     ]
       .filter(Boolean)
       .join(" ") || undefined;
-  const labelledBy = label
-    ? labelId
-    : !ariaLabel && fc
-      ? fc.labelId
-      : undefined;
+  const labelledBy = ariaLabelledBy
+    ? ariaLabelledBy
+    : label
+      ? labelId
+      : !ariaLabel && fc
+        ? fc.labelId
+        : undefined;
 
   const handleChange = (
     val: string | number,
@@ -81,6 +90,8 @@ const RadioGroup = ({
         isError && styles.error,
         className,
       )}
+      style={style}
+      {...pickDataAttributes(rest)}
     >
       {label && (
         <div id={labelId} className={styles.groupLabel}>
@@ -100,6 +111,7 @@ const RadioGroup = ({
         <div
           className={cn(styles.radioGroup, styles[direction])}
           role="radiogroup"
+          id={id}
           aria-labelledby={labelledBy}
           aria-label={label ? undefined : ariaLabel}
           aria-describedby={describedBy}

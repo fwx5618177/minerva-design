@@ -8,6 +8,7 @@ import {
 } from "react";
 import { toPlacement } from "@minerva/core";
 import { Slot } from "../../internal/Slot";
+import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";
 import { useLayerParent } from "../../internal/useDismissableLayer";
 import { MenuRoot, type FocusIntent } from "./MenuItems";
@@ -45,9 +46,9 @@ const Menu = ({
   disabled = false,
   modal = true,
   loop = true,
-  dir = "ltr",
+  dir: dirProp,
   className,
-  ariaLabel,
+  "aria-label": ariaLabel,
 }: MenuProps) => {
   const [open, setOpen] = useControllableState({
     value: openProp,
@@ -55,6 +56,13 @@ const Menu = ({
     onChange: onOpenChange,
   });
   const [trigger, setTrigger] = useState<HTMLElement | null>(null);
+  // Without `dir`, the menu (portalled out of the trigger's subtree) follows
+  // the reading direction inherited by the trigger, read when it opens.
+  const inheritedDir = useInheritedDirection(
+    trigger,
+    open && dirProp === undefined,
+  );
+  const dir = dirProp ?? inheritedDir;
   const tabContainer = useLayerParent();
   const generatedId = useId();
   const contentId = useId();
@@ -126,7 +134,7 @@ const Menu = ({
         dir={dir}
         modal={modal}
         className={className}
-        ariaLabel={ariaLabel}
+        aria-label={ariaLabel}
         labelledBy={triggerId}
         open={open && !disabled}
         setOpen={setOpen}

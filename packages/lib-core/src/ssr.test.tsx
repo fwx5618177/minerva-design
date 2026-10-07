@@ -5,135 +5,10 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
 import { componentSsrCases } from "./test-utils/componentSsrCases";
+import type { MonacoCodeEditorProps } from "./monaco";
 
-const {
-  Alert,
-  AutoComplete,
-  Avatar,
-  AvatarGroup,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  Cascader,
-  Checkbox,
-  ConfigProvider,
-  Divider,
-  Empty,
-  IconButton,
-  Pagination,
-  ProgressIndicator,
-  Radio,
-  RadioGroup,
-  Skeleton,
-  Switch,
-  Tag,
-  TimePicker,
-  Tooltip,
-  VirtualList,
-} = lib;
-
-const ownCases: Array<[string, React.ReactElement]> = [
-  [
-    "Alert",
-    <Alert color="info" title="Title" closable>
-      Body
-    </Alert>,
-  ],
-  [
-    "AutoComplete",
-    <AutoComplete name="a" label="A" options={[{ label: "x", value: "x" }]} />,
-  ],
-  ["Avatar", <Avatar name="Ada Lovelace" />],
-  [
-    "AvatarGroup",
-    <AvatarGroup>
-      <Avatar name="A" />
-      <Avatar name="B" />
-    </AvatarGroup>,
-  ],
-  [
-    "Badge",
-    <Badge content={3}>
-      <span>Inbox</span>
-    </Badge>,
-  ],
-  ["Button", <Button>Click</Button>],
-  [
-    "Card",
-    <Card>
-      <CardHeader>
-        <CardTitle>T</CardTitle>
-        <CardDescription>D</CardDescription>
-      </CardHeader>
-      <CardContent>C</CardContent>
-      <CardFooter>F</CardFooter>
-    </Card>,
-  ],
-  [
-    "Cascader",
-    <Cascader
-      name="c"
-      label="C"
-      options={[{ value: "a", label: "A" }]}
-      defaultValue={["a"]}
-    />,
-  ],
-  ["Checkbox", <Checkbox label="Check" defaultChecked />],
-  ["Divider", <Divider>Text</Divider>],
-  ["Empty", <Empty />],
-  [
-    "IconButton",
-    <IconButton
-      icon={<span />}
-      ariaLabel="Icon"
-      showTooltip
-      tooltip={{ content: "Tip" }}
-    />,
-  ],
-  [
-    "Pagination",
-    <Pagination total={100} showQuickJumper showSizeChanger showTotal />,
-  ],
-  ["ProgressIndicator", <ProgressIndicator />],
-  ["Radio", <Radio label="Radio" value="r" />],
-  [
-    "RadioGroup",
-    <RadioGroup label="Group" defaultValue="a">
-      <Radio value="a" label="A" />
-    </RadioGroup>,
-  ],
-  ["Skeleton", <Skeleton loading />],
-  ["Switch", <Switch label="Switch" defaultChecked />],
-  [
-    "Tag",
-    <Tag closable clickable>
-      Tag
-    </Tag>,
-  ],
-  ["TimePicker", <TimePicker defaultValue={new Date(2024, 0, 1, 9, 30, 0)} />],
-  [
-    "Tooltip",
-    <Tooltip content="Tip" defaultOpen>
-      <button type="button">T</button>
-    </Tooltip>,
-  ],
-  [
-    "VirtualList",
-    <VirtualList
-      items={[{ id: 1 }, { id: 2 }]}
-      maxHeight={100}
-      itemHeight={20}
-      renderItem={(item) => <span>{item.id}</span>}
-    />,
-  ],
-];
-
-const cases = [...ownCases, ...componentSsrCases];
+const cases = componentSsrCases;
+const { ConfigProvider } = lib;
 
 describe("SSR", () => {
   it("runs without a DOM", () => {
@@ -159,5 +34,34 @@ describe("SSR", () => {
     for (const name of components) {
       expect(tested.has(name), `${name} has an SSR case`).toBe(true);
     }
+  });
+
+  // Every source module (not only what index re-exports) must be importable
+  // on the server: no window / document / navigator access at import time.
+  const modules = import.meta.glob([
+    "./**/*.{ts,tsx}",
+    "!./**/*.test.{ts,tsx}",
+    "!./**/*.d.ts",
+    "!./test-utils/**",
+  ]);
+  it.each(Object.keys(modules))("imports %s without a DOM", async (path) => {
+    await expect(modules[path]()).resolves.toBeDefined();
+  });
+
+  it("renders the separate monaco entry to a string", async () => {
+    const { MonacoCodeEditor } = await import("./monaco");
+    const html = renderToString(
+      <ConfigProvider theme="auto">
+        <MonacoCodeEditor
+          // The engine is only used on the client, after mount.
+          monaco={{} as MonacoCodeEditorProps["monaco"]}
+          label="Code"
+          value="const a = 1;"
+          onChange={() => {}}
+          language="typescript"
+        />
+      </ConfigProvider>,
+    );
+    expect(typeof html).toBe("string");
   });
 });

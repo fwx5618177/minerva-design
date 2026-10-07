@@ -1,4 +1,4 @@
-import { LuRefreshCw } from "react-icons/lu";
+import { IconRefreshCw } from "../../internal/icons";
 import useI18n from "../../hooks/useI18n";
 import Button from "../Button/Button";
 import Pagination from "../Pagination/Pagination";
@@ -34,7 +34,7 @@ export function DataTable<T>({
               size="small"
               onClick={onRetry}
             >
-              <LuRefreshCw aria-hidden="true" className={styles.retryIcon} />
+              <IconRefreshCw aria-hidden="true" className={styles.retryIcon} />
               {retryLabel ?? t("table.retry")}
             </Button>
           )}

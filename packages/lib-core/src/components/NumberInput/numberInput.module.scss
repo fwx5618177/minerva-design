@@ -1,3 +1,11 @@
+// Public CSS variables (set them on the number input or any ancestor):
+// @css-var --number-input-height Height (every size; defaults to the density's control height of the size)
+// @css-var --number-input-padding-x Horizontal padding of the text (defaults to the density's small control padding)
+// @css-var --number-input-radius Corner radius (defaults to --radius-md)
+// @css-var --number-input-font-size Font size (every size)
+// @css-var --number-input-background Background color
+// @css-var --number-input-border-color Border color at rest (also the stepper separators)
+// @css-var --number-input-stepper-width Width of the increment / decrement column
 .root {
   position: relative;
   display: inline-flex;
@@ -5,9 +13,9 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  background-color: var(--number-input-background, var(--surface-color));
+  border: 1px solid var(--number-input-border-color, var(--border-color));
+  border-radius: var(--number-input-radius, var(--radius-md));
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-base),
@@ -82,7 +90,7 @@
   font: inherit;
   color: var(--text-color);
   font-variant-numeric: tabular-nums;
-  padding: 0 var(--space-3);
+  padding: 0 var(--number-input-padding-x, var(--control-padding-x-sm));
 
   &::placeholder {
     color: var(--text-muted-color);
@@ -94,25 +102,25 @@
 }
 
 .small {
-  height: 32px;
-  font-size: var(--font-size-sm);
+  height: var(--number-input-height, var(--control-height-sm));
+  font-size: var(--number-input-font-size, var(--font-size-sm));
 }
 
 .medium {
-  height: 40px;
-  font-size: var(--font-size-md);
+  height: var(--number-input-height, var(--control-height-md));
+  font-size: var(--number-input-font-size, var(--font-size-md));
 }
 
 .large {
-  height: 48px;
-  font-size: var(--font-size-lg);
+  height: var(--number-input-height, var(--control-height-lg));
+  font-size: var(--number-input-font-size, var(--font-size-lg));
 }
 
 .stepper {
   display: flex;
   flex-direction: column;
-  width: 22px;
-  border-left: 1px solid var(--border-color);
+  width: var(--number-input-stepper-width, 22px);
+  border-inline-start: 1px solid var(--number-input-border-color, var(--border-color));
   flex-shrink: 0;
 }
 
@@ -147,10 +155,18 @@
 }
 
 .stepUp {
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 0 calc(var(--radius-md) - 1px) 0 0;
+  border-bottom: 1px solid var(--number-input-border-color, var(--border-color));
+  border-start-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 1px);
 }
 
 .stepDown {
-  border-radius: 0 0 calc(var(--radius-md) - 1px) 0;
+  border-end-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 1px);
+}
+
+// Forced colors drop the focus halo: draw a system-colored outline instead.
+@media (forced-colors: active) {
+  .root:focus-within {
+    outline: 2px solid Highlight;
+    outline-offset: 1px;
+  }
 }

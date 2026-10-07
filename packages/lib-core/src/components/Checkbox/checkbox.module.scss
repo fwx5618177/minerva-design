@@ -3,27 +3,30 @@
 .checkboxWrapper {
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 
   &.error {
     @include error-animation;
   }
 }
 
-// Override hooks (set them on `className` or any ancestor):
-//   --checkbox-checked-color    background / border of the checked box
-//                               (defaults to the `color` prop's accent)
-//   --checkbox-checkmark-color  checkmark / indeterminate dash
-//   --checkbox-box-color        background of the unchecked box
-//   --checkbox-border-color     border of the unchecked box
+// Public CSS variables (set them on `className` or any ancestor):
+// @css-var --checkbox-checked-color Background / border of the checked or indeterminate box (defaults to the color prop's accent)
+// @css-var --checkbox-checkmark-color Color of the checkmark / indeterminate dash
+// @css-var --checkbox-box-color Background of the unchecked box
+// @css-var --checkbox-border-color Border of the unchecked box
+// @css-var --checkbox-size Width and height of the box (every size)
+// @css-var --checkbox-radius Corner radius of the box for the square and rounded shapes
+// @css-var --checkbox-gap Space between the box and the label
+// @css-var --checkbox-label-font-size Font size of the label (every size)
 .checkbox {
   // Accent of the `color` prop (set by the color classes below)
-  --checkbox-accent: var(--primary-color);
+  --_checkbox-accent: var(--primary-color);
 
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--checkbox-gap, var(--space-2));
   cursor: pointer;
   user-select: none;
 
@@ -64,8 +67,8 @@
   margin: 0;
 
   &:checked ~ .checkmark {
-    background-color: var(--checkbox-checked-color, var(--checkbox-accent));
-    border: 1px solid var(--checkbox-checked-color, var(--checkbox-accent));
+    background-color: var(--checkbox-checked-color, var(--_checkbox-accent));
+    border: 1px solid var(--checkbox-checked-color, var(--_checkbox-accent));
 
     &:after {
       display: block;
@@ -86,11 +89,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--checkbox-size, 24px);
+  height: var(--checkbox-size, 24px);
   background-color: var(--checkbox-box-color, var(--surface-color));
   border: 1px solid var(--checkbox-border-color, var(--border-strong-color));
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
 
   &:after {
     content: "";
@@ -106,7 +109,7 @@
 
 // Shapes
 .square .checkmark {
-  border-radius: 2px;
+  border-radius: var(--checkbox-radius, calc(var(--radius-sm) / 2));
 }
 
 .circle .checkmark {
@@ -114,14 +117,14 @@
 }
 
 .rounded .checkmark {
-  border-radius: 4px;
+  border-radius: var(--checkbox-radius, var(--radius-sm));
 }
 
 // Sizes
 .small {
   .checkmark {
-    width: 15px;
-    height: 15px;
+    width: var(--checkbox-size, 15px);
+    height: var(--checkbox-size, 15px);
 
     &:after {
       width: 3px;
@@ -132,14 +135,14 @@
   }
 
   .label {
-    font-size: 13px;
+    font-size: var(--checkbox-label-font-size, var(--font-size-sm));
   }
 }
 
 .large {
   .checkmark {
-    width: 32px;
-    height: 32px;
+    width: var(--checkbox-size, 32px);
+    height: var(--checkbox-size, 32px);
 
     &:after {
       width: 7px;
@@ -150,20 +153,20 @@
   }
 
   .label {
-    font-size: 16px;
+    font-size: var(--checkbox-label-font-size, var(--font-size-lg));
   }
 }
 
 .label {
-  font-size: 14px;
+  font-size: var(--checkbox-label-font-size, var(--font-size-md));
   color: var(--text-color);
 }
 
 .helperTextWrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
 
   .errorIcon {
     color: var(--danger-color);
@@ -175,7 +178,7 @@
 }
 
 .helperText {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--text-secondary-color);
 
   &.errorText {
@@ -185,8 +188,8 @@
 
 // Indeterminate state
 input:indeterminate ~ .checkmark {
-  background-color: var(--checkbox-checked-color, var(--checkbox-accent));
-  border-color: var(--checkbox-checked-color, var(--checkbox-accent));
+  background-color: var(--checkbox-checked-color, var(--_checkbox-accent));
+  border-color: var(--checkbox-checked-color, var(--_checkbox-accent));
 
   &:after {
     display: block;
@@ -208,17 +211,57 @@ input:indeterminate ~ .checkmark {
 
 // Colors of the checked / indeterminate box
 .colorSuccess {
-  --checkbox-accent: var(--success-color);
+  --_checkbox-accent: var(--success-color);
 }
 
 .colorInfo {
-  --checkbox-accent: var(--info-color);
+  --_checkbox-accent: var(--info-color);
 }
 
 .colorWarning {
-  --checkbox-accent: var(--warning-color);
+  --_checkbox-accent: var(--warning-color);
 }
 
 .colorDanger {
-  --checkbox-accent: var(--danger-color);
+  --_checkbox-accent: var(--danger-color);
+}
+
+// Forced colors: the checked fill is a background, which the browser would
+// drop. Paint the box with system colors instead.
+@media (forced-colors: active) {
+  .checkmark {
+    forced-color-adjust: none;
+    background-color: Canvas;
+    border-color: ButtonText;
+
+    &::after {
+      border-color: HighlightText;
+    }
+  }
+
+  .input:checked ~ .checkmark,
+  input:indeterminate ~ .checkmark {
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
+  input:indeterminate ~ .checkmark::after {
+    background-color: HighlightText;
+  }
+
+  .input:focus-visible ~ .checkmark {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .checkbox.disabled .checkmark {
+    border-color: GrayText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkboxWrapper.error,
+  .checkbox::before {
+    animation: none !important;
+  }
 }

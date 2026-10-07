@@ -28,22 +28,27 @@
     },
     "with-icon": {
       "title": "アイコン付き",
-      "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには ariaLabel を指定してください。"
+      "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
     },
     "icons-loading": {
       "title": "アイコン・読み込みテキスト・全幅",
       "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+    },
+    "form": {
+      "title": "フォーム内の type",
+      "description": "Button の既定は type=\"button\" なので、<form> 内のボタン（プレビュー、行の追加、ダイアログを開くなど）が誤ってフォームを送信することはありません。送信ボタンには type=\"submit\"、リセットには type=\"reset\" を明示してください。"
     }
   },
   "api": {
     "ButtonProps": {
+      "type": "ネイティブのボタン種別。既定は \"button\"（HTML の既定 \"submit\" とは異なる）なので、フォーム内の Button が誤って送信することはありません。送信ボタンには type=\"submit\"、リセットボタンには \"reset\" を使います",
       "onClick": "クリック時に呼ばれます（無効時は呼ばれません）",
       "children": "ボタンの内容",
       "className": "追加のクラス名",
       "color": "ボタンのセマンティックカラー",
       "variant": "見た目のスタイル：solid（塗りつぶし）、outline（枠線のみ）、ghost（ホバーまで透明）、link（テキストリンク風）",
       "size": "ボタンのサイズ",
-      "ariaLabel": "アクセシブルなラベル。アイコンのみのボタンでは必須",
+      "aria-label": "アクセシブルなラベル。アイコンのみのボタンでは必須",
       "disabled": "ボタンを無効にします",
       "loading": "スピナーを表示し、実行をブロックします（aria-busy / aria-disabled）。ボタンはフォーカス可能なままなので、キーボードフォーカスが失われません",
       "active": "押下/アクティブ状態で表示します",
@@ -56,5 +61,14 @@
       "endIcon": "内容の後に表示するアイコン",
       "fullWidth": "ボタンをコンテナの全幅に広げます"
     }
+  },
+  "cssVars": {
+    "--button-height": "最小の高さ（全サイズ。既定値は現在の密度におけるサイズ別のコントロール高さ）",
+    "--button-padding-x": "左右のパディング（全サイズ）",
+    "--button-radius": "角丸（既定は --radius-md。shape / borderRadius プロパティが優先）",
+    "--button-font-size": "フォントサイズ（全サイズ）",
+    "--button-font-weight": "フォントの太さ",
+    "--button-gap": "アイコンとラベルの間隔",
+    "--button-label-white-space": "ラベルの white-space：nowrap（既定、省略表示）または normal（折り返し）"
   }
 }

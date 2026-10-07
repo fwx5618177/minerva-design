@@ -1,7 +1,13 @@
+// Public CSS variables (set them on the form control or any ancestor):
+// @css-var --form-control-gap Space between the label, the field and the helper / error text
+// @css-var --form-control-label-font-size Font size of the label
+// @css-var --form-control-label-color Color of the label
+// @css-var --form-control-helper-font-size Font size of the helper and error texts
+// @css-var --form-control-required-color Color of the required marker
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--form-control-gap, var(--space-2));
   width: 100%;
   min-width: 0;
 }
@@ -10,19 +16,19 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: var(--font-size-sm);
+  font-size: var(--form-control-label-font-size, var(--font-size-sm));
   font-weight: var(--font-weight-medium);
-  color: var(--text-color);
+  color: var(--form-control-label-color, var(--text-color));
   line-height: var(--line-height-tight);
 }
 
 .required {
-  color: var(--danger-color);
-  margin-left: var(--space-0-5);
+  color: var(--form-control-required-color, var(--danger-color));
+  margin-inline-start: var(--space-0-5);
 }
 
 .helper {
-  font-size: var(--font-size-sm);
+  font-size: var(--form-control-helper-font-size, var(--font-size-sm));
   color: var(--text-secondary-color);
   line-height: var(--line-height-base);
 }
@@ -31,7 +37,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: var(--font-size-sm);
+  font-size: var(--form-control-helper-font-size, var(--font-size-sm));
   color: var(--danger-color-text, var(--danger-color));
   line-height: var(--line-height-base);
 }

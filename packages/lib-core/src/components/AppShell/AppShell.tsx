@@ -6,12 +6,12 @@ import {
   useSyncExternalStore,
 } from "react";
 import {
-  LuPanelLeftClose,
-  LuPanelLeftOpen,
-  LuPin,
-  LuPinOff,
-  LuX,
-} from "react-icons/lu";
+  IconPanelLeftClose,
+  IconPanelLeftOpen,
+  IconPin,
+  IconPinOff,
+  IconX,
+} from "../../internal/icons";
 import { IconButton } from "../IconButton";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
@@ -46,6 +46,8 @@ const getServerMobile = () => false;
  * AppShell: application chrome with a desktop sidebar (expanded, compact rail or
  * floating rail), a sticky header and a single `main` landmark. At 768px and
  * below the navigation moves into a modal drawer opened from the header.
+ * A "Skip to content" link (first focusable element, visible on focus) moves
+ * focus to `main`.
  */
 const AppShell = ({
   brand,
@@ -60,6 +62,7 @@ const AppShell = ({
   defaultSidebarMode = "expanded",
   onSidebarModeChange,
   labels: overrides,
+  skipLink = true,
   className,
   ...rest
 }: AppShellProps) => {
@@ -104,6 +107,10 @@ const AppShell = ({
 
   const headerToggle = useRef<HTMLButtonElement>(null);
   const sidebarId = useId();
+  const mainId = useId();
+  const mainRef = useRef<HTMLElement>(null);
+  const skipLinkLabel =
+    typeof skipLink === "string" ? skipLink : t("appShell.skipToContent");
   const drawerOpen = isMobile && mobileOpen;
 
   // Leaving the mobile layout with the drawer open: its trigger is gone, so
@@ -134,15 +141,15 @@ const AppShell = ({
       size="small"
       shape="square"
       className={styles.control}
-      ariaLabel={compactMode ? labels.expand : labels.collapse}
+      aria-label={compactMode ? labels.expand : labels.collapse}
       aria-controls={sidebarId}
       aria-expanded={!collapsed}
       onClick={() => setMode(compactMode ? "expanded" : "compact")}
       icon={
         compactMode ? (
-          <LuPanelLeftOpen aria-hidden="true" />
+          <IconPanelLeftOpen aria-hidden="true" />
         ) : (
-          <LuPanelLeftClose aria-hidden="true" />
+          <IconPanelLeftClose aria-hidden="true" />
         )
       }
     />
@@ -156,6 +163,20 @@ const AppShell = ({
         data-sidebar-expanded={!collapsed || undefined}
         {...rest}
       >
+        {skipLink !== false && (
+          <a
+            className={styles.skipLink}
+            href={`#${mainId}`}
+            onClick={(event) => {
+              // Focus main directly: no hash change (routers) and focus
+              // really lands there (tabindex="-1")
+              event.preventDefault();
+              mainRef.current?.focus();
+            }}
+          >
+            {skipLinkLabel}
+          </a>
+        )}
         {!isMobile && (
           <aside
             id={sidebarId}
@@ -194,7 +215,7 @@ const AppShell = ({
                 shape="square"
                 className={styles.control}
                 aria-pressed={mode === "floating"}
-                ariaLabel={
+                aria-label={
                   mode === "floating"
                     ? labels.disableFloating
                     : labels.enableFloating
@@ -204,9 +225,9 @@ const AppShell = ({
                 }
                 icon={
                   mode === "floating" ? (
-                    <LuPinOff aria-hidden="true" />
+                    <IconPinOff aria-hidden="true" />
                   ) : (
-                    <LuPin aria-hidden="true" />
+                    <IconPin aria-hidden="true" />
                   )
                 }
               />
@@ -222,8 +243,8 @@ const AppShell = ({
                   size="small"
                   shape="square"
                   className={styles.control}
-                  ariaLabel={labels.openNavigation}
-                  icon={<LuPanelLeftOpen aria-hidden="true" />}
+                  aria-label={labels.openNavigation}
+                  icon={<IconPanelLeftOpen aria-hidden="true" />}
                 />
               </DialogTrigger>
             ) : (
@@ -232,7 +253,14 @@ const AppShell = ({
             <div className={styles.headerActions}>{headerActions}</div>
           </header>
           {pageNavigation}
-          <main className={styles.content}>{children}</main>
+          <main
+            ref={mainRef}
+            id={mainId}
+            tabIndex={-1}
+            className={styles.content}
+          >
+            {children}
+          </main>
         </div>
       </div>
       {isMobile && (
@@ -250,7 +278,7 @@ const AppShell = ({
             className={styles.drawerClose}
             aria-label={labels.closeNavigation}
           >
-            <LuX aria-hidden="true" />
+            <IconX aria-hidden="true" />
           </DialogClose>
         </DialogContent>
       )}

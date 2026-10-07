@@ -1,6 +1,11 @@
 {
   "title": "Toast",
   "description": "Notifications temporaires avec un titre, une description et une couleur sémantique, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application, si bien qu’elles héritent de son contexte (thème, langue). Chargement, suivi de promesse, mise à jour sur place, actions et nombre maximal sont intégrés. Compatible avec le rendu serveur.",
+  "usage": {
+    "title": "Lequel choisir : useToast() ou toast()",
+    "hook": "Dans un composant, appelez useToast() : ses toasts suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, ils sont rendus dans son conteneur de portail, avec son thème, sa palette et ses tokens, et leurs libellés intégrés utilisent sa langue. Le ToastProvider propriétaire les affiche toujours, avec sa position, son max et ses libellés.",
+    "function": "Hors de React (bus d’événements, clients d’API, stores et autres modules non composants), importez directement toast() : aucun hook n’y est disponible, et ses toasts utilisent la portée du ToastProvider, en général le thème et la langue racines."
+  },
   "demos": {
     "basic": {
       "title": "Utilisation de base",
@@ -24,7 +29,15 @@
     },
     "dedupe": {
       "title": "Le même id remplace",
-      "description": "Afficher un toast avec l’id d’un toast visible le remplace et relance son minuteur au lieu d’empiler des doublons (pratique pour les erreurs de polling). useToast renvoie la même fonction toast."
+      "description": "Afficher un toast avec l’id d’un toast visible le remplace et relance son minuteur au lieu d’empiler des doublons (pratique pour les erreurs de polling)."
+    },
+    "scoped": {
+      "title": "Portée : useToast() ou toast()",
+      "description": "Les deux boutons sont dans un ConfigProvider imbriqué (thème sombre, palette tech, chinois). useToast() affiche son toast dans cette portée (tokens sombres, libellé de fermeture en chinois, sa propre zone à la même position) ; toast() l’affiche à la racine, avec le thème et la langue de la page."
+    },
+    "keyboard": {
+      "title": "Clavier",
+      "description": "F8 (la prop hotkey, aussi annoncée dans le libellé de la région « Notifications (F8) ») déplace le focus vers les toasts. Échap ferme le toast qui a le focus ; après une fermeture, le focus passe au bouton de fermeture du toast suivant, puis revient là où il était avant d'entrer dans les toasts."
     }
   },
   "api": {
@@ -49,8 +62,9 @@
       "children": "Contenu de l’application ; la zone des toasts est rendue après lui",
       "max": "Nombre maximal de toasts affichés à la fois ; au-delà, les plus anciens se ferment d’abord",
       "pauseOnHover": "Suspend le minuteur de fermeture automatique pendant le survol ou le focus d’un toast",
-      "ariaLabel": "Libellé accessible de la région des toasts",
-      "closeLabel": "Libellé accessible des boutons de fermeture"
+      "aria-label": "Libellé accessible de la région des toasts, utilisé tel quel (celui par défaut inclut le raccourci)",
+      "closeLabel": "Libellé accessible des boutons de fermeture",
+      "hotkey": "Touches pressées ensemble pour déplacer le focus vers la région des toasts (la première qui en contient) : codes de touche (F8, KeyT), touches ou modificateurs (altKey, ctrlKey, metaKey, shiftKey). Affichées dans le libellé par défaut de la région, p. ex. « Notifications (F8) » ; un tableau vide la désactive"
     },
     "ToastApi": {
       "info": "Affiche un toast d’information avec le titre donné",
@@ -67,5 +81,15 @@
       "success": "Titre une fois la promesse résolue (un nœud, ou une fonction de la valeur)",
       "error": "Titre une fois la promesse rejetée (un nœud, ou une fonction de l’erreur)"
     }
+  },
+  "cssVars": {
+    "--toast-width": "Largeur de la pile de notifications (limitée par la fenêtre)",
+    "--toast-gap": "Espace entre les notifications empilées",
+    "--toast-offset": "Distance entre la pile et les bords de la fenêtre",
+    "--toast-padding": "Marge intérieure d'une notification",
+    "--toast-radius": "Rayon des coins d'une notification (par défaut --radius-md)",
+    "--toast-shadow": "Ombre d'une notification (par défaut --shadow-lg)",
+    "--toast-background": "Fond de base d'une notification (sous la teinte de couleur)",
+    "--toast-z-index": "Ordre d'empilement de la pile (par défaut --z-toast)"
   }
 }

@@ -152,11 +152,11 @@ describe("Switch", () => {
     expect(thumb.style.backgroundColor).toBe("");
   });
 
-  it("applies custom label, track and thumb styles", () => {
+  it("applies custom root, track and thumb styles", () => {
     const { container } = render(
       <Switch
         label="S"
-        labelStyle={{ margin: "3px" }}
+        style={{ margin: "3px" }}
         trackStyle={{ opacity: "0.5" }}
         thumbStyle={{ width: "10px" }}
       />,

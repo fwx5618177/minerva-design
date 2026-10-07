@@ -22,6 +22,7 @@ import type {
   TabsProps,
   TabsVariant,
 } from "./types";
+import { resolveDirection } from "../../internal/direction";
 import styles from "./tabs.module.scss";
 
 interface TabsContextValue {
@@ -30,7 +31,8 @@ interface TabsContextValue {
   select: (value: string) => void;
   variant: TabsVariant;
   orientation: TabsOrientation;
-  dir: "ltr" | "rtl";
+  /** Explicit `dir` prop; `undefined` inherits the direction from the DOM. */
+  dir: "ltr" | "rtl" | undefined;
   activationMode: "automatic" | "manual";
 }
 
@@ -43,7 +45,7 @@ const TabsContext = createContext<TabsContextValue>({
   select: () => {},
   variant: "line",
   orientation: "horizontal",
-  dir: "ltr",
+  dir: undefined,
   activationMode: "automatic",
 });
 
@@ -92,7 +94,7 @@ export const Tabs = ({
         select: setValue,
         variant,
         orientation,
-        dir: dir ?? "ltr",
+        dir,
         activationMode,
       }}
     >
@@ -211,7 +213,7 @@ export const TabList = ({
       count: tabs.length,
       key: event.key,
       orientation,
-      dir,
+      dir: resolveDirection(dir, list),
       loop,
       isDisabled: (index) => tabs[index].disabled,
     });

@@ -41,6 +41,10 @@
     "animations": {
       "title": "动画",
       "description": "选择入场动画或将其关闭。"
+    },
+    "return-focus": {
+      "title": "关闭后的焦点",
+      "description": "通过关闭按钮关闭警告提示后，焦点不会落到页面上：它会移到警告之后的下一个可聚焦元素（没有则移到前一个，再没有则移到其容器），或移到 returnFocus 指定的元素（元素、ref 或函数）。"
     }
   },
   "api": {
@@ -73,7 +77,17 @@
       "expandLabel": "内容收起时展开按钮的无障碍标签",
       "collapseLabel": "内容展开时收起按钮的无障碍标签",
       "iconLabel": "状态图标的无障碍标签",
-      "role": "提示的 ARIA 角色。危险与警告会打断播报（\"alert\"），信息与成功为礼貌播报（\"status\"）"
+      "role": "提示的 ARIA 角色。危险与警告会打断播报（\"alert\"），信息与成功为礼貌播报（\"status\"）",
+      "returnFocus": "通过关闭按钮关闭后接收焦点的元素：元素、ref 或函数。未设置时焦点移到警告之后的下一个可聚焦元素（没有则移到前一个，再没有则移到其容器），绝不会落到 <body>"
     }
+  },
+  "cssVars": {
+    "--alert-padding": "内边距（所有尺寸；默认为对应尺寸的内边距）",
+    "--alert-radius": "圆角（默认 --radius-sm，rounded 时为 --radius-lg）",
+    "--alert-font-size": "字号（所有尺寸）",
+    "--alert-icon-size": "状态图标的大小（所有尺寸）",
+    "--alert-gap": "图标、内容与操作之间的间距",
+    "--alert-shadow": "带阴影提示的阴影（默认 --shadow-sm）",
+    "--alert-margin-bottom": "提示下方的间距"
   }
 }

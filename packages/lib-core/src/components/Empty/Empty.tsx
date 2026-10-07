@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import { RiInboxLine } from "react-icons/ri";
+import { IconInbox } from "../../internal/icons";
 import styles from "./empty.module.scss";
 import type { EmptyProps } from "./types";
 import { cn } from "../../utils/cn";
@@ -7,7 +7,7 @@ import useI18n from "../../hooks/useI18n";
 
 /** Default icon; decorative, the description names the empty state */
 const DefaultIcon = () => (
-  <RiInboxLine size={40} className={styles.defaultIcon} aria-hidden="true" />
+  <IconInbox size={40} className={styles.defaultIcon} aria-hidden="true" />
 );
 
 /** Built-in illustration (decorative) */

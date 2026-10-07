@@ -1,17 +1,27 @@
+// Public CSS variables (set them on the menu content or any ancestor):
+// @css-var --menu-min-width Minimum width of the menu panel
+// @css-var --menu-max-width Maximum width of the menu panel
+// @css-var --menu-max-height Maximum height of the menu panel (scrolls beyond)
+// @css-var --menu-padding Inner padding of the menu panel
+// @css-var --menu-radius Corner radius of the menu panel (defaults to --radius-lg)
+// @css-var --menu-shadow Shadow of the menu panel (defaults to --shadow-md)
+// @css-var --menu-item-height Minimum height of an item (every size; defaults to the density's control height)
+// @css-var --menu-z-index Stacking order of the menu panel (defaults to --z-popover)
+
 .content {
-  z-index: var(--z-popover);
+  z-index: var(--menu-z-index, var(--z-popover));
   box-sizing: border-box;
-  min-width: min(12rem, calc(100vw - 1rem));
-  max-width: min(22rem, calc(100vw - 1rem));
-  max-height: min(24rem, calc(100vh - 1rem));
+  min-width: var(--menu-min-width, min(12rem, calc(100vw - 1rem)));
+  max-width: var(--menu-max-width, min(22rem, calc(100vw - 1rem)));
+  max-height: var(--menu-max-height, min(24rem, calc(100vh - 1rem)));
   overflow: auto;
   outline: none;
-  padding: var(--space-1);
+  padding: var(--menu-padding, var(--space-1));
   border: 1px solid var(--border-strong-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--menu-radius, var(--radius-lg));
   background: var(--surface-elevated-color);
   color: var(--text-color);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--menu-shadow, var(--shadow-md));
   font-family: var(--font-family-sans);
   font-size: var(--font-size-md);
   line-height: var(--line-height-base);
@@ -22,8 +32,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 2.5rem;
-  padding: var(--space-2) var(--space-3);
+  min-height: var(--menu-item-height, var(--control-height-md));
+  padding: var(--row-padding-y) var(--row-padding-x);
   border-radius: var(--radius-md);
   color: var(--text-color);
   outline: none;
@@ -39,6 +49,18 @@
   &[data-disabled] {
     color: var(--text-disabled-color);
     pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    &[data-highlighted],
+    &[data-state="open"] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+
+    &[data-disabled] {
+      color: GrayText;
+    }
   }
 }
 
@@ -88,7 +110,7 @@
 }
 
 .label {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--row-padding-y) var(--row-padding-x);
   font-size: var(--font-size-xs);
   color: var(--text-muted-color);
 }
@@ -100,6 +122,12 @@
 }
 
 .small .item {
-  min-height: 2rem;
+  min-height: var(--menu-item-height, var(--control-height-sm));
   padding: var(--space-1) var(--space-2);
+}
+
+@media print {
+  .content {
+    display: none;
+  }
 }

@@ -7,7 +7,7 @@ export default function BilateralAndSegmentedDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Switch
-        ariaLabel="Data source"
+        aria-label="Data source"
         offLabel="Business BFF"
         onLabel="Mock response"
         checked={mock}
@@ -15,7 +15,7 @@ export default function BilateralAndSegmentedDemo() {
       />
       <Switch
         variant="segmented"
-        ariaLabel="Data source"
+        aria-label="Data source"
         offLabel="Business BFF"
         onLabel="Mock response"
         checked={mock}

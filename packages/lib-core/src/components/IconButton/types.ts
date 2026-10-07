@@ -25,7 +25,7 @@ export interface IconButtonProps extends Omit<
   children?: React.ReactNode;
   /**
    * Accessible name of the button, also shown as its tooltip (unless
-   * showTooltip is false). Takes precedence over ariaLabel
+   * showTooltip is false). Takes precedence over aria-label
    */
   label?: string;
   /**
@@ -55,7 +55,9 @@ export interface IconButtonProps extends Omit<
    */
   disabled?: boolean;
   /**
-   * Replaces the icon with a spinner and blocks interaction
+   * Replaces the icon with a spinner and ignores activation (click, Enter,
+   * Space, form submission) while staying focusable: exposed as
+   * aria-busy + aria-disabled instead of the native disabled attribute
    * @default false
    */
   loading?: boolean;
@@ -87,5 +89,5 @@ export interface IconButtonProps extends Omit<
    * Accessible label; always set it, since the button only contains an icon
    * @default "icon button" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
 }

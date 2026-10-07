@@ -1,19 +1,32 @@
+// Public CSS variables (set them on the popover content or any ancestor):
+// @css-var --popover-min-width Minimum width of the panel
+// @css-var --popover-max-width Maximum width of the panel
+// @css-var --popover-padding Inner padding of the panel
+// @css-var --popover-radius Corner radius of the panel (defaults to --radius-lg)
+// @css-var --popover-background Background of the panel and its arrow
+// @css-var --popover-border-color Border color of the panel and its arrow
+// @css-var --popover-shadow Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)
+// @css-var --popover-z-index Stacking order of the panel (defaults to --z-popover)
+//
+// Internal: --_popover-surface / --_popover-border / --_popover-shadow carry
+// the dark-theme look (set on the [data-theme] elements, see below).
+
 // Positioned wrapper (fixed, left / top); the panel inside animates freely.
 .positioner {
-  z-index: var(--z-popover);
+  z-index: var(--popover-z-index, var(--z-popover));
 }
 
 .content {
   position: relative;
-  background-color: var(--popover-surface, var(--surface-elevated-color));
+  background-color: var(--popover-background, var(--_popover-surface, var(--surface-elevated-color)));
   color: var(--text-color);
-  border: 1px solid var(--popover-border, var(--border-color));
-  border-radius: var(--radius-lg);
-  box-shadow: var(--popover-shadow, var(--shadow-lg));
-  padding: var(--space-3);
-  z-index: var(--z-popover);
-  min-width: min(13.75rem, calc(100vw - 2rem));
-  max-width: min(22.5rem, calc(100vw - 2rem));
+  border: 1px solid var(--popover-border-color, var(--_popover-border, var(--border-color)));
+  border-radius: var(--popover-radius, var(--radius-lg));
+  box-shadow: var(--popover-shadow, var(--_popover-shadow, var(--shadow-lg)));
+  padding: var(--popover-padding, var(--space-3));
+  z-index: var(--popover-z-index, var(--z-popover));
+  min-width: min(var(--popover-min-width, 13.75rem), calc(100vw - 2rem));
+  max-width: min(var(--popover-max-width, 22.5rem), calc(100vw - 2rem));
   outline: none;
   animation: popover-fade-in var(--transition-fast);
 
@@ -53,8 +66,8 @@
 
 .arrow {
   display: block;
-  fill: var(--popover-surface, var(--surface-elevated-color));
-  stroke: var(--popover-border, var(--border-color));
+  fill: var(--popover-background, var(--_popover-surface, var(--surface-elevated-color)));
+  stroke: var(--popover-border-color, var(--_popover-border, var(--border-color)));
 }
 
 // Dark themes: lift the panel off the page with a subtle surface and strong
@@ -62,15 +75,15 @@
 // one wins: a light scope (nested ConfigProvider) inside a dark page, or the
 // other way around, gets the right look.
 :global([data-theme="dark"]) {
-  --popover-surface: var(--surface-subtle-color);
-  --popover-border: var(--border-strong-color);
-  --popover-shadow: var(--shadow-xl);
+  --_popover-surface: var(--surface-subtle-color);
+  --_popover-border: var(--border-strong-color);
+  --_popover-shadow: var(--shadow-xl);
 }
 
 :global([data-theme="light"]) {
-  --popover-surface: initial;
-  --popover-border: initial;
-  --popover-shadow: initial;
+  --_popover-surface: initial;
+  --_popover-border: initial;
+  --_popover-shadow: initial;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -97,5 +110,18 @@
   to {
     opacity: 0;
     transform: translateY(-4px);
+  }
+}
+
+@media (forced-colors: active) {
+  .content {
+    border-color: CanvasText;
+  }
+}
+
+@media print {
+  .positioner,
+  .content {
+    display: none;
   }
 }

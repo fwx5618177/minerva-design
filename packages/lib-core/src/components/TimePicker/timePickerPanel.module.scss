@@ -2,24 +2,24 @@
   background: var(--surface-elevated-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: var(--time-picker-panel-radius, var(--radius-sm));
   box-shadow: var(--shadow-md);
-  padding: 8px;
+  padding: var(--time-picker-panel-padding, var(--space-2));
   user-select: none;
 
   .timeColumns {
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
   }
 
   .timeColumn {
-    width: 60px;
-    height: 224px;
+    width: var(--time-picker-column-width, 60px);
+    height: var(--time-picker-column-height, 224px);
     overflow-y: auto;
-    border-right: 1px solid var(--border-color);
+    border-inline-end: 1px solid var(--border-color);
 
     &:last-child {
-      border-right: none;
+      border-inline-end: none;
     }
 
     &::-webkit-scrollbar {
@@ -28,27 +28,27 @@
 
     &::-webkit-scrollbar-thumb {
       background: var(--border-strong-color);
-      border-radius: 3px;
+      border-radius: var(--radius-full);
     }
   }
 
   .timeUnit {
-    height: 32px;
-    line-height: 32px;
-    padding: 0 8px;
+    height: var(--time-picker-cell-height, var(--control-height-sm));
+    line-height: var(--time-picker-cell-height, var(--control-height-sm));
+    padding: 0 var(--time-picker-cell-padding-x, calc(var(--row-padding-x) - var(--space-1)));
     cursor: pointer;
     text-align: center;
-    border-radius: 2px;
-    transition: all 0.2s ease;
+    border-radius: calc(var(--radius-sm) / 2);
+    transition: all var(--transition-base);
 
     &:hover:not(.disabled) {
       background: var(--surface-muted-color);
     }
 
     &.selected {
-      background: var(--primary-color-subtle);
+      background: var(--time-picker-selected-background, var(--primary-color-subtle));
       color: var(--primary-color-text);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
     }
 
     &:focus-visible {
@@ -60,5 +60,13 @@
       color: var(--text-disabled-color);
       cursor: not-allowed;
     }
+  }
+}
+
+// Forced colors drop the selected background: outline the selected cell.
+@media (forced-colors: active) {
+  .timePickerPanel .timeUnit.selected {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
   }
 }

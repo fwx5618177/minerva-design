@@ -39,7 +39,7 @@ const field = (
 
 function Langs(props: Omit<SelectProps, "children">) {
   return (
-    <Select ariaLabel="Language" placeholder="Pick one" {...props}>
+    <Select aria-label="Language" placeholder="Pick one" {...props}>
       <SelectItem value="zh">Chinese</SelectItem>
       <SelectItem value="en">English</SelectItem>
       <SelectSeparator data-testid="sep" />
@@ -197,7 +197,7 @@ describe("Select", () => {
   it("forwards the ref to the trigger button", () => {
     const ref = createRef<HTMLButtonElement>();
     render(
-      <Select ref={ref} ariaLabel="Language">
+      <Select ref={ref} aria-label="Language">
         <SelectItem value="zh">Chinese</SelectItem>
       </Select>,
     );
@@ -216,7 +216,7 @@ describe("Select", () => {
 
   it("server-renders the trigger and its value slot", () => {
     const html = renderToStaticMarkup(
-      <Select ariaLabel="Event" placeholder="Pick">
+      <Select aria-label="Event" placeholder="Pick">
         <SelectItem value="a">A</SelectItem>
       </Select>,
     );
@@ -245,7 +245,7 @@ describe("Select", () => {
   it("lets an explicit disabled={false} override the FormControl", () => {
     render(
       <FormControlContext.Provider value={field({ disabled: true })}>
-        <Select ariaLabel="Language" disabled={false}>
+        <Select aria-label="Language" disabled={false}>
           <SelectItem value="zh">Chinese</SelectItem>
         </Select>
       </FormControlContext.Provider>,
@@ -259,7 +259,7 @@ describe("Select", () => {
         value={field({ id: "genre", required: true, hasHelperText: true })}
       >
         <label htmlFor="genre">Genre</label>
-        <Select placeholder="Pick" ariaDescribedBy="extra">
+        <Select placeholder="Pick" aria-describedby="extra">
           <SelectItem value="a">A</SelectItem>
         </Select>
         <span id="field-helper">Shown on the book page</span>
@@ -316,7 +316,7 @@ describe("Select keyboard", () => {
   it("moves with the arrows without wrapping, skips disabled options, supports Home / End / PageUp / PageDown", async () => {
     const user = setup();
     render(
-      <Select ariaLabel="Language">
+      <Select aria-label="Language">
         <SelectItem value="a">Alpha</SelectItem>
         <SelectItem value="b" disabled>
           Beta
@@ -425,7 +425,7 @@ describe("Select keyboard", () => {
     const user = setup();
     const onChange = vi.fn();
     render(
-      <Select ariaLabel="Language" onChange={onChange}>
+      <Select aria-label="Language" onChange={onChange}>
         <SelectItem value="nz">New Zealand</SelectItem>
         <SelectItem value="ny" textValue="New York">
           <b>NY</b>
@@ -544,7 +544,7 @@ describe("Select accessibility", () => {
   it("leaves a group without SelectLabel unlabelled", async () => {
     const user = setup();
     render(
-      <Select ariaLabel="Language">
+      <Select aria-label="Language">
         <SelectGroup>
           <SelectItem value="a">A</SelectItem>
         </SelectGroup>
@@ -597,7 +597,7 @@ describe("Select accessibility", () => {
       children: ReactNode;
     }) => <SelectItem value={value}>{children}</SelectItem>;
     render(
-      <Select ariaLabel="Language" defaultValue="b">
+      <Select aria-label="Language" defaultValue="b">
         <Option value="a">Alpha</Option>
         <Option value="b">Beta</Option>
       </Select>,
@@ -774,5 +774,29 @@ describe("Select SSR", () => {
   it("server-renders the label of an option nested in a group", () => {
     const html = renderToStaticMarkup(<Langs defaultValue="ja" />);
     expect(html).toMatch(/<span class="value"><span>Japanese<\/span>/);
+  });
+});
+
+describe("Select native attributes", () => {
+  it("forwards style, data-* and aria-labelledby to the trigger and names the listbox", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <span id="fruit-label">Fruit</span>
+        <Select
+          aria-labelledby="fruit-label"
+          style={{ minWidth: "10rem" }}
+          data-testid="fruit"
+        >
+          <SelectItem value="apple">Apple</SelectItem>
+        </Select>
+      </>,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Fruit" });
+    expect(trigger).toHaveAttribute("data-testid", "fruit");
+    expect(trigger).toHaveAttribute("data-component", "select");
+    expect(trigger.style.minWidth).toBe("10rem");
+    await user.click(trigger);
+    expect(screen.getByRole("listbox", { name: "Fruit" })).toBeInTheDocument();
   });
 });

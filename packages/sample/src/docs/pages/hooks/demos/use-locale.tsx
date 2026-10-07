@@ -13,7 +13,7 @@ const AVATAR_KEY = "avatar.default";
 const LANGUAGES: SupportedLanguage[] = ["en", "zh", "ja", "fr"];
 
 function Preview() {
-  // t() translates lib-core's own strings with its private i18next instance,
+  // t() translates lib-core's own strings with its built-in translator,
   // in the language of the closest ConfigProvider
   const { t, language } = useI18n();
   return (

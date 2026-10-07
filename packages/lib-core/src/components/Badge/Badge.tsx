@@ -21,7 +21,7 @@ export const Badge = ({
   variant = "solid",
   size = "medium",
   className = "",
-  ariaLabel,
+  "aria-label": ariaLabel,
   icon,
   content,
   position = "top-right",

@@ -1,7 +1,16 @@
+// Public CSS variables (set them on `className` or any ancestor):
+// @css-var --radio-checked-color Color of the checked mark (defaults to the color prop's accent)
+// @css-var --radio-dot-color Color of the inner dot of the checked mark
+// @css-var --radio-border-color Border of the unchecked mark
+// @css-var --radio-background Background of the unchecked mark
+// @css-var --radio-size Width and height of the mark (every size)
+// @css-var --radio-gap Space between the mark and the label
+// @css-var --radio-label-font-size Font size of the label (every size)
+// @css-var --radio-group-gap Space between the radios of a RadioGroup
 .radioWrapper {
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   position: relative;
 
   &.error {
@@ -15,7 +24,7 @@
   align-items: center;
   cursor: pointer;
   user-select: none;
-  gap: 8px;
+  gap: var(--radio-gap, var(--space-2));
 
   .input {
     position: absolute;
@@ -33,15 +42,15 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border-strong-color);
+    width: var(--radio-size, 18px);
+    height: var(--radio-size, 18px);
+    border: 2px solid var(--radio-border-color, var(--border-strong-color));
     border-radius: 50%;
-    background-color: var(--surface-color);
-    // Accent comes from the color class (`--radio-accent`); defaults to the
+    background-color: var(--radio-background, var(--surface-color));
+    // Accent comes from the color class (`--_radio-accent`); defaults to the
     // primary role.
-    color: var(--radio-accent, var(--primary-color));
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--radio-checked-color, var(--_radio-accent, var(--primary-color)));
+    transition: all var(--transition-base);
     box-sizing: border-box;
 
     &:after {
@@ -55,7 +64,7 @@
       background-color: currentColor;
       opacity: 0;
       transform: scale(0);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all var(--transition-base);
     }
   }
 
@@ -65,7 +74,7 @@
     background-color: currentColor;
 
     &:after {
-      background-color: var(--text-inverse-color);
+      background-color: var(--radio-dot-color, var(--text-inverse-color));
       opacity: 1;
       transform: scale(1);
     }
@@ -100,7 +109,7 @@
     align-items: flex-start;
   }
 
-  // Colors: see the `--radio-accent` color classes at the bottom.
+  // Colors: see the `--_radio-accent` color classes at the bottom.
 
   // Shape styles
   &.circle .radioMark {
@@ -118,16 +127,16 @@
   }
 
   &.rounded .radioMark {
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     &:after {
-      border-radius: 2px;
+      border-radius: calc(var(--radius-sm) / 2);
     }
   }
 
   &.small {
     .radioMark {
-      width: 16px;
-      height: 16px;
+      width: var(--radio-size, 16px);
+      height: var(--radio-size, 16px);
 
       &:after {
         width: 8px;
@@ -135,14 +144,14 @@
       }
     }
     .label {
-      font-size: 14px;
+      font-size: var(--radio-label-font-size, var(--font-size-md));
     }
   }
 
   &.medium {
     .radioMark {
-      width: 20px;
-      height: 20px;
+      width: var(--radio-size, 20px);
+      height: var(--radio-size, 20px);
 
       &:after {
         width: 12px;
@@ -150,14 +159,14 @@
       }
     }
     .label {
-      font-size: 16px;
+      font-size: var(--radio-label-font-size, var(--font-size-lg));
     }
   }
 
   &.large {
     .radioMark {
-      width: 24px;
-      height: 24px;
+      width: var(--radio-size, 24px);
+      height: var(--radio-size, 24px);
 
       &:after {
         width: 16px;
@@ -165,7 +174,7 @@
       }
     }
     .label {
-      font-size: 18px;
+      font-size: var(--radio-label-font-size, var(--font-size-xl));
     }
   }
 }
@@ -173,11 +182,11 @@
 .radioMark {
   position: relative;
   display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--border-strong-color);
+  width: var(--radio-size, 18px);
+  height: var(--radio-size, 18px);
+  border: 2px solid var(--radio-border-color, var(--border-strong-color));
   border-radius: 50%;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
 
   &:after {
     content: "";
@@ -191,8 +200,8 @@
     opacity: 0;
     transform: translate(-50%, -50%) scale(0);
     transition:
-      transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
   }
 
   &:hover {
@@ -217,8 +226,8 @@
     opacity: 0;
     transform: translate(-50%, -50%) scale(0);
     transition:
-      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transform var(--transition-base),
+      opacity var(--transition-base);
   }
 }
 
@@ -232,14 +241,14 @@
 }
 
 .label {
-  font-size: 14px;
+  font-size: var(--radio-label-font-size, var(--font-size-md));
   color: var(--text-color);
 }
 
 .small {
   .radioMark {
-    width: 16px;
-    height: 16px;
+    width: var(--radio-size, 16px);
+    height: var(--radio-size, 16px);
 
     &:after {
       width: 8px;
@@ -253,14 +262,14 @@
   }
 
   .label {
-    font-size: 12px;
+    font-size: var(--radio-label-font-size, var(--font-size-xs));
   }
 }
 
 .large {
   .radioMark {
-    width: 20px;
-    height: 20px;
+    width: var(--radio-size, 20px);
+    height: var(--radio-size, 20px);
 
     &:after {
       width: 12px;
@@ -274,15 +283,15 @@
   }
 
   .label {
-    font-size: 16px;
+    font-size: var(--radio-label-font-size, var(--font-size-lg));
   }
 }
 
 .radioGroup {
   display: flex;
-  gap: 16px;
-  padding: 4px;
-  border-radius: 4px;
+  gap: var(--radio-group-gap, var(--space-4));
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   border: 1px solid transparent;
 
   &.vertical {
@@ -299,14 +308,14 @@
 .helperTextWrapper {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
 }
 
 .helperText {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--text-secondary-color);
-  margin-top: 4px;
+  margin-top: var(--space-1);
   min-height: 20px;
 
   &.errorText {
@@ -334,25 +343,25 @@
 }
 
 .primary {
-  --radio-accent: var(--primary-color);
+  --_radio-accent: var(--primary-color);
 }
 
 .success {
-  --radio-accent: var(--success-color);
+  --_radio-accent: var(--success-color);
 }
 
 .warning {
-  --radio-accent: var(--warning-color);
+  --_radio-accent: var(--warning-color);
 }
 
 .danger {
-  --radio-accent: var(--danger-color);
+  --_radio-accent: var(--danger-color);
 }
 
 .radioGroupWrapper {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 
   &.error {
     .radioGroup {
@@ -362,7 +371,45 @@
 }
 
 .groupLabel {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
   color: var(--text-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radioWrapper.error {
+    animation: none;
+  }
+}
+
+// Forced colors: the checked fill is a background, which the browser would
+// drop. Draw the mark and its dot with system colors instead.
+@media (forced-colors: active) {
+  .radio .radioMark {
+    forced-color-adjust: none;
+    border-color: ButtonText;
+    background-color: Canvas;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .radio .input:checked ~ .radioMark {
+    border-color: Highlight;
+    background-color: Canvas;
+
+    &::after {
+      background-color: Highlight;
+    }
+  }
+
+  .radio .input:focus-visible ~ .radioMark {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .radio.disabled .radioMark {
+    border-color: GrayText;
+  }
 }

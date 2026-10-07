@@ -22,11 +22,11 @@ const Toolbar = ({ onAction }: { onAction: (action: string) => void }) => {
   return (
     <div role="toolbar" aria-label="Document">
       <Tooltip content="Open settings">
-        <IconButton icon={<CogIcon />} ariaLabel="Settings" />
+        <IconButton icon={<CogIcon />} aria-label="Settings" />
       </Tooltip>
       <IconButton
         icon={<CogIcon />}
-        ariaLabel="Favorite"
+        aria-label="Favorite"
         defaultPressed={false}
       />
       <Popover>
@@ -38,7 +38,7 @@ const Toolbar = ({ onAction }: { onAction: (action: string) => void }) => {
         </PopoverContent>
       </Popover>
       <Menu
-        ariaLabel="More actions"
+        aria-label="More actions"
         items={[
           { key: "rename", label: "Rename" },
           { key: "archive", label: "Archive", disabled: true },

@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "任意のアイコン要素を渡します。ボタンにはアイコンしかないため、必ず ariaLabel を指定してください。type=\"button\" のネイティブボタンとして描画されるため、フォームを送信しません。"
+      "description": "任意のアイコン要素を渡します。ボタンにはアイコンしかないため、必ず aria-label を指定してください。type=\"button\" のネイティブボタンとして描画されるため、フォームを送信しません。"
     },
     "colors": {
       "title": "カラー",
@@ -20,7 +20,7 @@
     },
     "states": {
       "title": "状態",
-      "description": "loading はアイコンをスピナーに置き換え、pressed はトグルがオンであることを示し、disabled はネイティブの disabled 属性を設定してボタンをタブ順序から外します。"
+      "description": "loading はアイコンをスピナーに置き換え、操作を無視しつつボタンをフォーカス可能なままにします（aria-busy + aria-disabled）。pressed はトグルがオンであることを示し、disabled はネイティブの disabled 属性を設定してボタンをタブ順序から外します。"
     },
     "toggle": {
       "title": "トグルボタン",
@@ -51,17 +51,26 @@
       "size": "ボタンのサイズ",
       "shape": "ボタンの形状",
       "disabled": "ネイティブボタンを無効にし、タブ順序から外します",
-      "loading": "アイコンをスピナーに置き換え、操作をブロックする",
+      "loading": "アイコンをスピナーに置き換え、フォーカス可能なまま操作（クリック、Enter、Space、フォーム送信）を無視します。ネイティブの disabled 属性ではなく aria-busy と aria-disabled で示されます",
       "pressed": "トグルボタンの押下状態（制御。onPressedChange と併用）。aria-pressed で公開されます",
       "defaultPressed": "非制御のトグルボタンの初期押下状態",
       "onPressedChange": "トグルボタンが操作されたときに新しい押下状態で呼ばれます",
       "className": "追加のクラス名",
       "tooltip": "ツールチップの設定（content、color、variant、shape、arrow）。showTooltip が必要",
       "showTooltip": "ホバー時とフォーカス時にツールチップを表示する",
-      "ariaLabel": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する",
+      "aria-label": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する",
       "ref": "<button> 要素への ref",
       "children": "アイコン要素（icon プロパティの代わり）",
-      "label": "ボタンのアクセシブルな名前。ツールチップとしても表示されます（showTooltip が false の場合を除く）。ariaLabel より優先されます"
+      "label": "ボタンのアクセシブルな名前。ツールチップとしても表示されます（showTooltip が false の場合を除く）。aria-label より優先されます"
     }
+  },
+  "cssVars": {
+    "--icon-button-color": "アイコンの色",
+    "--icon-button-hover-bg": "ホバー時の背景色",
+    "--icon-button-pressed-color": "押下状態のトグルのアイコン色",
+    "--icon-button-pressed-bg": "押下状態のトグルの背景色",
+    "--icon-button-size": "ボタンの幅と高さ（全サイズ。既定は密度に応じたコントロール高さに従う）",
+    "--icon-button-icon-size": "アイコンのフォントサイズ（全サイズ）",
+    "--icon-button-radius": "square 形状の角丸（既定は --radius-lg）"
   }
 }

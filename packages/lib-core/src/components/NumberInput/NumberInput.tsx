@@ -1,5 +1,5 @@
 import { useState, type FocusEvent, type KeyboardEvent } from "react";
-import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { IconChevronDown, IconChevronUp } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { isAriaInvalid } from "../../internal/forms-field";
@@ -39,7 +39,8 @@ function parseDraft(input: string): number | null {
 }
 
 /**
- * NumberInput: numeric text field (role="spinbutton") with keyboard stepping,
+ * NumberInput: numeric text field (role="spinbutton") with keyboard stepping
+ * (arrows, Page Up / Down, Home / End to min / max when bounded),
  * an optional stepper, min / max clamping and fixed precision. The draft may
  * hold intermediate text ("-", "1.") while typing; it is committed on blur /
  * Enter. Mouse wheel never changes the value.
@@ -135,6 +136,17 @@ export const NumberInput = ({
     } else if (event.key === "ArrowDown") {
       event.preventDefault();
       adjust(-step);
+    } else if (event.key === "PageUp" || event.key === "PageDown") {
+      // WAI-ARIA spinbutton: Page Up / Down step by a larger amount (10 steps).
+      event.preventDefault();
+      adjust((event.key === "PageUp" ? 10 : -10) * step);
+    } else if (event.key === "Home" && min !== undefined) {
+      // Home / End jump to the bounds; without a bound they keep moving the caret.
+      event.preventDefault();
+      emit(min);
+    } else if (event.key === "End" && max !== undefined) {
+      event.preventDefault();
+      emit(max);
     } else if (event.key === "Enter") {
       event.currentTarget.blur();
     }
@@ -202,7 +214,7 @@ export const NumberInput = ({
             onClick={() => adjust(step)}
             aria-label={incrementLabel ?? t("numberInput.increment")}
           >
-            <LuChevronUp size={12} strokeWidth={2.5} aria-hidden />
+            <IconChevronUp size={12} strokeWidth={2.5} aria-hidden />
           </button>
           <button
             type="button"
@@ -212,7 +224,7 @@ export const NumberInput = ({
             onClick={() => adjust(-step)}
             aria-label={decrementLabel ?? t("numberInput.decrement")}
           >
-            <LuChevronDown size={12} strokeWidth={2.5} aria-hidden />
+            <IconChevronDown size={12} strokeWidth={2.5} aria-hidden />
           </button>
         </div>
       )}

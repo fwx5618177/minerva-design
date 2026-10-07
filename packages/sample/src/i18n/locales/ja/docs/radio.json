@@ -41,7 +41,7 @@
       "onChange": "選択状態が変わったときのコールバック（単独使用時のみ。グループ内では RadioGroup の onChange を使用）",
       "size": "サイズ。RadioGroup の size で上書きされます",
       "label": "ラジオボタンの横に表示するラベル",
-      "ariaLabel": "アクセシブルなラベル。表示ラベルがない場合は必須",
+      "aria-label": "アクセシブルなラベル。表示ラベルがない場合は必須",
       "className": "追加のクラス名",
       "color": "選択時のラジオボタンのセマンティックカラー。RadioGroup が color を指定している場合はそちらで上書きされます",
       "required": "入力を必須にします",
@@ -50,14 +50,18 @@
       "errorMessage": "error が true のときラジオボタンの下に表示するメッセージ（aria-describedby で関連付け）",
       "helperText": "ラジオボタンの下に表示するヘルプテキスト（aria-describedby で関連付け）",
       "ref": "ネイティブの <input type=\"radio\"> 要素への ref",
-      "children": "ラベルの内容（label の代替。label 未指定時に使用）"
+      "children": "ラベルの内容（label の代替。label 未指定時に使用）",
+      "aria-labelledby": "ラジオボタンのラベルとなる要素の id（複数可）",
+      "aria-describedby": "ラジオボタンを説明する追加の要素 id（ヘルプ / エラーテキストと結合）",
+      "id": "ラジオボタンの id",
+      "style": "ルートラッパーのインラインスタイル"
     },
     "RadioGroupProps": {
       "value": "選択中のラジオボタンの値（制御）",
       "defaultValue": "初期選択値（非制御）",
       "name": "グループ内のすべてのラジオボタンで共有する name（省略時は一意の name が生成されるため、矢印キーでの移動が常に機能します）",
       "label": "グループの表示ラベル。アクセシブルな名前にもなります",
-      "ariaLabel": "表示ラベルがない場合のグループのアクセシブルなラベル",
+      "aria-label": "表示ラベルがない場合のグループのアクセシブルなラベル",
       "onChange": "新しく選択された値で呼び出されます",
       "disabled": "グループ内のすべてのラジオボタンを無効にします",
       "children": "Radio 要素",
@@ -68,7 +72,21 @@
       "helperText": "グループの下に表示するヘルプテキスト（aria-describedby で関連付け）",
       "required": "グループを必須にします（aria-required）",
       "color": "グループ内のすべてのラジオボタンに適用されるセマンティックカラー（各ボタンの色を上書き）。未指定の場合は各ボタンが自身の色を使います",
-      "ref": "ルートのラッパー要素への ref"
+      "ref": "ルートのラッパー要素への ref",
+      "aria-labelledby": "グループ（label より優先）のラベルとなる要素の id（複数可）",
+      "aria-describedby": "グループを説明する追加の要素 id（ヘルプ / エラーテキストと結合）",
+      "id": "role=\"radiogroup\" の要素の id",
+      "style": "ルートラッパーのインラインスタイル"
     }
+  },
+  "cssVars": {
+    "--radio-checked-color": "選択されたマークの色（既定は color プロパティのアクセント）",
+    "--radio-dot-color": "選択されたマーク内側のドットの色",
+    "--radio-border-color": "未選択のマークの枠線色",
+    "--radio-background": "未選択のマークの背景色",
+    "--radio-size": "マークの幅と高さ（全サイズ）",
+    "--radio-gap": "マークとラベルの間隔",
+    "--radio-label-font-size": "ラベルのフォントサイズ（全サイズ）",
+    "--radio-group-gap": "RadioGroup 内のラジオ同士の間隔"
   }
 }

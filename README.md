@@ -25,7 +25,9 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 - **ESM + CommonJS**: both module formats are shipped
 - **TypeScript**: type definitions are included
 - **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
-- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `style.css`, `prose.scss`
+- **Design presets**: switch the whole app's look with `<ConfigProvider preset="editorial">` (restrained, reading-oriented) or the `density` / `radius` / `shadow` / `fontScale` axes; SSR-ready (`designAttributes()`, `createThemeInitScript({ design })`) and scoped by nested providers
+- **Customization**: every component documents a stable set of CSS custom properties (`--button-height`, `--modal-width`, ...)
+- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `style.css` (or per-component `styles/<component>.css` + `styles/tokens.css`), `prose.scss`; tree-shakeable per component, no icon / i18n runtime dependencies
 - **i18n**: built-in locales for English, Chinese, Japanese and French
 - **No headless dependency**: overlays, menus, select, tabs and `asChild` are built in house on `@minerva/core`; Floating UI is the only third-party interaction dependency
 
@@ -85,7 +87,7 @@ OR
 yarn add @minerva/lib-core react react-dom
 ```
 
-Requires React 19 (`react` and `react-dom` `^19.0.0`). Version 1.x of `@minerva/lib-core` supports React 18. The entry is marked `"use client"`, so it can be imported from React Server Components frameworks (e.g. the Next.js App Router) without a wrapper.
+Requires React 19 (`react` and `react-dom` `^19.0.0`). React 18 is not supported (the components use React 19 APIs such as `ref` as a regular prop). Every client module is marked `"use client"`, so it can be imported from React Server Components frameworks (e.g. the Next.js App Router) without a wrapper.
 
 ### Basic Usage
 

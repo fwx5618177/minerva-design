@@ -1,5 +1,9 @@
-// Override hook: `--divider-color` (line color, default `--border-color`),
-// set it through `className` or `style`.
+// Public CSS variables (set them on the divider or any ancestor):
+// @css-var --divider-color Line color (defaults to --border-color)
+// @css-var --divider-thickness Line thickness
+// @css-var --divider-spacing Inline margin around a vertical divider
+// @css-var --divider-text-gap Space between the text and the lines
+// @css-var --divider-text-font-size Font size of the text
 .divider {
   position: relative;
   flex-shrink: 0;
@@ -12,18 +16,19 @@
   &.horizontal {
     width: 100%;
     border-top-style: solid;
-    border-top-width: 1px;
+    border-top-width: var(--divider-thickness, 1px);
     border-color: var(--divider-color, var(--border-color));
   }
 
   &.vertical {
     display: inline-block;
     height: 1em;
-    border-left-style: solid;
-    border-left-width: 1px;
+    border-inline-start-style: solid;
+    border-inline-start-width: var(--divider-thickness, 1px);
     border-color: var(--divider-color, var(--border-color));
     vertical-align: middle;
-    margin: 0 8px;
+    margin-block: 0;
+    margin-inline: var(--divider-spacing, var(--space-2));
   }
 
   &.solid {
@@ -31,7 +36,7 @@
       border-top-style: solid;
     }
     &.vertical {
-      border-left-style: solid;
+      border-inline-start-style: solid;
     }
   }
 
@@ -40,7 +45,7 @@
       border-top-style: dashed;
     }
     &.vertical {
-      border-left-style: dashed;
+      border-inline-start-style: dashed;
     }
   }
 
@@ -49,7 +54,7 @@
       border-top-style: dotted;
     }
     &.vertical {
-      border-left-style: dotted;
+      border-inline-start-style: dotted;
     }
   }
 
@@ -62,7 +67,7 @@
     &::after {
       content: "";
       flex: 1;
-      border-top: 1px solid var(--divider-color, var(--border-color));
+      border-top: var(--divider-thickness, 1px) solid var(--divider-color, var(--border-color));
     }
   }
 
@@ -89,8 +94,9 @@
   }
 
   .text {
-    padding: 0 16px;
-    font-size: 14px;
+    padding-block: 0;
+    padding-inline: var(--divider-text-gap, var(--space-4));
+    font-size: var(--divider-text-font-size, var(--font-size-md));
     color: var(--text-secondary-color);
     white-space: nowrap;
   }

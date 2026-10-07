@@ -29,7 +29,7 @@ describe("Tooltip", () => {
 
   it("keeps the child as the only interactive element", () => {
     const { container } = render(
-      <Tooltip content="Hello" ariaLabel="Tip">
+      <Tooltip content="Hello" aria-label="Tip">
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -48,7 +48,7 @@ describe("Tooltip", () => {
     const onClick = vi.fn();
     const onKeyDown = vi.fn((e: React.KeyboardEvent) => e.defaultPrevented);
     render(
-      <Tooltip content="Hello" ariaLabel="Tip">
+      <Tooltip content="Hello" aria-label="Tip">
         <button type="button" onClick={onClick} onKeyDown={onKeyDown}>
           Trigger
         </button>
@@ -127,7 +127,7 @@ describe("Tooltip", () => {
     render(
       <Tooltip
         content="Hello"
-        ariaLabel="Trigger"
+        aria-label="Trigger"
         enterDelay={300}
         leaveDelay={100}
         onOpen={onOpen}
@@ -160,7 +160,7 @@ describe("Tooltip", () => {
     const user = setup();
     const onOpen = vi.fn();
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" onOpen={onOpen}>
+      <Tooltip content="Hello" aria-label="Trigger" onOpen={onOpen}>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -176,7 +176,7 @@ describe("Tooltip", () => {
 
   it("adds the show class once positioned", async () => {
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" defaultOpen>
+      <Tooltip content="Hello" aria-label="Trigger" defaultOpen>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -189,7 +189,7 @@ describe("Tooltip", () => {
     const user = setup();
     const onOpen = vi.fn();
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" disabled onOpen={onOpen}>
+      <Tooltip content="Hello" aria-label="Trigger" disabled onOpen={onOpen}>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -211,7 +211,7 @@ describe("Tooltip", () => {
     render(
       <Tooltip
         content="Hello"
-        ariaLabel="Trigger"
+        aria-label="Trigger"
         onOpen={onOpen}
         onClose={onClose}
       >
@@ -243,7 +243,7 @@ describe("Tooltip", () => {
     const user = setup();
     const onClose = vi.fn();
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" onClose={onClose}>
+      <Tooltip content="Hello" aria-label="Trigger" onClose={onClose}>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -257,7 +257,7 @@ describe("Tooltip", () => {
   it("respects the controlled open prop", async () => {
     const user = setup();
     const { rerender } = render(
-      <Tooltip content="Hello" ariaLabel="Trigger" open={false}>
+      <Tooltip content="Hello" aria-label="Trigger" open={false}>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -268,7 +268,7 @@ describe("Tooltip", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 
     rerender(
-      <Tooltip content="Hello" ariaLabel="Trigger" open>
+      <Tooltip content="Hello" aria-label="Trigger" open>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -278,7 +278,7 @@ describe("Tooltip", () => {
   it("exposes open, close and toggle via ref", () => {
     const ref = createRef<TooltipRef>();
     render(
-      <Tooltip ref={ref} content="Hello" ariaLabel="Trigger">
+      <Tooltip ref={ref} content="Hello" aria-label="Trigger">
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -297,7 +297,7 @@ describe("Tooltip", () => {
     render(
       <Tooltip
         content="Hello"
-        ariaLabel="Trigger"
+        aria-label="Trigger"
         defaultOpen
         color="success"
         variant="subtle"
@@ -335,7 +335,7 @@ describe("Tooltip", () => {
 
   it("defaults to the neutral solid tooltip without an arrow", () => {
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" defaultOpen>
+      <Tooltip content="Hello" aria-label="Trigger" defaultOpen>
         <button type="button">Trigger</button>
       </Tooltip>,
     );
@@ -350,7 +350,7 @@ describe("Tooltip", () => {
     vi.useRealTimers();
     const spy = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect");
     render(
-      <Tooltip content="Hello" ariaLabel="Trigger" defaultOpen>
+      <Tooltip content="Hello" aria-label="Trigger" defaultOpen>
         <button type="button">Trigger</button>
       </Tooltip>,
     );

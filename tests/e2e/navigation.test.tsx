@@ -141,7 +141,7 @@ describe("PageTabs", () => {
     return (
       <>
         <PageTabs
-          ariaLabel="Open pages"
+          aria-label="Open pages"
           activeValue={active}
           actions={<IconButton label="Page menu">⋯</IconButton>}
         >
@@ -387,7 +387,7 @@ describe("NavTree", () => {
     const [active, setActive] = useState("books-list");
     return (
       <NavTree
-        ariaLabel="后台导航"
+        aria-label="后台导航"
         sections={NAV_SECTIONS}
         activeId={active}
         renderLink={(item, content, state) => (
@@ -451,7 +451,11 @@ describe("NavTree", () => {
 
   it("default links render as anchors with aria-current", () => {
     render(
-      <NavTree ariaLabel="站点" sections={NAV_SECTIONS} activeId="dashboard" />,
+      <NavTree
+        aria-label="站点"
+        sections={NAV_SECTIONS}
+        activeId="dashboard"
+      />,
     );
     const link = screen.getByRole("link", { name: "仪表盘" });
     expect(link).toHaveAttribute("href", "#dashboard");

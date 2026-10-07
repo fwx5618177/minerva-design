@@ -25,7 +25,9 @@ Minerva 是一个面向 Web 的 UI 组件库：包含一个 React 组件库和�
 - **ESM + CommonJS**：同时提供两种模块格式
 - **TypeScript**：自带类型定义
 - **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`@minerva/lib-core/theme-utils`，服务端安全）
-- **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`、`prose.scss`
+- **设计预设**：通过 `<ConfigProvider preset="editorial">`（克制、以阅读为主）或 `density` / `radius` / `shadow` / `fontScale` 维度切换整个应用的外观；支持 SSR（`designAttributes()`、`createThemeInitScript({ design })`），并可由嵌套 provider 限定作用域
+- **定制**：每个组件都文档化了一组稳定的 CSS 自定义属性（`--button-height`、`--modal-width`……）
+- **入口**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`（或按组件引入 `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`；按组件 tree-shaking，无图标 / i18n 运行时依赖
 - **国际化**：内置英文、中文、日文和法文语言包
 - **无 headless 依赖**：浮层、菜单、选择器、标签页和 `asChild` 都基于 `@minerva/core` 自主实现；Floating UI 是唯一的第三方交互依赖
 
@@ -85,7 +87,7 @@ npm install @minerva/lib-core react react-dom
 yarn add @minerva/lib-core react react-dom
 ```
 
-需要 React 19（`react`、`react-dom` `^19.0.0`）。`@minerva/lib-core` 1.x 版本支持 React 18。包入口带有 `"use client"` 指令，可直接在 React Server Components 框架（如 Next.js App Router）中引入，无需额外包装。
+需要 React 19（`react`、`react-dom` `^19.0.0`）。不支持 React 18（组件使用了把 `ref` 作为普通属性等 React 19 API）。所有客户端模块都带有 `"use client"` 指令，可直接在 React Server Components 框架（如 Next.js App Router）中引入，无需额外包装。
 
 ### 基础用法
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { canUseDOM } from "../../internal/canUseDOM";
+import type { ThemeScope } from "../../internal/themeScope";
 import type { ToastAction, ToastApi, ToastOptions } from "./types";
 
 /** Default auto-close delay, in milliseconds */
@@ -24,7 +25,22 @@ export interface ToastItem {
   action?: ToastAction;
   onClose?: (id: ToastId) => void;
   state: "open" | "closing";
+  /**
+   * Theme scope of the caller (`useToast()` inside a nested ConfigProvider):
+   * the toast is rendered into its portal container, with its language.
+   * `undefined` = the scope of the owning ToastProvider (`toast()`).
+   */
+  scope?: ThemeScope;
 }
+
+/**
+ * Keeps a scope only when it changes something compared to the owning
+ * provider: a scoped portal container or a scoped language.
+ */
+export const toastScopeOf = (
+  scope: ThemeScope | null | undefined,
+): ThemeScope | undefined =>
+  scope && (scope.portalContainer || scope.language) ? scope : undefined;
 
 type Listener = (toasts: ToastItem[]) => void;
 
@@ -76,7 +92,7 @@ export class ToastStore {
     });
   }
 
-  push(opts: ToastOptions): ToastId {
+  push(opts: ToastOptions, scope?: ThemeScope): ToastId {
     const id = opts.id ?? ++this.idCounter;
     // SSR: a module level list would leak between requests; nothing renders
     // on the server anyway.
@@ -94,6 +110,7 @@ export class ToastStore {
       action: opts.action,
       onClose: opts.onClose,
       state: "open",
+      scope,
     };
     const index = this.toasts.findIndex((t) => t.id === id);
     if (index >= 0) {
@@ -126,7 +143,7 @@ export class ToastStore {
       (loadingChanged && current.duration === defaultDuration
         ? undefined
         : current.duration);
-    this.push({ ...current, ...opts, id, duration });
+    this.push({ ...current, ...opts, id, duration }, current.scope);
   }
 
   /** Starts the closing animation, then removes the toast. */
@@ -236,24 +253,30 @@ class ToastProviderRegistry {
 
 export const toastProviders = new ToastProviderRegistry();
 
-const createToast = (store: ToastStore): ToastApi => {
-  const fn = ((opts: ToastOptions) => store.push(opts)) as ToastApi;
-  fn.info = (title, opts) => store.push({ ...opts, title, color: "info" });
-  fn.success = (title, opts) =>
-    store.push({ ...opts, title, color: "success" });
-  fn.warning = (title, opts) =>
-    store.push({ ...opts, title, color: "warning" });
-  fn.danger = (title, opts) => store.push({ ...opts, title, color: "danger" });
-  fn.loading = (title, opts) => store.push({ ...opts, title, loading: true });
+/**
+ * Builds a toast API over `store`. Every toast it shows carries `scope`
+ * (see `ToastItem.scope`); `undefined` renders in the owner's scope.
+ */
+export const createToast = (
+  store: ToastStore,
+  scope?: ThemeScope,
+): ToastApi => {
+  const show = (opts: ToastOptions) => store.push(opts, scope);
+  const fn = ((opts: ToastOptions) => show(opts)) as ToastApi;
+  fn.info = (title, opts) => show({ ...opts, title, color: "info" });
+  fn.success = (title, opts) => show({ ...opts, title, color: "success" });
+  fn.warning = (title, opts) => show({ ...opts, title, color: "warning" });
+  fn.danger = (title, opts) => show({ ...opts, title, color: "danger" });
+  fn.loading = (title, opts) => show({ ...opts, title, loading: true });
   fn.promise = (promise, messages, opts) => {
-    const id = store.push({
+    const id = show({
       ...opts,
       title: messages.loading,
       loading: true,
       duration: 0,
     });
     const settle = (color: "success" | "danger", title: ReactNode) =>
-      store.push({ ...opts, id, title, color, loading: false });
+      show({ ...opts, id, title, color, loading: false });
     promise.then(
       (value) =>
         settle(
@@ -286,5 +309,10 @@ const createToast = (store: ToastStore): ToastApi => {
  * a promise from loading to success / danger. Works anywhere (no provider
  * needed to queue toasts); one ToastProvider renders them (see
  * `toastProviders`).
+ *
+ * Meant for code outside React components (event buses, API clients,
+ * non-component modules): its toasts use the scope of the owning
+ * ToastProvider (usually the root theme and language). Inside components,
+ * prefer `useToast()`, which follows the nearest ConfigProvider scope.
  */
 export const toast: ToastApi = createToast(toastStore);

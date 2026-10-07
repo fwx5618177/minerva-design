@@ -9,6 +9,7 @@ import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useFormControlProps } from "../FormControl/context";
 import styles from "./autoComplete.module.scss";
+import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/core";
 
 const DEFAULT_OFFSET = Object.freeze({ x: 0, y: 4 });
 const EMPTY_OPTIONS: AutoCompleteOption[] = [];
@@ -203,7 +204,15 @@ const AutoComplete = ({
         }
         break;
       }
-      // Escape: handled by the dropdown's dismissable layer (topmost only)
+      case "Escape":
+        // Open: the dropdown's dismissable layer closes it (topmost only).
+        // Closed: clears the text (APG combobox), `onChange("")`.
+        if (!shown && inputValue !== "") {
+          event.preventDefault();
+          setInputValue("");
+          setFocusedIndex(-1);
+        }
+        break;
       default:
         break;
     }
@@ -238,12 +247,17 @@ const AutoComplete = ({
     input.setAttribute("role", "combobox");
     input.setAttribute("aria-autocomplete", "list");
     input.setAttribute("aria-expanded", String(shown));
+    // Closed with text: Escape clears it instead of closing an enclosing
+    // Modal / Drawer / Popover
+    if (!shown && inputValue !== "") {
+      input.setAttribute(ESCAPE_CONSUMER_ATTRIBUTE, "");
+    } else input.removeAttribute(ESCAPE_CONSUMER_ATTRIBUTE);
     if (shown) input.setAttribute("aria-controls", listboxId);
     else input.removeAttribute("aria-controls");
     if (activeOptionId)
       input.setAttribute("aria-activedescendant", activeOptionId);
     else input.removeAttribute("aria-activedescendant");
-  }, [input, shown, listboxId, activeOptionId]);
+  }, [input, shown, listboxId, activeOptionId, inputValue]);
 
   // Clicking the still-focused input (after a pick or Escape) reopens the
   // dropdown; focus alone does not fire again.

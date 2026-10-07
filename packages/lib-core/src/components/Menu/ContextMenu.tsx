@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Placement, VirtualElement } from "@minerva/core";
 import { Slot } from "../../internal/Slot";
+import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";
 import { useLayerParent } from "../../internal/useDismissableLayer";
 import { MenuRoot, type FocusIntent } from "./MenuItems";
@@ -63,15 +64,18 @@ const ContextMenu = ({
   disabled = false,
   modal = true,
   loop = true,
-  dir = "ltr",
+  dir: dirProp,
   className,
-  ariaLabel,
+  "aria-label": ariaLabel,
 }: ContextMenuProps) => {
   const [open, setOpen] = useControllableState({
     defaultValue: false,
     onChange: onOpenChange,
   });
   const [area, setArea] = useState<HTMLElement | null>(null);
+  // Without `dir`, the menu follows the direction inherited by the area.
+  const inheritedDir = useInheritedDirection(area, dirProp === undefined);
+  const dir = dirProp ?? inheritedDir;
   const [position, setPosition] = useState<Position | null>(null);
   const tabContainer = useLayerParent();
   const contentId = useId();
@@ -178,7 +182,7 @@ const ContextMenu = ({
         dir={dir}
         modal={modal}
         className={className}
-        ariaLabel={ariaLabel}
+        aria-label={ariaLabel}
         open={open && !disabled && !!position}
         setOpen={setOpen}
         anchor={position?.anchor ?? null}

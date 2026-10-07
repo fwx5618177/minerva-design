@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  ESCAPE_CONSUMER_ATTRIBUTE,
   createDismissableLayer,
   getLayerStack,
   type DismissableLayer,
@@ -59,6 +60,19 @@ describe("createDismissableLayer", () => {
     expect(onEscapeKeyDown).toHaveBeenCalledWith(event);
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("ignores Escape pressed inside an element that consumes it", () => {
+    const onDismiss = vi.fn();
+    const node = el("a");
+    layer(node, { onDismiss });
+    const button = node.querySelector("button")!;
+    button.setAttribute(ESCAPE_CONSUMER_ATTRIBUTE, "");
+    expect(escape(button).defaultPrevented).toBe(false);
+    expect(onDismiss).not.toHaveBeenCalled();
+    button.removeAttribute(ESCAPE_CONSUMER_ATTRIBUTE);
+    escape(button);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   it("ignores other keys", () => {

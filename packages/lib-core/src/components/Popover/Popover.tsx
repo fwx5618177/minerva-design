@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
   type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
   type Ref,
 } from "react";
 import { parsePlacement, toPlacement } from "@minerva/core";
@@ -17,11 +18,14 @@ import { useControllableState } from "../../internal/useControllableState";
 import {
   LayerContext,
   useDismissableLayer,
+  useLayerParent,
 } from "../../internal/useDismissableLayer";
 import { useFocusScope } from "../../internal/useFocusScope";
 import { useHideOthers } from "../../internal/useHideOthers";
 import { usePresence } from "../../internal/usePresence";
 import { useScrollLock } from "../../internal/useScrollLock";
+import { adjacentTabbable, tabLeavesPanel } from "../../internal/tabbing";
+import { usePortalDirection } from "../../internal/direction";
 import { cn } from "../../utils/cn";
 import type {
   PopoverAnchorProps,
@@ -175,8 +179,12 @@ const UNPOSITIONED: CSSProperties = { transform: "translate(0, -200%)" };
  * - Escape (topmost layer only), a pointer down outside or focus leaving it
  *   close it; overlays opened inside it are child layers, and a Popover
  *   inside a Modal is a child layer of the Modal.
- * - `modal` (on the root): focus trap, scroll lock, the rest of the page
- *   hidden from assistive technology, outside pointer events disabled.
+ * - Non-modal: Tab past its last tabbable (Shift+Tab before its first)
+ *   closes it and moves focus to the tabbable after (before) the trigger
+ *   in document order; Tab never loops inside the panel.
+ * - `modal` (on the root): focus trap (Tab loops inside), scroll lock, the
+ *   rest of the page hidden from assistive technology, outside pointer
+ *   events disabled.
  * - Stays mounted during the `data-state="closed"` exit animation.
  */
 export const PopoverContent = ({
@@ -199,10 +207,13 @@ export const PopoverContent = ({
   onPointerDownOutside,
   onFocusOutside,
   onInteractOutside,
+  onKeyDown,
   ...rest
 }: PopoverContentProps) => {
   const { open, setOpen, modal, contentId, trigger, anchor } =
     usePopoverContext("PopoverContent");
+  // Tab moves on within the enclosing layer (e.g. a Modal), else the page.
+  const tabContainer = useLayerParent();
   const [element, setElement] = useState<HTMLDivElement | null>(null);
   const [arrowElement, setArrowElement] = useState<HTMLSpanElement | null>(
     null,
@@ -229,6 +240,8 @@ export const PopoverContent = ({
     arrowElement: arrow ? arrowElement : null,
   });
   const contentRef = useMergedRefs<HTMLDivElement>(setElement, ref);
+  // Portalled content keeps the reading direction of its anchor.
+  const dir = usePortalDirection(element, anchor ?? trigger, open);
   const placement = parsePlacement(finalPlacement);
 
   useDismissableLayer(element, {
@@ -248,13 +261,35 @@ export const PopoverContent = ({
   useFocusScope(element, {
     enabled: active,
     trapped: modal,
-    loop: true,
+    loop: modal,
     restoreFocus: () => trigger,
     onMountAutoFocus: onOpenAutoFocus,
     onUnmountAutoFocus: onCloseAutoFocus,
   });
   useScrollLock(active && modal);
   useHideOthers(element, active && modal);
+
+  // Non-modal: Tab out of the panel continues from the trigger.
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (
+      modal ||
+      !element ||
+      !trigger ||
+      event.key !== "Tab" ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey
+    )
+      return;
+    const backwards = event.shiftKey;
+    // Ignore keys from nested (portalled) layers rendered inside the panel.
+    if (!tabLeavesPanel(element, event.target as Element, backwards)) return;
+    event.preventDefault();
+    const container = tabContainer ?? trigger.ownerDocument.body;
+    const next = adjacentTabbable(trigger, container, backwards) ?? trigger;
+    next.focus();
+    setOpen(false);
+  };
 
   if (!present && !forceMount) return null;
 
@@ -271,18 +306,23 @@ export const PopoverContent = ({
       data-align={placement.align}
     >
       <LayerContext.Provider value={element}>
+        {/* The dialog only intercepts Tab bubbling from its content (focus
+            management), it is not itself a control. */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
           ref={contentRef}
           id={contentId}
           role="dialog"
           aria-modal={modal || undefined}
           tabIndex={-1}
+          dir={dir}
           data-state={state}
           data-side={placement.side}
           data-align={placement.align}
           className={cn(styles.content, className)}
           style={style}
           {...rest}
+          onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown)}
         >
           {children}
           {arrow && (

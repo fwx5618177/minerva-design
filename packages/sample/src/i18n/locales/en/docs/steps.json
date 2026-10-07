@@ -8,7 +8,7 @@
     },
     "read-only": {
       "title": "Read-only progress",
-      "description": "Without onChange the steps are a read-only progress indicator."
+      "description": "Without onChange the steps are a read-only progress indicator: a plain ordered list (no buttons) whose current item has aria-current=\"step\"."
     }
   },
   "api": {
@@ -17,8 +17,8 @@
       "value": "Value of the current step (controlled; pair with onChange)",
       "defaultValue": "Value of the initial current step (uncontrolled)",
       "onChange": "Called with the value of the step the user navigates to. Steps only report navigation: validation and workflow transitions belong to the caller",
-      "readOnly": "Renders the steps as a read-only progress indicator (every step button disabled)",
-      "ariaLabel": "Accessible label of the list",
+      "readOnly": "Renders the steps as a read-only progress indicator: plain list items without buttons, the current one marked aria-current=\"step\"",
+      "aria-label": "Accessible label of the list",
       "className": "Additional class name",
       "ref": "Ref to the root <ol> element"
     },
@@ -27,5 +27,12 @@
       "label": "Visible label of the step",
       "disabled": "Prevents navigating to this step (e.g. a terminal state that is not reached yet)"
     }
+  },
+  "cssVars": {
+    "--steps-gap": "Space between the steps (row and column gap)",
+    "--steps-font-size": "Font size of the labels",
+    "--steps-indicator-size": "Diameter of the numbered indicator",
+    "--steps-accent-color": "Color of the current / completed indicators (defaults to --primary-color)",
+    "--steps-current-background": "Background of the current step's indicator"
   }
 }

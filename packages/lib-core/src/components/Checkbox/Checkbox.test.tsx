@@ -308,3 +308,26 @@ describe("Checkbox", () => {
     });
   });
 });
+
+describe("Checkbox native attributes", () => {
+  it("forwards aria-* to the input and style / data-* to the label", () => {
+    render(
+      <>
+        <span id="cb-label">Newsletter</span>
+        <span id="cb-desc">Weekly</span>
+        <Checkbox
+          aria-labelledby="cb-label"
+          aria-describedby="cb-desc"
+          style={{ margin: "4px" }}
+          data-testid="cb"
+        />
+      </>,
+    );
+    const input = screen.getByRole("checkbox", { name: "Newsletter" });
+    expect(input).toHaveAccessibleDescription("Weekly");
+    const label = input.closest("label")!;
+    expect(label).toHaveAttribute("data-testid", "cb");
+    expect(label.style.margin).toBe("4px");
+    expect(input).not.toHaveAttribute("data-testid");
+  });
+});

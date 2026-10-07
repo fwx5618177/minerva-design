@@ -47,7 +47,7 @@ export default function CustomThemeDemo() {
               Disabled
             </Button>
             <Switch label="Reading mode" defaultChecked />
-            <Select ariaLabel="Paper" defaultValue="cream">
+            <Select aria-label="Paper" defaultValue="cream">
               <SelectItem value="cream">Cream</SelectItem>
               <SelectItem value="ivory">Ivory</SelectItem>
               <SelectItem value="kraft">Kraft</SelectItem>

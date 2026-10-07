@@ -9,6 +9,10 @@
     "form-control": {
       "title": "表单",
       "description": "name 会将每个标签作为隐藏输入提交；FormField 提供标签和只读状态。"
+    },
+    "separators": {
+      "title": "分隔符",
+      "description": "separators 列出将输入或粘贴的文本拆分为标签的字符串；\"Enter\" 表示按下回车键时提交，并按换行拆分粘贴内容。"
     }
   },
   "api": {
@@ -18,10 +22,12 @@
       "onChange": "添加、删除或清空后以新标签调用",
       "options": "建议项；已选标签会被隐藏，重复项会合并",
       "commitOnBlur": "输入框失焦时将草稿添加为标签",
+      "separators": "提交草稿的按键：字面字符串（如 \",\" 或 \";\"）会将输入或粘贴的文本拆分为标签；\"Enter\" 表示按回车键提交（粘贴的文本也会按换行拆分）",
       "id": "文本输入框的 id（默认为 FormControl 的 id）",
       "name": "以该名称提交每个已选标签（隐藏输入）；草稿不会提交",
       "placeholder": "文本输入框的占位符",
       "aria-label": "没有 FormControl 标签时文本输入框的无障碍名称",
+      "aria-labelledby": "为文本输入框提供标签的元素 id（优先于 FormControl 的标签）",
       "aria-describedby": "描述文本输入框的额外 id",
       "disabled": "禁用字段（FormControl 也可设置）",
       "readOnly": "只显示标签，不提供编辑控件（FormControl 也可设置）",
@@ -33,7 +39,16 @@
       "removeLabel": "标签删除按钮的无障碍标签",
       "createLabel": "“创建此标签”建议项的文字",
       "className": "外层容器的类名",
+      "style": "外层容器的内联样式",
       "ref": "文本 <input> 的 ref"
     }
+  },
+  "cssVars": {
+    "--tag-input-gap": "标签之间以及标签与输入行之间的间距",
+    "--tag-input-tag-min-height": "标签最小高度（默认取当前密度的小号控件高度）",
+    "--tag-input-list-max-height": "建议列表开始滚动前的最大高度",
+    "--tag-input-list-radius": "建议列表的圆角（默认 --radius-md）",
+    "--tag-input-option-padding-y": "建议项的垂直内边距（跟随密度的行内边距）",
+    "--tag-input-option-padding-x": "建议项的水平内边距（跟随密度的行内边距）"
   }
 }

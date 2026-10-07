@@ -21,7 +21,7 @@ export default function ContextMenuDemo() {
 
   return (
     <PageTabs
-      ariaLabel="Open pages"
+      aria-label="Open pages"
       activeValue={active}
       actions={
         <Menu
@@ -30,7 +30,7 @@ export default function ContextMenuDemo() {
         >
           <IconButton
             size="small"
-            ariaLabel="Page menu"
+            aria-label="Page menu"
             icon={<LuEllipsis />}
           />
         </Menu>

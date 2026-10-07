@@ -2,6 +2,12 @@ import type { ReactNode } from "react";
 import type {
   ComponentTheme,
   CustomBilingualTheme,
+  Density,
+  DesignPreset,
+  FontScale,
+  RadiusScale,
+  ResolvedDesign,
+  ShadowScale,
   DefaultTheme,
   Palette,
   ResolvedThemeMode,
@@ -42,6 +48,18 @@ export type ConfigProviderThemeProps =
   | ThemeMap
   | DefaultTheme;
 
+// Design axes (implemented in @minerva/core); re-exported so
+// `@minerva/lib-core` exposes them.
+export type {
+  Density,
+  DesignOptions,
+  DesignPreset,
+  FontScale,
+  RadiusScale,
+  ResolvedDesign,
+  ShadowScale,
+} from "@minerva/core";
+
 // Languages with built-in translations (the message bundles live in
 // @minerva/core); re-exported so `@minerva/lib-core` keeps exposing the type.
 export type { SupportedLanguage } from "@minerva/core";
@@ -78,6 +96,11 @@ export interface ConfigContextProps {
    * nested provider), `null` for Minerva's default look
    */
   palette?: Palette | null;
+  /**
+   * Applied design axes (`data-density` / `data-radius` / `data-shadow` /
+   * `data-font-scale`) and the preset they come from
+   */
+  design?: ResolvedDesign;
   /** Change the theme (persisted to the `theme` cookie when `persist` is on) */
   setTheme?: (theme: ConfigProviderThemeProps) => void;
   /** Change the palette (persisted to the `palette` cookie when `persist` is on) */
@@ -121,6 +144,40 @@ export interface ConfigContextProviderProps {
    * @default { language: "en" } (nested: the parent's locale)
    */
   locale?: Locale;
+  /**
+   * Design preset: a named combination of the design axes below and a default
+   * palette. "minerva" (default look), "editorial" (restrained,
+   * reading-oriented: editorial palette, comfortable density, small radius,
+   * subtle shadows, large type) or "compact" (dense, data-heavy screens).
+   * Explicit axes and `palette` win over the preset. A nested provider
+   * inherits its parent's design unless set; a nested preset resets every
+   * axis it does not set.
+   * @default "minerva" (nested: the parent's design)
+   */
+  preset?: DesignPreset;
+  /**
+   * Spacing density of controls (heights, paddings) and rows (menus, lists,
+   * tables): `data-density`
+   * @default "standard" (or the preset's)
+   */
+  density?: Density;
+  /**
+   * Corner radius scale (`--radius-sm` ... `--radius-2xl`): `data-radius`
+   * @default "medium" (or the preset's)
+   */
+  radius?: RadiusScale;
+  /**
+   * Elevation shadows (`--shadow-sm` ... `--shadow-xl`): `data-shadow`.
+   * "standard" keeps the theme / palette shadows
+   * @default "standard" (or the preset's)
+   */
+  shadow?: ShadowScale;
+  /**
+   * Type scale (`--font-size-*`, line heights): `data-font-scale`. "large"
+   * is reading-oriented
+   * @default "standard" (or the preset's)
+   */
+  fontScale?: FontScale;
   /** Application content */
   children: ReactNode;
 }

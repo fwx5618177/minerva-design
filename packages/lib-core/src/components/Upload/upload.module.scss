@@ -1,11 +1,20 @@
+// Public CSS variables (set them on the upload or any ancestor):
+// @css-var --upload-gap Space between the label, the dropzone, the error and the file list
+// @css-var --upload-font-size Font size
+// @css-var --upload-dropzone-padding Inner padding of the dropzone
+// @css-var --upload-dropzone-radius Corner radius of the dropzone (defaults to --radius-md)
+// @css-var --upload-dropzone-border-color Dashed border color of the dropzone at rest
+// @css-var --upload-dropzone-background Background of the dropzone at rest
+// @css-var --upload-preview-width Width of an image preview in the file list
+// @css-var --upload-preview-height Height of an image preview in the file list
 .upload {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--upload-gap, var(--space-3));
   min-width: 0;
   color: var(--text-color);
   font-family: var(--font-family-sans);
-  font-size: var(--font-size-sm);
+  font-size: var(--upload-font-size, var(--font-size-sm));
 }
 
 .label {
@@ -13,10 +22,10 @@
 }
 
 .dropzone {
-  padding: var(--space-4);
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--surface-color);
+  padding: var(--upload-dropzone-padding, var(--space-4));
+  border: 1px dashed var(--upload-dropzone-border-color, var(--border-color));
+  border-radius: var(--upload-dropzone-radius, var(--radius-md));
+  background: var(--upload-dropzone-background, var(--surface-color));
   transition: border-color var(--transition-fast);
 
   &.dragging {
@@ -48,9 +57,9 @@
 }
 
 .preview {
-  width: 72px;
-  height: 48px;
-  flex: 0 0 72px;
+  width: var(--upload-preview-width, 72px);
+  height: var(--upload-preview-height, 48px);
+  flex: 0 0 var(--upload-preview-width, 72px);
   object-fit: cover;
   border-radius: var(--radius-sm);
 }
@@ -76,4 +85,13 @@
   display: flex;
   flex: 0 0 auto;
   gap: var(--space-1);
+}
+
+// Forced colors drop the drag-over background: outline the dropzone instead.
+@media (forced-colors: active) {
+  .dropzone.dragging {
+    border-style: solid;
+    outline: 2px solid Highlight;
+    outline-offset: 1px;
+  }
 }

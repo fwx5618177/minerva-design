@@ -116,7 +116,9 @@ describe("e2e: toast API", () => {
     act(() => {
       toast.info("Themed", { duration: 0 });
     });
-    const region = await screen.findByRole("region", { name: "Notifications" });
+    const region = await screen.findByRole("region", {
+      name: "Notifications (F8)",
+    });
     expect(within(region).getByRole("status")).toHaveTextContent("Themed");
     // portalled into the scope's container, so the toast gets the dark theme
     expect(region.closest("[data-minerva-theme-scope]")).not.toBeNull();

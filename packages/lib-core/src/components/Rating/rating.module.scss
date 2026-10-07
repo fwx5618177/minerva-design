@@ -1,17 +1,25 @@
 // Stars use the accent color so they read as the same brand signal as CTAs;
 // they follow `currentColor`, so a `color` (style or className) recolors them.
+//
+// Public CSS variables (set them on the rating or any ancestor):
+// @css-var --rating-color Color of the filled stars (defaults to --accent-color)
+// @css-var --rating-empty-color Color of the empty stars and of the unfilled half
+// @css-var --rating-star-gap Space between the stars
+// @css-var --rating-gap Space between the stars and the value
+// @css-var --rating-value-font-size Font size of the numeric value (every size)
+// @css-var --rating-scale-gap Space between the rows of a RatingScale
 .rating {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--accent-color);
+  gap: var(--rating-gap, var(--space-2));
+  color: var(--rating-color, var(--accent-color));
   font-family: var(--font-family-sans);
   vertical-align: middle;
 }
 
 .stars {
   display: inline-flex;
-  gap: 1px;
+  gap: var(--rating-star-gap, 1px);
   line-height: 0;
 }
 
@@ -21,7 +29,7 @@
 }
 
 .empty {
-  color: var(--border-strong-color);
+  color: var(--rating-empty-color, var(--border-strong-color));
 }
 
 .half {
@@ -31,12 +39,21 @@
 .halfBase {
   position: absolute;
   inset: 0;
-  color: var(--border-strong-color);
+  color: var(--rating-empty-color, var(--border-strong-color));
 }
 
 .halfFill {
   position: absolute;
   inset: 0;
+}
+
+// The half icon fills its left half: mirror it so RTL fills the start side.
+[dir="rtl"] .halfFill {
+  transform: scaleX(-1);
+}
+
+.halfFill:dir(rtl) {
+  transform: scaleX(-1);
 }
 
 // Interactive: the whole rating is the focus target (role="slider").
@@ -77,7 +94,7 @@
   align-items: baseline;
   gap: var(--space-1);
   color: var(--text-color);
-  font-size: var(--font-size-sm);
+  font-size: var(--rating-value-font-size, var(--font-size-sm));
 
   strong {
     font-weight: var(--font-weight-semibold);
@@ -85,11 +102,11 @@
   }
 
   .small & {
-    font-size: var(--font-size-xs);
+    font-size: var(--rating-value-font-size, var(--font-size-xs));
   }
 
   .large & {
-    font-size: var(--font-size-md);
+    font-size: var(--rating-value-font-size, var(--font-size-md));
   }
 }
 
@@ -102,7 +119,7 @@
 .scale {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--rating-scale-gap, var(--space-3));
   font-family: var(--font-family-sans);
 }
 
@@ -117,4 +134,23 @@
   color: var(--text-secondary-color);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+}
+
+// Forced colors: keep the filled / empty distinction with system colors and
+// replace the box-shadow focus ring by an outline.
+@media (forced-colors: active) {
+  .star {
+    forced-color-adjust: none;
+    color: Highlight;
+  }
+
+  .empty,
+  .halfBase {
+    color: CanvasText;
+  }
+
+  .interactive:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
 }

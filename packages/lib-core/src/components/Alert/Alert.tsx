@@ -1,24 +1,29 @@
-import React, { useCallback, useId, useState } from "react";
+import React, { useCallback, useId, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import {
-  IoInformationCircle,
-  IoCheckmarkCircle,
-  IoWarning,
-  IoCloseCircle,
-  IoClose,
-  IoChevronDown,
-  IoChevronUp,
-} from "react-icons/io5";
+  IconChevronDown,
+  IconChevronUp,
+  IconCircleCheckFilled,
+  IconCircleInfoFilled,
+  IconCircleXFilled,
+  IconTriangleAlertFilled,
+  IconX,
+} from "../../internal/icons";
 import type { AlertProps } from "./types";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
+import { useMergedRefs } from "../../internal/mergeRefs";
+import {
+  isFocusInsideOrLost,
+  moveFocusBeforeRemoval,
+} from "../../internal/focusAfterRemoval";
 import styles from "./alert.module.scss";
 
 const iconMap = {
-  info: <IoInformationCircle />,
-  success: <IoCheckmarkCircle />,
-  warning: <IoWarning />,
-  danger: <IoCloseCircle />,
+  info: <IconCircleInfoFilled />,
+  success: <IconCircleCheckFilled />,
+  warning: <IconTriangleAlertFilled />,
+  danger: <IconCircleXFilled />,
 };
 
 const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
@@ -47,6 +52,7 @@ const ANIMATION_NAMES = ["slideIn", "fadeIn", "bounce", "zoom"] as const;
  * @param {string} expandLabel - 展开按钮的无障碍名称（默认本地化）
  * @param {string} collapseLabel - 收起按钮的无障碍名称（默认本地化）
  * @param {string} iconLabel - 图标的无障碍名称（默认本地化）
+ * @param {FocusTarget} returnFocus - 关闭后接收焦点的元素（元素 / ref / 函数），缺省时移到下一个可聚焦元素
  * @param {Ref} ref - 根元素的 ref
  */
 const Alert = ({
@@ -77,12 +83,15 @@ const Alert = ({
   expandLabel,
   collapseLabel,
   iconLabel,
+  returnFocus,
   role,
   ref,
   ...rest
 }: AlertProps) => {
   const { t } = useI18n();
   const [visible, setVisible] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const mergedRef = useMergedRefs(rootRef, ref);
   const [expanded, setExpanded] = useControllableState({
     value: expandedProp,
     defaultValue: defaultExpanded,
@@ -94,10 +103,16 @@ const Alert = ({
 
   const handleClose = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      setVisible(false);
       onClose?.(e);
+      // Move focus out before the alert disappears so it never falls to
+      // <body> (unless onClose already moved it elsewhere on purpose)
+      const root = rootRef.current;
+      if (root && isFocusInsideOrLost(root)) {
+        moveFocusBeforeRemoval(root, returnFocus);
+      }
+      setVisible(false);
     },
-    [onClose],
+    [onClose, returnFocus],
   );
 
   // onExpand is called by the setter itself, never inside a state updater,
@@ -141,7 +156,7 @@ const Alert = ({
   return (
     <div
       {...rest}
-      ref={ref}
+      ref={mergedRef}
       className={classes}
       style={customStyle}
       // Danger and warning interrupt (alert); info and success are polite
@@ -176,7 +191,7 @@ const Alert = ({
                 aria-expanded={expanded}
                 aria-controls={expanded && hasContent ? contentId : undefined}
               >
-                {expanded ? <IoChevronUp /> : <IoChevronDown />}
+                {expanded ? <IconChevronUp /> : <IconChevronDown />}
               </button>
             )}
           </div>
@@ -197,7 +212,7 @@ const Alert = ({
           aria-label={closeLabel ?? t("alert.close")}
           type="button"
         >
-          {closeIcon || <IoClose />}
+          {closeIcon || <IconX />}
         </button>
       )}
     </div>

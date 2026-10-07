@@ -1,4 +1,5 @@
-import type { Ref } from "react";
+import type { CSSProperties, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 /** Size of the Select trigger */
 export type SelectSize = "small" | "medium" | "large";
@@ -6,9 +7,10 @@ export type SelectSize = "small" | "medium" | "large";
 /**
  * Props of the Select component (a single-choice dropdown: select-only
  * combobox trigger + listbox popup anchored below it, with full keyboard
- * support and a hidden native select for forms)
+ * support and a hidden native select for forms). `id`, `className`, `style`,
+ * `aria-*` and `data-*` attributes go to the trigger <button>.
  */
-export interface SelectProps {
+export interface SelectProps extends DataAttributes {
   /** Selected value (controlled; pair with onChange) */
   value?: string;
   /** Initially selected value (uncontrolled) */
@@ -52,11 +54,17 @@ export interface SelectProps {
   /** id of the trigger (defaults to the enclosing FormControl's id) */
   id?: string;
   /** Accessible label of the trigger, required when there is no visible label */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /**
+   * id(s) of the element(s) labelling the trigger (also names the listbox)
+   */
+  "aria-labelledby"?: string;
   /** Extra ids of elements describing the trigger (aria-describedby) */
-  ariaDescribedBy?: string;
+  "aria-describedby"?: string;
   /** Additional class name of the trigger */
   className?: string;
+  /** Inline styles of the trigger */
+  style?: CSSProperties;
   /** Additional class name of the popup */
   contentClassName?: string;
   /** SelectItem / SelectGroup / SelectLabel / SelectSeparator elements */

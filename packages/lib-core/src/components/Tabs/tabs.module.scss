@@ -1,5 +1,16 @@
 // Tabs. The color classes set `--tabs-accent`, `--tabs-selected-bg` and
-// `--tabs-selected-fg`, read by every variant below.
+// `--tabs-selected-fg`, read by every variant below (internal plumbing, not
+// part of the public contract).
+//
+// Public CSS variables (set them on the tabs or any ancestor):
+// @css-var --tabs-gap Space between the tabs of the list
+// @css-var --tabs-font-size Font size of the tabs
+// @css-var --tabs-trigger-padding-x Horizontal padding of a tab (every variant)
+// @css-var --tabs-trigger-padding-y Vertical padding of a tab (every variant)
+// @css-var --tabs-trigger-min-height Minimum height of a tab (pills default to the density's control height minus 4px)
+// @css-var --tabs-radius Corner radius of enclosed / soft / pill tabs (defaults to --radius-md)
+// @css-var --tabs-indicator-width Thickness of the line indicator
+// @css-var --tabs-panel-padding Padding of the panel
 
 .tabs {
   display: flex;
@@ -37,7 +48,7 @@
   display: flex;
   flex-shrink: 0;
   position: relative;
-  gap: var(--space-1);
+  gap: var(--tabs-gap, var(--space-1));
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -58,10 +69,12 @@
   background: transparent;
   border: none;
   font-family: inherit;
-  font-size: var(--font-size-md);
+  font-size: var(--tabs-font-size, var(--font-size-md));
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary-color);
-  padding: var(--space-3) var(--space-4);
+  min-height: var(--tabs-trigger-min-height, auto);
+  padding-block: var(--tabs-trigger-padding-y, var(--space-3));
+  padding-inline: var(--tabs-trigger-padding-x, var(--space-4));
   cursor: pointer;
   position: relative;
   white-space: nowrap;
@@ -91,6 +104,18 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  // Selection is often conveyed by a fill: mark it with a system color.
+  @media (forced-colors: active) {
+    &[data-state="active"] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+
+    &:disabled {
+      color: GrayText;
+    }
+  }
 }
 
 // line (default): underline indicator only
@@ -99,9 +124,9 @@
 }
 
 .lineTrigger {
-  border-bottom: 2px solid transparent;
+  border-bottom: var(--tabs-indicator-width, 2px) solid transparent;
   margin-bottom: -1px;
-  padding-inline: var(--space-2);
+  padding-inline: var(--tabs-trigger-padding-x, var(--space-2));
 
   &[data-state="active"] {
     border-bottom-color: var(--tabs-accent);
@@ -110,19 +135,19 @@
 
 .lineList.verticalList {
   border-bottom: none;
-  border-right: 1px solid var(--border-color);
+  border-inline-end: 1px solid var(--border-color);
 }
 
 .lineTrigger.verticalTrigger {
   border-bottom: none;
-  border-right: 2px solid transparent;
+  border-inline-end: var(--tabs-indicator-width, 2px) solid transparent;
   margin-bottom: 0;
-  margin-right: -1px;
-  padding-inline: var(--space-3);
-  text-align: left;
+  margin-inline-end: -1px;
+  padding-inline: var(--tabs-trigger-padding-x, var(--space-3));
+  text-align: start;
 
   &[data-state="active"] {
-    border-right-color: var(--tabs-accent);
+    border-inline-end-color: var(--tabs-accent);
   }
 }
 
@@ -133,7 +158,7 @@
 
 .enclosedTrigger {
   border: 1px solid transparent;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-radius: var(--tabs-radius, var(--radius-md)) var(--tabs-radius, var(--radius-md)) 0 0;
 
   &[data-state="active"] {
     border-color: var(--border-color);
@@ -145,13 +170,13 @@
 // soft: segmented control
 .softList {
   background-color: var(--surface-muted-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--tabs-radius, var(--radius-md));
   padding: var(--space-1);
-  gap: var(--space-1);
+  gap: var(--tabs-gap, var(--space-1));
 }
 
 .softTrigger {
-  border-radius: var(--radius-sm);
+  border-radius: calc(var(--tabs-radius, var(--radius-md)) - var(--space-0-5));
 
   &[data-state="active"] {
     background-color: var(--surface-color);
@@ -162,15 +187,16 @@
 
 // pills: separated, flat child-view tabs; the list itself is unframed
 .pillsList {
-  gap: var(--space-2);
+  gap: var(--tabs-gap, var(--space-2));
   padding-block: var(--space-1);
 }
 
 .pillsTrigger {
-  min-height: 36px;
+  min-height: var(--tabs-trigger-min-height, calc(var(--control-height-md) - var(--space-1)));
   max-width: 100%;
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
+  border-radius: var(--tabs-radius, var(--radius-md));
+  padding-block: var(--tabs-trigger-padding-y, var(--space-2));
+  padding-inline: var(--tabs-trigger-padding-x, var(--space-3));
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -208,7 +234,7 @@
   border-bottom: none;
 
   &[data-state="active"] {
-    border-right-color: var(--tabs-selected-fg);
+    border-inline-end-color: var(--tabs-selected-fg);
   }
 }
 
@@ -232,7 +258,7 @@
 }
 
 .panel {
-  padding: var(--space-4) 0;
+  padding: var(--tabs-panel-padding, var(--space-4) 0);
   flex: 1;
   min-width: 0;
 

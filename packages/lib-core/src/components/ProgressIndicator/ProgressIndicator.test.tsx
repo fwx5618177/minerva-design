@@ -7,7 +7,7 @@ import ProgressIndicator from "./ProgressIndicator";
 
 describe("ProgressIndicator", () => {
   it("renders a labelled progressbar with a spinner by default", () => {
-    render(<ProgressIndicator ariaLabel="Loading data" />);
+    render(<ProgressIndicator aria-label="Loading data" />);
 
     const progressbar = screen.getByRole("progressbar", {
       name: "Loading data",
@@ -72,8 +72,8 @@ describe("ProgressIndicator", () => {
     expect(progressbar).not.toHaveAttribute("aria-label");
     expect(screen.getByText("Saving draft")).toHaveClass("label");
 
-    // ariaLabel still wins over the visible label
-    rerender(<ProgressIndicator label="Saving draft" ariaLabel="Saving" />);
+    // aria-label still wins over the visible label
+    rerender(<ProgressIndicator label="Saving draft" aria-label="Saving" />);
     expect(screen.getByRole("progressbar", { name: "Saving" })).toBe(
       progressbar,
     );
@@ -185,7 +185,7 @@ describe("ProgressIndicator localization", () => {
       i18n.changeLanguage("en");
     });
   });
-  it("translates the default label and lets ariaLabel win", () => {
+  it("translates the default label and lets aria-label win", () => {
     act(() => {
       i18n.changeLanguage("fr");
     });
@@ -194,7 +194,7 @@ describe("ProgressIndicator localization", () => {
       screen.getByRole("progressbar", { name: "Chargement" }),
     ).toBeInTheDocument();
 
-    rerender(<ProgressIndicator ariaLabel="Uploading" />);
+    rerender(<ProgressIndicator aria-label="Uploading" />);
     expect(
       screen.getByRole("progressbar", { name: "Uploading" }),
     ).toBeInTheDocument();

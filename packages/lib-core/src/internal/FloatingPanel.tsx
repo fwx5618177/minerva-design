@@ -17,6 +17,7 @@ import {
 } from "./useAnchoredPosition";
 import { LayerContext, useDismissableLayer } from "./useDismissableLayer";
 import { useFocusScope } from "./useFocusScope";
+import { usePortalDirection, type ReadingDirection } from "./direction";
 
 /** Off-screen until the first position is computed (no flash at 0,0). */
 const UNPOSITIONED: CSSProperties = { left: -9999, top: -9999 };
@@ -75,6 +76,11 @@ export interface FloatingLayer {
   isPositioned: boolean;
   /** Arrow offsets (when `arrowElement` is set). */
   arrowStyles: CSSProperties;
+  /**
+   * `dir` for the (portalled) floating element: the anchor's reading
+   * direction when it differs from the portal container's.
+   */
+  dir: ReadingDirection | undefined;
 }
 
 /**
@@ -104,6 +110,7 @@ export function useFloatingLayer({
   const { setFloating } = anchored;
   const ref = useMergedRefs<HTMLElement>(setElement, setFloating);
   const active = open && !!element;
+  const dir = usePortalDirection(element, anchor, open);
 
   useDismissableLayer(element, {
     enabled: active,
@@ -136,6 +143,7 @@ export function useFloatingLayer({
     placement: anchored.placement,
     isPositioned: anchored.isPositioned,
     arrowStyles: anchored.arrowStyles,
+    dir,
   };
 }
 
@@ -215,6 +223,7 @@ export const FloatingPanel = ({
   return (
     <Portal>
       <div
+        dir={layer.dir}
         {...rest}
         ref={mergedRef}
         data-side={side}

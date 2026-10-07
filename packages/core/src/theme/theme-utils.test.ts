@@ -111,6 +111,8 @@ describe("cookie helpers", () => {
 interface StubDom {
   dataset: Record<string, string | undefined>;
   style: { colorScheme?: string };
+  getAttribute: (name: string) => string | null;
+  hasAttribute: (name: string) => boolean;
 }
 
 const realDocument = globalThis.document;
@@ -134,8 +136,16 @@ function runScript(
     ? { palette: opts.initialPalette }
     : {};
   const style: { colorScheme?: string } = {};
+  const attributes = new Map<string, string>();
+  const element = {
+    dataset,
+    style,
+    setAttribute: (name: string, value: string) => attributes.set(name, value),
+    getAttribute: (name: string) => attributes.get(name) ?? null,
+    hasAttribute: (name: string) => attributes.has(name),
+  };
   Object.assign(globalThis, {
-    document: { cookie: opts.cookie, documentElement: { dataset, style } },
+    document: { cookie: opts.cookie, documentElement: element },
     window: opts.noMatchMedia
       ? {}
       : {
@@ -145,7 +155,7 @@ function runScript(
         },
   });
   new Function(script)();
-  return { dataset, style };
+  return element;
 }
 
 describe("THEME_INIT_SCRIPT", () => {
@@ -254,5 +264,34 @@ describe("createThemeInitScript", () => {
 
   it("is deterministic (same string on server and client)", () => {
     expect(createThemeInitScript()).toBe(THEME_INIT_SCRIPT);
+  });
+
+  it("writes the design attributes and uses the preset's palette", () => {
+    const script = createThemeInitScript({
+      design: { preset: "editorial", density: "compact" },
+    });
+    const dom = runScript(script, { cookie: "" });
+    expect(dom.dataset.palette).toBe("editorial");
+    expect(dom.getAttribute("data-density")).toBe("compact");
+    expect(dom.getAttribute("data-radius")).toBe("small");
+    expect(dom.getAttribute("data-shadow")).toBe("subtle");
+    expect(dom.getAttribute("data-font-scale")).toBe("large");
+    // the cookie palette and an explicit default palette still win
+    expect(runScript(script, { cookie: "palette=tech" }).dataset.palette).toBe(
+      "tech",
+    );
+    const explicit = createThemeInitScript({
+      defaultPalette: null,
+      design: { preset: "editorial" },
+    });
+    expect(runScript(explicit, { cookie: "" }).dataset.palette).toBeUndefined();
+  });
+
+  it("writes nothing for the standard design", () => {
+    const dom = runScript(createThemeInitScript({ design: {} }), {
+      cookie: "",
+    });
+    expect(dom.hasAttribute("data-density")).toBe(false);
+    expect(dom.hasAttribute("data-radius")).toBe(false);
   });
 });

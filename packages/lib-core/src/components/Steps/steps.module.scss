@@ -1,12 +1,19 @@
+// Public CSS variables (set them on the steps or any ancestor):
+// @css-var --steps-gap Space between the steps (row and column gap)
+// @css-var --steps-font-size Font size of the labels
+// @css-var --steps-indicator-size Diameter of the numbered indicator
+// @css-var --steps-accent-color Color of the current / completed indicators (defaults to --primary-color)
+// @css-var --steps-current-background Background of the current step's indicator
+
 .steps {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--steps-gap, var(--space-2) var(--space-4));
   margin: 0;
   padding: 0;
   list-style: none;
   font-family: var(--font-family-sans);
-  font-size: var(--font-size-sm);
+  font-size: var(--steps-font-size, var(--font-size-sm));
 }
 
 .step {
@@ -27,7 +34,8 @@
   text-align: start;
   cursor: pointer;
 
-  &:disabled {
+  &:disabled,
+  &.static {
     cursor: default;
   }
 
@@ -41,9 +49,9 @@
 .number {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  width: var(--steps-indicator-size, 24px);
+  height: var(--steps-indicator-size, 24px);
+  flex: 0 0 var(--steps-indicator-size, 24px);
   border: 1px solid var(--border-color);
   border-radius: 50%;
   font-size: var(--font-size-xs);
@@ -55,12 +63,22 @@
 }
 
 .current .number {
-  background: var(--primary-color-subtle);
+  background: var(--steps-current-background, var(--primary-color-subtle));
   color: var(--primary-color-text);
-  border-color: var(--primary-color);
+  border-color: var(--steps-accent-color, var(--primary-color));
 }
 
 .complete .number {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+  border-color: var(--steps-accent-color, var(--primary-color));
+  color: var(--steps-accent-color, var(--primary-color));
+}
+
+// Forced colors drop the tinted fill: the current step uses the system highlight.
+@media (forced-colors: active) {
+  .current .number {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
 }

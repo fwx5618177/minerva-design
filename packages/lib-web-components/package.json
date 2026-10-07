@@ -21,12 +21,22 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react.d.ts"
+      "import": {
+        "types": "./dist/react.d.ts"
+      },
+      "require": {
+        "types": "./dist/react.d.cts"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -42,7 +52,8 @@
     "watch": "vite build --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist coverage"
+    "clean": "rimraf dist coverage",
+    "check:package": "publint && attw --pack ."
   },
   "dependencies": {
     "lit": "^3.3.0"
@@ -58,5 +69,15 @@
   "devDependencies": {
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/react.d.ts"
+      ]
+    }
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

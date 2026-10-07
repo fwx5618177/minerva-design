@@ -8,7 +8,7 @@ export default function WithIconDemo() {
         color="success"
         icon={<FaCheck />}
         content="OK"
-        ariaLabel="Verified"
+        aria-label="Verified"
       >
         <FaUser size={24} />
       </Badge>
@@ -16,7 +16,7 @@ export default function WithIconDemo() {
         color="warning"
         icon={<FaStar />}
         content="Top"
-        ariaLabel="Top rated"
+        aria-label="Top rated"
       >
         <FaUser size={24} />
       </Badge>

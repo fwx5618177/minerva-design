@@ -87,10 +87,11 @@ export interface TagProps extends Omit<
   /** Custom close icon */
   closeIcon?: React.ReactNode;
   /**
-   * Accessible label of the close button
-   * @default "Close" (localized)
+   * Accessible label of the close button: a string, or a function of the
+   * tag's text label (the text of its children)
+   * @default "Remove {label}" (localized), or "Close" when the tag has no text
    */
-  closeLabel?: string;
+  closeLabel?: string | ((label: string) => string);
   /**
    * Shows a ripple effect when a clickable tag is activated
    * @default true

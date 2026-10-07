@@ -1,5 +1,14 @@
 import type { HTMLAttributes, Ref } from "react";
 
+/**
+ * DOM placement: without `copyable` the root is the <pre> region and it
+ * receives `className`, `style`, `ref` and every native attribute. With
+ * `copyable` the <pre> is wrapped in a positioned <div> (the copy button
+ * cannot live inside <pre>); `className`, `style` (including the `maxHeight`
+ * cap) and native attributes then go to that outermost <div>, while `ref`,
+ * `tabIndex`, `aria-label`, `aria-labelledby` and `aria-describedby` stay on
+ * the <pre> region.
+ */
 export interface CodeBlockProps extends Omit<
   HTMLAttributes<HTMLPreElement>,
   "children"
@@ -11,7 +20,7 @@ export interface CodeBlockProps extends Omit<
    * `aria-labelledby` attributes also work)
    * @default "Code" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Wraps long lines (pre-wrap) instead of scrolling horizontally
    * @default true
@@ -28,6 +37,14 @@ export interface CodeBlockProps extends Omit<
    * @default 0
    */
   tabIndex?: number;
-  /** Ref to the <pre> element */
+  /**
+   * Shows a copy button in the top-right corner that writes the text to the
+   * clipboard; its label switches to "Copied" / "Copy failed" for about two
+   * seconds and the result is announced through a polite live region. When
+   * set, the <pre> is wrapped in a <div> (see the interface description)
+   * @default false
+   */
+  copyable?: boolean;
+  /** Ref to the <pre> element (also when copyable) */
   ref?: Ref<HTMLPreElement>;
 }

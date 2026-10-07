@@ -203,7 +203,7 @@ describe("Tag", () => {
 
   it("renders the close control as a labelled native button", () => {
     render(<Tag closable>T</Tag>);
-    const close = screen.getByRole("button", { name: "Close" });
+    const close = screen.getByRole("button", { name: "Remove T" });
     expect(close.tagName).toBe("BUTTON");
     expect(close).toHaveAttribute("type", "button");
     expect(close).toHaveClass("closeIcon");
@@ -238,7 +238,7 @@ describe("Tag", () => {
       await user.tab();
       expect(screen.getByRole("button", { name: "T" })).toHaveFocus();
       await user.tab();
-      const close = screen.getByRole("button", { name: "Close" });
+      const close = screen.getByRole("button", { name: "Remove T" });
       expect(close).toHaveFocus();
       await user.keyboard(key);
       expect(onClose).toHaveBeenCalledTimes(1);
@@ -252,7 +252,7 @@ describe("Tag", () => {
         T
       </Tag>,
     );
-    expect(screen.getByRole("button", { name: "Close" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Remove T" })).toBeDisabled();
   });
   describe("keyboard / a11y when clickable", () => {
     it("renders the content as a native button", () => {
@@ -323,7 +323,7 @@ describe("Tag", () => {
       expect(tag).not.toHaveAttribute("role");
       expect(tag).not.toHaveAttribute("tabindex");
       const action = screen.getByRole("button", { name: "T" });
-      const close = screen.getByRole("button", { name: "Close" });
+      const close = screen.getByRole("button", { name: "Remove T" });
       expect(action.tagName).toBe("BUTTON");
       expect(action).toHaveAttribute("type", "button");
       expect(action).not.toContainElement(close);
@@ -348,7 +348,7 @@ describe("Tag", () => {
       expect(onClose).not.toHaveBeenCalled();
 
       await user.tab();
-      expect(screen.getByRole("button", { name: "Close" })).toHaveFocus();
+      expect(screen.getByRole("button", { name: "Remove T" })).toHaveFocus();
       await user.keyboard("{Enter}");
       await user.keyboard(" ");
       expect(onClose).toHaveBeenCalledTimes(2);
@@ -362,7 +362,7 @@ describe("Tag", () => {
         </Tag>,
       );
       expect(screen.getByRole("button", { name: "T" })).toBeDisabled();
-      expect(screen.getByRole("button", { name: "Close" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Remove T" })).toBeDisabled();
     });
 
     it("exposes the pressed state of toggle tags", () => {
@@ -410,7 +410,9 @@ describe("Tag localization", () => {
       i18n.changeLanguage("fr");
     });
     const { rerender } = render(<Tag closable>React</Tag>);
-    expect(screen.getByRole("button", { name: "Fermer" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Supprimer React" }),
+    ).toBeInTheDocument();
 
     rerender(
       <Tag closable closeLabel="Remove React">
@@ -479,7 +481,9 @@ describe("Tag avatar, loading and selection", () => {
       </Tag>,
     );
     expect(getTag("T")).not.toHaveAttribute("aria-busy");
-    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Remove T" }),
+    ).toBeInTheDocument();
   });
 
   it("styles a pressed (selected) toggle tag and exposes aria-pressed=false", () => {

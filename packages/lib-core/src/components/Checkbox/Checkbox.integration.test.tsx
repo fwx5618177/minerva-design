@@ -59,7 +59,7 @@ describe("Checkbox labels, state and form integration", () => {
       <Checkbox label="Label">Child</Checkbox>,
     );
     expect(screen.queryByText("Child")).toBeNull();
-    rerender(<Checkbox ariaLabel="Bare" />);
+    rerender(<Checkbox aria-label="Bare" />);
     expect(container.querySelector(`.${styles.label}`)).toBeNull();
   });
 
@@ -129,7 +129,7 @@ describe("Checkbox labels, state and form integration", () => {
     render(
       <>
         <span id="hint">Hint</span>
-        <Checkbox id="agree" value="yes" required ariaDescribedBy="hint">
+        <Checkbox id="agree" value="yes" required aria-describedby="hint">
           A
         </Checkbox>
       </>,

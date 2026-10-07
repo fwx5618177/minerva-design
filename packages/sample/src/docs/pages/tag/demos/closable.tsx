@@ -14,7 +14,6 @@ export default function ClosableDemo() {
         <Tag
           key={tag}
           closable
-          closeLabel={`Remove ${tag}`}
           closeIcon={index === 2 ? <FaTimesCircle aria-hidden /> : undefined}
           onClose={() => setTags((prev) => prev.filter((t) => t !== tag))}
           // clickable + closable: the tag and its close button are two

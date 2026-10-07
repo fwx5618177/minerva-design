@@ -6,7 +6,7 @@ export default function BasicDemo() {
 
   return (
     <div style={{ width: 240 }}>
-      <Select ariaLabel="Language" value={language} onChange={setLanguage}>
+      <Select aria-label="Language" value={language} onChange={setLanguage}>
         <SelectItem value="en">English</SelectItem>
         <SelectItem value="zh">Chinese</SelectItem>
         <SelectItem value="fr">French</SelectItem>

@@ -20,4 +20,11 @@ export type {
   ConfigContextProviderProps,
   ThemeContextValue,
   ThemeProviderProps,
+  Density,
+  DesignOptions,
+  DesignPreset,
+  FontScale,
+  RadiusScale,
+  ResolvedDesign,
+  ShadowScale,
 } from "./types";

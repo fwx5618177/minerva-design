@@ -6,7 +6,7 @@ export default function WithIconDemo() {
     <ProgressIndicator
       variant="bar"
       icon={<FiUploadCloud />}
-      ariaLabel="Uploading files"
+      aria-label="Uploading files"
     />
   );
 }

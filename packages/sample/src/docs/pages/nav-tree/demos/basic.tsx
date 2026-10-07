@@ -46,7 +46,7 @@ export default function BasicDemo() {
   return (
     <div style={{ maxWidth: 260 }}>
       <NavTree
-        ariaLabel="Main navigation"
+        aria-label="Main navigation"
         sections={sections}
         activeId={active}
         onItemSelect={(item) => {

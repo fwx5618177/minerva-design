@@ -136,7 +136,7 @@ function CreateBookApp({ onCreate }: { onCreate: (book: Book) => void }) {
           含成人内容
         </Checkbox>
         <Switch
-          ariaLabel="立即发布"
+          aria-label="立即发布"
           checked={book.publish}
           onChange={(v) => set("publish", v)}
         />
@@ -160,7 +160,7 @@ function setup() {
 
 async function dismissToasts(
   user: ReturnType<typeof userEvent.setup>,
-  regionName = "Notifications",
+  regionName = "Notifications (F8)",
   closeName = "Close",
 ) {
   const region = screen.queryByRole("region", { name: regionName });
@@ -251,7 +251,7 @@ describe("create-book form flow", () => {
     ]);
 
     const status = await within(
-      screen.getByRole("region", { name: "Notifications" }),
+      screen.getByRole("region", { name: "Notifications (F8)" }),
     ).findByRole("status");
     expect(status).toHaveTextContent("《诡秘之主》已创建");
     expect(status).toHaveTextContent("1394 章 · 克苏鲁, 完结");
@@ -308,6 +308,42 @@ describe("create-book form flow", () => {
     expect(
       screen.getByRole("textbox", { name: /书名/ }),
     ).toHaveAccessibleDescription("公开展示的标题");
+  });
+
+  it("a Button without type (preview, add row...) never submits the form; only type=submit does", async () => {
+    const user = userEvent.setup();
+    const submits: string[] = [];
+    const previews: string[] = [];
+    render(
+      <FormLayout
+        aria-label="草稿"
+        onSubmit={(event) => {
+          event.preventDefault();
+          submits.push("submit");
+        }}
+      >
+        <FormField label="书名">
+          <Input name="title" defaultValue="三体" />
+        </FormField>
+        <Toolbar>
+          <Button variant="outline" onClick={() => previews.push("preview")}>
+            预览
+          </Button>
+          <Button type="submit">保存</Button>
+        </Toolbar>
+      </FormLayout>,
+    );
+
+    const preview = screen.getByRole("button", { name: "预览" });
+    expect(preview).toHaveAttribute("type", "button");
+    await user.click(preview);
+    preview.focus();
+    await user.keyboard("{Enter}");
+    expect(previews).toEqual(["preview", "preview"]);
+    expect(submits).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: "保存" }));
+    expect(submits).toEqual(["submit"]);
   });
 
   // Behavioural layout checks (happy-dom has no grid geometry).

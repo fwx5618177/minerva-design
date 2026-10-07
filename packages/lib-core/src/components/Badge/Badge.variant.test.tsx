@@ -130,7 +130,7 @@ describe("Badge color, variant and native attributes", () => {
       <Badge
         ref={ref}
         className="consumer"
-        ariaLabel="3 unread"
+        aria-label="3 unread"
         color="danger"
         variant="subtle"
         dot

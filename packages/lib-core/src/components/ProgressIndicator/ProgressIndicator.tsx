@@ -1,5 +1,9 @@
 import React, { useId } from "react";
-import { FaSpinner, FaWaveSquare, FaCircleNotch } from "react-icons/fa";
+import {
+  IconCircleNotch,
+  IconSpinner,
+  IconWaveSquare,
+} from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import type { ProgressIndicatorProps } from "./types";
@@ -8,7 +12,7 @@ import styles from "./progressIndicator.module.scss";
 /**
  * ProgressIndicator: the indeterminate loading indicator (spinner, circle,
  * wave, bar or dotted bar). It is a `progressbar` without a value, named by
- * `ariaLabel`, by its visible `label`, or by the localized "Loading". It is
+ * `aria-label`, by its visible `label`, or by the localized "Loading". It is
  * never focusable, so it can sit inside buttons. Set `decorative` when a
  * surrounding element already announces the loading state.
  */
@@ -18,7 +22,7 @@ const ProgressIndicator = ({
   color = "primary",
   icon,
   label,
-  ariaLabel,
+  "aria-label": ariaLabel,
   decorative = false,
   className = "",
   width,
@@ -31,7 +35,7 @@ const ProgressIndicator = ({
   const labelId = useId();
   const indicatorMap = {
     spinner: (
-      <FaSpinner className={cn(styles.spinner, styles[size])} aria-hidden />
+      <IconSpinner className={cn(styles.spinner, styles[size])} aria-hidden />
     ),
     bar: (
       <div className={cn(styles.barContainer, styles[size])}>
@@ -40,11 +44,14 @@ const ProgressIndicator = ({
     ),
     wave: (
       <div className={cn(styles.waveContainer, styles[size])}>
-        <FaWaveSquare className={styles.wave} aria-hidden />
+        <IconWaveSquare className={styles.wave} aria-hidden />
       </div>
     ),
     circle: (
-      <FaCircleNotch className={cn(styles.circle, styles[size])} aria-hidden />
+      <IconCircleNotch
+        className={cn(styles.circle, styles[size])}
+        aria-hidden
+      />
     ),
     dottedBar: (
       <div className={cn(styles.dottedBarContainer, styles[size])}>

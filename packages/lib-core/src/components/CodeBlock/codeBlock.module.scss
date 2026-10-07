@@ -1,16 +1,25 @@
+// Public CSS variables (set them on the code block or any ancestor):
+// @css-var --code-block-padding Inner padding
+// @css-var --code-block-radius Corner radius (defaults to --radius-md)
+// @css-var --code-block-bg Background color
+// @css-var --code-block-border-color Border color
+// @css-var --code-block-font-size Font size of the code
+// @css-var --code-block-max-height Maximum height before the block scrolls (default: none)
+
 .codeBlock {
   box-sizing: border-box;
   margin: 0;
   min-width: 0;
   max-width: 100%;
+  max-height: var(--code-block-max-height, none);
   overflow: auto;
-  padding: var(--space-4);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--control-color);
+  padding: var(--code-block-padding, var(--space-4));
+  border: 1px solid var(--code-block-border-color, var(--border-color));
+  border-radius: var(--code-block-radius, var(--radius-md));
+  background: var(--code-block-bg, var(--control-color));
   color: var(--text-color);
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
+  font-size: var(--code-block-font-size, var(--font-size-sm));
   line-height: var(--line-height-base);
   letter-spacing: 0;
   tab-size: 2;
@@ -29,5 +38,66 @@
   code {
     font: inherit;
     color: inherit;
+  }
+}
+
+// Copyable: a positioned wrapper holds the region and the copy button.
+// The wrapper carries the max-height (inline style), the region shrinks to
+// fit and scrolls.
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  max-height: var(--code-block-max-height, none);
+
+  > .codeBlock {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+// Keep the first line clear of the copy button.
+.copyable {
+  padding-inline-end: calc(var(--code-block-padding, var(--space-4)) + var(--control-height-sm) + var(--space-2));
+}
+
+.actions {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  display: flex;
+}
+
+.visuallyHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Print the whole code: no scroll container, long lines wrap.
+@media print {
+  .root {
+    max-height: none !important;
+  }
+
+  .actions {
+    display: none;
+  }
+
+  .codeBlock {
+    max-height: none;
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    break-inside: avoid;
   }
 }

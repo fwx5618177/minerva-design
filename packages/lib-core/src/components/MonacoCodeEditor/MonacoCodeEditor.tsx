@@ -7,8 +7,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { LuRotateCw } from "react-icons/lu";
+import { IconRotateCw } from "../../internal/icons";
 import { cn } from "../../utils/cn";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import useI18n from "../../hooks/useI18n";
 import Button from "../Button/Button";
 import ProgressIndicator from "../ProgressIndicator/ProgressIndicator";
@@ -88,6 +89,8 @@ export const MonacoCodeEditor = ({
   retryLabel,
   loadingLabel,
   className,
+  style,
+  ...rest
 }: MonacoCodeEditorProps) => {
   const { t } = useI18n();
   const resolvedTheme = useEditorTheme(theme);
@@ -151,7 +154,13 @@ export const MonacoCodeEditor = ({
   const busy = status === "loading" || status === "ready";
 
   return (
-    <div className={cn(styles.root, className)} role="group" aria-label={label}>
+    <div
+      {...pickDataAttributes(rest)}
+      className={cn(styles.root, className)}
+      style={style}
+      role="group"
+      aria-label={label}
+    >
       {/* Labels the fallback textarea, or Monaco's own input once mounted
           (its id is set in onMount), so clicking it focuses the editor. */}
       <label className={styles.label} htmlFor={inputId}>
@@ -172,10 +181,10 @@ export const MonacoCodeEditor = ({
                 color="neutral"
                 variant="outline"
                 size="small"
-                ariaLabel={retryLabel ?? t("monacoCodeEditor.retryLabel")}
+                aria-label={retryLabel ?? t("monacoCodeEditor.retryLabel")}
                 onClick={() => setAttempt((previous) => previous + 1)}
               >
-                <LuRotateCw aria-hidden="true" className={styles.retryIcon} />
+                <IconRotateCw aria-hidden="true" className={styles.retryIcon} />
                 {retryText ?? t("monacoCodeEditor.retry")}
               </Button>
             </div>
@@ -197,7 +206,7 @@ export const MonacoCodeEditor = ({
               <div className={styles.loading} role="status">
                 <ProgressIndicator
                   size="small"
-                  ariaLabel={loadingLabel ?? t("monacoCodeEditor.loading")}
+                  aria-label={loadingLabel ?? t("monacoCodeEditor.loading")}
                 />
               </div>
             )}

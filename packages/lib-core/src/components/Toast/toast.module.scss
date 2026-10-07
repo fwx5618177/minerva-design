@@ -1,15 +1,26 @@
 // Each color sets --toast-accent / --toast-border / --toast-tint; the item
-// sets --toast-duration inline to time the progress bar.
+// sets --toast-duration inline to time the progress bar (internal plumbing,
+// not part of the public contract).
+//
+// Public CSS variables (set them on the viewport / Toaster or any ancestor):
+// @css-var --toast-width Width of the toast stack (capped by the viewport)
+// @css-var --toast-gap Space between stacked toasts
+// @css-var --toast-offset Distance between the stack and the viewport edges
+// @css-var --toast-padding Padding of a toast
+// @css-var --toast-radius Corner radius of a toast (defaults to --radius-md)
+// @css-var --toast-shadow Shadow of a toast (defaults to --shadow-lg)
+// @css-var --toast-background Base background of a toast (under the color tint)
+// @css-var --toast-z-index Stacking order of the stack (defaults to --z-toast)
 
 .viewport {
   position: fixed;
-  z-index: var(--z-toast);
+  z-index: var(--toast-z-index, var(--z-toast));
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-4);
+  gap: var(--toast-gap, var(--space-2));
+  padding: var(--toast-offset, var(--space-4));
   pointer-events: none;
-  width: min(420px, 100vw);
+  width: min(var(--toast-width, 420px), 100vw);
   box-sizing: border-box;
 }
 
@@ -57,11 +68,11 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: linear-gradient(0deg, var(--toast-tint), var(--toast-tint)), color-mix(in srgb, var(--surface-elevated-color) 88%, transparent);
+  padding: var(--toast-padding, var(--space-3) var(--space-4));
+  background: linear-gradient(0deg, var(--toast-tint), var(--toast-tint)), var(--toast-background, color-mix(in srgb, var(--surface-elevated-color) 88%, transparent));
   border: 1px solid var(--toast-border, var(--border-color));
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--toast-radius, var(--radius-md));
+  box-shadow: var(--toast-shadow, var(--shadow-lg));
   pointer-events: auto;
   font-family: var(--font-family-sans);
   font-size: var(--font-size-sm);
@@ -168,6 +179,15 @@
   opacity: 0.55;
   transform-origin: left center;
   animation: toastProgress var(--toast-duration, 4000ms) linear forwards;
+
+  [dir="rtl"] & {
+    transform-origin: right center;
+  }
+
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
 }
 
 .info {
@@ -229,5 +249,11 @@
   .toast,
   .toast[data-state="closing"] {
     animation: none;
+  }
+}
+
+@media print {
+  .viewport {
+    display: none;
   }
 }

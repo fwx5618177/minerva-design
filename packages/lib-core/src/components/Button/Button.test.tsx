@@ -64,8 +64,8 @@ describe("Button", () => {
     expect(button).not.toHaveClass("borderRadiusMedium");
   });
 
-  it("uses ariaLabel as the accessible name", () => {
-    render(<Button ariaLabel="Close dialog">x</Button>);
+  it("uses aria-label as the accessible name", () => {
+    render(<Button aria-label="Close dialog">x</Button>);
 
     expect(
       screen.getByRole("button", { name: "Close dialog" }),
@@ -140,6 +140,63 @@ describe("Button", () => {
     const button = screen.getByTestId("btn");
     expect(button).toHaveAttribute("type", "submit");
     expect(ref.current).toBe(button);
+  });
+
+  describe("type", () => {
+    it('defaults to type="button"', () => {
+      render(<Button>Save</Button>);
+      expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute(
+        "type",
+        "button",
+      );
+    });
+
+    it("does not submit the surrounding form by default (click or Enter)", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      const onClick = vi.fn();
+      render(
+        <form onSubmit={onSubmit}>
+          <input aria-label="Name" />
+          <Button onClick={onClick}>Preview</Button>
+        </form>,
+      );
+      const button = screen.getByRole("button", { name: "Preview" });
+      await user.click(button);
+      button.focus();
+      await user.keyboard("{Enter}");
+      expect(onClick).toHaveBeenCalledTimes(2);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('submits the form when type="submit" is explicit', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <Button>Cancel</Button>
+          <Button type="submit">Send</Button>
+        </form>,
+      );
+      await user.click(screen.getByRole("button", { name: "Cancel" }));
+      expect(onSubmit).not.toHaveBeenCalled();
+      await user.click(screen.getByRole("button", { name: "Send" }));
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it('resets the form with type="reset"', async () => {
+      const user = userEvent.setup();
+      render(
+        <form>
+          <input aria-label="Name" defaultValue="" />
+          <Button type="reset">Reset</Button>
+        </form>,
+      );
+      const input = screen.getByRole("textbox", { name: "Name" });
+      await user.type(input, "Ada");
+      await user.click(screen.getByRole("button", { name: "Reset" }));
+      expect(input).toHaveValue("");
+    });
   });
 
   describe("regressions", () => {

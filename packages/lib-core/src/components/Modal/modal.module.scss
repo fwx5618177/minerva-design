@@ -6,7 +6,16 @@
 // - a direct <form> / <fieldset> wrapper keeps the body scrollable
 // - oversized header / description / footer scroll inside viewport-bounded regions
 
-$gutter: clamp(1rem, 3vw, 1.5rem);
+// Public CSS variables (set them on the modal or any ancestor):
+// @css-var --modal-width Width of the panel (every size; defaults to the width of the size, capped by the viewport)
+// @css-var --modal-max-height Maximum height of the panel (the body scrolls beyond)
+// @css-var --modal-padding Horizontal padding of the header, description, body and footer
+// @css-var --modal-radius Corner radius of the panel (defaults to --radius-xl)
+// @css-var --modal-shadow Shadow of the panel (defaults to --shadow-xl)
+// @css-var --modal-background Background of the panel
+// @css-var --modal-z-index Stacking order of the panel (defaults to --z-modal)
+
+$gutter: var(--modal-padding, clamp(1rem, 3vw, 1.5rem));
 
 .overlay {
   position: fixed;
@@ -25,14 +34,14 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--surface-color);
+  background-color: var(--modal-background, var(--surface-color));
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  z-index: var(--z-modal);
-  width: min(calc(100vw - 2rem), 31.25rem);
-  max-height: min(calc(100vh - 2rem), 52rem);
+  border-radius: var(--modal-radius, var(--radius-xl));
+  box-shadow: var(--modal-shadow, var(--shadow-xl));
+  z-index: var(--modal-z-index, var(--z-modal));
+  width: min(calc(100vw - 2rem), var(--modal-width, 31.25rem));
+  max-height: min(calc(100vh - 2rem), var(--modal-max-height, 52rem));
   display: flex;
   flex-direction: column;
   // Clips long bodies so the radius applies and the body's overflow-y takes over.
@@ -60,16 +69,16 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 }
 
 .small {
-  width: min(calc(100vw - 2rem), 25rem);
+  width: min(calc(100vw - 2rem), var(--modal-width, 25rem));
 }
 .medium {
-  width: min(calc(100vw - 2rem), 31.25rem);
+  width: min(calc(100vw - 2rem), var(--modal-width, 31.25rem));
 }
 .large {
-  width: min(calc(100vw - 2rem), 43.75rem);
+  width: min(calc(100vw - 2rem), var(--modal-width, 43.75rem));
 }
 .xlarge {
-  width: min(calc(100vw - 2rem), 56.25rem);
+  width: min(calc(100vw - 2rem), var(--modal-width, 56.25rem));
 }
 .full {
   max-width: none;
@@ -83,8 +92,8 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
     top: auto;
     bottom: 0.5rem;
     width: calc(100vw - 1rem);
-    max-height: min(calc(100dvh - 1rem), 42rem);
-    border-radius: var(--radius-xl) var(--radius-xl) var(--radius-lg) var(--radius-lg);
+    max-height: min(calc(100dvh - 1rem), var(--modal-max-height, 42rem));
+    border-radius: var(--modal-radius, var(--radius-xl) var(--radius-xl) var(--radius-lg) var(--radius-lg));
     transform: translateX(-50%);
     animation: modal-slide-up var(--transition-base);
 
@@ -98,7 +107,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
   .large,
   .xlarge,
   .full {
-    width: calc(100vw - 1rem);
+    width: min(calc(100vw - 1rem), var(--modal-width, 100vw));
     max-width: none;
   }
 
@@ -116,7 +125,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 }
 
 .content:has(> .close) .header {
-  padding-right: calc(2rem + var(--space-3) + var(--space-3));
+  padding-inline-end: calc(2rem + var(--space-3) + var(--space-3));
 }
 
 .header {
@@ -181,7 +190,7 @@ $gutter: clamp(1rem, 3vw, 1.5rem);
 .close {
   position: absolute;
   top: var(--space-3);
-  right: var(--space-3);
+  inset-inline-end: var(--space-3);
   width: 2rem;
   height: 2rem;
   display: inline-flex;

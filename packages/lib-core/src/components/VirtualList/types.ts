@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { HTMLAttributes, MouseEvent, KeyboardEvent, Ref } from "react";
 
 export interface VirtualListItem {
   /** Unique key of the item */
@@ -8,9 +8,13 @@ export interface VirtualListItem {
 }
 
 /**
- * VirtualList props
+ * VirtualList props. Other native <div> attributes (id, data-*, aria-*,
+ * event handlers...) are forwarded to the root (scroll container) element
  */
-export interface VirtualListProps {
+export interface VirtualListProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children" | "role" | "tabIndex"
+> {
   /** Items to render */
   items: VirtualListItem[];
   /** Fixed row height in pixels; measured from the first item when omitted */
@@ -53,8 +57,18 @@ export interface VirtualListProps {
    * @default false
    */
   loading?: boolean;
+  /**
+   * Called when a row is clicked, or activated with Enter / Space while the
+   * row itself has focus. Makes the rows clickable: focusable and shown
+   * with a pointer cursor
+   */
+  onItemClick?: (
+    item: VirtualListItem,
+    index: number,
+    event: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>,
+  ) => void;
   /** Accessible name of the list */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /** Ref to the root (scroll container) <div> element */
   ref?: Ref<HTMLDivElement>;
 }

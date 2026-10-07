@@ -1,14 +1,21 @@
+// Public CSS variables (set them on the list or any ancestor):
+// @css-var --virtual-list-radius Corner radius (defaults to --radius-sm)
+// @css-var --virtual-list-shadow Shadow at rest (defaults to --shadow-sm)
+// @css-var --virtual-list-hover-shadow Shadow while hovered (defaults to --shadow-md)
+// @css-var --virtual-list-scrollbar-size Width of the scrollbar (WebKit / Blink)
+// @css-var --virtual-list-loading-padding Padding of the loading indicator row
+
 .virtualList {
   position: relative;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   will-change: transform;
-  box-shadow: var(--shadow-sm);
-  border-radius: 4px;
+  box-shadow: var(--virtual-list-shadow, var(--shadow-sm));
+  border-radius: var(--virtual-list-radius, var(--radius-sm));
   transition: box-shadow 0.3s ease;
 
   &:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--virtual-list-hover-shadow, var(--shadow-md));
   }
 
   .virtualListContent {
@@ -17,18 +24,21 @@
 
   .virtualListItem {
     position: absolute;
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     will-change: transform;
     transition: transform 0.2s ease;
+
+    // Only rows with a click handler (onItemClick) look clickable
+    &.clickable {
+      cursor: pointer;
+    }
   }
 
   .loadingWrapper {
     position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px;
+    inset-inline: 0;
+    padding: var(--virtual-list-loading-padding, var(--space-3));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,12 +47,12 @@
   }
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: var(--virtual-list-scrollbar-size, 6px);
   }
 
   &::-webkit-scrollbar-thumb {
     background-color: var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-full);
 
     &:hover {
       background-color: var(--border-strong-color);
@@ -51,5 +61,13 @@
 
   &::-webkit-scrollbar-track {
     background-color: var(--surface-muted-color);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    .virtualListItem {
+      transition: none;
+    }
   }
 }

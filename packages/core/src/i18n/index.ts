@@ -1,6 +1,6 @@
-// Framework-agnostic i18n resources: the built-in message bundles of every
-// supported language (plain data, no i18n runtime). Adapters such as
-// `@minerva/lib-core` load them into their own i18n library.
+// Framework-agnostic i18n: the built-in message bundles of every supported
+// language (plain data) and a tiny translator (`createTranslator` /
+// `translate`) that adapters such as `@minerva/lib-core` build on.
 import en from "./locales/en";
 import fr from "./locales/fr";
 import ja from "./locales/ja";
@@ -10,6 +10,15 @@ import type { SupportedLanguage } from "./types";
 
 export type { SupportedLanguage } from "./types";
 export { mergeMessages, type Messages } from "./merge";
+export {
+  createTranslator,
+  getPluralCategory,
+  interpolate,
+  translate,
+  type TranslateFunction,
+  type TranslateOptions,
+  type TranslatorConfig,
+} from "./translate";
 
 /** Every language Minerva ships translations for */
 export const SUPPORTED_LANGUAGES: readonly SupportedLanguage[] = [

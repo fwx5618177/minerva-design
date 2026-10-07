@@ -9,6 +9,10 @@
     "form-control": {
       "title": "Forms",
       "description": "name submits each tag as a hidden input; FormField provides the label and read-only state."
+    },
+    "separators": {
+      "title": "Separators",
+      "description": "separators lists the strings that split typed or pasted text into tags; \"Enter\" commits on the Enter key and splits pasted lines."
     }
   },
   "api": {
@@ -18,10 +22,12 @@
       "onChange": "Called with the next tags after an addition, a removal or clearing",
       "options": "Suggestions; already selected tags are hidden and duplicates merged",
       "commitOnBlur": "Adds the typed draft as a tag when the input loses focus",
+      "separators": "Keys that commit the draft: a literal string (e.g. \",\" or \";\") splits the typed or pasted text into tags; \"Enter\" commits on the Enter key (and also splits pasted text on line breaks)",
       "id": "Id of the text input (defaults to the FormControl id)",
       "name": "Submits every selected tag under this name (hidden inputs); the draft is not submitted",
       "placeholder": "Placeholder of the text input",
       "aria-label": "Accessible name of the text input when there is no FormControl label",
+      "aria-labelledby": "Ids of the elements labelling the text input (wins over the FormControl label)",
       "aria-describedby": "Extra ids describing the text input",
       "disabled": "Disables the field (also set by FormControl)",
       "readOnly": "Shows the tags without editing controls (also set by FormControl)",
@@ -33,7 +39,16 @@
       "removeLabel": "Accessible label of a tag's remove button",
       "createLabel": "Text of the \"create this tag\" suggestion",
       "className": "Class name of the wrapper",
+      "style": "Inline style of the wrapper",
       "ref": "Ref to the text <input>"
     }
+  },
+  "cssVars": {
+    "--tag-input-gap": "Space between the tags and between the tags and the entry row",
+    "--tag-input-tag-min-height": "Minimum height of a tag (defaults to the density's small control height)",
+    "--tag-input-list-max-height": "Maximum height of the suggestion list before it scrolls",
+    "--tag-input-list-radius": "Corner radius of the suggestion list (defaults to --radius-md)",
+    "--tag-input-option-padding-y": "Vertical padding of a suggestion (follows the density's row padding)",
+    "--tag-input-option-padding-x": "Horizontal padding of a suggestion (follows the density's row padding)"
   }
 }

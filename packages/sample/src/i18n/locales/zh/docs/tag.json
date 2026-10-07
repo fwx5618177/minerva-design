@@ -20,7 +20,7 @@
     },
     "closable": {
       "title": "可关闭",
-      "description": "closable 会添加关闭按钮并调用 onClose，请在其中从状态中移除标签；closeIcon 和 closeLabel 用于自定义该按钮。第一个标签同时可点击：标签本身和关闭按钮是两个独立的按钮，都可以用 Tab 到达。"
+      "description": "closable 添加以标签命名的关闭按钮（“移除 Tag 1”，已本地化；closeLabel 可用字符串或以标签文本为参数的函数覆盖）；激活时调用 onClose。第一个标签同时可点击：标签本身和关闭按钮是两个独立的按钮，都可以用 Tab 到达。"
     },
     "clickable": {
       "title": "可点击（可选择）",
@@ -65,9 +65,16 @@
       "style": "内联样式",
       "disabled": "禁用标签及其关闭按钮",
       "closeIcon": "自定义关闭图标",
-      "closeLabel": "关闭按钮的无障碍标签",
+      "closeLabel": "关闭按钮的无障碍标签：字符串，或以标签文本为参数的函数。默认为“移除 {label}”（本地化），标签没有文本时为“关闭”",
       "ripple": "点击时显示涟漪效果",
       "ref": "指向根元素的 ref"
     }
+  },
+  "cssVars": {
+    "--tag-height": "最小高度（所有尺寸；默认为内容高度）",
+    "--tag-padding-x": "水平内边距（所有尺寸）",
+    "--tag-font-size": "字号（所有尺寸）",
+    "--tag-radius": "rounded 形状的圆角（默认 --radius-sm）",
+    "--tag-gap": "图标、文字与关闭按钮之间的间距"
   }
 }

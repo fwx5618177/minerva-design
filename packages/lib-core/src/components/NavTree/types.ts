@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 /** An entry of a NavTree: a link, or a branch when it has children */
 export interface NavTreeItem {
@@ -53,8 +54,11 @@ export interface NavTreeItemState {
   className: string;
 }
 
-/** Props of `NavTree`, a sidebar navigation tree */
-export interface NavTreeProps {
+/**
+ * Props of `NavTree`, a sidebar navigation tree. `className`, `style`, `id`,
+ * `aria-*` and `data-*` attributes go to the `<nav>` element
+ */
+export interface NavTreeProps extends DataAttributes {
   /** Sections of items */
   sections: NavTreeSection[];
   /** Id of the active (current page) item; its ancestors expand */
@@ -95,7 +99,11 @@ export interface NavTreeProps {
    * Accessible name of the `<nav>` landmark
    * @default "Navigation" (localized)
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /** id(s) of the element(s) naming the `<nav>` landmark (replaces the default label) */
+  "aria-labelledby"?: string;
+  /** id of the `<nav>` element */
+  id?: string;
   /** Ref to the `<nav>` element */
   ref?: Ref<HTMLElement>;
 }

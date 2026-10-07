@@ -19,7 +19,7 @@ export default function BasicDemo() {
   };
 
   return (
-    <PageTabs ariaLabel="Open pages" activeValue={active}>
+    <PageTabs aria-label="Open pages" activeValue={active}>
       {pages.map((page) => (
         <PageTab
           key={page.value}
@@ -32,7 +32,7 @@ export default function BasicDemo() {
             page.value !== "home" && (
               <IconButton
                 size="small"
-                ariaLabel={`Close ${page.label}`}
+                aria-label={`Close ${page.label}`}
                 icon={<LuX />}
                 onClick={() => close(page.value)}
               />

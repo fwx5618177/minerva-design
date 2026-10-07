@@ -7,7 +7,7 @@ import Badge from "./Badge";
 
 describe("Badge", () => {
   it("renders a status badge with default classes", () => {
-    render(<Badge content={5} ariaLabel="5 notifications" />);
+    render(<Badge content={5} aria-label="5 notifications" />);
     const badge = screen.getByRole("status", { name: "5 notifications" });
     expect(badge).toHaveTextContent("5");
     expect(badge).toHaveClass("badge", "primary", "medium", "standalone");
@@ -91,7 +91,7 @@ describe("Badge", () => {
 
   it("is not a tab stop (non-interactive)", async () => {
     const user = userEvent.setup();
-    render(<Badge content={1} ariaLabel="One" />);
+    render(<Badge content={1} aria-label="One" />);
     await user.tab();
     expect(screen.getByRole("status", { name: "One" })).not.toHaveFocus();
     expect(document.body).toHaveFocus();
@@ -174,9 +174,9 @@ describe("Badge localization", () => {
 
 describe("Badge as a status dot", () => {
   it.each(["success", "warning", "danger", "info", "neutral"] as const)(
-    "renders a standalone %s dot announced by its ariaLabel",
+    "renders a standalone %s dot announced by its aria-label",
     (color) => {
-      render(<Badge dot color={color} ariaLabel={`${color} status`} />);
+      render(<Badge dot color={color} aria-label={`${color} status`} />);
       const dot = screen.getByRole("status", { name: `${color} status` });
       expect(dot).toHaveClass("badge", "dot", "standalone", color);
       expect(dot).toBeEmptyDOMElement();

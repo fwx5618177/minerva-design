@@ -80,7 +80,7 @@ describe("PageHeader", () => {
       <PageHeader
         title="Accounts"
         description="Directory"
-        actions={<IconButton ariaLabel="Refresh" icon="R" disabled />}
+        actions={<IconButton aria-label="Refresh" icon="R" disabled />}
       />,
     );
     expect(container.querySelector("h1")?.textContent).toBe("Accounts");

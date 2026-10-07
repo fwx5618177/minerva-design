@@ -1,4 +1,5 @@
 import type { CSSProperties, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 /** Viewport simulated by HtmlPreview */
 export type HtmlPreviewViewport = "desktop" | "mobile";
@@ -6,9 +7,9 @@ export type HtmlPreviewViewport = "desktop" | "mobile";
 /**
  * Props of `HtmlPreview`. The iframe itself is not configurable: it is always
  * sandboxed (`sandbox=""`), has no referrer and renders a sanitized document
- * behind a strict Content-Security-Policy.
+ * behind a strict Content-Security-Policy. `data-*` attributes go to the root.
  */
-export interface HtmlPreviewProps {
+export interface HtmlPreviewProps extends DataAttributes {
   /** Untrusted HTML to preview (sanitized with DOMPurify in the browser) */
   html: string;
   /** Accessible title of the iframe */

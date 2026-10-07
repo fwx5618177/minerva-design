@@ -1,6 +1,12 @@
 import { contains, getEventTarget, getOwnerDocument } from "./dom";
 
 /**
+ * Attribute marking an element that handles Escape itself while it is set:
+ * Escape pressed inside it does not dismiss the topmost layer.
+ */
+export const ESCAPE_CONSUMER_ATTRIBUTE = "data-minerva-escape-consumer";
+
+/**
  * Outside-interaction callback. Receives the original DOM event; call
  * `event.preventDefault()` or return `false` to keep the layer open.
  */
@@ -244,6 +250,10 @@ function attachDocument(doc: Document) {
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key !== "Escape") return;
+    // A control inside the layer consumes this Escape itself (e.g. a closed
+    // combobox clearing its text): the layer stays open.
+    const target = getEventTarget(event) as Element | null;
+    if (target?.closest?.(`[${ESCAPE_CONSUMER_ATTRIBUTE}]`)) return;
     const top = [...layers]
       .reverse()
       .find((layer) => getOwnerDocument(layer.element) === doc);

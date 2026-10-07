@@ -214,3 +214,18 @@ describe("HtmlPreview", () => {
     expect(markup).not.toContain("bad()");
   });
 });
+
+describe("HtmlPreview native attributes", () => {
+  it("forwards data-* attributes to the root, never to the iframe", () => {
+    act(() =>
+      root.render(
+        <HtmlPreview html="<p>x</p>" title="Email" data-testid="preview" />,
+      ),
+    );
+    const preview = container.querySelector('[data-testid="preview"]')!;
+    expect(preview).toBe(container.firstElementChild);
+    expect(container.querySelector("iframe")).not.toHaveAttribute(
+      "data-testid",
+    );
+  });
+});

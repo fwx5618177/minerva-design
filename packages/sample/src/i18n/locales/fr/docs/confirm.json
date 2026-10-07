@@ -1,6 +1,11 @@
 {
   "title": "Confirm",
   "description": "Demande à l'utilisateur de confirmer une action : un remplaçant thématisé de window.confirm. Utilisez le ConfirmDialog déclaratif ou attendez confirm() depuis n'importe où ; avec un ConfirmProvider la boîte s'affiche dans l'arbre de l'application, sans lui un hôte autonome est monté à la demande, et côté serveur confirm() renvoie false.",
+  "usage": {
+    "title": "Lequel choisir : useConfirm() ou confirm()",
+    "hook": "Dans un composant, appelez useConfirm() : ses boîtes de dialogue suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, la modale est rendue dans son conteneur de portail, avec son thème, sa palette et ses tokens, et les libellés par défaut des boutons utilisent sa langue. Un ConfirmProvider les affiche toujours s’il y en a un.",
+    "function": "Hors de React (bus d’événements, clients d’API, gardes de routeur et autres modules non composants), importez directement confirm() : aucun hook n’y est disponible, et ses boîtes utilisent le thème et la langue racines."
+  },
   "demos": {
     "imperative": {
       "title": "confirm() impératif",
@@ -12,11 +17,15 @@
     },
     "provider": {
       "title": "Avec ConfirmProvider",
-      "description": "useConfirm() renvoie le confirm du provider : les boîtes partagent le contexte de l'application. Les demandes simultanées s'affichent une par une."
+      "description": "useConfirm() renvoie un confirm affiché par le provider (dans la portée ConfigProvider de l’appelant) : les boîtes partagent le contexte de l'application. Les demandes simultanées s'affichent une par une."
     },
     "declarative": {
       "title": "ConfirmDialog déclaratif",
       "description": "Boîte contrôlée ; loading affiche un indicateur et bloque l'annulation pendant onConfirm."
+    },
+    "scoped": {
+      "title": "Portée : useConfirm() ou confirm()",
+      "description": "Les deux boutons sont dans un ConfigProvider imbriqué (thème sombre, palette tech, chinois). useConfirm() ouvre sa boîte dans cette portée (tokens sombres, libellés de boutons en chinois) ; confirm() l’ouvre à la racine, avec le thème et la langue de la page."
     }
   },
   "api": {
@@ -36,7 +45,7 @@
       "confirmDisabled": "Désactive nativement le bouton de confirmation (retiré de l'ordre de tabulation) ; avec loading seul il reste focalisable mais ne peut pas être réactivé"
     },
     "ConfirmProviderProps": {
-      "children": "Sous-arbre de l'application ; les boîtes de useConfirm() / confirm() s'y affichent"
+      "children": "Sous-arbre de l'application ; les boîtes de useConfirm() / confirm() s'y affichent (celles de useConfirm() dans la portée ConfigProvider de l’appelant)"
     }
   }
 }

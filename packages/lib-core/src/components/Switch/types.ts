@@ -1,10 +1,12 @@
 import type { Ref } from "react";
 import type { ColorScheme } from "@minerva/core";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 /** Appearance of a Switch */
 export type SwitchVariant = "slider" | "segmented";
 
-export interface SwitchProps {
+/** `data-*` attributes are forwarded to the root element. */
+export interface SwitchProps extends DataAttributes {
   /** Whether the switch is on (controlled) */
   checked?: boolean;
   /**
@@ -55,8 +57,22 @@ export interface SwitchProps {
   offLabel?: React.ReactNode;
   /** Label of the "on" state (see offLabel) */
   onLabel?: React.ReactNode;
-  /** Accessible label, required when the switch has no visible label */
-  ariaLabel?: string;
+  /**
+   * Accessible label, required when the switch has no visible label. Set on
+   * the switch input (on the segment group for the segmented variant)
+   */
+  "aria-label"?: string;
+  /**
+   * id(s) of the element(s) labelling the switch (on the segment group for the
+   * segmented variant). Defaults to the enclosing FormControl's label for the
+   * segmented variant
+   */
+  "aria-labelledby"?: string;
+  /**
+   * Extra id(s) of elements describing the switch, merged with the enclosing
+   * FormControl's helper / error text
+   */
+  "aria-describedby"?: string;
   /** Name of the input, used in forms */
   name?: string;
   /** id of the input (defaults to the enclosing FormControl's id) */
@@ -80,8 +96,8 @@ export interface SwitchProps {
   ripple?: boolean;
   /** Additional class name */
   className?: string;
-  /** Inline styles of the root label element */
-  labelStyle?: React.CSSProperties;
+  /** Inline styles of the root element */
+  style?: React.CSSProperties;
   /** Inline styles of the track */
   trackStyle?: React.CSSProperties;
   /** Inline styles of the thumb */

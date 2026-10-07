@@ -1,5 +1,5 @@
-import { useId, useRef } from "react";
-import { LuPlus, LuX } from "react-icons/lu";
+import { useEffect, useId, useRef } from "react";
+import { IconPlus, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
@@ -15,7 +15,9 @@ const EMPTY: KeyValueEntry[] = [];
 /**
  * KeyValueEditor: ordered list of editable string pairs (multi-line keys and
  * values), with add / remove actions. Rows are tracked by their stable `id`,
- * so duplicate keys and reordering are safe.
+ * so duplicate keys and reordering are safe. Keyboard focus follows the
+ * actions: adding a row focuses its key field; removing one focuses the next
+ * row's remove button (else the previous one, else the add button).
  */
 export const KeyValueEditor = ({
   entries: entriesProp,
@@ -43,12 +45,37 @@ export const KeyValueEditor = ({
   const valueText = valueLabel ?? t("keyValueEditor.value");
   const removeText = removeLabel ?? t("keyValueEditor.remove");
 
+  // Focus management: without it, removing a row drops focus to <body> (the
+  // focused remove button unmounts) and a new row has to be found by hand.
+  const keyFields = useRef(new Map<string, HTMLTextAreaElement>());
+  const removeButtons = useRef(new Map<string, HTMLButtonElement>());
+  const addButton = useRef<HTMLButtonElement>(null);
+  const pendingFocus = useRef<
+    | { kind: "add"; id: string }
+    | { kind: "remove"; id: string; nextId?: string }
+    | null
+  >(null);
+  useEffect(() => {
+    const pending = pendingFocus.current;
+    if (!pending) return;
+    // Settled once the entries change (a controlled parent may reject it).
+    pendingFocus.current = null;
+    const has = (id?: string) => entries.some((entry) => entry.id === id);
+    if (pending.kind === "add") {
+      if (has(pending.id)) keyFields.current.get(pending.id)?.focus();
+    } else if (!has(pending.id)) {
+      const next = pending.nextId && removeButtons.current.get(pending.nextId);
+      (next || addButton.current)?.focus();
+    }
+  }, [entries]);
+
   const add = () => {
     if (disabled) return;
     let id: string;
     do {
       id = `key-value-${editorId}-${nextId.current++}`;
     } while (entries.some((entry) => entry.id === id));
+    pendingFocus.current = { kind: "add", id };
     setEntries([...entries, { id, key: "", value: "" }]);
   };
 
@@ -62,7 +89,11 @@ export const KeyValueEditor = ({
   };
 
   const remove = (id: string) => {
-    if (!disabled) setEntries(entries.filter((entry) => entry.id !== id));
+    if (disabled) return;
+    const index = entries.findIndex((entry) => entry.id === id);
+    const neighbour = entries[index + 1] ?? entries[index - 1];
+    pendingFocus.current = { kind: "remove", id, nextId: neighbour?.id };
+    setEntries(entries.filter((entry) => entry.id !== id));
   };
 
   const numbered = (text: string, index: number) => (
@@ -85,6 +116,10 @@ export const KeyValueEditor = ({
               errorMessage={error?.key}
             >
               <Textarea
+                ref={(node) => {
+                  if (node) keyFields.current.set(entry.id, node);
+                  else keyFields.current.delete(entry.id);
+                }}
                 className={styles.key}
                 size="small"
                 rows={1}
@@ -110,12 +145,16 @@ export const KeyValueEditor = ({
               />
             </FormField>
             <IconButton
+              ref={(node) => {
+                if (node) removeButtons.current.set(entry.id, node);
+                else removeButtons.current.delete(entry.id);
+              }}
               className={styles.remove}
               type="button"
               label={`${removeText} ${index + 1}`}
               size="small"
               shape="square"
-              icon={<LuX size={16} aria-hidden />}
+              icon={<IconX size={16} aria-hidden />}
               disabled={disabled}
               onClick={() => remove(entry.id)}
             />
@@ -123,6 +162,7 @@ export const KeyValueEditor = ({
         );
       })}
       <Button
+        ref={addButton}
         className={styles.add}
         type="button"
         color="neutral"
@@ -131,7 +171,7 @@ export const KeyValueEditor = ({
         disabled={disabled}
         onClick={add}
       >
-        <LuPlus size={16} aria-hidden />
+        <IconPlus size={16} aria-hidden />
         <span>{addLabel ?? t("keyValueEditor.add")}</span>
       </Button>
     </div>

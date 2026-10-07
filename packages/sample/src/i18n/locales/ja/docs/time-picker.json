@@ -59,9 +59,16 @@
       "secondStep": "秒の選択肢の間隔",
       "ref": "<input> 要素への ref",
       "label": "入力欄の表示ラベル。未指定の場合、入力欄のラベルはローカライズされた \"Time\"（時刻）になります",
-      "ariaLabel": "表示ラベルがない場合の入力欄のアクセシブルラベル",
+      "aria-label": "表示ラベルがない場合の入力欄のアクセシブルラベル",
       "name": "入力欄の name",
-      "onOpenChange": "パネルが開閉したときに呼ばれます"
+      "onOpenChange": "パネルが開閉したときに呼ばれます",
+      "style": "ルート要素のインラインスタイル",
+      "aria-labelledby": "入力欄のラベルとなる要素の id（複数可）。FormControl 内では既定で FormLabel を参照します（label / aria-label 指定時を除く）",
+      "aria-describedby": "入力欄を説明する要素の id（複数可）。外側の FormControl のヘルプ／エラーテキストとマージされます",
+      "id": "入力欄の id。既定では外側の FormControl の id を使用します",
+      "required": "入力欄を必須としてマークします。既定では外側の FormControl の状態を引き継ぎます",
+      "readOnly": "値を表示するだけで変更はできません（入力・パネル・クリア不可）。既定では外側の FormControl の状態を引き継ぎます",
+      "invalid": "入力欄を無効としてマークします（aria-invalid）。既定では外側の FormControl の状態を引き継ぎます"
     }
   },
   "keyboard": {
@@ -69,7 +76,17 @@
     "open": "入力欄で下矢印キーを押すとパネルが開きます。外側をクリックすると閉じます。",
     "navigate": "各列（時・分・秒・午前/午後）は listbox です。上下矢印キー、Home、End で列内を移動し、左右矢印キーで列を切り替えます。",
     "select": "Enter または Space でフォーカス中の選択肢を選びます。",
-    "close": "Escape でパネルを閉じてフォーカスを入力欄に戻します。",
+    "close": "Escape でパネルを閉じてフォーカスを入力欄に戻します。最後の列で Tab を押すとパネルが閉じて次のフィールドへ、最初の列で Shift+Tab を押すとパネルが閉じて入力欄に戻ります。",
     "typing": "入力したテキストは、完全で有効な時刻になったときだけ確定されます。フォーカスが外れると緩やかな解析が行われ、空のテキストは値をクリアし、解析できないテキストは元の値に戻ります。"
+  },
+  "cssVars": {
+    "--time-picker-width": "入力欄の幅",
+    "--time-picker-panel-radius": "パネルの角丸（既定は --radius-sm）",
+    "--time-picker-panel-padding": "パネルの内側の余白",
+    "--time-picker-column-width": "時 / 分 / 秒の各列の幅",
+    "--time-picker-column-height": "スクロールが始まる前の列の高さ",
+    "--time-picker-cell-height": "時刻セルの高さ（既定は密度に応じた small のコントロール高さ）",
+    "--time-picker-cell-padding-x": "時刻セルの左右パディング（密度の行パディングに従う）",
+    "--time-picker-selected-background": "選択された時刻セルの背景色"
   }
 }

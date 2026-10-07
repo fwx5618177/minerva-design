@@ -18,7 +18,7 @@ import type {
   Locale,
   ThemeMap,
 } from "./types";
-import i18n, { DEFAULT_LANGUAGE } from "../config/i18n";
+import { DEFAULT_LANGUAGE, getLanguage, setLanguage } from "../config/i18n";
 import {
   THEME_SCOPE_ATTRIBUTE,
   ThemeScopeContext,
@@ -27,6 +27,10 @@ import {
 import {
   PALETTE_COOKIE_NAME,
   THEME_COOKIE_NAME,
+  applyDesignAttributes,
+  designAttributes,
+  presetPalette,
+  resolveDesign,
   generateCSSVariables,
   getSystemTheme,
   isBilingualTheme,
@@ -37,6 +41,7 @@ import {
   resolveTheme,
   serializeThemeCookie,
   type Palette,
+  type ResolvedDesign,
   type ResolvedThemeMode,
   type ThemeMode,
 } from "@minerva/core";
@@ -128,23 +133,32 @@ const setAttribute = (
   else element.setAttribute(name, value);
 };
 
+const DESIGN_ATTRIBUTE_NAMES = [
+  "data-density",
+  "data-radius",
+  "data-shadow",
+  "data-font-scale",
+];
+
 /**
- * Global configuration: theme (+ palette), and the language of lib-core's
- * built-in texts.
+ * Global configuration: theme (+ palette), design axes (preset, density,
+ * radius, shadow, font scale), and the language of lib-core's built-in texts.
  *
  * Root provider (no `ConfigProvider` above it) - owns the document:
  * - `data-theme` (resolved light / dark) and `color-scheme` on `<html>`
  * - with a `palette` and a light / dark / system theme: `data-palette` on
  *   `<html>`, tokens come from the palette blocks of `style.css`
  * - otherwise the theme's tokens are written as inline CSS variables
+ * - the design axes that differ from the standard look: `data-density`,
+ *   `data-radius`, `data-shadow`, `data-font-scale` on `<html>`
  * - the `theme` / `palette` cookies (`persist`) and lib-core's global language
  * Everything it wrote on `<html>` is restored when it unmounts.
  *
  * Nested provider - never touches `<html>`, cookies or the global language.
  * It inherits every setting it does not override from its parent. When it
- * overrides `theme` and / or `palette`, they are applied to its subtree only:
- * a `display: contents` wrapper element carries `data-theme` / `data-palette`
- * / the tokens, and portalled content (Modal, Popover, Select, Toast...) is
+ * overrides `theme`, `palette` and / or a design axis, they are applied to its
+ * subtree only: a `display: contents` wrapper element carries `data-theme` /
+ * `data-palette` / the design attributes / the tokens, and portalled content (Modal, Popover, Select, Toast...) is
  * rendered into a matching scope container on `document.body`. An overridden
  * `locale` only applies to the components of its subtree.
  */
@@ -155,21 +169,51 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
   onThemeChange,
   onPaletteChange,
   locale,
+  preset,
+  density,
+  radius,
+  shadow,
+  fontScale,
   children,
 }) => {
   const parentScope = useContext(ThemeScopeContext);
   const parent = useContext(ConfigContext);
   const isRoot = parentScope === null;
+  // A preset brings its palette unless one is given
+  const paletteInput =
+    paletteProp !== undefined
+      ? paletteProp
+      : preset !== undefined
+        ? presetPalette(preset)
+        : undefined;
   const ownsTheme = isRoot || themeProp !== undefined;
-  const ownsPalette = isRoot || paletteProp !== undefined;
-  // a nested provider overriding the theme and / or palette of its subtree
-  const scoped = !isRoot && (ownsTheme || ownsPalette);
+  const ownsPalette = isRoot || paletteInput !== undefined;
+  const ownsDesign =
+    isRoot ||
+    preset !== undefined ||
+    density !== undefined ||
+    radius !== undefined ||
+    shadow !== undefined ||
+    fontScale !== undefined;
+  // a nested provider overriding the theme, palette or design of its subtree
+  const scoped = !isRoot && (ownsTheme || ownsPalette || ownsDesign);
+
+  // Design axes: unset ones follow the parent (a nested preset resets them)
+  const parentDesign = isRoot ? undefined : parent?.design;
+  const design = useMemo<ResolvedDesign>(
+    () =>
+      resolveDesign(
+        { preset, density, radius, shadow, fontScale },
+        parentDesign,
+      ),
+    [preset, density, radius, shadow, fontScale, parentDesign],
+  );
 
   const [themeState, setThemeState] = useState<ConfigProviderThemeProps>(
     themeProp ?? "auto",
   );
   const [paletteState, setPaletteState] = useState<Palette | null>(
-    paletteProp ?? null,
+    paletteInput ?? null,
   );
 
   // Follow new props (adjusting state while rendering avoids a stale render)
@@ -178,10 +222,10 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     setPrevThemeProp(themeProp);
     setThemeState(themeProp ?? "auto");
   }
-  const [prevPaletteProp, setPrevPaletteProp] = useState(paletteProp);
-  if (paletteProp !== prevPaletteProp) {
-    setPrevPaletteProp(paletteProp);
-    setPaletteState(paletteProp ?? null);
+  const [prevPaletteProp, setPrevPaletteProp] = useState(paletteInput);
+  if (paletteInput !== prevPaletteProp) {
+    setPrevPaletteProp(paletteInput);
+    setPaletteState(paletteInput ?? null);
   }
 
   // Settings that are not overridden follow the parent provider
@@ -204,7 +248,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
   // once after hydration. A no-op when the server already passed the values.
   // Only the root provider persists.
   const rootThemeProp = themeProp ?? "auto";
-  const rootPaletteProp = paletteProp ?? null;
+  const rootPaletteProp = paletteInput ?? null;
   const persistedFor = useRef<string | null>(null);
   useEffect(() => {
     if (!isRoot || !persist) return;
@@ -239,9 +283,15 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     const initialTheme = root.getAttribute("data-theme");
     const initialPalette = root.getAttribute("data-palette");
     const initialScheme = root.style.getPropertyValue("color-scheme");
+    const initialDesign = DESIGN_ATTRIBUTE_NAMES.map(
+      (name) => [name, root.getAttribute(name)] as const,
+    );
     return () => {
       setAttribute(root, "data-theme", initialTheme);
       setAttribute(root, "data-palette", initialPalette);
+      for (const [name, value] of initialDesign) {
+        setAttribute(root, name, value);
+      }
       if (initialScheme) root.style.setProperty("color-scheme", initialScheme);
       else root.style.removeProperty("color-scheme");
       generateCSSVariables(root.style, {} as ThemeMap);
@@ -270,6 +320,18 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     }
   }, [isRoot, theme, systemTheme, resolvedMode, activePalette]);
 
+  // Root: apply the design axes to <html> (standard values are omitted)
+  useEffect(() => {
+    if (!isRoot) return;
+    applyDesignAttributes(document.documentElement, design);
+  }, [isRoot, design]);
+
+  // Scope element / portal host: every axis, so "standard" can be restored
+  const scopeDesignAttributes = useMemo(
+    () => (scoped ? designAttributes(design, { all: true }) : undefined),
+    [scoped, design],
+  );
+
   // Language: the root provider sets lib-core's global language (also used by
   // imperative APIs such as `message`), nested ones only their subtree.
   const language =
@@ -281,15 +343,15 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
 
   useEffect(() => {
     if (!isRoot) return;
-    const initialLanguage = i18n.language;
+    const initialLanguage = getLanguage();
     return () => {
-      if (initialLanguage) void i18n.changeLanguage(initialLanguage);
+      setLanguage(initialLanguage);
     };
   }, [isRoot]);
 
   useEffect(() => {
     if (!isRoot) return;
-    void i18n.changeLanguage(language);
+    setLanguage(language);
   }, [isRoot, language]);
 
   // Scoped theme: tokens / attributes of the subtree
@@ -322,6 +384,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     if (!portalHost) return;
     setAttribute(portalHost, "data-theme", resolvedMode);
     setAttribute(portalHost, "data-palette", activePalette);
+    applyDesignAttributes(portalHost, design, { all: true });
     if (resolvedMode)
       portalHost.style.setProperty("color-scheme", resolvedMode);
     else portalHost.style.removeProperty("color-scheme");
@@ -329,7 +392,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       portalHost.style,
       activePalette ? ({} as ThemeMap) : resolveTheme(theme, systemTheme),
     );
-  }, [portalHost, resolvedMode, activePalette, theme, systemTheme]);
+  }, [portalHost, resolvedMode, activePalette, theme, systemTheme, design]);
 
   const onThemeChangeRef = useRef(onThemeChange);
   const onPaletteChangeRef = useRef(onPaletteChange);
@@ -387,6 +450,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       mode: themeModeOf(theme),
       resolvedMode,
       palette,
+      design,
       setTheme,
       setPalette,
     }),
@@ -396,6 +460,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       currentLocale,
       resolvedMode,
       palette,
+      design,
       setTheme,
       setPalette,
     ],
@@ -421,6 +486,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
             {...{ [THEME_SCOPE_ATTRIBUTE]: "" }}
             data-theme={resolvedMode}
             data-palette={activePalette ?? undefined}
+            {...scopeDesignAttributes}
             style={{
               display: "contents",
               colorScheme: resolvedMode,

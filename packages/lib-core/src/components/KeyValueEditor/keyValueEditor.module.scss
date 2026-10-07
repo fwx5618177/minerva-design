@@ -1,7 +1,11 @@
+// Public CSS variables (set them on the editor or any ancestor):
+// @css-var --key-value-editor-gap Space between the rows and the add button
+// @css-var --key-value-editor-column-gap Space between the key, the value and the remove button of a row
+// @css-var --key-value-editor-control-height Size of the remove button and minimum height of the key field and of the add button (defaults to the density's small control height)
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--key-value-editor-gap, var(--space-3));
   width: 100%;
   min-width: 0;
   container-type: inline-size;
@@ -10,9 +14,9 @@
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) var(--key-value-editor-control-height, var(--control-height-sm));
   align-items: start;
-  gap: var(--space-2);
+  gap: var(--key-value-editor-column-gap, var(--space-2));
   min-width: 0;
 
   label,
@@ -22,12 +26,12 @@
 }
 
 .key {
-  min-height: 32px;
+  min-height: var(--key-value-editor-control-height, var(--control-height-sm));
 }
 
 .remove {
-  width: 32px;
-  height: 32px;
+  width: var(--key-value-editor-control-height, var(--control-height-sm));
+  height: var(--key-value-editor-control-height, var(--control-height-sm));
   // Aligns the button with the fields, below their labels.
   margin-top: calc(var(--font-size-sm) * var(--line-height-tight) + var(--space-2));
 }
@@ -39,7 +43,7 @@
   align-self: flex-start;
   max-width: 100%;
   height: auto;
-  min-height: 32px;
+  min-height: var(--key-value-editor-control-height, var(--control-height-sm));
   white-space: normal;
 
   > span {
@@ -62,7 +66,7 @@
 
 @container (max-width: 400px) {
   .row {
-    grid-template-columns: minmax(0, 1fr) 32px;
+    grid-template-columns: minmax(0, 1fr) var(--key-value-editor-control-height, var(--control-height-sm));
 
     > :not(.remove) {
       grid-column: 1;

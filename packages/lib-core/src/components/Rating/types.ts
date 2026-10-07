@@ -43,7 +43,7 @@ export interface RatingProps {
    * Accessible label of the rating
    * @default "<value> / <max>"
    */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /** Called on key down (interactive mode) before the built-in stepping; call preventDefault() to take over a key */
   onKeyDown?: (event: React.KeyboardEvent<HTMLSpanElement>) => void;
   /** Additional class name */

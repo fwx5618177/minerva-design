@@ -17,6 +17,10 @@
     "high-performance": {
       "title": "高性能模式",
       "description": "highPerformance 使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新，此示例包含 100,000 行。"
+    },
+    "clickable-rows": {
+      "title": "可点击行与原生属性",
+      "description": "onItemClick 让行可点击（指针光标、可聚焦、可用 Enter / Space 激活）；未设置时行保持默认光标。id、data-*、aria-* 等原生属性会传递到根元素。"
     }
   },
   "api": {
@@ -33,12 +37,20 @@
       "loadMoreThreshold": "距底部多少像素时触发 onLoadMore",
       "highPerformance": "使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新",
       "loading": "在列表底部显示加载指示器",
-      "ariaLabel": "列表的无障碍名称",
-      "ref": "根（滚动容器）<div> 元素的 ref"
+      "aria-label": "列表的无障碍名称",
+      "ref": "根（滚动容器）<div> 元素的 ref",
+      "onItemClick": "点击行，或行本身聚焦时按 Enter / Space 时调用。使行可点击：可聚焦并显示指针光标"
     },
     "VirtualListItem": {
       "id": "列表项的唯一键",
       "metadata": "供 renderItem 使用的任意数据"
     }
+  },
+  "cssVars": {
+    "--virtual-list-radius": "圆角（默认 --radius-sm）",
+    "--virtual-list-shadow": "静止时的阴影（默认 --shadow-sm）",
+    "--virtual-list-hover-shadow": "悬停时的阴影（默认 --shadow-md）",
+    "--virtual-list-scrollbar-size": "滚动条宽度（WebKit / Blink）",
+    "--virtual-list-loading-padding": "加载指示行的内边距"
   }
 }

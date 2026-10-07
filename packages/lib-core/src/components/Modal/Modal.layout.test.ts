@@ -20,7 +20,7 @@ it("wraps plain modal text without changing nested code whitespace", () => {
 
 it("reserves title space only when the close button is rendered", () => {
   expect(css).toMatch(
-    /\.content:has\(> \.close\) \.header\s*\{[^}]*padding-right:/,
+    /\.content:has\(> \.close\) \.header\s*\{[^}]*padding-inline-end:/,
   );
 });
 

@@ -1,4 +1,4 @@
-import { LuX } from "react-icons/lu";
+import { IconX } from "../../internal/icons";
 import useI18n from "../../hooks/useI18n";
 import {
   DialogClose,
@@ -68,7 +68,7 @@ export const ModalContent = ({
           className={styles.close}
           aria-label={closeLabel ?? t("modal.close")}
         >
-          <LuX size={16} aria-hidden="true" />
+          <IconX size={16} aria-hidden="true" />
         </DialogClose>
       )}
     </DialogContent>

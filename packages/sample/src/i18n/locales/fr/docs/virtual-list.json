@@ -17,6 +17,10 @@
     "high-performance": {
       "title": "Mode haute performance",
       "description": "highPerformance regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback, ici avec 100 000 lignes."
+    },
+    "clickable-rows": {
+      "title": "Lignes cliquables et attributs natifs",
+      "description": "onItemClick rend les lignes cliquables (curseur pointeur, focalisables, activées avec Entrée / Espace) ; sans lui, elles gardent le curseur par défaut. Les attributs natifs comme id, data-* et aria-* sont transmis à la racine."
     }
   },
   "api": {
@@ -33,12 +37,20 @@
       "loadMoreThreshold": "Distance du bas (px) à partir de laquelle onLoadMore est déclenché",
       "highPerformance": "Regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback",
       "loading": "Affiche un indicateur de chargement en bas de la liste",
-      "ariaLabel": "Nom accessible de la liste",
-      "ref": "Ref vers l’élément racine <div> (conteneur de défilement)"
+      "aria-label": "Nom accessible de la liste",
+      "ref": "Ref vers l’élément racine <div> (conteneur de défilement)",
+      "onItemClick": "Appelé quand une ligne est cliquée, ou activée avec Entrée / Espace quand elle a elle-même le focus. Rend les lignes cliquables : focalisables et affichées avec un curseur pointeur"
     },
     "VirtualListItem": {
       "id": "Clé unique de l'élément",
       "metadata": "Données arbitraires pour renderItem"
     }
+  },
+  "cssVars": {
+    "--virtual-list-radius": "Rayon des coins (par défaut --radius-sm)",
+    "--virtual-list-shadow": "Ombre au repos (par défaut --shadow-sm)",
+    "--virtual-list-hover-shadow": "Ombre au survol (par défaut --shadow-md)",
+    "--virtual-list-scrollbar-size": "Largeur de la barre de défilement (WebKit / Blink)",
+    "--virtual-list-loading-padding": "Marge intérieure de la ligne de l'indicateur de chargement"
   }
 }

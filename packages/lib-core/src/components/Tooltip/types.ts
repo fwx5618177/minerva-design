@@ -121,7 +121,7 @@ export interface TooltipProps {
   /** Called when the tooltip closes from mouse leave, blur or Escape */
   onClose?: () => void;
   /** Accessible label of the tooltip element */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Attaches the hover / focus handlers, the ref and `className` directly to
    * the single child element instead of wrapping it in a `<div>` (keeps flex

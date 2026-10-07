@@ -13,7 +13,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
-import { LuCheck, LuChevronDown } from "react-icons/lu";
+import { IconCheck, IconChevronDown } from "../../internal/icons";
 import { createTypeahead, getNextIndex, parsePlacement } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import {
@@ -22,6 +22,7 @@ import {
 } from "../FormControl/context";
 import { useFloatingLayer } from "../../internal/FloatingPanel";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import { Portal } from "../../internal/Portal";
 import { useControllableState } from "../../internal/useControllableState";
 import { LayerContext } from "../../internal/useDismissableLayer";
@@ -157,12 +158,15 @@ const Select = ({
   required,
   name,
   id,
-  ariaLabel,
-  ariaDescribedBy,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
   className,
+  style,
   contentClassName,
   children,
   ref,
+  ...rest
 }: SelectProps) => {
   const fc = useFormControlContext();
   const field = useFormControlProps({
@@ -240,6 +244,7 @@ const Select = ({
     floatingStyles,
     placement,
     isPositioned,
+    dir: layerDir,
   } = useFloatingLayer({
     open,
     anchor: trigger,
@@ -458,13 +463,16 @@ const Select = ({
   const { side, align } = parsePlacement(placement);
   const listboxLabel = ariaLabel
     ? { "aria-label": ariaLabel }
-    : fc
-      ? { "aria-labelledby": fc.labelId }
-      : {};
+    : ariaLabelledBy
+      ? { "aria-labelledby": ariaLabelledBy }
+      : fc
+        ? { "aria-labelledby": fc.labelId }
+        : {};
 
   return (
     <>
       <button
+        {...pickDataAttributes(rest)}
         type="button"
         ref={triggerRef}
         id={field.id}
@@ -474,6 +482,7 @@ const Select = ({
         aria-controls={open ? listboxId : undefined}
         aria-autocomplete="none"
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         aria-describedby={field["aria-describedby"]}
         aria-required={isRequired || undefined}
         aria-invalid={isInvalid || undefined}
@@ -486,6 +495,7 @@ const Select = ({
           isInvalid && styles.invalid,
           className,
         )}
+        style={style}
         // Lets layouts such as Toolbar size the trigger (see page.module.scss)
         data-component="select"
         onClick={() => setOpen(!open)}
@@ -499,7 +509,7 @@ const Select = ({
           <span>{showPlaceholder ? placeholder : selectedItem?.label}</span>
         </span>
         <span className={styles.icon} aria-hidden="true">
-          <LuChevronDown focusable={false} />
+          <IconChevronDown focusable={false} />
         </span>
       </button>
 
@@ -531,6 +541,7 @@ const Select = ({
               space available); the listbox inside scrolls within it. */}
           <div
             ref={positionerRef}
+            dir={layerDir}
             className={styles.positioner}
             style={floatingStyles}
             data-side={side}
@@ -610,7 +621,7 @@ const SelectItem = ({
       <span className={styles.itemText}>{children}</span>
       {selected && (
         <span className={styles.itemIndicator} aria-hidden="true">
-          <LuCheck focusable={false} />
+          <IconCheck focusable={false} />
         </span>
       )}
     </div>

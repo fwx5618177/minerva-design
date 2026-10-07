@@ -9,6 +9,10 @@
     "form-control": {
       "title": "フォーム",
       "description": "name は各タグを hidden input として送信し、FormField がラベルと読み取り専用状態を提供します。"
+    },
+    "separators": {
+      "title": "区切り文字",
+      "description": "separators には入力または貼り付けたテキストをタグに分割する文字列を指定します。\"Enter\" は Enter キーで確定し、貼り付けたテキストを改行で分割します。"
     }
   },
   "api": {
@@ -18,10 +22,12 @@
       "onChange": "追加・削除・クリアの後に新しいタグで呼ばれます",
       "options": "候補。選択済みタグは隠れ、重複はまとめられます",
       "commitOnBlur": "入力欄がフォーカスを失うと下書きをタグとして追加",
+      "separators": "下書きを確定するキー：リテラル文字列（\",\" や \";\" など）は入力または貼り付けたテキストをタグに分割し、\"Enter\" は Enter キーで確定します（貼り付けたテキストも改行で分割）",
       "id": "テキスト入力の id（既定は FormControl の id）",
       "name": "選択済みタグをこの名前で送信（hidden input）。下書きは送信されません",
       "placeholder": "テキスト入力のプレースホルダー",
       "aria-label": "FormControl のラベルがない場合のテキスト入力のアクセシブル名",
+      "aria-labelledby": "テキスト入力のラベルとなる要素の id（FormControl のラベルより優先）",
       "aria-describedby": "テキスト入力を説明する追加の id",
       "disabled": "フィールドを無効化（FormControl でも設定）",
       "readOnly": "編集コントロールなしでタグを表示（FormControl でも設定）",
@@ -33,7 +39,16 @@
       "removeLabel": "タグの削除ボタンのアクセシブルラベル",
       "createLabel": "「このタグを作成」候補のテキスト",
       "className": "ラッパーのクラス名",
+      "style": "ラッパーのインラインスタイル",
       "ref": "テキスト <input> への ref"
     }
+  },
+  "cssVars": {
+    "--tag-input-gap": "タグ同士およびタグと入力行の間隔",
+    "--tag-input-tag-min-height": "タグの最小高さ（既定は密度に応じた small のコントロール高さ）",
+    "--tag-input-list-max-height": "スクロールが始まる前の候補リストの最大高さ",
+    "--tag-input-list-radius": "候補リストの角丸（既定は --radius-md）",
+    "--tag-input-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
+    "--tag-input-option-padding-x": "候補の左右パディング（密度の行パディングに従う）"
   }
 }

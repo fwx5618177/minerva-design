@@ -11,9 +11,9 @@ const options = [
 // dropdown itself through dropdownClassName.
 const css = `
 .priority-dropdown {
-  --autocomplete-dropdown-bg: #f8fafc;
-  --autocomplete-option-highlight-bg: #fef3c7;
-  --autocomplete-option-hover-bg: #e0f2fe;
+  --auto-complete-dropdown-background: #f8fafc;
+  --auto-complete-option-highlight-background: #fef3c7;
+  --auto-complete-option-hover-background: #e0f2fe;
 }
 `;
 

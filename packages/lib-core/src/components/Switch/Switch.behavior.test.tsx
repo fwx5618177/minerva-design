@@ -11,6 +11,12 @@ import {
   FormControlContext,
   type FormControlContextValue,
 } from "../FormControl/context";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+} from "../FormControl";
 
 const field = (
   overrides: Partial<FormControlContextValue> = {},
@@ -42,7 +48,7 @@ const rootOf = (el: HTMLElement) =>
 
 describe("Switch slider", () => {
   it("renders the default size / color classes and a thumb", () => {
-    render(<Switch ariaLabel="Dark" />);
+    render(<Switch aria-label="Dark" />);
     const sw = screen.getByRole("switch", { name: "Dark" });
     expect(rootOf(sw)).toHaveClass(styles.medium, styles.primary);
     expect(sw).not.toBeChecked();
@@ -55,7 +61,7 @@ describe("Switch slider", () => {
     ["medium", "info"],
   ] as const)("maps size %s / color %s", (size, color) => {
     render(
-      <Switch ariaLabel="x" size={size} color={color} className="consumer" />,
+      <Switch aria-label="x" size={size} color={color} className="consumer" />,
     );
     expect(rootOf(screen.getByRole("switch"))).toHaveClass(
       styles[size],
@@ -65,7 +71,7 @@ describe("Switch slider", () => {
   });
 
   it("emits only the selected color class", () => {
-    render(<Switch ariaLabel="x" color="warning" />);
+    render(<Switch aria-label="x" color="warning" />);
     const root = rootOf(screen.getByRole("switch"));
     expect(root).toHaveClass(styles.warning);
     for (const role of ["primary", "success", "danger", "info"]) {
@@ -76,7 +82,7 @@ describe("Switch slider", () => {
   it("applies the color class to the segmented variant", () => {
     render(
       <Switch
-        ariaLabel="Mode"
+        aria-label="Mode"
         variant="segmented"
         offLabel="Off"
         onLabel="On"
@@ -99,7 +105,7 @@ describe("Switch slider", () => {
 
   it("reflects controlled state on the root class", async () => {
     const user = userEvent.setup();
-    render(<Controlled ariaLabel="x" />);
+    render(<Controlled aria-label="x" />);
     const sw = screen.getByRole("switch");
     expect(rootOf(sw)).not.toHaveClass(styles.checked);
     await user.click(sw);
@@ -114,7 +120,7 @@ describe("Switch slider", () => {
       const [checked, setChecked] = useState(false);
       return (
         <Switch
-          ariaLabel="Mode"
+          aria-label="Mode"
           offLabel="BFF"
           onLabel="Mock"
           checked={checked}
@@ -148,7 +154,7 @@ describe("Switch slider", () => {
 
   it("uncontrolled bilateral labels change state and stay in sync", async () => {
     const user = userEvent.setup();
-    render(<Switch ariaLabel="x" offLabel="Off" onLabel="On" />);
+    render(<Switch aria-label="x" offLabel="Off" onLabel="On" />);
     await user.click(screen.getByRole("button", { name: "On" }));
     expect(screen.getByRole("switch")).toBeChecked();
     expect(rootOf(screen.getByRole("switch"))).toHaveClass(styles.checked);
@@ -159,7 +165,7 @@ describe("Switch slider", () => {
 
   it("prefers bilateral labels over the label / children", () => {
     render(
-      <Switch ariaLabel="x" offLabel="Off" onLabel="On" label="Ignored">
+      <Switch aria-label="x" offLabel="Off" onLabel="On" label="Ignored">
         Ignored too
       </Switch>,
     );
@@ -172,7 +178,7 @@ describe("Switch slider", () => {
     const onChange = vi.fn();
     render(
       <Switch
-        ariaLabel="x"
+        aria-label="x"
         disabled
         offLabel="Off"
         onLabel="On"
@@ -193,7 +199,7 @@ describe("Switch slider", () => {
 
   it("forwards the ref and passes id / value to the input", () => {
     const ref = createRef<HTMLInputElement>();
-    render(<Switch ref={ref} ariaLabel="x" id="sw" value="on" />);
+    render(<Switch ref={ref} aria-label="x" id="sw" value="on" />);
     expect(ref.current).toBe(screen.getByRole("switch"));
     expect(ref.current).toHaveAttribute("id", "sw");
     expect(ref.current).toHaveAttribute("value", "on");
@@ -202,13 +208,13 @@ describe("Switch slider", () => {
   it("inherits disabled from a FormControl unless overridden", () => {
     const { rerender } = render(
       <FormControlContext.Provider value={field({ disabled: true })}>
-        <Switch ariaLabel="x" />
+        <Switch aria-label="x" />
       </FormControlContext.Provider>,
     );
     expect(screen.getByRole("switch")).toBeDisabled();
     rerender(
       <FormControlContext.Provider value={field({ disabled: true })}>
-        <Switch ariaLabel="x" disabled={false} />
+        <Switch aria-label="x" disabled={false} />
       </FormControlContext.Provider>,
     );
     expect(screen.getByRole("switch")).toBeEnabled();
@@ -224,7 +230,7 @@ describe("Switch slider", () => {
           hasErrorMessage: true,
         })}
       >
-        <Switch ariaLabel="Notify" />
+        <Switch aria-label="Notify" />
         <span id="field-error">Must be on</span>
       </FormControlContext.Provider>,
     );
@@ -240,7 +246,7 @@ describe("Switch slider", () => {
     const onChange = vi.fn();
     render(
       <FormControlContext.Provider value={field({ readOnly: true })}>
-        <Switch ariaLabel="x" onChange={onChange} />
+        <Switch aria-label="x" onChange={onChange} />
       </FormControlContext.Provider>,
     );
     const sw = screen.getByRole("switch");
@@ -259,7 +265,7 @@ describe("Switch segmented", () => {
         offLabel="BFF"
         onLabel="Mock"
         checked={false}
-        ariaLabel="Source"
+        aria-label="Source"
       />,
     );
     expect(screen.queryByRole("switch")).toBeNull();
@@ -306,9 +312,113 @@ describe("Switch segmented", () => {
     expect(screen.getByRole("group")).toHaveClass(styles.disabled);
   });
 
+  it("wires the enclosing FormControl label, helper text and required state to the group", () => {
+    render(
+      <FormControl required>
+        <FormLabel>Data source</FormLabel>
+        <Switch variant="segmented" offLabel="BFF" onLabel="Mock" />
+        <FormHelperText>Where requests go</FormHelperText>
+      </FormControl>,
+    );
+    const group = screen.getByRole("group", { name: /Data source/ });
+    const helper = screen.getByText("Where requests go");
+    expect(group.getAttribute("aria-describedby")).toBe(helper.id);
+    expect(group).toHaveAccessibleDescription("Where requests go");
+    expect(group).not.toHaveAttribute("data-invalid");
+    expect(group).toHaveAttribute("data-required", "true");
+    // the hidden input stays out of the accessibility tree
+    expect(group.querySelector("input")).toHaveAttribute("aria-hidden", "true");
+    expect(group.querySelector("input")).not.toHaveAttribute(
+      "aria-describedby",
+    );
+  });
+
+  it("exposes the FormControl error and invalid state on the group", () => {
+    render(
+      <FormControl invalid>
+        <FormLabel>Data source</FormLabel>
+        <Switch
+          variant="segmented"
+          offLabel="BFF"
+          onLabel="Mock"
+          aria-describedby="extra"
+        />
+        <FormErrorMessage>Pick a source</FormErrorMessage>
+        <span id="extra">Extra</span>
+      </FormControl>,
+    );
+    const group = screen.getByRole("group", { name: /Data source/ });
+    const error = screen.getByText("Pick a source");
+    expect(group).toHaveAttribute("data-invalid", "true");
+    expect(group).not.toHaveAttribute("aria-invalid");
+    expect(group.getAttribute("aria-describedby")).toBe(`${error.id} extra`);
+    expect(group).toHaveAccessibleDescription("Pick a source Extra");
+  });
+
+  it("prefers an explicit aria-label / aria-labelledby over the FormControl label", () => {
+    const { rerender } = render(
+      <FormControlContext.Provider value={field()}>
+        <span id="field-label">Field</span>
+        <span id="own">Own label</span>
+        <Switch
+          variant="segmented"
+          offLabel="A"
+          onLabel="B"
+          aria-labelledby="own"
+        />
+      </FormControlContext.Provider>,
+    );
+    expect(screen.getByRole("group", { name: "Own label" })).toBeTruthy();
+    rerender(
+      <FormControlContext.Provider value={field()}>
+        <span id="field-label">Field</span>
+        <Switch variant="segmented" offLabel="A" onLabel="B" aria-label="X" />
+      </FormControlContext.Provider>,
+    );
+    const group = screen.getByRole("group", { name: "X" });
+    expect(group).not.toHaveAttribute("aria-labelledby");
+    expect(group).toHaveAttribute("id", "field");
+  });
+
+  it("forwards style and data-* attributes to the group", () => {
+    render(
+      <Switch
+        variant="segmented"
+        offLabel="A"
+        onLabel="B"
+        aria-label="Mode"
+        style={{ margin: "2px" }}
+        data-testid="seg"
+      />,
+    );
+    const group = screen.getByRole("group", { name: "Mode" });
+    expect(group).toHaveAttribute("data-testid", "seg");
+    expect(group.style.margin).toBe("2px");
+  });
+
   it("falls back to a slider when either label is missing", () => {
-    render(<Switch variant="segmented" ariaLabel="x" offLabel="A" />);
+    render(<Switch variant="segmented" aria-label="x" offLabel="A" />);
     expect(screen.getByRole("switch")).toBeInTheDocument();
     expect(screen.queryByRole("group")).toBeNull();
+  });
+});
+
+describe("Switch native attributes", () => {
+  it("forwards aria-labelledby / aria-describedby to the input and data-* to the root", () => {
+    render(
+      <>
+        <span id="lbl">Wi-Fi</span>
+        <span id="desc">Uses more battery</span>
+        <Switch
+          aria-labelledby="lbl"
+          aria-describedby="desc"
+          data-track="wifi"
+        />
+      </>,
+    );
+    const input = screen.getByRole("switch", { name: "Wi-Fi" });
+    expect(input).toHaveAccessibleDescription("Uses more battery");
+    expect(rootOf(input)).toHaveAttribute("data-track", "wifi");
+    expect(input).not.toHaveAttribute("data-track");
   });
 });

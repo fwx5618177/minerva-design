@@ -1,6 +1,11 @@
 {
   "title": "Confirm",
   "description": "Asks the user to confirm an action: a themed replacement for window.confirm. Use the declarative ConfirmDialog or await confirm() from anywhere; with a ConfirmProvider the dialog renders inside your app tree, without one a standalone host is mounted on demand, and on the server confirm() resolves false.",
+  "usage": {
+    "title": "When to use which: useConfirm() or confirm()",
+    "hook": "Inside components, call useConfirm(): its dialogs follow the nearest ConfigProvider scope. Under a nested provider the modal portals into its host, with its theme, palette and tokens, and the default button labels use its language. A ConfirmProvider still renders them when there is one.",
+    "function": "Outside React (event buses, API clients, router guards and other non-component modules), import confirm() directly: no hook is available there, and its dialogs use the root theme and language."
+  },
   "demos": {
     "imperative": {
       "title": "Imperative confirm()",
@@ -12,11 +17,15 @@
     },
     "provider": {
       "title": "With ConfirmProvider",
-      "description": "useConfirm() returns the provider's confirm, so dialogs share your app's context. Concurrent requests are shown one at a time."
+      "description": "useConfirm() returns a confirm rendered by the provider (inside the caller's ConfigProvider scope), so dialogs share your app's context. Concurrent requests are shown one at a time."
     },
     "declarative": {
       "title": "Declarative ConfirmDialog",
       "description": "Controlled dialog; loading shows a spinner and locks cancel while onConfirm runs."
+    },
+    "scoped": {
+      "title": "Scoped: useConfirm() vs confirm()",
+      "description": "Both buttons sit in a nested ConfigProvider (dark theme, tech palette, Chinese). useConfirm() opens its dialog inside that scope (dark tokens, Chinese button labels); confirm() opens it at the root, with the page theme and language."
     }
   },
   "api": {
@@ -36,7 +45,7 @@
       "confirmDisabled": "Natively disables the confirm button (removes it from the tab order); with loading alone it stays focusable but cannot be activated again"
     },
     "ConfirmProviderProps": {
-      "children": "Application subtree; useConfirm() / confirm() render their dialogs here"
+      "children": "Application subtree; useConfirm() / confirm() render their dialogs here (useConfirm() dialogs inside the caller's ConfigProvider scope)"
     }
   }
 }

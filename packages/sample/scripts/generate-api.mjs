@@ -7,6 +7,11 @@
 //
 // For every exported interface / object type alias it records each member's
 // name, type, whether it is required, its JSDoc description and `@default` tag.
+//
+// It also records the public CSS custom properties of every lib-core
+// component, declared in its SCSS files as
+//   // @css-var --button-height Height of the button (every size)
+// under the key `css:<ComponentFolder>`.
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,6 +45,8 @@ const sourceFiles = () => [
   { file: join(LIB_SRC, "contexts/types.ts"), prefix: "" },
   // Theme object types (ThemeProps, ...), re-exported by @minerva/lib-core
   { file: join(CORE_SRC, "theme/types.ts"), prefix: "" },
+  // Design axes (DesignOptions, ...), re-exported by @minerva/lib-core
+  { file: join(CORE_SRC, "theme/design.ts"), prefix: "" },
   // i18n types (SupportedLanguage, ...), re-exported by @minerva/lib-core
   { file: join(CORE_SRC, "i18n/types.ts"), prefix: "" },
   ...typeFilesIn(WC_SRC).map((file) => ({ file, prefix: WC_PREFIX })),
@@ -157,9 +164,42 @@ export const generateApi = () => {
       };
     }
   }
+  Object.assign(result, generateCssVars());
   return Object.fromEntries(
     Object.entries(result).sort(([a], [b]) => a.localeCompare(b)),
   );
+};
+
+/** Prefix of the CSS-variable entries (`css:<ComponentFolder>`) */
+export const CSS_PREFIX = "css:";
+const CSS_VAR_COMMENT = /^\s*\/\/\s*@css-var\s+(--[\w-]+)\s+(.+?)\s*$/gm;
+
+/** `// @css-var` declarations of every lib-core component folder */
+export const generateCssVars = () => {
+  const componentsDir = join(LIB_SRC, "components");
+  const result = {};
+  for (const dir of readdirSync(componentsDir, { withFileTypes: true })) {
+    if (!dir.isDirectory()) continue;
+    const folder = join(componentsDir, dir.name);
+    const vars = [];
+    for (const file of readdirSync(folder).sort()) {
+      if (!file.endsWith(".scss")) continue;
+      const text = readFileSync(join(folder, file), "utf8");
+      for (const [, name, description] of text.matchAll(CSS_VAR_COMMENT)) {
+        if (vars.some((v) => v.name === name)) {
+          throw new Error(`Duplicate @css-var ${name} in ${dir.name}`);
+        }
+        vars.push({ name, description: clean(description) });
+      }
+    }
+    if (vars.length === 0) continue;
+    result[CSS_PREFIX + dir.name] = {
+      kind: "cssVars",
+      source: relative(join(SAMPLE_ROOT, ".."), folder).replace(/\\/g, "/"),
+      vars,
+    };
+  }
+  return result;
 };
 
 export const serialize = (api) => `${JSON.stringify(api, null, 2)}\n`;

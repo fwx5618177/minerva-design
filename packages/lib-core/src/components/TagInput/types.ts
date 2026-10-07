@@ -1,8 +1,10 @@
-import type { Ref } from "react";
+import type { CSSProperties, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 export type TagInputSize = "small" | "medium" | "large";
 
-export interface TagInputProps {
+/** `data-*` attributes are forwarded to the wrapper. */
+export interface TagInputProps extends DataAttributes {
   /** Selected tags (controlled); omit for an uncontrolled field */
   value?: readonly string[];
   /**
@@ -22,6 +24,13 @@ export interface TagInputProps {
    * @default true
    */
   commitOnBlur?: boolean;
+  /**
+   * Keys that commit the draft: a literal string (e.g. "," or ";") splits the
+   * typed or pasted text into tags; "Enter" commits on the Enter key (and also
+   * splits pasted text on line breaks)
+   * @default [",", "Enter"]
+   */
+  separators?: readonly string[];
   /** Id of the text input (defaults to the FormControl id) */
   id?: string;
   /** Submits every selected tag under this name (hidden inputs); the draft is not submitted */
@@ -30,6 +39,8 @@ export interface TagInputProps {
   placeholder?: string;
   /** Accessible name of the text input when there is no FormControl label */
   "aria-label"?: string;
+  /** Ids of the elements labelling the text input (wins over the FormControl label) */
+  "aria-labelledby"?: string;
   /** Extra ids describing the text input */
   "aria-describedby"?: string;
   /**
@@ -79,6 +90,8 @@ export interface TagInputProps {
   createLabel?: (tag: string) => string;
   /** Class name of the wrapper */
   className?: string;
+  /** Inline style of the wrapper */
+  style?: CSSProperties;
   /** Ref to the text <input> */
   ref?: Ref<HTMLInputElement>;
 }

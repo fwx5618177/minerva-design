@@ -1,6 +1,11 @@
 {
   "title": "Toast",
   "description": "Temporary notifications with a title, a description and a semantic color, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree, so they inherit your app's context (theme, locale). Loading toasts, promise tracking, in-place updates, actions and a maximum count are built in. Server rendering is safe.",
+  "usage": {
+    "title": "When to use which: useToast() or toast()",
+    "hook": "Inside components, call useToast(): the toasts it shows follow the nearest ConfigProvider scope. Under a nested provider they are rendered into its portal host, with its theme, palette and tokens, and their built-in labels use its language. The owning ToastProvider still renders them, with its position, max and labels.",
+    "function": "Outside React (event buses, API clients, stores and other non-component modules), import toast() directly: no hook is available there, and its toasts use the scope of the ToastProvider, usually the root theme and language."
+  },
   "demos": {
     "basic": {
       "title": "Basic usage",
@@ -24,7 +29,15 @@
     },
     "dedupe": {
       "title": "Same id replaces",
-      "description": "Showing a toast with the id of a visible one replaces it and restarts its timer, instead of stacking duplicates (handy for polling errors). useToast returns the same toast function."
+      "description": "Showing a toast with the id of a visible one replaces it and restarts its timer, instead of stacking duplicates (handy for polling errors)."
+    },
+    "scoped": {
+      "title": "Scoped: useToast() vs toast()",
+      "description": "Both buttons sit in a nested ConfigProvider (dark theme, tech palette, Chinese). useToast() renders its toast inside that scope (dark tokens, Chinese close label, its own viewport at the same position); toast() renders at the root, with the page theme and language."
+    },
+    "keyboard": {
+      "title": "Keyboard",
+      "description": "F8 (the hotkey prop, also announced in the region label \"Notifications (F8)\") moves focus to the toasts. Escape dismisses the focused toast; after closing one, focus moves to the next toast's close button, then back to where it was before entering the toasts."
     }
   },
   "api": {
@@ -49,8 +62,9 @@
       "children": "Application content; the toast viewport is rendered after it",
       "max": "Maximum number of toasts shown at once; when exceeded the oldest close first",
       "pauseOnHover": "Pauses the auto-close timer while a toast is hovered or focused",
-      "ariaLabel": "Accessible label of the toast region",
-      "closeLabel": "Accessible label of the close buttons"
+      "aria-label": "Accessible label of the toast region, used as is (the default one includes the hotkey)",
+      "closeLabel": "Accessible label of the close buttons",
+      "hotkey": "Keys pressed together to move focus to the toast region (the first one holding toasts): key codes (F8, KeyT), keys or modifiers (altKey, ctrlKey, metaKey, shiftKey). Shown in the default region label, e.g. \"Notifications (F8)\"; an empty array disables it"
     },
     "ToastApi": {
       "info": "Shows an info toast with the given title",
@@ -67,5 +81,15 @@
       "success": "Title once the promise resolves (a node, or a function of the value)",
       "error": "Title once the promise rejects (a node, or a function of the error)"
     }
+  },
+  "cssVars": {
+    "--toast-width": "Width of the toast stack (capped by the viewport)",
+    "--toast-gap": "Space between stacked toasts",
+    "--toast-offset": "Distance between the stack and the viewport edges",
+    "--toast-padding": "Padding of a toast",
+    "--toast-radius": "Corner radius of a toast (defaults to --radius-md)",
+    "--toast-shadow": "Shadow of a toast (defaults to --shadow-lg)",
+    "--toast-background": "Base background of a toast (under the color tint)",
+    "--toast-z-index": "Stacking order of the stack (defaults to --z-toast)"
   }
 }

@@ -3,20 +3,21 @@
   "description": "在 React 项目中添加 Minerva、引入样式表，并可选地注册 Web Components。",
   "requirements": {
     "title": "环境要求",
-    "react": "React 与 React DOM 19 或更高版本（@minerva/lib-core 的 peer 依赖）。",
+    "react": "React 与 React DOM 19（@minerva/lib-core 的 peer 依赖）。不支持 React 18：组件依赖 React 19 的 API（例如把 ref 作为普通属性），并在 StrictMode 与 React DOM 19 服务端渲染下测试。",
     "bundler": "支持 ES 模块和 CSS 导入的构建工具，例如 Vite、webpack、Rspack 或 Next.js。同时也提供 CommonJS 构建。",
     "browsers": "现代常青浏览器：主题令牌依赖 CSS 自定义属性和 color-mix()。"
   },
   "core": {
     "title": "安装 React 组件",
     "text": "使用你的包管理器安装 @minerva/lib-core。如果项目中还没有 react 和 react-dom，请一并安装。",
-    "peers": "react 和 react-dom 是 peer 依赖（>= 18），以确保应用中只有一份 React。i18next、react-i18next、react-icons 和 classnames 作为普通依赖会被自动安装。"
+    "peers": "react 和 react-dom 是 peer 依赖（^19），以确保应用中只有一份 React。运行时依赖只有 @minerva/core（基础原语、设计令牌和轻量翻译器）、DOMPurify（HtmlPreview）和 jsonc-parser（JsonField）：不会安装任何图标、类名或 i18n 库。图标均为内联 SVG。"
   },
   "styles": {
     "title": "引入样式表",
     "text": "组件样式和默认主题令牌被打包在同一个 CSS 文件中。请在应用的入口文件中引入一次：",
     "note": "缺少 @minerva/lib-core/style.css 时组件将没有样式。只需引入一次；在多个模块中重复引入不会出错，但没有必要。",
-    "extras": "同目录下还发布了一个可选的 Sass 文件：@minerva/lib-core/prose.scss 包含长文排版 mixin，可在你自己的 Sass 中通过 @use 引入。"
+    "extras": "同目录下还发布了一个可选的 Sass 文件：@minerva/lib-core/prose.scss 包含长文排版 mixin，可在你自己的 Sass 中通过 @use 引入。",
+    "perComponent": "只用到少数组件？可以不引入 style.css，而是引入一次设计令牌，再引入所用组件各自的样式表。每个文件包含该组件及其内部渲染的组件的样式（例如 confirm.css 包含 Button 与 Modal 的样式）；文件名为组件目录名的 kebab-case 形式（tag-input.css、time-picker.css……）。JavaScript 同样按组件 tree-shaking：每个模块单独发布，除 CSS 外整个包没有副作用。"
   },
   "optional": {
     "title": "可选入口与 peer 依赖",

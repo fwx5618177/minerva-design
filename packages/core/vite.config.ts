@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { compile } from "sass";
 import type { Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
+import { writeDualDeclarations } from "../../scripts/dual-declarations.mjs";
 
 // Dependencies (@floating-ui/dom) are resolved by the consumer, never bundled.
 const externalDeps = Object.keys(pkg.dependencies ?? {});
@@ -47,6 +48,7 @@ export default defineConfig({
       // per-locale declarations (incl. `*.json.d.ts`) are never referenced.
       beforeWriteFile: (filePath) =>
         /[\\/]i18n[\\/]locales[\\/]/.test(filePath) ? false : undefined,
+      afterBuild: writeDualDeclarations,
     }),
   ],
   build: {

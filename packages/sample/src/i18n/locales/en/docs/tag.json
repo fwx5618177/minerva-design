@@ -20,7 +20,7 @@
     },
     "closable": {
       "title": "Closable",
-      "description": "closable adds a close button that calls onClose; remove the tag from your state there. closeIcon and closeLabel customize the button. The first tag is also clickable: the tag and its close button are two separate buttons, each reachable with Tab."
+      "description": "closable adds a close button named after the tag (\"Remove Tag 1\", localized; closeLabel overrides it with a string or a function of the label); onClose is called when it is activated. The first tag is also clickable: the tag and its close button are two separate buttons, each reachable with Tab."
     },
     "clickable": {
       "title": "Clickable (selectable)",
@@ -65,9 +65,16 @@
       "style": "Inline styles",
       "disabled": "Disables the tag and its close button",
       "closeIcon": "Custom close icon",
-      "closeLabel": "Accessible label of the close button",
+      "closeLabel": "Accessible label of the close button: a string, or a function of the tag's text label. Defaults to \"Remove {label}\" (localized), or \"Close\" when the tag has no text",
       "ripple": "Shows a ripple effect on click",
       "ref": "Ref to the root element"
     }
+  },
+  "cssVars": {
+    "--tag-height": "Minimum height (every size; default: the content height)",
+    "--tag-padding-x": "Horizontal padding (every size)",
+    "--tag-font-size": "Font size (every size)",
+    "--tag-radius": "Corner radius of the rounded shape (defaults to --radius-sm)",
+    "--tag-gap": "Space between the icon, the label and the close button"
   }
 }

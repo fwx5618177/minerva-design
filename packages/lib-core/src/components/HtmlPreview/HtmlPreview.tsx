@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "../../utils/cn";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import { previewDocument } from "./previewDocument";
 import type { HtmlPreviewProps } from "./types";
 import styles from "./htmlPreview.module.scss";
@@ -19,6 +20,7 @@ export const HtmlPreview = ({
   className,
   style,
   ref,
+  ...rest
 }: HtmlPreviewProps) => {
   const [doc, setDoc] = useState(() => previewDocument());
   // Deliberately two-phase: the server and the first client render both use
@@ -31,7 +33,12 @@ export const HtmlPreview = ({
   const frameHeight = Number.isFinite(height) && height > 0 ? height : 600;
 
   return (
-    <div ref={ref} className={cn(styles.preview, className)} style={style}>
+    <div
+      {...pickDataAttributes(rest)}
+      ref={ref}
+      className={cn(styles.preview, className)}
+      style={style}
+    >
       {/* A new key replaces the browsing context, so an initial empty srcdoc
           can never finish loading after the real document. */}
       <iframe

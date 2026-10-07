@@ -54,8 +54,23 @@ const EXPECTED_EXPORTS = [
   "useLocale",
 ];
 
-type ConditionalExport = { types: string; import: string; require: string };
-const conditional = (key: string) => pkg.exports[key] as ConditionalExport;
+type Target = { types: string; default: string };
+type ConditionalExport = { import: Target; require: Target };
+/** ESM / CJS files and their declarations of an exports-map entry */
+const conditional = (key: string) => {
+  const entry = pkg.exports[key] as ConditionalExport;
+  return {
+    import: entry.import.default,
+    require: entry.require.default,
+    types: entry.import.types,
+    requireTypes: entry.require.types,
+  };
+};
+const walk = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
+  );
+const distFiles = walk(dist("dist"));
 
 /** Sub-entries and whether they are client modules ("use client" banner) */
 const ENTRIES: Record<string, boolean> = {
@@ -67,11 +82,23 @@ const ENTRIES: Record<string, boolean> = {
 describe("@minerva/lib-core dist", () => {
   it("ships every file referenced by package.json", () => {
     const files = [pkg.main, pkg.module, pkg.types];
-    for (const value of Object.values(pkg.exports) as Array<
-      string | ConditionalExport
+    for (const [key, value] of Object.entries(pkg.exports) as Array<
+      [string, string | ConditionalExport]
     >) {
+      if (key.includes("*")) continue;
       if (typeof value === "string") files.push(value);
-      else files.push(value.types, value.import, value.require);
+      else {
+        const {
+          import: esm,
+          require: cjs,
+          types,
+          requireTypes,
+        } = conditional(key);
+        files.push(esm, cjs, types, requireTypes);
+        // each condition has its own declarations (.d.ts for ESM, .d.cts for CJS)
+        expect(types).toMatch(/\.d\.ts$/);
+        expect(requireTypes).toMatch(/\.d\.cts$/);
+      }
     }
     for (const file of files) {
       expect(existsSync(dist(file)), file).toBe(true);
@@ -80,10 +107,16 @@ describe("@minerva/lib-core dist", () => {
       [
         ...Object.keys(ENTRIES),
         "./style.css",
+        "./styles/*.css",
         "./prose.scss",
         "./package.json",
       ].sort(),
     );
+    // node10 resolution of the sub-entries' types
+    for (const key of Object.keys(ENTRIES).filter((k) => k !== ".")) {
+      const name = key.slice(2);
+      expect(pkg.typesVersions["*"][name]).toEqual([conditional(key).types]);
+    }
   });
 
   it.each(Object.entries(ENTRIES))(
@@ -97,6 +130,35 @@ describe("@minerva/lib-core dist", () => {
       }
     },
   );
+
+  it('marks every client module "use client" (deep imports stay client modules)', () => {
+    const modules = distFiles.filter(
+      (file) => /\.(c?js)$/.test(file) && !/[\\/]theme-utils\.c?js$/.test(file),
+    );
+    expect(modules.length).toBeGreaterThan(100);
+    for (const file of modules) {
+      expect(readFileSync(file, "utf8").startsWith('"use client";'), file).toBe(
+        true,
+      );
+    }
+  });
+
+  it("relative imports of the declarations resolve (.d.ts -> .js, .d.cts -> .cjs)", () => {
+    const declarations = distFiles.filter((f) => /\.d\.c?ts$/.test(f));
+    expect(declarations.length).toBeGreaterThan(100);
+    const specifier = /(?:from\s*|import\s*\(\s*|import\s+)["'](\.[^"']*)["']/g;
+    for (const file of declarations) {
+      const cjs = file.endsWith(".d.cts");
+      for (const [, path] of readFileSync(file, "utf8").matchAll(specifier)) {
+        expect(path, file).toMatch(cjs ? /\.cjs$/ : /\.js$/);
+        const target = join(dirname(file), path).replace(
+          /\.c?js$/,
+          cjs ? ".d.cts" : ".d.ts",
+        );
+        expect(existsSync(target), `${file} -> ${path}`).toBe(true);
+      }
+    }
+  });
 
   it("keeps the server-safe theme-utils entry free of React", () => {
     const key = "./theme-utils";
@@ -124,9 +186,16 @@ describe("@minerva/lib-core dist", () => {
         "THEME_COOKIE_NAME",
         "PALETTE_COOKIE_NAME",
         "THEME_COOKIE_MAX_AGE",
+        "designAttributes",
+        "resolveDesign",
+        "designPresets",
+        "DESIGN_PRESETS",
       ]) {
         expect(mod[name], name).toBeDefined();
       }
+      expect(mod.designAttributes({ preset: "editorial" })).toMatchObject({
+        "data-density": "comfortable",
+      });
       expect(mod.parseThemeCookies("theme=dark; palette=tech")).toEqual({
         theme: "dark",
         palette: "tech",
@@ -148,6 +217,66 @@ describe("@minerva/lib-core dist", () => {
     for (const name of names) expect(style, name).toContain(`${name}:`);
     const prose = readFileSync(dist(pkg.exports["./prose.scss"]), "utf8");
     expect(prose).toMatch(/@mixin/);
+    // design axes and accessibility preferences ship with the tokens
+    for (const [name, value] of [
+      ["density", "compact"],
+      ["radius", "none"],
+      ["shadow", "subtle"],
+      ["font-scale", "large"],
+    ]) {
+      expect(style).toMatch(new RegExp(`\\[data-${name}=("?)${value}\\1\\]`));
+    }
+    expect(style).toContain("prefers-reduced-motion");
+    expect(style).toContain("forced-colors");
+  });
+
+  it("ships per-component stylesheets and the tokens alone", () => {
+    const style = readFileSync(dist("dist/style.css"), "utf8");
+    const tokens = readFileSync(dist("dist/styles/tokens.css"), "utf8");
+    expect(style.startsWith(tokens.trim())).toBe(true);
+    const sheets = readdirSync(dist("dist/styles")).filter(
+      (f) => f !== "tokens.css",
+    );
+    // one per styled component folder
+    const folders = readdirSync(join(root, "src/components"), {
+      withFileTypes: true,
+    }).filter(
+      (d) =>
+        d.isDirectory() &&
+        readdirSync(join(root, "src/components", d.name)).some((f) =>
+          f.endsWith(".module.scss"),
+        ),
+    );
+    expect(sheets.length).toBeGreaterThanOrEqual(folders.length);
+    expect(sheets).toContain("button.css");
+    for (const sheet of sheets) {
+      const css = readFileSync(dist(`dist/styles/${sheet}`), "utf8");
+      // no design tokens (import styles/tokens.css once)
+      expect(css, sheet).not.toContain("--space-4:");
+      // every rule of a component sheet is part of style.css
+      expect(css.length, sheet).toBeLessThan(style.length);
+    }
+    // a component sheet includes the styles of the components it renders
+    const confirm = readFileSync(dist("dist/styles/confirm.css"), "utf8");
+    const button = readFileSync(dist("dist/styles/button.css"), "utf8");
+    expect(confirm).toContain(button.trim().slice(0, 200));
+    // resolvable through the exports map
+    expect(require.resolve("@minerva/lib-core/styles/button.css")).toBe(
+      dist("dist/styles/button.css"),
+    );
+  });
+
+  it("every documented CSS variable (// @css-var) is used by the compiled CSS", () => {
+    const style = readFileSync(dist("dist/style.css"), "utf8");
+    const pattern = /^\s*\/\/\s*@css-var\s+(--[\w-]+)\s/gm;
+    const documented = walk(join(root, "src/components"))
+      .filter((file) => file.endsWith(".scss"))
+      .flatMap((file) =>
+        [...readFileSync(file, "utf8").matchAll(pattern)].map((m) => m[1]),
+      );
+    expect(documented.length).toBeGreaterThan(50);
+    const unused = documented.filter((name) => !style.includes(`var(${name}`));
+    expect(unused).toEqual([]);
   });
 
   it("resolves the same named exports from ESM and CJS", async () => {
@@ -168,10 +297,10 @@ describe("@minerva/lib-core dist", () => {
   });
 
   it("keeps react, react-dom and dependencies external", () => {
-    // the entry plus the shared chunks it imports
-    const code = readdirSync(dist("dist"))
+    // every ESM module of the package
+    const code = distFiles
       .filter((file) => file.endsWith(".js"))
-      .map((file) => readFileSync(dist(`dist/${file}`), "utf8"))
+      .map((file) => readFileSync(file, "utf8"))
       .join("\n");
     expect(code).toMatch(/from "react"/);
     expect(code).not.toMatch(/react\.production|react-dom\.production/);
@@ -180,6 +309,70 @@ describe("@minerva/lib-core dist", () => {
     expect(code).not.toMatch(/function createThemeInitScript/);
     // ...but its design tokens are bundled into style.css, not imported
     expect(code).not.toMatch(/tokens\.css/);
+    // no third-party runtime besides @minerva/core, dompurify, jsonc-parser
+    // (and the optional Monaco peer of the monaco entry)
+    const bare = new Set(
+      [...code.matchAll(/from "([^".][^"]*)"/g)].map((m) =>
+        m[1].startsWith("@")
+          ? m[1].split("/").slice(0, 2).join("/")
+          : m[1].split("/")[0],
+      ),
+    );
+    expect([...bare].sort()).toEqual(
+      [
+        "@minerva/core",
+        "@monaco-editor/react",
+        "dompurify",
+        "jsonc-parser",
+        "react",
+        "react-dom",
+      ]
+        .filter((name) => bare.has(name))
+        .sort(),
+    );
+    expect(Object.keys(pkg.dependencies).sort()).toEqual([
+      "@minerva/core",
+      "dompurify",
+      "jsonc-parser",
+    ]);
+  });
+
+  it("tree-shakes: importing one component does not pull the others", async () => {
+    const { rolldown } = await import("rolldown");
+    const sizeOf = async (code: string) => {
+      const bundle = await rolldown({
+        input: "entry",
+        cwd: root,
+        platform: "browser",
+        logLevel: "silent",
+        external: (id) => /^(react|react-dom)(\/|$)/.test(id),
+        plugins: [
+          {
+            name: "virtual-entry",
+            resolveId: (id) => (id === "entry" ? "\0entry" : null),
+            load: (id) => (id === "\0entry" ? code : null),
+          },
+        ],
+      });
+      const { output } = await bundle.generate({ format: "esm", minify: true });
+      await bundle.close();
+      const chunk = output[0];
+      return { size: chunk.code.length, modules: Object.keys(chunk.modules) };
+    };
+    const button = await sizeOf(
+      'import { Button } from "@minerva/lib-core"; console.log(Button);',
+    );
+    // Button alone: a few KB, none of the other components
+    expect(button.size).toBeLessThan(8_000);
+    expect(
+      button.modules.filter((id) => /[\\/]components[\\/]/.test(id)),
+    ).toEqual(
+      button.modules.filter((id) => /[\\/]components[\\/]Button[\\/]/.test(id)),
+    );
+    const all = await sizeOf(
+      'import * as lib from "@minerva/lib-core"; console.log(lib);',
+    );
+    expect(all.size).toBeGreaterThan(button.size * 10);
   });
 
   it("can be imported and server-rendered without a DOM", async () => {

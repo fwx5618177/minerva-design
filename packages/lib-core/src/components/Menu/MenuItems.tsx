@@ -17,13 +17,12 @@ import {
   createTypeahead,
   focusElement,
   getNextIndex,
-  getTabbables,
   parsePlacement,
   type GraceSide,
   type Placement,
   type VirtualElement,
 } from "@minerva/core";
-import { LuCheck, LuChevronRight } from "react-icons/lu";
+import { IconCheck, IconChevronRight } from "../../internal/icons";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { Portal } from "../../internal/Portal";
 import { useAnchoredPosition } from "../../internal/useAnchoredPosition";
@@ -35,6 +34,7 @@ import { useFocusScope } from "../../internal/useFocusScope";
 import { useHideOthers } from "../../internal/useHideOthers";
 import { usePresence } from "../../internal/usePresence";
 import { useScrollLock } from "../../internal/useScrollLock";
+import { adjacentTabbable } from "../../internal/tabbing";
 import { cn } from "../../utils/cn";
 import type {
   MenuAction,
@@ -80,25 +80,6 @@ const getItems = (content: HTMLElement | null): HTMLElement[] =>
 
 const focusNoScroll = (el: HTMLElement | null | undefined) =>
   focusElement(el, { preventScroll: true });
-
-/**
- * The tabbable element before / after `anchor` in `container` (Tab pressed
- * in a menu moves on from its trigger).
- */
-function adjacentTabbable(
-  anchor: Element,
-  container: Element,
-  backwards: boolean,
-): HTMLElement | null {
-  const tabbables = getTabbables(container).filter(
-    (el) => el !== anchor && !anchor.contains(el) && !el.contains(anchor),
-  );
-  const follows = (el: Element) =>
-    !!(anchor.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
-  return backwards
-    ? ([...tabbables].reverse().find((el) => !follows(el)) ?? null)
-    : (tabbables.find(follows) ?? null);
-}
 
 /* -------------------------------------------------------------------------- */
 /* Root context                                                               */
@@ -190,7 +171,7 @@ interface MenuPanelProps {
   /** Submenu: its trigger item (ArrowLeft / Escape return focus to it). */
   parentItem?: HTMLElement | null;
   className?: string;
-  ariaLabel?: string;
+  "aria-label"?: string;
   labelledBy?: string;
   /** Root panel: called on pointer down outside (cancelable). */
   onPointerDownOutside?: (event: PointerEvent) => void;
@@ -211,7 +192,7 @@ const MenuPanel = ({
   id,
   parentItem,
   className,
-  ariaLabel,
+  "aria-label": ariaLabel,
   labelledBy,
   onPointerDownOutside,
   onElement,
@@ -653,7 +634,7 @@ const CheckboxItem = ({ entry }: { entry: MenuCheckboxEntry }) => {
       }}
       indicator={
         <span className={styles.indicator} aria-hidden="true">
-          {checked && <LuCheck size={16} />}
+          {checked && <IconCheck size={16} />}
         </span>
       }
       api={{
@@ -767,7 +748,7 @@ const SubmenuItem = ({ entry }: { entry: MenuAction }) => {
           "data-state": open ? "open" : "closed",
         }}
         trailing={
-          <LuChevronRight
+          <IconChevronRight
             className={styles.chevron}
             size={16}
             aria-hidden="true"
@@ -867,7 +848,7 @@ export interface MenuRootProps {
   dir: MenuDirection;
   modal: boolean;
   className?: string;
-  ariaLabel?: string;
+  "aria-label"?: string;
   labelledBy?: string;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -899,7 +880,7 @@ export const MenuRoot = ({
   dir,
   modal,
   className,
-  ariaLabel,
+  "aria-label": ariaLabel,
   labelledBy,
   open,
   setOpen,
@@ -979,7 +960,7 @@ export const MenuRoot = ({
         branches={() => [trigger]}
         id={contentId}
         className={className}
-        ariaLabel={ariaLabel}
+        aria-label={ariaLabel}
         labelledBy={labelledBy}
         onPointerDownOutside={(event) => {
           onPointerDownOutside?.(event);

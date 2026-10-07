@@ -1,5 +1,14 @@
 @use "../../styles/mixins" as *;
 
+// Public CSS variables (set them on the alert or any ancestor):
+// @css-var --alert-padding Padding (every size; defaults to the padding of the size)
+// @css-var --alert-radius Corner radius (defaults to --radius-sm, --radius-lg when rounded)
+// @css-var --alert-font-size Font size (every size)
+// @css-var --alert-icon-size Size of the status icon (every size)
+// @css-var --alert-gap Space between the icon, the content and the actions
+// @css-var --alert-shadow Shadow of the elevated alert (defaults to --shadow-sm)
+// @css-var --alert-margin-bottom Space below the alert
+
 .alert {
   position: relative;
   display: flex;
@@ -7,17 +16,17 @@
   min-width: 0;
   overflow-wrap: anywhere;
   align-items: flex-start;
-  padding: 12px 16px;
-  border-radius: 4px;
+  padding: var(--alert-padding, var(--space-3) var(--space-4));
+  border-radius: var(--alert-radius, var(--radius-sm));
   transition: all 0.3s ease;
-  margin-bottom: 16px;
+  margin-bottom: var(--alert-margin-bottom, var(--space-4));
 
   &.withElevation {
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--alert-shadow, var(--shadow-sm));
   }
 
   &.rounded {
-    border-radius: 8px;
+    border-radius: var(--alert-radius, var(--radius-lg));
   }
 
   &.collapsible {
@@ -55,29 +64,29 @@
 
   // Size variants
   &.small {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: var(--alert-padding, var(--space-2) var(--space-3));
+    font-size: var(--alert-font-size, var(--font-size-xs));
 
     .icon {
-      font-size: 16px;
+      font-size: var(--alert-icon-size, 16px);
     }
   }
 
   &.medium {
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: var(--alert-padding, var(--space-3) var(--space-4));
+    font-size: var(--alert-font-size, var(--font-size-md));
 
     .icon {
-      font-size: 20px;
+      font-size: var(--alert-icon-size, 20px);
     }
   }
 
   &.large {
-    padding: 16px 20px;
-    font-size: 16px;
+    padding: var(--alert-padding, var(--space-4) var(--space-5));
+    font-size: var(--alert-font-size, var(--font-size-lg));
 
     .icon {
-      font-size: 24px;
+      font-size: var(--alert-icon-size, 24px);
     }
   }
 
@@ -116,7 +125,7 @@
 
   // Icon styles
   .icon {
-    margin-right: 12px;
+    margin-inline-end: var(--alert-gap, var(--space-3));
     display: flex;
     align-items: center;
   }
@@ -138,13 +147,13 @@
 
   // Action styles
   .action {
-    margin-left: 16px;
+    margin-inline-start: var(--space-4);
   }
 
   // Close button styles
   .closeButton {
     padding: 0;
-    margin-left: 12px;
+    margin-inline-start: var(--alert-gap, var(--space-3));
     background: none;
     border: none;
     cursor: pointer;
@@ -190,6 +199,17 @@
     .message {
       animation: expandContent 0.3s ease-out forwards;
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &.withAnimation,
+    &.expanded .message {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    border: 1px solid CanvasText;
   }
 }
 

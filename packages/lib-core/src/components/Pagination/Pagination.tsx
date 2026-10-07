@@ -7,12 +7,13 @@ import React, {
   type MouseEvent,
 } from "react";
 import {
-  IoChevronBack,
-  IoChevronForward,
-  IoEllipsisHorizontal,
-} from "react-icons/io5";
+  IconChevronLeft,
+  IconChevronRight,
+  IconEllipsis,
+} from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import type { PaginationProps } from "./types";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
@@ -26,10 +27,10 @@ const WINDOW_SIZE = 5;
 const JUMP_SIZE = 5;
 
 const DEFAULT_ICONS = {
-  prev: <IoChevronBack aria-hidden="true" />,
-  next: <IoChevronForward aria-hidden="true" />,
-  jumpPrev: <IoEllipsisHorizontal aria-hidden="true" />,
-  jumpNext: <IoEllipsisHorizontal aria-hidden="true" />,
+  prev: <IconChevronLeft aria-hidden="true" />,
+  next: <IconChevronRight aria-hidden="true" />,
+  jumpPrev: <IconEllipsis aria-hidden="true" />,
+  jumpNext: <IconEllipsis aria-hidden="true" />,
 };
 
 interface Ripple {
@@ -263,6 +264,8 @@ const Pagination = ({
   // 快速跳转
   const handleJump = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
+    // Enter in a text input would implicitly submit an enclosing form
+    e.preventDefault();
     const value = parseInt(jumpValue, 10);
     if (!isNaN(value) && value >= 1 && value <= totalPages) {
       changePage(value);
@@ -388,7 +391,10 @@ const Pagination = ({
               inputMode="numeric"
               onChange={(e) => setSimpleDraft(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") commitSimpleDraft();
+                if (e.key !== "Enter") return;
+                // Do not implicitly submit an enclosing form
+                e.preventDefault();
+                commitSimpleDraft();
               }}
               onBlur={commitSimpleDraft}
             />
@@ -466,10 +472,12 @@ const Pagination = ({
   // keys): 方向键 / Home / End, 焦点随之移动到当前页
   // (disabled pagination: the buttons are disabled and receive no keys)
   const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    // RTL: the previous page is on the right, so ArrowRight goes back.
+    const key = logicalArrowKey(e.key, e.currentTarget);
     const destination =
-      e.key === "ArrowLeft"
+      key === "ArrowLeft"
         ? page - 1
-        : e.key === "ArrowRight"
+        : key === "ArrowRight"
           ? page + 1
           : e.key === "Home"
             ? 1

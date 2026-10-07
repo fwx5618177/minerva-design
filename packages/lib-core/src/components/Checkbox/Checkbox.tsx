@@ -1,7 +1,8 @@
 import React, { useId, useLayoutEffect, useRef } from "react";
 import { cn } from "../../utils/cn";
-import { FaInfoCircle } from "react-icons/fa";
+import { IconCircleInfoFilled } from "../../internal/icons";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import { useControllableState } from "../../internal/useControllableState";
 import {
   useFormControlContext,
@@ -29,16 +30,19 @@ const Checkbox = ({
   color = "primary",
   id,
   value,
-  ariaDescribedBy,
-  ariaLabel,
+  "aria-describedby": ariaDescribedBy,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   className = "",
+  style,
   icon,
   required,
   error = false,
-  errorIcon = <FaInfoCircle />,
+  errorIcon = <IconCircleInfoFilled />,
   helperText,
   labelPlacement = "end",
   ref,
+  ...rest
 }: CheckboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const mergedRef = useMergedRefs(inputRef, ref);
@@ -100,7 +104,11 @@ const Checkbox = ({
 
   return (
     <div className={cn(styles.checkboxWrapper, isError && styles.error)}>
-      <label className={labelClasses}>
+      <label
+        className={labelClasses}
+        style={style}
+        {...pickDataAttributes(rest)}
+      >
         <input
           ref={mergedRef}
           type="checkbox"
@@ -115,6 +123,7 @@ const Checkbox = ({
           required={isRequired}
           aria-checked={indeterminate ? "mixed" : undefined}
           aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           aria-invalid={isError || undefined}
           aria-readonly={field["aria-readonly"]}
           aria-describedby={field["aria-describedby"]}

@@ -26,7 +26,7 @@ import { IoTrashOutline } from "react-icons/io5";
 </Button>;
 
 // icon-only controls need an accessible name
-<IconButton icon={<IoTrashOutline />} ariaLabel="Delete item" />;`;
+<IconButton icon={<IoTrashOutline />} aria-label="Delete item" />;`;
 
 const IntroductionDoc: React.FC = () => {
   const { t } = useTranslation();

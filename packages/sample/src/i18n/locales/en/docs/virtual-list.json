@@ -17,6 +17,10 @@
     "high-performance": {
       "title": "High performance mode",
       "description": "highPerformance batches scroll updates with requestAnimationFrame and requestIdleCallback, here with 100,000 rows."
+    },
+    "clickable-rows": {
+      "title": "Clickable rows and native attributes",
+      "description": "onItemClick makes the rows clickable (pointer cursor, focusable, activated with Enter / Space); without it rows keep the default cursor. Native attributes such as id, data-* and aria-* are forwarded to the root."
     }
   },
   "api": {
@@ -33,12 +37,20 @@
       "loadMoreThreshold": "Distance from the bottom (px) at which onLoadMore is triggered",
       "highPerformance": "Batches scroll updates with requestAnimationFrame and requestIdleCallback",
       "loading": "Shows a loading indicator at the bottom of the list",
-      "ariaLabel": "Accessible name of the list",
-      "ref": "Ref to the root (scroll container) <div> element"
+      "aria-label": "Accessible name of the list",
+      "ref": "Ref to the root (scroll container) <div> element",
+      "onItemClick": "Called when a row is clicked, or activated with Enter / Space while the row itself has focus. Makes the rows clickable: focusable and shown with a pointer cursor"
     },
     "VirtualListItem": {
       "id": "Unique key of the item",
       "metadata": "Arbitrary data for renderItem"
     }
+  },
+  "cssVars": {
+    "--virtual-list-radius": "Corner radius (defaults to --radius-sm)",
+    "--virtual-list-shadow": "Shadow at rest (defaults to --shadow-sm)",
+    "--virtual-list-hover-shadow": "Shadow while hovered (defaults to --shadow-md)",
+    "--virtual-list-scrollbar-size": "Width of the scrollbar (WebKit / Blink)",
+    "--virtual-list-loading-padding": "Padding of the loading indicator row"
   }
 }

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
-import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { IconChevronLeft, IconChevronRight } from "../../internal/icons";
 import IconButton from "../IconButton/IconButton";
 import Tooltip from "../Tooltip/Tooltip";
 import useI18n from "../../hooks/useI18n";
 import type { PageTabProps, PageTabsProps } from "./types";
+import { getDirection } from "../../internal/direction";
 import styles from "./pageTabs.module.scss";
 
 const TAB_SELECTOR = `.${styles.pageTab}`;
@@ -13,6 +14,8 @@ interface ScrollState {
   overflow: boolean;
   left: boolean;
   right: boolean;
+  /** Right-to-left layout: the start (first) scroll button is on the right. */
+  rtl: boolean;
 }
 
 /**
@@ -22,7 +25,7 @@ interface ScrollState {
  * current item is kept in view.
  */
 export const PageTabs = ({
-  ariaLabel,
+  "aria-label": ariaLabel,
   activeValue,
   children,
   actions,
@@ -38,24 +41,34 @@ export const PageTabs = ({
   const list = useRef<HTMLDivElement>(null);
   const focused = useRef<HTMLElement | null>(null);
   const previousItems = useRef<string | null>(null);
+  const leftButton = useRef<HTMLButtonElement>(null);
+  const rightButton = useRef<HTMLButtonElement>(null);
+  /** Scroll button last used: it may get disabled while it has focus */
+  const movedWith = useRef<HTMLButtonElement | null>(null);
   const [scroll, setScroll] = useState<ScrollState>({
     overflow: false,
     left: false,
     right: false,
+    rtl: false,
   });
 
   const measure = useCallback(() => {
     const el = viewport.current;
     if (!el) return;
+    // In RTL, scrollLeft runs from 0 (start, right edge) to -(max).
+    const rtl = getDirection(el) === "rtl";
+    const max = el.scrollWidth - el.clientWidth;
     const next = {
       overflow: el.scrollWidth > el.clientWidth + 1,
-      left: el.scrollLeft > 1,
-      right: el.scrollLeft + el.clientWidth < el.scrollWidth - 1,
+      left: rtl ? el.scrollLeft > -max + 1 : el.scrollLeft > 1,
+      right: rtl ? el.scrollLeft < -1 : el.scrollLeft < max - 1,
+      rtl,
     };
     setScroll((prev) =>
       prev.overflow === next.overflow &&
       prev.left === next.left &&
-      prev.right === next.right
+      prev.right === next.right &&
+      prev.rtl === next.rtl
         ? prev
         : next,
     );
@@ -103,6 +116,21 @@ export const PageTabs = ({
         ?.querySelector<HTMLButtonElement>('[aria-current="page"]')
         ?.focus({ preventScroll: true });
     }
+    // A scroll button activated from the keyboard is disabled once its end
+    // is reached, which would drop focus to <body>: hand focus to the
+    // opposite scroll button instead.
+    const from = movedWith.current;
+    if (from?.disabled) {
+      movedWith.current = null;
+      if (
+        document.activeElement === from ||
+        document.activeElement === document.body
+      ) {
+        (from === leftButton.current ? rightButton : leftButton).current?.focus(
+          { preventScroll: true },
+        );
+      }
+    }
   });
 
   useEffect(() => {
@@ -117,9 +145,38 @@ export const PageTabs = ({
     const el = viewport.current;
     /* v8 ignore next */
     if (!el) return;
+    movedWith.current =
+      direction < 0 ? leftButton.current : rightButton.current;
     el.scrollLeft += direction * Math.max(1, el.clientWidth * 0.8);
     measure();
   };
+
+  // Physical buttons: the left one always sits on the left edge (it comes
+  // last in the DOM in RTL, where the flex row is reversed).
+  const scrollLeft = (
+    <IconButton
+      ref={leftButton}
+      className={styles.scroll}
+      aria-label={scrollLeftLabel ?? t("pageTabs.scrollLeft")}
+      size="small"
+      shape="square"
+      disabled={!scroll.left}
+      onClick={() => move(-1)}
+      icon={<IconChevronLeft size={18} aria-hidden="true" />}
+    />
+  );
+  const scrollRight = (
+    <IconButton
+      ref={rightButton}
+      className={styles.scroll}
+      aria-label={scrollRightLabel ?? t("pageTabs.scrollRight")}
+      size="small"
+      shape="square"
+      disabled={!scroll.right}
+      onClick={() => move(1)}
+      icon={<IconChevronRight size={18} aria-hidden="true" />}
+    />
+  );
 
   return (
     <nav
@@ -146,33 +203,13 @@ export const PageTabs = ({
         onContextMenuCapture?.(event);
       }}
     >
-      {scroll.overflow && (
-        <IconButton
-          className={styles.scroll}
-          ariaLabel={scrollLeftLabel ?? t("pageTabs.scrollLeft")}
-          size="small"
-          shape="square"
-          disabled={!scroll.left}
-          onClick={() => move(-1)}
-          icon={<LuChevronLeft size={18} aria-hidden="true" />}
-        />
-      )}
+      {scroll.overflow && (scroll.rtl ? scrollRight : scrollLeft)}
       <div ref={viewport} className={styles.viewport} onScroll={measure}>
         <div ref={list} className={styles.list}>
           {children}
         </div>
       </div>
-      {scroll.overflow && (
-        <IconButton
-          className={styles.scroll}
-          ariaLabel={scrollRightLabel ?? t("pageTabs.scrollRight")}
-          size="small"
-          shape="square"
-          disabled={!scroll.right}
-          onClick={() => move(1)}
-          icon={<LuChevronRight size={18} aria-hidden="true" />}
-        />
-      )}
+      {scroll.overflow && (scroll.rtl ? scrollLeft : scrollRight)}
       {actions && <div className={styles.actions}>{actions}</div>}
     </nav>
   );

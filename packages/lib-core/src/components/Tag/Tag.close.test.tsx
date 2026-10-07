@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Tag from "./Tag";
 import type { TagProps } from "./types";
+import { ConfigProvider } from "../../contexts/ConfigProvider";
 
 describe("Tag colors, close button and native attributes", () => {
   it("renders children with the default color/variant/size and no close button", () => {
@@ -45,9 +46,9 @@ describe("Tag colors, close button and native attributes", () => {
       </div>,
     );
     expect(screen.getByTestId("tag")).toHaveClass("small");
-    const close = screen.getByRole("button", { name: "Close" });
+    const close = screen.getByRole("button", { name: "Remove v2.0" });
     expect(close).toHaveAttribute("type", "button");
-    expect(close).toHaveAttribute("title", "Close");
+    expect(close).toHaveAttribute("title", "Remove v2.0");
     expect(close).toHaveClass("closeIcon");
     await user.click(close);
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -79,7 +80,7 @@ describe("Tag colors, close button and native attributes", () => {
         Locked
       </Tag>,
     );
-    const close = screen.getByRole("button", { name: "Close" });
+    const close = screen.getByRole("button", { name: "Remove Locked" });
     expect(close).toBeDisabled();
     await user.click(close);
     expect(onClose).not.toHaveBeenCalled();
@@ -131,5 +132,54 @@ describe("Tag styles", () => {
       /\.tag\.neutral\.outline\s*\{[^}]*background-color: transparent;[^}]*border: 1px solid var\(--border-strong-color\)/,
     );
     expect(css).not.toMatch(/\.tag\.(default|bordered)\b/);
+  });
+});
+
+describe("Tag close button name", () => {
+  it("names the close button after the tag's text, also inside elements", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <Tag closable onClose={onClose} icon={<svg aria-hidden />}>
+        <strong>Design</strong> system
+      </Tag>,
+    );
+    await user.tab();
+    const close = screen.getByRole("button", { name: "Remove Design system" });
+    expect(close).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("accepts a function of the label as closeLabel", () => {
+    render(
+      <Tag closable closeLabel={(label) => `Delete filter ${label}`}>
+        {"Status: "}
+        {3}
+      </Tag>,
+    );
+    expect(
+      screen.getByRole("button", { name: "Delete filter Status: 3" }),
+    ).toHaveAttribute("title", "Delete filter Status: 3");
+  });
+
+  it("falls back to the plain close label when the tag has no text", () => {
+    render(
+      <Tag closable icon={<svg aria-hidden />}>
+        {null}
+      </Tag>,
+    );
+    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+  });
+
+  it("localizes the label", () => {
+    render(
+      <ConfigProvider locale={{ language: "fr" }}>
+        <Tag closable>React</Tag>
+      </ConfigProvider>,
+    );
+    expect(
+      screen.getByRole("button", { name: "Supprimer React" }),
+    ).toBeInTheDocument();
   });
 });

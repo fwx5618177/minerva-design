@@ -7,7 +7,7 @@ const log = [
 
 export default function NoWrapDemo() {
   return (
-    <CodeBlock ariaLabel="Server log" wrap={false} maxHeight={160}>
+    <CodeBlock aria-label="Server log" wrap={false} maxHeight={160}>
       {log}
     </CodeBlock>
   );

@@ -3,6 +3,7 @@
 // The matching design tokens ship as CSS: `@minerva/core/tokens.css`.
 export * from "./types";
 export * from "./theme-utils";
+export * from "./design";
 export * from "./themes";
 export * from "./palettes";
 export * from "./apply-theme";

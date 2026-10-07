@@ -116,7 +116,9 @@ it.each([
     expect(status).toHaveClass(styles[size]);
     expect(status.hasAttribute("size")).toBe(false);
     expect(css).toMatch(
-      new RegExp(`\\.${size}\\s*\\{[^}]*min-height:\\s*${minHeight}\\s*;`),
+      new RegExp(
+        `\\.${size}\\s*\\{[^}]*min-height:\\s*var\\(--loading-state-min-height,\\s*${minHeight}\\)\\s*;`,
+      ),
     );
   },
 );
@@ -132,10 +134,10 @@ it("ships bounded horizontal layout, muted typography and wrapping without a car
     "flex-direction: row;",
     "align-items: center;",
     "justify-content: center;",
-    "gap: var(--space-3);",
-    "padding: var(--space-4);",
-    "color: var(--text-muted-color);",
-    "font-size: var(--font-size-md);",
+    "gap: var(--loading-state-gap, var(--space-3));",
+    "padding: var(--loading-state-padding, var(--space-4));",
+    "color: var(--loading-state-color, var(--text-muted-color));",
+    "font-size: var(--loading-state-font-size, var(--font-size-md));",
     "font-family: var(--font-family-sans);",
     "line-height: var(--line-height-base);",
   ])

@@ -8,7 +8,7 @@
     },
     "read-only": {
       "title": "読み取り専用の進捗",
-      "description": "onChange がない場合、ステップは読み取り専用の進捗表示になります。"
+      "description": "onChange がない場合、ステップは読み取り専用の進捗表示になります。ボタンを含まない順序付きリストで、現在の項目に aria-current=\"step\" が付きます。"
     }
   },
   "api": {
@@ -17,8 +17,8 @@
       "value": "現在のステップの値（制御モード。onChange と併用）",
       "defaultValue": "初期の現在ステップの値（非制御モード）",
       "onChange": "ユーザーが移動したステップの値で呼ばれます。通知するのはナビゲーションのみで、検証やワークフローの遷移は呼び出し側の責任です",
-      "readOnly": "読み取り専用の進捗表示として描画します（すべてのボタンが無効）",
-      "ariaLabel": "リストのアクセシブルなラベル",
+      "readOnly": "読み取り専用の進捗表示として描画します（ボタンのないリスト項目で、現在の項目に aria-current=\"step\"）",
+      "aria-label": "リストのアクセシブルなラベル",
       "className": "追加のクラス名",
       "ref": "ルート <ol> 要素への ref"
     },
@@ -27,5 +27,12 @@
       "label": "ステップの表示ラベル",
       "disabled": "このステップへの移動を禁止します（未到達の終端状態など）"
     }
+  },
+  "cssVars": {
+    "--steps-gap": "ステップ間の間隔（行と列）",
+    "--steps-font-size": "ラベルのフォントサイズ",
+    "--steps-indicator-size": "番号インジケーターの直径",
+    "--steps-accent-color": "現在 / 完了インジケーターの色（既定値は --primary-color）",
+    "--steps-current-background": "現在のステップのインジケーターの背景"
   }
 }

@@ -1,4 +1,11 @@
 // Unframed: no background, border or radius. Consumer styles can override.
+//
+// Public CSS variables (set them on the loading state or any ancestor):
+// @css-var --loading-state-gap Space between the spinner and the label
+// @css-var --loading-state-padding Padding
+// @css-var --loading-state-min-height Minimum height (every size; defaults to the height of the size)
+// @css-var --loading-state-color Color of the label and the spinner
+// @css-var --loading-state-font-size Font size of the label
 .loadingState {
   box-sizing: border-box;
   min-width: 0;
@@ -7,10 +14,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  color: var(--text-muted-color);
-  font-size: var(--font-size-md);
+  gap: var(--loading-state-gap, var(--space-3));
+  padding: var(--loading-state-padding, var(--space-4));
+  color: var(--loading-state-color, var(--text-muted-color));
+  font-size: var(--loading-state-font-size, var(--font-size-md));
   font-family: var(--font-family-sans);
   line-height: var(--line-height-base);
 }
@@ -24,13 +31,13 @@
 
 // Minimum heights include the padding; content can grow taller
 .small {
-  min-height: 64px;
+  min-height: var(--loading-state-min-height, 64px);
 }
 .medium {
-  min-height: 160px;
+  min-height: var(--loading-state-min-height, 160px);
 }
 .large {
-  min-height: 240px;
+  min-height: var(--loading-state-min-height, 240px);
 }
 
 @media (prefers-reduced-motion: reduce) {

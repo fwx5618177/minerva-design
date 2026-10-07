@@ -44,7 +44,10 @@ export interface ConfirmDialogProps extends ConfirmOptions {
 
 /** Props of `ConfirmProvider`. */
 export interface ConfirmProviderProps {
-  /** Application subtree; `useConfirm()` / `confirm()` render their dialogs here. */
+  /**
+   * Application subtree; `useConfirm()` / `confirm()` render their dialogs
+   * here (`useConfirm()` dialogs inside the caller's ConfigProvider scope).
+   */
   children?: ReactNode;
 }
 

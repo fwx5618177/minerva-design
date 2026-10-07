@@ -1,6 +1,7 @@
 /**
  * Server-safe theme helpers (`@minerva/lib-core/theme-utils`): types, cookie
- * names, cookie parsing and the no-flash init script.
+ * names, cookie parsing, the no-flash init script and the design axes
+ * (`designAttributes()` for the `<html>` of a server-rendered root layout).
  *
  * Implemented in `@minerva/core` (framework-agnostic, no `"use client"`) and
  * re-exported here, so React Server Components (e.g. a root layout) can read
@@ -15,6 +16,15 @@
  *     ...
  */
 export {
+  DENSITIES,
+  DESIGN_ATTRIBUTES,
+  DESIGN_PRESETS,
+  FONT_SCALES,
+  RADIUS_SCALES,
+  SHADOW_SCALES,
+  designAttributes,
+  designPresets,
+  resolveDesign,
   PALETTES,
   PALETTE_COOKIE_NAME,
   THEME_COOKIE_MAX_AGE,
@@ -30,6 +40,14 @@ export {
   serializeThemeCookie,
 } from "@minerva/core";
 export type {
+  Density,
+  DesignOptions,
+  DesignPreset,
+  DesignPresetDefinition,
+  FontScale,
+  RadiusScale,
+  ResolvedDesign,
+  ShadowScale,
   Palette,
   ResolvedThemeMode,
   ThemeCookies,

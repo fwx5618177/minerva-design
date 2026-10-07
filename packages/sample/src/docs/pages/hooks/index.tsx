@@ -55,7 +55,8 @@ const HooksDoc: React.FC = () => {
     },
     {
       name: "useI18n",
-      signature: "() => { t: TFunction; i18n: i18n }",
+      signature:
+        "() => { t: (key: string, options?: TranslateOptions) => string; language: SupportedLanguage }",
       description: t("docs.hooks.reference.useI18n"),
     },
     {

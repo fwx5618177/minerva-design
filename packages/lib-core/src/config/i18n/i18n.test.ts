@@ -1,42 +1,76 @@
-import { afterEach, describe, expect, it } from "vitest";
-import { SUPPORTED_LANGUAGES, messages } from "@minerva/core";
-import i18n, { DEFAULT_LANGUAGE, resources } from ".";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { SUPPORTED_LANGUAGES, messages as coreMessages } from "@minerva/core";
+import i18n, {
+  DEFAULT_LANGUAGE,
+  getLanguage,
+  getServerLanguage,
+  messages,
+  resolveLanguage,
+  setLanguage,
+  subscribeLanguage,
+  translateMessage,
+} from ".";
 
-// The message bundles themselves are tested in @minerva/core; this covers how
-// lib-core loads them into its private i18next instance.
-describe("lib-core i18next instance", () => {
-  afterEach(() => i18n.changeLanguage(DEFAULT_LANGUAGE));
+// The message bundles and the translator are tested in @minerva/core; this
+// covers lib-core's global language store.
+describe("lib-core language store", () => {
+  afterEach(() => setLanguage(DEFAULT_LANGUAGE));
 
-  it("loads @minerva/core's messages of every language as the index namespace", () => {
-    expect(Object.keys(resources).sort()).toEqual(
-      [...SUPPORTED_LANGUAGES].sort(),
-    );
+  it("uses @minerva/core's messages of every language", () => {
+    expect(messages).toBe(coreMessages);
     for (const language of SUPPORTED_LANGUAGES) {
-      expect(resources[language].index).toBe(messages[language]);
-      expect(i18n.getResourceBundle(language, "index")).toEqual(
-        messages[language],
+      expect(translateMessage("common.loading", undefined, language)).toBe(
+        (coreMessages[language].common as Record<string, string>).loading,
       );
     }
   });
 
-  it("starts in the default language and switches languages", async () => {
+  it("starts in the default language and switches languages", () => {
     expect(DEFAULT_LANGUAGE).toBe("en");
+    expect(getLanguage()).toBe("en");
     expect(i18n.language).toBe("en");
-    expect(i18n.t("common.loading")).toBe("Loading");
-    // group strings (groups/*.json) are merged into the same namespace
+    expect(translateMessage("common.loading")).toBe("Loading");
+    // group strings (groups/*.json) are merged into the same tree
     expect(i18n.t("themeToggle.light")).not.toBe("themeToggle.light");
 
-    await i18n.changeLanguage("zh");
-    expect(i18n.t("common.loading")).toBe("加载中");
+    setLanguage("zh");
+    expect(getLanguage()).toBe("zh");
+    expect(translateMessage("common.loading")).toBe("加载中");
+
+    i18n.changeLanguage("fr");
+    expect(i18n.language).toBe("fr");
   });
 
-  it("falls back to the default language for unknown languages", async () => {
-    await i18n.changeLanguage("de");
-    expect(i18n.t("common.loading")).toBe("Loading");
+  it("falls back to the default language for unknown languages", () => {
+    setLanguage("de");
+    expect(translateMessage("common.loading")).toBe("Loading");
+    expect(resolveLanguage("de")).toBe("en");
+    expect(resolveLanguage("ja")).toBe("ja");
   });
 
-  it("is private: does not touch the global i18next instance", async () => {
-    const { default: globalI18next } = await import("i18next");
-    expect(i18n).not.toBe(globalI18next);
+  it("notifies subscribers of actual changes only, until they unsubscribe", () => {
+    const listener = vi.fn();
+    const unsubscribe = subscribeLanguage(listener);
+    setLanguage("ja");
+    expect(listener).toHaveBeenCalledTimes(1);
+    setLanguage("ja");
+    expect(listener).toHaveBeenCalledTimes(1);
+    unsubscribe();
+    setLanguage("fr");
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports the default language as the server snapshot", () => {
+    setLanguage("zh");
+    expect(getServerLanguage()).toBe(DEFAULT_LANGUAGE);
+  });
+
+  it("does not touch globals", async () => {
+    const before = new Set(Object.keys(globalThis));
+    vi.resetModules();
+    await import(".");
+    const added = Object.keys(globalThis).filter((key) => !before.has(key));
+    expect(added).toEqual([]);
+    expect(document.documentElement.lang).toBe("");
   });
 });

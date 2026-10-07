@@ -5,6 +5,13 @@ export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "color"
 > {
+  /**
+   * Native button type. Defaults to "button" (unlike the HTML default
+   * "submit"), so a Button in a form never submits it by accident: use
+   * `type="submit"` for submit buttons and `"reset"` for reset buttons
+   * @default "button"
+   */
+  type?: "button" | "submit" | "reset";
   /** Called when the button is clicked (not called while disabled) */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /** Button content */
@@ -28,7 +35,7 @@ export interface ButtonProps extends Omit<
    */
   size?: "xsmall" | "small" | "medium" | "large" | "xlarge";
   /** Accessible label, required when the button only contains an icon */
-  ariaLabel?: string;
+  "aria-label"?: string;
   /**
    * Disables the button
    * @default false

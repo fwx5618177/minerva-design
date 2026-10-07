@@ -1,10 +1,12 @@
+import type { CSSProperties } from "react";
 import type { Monaco } from "@monaco-editor/react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 /** Color theme of the Monaco editor */
 export type MonacoCodeEditorTheme = "light" | "dark";
 
 /** Props of `MonacoCodeEditor` (published from `@minerva/lib-core/monaco`) */
-export interface MonacoCodeEditorProps {
+export interface MonacoCodeEditorProps extends DataAttributes {
   /**
    * Local Monaco engine (`import * as monaco from "monaco-editor"`). One
    * engine per application; configure its workers in the host. The editor is
@@ -73,6 +75,8 @@ export interface MonacoCodeEditorProps {
    * @default "Loading editor" (localized)
    */
   loadingLabel?: string;
-  /** Additional class name */
+  /** Additional class name of the root element */
   className?: string;
+  /** Inline styles of the root element */
+  style?: CSSProperties;
 }

@@ -1,4 +1,4 @@
-// Shared SSR cases for lib-core components (used by ssr.test.tsx, which renders
+// Shared cases covering every exported lib-core component (ssr.test.tsx renders
 // every case in a DOM-less Node environment, and internal-buttons.test.tsx).
 import type { ReactElement } from "react";
 import * as lib from "../index";
@@ -343,13 +343,13 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   ],
   [
     "PageTabs",
-    <lib.PageTabs ariaLabel="Pages" activeValue="a">
+    <lib.PageTabs aria-label="Pages" activeValue="a">
       <lib.PageTab value="a" label="A" />
     </lib.PageTabs>,
   ],
   [
     "PageTab",
-    <lib.PageTabs ariaLabel="Pages" activeValue="a">
+    <lib.PageTabs aria-label="Pages" activeValue="a">
       <lib.PageTab value="a" label="A" />
     </lib.PageTabs>,
   ],
@@ -477,6 +477,107 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
       label="Files"
       value={[{ id: "1", name: "a.txt", status: "done" }]}
       onFilesSelected={noop}
+    />,
+  ],
+
+  [
+    "Alert",
+    <lib.Alert color="info" title="Title" closable>
+      Body
+    </lib.Alert>,
+  ],
+  [
+    "AutoComplete",
+    <lib.AutoComplete
+      name="a"
+      label="A"
+      options={[{ label: "x", value: "x" }]}
+    />,
+  ],
+  ["Avatar", <lib.Avatar name="Ada Lovelace" />],
+  [
+    "AvatarGroup",
+    <lib.AvatarGroup>
+      <lib.Avatar name="A" />
+      <lib.Avatar name="B" />
+    </lib.AvatarGroup>,
+  ],
+  [
+    "Badge",
+    <lib.Badge content={3}>
+      <span>Inbox</span>
+    </lib.Badge>,
+  ],
+  ["Button", <lib.Button>Click</lib.Button>],
+  [
+    "Card",
+    <lib.Card>
+      <lib.CardHeader>
+        <lib.CardTitle>T</lib.CardTitle>
+        <lib.CardDescription>D</lib.CardDescription>
+      </lib.CardHeader>
+      <lib.CardContent>C</lib.CardContent>
+      <lib.CardFooter>F</lib.CardFooter>
+    </lib.Card>,
+  ],
+  [
+    "Cascader",
+    <lib.Cascader
+      name="c"
+      label="C"
+      options={[{ value: "a", label: "A" }]}
+      defaultValue={["a"]}
+    />,
+  ],
+  ["Checkbox", <lib.Checkbox label="Check" defaultChecked />],
+  ["Divider", <lib.Divider>Text</lib.Divider>],
+  ["Empty", <lib.Empty />],
+  [
+    "IconButton",
+    <lib.IconButton
+      icon={<span />}
+      aria-label="Icon"
+      showTooltip
+      tooltip={{ content: "Tip" }}
+    />,
+  ],
+  [
+    "Pagination",
+    <lib.Pagination total={100} showQuickJumper showSizeChanger showTotal />,
+  ],
+  ["ProgressIndicator", <lib.ProgressIndicator />],
+  ["Radio", <lib.Radio label="Radio" value="r" />],
+  [
+    "RadioGroup",
+    <lib.RadioGroup label="Group" defaultValue="a">
+      <lib.Radio value="a" label="A" />
+    </lib.RadioGroup>,
+  ],
+  ["Skeleton", <lib.Skeleton loading />],
+  ["Switch", <lib.Switch label="Switch" defaultChecked />],
+  [
+    "Tag",
+    <lib.Tag closable clickable>
+      Tag
+    </lib.Tag>,
+  ],
+  [
+    "TimePicker",
+    <lib.TimePicker defaultValue={new Date(2024, 0, 1, 9, 30, 0)} />,
+  ],
+  [
+    "Tooltip",
+    <lib.Tooltip content="Tip" defaultOpen>
+      <button type="button">T</button>
+    </lib.Tooltip>,
+  ],
+  [
+    "VirtualList",
+    <lib.VirtualList
+      items={[{ id: 1 }, { id: 2 }]}
+      maxHeight={100}
+      itemHeight={20}
+      renderItem={(item) => <span>{item.id}</span>}
     />,
   ],
 ];

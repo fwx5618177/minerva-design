@@ -82,13 +82,13 @@ describe("Menu", () => {
     ).toBeInTheDocument();
   });
 
-  it("applies side/align props, the medium size by default, className and ariaLabel", async () => {
+  it("applies side/align props, the medium size by default, className and aria-label", async () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     const { trigger } = renderMenu({
       side: "top",
       align: "start",
       className: "extra",
-      ariaLabel: "Row actions",
+      "aria-label": "Row actions",
     });
     await user.click(trigger);
     const menu = screen.getByRole("menu", { name: "Row actions" });
@@ -266,7 +266,7 @@ describe("Menu", () => {
         ]}
         onSelect={onSelect}
       >
-        <IconButton ariaLabel="Actions" icon="..." />
+        <IconButton aria-label="Actions" icon="..." />
       </Menu>,
     );
     const trigger = screen.getByRole("button", { name: "Actions" });
@@ -302,7 +302,7 @@ describe("Menu", () => {
         <ModalContent hideCloseButton>
           <ModalHeader>Settings</ModalHeader>
           <Menu items={[{ key: "edit", label: "Edit" }]}>
-            <IconButton ariaLabel="Nested actions" icon="..." />
+            <IconButton aria-label="Nested actions" icon="..." />
           </Menu>
         </ModalContent>
       </ModalRoot>,
@@ -334,7 +334,7 @@ describe("ContextMenu", () => {
         onSelect={onSelect}
         onOpenChange={onOpenChange}
         size="small"
-        ariaLabel="Row menu"
+        aria-label="Row menu"
       >
         <div>Row</div>
       </ContextMenu>,
@@ -420,7 +420,7 @@ describe("Menu keyboard and dismissal", () => {
         <Menu
           items={actions}
           onSelect={onSelect}
-          ariaLabel="Row actions"
+          aria-label="Row actions"
           {...extra}
         >
           <button type="button">Actions</button>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import {
   useFormControlContext,
   useFormControlProps,
@@ -39,7 +40,9 @@ const Switch = ({
   children,
   offLabel,
   onLabel,
-  ariaLabel,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
   name,
   id,
   value,
@@ -47,7 +50,7 @@ const Switch = ({
   loading = false,
   ripple = true,
   className,
-  labelStyle,
+  style,
   trackStyle,
   thumbStyle,
   onChange,
@@ -56,7 +59,9 @@ const Switch = ({
   icon,
   iconPlacement = "start",
   ref,
+  ...rest
 }: SwitchProps) => {
+  const dataAttributes = pickDataAttributes(rest);
   const [isChecked, setIsChecked] = useControllableState({
     value: checked,
     defaultValue: defaultChecked,
@@ -72,7 +77,10 @@ const Switch = ({
 
   // FormControl wiring; an explicit `disabled` wins (so `false` opts out).
   const fc = useFormControlContext();
-  const field = useFormControlProps({ id });
+  const field = useFormControlProps({
+    id,
+    "aria-describedby": ariaDescribedBy,
+  });
   const isDisabled = disabled ?? fc?.disabled ?? false;
   const readOnly = !!fc?.readOnly;
   const blocked = isDisabled || loading || readOnly;
@@ -123,10 +131,11 @@ const Switch = ({
       type="checkbox"
       role={segmented ? undefined : "switch"}
       className={segmented ? styles.hiddenInput : undefined}
-      id={segmented ? id : field.id}
+      id={segmented ? undefined : field.id}
       name={name}
       value={value}
       aria-label={segmented ? undefined : ariaLabel}
+      aria-labelledby={segmented ? undefined : ariaLabelledBy}
       aria-checked={segmented ? undefined : isChecked}
       aria-disabled={segmented ? undefined : isDisabled || loading || undefined}
       aria-busy={loading || undefined}
@@ -148,9 +157,23 @@ const Switch = ({
 
   if (segmented) {
     return (
+      // The group carries the field wiring: its name (FormControl label unless
+      // named explicitly) and helper / error description (the FormControl
+      // error message is referenced while invalid). aria-invalid and
+      // aria-required are not supported on role="group": both states are
+      // exposed as data-invalid / data-required (and by the FormControl).
       <span
         role="group"
+        id={field.id}
         aria-label={ariaLabel}
+        aria-labelledby={
+          ariaLabelledBy ?? (fc && !ariaLabel ? fc.labelId : undefined)
+        }
+        aria-describedby={field["aria-describedby"]}
+        aria-disabled={blocked || undefined}
+        data-invalid={field["aria-invalid"] || undefined}
+        data-required={fc?.required || undefined}
+        {...dataAttributes}
         className={cn(
           styles.segmented,
           styles[size],
@@ -158,7 +181,7 @@ const Switch = ({
           blocked && styles.disabled,
           className,
         )}
-        style={labelStyle}
+        style={style}
       >
         {input}
         {[false, true].map((segmentState) => {
@@ -230,7 +253,7 @@ const Switch = ({
     };
     // A <span> root: the side buttons must not sit inside the input's label.
     return (
-      <span className={switchClasses} style={labelStyle}>
+      <span className={switchClasses} style={style} {...dataAttributes}>
         {side(false)}
         {control}
         {side(true)}
@@ -249,7 +272,7 @@ const Switch = ({
 
   return (
     // The label wraps the input, so clicking anywhere on it toggles the switch.
-    <label className={switchClasses} style={labelStyle}>
+    <label className={switchClasses} style={style} {...dataAttributes}>
       {labelFirst && labelNode}
       {control}
       {iconNode}

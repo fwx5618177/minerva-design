@@ -32,7 +32,7 @@
     },
     "appearance": {
       "title": "Dropdown placement and colors",
-      "description": "Customize placement, offset and animation, and recolor the dropdown, hovered and highlighted options with the --autocomplete-dropdown-bg, --autocomplete-option-hover-bg and --autocomplete-option-highlight-bg CSS custom properties set through dropdownClassName. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
+      "description": "Customize placement, offset and animation, and recolor the dropdown, hovered and highlighted options with the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties set through dropdownClassName. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
     },
     "search-box": {
       "title": "Search box",
@@ -43,7 +43,7 @@
     "title": "Keyboard and accessibility",
     "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
     "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
-    "escape": "Escape closes the dropdown and keeps focus in the input; inside a Modal or Popover only the dropdown closes.",
+    "escape": "Escape closes the dropdown and keeps focus in the input; with the dropdown already closed it clears the text (onChange receives \"\"). Inside a Modal or Popover only the dropdown closes.",
     "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
   },
   "api": {
@@ -62,7 +62,7 @@
       "loading": "Shows a loading indicator in the dropdown",
       "inputProps": "Props forwarded to the underlying Input (native attributes, aria-label, size, prefix / suffix, clearable...)",
       "emptyProps": "Props forwarded to the default Empty state",
-      "dropdownClassName": "Additional class name of the dropdown (portalled) element. It can set the --autocomplete-dropdown-bg, --autocomplete-option-hover-bg and --autocomplete-option-highlight-bg CSS custom properties to recolor the dropdown, hovered options and highlighted options",
+      "dropdownClassName": "Additional class name of the dropdown (portalled) element. It can set the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties to recolor the dropdown, hovered options and highlighted options",
       "placement": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport",
       "offset": "Dropdown offset in pixels: for top / bottom placements y is the gap to the input and x shifts along it; for left / right placements x is the gap",
       "animation": "Animates the dropdown when it opens",
@@ -87,5 +87,15 @@
       "group": "Free-form group identifier, typically read by groupBy",
       "style": "Inline styles of the option"
     }
+  },
+  "cssVars": {
+    "--auto-complete-dropdown-background": "Background of the dropdown",
+    "--auto-complete-dropdown-radius": "Corner radius of the dropdown (defaults to --radius-lg)",
+    "--auto-complete-dropdown-max-height": "Maximum height of the option list before it scrolls",
+    "--auto-complete-font-size": "Font size of the dropdown",
+    "--auto-complete-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+    "--auto-complete-option-padding-x": "Horizontal padding of an option and of a group label",
+    "--auto-complete-option-hover-background": "Background of the hovered / keyboard-focused option",
+    "--auto-complete-option-highlight-background": "Background of options with highlight: true"
   }
 }

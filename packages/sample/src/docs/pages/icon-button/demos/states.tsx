@@ -18,15 +18,15 @@ export default function StatesDemo() {
         color="primary"
         loading={loading}
         onClick={upload}
-        ariaLabel="Upload"
+        aria-label="Upload"
       />
       <IconButton
         icon={<IoMic />}
         pressed={muted}
         onPressedChange={setMuted}
-        ariaLabel="Mute microphone"
+        aria-label="Mute microphone"
       />
-      <IconButton icon={<IoTrashOutline />} disabled ariaLabel="Delete" />
+      <IconButton icon={<IoTrashOutline />} disabled aria-label="Delete" />
     </>
   );
 }

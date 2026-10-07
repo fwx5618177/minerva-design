@@ -41,7 +41,7 @@
       "onChange": "选中状态变化时的回调（仅独立使用时有效，分组内请使用 RadioGroup 的 onChange）",
       "size": "尺寸，会被 RadioGroup 的 size 覆盖",
       "label": "显示在单选框旁的文字标签",
-      "ariaLabel": "无障碍标签；没有可见标签时必填",
+      "aria-label": "无障碍标签；没有可见标签时必填",
       "className": "额外的类名",
       "color": "选中时单选框的语义色。若 RadioGroup 设置了 color，则会被其覆盖",
       "required": "标记为必填",
@@ -50,14 +50,18 @@
       "errorMessage": "error 为 true 时显示在单选框下方的消息（通过 aria-describedby 关联）",
       "helperText": "显示在单选框下方的帮助文本（通过 aria-describedby 关联）",
       "ref": "指向原生 <input type=\"radio\"> 元素的 ref",
-      "children": "标签内容（label 的替代写法；未设置 label 时使用）"
+      "children": "标签内容（label 的替代写法；未设置 label 时使用）",
+      "aria-labelledby": "为单选框提供标签的元素 id（可多个）",
+      "aria-describedby": "描述单选框的额外元素 id（与帮助 / 错误文本合并）",
+      "id": "单选框的 id",
+      "style": "根容器的内联样式"
     },
     "RadioGroupProps": {
       "value": "选中项的值（受控）",
       "defaultValue": "初始选中的值（非受控）",
       "name": "组内所有单选框共享的 name（省略时会自动生成唯一的 name，因此方向键导航始终可用）",
       "label": "组的可见标签，同时作为其无障碍名称",
-      "ariaLabel": "没有可见标签时组的无障碍标签",
+      "aria-label": "没有可见标签时组的无障碍标签",
       "onChange": "选中项变化时以新值调用",
       "disabled": "禁用分组内所有单选框",
       "children": "Radio 子元素",
@@ -68,7 +72,21 @@
       "helperText": "显示在组下方的帮助文本（通过 aria-describedby 关联）",
       "required": "标记分组为必填（aria-required）",
       "color": "作用于组内所有单选框的语义色（覆盖单选框自身的颜色）；未设置时每个单选框使用自身的颜色",
-      "ref": "指向根包裹元素的 ref"
+      "ref": "指向根包裹元素的 ref",
+      "aria-labelledby": "为单选组（优先于 label）提供标签的元素 id（可多个）",
+      "aria-describedby": "描述单选组的额外元素 id（与帮助 / 错误文本合并）",
+      "id": "role=\"radiogroup\" 元素的 id",
+      "style": "根容器的内联样式"
     }
+  },
+  "cssVars": {
+    "--radio-checked-color": "选中标记的颜色（默认取 color 属性的强调色）",
+    "--radio-dot-color": "选中标记内部圆点的颜色",
+    "--radio-border-color": "未选中标记的边框颜色",
+    "--radio-background": "未选中标记的背景色",
+    "--radio-size": "标记的宽高（所有尺寸）",
+    "--radio-gap": "标记与标签之间的间距",
+    "--radio-label-font-size": "标签字号（所有尺寸）",
+    "--radio-group-gap": "RadioGroup 中各单选框之间的间距"
   }
 }

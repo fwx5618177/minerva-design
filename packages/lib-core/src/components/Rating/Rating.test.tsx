@@ -89,13 +89,13 @@ describe("Rating (read-only)", () => {
     expect(container.querySelector(`.${styles.value}`)).toBeNull();
   });
 
-  it("uses a custom ariaLabel, size and className, and forwards ref", () => {
+  it("uses a custom aria-label, size and className, and forwards ref", () => {
     const ref = createRef<HTMLSpanElement>();
     render(
       <Rating
         ref={ref}
         value={4}
-        ariaLabel="Four"
+        aria-label="Four"
         size="large"
         className="c"
         style={{ margin: 4 }}

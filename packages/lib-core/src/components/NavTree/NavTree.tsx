@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -6,12 +7,14 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { LuChevronDown } from "react-icons/lu";
+import { IconChevronDown } from "../../internal/icons";
 import { cn } from "../../utils/cn";
+import { pickDataAttributes } from "../../internal/dataAttributes";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import type { NavTreeItem, NavTreeItemState, NavTreeProps } from "./types";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./navTree.module.scss";
 
 const ITEM_SELECTOR = `.${styles.item}`;
@@ -53,7 +56,8 @@ function handleNavKeyDown(event: globalThis.KeyboardEvent) {
   const items = focusableItems(nav);
   const index = items.indexOf(current);
   let next: HTMLElement | null | undefined;
-  switch (event.key) {
+  // RTL: ArrowRight moves to the parent, ArrowLeft expands.
+  switch (logicalArrowKey(event.key, nav)) {
     case "ArrowDown":
       next = items[index + 1];
       break;
@@ -105,8 +109,11 @@ export const NavTree = ({
   renderLink,
   className,
   style,
-  ariaLabel,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  id,
   ref,
+  ...rest
 }: NavTreeProps) => {
   const { t } = useI18n();
   const navRef = useRef<HTMLElement>(null);
@@ -206,7 +213,7 @@ export const NavTree = ({
             )}
             {hasChildren && (
               <span className={styles.chevron} aria-hidden="true">
-                <LuChevronDown size={16} strokeWidth={2} />
+                <IconChevronDown size={16} strokeWidth={2} />
               </span>
             )}
           </span>
@@ -217,7 +224,8 @@ export const NavTree = ({
     if (hasChildren) {
       const handleBranchKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
         if (collapsed) return;
-        if (event.key === "ArrowRight") {
+        const key = logicalArrowKey(event.key, event.currentTarget);
+        if (key === "ArrowRight") {
           event.preventDefault();
           if (!open) setItemExpanded(item, true);
           else
@@ -226,7 +234,7 @@ export const NavTree = ({
                 `${CHILDREN_SELECTOR} ${ITEM_SELECTOR}`,
               )
               ?.focus();
-        } else if (event.key === "ArrowLeft" && open) {
+        } else if (key === "ArrowLeft" && open) {
           event.preventDefault();
           setItemExpanded(item, false);
         }
@@ -256,18 +264,23 @@ export const NavTree = ({
       );
     }
 
-    if (renderLink) return renderLink(item, content, state);
+    // Keys are passed directly (React warns when `key` is spread in props);
+    // custom links get theirs from a Fragment.
+    if (renderLink) {
+      return (
+        <Fragment key={item.id}>{renderLink(item, content, state)}</Fragment>
+      );
+    }
 
     const common = {
       className: itemClassName,
-      key: item.id,
       title,
       "data-active": active || undefined,
     };
     // A disabled entry is not a navigable link: no href, no handler.
     if (disabled) {
       return (
-        <span {...common} role="link" aria-disabled="true">
+        <span key={item.id} {...common} role="link" aria-disabled="true">
           {content}
         </span>
       );
@@ -276,6 +289,7 @@ export const NavTree = ({
     if (item.href === undefined) {
       return (
         <button
+          key={item.id}
           {...common}
           type="button"
           aria-current={active ? "page" : undefined}
@@ -287,6 +301,7 @@ export const NavTree = ({
     }
     return (
       <a
+        key={item.id}
         {...common}
         href={item.href}
         aria-current={active ? "page" : undefined}
@@ -306,8 +321,13 @@ export const NavTree = ({
         wrapLabels && !collapsed && styles.wrapLabels,
         className,
       )}
+      {...pickDataAttributes(rest)}
+      id={id}
       style={style}
-      aria-label={ariaLabel ?? t("navTree.label")}
+      aria-label={
+        ariaLabel ?? (ariaLabelledBy ? undefined : t("navTree.label"))
+      }
+      aria-labelledby={ariaLabelledBy}
     >
       {sections.map((section) => (
         <section className={styles.section} key={section.id}>

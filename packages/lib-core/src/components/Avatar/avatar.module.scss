@@ -1,7 +1,17 @@
 @use "../../styles/mixins" as *;
 
+// Public CSS variables (set them on the avatar or any ancestor):
+// @css-var --avatar-size Width and height of every avatar (overrides the size presets; a numeric size prop wins)
+// @css-var --avatar-radius Corner radius of the rounded shape (defaults to --radius-sm)
+// @css-var --avatar-bg-color Background color when no color is set (defaults to --info-color)
+// @css-var --avatar-text-color Color of the initials
+// @css-var --avatar-border-color Border color
+// @css-var --avatar-stacked-overlap How far a stacked avatar overlaps the previous one
+
+// The size presets set the private --_avatar-size; a numeric size prop writes
+// --avatar-size inline, so it wins over the presets and over any ancestor.
 .avatar {
-  --avatar-size: 3rem;
+  --_avatar-size: 3rem;
   display: inline-block;
   flex-shrink: 0;
   vertical-align: middle;
@@ -24,35 +34,35 @@
   }
 
   &.rounded {
-    border-radius: 0.25rem;
+    border-radius: var(--avatar-radius, var(--radius-sm));
   }
 
   &.xsmall {
-    --avatar-size: 1.5rem;
+    --_avatar-size: 1.5rem;
   }
 
   &.small {
-    --avatar-size: 2rem;
+    --_avatar-size: 2rem;
   }
 
   &.medium {
-    --avatar-size: 3rem;
+    --_avatar-size: 3rem;
   }
 
   &.large {
-    --avatar-size: 4rem;
+    --_avatar-size: 4rem;
   }
 
   &.xlarge {
-    --avatar-size: 5rem;
+    --_avatar-size: 5rem;
   }
 
   &.xxlarge {
-    --avatar-size: 6rem;
+    --_avatar-size: 6rem;
   }
 
-  width: var(--avatar-size);
-  height: var(--avatar-size);
+  width: var(--avatar-size, var(--_avatar-size));
+  height: var(--avatar-size, var(--_avatar-size));
 
   // Background variants (overridable via --avatar-bg-color-<role>)
   @each $role in (primary, secondary, success, warning, danger, info) {
@@ -62,12 +72,12 @@
   }
 
   &:hover {
-    box-shadow: 0 6px 10px var(--shadow-color);
+    box-shadow: var(--shadow-md);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 10px var(--shadow-color);
+    box-shadow: var(--shadow-md);
   }
 
   &:focus-visible {
@@ -80,7 +90,7 @@
   }
 
   &.stacked {
-    margin-left: -0.5rem;
+    margin-inline-start: calc(-1 * var(--avatar-stacked-overlap, 0.5rem));
     border: 1px solid var(--surface-color);
     transition: transform 0.3s ease;
 
@@ -104,7 +114,7 @@
     left: 50%;
     top: 50%;
     // scales with the avatar so two-letter initials always fit
-    font-size: calc(var(--avatar-size) * 0.4);
+    font-size: calc(var(--avatar-size, var(--_avatar-size)) * 0.4);
     font-weight: var(--font-weight-medium, 500);
     line-height: 1;
     color: var(--avatar-text-color, var(--text-inverse-color));
@@ -115,4 +125,17 @@
   }
 
   @include ripple-effect;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:active,
+    &.stacked:hover {
+      transform: none;
+    }
+
+    &:focus:not(:active)::before {
+      animation: none;
+    }
+  }
 }

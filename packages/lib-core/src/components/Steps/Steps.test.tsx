@@ -39,7 +39,7 @@ describe("Steps", () => {
         items={items}
         value="review"
         onChange={() => {}}
-        ariaLabel="Publishing"
+        aria-label="Publishing"
         className="c"
       />,
     );
@@ -117,11 +117,30 @@ describe("Steps", () => {
     expect(onChange).toHaveBeenCalledWith("review");
   });
 
-  it("renders read-only (all buttons disabled) without onChange", () => {
-    render(<Steps items={items} value="review" />);
-    screen
-      .getAllByRole("button")
-      .forEach((button) => expect(button).toBeDisabled());
+  it("renders a plain ordered list without buttons when read-only", () => {
+    const { container } = render(<Steps items={items} value="review" />);
+    const list = screen.getByRole("list", { name: "Steps" });
+    expect(list.tagName).toBe("OL");
+    const listItems = screen.getAllByRole("listitem");
+    expect(listItems.map((li) => li.tagName)).toEqual(["LI", "LI", "LI"]);
+    expect(listItems.map((li) => li.textContent)).toEqual([
+      "1Draft",
+      "2Review",
+      "3Publish",
+    ]);
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(container.querySelector("button")).toBeNull();
+    expect(listItems[1]).toHaveAttribute("aria-current", "step");
+    expect(listItems[0]).not.toHaveAttribute("aria-current");
+    expect(listItems[2]).not.toHaveAttribute("aria-current");
+    expect(listItems[0]).toHaveClass("complete");
+    expect(container.querySelectorAll("[aria-current]")).toHaveLength(1);
+  });
+
+  it("puts aria-current on the button, not the item, when navigable", () => {
+    render(<Steps items={items} value="review" onChange={() => {}} />);
+    const [, second] = screen.getAllByRole("listitem");
+    expect(second).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("button", { name: "Review" })).toHaveAttribute(
       "aria-current",
       "step",
@@ -134,9 +153,11 @@ describe("Steps", () => {
     const { rerender } = render(
       <Steps items={items} value="review" onChange={onChange} readOnly />,
     );
-    screen
-      .getAllByRole("button")
-      .forEach((button) => expect(button).toBeDisabled());
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.getAllByRole("listitem")[1]).toHaveAttribute(
+      "aria-current",
+      "step",
+    );
 
     rerender(<Steps items={items} defaultValue="draft" readOnly={false} />);
     await user.click(screen.getByRole("button", { name: "Publish" }));

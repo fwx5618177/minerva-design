@@ -27,7 +27,7 @@ const PRIMITIVES = [
 const layersCode = `@minerva/core            framework-agnostic TypeScript, DOM only
   ├─ interaction primitives (focus, layers, scroll lock, roving focus, ...)
   ├─ positioning (the only place @floating-ui/dom is used)
-  └─ theme utilities, palettes, design tokens (tokens.css), i18n messages
+  └─ theme utilities, palettes, design tokens (tokens.css), i18n messages + translator
         ▲                                ▲
         │ thin React hooks               │ Lit controllers (later)
 @minerva/lib-core                 @minerva/lib-web-components

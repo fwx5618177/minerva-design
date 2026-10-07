@@ -72,7 +72,7 @@ const Catalogue = () => {
         <Button type="submit">Search</Button>
       </form>
       <Menu
-        ariaLabel="Categories"
+        aria-label="Categories"
         align="start"
         items={categoryItems}
         onSelect={(item) => {
@@ -118,7 +118,7 @@ const Catalogue = () => {
       ) : (
         <>
           <VirtualList
-            ariaLabel="Products"
+            aria-label="Products"
             items={pageItems.map((p) => ({
               id: p.id,
               metadata: { name: p.name, category: p.category },

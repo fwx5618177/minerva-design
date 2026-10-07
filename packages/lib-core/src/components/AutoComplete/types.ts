@@ -81,8 +81,8 @@ export interface AutoCompleteProps {
   emptyProps?: Omit<EmptyProps, "children">;
   /**
    * Additional class name of the dropdown (portalled) element. It can set the
-   * CSS custom properties `--autocomplete-dropdown-bg`,
-   * `--autocomplete-option-hover-bg` and `--autocomplete-option-highlight-bg`
+   * CSS custom properties `--auto-complete-dropdown-background`,
+   * `--auto-complete-option-hover-background` and `--auto-complete-option-highlight-background`
    * to recolor the dropdown, hovered options and highlighted options
    */
   dropdownClassName?: string;

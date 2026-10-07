@@ -57,7 +57,12 @@ export interface TableRootProps extends Omit<
    * @default false
    */
   hoverable?: boolean;
-  /** Horizontal minimum width / vertical maximum height of the scroll area */
+  /**
+   * Horizontal minimum width / vertical maximum height of the scroll area.
+   * When set (or when the content overflows), the scroll area becomes a
+   * focusable region named by the table's `aria-label` / `aria-labelledby`
+   * (default: "Scrollable table", localized) so keyboard users can scroll it
+   */
   scroll?: TableScrollConfig;
   /** Ref to the `<table>` element */
   ref?: Ref<HTMLTableElement>;
@@ -120,6 +125,60 @@ export interface TableColumn<T> {
    * (left) or end (right) of `columns`
    */
   fixed?: TableColumnFixed;
+  /**
+   * Makes the column sortable: its header becomes a button cycling ascending
+   * → descending → unsorted. `true` compares `row[key]` (numbers, dates,
+   * then strings with a locale / numeric collation; empty values last); a
+   * function `(a, b) => number` compares two rows for the ascending order
+   * @default false
+   */
+  sortable?: boolean | TableSortCompare<T>;
+}
+
+/** Key identifying a row (returned by `rowKey`) */
+export type TableRowKey = string | number;
+
+/** Direction of a sorted column */
+export type TableSortOrder = "ascend" | "descend";
+
+/** Compares two rows for the ascending order (like `Array.prototype.sort`) */
+export type TableSortCompare<T> = (a: T, b: T) => number;
+
+/** Sort state of a `Table` */
+export interface TableSortState {
+  /** Key of the sorted column */
+  key: string;
+  /** Sort direction; `null` means unsorted */
+  order: TableSortOrder | null;
+}
+
+/** Row selection configuration of a `Table` (leading checkbox column) */
+export interface TableRowSelection<T> {
+  /**
+   * Selection mode (multiple selection with checkboxes)
+   * @default "checkbox"
+   */
+  type?: "checkbox";
+  /** Keys of the selected rows (controlled) */
+  selectedRowKeys?: TableRowKey[];
+  /**
+   * Keys of the initially selected rows (uncontrolled)
+   * @default []
+   */
+  defaultSelectedRowKeys?: TableRowKey[];
+  /** Called with the new selected keys and the matching rows of `data` */
+  onChange?: (selectedRowKeys: TableRowKey[], selectedRows: T[]) => void;
+  /**
+   * Per-row checkbox options; disabled rows cannot be toggled and are
+   * skipped by the select-all checkbox
+   */
+  getCheckboxProps?: (row: T) => { disabled?: boolean };
+  /**
+   * Names a row in the accessible label of its checkbox ("Select row
+   * {name}")
+   * @default the row key
+   */
+  getRowLabel?: (row: T, index: number) => string;
 }
 
 /** Props of the declarative `Table` */
@@ -129,7 +188,7 @@ export interface TableProps<T> extends Omit<TableRootProps, "children"> {
   /** Rows to render */
   data: T[];
   /** Extracts a stable key from a row (defaults to the row index) */
-  rowKey?: (row: T, index: number) => string | number;
+  rowKey?: (row: T, index: number) => TableRowKey;
   /**
    * Content of the single row shown when `data` is empty
    * @default "No data" (localized)
@@ -145,6 +204,25 @@ export interface TableProps<T> extends Omit<TableRootProps, "children"> {
    * @default 5
    */
   loadingRows?: number;
+  /**
+   * Sort state (controlled); `null` means unsorted. Use with `onSortChange`
+   */
+  sortState?: TableSortState | null;
+  /**
+   * Initial sort state (uncontrolled)
+   * @default null
+   */
+  defaultSortState?: TableSortState | null;
+  /** Called with the next sort state when a sortable header is activated */
+  onSortChange?: (sortState: TableSortState) => void;
+  /**
+   * Skips local sorting: `data` is rendered as given (sorted by the data
+   * owner, e.g. a server) while the headers still reflect the sort state
+   * @default false
+   */
+  manualSort?: boolean;
+  /** Adds a leading checkbox column to select rows */
+  rowSelection?: TableRowSelection<T>;
 }
 
 /** Props of `DataTable`: a `Table` with pagination and error / retry states */

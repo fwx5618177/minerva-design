@@ -23,7 +23,7 @@ import useI18n from "../../hooks/useI18n";
  * @param boolean active - 是否激活交互态
  * @param boolean paragraph - 是否显示段落
  * @param boolean title - 是否显示标题
- * @param string ariaLabel - 加载中区域的无障碍名称
+ * @param string aria-label - 加载中区域的无障碍名称
  * @param boolean decorative - 只渲染单个装饰性占位块（aria-hidden span）
  * @param number | string size - 装饰性圆形占位的边长
  * @param Ref ref - 根元素的 ref (仅在 loading 时渲染)
@@ -48,7 +48,7 @@ const Skeleton = ({
   active = false,
   paragraph = false,
   title = false,
-  ariaLabel,
+  "aria-label": ariaLabel,
   decorative = false,
   size,
   ref,

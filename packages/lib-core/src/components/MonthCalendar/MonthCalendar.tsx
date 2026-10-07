@@ -1,8 +1,13 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
-import { LuCalendarDays, LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import {
+  IconCalendar,
+  IconChevronLeft,
+  IconChevronRight,
+} from "../../internal/icons";
 import { useControllableState } from "../../internal/useControllableState";
 import useI18n from "../../hooks/useI18n";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./monthCalendar.module.scss";
 import type { MonthCalendarEvent, MonthCalendarProps } from "./types";
 
@@ -39,7 +44,9 @@ function sameMonth(a: Date, b: Date) {
  * MonthCalendar: a Monday-first, six-week month grid. Each day shows its
  * number of events; selecting a day lists its events below the grid. Fully
  * keyboard operable (arrows, Home / End, PageUp / PageDown, Shift+Page for
- * years, Enter / Space to select) with a roving tab stop.
+ * years, Enter / Space to select) with a roving tab stop. APG date grid:
+ * each day is a focusable `gridcell` carrying `aria-selected` (no inner
+ * button), so the selection is announced once.
  */
 const MonthCalendar = ({
   month: monthProp,
@@ -52,7 +59,7 @@ const MonthCalendar = ({
   onEventClick,
   disabled = false,
   showSelectedDayEvents = true,
-  ariaLabel,
+  "aria-label": ariaLabel,
   previousMonthLabel,
   nextMonthLabel,
   todayLabel,
@@ -79,7 +86,7 @@ const MonthCalendar = ({
     },
   });
   const [focusedKey, setFocusedKey] = useState("");
-  const buttons = useRef(new Map<string, HTMLButtonElement>());
+  const cells = useRef(new Map<string, HTMLDivElement>());
   const pendingFocus = useRef<string | null>(null);
 
   const first = monthStart(month);
@@ -102,13 +109,13 @@ const MonthCalendar = ({
   const selectedEvents = events.filter((event) => event.date === value);
 
   // After keyboard navigation (possibly into another month), focus the day
-  // once its button exists.
+  // once its cell exists.
   useEffect(() => {
     if (disabled || !pendingFocus.current) return;
-    const button = buttons.current.get(pendingFocus.current);
-    if (button) {
+    const cell = cells.current.get(pendingFocus.current);
+    if (cell) {
       pendingFocus.current = null;
-      button.focus();
+      cell.focus();
     }
   }, [monthKey, focusedKey, disabled]);
 
@@ -121,7 +128,7 @@ const MonthCalendar = ({
   };
 
   const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLButtonElement>,
+    event: React.KeyboardEvent<HTMLDivElement>,
     date: Date,
   ) => {
     if (disabled) return;
@@ -132,7 +139,8 @@ const MonthCalendar = ({
     }
     let target: Date;
     const weekday = (date.getDay() + 6) % 7;
-    switch (event.key) {
+    // RTL: the week runs right to left, so ArrowLeft is the next day.
+    switch (logicalArrowKey(event.key, event.currentTarget)) {
       case "ArrowLeft":
         target = addDays(date, -1);
         break;
@@ -196,7 +204,7 @@ const MonthCalendar = ({
             disabled={disabled}
             onClick={() => goToMonth(monthStart(month, -1))}
           >
-            <LuChevronLeft aria-hidden focusable={false} />
+            <IconChevronLeft aria-hidden focusable={false} />
           </button>
           <button
             type="button"
@@ -204,7 +212,7 @@ const MonthCalendar = ({
             disabled={disabled}
             onClick={() => goToMonth(new Date())}
           >
-            <LuCalendarDays aria-hidden focusable={false} />
+            <IconCalendar aria-hidden focusable={false} />
             {todayLabel ?? t("monthCalendar.today")}
           </button>
           <button
@@ -214,11 +222,16 @@ const MonthCalendar = ({
             disabled={disabled}
             onClick={() => goToMonth(monthStart(month, 1))}
           >
-            <LuChevronRight aria-hidden focusable={false} />
+            <IconChevronRight aria-hidden focusable={false} />
           </button>
         </div>
       </div>
-      <div role="grid" aria-labelledby={headingId} className={styles.grid}>
+      <div
+        role="grid"
+        aria-labelledby={headingId}
+        aria-disabled={disabled || undefined}
+        className={styles.grid}
+      >
         <div role="row" className={styles.week}>
           {WEEKDAYS.map((day, index) => (
             <div role="columnheader" key={day} className={styles.weekday}>
@@ -233,44 +246,40 @@ const MonthCalendar = ({
               const count = counts.get(key) ?? 0;
               const selected = value === key;
               return (
+                // APG date grid: the cell itself is the focusable,
+                // selectable element (roving tabindex, aria-selected).
                 <div
                   role="gridcell"
-                  aria-selected={selected}
                   key={key}
-                  className={styles.cell}
+                  className={styles.day}
+                  ref={(element) => {
+                    if (element) cells.current.set(key, element);
+                    else cells.current.delete(key);
+                  }}
+                  data-date={key}
+                  data-outside={!sameMonth(date, month) || undefined}
+                  aria-label={
+                    getDayLabel
+                      ? getDayLabel(key, count)
+                      : count
+                        ? t("monthCalendar.dayWithEvents", {
+                            date: key,
+                            count,
+                          })
+                        : key
+                  }
+                  aria-selected={selected}
+                  aria-current={key === todayKey ? "date" : undefined}
+                  aria-disabled={disabled || undefined}
+                  tabIndex={!disabled && key === activeKey ? 0 : -1}
+                  onFocus={() => setFocusedKey(key)}
+                  onClick={() => select(date)}
+                  onKeyDown={(event) => handleKeyDown(event, date)}
                 >
-                  <button
-                    type="button"
-                    className={styles.day}
-                    ref={(element) => {
-                      if (element) buttons.current.set(key, element);
-                      else buttons.current.delete(key);
-                    }}
-                    data-date={key}
-                    data-outside={!sameMonth(date, month) || undefined}
-                    aria-label={
-                      getDayLabel
-                        ? getDayLabel(key, count)
-                        : count
-                          ? t("monthCalendar.dayWithEvents", {
-                              date: key,
-                              count,
-                            })
-                          : key
-                    }
-                    aria-pressed={selected}
-                    aria-current={key === todayKey ? "date" : undefined}
-                    disabled={disabled}
-                    tabIndex={!disabled && key === activeKey ? 0 : -1}
-                    onFocus={() => setFocusedKey(key)}
-                    onClick={() => select(date)}
-                    onKeyDown={(event) => handleKeyDown(event, date)}
-                  >
-                    <span>{date.getDate()}</span>
-                    <span className={styles.count} aria-hidden>
-                      {count ? (count > 99 ? "99+" : count) : " "}
-                    </span>
-                  </button>
+                  <span>{date.getDate()}</span>
+                  <span className={styles.count} aria-hidden>
+                    {count ? (count > 99 ? "99+" : count) : " "}
+                  </span>
                 </div>
               );
             })}

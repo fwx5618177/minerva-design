@@ -18,7 +18,7 @@ export default function ColorsDemo() {
           key={color}
           color={color}
           content={index + 1}
-          ariaLabel={`${color} badge`}
+          aria-label={`${color} badge`}
         >
           <FaBell size={24} title={color} />
         </Badge>

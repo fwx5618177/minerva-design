@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Button } from "./index";
 import "../index";
 
@@ -87,6 +87,61 @@ describe("<minerva-button>", () => {
     const event = new MouseEvent("click", { bubbles: true, cancelable: true });
     spinnerButton?.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  describe("type", () => {
+    const mountForm = async (button: string) => {
+      document.body.innerHTML = `<form><input name="q" value="a">${button}</form>`;
+      const form = document.body.querySelector("form")!;
+      const el = form.querySelector("minerva-button")!;
+      await el.updateComplete;
+      return { form, el, inner: el.shadowRoot!.querySelector("button")! };
+    };
+
+    it('defaults to type="button": the inner button is explicit and never submits', async () => {
+      const { el, inner } = await mountForm(
+        "<minerva-button>x</minerva-button>",
+      );
+      expect(el.type).toBe("button");
+      expect(inner.getAttribute("type")).toBe("button");
+    });
+
+    it("does not submit the enclosing form by default", async () => {
+      const { form, inner } = await mountForm(
+        "<minerva-button>x</minerva-button>",
+      );
+      const submit = vi.fn((event: Event) => event.preventDefault());
+      form.addEventListener("submit", submit);
+      inner.click();
+      expect(submit).not.toHaveBeenCalled();
+    });
+
+    it('type="submit" submits the enclosing form (not while disabled or loading)', async () => {
+      const { form, el, inner } = await mountForm(
+        '<minerva-button type="submit">x</minerva-button>',
+      );
+      const submit = vi.fn((event: Event) => event.preventDefault());
+      form.addEventListener("submit", submit);
+      el.loading = true;
+      await el.updateComplete;
+      inner.click();
+      expect(submit).not.toHaveBeenCalled();
+
+      el.loading = false;
+      await el.updateComplete;
+      inner.click();
+      expect(submit).toHaveBeenCalledTimes(1);
+    });
+
+    it('type="reset" resets the enclosing form', async () => {
+      const { form, inner } = await mountForm(
+        '<minerva-button type="reset">x</minerva-button>',
+      );
+      const input = form.querySelector("input")!;
+      input.value = "changed";
+      inner.click();
+      expect(input.value).toBe("a");
+    });
   });
 
   it("updates classes when properties change", async () => {

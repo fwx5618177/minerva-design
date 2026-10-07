@@ -29,6 +29,14 @@
     "cell-content": {
       "title": "セルの内容",
       "description": "TableCellContent は長い内容の幅を制限して折り返し、控えめな 2 行目や等幅の主テキストを表示できます。"
+    },
+    "sorting": {
+      "title": "並べ替え",
+      "description": "sortable を指定するとヘッダーがボタンになり、昇順・降順・並べ替えなしを順に切り替えます（aria-sort も連動）。true は row[key] を比較し、関数は 2 行を比較します。sortState と onSortChange で制御するか、manualSort でサーバー側の並べ替えに任せます。"
+    },
+    "selection": {
+      "title": "行の選択",
+      "description": "rowSelection はチェックボックス列と全選択チェックボックス（一部選択時は中間状態）を追加します。全選択では無効な行がスキップされ、選択行には aria-selected とハイライトが付きます。"
     }
   },
   "api": {
@@ -38,7 +46,12 @@
       "rowKey": "行から安定したキーを取り出します（既定は行インデックス）",
       "emptyText": "data が空のときに表示する 1 行の内容",
       "loading": "データの代わりにスケルトン行を表示します",
-      "loadingRows": "読み込み中に表示するスケルトン行の数"
+      "loadingRows": "読み込み中に表示するスケルトン行の数",
+      "sortState": "並べ替え状態（制御）。null は並べ替えなし",
+      "defaultSortState": "初期の並べ替え状態（非制御）",
+      "onSortChange": "並べ替え可能なヘッダーが操作されたとき、次の並べ替え状態で呼ばれます",
+      "manualSort": "ローカルの並べ替えを省略します。data はそのまま描画され（サーバーなどデータの所有者が並べ替え）、ヘッダーは並べ替え状態を反映します",
+      "rowSelection": "行を選択する先頭のチェックボックス列を追加します"
     },
     "TableColumn": {
       "key": "列の一意なキー。各行から既定で読み取るフィールドでもあります",
@@ -47,7 +60,8 @@
       "width": "列幅（数値はピクセル）。width と min-width に適用され、固定列では必須です",
       "align": "見出しとセルの水平方向の配置",
       "ellipsis": "内容を 1 行に収め、省略記号で切り詰めます",
-      "fixed": "横スクロール時に列を左端または右端に固定します"
+      "fixed": "横スクロール時に列を左端または右端に固定します",
+      "sortable": "列を並べ替え可能にします。true は row[key] を比較（空の値は最後）、関数 (a, b) => number は昇順で 2 行を比較します"
     },
     "DataTableProps": {
       "pagination": "表の下に表示するページネーションの props（行は事前にページ分割）",
@@ -59,12 +73,24 @@
       "size": "セルの密度",
       "variant": "見た目：シンプル、ストライプ、罫線付き",
       "hoverable": "ホバー時に行を強調します",
-      "scroll": "スクロール領域の最小幅／最大高さ",
+      "scroll": "スクロール領域の横方向の最小幅 / 縦方向の最大高さ。スクロールするラッパーは表の名前を持つフォーカス可能なリージョンになります（既定:「スクロール可能な表」）",
       "ref": "<table> 要素への ref"
     },
     "TableScrollConfig": {
       "x": "表の最小幅。コンテナが狭いと横スクロールします",
       "y": "表示する高さの上限。縦スクロールし、見出しは固定されます"
+    },
+    "TableSortState": {
+      "key": "並べ替え対象の列の key",
+      "order": "並べ替えの方向（\"ascend\" または \"descend\"）。null は並べ替えなし"
+    },
+    "TableRowSelection": {
+      "type": "選択モード（チェックボックスによる複数選択）",
+      "selectedRowKeys": "選択された行の key（制御）",
+      "defaultSelectedRowKeys": "初期選択される行の key（非制御）",
+      "onChange": "新しい選択 key と data 内の対応する行で呼ばれます",
+      "getCheckboxProps": "行ごとのチェックボックスのオプション。無効な行は切り替えできず、全選択でスキップされます",
+      "getRowLabel": "行のチェックボックスのアクセシブルラベルで行を名付けます（「行 {name} を選択」）。既定は行の key"
     },
     "TableCellContentProps": {
       "primary": "主な内容",
@@ -79,5 +105,18 @@
       "lastLeftFixedKey": "先頭の左固定ブロックの最後の列（境界に影）",
       "firstRightFixedKey": "末尾の右固定ブロックの最初の列（境界に影）"
     }
+  },
+  "cssVars": {
+    "--table-cell-padding-y": "セルの上下パディング（全サイズ。既定では密度に追従）",
+    "--table-cell-padding-x": "セルの左右パディング（全サイズ。既定では密度に追従）",
+    "--table-font-size": "本体セルのフォントサイズ（全サイズ）",
+    "--table-header-bg": "ヘッダー行の背景色",
+    "--table-border-color": "行区切り線の色",
+    "--table-radius": "ラッパーの角丸（既定値は --radius-lg）",
+    "--table-stripe-bg": "ストライプ表の奇数行の背景色",
+    "--table-hover-bg": "ホバー可能な表でホバー中の行の背景色",
+    "--table-selected-bg": "選択された行の背景色（行の選択）",
+    "--table-sort-icon-color": "並べ替えられていない並べ替え可能な列のインジケーターの色",
+    "--table-focus-ring-color": "フォーカスされたスクロール領域のアウトラインの色"
   }
 }

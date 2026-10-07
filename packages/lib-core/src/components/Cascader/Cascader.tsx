@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
-import { IoChevronDown, IoClose } from "react-icons/io5";
+import { IconChevronDown, IconX } from "../../internal/icons";
 import { Input } from "../Input";
 import CascaderPanel from "./CascaderPanel";
 import type { CascaderProps, CascaderOption } from "./types";
@@ -8,6 +8,12 @@ import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useControllableState } from "../../internal/useControllableState";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import useI18n from "../../hooks/useI18n";
+import { pickDataAttributes } from "../../internal/dataAttributes";
+import {
+  FormControlContext,
+  useFormControlContext,
+  useFormControlProps,
+} from "../FormControl/context";
 import styles from "./cascader.module.scss";
 
 type CascaderValue = (string | number)[];
@@ -53,7 +59,9 @@ const flattenOptions = (
 /**
  * Cascader: pick a value from a tree of options, one column per level.
  * Supports search, lazy loading (loadData), hover expansion and full keyboard
- * navigation. The value can be controlled or uncontrolled.
+ * navigation. The value can be controlled or uncontrolled. Inside a
+ * FormControl the input picks up the field's id, label, description,
+ * invalid, required, disabled and read-only state (explicit props win).
  */
 const Cascader = ({
   ref,
@@ -64,7 +72,15 @@ const Cascader = ({
   defaultValue,
   onChange,
   displayRender,
-  disabled = false,
+  disabled: disabledProp,
+  readOnly: readOnlyProp,
+  required: requiredProp,
+  invalid: invalidProp,
+  id,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  style,
   placeholder,
   allowClear = true,
   expandTrigger = "click",
@@ -78,8 +94,23 @@ const Cascader = ({
   maxLevel = 6,
   dropdownStyle,
   optionStyle,
+  ...rest
 }: CascaderProps) => {
   const { t } = useI18n();
+  const fc = useFormControlContext();
+  const field = useFormControlProps({
+    id,
+    "aria-describedby": ariaDescribedBy,
+  });
+  const disabled = disabledProp ?? fc?.disabled ?? false;
+  const readOnly = readOnlyProp ?? fc?.readOnly ?? false;
+  const required = requiredProp ?? fc?.required ?? false;
+  const invalid = invalidProp ?? fc?.invalid ?? false;
+  // A FormLabel names the input unless an explicit aria-label is given;
+  // `label` stays as aria-label fallback (aria-labelledby wins when its
+  // target exists, and is ignored when it does not).
+  const labelledBy =
+    ariaLabelledBy ?? (fc && !ariaLabel ? fc.labelId : undefined);
   const [selectedValue, setSelectedValue] = useControllableState<CascaderValue>(
     { value, defaultValue: defaultValue ?? EMPTY_VALUE },
   );
@@ -115,7 +146,7 @@ const Cascader = ({
   }, [searching, searchValue, options, filter]);
 
   const openDropdown = (fromKeyboard = false) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     setExpandedValues(selectedValue);
     setFocusPanel(fromKeyboard);
     setIsOpen(true);
@@ -308,9 +339,10 @@ const Cascader = ({
 
   return (
     <div
+      {...pickDataAttributes(rest)}
       className={cn(styles.cascader, className)}
       ref={setAnchor}
-      style={{ width }}
+      style={{ width, ...style }}
       onBlur={handleBlur}
     >
       {/* Pointer convenience: clicking anywhere on the selector toggles the
@@ -323,29 +355,40 @@ const Cascader = ({
           [styles.focused]: isOpen,
         })}
         onClick={() => {
-          if (disabled) return;
+          if (disabled || readOnly) return;
           if (!isOpen) openDropdown();
           else if (!showSearch) closeDropdown();
         }}
       >
-        <Input
-          ref={setInputRef}
-          variant="unstyled"
-          aria-label={label}
-          name={name}
-          value={displayValue}
-          readOnly={!showSearch}
-          disabled={disabled}
-          placeholder={placeholder ?? t("cascader.placeholder")}
-          className={styles.input}
-          onChange={(e) => {
-            if (!showSearch) return;
-            setSearchValue(e.target.value);
-            if (!isOpen) openDropdown();
-          }}
-          onKeyDown={handleInputKeyDown}
-        />
-        {allowClear && selectedValue.length > 0 && !disabled && (
+        {/* The field state is resolved here (explicit props win over the
+            FormControl), so the inner Input must not merge it again. */}
+        <FormControlContext.Provider value={null}>
+          <Input
+            ref={setInputRef}
+            variant="unstyled"
+            id={field.id}
+            aria-label={ariaLabel ?? label}
+            aria-labelledby={labelledBy}
+            aria-describedby={field["aria-describedby"]}
+            aria-invalid={invalid || undefined}
+            aria-required={required || undefined}
+            aria-readonly={(showSearch && readOnly) || undefined}
+            required={required}
+            name={name}
+            value={displayValue}
+            readOnly={!showSearch || readOnly}
+            disabled={disabled}
+            placeholder={placeholder ?? t("cascader.placeholder")}
+            className={styles.input}
+            onChange={(e) => {
+              if (!showSearch || readOnly) return;
+              setSearchValue(e.target.value);
+              if (!isOpen) openDropdown();
+            }}
+            onKeyDown={handleInputKeyDown}
+          />
+        </FormControlContext.Provider>
+        {allowClear && selectedValue.length > 0 && !disabled && !readOnly && (
           <button
             type="button"
             className={styles.clearIcon}
@@ -355,14 +398,14 @@ const Cascader = ({
               handleClear();
             }}
           >
-            <IoClose className={styles.icon} aria-hidden focusable={false} />
+            <IconX className={styles.icon} aria-hidden focusable={false} />
           </button>
         )}
         <span
           className={cn(styles.arrow, isOpen && styles.open)}
           aria-hidden="true"
         >
-          <IoChevronDown className={styles.icon} />
+          <IconChevronDown className={styles.icon} />
         </span>
       </div>
       {dropdown}

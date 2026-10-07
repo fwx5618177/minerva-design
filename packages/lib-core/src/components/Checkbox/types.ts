@@ -1,7 +1,12 @@
-import type { Ref } from "react";
+import type { CSSProperties, Ref } from "react";
 import type { ColorScheme } from "@minerva/core";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
-export interface CheckboxProps {
+/**
+ * `className`, `style` and `data-*` attributes go to the <label> wrapping the
+ * box; `id`, `name` and `aria-*` go to the native <input>.
+ */
+export interface CheckboxProps extends DataAttributes {
   /** Checked state (controlled) */
   checked?: boolean;
   /**
@@ -58,14 +63,18 @@ export interface CheckboxProps {
   /** Value submitted with the form when checked */
   value?: string;
   /** Extra ids of elements describing the checkbox (aria-describedby) */
-  ariaDescribedBy?: string;
+  "aria-describedby"?: string;
   /** Accessible label, required when there is no visible label */
-  ariaLabel?: string;
+  "aria-label"?: string;
+  /** id(s) of the element(s) labelling the checkbox */
+  "aria-labelledby"?: string;
   /**
-   * Additional class name
+   * Additional class name of the label element
    * @default ""
    */
   className?: string;
+  /** Inline styles of the label element */
+  style?: CSSProperties;
   /** Custom icon shown when checked */
   icon?: React.ReactNode;
   /**
@@ -80,7 +89,7 @@ export interface CheckboxProps {
   error?: boolean;
   /**
    * Icon shown before the helper text in the error state
-   * @default <FaInfoCircle />
+   * @default a filled info-circle icon
    */
   errorIcon?: React.ReactNode;
   /** Helper or error text shown below the checkbox (linked with aria-describedby) */

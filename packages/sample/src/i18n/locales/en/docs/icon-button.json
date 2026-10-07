@@ -4,7 +4,7 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Pass any icon element. The button only contains an icon, so always give it an ariaLabel. It renders a native button with type=\"button\", so it never submits a form."
+      "description": "Pass any icon element. The button only contains an icon, so always give it an aria-label. It renders a native button with type=\"button\", so it never submits a form."
     },
     "colors": {
       "title": "Colors",
@@ -20,7 +20,7 @@
     },
     "states": {
       "title": "States",
-      "description": "Loading replaces the icon with a spinner, pressed marks a toggle as on and disabled sets the native disabled attribute, which removes the button from the tab order."
+      "description": "loading replaces the icon with a spinner and keeps the button focusable (aria-busy + aria-disabled) while ignoring activation, pressed marks a toggle as on and disabled sets the native disabled attribute, which removes the button from the tab order."
     },
     "toggle": {
       "title": "Toggle button",
@@ -51,17 +51,26 @@
       "size": "Button size",
       "shape": "Button shape",
       "disabled": "Disables the native button and removes it from the tab order",
-      "loading": "Replaces the icon with a spinner and blocks interaction",
+      "loading": "Replaces the icon with a spinner and ignores activation (click, Enter, Space, form submission) while staying focusable: exposed as aria-busy + aria-disabled instead of the native disabled attribute",
       "pressed": "Pressed state of a toggle button (controlled; pair with onPressedChange); exposed as aria-pressed",
       "defaultPressed": "Initial pressed state of an uncontrolled toggle button",
       "onPressedChange": "Called with the new pressed state when a toggle button is activated",
       "className": "Additional class name",
       "tooltip": "Tooltip configuration (content, color, variant, shape, arrow); requires showTooltip",
       "showTooltip": "Shows the tooltip on hover and focus",
-      "ariaLabel": "Accessible label; always set it, since the button only contains an icon",
+      "aria-label": "Accessible label; always set it, since the button only contains an icon",
       "ref": "Ref to the <button> element",
       "children": "Icon element, alternative to the icon prop",
-      "label": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over ariaLabel"
+      "label": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over aria-label"
     }
+  },
+  "cssVars": {
+    "--icon-button-color": "Icon color",
+    "--icon-button-hover-bg": "Background on hover",
+    "--icon-button-pressed-color": "Icon color of a pressed toggle",
+    "--icon-button-pressed-bg": "Background of a pressed toggle",
+    "--icon-button-size": "Width and height of the button (every size; defaults follow the density's control heights)",
+    "--icon-button-icon-size": "Font size of the icon (every size)",
+    "--icon-button-radius": "Corner radius of the square shape (defaults to --radius-lg)"
   }
 }

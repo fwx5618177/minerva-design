@@ -41,6 +41,10 @@
     "animations": {
       "title": "Animations",
       "description": "Choisissez l’animation d’entrée ou désactivez-la."
+    },
+    "return-focus": {
+      "title": "Focus après fermeture",
+      "description": "Fermer une alerte avec son bouton de fermeture ne fait jamais tomber le focus sur la page : il passe à l'élément focalisable suivant l'alerte (sinon au précédent, sinon à son conteneur), ou à returnFocus (un élément, une ref ou une fonction)."
     }
   },
   "api": {
@@ -73,7 +77,17 @@
       "expandLabel": "Libellé accessible du bouton de bascule lorsque le contenu est replié",
       "collapseLabel": "Libellé accessible du bouton de bascule lorsque le contenu est déplié",
       "iconLabel": "Libellé accessible de l’icône de statut",
-      "role": "Rôle ARIA de l’alerte. Danger et avertissements interrompent (\"alert\"), info et succès sont polis (\"status\")"
+      "role": "Rôle ARIA de l’alerte. Danger et avertissements interrompent (\"alert\"), info et succès sont polis (\"status\")",
+      "returnFocus": "Élément recevant le focus après la fermeture par le bouton de fermeture : un élément, une ref ou une fonction. Sans lui, le focus passe à l'élément focalisable suivant l'alerte (sinon au précédent, sinon à son conteneur), jamais à <body>"
     }
+  },
+  "cssVars": {
+    "--alert-padding": "Marge intérieure (toutes les tailles ; par défaut celle de la taille)",
+    "--alert-radius": "Rayon des coins (par défaut --radius-sm, --radius-lg si arrondi)",
+    "--alert-font-size": "Taille de police (toutes les tailles)",
+    "--alert-icon-size": "Taille de l'icône d'état (toutes les tailles)",
+    "--alert-gap": "Espace entre l'icône, le contenu et les actions",
+    "--alert-shadow": "Ombre de l'alerte surélevée (par défaut --shadow-sm)",
+    "--alert-margin-bottom": "Espace sous l'alerte"
   }
 }

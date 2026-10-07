@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode, Ref } from "react";
+import type { DataAttributes } from "../../internal/dataAttributes";
 
 export interface CascaderOption {
   /** Value of the option, unique among its siblings */
@@ -15,7 +16,8 @@ export interface CascaderOption {
   loading?: boolean;
 }
 
-export interface CascaderProps {
+/** Props of Cascader; `data-*` attributes are forwarded to the root element */
+export interface CascaderProps extends DataAttributes {
   /** Ref to the inner <input> element */
   ref?: Ref<HTMLInputElement>;
   /** Label of the input */
@@ -42,7 +44,7 @@ export interface CascaderProps {
     selectedOptions: CascaderOption[],
   ) => string;
   /**
-   * Disables the cascader
+   * Disables the cascader; defaults to the enclosing FormControl's state
    * @default false
    */
   disabled?: boolean;
@@ -63,6 +65,37 @@ export interface CascaderProps {
   expandTrigger?: "click" | "hover";
   /** Additional class name */
   className?: string;
+  /** Inline styles of the root element */
+  style?: CSSProperties;
+  /**
+   * Accessible label of the input; overrides `label` and the label of an
+   * enclosing FormControl
+   */
+  "aria-label"?: string;
+  /** Id(s) of the element(s) labelling the input */
+  "aria-labelledby"?: string;
+  /**
+   * Id(s) of the element(s) describing the input; merged with the helper /
+   * error text of an enclosing FormControl
+   */
+  "aria-describedby"?: string;
+  /** Id of the input; defaults to the id of an enclosing FormControl */
+  id?: string;
+  /**
+   * Marks the input as required (aria-required); defaults to the enclosing
+   * FormControl's state
+   */
+  required?: boolean;
+  /**
+   * Shows the value without allowing changes (the dropdown does not open);
+   * defaults to the enclosing FormControl's state
+   */
+  readOnly?: boolean;
+  /**
+   * Marks the input as invalid (aria-invalid); defaults to the enclosing
+   * FormControl's state
+   */
+  invalid?: boolean;
   /**
    * Allows typing to search all paths
    * @default false

@@ -7,7 +7,7 @@ export default function FallbackDemo() {
       <Avatar name="Ada Lovelace" size="xsmall" />
       <Avatar name="张三" size={40} />
       <Avatar src="data:image/png;base64,broken" name="Grace Hopper" />
-      <Avatar ariaLabel="Guest">
+      <Avatar aria-label="Guest">
         <LuUser aria-hidden />
       </Avatar>
       <Avatar name="VIP" fallback="★" shape="rounded" size="xlarge" />

@@ -27,8 +27,8 @@ describe("IconButton label and children", () => {
     expect(wrapper).toHaveClass(styles.glyph);
   });
 
-  it("label wins over ariaLabel", () => {
-    render(<IconButton label="Refresh" ariaLabel="Other" icon={<svg />} />);
+  it("label wins over aria-label", () => {
+    render(<IconButton label="Refresh" aria-label="Other" icon={<svg />} />);
     expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();
   });
 
@@ -146,11 +146,12 @@ describe("IconButton label and children", () => {
     expect(button).toHaveAccessibleDescription("first");
   });
 
-  it("marks the loading state as busy and disabled", () => {
+  it("marks the loading state as busy and aria-disabled, staying focusable", () => {
     render(<IconButton label="Busy" loading icon={<svg />} size="xsmall" />);
     const button = screen.getByRole("button", { name: "Busy" });
     expect(button).toHaveAttribute("aria-busy", "true");
-    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).toBeEnabled();
     expect(button).toHaveClass(styles.loading);
   });
 });

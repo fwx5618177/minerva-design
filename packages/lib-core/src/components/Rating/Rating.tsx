@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { cn } from "../../utils/cn";
-import { LuStar, LuStarHalf } from "react-icons/lu";
+import { IconStar, IconStarHalf } from "../../internal/icons";
+import { logicalArrowKey } from "../../internal/direction";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
 
@@ -8,6 +9,11 @@ type StarFill = "full" | "half" | "empty";
 
 const SIZE_PX = { small: 12, medium: 16, large: 20 } as const;
 const STARS = [0, 1, 2, 3, 4];
+/**
+ * PageUp / PageDown step, in stars: max(1, round(stars / 5)) = one whole
+ * star (arrows move by half a star).
+ */
+const PAGE_STARS = Math.max(1, Math.round(STARS.length / 5));
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -17,8 +23,8 @@ const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
     // Empty outline with the filled left half drawn on top.
     return (
       <span className={className} style={{ width: size, height: size }}>
-        <LuStar size={size} strokeWidth={1.5} className={styles.halfBase} />
-        <LuStarHalf
+        <IconStar size={size} strokeWidth={1.5} className={styles.halfBase} />
+        <IconStarHalf
           size={size}
           fill="currentColor"
           strokeWidth={1.5}
@@ -28,7 +34,7 @@ const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
     );
   }
   return (
-    <LuStar
+    <IconStar
       size={size}
       className={className}
       fill={fill === "full" ? "currentColor" : "none"}
@@ -42,7 +48,10 @@ const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
 /**
  * Rating: displays a score as 5 stars (any 0..max scale), optionally with
  * the value and the number of ratings. With `onChange` it becomes an
- * interactive slider (hover preview, half-star clicks, arrow keys).
+ * interactive slider (hover preview, half-star clicks, keyboard): arrows
+ * step half a star (`max / 10`; in RTL ArrowLeft increases), PageUp /
+ * PageDown one whole star (`max / 5`), Home / End jump to 0 / `max`; all
+ * clamped to 0..max.
  */
 const Rating = ({
   value,
@@ -52,7 +61,7 @@ const Rating = ({
   ratingCount,
   onChange,
   readOnly = false,
-  ariaLabel,
+  "aria-label": ariaLabel,
   onKeyDown,
   className,
   style,
@@ -91,9 +100,11 @@ const Rating = ({
     // The consumer goes first; preventDefault() takes over the key.
     onKeyDown?.(event);
     if (event.defaultPrevented || !interactive) return;
-    const step = max / 10;
+    const step = max / (STARS.length * 2);
+    const pageStep = (max / STARS.length) * PAGE_STARS;
     let next: number;
-    switch (event.key) {
+    // Stars follow the reading direction: in RTL ArrowLeft increases.
+    switch (logicalArrowKey(event.key, event.currentTarget)) {
       case "ArrowRight":
       case "ArrowUp":
         next = Math.min(max, round1(value + step));
@@ -101,6 +112,12 @@ const Rating = ({
       case "ArrowLeft":
       case "ArrowDown":
         next = Math.max(0, round1(value - step));
+        break;
+      case "PageUp":
+        next = Math.min(max, round1(value + pageStep));
+        break;
+      case "PageDown":
+        next = Math.max(0, round1(value - pageStep));
         break;
       case "Home":
         next = 0;
@@ -222,7 +239,7 @@ const RatingScale = ({
           showValue={showValue}
           readOnly={readOnly}
           onChange={onChange ? (v) => onChange(dim.key, v) : undefined}
-          ariaLabel={`${dim.label} ${dim.value.toFixed(1)} / ${max}`}
+          aria-label={`${dim.label} ${dim.value.toFixed(1)} / ${max}`}
         />
       </div>
     ))}

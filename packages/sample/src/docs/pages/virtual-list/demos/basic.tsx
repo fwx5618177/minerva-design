@@ -12,7 +12,7 @@ export default function BasicDemo() {
         items={items}
         itemHeight={40}
         maxHeight={300}
-        ariaLabel="Rows"
+        aria-label="Rows"
         renderItem={(item) => <span>{item.metadata?.title}</span>}
       />
     </div>

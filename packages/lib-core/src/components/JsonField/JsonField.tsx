@@ -1,6 +1,10 @@
 import { useId, useState } from "react";
 import { applyEdits, createScanner, format } from "jsonc-parser";
-import { LuBraces, LuCircleAlert, LuCircleCheck } from "react-icons/lu";
+import {
+  IconBraces,
+  IconCircleAlert,
+  IconCircleCheck,
+} from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
@@ -109,7 +113,7 @@ export const JsonField = ({
             label={formatLabel ?? t("jsonField.format")}
             size="small"
             shape="square"
-            icon={<LuBraces size={18} aria-hidden />}
+            icon={<IconBraces size={18} aria-hidden />}
             disabled={disabled || readOnly || !text.trim()}
             onClick={formatNow}
           />
@@ -156,13 +160,13 @@ export const JsonField = ({
       >
         {validation.status === "valid" && (
           <>
-            <LuCircleCheck size={16} aria-hidden />
+            <IconCircleCheck size={16} aria-hidden />
             <span>{validLabel ?? t("jsonField.valid")}</span>
           </>
         )}
         {validation.status === "invalid" && (
           <>
-            <LuCircleAlert size={16} aria-hidden />
+            <IconCircleAlert size={16} aria-hidden />
             <span>
               {invalidLabel ?? t("jsonField.invalid")}: {validation.error}
             </span>

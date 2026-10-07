@@ -59,9 +59,16 @@
       "secondStep": "Intervalle entre les options de seconde",
       "ref": "Ref vers l'élément <input>",
       "label": "Étiquette visible du champ ; sans elle, le champ est libellé \"Time\" (traduit)",
-      "ariaLabel": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
+      "aria-label": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
       "name": "Nom du champ",
-      "onOpenChange": "Appelé quand le panneau s'ouvre ou se ferme"
+      "onOpenChange": "Appelé quand le panneau s'ouvre ou se ferme",
+      "style": "Styles en ligne de l'élément racine",
+      "aria-labelledby": "Id(s) du ou des éléments qui libellent le champ ; dans un FormControl, pointe par défaut vers le FormLabel (sauf si label / aria-label est défini)",
+      "aria-describedby": "Id(s) du ou des éléments qui décrivent le champ ; fusionné avec le texte d'aide / d'erreur d'un FormControl englobant",
+      "id": "Id du champ ; par défaut, l'id du FormControl englobant",
+      "required": "Marque le champ comme obligatoire ; par défaut, l'état du FormControl englobant",
+      "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement) ; par défaut, l'état du FormControl englobant",
+      "invalid": "Marque le champ comme invalide (aria-invalid) ; par défaut, l'état du FormControl englobant"
     }
   },
   "keyboard": {
@@ -69,7 +76,17 @@
     "open": "Flèche bas sur le champ ouvre le panneau ; un clic à l'extérieur le ferme.",
     "navigate": "Chaque colonne (heures, minutes, secondes, AM/PM) est une listbox : Flèche haut / Flèche bas, Début et Fin s'y déplacent, Flèche gauche / Flèche droite changent de colonne.",
     "select": "Entrée ou Espace choisit l'option qui a le focus.",
-    "close": "Échap ferme le panneau et rend le focus au champ.",
+    "close": "Échap ferme le panneau et rend le focus au champ. Tab après la dernière colonne le ferme et passe au champ suivant ; Maj+Tab avant la première colonne le ferme et revient au champ.",
     "typing": "Le texte saisi n'est validé qu'une fois qu'il forme une heure complète et valide. À la perte du focus, une analyse plus souple est appliquée ; un texte vide efface la valeur et un texte illisible restaure la précédente."
+  },
+  "cssVars": {
+    "--time-picker-width": "Largeur du champ",
+    "--time-picker-panel-radius": "Rayon des coins du panneau (par défaut --radius-sm)",
+    "--time-picker-panel-padding": "Marge intérieure du panneau",
+    "--time-picker-column-width": "Largeur d'une colonne heures / minutes / secondes",
+    "--time-picker-column-height": "Hauteur des colonnes avant défilement",
+    "--time-picker-cell-height": "Hauteur d'une cellule horaire (par défaut la hauteur de contrôle small de la densité)",
+    "--time-picker-cell-padding-x": "Marge intérieure horizontale d'une cellule horaire (suit la marge de ligne de la densité)",
+    "--time-picker-selected-background": "Fond de la cellule horaire sélectionnée"
   }
 }

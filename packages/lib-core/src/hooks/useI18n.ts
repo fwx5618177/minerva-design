@@ -1,30 +1,45 @@
-import type { TFunction, i18n as I18n } from "i18next";
-import { useTranslation } from "react-i18next";
-import i18n from "../config/i18n";
+import { useCallback, useSyncExternalStore } from "react";
+import type { TranslateOptions } from "@minerva/core";
+import {
+  getLanguage,
+  getServerLanguage,
+  resolveLanguage,
+  subscribeLanguage,
+  translateMessage,
+} from "../config/i18n";
 import type { SupportedLanguage } from "../contexts/types";
 import { useThemeScope } from "../internal/themeScope";
 
+/** Translate function returned by `useI18n` */
+export type TranslateFn = (key: string, options?: TranslateOptions) => string;
+
 /**
- * Translations of lib-core. Uses the library's own i18next instance so it never
- * interferes with the host application's i18next setup.
+ * Translations of lib-core's built-in texts (in-house translator, independent
+ * of any i18n library the host application uses).
  *
  * `t` follows the `locale` of the closest nested `ConfigProvider` that sets
  * one, otherwise lib-core's global language (set by the root provider).
+ * Components re-render when the global language changes.
  */
 const useI18n = (): {
-  t: TFunction<"index">;
-  i18n: I18n;
+  t: TranslateFn;
   /** Language `t` translates to */
   language: SupportedLanguage;
 } => {
-  const lng = useThemeScope()?.language;
-  const { t } = useTranslation("index", { i18n, lng });
+  const scopeLanguage = useThemeScope()?.language;
+  const globalLanguage = useSyncExternalStore(
+    subscribeLanguage,
+    getLanguage,
+    getServerLanguage,
+  );
+  const lng = scopeLanguage ?? globalLanguage;
 
-  return {
-    t,
-    i18n,
-    language: (lng ?? i18n.language ?? "en") as SupportedLanguage,
-  };
+  const t = useCallback<TranslateFn>(
+    (key, options) => translateMessage(key, options, lng),
+    [lng],
+  );
+
+  return { t, language: resolveLanguage(lng) };
 };
 
 export default useI18n;

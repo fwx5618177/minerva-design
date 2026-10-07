@@ -7,6 +7,8 @@ import type { ButtonProps } from "./types";
  * Button: a native <button> with a semantic `color`, a visual `variant`
  * (solid, outline, ghost, link), sizes, shapes, icons and a loading state.
  * Extra HTML attributes are forwarded; `ref` reaches the <button>.
+ * `type` defaults to "button" so a Button inside a form never submits it by
+ * accident; pass `type="submit"` for submit buttons.
  */
 const Button = ({
   onClick,
@@ -15,7 +17,7 @@ const Button = ({
   color = "primary",
   variant = "solid",
   size = "medium",
-  ariaLabel,
+  "aria-label": ariaLabel,
   disabled = false,
   loading = false,
   loadingText,
@@ -27,6 +29,7 @@ const Button = ({
   borderRadius,
   style,
   ref,
+  type = "button",
   ...restProps
 }: ButtonProps) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,6 +85,7 @@ const Button = ({
   return (
     <button
       ref={ref}
+      type={type}
       className={cn(
         styles.customButton,
         styles[color],

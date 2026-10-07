@@ -6,14 +6,14 @@ export default function TooltipDemo() {
     <>
       <IconButton
         icon={<IoCopyOutline />}
-        ariaLabel="Copy"
+        aria-label="Copy"
         showTooltip
         tooltip={{ content: "Copy to clipboard" }}
       />
       <IconButton
         icon={<IoInformationCircleOutline />}
         color="info"
-        ariaLabel="More information"
+        aria-label="More information"
         showTooltip
         tooltip={{ content: "Hover or focus to see me", arrow: true }}
       />
