@@ -33,3 +33,7 @@ export async function loadNativeDemos(
 
 /** Paths of every native demo (tests) */
 export const nativeDemoPaths = () => Object.keys(modules);
+
+/** `import { … } from "minerva-design/native"` */
+export const nativeImportSnippet = (exports: string[]) =>
+  `import { ${exports.join(", ")} } from "minerva-design/native";`;

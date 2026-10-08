@@ -2,11 +2,9 @@
 // screen of the closest PhoneFrame (portal into its overlay host), instead
 // of react-native-web's body-level Modal. Escape requests a close like the
 // Android back button (`onRequestClose`).
-import React, { createContext, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { createPortal } from "react-dom";
-
-/** Element hosting the modals of a phone frame */
-export const ModalHostContext = createContext<HTMLElement | null>(null);
+import { ModalHostContext } from "./modalHost";
 
 export interface FramedModalProps {
   visible?: boolean;

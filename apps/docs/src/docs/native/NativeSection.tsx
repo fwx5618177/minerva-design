@@ -9,7 +9,7 @@ import { Link } from "react-router";
 import CodeBlock from "@layout/CodeBlock";
 import type { DocPageMeta } from "../registry";
 import type { DemoEntry } from "../demos";
-import { loadNativeDemos } from "../nativeDemos";
+import { loadNativeDemos, nativeImportSnippet } from "../nativeDemos";
 import { loadNativeApis, NATIVE_API_PREFIX } from "../api";
 import DemoBlock from "../components/DemoBlock";
 import PropsTable from "../components/PropsTable";
@@ -19,10 +19,6 @@ import styles from "../components/docs.module.scss";
 export interface NativeSectionProps {
   meta: DocPageMeta;
 }
-
-/** `import { … } from "minerva-design/native"` */
-export const nativeImportSnippet = (exports: string[]) =>
-  `import { ${exports.join(", ")} } from "minerva-design/native";`;
 
 const NativeSection: React.FC<NativeSectionProps> = ({ meta }) => {
   const { t } = useTranslation();

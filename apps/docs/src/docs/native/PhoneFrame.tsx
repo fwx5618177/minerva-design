@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { MinervaProvider } from "minerva-design/native";
 import { useThemeMode } from "@/theme/ThemeModeContext";
-import { ModalHostContext } from "./FramedModal";
+import { ModalHostContext } from "./modalHost";
 import styles from "./phone.module.scss";
 
 /** Status bar and home indicator heights: the safe-area insets of the preview */
