@@ -1,5 +1,5 @@
-import React from "react";
-import { createHashRouter, Navigate } from "react-router";
+import React, { lazy } from "react";
+import { createHashRouter } from "react-router";
 import Layout from "@layout/Layout";
 import ErrorBoundary from "@pages/ErrorBoundary";
 import NotFoundPage from "@pages/NotFoundPage";
@@ -12,8 +12,9 @@ const router = createHashRouter([
     errorElement: <ErrorBoundary />,
     children: [
       {
+        // The landing page is its own chunk, like every docs page
         index: true,
-        element: <Navigate to="overview" replace />,
+        Component: lazy(() => import("@pages/HomePage")),
       },
       ...routes,
       {

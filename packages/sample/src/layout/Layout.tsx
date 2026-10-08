@@ -1,33 +1,49 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IoMenuOutline } from "react-icons/io5";
+import { getDocPage } from "@/docs/registry";
+import TopNav from "@/site/TopNav";
+import Footer from "@/site/Footer";
+import Pager from "@/site/Pager";
+import SearchPalette from "@/site/SearchPalette";
+import TableOfContents from "@/site/TableOfContents";
 import Sidebar from "./Sidebar";
-import LanguageSwitcher from "@components/LanguageSwitcher";
-import ThemeSwitcher, { PaletteSwitcher } from "@components/ThemeSwitcher";
-import styles from "@styles/layout/layout.module.scss";
+import styles from "@/site/site.module.scss";
 
 const PageFallback: React.FC = () => {
   const { t } = useTranslation();
   return (
     <div className={styles.loading} role="status" aria-live="polite">
-      {t("doc.loading")}
+      <span className={styles.loadingBar} aria-hidden />
+      <span className="sr-only">{t("doc.loading")}</span>
     </div>
   );
 };
 
+/**
+ * Site shell: skip link, sticky top navigation, and either the docs layout
+ * (sidebar | content | "On this page") for documentation pages or a
+ * full-width canvas (landing page, 404).
+ */
 const Layout: React.FC = () => {
   const { t } = useTranslation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { pathname } = useLocation();
+  const isDocPage = !!getDocPage(pathname.replace(/^\//, ""));
 
   // Start every page at the top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  const content = (
+    <Suspense fallback={<PageFallback />}>
+      <Outlet />
+    </Suspense>
+  );
+
   return (
-    <div className={styles.layout}>
+    <div className={styles.shell}>
       <a
         className={styles.skipLink}
         href="#main-content"
@@ -38,34 +54,30 @@ const Layout: React.FC = () => {
       >
         {t("nav.skipToContent")}
       </a>
-      <button
-        type="button"
-        className={styles.menuButton}
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        aria-label={t("nav.toggleMenu")}
-        aria-expanded={isMobileMenuOpen}
-        aria-controls="docs-sidebar"
-      >
-        <IoMenuOutline aria-hidden />
-      </button>
-      <Sidebar
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
-      <main className={styles.main}>
-        <div className={styles.header}>
-          <div className={styles.headerControls}>
-            <ThemeSwitcher />
-            <PaletteSwitcher />
-            <LanguageSwitcher />
-          </div>
+      <TopNav onSearch={() => setSearchOpen(true)} />
+      {isDocPage ? (
+        <div className={styles.docsLayout}>
+          <Sidebar />
+          <main
+            className={styles.main}
+            id="main-content"
+            tabIndex={-1}
+            data-toc-root
+          >
+            {content}
+            <Pager pathname={pathname} />
+          </main>
+          <aside className={styles.tocColumn}>
+            <TableOfContents key={pathname} />
+          </aside>
         </div>
-        <div className={styles.content} id="main-content" tabIndex={-1}>
-          <Suspense fallback={<PageFallback />}>
-            <Outlet />
-          </Suspense>
-        </div>
-      </main>
+      ) : (
+        <main className={styles.plainMain} id="main-content" tabIndex={-1}>
+          {content}
+        </main>
+      )}
+      <Footer />
+      <SearchPalette open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 };

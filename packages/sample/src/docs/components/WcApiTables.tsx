@@ -104,8 +104,8 @@ const WcApiTables: React.FC<WcApiTablesProps> = ({
     ]);
 
   return (
-    <div className={styles.apiBlock} id={`api-${tag}`}>
-      <h3 className={styles.apiTitle}>
+    <div className={styles.apiBlock}>
+      <h3 className={styles.apiTitle} id={`api-${tag}`}>
         <code>{`<${tag}>`}</code>
       </h3>
       {table(

@@ -16,10 +16,45 @@ const alias: Alias[] = Object.entries(tsconfig.compilerOptions.paths)
     ),
   }));
 
+const src = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+
+// Unit tests import the workspace packages from source (no build needed),
+// exactly like tests/e2e does. Exact-match aliases: sub-entries first.
+const testAlias: Alias[] = [
+  {
+    find: /^@minerva\/lib-core\/theme-utils$/,
+    replacement: src("../lib-core/src/theme-utils.ts"),
+  },
+  {
+    find: /^@minerva\/lib-core\/style\.css$/,
+    replacement: src("../core/src/theme/tokens.scss"),
+  },
+  {
+    find: /^@minerva\/lib-core$/,
+    replacement: src("../lib-core/src/index.ts"),
+  },
+  {
+    find: /^@minerva\/lib-web-components$/,
+    replacement: src("../lib-web-components/src/index.ts"),
+  },
+  {
+    find: /^@lib-core-styles\//,
+    replacement: src("../lib-core/src/"),
+  },
+  {
+    find: /^@minerva\/core\/tokens\.css$/,
+    replacement: src("../core/src/theme/tokens.scss"),
+  },
+  {
+    find: /^@minerva\/core$/,
+    replacement: src("../core/src/index.ts"),
+  },
+];
+
 export default defineConfig({
   base: "/minerva/",
   plugins: [react()],
-  resolve: { alias },
+  resolve: { alias: process.env.VITEST ? [...testAlias, ...alias] : alias },
   server: {
     port: 3000,
     host: "127.0.0.1",
@@ -58,7 +93,25 @@ export default defineConfig({
   },
   test: {
     name: "sample",
+    // Node by default (docs consistency checks); component tests opt into
+    // happy-dom with a `// @vitest-environment happy-dom` docblock.
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          enableJavaScriptEvaluation: false,
+          disableJavaScriptFileLoading: true,
+          disableCSSFileLoading: true,
+          disableIframePageLoading: true,
+          handleDisabledFileLoadingAsSuccess: true,
+        },
+      },
+    },
+    include: ["src/**/*.test.{ts,tsx}"],
+    setupFiles: ["./src/test/setup.ts"],
+    css: {
+      include: [],
+      modules: { classNameStrategy: "non-scoped" },
+    },
   },
 });

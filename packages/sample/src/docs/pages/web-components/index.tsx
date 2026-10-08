@@ -239,8 +239,12 @@ const WebComponentsDoc: React.FC = () => {
       <section className={styles.section} aria-labelledby="install">
         <h2 id="install">{k("install.title")}</h2>
         <p className={styles.prose}>{k("install.text")}</p>
-        <CodeBlock code={installPnpm} language="bash" title="pnpm" />
-        <CodeBlock code={installNpm} language="bash" title="npm" />
+        <CodeBlock
+          tabs={[
+            { label: "pnpm", code: installPnpm, language: "bash" },
+            { label: "npm", code: installNpm, language: "bash" },
+          ]}
+        />
       </section>
 
       <section className={styles.section} aria-labelledby="load">

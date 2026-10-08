@@ -173,7 +173,7 @@ const ThemeSwitcherShowcase: React.FC = () => {
   const { mode, setMode, resolved } = useThemeMode();
 
   return (
-    <div className={styles.demo}>
+    <div className={styles.demoFrame}>
       <div className={styles.demoHeader}>
         <div
           role="group"
@@ -197,7 +197,7 @@ const ThemeSwitcherShowcase: React.FC = () => {
           {t("docs.theming.live.current")} <code>{resolved}</code>
         </p>
       </div>
-      <div className={styles.demoPreview}>
+      <div className={styles.demoPreview} data-demo-preview>
         <VStack gap={4}>
           <HStack gap={4} wrap>
             <Button color="primary">Primary</Button>

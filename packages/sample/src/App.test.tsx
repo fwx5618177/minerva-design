@@ -1,0 +1,99 @@
+// @vitest-environment happy-dom
+// E2E-style flow through the real app router (hash routes, lazy pages,
+// layout, search, theme), driven only with user-event.
+import React from "react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import i18n from "@i18n/config";
+import { setupI18n } from "./test/utils";
+
+// Registering every custom element is not needed for the flow
+vi.mock("@minerva/lib-web-components", () => ({}));
+
+beforeAll(async () => {
+  window.location.hash = "#/";
+  localStorage.clear();
+  await setupI18n();
+});
+
+const h1 = () => screen.findByRole("heading", { level: 1 });
+
+describe("docs site", () => {
+  it("home → component page → Web Components tab → search → dark mode", async () => {
+    const user = userEvent.setup();
+    const { default: App } = await import("./App");
+    render(<App />);
+
+    // Landing page, with the site chrome
+    expect(await h1()).toHaveTextContent("Interfaces that feel finished.");
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Skip to content" }),
+    ).toHaveAttribute("href", "#main-content");
+
+    // → component page
+    await user.click(screen.getByRole("link", { name: "Browse components" }));
+    await waitFor(async () =>
+      expect(await h1()).toHaveTextContent(i18n.t("docs.button.title")),
+    );
+    expect(window.location.hash).toBe("#/button");
+    const sidebar = screen.getByRole("navigation", { name: "Documentation" });
+    expect(
+      within(sidebar).getByRole("link", { name: i18n.t("docs.button.title") }),
+    ).toHaveAttribute("aria-current", "page");
+    // "On this page" lists the page sections
+    const toc = await screen.findByRole("navigation", { name: "On this page" });
+    await waitFor(() =>
+      expect(
+        within(toc).getByRole("link", { name: "API" }),
+      ).toBeInTheDocument(),
+    );
+
+    // → Web Components tab
+    await user.click(screen.getByRole("tab", { name: "Web Components" }));
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("<minerva-button>");
+    expect(window.location.hash).toBe("#/button?framework=wc");
+
+    // → search (⌘K) to another page
+    await user.keyboard("{Meta>}k{/Meta}");
+    const input = await screen.findByRole("combobox");
+    await user.type(input, "Pagination");
+    await user.keyboard("{Enter}");
+    await waitFor(async () =>
+      expect(await h1()).toHaveTextContent(i18n.t("docs.pagination.title")),
+    );
+    expect(window.location.hash).toMatch(/^#\/pagination/);
+    // previous / next pages
+    expect(
+      screen.getByRole("navigation", { name: "Pagination" }),
+    ).toBeInTheDocument();
+
+    // → dark mode
+    await user.click(screen.getByRole("button", { name: /^Theme:/ }));
+    await user.click(
+      await screen.findByRole("menuitemradio", { name: "Dark" }),
+    );
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(localStorage.getItem("minerva-docs-theme")).toBe("dark");
+
+    // the header search button opens the palette too
+    await user.click(
+      screen.getByRole("button", { name: "Search documentation" }),
+    );
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+
+    // unknown routes show the 404 page
+    act(() => {
+      window.history.pushState(null, "", "#/does-not-exist");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    expect(
+      await screen.findByRole("heading", {
+        name: "This page could not be found.",
+      }),
+    ).toBeInTheDocument();
+  });
+});
