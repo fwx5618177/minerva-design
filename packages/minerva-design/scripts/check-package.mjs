@@ -1,8 +1,9 @@
 // Lints the published package (`pnpm check:package`, after `pnpm build`):
 // - publint: package.json fields, exports targets, file formats
 // - Are the Types Wrong? on the packed tarball, per entry family:
-//   the React / core entries are dual (ESM + CJS, a declaration file per
-//   condition, node10 typesVersions); the web components are ESM only.
+//   the React / core / React Native entries are dual (ESM + CJS, a
+//   declaration file per condition, node10 typesVersions); the web
+//   components are ESM only.
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -26,7 +27,11 @@ try {
     dir,
     readdirSync(dir).find((f) => f.endsWith(".tgz")),
   );
-  const dual = [".", ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`)];
+  const dual = [
+    ".",
+    ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`),
+    "./native",
+  ];
   const esmOnly = Object.keys(expectedExports()).filter(
     (key) =>
       key.startsWith("./web-components") && key !== "./web-components/cdn",

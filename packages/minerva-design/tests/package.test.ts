@@ -2,7 +2,8 @@
 // and loads in Node (ESM, and CJS where provided), "use client" banners are
 // exactly on the React client entries, the framework-agnostic core is
 // shipped once (dist/core/) and shared by the React and web component entry
-// graphs, and the web components never reach React-only bundles.
+// graphs, the web components never reach React-only bundles and the React
+// Native entry never reaches web bundles.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, relative } from "node:path";
@@ -38,6 +39,8 @@ const JS_ENTRIES = Object.keys(exportsMap).filter((key) => {
   return files.some((f) => /\.c?js$/.test(f));
 });
 const CLIENT_ENTRIES = new Set([".", "./monaco"]);
+/** Entries that need a React Native runtime (not loadable in Node) */
+const NATIVE_ENTRIES = new Set(["./native"]);
 const specifier = (key: string) =>
   key === "." ? "minerva-design" : `minerva-design/${key.slice(2)}`;
 const fileOf = (key: string, condition: "import" | "require") => {
@@ -91,22 +94,25 @@ describe("exports map", () => {
 
 describe("every entry loads in Node", () => {
   // (the CDN bundle is a browser-only file, loaded by <script type="module">)
-  it.each(JS_ENTRIES.filter((key) => key !== "./web-components/cdn"))(
-    "%s (ESM)",
-    async (key) => {
-      const mod = await import(specifier(key));
-      // define entries export their element classes
-      expect(Object.keys(mod).length, key).toBeGreaterThan(0);
-    },
-  );
+  it.each(
+    JS_ENTRIES.filter(
+      (key) => key !== "./web-components/cdn" && !NATIVE_ENTRIES.has(key),
+    ),
+  )("%s (ESM)", async (key) => {
+    const mod = await import(specifier(key));
+    // define entries export their element classes
+    expect(Object.keys(mod).length, key).toBeGreaterThan(0);
+  });
 
-  it.each(JS_ENTRIES.filter((key) => fileOf(key, "require")?.endsWith(".cjs")))(
-    "%s (CJS)",
-    (key) => {
-      const mod = require(specifier(key));
-      expect(Object.keys(mod).length, key).toBeGreaterThan(0);
-    },
-  );
+  it.each(
+    JS_ENTRIES.filter(
+      (key) =>
+        fileOf(key, "require")?.endsWith(".cjs") && !NATIVE_ENTRIES.has(key),
+    ),
+  )("%s (CJS)", (key) => {
+    const mod = require(specifier(key));
+    expect(Object.keys(mod).length, key).toBeGreaterThan(0);
+  });
 });
 
 describe('"use client"', () => {
@@ -133,7 +139,7 @@ describe('"use client"', () => {
 describe("one copy of the core", () => {
   const coreDir = join(root, "dist/core");
   const domDir = join(root, "dist/dom");
-  const nonCore = ["react", "web-components"].flatMap((dir) =>
+  const nonCore = ["react", "web-components", "native"].flatMap((dir) =>
     walk(join(root, "dist", dir)).filter(
       (f) => /\.(c?js|d\.c?ts)$/.test(f) && !f.includes("/cdn/"),
     ),
@@ -260,5 +266,100 @@ console.log(Button, useConfig, createFocusScope);`
         /web-components|[\\/]lit(-html|-element)?[\\/]/.test(id),
       ),
     ).toEqual([]);
+  });
+});
+
+describe("React Native entry (minerva-design/native)", () => {
+  const nativeDir = join(root, "dist/native");
+  const modules = walk(nativeDir).filter(
+    (f) => /\.c?js$/.test(f) && !f.includes(`${nativeDir}/source/`),
+  );
+  const specifiers = (code: string) =>
+    Array.from(
+      code.matchAll(
+        /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\brequire\(\s*)["']([^"']+)["']/g,
+      ),
+      (m) => m[1],
+    );
+
+  it("resolves for Metro (react-native), TypeScript, ESM, CJS and source", () => {
+    const entry = exportsMap["./native"] as Record<string, unknown>;
+    // condition order matters: Metro picks the first matching key
+    expect(Object.keys(entry)).toEqual([
+      "source",
+      "react-native",
+      "import",
+      "require",
+    ]);
+    for (const file of targets(entry)) {
+      expect(existsSync(join(root, file)), file).toBe(true);
+    }
+    expect(pkg.typesVersions["*"].native).toEqual(["./dist/native/index.d.ts"]);
+  });
+
+  it("imports only react, react-native and the shared core (one copy)", () => {
+    const allowed = /^(react|react\/jsx-runtime|react-native)$/;
+    expect(modules.length).toBeGreaterThan(20);
+    for (const file of modules) {
+      for (const spec of specifiers(readFileSync(file, "utf8"))) {
+        if (spec.startsWith(".")) {
+          const target = join(dirname(file), spec);
+          const inNative = !relative(nativeDir, target).startsWith("..");
+          const inCore = !relative(join(root, "dist/core"), target).startsWith(
+            "..",
+          );
+          expect(inNative || inCore, `${file} -> ${spec}`).toBe(true);
+          expect(existsSync(target), `${file} -> ${spec}`).toBe(true);
+        } else {
+          expect(spec, file).toMatch(allowed);
+        }
+      }
+    }
+  });
+
+  it("the TypeScript sources point at the shared core build", () => {
+    const sources = walk(join(nativeDir, "source"));
+    expect(sources.some((f) => f.endsWith("index.ts"))).toBe(true);
+    for (const file of sources) {
+      const code = readFileSync(file, "utf8");
+      expect(code, file).not.toMatch(/["']@minerva\//);
+      expect(code, file).not.toMatch(/\.test\.tsx?["']/);
+    }
+  });
+
+  it("React web bundles never contain React Native code", async () => {
+    const bundle = await rolldown({
+      input: "entry",
+      cwd: root,
+      platform: "browser",
+      logLevel: "silent",
+      external: (id) =>
+        /^(react|react-dom|lit|@lit|lit-html|lit-element)(\/|$)/.test(id),
+      plugins: [
+        {
+          name: "virtual-entry",
+          resolveId: (id) => (id === "entry" ? "\0entry" : null),
+          load: (id) =>
+            id === "\0entry"
+              ? `import * as lib from "minerva-design";
+import * as core from "minerva-design/core";
+import "minerva-design/web-components";
+console.log(lib, core);`
+              : null,
+        },
+      ],
+    });
+    const { output } = await bundle.generate({ format: "esm" });
+    await bundle.close();
+    const modules = output.flatMap((chunk) =>
+      chunk.type === "chunk" ? Object.keys(chunk.modules) : [],
+    );
+    expect(
+      modules.filter((id) => /[\\/]dist[\\/]native[\\/]/.test(id)),
+    ).toEqual([]);
+    const code = output
+      .map((chunk) => (chunk.type === "chunk" ? chunk.code : ""))
+      .join("\n");
+    expect(code).not.toMatch(/["']react-native["']/);
   });
 });

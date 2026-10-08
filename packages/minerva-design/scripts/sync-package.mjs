@@ -4,6 +4,8 @@
 // - the core (ESM + CJS): `./core` (dist/dom/core-web: the platform-neutral
 //   dist/core/ plus the DOM primitives of dist/dom/), `./styling-hooks`,
 //   `./tokens.css`
+// - the React Native components (dist/native/, ESM + CJS + the TypeScript
+//   sources): `./native`, with `react-native` / `source` conditions for Metro
 // - the web components (dist/web-components/, ESM only): the all-in-one
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
@@ -51,10 +53,24 @@ export const DUAL_SUBPATHS = {
 export const PLANNED_RENDERERS = {
   vue: "./vue",
   angular: "./angular",
-  native: "./native",
   taro: "./taro",
   uni: "./uni",
   weapp: "miniprogram: dist/weapp",
+};
+
+/**
+ * `./native` (React Native + Expo): Metro (`react-native` condition, package
+ * exports on by default since RN 0.79 / Expo SDK 53) gets the ESM build,
+ * `source` the TypeScript sources (opt-in `unstable_conditionNames`), Node /
+ * Jest the CJS build, TypeScript the declarations of each.
+ */
+export const NATIVE_ENTRY = {
+  source: "./dist/native/source/index.ts",
+  "react-native": {
+    types: "./dist/native/index.d.ts",
+    default: "./dist/native/index.js",
+  },
+  ...dual("native/index"),
 };
 
 export function expectedExports() {
@@ -62,6 +78,7 @@ export function expectedExports() {
   for (const [name, [base, types]] of Object.entries(DUAL_SUBPATHS)) {
     exports[`./${name}`] = dual(base, types);
   }
+  exports["./native"] = NATIVE_ENTRY;
   Object.assign(exports, {
     "./style.css": "./dist/react/style.css",
     "./styles/*.css": "./dist/react/styles/*.css",
@@ -99,12 +116,15 @@ export function expectedExports() {
 
 export function expectedTypesVersions() {
   return {
-    "*": Object.fromEntries(
-      Object.entries(DUAL_SUBPATHS).map(([name, [base, types = base]]) => [
-        name,
-        [`./dist/${types}.d.ts`],
-      ]),
-    ),
+    "*": {
+      ...Object.fromEntries(
+        Object.entries(DUAL_SUBPATHS).map(([name, [base, types = base]]) => [
+          name,
+          [`./dist/${types}.d.ts`],
+        ]),
+      ),
+      native: ["./dist/native/index.d.ts"],
+    },
   };
 }
 
