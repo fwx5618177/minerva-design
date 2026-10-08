@@ -23,3 +23,5 @@ export type {
   ShadowScale,
   FontScale,
 } from "@minerva/core";
+export { MinervaVue, MinervaVue as default } from "./plugin";
+export type { MinervaVueOptions } from "./plugin";

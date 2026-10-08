@@ -11,6 +11,8 @@ import {
   type WcFrameworkSources,
 } from "../wcDemos";
 import { loadElementApis } from "../api";
+import { loadVueApis, getVueApi } from "../vueApi";
+import { vueDemosOf } from "../vueDemos";
 import {
   FRAMEWORKS,
   getFramework,
@@ -23,6 +25,8 @@ import PropsTable from "./PropsTable";
 import CssVarsTable from "./CssVarsTable";
 import WcApiTables from "./WcApiTables";
 import WcDemo from "./WcDemo";
+import VueDemo from "./VueDemo";
+import VueApiTables from "./VueApiTables";
 import StylingHooks from "./StylingHooks";
 import styles from "./docs.module.scss";
 
@@ -153,6 +157,99 @@ const WebComponentSection: React.FC<{
       </section>
 
       <StylingHooks meta={meta} framework="wc" />
+    </>
+  );
+};
+
+/**
+ * A component page for Vue: the native renderer (minerva-design/vue). Import
+ * snippet, the live demos (real Vue components mounted as Vue islands) with
+ * their single-file component source, the API tables generated from the Vue
+ * component types, and the styling hooks (the same DOM hooks as React).
+ */
+const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
+  meta,
+  framework,
+}) => {
+  const { t } = useTranslation();
+  const demos = vueDemosOf(meta.id);
+  const demoIds = (meta.wc?.demos ?? Object.keys(demos)).filter(
+    (id) => demos[id],
+  );
+  const [loaded, setLoaded] = useState<Record<string, string> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const entries = vueDemosOf(meta.id);
+    void Promise.all([
+      loadVueApis(),
+      ...Object.entries(entries).map(async ([id, demo]) => [
+        id,
+        await demo.source(),
+      ]),
+    ]).then(([, ...sources]) => {
+      if (!cancelled)
+        setLoaded(Object.fromEntries(sources as [string, string][]));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [meta.id]);
+  const components = (meta.exports ?? []).filter(
+    (name) => !loaded || getVueApi(name),
+  );
+
+  return (
+    <>
+      <section className={styles.section} aria-labelledby="vue-import">
+        <h2 id="vue-import">{t("doc.import")}</h2>
+        <CodeBlock
+          code={`import { ${components.join(", ")} } from "minerva-design/vue";`}
+          language="ts"
+        />
+        <StylesheetNote />
+        <p className={styles.prose}>
+          <Trans
+            i18nKey="doc.fw.guide"
+            values={{ framework: framework.label }}
+            components={{ guide: <Link to={`/${framework.guide}`} /> }}
+          />
+        </p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="vue-examples">
+        <h2 id="vue-examples">{t("doc.examples")}</h2>
+        <p className={styles.prose}>{t("doc.fw.vue.examples")}</p>
+        {!loaded && <p className={styles.muted}>{t("doc.loading")}</p>}
+        {loaded &&
+          demoIds.map((demoId) => (
+            <DemoBlock
+              key={demoId}
+              id={`vue-demo-${demoId}`}
+              title={t(`docs.${meta.id}.wc.demos.${demoId}.title`)}
+              description={t(`docs.${meta.id}.wc.demos.${demoId}.description`)}
+              source={loaded[demoId] ?? ""}
+              language={framework.language}
+            >
+              <VueDemo demo={demos[demoId]} />
+            </DemoBlock>
+          ))}
+      </section>
+
+      <section className={styles.section} aria-labelledby="vue-api">
+        <h2 id="vue-api">{t("doc.api")}</h2>
+        <p className={styles.prose}>{t("doc.fw.vue.api")}</p>
+        {loaded &&
+          components.map((name) => (
+            <VueApiTables
+              key={name}
+              page={meta.id}
+              name={name}
+              reactInterfaces={meta.api}
+            />
+          ))}
+      </section>
+
+      <StylingHooks meta={meta} framework="react" />
     </>
   );
 };
@@ -313,6 +410,8 @@ const FrameworkTabs: React.FC<{
         <TabPanel key={fw.id} value={fw.id}>
           {fw.renderer === "react" ? (
             react
+          ) : fw.renderer === "vue" ? (
+            <VueSection meta={meta} framework={fw} />
           ) : (
             <WebComponentSection
               meta={meta}

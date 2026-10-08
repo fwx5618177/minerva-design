@@ -8,6 +8,9 @@
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
 //   framework typings, the Custom Elements Manifest and the VS Code data.
+// - the native Vue 3 renderer (dist/vue/, ESM only): `./vue`, the optional
+//   `./vue/monaco` entry and the `./vue/global` typings (GlobalComponents of
+//   the `app.use(MinervaVue)` plugin).
 //   node scripts/sync-package.mjs          (write)
 //   node scripts/sync-package.mjs --check  (exit 1 when out of date)
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -41,6 +44,9 @@ export const DUAL_SUBPATHS = {
   "styling-hooks": ["core/styling-hooks", "core/styling-hooks/index"],
 };
 
+/** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */
+export const VUE_SUBPATHS = ["./vue", "./vue/monaco"];
+
 /**
  * Native renderers planned for later phases (private workspace packages
  * `packages/<name>`, no build output yet). Their entries are deliberately
@@ -49,7 +55,6 @@ export const DUAL_SUBPATHS = {
  * rather than an export.
  */
 export const PLANNED_RENDERERS = {
-  vue: "./vue",
   angular: "./angular",
   native: "./native",
   taro: "./taro",
@@ -90,6 +95,15 @@ export function expectedExports() {
     "./web-components/solid": {
       types: "./dist/web-components/types/solid.d.ts",
     },
+    "./vue": {
+      types: "./dist/vue/index.d.ts",
+      default: "./dist/vue/index.js",
+    },
+    "./vue/monaco": {
+      types: "./dist/vue/monaco.d.ts",
+      default: "./dist/vue/monaco.js",
+    },
+    "./vue/global": { types: "./dist/vue/global.d.ts" },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
     "./package.json": "./package.json",

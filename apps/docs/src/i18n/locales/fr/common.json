@@ -97,8 +97,8 @@
         "htmlCdn": "Sans étape de build, chargez plutôt le bundle CDN autonome —"
       },
       "vue": {
-        "examples": "Chaque exemple est un composant monofichier Vue 3 (<script setup lang=\"ts\">) : références d'éléments avec ref(), liaisons de propriétés :prop.prop, écouteurs @minerva-* et état réactif dans le template. Il est généré à partir de la démo custom element affichée au-dessus.",
-        "api": "Dans les templates Vue, liez attributs et propriétés avec :nom (ajoutez .prop pour forcer une propriété, p. ex. tableaux et objets), écoutez avec @minerva-evenement (lisez $event.detail) et remplissez les slots avec slot=\"nom\"."
+        "examples": "Chaque exemple est un composant monofichier Vue 3 (<script setup lang=\"ts\">) qui utilise les composants natifs de minerva-design/vue : v-model pour les valeurs et les états d'ouverture, des emits typés, des slots pour le contenu riche. La démo ci-dessus est ce composant même, monté comme un îlot Vue.",
+        "api": "Généré à partir des types des composants Vue (vue-component-meta). Les props gardent les noms de React ; la valeur est v-model (modelValue), les surcouches utilisent v-model:open, les événements sont des emits nommés comme les callbacks React sans « on » (onOpenChange → @open-change) et le contenu riche passe par des slots."
       },
       "angular": {
         "examples": "Chaque exemple est un composant Angular standalone avec CUSTOM_ELEMENTS_SCHEMA : #références lues avec @ViewChild, liaisons de propriétés [prop], écouteurs (minerva-evenement) et champs du composant dans le template. Il est généré à partir de la démo custom element affichée au-dessus.",
@@ -117,7 +117,18 @@
         "api": "En HTML, les attributs sont en kebab-case (chaînes, nombres et booléens) ; définissez tableaux, objets et fonctions comme propriétés JavaScript ; écoutez avec addEventListener(\"minerva-evenement\")."
       }
     },
-    "requiresStylesheetEnd": "."
+    "requiresStylesheetEnd": ".",
+    "vue": {
+      "sections": {
+        "props": "Props",
+        "events": "Événements (emits)",
+        "slots": "Slots"
+      },
+      "event": "Événement",
+      "payload": "Charge utile",
+      "slot": "Slot",
+      "slotProps": "Props du slot"
+    }
   },
   "error": {
     "title": "Oups !",

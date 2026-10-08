@@ -1,7 +1,7 @@
 {
   "name": "minerva-design",
   "version": "0.0.0",
-  "description": "Minerva design system: accessible React 19 components (SSR / RSC ready) and the same set as framework-agnostic Web Components (Lit), with design tokens, theming and i18n",
+  "description": "Minerva design system: accessible React 19 components (SSR / RSC ready), native Vue 3 components (SSR / Nuxt ready) and the same set as framework-agnostic Web Components (Lit), with design tokens, theming and i18n",
   "license": "MIT",
   "author": "fwx5618177 <fwx5618177@gmail.com>",
   "repository": {
@@ -32,6 +32,8 @@
     "theming",
     "design-tokens",
     "vue",
+    "vue-3",
+    "nuxt",
     "angular",
     "svelte",
     "solid",
@@ -363,6 +365,17 @@
     "./web-components/solid": {
       "types": "./dist/web-components/types/solid.d.ts"
     },
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "default": "./dist/vue/index.js"
+    },
+    "./vue/monaco": {
+      "types": "./dist/vue/monaco.d.ts",
+      "default": "./dist/vue/monaco.js"
+    },
+    "./vue/global": {
+      "types": "./dist/vue/global.d.ts"
+    },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
     "./package.json": "./package.json"
@@ -404,7 +417,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build",
+    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",
@@ -421,7 +434,8 @@
     "@monaco-editor/react": "^4.7.0",
     "monaco-editor": ">=0.52.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "vue": "^3.5.0"
   },
   "peerDependenciesMeta": {
     "@monaco-editor/react": {
@@ -435,6 +449,9 @@
     },
     "react-dom": {
       "optional": true
+    },
+    "vue": {
+      "optional": true
     }
   },
   "devDependencies": {
@@ -444,7 +461,8 @@
     "react-dom": "catalog:web",
     "rolldown": "1.2.12",
     "typescript": "~6.0.3",
-    "vite": "^8.3.3"
+    "vite": "^8.3.3",
+    "vue": "catalog:vue"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

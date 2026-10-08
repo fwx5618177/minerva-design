@@ -24,6 +24,14 @@ export function contractOf(name: string): ComponentContract {
   return contract;
 }
 
+/**
+ * The API a platform's components follow: the native Vue renderer mirrors
+ * the React props and callbacks (`defaultChecked`, `onChange` -> emit
+ * "change"); the custom elements have their own (properties, DOM events).
+ */
+export const apiOf = (platform: Platform): "react" | "wc" =>
+  platform === "wc" ? "wc" : "react";
+
 /** Whether a component prop exists on a platform */
 export function hasProp(
   contract: ComponentContract,
@@ -31,7 +39,7 @@ export function hasProp(
   platform: Platform,
 ): boolean {
   const prop = contract.props.find((p) => p.name === name);
-  return !!prop && (!prop.only || prop.only === platform);
+  return !!prop && (!prop.only || prop.only === apiOf(platform));
 }
 
 /**
@@ -59,7 +67,9 @@ export function eventWith(
   platform: Platform,
 ): EventContract {
   const event = contract.events.find(
-    (e) => e.detail?.includes(field) && (platform === "react" ? e.react : e.wc),
+    (e) =>
+      e.detail?.includes(field) &&
+      (apiOf(platform) === "react" ? e.react : e.wc),
   );
   if (!event)
     throw new Error(

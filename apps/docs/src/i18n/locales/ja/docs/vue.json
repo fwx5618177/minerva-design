@@ -1,0 +1,34 @@
+{
+  "title": "Vue",
+  "description": "minerva-design/vue のネイティブ Vue 3 コンポーネント：インストール、グローバルスタイルシート、コンポーネント単位のインポートまたはプラグイン、v-model と emit、ネストした ConfigProvider スコープによるテーマ、Nuxt / SSR、Volar の型。",
+  "install": {
+    "title": "インストール",
+    "text": "Vue 3.5 以降と一緒にパッケージをインストールします（vue は任意のピア依存です）。minerva-design/vue は ES モジュールと型宣言を提供し、コンポーネントは React と同じヘッドレスコアの上に作られた Vue 単一ファイルコンポーネントです。",
+    "stylesheet": "エントリーファイルでグローバルスタイルシートを一度だけインポートします。React と同じファイルです。Vue コンポーネントは同じクラス名とスタイリングフックを出力するため、デザイントークン、テーマ、パレット、CSS 変数がそのまま適用されます。"
+  },
+  "usage": {
+    "title": "コンポーネントの使い方",
+    "text": "コンポーネントを名前でインポートします。バンドラーは使用したものだけを残します（すべてのエクスポートは副作用がありません）。",
+    "vModel": "値は v-model（modelValue / update:modelValue）で、非制御の場合は defaultValue / defaultChecked を使います。オーバーレイは v-model:open（defaultOpen）、その他の制御プロパティは v-model:名前（v-model:current、v-model:expanded）です。",
+    "events": "イベントは型付きの emit で、名前は React のコールバック名から \"on\" を除いたものです：onChange → @change、onOpenChange → @open-change。引数も同じです。",
+    "slots": "リッチなコンテンツはスロット（#trigger、#title、#start-icon など）で渡し、単純なテキストはプロパティ（title、description、label）のままです。"
+  },
+  "plugin": {
+    "title": "グローバル登録",
+    "text": "名前付きインポートを推奨します。インポートせずにすべてのテンプレートで使いたい場合はプラグインをインストールします。<MnButton>、<MnModal> などとして登録されます（プレフィックスは変更可能）。",
+    "types": "グローバルコンポーネントは minerva-design/vue/global の型定義により Vue - Official（Volar）と vue-tsc で型付けされます："
+  },
+  "theming": {
+    "title": "テーマと i18n",
+    "text": "ConfigProvider はテーマ、パレット、デザイン軸、組み込みテキストの言語を設定します。ルートのプロバイダーは <html> を管理し、ネストしたプロバイダーは上書きをそのサブツリー（オーバーレイを含む。対応するスコープコンテナにテレポートされます）に限定します。",
+    "composables": "コンポーザブルは最も近いプロバイダーを読み取ります："
+  },
+  "nuxt": {
+    "title": "Nuxt とサーバーレンダリング",
+    "text": "コンポーネントは vue/server-renderer でサーバーレンダリングされ、不一致なくハイドレートされます。オーバーレイ（モーダル、ポップオーバー、トースト）はクライアントでマウントされ、id は Vue の useId() から生成され、setup 中に DOM に触れません。Nuxt ではスタイルシートを css に追加し、必要に応じてグローバルコンポーネント用のプラグインを追加します。"
+  },
+  "islands": {
+    "title": "Vue アイランド",
+    "text": "テーマを別のフレームワークが管理するページに Vue アプリをマウントしますか（マイクロフロントエンド、React ページ内の Vue ウィジェット）？マウント前に provideEmbeddedScope を呼び出すと、プロバイダーはネストしたものとして動作し、<html> を書き換えません。このドキュメントのすべての Vue デモで使用しています。"
+  }
+}

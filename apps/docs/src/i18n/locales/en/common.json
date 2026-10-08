@@ -97,8 +97,8 @@
         "htmlCdn": "Without a build step, load the self-contained CDN bundle instead —"
       },
       "vue": {
-        "examples": "Each example is a Vue 3 single-file component (<script setup lang=\"ts\">): element refs with ref(), :prop.prop property bindings, @minerva-* event listeners and reactive state in the template. It is generated from the live custom-element demo shown above it.",
-        "api": "In Vue templates, bind attributes and properties with :name (add .prop to force a property, e.g. arrays and objects), listen with @minerva-event (read $event.detail) and fill slots with slot=\"name\"."
+        "examples": "Each example is a Vue 3 single-file component (<script setup lang=\"ts\">) using the native components of minerva-design/vue: v-model for values and open states, typed emits, slots for rich content. The live demo above it is that very component, mounted as a Vue island.",
+        "api": "Generated from the Vue component types (vue-component-meta). Props keep the React names; the value is v-model (modelValue), overlays use v-model:open, events are emits named like the React callbacks without \"on\" (onOpenChange → @open-change), and rich content goes in slots."
       },
       "angular": {
         "examples": "Each example is a standalone Angular component with CUSTOM_ELEMENTS_SCHEMA: #refs read with @ViewChild, [prop] property bindings, (minerva-event) listeners and component fields in the template. It is generated from the live custom-element demo shown above it.",
@@ -117,7 +117,18 @@
         "api": "In HTML, attributes are kebab-case (string, number and boolean values); set arrays, objects and functions as JavaScript properties; listen with addEventListener(\"minerva-event\")."
       }
     },
-    "requiresStylesheetEnd": "."
+    "requiresStylesheetEnd": ".",
+    "vue": {
+      "sections": {
+        "props": "Props",
+        "events": "Emits",
+        "slots": "Slots"
+      },
+      "event": "Event",
+      "payload": "Payload",
+      "slot": "Slot",
+      "slotProps": "Slot props"
+    }
   },
   "error": {
     "title": "Oops!",

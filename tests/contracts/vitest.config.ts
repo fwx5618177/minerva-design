@@ -1,19 +1,26 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import vue from "@vitejs/plugin-vue";
 import { fileURLToPath } from "node:url";
 
 const src = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 // Cross-platform contract suites (see README.md): written once against the
 // Driver API, run by the React DOM and Web Components drivers on the
-// sources (happy-dom), like tests/e2e. Exact-match aliases: sub-entries first.
+// sources (happy-dom), like tests/e2e, and by the Vue driver (single-file
+// components compiled by @vitejs/plugin-vue). Exact-match aliases:
+// sub-entries first.
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), vue()],
   resolve: {
     alias: [
       {
         find: /^minerva-design$/,
         replacement: src("../../packages/react/src/index.ts"),
+      },
+      {
+        find: /^minerva-design\/vue$/,
+        replacement: src("../../packages/vue/src/index.ts"),
       },
       {
         find: /^minerva-design\/web-components$/,

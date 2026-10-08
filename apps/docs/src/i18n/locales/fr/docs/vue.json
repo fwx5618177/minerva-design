@@ -1,0 +1,34 @@
+{
+  "title": "Vue",
+  "description": "Les composants Vue 3 natifs de minerva-design/vue : installation, feuille de style globale, imports par composant ou plugin, v-model et emits, thèmes avec des ConfigProvider imbriqués, Nuxt / SSR et typages Volar.",
+  "install": {
+    "title": "Installation",
+    "text": "Installez le paquet avec Vue 3.5 ou plus récent (une dépendance pair optionnelle). minerva-design/vue fournit des modules ES et des déclarations de types ; les composants sont des composants monofichiers Vue construits sur le même cœur headless que React.",
+    "stylesheet": "Importez la feuille de style globale une seule fois, dans votre fichier d'entrée. C'est le même fichier que pour React : les composants Vue rendent les mêmes noms de classes et hooks de style, donc jetons de design, thèmes, palettes et variables CSS s'appliquent tels quels."
+  },
+  "usage": {
+    "title": "Utiliser les composants",
+    "text": "Importez les composants par leur nom ; votre bundler ne garde que ceux que vous utilisez (aucun export n'a d'effet de bord).",
+    "vModel": "Les valeurs passent par v-model (modelValue / update:modelValue), avec defaultValue / defaultChecked en mode non contrôlé ; les surcouches utilisent v-model:open (defaultOpen), les autres props contrôlées v-model:nom (v-model:current, v-model:expanded).",
+    "events": "Les événements sont des emits typés, nommés comme les callbacks React sans « on » : onChange → @change, onOpenChange → @open-change, avec les mêmes arguments.",
+    "slots": "Le contenu riche passe par des slots (#trigger, #title, #start-icon…) ; les textes simples restent des props (title, description, label)."
+  },
+  "plugin": {
+    "title": "Enregistrement global",
+    "text": "Préférez les imports nommés. Pour utiliser les composants dans tous les templates sans les importer, installez le plugin : il les enregistre comme <MnButton>, <MnModal>… (le préfixe est configurable).",
+    "types": "Les composants globaux sont typés pour Vue - Official (Volar) et vue-tsc par les typages minerva-design/vue/global :"
+  },
+  "theming": {
+    "title": "Thèmes et i18n",
+    "text": "ConfigProvider définit le thème, la palette, les axes de design et la langue des textes intégrés. Le provider racine gère <html> ; un provider imbriqué limite ses surcharges à son sous-arbre, surcouches comprises (elles sont téléportées dans un conteneur de portée correspondant).",
+    "composables": "Les composables lisent le provider le plus proche :"
+  },
+  "nuxt": {
+    "title": "Nuxt et rendu serveur",
+    "text": "Les composants se rendent côté serveur avec vue/server-renderer et s'hydratent sans écart : les surcouches (modales, popovers, toasts) se montent côté client, les id viennent du useId() de Vue et rien ne touche au DOM pendant le setup. Dans Nuxt, ajoutez la feuille de style à css et, si besoin, un plugin pour les composants globaux."
+  },
+  "islands": {
+    "title": "Îlots Vue",
+    "text": "Vous montez une application Vue dans une page dont le thème est géré par un autre framework (micro-frontends, un widget Vue dans une page React) ? Appelez provideEmbeddedScope avant le montage : ses providers se comportent alors comme des providers imbriqués et n'écrivent jamais <html>. Cette documentation l'utilise pour chaque démo Vue."
+  }
+}

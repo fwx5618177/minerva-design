@@ -97,8 +97,8 @@
         "htmlCdn": "无需构建步骤时，改为加载自包含的 CDN 包——"
       },
       "vue": {
-        "examples": "每个示例都是 Vue 3 单文件组件（<script setup lang=\"ts\">）：用 ref() 获取元素引用，用 :prop.prop 绑定属性，用 @minerva-* 监听事件，并在模板中使用响应式状态。它由上方实时运行的自定义元素示例生成。",
-        "api": "在 Vue 模板中，用 :name 绑定特性和属性（数组、对象等需要加 .prop 强制作为属性），用 @minerva-event 监听事件（读取 $event.detail），用 slot=\"name\" 填充插槽。"
+        "examples": "每个示例都是一个 Vue 3 单文件组件（<script setup lang=\"ts\">），使用 minerva-design/vue 的原生组件：用 v-model 绑定值与打开状态，事件有类型，富内容通过插槽传入。上方的实时演示正是该组件，以 Vue 岛的方式挂载。",
+        "api": "根据 Vue 组件类型自动生成（vue-component-meta）。属性名与 React 保持一致；值通过 v-model（modelValue）绑定，浮层使用 v-model:open；事件名为去掉 \"on\" 的 React 回调名（onOpenChange → @open-change）；富内容使用插槽。"
       },
       "angular": {
         "examples": "每个示例都是使用 CUSTOM_ELEMENTS_SCHEMA 的独立 Angular 组件：用 @ViewChild 读取 #引用，用 [prop] 绑定属性，用 (minerva-event) 监听事件，并在模板中使用组件字段。它由上方实时运行的自定义元素示例生成。",
@@ -117,7 +117,18 @@
         "api": "在 HTML 中，特性使用 kebab-case（字符串、数字和布尔值）；数组、对象和函数通过 JavaScript 属性设置；用 addEventListener(\"minerva-event\") 监听事件。"
       }
     },
-    "requiresStylesheetEnd": "。"
+    "requiresStylesheetEnd": "。",
+    "vue": {
+      "sections": {
+        "props": "属性（Props）",
+        "events": "事件（Emits）",
+        "slots": "插槽（Slots）"
+      },
+      "event": "事件",
+      "payload": "参数",
+      "slot": "插槽",
+      "slotProps": "插槽属性"
+    }
   },
   "error": {
     "title": "糟糕！",

@@ -97,8 +97,8 @@
         "htmlCdn": "ビルドなしの場合は、自己完結型の CDN バンドルを読み込みます —"
       },
       "vue": {
-        "examples": "各例は Vue 3 の単一ファイルコンポーネント（<script setup lang=\"ts\">）です。ref() による要素参照、:prop.prop によるプロパティバインド、@minerva-* イベントリスナー、テンプレート内のリアクティブな状態を使います。上に表示されたライブのカスタム要素デモから生成されています。",
-        "api": "Vue テンプレートでは :name で属性とプロパティをバインドし（配列やオブジェクトは .prop でプロパティを強制）、@minerva-event でイベントを受け取り（$event.detail を参照）、slot=\"name\" でスロットを埋めます。"
+        "examples": "各サンプルは minerva-design/vue のネイティブコンポーネントを使う Vue 3 単一ファイルコンポーネント（<script setup lang=\"ts\">）です。値と開閉状態は v-model、イベントは型付きの emit、リッチなコンテンツはスロットで渡します。上のライブデモはそのコンポーネント自体を Vue アイランドとしてマウントしたものです。",
+        "api": "Vue コンポーネントの型から生成されています（vue-component-meta）。プロパティ名は React と同じです。値は v-model（modelValue）、オーバーレイは v-model:open、イベントは React のコールバック名から \"on\" を除いた emit（onOpenChange → @open-change）、リッチなコンテンツはスロットです。"
       },
       "angular": {
         "examples": "各例は CUSTOM_ELEMENTS_SCHEMA を使うスタンドアロンの Angular コンポーネントです。@ViewChild で読む #参照、[prop] プロパティバインド、(minerva-event) リスナー、テンプレート内のコンポーネントフィールドを使います。上に表示されたライブのカスタム要素デモから生成されています。",
@@ -117,7 +117,18 @@
         "api": "HTML では属性は kebab-case（文字列・数値・真偽値）です。配列・オブジェクト・関数は JavaScript のプロパティとして設定し、addEventListener(\"minerva-event\") でイベントを受け取ります。"
       }
     },
-    "requiresStylesheetEnd": "。"
+    "requiresStylesheetEnd": "。",
+    "vue": {
+      "sections": {
+        "props": "プロパティ（Props）",
+        "events": "イベント（Emits）",
+        "slots": "スロット"
+      },
+      "event": "イベント",
+      "payload": "ペイロード",
+      "slot": "スロット",
+      "slotProps": "スロットプロパティ"
+    }
   },
   "error": {
     "title": "おっと！",

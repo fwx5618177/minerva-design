@@ -1,0 +1,34 @@
+{
+  "title": "Vue",
+  "description": "The native Vue 3 components of minerva-design/vue: installation, the global stylesheet, per-component imports or the plugin, v-model and emits, theming with nested ConfigProvider scopes, Nuxt / SSR and Volar typings.",
+  "install": {
+    "title": "Installation",
+    "text": "Install the package with Vue 3.5 or later (an optional peer dependency). minerva-design/vue ships ES modules and type declarations; the components are Vue single-file components built on the same headless core as React.",
+    "stylesheet": "Import the global stylesheet once, in your entry file. It is the same file as for React: the Vue components render the same class names and styling hooks, so design tokens, themes, palettes and CSS variables apply unchanged."
+  },
+  "usage": {
+    "title": "Using the components",
+    "text": "Import components by name; your bundler keeps only those you use (every export is side-effect free).",
+    "vModel": "Values are v-model (modelValue / update:modelValue) with defaultValue / defaultChecked for uncontrolled use; overlays use v-model:open (defaultOpen), other controlled props v-model:name (v-model:current, v-model:expanded).",
+    "events": "Events are typed emits named like the React callbacks without \"on\": onChange → @change, onOpenChange → @open-change, with the same arguments.",
+    "slots": "Rich content goes in slots (#trigger, #title, #start-icon...); simple texts stay props (title, description, label)."
+  },
+  "plugin": {
+    "title": "Global registration",
+    "text": "Prefer named imports. To use the components in every template without importing them, install the plugin: it registers them as <MnButton>, <MnModal>... (the prefix is configurable).",
+    "types": "The global components are typed for Vue - Official (Volar) and vue-tsc by the minerva-design/vue/global typings:"
+  },
+  "theming": {
+    "title": "Theming and i18n",
+    "text": "ConfigProvider sets the theme, palette, design axes and the language of the built-in texts. The root provider owns <html>; a nested provider scopes its overrides to its subtree, overlays included (they are teleported into a matching scope container).",
+    "composables": "Composables read the closest provider:"
+  },
+  "nuxt": {
+    "title": "Nuxt and server rendering",
+    "text": "The components render on the server with vue/server-renderer and hydrate without mismatches: overlays (modals, popovers, toasts) mount on the client, ids come from Vue's useId(), and nothing touches the DOM during setup. In Nuxt, add the stylesheet to css and, optionally, a plugin for the global components."
+  },
+  "islands": {
+    "title": "Vue islands",
+    "text": "Mounting a Vue app inside a page whose theme is owned by another framework (micro-frontends, a Vue widget in a React page)? Call provideEmbeddedScope before mounting: its providers then behave as nested ones and never write <html>. This documentation uses it for every Vue demo."
+  }
+}

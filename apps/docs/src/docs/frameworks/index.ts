@@ -2,6 +2,9 @@
 //
 // Each entry says how a component page renders for the framework:
 // - renderer "react": the React demos and the props tables of React
+// - renderer "vue": the native Vue renderer (minerva-design/vue): live demos
+//   mounted as Vue islands (pages/<id>/vue/<demo>.vue), their single-file
+//   component source and the API generated from the Vue component types
 // - renderer "web-components": the live custom-element demos of the page,
 //   their source in the framework's idiom (generated at build time from the
 //   wc/<demo>.html + wc/<demo>.ts sources by ./transform.ts) and the element
@@ -10,8 +13,8 @@
 // Adding a framework (React Native, Taro, WeChat mini programs, uni-app...)
 // is adding an entry: a new `renderer` kind for a new rendering strategy, or
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
-// Vue and Angular get native renderers later (see the Platform support page);
-// until then they render the Web Components (`nativePlanned`).
+// Angular gets a native renderer later (see the Platform support page); until
+// then it renders the Web Components (`nativePlanned`).
 import type { WcMeta } from "../registry";
 
 export type FrameworkId =
@@ -20,7 +23,7 @@ export type FrameworkId =
 /** Frameworks rendered from the Web Component demos */
 export type WcFrameworkId = Exclude<FrameworkId, "react">;
 
-export type FrameworkRenderer = "react" | "web-components";
+export type FrameworkRenderer = "react" | "vue" | "web-components";
 
 export interface SetupSnippet {
   /** i18n key under `doc.fw.setup` describing the step */
@@ -43,9 +46,9 @@ export interface FrameworkDef {
   /** Registration, compiler and typings steps for a component page */
   setup: (wc: WcMeta) => SetupSnippet[];
   /**
-   * A native renderer is planned (`minerva-design/vue`,
-   * `minerva-design/angular`): until it lands the page shows the Web
-   * Components "via Web Components (native coming soon)".
+   * A native renderer is planned (`minerva-design/angular`): until it lands
+   * the page shows the Web Components "via Web Components (native coming
+   * soon)".
    */
   nativePlanned?: boolean;
 }
@@ -77,40 +80,10 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
   {
     id: "vue",
     label: "Vue",
-    renderer: "web-components",
-    nativePlanned: true,
+    renderer: "vue",
     language: "html",
-    guide: "wc-vue",
-    setup: (wc) => [
-      register(wc, "src/main.ts"),
-      {
-        step: "vueCompiler",
-        file: "vite.config.ts",
-        language: "ts",
-        code: `import vue from "@vitejs/plugin-vue";
-
-export default {
-  plugins: [
-    vue({
-      template: {
-        // <minerva-*> are custom elements, not Vue components
-        compilerOptions: { isCustomElement: (tag) => tag.startsWith("minerva-") },
-      },
-    }),
-  ],
-};`,
-      },
-      {
-        step: "types",
-        file: "tsconfig.json",
-        language: "json",
-        code: `{
-  "compilerOptions": {
-    "types": ["${PKG}/vue"]
-  }
-}`,
-      },
-    ],
+    guide: "vue",
+    setup: () => [],
   },
   {
     id: "angular",

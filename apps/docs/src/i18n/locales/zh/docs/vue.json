@@ -1,0 +1,34 @@
+{
+  "title": "Vue",
+  "description": "minerva-design/vue 的原生 Vue 3 组件：安装、全局样式表、按需导入或插件、v-model 与事件、通过嵌套 ConfigProvider 作用域定制主题、Nuxt / SSR 以及 Volar 类型。",
+  "install": {
+    "title": "安装",
+    "text": "与 Vue 3.5 或更高版本一起安装本包（vue 为可选的对等依赖）。minerva-design/vue 提供 ES 模块和类型声明；组件是基于与 React 相同的无头核心构建的 Vue 单文件组件。",
+    "stylesheet": "在入口文件中导入一次全局样式表。它与 React 使用的是同一个文件：Vue 组件渲染相同的类名和样式钩子，因此设计令牌、主题、调色板和 CSS 变量均可直接生效。"
+  },
+  "usage": {
+    "title": "使用组件",
+    "text": "按名称导入组件；打包工具只会保留你用到的组件（所有导出都没有副作用）。",
+    "vModel": "值通过 v-model（modelValue / update:modelValue）绑定，非受控用法使用 defaultValue / defaultChecked；浮层使用 v-model:open（defaultOpen），其他受控属性使用 v-model:名称（v-model:current、v-model:expanded）。",
+    "events": "事件是有类型的 emit，名称为去掉 \"on\" 的 React 回调名：onChange → @change，onOpenChange → @open-change，参数相同。",
+    "slots": "富内容通过插槽传入（#trigger、#title、#start-icon 等）；简单文本仍是属性（title、description、label）。"
+  },
+  "plugin": {
+    "title": "全局注册",
+    "text": "推荐使用具名导入。如果希望在所有模板中无需导入即可使用组件，可安装插件：组件将注册为 <MnButton>、<MnModal> 等（前缀可配置）。",
+    "types": "全局组件的类型由 minerva-design/vue/global 提供，支持 Vue - Official（Volar）和 vue-tsc："
+  },
+  "theming": {
+    "title": "主题与国际化",
+    "text": "ConfigProvider 设置主题、调色板、设计维度以及内置文本的语言。根 Provider 掌管 <html>；嵌套 Provider 会把覆盖范围限定在其子树内，包括浮层（浮层会被传送到对应的作用域容器中）。",
+    "composables": "组合式函数读取最近的 Provider："
+  },
+  "nuxt": {
+    "title": "Nuxt 与服务端渲染",
+    "text": "组件可通过 vue/server-renderer 在服务端渲染，并且水合时不会出现不匹配：浮层（模态框、弹出层、消息提示）在客户端挂载，id 来自 Vue 的 useId()，setup 期间不会访问 DOM。在 Nuxt 中，把样式表加入 css，并可选地添加一个插件来注册全局组件。"
+  },
+  "islands": {
+    "title": "Vue 岛",
+    "text": "要在主题由其他框架掌管的页面中挂载 Vue 应用（微前端、React 页面中的 Vue 小部件）？在挂载前调用 provideEmbeddedScope：其中的 Provider 将作为嵌套 Provider 工作，绝不会修改 <html>。本文档的每个 Vue 示例都使用了它。"
+  }
+}

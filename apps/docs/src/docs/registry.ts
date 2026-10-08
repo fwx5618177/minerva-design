@@ -85,6 +85,7 @@ export const docPages: DocPageMeta[] = [
   { id: "architecture", category: "gettingStarted" },
   { id: "platform-support", category: "gettingStarted" },
   { id: "rsc-guide", category: "gettingStarted" },
+  { id: "vue", category: "gettingStarted" },
   { id: "theming", category: "gettingStarted", demos: ["scoped-theme"] },
   {
     id: "styling",

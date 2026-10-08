@@ -48,3 +48,8 @@ export declare function generateContracts(): ComponentContract[];
 export declare function serializeContracts(
   contracts?: ComponentContract[],
 ): Promise<string>;
+
+/** Vue components covered by the shared contract suites (`stable`) */
+export declare const VUE_CONTRACT_SUITE_COMPONENTS: Set<string>;
+/** Value exports of the Vue renderer (static read of its barrels) */
+export declare function readVue(): Set<string>;

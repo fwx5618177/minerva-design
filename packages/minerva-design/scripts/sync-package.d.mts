@@ -5,3 +5,5 @@ export function expectedTypesVersions(): Record<
   string,
   Record<string, string[]>
 >;
+export const VUE_SUBPATHS: string[];
+export const PLANNED_RENDERERS: Record<string, string>;

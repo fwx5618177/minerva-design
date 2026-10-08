@@ -9,6 +9,9 @@
 //   (packages/minerva-design/custom-elements.json): properties, attributes,
 //   events (with their `detail: { ... }` fields), slots.
 // - Docs: the page documenting the component (apps/docs registry).
+// - Vue: the exports of the native Vue renderer (packages/vue, read
+//   statically from its barrels): `stable` when the cross-platform contract
+//   suites cover the component (tests/contracts), `beta` otherwise.
 //
 //   node tools/generate-contracts.mjs          -> writes the JSON
 //   node tools/generate-contracts.mjs --check  -> exits 1 when it is stale
@@ -74,11 +77,85 @@ const REACT_PROPS = {
 /** Exported values with a `XProps` type that are not components */
 const NOT_COMPONENTS = new Set(["ConfigContext"]);
 
+/**
+ * Vue components driven by the shared contract suites (tests/contracts/
+ * suites + the Vue driver): `stable` on Vue; the other Vue exports are `beta`.
+ */
+export const VUE_CONTRACT_SUITE_COMPONENTS = new Set([
+  "Button",
+  "Checkbox",
+  "ConfigProvider",
+  "Modal",
+  "Pagination",
+  "Radio",
+  "RadioGroup",
+  "Switch",
+  "Tab",
+  "TabList",
+  "TabPanel",
+  "Tabs",
+  "ToastProvider",
+]);
+
+const VUE_ENTRIES = ["packages/vue/src/index.ts", "packages/vue/src/monaco.ts"];
+
+/**
+ * Value exports of the Vue renderer, read statically from its barrels
+ * (`export * from`, `export { a, b as c }`, `export { default as X }`,
+ * `export const X`): `.vue` modules cannot be imported by this script.
+ */
+export function readVue() {
+  const names = new Set();
+  const seen = new Set();
+  const resolve = (from, specifier) => {
+    const base = join(dirname(from), specifier);
+    for (const candidate of [`${base}.ts`, join(base, "index.ts"), base]) {
+      if (existsSync(candidate) && candidate.endsWith(".ts")) return candidate;
+    }
+    return undefined;
+  };
+  const visit = (file) => {
+    if (!file || seen.has(file) || !existsSync(file)) return;
+    seen.add(file);
+    const text = readFileSync(file, "utf8").replace(/\/\/.*$/gm, "");
+    for (const [, specifier] of text.matchAll(
+      /export\s+\*\s+from\s+["'](\.[^"']+)["']/g,
+    ))
+      visit(resolve(file, specifier));
+    for (const [, list] of text.matchAll(/export\s+\{([^}]*)\}/g)) {
+      for (const item of list.split(",")) {
+        const entry = item.trim();
+        if (!entry || entry.startsWith("type ")) continue;
+        const alias = /\bas\s+(\w+)$/.exec(entry);
+        names.add(alias ? alias[1] : entry);
+      }
+    }
+    for (const [, name] of text.matchAll(
+      /export\s+(?:const|function|class)\s+(\w+)/g,
+    ))
+      names.add(name);
+  };
+  for (const entry of VUE_ENTRIES) visit(at(entry));
+  return names;
+}
+
+/** Support of a component on Vue (generated from the Vue exports) */
+function vueSupport(name, react, vueExports) {
+  if (vueExports.has(name)) {
+    return {
+      status: VUE_CONTRACT_SUITE_COMPONENTS.has(name) ? "stable" : "beta",
+    };
+  }
+  if (!react) return { status: "n/a", notes: NOT_APPLICABLE_NOTES.vue };
+  return { status: "planned" };
+}
+
 /** Where a React-only part / a WC-only element lives on the other side */
 const NOT_APPLICABLE_NOTES = {
   react:
     "Data object in React: an item of the parent component's items / entries prop.",
   wc: "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element.",
+  vue: "Data object in Vue (like React): an item of the parent component's items / entries prop.",
 };
 
 /**
@@ -330,7 +407,15 @@ const eventFor = (callback, events) => {
   ].find((candidate) => events.has(candidate));
 };
 
-function buildContract({ name, tag, react, element, aliasTypes, docs }) {
+function buildContract({
+  name,
+  tag,
+  react,
+  element,
+  aliasTypes,
+  docs,
+  vueExports,
+}) {
   // props: React declaration order, then element-only properties
   const props = [];
   const events = new Map(
@@ -405,6 +490,7 @@ function buildContract({ name, tag, react, element, aliasTypes, docs }) {
   platforms.wc = element
     ? { status: "stable" }
     : { status: "n/a", notes: NOT_APPLICABLE_NOTES.wc };
+  platforms.vue = vueSupport(name, react, vueExports);
   return compact({
     name,
     tag,
@@ -438,6 +524,7 @@ export function generateContracts() {
   const react = readReact();
   const elements = readElements();
   const docs = docsIndex();
+  const vueExports = readVue();
   // exported type aliases resolve the element types named after them
   // (`SwitchColor` -> `"primary" | "success" | ...`)
   const aliasTypes = new Map(
@@ -465,7 +552,7 @@ export function generateContracts() {
   }
   return [...byName.values()]
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((input) => buildContract({ ...input, aliasTypes }));
+    .map((input) => buildContract({ ...input, aliasTypes, vueExports }));
 }
 
 /** Prettier-formatted JSON (the committed file is compared verbatim) */

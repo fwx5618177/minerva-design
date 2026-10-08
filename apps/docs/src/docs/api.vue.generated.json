@@ -1,0 +1,725 @@
+{
+  "Box": {
+    "file": "packages/vue/src/components/Box/Box.vue",
+    "props": [
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      { "name": "p", "type": "BoxSpace", "required": false, "description": "Padding on all sides (spacing token or CSS value)" },
+      { "name": "px", "type": "BoxSpace", "required": false, "description": "Horizontal padding (left and right)" },
+      { "name": "py", "type": "BoxSpace", "required": false, "description": "Vertical padding (top and bottom)" },
+      { "name": "pt", "type": "BoxSpace", "required": false, "description": "Top padding" },
+      { "name": "pr", "type": "BoxSpace", "required": false, "description": "Right padding" },
+      { "name": "pb", "type": "BoxSpace", "required": false, "description": "Bottom padding" },
+      { "name": "pl", "type": "BoxSpace", "required": false, "description": "Left padding" },
+      { "name": "m", "type": "BoxSpace", "required": false, "description": "Margin on all sides (spacing token or CSS value such as \"auto\")" },
+      { "name": "mx", "type": "BoxSpace", "required": false, "description": "Horizontal margin (left and right)" },
+      { "name": "my", "type": "BoxSpace", "required": false, "description": "Vertical margin (top and bottom)" },
+      { "name": "mt", "type": "BoxSpace", "required": false, "description": "Top margin" },
+      { "name": "mr", "type": "BoxSpace", "required": false, "description": "Right margin" },
+      { "name": "mb", "type": "BoxSpace", "required": false, "description": "Bottom margin" },
+      { "name": "ml", "type": "BoxSpace", "required": false, "description": "Left margin" },
+      { "name": "w", "type": "BoxSize", "required": false, "description": "Width: numbers are pixels, strings are CSS lengths" },
+      { "name": "h", "type": "BoxSize", "required": false, "description": "Height: numbers are pixels, strings are CSS lengths" },
+      { "name": "minW", "type": "BoxSize", "required": false, "description": "Minimum width" },
+      { "name": "minH", "type": "BoxSize", "required": false, "description": "Minimum height" },
+      { "name": "maxW", "type": "BoxSize", "required": false, "description": "Maximum width" },
+      { "name": "maxH", "type": "BoxSize", "required": false, "description": "Maximum height" },
+      {
+        "name": "bg",
+        "type": "string",
+        "required": false,
+        "description": "Background: a surface alias (`\"bg\"`, `\"bg.subtle\"`, `\"bg.muted\"`, `\"bg.canvas\"`,\n`\"bg.elevated\"`, `\"bg.emphasis\"`) or any CSS background value"
+      },
+      { "name": "rounded", "type": "string", "required": false, "description": "Border radius: a radius token (none, sm, md, lg, xl, 2xl, full) or any CSS value" },
+      { "name": "boxShadow", "type": "string", "required": false, "description": "Box shadow: a shadow token (sm, md, lg, xl) or any CSS value" },
+      { "name": "border", "type": "string", "required": false, "description": "CSS border shorthand, used as-is" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Button": {
+    "file": "packages/vue/src/components/Button/Button.vue",
+    "props": [
+      { "name": "type", "type": "\"button\" | \"submit\" | \"reset\"", "default": "\"button\"", "required": false },
+      { "name": "color", "type": "ColorScheme", "default": "\"primary\"", "required": false, "description": "Semantic color." },
+      { "name": "variant", "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\"", "default": "\"solid\"", "required": false, "description": "Visual variant." },
+      { "name": "size", "type": "\"medium\" | \"xsmall\" | \"small\" | \"large\" | \"xlarge\"", "default": "\"medium\"", "required": false },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Busy: spinner, `aria-busy`, ignores presses." },
+      { "name": "loadingText", "type": "string", "required": false, "description": "Label while loading (or the `loading-text` slot)" },
+      { "name": "fullWidth", "type": "boolean", "default": "false", "required": false, "description": "Takes the full width of its container." },
+      { "name": "active", "type": "boolean", "default": "false", "required": false, "description": "Pressed / selected look (`data-state=\"active\"`)." },
+      { "name": "shape", "type": "\"rounded\" | \"square\" | \"circle\"", "required": false },
+      { "name": "borderRadius", "type": "number | \"medium\" | \"small\" | \"large\" | \"square\" | \"circle\" | \"none\"", "required": false, "description": "Corner radius: a scale step or px" }
+    ],
+    "events": [{ "name": "click", "type": "[event: MouseEvent]" }],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Label" },
+      { "name": "start-icon", "type": "any", "description": "Icon before the label" },
+      { "name": "end-icon", "type": "any", "description": "Icon after the label" },
+      { "name": "loading-text", "type": "any", "description": "Label while loading (replaces the content; the `loadingText` prop)" }
+    ]
+  },
+  "CommandDialog": {
+    "file": "packages/vue/src/components/Command/CommandDialog.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled." },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled" },
+      { "name": "items", "type": "CommandItem[]", "required": true, "description": "Commands to search. Disabled items are never shown." },
+      { "name": "title", "type": "string", "required": false, "description": "Title of the dialog; defaults to the localized \"Command palette\"." },
+      { "name": "description", "type": "string", "required": false, "description": "Accessible description of the palette; defaults to a localized hint." },
+      { "name": "placeholder", "type": "string", "required": false, "description": "Placeholder of the search input; defaults to a localized hint." },
+      { "name": "emptyText", "type": "string", "required": false, "description": "Shown when nothing matches; defaults to the localized \"No matching results\"." },
+      { "name": "shortcutLabel", "type": "string", "required": false, "description": "Shortcut hint rendered as `<kbd>` next to the title, e.g. \"⌘K\"." },
+      {
+        "name": "shortcut",
+        "type": "string | string[]",
+        "required": false,
+        "description": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\" (Cmd+K on\nmacOS, Ctrl+K elsewhere). Modifiers: mod, ctrl, meta/cmd, shift, alt/option."
+      },
+      { "name": "maxResults", "type": "number", "default": "12", "required": false, "description": "Maximum number of results shown" },
+      {
+        "name": "filter",
+        "type": "((items: CommandItem[], query: string) => CommandItem[])",
+        "required": false,
+        "description": "Custom search, e.g. to rank results by match quality. Receives the\nenabled items and the trimmed query (never empty) and returns the\nmatching items in display order (then capped at `maxResults`). By\ndefault, items whose group, title, description or keywords contain the\nquery (case-insensitive) are kept in `items` order."
+      },
+      { "name": "resultsLabel", "type": "string", "required": false, "description": "Accessible label of the results list; defaults to the localized \"Command results\"." },
+      { "name": "enterLabel", "type": "string", "required": false, "description": "Key hint shown at the end of the search input; defaults to the localized \"Enter\"." },
+      { "name": "className", "type": "ClassValue", "required": false, "description": "Additional class of the dialog panel (a `class` attribute works too)." }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "select", "type": "[item: CommandItem]" }
+    ],
+    "slots": [
+      { "name": "title", "type": "any" },
+      { "name": "description", "type": "any" },
+      { "name": "empty-text", "type": "any" },
+      { "name": "shortcut-label", "type": "any" },
+      { "name": "enter-label", "type": "any" }
+    ]
+  },
+  "ConfigProvider": {
+    "file": "packages/vue/src/config/ConfigProvider.vue",
+    "props": [
+      { "name": "theme", "type": "ConfigProviderTheme", "required": false, "description": "Theme of the subtree (`v-model:theme`). Root default: `\"auto\"`" },
+      {
+        "name": "palette",
+        "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null",
+        "required": false,
+        "description": "Color palette (light / dark / system themes only); `null` for none"
+      },
+      { "name": "persist", "type": "boolean", "default": "false", "required": false, "description": "Root only: persist theme and palette in cookies." },
+      { "name": "locale", "type": "Locale", "required": false, "description": "Language of the built-in texts" },
+      { "name": "preset", "type": "\"editorial\" | \"minerva\" | \"compact\" | \"touch\"", "required": false, "description": "Design preset (brings its palette unless `palette` is set)" },
+      { "name": "density", "type": "\"compact\" | \"standard\" | \"comfortable\"", "required": false },
+      { "name": "radius", "type": "\"medium\" | \"small\" | \"large\" | \"none\"", "required": false },
+      { "name": "shadow", "type": "\"none\" | \"standard\" | \"subtle\"", "required": false },
+      { "name": "fontScale", "type": "\"small\" | \"large\" | \"standard\"", "required": false }
+    ],
+    "events": [
+      { "name": "update:theme", "type": "[theme: ConfigProviderTheme]" },
+      { "name": "update:palette", "type": "[palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null]" },
+      { "name": "themeChange", "type": "[theme: ConfigProviderTheme]" },
+      { "name": "paletteChange", "type": "[palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null]" }
+    ],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "ConfirmDialog": {
+    "file": "packages/vue/src/components/Confirm/ConfirmDialog.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": true, "description": "Whether the dialog is open (controlled, `v-model:open`)." },
+      { "name": "title", "type": "ConfirmContent", "required": false, "description": "Title (the dialog's accessible name), or the `title` slot." },
+      {
+        "name": "color",
+        "type": "\"primary\" | \"warning\" | \"danger\"",
+        "default": "\"primary\"",
+        "required": false,
+        "description": "Semantic color of the confirm button; `danger` marks a destructive\naction (and defaults its label to \"Delete\")"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows a spinner on the confirm button and disables cancel (e.g. while an async `confirm` handler runs)"
+      },
+      { "name": "description", "type": "ConfirmContent", "required": false, "description": "Explanation below the title (the dialog's accessible description)." },
+      {
+        "name": "confirmLabel",
+        "type": "ConfirmContent",
+        "required": false,
+        "description": "Label of the confirm button; defaults to the localized \"Confirm\", or \"Delete\" for `color=\"danger\"`."
+      },
+      { "name": "cancelLabel", "type": "ConfirmContent", "required": false, "description": "Label of the cancel button; defaults to the localized \"Cancel\"." },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close (×) button; defaults to the localized \"Close\"." },
+      {
+        "name": "confirmDisabled",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Natively disables the confirm button (removes it from the tab order). While\n`loading` alone it stays focusable but cannot be activated again"
+      }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "confirm", "type": "[]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Extra content (in the body)" },
+      { "name": "title", "type": "any" },
+      { "name": "description", "type": "any" },
+      { "name": "confirm-label", "type": "any" },
+      { "name": "cancel-label", "type": "any" }
+    ]
+  },
+  "ConfirmProvider": {
+    "file": "packages/vue/src/components/Confirm/ConfirmProvider.vue",
+    "props": [],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Application subtree; `useConfirm()` / `confirm()` dialogs render here" }]
+  },
+  "Drawer": {
+    "file": "packages/vue/src/components/Drawer/Drawer.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled." },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled" },
+      { "name": "side", "type": "DrawerSide", "default": "\"right\"", "required": false, "description": "Edge the panel slides in from" },
+      { "name": "size", "type": "DrawerSize", "default": "\"medium\"", "required": false, "description": "Size preset" },
+      { "name": "title", "type": "string", "required": false, "description": "Title rendered as the drawer's accessible name (or the `title` slot)." },
+      { "name": "description", "type": "string", "required": false, "description": "Description rendered below the title (or the `description` slot)." },
+      { "name": "hideCloseButton", "type": "boolean", "default": "false", "required": false, "description": "Hides the close (×) button" },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close button; defaults to the localized \"Close\"." },
+      {
+        "name": "hiddenDescription",
+        "type": "string",
+        "required": false,
+        "description": "Text of the visually hidden description rendered when `description` is\nnot set; defaults to the localized \"Drawer content\"."
+      }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Content: usually `DrawerBody` + `DrawerFooter`" },
+      { "name": "trigger", "type": "any", "description": "Element opening the drawer (its single child gets the trigger props)" },
+      { "name": "title", "type": "any" },
+      { "name": "description", "type": "any" }
+    ]
+  },
+  "DrawerBody": { "file": "packages/vue/src/components/Drawer/DrawerBody.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "DrawerClose": {
+    "file": "packages/vue/src/components/Drawer/DrawerClose.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "DrawerContent": {
+    "file": "packages/vue/src/components/Drawer/DrawerContent.vue",
+    "props": [
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\"", "default": "\"dialog\"", "required": false, "description": "ARIA role of the panel" },
+      {
+        "name": "forceMount",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for\nanimation libraries"
+      },
+      { "name": "side", "type": "DrawerSide", "default": "\"right\"", "required": false, "description": "Edge the panel slides in from" },
+      { "name": "size", "type": "DrawerSize", "default": "\"medium\"", "required": false, "description": "Size preset" },
+      { "name": "hideCloseButton", "type": "boolean", "default": "false", "required": false, "description": "Hides the close (×) button" },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close button; defaults to the localized \"Close\"." },
+      {
+        "name": "hiddenDescription",
+        "type": "string",
+        "required": false,
+        "description": "Text of the visually hidden description rendered when `description` is\nnot set; defaults to the localized \"Drawer content\"."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Visible description below the title (or the `description` slot). Without\nit a visually hidden generic description is rendered."
+      },
+      { "name": "overlayClass", "type": "ClassValue", "required": false, "description": "Class of the overlay (backdrop)." }
+    ],
+    "events": [
+      { "name": "openAutoFocus", "type": "[event: Event]" },
+      { "name": "closeAutoFocus", "type": "[event: Event]" },
+      { "name": "escapeKeyDown", "type": "[event: KeyboardEvent]" },
+      { "name": "pointerDownOutside", "type": "[event: PointerEvent]" },
+      { "name": "interactOutside", "type": "[event: PointerEvent | FocusEvent]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any" },
+      { "name": "description", "type": "any", "description": "Visible description (instead of the `description` prop)" }
+    ]
+  },
+  "DrawerFooter": { "file": "packages/vue/src/components/Drawer/DrawerFooter.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "DrawerHeader": { "file": "packages/vue/src/components/Drawer/DrawerHeader.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "DrawerRoot": {
+    "file": "packages/vue/src/components/Drawer/DrawerRoot.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled." },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled" },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Modal mode: renders the overlay, traps focus, locks page scrolling and\nblocks / hides the page behind. Non-modal drawers close on outside click /\nfocus instead."
+      }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "DrawerTrigger": {
+    "file": "packages/vue/src/components/Drawer/DrawerTrigger.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "GridItem": {
+    "file": "packages/vue/src/components/ResponsiveGrid/GridItem.vue",
+    "props": [
+      { "name": "fullWidth", "type": "boolean", "default": "false", "required": false, "description": "Spans the full row of the surrounding grid" },
+      { "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges the item attributes and classes into its single child instead of\nrendering a wrapper div" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "HStack": {
+    "file": "packages/vue/src/components/Stack/HStack.vue",
+    "props": [
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "required": false,
+        "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
+      },
+      { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
+      { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator."
+      },
+      {
+        "name": "attached",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`."
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Items" },
+      { "name": "separator", "type": "any", "description": "Rendered between every two items (the `separator` prop as content)" }
+    ]
+  },
+  "Modal": {
+    "file": "packages/vue/src/components/Modal/Modal.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`)" },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled." },
+      { "name": "title", "type": "string", "required": false, "description": "Title (or the `title` slot); the dialog's accessible name" },
+      { "name": "description", "type": "string", "required": false, "description": "Description (or the `description` slot)" },
+      { "name": "size", "type": "ModalSize", "default": "\"medium\"", "required": false },
+      { "name": "hideCloseButton", "type": "boolean", "default": "false", "required": false },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible name of the close button (default: translated \"Close\")" },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\"", "default": "\"dialog\"", "required": false }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Body" },
+      { "name": "trigger", "type": "any", "description": "Element opening the modal (its single child gets the trigger props)" },
+      { "name": "title", "type": "any" },
+      { "name": "description", "type": "any" }
+    ]
+  },
+  "ModalBody": { "file": "packages/vue/src/components/Modal/ModalBody.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "ModalClose": {
+    "file": "packages/vue/src/components/Modal/ModalClose.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "ModalContent": {
+    "file": "packages/vue/src/components/Modal/ModalContent.vue",
+    "props": [
+      { "name": "size", "type": "ModalSize", "default": "\"medium\"", "required": false },
+      { "name": "hideCloseButton", "type": "boolean", "default": "false", "required": false },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible name of the close button (default: translated \"Close\")" },
+      { "name": "description", "type": "string", "required": false, "description": "Description under the title (or the `description` slot)" },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\"", "default": "\"dialog\"", "required": false },
+      { "name": "forceMount", "type": "boolean", "default": "false", "required": false, "description": "Keep mounted while closed" },
+      { "name": "overlayClass", "type": "ClassValue", "required": false, "description": "Class of the overlay" }
+    ],
+    "events": [
+      { "name": "openAutoFocus", "type": "[event: Event]" },
+      { "name": "closeAutoFocus", "type": "[event: Event]" },
+      { "name": "escapeKeyDown", "type": "[event: KeyboardEvent]" },
+      { "name": "pointerDownOutside", "type": "[event: PointerEvent]" },
+      { "name": "interactOutside", "type": "[event: PointerEvent | FocusEvent]" }
+    ],
+    "slots": [
+      { "name": "description", "type": "{}" },
+      { "name": "default", "type": "{}" }
+    ]
+  },
+  "ModalFooter": { "file": "packages/vue/src/components/Modal/ModalFooter.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "ModalHeader": { "file": "packages/vue/src/components/Modal/ModalHeader.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "ModalRoot": {
+    "file": "packages/vue/src/components/Modal/ModalRoot.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`)" },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled." },
+      { "name": "modal", "type": "boolean", "default": "true", "required": false, "description": "Focus trap, scroll lock, overlay, page hidden from AT." }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "ModalTrigger": {
+    "file": "packages/vue/src/components/Modal/ModalTrigger.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Page": {
+    "file": "packages/vue/src/components/Page/Page.vue",
+    "props": [{ "name": "maxWidth", "type": "string | number", "required": false, "description": "Maximum width: numbers are pixels, strings are CSS lengths (`style` wins)" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "PageHeader": {
+    "file": "packages/vue/src/components/Page/PageHeader.vue",
+    "props": [
+      { "name": "title", "type": "string | number", "required": false, "description": "Heading text (or the `title` slot)" },
+      { "name": "description", "type": "string | number", "required": false, "description": "Supporting text under the heading; omitted when empty (0 is rendered)" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "title", "type": "any", "description": "Heading content (the `title` prop)" },
+      { "name": "description", "type": "any", "description": "Supporting content (the `description` prop)" },
+      { "name": "actions", "type": "any", "description": "Actions next to the heading" }
+    ]
+  },
+  "PageSection": {
+    "file": "packages/vue/src/components/Page/PageSection.vue",
+    "props": [
+      { "name": "title", "type": "string | number", "required": false, "description": "Heading text (or the `title` slot)" },
+      { "name": "description", "type": "string | number", "required": false, "description": "Supporting text under the heading; omitted when empty (0 is rendered)" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Section content" },
+      { "name": "title", "type": "any", "description": "Heading content (the `title` prop)" },
+      { "name": "description", "type": "any", "description": "Supporting content (the `description` prop)" },
+      { "name": "actions", "type": "any", "description": "Actions next to the heading" },
+      { "name": "icon", "type": "any", "description": "Decorative icon before the title, hidden from assistive technology" }
+    ]
+  },
+  "ResponsiveGrid": {
+    "file": "packages/vue/src/components/ResponsiveGrid/ResponsiveGrid.vue",
+    "props": [
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component rendered as the outer container (div, section, nav...)" },
+      {
+        "name": "columns",
+        "type": "ResponsiveGridColumns",
+        "default": "1",
+        "required": false,
+        "description": "Column counts, responding to the grid's own width (container queries):\na number, or `{ base, sm, md, lg }` (480 / 768 / 1200px). Integers 1-12;\nother values throw a RangeError."
+      },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "default": "4",
+        "required": false,
+        "description": "Gap between rows and columns: numbers and numeric strings select spacing\ntokens, other strings are CSS values"
+      },
+      { "name": "rowGap", "type": "string | number", "required": false, "description": "Gap between rows; defaults to `gap`" },
+      { "name": "columnGap", "type": "string | number", "required": false, "description": "Gap between columns; defaults to `gap`" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Select": {
+    "file": "packages/vue/src/components/Select/Select.vue",
+    "props": [
+      { "name": "modelValue", "type": "string", "required": false, "description": "Selected value (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initially selected value (uncontrolled)" },
+      { "name": "open", "type": "boolean", "required": false, "description": "Whether the popup is open (controlled, `v-model:open`)" },
+      { "name": "defaultOpen", "type": "boolean", "default": "false", "required": false, "description": "Whether the popup is initially open (uncontrolled)" },
+      { "name": "placeholder", "type": "string", "required": false, "description": "Text shown in the trigger while nothing is selected (or the `placeholder` slot)" },
+      { "name": "size", "type": "SelectSize", "default": "\"medium\"", "required": false, "description": "Size of the trigger" },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (also set by an invalid enclosing FormControl)" },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the select. Inherited from an enclosing FormControl when not\nset; an explicit `false` overrides the FormControl"
+      },
+      { "name": "required", "type": "boolean", "required": false, "description": "Marks the select as required (inherited from an enclosing FormControl)" },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the hidden native select, used in forms" },
+      { "name": "id", "type": "string", "required": false, "description": "id of the trigger (defaults to the enclosing FormControl's id)" },
+      { "name": "contentClassName", "type": "string", "required": false, "description": "Additional class name of the popup" }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "SelectItem / SelectGroup / SelectLabel / SelectSeparator elements" },
+      { "name": "placeholder", "type": "any", "description": "Shown in the trigger while nothing is selected (the `placeholder` prop)" }
+    ]
+  },
+  "SelectGroup": {
+    "file": "packages/vue/src/components/Select/SelectGroup.vue",
+    "props": [],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "SelectLabel and SelectItem elements" }]
+  },
+  "SelectItem": {
+    "file": "packages/vue/src/components/Select/SelectItem.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Value of the option (must not be an empty string)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Prevents selecting the option" },
+      { "name": "textValue", "type": "string", "required": false, "description": "Text used for typeahead when the content is not plain text" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Content of the option" }]
+  },
+  "SelectLabel": { "file": "packages/vue/src/components/Select/SelectLabel.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any", "description": "Label content" }] },
+  "SelectSeparator": { "file": "packages/vue/src/components/Select/SelectSeparator.vue", "props": [], "events": [], "slots": [] },
+  "SplitLayout": {
+    "file": "packages/vue/src/components/SplitLayout/SplitLayout.vue",
+    "props": [
+      {
+        "name": "aside",
+        "type": "string | number | null",
+        "required": false,
+        "description": "Secondary text rendered after the main slot (or the `aside` slot).\nWithout both, the aside column is omitted (single full-width column);\n`0` is valid content."
+      },
+      {
+        "name": "asideWidth",
+        "type": "number",
+        "default": "320",
+        "required": false,
+        "description": "Requested aside width in pixels in split mode (the track is\n`min(asideWidth, 50%)`); must be finite and positive, otherwise a RangeError\nis thrown"
+      },
+      {
+        "name": "collapseBelow",
+        "type": "SplitLayoutCollapseBelow",
+        "default": "\"md\"",
+        "required": false,
+        "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and\nstacks below"
+      },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "default": "6",
+        "required": false,
+        "description": "Gap between the slots: numbers and numeric strings select spacing tokens,\nother strings are CSS values"
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Main content" },
+      { "name": "aside", "type": "any", "description": "Secondary content (the `aside` prop)" }
+    ]
+  },
+  "Stack": {
+    "file": "packages/vue/src/components/Stack/Stack.vue",
+    "props": [
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      { "name": "direction", "type": "StackDirection", "default": "\"column\"", "required": false, "description": "Flex direction" },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "required": false,
+        "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
+      },
+      { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
+      { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator."
+      },
+      {
+        "name": "attached",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`."
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Items" },
+      { "name": "separator", "type": "any", "description": "Rendered between every two items (the `separator` prop as content)" }
+    ]
+  },
+  "StatCard": {
+    "file": "packages/vue/src/components/Page/StatCard.vue",
+    "props": [
+      { "name": "label", "type": "string | number", "required": false, "description": "Metric name (or the `label` slot)" },
+      { "name": "value", "type": "string | number", "required": false, "description": "Metric value (or the `value` slot; 0 is rendered)" },
+      { "name": "description", "type": "string | number", "required": false, "description": "Explanatory text under the value (or the `description` slot)" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "label", "type": "any", "description": "Metric name (the `label` prop)" },
+      { "name": "value", "type": "any", "description": "Metric value (the `value` prop)" },
+      { "name": "icon", "type": "any", "description": "Decorative icon, hidden from assistive technology" },
+      { "name": "description", "type": "any", "description": "Explanatory content under the value (the `description` prop)" }
+    ]
+  },
+  "Tab": {
+    "file": "packages/vue/src/components/Tabs/Tab.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Value identifying the tab and its panel (must not contain whitespace)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the tab (skipped by arrow keys)" },
+      { "name": "color", "type": "ColorScheme", "required": false, "description": "Overrides the group color; an explicitly colored tab keeps a tinted\nbackground while inactive" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Tab content" }]
+  },
+  "TabList": {
+    "file": "packages/vue/src/components/Tabs/TabList.vue",
+    "props": [{ "name": "loop", "type": "boolean", "default": "true", "required": false, "description": "Moves focus from the last tab to the first (and back) with the arrow keys" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "TabPanel": {
+    "file": "packages/vue/src/components/Tabs/TabPanel.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Value of the tab this panel belongs to" },
+      { "name": "forceMount", "type": "boolean", "default": "false", "required": false, "description": "Keeps the panel mounted (hidden) while its tab is not selected" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Tabs": {
+    "file": "packages/vue/src/components/Tabs/Tabs.vue",
+    "props": [
+      { "name": "modelValue", "type": "string", "required": false, "description": "Value of the selected tab (controlled: `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Value of the initially selected tab (uncontrolled)" },
+      { "name": "orientation", "type": "TabsOrientation", "default": "\"horizontal\"", "required": false, "description": "Layout and arrow-key direction" },
+      {
+        "name": "activationMode",
+        "type": "\"automatic\" | \"manual\"",
+        "default": "\"automatic\"",
+        "required": false,
+        "description": "`automatic` selects a tab when it receives focus; `manual` only on\nEnter / Space / click, so the parent can confirm before switching"
+      },
+      { "name": "dir", "type": "\"ltr\" | \"rtl\"", "required": false, "description": "Reading direction (affects arrow keys)" },
+      { "name": "variant", "type": "TabsVariant", "default": "\"line\"", "required": false, "description": "Visual style" },
+      { "name": "color", "type": "ColorScheme", "default": "\"primary\"", "required": false, "description": "Color of the selection" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": [{ "name": "default", "type": "any", "description": "`TabList` and `TabPanel` elements" }]
+  },
+  "ToastProvider": {
+    "file": "packages/vue/src/components/Toast/ToastProvider.vue",
+    "props": [
+      { "name": "position", "type": "ToastPosition", "default": "\"top-right\"", "required": false, "description": "Where the toasts are stacked" },
+      { "name": "max", "type": "number", "default": "Infinity", "required": false, "description": "Maximum number of toasts shown at once; when exceeded the oldest close\nfirst" },
+      { "name": "pauseOnHover", "type": "boolean", "default": "true", "required": false, "description": "Pauses the auto-close timer while a toast is hovered or focused" },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the toast region (used as is; the default one\nincludes the hotkey). Set with the `aria-label` attribute"
+      },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close buttons" },
+      {
+        "name": "hotkey",
+        "type": "string[]",
+        "default": "[\"F8\"]",
+        "required": false,
+        "description": "Keys pressed together to move focus to the toast region (the first one\nholding toasts): key codes (`\"F8\"`, `\"KeyT\"`), keys or modifiers\n(`\"altKey\"`, `\"ctrlKey\"`, `\"metaKey\"`, `\"shiftKey\"`). Shown in the\ndefault region label, e.g. \"Notifications (F8)\". An empty array\ndisables it"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Application content; the toast viewport is rendered after it" }]
+  },
+  "Toolbar": {
+    "file": "packages/vue/src/components/Page/Toolbar.vue",
+    "props": [
+      { "name": "wrap", "type": "boolean", "default": "true", "required": false, "description": "Wraps controls onto multiple lines; `false` keeps one bounded row" },
+      {
+        "name": "density",
+        "type": "ToolbarDensity",
+        "default": "\"default\"",
+        "required": false,
+        "description": "Gap between controls: `default` (space-3) or `compact` (space-1, with\ncentered direct-child vertical dividers)"
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Applies the toolbar attributes and classes to its single child (e.g. a\nCard) instead of rendering a wrapper div"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "VStack": {
+    "file": "packages/vue/src/components/Stack/VStack.vue",
+    "props": [
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "required": false,
+        "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
+      },
+      { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
+      { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator."
+      },
+      {
+        "name": "attached",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`."
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Items" },
+      { "name": "separator", "type": "any", "description": "Rendered between every two items (the `separator` prop as content)" }
+    ]
+  }
+}

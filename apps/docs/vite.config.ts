@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import type { Alias } from "vite";
 import react from "@vitejs/plugin-react";
+import vue from "@vitejs/plugin-vue";
 import { fileURLToPath } from "node:url";
 import tsconfig from "./tsconfig.json" with { type: "json" };
 import {
@@ -40,6 +41,10 @@ const testAlias: Alias[] = [
     replacement: src("../../packages/react/src/index.ts"),
   },
   {
+    find: /^minerva-design\/vue$/,
+    replacement: src("../../packages/vue/src/index.ts"),
+  },
+  {
     find: /^minerva-design\/web-components$/,
     replacement: src("../../packages/web-components/src/index.ts"),
   },
@@ -73,6 +78,9 @@ export default defineConfig({
   base: "/minerva-design/",
   plugins: [
     react(),
+    // the native Vue demos (pages/<id>/vue/*.vue) and, in tests, the Vue
+    // renderer's single-file components
+    vue(),
     docsMetaPlugin(),
     wcFrameworksPlugin(),
     bundleBudgetPlugin(),

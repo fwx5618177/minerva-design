@@ -12,3 +12,5 @@ export { useI18n } from "../config/useI18n";
 export type { TranslateFn } from "../config/useI18n";
 export { useLocale } from "../config/useLocale";
 export { getLanguage, setLanguage, translateMessage } from "../config/i18n";
+export { provideEmbeddedScope } from "../config/embed";
+export type { EmbeddedScopeOptions } from "../config/embed";
