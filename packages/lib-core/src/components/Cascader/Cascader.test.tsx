@@ -1,5 +1,5 @@
 import { createRef, useState } from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Cascader from "./Cascader";
@@ -522,10 +522,14 @@ describe("Cascader", () => {
   });
 
   describe("regressions", () => {
+    // `loaded` lets a test hold the lazy load open until it has asserted the
+    // loading state; without it the children arrive after a short timer.
     const LazyHarness = ({
       onChange,
+      loaded,
     }: {
       onChange?: CascaderProps["onChange"];
+      loaded?: Promise<void>;
     }) => {
       const [opts, setOpts] = useState<CascaderOption[]>([
         { value: "fe", label: "Frontend" },
@@ -538,7 +542,7 @@ describe("Cascader", () => {
             o.value === target.value ? { ...o, loading: true } : o,
           ),
         );
-        setTimeout(() => {
+        const finish = () => {
           setOpts((prev) =>
             prev.map((o) =>
               o.value === target.value
@@ -553,7 +557,9 @@ describe("Cascader", () => {
                 : o,
             ),
           );
-        }, 50);
+        };
+        if (loaded) void loaded.then(finish);
+        else setTimeout(finish, 50);
       };
       return (
         <Cascader
@@ -569,7 +575,11 @@ describe("Cascader", () => {
     it("loads children of a lazy option instead of selecting it", async () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
-      render(<LazyHarness onChange={onChange} />);
+      let finishLoad!: () => void;
+      const loaded = new Promise<void>((resolve) => {
+        finishLoad = resolve;
+      });
+      render(<LazyHarness onChange={onChange} loaded={loaded} />);
       await open(user);
       await user.click(screen.getByText("Frontend"));
       expect(onChange).not.toHaveBeenCalled();
@@ -578,6 +588,10 @@ describe("Cascader", () => {
         "aria-busy",
         "true",
       );
+      await act(async () => {
+        finishLoad();
+        await loaded;
+      });
       await screen.findByText("Team B");
       expect(getColumns()).toHaveLength(2);
       await user.click(screen.getByText("Team B"));
