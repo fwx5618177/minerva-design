@@ -62,7 +62,7 @@ describe("buildSearchItems", () => {
       `${FRAMEWORK_ITEM_PREFIX}angular`,
     );
     expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}vue`)).toBe(
-      "/wc-vue?framework=vue",
+      "/vue?framework=vue",
     );
     expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}react`)).toBe(
       "/installation?framework=react",

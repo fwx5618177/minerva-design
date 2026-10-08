@@ -108,17 +108,19 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     ]);
   });
 
-  it("react / react-dom and Monaco are optional peers", () => {
+  it("react / react-dom, vue and Monaco are optional peers", () => {
     expect(Object.keys(pkg.peerDependencies ?? {}).sort()).toEqual([
       "@monaco-editor/react",
       "monaco-editor",
       "react",
       "react-dom",
+      "vue",
     ]);
     for (const peer of Object.keys(pkg.peerDependencies ?? {})) {
       expect(pkg.peerDependenciesMeta?.[peer]?.optional, peer).toBe(true);
     }
     expect(pkg.peerDependencies?.react).toBe("^19.0.0");
+    expect(pkg.peerDependencies?.vue).toBe("^3.5.0");
   });
 });
 
@@ -134,7 +136,17 @@ describe("planned renderers", () => {
   const published = readJson<Pkg & { exports: Record<string, unknown> }>(
     "packages/minerva-design/package.json",
   );
-  it.each(["vue", "angular", "native", "taro", "weapp", "uni"])(
+  it("packages/vue is implemented: published as minerva-design/vue", () => {
+    const pkg = readJson<Pkg>("packages/vue/package.json");
+    expect(pkg.name).toBe("@minerva/vue");
+    expect(pkg.private).toBe(true);
+    expect(read("packages/vue/README.md")).not.toContain("Status: planned");
+    expect(Object.keys(published.exports)).toEqual(
+      expect.arrayContaining(["./vue", "./vue/monaco", "./vue/global"]),
+    );
+  });
+
+  it.each(["angular", "native", "taro", "weapp", "uni"])(
     "packages/%s is a private placeholder, not exported yet",
     (name) => {
       const pkg = readJson<Pkg & { scripts: Record<string, string> }>(

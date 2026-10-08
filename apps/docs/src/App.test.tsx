@@ -70,10 +70,10 @@ describe("docs site", () => {
 
       // → framework selector: Vue (the choice follows the reader)
       await user.click(screen.getByRole("tab", { name: "Vue" }));
+      // the native Vue renderer (minerva-design/vue)
       expect(screen.getByRole("tabpanel")).toHaveTextContent(
-        "<minerva-button>",
+        'from "minerva-design/vue"',
       );
-      expect(screen.getByRole("tabpanel")).toHaveTextContent("isCustomElement");
       expect(window.location.hash).toBe("#/button?framework=vue");
 
       // → search (⌘K) to another page

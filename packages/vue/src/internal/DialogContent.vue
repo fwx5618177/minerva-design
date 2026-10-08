@@ -115,29 +115,37 @@ const overlayStyles = computed<StyleValue>(() => [
 </script>
 
 <template>
-  <Portal v-if="present || forceMount" :container="container">
-    <div
-      v-if="modal"
-      :class="overlayClass"
-      :style="overlayStyles"
-      v-bind="overlayAttrs"
-      :data-state="state"
-      aria-hidden="true"
-    />
-    <div
-      :ref="setElement"
-      :id="context.contentId"
-      :role="role"
-      :aria-modal="modal || undefined"
-      :aria-labelledby="context.titles.value > 0 ? context.titleId : undefined"
-      :aria-describedby="
-        context.descriptions.value > 0 ? context.descriptionId : undefined
-      "
-      tabindex="-1"
-      :data-state="state"
-      v-bind="attrs"
-    >
-      <slot />
-    </div>
+  <!-- The teleport stays mounted; only its content toggles. A teleport
+       unmounted from inside another layer (a modal) would remove its anchor
+       nodes from that layer, which a focus trap reacts to (focus pulled
+       back into the modal instead of returning to the trigger). -->
+  <Portal :container="container">
+    <template v-if="present || forceMount">
+      <div
+        v-if="modal"
+        :class="overlayClass"
+        :style="overlayStyles"
+        v-bind="overlayAttrs"
+        :data-state="state"
+        aria-hidden="true"
+      />
+      <div
+        :ref="setElement"
+        :id="context.contentId"
+        :role="role"
+        :aria-modal="modal || undefined"
+        :aria-labelledby="
+          context.titles.value > 0 ? context.titleId : undefined
+        "
+        :aria-describedby="
+          context.descriptions.value > 0 ? context.descriptionId : undefined
+        "
+        tabindex="-1"
+        :data-state="state"
+        v-bind="attrs"
+      >
+        <slot />
+      </div>
+    </template>
   </Portal>
 </template>

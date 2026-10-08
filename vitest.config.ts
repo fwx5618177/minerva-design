@@ -15,8 +15,9 @@ export default defineConfig({
       "tests/e2e",
       "tests/contracts",
       "tests/docs",
-      // planned renderers: their platform testing spikes (docs/adr)
+      // native Vue 3 renderer (minerva-design/vue)
       "packages/vue",
+      // planned renderers: their platform testing spikes (docs/adr)
       "packages/angular",
       "packages/native/vitest.config.ts",
       "packages/native/vitest.web.config.ts",
@@ -32,6 +33,7 @@ export default defineConfig({
         "**/dom/src/**/*.ts",
         "**/react/src/**/*.{ts,tsx}",
         "**/web-components/src/**/*.{ts,tsx}",
+        "**/packages/vue/src/**/*.{ts,vue}",
       ],
       exclude: [
         "**/*.test.{ts,tsx}",
@@ -45,8 +47,14 @@ export default defineConfig({
         "**/packages/dom/src/core-web.ts",
         "**/web-components/src/index.ts",
         "**/web-components/src/controllers/index.ts",
+        "**/packages/vue/src/index.ts",
+        "**/packages/vue/src/groups/**",
+        "**/packages/vue/src/components/*/index.ts",
+        // generated Volar typings (no runtime code)
+        "**/packages/vue/src/global.ts",
         // generated from the React icons (no logic)
         "**/web-components/src/internal/icons.ts",
+        "**/packages/vue/src/internal/icons.ts",
         "**/test-utils/**",
       ],
       reporter: ["text-summary", "html", "lcov"],

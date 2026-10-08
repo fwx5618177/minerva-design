@@ -92,23 +92,29 @@ defineExpose({ element: layer.element, placement: layer.placement });
 </script>
 
 <template>
-  <Portal v-if="open">
-    <div
-      :ref="setElement"
-      :dir="layer.dir.value"
-      v-bind="$attrs"
-      :data-side="sides.side"
-      :data-align="sides.align"
-      :data-placement="layer.placement.value"
-      :style="layer.floatingStyles.value"
-    >
-      <slot
-        v-if="layer.element.value"
-        :placement="layer.placement.value"
-        :arrow-styles="
-          layer.arrowStyles.value as Record<string, string | undefined>
-        "
-      />
-    </div>
+  <!-- The teleport stays mounted; only its content toggles. A teleport
+       unmounted from inside another layer (a modal) would remove its anchor
+       nodes from that layer, which a focus trap reacts to (focus pulled
+       back into the modal instead of returning to the trigger). -->
+  <Portal>
+    <template v-if="open">
+      <div
+        :ref="setElement"
+        :dir="layer.dir.value"
+        v-bind="$attrs"
+        :data-side="sides.side"
+        :data-align="sides.align"
+        :data-placement="layer.placement.value"
+        :style="layer.floatingStyles.value"
+      >
+        <slot
+          v-if="layer.element.value"
+          :placement="layer.placement.value"
+          :arrow-styles="
+            layer.arrowStyles.value as Record<string, string | undefined>
+          "
+        />
+      </div>
+    </template>
   </Portal>
 </template>

@@ -82,8 +82,42 @@ describe("global framework selector", () => {
     ).toBeInTheDocument();
   });
 
+  it("Vue shows the native renderer: import, live Vue demos with their SFC source, the Vue API", async () => {
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(tabs().getByRole("tab", { name: "Vue" }));
+    selected("Vue");
+    expect(screen.getByRole("status", { name: "query" })).toHaveTextContent(
+      "?framework=vue",
+    );
+    const panel = screen.getByRole("tabpanel");
+    expect(panel).toHaveTextContent(
+      'import { Button } from "minerva-design/vue";',
+    );
+    expect(panel).not.toHaveTextContent("isCustomElement");
+    expect(screen.queryByTestId("native-planned")).toBeNull();
+    // the demos load lazily: real Vue components, their single-file source
+    expect(
+      await within(panel).findByRole("heading", {
+        level: 3,
+        name: "Basic usage",
+      }),
+    ).toBeInTheDocument();
+    expect(panel).toHaveTextContent("<script setup");
+    expect(panel).toHaveTextContent('from "minerva-design/vue"');
+    expect(
+      await within(panel).findByRole("button", { name: "Save" }),
+    ).toHaveAttribute("data-minerva", "button");
+    // API tables generated from the Vue component types
+    expect(
+      await within(panel).findByRole("heading", { level: 3, name: "<Button>" }),
+    ).toBeInTheDocument();
+    expect(within(panel).getByText("@click")).toBeInTheDocument();
+    expect(within(panel).getByText("#start-icon")).toBeInTheDocument();
+    expect(localStorage.getItem("minerva-docs-framework")).toBe("vue");
+  });
+
   it.each([
-    ["Vue", "vue", "src/main.ts", "isCustomElement", "<script setup"],
     [
       "Angular",
       "angular",
@@ -141,7 +175,7 @@ describe("global framework selector", () => {
   );
 
   it.each([
-    ["Vue", true],
+    ["Vue", false],
     ["Angular", true],
     ["Svelte", false],
     ["HTML", false],
