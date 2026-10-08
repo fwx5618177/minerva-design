@@ -182,8 +182,8 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   invalid = false;
 
   /** Read-only: focusable and submitted, no dropdown */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Shows a loading indicator instead of the options */
   @property({ type: Boolean, reflect: true })
@@ -290,7 +290,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
 
   /** Whether the input accepts no interaction (disabled / read-only). */
   private get blocked(): boolean {
-    return this.isDisabled || this.readonly;
+    return this.isDisabled || this.readOnly;
   }
 
   /** The dropdown is rendered (open and interactive). */
@@ -510,7 +510,13 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     if (changed.has("value") && changed.get("value") !== undefined) {
       this.dirty = this.value !== this.defaultValue || this.dirty;
     }
-    if (changed.has("defaultValue") && !this.dirty) {
+    // first update: a value set before connecting wins over the default
+    // unless the value attribute is present
+    if (
+      changed.has("defaultValue") &&
+      !this.dirty &&
+      (this.hasUpdated || this.hasAttribute("value"))
+    ) {
       this.value = this.defaultValue;
     }
     // A disabled / read-only field never keeps the dropdown.
@@ -704,7 +710,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
           .value=${live(this.value)}
           placeholder=${this.placeholder || nothing}
           ?disabled=${disabled}
-          ?readonly=${this.readonly}
+          ?readonly=${this.readOnly}
           @input=${this.handleInput}
           @change=${this.handleChange}
           @focus=${() => this.openDropdown()}

@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { focusElement, getFocusables, isTabbable } from "@minerva/core";
+import { focusElement, getAdjacentTabbable } from "@minerva/core";
 
 /** Where focus goes once an element (an alert, a toast...) is removed. */
 export type FocusTarget =
@@ -16,27 +16,6 @@ export function resolveFocusTarget(
   if (typeof target === "function") return target() ?? null;
   if ("current" in target && !(target instanceof Node)) return target.current;
   return target as HTMLElement;
-}
-
-/**
- * The tabbable element following `el` in document order (outside `el`),
- * else the one preceding it, else `null`.
- */
-export function getAdjacentTabbable(el: HTMLElement): HTMLElement | null {
-  const doc = el.ownerDocument;
-  const candidates = getFocusables(doc.body).filter(
-    (candidate) => !el.contains(candidate) && isTabbable(candidate),
-  );
-  const next = candidates.find(
-    (candidate) =>
-      el.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_FOLLOWING,
-  );
-  if (next) return next;
-  const previous = candidates.filter(
-    (candidate) =>
-      el.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_PRECEDING,
-  );
-  return previous[previous.length - 1] ?? null;
 }
 
 /**

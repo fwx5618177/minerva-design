@@ -23,12 +23,12 @@ export type ToastColor = "info" | "success" | "warning" | "danger";
 
 /** Screen corner / edge where the toast stack is shown */
 export type ToastPosition =
-  | "topRight"
-  | "topLeft"
-  | "topCenter"
-  | "bottomRight"
-  | "bottomLeft"
-  | "bottomCenter";
+  | "top-right"
+  | "top-left"
+  | "top-center"
+  | "bottom-right"
+  | "bottom-left"
+  | "bottom-center";
 
 /** Why a toast closed (`minerva-close` detail) */
 export type ToastCloseReason =

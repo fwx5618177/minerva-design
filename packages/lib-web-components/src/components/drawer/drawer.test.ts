@@ -38,8 +38,8 @@ describe("<minerva-drawer>", () => {
     expect(panel(el)).toBeNull();
     expect(el.side).toBe("right");
     expect(el.size).toBe("medium");
-    expect(el.getAttribute("side")).toBe("right");
-    expect(el.getAttribute("size")).toBe("medium");
+    expect(el.getAttribute("side")).toBeNull();
+    expect(el.getAttribute("size")).toBeNull();
   });
 
   it("renders a modal dialog labelled by the title with side / size classes and a hidden description", async () => {

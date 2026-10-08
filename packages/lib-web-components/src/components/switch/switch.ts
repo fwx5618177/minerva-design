@@ -133,8 +133,8 @@ export class MinervaSwitch extends FormAssociatedElement {
   noRipple = false;
 
   /** Read-only: focusable and submitted, but the user cannot toggle it */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Error state (aria-invalid) */
   @property({ type: Boolean, reflect: true })
@@ -161,7 +161,7 @@ export class MinervaSwitch extends FormAssociatedElement {
   }
 
   private get blocked(): boolean {
-    return this.isDisabled || this.loading || this.readonly;
+    return this.isDisabled || this.loading || this.readOnly;
   }
 
   override focus(options?: FocusOptions): void {
@@ -254,7 +254,7 @@ export class MinervaSwitch extends FormAssociatedElement {
   }
 
   private handleClick(event: MouseEvent) {
-    if (this.readonly) {
+    if (this.readOnly) {
       event.preventDefault();
       return;
     }
@@ -293,7 +293,7 @@ export class MinervaSwitch extends FormAssociatedElement {
       }
       aria-busy=${this.loading ? "true" : nothing}
       aria-invalid=${!segmented && invalid ? "true" : nothing}
-      aria-readonly=${!segmented && this.readonly ? "true" : nothing}
+      aria-readonly=${!segmented && this.readOnly ? "true" : nothing}
       aria-required=${!segmented && this.required ? "true" : nothing}
       @change=${this.handleChange}
       @click=${this.handleClick}

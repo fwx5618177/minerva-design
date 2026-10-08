@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { cn } from "../../utils/cn";
-import { resolveSpace } from "../../internal/space";
+import { resolveSpace } from "@minerva/core";
 import type { SplitLayoutProps } from "./types";
 import styles from "./splitLayout.module.scss";
 

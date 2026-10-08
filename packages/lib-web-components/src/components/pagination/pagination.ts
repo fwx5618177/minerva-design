@@ -9,6 +9,11 @@ import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import styles from "@lib-core-styles/components/Pagination/pagination.module.scss?inline";
+import {
+  getCompactPageItems,
+  getPageRange,
+  PAGINATION_JUMP_SIZE,
+} from "@minerva/core";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
@@ -52,64 +57,6 @@ export interface PaginationLabels {
   total?: (total: number) => string;
   nav?: string;
 }
-
-/** Number of consecutive page buttons around the current page */
-const WINDOW_SIZE = 5;
-/** Pages skipped by the jump-prev / jump-next items */
-const JUMP_SIZE = 5;
-
-const rangeOf = (start: number, end: number) => {
-  const out: number[] = [];
-  for (let i = start; i <= end; i++) out.push(i);
-  return out;
-};
-
-/** Window of page numbers centered on `current`, clamped to [1, totalPages] */
-const getPageRange = (current: number, totalPages: number) => {
-  let start = Math.max(1, current - Math.floor(WINDOW_SIZE / 2));
-  const end = Math.min(totalPages, start + WINDOW_SIZE - 1);
-  if (end - start + 1 < WINDOW_SIZE) start = Math.max(1, end - WINDOW_SIZE + 1);
-  return rangeOf(start, end);
-};
-
-type CompactItem = number | "ellipsis-start" | "ellipsis-end";
-
-/** Compact page list (lib-core's getCompactItems). */
-const getCompactItems = (
-  totalPages: number,
-  page: number,
-  siblings: number,
-  boundary: number,
-): CompactItem[] => {
-  const totalSlots = boundary * 2 + siblings * 2 + 3;
-  if (totalPages <= totalSlots) return rangeOf(1, totalPages);
-  const leftSibling = Math.max(page - siblings, boundary + 1);
-  const rightSibling = Math.min(page + siblings, totalPages - boundary);
-  const showStartGap = leftSibling > boundary + 2;
-  const showEndGap = rightSibling < totalPages - boundary - 1;
-  const clusterSize = boundary + siblings * 2 + 2;
-  if (!showStartGap) {
-    return [
-      ...rangeOf(1, clusterSize),
-      "ellipsis-end",
-      ...rangeOf(totalPages - boundary + 1, totalPages),
-    ];
-  }
-  if (!showEndGap) {
-    return [
-      ...rangeOf(1, boundary),
-      "ellipsis-start",
-      ...rangeOf(totalPages - clusterSize + 1, totalPages),
-    ];
-  }
-  return [
-    ...rangeOf(1, boundary),
-    "ellipsis-start",
-    ...rangeOf(leftSibling, rightSibling),
-    "ellipsis-end",
-    ...rangeOf(totalPages - boundary + 1, totalPages),
-  ];
-};
 
 /** `"10, 20 50"` <-> `[10, 20, 50]` */
 const numberListConverter = {
@@ -515,7 +462,7 @@ export class MinervaPagination extends MinervaElement {
     });
 
     if (this.siblingCount !== undefined || this.boundaryCount !== undefined) {
-      const compact = getCompactItems(
+      const compact = getCompactPageItems(
         totalPages,
         page,
         Math.max(0, this.siblingCount ?? 1),
@@ -540,7 +487,7 @@ export class MinervaPagination extends MinervaElement {
         items.push({
           key: "jump-prev",
           type: "jump-prev",
-          target: Math.max(1, page - JUMP_SIZE),
+          target: Math.max(1, page - PAGINATION_JUMP_SIZE),
         });
       }
     }
@@ -551,7 +498,7 @@ export class MinervaPagination extends MinervaElement {
         items.push({
           key: "jump-next",
           type: "jump-next",
-          target: Math.min(totalPages, page + JUMP_SIZE),
+          target: Math.min(totalPages, page + PAGINATION_JUMP_SIZE),
         });
       }
       items.push(pageItem(totalPages));

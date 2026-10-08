@@ -66,7 +66,7 @@ describe("<minerva-switch>", () => {
     expect(input(el)).toHaveAttribute("aria-busy", "true");
     expect(input(el).disabled).toBe(true);
     el.loading = false;
-    el.readonly = true;
+    el.readOnly = true;
     await el.updateComplete;
     await userEvent.click(input(el));
     input(el).focus();

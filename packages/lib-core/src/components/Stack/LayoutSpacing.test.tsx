@@ -125,7 +125,7 @@ describe.each(layouts)("$name spacing", (layout) => {
     [".5", ".5"],
     ["0.50", "var(--space-0-50)"],
     ["04", "var(--space-04)"],
-    [" 0.5 ", "0.5"],
+    [" 0.5 ", "var(--space-0-5)"],
     ["1e2", "1e2"],
     ["auto", "auto"],
     ["unknown", "unknown"],

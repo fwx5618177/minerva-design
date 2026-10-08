@@ -5,7 +5,13 @@ import { styleMap } from "lit/directives/style-map.js";
 import styles from "@lib-core-styles/components/Rating/rating.module.scss?inline";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
-import { getDirection } from "../../internal/dom";
+import {
+  logicalArrowKey,
+  ratingDisplayStars,
+  ratingStarFill,
+  roundRating,
+  type RatingStarFill,
+} from "@minerva/core";
 import {
   FormAssociatedElement,
   type ValidityResult,
@@ -29,8 +35,6 @@ export interface RatingDimension {
   hint?: string;
 }
 
-type StarFill = "full" | "half" | "empty";
-
 const SIZE_PX: Record<RatingSize, number> = {
   small: 12,
   medium: 16,
@@ -39,8 +43,6 @@ const SIZE_PX: Record<RatingSize, number> = {
 const STARS = [0, 1, 2, 3, 4];
 /** PageUp / PageDown step, in stars (arrows move by half a star). */
 const PAGE_STARS = Math.max(1, Math.round(STARS.length / 5));
-
-const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /** Shared star styles: the icons are 1em outlines, filled through CSS. */
 const starStyles = css`
@@ -131,8 +133,8 @@ export class MinervaRating extends FormAssociatedElement {
   interactive = false;
 
   /** Forces display mode even when `interactive` is set */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   @state()
   private hoverIndex: number | null = null;
@@ -145,7 +147,7 @@ export class MinervaRating extends FormAssociatedElement {
   private dirty = false;
 
   private get isInteractive(): boolean {
-    return this.interactive && !this.readonly && !this.isDisabled;
+    return this.interactive && !this.readOnly && !this.isDisabled;
   }
 
   override focus(options?: FocusOptions): void {
@@ -219,7 +221,7 @@ export class MinervaRating extends FormAssociatedElement {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const leftHalf = event.clientX - rect.left < rect.width / 2;
     const stars = index + (leftHalf ? 0.5 : 1);
-    this.commit(round1((stars / 5) * this.max));
+    this.commit(roundRating((stars / 5) * this.max));
   }
 
   private handleKeyDown(event: KeyboardEvent) {
@@ -227,27 +229,23 @@ export class MinervaRating extends FormAssociatedElement {
     const { max, value } = this;
     const step = max / (STARS.length * 2);
     const pageStep = (max / STARS.length) * PAGE_STARS;
-    let key = event.key;
     // Stars follow the reading direction: in RTL ArrowLeft increases.
-    if (getDirection(this) === "rtl") {
-      if (key === "ArrowLeft") key = "ArrowRight";
-      else if (key === "ArrowRight") key = "ArrowLeft";
-    }
+    const key = logicalArrowKey(event.key, this);
     let next: number;
     switch (key) {
       case "ArrowRight":
       case "ArrowUp":
-        next = Math.min(max, round1(value + step));
+        next = Math.min(max, roundRating(value + step));
         break;
       case "ArrowLeft":
       case "ArrowDown":
-        next = Math.max(0, round1(value - step));
+        next = Math.max(0, roundRating(value - step));
         break;
       case "PageUp":
-        next = Math.min(max, round1(value + pageStep));
+        next = Math.min(max, roundRating(value + pageStep));
         break;
       case "PageDown":
-        next = Math.max(0, round1(value - pageStep));
+        next = Math.max(0, roundRating(value - pageStep));
         break;
       case "Home":
         next = 0;
@@ -262,7 +260,7 @@ export class MinervaRating extends FormAssociatedElement {
     this.commit(next);
   }
 
-  private renderStar(fill: StarFill, px: number) {
+  private renderStar(fill: RatingStarFill, px: number) {
     const size = styleMap({
       width: `${px}px`,
       height: `${px}px`,
@@ -286,17 +284,11 @@ export class MinervaRating extends FormAssociatedElement {
     const interactive = this.isInteractive;
     const { value, max } = this;
     // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half star.
-    const stars5 = max > 0 ? (value / max) * 5 : 0;
-    const fullCount = Math.floor(stars5);
-    const fraction = stars5 - fullCount;
-    const half = fraction >= 0.25 && fraction < 0.75;
-    const roundedFull = fraction >= 0.75 ? fullCount + 1 : fullCount;
     const displayed =
       interactive && this.hoverIndex !== null
         ? this.hoverIndex
-        : roundedFull + (half ? 0.5 : 0);
-    const fillOf = (i: number): StarFill =>
-      i < Math.floor(displayed) ? "full" : i < displayed ? "half" : "empty";
+        : ratingDisplayStars(value, max);
+    const fillOf = (i: number) => ratingStarFill(i, displayed);
     const px = SIZE_PX[this.size] ?? SIZE_PX.medium;
     const label = this.aria.label ?? `${value.toFixed(1)} / ${max}`;
 
@@ -407,8 +399,8 @@ export class MinervaRatingScale extends MinervaElement {
   interactive = false;
 
   /** Forces display mode even when `interactive` is set */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Hides the score at the end of each row */
   @property({ type: Boolean, attribute: "hide-value" })
@@ -436,7 +428,7 @@ export class MinervaRatingScale extends MinervaElement {
               .size=${this.size}
               ?show-value=${!this.hideValue}
               ?interactive=${this.interactive}
-              ?readonly=${this.readonly}
+              ?readonly=${this.readOnly}
               aria-label=${`${dim.label} ${dim.value.toFixed(1)} / ${this.max}`}
               @minerva-change=${(event: CustomEvent<{ value: number }>) =>
                 this.handleChange(event, dim.key)}

@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { matchesAccept } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { IconRotateCw, IconUpload, IconX } from "../../internal/icons";
 import type { UploadItem, UploadProps } from "./types";
@@ -7,19 +8,6 @@ import useI18n from "../../hooks/useI18n";
 import Button from "../Button/Button";
 import IconButton from "../IconButton/IconButton";
 import Alert from "../Alert/Alert";
-
-/** Whether a file matches an <input accept> list (extensions and MIME types) */
-function matchesAccept(file: File, accept: string) {
-  return accept.split(",").some((part) => {
-    const rule = part.trim().toLowerCase();
-    if (!rule || rule === "*" || rule === "*/*") return true;
-    if (rule.startsWith(".")) return file.name.toLowerCase().endsWith(rule);
-    const type = file.type.toLowerCase();
-    return rule.endsWith("/*")
-      ? type.startsWith(rule.slice(0, -1))
-      : type === rule;
-  });
-}
 
 /**
  * Upload: file selection (button or drag and drop) with validation and a

@@ -35,7 +35,7 @@ describe("<minerva-list>", () => {
     expect(base.classList).toContain("list");
     expect(base.classList).toContain("dividers");
     expect(base.classList).not.toContain("compact");
-    expect(el.getAttribute("density")).toBe("default");
+    expect(el.getAttribute("density")).toBeNull();
     el.density = "compact";
     el.noDividers = true;
     await el.updateComplete;

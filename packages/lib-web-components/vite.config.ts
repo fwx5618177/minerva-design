@@ -106,6 +106,7 @@ export default defineConfig({
       "tests/ssr/**/*.test.ts",
       "tests/meta/**/*.test.ts",
       "tests/e2e/**/*.test.ts",
+      "tests/runtime/**/*.test.ts",
     ],
     alias: [
       {

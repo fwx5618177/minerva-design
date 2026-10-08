@@ -54,6 +54,13 @@ describe("Rating (read-only)", () => {
     },
   );
 
+  it("shows empty stars when max is not positive (like <minerva-rating>)", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(<Rating value={3} max={0} />);
+    expect(fills(container)).toEqual(Array(5).fill("empty"));
+    warn.mockRestore();
+  });
+
   it("renders a half star for fractions in 0.25..0.75", () => {
     const { container } = render(<Rating value={5} max={10} />);
     expect(fills(container)).toEqual([

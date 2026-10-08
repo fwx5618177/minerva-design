@@ -370,7 +370,7 @@ describe("<minerva-select> pointer", () => {
     expect(focused()).toBe(option("English"));
     expect(option("Chinese")).not.toHaveAttribute("data-highlighted");
     expect(option("Chinese")).toHaveAttribute("data-state", "checked");
-    expect(option("English")).toHaveAttribute("data-state", "unchecked");
+    expect(option("English")).not.toHaveAttribute("data-state");
   });
 
   it("closes on an outside pointer down and on a second click on the trigger", async () => {

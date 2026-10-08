@@ -8,7 +8,13 @@ import {
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
-import { contains } from "@minerva/core";
+import {
+  contains,
+  findCascaderPath,
+  flattenCascaderOptions,
+  logicalArrowKey,
+  type CascaderSearchEntry,
+} from "@minerva/core";
 import styles from "@lib-core-styles/components/Cascader/cascader.module.scss?inline";
 import {
   FloatingLayerController,
@@ -16,7 +22,6 @@ import {
 } from "../../controllers/floating-layer";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
-import { getDirection } from "../../internal/dom";
 import {
   FormAssociatedElement,
   type ValidityResult,
@@ -57,39 +62,8 @@ export interface CascaderChangeDetail {
 /** Content returned by `optionRender` */
 export type CascaderRenderResult = string | Node | TemplateResult;
 
-/** Resolve the option chain for a list of values (one value per level) */
-const findOptionsByValues = (
-  opts: CascaderOption[],
-  values: CascaderValue,
-): CascaderOption[] => {
-  const result: CascaderOption[] = [];
-  let level: CascaderOption[] | undefined = opts;
-  for (const value of values) {
-    const found: CascaderOption | undefined = level?.find(
-      (o) => o.value === value,
-    );
-    if (!found) break;
-    result.push(found);
-    level = found.children;
-  }
-  return result;
-};
-
 /** A flattened option together with the chain of options leading to it */
-type SearchResult = { option: CascaderOption; path: CascaderOption[] };
-
-const flattenOptions = (
-  opts: CascaderOption[],
-  path: CascaderOption[] = [],
-): SearchResult[] =>
-  opts.flatMap((option) => {
-    if (option.disabled) return [];
-    const current = [...path, option];
-    return [
-      { option, path: current },
-      ...(option.children ? flattenOptions(option.children, current) : []),
-    ];
-  });
+type SearchResult = CascaderSearchEntry<CascaderOption>;
 
 const samePath = (a: CascaderValue, b: CascaderValue) =>
   a.length === b.length && a.every((v, i) => v === b[i]);
@@ -273,8 +247,8 @@ export class MinervaCascader extends FormAssociatedElement {
   invalid = false;
 
   /** Shows the value without allowing changes (the panel does not open) */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Hides the clear button (lib-core `allowClear={false}`) */
   @property({ type: Boolean, attribute: "hide-clear-button" })
@@ -362,7 +336,7 @@ export class MinervaCascader extends FormAssociatedElement {
 
   /** Options of the selected path (one per level) */
   get selectedOptions(): CascaderOption[] {
-    return findOptionsByValues(this.options, this.value);
+    return findCascaderPath(this.options, this.value);
   }
 
   override focus(options?: FocusOptions): void {
@@ -441,7 +415,13 @@ export class MinervaCascader extends FormAssociatedElement {
     if (changed.has("value") && changed.get("value") !== undefined) {
       this.dirty = !samePath(this.value, this.defaultValue) || this.dirty;
     }
-    if (changed.has("defaultValue") && !this.dirty) {
+    // first update: a value set before connecting wins over the default
+    // unless the value attribute is present
+    if (
+      changed.has("defaultValue") &&
+      !this.dirty &&
+      (this.hasUpdated || this.hasAttribute("value"))
+    ) {
       this.value = [...this.defaultValue];
     }
     if (changed.has("open")) {
@@ -469,7 +449,7 @@ export class MinervaCascader extends FormAssociatedElement {
       (changed.has("options") || changed.has("value")) &&
       this.options.length > 0 &&
       this.value.length > 0 &&
-      findOptionsByValues(this.options, this.value).length < this.value.length
+      findCascaderPath(this.options, this.value).length < this.value.length
     ) {
       devWarn(
         MinervaCascader.tagName,
@@ -478,16 +458,23 @@ export class MinervaCascader extends FormAssociatedElement {
     }
   }
 
+  private widthApplied = false;
+
   protected override updated(changed: PropertyValues<this>): void {
     super.updated(changed);
     if (changed.has("width")) {
       const w = this.width;
-      this.style.width =
+      const width =
         w === undefined || w === ""
           ? ""
           : typeof w === "number" || /^\d+(\.\d+)?$/.test(w)
             ? `${w}px`
             : w;
+      // The default (240px) comes from the :host rule: no style attribute
+      // on the host unless another width is set (hydration)
+      const custom = width !== "" && width !== "240px";
+      if (custom || this.widthApplied) this.style.width = custom ? width : "";
+      this.widthApplied = custom;
     }
     this.floating.sync(this.open && !this.isDisabled);
     const pending = this.pendingFocus;
@@ -512,7 +499,7 @@ export class MinervaCascader extends FormAssociatedElement {
   }
 
   private openDropdown(fromKeyboard = false) {
-    if (this.isDisabled || this.readonly) return;
+    if (this.isDisabled || this.readOnly) return;
     if (this.requestOpen(true)) {
       this.expandedValues = [...this.value];
       this.pendingFocus = fromKeyboard ? -1 : null;
@@ -567,7 +554,7 @@ export class MinervaCascader extends FormAssociatedElement {
   // ---- panel helpers ------------------------------------------------------
 
   private get expandedPath(): CascaderOption[] {
-    return findOptionsByValues(this.options, this.expandedValues);
+    return findCascaderPath(this.options, this.expandedValues);
   }
 
   /** Columns: the root options, then the children of each expanded option */
@@ -621,7 +608,7 @@ export class MinervaCascader extends FormAssociatedElement {
     if (!this.searching) return [];
     const { searchValue, filter } = this;
     const needle = searchValue.toLowerCase();
-    return flattenOptions(this.options).filter(({ path }) =>
+    return flattenCascaderOptions(this.options).filter(({ path }) =>
       filter
         ? filter(searchValue, path)
         : path.some((o) => String(o.label).toLowerCase().includes(needle)),
@@ -633,14 +620,14 @@ export class MinervaCascader extends FormAssociatedElement {
   }
 
   private handleSelectorClick() {
-    if (this.isDisabled || this.readonly) return;
+    if (this.isDisabled || this.readOnly) return;
     if (!this.open) this.openDropdown();
     else if (!this.showSearch) this.closeDropdown();
   }
 
   private handleInput(event: Event) {
     const text = (event.target as HTMLInputElement).value;
-    if (!this.showSearch || this.readonly) return;
+    if (!this.showSearch || this.readOnly) return;
     this.searchValue = text;
     this.emit("minerva-input", { value: text });
     if (!this.open) this.openDropdown();
@@ -707,12 +694,8 @@ export class MinervaCascader extends FormAssociatedElement {
     const index = items.indexOf(item);
     const focusAt = (i: number) =>
       items[(i + items.length) % items.length]?.focus();
-    let key = e.key;
     // RTL: columns open towards the left, so ArrowLeft expands.
-    if (getDirection(this) === "rtl") {
-      if (key === "ArrowLeft") key = "ArrowRight";
-      else if (key === "ArrowRight") key = "ArrowLeft";
-    }
+    const key = logicalArrowKey(e.key, this);
     switch (key) {
       case "ArrowDown":
         e.preventDefault();
@@ -901,7 +884,7 @@ export class MinervaCascader extends FormAssociatedElement {
       !this.hideClearButton &&
       this.value.length > 0 &&
       !disabled &&
-      !this.readonly;
+      !this.readOnly;
     const displayValue = this.searching ? this.searchValue : this.displayText;
     const ariaInvalid =
       this.invalid || this.aria.attr("aria-invalid") === "true";
@@ -928,10 +911,10 @@ export class MinervaCascader extends FormAssociatedElement {
               aria-description=${this.aria.description ?? nothing}
               aria-invalid=${ariaInvalid ? "true" : nothing}
               aria-required=${this.required ? "true" : nothing}
-              aria-readonly=${this.showSearch && this.readonly ? "true" : nothing}
+              aria-readonly=${this.showSearch && this.readOnly ? "true" : nothing}
               name=${this.name || nothing}
               .value=${live(displayValue)}
-              ?readonly=${!this.showSearch || this.readonly}
+              ?readonly=${!this.showSearch || this.readOnly}
               ?disabled=${disabled}
               ?required=${this.required}
               autocomplete="off"

@@ -3,12 +3,12 @@ import type { ColorScheme } from "@minerva/core";
 
 /** Screen corner / edge where the toast stack is shown */
 export type ToastPosition =
-  | "topRight"
-  | "topLeft"
-  | "topCenter"
-  | "bottomRight"
-  | "bottomLeft"
-  | "bottomCenter";
+  | "top-right"
+  | "top-left"
+  | "top-center"
+  | "bottom-right"
+  | "bottom-left"
+  | "bottom-center";
 
 /** Button rendered inside a toast; activating it also closes the toast */
 export interface ToastAction {
@@ -115,7 +115,7 @@ export interface ToastApi {
 export interface ToastProviderProps {
   /**
    * Where the toasts are stacked
-   * @default "topRight"
+   * @default "top-right"
    */
   position?: ToastPosition;
   /** Application content; the toast viewport is rendered after it */

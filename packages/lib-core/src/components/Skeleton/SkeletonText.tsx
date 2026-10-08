@@ -1,5 +1,5 @@
 import { cn } from "../../utils/cn";
-import { resolveSpace } from "../../internal/space";
+import { resolveSpace } from "@minerva/core";
 import Skeleton from "./Skeleton";
 import type { SkeletonTextProps } from "./types";
 import styles from "./skeleton.module.scss";

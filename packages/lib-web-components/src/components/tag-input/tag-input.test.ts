@@ -159,11 +159,11 @@ describe("<minerva-tag-input>", () => {
     expect(el.separators).toEqual([",", "Enter"]);
     expect(el.noCommitOnBlur).toBe(false);
     expect(el.invalid).toBe(false);
-    expect(el.readonly).toBe(false);
-    expect(el.getAttribute("size")).toBe("medium");
+    expect(el.readOnly).toBe(false);
+    expect(el.getAttribute("size")).toBeNull();
     el.size = "small";
     el.invalid = true;
-    el.readonly = true;
+    el.readOnly = true;
     el.disabled = true;
     await el.updateComplete;
     expect(el.getAttribute("size")).toBe("small");

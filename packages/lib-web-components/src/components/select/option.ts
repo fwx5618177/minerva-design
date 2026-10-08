@@ -1,4 +1,6 @@
 import { css, html, nothing, type PropertyValues } from "lit";
+import { setHostAria } from "../../internal/aria";
+import { attachInternals } from "../../internal/form";
 import { property } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/Select/select.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
@@ -21,6 +23,8 @@ let nextLabelId = 0;
  * @csspart indicator - The check mark of the selected option
  */
 export class MinervaOption extends MinervaElement {
+  private readonly internals = attachInternals(this);
+  private readonly ownedAria = new Set<string>();
   static override tagName = "minerva-option";
   static override styles = [
     hostStyles,
@@ -72,18 +76,27 @@ export class MinervaOption extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute("role", "option");
-    this.tabIndex = -1;
+    setHostAria(this, this.internals, { role: "option" }, this.ownedAria);
+    // tabindex="-1" is set by the select when it focuses the option
   }
 
   protected override updated(changed: PropertyValues<this>): void {
     super.updated(changed);
-    this.setAttribute("aria-selected", String(this.selected));
+    setHostAria(
+      this,
+      this.internals,
+      {
+        ariaSelected: String(this.selected),
+        ariaDisabled: this.disabled ? "true" : null,
+      },
+      this.ownedAria,
+    );
     this.toggleAttribute("data-highlighted", this.highlighted);
     this.toggleAttribute("data-disabled", this.disabled);
-    this.dataset.state = this.selected ? "checked" : "unchecked";
-    if (this.disabled) this.setAttribute("aria-disabled", "true");
-    else this.removeAttribute("aria-disabled");
+    // host styling hook only when selected (an upgraded, unselected option
+    // keeps the server-rendered attributes as they are)
+    if (this.selected) this.dataset.state = "checked";
+    else delete this.dataset.state;
     if (DEV && changed.has("value") && this.value === "" && this.isConnected) {
       devWarn(
         MinervaOption.tagName,
@@ -121,6 +134,7 @@ export class MinervaOption extends MinervaElement {
  * @slot - A `<minerva-select-label>` and `<minerva-option>` elements
  */
 export class MinervaOptionGroup extends MinervaElement {
+  private readonly internals = attachInternals(this);
   static override tagName = "minerva-option-group";
   static override styles = [
     hostStyles,
@@ -135,7 +149,7 @@ export class MinervaOptionGroup extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute("role", "group");
+    setHostAria(this, this.internals, { role: "group" });
     this.syncLabel();
     if (typeof MutationObserver === "undefined") return;
     this.observer = new MutationObserver(() => this.syncLabel());
@@ -201,6 +215,7 @@ export class MinervaSelectLabel extends MinervaElement {
  * @csspart base - The line
  */
 export class MinervaSelectSeparator extends MinervaElement {
+  private readonly internals = attachInternals(this);
   static override tagName = "minerva-select-separator";
   static override styles = [
     hostStyles,
@@ -214,7 +229,7 @@ export class MinervaSelectSeparator extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute("aria-hidden", "true");
+    setHostAria(this, this.internals, { ariaHidden: "true" });
   }
 
   protected override render() {

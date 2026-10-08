@@ -90,7 +90,7 @@ describe("<minerva-checkbox>", () => {
     await userEvent.click(box(el));
     expect(el.checked).toBe(false);
     expect(box(el)).toHaveAttribute("aria-readonly", "true");
-    el.readonly = false;
+    el.readOnly = false;
     el.disabled = true;
     await el.updateComplete;
     expect(box(el).disabled).toBe(true);

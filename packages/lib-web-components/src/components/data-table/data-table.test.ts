@@ -6,7 +6,7 @@ import {
   MinervaTableCellContent,
   type TableColumn,
 } from "./data-table";
-import { computeFixedColumnLayout } from "./fixed-columns";
+import { computeFixedColumnLayout } from "@minerva/core";
 import "../../elements/data-table";
 import { MinervaPagination } from "../pagination/pagination";
 import { resetDevWarnings } from "../../internal/dev";

@@ -51,7 +51,7 @@ describe("<minerva-form-control>", () => {
     expect(input).toHaveAttribute("aria-readonly", "true");
 
     el.disabled = false;
-    el.readonly = false;
+    el.readOnly = false;
     el.required = false;
     await settle();
     expect(input.disabled).toBe(false);

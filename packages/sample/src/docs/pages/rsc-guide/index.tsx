@@ -9,13 +9,14 @@ const ENTRIES = [
   { entry: "@minerva/lib-core", client: true, key: "main" },
   { entry: "@minerva/lib-core/monaco", client: true, key: "monaco" },
   { entry: "@minerva/lib-core/theme-utils", client: false, key: "themeUtils" },
+  { entry: "@minerva/lib-core/utils", client: false, key: "utils" },
 ] as const;
 
 const bannerCode = `// dist/index.js and dist/monaco.js start with
 "use client";
 
-// dist/theme-utils.js does not: it holds plain functions and strings,
-// safe to run on the server`;
+// dist/theme-utils.js and dist/utils-entry.js do not: they hold plain
+// functions and data, safe to run on the server`;
 
 const serverRenderCode = `// app/page.tsx: a Server Component (no "use client")
 import { Card, Tag } from "@minerva/lib-core";
@@ -77,9 +78,33 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   );
 }
 
+// Plain functions and data (cn, themes, palettes, resolveTheme...):
+// import them from the server-safe utils entry, not from the main entry
+import { cn, themes } from "@minerva/lib-core/utils";
+
 // Not on the server: main-entry functions are client references there
 // import { toast } from "@minerva/lib-core";
 // toast.success("Hi"); // call it from a client component instead`;
+
+const cspCode = `// Strict CSP, option 1: a per-request nonce on the inline script
+<script
+  nonce={nonce}
+  suppressHydrationWarning
+  dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+/>
+// Content-Security-Policy: script-src 'self' 'nonce-<nonce>'
+
+// Option 2: allow the script by its hash (static HTML, CDN caching)
+import {
+  THEME_INIT_SCRIPT_HASH,
+  createThemeInitScript,
+  cspHash,
+} from "@minerva/lib-core/theme-utils";
+
+const csp = \`script-src 'self' \${THEME_INIT_SCRIPT_HASH}\`;
+// a customised script has its own hash:
+const script = createThemeInitScript({ defaultTheme: "dark" });
+const customCsp = \`script-src 'self' \${cspHash(script)}\`;`;
 
 const cssCode = `// Next.js App Router: import global CSS once, in the root layout
 // app/layout.tsx
@@ -149,6 +174,12 @@ const RscGuideDoc: React.FC = () => {
         <p className={styles.prose}>{k("functions.text")}</p>
         <CodeBlock code={serverUtilsCode} language="tsx" />
         <p className={styles.callout}>{k("functions.imperative")}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="csp">
+        <h2 id="csp">{k("csp.title")}</h2>
+        <p className={styles.prose}>{k("csp.text")}</p>
+        <CodeBlock code={cspCode} language="tsx" />
       </section>
 
       <section className={styles.section} aria-labelledby="css">

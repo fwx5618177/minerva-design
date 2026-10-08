@@ -115,7 +115,7 @@ describe("<minerva-cascader>", () => {
     expect(el.showSearch).toBe(false);
     expect(el.hideClearButton).toBe(false);
     el.invalid = true;
-    el.readonly = true;
+    el.readOnly = true;
     el.showSearch = true;
     el.expandTrigger = "hover";
     el.placeholder = "Choose area";

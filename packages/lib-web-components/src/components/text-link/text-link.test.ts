@@ -28,7 +28,7 @@ describe("<minerva-text-link>", () => {
     expect(a).toHaveAttribute("target", "_blank");
     expect(a).toHaveAttribute("rel", "noopener");
     expect(a.querySelector("svg")).toBeNull();
-    expect(el.getAttribute("variant")).toBe("default");
+    expect(el.getAttribute("variant")).toBeNull();
   });
 
   it("adds a decorative chevron to the subtle variant", async () => {

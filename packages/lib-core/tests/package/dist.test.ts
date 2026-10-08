@@ -77,6 +77,7 @@ const ENTRIES: Record<string, boolean> = {
   ".": true,
   "./monaco": true,
   "./theme-utils": false,
+  "./utils": false,
 };
 
 describe("@minerva/lib-core dist", () => {
@@ -133,7 +134,9 @@ describe("@minerva/lib-core dist", () => {
 
   it('marks every client module "use client" (deep imports stay client modules)', () => {
     const modules = distFiles.filter(
-      (file) => /\.(c?js)$/.test(file) && !/[\\/]theme-utils\.c?js$/.test(file),
+      (file) =>
+        /\.(c?js)$/.test(file) &&
+        !/[\\/](theme-utils|utils-entry)\.c?js$/.test(file),
     );
     expect(modules.length).toBeGreaterThan(100);
     for (const file of modules) {
@@ -160,13 +163,15 @@ describe("@minerva/lib-core dist", () => {
     }
   });
 
-  it("keeps the server-safe theme-utils entry free of React", () => {
-    const key = "./theme-utils";
-    for (const file of [conditional(key).import, conditional(key).require]) {
-      const code = readFileSync(dist(file), "utf8");
-      expect(code, file).not.toMatch(/from "react"|require\("react"\)/);
-    }
-  });
+  it.each(["./theme-utils", "./utils"])(
+    "keeps the server-safe %s entry free of React and of client modules",
+    (key) => {
+      for (const file of [conditional(key).import, conditional(key).require]) {
+        const code = readFileSync(dist(file), "utf8");
+        expect(code, file).not.toMatch(/from "react"|require\("react"\)/);
+      }
+    },
+  );
 
   it("exposes the theme-utils API from ESM and CJS, usable on the server", async () => {
     const esm = await import(
@@ -176,6 +181,8 @@ describe("@minerva/lib-core dist", () => {
     for (const mod of [esm, cjs]) {
       for (const name of [
         "THEME_INIT_SCRIPT",
+        "THEME_INIT_SCRIPT_HASH",
+        "cspHash",
         "createThemeInitScript",
         "parseThemeCookie",
         "parsePaletteCookie",
@@ -196,10 +203,75 @@ describe("@minerva/lib-core dist", () => {
       expect(mod.designAttributes({ preset: "editorial" })).toMatchObject({
         "data-density": "comfortable",
       });
+      expect(mod.THEME_INIT_SCRIPT_HASH).toBe(
+        mod.cspHash(mod.THEME_INIT_SCRIPT),
+      );
       expect(mod.parseThemeCookies("theme=dark; palette=tech")).toEqual({
         theme: "dark",
         palette: "tech",
       });
+    }
+  });
+
+  // React Server Components: a module without "use client" that only imports
+  // @minerva/core, so functions are callable and data objects populated
+  // (through the "use client" main entry they would be client references).
+  it("exposes the non-component utilities from ESM and CJS, usable on the server", async () => {
+    const esm = await import(
+      pathToFileURL(dist(conditional("./utils").import)).href
+    );
+    const cjs = require("@minerva/lib-core/utils");
+    for (const file of [
+      conditional("./utils").import,
+      conditional("./utils").require,
+    ]) {
+      const code = readFileSync(dist(file), "utf8");
+      // only @minerva/core: no relative import of a "use client" module
+      const specifiers = Array.from(
+        code.matchAll(/(?:from\s*|require\()["']([^"']+)["']/g),
+        (m) => m[1],
+      );
+      expect(
+        specifiers.filter((s) => s !== "@minerva/core"),
+        file,
+      ).toEqual([]);
+    }
+    for (const mod of [esm, cjs]) {
+      expect(mod.cn("a", false, { b: true }, ["c"])).toBe("a b c");
+      for (const data of [
+        mod.themes,
+        mod.light,
+        mod.dark,
+        mod.githubDark,
+        mod.palettes,
+      ]) {
+        expect(Object.keys(data).length).toBeGreaterThan(0);
+      }
+      expect(mod.themes.light).toBe(mod.light);
+      expect(typeof mod.generateCSSVariables).toBe("function");
+      expect(mod.resolveTheme("dark", "light")).toBeDefined();
+      expect(typeof mod.isBilingualTheme).toBe("function");
+      expect(typeof mod.getSystemTheme).toBe("function");
+      expect(typeof mod.applyThemeStyles).toBe("function");
+      expect(mod.normalizeShortcuts("mod+k")).toHaveLength(1);
+      expect(
+        mod.matchesShortcut(
+          {
+            key: "k",
+            ctrlKey: true,
+            metaKey: false,
+            altKey: false,
+            shiftKey: false,
+          },
+          "ctrl+k",
+        ),
+      ).toBe(true);
+      expect(
+        mod.computeFixedColumnLayout([
+          { key: "a", fixed: "left", width: 100 },
+          { key: "b", fixed: "left", width: 50 },
+        ]).leftOffsets.b,
+      ).toBe(100);
     }
   });
 

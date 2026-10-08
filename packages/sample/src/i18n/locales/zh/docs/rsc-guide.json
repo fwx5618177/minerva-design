@@ -10,7 +10,8 @@
     "no": "否",
     "main": "全部组件、Provider、Hooks 和工具函数。",
     "monaco": "基于 Monaco 的代码编辑器（可选 peer 依赖：@monaco-editor/react 和 monaco-editor）。",
-    "themeUtils": "服务端安全的主题辅助函数：THEME_INIT_SCRIPT、Cookie 解析与序列化、调色板名称。"
+    "themeUtils": "服务端安全的主题辅助函数：THEME_INIT_SCRIPT、Cookie 解析与序列化、调色板名称。",
+    "utils": "服务端安全的工具函数：cn、themes、light、dark、githubDark、palettes、resolveTheme、generateCSSVariables、applyThemeStyles、getSystemTheme、isBilingualTheme、matchesShortcut、normalizeShortcuts、computeFixedColumnLayout。"
   },
   "why": {
     "title": "为什么有些入口是客户端边界",
@@ -24,8 +25,12 @@
   },
   "functions": {
     "title": "在服务端调用函数",
-    "text": "@minerva/lib-core/theme-utils 中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（toast.success、Confirm、applyThemeStyles、各种 Hooks……）：它们在那里只是客户端引用。请在客户端组件和事件处理函数中调用它们。",
+    "text": "@minerva/lib-core/theme-utils 与 @minerva/lib-core/utils 中的辅助函数可以在服务端随意调用：layout、路由处理器、中间件或边缘函数中均可。不要在 Server Component 中调用主入口的函数（toast.success、Confirm、各种 Hooks……），也不要在那里读取主入口导出的数据（themes、palettes……）：它们只是客户端引用。请改从 @minerva/lib-core/utils 导入这些普通函数和数据。",
     "imperative": "命令式 API 在客户端组件的 SSR 过程中同样安全：没有 document 时它们什么也不做，而 Confirm 这类基于 Promise 的对话框在服务端会 resolve 为 false。请在只会在浏览器中运行的事件处理函数或 effect 中触发它们。"
+  },
+  "csp": {
+    "title": "内容安全策略（CSP）",
+    "text": "严格的 Content-Security-Policy（不含 'unsafe-inline'）会拦截内联的主题初始化脚本。可以在 <script> 元素上输出本次请求的 nonce，或按哈希放行该脚本：THEME_INIT_SCRIPT_HASH 是 THEME_INIT_SCRIPT 的 'sha256-…' 源表达式，cspHash() 可为 createThemeInitScript() 生成的脚本计算哈希。"
   },
   "css": {
     "title": "在哪里导入 CSS",

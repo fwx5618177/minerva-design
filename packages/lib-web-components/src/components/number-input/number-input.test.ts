@@ -159,7 +159,7 @@ describe("<minerva-number-input>", () => {
     await userEvent.keyboard("{PageUp}{PageDown}{Home}{End}{ArrowUp}");
     expect(onChange).not.toHaveBeenCalled();
     expect($<HTMLButtonElement>(el, "[part=increment]").disabled).toBe(true);
-    el.readonly = false;
+    el.readOnly = false;
     el.disabled = true;
     await el.updateComplete;
     expect(spin(el).disabled).toBe(true);

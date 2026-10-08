@@ -133,6 +133,30 @@ describe("<minerva-rating>", () => {
     expect(onChange).toHaveBeenLastCalledWith(7);
   });
 
+  it.each([
+    [
+      'dir="auto" below dir="rtl"',
+      `<div dir="rtl"><div dir="auto"><minerva-rating interactive aria-label="Score" value="5"></minerva-rating></div></div>`,
+    ],
+    [
+      "CSS-only direction: rtl",
+      `<div style="direction: rtl"><minerva-rating interactive aria-label="Score" value="5"></minerva-rating></div>`,
+    ],
+  ])("RTL from %s: ArrowLeft increases (like React)", async (_, markup) => {
+    document.body.innerHTML = markup;
+    await settle();
+    const el = document.querySelector<MinervaRating>("minerva-rating")!;
+    const onChange = vi.fn();
+    el.addEventListener("minerva-change", (e) =>
+      onChange((e as CustomEvent).detail.value),
+    );
+    slider(el).focus();
+    await userEvent.keyboard("{ArrowLeft}");
+    expect(onChange).toHaveBeenLastCalledWith(6);
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith(4);
+  });
+
   it("clicking a star picks it; hover previews", async () => {
     const { el, onChange } = await setup('value="0"');
     const buttons =
@@ -158,7 +182,7 @@ describe("<minerva-rating>", () => {
     slider(el).focus();
     await userEvent.keyboard("{ArrowUp}");
     expect(onChange).not.toHaveBeenCalled();
-    el.readonly = false;
+    el.readOnly = false;
     el.disabled = true;
     await el.updateComplete;
     expect(slider(el)).toHaveAttribute("role", "img");
@@ -259,7 +283,7 @@ describe("<minerva-rating-scale>", () => {
     await settle();
     const rating =
       el.shadowRoot!.querySelector<MinervaRating>("minerva-rating")!;
-    expect(rating.readonly).toBe(true);
+    expect(rating.readOnly).toBe(true);
     expect(rating.showValue).toBe(false);
     expect($(rating, ".rating")).toHaveAttribute("role", "img");
   });

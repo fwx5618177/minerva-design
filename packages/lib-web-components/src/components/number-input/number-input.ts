@@ -3,6 +3,12 @@ import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
 import styles from "@lib-core-styles/components/NumberInput/numberInput.module.scss?inline";
+import {
+  clampNumber,
+  formatNumberValue,
+  inferStepPrecision,
+  parseNumberDraft,
+} from "@minerva/core";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import {
@@ -15,33 +21,6 @@ import { hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
 
 export type NumberInputSize = "small" | "medium" | "large";
-
-function inferPrecision(step?: number): number {
-  if (!step || step >= 1) return 0;
-  const s = String(step);
-  const dot = s.indexOf(".");
-  return dot === -1 ? 0 : s.length - dot - 1;
-}
-
-function clamp(n: number, min?: number, max?: number): number {
-  let v = n;
-  if (min !== undefined) v = Math.max(min, v);
-  if (max !== undefined) v = Math.min(max, v);
-  return v;
-}
-
-function valueToString(v: number | null | undefined, precision: number) {
-  if (v === null || v === undefined || Number.isNaN(v)) return "";
-  return v.toFixed(precision);
-}
-
-/** Digits with an optional leading "-" and one "."; no exponent (a typing trap). */
-function parseDraft(input: string): number | null {
-  const trimmed = input.trim();
-  if (!trimmed || !/^-?\d*(\.\d*)?$/.test(trimmed)) return null;
-  const n = Number(trimmed);
-  return Number.isFinite(n) ? n : null;
-}
 
 /** `null` for a missing / empty / non-numeric attribute, else the number. */
 const optionalNumber = {
@@ -133,8 +112,8 @@ export class MinervaNumberInput extends FormAssociatedElement {
   invalid = false;
 
   /** Focusable and submitted, but typing and stepping do not change the value */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Shows increment / decrement buttons (the arrow keys always work) */
   @property({ type: Boolean, attribute: "show-stepper" })
@@ -180,11 +159,11 @@ export class MinervaNumberInput extends FormAssociatedElement {
   private dirty = false;
 
   private get resolvedPrecision(): number {
-    return this.precision ?? inferPrecision(this.step);
+    return this.precision ?? inferStepPrecision(this.step);
   }
 
   private get locked(): boolean {
-    return this.isDisabled || this.readonly;
+    return this.isDisabled || this.readOnly;
   }
 
   override focus(options?: FocusOptions): void {
@@ -206,7 +185,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
   }
 
   protected getFormValue(): string {
-    return valueToString(this.value, this.resolvedPrecision);
+    return formatNumberValue(this.value, this.resolvedPrecision);
   }
 
   protected override getValidity(): ValidityResult {
@@ -214,7 +193,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
     const anchor = this.input;
     const text = this.draft.trim();
     if (text && text !== "-" && text !== ".") {
-      const parsed = parseDraft(text);
+      const parsed = parseNumberDraft(text);
       if (parsed === null) {
         return {
           flags: { badInput: true },
@@ -255,11 +234,11 @@ export class MinervaNumberInput extends FormAssociatedElement {
   protected resetFormValue(): void {
     this.dirty = false;
     this.value = this.defaultValue;
-    this.draft = valueToString(this.value, this.resolvedPrecision);
+    this.draft = formatNumberValue(this.value, this.resolvedPrecision);
   }
 
   protected override restoreFormState(state: unknown): void {
-    if (typeof state === "string") this.value = parseDraft(state);
+    if (typeof state === "string") this.value = parseNumberDraft(state);
   }
 
   protected override willUpdate(changed: Map<PropertyKey, unknown>): void {
@@ -279,9 +258,9 @@ export class MinervaNumberInput extends FormAssociatedElement {
       changed.has("precision") ||
       changed.has("step")
     ) {
-      const numeric = parseDraft(this.draft);
+      const numeric = parseNumberDraft(this.draft);
       if (numeric === null || numeric !== this.value) {
-        this.draft = valueToString(this.value, this.resolvedPrecision);
+        this.draft = formatNumberValue(this.value, this.resolvedPrecision);
       }
     }
     if (
@@ -299,9 +278,11 @@ export class MinervaNumberInput extends FormAssociatedElement {
   }
 
   private stepped(delta: number): number {
-    const base = parseDraft(this.draft) ?? this.value ?? 0;
+    const base = parseNumberDraft(this.draft) ?? this.value ?? 0;
     return Number(
-      clamp(base + delta, this.min, this.max).toFixed(this.resolvedPrecision),
+      clampNumber(base + delta, this.min, this.max).toFixed(
+        this.resolvedPrecision,
+      ),
     );
   }
 
@@ -309,7 +290,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
   private commitValue(next: number | null) {
     const precision = this.resolvedPrecision;
     const rounded = next === null ? null : Number(next.toFixed(precision));
-    this.draft = valueToString(rounded, precision);
+    this.draft = formatNumberValue(rounded, precision);
     if (rounded === this.value) return;
     this.dirty = true;
     this.value = rounded;
@@ -322,17 +303,17 @@ export class MinervaNumberInput extends FormAssociatedElement {
     const trimmed = text.trim();
     if (trimmed === "" || trimmed === "-") {
       if (this.noEmpty) {
-        this.commitValue(clamp(this.min ?? 0, this.min, this.max));
+        this.commitValue(clampNumber(this.min ?? 0, this.min, this.max));
       } else this.commitValue(null);
       return;
     }
-    const parsed = parseDraft(trimmed);
+    const parsed = parseNumberDraft(trimmed);
     if (parsed === null) {
       // Invalid text falls back to the last valid value.
-      this.draft = valueToString(this.value, this.resolvedPrecision);
+      this.draft = formatNumberValue(this.value, this.resolvedPrecision);
       return;
     }
-    this.commitValue(clamp(parsed, this.min, this.max));
+    this.commitValue(clampNumber(parsed, this.min, this.max));
   }
 
   private adjust(delta: number) {
@@ -342,7 +323,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
 
   private handleInput() {
     this.draft = String(this.input.value);
-    this.emit("minerva-input", { value: parseDraft(this.draft) });
+    this.emit("minerva-input", { value: parseNumberDraft(this.draft) });
   }
 
   private handleKeyDown(event: KeyboardEvent) {
@@ -376,7 +357,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
     const { t } = this.locale;
     const text = this.draft.trim();
     if (!text || text === "-" || text === ".") return undefined;
-    const parsed = parseDraft(text);
+    const parsed = parseNumberDraft(text);
     if (parsed === null) {
       return this.notANumberMessage ?? t("numberInput.notANumber");
     }
@@ -425,7 +406,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
         .value=${live(this.draft)}
         placeholder=${this.placeholder || nothing}
         ?disabled=${disabled}
-        ?readonly=${this.readonly}
+        ?readonly=${this.readOnly}
         ?required=${this.required}
         aria-valuemin=${this.min ?? nothing}
         aria-valuemax=${this.max ?? nothing}

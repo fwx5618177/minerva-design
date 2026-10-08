@@ -11,6 +11,11 @@ import {
   IconChevronRight,
   IconEllipsis,
 } from "../../internal/icons";
+import {
+  getCompactPageItems,
+  getPageRange,
+  PAGINATION_JUMP_SIZE,
+} from "@minerva/core";
 import { cn } from "../../utils/cn";
 import type { PaginationProps } from "./types";
 import { logicalArrowKey } from "../../internal/direction";
@@ -21,11 +26,6 @@ import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 
 type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
-
-/** Number of consecutive page buttons around the current page */
-const WINDOW_SIZE = 5;
-/** Pages skipped by the jump-prev / jump-next items */
-const JUMP_SIZE = 5;
 
 const DEFAULT_ICONS = {
   prev: <IconChevronLeft aria-hidden="true" />,
@@ -40,70 +40,6 @@ interface Ripple {
   id: number;
   itemKey: string;
 }
-
-/** Window of page numbers centered on `current`, clamped to [1, totalPages] */
-const getPageRange = (current: number, totalPages: number) => {
-  let start = Math.max(1, current - Math.floor(WINDOW_SIZE / 2));
-  const end = Math.min(totalPages, start + WINDOW_SIZE - 1);
-  if (end - start + 1 < WINDOW_SIZE) {
-    start = Math.max(1, end - WINDOW_SIZE + 1);
-  }
-  const range: number[] = [];
-  for (let i = start; i <= end; i++) range.push(i);
-  return range;
-};
-
-type CompactItem = number | "ellipsis-start" | "ellipsis-end";
-
-const rangeOf = (start: number, end: number) => {
-  const out: number[] = [];
-  for (let i = start; i <= end; i++) out.push(i);
-  return out;
-};
-
-/**
- * Compact page list: `boundary` pages at each end, `siblings` pages on each
- * side of the current page and "…" gaps. Every page is listed when they fit.
- */
-const getCompactItems = (
-  totalPages: number,
-  page: number,
-  siblings: number,
-  boundary: number,
-): CompactItem[] => {
-  // boundaries + current and its siblings + two gap slots
-  const totalSlots = boundary * 2 + siblings * 2 + 3;
-  if (totalPages <= totalSlots) return rangeOf(1, totalPages);
-
-  const leftSibling = Math.max(page - siblings, boundary + 1);
-  const rightSibling = Math.min(page + siblings, totalPages - boundary);
-  // a gap of a single page is shown as that page instead of "…"
-  const showStartGap = leftSibling > boundary + 2;
-  const showEndGap = rightSibling < totalPages - boundary - 1;
-  const clusterSize = boundary + siblings * 2 + 2;
-
-  if (!showStartGap) {
-    return [
-      ...rangeOf(1, clusterSize),
-      "ellipsis-end",
-      ...rangeOf(totalPages - boundary + 1, totalPages),
-    ];
-  }
-  if (!showEndGap) {
-    return [
-      ...rangeOf(1, boundary),
-      "ellipsis-start",
-      ...rangeOf(totalPages - clusterSize + 1, totalPages),
-    ];
-  }
-  return [
-    ...rangeOf(1, boundary),
-    "ellipsis-start",
-    ...rangeOf(leftSibling, rightSibling),
-    "ellipsis-end",
-    ...rangeOf(totalPages - boundary + 1, totalPages),
-  ];
-};
 
 /**
  * Pagination 分页组件
@@ -465,7 +401,7 @@ const Pagination = ({
     }
 
     if (siblingCount !== undefined || boundaryCount !== undefined) {
-      const compact = getCompactItems(
+      const compact = getCompactPageItems(
         totalPages,
         page,
         Math.max(0, siblingCount ?? 1),
@@ -492,7 +428,9 @@ const Pagination = ({
     if (range.length > 0 && range[0] > 1) {
       items.push(renderItem(1, "page"));
       if (range[0] > 2) {
-        items.push(renderItem(Math.max(1, page - JUMP_SIZE), "jump-prev"));
+        items.push(
+          renderItem(Math.max(1, page - PAGINATION_JUMP_SIZE), "jump-prev"),
+        );
       }
     }
 
@@ -502,7 +440,10 @@ const Pagination = ({
     if (range.length > 0 && last < totalPages) {
       if (last < totalPages - 1) {
         items.push(
-          renderItem(Math.min(totalPages, page + JUMP_SIZE), "jump-next"),
+          renderItem(
+            Math.min(totalPages, page + PAGINATION_JUMP_SIZE),
+            "jump-next",
+          ),
         );
       }
       items.push(renderItem(totalPages, "page"));

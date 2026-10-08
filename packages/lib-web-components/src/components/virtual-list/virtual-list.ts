@@ -11,6 +11,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map.js";
 import styles from "@lib-core-styles/components/VirtualList/virtualList.module.scss?inline";
 import progressStyles from "@lib-core-styles/components/ProgressIndicator/progressIndicator.module.scss?inline";
+import { getVirtualRange } from "@minerva/core";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { IconWaveSquare } from "../../internal/icons";
@@ -185,10 +186,20 @@ export class MinervaVirtualList extends MinervaElement {
   }
 
   protected override firstUpdated(): void {
+    this.observeContainer();
+  }
+
+  protected override reconnectedCallback(): void {
+    super.reconnectedCallback();
+    this.observeContainer();
+  }
+
+  /** Tracks the height of the scroll container. */
+  private observeContainer() {
     const container = this.container;
     if (!container) return;
     this.containerHeight = container.clientHeight;
-    if (typeof ResizeObserver === "undefined") return;
+    if (this.resizeObserver || typeof ResizeObserver === "undefined") return;
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         this.containerHeight = entry.contentRect.height;
@@ -307,13 +318,13 @@ export class MinervaVirtualList extends MinervaElement {
   private visibleWindow(): WindowItem[] {
     const height = this.rowHeight;
     if (!height) return [];
-    const overscan = Math.max(0, this.overscan || 0);
-    const start = Math.max(
-      0,
-      Math.floor(this.scrollOffset / height) - overscan,
-    );
-    const count = Math.ceil(this.containerHeight / height) + 2 * overscan;
-    const end = Math.min(this.items.length, start + count);
+    const { start, end } = getVirtualRange({
+      scrollTop: this.scrollOffset,
+      viewportHeight: this.containerHeight,
+      itemHeight: height,
+      itemCount: this.items.length,
+      overscan: this.overscan,
+    });
     const rows: WindowItem[] = [];
     for (let i = start; i < end; i++)
       rows.push({ index: i, start: i * height });

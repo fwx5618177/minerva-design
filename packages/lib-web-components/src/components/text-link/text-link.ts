@@ -1,3 +1,4 @@
+import { linkRel } from "@minerva/core";
 import { css, html, nothing } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -7,6 +8,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { IconChevronRight } from "../../internal/icons";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
+import { safeHref } from "../../internal/url";
 
 /** default: underlined inline link; subtle: quiet with a chevron; action: full-width row */
 export type TextLinkVariant = "default" | "subtle" | "action";
@@ -49,7 +51,7 @@ export class MinervaTextLink extends MinervaElement {
   @property({ reflect: true })
   variant: TextLinkVariant = "default";
 
-  /** URL of the link */
+  /** URL of the link (`javascript:` / `vbscript:` URLs are not rendered) */
   @property()
   href?: string;
 
@@ -57,7 +59,7 @@ export class MinervaTextLink extends MinervaElement {
   @property()
   target?: string;
 
-  /** Link relationship (`noopener`...) */
+  /** Link relationship (`noopener`...); defaults to `noopener noreferrer` with `target="_blank"` */
   @property()
   rel?: string;
 
@@ -99,9 +101,9 @@ export class MinervaTextLink extends MinervaElement {
     return html`<a
       part="link"
       class=${classMap({ textLink: true, [this.variant]: true })}
-      href=${this.href ?? nothing}
+      href=${safeHref(MinervaTextLink.tagName, this.href) ?? nothing}
       target=${this.target ?? nothing}
-      rel=${this.rel ?? nothing}
+      rel=${linkRel(this.target, this.rel) ?? nothing}
       download=${this.download ?? nothing}
       hreflang=${this.hreflang ?? nothing}
       aria-label=${this.aria.label ?? nothing}

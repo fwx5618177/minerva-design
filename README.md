@@ -181,13 +181,15 @@ Pass `theme="github-dark"` (or `"light"` / `"dark"`) to use a built-in theme as-
 
 ```tsx
 // app/layout.tsx (React Server Component)
+import type { ReactNode } from "react";
+import { headers } from "next/headers";
 import {
   THEME_INIT_SCRIPT,
   parseThemeCookies,
 } from "@minerva/lib-core/theme-utils";
 import { ThemeProvider } from "@minerva/lib-core";
 
-export default async function Layout({ children }) {
+export default async function Layout({ children }: { children: ReactNode }) {
   const { theme, palette } = parseThemeCookies((await headers()).get("cookie"));
   return (
     <html suppressHydrationWarning>
@@ -206,6 +208,16 @@ export default async function Layout({ children }) {
   );
 }
 ```
+
+With a strict Content-Security-Policy (no `'unsafe-inline'`), give the inline script the request's nonce (`<script nonce={nonce} ...>`) or allow it by hash: `THEME_INIT_SCRIPT_HASH` (from `@minerva/lib-core/theme-utils`) is its `'sha256-…'` source, and `cspHash(createThemeInitScript(options))` hashes a customised script:
+
+```ts
+import { THEME_INIT_SCRIPT_HASH } from "@minerva/lib-core/theme-utils";
+
+export const csp = `script-src 'self' ${THEME_INIT_SCRIPT_HASH}`;
+```
+
+Plain functions and data of the main entry (`cn`, `themes`, `palettes`, `resolveTheme`, `applyThemeStyles`, `matchesShortcut`, `computeFixedColumnLayout`...) are client references inside Server Components (the main entry is `"use client"`): import them from the server-safe `@minerva/lib-core/utils` entry there.
 
 ### Toast API
 
@@ -292,6 +304,32 @@ Typings: every element is in `HTMLElementTagNameMap`; templates are typed with
 
 Guides for plain HTML, Vue, Angular, Svelte, forms and theming: [Web Components](https://fwx5618177.github.io/minerva/#/web-components).
 
+## 🌐 Browser support
+
+Minerva targets evergreen browsers. **Fully supported** (every feature below, no fallback involved): **Chrome / Edge 120+, Firefox 125+, Safari 17+** (iOS Safari 17+). Older engines down to the build baseline (Chrome / Edge 111, Firefox 113, Safari 16.4) work with the documented degradations. Server rendering needs Node `^20.19.0 || >=22.12.0`; nothing touches `window` / `document` at import time.
+
+| Feature                                                                                       | Used by                                                                                                                                                     | Minimum (Chrome / Firefox / Safari) | Without it                                                                                                        |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ES2020 (core, lib-core) / ES2022 (web components: class fields, static blocks)                | All JavaScript                                                                                                                                              | 80 / 80 / 14 — 94 / 93 / 16.4       | Required (transpile the packages yourself for older targets)                                                      |
+| CSS custom properties, `:focus-visible`, logical properties (`margin-inline`, `inset`), `gap` | All styles                                                                                                                                                  | 90 / 88 / 15.4                      | Required                                                                                                          |
+| `color-mix()`                                                                                 | Tinted shadows, hover / selected surfaces, focus rings                                                                                                      | 111 / 113 / 16.2                    | The declaration is dropped: flatter shadows and hover states                                                      |
+| Size container queries (`@container`)                                                         | `ResponsiveGrid`, `SplitLayout`, `KeyValueEditor` (responsive to their own width)                                                                           | 105 / 110 / 16                      | The single-column (narrow) layout is kept                                                                         |
+| `:has()`                                                                                      | `Input` adornment spacing, `Modal` / `Drawer` header padding next to the close button                                                                       | 105 / 121 / 15.4                    | Slightly different padding                                                                                        |
+| `:dir()`                                                                                      | Half stars of `Rating`, `Cascader` chevrons in RTL                                                                                                          | 120 / 49 / 16.4                     | RTL only: the half star / chevron is not mirrored                                                                 |
+| Dynamic viewport units (`dvh`)                                                                | `Drawer`, `AppShell` heights                                                                                                                                | 108 / 101 / 15.4                    | Required for the mobile-browser-chrome-aware height                                                               |
+| `accent-color`                                                                                | Native checkbox / radio / range tint                                                                                                                        | 93 / 92 / 15.4                      | Browser default tint                                                                                              |
+| `ResizeObserver`                                                                              | `Tabs` indicator, `PageTabs` overflow, `Table` / `<minerva-data-table>` fixed columns, `VirtualList`                                                        | 64 / 69 / 13.1                      | Feature-detected: measurements happen once instead of on resize                                                   |
+| `requestIdleCallback`                                                                         | `VirtualList` scroll batching                                                                                                                               | 47 / 55 / —                         | Feature-detected: `requestAnimationFrame` only (Safari)                                                           |
+| `inert`                                                                                       | `hideOthers(..., { attribute: "inert" })` (opt-in; default is `aria-hidden`)                                                                                | 102 / 112 / 15.5                    | Use the default `aria-hidden` mode                                                                                |
+| Clipboard API (`navigator.clipboard`)                                                         | `CodeBlock` / `<minerva-code-block>` copy button                                                                                                            | 66 / 63 / 13.1, secure context      | Feature-detected: the button reports "copy failed" (no `execCommand` fallback); HTTPS / localhost needed          |
+| **Web components only**                                                                       |                                                                                                                                                             |                                     |                                                                                                                   |
+| Custom elements v1, shadow DOM v1                                                             | Every element                                                                                                                                               | 67 / 63 / 10.1                      | Required                                                                                                          |
+| Constructable stylesheets (`adoptedStyleSheets`)                                              | Shadow-root styles (Lit)                                                                                                                                    | 73 / 101 / 16.4                     | Lit falls back to `<style>` elements                                                                              |
+| `ElementInternals` (form-associated custom elements)                                          | Form controls: `FormData`, constraint validation, `form.reset()`, `<label for>`, `<fieldset disabled>`                                                      | 77 / 98 / 16.4                      | Feature-detected: the controls work but do not take part in forms (polyfill: `element-internals-polyfill`)        |
+| Popover API (`popover`, top layer)                                                            | Overlays (popover, tooltip, menus, select / autocomplete / cascader / time-picker lists, modal, drawer, confirm, command, toasts) escape `overflow: hidden` | 114 / 125 / 17                      | Feature-detected: `position: fixed` + `z-index` (an ancestor with `transform` / `filter` / `contain` can clip it) |
+
+The React components render overlays into a portal and do not need the Popover API. Polyfills are never bundled; load them before Minerva if you need them.
+
 ## 🧑‍💻 Developer Quick Start
 
 Requirements: Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 for local development. Building the packages and the docs site also works on Node.js 20.19+, which is what the GitHub Pages deploy workflow uses.
@@ -373,8 +411,8 @@ What each package publishes (`files` in its `package.json`; tests, sources and t
 
 | Package                       | Contents                                                                                                                                                                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@minerva/core`               | `dist/` (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`), `README.md`, `LICENSE`                                                                                                                                            |
-| `@minerva/lib-core`           | `dist/` (ESM + CJS per module, types, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco` and `./theme-utils` entries), `README.md`, `LICENSE`                                                       |
+| `@minerva/core`               | `dist/` (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`), `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                                            |
+| `@minerva/lib-core`           | `dist/` (ESM + CJS per module, types, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco`, `./theme-utils` and `./utils` entries), `README.md`, `LICENSE`                                            |
 | `@minerva/lib-web-components` | `dist/` (ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, `tokens.css`, framework typings in `types/`, `html-custom-data.json`), `custom-elements.json`, `README.md`, `LICENSE` |
 
 `@minerva/sample` (the docs site) is private and never published.

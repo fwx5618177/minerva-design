@@ -2,7 +2,6 @@ import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
-import { contains, getTabbables } from "@minerva/core";
 import inputStyles from "@lib-core-styles/components/Input/input.module.scss?inline";
 import iconButtonStyles from "@lib-core-styles/components/IconButton/iconButton.module.scss?inline";
 import styles from "@lib-core-styles/components/TimePicker/timePicker.module.scss?inline";
@@ -13,7 +12,6 @@ import {
 } from "../../controllers/floating-layer";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
-import { getDirection } from "../../internal/dom";
 import {
   FormAssociatedElement,
   type ValidityResult,
@@ -22,6 +20,9 @@ import { IconClock, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import {
+  contains,
+  getTabbables,
+  logicalArrowKey,
   formatHasSeconds,
   formatTime,
   resolveTimeFormat,
@@ -30,7 +31,7 @@ import {
   secondsOfDay,
   startOfToday,
   toTimeValue,
-} from "./utils";
+} from "@minerva/core";
 import { sharedStyles } from "../../internal/styles";
 
 export type TimePickerSize = "small" | "medium" | "large";
@@ -179,8 +180,8 @@ export class MinervaTimePicker extends FormAssociatedElement {
   invalid = false;
 
   /** Shows the value without allowing changes (typing, panel, clearing) */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Hides the clear button (lib-core: `clearable={false}`) */
   @property({ type: Boolean, reflect: true, attribute: "hide-clear-button" })
@@ -275,7 +276,7 @@ export class MinervaTimePicker extends FormAssociatedElement {
   }
 
   private get interactive(): boolean {
-    return !this.isDisabled && !this.readonly;
+    return !this.isDisabled && !this.readOnly;
   }
 
   protected getFormValue(): string {
@@ -308,7 +309,13 @@ export class MinervaTimePicker extends FormAssociatedElement {
     if (changed.has("value") && changed.get("value") !== undefined) {
       this.dirty = this.value !== this.defaultValue || this.dirty;
     }
-    if (changed.has("defaultValue") && !this.dirty) {
+    // first update: a value set before connecting wins over the default
+    // unless the value attribute is present
+    if (
+      changed.has("defaultValue") &&
+      !this.dirty &&
+      (this.hasUpdated || this.hasAttribute("value"))
+    ) {
       this.value = this.defaultValue;
     }
     if (DEV) this.checkUsage(changed);
@@ -524,12 +531,8 @@ export class MinervaTimePicker extends FormAssociatedElement {
     const count = columns?.length ?? 0;
     const focusColumn = (i: number) =>
       columns?.[i]?.querySelector<HTMLElement>('[tabindex="0"]')?.focus();
-    let key = event.key;
     // RTL: columns are laid out right to left, so ArrowLeft is the next one.
-    if (getDirection(this) === "rtl") {
-      if (key === "ArrowLeft") key = "ArrowRight";
-      else if (key === "ArrowRight") key = "ArrowLeft";
-    }
+    const key = logicalArrowKey(event.key, this);
     switch (key) {
       case "ArrowDown":
         event.preventDefault();
@@ -717,7 +720,7 @@ export class MinervaTimePicker extends FormAssociatedElement {
   protected override render() {
     const { t } = this.locale;
     const disabled = this.isDisabled;
-    const readonly = this.readonly;
+    const readonly = this.readOnly;
     const current = this.valueAsDate;
     const name = this.label || this.aria.label || t("timePicker.label");
     const displayValue =

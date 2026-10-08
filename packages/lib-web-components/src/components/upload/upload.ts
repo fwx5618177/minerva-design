@@ -4,6 +4,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import iconButtonStyles from "@lib-core-styles/components/IconButton/iconButton.module.scss?inline";
 import styles from "@lib-core-styles/components/Upload/upload.module.scss?inline";
+import { matchesAccept } from "@minerva/core";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import {
@@ -55,19 +56,6 @@ export interface UploadLabels {
   retry?: (name: string) => string;
   /** Accessible label of the remove button of a file */
   remove?: (name: string) => string;
-}
-
-/** Whether a file matches an <input accept> list (extensions and MIME types) */
-function matchesAccept(file: File, accept: string) {
-  return accept.split(",").some((part) => {
-    const rule = part.trim().toLowerCase();
-    if (!rule || rule === "*" || rule === "*/*") return true;
-    if (rule.startsWith(".")) return file.name.toLowerCase().endsWith(rule);
-    const type = file.type.toLowerCase();
-    return rule.endsWith("/*")
-      ? type.startsWith(rule.slice(0, -1))
-      : type === rule;
-  });
 }
 
 let nextUpload = 0;

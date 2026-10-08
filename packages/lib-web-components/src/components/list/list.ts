@@ -1,4 +1,5 @@
 import { css, html, nothing } from "lit";
+import { setHostAria } from "../../internal/aria";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/List/list.module.scss?inline";
@@ -10,22 +11,6 @@ import { sharedStyles } from "../../internal/styles";
 
 /** Row density: 56px or 40px minimum row height */
 export type ListDensity = "default" | "compact";
-
-/**
- * Sets the ARIA role of `host` through ElementInternals, falling back to the
- * `role` attribute (unless the author set one).
- */
-function setHostRole(
-  host: HTMLElement,
-  internals: ElementInternals | null,
-  role: string,
-) {
-  if (internals && "role" in internals) {
-    internals.role = role;
-  } else if (!host.hasAttribute("role")) {
-    host.setAttribute("role", role);
-  }
-}
 
 /**
  * A quiet operational list (`<List>` of lib-core): `role="list"` on the
@@ -75,7 +60,7 @@ export class MinervaList extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    setHostRole(this, this.internals, "list");
+    setHostAria(this, this.internals, { role: "list" });
   }
 
   protected override updated(): void {
@@ -166,7 +151,7 @@ export class MinervaListItem extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    setHostRole(this, this.internals, "listitem");
+    setHostAria(this, this.internals, { role: "listitem" });
   }
 
   protected override render() {

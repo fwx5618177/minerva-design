@@ -73,7 +73,7 @@ describe("<minerva-badge>", () => {
     const el = await mount<MinervaBadge>(
       `<minerva-badge badge-role="presentation">1</minerva-badge>`,
     );
-    expect(el.getAttribute("color")).toBe("primary");
+    expect(el.getAttribute("color")).toBeNull();
     el.color = "danger";
     el.variant = "outline";
     await el.updateComplete;

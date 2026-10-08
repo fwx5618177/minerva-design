@@ -9,7 +9,7 @@ import { sharedStyles } from "../../internal/styles";
 type Control = HTMLElement & Record<string, unknown>;
 
 /** Boolean state the field applies to its control. */
-type Flag = "invalid" | "required" | "disabled" | "readonly";
+type Flag = "invalid" | "required" | "disabled" | "readOnly";
 
 /** Controls that a label click toggles (like a native `<label>`) */
 const isCheckable = (el: Element) =>
@@ -91,8 +91,8 @@ export class MinervaFormControl extends MinervaElement {
   disabled = false;
 
   /** Makes the control read-only */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Indicator shown after the label when required (hidden from assistive technology) */
   @property({ attribute: "required-indicator" })
@@ -196,7 +196,7 @@ export class MinervaFormControl extends MinervaElement {
       invalid: ["invalid", "error"],
       required: ["required"],
       disabled: ["disabled"],
-      readonly: ["readonly", "readOnly"],
+      readOnly: ["readOnly", "readonly"],
     };
     return (
       candidates[flag].find(
@@ -238,14 +238,14 @@ export class MinervaFormControl extends MinervaElement {
     const description = this.descriptionText;
     this.setAttr(el, "aria-description", description || null);
 
-    const flags: Flag[] = ["invalid", "required", "disabled", "readonly"];
+    const flags: Flag[] = ["invalid", "required", "disabled", "readOnly"];
     for (const flag of flags) {
       const prop = this.propFor(el, flag);
       if (prop) this.setProp(el, prop, this[flag]);
     }
     this.setAttr(el, "aria-invalid", this.invalid ? "true" : null);
     this.setAttr(el, "aria-required", this.required ? "true" : null);
-    this.setAttr(el, "aria-readonly", this.readonly ? "true" : null);
+    this.setAttr(el, "aria-readonly", this.readOnly ? "true" : null);
 
     if (DEV && this.children.length > 0) {
       const controls = Array.from(this.children).filter(

@@ -14,6 +14,7 @@ import {
   IconChevronUp,
   IconChevronsUpDown,
 } from "../../internal/icons";
+import { getColumnCompare, nextSortState } from "@minerva/core";
 import { computeFixedColumnLayout } from "./fixedColumns";
 import type {
   TableBodyProps,
@@ -25,7 +26,6 @@ import type {
   TableRootProps,
   TableRowKey,
   TableRowProps,
-  TableSortCompare,
   TableSortState,
 } from "./types";
 import styles from "./table.module.scss";
@@ -150,47 +150,6 @@ export const TableCell = ({ ref, ...props }: TableCellProps) => (
   <td ref={ref} {...props} />
 );
 
-const isEmpty = (value: unknown): boolean =>
-  value === null || value === undefined || value === "";
-
-const collator = new Intl.Collator(undefined, {
-  numeric: true,
-  sensitivity: "base",
-});
-
-/** Default ascending comparison of two cell values (empty values last) */
-const compareValues = (a: unknown, b: unknown): number => {
-  if (isEmpty(a) || isEmpty(b)) return isEmpty(a) ? (isEmpty(b) ? 0 : 1) : -1;
-  if (typeof a === "number" && typeof b === "number") return a - b;
-  if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
-  if (typeof a === "boolean" && typeof b === "boolean")
-    return Number(a) - Number(b);
-  return collator.compare(String(a), String(b));
-};
-
-const compareFor = <T,>(col: TableColumn<T>): TableSortCompare<T> | null => {
-  if (typeof col.sortable === "function") return col.sortable;
-  if (col.sortable)
-    return (a, b) =>
-      compareValues(
-        (a as Record<string, unknown>)[col.key],
-        (b as Record<string, unknown>)[col.key],
-      );
-  return null;
-};
-
-/** Next state of the ascending → descending → unsorted cycle */
-const nextSortState = (
-  current: TableSortState | null,
-  key: string,
-): TableSortState => {
-  const order = current?.key === key ? current.order : null;
-  return {
-    key,
-    order: order === null ? "ascend" : order === "ascend" ? "descend" : null,
-  };
-};
-
 const ARIA_SORT = { ascend: "ascending", descend: "descending" } as const;
 
 /** Width of the selection column (px) */
@@ -276,7 +235,7 @@ export function Table<T>({
     activeOrder === null
       ? undefined
       : columns.find((col) => col.key === sortState?.key);
-  const compare = sortColumn ? compareFor(sortColumn) : null;
+  const compare = sortColumn ? getColumnCompare(sortColumn) : null;
   const rows =
     !manualSort && compare
       ? [...entries].sort((a, b) =>

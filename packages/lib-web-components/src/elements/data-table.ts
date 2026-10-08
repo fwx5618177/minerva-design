@@ -7,8 +7,5 @@ import { defineElement } from "../internal/define";
 defineElement(MinervaDataTable);
 defineElement(MinervaTableCellContent);
 export * from "../components/data-table/data-table";
-export { computeFixedColumnLayout } from "../components/data-table/fixed-columns";
-export type {
-  FixedColumnLayout,
-  FixedColumnLike,
-} from "../components/data-table/fixed-columns";
+export { computeFixedColumnLayout } from "@minerva/core";
+export type { FixedColumnLayout, FixedColumnLike } from "@minerva/core";

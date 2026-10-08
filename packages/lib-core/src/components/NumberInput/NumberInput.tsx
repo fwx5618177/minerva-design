@@ -1,5 +1,11 @@
 import { useState, type FocusEvent, type KeyboardEvent } from "react";
 import { IconChevronDown, IconChevronUp } from "../../internal/icons";
+import {
+  clampNumber,
+  formatNumberValue,
+  inferStepPrecision,
+  parseNumberDraft,
+} from "@minerva/core";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { isAriaInvalid } from "../../internal/forms-field";
@@ -8,36 +14,6 @@ import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useFormControlProps } from "../FormControl/context";
 import type { NumberInputProps } from "./types";
 import styles from "./numberInput.module.scss";
-
-function inferPrecision(step?: number): number {
-  if (!step || step >= 1) return 0;
-  const s = String(step);
-  const dot = s.indexOf(".");
-  return dot === -1 ? 0 : s.length - dot - 1;
-}
-
-function clamp(n: number, min?: number, max?: number): number {
-  let v = n;
-  if (min !== undefined) v = Math.max(min, v);
-  if (max !== undefined) v = Math.min(max, v);
-  return v;
-}
-
-function valueToString(
-  v: number | null | undefined,
-  precision: number,
-): string {
-  if (v === null || v === undefined || Number.isNaN(v)) return "";
-  return v.toFixed(precision);
-}
-
-/** Digits with an optional leading "-" and one "."; no exponent (a typing trap). */
-function parseDraft(input: string): number | null {
-  const trimmed = input.trim();
-  if (!trimmed || !/^-?\d*(\.\d*)?$/.test(trimmed)) return null;
-  const n = Number(trimmed);
-  return Number.isFinite(n) ? n : null;
-}
 
 /**
  * NumberInput: numeric text field (role="spinbutton") with keyboard stepping
@@ -75,7 +51,7 @@ export const NumberInput = ({
   const field = useFormControlProps({ ...rest, disabled, readOnly });
   const isDisabled = !!field.disabled;
   const isLocked = isDisabled || !!field.readOnly;
-  const precision = precisionProp ?? inferPrecision(step);
+  const precision = precisionProp ?? inferStepPrecision(step);
 
   if (process.env.NODE_ENV !== "production") {
     if (min !== undefined && max !== undefined && min > max) {
@@ -108,15 +84,17 @@ export const NumberInput = ({
     name: "NumberInput",
   });
 
-  const [draft, setDraft] = useState(() => valueToString(current, precision));
+  const [draft, setDraft] = useState(() =>
+    formatNumberValue(current, precision),
+  );
   // Sync the draft when the value changes from outside (derived during
   // render), unless the draft already shows that number (keeps "1." etc.).
   const [synced, setSynced] = useState({ current, precision });
   if (synced.current !== current || synced.precision !== precision) {
     setSynced({ current, precision });
-    const numeric = parseDraft(draft);
+    const numeric = parseNumberDraft(draft);
     if (numeric === null || numeric !== current) {
-      setDraft(valueToString(current, precision));
+      setDraft(formatNumberValue(current, precision));
     }
   }
 
@@ -134,23 +112,23 @@ export const NumberInput = ({
         setCurrent(null);
         setDraft("");
       } else {
-        emit(clamp(min ?? 0, min, max));
+        emit(clampNumber(min ?? 0, min, max));
       }
       return;
     }
-    const parsed = parseDraft(trimmed);
+    const parsed = parseNumberDraft(trimmed);
     if (parsed === null) {
       // Invalid text falls back to the last valid value.
-      setDraft(valueToString(current, precision));
+      setDraft(formatNumberValue(current, precision));
       return;
     }
-    emit(clamp(parsed, min, max));
+    emit(clampNumber(parsed, min, max));
   };
 
   const adjust = (delta: number) => {
     if (isLocked) return;
-    const base = parseDraft(draft) ?? current ?? 0;
-    emit(clamp(base + delta, min, max));
+    const base = parseNumberDraft(draft) ?? current ?? 0;
+    emit(clampNumber(base + delta, min, max));
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -185,7 +163,7 @@ export const NumberInput = ({
 
   // Draft-level validation: not a number, or out of range.
   const draftTrim = draft.trim();
-  const parsedDraft = parseDraft(draftTrim);
+  const parsedDraft = parseNumberDraft(draftTrim);
   let errorMessage: string | undefined;
   if (draftTrim && draftTrim !== "-" && draftTrim !== ".") {
     if (parsedDraft === null) {

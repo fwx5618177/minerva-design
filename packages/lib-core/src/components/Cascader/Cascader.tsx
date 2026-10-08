@@ -15,47 +15,14 @@ import {
   useFormControlContext,
   useFormControlProps,
 } from "../FormControl/context";
+import { findCascaderPath, flattenCascaderOptions } from "@minerva/core";
 import styles from "./cascader.module.scss";
 
 type CascaderValue = (string | number)[];
 
-/** Resolve the option chain for a list of values (one value per level) */
-const findOptionsByValues = (
-  opts: CascaderOption[],
-  values: CascaderValue,
-): CascaderOption[] => {
-  const result: CascaderOption[] = [];
-  let level: CascaderOption[] | undefined = opts;
-  for (const value of values) {
-    const found: CascaderOption | undefined = level?.find(
-      (o) => o.value === value,
-    );
-    if (!found) break;
-    result.push(found);
-    level = found.children;
-  }
-  return result;
-};
-
 /** Stable defaults so memos depending on them don't re-run each render */
 const EMPTY_OPTIONS: CascaderOption[] = [];
 const EMPTY_VALUE: CascaderValue = [];
-
-/** A flattened option together with the chain of options leading to it */
-type SearchResult = { option: CascaderOption; path: CascaderOption[] };
-
-const flattenOptions = (
-  opts: CascaderOption[],
-  path: CascaderOption[] = [],
-): SearchResult[] =>
-  opts.flatMap((option) => {
-    if (option.disabled) return [];
-    const current = [...path, option];
-    return [
-      { option, path: current },
-      ...(option.children ? flattenOptions(option.children, current) : []),
-    ];
-  });
 
 /**
  * Cascader: pick a value from a tree of options, one column per level.
@@ -128,7 +95,7 @@ const Cascader = ({
     { value, defaultValue: defaultValue ?? EMPTY_VALUE, name: "Cascader" },
   );
   const selectedOptions = useMemo(
-    () => findOptionsByValues(options, selectedValue),
+    () => findCascaderPath(options, selectedValue),
     [options, selectedValue],
   );
 
@@ -137,7 +104,7 @@ const Cascader = ({
   const [focusPanel, setFocusPanel] = useState(false);
   const [expandedValues, setExpandedValues] = useState<CascaderValue>([]);
   const expandedPath = useMemo(
-    () => findOptionsByValues(options, expandedValues),
+    () => findCascaderPath(options, expandedValues),
     [options, expandedValues],
   );
   const [searchValue, setSearchValue] = useState("");
@@ -151,7 +118,7 @@ const Cascader = ({
   const searchResults = useMemo(() => {
     if (!searching) return [];
     const needle = searchValue.toLowerCase();
-    return flattenOptions(options).filter(({ path }) =>
+    return flattenCascaderOptions(options).filter(({ path }) =>
       filter
         ? filter(searchValue, path)
         : path.some((o) => String(o.label).toLowerCase().includes(needle)),

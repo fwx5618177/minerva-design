@@ -3,7 +3,12 @@ import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
 import { repeat } from "lit/directives/repeat.js";
-import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/core";
+import {
+  // Aliased: the name shows up as the documented default of `separators`.
+  DEFAULT_TAG_SEPARATORS as DEFAULT_SEPARATORS,
+  ESCAPE_CONSUMER_ATTRIBUTE,
+  splitBySeparators,
+} from "@minerva/core";
 import iconButtonStyles from "@lib-core-styles/components/IconButton/iconButton.module.scss?inline";
 import inputStyles from "@lib-core-styles/components/Input/input.module.scss?inline";
 import tagStyles from "@lib-core-styles/components/Tag/tag.module.scss?inline";
@@ -27,19 +32,8 @@ import { sharedStyles } from "../../internal/styles";
 export type TagInputSize = "small" | "medium" | "large";
 
 const TAG = "minerva-tag-input";
-const DEFAULT_SEPARATORS: readonly string[] = [",", "Enter"];
 const ENTER = "Enter";
 const LINE_BREAKS = ["\r\n", "\n", "\r"];
-
-/** Splits `text` on any of the literal `separators` (longest first). */
-function splitText(text: string, separators: readonly string[]): string[] {
-  if (separators.length === 0) return [text];
-  const pattern = [...separators]
-    .sort((a, b) => b.length - a.length)
-    .map((sep) => sep.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  return text.split(new RegExp(pattern));
-}
 
 /** Strings of a JSON array attribute (`null` when it is not one). */
 function parseJsonList(text: string, attribute: string): string[] | null {
@@ -228,8 +222,8 @@ export class MinervaTagInput extends FormAssociatedElement {
   invalid = false;
 
   /** Shows the tags without editing controls (still submitted) */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Text of the suggestion list when nothing matches (default: localized "No matches") */
   @property({ attribute: "empty-text" })
@@ -309,7 +303,7 @@ export class MinervaTagInput extends FormAssociatedElement {
   }
 
   private get blocked(): boolean {
-    return this.isDisabled || this.readonly;
+    return this.isDisabled || this.readOnly;
   }
 
   private get isOpen(): boolean {
@@ -485,7 +479,7 @@ export class MinervaTagInput extends FormAssociatedElement {
     const parts =
       this.composing || splitters.length === 0
         ? [text]
-        : splitText(text, splitters);
+        : splitBySeparators(text, splitters);
     if (parts.length > 1) {
       // Typed a separator: commit what precedes it, keep the rest.
       this.commitAll(parts.slice(0, -1), parts[parts.length - 1]);
@@ -508,7 +502,7 @@ export class MinervaTagInput extends FormAssociatedElement {
     const start = this.input.selectionStart ?? draft.length;
     const end = this.input.selectionEnd ?? draft.length;
     const text = draft.slice(0, start) + pasted + draft.slice(end);
-    this.commitAll(splitText(text, splitters));
+    this.commitAll(splitBySeparators(text, splitters));
     this.setOpen(false);
   }
 
@@ -608,7 +602,7 @@ export class MinervaTagInput extends FormAssociatedElement {
     >
       <span class="content"><span class="label">${tag}</span></span>
       ${
-        this.readonly
+        this.readOnly
           ? nothing
           : html`<button
               part="remove-button"
@@ -723,7 +717,7 @@ export class MinervaTagInput extends FormAssociatedElement {
               placeholder=${this.placeholder || nothing}
               .value=${live(this.draft)}
               ?disabled=${disabled}
-              ?readonly=${this.readonly}
+              ?readonly=${this.readOnly}
               @input=${this.handleInput}
               @focus=${this.handleFocus}
               @click=${this.handleFocus}
@@ -737,7 +731,7 @@ export class MinervaTagInput extends FormAssociatedElement {
           ${open ? this.renderList(filtered) : nothing}
         </div>
         ${
-          this.readonly
+          this.readOnly
             ? nothing
             : html`<button
                   part="add-button"

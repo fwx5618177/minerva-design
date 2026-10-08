@@ -1,9 +1,16 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/MonthCalendar/monthCalendar.module.scss?inline";
+import {
+  addDays,
+  dayKey,
+  localDate,
+  logicalArrowKey,
+  monthStart,
+  sameMonth,
+} from "@minerva/core";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
-import { getDirection } from "../../internal/dom";
 import {
   IconCalendar,
   IconChevronLeft,
@@ -25,32 +32,6 @@ export interface MonthCalendarEvent {
 
 const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const DAY_KEY = /^\d{4}-\d{2}-\d{2}$/;
-
-function localDate(year: number, month: number, day: number) {
-  // setFullYear keeps years < 100 intact (the Date constructor maps them to 19xx).
-  const date = new Date(0);
-  date.setFullYear(year, month, day);
-  date.setHours(0, 0, 0, 0);
-  return date;
-}
-
-function dayKey(date: Date) {
-  return `${String(date.getFullYear()).padStart(4, "0")}-${String(
-    date.getMonth() + 1,
-  ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-}
-
-function addDays(date: Date, days: number) {
-  return localDate(date.getFullYear(), date.getMonth(), date.getDate() + days);
-}
-
-function monthStart(date: Date, offset = 0) {
-  return localDate(date.getFullYear(), date.getMonth() + offset, 1);
-}
-
-function sameMonth(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
-}
 
 /** `month` attribute: "YYYY-MM" or "YYYY-MM-DD" (local) <-> Date. */
 const monthConverter = {
@@ -211,14 +192,8 @@ export class MinervaMonthCalendar extends MinervaElement {
       if (!event.repeat) this.select(date);
       return;
     }
-    const rtl = getDirection(this) === "rtl";
     // RTL: the week runs right to left, so ArrowLeft is the next day.
-    const key =
-      rtl && event.key === "ArrowLeft"
-        ? "ArrowRight"
-        : rtl && event.key === "ArrowRight"
-          ? "ArrowLeft"
-          : event.key;
+    const key = logicalArrowKey(event.key, this);
     const weekday = (date.getDay() + 6) % 7;
     let target: Date;
     switch (key) {

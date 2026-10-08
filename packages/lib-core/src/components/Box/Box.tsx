@@ -1,6 +1,6 @@
 import type { CSSProperties, ElementType } from "react";
-import { resolveSpace } from "../../internal/space";
-import type { BoxProps, BoxSize } from "./types";
+import { resolveSize, resolveSpace } from "@minerva/core";
+import type { BoxProps } from "./types";
 
 /** Surface aliases accepted by `bg` (`bg.*` shorthands -> surface tokens) */
 const backgrounds: Record<string, string> = {
@@ -14,9 +14,6 @@ const backgrounds: Record<string, string> = {
 
 const radii = ["none", "sm", "md", "lg", "xl", "2xl", "full"];
 const shadows = ["sm", "md", "lg", "xl"];
-
-const size = (value: BoxSize) =>
-  typeof value === "number" ? `${value}px` : value;
 
 /**
  * Box: a polymorphic container with a small set of style shorthands
@@ -81,12 +78,12 @@ const Box = ({
     ...(mr !== undefined && { marginRight: resolveSpace(mr) }),
     ...(mb !== undefined && { marginBottom: resolveSpace(mb) }),
     ...(ml !== undefined && { marginLeft: resolveSpace(ml) }),
-    ...(w !== undefined && { width: size(w) }),
-    ...(h !== undefined && { height: size(h) }),
-    ...(minW !== undefined && { minWidth: size(minW) }),
-    ...(minH !== undefined && { minHeight: size(minH) }),
-    ...(maxW !== undefined && { maxWidth: size(maxW) }),
-    ...(maxH !== undefined && { maxHeight: size(maxH) }),
+    ...(w !== undefined && { width: resolveSize(w) }),
+    ...(h !== undefined && { height: resolveSize(h) }),
+    ...(minW !== undefined && { minWidth: resolveSize(minW) }),
+    ...(minH !== undefined && { minHeight: resolveSize(minH) }),
+    ...(maxW !== undefined && { maxWidth: resolveSize(maxW) }),
+    ...(maxH !== undefined && { maxHeight: resolveSize(maxH) }),
     ...(bg !== undefined && { background: backgrounds[bg] ?? bg }),
     ...(rounded !== undefined && {
       borderRadius: radii.includes(rounded)

@@ -73,6 +73,15 @@ describe("Box", () => {
     expect(style.maxHeight).toBe("100vh");
   });
 
+  it("trims spacing values and treats numeric size strings as px (like <minerva-box>)", () => {
+    render(<Box data-testid="box" p=" 2 " m=" 12px " w="120" h=" 3rem " />);
+    const { style } = screen.getByTestId("box");
+    expect(style.padding).toBe("var(--space-2)");
+    expect(style.margin).toBe("12px");
+    expect(style.width).toBe("120px");
+    expect(style.height).toBe("3rem");
+  });
+
   it("resolves semantic background, radius and shadow tokens", () => {
     render(
       <Box

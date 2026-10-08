@@ -1,4 +1,6 @@
 import { css, html, nothing } from "lit";
+import { setHostAria } from "../../internal/aria";
+import { attachInternals as attachHostInternals } from "../../internal/form";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { ColorScheme } from "@minerva/core";
@@ -51,6 +53,8 @@ const NAVIGATION_KEYS = new Set([
  * @fires minerva-change - A standalone radio was checked by the user; `detail: { checked: true, value }` (inside a group, the group fires it)
  */
 export class MinervaRadio extends MinervaElement {
+  private readonly hostInternals = attachHostInternals(this);
+  private readonly ownedAria = new Set<string>();
   static override tagName = "minerva-radio";
   static override styles = [
     hostStyles,
@@ -159,10 +163,16 @@ export class MinervaRadio extends MinervaElement {
 
   protected override updated(): void {
     const disabled = this.isDisabled;
-    this.setAttribute("role", "radio");
-    this.setAttribute("aria-checked", String(this.checked));
-    if (disabled) this.setAttribute("aria-disabled", "true");
-    else this.removeAttribute("aria-disabled");
+    setHostAria(
+      this,
+      this.hostInternals,
+      {
+        role: "radio",
+        ariaChecked: String(this.checked),
+        ariaDisabled: disabled ? "true" : null,
+      },
+      this.ownedAria,
+    );
     if (!this.group) this.setAttribute("tabindex", disabled ? "-1" : "0");
     const helper = this.error ? this.errorMessage : this.helperText;
     if (

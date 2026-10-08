@@ -11,7 +11,7 @@ import {
   parseTimeInput,
   resolveTimeFormat,
   startOfToday,
-} from "./utils";
+} from "@minerva/core";
 import { FloatingPanel } from "../../internal/FloatingPanel";
 import { useLayerParent } from "../../internal/useDismissableLayer";
 import { adjacentTabbable, tabLeavesPanel } from "../../internal/tabbing";

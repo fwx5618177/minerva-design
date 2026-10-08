@@ -9,16 +9,16 @@ import {
 } from "@minerva/lib-core";
 
 const positions: ToastPosition[] = [
-  "topLeft",
-  "topCenter",
-  "topRight",
-  "bottomLeft",
-  "bottomCenter",
-  "bottomRight",
+  "top-left",
+  "top-center",
+  "top-right",
+  "bottom-left",
+  "bottom-center",
+  "bottom-right",
 ];
 
 export default function BasicDemo() {
-  const [position, setPosition] = useState<ToastPosition>("topRight");
+  const [position, setPosition] = useState<ToastPosition>("top-right");
   return (
     // Mount one ToastProvider near the root of the app; max={3} closes the
     // oldest toast when a fourth one appears

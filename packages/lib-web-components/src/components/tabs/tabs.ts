@@ -1,4 +1,6 @@
 import { css, html, nothing, type PropertyValues } from "lit";
+import { setHostAria } from "../../internal/aria";
+import { attachInternals } from "../../internal/form";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { ColorScheme } from "@minerva/core";
@@ -264,6 +266,8 @@ export class MinervaTabs extends MinervaElement {
  * @csspart base - The visual trigger
  */
 export class MinervaTab extends MinervaElement {
+  private readonly internals = attachInternals(this);
+  private readonly ownedAria = new Set<string>();
   static override tagName = "minerva-tab";
   static override styles = [
     hostStyles,
@@ -326,7 +330,7 @@ export class MinervaTab extends MinervaElement {
   override connectedCallback(): void {
     super.connectedCallback();
     if (!this.hasAttribute("slot")) this.slot = "tab";
-    this.setAttribute("role", "tab");
+    setHostAria(this, this.internals, { role: "tab" }, this.ownedAria);
     this.addEventListener("mousedown", this.handleMouseDown);
     this.addEventListener("keydown", this.handleKeyDown);
     this.addEventListener("click", this.handleClick);
@@ -367,15 +371,17 @@ export class MinervaTab extends MinervaElement {
   };
 
   protected override updated(): void {
-    this.setAttribute("aria-selected", String(this.selected));
+    setHostAria(
+      this,
+      this.internals,
+      {
+        ariaSelected: String(this.selected),
+        ariaDisabled: this.disabled ? "true" : null,
+      },
+      this.ownedAria,
+    );
     this.setAttribute("data-state", this.selected ? "active" : "inactive");
-    if (this.disabled) {
-      this.setAttribute("aria-disabled", "true");
-      this.setAttribute("data-disabled", "");
-    } else {
-      this.removeAttribute("aria-disabled");
-      this.removeAttribute("data-disabled");
-    }
+    this.toggleAttribute("data-disabled", this.disabled);
     const orientation = this.group?.orientation ?? "horizontal";
     this.setAttribute("data-orientation", orientation);
   }
@@ -421,6 +427,7 @@ export class MinervaTab extends MinervaElement {
  * @csspart base - The panel wrapper
  */
 export class MinervaTabPanel extends MinervaElement {
+  private readonly internals = attachInternals(this);
   static override tagName = "minerva-tab-panel";
   static override styles = [
     hostStyles,
@@ -501,7 +508,7 @@ export class MinervaTabPanel extends MinervaElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute("role", "tabpanel");
+    setHostAria(this, this.internals, { role: "tabpanel" });
     if (!this.hasAttribute("tabindex")) this.tabIndex = 0;
   }
 

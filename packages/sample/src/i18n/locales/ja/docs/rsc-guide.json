@@ -10,7 +10,8 @@
     "no": "なし",
     "main": "すべてのコンポーネント、プロバイダー、フック、ユーティリティ。",
     "monaco": "Monaco ベースのコードエディター（任意のピア依存：@monaco-editor/react と monaco-editor）。",
-    "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。"
+    "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。",
+    "utils": "サーバーで安全に使えるユーティリティ：cn、themes、light、dark、githubDark、palettes、resolveTheme、generateCSSVariables、applyThemeStyles、getSystemTheme、isBilingualTheme、matchesShortcut、normalizeShortcuts、computeFixedColumnLayout。"
   },
   "why": {
     "title": "一部のエントリがクライアント境界である理由",
@@ -24,8 +25,12 @@
   },
   "functions": {
     "title": "サーバーで関数を呼び出す",
-    "text": "@minerva/lib-core/theme-utils のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（toast.success、Confirm、applyThemeStyles、各フックなど）は Server Component で呼び出さないでください。そこではクライアント参照にすぎません。クライアントコンポーネントやイベントハンドラーから呼び出してください。",
+    "text": "@minerva/lib-core/theme-utils と @minerva/lib-core/utils のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（toast.success、Confirm、各フックなど）を Server Component で呼び出したり、そのデータ（themes、palettes など）を読んだりしないでください。そこではクライアント参照にすぎません。通常の関数とデータは @minerva/lib-core/utils からインポートしてください。",
     "imperative": "命令的な API はクライアントコンポーネントの SSR 中でも安全です。document がない場合は何もせず、Confirm のような Promise ベースのダイアログはサーバーでは false に解決されます。ブラウザーでのみ実行されるイベントハンドラーやエフェクトから呼び出してください。"
+  },
+  "csp": {
+    "title": "コンテンツセキュリティポリシー（CSP）",
+    "text": "厳格な Content-Security-Policy（'unsafe-inline' なし）はインラインのテーマ初期化スクリプトをブロックします。<script> 要素にリクエストの nonce を付けるか、ハッシュで許可してください。THEME_INIT_SCRIPT_HASH は THEME_INIT_SCRIPT の 'sha256-…' ソースで、cspHash() は createThemeInitScript() で作ったスクリプトのハッシュを計算します。"
   },
   "css": {
     "title": "CSS をインポートする場所",

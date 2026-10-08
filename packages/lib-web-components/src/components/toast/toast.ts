@@ -6,10 +6,11 @@ import { styleMap } from "lit/directives/style-map.js";
 import {
   contains,
   focusElement,
+  formatHotkey,
   getActiveElement,
-  getFocusables,
+  getAdjacentTabbable,
   getTabbables,
-  isTabbable,
+  matchesHotkey,
 } from "@minerva/core";
 import styles from "@lib-core-styles/components/Toast/toast.module.scss?inline";
 import { popoverResetStyles } from "../../controllers/floating-layer";
@@ -48,37 +49,15 @@ const ICONS: Record<ToastColor, unknown> = {
 };
 
 const POSITIONS: readonly ToastPosition[] = [
-  "topRight",
-  "topLeft",
-  "topCenter",
-  "bottomRight",
-  "bottomLeft",
-  "bottomCenter",
+  "top-right",
+  "top-left",
+  "top-center",
+  "bottom-right",
+  "bottom-left",
+  "bottom-center",
 ];
 
 const DEFAULT_HOTKEY = ["F8"];
-const MODIFIER_KEYS = ["altKey", "ctrlKey", "metaKey", "shiftKey"] as const;
-
-/** Whether `event` matches every key of `hotkey` (codes, keys or modifiers). */
-const matchesHotkey = (event: KeyboardEvent, hotkey: readonly string[]) =>
-  hotkey.length > 0 &&
-  hotkey.every((key) =>
-    (MODIFIER_KEYS as readonly string[]).includes(key)
-      ? event[key as (typeof MODIFIER_KEYS)[number]]
-      : event.code === key || event.key === key,
-  );
-
-/** Human readable hotkey, e.g. ["altKey", "KeyT"] -> "Alt+T". */
-const formatHotkey = (hotkey: readonly string[]) =>
-  hotkey
-    .map((key) =>
-      key
-        .replace(/Key$/, "")
-        .replace(/^Key(?=.)/, "")
-        .replace(/^Digit/, "")
-        .replace(/^./, (c) => c.toUpperCase()),
-    )
-    .join("+");
 
 /** `hotkey` attribute: keys separated by spaces, commas or "+"; "" disables. */
 const hotkeyConverter = {
@@ -90,23 +69,6 @@ const hotkeyConverter = {
           .map((key) => key.trim())
           .filter(Boolean),
 };
-
-/** The tabbable element after `el` (outside it), else the one before it. */
-function getAdjacentTabbable(el: HTMLElement): HTMLElement | null {
-  const candidates = getFocusables(el.ownerDocument.body).filter(
-    (candidate) => !contains(el, candidate) && isTabbable(candidate),
-  );
-  const next = candidates.find(
-    (candidate) =>
-      el.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_FOLLOWING,
-  );
-  if (next) return next;
-  const previous = candidates.filter(
-    (candidate) =>
-      el.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_PRECEDING,
-  );
-  return previous[previous.length - 1] ?? null;
-}
 
 /** One document keydown listener (hotkeys) shared by every region. */
 let hotkeyUsers = 0;
@@ -200,7 +162,7 @@ export class MinervaToastRegion extends MinervaElement {
 
   /** Where the toasts are stacked */
   @property({ reflect: true })
-  position: ToastPosition = "topRight";
+  position: ToastPosition = "top-right";
 
   /** Maximum number of toasts shown at once; the oldest close first */
   @property({ type: Number })
@@ -545,7 +507,7 @@ export class MinervaToastRegion extends MinervaElement {
         : this.locale.t("toast.region"));
     const position = POSITIONS.includes(this.position)
       ? this.position
-      : "topRight";
+      : "top-right";
     return html`<div
       part="viewport"
       class=${classMap({ viewport: true, [position]: true })}

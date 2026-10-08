@@ -266,6 +266,17 @@ import "@minerva/lib-web-components/tokens.css";
 
 素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
+## 🌐 ブラウザサポート
+
+エバーグリーンブラウザが対象です。**完全サポート**（以下の機能がすべてネイティブで動作）：**Chrome / Edge 120+、Firefox 125+、Safari 17+**（iOS Safari 17+ を含む）。それより古いエンジン（Chrome / Edge 111、Firefox 113、Safari 16.4 まで）でも次の劣化つきで動作します：
+
+- `color-mix()`（111 / 113 / 16.2）：影とホバー色が平坦になる；コンテナクエリ（105 / 110 / 16）：`ResponsiveGrid`・`SplitLayout`・`KeyValueEditor` は 1 カラムのまま；`:has()`（105 / 121 / 15.4）：`Input`・`Modal` / `Drawer` の余白がわずかに異なる；`:dir()`（120 / 49 / 16.4）：RTL で `Rating` の半星と `Cascader` の矢印が反転しない。
+- Web Components：Popover API（114 / 125 / 17）がない場合、オーバーレイは `position: fixed` + `z-index` にフォールバック；`ElementInternals`（77 / 98 / 16.4）がない場合、フォームコントロールは動作するがフォームに参加しない（`element-internals-polyfill` を利用可）；`adoptedStyleSheets` がない場合 Lit は `<style>` にフォールバック。
+- クリップボード（`CodeBlock` のコピー）はセキュアコンテキスト（HTTPS / localhost）が必要で、使えない場合は「コピー失敗」と表示されます。
+- SSR には Node `^20.19.0 || >=22.12.0` が必要です。インポート時に `window` / `document` にはアクセスしません。
+
+機能マトリクスの全体は [英語版 README](./README.md#-browser-support) を参照してください。
+
 ## 🧑‍💻 開発者向けクイックスタート
 
 必要環境：ローカル開発には Node.js >= 22.12（`.nvmrc` を参照）と pnpm 11 が必要です。パッケージとドキュメントサイトのビルドは Node.js 20.19+ でも動作します（GitHub Pages のデプロイワークフローは Node 20 を使用）。

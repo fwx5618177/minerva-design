@@ -1,6 +1,6 @@
 import type { CSSProperties, ElementType } from "react";
 import { cn } from "../../utils/cn";
-import { resolveSpace } from "../../internal/space";
+import { resolveSpace } from "@minerva/core";
 import type { ResponsiveGridProps } from "./types";
 import styles from "./responsiveGrid.module.scss";
 

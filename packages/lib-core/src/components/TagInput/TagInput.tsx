@@ -5,6 +5,7 @@ import {
   type ClipboardEvent,
   type KeyboardEvent,
 } from "react";
+import { DEFAULT_TAG_SEPARATORS, splitBySeparators } from "@minerva/core";
 import { IconPlus, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
 import { pickDataAttributes } from "../../internal/dataAttributes";
@@ -20,19 +21,8 @@ import type { TagInputProps } from "./types";
 import styles from "./tagInput.module.scss";
 
 const EMPTY: readonly string[] = [];
-const DEFAULT_SEPARATORS: readonly string[] = [",", "Enter"];
 const ENTER = "Enter";
 const LINE_BREAKS = ["\r\n", "\n", "\r"];
-
-/** Splits `text` on any of the literal `separators` (longest first). */
-function splitText(text: string, separators: readonly string[]): string[] {
-  if (separators.length === 0) return [text];
-  const pattern = [...separators]
-    .sort((a, b) => b.length - a.length)
-    .map((sep) => sep.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  return text.split(new RegExp(pattern));
-}
 
 interface Suggestion {
   /** The tag added when selected */
@@ -55,7 +45,7 @@ export const TagInput = ({
   onChange,
   options = EMPTY,
   commitOnBlur = true,
-  separators = DEFAULT_SEPARATORS,
+  separators = DEFAULT_TAG_SEPARATORS,
   id,
   name,
   placeholder,
@@ -174,7 +164,7 @@ export const TagInput = ({
     const start = el.selectionStart ?? draft.length;
     const end = el.selectionEnd ?? draft.length;
     const text = draft.slice(0, start) + pasted + draft.slice(end);
-    commitAll(splitText(text, pasteSplitters));
+    commitAll(splitBySeparators(text, pasteSplitters));
     setOpen(false);
   };
 
@@ -306,7 +296,7 @@ export const TagInput = ({
               const parts =
                 composing.current || splitters.length === 0
                   ? [text]
-                  : splitText(text, splitters);
+                  : splitBySeparators(text, splitters);
               if (parts.length > 1) {
                 // Typed a separator: commit what precedes it, keep the rest.
                 commitAll(parts.slice(0, -1), parts[parts.length - 1]);

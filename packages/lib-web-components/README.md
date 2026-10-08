@@ -124,6 +124,10 @@ VS Code (plain HTML):
 }
 ```
 
+## Server rendering and hydration
+
+The modules import in Node without a DOM. Elements in server-rendered markup (for example a React 19 page that renders the tags) upgrade without touching their host attributes: default property values are not reflected (only values you set are), and the implicit ARIA of items (`role`, `aria-selected`, `aria-checked`...) goes through `ElementInternals`, so frameworks hydrate without attribute mismatches. Properties set before an element is connected (or before its definition loads) are kept. Moving an element in the DOM re-acquires its resources, and an open overlay stays open and working.
+
 ## Development warnings
 
 Invalid attribute combinations and common mistakes are logged with `console.error` (the channel and `[minerva] <subject>: ...` format of the React components of `@minerva/lib-core`: `[minerva] <minerva-x>: ...`), once per message, when `process.env.NODE_ENV !== "production"`. Bundlers replace that expression, so production builds drop the checks; the CDN bundle is built for production.
@@ -134,6 +138,10 @@ Invalid attribute combinations and common mistakes are logged with `console.erro
 - [Plain HTML](https://fwx5618177.github.io/minerva/#/wc-plain-html) · [Vue](https://fwx5618177.github.io/minerva/#/wc-vue) · [Angular](https://fwx5618177.github.io/minerva/#/wc-angular) · [Svelte](https://fwx5618177.github.io/minerva/#/wc-svelte)
 - [Forms](https://fwx5618177.github.io/minerva/#/wc-forms) · [Theming](https://fwx5618177.github.io/minerva/#/wc-theming)
 - [Repository](https://github.com/fwx5618177/minerva) · [Issues](https://github.com/fwx5618177/minerva/issues)
+
+## Browser support
+
+ES2022, custom elements v1 and shadow DOM on evergreen browsers (fully supported: Chrome / Edge 120+, Firefox 125+, Safari 17+). Feature-detected with fallbacks: the Popover API (overlays fall back to `position: fixed`), `ElementInternals` (without it the controls do not take part in forms; `element-internals-polyfill` works) and constructable stylesheets. The feature matrix and fallbacks are in the [repository README](https://github.com/fwx5618177/minerva#-browser-support).
 
 ## License
 

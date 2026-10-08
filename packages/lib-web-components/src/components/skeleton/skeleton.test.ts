@@ -34,7 +34,7 @@ describe("<minerva-skeleton>", () => {
     expect(lines).toHaveLength(1);
     expect(lines[0].classList).toContain("text");
     expect(lines[0].classList).toContain("animation-pulse");
-    expect(el.getAttribute("variant")).toBe("text");
+    expect(el.getAttribute("variant")).toBeNull();
   });
 
   it("renders lines with sizes (numbers are pixels)", async () => {

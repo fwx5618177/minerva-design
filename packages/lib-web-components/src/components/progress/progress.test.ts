@@ -30,7 +30,7 @@ describe("<minerva-progress>", () => {
     expect(indicator.classList).toContain("spinner");
     expect(indicator.classList).toContain("medium");
     expect(indicator.querySelector("svg")).not.toBeNull();
-    expect(el.getAttribute("variant")).toBe("spinner");
+    expect(el.getAttribute("variant")).toBeNull();
   });
 
   it("renders every variant with lib-core's classes", async () => {

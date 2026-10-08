@@ -91,10 +91,10 @@ describe("<minerva-json-field>", () => {
     );
     expect(formatButton(el).disabled).toBe(true);
     el.value = "{}";
-    el.readonly = true;
+    el.readOnly = true;
     await el.updateComplete;
     expect(formatButton(el).disabled).toBe(true);
-    el.readonly = false;
+    el.readOnly = false;
     el.disabled = true;
     await el.updateComplete;
     expect(formatButton(el).disabled).toBe(true);

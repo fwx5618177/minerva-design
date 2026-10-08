@@ -1,5 +1,7 @@
 import React from "react";
+import { linkRel } from "@minerva/core";
 import { cn } from "../../utils/cn";
+import { safeHref } from "../../internal/safeUrl";
 import type {
   CardProps,
   CardHeaderProps,
@@ -32,6 +34,13 @@ export const Card = ({
   ...rest
 }: CardProps) => {
   const Tag: React.ElementType = as ?? "div";
+  const link =
+    Tag === "a"
+      ? {
+          href: safeHref("Card", rest.href),
+          rel: linkRel(rest.target, rest.rel),
+        }
+      : undefined;
   return (
     <Tag
       ref={ref}
@@ -45,6 +54,7 @@ export const Card = ({
         className,
       )}
       {...rest}
+      {...link}
     >
       {children}
     </Tag>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { CommandDialog, type CommandItem } from "@minerva/lib-core";
 
 const ITEMS: CommandItem[] = [
@@ -7,6 +8,7 @@ const ITEMS: CommandItem[] = [
 ];
 
 export default function ShortcutDemo() {
+  const [last, setLast] = useState<string | null>(null);
   return (
     <>
       <p>
@@ -17,8 +19,11 @@ export default function ShortcutDemo() {
         shortcut="mod+k"
         shortcutLabel="⌘K"
         title="Quick actions"
-        onSelect={(item) => console.log(item.id)}
+        onSelect={(item) => setLast(item.title)}
       />
+      <p aria-live="polite">
+        {last ? `Selected: ${last}` : "Nothing selected yet"}
+      </p>
     </>
   );
 }

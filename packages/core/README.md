@@ -35,6 +35,9 @@ import {
   createFocusScope,
 } from "@minerva/core";
 
+const trigger = document.querySelector<HTMLElement>("#trigger")!;
+const popover = document.querySelector<HTMLElement>("#popover")!;
+
 const stop = autoPosition(
   trigger,
   popover,
@@ -122,6 +125,10 @@ t("missing.key", { defaultValue: "Fallback" }); // "Fallback"
 `@minerva/lib-core` uses this translator (no i18n library dependency) together with
 its own global language store; other adapters can use it too or feed the
 bundles to any i18n library.
+
+## Browser support
+
+ES2020, evergreen browsers (fully supported: Chrome / Edge 120+, Firefox 125+, Safari 17+). The modules are SSR-safe: nothing touches `window` / `document` until called. The feature matrix and fallbacks are in the [repository README](https://github.com/fwx5618177/minerva#-browser-support).
 
 ## License
 

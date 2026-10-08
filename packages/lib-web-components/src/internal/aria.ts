@@ -74,3 +74,51 @@ export class AriaController implements ReactiveController {
     this.observer = null;
   }
 }
+
+/** ARIA of a host element that ElementInternals can carry */
+export type HostAria = Partial<
+  Record<
+    "role" | "ariaSelected" | "ariaChecked" | "ariaDisabled" | "ariaHidden",
+    string | null
+  >
+>;
+
+const ARIA_ATTRIBUTE: Record<keyof HostAria, string> = {
+  role: "role",
+  ariaSelected: "aria-selected",
+  ariaChecked: "aria-checked",
+  ariaDisabled: "aria-disabled",
+  ariaHidden: "aria-hidden",
+};
+
+/**
+ * Sets the implicit ARIA of `host` through ElementInternals (default
+ * semantics: no attribute is added to the host, so server-rendered markup
+ * hydrates without attribute mismatches, and author attributes still win).
+ * Without ARIA reflection on ElementInternals (older engines), falls back
+ * to attributes, never overwriting one the author set.
+ */
+export function setHostAria(
+  host: HTMLElement,
+  internals: ElementInternals | null,
+  aria: HostAria,
+  owned: Set<string> = new Set(),
+): void {
+  for (const [key, value] of Object.entries(aria) as Array<
+    [keyof HostAria, string | null]
+  >) {
+    if (internals && key in internals) {
+      (internals as unknown as Record<string, string | null>)[key] = value;
+      continue;
+    }
+    const attribute = ARIA_ATTRIBUTE[key];
+    if (host.hasAttribute(attribute) && !owned.has(attribute)) continue;
+    if (value === null) {
+      host.removeAttribute(attribute);
+      owned.delete(attribute);
+    } else {
+      host.setAttribute(attribute, value);
+      owned.add(attribute);
+    }
+  }
+}

@@ -10,7 +10,8 @@
     "no": "No",
     "main": "All components, providers, hooks and utilities.",
     "monaco": "The Monaco-based code editor (optional peers: @monaco-editor/react and monaco-editor).",
-    "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names."
+    "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names.",
+    "utils": "Server-safe utilities: cn, themes, light, dark, githubDark, palettes, resolveTheme, generateCSSVariables, applyThemeStyles, getSystemTheme, isBilingualTheme, matchesShortcut, normalizeShortcuts, computeFixedColumnLayout."
   },
   "why": {
     "title": "Why some entries are client boundaries",
@@ -24,8 +25,12 @@
   },
   "functions": {
     "title": "Calling functions on the server",
-    "text": "Call the helpers of @minerva/lib-core/theme-utils freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (toast.success, Confirm, applyThemeStyles, the hooks...): they are client references there. Call them from client components and event handlers.",
+    "text": "Call the helpers of @minerva/lib-core/theme-utils and @minerva/lib-core/utils freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (toast.success, Confirm, the hooks...), and do not read its data exports (themes, palettes...) there: they are client references. Import the plain functions and data from @minerva/lib-core/utils instead.",
     "imperative": "Imperative APIs are also safe during SSR of client components: without a document they do nothing, and promise-based dialogs such as Confirm resolve to false on the server. Trigger them from event handlers or effects, which only run in the browser."
+  },
+  "csp": {
+    "title": "Content Security Policy",
+    "text": "A strict Content-Security-Policy (no 'unsafe-inline') blocks the inline theme init script. Either render the request's nonce on the <script> element, or allow the script by its hash: THEME_INIT_SCRIPT_HASH is the 'sha256-…' source of THEME_INIT_SCRIPT, and cspHash() computes it for a script built with createThemeInitScript()."
   },
   "css": {
     "title": "Where to import the CSS",

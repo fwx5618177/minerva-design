@@ -10,7 +10,8 @@
     "no": "Non",
     "main": "Tous les composants, providers, hooks et utilitaires.",
     "monaco": "L'éditeur de code basé sur Monaco (dépendances pairs facultatives : @monaco-editor/react et monaco-editor).",
-    "themeUtils": "Utilitaires de thème compatibles serveur : THEME_INIT_SCRIPT, lecture et sérialisation des cookies, noms des palettes."
+    "themeUtils": "Utilitaires de thème compatibles serveur : THEME_INIT_SCRIPT, lecture et sérialisation des cookies, noms des palettes.",
+    "utils": "Utilitaires compatibles serveur : cn, themes, light, dark, githubDark, palettes, resolveTheme, generateCSSVariables, applyThemeStyles, getSystemTheme, isBilingualTheme, matchesShortcut, normalizeShortcuts, computeFixedColumnLayout."
   },
   "why": {
     "title": "Pourquoi certains points d'entrée sont des frontières client",
@@ -24,8 +25,12 @@
   },
   "functions": {
     "title": "Appeler des fonctions côté serveur",
-    "text": "Appelez librement les utilitaires de @minerva/lib-core/theme-utils côté serveur : dans les layouts, les route handlers, les middlewares ou les fonctions edge. N'appelez pas les fonctions du point d'entrée principal dans un Server Component (toast.success, Confirm, applyThemeStyles, les hooks...) : là, ce ne sont que des références client. Appelez-les depuis des composants client et des gestionnaires d'événements.",
+    "text": "Appelez librement les utilitaires de @minerva/lib-core/theme-utils et de @minerva/lib-core/utils côté serveur : dans les layouts, les route handlers, les middlewares ou les fonctions edge. N'appelez pas les fonctions du point d'entrée principal dans un Server Component (toast.success, Confirm, les hooks...) et n'y lisez pas ses données (themes, palettes...) : ce ne sont que des références client. Importez plutôt les fonctions et données simples depuis @minerva/lib-core/utils.",
     "imperative": "Les API impératives sont aussi sûres pendant le SSR des composants client : sans document elles ne font rien, et les dialogues basés sur une promesse comme Confirm se résolvent à false côté serveur. Déclenchez-les depuis des gestionnaires d'événements ou des effets, qui ne s'exécutent que dans le navigateur."
+  },
+  "csp": {
+    "title": "Content Security Policy",
+    "text": "Une Content-Security-Policy stricte (sans 'unsafe-inline') bloque le script d'initialisation du thème en ligne. Ajoutez le nonce de la requête à l'élément <script>, ou autorisez le script par son empreinte : THEME_INIT_SCRIPT_HASH est la source 'sha256-…' de THEME_INIT_SCRIPT, et cspHash() la calcule pour un script créé avec createThemeInitScript()."
   },
   "css": {
     "title": "Où importer le CSS",

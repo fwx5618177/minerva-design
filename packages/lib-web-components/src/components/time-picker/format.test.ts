@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import "../../elements/time-picker";
-import { formatHasSeconds, resolveTimeFormat } from "./utils";
+import { formatHasSeconds, resolveTimeFormat } from "@minerva/core";
 import { mount, settle } from "../../../tests/utils";
 
 describe("time picker seconds: one source of truth (the format in use)", () => {

@@ -185,7 +185,7 @@ describe("ToastProvider", () => {
 
   it("renders toasts in a labelled region with color and position classes", () => {
     render(
-      <ToastProvider position="bottomLeft">
+      <ToastProvider position="bottom-left">
         <p>App</p>
       </ToastProvider>,
     );
@@ -194,7 +194,7 @@ describe("ToastProvider", () => {
       toast.success("Saved", { description: "All good", duration: 3000 });
     });
     const region = screen.getByRole("region", { name: "Notifications (F8)" });
-    expect(region).toHaveClass("viewport", "bottomLeft");
+    expect(region).toHaveClass("viewport", "bottom-left");
     const item = within(region).getByRole("status");
     expect(item).toHaveClass("toast", "success");
     expect(item).toHaveAttribute("data-state", "open");
@@ -217,7 +217,7 @@ describe("ToastProvider", () => {
     expect(alert.style.getPropertyValue("--toast-duration")).toBe("");
     expect(
       screen.getByRole("region", { name: "Notifications (F8)" }),
-    ).toHaveClass("viewport", "topRight");
+    ).toHaveClass("viewport", "top-right");
   });
 
   it("closes with the close button", () => {
@@ -615,12 +615,12 @@ describe("toast: loading, update, promise, max and options", () => {
   });
 
   it.each([
-    "topRight",
-    "topLeft",
-    "topCenter",
-    "bottomRight",
-    "bottomLeft",
-    "bottomCenter",
+    "top-right",
+    "top-left",
+    "top-center",
+    "bottom-right",
+    "bottom-left",
+    "bottom-center",
   ] as const)("stacks toasts at %s", (position) => {
     render(<ToastProvider position={position} />);
     show(() => toast.info("Placed", { duration: 0 }));
@@ -673,8 +673,8 @@ describe("several ToastProviders", () => {
 
   it("lets the outermost of nested providers render the toasts", () => {
     render(
-      <ToastProvider aria-label="Outer" position="bottomLeft">
-        <ToastProvider aria-label="Inner" position="topCenter" />
+      <ToastProvider aria-label="Outer" position="bottom-left">
+        <ToastProvider aria-label="Inner" position="top-center" />
       </ToastProvider>,
     );
     act(() => {
@@ -682,7 +682,7 @@ describe("several ToastProviders", () => {
     });
     expect(screen.getAllByText("Nested")).toHaveLength(1);
     expect(screen.getByRole("region", { name: "Outer" })).toHaveClass(
-      "bottomLeft",
+      "bottom-left",
     );
     expect(
       screen.queryByRole("region", { name: "Inner" }),

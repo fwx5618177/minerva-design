@@ -5,6 +5,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
+import { getVirtualRange } from "@minerva/core";
 import type { VirtualListItem, VirtualListProps, VirtualItem } from "./types";
 import styles from "./virtualList.module.scss";
 import { useMergedRefs } from "../../internal/mergeRefs";
@@ -111,21 +112,15 @@ const VirtualList = ({
 
   // 计算可见范围
   const visibleRange = useMemo(() => {
+    // Before the first row is measured, render one row to measure it.
     if (!finalItemHeight) return { start: 0, end: 1, visibleCount: 1 };
-
-    const start = Math.max(
-      0,
-      Math.floor(scrollTop / finalItemHeight) - overscan,
-    );
-    const visibleCount =
-      Math.ceil(containerHeight / finalItemHeight) + 2 * overscan;
-    const end = Math.min(items.length, start + visibleCount);
-
-    return {
-      start,
-      end,
-      visibleCount,
-    };
+    return getVirtualRange({
+      scrollTop,
+      viewportHeight: containerHeight,
+      itemHeight: finalItemHeight,
+      itemCount: items.length,
+      overscan,
+    });
   }, [scrollTop, containerHeight, finalItemHeight, overscan, items.length]);
 
   // 取消尚未执行的 RAF / idle 回调

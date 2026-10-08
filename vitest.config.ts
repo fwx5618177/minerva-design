@@ -11,6 +11,7 @@ export default defineConfig({
       "packages/lib-web-components",
       "packages/sample",
       "tests/e2e",
+      "tests/docs",
     ],
     coverage: {
       provider: "v8",

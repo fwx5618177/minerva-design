@@ -20,6 +20,13 @@ export default defineConfig(
         ...globals.node,
       },
     },
+    rules: {
+      // `const { a, ...rest } = x` drops `a` on purpose
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { ignoreRestSiblings: true },
+      ],
+    },
   },
   {
     files: [

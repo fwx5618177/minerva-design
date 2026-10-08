@@ -464,7 +464,7 @@ describe("<minerva-autocomplete> keyboard", () => {
     expect(options(el)).toHaveLength(0);
     expect(input(el).disabled).toBe(true);
     el.disabled = false;
-    el.readonly = true;
+    el.readOnly = true;
     await settle();
     expect(input(el)).toHaveAttribute("readonly");
     await focusInput(el);

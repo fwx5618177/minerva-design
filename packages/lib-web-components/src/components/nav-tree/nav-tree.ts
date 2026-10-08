@@ -17,6 +17,7 @@ import { IconChevronDown } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
+import { safeHref } from "../../internal/url";
 
 /** Content accepted for icons, trailing content and custom links */
 export type NavTreeContent = string | Node | TemplateResult;
@@ -451,7 +452,7 @@ export class MinervaNavTree extends MinervaElement {
     return html`<a
       part="item"
       class=${classMap(classes)}
-      href=${item.href}
+      href=${safeHref(MinervaNavTree.tagName, item.href) ?? nothing}
       title=${title}
       data-id=${item.id}
       data-active=${active ? "true" : nothing}

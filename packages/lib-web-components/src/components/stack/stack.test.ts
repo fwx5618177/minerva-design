@@ -28,7 +28,7 @@ describe("<minerva-stack>", () => {
     expect(div.classList).toContain("column");
     expect(div.style.gap).toBe("");
     expect(div.hasAttribute("role")).toBe(false);
-    expect(el.getAttribute("direction")).toBe("column");
+    expect(el.getAttribute("direction")).toBeNull();
     const slot = el.shadowRoot!.querySelector("slot")!;
     expect(slot.assignedElements()).toHaveLength(2);
   });
@@ -227,6 +227,6 @@ describe("<minerva-stack>", () => {
     document.body.append(v2);
     await settle();
     expect(base(v2).style.alignItems).toBe("stretch");
-    expect(v2.getAttribute("direction")).toBe("column");
+    expect(v2.getAttribute("direction")).toBeNull();
   });
 });

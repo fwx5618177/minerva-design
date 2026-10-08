@@ -54,7 +54,6 @@ export class FloatingLayerController implements ReactiveController {
   ) {
     host.addController(this);
     this.position = new AnchoredPositionController(host, () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { anchor, floating, branches, onDismiss, ...rest } = this.options();
       return rest;
     });

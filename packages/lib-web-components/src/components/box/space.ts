@@ -1,22 +1,6 @@
-/**
- * Spacing values of the layout elements (lib-core's `resolveSpace`): numbers
- * and numeric strings select spacing tokens (`2` -> `var(--space-2)`,
- * `0.5` -> `var(--space-0-5)`); any other string is a CSS value used as-is
- * (`"12px"`, `"auto"`, `"var(--x)"`).
- */
-export function resolveSpace(value: string | number): string {
-  const text = String(value).trim();
-  if (typeof value !== "number" && !/^\d+(\.\d+)?$/.test(text)) return text;
-  return `var(--space-${text.replace(".", "-")})`;
-}
-
-/** Numbers and numeric strings are pixels, other strings CSS lengths. */
-export function resolveSize(value: string | number): string {
-  const text = String(value).trim();
-  return typeof value === "number" || /^-?\d+(\.\d+)?$/.test(text)
-    ? `${text}px`
-    : text;
-}
+// Attribute helpers of the layout elements. `resolveSpace` / `resolveSize`
+// live in @minerva/core (shared with lib-core).
+export { resolveSize, resolveSpace } from "@minerva/core";
 
 /**
  * Drops the characters that could escape a declaration when a value is

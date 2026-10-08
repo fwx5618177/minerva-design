@@ -9,6 +9,7 @@ import {
 } from "react";
 import { IconChevronDown } from "../../internal/icons";
 import { cn } from "../../utils/cn";
+import { safeHref } from "../../internal/safeUrl";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
@@ -316,7 +317,7 @@ export const NavTree = ({
       <a
         key={item.id}
         {...common}
-        href={item.href}
+        href={safeHref("NavTree", item.href)}
         aria-current={active ? "page" : undefined}
         onClick={() => onItemSelect?.(item)}
       >

@@ -26,8 +26,8 @@ describe("<minerva-divider>", () => {
     expect(hr.style.borderWidth).toBe("1px");
     expect(hr.style.marginTop).toBe("16px");
     expect(hr.style.marginLeft).toBe("0px");
-    expect(el.getAttribute("orientation")).toBe("horizontal");
-    expect(el.getAttribute("variant")).toBe("solid");
+    expect(el.getAttribute("orientation")).toBeNull();
+    expect(el.getAttribute("variant")).toBeNull();
   });
 
   it("renders text in a role=separator with the alignment class", async () => {

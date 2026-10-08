@@ -1,7 +1,7 @@
 import { Children, Fragment, isValidElement } from "react";
 import type { CSSProperties, ElementType, ReactNode } from "react";
 import { cn } from "../../utils/cn";
-import { resolveSpace } from "../../internal/space";
+import { resolveSpace } from "@minerva/core";
 import type {
   HStackProps,
   StackAlign,

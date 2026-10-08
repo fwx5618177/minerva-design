@@ -90,7 +90,9 @@ describe("<minerva-tooltip>", () => {
     }
     expect(el).toHaveAttribute("color", "danger");
     expect(el).toHaveAttribute("variant", "glass");
-    expect(el).toHaveAttribute("placement", "top");
+    // the default placement stays implicit (not reflected)
+    expect(el).not.toHaveAttribute("placement");
+    expect(el.placement).toBe("top");
   });
 
   it("parses offset as 'x y'", async () => {

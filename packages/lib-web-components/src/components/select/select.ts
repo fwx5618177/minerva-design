@@ -335,7 +335,13 @@ export class MinervaSelect extends FormAssociatedElement {
     if (changed.has("value") && changed.get("value") !== undefined) {
       this.dirty = this.value !== this.defaultValue || this.dirty;
     }
-    if (changed.has("defaultValue") && !this.dirty) {
+    // first update: a value set before connecting wins over the default
+    // unless the value attribute is present
+    if (
+      changed.has("defaultValue") &&
+      !this.dirty &&
+      (this.hasUpdated || this.hasAttribute("value"))
+    ) {
       this.value = this.defaultValue;
     }
     if (changed.has("open") && this.open) {
@@ -372,6 +378,9 @@ export class MinervaSelect extends FormAssociatedElement {
             target.focus({ preventScroll: true });
           }
         } else if (document.activeElement !== target) {
+          // light <minerva-option>: focusable from script only, made so when
+          // first focused (no tabindex on server-rendered markup)
+          if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
           target.focus({ preventScroll: true });
         }
       }

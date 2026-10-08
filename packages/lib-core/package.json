@@ -1,6 +1,6 @@
 {
   "name": "@minerva/lib-core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Minerva React component library (layout, forms, overlays, data display, navigation, editors, theming)",
   "license": "MIT",
   "author": "fwx5618177 <fwx5618177@gmail.com>",
@@ -10,10 +10,23 @@
     "directory": "packages/lib-core"
   },
   "homepage": "https://fwx5618177.github.io/minerva/",
+  "bugs": {
+    "url": "https://github.com/fwx5618177/minerva/issues"
+  },
   "keywords": [
+    "minerva",
     "react",
+    "react-19",
     "components",
-    "ui"
+    "ui",
+    "design-system",
+    "component-library",
+    "accessibility",
+    "a11y",
+    "ssr",
+    "rsc",
+    "theming",
+    "typescript"
   ],
   "type": "module",
   "main": "./dist/index.cjs",
@@ -40,6 +53,16 @@
         "default": "./dist/theme-utils.cjs"
       }
     },
+    "./utils": {
+      "import": {
+        "types": "./dist/utils-entry.d.ts",
+        "default": "./dist/utils-entry.js"
+      },
+      "require": {
+        "types": "./dist/utils-entry.d.cts",
+        "default": "./dist/utils-entry.cjs"
+      }
+    },
     "./monaco": {
       "import": {
         "types": "./dist/monaco.d.ts",
@@ -56,7 +79,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "sideEffects": [
     "**/*.css",
@@ -106,6 +130,9 @@
     "*": {
       "theme-utils": [
         "./dist/theme-utils.d.ts"
+      ],
+      "utils": [
+        "./dist/utils-entry.d.ts"
       ],
       "monaco": [
         "./dist/monaco.d.ts"

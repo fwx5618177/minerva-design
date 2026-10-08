@@ -22,14 +22,12 @@ export function closestComposed<E extends Element = Element>(
   return null;
 }
 
-/** Writing direction of `el` (from the closest `dir` attribute). */
-export function getDirection(el: Element): "ltr" | "rtl" {
-  const owner = closestComposed(el, "[dir]");
-  return owner?.getAttribute("dir")?.toLowerCase() === "rtl" ? "rtl" : "ltr";
-}
+// Writing direction of an element (closest `dir`, crossing shadow roots and
+// slots, `dir="auto"` skipped, then CSS `direction`): shared with lib-core.
+export { getDirection, logicalArrowKey } from "@minerva/core";
 
 /** Whether the native Popover API (`popover` attribute, top layer) exists. */
-export function supportsPopover(el: Element): boolean {
+function supportsPopover(el: Element): boolean {
   return typeof (el as HTMLElement).showPopover === "function";
 }
 

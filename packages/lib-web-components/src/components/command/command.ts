@@ -13,16 +13,16 @@ import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
 import {
+  commandSearchText,
   isEditableTarget,
   matchesShortcut,
+  normalizeSearchText,
   normalizeShortcuts,
-} from "./shortcuts";
+} from "@minerva/core";
 
-export {
-  matchesShortcut,
-  normalizeShortcuts,
-  type CommandShortcutEvent,
-} from "./shortcuts";
+export { matchesShortcut, normalizeShortcuts };
+/** Keyboard event fields read by `matchesShortcut`. */
+export type { ShortcutEvent as CommandShortcutEvent } from "@minerva/core";
 import { sharedStyles } from "../../internal/styles";
 
 /** One entry of the command palette (same shape as lib-core's `CommandItem`). */
@@ -44,11 +44,6 @@ export interface CommandItem {
 /** Why the palette asked to open / close (`minerva-open-change` detail) */
 export type CommandOpenChangeReason =
   "shortcut" | "select" | "escape" | "outside";
-
-const normalize = (value: string) => value.trim().toLowerCase();
-
-const searchText = (item: CommandItem) =>
-  `${item.group ?? ""} ${item.title} ${item.description ?? ""} ${item.keywords ?? ""}`;
 
 /** `shortcut` attribute: comma-separated list ("mod+k, /"). */
 const shortcutConverter = {
@@ -199,10 +194,13 @@ export class MinervaCommandDialog extends MinervaElement {
 
   /** The visible results: enabled items matching the query, capped at `maxResults`. */
   private get results(): CommandItem[] {
-    const q = normalize(this.query);
+    const q = normalizeSearchText(this.query);
     return (Array.isArray(this.items) ? this.items : [])
       .filter((item) => !item.disabled)
-      .filter((item) => !q || normalize(searchText(item)).includes(q))
+      .filter(
+        (item) =>
+          !q || normalizeSearchText(commandSearchText(item)).includes(q),
+      )
       .slice(0, Math.max(0, this.maxResults));
   }
 

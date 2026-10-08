@@ -46,7 +46,7 @@ describe("<minerva-icon-button>", () => {
     const el = await mount<MinervaIconButton>(
       `<minerva-icon-button label="A"></minerva-icon-button>`,
     );
-    expect(el.getAttribute("color")).toBe("neutral");
+    expect(el.getAttribute("color")).toBeNull();
     el.color = "danger";
     el.variant = "solid";
     el.size = "xsmall";

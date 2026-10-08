@@ -14,6 +14,11 @@
  *       <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
  *     </head>
  *     ...
+ *
+ * Strict Content-Security-Policy: render the request's nonce on the script
+ * (`<script nonce={nonce} ...>`), or allow its hash: `script-src 'self'
+ * ${THEME_INIT_SCRIPT_HASH}` (`cspHash(createThemeInitScript(options))` for
+ * a customised script).
  */
 export {
   DENSITIES,
@@ -30,7 +35,9 @@ export {
   THEME_COOKIE_MAX_AGE,
   THEME_COOKIE_NAME,
   THEME_INIT_SCRIPT,
+  THEME_INIT_SCRIPT_HASH,
   createThemeInitScript,
+  cspHash,
   isPalette,
   isThemeMode,
   parsePaletteCookie,

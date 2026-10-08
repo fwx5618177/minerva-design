@@ -106,6 +106,20 @@ describe("VirtualList", () => {
       expect(renderedLabels()).toHaveLength(9);
     });
 
+    it("treats a negative overscan as 0", () => {
+      render(
+        <VirtualList
+          items={makeItems(1000)}
+          itemHeight={ITEM_HEIGHT}
+          maxHeight={CONTAINER_HEIGHT}
+          overscan={-3}
+          renderItem={renderItem}
+        />,
+      );
+      // ceil(100 / 20) rows, no shrinking of the window
+      expect(renderedLabels()).toHaveLength(5);
+    });
+
     it("never renders more items than provided", () => {
       render(
         <VirtualList

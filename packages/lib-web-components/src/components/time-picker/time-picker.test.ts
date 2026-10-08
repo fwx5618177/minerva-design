@@ -6,7 +6,7 @@ import "../../elements/modal";
 import type { MinervaModal } from "../modal/modal";
 import { resetDevWarnings } from "../../internal/dev";
 import { $, mount, settle, wait } from "../../../tests/utils";
-import { formatTime, parseTimeInput, parseTimeValue } from "./utils";
+import { formatTime, parseTimeInput, parseTimeValue } from "@minerva/core";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -81,7 +81,7 @@ describe("<minerva-time-picker>", () => {
     el.use12Hours = true;
     el.hideClearButton = true;
     el.invalid = true;
-    el.readonly = true;
+    el.readOnly = true;
     await el.updateComplete;
     expect(el.getAttribute("size")).toBe("small");
     expect(el.hasAttribute("use-12-hours")).toBe(true);
@@ -331,7 +331,7 @@ describe("<minerva-time-picker>", () => {
     expect(panel(el)).toBeNull();
 
     el.disabled = false;
-    el.readonly = true;
+    el.readOnly = true;
     await el.updateComplete;
     expect(field(el)).toHaveAttribute("readonly");
     expect(el.shadowRoot!.querySelector(".clearButton")).toBeNull();

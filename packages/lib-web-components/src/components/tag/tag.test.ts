@@ -23,7 +23,7 @@ describe("<minerva-tag>", () => {
     }
     expect(base).toHaveAttribute("data-component", "tag");
     expect(el.shadowRoot!.querySelector("button")).toBeNull();
-    expect(el.getAttribute("color")).toBe("neutral");
+    expect(el.getAttribute("color")).toBeNull();
   });
 
   it("names the close button after the label and fires minerva-close", async () => {

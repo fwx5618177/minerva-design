@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import {
+  ratingDisplayStars,
+  ratingStarFill,
+  roundRating,
+  type RatingStarFill,
+} from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { IconStar, IconStarHalf } from "../../internal/icons";
 import { logicalArrowKey } from "../../internal/direction";
 import { warnOnce } from "../../internal/devWarnings";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
-
-type StarFill = "full" | "half" | "empty";
 
 const SIZE_PX = { small: 12, medium: 16, large: 20 } as const;
 const STARS = [0, 1, 2, 3, 4];
@@ -16,9 +20,7 @@ const STARS = [0, 1, 2, 3, 4];
  */
 const PAGE_STARS = Math.max(1, Math.round(STARS.length / 5));
 
-const round1 = (n: number) => Math.round(n * 10) / 10;
-
-const Star = ({ fill, size }: { fill: StarFill; size: number }) => {
+const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
   const className = cn(styles.star, styles[fill]);
   if (fill === "half") {
     // Empty outline with the filled left half drawn on top.
@@ -86,18 +88,12 @@ const Rating = ({
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half star.
-  const stars5 = (value / max) * 5;
-  const fullCount = Math.floor(stars5);
-  const fraction = stars5 - fullCount;
-  const half = fraction >= 0.25 && fraction < 0.75;
-  const roundedFull = fraction >= 0.75 ? fullCount + 1 : fullCount;
   const displayed =
     interactive && hoverIndex !== null
       ? hoverIndex
-      : roundedFull + (half ? 0.5 : 0);
+      : ratingDisplayStars(value, max);
 
-  const fillOf = (i: number): StarFill =>
-    i < Math.floor(displayed) ? "full" : i < displayed ? "half" : "empty";
+  const fillOf = (i: number) => ratingStarFill(i, displayed);
 
   const handleStarClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -107,7 +103,7 @@ const Rating = ({
     const rect = event.currentTarget.getBoundingClientRect();
     const leftHalf = event.clientX - rect.left < rect.width / 2;
     const stars = index + (leftHalf ? 0.5 : 1);
-    onChange?.(round1((stars / 5) * max));
+    onChange?.(roundRating((stars / 5) * max));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -121,17 +117,17 @@ const Rating = ({
     switch (logicalArrowKey(event.key, event.currentTarget)) {
       case "ArrowRight":
       case "ArrowUp":
-        next = Math.min(max, round1(value + step));
+        next = Math.min(max, roundRating(value + step));
         break;
       case "ArrowLeft":
       case "ArrowDown":
-        next = Math.max(0, round1(value - step));
+        next = Math.max(0, roundRating(value - step));
         break;
       case "PageUp":
-        next = Math.min(max, round1(value + pageStep));
+        next = Math.min(max, roundRating(value + pageStep));
         break;
       case "PageDown":
-        next = Math.max(0, round1(value - pageStep));
+        next = Math.max(0, roundRating(value - pageStep));
         break;
       case "Home":
         next = 0;

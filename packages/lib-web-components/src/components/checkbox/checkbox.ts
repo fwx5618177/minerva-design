@@ -122,8 +122,8 @@ export class MinervaCheckbox extends FormAssociatedElement {
   helperText = "";
 
   /** Read-only: focusable and submitted, but the user cannot toggle it */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   @query("input")
   private input!: HTMLInputElement;
@@ -194,11 +194,11 @@ export class MinervaCheckbox extends FormAssociatedElement {
   }
 
   private handleClick(event: MouseEvent) {
-    if (this.readonly) event.preventDefault();
+    if (this.readOnly) event.preventDefault();
   }
 
   private handleChange() {
-    if (this.readonly) return;
+    if (this.readOnly) return;
     this.dirty = true;
     this.input.indeterminate = this.indeterminate;
     this.checked = this.input.checked;
@@ -240,7 +240,7 @@ export class MinervaCheckbox extends FormAssociatedElement {
           aria-label=${this.aria.label ?? nothing}
           aria-description=${description || nothing}
           aria-invalid=${invalid ? "true" : nothing}
-          aria-readonly=${this.readonly ? "true" : nothing}
+          aria-readonly=${this.readOnly ? "true" : nothing}
           @click=${this.handleClick}
           @change=${this.handleChange}
         />

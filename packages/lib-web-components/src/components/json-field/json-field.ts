@@ -143,8 +143,8 @@ export class MinervaJsonField extends FormAssociatedElement {
   invalid = false;
 
   /** Read-only: focusable and submitted, not editable nor formattable */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Placeholder text */
   @property()
@@ -239,7 +239,7 @@ export class MinervaJsonField extends FormAssociatedElement {
   }
 
   private get locked(): boolean {
-    return this.isDisabled || this.readonly;
+    return this.isDisabled || this.readOnly;
   }
 
   private formatNow() {
@@ -330,7 +330,7 @@ export class MinervaJsonField extends FormAssociatedElement {
         name=${this.name || nothing}
         placeholder=${this.placeholder || nothing}
         ?disabled=${disabled}
-        ?readonly=${this.readonly}
+        ?readonly=${this.readOnly}
         ?required=${this.required}
         aria-label=${this.aria.label ?? nothing}
         aria-description=${description || nothing}

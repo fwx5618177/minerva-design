@@ -266,6 +266,17 @@ import "@minerva/lib-web-components/tokens.css";
 
 纯 HTML、Vue、Angular、Svelte、表单和主题的使用指南见 [Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
+## 🌐 浏览器支持
+
+面向常青浏览器。**完整支持**（下列特性均原生可用，无需回退）：**Chrome / Edge 120+、Firefox 125+、Safari 17+**（含 iOS Safari 17+）。更旧的引擎（低至 Chrome / Edge 111、Firefox 113、Safari 16.4）可以使用，但有以下降级：
+
+- `color-mix()`（111 / 113 / 16.2）：阴影与悬停色变平；容器查询（105 / 110 / 16）：`ResponsiveGrid`、`SplitLayout`、`KeyValueEditor` 保持单列；`:has()`（105 / 121 / 15.4）：`Input`、`Modal` / `Drawer` 内边距略有差异；`:dir()`（120 / 49 / 16.4）：RTL 下 `Rating` 半星与 `Cascader` 箭头不镜像。
+- Web Components：Popover API（114 / 125 / 17）缺失时浮层回退为 `position: fixed` + `z-index`；`ElementInternals`（77 / 98 / 16.4）缺失时表单控件可用但不参与表单（可用 `element-internals-polyfill`）；`adoptedStyleSheets` 缺失时 Lit 回退为 `<style>`。
+- 剪贴板（`CodeBlock` 复制）需要安全上下文（HTTPS / localhost），不可用时提示复制失败。
+- SSR 需要 Node `^20.19.0 || >=22.12.0`，导入时不访问 `window` / `document`。
+
+完整的特性矩阵见 [英文 README](./README.md#-browser-support)。
+
 ## 🧑‍💻 开发者快速开始
 
 环境要求：本地开发需要 Node.js >= 22.12（见 `.nvmrc`）和 pnpm 11。构建各个包和文档站点在 Node.js 20.19+ 上同样可用（GitHub Pages 部署工作流使用的就是 Node 20）。

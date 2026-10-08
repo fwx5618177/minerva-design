@@ -138,10 +138,19 @@ export class MinervaPageTabs extends MinervaElement {
   }
 
   protected override firstUpdated(): void {
-    if (typeof ResizeObserver !== "undefined") {
-      this.resize = new ResizeObserver(() => this.revealActive());
-      this.resize.observe(this.viewport);
-    }
+    this.observeViewport();
+  }
+
+  protected override reconnectedCallback(): void {
+    super.reconnectedCallback();
+    this.observeViewport();
+  }
+
+  /** Keeps the active tab in view when the viewport resizes. */
+  private observeViewport() {
+    if (this.resize || typeof ResizeObserver === "undefined") return;
+    this.resize = new ResizeObserver(() => this.revealActive());
+    this.resize.observe(this.viewport);
   }
 
   protected override updated(changed: PropertyValues<this>): void {

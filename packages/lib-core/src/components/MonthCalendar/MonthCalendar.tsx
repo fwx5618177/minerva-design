@@ -7,6 +7,13 @@ import {
 } from "../../internal/icons";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
+import {
+  addDays,
+  dayKey,
+  localDate,
+  monthStart,
+  sameMonth,
+} from "@minerva/core";
 import useI18n from "../../hooks/useI18n";
 import { logicalArrowKey } from "../../internal/direction";
 import styles from "./monthCalendar.module.scss";
@@ -14,32 +21,6 @@ import type { MonthCalendarEvent, MonthCalendarProps } from "./types";
 
 const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const NO_EVENTS: readonly MonthCalendarEvent[] = [];
-
-function localDate(year: number, month: number, day: number) {
-  // setFullYear keeps years < 100 intact (the Date constructor maps them to 19xx).
-  const date = new Date(0);
-  date.setFullYear(year, month, day);
-  date.setHours(0, 0, 0, 0);
-  return date;
-}
-
-function dayKey(date: Date) {
-  return `${String(date.getFullYear()).padStart(4, "0")}-${String(
-    date.getMonth() + 1,
-  ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-}
-
-function addDays(date: Date, days: number) {
-  return localDate(date.getFullYear(), date.getMonth(), date.getDate() + days);
-}
-
-function monthStart(date: Date, offset = 0) {
-  return localDate(date.getFullYear(), date.getMonth() + offset, 1);
-}
-
-function sameMonth(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
-}
 
 /**
  * MonthCalendar: a Monday-first, six-week month grid. Each day shows its

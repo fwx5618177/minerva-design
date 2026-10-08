@@ -30,8 +30,8 @@ const src = (path: string) =>
 /**
  * Package entries. The build preserves the module structure (one output file
  * per source module) so bundlers tree-shake per component. Every module but
- * the server-safe theme-utils entry (pure functions / constants used by root
- * layouts, which only imports @minerva/core) gets a `"use client"` banner, so
+ * the server-safe theme-utils and utils entries (pure functions / constants,
+ * which only import @minerva/core) gets a `"use client"` banner, so
  * React Server Components can import the client entries, and deep imports
  * created by barrel optimisation (e.g. Next.js `optimizePackageImports`) stay
  * client modules too.
@@ -39,9 +39,12 @@ const src = (path: string) =>
 const entries = {
   index: src("index.ts"),
   "theme-utils": src("theme-utils.ts"),
+  // `@minerva/lib-core/utils`: the non-component functions / data, usable
+  // from React Server Components
+  "utils-entry": src("utils-entry.ts"),
   monaco: src("monaco.ts"),
 };
-const SERVER_ENTRIES = new Set(["theme-utils"]);
+const SERVER_ENTRIES = new Set(["theme-utils", "utils-entry"]);
 
 const kebab = (name: string) =>
   name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();

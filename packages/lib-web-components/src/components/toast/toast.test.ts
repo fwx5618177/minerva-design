@@ -157,13 +157,13 @@ describe("<minerva-toast-region>", () => {
   });
 
   it("renders lib-core's structure, classes and labelled region", async () => {
-    const el = await setup(`position="bottomLeft"`);
+    const el = await setup(`position="bottom-left"`);
     toast.success("Saved", { description: "All good", duration: 3000 });
     await settle();
     const region = regionOf(el);
     expect(region).toHaveAttribute("aria-label", "Notifications (F8)");
     expect(region.classList).toContain("viewport");
-    expect(region.classList).toContain("bottomLeft");
+    expect(region.classList).toContain("bottom-left");
     expect(region).toHaveAttribute("popover", "manual");
     expect(region).not.toHaveAttribute("tabindex");
     expect(el).not.toHaveAttribute("data-minerva-keep-visible");
@@ -208,7 +208,7 @@ describe("<minerva-toast-region>", () => {
     expect(item.querySelector(".title")).toBeNull();
     expect(item.querySelector(".progress")).toBeNull();
     expect(item.style.getPropertyValue("--toast-duration")).toBe("");
-    expect(regionOf(el).classList).toContain("topRight");
+    expect(regionOf(el).classList).toContain("top-right");
   });
 
   it("loading toasts are a polite status with a decorative spinner and never auto-close", async () => {
@@ -512,12 +512,12 @@ describe("<minerva-toast-region>", () => {
   });
 
   it.each([
-    "topRight",
-    "topLeft",
-    "topCenter",
-    "bottomRight",
-    "bottomLeft",
-    "bottomCenter",
+    "top-right",
+    "top-left",
+    "top-center",
+    "bottom-right",
+    "bottom-left",
+    "bottom-center",
   ])("stacks toasts at %s", async (position) => {
     const el = await setup(`position="${position}"`);
     toast.info("Placed", { duration: 0 });
@@ -668,7 +668,7 @@ describe("several regions and scopes", () => {
   it("targets a region with toast.region(el), { region: id } or el.toast", async () => {
     document.body.innerHTML = `
       <minerva-toast-region id="main"></minerva-toast-region>
-      <minerva-toast-region id="side" position="bottomLeft"></minerva-toast-region>`;
+      <minerva-toast-region id="side" position="bottom-left"></minerva-toast-region>`;
     await settle();
     const main = document.getElementById("main") as MinervaToastRegion;
     const side = document.getElementById("side") as MinervaToastRegion;
@@ -765,7 +765,7 @@ describe("dev warnings", () => {
       expect.stringContaining('invalid position "middle"'),
     );
     // falls back to the default stack
-    expect(regionOf(el).classList).toContain("topRight");
+    expect(regionOf(el).classList).toContain("top-right");
     const id: ToastId = toast.info("Lost", { duration: 0, region: "nope" });
     await settle();
     expect(warn).toHaveBeenCalledWith(

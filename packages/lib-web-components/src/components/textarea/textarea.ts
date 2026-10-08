@@ -81,20 +81,20 @@ export class MinervaTextarea extends FormAssociatedElement {
   placeholder = "";
 
   /** Read-only: focusable and submitted, not editable */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Visible text lines */
   @property({ type: Number })
   rows?: number;
 
   /** Minimum length */
-  @property({ type: Number })
-  minlength?: number;
+  @property({ type: Number, attribute: "minlength" })
+  minLength?: number;
 
   /** Maximum length */
-  @property({ type: Number })
-  maxlength?: number;
+  @property({ type: Number, attribute: "maxlength" })
+  maxLength?: number;
 
   /** Autocomplete hint */
   @property()
@@ -171,14 +171,14 @@ export class MinervaTextarea extends FormAssociatedElement {
     }
     if (
       DEV &&
-      (changed.has("minlength") || changed.has("maxlength")) &&
-      this.minlength !== undefined &&
-      this.maxlength !== undefined &&
-      this.minlength > this.maxlength
+      (changed.has("minLength") || changed.has("maxLength")) &&
+      this.minLength !== undefined &&
+      this.maxLength !== undefined &&
+      this.minLength > this.maxLength
     ) {
       devWarn(
         MinervaTextarea.tagName,
-        `minlength (${this.minlength}) is greater than maxlength (${this.maxlength}): no value can be valid.`,
+        `minlength (${this.minLength}) is greater than maxlength (${this.maxLength}): no value can be valid.`,
       );
     }
   }
@@ -211,10 +211,10 @@ export class MinervaTextarea extends FormAssociatedElement {
       placeholder=${this.placeholder || nothing}
       rows=${this.rows ?? nothing}
       ?disabled=${this.isDisabled}
-      ?readonly=${this.readonly}
+      ?readonly=${this.readOnly}
       ?required=${this.required}
-      minlength=${this.minlength ?? nothing}
-      maxlength=${this.maxlength ?? nothing}
+      minlength=${this.minLength ?? nothing}
+      maxlength=${this.maxLength ?? nothing}
       autocomplete=${(this.autocomplete as never) ?? nothing}
       wrap=${this.wrap ?? nothing}
       aria-label=${this.aria.label ?? nothing}

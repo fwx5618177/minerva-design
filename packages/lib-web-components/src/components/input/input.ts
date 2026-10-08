@@ -110,16 +110,16 @@ export class MinervaInput extends FormAssociatedElement {
   placeholder = "";
 
   /** Read-only: focusable and submitted, not editable */
-  @property({ type: Boolean, reflect: true })
-  readonly = false;
+  @property({ type: Boolean, reflect: true, attribute: "readonly" })
+  readOnly = false;
 
   /** Minimum length */
-  @property({ type: Number })
-  minlength?: number;
+  @property({ type: Number, attribute: "minlength" })
+  minLength?: number;
 
   /** Maximum length */
-  @property({ type: Number })
-  maxlength?: number;
+  @property({ type: Number, attribute: "maxlength" })
+  maxLength?: number;
 
   /** Regular expression the value must match */
   @property()
@@ -227,19 +227,25 @@ export class MinervaInput extends FormAssociatedElement {
     if (changed.has("value") && changed.get("value") !== undefined) {
       this.dirty = this.value !== this.defaultValue || this.dirty;
     }
-    if (changed.has("defaultValue") && !this.dirty) {
+    // first update: a value set before connecting wins over the default
+    // unless the value attribute is present
+    if (
+      changed.has("defaultValue") &&
+      !this.dirty &&
+      (this.hasUpdated || this.hasAttribute("value"))
+    ) {
       this.value = this.defaultValue;
     }
     if (
       DEV &&
-      changed.has("maxlength") &&
-      this.minlength !== undefined &&
-      this.maxlength !== undefined &&
-      this.minlength > this.maxlength
+      changed.has("maxLength") &&
+      this.minLength !== undefined &&
+      this.maxLength !== undefined &&
+      this.minLength > this.maxLength
     ) {
       devWarn(
         MinervaInput.tagName,
-        `minlength (${this.minlength}) is greater than maxlength (${this.maxlength}): no value can be valid.`,
+        `minlength (${this.minLength}) is greater than maxlength (${this.maxLength}): no value can be valid.`,
       );
     }
   }
@@ -273,7 +279,7 @@ export class MinervaInput extends FormAssociatedElement {
     const disabled = this.isDisabled;
     const isPassword = this.type === "password";
     const showClear =
-      this.clearable && this.value !== "" && !disabled && !this.readonly;
+      this.clearable && this.value !== "" && !disabled && !this.readOnly;
     const passwordLabel = this.passwordVisible
       ? (this.hidePasswordLabel ?? t("input.hidePassword"))
       : (this.showPasswordLabel ?? t("input.showPassword"));
@@ -303,10 +309,10 @@ export class MinervaInput extends FormAssociatedElement {
         name=${this.name || nothing}
         placeholder=${this.placeholder || nothing}
         ?disabled=${disabled}
-        ?readonly=${this.readonly}
+        ?readonly=${this.readOnly}
         ?required=${this.required}
-        minlength=${this.minlength ?? nothing}
-        maxlength=${this.maxlength ?? nothing}
+        minlength=${this.minLength ?? nothing}
+        maxlength=${this.maxLength ?? nothing}
         pattern=${this.pattern ?? nothing}
         min=${this.min ?? nothing}
         max=${this.max ?? nothing}
@@ -355,8 +361,8 @@ export class MinervaInput extends FormAssociatedElement {
         this.showCharCount
           ? html`<span id=${this.countId} class="count" part="count"
               >${
-                this.maxlength != null && this.maxlength >= 0
-                  ? `${this.value.length} / ${this.maxlength}`
+                this.maxLength != null && this.maxLength >= 0
+                  ? `${this.value.length} / ${this.maxLength}`
                   : this.value.length
               }</span
             >`

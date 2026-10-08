@@ -19,8 +19,13 @@ import {
 import useI18n from "../../hooks/useI18n";
 import { ProgressIndicator } from "../ProgressIndicator";
 import { useIsClient } from "../../internal/useIsClient";
-import { focusElement, getTabbables } from "@minerva/core";
-import { getAdjacentTabbable } from "../../internal/focusAfterRemoval";
+import {
+  focusElement,
+  formatHotkey,
+  getAdjacentTabbable,
+  getTabbables,
+  matchesHotkey,
+} from "@minerva/core";
 import {
   createToast,
   toast,
@@ -56,28 +61,6 @@ const SPINNER = (
 
 const NO_TOASTS: ToastItem[] = [];
 const DEFAULT_HOTKEY = ["F8"];
-const MODIFIER_KEYS = ["altKey", "ctrlKey", "metaKey", "shiftKey"] as const;
-
-/** Whether `event` matches every key of `hotkey` (codes, keys or modifiers). */
-const matchesHotkey = (event: KeyboardEvent, hotkey: readonly string[]) =>
-  hotkey.length > 0 &&
-  hotkey.every((key) =>
-    (MODIFIER_KEYS as readonly string[]).includes(key)
-      ? event[key as (typeof MODIFIER_KEYS)[number]]
-      : event.code === key || event.key === key,
-  );
-
-/** Human readable hotkey, e.g. ["altKey", "KeyT"] -> "Alt+T". */
-const formatHotkey = (hotkey: readonly string[]) =>
-  hotkey
-    .map((key) =>
-      key
-        .replace(/Key$/, "")
-        .replace(/^Key(?=.)/, "")
-        .replace(/^Digit/, "")
-        .replace(/^./, (c) => c.toUpperCase()),
-    )
-    .join("+");
 
 /**
  * Focus bookkeeping shared by the viewports of a provider: the element
@@ -360,7 +343,7 @@ const containerKey = (container: HTMLElement): string => {
  * position, max and labels), so the scoped theme and language apply.
  */
 const ToastProvider = ({
-  position = "topRight",
+  position = "top-right",
   children,
   max = Infinity,
   pauseOnHover = true,

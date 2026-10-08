@@ -6,82 +6,22 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
+import {
+  commandSearchText,
+  isEditableTarget,
+  matchesShortcut,
+  normalizeSearchText,
+  normalizeShortcuts,
+} from "@minerva/core";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { cn } from "../../utils/cn";
 import { ModalContent, ModalHeader, ModalRoot } from "../Modal/Modal";
-import type {
-  CommandDialogProps,
-  CommandItem,
-  CommandShortcutEvent,
-} from "./types";
+import type { CommandDialogProps, CommandItem } from "./types";
 import styles from "./command.module.scss";
 
-const normalize = (value: string) => value.trim().toLowerCase();
-
-const searchText = (item: CommandItem) =>
-  `${item.group ?? ""} ${item.title} ${item.description ?? ""} ${item.keywords ?? ""}`;
-
-/** Drops empty / non-string shortcut values (runtime safety for untyped callers). */
-export function normalizeShortcuts(
-  shortcut: string | readonly string[] | undefined,
-): string[] {
-  const values = Array.isArray(shortcut) ? shortcut : [shortcut];
-  return values.filter(
-    (value): value is string =>
-      typeof value === "string" && value.trim() !== "",
-  );
-}
-
-/**
- * Whether a keyboard event matches a shortcut such as "mod+k" or
- * "ctrl+shift+p". `mod` accepts Cmd (macOS) or Ctrl. Non-string shortcuts
- * never match.
- */
-export function matchesShortcut(
-  event: CommandShortcutEvent,
-  shortcut: unknown,
-): boolean {
-  if (typeof shortcut !== "string") return false;
-  const parts = shortcut
-    .trim()
-    .toLowerCase()
-    .split("+")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const key = parts[parts.length - 1];
-  if (!key || String(event.key ?? "").toLowerCase() !== key) return false;
-  const has = (...names: string[]) => names.some((n) => parts.includes(n));
-  if (has("mod") && !event.metaKey && !event.ctrlKey) return false;
-  if (has("ctrl") && !event.ctrlKey) return false;
-  if (has("meta", "cmd") && !event.metaKey) return false;
-  if (has("shift") && !event.shiftKey) return false;
-  if (has("alt", "option") && !event.altKey) return false;
-  return true;
-}
-
-/** Text inputs, textareas, selects and contenteditable hosts. */
-const isEditableTarget = (target: EventTarget | null): boolean => {
-  if (!(target instanceof HTMLElement)) return false;
-  if (target.isContentEditable) return true;
-  if (target instanceof HTMLTextAreaElement) return true;
-  if (target instanceof HTMLSelectElement) return true;
-  if (target instanceof HTMLInputElement) {
-    return ![
-      "button",
-      "checkbox",
-      "color",
-      "file",
-      "image",
-      "radio",
-      "range",
-      "reset",
-      "submit",
-    ].includes(target.type);
-  }
-  return false;
-};
+export { matchesShortcut, normalizeShortcuts };
 
 interface CommandPanelProps {
   items: CommandItem[];
@@ -112,10 +52,13 @@ const CommandPanel = ({
   const listId = `${baseId}-results`;
 
   const results = useMemo(() => {
-    const q = normalize(query);
+    const q = normalizeSearchText(query);
     return items
       .filter((item) => !item.disabled)
-      .filter((item) => !q || normalize(searchText(item)).includes(q))
+      .filter(
+        (item) =>
+          !q || normalizeSearchText(commandSearchText(item)).includes(q),
+      )
       .slice(0, maxResults);
   }, [items, maxResults, query]);
 

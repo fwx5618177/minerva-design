@@ -1,3 +1,4 @@
+import { linkRel } from "@minerva/core";
 import { css, nothing, type PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -9,6 +10,7 @@ import { closestComposed } from "../../internal/dom";
 import { attachInternals } from "../../internal/form";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
+import { safeHref } from "../../internal/url";
 
 /** Visual style of a card */
 export type CardVariant =
@@ -228,9 +230,9 @@ export class MinervaCard extends MinervaElement {
       return html`<a
         part="base"
         class=${classes}
-        href=${this.href ?? nothing}
+        href=${safeHref(MinervaCard.tagName, this.href) ?? nothing}
         target=${this.target ?? nothing}
-        rel=${this.rel ?? nothing}
+        rel=${linkRel(this.target, this.rel) ?? nothing}
         download=${this.download ?? nothing}
         aria-label=${label}
         >${slot}</a

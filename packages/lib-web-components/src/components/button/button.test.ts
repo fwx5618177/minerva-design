@@ -48,8 +48,8 @@ describe("<minerva-button>", () => {
 
   it("reflects properties to attributes and defaults", async () => {
     const el = await mount<MinervaButton>(`<minerva-button>x</minerva-button>`);
-    expect(el.getAttribute("color")).toBe("primary");
-    expect(el.getAttribute("variant")).toBe("solid");
+    expect(el.getAttribute("color")).toBeNull();
+    expect(el.getAttribute("variant")).toBeNull();
     el.variant = "ghost";
     el.fullWidth = true;
     await el.updateComplete;
