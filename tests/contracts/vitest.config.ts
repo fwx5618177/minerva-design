@@ -62,6 +62,8 @@ export default defineConfig({
       },
     },
     include: ["**/*.test.{ts,tsx}"],
+    // React Native: its own environment (vitest.native.config.ts)
+    exclude: ["native.test.tsx", "**/node_modules/**"],
     setupFiles: [
       "../../packages/web-components/tests/setup/setup.ts",
       "./setup.ts",

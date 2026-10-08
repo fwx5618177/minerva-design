@@ -5,7 +5,9 @@ export default defineConfig({
     // Each project configures its own environment:
     // - unit: packages/*/vite.config.ts, apps/docs/vite.config.ts
     // - e2e: tests/e2e/vitest.config.ts (user flows across components)
-    // - contracts: tests/contracts/vitest.config.ts (cross-platform suites)
+    // - contracts: tests/contracts/vitest.config.ts (cross-platform suites),
+    //   tests/contracts/vitest.native.config.ts (React Native driver)
+    // - native: packages/native/vitest*.config.ts, tests/e2e-native
     projects: [
       "packages/core",
       "packages/dom",
@@ -13,13 +15,16 @@ export default defineConfig({
       "packages/web-components",
       "apps/docs",
       "tests/e2e",
+      "tests/e2e-native",
       "tests/contracts",
+      "tests/contracts/vitest.native.config.ts",
       "tests/docs",
+      // React Native (minerva-design/native): RNTL and react-native-web lanes
+      "packages/native/vitest.config.ts",
+      "packages/native/vitest.web.config.ts",
       // planned renderers: their platform testing spikes (docs/adr)
       "packages/vue",
       "packages/angular",
-      "packages/native/vitest.config.ts",
-      "packages/native/vitest.web.config.ts",
       "packages/taro",
       "packages/weapp",
       "packages/uni",

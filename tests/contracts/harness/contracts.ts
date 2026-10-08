@@ -24,14 +24,23 @@ export function contractOf(name: string): ComponentContract {
   return contract;
 }
 
-/** Whether a component prop exists on a platform */
+/**
+ * Whether a component prop exists on a platform. React Native
+ * (minerva-design/native) follows the React API: React-only props
+ * (`defaultOpen`, `defaultValue`...) exist there too.
+ */
 export function hasProp(
   contract: ComponentContract,
   name: string,
   platform: Platform,
 ): boolean {
   const prop = contract.props.find((p) => p.name === name);
-  return !!prop && (!prop.only || prop.only === platform);
+  return (
+    !!prop &&
+    (!prop.only ||
+      prop.only === platform ||
+      (platform === "native" && prop.only === "react"))
+  );
 }
 
 /**
@@ -58,8 +67,10 @@ export function eventWith(
   field: string,
   platform: Platform,
 ): EventContract {
+  const callback = (e: EventContract) =>
+    platform === "react" ? e.react : platform === "native" ? e.native : e.wc;
   const event = contract.events.find(
-    (e) => e.detail?.includes(field) && (platform === "react" ? e.react : e.wc),
+    (e) => e.detail?.includes(field) && callback(e),
   );
   if (!event)
     throw new Error(
@@ -69,8 +80,9 @@ export function eventWith(
 }
 
 /**
- * React callback arguments -> the contract's detail fields, by position
- * (`onChange(checked, event)` -> `{ checked }`); events are dropped.
+ * React / React Native callback arguments -> the contract's detail fields,
+ * by position (`onChange(checked, event)` -> `{ checked }`); events are
+ * dropped.
  */
 export function detailOf(
   event: EventContract,
