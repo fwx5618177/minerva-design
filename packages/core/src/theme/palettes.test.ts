@@ -5,18 +5,18 @@ import { palettes } from "./palettes";
 import { dark, light } from "./themes";
 import { PALETTES } from "./mode";
 
-const read = (file: string) =>
-  readFileSync(join(import.meta.dirname, "tokens", file), "utf8");
+// The generated stylesheet (`@minerva/core/tokens.css`)
+const tokensCss = readFileSync(join(import.meta.dirname, "tokens.css"), "utf8");
 
-// prettier normalizes quotes in the stylesheet
+// the stylesheet writes font stacks with double quotes
 const normalize = (v: string) =>
   v.replace(/\s+/g, " ").replace(/'/g, '"').trim();
 
-/** selector -> declarations of a flat stylesheet */
-const blocks = (scss: string) => {
+/** selector -> declarations of the stylesheet (first block of a selector) */
+const blocks = (css: string) => {
   const out = new Map<string, Record<string, string>>();
-  const source = scss.replace(/\/\/[^\n]*/g, "");
-  for (const [, selector, body] of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (out.has(normalize(selector))) continue;
     out.set(
       normalize(selector),
       Object.fromEntries(
@@ -31,7 +31,7 @@ const blocks = (scss: string) => {
 };
 
 describe("palettes", () => {
-  const css = blocks(read("palettes.scss"));
+  const css = blocks(tokensCss);
 
   it("defines every palette in light and dark", () => {
     expect(Object.keys(palettes).sort()).toEqual([...PALETTES].sort());
@@ -40,11 +40,11 @@ describe("palettes", () => {
     }
   });
 
-  it.each(PALETTES)("%s: palettes.scss matches palettes.ts", (palette) => {
+  it.each(PALETTES)("%s: tokens.css declares palettes.ts", (palette) => {
     const lightBlock = css.get(
-      `[data-palette="${palette}"][data-theme="light"], [data-palette="${palette}"]:not([data-theme="dark"])`,
+      `[data-palette=${palette}][data-theme=light], [data-palette=${palette}]:not([data-theme=dark])`,
     );
-    const darkBlock = css.get(`[data-palette="${palette}"][data-theme="dark"]`);
+    const darkBlock = css.get(`[data-palette=${palette}][data-theme=dark]`);
     const expected = (theme: Record<string, string>) =>
       Object.fromEntries(
         Object.entries(theme).map(([k, v]) => [k, normalize(v)]),
@@ -71,7 +71,7 @@ describe("palettes", () => {
   });
 
   it("declares Minerva's own dark mode for data-theme without a palette", () => {
-    const block = css.get('[data-theme="dark"]:not([data-palette])');
+    const block = css.get("[data-theme=dark]:not([data-palette])");
     expect(block).toEqual(
       Object.fromEntries(
         Object.entries(dark).map(([k, v]) => [k, normalize(String(v))]),
@@ -89,7 +89,7 @@ describe("palettes", () => {
 });
 
 describe("scale tokens", () => {
-  const scales = blocks(read("scales.scss")).get(":root")!;
+  const scales = blocks(tokensCss).get(":root")!;
 
   it("ships the spacing scale used by layout props", () => {
     for (const step of [

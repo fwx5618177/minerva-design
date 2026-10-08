@@ -140,6 +140,35 @@ describe("global framework selector", () => {
     },
   );
 
+  it.each([
+    ["Vue", true],
+    ["Angular", true],
+    ["Svelte", false],
+    ["HTML", false],
+  ])(
+    "%s is labelled as using the Web Components until its native renderer lands: %s",
+    async (label, planned) => {
+      const user = userEvent.setup();
+      renderPage();
+      const tab = tabs().getByRole("tab", { name: label });
+      expect(tab.getAttribute("title")).toBe(
+        planned ? `${label} via Web Components (native coming soon)` : null,
+      );
+      await user.click(tab);
+      const note = screen.queryByTestId("native-planned");
+      if (!planned) {
+        expect(note).toBeNull();
+        return;
+      }
+      expect(note).toHaveTextContent(
+        `${label} via Web Components (native coming soon)`,
+      );
+      expect(
+        within(note!).getByRole("link", { name: "Platform support" }),
+      ).toHaveAttribute("href", "/platform-support");
+    },
+  );
+
   it("moves between frameworks with the arrow keys", async () => {
     const user = userEvent.setup();
     renderPage();

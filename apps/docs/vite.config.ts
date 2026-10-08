@@ -33,7 +33,7 @@ const testAlias: Alias[] = [
   },
   {
     find: /^minerva-design\/style\.css$/,
-    replacement: src("../../packages/core/src/theme/tokens.scss"),
+    replacement: src("../../packages/core/src/theme/tokens.css"),
   },
   {
     find: /^minerva-design$/,
@@ -49,7 +49,7 @@ const testAlias: Alias[] = [
   },
   {
     find: /^minerva-design\/tokens\.css$/,
-    replacement: src("../../packages/core/src/theme/tokens.scss"),
+    replacement: src("../../packages/core/src/theme/tokens.css"),
   },
   {
     find: /^minerva-design\/styling-hooks$/,

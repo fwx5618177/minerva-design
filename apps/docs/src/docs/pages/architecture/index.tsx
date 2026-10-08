@@ -11,6 +11,50 @@ const PACKAGES = [
   { name: "minerva-design/web-components", key: "webComponents" },
 ] as const;
 
+/** Internal layers behind the published entries (dist/ of minerva-design) */
+const WORKSPACE = [
+  { name: "dist/core", key: "neutral" },
+  { name: "dist/dom", key: "dom" },
+] as const;
+
+/**
+ * Every renderer shares the platform-neutral core (state machines, contracts,
+ * tokens, i18n); web renderers add the DOM layer. Statuses mirror the component
+ * contracts (Platform support page).
+ */
+const PLATFORMS = [
+  { key: "react", entry: "minerva-design", dom: true, status: "stable" },
+  {
+    key: "wc",
+    entry: "minerva-design/web-components",
+    dom: true,
+    status: "stable",
+  },
+  { key: "vue", entry: "minerva-design/vue", dom: true, status: "planned" },
+  {
+    key: "angular",
+    entry: "minerva-design/angular",
+    dom: true,
+    status: "planned",
+  },
+  {
+    key: "native",
+    entry: "minerva-design/native",
+    dom: false,
+    status: "planned",
+  },
+  { key: "taro", entry: "minerva-design/taro", dom: false, status: "planned" },
+  {
+    key: "weapp",
+    entry: "package.json miniprogram → dist/weapp",
+    dom: false,
+    status: "planned",
+  },
+  { key: "uni", entry: "minerva-design/uni", dom: false, status: "planned" },
+] as const;
+
+const ROADMAP = ["phase0", "phase1", "phase2", "phase3", "phase4"] as const;
+
 const PRIMITIVES = [
   "focusScope",
   "dismissableLayer",
@@ -24,15 +68,23 @@ const PRIMITIVES = [
   "theme",
 ] as const;
 
-const layersCode = `minerva-design/core            framework-agnostic TypeScript, DOM only
-  ├─ interaction primitives (focus, layers, scroll lock, roving focus, ...)
-  ├─ positioning (the only place @floating-ui/dom is used)
-  └─ theme utilities, palettes, design tokens (tokens.css), i18n messages + translator
-        ▲                                ▲
-        │ thin React hooks               │ Lit controllers
-minerva-design                 minerva-design/web-components
-  React 19 components               Web Components (Lit custom elements)
-  + style.css                       + tokens.css, CDN bundle`;
+const layersCode = `core (dist/core)   platform-neutral TypeScript (no DOM): React Native, mini-programs, Node
+  ├─ headless state machines (machines/): disclosure, toast queue, tabs, selection, field...
+  ├─ component contracts (contracts/): props, events, slots, platform support
+  ├─ tokens: TypeScript source → tokens.css, tokens.mini.css, resolveTokens()
+  └─ theme data, design presets, i18n messages + translator, pure helpers
+        ▲
+        │                             web only
+        │   dom (dist/dom)   focus scope, layers, scroll lock, roving focus,
+        │        ▲         positioning (@floating-ui/dom), portal, theme DOM helpers
+        │        │
+ ┌──────┴────────┴──────────────┬─────────────────────────┬──────────────────────┐
+ minerva-design         minerva-design/web-components   minerva-design/vue · /angular
+ React 19 (DOM)         Lit custom elements             (planned, native)
+        │
+ minerva-design/native · /taro · /uni · miniprogram → dist/weapp   (planned, core only)
+
+minerva-design/core = core + dom (the web API)`;
 
 const coreCode = `import { createDismissableLayer, createFocusScope, lockScroll } from "minerva-design/core";
 
@@ -82,12 +134,91 @@ const ArchitectureDoc: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <p className={styles.prose}>{k("packages.workspace")}</p>
+      <div
+        className={styles.tableWrapper}
+        tabIndex={0}
+        role="region"
+        aria-label={k("packages.workspaceTitle")}
+      >
+        <table className={styles.propsTable}>
+          <thead>
+            <tr>
+              <th scope="col">{k("packages.package")}</th>
+              <th scope="col">{t("doc.description")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {WORKSPACE.map((row) => (
+              <tr key={row.name}>
+                <th scope="row">
+                  <code className={styles.propName}>{row.name}</code>
+                </th>
+                <td>{k(`packages.${row.key}`)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <CodeBlock code={layersCode} language="text" />
     </section>
   );
 
   return (
     <DocPage id="architecture" intro={intro}>
+      <section className={styles.section} aria-labelledby="platforms">
+        <h2 id="platforms">{k("platforms.title")}</h2>
+        <p className={styles.prose}>{k("platforms.text")}</p>
+        <div
+          className={styles.tableWrapper}
+          tabIndex={0}
+          role="region"
+          aria-label={k("platforms.title")}
+        >
+          <table className={styles.propsTable}>
+            <thead>
+              <tr>
+                <th scope="col">{k("platforms.platform")}</th>
+                <th scope="col">{k("platforms.entry")}</th>
+                <th scope="col">{k("platforms.renderer")}</th>
+                <th scope="col">{k("platforms.shared")}</th>
+                <th scope="col">{k("platforms.status")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PLATFORMS.map((row) => (
+                <tr key={row.key}>
+                  <th scope="row">{k(`platforms.rows.${row.key}.name`)}</th>
+                  <td>
+                    <code className={styles.propName}>{row.entry}</code>
+                  </td>
+                  <td>{k(`platforms.rows.${row.key}.renderer`)}</td>
+                  <td>
+                    <code>{row.dom ? "core + dom" : "core"}</code>
+                  </td>
+                  <td>{k(`platforms.${row.status}`)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className={styles.prose}>
+          <Link to="/platform-support">{k("platforms.support")}</Link>
+        </p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="headless">
+        <h2 id="headless">{k("headless.title")}</h2>
+        <p className={styles.prose}>{k("headless.text")}</p>
+        <ul className={styles.prose}>
+          {(["machines", "contracts", "tokens", "tests"] as const).map(
+            (key) => (
+              <li key={key}>{k(`headless.${key}`)}</li>
+            ),
+          )}
+        </ul>
+      </section>
+
       <section className={styles.section} aria-labelledby="primitives">
         <h2 id="primitives">{k("primitives.title")}</h2>
         <p className={styles.prose}>{k("primitives.text")}</p>
@@ -108,6 +239,16 @@ const ArchitectureDoc: React.FC = () => {
       <section className={styles.section} aria-labelledby="dependencies">
         <h2 id="dependencies">{k("dependencies.title")}</h2>
         <p className={styles.prose}>{k("dependencies.text")}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="roadmap">
+        <h2 id="roadmap">{k("roadmap.title")}</h2>
+        <p className={styles.prose}>{k("roadmap.text")}</p>
+        <ol className={styles.prose}>
+          {ROADMAP.map((key) => (
+            <li key={key}>{k(`roadmap.${key}`)}</li>
+          ))}
+        </ol>
       </section>
 
       <section className={styles.section} aria-labelledby="next-steps">

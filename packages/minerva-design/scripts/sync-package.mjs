@@ -41,6 +41,22 @@ export const DUAL_SUBPATHS = {
   "styling-hooks": ["core/styling-hooks", "core/styling-hooks/index"],
 };
 
+/**
+ * Native renderers planned for later phases (private workspace packages
+ * `packages/<name>`, no build output yet). Their entries are deliberately
+ * NOT in the exports map until the renderer is implemented; the WeChat
+ * renderer will be published through the `miniprogram` field (dist/weapp)
+ * rather than an export.
+ */
+export const PLANNED_RENDERERS = {
+  vue: "./vue",
+  angular: "./angular",
+  native: "./native",
+  taro: "./taro",
+  uni: "./uni",
+  weapp: "miniprogram: dist/weapp",
+};
+
 export function expectedExports() {
   const exports = { ".": dual("react/index") };
   for (const [name, [base, types]] of Object.entries(DUAL_SUBPATHS)) {

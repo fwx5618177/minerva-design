@@ -21,6 +21,13 @@ export const PUBLISHED = {
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
   "packages/dom": "@minerva/dom",
+  // planned renderers (placeholders, see docs/adr/0001-platform-foundation.md)
+  "packages/vue": "@minerva/vue",
+  "packages/angular": "@minerva/angular",
+  "packages/native": "@minerva/native",
+  "packages/taro": "@minerva/taro",
+  "packages/weapp": "@minerva/weapp",
+  "packages/uni": "@minerva/uni",
   "packages/react": "@minerva/react",
   "packages/web-components": "@minerva/web-components",
   "apps/docs": "@minerva/docs",
@@ -40,6 +47,12 @@ export const MARKDOWN = [
   "packages/dom/README.md",
   "packages/react/README.md",
   "packages/web-components/README.md",
+  ...["vue", "angular", "native", "taro", "weapp", "uni"].map(
+    (name) => `packages/${name}/README.md`,
+  ),
+  ...readdirSync(at("docs/adr"))
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => `docs/adr/${name}`),
 ];
 
 export interface CodeBlock {

@@ -3,7 +3,14 @@ import { setHostAria } from "../../internal/aria";
 import { attachInternals } from "../../internal/form";
 import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import type { ColorScheme } from "@minerva/core";
+import {
+  createTabsMachine,
+  getTabsTabStop,
+  type ColorScheme,
+  type TabsEvent,
+  type TabsProps,
+} from "@minerva/core";
+import { MachineController } from "../../controllers/machine";
 import styles from "@react-styles/components/Tabs/tabs.module.scss?inline";
 import { RovingFocusController } from "../../controllers/roving-focus";
 import { AriaController } from "../../internal/aria";
@@ -135,14 +142,39 @@ export class MinervaTabs extends MinervaElement {
     ).filter((panel) => ownerOf(panel) === this);
   }
 
-  /** Called by a tab (click / Enter / Space / focus): selects `value`. */
-  select(value: string): void {
-    if (value === this.value) return;
+  // Selection and automatic activation: core's tabs machine, with `value`
+  // as its controlled value (applied by `apply` unless the event is canceled).
+  private readonly machine = new MachineController(
+    this,
+    createTabsMachine(this.tabsProps()),
+    // the template follows `value` (a property), not the machine state
+    () => false,
+  );
+
+  private tabsProps(): TabsProps {
+    return {
+      value: this.value,
+      activationMode: this.activationMode,
+      onValueChange: (value) => this.apply(value),
+    };
+  }
+
+  private send(event: TabsEvent) {
+    this.machine.sync(this.tabsProps());
+    this.machine.send(event);
+  }
+
+  private apply(value: string) {
     if (!this.emit("minerva-change", { value }, { cancelable: true })) {
       // controlled: the parent keeps (or later sets) the selection
       return;
     }
     this.value = value;
+  }
+
+  /** Called by a tab (click / Enter / Space / focus): selects `value`. */
+  select(value: string): void {
+    this.send({ type: "SELECT", value, disabled: false });
   }
 
   override connectedCallback(): void {
@@ -231,10 +263,7 @@ export class MinervaTabs extends MinervaElement {
     }
     this.ensureRoving();
     // tab stop: the selected tab, else the first enabled one
-    const selected = tabs.find(
-      (tab) => tab.value === this.value && !tab.disabled,
-    );
-    const stop = selected ?? tabs.find((tab) => !tab.disabled);
+    const stop = getTabsTabStop(tabs, this.value);
     if (stop) this.roving.setActive(stop, { focus: false });
     else this.roving.refresh();
   }
@@ -252,9 +281,9 @@ export class MinervaTabs extends MinervaElement {
 
   /** Automatic activation: focusing a tab selects it. */
   private handleFocusIn = (event: FocusEvent) => {
-    if (this.activationMode !== "automatic") return;
     const tab = this.tabs.find((t) => t === event.target);
-    if (tab && !tab.disabled) this.select(tab.value);
+    if (tab)
+      this.send({ type: "FOCUS", value: tab.value, disabled: tab.disabled });
   };
 
   protected override render() {

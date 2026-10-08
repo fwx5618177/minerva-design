@@ -1,6 +1,7 @@
 import { createRef, type ReactNode } from "react";
 import { act, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { compile } from "sass";
 import { expect, it } from "vitest";
@@ -158,12 +159,10 @@ it.each([
 it.each([0.5, "0.5"])(
   "resolves fractional gap %s to a token declared by the compiled scale",
   (gap) => {
-    const tokens = compile(
-      join(
-        import.meta.dirname,
-        "../../../../core/src/theme/tokens/scales.scss",
-      ),
-    ).css;
+    const tokens = readFileSync(
+      join(import.meta.dirname, "../../../../core/src/theme/tokens.css"),
+      "utf8",
+    );
     const { container } = render(
       <SplitLayout aside="Properties" gap={gap}>
         Main

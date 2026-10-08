@@ -1,0 +1,72 @@
+{
+  "title": "Platform support",
+  "description": "Which Minerva components are available on which platform: React and Web Components today, native Vue, Angular, React Native, Taro, WeChat mini-program and uni-app renderers planned.",
+  "platformsTitle": "Platforms",
+  "platformsText": "Every component is described once in a platform-neutral contract (props, events, slots). Each renderer implements the contracts with its own components; the shared contract tests check that they behave the same.",
+  "platform": "Platform",
+  "components": "Components",
+  "platforms": {
+    "react": {
+      "name": "React",
+      "text": "React 19 components for the DOM (minerva-design)."
+    },
+    "wc": {
+      "name": "Web Components",
+      "text": "Lit custom elements for any framework or none (minerva-design/web-components). Vue and Angular use them until their native renderers ship."
+    },
+    "vue": {
+      "name": "Vue",
+      "text": "Native Vue 3 components."
+    },
+    "angular": {
+      "name": "Angular",
+      "text": "Native Angular components."
+    },
+    "native": {
+      "name": "React Native",
+      "text": "React Native components for iOS and Android (with Expo)."
+    },
+    "taro": {
+      "name": "Taro",
+      "text": "Taro components for mini-programs and H5."
+    },
+    "weapp": {
+      "name": "WeChat",
+      "text": "Native WeChat mini-program components."
+    },
+    "uni": {
+      "name": "uni-app",
+      "text": "uni-app components for mini-programs, apps and H5."
+    }
+  },
+  "status": {
+    "stable": "Stable",
+    "beta": "Beta",
+    "planned": "Planned",
+    "na": "N/A"
+  },
+  "legend": {
+    "stable": "shipped and covered by the contract tests.",
+    "beta": "shipped; the API may still change.",
+    "planned": "on the roadmap, not available yet.",
+    "na": "not a component on this platform by design: the platform covers it another way (hover the badge for details)."
+  },
+  "notApplicable": {
+    "react": "A data object in React: an item of the parent component's items / entries prop.",
+    "wc": "A React-only composition part or provider: the custom elements cover it with attributes or the parent element."
+  },
+  "matrixTitle": "Support matrix",
+  "matrixText": "Every component and custom element, by platform. Filter by product track: back-office applications (toB) or consumer apps (toC).",
+  "track": {
+    "label": "Product track",
+    "all": "All",
+    "toB": "toB",
+    "toC": "toC"
+  },
+  "count": "Components shown: {{count}}",
+  "component": "Component",
+  "tracks": "Tracks",
+  "contractsTitle": "Component contracts",
+  "contractsText": "The matrix is generated from the component contracts: metadata extracted from the React props types and the Custom Elements Manifest (props with their kinds, enum values and defaults, events with their detail fields, slots, tracks and the support of every platform). A test fails when a prop, attribute or event changes without regenerating them, and when React and the custom elements disagree on enum values or defaults.",
+  "testsText": "The same contract test suites (presses, controlled and uncontrolled state, selection, dialogs, toasts, translations, design tokens) run against every renderer through a driver per platform; a new renderer becomes stable once its driver passes them."
+}

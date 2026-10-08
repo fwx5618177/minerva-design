@@ -1,5 +1,4 @@
 import React, {
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -12,16 +11,20 @@ import {
   IconEllipsis,
 } from "../../internal/icons";
 import {
-  getCompactPageItems,
-  getPageRange,
-  PAGINATION_JUMP_SIZE,
+  canGoToPage,
+  createPaginationMachine,
+  getPaginationItems,
+  getPaginationKeyTarget,
+  getPaginationVisibleRange,
+  getTotalPages,
 } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import type { PaginationProps } from "./types";
 import { logicalArrowKey } from "../../internal/direction";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
-import { useControllableState } from "../../internal/useControllableState";
+import { useControlledSwitchWarning } from "../../internal/useControllableState";
+import { useMachine } from "../../internal/useMachine";
 import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { hooks } from "../../internal/stylingHooks";
@@ -121,12 +124,7 @@ const Pagination = ({
       lockHint: "set `disabled`",
     });
   }
-  const [page, setPage] = useControllableState({
-    value: current,
-    defaultValue: defaultCurrent ?? 1,
-    name: "Pagination",
-    prop: "current",
-  });
+  useControlledSwitchWarning(current !== undefined, "Pagination", "current");
   if (process.env.NODE_ENV !== "production") {
     warnControlledProps("Pagination", {
       prop: "pageSize",
@@ -138,12 +136,20 @@ const Pagination = ({
       locked: disabled || !showSizeChanger,
     });
   }
-  const [currentPageSize, setPageSize] = useControllableState({
-    value: pageSize,
-    defaultValue: defaultPageSize ?? 10,
-    name: "Pagination",
-    prop: "pageSize",
-  });
+  useControlledSwitchWarning(pageSize !== undefined, "Pagination", "pageSize");
+  // Page and page size (each controlled or not): core's pagination machine.
+  const [{ page, pageSize: currentPageSize }, send] = useMachine(
+    createPaginationMachine,
+    {
+      page: current,
+      defaultPage: defaultCurrent ?? 1,
+      pageSize,
+      defaultPageSize: defaultPageSize ?? 10,
+      total,
+      disabled,
+      onChange,
+    },
+  );
 
   const [jumpValue, setJumpValue] = useState("");
   // Draft text of the simple-mode page input while the user is typing
@@ -160,10 +166,7 @@ const Pagination = ({
 
   const mergedIcons = { ...DEFAULT_ICONS, ...icons };
   // There is always at least one (possibly empty) page
-  const totalPages = Math.max(
-    1,
-    currentPageSize > 0 ? Math.ceil(total / currentPageSize) : 0,
-  );
+  const totalPages = getTotalPages(total, currentPageSize);
 
   if (process.env.NODE_ENV !== "production") {
     // `total = 0` usually means "not loaded yet": only out-of-range pages of
@@ -181,17 +184,14 @@ const Pagination = ({
     }
   }
 
-  const changePage = useCallback(
-    (target: number, focus: "active" | "if-lost" = "if-lost") => {
-      if (disabled || target === page || target < 1 || target > totalPages) {
-        return;
-      }
-      restoreFocus.current = { mode: focus, page: target };
-      setPage(target);
-      onChange?.(target, currentPageSize);
-    },
-    [disabled, page, totalPages, setPage, onChange, currentPageSize],
-  );
+  const changePage = (
+    target: number,
+    focus: "active" | "if-lost" = "if-lost",
+  ) => {
+    if (!canGoToPage(page, target, totalPages, disabled)) return;
+    restoreFocus.current = { mode: focus, page: target };
+    send({ type: "GOTO", page: target });
+  };
 
   // Focus management after a page change (runs after the DOM is updated)
   useEffect(() => {
@@ -218,9 +218,7 @@ const Pagination = ({
     itemKey: string,
     event: MouseEvent<HTMLButtonElement>,
   ) => {
-    if (disabled || target === page || target < 1 || target > totalPages) {
-      return;
-    }
+    if (!canGoToPage(page, target, totalPages, disabled)) return;
     // Ripple only for pointer clicks (keyboard-triggered clicks have detail 0)
     if (event.detail > 0) {
       const rect = event.currentTarget.getBoundingClientRect();
@@ -256,10 +254,7 @@ const Pagination = ({
 
   // 页码大小改变: 回到第一页
   const handleSizeChange = (value: string) => {
-    const newSize = parseInt(value, 10);
-    setPageSize(newSize);
-    setPage(1);
-    onChange?.(1, newSize);
+    send({ type: "SET_PAGE_SIZE", pageSize: parseInt(value, 10) });
   };
 
   // 提交简单模式输入框的页码: 有效值夹取到合法范围, 无效值还原
@@ -406,57 +401,21 @@ const Pagination = ({
       );
     }
 
-    if (siblingCount !== undefined || boundaryCount !== undefined) {
-      const compact = getCompactPageItems(
-        totalPages,
-        page,
-        Math.max(0, siblingCount ?? 1),
-        Math.max(1, boundaryCount ?? 1),
-      );
-      return [
-        renderEdge("prev"),
-        ...compact.map((item) =>
-          typeof item === "number" ? (
-            renderItem(item, "page")
-          ) : (
-            <span key={item} className={styles.ellipsis} aria-hidden="true">
-              …
-            </span>
-          ),
-        ),
-        renderEdge("next"),
-      ];
-    }
-
-    const range = getPageRange(page, totalPages);
-    const items: React.ReactNode[] = [renderEdge("prev")];
-
-    if (range.length > 0 && range[0] > 1) {
-      items.push(renderItem(1, "page"));
-      if (range[0] > 2) {
-        items.push(
-          renderItem(Math.max(1, page - PAGINATION_JUMP_SIZE), "jump-prev"),
-        );
-      }
-    }
-
-    range.forEach((p) => items.push(renderItem(p, "page")));
-
-    const last = range[range.length - 1];
-    if (range.length > 0 && last < totalPages) {
-      if (last < totalPages - 1) {
-        items.push(
-          renderItem(
-            Math.min(totalPages, page + PAGINATION_JUMP_SIZE),
-            "jump-next",
-          ),
-        );
-      }
-      items.push(renderItem(totalPages, "page"));
-    }
-
-    items.push(renderEdge("next"));
-    return items;
+    return getPaginationItems({
+      page,
+      totalPages,
+      siblingCount,
+      boundaryCount,
+      hideEdges,
+    }).map((item) =>
+      item.kind === "ellipsis" ? (
+        <span key={item.key} className={styles.ellipsis} aria-hidden="true">
+          …
+        </span>
+      ) : (
+        renderItem(item.page, item.kind)
+      ),
+    );
   };
 
   // 键盘导航 (on the page buttons only, so inputs / selects keep their own
@@ -464,30 +423,17 @@ const Pagination = ({
   // (disabled pagination: the buttons are disabled and receive no keys)
   const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
     // RTL: the previous page is on the right, so ArrowRight goes back.
-    const key = logicalArrowKey(e.key, e.currentTarget);
-    const destination =
-      key === "ArrowLeft"
-        ? page - 1
-        : key === "ArrowRight"
-          ? page + 1
-          : e.key === "Home"
-            ? 1
-            : e.key === "End"
-              ? totalPages
-              : null;
+    const destination = getPaginationKeyTarget(
+      logicalArrowKey(e.key, e.currentTarget),
+      page,
+      totalPages,
+    );
     if (destination === null) return;
     e.preventDefault();
     changePage(destination, "active");
   };
 
-  const shownPage = Math.min(Math.max(1, page), totalPages);
-  const visibleRange: [number, number] =
-    total > 0
-      ? [
-          (shownPage - 1) * currentPageSize + 1,
-          Math.min(shownPage * currentPageSize, total),
-        ]
-      : [0, 0];
+  const visibleRange = getPaginationVisibleRange(page, currentPageSize, total);
 
   const sizeLabel = labels?.pageSize ?? t("pagination.pageSize");
   const sizeOptionLabel = (size: number) =>

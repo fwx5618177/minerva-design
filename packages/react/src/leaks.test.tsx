@@ -99,7 +99,8 @@ describe("leak harness: mount / unmount", () => {
     );
     await pause(30);
     unmount();
-    expect(tracker.held().join("\n")).toMatch(/Toast[\\/]store\.ts/);
+    // (the queue of @minerva/core behind Toast/store.ts holds it)
+    expect(tracker.held().join("\n")).toMatch(/machines[\\/]toast\.ts/);
     act(() => lib.toast.dismiss());
     // closing animation (TOAST_EXIT_DURATION), then removal
     await pause(300);

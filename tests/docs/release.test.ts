@@ -130,6 +130,29 @@ describe("private workspace packages", () => {
   });
 });
 
+describe("planned renderers", () => {
+  const published = readJson<Pkg & { exports: Record<string, unknown> }>(
+    "packages/minerva-design/package.json",
+  );
+  it.each(["vue", "angular", "native", "taro", "weapp", "uni"])(
+    "packages/%s is a private placeholder, not exported yet",
+    (name) => {
+      const pkg = readJson<Pkg & { scripts: Record<string, string> }>(
+        `packages/${name}/package.json`,
+      );
+      expect(pkg.name).toBe(`@minerva/${name}`);
+      expect(pkg.private).toBe(true);
+      expect(read(`packages/${name}/README.md`)).toContain("Status: planned");
+      expect(read(`packages/${name}/src/index.ts`)).toMatch(/export \{\};/);
+      expect(Object.keys(published.exports)).not.toContain(`./${name}`);
+    },
+  );
+
+  it("WeChat ships later through the miniprogram field", () => {
+    expect(published).not.toHaveProperty("miniprogram");
+  });
+});
+
 describe("versioning", () => {
   it("only minerva-design is released (private packages ignored)", () => {
     expect(changesets.fixed).toEqual([]);

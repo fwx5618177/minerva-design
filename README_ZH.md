@@ -416,7 +416,7 @@ pnpm dev
 | `dist/web-components/` | 每个元素的 ESM、`elements/*` 入口（含可选的 `code-editor`）、`cdn/minerva.js`、`types/` 中的框架类型、`html-custom-data.json`                         |
 | 包根目录               | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                        |
 
-workspace 包（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`）都是私有包，永远不会发布。
+workspace 包（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、规划中的渲染器 `@minerva/{vue,angular,native,taro,weapp,uni}` 以及 `@minerva/docs`）都是私有包，永远不会发布。
 
 ## 🤝 贡献
 

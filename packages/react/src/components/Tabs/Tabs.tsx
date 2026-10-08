@@ -9,10 +9,16 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from "react";
-import { getNextIndex } from "@minerva/core";
+import {
+  createTabsMachine,
+  getTabsNavigationIndex,
+  getTabsTabStop,
+  type TabsEvent,
+} from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { useMergedRefs } from "../../internal/mergeRefs";
-import { useControllableState } from "../../internal/useControllableState";
+import { useControlledSwitchWarning } from "../../internal/useControllableState";
+import { useMachine } from "../../internal/useMachine";
 import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { composeEventHandlers } from "../../internal/composeEventHandlers";
 import type {
@@ -30,7 +36,8 @@ import styles from "./tabs.module.scss";
 interface TabsContextValue {
   baseId: string;
   value: string | undefined;
-  select: (value: string) => void;
+  /** Sends an event to the tabs machine (selection, focus). */
+  send: (event: TabsEvent) => void;
   variant: TabsVariant;
   orientation: TabsOrientation;
   /** Explicit `dir` prop; `undefined` inherits the direction from the DOM. */
@@ -44,7 +51,7 @@ interface TabsContextValue {
 const TabsContext = createContext<TabsContextValue>({
   baseId: "tabs",
   value: undefined,
-  select: () => {},
+  send: () => {},
   variant: "line",
   orientation: "horizontal",
   dir: undefined,
@@ -92,11 +99,13 @@ export const Tabs = ({
       handler: onChange,
     });
   }
-  const [value, setValue] = useControllableState<string | undefined>({
+  useControlledSwitchWarning(valueProp !== undefined, "Tabs");
+  // Selection and automatic / manual activation: core's tabs machine.
+  const [{ value }, send] = useMachine(createTabsMachine, {
     value: valueProp,
     defaultValue,
-    onChange: onChange as ((value: string | undefined) => void) | undefined,
-    name: "Tabs",
+    onValueChange: onChange,
+    activationMode,
   });
 
   return (
@@ -104,7 +113,7 @@ export const Tabs = ({
       value={{
         baseId,
         value,
-        select: setValue,
+        send,
         variant,
         orientation,
         dir,
@@ -154,14 +163,13 @@ export const TabList = ({
     const list = listRef.current;
     if (!list) return;
     const update = () => {
-      const tabs = getOwnTabs(list);
+      const tabs = getOwnTabs(list).map((tab) => ({
+        value: tab.id,
+        disabled: tab.disabled,
+      }));
       const selectedId = value === undefined ? undefined : tabId(baseId, value);
-      const selectedFocusable = tabs.some(
-        (tab) => tab.id === selectedId && !tab.disabled,
-      );
-      setFallbackStop(
-        selectedFocusable ? undefined : tabs.find((tab) => !tab.disabled)?.id,
-      );
+      const stop = getTabsTabStop(tabs, selectedId)?.value;
+      setFallbackStop(stop === selectedId ? undefined : stop);
     };
     update();
     if (process.env.NODE_ENV !== "production") {
@@ -238,14 +246,13 @@ export const TabList = ({
     const currentIndex = tabs.indexOf(event.target as HTMLButtonElement);
     // Keys from nested Tabs (or other descendants) are not ours.
     if (currentIndex === -1) return;
-    const next = getNextIndex({
+    const next = getTabsNavigationIndex({
       currentIndex,
-      count: tabs.length,
+      tabs,
       key: event.key,
       orientation,
       dir: resolveDirection(dir, list),
       loop,
-      isDisabled: (index) => tabs[index].disabled,
     });
     if (next === null) return;
     event.preventDefault();
@@ -291,19 +298,20 @@ export const Tab = ({
   const {
     baseId,
     value: selectedValue,
-    select,
+    send,
     variant,
     orientation,
-    activationMode,
   } = useContext(TabsContext);
   const fallbackStop = useContext(TabStopContext);
   const id = tabId(baseId, value);
   const selected = value === selectedValue;
   const isTabStop = fallbackStop === undefined ? selected : fallbackStop === id;
 
+  const select = () => send({ type: "SELECT", value, disabled });
+
   const handleMouseDown = (event: MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    if (event.button === 0 && !event.ctrlKey) select(value);
+    if (event.button === 0 && !event.ctrlKey) select();
     // Keep focus where it is on ctrl-click / other buttons (context menus).
     else event.preventDefault();
   };
@@ -312,16 +320,15 @@ export const Tab = ({
     if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
     // Handled here, so suppress the native button click activation.
     event.preventDefault();
-    select(value);
+    select();
   };
 
-  const handleFocus = () => {
-    if (!disabled && !selected && activationMode === "automatic") select(value);
-  };
+  // Automatic activation selects the focused tab (see the tabs machine).
+  const handleFocus = () => send({ type: "FOCUS", value, disabled });
 
   // Assistive technologies may activate with a bare click (no mouse down).
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    if (!disabled && event.detail === 0) select(value);
+    if (!disabled && event.detail === 0) select();
   };
 
   return (

@@ -1,22 +1,80 @@
 {
   "title": "Architecture",
-  "description": "How Minerva is split into packages: a framework-agnostic core with the interaction primitives, the React components built on it, and the Web Components.",
+  "description": "How Minerva is split: a platform-neutral core (state machines, contracts, tokens, i18n) shared by every renderer, the DOM primitives of the web renderers, the React components, the Web Components and the planned native renderers.",
   "packages": {
     "title": "Packages",
-    "text": "Minerva is a pnpm monorepo publishing three libraries. Interaction logic, theming data and translations are written once in minerva-design/core; the framework packages only add rendering.",
+    "text": "Minerva is a pnpm monorepo publishing one package, minerva-design, with one entry per renderer. Behaviour (headless state machines), component contracts, design tokens, theming data and translations are written once in the core; renderers only add rendering.",
     "package": "Package",
-    "core": "Framework-agnostic TypeScript (DOM only, no React or Lit): focus scopes, the dismissable layer stack, scroll lock, hide-others, roving focus and typeahead, positioning, portal hosts, ids and controllable state, plus theme utilities, palettes, design tokens (tokens.css), the i18n messages and a tiny translator (createTranslator).",
+    "core": "The web core API: the whole platform-neutral core (dist/core) plus the DOM primitives of the DOM layer (dist/dom): focus scopes, the dismissable layer stack, scroll lock, hide-others, roving focus, positioning, portal hosts, theme cookies and the no-flash init script. Same API as before the split.",
     "libCore": "The React 19 component library. Components use thin hooks over the core primitives (src/internal), so every overlay shares one implementation. Re-exports the theme helpers and types of its public API, and bundles the core tokens into style.css.",
-    "webComponents": "Lit custom elements implementing the whole component set for any framework or none. Their behaviour comes from the same core primitives through Lit controllers, and they compile the React library's stylesheets into their shadow roots, so both libraries look and behave the same."
+    "webComponents": "Lit custom elements implementing the whole component set for any framework or none. Their behaviour comes from the same core primitives through Lit controllers, and they compile the React library's stylesheets into their shadow roots, so both libraries look and behave the same.",
+    "workspace": "Two internal layers implement it, built from private workspace packages. Native renderers (React Native, mini-programs) only use the first one, so no DOM code reaches them.",
+    "workspaceTitle": "Internal layers",
+    "neutral": "Platform-neutral TypeScript with no DOM access (enforced by lint rules and a test in a Node environment without Intl.PluralRules): headless state machines, component contracts, design tokens (TypeScript source, generated tokens.css / tokens.mini.css, resolveTokens for concrete values), theme types, palettes and design presets, i18n messages and the translator, keyboard navigation and typeahead math, ids, controllable state, validation and URL sanitizing.",
+    "dom": "The DOM half for web renderers: focus scope, dismissable layers, scroll lock, hide-others, the roving focus DOM binding, positioning with @floating-ui/dom, portal hosts, pointer grace, presence (exit animations), reading direction and the theme's DOM / cookie helpers."
+  },
+  "platforms": {
+    "title": "Platforms",
+    "text": "Every renderer is a native implementation sharing the same headless core, shipped as a subpath of the single minerva-design package. Web renderers also use the DOM primitives; React Native and mini-program renderers resolve tokens to concrete values instead of CSS variables.",
+    "platform": "Platform",
+    "entry": "Entry",
+    "renderer": "Renderer",
+    "shared": "Shared layers",
+    "status": "Status",
+    "stable": "Stable",
+    "planned": "Planned",
+    "support": "Per-component support: see Platform support.",
+    "rows": {
+      "react": {
+        "name": "React (web)",
+        "renderer": "React 19 DOM components, SSR / RSC ready"
+      },
+      "wc": {
+        "name": "Web Components",
+        "renderer": "Lit custom elements, any framework or none"
+      },
+      "vue": {
+        "name": "Vue 3",
+        "renderer": "Native single-file components (until then: the Web Components)"
+      },
+      "angular": {
+        "name": "Angular",
+        "renderer": "Native standalone components with signals (until then: the Web Components)"
+      },
+      "native": {
+        "name": "React Native + Expo",
+        "renderer": "React Native components, tokens resolved with resolveTokens"
+      },
+      "taro": {
+        "name": "Taro",
+        "renderer": "React-syntax components for mini-programs and H5, tokens.mini.css"
+      },
+      "weapp": {
+        "name": "WeChat mini-program",
+        "renderer": "Native custom components (WXML / WXSS), tokens.mini.css"
+      },
+      "uni": {
+        "name": "uni-app",
+        "renderer": "Vue 3 components with uni-app built-ins, tokens.mini.css"
+      }
+    }
+  },
+  "headless": {
+    "title": "Shared headless layer",
+    "text": "So renderers never diverge, everything except rendering lives in the core:",
+    "machines": "State machines (core/machines): framework-neutral stores { getState, send, subscribe } for disclosure and presence, the toast queue, selection, tabs, picker columns, fields and validation, pagination, rating, number stepper and toggles. The React and Web Component toasts, tabs, pagination and rating already run on them.",
+    "contracts": "Component contracts (core/contracts): runtime metadata per component (props with enum values and defaults, events, slots, tracks, a support status per platform), checked against the React types and custom-elements.json.",
+    "tokens": "Design tokens: TypeScript data generates tokens.css (byte-identical to the previous Sass output), class-based tokens.mini.css for mini-programs (split per palette) and resolveTokens() with an sRGB color-mix matching CSS.",
+    "tests": "Contract test suites written once (tests/contracts) run against a driver per renderer: React DOM and Web Components today, each new renderer adds its driver."
   },
   "primitives": {
-    "title": "Core primitives",
-    "text": "Each primitive is a small function working on DOM elements, returning a cleanup or controller object. They are nested-safe: a stack decides which overlay reacts first.",
+    "title": "DOM primitives",
+    "text": "The DOM primitives (dist/dom) are small functions working on DOM elements, returning a cleanup or controller object. They are nested-safe: a stack decides which overlay reacts first. Their platform-neutral parts (keyboard navigation, typeahead, controllable state) live in the core (dist/core).",
     "focusScope": "createFocusScope: focus on open, Tab trapping with loop, focus restored to the opener on close; nested scopes pause the outer one.",
     "dismissableLayer": "createDismissableLayer: Escape, pointer down outside and focus outside dismiss only the topmost layer; clicks in child layers (submenus, a Select in a Modal) never close their parents.",
     "scrollLock": "lockScroll: reference-counted page scroll lock that compensates the scrollbar width.",
     "hideOthers": "hideOthers: hides everything except the modal from assistive technology (aria-hidden or inert), restored correctly when modals nest.",
-    "rovingFocus": "getNextIndex, createTypeahead, createRovingFocus: arrow keys, Home / End, wrap-around, orientation, right-to-left and typeahead for menus, listboxes and tabs.",
+    "rovingFocus": "getNextIndex and createTypeahead (core) with createRovingFocus (DOM): arrow keys, Home / End, wrap-around, orientation, right-to-left and typeahead for menus, listboxes and tabs.",
     "positioning": "computeAnchoredPosition / autoPosition: anchored placement with offset, flip, shift, size and arrow, kept in place while scrolling and resizing.",
     "pointerGrace": "createPointerGrace: the safe triangle that keeps a submenu open while the pointer moves towards it.",
     "portal": "getPortalContainer / createPortalHost: where overlays are rendered; nested ConfigProviders create a portal host per theme scope.",
@@ -30,7 +88,16 @@
   },
   "dependencies": {
     "title": "Dependencies",
-    "text": "Floating UI (@floating-ui/dom) is the only third-party interaction dependency, used solely inside the core positioning module. There is no Radix UI or other headless library: Slot / asChild, Tabs, dialogs, menus and the select are developed in this repository and tested with Vitest, happy-dom, Testing Library and user-event."
+    "text": "Floating UI (@floating-ui/dom) is the only third-party interaction dependency, used solely inside the positioning module of the DOM layer (dist/dom). There is no Radix UI or other headless library: Slot / asChild, Tabs, dialogs, menus and the select are developed in this repository and tested with Vitest, happy-dom, Testing Library and user-event."
+  },
+  "roadmap": {
+    "title": "Roadmap",
+    "text": "Each phase ships one renderer family on top of the shared core, adds its contract-test driver and moves its contract statuses from planned to beta, then stable.",
+    "phase0": "Foundation (done): platform-neutral core and the DOM layer (dist/dom), tokens pipeline, state machines, component contracts, contract test harness, pnpm catalogs and empty renderer packages.",
+    "phase1": "Vue 3 and Angular native renderers (minerva-design/vue, minerva-design/angular), replacing the Web Component usage of those frameworks.",
+    "phase2": "React Native + Expo (minerva-design/native).",
+    "phase3": "Mini-programs: Taro (minerva-design/taro), WeChat native components (dist/weapp through the miniprogram field) and uni-app (minerva-design/uni).",
+    "phase4": "toC components and the touch design preset across every platform."
   },
   "next": {
     "title": "Next steps",

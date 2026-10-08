@@ -1,22 +1,80 @@
 {
   "title": "Architecture",
-  "description": "Comment Minerva est découpé en paquets : un cœur indépendant de tout framework avec les primitives d’interaction, les composants React construits dessus, et les Web Components.",
+  "description": "Comment Minerva est découpé : un cœur indépendant de la plateforme (machines à états, contrats de composants, jetons de design, i18n) partagé par tous les moteurs de rendu, les primitives DOM des moteurs web, les composants React, les Web Components et les moteurs natifs prévus.",
   "packages": {
     "title": "Paquets",
-    "text": "Minerva est un monorepo pnpm qui publie trois bibliothèques. La logique d’interaction, les données de thème et les traductions sont écrites une seule fois dans minerva-design/core ; les paquets propres à un framework se chargent uniquement du rendu.",
+    "text": "Minerva est un monorepo pnpm qui publie un seul paquet, minerva-design, avec une entrée par moteur de rendu. Le comportement (machines à états headless), les contrats de composants, les jetons de design, les données de thème et les traductions sont écrits une seule fois dans le cœur ; les moteurs de rendu se chargent uniquement du rendu.",
     "package": "Paquet",
-    "core": "TypeScript indépendant de tout framework (DOM uniquement, ni React ni Lit) : portées de focus, pile de couches refermables, verrouillage du défilement, masquage du reste de la page, focus itinérant et recherche par saisie, positionnement, hôtes de portail, identifiants et état contrôlable, ainsi que les utilitaires de thème, les palettes, les jetons de design (tokens.css), les messages i18n et un petit traducteur (createTranslator).",
+    "core": "L’API web du cœur : tout le cœur indépendant de la plateforme (dist/core) plus les primitives de la couche DOM (dist/dom) : portées de focus, pile de couches refermables, verrouillage du défilement, masquage du reste de la page, focus itinérant, positionnement, hôtes de portail, cookies de thème et script d’initialisation sans flash. Même API qu’avant la séparation.",
     "libCore": "La bibliothèque de composants React 19. Les composants utilisent de fins hooks au-dessus des primitives du cœur (src/internal), si bien que toutes les surcouches partagent une seule implémentation. Elle réexporte les utilitaires et types de thème de son API publique et intègre les jetons du cœur dans style.css.",
-    "webComponents": "Des éléments personnalisés Lit qui implémentent l'ensemble des composants, avec ou sans framework. Leur comportement vient des mêmes primitives du cœur via des contrôleurs Lit, et ils compilent les feuilles de style de la bibliothèque React dans leur shadow root : les deux bibliothèques ont le même rendu et le même comportement."
+    "webComponents": "Des éléments personnalisés Lit qui implémentent l'ensemble des composants, avec ou sans framework. Leur comportement vient des mêmes primitives du cœur via des contrôleurs Lit, et ils compilent les feuilles de style de la bibliothèque React dans leur shadow root : les deux bibliothèques ont le même rendu et le même comportement.",
+    "workspace": "Deux couches internes l’implémentent, construites à partir de paquets privés du workspace. Les moteurs natifs (React Native, mini-programmes) n’utilisent que la première : aucun code DOM ne les atteint.",
+    "workspaceTitle": "Couches internes",
+    "neutral": "TypeScript indépendant de la plateforme, sans accès au DOM (garanti par des règles de lint et un test dans un environnement Node sans Intl.PluralRules) : machines à états headless, contrats de composants, jetons de design (source TypeScript, tokens.css / tokens.mini.css générés, resolveTokens pour des valeurs concrètes), types de thème, palettes et préréglages de design, messages i18n et traducteur, calculs de navigation au clavier et de recherche par saisie, identifiants, état contrôlable, validation et assainissement des URL.",
+    "dom": "La partie DOM des moteurs web : portée de focus, couches refermables, verrouillage du défilement, masquage du reste de la page, liaison DOM du focus itinérant, positionnement avec @floating-ui/dom, hôtes de portail, zone de tolérance du pointeur, presence (animations de sortie), sens de lecture et utilitaires DOM / cookies du thème."
+  },
+  "platforms": {
+    "title": "Plateformes",
+    "text": "Chaque moteur de rendu est une implémentation native qui partage le même cœur headless, publiée comme sous-chemin du paquet unique minerva-design. Les moteurs web utilisent aussi les primitives DOM ; React Native et les mini-programmes résolvent les jetons en valeurs concrètes plutôt qu’en variables CSS.",
+    "platform": "Plateforme",
+    "entry": "Entrée",
+    "renderer": "Moteur de rendu",
+    "shared": "Couches partagées",
+    "status": "Statut",
+    "stable": "Stable",
+    "planned": "Prévu",
+    "support": "Prise en charge composant par composant : voir Plateformes prises en charge.",
+    "rows": {
+      "react": {
+        "name": "React (web)",
+        "renderer": "Composants React 19 pour le DOM, prêts pour le SSR / les RSC"
+      },
+      "wc": {
+        "name": "Web Components",
+        "renderer": "Éléments personnalisés Lit, avec ou sans framework"
+      },
+      "vue": {
+        "name": "Vue 3",
+        "renderer": "Composants monofichiers natifs (en attendant : les Web Components)"
+      },
+      "angular": {
+        "name": "Angular",
+        "renderer": "Composants autonomes natifs avec signals (en attendant : les Web Components)"
+      },
+      "native": {
+        "name": "React Native + Expo",
+        "renderer": "Composants React Native, jetons résolus par resolveTokens"
+      },
+      "taro": {
+        "name": "Taro",
+        "renderer": "Composants en syntaxe React pour les mini-programmes et H5, tokens.mini.css"
+      },
+      "weapp": {
+        "name": "Mini-programme WeChat",
+        "renderer": "Composants personnalisés natifs (WXML / WXSS), tokens.mini.css"
+      },
+      "uni": {
+        "name": "uni-app",
+        "renderer": "Composants Vue 3 avec les composants intégrés d’uni-app, tokens.mini.css"
+      }
+    }
+  },
+  "headless": {
+    "title": "Couche headless partagée",
+    "text": "Pour que les moteurs de rendu ne divergent jamais, tout sauf le rendu se trouve dans le cœur :",
+    "machines": "Machines à états (core/machines) : des stores { getState, send, subscribe } indépendants de tout framework pour l’ouverture / fermeture et presence, la file des toasts, la sélection, les onglets, les colonnes de sélecteur, les champs et leur validation, la pagination, la notation, le champ numérique à pas et les interrupteurs. Les toasts, onglets, la pagination et la notation React et Web Components les utilisent déjà.",
+    "contracts": "Contrats de composants (core/contracts) : métadonnées d’exécution par composant (props avec valeurs d’énumération et valeurs par défaut, événements, slots, cibles, statut de prise en charge par plateforme), vérifiées par rapport aux types React et à custom-elements.json.",
+    "tokens": "Jetons de design : des données TypeScript génèrent tokens.css (identique octet pour octet à l’ancienne sortie Sass), un tokens.mini.css à base de classes pour les mini-programmes (découpé par palette) et resolveTokens() avec un color-mix sRGB conforme au CSS.",
+    "tests": "Des suites de tests de contrat écrites une seule fois (tests/contracts) s’exécutent avec un pilote par moteur de rendu : React DOM et Web Components aujourd’hui, chaque nouveau moteur ajoute le sien."
   },
   "primitives": {
-    "title": "Primitives du cœur",
-    "text": "Chaque primitive est une petite fonction qui agit sur des éléments du DOM et renvoie une fonction de nettoyage ou un contrôleur. Elles gèrent l’imbrication : une pile décide quelle surcouche réagit en premier.",
+    "title": "Primitives DOM",
+    "text": "Les primitives DOM (dist/dom) sont de petites fonctions qui agissent sur des éléments du DOM et renvoient une fonction de nettoyage ou un contrôleur. Elles gèrent l’imbrication : une pile décide quelle surcouche réagit en premier. Leurs parties indépendantes de la plateforme (navigation au clavier, recherche par saisie, état contrôlable) se trouvent dans le cœur (dist/core).",
     "focusScope": "createFocusScope : focus à l’ouverture, piégeage de Tab en boucle, focus rendu à l’élément d’origine à la fermeture ; une portée imbriquée met la portée parente en pause.",
     "dismissableLayer": "createDismissableLayer : Échap, un appui du pointeur à l’extérieur ou un focus à l’extérieur ne ferment que la couche du dessus ; un clic dans une couche enfant (sous-menu, Select dans une Modal) ne ferme jamais ses parents.",
     "scrollLock": "lockScroll : verrouillage du défilement de la page avec compteur de références, qui compense la largeur de la barre de défilement.",
     "hideOthers": "hideOthers : masque tout sauf la fenêtre modale aux technologies d’assistance (aria-hidden ou inert), avec une restauration correcte quand les modales s’imbriquent.",
-    "rovingFocus": "getNextIndex, createTypeahead, createRovingFocus : touches fléchées, Début / Fin, bouclage, orientation, écriture de droite à gauche et recherche par saisie pour les menus, listes et onglets.",
+    "rovingFocus": "getNextIndex et createTypeahead (cœur) avec createRovingFocus (DOM) : touches fléchées, Début / Fin, bouclage, orientation, écriture de droite à gauche et recherche par saisie pour les menus, listes et onglets.",
     "positioning": "computeAnchoredPosition / autoPosition : placement ancré avec décalage, retournement, glissement, taille et flèche, maintenu pendant le défilement et le redimensionnement.",
     "pointerGrace": "createPointerGrace : le triangle de sécurité qui garde un sous-menu ouvert pendant que le pointeur se dirige vers lui.",
     "portal": "getPortalContainer / createPortalHost : où les surcouches sont rendues ; les ConfigProvider imbriqués créent un hôte de portail par portée de thème.",
@@ -30,7 +88,16 @@
   },
   "dependencies": {
     "title": "Dépendances",
-    "text": "Floating UI (@floating-ui/dom) est la seule dépendance d’interaction tierce, utilisée uniquement dans le module de positionnement du cœur. Il n’y a ni Radix UI ni autre bibliothèque headless : Slot / asChild, Tabs, les boîtes de dialogue, les menus et la liste déroulante sont développés dans ce dépôt et testés avec Vitest, happy-dom, Testing Library et user-event."
+    "text": "Floating UI (@floating-ui/dom) est la seule dépendance d’interaction tierce, utilisée uniquement dans le module de positionnement de la couche DOM (dist/dom). Il n’y a ni Radix UI ni autre bibliothèque headless : Slot / asChild, Tabs, les boîtes de dialogue, les menus et la liste déroulante sont développés dans ce dépôt et testés avec Vitest, happy-dom, Testing Library et user-event."
+  },
+  "roadmap": {
+    "title": "Feuille de route",
+    "text": "Chaque phase livre une famille de moteurs de rendu au-dessus du cœur partagé, ajoute son pilote de tests de contrat et fait passer le statut de ses contrats de prévu à bêta, puis stable.",
+    "phase0": "Fondations (terminé) : cœur indépendant de la plateforme et couche DOM (dist/dom), chaîne des jetons, machines à états, contrats de composants, harnais de tests de contrat, catalogues pnpm et paquets de moteurs de rendu vides.",
+    "phase1": "Moteurs natifs Vue 3 et Angular (minerva-design/vue, minerva-design/angular), qui remplacent l’usage des Web Components dans ces frameworks.",
+    "phase2": "React Native + Expo (minerva-design/native).",
+    "phase3": "Mini-programmes : Taro (minerva-design/taro), composants natifs WeChat (dist/weapp via le champ miniprogram) et uni-app (minerva-design/uni).",
+    "phase4": "Composants grand public (toC) et préréglage de design touch sur toutes les plateformes."
   },
   "next": {
     "title": "Étapes suivantes",

@@ -10,6 +10,8 @@
 // Adding a framework (React Native, Taro, WeChat mini programs, uni-app...)
 // is adding an entry: a new `renderer` kind for a new rendering strategy, or
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
+// Vue and Angular get native renderers later (see the Platform support page);
+// until then they render the Web Components (`nativePlanned`).
 import type { WcMeta } from "../registry";
 
 export type FrameworkId =
@@ -40,6 +42,12 @@ export interface FrameworkDef {
   guide: string;
   /** Registration, compiler and typings steps for a component page */
   setup: (wc: WcMeta) => SetupSnippet[];
+  /**
+   * A native renderer is planned (`minerva-design/vue`,
+   * `minerva-design/angular`): until it lands the page shows the Web
+   * Components "via Web Components (native coming soon)".
+   */
+  nativePlanned?: boolean;
 }
 
 const PKG = "minerva-design/web-components";
@@ -70,6 +78,7 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
     id: "vue",
     label: "Vue",
     renderer: "web-components",
+    nativePlanned: true,
     language: "html",
     guide: "wc-vue",
     setup: (wc) => [
@@ -107,6 +116,7 @@ export default {
     id: "angular",
     label: "Angular",
     renderer: "web-components",
+    nativePlanned: true,
     language: "ts",
     guide: "wc-angular",
     setup: (wc) => [

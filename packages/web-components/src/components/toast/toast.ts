@@ -3,7 +3,7 @@ import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { formatHotkey, matchesHotkey } from "@minerva/core";
+import { formatHotkey, getToastOverflow, matchesHotkey } from "@minerva/core";
 import {
   contains,
   focusElement,
@@ -263,8 +263,7 @@ export class MinervaToastRegion extends MinervaElement {
       mine.unshift(item);
     }
     // Over `max`: the oldest open toasts close (onClose runs as usual)
-    const open = mine.filter((item) => item.state === "open");
-    const overflow = open.slice(0, Math.max(0, open.length - this.max));
+    const overflow = getToastOverflow(mine, this.max);
     if (overflow.length > 0) {
       for (const item of overflow) toastStore.dismiss(item.id, "overflow");
       return;

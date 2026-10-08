@@ -8,7 +8,7 @@ import styles from "@/docs/components/docs.module.scss";
 const CONFIG_ATTRIBUTES = [
   ["theme", "light | dark | system | github-dark"],
   ["palette", "editorial | tech | graphite | cool"],
-  ["design", "minerva | editorial | compact"],
+  ["design", "minerva | editorial | compact | touch"],
   ["density", "compact | standard | comfortable"],
   ["radius", "none | small | medium | large"],
   ["shadow", "none | subtle | standard"],

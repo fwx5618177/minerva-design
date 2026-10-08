@@ -1,8 +1,8 @@
-// Minerva's built-in palettes (palette x mode) as theme token values.
-// `tokens/palettes.scss` declares the same values under
-// [data-palette][data-theme] selectors (kept in sync by `palettes.test.ts`), so
-// the SSR init script can select a palette before hydration without any
-// JavaScript theme application.
+// Minerva's built-in palettes (palette x mode) as theme token values: the
+// source of the [data-palette][data-theme] blocks of `tokens.css`
+// (../tokens/css.ts), so the SSR init script can select a palette before
+// hydration without any JavaScript theme application, and of
+// `resolveTokens({ palette })` / the mini-program palette classes.
 import type { ComponentTheme } from "./types";
 import type { Palette, ResolvedThemeMode } from "./mode";
 

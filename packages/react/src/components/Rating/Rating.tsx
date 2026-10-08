@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  ratingDisplayStars,
-  ratingStarFill,
-  roundRating,
+  createRatingMachine,
+  getRatingKeyValue,
+  getRatingStarFills,
+  RATING_STAR_COUNT,
   type RatingStarFill,
 } from "@minerva/core";
 import { cn } from "../../utils/cn";
@@ -10,16 +11,12 @@ import { IconStar, IconStarHalf } from "../../internal/icons";
 import { logicalArrowKey } from "../../internal/direction";
 import { warnOnce } from "../../internal/devWarnings";
 import { hooks } from "../../internal/stylingHooks";
+import { useMachine } from "../../internal/useMachine";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
 
 const SIZE_PX = { small: 12, medium: 16, large: 20 } as const;
-const STARS = [0, 1, 2, 3, 4];
-/**
- * PageUp / PageDown step, in stars: max(1, round(stars / 5)) = one whole
- * star (arrows move by half a star).
- */
-const PAGE_STARS = Math.max(1, Math.round(STARS.length / 5));
+const STARS = Array.from({ length: RATING_STAR_COUNT }, (_, i) => i);
 
 const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
   const className = cn(styles.star, styles[fill]);
@@ -91,15 +88,18 @@ const Rating = ({
       );
     }
   }
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  // Hover preview, picks and keys: core's rating machine (the score stays
+  // controlled by `value` / `onChange`).
+  const [state, send] = useMachine(createRatingMachine, {
+    value,
+    max,
+    readOnly: !interactive,
+    onValueChange: onChange,
+  });
 
   // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half star.
-  const displayed =
-    interactive && hoverIndex !== null
-      ? hoverIndex
-      : ratingDisplayStars(value, max);
-
-  const fillOf = (i: number) => ratingStarFill(i, displayed);
+  const fills = getRatingStarFills(state, max);
+  const fillOf = (i: number) => fills[i];
 
   const handleStarClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -108,44 +108,18 @@ const Rating = ({
     // Left half of a star -> half star, right half -> full star.
     const rect = event.currentTarget.getBoundingClientRect();
     const leftHalf = event.clientX - rect.left < rect.width / 2;
-    const stars = index + (leftHalf ? 0.5 : 1);
-    onChange?.(roundRating((stars / 5) * max));
+    send({ type: "PICK", index, half: leftHalf });
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     // The consumer goes first; preventDefault() takes over the key.
     onKeyDown?.(event);
     if (event.defaultPrevented || !interactive) return;
-    const step = max / (STARS.length * 2);
-    const pageStep = (max / STARS.length) * PAGE_STARS;
-    let next: number;
     // Stars follow the reading direction: in RTL ArrowLeft increases.
-    switch (logicalArrowKey(event.key, event.currentTarget)) {
-      case "ArrowRight":
-      case "ArrowUp":
-        next = Math.min(max, roundRating(value + step));
-        break;
-      case "ArrowLeft":
-      case "ArrowDown":
-        next = Math.max(0, roundRating(value - step));
-        break;
-      case "PageUp":
-        next = Math.min(max, roundRating(value + pageStep));
-        break;
-      case "PageDown":
-        next = Math.max(0, roundRating(value - pageStep));
-        break;
-      case "Home":
-        next = 0;
-        break;
-      case "End":
-        next = max;
-        break;
-      default:
-        return;
-    }
+    const key = logicalArrowKey(event.key, event.currentTarget);
+    if (getRatingKeyValue(key, value, max) === null) return;
     event.preventDefault();
-    onChange?.(next);
+    send({ type: "KEY", key });
   };
 
   const px = SIZE_PX[size];
@@ -169,7 +143,7 @@ const Rating = ({
             tabIndex={-1}
             className={styles.starButton}
             onClick={(event) => handleStarClick(event, i)}
-            onMouseEnter={() => setHoverIndex(i + 1)}
+            onMouseEnter={() => send({ type: "HOVER", index: i })}
           >
             <Star fill={fillOf(i)} size={px} />
           </button>
@@ -221,7 +195,7 @@ const Rating = ({
       aria-valuemax={max}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      onMouseLeave={() => setHoverIndex(null)}
+      onMouseLeave={() => send({ type: "HOVER_END" })}
       {...rootHooks}
     >
       {stars}

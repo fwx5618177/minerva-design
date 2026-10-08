@@ -8,7 +8,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./styling-hooks": "./src/styling-hooks/index.ts",
-    "./tokens.css": "./src/theme/tokens.scss",
+    "./contracts": "./src/contracts/index.ts",
+    "./tokens.css": "./src/theme/tokens.css",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -16,10 +17,8 @@
     "watch": "vite build --watch",
     "test": "vitest run",
     "hooks:lock": "vitest run src/styling-hooks --update",
+    "tokens:generate": "vitest run src/tokens/generated.test.ts --update",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf coverage"
-  },
-  "devDependencies": {
-    "sass": "^1.105.1"
   }
 }

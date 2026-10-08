@@ -1,22 +1,80 @@
 {
   "title": "アーキテクチャ",
-  "description": "Minerva のパッケージ構成：インタラクションのプリミティブを持つフレームワーク非依存のコア、その上に構築された React コンポーネント、そして Web Components。",
+  "description": "Minerva の構成：すべてのレンダラーが共有するプラットフォーム非依存のコア（ステートマシン、コンポーネント契約、デザイントークン、i18n）、Web レンダラー向けの DOM プリミティブ、React コンポーネント、Web Components、そして計画中のネイティブレンダラー。",
   "packages": {
     "title": "パッケージ",
-    "text": "Minerva は 3 つのライブラリを公開する pnpm モノレポです。インタラクションのロジック、テーマのデータ、翻訳は minerva-design/core に一度だけ書かれ、各フレームワーク向けパッケージは描画だけを担当します。",
+    "text": "Minerva は 1 つのパッケージ minerva-design を公開する pnpm モノレポで、レンダラーごとにエントリーがあります。振る舞い（ヘッドレスなステートマシン）、コンポーネント契約、デザイントークン、テーマのデータ、翻訳はコアに一度だけ書かれ、各レンダラーは描画だけを担当します。",
     "package": "パッケージ",
-    "core": "フレームワーク非依存の TypeScript（DOM のみ、React や Lit なし）：フォーカススコープ、閉じられるレイヤーのスタック、スクロールロック、他要素の非表示、ロービングフォーカスとタイプアヘッド、位置決め、ポータルのホスト、ID と制御可能な状態、さらにテーマユーティリティ、パレット、デザイントークン（tokens.css）、i18n メッセージと軽量トランスレーター（createTranslator）。",
+    "core": "Web 向けコア API：プラットフォーム非依存のコア層（dist/core）のすべてと、DOM 層（dist/dom）の DOM プリミティブ（フォーカススコープ、閉じられるレイヤーのスタック、スクロールロック、他要素の非表示、ロービングフォーカス、位置決め、ポータルのホスト、テーマの Cookie とちらつき防止の初期化スクリプト）。分割前と同じ API です。",
     "libCore": "React 19 のコンポーネントライブラリ。コンポーネントはコアのプリミティブを包む薄いフック（src/internal）を使うため、すべてのオーバーレイが同じ実装を共有します。公開 API に含まれるテーマのヘルパーと型を再エクスポートし、コアのトークンを style.css に同梱します。",
-    "webComponents": "全コンポーネントを実装した Lit のカスタム要素。どのフレームワークでも、フレームワークなしでも使えます。Lit コントローラーを通して同じコアのプリミティブを使い、React 版のスタイルシートを shadow root にコンパイルしているため、両ライブラリの見た目と挙動は同じです。"
+    "webComponents": "全コンポーネントを実装した Lit のカスタム要素。どのフレームワークでも、フレームワークなしでも使えます。Lit コントローラーを通して同じコアのプリミティブを使い、React 版のスタイルシートを shadow root にコンパイルしているため、両ライブラリの見た目と挙動は同じです。",
+    "workspace": "これは非公開のワークスペースパッケージからビルドされる 2 つの内部レイヤーで実装されています。ネイティブレンダラー（React Native、ミニプログラム）は 1 つ目だけを使うため、DOM のコードは含まれません。",
+    "workspaceTitle": "内部レイヤー",
+    "neutral": "DOM にアクセスしないプラットフォーム非依存の TypeScript（lint ルールと、Intl.PluralRules のない Node 環境で動くテストで保証）：ヘッドレスなステートマシン、コンポーネント契約、デザイントークン（TypeScript のソースから tokens.css / tokens.mini.css を生成し、resolveTokens で具体的な値を返す）、テーマの型、パレットとデザインプリセット、i18n メッセージとトランスレーター、キーボードナビゲーションとタイプアヘッドの計算、ID、制御可能な状態、バリデーション、URL のサニタイズ。",
+    "dom": "Web レンダラー向けの DOM 部分：フォーカススコープ、閉じられるレイヤー、スクロールロック、他要素の非表示、ロービングフォーカスの DOM バインディング、@floating-ui/dom による位置決め、ポータルのホスト、ポインターの猶予領域、presence（退場アニメーション）、読み方向、テーマの DOM / Cookie ヘルパー。"
+  },
+  "platforms": {
+    "title": "プラットフォーム",
+    "text": "各レンダラーは同じヘッドレスなコアを共有するネイティブ実装で、単一の minerva-design パッケージのサブパスとして配布されます。Web レンダラーは DOM プリミティブも使い、React Native とミニプログラムのレンダラーは CSS 変数ではなく具体的な値に解決したトークンを使います。",
+    "platform": "プラットフォーム",
+    "entry": "エントリー",
+    "renderer": "レンダラー",
+    "shared": "共有レイヤー",
+    "status": "状態",
+    "stable": "安定版",
+    "planned": "計画中",
+    "support": "コンポーネントごとの対応状況は「プラットフォーム対応」を参照してください。",
+    "rows": {
+      "react": {
+        "name": "React（Web）",
+        "renderer": "React 19 の DOM コンポーネント、SSR / RSC 対応"
+      },
+      "wc": {
+        "name": "Web Components",
+        "renderer": "Lit のカスタム要素、どのフレームワークでもフレームワークなしでも"
+      },
+      "vue": {
+        "name": "Vue 3",
+        "renderer": "ネイティブの単一ファイルコンポーネント（それまでは Web Components）"
+      },
+      "angular": {
+        "name": "Angular",
+        "renderer": "signals を使うネイティブのスタンドアロンコンポーネント（それまでは Web Components）"
+      },
+      "native": {
+        "name": "React Native + Expo",
+        "renderer": "React Native コンポーネント、トークンは resolveTokens で解決"
+      },
+      "taro": {
+        "name": "Taro",
+        "renderer": "ミニプログラムと H5 向けの React 構文のコンポーネント、tokens.mini.css"
+      },
+      "weapp": {
+        "name": "WeChat ミニプログラム",
+        "renderer": "ネイティブのカスタムコンポーネント（WXML / WXSS）、tokens.mini.css"
+      },
+      "uni": {
+        "name": "uni-app",
+        "renderer": "uni-app の組み込みコンポーネントを使う Vue 3 コンポーネント、tokens.mini.css"
+      }
+    }
+  },
+  "headless": {
+    "title": "共有のヘッドレスレイヤー",
+    "text": "レンダラー同士が食い違わないよう、描画以外のすべてをコアに置いています：",
+    "machines": "ステートマシン（core/machines）：開閉と presence、トーストのキュー、選択、タブ、ピッカーの列、フィールドとバリデーション、ページネーション、評価、数値ステッパー、トグル類のためのフレームワーク非依存な { getState, send, subscribe } ストア。React と Web Components のトースト、タブ、ページネーション、評価はすでにこれで動いています。",
+    "contracts": "コンポーネント契約（core/contracts）：コンポーネントごとの実行時メタデータ（列挙値とデフォルト値つきのプロパティ、イベント、スロット、トラック、プラットフォームごとの対応状況）。React の型と custom-elements.json に照らして検証されます。",
+    "tokens": "デザイントークン：TypeScript のデータから tokens.css（以前の Sass の出力とバイト単位で同一）、ミニプログラム向けのクラスベースの tokens.mini.css（パレットごとに分割）、CSS と一致する sRGB の color-mix を備えた resolveTokens() を生成します。",
+    "tests": "一度だけ書いた契約テストスイート（tests/contracts）をレンダラーごとのドライバーで実行します。現在は React DOM と Web Components で、新しいレンダラーは自分のドライバーを追加します。"
   },
   "primitives": {
-    "title": "コアのプリミティブ",
-    "text": "各プリミティブは DOM 要素を扱う小さな関数で、後片付け用の関数かコントローラーを返します。入れ子にも対応しており、どのオーバーレイが先に反応するかはスタックが決めます。",
+    "title": "DOM プリミティブ",
+    "text": "DOM プリミティブ（dist/dom）は DOM 要素を扱う小さな関数で、後片付け用の関数かコントローラーを返します。入れ子にも対応しており、どのオーバーレイが先に反応するかはスタックが決めます。プラットフォームに依存しない部分（キーボードナビゲーション、タイプアヘッド、制御可能な状態）はコア層（dist/core）にあります。",
     "focusScope": "createFocusScope：開いたときのフォーカス、ループする Tab のトラップ、閉じたときに開いた要素へフォーカスを戻す。入れ子のスコープは外側を一時停止します。",
     "dismissableLayer": "createDismissableLayer：Escape、外側でのポインター押下、外側へのフォーカス移動で閉じるのは最前面のレイヤーだけ。子レイヤー（サブメニュー、Modal 内の Select）でのクリックが親を閉じることはありません。",
     "scrollLock": "lockScroll：参照カウント付きのページスクロールロック。スクロールバーの幅を補正します。",
     "hideOthers": "hideOthers：モーダル以外を支援技術から隠し（aria-hidden または inert）、モーダルが入れ子になっても正しく元に戻します。",
-    "rovingFocus": "getNextIndex、createTypeahead、createRovingFocus：メニュー、リストボックス、タブ向けの矢印キー、Home / End、折り返し、方向、右から左、タイプアヘッド。",
+    "rovingFocus": "getNextIndex と createTypeahead（コア）、createRovingFocus（DOM）：メニュー、リストボックス、タブ向けの矢印キー、Home / End、折り返し、方向、右から左、タイプアヘッド。",
     "positioning": "computeAnchoredPosition / autoPosition：オフセット、反転、シフト、サイズ、矢印に対応したアンカー配置。スクロールやリサイズの間も位置を保ちます。",
     "pointerGrace": "createPointerGrace：ポインターがサブメニューへ向かう間それを開いたままにするセーフトライアングル。",
     "portal": "getPortalContainer / createPortalHost：オーバーレイの描画先。入れ子の ConfigProvider はテーマのスコープごとにポータルのホストを作ります。",
@@ -30,7 +88,16 @@
   },
   "dependencies": {
     "title": "依存関係",
-    "text": "Floating UI（@floating-ui/dom）が唯一のサードパーティのインタラクション依存で、コアの位置決めモジュール内でのみ使われます。Radix UI などのヘッドレスライブラリは使いません。Slot / asChild、Tabs、ダイアログ、メニュー、セレクトはこのリポジトリで開発され、Vitest、happy-dom、Testing Library、user-event でテストされています。"
+    "text": "Floating UI（@floating-ui/dom）が唯一のサードパーティのインタラクション依存で、DOM 層（dist/dom）の位置決めモジュール内でのみ使われます。Radix UI などのヘッドレスライブラリは使いません。Slot / asChild、Tabs、ダイアログ、メニュー、セレクトはこのリポジトリで開発され、Vitest、happy-dom、Testing Library、user-event でテストされています。"
+  },
+  "roadmap": {
+    "title": "ロードマップ",
+    "text": "各フェーズで共有コアの上に 1 つのレンダラー群を提供し、契約テストのドライバーを追加し、契約の状態を計画中からベータ、安定版へと進めます。",
+    "phase0": "基盤（完了）：プラットフォーム非依存のコアと DOM 層（dist/dom）、トークンのパイプライン、ステートマシン、コンポーネント契約、契約テストの仕組み、pnpm catalogs、空のレンダラーパッケージ。",
+    "phase1": "Vue 3 と Angular のネイティブレンダラー（minerva-design/vue、minerva-design/angular）。これらのフレームワークでの Web Components の利用を置き換えます。",
+    "phase2": "React Native + Expo（minerva-design/native）。",
+    "phase3": "ミニプログラム：Taro（minerva-design/taro）、WeChat ネイティブコンポーネント（miniprogram フィールドから dist/weapp）、uni-app（minerva-design/uni）。",
+    "phase4": "toC 向けコンポーネントと touch デザインプリセットを全プラットフォームへ。"
   },
   "next": {
     "title": "次のステップ",

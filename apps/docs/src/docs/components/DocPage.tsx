@@ -77,6 +77,15 @@ const WebComponentSection: React.FC<{
     <>
       <section className={styles.section} aria-labelledby="wc-import">
         <h2 id="wc-import">{t("doc.fw.setupTitle")}</h2>
+        {framework.nativePlanned && (
+          <p className={styles.callout} data-testid="native-planned">
+            <Trans
+              i18nKey="doc.fw.viaWebComponents"
+              values={{ framework: framework.label }}
+              components={{ support: <Link to="/platform-support" /> }}
+            />
+          </p>
+        )}
         <p className={styles.prose}>
           {t("doc.wc.intro", {
             tags: wc.tags.map((tag) => `<${tag}>`).join(", "),
@@ -286,7 +295,15 @@ const FrameworkTabs: React.FC<{
         </span>
         <TabList aria-label={t("doc.wc.framework")}>
           {FRAMEWORKS.map((fw) => (
-            <Tab key={fw.id} value={fw.id}>
+            <Tab
+              key={fw.id}
+              value={fw.id}
+              title={
+                fw.nativePlanned
+                  ? t("doc.fw.viaWebComponentsShort", { framework: fw.label })
+                  : undefined
+              }
+            >
               {fw.label}
             </Tab>
           ))}

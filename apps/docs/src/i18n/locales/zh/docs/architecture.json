@@ -1,22 +1,80 @@
 {
   "title": "架构",
-  "description": "Minerva 的包划分：承载交互原语的框架无关核心、基于它构建的 React 组件，以及 Web Components。",
+  "description": "Minerva 的分层：所有渲染器共享的平台无关核心（状态机、组件契约、设计令牌、i18n）、Web 渲染器使用的 DOM 原语、React 组件、Web Components，以及规划中的原生渲染器。",
   "packages": {
     "title": "包",
-    "text": "Minerva 是一个 pnpm monorepo，发布三个库。交互逻辑、主题数据和翻译只在 minerva-design/core 中编写一次；各框架包只负责渲染。",
+    "text": "Minerva 是一个 pnpm monorepo，只发布一个包 minerva-design，每个渲染器对应一个入口。行为（无头状态机）、组件契约、设计令牌、主题数据和翻译只在核心中编写一次；各渲染器只负责渲染。",
     "package": "包",
-    "core": "框架无关的 TypeScript（只依赖 DOM，不含 React 或 Lit）：焦点作用域、可关闭层栈、滚动锁定、隐藏其他内容、漫游焦点与按键查找、定位、Portal 容器、id 与受控状态，以及主题工具、调色板、设计令牌（tokens.css）、i18n 文案和轻量翻译器（createTranslator）。",
+    "core": "Web 端核心 API：完整的平台无关核心层（dist/core），加上 DOM 层（dist/dom）的 DOM 原语：焦点作用域、可关闭层栈、滚动锁定、隐藏其他内容、漫游焦点、定位、Portal 容器、主题 Cookie 与防闪烁初始化脚本。API 与拆分前相同。",
     "libCore": "React 19 组件库。组件通过 src/internal 中对核心原语的轻量 Hook 实现，所有浮层共享同一套实现。它重新导出公共 API 中的主题工具与类型，并把核心令牌打包进 style.css。",
-    "webComponents": "基于 Lit 的自定义元素，实现完整的组件集，可用于任意框架或不用框架。它们通过 Lit 控制器复用同样的核心原语，并将 React 版的样式表编译进 shadow root，因此两个库的外观和行为一致。"
+    "webComponents": "基于 Lit 的自定义元素，实现完整的组件集，可用于任意框架或不用框架。它们通过 Lit 控制器复用同样的核心原语，并将 React 版的样式表编译进 shadow root，因此两个库的外观和行为一致。",
+    "workspace": "它由两个内部层实现，分别构建自私有工作区包。原生渲染器（React Native、小程序）只使用第一个，因此不会引入任何 DOM 代码。",
+    "workspaceTitle": "内部层",
+    "neutral": "平台无关的 TypeScript，不访问 DOM（由 lint 规则和一个在没有 Intl.PluralRules 的 Node 环境中运行的测试保证）：无头状态机、组件契约、设计令牌（TypeScript 源数据，生成 tokens.css / tokens.mini.css，以及返回具体值的 resolveTokens）、主题类型、调色板与设计预设、i18n 文案与翻译器、键盘导航与按键查找算法、id、受控状态、校验和 URL 安全处理。",
+    "dom": "供 Web 渲染器使用的 DOM 部分：焦点作用域、可关闭层、滚动锁定、隐藏其他内容、漫游焦点的 DOM 绑定、基于 @floating-ui/dom 的定位、Portal 容器、指针安全区、presence（退出动画）、阅读方向，以及主题的 DOM / Cookie 工具。"
+  },
+  "platforms": {
+    "title": "平台",
+    "text": "每个渲染器都是共享同一个无头核心的原生实现，并作为唯一的 minerva-design 包的子路径发布。Web 渲染器还会使用 DOM 原语；React Native 和小程序渲染器则把令牌解析为具体值，而不是 CSS 变量。",
+    "platform": "平台",
+    "entry": "入口",
+    "renderer": "渲染方式",
+    "shared": "共享层",
+    "status": "状态",
+    "stable": "稳定",
+    "planned": "规划中",
+    "support": "各组件的支持情况：参见“平台支持”。",
+    "rows": {
+      "react": {
+        "name": "React（Web）",
+        "renderer": "React 19 DOM 组件，支持 SSR / RSC"
+      },
+      "wc": {
+        "name": "Web Components",
+        "renderer": "Lit 自定义元素，可用于任意框架或不用框架"
+      },
+      "vue": {
+        "name": "Vue 3",
+        "renderer": "原生单文件组件（在此之前使用 Web Components）"
+      },
+      "angular": {
+        "name": "Angular",
+        "renderer": "基于 signals 的原生独立组件（在此之前使用 Web Components）"
+      },
+      "native": {
+        "name": "React Native + Expo",
+        "renderer": "React Native 组件，令牌由 resolveTokens 解析"
+      },
+      "taro": {
+        "name": "Taro",
+        "renderer": "面向小程序和 H5 的 React 语法组件，使用 tokens.mini.css"
+      },
+      "weapp": {
+        "name": "微信小程序",
+        "renderer": "原生自定义组件（WXML / WXSS），使用 tokens.mini.css"
+      },
+      "uni": {
+        "name": "uni-app",
+        "renderer": "使用 uni-app 内置组件的 Vue 3 组件，使用 tokens.mini.css"
+      }
+    }
+  },
+  "headless": {
+    "title": "共享的无头层",
+    "text": "为了让各渲染器不产生分歧，除渲染以外的一切都放在核心中：",
+    "machines": "状态机（core/machines）：框架无关的 { getState, send, subscribe } store，覆盖展开收起与 presence、Toast 队列、选择、标签页、选择器列、表单字段与校验、分页、评分、数字步进器和开关类控件。React 与 Web Components 的 Toast、Tabs、Pagination 和 Rating 已经基于它们运行。",
+    "contracts": "组件契约（core/contracts）：每个组件的运行时元数据（含枚举值与默认值的属性、事件、插槽、业务方向、各平台的支持状态），并与 React 类型和 custom-elements.json 进行一致性校验。",
+    "tokens": "设计令牌：由 TypeScript 数据生成 tokens.css（与之前的 Sass 输出逐字节一致）、面向小程序的基于类名的 tokens.mini.css（按调色板拆分），以及带有与 CSS 一致的 sRGB color-mix 实现的 resolveTokens()。",
+    "tests": "契约测试套件只编写一次（tests/contracts），通过每个渲染器的驱动运行：目前有 React DOM 和 Web Components，新渲染器加入时补充自己的驱动。"
   },
   "primitives": {
-    "title": "核心原语",
-    "text": "每个原语都是作用于 DOM 元素的小函数，返回清理函数或控制器对象。它们支持嵌套：由一个栈决定哪个浮层先响应。",
+    "title": "DOM 原语",
+    "text": "DOM 原语（dist/dom）是作用于 DOM 元素的小函数，返回清理函数或控制器对象。它们支持嵌套：由一个栈决定哪个浮层先响应。其中与平台无关的部分（键盘导航、按键查找、受控状态）位于核心层（dist/core）。",
     "focusScope": "createFocusScope：打开时聚焦、Tab 循环约束焦点、关闭时把焦点还给触发元素；嵌套作用域会暂停外层。",
     "dismissableLayer": "createDismissableLayer：Escape、外部指针按下和焦点移出只关闭最上层；在子层（子菜单、Modal 中的 Select）内点击不会关闭父层。",
     "scrollLock": "lockScroll：带引用计数的页面滚动锁定，并补偿滚动条宽度。",
     "hideOthers": "hideOthers：对辅助技术隐藏模态框以外的内容（aria-hidden 或 inert），嵌套模态框时也能正确恢复。",
-    "rovingFocus": "getNextIndex、createTypeahead、createRovingFocus：为菜单、列表框和标签页提供方向键、Home / End、循环、方向、从右到左和按键查找。",
+    "rovingFocus": "getNextIndex 与 createTypeahead（核心）以及 createRovingFocus（DOM）：为菜单、列表框和标签页提供方向键、Home / End、循环、方向、从右到左和按键查找。",
     "positioning": "computeAnchoredPosition / autoPosition：带偏移、翻转、平移、尺寸和箭头的锚定定位，滚动和缩放时保持位置。",
     "pointerGrace": "createPointerGrace：指针向子菜单移动时保持其打开的安全三角区。",
     "portal": "getPortalContainer / createPortalHost：浮层的渲染位置；嵌套的 ConfigProvider 会为每个主题作用域创建一个 Portal 容器。",
@@ -30,7 +88,16 @@
   },
   "dependencies": {
     "title": "依赖",
-    "text": "Floating UI（@floating-ui/dom）是唯一的第三方交互依赖，只在核心定位模块中使用。不使用 Radix UI 或其他 headless 库：Slot / asChild、Tabs、对话框、菜单和选择器都在本仓库中开发，并用 Vitest、happy-dom、Testing Library 和 user-event 测试。"
+    "text": "Floating UI（@floating-ui/dom）是唯一的第三方交互依赖，只在 DOM 层（dist/dom）的定位模块中使用。不使用 Radix UI 或其他 headless 库：Slot / asChild、Tabs、对话框、菜单和选择器都在本仓库中开发，并用 Vitest、happy-dom、Testing Library 和 user-event 测试。"
+  },
+  "roadmap": {
+    "title": "路线图",
+    "text": "每个阶段基于共享核心交付一类渲染器，补充其契约测试驱动，并把其契约状态从“规划中”推进到 beta，再到稳定。",
+    "phase0": "基础（已完成）：平台无关核心与 DOM 层（dist/dom）、令牌流水线、状态机、组件契约、契约测试框架、pnpm catalogs 和空的渲染器包。",
+    "phase1": "Vue 3 与 Angular 原生渲染器（minerva-design/vue、minerva-design/angular），取代这两个框架中对 Web Components 的使用。",
+    "phase2": "React Native + Expo（minerva-design/native）。",
+    "phase3": "小程序：Taro（minerva-design/taro）、微信原生组件（通过 miniprogram 字段指向 dist/weapp）和 uni-app（minerva-design/uni）。",
+    "phase4": "面向 C 端的组件与 touch 设计预设覆盖所有平台。"
   },
   "next": {
     "title": "下一步",

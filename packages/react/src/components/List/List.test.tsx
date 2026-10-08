@@ -5,6 +5,7 @@ import {
   type LiHTMLAttributes,
   type ReactNode,
 } from "react";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -42,18 +43,10 @@ afterEach(() => {
 /** Mounts the component styles (module + scale tokens) like a consumer app */
 function mountStyled(children: ReactNode) {
   css ??= [
-    compile(
-      join(
-        import.meta.dirname,
-        "../../../../core/src/theme/tokens/scales.scss",
-      ),
-    ).css,
-    compile(
-      join(
-        import.meta.dirname,
-        "../../../../core/src/theme/tokens/default-theme.scss",
-      ),
-    ).css,
+    readFileSync(
+      join(import.meta.dirname, "../../../../core/src/theme/tokens.css"),
+      "utf8",
+    ),
     compile(join(import.meta.dirname, "list.module.scss")).css,
   ]
     .join("\n")

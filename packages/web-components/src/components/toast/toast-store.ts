@@ -1,8 +1,15 @@
-// Framework-agnostic toast store and `toast()` API: a port of the React library's
+// Toast store and `toast()` API of the web components: a thin adapter over
+// core's `createToastQueue`, the queue shared with the React library's
 // `components/Toast/store.ts` (same semantics: same-id replacement, timers,
-// pause / resume, closing state, update, promise), without React. No DOM
-// access at import time (SSR safe).
+// pause / resume, closing state, update, promise). No DOM access at import
+// time (SSR safe).
 import type { TemplateResult } from "lit";
+import {
+  createToastQueue,
+  type ToastQueue,
+  type ToastQueueBaseItem,
+  type ToastQueueLifecycleEvent,
+} from "@minerva/core";
 import { DEV, devWarn } from "../../internal/dev";
 
 /** Default auto-close delay, in milliseconds */
@@ -130,37 +137,22 @@ export interface ToastApi {
 }
 
 /** A toast held by the store */
-export interface ToastItem {
-  id: ToastId;
-  color: ToastColor;
-  loading: boolean;
-  title?: ToastContent;
-  description?: ToastContent;
-  duration: number;
-  /** Custom icon; undefined uses the color icon (or spinner), null hides it */
-  icon?: ToastContent | null;
-  closable: boolean;
-  action?: ToastAction;
-  onClose?: (id: ToastId) => void;
-  state: "open" | "closing";
+export interface ToastItem extends ToastQueueBaseItem<ToastContent> {
   /** Explicit region; `undefined` = the owner region */
   region?: HTMLElement;
 }
 
+/** Per-toast data of the web components (the explicit region) */
+type ToastExtra = Pick<ToastItem, "region">;
+
 /** Store lifecycle notifications (regions turn them into DOM events) */
-export type ToastLifecycleEvent =
-  | { type: "close"; item: ToastItem; reason: ToastCloseReason }
-  | { type: "remove"; item: ToastItem };
+export type ToastLifecycleEvent = ToastQueueLifecycleEvent<
+  ToastContent,
+  ToastExtra
+>;
 
 type Listener = (toasts: ToastItem[]) => void;
 type LifecycleListener = (event: ToastLifecycleEvent) => void;
-
-interface Timer {
-  handle?: ReturnType<typeof setTimeout>;
-  deadline: number;
-  remaining: number;
-  paused: boolean;
-}
 
 const hasDOM = () =>
   typeof window !== "undefined" && typeof document !== "undefined";
@@ -175,90 +167,29 @@ export interface ToastStoreOptions {
  * elements render the list. Re-using an id replaces the toast.
  */
 export class ToastStore {
-  private toasts: ToastItem[] = [];
-  private listeners = new Set<Listener>();
-  private lifecycle = new Set<LifecycleListener>();
-  private idCounter = 0;
-  private timers = new Map<ToastId, Timer>();
-  private readonly isClient: () => boolean;
+  private readonly queue: ToastQueue<ToastContent, ToastExtra>;
 
   constructor(options: ToastStoreOptions = {}) {
-    this.isClient = options.isClient ?? hasDOM;
-  }
-
-  /** Listens to list changes; returns the unsubscribe function. */
-  subscribe = (fn: Listener): (() => void) => {
-    this.listeners.add(fn);
-    return () => {
-      this.listeners.delete(fn);
-    };
-  };
-
-  /** Listens to close / remove notifications. */
-  subscribeLifecycle = (fn: LifecycleListener): (() => void) => {
-    this.lifecycle.add(fn);
-    return () => {
-      this.lifecycle.delete(fn);
-    };
-  };
-
-  private emit(): void {
-    for (const fn of [...this.listeners]) fn(this.toasts);
-  }
-
-  private notify(event: ToastLifecycleEvent): void {
-    for (const fn of [...this.lifecycle]) fn(event);
-  }
-
-  private clearTimer(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (timer) clearTimeout(timer.handle);
-    this.timers.delete(id);
-  }
-
-  private schedule(id: ToastId, duration: number): void {
-    this.clearTimer(id);
-    if (duration <= 0) return;
-    this.timers.set(id, {
-      handle: setTimeout(() => this.dismiss(id, "timeout"), duration),
-      deadline: Date.now() + duration,
-      remaining: duration,
-      paused: false,
+    this.queue = createToastQueue<ToastContent, ToastExtra>({
+      // SSR: a module level list would leak between requests; nothing
+      // renders on the server anyway.
+      isClient: options.isClient ?? hasDOM,
+      defaultDuration: DEFAULT_TOAST_DURATION,
+      exitDuration: TOAST_EXIT_DURATION,
     });
   }
 
+  /** Listens to list changes; returns the unsubscribe function. */
+  subscribe = (fn: Listener): (() => void) =>
+    this.queue.subscribe((state) => fn(state.toasts));
+
+  /** Listens to close / remove notifications. */
+  subscribeLifecycle = (fn: LifecycleListener): (() => void) =>
+    this.queue.subscribeLifecycle(fn);
+
   /** Shows (or replaces) a toast; returns its id. */
   push(opts: ToastOptions, region?: HTMLElement): ToastId {
-    const id = opts.id ?? ++this.idCounter;
-    // SSR: a module level list would leak between requests; nothing renders
-    // on the server anyway.
-    if (!this.isClient()) return id;
-    const loading = opts.loading ?? false;
-    const next: ToastItem = {
-      id,
-      color: opts.color ?? "info",
-      loading,
-      title: opts.title,
-      description: opts.description,
-      duration: opts.duration ?? (loading ? 0 : DEFAULT_TOAST_DURATION),
-      icon: opts.icon,
-      closable: opts.closable ?? true,
-      action: opts.action,
-      onClose: opts.onClose,
-      state: "open",
-      region,
-    };
-    const index = this.toasts.findIndex((t) => t.id === id);
-    if (index >= 0) {
-      const updated = this.toasts.slice();
-      updated[index] = next;
-      this.toasts = updated;
-    } else {
-      this.toasts = [...this.toasts, next];
-    }
-    this.emit();
-    this.schedule(id, next.duration);
-    return id;
+    return this.queue.add(opts, { region });
   }
 
   /**
@@ -266,79 +197,40 @@ export class ToastStore {
    * Unknown or closing ids are ignored.
    */
   update(id: ToastId, opts: Omit<ToastOptions, "id">): void {
-    const current = this.toasts.find((t) => t.id === id && t.state === "open");
-    if (!current) return;
-    const loadingChanged =
-      opts.loading !== undefined && opts.loading !== current.loading;
-    const defaultDuration = current.loading ? 0 : DEFAULT_TOAST_DURATION;
-    const duration =
-      opts.duration ??
-      (loadingChanged && current.duration === defaultDuration
-        ? undefined
-        : current.duration);
-    this.push({ ...current, ...opts, id, duration }, current.region);
+    this.queue.update(id, opts);
   }
 
   /** Starts the closing animation, then removes the toast. */
   dismiss(id: ToastId, reason: ToastCloseReason = "dismiss"): void {
-    this.clearTimer(id);
-    const closing = this.toasts.find((t) => t.id === id && t.state === "open");
-    if (!closing) return;
-    this.toasts = this.toasts.map((t) =>
-      t.id === id ? { ...t, state: "closing" } : t,
-    );
-    this.emit();
-    closing.onClose?.(id);
-    this.notify({ type: "close", item: closing, reason });
-    setTimeout(() => {
-      // A toast pushed again with the same id while closing stays
-      const current = this.toasts.find((t) => t.id === id);
-      if (current?.state !== "closing") return;
-      this.toasts = this.toasts.filter((t) => t.id !== id);
-      this.emit();
-      this.notify({ type: "remove", item: current });
-    }, TOAST_EXIT_DURATION);
+    this.queue.dismiss(id, reason);
   }
 
   /** Closes every open toast. */
   dismissAll(): void {
-    for (const t of this.toasts) this.dismiss(t.id);
+    this.queue.dismissAll();
   }
 
   /** Stops the auto-close countdown (hover / focus). */
   pause(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (!timer || timer.paused) return;
-    clearTimeout(timer.handle);
-    timer.remaining = Math.max(0, timer.deadline - Date.now());
-    timer.paused = true;
+    this.queue.pause(id);
   }
 
   /** Continues a paused countdown where it stopped. */
   resume(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (!timer?.paused) return;
-    timer.paused = false;
-    timer.deadline = Date.now() + timer.remaining;
-    timer.handle = setTimeout(
-      () => this.dismiss(id, "timeout"),
-      timer.remaining,
-    );
+    this.queue.resume(id);
   }
 
   /** Current list (a new array on every change). */
-  readonly getSnapshot = (): ToastItem[] => this.toasts;
+  readonly getSnapshot = (): ToastItem[] => this.queue.getState().toasts;
 
   /** Current list (tests). */
   peek(): readonly ToastItem[] {
-    return this.toasts;
+    return this.getSnapshot();
   }
 
   /** Clears everything (tests). */
   reset(): void {
-    for (const id of [...this.timers.keys()]) this.clearTimer(id);
-    this.toasts = [];
-    this.emit();
+    this.queue.reset();
   }
 }
 

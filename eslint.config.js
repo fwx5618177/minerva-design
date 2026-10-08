@@ -154,6 +154,27 @@ export default defineConfig(
     },
   },
   {
+    // Platform testing spikes of the planned renderers (packages/*/spike,
+    // docs/adr): third-party runtimes with loose typings (mini-program
+    // `Component` / `wx` globals, j-component, RNTL matchers).
+    files: ["packages/*/spike/**/*.{js,ts,tsx}"],
+    languageOptions: {
+      globals: { Component: "readonly", Behavior: "readonly", wx: "readonly" },
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          ignoreRestSiblings: true,
+          varsIgnorePattern: "^T",
+          argsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.test.{ts,tsx}"],
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off",

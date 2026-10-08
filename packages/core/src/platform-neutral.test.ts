@@ -71,6 +71,13 @@ describe("platform-neutral core", () => {
       core.getNextIndex({ key: "ArrowDown", currentIndex: 0, count: 3 }),
     ).toBe(1);
     expect(core.createId("x")).toMatch(/^x/);
+    // design tokens resolve without CSS (React Native / mini-programs)
+    expect(
+      core.resolveTokens({ mode: "dark", palette: "tech" }).colors[
+        "primary-color"
+      ],
+    ).toBe("#5c8ee6");
+    expect(core.generateMiniTokensCss()).toContain("page, .mn-root {");
   });
 
   it("plural messages fall back to built-in rules without Intl.PluralRules", async () => {

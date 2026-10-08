@@ -209,27 +209,38 @@ Invalid attribute combinations and common mistakes are logged with `console.erro
 ## Core (advanced)
 
 `minerva-design/core` is the framework-agnostic, side-effect-free and SSR-safe
-TypeScript both libraries are built on (plain DOM APIs; the only runtime
-dependency is `@floating-ui/dom`). The React and web component entries import
-the same copy, so an app using both loads it once.
+TypeScript both libraries are built on. It has two layers, shipped once and
+shared by every entry (an app using React and the web components loads them
+once):
 
-| Module              | API                                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| `id`                | `createId(prefix?)`                                                                               |
-| `controllable`      | `createControllableState({ value, defaultValue, onChange })`                                      |
-| `dom`               | `canUseDOM`, `getActiveElement`, `contains`, `getTabbables`, `getFocusables`, `focusElement`, ... |
-| `focus-scope`       | `createFocusScope(container, { trapped, loop, autoFocus, restoreFocus })`                         |
-| `dismissable-layer` | `createDismissableLayer(element, { onDismiss, branches, disableOutsidePointerEvents, ... })`      |
-| `scroll-lock`       | `lockScroll(target?)` returns `unlock()`                                                          |
-| `hide-others`       | `hideOthers(targets, { root, attribute })` returns `undo()`                                       |
-| `roving-focus`      | `getNextIndex(...)`, `createTypeahead()`, `createRovingFocus(container, options)`                 |
-| `portal`            | `getPortalContainer(explicit?)`, `createPortalHost({ id, attributes, parent })`                   |
-| `positioning`       | `computeAnchoredPosition`, `autoPosition`, `applyPosition`, placement helpers                     |
-| `pointer-grace`     | `createPointerGrace()`, `getGraceArea`, `isPointInPolygon`                                        |
-| `presence`          | `waitForExitAnimation(el)`                                                                        |
-| `theme`             | theme types, `light` / `dark` / `githubDark` / `themes`, `palettes`, `applyThemeStyles`, ...      |
-| `theme/theme-utils` | `THEME_INIT_SCRIPT`, `parseThemeCookies`, `serializeThemeCookie`, `PALETTES`, ... (server-safe)   |
-| `i18n`              | `messages`, `SUPPORTED_LANGUAGES`, `mergeMessages`, `createTranslator`, `translate`, ...          |
+- the **platform-neutral** layer (`dist/core`, no DOM access, also used by the
+  planned React Native and mini-program renderers): ids, controllable state,
+  keyboard navigation and typeahead math, theme data and design presets, i18n;
+- the **DOM** layer (`dist/dom`, web renderers only; its only runtime
+  dependency is `@floating-ui/dom`): focus scope, layers, scroll lock,
+  positioning, portal, presence, theme DOM / cookie helpers.
+
+| Module              | Layer   | API                                                                                                                              |
+| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | neutral | `createId(prefix?)`                                                                                                              |
+| `controllable`      | neutral | `createControllableState({ value, defaultValue, onChange })`                                                                     |
+| `keyboard`          | neutral | `getNextIndex(...)`, `createTypeahead()`                                                                                         |
+| `theme`             | neutral | theme types, `light` / `dark` / `githubDark` / `themes`, `palettes`, `PALETTES`, design presets                                  |
+| `tokens`            | neutral | `resolveTokens({ mode, palette, design })`, `colorMix`, `generateTokensCss()`, token data                                        |
+| `i18n`              | neutral | `messages`, `SUPPORTED_LANGUAGES`, `mergeMessages`, `createTranslator`, `translate`, ...                                         |
+| `machines`          | neutral | `createTabsMachine`, `createToastQueue`, `createPaginationMachine`, `createRatingMachine`, ... (`{ getState, send, subscribe }`) |
+| `tokens`            | neutral | `resolveTokens({ mode, palette, design, overrides })`, `colorMix(a, b, pct)`, token generators                                   |
+| `dom`               | DOM     | `canUseDOM`, `getActiveElement`, `contains`, `getTabbables`, `getFocusables`, `focusElement`, ...                                |
+| `focus-scope`       | DOM     | `createFocusScope(container, { trapped, loop, autoFocus, restoreFocus })`                                                        |
+| `dismissable-layer` | DOM     | `createDismissableLayer(element, { onDismiss, branches, disableOutsidePointerEvents, ... })`                                     |
+| `scroll-lock`       | DOM     | `lockScroll(target?)` returns `unlock()`                                                                                         |
+| `hide-others`       | DOM     | `hideOthers(targets, { root, attribute })` returns `undo()`                                                                      |
+| `roving-focus`      | DOM     | `createRovingFocus(container, options)`                                                                                          |
+| `portal`            | DOM     | `getPortalContainer(explicit?)`, `createPortalHost({ id, attributes, parent })`                                                  |
+| `positioning`       | DOM     | `computeAnchoredPosition`, `autoPosition`, `applyPosition`, placement helpers                                                    |
+| `pointer-grace`     | DOM     | `createPointerGrace()`, `getGraceArea`, `isPointInPolygon`                                                                       |
+| `presence`          | DOM     | `waitForExitAnimation(el)`                                                                                                       |
+| `theme` (DOM)       | DOM     | `applyThemeStyles`, `applyDesignAttributes`, `THEME_INIT_SCRIPT`, `parseThemeCookies`, ...                                       |
 
 ```ts
 import {

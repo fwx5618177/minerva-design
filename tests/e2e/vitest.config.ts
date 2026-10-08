@@ -27,7 +27,7 @@ export default defineConfig({
       },
       {
         find: /^@minerva\/core\/tokens\.css$/,
-        replacement: src("../../packages/core/src/theme/tokens.scss"),
+        replacement: src("../../packages/core/src/theme/tokens.css"),
       },
       {
         find: /^@minerva\/core$/,

@@ -416,7 +416,7 @@ pnpm dev
 | `dist/web-components/` | 要素ごとの ESM、`elements/*` エントリー（任意の `code-editor` を含む）、`cdn/minerva.js`、`types/` のフレームワーク型定義、`html-custom-data.json`                                    |
 | パッケージのルート     | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                                                        |
 
-workspace パッケージ（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`）は非公開で、公開されることはありません。
+workspace パッケージ（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、計画中のレンダラー `@minerva/{vue,angular,native,taro,weapp,uni}`、`@minerva/docs`）は非公開で、公開されることはありません。
 
 ## 🤝 コントリビューション
 

@@ -1,30 +1,22 @@
 import type { ReactNode } from "react";
+import {
+  createToastQueue,
+  type ToastQueueId,
+  type ToastQueueItem,
+} from "@minerva/core";
 import { canUseDOM } from "../../internal/canUseDOM";
 import type { ThemeScope } from "../../internal/themeScope";
-import type { ToastAction, ToastApi, ToastOptions } from "./types";
+import type { ToastApi, ToastOptions } from "./types";
 
 /** Default auto-close delay, in milliseconds */
 export const DEFAULT_TOAST_DURATION = 4000;
 /** Length of the closing animation before a toast is removed */
 export const TOAST_EXIT_DURATION = 200;
 
-export type ToastId = string | number;
+export type ToastId = ToastQueueId;
 
-/** A toast held by the store */
-export interface ToastItem {
-  id: ToastId;
-  color: NonNullable<ToastOptions["color"]>;
-  /** Spinner instead of the icon, no auto-close by default */
-  loading: boolean;
-  title?: ReactNode;
-  description?: ReactNode;
-  duration: number;
-  /** Custom icon; undefined uses the color icon (or spinner), null hides it */
-  icon?: ReactNode;
-  closable: boolean;
-  action?: ToastAction;
-  onClose?: (id: ToastId) => void;
-  state: "open" | "closing";
+/** Per-toast data of the React renderer */
+interface ToastExtra {
   /**
    * Theme scope of the caller (`useToast()` inside a nested ConfigProvider):
    * the toast is rendered into its portal container, with its language.
@@ -32,6 +24,13 @@ export interface ToastItem {
    */
   scope?: ThemeScope;
 }
+
+/**
+ * A toast held by the store: `state` "open" | "closing", `loading` (spinner,
+ * no auto-close by default), `icon` (undefined: the color icon or spinner,
+ * null: hidden) and the render `scope`.
+ */
+export type ToastItem = ToastQueueItem<ReactNode, ToastExtra>;
 
 /**
  * Keeps a scope only when it changes something compared to the owning
@@ -44,85 +43,29 @@ export const toastScopeOf = (
 
 type Listener = (toasts: ToastItem[]) => void;
 
-interface Timer {
-  handle?: ReturnType<typeof setTimeout>;
-  /** Date.now() at which the toast closes (while running) */
-  deadline: number;
-  /** Time left when paused */
-  remaining: number;
-  paused: boolean;
-}
-
 /**
  * Module level store: the imperative API works without a provider (and
  * outside React). Only the owning ToastProvider renders the list. Re-using an id
  * replaces the toast (sonner-style) instead of appending a duplicate.
+ *
+ * A thin adapter over core's `createToastQueue` (shared with the web
+ * components): same-id replacement, timers, pause / resume and the closing
+ * state live there.
  */
 export class ToastStore {
-  private toasts: ToastItem[] = [];
-  private listeners = new Set<Listener>();
-  private idCounter = 0;
-  private timers = new Map<ToastId, Timer>();
-
-  subscribe = (fn: Listener): (() => void) => {
-    this.listeners.add(fn);
-    return () => {
-      this.listeners.delete(fn);
-    };
-  };
-
-  private emit(): void {
-    for (const fn of this.listeners) fn(this.toasts);
-  }
-
-  private clearTimer(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (timer) clearTimeout(timer.handle);
-    this.timers.delete(id);
-  }
-
-  private schedule(id: ToastId, duration: number): void {
-    this.clearTimer(id);
-    if (duration <= 0) return;
-    this.timers.set(id, {
-      handle: setTimeout(() => this.dismiss(id), duration),
-      deadline: Date.now() + duration,
-      remaining: duration,
-      paused: false,
-    });
-  }
-
-  push(opts: ToastOptions, scope?: ThemeScope): ToastId {
-    const id = opts.id ?? ++this.idCounter;
+  private readonly queue = createToastQueue<ReactNode, ToastExtra>({
     // SSR: a module level list would leak between requests; nothing renders
     // on the server anyway.
-    if (!canUseDOM) return id;
-    const loading = opts.loading ?? false;
-    const next: ToastItem = {
-      id,
-      color: opts.color ?? "info",
-      loading,
-      title: opts.title,
-      description: opts.description,
-      duration: opts.duration ?? (loading ? 0 : DEFAULT_TOAST_DURATION),
-      icon: opts.icon,
-      closable: opts.closable ?? true,
-      action: opts.action,
-      onClose: opts.onClose,
-      state: "open",
-      scope,
-    };
-    const index = this.toasts.findIndex((t) => t.id === id);
-    if (index >= 0) {
-      const updated = this.toasts.slice();
-      updated[index] = next;
-      this.toasts = updated;
-    } else {
-      this.toasts = [...this.toasts, next];
-    }
-    this.emit();
-    this.schedule(id, next.duration);
-    return id;
+    isClient: () => canUseDOM,
+    defaultDuration: DEFAULT_TOAST_DURATION,
+    exitDuration: TOAST_EXIT_DURATION,
+  });
+
+  subscribe = (fn: Listener): (() => void) =>
+    this.queue.subscribe((state) => fn(state.toasts));
+
+  push(opts: ToastOptions, scope?: ThemeScope): ToastId {
+    return this.queue.add(opts, { scope });
   }
 
   /**
@@ -130,76 +73,39 @@ export class ToastStore {
    * its timer restarts. Unknown or closing ids are ignored.
    */
   update(id: ToastId, opts: Omit<ToastOptions, "id">): void {
-    const current = this.toasts.find((t) => t.id === id && t.state === "open");
-    if (!current) return;
-    // Entering / leaving the loading state with the default duration of the
-    // previous state switches to the default of the new one unless a
-    // duration is given
-    const loadingChanged =
-      opts.loading !== undefined && opts.loading !== current.loading;
-    const defaultDuration = current.loading ? 0 : DEFAULT_TOAST_DURATION;
-    const duration =
-      opts.duration ??
-      (loadingChanged && current.duration === defaultDuration
-        ? undefined
-        : current.duration);
-    this.push({ ...current, ...opts, id, duration }, current.scope);
+    this.queue.update(id, opts);
   }
 
   /** Starts the closing animation, then removes the toast. */
   dismiss(id: ToastId): void {
-    this.clearTimer(id);
-    const closing = this.toasts.find((t) => t.id === id && t.state === "open");
-    if (!closing) return;
-    this.toasts = this.toasts.map((t) =>
-      t.id === id ? { ...t, state: "closing" } : t,
-    );
-    this.emit();
-    closing.onClose?.(id);
-    setTimeout(() => {
-      // A toast pushed again with the same id while closing stays
-      const current = this.toasts.find((t) => t.id === id);
-      if (current?.state !== "closing") return;
-      this.toasts = this.toasts.filter((t) => t.id !== id);
-      this.emit();
-    }, TOAST_EXIT_DURATION);
+    this.queue.dismiss(id);
   }
 
   dismissAll(): void {
-    for (const t of this.toasts) this.dismiss(t.id);
+    this.queue.dismissAll();
   }
 
   /** Stops the auto-close countdown (hover / focus). */
   pause(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (!timer || timer.paused) return;
-    clearTimeout(timer.handle);
-    timer.remaining = Math.max(0, timer.deadline - Date.now());
-    timer.paused = true;
+    this.queue.pause(id);
   }
 
   /** Continues a paused countdown where it stopped. */
   resume(id: ToastId): void {
-    const timer = this.timers.get(id);
-    if (!timer?.paused) return;
-    timer.paused = false;
-    timer.deadline = Date.now() + timer.remaining;
-    timer.handle = setTimeout(() => this.dismiss(id), timer.remaining);
+    this.queue.resume(id);
   }
 
   /** useSyncExternalStore snapshot: a new array on every change. */
-  readonly getSnapshot = (): ToastItem[] => this.toasts;
+  readonly getSnapshot = (): ToastItem[] => this.queue.getState().toasts;
 
   /** Current list (tests). */
   peek(): readonly ToastItem[] {
-    return this.toasts;
+    return this.getSnapshot();
   }
 
   /** Clears everything (tests). */
   reset(): void {
-    for (const id of [...this.timers.keys()]) this.clearTimer(id);
-    this.toasts = [];
-    this.emit();
+    this.queue.reset();
   }
 }
 

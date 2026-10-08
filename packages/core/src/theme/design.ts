@@ -1,9 +1,10 @@
 /**
  * Design axes: app-wide look switches, orthogonal to the color mode and the
  * palette. Each axis maps to a data attribute selecting a token block of
- * `tokens.css` (`tokens/design.scss`):
+ * `tokens.css` (token data: `../tokens/design.ts`):
  *
- *   density    data-density     control heights / paddings, row paddings
+ *   density    data-density     control heights / paddings, row paddings,
+ *                               minimum touch target (--touch-target-min)
  *   radius     data-radius      --radius-sm ... --radius-2xl
  *   shadow     data-shadow      --shadow-sm ... --shadow-xl
  *   fontScale  data-font-scale  --font-size-* and line heights
@@ -31,7 +32,12 @@ export const FONT_SCALES = ["small", "standard", "large"] as const;
 /** Type scale ("large" is reading-oriented). */
 export type FontScale = (typeof FONT_SCALES)[number];
 
-export const DESIGN_PRESETS = ["minerva", "editorial", "compact"] as const;
+export const DESIGN_PRESETS = [
+  "minerva",
+  "editorial",
+  "compact",
+  "touch",
+] as const;
 /** A built-in design preset. */
 export type DesignPreset = (typeof DESIGN_PRESETS)[number];
 
@@ -39,8 +45,9 @@ export type DesignPreset = (typeof DESIGN_PRESETS)[number];
 export interface DesignOptions {
   /**
    * Named combination of the axes below and a default palette:
-   * "minerva" (default look), "editorial" (restrained, reading-oriented) or
-   * "compact" (dense, data-heavy screens)
+   * "minerva" (default look), "editorial" (restrained, reading-oriented),
+   * "compact" (dense, data-heavy screens) or "touch" (consumer mobile apps:
+   * comfortable density with 44px touch targets, large radius)
    * @default "minerva"
    */
   preset?: DesignPreset;
@@ -93,6 +100,15 @@ export const designPresets: Record<DesignPreset, DesignPresetDefinition> = {
     radius: "small",
     shadow: "standard",
     fontScale: "small",
+    palette: null,
+  },
+  // Consumer (toC) mobile apps: larger controls and rows, 44px minimum touch
+  // targets (`--touch-target-min`, Apple HIG / WCAG 2.5.5), rounder corners
+  touch: {
+    density: "comfortable",
+    radius: "large",
+    shadow: "standard",
+    fontScale: "standard",
     palette: null,
   },
 };

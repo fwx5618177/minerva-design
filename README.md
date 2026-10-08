@@ -46,7 +46,7 @@ One package, [`minerva-design`](https://www.npmjs.com/package/minerva-design), w
 | `minerva-design/web-components/{react,vue,svelte,solid}`                       | Framework typings of the custom elements; `minerva-design/custom-elements.json` and `minerva-design/html-custom-data.json` (VS Code) describe them for tools.                                      |
 | `minerva-design/core`, `minerva-design/styling-hooks`                          | Advanced: the framework-agnostic primitives both libraries are built on (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme, i18n) and the styling hooks manifest.     |
 
-The repository is a pnpm monorepo: `packages/core`, `packages/react` and `packages/web-components` hold the sources (private workspace packages), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
+The repository is a pnpm monorepo: `packages/core` (platform-neutral), `packages/dom`, `packages/react` and `packages/web-components` hold the sources (private workspace packages; `packages/{vue,angular,native,taro,weapp,uni}` are the planned native renderers), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
 
 ### Architecture
 
@@ -480,7 +480,7 @@ What the package publishes (`files` in `packages/minerva-design/package.json`; t
 | `dist/web-components/` | ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, framework typings in `types/`, `html-custom-data.json`                            |
 | package root           | `custom-elements.json`, `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                              |
 
-The workspace packages (`@minerva/core`, `@minerva/react`, `@minerva/web-components`, `@minerva/docs`) are private and never published.
+The workspace packages (`@minerva/core`, `@minerva/dom`, `@minerva/react`, `@minerva/web-components`, the planned renderers `@minerva/{vue,angular,native,taro,weapp,uni}` and `@minerva/docs`) are private and never published.
 
 ## 🤝 Contributing
 

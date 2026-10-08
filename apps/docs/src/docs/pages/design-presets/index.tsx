@@ -82,7 +82,7 @@ const AXES = [
   {
     axis: "preset",
     attribute: "-",
-    values: '"minerva" | "editorial" | "compact"',
+    values: '"minerva" | "editorial" | "compact" | "touch"',
   },
   {
     axis: "density",

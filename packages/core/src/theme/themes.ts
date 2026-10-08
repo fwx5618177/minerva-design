@@ -1,54 +1,39 @@
 import type { ComponentTheme, ThemeName } from "./types";
+import { baseTokens, semanticTokens } from "../tokens/default-theme";
+import { mergeBlocks, toCss, type TokenValue } from "../tokens/expr";
+
+/** CSS text of some tokens of a block. */
+/*#__NO_SIDE_EFFECTS__*/
+function pickCss<K extends string>(
+  block: Record<K, TokenValue>,
+  keys: readonly K[],
+): Record<K, string> {
+  const out = {} as Record<K, string>;
+  for (const key of keys) out[key] = toCss(block[key]);
+  return out;
+}
 
 /**
- * Semantic token defaults, expressed in terms of the base tokens. These are the
- * same values declared on `:root` in `tokens/default-theme.scss`; the light
- * theme uses them as-is so they keep following the base colors.
+ * Semantic token defaults, expressed in terms of the base tokens: the same
+ * formulas as the `:root` block of `tokens.css` (../tokens/default-theme.ts).
+ * The light theme uses them as-is so they keep following the base colors.
  */
-const derivedSemantic = {
-  "surface-color": "var(--background-color)",
-  "surface-muted-color":
-    "color-mix(in srgb, var(--foreground-color) 6%, var(--background-color))",
-  "surface-elevated-color": "var(--background-color)",
-  "overlay-color": "color-mix(in srgb, #000000 45%, transparent)",
-  "border-strong-color":
-    "color-mix(in srgb, var(--foreground-color) 35%, var(--background-color))",
-  "text-color": "var(--foreground-color)",
-  "text-secondary-color":
-    "color-mix(in srgb, var(--foreground-color) 75%, var(--background-color))",
-  "text-disabled-color":
-    "color-mix(in srgb, var(--foreground-color) 45%, var(--background-color))",
-  "text-inverse-color": "#ffffff",
-  "focus-ring-color":
-    "color-mix(in srgb, var(--primary-color) 45%, transparent)",
-} as const satisfies Partial<ComponentTheme>;
+const derivedSemantic = /* @__PURE__ */ pickCss(semanticTokens, [
+  "surface-color",
+  "surface-muted-color",
+  "surface-elevated-color",
+  "overlay-color",
+  "border-strong-color",
+  "text-color",
+  "text-secondary-color",
+  "text-disabled-color",
+  "text-inverse-color",
+  "focus-ring-color",
+] as const);
 
-export const light: ComponentTheme = {
-  "primary-color": "#2563eb",
-  "secondary-color": "#475569",
-  "success-color": "#15803d",
-  "danger-color": "#dc2626",
-  "warning-color": "#b45309",
-  "info-color": "#0e7490",
-  "light-color": "#f7f7f7",
-  "dark-color": "#4a4a4a",
-  "background-color": "#ffffff",
-  "foreground-color": "#1f2937",
-  "border-color": "#d9dde3",
-  "text-gray": "#6b7280",
-  "primary-gradient-start": "#6a11cb",
-  "primary-gradient-end": "#2575fc",
-  "secondary-gradient-start": "#42e695",
-  "secondary-gradient-end": "#3bb2b8",
-  "highlight-color": "#ffeb3b",
-  "shadow-color": "rgba(15, 23, 42, 0.16)",
-  "muted-color": "#64748b",
-  "link-color": "#1d4ed8",
-  "link-hover-color": "#1e40af",
-  "link-active-color": "#1e3a8a",
-  "link-visited-color": "#6d28d9",
-  ...derivedSemantic,
-};
+export const light: ComponentTheme = /* @__PURE__ */ mergeBlocks<
+  Partial<ComponentTheme>
+>(baseTokens, derivedSemantic) as ComponentTheme;
 
 export const dark: ComponentTheme = {
   "primary-color": "#818cf8",

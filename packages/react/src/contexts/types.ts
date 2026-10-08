@@ -148,7 +148,9 @@ export interface ConfigContextProviderProps {
    * Design preset: a named combination of the design axes below and a default
    * palette. "minerva" (default look), "editorial" (restrained,
    * reading-oriented: editorial palette, comfortable density, small radius,
-   * subtle shadows, large type) or "compact" (dense, data-heavy screens).
+   * subtle shadows, large type), "compact" (dense, data-heavy screens) or
+   * "touch" (consumer mobile apps: comfortable density, 44px touch targets,
+   * large radius).
    * Explicit axes and `palette` win over the preset. A nested provider
    * inherits its parent's design unless set; a nested preset resets every
    * axis it does not set.

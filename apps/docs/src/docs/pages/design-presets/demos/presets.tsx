@@ -3,7 +3,7 @@ import { Button, ConfigProvider, HStack, VStack } from "minerva-design";
 import type { DesignPreset } from "minerva-design";
 import { Showcase } from "../Showcase";
 
-const PRESETS: DesignPreset[] = ["minerva", "editorial", "compact"];
+const PRESETS: DesignPreset[] = ["minerva", "editorial", "compact", "touch"];
 
 // A nested ConfigProvider scopes the design to its subtree; at the root of
 // an app the same props switch the whole document (<html data-*>).

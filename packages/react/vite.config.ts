@@ -233,7 +233,7 @@ export default defineConfig({
       {
         find: /^@minerva\/core\/tokens\.css$/,
         replacement: fileURLToPath(
-          new URL("../core/src/theme/tokens.scss", import.meta.url),
+          new URL("../core/src/theme/tokens.css", import.meta.url),
         ),
       },
       {

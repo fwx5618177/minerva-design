@@ -33,6 +33,13 @@ This workspace package is **private**: it is published inside
 entry graphs. Inside the workspace the `exports` of this package point at the
 TypeScript sources (tests and type-checking need no build).
 
+- Design tokens: `src/tokens` (data + generators) is the single source of
+  truth. The build emits `tokens.css` and the `tokens.mini*.css` files from
+  it; `src/theme/tokens.css` (the unlayered stylesheet behind
+  `@minerva/core/tokens.css`, bundled by `@minerva/react`) is committed and
+  regenerated with `pnpm --filter @minerva/core tokens:generate` (a test
+  fails when it drifts). `src/tokens/__fixtures__/tokens.golden.css` is the
+  pre-TypeScript Sass output plus the documented `touch` delta.
 - `pnpm hooks:lock` (root) regenerates `styling-hooks.lock.json`: adding a
   hook is a minor change, removing or renaming one is a major change.
 - Public API and usage: see the `Core (advanced)` section of the

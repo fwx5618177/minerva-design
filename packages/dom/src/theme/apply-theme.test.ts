@@ -32,6 +32,15 @@ afterEach(() => {
   document.documentElement.removeAttribute("style");
 });
 
+/** The `:root, [data-minerva-theme-scope]` block of @minerva/core's tokens.css */
+const defaultThemeBlock = () =>
+  /^:root,\s*\[data-minerva-theme-scope\] \{([^}]*)\}/m.exec(
+    readFileSync(
+      join(import.meta.dirname, "../../../core/src/theme/tokens.css"),
+      "utf8",
+    ),
+  )![1];
+
 describe("themes map", () => {
   it("maps every theme name to a theme object", () => {
     expect(themes.light).toBe(light);
@@ -42,14 +51,8 @@ describe("themes map", () => {
     );
   });
 
-  it("keeps the default CSS (default-theme.scss) in sync with the light theme", () => {
-    const defaultThemeScss = readFileSync(
-      join(
-        import.meta.dirname,
-        "../../../core/src/theme/tokens/default-theme.scss",
-      ),
-      "utf8",
-    );
+  it("keeps the default CSS (tokens.css :root block) in sync with the light theme", () => {
+    const defaultThemeScss = defaultThemeBlock();
     const normalize = (v: string) => v.replace(/\s+/g, " ").trim();
     const declared = Object.fromEntries(
       [...defaultThemeScss.matchAll(/--([\w-]+):\s*([^;]+);/g)].map(
@@ -74,13 +77,7 @@ describe("themes map", () => {
   });
 
   it("declares a :root default for every semantic token used by the themes", () => {
-    const defaultThemeScss = readFileSync(
-      join(
-        import.meta.dirname,
-        "../../../core/src/theme/tokens/default-theme.scss",
-      ),
-      "utf8",
-    );
+    const defaultThemeScss = defaultThemeBlock();
     for (const role of [
       "primary",
       "secondary",

@@ -20,10 +20,7 @@ import {
 } from "./design";
 import { isPalette } from "./mode";
 
-const scss = readFileSync(
-  join(import.meta.dirname, "tokens", "design.scss"),
-  "utf8",
-);
+const css = readFileSync(join(import.meta.dirname, "tokens.css"), "utf8");
 
 describe("design axes", () => {
   it("resolves the default (minerva) design", () => {
@@ -87,6 +84,10 @@ describe("design axes", () => {
       "data-shadow": "subtle",
       "data-font-scale": "large",
     });
+    expect(designAttributes({ preset: "touch" })).toEqual({
+      "data-density": "comfortable",
+      "data-radius": "large",
+    });
     expect(designAttributes({}, { all: true })).toEqual({
       "data-density": "standard",
       "data-radius": "medium",
@@ -95,7 +96,7 @@ describe("design axes", () => {
     });
   });
 
-  it("tokens/design.scss has a block for every non-standard value", () => {
+  it("tokens.css has a block for every non-standard value", () => {
     const values: Record<keyof typeof DESIGN_ATTRIBUTES, readonly string[]> = {
       density: DENSITIES,
       radius: RADIUS_SCALES,
@@ -106,8 +107,8 @@ describe("design axes", () => {
       const attribute =
         DESIGN_ATTRIBUTES[axis as keyof typeof DESIGN_ATTRIBUTES];
       for (const value of list) {
-        expect(scss, `${attribute}=${value}`).toContain(
-          `[${attribute}="${value}"][${attribute}]`,
+        expect(css, `${attribute}=${value}`).toContain(
+          `[${attribute}=${value}][${attribute}]`,
         );
       }
     }

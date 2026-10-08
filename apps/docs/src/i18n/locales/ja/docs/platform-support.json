@@ -1,0 +1,72 @@
+{
+  "title": "プラットフォーム対応",
+  "description": "Minerva の各コンポーネントがどのプラットフォームで使えるか：現在は React と Web Components、ネイティブの Vue、Angular、React Native、Taro、WeChat ミニプログラム、uni-app レンダラーを計画中です。",
+  "platformsTitle": "プラットフォーム",
+  "platformsText": "各コンポーネントは、プラットフォームに依存しないコントラクト（プロパティ、イベント、スロット）で一度だけ定義されます。各レンダラーは独自のコンポーネントでコントラクトを実装し、共通のコントラクトテストが同じ振る舞いであることを確認します。",
+  "platform": "プラットフォーム",
+  "components": "コンポーネント",
+  "platforms": {
+    "react": {
+      "name": "React",
+      "text": "DOM 向けの React 19 コンポーネント（minerva-design）。"
+    },
+    "wc": {
+      "name": "Web Components",
+      "text": "任意のフレームワーク（またはフレームワークなし）で使える Lit カスタム要素（minerva-design/web-components）。ネイティブレンダラーが提供されるまで、Vue と Angular はこれを使用します。"
+    },
+    "vue": {
+      "name": "Vue",
+      "text": "ネイティブの Vue 3 コンポーネント。"
+    },
+    "angular": {
+      "name": "Angular",
+      "text": "ネイティブの Angular コンポーネント。"
+    },
+    "native": {
+      "name": "React Native",
+      "text": "iOS と Android 向けの React Native コンポーネント（Expo 対応）。"
+    },
+    "taro": {
+      "name": "Taro",
+      "text": "ミニプログラムと H5 向けの Taro コンポーネント。"
+    },
+    "weapp": {
+      "name": "WeChat",
+      "text": "ネイティブの WeChat ミニプログラムコンポーネント。"
+    },
+    "uni": {
+      "name": "uni-app",
+      "text": "ミニプログラム、アプリ、H5 向けの uni-app コンポーネント。"
+    }
+  },
+  "status": {
+    "stable": "安定版",
+    "beta": "ベータ",
+    "planned": "予定",
+    "na": "対象外"
+  },
+  "legend": {
+    "stable": "提供済みで、コントラクトテストでカバーされています。",
+    "beta": "提供済みですが、API が変わる可能性があります。",
+    "planned": "ロードマップにあり、まだ利用できません。",
+    "na": "設計上このプラットフォームでは独立したコンポーネントではなく、別の方法で提供されます（詳細はバッジにカーソルを合わせてください）。"
+  },
+  "notApplicable": {
+    "react": "React ではデータオブジェクトです：親コンポーネントの items / entries プロパティの項目。",
+    "wc": "React 専用の構成パーツまたはプロバイダーです：カスタム要素は属性または親要素で同じ機能を提供します。"
+  },
+  "matrixTitle": "対応表",
+  "matrixText": "すべてのコンポーネントとカスタム要素をプラットフォーム別に示します。プロダクトの種類で絞り込めます：業務アプリケーション（toB）またはコンシューマー向けアプリ（toC）。",
+  "track": {
+    "label": "プロダクトの種類",
+    "all": "すべて",
+    "toB": "toB",
+    "toC": "toC"
+  },
+  "count": "表示中のコンポーネント：{{count}}",
+  "component": "コンポーネント",
+  "tracks": "種類",
+  "contractsTitle": "コンポーネントコントラクト",
+  "contractsText": "この対応表はコンポーネントコントラクトから生成されます。コントラクトは React のプロパティ型と Custom Elements Manifest から抽出したメタデータです（プロパティの種類・列挙値・デフォルト値、イベントとその detail フィールド、スロット、プロダクトの種類、各プラットフォームの対応状況）。プロパティ、属性、イベントが変更されたのに再生成されていない場合や、React とカスタム要素で列挙値やデフォルト値が一致しない場合はテストが失敗します。",
+  "testsText": "同じコントラクトテスト（クリック、制御・非制御の状態、選択、ダイアログ、トースト、翻訳、デザイントークン）が、プラットフォームごとのドライバーを通じてすべてのレンダラーで実行されます。新しいレンダラーは、そのドライバーがテストに合格すると安定版になります。"
+}

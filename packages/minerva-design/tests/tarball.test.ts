@@ -20,6 +20,39 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+/**
+ * `catalog:<name>` specs of the workspace (pnpm-workspace.yaml `catalogs`)
+ * replaced by their version ranges: the consumer project is not part of the
+ * workspace.
+ */
+function resolveCatalogs(specs: Record<string, string>) {
+  const yaml = readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
+      "../../../pnpm-workspace.yaml",
+    ),
+    "utf8",
+  );
+  const versionIn = (catalog: string, name: string) => {
+    const block = yaml.split(/^ {2}(\S+):\n/m);
+    const index = block.indexOf(catalog);
+    if (index === -1) throw new Error(`Unknown catalog ${catalog}`);
+    const line = block[index + 1]
+      .split("\n")
+      .find((l) => l.trim().replace(/"/g, "").startsWith(`${name}:`));
+    if (!line) throw new Error(`No ${name} in catalog ${catalog}`);
+    return line.split(": ")[1].trim();
+  };
+  return Object.fromEntries(
+    Object.entries(specs).map(([name, spec]) => [
+      name,
+      spec.startsWith("catalog:")
+        ? versionIn(spec.slice("catalog:".length) || "default", name)
+        : spec,
+    ]),
+  );
+}
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const workspace = JSON.parse(
@@ -56,7 +89,9 @@ beforeAll(() => {
   );
   app = join(dir, "app");
   cpSync(join(root, "tests/fixtures/consumer"), app, { recursive: true });
-  const dev = workspace.devDependencies as Record<string, string>;
+  const dev = resolveCatalogs(
+    workspace.devDependencies as Record<string, string>,
+  );
   writeFileSync(
     join(app, "package.json"),
     `${JSON.stringify(

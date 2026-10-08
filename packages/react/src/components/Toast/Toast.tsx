@@ -20,7 +20,7 @@ import {
 import useI18n from "../../hooks/useI18n";
 import { ProgressIndicator } from "../ProgressIndicator";
 import { useIsClient } from "../../internal/useIsClient";
-import { formatHotkey, matchesHotkey } from "@minerva/core";
+import { formatHotkey, getToastOverflow, matchesHotkey } from "@minerva/core";
 import { focusElement, getAdjacentTabbable, getTabbables } from "@minerva/dom";
 import {
   createToast,
@@ -450,18 +450,12 @@ const ToastProvider = ({
 
   // Over `max`: the oldest open toasts close (and animate out), so their
   // onClose runs as with any other dismissal.
-  const open = unique.filter((item) => item.state === "open");
-  const overflowCount = Math.max(0, open.length - max);
-  const overflowKey = open
-    .slice(0, overflowCount)
+  const overflowKey = getToastOverflow(unique, max)
     .map((item) => String(item.id))
     .join("\u0000");
   useEffect(() => {
     if (!isOwner || !overflowKey) return;
-    const current = toastStore
-      .getSnapshot()
-      .filter((item) => item.state === "open");
-    for (const item of current.slice(0, Math.max(0, current.length - max))) {
+    for (const item of getToastOverflow(toastStore.getSnapshot(), max)) {
       toastStore.dismiss(item.id);
     }
   }, [isOwner, overflowKey, max]);

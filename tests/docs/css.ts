@@ -1,6 +1,7 @@
 // Compiled CSS of the libraries, for the stylesheet rule checks
 // (css-rules.test.ts, focus-rules.test.ts). Nothing needs a prior build:
-// every SCSS source is compiled with `sass` at test time, and the inline
+// every SCSS source is compiled with `sass` at test time, the design tokens
+// are the committed generated stylesheet, and the inline
 // Lit `css` templates of the web components are read from their sources.
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
@@ -48,14 +49,20 @@ export function compileScss(file: string): string {
 const isScssEntry = (file: string) =>
   file.endsWith(".scss") && !/\/_[^/]+\.scss$/.test(file);
 
+/** The design tokens (generated from @minerva/core's token data) */
+export const TOKENS_CSS = "packages/core/src/theme/tokens.css";
+
 /** Every component stylesheet (React + web components) and the design tokens */
 export function libraryStylesheets(): Stylesheet[] {
   const scss = [
     ...walk("packages/react/src", isScssEntry),
     ...walk("packages/web-components/src", isScssEntry),
-    "packages/core/src/theme/tokens.scss",
   ].map((file) => ({ file, css: compileScss(file) }));
-  return [...scss, ...litStylesheets()];
+  const tokens = {
+    file: TOKENS_CSS,
+    css: readFileSync(at(TOKENS_CSS), "utf8"),
+  };
+  return [...scss, tokens, ...litStylesheets()];
 }
 
 /** The inline `css\`\`` templates of the web components (one entry per template) */

@@ -1,16 +1,20 @@
 import { css, html, nothing } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
 import styles from "@react-styles/components/Rating/rating.module.scss?inline";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import {
-  ratingDisplayStars,
-  ratingStarFill,
-  roundRating,
+  createRatingMachine,
+  getRatingKeyValue,
+  getRatingStarFills,
+  RATING_STAR_COUNT,
+  type RatingMachineEvent,
+  type RatingMachineProps,
   type RatingStarFill,
 } from "@minerva/core";
+import { MachineController } from "../../controllers/machine";
 import { logicalArrowKey } from "@minerva/dom";
 import {
   FormAssociatedElement,
@@ -41,9 +45,7 @@ const SIZE_PX: Record<RatingSize, number> = {
   medium: 16,
   large: 20,
 };
-const STARS = [0, 1, 2, 3, 4];
-/** PageUp / PageDown step, in stars (arrows move by half a star). */
-const PAGE_STARS = Math.max(1, Math.round(STARS.length / 5));
+const STARS = Array.from({ length: RATING_STAR_COUNT }, (_, i) => i);
 
 /** Shared star styles: the icons are 1em outlines, filled through CSS. */
 const starStyles = css`
@@ -141,15 +143,33 @@ export class MinervaRating extends FormAssociatedElement {
   @property({ type: Boolean, reflect: true, attribute: "readonly" })
   readOnly = false;
 
-  @state()
-  private hoverIndex: number | null = null;
-
   @query(".rating")
   private root!: HTMLElement;
 
   private readonly locale = new LocaleController(this);
   private readonly aria = new AriaController(this, () => this.labels);
   private dirty = false;
+  // Hover preview, picks and keys; `value` stays the source of truth (a
+  // controlled value of the machine, changed through `commit`).
+  private readonly rating = new MachineController(
+    this,
+    createRatingMachine(this.ratingProps()),
+  );
+
+  private ratingProps(): RatingMachineProps {
+    return {
+      value: this.value,
+      max: this.max,
+      readOnly: !this.isInteractive,
+      onValueChange: (next) => this.commit(next),
+    };
+  }
+
+  private send(event: RatingMachineEvent) {
+    // properties set since the last update apply right away
+    this.rating.sync(this.ratingProps());
+    this.rating.send(event);
+  }
 
   private get isInteractive(): boolean {
     return this.interactive && !this.readOnly && !this.isDisabled;
@@ -210,6 +230,7 @@ export class MinervaRating extends FormAssociatedElement {
         `value (${this.value}) is outside 0..max (${this.max}).`,
       );
     }
+    this.rating.sync(this.ratingProps());
   }
 
   private commit(next: number) {
@@ -225,44 +246,16 @@ export class MinervaRating extends FormAssociatedElement {
     // Left half of a star -> half star, right half -> full star.
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const leftHalf = event.clientX - rect.left < rect.width / 2;
-    const stars = index + (leftHalf ? 0.5 : 1);
-    this.commit(roundRating((stars / 5) * this.max));
+    this.send({ type: "PICK", index, half: leftHalf });
   }
 
   private handleKeyDown(event: KeyboardEvent) {
     if (event.defaultPrevented || !this.isInteractive) return;
-    const { max, value } = this;
-    const step = max / (STARS.length * 2);
-    const pageStep = (max / STARS.length) * PAGE_STARS;
     // Stars follow the reading direction: in RTL ArrowLeft increases.
     const key = logicalArrowKey(event.key, this);
-    let next: number;
-    switch (key) {
-      case "ArrowRight":
-      case "ArrowUp":
-        next = Math.min(max, roundRating(value + step));
-        break;
-      case "ArrowLeft":
-      case "ArrowDown":
-        next = Math.max(0, roundRating(value - step));
-        break;
-      case "PageUp":
-        next = Math.min(max, roundRating(value + pageStep));
-        break;
-      case "PageDown":
-        next = Math.max(0, roundRating(value - pageStep));
-        break;
-      case "Home":
-        next = 0;
-        break;
-      case "End":
-        next = max;
-        break;
-      default:
-        return;
-    }
+    if (getRatingKeyValue(key, this.value, this.max) === null) return;
     event.preventDefault();
-    this.commit(next);
+    this.send({ type: "KEY", key });
   }
 
   protected override hookStates() {
@@ -293,12 +286,14 @@ export class MinervaRating extends FormAssociatedElement {
   protected override render() {
     const interactive = this.isInteractive;
     const { value, max } = this;
-    // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half star.
-    const displayed =
-      interactive && this.hoverIndex !== null
-        ? this.hoverIndex
-        : ratingDisplayStars(value, max);
-    const fillOf = (i: number) => ratingStarFill(i, displayed);
+    // Normalize the score to 5 stars; fractions in 0.25..0.75 render a half
+    // star (or the hover preview).
+    const state = this.rating.machine.project(
+      this.rating.state,
+      this.ratingProps(),
+    );
+    const fills = getRatingStarFills(state, max);
+    const fillOf = (i: number) => fills[i];
     const px = SIZE_PX[this.size] ?? SIZE_PX.medium;
     const label = this.aria.label ?? `${value.toFixed(1)} / ${max}`;
 
@@ -310,7 +305,7 @@ export class MinervaRating extends FormAssociatedElement {
               tabindex="-1"
               class="starButton"
               @click=${(event: MouseEvent) => this.handleStarClick(event, i)}
-              @mouseenter=${() => (this.hoverIndex = i + 1)}
+              @mouseenter=${() => this.send({ type: "HOVER", index: i })}
             >
               ${this.renderStar(fillOf(i), px)}
             </button>`
@@ -360,7 +355,7 @@ export class MinervaRating extends FormAssociatedElement {
       aria-valuemax=${max}
       aria-required=${this.required ? "true" : nothing}
       @keydown=${this.handleKeyDown}
-      @mouseleave=${() => (this.hoverIndex = null)}
+      @mouseleave=${() => this.send({ type: "HOVER_END" })}
       >${stars}${valueNode}</span
     >`;
   }

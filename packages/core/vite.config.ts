@@ -1,11 +1,10 @@
 import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 import { fileURLToPath } from "node:url";
-import { compile } from "sass";
-import type { Plugin } from "vite";
+import { runnerImport, type Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
 import { writeDualDeclarations } from "../../tools/dual-declarations.mjs";
-import { wrapInLayer } from "../../tools/css-layer.mjs";
+import { CSS_LAYER } from "../../tools/css-layer.mjs";
 import { CORE_DIST } from "../../tools/paths.mjs";
 
 // Platform-neutral: no runtime dependency (the DOM primitives and
@@ -16,31 +15,42 @@ const externalDeps = Object.keys(
 const isExternal = (id: string) =>
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
-const TOKENS_ENTRY = fileURLToPath(
-  new URL("./src/theme/tokens.scss", import.meta.url),
-);
-
 /**
- * Design tokens (`minerva-design/tokens.css`): compiled from the Sass sources
- * in src/theme/tokens and emitted next to the JS bundle, inside the
- * `minerva` cascade layer (unlayered app CSS wins without `!important`). Kept out of the JS
- * graph so `minerva-design/core` stays side-effect free and importable in Node.
+ * Design tokens, generated from the token data in src/tokens (the single
+ * source of truth) and emitted next to the JS bundle:
+ *
+ * - `tokens.css` (`minerva-design/tokens.css`): inside the `minerva` cascade
+ *   layer (unlayered app CSS wins without `!important`). The unlayered copy
+ *   bundled by @minerva/react is src/theme/tokens.css (`@minerva/core/tokens.css`,
+ *   kept equal to the generator by src/tokens/generated.test.ts).
+ * - `tokens.mini*.css`: class-scoped, pre-resolved tokens for mini-programs
+ *   (internal: consumed by the planned Taro / WeChat / uni-app renderers).
+ *
+ * Kept out of the JS graph so `minerva-design/core` stays side-effect free and
+ * importable in Node. The generators are loaded with Vite's module runner
+ * (TypeScript on any supported Node version), afresh on every build (the
+ * token modules are part of the bundle graph, so `watch` rebuilds on change).
  */
 const designTokens = (): Plugin => ({
   name: "minerva-design-tokens",
-  buildStart() {
-    this.addWatchFile(TOKENS_ENTRY);
-  },
-  generateBundle(options) {
-    // Both lib formats (es, cjs) write to dist/: emit the file once.
+  async generateBundle(options) {
+    // Both lib formats (es, cjs) write to dist/: emit the files once.
     if (options.format !== "es") return;
-    const { css, loadedUrls } = compile(TOKENS_ENTRY, { style: "expanded" });
-    for (const url of loadedUrls) this.addWatchFile(fileURLToPath(url));
+    const { module } = await runnerImport<typeof import("./src/tokens")>(
+      fileURLToPath(new URL("./src/tokens/index.ts", import.meta.url)),
+      { configFile: false, logLevel: "error" },
+    );
+    const { generateTokensCss, generateMiniTokensFiles } = module;
     this.emitFile({
       type: "asset",
       fileName: "tokens.css",
-      source: `${wrapInLayer(css)}\n`,
+      source: generateTokensCss({ layer: CSS_LAYER }),
     });
+    for (const [fileName, source] of Object.entries(
+      generateMiniTokensFiles(),
+    )) {
+      this.emitFile({ type: "asset", fileName, source });
+    }
   },
 });
 
@@ -52,8 +62,13 @@ export default defineConfig({
       entryRoot: "src",
       // The message bundles are typed as `Messages` by i18n/index.ts; their
       // per-locale declarations (incl. `*.json.d.ts`) are never referenced.
+      // Same for the contracts data (typed by contracts/index.ts).
       beforeWriteFile: (filePath) =>
-        /[\\/]i18n[\\/]locales[\\/]/.test(filePath) ? false : undefined,
+        /[\\/]i18n[\\/]locales[\\/]|[\\/]contracts[\\/][^\\/]+\.json\.d\.ts$/.test(
+          filePath,
+        )
+          ? false
+          : undefined,
       afterBuild: writeDualDeclarations,
     }),
   ],
@@ -70,6 +85,10 @@ export default defineConfig({
         // `minerva-design/styling-hooks`: the styling hooks manifest (data)
         "styling-hooks": fileURLToPath(
           new URL("./src/styling-hooks/index.ts", import.meta.url),
+        ),
+        // `@minerva/core/contracts` (internal): component contracts (data)
+        contracts: fileURLToPath(
+          new URL("./src/contracts/index.ts", import.meta.url),
         ),
       },
       formats: ["es", "cjs"],

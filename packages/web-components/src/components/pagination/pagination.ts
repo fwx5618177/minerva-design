@@ -10,10 +10,16 @@ import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import styles from "@react-styles/components/Pagination/pagination.module.scss?inline";
 import {
-  getCompactPageItems,
-  getPageRange,
-  PAGINATION_JUMP_SIZE,
+  canGoToPage,
+  createPaginationMachine,
+  getPaginationItems,
+  getPaginationKeyTarget,
+  getPaginationVisibleRange,
+  getTotalPages,
+  type PaginationMachineEvent,
+  type PaginationMachineProps,
 } from "@minerva/core";
+import { MachineController } from "../../controllers/machine";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
@@ -220,12 +226,34 @@ export class MinervaPagination extends MinervaElement {
   private restoreFocus: { mode: "active" | "if-lost"; page: number } | null =
     null;
 
+  // Page / page size changes go through core's pagination machine; the
+  // `current` / `page-size` properties stay the source of truth (controlled
+  // values, applied by `request` unless the event is canceled).
+  private readonly pagination = new MachineController(
+    this,
+    createPaginationMachine(this.paginationProps()),
+    // the template follows `current` / `page-size` (properties)
+    () => false,
+  );
+
+  private paginationProps(): PaginationMachineProps {
+    return {
+      page: this.current,
+      pageSize: this.pageSize,
+      total: this.total,
+      disabled: this.disabled,
+      onChange: (page, pageSize) => this.request(page, pageSize),
+    };
+  }
+
+  private send(event: PaginationMachineEvent) {
+    this.pagination.sync(this.paginationProps());
+    this.pagination.send(event);
+  }
+
   /** Number of pages (at least 1). */
   get totalPages(): number {
-    return Math.max(
-      1,
-      this.pageSize > 0 ? Math.ceil(this.total / this.pageSize) : 0,
-    );
+    return getTotalPages(this.total, this.pageSize);
   }
 
   override disconnectedCallback(): void {
@@ -245,17 +273,11 @@ export class MinervaPagination extends MinervaElement {
   }
 
   private changePage(target: number, focus: "active" | "if-lost" = "if-lost") {
-    const page = this.current;
-    if (
-      this.disabled ||
-      target === page ||
-      target < 1 ||
-      target > this.totalPages
-    ) {
+    if (!canGoToPage(this.current, target, this.totalPages, this.disabled)) {
       return;
     }
     this.restoreFocus = { mode: focus, page: target };
-    this.request(target, this.pageSize);
+    this.send({ type: "GOTO", page: target });
   }
 
   protected override willUpdate(changed: PropertyValues<this>): void {
@@ -286,13 +308,7 @@ export class MinervaPagination extends MinervaElement {
   }
 
   private handleItemClick(target: number, itemKey: string, event: MouseEvent) {
-    const page = this.current;
-    if (
-      this.disabled ||
-      target === page ||
-      target < 1 ||
-      target > this.totalPages
-    ) {
+    if (!canGoToPage(this.current, target, this.totalPages, this.disabled)) {
       return;
     }
     // Ripple only for pointer clicks (keyboard-triggered clicks have detail 0)
@@ -322,17 +338,11 @@ export class MinervaPagination extends MinervaElement {
     ) {
       key = key === "ArrowLeft" ? "ArrowRight" : "ArrowLeft";
     }
-    const page = this.current;
-    const destination =
-      key === "ArrowLeft"
-        ? page - 1
-        : key === "ArrowRight"
-          ? page + 1
-          : key === "Home"
-            ? 1
-            : key === "End"
-              ? this.totalPages
-              : null;
+    const destination = getPaginationKeyTarget(
+      key,
+      this.current,
+      this.totalPages,
+    );
     if (destination === null) return;
     event.preventDefault();
     this.changePage(destination, "active");
@@ -352,7 +362,9 @@ export class MinervaPagination extends MinervaElement {
   private handleSizeChange = (event: Event) => {
     const select = event.target as HTMLSelectElement;
     const newSize = parseInt(select.value, 10);
-    if (!this.request(1, newSize)) select.value = String(this.pageSize);
+    this.send({ type: "SET_PAGE_SIZE", pageSize: newSize });
+    // canceled: the select shows the current size again
+    if (this.pageSize !== newSize) select.value = String(this.pageSize);
   };
 
   private commitSimpleDraft = () => {
@@ -461,62 +473,13 @@ export class MinervaPagination extends MinervaElement {
 
   /** Items of the page list (stable keys: the focused button survives). */
   private items(): Item[] {
-    const page = this.current;
-    const totalPages = this.totalPages;
-    const edge = (type: "prev" | "next"): Item[] =>
-      this.hideEdges
-        ? []
-        : [{ key: type, type, target: type === "prev" ? page - 1 : page + 1 }];
-    const pageItem = (p: number): Item => ({
-      key: `page-${p}`,
-      type: "page",
-      target: p,
-    });
-
-    if (this.siblingCount !== undefined || this.boundaryCount !== undefined) {
-      const compact = getCompactPageItems(
-        totalPages,
-        page,
-        Math.max(0, this.siblingCount ?? 1),
-        Math.max(1, this.boundaryCount ?? 1),
-      );
-      return [
-        ...edge("prev"),
-        ...compact.map((item) =>
-          typeof item === "number"
-            ? pageItem(item)
-            : { key: item, type: "ellipsis" as const, target: 0 },
-        ),
-        ...edge("next"),
-      ];
-    }
-
-    const range = getPageRange(page, totalPages);
-    const items: Item[] = [...edge("prev")];
-    if (range.length > 0 && range[0] > 1) {
-      items.push(pageItem(1));
-      if (range[0] > 2) {
-        items.push({
-          key: "jump-prev",
-          type: "jump-prev",
-          target: Math.max(1, page - PAGINATION_JUMP_SIZE),
-        });
-      }
-    }
-    range.forEach((p) => items.push(pageItem(p)));
-    const last = range[range.length - 1];
-    if (range.length > 0 && last < totalPages) {
-      if (last < totalPages - 1) {
-        items.push({
-          key: "jump-next",
-          type: "jump-next",
-          target: Math.min(totalPages, page + PAGINATION_JUMP_SIZE),
-        });
-      }
-      items.push(pageItem(totalPages));
-    }
-    items.push(...edge("next"));
-    return items;
+    return getPaginationItems({
+      page: this.current,
+      totalPages: this.totalPages,
+      siblingCount: this.siblingCount,
+      boundaryCount: this.boundaryCount,
+      hideEdges: this.hideEdges,
+    }).map(({ key, kind, page }) => ({ key, type: kind, target: page }));
   }
 
   private renderPageList() {
@@ -574,14 +537,11 @@ export class MinervaPagination extends MinervaElement {
     const labels = this.labels;
     const total = this.total;
     const pageSize = this.pageSize;
-    const shownPage = Math.min(Math.max(1, this.current), this.totalPages);
-    const visibleRange: [number, number] =
-      total > 0
-        ? [
-            (shownPage - 1) * pageSize + 1,
-            Math.min(shownPage * pageSize, total),
-          ]
-        : [0, 0];
+    const visibleRange = getPaginationVisibleRange(
+      this.current,
+      pageSize,
+      total,
+    );
     const options = this.pageSizeOptions.includes(pageSize)
       ? this.pageSizeOptions
       : [...this.pageSizeOptions, pageSize].sort((a, b) => a - b);

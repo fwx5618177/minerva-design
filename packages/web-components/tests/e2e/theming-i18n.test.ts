@@ -7,9 +7,9 @@
 // @minerva/core's tokens.css (same file as minerva-design/tokens.css)
 // match the scope element that is the closest composed ancestor of each
 // element, its shadow internals and its top-layer overlays.
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compile } from "sass";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import "../../src/index";
@@ -21,12 +21,13 @@ import type {
 import { closestComposed } from "../../src/internal/dom";
 import { $, settle, wait } from "../utils";
 
-const tokens = compile(
+const tokens = readFileSync(
   join(
     dirname(fileURLToPath(import.meta.url)),
-    "../../../core/src/theme/tokens.scss",
+    "../../../core/src/theme/tokens.css",
   ),
-).css;
+  "utf8",
+);
 
 /** Selectors of the token rules (e.g. `[data-palette="tech"][data-theme="dark"]`) */
 const tokenSelectors = [...tokens.matchAll(/^([^@\s{}][^{}]*)\{/gm)]
@@ -34,7 +35,7 @@ const tokenSelectors = [...tokens.matchAll(/^([^@\s{}][^{}]*)\{/gm)]
   .map((selector) => selector.trim())
   .filter((selector) => selector.startsWith("["));
 
-/** Sass drops the quotes of attribute selectors: compare without them */
+/** The stylesheet omits the quotes of attribute selectors: compare without them */
 const unquote = (selector: string) => selector.replace(/"/g, "");
 
 /** Token rules that apply to `el` through its closest themed scope */

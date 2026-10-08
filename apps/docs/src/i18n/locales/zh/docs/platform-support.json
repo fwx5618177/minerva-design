@@ -1,0 +1,72 @@
+{
+  "title": "平台支持",
+  "description": "Minerva 各组件在各平台上的可用情况：目前支持 React 与 Web Components，原生 Vue、Angular、React Native、Taro、微信小程序和 uni-app 渲染器正在规划中。",
+  "platformsTitle": "平台",
+  "platformsText": "每个组件都只在一份与平台无关的契约中描述一次（属性、事件、插槽）。各渲染器用自己的组件实现这些契约，共享的契约测试确保它们行为一致。",
+  "platform": "平台",
+  "components": "组件",
+  "platforms": {
+    "react": {
+      "name": "React",
+      "text": "面向 DOM 的 React 19 组件（minerva-design）。"
+    },
+    "wc": {
+      "name": "Web Components",
+      "text": "基于 Lit 的自定义元素，可用于任意框架或不使用框架（minerva-design/web-components）。在原生渲染器发布之前，Vue 和 Angular 使用它们。"
+    },
+    "vue": {
+      "name": "Vue",
+      "text": "原生 Vue 3 组件。"
+    },
+    "angular": {
+      "name": "Angular",
+      "text": "原生 Angular 组件。"
+    },
+    "native": {
+      "name": "React Native",
+      "text": "面向 iOS 和 Android 的 React Native 组件（支持 Expo）。"
+    },
+    "taro": {
+      "name": "Taro",
+      "text": "面向小程序和 H5 的 Taro 组件。"
+    },
+    "weapp": {
+      "name": "微信",
+      "text": "原生微信小程序组件。"
+    },
+    "uni": {
+      "name": "uni-app",
+      "text": "面向小程序、App 和 H5 的 uni-app 组件。"
+    }
+  },
+  "status": {
+    "stable": "稳定",
+    "beta": "测试版",
+    "planned": "规划中",
+    "na": "不适用"
+  },
+  "legend": {
+    "stable": "已发布，并由契约测试覆盖。",
+    "beta": "已发布，API 仍可能变化。",
+    "planned": "已列入路线图，暂不可用。",
+    "na": "按设计在该平台上不是独立组件：平台以其他方式提供（将鼠标悬停在标签上查看详情）。"
+  },
+  "notApplicable": {
+    "react": "在 React 中是数据对象：父组件 items / entries 属性中的一项。",
+    "wc": "仅 React 提供的组合部件或 Provider：自定义元素通过属性或父元素实现相同功能。"
+  },
+  "matrixTitle": "支持矩阵",
+  "matrixText": "按平台列出所有组件和自定义元素。可按产品方向筛选：企业后台应用（toB）或面向消费者的应用（toC）。",
+  "track": {
+    "label": "产品方向",
+    "all": "全部",
+    "toB": "toB",
+    "toC": "toC"
+  },
+  "count": "显示的组件数：{{count}}",
+  "component": "组件",
+  "tracks": "方向",
+  "contractsTitle": "组件契约",
+  "contractsText": "该矩阵由组件契约生成：契约是从 React 属性类型和 Custom Elements Manifest 中提取的元数据（属性及其类型、枚举值和默认值，事件及其 detail 字段，插槽，产品方向以及各平台的支持情况）。当属性、特性或事件发生变化而未重新生成契约，或 React 与自定义元素的枚举值或默认值不一致时，测试会失败。",
+  "testsText": "同一套契约测试（点击、受控与非受控状态、选择、对话框、消息提示、翻译、设计令牌）通过各平台的驱动程序在每个渲染器上运行；新的渲染器在其驱动程序通过这些测试后即成为稳定版。"
+}
