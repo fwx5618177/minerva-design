@@ -13,6 +13,11 @@
 //   // @css-var --button-height Height of the button (every size)
 // under the key `css:<ComponentFolder>`.
 //
+// React Native: the exported interfaces / aliases of minerva-design/native
+// (packages/native/src: component `*Props`, theme types) are recorded under
+// `native:<Name>` in a separate file (api.native.generated.json), loaded by
+// the "React Native" tabs only.
+//
 // Web Components: the API of every custom element of
 // minerva-design/web-components (attributes, properties, events, slots, CSS
 // parts, CSS custom properties, methods) is read from its Custom Elements
@@ -34,6 +39,14 @@ export const WC_PREFIX = "wc:";
 export const OUTPUT = join(DOCS_ROOT, "src/docs/api.generated.json");
 /** Web Component APIs: a separate file, loaded only by the "Web Components" tabs */
 export const OUTPUT_WC = join(DOCS_ROOT, "src/docs/api.wc.generated.json");
+/** React Native APIs: loaded only by the "React Native" tabs */
+export const OUTPUT_NATIVE = join(
+  DOCS_ROOT,
+  "src/docs/api.native.generated.json",
+);
+const NATIVE_SRC = join(PACKAGES_DIR, "native/src");
+/** React Native entries are keyed with this prefix (`native:ButtonProps`) */
+export const NATIVE_PREFIX = "native:";
 
 const typeFilesIn = (componentsDir) => {
   const files = [];
@@ -121,9 +134,10 @@ const membersOf = (members, sourceFile) =>
       return prop;
     });
 
-export const generateApi = () => {
+/** Exported interfaces / aliases of TypeScript files */
+const typesOf = (files) => {
   const result = {};
-  for (const { file, prefix } of sourceFiles()) {
+  for (const { file, prefix } of files) {
     const text = readFileSync(file, "utf8");
     const sourceFile = ts.createSourceFile(
       file,
@@ -172,11 +186,39 @@ export const generateApi = () => {
       };
     }
   }
+  return result;
+};
+
+export const generateApi = () => {
+  const result = typesOf(sourceFiles());
   Object.assign(result, generateCssVars());
   return Object.fromEntries(
     Object.entries(result).sort(([a], [b]) => a.localeCompare(b)),
   );
 };
+
+/** Public modules of minerva-design/native (no tests, no internals) */
+const nativeFiles = () => {
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory()
+        ? walk(join(dir, entry.name))
+        : [join(dir, entry.name)],
+    );
+  if (!existsSync(NATIVE_SRC)) return [];
+  return walk(NATIVE_SRC)
+    .filter(
+      (file) =>
+        /\.tsx?$/.test(file) &&
+        !/\.test\.tsx?$/.test(file) &&
+        /[\\/](components|theme)[\\/]/.test(file),
+    )
+    .sort()
+    .map((file) => ({ file, prefix: NATIVE_PREFIX }));
+};
+
+/** The exported types of minerva-design/native (`native:<Name>`) */
+export const generateNativeApi = () => sortKeys(typesOf(nativeFiles()));
 
 /** Prefix of the CSS-variable entries (`css:<ComponentFolder>`) */
 export const CSS_PREFIX = "css:";
@@ -298,6 +340,7 @@ if (isMain) {
   const outputs = [
     [OUTPUT, serialize(generateApi())],
     [OUTPUT_WC, serialize(sortKeys(generateElements()))],
+    [OUTPUT_NATIVE, serialize(generateNativeApi())],
   ];
   for (const [file, next] of outputs) {
     const name = relative(DOCS_ROOT, file);

@@ -57,10 +57,25 @@ export interface ApiCssVar {
 
 const entries = api as Record<string, ApiEntry>;
 
-export const getApiEntry = (name: string): ApiEntry | undefined =>
-  Object.prototype.hasOwnProperty.call(entries, name)
-    ? entries[name]
+// React Native APIs (`native:<Name>`) live in their own file, loaded on demand
+let nativeEntries: Record<string, ApiEntry> | null = null;
+let nativeLoading: Promise<void> | null = null;
+
+/** Loads the React Native APIs (once); `getApiEntry("native:…")` works afterwards */
+export const loadNativeApis = (): Promise<void> =>
+  (nativeLoading ??= import("./api.native.generated.json").then((mod) => {
+    nativeEntries = mod.default as unknown as Record<string, ApiEntry>;
+  }));
+
+/** Prefix of the React Native API entries (`native:ButtonProps`) */
+export const NATIVE_API_PREFIX = "native:";
+
+export const getApiEntry = (name: string): ApiEntry | undefined => {
+  const source = name.startsWith(NATIVE_API_PREFIX) ? nativeEntries : entries;
+  return source && Object.prototype.hasOwnProperty.call(source, name)
+    ? source[name]
     : undefined;
+};
 
 /** i18n-safe key for an interface name (":" is i18next's namespace separator) */
 export const apiKey = (name: string) => name.replace(/:/g, "_");

@@ -6,8 +6,11 @@
 //   their source in the framework's idiom (generated at build time from the
 //   wc/<demo>.html + wc/<demo>.ts sources by ./transform.ts) and the element
 //   API (attributes, properties, events, slots, parts)
+// - renderer "native": the React Native components (minerva-design/native)
+//   rendered live through react-native-web in a phone frame, their RN TSX
+//   source (pages/<id>/native/<demo>.tsx) and the native props tables
 //
-// Adding a framework (React Native, Taro, WeChat mini programs, uni-app...)
+// Adding a framework (Taro, WeChat mini programs, uni-app...)
 // is adding an entry: a new `renderer` kind for a new rendering strategy, or
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
 // Vue and Angular get native renderers later (see the Platform support page);
@@ -15,12 +18,12 @@
 import type { WcMeta } from "../registry";
 
 export type FrameworkId =
-  "react" | "vue" | "angular" | "svelte" | "solid" | "html";
+  "react" | "react-native" | "vue" | "angular" | "svelte" | "solid" | "html";
 
 /** Frameworks rendered from the Web Component demos */
-export type WcFrameworkId = Exclude<FrameworkId, "react">;
+export type WcFrameworkId = Exclude<FrameworkId, "react" | "react-native">;
 
-export type FrameworkRenderer = "react" | "web-components";
+export type FrameworkRenderer = "react" | "native" | "web-components";
 
 export interface SetupSnippet {
   /** i18n key under `doc.fw.setup` describing the step */
@@ -72,6 +75,14 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
     renderer: "react",
     language: "tsx",
     guide: "installation",
+    setup: () => [],
+  },
+  {
+    id: "react-native",
+    label: "React Native",
+    renderer: "native",
+    language: "tsx",
+    guide: "react-native",
     setup: () => [],
   },
   {
@@ -197,8 +208,12 @@ export default {
 
 export const DEFAULT_FRAMEWORK: FrameworkId = "react";
 
-/** Ids of the previous "React | Web Components" switch */
-const LEGACY_IDS: Record<string, FrameworkId> = { wc: "html" };
+/** Ids of the previous "React | Web Components" switch, and aliases */
+const LEGACY_IDS: Record<string, FrameworkId> = {
+  wc: "html",
+  native: "react-native",
+  rn: "react-native",
+};
 
 /** A known framework id (`?framework=` value, stored choice), or undefined */
 export function parseFramework(

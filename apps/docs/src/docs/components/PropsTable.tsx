@@ -23,7 +23,7 @@ const PropsTable: React.FC<PropsTableProps> = ({ page, name }) => {
     return null;
   }
 
-  const displayName = name.replace(/^wc:/, "");
+  const displayName = name.replace(/^(wc|native):/, "");
   const key = apiKey(name);
 
   return (
@@ -59,9 +59,8 @@ const PropsTable: React.FC<PropsTableProps> = ({ page, name }) => {
           </thead>
           <tbody>
             {entry.props.map((prop) => {
-              const alias = getApiEntry(
-                name.startsWith("wc:") ? `wc:${prop.type}` : prop.type,
-              );
+              const prefix = /^(wc|native):/.exec(name)?.[0] ?? "";
+              const alias = getApiEntry(`${prefix}${prop.type}`);
               return (
                 <tr key={prop.name}>
                   <th scope="row">

@@ -1,0 +1,107 @@
+// Phone mockup of the React Native previews (375 x 720 screen).
+.phone {
+  --phone-bezel: #0f172a;
+  --phone-screen: #ffffff;
+  margin: 0 auto;
+  width: min(100%, 399px);
+  padding: 12px;
+  border-radius: 56px;
+  background: var(--phone-bezel);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--phone-bezel) 70%, #64748b),
+    0 24px 48px rgba(15, 23, 42, 0.25);
+
+  &[data-dark] {
+    --phone-bezel: #020617;
+    --phone-screen: #0b1120;
+  }
+}
+
+.screen {
+  position: relative;
+  // fixed / absolute layers of the app stay inside the screen
+  transform: translateZ(0);
+  display: flex;
+  flex-direction: column;
+  height: 720px;
+  max-height: 80vh;
+  overflow: hidden;
+  border-radius: 44px;
+  background: var(--phone-screen);
+}
+
+.statusBar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 28px;
+  font:
+    600 14px/1 system-ui,
+    -apple-system,
+    sans-serif;
+  color: #0f172a;
+  pointer-events: none;
+
+  .phone[data-dark] & {
+    color: #f8fafc;
+  }
+}
+
+.notch {
+  width: 110px;
+  height: 30px;
+  border-radius: 0 0 18px 18px;
+  background: var(--phone-bezel);
+  align-self: flex-start;
+}
+
+.battery {
+  width: 24px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 52px 16px 32px;
+  overscroll-behavior: contain;
+}
+
+.modalHost {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.homeIndicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  z-index: 40;
+  width: 128px;
+  height: 5px;
+  border-radius: 3px;
+  background: #0f172a;
+  opacity: 0.35;
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  .phone[data-dark] & {
+    background: #f8fafc;
+  }
+}

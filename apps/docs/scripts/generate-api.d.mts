@@ -17,3 +17,6 @@ export declare const OUTPUT_WC: string;
 export declare const sortKeys: <T>(
   entries: Record<string, T>,
 ) => Record<string, T>;
+export declare const OUTPUT_NATIVE: string;
+export declare const NATIVE_PREFIX: string;
+export declare const generateNativeApi: () => Record<string, unknown>;

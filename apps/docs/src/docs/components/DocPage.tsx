@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Tab, TabList, TabPanel, Tabs } from "minerva-design";
@@ -25,6 +25,19 @@ import WcApiTables from "./WcApiTables";
 import WcDemo from "./WcDemo";
 import StylingHooks from "./StylingHooks";
 import styles from "./docs.module.scss";
+
+// react-native-web and the native demos load with the React Native tab only
+const NativeSection = lazy(() => import("../native/NativeSection"));
+
+/** The React Native tab (or the whole content of a mobile-only page) */
+const NativeContent: React.FC<{ meta: DocPageMeta }> = ({ meta }) => {
+  const { t } = useTranslation();
+  return (
+    <Suspense fallback={<p className={styles.muted}>{t("doc.loading")}</p>}>
+      <NativeSection meta={meta} />
+    </Suspense>
+  );
+};
 
 /** "Requires the global stylesheet — see Installation", under an import */
 export const StylesheetNote: React.FC = () => {
@@ -192,6 +205,8 @@ const DocPage: React.FC<DocPageProps> = ({
   if (!meta) return null;
 
   const demoIds = meta.demos ?? Object.keys(demos);
+  // a mobile component of minerva-design/native only
+  const nativeOnly = !!meta.native && !meta.exports?.length && !meta.wc;
 
   const reactContent = (
     <>
@@ -261,8 +276,18 @@ const DocPage: React.FC<DocPageProps> = ({
         <p className={styles.eyebrow}>{t(`nav.${meta.category}`)}</p>
         <h1>{title}</h1>
         <p className={styles.lead}>{t(`docs.${id}.description`)}</p>
+        {nativeOnly && (
+          <p className={styles.callout} data-testid="native-only">
+            {t("doc.native.only")}
+          </p>
+        )}
       </header>
-      {meta.wc ? (
+      {nativeOnly ? (
+        <>
+          <NativeContent meta={meta} />
+          {children}
+        </>
+      ) : meta.wc || meta.native ? (
         <FrameworkTabs meta={meta} react={reactContent} />
       ) : (
         reactContent
@@ -272,9 +297,9 @@ const DocPage: React.FC<DocPageProps> = ({
 };
 
 /**
- * The global framework selector of a component page (React, Vue, Angular,
- * Svelte, Solid, HTML): one panel per framework, only the selected one is
- * rendered. The choice is shared by every page and kept in `?framework=`.
+ * The global framework selector of a component page (React, React Native,
+ * Vue, Angular, Svelte, Solid, HTML): one panel per framework, only the
+ * selected one is rendered. The choice is shared by every page and kept in `?framework=`.
  */
 const FrameworkTabs: React.FC<{
   meta: DocPageMeta;
@@ -313,7 +338,9 @@ const FrameworkTabs: React.FC<{
         <TabPanel key={fw.id} value={fw.id}>
           {fw.renderer === "react" ? (
             react
-          ) : (
+          ) : fw.renderer === "native" ? (
+            <NativeContent meta={meta} />
+          ) : meta.wc ? (
             <WebComponentSection
               meta={meta}
               framework={
@@ -322,6 +349,14 @@ const FrameworkTabs: React.FC<{
                 }
               }
             />
+          ) : (
+            <p className={styles.callout} data-testid="wc-unavailable">
+              <Trans
+                i18nKey="doc.fw.unavailable"
+                values={{ framework: fw.label }}
+                components={{ support: <Link to="/platform-support" /> }}
+              />
+            </p>
           )}
         </TabPanel>
       ))}

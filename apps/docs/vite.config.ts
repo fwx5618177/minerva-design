@@ -13,8 +13,14 @@ import { wcFrameworksPlugin } from "./src/docs/frameworks/vitePlugin.ts";
 // The minerva-design entries there only point tsc at workspace sources for
 // type-checking; at runtime Vite resolves the built package (the workspace
 // link to packages/minerva-design) instead, exactly like an application.
+// `react` / `react-native` there are type-only too: the native sources
+// (packages/native) are typed with React Native's types and the site's
+// single @types/react.
+const TYPE_ONLY_PATHS = new Set(["react", "react/*", "react-native"]);
 const alias: Alias[] = Object.entries(tsconfig.compilerOptions.paths)
-  .filter(([key]) => !key.startsWith("minerva-design"))
+  .filter(
+    ([key]) => !key.startsWith("minerva-design") && !TYPE_ONLY_PATHS.has(key),
+  )
   .map(([key, [target]]) => ({
     find: new RegExp(`^${key.replace("*", "")}`),
     replacement: fileURLToPath(
@@ -23,6 +29,21 @@ const alias: Alias[] = Object.entries(tsconfig.compilerOptions.paths)
   }));
 
 const src = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+
+// React Native previews: minerva-design/native imported from its sources and
+// rendered through react-native-web (`react-native` is the docs shim:
+// react-native-web with a Modal that stays inside the phone frame). Only the
+// "React Native" tabs load them (lazy chunks).
+const nativeAlias: Alias[] = [
+  {
+    find: /^react-native$/,
+    replacement: src("./src/docs/native/react-native.ts"),
+  },
+  {
+    find: /^minerva-design\/native$/,
+    replacement: src("../../packages/native/src/index.ts"),
+  },
+];
 
 // Unit tests import the workspace packages from source (no build needed),
 // exactly like tests/e2e does. Exact-match aliases: sub-entries first.
@@ -77,7 +98,14 @@ export default defineConfig({
     wcFrameworksPlugin(),
     bundleBudgetPlugin(),
   ],
-  resolve: { alias: process.env.VITEST ? [...testAlias, ...alias] : alias },
+  resolve: {
+    alias: process.env.VITEST
+      ? [...nativeAlias, ...testAlias, ...alias]
+      : [...nativeAlias, ...alias],
+    // one React for the site and the native sources (packages/native pins
+    // the Expo SDK's React for its own tests)
+    dedupe: ["react", "react-dom"],
+  },
   server: {
     port: 3000,
     host: "127.0.0.1",

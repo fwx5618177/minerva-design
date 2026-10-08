@@ -90,9 +90,11 @@ export function Overlay({
       useNativeDriver: nativeDriver,
     });
     let done = false;
-    animation.start(() => {
+    animation.start(({ finished }) => {
       done = true;
-      end.current();
+      // a stopped animation (unmount, StrictMode re-run, phase change) is
+      // not the end of the transition
+      if (finished) end.current();
     });
     return () => {
       if (!done) animation.stop();
