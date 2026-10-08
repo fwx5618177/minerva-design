@@ -108,13 +108,17 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     ]);
   });
 
-  it("react / react-dom and Monaco are optional peers", () => {
+  it("react / react-dom, Monaco and React Native are optional peers", () => {
     expect(Object.keys(pkg.peerDependencies ?? {}).sort()).toEqual([
       "@monaco-editor/react",
       "monaco-editor",
       "react",
       "react-dom",
+      "react-native",
+      "react-native-safe-area-context",
+      "react-native-svg",
     ]);
+    expect(pkg.peerDependencies?.["react-native"]).toBe(">=0.79.0");
     for (const peer of Object.keys(pkg.peerDependencies ?? {})) {
       expect(pkg.peerDependenciesMeta?.[peer]?.optional, peer).toBe(true);
     }
@@ -134,7 +138,7 @@ describe("planned renderers", () => {
   const published = readJson<Pkg & { exports: Record<string, unknown> }>(
     "packages/minerva-design/package.json",
   );
-  it.each(["vue", "angular", "native", "taro", "weapp", "uni"])(
+  it.each(["vue", "angular", "taro", "weapp", "uni"])(
     "packages/%s is a private placeholder, not exported yet",
     (name) => {
       const pkg = readJson<Pkg & { scripts: Record<string, string> }>(
@@ -147,6 +151,15 @@ describe("planned renderers", () => {
       expect(Object.keys(published.exports)).not.toContain(`./${name}`);
     },
   );
+
+  it("packages/native is published as minerva-design/native", () => {
+    const pkg = readJson<Pkg & { scripts: Record<string, string> }>(
+      "packages/native/package.json",
+    );
+    expect(pkg.private).toBe(true);
+    expect(pkg.scripts.build).toBe("vite build");
+    expect(Object.keys(published.exports)).toContain("./native");
+  });
 
   it("WeChat ships later through the miniprogram field", () => {
     expect(published).not.toHaveProperty("miniprogram");

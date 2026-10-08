@@ -24,6 +24,7 @@ export default defineConfig({
         replacement: `${fromNative("@testing-library/react-native")}$1`,
       },
       { find: /^test-renderer$/, replacement: fromNative("test-renderer") },
+      { find: /^react-native$/, replacement: fromNative("react-native") },
     ],
   },
   test: {
