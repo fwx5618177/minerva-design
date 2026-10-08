@@ -27,8 +27,8 @@ const PropsTable: React.FC<PropsTableProps> = ({ page, name }) => {
   const key = apiKey(name);
 
   return (
-    <div className={styles.apiBlock} id={`api-${key}`}>
-      <h3 className={styles.apiTitle}>
+    <div className={styles.apiBlock}>
+      <h3 className={styles.apiTitle} id={`api-${key}`}>
         <code>{displayName}</code>
       </h3>
       {entry.extends.length > 0 && (

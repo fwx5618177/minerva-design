@@ -225,6 +225,7 @@ const DocPage: React.FC<DocPageProps> = ({
   return (
     <article className={styles.page}>
       <header className={styles.pageHeader}>
+        <p className={styles.eyebrow}>{t(`nav.${meta.category}`)}</p>
         <h1>{title}</h1>
         <p className={styles.lead}>{t(`docs.${id}.description`)}</p>
       </header>
@@ -247,6 +248,7 @@ const FrameworkTabs: React.FC<{
     <Tabs
       value={framework}
       onChange={(value) => setFramework(value as Framework)}
+      variant="soft"
       className={styles.frameworkTabs}
     >
       <TabList aria-label={t("doc.wc.framework")}>

@@ -1,5 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+// Self-hosted Geist (font-display: swap), before the library stylesheet
+import "@fontsource-variable/geist/wght.css";
+import "@fontsource-variable/geist-mono/wght.css";
 import "@minerva/lib-core/style.css";
 import "@styles/global.scss";
 import "@minerva/lib-web-components";

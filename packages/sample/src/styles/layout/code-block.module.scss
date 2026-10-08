@@ -1,226 +1,227 @@
+// Code blocks: hairline frame, file name header, Geist-like syntax colors
+// that follow the site theme (light / true-black dark).
+
 .codeBlock {
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--code-bg);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-normal);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 100%;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-code-bg);
+  color: var(--ds-code-fg);
 
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .srOnly {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-3) var(--spacing-4);
-    background: var(--code-header-bg);
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color var(--transition-normal);
-
-    .language {
-      font-size: var(--font-size-sm);
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-
-    .copyButton {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
-      transition: all var(--transition-fast);
-      background: var(--bg-secondary);
-      cursor: pointer;
-
-      &:hover {
-        color: var(--text-primary);
-        background: var(--bg-hover);
-        transform: scale(1.05);
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--primary-color);
-        outline-offset: 2px;
-      }
-
-      &:active {
-        transform: scale(0.95);
-      }
-
-      .icon {
-        width: 18px;
-        height: 18px;
-        transition: transform var(--transition-fast);
-      }
-
-      &:hover .icon {
-        transform: rotate(-4deg);
-      }
-    }
-  }
-
-  .codeWrapper {
-    position: relative;
-    overflow: auto;
-    background: var(--code-content-bg);
-    -webkit-overflow-scrolling: touch;
-
-    &::-webkit-scrollbar {
-      height: 4px;
-      width: 4px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: var(--scrollbar-track);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border-radius: 2px;
-
-      &:hover {
-        background: var(--scrollbar-thumb-hover);
-      }
-    }
-
-    .pre {
-      margin: 0;
-      padding: var(--spacing-4) var(--spacing-4);
-      background: transparent;
-      overflow: visible;
-      position: relative;
-
-      code {
-        font-family: var(--font-mono);
-        font-size: var(--font-size-sm);
-        line-height: 1.6;
-        display: block;
-        color: var(--code-text);
-        white-space: pre;
-        overflow-x: auto;
-        padding-bottom: var(--spacing-2);
-      }
-
-      &.line-numbers {
-        padding-left: 3.8rem;
-        counter-reset: linenumber;
-
-        > code {
-          position: relative;
-          white-space: inherit;
-
-          .line-numbers-rows {
-            position: absolute;
-            pointer-events: none;
-            top: 0;
-            font-size: 100%;
-            left: -3.8rem;
-            width: 3rem;
-            letter-spacing: -1px;
-            border-right: 1px solid var(--border-color);
-            user-select: none;
-            background: var(--code-line-number-bg);
-
-            > span {
-              pointer-events: none;
-              display: block;
-              counter-increment: linenumber;
-              padding: 0 0.8em;
-              height: 1.6em;
-              line-height: 1.6;
-              transition: background-color var(--transition-fast);
-
-              &:before {
-                content: counter(linenumber);
-                color: var(--code-line-number);
-                display: block;
-                text-align: right;
-              }
-
-              &:hover {
-                background: var(--code-line-hover-bg);
-              }
-            }
-          }
-        }
-      }
-    }
+  &[data-flush] {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
   }
 }
 
-// Mobile styles
-@media (max-width: 768px) {
-  .codeBlock {
-    margin: var(--spacing-3) 0;
-    border-radius: var(--radius-sm);
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 40px;
+  padding: 0 6px 0 16px;
+  border-bottom: 1px solid var(--ds-border);
+  background: var(--ds-bg);
+}
 
-    .header {
-      padding: var(--spacing-2) var(--spacing-3);
+// Tab strip of <CodeTabs> (package managers, file variants)
+.tabs {
+  display: flex;
+  align-self: stretch;
+  gap: 16px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 
-      .language {
-        font-size: var(--font-size-xs);
-      }
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--ds-fg-subtle);
+  font-family: var(--ds-font-mono);
+  font-size: 12.5px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ds-duration) var(--ds-ease);
 
-      .copyButton {
-        width: 28px;
-        height: 28px;
+  &:hover {
+    color: var(--ds-fg-strong);
+  }
 
-        .icon {
-          width: 16px;
-          height: 16px;
-        }
-      }
+  &[aria-selected="true"] {
+    color: var(--ds-fg-strong);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 1px;
+      background: var(--ds-fg-strong);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-focus);
+    outline-offset: -2px;
+    border-radius: var(--ds-radius-sm);
+  }
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ds-font-sans);
+  font-size: 13px;
+  color: var(--ds-fg-subtle);
+
+  &[data-filename] {
+    font-family: var(--ds-font-mono);
+    font-size: 12.5px;
+    color: var(--ds-fg-muted);
+  }
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ds-radius);
+  background: transparent;
+  color: var(--ds-fg-subtle);
+  cursor: pointer;
+  transition:
+    color var(--ds-duration) var(--ds-ease),
+    background-color var(--ds-duration) var(--ds-ease);
+
+  &:hover {
+    color: var(--ds-fg-strong);
+    background: var(--ds-bg-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-focus);
+    outline-offset: -2px;
+  }
+
+  &[data-copied] {
+    color: var(--ds-success);
+  }
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+}
+
+.pre {
+  margin: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  background: transparent;
+  font-family: var(--ds-font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  tab-size: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-border-strong) transparent;
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-focus);
+    outline-offset: -2px;
+  }
+
+  code {
+    font: inherit;
+    color: inherit;
+    background: none;
+    white-space: pre;
+  }
+
+  // Prism tokens
+  :global {
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+      color: var(--ds-code-comment);
     }
 
-    .codeWrapper {
-      .pre {
-        padding: var(--spacing-3);
-
-        code {
-          font-size: var(--font-size-xs);
-          line-height: 1.5;
-          padding: 0;
-
-          white-space: pre-wrap;
-          word-break: break-word;
-        }
-
-        &.line-numbers {
-          padding-left: 3rem;
-
-          .line-numbers-rows {
-            left: -3rem;
-            width: 2.5rem;
-
-            > span {
-              padding: 0 0.6em;
-            }
-          }
-        }
-      }
+    .token.punctuation,
+    .token.operator,
+    .token.entity,
+    .token.url {
+      color: var(--ds-code-punctuation);
     }
 
-    &:hover {
-      transform: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    .token.keyword,
+    .token.atrule,
+    .token.important,
+    .token.rule {
+      color: var(--ds-code-keyword);
+    }
+
+    .token.string,
+    .token.char,
+    .token.attr-value,
+    .token.regex,
+    .token.inserted,
+    .token.template-string {
+      color: var(--ds-code-string);
+    }
+
+    .token.attr-value .token.punctuation {
+      color: var(--ds-code-string);
+    }
+
+    .token.function,
+    .token.class-name,
+    .token.attr-name,
+    .token.selector {
+      color: var(--ds-code-function);
+    }
+
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.property,
+    .token.builtin,
+    .token.variable {
+      color: var(--ds-code-constant);
+    }
+
+    .token.tag .token.punctuation {
+      color: var(--ds-code-punctuation);
+    }
+
+    .token.deleted {
+      color: var(--ds-danger);
+    }
+
+    .token.bold {
+      font-weight: 600;
+    }
+
+    .token.italic {
+      font-style: italic;
     }
   }
 }

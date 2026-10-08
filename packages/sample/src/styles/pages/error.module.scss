@@ -1,119 +1,108 @@
+// 404 / route error page
 .errorPage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--ds-header-height) - 120px);
+  padding: 64px 24px;
+  background-image: radial-gradient(circle at 1px 1px, var(--ds-border) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.content {
+  max-width: 520px;
+  text-align: center;
+  padding: 48px 40px;
+  background: var(--ds-bg);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-xl);
+}
+
+.code {
+  margin: 0 0 16px;
+  font-family: var(--ds-font-mono);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--ds-fg-subtle);
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--ds-fg-strong);
+}
+
+.text {
+  margin: 0 0 32px;
+  color: var(--ds-fg-muted);
+  line-height: 1.6;
+}
+
+.errorMessage {
+  margin: 0 0 32px;
+  padding: 12px 16px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--ds-font-mono);
+  font-size: 13px;
+  color: var(--ds-danger);
+  background: var(--ds-danger-subtle);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius);
+}
+
+.actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: var(--spacing-6);
-  background: var(--bg-base);
-  transition: var(--transition-colors);
+  gap: 16px;
+}
 
-  .content {
-    text-align: center;
-    max-width: 480px;
-    padding: var(--spacing-8);
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    transition: var(--transition-all);
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--ds-radius);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--ds-duration) var(--ds-ease);
+}
 
-    h1 {
-      font-size: var(--text-5xl);
-      font-weight: 700;
-      color: var(--primary-color);
-      margin: 0 0 var(--spacing-4);
-      line-height: 1;
-      transition: var(--transition-colors);
-    }
+.primary {
+  background: var(--ds-inverse-bg);
+  color: var(--ds-inverse-fg);
+  border: 1px solid var(--ds-inverse-bg);
 
-    p {
-      font-size: var(--text-lg);
-      color: var(--text-secondary);
-      margin: 0 0 var(--spacing-6);
-      transition: var(--transition-colors);
-
-      &.errorMessage {
-        font-family: monospace;
-        font-size: var(--text-sm);
-        color: var(--danger-color);
-        padding: var(--spacing-4);
-        background: var(--bg-subtle);
-        border-radius: var(--radius);
-        margin-bottom: var(--spacing-8);
-        word-break: break-word;
-      }
-    }
-
-    .actions {
-      display: flex;
-      gap: var(--spacing-4);
-      justify-content: center;
-
-      .homeLink,
-      .refreshButton {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--spacing-2);
-        padding: var(--spacing-3) var(--spacing-6);
-        border-radius: var(--radius);
-        font-size: var(--text-sm);
-        font-weight: 500;
-        transition: var(--transition-all);
-
-        .icon {
-          width: 18px;
-          height: 18px;
-        }
-      }
-
-      .homeLink {
-        background: var(--primary-color);
-        color: var(--text-on-primary);
-
-        &:hover {
-          background: var(--primary-dark);
-          transform: translateY(-2px);
-        }
-      }
-
-      .refreshButton {
-        background: var(--bg-subtle);
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-
-        &:hover {
-          background: var(--bg-hover);
-          transform: translateY(-2px);
-        }
-      }
-    }
+  &:hover {
+    opacity: 0.88;
   }
 }
 
-// Mobile styles
-@media (max-width: 768px) {
-  .errorPage {
-    padding: var(--spacing-4);
+.secondary {
+  background: var(--ds-bg);
+  color: var(--ds-fg);
+  border: 1px solid var(--ds-border);
 
-    .content {
-      padding: var(--spacing-6);
-
-      h1 {
-        font-size: var(--text-4xl);
-      }
-
-      p {
-        font-size: var(--text-base);
-      }
-
-      .actions {
-        flex-direction: column;
-
-        .homeLink,
-        .refreshButton {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    }
+  &:hover {
+    background: var(--ds-bg-hover);
   }
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ds-fg-subtle);
 }

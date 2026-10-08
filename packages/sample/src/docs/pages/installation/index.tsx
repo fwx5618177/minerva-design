@@ -89,9 +89,13 @@ const InstallationDoc: React.FC = () => {
       <section className={styles.section} aria-labelledby="install-core">
         <h2 id="install-core">{t("docs.installation.core.title")}</h2>
         <p className={styles.prose}>{t("docs.installation.core.text")}</p>
-        <CodeBlock code={installPnpm} language="bash" title="pnpm" />
-        <CodeBlock code={installNpm} language="bash" title="npm" />
-        <CodeBlock code={installYarn} language="bash" title="yarn" />
+        <CodeBlock
+          tabs={[
+            { label: "pnpm", code: installPnpm, language: "bash" },
+            { label: "npm", code: installNpm, language: "bash" },
+            { label: "yarn", code: installYarn, language: "bash" },
+          ]}
+        />
         <p className={styles.prose}>{t("docs.installation.core.peers")}</p>
       </section>
 
