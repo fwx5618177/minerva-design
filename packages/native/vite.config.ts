@@ -26,7 +26,7 @@ const externalDeps = [
 const isExternal = (id: string) =>
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
-const SRC = fileURLToPath(new URL("./src", import.meta.url));
+const SRC = fileURLToPath(new URL("./src", import.meta.url).href);
 const isSource = (file: string) =>
   /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file);
 
