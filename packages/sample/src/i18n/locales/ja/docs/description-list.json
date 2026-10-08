@@ -5,12 +5,18 @@
     "basic": {
       "title": "基本的な使い方",
       "description": "ラベルと値には任意の ReactNode を使え、0 も表示されます。"
+    },
+    "variants": {
+      "title": "枠付きとストライプ",
+      "description": "bordered は項目をパディング付きの行を持つカードとして囲み、striped は区切り線の代わりに 1 行おきに色付けします。"
     }
   },
   "api": {
     "DescriptionListProps": {
       "items": "順番に描画する行",
-      "ref": "<dl> 要素への ref"
+      "ref": "<dl> 要素への ref",
+      "bordered": "リストをパディング付きの行を持つカードとして囲みます",
+      "striped": "1 行おきに色付けします（区切り線の代わり）"
     },
     "DescriptionListItem": {
       "key": "行の安定した React key",
@@ -23,7 +29,11 @@
     "--description-list-gap": "用語と説明の間隔",
     "--description-list-term-color": "用語の文字色",
     "--description-list-border-color": "行区切り線の色",
-    "--description-list-font-size": "フォントサイズ"
+    "--description-list-font-size": "フォントサイズ",
+    "--description-list-radius": "枠付きリストの角丸（既定は --radius-lg）",
+    "--description-list-background": "枠付きリストの背景（既定は --surface-color）",
+    "--description-list-padding-x": "枠付きまたはストライプのリストの行の左右パディング",
+    "--description-list-stripe-background": "ストライプリストの 1 行おきの背景（既定は --surface-subtle-color）"
   },
   "wc": {
     "demos": {
@@ -38,6 +48,10 @@
       "styling": {
         "title": "スタイリング",
         "description": "CSS 変数で密度、間隔、区切り線を設定し、::part(term) と ::part(row) でネイティブのセルをスタイルします。"
+      },
+      "variants": {
+        "title": "枠付きとストライプ",
+        "description": "bordered と striped のブール属性：パディング付きの行を持つカード枠、または区切り線の代わりの交互の色付け。"
       }
     },
     "minerva-description-item": {

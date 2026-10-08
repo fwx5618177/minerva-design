@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { Tab, TabList, TabPanel, Tabs } from "@minerva/lib-core";
 import CodeBlock from "@layout/CodeBlock";
 import { getDocPage, type DocPageMeta } from "../registry";
+import { importSnippet, type DemoEntry, type WcDemoEntry } from "../demos";
 import {
-  importSnippet,
-  wcImportSnippet,
-  type DemoEntry,
-  type WcDemoEntry,
-} from "../demos";
-import { loadWcDemos } from "../wcDemos";
+  loadWcDemos,
+  loadWcFrameworkSources,
+  type WcFrameworkSources,
+} from "../wcDemos";
 import { loadElementApis } from "../api";
+import {
+  FRAMEWORKS,
+  getFramework,
+  type FrameworkDef,
+  type WcFrameworkId,
+} from "../frameworks";
+import { useFramework } from "../frameworks/useFramework";
 import DemoBlock from "./DemoBlock";
 import PropsTable from "./PropsTable";
 import CssVarsTable from "./CssVarsTable";
@@ -20,80 +26,91 @@ import WcDemo from "./WcDemo";
 import StylingHooks from "./StylingHooks";
 import styles from "./docs.module.scss";
 
-type Framework = "react" | "wc";
-const FRAMEWORK_KEY = "minerva-docs-framework";
-
-/** Selected framework tab: `?framework=wc` wins, then the last choice. */
-const useFramework = (): [Framework, (next: Framework) => void] => {
-  const [params, setParams] = useSearchParams();
-  const fromUrl = params.get("framework");
-  const [stored, setStored] = useState<Framework>(() => {
-    try {
-      return localStorage.getItem(FRAMEWORK_KEY) === "wc" ? "wc" : "react";
-    } catch {
-      return "react";
-    }
-  });
-  const framework: Framework =
-    fromUrl === "wc" || fromUrl === "react" ? fromUrl : stored;
-  const set = (next: Framework) => {
-    setStored(next);
-    try {
-      localStorage.setItem(FRAMEWORK_KEY, next);
-    } catch {
-      // storage unavailable (private mode): the URL still carries the choice
-    }
-    const nextParams = new URLSearchParams(params);
-    nextParams.set("framework", next);
-    setParams(nextParams, { replace: true });
-  };
-  return [framework, set];
+/** "Requires the global stylesheet — see Installation", under an import */
+export const StylesheetNote: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <p className={styles.importNote}>
+      {t("doc.requiresStylesheet")}{" "}
+      <Link to="/installation#global-stylesheet">
+        {t("doc.requiresStylesheetLink")}
+      </Link>
+      {t("doc.requiresStylesheetEnd")}
+    </p>
+  );
 };
 
-/** "Web Components" tab of a component page */
-const WebComponentSection: React.FC<{ meta: DocPageMeta }> = ({ meta }) => {
+interface WcDemos {
+  demos: Record<string, WcDemoEntry>;
+  sources: Record<string, WcFrameworkSources>;
+}
+
+/**
+ * A component page for a framework rendered from the Web Components: setup
+ * (registration, compiler options, typings), the live custom-element demos
+ * with their source in the framework's idiom, and the element API.
+ */
+const WebComponentSection: React.FC<{
+  meta: DocPageMeta;
+  framework: FrameworkDef & { id: WcFrameworkId };
+}> = ({ meta, framework }) => {
   const { t } = useTranslation();
-  const [demos, setDemos] = useState<Record<string, WcDemoEntry> | null>(null);
+  const [loaded, setLoaded] = useState<WcDemos | null>(null);
   const wc = meta.wc!;
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([loadWcDemos(meta.id), loadElementApis()]).then(
-      ([loaded]) => {
-        if (!cancelled) setDemos(loaded);
-      },
-    );
+    void Promise.all([
+      loadWcDemos(meta.id),
+      loadWcFrameworkSources(meta.id),
+      loadElementApis(),
+    ]).then(([demos, sources]) => {
+      if (!cancelled) setLoaded({ demos, sources });
+    });
     return () => {
       cancelled = true;
     };
   }, [meta.id]);
 
+  const setup = framework.setup(wc);
+
   return (
     <>
       <section className={styles.section} aria-labelledby="wc-import">
-        <h2 id="wc-import">{t("doc.import")}</h2>
+        <h2 id="wc-import">{t("doc.fw.setupTitle")}</h2>
         <p className={styles.prose}>
           {t("doc.wc.intro", {
             tags: wc.tags.map((tag) => `<${tag}>`).join(", "),
           })}
         </p>
-        <CodeBlock code={wcImportSnippet(wc.entry)} language="ts" />
+        {setup.map((snippet, index) => (
+          <div key={index} className={styles.setupStep}>
+            <p className={styles.prose}>
+              {t(`doc.fw.setup.${snippet.step}`, {
+                framework: framework.label,
+              })}{" "}
+              <code>{snippet.file}</code>
+            </p>
+            <CodeBlock code={snippet.code} language={snippet.language} />
+          </div>
+        ))}
+        <StylesheetNote />
+        <p className={styles.prose}>
+          <Trans
+            i18nKey="doc.fw.guide"
+            values={{ framework: framework.label }}
+            components={{ guide: <Link to={`/${framework.guide}`} /> }}
+          />
+        </p>
       </section>
 
       <section className={styles.section} aria-labelledby="wc-examples">
         <h2 id="wc-examples">{t("doc.examples")}</h2>
-        {!demos && <p className={styles.muted}>{t("doc.loading")}</p>}
-        {demos &&
+        <p className={styles.prose}>{t(`doc.fw.${framework.id}.examples`)}</p>
+        {!loaded && <p className={styles.muted}>{t("doc.loading")}</p>}
+        {loaded &&
           wc.demos.map((demoId) => {
-            const demo = demos[demoId];
+            const demo = loaded.demos[demoId];
             if (!demo) return null;
-            const source = demo.script
-              ? `${demo.html.trim()}
-
-<script type="module">
-${demo.script.trim()}
-</script>
-`
-              : demo.html;
             return (
               <DemoBlock
                 key={demoId}
@@ -102,8 +119,8 @@ ${demo.script.trim()}
                 description={t(
                   `docs.${meta.id}.wc.demos.${demoId}.description`,
                 )}
-                source={source}
-                language="html"
+                source={loaded.sources[demoId]?.[framework.id] ?? demo.html}
+                language={framework.language}
               >
                 <WcDemo demo={demo} />
               </DemoBlock>
@@ -114,7 +131,8 @@ ${demo.script.trim()}
       <section className={styles.section} aria-labelledby="wc-api">
         <h2 id="wc-api">{t("doc.api")}</h2>
         <p className={styles.prose}>{t("doc.wc.apiIntro")}</p>
-        {demos &&
+        <p className={styles.prose}>{t(`doc.fw.${framework.id}.api`)}</p>
+        {loaded &&
           wc.tags.map((tag) => (
             <WcApiTables
               key={tag}
@@ -175,6 +193,7 @@ const DocPage: React.FC<DocPageProps> = ({
             code={importCode ?? importSnippet(meta.exports, meta.package)}
             language="tsx"
           />
+          <StylesheetNote />
         </section>
       )}
 
@@ -243,6 +262,11 @@ const DocPage: React.FC<DocPageProps> = ({
   );
 };
 
+/**
+ * The global framework selector of a component page (React, Vue, Angular,
+ * Svelte, Solid, HTML): one panel per framework, only the selected one is
+ * rendered. The choice is shared by every page and kept in `?framework=`.
+ */
 const FrameworkTabs: React.FC<{
   meta: DocPageMeta;
   react: React.ReactNode;
@@ -252,18 +276,38 @@ const FrameworkTabs: React.FC<{
   return (
     <Tabs
       value={framework}
-      onChange={(value) => setFramework(value as Framework)}
+      onChange={(value) => setFramework(value as FrameworkDef["id"])}
       variant="soft"
       className={styles.frameworkTabs}
     >
-      <TabList aria-label={t("doc.wc.framework")}>
-        <Tab value="react">React</Tab>
-        <Tab value="wc">Web Components</Tab>
-      </TabList>
-      <TabPanel value="react">{react}</TabPanel>
-      <TabPanel value="wc">
-        <WebComponentSection meta={meta} />
-      </TabPanel>
+      <div className={styles.frameworkBar}>
+        <span className={styles.frameworkLabel} aria-hidden>
+          {t("doc.wc.framework")}
+        </span>
+        <TabList aria-label={t("doc.wc.framework")}>
+          {FRAMEWORKS.map((fw) => (
+            <Tab key={fw.id} value={fw.id}>
+              {fw.label}
+            </Tab>
+          ))}
+        </TabList>
+      </div>
+      {FRAMEWORKS.map((fw) => (
+        <TabPanel key={fw.id} value={fw.id}>
+          {fw.renderer === "react" ? (
+            react
+          ) : (
+            <WebComponentSection
+              meta={meta}
+              framework={
+                getFramework(fw.id) as FrameworkDef & {
+                  id: WcFrameworkId;
+                }
+              }
+            />
+          )}
+        </TabPanel>
+      ))}
     </Tabs>
   );
 };

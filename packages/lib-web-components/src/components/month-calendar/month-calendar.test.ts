@@ -7,6 +7,7 @@ import {
 import "../../elements/month-calendar";
 import "../../elements/config";
 import { resetDevWarnings } from "../../internal/dev";
+import { customStates } from "../../internal/styling-hooks";
 import { $, mount } from "../../../tests/utils";
 
 afterEach(() => {
@@ -345,5 +346,65 @@ describe("<minerva-month-calendar>", () => {
     const warn = vi.spyOn(console, "error").mockImplementation(() => {});
     await setup(`month="2024-02" value="2024/02/03"`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("YYYY-MM-DD"));
+  });
+  it.each(["small", "medium", "large"] as const)(
+    "applies the %s size (class, attribute and custom state)",
+    async (size) => {
+      const el = await setup(`month="2024-02" size="${size}"`);
+      expect(el.size).toBe(size);
+      expect($(el, "section.monthCalendar")).toHaveClass(size);
+      expect([...customStates(el)]).toContain(`size-${size}`);
+    },
+  );
+
+  it("defaults to the medium size and reflects it", async () => {
+    const el = await setup(`month="2024-02"`);
+    expect(el.size).toBe("medium");
+    expect($(el, "section.monthCalendar")).toHaveClass("medium");
+    el.size = "large";
+    await el.updateComplete;
+    expect(el).toHaveAttribute("size", "large");
+    expect($(el, "section.monthCalendar")).toHaveClass("large");
+  });
+
+  it("highlights a range (either order) without changing the selection", async () => {
+    const el = await setup(
+      `month="2024-02" range-start="2024-02-14" range-end="2024-02-12"`,
+    );
+    const onChange = vi.fn();
+    el.addEventListener("minerva-change", onChange);
+    expect(el.rangeStart).toBe("2024-02-14");
+    expect(day(el, "2024-02-11")).not.toHaveClass("inRange");
+    expect(day(el, "2024-02-12")).toHaveClass("inRange", "rangeStart");
+    expect(day(el, "2024-02-12")).not.toHaveClass("rangeEnd");
+    expect(day(el, "2024-02-13")).toHaveClass("inRange");
+    expect(day(el, "2024-02-13")).not.toHaveClass("rangeStart", "rangeEnd");
+    expect(day(el, "2024-02-14")).toHaveClass("inRange", "rangeEnd");
+    expect(day(el, "2024-02-15")).not.toHaveClass("inRange");
+    expect(day(el, "2024-02-13")).toHaveAttribute("aria-selected", "false");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("ignores an incomplete or malformed range", async () => {
+    const el = await setup(`month="2024-02" range-start="2024-02-12"`);
+    expect(el.shadowRoot!.querySelector(".inRange")).toBeNull();
+    el.rangeEnd = "soon";
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelector(".inRange")).toBeNull();
+  });
+
+  it("marks the day number and the days with events", async () => {
+    const el = await setup(`month="2024-02"`);
+    el.events = EVENTS;
+    await el.updateComplete;
+    expect(day(el, "2024-02-29").querySelector(".dayNumber")!.textContent).toBe(
+      "29",
+    );
+    expect(day(el, "2024-02-29").querySelector(".count")).toHaveClass(
+      "hasEvents",
+    );
+    expect(day(el, "2024-02-28").querySelector(".count")).not.toHaveClass(
+      "hasEvents",
+    );
   });
 });

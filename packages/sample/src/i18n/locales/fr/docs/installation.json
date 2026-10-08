@@ -13,11 +13,28 @@
     "peers": "react et react-dom sont des dépendances pair (^19), afin que votre application conserve une seule copie de React. Les seules dépendances d'exécution sont @minerva/core (primitives, jetons de design et un petit traducteur), DOMPurify (HtmlPreview) et jsonc-parser (JsonField) : aucune bibliothèque d'icônes, de noms de classes ou d'i18n n'est installée. Les icônes sont des SVG en ligne."
   },
   "styles": {
-    "title": "Importer la feuille de style",
-    "text": "Les styles des composants et les jetons du thème par défaut sont regroupés dans un seul fichier CSS. Importez-le une fois, dans le fichier d'entrée de votre application :",
-    "note": "Sans @minerva/lib-core/style.css, les composants s'affichent sans style. Un seul import suffit ; l'importer depuis plusieurs modules est sans danger mais inutile.",
-    "extras": "Un fichier Sass facultatif est publié à côté : @minerva/lib-core/prose.scss contient des mixins pour la typographie de texte long, à charger avec @use depuis votre propre Sass.",
-    "perComponent": "Vous n'utilisez que quelques composants ? Importez une fois les jetons de design puis la feuille de style de chaque composant utilisé, au lieu de style.css. Chaque fichier contient les styles du composant et des composants qu'il affiche (par exemple confirm.css inclut les styles de Button et Modal) ; le nom de fichier est le dossier du composant en kebab-case (tag-input.css, time-picker.css...). Le JavaScript est aussi tree-shaké par composant : chaque module est publié séparément et le paquet est sans effet de bord hormis son CSS."
+    "title": "Importer la feuille de style globale une seule fois",
+    "text": "Les styles de tous les composants et les jetons du thème par défaut sont regroupés dans une feuille de style globale, @minerva/lib-core/style.css. Importez-la une seule fois, dans le point d'entrée de l'application, avant votre propre CSS. Les fichiers de composants n'importent ensuite que des composants, jamais de CSS.",
+    "note": "Sans @minerva/lib-core/style.css, les composants s'affichent sans style. Importez-la une seule fois, dans le point d'entrée : la réimporter depuis des fichiers de composants est sans danger mais inutile.",
+    "vite": {
+      "title": "React avec Vite : src/main.tsx",
+      "note": "Vite regroupe le CSS importé depuis JavaScript : en développement, le serveur injecte la feuille de style, et vite build la produit sous forme d'un unique fichier .css haché, lié depuis index.html. Aucun plugin ni configuration supplémentaire n'est nécessaire."
+    },
+    "next": {
+      "title": "Next.js (App Router) : app/layout.tsx",
+      "note": "Le layout racine est un Server Component et peut importer du CSS global ; toutes les routes reçoivent alors les styles."
+    },
+    "wc": {
+      "title": "Web Components : src/main.ts",
+      "note": "Les éléments personnalisés portent leurs propres styles dans leur shadow root ; tokens.css fournit les jetons de design partagés. Importez les deux une seule fois, dans le point d'entrée de votre application Vue, Angular, Svelte, Solid ou HTML. Si la même page utilise aussi les composants React, style.css contient déjà les jetons."
+    },
+    "components": {
+      "title": "Dans les fichiers de composants",
+      "text": "Les pages des composants ne montrent que l'import du composant. Elles supposent toutes la feuille de style globale importée ci-dessus :"
+    },
+    "perComponentTitle": "Optionnel : feuilles de style par composant",
+    "perComponent": "Vous n'utilisez que quelques composants ? Importez une fois les jetons de design puis la feuille de style de chaque composant utilisé, au lieu de style.css. Chaque fichier contient les styles du composant et des composants qu'il affiche (par exemple confirm.css inclut les styles de Button et Modal) ; le nom de fichier est le dossier du composant en kebab-case (tag-input.css, time-picker.css...). Le JavaScript est aussi tree-shaké par composant : chaque module est publié séparément et le paquet est sans effet de bord hormis son CSS.",
+    "extras": "Un fichier Sass facultatif est publié à côté : @minerva/lib-core/prose.scss contient des mixins pour la typographie de texte long, à charger avec @use depuis votre propre Sass."
   },
   "optional": {
     "title": "Points d'entrée et dépendances pairs facultatifs",

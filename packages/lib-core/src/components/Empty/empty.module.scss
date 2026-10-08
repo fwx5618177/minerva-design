@@ -8,6 +8,9 @@
 // @css-var --empty-background Background of the framed (unsized) layout
 // @css-var --empty-radius Corner radius of the framed (unsized) layout (defaults to --radius-sm)
 // @css-var --empty-description-max-width Maximum width of the description (sized layout)
+// @css-var --empty-icon-background Background of the icon tile (sized layout)
+// @css-var --empty-icon-border-color Ring color of the icon tile (sized layout)
+// @css-var --empty-icon-radius Corner radius of the icon tile (sized layout; defaults to --radius-lg)
 
 .showShadow {
   box-shadow: var(--shadow-md);
@@ -90,18 +93,29 @@
     font-family: var(--font-family-sans);
     text-align: center;
 
+    // The icon sits in a tile: tinted fill, full ring and a soft shadow
     .iconWrapper {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       height: auto;
-      margin: 0;
+      margin: 0 0 var(--space-1);
+      padding: var(--space-3);
+      border: 1px solid var(--empty-icon-border-color, var(--border-color));
+      border-radius: var(--empty-icon-radius, var(--radius-lg));
+      background: var(--empty-icon-background, var(--surface-subtle-color));
+      box-shadow: var(--shadow-sm);
       color: var(--text-muted-color);
-      opacity: 0.7;
+      opacity: 1;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     .title {
       margin: 0;
+      letter-spacing: -0.01em;
     }
 
     .description {
@@ -122,6 +136,11 @@
 
   &.size-small {
     padding: var(--empty-padding, var(--space-4) var(--space-3));
+
+    &.sized .iconWrapper {
+      padding: var(--space-2);
+      border-radius: var(--empty-icon-radius, var(--radius-md));
+    }
 
     .iconWrapper svg {
       width: var(--empty-icon-size, 28px);
@@ -152,6 +171,11 @@
 
   &.size-large {
     padding: var(--empty-padding, var(--space-12) var(--space-6));
+
+    &.sized .iconWrapper {
+      padding: var(--space-4);
+      border-radius: var(--empty-icon-radius, var(--radius-xl));
+    }
 
     .iconWrapper svg {
       width: var(--empty-icon-size, 56px);

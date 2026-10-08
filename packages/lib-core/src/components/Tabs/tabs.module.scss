@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Tabs. The color classes set `--tabs-accent`, `--tabs-selected-bg` and
 // `--tabs-selected-fg`, read by every variant below (internal plumbing, not
 // part of the public contract).
@@ -118,51 +120,69 @@
   }
 }
 
-// line (default): underline indicator only
+// line (default): a rounded indicator pill under the selected tab (a
+// separate full shape, `::after`, not a border-bottom) over a 1px baseline.
+// The baseline is a background line (it spans the whole scroll width of an
+// overflowing list); in forced colors the selected tab keeps its outline.
 .lineList {
-  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(var(--border-color), var(--border-color)) bottom / 100% 1px no-repeat local;
 }
 
 .lineTrigger {
-  border-bottom: var(--tabs-indicator-width, 2px) solid transparent;
-  margin-bottom: -1px;
   padding-inline: var(--tabs-trigger-padding-x, var(--space-2));
 
-  &[data-state="active"] {
-    border-bottom-color: var(--tabs-accent);
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-inline: 0;
+    bottom: 0;
+    height: var(--tabs-indicator-width, 2px);
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    pointer-events: none;
+    transition: background-color var(--transition-fast);
+  }
+
+  &[data-state="active"]::after {
+    background-color: var(--tabs-accent);
   }
 }
 
 .lineList.verticalList {
-  border-bottom: none;
-  border-inline-end: 1px solid var(--border-color);
-}
+  background: none;
 
-.lineTrigger.verticalTrigger {
-  border-bottom: none;
-  border-inline-end: var(--tabs-indicator-width, 2px) solid transparent;
-  margin-bottom: 0;
-  margin-inline-end: -1px;
-  padding-inline: var(--tabs-trigger-padding-x, var(--space-3));
-  text-align: start;
-
-  &[data-state="active"] {
-    border-inline-end-color: var(--tabs-accent);
+  &::after {
+    @include separator(inline-end);
   }
 }
 
-// enclosed: browser-like tabs
+.lineTrigger.verticalTrigger {
+  padding-inline: var(--tabs-trigger-padding-x, var(--space-3));
+  text-align: start;
+
+  &::after {
+    inset-inline: auto 0;
+    inset-block: 0;
+    width: var(--tabs-indicator-width, 2px);
+    height: auto;
+  }
+}
+
+// enclosed: an outlined track; the selected tab is an outlined tile
+// (full rounded shapes, no edge merging with a baseline)
 .enclosedList {
-  border-bottom: 1px solid var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--tabs-radius, var(--radius-md));
+  padding: var(--space-1);
 }
 
 .enclosedTrigger {
   border: 1px solid transparent;
-  border-radius: var(--tabs-radius, var(--radius-md)) var(--tabs-radius, var(--radius-md)) 0 0;
+  border-radius: calc(var(--tabs-radius, var(--radius-md)) - var(--space-0-5));
 
   &[data-state="active"] {
-    border-color: var(--border-color);
-    border-bottom-color: var(--surface-color);
+    border-color: var(--border-strong-color);
     background-color: var(--surface-color);
   }
 }
@@ -212,11 +232,12 @@
   }
 }
 
-// Explicitly colored tabs stay tinted in every state
+// Explicitly colored tabs stay tinted in every state; the selected one adds
+// a full inset ring (a rounded full shape, not an edge marker)
 .trigger.colored {
   background-color: var(--tabs-selected-bg);
   color: var(--tabs-selected-fg);
-  border-bottom: 2px solid transparent;
+  border-radius: var(--tabs-radius, var(--radius-md));
 
   &:hover:not(:disabled):not([data-state="active"]) {
     background-color: var(--tabs-selected-bg);
@@ -225,16 +246,12 @@
     text-underline-offset: 3px;
   }
 
-  &[data-state="active"] {
-    border-bottom-color: var(--tabs-selected-fg);
+  &:not(.pillsTrigger)[data-state="active"] {
+    box-shadow: inset 0 0 0 2px var(--tabs-selected-fg);
   }
-}
 
-.trigger.colored.lineTrigger.verticalTrigger {
-  border-bottom: none;
-
-  &[data-state="active"] {
-    border-inline-end-color: var(--tabs-selected-fg);
+  &.lineTrigger[data-state="active"]::after {
+    background-color: var(--tabs-selected-fg);
   }
 }
 

@@ -1,6 +1,10 @@
+@use "../../styles/mixins" as *;
+
 // Select trigger follows the Input border strategy: a transparent 1px border
 // reserves the box, the visible border is an inset box-shadow (no sub-pixel
-// seams at the rounded corners) and focus adds a soft 4px halo.
+// seams at the rounded corners) and focus (keyboard focus or open) uses the
+// shared control-focus treatment (styles/_mixins.scss): border color + ring
+// + a transparent outline that forced colors make visible.
 //
 // Public CSS variables (set them on the trigger / content or any ancestor;
 // the listbox is portaled, so set its variables on :root or contentClassName):
@@ -16,7 +20,6 @@
 // Internal plumbing uses the --_select-* prefix.
 .trigger {
   --_select-border: var(--select-border-color, var(--border-color));
-  --_select-focus-ring: var(--focus-ring-color);
 
   display: inline-flex;
   align-items: center;
@@ -43,11 +46,8 @@
 
   &:focus-visible,
   &[data-state="open"] {
-    outline: none;
-    --_select-border: var(--primary-color);
-    box-shadow:
-      inset 0 0 0 1px var(--_select-border),
-      0 0 0 4px var(--_select-focus-ring);
+    --_select-border: #{$focus-border-color};
+    @include control-focus(var(--_select-border), $inset-border: true);
   }
 
   &[data-placeholder] {
@@ -97,9 +97,7 @@
   &:focus-visible,
   &[data-state="open"] {
     --_select-border: var(--danger-color);
-    box-shadow:
-      inset 0 0 0 1px var(--_select-border),
-      0 0 0 4px var(--danger-color-subtle);
+    @include control-focus(var(--_select-border), $focus-ring-danger, $inset-border: true);
   }
 }
 
@@ -252,12 +250,15 @@
     outline-offset: 1px;
   }
 
+  // the selected option gets a full 1px ring (no one-sided stripe); the
+  // highlighted one a 2px ring (wins when both)
+  .item[data-selected] {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+
   .item[data-highlighted] {
     outline: 2px solid Highlight;
     outline-offset: -2px;
-  }
-
-  .item[data-selected] {
-    border-inline-start: 3px solid Highlight;
   }
 }

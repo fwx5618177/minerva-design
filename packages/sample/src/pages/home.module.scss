@@ -40,25 +40,59 @@ $bp-md: 768px;
   pointer-events: none;
 }
 
-.badge {
+// Supported frameworks: React, then the Web Components stacks
+.support {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 820px;
+  margin: 0 0 28px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin: 0 0 24px;
-  padding: 4px 12px;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px 0 10px;
   border: 1px solid var(--ds-border);
   border-radius: 999px;
   background: var(--ds-bg);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ds-fg-muted);
+  color: var(--ds-fg);
+  white-space: nowrap;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: var(--ds-fg-muted);
+  }
 }
 
-.badgeDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ds-accent);
+.supportDivider {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--ds-border-strong);
+}
+
+.supportLabel {
+  color: var(--ds-fg-subtle);
+  white-space: nowrap;
 }
 
 .title {
@@ -220,11 +254,12 @@ $bp-md: 768px;
   }
 }
 
-// ---- Live showcase ----
+// ---- Live showcase: a small deploy panel ----
 
 .showcase {
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto 112px;
-  max-width: 760px;
 }
 
 .window {
@@ -232,14 +267,22 @@ $bp-md: 768px;
   border-radius: var(--ds-radius-xl);
   overflow: hidden;
   background: var(--ds-bg);
+  box-shadow: var(--ds-shadow-popover);
 }
 
 .windowBar {
-  display: flex;
-  gap: 6px;
-  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 40px;
+  padding: 0 14px;
   border-bottom: 1px solid var(--ds-border);
   background: var(--ds-bg-subtle);
+}
+
+.windowDots {
+  display: flex;
+  gap: 6px;
 
   span {
     width: 10px;
@@ -250,27 +293,81 @@ $bp-md: 768px;
   }
 }
 
+.windowTitle {
+  font-family: var(--ds-font-mono);
+  font-size: 12px;
+  color: var(--ds-fg-subtle);
+}
+
 // The library's own theme surface (not the site's)
 .windowBody {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 40px 32px;
+  display: grid;
+  gap: 24px;
+  padding: 24px;
   background: var(--background-color);
+  color: var(--text-color);
+  text-align: left;
+
+  @media (min-width: $bp-md) {
+    padding: 28px 32px 32px;
+  }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panelHeading {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.panelProject {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--text-color);
 }
 
-.showcaseRow {
+.panelMeta {
+  font-family: var(--ds-font-mono);
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.panelFields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 560px) {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.panelFooter {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 12px 16px;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
 }
 
-.showcaseInput {
-  width: 240px;
-  max-width: 100%;
+.panelActions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
 }
 
 // ---- Sections ----

@@ -140,7 +140,10 @@ describe("per-element entries (tree-shaking)", () => {
       deps,
     );
     console.info(`all-in-one (deps external): ${size} B`);
-    expect(size).toBeLessThan(540_000);
+    // ~543 kB after the richer component styles (MonthCalendar, Steps, List,
+    // DescriptionList...), the separator / focus-ring rules and the new
+    // variants; raised deliberately from 540 kB, with headroom for one release
+    expect(size).toBeLessThan(560_000);
     for (const { tagName } of elements) {
       if (OPTIONAL_TAGS.includes(tagName)) expect(js).not.toContain(tagName);
       else expect(js).toContain(tagName);

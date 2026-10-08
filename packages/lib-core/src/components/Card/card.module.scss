@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the card or any ancestor):
 // @css-var --card-bg-color Background color of the card
 // @css-var --card-bg-color-content Background color of the content section (sections layout)
@@ -57,8 +59,13 @@
 
   .cardHeader {
     padding: var(--card-padding, var(--space-4));
+    position: relative;
     background-color: var(--card-header-bg-color, var(--surface-muted-color));
-    border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
+
+    // section separator (a 1px separator shape, not a one-sided border)
+    &::after {
+      @include separator(bottom, var(--card-border-color, var(--border-color)));
+    }
   }
 
   .cardTitle {
@@ -82,7 +89,6 @@
     padding: var(--card-padding, var(--space-4));
     flex: 1;
     background-color: var(--card-bg-color-content, var(--surface-color));
-    border-bottom: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
     // Content wraps (only the title / description truncate)
     min-width: 0;
     overflow-wrap: anywhere;
@@ -91,8 +97,12 @@
   .cardFooter {
     padding: var(--card-padding, var(--space-4));
     background-color: color-mix(in srgb, var(--surface-muted-color) 60%, transparent);
+    position: relative;
     text-align: end;
-    border-top: 1px solid var(--card-border-color, var(--border-color)); /* 添加分割线 */
+
+    &::before {
+      @include separator(top, var(--card-border-color, var(--border-color)));
+    }
   }
 
   // ── Padded layout (`padding` set): the card pads itself, sections sit flush
@@ -113,6 +123,11 @@
       overflow: visible;
     }
 
+    > .cardHeader::after,
+    > .cardFooter::before {
+      content: none;
+    }
+
     > .cardHeader + .cardContent {
       margin-top: var(--space-3);
     }
@@ -121,7 +136,10 @@
     > .cardHeader + .cardFooter {
       margin-top: var(--space-4);
       padding-top: var(--space-4);
-      border-top: 1px solid var(--card-border-color, var(--border-color));
+
+      &::before {
+        content: "";
+      }
     }
 
     .cardTitle {

@@ -7,6 +7,7 @@ import {
   bundleBudgetPlugin,
   docsMetaPlugin,
 } from "./scripts/build-plugins.mjs";
+import { wcFrameworksPlugin } from "./src/docs/frameworks/vitePlugin.ts";
 
 // App path aliases are defined once, in tsconfig.json "paths".
 // The @minerva/* entries there only point tsc at workspace sources for
@@ -61,7 +62,12 @@ const testAlias: Alias[] = [
 
 export default defineConfig({
   base: "/minerva/",
-  plugins: [react(), docsMetaPlugin(), bundleBudgetPlugin()],
+  plugins: [
+    react(),
+    docsMetaPlugin(),
+    wcFrameworksPlugin(),
+    bundleBudgetPlugin(),
+  ],
   resolve: { alias: process.env.VITEST ? [...testAlias, ...alias] : alias },
   server: {
     port: 3000,

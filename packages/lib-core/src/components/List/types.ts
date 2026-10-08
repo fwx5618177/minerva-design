@@ -1,14 +1,22 @@
 import type { HTMLAttributes, LiHTMLAttributes, Ref } from "react";
 
-/** Row density of a List: 56px or 40px minimum row height */
-export type ListDensity = "default" | "compact";
+/** Row density of a List: 56px, 40px or 72px minimum row height */
+export type ListDensity = "default" | "compact" | "comfortable";
 
 export interface ListProps extends HTMLAttributes<HTMLUListElement> {
   /**
-   * Minimum row height and vertical padding (56px / 12px or 40px / 8px)
+   * Minimum row height and vertical padding (56px / 12px, 40px / 8px or
+   * 72px / 16px)
    * @default "default"
    */
   density?: ListDensity;
+  /**
+   * Frames the list as a card (full border, rounded corners, surface
+   * background) whose rows are tinted on hover and while a control inside
+   * them has the focus
+   * @default false
+   */
+  bordered?: boolean;
   /**
    * Draws token-colored separators between adjacent rows
    * @default true

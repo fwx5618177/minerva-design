@@ -79,6 +79,18 @@
       "popoverResetStyles": "popoverResetStyles：重置在顶层（top layer）中渲染的 popover=\"manual\" 面板的浏览器默认样式。"
     }
   },
+  "frameworks": {
+    "title": "一个页面，所有框架",
+    "text": "每个组件页面都有框架选择器（React、Vue、Angular、Svelte、Solid、HTML），选择会在整个站点以及 ?framework= 链接中保留。Vue、Angular、Svelte、Solid 和 HTML 示例运行的是真实的自定义元素；它们的源码在构建时由一个确定性的转换器根据页面的 Web Component 示例（HTML 及其 setup 脚本）生成，因此每个框架始终展示同一个经过测试的示例：",
+    "rules": {
+      "refs": "root.querySelector(\"#id\") → 元素引用：Vue 中的 ref()、Angular 中的 #ref + @ViewChild、Svelte 中的 bind:this、Solid 中的 ref={el}。",
+      "events": "el.addEventListener(\"minerva-change\", handler) → 模板事件监听：@minerva-change、(minerva-change)、onminerva-change、on:minerva-change；对应的 removeEventListener 会被去掉，由框架负责移除。",
+      "props": "setup 中的 el.items = [...] → 属性绑定：:items.prop、[items]、items={…}、prop:items={…}。",
+      "text": "只通过 textContent（或 <output> 的 value）写入的元素 → 在模板中渲染的响应式状态（ref、字段、$state、signal）。",
+      "rest": "其他声明变为组件状态和函数，其他语句在挂载时执行（onMounted、ngAfterViewInit、onMount），清理函数的其余部分在卸载时执行。纯 HTML 保留原脚本，用 document 代替示例根元素。"
+    },
+    "fallback": "规则无法表达的代码会保留原始的 setup 函数，并在挂载时以容器引用调用，因此生成的示例始终正确。"
+  },
   "guides": {
     "title": "指南"
   },

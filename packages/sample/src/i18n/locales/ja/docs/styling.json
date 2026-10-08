@@ -41,6 +41,12 @@
     "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css、@minerva/lib-web-components/tokens.css は @layer minerva で囲まれています。レイヤー外の CSS は詳細度や記述順に関係なくすべてのレイヤーに勝つので、!important なしでライブラリを上書きできます。アプリでレイヤーを使う場合は、どのスタイルシートよりも前に一度だけ順序を宣言してください。",
     "resets": "注意：レイヤー外のグローバルなリセット（button { background: none }、normalize.css…）も Minerva のスタイルを上書きするようになります。上の例のように minerva より前のレイヤー（layer(reset)）に読み込んでください。"
   },
+  "rules": {
+    "title": "ビジュアルルール：ボーダーとフォーカス",
+    "borders": "片側だけのボーダーは使いません：Minerva は一辺のストライプで状態を示しません（ハイライト項目の左アクセントバー、選択タブの下線ボーダー、アラートや引用ブロックのストライプ、片側の inset シャドウはありません）。インジケーターは完全な形状です：背景の塗り、全周のリング、角丸のピル、ドット。行やセクションの区切りは区切り形状（疑似要素または区切り要素が描く 1px の線）で、行の border-bottom ではありません。上書きするときも同じルールに従ってください。テーブルのグリッド線と Divider 要素自体だけが文書化された例外です。",
+    "focus": "テキスト系コントロール（Input、Textarea、Select のトリガー、NumberInput、TagInput、AutoComplete、TimePicker、Cascader、JsonField、KeyValueEditor、Command の検索欄、Pagination の入力欄）のフォーカスは、ブラウザー標準のアウトラインを置き換えます：ボーダーがフォーカス色に変わり、box-shadow のリングがコントロールを囲みます。テキストフィールドはマウスを含むすべてのフォーカスで表示されます（:focus / :focus-within）。ボタンであるトリガーは :focus-visible を使います。リングの色はテーマの --focus-ring-color から取られ、パレットごとにライトとダークで調整されています。:root、テーマのスコープ、または個々のコントロールで下記の変数を設定してカスタマイズできます。",
+    "forced": "強制カラーモード（Windows ハイコントラスト）：box-shadow は描画されないため、すべてのフォーカスルールは outline: 2px solid transparent も設定します。システムがこのアウトラインを見えるシステムカラーで描くので、フォーカスが消えることはありません。リングを作り直すときも残してください。"
+  },
   "stability": {
     "title": "安定性ポリシー",
     "text": "フックの仕様は機械可読です：@minerva/core/styling-hooks がマニフェスト（コンポーネント → パーツ → 状態とその値）をエクスポートし、ドキュメントはそこから生成されます。コントラクトテストはすべての React コンポーネントとカスタム要素をさまざまな状態で描画し、文書化されたフックが欠けている、または文書化されていないパーツが現れると失敗します。ロックファイル（styling-hooks.lock.json）は、意図して更新するまで仕様の変更をすべてビルドエラーにします。",
@@ -64,7 +70,7 @@
     },
     "restyle-tabs": {
       "title": "Tabs のスタイル変更",
-      "description": "タブの状態フックで、下線スタイル、色付きのアクティブタブ、控えめな無効タブを実現します。"
+      "description": "タブの状態フックで、角丸のピル型タブ、色付きで全周に枠線のあるアクティブタブ、控えめな無効タブを実現します。"
     },
     "restyle-table": {
       "title": "Table のスタイル変更",
@@ -88,7 +94,7 @@
     },
     "items-toast": {
       "title": "成功トースト",
-      "description": "成功トーストには緑のバーと背景が付き、閉じかけのトーストは data-state=\"closed\" / toast--closed の間薄くなります。React のトーストはポータルで描画されますが、複合セレクターで一致します。"
+      "description": "成功トーストには緑の枠線と背景が付き、閉じかけのトーストは data-state=\"closed\" / toast--closed の間薄くなります。React のトーストはポータルで描画されますが、複合セレクターで一致します。"
     }
   }
 }

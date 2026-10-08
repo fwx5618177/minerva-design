@@ -15,6 +15,7 @@ bootstrapApplication(AppComponent);
 // "styles": ["node_modules/@minerva/lib-web-components/dist/tokens.css", "src/styles.css"]`;
 
 const componentCode = `import { CUSTOM_ELEMENTS_SCHEMA, Component, signal } from "@angular/core";
+import { toast } from "@minerva/lib-web-components/toast";
 
 @Component({
   selector: "app-profile",
@@ -57,7 +58,8 @@ export class ProfileComponent {
   ];
 
   save() {
-    console.log(this.name(), this.plan(), this.notify());
+    // toast() creates its <minerva-toast-region> on demand
+    toast.success(\`Saved \${this.name()} (\${this.plan()} plan)\`);
   }
 }`;
 
@@ -108,6 +110,7 @@ export class MinervaValueAccessor implements ControlValueAccessor {
 
 const reactiveCode = `import { CUSTOM_ELEMENTS_SCHEMA, Component } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { toast } from "@minerva/lib-web-components/toast";
 import { MinervaValueAccessor } from "./minerva-value-accessor";
 
 @Component({
@@ -128,7 +131,8 @@ export class SignupComponent {
   });
 
   submit() {
-    console.log(this.form.getRawValue());
+    const { email } = this.form.getRawValue();
+    toast.success(\`Welcome, \${email}!\`);
   }
 }`;
 

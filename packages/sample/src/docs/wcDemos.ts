@@ -1,4 +1,5 @@
 import type { WcDemoEntry } from "./demos";
+import type { WcFrameworkId } from "./frameworks";
 
 // Web Component demos of every page: pages/<id>/wc/<demo>.html (+ optional
 // <demo>.ts exporting `setup(root)`). Loaded on demand, when the "Web
@@ -36,6 +37,34 @@ export async function loadWcDemos(
           { html: markup, setup: script?.setup, script: source },
         ] as const;
       }),
+  );
+  return Object.fromEntries(entries);
+}
+
+/** A demo's source in each framework idiom (see frameworks/transform.ts) */
+export type WcFrameworkSources = Record<WcFrameworkId, string>;
+
+// Generated at build time by the `minerva-wc-frameworks` Vite plugin
+const frameworkSources = import.meta.glob<WcFrameworkSources>(
+  "./pages/*/wc/*.html",
+  { query: "?wc-frameworks", import: "default" },
+);
+
+/** Demo id -> its framework sources, for a page */
+export async function loadWcFrameworkSources(
+  page: string,
+): Promise<Record<string, WcFrameworkSources>> {
+  const prefix = `./pages/${page}/wc/`;
+  const entries = await Promise.all(
+    Object.keys(frameworkSources)
+      .filter((path) => path.startsWith(prefix))
+      .map(
+        async (path) =>
+          [
+            path.slice(prefix.length).replace(/\.html$/, ""),
+            await frameworkSources[path](),
+          ] as const,
+      ),
   );
   return Object.fromEntries(entries);
 }

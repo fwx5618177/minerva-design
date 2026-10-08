@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Stars use the accent color so they read as the same brand signal as CTAs;
 // they follow `currentColor`, so a `color` (style or className) recolors them.
 //
@@ -8,6 +10,8 @@
 // @css-var --rating-gap Space between the stars and the value
 // @css-var --rating-value-font-size Font size of the numeric value (every size)
 // @css-var --rating-scale-gap Space between the rows of a RatingScale
+// @css-var --rating-empty-fill Fill of the empty stars and of the unfilled half (defaults to --surface-muted-color)
+// @css-var --rating-hover-scale Scale of the hovered star of an interactive rating (defaults to 1.15)
 .rating {
   display: inline-flex;
   align-items: center;
@@ -30,6 +34,16 @@
 
 .empty {
   color: var(--rating-empty-color, var(--border-strong-color));
+}
+
+// Empty stars (and the unfilled half) are tinted shapes, not bare outlines,
+// so a half star reads clearly. React: the class is on the <svg>; web
+// components: on a wrapper of the <svg>.
+.empty,
+.empty svg,
+.halfBase,
+.halfBase svg {
+  fill: var(--rating-empty-fill, var(--surface-muted-color));
 }
 
 .half {
@@ -61,8 +75,12 @@
   outline: none;
   border-radius: var(--radius-sm);
 
+  // the design-system ring (box-shadow) + a transparent outline that forced
+  // colors paint
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--primary-color);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: focus-ring();
   }
 }
 
@@ -79,12 +97,17 @@
   transition: transform var(--transition-fast);
 
   &:hover {
-    transform: scale(1.15);
+    transform: scale(var(--rating-hover-scale, 1.15));
+  }
+
+  &:active {
+    transform: scale(0.92);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .starButton:hover {
+  .starButton:hover,
+  .starButton:active {
     transform: none;
   }
 }
@@ -147,6 +170,13 @@
   .empty,
   .halfBase {
     color: CanvasText;
+  }
+
+  .empty,
+  .empty svg,
+  .halfBase,
+  .halfBase svg {
+    fill: Canvas;
   }
 
   .interactive:focus-visible {

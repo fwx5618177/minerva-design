@@ -4,8 +4,7 @@ import { collectDemos } from "@/docs/demos";
 
 // Not part of the main entry: published from the "./monaco" sub-entry, with
 // @monaco-editor/react and monaco-editor as optional peer dependencies.
-const importCode = `import { MonacoCodeEditor } from "@minerva/lib-core/monaco";
-import "@minerva/lib-core/style.css";`;
+const importCode = `import { MonacoCodeEditor } from "@minerva/lib-core/monaco";`;
 
 const demos = collectDemos(
   import.meta.glob<React.ComponentType>("./demos/*.tsx", {

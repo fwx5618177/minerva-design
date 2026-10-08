@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the shell or any ancestor).
 // @css-var --app-shell-sidebar-width Width of the expanded sidebar
 // @css-var --app-shell-rail-width Width of the compact / floating rail
@@ -61,9 +63,13 @@ $header-height: var(--app-shell-header-height, 60px);
   display: flex;
   flex-direction: column;
   background: var(--app-shell-sidebar-background, var(--surface-color));
-  border-inline-end: 1px solid var(--border-color);
   z-index: var(--z-sticky);
   transition: width var(--transition-base);
+
+  // region separator (a 1px separator shape, not a one-sided border)
+  &::after {
+    @include separator(inline-end);
+  }
 }
 
 .brand {
@@ -72,9 +78,13 @@ $header-height: var(--app-shell-header-height, 60px);
   min-height: $header-height;
   flex-shrink: 0;
   gap: var(--space-3);
+  position: relative;
   padding: 0 var(--space-5);
-  border-bottom: 1px solid var(--border-color);
   overflow: hidden;
+
+  &::after {
+    @include separator(bottom);
+  }
 }
 
 .brandIcon {
@@ -106,8 +116,12 @@ $header-height: var(--app-shell-header-height, 60px);
   justify-content: space-between;
   flex-shrink: 0;
   gap: var(--space-1);
+  position: relative;
   padding: var(--space-3);
-  border-top: 1px solid var(--border-color);
+
+  &::before {
+    @include separator(top);
+  }
 }
 
 .workspace {
@@ -130,7 +144,10 @@ $header-height: var(--app-shell-header-height, 60px);
   min-height: $header-height;
   padding: var(--space-2) var(--space-6);
   background: var(--app-shell-header-background, var(--surface-color));
-  border-bottom: 1px solid var(--border-color);
+
+  &::after {
+    @include separator(bottom);
+  }
 }
 
 .control {

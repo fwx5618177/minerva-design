@@ -63,8 +63,9 @@ const WcApiTables: React.FC<WcApiTablesProps> = ({
           <table className={styles.propsTable}>
             <thead>
               <tr>
-                {head.map((h) => (
-                  <th scope="col" key={h}>
+                {/* index keys: two headers can share a translation (zh) */}
+                {head.map((h, index) => (
+                  <th scope="col" key={index}>
                     {h}
                   </th>
                 ))}

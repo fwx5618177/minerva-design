@@ -173,7 +173,8 @@ $demo: "[data-demo-preview]";
   color: var(--ds-fg-subtle);
 }
 
-// ---- Framework tabs (React / Web Components): Minerva Tabs, soft variant ----
+// ---- Framework selector (React, Vue, Angular, Svelte, Solid, HTML):
+// Minerva Tabs, soft variant ----
 
 .frameworkTabs {
   --surface-color: var(--ds-bg-raised);
@@ -186,10 +187,6 @@ $demo: "[data-demo-preview]";
   --tabs-trigger-padding-x: 12px;
   --tabs-panel-padding: 40px 0 0;
   margin-bottom: 32px;
-
-  > [role="tablist"] {
-    align-self: flex-start;
-  }
 }
 
 // ---- DemoBlock ----
@@ -496,5 +493,41 @@ $demo: "[data-demo-preview]";
     // "i" in a circle
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 14.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13ZM8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16Zm.75-10.5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.25 7h1.5v4.5h-1.5V7Z'/%3E%3C/svg%3E")
       center / contain no-repeat;
+  }
+}
+
+// ---- Global framework selector + stylesheet note ----
+
+.frameworkBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: 100%;
+
+  > [role="tablist"] {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
+
+.frameworkLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ds-fg-subtle);
+}
+
+.importNote {
+  margin: 8px 0 0 !important;
+  font-size: 14px;
+  color: var(--ds-fg-muted);
+}
+
+.setupStep {
+  margin-top: 16px;
+
+  > p {
+    margin-bottom: 8px !important;
   }
 }

@@ -1,4 +1,10 @@
-import { Button, ConfirmProvider, useConfirm } from "@minerva/lib-core";
+import {
+  Button,
+  ConfirmProvider,
+  ToastProvider,
+  toast,
+  useConfirm,
+} from "@minerva/lib-core";
 
 function PublishButton() {
   const ask = useConfirm();
@@ -6,7 +12,7 @@ function PublishButton() {
     <Button
       onClick={async () => {
         if (await ask({ title: "Publish chapter?", confirmLabel: "Publish" })) {
-          alert("Published");
+          toast.success("Published");
         }
       }}
     >
@@ -17,8 +23,10 @@ function PublishButton() {
 
 export default function ProviderDemo() {
   return (
-    <ConfirmProvider>
-      <PublishButton />
-    </ConfirmProvider>
+    <ToastProvider>
+      <ConfirmProvider>
+        <PublishButton />
+      </ConfirmProvider>
+    </ToastProvider>
   );
 }

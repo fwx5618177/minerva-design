@@ -34,7 +34,7 @@ export default function Root() {
   );
 }`;
 
-const configProviderCode = `import { ConfigProvider } from "@minerva/lib-core";
+const configProviderCode = `import { ConfigProvider, ToastProvider, toast } from "@minerva/lib-core";
 
 // The same thing with ConfigProvider (ThemeProvider is a preset over it):
 // "system" is an alias of "auto"; persist turns on the cookies.
@@ -42,10 +42,12 @@ const configProviderCode = `import { ConfigProvider } from "@minerva/lib-core";
   theme="system"
   palette="editorial"
   persist
-  onThemeChange={(theme) => console.log("theme", theme)}
-  onPaletteChange={(palette) => console.log("palette", palette)}
+  onThemeChange={(theme) => toast.info(\`Theme: \${theme}\`)}
+  onPaletteChange={(palette) => toast.info(\`Palette: \${palette}\`)}
 >
-  <App />
+  <ToastProvider>
+    <App />
+  </ToastProvider>
 </ConfigProvider>;`;
 
 const useThemeCode = `import { useTheme } from "@minerva/lib-core";

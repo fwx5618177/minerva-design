@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the dialog or any ancestor):
 // @css-var --command-search-height Minimum height of the search field (defaults to --control-height-md)
 // @css-var --command-results-max-height Maximum height of the scrolling result list
@@ -19,9 +21,14 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+  position: relative;
   padding: var(--space-4) var(--space-5) var(--space-3);
-  border-bottom: 1px solid var(--border-color);
   font-size: var(--font-size-md);
+
+  // a 1px separator shape, not a one-sided border
+  &::after {
+    @include separator(bottom);
+  }
 
   span {
     min-width: 0;
@@ -64,9 +71,9 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
 
+  // the shared control-focus treatment (styles/_mixins.scss)
   &:focus-within {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
+    @include control-focus;
   }
 }
 
@@ -93,9 +100,12 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
 .results {
   display: grid;
   max-height: var(--command-results-max-height, min(440px, 58vh));
+  gap: 2px;
   margin: 0 var(--space-5) var(--space-5);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-1);
+  // a fully outlined, rounded result box; the rows are rounded tiles
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
   overflow-y: auto;
 }
 
@@ -110,8 +120,7 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
   padding-block: var(--command-item-padding-y, calc(var(--row-padding-y) + var(--space-1)));
   padding-inline: var(--command-item-padding-x, calc(var(--row-padding-x) + var(--space-1))) var(--command-item-padding-x, var(--row-padding-x));
   border: 0;
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-color);
   font: inherit;
@@ -121,28 +130,10 @@ $tint: color-mix(in srgb, var(--primary-color) 10%, transparent);
     background-color var(--transition-fast),
     color var(--transition-fast);
 
-  &:last-child {
-    border-bottom: 0;
-  }
-
-  &::before {
-    position: absolute;
-    inset-block: 10px;
-    inset-inline-start: 0;
-    width: 3px;
-    border-radius: var(--radius-full);
-    background: transparent;
-    content: "";
-    transition: background-color var(--transition-fast);
-  }
-
+  // the hovered / active row is a filled rounded tile (no edge accent bar)
   &:hover,
   &[data-highlighted] {
     background: var(--command-item-active-background, #{$tint});
-
-    &::before {
-      background: var(--primary-color);
-    }
   }
 
   @media (forced-colors: active) {

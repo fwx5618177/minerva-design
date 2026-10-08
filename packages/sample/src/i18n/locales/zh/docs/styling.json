@@ -41,6 +41,12 @@
     "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css 和 @minerva/lib-web-components/tokens.css 都包裹在 @layer minerva 中。未分层的 CSS 无论优先级或先后顺序都会胜过任何层，因此你的规则无需 !important 即可覆盖库样式。如果你的应用使用了级联层，请在所有样式表之前声明一次层顺序。",
     "resets": "注意：未分层的全局重置样式（button { background: none }、normalize.css……）现在同样会覆盖 Minerva 的样式。请像上面那样把它们导入到排在 minerva 之前的层中（layer(reset)）。"
   },
+  "rules": {
+    "title": "视觉规则：边框与焦点",
+    "borders": "不使用单边边框：Minerva 从不用某一侧的色条表示状态（高亮项没有左侧强调条，选中的标签没有下划线边框，提示框和引用块没有侧边色条，也没有单边的 inset 阴影）。指示器都是完整形状：背景填充、完整描边环、圆角胶囊或圆点。行与区块之间的分隔线是分隔形状（由伪元素或分隔元素绘制的 1px 线条），而不是行的 border-bottom。自定义样式时请遵循同一规则；表格网格线和 Divider 元素本身是仅有的已记录例外。",
+    "focus": "文本类控件（Input、Textarea、Select 触发器、NumberInput、TagInput、AutoComplete、TimePicker、Cascader、JsonField、KeyValueEditor、Command 搜索框、Pagination 输入框）的焦点样式取代了浏览器原生轮廓：边框变为焦点色，并由 box-shadow 绘制环绕控件的焦点环。文本输入框在任何聚焦方式下（包括鼠标）都会显示（:focus / :focus-within）；按钮类触发器使用 :focus-visible。焦点环颜色来自主题的 --focus-ring-color，按调色板分别为浅色和深色调校。可在 :root、主题作用域或单个控件上用下列变量自定义。",
+    "forced": "强制颜色模式（Windows 高对比度）：该模式不绘制 box-shadow，因此每条焦点规则还会设置 outline: 2px solid transparent。系统会把这条轮廓渲染为可见的系统颜色，焦点不会消失。重新设计焦点环时请保留它。"
+  },
   "stability": {
     "title": "稳定性策略",
     "text": "钩子接口是机器可读的：@minerva/core/styling-hooks 导出清单（组件 → 部件 → 状态及其取值），文档即由它生成。契约测试会在各种状态下渲染每个 React 组件和每个自定义元素，只要缺少已文档化的钩子或出现未文档化的部件就会失败；锁定文件（styling-hooks.lock.json）会让任何接口变更导致构建失败，直到有意更新它。",
@@ -64,7 +70,7 @@
     },
     "restyle-tabs": {
       "title": "重新设计 Tabs",
-      "description": "通过标签页组件的状态钩子实现下划线样式、着色的当前标签和淡化的禁用标签。"
+      "description": "通过标签页组件的状态钩子实现圆角胶囊样式：当前标签带着色背景和完整描边，禁用标签变淡。"
     },
     "restyle-table": {
       "title": "重新设计 Table",
@@ -88,7 +94,7 @@
     },
     "items-toast": {
       "title": "成功通知",
-      "description": "成功通知带绿色竖条和背景，离开中的通知在 data-state=\"closed\" / toast--closed 期间变淡。React 通知通过 portal 渲染：复合选择器依然能匹配。"
+      "description": "成功通知带绿色描边和背景，离开中的通知在 data-state=\"closed\" / toast--closed 期间变淡。React 通知通过 portal 渲染：复合选择器依然能匹配。"
     }
   }
 }

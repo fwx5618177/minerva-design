@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the cascader or any ancestor; the
 // dropdown is portaled, so set its variables on :root or dropdownClassName):
 // @css-var --cascader-height Minimum height of the field (defaults to the density's small control height)
@@ -30,11 +32,12 @@
     border-color: var(--border-strong-color);
   }
 
+  // open, or focus on the field (mouse included): the shared control-focus
+  // treatment (styles/_mixins.scss)
   &.focused,
-  &:focus-visible {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
+  &:focus-visible,
+  &:focus-within {
+    @include control-focus;
   }
 
   &.disabled {
@@ -128,6 +131,9 @@
   display: flex;
   min-height: 180px;
   max-height: var(--cascader-dropdown-max-height, 300px);
+  // columns are separated by space, not by a one-sided border line
+  gap: var(--space-1);
+  padding-inline: var(--space-1);
   background: var(--surface-elevated-color);
   border-radius: var(--cascader-radius, var(--radius-sm));
 }
@@ -137,7 +143,6 @@
   flex: 0 0 auto;
   min-width: var(--cascader-column-min-width, 160px);
   max-width: max(260px, var(--cascader-column-min-width, 160px));
-  border-inline-end: 1px solid var(--border-color);
   margin: 0;
   padding: var(--space-1) 0;
   list-style: none;
@@ -155,10 +160,6 @@
     &:hover {
       background: var(--border-strong-color);
     }
-  }
-
-  &:last-child {
-    border-inline-end: none;
   }
 }
 
@@ -294,7 +295,8 @@
 // and mark the active option with a system-colored edge.
 @media (forced-colors: active) {
   .selector.focused,
-  .selector:focus-visible {
+  .selector:focus-visible,
+  .selector:focus-within {
     outline: 2px solid Highlight;
     outline-offset: 1px;
   }

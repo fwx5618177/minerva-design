@@ -13,11 +13,28 @@
     "peers": "react と react-dom は peer 依存（^19）なので、アプリ内の React は 1 つに保たれます。実行時の依存は @minerva/core（プリミティブ、デザイントークン、軽量トランスレーター）、DOMPurify（HtmlPreview）、jsonc-parser（JsonField）だけで、アイコン・クラス名・i18n のライブラリはインストールされません。アイコンはインライン SVG です。"
   },
   "styles": {
-    "title": "スタイルシートの読み込み",
-    "text": "コンポーネントのスタイルとデフォルトのテーマトークンは 1 つの CSS ファイルにまとめられています。アプリのエントリーファイルで一度だけ読み込んでください：",
-    "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。読み込みは一度で十分です。複数のモジュールから読み込んでも問題はありませんが不要です。",
-    "extras": "同じ場所に任意の Sass ファイルが公開されています。@minerva/lib-core/prose.scss は長文タイポグラフィ用の mixin を含み、独自の Sass から @use で読み込みます。",
-    "perComponent": "一部のコンポーネントしか使わない場合は、style.css の代わりにデザイントークンを一度読み込み、使うコンポーネントごとのスタイルシートを読み込めます。各ファイルにはそのコンポーネントと、内部で描画するコンポーネントのスタイルが含まれます（例：confirm.css には Button と Modal のスタイルも含まれます）。ファイル名はコンポーネントフォルダー名の kebab-case です（tag-input.css、time-picker.css など）。JavaScript もコンポーネント単位で tree-shaking されます。各モジュールは個別に公開され、CSS 以外に副作用はありません。"
+    "title": "グローバルスタイルシートを一度だけ読み込む",
+    "text": "すべてのコンポーネントのスタイルとデフォルトのテーマトークンは、1 つのグローバルスタイルシート @minerva/lib-core/style.css にまとめられています。アプリのエントリで、独自の CSS より前に一度だけ読み込んでください。以降、コンポーネントのファイルではコンポーネントだけをインポートし、CSS はインポートしません。",
+    "note": "@minerva/lib-core/style.css がないとコンポーネントはスタイルなしで表示されます。エントリで一度だけ読み込んでください。コンポーネントのファイルから再度読み込んでも問題はありませんが不要です。",
+    "vite": {
+      "title": "React + Vite：src/main.tsx",
+      "note": "Vite は JavaScript からインポートされた CSS をバンドルします。開発時は開発サーバーがスタイルを注入し、vite build ではハッシュ付きの 1 つの .css ファイルとして出力され index.html から読み込まれます。プラグインや追加の設定は不要です。"
+    },
+    "next": {
+      "title": "Next.js（App Router）：app/layout.tsx",
+      "note": "ルートレイアウトは Server Component で、グローバル CSS をインポートできます。これですべてのルートにスタイルが適用されます。"
+    },
+    "wc": {
+      "title": "Web Components：src/main.ts",
+      "note": "カスタム要素は shadow root 内に自身のスタイルを持ち、tokens.css が共通のデザイントークンを提供します。Vue、Angular、Svelte、Solid、素の HTML アプリのエントリで、どちらも一度だけ読み込んでください。同じページで React コンポーネントも使う場合、style.css にトークンが含まれています。"
+    },
+    "components": {
+      "title": "コンポーネントのファイルでは",
+      "text": "コンポーネントのページにはコンポーネントのインポートだけが表示されます。どれも上で読み込んだグローバルスタイルシートを前提としています："
+    },
+    "perComponentTitle": "オプション：コンポーネントごとのスタイルシート",
+    "perComponent": "一部のコンポーネントしか使わない場合は、style.css の代わりにデザイントークンを一度読み込み、使うコンポーネントごとのスタイルシートを読み込めます。各ファイルにはそのコンポーネントと、内部で描画するコンポーネントのスタイルが含まれます（例：confirm.css には Button と Modal のスタイルも含まれます）。ファイル名はコンポーネントフォルダー名の kebab-case です（tag-input.css、time-picker.css など）。JavaScript もコンポーネント単位で tree-shaking されます。各モジュールは個別に公開され、CSS 以外に副作用はありません。",
+    "extras": "同じ場所に任意の Sass ファイルが公開されています。@minerva/lib-core/prose.scss は長文タイポグラフィ用の mixin を含み、独自の Sass から @use で読み込みます。"
   },
   "optional": {
     "title": "任意のエントリとピア依存",

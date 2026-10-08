@@ -353,4 +353,57 @@ describe("MonthCalendar", () => {
       await act(() => i18n.changeLanguage("en"));
     }
   });
+  it.each(["small", "medium", "large"] as const)(
+    "applies the %s size (class and data-size hook)",
+    (size) => {
+      render({ size });
+      const root = screen.getByRole("region", { name: "Month calendar" });
+      expect(root).toHaveClass(styles[size]);
+      expect(root).toHaveAttribute("data-size", size);
+    },
+  );
+
+  it("defaults to the medium size", () => {
+    render();
+    const root = screen.getByRole("region", { name: "Month calendar" });
+    expect(root).toHaveClass(styles.medium);
+    expect(root).toHaveAttribute("data-size", "medium");
+  });
+
+  it("highlights a range (either order) without changing the selection", () => {
+    const onChange = vi.fn();
+    render({ rangeStart: "2024-02-14", rangeEnd: "2024-02-12", onChange });
+    expect(day("2024-02-11")).not.toHaveClass(styles.inRange);
+    expect(day("2024-02-12")).toHaveClass(styles.inRange, styles.rangeStart);
+    expect(day("2024-02-12")).not.toHaveClass(styles.rangeEnd);
+    expect(day("2024-02-13")).toHaveClass(styles.inRange);
+    expect(day("2024-02-13")).not.toHaveClass(
+      styles.rangeStart,
+      styles.rangeEnd,
+    );
+    expect(day("2024-02-14")).toHaveClass(styles.inRange, styles.rangeEnd);
+    expect(day("2024-02-15")).not.toHaveClass(styles.inRange);
+    expect(day("2024-02-13")).toHaveAttribute("aria-selected", "false");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("ignores an incomplete or malformed range", () => {
+    render({ rangeStart: "2024-02-12" });
+    expect(container.querySelector(`.${styles.inRange}`)).toBeNull();
+    render({ rangeStart: "2024-02-12", rangeEnd: "soon" });
+    expect(container.querySelector(`.${styles.inRange}`)).toBeNull();
+  });
+
+  it("marks the day number and the days with events", () => {
+    render();
+    expect(
+      day("2024-02-29").querySelector(`.${styles.dayNumber}`),
+    ).toHaveTextContent("29");
+    expect(day("2024-02-29").querySelector(`.${styles.count}`)).toHaveClass(
+      styles.hasEvents,
+    );
+    expect(day("2024-02-28").querySelector(`.${styles.count}`)).not.toHaveClass(
+      styles.hasEvents,
+    );
+  });
 });

@@ -11,7 +11,9 @@ const css = `
    matches them wherever they render */
 [data-minerva="toast-region"][data-part="toast"][data-color="success"],
 minerva-toast-region.success-toasts::part(toast toast--color-success) {
-  border-inline-start: 6px solid var(--success-color);
+  /* a full outline, not a one-sided stripe */
+  border-color: var(--success-color);
+  box-shadow: inset 0 0 0 1px var(--success-color);
   background: var(--success-color-subtle);
 }
 /* leaving toast (data-state="closed" during its exit animation) */

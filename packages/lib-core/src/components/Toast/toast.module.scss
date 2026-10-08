@@ -11,6 +11,7 @@
 // @css-var --toast-shadow Shadow of a toast (defaults to --shadow-lg)
 // @css-var --toast-background Base background of a toast (under the color tint)
 // @css-var --toast-z-index Stacking order of the stack (defaults to --z-toast)
+// @css-var --toast-icon-background Background of the round chip behind the status icon (defaults to the color's accent at 14%)
 
 .viewport {
   position: fixed;
@@ -91,11 +92,16 @@
   }
 }
 
+// The status icon sits in a round, tinted chip
 .icon {
   flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 1px;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  margin-block: -2px;
+  padding: 5px;
+  border-radius: var(--radius-full);
+  background: var(--toast-icon-background, color-mix(in srgb, var(--toast-accent) 14%, transparent));
   color: var(--toast-accent);
 
   svg {

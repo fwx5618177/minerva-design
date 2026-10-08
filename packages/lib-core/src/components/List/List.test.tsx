@@ -72,7 +72,7 @@ describe("List public contract", () => {
       ComponentProps<typeof ListItem>
     >().toMatchTypeOf<ListItemProps>();
     expectTypeOf<ListProps["density"]>().toEqualTypeOf<
-      "default" | "compact" | undefined
+      "default" | "compact" | "comfortable" | undefined
     >();
     expectTypeOf<ListItemProps["primary"]>().toEqualTypeOf<ReactNode>();
     expectTypeOf<ListItemProps["value"]>().toEqualTypeOf<
@@ -304,6 +304,27 @@ describe("List public contract", () => {
     expect(list.hasAttribute("density")).toBe(false);
     expect(list.hasAttribute("dividers")).toBe(false);
   });
+
+  it("applies the comfortable density and the bordered card", () => {
+    container.innerHTML = renderToStaticMarkup(
+      <List>
+        <ListItem primary="One" />
+      </List>,
+    );
+    expect(container.querySelector("ul")).not.toHaveClass(
+      styles.bordered,
+      styles.comfortable,
+    );
+    container.innerHTML = renderToStaticMarkup(
+      <List density="comfortable" bordered>
+        <ListItem primary="One" />
+      </List>,
+    );
+    const list = container.querySelector("ul")!;
+    expect(list).toHaveClass(styles.comfortable, styles.bordered);
+    expect(list).not.toHaveClass(styles.compact);
+    expect(list.hasAttribute("bordered")).toBe(false);
+  });
 });
 
 // The row defaults derive from the density tokens through calc(), which
@@ -370,9 +391,14 @@ describe("List distributed styles", () => {
     expect(
       toPx(getComputedStyle(rows[2]!).getPropertyValue("padding-block")),
     ).toBe(8);
-    expect(getComputedStyle(rows[0]!).borderTopWidth).not.toBe("1px");
-    expect(getComputedStyle(rows[1]!).borderTopWidth).toBe("1px");
-    expect(getComputedStyle(rows[3]!).borderTopWidth).not.toBe("1px");
+    // the divider is a separator pseudo-element (no one-sided border),
+    // shown through --_list-divider on the rows after the first
+    const divider = (row: Element) =>
+      getComputedStyle(row).getPropertyValue("--_list-divider").trim();
+    expect(divider(rows[0]!)).toBe("0");
+    expect(divider(rows[1]!)).toBe("1");
+    expect(divider(rows[3]!)).toBe("0");
+    expect(getComputedStyle(rows[1]!).borderTopWidth).not.toBe("1px");
   });
 
   it("gives each density a stable minimum row height without limiting content growth", () => {

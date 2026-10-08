@@ -41,6 +41,12 @@
     "text": "@minerva/core/tokens.css, @minerva/lib-core/style.css, styles/*.css et @minerva/lib-web-components/tokens.css sont enveloppés dans @layer minerva. Le CSS hors couche l'emporte sur toutes les couches, quels que soient sa spécificité et son ordre : vos règles remplacent celles de la bibliothèque sans !important. Si votre application utilise des couches, déclarez leur ordre une fois, avant toute feuille de style.",
     "resets": "Conséquence : les resets globaux hors couche (button { background: none }, normalize.css...) l'emportent désormais aussi sur les styles de Minerva. Importez-les dans une couche placée avant minerva (layer(reset)), comme ci-dessus."
   },
+  "rules": {
+    "title": "Règles visuelles : bordures et focus",
+    "borders": "Pas de bordure d'un seul côté : Minerva ne marque jamais un état par une bande sur un bord (pas de barre d'accent à gauche d'un élément en surbrillance, pas de bordure soulignant l'onglet sélectionné, pas de bande sur une alerte ou une citation, pas d'ombre inset d'un seul côté). Les indicateurs sont des formes complètes : un fond, un anneau complet, une pastille arrondie ou un point. Les séparateurs entre lignes et sections sont des formes de séparation (une ligne de 1px dessinée par un pseudo-élément ou un élément séparateur), jamais un border-bottom de la ligne. Suivez la même règle dans vos surcharges ; les lignes de grille des tableaux et l'élément Divider lui-même sont les seules exceptions documentées.",
+    "focus": "Le focus des contrôles de saisie (Input, Textarea, déclencheur de Select, NumberInput, TagInput, AutoComplete, TimePicker, Cascader, JsonField, KeyValueEditor, recherche de Command, champs de Pagination) remplace le contour natif du navigateur : la bordure prend la couleur de focus et un anneau en box-shadow entoure le contrôle. Les champs de texte l'affichent à chaque focus, souris comprise (:focus / :focus-within) ; les déclencheurs qui sont des boutons utilisent :focus-visible. La couleur de l'anneau vient du --focus-ring-color du thème, réglé par palette en clair et en sombre. Personnalisez-le avec les variables ci-dessous, sur :root, une portée de thème ou un seul contrôle.",
+    "forced": "Couleurs forcées (contraste élevé de Windows) : les box-shadows n'y sont pas peintes, donc chaque règle de focus définit aussi outline: 2px solid transparent. Le système transforme ce contour en une couleur système visible : le focus ne disparaît jamais. Conservez-le si vous redessinez l'anneau."
+  },
   "stability": {
     "title": "Politique de stabilité",
     "text": "La surface des hooks est lisible par machine : @minerva/core/styling-hooks exporte le manifeste (composant → parties → états, avec leurs valeurs) dont la documentation est générée. Des tests de contrat rendent chaque composant React et chaque élément personnalisé dans leurs états, et échouent si un hook documenté manque ou si une partie non documentée apparaît ; un fichier de verrouillage (styling-hooks.lock.json) fait échouer le build à toute modification de la surface tant qu'il n'est pas mis à jour volontairement.",
@@ -64,7 +70,7 @@
     },
     "restyle-tabs": {
       "title": "Restyler Tabs",
-      "description": "Des onglets soulignés, l'onglet actif coloré et l'onglet désactivé atténué, grâce aux hooks d'état de l'onglet."
+      "description": "Des onglets en pastilles arrondies, l'onglet actif teinté et entièrement entouré, l'onglet désactivé atténué, grâce aux hooks d'état de l'onglet."
     },
     "restyle-table": {
       "title": "Restyler Table",
@@ -88,7 +94,7 @@
     },
     "items-toast": {
       "title": "Toasts de succès",
-      "description": "Les toasts de succès reçoivent une barre et un fond verts, et les toasts qui partent s'estompent pendant data-state=\"closed\" / toast--closed. Les toasts React sont rendus dans un portail : le sélecteur composé les cible quand même."
+      "description": "Les toasts de succès reçoivent un contour et un fond verts, et les toasts qui partent s'estompent pendant data-state=\"closed\" / toast--closed. Les toasts React sont rendus dans un portail : le sélecteur composé les cible quand même."
     }
   }
 }

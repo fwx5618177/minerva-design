@@ -5,26 +5,25 @@ type OpenChange = CustomEvent<{ open: boolean }>;
 
 export function setup(root: HTMLElement) {
   const tip = root.querySelector<Tooltip>("#tip")!;
+  const showButton = root.querySelector<HTMLElement>("#tip-show")!;
+  const hideButton = root.querySelector<HTMLElement>("#tip-hide")!;
+  const toggleButton = root.querySelector<HTMLElement>("#tip-toggle")!;
   const log = root.querySelector<HTMLElement>("#tip-log")!;
-  const actions: Array<[string, () => void]> = [
-    ["#tip-show", () => tip.show()],
-    ["#tip-hide", () => tip.hide()],
-    ["#tip-toggle", () => tip.toggle()],
-  ];
-  const buttons = actions.map(([selector, action]) => {
-    const button = root.querySelector<HTMLElement>(selector)!;
-    button.addEventListener("click", action);
-    return [button, action] as const;
-  });
+  const onShow = () => tip.show();
+  const onHide = () => tip.hide();
+  const onToggle = () => tip.toggle();
   const onChange = (event: Event) =>
     (log.textContent = `minerva-open-change: open=${
       (event as OpenChange).detail.open
     }`);
+  showButton.addEventListener("click", onShow);
+  hideButton.addEventListener("click", onHide);
+  toggleButton.addEventListener("click", onToggle);
   tip.addEventListener("minerva-open-change", onChange);
   return () => {
-    for (const [button, action] of buttons) {
-      button.removeEventListener("click", action);
-    }
+    showButton.removeEventListener("click", onShow);
+    hideButton.removeEventListener("click", onHide);
+    toggleButton.removeEventListener("click", onToggle);
     tip.removeEventListener("minerva-open-change", onChange);
   };
 }

@@ -10,6 +10,7 @@ import { hooks } from "../../internal/stylingHooks";
 export const List = ({
   density = "default",
   dividers = true,
+  bordered = false,
   role = "list",
   className,
   ref,
@@ -21,6 +22,8 @@ export const List = ({
     className={cn(
       styles.list,
       density === "compact" && styles.compact,
+      density === "comfortable" && styles.comfortable,
+      bordered && styles.bordered,
       dividers && styles.dividers,
       className,
     )}

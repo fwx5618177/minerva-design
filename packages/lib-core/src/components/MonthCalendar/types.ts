@@ -11,6 +11,12 @@ export interface MonthCalendarEvent {
 }
 
 /**
+ * Density of a MonthCalendar: "small" (compact cells, events as a dot),
+ * "medium" or "large" (comfortable cells, the day number at the top)
+ */
+export type MonthCalendarSize = "small" | "medium" | "large";
+
+/**
  * Props of the MonthCalendar component: a Monday-first month grid with
  * per-day event counts, keyboard navigation and the selected day's events
  */
@@ -37,6 +43,22 @@ export interface MonthCalendarProps {
   events?: readonly MonthCalendarEvent[];
   /** Makes the selected day's events clickable */
   onEventClick?: (event: MonthCalendarEvent) => void;
+  /**
+   * First day of a highlighted range, "YYYY-MM-DD" (display only; pair with
+   * rangeEnd)
+   */
+  rangeStart?: string;
+  /**
+   * Last day of a highlighted range, "YYYY-MM-DD" (display only; pair with
+   * rangeStart)
+   */
+  rangeEnd?: string;
+  /**
+   * Cell density: compact ("small"), default ("medium") or comfortable
+   * ("large")
+   * @default "medium"
+   */
+  size?: MonthCalendarSize;
   /**
    * Blocks navigation, selection and event clicks
    * @default false

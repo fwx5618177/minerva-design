@@ -40,8 +40,10 @@ const configCode = `<minerva-config theme="system" palette="tech" design="editor
 </minerva-config>`;
 
 const configEventCode = `const config = document.querySelector("minerva-config");
+const status = document.querySelector("#theme-status");
 config.addEventListener("minerva-theme-change", (event) => {
-  console.log(event.detail.mode); // "light" | "dark", e.g. when the OS switches
+  // "light" | "dark", e.g. when the OS switches
+  status.textContent = \`\${event.detail.mode} mode\`;
 });
 config.resolvedMode; // the mode currently applied`;
 

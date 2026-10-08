@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the nav tree or any ancestor):
 // @css-var --nav-tree-gap Space between the sections
 // @css-var --nav-tree-item-height Minimum height of a top-level row (defaults to the density's control height)
@@ -6,6 +8,9 @@
 // @css-var --nav-tree-indent Indentation of nested rows
 // @css-var --nav-tree-active-background Background of the active row
 // @css-var --nav-tree-active-color Accent color of the active row's icon
+// @css-var --nav-tree-hover-background Background of a hovered row (defaults to --hover-color)
+// @css-var --nav-tree-guide-color Color of the indent guide of an expanded branch (defaults to --border-color)
+// @css-var --nav-tree-guide-active-color Color of the indent guide of the branch holding the active row
 
 .navTree {
   display: grid;
@@ -18,12 +23,20 @@
   display: grid;
   gap: var(--space-2);
   min-width: 0;
+  position: relative;
   padding-top: var(--space-4);
-  border-top: 1px solid var(--border-color);
+
+  // section separator: a 1px separator shape, not a one-sided border
+  &::before {
+    @include separator(top);
+  }
 
   &:first-child {
     padding-top: 0;
-    border-top: 0;
+
+    &::before {
+      content: none;
+    }
   }
 }
 
@@ -44,9 +57,23 @@
 }
 
 .children {
+  position: relative;
   margin-inline-start: 0;
   padding-inline-start: var(--nav-tree-indent, calc(var(--space-3) + 10px));
   border-inline-start: 0;
+
+  // Indent guide: a 1px rounded shape (not a border) under the parent's
+  // icon, accented when the branch holds the active row
+  &::before {
+    @include separator(inline-start, var(--nav-tree-guide-color, var(--border-color)), 2px);
+    inset-inline-start: calc(var(--nav-tree-indent, calc(var(--space-3) + 10px)) / 2);
+    border-radius: var(--radius-full);
+    transition: background-color var(--transition-fast);
+  }
+
+  &:has(.active)::before {
+    background-color: var(--nav-tree-guide-active-color, var(--primary-color-border));
+  }
 }
 
 .item {
@@ -73,8 +100,12 @@
     box-shadow var(--transition-fast);
 
   &:hover {
-    background: var(--hover-color);
+    background: var(--nav-tree-hover-background, var(--hover-color));
     color: var(--text-color);
+  }
+
+  &:active:not(.disabled) {
+    background: var(--surface-muted-color);
   }
 
   &:focus-visible {
@@ -297,5 +328,9 @@
 
   .disabled {
     color: GrayText;
+  }
+
+  .children:has(.active)::before {
+    background-color: Highlight;
   }
 }

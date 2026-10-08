@@ -79,7 +79,43 @@
       "signature": "Signature",
       "readonly": "read-only",
       "defaultSlot": "(default)"
-    }
+    },
+    "requiresStylesheet": "Requires the global stylesheet — see",
+    "requiresStylesheetLink": "Installation",
+    "fw": {
+      "setupTitle": "Setup",
+      "guide": "More on {{framework}}: <guide>the full integration guide</guide>.",
+      "setup": {
+        "register": "Register the elements and load the design tokens once, in your entry file —",
+        "vueCompiler": "Tell Vue's template compiler that minerva-* tags are custom elements —",
+        "types": "Add the {{framework}} typings: attributes, properties and events are type-checked and completed in templates —",
+        "angularSchema": "Allow custom elements in every component that uses them —",
+        "solidTypes": "Add the Solid JSX typings (on:minerva-* events and prop:* properties are typed) —",
+        "htmlModule": "With a bundler or an import map, import the element entry in a module script —",
+        "htmlCdn": "Without a build step, load the self-contained CDN bundle instead —"
+      },
+      "vue": {
+        "examples": "Each example is a Vue 3 single-file component (<script setup lang=\"ts\">): element refs with ref(), :prop.prop property bindings, @minerva-* event listeners and reactive state in the template. It is generated from the live custom-element demo shown above it.",
+        "api": "In Vue templates, bind attributes and properties with :name (add .prop to force a property, e.g. arrays and objects), listen with @minerva-event (read $event.detail) and fill slots with slot=\"name\"."
+      },
+      "angular": {
+        "examples": "Each example is a standalone Angular component with CUSTOM_ELEMENTS_SCHEMA: #refs read with @ViewChild, [prop] property bindings, (minerva-event) listeners and component fields in the template. It is generated from the live custom-element demo shown above it.",
+        "api": "In Angular templates, bind properties with [name], attributes with [attr.name], listen with (minerva-event) (read $event.detail) and fill slots with slot=\"name\"."
+      },
+      "svelte": {
+        "examples": "Each example is a Svelte 5 component (runes): bind:this refs, name={value} property bindings, onminerva-event handlers and $state in the markup. It is generated from the live custom-element demo shown above it.",
+        "api": "In Svelte, name={value} sets a property when the element has one (an attribute otherwise), onminerva-event={handler} listens to an event and slot=\"name\" fills a slot."
+      },
+      "solid": {
+        "examples": "Each example is a Solid component: ref={el}, prop:name={value} property bindings, on:minerva-event listeners and signals in the JSX. It is generated from the live custom-element demo shown above it.",
+        "api": "In Solid JSX, name=\"…\" sets an attribute, prop:name={value} a property, on:minerva-event={handler} listens to an event (case-sensitive) and slot=\"name\" fills a slot."
+      },
+      "html": {
+        "examples": "Each example is plain HTML with a module script: the markup is the live demo itself, the script finds the elements with document.querySelector, sets properties and listens to events.",
+        "api": "In HTML, attributes are kebab-case (string, number and boolean values); set arrays, objects and functions as JavaScript properties; listen with addEventListener(\"minerva-event\")."
+      }
+    },
+    "requiresStylesheetEnd": "."
   },
   "error": {
     "title": "Oops!",
@@ -108,15 +144,37 @@
     "placeholder": "Search pages and components…",
     "empty": "No results found.",
     "results": "Search results",
-    "description": "Type to filter pages and components, use the arrow keys to move and Enter to open."
+    "description": "Type to filter pages and components, use the arrow keys to move and Enter to open.",
+    "framework": {
+      "title": "Show the docs in {{framework}}",
+      "description": "Component pages show {{framework}} examples, setup and API."
+    }
   },
   "home": {
-    "badge": "React + Web Components",
+    "support": {
+      "label": "Supported frameworks",
+      "webComponents": "Web Components:"
+    },
     "title": "Interfaces that feel finished.",
     "subtitle": "Minerva is an accessible, themable component library for React and every other framework through standard Web Components.",
     "getStarted": "Get started",
     "browse": "Browse components",
     "installLabel": "Install command",
+    "showcase": {
+      "label": "Live preview: a deploy panel built with Minerva components",
+      "title": "Deployments",
+      "project": "Project name",
+      "branch": "Branch",
+      "production": "Production",
+      "preview": "Preview",
+      "deploy": "Deploy",
+      "cancel": "Cancel",
+      "status": {
+        "ready": "Ready",
+        "building": "Building",
+        "canceled": "Canceled"
+      }
+    },
     "featuresTitle": "Everything you need, nothing you don't",
     "frameworksTitle": "One design language, every framework",
     "frameworksText": "Use the React components, or drop the same custom elements into plain HTML, Vue, Angular, Svelte or Solid.",

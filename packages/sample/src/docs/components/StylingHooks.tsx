@@ -34,8 +34,8 @@ const Table: React.FC<{
     <table className={styles.propsTable}>
       <thead>
         <tr>
-          {head.map((cell) => (
-            <th scope="col" key={cell}>
+          {head.map((cell, index) => (
+            <th scope="col" key={index}>
               {cell}
             </th>
           ))}

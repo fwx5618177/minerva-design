@@ -7,6 +7,9 @@
 // @css-var --upload-dropzone-background Background of the dropzone at rest
 // @css-var --upload-preview-width Width of an image preview in the file list
 // @css-var --upload-preview-height Height of an image preview in the file list
+// @css-var --upload-dropzone-min-height Minimum height of the dropzone (its content is centered)
+// @css-var --upload-item-background Background of a file row (defaults to --surface-color)
+// @css-var --upload-dropzone-active-color Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)
 .upload {
   display: flex;
   flex-direction: column;
@@ -21,16 +24,34 @@
   font-weight: var(--font-weight-medium);
 }
 
+// Centered drop target: dashed full border, hover and drag-over feedback
+// (a full ring around the tinted area while a file is over it)
 .dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--upload-dropzone-min-height, 6rem);
   padding: var(--upload-dropzone-padding, var(--space-4));
   border: 1px dashed var(--upload-dropzone-border-color, var(--border-color));
   border-radius: var(--upload-dropzone-radius, var(--radius-md));
-  background: var(--upload-dropzone-background, var(--surface-color));
-  transition: border-color var(--transition-fast);
+  background: var(--upload-dropzone-background, var(--surface-subtle-color));
+  text-align: center;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-strong-color);
+  }
 
   &.dragging {
-    border-color: var(--primary-color);
+    border-color: var(--upload-dropzone-active-color, var(--primary-color));
+    border-style: solid;
     background: var(--primary-color-subtle);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--upload-dropzone-active-color, var(--primary-color)) 18%, transparent);
   }
 }
 
@@ -52,8 +73,24 @@
   align-items: center;
   gap: var(--space-3);
   min-width: 0;
-  padding-block: var(--space-2);
-  border-bottom: 1px solid var(--border-color);
+  // each file is a fully outlined rounded row (no one-sided separator)
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--upload-item-background, var(--surface-color));
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-strong-color);
+  }
+
+  // a failed file: the whole row is tinted (full border, no stripe)
+  &:has(.statusError) {
+    border-color: var(--danger-color-border);
+    background: var(--danger-color-subtle);
+  }
 }
 
 .preview {
@@ -62,14 +99,21 @@
   flex: 0 0 var(--upload-preview-width, 72px);
   object-fit: cover;
   border-radius: var(--radius-sm);
+  // a hairline ring keeps light images visible on light surfaces
+  box-shadow: 0 0 0 1px var(--border-color);
 }
 
 .info {
   flex: 1;
   min-width: 0;
   display: grid;
-  gap: var(--space-1);
+  gap: var(--space-0-5);
   overflow-wrap: anywhere;
+
+  // the file name
+  > :first-child {
+    font-weight: var(--font-weight-medium);
+  }
 }
 
 .status {
@@ -93,5 +137,9 @@
     border-style: solid;
     outline: 2px solid Highlight;
     outline-offset: 1px;
+  }
+
+  .item:has(.statusError) {
+    border-width: 2px;
   }
 }

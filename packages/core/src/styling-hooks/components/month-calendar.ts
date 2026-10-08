@@ -26,5 +26,6 @@ export default defineHooks({
   },
   states: {
     disabled: true,
+    size: ["small", "medium", "large"],
   },
 });

@@ -41,6 +41,12 @@
     "text": "@minerva/core/tokens.css, @minerva/lib-core/style.css, styles/*.css and @minerva/lib-web-components/tokens.css are wrapped in @layer minerva. Unlayered CSS beats every layer whatever its specificity or source order, so your rules override the library without !important. If your app uses layers, declare the order once, before any stylesheet.",
     "resets": "Consequence: unlayered global resets (button { background: none }, normalize.css...) now override Minerva's styles too. Import them into a layer listed before minerva (layer(reset)), as shown above."
   },
+  "rules": {
+    "title": "Visual rules: borders and focus",
+    "borders": "No one-sided borders: Minerva never marks state with a stripe on one edge (no left accent bar on a highlighted item, no underline border on a selected tab, no alert or blockquote stripe, no one-sided inset shadow). Indicators are full shapes: a background fill, a full ring, a rounded pill or a dot. Dividers between rows and sections are separator shapes (a 1px line drawn by a pseudo-element or a separator element), never a border-bottom of the row. Follow the same rule in your overrides; table grid lines and the Divider element itself are the only documented exceptions.",
+    "focus": "Focus on text-like controls (Input, Textarea, Select trigger, NumberInput, TagInput, AutoComplete, TimePicker, Cascader, JsonField, KeyValueEditor, the Command search, Pagination fields) replaces the native browser outline: the border switches to the focus color and a box-shadow ring surrounds the control. Text fields show it on every focus, mouse included (:focus / :focus-within); triggers that are buttons use :focus-visible. The ring color comes from the theme's --focus-ring-color, tuned per palette for light and dark. Customize it with the variables below, on :root, a theme scope or one control.",
+    "forced": "Forced colors (Windows High Contrast): box-shadows are not painted there, so every focus rule also sets outline: 2px solid transparent. The system turns that outline into a visible system color, so focus never disappears. Keep it if you restyle the ring."
+  },
   "stability": {
     "title": "Stability policy",
     "text": "The hook surface is machine-readable: @minerva/core/styling-hooks exports the manifest (component → parts → states, with their values) the docs are generated from. Contract tests render every React component and every custom element in their states and fail if a documented hook is missing or an undocumented part appears; a lock file (styling-hooks.lock.json) fails the build on any change to the surface until it is updated on purpose.",
@@ -64,7 +70,7 @@
     },
     "restyle-tabs": {
       "title": "Restyle Tabs",
-      "description": "Underlined tabs with a colored active tab and a muted disabled one, from the tab component's state hooks."
+      "description": "Rounded pill tabs with a tinted, fully outlined active tab and a muted disabled one, from the tab component's state hooks."
     },
     "restyle-table": {
       "title": "Restyle Table",
@@ -88,7 +94,7 @@
     },
     "items-toast": {
       "title": "Success toasts",
-      "description": "Success toasts get a green bar and background, and leaving toasts fade while data-state=\"closed\" / toast--closed. React toasts are portalled: the compound selector still matches them."
+      "description": "Success toasts get a green outline and background, and leaving toasts fade while data-state=\"closed\" / toast--closed. React toasts are portalled: the compound selector still matches them."
     }
   }
 }

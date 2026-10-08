@@ -9,13 +9,20 @@ import { hooks } from "../../internal/stylingHooks";
  */
 export const DescriptionList = ({
   items,
+  bordered = false,
+  striped = false,
   className,
   ref,
   ...rest
 }: DescriptionListProps) => (
   <dl
     ref={ref}
-    className={cn(styles.descriptionList, className)}
+    className={cn(
+      styles.descriptionList,
+      bordered && styles.bordered,
+      striped && styles.striped,
+      className,
+    )}
     {...rest}
     {...hooks("description-list", "root")}
   >

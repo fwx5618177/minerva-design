@@ -65,10 +65,11 @@ const attrsCode = `<!-- attributes: strings, kebab-case; booleans are on when pr
 </script>`;
 
 const eventsCode = `const select = document.querySelector("minerva-select");
+const output = document.querySelector("#plan-output");
 
 // committed value change: bubbles and crosses shadow roots (composed)
 select.addEventListener("minerva-change", (event) => {
-  console.log(event.detail.value);
+  output.textContent = \`Plan: \${event.detail.value}\`;
 });
 
 // "controlled" pattern: open-change events are cancelable
@@ -99,7 +100,10 @@ const slotsCode = `<minerva-modal label="Delete project?">
 
 const typingsCode = `// every element is in HTMLElementTagNameMap: querySelector is typed
 const select = document.querySelector("minerva-select"); // MinervaSelect | null
-select?.addEventListener("minerva-change", () => console.log(select.value));
+const output = document.querySelector("output"); // HTMLOutputElement | null
+select?.addEventListener("minerva-change", () => {
+  if (output) output.value = select.value; // string
+});
 
 // element classes and their string-literal unions are exported
 import type { MinervaButton, ButtonVariant } from "@minerva/lib-web-components";`;
@@ -223,6 +227,9 @@ const GUIDES = [
   "wc-theming",
 ] as const;
 
+/** How the framework selector derives each framework's source */
+const FRAMEWORK_RULES = ["refs", "events", "props", "text", "rest"] as const;
+
 const WebComponentsDoc: React.FC = () => {
   const { t } = useTranslation();
   const k = (key: string) => t(`docs.web-components.${key}`);
@@ -339,6 +346,17 @@ const WebComponentsDoc: React.FC = () => {
           ))}
         </ul>
         <CodeBlock code={authoringCode} language="ts" />
+      </section>
+
+      <section className={styles.section} aria-labelledby="frameworks">
+        <h2 id="frameworks">{k("frameworks.title")}</h2>
+        <p className={styles.prose}>{k("frameworks.text")}</p>
+        <ul className={styles.prose}>
+          {FRAMEWORK_RULES.map((rule) => (
+            <li key={rule}>{k(`frameworks.rules.${rule}`)}</li>
+          ))}
+        </ul>
+        <p className={styles.prose}>{k("frameworks.fallback")}</p>
       </section>
 
       <section className={styles.section} aria-labelledby="guides">

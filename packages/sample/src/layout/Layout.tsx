@@ -8,6 +8,7 @@ import Pager from "@/site/Pager";
 import SearchPalette from "@/site/SearchPalette";
 import TableOfContents from "@/site/TableOfContents";
 import PageSkeleton from "@/site/PageSkeleton";
+import { scrollToHeading } from "@/site/toc";
 import Sidebar from "./Sidebar";
 import styles from "@/site/site.module.scss";
 
@@ -19,13 +20,26 @@ import styles from "@/site/site.module.scss";
 const Layout: React.FC = () => {
   const { t } = useTranslation();
   const [searchOpen, setSearchOpen] = useState(false);
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const isDocPage = !!getDocPage(pathname.replace(/^\//, ""));
 
-  // Start every page at the top
+  // Start every page at the top, or at the `#section` of the link (once the
+  // lazily-loaded page has rendered it)
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    const id = decodeURIComponent(hash.slice(1));
+    let frame = 0;
+    let attempts = 0;
+    const scroll = () => {
+      if (document.getElementById(id)) scrollToHeading(id);
+      else if (attempts++ < 120) frame = requestAnimationFrame(scroll);
+    };
+    scroll();
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash]);
 
   const content = (
     <Suspense fallback={<PageSkeleton variant={isDocPage ? "doc" : "home"} />}>

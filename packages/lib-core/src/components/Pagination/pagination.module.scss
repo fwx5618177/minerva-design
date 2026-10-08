@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the pagination or any ancestor):
 // @css-var --pagination-item-size Height and minimum width of the page buttons (every size; defaults to the density's control height)
 // @css-var --pagination-item-radius Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)
@@ -5,6 +7,8 @@
 // @css-var --pagination-font-size Font size
 // @css-var --pagination-active-background Background of the current page (solid variant)
 // @css-var --pagination-active-color Text color of the current page (solid variant)
+// @css-var --pagination-hover-background Background of a hovered page button (defaults to --hover-color)
+// @css-var --pagination-subtle-background Background of the current page of the ghost variant (defaults to --primary-color-subtle)
 
 .pagination {
   display: flex;
@@ -23,7 +27,12 @@
     padding: 0 var(--space-1);
     border-radius: var(--pagination-item-radius, var(--radius-md));
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      color var(--transition-fast),
+      transform var(--transition-fast);
     position: relative;
     overflow: hidden;
     background: var(--surface-color);
@@ -31,14 +40,19 @@
     color: var(--text-color);
     font: inherit;
     font-weight: 500;
+    font-variant-numeric: tabular-nums;
     appearance: none;
 
+    // Calm hover (Geist): a fill and a stronger border, no lift
     &:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color-text);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 4px color-mix(in srgb, var(--primary-color) 10%, transparent);
+      background: var(--pagination-hover-background, var(--hover-color));
+      border-color: var(--border-strong-color);
+      color: var(--text-color);
       z-index: 1;
+    }
+
+    &:active {
+      transform: scale(0.96);
     }
 
     &:focus {
@@ -46,9 +60,10 @@
       z-index: 2;
     }
 
+    // the shared focus treatment: border color, box-shadow ring and a
+    // transparent outline for forced colors (styles/_mixins.scss)
     &:focus-visible {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
+      @include control-focus;
     }
 
     &.active {
@@ -59,11 +74,9 @@
       z-index: 3;
 
       &:hover {
-        background: var(--primary-color-hover);
-        border-color: var(--primary-color-hover);
-        color: var(--text-inverse-color);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px color-mix(in srgb, var(--primary-color) 20%, transparent);
+        background: var(--pagination-active-background, var(--primary-color-hover));
+        border-color: var(--pagination-active-background, var(--primary-color-hover));
+        color: var(--pagination-active-color, var(--text-inverse-color));
       }
     }
 
@@ -158,10 +171,9 @@
         border-color: var(--primary-color);
       }
 
+      // the shared control-focus treatment (styles/_mixins.scss)
       &:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px var(--focus-ring-color);
+        @include control-focus;
       }
     }
 
@@ -212,10 +224,9 @@
         border-color: var(--primary-color);
       }
 
+      // the shared control-focus treatment (styles/_mixins.scss)
       &:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px var(--focus-ring-color);
+        @include control-focus;
       }
     }
   }
@@ -254,10 +265,9 @@
         border-color: var(--primary-color);
       }
 
+      // the shared control-focus treatment (styles/_mixins.scss)
       &:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px var(--focus-ring-color);
+        @include control-focus;
       }
     }
   }
@@ -275,6 +285,12 @@
   to {
     transform: scale(4);
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagination .item:active {
+    transform: none;
   }
 }
 
@@ -322,21 +338,20 @@
   border-color: transparent;
 
   &:hover {
-    background: var(--surface-muted-color);
+    background: var(--pagination-hover-background, var(--surface-muted-color));
     border-color: transparent;
-    box-shadow: none;
   }
 
+  // the current page is a tinted pill
   &.active {
-    background: transparent;
+    background: var(--pagination-subtle-background, var(--primary-color-subtle));
     border-color: transparent;
     color: var(--primary-color-text);
 
     &:hover {
-      background: var(--primary-color-subtle);
-      border-color: transparent;
+      background: var(--pagination-subtle-background, var(--primary-color-subtle));
+      border-color: var(--primary-color-border);
       color: var(--primary-color-text);
-      box-shadow: none;
     }
   }
 

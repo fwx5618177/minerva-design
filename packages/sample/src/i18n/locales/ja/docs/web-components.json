@@ -79,6 +79,18 @@
       "popoverResetStyles": "popoverResetStyles：トップレイヤーに描画される popover=\"manual\" パネルの UA スタイルをリセットします。"
     }
   },
+  "frameworks": {
+    "title": "1 つのページで、すべてのフレームワーク",
+    "text": "各コンポーネントページにはフレームワークセレクター（React、Vue、Angular、Svelte、Solid、HTML）があり、選択はサイト全体と ?framework= リンクに保持されます。Vue・Angular・Svelte・Solid・HTML の例は本物のカスタム要素を実行します。そのソースはビルド時に、ページの Web Component デモ（HTML とその setup スクリプト）から決定的なトランスフォーマーで生成されるため、どのフレームワークでも同じテスト済みの例が表示されます：",
+    "rules": {
+      "refs": "root.querySelector(\"#id\") → 要素参照：Vue では ref()、Angular では #ref + @ViewChild、Svelte では bind:this、Solid では ref={el}。",
+      "events": "el.addEventListener(\"minerva-change\", handler) → テンプレートのリスナー：@minerva-change、(minerva-change)、onminerva-change、on:minerva-change。対応する removeEventListener は削除され、フレームワークが解除します。",
+      "props": "setup 内の el.items = [...] → プロパティバインド：:items.prop、[items]、items={…}、prop:items={…}。",
+      "text": "textContent（または <output> の value）だけで書き込まれる要素 → テンプレートに描画されるリアクティブな状態（ref、フィールド、$state、シグナル）。",
+      "rest": "その他の宣言はコンポーネントの状態と関数になり、その他の文はマウント時（onMounted、ngAfterViewInit、onMount）に、クリーンアップの残りはアンマウント時に実行されます。プレーンな HTML はスクリプトをそのまま使い、デモのルートの代わりに document を使います。"
+    },
+    "fallback": "ルールで表現できないコードは元の setup 関数のまま残り、マウント時にコンテナ参照で呼び出されるため、生成された例は常に正しく動作します。"
+  },
   "guides": {
     "title": "ガイド"
   },

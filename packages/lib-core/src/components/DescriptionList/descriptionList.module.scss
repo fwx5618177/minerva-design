@@ -1,9 +1,15 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the list or any ancestor):
 // @css-var --description-list-row-padding-y Vertical padding of a row (follows the density's row padding)
 // @css-var --description-list-gap Space between the term and the description
 // @css-var --description-list-term-color Text color of the terms
 // @css-var --description-list-border-color Color of the row separators
 // @css-var --description-list-font-size Font size
+// @css-var --description-list-radius Corner radius of a bordered list (defaults to --radius-lg)
+// @css-var --description-list-background Background of a bordered list (defaults to --surface-color)
+// @css-var --description-list-padding-x Horizontal padding of the rows of a bordered or striped list
+// @css-var --description-list-stripe-background Background of every other row of a striped list (defaults to --surface-subtle-color)
 
 .descriptionList {
   margin: 0;
@@ -22,10 +28,11 @@
   // standard density: --row-padding-y (0.5rem) + 0.5rem = 1rem
   padding-block: var(--description-list-row-padding-y, calc(var(--row-padding-y) + var(--space-2)));
   padding-inline: 0;
-  border-bottom: 1px solid var(--description-list-border-color, var(--border-color));
+  position: relative;
 
-  &:last-child {
-    border-bottom: 0;
+  // row separator: a 1px separator shape, not a one-sided border
+  &:not(:last-child)::after {
+    @include separator(bottom, var(--description-list-border-color, var(--border-color)));
   }
 
   dt,
@@ -46,6 +53,51 @@
   code {
     font-family: var(--font-family-mono);
     font-size: var(--font-size-sm);
+  }
+}
+
+// Bordered: a card with a full border; rows get an inline padding
+.bordered {
+  overflow: hidden;
+  border: 1px solid var(--description-list-border-color, var(--border-color));
+  border-radius: var(--description-list-radius, var(--radius-lg));
+  background: var(--description-list-background, var(--surface-color));
+
+  .row {
+    padding-inline: var(--description-list-padding-x, var(--space-4));
+  }
+}
+
+// Striped: every other row is tinted (rounded when unframed) and the fills
+// replace the separators
+.striped {
+  .row {
+    padding-inline: var(--description-list-padding-x, var(--space-3));
+    border-radius: var(--radius-md);
+
+    &::after {
+      content: none;
+    }
+  }
+
+  .row:nth-child(even) {
+    background: var(--description-list-stripe-background, var(--surface-subtle-color));
+  }
+}
+
+.bordered.striped .row {
+  padding-inline: var(--description-list-padding-x, var(--space-4));
+  border-radius: 0;
+}
+
+// Forced colors drop the fills: striped rows get their separators back
+@media (forced-colors: active) {
+  .striped .row:not(:last-child)::after {
+    content: "";
+  }
+
+  .bordered {
+    border-color: CanvasText;
   }
 }
 

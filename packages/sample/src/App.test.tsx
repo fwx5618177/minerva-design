@@ -27,7 +27,7 @@ const pageHeading = (name: string) =>
 
 describe("docs site", () => {
   it(
-    "home → component page → Web Components tab → search → dark mode",
+    "home → component page → framework selector → search → dark mode",
     { timeout: 60_000 },
     async () => {
       const user = userEvent.setup();
@@ -68,12 +68,13 @@ describe("docs site", () => {
         ),
       ).toBeInTheDocument();
 
-      // → Web Components tab
-      await user.click(screen.getByRole("tab", { name: "Web Components" }));
+      // → framework selector: Vue (the choice follows the reader)
+      await user.click(screen.getByRole("tab", { name: "Vue" }));
       expect(screen.getByRole("tabpanel")).toHaveTextContent(
         "<minerva-button>",
       );
-      expect(window.location.hash).toBe("#/button?framework=wc");
+      expect(screen.getByRole("tabpanel")).toHaveTextContent("isCustomElement");
+      expect(window.location.hash).toBe("#/button?framework=vue");
 
       // → search (⌘K) to another page
       await user.keyboard("{Meta>}k{/Meta}");
@@ -84,6 +85,11 @@ describe("docs site", () => {
         await pageHeading(i18n.t("docs.pagination.title")),
       ).toBeInTheDocument();
       expect(window.location.hash).toMatch(/^#\/pagination/);
+      // the framework chosen on the button page is kept
+      expect(screen.getByRole("tab", { name: "Vue" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
       // previous / next pages
       expect(
         screen.getByRole("navigation", { name: "Pagination" }),

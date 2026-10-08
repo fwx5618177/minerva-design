@@ -9,6 +9,7 @@ import SearchPalette from "./SearchPalette";
 import type { CommandItem } from "@minerva/lib-core";
 import { changeLanguage } from "@i18n/config";
 import {
+  FRAMEWORK_ITEM_PREFIX,
   HOME_ITEM_ID,
   buildSearchItems,
   foldSearchText,
@@ -42,9 +43,41 @@ describe("buildSearchItems", () => {
     }
   });
 
+  it("has one entry per framework, opening its guide with ?framework=", () => {
+    const items = buildSearchItems(i18n.t);
+    const frameworks = items.filter((item) =>
+      item.id.startsWith(FRAMEWORK_ITEM_PREFIX),
+    );
+    expect(frameworks.map((item) => item.title)).toEqual([
+      "Show the docs in React",
+      "Show the docs in Vue",
+      "Show the docs in Angular",
+      "Show the docs in Svelte",
+      "Show the docs in Solid",
+      "Show the docs in HTML",
+    ]);
+    expect(frameworks[1].group).toBe("Framework");
+    expect(rankSearchItems(items, "angular")[0].id).toBe("wc-angular");
+    expect(rankSearchItems(items, "angular").map((item) => item.id)).toContain(
+      `${FRAMEWORK_ITEM_PREFIX}angular`,
+    );
+    expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}vue`)).toBe(
+      "/wc-vue?framework=vue",
+    );
+    expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}react`)).toBe(
+      "/installation?framework=react",
+    );
+    expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}html`)).toBe(
+      "/wc-plain-html?framework=html",
+    );
+  });
+
   it("maps entries to routes and formats the shortcut per platform", () => {
     expect(pathOfItem(HOME_ITEM_ID)).toBe("/");
     expect(pathOfItem("button")).toBe("/button");
+    expect(pathOfItem(`${FRAMEWORK_ITEM_PREFIX}cobol`)).toBe(
+      `/${FRAMEWORK_ITEM_PREFIX}cobol`,
+    );
     expect(modKeyLabel("MacIntel")).toBe("⌘K");
     expect(modKeyLabel("Win32")).toBe("Ctrl K");
   });

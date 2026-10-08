@@ -1,5 +1,6 @@
 import { css, html, type TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/DescriptionList/descriptionList.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
@@ -86,6 +87,14 @@ export class MinervaDescriptionList extends MinervaElement {
   @property({ attribute: false })
   items: DescriptionListItem[] = [];
 
+  /** Frames the list as a card (full border, rounded corners, surface background, padded rows) */
+  @property({ type: Boolean, reflect: true })
+  bordered = false;
+
+  /** Tints every other row (replaces the row separators) */
+  @property({ type: Boolean, reflect: true })
+  striped = false;
+
   private observer: MutationObserver | null = null;
 
   private declarativeItems(): MinervaDescriptionItem[] {
@@ -137,7 +146,14 @@ export class MinervaDescriptionList extends MinervaElement {
 
   protected override render() {
     const declarative = this.declarativeItems();
-    return html`<dl part="root" class="descriptionList">
+    return html`<dl
+      part="root"
+      class=${classMap({
+        descriptionList: true,
+        bordered: this.bordered,
+        striped: this.striped,
+      })}
+    >
       ${(this.items ?? []).map(
         (item) =>
           html`<div part="row" class="row">

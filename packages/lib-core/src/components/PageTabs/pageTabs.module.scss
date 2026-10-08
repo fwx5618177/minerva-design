@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Flat, separate rounded items (36px) with 8px gaps inside a stable 48px nav.
 // Selection is a quiet theme fill: no indicator, no shadow.
 // The heights follow the density (control height lg / md minus 4px).
@@ -18,9 +20,14 @@
   min-width: 0;
   height: var(--page-tabs-height, var(--control-height-lg));
   padding-inline: var(--space-3);
+  position: relative;
   background: var(--page-tabs-background, var(--surface-color));
-  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
+
+  // bar separator: a 1px separator shape, not a one-sided border
+  &::after {
+    @include separator(bottom);
+  }
 }
 
 .viewport {

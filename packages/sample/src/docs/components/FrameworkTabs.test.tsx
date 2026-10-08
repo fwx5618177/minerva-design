@@ -6,25 +6,30 @@ import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import DocPage from "./DocPage";
 import { SiteProviders, setupI18n } from "../../test/utils";
+import { FRAMEWORKS } from "../frameworks";
+import { resetStoredFramework } from "../frameworks/useFramework";
 
-// The custom elements themselves are not needed to test the tabs
+// The custom elements themselves are not needed to test the selector
 vi.mock("@minerva/lib-web-components", () => ({}));
 
 beforeAll(setupI18n);
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  resetStoredFramework();
+});
 
 const Search: React.FC = () => (
   <output aria-label="query">{useLocation().search}</output>
 );
 
-const renderPage = (url = "/button") => {
+const renderPage = (url = "/button", id = "button") => {
   const router = createMemoryRouter(
     [
       {
-        path: "/button",
+        path: `/${id}`,
         element: (
           <>
-            <DocPage id="button" />
+            <DocPage id={id} />
             <Search />
           </>
         ),
@@ -40,59 +45,134 @@ const renderPage = (url = "/button") => {
 };
 
 const tabs = () => within(screen.getByRole("tablist", { name: "Framework" }));
+const selected = (name: string) =>
+  expect(tabs().getByRole("tab", { name })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
 
-describe("React / Web Components tabs", () => {
-  it("is a segmented control switching the page content", async () => {
-    const user = userEvent.setup();
+describe("global framework selector", () => {
+  it("offers React, Vue, Angular, Svelte, Solid and HTML", () => {
     renderPage();
-    expect(tabs().getByRole("tab", { name: "React" })).toHaveAttribute(
-      "aria-selected",
-      "true",
+    expect(
+      tabs()
+        .getAllByRole("tab")
+        .map((tab) => tab.textContent),
+    ).toEqual(["React", "Vue", "Angular", "Svelte", "Solid", "HTML"]);
+    expect(FRAMEWORKS.map((fw) => fw.id)).toEqual([
+      "react",
+      "vue",
+      "angular",
+      "svelte",
+      "solid",
+      "html",
+    ]);
+    selected("React");
+  });
+
+  it("React shows the component import (no stylesheet) and the props", () => {
+    renderPage();
+    const panel = screen.getByRole("tabpanel");
+    expect(panel).toHaveTextContent(
+      'import { Button } from "@minerva/lib-core";',
     );
+    expect(panel).not.toHaveTextContent("style.css");
+    const note = within(panel).getByRole("link", { name: "Installation" });
+    expect(note).toHaveAttribute("href", "/installation#global-stylesheet");
     expect(
       screen.getByRole("heading", { level: 2, name: "API" }),
     ).toBeInTheDocument();
-
-    await user.click(tabs().getByRole("tab", { name: "Web Components" }));
-    expect(tabs().getByRole("tab", { name: "Web Components" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-    const panel = screen.getByRole("tabpanel");
-    expect(panel).toHaveTextContent("<minerva-button>");
-    expect(screen.getByRole("status", { name: "query" })).toHaveTextContent(
-      "?framework=wc",
-    );
-
-    // keyboard: arrows move between the two tabs
-    await user.keyboard("{ArrowLeft}");
-    expect(tabs().getByRole("tab", { name: "React" })).toHaveFocus();
-    expect(tabs().getByRole("tab", { name: "React" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
   });
 
-  it("remembers the last framework across pages and visits", async () => {
+  it.each([
+    ["Vue", "vue", "src/main.ts", "isCustomElement", "<script setup"],
+    [
+      "Angular",
+      "angular",
+      "src/main.ts",
+      "CUSTOM_ELEMENTS_SCHEMA",
+      "@Component",
+    ],
+    ["Svelte", "svelte", "src/main.ts", "lib-web-components/svelte", ".svelte"],
+    ["Solid", "solid", "src/index.tsx", "lib-web-components/solid", "solid-js"],
+    ["HTML", "html", "index.html", "cdn/minerva.js", '<script type="module">'],
+  ])(
+    "%s shows its setup, the generated demo sources and the element API",
+    async (label, id, file, setup, source) => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(tabs().getByRole("tab", { name: label }));
+      selected(label);
+      expect(screen.getByRole("status", { name: "query" })).toHaveTextContent(
+        `?framework=${id}`,
+      );
+      const panel = screen.getByRole("tabpanel");
+      expect(
+        within(panel).getByRole("heading", { level: 2, name: "Setup" }),
+      ).toBeInTheDocument();
+      expect(panel).toHaveTextContent(file);
+      expect(panel).toHaveTextContent(setup);
+      expect(panel).toHaveTextContent(
+        'import "@minerva/lib-web-components/button"',
+      );
+      // the demos load lazily, with their source in the framework's idiom
+      expect(
+        await within(panel).findByRole("heading", {
+          level: 3,
+          name: "Basic usage",
+        }),
+      ).toBeInTheDocument();
+      expect(panel).toHaveTextContent(source);
+      expect(
+        within(panel).getByRole("heading", { level: 2, name: "API" }),
+      ).toBeInTheDocument();
+      expect(localStorage.getItem("minerva-docs-framework")).toBe(id);
+    },
+  );
+
+  it("moves between frameworks with the arrow keys", async () => {
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(tabs().getByRole("tab", { name: "Vue" }));
+    await user.keyboard("{ArrowRight}");
+    expect(tabs().getByRole("tab", { name: "Angular" })).toHaveFocus();
+    selected("Angular");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}");
+    selected("React");
+  });
+
+  it("remembers the framework across pages and visits", async () => {
     const user = userEvent.setup();
     const { unmount } = renderPage();
-    await user.click(tabs().getByRole("tab", { name: "Web Components" }));
-    expect(localStorage.getItem("minerva-docs-framework")).toBe("wc");
+    await user.click(tabs().getByRole("tab", { name: "Svelte" }));
     unmount();
 
-    renderPage();
-    expect(tabs().getByRole("tab", { name: "Web Components" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    renderPage("/tag", "tag");
+    selected("Svelte");
   });
 
-  it("lets ?framework= in the URL win over the stored choice", () => {
-    localStorage.setItem("minerva-docs-framework", "wc");
-    renderPage("/button?framework=react");
-    expect(tabs().getByRole("tab", { name: "React" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+  it("lets ?framework= win over the stored choice and persists it", () => {
+    localStorage.setItem("minerva-docs-framework", "vue");
+    renderPage("/button?framework=angular");
+    selected("Angular");
+    expect(localStorage.getItem("minerva-docs-framework")).toBe("angular");
+  });
+
+  it("maps the old ?framework=wc and stored 'wc' to HTML", () => {
+    renderPage("/button?framework=wc");
+    selected("HTML");
+  });
+
+  it("falls back to React for unknown values", () => {
+    localStorage.setItem("minerva-docs-framework", "cobol");
+    renderPage("/button?framework=nope");
+    selected("React");
+  });
+
+  it("is not shown on pages without a Web Component counterpart", () => {
+    renderPage("/hooks", "hooks");
+    expect(
+      screen.queryByRole("tablist", { name: "Framework" }),
+    ).not.toBeInTheDocument();
   });
 });

@@ -2,9 +2,18 @@
 import type { TFunction } from "i18next";
 import type { CommandItem } from "@minerva/lib-core";
 import { docPages, type DocPageMeta } from "@/docs/registry";
+import {
+  FRAMEWORKS,
+  getFramework,
+  parseFramework,
+  type FrameworkDef,
+} from "@/docs/frameworks";
 
 /** Id of the landing page entry */
 export const HOME_ITEM_ID = "__home";
+
+/** Id prefix of the "show the docs in <framework>" entries */
+export const FRAMEWORK_ITEM_PREFIX = "__framework:";
 
 /**
  * One entry per documentation page (translated title, description and
@@ -14,6 +23,7 @@ export const HOME_ITEM_ID = "__home";
 export function buildSearchItems(
   t: TFunction,
   pages: readonly DocPageMeta[] = docPages,
+  frameworks: readonly FrameworkDef[] = FRAMEWORKS,
 ): CommandItem[] {
   const home: CommandItem = {
     id: HOME_ITEM_ID,
@@ -33,6 +43,16 @@ export function buildSearchItems(
         ...(page.exports ?? []),
         ...(page.wc?.tags ?? []),
       ].join(" "),
+    })),
+    // switch the site-wide framework (component pages follow it)
+    ...frameworks.map((fw) => ({
+      id: `${FRAMEWORK_ITEM_PREFIX}${fw.id}`,
+      title: t("search.framework.title", { framework: fw.label }),
+      description: t("search.framework.description", {
+        framework: fw.label,
+      }),
+      group: t("doc.wc.framework"),
+      keywords: `${fw.id} ${fw.label} framework`,
     })),
   ];
 }
@@ -95,9 +115,20 @@ export function rankSearchItems(
     .map((entry) => entry.item);
 }
 
-/** Route of a search entry */
-export const pathOfItem = (id: string) =>
-  id === HOME_ITEM_ID ? "/" : `/${id}`;
+/**
+ * Route of a search entry; a framework entry opens its guide with
+ * `?framework=<id>`, which makes it the site-wide choice.
+ */
+export const pathOfItem = (id: string) => {
+  if (id === HOME_ITEM_ID) return "/";
+  if (id.startsWith(FRAMEWORK_ITEM_PREFIX)) {
+    const framework = parseFramework(id.slice(FRAMEWORK_ITEM_PREFIX.length));
+    if (framework) {
+      return `/${getFramework(framework).guide}?framework=${framework}`;
+    }
+  }
+  return `/${id}`;
+};
 
 /** "⌘K" on Apple platforms, "Ctrl K" elsewhere */
 export const modKeyLabel = (

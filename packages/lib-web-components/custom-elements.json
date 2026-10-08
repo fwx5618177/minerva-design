@@ -1719,7 +1719,7 @@
             },
             {
               "name": "--input-focus-color",
-              "description": "Border color while hovered / focused"
+              "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
             },
             {
               "name": "--auto-complete-dropdown-background",
@@ -2327,6 +2327,10 @@
             {
               "name": "--badge-dot-size",
               "description": "Diameter of the dot badge"
+            },
+            {
+              "name": "--badge-ring-color",
+              "description": "Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)"
             }
           ]
         }
@@ -7786,6 +7790,22 @@
             {
               "name": "--description-list-font-size",
               "description": "Font size"
+            },
+            {
+              "name": "--description-list-radius",
+              "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+            },
+            {
+              "name": "--description-list-background",
+              "description": "Background of a bordered list (defaults to --surface-color)"
+            },
+            {
+              "name": "--description-list-padding-x",
+              "description": "Horizontal padding of the rows of a bordered or striped list"
+            },
+            {
+              "name": "--description-list-stripe-background",
+              "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
             }
           ]
         },
@@ -7826,12 +7846,53 @@
               },
               "default": "[]",
               "description": "Rows rendered before the declarative `<minerva-description-item>` children"
+            },
+            {
+              "kind": "field",
+              "name": "bordered",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Frames the list as a card (full border, rounded corners, surface background, padded rows)",
+              "attribute": "bordered",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "striped",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Tints every other row (replaces the row separators)",
+              "attribute": "striped",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "bordered",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Frames the list as a card (full border, rounded corners, surface background, padded rows)",
+              "fieldName": "bordered"
+            },
+            {
+              "name": "striped",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Tints every other row (replaces the row separators)",
+              "fieldName": "striped"
             }
           ],
           "tagName": "minerva-description-list",
           "customElement": true,
           "summary": "Native description list of labeled fields.",
-          "attributes": [],
           "cssProperties": [
             {
               "name": "--description-list-row-padding-y",
@@ -7852,6 +7913,22 @@
             {
               "name": "--description-list-font-size",
               "description": "Font size"
+            },
+            {
+              "name": "--description-list-radius",
+              "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+            },
+            {
+              "name": "--description-list-background",
+              "description": "Background of a bordered list (defaults to --surface-color)"
+            },
+            {
+              "name": "--description-list-padding-x",
+              "description": "Horizontal padding of the rows of a bordered or striped list"
+            },
+            {
+              "name": "--description-list-stripe-background",
+              "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
             }
           ]
         }
@@ -8684,6 +8761,18 @@
             {
               "name": "--empty-description-max-width",
               "description": "Maximum width of the description (sized layout)"
+            },
+            {
+              "name": "--empty-icon-background",
+              "description": "Background of the icon tile (sized layout)"
+            },
+            {
+              "name": "--empty-icon-border-color",
+              "description": "Ring color of the icon tile (sized layout)"
+            },
+            {
+              "name": "--empty-icon-radius",
+              "description": "Corner radius of the icon tile (sized layout; defaults to --radius-lg)"
             }
           ]
         }
@@ -10444,7 +10533,7 @@
             },
             {
               "name": "--input-focus-color",
-              "description": "Border color while hovered / focused"
+              "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
             }
           ]
         }
@@ -11632,11 +11721,22 @@
               "kind": "field",
               "name": "density",
               "type": {
-                "text": "\"default\" | \"compact\""
+                "text": "\"default\" | \"compact\" | \"comfortable\""
               },
               "default": "\"default\"",
               "description": "Minimum row height and vertical padding of the items",
               "attribute": "density",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "bordered",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Frames the list as a card (full border, rounded corners) whose rows are tinted on hover / focus-within",
+              "attribute": "bordered",
               "reflects": true
             },
             {
@@ -11655,11 +11755,20 @@
             {
               "name": "density",
               "type": {
-                "text": "\"default\" | \"compact\""
+                "text": "\"default\" | \"compact\" | \"comfortable\""
               },
               "default": "\"default\"",
               "description": "Minimum row height and vertical padding of the items",
               "fieldName": "density"
+            },
+            {
+              "name": "bordered",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Frames the list as a card (full border, rounded corners) whose rows are tinted on hover / focus-within",
+              "fieldName": "bordered"
             },
             {
               "name": "no-dividers",
@@ -11698,6 +11807,22 @@
             {
               "name": "--list-icon-size",
               "description": "Size of the leading icon slot"
+            },
+            {
+              "name": "--list-border-color",
+              "description": "Border color of a bordered list (defaults to --border-color)"
+            },
+            {
+              "name": "--list-radius",
+              "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+            },
+            {
+              "name": "--list-background",
+              "description": "Background of a bordered list (defaults to --surface-color)"
+            },
+            {
+              "name": "--list-item-hover-background",
+              "description": "Background of a row of a bordered list on hover / while a control inside it has the focus"
             }
           ]
         },
@@ -11814,6 +11939,22 @@
             {
               "name": "--list-icon-size",
               "description": "Size of the leading icon slot"
+            },
+            {
+              "name": "--list-border-color",
+              "description": "Border color of a bordered list (defaults to --border-color)"
+            },
+            {
+              "name": "--list-radius",
+              "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+            },
+            {
+              "name": "--list-background",
+              "description": "Background of a bordered list (defaults to --surface-color)"
+            },
+            {
+              "name": "--list-item-hover-background",
+              "description": "Background of a row of a bordered list on hover / while a control inside it has the focus"
             }
           ]
         }
@@ -13690,6 +13831,37 @@
             },
             {
               "kind": "field",
+              "name": "rangeStart",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "First day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with `range-end`)",
+              "attribute": "range-start",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "rangeEnd",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Last day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with `range-start`)",
+              "attribute": "range-end",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Cell density: compact (\"small\"), default (\"medium\") or comfortable (\"large\")",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
               "name": "disabled",
               "type": {
                 "text": "boolean"
@@ -13838,6 +14010,31 @@
               "fieldName": "clickableEvents"
             },
             {
+              "name": "range-start",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "First day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with `range-end`)",
+              "fieldName": "rangeStart"
+            },
+            {
+              "name": "range-end",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Last day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with `range-start`)",
+              "fieldName": "rangeEnd"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Cell density: compact (\"small\"), default (\"medium\") or comfortable (\"large\")",
+              "fieldName": "size"
+            },
+            {
               "name": "disabled",
               "type": {
                 "text": "boolean"
@@ -13910,7 +14107,7 @@
             },
             {
               "name": "--month-calendar-day-height",
-              "description": "Height of a day cell (defaults to 4rem, 3.25rem on narrow screens)"
+              "description": "Height of a day cell (defaults to 4rem, 3.25rem on narrow screens; 2.5rem with size=\"small\", 5.5rem with size=\"large\")"
             },
             {
               "name": "--month-calendar-nav-height",
@@ -13918,15 +14115,55 @@
             },
             {
               "name": "--month-calendar-radius",
-              "description": "Corner radius of the buttons, days and events (defaults to --radius-sm)"
+              "description": "Corner radius of the buttons, days and events (defaults to --radius-md)"
+            },
+            {
+              "name": "--month-calendar-hover-background",
+              "description": "Background of a hovered day"
             },
             {
               "name": "--month-calendar-selected-background",
               "description": "Background of the selected day"
             },
             {
+              "name": "--month-calendar-selected-color",
+              "description": "Text color of the selected day"
+            },
+            {
               "name": "--month-calendar-today-color",
-              "description": "Border color marking today"
+              "description": "Ring color marking today"
+            },
+            {
+              "name": "--month-calendar-weekday-color",
+              "description": "Text color of the weekday headers"
+            },
+            {
+              "name": "--month-calendar-outside-color",
+              "description": "Text color of the days of the previous / next month"
+            },
+            {
+              "name": "--month-calendar-event-background",
+              "description": "Background of the event count badge"
+            },
+            {
+              "name": "--month-calendar-event-color",
+              "description": "Text color of the event count badge (and color of the event dot)"
+            },
+            {
+              "name": "--month-calendar-range-background",
+              "description": "Background of the days inside the highlighted range"
+            },
+            {
+              "name": "--month-calendar-range-edge-background",
+              "description": "Background of the first and last days of the range"
+            },
+            {
+              "name": "--month-calendar-range-edge-color",
+              "description": "Text color of the first and last days of the range"
+            },
+            {
+              "name": "--month-calendar-events-background",
+              "description": "Background of the selected day's event panel"
             }
           ]
         }
@@ -14121,6 +14358,18 @@
             {
               "name": "--nav-tree-active-color",
               "description": "Accent color of the active row's icon"
+            },
+            {
+              "name": "--nav-tree-hover-background",
+              "description": "Background of a hovered row (defaults to --hover-color)"
+            },
+            {
+              "name": "--nav-tree-guide-color",
+              "description": "Color of the indent guide of an expanded branch (defaults to --border-color)"
+            },
+            {
+              "name": "--nav-tree-guide-active-color",
+              "description": "Color of the indent guide of the branch holding the active row"
             }
           ]
         }
@@ -14831,7 +15080,7 @@
             },
             {
               "name": "--number-input-border-color",
-              "description": "Border color at rest (also the stepper separators)"
+              "description": "Border color at rest"
             },
             {
               "name": "--number-input-stepper-width",
@@ -16378,6 +16627,14 @@
             {
               "name": "--pagination-active-color",
               "description": "Text color of the current page (solid variant)"
+            },
+            {
+              "name": "--pagination-hover-background",
+              "description": "Background of a hovered page button (defaults to --hover-color)"
+            },
+            {
+              "name": "--pagination-subtle-background",
+              "description": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
             }
           ]
         }
@@ -18325,6 +18582,14 @@
             {
               "name": "--rating-scale-gap",
               "description": "Space between the rows of a RatingScale"
+            },
+            {
+              "name": "--rating-empty-fill",
+              "description": "Fill of the empty stars and of the unfilled half (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--rating-hover-scale",
+              "description": "Scale of the hovered star of an interactive rating (defaults to 1.15)"
             }
           ]
         },
@@ -18490,6 +18755,14 @@
             {
               "name": "--rating-scale-gap",
               "description": "Space between the rows of a RatingScale"
+            },
+            {
+              "name": "--rating-empty-fill",
+              "description": "Fill of the empty stars and of the unfilled half (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--rating-hover-scale",
+              "description": "Scale of the hovered star of an interactive rating (defaults to 1.15)"
             }
           ]
         }
@@ -21019,6 +21292,18 @@
             {
               "name": "--steps-current-background",
               "description": "Background of the current step's indicator"
+            },
+            {
+              "name": "--steps-connector-color",
+              "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+            },
+            {
+              "name": "--steps-connector-complete-color",
+              "description": "Color of the line after a completed step (defaults to the accent color)"
+            },
+            {
+              "name": "--steps-connector-min-width",
+              "description": "Minimum length of the line joining two steps"
             }
           ]
         }
@@ -22936,7 +23221,7 @@
             },
             {
               "name": "--input-focus-color",
-              "description": "Border color while hovered / focused"
+              "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
             },
             {
               "name": "--tag-height",
@@ -22957,6 +23242,10 @@
             {
               "name": "--tag-gap",
               "description": "Space between the icon, the label and the close button"
+            },
+            {
+              "name": "--tag-ring-color",
+              "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
             },
             {
               "name": "--tag-input-gap",
@@ -23361,6 +23650,10 @@
             {
               "name": "--tag-gap",
               "description": "Space between the icon, the label and the close button"
+            },
+            {
+              "name": "--tag-ring-color",
+              "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
             }
           ]
         }
@@ -25239,7 +25532,7 @@
             },
             {
               "name": "--input-focus-color",
-              "description": "Border color while hovered / focused"
+              "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
             },
             {
               "name": "--icon-button-color",
@@ -25550,6 +25843,10 @@
             {
               "name": "--toast-z-index",
               "description": "Stacking order of the stack (defaults to --z-toast)"
+            },
+            {
+              "name": "--toast-icon-background",
+              "description": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
             }
           ]
         }
@@ -26691,6 +26988,18 @@
             {
               "name": "--upload-preview-height",
               "description": "Height of an image preview in the file list"
+            },
+            {
+              "name": "--upload-dropzone-min-height",
+              "description": "Minimum height of the dropzone (its content is centered)"
+            },
+            {
+              "name": "--upload-item-background",
+              "description": "Background of a file row (defaults to --surface-color)"
+            },
+            {
+              "name": "--upload-dropzone-active-color",
+              "description": "Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)"
             }
           ]
         }

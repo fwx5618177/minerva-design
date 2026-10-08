@@ -1,10 +1,12 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the number input or any ancestor):
 // @css-var --number-input-height Height (every size; defaults to the density's control height of the size)
 // @css-var --number-input-padding-x Horizontal padding of the text (defaults to the density's small control padding)
 // @css-var --number-input-radius Corner radius (defaults to --radius-md)
 // @css-var --number-input-font-size Font size (every size)
 // @css-var --number-input-background Background color
-// @css-var --number-input-border-color Border color at rest (also the stepper separators)
+// @css-var --number-input-border-color Border color at rest
 // @css-var --number-input-stepper-width Width of the increment / decrement column
 .root {
   position: relative;
@@ -25,9 +27,10 @@
     border-color: var(--primary-color);
   }
 
+  // focus (mouse included): the shared control-focus treatment
+  // (styles/_mixins.scss): border color + ring + transparent outline
   &:focus-within:not(.invalid) {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 22%, transparent);
+    @include control-focus;
   }
 }
 
@@ -36,8 +39,7 @@
 
   // An error stays red while focused.
   &:focus-within {
-    border-color: var(--danger-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 22%, transparent);
+    @include control-focus(var(--danger-color), $focus-ring-danger);
   }
 
   .field {
@@ -119,8 +121,12 @@
 .stepper {
   display: flex;
   flex-direction: column;
+  // the steppers are two rounded tiles inside the field (full shapes, no
+  // separator borders)
+  gap: 1px;
   width: var(--number-input-stepper-width, 22px);
-  border-inline-start: 1px solid var(--number-input-border-color, var(--border-color));
+  padding: 2px;
+  box-sizing: content-box;
   flex-shrink: 0;
 }
 
@@ -134,6 +140,7 @@
   cursor: pointer;
   color: var(--text-muted-color);
   padding: 0;
+  border-radius: calc(var(--number-input-radius, var(--radius-md)) - 3px);
   line-height: 1;
   transition:
     background-color var(--transition-fast),
@@ -154,13 +161,13 @@
   }
 }
 
+// the outer corners follow the field's radius (concentric, 2px inside)
 .stepUp {
-  border-bottom: 1px solid var(--number-input-border-color, var(--border-color));
-  border-start-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 1px);
+  border-start-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 3px);
 }
 
 .stepDown {
-  border-end-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 1px);
+  border-end-end-radius: calc(var(--number-input-radius, var(--radius-md)) - 3px);
 }
 
 // Forced colors drop the focus halo: draw a system-colored outline instead.

@@ -79,6 +79,18 @@
       "popoverResetStyles": "popoverResetStyles: resets the UA styles of a popover=\"manual\" panel rendered in the top layer."
     }
   },
+  "frameworks": {
+    "title": "One page, every framework",
+    "text": "Every component page has a framework selector (React, Vue, Angular, Svelte, Solid, HTML) whose choice is kept for the whole site and in the ?framework= link. The Vue, Angular, Svelte, Solid and HTML examples run the real custom elements; their source is generated at build time from the page's Web Component demo (HTML + its setup script) by a deterministic transformer, so every framework always shows the same, tested example:",
+    "rules": {
+      "refs": "root.querySelector(\"#id\") → an element reference: ref() in Vue, #ref + @ViewChild in Angular, bind:this in Svelte, ref={el} in Solid.",
+      "events": "el.addEventListener(\"minerva-change\", handler) → a template listener: @minerva-change, (minerva-change), onminerva-change, on:minerva-change; the matching removeEventListener is dropped, the framework removes it.",
+      "props": "el.items = [...] at setup → a property binding: :items.prop, [items], items={…}, prop:items={…}.",
+      "text": "An element only written through textContent (or the value of an <output>) → reactive state rendered in the template (ref, field, $state, signal).",
+      "rest": "Other declarations become component state and functions, other statements run on mount (onMounted, ngAfterViewInit, onMount) and the rest of the cleanup on unmount. Plain HTML keeps the script as is, with document instead of the demo root."
+    },
+    "fallback": "Code the rules cannot express keeps the original setup function, called on mount with a container ref, so the generated example stays correct."
+  },
   "guides": {
     "title": "Guides"
   },

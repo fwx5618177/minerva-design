@@ -82,4 +82,23 @@ describe("<minerva-list>", () => {
       expect.stringContaining("minerva-list-item"),
     );
   });
+  it("renders the comfortable density and the bordered card", async () => {
+    const el = await mount<MinervaList>(
+      `<minerva-list density="comfortable" bordered><minerva-list-item primary="A"></minerva-list-item></minerva-list>`,
+    );
+    const base = $(el, "[part=root]");
+    expect(el.bordered).toBe(true);
+    expect(base.classList).toContain("comfortable");
+    expect(base.classList).toContain("bordered");
+    expect(base.classList).not.toContain("compact");
+    el.bordered = false;
+    await el.updateComplete;
+    expect(el.hasAttribute("bordered")).toBe(false);
+    expect(base.classList).not.toContain("bordered");
+    const css = (MinervaList.styles as { cssText?: string }[])
+      .map((s) => s.cssText ?? "")
+      .join("");
+    expect(css).toContain('[density="comfortable"]');
+    expect(css).toContain("::slotted(minerva-list-item:hover)");
+  });
 });

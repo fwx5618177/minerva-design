@@ -79,6 +79,18 @@
       "popoverResetStyles": "popoverResetStyles : réinitialise les styles du navigateur d'un panneau popover=\"manual\" rendu dans la top layer."
     }
   },
+  "frameworks": {
+    "title": "Une page, tous les frameworks",
+    "text": "Chaque page de composant a un sélecteur de framework (React, Vue, Angular, Svelte, Solid, HTML) dont le choix est conservé sur tout le site et dans le lien ?framework=. Les exemples Vue, Angular, Svelte, Solid et HTML exécutent les vrais custom elements ; leur source est générée au build à partir de la démo Web Component de la page (HTML + son script setup) par un transformateur déterministe, si bien que chaque framework montre toujours le même exemple, testé :",
+    "rules": {
+      "refs": "root.querySelector(\"#id\") → une référence d'élément : ref() en Vue, #ref + @ViewChild en Angular, bind:this en Svelte, ref={el} en Solid.",
+      "events": "el.addEventListener(\"minerva-change\", handler) → un écouteur de template : @minerva-change, (minerva-change), onminerva-change, on:minerva-change ; le removeEventListener correspondant disparaît, le framework s'en charge.",
+      "props": "el.items = [...] dans setup → une liaison de propriété : :items.prop, [items], items={…}, prop:items={…}.",
+      "text": "Un élément seulement écrit via textContent (ou la value d'un <output>) → un état réactif rendu dans le template (ref, champ, $state, signal).",
+      "rest": "Les autres déclarations deviennent l'état et les fonctions du composant, les autres instructions s'exécutent au montage (onMounted, ngAfterViewInit, onMount) et le reste du nettoyage au démontage. Le HTML simple garde le script tel quel, avec document à la place de la racine de la démo."
+    },
+    "fallback": "Le code que les règles ne savent pas exprimer garde la fonction setup d'origine, appelée au montage avec une référence de conteneur : l'exemple généré reste correct."
+  },
   "guides": {
     "title": "Guides"
   },

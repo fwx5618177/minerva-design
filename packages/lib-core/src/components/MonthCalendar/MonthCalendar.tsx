@@ -22,6 +22,7 @@ import type { MonthCalendarEvent, MonthCalendarProps } from "./types";
 
 const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const NO_EVENTS: readonly MonthCalendarEvent[] = [];
+const DAY_KEY = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * MonthCalendar: a Monday-first, six-week month grid. Each day shows its
@@ -40,6 +41,9 @@ const MonthCalendar = ({
   onChange,
   events = NO_EVENTS,
   onEventClick,
+  rangeStart,
+  rangeEnd,
+  size = "medium",
   disabled = false,
   showSelectedDayEvents = true,
   "aria-label": ariaLabel,
@@ -117,6 +121,11 @@ const MonthCalendar = ({
   for (const event of events)
     counts.set(event.date, (counts.get(event.date) ?? 0) + 1);
   const selectedEvents = events.filter((event) => event.date === value);
+  // Highlighted range (display only): both ends, in either order.
+  const range =
+    rangeStart && rangeEnd && DAY_KEY.test(rangeStart) && DAY_KEY.test(rangeEnd)
+      ? [rangeStart, rangeEnd].sort()
+      : undefined;
 
   // After keyboard navigation (possibly into another month), focus the day
   // once its cell exists.
@@ -199,9 +208,9 @@ const MonthCalendar = ({
   return (
     <section
       ref={ref}
-      className={cn(styles.monthCalendar, className)}
+      className={cn(styles.monthCalendar, styles[size], className)}
       aria-label={ariaLabel ?? t("monthCalendar.label")}
-      {...hooks("month-calendar", "root", { disabled })}
+      {...hooks("month-calendar", "root", { disabled, size })}
     >
       <div className={styles.toolbar}>
         <h2
@@ -267,13 +276,19 @@ const MonthCalendar = ({
               const selected = value === key;
               const outside = !sameMonth(date, month);
               const isToday = key === todayKey;
+              const inRange = !!range && key >= range[0] && key <= range[1];
               return (
                 // APG date grid: the cell itself is the focusable,
                 // selectable element (roving tabindex, aria-selected).
                 <div
                   role="gridcell"
                   key={key}
-                  className={styles.day}
+                  className={cn(
+                    styles.day,
+                    inRange && styles.inRange,
+                    inRange && key === range?.[0] && styles.rangeStart,
+                    inRange && key === range?.[1] && styles.rangeEnd,
+                  )}
                   {...hooks("month-calendar", "day", {
                     selected,
                     today: isToday,
@@ -303,8 +318,11 @@ const MonthCalendar = ({
                   onClick={() => select(date)}
                   onKeyDown={(event) => handleKeyDown(event, date)}
                 >
-                  <span>{date.getDate()}</span>
-                  <span className={styles.count} aria-hidden>
+                  <span className={styles.dayNumber}>{date.getDate()}</span>
+                  <span
+                    className={cn(styles.count, count > 0 && styles.hasEvents)}
+                    aria-hidden
+                  >
                     {count ? (count > 99 ? "99+" : count) : " "}
                   </span>
                 </div>

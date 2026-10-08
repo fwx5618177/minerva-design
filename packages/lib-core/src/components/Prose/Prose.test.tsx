@@ -198,9 +198,11 @@ describe("prose.scss Sass adapter", () => {
     expect(
       declarations(css, ".prose :where(p)").getPropertyValue("padding"),
     ).toBe("0px");
-    expect(
-      declarations(css, ".prose :where(blockquote)").getPropertyValue("border"),
-    ).toBe("0px");
+    // a filled rounded block (no one-sided stripe); the transparent border
+    // shows in forced colors
+    const quote = declarations(css, ".prose :where(blockquote)");
+    expect(quote.getPropertyValue("border")).toBe("1px solid transparent");
+    expect(quote.getPropertyValue("border-inline-start")).toBe("");
   });
 
   it("preserves code whitespace, syntax colors and native table layout without broad resets", () => {
@@ -226,17 +228,16 @@ describe("prose.scss Sass adapter", () => {
         "white-space",
       ),
     ).toBe("normal");
+    // the rule is a 1px separator shape (no border-top)
     expect(
       declarations(css, ".editor-host :where(hr)").getPropertyValue("height"),
-    ).toBe("0px");
+    ).toBe("1px");
     expect(
       declarations(css, ".editor-host :where(hr)").getPropertyValue("padding"),
     ).toBe("0px");
     expect(
-      declarations(css, ".editor-host :where(hr)").getPropertyValue(
-        "background",
-      ),
-    ).toBe("transparent");
+      declarations(css, ".editor-host :where(hr)").getPropertyValue("border"),
+    ).toBe("0px");
     expect(table.getPropertyValue("overflow-wrap")).toBe("normal");
     expect(css).toContain("hljs-punctuation");
     expect(css).not.toMatch(

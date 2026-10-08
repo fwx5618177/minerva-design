@@ -79,7 +79,43 @@
       "signature": "Signature",
       "readonly": "lecture seule",
       "defaultSlot": "(par défaut)"
-    }
+    },
+    "requiresStylesheet": "Nécessite la feuille de style globale — voir",
+    "requiresStylesheetLink": "Installation",
+    "fw": {
+      "setupTitle": "Mise en place",
+      "guide": "Pour aller plus loin avec {{framework}} : <guide>le guide d'intégration complet</guide>.",
+      "setup": {
+        "register": "Enregistrez les éléments et chargez les design tokens une seule fois, dans le fichier d'entrée —",
+        "vueCompiler": "Indiquez au compilateur de templates de Vue que les balises minerva-* sont des custom elements —",
+        "types": "Ajoutez les typages {{framework}} : attributs, propriétés et événements sont vérifiés et complétés dans les templates —",
+        "angularSchema": "Autorisez les custom elements dans chaque composant qui les utilise —",
+        "solidTypes": "Ajoutez les typages JSX de Solid (événements on:minerva-* et propriétés prop:* typés) —",
+        "htmlModule": "Avec un bundler ou une import map, importez l'entrée de l'élément dans un script module —",
+        "htmlCdn": "Sans étape de build, chargez plutôt le bundle CDN autonome —"
+      },
+      "vue": {
+        "examples": "Chaque exemple est un composant monofichier Vue 3 (<script setup lang=\"ts\">) : références d'éléments avec ref(), liaisons de propriétés :prop.prop, écouteurs @minerva-* et état réactif dans le template. Il est généré à partir de la démo custom element affichée au-dessus.",
+        "api": "Dans les templates Vue, liez attributs et propriétés avec :nom (ajoutez .prop pour forcer une propriété, p. ex. tableaux et objets), écoutez avec @minerva-evenement (lisez $event.detail) et remplissez les slots avec slot=\"nom\"."
+      },
+      "angular": {
+        "examples": "Chaque exemple est un composant Angular standalone avec CUSTOM_ELEMENTS_SCHEMA : #références lues avec @ViewChild, liaisons de propriétés [prop], écouteurs (minerva-evenement) et champs du composant dans le template. Il est généré à partir de la démo custom element affichée au-dessus.",
+        "api": "Dans les templates Angular, liez les propriétés avec [nom], les attributs avec [attr.nom], écoutez avec (minerva-evenement) (lisez $event.detail) et remplissez les slots avec slot=\"nom\"."
+      },
+      "svelte": {
+        "examples": "Chaque exemple est un composant Svelte 5 (runes) : références bind:this, liaisons de propriétés nom={valeur}, gestionnaires onminerva-evenement et $state dans le balisage. Il est généré à partir de la démo custom element affichée au-dessus.",
+        "api": "En Svelte, nom={valeur} définit une propriété quand l'élément en a une (un attribut sinon), onminerva-evenement={handler} écoute un événement et slot=\"nom\" remplit un slot."
+      },
+      "solid": {
+        "examples": "Chaque exemple est un composant Solid : ref={el}, liaisons de propriétés prop:nom={valeur}, écouteurs on:minerva-evenement et signaux dans le JSX. Il est généré à partir de la démo custom element affichée au-dessus.",
+        "api": "En JSX Solid, nom=\"…\" définit un attribut, prop:nom={valeur} une propriété, on:minerva-evenement={handler} écoute un événement (sensible à la casse) et slot=\"nom\" remplit un slot."
+      },
+      "html": {
+        "examples": "Chaque exemple est du HTML simple avec un script module : le balisage est la démo elle-même, le script récupère les éléments avec document.querySelector, définit des propriétés et écoute les événements.",
+        "api": "En HTML, les attributs sont en kebab-case (chaînes, nombres et booléens) ; définissez tableaux, objets et fonctions comme propriétés JavaScript ; écoutez avec addEventListener(\"minerva-evenement\")."
+      }
+    },
+    "requiresStylesheetEnd": "."
   },
   "error": {
     "title": "Oups !",
@@ -108,15 +144,37 @@
     "placeholder": "Rechercher des pages et composants…",
     "empty": "Aucun résultat.",
     "results": "Résultats de recherche",
-    "description": "Tapez pour filtrer les pages et composants, flèches pour vous déplacer, Entrée pour ouvrir."
+    "description": "Tapez pour filtrer les pages et composants, flèches pour vous déplacer, Entrée pour ouvrir.",
+    "framework": {
+      "title": "Afficher la documentation en {{framework}}",
+      "description": "Les pages de composants montrent les exemples, la mise en place et l'API {{framework}}."
+    }
   },
   "home": {
-    "badge": "React + Web Components",
+    "support": {
+      "label": "Frameworks pris en charge",
+      "webComponents": "Web Components :"
+    },
     "title": "Des interfaces abouties.",
     "subtitle": "Minerva est une bibliothèque de composants accessible et thématisable pour React, et pour tous les autres frameworks grâce aux Web Components standard.",
     "getStarted": "Commencer",
     "browse": "Parcourir les composants",
     "installLabel": "Commande d'installation",
+    "showcase": {
+      "label": "Aperçu en direct : un panneau de déploiement construit avec les composants Minerva",
+      "title": "Déploiements",
+      "project": "Nom du projet",
+      "branch": "Branche",
+      "production": "Production",
+      "preview": "Prévisualisation",
+      "deploy": "Déployer",
+      "cancel": "Annuler",
+      "status": {
+        "ready": "Prêt",
+        "building": "Compilation",
+        "canceled": "Annulé"
+      }
+    },
     "featuresTitle": "Tout le nécessaire, rien de superflu",
     "frameworksTitle": "Un seul langage visuel, tous les frameworks",
     "frameworksText": "Utilisez les composants React, ou les mêmes éléments personnalisés en HTML pur, Vue, Angular, Svelte ou Solid.",

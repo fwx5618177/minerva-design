@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the list or any ancestor):
 // @css-var --list-item-min-height Minimum height of an item (follows the density; compact lists are shorter)
 // @css-var --list-item-padding-y Vertical padding of an item (follows the density's row padding)
@@ -5,6 +7,10 @@
 // @css-var --list-item-gap Space between the icon, the content and the actions
 // @css-var --list-divider-color Color of the dividers between items
 // @css-var --list-icon-size Size of the leading icon slot
+// @css-var --list-border-color Border color of a bordered list (defaults to --border-color)
+// @css-var --list-radius Corner radius of a bordered list (defaults to --radius-lg)
+// @css-var --list-background Background of a bordered list (defaults to --surface-color)
+// @css-var --list-item-hover-background Background of a row of a bordered list on hover / while a control inside it has the focus
 
 .list {
   list-style: none;
@@ -36,8 +42,49 @@
   padding-block: var(--list-item-padding-y, var(--row-padding-y));
 }
 
+// standard density: 2 x 0.5rem + 3.5rem = 4.5rem, padding-block 1rem
+.comfortable > .item {
+  min-height: var(--list-item-min-height, calc(2 * var(--row-padding-y) + 3.5rem));
+  padding-block: var(--list-item-padding-y, calc(var(--row-padding-y) + var(--space-2)));
+}
+
+// Bordered: a card framing the rows (full border); its rows are tinted on
+// hover / focus-within (the web component tints its slotted items, list.ts).
+.bordered {
+  overflow: hidden;
+  border: 1px solid var(--list-border-color, var(--border-color));
+  border-radius: var(--list-radius, var(--radius-lg));
+  background: var(--list-background, var(--surface-color));
+}
+
+.bordered > .item {
+  transition: background-color var(--transition-fast);
+
+  &:hover,
+  &:focus-within {
+    background-color: var(--list-item-hover-background, var(--surface-subtle-color));
+  }
+}
+
+// Dividers: a 1px separator shape above every row but the first (not a
+// one-sided border), shown through `--_list-divider` (0 / 1): the web
+// component sets it on its slotted items (list.ts), whose shadow root draws
+// the line.
+.item {
+  position: relative;
+
+  &::before {
+    @include separator(top, var(--list-divider-color, var(--border-color)));
+    opacity: var(--_list-divider, 0);
+  }
+}
+
+.list > .item {
+  --_list-divider: 0;
+}
+
 .dividers > .item + .item {
-  border-top: 1px solid var(--list-divider-color, var(--border-color));
+  --_list-divider: 1;
 }
 
 .content {
@@ -100,6 +147,13 @@
     max-width: 100%;
     overflow-wrap: anywhere;
     white-space: normal;
+  }
+}
+
+// Forced colors keep the card frame visible
+@media (forced-colors: active) {
+  .bordered {
+    border-color: CanvasText;
   }
 }
 

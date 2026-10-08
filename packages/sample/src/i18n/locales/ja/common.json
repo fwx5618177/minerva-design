@@ -79,7 +79,43 @@
       "signature": "シグネチャ",
       "readonly": "読み取り専用",
       "defaultSlot": "（デフォルト）"
-    }
+    },
+    "requiresStylesheet": "グローバルスタイルシートが必要です — 参照：",
+    "requiresStylesheetLink": "インストール",
+    "fw": {
+      "setupTitle": "セットアップ",
+      "guide": "{{framework}} の詳細：<guide>統合ガイド</guide>。",
+      "setup": {
+        "register": "エントリーファイルで要素を登録し、デザイントークンを一度だけ読み込みます —",
+        "vueCompiler": "Vue のテンプレートコンパイラーに minerva-* タグがカスタム要素であることを伝えます —",
+        "types": "{{framework}} の型定義を追加します。テンプレート内の属性・プロパティ・イベントが型チェックされ、補完されます —",
+        "angularSchema": "カスタム要素を使うすべてのコンポーネントでカスタム要素を許可します —",
+        "solidTypes": "Solid の JSX 型定義を追加します（on:minerva-* イベントと prop:* プロパティに型が付きます） —",
+        "htmlModule": "バンドラーまたは import map を使う場合、module スクリプトで要素のエントリーをインポートします —",
+        "htmlCdn": "ビルドなしの場合は、自己完結型の CDN バンドルを読み込みます —"
+      },
+      "vue": {
+        "examples": "各例は Vue 3 の単一ファイルコンポーネント（<script setup lang=\"ts\">）です。ref() による要素参照、:prop.prop によるプロパティバインド、@minerva-* イベントリスナー、テンプレート内のリアクティブな状態を使います。上に表示されたライブのカスタム要素デモから生成されています。",
+        "api": "Vue テンプレートでは :name で属性とプロパティをバインドし（配列やオブジェクトは .prop でプロパティを強制）、@minerva-event でイベントを受け取り（$event.detail を参照）、slot=\"name\" でスロットを埋めます。"
+      },
+      "angular": {
+        "examples": "各例は CUSTOM_ELEMENTS_SCHEMA を使うスタンドアロンの Angular コンポーネントです。@ViewChild で読む #参照、[prop] プロパティバインド、(minerva-event) リスナー、テンプレート内のコンポーネントフィールドを使います。上に表示されたライブのカスタム要素デモから生成されています。",
+        "api": "Angular テンプレートでは [name] でプロパティ、[attr.name] で属性をバインドし、(minerva-event) でイベントを受け取り（$event.detail を参照）、slot=\"name\" でスロットを埋めます。"
+      },
+      "svelte": {
+        "examples": "各例は Svelte 5（runes）のコンポーネントです。bind:this 参照、name={value} プロパティバインド、onminerva-event ハンドラー、マークアップ内の $state を使います。上に表示されたライブのカスタム要素デモから生成されています。",
+        "api": "Svelte では、要素に同名のプロパティがあれば name={value} がプロパティを設定し（なければ属性）、onminerva-event={handler} でイベントを受け取り、slot=\"name\" でスロットを埋めます。"
+      },
+      "solid": {
+        "examples": "各例は Solid コンポーネントです。ref={el}、prop:name={value} プロパティバインド、on:minerva-event リスナー、JSX 内のシグナルを使います。上に表示されたライブのカスタム要素デモから生成されています。",
+        "api": "Solid の JSX では name=\"…\" が属性、prop:name={value} がプロパティを設定し、on:minerva-event={handler} でイベントを受け取り（大文字小文字を区別）、slot=\"name\" でスロットを埋めます。"
+      },
+      "html": {
+        "examples": "各例は module スクリプト付きのプレーンな HTML です。マークアップはライブデモそのもので、スクリプトは document.querySelector で要素を取得し、プロパティを設定してイベントを受け取ります。",
+        "api": "HTML では属性は kebab-case（文字列・数値・真偽値）です。配列・オブジェクト・関数は JavaScript のプロパティとして設定し、addEventListener(\"minerva-event\") でイベントを受け取ります。"
+      }
+    },
+    "requiresStylesheetEnd": "。"
   },
   "error": {
     "title": "おっと！",
@@ -108,15 +144,37 @@
     "placeholder": "ページとコンポーネントを検索…",
     "empty": "結果が見つかりません。",
     "results": "検索結果",
-    "description": "入力してページとコンポーネントを絞り込み、矢印キーで移動、Enter で開きます。"
+    "description": "入力してページとコンポーネントを絞り込み、矢印キーで移動、Enter で開きます。",
+    "framework": {
+      "title": "{{framework}} でドキュメントを表示",
+      "description": "コンポーネントページに {{framework}} の例・セットアップ・API を表示します。"
+    }
   },
   "home": {
-    "badge": "React + Web Components",
+    "support": {
+      "label": "対応フレームワーク",
+      "webComponents": "Web Components："
+    },
     "title": "完成度の高いインターフェースを。",
     "subtitle": "Minerva はアクセシブルでテーマ対応のコンポーネントライブラリです。React はもちろん、標準の Web Components であらゆるフレームワークから使えます。",
     "getStarted": "はじめる",
     "browse": "コンポーネント一覧",
     "installLabel": "インストールコマンド",
+    "showcase": {
+      "label": "ライブプレビュー：Minerva のコンポーネントで作ったデプロイパネル",
+      "title": "デプロイ",
+      "project": "プロジェクト名",
+      "branch": "ブランチ",
+      "production": "本番環境",
+      "preview": "プレビュー環境",
+      "deploy": "デプロイ",
+      "cancel": "キャンセル",
+      "status": {
+        "ready": "準備完了",
+        "building": "ビルド中",
+        "canceled": "キャンセル済み"
+      }
+    },
     "featuresTitle": "必要なものはすべて、不要なものは何も",
     "frameworksTitle": "ひとつのデザイン言語を、すべてのフレームワークで",
     "frameworksText": "React コンポーネントを使うか、同じカスタム要素を素の HTML、Vue、Angular、Svelte、Solid で使えます。",

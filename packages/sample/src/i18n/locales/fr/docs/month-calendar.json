@@ -5,6 +5,14 @@
     "basic": {
       "title": "Utilisation de base",
       "description": "Choisissez un jour pour lister ses événements ; flèches, Début / Fin et Page préc. / suiv. (avec Maj : un an) déplacent le focus. Chaque jour est une cellule de grille focalisable marquée aria-selected : la sélection n’est annoncée qu’une fois."
+    },
+    "sizes": {
+      "title": "Tailles",
+      "description": "size=\"small\" donne une grille compacte où les événements sont des points ; size=\"large\" est confortable, avec le numéro du jour en haut et le badge d'événements en bas d'une cellule plus haute."
+    },
+    "range": {
+      "title": "Plage mise en évidence",
+      "description": "rangeStart / rangeEnd teintent les jours intermédiaires et remplissent les deux extrémités (affichage seul, dans n'importe quel ordre). Ici, un premier clic commence une plage et un second la ferme."
     }
   },
   "api": {
@@ -17,6 +25,9 @@
       "onChange": "Appelé avec le jour sélectionné",
       "events": "Événements ; chaque jour affiche leur nombre",
       "onEventClick": "Rend cliquables les événements du jour choisi",
+      "rangeStart": "Premier jour d'une plage mise en évidence (affichage seul)",
+      "rangeEnd": "Dernier jour d'une plage mise en évidence (affichage seul)",
+      "size": "Densité des cellules : compacte (small), par défaut (medium) ou confortable (large)",
       "disabled": "Bloque navigation, sélection et clics",
       "showSelectedDayEvents": "Liste les événements du jour choisi sous la grille",
       "aria-label": "Libellé accessible du calendrier",
@@ -40,11 +51,21 @@
   "cssVars": {
     "--month-calendar-font-size": "Taille de police de base",
     "--month-calendar-gap": "Espace entre les cellules des jours",
-    "--month-calendar-day-height": "Hauteur d'une cellule de jour (par défaut 4rem, 3.25rem sur écran étroit)",
+    "--month-calendar-day-height": "Hauteur d'une cellule de jour (par défaut 4rem, 3.25rem sur écran étroit ; 2.5rem avec size=\"small\", 5.5rem avec size=\"large\")",
     "--month-calendar-nav-height": "Hauteur des boutons de la barre d'outils (par défaut la hauteur de contrôle small de la densité)",
-    "--month-calendar-radius": "Rayon des coins des boutons, des jours et des événements (par défaut --radius-sm)",
+    "--month-calendar-radius": "Rayon des coins des boutons, des jours et des événements (par défaut --radius-md)",
+    "--month-calendar-hover-background": "Fond d'un jour survolé",
     "--month-calendar-selected-background": "Fond du jour sélectionné",
-    "--month-calendar-today-color": "Couleur de bordure marquant aujourd'hui"
+    "--month-calendar-selected-color": "Couleur du texte du jour sélectionné",
+    "--month-calendar-today-color": "Couleur de l'anneau marquant aujourd'hui",
+    "--month-calendar-weekday-color": "Couleur du texte des en-têtes des jours de la semaine",
+    "--month-calendar-outside-color": "Couleur du texte des jours du mois précédent / suivant",
+    "--month-calendar-event-background": "Fond du badge du nombre d'événements",
+    "--month-calendar-event-color": "Couleur du texte du badge d'événements (et du point d'événement)",
+    "--month-calendar-range-background": "Fond des jours de la plage mise en évidence",
+    "--month-calendar-range-edge-background": "Fond du premier et du dernier jour de la plage",
+    "--month-calendar-range-edge-color": "Couleur du texte du premier et du dernier jour de la plage",
+    "--month-calendar-events-background": "Fond du panneau des événements du jour sélectionné"
   },
   "wc": {
     "demos": {
@@ -55,6 +76,14 @@
       "events": {
         "title": "Événements",
         "description": "minerva-change signale le jour choisi, minerva-month-change le mois affiché ; avec clickable-events, minerva-event-click se déclenche pour un événement."
+      },
+      "sizes": {
+        "title": "Tailles",
+        "description": "size=\"small\" dessine les événements en points, size=\"large\" donne des cellules plus hautes avec le numéro du jour en haut (états personnalisés :state(size-small)...)."
+      },
+      "range": {
+        "title": "Plage mise en évidence",
+        "description": "range-start / range-end mettent en évidence les jours intermédiaires (affichage seul) ; définissez-les depuis minerva-change pour créer un sélecteur de plage."
       },
       "localized": {
         "title": "Localisation et états",

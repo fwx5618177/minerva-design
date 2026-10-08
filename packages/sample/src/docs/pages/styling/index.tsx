@@ -88,6 +88,27 @@ minerva-page-tab:state(current) { }
 /* your slotted trigger, from the states of its host */
 minerva-menu:state(open) > [slot="trigger"] { }`;
 
+const focusCode = `/* The focus ring of every text-like control. Unset by default: the
+   ring falls back to the theme's --focus-ring-color (per palette, light
+   and dark), a 3px width and --primary-color for the border */
+:root {
+  --minerva-focus-ring-width: 4px;
+  --minerva-focus-border-color: var(--primary-color-text);
+}
+
+/* One control: component variables still win for the border */
+.search-field {
+  --input-focus-color: var(--success-color);
+  --minerva-focus-ring-color: color-mix(in srgb, var(--success-color) 45%, transparent);
+}
+
+/* Restyling the ring yourself? Keep the transparent outline:
+   forced colors (High Contrast) paint it, box-shadows are dropped */
+[data-minerva="input"][data-part="root"]:focus-within {
+  box-shadow: 0 0 0 2px var(--primary-color);
+  outline: 2px solid transparent;
+}`;
+
 const layerCode = `/* The library ships inside @layer minerva: unlayered rules win,
    whatever their specificity or order */
 .my-button {
@@ -232,6 +253,14 @@ const StylingDoc: React.FC = () => {
         <p className={styles.prose}>{k("layers.text")}</p>
         <CodeBlock code={layerCode} language="css" />
         <p className={styles.callout}>{k("layers.resets")}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="visual-rules">
+        <h2 id="visual-rules">{k("rules.title")}</h2>
+        <p className={styles.prose}>{k("rules.borders")}</p>
+        <p className={styles.prose}>{k("rules.focus")}</p>
+        <CodeBlock code={focusCode} language="css" />
+        <p className={styles.callout}>{k("rules.forced")}</p>
       </section>
     </>
   );

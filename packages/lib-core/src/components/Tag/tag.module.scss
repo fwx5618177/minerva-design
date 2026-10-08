@@ -5,6 +5,7 @@
 // @css-var --tag-font-size Font size (every size)
 // @css-var --tag-radius Corner radius of the rounded shape (defaults to --radius-sm)
 // @css-var --tag-gap Space between the icon, the label and the close button
+// @css-var --tag-ring-color Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)
 
 .tag {
   display: inline-flex;
@@ -15,6 +16,14 @@
   cursor: default;
   gap: var(--tag-gap, var(--space-1));
   min-height: var(--tag-height, auto);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+
+  // Tinted (default) variant: a hairline full ring in the tag's own color.
+  // Zero specificity, so pressed / elevation / custom shadows win.
+  &:where(:not(.solid, .outline)) {
+    box-shadow: inset 0 0 0 1px var(--tag-ring-color, color-mix(in srgb, currentColor 16%, transparent));
+  }
 
   // Size variants
   &.small {
@@ -92,12 +101,14 @@
   &.clickable:not(.disabled) {
     cursor: pointer;
 
+    // A currentColor veil over the fill: works for every color, variant
+    // and theme (light or dark)
     &:hover {
-      filter: brightness(0.95);
+      background-image: linear-gradient(color-mix(in srgb, currentColor 8%, transparent), color-mix(in srgb, currentColor 8%, transparent));
     }
 
     &:active {
-      filter: brightness(0.9);
+      background-image: linear-gradient(color-mix(in srgb, currentColor 14%, transparent), color-mix(in srgb, currentColor 14%, transparent));
     }
   }
 

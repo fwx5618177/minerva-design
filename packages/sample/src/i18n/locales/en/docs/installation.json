@@ -13,11 +13,28 @@
     "peers": "react and react-dom are peer dependencies (^19) so your app keeps a single copy of React. The only runtime dependencies are @minerva/core (primitives, design tokens and a tiny translator), DOMPurify (HtmlPreview) and jsonc-parser (JsonField): no icon, class-name or i18n library is installed. Icons are inline SVGs."
   },
   "styles": {
-    "title": "Import the stylesheet",
-    "text": "The component styles and the default theme tokens are bundled in a single CSS file. Import it once, in your application's entry file:",
-    "note": "Without @minerva/lib-core/style.css the components render unstyled. Import it only once; importing it from several modules is harmless but unnecessary.",
-    "extras": "An optional Sass file is published next to it: @minerva/lib-core/prose.scss contains mixins for long-form typography, to @use from your own Sass.",
-    "perComponent": "Only using a few components? Import the design tokens once and the stylesheet of each component you use instead of style.css. Each file contains the styles of the component and of the components it renders (e.g. confirm.css includes the Button and Modal styles); the file name is the kebab-case component folder (tag-input.css, time-picker.css, ...). The JavaScript is tree-shaken per component as well: every module is published separately and the package is side-effect free except for its CSS."
+    "title": "Import the global stylesheet once",
+    "text": "The styles of every component and the default theme tokens are bundled in one global stylesheet, @minerva/lib-core/style.css. Import it exactly once, in your application entry, before your own CSS. Component files then import components only, never CSS.",
+    "note": "Without @minerva/lib-core/style.css the components render unstyled. Import it only once, in the entry: importing it again from component files is harmless but unnecessary.",
+    "vite": {
+      "title": "React with Vite: src/main.tsx",
+      "note": "Vite bundles CSS imported from JavaScript: in development the stylesheet is injected by the dev server, and vite build emits it as a single hashed .css file linked from index.html. No plugin or extra configuration is needed."
+    },
+    "next": {
+      "title": "Next.js (App Router): app/layout.tsx",
+      "note": "The root layout is a Server Component and may import global CSS; every route then gets the styles."
+    },
+    "wc": {
+      "title": "Web Components: src/main.ts",
+      "note": "The custom elements carry their own styles in their shadow roots; tokens.css provides the shared design tokens. Import both once, in the entry of your Vue, Angular, Svelte, Solid or plain HTML app. If the same page also uses the React components, style.css already contains the tokens."
+    },
+    "components": {
+      "title": "In component files",
+      "text": "Component pages show the component import only. They all rely on the global stylesheet imported above:"
+    },
+    "perComponentTitle": "Optional: per-component stylesheets",
+    "perComponent": "Only using a few components? Import the design tokens once and the stylesheet of each component you use instead of style.css. Each file contains the styles of the component and of the components it renders (e.g. confirm.css includes the Button and Modal styles); the file name is the kebab-case component folder (tag-input.css, time-picker.css, ...). The JavaScript is tree-shaken per component as well: every module is published separately and the package is side-effect free except for its CSS.",
+    "extras": "An optional Sass file is published next to it: @minerva/lib-core/prose.scss contains mixins for long-form typography, to @use from your own Sass."
   },
   "optional": {
     "title": "Optional entries and peers",

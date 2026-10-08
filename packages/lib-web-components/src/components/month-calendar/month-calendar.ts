@@ -1,5 +1,6 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import styles from "@lib-core-styles/components/MonthCalendar/monthCalendar.module.scss?inline";
 import {
   addDays,
@@ -30,6 +31,9 @@ export interface MonthCalendarEvent {
   /** Title of the event */
   title: string;
 }
+
+/** Cell density: compact ("small"), default ("medium") or comfortable ("large") */
+export type MonthCalendarSize = "small" | "medium" | "large";
 
 const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const DAY_KEY = /^\d{4}-\d{2}-\d{2}$/;
@@ -86,6 +90,9 @@ export class MinervaMonthCalendar extends MinervaElement {
     css`
       :host {
         display: block;
+        /* fills its container, also as a flex / grid item (like the
+           block-level React calendar) */
+        inline-size: 100%;
       }
       .navButton svg {
         flex-shrink: 0;
@@ -109,6 +116,18 @@ export class MinervaMonthCalendar extends MinervaElement {
   /** Renders the selected day's events as buttons firing `minerva-event-click` */
   @property({ type: Boolean, attribute: "clickable-events" })
   clickableEvents = false;
+
+  /** First day of a highlighted range, "YYYY-MM-DD" (display only; pair with `range-end`) */
+  @property({ attribute: "range-start", reflect: true })
+  rangeStart?: string;
+
+  /** Last day of a highlighted range, "YYYY-MM-DD" (display only; pair with `range-start`) */
+  @property({ attribute: "range-end", reflect: true })
+  rangeEnd?: string;
+
+  /** Cell density: compact ("small"), default ("medium") or comfortable ("large") */
+  @property({ reflect: true })
+  size: MonthCalendarSize = "medium";
 
   /** Blocks navigation, selection and event clicks */
   @property({ type: Boolean, reflect: true })
@@ -271,7 +290,7 @@ export class MinervaMonthCalendar extends MinervaElement {
   }
 
   protected override hookStates() {
-    return { disabled: this.disabled };
+    return { disabled: this.disabled, size: this.size };
   }
 
   protected override render() {
@@ -308,10 +327,22 @@ export class MinervaMonthCalendar extends MinervaElement {
       heading = dayKey(first).slice(0, 7);
     }
     const disabled = this.disabled;
+    // Highlighted range (display only): both ends, in either order.
+    const { rangeStart, rangeEnd } = this;
+    const range =
+      rangeStart &&
+      rangeEnd &&
+      DAY_KEY.test(rangeStart) &&
+      DAY_KEY.test(rangeEnd)
+        ? [rangeStart, rangeEnd].sort()
+        : undefined;
+    const size = ["small", "medium", "large"].includes(this.size)
+      ? this.size
+      : "medium";
 
     return html`<section
       part="root"
-      class="monthCalendar"
+      class="monthCalendar ${size}"
       aria-label=${this.aria.label ?? t("monthCalendar.label")}
     >
       <div class="toolbar">
@@ -380,6 +411,7 @@ export class MinervaMonthCalendar extends MinervaElement {
                   : count
                     ? t("monthCalendar.dayWithEvents", { date: key, count })
                     : key;
+                const inRange = !!range && key >= range[0] && key <= range[1];
                 const states = {
                   selected: value === key,
                   today: key === todayKey,
@@ -389,7 +421,12 @@ export class MinervaMonthCalendar extends MinervaElement {
                 return html`<div
                   role="gridcell"
                   part=${itemParts("day", states)}
-                  class="day"
+                  class=${classMap({
+                    day: true,
+                    inRange,
+                    rangeStart: inRange && key === range?.[0],
+                    rangeEnd: inRange && key === range?.[1],
+                  })}
                   data-date=${key}
                   ?data-outside=${states.outside}
                   aria-label=${label}
@@ -402,8 +439,10 @@ export class MinervaMonthCalendar extends MinervaElement {
                   @keydown=${(event: KeyboardEvent) =>
                     this.handleKeyDown(event, date)}
                 >
-                  <span>${date.getDate()}</span>
-                  <span class="count" aria-hidden="true"
+                  <span class="dayNumber">${date.getDate()}</span>
+                  <span
+                    class=${count ? "count hasEvents" : "count"}
+                    aria-hidden="true"
                     >${count ? (count > 99 ? "99+" : count) : " "}</span
                   >
                 </div>`;

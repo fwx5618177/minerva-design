@@ -85,4 +85,21 @@ describe("<minerva-description-list>", () => {
       expect.stringContaining("minerva-description-item"),
     );
   });
+  it("applies the bordered / striped variants (reflected)", async () => {
+    const el = await mount<MinervaDescriptionList>(
+      `<minerva-description-list></minerva-description-list>`,
+    );
+    const dl = $(el, "dl");
+    expect(el.bordered).toBe(false);
+    expect(el.striped).toBe(false);
+    expect(dl.classList).not.toContain("bordered");
+    el.bordered = true;
+    el.striped = true;
+    await el.updateComplete;
+    expect(el).toHaveAttribute("bordered");
+    expect(el).toHaveAttribute("striped");
+    expect(dl.classList).toContain("descriptionList");
+    expect(dl.classList).toContain("bordered");
+    expect(dl.classList).toContain("striped");
+  });
 });

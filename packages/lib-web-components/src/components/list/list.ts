@@ -9,8 +9,8 @@ import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
 import { sharedStyles } from "../../internal/styles";
 
-/** Row density: 56px or 40px minimum row height */
-export type ListDensity = "default" | "compact";
+/** Row density: 56px, 40px or 72px minimum row height */
+export type ListDensity = "default" | "compact" | "comfortable";
 
 /**
  * A quiet operational list (`<List>` of lib-core): `role="list"` on the
@@ -40,9 +40,32 @@ export class MinervaList extends MinervaElement {
         );
         --_minerva-list-item-padding-y: var(--row-padding-y);
       }
+      :host([density="comfortable"]) {
+        --_minerva-list-item-min-height: calc(
+          2 * var(--row-padding-y) + 3.5rem
+        );
+        --_minerva-list-item-padding-y: calc(
+          var(--row-padding-y) + var(--space-2)
+        );
+      }
+      /* bordered: the items are tinted on hover / focus-within (as in list.module.scss) */
+      :host([bordered]) ::slotted(minerva-list-item) {
+        transition: background-color var(--transition-fast);
+      }
+      :host([bordered]) ::slotted(minerva-list-item:hover),
+      :host([bordered]) ::slotted(minerva-list-item:focus-within) {
+        background-color: var(
+          --list-item-hover-background,
+          var(--surface-subtle-color)
+        );
+      }
+      /* dividers: drawn by the items (a 1px separator shape, list.module.scss) */
+      ::slotted(minerva-list-item) {
+        --_list-divider: 0;
+      }
       :host(:not([no-dividers]))
         ::slotted(minerva-list-item:not(:first-child)) {
-        border-top: 1px solid var(--list-divider-color, var(--border-color));
+        --_list-divider: 1;
       }
     `,
     sharedStyles(styles),
@@ -51,6 +74,10 @@ export class MinervaList extends MinervaElement {
   /** Minimum row height and vertical padding of the items */
   @property({ reflect: true })
   density: ListDensity = "default";
+
+  /** Frames the list as a card (full border, rounded corners) whose rows are tinted on hover / focus-within */
+  @property({ type: Boolean, reflect: true })
+  bordered = false;
 
   /** Removes the separators between items (lib-core's `dividers={false}`) */
   @property({ type: Boolean, reflect: true, attribute: "no-dividers" })
@@ -83,6 +110,8 @@ export class MinervaList extends MinervaElement {
       class=${classMap({
         list: true,
         compact: this.density === "compact",
+        comfortable: this.density === "comfortable",
+        bordered: this.bordered,
         dividers: !this.noDividers,
       })}
     >

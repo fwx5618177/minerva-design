@@ -79,7 +79,43 @@
       "signature": "签名",
       "readonly": "只读",
       "defaultSlot": "（默认）"
-    }
+    },
+    "requiresStylesheet": "需要全局样式表——参见",
+    "requiresStylesheetLink": "安装",
+    "fw": {
+      "setupTitle": "安装与配置",
+      "guide": "关于 {{framework}} 的更多内容：<guide>完整集成指南</guide>。",
+      "setup": {
+        "register": "在入口文件中注册元素并加载设计令牌（只需一次）——",
+        "vueCompiler": "告诉 Vue 模板编译器 minerva-* 标签是自定义元素——",
+        "types": "添加 {{framework}} 类型声明：模板中的属性、特性和事件都会得到类型检查与补全——",
+        "angularSchema": "在每个使用自定义元素的组件中允许自定义元素——",
+        "solidTypes": "添加 Solid JSX 类型声明（on:minerva-* 事件与 prop:* 属性均有类型）——",
+        "htmlModule": "使用打包工具或 import map 时，在 module 脚本中导入元素入口——",
+        "htmlCdn": "无需构建步骤时，改为加载自包含的 CDN 包——"
+      },
+      "vue": {
+        "examples": "每个示例都是 Vue 3 单文件组件（<script setup lang=\"ts\">）：用 ref() 获取元素引用，用 :prop.prop 绑定属性，用 @minerva-* 监听事件，并在模板中使用响应式状态。它由上方实时运行的自定义元素示例生成。",
+        "api": "在 Vue 模板中，用 :name 绑定特性和属性（数组、对象等需要加 .prop 强制作为属性），用 @minerva-event 监听事件（读取 $event.detail），用 slot=\"name\" 填充插槽。"
+      },
+      "angular": {
+        "examples": "每个示例都是使用 CUSTOM_ELEMENTS_SCHEMA 的独立 Angular 组件：用 @ViewChild 读取 #引用，用 [prop] 绑定属性，用 (minerva-event) 监听事件，并在模板中使用组件字段。它由上方实时运行的自定义元素示例生成。",
+        "api": "在 Angular 模板中，用 [name] 绑定属性，用 [attr.name] 绑定特性，用 (minerva-event) 监听事件（读取 $event.detail），用 slot=\"name\" 填充插槽。"
+      },
+      "svelte": {
+        "examples": "每个示例都是 Svelte 5 组件（runes）：bind:this 引用、name={value} 属性绑定、onminerva-event 事件处理，以及标记中的 $state。它由上方实时运行的自定义元素示例生成。",
+        "api": "在 Svelte 中，元素有同名属性时 name={value} 设置属性（否则设置特性），onminerva-event={handler} 监听事件，slot=\"name\" 填充插槽。"
+      },
+      "solid": {
+        "examples": "每个示例都是 Solid 组件：ref={el}、prop:name={value} 属性绑定、on:minerva-event 事件监听，以及 JSX 中的 signal。它由上方实时运行的自定义元素示例生成。",
+        "api": "在 Solid JSX 中，name=\"…\" 设置特性，prop:name={value} 设置属性，on:minerva-event={handler} 监听事件（区分大小写），slot=\"name\" 填充插槽。"
+      },
+      "html": {
+        "examples": "每个示例都是带 module 脚本的纯 HTML：标记就是实时示例本身，脚本用 document.querySelector 获取元素、设置属性并监听事件。",
+        "api": "在 HTML 中，特性使用 kebab-case（字符串、数字和布尔值）；数组、对象和函数通过 JavaScript 属性设置；用 addEventListener(\"minerva-event\") 监听事件。"
+      }
+    },
+    "requiresStylesheetEnd": "。"
   },
   "error": {
     "title": "糟糕！",
@@ -108,15 +144,37 @@
     "placeholder": "搜索页面和组件…",
     "empty": "没有找到结果。",
     "results": "搜索结果",
-    "description": "输入关键字筛选页面和组件，方向键移动，回车打开。"
+    "description": "输入关键字筛选页面和组件，方向键移动，回车打开。",
+    "framework": {
+      "title": "以 {{framework}} 查看文档",
+      "description": "组件页面将显示 {{framework}} 的示例、配置和 API。"
+    }
   },
   "home": {
-    "badge": "React + Web Components",
+    "support": {
+      "label": "支持的框架",
+      "webComponents": "Web Components："
+    },
     "title": "打磨到位的界面组件。",
     "subtitle": "Minerva 是一个无障碍、可主题化的组件库：React 组件开箱即用，其他框架通过标准 Web Components 使用。",
     "getStarted": "快速开始",
     "browse": "浏览组件",
     "installLabel": "安装命令",
+    "showcase": {
+      "label": "实时预览：用 Minerva 组件构建的部署面板",
+      "title": "部署",
+      "project": "项目名称",
+      "branch": "分支",
+      "production": "生产环境",
+      "preview": "预览环境",
+      "deploy": "部署",
+      "cancel": "取消",
+      "status": {
+        "ready": "就绪",
+        "building": "构建中",
+        "canceled": "已取消"
+      }
+    },
     "featuresTitle": "需要的都有，多余的没有",
     "frameworksTitle": "一套设计语言，适配所有框架",
     "frameworksText": "使用 React 组件，或把同样的自定义元素用在纯 HTML、Vue、Angular、Svelte 或 Solid 中。",

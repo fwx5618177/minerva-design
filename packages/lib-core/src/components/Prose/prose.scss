@@ -124,11 +124,13 @@ $_bold: var(--font-weight-bold, 700);
   :where(li > ul, li > ol, li > p) {
     margin-block: 0.25em;
   }
+  // a filled, rounded quote block (full shape, no one-sided stripe); the
+  // transparent border becomes visible in forced colors
   :where(blockquote) {
-    padding: 0.25em 1em;
-    border: 0;
-    border-inline-start: 3px solid $_border;
-    background: transparent;
+    padding: 0.5em 1em;
+    border: 1px solid transparent;
+    border-radius: $_radius;
+    background: $_control;
     color: inherit;
   }
   :where(a) {
@@ -253,13 +255,18 @@ $_bold: var(--font-weight-bold, 700);
   :where(th > p, td > p) {
     margin: 0;
   }
+  // a 1px separator shape (not a one-sided border)
   :where(hr) {
-    height: 0;
+    height: 1px;
     padding: 0;
     margin: 1.5em 0;
     border: 0;
-    border-top: 1px solid $_border;
-    background: transparent;
+    background: $_border;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+      background: CanvasText;
+    }
   }
   :where(sub, sup) {
     font-size: 0.75em;

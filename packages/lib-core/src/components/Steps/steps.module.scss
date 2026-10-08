@@ -4,6 +4,9 @@
 // @css-var --steps-indicator-size Diameter of the numbered indicator
 // @css-var --steps-accent-color Color of the current / completed indicators (defaults to --primary-color)
 // @css-var --steps-current-background Background of the current step's indicator
+// @css-var --steps-connector-color Color of the line joining the upcoming steps (defaults to --border-color)
+// @css-var --steps-connector-complete-color Color of the line after a completed step (defaults to the accent color)
+// @css-var --steps-connector-min-width Minimum length of the line joining two steps
 
 .steps {
   display: flex;
@@ -16,8 +19,31 @@
   font-size: var(--steps-font-size, var(--font-size-sm));
 }
 
+// Every step but the last grows and ends with a connector: a rounded
+// 1px bar (a shape of its own, not a border)
 .step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   min-width: 0;
+
+  &:not(:last-child) {
+    flex: 1 1 auto;
+
+    &::after {
+      content: "";
+      flex: 1 1 var(--steps-connector-min-width, 1.5rem);
+      min-width: var(--steps-connector-min-width, 1.5rem);
+      height: 1px;
+      border-radius: var(--radius-full);
+      background: var(--steps-connector-color, var(--border-color));
+      transition: background-color var(--transition-fast);
+    }
+  }
+
+  &.complete:not(:last-child)::after {
+    background: var(--steps-connector-complete-color, var(--steps-accent-color, var(--primary-color)));
+  }
 }
 
 .button {
@@ -47,6 +73,7 @@
 }
 
 .number {
+  position: relative;
   display: grid;
   place-items: center;
   width: var(--steps-indicator-size, 24px);
@@ -54,7 +81,24 @@
   flex: 0 0 var(--steps-indicator-size, 24px);
   border: 1px solid var(--border-color);
   border-radius: 50%;
+  background: var(--surface-color);
   font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast);
+}
+
+// Interactive steps: hover brightens the label and the indicator ring
+button.button:not(:disabled):hover {
+  color: var(--text-secondary-color);
+
+  .number {
+    border-color: var(--border-strong-color);
+  }
 }
 
 .current .button {
@@ -62,19 +106,54 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.current .number {
+// Current: tinted fill, accent ring and a soft halo (full ring)
+.current .number,
+.current button.button:not(:disabled):hover .number {
   background: var(--steps-current-background, var(--primary-color-subtle));
   color: var(--primary-color-text);
   border-color: var(--steps-accent-color, var(--primary-color));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--steps-accent-color, var(--primary-color)) 16%, transparent);
 }
 
-.complete .number {
+// Complete: a solid accent disc with a check mark instead of the number
+.complete .number,
+.complete button.button:not(:disabled):hover .number {
   border-color: var(--steps-accent-color, var(--primary-color));
-  color: var(--steps-accent-color, var(--primary-color));
+  background: var(--steps-accent-color, var(--primary-color));
+  color: transparent;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--text-inverse-color);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+      center / 58% no-repeat;
+  }
+}
+
+.complete .button {
+  color: var(--text-secondary-color);
+}
+
+.button:disabled {
+  opacity: 0.55;
 }
 
 // Forced colors drop the tinted fill: the current step uses the system highlight.
 @media (forced-colors: active) {
+  .complete .number {
+    color: CanvasText;
+
+    &::before {
+      content: none;
+    }
+  }
+
+  .step:not(:last-child)::after {
+    background: CanvasText;
+  }
+
   .current .number {
     forced-color-adjust: none;
     background: Highlight;

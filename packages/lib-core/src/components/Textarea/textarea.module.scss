@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Public CSS variables (set them on the textarea or any ancestor):
 // @css-var --textarea-min-height Minimum height (every size)
 // @css-var --textarea-padding-y Vertical padding of the text
@@ -6,6 +8,10 @@
 // @css-var --textarea-font-size Font size (every size)
 // @css-var --textarea-background Background color of the outline variant
 // @css-var --textarea-border-color Border color at rest
+//
+// Focus (mouse included): the shared control-focus treatment
+// (styles/_mixins.scss): border color + box-shadow ring and a transparent
+// outline that forced colors make visible.
 .textarea {
   display: block;
   width: 100%;
@@ -29,9 +35,7 @@
   }
 
   &:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
+    @include control-focus;
   }
 
   &::placeholder {
@@ -96,8 +100,7 @@
   }
 
   &:focus {
-    border-color: var(--danger-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 16%, transparent);
+    @include control-focus(var(--danger-color), $focus-ring-danger);
   }
 }
 

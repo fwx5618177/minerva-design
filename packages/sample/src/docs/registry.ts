@@ -1020,11 +1020,11 @@ export const docPages: DocPageMeta[] = [
     category: "dataDisplay",
     exports: ["DescriptionList"],
     api: ["DescriptionListProps", "DescriptionListItem"],
-    demos: ["basic"],
+    demos: ["basic", "variants"],
     wc: {
       entry: "description-list",
       tags: ["minerva-description-item", "minerva-description-list"],
-      demos: ["basic", "items", "styling"],
+      demos: ["basic", "items", "variants", "styling"],
     },
   },
   {
@@ -1033,11 +1033,11 @@ export const docPages: DocPageMeta[] = [
     category: "dataDisplay",
     exports: ["List", "ListItem"],
     api: ["ListProps", "ListItemProps"],
-    demos: ["basic", "compact"],
+    demos: ["basic", "compact", "bordered"],
     wc: {
       entry: "list",
       tags: ["minerva-list", "minerva-list-item"],
-      demos: ["basic", "slots", "density"],
+      demos: ["basic", "slots", "density", "bordered"],
     },
   },
   {
@@ -1198,7 +1198,7 @@ export const docPages: DocPageMeta[] = [
     category: "navigation",
     exports: ["Steps"],
     api: ["StepsProps", "StepsItem"],
-    demos: ["basic", "read-only"],
+    demos: ["basic", "read-only", "styling"],
     wc: {
       entry: "steps",
       tags: ["minerva-steps"],
@@ -1268,11 +1268,11 @@ export const docPages: DocPageMeta[] = [
     category: "dataDisplay",
     exports: ["MonthCalendar"],
     api: ["MonthCalendarProps", "MonthCalendarEvent"],
-    demos: ["basic"],
+    demos: ["basic", "sizes", "range"],
     wc: {
       entry: "month-calendar",
       tags: ["minerva-month-calendar"],
-      demos: ["basic", "events", "localized"],
+      demos: ["basic", "events", "sizes", "range", "localized"],
     },
   },
 

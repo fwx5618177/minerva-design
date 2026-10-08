@@ -53,6 +53,7 @@ const pageCode = `<!doctype html>
 
         <minerva-button type="submit">Create account</minerva-button>
         <minerva-button type="reset" variant="ghost">Reset</minerva-button>
+        <output id="last-change" aria-live="polite"></output>
       </form>
 
       <minerva-modal id="done" label="Welcome!">
@@ -67,7 +68,8 @@ const pageCode = `<!doctype html>
 
       // custom events bubble: one listener on the form sees every control
       form.addEventListener("minerva-change", (event) => {
-        console.log(event.target.name, event.detail);
+        document.querySelector("#last-change").textContent =
+          \`\${event.target.name} changed\`;
       });
 
       form.addEventListener("submit", (event) => {

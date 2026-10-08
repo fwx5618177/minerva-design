@@ -58,6 +58,31 @@ describe("DescriptionList", () => {
     ).toEqual(["12345678-1234-4234-8234-123456789012", "0"]);
   });
 
+  it("is plain by default and applies the bordered / striped variants", () => {
+    const { container, rerender } = render(<DescriptionList items={items} />);
+    const dl = container.querySelector("dl")!;
+    expect(dl).not.toHaveClass("bordered");
+    expect(dl).not.toHaveClass("striped");
+    rerender(<DescriptionList items={items} bordered striped />);
+    expect(dl).toHaveClass("descriptionList", "bordered", "striped");
+    expect(dl).not.toHaveAttribute("bordered");
+    rerender(<DescriptionList items={items} striped />);
+    expect(dl).toHaveClass("striped");
+    expect(dl).not.toHaveClass("bordered");
+  });
+
+  it("styles the variants with full shapes only", () => {
+    const css = compile(
+      join(import.meta.dirname, "descriptionList.module.scss"),
+    ).css;
+    expect(css).toMatch(
+      /\.bordered\s*\{[^}]*border:\s*1px solid var\(--description-list-border-color/,
+    );
+    expect(css).toMatch(
+      /\.striped \.row:nth-child\(even\)\s*\{[^}]*background:\s*var\(--description-list-stripe-background/,
+    );
+  });
+
   it("renders an empty list without rows", () => {
     const { container } = render(<DescriptionList items={[]} />);
     expect(container.querySelector("dl")).toBeEmptyDOMElement();

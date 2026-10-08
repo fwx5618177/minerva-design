@@ -7,6 +7,7 @@
 // @css-var --badge-padding-x Horizontal padding (every size)
 // @css-var --badge-font-size Font size (every size)
 // @css-var --badge-dot-size Diameter of the dot badge
+// @css-var --badge-ring-color Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)
 
 // Attached badge: the wrapper is the positioning context of the corner badge.
 // It is not interactive, so it has no hover / active / focus styles.
@@ -31,10 +32,16 @@
   --_badge-border: transparent;
 
   display: inline-block;
+  box-sizing: border-box;
+  // a one-character count stays a circle / square pill
+  min-width: calc(1em + 2 * var(--badge-padding-y, 0.25rem));
   padding: var(--badge-padding-y, 0.25rem) var(--badge-padding-x, 0.5rem);
   font-size: var(--badge-font-size, 0.65rem);
   font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
   line-height: 1;
+  text-align: center;
   color: var(--badge-fg, var(--_badge-fg));
   background-color: var(--badge-bg, var(--_badge-bg));
   border-radius: var(--badge-radius, var(--radius-sm));
@@ -42,7 +49,6 @@
     background-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
-  box-shadow: var(--shadow-sm);
   position: relative;
 
   // Standalone badge: inline, in the normal flow (never absolutely positioned)
@@ -131,6 +137,15 @@
     }
   }
 
+  // Attached (corner) badges: a ring in the surface color cuts them out of
+  // the content they sit on
+  &.top-right,
+  &.top-left,
+  &.bottom-right,
+  &.bottom-left {
+    box-shadow: 0 0 0 2px var(--badge-ring-color, var(--surface-color));
+  }
+
   &.top-right {
     position: absolute;
     top: -8px;
@@ -179,6 +194,7 @@
     width: var(--badge-dot-size, 8px);
     height: var(--badge-dot-size, 8px);
     flex: 0 0 var(--badge-dot-size, 8px);
+    min-width: 0;
     padding: 0;
     border: 0;
     border-radius: 50%;

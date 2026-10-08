@@ -5,6 +5,14 @@
     "basic": {
       "title": "基本的な使い方",
       "description": "日付を選ぶと予定を一覧表示します。矢印キー・Home / End・PageUp / PageDown（Shift 併用で 1 年）でフォーカスを移動します。各日は aria-selected 付きのフォーカス可能なグリッドセルなので、選択状態は一度だけ読み上げられます。"
+    },
+    "sizes": {
+      "title": "サイズ",
+      "description": "size=\"small\" はコンパクトなグリッドで、予定はドットで表示されます。size=\"large\" はゆったりしたレイアウトで、高いセルの上部に日付、下部に予定数のバッジを表示します。"
+    },
+    "range": {
+      "title": "範囲のハイライト",
+      "description": "rangeStart / rangeEnd は間の日付を色付けし、両端を塗りつぶします（表示のみ、順序は任意）。この例では 1 回目のクリックで新しい範囲を開始し、2 回目で閉じます。"
     }
   },
   "api": {
@@ -17,6 +25,9 @@
       "onChange": "選択日で呼ばれます",
       "events": "予定。日ごとに件数を表示",
       "onEventClick": "選択日の予定をクリック可能にします",
+      "rangeStart": "ハイライトする範囲の最初の日（表示のみ）",
+      "rangeEnd": "ハイライトする範囲の最後の日（表示のみ）",
+      "size": "セルの密度：コンパクト（small）、標準（medium）、ゆったり（large）",
       "disabled": "ナビゲーション・選択・予定クリックを無効化",
       "showSelectedDayEvents": "グリッドの下に選択日の予定を一覧表示",
       "aria-label": "カレンダーのアクセシブルラベル",
@@ -40,11 +51,21 @@
   "cssVars": {
     "--month-calendar-font-size": "基本のフォントサイズ",
     "--month-calendar-gap": "日付セル同士の間隔",
-    "--month-calendar-day-height": "日付セルの高さ（既定は 4rem、狭い画面では 3.25rem）",
+    "--month-calendar-day-height": "日付セルの高さ（既定 4rem、狭い画面では 3.25rem。size=\"small\" では 2.5rem、size=\"large\" では 5.5rem）",
     "--month-calendar-nav-height": "ツールバーのボタンの高さ（既定は密度に応じた small のコントロール高さ）",
-    "--month-calendar-radius": "ボタン・日付・イベントの角丸（既定は --radius-sm）",
+    "--month-calendar-radius": "ボタン・日付・予定の角丸（既定は --radius-md）",
+    "--month-calendar-hover-background": "ホバー中の日付の背景",
     "--month-calendar-selected-background": "選択された日の背景色",
-    "--month-calendar-today-color": "今日を示す枠線の色"
+    "--month-calendar-selected-color": "選択された日付の文字色",
+    "--month-calendar-today-color": "今日を示すリングの色",
+    "--month-calendar-weekday-color": "曜日ヘッダーの文字色",
+    "--month-calendar-outside-color": "前月 / 翌月の日付の文字色",
+    "--month-calendar-event-background": "予定数バッジの背景",
+    "--month-calendar-event-color": "予定数バッジの文字色（および予定ドットの色）",
+    "--month-calendar-range-background": "ハイライト範囲内の日付の背景",
+    "--month-calendar-range-edge-background": "範囲の最初と最後の日の背景",
+    "--month-calendar-range-edge-color": "範囲の最初と最後の日の文字色",
+    "--month-calendar-events-background": "選択日の予定パネルの背景"
   },
   "wc": {
     "demos": {
@@ -55,6 +76,14 @@
       "events": {
         "title": "イベント",
         "description": "minerva-change は選択した日、minerva-month-change は表示中の月を通知します。clickable-events を付けると、予定をクリックしたときに minerva-event-click が発火します。"
+      },
+      "sizes": {
+        "title": "サイズ",
+        "description": "size=\"small\" は予定をドットで描画し、size=\"large\" は日付を上部に置いた高いセルになります（:state(size-small) などのカスタムステートも利用可能）。"
+      },
+      "range": {
+        "title": "範囲のハイライト",
+        "description": "range-start / range-end は間の日付をハイライトします（表示のみ）。minerva-change で設定すれば範囲ピッカーを作れます。"
       },
       "localized": {
         "title": "ローカライズと状態",

@@ -1,3 +1,5 @@
+@use "../../styles/mixins" as *;
+
 // Every visible line is drawn with box-shadow (inset 1px as border + outer
 // focus halo) so rounded corners stay crisp: a real border and a box-shadow
 // rasterize differently and leave 1px notches at the corners at 1x DPR.
@@ -9,13 +11,15 @@
 // @css-var --input-font-size Font size (every size)
 // @css-var --input-background Background color of the outline variant
 // @css-var --input-border-color Border color at rest
-// @css-var --input-focus-color Border color while hovered / focused
+// @css-var --input-focus-color Border color while hovered / focused (focus: then --minerva-focus-border-color)
+//
+// Focus: the shared control-focus treatment (styles/_mixins.scss): border
+// color + box-shadow ring (--minerva-focus-ring-color / -width) and a
+// transparent outline that forced colors make visible.
 //
 // Internal plumbing uses the --_input-* prefix.
 .root {
   --_input-border: var(--input-border-color, var(--border-color));
-  --_input-focus-ring: color-mix(in srgb, var(--input-focus-color, var(--primary-color)) 16%, transparent);
-  --_input-focus-ring-width: 3px;
   --_input-pad-x: var(--input-padding-x, var(--control-padding-x-sm));
 
   position: relative;
@@ -37,10 +41,8 @@
   }
 
   &:focus-within {
-    --_input-border: var(--input-focus-color, var(--primary-color));
-    box-shadow:
-      inset 0 0 0 1px var(--_input-border),
-      0 0 0 var(--_input-focus-ring-width) var(--_input-focus-ring);
+    --_input-border: var(--input-focus-color, #{$focus-border-color});
+    @include control-focus(var(--_input-border), $inset-border: true);
   }
 }
 
@@ -97,9 +99,7 @@
 
   &:focus-within {
     --_input-border: var(--danger-color);
-    box-shadow:
-      inset 0 0 0 1px var(--_input-border),
-      0 0 0 var(--_input-focus-ring-width) color-mix(in srgb, var(--danger-color) 16%, transparent);
+    @include control-focus(var(--_input-border), $focus-ring-danger, $inset-border: true);
   }
 }
 

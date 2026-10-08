@@ -9,13 +9,42 @@ const installPnpm = `pnpm add @minerva/lib-core react react-dom`;
 const installNpm = `npm install @minerva/lib-core react react-dom`;
 const installYarn = `yarn add @minerva/lib-core react react-dom`;
 
-const styleImport = `// main.tsx (your entry file) — import the stylesheet exactly once
-import "@minerva/lib-core/style.css";`;
+// The global stylesheet, imported once in the app entry (#global-stylesheet)
+const viteEntry = `// src/main.tsx — the only place that imports Minerva's CSS
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "@minerva/lib-core/style.css";
+import App from "./App";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);`;
+
+const nextLayout = `// app/layout.tsx — global CSS belongs in the root layout
+import type { ReactNode } from "react";
+import "@minerva/lib-core/style.css";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}`;
+
+const wcEntry = `// src/main.ts — register the elements and load the design tokens, once
+import "@minerva/lib-web-components";
+import "@minerva/lib-web-components/tokens.css";`;
+
+const componentImport = `// any component file: import the component only, no CSS
+import { Tag } from "@minerva/lib-core";`;
 
 const extraStyles = `// optional, in your own .scss: long-form typography mixins
 @use "@minerva/lib-core/prose.scss" as prose;`;
 
-const perComponentStyles = `// main.tsx — instead of "@minerva/lib-core/style.css":
+const perComponentStyles = `// src/main.tsx — optional, instead of "@minerva/lib-core/style.css":
 import "@minerva/lib-core/styles/tokens.css"; // design tokens, once
 import "@minerva/lib-core/styles/button.css";
 import "@minerva/lib-core/styles/input.css";
@@ -99,11 +128,39 @@ const InstallationDoc: React.FC = () => {
         <p className={styles.prose}>{t("docs.installation.core.peers")}</p>
       </section>
 
-      <section className={styles.section} aria-labelledby="styles">
-        <h2 id="styles">{t("docs.installation.styles.title")}</h2>
+      <section className={styles.section} aria-labelledby="global-stylesheet">
+        <h2 id="global-stylesheet">{t("docs.installation.styles.title")}</h2>
         <p className={styles.prose}>{t("docs.installation.styles.text")}</p>
-        <CodeBlock code={styleImport} language="tsx" />
         <p className={styles.callout}>{t("docs.installation.styles.note")}</p>
+
+        <h3 id="stylesheet-vite">{t("docs.installation.styles.vite.title")}</h3>
+        <CodeBlock code={viteEntry} language="tsx" title="src/main.tsx" />
+        <p className={styles.prose}>
+          {t("docs.installation.styles.vite.note")}
+        </p>
+
+        <h3 id="stylesheet-next">{t("docs.installation.styles.next.title")}</h3>
+        <CodeBlock code={nextLayout} language="tsx" title="app/layout.tsx" />
+        <p className={styles.prose}>
+          {t("docs.installation.styles.next.note")}{" "}
+          <Link to="/rsc-guide">{t("docs.installation.optional.rsc")}</Link>
+        </p>
+
+        <h3 id="stylesheet-wc">{t("docs.installation.styles.wc.title")}</h3>
+        <CodeBlock code={wcEntry} language="ts" title="src/main.ts" />
+        <p className={styles.prose}>{t("docs.installation.styles.wc.note")}</p>
+
+        <h3 id="stylesheet-components">
+          {t("docs.installation.styles.components.title")}
+        </h3>
+        <p className={styles.prose}>
+          {t("docs.installation.styles.components.text")}
+        </p>
+        <CodeBlock code={componentImport} language="tsx" />
+
+        <h3 id="per-component-styles">
+          {t("docs.installation.styles.perComponentTitle")}
+        </h3>
         <p className={styles.prose}>
           {t("docs.installation.styles.perComponent")}
         </p>

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import {
+  Alert,
   Button,
   FormField,
   FormLayout,
@@ -8,12 +10,13 @@ import {
 } from "@minerva/lib-core";
 
 export default function BasicDemo() {
+  const [saved, setSaved] = useState<string | null>(null);
   return (
     <FormLayout
       columns={{ base: 1, sm: 2 }}
       onSubmit={(event) => {
         event.preventDefault();
-        alert(
+        setSaved(
           JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))),
         );
       }}
@@ -37,6 +40,13 @@ export default function BasicDemo() {
       <GridItem fullWidth>
         <Button type="submit">Save</Button>
       </GridItem>
+      {saved && (
+        <GridItem fullWidth>
+          <Alert color="success" title="Saved">
+            <code>{saved}</code>
+          </Alert>
+        </GridItem>
+      )}
     </FormLayout>
   );
 }

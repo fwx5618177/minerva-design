@@ -587,30 +587,33 @@ $bp-xl: 1280px;
   color: var(--ds-fg-strong);
 }
 
+// No one-sided accent bar (library rule, followed by the site too): the
+// current section is a rounded fill.
 .tocList {
+  display: grid;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
-  border-left: 1px solid var(--ds-border);
 
   li[data-level="3"] .tocLink {
-    padding-left: 24px;
+    padding-left: 20px;
   }
 }
 
 .tocLink {
   position: relative;
   display: block;
-  padding: 4px 0 4px 12px;
-  margin-left: -1px;
-  border-left: 1px solid transparent;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius);
   color: var(--ds-fg-subtle);
   font-size: 13px;
   line-height: 18px;
   text-decoration: none;
   transition:
     color var(--ds-duration) var(--ds-ease),
-    border-color var(--ds-duration) var(--ds-ease);
+    background-color var(--ds-duration) var(--ds-ease);
   @include focus-ring;
 
   &:focus-visible {
@@ -623,7 +626,15 @@ $bp-xl: 1280px;
 
   &[data-active] {
     color: var(--ds-fg-strong);
-    border-left-color: var(--ds-fg-strong);
+    font-weight: 500;
+    background: var(--ds-bg-muted);
+  }
+
+  // forced colors drop the fill: keep a full outline on the current section
+  @media (forced-colors: active) {
+    &[data-active] {
+      border-color: CanvasText;
+    }
   }
 }
 

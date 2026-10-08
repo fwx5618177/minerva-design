@@ -13,6 +13,17 @@ export interface DescriptionListItem {
 export interface DescriptionListProps extends HTMLAttributes<HTMLDListElement> {
   /** Rows to render, in order */
   items: DescriptionListItem[];
+  /**
+   * Frames the list as a card (full border, rounded corners, surface
+   * background, padded rows)
+   * @default false
+   */
+  bordered?: boolean;
+  /**
+   * Tints every other row (replaces the row separators)
+   * @default false
+   */
+  striped?: boolean;
   /** Ref to the <dl> element */
   ref?: Ref<HTMLDListElement>;
 }

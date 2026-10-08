@@ -272,14 +272,23 @@ const sectionStyles = css`
   }
   .cardHeader {
     padding: var(--card-padding, var(--space-4));
+    position: relative;
     background-color: var(--card-header-bg-color, var(--surface-muted-color));
-    border-bottom: 1px solid var(--card-border-color, var(--border-color));
+  }
+  /* section separators: 1px separator shapes, not one-sided borders */
+  .cardHeader::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--card-border-color, var(--border-color));
+    pointer-events: none;
   }
   .cardContent {
     padding: var(--card-padding, var(--space-4));
     flex: 1;
     background-color: var(--card-bg-color-content, var(--surface-color));
-    border-bottom: 1px solid var(--card-border-color, var(--border-color));
     min-width: 0;
     overflow-wrap: anywhere;
   }
@@ -290,8 +299,24 @@ const sectionStyles = css`
       var(--surface-muted-color) 60%,
       transparent
     );
+    position: relative;
     text-align: end;
-    border-top: 1px solid var(--card-border-color, var(--border-color));
+  }
+  .cardFooter::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background-color: var(--card-border-color, var(--border-color));
+    pointer-events: none;
+  }
+  @media (forced-colors: active) {
+    .cardHeader::after,
+    .cardFooter::before {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
   }
   .padded {
     padding: 0;
@@ -301,6 +326,10 @@ const sectionStyles = css`
     white-space: normal;
     overflow: visible;
   }
+  .padded.cardHeader::after,
+  .padded.cardFooter::before {
+    content: none;
+  }
   .padded.cardContent.afterHeader {
     margin-top: var(--space-3);
   }
@@ -308,7 +337,10 @@ const sectionStyles = css`
   .padded.cardFooter.afterHeader {
     margin-top: var(--space-4);
     padding-top: var(--space-4);
-    border-top: 1px solid var(--card-border-color, var(--border-color));
+  }
+  .padded.cardFooter.afterContent::before,
+  .padded.cardFooter.afterHeader::before {
+    content: "";
   }
   .pad-none {
     padding: 0;

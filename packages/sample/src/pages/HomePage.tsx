@@ -23,7 +23,10 @@ import {
 import {
   Badge,
   Button,
+  FormField,
   Input,
+  Select,
+  SelectItem,
   Switch,
   Tab,
   TabList,
@@ -41,14 +44,20 @@ const INSTALL = {
 } as const;
 type Manager = keyof typeof INSTALL;
 
-const FRAMEWORKS = [
-  { name: "React", Icon: SiReact },
+/** Frameworks served by the Web Components package (names are not translated) */
+const WC_FRAMEWORKS = [
   { name: "Vue", Icon: SiVuedotjs },
   { name: "Angular", Icon: SiAngular },
   { name: "Svelte", Icon: SiSvelte },
   { name: "Solid", Icon: SiSolid },
   { name: "HTML", Icon: SiHtml5 },
 ];
+
+const FRAMEWORKS = [{ name: "React", Icon: SiReact }, ...WC_FRAMEWORKS];
+
+const BRANCHES = ["main", "develop", "feat/docs"] as const;
+/** Simulated build time of the showcase's deploy panel */
+const BUILD_MS = 1500;
 
 /** Feature cards: strings under `home.features.<key>` (common.json) */
 const FEATURES = [
@@ -100,6 +109,137 @@ const InstallCommand: React.FC<{ command: string }> = ({ command }) => {
   );
 };
 
+/** Hero pills: React natively, every other stack through the Web Components */
+const FrameworkSupport: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <div
+      className={styles.support}
+      role="group"
+      aria-label={t("home.support.label")}
+    >
+      <span className={styles.pill}>
+        <SiReact aria-hidden />
+        React
+      </span>
+      <span className={styles.supportDivider} aria-hidden />
+      <span className={styles.supportLabel}>
+        {t("home.support.webComponents")}
+      </span>
+      <ul className={styles.pills}>
+        {WC_FRAMEWORKS.map(({ name, Icon }) => (
+          <li key={name} className={styles.pill}>
+            <Icon aria-hidden />
+            {name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+type DeployStatus = "ready" | "building" | "canceled";
+
+const STATUS_COLOR = {
+  ready: "success",
+  building: "warning",
+  canceled: "neutral",
+} as const;
+
+/** Live showcase: a small deploy panel built from real Minerva components */
+const DeployPanel: React.FC = () => {
+  const { t } = useTranslation();
+  const [project, setProject] = useState("minerva-app");
+  const [branch, setBranch] = useState<string>(BRANCHES[0]);
+  const [production, setProduction] = useState(true);
+  const [status, setStatus] = useState<DeployStatus>("ready");
+
+  useEffect(() => {
+    if (status !== "building") return;
+    const timer = setTimeout(() => setStatus("ready"), BUILD_MS);
+    return () => clearTimeout(timer);
+  }, [status]);
+
+  const building = status === "building";
+  const target = production
+    ? t("home.showcase.production")
+    : t("home.showcase.preview");
+
+  return (
+    <div className={styles.window}>
+      <div className={styles.windowBar}>
+        <span className={styles.windowDots} aria-hidden>
+          <span />
+          <span />
+          <span />
+        </span>
+        <span className={styles.windowTitle}>{t("home.showcase.title")}</span>
+      </div>
+      <div className={styles.windowBody} data-demo-preview>
+        <div className={styles.panelHeader}>
+          <div className={styles.panelHeading}>
+            <span className={styles.panelProject}>{project || "—"}</span>
+            <span className={styles.panelMeta}>
+              {branch} · {target}
+            </span>
+          </div>
+          <Badge
+            color={STATUS_COLOR[status]}
+            variant="subtle"
+            role="status"
+            aria-live="polite"
+          >
+            {t(`home.showcase.status.${status}`)}
+          </Badge>
+        </div>
+        <div className={styles.panelFields}>
+          <FormField label={t("home.showcase.project")}>
+            <Input
+              value={project}
+              onChange={(event) => setProject(event.target.value)}
+              disabled={building}
+            />
+          </FormField>
+          <FormField label={t("home.showcase.branch")}>
+            <Select value={branch} onChange={setBranch} disabled={building}>
+              {BRANCHES.map((name) => (
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </Select>
+          </FormField>
+        </div>
+        <div className={styles.panelFooter}>
+          <Switch
+            label={t("home.showcase.production")}
+            checked={production}
+            onChange={(checked) => setProduction(checked)}
+            disabled={building}
+          />
+          <div className={styles.panelActions}>
+            <Button
+              variant="outline"
+              disabled={!building}
+              onClick={() => setStatus("canceled")}
+            >
+              {t("home.showcase.cancel")}
+            </Button>
+            <Button
+              color="primary"
+              loading={building}
+              disabled={!project.trim()}
+              onClick={() => setStatus("building")}
+            >
+              {t("home.showcase.deploy")}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /** Landing page: hero, install command, live preview, features, frameworks */
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -120,10 +260,7 @@ const HomePage: React.FC = () => {
     <div className={styles.home}>
       <section className={styles.hero} aria-labelledby="home-title">
         <div className={styles.heroGrid} aria-hidden />
-        <p className={styles.badge}>
-          <span className={styles.badgeDot} aria-hidden />
-          {t("home.badge")}
-        </p>
+        <FrameworkSupport />
         <h1 id="home-title" className={styles.title}>
           {t("home.title")}
         </h1>
@@ -160,32 +297,11 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Live components, rendered with the library's own theme */}
-      <section className={styles.showcase} aria-label="Minerva UI">
-        <div className={styles.window}>
-          <div className={styles.windowBar} aria-hidden>
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className={styles.windowBody} data-demo-preview>
-            <div className={styles.showcaseRow}>
-              <Button color="primary">Deploy</Button>
-              <Button variant="outline">Preview</Button>
-              <Button variant="ghost">Cancel</Button>
-              <Badge color="success" variant="subtle">
-                Ready
-              </Badge>
-            </div>
-            <div className={styles.showcaseRow}>
-              <Input
-                aria-label="Project name"
-                placeholder="my-minerva-app"
-                className={styles.showcaseInput}
-              />
-              <Switch label="Dark mode ready" defaultChecked />
-            </div>
-          </div>
-        </div>
+      <section
+        className={styles.showcase}
+        aria-label={t("home.showcase.label")}
+      >
+        <DeployPanel />
       </section>
 
       <section className={styles.section} aria-labelledby="home-features">

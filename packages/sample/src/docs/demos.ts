@@ -22,7 +22,11 @@ export const collectDemos = (
   return demos;
 };
 
-/** Default import snippet for a page's exports */
+/**
+ * Default import snippet for a page's exports: the component import only
+ * (the global stylesheet is imported once, in the app entry — see the
+ * Installation page; DocPage adds a note linking there).
+ */
 export const importSnippet = (
   exports: string[] = [],
   pkg: string = "@minerva/lib-core",
@@ -30,8 +34,7 @@ export const importSnippet = (
   if (pkg === "@minerva/lib-web-components") {
     return `// registers <minerva-button> and the other custom elements\nimport "@minerva/lib-web-components";`;
   }
-  const names = exports.join(", ");
-  return `import { ${names} } from "${pkg}";\nimport "${pkg}/style.css";`;
+  return `import { ${exports.join(", ")} } from "${pkg}";`;
 };
 
 /** A Web Component demo: plain HTML + an optional setup script */
@@ -65,7 +68,3 @@ export const collectWcDemos = (
   }
   return demos;
 };
-
-/** Import snippet of a Web Component page */
-export const wcImportSnippet = (entry: string) =>
-  `// registers the element(s) of this page (and only them)\nimport "@minerva/lib-web-components/${entry}";\n\n// or every element at once\nimport "@minerva/lib-web-components";\n\n// design tokens (once per app; skip if you already load @minerva/lib-core/style.css)\nimport "@minerva/lib-web-components/tokens.css";`;
