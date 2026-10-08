@@ -3,8 +3,9 @@
 - Status: accepted (GO for both options; A is the default, B the fallback)
 - Date: 2026-10-09
 - Time box: ~45 min
-- Code: `packages/native/spike/` (`pnpm vitest run --project native`,
-  `--project native-web`)
+- Code: the spike became the test setup of `packages/native`
+  (`test/rn-environment.ts`, `vitest.config.ts`, `vitest.web.config.ts`;
+  `pnpm vitest run --project native`, `--project native-web`)
 
 ## Versions (verified on npm, 2026-10-09)
 
@@ -23,7 +24,7 @@ These are the `native` pnpm catalog.
 
 ## Option A: react-native-testing-mocks + @testing-library/react-native 14 (GO)
 
-Setup (`packages/native/vitest.config.ts`, `spike/rn-environment.ts`):
+Setup (`packages/native/vitest.config.ts`, `test/rn-environment.ts`):
 
 - a **local Vitest environment** instead of the package's
   `react-native-testing-mocks/vitest` plugin, which fails on Vitest 5
@@ -44,7 +45,7 @@ Setup (`packages/native/vitest.config.ts`, `spike/rn-environment.ts`):
   resolvable by `@babel/register` (dev dependencies of the package);
 - RNTL 14: `render`, `fireEvent`, `userEvent` are **async** (await them);
   matcher types come from `@testing-library/react-native/dist/matchers/types`
-  (`spike/vitest-rntl.d.ts`).
+  (`test/vitest-rntl.d.ts`).
 
 Test: role query, `fireEvent.press` and `userEvent.press`, disabled ignores
 presses, `toHaveTextContent`, `toBeDisabled`. ~2.5 s per file (Babel on RN,

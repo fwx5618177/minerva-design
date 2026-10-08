@@ -6,6 +6,7 @@ import forms from "./groups/forms.json";
 import general from "./groups/general.json";
 import inputs from "./groups/inputs.json";
 import layout from "./groups/layout.json";
+import mobile from "./groups/mobile.json";
 import overlays from "./groups/overlays.json";
 import theme from "./groups/theme.json";
 import { mergeMessages, type Messages } from "../../merge";
@@ -22,6 +23,7 @@ const messages: Messages = /* @__PURE__ */ mergeMessages<Messages>(
   general,
   inputs,
   layout,
+  mobile,
   overlays,
   theme,
 );

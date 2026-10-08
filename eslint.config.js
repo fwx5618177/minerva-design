@@ -113,7 +113,11 @@ export default defineConfig(
     },
   },
   {
-    files: ["packages/react/src/**/*.{ts,tsx}", "apps/docs/src/**/*.{ts,tsx}"],
+    files: [
+      "packages/react/src/**/*.{ts,tsx}",
+      "packages/native/src/**/*.{ts,tsx}",
+      "apps/docs/src/**/*.{ts,tsx}",
+    ],
     plugins: {
       "react-hooks": reactHooks,
     },
