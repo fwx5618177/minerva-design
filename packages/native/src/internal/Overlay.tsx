@@ -192,8 +192,8 @@ export function Overlay({
         <Animated.View
           accessibilityViewIsModal
           aria-modal
-          {...panelProps}
           {...part(component, "content")}
+          {...panelProps}
           style={[
             {
               backgroundColor: t.colors["surface-elevated-color"],
