@@ -68,6 +68,8 @@ describe("item state hooks (web components e2e)", () => {
     expect(withParts(menu, "item", "item--highlighted").map(text)).toEqual([
       "Edit",
     ]);
+    // the slotted trigger is styled from the host: :state(open) > [slot=trigger]
+    expect(customStates(menu).has("open")).toBe(true);
 
     await user.keyboard("{ArrowDown}");
     await settle();

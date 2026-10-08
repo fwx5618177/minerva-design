@@ -20,14 +20,15 @@ describe("Steps keyboard", () => {
     const review = screen.getByRole("button", { name: "Review" });
     expect(review).toHaveFocus();
     const [draftBefore, reviewBefore] = screen.getAllByRole("listitem");
-    expect(draftBefore).toHaveAttribute("data-status", "current");
+    expect(draftBefore).toHaveAttribute("data-current", "");
+    expect(draftBefore).not.toHaveAttribute("data-status");
     expect(reviewBefore).toHaveAttribute("data-status", "upcoming");
     await user.keyboard(" ");
     expect(onChange).toHaveBeenCalledWith("review");
     expect(review).toHaveAttribute("aria-current", "step");
     const [draftItem, reviewItem] = screen.getAllByRole("listitem");
     expect(reviewItem).toHaveAttribute("data-current", "");
-    expect(reviewItem).toHaveAttribute("data-status", "current");
+    expect(reviewItem).not.toHaveAttribute("data-status");
     expect(draftItem).not.toHaveAttribute("data-current");
     expect(draftItem).toHaveAttribute("data-status", "complete");
     // the current step does not re-emit

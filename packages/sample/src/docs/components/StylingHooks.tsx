@@ -59,7 +59,7 @@ const ComponentHooks: React.FC<{
   name: string;
   framework: HookFramework;
 }> = ({ name, framework }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const spec = manifest[name];
   const id = `hooks-${framework}-${name}`;
   const root =
@@ -108,6 +108,12 @@ const ComponentHooks: React.FC<{
       t(`hooks.states.${key}`),
     ];
   });
+  // generic description of the state, plus the component's own note
+  const itemStateDescription = (name: string, part: string, key: string) => {
+    const note = `hooks.itemNotes.${name}.${part}.${key}`;
+    const text = t(`hooks.states.${key}`);
+    return i18n.exists(note) ? `${text} — ${t(note)}` : text;
+  };
   const itemRows = itemStatesOf(spec, framework).map(
     ({ part, key, values }) => [
       <code className={styles.propName} key="part">
@@ -127,7 +133,7 @@ const ComponentHooks: React.FC<{
           );
         })}
       </span>,
-      t(`hooks.states.${key}`),
+      itemStateDescription(name, part, key),
     ],
   );
   const example = hookExample(name, framework);

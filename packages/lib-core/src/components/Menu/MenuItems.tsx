@@ -1,5 +1,6 @@
 import {
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useId,
@@ -65,6 +66,24 @@ const UNPOSITIONED: CSSProperties = { transform: "translate(0, -200%)" };
 /** Classes of a menu panel (root menu or submenu). */
 export const contentClassName = (size: MenuSize, className?: string) =>
   cn(styles.content, size === "small" && styles.small, className);
+
+/**
+ * Public hooks of the trigger (Menu) / area (ContextMenu): rendered on a
+ * native element child only. A component child (e.g. a Minerva Button)
+ * keeps its own hooks (`aria-expanded` reflects the Menu's state there).
+ */
+export const triggerHooks = (
+  component: "menu" | "context-menu",
+  child: unknown,
+  open: boolean,
+  disabled: boolean,
+) =>
+  isValidElement(child) && typeof child.type === "string"
+    ? hooks(component, "trigger", {
+        state: open ? "open" : "closed",
+        disabled,
+      })
+    : undefined;
 
 const isDisabledItem = (item: HTMLElement) =>
   item.hasAttribute("data-disabled");

@@ -9,11 +9,11 @@ export default defineHooks({
     root: { description: "The <ol>" },
     item: {
       description:
-        "A step <li> (the current step has aria-current=step). Item states: current, disabled, status (complete / current / upcoming)",
+        "A step <li> (the current step has aria-current=step). Item states: current (the current step, like pagination / nav-tree items; it has no status), status (complete: before the current step, upcoming: after it), disabled (navigable steps only: a disabled step has no effect in read-only steps)",
       itemStates: {
         current: true,
         disabled: true,
-        status: ["complete", "current", "upcoming"],
+        status: ["complete", "upcoming"],
       },
     },
     button: {

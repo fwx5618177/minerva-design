@@ -25,6 +25,7 @@ const CURRENT = "rgb(0, 0, 255)";
 
 /** The consumer stylesheet: public hooks only */
 const consumerCss = `
+[data-minerva="menu"][data-part="trigger"][data-state="open"] { color: ${CURRENT}; }
 [data-minerva="menu"][data-part="item"][data-highlighted] { color: ${HIGHLIGHT}; }
 [data-minerva="menu"][data-part="item"][data-state="checked"] { font-weight: 700; }
 [data-minerva="menu"][data-part="item"][data-disabled] { opacity: 0.5; }
@@ -75,8 +76,14 @@ describe("item state hooks: consumer CSS (React)", () => {
         <button type="button">Actions</button>
       </Menu>,
     );
-    screen.getByRole("button", { name: "Actions" }).focus();
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    expect(trigger).toHaveAttribute("data-state", "closed");
+    trigger.focus();
     await user.keyboard("{ArrowDown}");
+    // the trigger's public hook follows the menu
+    expect(trigger).toHaveAttribute("data-part", "trigger");
+    expect(trigger).toHaveAttribute("data-state", "open");
+    expect(color(trigger)).toBe(CURRENT);
     const edit = await screen.findByRole("menuitem", { name: "Edit" });
     const copy = screen.getByRole("menuitem", { name: "Duplicate" });
     await waitFor(() => expect(edit).toHaveFocus());

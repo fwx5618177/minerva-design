@@ -69,6 +69,8 @@ const itemsCode = `/* React: item states are attributes of the item element itse
 [data-minerva="pagination"][data-part="item"][data-current] { }
 [data-minerva="data-table"][data-part="header-cell"][data-sort="ascending"] { }
 [data-minerva="toast-region"][data-part="toast"][data-color="success"] { }
+/* the trigger of a menu (a native element child) while the menu is open */
+[data-minerva="menu"][data-part="trigger"][data-state="open"] { }
 
 /* Web components, items in the shadow root: <part>--<state> part names */
 minerva-menu::part(item item--highlighted) { }
@@ -82,7 +84,9 @@ minerva-upload::part(item item--status-error) { }
 /* Web components, items that are elements of their own: :state() */
 minerva-option:state(selected)::part(root) { }
 minerva-tab:state(active)::part(root) { }
-minerva-page-tab:state(current) { }`;
+minerva-page-tab:state(current) { }
+/* your slotted trigger, from the states of its host */
+minerva-menu:state(open) > [slot="trigger"] { }`;
 
 const layerCode = `/* The library ships inside @layer minerva: unlayered rules win,
    whatever their specificity or order */

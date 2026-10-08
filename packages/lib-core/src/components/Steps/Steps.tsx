@@ -79,8 +79,9 @@ const Steps = ({
             {...hooks("steps", "item", {
               current: isCurrent,
               disabled: !readOnly && item.disabled,
+              // the current step has `current` and no status
               status: isCurrent
-                ? "current"
+                ? undefined
                 : isComplete
                   ? "complete"
                   : "upcoming",

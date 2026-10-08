@@ -26,7 +26,11 @@ const common = (lng: string) =>
       "utf8",
     ),
   ) as {
-    hooks: { parts: Record<string, string>; states: Record<string, string> };
+    hooks: {
+      parts: Record<string, string>;
+      states: Record<string, string>;
+      itemNotes: Record<string, Record<string, Record<string, string>>>;
+    };
   };
 
 describe("styling hooks docs", () => {
@@ -47,6 +51,24 @@ describe("styling hooks docs", () => {
     expect(states.filter((key) => !hooks.states[key])).toEqual([]);
     // no stale entries
     expect(Object.keys(hooks.parts).filter((p) => !parts.has(p))).toEqual([]);
+  });
+
+  it.each(LOCALES)("notes only documented item states, like en (%s)", (lng) => {
+    const notes = common(lng).hooks.itemNotes;
+    const keys = (n: typeof notes) =>
+      Object.entries(n).flatMap(([name, parts]) =>
+        Object.entries(parts).flatMap(([part, states]) =>
+          Object.keys(states).map((key) => `${name}.${part}.${key}`),
+        ),
+      );
+    expect(keys(notes)).toEqual(keys(common("en").hooks.itemNotes));
+    for (const key of keys(notes)) {
+      const [name, part, state] = key.split(".");
+      expect(
+        Object.keys(hookManifest[name]?.parts[part]?.itemStates ?? {}),
+        key,
+      ).toContain(state);
+    }
   });
 
   it("finds the hooks of a page from its tags and exports", () => {

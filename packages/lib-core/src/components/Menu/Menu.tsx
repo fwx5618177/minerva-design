@@ -12,7 +12,7 @@ import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { useLayerParent } from "../../internal/useDismissableLayer";
-import { MenuRoot, type FocusIntent } from "./MenuItems";
+import { MenuRoot, triggerHooks, type FocusIntent } from "./MenuItems";
 import type { MenuProps } from "./types";
 
 const OFFSET = { mainAxis: 6, crossAxis: 0 };
@@ -131,8 +131,7 @@ const Menu = ({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? contentId : undefined}
-        // No state hook on the trigger: the child (often a Minerva
-        // component) keeps its own hooks; style [aria-expanded="true"].
+        {...triggerHooks("menu", children, open, !!disabled)}
         {...{ disabled: disabled || undefined }}
         onKeyDown={onKeyDown}
         onClick={onClick}

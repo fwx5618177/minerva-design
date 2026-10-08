@@ -908,6 +908,7 @@ export abstract class MenuBase extends MinervaElement {
       : this.rootPlacement();
     return {
       state: this.open && !this.disabled ? "open" : "closed",
+      disabled: this.disabled,
       size: this.size,
       ...parsePlacement(placement),
       placement,

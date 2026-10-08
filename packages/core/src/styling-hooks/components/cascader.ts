@@ -27,7 +27,7 @@ export default defineHooks({
     column: { description: "A column of options (role=listbox)" },
     item: {
       description:
-        "An option (column option or search result). Item states: selected (on the selected path), expanded (its children column is shown), disabled, loading (children loading)",
+        "An option (column option or search result). Item states: selected (on the selected path), expanded (its children column is shown; never the selected leaf at the end of the path), disabled, loading (children loading)",
       itemStates: {
         selected: true,
         expanded: true,

@@ -36,7 +36,6 @@ export interface StepsItem {
  * @csspart item--current - Item state of `item`: current
  * @csspart item--disabled - Item state of `item`: disabled
  * @csspart item--status-complete - Item state of `item`: status complete
- * @csspart item--status-current - Item state of `item`: status current
  * @csspart item--status-upcoming - Item state of `item`: status upcoming
  * @csspart button - The `<button>` of a step (navigable) or its static wrapper (read-only)
  * @csspart indicator - The numbered indicator of a step
@@ -119,8 +118,9 @@ export class MinervaSteps extends MinervaElement {
               aria-hidden="true"
               >${index + 1}</span
             ><span part="label" class="label">${item.label}</span>`;
+          // the current step has `current` and no status
           const status = isCurrent
-            ? "current"
+            ? undefined
             : isComplete
               ? "complete"
               : "upcoming";

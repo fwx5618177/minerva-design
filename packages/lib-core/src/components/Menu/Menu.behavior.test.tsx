@@ -16,6 +16,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ContextMenu, Menu, type MenuEntry, type MenuProps } from ".";
 import { ConfigProvider } from "../../contexts/ConfigProvider";
+import { Button } from "../Button";
 import { ModalContent, ModalHeader, ModalRoot } from "../Modal";
 import { LONG_PRESS_DELAY } from "./ContextMenu";
 import { SUBMENU_OPEN_DELAY } from "./MenuItems";
@@ -78,16 +79,20 @@ afterEach(() => {
 });
 
 describe("Menu trigger", () => {
-  it("wires aria-haspopup, aria-expanded, aria-controls and labels the menu with the trigger (no private state attribute)", async () => {
+  it("wires aria-haspopup, aria-expanded, aria-controls, the public trigger hooks and labels the menu with the trigger", async () => {
     const { user, trigger } = renderMenu(simple);
     expect(trigger).toHaveAttribute("aria-haspopup", "menu");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(trigger).not.toHaveAttribute("data-menu-state");
+    expect(trigger).toHaveAttribute("data-minerva", "menu");
+    expect(trigger).toHaveAttribute("data-part", "trigger");
+    expect(trigger).toHaveAttribute("data-state", "closed");
     expect(trigger).not.toHaveAttribute("aria-controls");
 
     await user.click(trigger);
     const menu = screen.getByRole("menu");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("data-state", "open");
     expect(trigger).toHaveAttribute("aria-controls", menu.id);
     expect(menu).toHaveAttribute("aria-labelledby", trigger.id);
     expect(menu).toHaveAccessibleName("Open");
@@ -737,7 +742,27 @@ describe("Menu modality and layers", () => {
           <div>Area</div>
         </ContextMenu>,
       ),
-    ).not.toContain("data-menu-");
+    ).toContain(
+      'data-minerva="context-menu" data-part="trigger" data-state="closed"',
+    );
+    expect(html).toContain('data-part="trigger" data-state="open"');
+    expect(html).not.toContain("data-menu-");
+  });
+
+  it("leaves the hooks of a component trigger alone (a Minerva Button keeps its own)", async () => {
+    const user = userEvent.setup();
+    render(
+      <Menu items={simple}>
+        <Button>Actions</Button>
+      </Menu>,
+    );
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    expect(trigger).toHaveAttribute("data-minerva", "button");
+    expect(trigger).not.toHaveAttribute("data-state", "closed");
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("data-minerva", "button");
+    expect(trigger).not.toHaveAttribute("data-state", "open");
   });
 });
 
@@ -848,6 +873,10 @@ describe("ContextMenu", () => {
     expect(fireEvent.contextMenu(area)).toBe(true);
     fireEvent.keyDown(area, { key: "ContextMenu" });
     expect(screen.queryByRole("menu")).toBeNull();
-    expect(area).not.toHaveAttribute("data-disabled");
+    // public trigger hooks of the area
+    expect(area).toHaveAttribute("data-minerva", "context-menu");
+    expect(area).toHaveAttribute("data-part", "trigger");
+    expect(area).toHaveAttribute("data-state", "closed");
+    expect(area).toHaveAttribute("data-disabled", "");
   });
 });

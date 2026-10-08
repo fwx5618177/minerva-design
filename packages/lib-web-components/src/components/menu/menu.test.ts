@@ -13,6 +13,7 @@ import "../../elements/modal";
 import type { MinervaModal } from "../modal/modal";
 import { resetDevWarnings } from "../../internal/dev";
 import { mount, settle, wait } from "../../../tests/utils";
+import { customStates } from "../../internal/styling-hooks";
 
 // Modal menus set `pointer-events: none` on <body>: user-event's pointer
 // checks are disabled, like in lib-core's tests.
@@ -80,6 +81,25 @@ afterEach(() => {
 });
 
 describe("<minerva-menu> trigger", () => {
+  it("exposes the open / disabled state of the trigger as host custom states", async () => {
+    const { el } = await renderMenu(simple);
+    expect([...customStates(el)]).toContain("closed");
+    el.open = true;
+    await settle();
+    expect([...customStates(el)]).toContain("open");
+    el.open = false;
+    el.disabled = true;
+    await settle();
+    expect([...customStates(el)]).toEqual(
+      expect.arrayContaining(["closed", "disabled"]),
+    );
+    // the slotted trigger mirrors it (minerva-menu:state(open) > [slot=trigger])
+    expect(el.querySelector("[slot=trigger]")).toHaveAttribute(
+      "data-state",
+      "closed",
+    );
+  });
+
   it("is registered with its entry elements", () => {
     expect(customElements.get("minerva-menu")).toBe(MinervaMenu);
     expect(customElements.get("minerva-context-menu")).toBe(MinervaContextMenu);

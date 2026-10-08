@@ -6,6 +6,12 @@ export default defineHooks({
   react: ["Menu"],
   wc: "minerva-menu",
   parts: {
+    trigger: {
+      description:
+        "The trigger: the native element child of Menu (state open / closed, disabled). React only: a component child (e.g. a Minerva Button) keeps its own hooks and gets aria-expanded; on the web components the trigger is your slotted element, style it from the host states (minerva-menu:state(open) > [slot=trigger])",
+      states: ["state", "disabled"],
+      only: "react",
+    },
     content: {
       description:
         "A menu panel (role=menu: the root menu and its submenus, each with its own placement)",
@@ -35,6 +41,7 @@ export default defineHooks({
   },
   states: {
     state: ["open", "closed"],
+    disabled: true,
     size: ["small", "medium"],
     side: ["top", "right", "bottom", "left"],
     align: ["start", "center", "end"],

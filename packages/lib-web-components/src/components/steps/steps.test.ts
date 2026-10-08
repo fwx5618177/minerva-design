@@ -45,9 +45,7 @@ describe("<minerva-steps>", () => {
     expect(shipping.classList).toContain("current");
     expect(payment.classList).not.toContain("complete");
     expect(cart.getAttribute("part")).toBe("item item--status-complete");
-    expect(shipping.getAttribute("part")).toBe(
-      "item item--current item--status-current",
-    );
+    expect(shipping.getAttribute("part")).toBe("item item--current");
     expect(payment.getAttribute("part")).toBe("item item--status-upcoming");
     // read-only: no disabled step
     expect(steps(el)[3].getAttribute("part")).toBe(
@@ -84,9 +82,7 @@ describe("<minerva-steps>", () => {
     await el.updateComplete;
     expect(buttons[2]).toHaveAttribute("aria-current", "step");
     expect(el.getAttribute("value")).toBe("payment");
-    expect(steps(el)[2].getAttribute("part")).toBe(
-      "item item--current item--status-current",
-    );
+    expect(steps(el)[2].getAttribute("part")).toBe("item item--current");
     expect(steps(el)[0].getAttribute("part")).toBe(
       "item item--status-complete",
     );

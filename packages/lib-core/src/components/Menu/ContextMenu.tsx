@@ -14,7 +14,7 @@ import { Slot } from "../../internal/Slot";
 import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";
 import { useLayerParent } from "../../internal/useDismissableLayer";
-import { MenuRoot, type FocusIntent } from "./MenuItems";
+import { MenuRoot, triggerHooks, type FocusIntent } from "./MenuItems";
 import type { ContextMenuProps } from "./types";
 
 /** Touch long press duration that opens the menu (ms). */
@@ -163,8 +163,7 @@ const ContextMenu = ({
     <>
       <Slot
         ref={setArea}
-        // No state hook on the area: the child (often a Minerva component)
-        // keeps its own hooks.
+        {...triggerHooks("context-menu", children, open, !!disabled)}
         style={style}
         onContextMenu={onContextMenu}
         onKeyDown={onKeyDown}
