@@ -30,6 +30,10 @@ export default defineConfig({
   },
   test: {
     name: "angular",
+    // Analog defaults to the `vmThreads` pool, where the test realm's
+    // `Object` differs from happy-dom's (`node instanceof Object` is false:
+    // @minerva/dom's event target checks fail). Same pool as the other projects.
+    pool: "forks",
     environment: "happy-dom",
     environmentOptions: {
       happyDOM: {

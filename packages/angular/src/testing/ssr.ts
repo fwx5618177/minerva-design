@@ -13,15 +13,25 @@ import {
   provideClientHydration,
   type BootstrapContext,
 } from "@angular/platform-browser";
-import { ɵBrowserDomAdapter as BrowserDomAdapter } from "@angular/platform-browser";
 import {
   provideServerRendering,
   renderApplication,
+  ɵENABLE_DOM_EMULATION as ENABLE_DOM_EMULATION,
 } from "@angular/platform-server";
 
 /** Element name of a (selector-less test host) component */
 export const hostTag = (component: Type<unknown>) =>
   reflectComponentType(component)?.selector || "ng-component";
+
+/** A detached document (domino's `serialize()` added) for the server render */
+function serverDocument(tag: string): Document {
+  const doc = document.implementation.createHTMLDocument("");
+  doc.body.innerHTML = `<${tag}></${tag}>`;
+  Object.assign(doc, {
+    serialize: () => `<!DOCTYPE html>${doc.documentElement.outerHTML}`,
+  });
+  return doc;
+}
 
 /** Server-renders a standalone component (zoneless, hydration annotations) */
 export async function renderToString(
@@ -29,19 +39,7 @@ export async function renderToString(
   providers: Array<Provider | EnvironmentProviders> = [],
 ): Promise<string> {
   const tag = hostTag(component);
-  // the server platform installs domino's DOM globals: restore the test
-  // environment's ones afterwards (and the browser DOM adapter)
-  const saved = Object.getOwnPropertyDescriptors(globalThis);
-  try {
-    return await render(component, tag, providers);
-  } finally {
-    for (const key of Reflect.ownKeys(globalThis)) {
-      const before = saved[key as keyof typeof saved];
-      if (!before) delete (globalThis as Record<PropertyKey, unknown>)[key];
-      else Object.defineProperty(globalThis, key, before);
-    }
-    BrowserDomAdapter.makeCurrent();
-  }
+  return render(component, tag, providers);
 }
 
 function render(
@@ -64,9 +62,13 @@ function render(
         context,
       ),
     {
-      document: `<!doctype html><html><head></head><body><${tag}></${tag}></body></html>`,
+      document: serverDocument(tag),
       url: "http://localhost/",
       allowedHosts: ["localhost"],
+      // no domino globals over the test environment's DOM: the server
+      // render uses a separate happy-dom document (the published package is
+      // server-rendered in plain Node, with domino, by test:dist)
+      platformProviders: [{ provide: ENABLE_DOM_EMULATION, useValue: false }],
     },
   );
 }
