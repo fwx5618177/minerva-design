@@ -31,6 +31,7 @@ export const CodeBlock = ({
   maxHeight = "24rem",
   tabIndex = 0,
   copyable = false,
+  onCopied,
   className,
   style,
   ref,
@@ -65,10 +66,12 @@ export const CodeBlock = ({
     }
     try {
       await clipboard.writeText(children);
-      showStatus("copied");
     } catch {
       showStatus("failed");
+      return;
     }
+    showStatus("copied");
+    onCopied?.(children);
   };
 
   const regionProps = {

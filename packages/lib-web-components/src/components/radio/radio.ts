@@ -10,6 +10,11 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
 import {
+  isHostDeferred,
+  onHostSettled,
+  setHostAttribute,
+} from "../../internal/hydration";
+import {
   FormAssociatedElement,
   type ValidityResult,
 } from "../../internal/form";
@@ -173,17 +178,17 @@ export class MinervaRadio extends MinervaElement {
       },
       this.ownedAria,
     );
-    if (!this.group) this.setAttribute("tabindex", disabled ? "-1" : "0");
+    if (!this.group) setHostAttribute(this, "tabindex", disabled ? "-1" : "0");
     const helper = this.error ? this.errorMessage : this.helperText;
     if (
       helper &&
       (this.ownsDescription || !this.hasAttribute("aria-description"))
     ) {
       this.ownsDescription = true;
-      this.setAttribute("aria-description", helper);
+      setHostAttribute(this, "aria-description", helper);
     } else if (!helper && this.ownsDescription) {
       this.ownsDescription = false;
-      this.removeAttribute("aria-description");
+      setHostAttribute(this, "aria-description", null);
     }
   }
 
@@ -321,6 +326,9 @@ export class MinervaRadioGroup extends FormAssociatedElement {
   }));
   private observer: MutationObserver | null = null;
   private dirty = false;
+  private rovingAttached = false;
+  /** An update is queued for when server-rendered radios settle */
+  private settleQueued = false;
 
   /** The radios of the group */
   get radios(): MinervaRadio[] {
@@ -341,9 +349,9 @@ export class MinervaRadioGroup extends FormAssociatedElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.roving.attach(this);
-    // after core's handler (registered by attach): it moved focus already
-    this.addEventListener("keydown", this.handleKeyDown);
+    // roving tabindex: once server-rendered radios may get host attributes
+    // (see `syncRoving()`)
+    if (!isHostDeferred(this)) this.attachRoving();
     this.addEventListener("click", this.handleClick);
     if (typeof MutationObserver !== "undefined") {
       this.observer = new MutationObserver(() => this.requestUpdate());
@@ -351,8 +359,18 @@ export class MinervaRadioGroup extends FormAssociatedElement {
     }
   }
 
+  /** Attaches the roving focus, then the group's keydown listener. */
+  private attachRoving() {
+    if (this.rovingAttached) return;
+    this.rovingAttached = true;
+    this.roving.attach(this);
+    // after core's handler (registered by attach): it moved focus already
+    this.addEventListener("keydown", this.handleKeyDown);
+  }
+
   override disconnectedCallback(): void {
     super.disconnectedCallback();
+    this.rovingAttached = false;
     this.removeEventListener("keydown", this.handleKeyDown);
     this.removeEventListener("click", this.handleClick);
     this.observer?.disconnect();
@@ -405,7 +423,32 @@ export class MinervaRadioGroup extends FormAssociatedElement {
       if (radio.checked) checked ??= radio;
       radio.requestUpdate();
     }
-    // the checked radio is the Tab stop; disabled radios never are
+    this.syncRoving(radios, checked);
+    if (DEV && this.value !== "" && radios.length > 0 && !checked) {
+      devWarn(
+        MinervaRadioGroup.tagName,
+        `value "${this.value}" matches no <minerva-radio> of the group.`,
+      );
+    }
+  }
+
+  /**
+   * Roving tabindex (the checked radio is the Tab stop; disabled radios
+   * never are), once server-rendered radios may get host attributes.
+   */
+  private syncRoving(radios: MinervaRadio[], checked?: MinervaRadio) {
+    const waiting = [this, ...radios].find(isHostDeferred);
+    if (waiting) {
+      if (!this.settleQueued) {
+        this.settleQueued = true;
+        onHostSettled(waiting, () => {
+          this.settleQueued = false;
+          this.requestUpdate();
+        });
+      }
+      return;
+    }
+    this.attachRoving();
     if (checked && !checked.disabled && !this.isDisabled) {
       this.roving.setActive(checked, { focus: false });
     } else {
@@ -414,12 +457,6 @@ export class MinervaRadioGroup extends FormAssociatedElement {
     for (const radio of radios) {
       if (this.isDisabled || radio.disabled)
         radio.setAttribute("tabindex", "-1");
-    }
-    if (DEV && this.value !== "" && radios.length > 0 && !checked) {
-      devWarn(
-        MinervaRadioGroup.tagName,
-        `value "${this.value}" matches no <minerva-radio> of the group.`,
-      );
     }
   }
 

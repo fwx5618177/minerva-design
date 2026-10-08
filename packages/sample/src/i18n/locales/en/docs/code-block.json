@@ -12,7 +12,7 @@
     },
     "copyable": {
       "title": "Copy button",
-      "description": "copyable adds a copy button in the top-right corner; the result (\"Copied\" / \"Copy failed\") is shown on the button and announced to screen readers."
+      "description": "copyable adds a copy button in the top-right corner; the result (\"Copied\" / \"Copy failed\") is shown on the button and announced to screen readers. onCopied receives the copied text after a successful copy."
     }
   },
   "api": {
@@ -23,6 +23,7 @@
       "maxHeight": "Maximum height before the block scrolls",
       "tabIndex": "Tab order of the region (focusable by default)",
       "copyable": "Shows a copy button that writes the text to the clipboard and announces the result",
+      "onCopied": "Called with the copied text after the copy button wrote it to the clipboard (not on failure); the native onCopy still goes to the element",
       "ref": "Ref to the <pre> element"
     }
   },
@@ -57,7 +58,7 @@
         "text": "The text shown and copied (read-only)."
       },
       "events": {
-        "minerva-copy": "The copy button was used (detail: { value, success })."
+        "minerva-copy": "The copy button or copy() was used (detail: { text, success }; text is the copied text, React's onCopied receives it on success)."
       },
       "parts": {
         "base": "The outer wrapper (copyable or labelled blocks).",

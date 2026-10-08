@@ -50,6 +50,16 @@ const FRAMEWORKS = [
   { name: "HTML", Icon: SiHtml5 },
 ];
 
+/** Feature cards: strings under `home.features.<key>` (common.json) */
+const FEATURES = [
+  { key: "themes", Icon: IoColorPaletteOutline },
+  { key: "a11y", Icon: IoAccessibilityOutline },
+  { key: "i18n", Icon: IoGlobeOutline },
+  { key: "webComponents", Icon: IoCubeOutline },
+  { key: "typescript", Icon: IoLayersOutline },
+  { key: "modules", Icon: IoLogoNpm },
+] as const;
+
 const QUICK_LINKS = ["installation", "theming", "button", "web-components"];
 
 /** Copyable one-line install command */
@@ -99,38 +109,12 @@ const HomePage: React.FC = () => {
     document.title = "Minerva UI";
   }, []);
 
-  const features = [
-    {
-      Icon: IoColorPaletteOutline,
-      title: t("docs.overview.highlights.theming.title"),
-      text: t("docs.overview.highlights.theming.text"),
-    },
-    {
-      Icon: IoAccessibilityOutline,
-      title: t("docs.overview.highlights.a11y.title"),
-      text: t("docs.overview.highlights.a11y.text"),
-    },
-    {
-      Icon: IoGlobeOutline,
-      title: t("docs.overview.highlights.i18n.title"),
-      text: t("docs.overview.highlights.i18n.text"),
-    },
-    {
-      Icon: IoCubeOutline,
-      title: t("docs.web-components.title"),
-      text: t("home.wcFeature"),
-    },
-    {
-      Icon: IoLayersOutline,
-      title: t("docs.overview.highlights.typescript.title"),
-      text: t("docs.overview.highlights.typescript.text"),
-    },
-    {
-      Icon: IoLogoNpm,
-      title: t("docs.overview.highlights.modules.title"),
-      text: t("docs.overview.highlights.modules.text"),
-    },
-  ];
+  const features = FEATURES.map(({ key, Icon }) => ({
+    key,
+    Icon,
+    title: t(`home.features.${key}.title`),
+    text: t(`home.features.${key}.text`),
+  }));
 
   return (
     <div className={styles.home}>
@@ -209,8 +193,8 @@ const HomePage: React.FC = () => {
           {t("home.featuresTitle")}
         </h2>
         <ul className={styles.features}>
-          {features.map(({ Icon, title, text }) => (
-            <li key={title} className={styles.feature}>
+          {features.map(({ key, Icon, title, text }) => (
+            <li key={key} className={styles.feature}>
               <Icon aria-hidden className={styles.featureIcon} />
               <h3>{title}</h3>
               <p>{text}</p>

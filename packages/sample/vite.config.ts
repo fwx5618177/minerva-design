@@ -3,6 +3,10 @@ import type { Alias } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import tsconfig from "./tsconfig.json" with { type: "json" };
+import {
+  bundleBudgetPlugin,
+  docsMetaPlugin,
+} from "./scripts/build-plugins.mjs";
 
 // App path aliases are defined once, in tsconfig.json "paths".
 // The @minerva/* entries there only point tsc at workspace sources for
@@ -53,7 +57,7 @@ const testAlias: Alias[] = [
 
 export default defineConfig({
   base: "/minerva/",
-  plugins: [react()],
+  plugins: [react(), docsMetaPlugin(), bundleBudgetPlugin()],
   resolve: { alias: process.env.VITEST ? [...testAlias, ...alias] : alias },
   server: {
     port: 3000,

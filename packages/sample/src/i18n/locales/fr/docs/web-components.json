@@ -1,6 +1,6 @@
 {
   "title": "Web Components",
-  "description": "Prise en main : l'ensemble des composants Minerva sous forme d'éléments personnalisés standard, pour du HTML simple, Vue, Angular, Svelte, Solid, React ou tout autre framework.",
+  "description": "L'ensemble des composants Minerva sous forme d'éléments personnalisés standard, pour du HTML simple, Vue, Angular, Svelte, Solid, React ou tout autre framework.",
   "what": {
     "title": "De quoi s'agit-il",
     "p1": "@minerva/lib-web-components implémente chaque composant Minerva sous forme d'élément personnalisé standard (<minerva-button>, <minerva-select>, <minerva-modal>...), construit avec Lit. Une fois enregistrés, les éléments se comportent comme des balises HTML natives : ils fonctionnent dans une page statique, dans un template rendu côté serveur et dans tout framework qui produit du HTML.",
@@ -55,6 +55,7 @@
   "ssr": {
     "title": "Rendu côté serveur",
     "text": "Les modules peuvent être importés dans Node (Next.js, Nuxt, SvelteKit, Angular SSR, Astro...) : rien ne touche au DOM au moment de l'import, et defineElement() est idempotent et ne fait rien lorsque l'environnement n'a pas de registre customElements. Les éléments ne sont pas pré-rendus (pas de shadow DOM déclaratif) : le serveur envoie les balises avec leurs attributs et leur contenu light DOM, et le navigateur les met à niveau dès que les définitions sont chargées.",
+    "hydration": "Le balisage rendu côté serveur s'hydrate sans incohérence, même quand les définitions sont enregistrées avant hydrateRoot() : les éléments composites (onglets et panneaux, boutons radio, options) diffèrent les attributs d'hôte qu'ils écrivent eux-mêmes (tabindex itinérant, ids générés, aria-controls / aria-labelledby, slot, hidden, data-state) jusqu'après la prochaine image d'animation et période d'inactivité. Les éléments créés par script les écrivent immédiatement.",
     "fouc": "Masquez les éléments non définis avec :not(:defined) pour éviter un flash de contenu non stylé."
   },
   "dev": {

@@ -168,6 +168,28 @@ describe("<minerva-command-dialog>", () => {
     expect(options(el)).toHaveLength(2);
   });
 
+  it("uses a custom filter for non-empty queries", async () => {
+    const el = await setup('open max-results="1"');
+    const filter = vi.fn((items: CommandItem[], query: string) =>
+      items
+        .filter((item) => item.title.toLowerCase().includes(query))
+        .reverse(),
+    );
+    el.filter = filter;
+    await settle();
+    expect(options(el)).toHaveLength(1);
+    expect(filter).not.toHaveBeenCalled();
+    input(el).focus();
+    await userEvent.keyboard(" s ");
+    await settle();
+    expect(filter).toHaveBeenLastCalledWith(
+      ITEMS.filter((item) => !item.disabled),
+      "s",
+    );
+    expect(options(el)).toHaveLength(1);
+    expect(options(el)[0]).toHaveTextContent("SEO");
+  });
+
   it("navigates with arrows / Home / End, selects with Enter and closes", async () => {
     const el = await setup();
     const onSelect = vi.fn();

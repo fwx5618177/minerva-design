@@ -741,11 +741,11 @@ export const docPages: DocPageMeta[] = [
     category: "overlays",
     exports: ["CommandDialog", "normalizeShortcuts", "matchesShortcut"],
     api: ["CommandDialogProps", "CommandItem"],
-    demos: ["basic", "shortcut"],
+    demos: ["basic", "shortcut", "custom-filter"],
     wc: {
       entry: "command",
       tags: ["minerva-command-dialog"],
-      demos: ["basic", "shortcut"],
+      demos: ["basic", "shortcut", "custom-filter"],
     },
   },
   {

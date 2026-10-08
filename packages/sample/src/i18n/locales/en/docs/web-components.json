@@ -1,6 +1,6 @@
 {
   "title": "Web Components",
-  "description": "Getting started: the whole Minerva component set as standard custom elements, for plain HTML, Vue, Angular, Svelte, Solid, React or any other framework.",
+  "description": "The whole Minerva component set as standard custom elements, for plain HTML, Vue, Angular, Svelte, Solid, React or any other framework.",
   "what": {
     "title": "What it is",
     "p1": "@minerva/lib-web-components implements every Minerva component as a standard custom element (<minerva-button>, <minerva-select>, <minerva-modal>...), built with Lit. Once registered, the elements behave like built-in HTML tags: they work in a static page, in a server-rendered template and in every framework that renders HTML.",
@@ -55,6 +55,7 @@
   "ssr": {
     "title": "Server-side rendering",
     "text": "The modules can be imported in Node (Next.js, Nuxt, SvelteKit, Angular SSR, Astro...): nothing touches the DOM at import time, and defineElement() is idempotent and does nothing when the environment has no customElements registry. The elements are not pre-rendered (no declarative shadow DOM): the server sends the tags with their attributes and light DOM content, and the browser upgrades them once the definitions load.",
+    "hydration": "Server-rendered markup hydrates without mismatches, even when the definitions are registered before hydrateRoot(): composite items (tabs and panels, radios, options) defer the host attributes they write themselves (roving tabindex, generated ids, aria-controls / aria-labelledby, slot, hidden, data-state) until after the next animation frame and idle period. Elements created by script write them immediately.",
     "fouc": "Hide undefined elements with :not(:defined) to avoid a flash of unstyled content."
   },
   "dev": {

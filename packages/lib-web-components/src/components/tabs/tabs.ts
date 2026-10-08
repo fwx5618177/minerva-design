@@ -9,6 +9,11 @@ import { RovingFocusController } from "../../controllers/roving-focus";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
+import {
+  isHostDeferred,
+  onHostSettled,
+  setHostAttribute,
+} from "../../internal/hydration";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
 
@@ -106,6 +111,8 @@ export class MinervaTabs extends MinervaElement {
   private readonly baseId = `minerva-tabs-${++nextId}`;
   private rovingKey = "";
   private observer: MutationObserver | null = null;
+  /** An update is queued for when server-rendered items settle */
+  private settleQueued = false;
 
   private readonly roving = new RovingFocusController(this, () => ({
     getItems: () => this.tabs,
@@ -185,26 +192,44 @@ export class MinervaTabs extends MinervaElement {
     }
   }
 
-  /** Pushes selection, ids and styles to the tabs and panels. */
+  /**
+   * Pushes selection, ids and styles to the tabs and panels. Server-rendered
+   * markup gets its host attributes (ids, `tabindex`...) once hydrated.
+   */
   private sync() {
     if (!this.tablist) return;
-    this.ensureRoving();
     const tabs = this.tabs;
     const panels = this.panels;
+    const ids = new Map<Element, string>();
     for (const tab of tabs) {
-      if (!tab.id) tab.id = `${this.baseId}-tab-${tab.value}`;
+      ids.set(tab, tab.id || `${this.baseId}-tab-${tab.value}`);
+      if (!tab.id) setHostAttribute(tab, "id", ids.get(tab)!, this);
     }
     for (const panel of panels) {
-      if (!panel.id) panel.id = `${this.baseId}-panel-${panel.value}`;
+      ids.set(panel, panel.id || `${this.baseId}-panel-${panel.value}`);
+      if (!panel.id) setHostAttribute(panel, "id", ids.get(panel)!, this);
     }
     for (const tab of tabs) {
       const panel = panels.find((p) => p.value === tab.value);
-      tab.sync(this, tab.value === this.value, panel?.id);
+      tab.sync(this, tab.value === this.value, panel && ids.get(panel));
     }
     for (const panel of panels) {
       const tab = tabs.find((t) => t.value === panel.value);
-      panel.sync(this, panel.value === this.value, tab?.id);
+      panel.sync(this, panel.value === this.value, tab && ids.get(tab));
     }
+    // roving tabindex: once every item may get host attributes
+    const waiting = [this, ...tabs, ...panels].find(isHostDeferred);
+    if (waiting) {
+      if (!this.settleQueued) {
+        this.settleQueued = true;
+        onHostSettled(waiting, () => {
+          this.settleQueued = false;
+          this.requestUpdate();
+        });
+      }
+      return;
+    }
+    this.ensureRoving();
     // tab stop: the selected tab, else the first enabled one
     const selected = tabs.find(
       (tab) => tab.value === this.value && !tab.disabled,
@@ -322,14 +347,13 @@ export class MinervaTab extends MinervaElement {
   sync(group: MinervaTabs, selected: boolean, panelId?: string): void {
     this.group = group;
     this.selected = selected;
-    if (panelId) this.setAttribute("aria-controls", panelId);
-    else this.removeAttribute("aria-controls");
+    setHostAttribute(this, "aria-controls", panelId ?? null);
     this.requestUpdate();
   }
 
   override connectedCallback(): void {
     super.connectedCallback();
-    if (!this.hasAttribute("slot")) this.slot = "tab";
+    if (!this.hasAttribute("slot")) setHostAttribute(this, "slot", "tab");
     setHostAria(this, this.internals, { role: "tab" }, this.ownedAria);
     this.addEventListener("mousedown", this.handleMouseDown);
     this.addEventListener("keydown", this.handleKeyDown);
@@ -380,10 +404,10 @@ export class MinervaTab extends MinervaElement {
       },
       this.ownedAria,
     );
-    this.setAttribute("data-state", this.selected ? "active" : "inactive");
-    this.toggleAttribute("data-disabled", this.disabled);
+    setHostAttribute(this, "data-state", this.selected ? "active" : "inactive");
+    setHostAttribute(this, "data-disabled", this.disabled);
     const orientation = this.group?.orientation ?? "horizontal";
-    this.setAttribute("data-orientation", orientation);
+    setHostAttribute(this, "data-orientation", orientation);
   }
 
   protected override render() {
@@ -476,6 +500,8 @@ export class MinervaTabPanel extends MinervaElement {
 
   /** Mounts / unmounts the `<template>` content (React's unmounting). */
   private syncContent() {
+    // server-rendered markup: no extra light DOM child before hydration
+    if (isHostDeferred(this)) return;
     const template = this.template;
     if (this.selected || this.forceMount) {
       if (template && !this.stamped.length) {
@@ -493,12 +519,11 @@ export class MinervaTabPanel extends MinervaElement {
   sync(group: MinervaTabs, selected: boolean, tabId?: string): void {
     this.orientation = group.orientation;
     this.selected = selected;
-    this.hidden = !selected;
+    setHostAttribute(this, "hidden", !selected);
     this.syncContent();
-    this.setAttribute("data-state", selected ? "active" : "inactive");
-    this.setAttribute("data-orientation", group.orientation);
-    if (tabId) this.setAttribute("aria-labelledby", tabId);
-    else this.removeAttribute("aria-labelledby");
+    setHostAttribute(this, "data-state", selected ? "active" : "inactive");
+    setHostAttribute(this, "data-orientation", group.orientation);
+    setHostAttribute(this, "aria-labelledby", tabId ?? null);
     this.requestUpdate();
   }
 
@@ -509,14 +534,17 @@ export class MinervaTabPanel extends MinervaElement {
   override connectedCallback(): void {
     super.connectedCallback();
     setHostAria(this, this.internals, { role: "tabpanel" });
-    if (!this.hasAttribute("tabindex")) this.tabIndex = 0;
+    if (!this.hasAttribute("tabindex")) setHostAttribute(this, "tabindex", "0");
   }
 
   protected override render() {
+    // until `hidden` may be set on the host (hydration), an inactive panel
+    // hides its content
     return html`<div
       part="base"
       class="panel"
       data-orientation=${this.orientation}
+      ?hidden=${!this.selected && isHostDeferred(this) && !!ownerOf(this)}
     >
       <slot></slot>
     </div>`;

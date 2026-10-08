@@ -1,15 +1,21 @@
 import React, { lazy } from "react";
 import type { RouteObject } from "react-router";
 import { categories, docPages, type DocCategory } from "@/docs/registry";
+import { loadPageStrings } from "@i18n/config";
 
-// Every page is its own lazily-loaded chunk (src/docs/pages/<id>/index.tsx)
+// Every page is its own lazily-loaded chunk (src/docs/pages/<id>/index.tsx),
+// fetched together with its strings in the current language
 const pageModules = import.meta.glob<{ default: React.ComponentType }>(
   "../docs/pages/*/index.tsx",
 );
 
 const pageFor = (id: string) => {
   const loader = pageModules[`../docs/pages/${id}/index.tsx`];
-  return loader ? lazy(loader) : undefined;
+  return loader
+    ? lazy(() =>
+        Promise.all([loader(), loadPageStrings(id)]).then(([module]) => module),
+      )
+    : undefined;
 };
 
 export const routes: RouteObject[] = docPages.flatMap((page) => {
@@ -27,7 +33,11 @@ export const menuConfig = categories.map((category) => ({
   category,
   translationKey: `nav.${category}`,
   items: docPages
-    .filter((page) => page.category === category && pageFor(page.id))
+    .filter(
+      (page) =>
+        page.category === category &&
+        `../docs/pages/${page.id}/index.tsx` in pageModules,
+    )
     .map<MenuItem>((page) => ({
       path: page.id,
       translationKey: `docs.${page.id}.title`,

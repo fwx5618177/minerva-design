@@ -6,11 +6,16 @@ import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { beforeAll, describe, expect, it } from "vitest";
 import i18n from "@i18n/config";
 import SearchPalette from "./SearchPalette";
+import type { CommandItem } from "@minerva/lib-core";
+import { changeLanguage } from "@i18n/config";
 import {
   HOME_ITEM_ID,
   buildSearchItems,
+  foldSearchText,
   modKeyLabel,
   pathOfItem,
+  rankSearchItems,
+  searchScore,
 } from "./searchItems";
 import { SiteProviders, setupI18n } from "../test/utils";
 
@@ -42,6 +47,83 @@ describe("buildSearchItems", () => {
     expect(pathOfItem("button")).toBe("/button");
     expect(modKeyLabel("MacIntel")).toBe("⌘K");
     expect(modKeyLabel("Win32")).toBe("Ctrl K");
+  });
+});
+
+describe("rankSearchItems", () => {
+  const ITEMS: CommandItem[] = [
+    { id: "desc", title: "Zeta", description: "Shows a button group" },
+    { id: "name", title: "Eta", keywords: "eta ButtonGroup minerva-button" },
+    { id: "sub", title: "Togglebutton" },
+    { id: "word", title: "Icon Button" },
+    { id: "prefix", title: "Button group" },
+    { id: "exact", title: "Button" },
+    { id: "group", title: "Theta", group: "Buttons" },
+    { id: "none", title: "Card", description: "Surface" },
+  ];
+  const ids = (query: string) =>
+    rankSearchItems(ITEMS, query).map((item) => item.id);
+
+  it("ranks exact title > prefix > word start > substring > name > description > group", () => {
+    expect(ids("button")).toEqual([
+      "exact",
+      "prefix",
+      "word",
+      "sub",
+      "name",
+      "desc",
+      "group",
+    ]);
+    expect(searchScore(ITEMS[7], "button")).toBeNull();
+  });
+
+  it("ranks whole component / tag names above partial ones", () => {
+    const items: CommandItem[] = [
+      { id: "tag-input", title: "Tag Input", keywords: "minerva-tag-input" },
+      { id: "tag", title: "Tag", keywords: "minerva-tag" },
+    ];
+    expect(rankSearchItems(items, "minerva-tag").map((i) => i.id)).toEqual([
+      "tag",
+      "tag-input",
+    ]);
+  });
+
+  it("is case- and accent-insensitive and keeps the order of equal matches", () => {
+    expect(foldSearchText("  Thème  Sombre ")).toBe("theme sombre");
+    const items: CommandItem[] = [
+      { id: "a", title: "Thèmes" },
+      { id: "b", title: "Théorie" },
+      { id: "c", title: "Thèse" },
+    ];
+    expect(rankSearchItems(items, "THE").map((i) => i.id)).toEqual([
+      "a",
+      "b",
+      "c",
+    ]);
+  });
+
+  it("ranks the real search entries (i18n titles included)", async () => {
+    const items = buildSearchItems(i18n.t);
+    const titles = (query: string) =>
+      rankSearchItems(items, query)
+        .slice(0, 2)
+        .map((item) => item.title);
+    expect(titles("tag")).toEqual([
+      i18n.t("docs.tag.title"),
+      i18n.t("docs.tag-input.title"),
+    ]);
+    expect(titles("button")[0]).toBe(i18n.t("docs.button.title"));
+    expect(rankSearchItems(items, "minerva-card")[0].id).toBe("card");
+
+    await changeLanguage("zh");
+    try {
+      const zh = buildSearchItems(i18n.t);
+      expect(i18n.t("docs.button.title")).toBe("Button 按钮");
+      // the translated word ranks the page whose title starts a word with it
+      expect(rankSearchItems(zh, "按钮")[0].id).toBe("button");
+    } finally {
+      await changeLanguage("en");
+    }
   });
 });
 
@@ -104,6 +186,14 @@ describe("SearchPalette", () => {
     await user.type(input, "zzzz-nothing");
     expect(options()).toEqual([]);
     expect(screen.getByText("No results found.")).toBeInTheDocument();
+  });
+
+  it("lists the best match first", async () => {
+    const user = userEvent.setup();
+    renderPalette();
+    await user.click(screen.getByRole("button", { name: "open search" }));
+    await user.type(await screen.findByRole("combobox"), "input");
+    expect(options()[0]).toBe(i18n.t("docs.input.title"));
   });
 
   it("navigates with the keyboard and opens the chosen page", async () => {

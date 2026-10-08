@@ -12,10 +12,10 @@ export function setup(root: HTMLElement) {
     2,
   );
   const onCopy = (event: Event) => {
-    const { value, success } = (
-      event as CustomEvent<{ value: string; success: boolean }>
+    const { text, success } = (
+      event as CustomEvent<{ text: string; success: boolean }>
     ).detail;
-    status.value = success ? `Copied ${value.length} characters` : "Failed";
+    status.value = success ? `Copied ${text.length} characters` : "Failed";
   };
   const onClick = () => void block.copy();
   block.addEventListener("minerva-copy", onCopy);

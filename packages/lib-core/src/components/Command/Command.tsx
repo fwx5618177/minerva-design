@@ -26,6 +26,7 @@ export { matchesShortcut, normalizeShortcuts };
 interface CommandPanelProps {
   items: CommandItem[];
   maxResults: number;
+  filter?: CommandDialogProps["filter"];
   placeholder: string;
   emptyText: ReactNode;
   resultsLabel: string;
@@ -40,6 +41,7 @@ interface CommandPanelProps {
 const CommandPanel = ({
   items,
   maxResults,
+  filter,
   placeholder,
   emptyText,
   resultsLabel,
@@ -52,15 +54,17 @@ const CommandPanel = ({
   const listId = `${baseId}-results`;
 
   const results = useMemo(() => {
-    const q = normalizeSearchText(query);
-    return items
-      .filter((item) => !item.disabled)
-      .filter(
-        (item) =>
-          !q || normalizeSearchText(commandSearchText(item)).includes(q),
+    const enabled = items.filter((item) => !item.disabled);
+    const trimmed = query.trim();
+    if (!trimmed) return enabled.slice(0, maxResults);
+    if (filter) return filter(enabled, trimmed).slice(0, maxResults);
+    const q = normalizeSearchText(trimmed);
+    return enabled
+      .filter((item) =>
+        normalizeSearchText(commandSearchText(item)).includes(q),
       )
       .slice(0, maxResults);
-  }, [items, maxResults, query]);
+  }, [filter, items, maxResults, query]);
 
   const optionId = (index: number) => `${baseId}-option-${index}`;
   const activeId = results[activeIndex] ? optionId(activeIndex) : undefined;
@@ -178,6 +182,7 @@ export const CommandDialog = ({
   shortcutLabel,
   shortcut,
   maxResults = 12,
+  filter,
   resultsLabel,
   enterLabel,
   className,
@@ -245,6 +250,7 @@ export const CommandDialog = ({
         <CommandPanel
           items={items}
           maxResults={maxResults}
+          filter={filter}
           placeholder={placeholder ?? t("command.placeholder")}
           emptyText={emptyText ?? t("command.empty")}
           resultsLabel={resultsLabel ?? t("command.results")}

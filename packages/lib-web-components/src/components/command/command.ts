@@ -138,6 +138,16 @@ export class MinervaCommandDialog extends MinervaElement {
   @property({ type: Number, attribute: "max-results" })
   maxResults = 12;
 
+  /**
+   * Custom search, e.g. to rank results by match quality. Receives the
+   * enabled items and the trimmed query (never empty) and returns the
+   * matching items in display order (then capped at `maxResults`). By
+   * default, items whose group, title, description or keywords contain the
+   * query (case-insensitive) are kept in `items` order.
+   */
+  @property({ attribute: false })
+  filter?: (items: CommandItem[], query: string) => CommandItem[];
+
   /** Accessible label of the results list (default: localized "Command results") */
   @property({ attribute: "results-label" })
   resultsLabel?: string;
@@ -194,14 +204,21 @@ export class MinervaCommandDialog extends MinervaElement {
 
   /** The visible results: enabled items matching the query, capped at `maxResults`. */
   private get results(): CommandItem[] {
-    const q = normalizeSearchText(this.query);
-    return (Array.isArray(this.items) ? this.items : [])
-      .filter((item) => !item.disabled)
-      .filter(
-        (item) =>
-          !q || normalizeSearchText(commandSearchText(item)).includes(q),
+    const max = Math.max(0, this.maxResults);
+    const enabled = (Array.isArray(this.items) ? this.items : []).filter(
+      (item) => !item.disabled,
+    );
+    const trimmed = this.query.trim();
+    if (!trimmed) return enabled.slice(0, max);
+    if (typeof this.filter === "function") {
+      return this.filter(enabled, trimmed).slice(0, max);
+    }
+    const q = normalizeSearchText(trimmed);
+    return enabled
+      .filter((item) =>
+        normalizeSearchText(commandSearchText(item)).includes(q),
       )
-      .slice(0, Math.max(0, this.maxResults));
+      .slice(0, max);
   }
 
   /** Asks to change `open`; listeners can cancel `minerva-open-change`. */

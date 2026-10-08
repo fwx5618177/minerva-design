@@ -5273,7 +5273,7 @@
           ],
           "events": [
             {
-              "description": "The copy button was used (`detail: { value, success }`)",
+              "description": "The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success).",
               "name": "minerva-copy"
             }
           ],
@@ -6169,6 +6169,14 @@
               "default": "12",
               "description": "Maximum number of results shown",
               "attribute": "max-results"
+            },
+            {
+              "kind": "field",
+              "name": "filter",
+              "type": {
+                "text": "(items: CommandItem[], query: string) => CommandItem[] | undefined"
+              },
+              "description": "Custom search, e.g. to rank results by match quality. Receives the\nenabled items and the trimmed query (never empty) and returns the\nmatching items in display order (then capped at `maxResults`). By\ndefault, items whose group, title, description or keywords contain the\nquery (case-insensitive) are kept in `items` order."
             },
             {
               "kind": "field",

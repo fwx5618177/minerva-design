@@ -1,42 +1,24 @@
 // A React 19 page that server-renders Minerva custom elements: the markup is
 // produced by renderToString, the element definitions load (upgrading the
 // tags), then React hydrates. Upgraded elements must not have changed their
-// host attributes, or React reports hydration mismatches.
+// host attributes, or React reports hydration mismatches. Composite items
+// (tabs, radios, options) defer the host attributes they write themselves
+// (roving tabindex, id references, data-state...) until after hydration.
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { act } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type {} from "../../packages/lib-web-components/tests/e2e/jsx";
+import {
+  CompositePage,
+  attributes,
+  expectSettledA11y,
+  installInternals,
+  litUpdates,
+  nextFrames,
+  withoutReflectedState,
+} from "./wc-hydration-fixtures";
 
-/**
- * Browsers carry host ARIA (`role`, `aria-selected`...) on ElementInternals,
- * without host attributes. happy-dom has no ElementInternals: a minimal one
- * with ARIA reflection stands in for the browsers' here.
- */
-if (!("attachInternals" in HTMLElement.prototype)) {
-  Object.defineProperty(HTMLElement.prototype, "attachInternals", {
-    configurable: true,
-    value(this: HTMLElement) {
-      return {
-        role: null,
-        ariaSelected: null,
-        ariaChecked: null,
-        ariaDisabled: null,
-        ariaHidden: null,
-        form: null,
-        labels: [],
-        validity: { valid: true },
-        validationMessage: "",
-        willValidate: false,
-        states: new Set(),
-        setFormValue() {},
-        setValidity() {},
-        checkValidity: () => true,
-        reportValidity: () => true,
-      };
-    },
-  });
-}
+installInternals();
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -68,10 +50,6 @@ describe("server-rendered custom elements hydrate cleanly", () => {
     // server attributes, as parsed from the HTML
     const template = document.createElement("template");
     template.innerHTML = html;
-    const attributes = (root: ParentNode) =>
-      Array.from(root.querySelectorAll("*"), (el) =>
-        el.getAttributeNames().sort().join(" "),
-      );
     const before = attributes(template.content);
     // The definitions are loaded when the page's HTML is parsed (happy-dom
     // does not apply parsed attributes on a later upgrade; browsers do)
@@ -91,5 +69,43 @@ describe("server-rendered custom elements hydrate cleanly", () => {
     expect(
       errors.mock.calls.filter((args) => /hydrat/i.test(String(args[0]))),
     ).toEqual([]);
+  });
+});
+
+describe("server-rendered composite elements hydrate cleanly", () => {
+  it("defers roving tabindex, id references and data-state until after hydration", async () => {
+    const html = renderToString(<CompositePage />);
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    const before = attributes(template.content);
+    await import("@minerva/lib-web-components");
+    // the definitions are loaded while the page's HTML is parsed
+    const readyState = vi
+      .spyOn(document, "readyState", "get")
+      .mockReturnValue("loading");
+    document.body.innerHTML = `<div id="root">${html}</div>`;
+    readyState.mockRestore();
+    const container = document.getElementById("root")!;
+    await litUpdates(container);
+    // upgraded and rendered, without a host attribute of their own yet
+    expect(container.querySelector("minerva-tab")!.shadowRoot).not.toBeNull();
+    expect(withoutReflectedState(attributes(container))).toEqual(before);
+
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    const recoverable: unknown[] = [];
+    await act(async () => {
+      hydrateRoot(container, <CompositePage />, {
+        onRecoverableError: (error) => recoverable.push(error),
+      });
+    });
+    expect(recoverable).toEqual([]);
+    expect(errors.mock.calls).toEqual([]);
+
+    // after a frame: the attributes the items write themselves
+    await nextFrames();
+    await litUpdates(container);
+    expectSettledA11y(container);
+
+    expect(errors.mock.calls).toEqual([]);
   });
 });

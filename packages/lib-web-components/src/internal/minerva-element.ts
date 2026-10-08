@@ -8,6 +8,7 @@ import {
 } from "lit";
 import type { DefinableElement } from "./define";
 import { emit, type EmitOptions, type MinervaEventName } from "./events";
+import { markServerRendered, scheduleHostSettle } from "./hydration";
 
 /**
  * Base class of every Minerva element.
@@ -26,6 +27,10 @@ import { emit, type EmitOptions, type MinervaEventName } from "./events";
  *   class calls `reconnectedCallback()`, which runs an update in which an
  *   open element sees `open` as changed: its open side effects run again,
  *   as if it had just been opened.
+ * - hydration: an element that may be server-rendered markup (upgraded, or
+ *   parsed while the document loads) defers the host attributes it writes
+ *   itself (`setHostAttribute()` / `onHostSettled()` of
+ *   `internal/hydration.ts`) until hydration had a chance to run.
  */
 /** Elements whose `update()` is running (reflection happens first, synchronously) */
 const updating: MinervaElement[] = [];
@@ -100,6 +105,11 @@ export class MinervaElement extends LitElement {
     });
   }
 
+  constructor() {
+    super();
+    markServerRendered(this);
+  }
+
   protected override update(changed: PropertyValues): void {
     updating.push(this);
     try {
@@ -112,6 +122,7 @@ export class MinervaElement extends LitElement {
   override connectedCallback(): void {
     super.connectedCallback();
     if (this.hasUpdated) this.reconnectedCallback();
+    scheduleHostSettle(this);
   }
 
   /**

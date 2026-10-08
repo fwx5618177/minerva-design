@@ -2,7 +2,12 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { CommandDialog } from "@minerva/lib-core";
-import { buildSearchItems, modKeyLabel, pathOfItem } from "./searchItems";
+import {
+  buildSearchItems,
+  modKeyLabel,
+  pathOfItem,
+  rankSearchItems,
+} from "./searchItems";
 import styles from "./site.module.scss";
 
 export interface SearchPaletteProps {
@@ -12,7 +17,8 @@ export interface SearchPaletteProps {
 
 /**
  * ⌘K / Ctrl+K search over every documentation page and the component names
- * they document, built on Minerva's own CommandDialog (dogfooding).
+ * they document, built on Minerva's own CommandDialog (dogfooding), with
+ * results ranked by match quality (`rankSearchItems`).
  */
 const SearchPalette: React.FC<SearchPaletteProps> = ({
   open,
@@ -33,6 +39,7 @@ const SearchPalette: React.FC<SearchPaletteProps> = ({
       open={open}
       onOpenChange={onOpenChange}
       items={items}
+      filter={rankSearchItems}
       onSelect={(item) => navigate(pathOfItem(item.id))}
       title={t("search.title")}
       description={t("search.description")}

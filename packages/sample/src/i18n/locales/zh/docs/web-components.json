@@ -1,6 +1,6 @@
 {
   "title": "Web Components",
-  "description": "快速上手：以标准自定义元素形式提供的完整 Minerva 组件集，可用于纯 HTML、Vue、Angular、Svelte、Solid、React 或任何其他框架。",
+  "description": "以标准自定义元素形式提供完整的 Minerva 组件集，可用于纯 HTML、Vue、Angular、Svelte、Solid、React 或任何其他框架。",
   "what": {
     "title": "它是什么",
     "p1": "@minerva/lib-web-components 基于 Lit，把每个 Minerva 组件实现为标准的自定义元素（<minerva-button>、<minerva-select>、<minerva-modal>……）。注册之后，这些元素就像内置的 HTML 标签一样：可用于静态页面、服务端渲染的模板，以及任何渲染 HTML 的框架。",
@@ -55,6 +55,7 @@
   "ssr": {
     "title": "服务端渲染",
     "text": "这些模块可以在 Node 中引入（Next.js、Nuxt、SvelteKit、Angular SSR、Astro……）：引入时不会访问 DOM，并且 defineElement() 是幂等的，在没有 customElements 注册表的环境中不执行任何操作。元素不会被预渲染（不使用声明式 shadow DOM）：服务端发送带有 attribute 和 light DOM 内容的标签，浏览器在定义加载后再升级它们。",
+    "hydration": "服务端渲染的标记在水合时不会出现不匹配，即使在 hydrateRoot() 之前就注册了元素：复合子项（标签页与面板、单选框、选项）会把它们自己写入的宿主属性（roving tabindex、生成的 id、aria-controls / aria-labelledby、slot、hidden、data-state）推迟到下一个动画帧和空闲时段之后。由脚本创建的元素会立即写入。",
     "fouc": "使用 :not(:defined) 隐藏尚未定义的元素，以避免出现无样式内容闪烁。"
   },
   "dev": {

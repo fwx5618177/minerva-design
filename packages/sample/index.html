@@ -33,9 +33,156 @@
       content="Minerva UI — React components and Web Components with themes, i18n and accessibility built in."
     />
     <title>Minerva UI</title>
+    <!--
+      First paint: apply the stored theme before any CSS / JS loads, and show
+      a static shell (header + page skeleton) inside #root. React replaces it
+      on its first render; PageSkeleton (src/site) mirrors it for later
+      route loads. Checked by src/site/bootShell.test.ts.
+    -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var mode = null;
+        try {
+          mode = localStorage.getItem("minerva-docs-theme");
+        } catch (e) {}
+        var dark =
+          mode === "dark" ||
+          mode === "github-dark" ||
+          (mode !== "light" &&
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+        root.setAttribute("data-theme", dark ? "dark" : "light");
+        var path = location.hash.replace(/^#\/?/, "").split("?")[0];
+        root.setAttribute("data-boot", path ? "doc" : "home");
+      })();
+    </script>
+    <style>
+      html {
+        background: #fff;
+        color: #171717;
+        color-scheme: light;
+      }
+      html[data-theme="dark"] {
+        background: #000;
+        color: #ededed;
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+      }
+      .boot {
+        --boot-bone: #f2f2f2;
+        --boot-border: #ebebeb;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      [data-theme="dark"] .boot {
+        --boot-bone: #1a1a1a;
+        --boot-border: #262626;
+      }
+      .boot-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 64px;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--boot-border);
+        box-sizing: border-box;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: -0.01em;
+      }
+      .boot-header svg {
+        width: 22px;
+        height: 22px;
+      }
+      .boot-layout {
+        display: flex;
+        max-width: 1440px;
+        margin: 0 auto;
+      }
+      .boot-sidebar {
+        display: none;
+        flex: 0 0 256px;
+        min-height: calc(100vh - 64px);
+        border-right: 1px solid var(--boot-border);
+      }
+      .boot-page {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-width: 768px;
+        margin: 0 auto;
+        padding: 48px 20px;
+      }
+      [data-boot="home"] .boot-page {
+        align-items: center;
+        padding-top: 128px;
+      }
+      @media (min-width: 1024px) {
+        [data-boot="doc"] .boot-sidebar {
+          display: block;
+        }
+      }
+      .boot-bone {
+        display: block;
+        width: 100%;
+        height: 14px;
+        border-radius: 6px;
+        background: var(--boot-bone);
+      }
+      .boot-title {
+        width: 60%;
+        height: 40px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+      }
+      [data-boot="home"] .boot-title {
+        width: 90%;
+        height: 56px;
+      }
+      .boot-short {
+        width: 70%;
+      }
+      .boot-card {
+        height: 180px;
+        margin-top: 16px;
+        border-radius: 8px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" data-boot-shell role="status" aria-busy="true">
+        <span class="sr-only">Loading…</span>
+        <div class="boot-header" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2.5 22.5 21h-21L12 2.5Z" fill="currentColor" />
+          </svg>
+          Minerva UI
+        </div>
+        <div class="boot-layout" aria-hidden="true">
+          <div class="boot-sidebar"></div>
+          <div class="boot-page">
+            <span class="boot-bone boot-title"></span>
+            <span class="boot-bone"></span>
+            <span class="boot-bone boot-short"></span>
+            <span class="boot-bone boot-card"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <noscript>Minerva UI documentation requires JavaScript.</noscript>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 {
   "title": "Web Components",
-  "description": "はじめに：Minerva のコンポーネント一式を標準のカスタム要素として提供します。素の HTML、Vue、Angular、Svelte、Solid、React など、あらゆるフレームワークで使えます。",
+  "description": "Minerva のコンポーネント一式を標準のカスタム要素として提供します。素の HTML、Vue、Angular、Svelte、Solid、React など、あらゆるフレームワークで使えます。",
   "what": {
     "title": "概要",
     "p1": "@minerva/lib-web-components は、Minerva のすべてのコンポーネントを Lit で構築した標準のカスタム要素（<minerva-button>、<minerva-select>、<minerva-modal>...）として実装しています。一度登録すれば、要素は組み込みの HTML タグと同じように振る舞います。静的なページでも、サーバーレンダリングされたテンプレートでも、HTML を描画するあらゆるフレームワークでも動作します。",
@@ -55,6 +55,7 @@
   "ssr": {
     "title": "サーバーサイドレンダリング",
     "text": "モジュールは Node（Next.js、Nuxt、SvelteKit、Angular SSR、Astro...）でインポートできます。インポート時に DOM には一切触れず、defineElement() は冪等で、customElements レジストリのない環境では何もしません。要素は事前レンダリングされません（宣言的 shadow DOM は使いません）。サーバーは属性と light DOM のコンテンツを持つタグを送信し、定義が読み込まれるとブラウザがそれらをアップグレードします。",
+    "hydration": "サーバーでレンダリングされたマークアップは、hydrateRoot() より前に要素を登録しても不一致なくハイドレーションされます。複合要素の子（タブとパネル、ラジオ、オプション）は、自身が書き込むホスト属性（ロービング tabindex、生成される id、aria-controls / aria-labelledby、slot、hidden、data-state）を次のアニメーションフレームとアイドル期間の後まで遅らせます。スクリプトで作成された要素はすぐに書き込みます。",
     "fouc": "スタイルが適用されていないコンテンツのちらつきを避けるには、:not(:defined) で未定義の要素を非表示にします。"
   },
   "dev": {

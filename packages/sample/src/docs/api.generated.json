@@ -1962,6 +1962,12 @@
         "description": "Shows a copy button in the top-right corner that writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for about two seconds and the result is announced through a polite live region. When set, the <pre> is wrapped in a <div> (see the interface description)"
       },
       {
+        "name": "onCopied",
+        "type": "(text: string) => void",
+        "required": false,
+        "description": "Called with the copied text after the copy button wrote it to the clipboard (not on failure). The counterpart of the `minerva-copy` event of `<minerva-code-block>` (`detail.text`, with `detail.success`); named `onCopied` so it does not replace the native `onCopy` clipboard event handler, which still goes to the element"
+      },
+      {
         "name": "ref",
         "type": "Ref<HTMLPreElement>",
         "required": false,
@@ -2054,6 +2060,12 @@
         "required": false,
         "default": "12",
         "description": "Maximum number of results shown"
+      },
+      {
+        "name": "filter",
+        "type": "(items: CommandItem[], query: string) => CommandItem[]",
+        "required": false,
+        "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."
       },
       {
         "name": "resultsLabel",

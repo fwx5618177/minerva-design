@@ -142,6 +142,37 @@ describe("CommandDialog", () => {
     expect(screen.getAllByRole("option")).toHaveLength(2);
   });
 
+  it("uses a custom filter for non-empty queries", async () => {
+    const user = setup();
+    const filter = vi.fn((items: CommandItem[], query: string) =>
+      // reverse order, matching titles only
+      items
+        .filter((item) => item.title.toLowerCase().includes(query))
+        .reverse(),
+    );
+    render(
+      <CommandDialog
+        open
+        items={ITEMS}
+        onSelect={() => {}}
+        filter={filter}
+        maxResults={1}
+      />,
+    );
+    // empty query: items in order, filter not called
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+    expect(filter).not.toHaveBeenCalled();
+    await user.type(screen.getByRole("combobox"), " s ");
+    // enabled items only, trimmed query; capped at maxResults afterwards
+    expect(filter).toHaveBeenLastCalledWith(
+      ITEMS.filter((item) => !item.disabled),
+      "s",
+    );
+    const options = screen.getAllByRole("option");
+    expect(options).toHaveLength(1);
+    expect(options[0]).toHaveTextContent("SEO");
+  });
+
   it("navigates with arrows / Home / End, selects with Enter and closes", async () => {
     const user = setup();
     const onSelect = vi.fn();

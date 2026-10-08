@@ -1,5 +1,5 @@
 import { act, createRef } from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
@@ -205,26 +205,61 @@ describe("CodeBlock copyable", () => {
     expect(liveRegion(container)).toHaveTextContent("");
   });
 
+  it("calls onCopied with the text after a successful copy, keeping the native onCopy", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    mockClipboard({ writeText });
+    const onCopied = vi.fn();
+    const onCopy = vi.fn();
+    const { container } = render(
+      <CodeBlock copyable onCopied={onCopied} onCopy={onCopy}>
+        {"pnpm add @minerva/lib-core"}
+      </CodeBlock>,
+    );
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    await screen.findByRole("button", { name: "Copied" });
+    expect(onCopied).toHaveBeenCalledTimes(1);
+    expect(onCopied).toHaveBeenCalledWith("pnpm add @minerva/lib-core");
+    // the copy button does not trigger the native clipboard event
+    expect(onCopy).not.toHaveBeenCalled();
+    // the native onCopy still reaches the element (user copying a selection)
+    fireEvent.copy(container.querySelector("pre")!);
+    expect(onCopy).toHaveBeenCalledTimes(1);
+    expect(onCopied).toHaveBeenCalledTimes(1);
+  });
+
   it("reports a failure when writeText rejects", async () => {
     const user = userEvent.setup();
     mockClipboard({ writeText: vi.fn().mockRejectedValue(new Error("no")) });
-    const { container } = render(<CodeBlock copyable>x</CodeBlock>);
+    const onCopied = vi.fn();
+    const { container } = render(
+      <CodeBlock copyable onCopied={onCopied}>
+        x
+      </CodeBlock>,
+    );
     await user.click(screen.getByRole("button", { name: "Copy code" }));
     expect(
       await screen.findByRole("button", { name: "Copy failed" }),
     ).toBeInTheDocument();
     expect(liveRegion(container)).toHaveTextContent("Copy failed");
+    expect(onCopied).not.toHaveBeenCalled();
   });
 
   it("reports a failure when the clipboard API is missing", async () => {
     const user = userEvent.setup();
     mockClipboard(undefined);
-    const { container } = render(<CodeBlock copyable>x</CodeBlock>);
+    const onCopied = vi.fn();
+    const { container } = render(
+      <CodeBlock copyable onCopied={onCopied}>
+        x
+      </CodeBlock>,
+    );
     await user.click(screen.getByRole("button", { name: "Copy code" }));
     expect(
       await screen.findByRole("button", { name: "Copy failed" }),
     ).toBeInTheDocument();
     expect(liveRegion(container)).toHaveTextContent("Copy failed");
+    expect(onCopied).not.toHaveBeenCalled();
   });
 
   it("clears the feedback timer on unmount", async () => {

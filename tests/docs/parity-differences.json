@@ -1,6 +1,6 @@
 {
   "notes": {
-    "event": "The React callback belongs to a React-only API or is named after the React convention while the element dispatches the documented minerva-* event (onDropdownVisibleChange / onClose -> minerva-open-change, onOptionClick / onItemSelect -> minerva-select, Pagination onChange -> minerva-page-change); onPaletteChange follows ConfigProvider's setPalette(), which <minerva-config> does not have (the palette is its attribute).",
+    "event": "The React callback belongs to a React-only API or is named after the React convention while the element dispatches the documented minerva-* event (onDropdownVisibleChange / onClose -> minerva-open-change, onOptionClick / onItemSelect -> minerva-select, Pagination onChange -> minerva-page-change, CodeBlock onCopied -> minerva-copy with detail.success, onCopied being named so it does not replace the native onCopy); onPaletteChange follows ConfigProvider's setPalette(), which <minerva-config> does not have (the palette is its attribute).",
     "react-only": "React composition or styling hooks with no custom-element equivalent (ReactNode props without a slot of the same name are slots named differently, e.g. startIcon -> slot start; per-part style objects are ::part() selectors; data props that are children elements in HTML, e.g. KeyValueEditor entries -> value).",
     "wc-only": "Element vocabulary: string attributes replacing ReactNode props (heading, label, description, text), attributes replacing React context / provider values (locale, dialogRole, closeLabel...), state the element reflects for styling (collapsed, mobile, open on items), native-like properties React gets from the DOM element it renders (required, disabled, readOnly, placeholder, minLength, maxLength, autocomplete, href, target, rel, download, type, value)."
   },
@@ -33,7 +33,7 @@
     "minerva-button": ["react-only endIcon", "react-only loadingText", "react-only startIcon"],
     "minerva-cascader": ["react-only allowClear", "react-only id", "wc-only hideClearButton", "wc-only open"],
     "minerva-checkbox": ["react-only errorIcon", "react-only id", "wc-only readOnly"],
-    "minerva-code-block": ["react-only tabIndex", "wc-only code", "wc-only language", "wc-only text"],
+    "minerva-code-block": ["event onCopied", "react-only tabIndex", "wc-only code", "wc-only language", "wc-only text"],
     "minerva-code-editor": ["wc-only name", "wc-only required"],
     "minerva-command-dialog": ["react-only title", "wc-only label"],
     "minerva-config": ["event onPaletteChange", "react-only persist", "react-only preset", "wc-only design", "wc-only root"],

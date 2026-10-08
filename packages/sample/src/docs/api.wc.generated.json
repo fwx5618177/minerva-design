@@ -2604,7 +2604,7 @@
     "events": [
       {
         "name": "minerva-copy",
-        "description": "The copy button was used (`detail: { value, success }`)"
+        "description": "The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success)."
       }
     ],
     "slots": [],
@@ -3031,6 +3031,11 @@
         "type": "CommandItem[]",
         "default": "[]",
         "description": "Commands to search (disabled items are never shown)"
+      },
+      {
+        "name": "filter",
+        "type": "(items: CommandItem[], query: string) => CommandItem[] | undefined",
+        "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."
       }
     ],
     "methods": [

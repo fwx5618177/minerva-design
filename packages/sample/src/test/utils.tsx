@@ -2,12 +2,12 @@
 // Shared helpers of the docs-site component tests (happy-dom).
 import React from "react";
 import { I18nextProvider } from "react-i18next";
-import i18n, { loadLanguage } from "@i18n/config";
+import i18n, { loadAllDocs } from "@i18n/config";
 import { ThemeModeProvider } from "../theme/ThemeModeContext";
 
 /** English strings, including the lazily-loaded documentation strings */
 export async function setupI18n() {
-  await loadLanguage("en");
+  await loadAllDocs("en");
   await i18n.changeLanguage("en");
   return i18n;
 }

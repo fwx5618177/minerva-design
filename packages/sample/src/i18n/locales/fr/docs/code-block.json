@@ -12,7 +12,7 @@
     },
     "copyable": {
       "title": "Bouton de copie",
-      "description": "copyable ajoute un bouton de copie en haut à droite ; le résultat (« Copié » / « Échec de la copie ») s'affiche sur le bouton et est annoncé aux lecteurs d'écran."
+      "description": "copyable ajoute un bouton de copie en haut à droite ; le résultat (« Copié » / « Échec de la copie ») s'affiche sur le bouton et est annoncé aux lecteurs d'écran. onCopied reçoit le texte copié après une copie réussie."
     }
   },
   "api": {
@@ -23,6 +23,7 @@
       "maxHeight": "Hauteur maximale avant défilement",
       "tabIndex": "Ordre de tabulation de la région (focalisable par défaut)",
       "copyable": "Affiche un bouton qui copie le texte dans le presse-papiers et annonce le résultat",
+      "onCopied": "Appelée avec le texte copié une fois que le bouton de copie l'a écrit dans le presse-papiers (pas en cas d'échec) ; le onCopy natif reste transmis à l'élément",
       "ref": "Ref vers l'élément <pre>"
     }
   },
@@ -57,7 +58,7 @@
         "text": "Le texte affiché et copié (lecture seule)."
       },
       "events": {
-        "minerva-copy": "Le bouton de copie a été utilisé (detail : { value, success })."
+        "minerva-copy": "Le bouton de copie ou copy() a été utilisé (detail : { text, success } ; text est le texte copié, que le onCopied de React reçoit en cas de succès)."
       },
       "parts": {
         "base": "Le conteneur externe (blocs copiables ou étiquetés).",

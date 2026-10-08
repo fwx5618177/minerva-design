@@ -7,18 +7,9 @@ import Footer from "@/site/Footer";
 import Pager from "@/site/Pager";
 import SearchPalette from "@/site/SearchPalette";
 import TableOfContents from "@/site/TableOfContents";
+import PageSkeleton from "@/site/PageSkeleton";
 import Sidebar from "./Sidebar";
 import styles from "@/site/site.module.scss";
-
-const PageFallback: React.FC = () => {
-  const { t } = useTranslation();
-  return (
-    <div className={styles.loading} role="status" aria-live="polite">
-      <span className={styles.loadingBar} aria-hidden />
-      <span className="sr-only">{t("doc.loading")}</span>
-    </div>
-  );
-};
 
 /**
  * Site shell: skip link, sticky top navigation, and either the docs layout
@@ -37,7 +28,7 @@ const Layout: React.FC = () => {
   }, [pathname]);
 
   const content = (
-    <Suspense fallback={<PageFallback />}>
+    <Suspense fallback={<PageSkeleton variant={isDocPage ? "doc" : "home"} />}>
       <Outlet />
     </Suspense>
   );

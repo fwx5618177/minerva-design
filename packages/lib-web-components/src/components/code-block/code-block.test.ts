@@ -92,7 +92,7 @@ describe("<minerva-code-block>", () => {
     await settle();
     expect(writeText).toHaveBeenCalledWith("npm i");
     expect(onCopy.mock.calls[0][0].detail).toEqual({
-      value: "npm i",
+      text: "npm i",
       success: true,
     });
     expect(copyButton(el)).toHaveAttribute("aria-label", "Copied");
@@ -105,9 +105,15 @@ describe("<minerva-code-block>", () => {
     const el = await mount<MinervaCodeBlock>(
       `<minerva-code-block copyable>x</minerva-code-block>`,
     );
+    const onCopy = vi.fn();
+    el.addEventListener("minerva-copy", onCopy);
     vi.useFakeTimers();
     const ok = await el.copy();
     expect(ok).toBe(false);
+    expect(onCopy.mock.calls[0][0].detail).toMatchObject({
+      text: "x",
+      success: false,
+    });
     await el.updateComplete;
     expect(copyButton(el)).toHaveAttribute("aria-label", "Copy failed");
     expect(copyButton(el).classList).toContain("danger");

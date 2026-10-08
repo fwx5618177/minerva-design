@@ -4,6 +4,7 @@ import { attachInternals } from "../../internal/form";
 import { property } from "lit/decorators.js";
 import styles from "@lib-core-styles/components/Select/select.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
+import { getHostAttribute, setHostAttribute } from "../../internal/hydration";
 import { IconCheck } from "../../internal/icons";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { sharedStyles } from "../../internal/styles";
@@ -91,12 +92,12 @@ export class MinervaOption extends MinervaElement {
       },
       this.ownedAria,
     );
-    this.toggleAttribute("data-highlighted", this.highlighted);
-    this.toggleAttribute("data-disabled", this.disabled);
-    // host styling hook only when selected (an upgraded, unselected option
-    // keeps the server-rendered attributes as they are)
-    if (this.selected) this.dataset.state = "checked";
-    else delete this.dataset.state;
+    // hydration-safe: server-rendered options get them once hydrated
+    setHostAttribute(this, "data-highlighted", this.highlighted);
+    setHostAttribute(this, "data-disabled", this.disabled);
+    // host styling hook only when selected (an unselected option keeps the
+    // server-rendered attributes as they are)
+    setHostAttribute(this, "data-state", this.selected ? "checked" : null);
     if (DEV && changed.has("value") && this.value === "" && this.isConnected) {
       devWarn(
         MinervaOption.tagName,
@@ -168,10 +169,14 @@ export class MinervaOptionGroup extends MinervaElement {
       ":scope > minerva-select-label",
     );
     if (label) {
-      if (!label.id) label.id = `minerva-select-label-${nextLabelId++}`;
-      this.setAttribute("aria-labelledby", label.id);
+      let id = getHostAttribute(label, "id");
+      if (!id) {
+        id = `minerva-select-label-${nextLabelId++}`;
+        setHostAttribute(label, "id", id, this);
+      }
+      setHostAttribute(this, "aria-labelledby", id);
     } else {
-      this.removeAttribute("aria-labelledby");
+      setHostAttribute(this, "aria-labelledby", null);
     }
   }
 

@@ -1,4 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
+import { setHostAttribute } from "./hydration";
 
 const textOfIds = (host: Element, ids: string | null): string | undefined => {
   if (!ids) return undefined;
@@ -96,7 +97,8 @@ const ARIA_ATTRIBUTE: Record<keyof HostAria, string> = {
  * semantics: no attribute is added to the host, so server-rendered markup
  * hydrates without attribute mismatches, and author attributes still win).
  * Without ARIA reflection on ElementInternals (older engines), falls back
- * to attributes, never overwriting one the author set.
+ * to attributes (hydration-safe, see `setHostAttribute()`), never
+ * overwriting one the author set.
  */
 export function setHostAria(
   host: HTMLElement,
@@ -113,12 +115,8 @@ export function setHostAria(
     }
     const attribute = ARIA_ATTRIBUTE[key];
     if (host.hasAttribute(attribute) && !owned.has(attribute)) continue;
-    if (value === null) {
-      host.removeAttribute(attribute);
-      owned.delete(attribute);
-    } else {
-      host.setAttribute(attribute, value);
-      owned.add(attribute);
-    }
+    setHostAttribute(host, attribute, value);
+    if (value === null) owned.delete(attribute);
+    else owned.add(attribute);
   }
 }

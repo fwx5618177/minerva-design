@@ -319,6 +319,7 @@ const WebComponentsDoc: React.FC = () => {
       <section className={styles.section} aria-labelledby="ssr">
         <h2 id="ssr">{k("ssr.title")}</h2>
         <p className={styles.prose}>{k("ssr.text")}</p>
+        <p className={styles.prose}>{k("ssr.hydration")}</p>
         <CodeBlock code={ssrCode} language="ts" />
         <p className={styles.callout}>{k("ssr.fouc")}</p>
       </section>

@@ -12,7 +12,7 @@
     },
     "copyable": {
       "title": "复制按钮",
-      "description": "copyable 会在右上角添加复制按钮；结果（“已复制”/“复制失败”）显示在按钮上并播报给屏幕阅读器。"
+      "description": "copyable 在右上角添加复制按钮；结果（“已复制” / “复制失败”）显示在按钮上并播报给屏幕阅读器。复制成功后，onCopied 会收到被复制的文本。"
     }
   },
   "api": {
@@ -23,6 +23,7 @@
       "maxHeight": "代码块开始滚动前的最大高度",
       "tabIndex": "区域的 Tab 顺序（默认可聚焦）",
       "copyable": "显示复制按钮，将文本写入剪贴板并播报结果",
+      "onCopied": "复制按钮成功将文本写入剪贴板后调用，参数为被复制的文本（失败时不调用）；原生 onCopy 仍作用于元素",
       "ref": "<pre> 元素的 ref"
     }
   },
@@ -57,7 +58,7 @@
         "text": "显示和复制的文本（只读）。"
       },
       "events": {
-        "minerva-copy": "使用了复制按钮（detail: { value, success }）。"
+        "minerva-copy": "使用了复制按钮或 copy()（detail: { text, success }；text 为复制的文本，React 的 onCopied 在成功时收到它）。"
       },
       "parts": {
         "base": "外层容器（可复制或带标签的代码块）。",

@@ -60,6 +60,14 @@ export interface CommandDialogProps {
    * @default 12
    */
   maxResults?: number;
+  /**
+   * Custom search, e.g. to rank results by match quality. Receives the
+   * enabled items and the trimmed query (never empty) and returns the
+   * matching items in display order (then capped at `maxResults`). By
+   * default, items whose group, title, description or keywords contain the
+   * query (case-insensitive) are kept in `items` order.
+   */
+  filter?: (items: CommandItem[], query: string) => CommandItem[];
   /** Accessible label of the results list; defaults to the localized "Command results". */
   resultsLabel?: string;
   /** Key hint shown at the end of the search input; defaults to the localized "Enter". */

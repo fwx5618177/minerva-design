@@ -45,6 +45,14 @@ export interface CodeBlockProps extends Omit<
    * @default false
    */
   copyable?: boolean;
+  /**
+   * Called with the copied text after the copy button wrote it to the
+   * clipboard (not on failure). The counterpart of the `minerva-copy` event
+   * of `<minerva-code-block>` (`detail.text`, with `detail.success`); named
+   * `onCopied` so it does not replace the native `onCopy` clipboard event
+   * handler, which still goes to the element
+   */
+  onCopied?: (text: string) => void;
   /** Ref to the <pre> element (also when copyable) */
   ref?: Ref<HTMLPreElement>;
 }

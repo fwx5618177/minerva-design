@@ -15,6 +15,14 @@ import { sharedStyles } from "../../internal/styles";
 /** How long the "Copied" / "Copy failed" feedback stays visible (ms). */
 const COPY_FEEDBACK_MS = 2000;
 
+/** `detail` of the `minerva-copy` event */
+export interface CodeBlockCopyDetail {
+  /** The text written (or attempted) to the clipboard */
+  text: string;
+  /** Whether the clipboard write succeeded */
+  success: boolean;
+}
+
 /** Result of the last copy */
 export type CodeBlockCopyStatus = "idle" | "copied" | "failed";
 
@@ -45,7 +53,7 @@ const toCss = (value: string | number | undefined) =>
  * @csspart code - The `<code>` element
  * @csspart language - The language label
  * @csspart copy-button - The copy button
- * @fires minerva-copy - The copy button was used (`detail: { value, success }`)
+ * @fires minerva-copy - The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success).
  */
 export class MinervaCodeBlock extends MinervaElement {
   static override tagName = "minerva-code-block";
@@ -127,7 +135,10 @@ export class MinervaCodeBlock extends MinervaElement {
     }
     if (!this.isConnected) return success;
     this.showStatus(success ? "copied" : "failed");
-    this.emit("minerva-copy", { value: text, success });
+    this.emit<CodeBlockCopyDetail>("minerva-copy", {
+      text,
+      success,
+    });
     return success;
   }
 
