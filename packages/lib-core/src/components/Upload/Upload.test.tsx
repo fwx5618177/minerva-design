@@ -259,6 +259,12 @@ describe("Upload", () => {
     expect(items[0]).toHaveTextContent("Uploading");
     expect(items[1]).toHaveTextContent("Uploaded");
     expect(items[2]).toHaveTextContent("Upload failed");
+    // public item hook: the status of each file
+    expect(items.map((item) => item.getAttribute("data-status"))).toEqual([
+      "uploading",
+      "done",
+      "error",
+    ]);
     expect(screen.getAllByRole("status").map((s) => s.textContent)).toEqual(
       expect.arrayContaining(["Uploading", "Uploaded"]),
     );

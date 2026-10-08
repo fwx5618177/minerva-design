@@ -41,6 +41,23 @@ export function customStateNames(states: HookStates): Set<string> {
   return names;
 }
 
+/**
+ * The `part` attribute of an item rendered in a shadow root, with its item
+ * states as `<part>--<state>` part names (same vocabulary as the custom
+ * states), so consumers combine them in `::part()`:
+ *
+ *   itemParts("item", { highlighted: true, state: "checked" })
+ *   // "item item--checked item--highlighted"
+ *   minerva-menu::part(item item--highlighted) { ... }
+ *
+ * Shadow content only: no host attribute, nothing to hydrate.
+ */
+export function itemParts(part: string, states: HookStates): string {
+  let names = part;
+  for (const name of customStateNames(states)) names += ` ${part}--${name}`;
+  return names;
+}
+
 /** States currently applied to each element (also where unsupported) */
 const applied = new WeakMap<Element, Set<string>>();
 

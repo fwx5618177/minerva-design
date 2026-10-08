@@ -26,6 +26,7 @@ import { IconInbox, IconSpinner } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 /** Content a render callback may return */
@@ -90,6 +91,8 @@ const PLACEMENT = {
  * @csspart content - The positioned dropdown
  * @csspart list - The `role=listbox` list
  * @csspart item - An option
+ * @csspart item--highlighted - Item state of `item`: highlighted
+ * @csspart item--disabled - Item state of `item`: disabled
  * @csspart group-label - A group heading
  * @csspart empty - The empty state (no matching option)
  * @csspart loading - The loading state (while loading)
@@ -594,13 +597,15 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     activeIndex: number,
   ) {
     const active = activeIndex === index;
+    const highlighted = this.hoveredIndex === index || active;
+    const disabled = !!option.disabled;
     return html`<div
-      part="item"
+      part=${itemParts("item", { highlighted, disabled })}
       class=${classMap({
         optionItem: true,
-        disabled: !!option.disabled,
+        disabled,
         highlight: !!option.highlight,
-        active: this.hoveredIndex === index || active,
+        active: highlighted,
       })}
       style=${option.style ? styleMap(option.style) : nothing}
       role="option"

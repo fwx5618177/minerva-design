@@ -33,6 +33,7 @@ import {
   startOfToday,
   toTimeValue,
 } from "@minerva/core";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 export type TimePickerSize = "small" | "medium" | "large";
@@ -104,6 +105,8 @@ const units = (
  * @csspart content - The popup panel (`role=dialog`)
  * @csspart column - An hours / minutes / seconds / AM-PM column (`role=listbox`)
  * @csspart item - A time unit (`role=option`)
+ * @csspart item--selected - Item state of `item`: selected
+ * @csspart item--disabled - Item state of `item`: disabled
  * @fires minerva-change - The time was committed (picked, typed, normalized on blur or cleared), `detail: { value }` (`""` when cleared)
  * @fires minerva-input - The text of the input changed while typing, `detail: { value }` (the typed text)
  * @fires minerva-open-change - The user opened / closed the panel, `detail: { open }`; cancelable: `preventDefault()` keeps the current state
@@ -691,7 +694,10 @@ export class MinervaTimePicker extends FormAssociatedElement {
               ${column.items.map((unit) => {
                 const selected = hasValue && unit.value === column.selected;
                 return html`<div
-                  part="item"
+                  part=${itemParts("item", {
+                    selected,
+                    disabled: unit.disabled,
+                  })}
                   role="option"
                   aria-selected=${selected ? "true" : "false"}
                   aria-disabled=${unit.disabled ? "true" : nothing}

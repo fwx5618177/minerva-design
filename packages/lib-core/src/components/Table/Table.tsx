@@ -138,15 +138,41 @@ export const TableBody = ({ ref, ...props }: TableBodyProps) => (
   <tbody ref={ref} {...props} />
 );
 
-/** `<tr>` of a TableRoot */
-export const TableRow = ({ ref, ...props }: TableRowProps) => (
-  <tr ref={ref} {...props} {...hooks("data-table", "row")} />
-);
+/**
+ * `<tr>` of a TableRoot. A row with `aria-selected` true gets the public
+ * `data-selected` item hook.
+ */
+export const TableRow = ({ ref, ...props }: TableRowProps) => {
+  const ariaSelected = props["aria-selected"];
+  return (
+    <tr
+      ref={ref}
+      {...props}
+      {...hooks("data-table", "row", {
+        selected: ariaSelected === true || ariaSelected === "true",
+      })}
+    />
+  );
+};
 
-/** `<th>` of a TableRoot */
-export const TableHeader = ({ ref, ...props }: TableHeaderProps) => (
-  <th ref={ref} {...props} {...hooks("data-table", "header-cell")} />
-);
+const SORT_HOOKS = new Set(["ascending", "descending", "none"]);
+
+/**
+ * `<th>` of a TableRoot. A sortable header (`aria-sort` ascending /
+ * descending / none) gets the public `data-sort` item hook.
+ */
+export const TableHeader = ({ ref, ...props }: TableHeaderProps) => {
+  const ariaSort = props["aria-sort"];
+  return (
+    <th
+      ref={ref}
+      {...props}
+      {...hooks("data-table", "header-cell", {
+        sort: ariaSort && SORT_HOOKS.has(ariaSort) ? ariaSort : undefined,
+      })}
+    />
+  );
+};
 
 /** `<td>` of a TableRoot */
 export const TableCell = ({ ref, ...props }: TableCellProps) => (
@@ -363,11 +389,7 @@ export function Table<T>({
     body = rows.map(({ row, index, key }, i) => {
       const selected = hasSelection && selectedSet.has(key);
       return (
-        <TableRow
-          key={key}
-          aria-selected={selected || undefined}
-          data-selected={selected || undefined}
-        >
+        <TableRow key={key} aria-selected={selected || undefined}>
           {hasSelection && (
             <TableCell {...selectionCellProps}>
               <input
@@ -420,7 +442,6 @@ export function Table<T>({
           type="button"
           className={styles.sortButton}
           {...hooks("data-table", "sort-button")}
-          data-sort-order={order ?? undefined}
           onClick={() => setSortState(nextSortState(sortState, col.key))}
         >
           <span className={styles.sortLabel}>{col.header}</span>

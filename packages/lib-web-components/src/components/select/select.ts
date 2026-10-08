@@ -17,6 +17,7 @@ import { IconCheck, IconChevronDown } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import { MinervaOption } from "./option";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 export type SelectSize = "small" | "medium" | "large";
@@ -99,6 +100,9 @@ const isPrintable = (event: KeyboardEvent) =>
  * @csspart icon - The chevron
  * @csspart content - The listbox popup (`role=listbox`)
  * @csspart item - An option rendered from the `options` property
+ * @csspart item--selected - Item state of `item`: selected
+ * @csspart item--highlighted - Item state of `item`: highlighted
+ * @csspart item--disabled - Item state of `item`: disabled
  * @csspart group-label - A group heading rendered from the `options` property
  * @fires minerva-change - The user selected an option (`detail: { value }`)
  * @fires minerva-open-change - The user opened / closed the listbox (`detail: { open }`); cancelable: `preventDefault()` keeps the current state
@@ -564,16 +568,18 @@ export class MinervaSelect extends FormAssociatedElement {
 
   private renderDataOption(option: SelectOptionData) {
     const selected = option.value === this.value;
+    const highlighted = this.highlighted === option.value;
+    const disabled = !!option.disabled;
     return html`<div
-      part="item"
+      part=${itemParts("item", { selected, highlighted, disabled })}
       class="item"
       role="option"
       tabindex="-1"
       aria-selected=${String(selected)}
       aria-disabled=${option.disabled ? "true" : nothing}
-      data-state=${selected ? "checked" : "unchecked"}
-      ?data-highlighted=${this.highlighted === option.value}
-      ?data-disabled=${!!option.disabled}
+      ?data-selected=${selected}
+      ?data-highlighted=${highlighted}
+      ?data-disabled=${disabled}
       data-value=${option.value}
       data-text-value=${option.textValue ?? nothing}
     >

@@ -1,6 +1,6 @@
 {
   "$schema": "Minerva public styling hooks (React + web components)",
-  "policy": "Adding a component, part, state or state value is a minor change. Removing or renaming one is a major change. Class names and DOM structure without hooks are private.",
+  "policy": "Adding a component, part, state (component or item state) or state value is a minor change. Removing or renaming one is a major change. Class names and DOM structure without hooks are private.",
   "components": {
     "alert": {
       "react": [
@@ -95,7 +95,12 @@
         "input": {
           "only": "wc"
         },
-        "item": {},
+        "item": {
+          "itemStates": {
+            "disabled": true,
+            "highlighted": true
+          }
+        },
         "label": {},
         "list": {},
         "loading": {},
@@ -362,7 +367,14 @@
         "input": {
           "only": "wc"
         },
-        "item": {},
+        "item": {
+          "itemStates": {
+            "disabled": true,
+            "expanded": true,
+            "loading": true,
+            "selected": true
+          }
+        },
         "root": {
           "states": [
             "disabled",
@@ -491,7 +503,11 @@
         "empty": {},
         "header": {},
         "input": {},
-        "item": {},
+        "item": {
+          "itemStates": {
+            "highlighted": true
+          }
+        },
         "list": {},
         "overlay": {
           "states": [
@@ -567,7 +583,17 @@
         },
         "group": {},
         "icon": {},
-        "item": {},
+        "item": {
+          "itemStates": {
+            "disabled": true,
+            "expanded": true,
+            "highlighted": true,
+            "state": [
+              "checked",
+              "unchecked"
+            ]
+          }
+        },
         "item-indicator": {},
         "item-label": {},
         "label": {},
@@ -625,7 +651,15 @@
         "checkbox": {},
         "empty": {},
         "error": {},
-        "header-cell": {},
+        "header-cell": {
+          "itemStates": {
+            "sort": [
+              "ascending",
+              "descending",
+              "none"
+            ]
+          }
+        },
         "pagination": {
           "only": "wc"
         },
@@ -633,7 +667,11 @@
           "only": "wc"
         },
         "root": {},
-        "row": {},
+        "row": {
+          "itemStates": {
+            "selected": true
+          }
+        },
         "skeleton": {},
         "sort-button": {},
         "table": {
@@ -946,7 +984,11 @@
           "only": "wc"
         },
         "root": {},
-        "row": {}
+        "row": {
+          "itemStates": {
+            "invalid": true
+          }
+        }
       },
       "states": {
         "disabled": true
@@ -1011,7 +1053,17 @@
         },
         "group": {},
         "icon": {},
-        "item": {},
+        "item": {
+          "itemStates": {
+            "disabled": true,
+            "expanded": true,
+            "highlighted": true,
+            "state": [
+              "checked",
+              "unchecked"
+            ]
+          }
+        },
         "item-indicator": {},
         "item-label": {},
         "label": {},
@@ -1101,7 +1153,14 @@
       ],
       "wc": "minerva-month-calendar",
       "parts": {
-        "day": {},
+        "day": {
+          "itemStates": {
+            "disabled": true,
+            "outside": true,
+            "selected": true,
+            "today": true
+          }
+        },
         "empty": {},
         "event": {},
         "events": {},
@@ -1124,7 +1183,13 @@
         "group": {},
         "group-label": {},
         "icon": {},
-        "item": {},
+        "item": {
+          "itemStates": {
+            "current": true,
+            "disabled": true,
+            "expanded": true
+          }
+        },
         "label": {},
         "root": {}
       },
@@ -1167,10 +1232,7 @@
       "states": {
         "disabled": true,
         "highlighted": true,
-        "state": [
-          "checked",
-          "unchecked"
-        ]
+        "selected": true
       }
     },
     "option-group": {
@@ -1263,7 +1325,12 @@
       ],
       "wc": "minerva-pagination",
       "parts": {
-        "item": {},
+        "item": {
+          "itemStates": {
+            "current": true,
+            "disabled": true
+          }
+        },
         "jumper": {},
         "root": {},
         "simple-input": {},
@@ -1295,7 +1362,14 @@
       ],
       "wc": "minerva-palette-toggle",
       "parts": {
-        "item": {},
+        "item": {
+          "itemStates": {
+            "state": [
+              "active",
+              "inactive"
+            ]
+          }
+        },
         "root": {}
       },
       "states": {}
@@ -1474,7 +1548,15 @@
       "parts": {
         "count": {},
         "root": {},
-        "star": {},
+        "star": {
+          "itemStates": {
+            "fill": [
+              "empty",
+              "full",
+              "half"
+            ]
+          }
+        },
         "stars": {},
         "value": {}
       },
@@ -1536,7 +1618,12 @@
         },
         "icon": {},
         "item": {
-          "only": "wc"
+          "only": "wc",
+          "itemStates": {
+            "disabled": true,
+            "highlighted": true,
+            "selected": true
+          }
         },
         "root": {
           "states": [
@@ -1681,7 +1768,17 @@
       "parts": {
         "button": {},
         "indicator": {},
-        "item": {},
+        "item": {
+          "itemStates": {
+            "current": true,
+            "disabled": true,
+            "status": [
+              "complete",
+              "current",
+              "upcoming"
+            ]
+          }
+        },
         "label": {},
         "root": {}
       },
@@ -1904,7 +2001,11 @@
           "only": "wc"
         },
         "list": {},
-        "option": {},
+        "option": {
+          "itemStates": {
+            "highlighted": true
+          }
+        },
         "remove-button": {
           "only": "wc"
         },
@@ -1977,7 +2078,14 @@
       ],
       "wc": "minerva-theme-toggle",
       "parts": {
-        "item": {},
+        "item": {
+          "itemStates": {
+            "state": [
+              "active",
+              "inactive"
+            ]
+          }
+        },
         "root": {}
       },
       "states": {}
@@ -2007,7 +2115,12 @@
         "input": {
           "only": "wc"
         },
-        "item": {},
+        "item": {
+          "itemStates": {
+            "disabled": true,
+            "selected": true
+          }
+        },
         "root": {
           "states": [
             "disabled",
@@ -2060,7 +2173,21 @@
         "progress": {},
         "root": {},
         "title": {},
-        "toast": {}
+        "toast": {
+          "itemStates": {
+            "color": [
+              "danger",
+              "info",
+              "success",
+              "warning"
+            ],
+            "loading": true,
+            "state": [
+              "closed",
+              "open"
+            ]
+          }
+        }
       },
       "states": {}
     },
@@ -2160,7 +2287,15 @@
         "error": {
           "only": "wc"
         },
-        "item": {},
+        "item": {
+          "itemStates": {
+            "status": [
+              "done",
+              "error",
+              "uploading"
+            ]
+          }
+        },
         "label": {},
         "list": {},
         "remove-button": {

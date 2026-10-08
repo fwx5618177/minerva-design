@@ -435,7 +435,7 @@ export class MinervaPageTab extends MinervaElement {
       part="root"
       class="pageTab"
       data-value=${this.value}
-      ?data-active=${this.active}
+      ?data-current=${this.active}
       ?data-disabled=${this.disabled}
     >
       <button

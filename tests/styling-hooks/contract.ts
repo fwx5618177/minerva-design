@@ -7,9 +7,14 @@
 //   one of the component's states with a documented value;
 // - every documented hook exists: over all the scenarios (fixtures) of a
 //   component, each part and each state is rendered at least once (each
-//   `data-state` value too).
+//   `data-state` value too);
+// - item states (parts with `itemStates`: menu items, options, rows, days...)
+//   are on the item element in React (`data-*`) and are `<part>--<state>`
+//   part names in the shadow roots; every value of every item state must be
+//   rendered by some scenario.
 import {
   BOOLEAN_STATES,
+  ITEM_STATE_SEPARATOR,
   KEYED_STATES,
   STATE_VALUES,
   stylingHooks,
@@ -28,6 +33,10 @@ const STATE_ATTRIBUTES = ["state", ...BOOLEAN_STATES, ...KEYED_STATES].map(
   (key) => [key, `data-${key}`] as const,
 );
 
+/** Coverage key of an item state value */
+const itemKey = (part: string, key: string, value = "") =>
+  `item:${part}:${key}${value ? `=${value}` : ""}`;
+
 /** What the scenarios of a component rendered */
 export class Coverage {
   readonly parts = new Map<string, Set<string>>();
@@ -44,6 +53,11 @@ export class Coverage {
     seen.add(key);
     if (key === "state") seen.add(`state:${value}`);
   }
+
+  /** An item state of `part` (every value is tracked) */
+  itemState(component: string, part: string, key: string, value?: string) {
+    this.state(component, itemKey(part, key, BOOLEAN.has(key) ? "" : value));
+  }
 }
 
 /** The states a part carries in React */
@@ -54,7 +68,7 @@ function reactPartStates(spec: ComponentHookSpec, part: string): string[] {
 }
 
 function checkValue(
-  spec: ComponentHookSpec,
+  spec: Pick<ComponentHookSpec, "states">,
   key: string,
   value: string | undefined,
 ): string | null {
@@ -103,9 +117,16 @@ export function checkReactDom(
     }
     coverage.part(component, part);
     const allowed = reactPartStates(spec, part);
+    const itemStates = spec.parts[part].itemStates ?? {};
     for (const [key, attribute] of STATE_ATTRIBUTES) {
       if (!el.hasAttribute(attribute)) continue;
       const value = el.getAttribute(attribute) ?? undefined;
+      if (key in itemStates) {
+        const problem = checkValue({ states: itemStates }, key, value);
+        if (problem) problems.push(`${where}: item state ${problem}`);
+        else coverage.itemState(component, part, key, value);
+        continue;
+      }
       if (!allowed.includes(key)) {
         problems.push(`${where}: undocumented state ${attribute}="${value}"`);
         continue;
@@ -166,8 +187,30 @@ export function checkWcDom(
     for (const el of Array.from(
       host.shadowRoot?.querySelectorAll("[part]") ?? [],
     )) {
-      for (const part of (el.getAttribute("part") ?? "").split(/\s+/)) {
+      const names = (el.getAttribute("part") ?? "").split(/\s+/);
+      for (const part of names) {
         if (!part) continue;
+        const separator = part.indexOf(ITEM_STATE_SEPARATOR);
+        if (separator > 0) {
+          const base = part.slice(0, separator);
+          const name = part.slice(separator + ITEM_STATE_SEPARATOR.length);
+          const itemStates = spec.parts[base]?.itemStates;
+          const parsed = parseCustomState(name);
+          if (!itemStates || !parsed || !(parsed.key in itemStates)) {
+            problems.push(`${tag}::part(${part}): undocumented item state`);
+          } else if (!names.includes(base)) {
+            problems.push(`${tag}::part(${part}): without the ${base} part`);
+          } else {
+            const problem = checkValue(
+              { states: itemStates },
+              parsed.key,
+              parsed.value,
+            );
+            if (problem) problems.push(`${tag}::part(${part}): ${problem}`);
+            else coverage.itemState(component, base, parsed.key, parsed.value);
+          }
+          continue;
+        }
         if (!spec.parts[part]) {
           problems.push(`${tag}::part(${part}): undocumented part`);
         } else if (spec.parts[part].only === "react") {
@@ -205,6 +248,14 @@ export function missingHooks(
   for (const [part, partSpec] of Object.entries(spec.parts)) {
     if (partSpec.only === other) continue;
     if (!parts.has(part)) missing.push(`part ${part}`);
+    for (const [key, value] of Object.entries(partSpec.itemStates ?? {})) {
+      const keys = BOOLEAN.has(key)
+        ? [itemKey(part, key)]
+        : (value as string[]).map((v) => itemKey(part, key, v));
+      for (const k of keys) {
+        if (!states.has(k)) missing.push(`item state ${k.slice(5)}`);
+      }
+    }
   }
   for (const [key, value] of Object.entries(spec.states)) {
     if (!states.has(key)) missing.push(`state ${key}`);

@@ -63,11 +63,16 @@ describe("CommandDialog keyboard (APG combobox in a modal dialog)", () => {
     await waitFor(() => expect(input).toHaveFocus());
     const options = screen.getAllByRole("option");
     expect(input).toHaveAttribute("aria-activedescendant", options[0].id);
+    expect(options[0]).toHaveAttribute("data-highlighted", "");
     await user.keyboard("{ArrowDown}{ArrowDown}");
     expect(input).toHaveAttribute("aria-activedescendant", options[2].id);
     expect(options[2]).toHaveAttribute("aria-selected", "true");
+    expect(options[2]).toHaveAttribute("data-highlighted", "");
+    expect(options[0]).not.toHaveAttribute("data-highlighted");
     await user.keyboard("{ArrowUp}");
     expect(input).toHaveAttribute("aria-activedescendant", options[1].id);
+    expect(options[1]).toHaveAttribute("data-highlighted", "");
+    expect(options[2]).not.toHaveAttribute("data-highlighted");
     await user.keyboard("{Enter}");
     expect(onSelect).toHaveBeenCalledWith(ITEMS[1]);
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());

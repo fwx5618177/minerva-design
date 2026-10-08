@@ -101,10 +101,17 @@ reactSelector("modal", "content", { state: "open" });
 // '[data-minerva="modal"][data-part="content"][data-state="open"]'
 wcSelector("modal", "content", { state: "open" });
 // "minerva-modal:state(open)::part(content)"
+
+// item states (menu items, options, rows...): `itemStates` of a part
+stylingHooks.menu.parts.item.itemStates; // { highlighted, disabled, state, expanded }
+reactSelector("menu", "item", undefined, { highlighted: true });
+// '[data-minerva="menu"][data-part="item"][data-highlighted]'
+wcSelector("menu", "item", undefined, { highlighted: true });
+// "minerva-menu::part(item item--highlighted)"
 ```
 
 The surface is locked (`styling-hooks.lock.json` in the repository): adding a
-component, part, state or value is a minor change, removing or renaming one is
+component, part, state (item states included) or value is a minor change, removing or renaming one is
 a major change.
 
 ## Translations

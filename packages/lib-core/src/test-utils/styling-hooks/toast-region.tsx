@@ -18,4 +18,29 @@ export default [
       });
     },
   },
+  {
+    name: "toasts of every color, a loading toast",
+    element: <ToastProvider />,
+    setup: () => {
+      toastStore.reset();
+      act(() => {
+        toast.info("Heads up", { duration: 0 });
+        toast.warning("Careful", { duration: 0 });
+        toast.danger("Failed", { duration: 0 });
+        toast.loading("Uploading");
+      });
+    },
+  },
+  {
+    name: "a closing toast (closed while leaving)",
+    element: <ToastProvider />,
+    setup: () => {
+      toastStore.reset();
+      act(() => {
+        const id = toast({ title: "Bye", duration: 0 });
+        // stays mounted with data-state="closed" during the exit animation
+        toast.dismiss(id);
+      });
+    },
+  },
 ] satisfies HookScenario[];

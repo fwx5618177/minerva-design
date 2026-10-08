@@ -7,7 +7,15 @@ export default defineHooks({
   wc: "minerva-toast-region",
   parts: {
     root: { description: "The fixed stack (role=region)" },
-    toast: { description: "A toast (role=status, or alert for danger)" },
+    toast: {
+      description:
+        "A toast (role=status, or alert for danger). Item states: open / closed (while leaving), color, loading",
+      itemStates: {
+        state: ["open", "closed"],
+        color: ["info", "success", "warning", "danger"],
+        loading: true,
+      },
+    },
     icon: { description: "The icon of a toast (spinner while loading)" },
     title: { description: "The title of a toast" },
     description: { description: "The description of a toast" },

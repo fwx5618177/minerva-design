@@ -27,10 +27,13 @@ export default defineHooks({
     },
     row: {
       description:
-        "A <tr> (header and body rows; selected rows have aria-selected=true)",
+        "A <tr> (header and body rows; selected rows have aria-selected=true). Item state: selected (body rows)",
+      itemStates: { selected: true },
     },
     "header-cell": {
-      description: "A <th> column header (sortable headers have aria-sort)",
+      description:
+        "A <th> column header (sortable headers have aria-sort). Item state: sort (sortable headers only)",
+      itemStates: { sort: ["ascending", "descending", "none"] },
     },
     cell: { description: "A <td> body cell" },
     "sort-button": { description: "The sort button of a sortable header" },

@@ -30,6 +30,7 @@ import {
 import { IconChevronDown, IconChevronRight, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 /** One node of the option tree (same shape as lib-core's `CascaderOption`) */
@@ -143,6 +144,10 @@ let nextId = 0;
  * @csspart content - The positioned dropdown
  * @csspart column - A column of options (`role=listbox`)
  * @csspart item - An option (column option or search result)
+ * @csspart item--selected - Item state of `item`: selected
+ * @csspart item--expanded - Item state of `item`: expanded
+ * @csspart item--disabled - Item state of `item`: disabled
+ * @csspart item--loading - Item state of `item`: loading
  * @fires minerva-change - A path was selected or the value was cleared (`detail: { value, selectedOptions }`)
  * @fires change - Same as `minerva-change`, without detail
  * @fires minerva-clear - The clear button emptied the value
@@ -602,7 +607,8 @@ export class MinervaCascader extends FormAssociatedElement {
     );
     if (!column) return false;
     const target =
-      column.querySelector<HTMLElement>('[data-expanded="true"]') ??
+      column.querySelector<HTMLElement>("[data-expanded]") ??
+      column.querySelector<HTMLElement>("[data-selected]") ??
       column.querySelector<HTMLElement>(OPTION_SELECTOR);
     target?.focus();
     return Boolean(target);
@@ -836,15 +842,26 @@ export class MinervaCascader extends FormAssociatedElement {
               const showExpandIcon =
                 expandable &&
                 Boolean(option.children?.length || !option.isLeaf);
+              // the picked option (end of the selected path) has no children
+              // column, even while on the expanded path
+              const expanded =
+                isExpanded &&
+                !(isSelected && level === selectedPath.length - 1);
               return html`<li
-                data-expanded=${isExpanded ? "true" : nothing}
+                ?data-expanded=${expanded}
+                ?data-selected=${isSelected}
                 class=${classMap({
                   option: true,
                   active: isExpanded || isSelected,
                   disabled: Boolean(option.disabled),
                   loading: Boolean(option.loading),
                 })}
-                part="item"
+                part=${itemParts("item", {
+                  selected: isSelected,
+                  expanded,
+                  disabled: option.disabled,
+                  loading: option.loading,
+                })}
                 role="option"
                 aria-selected=${isSelected ? "true" : "false"}
                 aria-disabled=${option.disabled ? "true" : nothing}

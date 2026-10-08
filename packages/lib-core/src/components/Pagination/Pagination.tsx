@@ -340,7 +340,10 @@ const Pagination = ({
         onClick={(e) => handleItemClick(target, itemKey, e)}
         aria-label={itemLabel(type, target)}
         aria-current={isActive ? "page" : undefined}
-        {...hooks("pagination", "item")}
+        {...hooks("pagination", "item", {
+          current: isActive,
+          disabled: isDisabled,
+        })}
       >
         {content}
         {ripples

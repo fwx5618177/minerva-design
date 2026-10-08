@@ -296,6 +296,26 @@ describe("Select keyboard", () => {
     expect(listbox()).toHaveAttribute("data-state", "open");
   });
 
+  it("moves the public item hooks (data-highlighted) with the arrows", async () => {
+    const user = setup();
+    render(<Langs defaultValue="zh" />);
+    trigger().focus();
+    await user.keyboard("{ArrowDown}");
+    const zh = option("Chinese");
+    const en = option("English");
+    expect(zh).toHaveAttribute("data-minerva", "option");
+    expect(zh).toHaveAttribute("data-part", "root");
+    expect(zh).toHaveAttribute("data-selected", "");
+    expect(zh).toHaveAttribute("data-highlighted", "");
+    expect(zh).not.toHaveAttribute("data-state");
+    expect(option("Japanese")).toHaveAttribute("data-disabled", "");
+    await user.keyboard("{ArrowDown}");
+    expect(zh).not.toHaveAttribute("data-highlighted");
+    expect(zh).toHaveAttribute("data-selected", "");
+    expect(en).toHaveAttribute("data-highlighted", "");
+    expect(en).not.toHaveAttribute("data-selected");
+  });
+
   it("highlights the first enabled option on open without a value, the last one with ArrowUp", async () => {
     const user = setup();
     render(<Langs />);
@@ -476,8 +496,8 @@ describe("Select pointer", () => {
     expect(option("English")).toHaveAttribute("data-highlighted");
     expect(option("English")).toHaveFocus();
     expect(option("Chinese")).not.toHaveAttribute("data-highlighted");
-    expect(option("Chinese")).toHaveAttribute("data-state", "checked");
-    expect(option("English")).toHaveAttribute("data-state", "unchecked");
+    expect(option("Chinese")).toHaveAttribute("data-selected", "");
+    expect(option("English")).not.toHaveAttribute("data-selected");
   });
 
   it("closes on an outside pointer down and on a second click on the trigger", async () => {

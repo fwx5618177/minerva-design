@@ -280,6 +280,7 @@ import "@minerva/lib-web-components/tokens.css";
 | 部件     | `[data-minerva="button"][data-part="label"]` | `minerva-button::part(label)`      |
 | 状态     | `[data-state="open"]`、`[data-disabled]`     | `:state(open)`、`:state(disabled)` |
 | 键值状态 | `[data-size="small"]`                        | `:state(size-small)`               |
+| 条目状态 | `[data-part="item"][data-highlighted]`       | `::part(item item--highlighted)`   |
 
 ```css
 /* React */
@@ -303,7 +304,7 @@ minerva-modal:state(open)::part(content) {
 @layer reset, minerva, app;
 ```
 
-推荐使用复合选择器 `[data-minerva="x"][data-part="y"]`（对弹层、对话框等通过 portal 渲染的部件同样有效）；类名和没有钩子的 DOM 结构属于内部实现。每个组件的钩子列在其文档页和 `@minerva/core/styling-hooks`（机器可读清单）中，并由 `packages/core/styling-hooks.lock.json` 锁定：新增钩子为 minor 变更，删除或重命名为 major 变更。指南：[样式定制](https://fwx5618177.github.io/minerva/#/styling)。
+重复出现的条目（菜单项、选项、表格行与排序表头、页码、步骤、树节点、日期、通知、文件……）拥有各自的状态（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`……）：在 React 中是条目元素自身的属性；在 shadow root 中渲染的条目使用与部件名并列的 `<part>--<state>` 部件名（沿用 Shoelace / Web Awesome 的约定），本身是独立元素的条目使用自定义状态（`minerva-option:state(selected)`）。推荐使用复合选择器 `[data-minerva="x"][data-part="y"]`（对弹层、对话框等通过 portal 渲染的部件同样有效）；类名和没有钩子的 DOM 结构属于内部实现。每个组件的钩子列在其文档页和 `@minerva/core/styling-hooks`（机器可读清单）中，并由 `packages/core/styling-hooks.lock.json` 锁定：新增钩子为 minor 变更，删除或重命名为 major 变更。指南：[样式定制](https://fwx5618177.github.io/minerva/#/styling)。
 
 ## 🌐 浏览器支持
 

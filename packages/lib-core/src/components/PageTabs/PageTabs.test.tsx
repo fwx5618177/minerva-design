@@ -95,7 +95,7 @@ it("exposes route navigation without inventing tab panels or nesting controls", 
     "true",
   );
   expect(ref.current?.dataset.value).toBe("article");
-  expect(ref.current).toHaveAttribute("data-active");
+  expect(ref.current).toHaveAttribute("data-current");
   act(() => trigger.click());
   expect(select).toHaveBeenCalledTimes(1);
   act(() =>

@@ -38,7 +38,7 @@ import { usePresence } from "../../internal/usePresence";
 import { useScrollLock } from "../../internal/useScrollLock";
 import { adjacentTabbable } from "../../internal/tabbing";
 import { cn } from "../../utils/cn";
-import { hooks } from "../../internal/stylingHooks";
+import { hooks, type HookStates } from "../../internal/stylingHooks";
 import type {
   MenuAction,
   MenuCheckboxEntry,
@@ -67,7 +67,7 @@ export const contentClassName = (size: MenuSize, className?: string) =>
   cn(styles.content, size === "small" && styles.small, className);
 
 const isDisabledItem = (item: HTMLElement) =>
-  item.hasAttribute("data-menu-disabled");
+  item.hasAttribute("data-disabled");
 
 const itemText = (item: HTMLElement) =>
   item.dataset.textValue ??
@@ -514,6 +514,8 @@ interface ItemShellProps {
   id?: string;
   /** Extra attributes (aria-checked, aria-haspopup...). */
   attributes?: Record<string, string | boolean | undefined>;
+  /** Item state hooks (checked / unchecked, expanded) */
+  itemStates?: HookStates;
   onElement?: (element: HTMLDivElement | null) => void;
 }
 
@@ -531,6 +533,7 @@ const ItemShell = ({
   subKey,
   id,
   attributes,
+  itemStates,
   onElement,
 }: ItemShellProps) => {
   const panel = usePanel();
@@ -573,11 +576,9 @@ const ItemShell = ({
       className={styles.item}
       data-minerva-menu-item=""
       data-text-value={text}
-      data-menu-highlighted={highlighted ? "" : undefined}
-      data-menu-disabled={disabled ? "" : undefined}
       aria-disabled={disabled || undefined}
       {...attributes}
-      {...hooks(component, "item")}
+      {...hooks(component, "item", { ...itemStates, highlighted, disabled })}
       onFocus={(event) => {
         if (event.target === event.currentTarget) setHighlighted(true);
       }}
@@ -665,8 +666,8 @@ const CheckboxItem = ({ entry }: { entry: MenuCheckboxEntry }) => {
       disabled={entry.disabled}
       attributes={{
         "aria-checked": checked,
-        "data-menu-state": checked ? "checked" : "unchecked",
       }}
+      itemStates={{ state: checked ? "checked" : "unchecked" }}
       indicator={
         <span
           className={styles.indicator}
@@ -709,8 +710,8 @@ const RadioItem = ({
       disabled={item.disabled}
       attributes={{
         "aria-checked": checked,
-        "data-menu-state": checked ? "checked" : "unchecked",
       }}
+      itemStates={{ state: checked ? "checked" : "unchecked" }}
       indicator={
         <span
           className={styles.indicator}
@@ -804,8 +805,8 @@ const SubmenuItem = ({ entry }: { entry: MenuAction }) => {
           "aria-haspopup": "menu",
           "aria-expanded": open,
           "aria-controls": open ? subId : undefined,
-          "data-menu-state": open ? "open" : "closed",
         }}
+        itemStates={{ expanded: open }}
         trailing={
           <IconChevronRight
             className={styles.chevron}

@@ -23,6 +23,7 @@ import {
 export { matchesShortcut, normalizeShortcuts };
 /** Keyboard event fields read by `matchesShortcut`. */
 export type { ShortcutEvent as CommandShortcutEvent } from "@minerva/core";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 /** One entry of the command palette (same shape as lib-core's `CommandItem`). */
@@ -78,6 +79,7 @@ const shortcutConverter = {
  * @csspart input - The search input (`role="combobox"`)
  * @csspart list - The results list (`role="listbox"`)
  * @csspart item - A result (`role="option"`)
+ * @csspart item--highlighted - Item state of `item`: highlighted
  * @csspart empty - The text shown when no command matches
  * @fires minerva-select - A command was chosen (`detail: { value, item }`, `value` = the item's `id`); the palette then closes
  * @fires minerva-open-change - The user asked to open (shortcut) / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
@@ -446,12 +448,12 @@ export class MinervaCommandDialog extends MinervaElement {
                   const active = index === this.activeIndex;
                   return html`<button
                     id=${`option-${index}`}
-                    part="item"
+                    part=${itemParts("item", { highlighted: active })}
                     type="button"
                     role="option"
                     tabindex="-1"
                     aria-selected=${active ? "true" : "false"}
-                    data-active=${active ? "true" : nothing}
+                    ?data-highlighted=${active}
                     class="item"
                     @mouseenter=${() => (this.activeIndex = index)}
                     @click=${() => this.select(item)}

@@ -18,6 +18,7 @@ import {
 } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 /** An event shown in the calendar */
@@ -67,6 +68,10 @@ const monthConverter = {
  * @csspart nav-button - The previous / today / next buttons
  * @csspart grid - The `role=grid` element
  * @csspart day - A day cell (`role=gridcell`)
+ * @csspart day--selected - Item state of `day`: selected
+ * @csspart day--today - Item state of `day`: today
+ * @csspart day--outside - Item state of `day`: outside
+ * @csspart day--disabled - Item state of `day`: disabled
  * @csspart events - The events section of the selected day
  * @csspart event - An event (a button with `clickable-events`)
  * @csspart empty - The text shown when the selected day has no event
@@ -375,15 +380,21 @@ export class MinervaMonthCalendar extends MinervaElement {
                   : count
                     ? t("monthCalendar.dayWithEvents", { date: key, count })
                     : key;
+                const states = {
+                  selected: value === key,
+                  today: key === todayKey,
+                  outside: !sameMonth(date, first),
+                  disabled,
+                };
                 return html`<div
                   role="gridcell"
-                  part="day"
+                  part=${itemParts("day", states)}
                   class="day"
                   data-date=${key}
-                  data-outside=${sameMonth(date, first) ? nothing : "true"}
+                  ?data-outside=${states.outside}
                   aria-label=${label}
-                  aria-selected=${String(value === key)}
-                  aria-current=${key === todayKey ? "date" : nothing}
+                  aria-selected=${String(states.selected)}
+                  aria-current=${states.today ? "date" : nothing}
                   aria-disabled=${disabled ? "true" : nothing}
                   tabindex=${!disabled && key === activeKey ? "0" : "-1"}
                   @focus=${() => (this.focusedKey = key)}

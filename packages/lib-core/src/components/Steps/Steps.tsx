@@ -76,7 +76,15 @@ const Steps = ({
               [styles.complete]: isComplete,
             })}
             aria-current={readOnly && isCurrent ? "step" : undefined}
-            {...hooks("steps", "item")}
+            {...hooks("steps", "item", {
+              current: isCurrent,
+              disabled: !readOnly && item.disabled,
+              status: isCurrent
+                ? "current"
+                : isComplete
+                  ? "complete"
+                  : "upcoming",
+            })}
           >
             {readOnly ? (
               <span

@@ -20,7 +20,10 @@ export default defineHooks({
       only: "wc",
     },
     list: { description: "The file list" },
-    item: { description: "A file" },
+    item: {
+      description: "A file. Item state: status of the file",
+      itemStates: { status: ["uploading", "done", "error"] },
+    },
     "retry-button": {
       description:
         "The retry button of a failed file (web components only: React renders a nested IconButton, style its hooks)",

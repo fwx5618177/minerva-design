@@ -658,7 +658,7 @@ const SelectItem = ({
         if (!disabled) ctx.select(value);
       }}
       {...hooks("option", "root", {
-        state: selected ? "checked" : "unchecked",
+        selected,
         highlighted: ctx.highlighted === value,
         disabled,
       })}

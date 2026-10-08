@@ -11,4 +11,12 @@ export default [
       </ThemeProvider>
     ),
   },
+  {
+    name: "an active palette",
+    element: (
+      <ThemeProvider defaultPalette="editorial" disableStorage>
+        <PaletteToggle />
+      </ThemeProvider>
+    ),
+  },
 ] satisfies HookScenario[];

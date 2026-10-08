@@ -272,13 +272,15 @@ export const NavTree = ({
             type="button"
             title={title}
             aria-expanded={open}
-            data-active={active || undefined}
             data-ancestor-active={ancestorActive || undefined}
-            data-expanded={open || undefined}
             disabled={disabled}
             onClick={() => toggleItem(item)}
             onKeyDown={handleBranchKeyDown}
-            {...hooks("nav-tree", "item")}
+            {...hooks("nav-tree", "item", {
+              current: active,
+              expanded: open,
+              disabled,
+            })}
           >
             {content}
           </button>
@@ -302,8 +304,7 @@ export const NavTree = ({
     const common = {
       className: itemClassName,
       title,
-      "data-active": active || undefined,
-      ...hooks("nav-tree", "item"),
+      ...hooks("nav-tree", "item", { current: active, disabled }),
     };
     // A disabled entry is not a navigable link: no href, no handler.
     if (disabled) {

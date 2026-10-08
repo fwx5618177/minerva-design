@@ -10,7 +10,10 @@ export default defineHooks({
       description: 'The root (role="slider", or role="img" when display-only)',
     },
     stars: { description: "The star row" },
-    star: { description: "Each star" },
+    star: {
+      description: "Each star. Item state: fill",
+      itemStates: { fill: ["full", "half", "empty"] },
+    },
     value: { description: "The score and the count" },
     count: { description: "The number of ratings" },
   },

@@ -172,6 +172,8 @@ describe("TimePicker", () => {
 
     const [hours, minutes] = await openPanel(user);
     expect(within(hours).getByText("08")).toHaveClass("disabled");
+    expect(within(hours).getByText("08")).toHaveAttribute("data-disabled", "");
+    expect(within(hours).getByText("09")).not.toHaveAttribute("data-disabled");
     expect(within(hours).getByText("09")).not.toHaveClass("disabled");
     expect(within(hours).getByText("17")).not.toHaveClass("disabled");
     expect(within(hours).getByText("18")).toHaveClass("disabled");

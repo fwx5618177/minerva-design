@@ -93,6 +93,10 @@ describe("<minerva-nav-tree>", () => {
     expect(analytics).toHaveAttribute("aria-current", "page");
     expect(analytics).toHaveClass("active");
     expect(analytics).toHaveClass("nested");
+    expect(analytics.getAttribute("part")).toBe("item item--current");
+    expect(analytics).toHaveAttribute("data-current", "");
+    expect(item("Archived")!.getAttribute("part")).toBe("item item--disabled");
+    expect(branch.getAttribute("part")).toBe("item item--expanded");
     expect(nav().getAttribute("active-id")).toBe("analytics");
   });
 
@@ -113,13 +117,16 @@ describe("<minerva-nav-tree>", () => {
     await user.click(branch);
     await settle();
     expect(branch).toHaveAttribute("aria-expanded", "true");
-    expect(branch).toHaveAttribute("data-expanded", "true");
+    expect(branch).toHaveAttribute("data-expanded", "");
+    expect(branch.getAttribute("part")).toBe("item item--expanded");
     expect(onExpanded).toHaveBeenLastCalledWith(["operations"]);
     expect(onSelect).toHaveBeenLastCalledWith("operations");
     expect(el.expandedIds).toEqual(["operations"]);
     expect(item("Analytics")).toHaveClass("nested");
     await user.click(branch);
     await settle();
+    expect(branch).not.toHaveAttribute("data-expanded");
+    expect(branch.getAttribute("part")).toBe("item");
     expect(onExpanded).toHaveBeenLastCalledWith([]);
     expect(item("Analytics")).toBe(null);
   });

@@ -142,7 +142,7 @@ export function expectSettledA11y(container: HTMLElement): void {
   expect(solo).toHaveAttribute("aria-description", "On its own");
 
   const options = Array.from(container.querySelectorAll("minerva-option"));
-  expect(options[1]).toHaveAttribute("data-state", "checked");
+  expect(options[1]).toHaveAttribute("data-selected", "");
   expect(options[2]).toHaveAttribute("data-disabled", "");
   expect(internals(options[1]).ariaSelected).toBe("true");
   const label = container.querySelector("minerva-select-label")!;

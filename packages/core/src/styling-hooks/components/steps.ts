@@ -8,7 +8,13 @@ export default defineHooks({
   parts: {
     root: { description: "The <ol>" },
     item: {
-      description: "A step <li> (the current step has aria-current=step)",
+      description:
+        "A step <li> (the current step has aria-current=step). Item states: current, disabled, status (complete / current / upcoming)",
+      itemStates: {
+        current: true,
+        disabled: true,
+        status: ["complete", "current", "upcoming"],
+      },
     },
     button: {
       description:

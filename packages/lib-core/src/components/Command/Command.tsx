@@ -154,11 +154,10 @@ const CommandPanel = ({
                 // Keyboard navigation happens in the combobox input.
                 tabIndex={-1}
                 aria-selected={active}
-                data-active={active || undefined}
                 className={styles.item}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => onSelect(item)}
-                {...hooks("command-dialog", "item")}
+                {...hooks("command-dialog", "item", { highlighted: active })}
               >
                 <span className={styles.copy}>
                   <strong>{item.title}</strong>

@@ -8,7 +8,9 @@ export default defineHooks({
   parts: {
     root: { description: "The container" },
     row: {
-      description: "Each row (key field, value field and remove button)",
+      description:
+        "Each row (key field, value field and remove button). Item state: invalid (the key or the value has an error)",
+      itemStates: { invalid: true },
     },
     "remove-button": {
       description:

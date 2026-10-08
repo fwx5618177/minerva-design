@@ -183,7 +183,7 @@ const Upload = ({
             <li
               key={item.id}
               className={styles.item}
-              {...hooks("upload", "item")}
+              {...hooks("upload", "item", { status: item.status })}
             >
               {item.previewUrl && (
                 <img src={item.previewUrl} alt="" className={styles.preview} />

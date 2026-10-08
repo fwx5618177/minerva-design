@@ -10,6 +10,7 @@ export default [
       el.items = [
         { id: "1", name: "a.txt", status: "done" },
         { id: "2", name: "b.txt", status: "error", error: "Failed" },
+        { id: "3", name: "c.txt", status: "uploading" },
       ];
       const input = el.shadowRoot!.querySelector("input")!;
       Object.defineProperty(input, "files", {

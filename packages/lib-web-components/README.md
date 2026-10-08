@@ -145,14 +145,38 @@ minerva-button:state(size-small):state(variant-ghost) {
 
 React's `[data-state="open"]`, `[data-disabled]` and `[data-size="small"]` are
 `:state(open)`, `:state(disabled)` and `:state(size-small)` here (Chromium
-90-124: `:--open`). The hooks of every element are listed on its docs page and
-in `@minerva/core/styling-hooks`. `tokens.css` ships inside `@layer minerva`.
+90-124: `:--open`).
+
+Items rendered in a shadow root (menu items, options from the `options`
+property, table rows and headers, pages, steps, days, toasts, files...)
+expose their own states as `<part>--<state>` part names next to the part name
+(`<part>--<key>-<value>` for keyed states). `::part()` matches elements that
+carry every listed name, and needs no `:state()` support:
+
+```css
+minerva-menu::part(item item--highlighted) {
+  background: var(--primary-color-subtle);
+}
+minerva-data-table::part(header-cell header-cell--sort-ascending) {
+  color: var(--primary-color);
+}
+minerva-toast-region::part(toast toast--color-success) {
+  border-inline-start: 4px solid var(--success-color);
+}
+/* items that are elements of their own: their custom states */
+minerva-option:state(selected)::part(root) {
+  font-weight: 600;
+}
+```
+
+The hooks of every element are listed on its docs page and in
+`@minerva/core/styling-hooks`. `tokens.css` ships inside `@layer minerva`.
 
 ## Server rendering and hydration
 
 The modules import in Node without a DOM. Elements in server-rendered markup (for example a React 19 page that renders the tags) upgrade without touching their host attributes: default property values are not reflected (only values you set are), and the implicit ARIA of items (`role`, `aria-selected`, `aria-checked`...) goes through `ElementInternals`, so frameworks hydrate without attribute mismatches. Properties set before an element is connected (or before its definition loads) are kept. Moving an element in the DOM re-acquires its resources, and an open overlay stays open and working.
 
-Composite items also write host attributes of their own: the roving `tabindex` of `<minerva-tab>` / `<minerva-radio>`, the `tabindex` of `<minerva-tab-panel>`, the generated ids and `aria-controls` / `aria-labelledby` references between tabs and panels (and option groups and their labels), `slot`, `hidden` and `data-state` / `data-disabled`. Elements that may be server-rendered markup (upgraded in place, or parsed while the document is loading) defer these writes until hydration has had a chance to run: after the next animation frame, then the next idle period (or task). So you can register the elements before `hydrateRoot()` and React reports no mismatch. Elements created by script (`document.createElement`, client rendering) write them right away. Until then, inactive panels hide their content from inside the shadow DOM, and the tabs are not keyboard-focusable yet. The reflected `selected` (tab) and `checked` (radio) attributes are written on upgrade; React's hydration ignores those two names. Tab panels using a `<template>` child stamp it only after that point, so the hydrated light DOM stays unchanged.
+Composite items also write host attributes of their own: the roving `tabindex` of `<minerva-tab>` / `<minerva-radio>`, the `tabindex` of `<minerva-tab-panel>`, the generated ids and `aria-controls` / `aria-labelledby` references between tabs and panels (and option groups and their labels), `slot`, `hidden` and `data-state` / `data-selected` / `data-highlighted` / `data-disabled`. Elements that may be server-rendered markup (upgraded in place, or parsed while the document is loading) defer these writes until hydration has had a chance to run: after the next animation frame, then the next idle period (or task). So you can register the elements before `hydrateRoot()` and React reports no mismatch. Elements created by script (`document.createElement`, client rendering) write them right away. Until then, inactive panels hide their content from inside the shadow DOM, and the tabs are not keyboard-focusable yet. The reflected `selected` (tab) and `checked` (radio) attributes are written on upgrade; React's hydration ignores those two names. Tab panels using a `<template>` child stamp it only after that point, so the hydrated light DOM stays unchanged.
 
 ## Development warnings
 
@@ -172,3 +196,7 @@ ES2022, custom elements v1 and shadow DOM on evergreen browsers (fully supported
 ## License
 
 MIT
+
+```
+
+```

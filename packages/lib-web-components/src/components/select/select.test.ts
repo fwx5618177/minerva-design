@@ -6,6 +6,7 @@ import { MinervaOption } from "./option";
 import "../../elements/select";
 import "../../elements/modal";
 import { resetDevWarnings } from "../../internal/dev";
+import { customStates } from "../../internal/styling-hooks";
 import { $, mount, settle, wait } from "../../../tests/utils";
 
 afterEach(() => {
@@ -111,7 +112,7 @@ describe("<minerva-select>", () => {
     el.open = true;
     await settle();
     expect(option("English")).toHaveAttribute("aria-selected", "true");
-    expect(option("English")).toHaveAttribute("data-state", "checked");
+    expect(option("English")).toHaveAttribute("data-selected", "");
     expect(option("Chinese")).toHaveAttribute("aria-selected", "false");
     expect(
       option("English").shadowRoot!.querySelector(".itemIndicator"),
@@ -174,6 +175,44 @@ describe("<minerva-select>", () => {
     expect(el.shadowRoot!.activeElement).toBe(orange);
     await press("{ArrowUp}{Enter}");
     expect(el.value).toBe("a");
+  });
+
+  it("exposes the item states of options-property items as part names", async () => {
+    const el = await mount<MinervaSelect>(
+      `<minerva-select aria-label="Fruit"></minerva-select>`,
+    );
+    el.options = [
+      { value: "a", label: "Apple" },
+      { value: "b", label: "Banana", disabled: true },
+      { value: "o", label: "Orange" },
+    ];
+    el.value = "a";
+    await settle();
+    trigger(el).focus();
+    await press("{ArrowDown}");
+    const part = (value: string) =>
+      $(el, `[data-value=${value}]`).getAttribute("part");
+    expect(part("a")).toBe("item item--selected item--highlighted");
+    expect(part("b")).toBe("item item--disabled");
+    expect(part("o")).toBe("item");
+    await press("{ArrowDown}");
+    expect(part("a")).toBe("item item--selected");
+    expect(part("o")).toBe("item item--highlighted");
+    expect($(el, "[data-value=o]")).toHaveAttribute("data-highlighted", "");
+  });
+
+  it("exposes the states of <minerva-option> as custom states", async () => {
+    const el = await setup('value="zh"');
+    trigger(el).focus();
+    await press("{ArrowDown}");
+    expect([...customStates(option("Chinese"))].sort()).toEqual([
+      "highlighted",
+      "selected",
+    ]);
+    expect([...customStates(option("Japanese"))]).toEqual(["disabled"]);
+    await press("{ArrowDown}");
+    expect([...customStates(option("Chinese"))]).toEqual(["selected"]);
+    expect([...customStates(option("English"))]).toEqual(["highlighted"]);
   });
 });
 
@@ -368,8 +407,8 @@ describe("<minerva-select> pointer", () => {
     expect(option("English")).toHaveAttribute("data-highlighted");
     expect(focused()).toBe(option("English"));
     expect(option("Chinese")).not.toHaveAttribute("data-highlighted");
-    expect(option("Chinese")).toHaveAttribute("data-state", "checked");
-    expect(option("English")).not.toHaveAttribute("data-state");
+    expect(option("Chinese")).toHaveAttribute("data-selected", "");
+    expect(option("English")).not.toHaveAttribute("data-selected");
   });
 
   it("closes on an outside pointer down and on a second click on the trigger", async () => {

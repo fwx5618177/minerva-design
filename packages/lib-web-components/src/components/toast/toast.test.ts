@@ -32,7 +32,10 @@ const toastsOf = (el: MinervaToastRegion) =>
 const toastOf = (el: MinervaToastRegion, text: string) =>
   toastsOf(el).find((t) => t.textContent?.includes(text))!;
 const closeOf = (item: HTMLElement) =>
-  item.querySelector<HTMLButtonElement>("[data-toast-close]")!;
+  item.querySelector<HTMLButtonElement>('[part~="close-button"]')!;
+/** The part names of a toast (`toast toast--open toast--color-info`...) */
+const partsOf = (item: HTMLElement) =>
+  (item.getAttribute("part") ?? "").split(" ");
 
 /** Lit updates are microtasks: works with fake timers too. */
 const flush = async () => {
@@ -171,8 +174,11 @@ describe("<minerva-toast-region>", () => {
     expect(item).toHaveAttribute("role", "status");
     expect(item.classList).toContain("toast");
     expect(item.classList).toContain("success");
-    expect(item).toHaveAttribute("data-toast-state", "open");
-    expect(item).not.toHaveAttribute("data-toast-loading");
+    // public item parts (shadow content: no host attribute)
+    expect(item).toHaveAttribute(
+      "part",
+      "toast toast--open toast--color-success",
+    );
     expect(item.style.getPropertyValue("--toast-duration")).toBe("3000ms");
     expect(item.querySelector(".title")).toHaveTextContent("Saved");
     expect(item.querySelector(".description")).toHaveTextContent("All good");
@@ -220,13 +226,13 @@ describe("<minerva-toast-region>", () => {
     const [item] = toastsOf(el);
     expect(item).toHaveAttribute("role", "status");
     expect(item.classList).toContain("danger");
-    expect(item).toHaveAttribute("data-toast-loading", "true");
+    expect(partsOf(item)).toContain("toast--loading");
     expect(item.querySelector(".icon .spinner")).not.toBeNull();
     expect(el.shadowRoot!.querySelector("[role=progressbar]")).toBeNull();
     expect(item.querySelector(".progress")).toBeNull();
     vi.advanceTimersByTime(60_000);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(partsOf(item)).toContain("toast--open");
   });
 
   it("accepts a template / node title, a custom icon, or no icon", async () => {
@@ -267,7 +273,7 @@ describe("<minerva-toast-region>", () => {
     vi.advanceTimersByTime(1);
     await flush();
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
-    expect(toastsOf(el)[0]).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(toastsOf(el)[0])).toContain("toast--closed");
     expect(toastsOf(el)[0].querySelector(".progress")).toBeNull();
     vi.advanceTimersByTime(200);
     await flush();
@@ -296,7 +302,7 @@ describe("<minerva-toast-region>", () => {
       id,
       reason: "close-button",
     });
-    expect(toastsOf(el)[0]).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(toastsOf(el)[0])).toContain("toast--closed");
     await wait(250);
     await settle();
     expect(toastsOf(el)).toHaveLength(0);
@@ -331,13 +337,13 @@ describe("<minerva-toast-region>", () => {
     item.dispatchEvent(new MouseEvent("mouseenter"));
     vi.advanceTimersByTime(2000);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(partsOf(item)).toContain("toast--open");
     item.dispatchEvent(new MouseEvent("mouseleave"));
     const close = closeOf(item);
     close.focus();
     vi.advanceTimersByTime(2000);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(partsOf(item)).toContain("toast--open");
     // focus moving inside the toast keeps it paused
     close.dispatchEvent(
       new FocusEvent("focusout", {
@@ -348,11 +354,11 @@ describe("<minerva-toast-region>", () => {
     );
     vi.advanceTimersByTime(2000);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(partsOf(item)).toContain("toast--open");
     close.blur();
     vi.advanceTimersByTime(1000);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(item)).toContain("toast--closed");
   });
 
   it("does not pause with no-pause-on-hover", async () => {
@@ -365,7 +371,7 @@ describe("<minerva-toast-region>", () => {
     item.dispatchEvent(new MouseEvent("mouseenter"));
     vi.advanceTimersByTime(500);
     await flush();
-    expect(item).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(item)).toContain("toast--closed");
   });
 
   it("renders an action button that runs and closes the toast", async () => {
@@ -386,7 +392,7 @@ describe("<minerva-toast-region>", () => {
     await settle();
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(onClose.mock.calls[0][0].detail.reason).toBe("action");
-    expect(toastsOf(el)[0]).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(toastsOf(el)[0])).toContain("toast--closed");
   });
 
   it.each([
@@ -401,7 +407,7 @@ describe("<minerva-toast-region>", () => {
     await userEvent.keyboard(key);
     await settle();
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
-    expect(toastsOf(el)[0]).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(toastsOf(el)[0])).toContain("toast--closed");
   });
 
   it("dismiss(id) closes one toast, dismiss() every one", async () => {
@@ -437,14 +443,14 @@ describe("<minerva-toast-region>", () => {
     const [item] = toastsOf(el);
     toast.update(id, { title: "Still saving", color: "success" });
     await flush();
-    expect(item).toHaveAttribute("data-toast-loading", "true");
+    expect(partsOf(item)).toContain("toast--loading");
     vi.advanceTimersByTime(10_000);
     toast.update(id, { title: "Saved", loading: false });
     await flush();
     expect(toastsOf(el)[0]).toBe(item);
     expect(item).toHaveTextContent("Saved");
     expect(item.classList).toContain("success");
-    expect(item).not.toHaveAttribute("data-toast-loading");
+    expect(partsOf(item)).not.toContain("toast--loading");
     expect(item.querySelector(".icon .spinner")).toBeNull();
     vi.advanceTimersByTime(4000);
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
@@ -463,7 +469,7 @@ describe("<minerva-toast-region>", () => {
     });
     expect(returned).toBe(pending);
     await settle();
-    expect(toastsOf(el)[0]).toHaveAttribute("data-toast-loading", "true");
+    expect(partsOf(toastsOf(el)[0])).toContain("toast--loading");
     expect(toastsOf(el)[0]).toHaveTextContent("Uploading");
     resolve(3);
     await pending;
@@ -550,7 +556,7 @@ describe("<minerva-toast-region> keyboard and focus", () => {
     closeOf(toastOf(el, "First")).focus();
     await userEvent.keyboard("{Enter}");
     await settle();
-    expect(toastOf(el, "First")).toHaveAttribute("data-toast-state", "closing");
+    expect(partsOf(toastOf(el, "First"))).toContain("toast--closed");
     expect(getActiveElement()).toBe(closeOf(toastOf(el, "Second")));
   });
 
@@ -564,7 +570,7 @@ describe("<minerva-toast-region> keyboard and focus", () => {
     await userEvent.keyboard("{Escape}");
     await settle();
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
-    expect(toastOf(el, "Second")).toHaveAttribute("data-toast-state", "open");
+    expect(partsOf(toastOf(el, "Second"))).toContain("toast--open");
     expect(getActiveElement()).toBe(closeOf(toastOf(el, "Second")));
   });
 

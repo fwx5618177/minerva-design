@@ -27,4 +27,15 @@ export default [
       />
     ),
   },
+  {
+    name: "keyboard: today, selected, outside days (current month)",
+    element: <MonthCalendar />,
+    setup: async ({ user, container }) => {
+      // the grid's tab stop is today; Enter selects it
+      container
+        .querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')!
+        .focus();
+      await user.keyboard("{Enter}");
+    },
+  },
 ] satisfies HookScenario[];

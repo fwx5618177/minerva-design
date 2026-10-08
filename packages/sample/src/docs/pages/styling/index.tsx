@@ -62,6 +62,28 @@ minerva-modal:state(open)::part(content) { }
 minerva-button:state(loading)::part(spinner) { }
 minerva-button:state(size-small):state(variant-ghost) { }`;
 
+const itemsCode = `/* React: item states are attributes of the item element itself */
+[data-minerva="menu"][data-part="item"][data-highlighted] { }
+[data-minerva="menu"][data-part="item"][data-state="checked"] { }
+[data-minerva="option"][data-selected] { }
+[data-minerva="pagination"][data-part="item"][data-current] { }
+[data-minerva="data-table"][data-part="header-cell"][data-sort="ascending"] { }
+[data-minerva="toast-region"][data-part="toast"][data-color="success"] { }
+
+/* Web components, items in the shadow root: <part>--<state> part names */
+minerva-menu::part(item item--highlighted) { }
+minerva-menu::part(item item--checked) { }
+minerva-select::part(item item--selected) { }
+minerva-pagination::part(item item--current) { }
+minerva-data-table::part(header-cell header-cell--sort-ascending) { }
+minerva-toast-region::part(toast toast--color-success) { }
+minerva-upload::part(item item--status-error) { }
+
+/* Web components, items that are elements of their own: :state() */
+minerva-option:state(selected)::part(root) { }
+minerva-tab:state(active)::part(root) { }
+minerva-page-tab:state(current) { }`;
+
 const layerCode = `/* The library ships inside @layer minerva: unlayered rules win,
    whatever their specificity or order */
 .my-button {
@@ -186,6 +208,19 @@ const StylingDoc: React.FC = () => {
         <p className={styles.prose}>{k("wc.text")}</p>
         <CodeBlock code={wcCode} language="css" />
         <p className={styles.callout}>{k("wc.support")}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="items">
+        <h2 id="items">{k("items.title")}</h2>
+        <p className={styles.prose}>{k("items.text")}</p>
+        <ul className={styles.prose}>
+          <li>{k("items.react")}</li>
+          <li>{k("items.wc")}</li>
+          <li>{k("items.elements")}</li>
+        </ul>
+        <CodeBlock code={itemsCode} language="css" />
+        <p className={styles.prose}>{k("items.dynamic")}</p>
+        <p className={styles.callout}>{k("items.examples")}</p>
       </section>
 
       <section className={styles.section} aria-labelledby="layers">

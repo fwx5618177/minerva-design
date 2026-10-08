@@ -8,7 +8,9 @@ export default defineHooks({
   parts: {
     root: { description: "The role=group wrapper" },
     item: {
-      description: "Every option button (aria-pressed on the selected one)",
+      description:
+        "Every option button (aria-pressed on the selected one). Item state: active (the selected palette, aria-pressed) / inactive",
+      itemStates: { state: ["active", "inactive"] },
     },
   },
   states: {},

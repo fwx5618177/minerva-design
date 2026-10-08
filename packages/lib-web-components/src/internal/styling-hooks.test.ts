@@ -5,6 +5,7 @@ import { attachInternals } from "./internals";
 import {
   customStateNames,
   customStates,
+  itemParts,
   setCustomStates,
 } from "./styling-hooks";
 import { settle } from "../../tests/utils";
@@ -36,6 +37,20 @@ describe("customStateNames", () => {
         variant: 0,
       }),
     ]).toEqual(["open", "disabled", "size-small", "variant-0"]);
+  });
+});
+
+describe("itemParts", () => {
+  it("adds a <part>--<state> part name per item state", () => {
+    expect(
+      itemParts("item", {
+        highlighted: true,
+        disabled: false,
+        state: "checked",
+        status: "error",
+      }),
+    ).toBe("item item--highlighted item--checked item--status-error");
+    expect(itemParts("row", {})).toBe("row");
   });
 });
 

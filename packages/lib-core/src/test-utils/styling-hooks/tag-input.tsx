@@ -18,6 +18,14 @@ export default [
     },
   },
   {
+    name: "keyboard: highlighted suggestion",
+    element: <TagInput aria-label="Tags" options={["vue", "svelte"]} />,
+    setup: async ({ user, container }) => {
+      await user.click(container.querySelector("input")!);
+      await user.keyboard("{ArrowDown}");
+    },
+  },
+  {
     name: "open, no suggestion left, required",
     element: (
       <FormControl required>

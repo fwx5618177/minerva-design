@@ -15,7 +15,11 @@ export default defineHooks({
     search: { description: "The search field (icon, input and Enter hint)" },
     input: { description: "The search input (role=combobox)" },
     list: { description: "The results list (role=listbox)" },
-    item: { description: "A result (role=option)" },
+    item: {
+      description:
+        "A result (role=option). Item state: highlighted (active result)",
+      itemStates: { highlighted: true },
+    },
     empty: { description: "The text shown when no command matches" },
   },
   states: {

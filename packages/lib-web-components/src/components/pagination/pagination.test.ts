@@ -58,6 +58,11 @@ describe("<minerva-pagination>", () => {
     expect(page(1)).toHaveAttribute("aria-current", "page");
     expect(page(1)).toHaveClass("active");
     expect(page(2)).not.toHaveAttribute("aria-current");
+    expect(page(1)!.getAttribute("part")).toBe("item item--current");
+    expect(button("Previous page")!.getAttribute("part")).toBe(
+      "item item--disabled",
+    );
+    expect(button("Next page")!.getAttribute("part")).toBe("item");
     expect(button("Previous page")).toBeDisabled();
   });
 
@@ -139,6 +144,8 @@ describe("<minerva-pagination>", () => {
     expect(calls).toEqual([[3, 10]]);
     expect(el().current).toBe(3);
     expect(el().getAttribute("current")).toBe("3");
+    expect(page(3)!.getAttribute("part")).toBe("item item--current");
+    expect(page(1)!.getAttribute("part")).toBe("item");
     await user.click(page(3)!);
     expect(calls).toHaveLength(1); // current page: no event
     await user.click(button("Previous page")!);

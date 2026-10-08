@@ -12,6 +12,8 @@ import {
   hookComponentsOf,
   hookExample,
   hookManifest as manifest,
+  itemStateSelector,
+  itemStatesOf,
   partsOf,
   statePartsOf,
   type HookFramework,
@@ -106,6 +108,28 @@ const ComponentHooks: React.FC<{
       t(`hooks.states.${key}`),
     ];
   });
+  const itemRows = itemStatesOf(spec, framework).map(
+    ({ part, key, values }) => [
+      <code className={styles.propName} key="part">
+        {part}
+      </code>,
+      <code className={styles.propName} key="state">
+        {key}
+      </code>,
+      <span key="selectors">
+        {values.map((value, i) => {
+          const selector = itemStateSelector(name, framework, part, key, value);
+          return (
+            <React.Fragment key={selector}>
+              {i > 0 && " "}
+              <code className={styles.propType}>{selector}</code>
+            </React.Fragment>
+          );
+        })}
+      </span>,
+      t(`hooks.states.${key}`),
+    ],
+  );
   const example = hookExample(name, framework);
   return (
     <div className={styles.apiBlock} id={id}>
@@ -127,6 +151,18 @@ const ComponentHooks: React.FC<{
             t("doc.description"),
           ]}
           rows={stateRows}
+        />
+      )}
+      {itemRows.length > 0 && (
+        <Table
+          label={`${root} ${t("hooks.itemStatesTitle")}`}
+          head={[
+            t("hooks.part"),
+            t("hooks.state"),
+            t("hooks.selector"),
+            t("doc.description"),
+          ]}
+          rows={itemRows}
         />
       )}
       {example && <CodeBlock code={example} language="css" />}
@@ -159,6 +195,11 @@ const StylingHooks: React.FC<StylingHooksProps> = ({ meta, framework }) => {
       <p className={styles.prose}>
         {t(framework === "react" ? "hooks.introReact" : "hooks.introWc")}
       </p>
+      {names.some((name) => itemStatesOf(manifest[name], framework).length) && (
+        <p className={styles.prose}>
+          {t(framework === "react" ? "hooks.itemsReact" : "hooks.itemsWc")}
+        </p>
+      )}
       {names.map((name) => (
         <ComponentHooks key={name} name={name} framework={framework} />
       ))}

@@ -421,6 +421,44 @@ describe("TableRoot scroll and compound parts", () => {
     );
     expect(refs.cell.current).toHaveAttribute("colspan", "2");
   });
+
+  it("derives the row / header-cell item hooks of the compound parts from aria-selected / aria-sort", () => {
+    render(
+      <TableRoot>
+        <TableHead>
+          <TableRow>
+            <TableHeader scope="col" aria-sort="descending">
+              Sorted
+            </TableHeader>
+            <TableHeader scope="col" aria-sort="none">
+              Sortable
+            </TableHeader>
+            <TableHeader scope="col" aria-sort="other">
+              Other
+            </TableHeader>
+            <TableHeader scope="col">Plain</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow aria-selected data-testid="selected">
+            <TableCell>A</TableCell>
+          </TableRow>
+          <TableRow aria-selected="false" data-testid="unselected">
+            <TableCell>B</TableCell>
+          </TableRow>
+        </TableBody>
+      </TableRoot>,
+    );
+    const header = (name: string) => screen.getByRole("columnheader", { name });
+    expect(header("Sorted")).toHaveAttribute("data-sort", "descending");
+    expect(header("Sortable")).toHaveAttribute("data-sort", "none");
+    expect(header("Other")).not.toHaveAttribute("data-sort");
+    expect(header("Plain")).not.toHaveAttribute("data-sort");
+    expect(screen.getByTestId("selected")).toHaveAttribute("data-selected", "");
+    expect(screen.getByTestId("unselected")).not.toHaveAttribute(
+      "data-selected",
+    );
+  });
 });
 
 describe("DataTable", () => {

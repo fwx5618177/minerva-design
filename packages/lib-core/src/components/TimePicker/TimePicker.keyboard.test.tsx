@@ -61,8 +61,15 @@ describe("TimePicker keyboard", () => {
         within(column("Hours")).getByRole("option", { name: "10" }),
       ).toHaveFocus(),
     );
+    const hour = (name: string) =>
+      within(column("Hours")).getByRole("option", { name });
+    expect(hour("10")).toHaveAttribute("data-minerva", "time-picker");
+    expect(hour("10")).toHaveAttribute("data-part", "item");
+    expect(hour("10")).toHaveAttribute("data-selected", "");
     await user.keyboard("{ArrowDown}{Enter}");
     expect(onChange).toHaveBeenLastCalledWith(at(11, 30, 0));
+    expect(hour("10")).not.toHaveAttribute("data-selected");
+    expect(hour("11")).toHaveAttribute("data-selected", "");
     await user.keyboard("{ArrowRight}{End}{Enter}");
     expect(onChange).toHaveBeenLastCalledWith(at(11, 59, 0));
     await user.keyboard("{Home}");

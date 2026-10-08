@@ -148,6 +148,16 @@ describe("<minerva-upload>", () => {
       (s) => s.textContent,
     );
     expect(statuses).toEqual(["Uploading", "Network", "Uploaded"]);
+    // public item parts: the status of each file
+    expect(
+      Array.from(el.shadowRoot!.querySelectorAll("li")).map((li) =>
+        li.getAttribute("part"),
+      ),
+    ).toEqual([
+      "item item--status-uploading",
+      "item item--status-error",
+      "item item--status-done",
+    ]);
     expect($(el, ".statusError")).toHaveAttribute("role", "alert");
     expect($(el, "img.preview")).toHaveAttribute("alt", "");
 

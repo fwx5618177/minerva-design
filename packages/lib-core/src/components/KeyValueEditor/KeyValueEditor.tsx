@@ -132,7 +132,9 @@ export const KeyValueEditor = ({
           <div
             className={styles.row}
             key={entry.id}
-            {...hooks("key-value-editor", "row")}
+            {...hooks("key-value-editor", "row", {
+              invalid: Boolean(error?.key || error?.value),
+            })}
           >
             <FormField
               label={numbered(keyText, index)}

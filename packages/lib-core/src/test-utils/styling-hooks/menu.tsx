@@ -35,6 +35,19 @@ export default [
     ),
   },
   {
+    name: "keyboard: highlighted item, expanded submenu trigger",
+    element: (
+      <Menu items={menuEntries} aria-label="Actions">
+        <button type="button">Open</button>
+      </Menu>
+    ),
+    setup: async ({ user, view }) => {
+      view.getByRole("button", { name: "Open" }).focus();
+      // opens on the first item, then Share, then its submenu
+      await user.keyboard("{ArrowDown}{ArrowDown}{ArrowRight}");
+    },
+  },
+  {
     name: "disabled (closed)",
     element: (
       <Menu items={menuEntries} disabled>

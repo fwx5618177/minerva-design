@@ -31,7 +31,7 @@ describe("Toast focus management", () => {
     });
     expect(firstClose).toHaveFocus();
     await user.keyboard("{Enter}");
-    expect(toastOf("First")).toHaveAttribute("data-toast-state", "closing");
+    expect(toastOf("First")).toHaveAttribute("data-state", "closed");
     expect(
       within(toastOf("Second")).getByRole("button", { name: "Close" }),
     ).toHaveFocus();
@@ -83,8 +83,8 @@ describe("Toast focus management", () => {
     await user.tab();
     await user.keyboard("{Escape}");
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
-    expect(toastOf("First")).toHaveAttribute("data-toast-state", "closing");
-    expect(toastOf("Second")).toHaveAttribute("data-toast-state", "open");
+    expect(toastOf("First")).toHaveAttribute("data-state", "closed");
+    expect(toastOf("Second")).toHaveAttribute("data-state", "open");
     expect(
       within(toastOf("Second")).getByRole("button", { name: "Close" }),
     ).toHaveFocus();

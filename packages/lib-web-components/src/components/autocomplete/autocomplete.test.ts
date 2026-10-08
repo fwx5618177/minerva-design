@@ -321,6 +321,29 @@ describe("<minerva-autocomplete> keyboard", () => {
     expect(activeId(el)).toBe(options(el)[2].id);
   });
 
+  it("moves the item--highlighted part with the arrows (disabled items: item--disabled)", async () => {
+    const el = await setup('aria-label="search"', [
+      { value: "a", label: "Alpha" },
+      { value: "b", label: "Beta", disabled: true },
+      { value: "c", label: "Gamma" },
+    ]);
+    await focusInput(el);
+    const parts = () => options(el).map((o) => o.getAttribute("part"));
+    expect(parts()).toEqual(["item", "item item--disabled", "item"]);
+    await keyDown(el, "ArrowDown");
+    expect(parts()).toEqual([
+      "item item--highlighted",
+      "item item--disabled",
+      "item",
+    ]);
+    await keyDown(el, "ArrowDown");
+    expect(parts()).toEqual([
+      "item",
+      "item item--disabled",
+      "item item--highlighted",
+    ]);
+  });
+
   it("Enter picks the highlighted option without filling the input (no-fill-on-select)", async () => {
     const el = await setup(
       'aria-label="search" auto-highlight no-fill-on-select',

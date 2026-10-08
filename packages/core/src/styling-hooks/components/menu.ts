@@ -12,7 +12,14 @@ export default defineHooks({
       states: ["state", "size", "side", "align", "placement"],
     },
     item: {
-      description: "An item (role=menuitem, menuitemcheckbox or menuitemradio)",
+      description:
+        "An item (role=menuitem, menuitemcheckbox or menuitemradio). Item states: highlighted (focused), disabled, checked / unchecked (checkbox and radio items), expanded (submenu trigger while its submenu is open)",
+      itemStates: {
+        highlighted: true,
+        disabled: true,
+        state: ["checked", "unchecked"],
+        expanded: true,
+      },
     },
     "item-indicator": {
       description: "The check mark / radio dot of a checkbox or radio item",

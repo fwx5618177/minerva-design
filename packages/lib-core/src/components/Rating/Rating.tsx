@@ -29,7 +29,7 @@ const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
       <span
         className={className}
         style={{ width: size, height: size }}
-        {...hooks("rating", "star")}
+        {...hooks("rating", "star", { fill })}
       >
         <IconStar size={size} strokeWidth={1.5} className={styles.halfBase} />
         <IconStarHalf
@@ -49,7 +49,7 @@ const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
       strokeWidth={1.5}
       aria-hidden
       focusable={false}
-      {...hooks("rating", "star")}
+      {...hooks("rating", "star", { fill })}
     />
   );
 };

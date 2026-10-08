@@ -30,7 +30,8 @@ export default defineHooks({
     list: { description: "The suggestion list (role=listbox, while open)" },
     option: {
       description:
-        'A suggestion (role=option; the highlighted one has aria-selected="true")',
+        'A suggestion (role=option; the highlighted one has aria-selected="true. Item state: highlighted")',
+      itemStates: { highlighted: true },
     },
     empty: { description: "The text shown when no suggestion matches" },
     "add-button": {

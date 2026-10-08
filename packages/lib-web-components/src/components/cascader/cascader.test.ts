@@ -231,7 +231,7 @@ describe("<minerva-cascader>", () => {
     await userEvent.hover(option(el, "Jiangsu"));
     await settle();
     expect(columns(el)).toHaveLength(2);
-    expect(option(el, "Jiangsu")).toHaveAttribute("data-expanded", "true");
+    expect(option(el, "Jiangsu")).toHaveAttribute("data-expanded", "");
 
     const plain = await setup();
     await openByClick(plain);
@@ -413,7 +413,7 @@ describe("<minerva-cascader>", () => {
     await settle();
     expect(loadData).toHaveBeenCalledWith([lazy]);
     expect(onChange).not.toHaveBeenCalled();
-    expect(option(el, "Lazy")).toHaveAttribute("data-expanded", "true");
+    expect(option(el, "Lazy")).toHaveAttribute("data-expanded", "");
     await userEvent.click(option(el, "Leaf"));
     await settle();
     expect(loadData).toHaveBeenCalledTimes(1);
@@ -611,6 +611,32 @@ describe("<minerva-cascader> keyboard", () => {
     await press(el, "{Escape}");
     expect(dropdown(el)).toBeNull();
     expect(focused(el)).toBe(input(el));
+  });
+
+  it("exposes the item states as part names (expanded, selected, disabled, loading)", async () => {
+    const lazy: CascaderOption = {
+      value: "lazy",
+      label: "Lazy",
+      isLeaf: false,
+      loading: true,
+    };
+    const el = await setup("", [...options, lazy]);
+    input(el).focus();
+    await press(el, "{Enter}");
+    const part = (name: string) => option(el, name).getAttribute("part");
+    expect(part("Zhejiang")).toBe("item");
+    expect(part("Tibet")).toBe("item item--disabled");
+    expect(part("Lazy")).toBe("item item--loading");
+    await press(el, "{ArrowRight}");
+    expect(part("Zhejiang")).toBe("item item--expanded");
+    expect(option(el, "Zhejiang")).toHaveAttribute("data-expanded", "");
+    await press(el, "{ArrowDown}{Enter}");
+    // reopens on the selected path
+    await press(el, "{ArrowDown}");
+    expect(part("Zhejiang")).toBe("item item--selected item--expanded");
+    expect(part("Ningbo")).toBe("item item--selected");
+    expect(focused(el)).toBe(option(el, "Ningbo"));
+    expect(part("Hangzhou")).toBe("item");
   });
 
   it("ArrowLeft on the first column closes and returns to the input", async () => {

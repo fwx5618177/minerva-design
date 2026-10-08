@@ -79,7 +79,7 @@ export const PageTabs = ({
     const el = viewport.current;
     if (!el) return;
     const active = list.current?.querySelector<HTMLElement>(
-      `${TAB_SELECTOR}[data-active]`,
+      `${TAB_SELECTOR}[data-current]`,
     );
     if (active) {
       const view = el.getBoundingClientRect();
@@ -248,7 +248,6 @@ export const PageTab = ({
     ref={ref}
     className={cn(styles.pageTab, className)}
     data-value={value}
-    data-active={active || undefined}
     {...hooks("page-tab", "root", { current: active, disabled })}
   >
     <Tooltip

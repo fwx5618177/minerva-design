@@ -10,7 +10,16 @@ export default defineHooks({
     heading: { description: "The month heading" },
     "nav-button": { description: "The previous / today / next buttons" },
     grid: { description: "The role=grid element" },
-    day: { description: "A day cell (role=gridcell)" },
+    day: {
+      description:
+        "A day cell (role=gridcell). Item states: selected, today, outside (day of the previous / next month), disabled",
+      itemStates: {
+        selected: true,
+        today: true,
+        outside: true,
+        disabled: true,
+      },
+    },
     events: { description: "The events section of the selected day" },
     event: { description: "An event (a button when events are clickable)" },
     empty: { description: "The text shown when the selected day has no event" },

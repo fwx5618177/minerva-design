@@ -11,6 +11,21 @@ export default [
     },
   },
   {
+    name: "keyboard: selected units, disabled units (min / max time)",
+    element: (
+      <TimePicker
+        aria-label="Time"
+        defaultValue={new Date(2024, 0, 1, 10, 30, 0)}
+        minTime={new Date(2024, 0, 1, 9, 0, 0)}
+        maxTime={new Date(2024, 0, 1, 17, 0, 0)}
+      />
+    ),
+    setup: async ({ user, container }) => {
+      container.querySelector("input")!.focus();
+      await user.keyboard("{ArrowDown}");
+    },
+  },
+  {
     name: "disabled, invalid, small",
     element: <TimePicker aria-label="Time" disabled invalid size="small" />,
   },

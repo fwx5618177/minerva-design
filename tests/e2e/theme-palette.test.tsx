@@ -111,7 +111,8 @@ describe("theme mode + palette", () => {
 
   const status = () => screen.getByRole("status", { name: labels.status });
   const pressed = (name: string) =>
-    screen.getByRole("button", { name }).hasAttribute("data-active");
+    screen.getByRole("button", { name }).getAttribute("data-state") ===
+    "active";
   const expectNoPalette = () =>
     expect(html).not.toHaveAttribute("data-palette");
 

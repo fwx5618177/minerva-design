@@ -4,7 +4,11 @@
 // Scenarios: fixtures/<component>.ts (one per component; together they
 // render every part and state).
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NON_VISUAL_ELEMENTS } from "@minerva/core/styling-hooks";
+import {
+  NON_VISUAL_ELEMENTS,
+  itemPartName,
+  type StateKey,
+} from "@minerva/core/styling-hooks";
 import elementsManifest from "../../custom-elements.json" with { type: "json" };
 import "../../src/index";
 import "../../src/elements/code-editor";
@@ -59,6 +63,7 @@ describe("styling hooks contract (web components)", () => {
 
   it.each(components)("%s", async (component) => {
     // @csspart docs (custom-elements.json) list exactly the manifest parts
+    // and the `<part>--<state>` names of their item states
     const spec = manifest[component];
     const declaration = declarations.find((d) => d.tagName === spec.wc);
     expect(declaration, `${spec.wc} in custom-elements.json`).toBeDefined();
@@ -68,7 +73,14 @@ describe("styling hooks contract (web components)", () => {
     ).toEqual(
       Object.entries(spec.parts)
         .filter(([, part]) => part.only !== "react")
-        .map(([part]) => part)
+        .flatMap(([part, { itemStates = {} }]) => [
+          part,
+          ...Object.entries(itemStates).flatMap(([key, value]) =>
+            (Array.isArray(value) ? value : [undefined]).map((v) =>
+              itemPartName(part, key as StateKey, v),
+            ),
+          ),
+        ])
         .sort(),
     );
 

@@ -100,7 +100,9 @@ describe("<minerva-theme-toggle>", () => {
     expect(root.dataset.theme).toBe("dark");
     expect(root.style.colorScheme).toBe("dark");
     expect(active(el)).toEqual(["Dark"]);
-    expect(button(el, "Dark")).toHaveAttribute("data-active", "true");
+    // public item parts: item--active moves to the clicked option
+    expect(button(el, "Dark")).toHaveAttribute("part", "item item--active");
+    expect(button(el, "Light")).toHaveAttribute("part", "item item--inactive");
     expect($(el, ".group")).toHaveAttribute("aria-label", "Current theme dark");
     expect(document.cookie).not.toContain("theme=dark");
   });

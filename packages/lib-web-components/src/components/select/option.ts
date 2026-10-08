@@ -95,9 +95,7 @@ export class MinervaOption extends MinervaElement {
     // hydration-safe: server-rendered options get them once hydrated
     setHostAttribute(this, "data-highlighted", this.highlighted);
     setHostAttribute(this, "data-disabled", this.disabled);
-    // host styling hook only when selected (an unselected option keeps the
-    // server-rendered attributes as they are)
-    setHostAttribute(this, "data-state", this.selected ? "checked" : null);
+    setHostAttribute(this, "data-selected", this.selected);
     if (DEV && changed.has("value") && this.value === "" && this.isConnected) {
       devWarn(
         MinervaOption.tagName,
@@ -108,7 +106,7 @@ export class MinervaOption extends MinervaElement {
 
   protected override hookStates() {
     return {
-      state: this.selected ? "checked" : "unchecked",
+      selected: this.selected,
       highlighted: this.highlighted,
       disabled: this.disabled,
     };
@@ -118,7 +116,7 @@ export class MinervaOption extends MinervaElement {
     return html`<div
       part="root"
       class="item"
-      data-state=${this.selected ? "checked" : "unchecked"}
+      ?data-selected=${this.selected}
       ?data-highlighted=${this.highlighted}
       ?data-disabled=${this.disabled}
     >

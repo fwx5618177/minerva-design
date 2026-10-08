@@ -27,6 +27,15 @@
     "text": "Les éléments personnalisés exposent les mêmes noms : la balise est le composant, ::part(<nom>) atteint une partie du shadow root, et les états sont des états personnalisés de l'hôte (ElementInternals.states), sélectionnés avec :state(). Ils n'ajoutent aucun attribut à l'hôte : le balisage rendu côté serveur s'hydrate sans écart. Les règles sur ::part() et sur l'hôte l'emportent toujours sur les styles du shadow root de l'élément.",
     "support": ":state() nécessite Chrome 125, Firefox 126 ou Safari 17.4. Chromium 90-124 reçoit à la place les états avec tirets de l'ancienne syntaxe (:--open) ; les autres moteurs n'ont pas de hooks d'état : utilisez-y les attributs de l'hôte ([open], [disabled], [variant=\"ghost\"]). Les parties fonctionnent partout."
   },
+  "items": {
+    "title": "Styler les éléments et leurs états",
+    "text": "Les éléments répétés d'un composant (éléments de menu, options, onglets, lignes et en-têtes triés d'un tableau, pages, étapes, éléments d'arborescence, jours du calendrier, toasts, fichiers, étoiles...) ont leurs propres états publics : highlighted, selected, disabled, checked, current, expanded, sort, status... Ils utilisent le même vocabulaire que les états des composants et reflètent l'état ARIA de l'élément (aria-selected, aria-checked, aria-current, aria-expanded, aria-sort).",
+    "react": "React : l'état est un attribut de l'élément lui-même, à côté de data-minerva et data-part : [data-minerva=\"menu\"][data-part=\"item\"][data-highlighted].",
+    "wc": "Web components, éléments rendus dans la shadow root : chaque état d'élément est un nom de partie supplémentaire <part>--<état> (états à valeur : <part>--<clé>-<valeur>) à côté du nom de la partie. Combinez-les dans ::part(), qui cible les éléments portant tous les noms listés : minerva-menu::part(item item--highlighted), minerva-data-table::part(header-cell header-cell--sort-ascending). La convention suit Shoelace / Web Awesome (item--selected) et ne dépend pas de la prise en charge de :state().",
+    "elements": "Web components, éléments qui sont des custom elements à part entière (<minerva-option>, <minerva-tab>, <minerva-radio>, <minerva-page-tab>...) : leurs états sont des états personnalisés de l'élément, comme pour tout composant : minerva-option:state(selected)::part(root). Les attributs que vous posez vous-même sur ces éléments ([closable], [disabled]) sont aussi des sélecteurs stables.",
+    "dynamic": "Les hooks d'éléments suivent l'interaction : les flèches déplacent [data-highlighted] / item--highlighted d'un élément à l'autre, trier une colonne change data-sort, fermer un toast pose data-state=\"closed\" pendant son animation de sortie. Les noms de partie et les états personnalisés n'ajoutent aucun attribut à l'hôte : le balisage rendu côté serveur s'hydrate sans écart.",
+    "examples": "Les exemples ci-dessous restylent un élément de menu mis en évidence, l'option sélectionnée d'un select, la page courante, un en-tête de tableau trié et les toasts de succès, en React et avec les web components."
+  },
   "layers": {
     "title": "Couches de cascade : @layer minerva",
     "text": "@minerva/core/tokens.css, @minerva/lib-core/style.css, styles/*.css et @minerva/lib-web-components/tokens.css sont enveloppés dans @layer minerva. Le CSS hors couche l'emporte sur toutes les couches, quels que soient sa spécificité et son ordre : vos règles remplacent celles de la bibliothèque sans !important. Si votre application utilise des couches, déclarez leur ordre une fois, avant toute feuille de style.",
@@ -35,7 +44,7 @@
   "stability": {
     "title": "Politique de stabilité",
     "text": "La surface des hooks est lisible par machine : @minerva/core/styling-hooks exporte le manifeste (composant → parties → états, avec leurs valeurs) dont la documentation est générée. Des tests de contrat rendent chaque composant React et chaque élément personnalisé dans leurs états, et échouent si un hook documenté manque ou si une partie non documentée apparaît ; un fichier de verrouillage (styling-hooks.lock.json) fait échouer le build à toute modification de la surface tant qu'il n'est pas mis à jour volontairement.",
-    "minor": "Version mineure : ajout d'un composant, d'une partie, d'un état ou d'une valeur d'état.",
+    "minor": "Version mineure : ajout d'un composant, d'une partie, d'un état (de composant ou d'élément) ou d'une valeur d'état.",
     "major": "Version majeure : suppression ou renommage de l'un d'eux, ou déplacement d'un état vers une autre partie.",
     "private": "Non couverts : les noms de classes, la structure DOM des éléments sans hook et les surcharges internes en !important."
   },
@@ -60,6 +69,26 @@
     "restyle-table": {
       "title": "Restyler Table",
       "description": "Des cellules d'en-tête en majuscules et la ligne survolée mise en évidence grâce aux parties du tableau de données, plus des lignes zébrées en React (::part() n'accepte que les pseudo-classes d'interaction comme :hover, pas :nth-child)."
+    },
+    "items-menu": {
+      "title": "Élément de menu mis en évidence",
+      "description": "Ouvrez un menu et déplacez-vous avec les flèches : l'élément mis en évidence reçoit un fond teinté et une barre, les éléments cochés sont en gras, les désactivés barrés. Les panneaux React sont ciblés via la className du menu ; le web component utilise ::part(item item--highlighted)."
+    },
+    "items-select": {
+      "title": "Option sélectionnée d'un select",
+      "description": "L'option sélectionnée est remplie, celle mise en évidence entourée. Les options React sont des SelectItem (data-minerva=\"option\") ; le web component rendu depuis la propriété options expose ::part(item item--selected), et les enfants <minerva-option> leur propre :state(selected)."
+    },
+    "items-pagination": {
+      "title": "Page courante",
+      "description": "Des boutons de page ronds, la page courante cerclée ([data-current] / item--current) et les boutons précédent / suivant désactivés estompés."
+    },
+    "items-table": {
+      "title": "En-tête de tableau trié",
+      "description": "Cliquez sur un en-tête pour trier : l'en-tête de la colonne triée est souligné (data-sort / header-cell--sort-<sens>), les en-têtes triables non triés sont atténués, les lignes sélectionnées teintées."
+    },
+    "items-toast": {
+      "title": "Toasts de succès",
+      "description": "Les toasts de succès reçoivent une barre et un fond verts, et les toasts qui partent s'estompent pendant data-state=\"closed\" / toast--closed. Les toasts React sont rendus dans un portail : le sélecteur composé les cible quand même."
     }
   }
 }

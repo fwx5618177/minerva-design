@@ -318,6 +318,7 @@ Three public, stable layers, from the lightest touch to the most specific:
 | Part      | `[data-minerva="button"][data-part="label"]` | `minerva-button::part(label)`      |
 | State     | `[data-state="open"]`, `[data-disabled]`     | `:state(open)`, `:state(disabled)` |
 | Keyed     | `[data-size="small"]`                        | `:state(size-small)`               |
+| Item      | `[data-part="item"][data-highlighted]`       | `::part(item item--highlighted)`   |
 
 ```css
 /* React */
@@ -337,11 +338,21 @@ minerva-modal:state(open)::part(content) {
   border: 1px solid var(--border-color);
 }
 
+/* Item states: on the item itself (React) / <part>--<state> part names */
+[data-minerva="menu"][data-part="item"][data-highlighted],
+minerva-menu::part(item item--highlighted) {
+  background: var(--primary-color-subtle);
+}
+[data-minerva="data-table"][data-part="header-cell"][data-sort="ascending"],
+minerva-data-table::part(header-cell header-cell--sort-ascending) {
+  color: var(--primary-color);
+}
+
 /* Layered app CSS: put minerva in your layer order */
 @layer reset, minerva, app;
 ```
 
-Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `@minerva/core/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva/#/styling).
+Repeated items (menu items, options, rows and sorted headers, pages, steps, tree items, days, toasts, files...) carry their own states (`highlighted`, `selected`, `checked`, `current`, `expanded`, `sort`, `status`...): attributes of the item element in React; `<part>--<state>` part names next to the part name for items rendered in a shadow root (the Shoelace / Web Awesome convention), custom states for items that are elements of their own (`minerva-option:state(selected)`). Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `@minerva/core/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva/#/styling).
 
 ## 🌐 Browser support
 

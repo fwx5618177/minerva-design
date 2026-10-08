@@ -196,13 +196,13 @@
     background-color: var(--hover-color);
   }
 
-  &[data-state="checked"] {
+  &[data-selected] {
     color: var(--primary-color-text);
     font-weight: var(--font-weight-medium);
     background-color: var(--primary-color-subtle);
   }
 
-  &[data-state="checked"][data-highlighted] {
+  &[data-selected][data-highlighted] {
     background-color: color-mix(in srgb, var(--primary-color) 18%, var(--surface-color));
   }
 
@@ -244,7 +244,7 @@
 }
 
 // Forced colors drop box-shadows and backgrounds: outline the focused
-// trigger and the highlighted / checked options instead.
+// trigger and the highlighted / selected options instead.
 @media (forced-colors: active) {
   .trigger:focus-visible,
   .trigger[data-state="open"] {
@@ -257,7 +257,7 @@
     outline-offset: -2px;
   }
 
-  .item[data-state="checked"] {
+  .item[data-selected] {
     border-inline-start: 3px solid Highlight;
   }
 }

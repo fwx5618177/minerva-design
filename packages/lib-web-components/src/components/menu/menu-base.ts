@@ -37,6 +37,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { getDirection, hideTopLayer, showTopLayer } from "../../internal/dom";
 import { IconCheck, IconChevronRight } from "../../internal/icons";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import {
   affectsEntries,
   readEntries,
@@ -73,7 +74,7 @@ const ITEM_SELECTOR = "[data-minerva-menu-item]";
 const SUB_OFFSET = { mainAxis: 4, crossAxis: -5 };
 
 const isDisabledItem = (item: HTMLElement) =>
-  item.hasAttribute("data-menu-disabled");
+  item.hasAttribute("data-disabled");
 const itemText = (item: HTMLElement) =>
   item.dataset.textValue ??
   item.querySelector(".text")?.textContent ??
@@ -691,16 +692,38 @@ export abstract class MenuBase extends MinervaElement {
     this.itemActions.get(item.dataset.uid ?? "")?.(intent);
   }
 
+  /**
+   * Uid of the focused item. Not reactive: focus moves update the item's
+   * hooks directly (`data-highlighted`, `item--highlighted` part), and
+   * renders compute the same values from it (no extra render per move).
+   */
+  private highlightedItem: string | null = null;
+
+  private highlightItem(item: HTMLElement, highlighted: boolean) {
+    if (highlighted) this.highlightedItem = item.dataset.uid ?? null;
+    else if (this.highlightedItem === item.dataset.uid) {
+      this.highlightedItem = null;
+    }
+    item.toggleAttribute("data-highlighted", highlighted);
+    item.setAttribute(
+      "part",
+      itemParts("item", {
+        state: item.dataset.state,
+        highlighted,
+        disabled: item.hasAttribute("data-disabled"),
+        expanded: item.hasAttribute("data-expanded"),
+      }),
+    );
+  }
+
   private readonly onPanelFocusIn = (event: FocusEvent) => {
     const target = event.composedPath()[0] as HTMLElement;
-    if (target.matches?.(ITEM_SELECTOR))
-      target.setAttribute("data-menu-highlighted", "");
+    if (target.matches?.(ITEM_SELECTOR)) this.highlightItem(target, true);
   };
 
   private readonly onPanelFocusOut = (event: FocusEvent) => {
     const target = event.composedPath()[0] as HTMLElement;
-    if (target.matches?.(ITEM_SELECTOR))
-      target.removeAttribute("data-menu-highlighted");
+    if (target.matches?.(ITEM_SELECTOR)) this.highlightItem(target, false);
   };
 
   private onItemClick(event: MouseEvent) {
@@ -1076,27 +1099,30 @@ export abstract class MenuBase extends MinervaElement {
     const { uid, disabled = false, submenu } = options;
     this.itemActions.set(uid, options.activate);
     const text = options.textValue ?? plainText(options.label);
-    const state =
-      options.checked !== undefined
-        ? options.checked
-          ? "checked"
-          : "unchecked"
-        : submenu
-          ? submenu.open
-            ? "open"
-            : "closed"
-          : undefined;
+    const states = {
+      state:
+        options.checked === undefined
+          ? undefined
+          : options.checked
+            ? "checked"
+            : "unchecked",
+      highlighted: this.highlightedItem === uid,
+      disabled,
+      expanded: submenu?.open,
+    };
     return html`<div
       id=${`item-${uid}`}
-      part="item"
+      part=${itemParts("item", states)}
       role=${options.role}
       tabindex="-1"
       class="item"
       data-minerva-menu-item=""
       data-uid=${uid}
       data-text-value=${text ?? nothing}
-      data-menu-disabled=${disabled ? "" : nothing}
-      data-menu-state=${state ?? nothing}
+      data-state=${states.state ?? nothing}
+      ?data-highlighted=${states.highlighted}
+      ?data-disabled=${disabled}
+      ?data-expanded=${submenu?.open}
       aria-disabled=${disabled ? "true" : nothing}
       aria-checked=${options.checked === undefined ? nothing : String(options.checked)}
       aria-haspopup=${submenu ? "menu" : nothing}

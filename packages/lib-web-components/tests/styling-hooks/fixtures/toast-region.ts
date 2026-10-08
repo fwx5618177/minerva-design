@@ -14,4 +14,25 @@ export default [
       });
     },
   },
+  {
+    name: "toasts of every color, a loading toast",
+    html: `<minerva-toast-region></minerva-toast-region>`,
+    setup: () => {
+      toastStore.reset();
+      toast.info("Heads up", { duration: 0 });
+      toast.warning("Careful", { duration: 0 });
+      toast.danger("Failed", { duration: 0 });
+      toast.loading("Uploading");
+    },
+  },
+  {
+    name: "a closing toast (closed while leaving)",
+    html: `<minerva-toast-region></minerva-toast-region>`,
+    setup: () => {
+      toastStore.reset();
+      const id = toast({ title: "Bye", duration: 0 });
+      // stays rendered with the toast--closed part during the exit animation
+      toast.dismiss(id);
+    },
+  },
 ] satisfies WcHookScenario[];

@@ -34,7 +34,10 @@ export default defineHooks({
     column: {
       description: "An hours / minutes / seconds / AM-PM column (role=listbox)",
     },
-    item: { description: "A time unit (role=option)" },
+    item: {
+      description: "A time unit (role=option). Item states: selected, disabled",
+      itemStates: { selected: true, disabled: true },
+    },
   },
   states: {
     state: ["open", "closed"],

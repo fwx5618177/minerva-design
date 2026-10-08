@@ -126,6 +126,11 @@ describe("<minerva-key-value-editor>", () => {
     expect(control.invalid).toBe(true);
     expect($(control, ".error").textContent?.trim()).toBe("Key required");
     expect(inner(fields(el)[0])).toHaveAttribute("aria-invalid", "true");
+    // public item part: the row with an error
+    expect($(el, ".row")).toHaveAttribute("part", "row row--invalid");
+    el.errors = {};
+    await settle();
+    expect($(el, ".row")).toHaveAttribute("part", "row");
   });
 
   it("disabled disables every field and button", async () => {

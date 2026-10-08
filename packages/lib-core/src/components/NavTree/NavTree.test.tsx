@@ -94,6 +94,7 @@ describe("NavTree", () => {
     expect(activeItem?.textContent).toContain("访问统计");
     expect(activeItem).toHaveAttribute("aria-current", "page");
     expect(activeItem).toHaveClass("active");
+    expect(activeItem).toHaveAttribute("data-current", "");
     expect(
       activeItem?.querySelector('[data-testid="status"]')?.textContent,
     ).toBe("3");
@@ -199,13 +200,14 @@ describe("NavTree", () => {
     expect(branch).not.toHaveClass(styles.nested);
     await user.click(branch);
     expect(branch).toHaveAttribute("aria-expanded", "true");
-    expect(branch).toHaveAttribute("data-expanded", "true");
+    expect(branch).toHaveAttribute("data-expanded", "");
     expect(onExpandedChange).toHaveBeenLastCalledWith(["operations"]);
     expect(screen.getByRole("link", { name: "访问统计" })).toHaveClass(
       styles.item,
       styles.nested,
     );
     await user.click(branch);
+    expect(branch).not.toHaveAttribute("data-expanded");
     expect(onExpandedChange).toHaveBeenLastCalledWith([]);
     expect(screen.queryByRole("link", { name: "访问统计" })).toBeNull();
   });
@@ -277,6 +279,11 @@ describe("NavTree", () => {
     expect(link).toHaveAttribute("aria-disabled", "true");
     expect(link).not.toHaveAttribute("href");
     expect(link).toHaveClass(styles.disabled);
+    expect(link).toHaveAttribute("data-disabled", "");
+    expect(screen.getByRole("button", { name: "Branch" })).toHaveAttribute(
+      "data-disabled",
+      "",
+    );
     await user.click(link);
     expect(onItemSelect).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Branch" })).toBeDisabled();

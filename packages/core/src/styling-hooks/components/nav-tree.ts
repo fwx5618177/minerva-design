@@ -11,7 +11,8 @@ export default defineHooks({
     "group-label": { description: "The title of a section" },
     item: {
       description:
-        "A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)",
+        "A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink). Item states: current (active link), expanded (open branch), disabled",
+      itemStates: { current: true, expanded: true, disabled: true },
     },
     icon: { description: "The icon of an item" },
     label: { description: "The label of an item" },

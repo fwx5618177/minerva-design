@@ -14,6 +14,7 @@ import {
 import { IconRotateCw, IconUpload, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { MinervaButton } from "../button/button";
 import { sharedStyles } from "../../internal/styles";
 
@@ -87,6 +88,9 @@ let nextUpload = 0;
  * @csspart error - The selection error
  * @csspart list - The file list
  * @csspart item - A file
+ * @csspart item--status-uploading - Item state of `item`: status uploading
+ * @csspart item--status-done - Item state of `item`: status done
+ * @csspart item--status-error - Item state of `item`: status error
  * @csspart remove-button - The remove button of a file
  * @csspart retry-button - The retry button of a failed file
  * @fires minerva-files-selected - Valid files were picked or dropped; `detail: { files }`; cancelable (the files are then not listed)
@@ -453,7 +457,11 @@ export class MinervaUpload extends FormAssociatedElement {
                 this.items,
                 (item) => item.id,
                 (item) =>
-                  html`<li part="item" class="item" data-item-id=${item.id}>
+                  html`<li
+                    part=${itemParts("item", { status: item.status })}
+                    class="item"
+                    data-item-id=${item.id}
+                  >
                     ${
                       item.previewUrl
                         ? html`<img

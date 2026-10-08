@@ -85,7 +85,7 @@ describe("<minerva-page-tabs>", () => {
     expect($(item("article"), ".icon")).toHaveAttribute("aria-hidden", "true");
     const wrapper = $(item("article"), ".pageTab");
     expect(wrapper.dataset.value).toBe("article");
-    expect(wrapper).toHaveAttribute("data-active");
+    expect(wrapper).toHaveAttribute("data-current");
     // the action is a sibling of the label button
     expect($(item("article"), ".action slot[name=action]")).toBeTruthy();
   });

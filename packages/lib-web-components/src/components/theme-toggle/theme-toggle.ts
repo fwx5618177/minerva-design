@@ -1,4 +1,4 @@
-import { css, html, nothing } from "lit";
+import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import {
   PALETTES,
@@ -16,6 +16,7 @@ import { DEV, devWarn } from "../../internal/dev";
 import { closestComposed } from "../../internal/dom";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import type { MinervaConfig } from "../config/config";
 import { sharedStyles } from "../../internal/styles";
 
@@ -123,9 +124,9 @@ abstract class ThemeScopeElement extends MinervaElement {
         (item) =>
           html`<button
             type="button"
-            part="item"
+            part=${itemParts("item", { state: item.active ? "active" : "inactive" })}
             class="item"
-            data-active=${item.active ? "true" : nothing}
+            data-state=${item.active ? "active" : "inactive"}
             aria-pressed=${item.active ? "true" : "false"}
             @click=${() => select(item.value)}
           >
@@ -147,6 +148,8 @@ abstract class ThemeScopeElement extends MinervaElement {
  * @tag minerva-theme-toggle
  * @csspart root - The role=group wrapper
  * @csspart item - Every option button (aria-pressed on the selected one)
+ * @csspart item--active - Item state of `item`: active
+ * @csspart item--inactive - Item state of `item`: inactive
  * @fires minerva-change - The user picked a theme (`detail: { value }`); cancelable: `preventDefault()` keeps the current theme
  */
 export class MinervaThemeToggle extends ThemeScopeElement {
@@ -254,6 +257,8 @@ export class MinervaThemeToggle extends ThemeScopeElement {
  * @tag minerva-palette-toggle
  * @csspart root - The role=group wrapper
  * @csspart item - Every option button (aria-pressed on the selected one)
+ * @csspart item--active - Item state of `item`: active
+ * @csspart item--inactive - Item state of `item`: inactive
  * @fires minerva-change - The user picked a palette (`detail: { value }`, `null` = default look); cancelable: `preventDefault()` keeps the current palette
  */
 export class MinervaPaletteToggle extends ThemeScopeElement {

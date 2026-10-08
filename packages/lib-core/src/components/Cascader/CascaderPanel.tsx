@@ -49,7 +49,8 @@ const CascaderPanel = ({
     const column = columnEl(level);
     if (!column) return false;
     const target =
-      column.querySelector<HTMLElement>('[data-expanded="true"]') ??
+      column.querySelector<HTMLElement>("[data-expanded]") ??
+      column.querySelector<HTMLElement>("[data-selected]") ??
       column.querySelector<HTMLElement>(OPTION_SELECTOR);
     target?.focus();
     return Boolean(target);
@@ -144,20 +145,27 @@ const CascaderPanel = ({
           {columnOptions.map((option) => {
             const isExpanded = expandedPath[level]?.value === option.value;
             const isSelected = selectedPath[level]?.value === option.value;
+            // the picked option (end of the selected path) has no children
+            // column, even while on the expanded path
+            const isPicked = isSelected && level === selectedPath.length - 1;
             const expandable = canExpand(option, level);
             const showExpandIcon =
               expandable && Boolean(option.children?.length || !option.isLeaf);
             return (
               <li
                 key={option.value}
-                data-expanded={isExpanded || undefined}
                 className={cn(styles.option, {
                   [styles.active]: isExpanded || isSelected,
                   [styles.disabled]: option.disabled,
                   [styles.loading]: option.loading,
                 })}
                 style={optionStyle}
-                {...hooks("cascader", "item")}
+                {...hooks("cascader", "item", {
+                  selected: isSelected,
+                  expanded: isExpanded && !isPicked,
+                  disabled: option.disabled,
+                  loading: option.loading,
+                })}
                 role="option"
                 aria-selected={isSelected}
                 aria-disabled={option.disabled || undefined}

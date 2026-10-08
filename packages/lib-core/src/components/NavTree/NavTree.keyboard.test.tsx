@@ -39,6 +39,7 @@ describe("NavTree keyboard (disclosure navigation)", () => {
     await user.tab({ shift: true });
     await user.keyboard("{Enter}");
     expect(branch).toHaveAttribute("aria-expanded", "true");
+    expect(branch).toHaveAttribute("data-expanded", "");
     expect(branch).toHaveFocus();
     await user.tab();
     expect(screen.getByRole("link", { name: "Books" })).toHaveFocus();
@@ -46,6 +47,7 @@ describe("NavTree keyboard (disclosure navigation)", () => {
     await user.tab({ shift: true });
     await user.keyboard(" ");
     expect(branch).toHaveAttribute("aria-expanded", "false");
+    expect(branch).not.toHaveAttribute("data-expanded");
     expect(screen.queryByRole("link", { name: "Books" })).toBeNull();
   });
 

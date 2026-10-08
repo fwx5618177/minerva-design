@@ -360,14 +360,15 @@ export const TagInput = ({
                   aria-selected={index === highlight}
                   tabIndex={-1}
                   className={styles.option}
-                  data-active={index === highlight || undefined}
                   // mousedown runs before the input blurs: keep focus in the input.
                   onMouseDown={(event) => {
                     event.preventDefault();
                     select(suggestion);
                   }}
                   onMouseEnter={() => setHighlight(index)}
-                  {...hooks("tag-input", "option")}
+                  {...hooks("tag-input", "option", {
+                    highlighted: index === highlight,
+                  })}
                 >
                   {suggestion.label}
                 </li>

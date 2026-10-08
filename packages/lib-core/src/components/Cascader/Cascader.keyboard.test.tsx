@@ -67,6 +67,42 @@ describe("Cascader keyboard", () => {
     expect(input()).toHaveAttribute("aria-expanded", "false");
   });
 
+  it("moves the public item hooks with keyboard navigation", async () => {
+    const user = userEvent.setup();
+    render(
+      <Cascader
+        label="Genre"
+        name="genre"
+        options={[
+          ...options,
+          { value: "drama", label: "Drama", disabled: true },
+          { value: "lazy", label: "Lazy", isLeaf: false, loading: true },
+        ]}
+      />,
+    );
+    const option = (name: string) => screen.getByRole("option", { name });
+    input().focus();
+    await user.keyboard("{Enter}");
+    expect(option("Fiction")).toHaveAttribute("data-minerva", "cascader");
+    expect(option("Fiction")).toHaveAttribute("data-part", "item");
+    expect(option("Fiction")).not.toHaveAttribute("data-expanded");
+    expect(option("Drama")).toHaveAttribute("data-disabled", "");
+    expect(option("Lazy")).toHaveAttribute("data-loading", "");
+    await user.keyboard("{ArrowRight}");
+    expect(option("Fiction")).toHaveAttribute("data-expanded", "");
+    expect(option("Fiction")).not.toHaveAttribute("data-selected");
+    await user.keyboard("{ArrowDown}{Enter}");
+    // reopens on the selected path
+    await user.keyboard("{ArrowDown}");
+    expect(option("Fiction")).toHaveAttribute("data-selected", "");
+    expect(option("Fiction")).toHaveAttribute("data-expanded", "");
+    expect(option("Science fiction")).toHaveAttribute("data-selected", "");
+    // a leaf shows no children column
+    expect(option("Science fiction")).not.toHaveAttribute("data-expanded");
+    expect(option("Science fiction")).toHaveFocus();
+    expect(option("Fantasy")).not.toHaveAttribute("data-selected");
+  });
+
   it("inside a Modal, Escape closes only the dropdown and returns focus to the input", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();

@@ -71,6 +71,12 @@ describe("Rating (read-only)", () => {
       "empty",
     ]);
     expect(container.querySelectorAll(`.${styles.half} svg`)).toHaveLength(2);
+    // public item hook of each star
+    expect(
+      Array.from(container.querySelectorAll('[data-part="star"]')).map((el) =>
+        el.getAttribute("data-fill"),
+      ),
+    ).toEqual(["full", "full", "half", "empty", "empty"]);
   });
 
   it("shows value and formatted rating count", () => {

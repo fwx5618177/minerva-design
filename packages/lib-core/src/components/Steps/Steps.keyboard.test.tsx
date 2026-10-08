@@ -19,12 +19,38 @@ describe("Steps keyboard", () => {
     await user.tab();
     const review = screen.getByRole("button", { name: "Review" });
     expect(review).toHaveFocus();
+    const [draftBefore, reviewBefore] = screen.getAllByRole("listitem");
+    expect(draftBefore).toHaveAttribute("data-status", "current");
+    expect(reviewBefore).toHaveAttribute("data-status", "upcoming");
     await user.keyboard(" ");
     expect(onChange).toHaveBeenCalledWith("review");
     expect(review).toHaveAttribute("aria-current", "step");
+    const [draftItem, reviewItem] = screen.getAllByRole("listitem");
+    expect(reviewItem).toHaveAttribute("data-current", "");
+    expect(reviewItem).toHaveAttribute("data-status", "current");
+    expect(draftItem).not.toHaveAttribute("data-current");
+    expect(draftItem).toHaveAttribute("data-status", "complete");
     // the current step does not re-emit
     await user.keyboard("{Enter}");
     expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("marks disabled steps of navigable steps only", () => {
+    const disabledItems = [
+      ...items,
+      { value: "done", label: "Done", disabled: true },
+    ];
+    const { rerender } = render(
+      <Steps items={disabledItems} defaultValue="draft" onChange={() => {}} />,
+    );
+    expect(screen.getAllByRole("listitem")[2]).toHaveAttribute(
+      "data-disabled",
+      "",
+    );
+    rerender(<Steps items={disabledItems} value="draft" />);
+    expect(screen.getAllByRole("listitem")[2]).not.toHaveAttribute(
+      "data-disabled",
+    );
   });
 
   it("has no tab stops as a read-only progress indicator", async () => {

@@ -10,6 +10,8 @@ import {
   hookComponentsOf,
   hookExample,
   hookManifest,
+  itemStateSelector,
+  itemStatesOf,
   partsOf,
   statePartsOf,
 } from "./stylingHooks";
@@ -66,6 +68,38 @@ describe("styling hooks docs", () => {
         "minerva-modal:state(open)::part(overlay) {\n  /* … */\n}",
     );
     expect(hookExample("unknown", "wc")).toBeNull();
+  });
+
+  it("documents item states with their selectors in both frameworks", () => {
+    const menu = hookManifest.menu;
+    expect(itemStatesOf(menu, "react")).toContainEqual({
+      part: "item",
+      key: "highlighted",
+      values: [true],
+    });
+    expect(itemStatesOf(menu, "wc")).toContainEqual({
+      part: "item",
+      key: "state",
+      values: ["checked", "unchecked"],
+    });
+    expect(
+      itemStateSelector("menu", "react", "item", "highlighted", true),
+    ).toBe('[data-minerva="menu"][data-part="item"][data-highlighted]');
+    expect(itemStateSelector("menu", "wc", "item", "highlighted", true)).toBe(
+      "minerva-menu::part(item item--highlighted)",
+    );
+    expect(
+      itemStateSelector("data-table", "wc", "header-cell", "sort", "ascending"),
+    ).toBe("minerva-data-table::part(header-cell header-cell--sort-ascending)");
+    // React-only item parts are not listed for the web components
+    expect(itemStatesOf(hookManifest.select, "react")).toEqual([]);
+    expect(itemStatesOf(hookManifest.select, "wc").length).toBeGreaterThan(0);
+    expect(hookExample("menu", "react")).toContain(
+      '[data-minerva="menu"][data-part="item"][data-highlighted] {',
+    );
+    expect(hookExample("menu", "wc")).toContain(
+      "minerva-menu::part(item item--highlighted) {",
+    );
   });
 
   it("lists the parts per framework and the parts carrying a state", () => {

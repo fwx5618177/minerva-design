@@ -223,7 +223,7 @@ describe("server-rendered composite elements", () => {
     expect(pro.hasAttribute("tabindex")).toBe(false);
     expect(solo.hasAttribute("tabindex")).toBe(false);
     expect(solo.hasAttribute("aria-description")).toBe(false);
-    expect(banana.hasAttribute("data-state")).toBe(false);
+    expect(banana.hasAttribute("data-selected")).toBe(false);
     expect(group.hasAttribute("aria-labelledby")).toBe(false);
 
     await hostSettled();
@@ -233,7 +233,7 @@ describe("server-rendered composite elements", () => {
     expect(pro).toHaveAttribute("aria-checked", "true");
     expect(solo).toHaveAttribute("tabindex", "0");
     expect(solo).toHaveAttribute("aria-description", "On its own");
-    expect(banana).toHaveAttribute("data-state", "checked");
+    expect(banana).toHaveAttribute("data-selected", "");
     expect(group).toHaveAttribute(
       "aria-labelledby",
       document.querySelector("minerva-select-label")!.id,

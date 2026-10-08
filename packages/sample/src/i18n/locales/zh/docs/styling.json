@@ -27,6 +27,15 @@
     "text": "自定义元素暴露相同的名字：标签即组件，::part(<名称>) 选中 shadow root 中的部件，状态是宿主的自定义状态（ElementInternals.states），用 :state() 选择。它们不会给宿主添加属性，因此服务端渲染的标记可以无冲突地水合。::part() 与宿主上的规则总是优先于元素内部的 shadow 样式。",
     "support": ":state() 需要 Chrome 125、Firefox 126 或 Safari 17.4。Chromium 90-124 使用旧的带横线语法（:--open）；其他引擎没有状态钩子：请改用宿主属性（[open]、[disabled]、[variant=\"ghost\"]）。部件在所有浏览器中都可用。"
   },
+  "items": {
+    "title": "条目及其状态的样式",
+    "text": "组件中重复出现的元素（菜单项、选项、标签页、表格行与排序表头、页码、步骤、树节点、日历日期、通知、文件、星星……）拥有各自的公开状态：highlighted、selected、disabled、checked、current、expanded、sort、status……它们与组件状态使用同一套词汇，并与条目的 ARIA 状态（aria-selected、aria-checked、aria-current、aria-expanded、aria-sort）保持一致。",
+    "react": "React：状态是条目元素自身的属性，与 data-minerva、data-part 并列：[data-minerva=\"menu\"][data-part=\"item\"][data-highlighted]。",
+    "wc": "Web Components，在 shadow root 中渲染的条目：每个条目状态都是与部件名并列的额外部件名 <part>--<state>（键值状态为 <part>--<key>-<value>）。在 ::part() 中组合使用——它匹配同时带有所列全部名称的元素：minerva-menu::part(item item--highlighted)、minerva-data-table::part(header-cell header-cell--sort-ascending)。该约定沿用 Shoelace / Web Awesome（item--selected），且不依赖 :state() 支持。",
+    "elements": "Web Components，本身就是独立自定义元素的条目（<minerva-option>、<minerva-tab>、<minerva-radio>、<minerva-page-tab>……）：其状态是条目元素的自定义状态，与任何组件相同：minerva-option:state(selected)::part(root)。你自己在这些元素上设置的属性（[closable]、[disabled]）同样是稳定的选择器。",
+    "dynamic": "条目钩子随交互变化：方向键让 [data-highlighted] / item--highlighted 在条目间移动，对列排序会切换 data-sort，关闭通知时在退出动画期间设置 data-state=\"closed\"。shadow 部件名和自定义状态不会给宿主添加任何属性，因此服务端渲染的标记水合时不会出现不匹配。",
+    "examples": "下面的示例在 React 和 Web Components 中分别重设了高亮的菜单项、选择器的选中选项、当前页码、已排序的表头以及成功通知的样式。"
+  },
   "layers": {
     "title": "级联层：@layer minerva",
     "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css 和 @minerva/lib-web-components/tokens.css 都包裹在 @layer minerva 中。未分层的 CSS 无论优先级或先后顺序都会胜过任何层，因此你的规则无需 !important 即可覆盖库样式。如果你的应用使用了级联层，请在所有样式表之前声明一次层顺序。",
@@ -35,7 +44,7 @@
   "stability": {
     "title": "稳定性策略",
     "text": "钩子接口是机器可读的：@minerva/core/styling-hooks 导出清单（组件 → 部件 → 状态及其取值），文档即由它生成。契约测试会在各种状态下渲染每个 React 组件和每个自定义元素，只要缺少已文档化的钩子或出现未文档化的部件就会失败；锁定文件（styling-hooks.lock.json）会让任何接口变更导致构建失败，直到有意更新它。",
-    "minor": "minor 版本：新增组件、部件、状态或状态取值。",
+    "minor": "次版本：新增组件、部件、状态（组件状态或条目状态）或状态值。",
     "major": "major 版本：删除或重命名其中任何一项，或把状态移到另一个部件上。",
     "private": "不在保证范围内：类名、没有钩子的元素的 DOM 结构，以及用 !important 覆盖内部样式。"
   },
@@ -60,6 +69,26 @@
     "restyle-table": {
       "title": "重新设计 Table",
       "description": "通过数据表格的部件实现大写表头单元格和悬停行高亮，React 中另有斑马纹行（::part() 只接受 :hover 等用户操作伪类，不接受 :nth-child）。"
+    },
+    "items-menu": {
+      "title": "高亮的菜单项",
+      "description": "打开菜单并用方向键移动：高亮项获得着色背景和竖条，选中的项加粗，禁用项加删除线。React 面板通过菜单的 className 限定作用域；Web Component 使用 ::part(item item--highlighted)。"
+    },
+    "items-select": {
+      "title": "选择器的选中选项",
+      "description": "选中的选项被填充，高亮的选项带虚线描边。React 选项是 SelectItem 组件（data-minerva=\"option\"）；通过 options 属性渲染的 Web Component 暴露 ::part(item item--selected)，<minerva-option> 子元素则使用自身的 :state(selected)。"
+    },
+    "items-pagination": {
+      "title": "当前页码",
+      "description": "圆形页码按钮，当前页带描边环（[data-current] / item--current），禁用的上一页 / 下一页按钮变淡。"
+    },
+    "items-table": {
+      "title": "已排序的表头",
+      "description": "点击表头排序：已排序列的表头带下划线（data-sort / header-cell--sort-<direction>），未排序的可排序表头变淡，选中的行着色。"
+    },
+    "items-toast": {
+      "title": "成功通知",
+      "description": "成功通知带绿色竖条和背景，离开中的通知在 data-state=\"closed\" / toast--closed 期间变淡。React 通知通过 portal 渲染：复合选择器依然能匹配。"
     }
   }
 }

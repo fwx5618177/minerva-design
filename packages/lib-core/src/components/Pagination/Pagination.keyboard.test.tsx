@@ -41,6 +41,22 @@ describe("Pagination keyboard", () => {
     expect(onChange).toHaveBeenLastCalledWith(3, 10);
   });
 
+  it("moves the current / disabled item hooks when paging with the keyboard", async () => {
+    const user = userEvent.setup();
+    render(<Pagination total={30} />);
+    const prev = screen.getByRole("button", { name: "Previous page" });
+    const next = screen.getByRole("button", { name: "Next page" });
+    expect(pageButton(1)).toHaveAttribute("data-current", "");
+    expect(prev).toHaveAttribute("data-disabled", "");
+    expect(next).not.toHaveAttribute("data-disabled");
+    next.focus();
+    await user.keyboard("{Enter}{Enter}");
+    expect(pageButton(1)).not.toHaveAttribute("data-current");
+    expect(pageButton(3)).toHaveAttribute("data-current", "");
+    expect(prev).not.toHaveAttribute("data-disabled");
+    expect(next).toHaveAttribute("data-disabled", "");
+  });
+
   it("jumps with Enter in the quick jumper without submitting an enclosing form", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn((e: FormEvent) => e.preventDefault());

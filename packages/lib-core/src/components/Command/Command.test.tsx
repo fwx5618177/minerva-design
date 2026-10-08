@@ -239,7 +239,7 @@ describe("CommandDialog", () => {
     expect(users).toHaveAttribute("tabindex", "-1");
     await user.hover(users);
     expect(users).toHaveAttribute("aria-selected", "true");
-    expect(users).toHaveAttribute("data-active", "true");
+    expect(users).toHaveAttribute("data-highlighted", "");
     await user.click(users);
     expect(onSelect).toHaveBeenCalledWith(ITEMS[1]);
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());

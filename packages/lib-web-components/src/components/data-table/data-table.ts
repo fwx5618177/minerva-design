@@ -28,6 +28,7 @@ import {
   getColumnCompare,
   nextSortState,
 } from "@minerva/core";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 export type TableSize = "small" | "medium" | "large";
@@ -132,7 +133,11 @@ const SELECTION_WIDTH = 48;
  * @csspart viewport - The scroll wrapper of the table (a focusable region while it scrolls)
  * @csspart table - The `<table>`
  * @csspart row - A `<tr>` (header and body rows; selected rows have aria-selected=true)
+ * @csspart row--selected - Item state of `row`: selected
  * @csspart header-cell - A `<th>` column header (sortable headers have aria-sort)
+ * @csspart header-cell--sort-ascending - Item state of `header-cell`: sort ascending
+ * @csspart header-cell--sort-descending - Item state of `header-cell`: sort descending
+ * @csspart header-cell--sort-none - Item state of `header-cell`: sort none
  * @csspart cell - A `<td>` body cell
  * @csspart sort-button - The sort button of a sortable header
  * @csspart checkbox - A row / select-all selection checkbox
@@ -473,10 +478,12 @@ export class MinervaDataTable<
           : order === "descend"
             ? IconChevronDown
             : IconChevronsUpDown;
+      const ariaSort = order ? ARIA_SORT[order] : "none";
       return html`<th
-        part="header-cell"
+        part=${itemParts("header-cell", { sort: ariaSort })}
         scope="col"
-        aria-sort=${order ? ARIA_SORT[order] : "none"}
+        aria-sort=${ariaSort}
+        data-sort=${ariaSort}
         style=${styleMap(cellStyle(col))}
         data-ellipsis=${col.ellipsis ? "true" : nothing}
         data-fixed=${col.fixed ?? nothing}
@@ -486,7 +493,6 @@ export class MinervaDataTable<
           type="button"
           part="sort-button"
           class="sortButton"
-          data-sort-order=${order ?? nothing}
           @click=${() => this.changeSort(col.key)}
         >
           <span class="sortLabel">${col.header}</span
@@ -537,7 +543,7 @@ export class MinervaDataTable<
         ({ row, index, key }, i) => {
           const selected = hasSelection && selectedSet.has(key);
           return html`<tr
-            part="row"
+            part=${itemParts("row", { selected })}
             aria-selected=${selected ? "true" : nothing}
             ?data-selected=${selected}
           >

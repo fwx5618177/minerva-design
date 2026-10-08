@@ -201,6 +201,8 @@ describe("<minerva-time-picker>", () => {
     const [hours, minutes] = columns(el);
     expect(option(hours, "08").classList).toContain("disabled");
     expect(option(hours, "08")).toHaveAttribute("aria-disabled", "true");
+    expect(option(hours, "08")).toHaveAttribute("part", "item item--disabled");
+    expect(option(hours, "09")).toHaveAttribute("part", "item item--selected");
     expect(option(hours, "09").classList).not.toContain("disabled");
     expect(option(hours, "17").classList).not.toContain("disabled");
     expect(option(hours, "18").classList).toContain("disabled");
@@ -430,9 +432,19 @@ describe("<minerva-time-picker>", () => {
       const el = await setup();
       const onChange = changes(el);
       await openWithKeyboard(el);
+      const hours = column(el, "Hours");
+      expect(option(hours, "10")).toHaveAttribute(
+        "part",
+        "item item--selected",
+      );
       await userEvent.keyboard("{ArrowDown}{Enter}");
       await settle();
       expect(onChange).toHaveBeenLastCalledWith("11:30:00");
+      expect(option(hours, "10")).toHaveAttribute("part", "item");
+      expect(option(hours, "11")).toHaveAttribute(
+        "part",
+        "item item--selected",
+      );
       await userEvent.keyboard("{ArrowRight}");
       expect(active(el)).toBe(option(column(el, "Minutes"), "30"));
       await userEvent.keyboard("{End}{Enter}");

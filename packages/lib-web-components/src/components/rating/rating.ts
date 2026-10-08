@@ -19,6 +19,7 @@ import {
 import { IconStar, IconStarHalf } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 export type RatingSize = "small" | "medium" | "large";
@@ -79,6 +80,9 @@ const starStyles = css`
  * @csspart root - The root (role="slider", or role="img" when display-only)
  * @csspart stars - The star row
  * @csspart star - Each star
+ * @csspart star--fill-full - Item state of `star`: fill full
+ * @csspart star--fill-half - Item state of `star`: fill half
+ * @csspart star--fill-empty - Item state of `star`: fill empty
  * @csspart value - The score and the count
  * @csspart count - The number of ratings
  * @fires change - The user changed the score
@@ -271,14 +275,15 @@ export class MinervaRating extends FormAssociatedElement {
       height: `${px}px`,
       fontSize: `${px}px`,
     });
+    const part = itemParts("star", { fill });
     if (fill === "half") {
-      return html`<span part="star" class="star half" style=${size}
+      return html`<span part=${part} class="star half" style=${size}
         ><span class="halfBase">${IconStar}</span
         ><span class="halfFill">${IconStarHalf}</span></span
       >`;
     }
     return html`<span
-      part="star"
+      part=${part}
       class=${classMap({ star: true, [fill]: true })}
       style=${size}
       >${IconStar}</span

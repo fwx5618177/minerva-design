@@ -251,7 +251,7 @@ describe("<minerva-command-dialog>", () => {
     users.dispatchEvent(new MouseEvent("mouseenter"));
     await settle();
     expect(users).toHaveAttribute("aria-selected", "true");
-    expect(users).toHaveAttribute("data-active", "true");
+    expect(users).toHaveAttribute("part", "item item--highlighted");
     // The modal layer sets `pointer-events: none` on <body>; user-event only
     // checks light DOM ancestors, so the (clickable) option is clicked directly.
     users.click();
@@ -448,13 +448,17 @@ describe("<minerva-command-dialog> keyboard (APG combobox in a modal dialog)", (
     await settle();
     const opts = options(el);
     expect(input(el)).toHaveAttribute("aria-activedescendant", opts[0].id);
+    const parts = () => options(el).map((o) => o.getAttribute("part"));
+    expect(parts()).toEqual(["item item--highlighted", "item", "item"]);
     await userEvent.keyboard("{ArrowDown}{ArrowDown}");
     await settle();
     expect(input(el)).toHaveAttribute("aria-activedescendant", opts[2].id);
     expect(opts[2]).toHaveAttribute("aria-selected", "true");
+    expect(parts()).toEqual(["item", "item", "item item--highlighted"]);
     await userEvent.keyboard("{ArrowUp}");
     await settle();
     expect(input(el)).toHaveAttribute("aria-activedescendant", opts[1].id);
+    expect(parts()).toEqual(["item", "item item--highlighted", "item"]);
     await userEvent.keyboard("{Enter}");
     await settle();
     await wait(10);

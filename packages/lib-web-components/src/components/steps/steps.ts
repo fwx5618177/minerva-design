@@ -7,6 +7,7 @@ import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 /** One step */
@@ -32,6 +33,11 @@ export interface StepsItem {
  * @tag minerva-steps
  * @csspart root - The `<ol>`
  * @csspart item - A step `<li>` (the current step has aria-current=step)
+ * @csspart item--current - Item state of `item`: current
+ * @csspart item--disabled - Item state of `item`: disabled
+ * @csspart item--status-complete - Item state of `item`: status complete
+ * @csspart item--status-current - Item state of `item`: status current
+ * @csspart item--status-upcoming - Item state of `item`: status upcoming
  * @csspart button - The `<button>` of a step (navigable) or its static wrapper (read-only)
  * @csspart indicator - The numbered indicator of a step
  * @csspart label - The label of a step
@@ -113,8 +119,17 @@ export class MinervaSteps extends MinervaElement {
               aria-hidden="true"
               >${index + 1}</span
             ><span part="label" class="label">${item.label}</span>`;
+          const status = isCurrent
+            ? "current"
+            : isComplete
+              ? "complete"
+              : "upcoming";
           return html`<li
-            part="item"
+            part=${itemParts("item", {
+              current: isCurrent,
+              disabled: !readOnly && !!item.disabled,
+              status,
+            })}
             class=${classMap({
               step: true,
               current: isCurrent,

@@ -66,6 +66,11 @@ export function setAttr(el: Element, name: string, value: string | null) {
  * @slot trigger - The button opening the menu (gets `aria-haspopup="menu"`, `aria-expanded`, `data-state`)
  * @csspart content - A menu panel (`role="menu"`: the root menu and its submenus)
  * @csspart item - An item (`role="menuitem"`, `menuitemcheckbox` or `menuitemradio`)
+ * @csspart item--highlighted - Item state of `item`: highlighted
+ * @csspart item--disabled - Item state of `item`: disabled
+ * @csspart item--checked - Item state of `item`: checked
+ * @csspart item--unchecked - Item state of `item`: unchecked
+ * @csspart item--expanded - Item state of `item`: expanded
  * @csspart item-indicator - The check mark / radio dot of a checkbox or radio item
  * @csspart icon - The icon of an item
  * @csspart item-label - The label of an item

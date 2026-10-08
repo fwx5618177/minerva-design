@@ -18,7 +18,7 @@ const toastTitles = () =>
       '[role="region"] [role="status"], [role="region"] [role="alert"]',
     ),
   )
-    .filter((el) => el.dataset.toastState === "open")
+    .filter((el) => el.dataset.state === "open")
     .map((el) => el.textContent?.trim())
     .filter(Boolean);
 
@@ -161,7 +161,7 @@ describe("e2e: toast API", () => {
     await act(() => vi.advanceTimersByTimeAsync(600));
     await user.hover(item);
     await act(() => vi.advanceTimersByTimeAsync(5000));
-    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(item).toHaveAttribute("data-state", "open");
 
     await user.unhover(item);
     // ~400ms were left when the pointer arrived

@@ -13,6 +13,14 @@ export default [
     element: <CommandDialog open items={items} onSelect={() => {}} />,
   },
   {
+    name: "keyboard: highlighted item moved with ArrowDown",
+    element: <CommandDialog open items={items} onSelect={() => {}} />,
+    setup: async ({ user, view }) => {
+      view.getByRole("combobox").focus();
+      await user.keyboard("{ArrowDown}");
+    },
+  },
+  {
     name: "open, no result",
     element: <CommandDialog open items={[]} onSelect={() => {}} />,
   },

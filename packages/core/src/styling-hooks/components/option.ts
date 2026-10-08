@@ -1,7 +1,8 @@
 import { defineHooks } from "../types";
 
 export default defineHooks({
-  description: "A selectable option of a select (role=option)",
+  description:
+    "A selectable option of a select (role=option); its states are the item states of the select's options: selected, highlighted, disabled",
   react: ["SelectItem"],
   wc: "minerva-option",
   parts: {
@@ -10,7 +11,7 @@ export default defineHooks({
     indicator: { description: "The check mark (while selected)" },
   },
   states: {
-    state: ["checked", "unchecked"],
+    selected: true,
     highlighted: true,
     disabled: true,
   },

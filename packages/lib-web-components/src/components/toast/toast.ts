@@ -27,6 +27,7 @@ import {
 } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import {
   TOAST_REGION_TAG,
   createToast,
@@ -58,6 +59,10 @@ const POSITIONS: readonly ToastPosition[] = [
 ];
 
 const DEFAULT_HOTKEY = ["F8"];
+/** The open toasts of the viewport (public item part `toast--open`) */
+const OPEN_TOAST_CHILD = ':scope > [part~="toast--open"]';
+/** The close button of a toast (public part) */
+const CLOSE_BUTTON_CHILD = ':scope > [part~="close-button"]';
 
 /** `hotkey` attribute: keys separated by spaces, commas or "+"; "" disables. */
 const hotkeyConverter = {
@@ -113,6 +118,13 @@ const onDocumentKeyDown = (event: KeyboardEvent) => {
  * @tag minerva-toast-region
  * @csspart root - The fixed stack (`role="region"`)
  * @csspart toast - A toast (`role="status"`, or `alert` for danger)
+ * @csspart toast--open - Item state of `toast`: open
+ * @csspart toast--closed - Item state of `toast`: closed
+ * @csspart toast--color-info - Item state of `toast`: color info
+ * @csspart toast--color-success - Item state of `toast`: color success
+ * @csspart toast--color-warning - Item state of `toast`: color warning
+ * @csspart toast--color-danger - Item state of `toast`: color danger
+ * @csspart toast--loading - Item state of `toast`: loading
  * @csspart icon - The icon of a toast (spinner while loading)
  * @csspart title - The title of a toast
  * @csspart description - The description of a toast
@@ -289,7 +301,7 @@ export class MinervaToastRegion extends MinervaElement {
   handleHotkey(event: KeyboardEvent): boolean {
     const viewport = this.viewport;
     if (!viewport || !matchesHotkey(event, this.hotkey)) return false;
-    if (!viewport.querySelector('[data-toast-state="open"]')) return false;
+    if (!viewport.querySelector(OPEN_TOAST_CHILD)) return false;
     event.preventDefault();
     const active = getActiveElement() as HTMLElement | null;
     if (
@@ -341,9 +353,7 @@ export class MinervaToastRegion extends MinervaElement {
     const viewport = this.viewport;
     if (!viewport) return;
     const others = Array.from(
-      viewport.querySelectorAll<HTMLElement>(
-        ':scope > [data-toast-state="open"]',
-      ),
+      viewport.querySelectorAll<HTMLElement>(OPEN_TOAST_CHILD),
     ).filter((other) => other !== el);
     const next =
       others.find(
@@ -352,7 +362,7 @@ export class MinervaToastRegion extends MinervaElement {
       ) ?? others[others.length - 1];
     if (next) {
       const target =
-        next.querySelector<HTMLElement>("[data-toast-close]") ??
+        next.querySelector<HTMLElement>(CLOSE_BUTTON_CHILD) ??
         getTabbables(next)[0];
       if (focusElement(target)) return;
     }
@@ -417,11 +427,15 @@ export class MinervaToastRegion extends MinervaElement {
     const closing = item.state === "closing";
     const toastEl = (event: Event) =>
       (event.currentTarget as HTMLElement).closest<HTMLElement>(".toast")!;
+    const states = {
+      state: closing ? "closed" : "open",
+      color: item.color,
+      loading: item.loading,
+    };
     return html`<div
-      part="toast"
+      part=${itemParts("toast", states)}
       class=${classMap({ toast: true, [item.color]: true })}
-      data-toast-state=${closing ? "closing" : "open"}
-      data-toast-loading=${item.loading ? "true" : nothing}
+      data-state=${states.state}
       role=${item.color === "danger" && !item.loading ? "alert" : "status"}
       style=${styleMap(
         item.duration > 0 ? { "--toast-duration": `${item.duration}ms` } : {},
@@ -479,7 +493,6 @@ export class MinervaToastRegion extends MinervaElement {
               class="close"
               part="close-button"
               aria-label=${this.closeLabel ?? this.locale.t("toast.close")}
-              data-toast-close=""
               @click=${(event: MouseEvent) =>
                 this.close(item, toastEl(event), "close-button")}
             >

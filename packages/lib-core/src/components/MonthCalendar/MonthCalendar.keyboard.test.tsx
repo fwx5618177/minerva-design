@@ -54,9 +54,14 @@ describe("MonthCalendar keyboard (APG grid)", () => {
     expect(day("2024-02-19")).toHaveFocus();
     await user.keyboard("{End}");
     expect(day("2024-02-25")).toHaveFocus();
+    // focus alone does not select
+    expect(day("2024-02-25")).not.toHaveAttribute("data-selected");
+    expect(day("2024-02-14")).toHaveAttribute("data-selected", "");
     await user.keyboard("{Enter}");
     expect(day("2024-02-25")).toHaveAttribute("aria-selected", "true");
+    expect(day("2024-02-25")).toHaveAttribute("data-selected", "");
     expect(day("2024-02-14")).toHaveAttribute("aria-selected", "false");
+    expect(day("2024-02-14")).not.toHaveAttribute("data-selected");
     // The roving tab stop follows focus.
     expect(day("2024-02-25")).toHaveAttribute("tabindex", "0");
     expect(day("2024-02-14")).toHaveAttribute("tabindex", "-1");
@@ -67,6 +72,15 @@ describe("MonthCalendar keyboard (APG grid)", () => {
     ).toBeInTheDocument();
     await user.keyboard("{ArrowUp} ");
     expect(day("2024-03-18")).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("marks today with the public today hook", () => {
+    const now = new Date();
+    const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    render(<MonthCalendar />);
+    expect(day(key)).toHaveAttribute("data-today", "");
+    expect(day(key)).toHaveAttribute("aria-current", "date");
+    expect(document.querySelectorAll("[data-today]")).toHaveLength(1);
   });
 
   it("focuses the gridcell itself; PageUp / Shift+PageDown move by month / year", async () => {

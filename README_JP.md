@@ -280,6 +280,7 @@ import "@minerva/lib-web-components/tokens.css";
 | パーツ         | `[data-minerva="button"][data-part="label"]` | `minerva-button::part(label)`      |
 | 状態           | `[data-state="open"]`、`[data-disabled]`     | `:state(open)`、`:state(disabled)` |
 | キー付き状態   | `[data-size="small"]`                        | `:state(size-small)`               |
+| アイテムの状態 | `[data-part="item"][data-highlighted]`       | `::part(item item--highlighted)`   |
 
 ```css
 /* React */
@@ -303,7 +304,7 @@ minerva-modal:state(open)::part(content) {
 @layer reset, minerva, app;
 ```
 
-複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `@minerva/core/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
+繰り返されるアイテム（メニュー項目、オプション、行とソート済みヘッダー、ページ、ステップ、ツリー項目、日付、トースト、ファイル…）は独自の状態（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`…）を持ちます：React ではアイテム要素そのものの属性、シャドウルート内のアイテムはパーツ名と並ぶ `<part>--<state>` パーツ名（Shoelace / Web Awesome の規約）、独立した要素であるアイテムはカスタムステート（`minerva-option:state(selected)`）です。複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `@minerva/core/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
 
 ## 🌐 ブラウザサポート
 

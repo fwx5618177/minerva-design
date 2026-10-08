@@ -147,7 +147,10 @@ describe("<minerva-tag-input>", () => {
     );
     expect(shadow(el).getElementById(options(el)[0].id)).toBe(options(el)[0]);
     expect(options(el)[0]).toHaveAttribute("aria-selected", "true");
-    expect(options(el)[0]).toHaveAttribute("data-active");
+    expect(options(el)[0]).toHaveAttribute(
+      "part",
+      "option option--highlighted",
+    );
   });
 
   it("has lib-core's defaults and reflects state attributes", async () => {
@@ -302,10 +305,13 @@ describe("<minerva-tag-input>", () => {
       options: ["Vue", "Svelte", "Solid"],
     });
     await focusField(el);
+    const parts = () => options(el).map((o) => o.getAttribute("part"));
     await key(el, "ArrowUp");
     expect(options(el)[2]).toHaveAttribute("aria-selected", "true");
+    expect(parts()).toEqual(["option", "option", "option option--highlighted"]);
     await key(el, "ArrowDown");
     expect(options(el)[0]).toHaveAttribute("aria-selected", "true");
+    expect(parts()).toEqual(["option option--highlighted", "option", "option"]);
     option(el, "Svelte").dispatchEvent(new MouseEvent("mouseenter"));
     await el.updateComplete;
     expect(option(el, "Svelte")).toHaveAttribute("aria-selected", "true");

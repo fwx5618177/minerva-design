@@ -3,6 +3,7 @@ import type { ComponentHookSpec } from "./types";
 import {
   BOOLEAN_STATES,
   customStateName,
+  itemPartName,
   stateAttribute,
   type StateKey,
 } from "./vocabulary";
@@ -36,28 +37,62 @@ export function wcStateSelector(states: StateSelector = {}): string {
 
 /**
  * React selector of a component / part (compound: robust to portals and
- * nesting): `[data-minerva="button"][data-part="label"]`.
+ * nesting): `[data-minerva="button"][data-part="label"]`. Item states are
+ * attributes of the part element too:
+ * `reactSelector("menu", "item", undefined, { highlighted: true })` ->
+ * `[data-minerva="menu"][data-part="item"][data-highlighted]`.
  */
 export function reactSelector(
   component: HookComponentName | (string & {}),
   part?: string,
   states?: StateSelector,
+  itemStates?: StateSelector,
 ): string {
-  return `[data-minerva="${component}"]${part ? `[data-part="${part}"]` : ""}${reactStateSelector(states)}`;
+  return `[data-minerva="${component}"]${part ? `[data-part="${part}"]` : ""}${reactStateSelector(states)}${reactStateSelector(itemStates)}`;
+}
+
+/**
+ * The part names of an item in states (web components):
+ * `wcItemParts("item", { highlighted: true })` -> `item item--highlighted`.
+ */
+export function wcItemParts(part: string, itemStates: StateSelector = {}) {
+  return [
+    part,
+    ...Object.entries(itemStates).map(([key, value]) =>
+      itemPartName(part, key as StateKey, value === true ? undefined : value),
+    ),
+  ].join(" ");
 }
 
 /**
  * Web component selector of a component / part; states are custom states
- * of the host: `minerva-button:state(loading)::part(label)`.
+ * of the host: `minerva-button:state(loading)::part(label)`. Item states
+ * (items rendered in the shadow root) are part names:
+ * `wcSelector("menu", "item", undefined, { highlighted: true })` ->
+ * `minerva-menu::part(item item--highlighted)`.
  */
 export function wcSelector(
   component: HookComponentName | (string & {}),
   part?: string,
   states?: StateSelector,
+  itemStates?: StateSelector,
 ): string {
   const spec = (stylingHooks as Record<string, ComponentHookSpec>)[component];
   const tag = spec?.wc ?? `minerva-${component}`;
-  return `${tag}${wcStateSelector(states)}${part ? `::part(${part})` : ""}`;
+  const parts = part && itemStates ? wcItemParts(part, itemStates) : part;
+  return `${tag}${wcStateSelector(states)}${parts ? `::part(${parts})` : ""}`;
+}
+
+/** State keys and values, sorted (lock file) */
+function sortedStates(states: ComponentHookSpec["states"]) {
+  return Object.fromEntries(
+    Object.keys(states)
+      .sort()
+      .map((key) => {
+        const value = (states as Record<string, unknown>)[key];
+        return [key, Array.isArray(value) ? [...value].sort() : value];
+      }),
+  );
 }
 
 /** The public hook surface (no descriptions): what the lock file records. */
@@ -78,27 +113,20 @@ export function hookSurface(
               Object.keys(spec.parts)
                 .sort()
                 .map((part) => {
-                  const { states, only } = spec.parts[part];
+                  const { states, only, itemStates } = spec.parts[part];
                   return [
                     part,
                     {
                       ...(states ? { states: [...states].sort() } : {}),
                       ...(only ? { only } : {}),
+                      ...(itemStates
+                        ? { itemStates: sortedStates(itemStates) }
+                        : {}),
                     },
                   ];
                 }),
             ),
-            states: Object.fromEntries(
-              Object.keys(spec.states)
-                .sort()
-                .map((key) => {
-                  const value = (spec.states as Record<string, unknown>)[key];
-                  return [
-                    key,
-                    Array.isArray(value) ? [...value].sort() : value,
-                  ];
-                }),
-            ),
+            states: sortedStates(spec.states),
           },
         ];
       }),

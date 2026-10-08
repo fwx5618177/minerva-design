@@ -79,9 +79,11 @@ describe("<minerva-month-calendar>", () => {
       "aria-label",
       "2024-03-01, 2 events",
     );
-    expect(day(el, "2024-03-01")).toHaveAttribute("data-outside", "true");
+    expect(day(el, "2024-03-01")).toHaveAttribute("data-outside", "");
+    expect(day(el, "2024-03-01").getAttribute("part")).toBe("day day--outside");
     expect(day(el, "2024-02-28")).toHaveAttribute("aria-label", "2024-02-28");
     expect(day(el, "2024-02-28")).not.toHaveAttribute("data-outside");
+    expect(day(el, "2024-02-28").getAttribute("part")).toBe("day");
     expect(day(el, "2024-02-29").querySelector(".count")!.textContent).toBe(
       "1",
     );
@@ -128,6 +130,9 @@ describe("<minerva-month-calendar>", () => {
   it("defaults to the current month", async () => {
     const el = await setup(``);
     const now = new Date();
+    const today = el.shadowRoot!.querySelectorAll("[part~='day--today']");
+    expect(today).toHaveLength(1);
+    expect(today[0]).toHaveAttribute("aria-current", "date");
     const heading = new Intl.DateTimeFormat("en", {
       year: "numeric",
       month: "long",
@@ -192,9 +197,16 @@ describe("<minerva-month-calendar>", () => {
     expect(focused(el)).toBe(day(el, "2024-02-19"));
     await userEvent.keyboard("{End}");
     expect(focused(el)).toBe(day(el, "2024-02-25"));
+    expect(day(el, "2024-02-14").getAttribute("part")).toBe(
+      "day day--selected",
+    );
     await userEvent.keyboard("{Enter}");
     await el.updateComplete;
     expect(day(el, "2024-02-25")).toHaveAttribute("aria-selected", "true");
+    expect(day(el, "2024-02-25").getAttribute("part")).toBe(
+      "day day--selected",
+    );
+    expect(day(el, "2024-02-14").getAttribute("part")).toBe("day");
     expect(day(el, "2024-02-14")).toHaveAttribute("aria-selected", "false");
     // the roving tab stop follows focus
     expect(day(el, "2024-02-25")).toHaveAttribute("tabindex", "0");
@@ -274,8 +286,12 @@ describe("<minerva-month-calendar>", () => {
       button.click();
     }
     expect($(el, "[role=grid]")).toHaveAttribute("aria-disabled", "true");
+    expect(day(el, "2024-02-29").getAttribute("part")).toBe(
+      "day day--selected day--disabled",
+    );
     for (const cell of el.shadowRoot!.querySelectorAll("[data-date]")) {
       expect(cell).toHaveAttribute("aria-disabled", "true");
+      expect(cell.getAttribute("part")).toContain("day--disabled");
       expect(cell).toHaveAttribute("tabindex", "-1");
     }
     day(el, "2024-03-01").click();

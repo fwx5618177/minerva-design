@@ -61,6 +61,12 @@ const SPINNER = (
 );
 
 const NO_TOASTS: ToastItem[] = [];
+/** The open toasts of a viewport (public item hooks) */
+const OPEN_TOAST_CHILD =
+  ':scope > [data-minerva="toast-region"][data-part="toast"][data-state="open"]';
+/** The close button of a toast (public part) */
+const CLOSE_BUTTON_CHILD =
+  ':scope > [data-minerva="toast-region"][data-part="close-button"]';
 const DEFAULT_HOTKEY = ["F8"];
 
 /**
@@ -85,9 +91,7 @@ const moveFocusFromToast = (el: HTMLElement, tracker: ToastFocusTracker) => {
   const viewport = el.parentElement;
   if (!viewport) return;
   const others = Array.from(
-    viewport.querySelectorAll<HTMLElement>(
-      ':scope > [data-toast-state="open"]',
-    ),
+    viewport.querySelectorAll<HTMLElement>(OPEN_TOAST_CHILD),
   ).filter((other) => other !== el);
   const next =
     others.find(
@@ -96,7 +100,7 @@ const moveFocusFromToast = (el: HTMLElement, tracker: ToastFocusTracker) => {
     ) ?? others[others.length - 1];
   if (next) {
     const target =
-      next.querySelector<HTMLElement>("[data-toast-close]") ??
+      next.querySelector<HTMLElement>(CLOSE_BUTTON_CHILD) ??
       getTabbables(next)[0];
     if (focusElement(target)) return;
   }
@@ -170,8 +174,6 @@ const ToastViewItem = ({
     <div
       ref={rootRef}
       className={cn(styles.toast, styles[item.color])}
-      data-toast-state={closing ? "closing" : "open"}
-      data-toast-loading={item.loading || undefined}
       // A pending (loading) toast is a polite status even when danger
       role={item.color === "danger" && !item.loading ? "alert" : "status"}
       style={
@@ -192,7 +194,11 @@ const ToastViewItem = ({
         e.stopPropagation();
         close();
       }}
-      {...hooks("toast-region", "toast")}
+      {...hooks("toast-region", "toast", {
+        state: closing ? "closed" : "open",
+        color: item.color,
+        loading: item.loading,
+      })}
     >
       {item.icon !== null && (
         <span
@@ -240,7 +246,6 @@ const ToastViewItem = ({
           type="button"
           className={styles.close}
           aria-label={closeLabel}
-          data-toast-close=""
           onClick={close}
           {...hooks("toast-region", "close-button")}
         >
@@ -423,9 +428,7 @@ const ToastProvider = ({
       const viewport = [
         ...(own ? [own] : []),
         ...[...viewports.values()].filter((el) => el !== own),
-      ].find(
-        (el) => el.isConnected && el.querySelector('[data-toast-state="open"]'),
-      );
+      ].find((el) => el.isConnected && el.querySelector(OPEN_TOAST_CHILD));
       if (!viewport) return;
       event.preventDefault();
       const doc = viewport.ownerDocument;

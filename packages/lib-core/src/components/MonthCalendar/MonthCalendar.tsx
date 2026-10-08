@@ -265,6 +265,8 @@ const MonthCalendar = ({
               const key = dayKey(date);
               const count = counts.get(key) ?? 0;
               const selected = value === key;
+              const outside = !sameMonth(date, month);
+              const isToday = key === todayKey;
               return (
                 // APG date grid: the cell itself is the focusable,
                 // selectable element (roving tabindex, aria-selected).
@@ -272,13 +274,17 @@ const MonthCalendar = ({
                   role="gridcell"
                   key={key}
                   className={styles.day}
-                  {...hooks("month-calendar", "day")}
+                  {...hooks("month-calendar", "day", {
+                    selected,
+                    today: isToday,
+                    outside,
+                    disabled,
+                  })}
                   ref={(element) => {
                     if (element) cells.current.set(key, element);
                     else cells.current.delete(key);
                   }}
                   data-date={key}
-                  data-outside={!sameMonth(date, month) || undefined}
                   aria-label={
                     getDayLabel
                       ? getDayLabel(key, count)
@@ -290,7 +296,7 @@ const MonthCalendar = ({
                         : key
                   }
                   aria-selected={selected}
-                  aria-current={key === todayKey ? "date" : undefined}
+                  aria-current={isToday ? "date" : undefined}
                   aria-disabled={disabled || undefined}
                   tabIndex={!disabled && key === activeKey ? 0 : -1}
                   onFocus={() => setFocusedKey(key)}

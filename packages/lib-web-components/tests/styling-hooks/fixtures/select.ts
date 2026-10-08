@@ -1,4 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import type { WcHookScenario } from "../types";
+import { settle } from "../../utils";
 
 const options = `<minerva-option-group>
     <minerva-select-label>Fruits</minerva-select-label>
@@ -32,6 +34,25 @@ export default [
         { value: "a", label: "A" },
         { label: "Group", options: [{ value: "b", label: "B" }] },
       ];
+    },
+  },
+  {
+    name: "keyboard: options property items selected, highlighted, disabled",
+    html: `<minerva-select label="Food" value="a"></minerva-select>`,
+    setup: async (root) => {
+      const select = root.querySelector("minerva-select")!;
+      select.options = [
+        { value: "a", label: "A" },
+        { value: "b", label: "B", disabled: true },
+        { value: "c", label: "C" },
+      ];
+      await settle();
+      const user = userEvent.setup();
+      select.shadowRoot!.querySelector<HTMLElement>("[part~=root]")!.focus();
+      // opens on the selected item, then moves past the disabled one
+      await user.keyboard("{ArrowDown}");
+      await settle();
+      await user.keyboard("{ArrowDown}");
     },
   },
   {

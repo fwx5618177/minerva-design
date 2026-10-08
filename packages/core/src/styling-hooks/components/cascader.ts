@@ -25,7 +25,16 @@ export default defineHooks({
       states: ["state", "side", "align", "placement"],
     },
     column: { description: "A column of options (role=listbox)" },
-    item: { description: "An option (column option or search result)" },
+    item: {
+      description:
+        "An option (column option or search result). Item states: selected (on the selected path), expanded (its children column is shown), disabled, loading (children loading)",
+      itemStates: {
+        selected: true,
+        expanded: true,
+        disabled: true,
+        loading: true,
+      },
+    },
   },
   states: {
     state: ["open", "closed"],

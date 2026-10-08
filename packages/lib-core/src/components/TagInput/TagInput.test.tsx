@@ -170,8 +170,14 @@ describe("TagInput", () => {
     act(() => input().focus());
     key("ArrowUp");
     expect(options()[2]).toHaveAttribute("aria-selected", "true");
+    expect(options()[2]).toHaveAttribute("data-highlighted", "");
+    expect(options()[0]).not.toHaveAttribute("data-highlighted");
     key("ArrowDown");
     expect(options()[0]).toHaveAttribute("aria-selected", "true");
+    expect(options()[0]).toHaveAttribute("data-minerva", "tag-input");
+    expect(options()[0]).toHaveAttribute("data-part", "option");
+    expect(options()[0]).toHaveAttribute("data-highlighted", "");
+    expect(options()[2]).not.toHaveAttribute("data-highlighted");
     act(() =>
       option("Svelte").dispatchEvent(
         new MouseEvent("mouseover", { bubbles: true }),

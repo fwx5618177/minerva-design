@@ -27,6 +27,15 @@
     "text": "カスタム要素も同じ名前を公開します：タグがコンポーネント、::part(<名前>) がシャドウルート内のパーツ、状態はホストのカスタムステート（ElementInternals.states）で :state() で選択します。ホストに属性を追加しないため、サーバー描画したマークアップも不一致なくハイドレーションできます。::part() とホストへのルールは、要素内部のシャドウスタイルより常に優先されます。",
     "support": ":state() には Chrome 125、Firefox 126、Safari 17.4 が必要です。Chromium 90-124 では旧来のダッシュ付き構文（:--open）になり、それ以外のエンジンでは状態フックがありません。その場合はホスト属性（[open]、[disabled]、[variant=\"ghost\"]）を使ってください。パーツはどこでも使えます。"
   },
+  "items": {
+    "title": "アイテムとその状態のスタイリング",
+    "text": "コンポーネント内で繰り返される要素（メニュー項目、オプション、タブ、テーブルの行とソート済みヘッダー、ページ、ステップ、ツリー項目、カレンダーの日付、トースト、ファイル、星…）は独自の公開状態を持ちます：highlighted、selected、disabled、checked、current、expanded、sort、status…。コンポーネントの状態と同じ語彙を使い、アイテムの ARIA 状態（aria-selected、aria-checked、aria-current、aria-expanded、aria-sort）を反映します。",
+    "react": "React：状態はアイテム要素そのものの属性で、data-minerva・data-part と並びます：[data-minerva=\"menu\"][data-part=\"item\"][data-highlighted]。",
+    "wc": "Web Components、シャドウルート内に描画されるアイテム：各アイテム状態はパーツ名と並ぶ追加のパーツ名 <part>--<state>（キー付き状態は <part>--<key>-<value>）です。::part() で組み合わせます。列挙したすべての名前を持つ要素に一致します：minerva-menu::part(item item--highlighted)、minerva-data-table::part(header-cell header-cell--sort-ascending)。この規約は Shoelace / Web Awesome（item--selected）に倣ったもので、:state() のサポートを必要としません。",
+    "elements": "Web Components、それ自体が独立したカスタム要素であるアイテム（<minerva-option>、<minerva-tab>、<minerva-radio>、<minerva-page-tab>…）：状態はアイテム要素のカスタムステートで、他のコンポーネントと同じです：minerva-option:state(selected)::part(root)。これらの要素に自分で設定した属性（[closable]、[disabled]）も安定したセレクターです。",
+    "dynamic": "アイテムのフックは操作に追従します：矢印キーで [data-highlighted] / item--highlighted が項目間を移動し、列をソートすると data-sort が切り替わり、トーストを閉じると退出アニメーション中に data-state=\"closed\" になります。シャドウのパーツ名とカスタムステートはホストに属性を追加しないため、サーバーで描画したマークアップは不一致なくハイドレーションされます。",
+    "examples": "以下の例では、ハイライトされたメニュー項目、セレクトの選択済みオプション、現在のページ、ソート済みのテーブルヘッダー、成功トーストのスタイルを React と Web Components の両方で変更しています。"
+  },
   "layers": {
     "title": "カスケードレイヤー：@layer minerva",
     "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css、@minerva/lib-web-components/tokens.css は @layer minerva で囲まれています。レイヤー外の CSS は詳細度や記述順に関係なくすべてのレイヤーに勝つので、!important なしでライブラリを上書きできます。アプリでレイヤーを使う場合は、どのスタイルシートよりも前に一度だけ順序を宣言してください。",
@@ -35,7 +44,7 @@
   "stability": {
     "title": "安定性ポリシー",
     "text": "フックの仕様は機械可読です：@minerva/core/styling-hooks がマニフェスト（コンポーネント → パーツ → 状態とその値）をエクスポートし、ドキュメントはそこから生成されます。コントラクトテストはすべての React コンポーネントとカスタム要素をさまざまな状態で描画し、文書化されたフックが欠けている、または文書化されていないパーツが現れると失敗します。ロックファイル（styling-hooks.lock.json）は、意図して更新するまで仕様の変更をすべてビルドエラーにします。",
-    "minor": "マイナーリリース：コンポーネント、パーツ、状態、状態の値の追加。",
+    "minor": "マイナーリリース：コンポーネント、パーツ、状態（コンポーネントまたはアイテムの状態）、状態値の追加。",
     "major": "メジャーリリース：それらの削除・改名、または状態を別のパーツへ移すこと。",
     "private": "対象外：クラス名、フックのない要素の DOM 構造、内部への !important による上書き。"
   },
@@ -60,6 +69,26 @@
     "restyle-table": {
       "title": "Table のスタイル変更",
       "description": "データテーブルのパーツで大文字のヘッダーセルとホバー行のハイライトを実現し、React では縞模様の行も追加します（::part() は :hover などのユーザー操作の疑似クラスのみ受け付け、:nth-child は使えません）。"
+    },
+    "items-menu": {
+      "title": "ハイライトされたメニュー項目",
+      "description": "メニューを開いて矢印キーで移動すると、ハイライトされた項目に色付きの背景とバーが付き、チェック済み項目は太字、無効な項目には取り消し線が付きます。React のパネルはメニューの className でスコープし、Web Component は ::part(item item--highlighted) を使います。"
+    },
+    "items-select": {
+      "title": "セレクトの選択済みオプション",
+      "description": "選択済みのオプションは塗りつぶし、ハイライト中のものは破線の枠線。React のオプションは SelectItem コンポーネント（data-minerva=\"option\"）、options プロパティから描画される Web Component は ::part(item item--selected) を公開し、<minerva-option> 子要素は自身の :state(selected) を使います。"
+    },
+    "items-pagination": {
+      "title": "現在のページ",
+      "description": "丸いページボタンで、現在のページはリング付き（[data-current] / item--current）、無効な前へ / 次へボタンは薄く表示されます。"
+    },
+    "items-table": {
+      "title": "ソート済みのテーブルヘッダー",
+      "description": "ヘッダーをクリックしてソートすると、ソート中の列ヘッダーに下線が付き（data-sort / header-cell--sort-<direction>）、未ソートのソート可能なヘッダーは控えめに、選択した行は色付きになります。"
+    },
+    "items-toast": {
+      "title": "成功トースト",
+      "description": "成功トーストには緑のバーと背景が付き、閉じかけのトーストは data-state=\"closed\" / toast--closed の間薄くなります。React のトーストはポータルで描画されますが、複合セレクターで一致します。"
     }
   }
 }

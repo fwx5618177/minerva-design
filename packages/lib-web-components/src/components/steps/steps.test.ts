@@ -44,6 +44,15 @@ describe("<minerva-steps>", () => {
     expect(cart.classList).toContain("complete");
     expect(shipping.classList).toContain("current");
     expect(payment.classList).not.toContain("complete");
+    expect(cart.getAttribute("part")).toBe("item item--status-complete");
+    expect(shipping.getAttribute("part")).toBe(
+      "item item--current item--status-current",
+    );
+    expect(payment.getAttribute("part")).toBe("item item--status-upcoming");
+    // read-only: no disabled step
+    expect(steps(el)[3].getAttribute("part")).toBe(
+      "item item--status-upcoming",
+    );
     expect(shipping.querySelector(".number")!.textContent).toBe("2");
     expect(shipping.querySelector(".number")).toHaveAttribute(
       "aria-hidden",
@@ -75,6 +84,15 @@ describe("<minerva-steps>", () => {
     await el.updateComplete;
     expect(buttons[2]).toHaveAttribute("aria-current", "step");
     expect(el.getAttribute("value")).toBe("payment");
+    expect(steps(el)[2].getAttribute("part")).toBe(
+      "item item--current item--status-current",
+    );
+    expect(steps(el)[0].getAttribute("part")).toBe(
+      "item item--status-complete",
+    );
+    expect(steps(el)[3].getAttribute("part")).toBe(
+      "item item--disabled item--status-upcoming",
+    );
     // the current step does not fire again
     await userEvent.keyboard("{Enter}");
     expect(onChange).toHaveBeenCalledTimes(1);

@@ -88,7 +88,17 @@ export const docPages: DocPageMeta[] = [
   {
     id: "styling",
     category: "gettingStarted",
-    demos: ["restyle-button", "restyle-modal", "restyle-tabs", "restyle-table"],
+    demos: [
+      "restyle-button",
+      "restyle-modal",
+      "restyle-tabs",
+      "restyle-table",
+      "items-menu",
+      "items-select",
+      "items-pagination",
+      "items-table",
+      "items-toast",
+    ],
   },
 
   // Configuration: ConfigProvider, hooks and theme utilities

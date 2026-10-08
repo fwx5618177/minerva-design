@@ -16,6 +16,7 @@ import { getDirection } from "../../internal/dom";
 import { IconChevronDown } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 import { safeHref } from "../../internal/url";
 
@@ -114,6 +115,9 @@ const CHILDREN_SELECTOR = ".children";
  * @csspart group - A section of items
  * @csspart group-label - The title of a section
  * @csspart item - A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)
+ * @csspart item--current - Item state of `item`: current
+ * @csspart item--expanded - Item state of `item`: expanded
+ * @csspart item--disabled - Item state of `item`: disabled
  * @csspart icon - The icon of an item
  * @csspart label - The label of an item
  * @csspart description - The secondary text of an item
@@ -390,15 +394,15 @@ export class MinervaNavTree extends MinervaElement {
       };
       return html`<div class="branch">
         <button
-          part="item"
+          part=${itemParts("item", { current: active, expanded: open, disabled })}
           class=${classMap(classes)}
           type="button"
           title=${title}
           aria-expanded=${open ? "true" : "false"}
           data-id=${item.id}
-          data-active=${active ? "true" : nothing}
+          ?data-current=${active}
           data-ancestor-active=${ancestorActive ? "true" : nothing}
-          data-expanded=${open ? "true" : nothing}
+          ?data-expanded=${open}
           ?disabled=${disabled}
           @click=${() => this.toggleItem(item)}
           @keydown=${handleBranchKeyDown}
@@ -431,14 +435,15 @@ export class MinervaNavTree extends MinervaElement {
         className,
       });
     }
+    const part = itemParts("item", { current: active, disabled });
     // A disabled entry is not a navigable link: no href, no handler.
     if (disabled) {
       return html`<span
-        part="item"
+        part=${part}
         class=${classMap(classes)}
         title=${title}
         data-id=${item.id}
-        data-active=${active ? "true" : nothing}
+        ?data-current=${active}
         role="link"
         aria-disabled="true"
         >${content}</span
@@ -447,12 +452,12 @@ export class MinervaNavTree extends MinervaElement {
     // Without href the entry is an action (minerva-select), i.e. a button.
     if (item.href === undefined) {
       return html`<button
-        part="item"
+        part=${part}
         class=${classMap(classes)}
         type="button"
         title=${title}
         data-id=${item.id}
-        data-active=${active ? "true" : nothing}
+        ?data-current=${active}
         aria-current=${active ? "page" : nothing}
         @click=${() => this.select(item)}
       >
@@ -460,12 +465,12 @@ export class MinervaNavTree extends MinervaElement {
       </button>`;
     }
     return html`<a
-      part="item"
+      part=${part}
       class=${classMap(classes)}
       href=${safeHref(MinervaNavTree.tagName, item.href) ?? nothing}
       title=${title}
       data-id=${item.id}
-      data-active=${active ? "true" : nothing}
+      ?data-current=${active}
       aria-current=${active ? "page" : nothing}
       @click=${(event: MouseEvent) => this.select(item, event)}
       >${content}</a

@@ -223,7 +223,10 @@ const TimePickerPanel = ({
                 return (
                   <div
                     key={unit.value}
-                    {...hooks("time-picker", "item")}
+                    {...hooks("time-picker", "item", {
+                      selected,
+                      disabled: unit.disabled,
+                    })}
                     role="option"
                     aria-selected={selected}
                     aria-disabled={unit.disabled || undefined}

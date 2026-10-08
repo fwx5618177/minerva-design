@@ -12,6 +12,7 @@ import {
 import { IconPlus, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { MinervaButton } from "../button/button";
 import { MinervaFormControl } from "../form-control/form-control";
 import { MinervaTextarea } from "../textarea/textarea";
@@ -60,6 +61,7 @@ let nextEditor = 0;
  * @tag minerva-key-value-editor
  * @csspart root - The container
  * @csspart row - Each row (key field, value field and remove button)
+ * @csspart row--invalid - Item state of `row`: invalid
  * @csspart remove-button - The remove button of a row (web components only: React renders an IconButton, styled with its own hooks)
  * @csspart add-button - The add button (web components only: React renders a Button, styled with its own hooks)
  * @fires minerva-input - A key or value is being typed; `detail: { value }` (the entries)
@@ -270,6 +272,12 @@ export class MinervaKeyValueEditor extends FormAssociatedElement {
     this.emit("minerva-change", { value: this.value });
   }
 
+  /** A row whose key or value has an error (`row--invalid` part) */
+  private isRowInvalid(entry: KeyValueEntry): boolean {
+    const error = this.errors?.[entry.id];
+    return Boolean(error?.key || error?.value);
+  }
+
   private renderField(
     entry: KeyValueEntry,
     index: number,
@@ -319,7 +327,11 @@ export class MinervaKeyValueEditor extends FormAssociatedElement {
         this.value,
         (entry) => entry.id,
         (entry, index) =>
-          html`<div class="row" part="row" data-entry-id=${entry.id}>
+          html`<div
+            class="row"
+            part=${itemParts("row", { invalid: this.isRowInvalid(entry) })}
+            data-entry-id=${entry.id}
+          >
             ${this.renderField(entry, index, "key", keyText)}
             ${this.renderField(entry, index, "value", valueText)}
             <button

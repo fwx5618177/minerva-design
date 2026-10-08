@@ -37,10 +37,11 @@ const ThemeToggle = ({
           key={item}
           type="button"
           className={styles.item}
-          data-active={theme === item || undefined}
           aria-pressed={theme === item}
           onClick={() => setTheme(item)}
-          {...hooks("theme-toggle", "item")}
+          {...hooks("theme-toggle", "item", {
+            state: theme === item ? "active" : "inactive",
+          })}
         >
           {labels?.[item] ?? t(`themeToggle.${item}`)}
         </button>

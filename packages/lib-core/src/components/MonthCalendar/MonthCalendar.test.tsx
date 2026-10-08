@@ -100,7 +100,8 @@ describe("MonthCalendar", () => {
       "aria-label",
       "2024-03-01, 2 events",
     );
-    expect(day("2024-03-01")).toHaveAttribute("data-outside", "true");
+    expect(day("2024-03-01")).toHaveAttribute("data-outside", "");
+    expect(day("2024-02-28")).not.toHaveAttribute("data-outside");
     expect(day("2024-02-28")).toHaveAttribute("aria-label", "2024-02-28");
     expect(
       day("2024-02-29").querySelector(`.${styles.count}`),
@@ -289,6 +290,7 @@ describe("MonthCalendar", () => {
     expect(screen.getByRole("grid")).toHaveAttribute("aria-disabled", "true");
     for (const cell of container.querySelectorAll<HTMLElement>("[data-date]")) {
       expect(cell).toHaveAttribute("aria-disabled", "true");
+      expect(cell).toHaveAttribute("data-disabled", "");
       expect(cell).toHaveAttribute("tabindex", "-1");
     }
     act(() => day("2024-03-01").click());

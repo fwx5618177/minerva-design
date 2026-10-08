@@ -58,6 +58,14 @@ describe("<minerva-rating>", () => {
       "half",
       "empty",
     ]);
+    // public item parts of each star
+    expect(stars.map((s) => s.getAttribute("part"))).toEqual([
+      "star star--fill-full",
+      "star star--fill-full",
+      "star star--fill-full",
+      "star star--fill-half",
+      "star star--fill-empty",
+    ]);
     const root = slider(el);
     expect(root).toHaveAttribute("role", "img");
     expect(root).toHaveAttribute("aria-label", "7.0 / 10");

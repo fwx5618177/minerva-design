@@ -89,6 +89,31 @@ describe("AutoComplete keyboard, submit and form integration", () => {
     expect(screen.getByText("Cuttlefish")).toHaveClass(styles.description);
   });
 
+  it("moves the public data-highlighted hook with the arrows", () => {
+    render(
+      <Search
+        autoHighlight={false}
+        options={[
+          { value: "a", label: "Alpha" },
+          { value: "b", label: "Beta", disabled: true },
+          { value: "c", label: "Gamma" },
+        ]}
+      />,
+    );
+    act(() => input().focus());
+    const [alpha, beta, gamma] = options();
+    expect(alpha).toHaveAttribute("data-minerva", "autocomplete");
+    expect(alpha).toHaveAttribute("data-part", "item");
+    expect(alpha).not.toHaveAttribute("data-highlighted");
+    expect(beta).toHaveAttribute("data-disabled", "");
+    keyDown("ArrowDown");
+    expect(alpha).toHaveAttribute("data-highlighted", "");
+    keyDown("ArrowDown");
+    expect(alpha).not.toHaveAttribute("data-highlighted");
+    expect(beta).not.toHaveAttribute("data-highlighted");
+    expect(gamma).toHaveAttribute("data-highlighted", "");
+  });
+
   it("Enter picks the highlighted option without filling the input", () => {
     const onSelect = vi.fn();
     const onChange = vi.fn();

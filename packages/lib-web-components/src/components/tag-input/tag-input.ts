@@ -27,6 +27,7 @@ import {
 import { IconPlus, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
+import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 
 export type TagInputSize = "small" | "medium" | "large";
@@ -115,6 +116,7 @@ let nextId = 0;
  * @csspart input - The native text <input> (role="combobox"; web components only, see control)
  * @csspart list - The suggestion list (role=listbox, while open)
  * @csspart option - A suggestion (role=option; the highlighted one has aria-selected="true")
+ * @csspart option--highlighted - Item state of `option`: highlighted
  * @csspart empty - The text shown when no suggestion matches
  * @csspart add-button - The add button (web components only: React renders an IconButton, styled with its own hooks)
  * @csspart clear-button - The clear button (web components only: React renders an IconButton, styled with its own hooks)
@@ -654,13 +656,13 @@ export class MinervaTagInput extends FormAssociatedElement {
       ${filtered.map(
         (suggestion, index) =>
           html`<li
-            part="option"
+            part=${itemParts("option", { highlighted: index === this.highlight })}
             id=${`${this.listId}-option-${index}`}
             role="option"
             aria-selected=${index === this.highlight ? "true" : "false"}
             tabindex="-1"
             class="option"
-            ?data-active=${index === this.highlight}
+            ?data-highlighted=${index === this.highlight}
             @mousedown=${(event: MouseEvent) => {
               // runs before the input blurs: keep focus in the input
               event.preventDefault();

@@ -9,6 +9,13 @@ const options = [
   },
 ];
 
+/** Item states: disabled and loading (children loading) options */
+const stateOptions = [
+  ...options,
+  { value: "de", label: "Germany", disabled: true },
+  { value: "es", label: "Spain", isLeaf: false, loading: true },
+];
+
 export default [
   {
     name: "closed, with a value",
@@ -33,6 +40,15 @@ export default [
     ),
     setup: async ({ user, container }) => {
       await user.click(container.querySelector('[data-part="control"]')!);
+    },
+  },
+  {
+    name: "keyboard: expanded, disabled and loading items",
+    element: <Cascader name="city" label="City" options={stateOptions} />,
+    setup: async ({ user, container }) => {
+      container.querySelector("input")!.focus();
+      // opens on France, then shows its children
+      await user.keyboard("{Enter}{ArrowRight}");
     },
   },
   {

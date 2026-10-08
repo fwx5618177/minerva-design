@@ -313,13 +313,14 @@ const AutoComplete = ({
 
   const renderOptionItem = (option: AutoCompleteOption, index: number) => {
     const active = activeIndex === index;
+    const highlighted = hoveredIndex === index || active;
     return (
       <div
         key={option.value}
         className={cn(styles.optionItem, {
           [styles.disabled]: option.disabled,
           [styles.highlight]: option.highlight,
-          [styles.active]: hoveredIndex === index || active,
+          [styles.active]: highlighted,
         })}
         style={option.style}
         role="option"
@@ -340,7 +341,10 @@ const AutoComplete = ({
         }}
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(-1)}
-        {...hooks("autocomplete", "item")}
+        {...hooks("autocomplete", "item", {
+          highlighted,
+          disabled: option.disabled,
+        })}
       >
         {mode === "custom" && renderOption
           ? renderOption(option)

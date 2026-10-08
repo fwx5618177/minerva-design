@@ -8,17 +8,36 @@ import {
   STATE_VALUES,
   customStateName,
   hookSurface,
+  itemPartName,
   reactSelector,
   reactStateSelector,
   stylingHooks,
+  wcItemParts,
   wcSelector,
   wcStateSelector,
   type ComponentHookSpec,
+  type ComponentStateSpec,
 } from "./index";
 
 const manifest = stylingHooks as Record<string, ComponentHookSpec>;
 const KEBAB = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const STATE_KEYS = ["state", ...BOOLEAN_STATES, ...KEYED_STATES] as string[];
+
+/** Keys and values of a component / item state spec use the vocabulary */
+function expectVocabulary(states: ComponentStateSpec) {
+  for (const [key, value] of Object.entries(states)) {
+    expect(STATE_KEYS).toContain(key);
+    if (key === "state") {
+      expect((value as string[]).length).toBeGreaterThan(0);
+      for (const v of value as string[]) expect(STATE_VALUES).toContain(v);
+    } else if ((BOOLEAN_STATES as readonly string[]).includes(key)) {
+      expect(value).toBe(true);
+    } else {
+      expect((value as string[]).length).toBeGreaterThan(0);
+      for (const v of value as string[]) expect(v).toMatch(KEBAB);
+    }
+  }
+}
 
 describe("styling hooks manifest", () => {
   it("lists every component module", () => {
@@ -49,17 +68,22 @@ describe("styling hooks manifest", () => {
     });
 
     it("uses the state vocabulary", () => {
-      for (const [key, value] of Object.entries(spec.states)) {
-        expect(STATE_KEYS).toContain(key);
-        if (key === "state") {
-          expect((value as string[]).length).toBeGreaterThan(0);
-          for (const v of value as string[]) expect(STATE_VALUES).toContain(v);
-        } else if ((BOOLEAN_STATES as readonly string[]).includes(key)) {
-          expect(value).toBe(true);
-        } else {
-          expect((value as string[]).length).toBeGreaterThan(0);
-          for (const v of value as string[]) expect(v).toMatch(KEBAB);
+      expectVocabulary(spec.states);
+    });
+
+    it("declares item states with the vocabulary", () => {
+      for (const [part, partSpec] of Object.entries(spec.parts)) {
+        if (!partSpec.itemStates) continue;
+        expect(Object.keys(partSpec.itemStates).length, part).toBeGreaterThan(
+          0,
+        );
+        expectVocabulary(partSpec.itemStates);
+        // a key is either a component state or an item state of the part
+        for (const key of partSpec.states ?? []) {
+          expect(Object.keys(partSpec.itemStates), part).not.toContain(key);
         }
+        // part names are kebab-case (no "--"): `<part>--<state>` names
+        // never collide with a part
       }
     });
 
@@ -106,6 +130,30 @@ describe("selectors", () => {
     expect(wcSelector("unknown-thing")).toBe("minerva-unknown-thing");
     expect(wcStateSelector({ state: "open", size: "small" })).toBe(
       ":state(open):state(size-small)",
+    );
+  });
+
+  it("builds item state selectors", () => {
+    expect(
+      reactSelector("menu", "item", undefined, { highlighted: true }),
+    ).toBe('[data-minerva="menu"][data-part="item"][data-highlighted]');
+    expect(
+      reactSelector("data-table", "header-cell", {}, { sort: "ascending" }),
+    ).toBe(
+      '[data-minerva="data-table"][data-part="header-cell"][data-sort="ascending"]',
+    );
+    expect(wcSelector("menu", "item", undefined, { highlighted: true })).toBe(
+      "minerva-menu::part(item item--highlighted)",
+    );
+    expect(
+      wcSelector("menu", "item", { state: "open" }, { state: "checked" }),
+    ).toBe("minerva-menu:state(open)::part(item item--checked)");
+    expect(wcItemParts("item", { disabled: true, status: "error" })).toBe(
+      "item item--disabled item--status-error",
+    );
+    expect(wcItemParts("row")).toBe("row");
+    expect(itemPartName("header-cell", "sort", "descending")).toBe(
+      "header-cell--sort-descending",
     );
   });
 

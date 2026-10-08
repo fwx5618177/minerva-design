@@ -272,6 +272,10 @@ describe("KeyValueEditor", () => {
     expect(document.activeElement).toBe(stableField);
     expect(inputs()[0].getAttribute("aria-invalid")).toBe("true");
     expect(inputs()[2].getAttribute("aria-invalid")).not.toBe("true");
+    // public item hook: the row with an error is invalid
+    const rows = document.querySelectorAll('[data-part="row"]');
+    expect(rows[0]).toHaveAttribute("data-invalid", "");
+    expect(rows[1]).not.toHaveAttribute("data-invalid");
   });
 
   it("keeps field ids distinct across multiple editors", () => {

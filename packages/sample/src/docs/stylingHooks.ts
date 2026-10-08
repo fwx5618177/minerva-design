@@ -54,6 +54,39 @@ export function statePartsOf(spec: ComponentHookSpec, key: string): string[] {
     .map(([name]) => name);
 }
 
+/** An item state of a part: its key and values (`[true]` for a boolean) */
+export interface ItemStateRow {
+  part: string;
+  key: string;
+  values: (string | true)[];
+}
+
+/** Item states of the parts rendered by `framework` (menu items, rows...) */
+export function itemStatesOf(
+  spec: ComponentHookSpec,
+  framework: HookFramework,
+): ItemStateRow[] {
+  return partsOf(spec, framework).flatMap(([part, partSpec]) =>
+    Object.entries(partSpec.itemStates ?? {}).map(([key, value]) => ({
+      part,
+      key,
+      values: Array.isArray(value) ? [...(value as string[])] : [true],
+    })),
+  );
+}
+
+/** Selector of a part in an item state */
+export const itemStateSelector = (
+  name: string,
+  framework: HookFramework,
+  part: string,
+  key: string,
+  value: string | true,
+) =>
+  framework === "react"
+    ? reactSelector(name, part, undefined, { [key]: value })
+    : wcSelector(name, part, undefined, { [key]: value });
+
 /** A state selector example of a state key */
 function sampleState(spec: ComponentHookSpec, key: string): StateSelector {
   const value = (spec.states as Record<string, unknown>)[key];
@@ -89,6 +122,13 @@ export function hookExample(
         `${wcSelector(name, part, sampleState(spec, stateKey))} {\n  /* … */\n}`,
       );
     }
+  }
+  // an item in a state (first item state of the component)
+  const [item] = itemStatesOf(spec, framework);
+  if (item) {
+    lines.push(
+      `${itemStateSelector(name, framework, item.part, item.key, item.values[0])} {\n  /* … */\n}`,
+    );
   }
   return lines.join("\n\n");
 }

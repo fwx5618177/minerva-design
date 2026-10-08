@@ -37,7 +37,7 @@ function renderToggle(
 const activeLabels = () =>
   screen
     .getAllByRole("button")
-    .filter((button) => button.hasAttribute("data-active"))
+    .filter((button) => button.getAttribute("data-state") === "active")
     .map((button) => button.textContent);
 
 describe("ThemeToggle", () => {
@@ -236,12 +236,14 @@ describe("PaletteToggle", () => {
     );
     const wrapper = screen.getByTestId("palette");
     expect(wrapper).toHaveAttribute("aria-label", "Current palette editorial");
+    // public item hook: state active / inactive
     expect(screen.getByRole("button", { name: "Editorial" })).toHaveAttribute(
-      "data-active",
-      "true",
+      "data-state",
+      "active",
     );
-    expect(screen.getByRole("button", { name: "Tech" })).not.toHaveAttribute(
-      "data-active",
+    expect(screen.getByRole("button", { name: "Tech" })).toHaveAttribute(
+      "data-state",
+      "inactive",
     );
     await user.click(screen.getByRole("button", { name: "Tech" }));
     expect(wrapper).toHaveAttribute("aria-label", "Current palette tech");
@@ -252,6 +254,14 @@ describe("PaletteToggle", () => {
     expect(screen.getByRole("button", { name: "Editorial" })).toHaveAttribute(
       "aria-pressed",
       "false",
+    );
+    expect(screen.getByRole("button", { name: "Tech" })).toHaveAttribute(
+      "data-state",
+      "active",
+    );
+    expect(screen.getByRole("button", { name: "Editorial" })).toHaveAttribute(
+      "data-state",
+      "inactive",
     );
     expect(root.dataset.palette).toBe("tech");
   });

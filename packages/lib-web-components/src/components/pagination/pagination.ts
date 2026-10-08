@@ -17,6 +17,7 @@ import {
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import { getDirection } from "../../internal/dom";
+import { itemParts } from "../../internal/styling-hooks";
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -97,6 +98,8 @@ interface Item {
  * @slot jump-next-icon - Icon of the jump-forward item
  * @csspart root - The `<nav>` landmark
  * @csspart item - A page / previous / next / jump button (the current page has aria-current=page)
+ * @csspart item--current - Item state of `item`: current
+ * @csspart item--disabled - Item state of `item`: disabled
  * @csspart total - The total text
  * @csspart jumper - The quick jumper label (wraps its input)
  * @csspart size-changer - The page size `<select>`
@@ -426,7 +429,7 @@ export class MinervaPagination extends MinervaElement {
     if (this.itemRender) content = this.itemRender(target, type);
     return html`<button
       type="button"
-      part="item"
+      part=${itemParts("item", { current: isActive, disabled: isDisabled })}
       data-key=${key}
       class=${classMap({
         item: true,

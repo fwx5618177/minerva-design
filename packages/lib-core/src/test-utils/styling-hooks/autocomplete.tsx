@@ -27,6 +27,22 @@ export default [
     setup: open,
   },
   {
+    name: "keyboard: highlighted item, disabled item",
+    element: (
+      <AutoComplete
+        label="Food"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Apricot", value: "apricot", disabled: true },
+        ]}
+      />
+    ),
+    setup: async ({ user, container }) => {
+      await user.click(container.querySelector("input")!);
+      await user.keyboard("{ArrowDown}");
+    },
+  },
+  {
     name: "open, empty",
     element: <AutoComplete label="Food" options={options} defaultValue="zzz" />,
     setup: open,

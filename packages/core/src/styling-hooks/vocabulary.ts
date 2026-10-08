@@ -9,6 +9,14 @@
  * | boolean | `[data-disabled]`         | `:state(disabled)`     |
  * | keyed   | `[data-size="small"]`     | `:state(size-small)`   |
  *
+ * Item states (a menu item, an option, a table row, a day...) use the same
+ * names on the item itself: `[data-part="item"][data-highlighted]` in React;
+ * on the web components either the custom states of the item element when
+ * it is a light-DOM element of its own (`minerva-option:state(selected)`),
+ * or `<part>--<state>` part names next to the part name when the item is
+ * rendered in a shadow root (`::part(item item--highlighted)`, see
+ * `itemPartName`).
+ *
  * Adding a name here is a minor change; removing or renaming one is a major
  * change (see `STABILITY_POLICY`).
  */
@@ -37,6 +45,10 @@ export const BOOLEAN_STATES = [
   "highlighted",
   "current",
   "dragging",
+  "selected",
+  "expanded",
+  "today",
+  "outside",
 ] as const;
 
 /**
@@ -53,6 +65,8 @@ export const KEYED_STATES = [
   "placement",
   "shape",
   "status",
+  "sort",
+  "fill",
 ] as const;
 
 export type StateValue = (typeof STATE_VALUES)[number];
@@ -81,12 +95,30 @@ export function customStateName(key: StateKey, value?: string): string {
   return `${key}-${value}`;
 }
 
+/** Separator of an item state part name: `item--highlighted` */
+export const ITEM_STATE_SEPARATOR = "--";
+
+/**
+ * The part name of an item state (web components, items rendered in a shadow
+ * root): `<part>--<custom state name>`, e.g. `item--highlighted`,
+ * `item--checked`, `header-cell--sort-ascending`. The element keeps its part
+ * name too, so `::part(item item--highlighted)` matches a highlighted item.
+ */
+export function itemPartName(
+  part: string,
+  key: StateKey,
+  value?: string,
+): string {
+  return `${part}${ITEM_STATE_SEPARATOR}${customStateName(key, value)}`;
+}
+
 /**
  * Stability policy of the hook surface (`styling-hooks.lock.json`):
- * adding a component, part, state key or value is a minor change; removing
+ * adding a component, part, state key or value (item states included) is a
+ * minor change; removing
  * or renaming one (or moving a state to another part) is a major change.
  * CSS classes, the DOM structure and the elements that carry no hook are
  * private and may change in any release.
  */
 export const STABILITY_POLICY =
-  "Adding a component, part, state or state value is a minor change. Removing or renaming one is a major change. Class names and DOM structure without hooks are private.";
+  "Adding a component, part, state (component or item state) or state value is a minor change. Removing or renaming one is a major change. Class names and DOM structure without hooks are private.";

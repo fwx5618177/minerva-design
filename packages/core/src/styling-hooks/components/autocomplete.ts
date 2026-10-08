@@ -26,7 +26,11 @@ export default defineHooks({
       states: ["state", "side", "align", "placement"],
     },
     list: { description: "The role=listbox list" },
-    item: { description: "An option" },
+    item: {
+      description:
+        "An option. Item states: highlighted (active option or hovered), disabled",
+      itemStates: { highlighted: true, disabled: true },
+    },
     "group-label": { description: "A group heading" },
     empty: { description: "The empty state (no matching option)" },
     loading: { description: "The loading state (while loading)" },

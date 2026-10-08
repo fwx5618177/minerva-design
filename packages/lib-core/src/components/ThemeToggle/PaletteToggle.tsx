@@ -43,10 +43,11 @@ const PaletteToggle = ({
             key={key}
             type="button"
             className={styles.item}
-            data-active={active || undefined}
             aria-pressed={active}
             onClick={() => setPalette(item)}
-            {...hooks("palette-toggle", "item")}
+            {...hooks("palette-toggle", "item", {
+              state: active ? "active" : "inactive",
+            })}
           >
             {labels?.[key] ?? t(`paletteToggle.${key}`)}
           </button>

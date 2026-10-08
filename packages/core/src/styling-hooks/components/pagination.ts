@@ -9,7 +9,8 @@ export default defineHooks({
     root: { description: "The <nav> landmark" },
     item: {
       description:
-        "A page / previous / next / jump button (the current page has aria-current=page)",
+        "A page / previous / next / jump button (the current page has aria-current=page). Item states: current (the current page), disabled",
+      itemStates: { current: true, disabled: true },
     },
     total: { description: "The total text" },
     jumper: { description: "The quick jumper label (wraps its input)" },

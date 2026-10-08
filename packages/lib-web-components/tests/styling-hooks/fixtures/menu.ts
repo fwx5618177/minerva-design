@@ -1,4 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import type { WcHookScenario } from "../types";
+import { settle } from "../../utils";
 
 export const menuEntries = `
   <minerva-menu-item value="new" shortcut="⌘N"><span slot="icon">+</span>New</minerva-menu-item>
@@ -22,6 +24,20 @@ export default [
     html: `<minerva-menu open size="small" aria-label="Actions">
       <button slot="trigger">Open</button>${menuEntries}
     </minerva-menu>`,
+  },
+  {
+    name: "keyboard: highlighted item, expanded submenu trigger",
+    html: `<minerva-menu aria-label="Actions">
+      <button slot="trigger">Open</button>${menuEntries}
+    </minerva-menu>`,
+    setup: async (root) => {
+      const user = userEvent.setup();
+      root.querySelector("button")!.focus();
+      // opens on the first item, then Share, then its submenu
+      await user.keyboard("{ArrowDown}");
+      await settle();
+      await user.keyboard("{ArrowDown}{ArrowRight}");
+    },
   },
   {
     name: "disabled (closed)",

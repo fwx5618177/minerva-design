@@ -20,6 +20,22 @@ export default [
     },
   },
   {
+    name: "keyboard: highlighted item, expanded submenu trigger",
+    element: (
+      <ContextMenu items={menuEntries} aria-label="Actions">
+        <div>Area</div>
+      </ContextMenu>
+    ),
+    setup: async ({ user, view }) => {
+      fireEvent.contextMenu(view.getByText("Area"), {
+        clientX: 10,
+        clientY: 10,
+      });
+      // focus is on the first item: Share, then its submenu
+      await user.keyboard("{ArrowDown}{ArrowRight}");
+    },
+  },
+  {
     name: "disabled (closed)",
     element: (
       <ContextMenu items={menuEntries} disabled>

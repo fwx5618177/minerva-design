@@ -313,6 +313,10 @@ describe("<minerva-data-table>", () => {
       expect(header("Name")).toHaveAttribute("aria-sort", "none");
       expect(header("Age")).toHaveAttribute("aria-sort", "none");
       expect(header("ID")).not.toHaveAttribute("aria-sort");
+      expect(header("Name").getAttribute("part")).toBe(
+        "header-cell header-cell--sort-none",
+      );
+      expect(header("ID").getAttribute("part")).toBe("header-cell");
       expect(header("ID").querySelector("button")).toBe(null);
       expect(header("Name").querySelector("svg")).toHaveAttribute(
         "aria-hidden",
@@ -331,15 +335,23 @@ describe("<minerva-data-table>", () => {
       await user.keyboard("{Enter}");
       await settle();
       expect(header("Name")).toHaveAttribute("aria-sort", "ascending");
-      expect(sortButton("Name")).toHaveAttribute("data-sort-order", "ascend");
+      expect(header("Name").getAttribute("part")).toBe(
+        "header-cell header-cell--sort-ascending",
+      );
       expect(cellTexts(1)).toEqual(["alice", "Bob", "Charlie"]);
       await user.keyboard(" ");
       await settle();
       expect(header("Name")).toHaveAttribute("aria-sort", "descending");
+      expect(header("Name").getAttribute("part")).toBe(
+        "header-cell header-cell--sort-descending",
+      );
       expect(cellTexts(1)).toEqual(["Charlie", "Bob", "alice"]);
       await user.keyboard("{Enter}");
       await settle();
       expect(header("Name")).toHaveAttribute("aria-sort", "none");
+      expect(header("Name").getAttribute("part")).toBe(
+        "header-cell header-cell--sort-none",
+      );
       expect(cellTexts(1)).toEqual(["Charlie", "alice", "Bob"]);
       expect(onSort.mock.calls).toEqual([
         [{ key: "name", order: "ascend" }],
@@ -425,7 +437,8 @@ describe("<minerva-data-table>", () => {
       });
       expect(el.selectedRowKeys).toEqual([2]);
       expect(bodyRows()[1]).toHaveAttribute("aria-selected", "true");
-      expect(bodyRows()[1]).toHaveAttribute("data-selected");
+      expect(bodyRows()[1].getAttribute("part")).toBe("row row--selected");
+      expect(bodyRows()[0].getAttribute("part")).toBe("row");
       expect(selectAll().indeterminate).toBe(true);
     });
 

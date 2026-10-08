@@ -43,6 +43,8 @@ describe("Table sorting", () => {
     expect(header("Name")).toHaveAttribute("aria-sort", "none");
     expect(header("Age")).toHaveAttribute("aria-sort", "none");
     expect(header("ID")).not.toHaveAttribute("aria-sort");
+    expect(header("Name")).toHaveAttribute("data-sort", "none");
+    expect(header("ID")).not.toHaveAttribute("data-sort");
     expect(within(header("ID")).queryByRole("button")).toBeNull();
     // Decorative indicator
     expect(header("Name").querySelector("svg")).toHaveAttribute(
@@ -68,14 +70,18 @@ describe("Table sorting", () => {
 
     await user.keyboard("{Enter}");
     expect(header("Name")).toHaveAttribute("aria-sort", "ascending");
+    expect(header("Name")).toHaveAttribute("data-sort", "ascending");
     expect(names()).toEqual(["alice", "Bob", "Charlie"]);
 
     await user.keyboard(" ");
     expect(header("Name")).toHaveAttribute("aria-sort", "descending");
+    expect(header("Name")).toHaveAttribute("data-sort", "descending");
+    expect(header("Age")).toHaveAttribute("data-sort", "none");
     expect(names()).toEqual(["Charlie", "Bob", "alice"]);
 
     await user.keyboard("{Enter}");
     expect(header("Name")).toHaveAttribute("aria-sort", "none");
+    expect(header("Name")).toHaveAttribute("data-sort", "none");
     expect(names()).toEqual(["Charlie", "alice", "Bob"]);
 
     expect(onSortChange.mock.calls).toEqual([
@@ -219,12 +225,14 @@ describe("Table row selection", () => {
     await user.keyboard(" ");
     expect(alice).toBeChecked();
     expect(alice.closest("tr")).toHaveAttribute("aria-selected", "true");
+    expect(alice.closest("tr")).toHaveAttribute("data-selected", "");
     expect(onChange).toHaveBeenLastCalledWith([2], [people[1]]);
     expect(selectAll).toBePartiallyChecked();
 
     await user.keyboard(" ");
     expect(alice).not.toBeChecked();
     expect(alice.closest("tr")).not.toHaveAttribute("aria-selected");
+    expect(alice.closest("tr")).not.toHaveAttribute("data-selected");
     expect(onChange).toHaveBeenLastCalledWith([], []);
     expect(selectAll).not.toBePartiallyChecked();
   });

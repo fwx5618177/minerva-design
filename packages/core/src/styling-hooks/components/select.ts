@@ -18,8 +18,9 @@ export default defineHooks({
     },
     item: {
       description:
-        "An option rendered from the `options` property (web components only: React options are SelectItem elements, see option)",
+        "An option rendered from the `options` property (web components only: React options are SelectItem elements, see option). Item states: selected, highlighted, disabled",
       only: "wc",
+      itemStates: { selected: true, highlighted: true, disabled: true },
     },
     "group-label": {
       description:
