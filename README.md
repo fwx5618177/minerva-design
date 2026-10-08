@@ -430,7 +430,7 @@ pnpm dev
 - Linting and formatting: ESLint 10 + typescript-eslint, Prettier
 - Git hooks: Husky, lint-staged, commitlint (Conventional Commits)
 - CI: `.github/workflows/ci.yml` runs lint, typecheck, format check, tests with coverage, build, built-package tests and package checks on Node 22 for every push to `main` and every pull request
-- Docs deployment: `.github/workflows/deploy.yml` builds the docs site and publishes it to GitHub Pages on every push to `main` (it still uses the pre-rename package names, kept working by the shims in [`tools/compat`](./tools/compat/README.md))
+- Docs deployment: `.github/workflows/deploy.yml` builds `minerva-design` and the docs site (`apps/docs`) and publishes it to GitHub Pages on every push to `main`
 
 ### Releasing (manual npm publishing)
 
@@ -480,7 +480,7 @@ What the package publishes (`files` in `packages/minerva-design/package.json`; t
 | `dist/web-components/` | ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, framework typings in `types/`, `html-custom-data.json`                            |
 | package root           | `custom-elements.json`, `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                              |
 
-The workspace packages (`@minerva/core`, `@minerva/react`, `@minerva/web-components`, `@minerva/docs` and the `tools/compat` shims) are private and never published.
+The workspace packages (`@minerva/core`, `@minerva/react`, `@minerva/web-components`, `@minerva/docs`) are private and never published.
 
 ## 🤝 Contributing
 

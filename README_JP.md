@@ -366,7 +366,7 @@ pnpm dev
 - リント・フォーマット：ESLint 10 + typescript-eslint、Prettier
 - Git フック：Husky、lint-staged、commitlint（Conventional Commits）
 - CI：`.github/workflows/ci.yml` が `main` への push とすべての Pull Request で、Node 22 上で lint、型チェック、整形チェック、カバレッジ付きテスト、ビルド、ビルド成果物のテスト、パッケージチェックを実行
-- ドキュメントのデプロイ：`.github/workflows/deploy.yml` が `main` への push ごとにドキュメントサイトをビルドし GitHub Pages に公開（リネーム前のパッケージ名を使い続けており、[`tools/compat`](./tools/compat/README.md) の互換パッケージで動作を維持しています）
+- ドキュメントのデプロイ：`.github/workflows/deploy.yml` が `main` への push ごとに `minerva-design` とドキュメントサイト（`apps/docs`）をビルドし、GitHub Pages に公開
 
 ### リリース（npm への手動公開）
 
@@ -416,7 +416,7 @@ pnpm dev
 | `dist/web-components/` | 要素ごとの ESM、`elements/*` エントリー（任意の `code-editor` を含む）、`cdn/minerva.js`、`types/` のフレームワーク型定義、`html-custom-data.json`                                    |
 | パッケージのルート     | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                                                        |
 
-workspace パッケージ（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`、`tools/compat` の互換パッケージ）は非公開で、公開されることはありません。
+workspace パッケージ（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`）は非公開で、公開されることはありません。
 
 ## 🤝 コントリビューション
 

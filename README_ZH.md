@@ -366,7 +366,7 @@ pnpm dev
 - 代码检查与格式化：ESLint 10 + typescript-eslint、Prettier
 - Git Hooks：Husky、lint-staged、commitlint（Conventional Commits）
 - CI：`.github/workflows/ci.yml` 在每次推送到 `main` 和每个 Pull Request 时，于 Node 22 下运行 lint、类型检查、格式检查、带覆盖率的测试、构建、构建产物测试和包检查
-- 文档部署：`.github/workflows/deploy.yml` 在每次推送到 `main` 时构建文档站点并发布到 GitHub Pages（它仍使用改名前的包名，由 [`tools/compat`](./tools/compat/README.md) 中的兼容包保持可用）
+- 文档部署：`.github/workflows/deploy.yml` 在每次推送到 `main` 时构建 `minerva-design` 和文档站点（`apps/docs`），并发布到 GitHub Pages
 
 ### 发布（手动发布到 npm）
 
@@ -416,7 +416,7 @@ pnpm dev
 | `dist/web-components/` | 每个元素的 ESM、`elements/*` 入口（含可选的 `code-editor`）、`cdn/minerva.js`、`types/` 中的框架类型、`html-custom-data.json`                         |
 | 包根目录               | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                        |
 
-workspace 包（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs` 以及 `tools/compat` 中的兼容包）都是私有包，永远不会发布。
+workspace 包（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`）都是私有包，永远不会发布。
 
 ## 🤝 贡献
 

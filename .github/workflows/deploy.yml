@@ -27,17 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build engine project
-        run: pnpm --filter @minerva/lib-core build
+      - name: Build minerva-design package
+        run: pnpm --filter minerva-design build
 
-      - name: Build web components project
-        run: pnpm --filter @minerva/lib-web-components build
-
-      - name: Build sample project
-        run: pnpm --filter @minerva/sample build
+      - name: Build docs site
+        run: pnpm --filter @minerva/docs build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: packages/sample/dist
+          folder: apps/docs/dist

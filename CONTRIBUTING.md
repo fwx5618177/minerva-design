@@ -22,13 +22,13 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 6. If your change affects the published package `minerva-design` (anything under `packages/core`, `packages/react`, `packages/web-components` or `packages/minerva-design`), add a changeset for `minerva-design` with `pnpm changeset`.
 7. Issue that pull request!
 
-`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. `deploy.yml` builds and deploys the docs site (through the compatibility shims of [`tools/compat`](./tools/compat/README.md); do not edit it).
+`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
 
 ## Development setup
 
 - Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 (`corepack enable` or `npm i -g pnpm`)
 - `pnpm install`, then `pnpm dev` to build `minerva-design` and start the docs site at http://127.0.0.1:3000/minerva/
-- Layout: `packages/core` (`@minerva/core`), `packages/react` (`@minerva/react`) and `packages/web-components` (`@minerva/web-components`) are the sources, as private workspace packages; their builds write `packages/minerva-design/dist/{core,react,web-components}`, the one published package (`minerva-design`). `apps/docs` (`@minerva/docs`) is the docs site; `tools/` holds the shared build helpers (`css-layer.mjs`, `dual-declarations.mjs`, `core-imports.mjs`, `paths.mjs`) and the `tools/compat` shims of the deploy workflow.
+- Layout: `packages/core` (`@minerva/core`), `packages/react` (`@minerva/react`) and `packages/web-components` (`@minerva/web-components`) are the sources, as private workspace packages; their builds write `packages/minerva-design/dist/{core,react,web-components}`, the one published package (`minerva-design`). `apps/docs` (`@minerva/docs`) is the docs site; `tools/` holds the shared build helpers (`css-layer.mjs`, `dual-declarations.mjs`, `core-imports.mjs`, `paths.mjs`).
 - User-facing code (docs pages, demos, READMEs) imports `minerva-design` entries only, never `@minerva/*` (checked by `apps/docs/src/docs/userImports.test.ts`). After adding a web component entry, run `pnpm --filter @minerva/web-components manifest` and `pnpm --filter minerva-design sync:package`.
 - Documentation pages live in `apps/docs/src/docs/pages/<page>/` (one file per live demo under `demos/`), their strings in `apps/docs/src/i18n/locales/<lng>/docs/<page>.json` (en, zh, ja, fr — keep all four in sync). API tables are generated from each component's `types.ts`: document props with JSDoc and `@default`, then run `pnpm --filter @minerva/docs gen:api`. `pnpm test` fails if a public export is undocumented, a locale is missing a key, or the generated API file is stale.
 

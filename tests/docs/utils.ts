@@ -16,25 +16,13 @@ export const PUBLISHED = {
 
 /**
  * Private workspace packages (never published, ignored by Changesets): the
- * sources, the docs site and the deploy-workflow shims of tools/compat
- * (directory -> name).
+ * sources and the docs site (directory -> name).
  */
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
   "packages/react": "@minerva/react",
   "packages/web-components": "@minerva/web-components",
   "apps/docs": "@minerva/docs",
-  ...Object.fromEntries(
-    readdirSync(join(ROOT, "tools/compat"), { withFileTypes: true })
-      .filter((d) => d.isDirectory())
-      .map((d) => {
-        const dir = `tools/compat/${d.name}`;
-        const { name } = JSON.parse(
-          readFileSync(join(ROOT, dir, "package.json"), "utf8"),
-        ) as { name: string };
-        return [dir, name];
-      }),
-  ),
 };
 
 /** Markdown files whose links and code blocks are checked */
@@ -50,7 +38,6 @@ export const MARKDOWN = [
   "packages/core/README.md",
   "packages/react/README.md",
   "packages/web-components/README.md",
-  "tools/compat/README.md",
 ];
 
 export interface CodeBlock {

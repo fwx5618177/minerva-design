@@ -3,7 +3,8 @@
 // shipped, no dependency on the private workspace packages (bundled into its
 // dist), and a Changesets setup that only ever releases it.
 import { describe, expect, it } from "vitest";
-import { PRIVATE, PUBLISHED, exists, read, readJson } from "./utils";
+import { readdirSync } from "node:fs";
+import { PRIVATE, PUBLISHED, at, exists, read, readJson } from "./utils";
 
 interface Pkg {
   name: string;
@@ -137,7 +138,16 @@ describe("versioning", () => {
     expect(changesets.baseBranch).toBe("main");
     // one glob for every private workspace package
     expect(changesets.ignore).toEqual(["@minerva/*"]);
-    expect(Object.keys(PRIVATE).length).toBeGreaterThanOrEqual(7);
+    // every workspace package except the published one is listed as private
+    const workspace = ["apps", "packages"].flatMap((group) =>
+      readdirSync(at(group), { withFileTypes: true })
+        .filter((d) => d.isDirectory() && exists(group, d.name, "package.json"))
+        .map((d) => `${group}/${d.name}`),
+    );
+    expect(
+      workspace.filter((dir) => !(dir.replace("packages/", "") in PUBLISHED)),
+    ).toEqual(expect.arrayContaining(Object.keys(PRIVATE)));
+    expect(Object.keys(PRIVATE)).toHaveLength(workspace.length - 1);
     for (const name of Object.values(PRIVATE)) {
       expect(name).toMatch(/^@minerva\/[\w-]+$/);
     }
