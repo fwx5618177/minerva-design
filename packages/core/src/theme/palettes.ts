@@ -4,7 +4,7 @@
 // the SSR init script can select a palette before hydration without any
 // JavaScript theme application.
 import type { ComponentTheme } from "./types";
-import type { Palette, ResolvedThemeMode } from "./theme-utils";
+import type { Palette, ResolvedThemeMode } from "./mode";
 
 export const palettes = {
   editorial: {

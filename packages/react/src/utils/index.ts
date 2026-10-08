@@ -5,6 +5,6 @@ export {
   getSystemTheme,
   isBilingualTheme,
   resolveTheme,
-} from "@minerva/core";
+} from "@minerva/dom";
 export { cn } from "./cn";
 export type { ClassValue, ClassDictionary } from "./cn";

@@ -106,6 +106,7 @@ const UNUSED: Array<[string, RegExp]> = [
 
 const SOURCES = [
   "packages/core/src",
+  "packages/dom/src",
   "packages/react/src",
   "packages/web-components/src",
 ];

@@ -11,7 +11,7 @@
  * `cspHash()` computes it for a custom `createThemeInitScript(...)` output
  * (synchronous and dependency-free, so it works in every server runtime).
  */
-import { THEME_INIT_SCRIPT } from "./theme-utils";
+import { THEME_INIT_SCRIPT } from "./cookies";
 
 const K = [
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,

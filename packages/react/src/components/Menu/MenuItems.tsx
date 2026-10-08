@@ -13,16 +13,15 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
+import { createTypeahead, getNextIndex } from "@minerva/core";
 import {
   createPointerGrace,
-  createTypeahead,
   focusElement,
-  getNextIndex,
   parsePlacement,
   type GraceSide,
   type Placement,
   type VirtualElement,
-} from "@minerva/core";
+} from "@minerva/dom";
 import { IconCheck, IconChevronRight } from "../../internal/icons";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";

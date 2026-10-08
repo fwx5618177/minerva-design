@@ -8,7 +8,6 @@ import {
   FONT_SCALES,
   RADIUS_SCALES,
   SHADOW_SCALES,
-  applyDesignAttributes,
   designAttributes,
   designPresets,
   isDensity,
@@ -19,7 +18,7 @@ import {
   presetPalette,
   resolveDesign,
 } from "./design";
-import { isPalette } from "./theme-utils";
+import { isPalette } from "./mode";
 
 const scss = readFileSync(
   join(import.meta.dirname, "tokens", "design.scss"),
@@ -94,15 +93,6 @@ describe("design axes", () => {
       "data-shadow": "standard",
       "data-font-scale": "standard",
     });
-  });
-
-  it("applies and removes the attributes on an element", () => {
-    const element = document.createElement("div");
-    applyDesignAttributes(element, { density: "compact" });
-    expect(element.getAttribute("data-density")).toBe("compact");
-    expect(element.hasAttribute("data-radius")).toBe(false);
-    applyDesignAttributes(element, null);
-    expect(element.hasAttribute("data-density")).toBe(false);
   });
 
   it("tokens/design.scss has a block for every non-standard value", () => {

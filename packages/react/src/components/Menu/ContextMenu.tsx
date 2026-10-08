@@ -9,7 +9,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import type { Placement, VirtualElement } from "@minerva/core";
+import type { Placement, VirtualElement } from "@minerva/dom";
 import { Slot } from "../../internal/Slot";
 import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";

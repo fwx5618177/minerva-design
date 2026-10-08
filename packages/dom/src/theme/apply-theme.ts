@@ -5,8 +5,8 @@ import type {
   Theme,
   ThemeMap,
   ThemeName,
-} from "./types";
-import { isThemeName, themeKeys, themes } from "./themes";
+} from "@minerva/core";
+import { isThemeName, themeKeys, themes } from "@minerva/core";
 
 const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 

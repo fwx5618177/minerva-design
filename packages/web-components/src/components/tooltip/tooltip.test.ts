@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { getActiveElement, getLayerStack } from "@minerva/core";
+import { getActiveElement, getLayerStack } from "@minerva/dom";
 import { MinervaTooltip, MinervaTooltipProvider } from "./tooltip";
 import type { MinervaModal } from "../modal/modal";
 import "../../elements/tooltip";

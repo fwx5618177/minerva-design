@@ -1,5 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-import { waitForExitAnimation } from "@minerva/core";
+import { waitForExitAnimation } from "@minerva/dom";
 
 /**
  * Keeps an overlay rendered while its exit animation runs (the React library's

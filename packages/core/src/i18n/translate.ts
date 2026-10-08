@@ -1,6 +1,7 @@
 // A tiny, framework-agnostic translator for Minerva's message bundles:
 // nested keys ("a.b.c"), `{{name}}` interpolation, plurals selected by `count`
-// through `Intl.PluralRules` (`key_one`, `key_other`, ...), and fallbacks
+// through `Intl.PluralRules` (`key_one`, `key_other`, ...; built-in rules
+// when the engine has no `Intl.PluralRules`), and fallbacks
 // (base language -> fallback language -> `defaultValue` -> the key itself).
 // Pure functions only: no DOM access and nothing mutated at import time.
 import type { Messages } from "./merge";
@@ -35,6 +36,44 @@ const DEFAULT_FALLBACK_LANGUAGE = "en";
 const hasOwn = (object: object, key: string): boolean =>
   Object.prototype.hasOwnProperty.call(object, key);
 
+/** Whether the engine implements `Intl.PluralRules` (Hermes without Intl and
+ * some mini-program JS engines do not). Read lazily: tests and polyfills may
+ * install it after this module loaded. */
+const hasPluralRules = (): boolean =>
+  typeof Intl !== "undefined" && typeof Intl.PluralRules === "function";
+
+/**
+ * CLDR cardinal plural rules of the built-in languages (and English-like
+ * "one / other" for any other language), used when `Intl.PluralRules` is
+ * missing:
+ * - zh, ja, ko, vi, th, id, ms: always "other"
+ * - fr (and pt): "one" for 0 <= n < 2, "many" for non-zero multiples of
+ *   1 000 000, else "other"
+ * - everything else: "one" for exactly 1, else "other"
+ */
+export const fallbackPluralCategory = (
+  language: string,
+  count: number,
+): Intl.LDMLPluralRule => {
+  const n = Math.abs(count);
+  switch (language.toLowerCase().split("-")[0]) {
+    case "zh":
+    case "ja":
+    case "ko":
+    case "vi":
+    case "th":
+    case "id":
+    case "ms":
+      return "other";
+    case "fr":
+    case "pt":
+      if (n < 2) return "one";
+      return Number.isInteger(n) && n % 1_000_000 === 0 ? "many" : "other";
+    default:
+      return n === 1 ? "one" : "other";
+  }
+};
+
 // Plural rules are costly to build: one instance per language, created lazily.
 const pluralRulesCache = new Map<string, Intl.PluralRules | null>();
 
@@ -54,12 +93,17 @@ const getPluralRules = (language: string): Intl.PluralRules | null => {
 
 /**
  * CLDR plural category of `count` in `language` ("zero", "one", "two", "few",
- * "many" or "other"). Unknown / invalid languages give "other".
+ * "many" or "other"). Unknown / invalid languages give "other". Without
+ * `Intl.PluralRules` (Hermes, mini-program engines) the built-in rules of
+ * {@link fallbackPluralCategory} apply.
  */
 export const getPluralCategory = (
   language: string,
   count: number,
-): Intl.LDMLPluralRule => getPluralRules(language)?.select(count) ?? "other";
+): Intl.LDMLPluralRule =>
+  hasPluralRules()
+    ? (getPluralRules(language)?.select(count) ?? "other")
+    : fallbackPluralCategory(language, count);
 
 /** Message string at the dot-separated `key` of `tree`, if any */
 const lookup = (

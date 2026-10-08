@@ -89,7 +89,10 @@ function reactPropNames(names: string[]) {
       target: ts.ScriptTarget.ES2022,
       skipLibCheck: true,
       noEmit: true,
-      paths: { "@minerva/core": [at("packages/core/src/index.ts")] },
+      paths: {
+        "@minerva/core": [at("packages/core/src/index.ts")],
+        "@minerva/dom": [at("packages/dom/src/index.ts")],
+      },
     },
   );
   const checker = program.getTypeChecker();

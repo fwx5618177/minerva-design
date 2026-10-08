@@ -3,7 +3,7 @@ import {
   createDismissableLayer,
   type DismissableLayer,
   type DismissableLayerOptions,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /**
  * Lit wrapper of core's `createDismissableLayer`: while active, the element

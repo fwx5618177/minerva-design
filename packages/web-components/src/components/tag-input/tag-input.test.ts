@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { createDismissableLayer } from "@minerva/core";
+import { createDismissableLayer } from "@minerva/dom";
 import { MinervaTagInput } from "./tag-input";
 import "../../elements/tag-input";
 import { resetDevWarnings } from "../../internal/dev";

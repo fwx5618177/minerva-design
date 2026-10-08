@@ -8,11 +8,11 @@ import {
 } from "react";
 import {
   commandSearchText,
-  isEditableTarget,
   matchesShortcut,
   normalizeSearchText,
   normalizeShortcuts,
 } from "@minerva/core";
+import { isEditableTarget } from "@minerva/dom";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";

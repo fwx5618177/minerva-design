@@ -2,21 +2,19 @@
 // script) and the client (ThemeProvider), so any drift causes hydration
 // mismatches or a flash of the wrong theme.
 import { afterEach, describe, expect, it } from "vitest";
+import { PALETTES, isPalette, isThemeMode } from "@minerva/core";
 import {
-  PALETTES,
   PALETTE_COOKIE_NAME,
   THEME_COOKIE_MAX_AGE,
   THEME_COOKIE_NAME,
   THEME_INIT_SCRIPT,
   createThemeInitScript,
-  isPalette,
-  isThemeMode,
   parsePaletteCookie,
   parseThemeCookie,
   parseThemeCookies,
   readCookieValue,
   serializeThemeCookie,
-} from "./theme-utils";
+} from "./cookies";
 
 describe("parseThemeCookie", () => {
   it("returns valid values as-is", () => {

@@ -8,7 +8,7 @@ import {
   coreImportsPlugin,
   rewriteCoreDeclarations,
 } from "../../tools/core-imports.mjs";
-import { CORE_DIST, WEB_COMPONENTS_DIST } from "../../tools/paths.mjs";
+import { WEB_COMPONENTS_DIST } from "../../tools/paths.mjs";
 import { minifyTemplatesPlugin } from "./scripts/minify-templates.mjs";
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
@@ -18,8 +18,8 @@ const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 //
 // Dependencies (lit, dompurify, jsonc-parser) and the optional peers
 // (monaco-editor, for the code-editor entry) are resolved by the consumer,
-// never bundled. @minerva/core stays external too: its imports are rewritten
-// to the copy in `dist/core/` shared with the React entries
+// never bundled. @minerva/core and @minerva/dom stay external too: their imports
+// are rewritten to the copies in `dist/core/` / `dist/dom/` shared with the React entries
 // (tools/core-imports.mjs).
 const externalDeps = [
   ...Object.keys(pkg.dependencies ?? {}),
@@ -55,7 +55,7 @@ export default defineConfig({
   plugins: [
     // whitespace of the css / html templates (build only)
     minifyTemplatesPlugin(),
-    coreImportsPlugin({ outDir: WEB_COMPONENTS_DIST, coreDir: CORE_DIST }),
+    coreImportsPlugin({ outDir: WEB_COMPONENTS_DIST }),
     dts({
       tsconfigPath: "./tsconfig.build.json",
       entryRoot: "src",
@@ -63,7 +63,7 @@ export default defineConfig({
       // explicit `.js` specifiers so `moduleResolution: node16` resolves them
       afterBuild: (emittedFiles) => {
         writeEsmDeclarations(emittedFiles);
-        rewriteCoreDeclarations(WEB_COMPONENTS_DIST, CORE_DIST);
+        rewriteCoreDeclarations(WEB_COMPONENTS_DIST);
       },
     }),
   ],
@@ -120,6 +120,10 @@ export default defineConfig({
       {
         find: /^@minerva\/core$/,
         replacement: here("../core/src/index.ts"),
+      },
+      {
+        find: /^@minerva\/dom$/,
+        replacement: here("../dom/src/index.ts"),
       },
     ],
     setupFiles: ["./tests/setup/setup.ts"],

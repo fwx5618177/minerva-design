@@ -24,7 +24,7 @@ export function closestComposed<E extends Element = Element>(
 
 // Writing direction of an element (closest `dir`, crossing shadow roots and
 // slots, `dir="auto"` skipped, then CSS `direction`): shared with React.
-export { getDirection, logicalArrowKey } from "@minerva/core";
+export { getDirection, logicalArrowKey } from "@minerva/dom";
 
 /** Whether the native Popover API (`popover` attribute, top layer) exists. */
 function supportsPopover(el: Element): boolean {

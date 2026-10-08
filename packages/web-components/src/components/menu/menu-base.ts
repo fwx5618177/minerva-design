@@ -10,24 +10,22 @@ import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import styles from "@react-styles/components/Menu/menu.module.scss?inline";
+import { createTypeahead, getNextIndex, type Typeahead } from "@minerva/core";
 import {
   contains,
   createPointerGrace,
-  createTypeahead,
   focusElement,
   getActiveElement,
   getExitAnimationDuration,
   getLayerStack,
-  getNextIndex,
   getTabbables,
   parsePlacement,
   type AnchorElement,
   type GraceSide,
   type Placement,
   type PointerGrace,
-  type Typeahead,
   waitForExitAnimation,
-} from "@minerva/core";
+} from "@minerva/dom";
 import { AnchoredPositionController } from "../../controllers/anchored-position";
 import { DismissableLayerController } from "../../controllers/dismissable-layer";
 import { popoverResetStyles } from "../../controllers/floating-layer";

@@ -6,7 +6,7 @@ import {
   type Ref,
   type RefCallback,
 } from "react";
-import { parsePlacement } from "@minerva/core";
+import { parsePlacement } from "@minerva/dom";
 import { useMergedRefs } from "./mergeRefs";
 import { Portal } from "./Portal";
 import {

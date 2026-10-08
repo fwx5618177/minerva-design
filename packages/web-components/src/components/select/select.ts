@@ -1,7 +1,8 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { createTypeahead, getNextIndex, parsePlacement } from "@minerva/core";
+import { createTypeahead, getNextIndex } from "@minerva/core";
+import { parsePlacement } from "@minerva/dom";
 import styles from "@react-styles/components/Select/select.module.scss?inline";
 import {
   FloatingLayerController,

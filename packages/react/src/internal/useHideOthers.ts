@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { hideOthers, type HideOthersOptions } from "@minerva/core";
+import { hideOthers, type HideOthersOptions } from "@minerva/dom";
 
 /**
  * Hides everything but `element` (and its ancestors) from assistive

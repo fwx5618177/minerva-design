@@ -2,7 +2,7 @@
 // Escape only dismissing the topmost layer, focus returning to the opener,
 // outside clicks. Behaviour comes from @minerva/core's shared layer stack.
 import userEvent from "@testing-library/user-event";
-import { getActiveElement, getLayerStack } from "@minerva/core";
+import { getActiveElement, getLayerStack } from "@minerva/dom";
 import { describe, expect, it } from "vitest";
 import "../../src/index";
 import type { MinervaModal, MinervaSelect } from "../../src/index";

@@ -2,7 +2,7 @@ import { createRef, useState } from "react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getLayerStack } from "@minerva/core";
+import { getLayerStack } from "@minerva/dom";
 import { FloatingPanel, type FloatingPanelProps } from "./FloatingPanel";
 
 type HarnessProps = Partial<

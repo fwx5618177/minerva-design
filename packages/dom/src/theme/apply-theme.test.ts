@@ -7,8 +7,8 @@ import {
   isBilingualTheme,
   resolveTheme,
 } from "./apply-theme";
-import { dark, githubDark, light, themes } from "./themes";
-import type { ComponentTheme } from "./types";
+import { dark, githubDark, light, themes } from "@minerva/core";
+import type { ComponentTheme } from "@minerva/core";
 
 const rootStyle = () => document.documentElement.style;
 
@@ -44,7 +44,10 @@ describe("themes map", () => {
 
   it("keeps the default CSS (default-theme.scss) in sync with the light theme", () => {
     const defaultThemeScss = readFileSync(
-      join(import.meta.dirname, "tokens/default-theme.scss"),
+      join(
+        import.meta.dirname,
+        "../../../core/src/theme/tokens/default-theme.scss",
+      ),
       "utf8",
     );
     const normalize = (v: string) => v.replace(/\s+/g, " ").trim();
@@ -72,7 +75,10 @@ describe("themes map", () => {
 
   it("declares a :root default for every semantic token used by the themes", () => {
     const defaultThemeScss = readFileSync(
-      join(import.meta.dirname, "tokens/default-theme.scss"),
+      join(
+        import.meta.dirname,
+        "../../../core/src/theme/tokens/default-theme.scss",
+      ),
       "utf8",
     );
     for (const role of [

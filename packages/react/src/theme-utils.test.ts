@@ -1,9 +1,14 @@
-// The theming implementation (and its unit tests) lives in @minerva/core; this
+// The theming implementation (and its unit tests) lives in @minerva/core and
+// @minerva/dom (cookies, init script, CSS variables); this
 // checks that the React library's public entries keep re-exporting it unchanged.
-import * as core from "@minerva/core";
+import * as neutral from "@minerva/core";
+import * as dom from "@minerva/dom";
 import { describe, expect, it } from "vitest";
 import * as lib from "./index";
 import * as themeUtils from "./theme-utils";
+
+// minerva-design/core = @minerva/core (platform-neutral) + @minerva/dom
+const core = { ...neutral, ...dom };
 
 describe("theme re-exports", () => {
   it("theme-utils entry re-exports the server-safe helpers from @minerva/core", () => {

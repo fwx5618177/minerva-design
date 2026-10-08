@@ -1,9 +1,10 @@
 /**
- * Server-safe theme helpers: types, cookie names, cookie parsing and the
+ * Server-safe theme helpers (web): cookie names, cookie parsing and the
  * no-flash init script.
  *
- * This module has no framework import and no DOM access at load time. It is
- * exported from `@minerva/core` and re-exported by the server-safe
+ * This module has no framework import and no DOM access at load time (the
+ * init script only runs in the browser). It lives in `@minerva/dom` (web
+ * only: cookies and `<html>` attributes) and is re-exported by the server-safe
  * `minerva-design/theme-utils` entry, so React Server Components (e.g. a
  * root layout) can read the theme cookies and inline the init script.
  *
@@ -23,19 +24,16 @@
  *     ...
  */
 
-import { designAttributes, presetPalette, type DesignOptions } from "./design";
-
-/** Color mode chosen by the user ("system" follows the OS). */
-export type ThemeMode = "light" | "dark" | "system";
-
-/** Color mode actually applied. */
-export type ResolvedThemeMode = "light" | "dark";
-
-/** Built-in palettes (orthogonal to the light / dark mode). */
-export const PALETTES = ["editorial", "tech", "graphite", "cool"] as const;
-
-/** A built-in palette name. */
-export type Palette = (typeof PALETTES)[number];
+import {
+  PALETTES,
+  designAttributes,
+  isPalette,
+  isThemeMode,
+  presetPalette,
+  type DesignOptions,
+  type Palette,
+  type ThemeMode,
+} from "@minerva/core";
 
 /** Cookie storing the {@link ThemeMode}. */
 export const THEME_COOKIE_NAME = "theme";
@@ -45,12 +43,6 @@ export const PALETTE_COOKIE_NAME = "palette";
 
 /** Cookie lifetime: one year, in seconds. */
 export const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
-
-export const isThemeMode = (value: unknown): value is ThemeMode =>
-  value === "light" || value === "dark" || value === "system";
-
-export const isPalette = (value: unknown): value is Palette =>
-  typeof value === "string" && (PALETTES as readonly string[]).includes(value);
 
 /** Parse a raw `theme` cookie value; invalid / missing values give `fallback`. */
 export function parseThemeCookie(

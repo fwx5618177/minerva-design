@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { palettes } from "./palettes";
 import { dark, light } from "./themes";
-import { PALETTES } from "./theme-utils";
+import { PALETTES } from "./mode";
 
 const read = (file: string) =>
   readFileSync(join(import.meta.dirname, "tokens", file), "utf8");

@@ -34,6 +34,10 @@ export default defineConfig({
         replacement: src("../../packages/core/src/index.ts"),
       },
       {
+        find: /^@minerva\/dom$/,
+        replacement: src("../../packages/dom/src/index.ts"),
+      },
+      {
         find: /^minerva-design\/web-components$/,
         replacement: src("../../packages/web-components/src/index.ts"),
       },

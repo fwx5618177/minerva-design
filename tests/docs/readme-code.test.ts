@@ -18,10 +18,11 @@ const PATHS: Record<string, string[]> = {
   "minerva-design/web-components/*": [
     "packages/web-components/src/elements/*.ts",
   ],
-  "minerva-design/core": ["packages/core/src/index.ts"],
+  "minerva-design/core": ["packages/dom/src/core-web.ts"],
   "minerva-design/styling-hooks": ["packages/core/src/styling-hooks/index.ts"],
   // the sources of minerva-design import the private core package
   "@minerva/core": ["packages/core/src/index.ts"],
+  "@minerva/dom": ["packages/dom/src/index.ts"],
 };
 
 /**

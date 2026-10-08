@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { getExitAnimationDuration, waitForExitAnimation } from "@minerva/core";
+import { getExitAnimationDuration, waitForExitAnimation } from "@minerva/dom";
 
 /**
  * Keeps an overlay mounted while its exit animation runs.

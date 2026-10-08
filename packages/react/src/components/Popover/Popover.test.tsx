@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { act } from "react";
-import { isScrollLocked } from "@minerva/core";
+import { isScrollLocked } from "@minerva/dom";
 import {
   Popover,
   PopoverAnchor,

@@ -3,7 +3,7 @@ import {
   createRovingFocus,
   type RovingFocus,
   type RovingFocusOptions,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /**
  * Lit wrapper of core's `createRovingFocus` (one tabbable item, arrow keys /

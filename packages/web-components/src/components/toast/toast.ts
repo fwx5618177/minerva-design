@@ -3,15 +3,14 @@ import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { formatHotkey, matchesHotkey } from "@minerva/core";
 import {
   contains,
   focusElement,
-  formatHotkey,
   getActiveElement,
   getAdjacentTabbable,
   getTabbables,
-  matchesHotkey,
-} from "@minerva/core";
+} from "@minerva/dom";
 import styles from "@react-styles/components/Toast/toast.module.scss?inline";
 import { popoverResetStyles } from "../../controllers/floating-layer";
 import { AriaController } from "../../internal/aria";

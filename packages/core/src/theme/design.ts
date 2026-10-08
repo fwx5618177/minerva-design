@@ -13,7 +13,7 @@
  *
  * Server-safe: no framework import, no DOM access at load time.
  */
-import type { Palette } from "./theme-utils";
+import type { Palette } from "./mode";
 
 export const DENSITIES = ["compact", "standard", "comfortable"] as const;
 /** Spacing density of controls and rows. */
@@ -182,21 +182,4 @@ export function designAttributes(
     }
   }
   return attributes;
-}
-
-/**
- * Writes (or removes) the design attributes on an element. Standard values
- * are removed unless `all` is set.
- */
-export function applyDesignAttributes(
-  element: Element,
-  design: DesignOptions | ResolvedDesign | null,
-  { all = false }: { all?: boolean } = {},
-): void {
-  const attributes = design ? designAttributes(design, { all }) : {};
-  for (const name of Object.values(DESIGN_ATTRIBUTES)) {
-    const value = attributes[name];
-    if (value === undefined) element.removeAttribute(name);
-    else element.setAttribute(name, value);
-  }
 }

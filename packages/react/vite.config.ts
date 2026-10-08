@@ -14,7 +14,7 @@ import {
   coreImportsPlugin,
   rewriteCoreDeclarations,
 } from "../../tools/core-imports.mjs";
-import { CORE_DIST, REACT_DIST } from "../../tools/paths.mjs";
+import { REACT_DIST } from "../../tools/paths.mjs";
 
 // Built into `dist/react/` of the published `minerva-design` package (its
 // main entry and the theme-utils / utils / monaco sub-entries).
@@ -187,7 +187,7 @@ const extraAssets = (): Plugin => ({
 export default defineConfig({
   plugins: [
     react(),
-    coreImportsPlugin({ outDir: REACT_DIST, coreDir: CORE_DIST }),
+    coreImportsPlugin({ outDir: REACT_DIST }),
     extraAssets(),
     stylesheets(),
     dts({
@@ -195,7 +195,7 @@ export default defineConfig({
       entryRoot: "src",
       afterBuild: (emittedFiles) => {
         writeDualDeclarations(emittedFiles);
-        rewriteCoreDeclarations(REACT_DIST, CORE_DIST);
+        rewriteCoreDeclarations(REACT_DIST);
       },
     }),
   ],
@@ -227,7 +227,7 @@ export default defineConfig({
   },
   test: {
     name: "react",
-    // Tests run against the @minerva/core sources (no build needed); the
+    // Tests run against the @minerva/core / @minerva/dom sources (no build needed); the
     // library build keeps it external like every other dependency.
     alias: [
       {
@@ -246,6 +246,12 @@ export default defineConfig({
         find: /^@minerva\/core$/,
         replacement: fileURLToPath(
           new URL("../core/src/index.ts", import.meta.url),
+        ),
+      },
+      {
+        find: /^@minerva\/dom$/,
+        replacement: fileURLToPath(
+          new URL("../dom/src/index.ts", import.meta.url),
         ),
       },
     ],

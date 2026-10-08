@@ -1,4 +1,4 @@
-import { getTabbables } from "@minerva/core";
+import { getTabbables } from "@minerva/dom";
 
 /**
  * The tabbable element before / after `anchor` in `container`, in document

@@ -1,14 +1,14 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { type ColorScheme } from "@minerva/core";
 import {
   createPointerGrace,
   getTabbables,
   parsePlacement,
   type AnchoredPositionResult,
-  type ColorScheme,
   type VirtualElement,
-} from "@minerva/core";
+} from "@minerva/dom";
 import styles from "@react-styles/components/Tooltip/tooltip.module.scss?inline";
 import {
   FloatingLayerController,

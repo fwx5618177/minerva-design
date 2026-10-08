@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { focusElement, getAdjacentTabbable } from "@minerva/core";
+import { focusElement, getAdjacentTabbable } from "@minerva/dom";
 
 /** Where focus goes once an element (an alert, a toast...) is removed. */
 export type FocusTarget =

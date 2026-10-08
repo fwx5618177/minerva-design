@@ -6,9 +6,9 @@ import { repeat } from "lit/directives/repeat.js";
 import {
   // Aliased: the name shows up as the documented default of `separators`.
   DEFAULT_TAG_SEPARATORS as DEFAULT_SEPARATORS,
-  ESCAPE_CONSUMER_ATTRIBUTE,
   splitBySeparators,
 } from "@minerva/core";
+import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/dom";
 import iconButtonStyles from "@react-styles/components/IconButton/iconButton.module.scss?inline";
 import inputStyles from "@react-styles/components/Input/input.module.scss?inline";
 import tagStyles from "@react-styles/components/Tag/tag.module.scss?inline";

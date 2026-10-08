@@ -1,6 +1,6 @@
 import { html, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-import { toPlacement, type Placement } from "@minerva/core";
+import { toPlacement, type Placement } from "@minerva/dom";
 import { DEV, devWarn } from "../../internal/dev";
 import { MenuBase } from "./menu-base";
 import {

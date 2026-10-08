@@ -15,7 +15,7 @@ import {
   type AnchoredPositionResult,
   type Placement,
   type VirtualElement,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 export type { Placement, VirtualElement };
 export { VIEWPORT_PADDING, toCamelPlacement };

@@ -2,14 +2,14 @@ import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { type ColorScheme } from "@minerva/core";
 import {
   contains,
   focusElement,
   getActiveElement,
   getFocusables,
   isTabbable,
-  type ColorScheme,
-} from "@minerva/core";
+} from "@minerva/dom";
 import styles from "@react-styles/components/Alert/alert.module.scss?inline";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";

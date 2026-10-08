@@ -8,7 +8,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type Ref,
 } from "react";
-import { parsePlacement, toPlacement } from "@minerva/core";
+import { parsePlacement, toPlacement } from "@minerva/dom";
 import { composeEventHandlers } from "../../internal/composeEventHandlers";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { Portal } from "../../internal/Portal";

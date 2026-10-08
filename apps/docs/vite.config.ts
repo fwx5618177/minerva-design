@@ -57,7 +57,15 @@ const testAlias: Alias[] = [
   },
   {
     find: /^minerva-design\/core$/,
+    replacement: src("../../packages/dom/src/core-web.ts"),
+  },
+  {
+    find: /^@minerva\/core$/,
     replacement: src("../../packages/core/src/index.ts"),
+  },
+  {
+    find: /^@minerva\/dom$/,
+    replacement: src("../../packages/dom/src/index.ts"),
   },
 ];
 

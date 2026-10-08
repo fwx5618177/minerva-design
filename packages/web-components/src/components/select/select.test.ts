@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { getActiveElement } from "@minerva/core";
+import { getActiveElement } from "@minerva/dom";
 import { MinervaSelect } from "./select";
 import { MinervaOption } from "./option";
 import "../../elements/select";

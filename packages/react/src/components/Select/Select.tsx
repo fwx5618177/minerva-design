@@ -14,7 +14,8 @@ import {
   type ReactNode,
 } from "react";
 import { IconCheck, IconChevronDown } from "../../internal/icons";
-import { createTypeahead, getNextIndex, parsePlacement } from "@minerva/core";
+import { createTypeahead, getNextIndex } from "@minerva/core";
+import { parsePlacement } from "@minerva/dom";
 import { cn } from "../../utils/cn";
 import {
   useFormControlContext,

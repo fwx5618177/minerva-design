@@ -57,9 +57,9 @@ async function bundleSize(
   return { size: Buffer.byteLength(js), js };
 }
 
-/** The shared core (dist/core/), imported through relative paths */
+/** The shared core (dist/core/ and dist/dom/), imported through relative paths */
 const isCore = (id: string) =>
-  /(^|[\\/])core[\\/](index|styling-hooks)\.js$/.test(id);
+  /(^|[\\/])(core[\\/](index|styling-hooks)|dom[\\/]index)\.js$/.test(id);
 const deps = (id: string) =>
   isCore(id) ||
   /^(lit|@lit|lit-html|lit-element|@floating-ui|dompurify|jsonc-parser)(\/|$)/.test(

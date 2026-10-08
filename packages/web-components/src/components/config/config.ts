@@ -1,8 +1,6 @@
 import { css, html, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import {
-  applyDesignAttributes,
-  generateCSSVariables,
   isDensity,
   isDesignPreset,
   isFontScale,
@@ -21,6 +19,7 @@ import {
   type SupportedLanguage,
   type ThemeMap,
 } from "@minerva/core";
+import { applyDesignAttributes, generateCSSVariables } from "@minerva/dom";
 import { MinervaElement } from "../../internal/minerva-element";
 
 /** Theme of a `<minerva-config>` scope */

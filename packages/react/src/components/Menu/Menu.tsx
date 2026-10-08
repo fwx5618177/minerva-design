@@ -6,7 +6,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { toPlacement } from "@minerva/core";
+import { toPlacement } from "@minerva/dom";
 import { Slot } from "../../internal/Slot";
 import { useInheritedDirection } from "../../internal/direction";
 import { useControllableState } from "../../internal/useControllableState";

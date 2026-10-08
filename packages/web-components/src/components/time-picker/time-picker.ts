@@ -20,19 +20,21 @@ import { IconClock, IconX } from "../../internal/icons";
 import { LocaleController } from "../../internal/locale";
 import { hostStyles } from "../../internal/minerva-element";
 import {
-  contains,
-  getTabbables,
-  logicalArrowKey,
   formatHasSeconds,
   formatTime,
   resolveTimeFormat,
-  parsePlacement,
   parseTimeInput,
   parseTimeValue,
   secondsOfDay,
   startOfToday,
   toTimeValue,
 } from "@minerva/core";
+import {
+  contains,
+  getTabbables,
+  logicalArrowKey,
+  parsePlacement,
+} from "@minerva/dom";
 import { itemParts } from "../../internal/styling-hooks";
 import { sharedStyles } from "../../internal/styles";
 

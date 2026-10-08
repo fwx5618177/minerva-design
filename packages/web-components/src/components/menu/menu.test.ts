@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { getActiveElement, getLayerStack, isScrollLocked } from "@minerva/core";
+import { getActiveElement, getLayerStack, isScrollLocked } from "@minerva/dom";
 import {
   MinervaMenu,
   MinervaMenuItem,

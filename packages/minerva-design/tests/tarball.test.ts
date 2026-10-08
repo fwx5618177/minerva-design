@@ -105,6 +105,8 @@ describe("packed tarball installed in a consumer project", () => {
       "dist/react/style.css",
       "dist/core/index.js",
       "dist/core/tokens.css",
+      "dist/dom/index.js",
+      "dist/dom/core-web.js",
       "dist/web-components/index.js",
       "dist/web-components/cdn/minerva.js",
       "dist/web-components/types/react.d.ts",

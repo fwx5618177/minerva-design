@@ -11,7 +11,7 @@ import { useMergedRefs } from "../../internal/mergeRefs";
 import { useFormControlProps } from "../FormControl/context";
 import { hooks } from "../../internal/stylingHooks";
 import styles from "./autoComplete.module.scss";
-import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/core";
+import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/dom";
 
 const DEFAULT_OFFSET = Object.freeze({ x: 0, y: 4 });
 const EMPTY_OPTIONS: AutoCompleteOption[] = [];

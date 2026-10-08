@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { parsePlacement } from "@minerva/core";
+import { parsePlacement } from "@minerva/dom";
 import { live } from "lit/directives/live.js";
 import { styleMap } from "lit/directives/style-map.js";
 import inputStyles from "@react-styles/components/Input/input.module.scss?inline";

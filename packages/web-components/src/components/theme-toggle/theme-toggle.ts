@@ -2,15 +2,17 @@ import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 import {
   PALETTES,
-  PALETTE_COOKIE_NAME,
-  THEME_COOKIE_NAME,
   isPalette,
   isThemeMode,
-  readCookieValue,
-  serializeThemeCookie,
   type Palette,
   type ThemeMode,
 } from "@minerva/core";
+import {
+  PALETTE_COOKIE_NAME,
+  THEME_COOKIE_NAME,
+  readCookieValue,
+  serializeThemeCookie,
+} from "@minerva/dom";
 import styles from "@react-styles/components/ThemeToggle/themeToggle.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { closestComposed } from "../../internal/dom";

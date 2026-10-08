@@ -6,10 +6,10 @@ import {
   addDays,
   dayKey,
   localDate,
-  logicalArrowKey,
   monthStart,
   sameMonth,
 } from "@minerva/core";
+import { logicalArrowKey } from "@minerva/dom";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import {

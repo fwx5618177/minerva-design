@@ -7,6 +7,39 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettier from "eslint-config-prettier";
 import globals from "globals";
 
+/** Browser / DOM globals a platform-neutral module must not touch */
+const BROWSER_GLOBALS = [
+  "window",
+  "document",
+  "navigator",
+  "location",
+  "history",
+  "localStorage",
+  "sessionStorage",
+  "getComputedStyle",
+  "matchMedia",
+  "requestAnimationFrame",
+  "cancelAnimationFrame",
+  "requestIdleCallback",
+  "customElements",
+  "HTMLElement",
+  "Element",
+  "Node",
+  "Document",
+  "ShadowRoot",
+  "DocumentFragment",
+  "Event",
+  "CustomEvent",
+  "KeyboardEvent",
+  "PointerEvent",
+  "MouseEvent",
+  "FocusEvent",
+  "MutationObserver",
+  "ResizeObserver",
+  "IntersectionObserver",
+  "CSS",
+];
+
 export default defineConfig(
   globalIgnores(["**/dist/", "**/coverage/"]),
   js.configs.recommended,
@@ -25,6 +58,57 @@ export default defineConfig(
       "@typescript-eslint/no-unused-vars": [
         "error",
         { ignoreRestSiblings: true },
+      ],
+    },
+  },
+  {
+    // @minerva/core is platform-neutral (React Native / Hermes, mini-program
+    // engines, Node): no DOM / browser globals, no DOM or framework imports.
+    // DOM code belongs in @minerva/dom. src/platform-neutral.test.ts checks
+    // the same at runtime.
+    files: ["packages/core/src/**/*.ts"],
+    languageOptions: {
+      globals: { ...globals.es2022, ...globals.node },
+    },
+    rules: {
+      "no-restricted-globals": [
+        "error",
+        ...BROWSER_GLOBALS.map((name) => ({
+          name,
+          message: `@minerva/core is platform-neutral: "${name}" is a browser global (move DOM code to @minerva/dom).`,
+        })),
+      ],
+      "no-restricted-properties": [
+        "error",
+        ...["window", "document", "navigator"].map((property) => ({
+          object: "globalThis",
+          property,
+          message: "@minerva/core is platform-neutral (no DOM access).",
+        })),
+      ],
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@minerva/dom",
+                "@floating-ui/*",
+                "lit",
+                "lit/*",
+                "react",
+                "react-dom",
+                "react-dom/*",
+                "react-native",
+                "vue",
+                "@angular/*",
+                "@tarojs/*",
+              ],
+              message:
+                "@minerva/core is platform-neutral: no DOM or framework imports.",
+            },
+          ],
+        },
       ],
     },
   },

@@ -253,7 +253,7 @@ describe("minerva-design React entries (dist/react)", () => {
   });
 
   // React Server Components: a module without "use client" that only imports
-  // the shared core (dist/core), so functions are callable and data objects populated
+  // the shared core (dist/core, dist/dom), so functions are callable and data objects populated
   // (through the "use client" main entry they would be client references).
   it("exposes the non-component utilities from ESM and CJS, usable on the server", async () => {
     const esm = await import(
@@ -271,7 +271,7 @@ describe("minerva-design React entries (dist/react)", () => {
         (m) => m[1],
       );
       expect(
-        specifiers.filter((s) => !/^\.\.\/core\/index\.c?js$/.test(s)),
+        specifiers.filter((s) => !/^\.\.\/(core|dom)\/index\.c?js$/.test(s)),
         file,
       ).toEqual([]);
     }

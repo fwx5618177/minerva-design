@@ -2,9 +2,13 @@
 // `minerva-design/utils`: the non-component functions and data of the
 // main entry, without "use client" (usable in React Server Components).
 import { describe, expect, it } from "vitest";
-import * as core from "@minerva/core";
+import * as neutral from "@minerva/core";
+import * as dom from "@minerva/dom";
 import * as lib from "./index";
 import * as utils from "./utils-entry";
+
+// minerva-design/core = @minerva/core (platform-neutral) + @minerva/dom
+const core = { ...neutral, ...dom };
 
 const NAMES = [
   "applyThemeStyles",

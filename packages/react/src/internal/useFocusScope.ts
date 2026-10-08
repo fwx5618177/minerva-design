@@ -4,7 +4,7 @@ import {
   focusElement,
   FOCUS_SCOPE_UNMOUNT_EVENT,
   type FocusScopeOptions,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /** Where focus goes when the scope is deactivated. */
 export type FocusRestoreTarget =

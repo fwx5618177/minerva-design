@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { THEME_INIT_SCRIPT, createThemeInitScript } from "./theme-utils";
+import { THEME_INIT_SCRIPT, createThemeInitScript } from "./cookies";
 import { THEME_INIT_SCRIPT_HASH, cspHash } from "./csp";
 
 const reference = (text: string) =>

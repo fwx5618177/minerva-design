@@ -8,7 +8,7 @@ import {
   getTabbables,
   parsePlacement,
   toPlacement,
-} from "@minerva/core";
+} from "@minerva/dom";
 import { AnchoredPositionController } from "../../controllers/anchored-position";
 import { DismissableLayerController } from "../../controllers/dismissable-layer";
 import { popoverResetStyles } from "../../controllers/floating-layer";

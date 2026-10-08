@@ -4,7 +4,7 @@ import {
   getActiveElement,
   type Placement,
   type VirtualElement,
-} from "@minerva/core";
+} from "@minerva/dom";
 import { getDirection } from "../../internal/dom";
 import { MenuBase } from "./menu-base";
 import { setAttr } from "./menu";

@@ -31,6 +31,10 @@ export {
   designPresets,
   resolveDesign,
   PALETTES,
+  isPalette,
+  isThemeMode,
+} from "@minerva/core";
+export {
   PALETTE_COOKIE_NAME,
   THEME_COOKIE_MAX_AGE,
   THEME_COOKIE_NAME,
@@ -38,14 +42,12 @@ export {
   THEME_INIT_SCRIPT_HASH,
   createThemeInitScript,
   cspHash,
-  isPalette,
-  isThemeMode,
   parsePaletteCookie,
   parseThemeCookie,
   parseThemeCookies,
   readCookieValue,
   serializeThemeCookie,
-} from "@minerva/core";
+} from "@minerva/dom";
 export type {
   Density,
   DesignOptions,
@@ -57,7 +59,6 @@ export type {
   ShadowScale,
   Palette,
   ResolvedThemeMode,
-  ThemeCookies,
-  ThemeInitScriptOptions,
   ThemeMode,
 } from "@minerva/core";
+export type { ThemeCookies, ThemeInitScriptOptions } from "@minerva/dom";

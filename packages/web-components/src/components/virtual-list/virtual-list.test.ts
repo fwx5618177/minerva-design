@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { html } from "lit";
-import { getActiveElement } from "@minerva/core";
+import { getActiveElement } from "@minerva/dom";
 import {
   MinervaVirtualList,
   type VirtualListItem,

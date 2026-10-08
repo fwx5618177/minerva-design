@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { lockScroll } from "@minerva/core";
+import { lockScroll } from "@minerva/dom";
 
 /**
  * Locks page scrolling (core `lockScroll`: scrollbar gap compensated with

@@ -132,23 +132,28 @@ describe('"use client"', () => {
 
 describe("one copy of the core", () => {
   const coreDir = join(root, "dist/core");
+  const domDir = join(root, "dist/dom");
   const nonCore = ["react", "web-components"].flatMap((dir) =>
     walk(join(root, "dist", dir)).filter(
       (f) => /\.(c?js|d\.c?ts)$/.test(f) && !f.includes("/cdn/"),
     ),
   );
 
-  it("React and web component modules import dist/core, never @minerva/*", () => {
+  it("React and web component modules import dist/core and dist/dom, never @minerva/*", () => {
     let imports = 0;
     for (const file of nonCore) {
       const code = readFileSync(file, "utf8");
       expect(code, file).not.toMatch(/["']@minerva\//);
       for (const [, path] of code.matchAll(
-        /["']((?:\.\.\/)+core\/[^"']+)["']/g,
+        /["']((?:\.\.\/)+(?:core|dom)\/[^"']+)["']/g,
       )) {
         imports++;
         const target = join(dirname(file), path);
-        expect(relative(coreDir, target).startsWith(".."), path).toBe(false);
+        expect(
+          relative(coreDir, target).startsWith("..") &&
+            relative(domDir, target).startsWith(".."),
+          path,
+        ).toBe(false);
         const declaration = /\.d\.c?ts$/.test(file);
         expect(
           existsSync(
@@ -164,11 +169,16 @@ describe("one copy of the core", () => {
   });
 
   it("no core code is inlined into the React or web component modules", () => {
-    // strings that only exist in the core sources (built-in messages, the
-    // floating-ui based positioning)
+    // strings that only exist in the core sources (built-in messages) and in
+    // the dom sources (the floating-ui based positioning)
     const markers = ["Clear selection", "@floating-ui/dom"];
     const core = readFileSync(join(coreDir, "index.js"), "utf8");
-    for (const marker of markers) expect(core, marker).toContain(marker);
+    const dom = readFileSync(join(domDir, "index.js"), "utf8");
+    expect(core).toContain("Clear selection");
+    expect(dom).toContain("@floating-ui/dom");
+    // the platform-neutral core never touches the DOM half
+    expect(core).not.toContain("@floating-ui/dom");
+    expect(core).not.toMatch(/["']\.\.\/dom\//);
     for (const file of nonCore.filter((f) => /\.c?js$/.test(f))) {
       const code = readFileSync(file, "utf8");
       for (const marker of markers) {
@@ -206,11 +216,16 @@ console.log(Button, useConfig, createFocusScope);`
       chunk.type === "chunk" ? Object.keys(chunk.modules) : [],
     );
     const coreModules = modules.filter((id) =>
-      /[\\/]dist[\\/]core[\\/]/.test(id),
+      /[\\/]dist[\\/](core|dom)[\\/]/.test(id),
     );
-    expect(coreModules.map((id) => relative(root, id))).toEqual([
-      "dist/core/index.js",
-    ]);
+    // minerva-design/core (dist/dom/core-web.js) is a re-export facade of
+    // the same two modules
+    expect(
+      coreModules
+        .map((id) => relative(root, id))
+        .filter((id) => !id.endsWith("core-web.js"))
+        .sort(),
+    ).toEqual(["dist/core/index.js", "dist/dom/index.js"]);
     const code = output
       .map((chunk) => (chunk.type === "chunk" ? chunk.code : ""))
       .join("\n");

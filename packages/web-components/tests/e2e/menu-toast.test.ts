@@ -1,7 +1,7 @@
 // E2E: a toolbar app — a dropdown menu whose actions raise toasts, inside a
 // themed scope; keyboard-only operation and focus return.
 import userEvent from "@testing-library/user-event";
-import { getActiveElement } from "@minerva/core";
+import { getActiveElement } from "@minerva/dom";
 import { describe, expect, it } from "vitest";
 import "../../src/index";
 import { toast } from "../../src/index";

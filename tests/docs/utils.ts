@@ -20,6 +20,7 @@ export const PUBLISHED = {
  */
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
+  "packages/dom": "@minerva/dom",
   "packages/react": "@minerva/react",
   "packages/web-components": "@minerva/web-components",
   "apps/docs": "@minerva/docs",
@@ -36,6 +37,7 @@ export const MARKDOWN = [
   ".changeset/README.md",
   ...Object.keys(PUBLISHED).map((dir) => `packages/${dir}/README.md`),
   "packages/core/README.md",
+  "packages/dom/README.md",
   "packages/react/README.md",
   "packages/web-components/README.md",
 ];

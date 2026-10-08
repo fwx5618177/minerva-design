@@ -5,7 +5,7 @@
 // reports the ones still held after it was unmounted / disconnected.
 //
 // Only resources acquired from the library sources are counted (the call
-// stack contains packages/<core|react|web-components>/src and no
+// stack contains packages/<core|dom|react|web-components>/src and no
 // node_modules frame in between): React, Lit, happy-dom and Testing Library
 // internals are not ours.
 
@@ -18,7 +18,7 @@ interface Resource {
 }
 
 const OWN_FRAME =
-  /[\\/]packages[\\/](core|react|web-components)[\\/]src[\\/](?!.*\.test\.)/;
+  /[\\/]packages[\\/](core|dom|react|web-components)[\\/]src[\\/](?!.*\.test\.)/;
 
 /** First library frame of the current stack, or null when not ours */
 function ownFrame(): string | null {

@@ -4,7 +4,7 @@ import {
   applyThemeStyles,
   getSystemTheme,
   isBilingualTheme,
-} from "@minerva/core";
+} from "@minerva/dom";
 import type { DefaultTheme, Theme } from "../contexts/types";
 
 const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";

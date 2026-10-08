@@ -1,9 +1,22 @@
 // Keyboard shortcut helpers shared by the command palettes (shortcut strings
 // such as "mod+k") and the toast regions (hotkey key lists such as ["F8"]).
 
+/**
+ * Key event fields every platform provides (a DOM `KeyboardEvent`, a React
+ * Native hardware key event mapped to this shape...).
+ */
+interface KeyFields {
+  key: string;
+  code: string;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+}
+
 /** Keyboard event fields read by `matchesShortcut`. */
 export type ShortcutEvent = Pick<
-  KeyboardEvent,
+  KeyFields,
   "key" | "metaKey" | "ctrlKey" | "shiftKey" | "altKey"
 >;
 
@@ -45,35 +58,6 @@ export function matchesShortcut(
   return true;
 }
 
-const NON_TEXT_INPUT_TYPES = [
-  "button",
-  "checkbox",
-  "color",
-  "file",
-  "image",
-  "radio",
-  "range",
-  "reset",
-  "submit",
-];
-
-/**
- * Whether `target` takes text input: text-like inputs, textareas, selects
- * and contenteditable hosts. Always `false` without a DOM (SSR).
- */
-export function isEditableTarget(target: EventTarget | null): boolean {
-  if (typeof HTMLElement === "undefined" || !(target instanceof HTMLElement)) {
-    return false;
-  }
-  if (target.isContentEditable) return true;
-  if (target instanceof HTMLTextAreaElement) return true;
-  if (target instanceof HTMLSelectElement) return true;
-  if (target instanceof HTMLInputElement) {
-    return !NON_TEXT_INPUT_TYPES.includes(target.type);
-  }
-  return false;
-}
-
 /** Fields of a command item that the palette search matches. */
 export interface CommandSearchFields {
   title: string;
@@ -94,7 +78,7 @@ const MODIFIER_KEYS = ["altKey", "ctrlKey", "metaKey", "shiftKey"] as const;
 type ModifierKey = (typeof MODIFIER_KEYS)[number];
 
 /** Keyboard event fields read by `matchesHotkey`. */
-export type HotkeyEvent = Pick<KeyboardEvent, "code" | "key" | ModifierKey>;
+export type HotkeyEvent = Pick<KeyFields, "code" | "key" | ModifierKey>;
 
 /**
  * Whether `event` matches every entry of `hotkey`: modifier names

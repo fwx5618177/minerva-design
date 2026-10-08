@@ -7,7 +7,7 @@ import {
   type AnchoredPositionOptions,
   type AnchoredPositionResult,
   type Placement,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /**
  * Keeps a floating element anchored (core `autoPosition` + `applyPosition`:

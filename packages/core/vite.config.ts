@@ -8,8 +8,11 @@ import { writeDualDeclarations } from "../../tools/dual-declarations.mjs";
 import { wrapInLayer } from "../../tools/css-layer.mjs";
 import { CORE_DIST } from "../../tools/paths.mjs";
 
-// Dependencies (@floating-ui/dom) are resolved by the consumer, never bundled.
-const externalDeps = Object.keys(pkg.dependencies ?? {});
+// Platform-neutral: no runtime dependency (the DOM primitives and
+// @floating-ui/dom live in @minerva/dom).
+const externalDeps = Object.keys(
+  (pkg as { dependencies?: Record<string, string> }).dependencies ?? {},
+);
 const isExternal = (id: string) =>
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
@@ -82,7 +85,9 @@ export default defineConfig({
   },
   test: {
     name: "core",
-    environment: "happy-dom",
+    // Platform-neutral: tests run without a DOM (like React Native / Hermes
+    // or a mini-program engine). DOM primitives are tested in @minerva/dom.
+    environment: "node",
     include: ["src/**/*.test.ts"],
   },
 });

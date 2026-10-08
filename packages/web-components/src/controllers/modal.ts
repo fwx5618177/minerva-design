@@ -1,5 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-import { hideOthers, lockScroll } from "@minerva/core";
+import { hideOthers, lockScroll } from "@minerva/dom";
 
 /**
  * Modal side effects of core: body scroll lock (with scrollbar gap

@@ -84,12 +84,12 @@
     },
     "./core": {
       "import": {
-        "types": "./dist/core/index.d.ts",
-        "default": "./dist/core/index.js"
+        "types": "./dist/dom/core-web.d.ts",
+        "default": "./dist/dom/core-web.js"
       },
       "require": {
-        "types": "./dist/core/index.d.cts",
-        "default": "./dist/core/index.cjs"
+        "types": "./dist/dom/core-web.d.cts",
+        "default": "./dist/dom/core-web.cjs"
       }
     },
     "./styling-hooks": {
@@ -379,7 +379,7 @@
         "./dist/react/monaco.d.ts"
       ],
       "core": [
-        "./dist/core/index.d.ts"
+        "./dist/dom/core-web.d.ts"
       ],
       "styling-hooks": [
         "./dist/core/styling-hooks/index.d.ts"
@@ -404,7 +404,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build",
+    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",

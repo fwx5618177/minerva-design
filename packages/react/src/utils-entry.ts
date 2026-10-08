@@ -12,20 +12,22 @@ import { computeFixedColumnLayout as computeLayout } from "@minerva/core";
 import type { FixedColumnLayout, TableColumn } from "./components/Table/types";
 
 export {
-  applyThemeStyles,
   cn,
   dark,
-  generateCSSVariables,
-  getSystemTheme,
   githubDark,
-  isBilingualTheme,
   light,
   matchesShortcut,
   normalizeShortcuts,
   palettes,
-  resolveTheme,
   themes,
 } from "@minerva/core";
+export {
+  applyThemeStyles,
+  generateCSSVariables,
+  getSystemTheme,
+  isBilingualTheme,
+  resolveTheme,
+} from "@minerva/dom";
 export type { ClassDictionary, ClassValue, ColorScheme } from "@minerva/core";
 
 /** Sticky offsets of the fixed columns of a `Table` (same as the main entry's). */

@@ -3,8 +3,8 @@ import type {
   AnchorElement,
   AnchoredPositionOptions,
   AnchoredPositionResult,
-} from "@minerva/core";
-import { contains, getActiveElement } from "@minerva/core";
+} from "@minerva/dom";
+import { contains, getActiveElement } from "@minerva/dom";
 import { hideTopLayer, showTopLayer } from "../internal/dom";
 import { AnchoredPositionController } from "./anchored-position";
 import { DismissableLayerController } from "./dismissable-layer";

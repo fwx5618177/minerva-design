@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createPointerGrace, parsePlacement } from "@minerva/core";
+import { createPointerGrace, parsePlacement } from "@minerva/dom";
 import { cn } from "../../utils/cn";
 import { hooks } from "../../internal/stylingHooks";
 import { Slot } from "../../internal/Slot";

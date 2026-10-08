@@ -3,7 +3,7 @@ import {
   createDismissableLayer,
   type DismissableLayer,
   type DismissableLayerOptions,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /**
  * Element of the closest enclosing dismissable layer (`null` at the top

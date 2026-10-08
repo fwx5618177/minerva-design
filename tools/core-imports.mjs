@@ -1,42 +1,70 @@
-// One copy of @minerva/core in the published `minerva-design` package.
+// One copy of each private workspace package in the published
+// `minerva-design` package.
 //
-// @minerva/core is a private workspace package: it is never published on its
-// own. Its build writes `dist/core/` of minerva-design (published as
-// `minerva-design/core`), and the React (`dist/react/`) and web component
-// (`dist/web-components/`) builds keep it external, then rewrite every
-// `@minerva/core` import to a relative path into `dist/core/`. Both entry
-// graphs therefore share the same core modules (same layer stack, scroll lock
-// counter, theme state...) and no core code is inlined twice.
+// @minerva/core (platform-neutral) and @minerva/dom (DOM primitives) are
+// private workspace packages: they are never published on their own. Their
+// builds write `dist/core/` and `dist/dom/` of minerva-design, and every
+// renderer build (`dist/react/`, `dist/web-components/`, later the other
+// renderers) keeps them external, then rewrites each `@minerva/core` /
+// `@minerva/dom` import to a relative path into `dist/core/` / `dist/dom/`.
+// Every entry graph therefore shares the same modules (same layer stack,
+// scroll lock counter, theme state...) and no core code is inlined twice.
 //
 // - `coreImportsPlugin()`: Vite / Rolldown plugin for the JS output
 //   (`.js` -> `dist/core/index.js`, `.cjs` -> `dist/core/index.cjs`)
 // - `rewriteCoreDeclarations()`: the same for the emitted `.d.ts` / `.d.cts`
-//   (run after vite-plugin-dts, which keeps `@minerva/core` as written).
+//   (run after vite-plugin-dts, which keeps the specifiers as written).
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
-
-/** `"@minerva/core"` / `"@minerva/core/styling-hooks"` string literals */
-const SPECIFIER = /(["'])@minerva\/core(\/styling-hooks)?\1/g;
+import { DIST_DIR } from "./paths.mjs";
 
 /**
- * Relative specifier from `fromFile` to the core module (`index` or the
- * `styling-hooks` entry).
+ * Workspace specifiers and their built module, relative to `dist/`:
+ * `js` for the JS files, `types` for the declarations.
+ */
+export const WORKSPACE_ENTRIES = {
+  "@minerva/core": { js: "core/index", types: "core/index" },
+  "@minerva/core/styling-hooks": {
+    js: "core/styling-hooks",
+    types: "core/styling-hooks/index",
+  },
+  "@minerva/core/contracts": {
+    js: "core/contracts",
+    types: "core/contracts/index",
+  },
+  "@minerva/dom": { js: "dom/index", types: "dom/index" },
+};
+
+/** Quoted workspace specifiers (longest first, exact match only) */
+const SPECIFIER = new RegExp(
+  `(["'])(${Object.keys(WORKSPACE_ENTRIES)
+    .sort((a, b) => b.length - a.length)
+    .map((s) => s.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&"))
+    .join("|")})\\1`,
+  "g",
+);
+
+/**
+ * Relative specifier from `fromFile` to the built module of a workspace
+ * specifier (`@minerva/core`, `@minerva/core/styling-hooks`, `@minerva/dom`...).
  *
  * @param {string} fromFile absolute path of the importing file
- * @param {string} coreDir absolute path of minerva-design/dist/core
- * @param {boolean} stylingHooks
+ * @param {string} specifier a key of WORKSPACE_ENTRIES
  * @param {"js" | "cjs" | "d.ts" | "d.cts"} kind
+ * @param {string} [distDir] absolute path of minerva-design/dist
  * @returns {string}
  */
-export function coreSpecifier(fromFile, coreDir, stylingHooks, kind) {
+export function workspaceSpecifier(
+  fromFile,
+  specifier,
+  kind,
+  distDir = DIST_DIR,
+) {
+  const entry = WORKSPACE_ENTRIES[specifier];
+  if (!entry) throw new Error(`Unknown workspace specifier ${specifier}`);
   const ext = kind === "cjs" || kind === "d.cts" ? ".cjs" : ".js";
-  // JS: dist/core/styling-hooks.js; declarations: dist/core/styling-hooks/index.d.ts
-  const name = stylingHooks
-    ? kind.startsWith("d.")
-      ? `styling-hooks/index${ext}`
-      : `styling-hooks${ext}`
-    : `index${ext}`;
-  const path = relative(dirname(fromFile), join(coreDir, name))
+  const name = `${kind.startsWith("d.") ? entry.types : entry.js}${ext}`;
+  const path = relative(dirname(fromFile), join(distDir, name))
     .split(sep)
     .join("/");
   return path.startsWith(".") ? path : `./${path}`;
@@ -45,37 +73,37 @@ export function coreSpecifier(fromFile, coreDir, stylingHooks, kind) {
 /**
  * @param {string} code
  * @param {string} fromFile
- * @param {string} coreDir
  * @param {"js" | "cjs" | "d.ts" | "d.cts"} kind
+ * @param {string} [distDir]
  * @returns {string}
  */
-export function rewriteCoreImports(code, fromFile, coreDir, kind) {
+export function rewriteCoreImports(code, fromFile, kind, distDir = DIST_DIR) {
   return code.replace(
     SPECIFIER,
-    (_match, quote, stylingHooks) =>
-      `${quote}${coreSpecifier(fromFile, coreDir, Boolean(stylingHooks), kind)}${quote}`,
+    (_match, quote, specifier) =>
+      `${quote}${workspaceSpecifier(fromFile, specifier, kind, distDir)}${quote}`,
   );
 }
 
 /**
- * Rewrites `@minerva/core` imports of the output chunks (external in the
- * build) to relative paths into `coreDir`.
+ * Rewrites the `@minerva/core` / `@minerva/dom` imports of the output chunks
+ * (external in the build) to relative paths into `dist/`.
  *
- * @param {{ outDir: string; coreDir: string }} options absolute paths
+ * @param {{ outDir: string; distDir?: string }} options absolute paths
  * @returns {import("vite").Plugin}
  */
-export function coreImportsPlugin({ outDir, coreDir }) {
+export function coreImportsPlugin({ outDir, distDir = DIST_DIR }) {
   return {
     name: "minerva-core-imports",
     renderChunk(code, chunk, options) {
-      if (!code.includes("@minerva/core")) return null;
+      if (!code.includes("@minerva/")) return null;
       const kind = options.format === "cjs" ? "cjs" : "js";
       return {
         code: rewriteCoreImports(
           code,
           join(outDir, chunk.fileName),
-          coreDir,
           kind,
+          distDir,
         ),
         // only import specifiers change (same lines)
         map: null,
@@ -91,12 +119,12 @@ const walk = (dir) =>
   );
 
 /**
- * Rewrites `@minerva/core` imports of every declaration file under `dir`.
+ * Rewrites the workspace imports of every declaration file under `dir`.
  *
  * @param {string} dir absolute path (e.g. minerva-design/dist/react)
- * @param {string} coreDir absolute path of minerva-design/dist/core
+ * @param {string} [distDir] absolute path of minerva-design/dist
  */
-export function rewriteCoreDeclarations(dir, coreDir) {
+export function rewriteCoreDeclarations(dir, distDir = DIST_DIR) {
   for (const file of walk(dir)) {
     const kind = file.endsWith(".d.cts")
       ? "d.cts"
@@ -105,7 +133,7 @@ export function rewriteCoreDeclarations(dir, coreDir) {
         : undefined;
     if (!kind) continue;
     const code = readFileSync(file, "utf8");
-    if (!code.includes("@minerva/core")) continue;
-    writeFileSync(file, rewriteCoreImports(code, file, coreDir, kind));
+    if (!code.includes("@minerva/")) continue;
+    writeFileSync(file, rewriteCoreImports(code, file, kind, distDir));
   }
 }

@@ -1,22 +1,28 @@
 import type { Plugin } from "vite";
 
-export declare function coreSpecifier(
+type Kind = "js" | "cjs" | "d.ts" | "d.cts";
+
+export declare const WORKSPACE_ENTRIES: Record<
+  string,
+  { js: string; types: string }
+>;
+export declare function workspaceSpecifier(
   fromFile: string,
-  coreDir: string,
-  stylingHooks: boolean,
-  kind: "js" | "cjs" | "d.ts" | "d.cts",
+  specifier: string,
+  kind: Kind,
+  distDir?: string,
 ): string;
 export declare function rewriteCoreImports(
   code: string,
   fromFile: string,
-  coreDir: string,
-  kind: "js" | "cjs" | "d.ts" | "d.cts",
+  kind: Kind,
+  distDir?: string,
 ): string;
 export declare function coreImportsPlugin(options: {
   outDir: string;
-  coreDir: string;
+  distDir?: string;
 }): Plugin;
 export declare function rewriteCoreDeclarations(
   dir: string,
-  coreDir: string,
+  distDir?: string,
 ): void;

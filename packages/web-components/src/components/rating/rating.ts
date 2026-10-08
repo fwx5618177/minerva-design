@@ -6,12 +6,12 @@ import styles from "@react-styles/components/Rating/rating.module.scss?inline";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
 import {
-  logicalArrowKey,
   ratingDisplayStars,
   ratingStarFill,
   roundRating,
   type RatingStarFill,
 } from "@minerva/core";
+import { logicalArrowKey } from "@minerva/dom";
 import {
   FormAssociatedElement,
   type ValidityResult,

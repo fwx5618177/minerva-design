@@ -7,6 +7,7 @@ export default defineConfig({
     // - e2e: tests/e2e/vitest.config.ts (user flows across components)
     projects: [
       "packages/core",
+      "packages/dom",
       "packages/react",
       "packages/web-components",
       "apps/docs",
@@ -18,6 +19,7 @@ export default defineConfig({
       // Library sources only (the docs site is not measured)
       include: [
         "**/core/src/**/*.ts",
+        "**/dom/src/**/*.ts",
         "**/react/src/**/*.{ts,tsx}",
         "**/web-components/src/**/*.{ts,tsx}",
       ],
@@ -29,6 +31,8 @@ export default defineConfig({
         // barrel files
         "**/react/src/**/index.{ts,tsx}",
         "**/packages/core/src/index.ts",
+        "**/packages/dom/src/index.ts",
+        "**/packages/dom/src/core-web.ts",
         "**/web-components/src/index.ts",
         "**/web-components/src/controllers/index.ts",
         // generated from the React icons (no logic)

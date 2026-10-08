@@ -6,7 +6,7 @@ import {
   getFocusScopeCount,
   getLayerStack,
   isScrollLocked,
-} from "@minerva/core";
+} from "@minerva/dom";
 import {
   DialogClose,
   DialogContent,

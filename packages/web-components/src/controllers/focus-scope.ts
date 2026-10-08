@@ -5,7 +5,7 @@ import {
   getActiveElement,
   type FocusScope,
   type FocusScopeOptions,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 /**
  * Lit wrapper of core's `createFocusScope` (auto-focus, optional trap with

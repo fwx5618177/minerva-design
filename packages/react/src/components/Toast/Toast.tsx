@@ -20,13 +20,8 @@ import {
 import useI18n from "../../hooks/useI18n";
 import { ProgressIndicator } from "../ProgressIndicator";
 import { useIsClient } from "../../internal/useIsClient";
-import {
-  focusElement,
-  formatHotkey,
-  getAdjacentTabbable,
-  getTabbables,
-  matchesHotkey,
-} from "@minerva/core";
+import { formatHotkey, matchesHotkey } from "@minerva/core";
+import { focusElement, getAdjacentTabbable, getTabbables } from "@minerva/dom";
 import {
   createToast,
   toast,

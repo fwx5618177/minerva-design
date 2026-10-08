@@ -1,28 +1,23 @@
+// @minerva/core: the platform-neutral core shared by every renderer (React
+// DOM, Web Components, and the planned Vue / Angular / React Native / Taro /
+// WeChat / uni-app renderers). Nothing here touches `document` / `window`
+// (enforced by ESLint and by src/platform-neutral.test.ts): DOM primitives
+// live in @minerva/dom.
 export * from "./id";
 export * from "./controllable";
-export * from "./dom";
-export * from "./focus-scope";
-export * from "./dismissable-layer";
-export * from "./scroll-lock";
-export * from "./hide-others";
-export * from "./roving-focus";
-export * from "./portal";
-export * from "./positioning";
-export * from "./pointer-grace";
-export * from "./presence";
 export * from "./dev-message";
 export * from "./url";
 export * from "./theme";
 export * from "./i18n";
 export * from "./time";
 export * from "./shortcuts";
-export * from "./adjacent-tabbable";
+export * from "./keyboard-navigation";
+export * from "./typeahead";
 export * from "./fixed-columns";
 export * from "./table-sort";
 export * from "./pagination";
 export * from "./calendar-date";
 export * from "./number-input";
-export * from "./direction";
 export * from "./spacing";
 export * from "./virtual-range";
 export * from "./file-accept";

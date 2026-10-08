@@ -4,7 +4,7 @@ import {
   logicalArrowKey,
   resolveDirection,
   type ReadingDirection,
-} from "@minerva/core";
+} from "@minerva/dom";
 
 // The direction helpers live in @minerva/core (shared with the web
 // components); the React hooks below build on them.

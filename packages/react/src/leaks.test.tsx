@@ -6,7 +6,7 @@
 import { useEffect, type ReactElement } from "react";
 import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createDismissableLayer, lockScroll } from "@minerva/core";
+import { createDismissableLayer, lockScroll } from "@minerva/dom";
 import * as lib from "./index";
 import { componentSsrCases } from "./test-utils/componentSsrCases";
 import { trackLeaks, type LeakTracker } from "../../../tests/leak-tracker";

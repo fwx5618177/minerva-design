@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { getActiveElement, getLayerStack } from "@minerva/core";
+import { getActiveElement, getLayerStack } from "@minerva/dom";
 import { MinervaModal } from "./modal";
 import "../../elements/modal";
 import "../../elements/button";

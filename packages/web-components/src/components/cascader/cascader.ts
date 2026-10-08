@@ -9,13 +9,11 @@ import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
 import {
-  contains,
   findCascaderPath,
   flattenCascaderOptions,
-  logicalArrowKey,
-  parsePlacement,
   type CascaderSearchEntry,
 } from "@minerva/core";
+import { contains, logicalArrowKey, parsePlacement } from "@minerva/dom";
 import styles from "@react-styles/components/Cascader/cascader.module.scss?inline";
 import {
   FloatingLayerController,

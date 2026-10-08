@@ -12,6 +12,7 @@ export type { SupportedLanguage } from "./types";
 export { mergeMessages, type Messages } from "./merge";
 export {
   createTranslator,
+  fallbackPluralCategory,
   getPluralCategory,
   interpolate,
   translate,

@@ -14,11 +14,11 @@ import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { PresenceController } from "../../internal/presence";
 import {
   commandSearchText,
-  isEditableTarget,
   matchesShortcut,
   normalizeSearchText,
   normalizeShortcuts,
 } from "@minerva/core";
+import { isEditableTarget } from "@minerva/dom";
 
 export { matchesShortcut, normalizeShortcuts };
 /** Keyboard event fields read by `matchesShortcut`. */

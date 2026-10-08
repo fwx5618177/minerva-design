@@ -1,7 +1,7 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { contains } from "@minerva/core";
+import { contains } from "@minerva/dom";
 import styles from "@react-styles/components/AppShell/appShell.module.scss?inline";
 import iconButtonStyles from "@react-styles/components/IconButton/iconButton.module.scss?inline";
 import { DismissableLayerController } from "../../controllers/dismissable-layer";

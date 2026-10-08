@@ -1,7 +1,8 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import type { ColorScheme, Placement } from "@minerva/core";
+import type { ColorScheme } from "@minerva/core";
+import type { Placement } from "@minerva/dom";
 import styles from "@react-styles/components/IconButton/iconButton.module.scss?inline";
 import tooltipStyles from "@react-styles/components/Tooltip/tooltip.module.scss?inline";
 import {

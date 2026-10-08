@@ -1,8 +1,9 @@
 // Regenerates the "exports" and "typesVersions" maps of package.json:
 // - the React entries (dist/react/, ESM + CJS): `.`, `./utils`,
 //   `./theme-utils`, `./monaco`, the stylesheets and the prose Sass adapter
-// - the framework-agnostic core (dist/core/, ESM + CJS): `./core`,
-//   `./styling-hooks`, `./tokens.css`
+// - the core (ESM + CJS): `./core` (dist/dom/core-web: the platform-neutral
+//   dist/core/ plus the DOM primitives of dist/dom/), `./styling-hooks`,
+//   `./tokens.css`
 // - the web components (dist/web-components/, ESM only): the all-in-one
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
@@ -36,7 +37,7 @@ export const DUAL_SUBPATHS = {
   utils: ["react/utils-entry"],
   "theme-utils": ["react/theme-utils"],
   monaco: ["react/monaco"],
-  core: ["core/index"],
+  core: ["dom/core-web"],
   "styling-hooks": ["core/styling-hooks", "core/styling-hooks/index"],
 };
 
