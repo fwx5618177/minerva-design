@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { dirname, join, normalize } from "node:path";
 import { MARKDOWN, docPageIds, exists, read, walk } from "./utils";
 
-const SITE = "https://fwx5618177.github.io/minerva/";
+const SITE = "https://fwx5618177.github.io/minerva-design/";
 const pages = docPageIds();
 
 /** GitHub's heading anchors: lowercase, punctuation / emoji dropped, spaces -> "-" */

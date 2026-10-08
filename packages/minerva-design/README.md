@@ -6,7 +6,7 @@ framework-agnostic **Web Components** (Lit) for plain HTML, Vue, Angular,
 Svelte, Solid or React, with design tokens, theming (light / dark / system,
 palettes, design presets) and built-in translations (en, zh, ja, fr).
 
-Documentation and live demos: <https://fwx5618177.github.io/minerva/>
+Documentation and live demos: <https://fwx5618177.github.io/minerva-design/>
 
 ## Install
 
@@ -291,9 +291,9 @@ helpers are published as `minerva-design/styling-hooks`.
 
 ## Links
 
-- [Installation](https://fwx5618177.github.io/minerva/#/installation) · [React Server Components](https://fwx5618177.github.io/minerva/#/rsc-guide) · [Theming](https://fwx5618177.github.io/minerva/#/theming)
-- Web Components: [getting started](https://fwx5618177.github.io/minerva/#/web-components) · [plain HTML](https://fwx5618177.github.io/minerva/#/wc-plain-html) · [Vue](https://fwx5618177.github.io/minerva/#/wc-vue) · [Angular](https://fwx5618177.github.io/minerva/#/wc-angular) · [Svelte](https://fwx5618177.github.io/minerva/#/wc-svelte) · [forms](https://fwx5618177.github.io/minerva/#/wc-forms) · [theming](https://fwx5618177.github.io/minerva/#/wc-theming)
-- [Repository](https://github.com/fwx5618177/minerva) · [Issues](https://github.com/fwx5618177/minerva/issues)
+- [Installation](https://fwx5618177.github.io/minerva-design/#/installation) · [React Server Components](https://fwx5618177.github.io/minerva-design/#/rsc-guide) · [Theming](https://fwx5618177.github.io/minerva-design/#/theming)
+- Web Components: [getting started](https://fwx5618177.github.io/minerva-design/#/web-components) · [plain HTML](https://fwx5618177.github.io/minerva-design/#/wc-plain-html) · [Vue](https://fwx5618177.github.io/minerva-design/#/wc-vue) · [Angular](https://fwx5618177.github.io/minerva-design/#/wc-angular) · [Svelte](https://fwx5618177.github.io/minerva-design/#/wc-svelte) · [forms](https://fwx5618177.github.io/minerva-design/#/wc-forms) · [theming](https://fwx5618177.github.io/minerva-design/#/wc-theming)
+- [Repository](https://github.com/fwx5618177/minerva-design) · [Issues](https://github.com/fwx5618177/minerva-design/issues)
 
 ## Browser support
 
@@ -301,7 +301,7 @@ helpers are published as `minerva-design/styling-hooks`.
 - **Web Components**: ES2022, custom elements v1 and shadow DOM on the same browsers. Feature-detected with fallbacks: the Popover API (overlays fall back to `position: fixed`), `ElementInternals` (without it the controls do not take part in forms; `element-internals-polyfill` works) and constructable stylesheets.
 - **Core**: ES2020 and DOM APIs only.
 
-The feature matrix and fallbacks are in the [repository README](https://github.com/fwx5618177/minerva#-browser-support).
+The feature matrix and fallbacks are in the [repository README](https://github.com/fwx5618177/minerva-design#-browser-support).
 
 ## License
 

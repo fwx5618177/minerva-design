@@ -4,7 +4,7 @@ import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
 
-const REPO_URL = "https://github.com/fwx5618177/minerva";
+const REPO_URL = "https://github.com/fwx5618177/minerva-design";
 
 const controlledCode = `import { useState } from "react";
 import { Switch } from "minerva-design";
@@ -110,7 +110,7 @@ const IntroductionDoc: React.FC = () => {
         <p className={styles.prose}>
           {t("docs.introduction.contributing.text")}{" "}
           <a href={REPO_URL} target="_blank" rel="noreferrer">
-            github.com/fwx5618177/minerva
+            github.com/fwx5618177/minerva-design
           </a>
         </p>
       </section>

@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva)
-[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/issues)
-[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/pulls)
-[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
+[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/issues)
+[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/blob/main/LICENSE)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/graphs/contributors)
 
 [English](./README.md) | [简体中文](./README_ZH.md) | [日本語](./README_JP.md)
 
@@ -16,7 +16,7 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 ## 🌟 デモとドキュメント
 
-ドキュメントとライブデモ：[https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
+ドキュメントとライブデモ：[https://fwx5618177.github.io/minerva-design/](https://fwx5618177.github.io/minerva-design/)
 
 ## ✨ 特徴
 
@@ -59,7 +59,7 @@ minerva-design               minerva-design/web-components
 
 両ライブラリは同じコア（パッケージ内の `dist/core/`）を読み込みます。React コンポーネントとカスタム要素を併用するアプリでも、コアは 1 回だけ読み込まれます。
 
-`minerva-design` のすべてのオーバーレイ（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）は同じコアのプリミティブの上に構築されています。レイヤースタックは 1 つ（Escape は最も内側のオーバーレイから閉じる）、フォーカス処理も 1 つ（フォーカスは開いた要素へ戻る）、位置決めエンジンも 1 つです。詳しくはドキュメントサイトの[アーキテクチャ](https://fwx5618177.github.io/minerva/#/architecture)ページを参照してください。
+`minerva-design` のすべてのオーバーレイ（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）は同じコアのプリミティブの上に構築されています。レイヤースタックは 1 つ（Escape は最も内側のオーバーレイから閉じる）、フォーカス処理も 1 つ（フォーカスは開いた要素へ戻る）、位置決めエンジンも 1 つです。詳しくはドキュメントサイトの[アーキテクチャ](https://fwx5618177.github.io/minerva-design/#/architecture)ページを参照してください。
 
 ### コンポーネント（`minerva-design`）
 
@@ -276,7 +276,7 @@ import "minerva-design/tokens.css";
 // VS Code: "html.customData": ["./node_modules/minerva-design/dist/web-components/html-custom-data.json"]
 ```
 
-素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
+素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva-design/#/web-components)。
 
 ### スタイルのカスタマイズ
 
@@ -316,7 +316,7 @@ minerva-modal:state(open)::part(content) {
 @layer reset, minerva, app;
 ```
 
-繰り返されるアイテム（メニュー項目、オプション、行とソート済みヘッダー、ページ、ステップ、ツリー項目、日付、トースト、ファイル…）は独自の状態（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`…）を持ちます：React ではアイテム要素そのものの属性、シャドウルート内のアイテムはパーツ名と並ぶ `<part>--<state>` パーツ名（Shoelace / Web Awesome の規約）、独立した要素であるアイテムはカスタムステート（`minerva-option:state(selected)`）です。複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `minerva-design/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
+繰り返されるアイテム（メニュー項目、オプション、行とソート済みヘッダー、ページ、ステップ、ツリー項目、日付、トースト、ファイル…）は独自の状態（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`…）を持ちます：React ではアイテム要素そのものの属性、シャドウルート内のアイテムはパーツ名と並ぶ `<part>--<state>` パーツ名（Shoelace / Web Awesome の規約）、独立した要素であるアイテムはカスタムステート（`minerva-option:state(selected)`）です。複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `minerva-design/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva-design/#/styling)。
 
 ## 🌐 ブラウザサポート
 
@@ -335,7 +335,7 @@ minerva-modal:state(open)::part(content) {
 必要環境：ローカル開発には Node.js >= 22.12（`.nvmrc` を参照）と pnpm 11 が必要です。パッケージとドキュメントサイトのビルドは Node.js 20.19+ でも動作します（GitHub Pages のデプロイワークフローは Node 20 を使用）。
 
 ```bash
-git clone https://github.com/fwx5618177/minerva.git
+git clone https://github.com/fwx5618177/minerva-design.git
 cd minerva
 pnpm install
 pnpm dev
@@ -431,5 +431,5 @@ workspace パッケージ（`@minerva/core`、`@minerva/react`、`@minerva/web-c
 ご質問やフィードバックがございましたら、以下の方法でお問い合わせください：
 
 - メール：[fwx5618177@gmail.com](mailto:fwx5618177@gmail.com)
-- GitHub Issues：[https://github.com/fwx5618177/minerva/issues](https://github.com/fwx5618177/minerva/issues)
-- GitHub Pull Requests：[https://github.com/fwx5618177/minerva/pulls](https://github.com/fwx5618177/minerva/pulls)
+- GitHub Issues：[https://github.com/fwx5618177/minerva-design/issues](https://github.com/fwx5618177/minerva-design/issues)
+- GitHub Pull Requests：[https://github.com/fwx5618177/minerva-design/pulls](https://github.com/fwx5618177/minerva-design/pulls)

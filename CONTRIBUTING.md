@@ -65,9 +65,9 @@ git push --follow-tags  # push the minerva-design@<version> tag
 
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-## Report bugs using Github's [issue tracker](https://github.com/fwx5618177/minerva/issues)
+## Report bugs using Github's [issue tracker](https://github.com/fwx5618177/minerva-design/issues)
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/fwx5618177/minerva/issues/new/choose).
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/fwx5618177/minerva-design/issues/new/choose).
 
 ## Write bug reports with detail, background, and sample code
 

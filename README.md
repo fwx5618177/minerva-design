@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva)
-[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/issues)
-[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/pulls)
-[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
+[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/issues)
+[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/blob/main/LICENSE)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/graphs/contributors)
 
 [English](./README.md) | [简体中文](./README_ZH.md) | [日本語](./README_JP.md)
 
@@ -16,7 +16,7 @@ Minerva is a UI component library for the web: React 19 components plus the same
 
 ## 🌟 Demo & Documentation
 
-Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
+Docs and live demos: [https://fwx5618177.github.io/minerva-design/](https://fwx5618177.github.io/minerva-design/)
 
 ## ✨ Features
 
@@ -59,7 +59,7 @@ minerva-design               minerva-design/web-components
 
 Both libraries import the same copy of the core (`dist/core/` of the package): an app that uses React components and custom elements together loads it once.
 
-Every overlay of `minerva-design` (Modal, Drawer, Popover, Tooltip, Menu, ContextMenu, Select, AutoComplete, Cascader, TimePicker) is built on the same core primitives: one layer stack (Escape closes the innermost overlay first), one focus implementation (focus returns to the opener) and one positioning engine. See the [Architecture](https://fwx5618177.github.io/minerva/#/architecture) page.
+Every overlay of `minerva-design` (Modal, Drawer, Popover, Tooltip, Menu, ContextMenu, Select, AutoComplete, Cascader, TimePicker) is built on the same core primitives: one layer stack (Escape closes the innermost overlay first), one focus implementation (focus returns to the opener) and one positioning engine. See the [Architecture](https://fwx5618177.github.io/minerva-design/#/architecture) page.
 
 ### Components (`minerva-design`)
 
@@ -314,7 +314,7 @@ Typings: every element is in `HTMLElementTagNameMap`; templates are typed with
 // VS Code: "html.customData": ["./node_modules/minerva-design/dist/web-components/html-custom-data.json"]
 ```
 
-Guides for plain HTML, Vue, Angular, Svelte, forms and theming: [Web Components](https://fwx5618177.github.io/minerva/#/web-components).
+Guides for plain HTML, Vue, Angular, Svelte, forms and theming: [Web Components](https://fwx5618177.github.io/minerva-design/#/web-components).
 
 ### Styling & customization
 
@@ -364,7 +364,7 @@ minerva-data-table::part(header-cell header-cell--sort-ascending) {
 @layer reset, minerva, app;
 ```
 
-Repeated items (menu items, options, rows and sorted headers, pages, steps, tree items, days, toasts, files...) carry their own states (`highlighted`, `selected`, `checked`, `current`, `expanded`, `sort`, `status`...): attributes of the item element in React; `<part>--<state>` part names next to the part name for items rendered in a shadow root (the Shoelace / Web Awesome convention), custom states for items that are elements of their own (`minerva-option:state(selected)`). Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `minerva-design/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva/#/styling).
+Repeated items (menu items, options, rows and sorted headers, pages, steps, tree items, days, toasts, files...) carry their own states (`highlighted`, `selected`, `checked`, `current`, `expanded`, `sort`, `status`...): attributes of the item element in React; `<part>--<state>` part names next to the part name for items rendered in a shadow root (the Shoelace / Web Awesome convention), custom states for items that are elements of their own (`minerva-option:state(selected)`). Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `minerva-design/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva-design/#/styling).
 
 ## 🌐 Browser support
 
@@ -399,7 +399,7 @@ The React components render overlays into a portal and do not need the Popover A
 Requirements: Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 for local development. Building the packages and the docs site also works on Node.js 20.19+, which is what the GitHub Pages deploy workflow uses.
 
 ```bash
-git clone https://github.com/fwx5618177/minerva.git
+git clone https://github.com/fwx5618177/minerva-design.git
 cd minerva
 pnpm install
 pnpm dev
@@ -495,5 +495,5 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 For any questions or feedback, please contact us:
 
 - Email: [fwx5618177@gmail.com](mailto:fwx5618177@gmail.com)
-- GitHub Issues: [https://github.com/fwx5618177/minerva/issues](https://github.com/fwx5618177/minerva/issues)
-- GitHub Pull Requests: [https://github.com/fwx5618177/minerva/pulls](https://github.com/fwx5618177/minerva/pulls)
+- GitHub Issues: [https://github.com/fwx5618177/minerva-design/issues](https://github.com/fwx5618177/minerva-design/issues)
+- GitHub Pull Requests: [https://github.com/fwx5618177/minerva-design/pulls](https://github.com/fwx5618177/minerva-design/pulls)

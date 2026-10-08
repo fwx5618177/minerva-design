@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva)
-[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/issues)
-[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/pulls)
-[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva.svg)](https://github.com/fwx5618177/minerva/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
+[![GitHub issues](https://img.shields.io/github/issues/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/issues)
+[![GitHub license](https://img.shields.io/github/license/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/blob/main/LICENSE)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/fwx5618177/minerva-design.svg)](https://github.com/fwx5618177/minerva-design/graphs/contributors)
 
 [English](./README.md) | [简体中文](./README_ZH.md) | [日本語](./README_JP.md)
 
@@ -16,7 +16,7 @@ Minerva 是一个面向 Web 的 UI 组件库：React 19 组件，以及同一套
 
 ## 🌟 演示和文档
 
-文档与在线演示：[https://fwx5618177.github.io/minerva/](https://fwx5618177.github.io/minerva/)
+文档与在线演示：[https://fwx5618177.github.io/minerva-design/](https://fwx5618177.github.io/minerva-design/)
 
 ## ✨ 特性
 
@@ -59,7 +59,7 @@ minerva-design               minerva-design/web-components
 
 两个组件库引入的是同一份核心代码（包内的 `dist/core/`）：同时使用 React 组件和自定义元素的应用只会加载一次。
 
-`minerva-design` 的所有浮层（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）都构建在同一套核心原语之上：同一个层栈（Escape 先关闭最内层浮层）、同一套焦点处理（焦点回到触发元素）和同一个定位引擎。详见文档站的[架构](https://fwx5618177.github.io/minerva/#/architecture)页面。
+`minerva-design` 的所有浮层（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）都构建在同一套核心原语之上：同一个层栈（Escape 先关闭最内层浮层）、同一套焦点处理（焦点回到触发元素）和同一个定位引擎。详见文档站的[架构](https://fwx5618177.github.io/minerva-design/#/architecture)页面。
 
 ### 组件（`minerva-design`）
 
@@ -276,7 +276,7 @@ import "minerva-design/tokens.css";
 // VS Code: "html.customData": ["./node_modules/minerva-design/dist/web-components/html-custom-data.json"]
 ```
 
-纯 HTML、Vue、Angular、Svelte、表单和主题的使用指南见 [Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
+纯 HTML、Vue、Angular、Svelte、表单和主题的使用指南见 [Web Components](https://fwx5618177.github.io/minerva-design/#/web-components)。
 
 ### 样式定制
 
@@ -316,7 +316,7 @@ minerva-modal:state(open)::part(content) {
 @layer reset, minerva, app;
 ```
 
-重复出现的条目（菜单项、选项、表格行与排序表头、页码、步骤、树节点、日期、通知、文件……）拥有各自的状态（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`……）：在 React 中是条目元素自身的属性；在 shadow root 中渲染的条目使用与部件名并列的 `<part>--<state>` 部件名（沿用 Shoelace / Web Awesome 的约定），本身是独立元素的条目使用自定义状态（`minerva-option:state(selected)`）。推荐使用复合选择器 `[data-minerva="x"][data-part="y"]`（对弹层、对话框等通过 portal 渲染的部件同样有效）；类名和没有钩子的 DOM 结构属于内部实现。每个组件的钩子列在其文档页和 `minerva-design/styling-hooks`（机器可读清单）中，并由 `packages/core/styling-hooks.lock.json` 锁定：新增钩子为 minor 变更，删除或重命名为 major 变更。指南：[样式定制](https://fwx5618177.github.io/minerva/#/styling)。
+重复出现的条目（菜单项、选项、表格行与排序表头、页码、步骤、树节点、日期、通知、文件……）拥有各自的状态（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`……）：在 React 中是条目元素自身的属性；在 shadow root 中渲染的条目使用与部件名并列的 `<part>--<state>` 部件名（沿用 Shoelace / Web Awesome 的约定），本身是独立元素的条目使用自定义状态（`minerva-option:state(selected)`）。推荐使用复合选择器 `[data-minerva="x"][data-part="y"]`（对弹层、对话框等通过 portal 渲染的部件同样有效）；类名和没有钩子的 DOM 结构属于内部实现。每个组件的钩子列在其文档页和 `minerva-design/styling-hooks`（机器可读清单）中，并由 `packages/core/styling-hooks.lock.json` 锁定：新增钩子为 minor 变更，删除或重命名为 major 变更。指南：[样式定制](https://fwx5618177.github.io/minerva-design/#/styling)。
 
 ## 🌐 浏览器支持
 
@@ -335,7 +335,7 @@ minerva-modal:state(open)::part(content) {
 环境要求：本地开发需要 Node.js >= 22.12（见 `.nvmrc`）和 pnpm 11。构建各个包和文档站点在 Node.js 20.19+ 上同样可用（GitHub Pages 部署工作流使用的就是 Node 20）。
 
 ```bash
-git clone https://github.com/fwx5618177/minerva.git
+git clone https://github.com/fwx5618177/minerva-design.git
 cd minerva
 pnpm install
 pnpm dev
@@ -431,5 +431,5 @@ workspace 包（`@minerva/core`、`@minerva/react`、`@minerva/web-components`�
 如有任何问题或反馈，请联系我们：
 
 - 邮箱：[fwx5618177@gmail.com](mailto:fwx5618177@gmail.com)
-- GitHub Issues：[https://github.com/fwx5618177/minerva/issues](https://github.com/fwx5618177/minerva/issues)
-- GitHub Pull Requests：[https://github.com/fwx5618177/minerva/pulls](https://github.com/fwx5618177/minerva/pulls)
+- GitHub Issues：[https://github.com/fwx5618177/minerva-design/issues](https://github.com/fwx5618177/minerva-design/issues)
+- GitHub Pull Requests：[https://github.com/fwx5618177/minerva-design/pulls](https://github.com/fwx5618177/minerva-design/pulls)

@@ -172,7 +172,7 @@ export {};
       references: [
         {
           name: "Documentation",
-          url: `https://fwx5618177.github.io/minerva/web-components/${e.tagName.replace(/^minerva-/, "")}`,
+          url: `https://fwx5618177.github.io/minerva-design/web-components/${e.tagName.replace(/^minerva-/, "")}`,
         },
       ],
     })),

@@ -62,7 +62,7 @@ const testAlias: Alias[] = [
 ];
 
 export default defineConfig({
-  base: "/minerva/",
+  base: "/minerva-design/",
   plugins: [
     react(),
     docsMetaPlugin(),

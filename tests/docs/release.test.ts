@@ -53,12 +53,12 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     expect(pkg.author).toMatch(/\S+ <\S+@\S+>/);
     expect(pkg.repository).toEqual({
       type: "git",
-      url: "git+https://github.com/fwx5618177/minerva.git",
+      url: "git+https://github.com/fwx5618177/minerva-design.git",
       directory: `packages/${dir}`,
     });
-    expect(pkg.homepage).toBe("https://fwx5618177.github.io/minerva/");
+    expect(pkg.homepage).toBe("https://fwx5618177.github.io/minerva-design/");
     expect(pkg.bugs).toEqual({
-      url: "https://github.com/fwx5618177/minerva/issues",
+      url: "https://github.com/fwx5618177/minerva-design/issues",
     });
     expect(pkg.type).toBe("module");
     expect(pkg.engines?.node).toBe(root.engines.node);
