@@ -1,4 +1,4 @@
-// A sign-up form built from lib-core form controls, filled in by a user.
+// A sign-up form built from React form controls, filled in by a user.
 import { useState } from "react";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,7 +19,7 @@ import {
   ToastProvider,
   toast,
   type CascaderOption,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const countries = ["France", "Germany", "Japan", "China", "Canada"].map(
   (name) => ({ label: name, value: name.toLowerCase() }),

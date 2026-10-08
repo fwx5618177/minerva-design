@@ -1,0 +1,121 @@
+{
+  "title": "Upload",
+  "description": "Selects files by button or drag and drop, validates them and lists them with their transfer state. The transfer itself stays in your code.",
+  "demos": {
+    "basic": {
+      "title": "Single file",
+      "description": "onFilesSelected receives files that pass accept and maxSize; reflect the transfer in value. replace lets a new file replace the current one."
+    },
+    "multiple": {
+      "title": "Multiple files",
+      "description": "multiple with maxCount; failed items show their error and a retry button when onRetry is set."
+    }
+  },
+  "api": {
+    "UploadProps": {
+      "label": "Visible label of the upload field (also names the file input)",
+      "value": "Files to list, with their transfer state (controlled)",
+      "onFilesSelected": "Called with the selected (or dropped) files once they pass accept, maxSize and maxCount. Transfer, cancellation and persisted URLs belong to the caller",
+      "onRemove": "Called to remove a file; shows a remove button on every item",
+      "onRetry": "Called to retry a failed file; shows a retry button on failed items",
+      "accept": "Accepted file types, as for <input accept>",
+      "multiple": "Allows selecting several files",
+      "replace": "Single-file mode: lets a new file replace the listed one (the existing file does not count toward maxCount)",
+      "maxCount": "Maximum number of files, including the listed ones",
+      "maxSize": "Maximum size of a file, in bytes",
+      "loading": "Busy state: blocks new selections and retries (removal stays possible) and sets aria-busy",
+      "disabled": "Disables selection, retry and removal",
+      "labels": "Custom texts; each one overrides the localized default",
+      "className": "Additional class name",
+      "ref": "Ref to the root element"
+    },
+    "UploadItem": {
+      "id": "Stable identifier of the file",
+      "name": "File name shown in the list",
+      "status": "Transfer state of the file",
+      "error": "Error message shown when status is \"error\"",
+      "previewUrl": "Image preview URL (e.g. an object URL)"
+    },
+    "UploadLabels": {
+      "select": "Text of the select button",
+      "uploading": "Status text of an uploading file",
+      "done": "Status text of an uploaded file",
+      "failed": "Status text of a failed file without its own error message",
+      "tooMany": "Error shown when too many files are selected",
+      "invalidType": "Error shown when a file does not match accept",
+      "tooLarge": "Error shown when a file exceeds maxSize",
+      "retry": "Accessible label of the retry button of a file",
+      "remove": "Accessible label of the remove button of a file"
+    }
+  },
+  "cssVars": {
+    "--upload-gap": "Space between the label, the dropzone, the error and the file list",
+    "--upload-font-size": "Font size",
+    "--upload-dropzone-padding": "Inner padding of the dropzone",
+    "--upload-dropzone-radius": "Corner radius of the dropzone (defaults to --radius-md)",
+    "--upload-dropzone-border-color": "Dashed border color of the dropzone at rest",
+    "--upload-dropzone-background": "Background of the dropzone at rest",
+    "--upload-preview-width": "Width of an image preview in the file list",
+    "--upload-preview-height": "Height of an image preview in the file list",
+    "--upload-dropzone-min-height": "Minimum height of the dropzone (its content is centered)",
+    "--upload-dropzone-active-color": "Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)",
+    "--upload-item-background": "Background of a file row (defaults to --surface-color)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Pick or drop files. accept and max-size reject invalid files with a message; replace swaps the single file, multiple + max-count allow several, and removable adds remove buttons."
+      },
+      "transfer": {
+        "title": "Upload progress and retry",
+        "description": "Canceling minerva-files-selected lets the page own items: files are listed as uploading, then done or failed (every second file fails once); retryable shows a retry button that fires minerva-retry."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "Every listed file is submitted under name (multipart FormData); required blocks submission without files and reset empties the list."
+      }
+    },
+    "minerva-upload": {
+      "props": {
+        "removable": "Shows a remove button on every item.",
+        "retryable": "Shows a retry button on failed items.",
+        "required": "An upload without files is invalid (valueMissing).",
+        "items": "Listed files with their transfer state: an array of { id, name, status, error?, previewUrl?, file? } (property).",
+        "texts": "Custom texts (the labels prop of the React library, renamed because labels is the form control's <label> list); each one overrides the localized default.",
+        "files": "The files of the listed items, submitted with the form (read-only).",
+        "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+        "form": "The form owning the element (read-only).",
+        "validity": "Validity state, like <input>.validity (read-only).",
+        "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+        "willValidate": "Whether the element takes part in constraint validation (read-only)."
+      },
+      "events": {
+        "change": "The listed files were changed by the user.",
+        "minerva-files-selected": "Valid files were picked or dropped; detail: { files }. Cancelable: the files are then not listed.",
+        "minerva-change": "The listed files were changed by the user; detail: { value } (the items).",
+        "minerva-remove": "The remove button of an item was activated; detail: { item }. Cancelable: the item is then kept.",
+        "minerva-retry": "The retry button of a failed item was activated; detail: { item }."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the inner icon buttons.",
+        "--icon-button-hover-bg": "Background of the inner icon buttons on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed inner icon button.",
+        "--icon-button-pressed-bg": "Background of a pressed inner icon button.",
+        "--icon-button-size": "Width and height of the inner icon buttons (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Font size of the icons of the inner icon buttons.",
+        "--icon-button-radius": "Corner radius of the inner icon buttons (defaults to --radius-lg)."
+      },
+      "methods": {
+        "focus": "Focuses the select button.",
+        "showPicker": "Opens the file picker.",
+        "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+        "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+        "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+      }
+    }
+  }
+}

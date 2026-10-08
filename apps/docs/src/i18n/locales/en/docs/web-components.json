@@ -1,0 +1,103 @@
+{
+  "title": "Web Components",
+  "description": "The whole Minerva component set as standard custom elements, for plain HTML, Vue, Angular, Svelte, Solid, React or any other framework.",
+  "what": {
+    "title": "What it is",
+    "p1": "minerva-design/web-components implements every Minerva component as a standard custom element (<minerva-button>, <minerva-select>, <minerva-modal>...), built with Lit. Once registered, the elements behave like built-in HTML tags: they work in a static page, in a server-rendered template and in every framework that renders HTML.",
+    "p2": "They are not wrappers of the React components: they render the same DOM structure and compile the same stylesheets into their shadow root, so they look identical, read the same design tokens and expose the same --<component>-* CSS variables. Keyboard and focus behaviour (focus scopes, the dismissable layer stack, roving focus, typeahead, positioning) comes from the same minerva-design/core primitives, with the same ARIA roles and states.",
+    "p3": "The API follows the React vocabulary: color, variant, size, disabled, open, value... become attributes and properties, ReactNode props become slots, callbacks become minerva-* events, and form controls take part in native <form>s."
+  },
+  "install": {
+    "title": "Install",
+    "text": "The package is ESM only and has no peer dependencies: Lit, minerva-design/core (with Floating UI), DOMPurify and jsonc-parser are regular dependencies. React is not needed."
+  },
+  "load": {
+    "title": "Load the elements",
+    "bundler": "With a bundler, import the package once (for instance in your entry file) to register every element:",
+    "perElement": "Or import one entry per element for smaller bundles. Each entry registers its element, its parts and the Minerva elements it renders, and nothing else; the modules are side-effect free otherwise, so unused elements are never bundled. Importing an element twice (or the all-in-one entry afterwards) is harmless.",
+    "cdn": "Without any build step, load the self-contained bundle from a CDN with a module script. It contains every element, Lit and minerva-design/core, minified:",
+    "esm": "Pin a version in CDN URLs in production. The bundle is also published as the ./cdn export (minerva-design/web-components/cdn) if you want to host it yourself."
+  },
+  "tokens": {
+    "title": "Design tokens",
+    "text": "The elements style themselves (their CSS lives in their shadow root), but read the design tokens (--primary-color, --radius-md, --space-2, ...) from the page. Load minerva-design/tokens.css once, as a stylesheet link or a CSS import. It is the same file as minerva-design/tokens.css: if the page already loads minerva-design/style.css (React and Web Components side by side), the tokens are already there. See Theming for themes, palettes and per-component variables."
+  },
+  "attributes": {
+    "title": "Attributes and properties",
+    "text": "Every option is a property (camelCase, any JavaScript value) and, when it is a string, number or boolean, an attribute too (kebab-case: full-width, close-label, activation-mode). Boolean attributes are on when present; options whose React default is true are inverted (hide-close-button, no-loop). State-like attributes (open, disabled, variant, size, color, checked...) are reflected, so CSS can select them. Arrays, objects and functions (options, items, columns, render callbacks) are properties only.",
+    "value": "Form controls follow native inputs: the value (or checked) attribute is the initial value, restored by form.reset(), while the value / checked property is the current value. Set the property to change it from script."
+  },
+  "events": {
+    "title": "Events",
+    "text": "Elements announce what the user did with CustomEvents named minerva-<what happened>. They bubble and are composed (they cross shadow roots), and carry the new state in event.detail:",
+    "change": "minerva-change: a committed value change ({ value }, or { checked, value } for checkboxes and switches).",
+    "input": "minerva-input: the value is changing while the user types ({ value }).",
+    "open": "minerva-open-change: the user asked to open or close a popup ({ open, ... }). It is cancelable: preventDefault() keeps the current state, the equivalent of a controlled open prop in React. Selection changes of tabs are cancelable too.",
+    "other": "More specific events use the same scheme: minerva-select, minerva-close, minerva-clear, minerva-page-change, minerva-sort-change, minerva-selection-change, minerva-after-open, minerva-after-close... Each component page lists the events of its elements.",
+    "native": "Native events keep their meaning where an element mirrors a native control: click, focus, blur, input and change (re-dispatched on the host).",
+    "programmatic": "Setting a property from script never fires an event: events always mean that the user did something, so syncing state into an element cannot loop."
+  },
+  "slots": {
+    "title": "Slots and parts",
+    "text": "Rich content goes into slots: the default slot for the main content, and named slots (slot=\"footer\", \"prefix\", \"start\", \"icon\"...) where the React component takes a ReactNode. Elements expose their key internals as CSS parts (root, label, content, item, input...) and their states as custom states (:state(open)...), which you can style from the page with ::part() without depending on their internal class names. Slots and parts are listed on every component page."
+  },
+  "typings": {
+    "title": "TypeScript and editor support",
+    "text": "Every element class adds itself to HTMLElementTagNameMap, so document.querySelector and createElement return the right type. The classes and their string-literal unions are exported from the package.",
+    "frameworks": "Typings for framework templates are generated from the Custom Elements Manifest (custom-elements.json, also published): attributes, properties and events are type-checked in React, Vue, Svelte and Solid templates. Reference the file that matches your framework once:",
+    "vscode": "For plain HTML files, point VS Code at the bundled HTML custom data to get tag and attribute completion with documentation:"
+  },
+  "react": {
+    "title": "Use from React 19",
+    "text": "React 19 supports custom elements natively: props that exist on the element are set as properties (so booleans, arrays and objects work as is) and props named on + the event name subscribe to custom events, e.g. onminerva-change. onClick and other standard events work as with native elements.",
+    "note": "In React apps the React components of minerva-design are usually the better fit. The custom elements are useful when the same widgets are shared with non-React code (micro-frontends, CMS content, server templates)."
+  },
+  "ssr": {
+    "title": "Server-side rendering",
+    "text": "The modules can be imported in Node (Next.js, Nuxt, SvelteKit, Angular SSR, Astro...): nothing touches the DOM at import time, and defineElement() is idempotent and does nothing when the environment has no customElements registry. The elements are not pre-rendered (no declarative shadow DOM): the server sends the tags with their attributes and light DOM content, and the browser upgrades them once the definitions load.",
+    "hydration": "Server-rendered markup hydrates without mismatches, even when the definitions are registered before hydrateRoot(): composite items (tabs and panels, radios, options) defer the host attributes they write themselves (roving tabindex, generated ids, aria-controls / aria-labelledby, slot, hidden, data-state) until after the next animation frame and idle period. Elements created by script write them immediately.",
+    "fouc": "Hide undefined elements with :not(:defined) to avoid a flash of unstyled content."
+  },
+  "dev": {
+    "title": "Development warnings",
+    "text": "Invalid attribute combinations and common mistakes (a value that matches no option, min greater than max, an icon-only button without aria-label, the package loaded twice...) are reported with console.error (the channel of the React components' warnings, like React's own prop warnings), once per message, in the same format as the React library: \"[minerva] <minerva-tag>: message\". The checks are guarded by process.env.NODE_ENV !== \"production\", which bundlers replace: production builds drop them. Without a bundler (the CDN build, or a module loaded where process does not exist), warnings are off."
+  },
+  "authoring": {
+    "title": "Authoring your own elements",
+    "text": "The building blocks of the Minerva elements are exported, so your own custom elements can share their conventions, theme scope and accessibility behaviour:",
+    "exports": {
+      "defineElement": "defineElement(Class): registers an element and its static dependencies; idempotent, warns in development when another class already owns the tag, no-op without customElements.",
+      "emit": "emit(target, name, detail, { cancelable }): dispatches a bubbling, composed minerva-* CustomEvent and returns false when a listener called preventDefault().",
+      "MinervaElement": "MinervaElement: the LitElement base class (static tagName, static dependencies, this.emit()).",
+      "hostStyles": "hostStyles: shared :host rules (box-sizing, the hidden attribute, a .visually-hidden helper).",
+      "FormAssociatedElement": "FormAssociatedElement: base class of form controls on ElementInternals (name, disabled, required, validity, custom validity, reset, fieldset and state restoration).",
+      "LocaleController": "LocaleController: built-in texts through the core translator (this.locale.t(\"modal.close\")), following lang and <minerva-config locale>.",
+      "resolveLanguage": "resolveLanguage(element): the supported language of an element's scope.",
+      "AriaController": "AriaController: forwards aria-label / aria-labelledby / aria-describedby and <label for> from the host to an inner control (ids cannot cross shadow roots).",
+      "HasSlotController": "HasSlotController: whether a named slot has content, to drop empty wrappers.",
+      "controllers": "Lit controllers over the core primitives: FloatingLayerController (anchored popup: position, dismissable layer, optional focus scope), AnchoredPositionController, DismissableLayerController, FocusScopeController, ModalController (scroll lock and hide-others), RovingFocusController and TypeaheadController.",
+      "popoverResetStyles": "popoverResetStyles: resets the UA styles of a popover=\"manual\" panel rendered in the top layer."
+    }
+  },
+  "frameworks": {
+    "title": "One page, every framework",
+    "text": "Every component page has a framework selector (React, Vue, Angular, Svelte, Solid, HTML) whose choice is kept for the whole site and in the ?framework= link. The Vue, Angular, Svelte, Solid and HTML examples run the real custom elements; their source is generated at build time from the page's Web Component demo (HTML + its setup script) by a deterministic transformer, so every framework always shows the same, tested example:",
+    "rules": {
+      "refs": "root.querySelector(\"#id\") → an element reference: ref() in Vue, #ref + @ViewChild in Angular, bind:this in Svelte, ref={el} in Solid.",
+      "events": "el.addEventListener(\"minerva-change\", handler) → a template listener: @minerva-change, (minerva-change), onminerva-change, on:minerva-change; the matching removeEventListener is dropped, the framework removes it.",
+      "props": "el.items = [...] at setup → a property binding: :items.prop, [items], items={…}, prop:items={…}.",
+      "text": "An element only written through textContent (or the value of an <output>) → reactive state rendered in the template (ref, field, $state, signal).",
+      "rest": "Other declarations become component state and functions, other statements run on mount (onMounted, ngAfterViewInit, onMount) and the rest of the cleanup on unmount. Plain HTML keeps the script as is, with document instead of the demo root."
+    },
+    "fallback": "Code the rules cannot express keeps the original setup function, called on mount with a container ref, so the generated example stays correct."
+  },
+  "guides": {
+    "title": "Guides"
+  },
+  "demos": {
+    "react": {
+      "title": "React 19",
+      "description": "Minerva custom elements rendered from React state: value, checked and disabled are passed as properties, and onminerva-input / onminerva-change subscribe to the custom events."
+    }
+  }
+}

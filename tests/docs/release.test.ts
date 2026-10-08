@@ -1,8 +1,9 @@
-// First-publish correctness of the three npm packages: complete metadata,
-// README / LICENSE / CHANGELOG shipped, coherent versions (one `fixed`
-// Changesets group) and internal dependencies that pnpm rewrites on publish.
+// First-publish correctness of the npm package `minerva-design` (the only
+// published package): complete metadata, README / LICENSE / CHANGELOG
+// shipped, no dependency on the private workspace packages (bundled into its
+// dist), and a Changesets setup that only ever releases it.
 import { describe, expect, it } from "vitest";
-import { PUBLISHED, exists, read, readJson } from "./utils";
+import { PRIVATE, PUBLISHED, exists, read, readJson } from "./utils";
 
 interface Pkg {
   name: string;
@@ -21,8 +22,10 @@ interface Pkg {
   engines?: { node?: string };
   publishConfig?: { access?: string; registry?: string };
   exports?: Record<string, unknown>;
+  scripts?: Record<string, string>;
   dependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
+  peerDependenciesMeta?: Record<string, { optional?: boolean }>;
 }
 
 const root = readJson<Pkg & { engines: { node: string } }>("package.json");
@@ -35,6 +38,8 @@ const changesets = readJson<{
   linked: string[][];
   access: string;
   baseBranch: string;
+  ignore: string[];
+  privatePackages: { version: boolean; tag: boolean };
 }>(".changeset/config.json");
 
 describe.each(packages)("%s (%s)", (dir, name, pkg) => {
@@ -63,65 +68,99 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     });
   });
 
-  it("declares its side effects (CSS only, plus element registration)", () => {
+  it("declares its side effects (stylesheets and element registration only)", () => {
     expect(Array.isArray(pkg.sideEffects)).toBe(true);
     const effects = pkg.sideEffects as string[];
-    expect(effects.some((p) => p.endsWith("*.css"))).toBe(true);
-    if (dir !== "lib-web-components") {
-      expect(effects.every((p) => /\*\.s?css$/.test(p))).toBe(true);
-    }
+    expect(effects).toContain("**/*.css");
+    expect(effects).toContain("**/*.scss");
+    // besides the stylesheets, only the web component define modules
+    expect(effects.filter((p) => !/\*\.s?css$/.test(p)).sort()).toEqual([
+      "dist/web-components/cdn/*.js",
+      "dist/web-components/elements/*.js",
+      "dist/web-components/index.js",
+    ]);
   });
 
-  it("ships dist, README, LICENSE and the CHANGELOG", () => {
-    expect(pkg.files).toContain("dist");
-    expect(pkg.files).toContain("CHANGELOG.md");
+  it("ships dist, the manifest, README, LICENSE and the CHANGELOG", () => {
+    expect(pkg.files).toEqual(["dist", "custom-elements.json", "CHANGELOG.md"]);
     // npm always packs README / LICENSE from the package folder
     expect(exists(`packages/${dir}/README.md`)).toBe(true);
     expect(read(`packages/${dir}/README.md`)).toMatch(
-      new RegExp(`^# ${name.replace("/", "\\/")}\\n`),
+      new RegExp(`^# ${name}\\n`),
     );
     expect(read(`packages/${dir}/README.md`)).toMatch(/## Browser support/);
     expect(read(`packages/${dir}/LICENSE`)).toBe(read("LICENSE"));
-    expect(exports(pkg)).toContain("./package.json");
+    expect(Object.keys(pkg.exports ?? {})).toContain("./package.json");
   });
 
-  it("depends on the other Minerva packages through the workspace", () => {
-    for (const [dep, range] of Object.entries(pkg.dependencies ?? {})) {
-      if (dep.startsWith("@minerva/")) {
-        expect(Object.values(PUBLISHED)).toContain(dep);
-        // replaced by the exact released version by `pnpm publish`
-        expect(range, dep).toBe("workspace:*");
+  it("bundles the private workspace packages: no @minerva/* dependency", () => {
+    for (const field of [pkg.dependencies, pkg.peerDependencies]) {
+      for (const dep of Object.keys(field ?? {})) {
+        expect(dep.startsWith("@minerva/"), dep).toBe(false);
       }
     }
-    for (const dep of Object.keys(pkg.peerDependencies ?? {})) {
-      expect(dep.startsWith("@minerva/"), dep).toBe(false);
+    expect(Object.keys(pkg.dependencies ?? {}).sort()).toEqual([
+      "@floating-ui/dom",
+      "dompurify",
+      "jsonc-parser",
+      "lit",
+    ]);
+  });
+
+  it("react / react-dom and Monaco are optional peers", () => {
+    expect(Object.keys(pkg.peerDependencies ?? {}).sort()).toEqual([
+      "@monaco-editor/react",
+      "monaco-editor",
+      "react",
+      "react-dom",
+    ]);
+    for (const peer of Object.keys(pkg.peerDependencies ?? {})) {
+      expect(pkg.peerDependenciesMeta?.[peer]?.optional, peer).toBe(true);
     }
+    expect(pkg.peerDependencies?.react).toBe("^19.0.0");
   });
 });
 
-const exports = (pkg: Pkg) => Object.keys(pkg.exports ?? {});
+describe("private workspace packages", () => {
+  it.each(Object.entries(PRIVATE))("%s (%s) is private", (dir, name) => {
+    const pkg = readJson<Pkg>(`${dir}/package.json`);
+    expect(pkg.name).toBe(name);
+    expect(pkg.private).toBe(true);
+  });
+});
 
 describe("versioning", () => {
-  it("the three packages are released together (one fixed group)", () => {
-    expect(changesets.fixed).toEqual([Object.values(PUBLISHED)]);
+  it("only minerva-design is released (private packages ignored)", () => {
+    expect(changesets.fixed).toEqual([]);
     expect(changesets.linked).toEqual([]);
     expect(changesets.access).toBe("public");
     expect(changesets.baseBranch).toBe("main");
-  });
-
-  it("share one version, still unreleased (0.x) or the same release", () => {
-    const versions = new Set(packages.map(([, , pkg]) => pkg.version));
-    expect(versions.size).toBe(1);
-    const [version] = versions;
-    expect(version).toMatch(/^\d+\.\d+\.\d+(-[\w.]+)?$/);
-  });
-
-  it("an unreleased tree has a pending changeset for every package", () => {
-    const [, , first] = packages[0];
-    if (first.version !== "0.0.0") return;
-    const pending = read(".changeset/initial-release.md");
-    for (const name of Object.values(PUBLISHED)) {
-      expect(pending).toContain(`"${name}": minor`);
+    // one glob for every private workspace package
+    expect(changesets.ignore).toEqual(["@minerva/*"]);
+    expect(Object.keys(PRIVATE).length).toBeGreaterThanOrEqual(7);
+    for (const name of Object.values(PRIVATE)) {
+      expect(name).toMatch(/^@minerva\/[\w-]+$/);
     }
+    expect(changesets.privatePackages).toEqual({ version: false, tag: false });
+  });
+
+  it("`pnpm release` builds and publishes minerva-design only", () => {
+    expect(root.scripts?.release).toBe(
+      "pnpm --filter minerva-design build && changeset publish",
+    );
+  });
+
+  it("a valid version, still unreleased (0.0.0) or released", () => {
+    const [, , pkg] = packages[0];
+    expect(pkg.version).toMatch(/^\d+\.\d+\.\d+(-[\w.]+)?$/);
+  });
+
+  it("an unreleased tree has one initial-release changeset (0.0.0 -> 0.1.0)", () => {
+    const [, , pkg] = packages[0];
+    if (pkg.version !== "0.0.0") return;
+    const pending = read(".changeset/initial-release.md");
+    expect(pending).toMatch(/^---\n"minerva-design": minor\n---\n/);
+    // no pending changeset names another package
+    expect(pending).not.toMatch(/^"@minerva\//m);
   });
 });

@@ -1,5 +1,5 @@
 // Time-of-day formatting and parsing shared by the TimePicker of
-// @minerva/lib-core and <minerva-time-picker> of @minerva/lib-web-components.
+// minerva-design and <minerva-time-picker> of minerva-design/web-components.
 
 const TOKEN_PATTERN = /(HH|H|hh|h|mm|m|ss|s|a)/g;
 

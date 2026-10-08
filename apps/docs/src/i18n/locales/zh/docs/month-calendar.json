@@ -1,0 +1,108 @@
+{
+  "title": "MonthCalendar 月历",
+  "description": "周一开始的月历网格，显示每日日程数量，支持键盘导航并列出选中日期的日程。",
+  "demos": {
+    "basic": {
+      "title": "基本用法",
+      "description": "选择日期以列出其日程；方向键、Home / End 与 PageUp / PageDown（按住 Shift 为一年）移动焦点。每一天都是带 aria-selected 的可聚焦网格单元格，选中状态只播报一次。"
+    },
+    "sizes": {
+      "title": "尺寸",
+      "description": "size=\"small\" 为紧凑网格，日程以圆点表示；size=\"large\" 为宽松布局，单元格更高，日期数字在顶部，日程数量徽标在底部。"
+    },
+    "range": {
+      "title": "高亮范围",
+      "description": "rangeStart / rangeEnd 为区间内的日期着色并填充两端（仅展示，顺序不限）。此示例中第一次点击开始新范围，第二次点击结束范围。"
+    }
+  },
+  "api": {
+    "MonthCalendarProps": {
+      "month": "显示的月份（受控）",
+      "defaultMonth": "初始显示的月份（非受控）",
+      "onMonthChange": "以目标月份第一天调用",
+      "value": "选中的日期 \"YYYY-MM-DD\"（受控）",
+      "defaultValue": "初始选中的日期（非受控）",
+      "onChange": "选中日期时调用",
+      "events": "日程；每天显示其数量",
+      "onEventClick": "使选中日期的日程可点击",
+      "rangeStart": "高亮范围的第一天（仅展示）",
+      "rangeEnd": "高亮范围的最后一天（仅展示）",
+      "size": "单元格密度：紧凑（small）、默认（medium）或宽松（large）",
+      "disabled": "禁止导航、选择与日程点击",
+      "showSelectedDayEvents": "在网格下方列出选中日期的日程",
+      "aria-label": "月历的无障碍标签",
+      "previousMonthLabel": "\"上个月\"按钮的标签",
+      "nextMonthLabel": "\"下个月\"按钮的标签",
+      "todayLabel": "返回当前月份按钮的标签",
+      "locale": "月份标题的语言区域",
+      "weekdayLabels": "列标题，从周一开始",
+      "getDayLabel": "日期按钮的无障碍标签（日期、日程数）",
+      "getEventsLabel": "选中日期日程列表的无障碍标签",
+      "emptyEventsText": "选中日期无日程时显示的文本",
+      "className": "额外的类名",
+      "ref": "指向根 <section> 的 ref"
+    },
+    "MonthCalendarEvent": {
+      "id": "日程的唯一 id",
+      "date": "本地日期 \"YYYY-MM-DD\"",
+      "title": "日程标题"
+    }
+  },
+  "cssVars": {
+    "--month-calendar-font-size": "基础字号",
+    "--month-calendar-gap": "日期单元格之间的间距",
+    "--month-calendar-day-height": "日期单元格高度（默认 4rem，窄屏为 3.25rem；size=\"small\" 时为 2.5rem，size=\"large\" 时为 5.5rem）",
+    "--month-calendar-nav-height": "工具栏按钮高度（默认取当前密度的小号控件高度）",
+    "--month-calendar-radius": "按钮、日期和日程的圆角（默认为 --radius-md）",
+    "--month-calendar-hover-background": "悬停日期的背景",
+    "--month-calendar-selected-background": "选中日期的背景色",
+    "--month-calendar-selected-color": "选中日期的文字颜色",
+    "--month-calendar-today-color": "标记今天的描边颜色",
+    "--month-calendar-weekday-color": "星期表头的文字颜色",
+    "--month-calendar-outside-color": "上 / 下个月日期的文字颜色",
+    "--month-calendar-event-background": "日程数量徽标的背景",
+    "--month-calendar-event-color": "日程数量徽标的文字颜色（以及日程圆点的颜色）",
+    "--month-calendar-range-background": "高亮范围内日期的背景",
+    "--month-calendar-range-edge-background": "范围首尾两天的背景",
+    "--month-calendar-range-edge-color": "范围首尾两天的文字颜色",
+    "--month-calendar-events-background": "选中日期日程面板的背景"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "month（\"YYYY-MM\"）和 value（\"YYYY-MM-DD\"）是特性，events 是属性。只有一个 Tab 停靠点：方向键、Home / End 和 PageUp / PageDown 在网格中移动。"
+      },
+      "events": {
+        "title": "事件",
+        "description": "minerva-change 报告选中的日期，minerva-month-change 报告显示的月份；启用 clickable-events 后，点击事件项会触发 minerva-event-click。"
+      },
+      "sizes": {
+        "title": "尺寸",
+        "description": "size=\"small\" 以圆点显示日程，size=\"large\" 使用更高的单元格并将日期数字置顶（同时提供 :state(size-small) 等自定义状态）。"
+      },
+      "range": {
+        "title": "高亮范围",
+        "description": "range-start / range-end 高亮区间内的日期（仅展示）；在 minerva-change 中设置它们即可实现范围选择。"
+      },
+      "localized": {
+        "title": "本地化与状态",
+        "description": "locale 和各标签特性用于翻译日历，weekdayLabels / getDayLabel / getEventsLabel 是属性。右侧：hide-events 与 disabled。"
+      }
+    },
+    "minerva-month-calendar": {
+      "props": {
+        "clickableEvents": "将选中日期的事件渲染为按钮，点击时触发 minerva-event-click。",
+        "hideEvents": "隐藏选中日期的事件列表（相当于 React 版的 showSelectedDayEvents={false}）。"
+      },
+      "events": {
+        "minerva-change": "用户选择了某一天（detail: { value }，\"YYYY-MM-DD\"）。",
+        "minerva-month-change": "用户切换到另一个月份（detail: { month }，该月第一天的本地零点）。",
+        "minerva-event-click": "选中日期的某个事件被激活（detail: { event }；需要 clickable-events）。"
+      },
+      "methods": {
+        "focus": "聚焦当前活动的日期单元格。"
+      }
+    }
+  }
+}

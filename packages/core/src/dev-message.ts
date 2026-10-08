@@ -1,6 +1,6 @@
 /**
  * Shared format of the development-only diagnostics of every Minerva
- * library (`@minerva/lib-core` and `@minerva/lib-web-components`).
+ * library (`minerva-design` and `minerva-design/web-components`).
  *
  * Both libraries log them with `console.error` (React's convention for prop
  * warnings such as controlled / uncontrolled switches), once per message, as

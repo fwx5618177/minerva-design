@@ -1,0 +1,236 @@
+{
+  "title": "Menu",
+  "description": "An action menu opened from a button (Menu) or with a right click (ContextMenu): icons, shortcuts, separators, groups, checkbox items, radio groups, submenus, typeahead and full keyboard support (Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; arrows wrap around and skip disabled items, Home / End, Tab closes it, Escape returns focus to the trigger). To pick a value from a list, use Select.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Items with icons and shortcut hints. onSelect receives the original item object, then the menu closes and focus returns to the trigger."
+    },
+    "triggers": {
+      "title": "Triggers",
+      "description": "Any button can be the trigger, such as a Button or an IconButton; label icon-only triggers. Pass aria-label to name the menu panel."
+    },
+    "groups": {
+      "title": "Groups, submenus and size",
+      "description": "Group entries with a label, separate them, and nest submenus with children. size=\"small\" makes items denser; side and align position the panel."
+    },
+    "submenus": {
+      "title": "Submenus",
+      "description": "Nest entries with children. ArrowRight, Enter or Space open a submenu on its first item and ArrowLeft or Escape close it only; with the pointer, submenus open on hover and stay open while the pointer moves diagonally towards them. With dir=\"rtl\" they open to the left and the arrow keys are swapped."
+    },
+    "checkbox-radio": {
+      "title": "Checkbox and radio items",
+      "description": "type: \"checkbox\" entries toggle (checked / defaultChecked + onCheckedChange) and type: \"radio-group\" entries hold mutually exclusive options (value / defaultValue + onValueChange). They keep the menu open so several options can be changed; set closeOnSelect on the entry to close it."
+    },
+    "placement": {
+      "title": "Placement",
+      "description": "side is the preferred side of the trigger and align the alignment against it; near the viewport edges the menu flips and shifts to stay visible."
+    },
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disable individual items (they are skipped by the arrow keys) or the whole menu."
+    },
+    "context-menu": {
+      "title": "Context menu",
+      "description": "ContextMenu opens the same entries at the pointer on right click or long press (a new right click moves it), and at the area with Shift+F10 or the ContextMenu key. Focus moves to the first item and returns to the area on close."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "Control the open state with open and onOpenChange; defaultOpen sets the initial state when it is uncontrolled."
+    }
+  },
+  "api": {
+    "MenuProps": {
+      "children": "Trigger element (button); click, Enter, Space and ArrowDown open the menu (ArrowUp focuses the last item)",
+      "items": "Entries of the menu",
+      "onSelect": "Called with the original item object when an action is selected",
+      "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+      "size": "Density of the items",
+      "align": "Alignment of the menu against the trigger",
+      "side": "Preferred side; the menu flips when there is not enough room",
+      "open": "Whether the menu is open (controlled; pair with onOpenChange)",
+      "defaultOpen": "Initial open state (uncontrolled)",
+      "onOpenChange": "Called when the menu opens or closes",
+      "disabled": "Disables the trigger",
+      "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+      "loop": "Arrow keys wrap around from the last item to the first (and back)",
+      "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+      "className": "Additional class name of the menu panel",
+      "aria-label": "Accessible label of the menu panel (defaults to the trigger's label)"
+    },
+    "ContextMenuProps": {
+      "children": "Area that opens the menu on right click / long press / Shift+F10 / ContextMenu key",
+      "items": "Entries of the menu",
+      "onSelect": "Called with the original item object when an action is selected",
+      "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+      "size": "Density of the items",
+      "onOpenChange": "Called when the menu opens or closes",
+      "disabled": "Disables the context menu (the native one shows instead)",
+      "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+      "loop": "Arrow keys wrap around from the last item to the first (and back)",
+      "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+      "className": "Additional class name of the menu panel",
+      "aria-label": "Accessible label of the menu panel"
+    },
+    "MenuAction": {
+      "key": "Unique key of the item",
+      "label": "Content of the item",
+      "textValue": "Text used for typeahead when label is not plain text",
+      "icon": "Icon displayed before the label",
+      "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+      "disabled": "Disables the item",
+      "closeOnSelect": "Whether selecting this item closes the menu (overrides the menu's closeOnSelect)",
+      "children": "Entries of a submenu opened by this item"
+    },
+    "MenuCheckboxEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the item",
+      "label": "Content of the item",
+      "textValue": "Text used for typeahead when label is not plain text",
+      "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+      "disabled": "Disables the item",
+      "checked": "Whether the item is checked (controlled; pair with onCheckedChange)",
+      "defaultChecked": "Initial checked state (uncontrolled)",
+      "onCheckedChange": "Called with the next checked state when the item is toggled",
+      "closeOnSelect": "Whether toggling the item closes the menu"
+    },
+    "MenuRadioGroupEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the group",
+      "label": "Label displayed above the group (also names the group)",
+      "items": "Options of the group",
+      "value": "Selected value (controlled; pair with onValueChange)",
+      "defaultValue": "Initially selected value (uncontrolled)",
+      "onValueChange": "Called with the value of the option that was chosen",
+      "closeOnSelect": "Whether choosing an option closes the menu"
+    },
+    "MenuRadioItem": {
+      "value": "Value of the option (unique within the group)",
+      "label": "Content of the option",
+      "textValue": "Text used for typeahead when label is not plain text",
+      "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+      "disabled": "Disables the option"
+    },
+    "MenuSeparatorEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the separator"
+    },
+    "MenuGroupEntry": {
+      "type": "Entry type",
+      "key": "Unique key of the group",
+      "label": "Label displayed above the group",
+      "items": "Entries of the group"
+    }
+  },
+  "cssVars": {
+    "--menu-min-width": "Minimum width of the menu panel",
+    "--menu-max-width": "Maximum width of the menu panel",
+    "--menu-max-height": "Maximum height of the menu panel (scrolls beyond)",
+    "--menu-padding": "Inner padding of the menu panel",
+    "--menu-radius": "Corner radius of the menu panel (defaults to --radius-lg)",
+    "--menu-shadow": "Shadow of the menu panel (defaults to --shadow-md)",
+    "--menu-item-height": "Minimum height of an item (every size; defaults to the density's control height)",
+    "--menu-z-index": "Stacking order of the menu panel (defaults to --z-popover)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Child elements describe the entries: items with an icon slot and a shortcut hint, a nested submenu, a separator, a labelled group and a disabled item. minerva-select gives the chosen value. Like React's Menu, panels fade in and, once closed, stay rendered with data-state=\"closed\" until their exit animation ends (none with prefers-reduced-motion)."
+      },
+      "checkbox-radio": {
+        "title": "Checkbox and radio items",
+        "description": "Checkbox items toggle and radio items of a <minerva-menu-group> are mutually exclusive; both keep the menu open and fire minerva-change."
+      },
+      "items": {
+        "title": "Entries from data",
+        "description": "The items property takes the React library's MenuEntry objects (radio group, separator, checkbox, action) instead of child elements. side / align place the menu, no-loop stops the arrow keys at the ends."
+      },
+      "context-menu": {
+        "title": "Context menu",
+        "description": "<minerva-context-menu> opens its entries at the pointer on right click or long press, or at the area with Shift+F10. The area is its other content."
+      }
+    },
+    "minerva-context-menu": {
+      "props": {
+        "keepOpen": "Selecting an action keeps the menu open.",
+        "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+        "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+        "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+        "isModal": "Whether the menu currently behaves as modal (read-only).",
+        "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+      },
+      "events": {
+        "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-select": "An action item was chosen (detail: { value, item }); cancelable: preventDefault() keeps the menu open.",
+        "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+      },
+      "slots": {
+        "default": "The area (and the declarative menu entries, which are not displayed)."
+      },
+      "methods": {
+        "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+        "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+        "show": "Opens the menu.",
+        "hide": "Closes the menu (and its submenus).",
+        "rootLayerOptions": "Layer options of the root panel (internal).",
+        "subLayerOptions": "Layer options of the submenus (internal)."
+      }
+    },
+    "minerva-menu-item": {
+      "props": {
+        "keepOpen": "Selecting this item keeps the menu open."
+      },
+      "slots": {
+        "default": "Label, and nested menu elements forming a submenu.",
+        "icon": "Icon displayed before the label."
+      }
+    },
+    "minerva-menu-checkbox-item": {
+      "slots": {
+        "default": "Label."
+      }
+    },
+    "minerva-menu-radio-item": {
+      "slots": {
+        "default": "Label."
+      }
+    },
+    "minerva-menu-group": {
+      "slots": {
+        "default": "Entries of the group."
+      }
+    },
+    "minerva-menu-label": {
+      "slots": {
+        "default": "Label text."
+      }
+    },
+    "minerva-menu": {
+      "props": {
+        "keepOpen": "Selecting an action keeps the menu open.",
+        "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+        "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+        "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+        "isModal": "Whether the menu currently behaves as modal (read-only).",
+        "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+      },
+      "events": {
+        "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+        "minerva-select": "An action item was chosen (detail: { value, item }, value = the item key / value attribute); cancelable: preventDefault() keeps the menu open.",
+        "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+      },
+      "slots": {
+        "trigger": "The button opening the menu (gets aria-haspopup=\"menu\", aria-expanded and data-state)."
+      },
+      "methods": {
+        "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+        "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+        "show": "Opens the menu.",
+        "hide": "Closes the menu (and its submenus).",
+        "rootLayerOptions": "Layer options of the root panel (internal).",
+        "subLayerOptions": "Layer options of the submenus (internal)."
+      }
+    }
+  }
+}

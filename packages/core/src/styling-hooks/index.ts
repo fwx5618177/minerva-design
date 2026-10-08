@@ -1,5 +1,5 @@
 /**
- * `@minerva/core/styling-hooks`: the manifest of Minerva's public styling
+ * `minerva-design/styling-hooks`: the manifest of Minerva's public styling
  * hooks (component -> parts -> states) and selector helpers.
  *
  * React: `[data-minerva="<component>"]`, `[data-part="<part>"]` and the state

@@ -1,6 +1,6 @@
 // Shared by the React 19 hydration tests of Minerva custom elements.
 import { expect } from "vitest";
-import type {} from "../../packages/lib-web-components/tests/e2e/jsx";
+import type {} from "../../packages/web-components/tests/e2e/jsx";
 
 /**
  * Browsers carry host ARIA (`role`, `aria-selected`...) on ElementInternals,

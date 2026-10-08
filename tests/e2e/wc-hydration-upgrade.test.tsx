@@ -49,11 +49,11 @@ it("upgraded tabs, radios and options hydrate without mismatches", async () => {
   // hydrated in the same task (React hydrates in a later one)
   const [{ defineElement }, tabsModule, radio, select, option] =
     await Promise.all([
-      import("../../packages/lib-web-components/src/internal/define"),
-      import("../../packages/lib-web-components/src/components/tabs/tabs"),
-      import("../../packages/lib-web-components/src/components/radio/radio"),
-      import("../../packages/lib-web-components/src/components/select/select"),
-      import("../../packages/lib-web-components/src/components/select/option"),
+      import("../../packages/web-components/src/internal/define"),
+      import("../../packages/web-components/src/components/tabs/tabs"),
+      import("../../packages/web-components/src/components/radio/radio"),
+      import("../../packages/web-components/src/components/select/select"),
+      import("../../packages/web-components/src/components/select/option"),
     ]);
   expect(customElements.get("minerva-tabs")).toBeUndefined();
   for (const element of [
@@ -89,7 +89,7 @@ it("upgraded tabs, radios and options hydrate without mismatches", async () => {
   expectSettledA11y(container);
 
   // (keyboard roving of deferred items: src/internal/hydration.test.ts of
-  // lib-web-components, whose setup routes events through slots)
+  // web components, whose setup routes events through slots)
   expect(errors.mock.calls).toEqual([]);
   errors.mockRestore();
 });

@@ -12,7 +12,7 @@
 
 </div>
 
-Minerva is a UI component library for the web: a React component library plus a set of framework-agnostic Web Components, developed together in a single pnpm monorepo.
+Minerva is a UI component library for the web: React 19 components plus the same set as framework-agnostic Web Components, published together as one npm package, [`minerva-design`](https://www.npmjs.com/package/minerva-design).
 
 ## 🌟 Demo & Documentation
 
@@ -24,34 +24,44 @@ Docs and live demos: [https://fwx5618177.github.io/minerva/](https://fwx5618177.
 - **Web Components**: the whole component set as standard custom elements (Lit) for plain HTML, Vue, Angular, Svelte, Solid or React: same look, tokens, keyboard and ARIA behaviour, form-associated controls, a CDN bundle and generated framework typings
 - **ESM + CommonJS**: both module formats are shipped for the React library (the Web Components are ESM only)
 - **TypeScript**: type definitions are included
-- **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`@minerva/lib-core/theme-utils`, server-safe)
+- **Theming**: light / dark / system modes plus the `editorial`, `tech`, `graphite` and `cool` palettes, driven by CSS custom properties; cookie persistence and a no-flash `THEME_INIT_SCRIPT` for SSR (`minerva-design/theme-utils`, server-safe)
 - **Design presets**: switch the whole app's look with `<ConfigProvider preset="editorial">` (restrained, reading-oriented) or the `density` / `radius` / `shadow` / `fontScale` axes; SSR-ready (`designAttributes()`, `createThemeInitScript({ design })`) and scoped by nested providers
 - **Customization**: every component documents a stable set of CSS custom properties (`--button-height`, `--modal-width`, ...)
-- **Entries**: `@minerva/lib-core`, `/theme-utils`, `/monaco`, `style.css` (or per-component `styles/<component>.css` + `styles/tokens.css`), `prose.scss`; tree-shakeable per component, no icon / i18n runtime dependencies
+- **Entries**: `minerva-design`, `/theme-utils`, `/monaco`, `style.css` (or per-component `styles/<component>.css` + `styles/tokens.css`), `prose.scss`; tree-shakeable per component, no icon / i18n runtime dependencies
 - **i18n**: built-in locales for English, Chinese, Japanese and French
-- **No headless dependency**: overlays, menus, select, tabs and `asChild` are built in house on `@minerva/core`; Floating UI is the only third-party interaction dependency
+- **No headless dependency**: overlays, menus, select, tabs and `asChild` are built in house on `minerva-design/core`; Floating UI is the only third-party interaction dependency
 
-## 📦 Packages
+## 📦 Package
 
-| Package                       | Description                                                                                                                                                                                                                                                  |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@minerva/core`               | Framework-agnostic interaction primitives (focus scope, dismissable layers, scroll lock, roving focus, positioning...), theme utilities, design tokens and i18n messages. Installed with lib-core.                                                           |
-| `@minerva/lib-core`           | React 19 component library. ESM + CJS, TypeScript types. Peer deps: `react` and `react-dom` `^19.0.0`.                                                                                                                                                       |
-| `@minerva/lib-web-components` | Framework-agnostic Web Components (Lit): every Minerva component as a custom element (`<minerva-button>`, `<minerva-select>`, `<minerva-modal>`...). ESM only; per-element entries, a CDN bundle, `tokens.css` and typings for React, Vue, Svelte and Solid. |
-| `@minerva/sample` (private)   | Vite docs/demo site, deployed to GitHub Pages.                                                                                                                                                                                                               |
+One package, [`minerva-design`](https://www.npmjs.com/package/minerva-design), with one entry per use:
+
+| Entry                                                                          | Description                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `minerva-design`                                                               | React 19 component library. ESM + CJS, TypeScript types, `"use client"` on every client module. Optional peer deps: `react` and `react-dom` `^19.0.0` (only needed for the React entries).         |
+| `minerva-design/style.css`                                                     | The global stylesheet (design tokens + every component), imported once in the app entry. Per-component `minerva-design/styles/<component>.css` and `minerva-design/tokens.css` are also published. |
+| `minerva-design/utils`, `minerva-design/theme-utils`                           | Server-safe helpers (no `"use client"`, no React): `cn`, themes, theme cookies, `THEME_INIT_SCRIPT`, design presets... for React Server Components and servers.                                    |
+| `minerva-design/monaco`                                                        | The Monaco-based code editor (optional peers `@monaco-editor/react` and `monaco-editor`).                                                                                                          |
+| `minerva-design/web-components`                                                | Framework-agnostic Web Components (Lit): every Minerva component as a custom element (`<minerva-button>`, `<minerva-select>`, `<minerva-modal>`...). ESM only.                                     |
+| `minerva-design/web-components/<element>`, `minerva-design/web-components/cdn` | One entry per element (incl. the optional `code-editor`), and a self-contained bundle for `<script type="module">` / CDN use.                                                                      |
+| `minerva-design/web-components/{react,vue,svelte,solid}`                       | Framework typings of the custom elements; `minerva-design/custom-elements.json` and `minerva-design/html-custom-data.json` (VS Code) describe them for tools.                                      |
+| `minerva-design/core`, `minerva-design/styling-hooks`                          | Advanced: the framework-agnostic primitives both libraries are built on (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme, i18n) and the styling hooks manifest.     |
+
+The repository is a pnpm monorepo: `packages/core`, `packages/react` and `packages/web-components` hold the sources (private workspace packages), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
 
 ### Architecture
 
 ```
-@minerva/core            framework-agnostic TypeScript (DOM only)
+minerva-design/core            framework-agnostic TypeScript (DOM only)
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
         ▲ React hooks                    ▲ Lit controllers
-@minerva/lib-core               @minerva/lib-web-components
+minerva-design               minerva-design/web-components
 ```
 
-Every overlay of `@minerva/lib-core` (Modal, Drawer, Popover, Tooltip, Menu, ContextMenu, Select, AutoComplete, Cascader, TimePicker) is built on the same core primitives: one layer stack (Escape closes the innermost overlay first), one focus implementation (focus returns to the opener) and one positioning engine. See the [Architecture](https://fwx5618177.github.io/minerva/#/architecture) page.
+Both libraries import the same copy of the core (`dist/core/` of the package): an app that uses React components and custom elements together loads it once.
 
-### Components (`@minerva/lib-core`)
+Every overlay of `minerva-design` (Modal, Drawer, Popover, Tooltip, Menu, ContextMenu, Select, AutoComplete, Cascader, TimePicker) is built on the same core primitives: one layer stack (Escape closes the innermost overlay first), one focus implementation (focus returns to the opener) and one positioning engine. See the [Architecture](https://fwx5618177.github.io/minerva/#/architecture) page.
+
+### Components (`minerva-design`)
 
 | Category     | Components                                                                                                                                                                                                                                                                                                           |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -63,31 +73,37 @@ Every overlay of `@minerva/lib-core` (Modal, Drawer, Popover, Tooltip, Menu, Con
 | Feedback     | `Alert`, `toast` / `ToastProvider`, `ProgressIndicator`, `Skeleton` / `SkeletonText`, `LoadingState`                                                                                                                                                                                                                 |
 | Overlays     | `Modal`, `Drawer`, `ConfirmDialog` / `confirm()` / `useConfirm`, `CommandDialog`, `Popover`, `Menu` / `ContextMenu`                                                                                                                                                                                                  |
 | Navigation   | `Tabs`, `PageTabs`, `NavTree`, `Pagination`, `Steps`                                                                                                                                                                                                                                                                 |
-| Editors      | `MonacoCodeEditor` (`@minerva/lib-core/monaco`)                                                                                                                                                                                                                                                                      |
+| Editors      | `MonacoCodeEditor` (`minerva-design/monaco`)                                                                                                                                                                                                                                                                         |
 
-Besides components, `@minerva/lib-core` exports `ConfigProvider`, `useConfig`, the hooks `useAutoTheme`, `useLocale` and `useI18n`, the utilities `applyThemeStyles` and `generateCSSVariables`, and the built-in `themes` map (`light`, `dark`, `github-dark`).
+Besides components, `minerva-design` exports `ConfigProvider`, `useConfig`, the hooks `useAutoTheme`, `useLocale` and `useI18n`, the utilities `applyThemeStyles` and `generateCSSVariables`, and the built-in `themes` map (`light`, `dark`, `github-dark`).
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-pnpm add @minerva/lib-core react react-dom
+pnpm add minerva-design
 ```
 
 OR
 
 ```bash
-npm install @minerva/lib-core react react-dom
+npm install minerva-design
 ```
 
 OR
 
 ```bash
-yarn add @minerva/lib-core react react-dom
+yarn add minerva-design
 ```
 
-Requires React 19 (`react` and `react-dom` `^19.0.0`). React 18 is not supported (the components use React 19 APIs such as `ref` as a regular prop). Every client module is marked `"use client"`, so it can be imported from React Server Components frameworks (e.g. the Next.js App Router) without a wrapper.
+Then import the global stylesheet once, in the app entry (e.g. `src/main.tsx` or the root `app/layout.tsx`):
+
+```ts
+import "minerva-design/style.css";
+```
+
+The React components require React 19 (`react` and `react-dom` `^19.0.0`). React 18 is not supported (the components use React 19 APIs such as `ref` as a regular prop). Every client module is marked `"use client"`, so it can be imported from React Server Components frameworks (e.g. the Next.js App Router) without a wrapper.
 
 ### Basic Usage
 
@@ -105,8 +121,8 @@ import {
   ToastProvider,
   VStack,
   toast,
-} from "@minerva/lib-core";
-import "@minerva/lib-core/style.css";
+} from "minerva-design";
+import "minerva-design/style.css";
 
 export default function App() {
   const [name, setName] = useState("");
@@ -154,7 +170,7 @@ export default function App() {
 - `locale`: `{ language: "en" | "zh" | "fr" }` (default `"en"`)
 
 ```tsx
-import { ConfigProvider, themes, useConfig } from "@minerva/lib-core";
+import { ConfigProvider, themes, useConfig } from "minerva-design";
 
 const brandTheme = {
   light: { ...themes.light, "primary-color": "#6750a4" },
@@ -186,8 +202,8 @@ import { headers } from "next/headers";
 import {
   THEME_INIT_SCRIPT,
   parseThemeCookies,
-} from "@minerva/lib-core/theme-utils";
-import { ThemeProvider } from "@minerva/lib-core";
+} from "minerva-design/theme-utils";
+import { ThemeProvider } from "minerva-design";
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const { theme, palette } = parseThemeCookies((await headers()).get("cookie"));
@@ -209,20 +225,20 @@ export default async function Layout({ children }: { children: ReactNode }) {
 }
 ```
 
-With a strict Content-Security-Policy (no `'unsafe-inline'`), give the inline script the request's nonce (`<script nonce={nonce} ...>`) or allow it by hash: `THEME_INIT_SCRIPT_HASH` (from `@minerva/lib-core/theme-utils`) is its `'sha256-…'` source, and `cspHash(createThemeInitScript(options))` hashes a customised script:
+With a strict Content-Security-Policy (no `'unsafe-inline'`), give the inline script the request's nonce (`<script nonce={nonce} ...>`) or allow it by hash: `THEME_INIT_SCRIPT_HASH` (from `minerva-design/theme-utils`) is its `'sha256-…'` source, and `cspHash(createThemeInitScript(options))` hashes a customised script:
 
 ```ts
-import { THEME_INIT_SCRIPT_HASH } from "@minerva/lib-core/theme-utils";
+import { THEME_INIT_SCRIPT_HASH } from "minerva-design/theme-utils";
 
 export const csp = `script-src 'self' ${THEME_INIT_SCRIPT_HASH}`;
 ```
 
-Plain functions and data of the main entry (`cn`, `themes`, `palettes`, `resolveTheme`, `applyThemeStyles`, `matchesShortcut`, `computeFixedColumnLayout`...) are client references inside Server Components (the main entry is `"use client"`): import them from the server-safe `@minerva/lib-core/utils` entry there.
+Plain functions and data of the main entry (`cn`, `themes`, `palettes`, `resolveTheme`, `applyThemeStyles`, `matchesShortcut`, `computeFixedColumnLayout`...) are client references inside Server Components (the main entry is `"use client"`): import them from the server-safe `minerva-design/utils` entry there.
 
 ### Toast API
 
 ```tsx
-import { Button, toast } from "@minerva/lib-core";
+import { Button, toast } from "minerva-design";
 
 // Rendered by the <ToastProvider> mounted near the root of the app
 export function SaveButton() {
@@ -239,20 +255,16 @@ export function SaveButton() {
 
 ### Web Components
 
-The same components as standard custom elements, for any framework or none. They render the lib-core DOM and styles in their shadow root and reuse the `@minerva/core` primitives, so they look and behave like the React components.
-
-```bash
-pnpm add @minerva/lib-web-components
-```
+The same components as standard custom elements, for any framework or none, from the same package (`pnpm add minerva-design`; React is not needed). They render the DOM and styles of the React components in their shadow root and reuse the `minerva-design/core` primitives, so they look and behave like the React components.
 
 ```ts
 // every element...
-import "@minerva/lib-web-components";
+import "minerva-design/web-components";
 // ...or only the ones you use (one entry per element)
-import "@minerva/lib-web-components/select";
+import "minerva-design/web-components/select";
 
-// design tokens, once (already included in @minerva/lib-core/style.css)
-import "@minerva/lib-web-components/tokens.css";
+// design tokens, once (already included in minerva-design/style.css)
+import "minerva-design/tokens.css";
 ```
 
 Or, without a build step, from a CDN:
@@ -260,11 +272,11 @@ Or, without a build step, from a CDN:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css"
+  href="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/core/tokens.css"
 />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"
+  src="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/web-components/cdn/minerva.js"
 ></script>
 ```
 
@@ -295,11 +307,11 @@ Then use the tags like native elements. Form controls are form-associated (`name
 Typings: every element is in `HTMLElementTagNameMap`; templates are typed with
 
 ```ts
-/// <reference types="@minerva/lib-web-components/react" />  // React 19 JSX
-/// <reference types="@minerva/lib-web-components/svelte" /> // Svelte 5
-/// <reference types="@minerva/lib-web-components/solid" />  // Solid
-// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types
-// VS Code: "html.customData": ["./node_modules/@minerva/lib-web-components/dist/html-custom-data.json"]
+/// <reference types="minerva-design/web-components/react" />  // React 19 JSX
+/// <reference types="minerva-design/web-components/svelte" /> // Svelte 5
+/// <reference types="minerva-design/web-components/solid" />  // Solid
+// Vue (Volar): add "minerva-design/web-components/vue" to compilerOptions.types
+// VS Code: "html.customData": ["./node_modules/minerva-design/dist/web-components/html-custom-data.json"]
 ```
 
 Guides for plain HTML, Vue, Angular, Svelte, forms and theming: [Web Components](https://fwx5618177.github.io/minerva/#/web-components).
@@ -352,7 +364,7 @@ minerva-data-table::part(header-cell header-cell--sort-ascending) {
 @layer reset, minerva, app;
 ```
 
-Repeated items (menu items, options, rows and sorted headers, pages, steps, tree items, days, toasts, files...) carry their own states (`highlighted`, `selected`, `checked`, `current`, `expanded`, `sort`, `status`...): attributes of the item element in React; `<part>--<state>` part names next to the part name for items rendered in a shadow root (the Shoelace / Web Awesome convention), custom states for items that are elements of their own (`minerva-option:state(selected)`). Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `@minerva/core/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva/#/styling).
+Repeated items (menu items, options, rows and sorted headers, pages, steps, tree items, days, toasts, files...) carry their own states (`highlighted`, `selected`, `checked`, `current`, `expanded`, `sort`, `status`...): attributes of the item element in React; `<part>--<state>` part names next to the part name for items rendered in a shadow root (the Shoelace / Web Awesome convention), custom states for items that are elements of their own (`minerva-option:state(selected)`). Use the compound selector `[data-minerva="x"][data-part="y"]` (it also matches portalled parts such as popups and dialogs); class names and unhooked DOM are private. The hook surface of every component is listed on its docs page and in `minerva-design/styling-hooks` (machine-readable manifest), and locked by `packages/core/styling-hooks.lock.json`: adding a hook is a minor change, removing or renaming one is a major change. Guide: [Styling & customization](https://fwx5618177.github.io/minerva/#/styling).
 
 ## 🌐 Browser support
 
@@ -360,7 +372,7 @@ Minerva targets evergreen browsers. **Fully supported** (every feature below, no
 
 | Feature                                                                                       | Used by                                                                                                                                                     | Minimum (Chrome / Firefox / Safari)            | Without it                                                                                                                       |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| ES2020 (core, lib-core) / ES2022 (web components: class fields, static blocks)                | All JavaScript                                                                                                                                              | 80 / 80 / 14 — 94 / 93 / 16.4                  | Required (transpile the packages yourself for older targets)                                                                     |
+| ES2020 (core, React) / ES2022 (web components: class fields, static blocks)                   | All JavaScript                                                                                                                                              | 80 / 80 / 14 — 94 / 93 / 16.4                  | Required (transpile the packages yourself for older targets)                                                                     |
 | CSS custom properties, `:focus-visible`, logical properties (`margin-inline`, `inset`), `gap` | All styles                                                                                                                                                  | 90 / 88 / 15.4                                 | Required                                                                                                                         |
 | `color-mix()`                                                                                 | Tinted shadows, hover / selected surfaces, focus rings                                                                                                      | 111 / 113 / 16.2                               | The declaration is dropped: flatter shadows and hover states                                                                     |
 | Size container queries (`@container`)                                                         | `ResponsiveGrid`, `SplitLayout`, `KeyValueEditor` (responsive to their own width)                                                                           | 105 / 110 / 16                                 | The single-column (narrow) layout is kept                                                                                        |
@@ -395,21 +407,21 @@ pnpm dev
 
 ### Scripts
 
-| Command                             | Description                                                                |
-| ----------------------------------- | -------------------------------------------------------------------------- |
-| `pnpm dev`                          | Build the libraries, then start the docs/demo site                         |
-| `pnpm build`                        | Build all packages in order: core → lib-core → lib-web-components → sample |
-| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows         |
-| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)            |
-| `pnpm test:dist`                    | Test the built lib-core and lib-web-components packages (run after build)  |
-| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                          |
-| `pnpm lint`                         | Run ESLint (flat config)                                                   |
-| `pnpm typecheck`                    | Type-check all packages                                                    |
-| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                    |
-| `pnpm clean`                        | Remove build output                                                        |
-| `pnpm changeset`                    | Add a changeset describing your change                                     |
-| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs               |
-| `pnpm release`                      | Build the libraries and publish them to npm                                |
+| Command                             | Description                                                                  |
+| ----------------------------------- | ---------------------------------------------------------------------------- |
+| `pnpm dev`                          | Build `minerva-design`, then start the docs/demo site                        |
+| `pnpm build`                        | Build `minerva-design` (core → react → web components), then the docs site   |
+| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows           |
+| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)              |
+| `pnpm test:dist`                    | Test the built `minerva-design` package and its packed tarball (after build) |
+| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                            |
+| `pnpm lint`                         | Run ESLint (flat config)                                                     |
+| `pnpm typecheck`                    | Type-check all packages                                                      |
+| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                      |
+| `pnpm clean`                        | Remove build output                                                          |
+| `pnpm changeset`                    | Add a changeset describing your change                                       |
+| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs                 |
+| `pnpm release`                      | Build `minerva-design` and publish it to npm                                 |
 
 ### Tooling
 
@@ -418,56 +430,57 @@ pnpm dev
 - Linting and formatting: ESLint 10 + typescript-eslint, Prettier
 - Git hooks: Husky, lint-staged, commitlint (Conventional Commits)
 - CI: `.github/workflows/ci.yml` runs lint, typecheck, format check, tests with coverage, build, built-package tests and package checks on Node 22 for every push to `main` and every pull request
-- Docs deployment: `.github/workflows/deploy.yml` builds the docs site and publishes it to GitHub Pages on every push to `main`
+- Docs deployment: `.github/workflows/deploy.yml` builds the docs site and publishes it to GitHub Pages on every push to `main` (it still uses the pre-rename package names, kept working by the shims in [`tools/compat`](./tools/compat/README.md))
 
 ### Releasing (manual npm publishing)
 
 Versioning and changelogs are managed with [Changesets](https://github.com/changesets/changesets). Publishing is **manual**, from a maintainer's machine: there is no publish workflow in CI (`.github/workflows/ci.yml` only verifies, `deploy.yml` only deploys the docs site).
 
-1. **Describe each change** (in its PR): `pnpm changeset`, pick the packages and the semver bump; commit the generated `.changeset/*.md`.
+1. **Describe each change** (in its PR): `pnpm changeset`, pick the semver bump of `minerva-design` (the only published package; the `@minerva/*` workspace packages are private and ignored); commit the generated `.changeset/*.md`.
 2. **Version** (on an up-to-date `main`, clean working tree):
 
    ```bash
-   pnpm version-packages   # changeset version: bumps versions, writes CHANGELOG.md, consumes .changeset/*.md
-   pnpm install            # refresh the lockfile (internal dependency ranges may have changed)
+   pnpm version-packages   # changeset version: bumps the version, writes CHANGELOG.md, consumes .changeset/*.md
+   pnpm install            # refresh the lockfile
    ```
 
-3. **Review** the result before anything leaves your machine: `git diff` (versions, CHANGELOG entries, `@minerva/core` ranges in lib-core / lib-web-components), then run the same checks as CI on Node 22 (`.nvmrc`):
+3. **Review** the result before anything leaves your machine: `git diff` (version, CHANGELOG entries), then run the same checks as CI on Node 22 (`.nvmrc`):
 
    ```bash
    pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
    pnpm build && pnpm test:dist && pnpm check:package
-   pnpm -r publish --dry-run --no-git-checks   # what would be published, nothing is uploaded
+   (cd packages/minerva-design && npm pack --dry-run)   # what would be published, nothing is uploaded
    git commit -am "chore: release" && git push
    ```
 
-4. **Log in to npm** with an account that can publish to the `@minerva` scope, with two-factor authentication enabled:
+4. **Log in to npm** with an account that can publish `minerva-design`, with two-factor authentication enabled:
 
    ```bash
    npm login --registry https://registry.npmjs.org/
    npm whoami --registry https://registry.npmjs.org/
    ```
 
-   Each package sets `publishConfig.registry` to `https://registry.npmjs.org/`, so a mirror configured in `~/.npmrc` (e.g. npmmirror) is not used for publishing.
+   The package sets `publishConfig.registry` to `https://registry.npmjs.org/`, so a mirror configured in `~/.npmrc` (e.g. npmmirror) is not used for publishing.
 
 5. **Publish**:
 
    ```bash
-   pnpm release            # builds core + lib-core + lib-web-components, then `changeset publish`
-   git push --follow-tags  # push the <package>@<version> tags created by changeset publish
+   pnpm release            # builds minerva-design, then `changeset publish`
+   git push --follow-tags  # push the minerva-design@<version> tag created by changeset publish
    ```
 
-   `changeset publish` only publishes packages whose version is not on npm yet, in dependency order (`@minerva/core` before `@minerva/lib-core` and `@minerva/lib-web-components`), and replaces `workspace:*` with the real version. With 2FA enabled for writes, npm prompts for a one-time password (or pass it up front: `pnpm release --otp <code>`, the argument is forwarded to `changeset publish`).
+   `changeset publish` only publishes `minerva-design` when its version is not on npm yet (private packages are never published). With 2FA enabled for writes, npm prompts for a one-time password (or pass it up front: `pnpm release --otp <code>`, the argument is forwarded to `changeset publish`).
 
-What each package publishes (`files` in its `package.json`; tests, sources and the docs site are never included):
+What the package publishes (`files` in `packages/minerva-design/package.json`; tests, sources and the docs site are never included):
 
-| Package                       | Contents                                                                                                                                                                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@minerva/core`               | `dist/` (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`), `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                                            |
-| `@minerva/lib-core`           | `dist/` (ESM + CJS per module, types, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco`, `./theme-utils` and `./utils` entries), `README.md`, `LICENSE`                                            |
-| `@minerva/lib-web-components` | `dist/` (ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, `tokens.css`, framework typings in `types/`, `html-custom-data.json`), `custom-elements.json`, `README.md`, `LICENSE` |
+| Folder                 | Contents                                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dist/react/`          | The React entries: ESM + CJS per module, `.d.ts` / `.d.cts`, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco`, `./theme-utils` and `./utils` entries |
+| `dist/core/`           | The framework-agnostic core shared by both libraries (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`)                                                                          |
+| `dist/web-components/` | ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, framework typings in `types/`, `html-custom-data.json`                            |
+| package root           | `custom-elements.json`, `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                              |
 
-`@minerva/sample` (the docs site) is private and never published.
+The workspace packages (`@minerva/core`, `@minerva/react`, `@minerva/web-components`, `@minerva/docs` and the `tools/compat` shims) are private and never published.
 
 ## 🤝 Contributing
 

@@ -29,10 +29,7 @@ export default defineConfig(
     },
   },
   {
-    files: [
-      "packages/lib-core/src/**/*.{ts,tsx}",
-      "packages/sample/src/**/*.{ts,tsx}",
-    ],
+    files: ["packages/react/src/**/*.{ts,tsx}", "apps/docs/src/**/*.{ts,tsx}"],
     plugins: {
       "react-hooks": reactHooks,
     },
@@ -45,8 +42,8 @@ export default defineConfig(
   {
     // Accessibility rules for every React source (library, docs site, e2e).
     files: [
-      "packages/lib-core/src/**/*.tsx",
-      "packages/sample/src/**/*.tsx",
+      "packages/react/src/**/*.tsx",
+      "apps/docs/src/**/*.tsx",
       "tests/e2e/**/*.tsx",
     ],
     ...jsxA11y.flatConfigs.recommended,
@@ -61,7 +58,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["packages/sample/src/**/*.{ts,tsx}"],
+    files: ["apps/docs/src/**/*.{ts,tsx}"],
     plugins: {
       "react-refresh": reactRefresh,
     },

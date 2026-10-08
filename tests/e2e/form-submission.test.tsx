@@ -1,6 +1,6 @@
 // "新建书籍" form — a consumer composes FormLayout + FormField + inputs,
 // validates on submit, shows a toast on success and can reset. Driven only
-// through user-event, with lib-core's default (English) built-in strings.
+// through user-event, with the React library's default (English) built-in strings.
 import { useState, type FormEvent } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -20,7 +20,7 @@ import {
   ToastProvider,
   Toolbar,
   toast,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 interface Book {
   title: string;

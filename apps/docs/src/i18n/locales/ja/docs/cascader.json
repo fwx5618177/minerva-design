@@ -1,0 +1,155 @@
+{
+  "title": "Cascader カスケード選択",
+  "description": "階層化された選択肢から段階的に値を選択します（例：国 / 地域 / 都市）。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "入力欄をクリック（または Enter、Space、下矢印キー）してパネルを開き、選択肢をクリックして次の階層を開きます。末端の選択肢を選ぶと選択が完了します。ドロップダウンは列の数に応じて広がります。"
+    },
+    "default-value": {
+      "title": "初期値",
+      "description": "defaultValue には各階層の値を並べたパスを指定します。"
+    },
+    "controlled": {
+      "title": "制御モード",
+      "description": "value を渡して onChange で更新します。クリア時は空配列で onChange が呼ばれます。"
+    },
+    "hover": {
+      "title": "ホバーで展開",
+      "description": "expandTrigger=\"hover\" では、親項目にポインターを重ねるとサブメニューが開きます。"
+    },
+    "search": {
+      "title": "検索",
+      "description": "showSearch で入力によりすべてのパスを絞り込めます。filter で一致条件をカスタマイズします。"
+    },
+    "display-render": {
+      "title": "表示のカスタマイズ",
+      "description": "displayRender で入力欄の表示テキストを整形します。この例では最後の階層のみを表示し、allowClear を無効にしています。"
+    },
+    "disabled": {
+      "title": "無効状態",
+      "description": "option.disabled で個別の項目を、disabled でコンポーネント全体を無効にします。"
+    },
+    "lazy-load": {
+      "title": "遅延読み込み",
+      "description": "子を持たず isLeaf でもない選択肢をクリックすると、選択する代わりに展開して loadData を呼びます。その選択肢に loading を設定し、届いた子を options に追加し、読み込んだ末端の選択肢には isLeaf: true を付けて選択できるようにします。"
+    },
+    "custom-option": {
+      "title": "項目と階層のカスタマイズ",
+      "description": "optionRender は各選択肢を階層とともに描画し、maxLevel は深さを制限し（最後の階層の選択肢は選択されます）、dropdownStyle / optionStyle でメニューを調整します。"
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "入力欄のラベル",
+      "name": "入力欄の name",
+      "options": "選択肢のツリー",
+      "value": "選択された値のパス（制御モード。onChange と組み合わせて使用）",
+      "defaultValue": "初期選択の値のパス（非制御）",
+      "onChange": "末端の項目が選択されたとき、または値がクリアされたときに呼び出されます",
+      "displayRender": "入力欄の表示テキストを整形します。既定ではラベルを \" / \" で連結します",
+      "disabled": "コンポーネントを無効にします",
+      "placeholder": "入力欄のプレースホルダー。既定はローカライズされた \"Please select\"（選択してください）",
+      "allowClear": "値が選択されているときにクリアボタン（ラベルはローカライズされた \"Clear selection\"）を表示します",
+      "expandTrigger": "サブメニューの展開方法",
+      "className": "追加のクラス名",
+      "showSearch": "入力してすべてのパスを検索できるようにします",
+      "filter": "カスタム検索条件。既定ではラベルに入力を含むパスが一致します",
+      "loadData": "子を遅延読み込みします。子を持たず isLeaf でもない選択肢をクリックすると、選択する代わりに展開し、そのパスで loadData を呼びます。子は自分で options に追加し、その間は選択肢に loading を設定してください",
+      "dropdownClassName": "ドロップダウンの追加クラス名",
+      "optionRender": "項目のカスタム描画",
+      "width": "コンポーネントの幅",
+      "maxLevel": "表示する最大階層数。最後の階層の選択肢は選択されます",
+      "dropdownStyle": "ドロップダウンのインラインスタイル",
+      "optionStyle": "各項目のインラインスタイル",
+      "ref": "内部の <input> 要素への ref",
+      "style": "ルート要素のインラインスタイル",
+      "aria-label": "入力欄のアクセシブルなラベル。label および外側の FormControl のラベルより優先されます",
+      "aria-labelledby": "入力欄のラベルとなる要素の id（複数可）",
+      "aria-describedby": "入力欄を説明する要素の id（複数可）。外側の FormControl のヘルプ／エラーテキストとマージされます",
+      "id": "入力欄の id。既定では外側の FormControl の id を使用します",
+      "required": "入力欄を必須としてマークします（aria-required）。既定では外側の FormControl の状態を引き継ぎます",
+      "readOnly": "値を表示するだけで変更はできません（ドロップダウンは開きません）。既定では外側の FormControl の状態を引き継ぎます",
+      "invalid": "入力欄を無効としてマークします（aria-invalid）。既定では外側の FormControl の状態を引き継ぎます"
+    },
+    "CascaderOption": {
+      "value": "項目の値（同じ階層内で一意）",
+      "label": "項目に表示するテキスト",
+      "children": "次の階層の項目",
+      "disabled": "項目を選択できないようにします",
+      "isLeaf": "loadData 使用時に末端項目（読み込む子がない）であることを示します",
+      "loading": "子の読み込み中にインジケーターを表示します"
+    }
+  },
+  "keyboard": {
+    "title": "キーボードとアクセシビリティ",
+    "open": "入力欄で Enter、Space、下矢印キーを押すとパネルが開き、フォーカスがパネル内へ移ります。入力欄にフォーカスするだけでは開きません。",
+    "navigate": "上下矢印キー、Home、End で列内を移動します。",
+    "expand": "右矢印キーまたは Enter で次の列を展開し（遅延読み込み後も同様）、Enter で末端の選択肢を選びます。左矢印キーで前の列に戻ります。",
+    "close": "Escape でパネルを閉じてフォーカスを入力欄に戻します。Tab でも閉じます。",
+    "aria": "入力欄は combobox ロールを持ちます。既定のプレースホルダーと \"Clear selection\"（選択をクリア）ボタンのラベルは React 版のロケールに従います。"
+  },
+  "cssVars": {
+    "--cascader-height": "入力欄の最小高さ（既定は密度に応じた small のコントロール高さ）",
+    "--cascader-radius": "入力欄・ドロップダウン・候補の角丸（既定は --radius-sm）",
+    "--cascader-font-size": "入力欄と候補のフォントサイズ",
+    "--cascader-border-color": "通常時の入力欄の枠線色",
+    "--cascader-column-min-width": "候補の各列の最小幅",
+    "--cascader-dropdown-max-height": "スクロールが始まる前の列の最大高さ",
+    "--cascader-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
+    "--cascader-option-padding-x": "候補の左右パディング（密度の行パディングに従う）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "選択肢のツリーは options プロパティで渡します。value 属性は既定のパス（カンマ区切りまたは JSON 配列）を設定します。minerva-change で選択されたパスを受け取れます。"
+      },
+      "search-hover": {
+        "title": "検索・ホバー展開・表示形式",
+        "description": "show-search は入力に応じてすべてのパスを絞り込み、expand-trigger=\"hover\" はホバーでサブメニューを開き、displayRender はフィールドの表示を整形します（ここでは最後のラベルのみ）。無効な選択肢は選べません。"
+      },
+      "lazy": {
+        "title": "遅延読み込み",
+        "description": "loadData を設定すると、子を持たない選択肢をアクティブにしたときに展開して子を読み込みます。loading を設定し、children を追加してから options を再代入します。"
+      },
+      "form": {
+        "title": "フォーム内での利用",
+        "description": "この要素はフォーム関連要素です。表示テキストを name で送信し、required は未選択での送信を防ぎ、form.reset() は value 属性のパスに戻します。"
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "パネルが開いているかどうか。",
+        "readOnly": "値を表示するだけで変更はできません（パネルは開きません）。",
+        "hideClearButton": "クリアボタンを非表示にします（React の allowClear={false} に相当）。",
+        "selectedOptions": "選択されたパスの選択肢（階層ごとに 1 つ、読み取り専用）。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素。",
+        "validity": "バリデーション状態（<input>.validity と同じ）。",
+        "validationMessage": "現在のバリデーションエラーを説明するメッセージ（有効なときは空）。",
+        "willValidate": "要素が制約バリデーションの対象かどうか。"
+      },
+      "events": {
+        "change": "minerva-change と同じですが detail はありません。",
+        "minerva-change": "パスが選択された、または値がクリアされました（detail: { value, selectedOptions }）。",
+        "minerva-clear": "クリアボタンで値が空になりました。",
+        "minerva-input": "検索テキストが変わりました（show-search、detail: { value }）。",
+        "minerva-open-change": "ユーザーがパネルの開閉を要求しました（detail: { open }）。キャンセル可能で、preventDefault() で現在の状態を維持します。"
+      },
+      "methods": {
+        "focus": "内部の入力欄にフォーカスします。",
+        "blur": "内部の入力欄からフォーカスを外します。",
+        "show": "パネルを開きます。",
+        "hide": "パネルを閉じます。",
+        "checkValidity": "有効性を確認します。無効な場合は invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザのバリデーションメッセージを表示します。",
+        "setCustomValidity": "カスタムのバリデーションエラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザから呼ばれ、value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザから呼ばれます。",
+        "formStateRestoreCallback": "値を復元するためにブラウザから呼ばれます（bfcache、自動入力）。"
+      }
+    }
+  }
+}

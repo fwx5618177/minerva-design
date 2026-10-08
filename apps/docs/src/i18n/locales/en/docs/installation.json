@@ -1,0 +1,67 @@
+{
+  "title": "Installation",
+  "description": "Add Minerva to a React project, load the stylesheet, and optionally register the Web Components.",
+  "requirements": {
+    "title": "Requirements",
+    "react": "React and React DOM 19 for the React components (optional peer dependencies of minerva-design: the Web Components need no React). React 18 is not supported: the components rely on React 19 APIs such as ref as a regular prop, and are tested with StrictMode and React DOM 19's server renderer.",
+    "bundler": "A bundler that understands ES modules and CSS imports, such as Vite, webpack, Rspack or Next.js. A CommonJS build is shipped as well.",
+    "browsers": "A modern evergreen browser: the theme tokens rely on CSS custom properties and color-mix()."
+  },
+  "core": {
+    "title": "Install the React components",
+    "text": "Install minerva-design with your package manager: one package for the React components, the Web Components and the design tokens. Add react and react-dom if your project does not have them yet.",
+    "peers": "react and react-dom are optional peer dependencies (^19) so your app keeps a single copy of React. The only runtime dependencies are @floating-ui/dom (positioning), DOMPurify (HtmlPreview), jsonc-parser (JsonField) and Lit (used by the Web Components entries only; React apps never bundle it): no icon, class-name or i18n library is installed. Icons are inline SVGs."
+  },
+  "styles": {
+    "title": "Import the global stylesheet once",
+    "text": "The styles of every component and the default theme tokens are bundled in one global stylesheet, minerva-design/style.css. Import it exactly once, in your application entry, before your own CSS. Component files then import components only, never CSS.",
+    "note": "Without minerva-design/style.css the components render unstyled. Import it only once, in the entry: importing it again from component files is harmless but unnecessary.",
+    "vite": {
+      "title": "React with Vite: src/main.tsx",
+      "note": "Vite bundles CSS imported from JavaScript: in development the stylesheet is injected by the dev server, and vite build emits it as a single hashed .css file linked from index.html. No plugin or extra configuration is needed."
+    },
+    "next": {
+      "title": "Next.js (App Router): app/layout.tsx",
+      "note": "The root layout is a Server Component and may import global CSS; every route then gets the styles."
+    },
+    "wc": {
+      "title": "Web Components: src/main.ts",
+      "note": "The custom elements carry their own styles in their shadow roots; tokens.css provides the shared design tokens. Import both once, in the entry of your Vue, Angular, Svelte, Solid or plain HTML app. If the same page also uses the React components, style.css already contains the tokens."
+    },
+    "components": {
+      "title": "In component files",
+      "text": "Component pages show the component import only. They all rely on the global stylesheet imported above:"
+    },
+    "perComponentTitle": "Optional: per-component stylesheets",
+    "perComponent": "Only using a few components? Import the design tokens once and the stylesheet of each component you use instead of style.css. Each file contains the styles of the component and of the components it renders (e.g. confirm.css includes the Button and Modal styles); the file name is the kebab-case component folder (tag-input.css, time-picker.css, ...). The JavaScript is tree-shaken per component as well: every module is published separately and the package is side-effect free except for its CSS.",
+    "extras": "An optional Sass file is published next to it: minerva-design/prose.scss contains mixins for long-form typography, to @use from your own Sass."
+  },
+  "optional": {
+    "title": "Optional entries and peers",
+    "text": "The Monaco-based code editor is published as a separate entry, minerva-design/monaco, so the main entry never pulls in Monaco. Its peers @monaco-editor/react and monaco-editor are optional: install them only if you import that entry.",
+    "rsc": "Using Next.js or another React Server Components framework? See Server Components for the entries that are client boundaries."
+  },
+  "app": {
+    "title": "Your first component",
+    "text": "Wrap the application in ConfigProvider and start using components:",
+    "provider": "ConfigProvider is optional for rendering components, but it applies the theme (following the system color scheme by default), sets the language of the React library's built-in texts and makes useConfig() available. Use one provider at the root of your app."
+  },
+  "webComponents": {
+    "title": "Web Components (optional)",
+    "text": "The same package provides the whole component set as framework-agnostic custom elements (Lit) under minerva-design/web-components, with the same design, tokens and keyboard behaviour, for plain HTML, Vue, Angular, Svelte or any other stack. The Web Components entries are ESM only and need no React; installing minerva-design is all it takes:",
+    "entries": "Import the package once to register every element, or import one entry per element so that only the elements you use are bundled. Load the design tokens once as well:",
+    "cdn": "Without a build step, load the tokens and the self-contained module bundle (every element, Lit and the Minerva core) from a CDN:",
+    "typings": "Every element is typed in HTMLElementTagNameMap. For framework templates, reference the typings generated for React 19, Vue (Volar), Svelte or Solid once:",
+    "more": "Web Components: getting started, events, typings and framework guides"
+  },
+  "typescript": {
+    "title": "TypeScript",
+    "text": "minerva-design ships its own type declarations; no @types package is needed. Props types (ButtonProps, TagProps, ...) and theme types (Theme, ComponentTheme, ThemeName, ...) are exported from the package root:"
+  },
+  "next": {
+    "title": "Next steps",
+    "introduction": "Design principles and the conventions used by every component.",
+    "theming": "Built-in themes, design tokens and custom themes.",
+    "components": "Start with the first component page and its live examples."
+  }
+}

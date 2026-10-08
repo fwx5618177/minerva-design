@@ -1,4 +1,4 @@
-// Star math of the ratings (lib-core Rating and <minerva-rating>): scores
+// Star math of the ratings (React Rating and <minerva-rating>): scores
 // on a 0..max scale shown as five stars with half stars.
 
 /** Fill of one star. */

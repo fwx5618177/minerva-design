@@ -1,0 +1,155 @@
+{
+  "title": "Cascader",
+  "description": "Selects a value from a hierarchy of options, one level at a time (e.g. country / region / city).",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Click the input (or press Enter, Space or Arrow Down) to open the panel, then click an option to open the next level; choosing a leaf completes the selection. The dropdown grows with its columns."
+    },
+    "default-value": {
+      "title": "Default value",
+      "description": "defaultValue takes the path of values, one per level."
+    },
+    "controlled": {
+      "title": "Controlled",
+      "description": "Pass value and update it in onChange. Clearing calls onChange with an empty array."
+    },
+    "hover": {
+      "title": "Expand on hover",
+      "description": "With expandTrigger=\"hover\", sub-menus open when the pointer hovers a parent option."
+    },
+    "search": {
+      "title": "Search",
+      "description": "showSearch lets users type to filter every path; filter customizes the matching."
+    },
+    "display-render": {
+      "title": "Custom display",
+      "description": "displayRender formats the text shown in the input; here only the last level is displayed and allowClear is off."
+    },
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disable individual options with option.disabled, or the whole component with disabled."
+    },
+    "lazy-load": {
+      "title": "Load options lazily",
+      "description": "Clicking an option that has no children and is not isLeaf expands it and calls loadData instead of selecting it. Set loading on the option, add its children to options when they arrive, and mark the loaded leaves with isLeaf: true so they can be selected."
+    },
+    "custom-option": {
+      "title": "Custom options and levels",
+      "description": "optionRender renders each option with its level, maxLevel limits the depth (an option at the last level is selected), and dropdownStyle / optionStyle adjust the menu."
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "Label of the input",
+      "name": "Name of the input",
+      "options": "Option tree",
+      "value": "Selected path of values (controlled; pair with onChange)",
+      "defaultValue": "Initially selected path of values (uncontrolled)",
+      "onChange": "Called when a leaf option is selected or the value is cleared",
+      "displayRender": "Formats the text shown in the input; by default labels are joined with \" / \"",
+      "disabled": "Disables the cascader",
+      "placeholder": "Placeholder of the input; defaults to a localized \"Please select\"",
+      "allowClear": "Shows a clear button (labelled \"Clear selection\", localized) when a value is selected",
+      "expandTrigger": "How sub-menus are expanded",
+      "className": "Additional class name",
+      "showSearch": "Allows typing to search all paths",
+      "filter": "Custom search predicate; by default paths whose labels contain the input match",
+      "loadData": "Loads children lazily: clicking an option that has no children and is not isLeaf expands it and calls loadData with its path (instead of selecting it). Add the children to options yourself; set loading on the option meanwhile",
+      "dropdownClassName": "Additional class name of the dropdown",
+      "optionRender": "Custom option renderer",
+      "width": "Width of the component",
+      "maxLevel": "Maximum number of levels shown; an option at the last level is selected",
+      "dropdownStyle": "Inline styles of the dropdown",
+      "optionStyle": "Inline styles of every option",
+      "ref": "Ref to the inner <input> element",
+      "style": "Inline styles of the root element",
+      "aria-label": "Accessible label of the input; overrides label and the label of an enclosing FormControl",
+      "aria-labelledby": "Id(s) of the element(s) labelling the input",
+      "aria-describedby": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl",
+      "id": "Id of the input; defaults to the id of an enclosing FormControl",
+      "required": "Marks the input as required (aria-required); defaults to the enclosing FormControl's state",
+      "readOnly": "Shows the value without allowing changes (the dropdown does not open); defaults to the enclosing FormControl's state",
+      "invalid": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
+    },
+    "CascaderOption": {
+      "value": "Value of the option, unique among its siblings",
+      "label": "Text displayed for the option",
+      "children": "Options of the next level",
+      "disabled": "Prevents the option from being selected",
+      "isLeaf": "Marks the option as a leaf (no children to load) when using loadData",
+      "loading": "Shows a loading indicator while its children are being loaded"
+    }
+  },
+  "keyboard": {
+    "title": "Keyboard and accessibility",
+    "open": "Enter, Space or Arrow Down on the input opens the panel and moves focus into it; focusing the input alone does not open it.",
+    "navigate": "Arrow Up / Arrow Down, Home and End move within a column.",
+    "expand": "Arrow Right or Enter expands the next column (also after lazy loading) and Enter selects a leaf; Arrow Left goes back to the previous column.",
+    "close": "Escape closes the panel and returns focus to the input; Tab closes it.",
+    "aria": "The input has the combobox role. Its default placeholder and the \"Clear selection\" button label follow the React library's locale."
+  },
+  "cssVars": {
+    "--cascader-height": "Minimum height of the field (defaults to the density's small control height)",
+    "--cascader-radius": "Corner radius of the field, the dropdown and the options (defaults to --radius-sm)",
+    "--cascader-font-size": "Font size of the field and of the options",
+    "--cascader-border-color": "Border color of the field at rest",
+    "--cascader-column-min-width": "Minimum width of a column of options",
+    "--cascader-dropdown-max-height": "Maximum height of the columns before they scroll",
+    "--cascader-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+    "--cascader-option-padding-x": "Horizontal padding of an option (follows the density's row padding)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The option tree is the options property; the value attribute sets the default path (comma-separated or JSON array). minerva-change reports the selected path."
+      },
+      "search-hover": {
+        "title": "Search, hover and display",
+        "description": "show-search filters every path as you type, expand-trigger=\"hover\" opens sub-menus on hover, and displayRender formats the field (here only the last label). Disabled options cannot be picked."
+      },
+      "lazy": {
+        "title": "Lazy loading",
+        "description": "With loadData, activating an option without children expands it and loads its children: set loading, add children, then reassign options."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: it submits the displayed text under name, required blocks an empty selection, and form.reset() restores the value attribute."
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "Whether the panel is open.",
+        "readOnly": "Shows the value without allowing changes (the panel does not open).",
+        "hideClearButton": "Hides the clear button (allowClear={false} in React).",
+        "selectedOptions": "Options of the selected path, one per level (read-only).",
+        "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element.",
+        "validity": "Validity state (same as <input>.validity).",
+        "validationMessage": "Message describing the current validation error (empty when valid).",
+        "willValidate": "Whether the element takes part in constraint validation."
+      },
+      "events": {
+        "change": "Same as minerva-change, without detail.",
+        "minerva-change": "A path was selected or the value was cleared (detail: { value, selectedOptions }).",
+        "minerva-clear": "The clear button emptied the value.",
+        "minerva-input": "The search text changed (show-search; detail: { value }).",
+        "minerva-open-change": "The user asked to open or close the panel (detail: { open }); cancelable: preventDefault() keeps the current state."
+      },
+      "methods": {
+        "focus": "Focuses the inner input.",
+        "blur": "Removes focus from the inner input.",
+        "show": "Opens the panel.",
+        "hide": "Closes the panel.",
+        "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+        "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
+  }
+}

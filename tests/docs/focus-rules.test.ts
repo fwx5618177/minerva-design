@@ -1,5 +1,5 @@
 // Focus treatment of the text-like controls, checked on the compiled CSS of
-// every library stylesheet (React + web components share the lib-core SCSS).
+// every library stylesheet (React + web components share the React SCSS).
 //
 // - Every text-like control has a focus rule with the design-system
 //   treatment (styles/_mixins.scss `control-focus`): a box-shadow ring and
@@ -23,7 +23,7 @@ import {
 } from "./css";
 import { at } from "./utils";
 
-const COMPONENTS = "packages/lib-core/src/components";
+const COMPONENTS = "packages/react/src/components";
 
 /** Text-like controls drawing their own frame: [name, scss, focus selector] */
 const CONTROLS: Array<[string, string, string]> = [
@@ -114,19 +114,19 @@ const FOCUS_CONTAINERS: Array<{
   reason: string;
 }> = [
   {
-    file: "packages/lib-core/src/components/Modal/modal.module.scss",
+    file: "packages/react/src/components/Modal/modal.module.scss",
     selector: ".content:focus",
     reason:
       "Modal dialog surface, focused on open when no control is auto-focused.",
   },
   {
-    file: "packages/lib-core/src/components/Drawer/drawer.module.scss",
+    file: "packages/react/src/components/Drawer/drawer.module.scss",
     selector: ".content:focus",
     reason:
       "Drawer dialog surface, focused on open when no control is auto-focused.",
   },
   {
-    file: "packages/lib-core/src/components/AppShell/appShell.module.scss",
+    file: "packages/react/src/components/AppShell/appShell.module.scss",
     selector: ".drawer:focus",
     reason:
       "Mobile navigation drawer surface, focused on open (its links show the ring).",
@@ -200,10 +200,7 @@ describe("text-like controls: focus treatment", () => {
     (_name, react, reactPattern, wc, wcPattern) => {
       expect(readFileSync(at(COMPONENTS, react), "utf8")).toMatch(reactPattern);
       expect(
-        readFileSync(
-          at("packages/lib-web-components/src/components", wc),
-          "utf8",
-        ),
+        readFileSync(at("packages/web-components/src/components", wc), "utf8"),
       ).toMatch(wcPattern);
     },
   );

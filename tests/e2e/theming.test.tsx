@@ -1,4 +1,4 @@
-// Theme and locale switching across lib-core and <minerva-button>:
+// Theme and locale switching across React and <minerva-button>:
 // ConfigProvider (light / dark / github-dark / auto), the locale of built-in
 // texts, and the web component picking up the same design tokens.
 import { useState } from "react";
@@ -13,9 +13,9 @@ import {
   useConfig,
   type ConfigProviderThemeProps,
   type SupportedLanguage,
-} from "@minerva/lib-core";
-import "@minerva/lib-web-components";
-import type {} from "../../packages/lib-web-components/tests/e2e/jsx";
+} from "minerva-design";
+import "minerva-design/web-components";
+import type {} from "../../packages/web-components/tests/e2e/jsx";
 
 /** Controllable prefers-color-scheme */
 const mockScheme = (initialDark: boolean) => {
@@ -85,7 +85,7 @@ const App = () => {
 };
 
 /**
- * A token as resolved inside <minerva-button>'s shadow root: lib-core's
+ * A token as resolved inside <minerva-button>'s shadow root: the React library's
  * button stylesheet maps the theme tokens to `--btn-tone` (fill) and
  * `--btn-tone-on` (text) on the inner <button>.
  */

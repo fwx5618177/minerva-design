@@ -5,12 +5,12 @@
 // Components demos) and every code snippet embedded in a docs page.
 //
 // `confirm(` is fine when it is Minerva's own `confirm()` / `useConfirm()`
-// (imported from @minerva/lib-core or @minerva/lib-web-components);
+// (imported from minerva-design or minerva-design/web-components);
 // `window.confirm` never is.
 import { describe, expect, it } from "vitest";
 import { read, walk } from "./utils";
 
-const PAGES = "packages/sample/src/docs/pages";
+const PAGES = "apps/docs/src/docs/pages";
 
 type Rule = "alert" | "prompt" | "confirm" | "console";
 
@@ -53,10 +53,10 @@ function codeOf(file: string, source: string): string {
 
 /** Minerva's confirm() is bound in the file (import, dynamic import, hook) */
 const hasMinervaConfirm = (code: string) =>
-  /import\s*(?:type\s*)?\{[^}]*\bconfirm\b[^}]*\}\s*from\s*["']@minerva\/(?:lib-core|lib-web-components)[^"']*["']/.test(
+  /import\s*(?:type\s*)?\{[^}]*\bconfirm\b[^}]*\}\s*from\s*["']minerva-design[^"']*["']/.test(
     code,
   ) ||
-  /\{[^}]*\bconfirm\b[^}]*\}\s*=\s*await\s+import\(\s*["']@minerva\/(?:lib-core|lib-web-components)/.test(
+  /\{[^}]*\bconfirm\b[^}]*\}\s*=\s*await\s+import\(\s*["']minerva-design/.test(
     code,
   ) ||
   /\b(?:const|let)\s+confirm\s*=\s*useConfirm\(/.test(code);
@@ -143,11 +143,11 @@ describe("docs demo feedback", () => {
     it.each([
       [
         "a.tsx",
-        `import { Button, confirm } from "@minerva/lib-core";\nawait confirm({ title: "Delete?" })`,
+        `import { Button, confirm } from "minerva-design";\nawait confirm({ title: "Delete?" })`,
       ],
       [
         "a.ts",
-        `const { confirm } = await import("@minerva/lib-web-components");\nawait confirm({ title: "x" })`,
+        `const { confirm } = await import("minerva-design/web-components");\nawait confirm({ title: "x" })`,
       ],
       ["a.tsx", `const confirm = useConfirm();\nawait confirm({ title: "x" })`],
       ["a.html", `<minerva-button>confirm({ host })</minerva-button>`],

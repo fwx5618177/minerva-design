@@ -1,26 +1,23 @@
 // The global stylesheet is imported once, in the app entry: the docs site
 // documents it on the Installation page (#global-stylesheet), and the
-// per-component stylesheets (`@minerva/lib-core/styles/<component>.css`)
+// per-component stylesheets (`minerva-design/styles/<component>.css`)
 // only appear there, as an optional optimisation, never as the default
 // pattern of another page.
 import { describe, expect, it } from "vitest";
 import { read, readJson, walk } from "./utils";
 
-const SAMPLE = "packages/sample/src";
-const INSTALLATION = `${SAMPLE}/docs/pages/installation/index.tsx`;
-const PER_COMPONENT = /@minerva\/lib-core\/styles\/[\w-]+\.css/;
+const DOCS = "apps/docs/src";
+const INSTALLATION = `${DOCS}/docs/pages/installation/index.tsx`;
+const PER_COMPONENT = /minerva-design\/styles\/[\w-]+\.css/;
 
 describe("stylesheet docs", () => {
   it("the published CSS entries used by the docs exist", () => {
-    const core = readJson<{ exports: Record<string, unknown> }>(
-      "packages/lib-core/package.json",
+    const pkg = readJson<{ exports: Record<string, unknown> }>(
+      "packages/minerva-design/package.json",
     );
-    const wc = readJson<{ exports: Record<string, unknown> }>(
-      "packages/lib-web-components/package.json",
-    );
-    expect(core.exports).toHaveProperty(["./style.css"]);
-    expect(core.exports).toHaveProperty(["./styles/*.css"]);
-    expect(wc.exports).toHaveProperty(["./tokens.css"]);
+    expect(pkg.exports).toHaveProperty(["./style.css"]);
+    expect(pkg.exports).toHaveProperty(["./styles/*.css"]);
+    expect(pkg.exports).toHaveProperty(["./tokens.css"]);
   });
 
   it("the Installation page has the #global-stylesheet section and its entry snippets", () => {
@@ -30,13 +27,13 @@ describe("stylesheet docs", () => {
     expect(page).toContain('title="app/layout.tsx"');
     expect(page).toContain('title="src/main.ts"');
     expect(page).toMatch(
-      /import "@minerva\/lib-web-components";\nimport "@minerva\/lib-web-components\/tokens\.css";/,
+      /import "minerva-design\/web-components";\nimport "minerva-design\/tokens\.css";/,
     );
   });
 
   it("per-component stylesheets are documented on the Installation page only", () => {
     const files = walk(
-      SAMPLE,
+      DOCS,
       (f) => /\.(?:tsx?|json|md|html)$/.test(f) && !/\.test\.tsx?$/.test(f),
     ).filter((f) => !f.endsWith(".generated.json"));
     const offenders = files.filter(
@@ -50,7 +47,7 @@ describe("stylesheet docs", () => {
     "%s: the component-page note keys exist",
     (lng) => {
       const common = readJson<{ doc: Record<string, string> }>(
-        `${SAMPLE}/i18n/locales/${lng}/common.json`,
+        `${DOCS}/i18n/locales/${lng}/common.json`,
       );
       expect(common.doc.requiresStylesheet).toBeTruthy();
       expect(common.doc.requiresStylesheetLink).toBeTruthy();

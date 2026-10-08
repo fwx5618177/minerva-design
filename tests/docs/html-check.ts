@@ -15,7 +15,7 @@ interface Manifest {
 }
 
 const manifest = readJson<Manifest>(
-  "packages/lib-web-components/custom-elements.json",
+  "packages/minerva-design/custom-elements.json",
 );
 export const ELEMENTS = new Map(
   manifest.modules

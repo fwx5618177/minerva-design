@@ -1,0 +1,45 @@
+{
+  "name": "@minerva/web-components",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Private workspace package: sources of the Minerva Web Components (Lit custom elements), published inside minerva-design (minerva-design/web-components)",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/elements/*.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "vite build && vite build --config vite.cdn.config.ts && node scripts/generate-typings.mjs",
+    "watch": "vite build --watch",
+    "test": "vitest run",
+    "manifest": "node scripts/generate-manifest.mjs",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf coverage"
+  },
+  "dependencies": {
+    "@minerva/core": "workspace:*",
+    "dompurify": "^3.4.16",
+    "jsonc-parser": "^3.3.1",
+    "lit": "^3.3.0"
+  },
+  "peerDependencies": {
+    "monaco-editor": ">=0.52.0"
+  },
+  "peerDependenciesMeta": {
+    "monaco-editor": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.11.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/user-event": "^14.6.7",
+    "element-internals-polyfill": "^3.0.2",
+    "jsdom": "^30.1.2",
+    "monaco-editor": "0.52.2",
+    "typescript": "~6.0.3"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "title": "フック",
+  "description": "ConfigProvider の内部で使われる低レベルのフック。テーマ、言語、React 版の翻訳を自分で管理できます。",
+  "reference": {
+    "title": "リファレンス",
+    "text": "すべてのフックとユーティリティは minerva-design からエクスポートされています。",
+    "hook": "フック",
+    "signature": "シグネチャ",
+    "useAutoTheme": "現在のテーマを state に保持し、ConfigProvider の外では CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } の組では prefers-color-scheme を購読し、アンマウント時に購読を解除します。設定されたテーマ、その setter、現在のシステムのカラースキームを返します。ConfigProvider の内側では state の管理だけを行い、<html> はルート Provider が管理します。",
+    "useLocale": "ロケールを state に保持し、ConfigProvider の外では React 版内蔵テキストの言語（en、zh、ja、fr）を切り替えます。ロケールとその setter を返します。ConfigProvider の内側では state の管理だけを行い、グローバルな言語はルート Provider が管理します。",
+    "useI18n": "{ t, language } を返します。t は React 版内蔵の軽量トランスレーター（ネストしたキー、プレースホルダーの補間、count による複数形、defaultValue に対応）で React 版の組み込みテキストを翻訳し、language は t が翻訳する言語です。t は locale を指定した最も近い入れ子の ConfigProvider に従い、それがなければ React 版のグローバルな言語を使います。React 版は i18n ライブラリに依存しないため、アプリケーション自身の i18n の設定には影響しません。",
+    "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
+    "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
+    "global": "useAutoTheme と useLocale がグローバルな状態（<html> の CSS 変数、React 版の言語）を変更するのは、上に ConfigProvider がない場合だけです。このサイトはルートに Provider があるため、下のデモではフックの state を入れ子の ConfigProvider に渡し、プレビューにだけ適用しています。"
+  },
+  "standalone": {
+    "title": "ConfigProvider なしでフックを使う",
+    "text": "useConfig() が不要なら、Provider の代わりに useAutoTheme と useLocale を直接呼び出せます。Provider の内側では state を保持するだけなので、サブツリーに適用するには入れ子の ConfigProvider に渡してください。"
+  },
+  "demos": {
+    "use-auto-theme": {
+      "title": "useAutoTheme",
+      "description": "setTheme は入れ子の ConfigProvider が適用するプレビューのテーマを変更します。systemTheme は常に OS のカラースキームを示します。ページの他の部分はサイトのテーマのままです。"
+    },
+    "use-locale": {
+      "title": "useLocale と useI18n",
+      "description": "setLocale は入れ子の ConfigProvider に渡すロケールを変更します。useI18n の t() はその言語で React 版の内蔵テキストを返します。"
+    },
+    "use-disclosure": {
+      "title": "useDisclosure と cn",
+      "description": "useDisclosure が onToggle、onOpen、onClose でパネルを制御し、cn が条件付きの部分からクラス名を組み立てます。"
+    }
+  }
+}

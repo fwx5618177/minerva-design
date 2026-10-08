@@ -10,7 +10,7 @@ import {
   ToastProvider,
   toast,
   type ToastProviderProps,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const toastTitles = () =>
   Array.from(

@@ -1,0 +1,64 @@
+{
+  "title": "Thèmes",
+  "description": "Thèmes clair et sombre intégrés, jetons de design sous forme de variables CSS, et création de votre propre thème.",
+  "builtIn": {
+    "title": "Thèmes intégrés",
+    "text": "La bibliothèque React fournit trois thèmes : light, dark et github-dark. Choisissez-en un avec la prop theme de ConfigProvider, ou gardez la valeur par défaut \"auto\", qui suit le schéma de couleurs du système d'exploitation et se met à jour en direct lorsqu'il change."
+  },
+  "live": {
+    "title": "Essayez",
+    "text": "Ce sélecteur pilote le thème de tout le site de documentation. Les composants ci-dessous, comme chaque page, se mettent à jour instantanément car ils ne lisent que des variables CSS.",
+    "current": "Thème appliqué :",
+    "alert": "Les composants changent de thème sans nouveau rendu : seules les variables CSS de <html> changent."
+  },
+  "values": {
+    "title": "Valeurs de thème acceptées",
+    "text": "La prop theme de ConfigProvider (ainsi que useAutoTheme / applyThemeStyles) accepte :",
+    "value": "Valeur",
+    "auto": "Par défaut. Utilise light ou dark selon prefers-color-scheme et suit ses changements.",
+    "light": "Le thème clair intégré.",
+    "dark": "Le thème sombre intégré.",
+    "githubDark": "Un thème sombre basé sur la palette sombre de GitHub.",
+    "object": "Un objet de thème complet (tous les jetons de base, plus des jetons sémantiques et de composant facultatifs). Généralement créé en étendant un thème intégré.",
+    "pair": "Deux objets de thème ; celui qui correspond au schéma de couleurs du système est appliqué, avec bascule automatique."
+  },
+  "how": {
+    "title": "Fonctionnement",
+    "p1": "Un thème est une table plate associant des noms de jetons à des valeurs CSS. ConfigProvider écrit chaque entrée comme propriété personnalisée CSS nommée --<token> dans le style en ligne de l'élément <html> :",
+    "p2": "Les styles des composants ne font que référencer ces variables (par exemple background: var(--primary-color)) : changer de thème ne provoque donc jamais de nouveau rendu React. La feuille de style déclare aussi chaque jeton sur :root, si bien que les composants ont les valeurs du thème clair même avant (ou sans) ConfigProvider."
+  },
+  "demos": {
+    "scoped-theme": {
+      "title": "Thème local",
+      "description": "Les jetons sont des variables CSS ordinaires : redéfinissez-les sur un élément conteneur pour changer le thème d'une partie de la page seulement."
+    }
+  },
+  "custom": {
+    "title": "Thèmes personnalisés",
+    "text": "Créez un thème en étendant un thème intégré et en redéfinissant les jetons voulus, puis passez-le à ConfigProvider. Passez une paire { light, dark } pour continuer à suivre le schéma de couleurs du système. Les jetons sémantiques (survol, fond teinté, anneau de focus...) sont dérivés des jetons de base : redéfinir primary-color suffit généralement."
+  },
+  "colorProps": {
+    "title": "Props color et variant",
+    "color": "Chaque composant choisit sa couleur sémantique avec la même prop color, typée par le type partagé ColorScheme : primary, neutral, success, warning, danger ou info (certains composants n'en acceptent qu'un sous-ensemble documenté). C'est toujours un rôle du thème, jamais une couleur CSS brute : pour recolorer un composant, modifiez les jetons du thème ou ses propriétés CSS personnalisées.",
+    "variant": "variant ne choisit que le style visuel, avec le même sens partout : solid (rempli avec la couleur, texte inversé), subtle (fond teinté), outline (fond transparent, bordure et texte colorés) et ghost (transparent, sans bordure). Les composants ajoutent leurs propres styles si besoin (Tabs line / enclosed, Input filled ...)."
+  },
+  "css": {
+    "title": "Redéfinir les jetons en CSS",
+    "text": "Vous pouvez aussi définir des jetons depuis une feuille de style classique. Tenez compte de l'endroit où chaque valeur est définie :",
+    "note": "ConfigProvider écrit le thème actif en style en ligne sur <html>, prioritaire sur les règles :root d'une feuille de style. Les jetons définis par le thème nécessitent !important pour être redéfinis globalement ; les jetons de composant (btn-*, card-*, avatar-*) ne sont pas définis par les thèmes intégrés et peuvent être déclarés normalement."
+  },
+  "tokens": {
+    "title": "Référence des jetons",
+    "text": "Chaque jeton est disponible via var(--<token>). Les pastilles affichent la valeur du thème actuel.",
+    "variable": "Variable CSS",
+    "base": "Jetons de base",
+    "baseText": "Obligatoires dans chaque objet de thème (ThemeProps).",
+    "semantic": "Jetons sémantiques",
+    "semanticText": "Facultatifs (SemanticThemeProps). Leurs valeurs par défaut sont dérivées des jetons de base avec color-mix() ; les thèmes sombres intégrés en définissent certains explicitement.",
+    "roles": "Jetons de rôle",
+    "rolesText": "Chaque couleur de rôle reçoit des jetons dérivés hover, active, subtle (fond teinté), border et text, par exemple --primary-color-hover ou --danger-color-subtle.",
+    "role": "Rôle",
+    "component": "Jetons de composant",
+    "componentText": "Redéfinitions facultatives par composant (ComponentThemeProps). Sans valeur, les composants se rabattent sur les jetons sémantiques."
+  }
+}

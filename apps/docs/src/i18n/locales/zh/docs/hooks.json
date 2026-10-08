@@ -1,0 +1,34 @@
+{
+  "title": "Hooks",
+  "description": "ConfigProvider 背后的底层 Hooks：自行管理主题、语言和 React 版的翻译。",
+  "reference": {
+    "title": "参考",
+    "text": "所有 Hooks 和工具函数都从 minerva-design 导出。",
+    "hook": "Hook",
+    "signature": "签名",
+    "useAutoTheme": "在状态中保存当前主题，并在 ConfigProvider 之外将其作为 CSS 变量写入 <html>。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其 setter 以及当前系统配色方案。在 ConfigProvider 内部它只管理状态：<html> 由根 Provider 负责。",
+    "useLocale": "在状态中保存 locale，并在 ConfigProvider 之外切换 React 版内置文案的语言（en、zh、ja 或 fr）。返回 locale 及其 setter。在 ConfigProvider 内部它只管理状态：全局语言由根 Provider 负责。",
+    "useI18n": "返回 { t, language }：t 使用 React 版内置的轻量翻译器翻译 React 版自带的文案（支持嵌套 key、占位符插值、基于 count 的复数形式和 defaultValue），language 为 t 所使用的语言。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 React 版的全局语言。React 版不依赖任何 i18n 库，因此绝不会影响应用自身的 i18n 配置。",
+    "useDisclosure": "浮层（Modal、Drawer、Popover……）的打开 / 关闭状态，支持受控（isOpen + onChange）和非受控（defaultIsOpen）两种用法。返回 isOpen 以及稳定的 onOpen、onClose 和 onToggle 回调。",
+    "cn": "拼接类名并跳过假值（false、null、undefined、0、空字符串）。用于条件类名的极简、无依赖替代方案，可代替 classnames。",
+    "global": "只有在上方没有 ConfigProvider 时，useAutoTheme 和 useLocale 才会修改全局状态（<html> 上的 CSS 变量、React 版的语言）。本站在根部有一个 Provider，因此下方示例把 Hook 的状态传给嵌套的 ConfigProvider，只作用于预览区域。"
+  },
+  "standalone": {
+    "title": "不使用 ConfigProvider 时使用 Hooks",
+    "text": "如果不需要 useConfig()，可以直接调用 useAutoTheme 和 useLocale 来代替 Provider。在 Provider 内部它们只保存状态：把状态传给嵌套的 ConfigProvider 即可作用于某个子树。"
+  },
+  "demos": {
+    "use-auto-theme": {
+      "title": "useAutoTheme",
+      "description": "setTheme 修改预览区域的主题，由嵌套的 ConfigProvider 应用；systemTheme 始终反映操作系统的配色方案。页面其余部分保持站点主题。"
+    },
+    "use-locale": {
+      "title": "useLocale 与 useI18n",
+      "description": "setLocale 修改传给嵌套 ConfigProvider 的 locale；useI18n 的 t() 以该语言返回 React 版的内置文案。"
+    },
+    "use-disclosure": {
+      "title": "useDisclosure 与 cn",
+      "description": "useDisclosure 通过 onToggle、onOpen 和 onClose 控制一个面板；cn 根据条件拼接出它的类名。"
+    }
+  }
+}

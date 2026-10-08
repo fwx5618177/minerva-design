@@ -14,7 +14,7 @@ import {
   Menu,
   VirtualList,
   type MenuAction,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const CATEGORIES = ["Books", "Games", "Music"] as const;
 const products = Array.from({ length: 95 }, (_, i) => ({

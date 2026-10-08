@@ -4,7 +4,7 @@
  *
  * This module has no framework import and no DOM access at load time. It is
  * exported from `@minerva/core` and re-exported by the server-safe
- * `@minerva/lib-core/theme-utils` entry, so React Server Components (e.g. a
+ * `minerva-design/theme-utils` entry, so React Server Components (e.g. a
  * root layout) can read the theme cookies and inline the init script.
  *
  * Theme model (two orthogonal axes):
@@ -14,7 +14,7 @@
  * Both are reflected on `<html>` as `data-theme` (resolved light / dark) and
  * `data-palette`, which select the palette token blocks of `style.css`.
  *
- *   import { THEME_INIT_SCRIPT } from "@minerva/lib-core/theme-utils";
+ *   import { THEME_INIT_SCRIPT } from "minerva-design/theme-utils";
  *
  *   <html suppressHydrationWarning>
  *     <head>

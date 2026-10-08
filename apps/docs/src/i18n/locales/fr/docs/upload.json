@@ -1,0 +1,121 @@
+{
+  "title": "Upload",
+  "description": "Sélectionne des fichiers par bouton ou glisser-déposer, les valide et les liste avec leur état de transfert. Le transfert lui-même reste dans votre code.",
+  "demos": {
+    "basic": {
+      "title": "Fichier unique",
+      "description": "onFilesSelected reçoit les fichiers conformes à accept et maxSize ; reflétez le transfert dans value. replace permet de remplacer le fichier actuel."
+    },
+    "multiple": {
+      "title": "Plusieurs fichiers",
+      "description": "multiple avec maxCount ; les éléments en échec affichent leur erreur et un bouton Réessayer si onRetry est défini."
+    }
+  },
+  "api": {
+    "UploadProps": {
+      "label": "Libellé visible du champ (nomme aussi le champ fichier)",
+      "value": "Fichiers à lister avec leur état de transfert (contrôlé)",
+      "onFilesSelected": "Appelé avec les fichiers choisis (ou déposés) conformes à accept, maxSize et maxCount. Transfert, annulation et URL persistées appartiennent à l’appelant",
+      "onRemove": "Appelé pour retirer un fichier ; affiche un bouton Retirer sur chaque élément",
+      "onRetry": "Appelé pour réessayer un fichier en échec ; affiche un bouton Réessayer sur ces éléments",
+      "accept": "Types de fichiers acceptés, comme pour <input accept>",
+      "multiple": "Autorise la sélection de plusieurs fichiers",
+      "replace": "Mode fichier unique : un nouveau fichier peut remplacer celui listé (qui ne compte pas dans maxCount)",
+      "maxCount": "Nombre maximal de fichiers, y compris ceux listés",
+      "maxSize": "Taille maximale d’un fichier, en octets",
+      "loading": "État occupé : bloque les nouvelles sélections et les nouvelles tentatives (le retrait reste possible) et définit aria-busy",
+      "disabled": "Désactive la sélection, les nouvelles tentatives et le retrait",
+      "labels": "Textes personnalisés ; chacun remplace la valeur localisée par défaut",
+      "className": "Classe CSS supplémentaire",
+      "ref": "Ref vers l’élément racine"
+    },
+    "UploadItem": {
+      "id": "Identifiant stable du fichier",
+      "name": "Nom affiché dans la liste",
+      "status": "État de transfert du fichier",
+      "error": "Message d’erreur affiché quand status vaut \"error\"",
+      "previewUrl": "URL d’aperçu de l’image (par ex. une object URL)"
+    },
+    "UploadLabels": {
+      "select": "Texte du bouton de sélection",
+      "uploading": "Texte d’état d’un fichier en cours d’envoi",
+      "done": "Texte d’état d’un fichier envoyé",
+      "failed": "Texte d’état d’un fichier en échec sans message propre",
+      "tooMany": "Erreur affichée quand trop de fichiers sont choisis",
+      "invalidType": "Erreur affichée quand un fichier ne correspond pas à accept",
+      "tooLarge": "Erreur affichée quand un fichier dépasse maxSize",
+      "retry": "Libellé accessible du bouton Réessayer d’un fichier",
+      "remove": "Libellé accessible du bouton Retirer d’un fichier"
+    }
+  },
+  "cssVars": {
+    "--upload-gap": "Espace entre le libellé, la zone de dépôt, l'erreur et la liste des fichiers",
+    "--upload-font-size": "Taille de police",
+    "--upload-dropzone-padding": "Marge intérieure de la zone de dépôt",
+    "--upload-dropzone-radius": "Rayon des coins de la zone de dépôt (par défaut --radius-md)",
+    "--upload-dropzone-border-color": "Couleur de la bordure pointillée de la zone de dépôt au repos",
+    "--upload-dropzone-background": "Fond de la zone de dépôt au repos",
+    "--upload-preview-width": "Largeur d'un aperçu d'image dans la liste des fichiers",
+    "--upload-preview-height": "Hauteur d'un aperçu d'image dans la liste des fichiers",
+    "--upload-dropzone-min-height": "Hauteur minimale de la zone de dépôt (son contenu est centré)",
+    "--upload-dropzone-active-color": "Couleur de la bordure et de l'anneau de la zone de dépôt pendant le survol d'un fichier (par défaut --primary-color)",
+    "--upload-item-background": "Fond d'une ligne de fichier (par défaut --surface-color)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Choisissez ou déposez des fichiers. accept et max-size rejettent les fichiers invalides avec un message ; replace remplace le fichier unique, multiple + max-count en autorisent plusieurs, et removable ajoute des boutons de suppression."
+      },
+      "transfer": {
+        "title": "Progression et nouvelle tentative",
+        "description": "Annuler minerva-files-selected laisse la page gérer items : les fichiers apparaissent en cours d’envoi, puis terminés ou en échec (un fichier sur deux échoue une fois) ; retryable affiche un bouton de nouvelle tentative qui émet minerva-retry."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "Chaque fichier listé est envoyé sous name (FormData multipart) ; required bloque l’envoi sans fichier et reset vide la liste."
+      }
+    },
+    "minerva-upload": {
+      "props": {
+        "removable": "Affiche un bouton de suppression sur chaque élément.",
+        "retryable": "Affiche un bouton de nouvelle tentative sur les éléments en échec.",
+        "required": "Un envoi sans fichier est invalide (valueMissing).",
+        "items": "Fichiers listés avec leur état de transfert : un tableau de { id, name, status, error?, previewUrl?, file? } (propriété).",
+        "texts": "Textes personnalisés (la prop labels de la bibliothèque React, renommée car labels est la liste des <label> du contrôle) ; chacun remplace la valeur localisée par défaut.",
+        "files": "Les fichiers des éléments listés, envoyés avec le formulaire (lecture seule).",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+      },
+      "events": {
+        "change": "L’utilisateur a modifié les fichiers listés.",
+        "minerva-files-selected": "Des fichiers valides ont été choisis ou déposés ; detail : { files }. Annulable : les fichiers ne sont alors pas listés.",
+        "minerva-change": "L’utilisateur a modifié les fichiers listés ; detail : { value } (les éléments).",
+        "minerva-remove": "Le bouton de suppression d’un élément a été activé ; detail : { item }. Annulable : l’élément est alors conservé.",
+        "minerva-retry": "Le bouton de nouvelle tentative d’un élément en échec a été activé ; detail : { item }."
+      },
+      "cssVars": {
+        "--icon-button-color": "Couleur d’icône des boutons-icônes internes.",
+        "--icon-button-hover-bg": "Fond des boutons-icônes internes au survol.",
+        "--icon-button-pressed-color": "Couleur d’icône d’un bouton-icône interne enfoncé.",
+        "--icon-button-pressed-bg": "Fond d’un bouton-icône interne enfoncé.",
+        "--icon-button-size": "Largeur et hauteur des boutons-icônes internes (par défaut, hauteurs de contrôle de la densité).",
+        "--icon-button-icon-size": "Taille de police des icônes des boutons-icônes internes.",
+        "--icon-button-radius": "Rayon des coins des boutons-icônes internes (par défaut --radius-lg)."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton de sélection.",
+        "showPicker": "Ouvre le sélecteur de fichiers.",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
+  }
+}

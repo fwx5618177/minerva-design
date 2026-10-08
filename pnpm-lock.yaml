@@ -111,6 +111,49 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3(@types/node@24.19.1)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.5)(jsdom@30.1.2)(vite@8.3.3(@types/node@24.19.1)(jiti@2.6.1)(sass@1.105.1)(yaml@2.9.1))
 
+  apps/docs:
+    dependencies:
+      '@fontsource-variable/geist':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/geist-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@monaco-editor/react':
+        specifier: ^4.7.0
+        version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      i18next:
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@6.0.3)
+      minerva-design:
+        specifier: workspace:*
+        version: link:../../packages/minerva-design
+      monaco-editor:
+        specifier: 0.52.2
+        version: 0.52.2
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
+      react:
+        specifier: ^19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.0(react@19.3.0)
+      react-i18next:
+        specifier: ^17.0.0
+        version: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      react-icons:
+        specifier: ^5.7.0
+        version: 5.7.0(react@19.3.0)
+      react-router:
+        specifier: ^7.18.4
+        version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    devDependencies:
+      '@types/prismjs':
+        specifier: ^1.26.3
+        version: 1.26.5
+
   packages/core:
     dependencies:
       '@floating-ui/dom':
@@ -121,7 +164,50 @@ importers:
         specifier: ^1.105.1
         version: 1.105.1
 
-  packages/lib-core:
+  packages/minerva-design:
+    dependencies:
+      '@floating-ui/dom':
+        specifier: ^1.8.0
+        version: 1.8.0
+      '@monaco-editor/react':
+        specifier: ^4.7.0
+        version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      dompurify:
+        specifier: ^3.4.16
+        version: 3.4.16
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
+      lit:
+        specifier: ^3.3.0
+        version: 3.3.3
+      monaco-editor:
+        specifier: '>=0.52.0'
+        version: 0.52.2
+    devDependencies:
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      react:
+        specifier: ^19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.0(react@19.3.0)
+      rolldown:
+        specifier: 1.2.12
+        version: 1.2.12
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.3.3
+        version: 8.3.3(@types/node@24.19.1)(jiti@2.6.1)(sass@1.105.1)(yaml@2.9.1)
+
+  packages/react:
     dependencies:
       '@minerva/core':
         specifier: workspace:*
@@ -148,11 +234,8 @@ importers:
       react-dom:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
-      rolldown:
-        specifier: 1.2.12
-        version: 1.2.12
 
-  packages/lib-web-components:
+  packages/web-components:
     dependencies:
       '@minerva/core':
         specifier: workspace:*
@@ -188,61 +271,15 @@ importers:
       monaco-editor:
         specifier: 0.52.2
         version: 0.52.2
-      rolldown:
-        specifier: 1.2.12
-        version: 1.2.12
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
 
-  packages/sample:
-    dependencies:
-      '@fontsource-variable/geist':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource-variable/geist-mono':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@minerva/core':
-        specifier: workspace:*
-        version: link:../core
-      '@minerva/lib-core':
-        specifier: workspace:*
-        version: link:../lib-core
-      '@minerva/lib-web-components':
-        specifier: workspace:*
-        version: link:../lib-web-components
-      '@monaco-editor/react':
-        specifier: ^4.7.0
-        version: 4.7.0(monaco-editor@0.52.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      i18next:
-        specifier: ^26.4.2
-        version: 26.4.2(typescript@6.0.3)
-      monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
-      prismjs:
-        specifier: ^1.30.0
-        version: 1.30.0
-      react:
-        specifier: ^19.3.0
-        version: 19.3.0
-      react-dom:
-        specifier: ^19.3.0
-        version: 19.3.0(react@19.3.0)
-      react-i18next:
-        specifier: ^17.0.0
-        version: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
-      react-icons:
-        specifier: ^5.7.0
-        version: 5.7.0(react@19.3.0)
-      react-router:
-        specifier: ^7.18.4
-        version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-    devDependencies:
-      '@types/prismjs':
-        specifier: ^1.26.3
-        version: 1.26.5
+  tools/compat/lib-core: {}
+
+  tools/compat/lib-web-components: {}
+
+  tools/compat/sample: {}
 
 packages:
 
@@ -2653,10 +2690,6 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-
-  lru-cache@11.0.0:
-    resolution: {integrity: sha512-Qv32eSV1RSCfhY3fpPE2GNZ8jgM9X7rdAfemLWqTUxwiyIC4jJ6Sy0fZ8H+oLWevO6i4/bizg7c8d8i6bxrzbA==}
-    engines: {node: 20 || >=22}
 
   lru-cache@11.5.3:
     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
@@ -6115,8 +6148,6 @@ snapshots:
   lodash@4.17.21:
     optional: true
 
-  lru-cache@11.0.0: {}
-
   lru-cache@11.5.3: {}
 
   lru-cache@5.1.1:
@@ -6339,7 +6370,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.0.0
+      lru-cache: 11.5.3
       minipass: 7.1.2
 
   path-type@4.0.0: {}

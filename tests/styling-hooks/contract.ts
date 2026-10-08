@@ -1,6 +1,6 @@
-// Styling hooks contract, shared by the React (lib-core) and web component
-// (lib-web-components) contract tests: checks rendered DOM against the
-// manifest of @minerva/core/styling-hooks.
+// Styling hooks contract, shared by the React and web component
+// contract tests: checks rendered DOM against the
+// manifest of minerva-design/styling-hooks.
 //
 // - every hook element is documented: its `data-part` (React) / `part`
 //   (shadow DOM) is a part of its component, and every state hook on it is

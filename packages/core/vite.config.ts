@@ -4,8 +4,9 @@ import { fileURLToPath } from "node:url";
 import { compile } from "sass";
 import type { Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
-import { writeDualDeclarations } from "../../scripts/dual-declarations.mjs";
-import { wrapInLayer } from "../../scripts/css-layer.mjs";
+import { writeDualDeclarations } from "../../tools/dual-declarations.mjs";
+import { wrapInLayer } from "../../tools/css-layer.mjs";
+import { CORE_DIST } from "../../tools/paths.mjs";
 
 // Dependencies (@floating-ui/dom) are resolved by the consumer, never bundled.
 const externalDeps = Object.keys(pkg.dependencies ?? {});
@@ -17,10 +18,10 @@ const TOKENS_ENTRY = fileURLToPath(
 );
 
 /**
- * Design tokens (`@minerva/core/tokens.css`): compiled from the Sass sources
+ * Design tokens (`minerva-design/tokens.css`): compiled from the Sass sources
  * in src/theme/tokens and emitted next to the JS bundle, inside the
  * `minerva` cascade layer (unlayered app CSS wins without `!important`). Kept out of the JS
- * graph so `@minerva/core` stays side-effect free and importable in Node.
+ * graph so `minerva-design/core` stays side-effect free and importable in Node.
  */
 const designTokens = (): Plugin => ({
   name: "minerva-design-tokens",
@@ -54,14 +55,16 @@ export default defineConfig({
     }),
   ],
   build: {
+    // `minerva-design/core`: the one copy of core shared by the React and
+    // web component builds (see tools/core-imports.mjs)
     emptyOutDir: true,
-    outDir: "dist",
+    outDir: CORE_DIST,
     sourcemap: true,
     target: "es2020",
     lib: {
       entry: {
         index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
-        // `@minerva/core/styling-hooks`: the styling hooks manifest (data)
+        // `minerva-design/styling-hooks`: the styling hooks manifest (data)
         "styling-hooks": fileURLToPath(
           new URL("./src/styling-hooks/index.ts", import.meta.url),
         ),

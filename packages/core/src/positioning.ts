@@ -148,7 +148,7 @@ function buildMiddleware(
 /**
  * Computes the position of `floating` anchored to `reference` (one shot).
  *
- * Same behaviour as lib-core's `useAnchoredPosition`: `fixed` strategy,
+ * Same behaviour as the React library's `useAnchoredPosition`: `fixed` strategy,
  * offset (default 8px), flip (padding 8, cross-axis `"alignment"`), shift
  * (padding 8 + `limitShift`), optional size constraints and arrow
  * (padding 6). Position with `left` / `top` (see `applyPosition`), never a

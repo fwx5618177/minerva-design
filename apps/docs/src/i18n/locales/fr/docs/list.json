@@ -1,0 +1,82 @@
+{
+  "title": "List",
+  "description": "Listes opérationnelles sobres sur ul / li natifs, avec texte principal et secondaire, icône décorative et actions en fin de ligne.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Les actions gardent leur propre nom ; aria-describedby peut viser le contenu principal."
+    },
+    "compact": {
+      "title": "Densité compacte",
+      "description": "density=\"compact\" réduit la hauteur minimale des lignes ; les séparateurs peuvent être désactivés."
+    },
+    "bordered": {
+      "title": "Carte encadrée",
+      "description": "bordered encadre la liste comme une carte dont les lignes se teintent au survol et quand un contrôle qu'elles contiennent a le focus ; density=\"comfortable\" donne des lignes plus hautes."
+    }
+  },
+  "api": {
+    "ListProps": {
+      "density": "Hauteur minimale des lignes et marge verticale",
+      "dividers": "Trace des séparateurs entre lignes adjacentes",
+      "role": "Rôle de liste, conservé pour que Safari / VoiceOver gardent la sémantique de liste",
+      "ref": "Ref vers l'élément <ul>",
+      "bordered": "Encadre la liste comme une carte dont les lignes se teintent au survol / au focus"
+    },
+    "ListItemProps": {
+      "primary": "Contenu principal",
+      "secondary": "Contenu secondaire, atténué et plus petit",
+      "icon": "Emplacement décoratif en tête, masqué aux technologies d'assistance",
+      "actions": "Contrôles en fin de ligne gérés par l'appelant",
+      "ref": "Ref vers l'élément <li>"
+    }
+  },
+  "cssVars": {
+    "--list-item-min-height": "Hauteur minimale d'un élément (suit la densité ; les listes compact sont plus basses)",
+    "--list-item-padding-y": "Marge intérieure verticale d'un élément (suit la marge de ligne de la densité)",
+    "--list-item-padding-x": "Marge intérieure horizontale d'un élément (suit la marge de ligne de la densité)",
+    "--list-item-gap": "Espace entre l'icône, le contenu et les actions",
+    "--list-divider-color": "Couleur des séparateurs entre les éléments",
+    "--list-icon-size": "Taille de l'emplacement de l'icône de tête",
+    "--list-border-color": "Couleur de la bordure d'une liste encadrée (par défaut --border-color)",
+    "--list-radius": "Rayon des coins d'une liste encadrée (par défaut --radius-lg)",
+    "--list-background": "Fond d'une liste encadrée (par défaut --surface-color)",
+    "--list-item-hover-background": "Fond d'une ligne d'une liste encadrée au survol / quand un contrôle qu'elle contient a le focus"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Lignes <minerva-list-item> avec les attributs primary et secondary ; des séparateurs divisent les éléments adjacents."
+      },
+      "slots": {
+        "title": "Icônes, texte riche et actions",
+        "description": "Les slots icon, par défaut, secondary et actions. Les lignes n'ont pas de commande : Remove est un bouton ordinaire du slot actions."
+      },
+      "density": {
+        "title": "Densité et séparateurs",
+        "description": "density=\"compact\" raccourcit les lignes, no-dividers retire les séparateurs, des variables CSS règlent couleur et marges."
+      },
+      "bordered": {
+        "title": "Carte encadrée",
+        "description": "L'attribut bordered encadre la liste comme une carte (lignes teintées au survol / au focus) ; density=\"comfortable\" donne des lignes plus hautes."
+      }
+    },
+    "minerva-list": {
+      "props": {
+        "noDividers": "Retire les séparateurs entre les éléments (dividers={false} de la bibliothèque React)."
+      },
+      "slots": {
+        "default": "Lignes <minerva-list-item>."
+      }
+    },
+    "minerva-list-item": {
+      "slots": {
+        "default": "Contenu principal (alternative à l'attribut primary).",
+        "secondary": "Contenu secondaire (alternative à l'attribut secondary).",
+        "icon": "Icône décorative en tête (masquée aux technologies d'assistance).",
+        "actions": "Contrôles en fin de ligne."
+      }
+    }
+  }
+}

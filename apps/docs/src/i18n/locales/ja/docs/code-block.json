@@ -1,0 +1,77 @@
+{
+  "title": "CodeBlock",
+  "description": "読み取り専用の整形済みテキスト（ログ、ペイロード、設定）を、名前付きでキーボードフォーカス可能なスクロール領域に表示します。",
+  "demos": {
+    "basic": {
+      "title": "基本的な使い方",
+      "description": "テキストはそのまま描画され、既定で長い行は折り返されます。"
+    },
+    "no-wrap": {
+      "title": "スクロールするログ",
+      "description": "wrap={false} で行を保ったまま横スクロールし、maxHeight で高さを制限します。"
+    },
+    "copyable": {
+      "title": "コピーボタン",
+      "description": "copyable で右上にコピーボタンを追加します。結果（「コピーしました」/「コピーに失敗しました」）はボタンに表示され、スクリーンリーダーに読み上げられます。コピーが成功すると onCopied がコピーしたテキストを受け取ります。"
+    }
+  },
+  "api": {
+    "CodeBlockProps": {
+      "children": "ソーステキスト（そのまま描画）",
+      "aria-label": "コード領域のアクセシブルネーム",
+      "wrap": "横スクロールせずに長い行を折り返します",
+      "maxHeight": "スクロールが始まるまでの最大の高さ",
+      "tabIndex": "領域のタブ順（既定でフォーカス可能）",
+      "copyable": "テキストをクリップボードに書き込むコピーボタンを表示し、結果を読み上げます",
+      "onCopied": "コピーボタンがテキストをクリップボードに書き込んだ後、そのテキストを引数に呼ばれます（失敗時は呼ばれません）。ネイティブの onCopy は引き続き要素に渡されます",
+      "ref": "<pre> 要素への ref"
+    }
+  },
+  "cssVars": {
+    "--code-block-padding": "内側のパディング",
+    "--code-block-radius": "角丸（既定値は --radius-md）",
+    "--code-block-bg": "背景色",
+    "--code-block-border-color": "枠線の色",
+    "--code-block-font-size": "コードのフォントサイズ",
+    "--code-block-max-height": "スクロールするまでの最大高さ（既定値は none）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "テキスト内容はそのまま表示されます（マークアップでは < をエスケープ）。language はラベルを表示します。各ブロックは名前付きのフォーカス可能な領域です。"
+      },
+      "copy": {
+        "title": "クリップボードへコピー",
+        "description": "code プロパティがテキストを保持します。copyable でコピーボタンを追加し、copy() で外部からコピーし、minerva-copy が結果を通知します。"
+      },
+      "overflow": {
+        "title": "長い行と高さ",
+        "description": "no-wrap で長い行を横スクロールにし、max-height で高さを制限します。領域はキーボードでもスクロールできます。"
+      }
+    },
+    "minerva-code-block": {
+      "props": {
+        "code": "ソーステキスト（既定：要素のテキスト内容）。",
+        "language": "コードの言語。ラベルとして表示されます（例：\"json\"、\"bash\"）。",
+        "noWrap": "長い行を折り返さず横スクロールします（React 版の wrap={false} に相当）。",
+        "text": "表示・コピーされるテキスト（読み取り専用）。"
+      },
+      "events": {
+        "minerva-copy": "コピーボタンまたは copy() が使われました（detail: { text, success }。text はコピーしたテキストで、React の onCopied は成功時にこれを受け取ります）。"
+      },
+      "cssVars": {
+        "--icon-button-color": "コピーボタンのアイコンの色。",
+        "--icon-button-hover-bg": "ホバー時のコピーボタンの背景。",
+        "--icon-button-pressed-color": "押下状態のコピーボタンのアイコンの色。",
+        "--icon-button-pressed-bg": "押下状態のコピーボタンの背景。",
+        "--icon-button-size": "コピーボタンの幅と高さ。",
+        "--icon-button-icon-size": "コピーアイコンのフォントサイズ。",
+        "--icon-button-radius": "コピーボタンの角丸の半径。"
+      },
+      "methods": {
+        "copy": "テキストをクリップボードにコピーし、成功したかどうかで解決します。"
+      }
+    }
+  }
+}

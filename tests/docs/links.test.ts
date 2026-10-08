@@ -72,7 +72,7 @@ describe("markdown links", () => {
 
 describe("docs site router links", () => {
   const sources = walk(
-    "packages/sample/src",
+    "apps/docs/src",
     (f) =>
       /\.tsx?$/.test(f) &&
       !/\.test\.tsx?$/.test(f) &&

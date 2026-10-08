@@ -95,7 +95,7 @@ export type ThemeRoleTokens = {
 
 /**
  * Optional semantic tokens. All of them have defaults declared on `:root` in
- * `@minerva/core/tokens.css` (`theme/tokens/default-theme.scss`), derived from the base `ThemeProps` keys with
+ * `minerva-design/tokens.css` (`theme/tokens/default-theme.scss`), derived from the base `ThemeProps` keys with
  * `color-mix()`, so they follow any theme (including custom ones). Set them in
  * a theme only when the derived value is not what you want (the built-in dark
  * themes set explicit surface and text colors, for example).

@@ -1,4 +1,4 @@
-// Default sorting of table columns, shared by lib-core's Table and
+// Default sorting of table columns, shared by the React library's Table and
 // <minerva-data-table>: value comparison, per-column comparator and the
 // ascending -> descending -> unsorted header cycle.
 

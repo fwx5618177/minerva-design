@@ -1,0 +1,107 @@
+{
+  "title": "ConfigProvider 全局配置",
+  "description": "为应用提供 React 版的主题和语言，并通过 useConfig() 读取它们。",
+  "usage": {
+    "title": "用法",
+    "text": "在应用根部渲染一个 ConfigProvider。它会把主题以 CSS 变量的形式写到 <html> 上，设置 React 版内置文案的语言，并通过 useConfig() 提供这两者。",
+    "dynamic": "两个属性都是响应式的：把它们存放在 state 中，即可让用户在运行时切换主题或语言。",
+    "global": "只有最外层的 ConfigProvider 会修改全局状态：它在 <html> 上写入 data-theme、data-palette 和主题变量，持久化 Cookie，并设置 React 版的全局语言。嵌套的 Provider 从不这样做，它只把自己的设置作用于其子树（见“嵌套 Provider”）。"
+  },
+  "palette": {
+    "title": "调色板、持久化与回调",
+    "text": "palette 在 light、dark 或 system 主题之上叠加一套配色调色板（\"editorial\"、\"tech\"、\"graphite\" 或 \"cool\"）。persist 会把主题和调色板的变更保存到 theme 与 palette Cookie 中，并在水合后恢复。setTheme 和 setPalette 改变取值后会调用 onThemeChange 和 onPaletteChange。",
+    "setters": "useConfig() 还会返回 mode、resolvedMode、palette 以及 setTheme 和 setPalette 两个设置函数，任何组件都能切换主题，无需提升状态。服务端渲染、Cookie 和防闪烁初始化脚本详见"
+  },
+  "demos": {
+    "use-config": {
+      "title": "读取配置",
+      "description": "useConfig() 返回最近的 Provider 所配置的主题、解析后的主题、配色和语言。在页头切换站点主题、配色或语言即可看到变化。"
+    },
+    "custom-theme": {
+      "title": "自定义主题",
+      "description": "基于 themes.light 构建的自定义主题，传给嵌套的 ConfigProvider：只有这个容器会切换主题，包括通过 Portal 渲染的 Select 菜单。"
+    },
+    "locale": {
+      "title": "语言",
+      "description": "只设置 locale（en、zh、ja 或 fr）的嵌套 ConfigProvider：其子树的内置文案会改变，而主题和配色继承自站点，<html> 不受影响。"
+    },
+    "palette": {
+      "title": "调色板",
+      "description": "每张卡片都是一个带有自己配色的嵌套 ConfigProvider，使用站点当前的模式。站点的根 Provider 仍保留 <html> 上的 data-palette。"
+    }
+  },
+  "api": {
+    "ConfigContextProviderProps": {
+      "theme": "要应用的主题：\"auto\" 或其别名 \"system\"（跟随 prefers-color-scheme）、内置主题名、主题对象或 { light, dark } 组合。根 Provider 将其应用到 <html>；嵌套 Provider 未设置时继承父级主题，设置后只作用于自己的子树。",
+      "palette": "与 light、dark、system 主题搭配使用的配色（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）；null 保持 Minerva 默认外观。根 Provider 在 <html> 上设置 data-palette；嵌套 Provider 未设置时继承父级配色，设置后只作用于其子树。配色变量来自 style.css。",
+      "persist": "将主题和配色的变更保存到 theme 和 palette Cookie 中，并在水合后恢复（SSR 时请配合 THEME_INIT_SCRIPT 使用）。仅对根 Provider 生效，嵌套 Provider 会忽略它。",
+      "onThemeChange": "setTheme 改变主题后调用。",
+      "onPaletteChange": "setPalette 改变调色板后调用。",
+      "locale": "React 版内置文案的语言。根 Provider 全局设置；嵌套 Provider 未设置时继承父级语言，设置后只作用于其子树。",
+      "children": "应用内容。",
+      "preset": "设计预设：设计维度与默认调色板的命名组合（\"minerva\"；\"editorial\" 为克制、以阅读为主的外观；\"compact\" 用于信息密集的界面）。显式设置的维度和调色板优先。参见“设计预设”。",
+      "density": "控件与行的间距密度（data-density）。",
+      "radius": "圆角比例（data-radius）。",
+      "shadow": "层级阴影比例（data-shadow）；\"standard\" 保留主题 / 调色板的阴影。",
+      "fontScale": "字号比例（data-font-scale）；\"large\" 适合阅读。"
+    },
+    "ConfigContextProps": {
+      "theme": "配置的主题（可能是 \"auto\" 或 { light, dark } 组合）。",
+      "resolvedTheme": "解析 \"auto\" 和 { light, dark } 组合后当前实际应用的主题：内置主题名称或主题对象。",
+      "locale": "React 版内置文案的当前语言设置。",
+      "mode": "主题的颜色模式：light、dark 主题分别为 \"light\"、\"dark\"；\"auto\"、\"system\" 和 { light, dark } 组合为 \"system\"；其他主题为 undefined。",
+      "resolvedMode": "实际应用的颜色模式（<html> 或嵌套 Provider 作用域元素上的 data-theme），可确定时提供。",
+      "palette": "当前配色（<html> 或嵌套 Provider 作用域元素上的 data-palette），null 表示 Minerva 默认外观。",
+      "setTheme": "切换主题（开启 persist 时保存到 theme Cookie）。",
+      "setPalette": "切换调色板（开启 persist 时保存到 palette Cookie）。",
+      "design": "解析后的设计维度（preset、density、radius、shadow、fontScale），应用于 <html> 或嵌套 provider 的作用域。"
+    },
+    "Locale": {
+      "language": "React 版内置文案的语言：\"en\"、\"zh\"、\"ja\" 或 \"fr\"。"
+    }
+  },
+  "context": {
+    "title": "ConfigContext",
+    "text": "当上层没有 ConfigProvider 时，useConfig() 会抛出错误，便于尽早发现配置问题。如果 Provider 是可选的，请直接读取 ConfigContext：它会返回 undefined 而不是抛错。"
+  },
+  "nesting": {
+    "title": "嵌套 Provider",
+    "text": "位于另一个 ConfigProvider 内部的 ConfigProvider 称为嵌套 Provider。可以用它为页面的某个区域、预览或示例设置不同的主题、配色或语言，而不影响页面其余部分。",
+    "inherit": "继承：它从上方最近的 Provider 继承 theme、palette 和 locale，只覆盖你显式设置的属性，其下的 useConfig() 返回合并后的值。继承的设置会随父级变化而更新。",
+    "scoped": "作用域主题：覆盖的 theme 或 palette 只作用于其子树。Provider 会渲染一个 display: contents 的包裹元素（不影响布局），其上带有 data-theme、data-palette 和主题变量。未覆盖 theme 或 palette 时不会渲染包裹元素。",
+    "locale": "作用域语言：覆盖的 locale 只改变其子树中的内置文案。只设置 locale 的 Provider 完全不会影响主题。",
+    "portal": "浮层：从作用域子树中通过 Portal 渲染的内容（Modal、Drawer、Popover、Select、Menu、Tooltip、Toast 等）会挂载到 <body> 上一个带有相同作用域的容器中，因此浮层也会使用作用域主题。在 React 树之外渲染的命令式 API（如独立的 confirm()）使用根主题。",
+    "document": "全局状态：嵌套 Provider 从不写入 <html>，从不读写 Cookie（persist 会被忽略），也从不修改 React 版的全局语言。卸载它后页面保持根 Provider 设置的状态不变；卸载根 Provider 时会还原它所做的修改。嵌套 Provider 的 setTheme 和 setPalette 修改它自己的覆盖值；对于未覆盖的设置，则修改父级的值。"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "<minerva-config> 以 display: contents 渲染，为其内部所有内容限定主题作用域：这里并排展示一个浅色和一个深色作用域。"
+      },
+      "palette-design": {
+        "title": "调色板与设计",
+        "description": "palette、design（预设）以及 density / radius / shadow / font-scale 覆盖项只作用于该子树。"
+      },
+      "locale": {
+        "title": "语言",
+        "description": "locale 设置内部元素内置文本的语言（分页总数、空状态）。切换语言即可实时看到更新。"
+      },
+      "nested": {
+        "title": "嵌套作用域与主题事件",
+        "description": "作用域可以嵌套，最近的作用域生效：内层始终为浅色，外层跟随按钮切换。minerva-theme-change 报告解析后的模式，theme=\"system\" 时同样适用。"
+      }
+    },
+    "minerva-config": {
+      "props": {
+        "root": "将属性写到 <html> 上（作用于整个页面），而不是该子树。"
+      },
+      "events": {
+        "minerva-theme-change": "解析后的浅色 / 深色模式发生变化（detail: { mode }），例如 theme=\"system\" 时系统偏好改变。"
+      },
+      "slots": {
+        "default": "作用域内的内容。"
+      }
+    }
+  }
+}

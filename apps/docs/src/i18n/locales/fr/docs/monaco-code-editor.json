@@ -1,0 +1,89 @@
+{
+  "title": "MonacoCodeEditor",
+  "description": "Éditeur Monaco étiqueté utilisant un moteur local (jamais de CDN) et suivant le thème de la page. Si le moteur ne se charge pas à temps, il se replie sur une zone de texte modifiable avec un bouton Réessayer. Importez-le depuis minerva-design/monaco ; @monaco-editor/react et monaco-editor sont des dépendances pairs optionnelles. Le Web Component <minerva-code-editor> est publié comme entrée optionnelle minerva-design/web-components/code-editor (hors de l'entrée tout-en-un et du bundle CDN), avec monaco-editor comme dépendance pair optionnelle.",
+  "demos": {
+    "basic": {
+      "title": "Éditeur chargé à la demande",
+      "description": "L'éditeur et le moteur local (dont le worker est configuré par l'hôte) sont chargés à la demande. Sans moteur, la zone de texte de repli s'affiche."
+    }
+  },
+  "api": {
+    "MonacoCodeEditorProps": {
+      "monaco": "Moteur Monaco local (import * as monaco from \"monaco-editor\") ; un par application",
+      "value": "Texte source (contrôlé)",
+      "onChange": "Appelée avec le nouveau texte source",
+      "language": "Id de langage Monaco",
+      "label": "Libellé visible, aussi nom accessible de l'éditeur",
+      "height": "Hauteur en pixels, bornée à [minHeight, maxHeight]",
+      "minHeight": "Hauteur minimale en pixels",
+      "maxHeight": "Hauteur maximale en pixels",
+      "disabled": "Rend l'éditeur (et son repli) en lecture seule",
+      "theme": "Thème de couleurs ; par défaut celui de la page (data-theme sur <html>, puis ConfigProvider)",
+      "loadTimeout": "Millisecondes d'attente du moteur avant le repli",
+      "unavailableText": "Message affiché au-dessus de la zone de texte de repli",
+      "retryText": "Texte du bouton Réessayer",
+      "retryLabel": "Libellé accessible du bouton Réessayer",
+      "loadingLabel": "Libellé accessible de l'indicateur de chargement",
+      "className": "Classe supplémentaire",
+      "style": "Styles en ligne de l’élément racine"
+    }
+  },
+  "cssVars": {
+    "--monaco-code-editor-radius": "Rayon des coins de la surface de l'éditeur (par défaut --radius-md)",
+    "--monaco-code-editor-border-color": "Couleur de bordure de la surface de l'éditeur",
+    "--monaco-code-editor-bg": "Couleur de fond de la surface de l'éditeur",
+    "--monaco-code-editor-label-gap": "Espace entre le libellé et l'éditeur",
+    "--monaco-code-editor-font-size": "Taille de police du libellé, des messages et de la zone de texte de repli"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Moteur local, thème et formulaire",
+        "description": "Chargez l'entrée optionnelle minerva-design/web-components/code-editor et le moteur Monaco de l'application, puis passez-le dans la propriété monaco. L'éditeur suit le thème de la page / du <minerva-config>, émet minerva-input à chaque modification (l'onChange de React) et soumet sa valeur avec le formulaire."
+      },
+      "fallback": {
+        "title": "Chargement, repli et moteur tardif",
+        "description": "Sans moteur, l'éditeur affiche son état de chargement, puis après load-timeout une zone de texte modifiable avec un bouton Réessayer (minerva-error est émis). Fournir le moteur ensuite charge l'éditeur avec la dernière valeur."
+      }
+    },
+    "minerva-code-editor": {
+      "props": {
+        "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+        "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+        "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+        "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+        "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+        "validity": "État de validité, comme <input>.validity (lecture seule).",
+        "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+        "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule).",
+        "defaultValue": "Texte source initial (l'attribut value), restauré par form.reset(). Le modifier change aussi value tant que l'utilisateur n'a pas modifié le code.",
+        "resolvedTheme": "Thème réellement appliqué : theme, sinon le data-theme le plus proche (une portée <minerva-config>, puis <html>) (lecture seule).",
+        "monaco": "Moteur Monaco local (import * as monaco from \"monaco-editor\"), défini comme propriété ; un par application. Jamais chargé depuis un CDN.",
+        "value": "Texte source (propriété ; l'attribut value définit defaultValue). Mis à jour à chaque modification ; le définir applique le texte comme une modification annulable.",
+        "theme": "Thème de couleur (light ou dark) ; par défaut celui de la portée de l'élément (le data-theme le plus proche : un <minerva-config>, puis <html>), suivi en direct.",
+        "disabled": "Rend l'éditeur (et sa zone de repli) en lecture seule ; ni envoyé, ni validé.",
+        "loadTimeout": "Millisecondes d'attente du moteur et de l'éditeur avant d'afficher la zone de texte de repli (aussi tant qu'aucun moteur n'est défini)."
+      },
+      "events": {
+        "input": "La valeur a changé (à chaque modification ; composed).",
+        "change": "La valeur a été validée : l'éditeur a perdu le focus après une modification.",
+        "minerva-input": "Identique à input, avec detail : { value } (l'onChange de React).",
+        "minerva-change": "Identique à change, avec detail : { value }.",
+        "minerva-error": "L'éditeur est devenu indisponible (pas de moteur à temps, moteur invalide, ou exception) et la zone de texte de repli est affichée."
+      },
+      "slots": {
+        "editor": "Créé par l'élément : le <div> du light DOM dans lequel Monaco s'affiche, pour que les feuilles de style ajoutées au document par Monaco s'appliquent. Ne le remplissez pas vous-même."
+      },
+      "methods": {
+        "focus": "Donne le focus à l'éditeur (ou à sa zone de repli).",
+        "retry": "Réessaie de charger l'éditeur (comme le bouton Réessayer).",
+        "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+        "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+        "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+        "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+        "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+        "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+      }
+    }
+  }
+}

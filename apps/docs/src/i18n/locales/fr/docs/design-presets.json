@@ -1,0 +1,49 @@
+{
+  "title": "Préréglages de design",
+  "description": "Changez l'apparence de toute une application, ou d'une partie, avec quelques props : un préréglage (minerva, editorial, compact) ou les axes de design individuels densité, rayon, ombre et échelle typographique. Compatible SSR et portées imbriquées.",
+  "axes": {
+    "title": "Axes de design",
+    "attribute": "Attribut",
+    "text": "Les axes de design sont indépendants du mode de couleur (theme) et de la palette. Chacun sélectionne un bloc de jetons de design via un attribut data ; les composants lisent ces jetons (hauteurs de contrôle, marges, rayons, ombres, tailles de police), donc toute la bibliothèque suit. Un préréglage est une combinaison nommée des quatre axes et d'une palette par défaut ; les axes et la palette explicites l'emportent sur le préréglage.",
+    "preset": "minerva : l'apparence par défaut de Minerva. editorial : sobre et orientée lecture (palette editorial, densité confortable, petit rayon, ombres discrètes, grands caractères). compact : écrans denses, riches en données (densité compacte, petit rayon, petits caractères).",
+    "density": "Hauteurs et marges horizontales des contrôles (--control-height-*, --control-padding-x-*) et marges des lignes comme les éléments de menu, les options et les cellules de tableau (--row-padding-y / --row-padding-x).",
+    "radius": "Échelle des rayons : --radius-sm, --radius-md, --radius-lg, --radius-xl et --radius-2xl.",
+    "shadow": "Ombres d'élévation --shadow-sm à --shadow-xl. standard conserve les ombres du thème ou de la palette.",
+    "fontScale": "Échelle typographique : --font-size-* et les hauteurs de ligne de base / aérée. large est pensé pour la lecture."
+  },
+  "root": {
+    "title": "Toute l'application",
+    "text": "Définissez les props sur le ConfigProvider racine : il écrit les axes non standard comme attributs data sur <html> (et la palette du préréglage comme data-palette), puis restaure <html> au démontage. useConfig().design renvoie les axes résolus."
+  },
+  "ssr": {
+    "title": "Rendu serveur",
+    "text": "Le provider racine applique les attributs après l'hydratation. Pour un premier rendu avec la bonne apparence, écrivez-les dans le HTML serveur avec designAttributes() de l'entrée sans danger côté serveur minerva-design/theme-utils, et/ou passez le même design à createThemeInitScript({ design }), qui utilise aussi la palette du préréglage comme palette par défaut."
+  },
+  "nested": {
+    "title": "Portées imbriquées",
+    "text": "Un ConfigProvider imbriqué hérite du design de son parent et n'applique ses surcharges qu'à son sous-arbre : un conteneur display: contents et le conteneur de portail de la portée portent tous les attributs de design, donc les modales, popovers et toasts rendus depuis ce sous-arbre ont la même apparence. Un préréglage imbriqué réinitialise chaque axe qu'il ne définit pas."
+  },
+  "css": {
+    "title": "Utiliser les jetons dans votre CSS",
+    "text": "Les axes ne changent que des jetons de design : vos propres styles peuvent utiliser les mêmes variables et rester cohérents avec les composants. Les ajustements par composant passent par les variables CSS de chaque composant (voir la section « Variables CSS » de chaque page de composant)."
+  },
+  "demos": {
+    "presets": {
+      "title": "Préréglages",
+      "description": "Le même écran avec chaque préréglage. Un ConfigProvider imbriqué limite le préréglage à la démo ; sur le provider racine, il s'applique à tout le document."
+    },
+    "axes": {
+      "title": "Axes individuels",
+      "description": "Chaque axe peut être défini seul et remplace la valeur du préréglage."
+    }
+  },
+  "api": {
+    "DesignOptions": {
+      "preset": "Combinaison nommée des axes de design et d'une palette par défaut.",
+      "density": "Densité d'espacement des contrôles et des lignes.",
+      "radius": "Échelle des rayons.",
+      "shadow": "Échelle des ombres d'élévation.",
+      "fontScale": "Échelle typographique."
+    }
+  }
+}

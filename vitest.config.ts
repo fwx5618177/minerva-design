@@ -3,13 +3,13 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     // Each project configures its own environment:
-    // - unit: packages/*/vite.config.ts
+    // - unit: packages/*/vite.config.ts, apps/docs/vite.config.ts
     // - e2e: tests/e2e/vitest.config.ts (user flows across components)
     projects: [
       "packages/core",
-      "packages/lib-core",
-      "packages/lib-web-components",
-      "packages/sample",
+      "packages/react",
+      "packages/web-components",
+      "apps/docs",
       "tests/e2e",
       "tests/docs",
     ],
@@ -18,8 +18,8 @@ export default defineConfig({
       // Library sources only (the docs site is not measured)
       include: [
         "**/core/src/**/*.ts",
-        "**/lib-core/src/**/*.{ts,tsx}",
-        "**/lib-web-components/src/**/*.{ts,tsx}",
+        "**/react/src/**/*.{ts,tsx}",
+        "**/web-components/src/**/*.{ts,tsx}",
       ],
       exclude: [
         "**/*.test.{ts,tsx}",
@@ -27,12 +27,12 @@ export default defineConfig({
         "**/*-types.ts",
         "**/*.d.ts",
         // barrel files
-        "**/lib-core/src/**/index.{ts,tsx}",
+        "**/react/src/**/index.{ts,tsx}",
         "**/packages/core/src/index.ts",
-        "**/lib-web-components/src/index.ts",
-        "**/lib-web-components/src/controllers/index.ts",
-        // generated from lib-core's icons (no logic)
-        "**/lib-web-components/src/internal/icons.ts",
+        "**/web-components/src/index.ts",
+        "**/web-components/src/controllers/index.ts",
+        // generated from the React icons (no logic)
+        "**/web-components/src/internal/icons.ts",
         "**/test-utils/**",
       ],
       reporter: ["text-summary", "html", "lcov"],

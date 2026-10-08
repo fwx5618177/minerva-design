@@ -1,0 +1,52 @@
+{
+  "title": "HtmlPreview",
+  "description": "Previews untrusted HTML such as email templates in a fully sandboxed iframe. The markup is sanitized with DOMPurify (fail-closed) and rendered behind a Content-Security-Policy that blocks scripts and network access.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Inline styles and data: images are kept; scripts, forms, links and remote images are removed."
+    },
+    "viewports": {
+      "title": "Viewports",
+      "description": "viewport=\"mobile\" renders a fixed-width preview (mobileWidth); desktop fills the container."
+    }
+  },
+  "api": {
+    "HtmlPreviewProps": {
+      "html": "Untrusted HTML to preview (sanitized in the browser)",
+      "title": "Accessible title of the iframe",
+      "viewport": "Full-width desktop preview or fixed-width mobile preview",
+      "mobileWidth": "Width of the mobile preview in pixels",
+      "height": "Height of the iframe in pixels",
+      "className": "Additional class name of the root element",
+      "style": "Inline styles of the root element",
+      "ref": "Ref to the root <div> element"
+    }
+  },
+  "cssVars": {
+    "--html-preview-bg": "Background color around the frame",
+    "--html-preview-frame-bg": "Background color of the frame",
+    "--html-preview-frame-border-color": "Border color of the frame"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The html attribute is sanitized and rendered in a sandboxed iframe; label gives the frame its accessible title."
+      },
+      "viewport": {
+        "title": "Desktop and mobile",
+        "description": "viewport=\"mobile\" renders a fixed-width frame of mobile-width pixels; the markup is set through the html property."
+      },
+      "sanitized": {
+        "title": "Untrusted input",
+        "description": "Edit the source: scripts and event handlers are removed and nothing runs, inline styles are kept."
+      }
+    },
+    "minerva-html-preview": {
+      "props": {
+        "label": "Accessible title of the iframe (the React library's title; falls back to aria-label)."
+      }
+    }
+  }
+}

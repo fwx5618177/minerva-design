@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   generateApi,
   generateElements,
-} from "../../packages/sample/scripts/generate-api.mjs";
+} from "../../apps/docs/scripts/generate-api.mjs";
 
 const api = { ...generateApi(), ...generateElements() } as Record<
   string,

@@ -1,77 +1,15 @@
 {
   "name": "@minerva/core",
   "version": "0.0.0",
-  "description": "Framework-agnostic DOM primitives and theming for Minerva (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme tokens, ...)",
+  "private": true,
+  "description": "Private workspace package: framework-agnostic DOM primitives and theming of Minerva, published inside minerva-design (minerva-design/core)",
   "license": "MIT",
-  "author": "fwx5618177 <fwx5618177@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fwx5618177/minerva.git",
-    "directory": "packages/core"
-  },
-  "homepage": "https://fwx5618177.github.io/minerva/",
-  "bugs": {
-    "url": "https://github.com/fwx5618177/minerva/issues"
-  },
-  "keywords": [
-    "minerva",
-    "dom",
-    "a11y",
-    "accessibility",
-    "focus-trap",
-    "headless",
-    "primitives",
-    "design-tokens",
-    "theming",
-    "i18n",
-    "ssr",
-    "typescript"
-  ],
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    },
-    "./styling-hooks": {
-      "import": {
-        "types": "./dist/styling-hooks/index.d.ts",
-        "default": "./dist/styling-hooks.js"
-      },
-      "require": {
-        "types": "./dist/styling-hooks/index.d.cts",
-        "default": "./dist/styling-hooks.cjs"
-      }
-    },
-    "./tokens.css": "./dist/tokens.css",
+    ".": "./src/index.ts",
+    "./styling-hooks": "./src/styling-hooks/index.ts",
+    "./tokens.css": "./src/theme/tokens.scss",
     "./package.json": "./package.json"
-  },
-  "typesVersions": {
-    "*": {
-      "styling-hooks": [
-        "./dist/styling-hooks/index.d.ts"
-      ]
-    }
-  },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "vite build",
@@ -79,16 +17,12 @@
     "test": "vitest run",
     "hooks:lock": "vitest run src/styling-hooks --update",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist coverage",
-    "check:package": "publint && attw --pack . --exclude-entrypoints ./tokens.css"
+    "clean": "rimraf coverage"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0"
   },
   "devDependencies": {
     "sass": "^1.105.1"
-  },
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
   }
 }

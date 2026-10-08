@@ -23,19 +23,19 @@ export interface Stylesheet {
   css: string;
 }
 
-const LIB_CORE_SRC = "packages/lib-core/src/";
+const LIB_CORE_SRC = "packages/react/src/";
 
-/** Compiles one SCSS entry (the lib-web-components `@lib-core-styles/` alias included) */
+/** Compiles one SCSS entry (the web components `@react-styles/` alias included) */
 export function compileScss(file: string): string {
   return compile(at(file), {
     style: "expanded",
-    loadPaths: [at("packages/lib-core/src"), at("packages")],
+    loadPaths: [at("packages/react/src"), at("packages")],
     importers: [
       {
         findFileUrl(url) {
-          if (!url.startsWith("@lib-core-styles/")) return null;
+          if (!url.startsWith("@react-styles/")) return null;
           return new URL(
-            url.replace("@lib-core-styles/", ""),
+            url.replace("@react-styles/", ""),
             pathToFileURL(at(LIB_CORE_SRC)),
           );
         },
@@ -51,8 +51,8 @@ const isScssEntry = (file: string) =>
 /** Every component stylesheet (React + web components) and the design tokens */
 export function libraryStylesheets(): Stylesheet[] {
   const scss = [
-    ...walk("packages/lib-core/src", isScssEntry),
-    ...walk("packages/lib-web-components/src", isScssEntry),
+    ...walk("packages/react/src", isScssEntry),
+    ...walk("packages/web-components/src", isScssEntry),
     "packages/core/src/theme/tokens.scss",
   ].map((file) => ({ file, css: compileScss(file) }));
   return [...scss, ...litStylesheets()];
@@ -61,7 +61,7 @@ export function libraryStylesheets(): Stylesheet[] {
 /** The inline `css\`\`` templates of the web components (one entry per template) */
 export function litStylesheets(): Stylesheet[] {
   return walk(
-    "packages/lib-web-components/src",
+    "packages/web-components/src",
     (f) => f.endsWith(".ts") && !f.endsWith(".test.ts"),
   ).flatMap((file) =>
     Array.from(

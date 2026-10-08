@@ -17,7 +17,7 @@ import {
   Table,
   ToastProvider,
   toast,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const HIGHLIGHT = "rgb(255, 0, 0)";
 const SELECTED = "rgb(0, 128, 0)";

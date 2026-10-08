@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-autofocus -- initial focus on an autoFocus field inside the dialog is the behaviour under test */
 // Modal, Drawer, ConfirmDialog / confirm(): focus management (initial focus,
 // trap, return to opener), Escape, and a delete-with-confirm list.
-// Uses lib-core's default (English) built-in texts ("Close", "Cancel",
+// Uses the React library's default (English) built-in texts ("Close", "Cancel",
 // "Confirm", "Delete").
 import { useState, type ReactNode } from "react";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
@@ -23,7 +23,7 @@ import {
   ModalFooter,
   confirm,
   useConfirm,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 function EditDocumentPage({
   onSubmit,

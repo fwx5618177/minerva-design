@@ -16,8 +16,8 @@ import {
   useConfig,
   useTheme,
   type SupportedLanguage,
-} from "@minerva/lib-core";
-import { THEME_INIT_SCRIPT } from "@minerva/lib-core/theme-utils";
+} from "minerva-design";
+import { THEME_INIT_SCRIPT } from "minerva-design/theme-utils";
 
 const html = document.documentElement;
 
@@ -260,7 +260,7 @@ describe("theme mode + palette", () => {
 
   describe("nested providers (a docs page with live demos)", () => {
     // Like the locale demo of the docs site: a nested provider that only
-    // changes lib-core's language for its subtree.
+    // changes the React library's language for its subtree.
     function LocaleDemo() {
       const [language, setLanguage] = useState<SupportedLanguage>("en");
       return (

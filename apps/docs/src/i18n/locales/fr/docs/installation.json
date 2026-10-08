@@ -1,0 +1,67 @@
+{
+  "title": "Installation",
+  "description": "Ajoutez Minerva à un projet React, chargez la feuille de style et, si besoin, enregistrez les Web Components.",
+  "requirements": {
+    "title": "Prérequis",
+    "react": "React et React DOM 19 pour les composants React (dépendances pair facultatives de minerva-design : les Web Components n'ont pas besoin de React). React 18 n'est pas pris en charge : les composants utilisent des API de React 19 comme ref en prop ordinaire, et sont testés avec StrictMode et le rendu serveur de React DOM 19.",
+    "bundler": "Un bundler qui gère les modules ES et les imports CSS, comme Vite, webpack, Rspack ou Next.js. Une version CommonJS est également fournie.",
+    "browsers": "Un navigateur moderne à jour : les jetons de thème reposent sur les propriétés personnalisées CSS et color-mix()."
+  },
+  "core": {
+    "title": "Installer les composants React",
+    "text": "Installez minerva-design avec votre gestionnaire de paquets : un seul paquet pour les composants React, les Web Components et les jetons de design. Ajoutez react et react-dom si votre projet ne les a pas encore.",
+    "peers": "react et react-dom sont des dépendances pair facultatives (^19), afin que votre application conserve une seule copie de React. Les seules dépendances d'exécution sont @floating-ui/dom (positionnement), DOMPurify (HtmlPreview), jsonc-parser (JsonField) et Lit (utilisé uniquement par les points d'entrée Web Components ; les applications React ne l'embarquent jamais) : aucune bibliothèque d'icônes, de noms de classes ou d'i18n n'est installée. Les icônes sont des SVG en ligne."
+  },
+  "styles": {
+    "title": "Importer la feuille de style globale une seule fois",
+    "text": "Les styles de tous les composants et les jetons du thème par défaut sont regroupés dans une feuille de style globale, minerva-design/style.css. Importez-la une seule fois, dans le point d'entrée de l'application, avant votre propre CSS. Les fichiers de composants n'importent ensuite que des composants, jamais de CSS.",
+    "note": "Sans minerva-design/style.css, les composants s'affichent sans style. Importez-la une seule fois, dans le point d'entrée : la réimporter depuis des fichiers de composants est sans danger mais inutile.",
+    "vite": {
+      "title": "React avec Vite : src/main.tsx",
+      "note": "Vite regroupe le CSS importé depuis JavaScript : en développement, le serveur injecte la feuille de style, et vite build la produit sous forme d'un unique fichier .css haché, lié depuis index.html. Aucun plugin ni configuration supplémentaire n'est nécessaire."
+    },
+    "next": {
+      "title": "Next.js (App Router) : app/layout.tsx",
+      "note": "Le layout racine est un Server Component et peut importer du CSS global ; toutes les routes reçoivent alors les styles."
+    },
+    "wc": {
+      "title": "Web Components : src/main.ts",
+      "note": "Les éléments personnalisés portent leurs propres styles dans leur shadow root ; tokens.css fournit les jetons de design partagés. Importez les deux une seule fois, dans le point d'entrée de votre application Vue, Angular, Svelte, Solid ou HTML. Si la même page utilise aussi les composants React, style.css contient déjà les jetons."
+    },
+    "components": {
+      "title": "Dans les fichiers de composants",
+      "text": "Les pages des composants ne montrent que l'import du composant. Elles supposent toutes la feuille de style globale importée ci-dessus :"
+    },
+    "perComponentTitle": "Optionnel : feuilles de style par composant",
+    "perComponent": "Vous n'utilisez que quelques composants ? Importez une fois les jetons de design puis la feuille de style de chaque composant utilisé, au lieu de style.css. Chaque fichier contient les styles du composant et des composants qu'il affiche (par exemple confirm.css inclut les styles de Button et Modal) ; le nom de fichier est le dossier du composant en kebab-case (tag-input.css, time-picker.css...). Le JavaScript est aussi tree-shaké par composant : chaque module est publié séparément et le paquet est sans effet de bord hormis son CSS.",
+    "extras": "Un fichier Sass facultatif est publié à côté : minerva-design/prose.scss contient des mixins pour la typographie de texte long, à charger avec @use depuis votre propre Sass."
+  },
+  "optional": {
+    "title": "Points d'entrée et dépendances pairs facultatifs",
+    "text": "L'éditeur de code basé sur Monaco est publié dans un point d'entrée séparé, minerva-design/monaco, afin que le point d'entrée principal n'embarque jamais Monaco. Ses dépendances pairs @monaco-editor/react et monaco-editor sont facultatives : installez-les seulement si vous importez ce point d'entrée.",
+    "rsc": "Vous utilisez Next.js ou un autre framework à React Server Components ? Consultez Server Components pour savoir quels points d'entrée sont des frontières client."
+  },
+  "app": {
+    "title": "Votre premier composant",
+    "text": "Enveloppez l'application dans ConfigProvider et utilisez les composants :",
+    "provider": "ConfigProvider n'est pas obligatoire pour afficher les composants, mais il applique le thème (qui suit par défaut le schéma de couleurs du système), définit la langue des textes intégrés de la bibliothèque React et rend useConfig() disponible. Utilisez un seul provider à la racine de l'application."
+  },
+  "webComponents": {
+    "title": "Web Components (facultatif)",
+    "text": "Le même paquet fournit l'ensemble des composants sous forme d'éléments personnalisés indépendants du framework (Lit) via minerva-design/web-components, avec le même design, les mêmes tokens et le même comportement clavier, pour du HTML simple, Vue, Angular, Svelte ou toute autre pile. Ces points d'entrée sont ESM uniquement et ne nécessitent pas React ; installer minerva-design suffit :",
+    "entries": "Importez le paquet une fois pour enregistrer tous les éléments, ou importez une entrée par élément pour n'embarquer que ceux que vous utilisez. Chargez aussi les design tokens une fois :",
+    "cdn": "Sans étape de build, chargez les tokens et le bundle de modules autonome (tous les éléments, Lit et le cœur de Minerva) depuis un CDN :",
+    "typings": "Chaque élément est typé dans HTMLElementTagNameMap. Pour les templates de framework, référencez une fois les typages générés pour React 19, Vue (Volar), Svelte ou Solid :",
+    "more": "Web Components : prise en main, événements, typages et guides par framework"
+  },
+  "typescript": {
+    "title": "TypeScript",
+    "text": "minerva-design embarque ses propres déclarations de types ; aucun paquet @types n'est nécessaire. Les types de props (ButtonProps, TagProps, ...) et de thème (Theme, ComponentTheme, ThemeName, ...) sont exportés depuis la racine du paquet :"
+  },
+  "next": {
+    "title": "Étapes suivantes",
+    "introduction": "Les principes de conception et les conventions communes à tous les composants.",
+    "theming": "Thèmes intégrés, jetons de design et thèmes personnalisés.",
+    "components": "Commencez par la première page de composant et ses exemples interactifs."
+  }
+}

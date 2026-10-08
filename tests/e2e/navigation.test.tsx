@@ -18,7 +18,7 @@ import {
   Tabs,
   type CommandItem,
   type NavTreeSection,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 describe("Tabs", () => {
   function BookDetail() {

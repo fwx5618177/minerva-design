@@ -1,0 +1,100 @@
+{
+  "title": "Styling & customization",
+  "description": "Restyle any Minerva component from your own CSS: design tokens and CSS variables, the public data-minerva / data-part / state hooks, ::part() and :state() for the web components, and the minerva cascade layer.",
+  "overview": {
+    "title": "Three public layers",
+    "text": "Minerva gives you three stable ways to customize a component, from the lightest touch to the most specific. They are public API: they keep working across minor releases, unlike internal class names and DOM structure.",
+    "variables": "Design tokens and component CSS variables: colors, radii, spacing, control heights... on :root, a theme scope or any element.",
+    "hooks": "Styling hooks: data-minerva (component), data-part (part) and state attributes (data-state, data-disabled, data-size...) in React; the tag, ::part() and :state() on the web components. Same names in both libraries.",
+    "layer": "The minerva cascade layer: every library stylesheet ships inside @layer minerva, so your unlayered CSS wins without !important."
+  },
+  "variables": {
+    "title": "CSS variables",
+    "text": "Start with variables: they adapt to the theme and keep the component's own states (hover, focus, disabled) consistent. Each component page lists its --<component>-* variables; tokens are described in Theming. Variables combine with the hooks below: set a variable for one variant, size or state instead of rewriting declarations."
+  },
+  "hooks": {
+    "title": "Styling hooks (React)",
+    "text": "Every React component renders data-minerva=\"<component>\" and data-part=\"<part>\" on the elements you can style, and its state as attributes from one shared vocabulary. The root of a component is data-part=\"root\"; parts of portalled overlays (popups, dialogs, toasts) carry data-minerva too, so they are matched wherever they render. Values are rendered on the server exactly as on the client (no hydration mismatch).",
+    "selector": "Recommended pattern: the compound selector [data-minerva=\"x\"][data-part=\"y\"] (specificity 0,2,0), plus state attributes. It is unaffected by nesting (a Button inside a Modal is its own component) and by portals. Avoid descendant chains of internal class names: they are private and change between releases. To scope a rule, prefix it with your own container class, or add a className to the component (it lands on the root or on the part the prop documents)."
+  },
+  "vocabulary": {
+    "title": "State vocabulary",
+    "text": "Every component uses the same state names. In React they are data-* attributes on the root (and on the parts that carry them, such as floating content); on the web components they are custom states of the host element.",
+    "parts": "Parts follow one vocabulary too: root, label, description, icon, start-icon, end-icon, spinner, trigger, content, overlay, header, body, footer, title, close-button, list, item, item-indicator, group, separator, input, control, thumb, track, indicator... The \"Styling hooks\" section of each component page lists its parts, selectors and states for React and for the web components."
+  },
+  "wc": {
+    "title": "Web components: ::part() and :state()",
+    "text": "The custom elements expose the same names: the tag is the component, ::part(<name>) reaches a part in the shadow root, and states are custom states of the host (ElementInternals.states), selected with :state(). They add no attribute to the host, so server-rendered markup hydrates without mismatches. Rules on ::part() and on the host always win over the element's shadow styles.",
+    "support": ":state() needs Chrome 125, Firefox 126 or Safari 17.4. Chromium 90-124 gets the legacy dashed states instead (:--open); other engines get no state hooks: use the host attributes ([open], [disabled], [variant=\"ghost\"]) there. Parts work everywhere."
+  },
+  "items": {
+    "title": "Styling items and their states",
+    "text": "Repeated elements of a component (menu items, options, tabs, table rows and sorted headers, pages, steps, tree items, calendar days, toasts, files, stars...) have public states of their own: highlighted, selected, disabled, checked, current, expanded, sort, status... They use the same vocabulary as the component states and mirror the ARIA state of the item (aria-selected, aria-checked, aria-current, aria-expanded, aria-sort).",
+    "react": "React: the state is an attribute of the item element itself, next to data-minerva and data-part: [data-minerva=\"menu\"][data-part=\"item\"][data-highlighted].",
+    "wc": "Web components, items rendered in the shadow root: every item state is an extra part name <part>--<state> (keyed states: <part>--<key>-<value>) next to the part name. Combine them in ::part() — it matches elements carrying all the listed names: minerva-menu::part(item item--highlighted), minerva-data-table::part(header-cell header-cell--sort-ascending). The convention follows Shoelace / Web Awesome (item--selected) and needs no :state() support.",
+    "elements": "Web components, items that are custom elements of their own (<minerva-option>, <minerva-tab>, <minerva-radio>, <minerva-page-tab>...): their states are custom states of the item element, like any component: minerva-option:state(selected)::part(root). Attributes you set on these elements yourself ([closable], [disabled]) are stable selectors too.",
+    "dynamic": "Item hooks follow the interaction: arrow keys move [data-highlighted] / item--highlighted from item to item, sorting a column switches data-sort, dismissing a toast sets data-state=\"closed\" during its exit animation. Shadow part names and custom states never add an attribute to a host, so server-rendered markup hydrates without mismatches.",
+    "examples": "The examples below restyle a highlighted menu item, the selected option of a select, the current page, a sorted table header and success toasts, in React and with the web components."
+  },
+  "layers": {
+    "title": "Cascade layers: @layer minerva",
+    "text": "minerva-design/tokens.css, minerva-design/style.css, styles/*.css and minerva-design/tokens.css are wrapped in @layer minerva. Unlayered CSS beats every layer whatever its specificity or source order, so your rules override the library without !important. If your app uses layers, declare the order once, before any stylesheet.",
+    "resets": "Consequence: unlayered global resets (button { background: none }, normalize.css...) now override Minerva's styles too. Import them into a layer listed before minerva (layer(reset)), as shown above."
+  },
+  "rules": {
+    "title": "Visual rules: borders and focus",
+    "borders": "No one-sided borders: Minerva never marks state with a stripe on one edge (no left accent bar on a highlighted item, no underline border on a selected tab, no alert or blockquote stripe, no one-sided inset shadow). Indicators are full shapes: a background fill, a full ring, a rounded pill or a dot. Dividers between rows and sections are separator shapes (a 1px line drawn by a pseudo-element or a separator element), never a border-bottom of the row. Follow the same rule in your overrides; table grid lines and the Divider element itself are the only documented exceptions.",
+    "focus": "Focus on text-like controls (Input, Textarea, Select trigger, NumberInput, TagInput, AutoComplete, TimePicker, Cascader, JsonField, KeyValueEditor, the Command search, Pagination fields) replaces the native browser outline: the border switches to the focus color and a box-shadow ring surrounds the control. Text fields show it on every focus, mouse included (:focus / :focus-within); triggers that are buttons use :focus-visible. The ring color comes from the theme's --focus-ring-color, tuned per palette for light and dark. Customize it with the variables below, on :root, a theme scope or one control.",
+    "forced": "Forced colors (Windows High Contrast): box-shadows are not painted there, so every focus rule also sets outline: 2px solid transparent. The system turns that outline into a visible system color, so focus never disappears. Keep it if you restyle the ring."
+  },
+  "stability": {
+    "title": "Stability policy",
+    "text": "The hook surface is machine-readable: minerva-design/styling-hooks exports the manifest (component → parts → states, with their values) the docs are generated from. Contract tests render every React component and every custom element in their states and fail if a documented hook is missing or an undocumented part appears; a lock file (styling-hooks.lock.json) fails the build on any change to the surface until it is updated on purpose.",
+    "minor": "Minor release: adding a component, a part, a state (component or item state) or a state value.",
+    "major": "Major release: removing or renaming any of them, or moving a state to another part.",
+    "private": "Not covered: class names, the DOM structure of elements without hooks, and !important overrides of internals."
+  },
+  "next": {
+    "title": "Next steps",
+    "theming": "Themes, palettes and design tokens.",
+    "wcTheming": "Tokens, themes and locales for the web components."
+  },
+  "demos": {
+    "restyle-button": {
+      "title": "Restyle Button",
+      "description": "Pill-shaped buttons through --button-* variables, a thicker outline variant, uppercase labels and a colored spinner while loading: React (data-* hooks) on the first row, <minerva-button> (::part() / :state()) on the second."
+    },
+    "restyle-modal": {
+      "title": "Restyle Modal",
+      "description": "A blurred overlay, a bordered panel and a colored title while open. The React panel is portalled to <body>; the compound [data-minerva][data-part] selector still matches it."
+    },
+    "restyle-tabs": {
+      "title": "Restyle Tabs",
+      "description": "Rounded pill tabs with a tinted, fully outlined active tab and a muted disabled one, from the tab component's state hooks."
+    },
+    "restyle-table": {
+      "title": "Restyle Table",
+      "description": "Uppercase header cells and a highlighted hovered row through the data table's parts, plus zebra rows in React (::part() only accepts user-action pseudo-classes such as :hover, not :nth-child)."
+    },
+    "items-menu": {
+      "title": "Highlighted menu item",
+      "description": "Open a menu and move with the arrow keys: the highlighted item gets a tinted background and a bar, checked items are bold, disabled ones struck through. React panels are scoped with the menu className; the web component uses ::part(item item--highlighted)."
+    },
+    "items-select": {
+      "title": "Selected select option",
+      "description": "The selected option is filled, the highlighted one outlined. React options are SelectItem components (data-minerva=\"option\"); the web component rendered from the options property exposes ::part(item item--selected), and <minerva-option> children their own :state(selected)."
+    },
+    "items-pagination": {
+      "title": "Current pagination page",
+      "description": "Round page buttons with a ringed current page ([data-current] / item--current) and faded disabled previous / next buttons."
+    },
+    "items-table": {
+      "title": "Sorted table header",
+      "description": "Click a header to sort: the sorted column header is underlined (data-sort / header-cell--sort-<direction>), unsorted sortable headers are muted, selected rows tinted."
+    },
+    "items-toast": {
+      "title": "Success toasts",
+      "description": "Success toasts get a green outline and background, and leaving toasts fade while data-state=\"closed\" / toast--closed. React toasts are portalled: the compound selector still matches them."
+    }
+  }
+}

@@ -1,4 +1,4 @@
-// Option tree helpers of the cascaders (lib-core Cascader and
+// Option tree helpers of the cascaders (React Cascader and
 // <minerva-cascader>).
 
 /** The option fields read by the cascader helpers. */

@@ -1,0 +1,155 @@
+{
+  "title": "Cascader 级联选择",
+  "description": "从层级数据中逐级选择一个值，例如国家 / 地区 / 城市。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "点击输入框（或按 Enter、Space、向下箭头）打开面板，再点击选项展开下一级；选择叶子选项即完成选择。下拉框会随列数变宽。"
+    },
+    "default-value": {
+      "title": "默认值",
+      "description": "defaultValue 接收由每一级的值组成的路径。"
+    },
+    "controlled": {
+      "title": "受控模式",
+      "description": "传入 value 并在 onChange 中更新；清除时 onChange 会收到空数组。"
+    },
+    "hover": {
+      "title": "悬停展开",
+      "description": "设置 expandTrigger=\"hover\" 后，鼠标悬停父级选项时展开子菜单。"
+    },
+    "search": {
+      "title": "搜索",
+      "description": "showSearch 允许输入文字过滤所有路径，filter 可自定义匹配规则。"
+    },
+    "display-render": {
+      "title": "自定义显示",
+      "description": "displayRender 自定义输入框中显示的文本；本例只显示最后一级，并关闭了 allowClear。"
+    },
+    "disabled": {
+      "title": "禁用",
+      "description": "通过 option.disabled 禁用单个选项，或通过 disabled 禁用整个组件。"
+    },
+    "lazy-load": {
+      "title": "动态加载",
+      "description": "点击没有子项且未设置 isLeaf 的选项时，会展开它并调用 loadData，而不是选中它。请在该选项上设置 loading，数据返回后把子项加入 options，并为加载出的叶子选项设置 isLeaf: true，使其可以被选中。"
+    },
+    "custom-option": {
+      "title": "自定义选项与层级",
+      "description": "optionRender 按层级渲染每个选项，maxLevel 限制层级深度（最后一层的选项会被选中），dropdownStyle / optionStyle 用于调整菜单样式。"
+    }
+  },
+  "api": {
+    "CascaderProps": {
+      "label": "输入框的标签",
+      "name": "输入框的 name",
+      "options": "选项数据树",
+      "value": "选中的值路径（受控；与 onChange 搭配使用）",
+      "defaultValue": "初始选中的值路径（非受控）",
+      "onChange": "选中叶子选项或清除值时的回调",
+      "displayRender": "自定义输入框中显示的文本，默认用 \" / \" 连接各级标签",
+      "disabled": "是否禁用",
+      "placeholder": "输入框占位文字；默认为本地化的 \"Please select\"（请选择）",
+      "allowClear": "有选中值时显示清除按钮（标签为本地化的 \"Clear selection\"）",
+      "expandTrigger": "次级菜单的展开方式",
+      "className": "额外的类名",
+      "showSearch": "允许输入以搜索所有路径",
+      "filter": "自定义搜索逻辑，默认匹配标签包含输入内容的路径",
+      "loadData": "懒加载子项：点击没有子项且未设置 isLeaf 的选项时，会展开它并以其路径调用 loadData（而不是选中它）。请自行把子项加入 options，并在加载期间为该选项设置 loading",
+      "dropdownClassName": "下拉框的额外类名",
+      "optionRender": "自定义选项渲染",
+      "width": "组件宽度",
+      "maxLevel": "显示的最大层级数；最后一层的选项会被选中",
+      "dropdownStyle": "下拉框的内联样式",
+      "optionStyle": "每个选项的内联样式",
+      "ref": "内部 <input> 元素的 ref",
+      "style": "根元素的内联样式",
+      "aria-label": "输入框的无障碍标签；优先于 label 以及外层 FormControl 的标签",
+      "aria-labelledby": "为输入框提供标签的元素 id（可多个）",
+      "aria-describedby": "描述输入框的元素 id（可多个）；会与外层 FormControl 的帮助/错误文本合并",
+      "id": "输入框的 id；默认使用外层 FormControl 的 id",
+      "required": "将输入框标记为必填（aria-required）；默认继承外层 FormControl 的状态",
+      "readOnly": "只显示值而不允许修改（下拉框不会打开）；默认继承外层 FormControl 的状态",
+      "invalid": "将输入框标记为无效（aria-invalid）；默认继承外层 FormControl 的状态"
+    },
+    "CascaderOption": {
+      "value": "选项的值，在同级中唯一",
+      "label": "选项显示的文本",
+      "children": "下一级的选项",
+      "disabled": "禁止选择该选项",
+      "isLeaf": "使用 loadData 时标记为叶子节点（无需加载子项）",
+      "loading": "加载子项时显示加载指示"
+    }
+  },
+  "keyboard": {
+    "title": "键盘与无障碍",
+    "open": "在输入框上按 Enter、Space 或向下箭头会打开面板并把焦点移入其中；仅聚焦输入框不会打开面板。",
+    "navigate": "向上 / 向下箭头、Home 和 End 在当前列内移动。",
+    "expand": "向右箭头或 Enter 展开下一列（懒加载后同样适用），Enter 选中叶子选项；向左箭头返回上一列。",
+    "close": "Escape 关闭面板并把焦点还给输入框；Tab 也会关闭面板。",
+    "aria": "输入框具有 combobox 角色。默认占位文字和 \"Clear selection\"（清除选择）按钮标签会跟随 React 版的语言设置。"
+  },
+  "cssVars": {
+    "--cascader-height": "输入框最小高度（默认取当前密度的小号控件高度）",
+    "--cascader-radius": "输入框、下拉层与选项的圆角（默认 --radius-sm）",
+    "--cascader-font-size": "输入框与选项的字号",
+    "--cascader-border-color": "输入框静止时的边框颜色",
+    "--cascader-column-min-width": "每一列选项的最小宽度",
+    "--cascader-dropdown-max-height": "各列开始滚动前的最大高度",
+    "--cascader-option-padding-y": "选项的垂直内边距（跟随密度的行内边距）",
+    "--cascader-option-padding-x": "选项的水平内边距（跟随密度的行内边距）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基本用法",
+        "description": "选项树通过 options 属性设置；value 特性设置默认路径（逗号分隔或 JSON 数组）。minerva-change 事件返回所选路径。"
+      },
+      "search-hover": {
+        "title": "搜索、悬停展开与显示格式",
+        "description": "show-search 在输入时筛选所有路径，expand-trigger=\"hover\" 在悬停时展开子菜单，displayRender 自定义输入框文本（此处只显示最后一级）。禁用的选项无法选择。"
+      },
+      "lazy": {
+        "title": "动态加载",
+        "description": "设置 loadData 后，激活没有子项的选项会展开它并加载子项：先设置 loading，再添加 children，最后重新赋值 options。"
+      },
+      "form": {
+        "title": "在表单中",
+        "description": "该元素可关联表单：以 name 提交显示的文本，required 会阻止空选择提交，form.reset() 恢复 value 特性中的路径。"
+      }
+    },
+    "minerva-cascader": {
+      "props": {
+        "open": "面板是否打开。",
+        "readOnly": "只显示值而不允许修改（面板不会打开）。",
+        "hideClearButton": "隐藏清除按钮（相当于 React 中的 allowClear={false}）。",
+        "selectedOptions": "所选路径上的选项，每级一个（只读）。",
+        "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中）。",
+        "form": "元素所属的表单（只读）。",
+        "labels": "与该元素关联的 <label> 元素。",
+        "validity": "有效性状态（与 <input>.validity 相同）。",
+        "validationMessage": "描述当前校验错误的消息（有效时为空）。",
+        "willValidate": "该元素是否参与约束校验。"
+      },
+      "events": {
+        "change": "与 minerva-change 相同，但不带 detail。",
+        "minerva-change": "选择了路径或清空了值（detail: { value, selectedOptions }）。",
+        "minerva-clear": "清除按钮清空了值。",
+        "minerva-input": "搜索文本发生变化（show-search；detail: { value }）。",
+        "minerva-open-change": "用户请求打开或关闭面板（detail: { open }）；可取消：preventDefault() 会保持当前状态。"
+      },
+      "methods": {
+        "focus": "聚焦内部输入框。",
+        "blur": "使内部输入框失去焦点。",
+        "show": "打开面板。",
+        "hide": "关闭面板。",
+        "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+        "reportValidity": "检查有效性并显示浏览器的校验提示。",
+        "setCustomValidity": "设置自定义校验错误（传入空字符串则清除）。",
+        "formResetCallback": "表单 reset() 时由浏览器调用：恢复 value 属性中的值。",
+        "formDisabledCallback": "祖先 <fieldset> 被禁用或启用时由浏览器调用。",
+        "formStateRestoreCallback": "由浏览器调用以恢复值（往返缓存、自动填充）。"
+      }
+    }
+  }
+}

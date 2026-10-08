@@ -12,7 +12,7 @@
 
 </div>
 
-Minerva は Web 向けの UI コンポーネントライブラリです。React コンポーネントライブラリと、フレームワークに依存しない Web Components を、1 つの pnpm monorepo で開発しています。
+Minerva は Web 向けの UI コンポーネントライブラリです。React 19 コンポーネントと、同じコンポーネントのフレームワーク非依存な Web Components を、1 つの npm パッケージ [`minerva-design`](https://www.npmjs.com/package/minerva-design) として公開しています。
 
 ## 🌟 デモとドキュメント
 
@@ -24,34 +24,44 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 - **Web Components**：全コンポーネントを標準のカスタム要素（Lit）として提供。素の HTML、Vue、Angular、Svelte、Solid、React で利用でき、見た目・トークン・キーボード操作・ARIA は React 版と同じ。フォーム関連付け対応のフォームコントロール、CDN バンドル、自動生成のフレームワーク向け型定義付き
 - **ESM + CommonJS**：React ライブラリは両方のモジュール形式を提供（Web Components は ESM のみ）
 - **TypeScript**：型定義を同梱
-- **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`@minerva/lib-core/theme-utils`、サーバー安全）に対応
+- **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`minerva-design/theme-utils`、サーバー安全）に対応
 - **デザインプリセット**：`<ConfigProvider preset="editorial">`（控えめで読みやすさ重視）や `density` / `radius` / `shadow` / `fontScale` の各軸でアプリ全体の見た目を切り替え。SSR 対応（`designAttributes()`、`createThemeInitScript({ design })`）で、ネストした provider でスコープを限定可能
 - **カスタマイズ**：各コンポーネントが安定した CSS カスタムプロパティ（`--button-height`、`--modal-width` など）を公開
-- **エントリー**：`@minerva/lib-core`、`/theme-utils`、`/monaco`、`style.css`（またはコンポーネント単位の `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`。コンポーネント単位で tree-shaking 可能で、アイコン / i18n の実行時依存なし
+- **エントリー**：`minerva-design`、`/theme-utils`、`/monaco`、`style.css`（またはコンポーネント単位の `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`。コンポーネント単位で tree-shaking 可能で、アイコン / i18n の実行時依存なし
 - **国際化**：英語・中国語・日本語・フランス語のロケールを内蔵
-- **ヘッドレスライブラリ不要**：オーバーレイ、メニュー、セレクト、タブ、`asChild` は `@minerva/core` 上で自前実装。サードパーティのインタラクション依存は Floating UI のみ
+- **ヘッドレスライブラリ不要**：オーバーレイ、メニュー、セレクト、タブ、`asChild` は `minerva-design/core` 上で自前実装。サードパーティのインタラクション依存は Floating UI のみ
 
 ## 📦 パッケージ
 
-| パッケージ                    | 説明                                                                                                                                                                                                                                                                                |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@minerva/core`               | フレームワーク非依存のインタラクションプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決めなど）、テーマユーティリティ、デザイントークン、i18n メッセージ。lib-core と一緒にインストールされます。                                |
-| `@minerva/lib-core`           | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き。Peer 依存：`react`、`react-dom` `^19.0.0`。                                                                                                                                                                        |
-| `@minerva/lib-web-components` | フレームワーク非依存の Web Components（Lit）：すべての Minerva コンポーネントをカスタム要素として提供（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>` など）。ESM のみ。要素ごとのエントリー、CDN バンドル、`tokens.css`、React・Vue・Svelte・Solid 向けの型定義を同梱。 |
-| `@minerva/sample`（非公開）   | Vite 製のドキュメント/デモサイト。GitHub Pages にデプロイ。                                                                                                                                                                                                                         |
+パッケージは [`minerva-design`](https://www.npmjs.com/package/minerva-design) の 1 つだけで、用途ごとにエントリーがあります：
+
+| エントリー                                                                     | 説明                                                                                                                                                                                                               |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `minerva-design`                                                               | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き、すべてのクライアントモジュールに `"use client"`。任意の Peer 依存：`react`、`react-dom` `^19.0.0`（React のエントリーでのみ必要）。               |
+| `minerva-design/style.css`                                                     | グローバルスタイルシート（デザイントークン + 全コンポーネント）。アプリのエントリーで 1 回読み込みます。コンポーネント単位の `minerva-design/styles/<component>.css` と `minerva-design/tokens.css` もあります。   |
+| `minerva-design/utils`、`minerva-design/theme-utils`                           | サーバーで安全に使えるヘルパー（`"use client"` なし、React 非依存）：`cn`、テーマ、テーマ Cookie、`THEME_INIT_SCRIPT`、デザインプリセットなど。React Server Components やサーバー向け。                            |
+| `minerva-design/monaco`                                                        | Monaco ベースのコードエディター（任意の Peer 依存 `@monaco-editor/react` と `monaco-editor`）。                                                                                                                    |
+| `minerva-design/web-components`                                                | フレームワーク非依存の Web Components（Lit）：すべての Minerva コンポーネントをカスタム要素として提供（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>` など）。ESM のみ。                                |
+| `minerva-design/web-components/<element>`、`minerva-design/web-components/cdn` | 要素ごとのエントリー（任意の `code-editor` を含む）と、`<script type="module">` / CDN 向けの自己完結バンドル。                                                                                                     |
+| `minerva-design/web-components/{react,vue,svelte,solid}`                       | カスタム要素のフレームワーク向け型定義。`minerva-design/custom-elements.json` と `minerva-design/html-custom-data.json`（VS Code）はツール向けの記述です。                                                         |
+| `minerva-design/core`、`minerva-design/styling-hooks`                          | 上級者向け：両ライブラリが共有するフレームワーク非依存のプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決め、テーマ、i18n）とスタイリングフックのマニフェスト。 |
+
+リポジトリは pnpm monorepo です：`packages/core`、`packages/react`、`packages/web-components` にソース（非公開の workspace パッケージ）、`packages/minerva-design` はそれらのビルド成果物をまとめた公開パッケージ、`apps/docs` は GitHub Pages にデプロイされるドキュメント/デモサイト（非公開）です。
 
 ### アーキテクチャ
 
 ```
-@minerva/core            framework-agnostic TypeScript (DOM only)
+minerva-design/core            framework-agnostic TypeScript (DOM only)
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
         ▲ React hooks                    ▲ Lit controllers
-@minerva/lib-core               @minerva/lib-web-components
+minerva-design               minerva-design/web-components
 ```
 
-`@minerva/lib-core` のすべてのオーバーレイ（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）は同じコアのプリミティブの上に構築されています。レイヤースタックは 1 つ（Escape は最も内側のオーバーレイから閉じる）、フォーカス処理も 1 つ（フォーカスは開いた要素へ戻る）、位置決めエンジンも 1 つです。詳しくはドキュメントサイトの[アーキテクチャ](https://fwx5618177.github.io/minerva/#/architecture)ページを参照してください。
+両ライブラリは同じコア（パッケージ内の `dist/core/`）を読み込みます。React コンポーネントとカスタム要素を併用するアプリでも、コアは 1 回だけ読み込まれます。
 
-### コンポーネント（`@minerva/lib-core`）
+`minerva-design` のすべてのオーバーレイ（Modal、Drawer、Popover、Tooltip、Menu、ContextMenu、Select、AutoComplete、Cascader、TimePicker）は同じコアのプリミティブの上に構築されています。レイヤースタックは 1 つ（Escape は最も内側のオーバーレイから閉じる）、フォーカス処理も 1 つ（フォーカスは開いた要素へ戻る）、位置決めエンジンも 1 つです。詳しくはドキュメントサイトの[アーキテクチャ](https://fwx5618177.github.io/minerva/#/architecture)ページを参照してください。
+
+### コンポーネント（`minerva-design`）
 
 | カテゴリ       | コンポーネント                                                                                                                                                                                                                                                                                                       |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -63,31 +73,37 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 | フィードバック | `Alert`、`toast` / `ToastProvider`、`ProgressIndicator`、`Skeleton` / `SkeletonText`、`LoadingState`                                                                                                                                                                                                                 |
 | オーバーレイ   | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Menu` / `ContextMenu`                                                                                                                                                                                                  |
 | ナビゲーション | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                 |
-| エディター     | `MonacoCodeEditor`（`@minerva/lib-core/monaco`）                                                                                                                                                                                                                                                                     |
+| エディター     | `MonacoCodeEditor`（`minerva-design/monaco`）                                                                                                                                                                                                                                                                        |
 
-コンポーネントのほかに、`@minerva/lib-core` は `ConfigProvider`、`useConfig`、フック `useAutoTheme`・`useLocale`・`useI18n`、ユーティリティ `applyThemeStyles`・`generateCSSVariables`、および組み込みテーマ集 `themes`（`light`、`dark`、`github-dark`）をエクスポートしています。
+コンポーネントのほかに、`minerva-design` は `ConfigProvider`、`useConfig`、フック `useAutoTheme`・`useLocale`・`useI18n`、ユーティリティ `applyThemeStyles`・`generateCSSVariables`、および組み込みテーマ集 `themes`（`light`、`dark`、`github-dark`）をエクスポートしています。
 
 ## 🚀 クイックスタート
 
 ### インストール
 
 ```bash
-pnpm add @minerva/lib-core react react-dom
+pnpm add minerva-design
 ```
 
 または
 
 ```bash
-npm install @minerva/lib-core react react-dom
+npm install minerva-design
 ```
 
 または
 
 ```bash
-yarn add @minerva/lib-core react react-dom
+yarn add minerva-design
 ```
 
-React 19（`react`・`react-dom` `^19.0.0`）が必要です。React 18 はサポートしていません（`ref` を通常のプロパティとして使うなど React 19 の API を利用）。すべてのクライアントモジュールに `"use client"` ディレクティブが付いているため、React Server Components 対応フレームワーク（Next.js App Router など）からラッパーなしで読み込めます。
+次に、アプリのエントリー（`src/main.tsx` やルートの `app/layout.tsx` など）でグローバルスタイルシートを 1 回だけ読み込みます：
+
+```ts
+import "minerva-design/style.css";
+```
+
+React コンポーネントには React 19（`react`・`react-dom` `^19.0.0`）が必要です。React 18 はサポートしていません（`ref` を通常のプロパティとして使うなど React 19 の API を利用）。すべてのクライアントモジュールに `"use client"` ディレクティブが付いているため、React Server Components 対応フレームワーク（Next.js App Router など）からラッパーなしで読み込めます。
 
 ### 基本的な使用方法
 
@@ -105,8 +121,8 @@ import {
   ToastProvider,
   VStack,
   toast,
-} from "@minerva/lib-core";
-import "@minerva/lib-core/style.css";
+} from "minerva-design";
+import "minerva-design/style.css";
 
 export default function App() {
   const [name, setName] = useState("");
@@ -154,7 +170,7 @@ export default function App() {
 - `locale`：`{ language: "en" | "zh" | "fr" }`（デフォルト `"en"`）
 
 ```tsx
-import { ConfigProvider, themes, useConfig } from "@minerva/lib-core";
+import { ConfigProvider, themes, useConfig } from "minerva-design";
 
 const brandTheme = {
   light: { ...themes.light, "primary-color": "#6750a4" },
@@ -179,12 +195,12 @@ export function Root() {
 
 ### テーマ・パレットと SSR
 
-サーバーコンポーネントで `@minerva/lib-core/theme-utils` の `parseThemeCookies` を使って cookie を読み、`<head>` に `THEME_INIT_SCRIPT` をインライン化し、`ThemeProvider`（`defaultTheme` / `defaultPalette`）でアプリを包むと、初回表示のちらつきを防げます。詳しくはドキュメントサイトの「テーマとパレット」ページを参照してください。
+サーバーコンポーネントで `minerva-design/theme-utils` の `parseThemeCookies` を使って cookie を読み、`<head>` に `THEME_INIT_SCRIPT` をインライン化し、`ThemeProvider`（`defaultTheme` / `defaultPalette`）でアプリを包むと、初回表示のちらつきを防げます。詳しくはドキュメントサイトの「テーマとパレット」ページを参照してください。
 
 ### Toast API
 
 ```tsx
-import { Button, toast } from "@minerva/lib-core";
+import { Button, toast } from "minerva-design";
 
 // Rendered by the <ToastProvider> mounted near the root of the app
 export function SaveButton() {
@@ -201,20 +217,16 @@ export function SaveButton() {
 
 ### Web Components
 
-同じコンポーネントを標準のカスタム要素として、どのフレームワークでも（フレームワークなしでも）使えます。shadow root に lib-core と同じ DOM とスタイルを描画し、`@minerva/core` のプリミティブを再利用するため、見た目も挙動も React コンポーネントと同じです。
-
-```bash
-pnpm add @minerva/lib-web-components
-```
+同じコンポーネントを標準のカスタム要素として、どのフレームワークでも（フレームワークなしでも）使えます。同じパッケージから提供され（`pnpm add minerva-design`、React は不要）、shadow root に React コンポーネントと同じ DOM とスタイルを描画し、`minerva-design/core` のプリミティブを再利用するため、見た目も挙動も React コンポーネントと同じです。
 
 ```ts
 // every element...
-import "@minerva/lib-web-components";
+import "minerva-design/web-components";
 // ...or only the ones you use (one entry per element)
-import "@minerva/lib-web-components/select";
+import "minerva-design/web-components/select";
 
-// design tokens, once (already included in @minerva/lib-core/style.css)
-import "@minerva/lib-web-components/tokens.css";
+// design tokens, once (already included in minerva-design/style.css)
+import "minerva-design/tokens.css";
 ```
 
 ビルドなしで CDN から読み込むこともできます：
@@ -222,11 +234,11 @@ import "@minerva/lib-web-components/tokens.css";
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/tokens.css"
+  href="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/core/tokens.css"
 />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@minerva/lib-web-components@1/dist/cdn/minerva.js"
+  src="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/web-components/cdn/minerva.js"
 ></script>
 ```
 
@@ -257,11 +269,11 @@ import "@minerva/lib-web-components/tokens.css";
 型定義：すべての要素は `HTMLElementTagNameMap` に登録されています。テンプレートの型チェックには次を参照します：
 
 ```ts
-/// <reference types="@minerva/lib-web-components/react" />  // React 19 JSX
-/// <reference types="@minerva/lib-web-components/svelte" /> // Svelte 5
-/// <reference types="@minerva/lib-web-components/solid" />  // Solid
-// Vue (Volar): add "@minerva/lib-web-components/vue" to compilerOptions.types
-// VS Code: "html.customData": ["./node_modules/@minerva/lib-web-components/dist/html-custom-data.json"]
+/// <reference types="minerva-design/web-components/react" />  // React 19 JSX
+/// <reference types="minerva-design/web-components/svelte" /> // Svelte 5
+/// <reference types="minerva-design/web-components/solid" />  // Solid
+// Vue (Volar): add "minerva-design/web-components/vue" to compilerOptions.types
+// VS Code: "html.customData": ["./node_modules/minerva-design/dist/web-components/html-custom-data.json"]
 ```
 
 素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
@@ -304,7 +316,7 @@ minerva-modal:state(open)::part(content) {
 @layer reset, minerva, app;
 ```
 
-繰り返されるアイテム（メニュー項目、オプション、行とソート済みヘッダー、ページ、ステップ、ツリー項目、日付、トースト、ファイル…）は独自の状態（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`…）を持ちます：React ではアイテム要素そのものの属性、シャドウルート内のアイテムはパーツ名と並ぶ `<part>--<state>` パーツ名（Shoelace / Web Awesome の規約）、独立した要素であるアイテムはカスタムステート（`minerva-option:state(selected)`）です。複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `@minerva/core/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
+繰り返されるアイテム（メニュー項目、オプション、行とソート済みヘッダー、ページ、ステップ、ツリー項目、日付、トースト、ファイル…）は独自の状態（`highlighted`、`selected`、`checked`、`current`、`expanded`、`sort`、`status`…）を持ちます：React ではアイテム要素そのものの属性、シャドウルート内のアイテムはパーツ名と並ぶ `<part>--<state>` パーツ名（Shoelace / Web Awesome の規約）、独立した要素であるアイテムはカスタムステート（`minerva-option:state(selected)`）です。複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `minerva-design/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
 
 ## 🌐 ブラウザサポート
 
@@ -331,21 +343,21 @@ pnpm dev
 
 ### スクリプト
 
-| コマンド                            | 説明                                                                                  |
-| ----------------------------------- | ------------------------------------------------------------------------------------- |
-| `pnpm dev`                          | ライブラリをビルドしてから、ドキュメント/デモサイトを起動                             |
-| `pnpm build`                        | 全パッケージを順にビルド：core → lib-core → lib-web-components → sample               |
-| `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー |
-| `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                      |
-| `pnpm test:dist`                    | ビルド成果物のテスト（lib-core と lib-web-components、ビルド後に実行）                |
-| `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                                        |
-| `pnpm lint`                         | ESLint（flat config）を実行                                                           |
-| `pnpm typecheck`                    | 全パッケージの型チェック                                                              |
-| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                                        |
-| `pnpm clean`                        | ビルド成果物を削除                                                                    |
-| `pnpm changeset`                    | 変更内容を記述した changeset を追加                                                   |
-| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成                            |
-| `pnpm release`                      | ライブラリをビルドして npm に公開                                                     |
+| コマンド                            | 説明                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | `minerva-design` をビルドしてから、ドキュメント/デモサイトを起動                            |
+| `pnpm build`                        | `minerva-design`（core → react → web components）をビルドし、次にドキュメントサイトをビルド |
+| `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー       |
+| `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                            |
+| `pnpm test:dist`                    | ビルドした `minerva-design` とその tarball のテスト（ビルド後に実行）                       |
+| `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                                              |
+| `pnpm lint`                         | ESLint（flat config）を実行                                                                 |
+| `pnpm typecheck`                    | 全パッケージの型チェック                                                                    |
+| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                                              |
+| `pnpm clean`                        | ビルド成果物を削除                                                                          |
+| `pnpm changeset`                    | 変更内容を記述した changeset を追加                                                         |
+| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成                                  |
+| `pnpm release`                      | `minerva-design` をビルドして npm に公開                                                    |
 
 ### ツール
 
@@ -354,56 +366,57 @@ pnpm dev
 - リント・フォーマット：ESLint 10 + typescript-eslint、Prettier
 - Git フック：Husky、lint-staged、commitlint（Conventional Commits）
 - CI：`.github/workflows/ci.yml` が `main` への push とすべての Pull Request で、Node 22 上で lint、型チェック、整形チェック、カバレッジ付きテスト、ビルド、ビルド成果物のテスト、パッケージチェックを実行
-- ドキュメントのデプロイ：`.github/workflows/deploy.yml` が `main` への push ごとにドキュメントサイトをビルドし GitHub Pages に公開
+- ドキュメントのデプロイ：`.github/workflows/deploy.yml` が `main` への push ごとにドキュメントサイトをビルドし GitHub Pages に公開（リネーム前のパッケージ名を使い続けており、[`tools/compat`](./tools/compat/README.md) の互換パッケージで動作を維持しています）
 
 ### リリース（npm への手動公開）
 
 バージョンと変更履歴は [Changesets](https://github.com/changesets/changesets) で管理しています。公開は**手動**で、メンテナーのマシンから行います。CI に公開ワークフローはありません（`.github/workflows/ci.yml` は検証のみ、`deploy.yml` はドキュメントサイトのデプロイのみ）。
 
-1. **変更ごとに changeset を書く**（その PR で）：`pnpm changeset` でパッケージと semver の種類を選び、生成された `.changeset/*.md` をコミットします。
+1. **変更ごとに changeset を書く**（その PR で）：`pnpm changeset` で `minerva-design`（唯一の公開パッケージ。`@minerva/*` の workspace パッケージは非公開で無視されます）の semver の種類を選び、生成された `.changeset/*.md` をコミットします。
 2. **バージョン更新**（最新の `main`、作業ツリーがクリーンな状態で）：
 
    ```bash
    pnpm version-packages   # changeset version：バージョン更新、CHANGELOG.md の書き込み、.changeset/*.md の消費
-   pnpm install            # lockfile を更新（内部依存の範囲が変わることがあります）
+   pnpm install            # lockfile を更新
    ```
 
-3. **レビュー**してから公開します：`git diff`（バージョン、CHANGELOG の内容、lib-core / lib-web-components の `@minerva/core` の範囲）を確認し、Node 22（`.nvmrc`）で CI と同じチェックを実行します：
+3. **レビュー**してから公開します：`git diff`（バージョン、CHANGELOG の内容）を確認し、Node 22（`.nvmrc`）で CI と同じチェックを実行します：
 
    ```bash
    pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
    pnpm build && pnpm test:dist && pnpm check:package
-   pnpm -r publish --dry-run --no-git-checks   # 公開される内容を確認（何もアップロードされません）
+   (cd packages/minerva-design && npm pack --dry-run)   # 公開される内容を確認（何もアップロードされません）
    git commit -am "chore: release" && git push
    ```
 
-4. **npm にログイン**：`@minerva` スコープへの公開権限があり、二要素認証（2FA）を有効にしたアカウントを使います：
+4. **npm にログイン**：`minerva-design` の公開権限があり、二要素認証（2FA）を有効にしたアカウントを使います：
 
    ```bash
    npm login --registry https://registry.npmjs.org/
    npm whoami --registry https://registry.npmjs.org/
    ```
 
-   各パッケージの `publishConfig.registry` は `https://registry.npmjs.org/` を指しているため、`~/.npmrc` にミラー（npmmirror など）を設定していても公開には使われません。
+   パッケージの `publishConfig.registry` は `https://registry.npmjs.org/` を指しているため、`~/.npmrc` にミラー（npmmirror など）を設定していても公開には使われません。
 
 5. **公開**：
 
    ```bash
-   pnpm release            # core、lib-core、lib-web-components をビルドし `changeset publish` を実行
-   git push --follow-tags  # changeset publish が作成した <パッケージ>@<バージョン> タグを push
+   pnpm release            # minerva-design をビルドし `changeset publish` を実行
+   git push --follow-tags  # changeset publish が作成した minerva-design@<バージョン> タグを push
    ```
 
-   `changeset publish` は npm にまだ存在しないバージョンのパッケージだけを、依存関係の順（`@minerva/core` → `@minerva/lib-core` と `@minerva/lib-web-components`）で公開し、`workspace:*` を実際のバージョンに置き換えます。書き込みに 2FA を有効にしている場合はワンタイムパスワードを求められます（事前に渡す場合：`pnpm release --otp <code>`。引数は `changeset publish` に渡されます）。
+   `changeset publish` は npm にまだ存在しないバージョンの場合にだけ `minerva-design` を公開します（非公開パッケージは公開されません）。書き込みに 2FA を有効にしている場合はワンタイムパスワードを求められます（事前に渡す場合：`pnpm release --otp <code>`。引数は `changeset publish` に渡されます）。
 
-各パッケージが公開する内容（各 `package.json` の `files`。テスト、ソース、ドキュメントサイトは含まれません）：
+公開される内容（`packages/minerva-design/package.json` の `files`。テスト、ソース、ドキュメントサイトは含まれません）：
 
-| パッケージ                    | 内容                                                                                                                                                                                                                        |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@minerva/core`               | `dist/`（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）、`README.md`、`LICENSE`                                                                                                                                              |
-| `@minerva/lib-core`           | `dist/`（モジュールごとの ESM + CJS、型、`style.css`、コンポーネントごとの `styles/*.css`、`prose.scss`、`./monaco` と `./theme-utils` エントリ）、`README.md`、`LICENSE`                                                   |
-| `@minerva/lib-web-components` | `dist/`（要素ごとの ESM、`elements/*` エントリ（オプションの `code-editor` を含む）、`cdn/minerva.js`、`tokens.css`、`types/` のフレームワーク型、`html-custom-data.json`）、`custom-elements.json`、`README.md`、`LICENSE` |
+| フォルダー             | 内容                                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dist/react/`          | React のエントリー：モジュールごとの ESM + CJS、`.d.ts` / `.d.cts`、`style.css`、コンポーネント単位の `styles/*.css`、`prose.scss`、`./monaco`・`./theme-utils`・`./utils` エントリー |
+| `dist/core/`           | 両ライブラリが共有するフレームワーク非依存のコア（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）                                                                                       |
+| `dist/web-components/` | 要素ごとの ESM、`elements/*` エントリー（任意の `code-editor` を含む）、`cdn/minerva.js`、`types/` のフレームワーク型定義、`html-custom-data.json`                                    |
+| パッケージのルート     | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                                                        |
 
-`@minerva/sample`（ドキュメントサイト）は private で、公開されることはありません。
+workspace パッケージ（`@minerva/core`、`@minerva/react`、`@minerva/web-components`、`@minerva/docs`、`tools/compat` の互換パッケージ）は非公開で、公開されることはありません。
 
 ## 🤝 コントリビューション
 

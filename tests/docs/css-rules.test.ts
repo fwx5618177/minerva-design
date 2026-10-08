@@ -8,7 +8,7 @@
 // separator elements (a full `height: 1px` background) or full borders.
 //
 // The check runs on the compiled CSS of every component stylesheet (React
-// and web components share the lib-core SCSS; the inline Lit `css`
+// and web components share the React SCSS; the inline Lit `css`
 // templates are read too) and of the design tokens. The few exceptions are
 // listed below, each with its justification.
 import { describe, expect, it } from "vitest";
@@ -32,9 +32,9 @@ interface AllowEntry {
  * Documented exceptions. Keep it short: every entry needs a reason why a
  * full-shape treatment would harm the component.
  */
-const DIVIDER = "packages/lib-core/src/components/Divider/divider.module.scss";
-const TABLE = "packages/lib-core/src/components/Table/table.module.scss";
-const TOOLTIP = "packages/lib-core/src/components/Tooltip/tooltip.module.scss";
+const DIVIDER = "packages/react/src/components/Divider/divider.module.scss";
+const TABLE = "packages/react/src/components/Table/table.module.scss";
+const TOOLTIP = "packages/react/src/components/Tooltip/tooltip.module.scss";
 
 export const ONE_SIDED_BORDER_ALLOWLIST: AllowEntry[] = [
   {

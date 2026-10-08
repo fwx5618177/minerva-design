@@ -1,11 +1,11 @@
-// Leak tracker shared by the lib-core and lib-web-components leak harnesses:
+// Leak tracker shared by the React and web component leak harnesses:
 // records the global resources a component acquires (event listeners on
 // window / document / <html> / <body> / media query lists, timers, animation
 // frames, idle callbacks, Resize / Mutation / Intersection observers) and
 // reports the ones still held after it was unmounted / disconnected.
 //
 // Only resources acquired from the library sources are counted (the call
-// stack contains packages/<core|lib-core|lib-web-components>/src and no
+// stack contains packages/<core|react|web-components>/src and no
 // node_modules frame in between): React, Lit, happy-dom and Testing Library
 // internals are not ours.
 
@@ -18,7 +18,7 @@ interface Resource {
 }
 
 const OWN_FRAME =
-  /[\\/]packages[\\/](core|lib-core|lib-web-components)[\\/]src[\\/](?!.*\.test\.)/;
+  /[\\/]packages[\\/](core|react|web-components)[\\/]src[\\/](?!.*\.test\.)/;
 
 /** First library frame of the current stack, or null when not ours */
 function ownFrame(): string | null {

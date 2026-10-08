@@ -1,4 +1,4 @@
-// Page number lists of the paginations of lib-core and lib-web-components.
+// Page number lists of the paginations of the React library and the web components.
 
 /** Pages skipped by the jump-prev / jump-next items of a pagination. */
 export const PAGINATION_JUMP_SIZE = 5;

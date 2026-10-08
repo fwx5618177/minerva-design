@@ -1,0 +1,56 @@
+{
+  "title": "Thèmes des Web Components",
+  "description": "Design tokens, thèmes, palettes et presets de design avec <minerva-config> ou de simples attributs, portées imbriquées, variables CSS par composant, ::part() et langues.",
+  "tokens": {
+    "title": "Design tokens",
+    "text": "Chaque élément lit les design tokens (couleurs, espacements, rayons, ombres, polices, hauteurs de contrôle) sous forme de propriétés personnalisées CSS, qui sont héritées dans les shadow roots. Chargez tokens.css une fois : il définit le thème clair sur :root et les règles qui changent les tokens selon les attributs ci-dessous. C'est le même fichier que minerva-design/tokens.css, et il est inclus dans minerva-design/style.css : React et Web Components partagent ainsi un seul thème sur une même page."
+  },
+  "attributes": {
+    "title": "Attributs de thème",
+    "text": "Les thèmes sont des attributs, lus par tokens.css : data-theme (light ou dark), data-palette, data-density, data-radius, data-shadow et data-font-scale. Sur <html>, ils ne nécessitent aucun script, ce qui les rend aussi faciles à rendre côté serveur :",
+    "nested": "Sous <html>, ajoutez aussi data-minerva-theme-scope à l'élément qui porte les attributs : les tokens dérivés (nuances de survol, atténuées et de bordure, anneau de focus...) sont calculés là où les couleurs de base sont déclarées, et cet attribut fait recalculer la portée. <minerva-config> s'en charge pour vous."
+  },
+  "config": {
+    "title": "<minerva-config>",
+    "text": "<minerva-config> est l'équivalent Web Component de ConfigProvider. Il s'affiche en display: contents et écrit les attributs de thème sur lui-même (une portée pour son contenu) ou, avec root, sur <html>. Les portées s'imbriquent, la plus proche l'emporte :",
+    "attribute": "Attribut",
+    "values": "Valeurs",
+    "attrs": {
+      "theme": "Clair, sombre, celui du système d'exploitation, ou le thème github-dark. Non défini : hérité de la portée englobante.",
+      "palette": "Palette de couleurs, avec une variante claire et une variante sombre.",
+      "design": "Preset de design : définit ensemble la densité, les rayons, les ombres et l'échelle typographique (ainsi que sa palette, sauf si palette est défini).",
+      "density": "Espacements et hauteurs de contrôle ; remplace le preset.",
+      "radius": "Échelle des rayons d'angle ; remplace le preset.",
+      "shadow": "Ombres d'élévation ; remplace le preset.",
+      "font-scale": "Échelle typographique ; remplace le preset.",
+      "locale": "Langue des textes intégrés (boutons de fermeture, états vides, messages de validation...) des éléments contenus.",
+      "root": "Applique tout à <html> (toute la page, avec lang) au lieu du sous-arbre de l'élément."
+    },
+    "event": "minerva-theme-change est déclenché lorsque le mode clair / sombre résolu change (y compris lorsque le système d'exploitation bascule avec theme=\"system\") ; resolvedMode renvoie le mode courant :"
+  },
+  "dark": {
+    "title": "Mode sombre",
+    "text": "theme=\"system\" suit prefers-color-scheme et se met à jour en direct. Pour laisser l'utilisateur choisir, définissez theme sur light, dark ou system depuis votre propre contrôle et conservez son choix. Sans <minerva-config>, basculer data-theme=\"dark\" sur <html> active le thème sombre par défaut ; pour éviter un flash du thème clair, écrivez l'attribut côté serveur ou dans un script en ligne avant le rendu de la page."
+  },
+  "cssVars": {
+    "title": "Variables CSS des composants",
+    "text": "Les éléments compilent les mêmes feuilles de style que les composants React : ils exposent donc les mêmes variables --<component>-* (--button-radius, --input-height, --card-padding, --table-cell-padding-y...), listées dans le tableau des variables CSS de chaque page de composant. Elles sont lues avec des valeurs de repli et jamais définies par l'élément : une valeur posée sur l'élément, sur n'importe quel ancêtre ou sur :root s'applique. Les tokens du thème (--primary-color...) peuvent être redéfinis de la même façon :"
+  },
+  "parts": {
+    "title": "Styler les parties internes avec ::part() et :state()",
+    "text": "Les éléments exposent leurs parties internes clés sous forme de parts CSS (root, label, content, overlay, list, item, input, control...) et leurs états sous forme d'états personnalisés (:state(open), :state(disabled), :state(size-small)...) : les mêmes noms que les hooks data-part et data-* des composants React. Ils font partie de l'API publique, contrairement aux noms de classes internes. Chaque page de composant les liste dans sa section « Hooks de style » ; le vocabulaire complet est dans Styles et personnalisation."
+  },
+  "overlays": {
+    "title": "Les surcouches restent dans leur portée",
+    "text": "Les fenêtres contextuelles (listes des sélecteurs, popovers, infobulles, menus) et les boîtes de dialogue sont rendues dans la shadow root de l'élément lui-même et affichées dans la top layer grâce à la Popover API, au lieu d'être déplacées à la fin du <body>. Elles restent dans l'arbre DOM là où vous les avez écrites : elles héritent donc des tokens, de la portée de thème, de la langue et de vos variables CSS, et un overflow: hidden ou un z-index sur un ancêtre ne peut ni les rogner ni les recouvrir. Les navigateurs sans Popover API se rabattent sur un positionnement fixe."
+  },
+  "i18n": {
+    "title": "Langues",
+    "text": "Les textes intégrés et les messages de validation suivent le <minerva-config locale> le plus proche, à défaut l'attribut lang le plus proche (en traversant les shadow roots), et à défaut l'anglais. L'anglais, le chinois, le japonais et le français sont pris en charge ; les balises régionales sont ramenées à leur langue (fr-CA utilise le français). Modifier lang ou locale met immédiatement à jour les éléments. Les textes qu'un élément affiche à partir d'attributs (libellés, placeholders, close-label...) sont à traduire par vos soins."
+  },
+  "next": {
+    "title": "Étapes suivantes",
+    "theming": "Thèmes intégrés, l'ensemble des design tokens et thèmes personnalisés.",
+    "presets": "Les palettes et les presets de design en détail."
+  }
+}

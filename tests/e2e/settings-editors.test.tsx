@@ -20,7 +20,7 @@ import {
   ListItem,
   Toolbar,
   type KeyValueEntry,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const LOSSLESS =
   '{"n":9007199254740993,"exponent":1e400,"escaped":"\\u0061","duplicate":1,"duplicate":2}';

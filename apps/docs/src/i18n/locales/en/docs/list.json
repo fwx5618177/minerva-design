@@ -1,0 +1,82 @@
+{
+  "title": "List",
+  "description": "Quiet operational lists on native ul / li elements with primary and secondary text, a decorative icon and trailing actions.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Actions keep their own names; aria-describedby can point into the primary content."
+    },
+    "compact": {
+      "title": "Compact density",
+      "description": "density=\"compact\" lowers the minimum row height; dividers can be turned off."
+    },
+    "bordered": {
+      "title": "Bordered card",
+      "description": "bordered frames the list as a card whose rows are tinted on hover and while a control inside them has the focus; density=\"comfortable\" gives taller rows."
+    }
+  },
+  "api": {
+    "ListProps": {
+      "density": "Minimum row height and vertical padding",
+      "dividers": "Draws separators between adjacent rows",
+      "role": "List role, kept so Safari / VoiceOver keep list semantics",
+      "ref": "Ref to the <ul> element",
+      "bordered": "Frames the list as a card whose rows are tinted on hover / focus-within"
+    },
+    "ListItemProps": {
+      "primary": "Main content",
+      "secondary": "Supporting content, muted and smaller",
+      "icon": "Decorative leading slot, hidden from assistive technologies",
+      "actions": "Trailing controls owned by the caller",
+      "ref": "Ref to the <li> element"
+    }
+  },
+  "cssVars": {
+    "--list-item-min-height": "Minimum height of an item (follows the density; compact lists are shorter)",
+    "--list-item-padding-y": "Vertical padding of an item (follows the density's row padding)",
+    "--list-item-padding-x": "Horizontal padding of an item (follows the density's row padding)",
+    "--list-item-gap": "Space between the icon, the content and the actions",
+    "--list-divider-color": "Color of the dividers between items",
+    "--list-icon-size": "Size of the leading icon slot",
+    "--list-border-color": "Border color of a bordered list (defaults to --border-color)",
+    "--list-radius": "Corner radius of a bordered list (defaults to --radius-lg)",
+    "--list-background": "Background of a bordered list (defaults to --surface-color)",
+    "--list-item-hover-background": "Background of a row of a bordered list on hover / while a control inside it has the focus"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "<minerva-list-item> rows with primary and secondary attributes; dividers separate adjacent items."
+      },
+      "slots": {
+        "title": "Icons, rich text and actions",
+        "description": "The icon, default, secondary and actions slots. The rows add no command: Remove is a regular button in the actions slot."
+      },
+      "density": {
+        "title": "Density and dividers",
+        "description": "density=\"compact\" shortens the rows, no-dividers removes the separators, CSS variables tune color and padding."
+      },
+      "bordered": {
+        "title": "Bordered card",
+        "description": "The bordered attribute frames the list as a card (rows tinted on hover / focus-within); density=\"comfortable\" gives taller rows."
+      }
+    },
+    "minerva-list": {
+      "props": {
+        "noDividers": "Removes the separators between items (the React library's dividers={false})."
+      },
+      "slots": {
+        "default": "<minerva-list-item> rows."
+      }
+    },
+    "minerva-list-item": {
+      "slots": {
+        "default": "Primary content (alternative to the primary attribute).",
+        "secondary": "Supporting content (alternative to the secondary attribute).",
+        "icon": "Decorative leading icon (hidden from assistive technologies).",
+        "actions": "Trailing controls."
+      }
+    }
+  }
+}

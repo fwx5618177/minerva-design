@@ -1,17 +1,17 @@
 // Docs site demos: the React / TS demo sources are type-checked by the
-// sample's `tsc` (`pnpm typecheck`, sample tsconfig includes src/); this
+// docs app's `tsc` (`pnpm typecheck`, its tsconfig includes src/); this
 // checks that nothing escapes it and that the Web Components HTML demos only
 // use existing elements, attributes and attribute values.
 import { describe, expect, it } from "vitest";
 import { read, readJson, walk } from "./utils";
 import { htmlProblems } from "./html-check";
 
-const PAGES = "packages/sample/src/docs/pages";
+const PAGES = "apps/docs/src/docs/pages";
 
 describe("docs demos", () => {
-  it("the sample's typecheck covers every demo source", () => {
+  it("the docs app's typecheck covers every demo source", () => {
     const tsconfig = readJson<{ include?: string[]; exclude?: string[] }>(
-      "packages/sample/tsconfig.json",
+      "apps/docs/tsconfig.json",
     );
     expect(tsconfig.include).toContain("src");
     for (const pattern of tsconfig.exclude ?? []) {

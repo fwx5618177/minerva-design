@@ -1,5 +1,5 @@
 // React <-> Web Components API parity, computed from the sources: the props
-// of every lib-core `<Name>Props` (inherited native props included, through
+// of every React `<Name>Props` (inherited native props included, through
 // the TypeScript checker) against the element's Custom Elements Manifest
 // entry (custom-elements.json, via the docs generator).
 //
@@ -19,7 +19,7 @@ import { writeFileSync } from "node:fs";
 import {
   generateApi,
   generateElements,
-} from "../../packages/sample/scripts/generate-api.mjs";
+} from "../../apps/docs/scripts/generate-api.mjs";
 import { at, readJson } from "./utils";
 
 interface Member {
@@ -80,10 +80,7 @@ const literals = (type?: string) =>
 /** All prop names of the exported React props interfaces (inherited included) */
 function reactPropNames(names: string[]) {
   const program = ts.createProgram(
-    [
-      at("packages/lib-core/src/index.ts"),
-      at("packages/lib-core/src/monaco.ts"),
-    ],
+    [at("packages/react/src/index.ts"), at("packages/react/src/monaco.ts")],
     {
       strict: true,
       jsx: ts.JsxEmit.ReactJSX,
@@ -98,8 +95,8 @@ function reactPropNames(names: string[]) {
   const checker = program.getTypeChecker();
   const result = new Map<string, Set<string>>();
   for (const file of [
-    at("packages/lib-core/src/index.ts"),
-    at("packages/lib-core/src/monaco.ts"),
+    at("packages/react/src/index.ts"),
+    at("packages/react/src/monaco.ts"),
   ]) {
     const source = program.getSourceFile(file)!;
     const module = checker.getSymbolAtLocation(source)!;

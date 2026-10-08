@@ -1,4 +1,4 @@
-// Value helpers of the number inputs (lib-core NumberInput and
+// Value helpers of the number inputs (React NumberInput and
 // <minerva-number-input>).
 
 /** Decimal places of `step` (`0.05` -> 2); `0` for whole or missing steps. */

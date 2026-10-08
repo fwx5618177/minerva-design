@@ -206,7 +206,7 @@ describe("placement helpers", () => {
     expect(toPlacement("right", "center")).toBe("right");
   });
 
-  it("converts camelCase placements (lib-core compatible)", () => {
+  it("converts camelCase placements (React compatible)", () => {
     expect(fromCamelPlacement("bottomStart")).toBe("bottom-start");
     expect(fromCamelPlacement("leftEnd")).toBe("left-end");
     expect(fromCamelPlacement("top")).toBe("top");

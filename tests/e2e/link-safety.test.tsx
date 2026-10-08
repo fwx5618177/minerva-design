@@ -4,8 +4,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NavTree, TextLink, type NavTreeSection } from "@minerva/lib-core";
-import "@minerva/lib-web-components";
+import { NavTree, TextLink, type NavTreeSection } from "minerva-design";
+import "minerva-design/web-components";
 
 const fromBackend = (): NavTreeSection[] => [
   {

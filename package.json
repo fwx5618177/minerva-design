@@ -1,7 +1,7 @@
 {
   "name": "minerva",
   "private": true,
-  "description": "Minerva component library monorepo",
+  "description": "Monorepo of minerva-design (React 19 components and Web Components)",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.23.0",
@@ -9,14 +9,14 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "pnpm --filter \"@minerva/sample^...\" build && pnpm --filter @minerva/sample dev",
-    "build": "pnpm -r build",
-    "preview": "pnpm --filter @minerva/sample preview",
+    "dev": "pnpm --filter minerva-design build && pnpm --filter @minerva/docs dev",
+    "build": "pnpm --filter minerva-design build && pnpm --filter @minerva/docs build",
+    "preview": "pnpm --filter @minerva/docs preview",
     "test": "vitest run",
-    "test:unit": "vitest run --project core --project lib-core --project lib-web-components --project sample --project docs",
+    "test:unit": "vitest run --project core --project react --project web-components --project docs-app --project docs",
     "test:e2e": "vitest run --project e2e",
-    "test:dist": "pnpm --filter @minerva/lib-core --filter @minerva/lib-web-components test:dist",
-    "check:package": "pnpm --filter @minerva/core --filter \"./packages/lib-*\" check:package",
+    "test:dist": "pnpm --filter minerva-design test:dist",
+    "check:package": "pnpm --filter minerva-design check:package",
     "test:watch": "vitest",
     "hooks:lock": "pnpm --filter @minerva/core hooks:lock",
     "test:coverage": "vitest run --coverage",
@@ -28,7 +28,7 @@
     "clean": "pnpm -r clean && rimraf node_modules coverage",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm --filter \"@minerva/core\" --filter \"./packages/lib-*\" build && changeset publish",
+    "release": "pnpm --filter minerva-design build && changeset publish",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -68,10 +68,10 @@
     "vitest": "^5.0.3"
   },
   "lint-staged": {
-    "packages/*/src/**/*.{ts,tsx}": [
+    "{apps,packages}/*/src/**/*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{js,ts,json,md,yml,yaml,scss}": "prettier --write"
+    "*.{js,mjs,ts,json,md,yml,yaml,scss}": "prettier --write"
   }
 }

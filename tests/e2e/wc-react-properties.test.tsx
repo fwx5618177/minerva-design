@@ -4,8 +4,8 @@
 // default).
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import "@minerva/lib-web-components";
-import type {} from "../../packages/lib-web-components/tests/e2e/jsx";
+import "minerva-design/web-components";
+import type {} from "../../packages/web-components/tests/e2e/jsx";
 
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 

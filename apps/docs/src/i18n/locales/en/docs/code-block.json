@@ -1,0 +1,77 @@
+{
+  "title": "CodeBlock",
+  "description": "A read-only block of preformatted text (logs, payloads, config) in a named, keyboard-focusable scroll region.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "Text is rendered verbatim and long lines wrap by default."
+    },
+    "no-wrap": {
+      "title": "Scrolling logs",
+      "description": "wrap={false} keeps lines intact and scrolls horizontally; maxHeight bounds the block."
+    },
+    "copyable": {
+      "title": "Copy button",
+      "description": "copyable adds a copy button in the top-right corner; the result (\"Copied\" / \"Copy failed\") is shown on the button and announced to screen readers. onCopied receives the copied text after a successful copy."
+    }
+  },
+  "api": {
+    "CodeBlockProps": {
+      "children": "Source text, rendered verbatim",
+      "aria-label": "Accessible name of the code region",
+      "wrap": "Wraps long lines instead of scrolling horizontally",
+      "maxHeight": "Maximum height before the block scrolls",
+      "tabIndex": "Tab order of the region (focusable by default)",
+      "copyable": "Shows a copy button that writes the text to the clipboard and announces the result",
+      "onCopied": "Called with the copied text after the copy button wrote it to the clipboard (not on failure); the native onCopy still goes to the element",
+      "ref": "Ref to the <pre> element"
+    }
+  },
+  "cssVars": {
+    "--code-block-padding": "Inner padding",
+    "--code-block-radius": "Corner radius (defaults to --radius-md)",
+    "--code-block-bg": "Background color",
+    "--code-block-border-color": "Border color",
+    "--code-block-font-size": "Font size of the code",
+    "--code-block-max-height": "Maximum height before the block scrolls (default: none)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "The text content is rendered verbatim (escape < in markup); language shows a label. Each block is a named, focusable region."
+      },
+      "copy": {
+        "title": "Copy to clipboard",
+        "description": "The code property holds the text; copyable adds a copy button, copy() copies from outside and minerva-copy reports the result."
+      },
+      "overflow": {
+        "title": "Long lines and height",
+        "description": "no-wrap scrolls long lines horizontally and max-height caps the block; the region scrolls with the keyboard too."
+      }
+    },
+    "minerva-code-block": {
+      "props": {
+        "code": "Source text (default: the element's text content).",
+        "language": "Language of the code, shown as a label (e.g. \"json\", \"bash\").",
+        "noWrap": "Scrolls long lines horizontally instead of wrapping them (the React library's wrap={false}).",
+        "text": "The text shown and copied (read-only)."
+      },
+      "events": {
+        "minerva-copy": "The copy button or copy() was used (detail: { text, success }; text is the copied text, React's onCopied receives it on success)."
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color of the copy button.",
+        "--icon-button-hover-bg": "Background of the copy button on hover.",
+        "--icon-button-pressed-color": "Icon color of a pressed copy button.",
+        "--icon-button-pressed-bg": "Background of a pressed copy button.",
+        "--icon-button-size": "Width and height of the copy button.",
+        "--icon-button-icon-size": "Font size of the copy icon.",
+        "--icon-button-radius": "Corner radius of the copy button."
+      },
+      "methods": {
+        "copy": "Copies the text to the clipboard; resolves with whether it worked."
+      }
+    }
+  }
+}

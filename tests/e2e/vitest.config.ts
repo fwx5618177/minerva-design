@@ -9,21 +9,21 @@ const src = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    // Import the packages exactly like a consumer does ("@minerva/lib-core"),
+    // Import the packages exactly like a consumer does ("minerva-design"),
     // served from source so no build is needed and coverage maps to src/.
     // Exact-match aliases: sub-entries first.
     alias: [
       {
-        find: /^@minerva\/lib-core\/theme-utils$/,
-        replacement: src("../../packages/lib-core/src/theme-utils.ts"),
+        find: /^minerva-design\/theme-utils$/,
+        replacement: src("../../packages/react/src/theme-utils.ts"),
       },
       {
-        find: /^@minerva\/lib-core\/monaco$/,
-        replacement: src("../../packages/lib-core/src/monaco.ts"),
+        find: /^minerva-design\/monaco$/,
+        replacement: src("../../packages/react/src/monaco.ts"),
       },
       {
-        find: /^@minerva\/lib-core$/,
-        replacement: src("../../packages/lib-core/src/index.ts"),
+        find: /^minerva-design$/,
+        replacement: src("../../packages/react/src/index.ts"),
       },
       {
         find: /^@minerva\/core\/tokens\.css$/,
@@ -34,13 +34,13 @@ export default defineConfig({
         replacement: src("../../packages/core/src/index.ts"),
       },
       {
-        find: /^@minerva\/lib-web-components$/,
-        replacement: src("../../packages/lib-web-components/src/index.ts"),
+        find: /^minerva-design\/web-components$/,
+        replacement: src("../../packages/web-components/src/index.ts"),
       },
-      // lib-core stylesheets compiled into the Web Components' shadow roots
+      // React stylesheets compiled into the Web Components' shadow roots
       {
-        find: /^@lib-core-styles\//,
-        replacement: src("../../packages/lib-core/src/"),
+        find: /^@react-styles\//,
+        replacement: src("../../packages/react/src/"),
       },
     ],
   },

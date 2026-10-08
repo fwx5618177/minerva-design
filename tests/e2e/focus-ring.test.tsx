@@ -1,7 +1,7 @@
 // A user tabs through a profile form (React and web components): every
 // text-like control receives focus in order and its frame is the element
 // the design-system focus rule targets (border color + box-shadow ring +
-// transparent outline, see packages/lib-core/src/styles/_mixins.scss).
+// transparent outline, see packages/react/src/styles/_mixins.scss).
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -14,12 +14,12 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@minerva/lib-core";
-import "@minerva/lib-web-components";
+} from "minerva-design";
+import "minerva-design/web-components";
 
 const COMPONENTS = join(
   import.meta.dirname,
-  "../../packages/lib-core/src/components",
+  "../../packages/react/src/components",
 );
 const css = (file: string) => compile(join(COMPONENTS, file)).css;
 

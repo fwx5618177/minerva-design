@@ -1,6 +1,6 @@
 // Framework-agnostic i18n: the built-in message bundles of every supported
 // language (plain data) and a tiny translator (`createTranslator` /
-// `translate`) that adapters such as `@minerva/lib-core` build on.
+// `translate`) that adapters such as `minerva-design` build on.
 import en from "./locales/en";
 import fr from "./locales/fr";
 import ja from "./locales/ja";

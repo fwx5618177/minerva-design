@@ -13,7 +13,7 @@ import {
   FormLayout,
   TagInput,
   type AutoCompleteOption,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 const BOOKS: AutoCompleteOption[] = [
   {

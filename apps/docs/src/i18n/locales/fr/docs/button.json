@@ -1,0 +1,114 @@
+{
+  "title": "Button",
+  "description": "Déclenche une action ou un événement, comme envoyer un formulaire ou ouvrir une boîte de dialogue.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Un bouton avec un gestionnaire de clic. Tous les attributs natifs de <button> sont transmis."
+    },
+    "colors": {
+      "title": "Couleurs",
+      "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger ou info."
+    },
+    "variants": {
+      "title": "Variantes",
+      "description": "variant définit le style visuel : solid (par défaut), outline, ghost ou link. Il se combine avec n'importe quelle couleur."
+    },
+    "sizes": {
+      "title": "Tailles",
+      "description": "Cinq tailles : xsmall, small, medium (par défaut), large et xlarge."
+    },
+    "shapes": {
+      "title": "Formes et arrondis",
+      "description": "Formes prédéfinies, ou un borderRadius prédéfini / en pixels."
+    },
+    "states": {
+      "title": "États",
+      "description": "États de chargement, désactivé et actif. Le chargement bloque les clics (et l'envoi du formulaire) pendant l'action, tout en gardant le focus clavier sur le bouton."
+    },
+    "with-icon": {
+      "title": "Avec icônes",
+      "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un aria-label aux boutons composés uniquement d'une icône."
+    },
+    "icons-loading": {
+      "title": "Icônes, texte de chargement et pleine largeur",
+      "description": "startIcon / endIcon affichent des icônes autour du libellé, loadingText remplace le contenu pendant le chargement et fullWidth étire le bouton."
+    },
+    "form": {
+      "title": "Dans un formulaire : type",
+      "description": "Button vaut type=\"button\" par défaut : un Button placé dans un <form> (aperçu, ajout de ligne, ouverture d’une boîte de dialogue...) ne le soumet jamais par accident. Passez type=\"submit\" pour le bouton d’envoi et type=\"reset\" pour réinitialiser le formulaire."
+    }
+  },
+  "api": {
+    "ButtonProps": {
+      "type": "Type natif du bouton. Vaut \"button\" par défaut (contrairement au \"submit\" du HTML), si bien qu’un Button dans un formulaire ne le soumet jamais par accident : utilisez type=\"submit\" pour les boutons d’envoi et \"reset\" pour les boutons de réinitialisation",
+      "onClick": "Appelé au clic (jamais lorsque le bouton est désactivé)",
+      "children": "Contenu du bouton",
+      "className": "Classe CSS supplémentaire",
+      "color": "Couleur sémantique du bouton",
+      "variant": "Style visuel : solid (plein), outline (bordure seule), ghost (transparent jusqu'au survol) ou link (aspect de lien texte)",
+      "size": "Taille du bouton",
+      "aria-label": "Libellé accessible, obligatoire pour un bouton contenant uniquement une icône",
+      "disabled": "Désactive le bouton",
+      "loading": "Affiche un indicateur de chargement et bloque l'activation (aria-busy / aria-disabled). Le bouton reste focalisable pour ne pas perdre le focus clavier",
+      "active": "Affiche le bouton à l'état pressé/actif",
+      "shape": "Forme prédéfinie du bouton",
+      "borderRadius": "Arrondi : valeur prédéfinie ou nombre de pixels. Le rayon du thème (--radius-md) est utilisé par défaut",
+      "style": "Styles en ligne",
+      "ref": "Ref vers l'élément <button>",
+      "loadingText": "Texte affiché à la place du contenu (et des icônes) pendant le chargement",
+      "startIcon": "Icône affichée avant le contenu",
+      "endIcon": "Icône affichée après le contenu",
+      "fullWidth": "Étire le bouton sur toute la largeur de son conteneur"
+    }
+  },
+  "cssVars": {
+    "--button-height": "Hauteur minimale (toutes tailles ; par défaut la hauteur de contrôle de la taille selon la densité)",
+    "--button-padding-x": "Marge intérieure horizontale (toutes tailles)",
+    "--button-radius": "Rayon des coins (--radius-md par défaut ; les props shape / borderRadius l'emportent)",
+    "--button-font-size": "Taille de police (toutes tailles)",
+    "--button-font-weight": "Graisse de police",
+    "--button-gap": "Espace entre les icônes et le libellé",
+    "--button-label-white-space": "white-space du libellé : nowrap (défaut, tronque) ou normal (retour à la ligne)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "Un <button> natif dans un shadow root, stylé par la feuille de style de la bibliothèque React : mêmes couleurs, variantes et variables CSS que le Button React."
+      },
+      "colors-variants": {
+        "title": "Couleurs et variantes",
+        "description": "color définit la tonalité sémantique (ColorScheme partagé), variant le style visuel."
+      },
+      "sizes-shapes": {
+        "title": "Tailles et formes",
+        "description": "Cinq tailles et trois formes. Les boutons ronds à icône seule ont besoin d’un aria-label, transmis au bouton interne."
+      },
+      "states": {
+        "title": "États, icônes et chargement",
+        "description": "Les slots start / end accueillent des icônes, le slot loading remplace le libellé pendant le chargement. Cliquez sur Enregistrer pour voir l’état de chargement."
+      },
+      "form": {
+        "title": "Dans un formulaire",
+        "description": "L’élément est associé aux formulaires : type=\"submit\" valide puis soumet son formulaire, type=\"reset\" le réinitialise."
+      }
+    },
+    "minerva-button": {
+      "props": {
+        "form": "Le formulaire auquel appartient le bouton (lecture seule)."
+      },
+      "slots": {
+        "default": "Libellé.",
+        "start": "Icône avant le libellé.",
+        "end": "Icône après le libellé.",
+        "loading": "Texte affiché à la place du libellé pendant le chargement."
+      },
+      "methods": {
+        "focus": "Donne le focus au bouton interne.",
+        "blur": "Retire le focus du bouton interne.",
+        "click": "Clique sur le bouton interne (ignoré s’il est désactivé ou en chargement)."
+      }
+    }
+  }
+}

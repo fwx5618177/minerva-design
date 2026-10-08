@@ -53,7 +53,7 @@ describe("server-rendered custom elements hydrate cleanly", () => {
     const before = attributes(template.content);
     // The definitions are loaded when the page's HTML is parsed (happy-dom
     // does not apply parsed attributes on a later upgrade; browsers do)
-    await import("@minerva/lib-web-components");
+    await import("minerva-design/web-components");
     document.body.innerHTML = `<div id="root">${html}</div>`;
     const container = document.getElementById("root")!;
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -78,7 +78,7 @@ describe("server-rendered composite elements hydrate cleanly", () => {
     const template = document.createElement("template");
     template.innerHTML = html;
     const before = attributes(template.content);
-    await import("@minerva/lib-web-components");
+    await import("minerva-design/web-components");
     // the definitions are loaded while the page's HTML is parsed
     const readyState = vi
       .spyOn(document, "readyState", "get")

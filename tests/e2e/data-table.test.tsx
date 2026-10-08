@@ -1,7 +1,7 @@
 // A "book list" page — Input filter + DataTable + Pagination (with page-size
 // Select). The page owns slicing/filtering/sorting; DataTable renders the
 // already-paginated rows.
-// Uses lib-core's default English built-in texts ("Pagination",
+// Uses the React library's default English built-in texts ("Pagination",
 // "Previous page", "Page 1", "Items per page", "5 / page", "Retry"); titles,
 // headers, total and empty text are consumer strings.
 import { useMemo, useState } from "react";
@@ -14,7 +14,7 @@ import {
   FormField,
   Input,
   type TableColumn,
-} from "@minerva/lib-core";
+} from "minerva-design";
 
 interface Book {
   id: number;

@@ -1,0 +1,114 @@
+{
+  "title": "Button",
+  "description": "Triggers an action or event, such as submitting a form or opening a dialog.",
+  "demos": {
+    "basic": {
+      "title": "Basic usage",
+      "description": "A button with a click handler. All native <button> attributes are forwarded."
+    },
+    "colors": {
+      "title": "Colors",
+      "description": "color sets the semantic color: primary (default), neutral, success, warning, danger or info."
+    },
+    "variants": {
+      "title": "Variants",
+      "description": "variant sets the visual style: solid (default), outline, ghost or link. It combines with any color."
+    },
+    "sizes": {
+      "title": "Sizes",
+      "description": "Five sizes: xsmall, small, medium (default), large and xlarge."
+    },
+    "shapes": {
+      "title": "Shapes and radius",
+      "description": "Preset shapes, or a custom borderRadius preset / pixel value."
+    },
+    "states": {
+      "title": "States",
+      "description": "Loading, disabled and active states. Loading blocks clicks (and form submission) while an action is running, but keeps keyboard focus on the button."
+    },
+    "with-icon": {
+      "title": "With icons",
+      "description": "Combine text and icons with startIcon / endIcon, e.g. a danger retry or a neutral ghost back button. Give icon-only buttons an aria-label."
+    },
+    "icons-loading": {
+      "title": "Icons, loading text and full width",
+      "description": "startIcon / endIcon render icons around the label, loadingText replaces the content while loading and fullWidth stretches the button."
+    },
+    "form": {
+      "title": "In a form: type",
+      "description": "Button defaults to type=\"button\", so a Button inside a <form> (preview, add row, open dialog...) never submits it by accident. Pass type=\"submit\" for the submit button and type=\"reset\" to reset the form."
+    }
+  },
+  "api": {
+    "ButtonProps": {
+      "type": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use type=\"submit\" for submit buttons and \"reset\" for reset buttons",
+      "onClick": "Called when the button is clicked (not called while disabled)",
+      "children": "Button content",
+      "className": "Additional class name",
+      "color": "Semantic color of the button",
+      "variant": "Visual style: solid (filled), outline (border only), ghost (transparent until hovered) or link (text link look)",
+      "size": "Button size",
+      "aria-label": "Accessible label, required when the button only contains an icon",
+      "disabled": "Disables the button",
+      "loading": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost",
+      "active": "Renders the button in its pressed/active state",
+      "shape": "Preset shape of the button",
+      "borderRadius": "Corner radius: a preset or a number of pixels. The theme radius (--radius-md) is used when omitted",
+      "style": "Inline styles",
+      "ref": "Ref to the <button> element",
+      "loadingText": "Text shown instead of the content (and icons) while loading",
+      "startIcon": "Icon rendered before the content",
+      "endIcon": "Icon rendered after the content",
+      "fullWidth": "Stretches the button to the full width of its container"
+    }
+  },
+  "cssVars": {
+    "--button-height": "Minimum height (every size; defaults to the density's control height of the size)",
+    "--button-padding-x": "Horizontal padding (every size)",
+    "--button-radius": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)",
+    "--button-font-size": "Font size (every size)",
+    "--button-font-weight": "Font weight",
+    "--button-gap": "Space between the icons and the label",
+    "--button-label-white-space": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "A native <button> in a shadow root, styled by the React library's stylesheet: same colors, variants and CSS variables as the React Button."
+      },
+      "colors-variants": {
+        "title": "Colors and variants",
+        "description": "color sets the semantic tone (shared ColorScheme), variant the visual style."
+      },
+      "sizes-shapes": {
+        "title": "Sizes and shapes",
+        "description": "Five sizes and three shapes. Icon-only circle buttons need an aria-label, forwarded to the inner button."
+      },
+      "states": {
+        "title": "States, icons and loading",
+        "description": "The start / end slots hold icons, the loading slot replaces the label while loading. Click Save to see the loading state."
+      },
+      "form": {
+        "title": "In a form",
+        "description": "The element is form-associated: type=\"submit\" validates and submits its form, type=\"reset\" resets it."
+      }
+    },
+    "minerva-button": {
+      "props": {
+        "form": "The form owning the button (read-only)."
+      },
+      "slots": {
+        "default": "Label.",
+        "start": "Icon before the label.",
+        "end": "Icon after the label.",
+        "loading": "Text shown instead of the label while loading."
+      },
+      "methods": {
+        "focus": "Focuses the inner button.",
+        "blur": "Removes focus from the inner button.",
+        "click": "Clicks the inner button (ignored while disabled or loading)."
+      }
+    }
+  }
+}

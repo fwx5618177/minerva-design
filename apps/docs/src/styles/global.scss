@@ -1,0 +1,181 @@
+// Docs-site design system (Vercel / Geist-like): monochrome, one accent,
+// 1px hairlines, generous whitespace.
+//
+// Two layers of variables:
+// - `--ds-*`: the site's own tokens (chrome, typography, docs content). They
+//   only depend on <html data-theme>, so the dark site is true black whatever
+//   React theme / palette is active.
+// - React tokens (--primary-color, --background-color, ...): owned by the
+//   root <ConfigProvider> on <html>. NEVER redefine them here: demos must show
+//   the library's real look. Demo previews (`[data-demo-preview]`) render on
+//   the lib theme's own surface.
+//
+// Fonts are self-hosted (@fontsource-variable/geist*, font-display: swap);
+// the latin subset of Geist Sans is preloaded from index.html.
+
+:root {
+  --ds-font-sans: "Geist Variable", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+  --ds-font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  // Light
+  --ds-bg: #ffffff;
+  --ds-bg-subtle: #fafafa;
+  --ds-bg-muted: #f2f2f2;
+  --ds-bg-raised: #ffffff;
+  --ds-bg-elevated: #ffffff;
+  --ds-bg-hover: rgba(0, 0, 0, 0.05);
+  --ds-bg-active: rgba(0, 0, 0, 0.08);
+  --ds-header-bg: rgba(255, 255, 255, 0.8);
+  --ds-border: #ebebeb;
+  --ds-border-strong: #c9c9c9;
+  --ds-fg: #171717;
+  --ds-fg-strong: #0a0a0a;
+  --ds-fg-muted: #4d4d4d; // 8.4:1 on white
+  --ds-fg-subtle: #666666; // 5.7:1 on white
+  --ds-accent: #0068d6; // 5.3:1 on white
+  --ds-accent-subtle: rgba(0, 104, 214, 0.08);
+  --ds-accent-fg: #ffffff;
+  --ds-inverse-bg: #171717;
+  --ds-inverse-fg: #ffffff;
+  --ds-warning: #a35200;
+  --ds-warning-subtle: rgba(255, 153, 0, 0.1);
+  --ds-danger: #c50f1f;
+  --ds-danger-subtle: rgba(229, 72, 77, 0.08);
+  --ds-success: #107d32;
+  --ds-focus: #0068d6;
+
+  // Code (light, Geist-like syntax colors)
+  --ds-code-bg: #fafafa;
+  --ds-code-fg: #171717;
+  --ds-code-comment: #666666;
+  --ds-code-keyword: #c41562;
+  --ds-code-string: #107d32;
+  --ds-code-function: #7d00cc;
+  --ds-code-constant: #0068d6;
+  --ds-code-punctuation: #4d4d4d;
+
+  --ds-radius-sm: 4px;
+  --ds-radius: 6px;
+  --ds-radius-lg: 8px;
+  --ds-radius-xl: 12px;
+  --ds-shadow-popover: 0 0 0 1px var(--ds-border), 0 4px 8px -4px rgba(0, 0, 0, 0.08), 0 16px 24px -8px rgba(0, 0, 0, 0.06);
+
+  --ds-header-height: 64px;
+  --ds-sidebar-width: 256px;
+  --ds-toc-width: 224px;
+  --ds-content-width: 768px;
+  --ds-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ds-duration: 150ms;
+
+  // Used by a few guide pages (inline styles). Never redefine React
+  // token names here (--font-size-*, --space-*, --transition-*, ...).
+  --spacing-8: 2rem;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --ds-bg: #000000;
+  --ds-bg-subtle: #0a0a0a;
+  --ds-bg-muted: #1a1a1a;
+  --ds-bg-raised: #2e2e2e;
+  --ds-bg-elevated: #0a0a0a;
+  --ds-bg-hover: rgba(255, 255, 255, 0.07);
+  --ds-bg-active: rgba(255, 255, 255, 0.11);
+  --ds-header-bg: rgba(0, 0, 0, 0.75);
+  --ds-border: #262626;
+  --ds-border-strong: #454545;
+  --ds-fg: #ededed;
+  --ds-fg-strong: #ffffff;
+  --ds-fg-muted: #a1a1a1; // 8.1:1 on black
+  --ds-fg-subtle: #8f8f8f; // 6.6:1 on black
+  --ds-accent: #52a8ff;
+  --ds-accent-subtle: rgba(82, 168, 255, 0.12);
+  --ds-accent-fg: #000000;
+  --ds-inverse-bg: #ededed;
+  --ds-inverse-fg: #0a0a0a;
+  --ds-warning: #ffb224;
+  --ds-warning-subtle: rgba(255, 178, 36, 0.1);
+  --ds-danger: #ff6166;
+  --ds-danger-subtle: rgba(255, 97, 102, 0.1);
+  --ds-success: #62c073;
+  --ds-focus: #52a8ff;
+
+  --ds-code-bg: #0a0a0a;
+  --ds-code-fg: #ededed;
+  --ds-code-comment: #8f8f8f;
+  --ds-code-keyword: #ff4d8d;
+  --ds-code-string: #62c073;
+  --ds-code-function: #c472fb;
+  --ds-code-constant: #52a8ff;
+  --ds-code-punctuation: #a1a1a1;
+
+  --ds-shadow-popover: 0 0 0 1px var(--ds-border), 0 8px 16px -4px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+// Minimal reset: no universal margin / transition rules, so library demos keep
+// their real styles.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: calc(var(--ds-header-height) + 24px);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--ds-font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--ds-bg);
+  color: var(--ds-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "liga", "calt";
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection {
+  background: var(--ds-accent-subtle);
+  color: inherit;
+}
+
+:root[data-theme="dark"] ::selection {
+  background: rgba(82, 168, 255, 0.3);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

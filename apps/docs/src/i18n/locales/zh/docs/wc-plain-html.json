@@ -1,0 +1,22 @@
+{
+  "title": "纯 HTML",
+  "description": "无需构建步骤的完整页面：CDN 模块包、设计令牌、<minerva-config>、带校验的表单以及事件监听器。另附按元素加载模块所需的 import map。",
+  "page": {
+    "title": "完整页面",
+    "text": "在 <head> 中放两个标签就够了：设计令牌样式表，以及自包含的模块包（包含所有元素、Lit 和 minerva-design/core）。复制此文件并在浏览器中打开：",
+    "tokens": "tokens.css 定义了设计令牌（颜色、间距、圆角、字体），元素和你自己的 CSS 都可以通过 var() 使用它们。",
+    "config": "带 root 的 <minerva-config> 会把主题（此处跟随操作系统）、调色板以及内置文案的语言应用到整个文档。",
+    "form": "这些控件是表单关联的：name、required、value / checked 属性、<label for>、type=\"submit\" 和 type=\"reset\" 按钮、FormData 以及浏览器的校验都与原生输入框一样工作。只有当所有控件都有效时才会触发 submit 事件。",
+    "events": "minerva-* 事件会冒泡，因此在表单（或 document）上的单个监听器即可接收所有控件的变化；event.target 是对应元素，event.detail 包含新值。",
+    "modal": "通过脚本设置 property（modal.open = true）永远不会触发事件；关闭按钮和 Escape 键会关闭模态框并触发 minerva-open-change。"
+  },
+  "importMaps": {
+    "title": "通过 import map 按元素加载模块",
+    "text": "CDN 模块包包含所有元素。若只想下载页面用到的元素，可以改为加载包中按元素拆分的模块（dist/elements/<name>.js）。它们正是构建工具所使用的文件，以裸模块说明符导入依赖，由浏览器中的 import map 负责解析：",
+    "deps": "这些模块会导入 lit（包括 lit/decorators.js 和 lit/directives/*，因此需要 \"lit/\" 前缀）、minerva-design/core（它本身依赖 @floating-ui/dom），以及仅 HTML 预览和 JSON 字段需要的 dompurify 和 jsonc-parser。esm.sh 会为你解析这些包的依赖；如果自行托管文件，还需要映射 @floating-ui/dom、@floating-ui/core 和 @floating-ui/utils。",
+    "note": "生产环境中请使用精确版本，并确保所有模块加载的是同一份 lit 和 minerva-design/core：在同一页面中混用 CDN 模块包和按元素拆分的模块会把共享代码下载两次，而且每个标签都会保留最先注册它的定义。"
+  },
+  "next": {
+    "title": "下一步"
+  }
+}

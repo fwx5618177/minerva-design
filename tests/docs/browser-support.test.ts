@@ -86,7 +86,7 @@ const FEATURES: Array<{
     row: "Custom states",
   },
   {
-    // added by the build to every published stylesheet (scripts/css-layer.mjs)
+    // added by the build to every published stylesheet (tools/css-layer.mjs)
     feature: "@layer",
     pattern: /@layer \$\{CSS_LAYER\}/,
     files: "build",
@@ -106,8 +106,8 @@ const UNUSED: Array<[string, RegExp]> = [
 
 const SOURCES = [
   "packages/core/src",
-  "packages/lib-core/src",
-  "packages/lib-web-components/src",
+  "packages/react/src",
+  "packages/web-components/src",
 ];
 const notTest = (f: string) => !/\.test\.tsx?$|\/test-utils\//.test(f);
 const styles = SOURCES.flatMap((d) => walk(d, (f) => /\.s?css$/.test(f))).map(
@@ -116,7 +116,7 @@ const styles = SOURCES.flatMap((d) => walk(d, (f) => /\.s?css$/.test(f))).map(
 const scripts = SOURCES.flatMap((d) =>
   walk(d, (f) => /\.tsx?$/.test(f) && notTest(f)),
 ).map((f) => read(f));
-const build = [read("scripts/css-layer.mjs")];
+const build = [read("tools/css-layer.mjs")];
 const readme = read("README.md");
 const matrix = readme.slice(
   readme.indexOf("## 🌐 Browser support"),

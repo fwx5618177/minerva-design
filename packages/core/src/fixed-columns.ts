@@ -1,5 +1,5 @@
 // Sticky offsets of the fixed (left / right) columns of a table, shared by
-// lib-core's Table and <minerva-data-table>.
+// the React library's Table and <minerva-data-table>.
 
 /** The column fields the layout reads */
 export interface FixedColumnLike {
