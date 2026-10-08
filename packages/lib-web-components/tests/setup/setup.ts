@@ -19,11 +19,25 @@
 //   events from slotted content as in browsers.
 // - happy-dom has no Popover API: overlays then fall back to fixed
 //   positioning (see `showTopLayer`), which is what the tests exercise.
+// - the polyfill's `CustomStateSet` only takes legacy `--name` states and
+//   mirrors them as `state--name` host attributes: it is made a plain set
+//   (any name, no attribute), like the browsers' `:state()` support. The
+//   styling hooks tests read the states with `customStates()`.
 import { afterEach } from "vitest";
 
 if (typeof window !== "undefined") {
   await import("@testing-library/jest-dom/vitest");
   await import("element-internals-polyfill");
+  const StateSet = (window as unknown as { CustomStateSet?: typeof Set })
+    .CustomStateSet;
+  if (StateSet) {
+    StateSet.prototype.add = function (this: Set<string>, name: string) {
+      return Set.prototype.add.call(this, name);
+    } as never;
+    StateSet.prototype.delete = function (this: Set<string>, name: string) {
+      return Set.prototype.delete.call(this, name);
+    };
+  }
 
   const nativeTarget = Object.getOwnPropertyDescriptor(
     Event.prototype,

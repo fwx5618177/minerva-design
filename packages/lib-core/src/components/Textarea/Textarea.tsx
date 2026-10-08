@@ -2,6 +2,7 @@ import { cn } from "../../utils/cn";
 import { isAriaInvalid } from "../../internal/forms-field";
 import { warnLengthBounds } from "../../internal/devWarnings";
 import { useFormControlProps } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import type { TextareaProps } from "./types";
 import styles from "./textarea.module.scss";
 
@@ -38,6 +39,14 @@ export const Textarea = ({
       {...field}
       aria-invalid={invalid ? true : field["aria-invalid"]}
       style={{ ...field.style, resize: "none" }}
+      {...hooks("textarea", "root", {
+        disabled: !!field.disabled,
+        invalid: isInvalid,
+        readonly: !!field.readOnly,
+        required: !!(field.required || field["aria-required"]),
+        size,
+        variant,
+      })}
     />
   );
 };

@@ -25,6 +25,7 @@ import {
   useFormControlContext,
   useFormControlProps,
 } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./timePicker.module.scss";
 
 /**
@@ -215,6 +216,13 @@ const TimePicker = ({
       onClick={(e) => {
         if (e.target === input) toggle();
       }}
+      {...hooks("time-picker", "root", {
+        state: open && !disabled && !readOnly ? "open" : "closed",
+        disabled,
+        readonly: readOnly,
+        invalid,
+        size,
+      })}
     >
       {/* The field state is resolved here (explicit props win over the
           FormControl), so the inner Input must not merge it again. */}
@@ -260,7 +268,11 @@ const TimePicker = ({
                 className={styles.clearButton}
               />
             ) : (
-              <span className={styles.clockIcon} aria-hidden="true">
+              <span
+                className={styles.clockIcon}
+                aria-hidden="true"
+                {...hooks("time-picker", "icon")}
+              >
                 <IconClock />
               </span>
             )
@@ -283,6 +295,7 @@ const TimePicker = ({
         aria-labelledby={labelledBy}
         className={styles.popup}
         onKeyDown={handlePanelKeyDown}
+        {...hooks("time-picker", "content", { state: "open" })}
       >
         <TimePickerPanel
           value={current ?? startOfToday()}

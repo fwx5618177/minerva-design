@@ -66,7 +66,7 @@ const inPaddedCard = (el: Element): boolean => {
  * @summary Content container with header, content and footer sections.
  * @tag minerva-card
  * @slot - Sections (`<minerva-card-header>`, `<minerva-card-content>`, `<minerva-card-footer>`) or any content
- * @csspart base - The card root (`div`, `article`, `section`, `a` or `button`)
+ * @csspart root - The card root (div, article, section, a or button)
  */
 export class MinervaCard extends MinervaElement {
   static override tagName = "minerva-card";
@@ -137,7 +137,7 @@ export class MinervaCard extends MinervaElement {
   @property()
   type: "button" | "submit" | "reset" = "button";
 
-  @query("[part=base]")
+  @query("[part=root]")
   private root?: HTMLElement;
 
   private readonly internals = attachInternals(this);
@@ -191,6 +191,13 @@ export class MinervaCard extends MinervaElement {
     this.removeEventListener("click", this.blockDisabledClicks, true);
   }
 
+  protected override hookStates() {
+    return {
+      variant: this.variant,
+      disabled: this.tag === "button" && this.disabled,
+    };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     if (changed.has("padding")) this.syncParts();
     if (DEV) {
@@ -228,7 +235,7 @@ export class MinervaCard extends MinervaElement {
     const slot = html`<slot @slotchange=${this.syncParts}></slot>`;
     if (tag === "a") {
       return html`<a
-        part="base"
+        part="root"
         class=${classes}
         href=${safeHref(MinervaCard.tagName, this.href) ?? nothing}
         target=${this.target ?? nothing}
@@ -240,7 +247,7 @@ export class MinervaCard extends MinervaElement {
     }
     if (tag === "button") {
       return html`<button
-        part="base"
+        part="root"
         class=${classes}
         type="button"
         ?disabled=${this.disabled}
@@ -253,7 +260,7 @@ export class MinervaCard extends MinervaElement {
       </button>`;
     }
     const element = unsafeStatic(tag);
-    return html`<${element} part="base" class=${classes}>${slot}</${element}>`;
+    return html`<${element} part="root" class=${classes}>${slot}</${element}>`;
   }
 }
 
@@ -343,7 +350,7 @@ export class MinervaCardSection extends MinervaElement {
   }
 
   protected override render() {
-    return html`<div part="base" class=${classMap(this.layoutClasses())}>
+    return html`<div part="root" class=${classMap(this.layoutClasses())}>
       <slot></slot>
     </div>`;
   }
@@ -357,7 +364,7 @@ export class MinervaCardSection extends MinervaElement {
  * @summary Card header section.
  * @tag minerva-card-header
  * @slot - Header content
- * @csspart base - The section box
+ * @csspart root - The section box
  */
 export class MinervaCardHeader extends MinervaCardSection {
   static override tagName = "minerva-card-header";
@@ -371,7 +378,7 @@ export class MinervaCardHeader extends MinervaCardSection {
  * @summary Card body section.
  * @tag minerva-card-content
  * @slot - Body content
- * @csspart base - The section box
+ * @csspart root - The section box
  */
 export class MinervaCardContent extends MinervaCardSection {
   static override tagName = "minerva-card-content";
@@ -445,7 +452,7 @@ export class MinervaCardContent extends MinervaCardSection {
  * @summary Card footer section.
  * @tag minerva-card-footer
  * @slot - Footer content
- * @csspart base - The section box
+ * @csspart root - The section box
  */
 export class MinervaCardFooter extends MinervaCardSection {
   static override tagName = "minerva-card-footer";
@@ -459,7 +466,7 @@ export class MinervaCardFooter extends MinervaCardSection {
  * @summary Card heading.
  * @tag minerva-card-title
  * @slot - Title text
- * @csspart base - The heading element
+ * @csspart root - The heading element
  */
 export class MinervaCardTitle extends MinervaElement {
   static override tagName = "minerva-card-title";
@@ -496,7 +503,7 @@ export class MinervaCardTitle extends MinervaElement {
   protected override render() {
     const tag = unsafeStatic(HEADINGS.includes(this.as) ? this.as : "h3");
     return html`<${tag}
-      part="base"
+      part="root"
       class=${classMap({ cardTitle: true, padded: inPaddedCard(this) })}
     ><slot></slot></${tag}>`;
   }
@@ -508,7 +515,7 @@ export class MinervaCardTitle extends MinervaElement {
  * @summary Card description text.
  * @tag minerva-card-description
  * @slot - Description text
- * @csspart base - The paragraph
+ * @csspart root - The paragraph
  */
 export class MinervaCardDescription extends MinervaElement {
   static override tagName = "minerva-card-description";
@@ -537,7 +544,7 @@ export class MinervaCardDescription extends MinervaElement {
 
   protected override render() {
     return html`<p
-      part="base"
+      part="root"
       class=${classMap({ cardDescription: true, padded: inPaddedCard(this) })}
     >
       <slot></slot>

@@ -9,6 +9,7 @@ import type {
   ToolbarProps,
 } from "./types";
 import styles from "./page.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /** `{x && ...}` would render 0 as a bare text node; only real content counts. */
 const hasContent = (node: ReactNode) =>
@@ -20,6 +21,7 @@ export const Page = ({ className, maxWidth, style, ...props }: PageProps) => (
     className={cn(styles.page, className)}
     style={{ maxWidth, ...style }}
     {...props}
+    {...hooks("page", "root")}
   />
 );
 
@@ -31,12 +33,22 @@ export const PageHeader = ({
   className,
   ...props
 }: PageHeaderProps) => (
-  <header className={cn(styles.header, className)} {...props}>
+  <header
+    className={cn(styles.header, className)}
+    {...props}
+    {...hooks("page-header", "root")}
+  >
     <div className={styles.heading}>
-      <h1>{title}</h1>
-      {hasContent(description) && <p>{description}</p>}
+      <h1 {...hooks("page-header", "title")}>{title}</h1>
+      {hasContent(description) && (
+        <p {...hooks("page-header", "description")}>{description}</p>
+      )}
     </div>
-    {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
+    {hasContent(actions) && (
+      <div className={styles.actions} {...hooks("page-header", "actions")}>
+        {actions}
+      </div>
+    )}
   </header>
 );
 
@@ -56,20 +68,34 @@ export const PageSection = ({
       aria-labelledby={headingId}
       className={cn(styles.section, className)}
       {...props}
+      {...hooks("page-section", "root")}
     >
-      <div className={styles.sectionHeader}>
+      <div
+        className={styles.sectionHeader}
+        {...hooks("page-section", "header")}
+      >
         <div className={styles.heading}>
-          <h2 id={headingId}>
+          <h2 id={headingId} {...hooks("page-section", "title")}>
             {hasContent(icon) && (
-              <span className={styles.sectionIcon} aria-hidden="true">
+              <span
+                className={styles.sectionIcon}
+                aria-hidden="true"
+                {...hooks("page-section", "icon")}
+              >
                 {icon}
               </span>
             )}
             {title}
           </h2>
-          {hasContent(description) && <p>{description}</p>}
+          {hasContent(description) && (
+            <p {...hooks("page-section", "description")}>{description}</p>
+          )}
         </div>
-        {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
+        {hasContent(actions) && (
+          <div className={styles.actions} {...hooks("page-section", "actions")}>
+            {actions}
+          </div>
+        )}
       </div>
       {children}
     </section>
@@ -98,6 +124,7 @@ export const Toolbar = ({
         className,
       )}
       {...props}
+      {...hooks("toolbar", "root")}
     />
   );
 };
@@ -111,19 +138,32 @@ export const StatCard = ({
   className,
   ...props
 }: StatCardProps) => (
-  <div className={cn(styles.statCard, className)} {...props}>
+  <div
+    className={cn(styles.statCard, className)}
+    {...props}
+    {...hooks("stat-card", "root")}
+  >
     {hasContent(icon) && (
-      <span className={styles.statIcon} aria-hidden="true">
+      <span
+        className={styles.statIcon}
+        aria-hidden="true"
+        {...hooks("stat-card", "icon")}
+      >
         {icon}
       </span>
     )}
     <div className={styles.statContent}>
       <dl>
-        <dt>{label}</dt>
-        <dd>{value}</dd>
+        <dt {...hooks("stat-card", "label")}>{label}</dt>
+        <dd {...hooks("stat-card", "value")}>{value}</dd>
       </dl>
       {description != null && (
-        <p className={styles.statDescription}>{description}</p>
+        <p
+          className={styles.statDescription}
+          {...hooks("stat-card", "description")}
+        >
+          {description}
+        </p>
       )}
     </div>
   </div>

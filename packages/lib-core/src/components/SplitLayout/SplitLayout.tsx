@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import { resolveSpace } from "@minerva/core";
 import type { SplitLayoutProps } from "./types";
 import styles from "./splitLayout.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * SplitLayout: main content with an optional aside column that splits beside
@@ -37,6 +38,7 @@ const SplitLayout = ({
         } as CSSProperties
       }
       {...rest}
+      {...hooks("split-layout", "root")}
     >
       <div
         className={cn(
@@ -45,8 +47,14 @@ const SplitLayout = ({
           hasAside && styles.hasAside,
         )}
       >
-        <div className={styles.main}>{children}</div>
-        {hasAside && <div className={styles.aside}>{aside}</div>}
+        <div className={styles.main} {...hooks("split-layout", "main")}>
+          {children}
+        </div>
+        {hasAside && (
+          <div className={styles.aside} {...hooks("split-layout", "aside")}>
+            {aside}
+          </div>
+        )}
       </div>
     </div>
   );

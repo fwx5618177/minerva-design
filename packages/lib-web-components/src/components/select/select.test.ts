@@ -27,8 +27,7 @@ const setup = (attrs = "") =>
     `<minerva-select aria-label="Language" placeholder="Pick one" ${attrs}>${LANGS}</minerva-select>`,
   );
 
-const trigger = (el: MinervaSelect) =>
-  $<HTMLButtonElement>(el, "[part=trigger]");
+const trigger = (el: MinervaSelect) => $<HTMLButtonElement>(el, "[part=root]");
 const listbox = (el: MinervaSelect) =>
   el.shadowRoot!.querySelector<HTMLElement>("[role=listbox]");
 const option = (text: string) =>

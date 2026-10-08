@@ -6,6 +6,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import useI18n from "../../hooks/useI18n";
 import type { PageTabProps, PageTabsProps } from "./types";
 import { getDirection } from "../../internal/direction";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./pageTabs.module.scss";
 
 const TAB_SELECTOR = `.${styles.pageTab}`;
@@ -202,15 +203,25 @@ export const PageTabs = ({
         }
         onContextMenuCapture?.(event);
       }}
+      {...hooks("page-tabs", "root")}
     >
       {scroll.overflow && (scroll.rtl ? scrollRight : scrollLeft)}
-      <div ref={viewport} className={styles.viewport} onScroll={measure}>
-        <div ref={list} className={styles.list}>
+      <div
+        ref={viewport}
+        className={styles.viewport}
+        onScroll={measure}
+        {...hooks("page-tabs", "viewport")}
+      >
+        <div ref={list} className={styles.list} {...hooks("page-tabs", "list")}>
           {children}
         </div>
       </div>
       {scroll.overflow && (scroll.rtl ? scrollLeft : scrollRight)}
-      {actions && <div className={styles.actions}>{actions}</div>}
+      {actions && (
+        <div className={styles.actions} {...hooks("page-tabs", "actions")}>
+          {actions}
+        </div>
+      )}
     </nav>
   );
 };
@@ -238,7 +249,7 @@ export const PageTab = ({
     className={cn(styles.pageTab, className)}
     data-value={value}
     data-active={active || undefined}
-    data-disabled={disabled || undefined}
+    {...hooks("page-tab", "root", { current: active, disabled })}
   >
     <Tooltip
       content={label}
@@ -250,19 +261,30 @@ export const PageTab = ({
       <button
         type="button"
         className={styles.trigger}
+        {...hooks("page-tab", "trigger")}
         aria-current={active ? "page" : undefined}
         disabled={disabled}
         onClick={onSelect}
       >
         {icon && (
-          <span className={styles.icon} aria-hidden="true">
+          <span
+            className={styles.icon}
+            aria-hidden="true"
+            {...hooks("page-tab", "icon")}
+          >
             {icon}
           </span>
         )}
-        <span className={styles.label}>{label}</span>
+        <span className={styles.label} {...hooks("page-tab", "label")}>
+          {label}
+        </span>
       </button>
     </Tooltip>
-    {action && <span className={styles.action}>{action}</span>}
+    {action && (
+      <span className={styles.action} {...hooks("page-tab", "action")}>
+        {action}
+      </span>
+    )}
   </div>
 );
 

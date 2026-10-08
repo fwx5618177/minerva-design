@@ -138,7 +138,7 @@ describe("<minerva-menu> trigger", () => {
     expect(focused()).toBe(menus(el)[0]);
     await u.keyboard("{ArrowDown}");
     expect(focused()).toBe(item(el, "Alpha"));
-    expect(item(el, "Alpha")).toHaveAttribute("data-highlighted");
+    expect(item(el, "Alpha")).toHaveAttribute("data-menu-highlighted");
   });
 
   it("ArrowUp opens and focuses the last enabled item", async () => {
@@ -346,16 +346,16 @@ describe("<minerva-menu> pointer", () => {
     const [menu] = menus(el);
     await u.hover(item(el, "Gamma"));
     expect(focused()).toBe(item(el, "Gamma"));
-    expect(item(el, "Gamma")).toHaveAttribute("data-highlighted");
+    expect(item(el, "Gamma")).toHaveAttribute("data-menu-highlighted");
     await u.hover(item(el, "Beta"));
     expect(focused()).toBe(menu);
-    expect(item(el, "Beta")).toHaveAttribute("data-disabled");
-    expect(item(el, "Gamma")).not.toHaveAttribute("data-highlighted");
+    expect(item(el, "Beta")).toHaveAttribute("data-menu-disabled");
+    expect(item(el, "Gamma")).not.toHaveAttribute("data-menu-highlighted");
     await u.hover(item(el, "Alpha"));
-    expect(item(el, "Alpha")).toHaveAttribute("data-highlighted");
+    expect(item(el, "Alpha")).toHaveAttribute("data-menu-highlighted");
     await u.unhover(item(el, "Alpha"));
     expect(focused()).toBe(menu);
-    expect(item(el, "Alpha")).not.toHaveAttribute("data-highlighted");
+    expect(item(el, "Alpha")).not.toHaveAttribute("data-menu-highlighted");
   });
 
   it("selects via pointer, passing the item, then closes", async () => {
@@ -417,7 +417,7 @@ describe("<minerva-menu> submenus", () => {
     expect(focused()).toBe(item(el, "Mail"));
     const [root, sub] = menus(el);
     expect(share).toHaveAttribute("aria-expanded", "true");
-    expect(share).toHaveAttribute("data-state", "open");
+    expect(share).toHaveAttribute("data-menu-state", "open");
     expect(share).toHaveAttribute("aria-controls", sub.id);
     expect(sub).toHaveAttribute("aria-labelledby", share.id);
     expect(root.contains(sub)).toBe(false);
@@ -526,7 +526,7 @@ describe("<minerva-menu> submenus", () => {
     // moving into the submenu highlights its items
     await u.hover(item(el, "Copy link"));
     expect(focused()).toBe(item(el, "Copy link"));
-    expect(item(el, "Share")).toHaveAttribute("data-state", "open");
+    expect(item(el, "Share")).toHaveAttribute("data-menu-state", "open");
     await u.hover(item(el, "Print"));
     await settle();
     expect(focused()).toBe(item(el, "Print"));
@@ -634,7 +634,7 @@ describe("<minerva-menu> checkbox and radio items", () => {
     await openWithKeyboard();
     const grid = item(el, "Show grid", "menuitemcheckbox");
     expect(grid).toHaveAttribute("aria-checked", "true");
-    expect(grid).toHaveAttribute("data-state", "checked");
+    expect(grid).toHaveAttribute("data-menu-state", "checked");
     expect(grid.querySelector(".indicator svg")).not.toBeNull();
     expect(item(el, "Show rulers", "menuitemcheckbox")).toHaveAttribute(
       "aria-checked",

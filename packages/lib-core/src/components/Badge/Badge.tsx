@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import type { BadgeProps } from "./types";
 import styles from "./badge.module.scss";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 const isTextLike = (node: React.ReactNode): node is string | number =>
   typeof node === "string" || typeof node === "number";
@@ -47,6 +48,7 @@ export const Badge = ({
     else if (hasChildren) badgeContent = t("badge.default");
   }
 
+  const states = { size, variant, color };
   const badge = (
     <span
       ref={standalone ? (ref as React.Ref<HTMLSpanElement>) : undefined}
@@ -67,8 +69,13 @@ export const Badge = ({
         borderWidth,
         ...style,
       }}
+      {...hooks("badge", standalone ? "root" : "badge", states)}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && (
+        <span className={styles.icon} {...hooks("badge", "icon")}>
+          {icon}
+        </span>
+      )}
       {badgeContent}
     </span>
   );
@@ -76,7 +83,11 @@ export const Badge = ({
   if (standalone) return badge;
 
   return (
-    <div ref={ref as React.Ref<HTMLDivElement>} className={styles.badgeWrapper}>
+    <div
+      ref={ref as React.Ref<HTMLDivElement>}
+      className={styles.badgeWrapper}
+      {...hooks("badge", "root", states)}
+    >
       <div className={styles.content}>{children}</div>
       {badge}
     </div>

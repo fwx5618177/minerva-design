@@ -50,7 +50,7 @@ const optionalNumber = {
  *
  * @summary Numeric field with keyboard stepping, stepper, min / max and precision.
  * @tag minerva-number-input
- * @csspart base - The field wrapper
+ * @csspart root - The field box (wraps the input and the stepper)
  * @csspart input - The native `<input>` (role="spinbutton")
  * @csspart stepper - The increment / decrement column
  * @csspart increment - The increment button
@@ -374,6 +374,19 @@ export class MinervaNumberInput extends FormAssociatedElement {
     return undefined;
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.isDisabled,
+      invalid:
+        this.invalid ||
+        this.draftError() !== undefined ||
+        this.aria.attr("aria-invalid") === "true",
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+    };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const disabled = this.isDisabled;
@@ -387,7 +400,7 @@ export class MinervaNumberInput extends FormAssociatedElement {
     const current = this.value ?? 0;
 
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         root: true,
         [this.size]: true,

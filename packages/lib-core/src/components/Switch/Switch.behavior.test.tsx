@@ -325,7 +325,7 @@ describe("Switch segmented", () => {
     expect(group.getAttribute("aria-describedby")).toBe(helper.id);
     expect(group).toHaveAccessibleDescription("Where requests go");
     expect(group).not.toHaveAttribute("data-invalid");
-    expect(group).toHaveAttribute("data-required", "true");
+    expect(group).toHaveAttribute("data-required", "");
     // the hidden input stays out of the accessibility tree
     expect(group.querySelector("input")).toHaveAttribute("aria-hidden", "true");
     expect(group.querySelector("input")).not.toHaveAttribute(
@@ -349,7 +349,7 @@ describe("Switch segmented", () => {
     );
     const group = screen.getByRole("group", { name: /Data source/ });
     const error = screen.getByText("Pick a source");
-    expect(group).toHaveAttribute("data-invalid", "true");
+    expect(group).toHaveAttribute("data-invalid", "");
     expect(group).not.toHaveAttribute("aria-invalid");
     expect(group.getAttribute("aria-describedby")).toBe(`${error.id} extra`);
     expect(group).toHaveAccessibleDescription("Pick a source Extra");

@@ -131,8 +131,10 @@ const Menu = ({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? contentId : undefined}
-        data-state={open ? "open" : "closed"}
-        data-disabled={disabled ? "" : undefined}
+        // Private attributes: the child (often a Minerva component) keeps
+        // its own state hooks.
+        data-menu-state={open ? "open" : "closed"}
+        data-menu-disabled={disabled ? "" : undefined}
         {...{ disabled: disabled || undefined }}
         onKeyDown={onKeyDown}
         onClick={onClick}
@@ -140,6 +142,7 @@ const Menu = ({
         {children}
       </Slot>
       <MenuRoot
+        component="menu"
         items={items}
         onSelect={onSelect}
         closeOnSelect={closeOnSelect}

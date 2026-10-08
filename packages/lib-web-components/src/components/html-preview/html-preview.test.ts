@@ -34,7 +34,7 @@ describe("<minerva-html-preview>", () => {
     el.html = "<p>keep</p><script>alert(1)</script>";
     await el.updateComplete;
     const iframe = frame(el);
-    expect($(el, "[part=base]").classList).toContain("preview");
+    expect($(el, "[part=root]").classList).toContain("preview");
     expect(iframe.classList).toContain("frame");
     expect(iframe.getAttribute("sandbox")).toBe("");
     expect(iframe).toHaveAttribute("referrerpolicy", "no-referrer");

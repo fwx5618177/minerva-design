@@ -5,6 +5,7 @@ import { compile } from "sass";
 import type { Plugin } from "vite";
 import pkg from "./package.json" with { type: "json" };
 import { writeDualDeclarations } from "../../scripts/dual-declarations.mjs";
+import { wrapInLayer } from "../../scripts/css-layer.mjs";
 
 // Dependencies (@floating-ui/dom) are resolved by the consumer, never bundled.
 const externalDeps = Object.keys(pkg.dependencies ?? {});
@@ -17,7 +18,8 @@ const TOKENS_ENTRY = fileURLToPath(
 
 /**
  * Design tokens (`@minerva/core/tokens.css`): compiled from the Sass sources
- * in src/theme/tokens and emitted next to the JS bundle. Kept out of the JS
+ * in src/theme/tokens and emitted next to the JS bundle, inside the
+ * `minerva` cascade layer (unlayered app CSS wins without `!important`). Kept out of the JS
  * graph so `@minerva/core` stays side-effect free and importable in Node.
  */
 const designTokens = (): Plugin => ({
@@ -33,7 +35,7 @@ const designTokens = (): Plugin => ({
     this.emitFile({
       type: "asset",
       fileName: "tokens.css",
-      source: `${css}\n`,
+      source: `${wrapInLayer(css)}\n`,
     });
   },
 });
@@ -57,9 +59,16 @@ export default defineConfig({
     sourcemap: true,
     target: "es2020",
     lib: {
-      entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+      entry: {
+        index: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+        // `@minerva/core/styling-hooks`: the styling hooks manifest (data)
+        "styling-hooks": fileURLToPath(
+          new URL("./src/styling-hooks/index.ts", import.meta.url),
+        ),
+      },
       formats: ["es", "cjs"],
-      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
+      fileName: (format, entryName) =>
+        `${entryName}.${format === "es" ? "js" : "cjs"}`,
     },
     rolldownOptions: {
       external: isExternal,

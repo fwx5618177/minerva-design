@@ -42,8 +42,25 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./styling-hooks": {
+      "import": {
+        "types": "./dist/styling-hooks/index.d.ts",
+        "default": "./dist/styling-hooks.js"
+      },
+      "require": {
+        "types": "./dist/styling-hooks/index.d.cts",
+        "default": "./dist/styling-hooks.cjs"
+      }
+    },
     "./tokens.css": "./dist/tokens.css",
     "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "styling-hooks": [
+        "./dist/styling-hooks/index.d.ts"
+      ]
+    }
   },
   "files": [
     "dist",
@@ -60,6 +77,7 @@
     "build": "vite build",
     "watch": "vite build --watch",
     "test": "vitest run",
+    "hooks:lock": "vitest run src/styling-hooks --update",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist coverage",
     "check:package": "publint && attw --pack . --exclude-entrypoints ./tokens.css"

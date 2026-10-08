@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import type { AvatarProps } from "./types";
 import styles from "./avatar.module.scss";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 const CJK = /[\u3400-\u9fff\uf900-\ufaff]/;
 
@@ -66,6 +67,10 @@ const Avatar = ({
           ...style,
         } as React.CSSProperties)
       : style,
+    ...hooks("avatar", "root", {
+      size: numericSize ? undefined : size,
+      shape,
+    }),
   };
 
   if (showImage) {
@@ -77,6 +82,7 @@ const Avatar = ({
           src={src}
           draggable={false}
           onError={() => setFailedSrc(src)}
+          {...hooks("avatar", "image")}
         />
       </span>
     );
@@ -88,7 +94,11 @@ const Avatar = ({
   // screen readers announce "Alice" instead of the letter "A".
   return (
     <span role="img" aria-label={label} {...rootProps}>
-      <span className={styles.avatarText} aria-hidden="true">
+      <span
+        className={styles.avatarText}
+        aria-hidden="true"
+        {...hooks("avatar", "fallback")}
+      >
         {content}
       </span>
     </span>

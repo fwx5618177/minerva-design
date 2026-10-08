@@ -3,6 +3,7 @@ import { useTheme } from "../../contexts/ThemeProvider";
 import useI18n from "../../hooks/useI18n";
 import { PALETTES, type Palette } from "../../theme-utils";
 import type { PaletteToggleProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./themeToggle.module.scss";
 
 /**
@@ -32,6 +33,7 @@ const PaletteToggle = ({
         palette: palette ?? t("paletteToggle.default"),
       })}
       {...rest}
+      {...hooks("palette-toggle", "root")}
     >
       {items.map((item) => {
         const key = item ?? "default";
@@ -44,6 +46,7 @@ const PaletteToggle = ({
             data-active={active || undefined}
             aria-pressed={active}
             onClick={() => setPalette(item)}
+            {...hooks("palette-toggle", "item")}
           >
             {labels?.[key] ?? t(`paletteToggle.${key}`)}
           </button>

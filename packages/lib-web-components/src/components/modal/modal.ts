@@ -40,11 +40,11 @@ export type ModalCloseReason =
  * @slot footer - Actions row
  * @slot trigger - Element that opens the modal when clicked
  * @csspart overlay - The backdrop
- * @csspart panel - The dialog panel (`role="dialog"`)
- * @csspart header - The title wrapper
+ * @csspart content - The dialog panel (`role="dialog"`)
+ * @csspart header - The title (accessible name of the dialog)
  * @csspart description - The description
- * @csspart body - The body wrapper
- * @csspart footer - The footer wrapper
+ * @csspart body - The scrollable body
+ * @csspart footer - The actions row
  * @csspart close-button - The close (×) button
  * @fires minerva-open-change - The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-after-open - The modal is open and focus moved in
@@ -168,6 +168,10 @@ export class MinervaModal extends MinervaElement {
     if (changed.has("open")) this.presence.sync(this.open);
   }
 
+  protected override hookStates() {
+    return { state: this.open ? "open" : "closed", size: this.size };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     const present = this.open || this.presence.present;
     if (changed.has("open")) {
@@ -217,7 +221,7 @@ export class MinervaModal extends MinervaElement {
                 aria-hidden="true"
               ></div>
               <div
-                part="panel"
+                part="content"
                 class=${classMap({ content: true, [this.size]: true })}
                 popover="manual"
                 role=${this.dialogRole}

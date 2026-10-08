@@ -42,11 +42,11 @@ const iconButtonClasses = (disabled: boolean, extra: string) => ({
  * @tag minerva-page-tabs
  * @slot - `<minerva-page-tab>` items
  * @slot actions - Global actions after the scrollable list (e.g. a page menu)
- * @csspart base - The `<nav>` landmark
- * @csspart viewport - The scrolling viewport
+ * @csspart root - The <nav> landmark
+ * @csspart viewport - The scrolling viewport of the items
  * @csspart list - The item list
- * @csspart scroll-button - The scroll left / right buttons
- * @csspart actions - The actions wrapper
+ * @csspart scroll-button - The scroll left / right buttons (while the items overflow)
+ * @csspart actions - The global actions after the list
  * @fires minerva-select - Re-dispatched from `<minerva-page-tab>`: a page was chosen (`detail: { value }`)
  * @fires minerva-close - Re-dispatched from `<minerva-page-tab>`: the close button of a page was activated (`detail: { value }`)
  */
@@ -306,7 +306,7 @@ export class MinervaPageTabs extends MinervaElement {
     const left = () => this.renderScrollButton("left");
     const right = () => this.renderScrollButton("right");
     return html`<nav
-      part="base"
+      part="root"
       class="pageTabs"
       aria-label=${this.aria.label ?? nothing}
     >
@@ -338,9 +338,11 @@ export class MinervaPageTabs extends MinervaElement {
  * @tag minerva-page-tab
  * @slot icon - Icon displayed before the label
  * @slot action - Separate control next to the label (e.g. a close button)
- * @csspart base - The item wrapper
- * @csspart trigger - The label `<button>`
+ * @csspart root - The item wrapper
+ * @csspart trigger - The label <button> (selects the page)
+ * @csspart icon - The icon before the label
  * @csspart label - The (truncated) label
+ * @csspart action - The wrapper of the separate control next to the label
  * @csspart close-button - The built-in close button (`closable`)
  * @fires minerva-select - The label button was activated (`detail: { value }`); cancelable: `preventDefault()` keeps the strip's `active-value`
  * @fires minerva-close - The built-in close button was activated (`detail: { value }`); remove the element to close the page
@@ -418,6 +420,10 @@ export class MinervaPageTab extends MinervaElement {
     this.emit("minerva-close", { value: this.value });
   }
 
+  protected override hookStates() {
+    return { current: this.active, disabled: this.disabled };
+  }
+
   protected override updated(): void {
     if (DEV && !this.label) {
       devWarn(MinervaPageTab.tagName, "set label to name the page.");
@@ -426,7 +432,7 @@ export class MinervaPageTab extends MinervaElement {
 
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       class="pageTab"
       data-value=${this.value}
       ?data-active=${this.active}
@@ -443,7 +449,7 @@ export class MinervaPageTab extends MinervaElement {
       >
         ${
           this.slots.test("icon")
-            ? html`<span class="icon" aria-hidden="true"
+            ? html`<span part="icon" class="icon" aria-hidden="true"
                 ><slot name="icon"></slot
               ></span>`
             : nothing
@@ -452,7 +458,7 @@ export class MinervaPageTab extends MinervaElement {
       </button>
       ${
         this.closable || this.slots.test("action")
-          ? html`<span class="action"
+          ? html`<span part="action" class="action"
               ><slot name="action"></slot>${
                 this.closable
                   ? html`<button

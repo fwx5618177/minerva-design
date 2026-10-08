@@ -7,6 +7,7 @@ import {
 } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { parsePlacement } from "@minerva/core";
 import { live } from "lit/directives/live.js";
 import { styleMap } from "lit/directives/style-map.js";
 import inputStyles from "@lib-core-styles/components/Input/input.module.scss?inline";
@@ -82,16 +83,16 @@ const PLACEMENT = {
  * @tag minerva-autocomplete
  * @slot prefix - Content before the text (icon)
  * @slot suffix - Content after the text
- * @csspart base - The root wrapper
+ * @csspart root - The root wrapper (label, field and anchor of the dropdown)
  * @csspart label - The visible label
- * @csspart field - The input wrapper
- * @csspart input - The native `<input>`
- * @csspart popup - The positioned dropdown
- * @csspart listbox - The `role="listbox"` list
- * @csspart option - An option
+ * @csspart field - The input box
+ * @csspart input - The native `<input role=combobox>`
+ * @csspart content - The positioned dropdown
+ * @csspart list - The `role=listbox` list
+ * @csspart item - An option
  * @csspart group-label - A group heading
- * @csspart empty - The empty state
- * @csspart loading - The loading state
+ * @csspart empty - The empty state (no matching option)
+ * @csspart loading - The loading state (while loading)
  * @fires minerva-input - The input text changed (typing, picking an option, Escape clearing) (`detail: { value }`)
  * @fires minerva-change - The text was committed: an option filled it in, Escape cleared it, or the native change (blur) (`detail: { value }`)
  * @fires minerva-select - An option was picked with the mouse or the keyboard (`detail: { value, option }`)
@@ -274,6 +275,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
       },
       onDismiss: () => this.close(),
       returnFocusOnEscape: () => this.input,
+      onPosition: () => this.syncHookStates(),
     };
   });
   /** IME composition in progress: Enter / arrows belong to the IME. */
@@ -526,6 +528,25 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     }
   }
 
+  protected override hookStates() {
+    const placement =
+      this.shown && this.floating.isOpen
+        ? this.floating.position.placement
+        : undefined;
+    const { side, align } = placement
+      ? parsePlacement(placement)
+      : { side: undefined, align: undefined };
+    return {
+      state: this.shown ? "open" : "closed",
+      disabled: this.isDisabled,
+      readonly: this.readOnly,
+      loading: this.loading,
+      side,
+      align,
+      placement,
+    };
+  }
+
   protected override updated(changed: PropertyValues): void {
     super.updated(changed);
     this.floating.sync(this.shown);
@@ -574,7 +595,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   ) {
     const active = activeIndex === index;
     return html`<div
-      part="option"
+      part="item"
       class=${classMap({
         optionItem: true,
         disabled: !!option.disabled,
@@ -657,7 +678,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     // closed list with text, Escape clears it instead of closing an
     // enclosing modal / drawer / popover.
     return html`<div
-      part="base"
+      part="root"
       class="autoComplete"
       @compositionstart=${() => (this.composing = true)}
       @compositionend=${() => (this.composing = false)}
@@ -728,7 +749,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
       </div>
       ${
         shown
-          ? html`<div class="popup" part="popup" popover="manual">
+          ? html`<div class="popup" part="content" popover="manual">
               <div
                 class=${classMap({
                   dropdown: true,
@@ -737,7 +758,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
               >
                 <div
                   class="optionList"
-                  part="listbox"
+                  part="list"
                   role="listbox"
                   id="listbox"
                   aria-label=${this.label || label || nothing}

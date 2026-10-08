@@ -118,7 +118,7 @@ abstract class ThemeScopeElement extends MinervaElement {
     items: { value: V; text: string; active: boolean }[],
     select: (value: V) => void,
   ) {
-    return html`<div part="base" class="group" role="group" aria-label=${label}>
+    return html`<div part="root" class="group" role="group" aria-label=${label}>
       ${items.map(
         (item) =>
           html`<button
@@ -145,8 +145,8 @@ abstract class ThemeScopeElement extends MinervaElement {
  *
  * @summary Light / dark / system theme switch.
  * @tag minerva-theme-toggle
- * @csspart base - The `role="group"` wrapper
- * @csspart item - Every option button
+ * @csspart root - The role=group wrapper
+ * @csspart item - Every option button (aria-pressed on the selected one)
  * @fires minerva-change - The user picked a theme (`detail: { value }`); cancelable: `preventDefault()` keeps the current theme
  */
 export class MinervaThemeToggle extends ThemeScopeElement {
@@ -252,8 +252,8 @@ export class MinervaThemeToggle extends ThemeScopeElement {
  *
  * @summary Color palette switch.
  * @tag minerva-palette-toggle
- * @csspart base - The `role="group"` wrapper
- * @csspart item - Every option button
+ * @csspart root - The role=group wrapper
+ * @csspart item - Every option button (aria-pressed on the selected one)
  * @fires minerva-change - The user picked a palette (`detail: { value }`, `null` = default look); cancelable: `preventDefault()` keeps the current palette
  */
 export class MinervaPaletteToggle extends ThemeScopeElement {

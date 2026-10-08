@@ -266,12 +266,52 @@ import "@minerva/lib-web-components/tokens.css";
 
 纯 HTML、Vue、Angular、Svelte、表单和主题的使用指南见 [Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
+### 样式定制
+
+三层公开、稳定的定制方式，从轻到重：
+
+1. **设计令牌与组件 CSS 变量**（`--primary-color`、`--radius-md`、`--button-radius`、`--input-height`……）：设置在 `:root`、主题作用域或任意元素上。
+2. **样式钩子**：每个 React 组件在其可样式化的元素上渲染 `data-minerva="<组件>"` 和 `data-part="<部件>"`，以及统一词汇的状态属性（`data-state="open|closed|checked|unchecked|indeterminate|active|inactive"`、`data-disabled`、`data-invalid`、`data-readonly`、`data-loading`、`data-size`、`data-variant`、`data-color`、`data-orientation`、`data-side`、`data-align`、`data-placement`……）。Web Components 以标签名、`::part()` 和自定义状态（`:state()`）暴露同样的名字。
+3. **级联层**：库的全部 CSS 都放在 `@layer minerva` 中，你未分层的 CSS 无需 `!important` 即可覆盖。
+
+| 钩子     | React                                        | Web Components                     |
+| -------- | -------------------------------------------- | ---------------------------------- |
+| 组件     | `[data-minerva="button"]`                    | `minerva-button`                   |
+| 部件     | `[data-minerva="button"][data-part="label"]` | `minerva-button::part(label)`      |
+| 状态     | `[data-state="open"]`、`[data-disabled]`     | `:state(open)`、`:state(disabled)` |
+| 键值状态 | `[data-size="small"]`                        | `:state(size-small)`               |
+
+```css
+/* React */
+[data-minerva="button"][data-part="root"][data-variant="solid"] {
+  --button-radius: 999px; /* CSS 变量与钩子组合使用 */
+  letter-spacing: 0.01em;
+}
+[data-minerva="modal"][data-part="content"][data-state="open"] {
+  border: 1px solid var(--border-color);
+}
+
+/* Web Components：同样的名字 */
+minerva-button:state(variant-solid) {
+  --button-radius: 999px;
+}
+minerva-modal:state(open)::part(content) {
+  border: 1px solid var(--border-color);
+}
+
+/* 分层的应用 CSS：把 minerva 放进你的层顺序 */
+@layer reset, minerva, app;
+```
+
+推荐使用复合选择器 `[data-minerva="x"][data-part="y"]`（对弹层、对话框等通过 portal 渲染的部件同样有效）；类名和没有钩子的 DOM 结构属于内部实现。每个组件的钩子列在其文档页和 `@minerva/core/styling-hooks`（机器可读清单）中，并由 `packages/core/styling-hooks.lock.json` 锁定：新增钩子为 minor 变更，删除或重命名为 major 变更。指南：[样式定制](https://fwx5618177.github.io/minerva/#/styling)。
+
 ## 🌐 浏览器支持
 
 面向常青浏览器。**完整支持**（下列特性均原生可用，无需回退）：**Chrome / Edge 120+、Firefox 125+、Safari 17+**（含 iOS Safari 17+）。更旧的引擎（低至 Chrome / Edge 111、Firefox 113、Safari 16.4）可以使用，但有以下降级：
 
 - `color-mix()`（111 / 113 / 16.2）：阴影与悬停色变平；容器查询（105 / 110 / 16）：`ResponsiveGrid`、`SplitLayout`、`KeyValueEditor` 保持单列；`:has()`（105 / 121 / 15.4）：`Input`、`Modal` / `Drawer` 内边距略有差异；`:dir()`（120 / 49 / 16.4）：RTL 下 `Rating` 半星与 `Cascader` 箭头不镜像。
-- Web Components：Popover API（114 / 125 / 17）缺失时浮层回退为 `position: fixed` + `z-index`；`ElementInternals`（77 / 98 / 16.4）缺失时表单控件可用但不参与表单（可用 `element-internals-polyfill`）；`adoptedStyleSheets` 缺失时 Lit 回退为 `<style>`。
+- Web Components：Popover API（114 / 125 / 17）缺失时浮层回退为 `position: fixed` + `z-index`；`ElementInternals`（77 / 98 / 16.4）缺失时表单控件可用但不参与表单（可用 `element-internals-polyfill`）；`adoptedStyleSheets` 缺失时 Lit 回退为 `<style>`；自定义状态 `:state()`（125 / 126 / 17.4）用于样式钩子，Chromium 90-124 使用旧语法 `:--open`，更旧的引擎可改用宿主属性（`[open]`、`[disabled]`）。
+- 级联层 `@layer`（99 / 97 / 15.4）：所有发布的样式表都位于 `@layer minerva` 中。
 - 剪贴板（`CodeBlock` 复制）需要安全上下文（HTTPS / localhost），不可用时提示复制失败。
 - SSR 需要 Node `^20.19.0 || >=22.12.0`，导入时不访问 `window` / `document`。
 

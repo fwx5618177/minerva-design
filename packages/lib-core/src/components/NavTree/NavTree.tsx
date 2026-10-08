@@ -15,6 +15,7 @@ import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { hooks } from "../../internal/stylingHooks";
 import type { NavTreeItem, NavTreeItemState, NavTreeProps } from "./types";
 import { logicalArrowKey } from "../../internal/direction";
 import styles from "./navTree.module.scss";
@@ -211,13 +212,24 @@ export const NavTree = ({
       : item.label;
     const content = (
       <>
-        <span className={styles.icon} aria-hidden="true">
+        <span
+          className={styles.icon}
+          aria-hidden="true"
+          {...hooks("nav-tree", "icon")}
+        >
           {item.icon}
         </span>
         <span className={styles.copy}>
-          <span className={styles.label}>{item.label}</span>
+          <span className={styles.label} {...hooks("nav-tree", "label")}>
+            {item.label}
+          </span>
           {item.description && (
-            <small className={styles.description}>{item.description}</small>
+            <small
+              className={styles.description}
+              {...hooks("nav-tree", "description")}
+            >
+              {item.description}
+            </small>
           )}
         </span>
         {!collapsed && (item.endContent || hasChildren) && (
@@ -266,6 +278,7 @@ export const NavTree = ({
             disabled={disabled}
             onClick={() => toggleItem(item)}
             onKeyDown={handleBranchKeyDown}
+            {...hooks("nav-tree", "item")}
           >
             {content}
           </button>
@@ -290,6 +303,7 @@ export const NavTree = ({
       className: itemClassName,
       title,
       "data-active": active || undefined,
+      ...hooks("nav-tree", "item"),
     };
     // A disabled entry is not a navigable link: no href, no handler.
     if (disabled) {
@@ -342,11 +356,21 @@ export const NavTree = ({
         ariaLabel ?? (ariaLabelledBy ? undefined : t("navTree.label"))
       }
       aria-labelledby={ariaLabelledBy}
+      {...hooks("nav-tree", "root")}
     >
       {sections.map((section) => (
-        <section className={styles.section} key={section.id}>
+        <section
+          className={styles.section}
+          key={section.id}
+          {...hooks("nav-tree", "group")}
+        >
           {section.title && (
-            <h2 className={styles.sectionTitle}>{section.title}</h2>
+            <h2
+              className={styles.sectionTitle}
+              {...hooks("nav-tree", "group-label")}
+            >
+              {section.title}
+            </h2>
           )}
           <div className={styles.list}>
             {section.items.map((item) => renderItem(item, 0))}

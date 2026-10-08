@@ -110,9 +110,13 @@ const CHILDREN_SELECTOR = ".children";
  *
  * @summary Sidebar navigation tree with sections, expandable branches and a compact mode.
  * @tag minerva-nav-tree
- * @csspart base - The `<nav>` landmark
- * @csspart section - A section
- * @csspart item - Every link / button row
+ * @csspart root - The `<nav>` landmark
+ * @csspart group - A section of items
+ * @csspart group-label - The title of a section
+ * @csspart item - A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)
+ * @csspart icon - The icon of an item
+ * @csspart label - The label of an item
+ * @csspart description - The secondary text of an item
  * @fires minerva-select - A leaf link / action or a branch was activated (`detail: { value, item }`); cancelable: `preventDefault()` also prevents the link navigation (client-side routing)
  * @fires minerva-expanded-change - A branch was expanded / collapsed by the user (`detail: { expandedIds, item, expanded }`); cancelable: `preventDefault()` keeps the current state
  */
@@ -307,13 +311,19 @@ export class MinervaNavTree extends MinervaElement {
     }
   };
 
+  private renderSectionTitle(title: string) {
+    return html`<h2 part="group-label" class="sectionTitle">${title}</h2>`;
+  }
+
   private renderContent(item: NavTreeItem, hasChildren: boolean) {
-    return html`<span class="icon" aria-hidden="true"
+    return html`<span part="icon" class="icon" aria-hidden="true"
         >${item.icon ?? nothing}</span
       ><span class="copy"
-        ><span class="label">${item.label}</span>${
+        ><span part="label" class="label">${item.label}</span>${
           item.description
-            ? html`<small class="description">${item.description}</small>`
+            ? html`<small part="description" class="description"
+                >${item.description}</small
+              >`
             : nothing
         }</span
       >${
@@ -466,7 +476,7 @@ export class MinervaNavTree extends MinervaElement {
     const ancestors = this.activeAncestors();
     const labelledBy = this.getAttribute("aria-labelledby");
     return html`<nav
-      part="base"
+      part="root"
       class=${classMap({
         navTree: true,
         collapsed: this.collapsed,
@@ -482,12 +492,8 @@ export class MinervaNavTree extends MinervaElement {
         this.sections ?? [],
         (section) => section.id,
         (section) =>
-          html`<section part="section" class="section">
-            ${
-              section.title
-                ? html`<h2 class="sectionTitle">${section.title}</h2>`
-                : nothing
-            }
+          html`<section part="group" class="section">
+            ${section.title ? this.renderSectionTitle(section.title) : nothing}
             <div class="list">
               ${repeat(
                 section.items,

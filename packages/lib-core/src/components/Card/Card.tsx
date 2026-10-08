@@ -12,6 +12,7 @@ import type {
   CardPadding,
 } from "./types";
 import styles from "./card.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /** Module class of a padding override */
 const paddingClass = (padding: CardPadding | undefined) =>
@@ -55,6 +56,10 @@ export const Card = ({
       )}
       {...rest}
       {...link}
+      {...hooks("card", "root", {
+        variant,
+        disabled: Tag === "button" && !!rest.disabled,
+      })}
     >
       {children}
     </Tag>
@@ -76,6 +81,7 @@ export const CardHeader = ({
       ref={ref}
       className={cn(styles.cardHeader, paddingClass(padding), className)}
       {...rest}
+      {...hooks("card-header", "root")}
     >
       {children}
     </div>
@@ -93,7 +99,12 @@ export const CardTitle = ({
   ...rest
 }: CardTitleProps) => {
   return (
-    <Heading ref={ref} className={cn(styles.cardTitle, className)} {...rest}>
+    <Heading
+      ref={ref}
+      className={cn(styles.cardTitle, className)}
+      {...rest}
+      {...hooks("card-title", "root")}
+    >
       {children}
     </Heading>
   );
@@ -109,7 +120,12 @@ export const CardDescription = ({
   ...rest
 }: CardDescriptionProps) => {
   return (
-    <p ref={ref} className={cn(styles.cardDescription, className)} {...rest}>
+    <p
+      ref={ref}
+      className={cn(styles.cardDescription, className)}
+      {...rest}
+      {...hooks("card-description", "root")}
+    >
       {children}
     </p>
   );
@@ -136,6 +152,7 @@ export const CardContent = ({
         className,
       )}
       {...rest}
+      {...hooks("card-content", "root")}
     >
       {children}
     </div>
@@ -157,6 +174,7 @@ export const CardFooter = ({
       ref={ref}
       className={cn(styles.cardFooter, paddingClass(padding), className)}
       {...rest}
+      {...hooks("card-footer", "root")}
     >
       {children}
     </div>

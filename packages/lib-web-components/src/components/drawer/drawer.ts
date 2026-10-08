@@ -52,11 +52,11 @@ const SIDES: readonly DrawerSide[] = ["left", "right", "top", "bottom"];
  * @slot footer - Actions row
  * @slot trigger - Element that opens the drawer when clicked
  * @csspart overlay - The backdrop
- * @csspart panel - The dialog panel (`role="dialog"`)
- * @csspart header - The title wrapper
- * @csspart description - The description
- * @csspart body - The body wrapper
- * @csspart footer - The footer wrapper
+ * @csspart content - The dialog panel (`role="dialog"`)
+ * @csspart header - The title (accessible name of the dialog)
+ * @csspart description - The description below the title (visually hidden when no description is given)
+ * @csspart body - The scrollable body
+ * @csspart footer - The actions row
  * @csspart close-button - The close (×) button
  * @fires minerva-open-change - The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-after-open - The drawer is open and focus moved in
@@ -210,6 +210,14 @@ export class MinervaDrawer extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return {
+      state: this.open ? "open" : "closed",
+      side: SIDES.includes(this.side) ? this.side : "right",
+      size: this.size,
+    };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     const present = this.open || this.presence.present;
     if (changed.has("open") || (changed.has("nonModal") && this.open)) {
@@ -270,7 +278,7 @@ export class MinervaDrawer extends MinervaElement {
                     ></div>`
               }
               <div
-                part="panel"
+                part="content"
                 class=${classMap({
                   content: true,
                   [side]: true,

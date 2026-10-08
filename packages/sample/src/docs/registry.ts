@@ -85,6 +85,11 @@ export const docPages: DocPageMeta[] = [
   { id: "architecture", category: "gettingStarted" },
   { id: "rsc-guide", category: "gettingStarted" },
   { id: "theming", category: "gettingStarted", demos: ["scoped-theme"] },
+  {
+    id: "styling",
+    category: "gettingStarted",
+    demos: ["restyle-button", "restyle-modal", "restyle-tabs", "restyle-table"],
+  },
 
   // Configuration: ConfigProvider, hooks and theme utilities
   {

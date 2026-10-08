@@ -1,4 +1,5 @@
 import { property, state } from "lit/decorators.js";
+import { attachInternals } from "./internals";
 import { MinervaElement } from "./minerva-element";
 
 /** Value a form-associated element contributes to its form's `FormData`. */
@@ -36,15 +37,7 @@ export function validityFlags(validity: ValidityState): ValidityStateFlags {
   return flags;
 }
 
-/**
- * `el.attachInternals()`, or `null` where unsupported (Node / SSR shims
- * without it). Call it from the constructor (or a field initializer).
- */
-export function attachInternals(el: HTMLElement): ElementInternals | null {
-  return typeof el.attachInternals === "function"
-    ? (el.attachInternals() as unknown as ElementInternals)
-    : null;
-}
+export { attachInternals };
 
 /**
  * Base class of the form controls (input, checkbox, select...): a

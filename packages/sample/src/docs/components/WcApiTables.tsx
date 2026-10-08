@@ -20,7 +20,8 @@ export interface WcApiTablesProps {
 /**
  * API of a custom element, generated from the Custom Elements Manifest of
  * @minerva/lib-web-components (scripts/generate-api.mjs): attributes and
- * properties, events, slots, CSS parts, CSS custom properties and methods.
+ * properties, events, slots, CSS custom properties and methods (the CSS parts
+ * are in the generated "Styling hooks" section).
  * Descriptions are translated per locale (English from the JSDoc otherwise).
  */
 const WcApiTables: React.FC<WcApiTablesProps> = ({
@@ -140,7 +141,6 @@ const WcApiTables: React.FC<WcApiTablesProps> = ({
         named("events"),
       )}
       {table("slots", [t("doc.wc.slot"), t("doc.description")], named("slots"))}
-      {table("parts", [t("doc.wc.part"), t("doc.description")], named("parts"))}
       {table(
         "cssVars",
         [t("doc.variable"), t("doc.description")],

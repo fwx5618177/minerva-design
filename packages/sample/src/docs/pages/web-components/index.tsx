@@ -88,8 +88,8 @@ const slotsCode = `<minerva-modal label="Delete project?">
 </minerva-modal>
 
 <style>
-  /* style the internals that a component exposes with part="…" */
-  minerva-modal::part(panel) {
+  /* style the parts an element exposes (::part) in its states (:state) */
+  minerva-modal:state(open)::part(content) {
     border-radius: 24px;
   }
   minerva-input::part(input) {

@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "../../internal/Dialog";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import type {
   DrawerContentProps,
   DrawerProps,
@@ -54,11 +55,14 @@ export const DrawerContent = ({
   return (
     <DialogContent
       overlayClassName={cn(styles.overlay, overlayClassName)}
+      overlayAttributes={hooks("drawer", "overlay")}
       className={cn(styles.content, styles[side], styles[size], className)}
       {...rest}
+      {...hooks("drawer", "content", { side, size })}
     >
       <DialogDescription
         className={description ? styles.description : styles.visuallyHidden}
+        {...hooks("drawer", "description")}
       >
         {description ?? hiddenDescription ?? t("drawer.description")}
       </DialogDescription>
@@ -67,6 +71,7 @@ export const DrawerContent = ({
         <DialogClose
           className={styles.close}
           aria-label={closeLabel ?? t("drawer.close")}
+          {...hooks("drawer", "close-button")}
         >
           <IconX size={16} aria-hidden="true" />
         </DialogClose>
@@ -82,13 +87,23 @@ export const DrawerHeader = ({
   ...rest
 }: DrawerSectionProps) => (
   <DialogTitle asChild>
-    <div ref={ref} className={cn(styles.header, className)} {...rest} />
+    <div
+      ref={ref}
+      className={cn(styles.header, className)}
+      {...rest}
+      {...hooks("drawer", "header")}
+    />
   </DialogTitle>
 );
 
 /** DrawerBody: the scrollable content area. */
 export const DrawerBody = ({ className, ref, ...rest }: DrawerSectionProps) => (
-  <div ref={ref} className={cn(styles.body, className)} {...rest} />
+  <div
+    ref={ref}
+    className={cn(styles.body, className)}
+    {...rest}
+    {...hooks("drawer", "body")}
+  />
 );
 
 /** DrawerFooter: right-aligned, wrapping action row. */
@@ -97,7 +112,12 @@ export const DrawerFooter = ({
   ref,
   ...rest
 }: DrawerSectionProps) => (
-  <div ref={ref} className={cn(styles.footer, className)} {...rest} />
+  <div
+    ref={ref}
+    className={cn(styles.footer, className)}
+    {...rest}
+    {...hooks("drawer", "footer")}
+  />
 );
 
 /**

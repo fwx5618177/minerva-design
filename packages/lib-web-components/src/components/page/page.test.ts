@@ -71,7 +71,7 @@ describe("page elements", () => {
     const el = await mount<MinervaToolbar>(
       `<minerva-toolbar aria-label="Filters" density="compact" nowrap><button>A</button></minerva-toolbar>`,
     );
-    const group = $(el, "[part=base]");
+    const group = $(el, "[part=root]");
     expect(group).toHaveAttribute("role", "group");
     expect(group).toHaveAttribute("aria-label", "Filters");
     expect(group.classList).toContain("toolbar");

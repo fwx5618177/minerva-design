@@ -66,17 +66,22 @@ const scopeCode = `<section class="brand" data-minerva-theme-scope>
   <minerva-button>Violet</minerva-button>
 </section>`;
 
-const partsCode = `/* ::part() reaches the internals an element exposes (listed on its page) */
-minerva-select::part(listbox) {
+const partsCode = `/* ::part() reaches the parts an element exposes, :state() its states
+   (both listed in the "Styling hooks" section of each component page) */
+minerva-select::part(content) {
   max-height: 240px;
 }
 
-minerva-modal::part(overlay) {
+minerva-modal:state(open)::part(overlay) {
   backdrop-filter: blur(4px);
 }
 
-minerva-tabs[variant="pills"]::part(tablist) {
+minerva-tabs:state(variant-pills)::part(list) {
   gap: var(--space-1);
+}
+
+minerva-button:state(loading)::part(label) {
+  opacity: 0.6;
 }`;
 
 const WcThemingDoc: React.FC = () => {

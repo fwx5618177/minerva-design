@@ -60,8 +60,8 @@ export class MinervaDescriptionItem extends MinervaElement {
  * @summary Native description list of labeled fields.
  * @tag minerva-description-list
  * @slot - `<minerva-description-item>` rows
- * @csspart base - The `<dl>`
- * @csspart row - Each row
+ * @csspart root - The `<dl>`
+ * @csspart row - Each row (one term / description pair)
  * @csspart term - Each `<dt>`
  * @csspart description - Each `<dd>`
  */
@@ -137,7 +137,7 @@ export class MinervaDescriptionList extends MinervaElement {
 
   protected override render() {
     const declarative = this.declarativeItems();
-    return html`<dl part="base" class="descriptionList">
+    return html`<dl part="root" class="descriptionList">
       ${(this.items ?? []).map(
         (item) =>
           html`<div part="row" class="row">

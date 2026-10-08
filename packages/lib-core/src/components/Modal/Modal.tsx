@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "../../internal/Dialog";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import type {
   ModalBodyProps,
   ModalContentProps,
@@ -56,11 +57,16 @@ export const ModalContent = ({
   return (
     <DialogContent
       overlayClassName={cn(styles.overlay, overlayClassName)}
+      overlayAttributes={hooks("modal", "overlay")}
       className={cn(styles.content, styles[size], className)}
       {...rest}
+      {...hooks("modal", "content", { size })}
     >
       {description && (
-        <DialogDescription className={styles.description}>
+        <DialogDescription
+          className={styles.description}
+          {...hooks("modal", "description")}
+        >
           {description}
         </DialogDescription>
       )}
@@ -69,6 +75,7 @@ export const ModalContent = ({
         <DialogClose
           className={styles.close}
           aria-label={closeLabel ?? t("modal.close")}
+          {...hooks("modal", "close-button")}
         >
           <IconX size={16} aria-hidden="true" />
         </DialogClose>
@@ -80,18 +87,33 @@ export const ModalContent = ({
 /** ModalHeader: the dialog title (accessible name). */
 export const ModalHeader = ({ className, ref, ...rest }: ModalHeaderProps) => (
   <DialogTitle asChild>
-    <div ref={ref} className={cn(styles.header, className)} {...rest} />
+    <div
+      ref={ref}
+      className={cn(styles.header, className)}
+      {...rest}
+      {...hooks("modal", "header")}
+    />
   </DialogTitle>
 );
 
 /** ModalBody: the scrollable content area. */
 export const ModalBody = ({ className, ref, ...rest }: ModalBodyProps) => (
-  <div ref={ref} className={cn(styles.body, className)} {...rest} />
+  <div
+    ref={ref}
+    className={cn(styles.body, className)}
+    {...rest}
+    {...hooks("modal", "body")}
+  />
 );
 
 /** ModalFooter: right-aligned, wrapping action row. */
 export const ModalFooter = ({ className, ref, ...rest }: ModalFooterProps) => (
-  <div ref={ref} className={cn(styles.footer, className)} {...rest} />
+  <div
+    ref={ref}
+    className={cn(styles.footer, className)}
+    {...rest}
+    {...hooks("modal", "footer")}
+  />
 );
 
 /**

@@ -48,10 +48,12 @@ let nextId = 0;
  * @tag minerva-input
  * @slot prefix - Content before the text (icon, "@")
  * @slot suffix - Content after the text (unit, icon, button)
- * @csspart base - The field wrapper
+ * @csspart root - The field box (wraps the input and its addons)
  * @csspart input - The native `<input>`
- * @csspart clear-button - The clear button
- * @csspart password-toggle - The password visibility toggle
+ * @csspart prefix - The content before the text
+ * @csspart suffix - The content after the text
+ * @csspart clear-button - The clear button (while there is a value)
+ * @csspart password-toggle - The password visibility toggle (type=password)
  * @csspart count - The character counter
  * @fires input - The value changed (each keystroke; native, composed)
  * @fires change - The value was committed (blur / Enter), re-dispatched from the inner input
@@ -274,6 +276,17 @@ export class MinervaInput extends FormAssociatedElement {
     this.input.focus();
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.isDisabled,
+      invalid: this.invalid || this.aria.attr("aria-invalid") === "true",
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+      variant: this.variant,
+    };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const disabled = this.isDisabled;
@@ -286,7 +299,7 @@ export class MinervaInput extends FormAssociatedElement {
     const describedBy = this.showCharCount ? this.countId : undefined;
 
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         root: true,
         [this.variant]: true,
@@ -298,7 +311,9 @@ export class MinervaInput extends FormAssociatedElement {
     >
       ${
         this.slots.test("prefix")
-          ? html`<span class="addon start"><slot name="prefix"></slot></span>`
+          ? html`<span class="addon start" part="prefix"
+              ><slot name="prefix"></slot
+            ></span>`
           : nothing
       }
       <input
@@ -370,7 +385,9 @@ export class MinervaInput extends FormAssociatedElement {
       }
       ${
         this.slots.test("suffix")
-          ? html`<span class="addon end"><slot name="suffix"></slot></span>`
+          ? html`<span class="addon end" part="suffix"
+              ><slot name="suffix"></slot
+            ></span>`
           : nothing
       }
     </div>`;

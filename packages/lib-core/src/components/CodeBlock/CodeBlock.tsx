@@ -4,6 +4,7 @@ import useI18n from "../../hooks/useI18n";
 import IconButton from "../IconButton";
 import { IconCheck, IconCopy, IconX } from "../../internal/icons";
 import type { CodeBlockProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./codeBlock.module.scss";
 
 /** How long the "Copied" / "Copy failed" feedback stays visible (ms). */
@@ -93,8 +94,9 @@ export const CodeBlock = ({
         {...rest}
         className={cn(styles.codeBlock, className)}
         style={{ maxHeight, ...style }}
+        {...hooks("code-block", "region")}
       >
-        <code>{children}</code>
+        <code {...hooks("code-block", "code")}>{children}</code>
       </pre>
     );
   }
@@ -111,9 +113,14 @@ export const CodeBlock = ({
       {...(rest as HTMLAttributes<HTMLDivElement>)}
       className={cn(styles.root, className)}
       style={{ maxHeight, ...style }}
+      {...hooks("code-block", "root")}
     >
-      <pre {...regionProps} className={cn(styles.codeBlock, styles.copyable)}>
-        <code>{children}</code>
+      <pre
+        {...regionProps}
+        className={cn(styles.codeBlock, styles.copyable)}
+        {...hooks("code-block", "region")}
+      >
+        <code {...hooks("code-block", "code")}>{children}</code>
       </pre>
       <div className={styles.actions}>
         <IconButton

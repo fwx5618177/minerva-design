@@ -38,6 +38,7 @@ import { usePresence } from "../../internal/usePresence";
 import { useScrollLock } from "../../internal/useScrollLock";
 import { adjacentTabbable } from "../../internal/tabbing";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import type {
   MenuAction,
   MenuCheckboxEntry,
@@ -66,7 +67,7 @@ export const contentClassName = (size: MenuSize, className?: string) =>
   cn(styles.content, size === "small" && styles.small, className);
 
 const isDisabledItem = (item: HTMLElement) =>
-  item.hasAttribute("data-disabled");
+  item.hasAttribute("data-menu-disabled");
 
 const itemText = (item: HTMLElement) =>
   item.dataset.textValue ??
@@ -87,7 +88,11 @@ const focusNoScroll = (el: HTMLElement | null | undefined) =>
 /* Root context                                                               */
 /* -------------------------------------------------------------------------- */
 
+/** Component whose hooks the panels and items carry. */
+export type MenuComponent = "menu" | "context-menu";
+
 interface MenuRootContextValue {
+  component: MenuComponent;
   onSelect?: (item: MenuAction) => void;
   closeOnSelect: boolean;
   size: MenuSize;
@@ -466,9 +471,6 @@ const MenuPanel = ({
             aria-labelledby={ariaLabel ? undefined : labelledBy}
             tabIndex={-1}
             dir={root.dir}
-            data-state={open ? "open" : "closed"}
-            data-side={side}
-            data-align={align}
             className={contentClassName(root.size, className)}
             style={
               isPositioned
@@ -476,6 +478,13 @@ const MenuPanel = ({
                 : { ...floatingStyles, ...UNPOSITIONED }
             }
             onKeyDown={onKeyDown}
+            {...hooks(root.component, "content", {
+              state: open ? "open" : "closed",
+              size: root.size,
+              side,
+              align,
+              placement: finalPlacement,
+            })}
           >
             <Entries entries={entries} />
           </div>
@@ -525,6 +534,7 @@ const ItemShell = ({
   onElement,
 }: ItemShellProps) => {
   const panel = usePanel();
+  const { component } = useMenuRoot();
   const [highlighted, setHighlighted] = useState(false);
   const apiRef = useRef(api);
   useLayoutEffect(() => {
@@ -563,10 +573,11 @@ const ItemShell = ({
       className={styles.item}
       data-minerva-menu-item=""
       data-text-value={text}
-      data-highlighted={highlighted ? "" : undefined}
-      data-disabled={disabled ? "" : undefined}
+      data-menu-highlighted={highlighted ? "" : undefined}
+      data-menu-disabled={disabled ? "" : undefined}
       aria-disabled={disabled || undefined}
       {...attributes}
+      {...hooks(component, "item")}
       onFocus={(event) => {
         if (event.target === event.currentTarget) setHighlighted(true);
       }}
@@ -586,12 +597,22 @@ const ItemShell = ({
     >
       {indicator}
       {icon && (
-        <span className={styles.icon} aria-hidden="true">
+        <span
+          className={styles.icon}
+          aria-hidden="true"
+          {...hooks(component, "icon")}
+        >
           {icon}
         </span>
       )}
-      <span className={styles.text}>{label}</span>
-      {shortcut && <span className={styles.shortcut}>{shortcut}</span>}
+      <span className={styles.text} {...hooks(component, "item-label")}>
+        {label}
+      </span>
+      {shortcut && (
+        <span className={styles.shortcut} {...hooks(component, "shortcut")}>
+          {shortcut}
+        </span>
+      )}
       {trailing}
     </div>
   );
@@ -644,10 +665,14 @@ const CheckboxItem = ({ entry }: { entry: MenuCheckboxEntry }) => {
       disabled={entry.disabled}
       attributes={{
         "aria-checked": checked,
-        "data-state": checked ? "checked" : "unchecked",
+        "data-menu-state": checked ? "checked" : "unchecked",
       }}
       indicator={
-        <span className={styles.indicator} aria-hidden="true">
+        <span
+          className={styles.indicator}
+          aria-hidden="true"
+          {...hooks(root.component, "item-indicator")}
+        >
           {checked && <IconCheck size={16} />}
         </span>
       }
@@ -684,10 +709,14 @@ const RadioItem = ({
       disabled={item.disabled}
       attributes={{
         "aria-checked": checked,
-        "data-state": checked ? "checked" : "unchecked",
+        "data-menu-state": checked ? "checked" : "unchecked",
       }}
       indicator={
-        <span className={styles.indicator} aria-hidden="true">
+        <span
+          className={styles.indicator}
+          aria-hidden="true"
+          {...hooks(root.component, "item-indicator")}
+        >
           {checked && <span className={styles.dot} />}
         </span>
       }
@@ -727,9 +756,14 @@ const RadioGroup = ({ entry }: { entry: MenuRadioGroupEntry }) => {
     <div
       role="group"
       aria-labelledby={entry.label != null ? labelId : undefined}
+      {...hooks(root.component, "group")}
     >
       {entry.label != null && (
-        <div id={labelId} className={styles.label}>
+        <div
+          id={labelId}
+          className={styles.label}
+          {...hooks(root.component, "label")}
+        >
           {entry.label}
         </div>
       )}
@@ -770,7 +804,7 @@ const SubmenuItem = ({ entry }: { entry: MenuAction }) => {
           "aria-haspopup": "menu",
           "aria-expanded": open,
           "aria-controls": open ? subId : undefined,
-          "data-state": open ? "open" : "closed",
+          "data-menu-state": open ? "open" : "closed",
         }}
         trailing={
           <IconChevronRight
@@ -804,43 +838,47 @@ const SubmenuItem = ({ entry }: { entry: MenuAction }) => {
 const SUB_OFFSET = { mainAxis: 4, crossAxis: -5 };
 
 /** Renders entries (items, separators, groups, submenus) recursively. */
-const Entries = ({ entries }: { entries: MenuEntry[] }) => (
-  <>
-    {entries.map((entry) => {
-      if ("type" in entry) {
-        switch (entry.type) {
-          case "separator":
-            return (
-              <div
-                key={entry.key}
-                role="separator"
-                aria-orientation="horizontal"
-                className={styles.separator}
-              />
-            );
-          case "group":
-            return (
-              <Group
-                key={entry.key}
-                label={entry.label}
-                entries={entry.items}
-              />
-            );
-          case "checkbox":
-            return <CheckboxItem key={entry.key} entry={entry} />;
-          case "radio-group":
-            return <RadioGroup key={entry.key} entry={entry} />;
+const Entries = ({ entries }: { entries: MenuEntry[] }) => {
+  const { component } = useMenuRoot();
+  return (
+    <>
+      {entries.map((entry) => {
+        if ("type" in entry) {
+          switch (entry.type) {
+            case "separator":
+              return (
+                <div
+                  key={entry.key}
+                  role="separator"
+                  aria-orientation="horizontal"
+                  className={styles.separator}
+                  {...hooks(component, "separator")}
+                />
+              );
+            case "group":
+              return (
+                <Group
+                  key={entry.key}
+                  label={entry.label}
+                  entries={entry.items}
+                />
+              );
+            case "checkbox":
+              return <CheckboxItem key={entry.key} entry={entry} />;
+            case "radio-group":
+              return <RadioGroup key={entry.key} entry={entry} />;
+          }
         }
-      }
-      const action = entry as MenuAction;
-      return action.children?.length ? (
-        <SubmenuItem key={action.key} entry={action} />
-      ) : (
-        <ActionItem key={action.key} entry={action} />
-      );
-    })}
-  </>
-);
+        const action = entry as MenuAction;
+        return action.children?.length ? (
+          <SubmenuItem key={action.key} entry={action} />
+        ) : (
+          <ActionItem key={action.key} entry={action} />
+        );
+      })}
+    </>
+  );
+};
 
 const Group = ({
   label,
@@ -850,9 +888,10 @@ const Group = ({
   entries: MenuEntry[];
 }) => {
   const labelId = useId();
+  const { component } = useMenuRoot();
   return (
-    <div role="group" aria-labelledby={labelId}>
-      <div id={labelId} className={styles.label}>
+    <div role="group" aria-labelledby={labelId} {...hooks(component, "group")}>
+      <div id={labelId} className={styles.label} {...hooks(component, "label")}>
         {label}
       </div>
       <Entries entries={entries} />
@@ -865,6 +904,8 @@ const Group = ({
 /* -------------------------------------------------------------------------- */
 
 export interface MenuRootProps {
+  /** Component whose hooks the panels and items carry */
+  component: MenuComponent;
   items: MenuEntry[];
   onSelect?: (item: MenuAction) => void;
   closeOnSelect: boolean;
@@ -897,6 +938,7 @@ export interface MenuRootProps {
  * radio state, focus restoration and the root panel.
  */
 export const MenuRoot = ({
+  component,
   items,
   onSelect,
   closeOnSelect,
@@ -927,6 +969,7 @@ export const MenuRoot = ({
 
   const context = useMemo<MenuRootContextValue>(
     () => ({
+      component,
       onSelect,
       closeOnSelect,
       size,
@@ -949,6 +992,7 @@ export const MenuRoot = ({
         setStoredState((prev) => ({ ...prev, [key]: value })),
     }),
     [
+      component,
       onSelect,
       closeOnSelect,
       size,

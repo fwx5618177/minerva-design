@@ -9,6 +9,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import {
   IconCircleCheck,
   IconCircleX,
@@ -84,7 +85,9 @@ const moveFocusFromToast = (el: HTMLElement, tracker: ToastFocusTracker) => {
   const viewport = el.parentElement;
   if (!viewport) return;
   const others = Array.from(
-    viewport.querySelectorAll<HTMLElement>(':scope > [data-state="open"]'),
+    viewport.querySelectorAll<HTMLElement>(
+      ':scope > [data-toast-state="open"]',
+    ),
   ).filter((other) => other !== el);
   const next =
     others.find(
@@ -167,8 +170,8 @@ const ToastViewItem = ({
     <div
       ref={rootRef}
       className={cn(styles.toast, styles[item.color])}
-      data-state={closing ? "closing" : "open"}
-      data-loading={item.loading || undefined}
+      data-toast-state={closing ? "closing" : "open"}
+      data-toast-loading={item.loading || undefined}
       // A pending (loading) toast is a polite status even when danger
       role={item.color === "danger" && !item.loading ? "alert" : "status"}
       style={
@@ -189,9 +192,14 @@ const ToastViewItem = ({
         e.stopPropagation();
         close();
       }}
+      {...hooks("toast-region", "toast")}
     >
       {item.icon !== null && (
-        <span className={styles.icon} aria-hidden="true">
+        <span
+          className={styles.icon}
+          aria-hidden="true"
+          {...hooks("toast-region", "icon")}
+        >
           {item.icon === undefined
             ? item.loading
               ? SPINNER
@@ -200,15 +208,25 @@ const ToastViewItem = ({
         </span>
       )}
       <div className={styles.content}>
-        {item.title && <div className={styles.title}>{item.title}</div>}
+        {item.title && (
+          <div className={styles.title} {...hooks("toast-region", "title")}>
+            {item.title}
+          </div>
+        )}
         {item.description && (
-          <div className={styles.description}>{item.description}</div>
+          <div
+            className={styles.description}
+            {...hooks("toast-region", "description")}
+          >
+            {item.description}
+          </div>
         )}
       </div>
       {item.action && (
         <button
           type="button"
           className={styles.action}
+          {...hooks("toast-region", "action")}
           onClick={() => {
             item.action?.onClick();
             close();
@@ -224,12 +242,17 @@ const ToastViewItem = ({
           aria-label={closeLabel}
           data-toast-close=""
           onClick={close}
+          {...hooks("toast-region", "close-button")}
         >
           <IconX aria-hidden="true" />
         </button>
       )}
       {item.duration > 0 && !closing && (
-        <span className={styles.progress} aria-hidden="true" />
+        <span
+          className={styles.progress}
+          aria-hidden="true"
+          {...hooks("toast-region", "progress")}
+        />
       )}
     </div>
   );
@@ -280,6 +303,7 @@ const ToastViewport = ({
         return () => tracker.registerViewport(viewportKey, null);
       }}
       className={cn(styles.viewport, styles[position])}
+      {...hooks("toast-region", "root")}
       role="region"
       aria-label={
         ariaLabel ??
@@ -399,7 +423,9 @@ const ToastProvider = ({
       const viewport = [
         ...(own ? [own] : []),
         ...[...viewports.values()].filter((el) => el !== own),
-      ].find((el) => el.isConnected && el.querySelector('[data-state="open"]'));
+      ].find(
+        (el) => el.isConnected && el.querySelector('[data-toast-state="open"]'),
+      );
       if (!viewport) return;
       event.preventDefault();
       const doc = viewport.ownerDocument;

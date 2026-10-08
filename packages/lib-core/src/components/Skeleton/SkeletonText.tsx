@@ -1,6 +1,6 @@
 import { cn } from "../../utils/cn";
 import { resolveSpace } from "@minerva/core";
-import Skeleton from "./Skeleton";
+import { hooks } from "../../internal/stylingHooks";
 import type { SkeletonTextProps } from "./types";
 import styles from "./skeleton.module.scss";
 
@@ -28,15 +28,25 @@ export const SkeletonText = ({
       {...rest}
       className={cn(styles.skeletonText, className)}
       style={{ gap: resolveSpace(gap), ...style }}
+      {...hooks("skeleton-text", "root")}
     >
+      {/* The markup of decorative text Skeletons, as lines of this block */}
       {Array.from({ length: count }, (_, index) => (
-        <Skeleton
+        <span
           key={index}
-          decorative
-          variant="text"
-          animation={animation}
-          height={lineHeight}
-          width={shrinkLast && index === count - 1 ? "70%" : "100%"}
+          aria-hidden="true"
+          className={cn(
+            styles.skeleton,
+            styles.decorative,
+            styles.text,
+            styles[`animation-${animation}`],
+          )}
+          style={{
+            width: shrinkLast && index === count - 1 ? "70%" : "100%",
+            height:
+              typeof lineHeight === "number" ? `${lineHeight}px` : lineHeight,
+          }}
+          {...hooks("skeleton-text", "line")}
         />
       ))}
     </div>

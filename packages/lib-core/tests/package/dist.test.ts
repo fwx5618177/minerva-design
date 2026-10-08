@@ -80,6 +80,34 @@ const ENTRIES: Record<string, boolean> = {
   "./utils": false,
 };
 
+/**
+ * Splits a stylesheet into the content of its top-level
+ * `@layer minerva { ... }` blocks and the CSS outside of them.
+ */
+function layers(css: string): { inside: string; outside: string } {
+  const open = "@layer minerva {";
+  let inside = "";
+  let outside = "";
+  let i = 0;
+  while (i < css.length) {
+    if (!css.startsWith(open, i)) {
+      outside += css[i++];
+      continue;
+    }
+    let depth = 0;
+    let j = i + open.length - 1;
+    for (; j < css.length; j++) {
+      if (css[j] === "{") depth++;
+      else if (css[j] === "}" && --depth === 0) break;
+    }
+    inside += `${css.slice(i + open.length, j).trim()}\n`;
+    i = j + 1;
+  }
+  return { inside, outside };
+}
+const outsideLayers = (css: string) => layers(css).outside;
+const unlayer = (css: string) => layers(css).inside;
+
 describe("@minerva/lib-core dist", () => {
   it("ships every file referenced by package.json", () => {
     const files = [pkg.main, pkg.module, pkg.types];
@@ -172,6 +200,24 @@ describe("@minerva/lib-core dist", () => {
       }
     },
   );
+
+  it("ships the styling hooks manifest of @minerva/core (ESM + CJS)", async () => {
+    const entry = require.resolve("@minerva/core/styling-hooks");
+    const cjs = require("@minerva/core/styling-hooks");
+    const esm = await import(
+      pathToFileURL(entry.replace(/\.cjs$/, ".js")).href
+    );
+    for (const mod of [esm, cjs]) {
+      expect(mod.stylingHooks.button.wc).toBe("minerva-button");
+      expect(mod.reactSelector("button", "label")).toBe(
+        '[data-minerva="button"][data-part="label"]',
+      );
+    }
+    // the manifest is data for tooling: the components never import it
+    const helper = readFileSync(dist("dist/internal/stylingHooks.js"), "utf8");
+    expect(helper).not.toContain("@minerva/core/styling-hooks");
+    expect(helper).toContain('"data-minerva"');
+  });
 
   it("exposes the theme-utils API from ESM and CJS, usable on the server", async () => {
     const esm = await import(
@@ -331,11 +377,30 @@ describe("@minerva/lib-core dist", () => {
     // a component sheet includes the styles of the components it renders
     const confirm = readFileSync(dist("dist/styles/confirm.css"), "utf8");
     const button = readFileSync(dist("dist/styles/button.css"), "utf8");
-    expect(confirm).toContain(button.trim().slice(0, 200));
+    expect(unlayer(confirm)).toContain(unlayer(button).slice(0, 200));
     // resolvable through the exports map
     expect(require.resolve("@minerva/lib-core/styles/button.css")).toBe(
       dist("dist/styles/button.css"),
     );
+  });
+
+  it("ships every stylesheet inside @layer minerva (unlayered app CSS wins)", () => {
+    const files = [
+      "dist/style.css",
+      ...readdirSync(dist("dist/styles")).map((f) => `dist/styles/${f}`),
+    ];
+    for (const file of files) {
+      const css = readFileSync(dist(file), "utf8");
+      // nothing outside the layer blocks (no unlayered rule, no @import)
+      expect(outsideLayers(css).trim(), file).toBe("");
+      expect(css, file).toMatch(/^@layer minerva \{/);
+    }
+    // the tokens of @minerva/core are layered at the source
+    const tokens = readFileSync(
+      require.resolve("@minerva/core/tokens.css"),
+      "utf8",
+    );
+    expect(outsideLayers(tokens).trim()).toBe("");
   });
 
   it("every documented CSS variable (// @css-var) is used by the compiled CSS", () => {

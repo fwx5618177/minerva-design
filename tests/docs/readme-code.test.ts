@@ -19,6 +19,7 @@ const PATHS: Record<string, string[]> = {
     "packages/lib-web-components/src/elements/*.ts",
   ],
   "@minerva/core": ["packages/core/src/index.ts"],
+  "@minerva/core/styling-hooks": ["packages/core/src/styling-hooks/index.ts"],
   "@minerva/core/*.css": ["packages/lib-core/src/global.d.ts"],
 };
 

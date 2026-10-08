@@ -18,6 +18,7 @@ import { IconButton } from "../IconButton";
 import { Input } from "../Input/Input";
 import { Tag } from "../Tag";
 import type { TagInputProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./tagInput.module.scss";
 
 const EMPTY: readonly string[] = [];
@@ -243,9 +244,17 @@ export const TagInput = ({
       {...pickDataAttributes(rest)}
       className={cn(styles.root, className)}
       style={style}
+      {...hooks("tag-input", "root", {
+        state: open ? "open" : "closed",
+        disabled,
+        invalid: invalid || !!field?.invalid,
+        readonly: readOnly,
+        required: !!field?.required,
+        size,
+      })}
     >
       {tags.length > 0 && (
-        <div className={styles.values}>
+        <div className={styles.values} {...hooks("tag-input", "tags")}>
           {tags.map((tag, index) => (
             <Tag
               key={`${index}-${tag}`}
@@ -332,9 +341,14 @@ export const TagInput = ({
               aria-label={ariaLabel}
               aria-labelledby={ariaLabelledBy}
               className={styles.list}
+              {...hooks("tag-input", "list")}
             >
               {filtered.length === 0 && (
-                <li className={styles.empty} role="presentation">
+                <li
+                  className={styles.empty}
+                  role="presentation"
+                  {...hooks("tag-input", "empty")}
+                >
                   {emptyText ?? t("tagInput.empty")}
                 </li>
               )}
@@ -353,6 +367,7 @@ export const TagInput = ({
                     select(suggestion);
                   }}
                   onMouseEnter={() => setHighlight(index)}
+                  {...hooks("tag-input", "option")}
                 >
                   {suggestion.label}
                 </li>

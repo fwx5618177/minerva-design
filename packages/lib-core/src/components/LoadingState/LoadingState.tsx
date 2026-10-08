@@ -2,6 +2,7 @@ import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { ProgressIndicator } from "../ProgressIndicator";
 import type { LoadingStateProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./loadingState.module.scss";
 
 /**
@@ -25,13 +26,14 @@ export const LoadingState = ({
       aria-live="polite"
       aria-atomic="true"
       {...rest}
+      {...hooks("loading-state", "root", { size })}
     >
-      <ProgressIndicator
-        className={styles.indicator}
-        color="current"
-        decorative
-      />
-      <span className={styles.label}>{label ?? t("loadingState.label")}</span>
+      <span className={styles.indicator} {...hooks("loading-state", "spinner")}>
+        <ProgressIndicator color="current" decorative />
+      </span>
+      <span className={styles.label} {...hooks("loading-state", "label")}>
+        {label ?? t("loadingState.label")}
+      </span>
     </div>
   );
 };

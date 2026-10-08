@@ -111,15 +111,14 @@ const onDocumentKeyDown = (event: KeyboardEvent) => {
  *
  * @summary Toast stack (viewport) rendering the toasts of the `toast()` API.
  * @tag minerva-toast-region
- * @csspart viewport - The fixed stack (`role="region"`)
- * @csspart toast - A toast
- * @csspart icon - The icon wrapper of a toast
- * @csspart content - The title / description wrapper
- * @csspart title - The title
- * @csspart description - The description
- * @csspart action - The action button
- * @csspart close-button - The close (×) button
- * @csspart progress - The countdown bar
+ * @csspart root - The fixed stack (`role="region"`)
+ * @csspart toast - A toast (`role="status"`, or `alert` for danger)
+ * @csspart icon - The icon of a toast (spinner while loading)
+ * @csspart title - The title of a toast
+ * @csspart description - The description of a toast
+ * @csspart action - The action button of a toast
+ * @csspart close-button - The close (×) button of a toast
+ * @csspart progress - The countdown bar of a timed toast
  * @fires minerva-close - A toast of this region started closing (`detail: { id, reason }`; reason: "timeout" | "close-button" | "action" | "escape" | "dismiss" | "overflow")
  * @fires minerva-after-close - A toast of this region was removed after its exit animation (`detail: { id }`)
  */
@@ -290,7 +289,7 @@ export class MinervaToastRegion extends MinervaElement {
   handleHotkey(event: KeyboardEvent): boolean {
     const viewport = this.viewport;
     if (!viewport || !matchesHotkey(event, this.hotkey)) return false;
-    if (!viewport.querySelector('[data-state="open"]')) return false;
+    if (!viewport.querySelector('[data-toast-state="open"]')) return false;
     event.preventDefault();
     const active = getActiveElement() as HTMLElement | null;
     if (
@@ -342,7 +341,9 @@ export class MinervaToastRegion extends MinervaElement {
     const viewport = this.viewport;
     if (!viewport) return;
     const others = Array.from(
-      viewport.querySelectorAll<HTMLElement>(':scope > [data-state="open"]'),
+      viewport.querySelectorAll<HTMLElement>(
+        ':scope > [data-toast-state="open"]',
+      ),
     ).filter((other) => other !== el);
     const next =
       others.find(
@@ -419,8 +420,8 @@ export class MinervaToastRegion extends MinervaElement {
     return html`<div
       part="toast"
       class=${classMap({ toast: true, [item.color]: true })}
-      data-state=${closing ? "closing" : "open"}
-      data-loading=${item.loading ? "true" : nothing}
+      data-toast-state=${closing ? "closing" : "open"}
+      data-toast-loading=${item.loading ? "true" : nothing}
       role=${item.color === "danger" && !item.loading ? "alert" : "status"}
       style=${styleMap(
         item.duration > 0 ? { "--toast-duration": `${item.duration}ms` } : {},
@@ -442,7 +443,7 @@ export class MinervaToastRegion extends MinervaElement {
       }}
     >
       ${this.renderIcon(item)}
-      <div class="content" part="content">
+      <div class="content">
         ${
           item.title
             ? html`<div class="title" part="title">${item.title}</div>`
@@ -509,7 +510,7 @@ export class MinervaToastRegion extends MinervaElement {
       ? this.position
       : "top-right";
     return html`<div
-      part="viewport"
+      part="root"
       class=${classMap({ viewport: true, [position]: true })}
       popover="manual"
       role="region"

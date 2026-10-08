@@ -29,8 +29,8 @@ const cssLength = (value: string | number) =>
  * @summary Separator line, optionally with text.
  * @tag minerva-divider
  * @slot - Optional text of a horizontal divider (ignored when vertical)
- * @csspart base - The `<hr>` / `role="separator"` element
- * @csspart text - The text wrapper
+ * @csspart root - The <hr>, or the role=separator element of a divider with text (align: position of the text)
+ * @csspart label - The text between the two halves of the line
  */
 export class MinervaDivider extends MinervaElement {
   static override tagName = "minerva-divider";
@@ -85,6 +85,16 @@ export class MinervaDivider extends MinervaElement {
 
   private readonly slots = new HasSlotController(this);
 
+  protected override hookStates() {
+    const hasText =
+      this.orientation === "horizontal" && this.slots.test("[default]");
+    return {
+      orientation: this.orientation,
+      variant: this.variant,
+      align: hasText ? this.textAlign : undefined,
+    };
+  }
+
   protected override updated(): void {
     if (
       DEV &&
@@ -127,17 +137,17 @@ export class MinervaDivider extends MinervaElement {
     });
     if (hasText) {
       return html`<div
-        part="base"
+        part="root"
         role="separator"
         aria-orientation=${this.orientation}
         class=${classes}
         style=${styleMap(style)}
       >
-        <span class="text" part="text"><slot></slot></span>
+        <span class="text" part="label"><slot></slot></span>
       </div>`;
     }
     return html`<hr
-      part="base"
+      part="root"
       aria-orientation=${this.orientation}
       class=${classes}
       style=${styleMap(style)}

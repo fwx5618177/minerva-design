@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import type { TimePickerPanelProps, TimeUnit } from "./types";
 import useI18n from "../../hooks/useI18n";
 import { logicalArrowKey } from "../../internal/direction";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./timePickerPanel.module.scss";
 
 type Kind = "hour" | "minute" | "second" | "ampm";
@@ -209,6 +210,7 @@ const TimePickerPanel = ({
             <div
               key={column.kind}
               className={styles.timeColumn}
+              {...hooks("time-picker", "column")}
               role="listbox"
               aria-label={column.label}
               // Roving tabindex lives on the options; the listbox is only a
@@ -221,6 +223,7 @@ const TimePickerPanel = ({
                 return (
                   <div
                     key={unit.value}
+                    {...hooks("time-picker", "item")}
                     role="option"
                     aria-selected={selected}
                     aria-disabled={unit.disabled || undefined}

@@ -16,6 +16,7 @@ import {
   useFormControlProps,
 } from "../FormControl/context";
 import { findCascaderPath, flattenCascaderOptions } from "@minerva/core";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./cascader.module.scss";
 
 type CascaderValue = (string | number)[];
@@ -240,6 +241,7 @@ const Cascader = ({
           <div
             key={path.map((o) => o.value).join("/")}
             className={styles.searchOption}
+            {...hooks("cascader", "item")}
             role="option"
             aria-selected={false}
             tabIndex={0}
@@ -290,6 +292,7 @@ const Cascader = ({
       onKeyDown={(e) => {
         if (e.key === "Tab") closeDropdown();
       }}
+      {...hooks("cascader", "content", { state: "open" })}
     >
       {searching ? (
         renderSearchResults()
@@ -324,6 +327,12 @@ const Cascader = ({
       ref={setAnchor}
       style={{ width, ...style }}
       onBlur={handleBlur}
+      {...hooks("cascader", "root", {
+        state: isOpen ? "open" : "closed",
+        disabled,
+        readonly: readOnly,
+        invalid,
+      })}
     >
       {/* Pointer convenience: clicking anywhere on the selector toggles the
           dropdown. Keyboard users get the same via the inner combobox input
@@ -339,6 +348,7 @@ const Cascader = ({
           if (!isOpen) openDropdown();
           else if (!showSearch) closeDropdown();
         }}
+        {...hooks("cascader", "control")}
       >
         {/* The field state is resolved here (explicit props win over the
             FormControl), so the inner Input must not merge it again. */}
@@ -373,6 +383,7 @@ const Cascader = ({
             type="button"
             className={styles.clearIcon}
             aria-label={t("cascader.clear")}
+            {...hooks("cascader", "clear-button")}
             onClick={(e) => {
               e.stopPropagation();
               handleClear();
@@ -384,6 +395,7 @@ const Cascader = ({
         <span
           className={cn(styles.arrow, isOpen && styles.open)}
           aria-hidden="true"
+          {...hooks("cascader", "icon")}
         >
           <IconChevronDown className={styles.icon} />
         </span>

@@ -25,7 +25,7 @@ describe("<minerva-skeleton>", () => {
     const el = await mount<MinervaSkeleton>(
       `<minerva-skeleton></minerva-skeleton>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("role", "status");
     expect(base).toHaveAttribute("aria-busy", "true");
     expect(base).toHaveAttribute("aria-label", "Loading");
@@ -53,7 +53,7 @@ describe("<minerva-skeleton>", () => {
     const el = await mount<MinervaSkeleton>(
       `<minerva-skeleton avatar avatar-shape="square" avatar-size="48" heading paragraph></minerva-skeleton>`,
     );
-    expect($(el, "[part=base]").classList).toContain("withAvatar");
+    expect($(el, "[part=root]").classList).toContain("withAvatar");
     const avatar = $(el, ".avatar");
     expect(avatar.classList).toContain("avatar-square");
     expect(avatar.style.width).toBe("48px");
@@ -75,7 +75,7 @@ describe("<minerva-skeleton>", () => {
     const el = await mount<MinervaSkeleton>(
       `<minerva-skeleton decorative variant="circular" size="24"></minerva-skeleton>`,
     );
-    const block = $(el, "span[part=base]");
+    const block = $(el, "span[part=root]");
     expect(block).toHaveAttribute("aria-hidden", "true");
     expect(block).not.toHaveAttribute("role");
     expect(block.classList).toContain("decorative");
@@ -99,7 +99,7 @@ describe("<minerva-skeleton>", () => {
     const el = await mount<MinervaSkeleton>(
       `<minerva-skeleton aria-label="Loading profile"></minerva-skeleton>`,
     );
-    expect($(el, "[part=base]")).toHaveAttribute(
+    expect($(el, "[part=root]")).toHaveAttribute(
       "aria-label",
       "Loading profile",
     );
@@ -107,7 +107,7 @@ describe("<minerva-skeleton>", () => {
       `<minerva-config locale="ja"><minerva-skeleton></minerva-skeleton></minerva-config>`,
       "minerva-skeleton",
     );
-    expect($(fr, "[part=base]").getAttribute("aria-label")).not.toBe("Loading");
+    expect($(fr, "[part=root]").getAttribute("aria-label")).not.toBe("Loading");
   });
 
   it("warns about invalid line counts", async () => {
@@ -125,7 +125,7 @@ describe("<minerva-skeleton-text>", () => {
     const el = await mount<MinervaSkeletonText>(
       `<minerva-skeleton-text></minerva-skeleton-text>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("aria-hidden", "true");
     expect(base.classList).toContain("skeletonText");
     expect(base.style.gap).toBe("var(--space-2)");
@@ -144,7 +144,7 @@ describe("<minerva-skeleton-text>", () => {
     expect(lines).toHaveLength(2);
     expect(lines[1].style.width).toBe("100%");
     expect(lines[1].style.height).toBe("12px");
-    expect($(el, "[part=base]").style.gap).toBe("6px");
+    expect($(el, "[part=root]").style.gap).toBe("6px");
   });
 
   it("warns about invalid line counts", async () => {

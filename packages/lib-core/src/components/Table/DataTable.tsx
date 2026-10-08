@@ -4,6 +4,7 @@ import Button from "../Button/Button";
 import Pagination from "../Pagination/Pagination";
 import { Table } from "./Table";
 import type { DataTableProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./table.module.scss";
 
 /**
@@ -23,9 +24,21 @@ export function DataTable<T>({
   const showError = Boolean(error) && !loading;
 
   return (
-    <div className={styles.dataTable} aria-busy={loading || undefined}>
+    <div
+      className={styles.dataTable}
+      aria-busy={loading || undefined}
+      {...hooks("data-table", "root", {
+        loading,
+        size: props.size ?? "medium",
+        variant: props.variant ?? "simple",
+      })}
+    >
       {showError ? (
-        <div className={styles.error} role="alert">
+        <div
+          className={styles.error}
+          role="alert"
+          {...hooks("data-table", "error")}
+        >
           <div className={styles.errorTitle}>{error}</div>
           {onRetry && (
             <Button

@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import type { SkeletonProps } from "./types";
 import styles from "./skeleton.module.scss";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * @name Skeleton 骨架屏
@@ -79,6 +80,7 @@ const Skeleton = ({
           borderRadius,
           ...style,
         }}
+        {...hooks("skeleton", "root", { variant })}
       />
     );
   }
@@ -104,6 +106,7 @@ const Skeleton = ({
             borderRadius,
             ...style,
           }}
+          {...hooks("skeleton", "line")}
         />
       ));
   };
@@ -125,6 +128,7 @@ const Skeleton = ({
           height:
             typeof avatarSize === "number" ? `${avatarSize}px` : avatarSize,
         }}
+        {...hooks("skeleton", "avatar")}
       />
     );
   };
@@ -149,6 +153,7 @@ const Skeleton = ({
               width: line.width,
               height: line.height,
             }}
+            {...hooks("skeleton", "line")}
           />
         ))}
       </div>
@@ -165,6 +170,7 @@ const Skeleton = ({
           styles.title,
           styles[`animation-${animation}`],
         )}
+        {...hooks("skeleton", "title")}
       />
     );
   };
@@ -206,6 +212,7 @@ const Skeleton = ({
         className,
       )}
       {...rest}
+      {...hooks("skeleton", "root", { variant })}
     >
       {renderContent()}
     </div>

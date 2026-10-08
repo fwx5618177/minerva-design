@@ -2,6 +2,7 @@ import { Slot } from "../../internal/Slot";
 import { cn } from "../../utils/cn";
 import type { ProseProps } from "./types";
 import styles from "./prose.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * Prose: unframed, theme-aware typography for semantic HTML (articles,
@@ -16,7 +17,12 @@ export const Prose = ({
 }: ProseProps) => {
   const Component = asChild ? Slot : "div";
   return (
-    <Component ref={ref} className={cn(styles.prose, className)} {...rest} />
+    <Component
+      ref={ref}
+      className={cn(styles.prose, className)}
+      {...rest}
+      {...hooks("prose", "root")}
+    />
   );
 };
 

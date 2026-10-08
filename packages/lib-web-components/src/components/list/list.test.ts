@@ -31,7 +31,7 @@ describe("<minerva-list>", () => {
 
   it("renders lib-core's list classes, density and dividers", async () => {
     const el = await mount<MinervaList>(`<minerva-list></minerva-list>`);
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("list");
     expect(base.classList).toContain("dividers");
     expect(base.classList).not.toContain("compact");
@@ -56,7 +56,7 @@ describe("<minerva-list>", () => {
         <button slot="actions">Pay</button>
       </minerva-list-item>`,
     );
-    expect($(el, "[part=base]").classList).toContain("item");
+    expect($(el, "[part=root]").classList).toContain("item");
     expect($(el, ".primary").textContent?.trim()).toBe("Invoice #12");
     expect($(el, ".secondary").textContent?.trim()).toBe("Due today");
     expect($(el, ".icon")).toHaveAttribute("aria-hidden", "true");

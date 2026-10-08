@@ -20,7 +20,7 @@ describe("<minerva-avatar>", () => {
     const el = await mount<MinervaAvatar>(
       `<minerva-avatar name="Ada Lovelace"></minerva-avatar>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("role", "img");
     expect(base).toHaveAttribute("aria-label", "Ada Lovelace");
     expect(base.classList).toContain("avatar");
@@ -87,7 +87,7 @@ describe("<minerva-avatar>", () => {
       `<minerva-avatar name="A" shape="rounded" size="40" stacked></minerva-avatar>`,
     );
     expect(el.size).toBe(40);
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("rounded");
     expect(base.classList).toContain("stacked");
     expect(base.style.getPropertyValue("--avatar-size")).toBe("40px");
@@ -120,7 +120,7 @@ describe("<minerva-avatar-group>", () => {
         <minerva-avatar name="B"></minerva-avatar>
       </minerva-avatar-group>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("role", "group");
     expect(base).toHaveAttribute("aria-label", "Avatar group");
     const slots = el.shadowRoot!.querySelectorAll<HTMLSlotElement>(
@@ -142,7 +142,7 @@ describe("<minerva-avatar-group>", () => {
     expect(el.shadowRoot!.querySelectorAll(".avatarGroupItem")).toHaveLength(2);
     expect($(el, ".count").textContent?.trim()).toBe("+4");
     expect($(el, ".count")).toHaveAttribute("aria-hidden", "true");
-    expect($(el, "[part=base]")).toHaveAttribute(
+    expect($(el, "[part=root]")).toHaveAttribute(
       "aria-label",
       "Avatar group with 4 more",
     );

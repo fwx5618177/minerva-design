@@ -1,6 +1,7 @@
 import type { CSSProperties, ElementType } from "react";
 import { resolveSize, resolveSpace } from "@minerva/core";
 import type { BoxProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 
 /** Surface aliases accepted by `bg` (`bg.*` shorthands -> surface tokens) */
 const backgrounds: Record<string, string> = {
@@ -99,7 +100,7 @@ const Box = ({
     ...style,
   };
 
-  return <Tag style={computed} {...rest} />;
+  return <Tag style={computed} {...rest} {...hooks("box", "root")} />;
 };
 
 export default Box;

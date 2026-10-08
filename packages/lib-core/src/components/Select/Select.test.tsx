@@ -221,7 +221,7 @@ describe("Select", () => {
       </Select>,
     );
     expect(html).toContain('data-component="select"');
-    expect(html).toMatch(/<span class="value"><span[^>]*>Pick<\/span>/);
+    expect(html).toMatch(/<span class="value"[^>]*><span[^>]*>Pick<\/span>/);
   });
 
   it("inherits id, invalid and disabled from a FormControl", () => {
@@ -765,7 +765,7 @@ describe("Select SSR", () => {
     const html = renderToStaticMarkup(
       <Langs name="lang" defaultValue="en" defaultOpen />,
     );
-    expect(html).toMatch(/<span class="value"><span>English<\/span>/);
+    expect(html).toMatch(/<span class="value"[^>]*><span>English<\/span>/);
     expect(html).not.toContain("data-placeholder");
     expect(html).not.toContain('role="listbox"');
     expect(html).toMatch(/<option value="en" selected="">English<\/option>/);
@@ -773,7 +773,7 @@ describe("Select SSR", () => {
 
   it("server-renders the label of an option nested in a group", () => {
     const html = renderToStaticMarkup(<Langs defaultValue="ja" />);
-    expect(html).toMatch(/<span class="value"><span>Japanese<\/span>/);
+    expect(html).toMatch(/<span class="value"[^>]*><span>Japanese<\/span>/);
   });
 });
 

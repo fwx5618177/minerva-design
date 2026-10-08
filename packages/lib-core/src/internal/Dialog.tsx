@@ -332,6 +332,8 @@ export interface DialogContentProps
   overlayClassName?: string;
   /** Inline style of the overlay (modal only). */
   overlayStyle?: CSSProperties;
+  /** `data-*` attributes of the overlay (its styling hooks; modal only). */
+  overlayAttributes?: Record<`data-${string}`, string | undefined>;
   /** Portal container; defaults to the theme-scoped one / `document.body`. */
   container?: Element | null;
 }
@@ -358,6 +360,7 @@ export const DialogContent = ({
   forceMount = false,
   overlayClassName,
   overlayStyle,
+  overlayAttributes,
   container,
   onOpenAutoFocus,
   onCloseAutoFocus,
@@ -424,6 +427,7 @@ export const DialogContent = ({
           style={
             overlayStyle ? { ...OVERLAY_STYLE, ...overlayStyle } : OVERLAY_STYLE
           }
+          {...overlayAttributes}
           data-state={state}
           aria-hidden="true"
         />

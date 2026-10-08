@@ -1,0 +1,65 @@
+{
+  "title": "スタイルのカスタマイズ",
+  "description": "自分の CSS で Minerva のあらゆるコンポーネントのスタイルを変更する方法：デザイントークンと CSS 変数、公開された data-minerva / data-part / 状態フック、Web Components の ::part() と :state()、そして minerva カスケードレイヤー。",
+  "overview": {
+    "title": "公開された 3 つのレイヤー",
+    "text": "Minerva にはコンポーネントをカスタマイズする安定した方法が 3 つあり、軽いものから順に使えます。いずれも公開 API で、マイナーリリース間で動作し続けます（内部のクラス名や DOM 構造は対象外です）。",
+    "variables": "デザイントークンとコンポーネントの CSS 変数：色、角丸、余白、コントロールの高さ…を :root、テーマスコープ、任意の要素に設定します。",
+    "hooks": "スタイリングフック：React では data-minerva（コンポーネント）、data-part（パーツ）、状態属性（data-state、data-disabled、data-size…）。Web Components ではタグ名、::part()、:state()。両方のライブラリで同じ名前です。",
+    "layer": "minerva カスケードレイヤー：ライブラリのスタイルシートはすべて @layer minerva に入っているため、レイヤー外の CSS は !important なしで優先されます。"
+  },
+  "variables": {
+    "title": "CSS 変数",
+    "text": "まずは変数を使いましょう。テーマに追従し、コンポーネント自身の状態（ホバー、フォーカス、無効）との一貫性も保てます。各コンポーネントページに --<コンポーネント>-* 変数の一覧があり、トークンは「テーマ」で説明しています。変数は下のフックと組み合わせられます：宣言を書き直す代わりに、特定のバリアント・サイズ・状態だけに変数を設定します。"
+  },
+  "hooks": {
+    "title": "スタイリングフック（React）",
+    "text": "すべての React コンポーネントは、スタイル可能な要素に data-minerva=\"<コンポーネント>\" と data-part=\"<パーツ>\" を出力し、状態を共通語彙の属性で表します。コンポーネントのルートは data-part=\"root\" です。ポータルで描画されるオーバーレイのパーツ（ポップアップ、ダイアログ、トースト）にも data-minerva が付くので、どこに描画されても一致します。値はサーバーでもクライアントとまったく同じに出力されます（ハイドレーションの不一致はありません）。",
+    "selector": "推奨パターン：複合セレクター [data-minerva=\"x\"][data-part=\"y\"]（詳細度 0,2,0）に状態属性を加えます。ネスト（Modal 内の Button はそれ自身のコンポーネント）やポータルの影響を受けません。内部クラス名の子孫セレクターは避けてください。内部実装であり、リリース間で変わります。範囲を限定するには自分のコンテナのクラスを前に付けるか、コンポーネントに className を渡します（ルート、またはその prop が説明するパーツに付きます）。"
+  },
+  "vocabulary": {
+    "title": "状態の語彙",
+    "text": "すべてのコンポーネントが同じ状態名を使います。React ではルート（およびフローティングコンテンツなど状態を持つパーツ）の data-* 属性、Web Components ではホスト要素のカスタムステートです。",
+    "parts": "パーツも共通の語彙に従います：root、label、description、icon、start-icon、end-icon、spinner、trigger、content、overlay、header、body、footer、title、close-button、list、item、item-indicator、group、separator、input、control、thumb、track、indicator… 各コンポーネントページの「スタイリングフック」に、React と Web Components それぞれのパーツ、セレクター、状態が載っています。"
+  },
+  "wc": {
+    "title": "Web Components：::part() と :state()",
+    "text": "カスタム要素も同じ名前を公開します：タグがコンポーネント、::part(<名前>) がシャドウルート内のパーツ、状態はホストのカスタムステート（ElementInternals.states）で :state() で選択します。ホストに属性を追加しないため、サーバー描画したマークアップも不一致なくハイドレーションできます。::part() とホストへのルールは、要素内部のシャドウスタイルより常に優先されます。",
+    "support": ":state() には Chrome 125、Firefox 126、Safari 17.4 が必要です。Chromium 90-124 では旧来のダッシュ付き構文（:--open）になり、それ以外のエンジンでは状態フックがありません。その場合はホスト属性（[open]、[disabled]、[variant=\"ghost\"]）を使ってください。パーツはどこでも使えます。"
+  },
+  "layers": {
+    "title": "カスケードレイヤー：@layer minerva",
+    "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css、@minerva/lib-web-components/tokens.css は @layer minerva で囲まれています。レイヤー外の CSS は詳細度や記述順に関係なくすべてのレイヤーに勝つので、!important なしでライブラリを上書きできます。アプリでレイヤーを使う場合は、どのスタイルシートよりも前に一度だけ順序を宣言してください。",
+    "resets": "注意：レイヤー外のグローバルなリセット（button { background: none }、normalize.css…）も Minerva のスタイルを上書きするようになります。上の例のように minerva より前のレイヤー（layer(reset)）に読み込んでください。"
+  },
+  "stability": {
+    "title": "安定性ポリシー",
+    "text": "フックの仕様は機械可読です：@minerva/core/styling-hooks がマニフェスト（コンポーネント → パーツ → 状態とその値）をエクスポートし、ドキュメントはそこから生成されます。コントラクトテストはすべての React コンポーネントとカスタム要素をさまざまな状態で描画し、文書化されたフックが欠けている、または文書化されていないパーツが現れると失敗します。ロックファイル（styling-hooks.lock.json）は、意図して更新するまで仕様の変更をすべてビルドエラーにします。",
+    "minor": "マイナーリリース：コンポーネント、パーツ、状態、状態の値の追加。",
+    "major": "メジャーリリース：それらの削除・改名、または状態を別のパーツへ移すこと。",
+    "private": "対象外：クラス名、フックのない要素の DOM 構造、内部への !important による上書き。"
+  },
+  "next": {
+    "title": "次のステップ",
+    "theming": "テーマ、パレット、デザイントークン。",
+    "wcTheming": "Web Components のトークン、テーマ、ロケール。"
+  },
+  "demos": {
+    "restyle-button": {
+      "title": "Button のスタイル変更",
+      "description": "--button-* 変数によるピル型ボタン、太い outline バリアント、大文字のラベル、読み込み中に色付きのスピナー：1 行目は React（data-* フック）、2 行目は <minerva-button>（::part() / :state()）。"
+    },
+    "restyle-modal": {
+      "title": "Modal のスタイル変更",
+      "description": "ぼかしたオーバーレイ、枠線付きのパネル、開いている間だけ色付きのタイトル。React のパネルは <body> にポータルされますが、複合セレクター [data-minerva][data-part] で一致します。"
+    },
+    "restyle-tabs": {
+      "title": "Tabs のスタイル変更",
+      "description": "タブの状態フックで、下線スタイル、色付きのアクティブタブ、控えめな無効タブを実現します。"
+    },
+    "restyle-table": {
+      "title": "Table のスタイル変更",
+      "description": "データテーブルのパーツで大文字のヘッダーセルとホバー行のハイライトを実現し、React では縞模様の行も追加します（::part() は :hover などのユーザー操作の疑似クラスのみ受け付け、:nth-child は使えません）。"
+    }
+  }
+}

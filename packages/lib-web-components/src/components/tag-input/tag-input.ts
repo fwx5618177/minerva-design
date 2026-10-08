@@ -107,16 +107,17 @@ let nextId = 0;
  *
  * @summary Tag field: type, paste or pick suggestions to build a list of tags.
  * @tag minerva-tag-input
- * @csspart base - The wrapper
+ * @csspart root - The wrapper
  * @csspart tags - The list of tags
- * @csspart tag - A tag
- * @csspart remove-button - The remove button of a tag
- * @csspart field - The text field wrapper
- * @csspart input - The native text `<input>` (`role="combobox"`)
- * @csspart listbox - The suggestion list
- * @csspart option - A suggestion
- * @csspart add-button - The add button
- * @csspart clear-button - The clear button
+ * @csspart tag - A tag (web components only: React renders a Tag, styled with its own hooks)
+ * @csspart remove-button - The remove button of a tag (web components only, see tag)
+ * @csspart control - The text field box (web components only: React renders an Input, styled with its own hooks)
+ * @csspart input - The native text <input> (role="combobox"; web components only, see control)
+ * @csspart list - The suggestion list (role=listbox, while open)
+ * @csspart option - A suggestion (role=option; the highlighted one has aria-selected="true")
+ * @csspart empty - The text shown when no suggestion matches
+ * @csspart add-button - The add button (web components only: React renders an IconButton, styled with its own hooks)
+ * @csspart clear-button - The clear button (web components only: React renders an IconButton, styled with its own hooks)
  * @fires minerva-change - The tags changed (addition, removal, clearing); `detail: { value }`
  * @fires minerva-input - The typed text (draft) changed; `detail: { value }` (the draft)
  * @fires minerva-open-change - The suggestion list is about to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state
@@ -622,10 +623,21 @@ export class MinervaTagInput extends FormAssociatedElement {
     </div>`;
   }
 
+  protected override hookStates() {
+    return {
+      state: this.isOpen ? "open" : "closed",
+      disabled: this.isDisabled,
+      invalid: this.invalid,
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+    };
+  }
+
   private renderList(filtered: Suggestion[]) {
     const label = this.aria.label;
     return html`<ul
-      part="listbox"
+      part="list"
       id=${this.listId}
       role="listbox"
       popover="manual"
@@ -634,7 +646,7 @@ export class MinervaTagInput extends FormAssociatedElement {
     >
       ${
         filtered.length === 0
-          ? html`<li class="empty" role="presentation">
+          ? html`<li class="empty" part="empty" role="presentation">
               ${this.emptyText ?? this.locale.t("tagInput.empty")}
             </li>`
           : nothing
@@ -672,7 +684,7 @@ export class MinervaTagInput extends FormAssociatedElement {
     const active = open ? filtered[this.highlight] : undefined;
     const preventBlur = (event: MouseEvent) => event.preventDefault();
 
-    return html`<div part="base" class="root">
+    return html`<div part="root" class="root">
       ${
         tags.length > 0
           ? html`<div part="tags" class="values">
@@ -687,7 +699,7 @@ export class MinervaTagInput extends FormAssociatedElement {
       <div class="entry">
         <div class="combobox">
           <div
-            part="field"
+            part="control"
             class=${classMap({
               root: true,
               outline: true,

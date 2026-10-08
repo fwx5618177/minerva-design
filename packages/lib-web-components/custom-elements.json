@@ -12,20 +12,24 @@
           "name": "MinervaAlert",
           "cssParts": [
             {
-              "description": "The alert root",
-              "name": "base"
+              "description": "The alert (role=alert for danger / warning, status otherwise); state open / closed only while collapsible",
+              "name": "root"
             },
             {
-              "description": "The icon wrapper",
+              "description": "The icon (role=img)",
               "name": "icon"
             },
             {
-              "description": "The title",
-              "name": "heading"
+              "description": "The title (holds the collapse button)",
+              "name": "title"
             },
             {
-              "description": "The message wrapper",
-              "name": "message"
+              "description": "The expand / collapse button of a collapsible alert",
+              "name": "trigger"
+            },
+            {
+              "description": "The message",
+              "name": "description"
             },
             {
               "description": "The action wrapper",
@@ -34,10 +38,6 @@
             {
               "description": "The close button",
               "name": "close-button"
-            },
-            {
-              "description": "The expand / collapse button",
-              "name": "toggle"
             }
           ],
           "slots": [
@@ -498,15 +498,15 @@
           "name": "MinervaAppShell",
           "cssParts": [
             {
-              "description": "The shell root",
-              "name": "shell"
+              "description": "The shell (`state`: whether the mobile navigation drawer is open)",
+              "name": "root"
             },
             {
-              "description": "The skip link",
+              "description": "The skip to content link",
               "name": "skip-link"
             },
             {
-              "description": "The desktop sidebar (`aside`)",
+              "description": "The desktop sidebar (<aside>)",
               "name": "sidebar"
             },
             {
@@ -514,16 +514,20 @@
               "name": "header"
             },
             {
-              "description": "The `main` element",
+              "description": "The <main> landmark",
               "name": "main"
             },
             {
-              "description": "The drawer backdrop",
+              "description": "The backdrop of the mobile drawer",
               "name": "overlay"
             },
             {
-              "description": "The mobile drawer (`role=\"dialog\"`)",
-              "name": "drawer"
+              "description": "The mobile navigation drawer (role=dialog)",
+              "name": "content"
+            },
+            {
+              "description": "The close button of the mobile drawer",
+              "name": "close-button"
             }
           ],
           "slots": [
@@ -941,43 +945,43 @@
           "name": "MinervaAutocomplete",
           "cssParts": [
             {
-              "description": "The root wrapper",
-              "name": "base"
+              "description": "The root wrapper (label, field and anchor of the dropdown)",
+              "name": "root"
             },
             {
               "description": "The visible label",
               "name": "label"
             },
             {
-              "description": "The input wrapper",
+              "description": "The input box",
               "name": "field"
             },
             {
-              "description": "The native `<input>`",
+              "description": "The native `<input role=combobox>`",
               "name": "input"
             },
             {
               "description": "The positioned dropdown",
-              "name": "popup"
+              "name": "content"
             },
             {
-              "description": "The `role=\"listbox\"` list",
-              "name": "listbox"
+              "description": "The `role=listbox` list",
+              "name": "list"
             },
             {
               "description": "An option",
-              "name": "option"
+              "name": "item"
             },
             {
               "description": "A group heading",
               "name": "group-label"
             },
             {
-              "description": "The empty state",
+              "description": "The empty state (no matching option)",
               "name": "empty"
             },
             {
-              "description": "The loading state",
+              "description": "The loading state (while loading)",
               "name": "loading"
             }
           ],
@@ -1765,16 +1769,16 @@
           "name": "MinervaAvatar",
           "cssParts": [
             {
-              "description": "The avatar root",
-              "name": "base"
+              "description": "The avatar box (role=img while the fallback is shown); no size state for a size in pixels",
+              "name": "root"
             },
             {
-              "description": "The `<img>`",
+              "description": "The <img>",
               "name": "image"
             },
             {
-              "description": "The initials / fallback wrapper",
-              "name": "text"
+              "description": "The initials / fallback content wrapper (no image)",
+              "name": "fallback"
             }
           ],
           "slots": [
@@ -1952,15 +1956,15 @@
           "name": "MinervaAvatarGroup",
           "cssParts": [
             {
-              "description": "The group root (`role=\"group\"`)",
-              "name": "base"
+              "description": "The group (role=group)",
+              "name": "root"
             },
             {
               "description": "The wrapper of each visible avatar",
               "name": "item"
             },
             {
-              "description": "The \"+N\" indicator",
+              "description": "The \"+N\" indicator of the hidden avatars",
               "name": "count"
             }
           ],
@@ -2080,15 +2084,15 @@
           "name": "MinervaBadge",
           "cssParts": [
             {
-              "description": "The root (the badge, or the wrapper when attached)",
-              "name": "base"
+              "description": "The outermost element: the badge itself when standalone, the wrapper of the children when attached",
+              "name": "root"
             },
             {
-              "description": "The badge itself",
+              "description": "The badge attached to a corner of the children (a standalone badge is the root)",
               "name": "badge"
             },
             {
-              "description": "The icon wrapper",
+              "description": "The icon before the content",
               "name": "icon"
             }
           ],
@@ -2783,14 +2787,22 @@
           "cssParts": [
             {
               "description": "The native `<button>`",
-              "name": "button"
+              "name": "root"
             },
             {
               "description": "The label wrapper",
               "name": "label"
             },
             {
-              "description": "The loading spinner",
+              "description": "The icon before the label",
+              "name": "start-icon"
+            },
+            {
+              "description": "The icon after the label",
+              "name": "end-icon"
+            },
+            {
+              "description": "The loading spinner (while loading)",
               "name": "spinner"
             }
           ],
@@ -3112,8 +3124,8 @@
           "name": "MinervaCard",
           "cssParts": [
             {
-              "description": "The card root (`div`, `article`, `section`, `a` or `button`)",
-              "name": "base"
+              "description": "The card root (div, article, section, a or button)",
+              "name": "root"
             }
           ],
           "slots": [
@@ -3374,7 +3386,7 @@
           "cssParts": [
             {
               "description": "The section box",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -3458,7 +3470,7 @@
           "cssParts": [
             {
               "description": "The section box",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -3560,7 +3572,7 @@
           "cssParts": [
             {
               "description": "The section box",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -3644,7 +3656,7 @@
           "cssParts": [
             {
               "description": "The heading element",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -3722,7 +3734,7 @@
           "cssParts": [
             {
               "description": "The paragraph",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -3833,36 +3845,36 @@
           "name": "MinervaCascader",
           "cssParts": [
             {
-              "description": "The root wrapper (`.cascader`)",
-              "name": "base"
+              "description": "The root wrapper (anchor of the dropdown)",
+              "name": "root"
             },
             {
-              "description": "The field (`.selector`)",
-              "name": "selector"
+              "description": "The field box (input, clear button, chevron)",
+              "name": "control"
             },
             {
-              "description": "The native `<input role=\"combobox\">`",
+              "description": "The native `<input role=combobox>`",
               "name": "input"
             },
             {
-              "description": "The clear button",
+              "description": "The clear button (while there is a value)",
               "name": "clear-button"
             },
             {
               "description": "The chevron",
-              "name": "arrow"
+              "name": "icon"
             },
             {
-              "description": "The popup panel",
-              "name": "dropdown"
+              "description": "The positioned dropdown",
+              "name": "content"
             },
             {
-              "description": "A column of options (`role=\"listbox\"`)",
+              "description": "A column of options (`role=listbox`)",
               "name": "column"
             },
             {
               "description": "An option (column option or search result)",
-              "name": "option"
+              "name": "item"
             }
           ],
           "members": [
@@ -4539,20 +4551,16 @@
           "name": "MinervaCheckbox",
           "cssParts": [
             {
-              "description": "The wrapper",
-              "name": "base"
-            },
-            {
-              "description": "The `<label>` wrapping the box and the label",
-              "name": "control"
+              "description": "The wrapper (the clickable row and the helper text)",
+              "name": "root"
             },
             {
               "description": "The native `<input type=\"checkbox\">`",
               "name": "input"
             },
             {
-              "description": "The visual box",
-              "name": "checkmark"
+              "description": "The visual box (draws the checkmark)",
+              "name": "control"
             },
             {
               "description": "The label text",
@@ -5179,11 +5187,11 @@
           "name": "MinervaCodeBlock",
           "cssParts": [
             {
-              "description": "The outer wrapper (copyable / labelled blocks)",
-              "name": "base"
+              "description": "The positioned outer wrapper of the region and its actions (only when copyable, or with a language label)",
+              "name": "root"
             },
             {
-              "description": "The `<pre>` region",
+              "description": "The `<pre>` scroll region (role=region): the visible box of the code",
               "name": "region"
             },
             {
@@ -5195,7 +5203,7 @@
               "name": "language"
             },
             {
-              "description": "The copy button",
+              "description": "The copy button (while copyable)",
               "name": "copy-button"
             }
           ],
@@ -5403,7 +5411,7 @@
           "cssParts": [
             {
               "description": "The `role=\"group\"` root",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The visible label",
@@ -5414,11 +5422,19 @@
               "name": "surface"
             },
             {
-              "description": "The fallback `<textarea>`",
+              "description": "The loading indicator (while the editor loads)",
+              "name": "loading"
+            },
+            {
+              "description": "The unavailable message and retry action (when the editor failed)",
+              "name": "error"
+            },
+            {
+              "description": "The fallback `<textarea>` (when the editor failed)",
               "name": "fallback"
             },
             {
-              "description": "The Retry `<minerva-button>`",
+              "description": "The retry `<minerva-button>`",
               "name": "retry-button"
             }
           ],
@@ -6054,18 +6070,18 @@
             },
             {
               "description": "The dialog panel (`role=\"dialog\"`)",
-              "name": "panel"
+              "name": "content"
             },
             {
-              "description": "The title row",
+              "description": "The title row (accessible name of the dialog)",
               "name": "header"
             },
             {
-              "description": "The description",
+              "description": "The description below the title",
               "name": "description"
             },
             {
-              "description": "The search field wrapper",
+              "description": "The search field (icon, input and Enter hint)",
               "name": "search"
             },
             {
@@ -6074,14 +6090,14 @@
             },
             {
               "description": "The results list (`role=\"listbox\"`)",
-              "name": "listbox"
+              "name": "list"
             },
             {
               "description": "A result (`role=\"option\"`)",
               "name": "item"
             },
             {
-              "description": "The empty state",
+              "description": "The text shown when no command matches",
               "name": "empty"
             }
           ],
@@ -6659,30 +6675,30 @@
             },
             {
               "description": "The dialog panel (`role=\"alertdialog\"`)",
-              "name": "panel"
+              "name": "content"
             },
             {
-              "description": "The title wrapper",
+              "description": "The title (accessible name of the dialog)",
               "name": "header"
             },
             {
-              "description": "The description",
+              "description": "The description below the title",
               "name": "description"
             },
             {
-              "description": "The body wrapper",
+              "description": "The optional extra content",
               "name": "body"
             },
             {
-              "description": "The actions row",
+              "description": "The actions row (Cancel and Confirm buttons)",
               "name": "footer"
             },
             {
-              "description": "The Cancel `<minerva-button>`",
+              "description": "The Cancel `<minerva-button>` (web components only: in React it is a Button with its own hooks)",
               "name": "cancel-button"
             },
             {
-              "description": "The Confirm `<minerva-button>`",
+              "description": "The Confirm `<minerva-button>` (web components only: in React it is a Button with its own hooks)",
               "name": "confirm-button"
             },
             {
@@ -6979,35 +6995,55 @@
           "name": "MinervaDataTable",
           "cssParts": [
             {
-              "description": "The outer wrapper",
-              "name": "base"
+              "description": "The outer wrapper of the table, the error state and the pagination",
+              "name": "root"
             },
             {
-              "description": "The scroll wrapper",
-              "name": "wrapper"
+              "description": "The scroll wrapper of the table (a focusable region while it scrolls)",
+              "name": "viewport"
             },
             {
               "description": "The `<table>`",
               "name": "table"
             },
             {
-              "description": "The sort buttons of sortable headers",
+              "description": "A `<tr>` (header and body rows; selected rows have aria-selected=true)",
+              "name": "row"
+            },
+            {
+              "description": "A `<th>` column header (sortable headers have aria-sort)",
+              "name": "header-cell"
+            },
+            {
+              "description": "A `<td>` body cell",
+              "name": "cell"
+            },
+            {
+              "description": "The sort button of a sortable header",
               "name": "sort-button"
             },
             {
-              "description": "The selection checkboxes",
+              "description": "A row / select-all selection checkbox",
               "name": "checkbox"
             },
             {
-              "description": "The error state",
+              "description": "The cell of the empty state",
+              "name": "empty"
+            },
+            {
+              "description": "A skeleton bar of the loading rows",
+              "name": "skeleton"
+            },
+            {
+              "description": "The error state (role=alert)",
               "name": "error"
             },
             {
-              "description": "The retry button",
+              "description": "The retry button of the error state",
               "name": "retry-button"
             },
             {
-              "description": "The `<minerva-pagination>`",
+              "description": "The `<minerva-pagination>` (its root and item parts are exported as pagination-root / pagination-item)",
               "name": "pagination"
             }
           ],
@@ -7446,8 +7482,16 @@
           "name": "MinervaTableCellContent",
           "cssParts": [
             {
-              "description": "The wrapper",
-              "name": "base"
+              "description": "The wrapper (bounded width)",
+              "name": "root"
+            },
+            {
+              "description": "The primary line (`<code>` when monospace)",
+              "name": "primary"
+            },
+            {
+              "description": "The muted secondary line",
+              "name": "secondary"
             }
           ],
           "slots": [
@@ -7708,10 +7752,10 @@
           "cssParts": [
             {
               "description": "The `<dl>`",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Each row",
+              "description": "Each row (one term / description pair)",
               "name": "row"
             },
             {
@@ -7797,12 +7841,12 @@
           "name": "MinervaDivider",
           "cssParts": [
             {
-              "description": "The `<hr>` / `role=\"separator\"` element",
-              "name": "base"
+              "description": "The <hr>, or the role=separator element of a divider with text (align: position of the text)",
+              "name": "root"
             },
             {
-              "description": "The text wrapper",
-              "name": "text"
+              "description": "The text between the two halves of the line",
+              "name": "label"
             }
           ],
           "slots": [
@@ -8022,22 +8066,22 @@
             },
             {
               "description": "The dialog panel (`role=\"dialog\"`)",
-              "name": "panel"
+              "name": "content"
             },
             {
-              "description": "The title wrapper",
+              "description": "The title (accessible name of the dialog)",
               "name": "header"
             },
             {
-              "description": "The description",
+              "description": "The description below the title (visually hidden when no description is given)",
               "name": "description"
             },
             {
-              "description": "The body wrapper",
+              "description": "The scrollable body",
               "name": "body"
             },
             {
-              "description": "The footer wrapper",
+              "description": "The actions row",
               "name": "footer"
             },
             {
@@ -8347,16 +8391,16 @@
           "name": "MinervaEmpty",
           "cssParts": [
             {
-              "description": "The root region",
-              "name": "base"
+              "description": "The region (role=status); size only for the unframed sized layout",
+              "name": "root"
             },
             {
               "description": "The icon wrapper",
               "name": "icon"
             },
             {
-              "description": "The heading",
-              "name": "heading"
+              "description": "The title (accessible name of the region)",
+              "name": "title"
             },
             {
               "description": "The description",
@@ -8367,7 +8411,7 @@
               "name": "actions"
             },
             {
-              "description": "The footer",
+              "description": "The footer content",
               "name": "footer"
             }
           ],
@@ -8622,22 +8666,22 @@
           "cssParts": [
             {
               "description": "The field container",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The `<label>`",
+              "description": "The <label>",
               "name": "label"
             },
             {
-              "description": "The required marker",
+              "description": "The required marker of the label",
               "name": "required-indicator"
             },
             {
-              "description": "The helper text",
+              "description": "The helper text (hidden while invalid)",
               "name": "helper-text"
             },
             {
-              "description": "The error message (role=\"alert\")",
+              "description": "The error message (role=\"alert\", while invalid)",
               "name": "error-message"
             }
           ],
@@ -8876,11 +8920,11 @@
           "name": "MinervaFormLayout",
           "cssParts": [
             {
-              "description": "The form layout box (lib-core's form root; also the grid's query container)",
-              "name": "base"
+              "description": "The form layout box (React: the native <form>; web components: the grid's query container, inside your own <form>)",
+              "name": "root"
             },
             {
-              "description": "The grid",
+              "description": "The grid. Web components only: React renders a nested ResponsiveGrid (style its `responsive-grid` hooks)",
               "name": "layout"
             }
           ],
@@ -9015,10 +9059,10 @@
           "cssParts": [
             {
               "description": "The scrolling container",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The `<iframe>`",
+              "description": "The sandboxed `<iframe>`",
               "name": "frame"
             }
           ],
@@ -9162,19 +9206,19 @@
           "name": "MinervaIconButton",
           "cssParts": [
             {
-              "description": "The native `<button>`",
-              "name": "button"
+              "description": "The native <button>; state active while a toggle button is pressed, inactive otherwise",
+              "name": "root"
             },
             {
-              "description": "The icon wrapper",
-              "name": "glyph"
+              "description": "The icon wrapper (hidden from assistive technologies)",
+              "name": "icon"
             },
             {
-              "description": "The loading indicator",
+              "description": "The loading indicator (while loading)",
               "name": "spinner"
             },
             {
-              "description": "The tooltip (`role=\"tooltip\"`)",
+              "description": "The tooltip (role=tooltip). Web components only: React wraps the button in a <Tooltip> component, which has its own hooks",
               "name": "tooltip"
             }
           ],
@@ -9579,19 +9623,27 @@
           "name": "MinervaInput",
           "cssParts": [
             {
-              "description": "The field wrapper",
-              "name": "base"
+              "description": "The field box (wraps the input and its addons)",
+              "name": "root"
             },
             {
               "description": "The native `<input>`",
               "name": "input"
             },
             {
-              "description": "The clear button",
+              "description": "The content before the text",
+              "name": "prefix"
+            },
+            {
+              "description": "The content after the text",
+              "name": "suffix"
+            },
+            {
+              "description": "The clear button (while there is a value)",
               "name": "clear-button"
             },
             {
-              "description": "The password visibility toggle",
+              "description": "The password visibility toggle (type=password)",
               "name": "password-toggle"
             },
             {
@@ -10375,18 +10427,22 @@
           "cssParts": [
             {
               "description": "The wrapper",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The format button",
+              "description": "The toolbar above the text (format button)",
+              "name": "toolbar"
+            },
+            {
+              "description": "The format button (web components only: React renders an IconButton, styled with its own hooks)",
               "name": "format-button"
             },
             {
-              "description": "The native `<textarea>`",
-              "name": "textarea"
+              "description": "The native <textarea> (web components only: React renders a Textarea, styled with its own hooks)",
+              "name": "input"
             },
             {
-              "description": "The validation status line",
+              "description": "The validation status line (role=status)",
               "name": "status"
             }
           ],
@@ -11019,18 +11075,18 @@
           "cssParts": [
             {
               "description": "The container",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Each row",
+              "description": "Each row (key field, value field and remove button)",
               "name": "row"
             },
             {
-              "description": "The remove button of a row",
+              "description": "The remove button of a row (web components only: React renders an IconButton, styled with its own hooks)",
               "name": "remove-button"
             },
             {
-              "description": "The add button",
+              "description": "The add button (web components only: React renders a Button, styled with its own hooks)",
               "name": "add-button"
             }
           ],
@@ -11513,8 +11569,8 @@
           "name": "MinervaList",
           "cssParts": [
             {
-              "description": "The list wrapper",
-              "name": "base"
+              "description": "The list (React: the <ul>; web components: its wrapper)",
+              "name": "root"
             }
           ],
           "slots": [
@@ -11604,22 +11660,22 @@
           "cssParts": [
             {
               "description": "The row",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The icon wrapper",
+              "description": "The decorative leading icon wrapper",
               "name": "icon"
             },
             {
               "description": "The primary text",
-              "name": "primary"
+              "name": "label"
             },
             {
               "description": "The secondary text",
-              "name": "secondary"
+              "name": "description"
             },
             {
-              "description": "The actions wrapper",
+              "description": "The trailing actions wrapper",
               "name": "actions"
             }
           ],
@@ -11744,11 +11800,11 @@
           "cssParts": [
             {
               "description": "The status region",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The spinner (`<minerva-progress>`)",
-              "name": "indicator"
+              "description": "The decorative spinner (wraps a ProgressIndicator in React; the <minerva-progress> element in the web components)",
+              "name": "spinner"
             },
             {
               "description": "The label",
@@ -11850,19 +11906,35 @@
           "name": "MinervaContextMenu",
           "cssParts": [
             {
-              "description": "A menu panel (root menu and submenus)",
-              "name": "menu"
+              "description": "A menu panel (`role=\"menu\"`: the root menu and its submenus)",
+              "name": "content"
             },
             {
-              "description": "A menu item",
+              "description": "An item (`role=\"menuitem\"`, `menuitemcheckbox` or `menuitemradio`)",
               "name": "item"
+            },
+            {
+              "description": "The check mark / radio dot of a checkbox or radio item",
+              "name": "item-indicator"
             },
             {
               "description": "The icon of an item",
               "name": "icon"
             },
             {
-              "description": "A group / section label",
+              "description": "The label of an item",
+              "name": "item-label"
+            },
+            {
+              "description": "The keyboard shortcut hint of an item",
+              "name": "shortcut"
+            },
+            {
+              "description": "A group of entries (`role=\"group\"`, also radio groups)",
+              "name": "group"
+            },
+            {
+              "description": "A group heading or section label",
               "name": "label"
             },
             {
@@ -12744,19 +12816,35 @@
           "name": "MinervaMenu",
           "cssParts": [
             {
-              "description": "A menu panel (root menu and submenus)",
-              "name": "menu"
+              "description": "A menu panel (`role=\"menu\"`: the root menu and its submenus)",
+              "name": "content"
             },
             {
-              "description": "A menu item",
+              "description": "An item (`role=\"menuitem\"`, `menuitemcheckbox` or `menuitemradio`)",
               "name": "item"
+            },
+            {
+              "description": "The check mark / radio dot of a checkbox or radio item",
+              "name": "item-indicator"
             },
             {
               "description": "The icon of an item",
               "name": "icon"
             },
             {
-              "description": "A group / section label",
+              "description": "The label of an item",
+              "name": "item-label"
+            },
+            {
+              "description": "The keyboard shortcut hint of an item",
+              "name": "shortcut"
+            },
+            {
+              "description": "A group of entries (`role=\"group\"`, also radio groups)",
+              "name": "group"
+            },
+            {
+              "description": "A group heading or section label",
               "name": "label"
             },
             {
@@ -13156,10 +13244,10 @@
             },
             {
               "description": "The dialog panel (`role=\"dialog\"`)",
-              "name": "panel"
+              "name": "content"
             },
             {
-              "description": "The title wrapper",
+              "description": "The title (accessible name of the dialog)",
               "name": "header"
             },
             {
@@ -13167,11 +13255,11 @@
               "name": "description"
             },
             {
-              "description": "The body wrapper",
+              "description": "The scrollable body",
               "name": "body"
             },
             {
-              "description": "The footer wrapper",
+              "description": "The actions row",
               "name": "footer"
             },
             {
@@ -13425,7 +13513,7 @@
           "cssParts": [
             {
               "description": "The calendar `<section>`",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The month heading",
@@ -13436,20 +13524,24 @@
               "name": "nav-button"
             },
             {
-              "description": "The `role=\"grid\"` element",
+              "description": "The `role=grid` element",
               "name": "grid"
             },
             {
-              "description": "Each day cell",
+              "description": "A day cell (`role=gridcell`)",
               "name": "day"
             },
             {
-              "description": "The selected day's events section",
+              "description": "The events section of the selected day",
               "name": "events"
             },
             {
-              "description": "Each event (button with `clickable-events`)",
+              "description": "An event (a button with `clickable-events`)",
               "name": "event"
+            },
+            {
+              "description": "The text shown when the selected day has no event",
+              "name": "empty"
             }
           ],
           "members": [
@@ -13757,15 +13849,31 @@
           "cssParts": [
             {
               "description": "The `<nav>` landmark",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "A section",
-              "name": "section"
+              "description": "A section of items",
+              "name": "group"
             },
             {
-              "description": "Every link / button row",
+              "description": "The title of a section",
+              "name": "group-label"
+            },
+            {
+              "description": "A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)",
               "name": "item"
+            },
+            {
+              "description": "The icon of an item",
+              "name": "icon"
+            },
+            {
+              "description": "The label of an item",
+              "name": "label"
+            },
+            {
+              "description": "The secondary text of an item",
+              "name": "description"
             }
           ],
           "members": [
@@ -13922,8 +14030,8 @@
           "name": "MinervaNumberInput",
           "cssParts": [
             {
-              "description": "The field wrapper",
-              "name": "base"
+              "description": "The field box (wraps the input and the stepper)",
+              "name": "root"
             },
             {
               "description": "The native `<input>` (role=\"spinbutton\")",
@@ -14637,11 +14745,11 @@
           "name": "MinervaPageTabs",
           "cssParts": [
             {
-              "description": "The `<nav>` landmark",
-              "name": "base"
+              "description": "The <nav> landmark",
+              "name": "root"
             },
             {
-              "description": "The scrolling viewport",
+              "description": "The scrolling viewport of the items",
               "name": "viewport"
             },
             {
@@ -14649,11 +14757,11 @@
               "name": "list"
             },
             {
-              "description": "The scroll left / right buttons",
+              "description": "The scroll left / right buttons (while the items overflow)",
               "name": "scroll-button"
             },
             {
-              "description": "The actions wrapper",
+              "description": "The global actions after the list",
               "name": "actions"
             }
           ],
@@ -14815,15 +14923,23 @@
           "cssParts": [
             {
               "description": "The item wrapper",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The label `<button>`",
+              "description": "The label <button> (selects the page)",
               "name": "trigger"
+            },
+            {
+              "description": "The icon before the label",
+              "name": "icon"
             },
             {
               "description": "The (truncated) label",
               "name": "label"
+            },
+            {
+              "description": "The wrapper of the separate control next to the label",
+              "name": "action"
             },
             {
               "description": "The built-in close button (`closable`)",
@@ -15086,7 +15202,7 @@
           "cssParts": [
             {
               "description": "The page column",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -15153,11 +15269,11 @@
           "cssParts": [
             {
               "description": "The `<header>`",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The `<h1>`",
-              "name": "heading"
+              "name": "title"
             },
             {
               "description": "The description paragraph",
@@ -15261,23 +15377,27 @@
           "cssParts": [
             {
               "description": "The `<section>`",
-              "name": "base",
+              "name": "root",
               "inheritedFrom": {
                 "name": "MinervaPageHeader",
                 "module": "src/components/page/page.ts"
               }
             },
             {
-              "description": "The heading row",
+              "description": "The title row (title, description and actions)",
               "name": "header"
             },
             {
               "description": "The `<h2>`",
-              "name": "heading",
+              "name": "title",
               "inheritedFrom": {
                 "name": "MinervaPageHeader",
                 "module": "src/components/page/page.ts"
               }
+            },
+            {
+              "description": "The decorative icon wrapper, inside the title",
+              "name": "icon"
             },
             {
               "description": "The description paragraph",
@@ -15294,10 +15414,6 @@
                 "name": "MinervaPageHeader",
                 "module": "src/components/page/page.ts"
               }
-            },
-            {
-              "description": "The icon wrapper",
-              "name": "icon"
             }
           ],
           "slots": [
@@ -15429,7 +15545,7 @@
           "cssParts": [
             {
               "description": "The group",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -15519,18 +15635,18 @@
           "cssParts": [
             {
               "description": "The card",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The icon wrapper",
+              "description": "The decorative icon wrapper",
               "name": "icon"
             },
             {
-              "description": "The `<dt>`",
+              "description": "The metric name (`<dt>`)",
               "name": "label"
             },
             {
-              "description": "The `<dd>`",
+              "description": "The metric value (`<dd>`)",
               "name": "value"
             },
             {
@@ -15700,10 +15816,10 @@
           "cssParts": [
             {
               "description": "The `<nav>` landmark",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Every page / prev / next / jump button",
+              "description": "A page / previous / next / jump button (the current page has aria-current=page)",
               "name": "item"
             },
             {
@@ -15711,7 +15827,7 @@
               "name": "total"
             },
             {
-              "description": "The quick jumper label",
+              "description": "The quick jumper label (wraps its input)",
               "name": "jumper"
             },
             {
@@ -16163,15 +16279,11 @@
           "name": "MinervaPopover",
           "cssParts": [
             {
-              "description": "The positioned wrapper (top layer)",
-              "name": "positioner"
+              "description": "The positioned panel (`role=\"dialog\"`)",
+              "name": "content"
             },
             {
-              "description": "The dialog panel",
-              "name": "panel"
-            },
-            {
-              "description": "The arrow wrapper",
+              "description": "The arrow pointing at the anchor (with `arrow`)",
               "name": "arrow"
             }
           ],
@@ -16516,11 +16628,15 @@
           "name": "MinervaProgress",
           "cssParts": [
             {
-              "description": "The root (`role=\"progressbar\"`)",
-              "name": "base"
+              "description": "The indicator (role=progressbar unless decorative); color current follows the text color",
+              "name": "root"
             },
             {
-              "description": "The animated indicator",
+              "description": "The icon before the indicator",
+              "name": "icon"
+            },
+            {
+              "description": "The animated indicator (ring, wave or bar)",
               "name": "indicator"
             },
             {
@@ -16758,12 +16874,12 @@
           "name": "MinervaRadio",
           "cssParts": [
             {
-              "description": "The wrapper",
-              "name": "base"
+              "description": "The wrapper (the clickable row and the helper text)",
+              "name": "root"
             },
             {
               "description": "The visual radio mark",
-              "name": "mark"
+              "name": "control"
             },
             {
               "description": "The label text",
@@ -17029,15 +17145,15 @@
           "cssParts": [
             {
               "description": "The wrapper",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The visible group label",
               "name": "label"
             },
             {
-              "description": "The element with role=\"radiogroup\"",
-              "name": "group"
+              "description": "The element with role=\"radiogroup\" (the radios)",
+              "name": "list"
             },
             {
               "description": "The helper text",
@@ -17572,8 +17688,8 @@
           "name": "MinervaRating",
           "cssParts": [
             {
-              "description": "The root (role=\"slider\", or role=\"img\" when read-only)",
-              "name": "base"
+              "description": "The root (role=\"slider\", or role=\"img\" when display-only)",
+              "name": "root"
             },
             {
               "description": "The star row",
@@ -17584,8 +17700,12 @@
               "name": "star"
             },
             {
-              "description": "The score and count",
+              "description": "The score and the count",
               "name": "value"
+            },
+            {
+              "description": "The number of ratings",
+              "name": "count"
             }
           ],
           "members": [
@@ -18079,10 +18199,10 @@
           "cssParts": [
             {
               "description": "The list of rows",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Each row",
+              "description": "Each row (a label and a rating)",
               "name": "row"
             },
             {
@@ -18268,10 +18388,10 @@
           "cssParts": [
             {
               "description": "The query container",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The grid",
+              "description": "The grid (its children are the grid items)",
               "name": "layout"
             }
           ],
@@ -18450,14 +18570,14 @@
           "cssParts": [
             {
               "description": "The option row",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The content wrapper",
               "name": "label"
             },
             {
-              "description": "The check mark of the selected option",
+              "description": "The check mark (while selected)",
               "name": "indicator"
             }
           ],
@@ -18625,6 +18745,12 @@
           "kind": "class",
           "description": "Groups options of a `<minerva-select>` (`<SelectGroup>` of lib-core,\n`role=\"group\"`), labelled by its `<minerva-select-label>` child.",
           "name": "MinervaOptionGroup",
+          "cssParts": [
+            {
+              "description": "The group wrapper",
+              "name": "root"
+            }
+          ],
           "slots": [
             {
               "description": "A `<minerva-select-label>` and `<minerva-option>` elements",
@@ -18678,7 +18804,7 @@
           "cssParts": [
             {
               "description": "The label",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -18734,7 +18860,7 @@
           "cssParts": [
             {
               "description": "The line",
-              "name": "base"
+              "name": "root"
             }
           ],
           "members": [],
@@ -18823,8 +18949,8 @@
           "name": "MinervaSelect",
           "cssParts": [
             {
-              "description": "The combobox `<button>`",
-              "name": "trigger"
+              "description": "The trigger (`<button role=combobox>`)",
+              "name": "root"
             },
             {
               "description": "The selected label / placeholder",
@@ -18835,16 +18961,12 @@
               "name": "icon"
             },
             {
-              "description": "The positioned popup wrapper",
-              "name": "positioner"
-            },
-            {
-              "description": "The `role=\"listbox\"` popup",
-              "name": "listbox"
+              "description": "The listbox popup (`role=listbox`)",
+              "name": "content"
             },
             {
               "description": "An option rendered from the `options` property",
-              "name": "option"
+              "name": "item"
             },
             {
               "description": "A group heading rendered from the `options` property",
@@ -19375,8 +19497,20 @@
           "name": "MinervaSkeleton",
           "cssParts": [
             {
-              "description": "The root (busy region, or the decorative block)",
-              "name": "base"
+              "description": "The busy region (role=status), or the single block of a decorative skeleton",
+              "name": "root"
+            },
+            {
+              "description": "The avatar placeholder",
+              "name": "avatar"
+            },
+            {
+              "description": "The title placeholder",
+              "name": "title"
+            },
+            {
+              "description": "Each line placeholder (also the paragraph lines)",
+              "name": "line"
             }
           ],
           "slots": [
@@ -19703,10 +19837,10 @@
           "cssParts": [
             {
               "description": "The block of lines",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Each line",
+              "description": "Each line placeholder",
               "name": "line"
             }
           ],
@@ -19867,14 +20001,14 @@
           "cssParts": [
             {
               "description": "The query container",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The main column",
               "name": "main"
             },
             {
-              "description": "The aside column",
+              "description": "The aside column (when there is aside content)",
               "name": "aside"
             }
           ],
@@ -19980,7 +20114,7 @@
           "cssParts": [
             {
               "description": "The flex container",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -20140,7 +20274,7 @@
           "cssParts": [
             {
               "description": "The flex container",
-              "name": "base",
+              "name": "root",
               "inheritedFrom": {
                 "name": "MinervaStack",
                 "module": "src/components/stack/stack.ts"
@@ -20364,7 +20498,7 @@
           "cssParts": [
             {
               "description": "The flex container",
-              "name": "base",
+              "name": "root",
               "inheritedFrom": {
                 "name": "MinervaStack",
                 "module": "src/components/stack/stack.ts"
@@ -20620,22 +20754,22 @@
           "cssParts": [
             {
               "description": "The `<ol>`",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "Each `<li>`",
-              "name": "step"
+              "description": "A step `<li>` (the current step has aria-current=step)",
+              "name": "item"
             },
             {
-              "description": "The button (or static wrapper) of each step",
+              "description": "The `<button>` of a step (navigable) or its static wrapper (read-only)",
               "name": "button"
             },
             {
-              "description": "The numbered indicator",
-              "name": "number"
+              "description": "The numbered indicator of a step",
+              "name": "indicator"
             },
             {
-              "description": "The label of each step",
+              "description": "The label of a step",
               "name": "label"
             }
           ],
@@ -20746,12 +20880,16 @@
           "name": "MinervaSwitch",
           "cssParts": [
             {
-              "description": "The root (`<label>`, or `<span>` with side labels / segments)",
-              "name": "base"
+              "description": "The outer element (<label>; a <span> with side labels; the group of segments)",
+              "name": "root"
             },
             {
               "description": "The native `<input type=\"checkbox\" role=\"switch\">`",
               "name": "input"
+            },
+            {
+              "description": "The slider box (wraps the track and the thumb)",
+              "name": "control"
             },
             {
               "description": "The track",
@@ -20762,6 +20900,10 @@
               "name": "thumb"
             },
             {
+              "description": "The icon (in the thumb or after the slider)",
+              "name": "icon"
+            },
+            {
               "description": "The label text",
               "name": "label"
             },
@@ -20770,7 +20912,7 @@
               "name": "side"
             },
             {
-              "description": "The off / on segments (buttons)",
+              "description": "The off / on segments (buttons, variant=\"segmented\")",
               "name": "segment"
             }
           ],
@@ -21467,12 +21609,12 @@
           "name": "MinervaTabs",
           "cssParts": [
             {
-              "description": "The root wrapper",
-              "name": "base"
+              "description": "The root wrapper of the tab list and the panels",
+              "name": "root"
             },
             {
-              "description": "The `role=\"tablist\"` container",
-              "name": "tablist"
+              "description": "The role=tablist container of the tabs",
+              "name": "list"
             }
           ],
           "slots": [
@@ -21712,8 +21854,8 @@
           "name": "MinervaTab",
           "cssParts": [
             {
-              "description": "The visual trigger",
-              "name": "base"
+              "description": "The visual tab trigger",
+              "name": "root"
             }
           ],
           "slots": [
@@ -21849,7 +21991,7 @@
           "cssParts": [
             {
               "description": "The panel wrapper",
-              "name": "base"
+              "name": "root"
             }
           ],
           "slots": [
@@ -21979,42 +22121,46 @@
           "cssParts": [
             {
               "description": "The wrapper",
-              "name": "base"
+              "name": "root"
             },
             {
               "description": "The list of tags",
               "name": "tags"
             },
             {
-              "description": "A tag",
+              "description": "A tag (web components only: React renders a Tag, styled with its own hooks)",
               "name": "tag"
             },
             {
-              "description": "The remove button of a tag",
+              "description": "The remove button of a tag (web components only, see tag)",
               "name": "remove-button"
             },
             {
-              "description": "The text field wrapper",
-              "name": "field"
+              "description": "The text field box (web components only: React renders an Input, styled with its own hooks)",
+              "name": "control"
             },
             {
-              "description": "The native text `<input>` (`role=\"combobox\"`)",
+              "description": "The native text <input> (role=\"combobox\"; web components only, see control)",
               "name": "input"
             },
             {
-              "description": "The suggestion list",
-              "name": "listbox"
+              "description": "The suggestion list (role=listbox, while open)",
+              "name": "list"
             },
             {
-              "description": "A suggestion",
+              "description": "A suggestion (role=option; the highlighted one has aria-selected=\"true\")",
               "name": "option"
             },
             {
-              "description": "The add button",
+              "description": "The text shown when no suggestion matches",
+              "name": "empty"
+            },
+            {
+              "description": "The add button (web components only: React renders an IconButton, styled with its own hooks)",
               "name": "add-button"
             },
             {
-              "description": "The clear button",
+              "description": "The clear button (web components only: React renders an IconButton, styled with its own hooks)",
               "name": "clear-button"
             }
           ],
@@ -22692,16 +22838,28 @@
           "name": "MinervaTag",
           "cssParts": [
             {
-              "description": "The tag root",
-              "name": "base"
+              "description": "The tag (a plain, non-interactive element); state active while a clickable tag is pressed, inactive otherwise",
+              "name": "root"
             },
             {
-              "description": "The native `<button>` of a clickable tag",
+              "description": "The native <button> of a clickable tag",
               "name": "action"
             },
             {
               "description": "The label wrapper",
               "name": "label"
+            },
+            {
+              "description": "The icon before the label",
+              "name": "icon"
+            },
+            {
+              "description": "The avatar before the label",
+              "name": "avatar"
+            },
+            {
+              "description": "The loading spinner (while loading)",
+              "name": "spinner"
             },
             {
               "description": "The close button",
@@ -23060,8 +23218,8 @@
           "name": "MinervaTextLink",
           "cssParts": [
             {
-              "description": "The native `<a>`",
-              "name": "link"
+              "description": "The native <a> (React: the slotted child with asChild)",
+              "name": "root"
             }
           ],
           "slots": [
@@ -23264,7 +23422,7 @@
           "cssParts": [
             {
               "description": "The native `<textarea>`",
-              "name": "textarea"
+              "name": "root"
             }
           ],
           "members": [
@@ -23864,11 +24022,11 @@
           "name": "MinervaThemeToggle",
           "cssParts": [
             {
-              "description": "The `role=\"group\"` wrapper",
-              "name": "base"
+              "description": "The role=group wrapper",
+              "name": "root"
             },
             {
-              "description": "Every option button",
+              "description": "Every option button (aria-pressed on the selected one)",
               "name": "item"
             }
           ],
@@ -23996,11 +24154,11 @@
           "name": "MinervaPaletteToggle",
           "cssParts": [
             {
-              "description": "The `role=\"group\"` wrapper",
-              "name": "base"
+              "description": "The role=group wrapper",
+              "name": "root"
             },
             {
-              "description": "Every option button",
+              "description": "Every option button (aria-pressed on the selected one)",
               "name": "item"
             }
           ],
@@ -24162,11 +24320,11 @@
           "name": "MinervaTimePicker",
           "cssParts": [
             {
-              "description": "The field wrapper (`.timePicker`)",
-              "name": "base"
+              "description": "The field wrapper (anchor of the panel)",
+              "name": "root"
             },
             {
-              "description": "The input box (`.root` of lib-core's Input)",
+              "description": "The input box",
               "name": "control"
             },
             {
@@ -24182,15 +24340,15 @@
               "name": "icon"
             },
             {
-              "description": "The popup panel (`role=\"dialog\"`)",
-              "name": "panel"
+              "description": "The popup panel (`role=dialog`)",
+              "name": "content"
             },
             {
-              "description": "An hours / minutes / seconds / AM-PM column (`role=\"listbox\"`)",
+              "description": "An hours / minutes / seconds / AM-PM column (`role=listbox`)",
               "name": "column"
             },
             {
-              "description": "A time unit (`role=\"option\"`)",
+              "description": "A time unit (`role=option`)",
               "name": "item"
             }
           ],
@@ -24976,38 +25134,34 @@
           "cssParts": [
             {
               "description": "The fixed stack (`role=\"region\"`)",
-              "name": "viewport"
+              "name": "root"
             },
             {
-              "description": "A toast",
+              "description": "A toast (`role=\"status\"`, or `alert` for danger)",
               "name": "toast"
             },
             {
-              "description": "The icon wrapper of a toast",
+              "description": "The icon of a toast (spinner while loading)",
               "name": "icon"
             },
             {
-              "description": "The title / description wrapper",
-              "name": "content"
-            },
-            {
-              "description": "The title",
+              "description": "The title of a toast",
               "name": "title"
             },
             {
-              "description": "The description",
+              "description": "The description of a toast",
               "name": "description"
             },
             {
-              "description": "The action button",
+              "description": "The action button of a toast",
               "name": "action"
             },
             {
-              "description": "The close (×) button",
+              "description": "The close (×) button of a toast",
               "name": "close-button"
             },
             {
-              "description": "The countdown bar",
+              "description": "The countdown bar of a timed toast",
               "name": "progress"
             }
           ],
@@ -25306,15 +25460,15 @@
           "name": "MinervaTooltip",
           "cssParts": [
             {
-              "description": "The wrapper around the trigger",
+              "description": "The wrapper around the trigger (the slotted element)",
               "name": "trigger"
             },
             {
-              "description": "The tooltip panel (`role=\"tooltip\"`)",
-              "name": "tooltip"
+              "description": "The positioned tooltip (`role=\"tooltip\"`, while shown)",
+              "name": "content"
             },
             {
-              "description": "The arrow (with `arrow`)",
+              "description": "The arrow pointing at the trigger (with `arrow`)",
               "name": "arrow"
             }
           ],
@@ -25686,8 +25840,8 @@
           "name": "MinervaUpload",
           "cssParts": [
             {
-              "description": "The container (role=\"group\")",
-              "name": "base"
+              "description": "The container (`role=group`)",
+              "name": "root"
             },
             {
               "description": "The visible label",
@@ -25710,7 +25864,7 @@
               "name": "list"
             },
             {
-              "description": "Each file",
+              "description": "A file",
               "name": "item"
             },
             {
@@ -26331,18 +26485,18 @@
           "cssParts": [
             {
               "description": "The scroll container (`role=\"region\"`)",
-              "name": "base"
+              "name": "root"
             },
             {
-              "description": "The list (`role=\"list\"`)",
+              "description": "The list (`role=\"list\"`) sized to all the rows",
               "name": "list"
             },
             {
-              "description": "A row (`role=\"listitem\"`)",
+              "description": "A rendered row (`role=\"listitem\"`)",
               "name": "item"
             },
             {
-              "description": "The loading indicator row",
+              "description": "The loading indicator row (while loading)",
               "name": "loading"
             }
           ],

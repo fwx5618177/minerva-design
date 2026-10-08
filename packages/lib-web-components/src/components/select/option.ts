@@ -19,9 +19,9 @@ let nextLabelId = 0;
  * @summary Selectable option of a select.
  * @tag minerva-option
  * @slot - Content of the option (text, icon...)
- * @csspart base - The option row
+ * @csspart root - The option row
  * @csspart label - The content wrapper
- * @csspart indicator - The check mark of the selected option
+ * @csspart indicator - The check mark (while selected)
  */
 export class MinervaOption extends MinervaElement {
   private readonly internals = attachInternals(this);
@@ -106,9 +106,17 @@ export class MinervaOption extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return {
+      state: this.selected ? "checked" : "unchecked",
+      highlighted: this.highlighted,
+      disabled: this.disabled,
+    };
+  }
+
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       class="item"
       data-state=${this.selected ? "checked" : "unchecked"}
       ?data-highlighted=${this.highlighted}
@@ -133,6 +141,7 @@ export class MinervaOption extends MinervaElement {
  * @summary Group of select options.
  * @tag minerva-option-group
  * @slot - A `<minerva-select-label>` and `<minerva-option>` elements
+ * @csspart root - The group wrapper
  */
 export class MinervaOptionGroup extends MinervaElement {
   private readonly internals = attachInternals(this);
@@ -181,7 +190,7 @@ export class MinervaOptionGroup extends MinervaElement {
   }
 
   protected override render() {
-    return html`<slot></slot>`;
+    return html`<div part="root"><slot></slot></div>`;
   }
 }
 
@@ -192,7 +201,7 @@ export class MinervaOptionGroup extends MinervaElement {
  * @summary Heading of a group of select options.
  * @tag minerva-select-label
  * @slot - Label text
- * @csspart base - The label
+ * @csspart root - The label
  */
 export class MinervaSelectLabel extends MinervaElement {
   static override tagName = "minerva-select-label";
@@ -207,7 +216,7 @@ export class MinervaSelectLabel extends MinervaElement {
   ];
 
   protected override render() {
-    return html`<div class="label" part="base"><slot></slot></div>`;
+    return html`<div class="label" part="root"><slot></slot></div>`;
   }
 }
 
@@ -217,7 +226,7 @@ export class MinervaSelectLabel extends MinervaElement {
  *
  * @summary Divider between select options.
  * @tag minerva-select-separator
- * @csspart base - The line
+ * @csspart root - The line
  */
 export class MinervaSelectSeparator extends MinervaElement {
   private readonly internals = attachInternals(this);
@@ -238,7 +247,7 @@ export class MinervaSelectSeparator extends MinervaElement {
   }
 
   protected override render() {
-    return html`<div class="separator" part="base"></div>`;
+    return html`<div class="separator" part="root"></div>`;
   }
 }
 

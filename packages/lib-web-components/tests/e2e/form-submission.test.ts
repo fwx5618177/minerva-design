@@ -54,7 +54,7 @@ describe("sign-up form (e2e)", () => {
     expect(name.checkValidity()).toBe(true);
 
     // pick "Pro" with the keyboard: open, move, select
-    inner(plan, "[part=trigger]").focus();
+    inner(plan, "[part=root]").focus();
     await userEvent.keyboard("{ArrowDown}");
     await settle();
     await userEvent.keyboard("{ArrowDown}");

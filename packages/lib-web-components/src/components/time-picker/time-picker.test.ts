@@ -17,7 +17,7 @@ type El = MinervaTimePicker;
 
 const field = (el: El) => $<HTMLInputElement>(el, "input");
 const panel = (el: El) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 const columns = (el: El) =>
   Array.from(panel(el)!.querySelectorAll<HTMLElement>(".timeColumn"));
 const column = (el: El, label: string) =>

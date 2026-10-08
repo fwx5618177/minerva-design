@@ -51,10 +51,10 @@ const HOVER_GRACE_MS = 300;
  * @summary Icon-only button with a tooltip, toggle and loading states.
  * @tag minerva-icon-button
  * @slot - The icon (hidden from assistive technologies)
- * @csspart button - The native `<button>`
- * @csspart glyph - The icon wrapper
- * @csspart spinner - The loading indicator
- * @csspart tooltip - The tooltip (`role="tooltip"`)
+ * @csspart root - The native <button>; state active while a toggle button is pressed, inactive otherwise
+ * @csspart icon - The icon wrapper (hidden from assistive technologies)
+ * @csspart spinner - The loading indicator (while loading)
+ * @csspart tooltip - The tooltip (role=tooltip). Web components only: React wraps the button in a <Tooltip> component, which has its own hooks
  * @fires minerva-pressed-change - A toggle button was activated (`detail: { pressed }`, the new state); cancelable: `preventDefault()` keeps the current state
  */
 export class MinervaIconButton extends MinervaElement {
@@ -301,6 +301,18 @@ export class MinervaIconButton extends MinervaElement {
     this.tooltipOpen = false;
   }
 
+  protected override hookStates() {
+    return {
+      state: this.toggle && this.pressed ? "active" : "inactive",
+      disabled: this.disabled,
+      loading: this.loading,
+      size: this.size,
+      variant: this.variant,
+      color: this.color,
+      shape: this.shape,
+    };
+  }
+
   protected override willUpdate(changed: PropertyValues<this>): void {
     if (
       (changed.has("disabled") ||
@@ -325,7 +337,7 @@ export class MinervaIconButton extends MinervaElement {
   protected override render() {
     const tooltipVisible = this.tooltipOpen && this.tooltipEnabled;
     return html`<button
-        part="button"
+        part="root"
         type="button"
         class=${classMap({
           iconButton: true,
@@ -362,7 +374,7 @@ export class MinervaIconButton extends MinervaElement {
                 aria-label=${this.locale.t("common.loading")}
                 >${IconSpinner}</span
               >`
-            : html`<span class="glyph" part="glyph" aria-hidden="true"
+            : html`<span class="glyph" part="icon" aria-hidden="true"
                 ><slot></slot
               ></span>`
         }

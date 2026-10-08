@@ -12,6 +12,7 @@ import type {
   FormHelperTextProps,
   FormLabelProps,
 } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./formControl.module.scss";
 
 /**
@@ -55,7 +56,17 @@ export const FormControl = ({
 
   return (
     <FormControlContext.Provider value={ctx}>
-      <div ref={ref} className={cn(styles.root, className)} {...rest}>
+      <div
+        ref={ref}
+        className={cn(styles.root, className)}
+        {...rest}
+        {...hooks("form-control", "root", {
+          disabled,
+          invalid,
+          readonly: readOnly,
+          required,
+        })}
+      >
         {children}
       </div>
     </FormControlContext.Provider>
@@ -79,10 +90,15 @@ export const FormLabel = ({
       htmlFor={htmlFor ?? ctx?.id}
       className={cn(styles.label, className)}
       {...rest}
+      {...hooks("form-control", "label")}
     >
       {children}
       {ctx?.required && (
-        <span className={styles.required} aria-hidden="true">
+        <span
+          className={styles.required}
+          aria-hidden="true"
+          {...hooks("form-control", "required-indicator")}
+        >
           {requiredIndicator}
         </span>
       )}
@@ -122,6 +138,7 @@ export const FormHelperText = ({
       id={ctx?.helperId}
       className={cn(styles.helper, className)}
       {...rest}
+      {...hooks("form-control", "helper-text")}
     >
       {children}
     </div>
@@ -146,6 +163,7 @@ export const FormErrorMessage = ({
       role="alert"
       className={cn(styles.error, className)}
       {...rest}
+      {...hooks("form-control", "error-message")}
     >
       {children}
     </div>

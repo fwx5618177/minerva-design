@@ -24,9 +24,9 @@ const DEFAULT_ASIDE_WIDTH = 320;
  * @tag minerva-split-layout
  * @slot - Main content
  * @slot aside - Secondary content, after main
- * @csspart base - The query container
+ * @csspart root - The query container
  * @csspart main - The main column
- * @csspart aside - The aside column
+ * @csspart aside - The aside column (when there is aside content)
  */
 export class MinervaSplitLayout extends MinervaElement {
   static override tagName = "minerva-split-layout";
@@ -76,7 +76,7 @@ export class MinervaSplitLayout extends MinervaElement {
     const width = this.validAsideWidth ? this.asideWidth : DEFAULT_ASIDE_WIDTH;
     return html`<div
       class="root"
-      part="base"
+      part="root"
       style=${styleMap({
         "--split-layout-aside-width": `${width}px`,
         "--split-layout-gap": resolveSpace(this.gap),

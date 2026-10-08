@@ -124,6 +124,30 @@ VS Code (plain HTML):
 }
 ```
 
+## Styling
+
+The elements read the design tokens and the same `--<component>-*` CSS
+variables as the React components. Their public styling hooks use the shared
+Minerva vocabulary: the tag, CSS parts and custom states of the host
+(`ElementInternals.states`), which add no host attribute:
+
+```css
+minerva-button::part(label) {
+  letter-spacing: 0.02em;
+}
+minerva-modal:state(open)::part(content) {
+  border: 1px solid var(--border-color);
+}
+minerva-button:state(size-small):state(variant-ghost) {
+  --button-radius: 999px;
+}
+```
+
+React's `[data-state="open"]`, `[data-disabled]` and `[data-size="small"]` are
+`:state(open)`, `:state(disabled)` and `:state(size-small)` here (Chromium
+90-124: `:--open`). The hooks of every element are listed on its docs page and
+in `@minerva/core/styling-hooks`. `tokens.css` ships inside `@layer minerva`.
+
 ## Server rendering and hydration
 
 The modules import in Node without a DOM. Elements in server-rendered markup (for example a React 19 page that renders the tags) upgrade without touching their host attributes: default property values are not reflected (only values you set are), and the implicit ARIA of items (`role`, `aria-selected`, `aria-checked`...) goes through `ElementInternals`, so frameworks hydrate without attribute mismatches. Properties set before an element is connected (or before its definition loads) are kept. Moving an element in the DOM re-acquires its resources, and an open overlay stays open and working.

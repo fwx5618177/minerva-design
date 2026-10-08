@@ -79,10 +79,11 @@ function formatJson(value: string, indent: number): string {
  *
  * @summary JSON textarea with formatting and syntax feedback.
  * @tag minerva-json-field
- * @csspart base - The wrapper
- * @csspart format-button - The format button
- * @csspart textarea - The native `<textarea>`
- * @csspart status - The validation status line
+ * @csspart root - The wrapper
+ * @csspart toolbar - The toolbar above the text (format button)
+ * @csspart format-button - The format button (web components only: React renders an IconButton, styled with its own hooks)
+ * @csspart input - The native <textarea> (web components only: React renders a Textarea, styled with its own hooks)
+ * @csspart status - The validation status line (role=status)
  * @fires input - The text changed (native, composed)
  * @fires change - The text was committed (blur) or formatted
  * @fires minerva-input - The text changed (typing or formatting); `detail: { value }`
@@ -266,6 +267,17 @@ export class MinervaJsonField extends FormAssociatedElement {
     this.emit("minerva-change", { value: this.value });
   }
 
+  protected override hookStates() {
+    const syntaxInvalid =
+      !this.focused && validate(this.value).status === "invalid";
+    return {
+      disabled: this.isDisabled,
+      invalid: syntaxInvalid || this.invalid,
+      readonly: this.readOnly,
+      required: this.required,
+    };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const disabled = this.isDisabled;
@@ -290,11 +302,11 @@ export class MinervaJsonField extends FormAssociatedElement {
       .filter(Boolean)
       .join(" ");
 
-    return html`<div class="root" part="base">
+    return html`<div class="root" part="root">
       ${
         this.hideToolbar
           ? nothing
-          : html`<div class="toolbar">
+          : html`<div class="toolbar" part="toolbar">
               <button
                 part="format-button"
                 type="button"
@@ -316,7 +328,7 @@ export class MinervaJsonField extends FormAssociatedElement {
             </div>`
       }
       <textarea
-        part="textarea"
+        part="input"
         class=${classMap({
           textarea: true,
           outline: true,

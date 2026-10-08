@@ -21,7 +21,7 @@ describe("<minerva-alert>", () => {
     const el = await mount<MinervaAlert>(
       `<minerva-alert heading="Heads up">Body</minerva-alert>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     for (const cls of [
       "alert",
       "info",
@@ -47,18 +47,18 @@ describe("<minerva-alert>", () => {
     const el = await mount<MinervaAlert>(
       `<minerva-alert color="danger">x</minerva-alert>`,
     );
-    expect($(el, "[part=base]")).toHaveAttribute("role", "alert");
+    expect($(el, "[part=root]")).toHaveAttribute("role", "alert");
     expect($(el, ".icon")).toHaveAttribute("aria-label", "danger icon");
     el.alertRole = "note";
     await el.updateComplete;
-    expect($(el, "[part=base]")).toHaveAttribute("role", "note");
+    expect($(el, "[part=root]")).toHaveAttribute("role", "note");
   });
 
   it("supports hide-icon, square, no-animation, banner, elevation and border-radius", async () => {
     const el = await mount<MinervaAlert>(
       `<minerva-alert hide-icon square no-animation banner elevation border-radius="6">x</minerva-alert>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(el.shadowRoot!.querySelector(".icon")).toBeNull();
     expect(base.classList).not.toContain("rounded");
     expect(base.classList).not.toContain("withAnimation");

@@ -197,8 +197,8 @@ describe("ToastProvider", () => {
     expect(region).toHaveClass("viewport", "bottom-left");
     const item = within(region).getByRole("status");
     expect(item).toHaveClass("toast", "success");
-    expect(item).toHaveAttribute("data-state", "open");
-    expect(item).not.toHaveAttribute("data-loading");
+    expect(item).toHaveAttribute("data-toast-state", "open");
+    expect(item).not.toHaveAttribute("data-toast-loading");
     expect(item.style.getPropertyValue("--toast-duration")).toBe("3000ms");
     expect(item.querySelector(".title")).toHaveTextContent("Saved");
     expect(item.querySelector(".description")).toHaveTextContent("All good");
@@ -229,7 +229,7 @@ describe("ToastProvider", () => {
     const region = screen.getByRole("region", { name: "Alerts" });
     fireEvent.click(within(region).getByRole("button", { name: "Dismiss" }));
     expect(within(region).getByRole("status")).toHaveAttribute(
-      "data-state",
+      "data-toast-state",
       "closing",
     );
     act(() => vi.advanceTimersByTime(200));
@@ -245,19 +245,19 @@ describe("ToastProvider", () => {
     const item = screen.getByRole("status");
     fireEvent.mouseEnter(item);
     act(() => vi.advanceTimersByTime(2000));
-    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveAttribute("data-toast-state", "open");
     fireEvent.mouseLeave(item);
     const close = within(item).getByRole("button");
     fireEvent.focus(close);
     act(() => vi.advanceTimersByTime(2000));
-    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveAttribute("data-toast-state", "open");
     // focus moving inside the toast keeps it paused
     fireEvent.blur(close, { relatedTarget: item });
     act(() => vi.advanceTimersByTime(2000));
-    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveAttribute("data-toast-state", "open");
     fireEvent.blur(close, { relatedTarget: null });
     act(() => vi.advanceTimersByTime(1000));
-    expect(item).toHaveAttribute("data-state", "closing");
+    expect(item).toHaveAttribute("data-toast-state", "closing");
   });
 
   it("does not pause when pauseOnHover is false", () => {
@@ -269,7 +269,7 @@ describe("ToastProvider", () => {
     const item = screen.getByRole("status");
     fireEvent.mouseEnter(item);
     act(() => vi.advanceTimersByTime(500));
-    expect(item).toHaveAttribute("data-state", "closing");
+    expect(item).toHaveAttribute("data-toast-state", "closing");
     fireEvent.mouseLeave(item);
   });
 
@@ -323,7 +323,7 @@ describe("toast: loading, update, promise, max and options", () => {
     show(() => toast({ title: "Deleting", color: "danger", loading: true }));
     const item = screen.getByRole("status");
     expect(item).toHaveClass("danger");
-    expect(item).toHaveAttribute("data-loading", "true");
+    expect(item).toHaveAttribute("data-toast-loading", "true");
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
@@ -333,13 +333,13 @@ describe("toast: loading, update, promise, max and options", () => {
     show(() => toast.loading("Saving…"));
     const item = screen.getByRole("status");
     expect(item).toHaveClass("info");
-    expect(item).toHaveAttribute("data-loading", "true");
+    expect(item).toHaveAttribute("data-toast-loading", "true");
     expect(item.querySelector(".icon .spinner")).not.toBeNull();
     // The toast itself is the live region: the spinner is not a progressbar
     expect(screen.queryByRole("progressbar")).toBeNull();
     expect(item.querySelector(".progress")).toBeNull();
     advance(60_000);
-    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveAttribute("data-toast-state", "open");
   });
 
   it("accepts a React element title, a custom icon, or no icon", () => {
@@ -389,7 +389,10 @@ describe("toast: loading, update, promise, max and options", () => {
     render(<ToastProvider />);
     show(() => toast.info("Quick", { duration: 500 }));
     advance(500);
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-state",
+      "closing",
+    );
   });
 
   it("closes via a labelled close button that does not submit forms, calling onClose", async () => {
@@ -429,7 +432,10 @@ describe("toast: loading, update, promise, max and options", () => {
     expect(action).toHaveFocus();
     await user.keyboard("{Enter}");
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-state",
+      "closing",
+    );
   });
 
   it("pauses while hovered and resumes the remaining time afterwards", async () => {
@@ -500,14 +506,14 @@ describe("toast: loading, update, promise, max and options", () => {
     const item = screen.getByRole("status");
     act(() => toast.update(id, { title: "Still saving", color: "success" }));
     // loading is kept (and the toast stays open) unless it is cleared
-    expect(item).toHaveAttribute("data-loading", "true");
+    expect(item).toHaveAttribute("data-toast-loading", "true");
     advance(10_000);
-    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveAttribute("data-toast-state", "open");
     act(() => toast.update(id, { title: "Saved", loading: false }));
     expect(screen.getByRole("status")).toBe(item);
     expect(item).toHaveTextContent("Saved");
     expect(item).toHaveClass("success");
-    expect(item).not.toHaveAttribute("data-loading");
+    expect(item).not.toHaveAttribute("data-toast-loading");
     expect(item.querySelector(".icon .spinner")).toBeNull();
     expect(store.peek()).toHaveLength(1);
     advance(4000);
@@ -527,7 +533,7 @@ describe("toast: loading, update, promise, max and options", () => {
     expect(item).toHaveTextContent("1 GB left");
     expect(item).toHaveClass("warning");
     advance(300);
-    expect(item).toHaveAttribute("data-state", "closing");
+    expect(item).toHaveAttribute("data-toast-state", "closing");
   });
 
   it("toast.promise follows a promise from loading to success", async () => {
@@ -546,14 +552,19 @@ describe("toast: loading, update, promise, max and options", () => {
       });
     });
     expect(returned).toBe(pending);
-    expect(screen.getByRole("status")).toHaveAttribute("data-loading", "true");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-loading",
+      "true",
+    );
     expect(screen.getByRole("status")).toHaveTextContent("Uploading");
     await act(async () => {
       resolve(3);
       await pending;
     });
     expect(screen.getByRole("status")).toHaveClass("success");
-    expect(screen.getByRole("status")).not.toHaveAttribute("data-loading");
+    expect(screen.getByRole("status")).not.toHaveAttribute(
+      "data-toast-loading",
+    );
     expect(screen.getByRole("status")).toHaveTextContent("Uploaded 3 files");
     expect(store.peek()).toHaveLength(1);
     advance(4000);

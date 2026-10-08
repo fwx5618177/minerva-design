@@ -74,13 +74,14 @@ const CONTROL_CLASSES = {
  * @slot brand-icon - Decorative brand icon, still visible in the compact rail
  * @slot header-actions - Content of the header bar (account menu, search...)
  * @slot page-navigation - Rendered between the header and `main` (e.g. page tabs)
- * @csspart shell - The shell root
- * @csspart skip-link - The skip link
- * @csspart sidebar - The desktop sidebar (`aside`)
+ * @csspart root - The shell (`state`: whether the mobile navigation drawer is open)
+ * @csspart skip-link - The skip to content link
+ * @csspart sidebar - The desktop sidebar (<aside>)
  * @csspart header - The header bar
- * @csspart main - The `main` element
- * @csspart overlay - The drawer backdrop
- * @csspart drawer - The mobile drawer (`role="dialog"`)
+ * @csspart main - The <main> landmark
+ * @csspart overlay - The backdrop of the mobile drawer
+ * @csspart content - The mobile navigation drawer (role=dialog)
+ * @csspart close-button - The close button of the mobile drawer
  * @fires minerva-sidebar-mode-change - The user changed the sidebar mode (`detail: { mode }`); cancelable: `preventDefault()` keeps the current mode
  * @fires minerva-open-change - The mobile drawer opened / closed (`detail: { open }`); cancelable when the user asked for it
  */
@@ -310,6 +311,10 @@ export class MinervaAppShell extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return { state: this.mobile && this.drawerOpen ? "open" : "closed" };
+  }
+
   private deactivateDrawer() {
     if (!this.drawerActive) return;
     this.drawerActive = false;
@@ -442,7 +447,7 @@ export class MinervaAppShell extends MinervaElement {
       <div
         id="drawer"
         class="drawer"
-        part="drawer"
+        part="content"
         popover="manual"
         role="dialog"
         aria-modal="true"
@@ -454,6 +459,7 @@ export class MinervaAppShell extends MinervaElement {
         <button
           type="button"
           class="drawerClose"
+          part="close-button"
           aria-label=${this.label(this.closeNavigationLabel, "closeNavigation")}
           @click=${() => this.requestDrawer(false)}
         >
@@ -466,7 +472,7 @@ export class MinervaAppShell extends MinervaElement {
     const skipText = this.skipLink || this.locale.t("appShell.skipToContent");
     return html`<div
         class="shell"
-        part="shell"
+        part="root"
         data-sidebar-mode=${this.mode}
         data-sidebar-expanded=${this.collapsed ? nothing : "true"}
       >

@@ -4,6 +4,7 @@ import { IconChevronRight } from "../../internal/icons";
 import type { CascaderPanelProps, CascaderOption } from "./types";
 import useI18n from "../../hooks/useI18n";
 import { logicalArrowKey } from "../../internal/direction";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./cascader.module.scss";
 
 const OPTION_SELECTOR = '[role="option"]:not([aria-disabled="true"])';
@@ -133,6 +134,7 @@ const CascaderPanel = ({
           id={columnId(level)}
           data-level={level}
           className={styles.column}
+          {...hooks("cascader", "column")}
           role="listbox"
           aria-label={t("cascader.level", {
             label: label ?? t("cascader.options"),
@@ -155,6 +157,7 @@ const CascaderPanel = ({
                   [styles.loading]: option.loading,
                 })}
                 style={optionStyle}
+                {...hooks("cascader", "item")}
                 role="option"
                 aria-selected={isSelected}
                 aria-disabled={option.disabled || undefined}

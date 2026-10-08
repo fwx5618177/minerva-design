@@ -120,7 +120,7 @@ describe("theming and i18n (e2e)", () => {
     const dialog = document.getElementById("dialog") as MinervaModal;
     dialog.open = true;
     await settle();
-    const panel = $(dialog, "[part=panel]");
+    const panel = $(dialog, "[part=content]");
     expect(scopeRules(panel)).toEqual(
       scopeRules(document.getElementById("nested-input")!),
     );

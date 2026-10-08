@@ -80,13 +80,13 @@ let nextUpload = 0;
  *
  * @summary File picker with drag and drop, validation and a file list.
  * @tag minerva-upload
- * @csspart base - The container (role="group")
+ * @csspart root - The container (`role=group`)
  * @csspart label - The visible label
  * @csspart dropzone - The drop target
  * @csspart select-button - The select button
  * @csspart error - The selection error
  * @csspart list - The file list
- * @csspart item - Each file
+ * @csspart item - A file
  * @csspart remove-button - The remove button of a file
  * @csspart retry-button - The retry button of a failed file
  * @fires minerva-files-selected - Valid files were picked or dropped; `detail: { files }`; cancelable (the files are then not listed)
@@ -387,6 +387,14 @@ export class MinervaUpload extends FormAssociatedElement {
     return labels?.done ?? t("upload.done");
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.isDisabled,
+      loading: this.loading,
+      dragging: this.dragging && !this.blocked,
+    };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const labels = this.texts;
@@ -394,7 +402,7 @@ export class MinervaUpload extends FormAssociatedElement {
     const disabled = this.isDisabled;
     const name = this.label || this.aria.label;
     return html`<div
-      part="base"
+      part="root"
       class="upload"
       role="group"
       aria-labelledby=${this.label ? "label" : nothing}

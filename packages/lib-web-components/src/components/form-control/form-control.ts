@@ -45,11 +45,11 @@ const isCheckable = (el: Element) =>
  * @slot label - Rich label content (alternative to the `label` attribute)
  * @slot helper-text - Rich helper text (alternative to `helper-text`)
  * @slot error-message - Rich error message (alternative to `error-message`)
- * @csspart base - The field container
- * @csspart label - The `<label>`
- * @csspart required-indicator - The required marker
- * @csspart helper-text - The helper text
- * @csspart error-message - The error message (role="alert")
+ * @csspart root - The field container
+ * @csspart label - The <label>
+ * @csspart required-indicator - The required marker of the label
+ * @csspart helper-text - The helper text (hidden while invalid)
+ * @csspart error-message - The error message (role="alert", while invalid)
  */
 export class MinervaFormControl extends MinervaElement {
   static override tagName = "minerva-form-control";
@@ -268,11 +268,20 @@ export class MinervaFormControl extends MinervaElement {
     else el.focus();
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.disabled,
+      invalid: this.invalid,
+      readonly: this.readOnly,
+      required: this.required,
+    };
+  }
+
   protected override render() {
     const hasLabel = !!this.label || this.slots.test("label");
     const hasHelper = !!this.helperText || this.slots.test("helper-text");
     const hasError = !!this.errorMessage || this.slots.test("error-message");
-    return html`<div class="root" part="base">
+    return html`<div class="root" part="root">
       ${
         hasLabel
           ? html`<label

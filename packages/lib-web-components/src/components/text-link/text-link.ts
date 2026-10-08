@@ -23,7 +23,7 @@ export type TextLinkVariant = "default" | "subtle" | "action";
  * @summary Styled native link (default, subtle, action row).
  * @tag minerva-text-link
  * @slot - Link text (and icons)
- * @csspart link - The native `<a>`
+ * @csspart root - The native <a> (React: the slotted child with asChild)
  */
 export class MinervaTextLink extends MinervaElement {
   static override tagName = "minerva-text-link";
@@ -88,6 +88,10 @@ export class MinervaTextLink extends MinervaElement {
     this.anchor?.click();
   }
 
+  protected override hookStates() {
+    return { variant: this.variant };
+  }
+
   protected override updated(): void {
     if (DEV && !this.href) {
       devWarn(
@@ -99,7 +103,7 @@ export class MinervaTextLink extends MinervaElement {
 
   protected override render() {
     return html`<a
-      part="link"
+      part="root"
       class=${classMap({ textLink: true, [this.variant]: true })}
       href=${safeHref(MinervaTextLink.tagName, this.href) ?? nothing}
       target=${this.target ?? nothing}

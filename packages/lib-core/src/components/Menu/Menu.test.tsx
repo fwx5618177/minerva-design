@@ -274,13 +274,13 @@ describe("Menu", () => {
       fireEvent.keyDown(trigger, { key: "ArrowDown" });
     });
     const disabled = document.querySelector<HTMLElement>(
-      '[role="menuitem"][data-disabled]',
+      '[role="menuitem"][data-menu-disabled]',
     )!;
     expect(disabled.textContent).toBe("Disabled");
     await act(async () => disabled.click());
     expect(onSelect).not.toHaveBeenCalled();
     const item = document.querySelector<HTMLElement>(
-      '[role="menuitem"]:not([data-disabled])',
+      '[role="menuitem"]:not([data-menu-disabled])',
     )!;
     await act(async () => {
       fireEvent.keyDown(item, { key: "Enter" });

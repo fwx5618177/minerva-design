@@ -24,6 +24,7 @@ import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
+import { hooks } from "../../internal/stylingHooks";
 
 type PaginationItemType = "page" | "prev" | "next" | "jump-prev" | "jump-next";
 
@@ -339,6 +340,7 @@ const Pagination = ({
         onClick={(e) => handleItemClick(target, itemKey, e)}
         aria-label={itemLabel(type, target)}
         aria-current={isActive ? "page" : undefined}
+        {...hooks("pagination", "item")}
       >
         {content}
         {ripples
@@ -365,6 +367,7 @@ const Pagination = ({
           {renderEdge("prev")}
           <div className={styles.simpleInput}>
             <input
+              {...hooks("pagination", "simple-input")}
               value={simpleDraft ?? String(page)}
               disabled={disabled}
               aria-label={labels?.currentPage ?? t("pagination.currentPage")}
@@ -510,9 +513,15 @@ const Pagination = ({
       ref={mergedRef}
       className={componentClassName}
       style={style}
+      {...hooks("pagination", "root", { disabled, size, shape, variant })}
     >
       {showTotal !== false && (
-        <div className={styles.total} aria-live="polite" aria-atomic="true">
+        <div
+          className={styles.total}
+          aria-live="polite"
+          aria-atomic="true"
+          {...hooks("pagination", "total")}
+        >
           {typeof showTotal === "function"
             ? showTotal(total, visibleRange)
             : totalRender
@@ -524,7 +533,7 @@ const Pagination = ({
       {renderPageList()}
 
       {showQuickJumper && (
-        <label className={styles.jumper}>
+        <label className={styles.jumper} {...hooks("pagination", "jumper")}>
           {labels?.jumpTo ?? t("pagination.jumpTo")}
           <input
             value={jumpValue}
@@ -540,6 +549,7 @@ const Pagination = ({
       {showSizeChanger && (
         <div className={styles.sizeChanger}>
           <select
+            {...hooks("pagination", "size-changer")}
             value={currentPageSize}
             disabled={disabled}
             onChange={(e) => handleSizeChange(e.target.value)}

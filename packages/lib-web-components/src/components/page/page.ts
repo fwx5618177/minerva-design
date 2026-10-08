@@ -21,7 +21,7 @@ export type ToolbarDensity = "default" | "compact";
  * @summary Padded column of a screen's content.
  * @tag minerva-page
  * @slot - Page content
- * @csspart base - The page column
+ * @csspart root - The page column
  */
 export class MinervaPage extends MinervaElement {
   static override tagName = "minerva-page";
@@ -45,7 +45,7 @@ export class MinervaPage extends MinervaElement {
       this.maxWidth === undefined || this.maxWidth === ""
         ? undefined
         : resolveSize(this.maxWidth);
-    return html`<div class="page" part="base" style=${styleMap({ maxWidth })}>
+    return html`<div class="page" part="root" style=${styleMap({ maxWidth })}>
       <slot></slot>
     </div>`;
   }
@@ -61,8 +61,8 @@ export class MinervaPage extends MinervaElement {
  * @slot heading - Heading content (alternative to the `heading` attribute)
  * @slot description - Supporting text (alternative to the `description` attribute)
  * @slot actions - Actions next to the heading (wrap below it on narrow widths)
- * @csspart base - The `<header>`
- * @csspart heading - The `<h1>`
+ * @csspart root - The `<header>`
+ * @csspart title - The `<h1>`
  * @csspart description - The description paragraph
  * @csspart actions - The actions wrapper
  */
@@ -101,7 +101,7 @@ export class MinervaPageHeader extends MinervaElement {
   protected renderHeading() {
     const hasDescription = !!this.description || this.slots.test("description");
     return html`<div class="heading">
-      <h1 part="heading"><slot name="heading">${this.heading}</slot></h1>
+      <h1 part="title"><slot name="heading">${this.heading}</slot></h1>
       ${
         hasDescription
           ? html`<p part="description">
@@ -121,7 +121,7 @@ export class MinervaPageHeader extends MinervaElement {
   }
 
   protected override render() {
-    return html`<header class="header" part="base">
+    return html`<header class="header" part="root">
       ${this.renderHeading()} ${this.renderActions()}
     </header>`;
   }
@@ -143,12 +143,12 @@ export class MinervaPageHeader extends MinervaElement {
  * @slot description - Supporting text (alternative to the `description` attribute)
  * @slot actions - Actions next to the heading
  * @slot icon - Decorative icon before the heading (hidden from assistive technologies)
- * @csspart base - The `<section>`
- * @csspart header - The heading row
- * @csspart heading - The `<h2>`
+ * @csspart root - The `<section>`
+ * @csspart header - The title row (title, description and actions)
+ * @csspart title - The `<h2>`
+ * @csspart icon - The decorative icon wrapper, inside the title
  * @csspart description - The description paragraph
  * @csspart actions - The actions wrapper
- * @csspart icon - The icon wrapper
  */
 export class MinervaPageSection extends MinervaPageHeader {
   static override tagName = "minerva-page-section";
@@ -170,7 +170,7 @@ export class MinervaPageSection extends MinervaPageHeader {
   protected override renderHeading() {
     const hasDescription = !!this.description || this.slots.test("description");
     return html`<div class="heading">
-      <h2 id="heading" part="heading">
+      <h2 id="heading" part="title">
         ${
           this.slots.test("icon")
             ? html`<span class="sectionIcon" part="icon" aria-hidden="true"
@@ -190,7 +190,7 @@ export class MinervaPageSection extends MinervaPageHeader {
   }
 
   protected override render() {
-    return html`<section class="section" part="base" aria-labelledby="heading">
+    return html`<section class="section" part="root" aria-labelledby="heading">
       <div class="sectionHeader" part="header">
         ${this.renderHeading()} ${this.renderActions()}
       </div>
@@ -215,7 +215,7 @@ export class MinervaPageSection extends MinervaPageHeader {
  * @summary Wrapping row of related controls (role="group").
  * @tag minerva-toolbar
  * @slot - Controls
- * @csspart base - The group
+ * @csspart root - The group
  */
 export class MinervaToolbar extends MinervaElement {
   static override tagName = "minerva-toolbar";
@@ -267,7 +267,7 @@ export class MinervaToolbar extends MinervaElement {
 
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       role="group"
       aria-label=${this.aria.label ?? nothing}
       aria-description=${this.aria.description ?? nothing}
@@ -292,10 +292,10 @@ export class MinervaToolbar extends MinervaElement {
  * @slot value - Metric value (alternative to the `value` attribute)
  * @slot description - Explanatory text under the value
  * @slot icon - Decorative icon (hidden from assistive technologies)
- * @csspart base - The card
- * @csspart icon - The icon wrapper
- * @csspart label - The `<dt>`
- * @csspart value - The `<dd>`
+ * @csspart root - The card
+ * @csspart icon - The decorative icon wrapper
+ * @csspart label - The metric name (`<dt>`)
+ * @csspart value - The metric value (`<dd>`)
  * @csspart description - The description paragraph
  */
 export class MinervaStatCard extends MinervaElement {
@@ -329,7 +329,7 @@ export class MinervaStatCard extends MinervaElement {
     const hasDescription =
       (this.description !== undefined && this.description !== null) ||
       this.slots.test("description");
-    return html`<div class="statCard" part="base">
+    return html`<div class="statCard" part="root">
       ${
         this.slots.test("icon")
           ? html`<span class="statIcon" part="icon" aria-hidden="true"

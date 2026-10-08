@@ -9,6 +9,7 @@ import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { useFormControlProps } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./autoComplete.module.scss";
 import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/core";
 
@@ -339,6 +340,7 @@ const AutoComplete = ({
         }}
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(-1)}
+        {...hooks("autocomplete", "item")}
       >
         {mode === "custom" && renderOption
           ? renderOption(option)
@@ -357,9 +359,19 @@ const AutoComplete = ({
       onCompositionEnd={() => {
         composing.current = false;
       }}
+      {...hooks("autocomplete", "root", {
+        state: shown ? "open" : "closed",
+        disabled: !!field.disabled,
+        readonly: !!field.readOnly,
+        loading,
+      })}
     >
       {label && (
-        <label htmlFor={inputId} className={styles.label}>
+        <label
+          htmlFor={inputId}
+          className={styles.label}
+          {...hooks("autocomplete", "label")}
+        >
           {label}
         </label>
       )}
@@ -405,6 +417,7 @@ const AutoComplete = ({
         onDismiss={close}
         returnFocusOnEscape={() => input}
         className={cn(styles.popup, dropdownClassName)}
+        {...hooks("autocomplete", "content", { state: "open" })}
       >
         <div className={cn(styles.dropdown, animation && styles.animated)}>
           {/* While open the listbox always exists (aria-controls target);
@@ -415,9 +428,14 @@ const AutoComplete = ({
             id={listboxId}
             aria-label={label}
             aria-busy={loading || undefined}
+            {...hooks("autocomplete", "list")}
           >
             {loading ? (
-              <div role="presentation" className={styles.loading}>
+              <div
+                role="presentation"
+                className={styles.loading}
+                {...hooks("autocomplete", "loading")}
+              >
                 <ProgressIndicator />
               </div>
             ) : processedOptions.length > 0 ? (
@@ -441,7 +459,11 @@ const AutoComplete = ({
                           role="group"
                           aria-label={group}
                         >
-                          <div className={styles.groupLabel} aria-hidden="true">
+                          <div
+                            className={styles.groupLabel}
+                            aria-hidden="true"
+                            {...hooks("autocomplete", "group-label")}
+                          >
                             {group}
                           </div>
                           {groupOptions.map((option) =>
@@ -458,7 +480,11 @@ const AutoComplete = ({
                     )}
               </>
             ) : (
-              <div role="presentation" className={styles.empty}>
+              <div
+                role="presentation"
+                className={styles.empty}
+                {...hooks("autocomplete", "empty")}
+              >
                 {renderEmpty?.() || <Empty {...emptyProps} />}
               </div>
             )}

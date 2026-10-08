@@ -17,6 +17,7 @@ import PropsTable from "./PropsTable";
 import CssVarsTable from "./CssVarsTable";
 import WcApiTables from "./WcApiTables";
 import WcDemo from "./WcDemo";
+import StylingHooks from "./StylingHooks";
 import styles from "./docs.module.scss";
 
 type Framework = "react" | "wc";
@@ -123,6 +124,8 @@ ${demo.script.trim()}
             />
           ))}
       </section>
+
+      <StylingHooks meta={meta} framework="wc" />
     </>
   );
 };
@@ -217,6 +220,8 @@ const DocPage: React.FC<DocPageProps> = ({
           ))}
         </section>
       )}
+
+      <StylingHooks meta={meta} framework="react" />
 
       {children}
     </>

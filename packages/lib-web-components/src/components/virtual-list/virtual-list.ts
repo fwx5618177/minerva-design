@@ -58,10 +58,10 @@ interface WindowItem {
  *
  * @summary Windowed list rendering only the visible rows.
  * @tag minerva-virtual-list
- * @csspart base - The scroll container (`role="region"`)
- * @csspart list - The list (`role="list"`)
- * @csspart item - A row (`role="listitem"`)
- * @csspart loading - The loading indicator row
+ * @csspart root - The scroll container (`role="region"`)
+ * @csspart list - The list (`role="list"`) sized to all the rows
+ * @csspart item - A rendered row (`role="listitem"`)
+ * @csspart loading - The loading indicator row (while loading)
  * @fires minerva-item-click - A clickable row was clicked or activated with Enter / Space (`detail: { item, index }`)
  * @fires minerva-load-more - The list was scrolled within `load-more-threshold` px of the bottom
  */
@@ -366,6 +366,10 @@ export class MinervaVirtualList extends MinervaElement {
     if (!next || !row.contains(next)) this.focusedId = null;
   }
 
+  protected override hookStates() {
+    return { loading: this.loading };
+  }
+
   protected override render() {
     const height = this.rowHeight;
     const label = this.aria.label ?? nothing;
@@ -373,7 +377,7 @@ export class MinervaVirtualList extends MinervaElement {
     const total = this.items.length;
     return html`<div
       class="virtualList"
-      part="base"
+      part="root"
       role="region"
       tabindex="0"
       aria-label=${label}

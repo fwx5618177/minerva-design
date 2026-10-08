@@ -24,6 +24,7 @@ import type {
   TabsVariant,
 } from "./types";
 import { resolveDirection } from "../../internal/direction";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./tabs.module.scss";
 
 interface TabsContextValue {
@@ -113,7 +114,6 @@ export const Tabs = ({
       <div
         ref={ref}
         dir={dir}
-        data-orientation={orientation}
         className={cn(
           styles.tabs,
           styles[color],
@@ -121,6 +121,7 @@ export const Tabs = ({
           className,
         )}
         {...rest}
+        {...hooks("tabs", "root", { orientation, variant, color })}
       >
         {children}
       </div>
@@ -259,7 +260,6 @@ export const TabList = ({
         ref={mergedRef}
         role="tablist"
         aria-orientation={orientation}
-        data-orientation={orientation}
         className={cn(
           styles.list,
           styles[`${variant}List`],
@@ -268,6 +268,7 @@ export const TabList = ({
         )}
         onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown)}
         {...rest}
+        {...hooks("tabs", "list", { orientation, variant })}
       />
     </TabStopContext.Provider>
   );
@@ -331,9 +332,6 @@ export const Tab = ({
       id={id}
       aria-selected={selected}
       aria-controls={panelId(baseId, value)}
-      data-state={selected ? "active" : "inactive"}
-      data-orientation={orientation}
-      data-disabled={disabled ? "" : undefined}
       disabled={disabled}
       tabIndex={isTabStop ? 0 : -1}
       className={cn(
@@ -349,6 +347,13 @@ export const Tab = ({
       onFocus={composeEventHandlers(onFocus, handleFocus)}
       onClick={composeEventHandlers(onClick, handleClick)}
       {...rest}
+      {...hooks("tab", "root", {
+        state: selected ? "active" : "inactive",
+        disabled,
+        orientation,
+        variant,
+        color,
+      })}
     >
       {children}
     </button>
@@ -377,12 +382,14 @@ export const TabPanel = ({
       role="tabpanel"
       id={panelId(baseId, value)}
       aria-labelledby={tabId(baseId, value)}
-      data-state={selected ? "active" : "inactive"}
-      data-orientation={orientation}
       hidden={!selected}
       tabIndex={0}
       className={cn(styles.panel, className)}
       {...rest}
+      {...hooks("tab-panel", "root", {
+        state: selected ? "active" : "inactive",
+        orientation,
+      })}
     >
       {children}
     </div>

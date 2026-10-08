@@ -42,9 +42,12 @@ interface Ripple {
  * @slot icon - Icon displayed before the label
  * @slot avatar - Avatar (small `<minerva-avatar>` or image) before the label
  * @slot close-icon - Custom close icon
- * @csspart base - The tag root
- * @csspart action - The native `<button>` of a clickable tag
+ * @csspart root - The tag (a plain, non-interactive element); state active while a clickable tag is pressed, inactive otherwise
+ * @csspart action - The native <button> of a clickable tag
  * @csspart label - The label wrapper
+ * @csspart icon - The icon before the label
+ * @csspart avatar - The avatar before the label
+ * @csspart spinner - The loading spinner (while loading)
  * @csspart close-button - The close button
  * @fires minerva-close - The close button was activated (`detail: {}`)
  * @fires minerva-change - A `toggle` tag was toggled (`detail: { pressed }`)
@@ -221,6 +224,18 @@ export class MinervaTag extends MinervaElement {
     this.rippleTimers.add(timer);
   }
 
+  protected override hookStates() {
+    return {
+      state: this.clickable && this.pressed ? "active" : "inactive",
+      disabled: this.disabled,
+      loading: this.loading,
+      size: this.size,
+      variant: this.variant,
+      color: this.color,
+      shape: this.shape,
+    };
+  }
+
   protected override updated(): void {
     if (DEV && (this.toggle || this.pressed !== undefined) && !this.clickable) {
       devWarn(
@@ -241,20 +256,28 @@ export class MinervaTag extends MinervaElement {
 
     const content = html`${
         this.loading
-          ? html`<span class="spinner" aria-hidden="true"></span>`
+          ? html`<span
+              class="spinner"
+              part="spinner"
+              aria-hidden="true"
+            ></span>`
           : html`${
               this.slots.test("icon")
-                ? html`<span class="icon"><slot name="icon"></slot></span>`
+                ? html`<span class="icon" part="icon"
+                    ><slot name="icon"></slot
+                  ></span>`
                 : nothing
             }${
               this.slots.test("avatar")
-                ? html`<span class="avatar"><slot name="avatar"></slot></span>`
+                ? html`<span class="avatar" part="avatar"
+                    ><slot name="avatar"></slot
+                  ></span>`
                 : nothing
             }`
       }<span class="content" part="label"><slot></slot></span>`;
 
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         tag: true,
         [this.color]: true,

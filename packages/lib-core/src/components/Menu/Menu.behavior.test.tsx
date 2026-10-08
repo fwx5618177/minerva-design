@@ -78,17 +78,17 @@ afterEach(() => {
 });
 
 describe("Menu trigger", () => {
-  it("wires aria-haspopup, aria-expanded, aria-controls, data-state and labels the menu with the trigger", async () => {
+  it("wires aria-haspopup, aria-expanded, aria-controls, data-menu-state and labels the menu with the trigger", async () => {
     const { user, trigger } = renderMenu(simple);
     expect(trigger).toHaveAttribute("aria-haspopup", "menu");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
-    expect(trigger).toHaveAttribute("data-state", "closed");
+    expect(trigger).toHaveAttribute("data-menu-state", "closed");
     expect(trigger).not.toHaveAttribute("aria-controls");
 
     await user.click(trigger);
     const menu = screen.getByRole("menu");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(trigger).toHaveAttribute("data-state", "open");
+    expect(trigger).toHaveAttribute("data-menu-state", "open");
     expect(trigger).toHaveAttribute("aria-controls", menu.id);
     expect(menu).toHaveAttribute("aria-labelledby", trigger.id);
     expect(menu).toHaveAccessibleName("Open");
@@ -221,19 +221,19 @@ describe("Menu pointer", () => {
     const menu = screen.getByRole("menu");
     await user.hover(item("Gamma"));
     expect(item("Gamma")).toHaveFocus();
-    expect(item("Gamma")).toHaveAttribute("data-highlighted");
+    expect(item("Gamma")).toHaveAttribute("data-menu-highlighted");
 
     await user.hover(item("Beta"));
     expect(item("Beta")).not.toHaveFocus();
-    expect(item("Beta")).toHaveAttribute("data-disabled");
+    expect(item("Beta")).toHaveAttribute("data-menu-disabled");
     expect(menu).toHaveFocus();
-    expect(item("Gamma")).not.toHaveAttribute("data-highlighted");
+    expect(item("Gamma")).not.toHaveAttribute("data-menu-highlighted");
 
     await user.hover(item("Alpha"));
-    expect(item("Alpha")).toHaveAttribute("data-highlighted");
+    expect(item("Alpha")).toHaveAttribute("data-menu-highlighted");
     await user.unhover(item("Alpha"));
     expect(menu).toHaveFocus();
-    expect(item("Alpha")).not.toHaveAttribute("data-highlighted");
+    expect(item("Alpha")).not.toHaveAttribute("data-menu-highlighted");
   });
 
   it("closeOnSelect={false} keeps the menu open; an item's closeOnSelect overrides it", async () => {
@@ -268,7 +268,7 @@ describe("Menu submenus", () => {
     await waitFor(() => expect(item("Mail")).toHaveFocus());
     const [root, sub] = screen.getAllByRole("menu");
     expect(share).toHaveAttribute("aria-expanded", "true");
-    expect(share).toHaveAttribute("data-state", "open");
+    expect(share).toHaveAttribute("data-menu-state", "open");
     expect(share).toHaveAttribute("aria-controls", sub!.id);
     expect(sub).toHaveAccessibleName("Share");
     expect(sub).toHaveAttribute("data-side", "right");
@@ -359,7 +359,7 @@ describe("Menu submenus", () => {
     // moving into the submenu highlights its items
     await user.hover(item("Copy link"));
     expect(item("Copy link")).toHaveFocus();
-    expect(item("Share")).toHaveAttribute("data-state", "open");
+    expect(item("Share")).toHaveAttribute("data-menu-state", "open");
 
     await user.hover(item("Print"));
     expect(item("Print")).toHaveFocus();
@@ -470,7 +470,7 @@ describe("Menu checkbox and radio items", () => {
       name: "Show rulers",
     });
     expect(grid).toHaveAttribute("aria-checked", "true");
-    expect(grid).toHaveAttribute("data-state", "checked");
+    expect(grid).toHaveAttribute("data-menu-state", "checked");
     expect(rulers).toHaveAttribute("aria-checked", "false");
     await waitFor(() => expect(grid).toHaveFocus());
 
@@ -738,7 +738,7 @@ describe("Menu modality and layers", () => {
           <div>Area</div>
         </ContextMenu>,
       ),
-    ).toContain('data-state="closed"');
+    ).toContain('data-menu-state="closed"');
   });
 });
 
@@ -763,7 +763,7 @@ describe("ContextMenu", () => {
     const event = fireEvent.contextMenu(area, { clientX: 120, clientY: 80 });
     expect(event).toBe(false); // default prevented
     const menu = screen.getByRole("menu");
-    expect(area).toHaveAttribute("data-state", "open");
+    expect(area).toHaveAttribute("data-menu-state", "open");
     // anchored to a zero-size point (2px gap; may flip in the test viewport)
     await waitFor(() => expect(menu.style.top).toBe("80px"));
     expect(Math.abs(parseFloat(menu.style.left) - 120)).toBe(2);
@@ -794,7 +794,7 @@ describe("ContextMenu", () => {
 
     fireEvent.keyDown(inner, { key: "ContextMenu" });
     await waitFor(() => expect(item("New")).toHaveFocus());
-    expect(area).toHaveAttribute("data-state", "open");
+    expect(area).toHaveAttribute("data-menu-state", "open");
   });
 
   it("supports submenus, selection and closes on Tab", async () => {
@@ -851,6 +851,6 @@ describe("ContextMenu", () => {
     expect(fireEvent.contextMenu(area)).toBe(true);
     fireEvent.keyDown(area, { key: "ContextMenu" });
     expect(screen.queryByRole("menu")).toBeNull();
-    expect(area).toHaveAttribute("data-disabled");
+    expect(area).toHaveAttribute("data-menu-disabled");
   });
 });

@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import { previewDocument } from "./previewDocument";
 import type { HtmlPreviewProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./htmlPreview.module.scss";
 
 /**
@@ -38,6 +39,7 @@ export const HtmlPreview = ({
       ref={ref}
       className={cn(styles.preview, className)}
       style={style}
+      {...hooks("html-preview", "root")}
     >
       {/* A new key replaces the browsing context, so an initial empty srcdoc
           can never finish loading after the real document. */}
@@ -48,6 +50,7 @@ export const HtmlPreview = ({
         referrerPolicy="no-referrer"
         srcDoc={doc}
         className={styles.frame}
+        {...hooks("html-preview", "frame")}
         style={{
           width: viewport === "mobile" ? width : "100%",
           height: frameHeight,

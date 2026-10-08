@@ -266,12 +266,52 @@ import "@minerva/lib-web-components/tokens.css";
 
 素の HTML、Vue、Angular、Svelte、フォーム、テーマのガイド：[Web Components](https://fwx5618177.github.io/minerva/#/web-components)。
 
+### スタイルのカスタマイズ
+
+公開され安定した 3 つのレイヤーがあり、軽いものから順に使えます：
+
+1. **デザイントークンとコンポーネントの CSS 変数**（`--primary-color`、`--radius-md`、`--button-radius`、`--input-height`…）：`:root`、テーマスコープ、任意の要素に設定します。
+2. **スタイリングフック**：すべての React コンポーネントは、スタイル可能な要素に `data-minerva="<コンポーネント>"` と `data-part="<パーツ>"`、共通語彙の状態属性（`data-state="open|closed|checked|unchecked|indeterminate|active|inactive"`、`data-disabled`、`data-invalid`、`data-readonly`、`data-loading`、`data-size`、`data-variant`、`data-color`、`data-orientation`、`data-side`、`data-align`、`data-placement`…）を出力します。Web Components はタグ名、`::part()`、カスタムステート（`:state()`）で同じ名前を公開します。
+3. **カスケードレイヤー**：ライブラリの CSS はすべて `@layer minerva` に入っているため、レイヤー外のアプリ CSS は `!important` なしで上書きできます。
+
+| フック         | React                                        | Web Components                     |
+| -------------- | -------------------------------------------- | ---------------------------------- |
+| コンポーネント | `[data-minerva="button"]`                    | `minerva-button`                   |
+| パーツ         | `[data-minerva="button"][data-part="label"]` | `minerva-button::part(label)`      |
+| 状態           | `[data-state="open"]`、`[data-disabled]`     | `:state(open)`、`:state(disabled)` |
+| キー付き状態   | `[data-size="small"]`                        | `:state(size-small)`               |
+
+```css
+/* React */
+[data-minerva="button"][data-part="root"][data-variant="solid"] {
+  --button-radius: 999px; /* 変数とフックを組み合わせる */
+  letter-spacing: 0.01em;
+}
+[data-minerva="modal"][data-part="content"][data-state="open"] {
+  border: 1px solid var(--border-color);
+}
+
+/* Web Components：同じ名前 */
+minerva-button:state(variant-solid) {
+  --button-radius: 999px;
+}
+minerva-modal:state(open)::part(content) {
+  border: 1px solid var(--border-color);
+}
+
+/* レイヤー化したアプリの CSS：minerva をレイヤー順に含める */
+@layer reset, minerva, app;
+```
+
+複合セレクター `[data-minerva="x"][data-part="y"]` を推奨します（ポップアップやダイアログなどポータルで描画されるパーツにも一致します）。クラス名とフックのない DOM は内部実装です。各コンポーネントのフックはドキュメントページと `@minerva/core/styling-hooks`（機械可読なマニフェスト）に一覧され、`packages/core/styling-hooks.lock.json` で固定されています：フックの追加は minor、削除・改名は major の変更です。ガイド：[スタイルのカスタマイズ](https://fwx5618177.github.io/minerva/#/styling)。
+
 ## 🌐 ブラウザサポート
 
 エバーグリーンブラウザが対象です。**完全サポート**（以下の機能がすべてネイティブで動作）：**Chrome / Edge 120+、Firefox 125+、Safari 17+**（iOS Safari 17+ を含む）。それより古いエンジン（Chrome / Edge 111、Firefox 113、Safari 16.4 まで）でも次の劣化つきで動作します：
 
 - `color-mix()`（111 / 113 / 16.2）：影とホバー色が平坦になる；コンテナクエリ（105 / 110 / 16）：`ResponsiveGrid`・`SplitLayout`・`KeyValueEditor` は 1 カラムのまま；`:has()`（105 / 121 / 15.4）：`Input`・`Modal` / `Drawer` の余白がわずかに異なる；`:dir()`（120 / 49 / 16.4）：RTL で `Rating` の半星と `Cascader` の矢印が反転しない。
-- Web Components：Popover API（114 / 125 / 17）がない場合、オーバーレイは `position: fixed` + `z-index` にフォールバック；`ElementInternals`（77 / 98 / 16.4）がない場合、フォームコントロールは動作するがフォームに参加しない（`element-internals-polyfill` を利用可）；`adoptedStyleSheets` がない場合 Lit は `<style>` にフォールバック。
+- Web Components：Popover API（114 / 125 / 17）がない場合、オーバーレイは `position: fixed` + `z-index` にフォールバック；`ElementInternals`（77 / 98 / 16.4）がない場合、フォームコントロールは動作するがフォームに参加しない（`element-internals-polyfill` を利用可）；`adoptedStyleSheets` がない場合 Lit は `<style>` にフォールバック；スタイリングフックのカスタムステート `:state()`（125 / 126 / 17.4）は Chromium 90-124 では旧構文 `:--open`、それより古いエンジンではホスト属性（`[open]`、`[disabled]`）を使います。
+- カスケードレイヤー `@layer`（99 / 97 / 15.4）：公開されるすべてのスタイルシートは `@layer minerva` に入っています。
 - クリップボード（`CodeBlock` のコピー）はセキュアコンテキスト（HTTPS / localhost）が必要で、使えない場合は「コピー失敗」と表示されます。
 - SSR には Node `^20.19.0 || >=22.12.0` が必要です。インポート時に `window` / `document` にはアクセスしません。
 

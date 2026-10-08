@@ -10,6 +10,7 @@ import type {
   VStackProps,
 } from "./types";
 import styles from "./stack.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 const alignMap: Record<StackAlign, string> = {
   start: "flex-start",
@@ -28,13 +29,21 @@ const justifyMap: Record<StackJustify, string> = {
   evenly: "space-evenly",
 };
 
+/** Styling hook component of a stack (`data-minerva`) */
+type StackHookName = "stack" | "hstack" | "vstack";
+
 /**
  * Stack: a flex container that lays out its children in a row or column with a
  * token-based gap. It does not wrap children in item elements; an optional
  * `separator` is inserted between them, and `attached` joins them into one
  * group (shared borders, outer corners only).
  */
-export const Stack = ({
+export const Stack = (props: StackProps) => (
+  <StackBase {...props} hookName="stack" />
+);
+
+const StackBase = ({
+  hookName,
   as = "div",
   direction = "column",
   gap,
@@ -47,7 +56,7 @@ export const Stack = ({
   className,
   children,
   ...rest
-}: StackProps) => {
+}: StackProps & { hookName: StackHookName }) => {
   const Tag = as as ElementType;
   const computed: CSSProperties = {
     ...(gap !== undefined && !attached && { gap: resolveSpace(gap) }),
@@ -68,6 +77,17 @@ export const Stack = ({
       style={computed}
       role={attached ? "group" : undefined}
       {...rest}
+      {...hooks(
+        hookName,
+        "root",
+        hookName === "stack"
+          ? {
+              orientation: direction.startsWith("row")
+                ? "horizontal"
+                : "vertical",
+            }
+          : undefined,
+      )}
     >
       {separator === undefined || separator === null
         ? children
@@ -90,12 +110,22 @@ const withSeparators = (children: ReactNode, separator: ReactNode) =>
 
 /** HStack: a horizontal Stack, centered on the cross axis by default. */
 export const HStack = ({ align, ...props }: HStackProps) => (
-  <Stack {...props} direction="row" align={align ?? "center"} />
+  <StackBase
+    {...props}
+    hookName="hstack"
+    direction="row"
+    align={align ?? "center"}
+  />
 );
 
 /** VStack: a vertical Stack, stretched on the cross axis by default. */
 export const VStack = ({ align, ...props }: VStackProps) => (
-  <Stack {...props} direction="column" align={align ?? "stretch"} />
+  <StackBase
+    {...props}
+    hookName="vstack"
+    direction="column"
+    align={align ?? "stretch"}
+  />
 );
 
 export default Stack;

@@ -33,7 +33,7 @@ const key = (
 });
 
 const panel = (el: MinervaCommandDialog) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 const input = (el: MinervaCommandDialog) =>
   $<HTMLInputElement>(el, "[role=combobox]");
 const options = (el: MinervaCommandDialog) =>

@@ -132,7 +132,7 @@ describe("<minerva-code-editor>", () => {
 
   it("shows a labelled loading state until the engine is set", async () => {
     const { el } = await setup(undefined, null);
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("role", "group");
     expect(base).toHaveAttribute("aria-label", "HTML source");
     expect($(el, "[part=label]").textContent).toBe("HTML source");

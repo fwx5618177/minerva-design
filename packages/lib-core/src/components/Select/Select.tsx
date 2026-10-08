@@ -30,6 +30,7 @@ import {
 } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { LayerContext } from "../../internal/useDismissableLayer";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./select.module.scss";
 import type {
   SelectGroupProps,
@@ -532,11 +533,22 @@ const Select = ({
         onKeyUp={(event) => {
           if (event.key === " ") event.preventDefault();
         }}
+        {...hooks("select", "root", {
+          state: open ? "open" : "closed",
+          disabled: isDisabled,
+          invalid: isInvalid,
+          required: isRequired,
+          size,
+        })}
       >
-        <span className={styles.value}>
+        <span className={styles.value} {...hooks("select", "value")}>
           <span>{showPlaceholder ? placeholder : selectedItem?.label}</span>
         </span>
-        <span className={styles.icon} aria-hidden="true">
+        <span
+          className={styles.icon}
+          aria-hidden="true"
+          {...hooks("select", "icon")}
+        >
           <IconChevronDown focusable={false} />
         </span>
       </button>
@@ -581,11 +593,14 @@ const Select = ({
                 role="listbox"
                 tabIndex={-1}
                 {...listboxLabel}
-                data-state="open"
-                data-side={side}
-                data-align={align}
                 className={cn(styles.content, contentClassName)}
                 onKeyDown={onListboxKeyDown}
+                {...hooks("select", "content", {
+                  state: "open",
+                  side,
+                  align,
+                  placement,
+                })}
               >
                 <SelectContext.Provider value={context}>
                   {children}
@@ -633,9 +648,6 @@ const SelectItem = ({
       tabIndex={-1}
       aria-selected={selected}
       aria-disabled={disabled || undefined}
-      data-state={selected ? "checked" : "unchecked"}
-      data-highlighted={ctx.highlighted === value ? "" : undefined}
-      data-disabled={disabled ? "" : undefined}
       data-value={value}
       data-text-value={textValue}
       className={cn(styles.item, className)}
@@ -645,10 +657,21 @@ const SelectItem = ({
       onClick={() => {
         if (!disabled) ctx.select(value);
       }}
+      {...hooks("option", "root", {
+        state: selected ? "checked" : "unchecked",
+        highlighted: ctx.highlighted === value,
+        disabled,
+      })}
     >
-      <span className={styles.itemText}>{children}</span>
+      <span className={styles.itemText} {...hooks("option", "label")}>
+        {children}
+      </span>
       {selected && (
-        <span className={styles.itemIndicator} aria-hidden="true">
+        <span
+          className={styles.itemIndicator}
+          aria-hidden="true"
+          {...hooks("option", "indicator")}
+        >
           <IconCheck focusable={false} />
         </span>
       )}
@@ -669,6 +692,7 @@ const SelectGroup = ({ className, ref, ...rest }: SelectGroupProps) => {
         aria-labelledby={hasLabel ? labelId : undefined}
         className={className}
         {...rest}
+        {...hooks("option-group", "root")}
       />
     </GroupContext.Provider>
   );
@@ -688,6 +712,7 @@ const SelectLabel = ({ className, ref, ...rest }: SelectLabelProps) => {
       id={group?.labelId}
       className={cn(styles.label, className)}
       {...rest}
+      {...hooks("select-label", "root")}
     />
   );
 };
@@ -699,6 +724,7 @@ const SelectSeparator = ({ className, ref, ...rest }: SelectSeparatorProps) => (
     aria-hidden="true"
     className={cn(styles.separator, className)}
     {...rest}
+    {...hooks("select-separator", "root")}
   />
 );
 

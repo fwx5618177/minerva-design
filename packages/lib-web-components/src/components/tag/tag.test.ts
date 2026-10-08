@@ -17,7 +17,7 @@ describe("<minerva-tag>", () => {
 
   it("renders lib-core's tag classes and defaults", async () => {
     const el = await mount<MinervaTag>(`<minerva-tag>React</minerva-tag>`);
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     for (const cls of ["tag", "neutral", "subtle", "medium", "rounded"]) {
       expect(base.classList).toContain(cls);
     }
@@ -101,7 +101,7 @@ describe("<minerva-tag>", () => {
     expect(onChange.mock.calls[0][0].detail).toEqual({ pressed: true });
     await el.updateComplete;
     expect(action).toHaveAttribute("aria-pressed", "true");
-    expect($(el, "[part=base]").classList).toContain("pressed");
+    expect($(el, "[part=root]").classList).toContain("pressed");
     expect(el.hasAttribute("pressed")).toBe(true);
   });
 
@@ -112,7 +112,7 @@ describe("<minerva-tag>", () => {
     expect($<HTMLButtonElement>(el, "button.action").disabled).toBe(true);
     expect(el.shadowRoot!.querySelector(".closeIcon")).toBeNull();
     expect(el.shadowRoot!.querySelector(".spinner")).not.toBeNull();
-    expect($(el, "[part=base]")).toHaveAttribute("aria-busy", "true");
+    expect($(el, "[part=root]")).toHaveAttribute("aria-busy", "true");
   });
 
   it("renders icon / avatar slots only when filled", async () => {

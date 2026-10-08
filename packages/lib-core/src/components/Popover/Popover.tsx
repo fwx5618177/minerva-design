@@ -28,6 +28,7 @@ import { useScrollLock } from "../../internal/useScrollLock";
 import { adjacentTabbable, tabLeavesPanel } from "../../internal/tabbing";
 import { usePortalDirection } from "../../internal/direction";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import type {
   PopoverAnchorProps,
   PopoverContentProps,
@@ -133,8 +134,11 @@ export const PopoverTrigger = ({
     "aria-haspopup": "dialog" as const,
     "aria-expanded": open,
     "aria-controls": open ? contentId : undefined,
-    "data-state": open ? "open" : "closed",
     ...rest,
+    // The native button only: with asChild the child keeps its own hooks.
+    ...(asChild
+      ? undefined
+      : hooks("popover", "trigger", { state: open ? "open" : "closed" })),
     onClick: composeEventHandlers(onClick, () => setOpen(!open)),
   };
   return asChild ? (
@@ -329,12 +333,15 @@ export const PopoverContent = ({
           aria-modal={modal || undefined}
           tabIndex={-1}
           dir={dir}
-          data-state={state}
-          data-side={placement.side}
-          data-align={placement.align}
           className={cn(styles.content, className)}
           style={style}
           {...rest}
+          {...hooks("popover", "content", {
+            state,
+            side: placement.side,
+            align: placement.align,
+            placement: finalPlacement,
+          })}
           onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown)}
         >
           {children}
@@ -344,6 +351,7 @@ export const PopoverContent = ({
               className={styles.arrowWrapper}
               style={arrowStyles}
               aria-hidden="true"
+              {...hooks("popover", "arrow")}
             >
               <svg
                 className={styles.arrow}

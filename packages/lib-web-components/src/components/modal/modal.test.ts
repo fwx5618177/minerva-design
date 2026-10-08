@@ -7,7 +7,7 @@ import "../../elements/button";
 import { $, mount, settle, wait } from "../../../tests/utils";
 
 const panel = (el: MinervaModal) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 
 const setup = () =>
   mount<MinervaModal>(

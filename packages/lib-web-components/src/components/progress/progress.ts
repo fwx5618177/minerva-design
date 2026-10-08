@@ -35,8 +35,9 @@ export type ProgressColor = "primary" | "neutral" | "current";
  * @tag minerva-progress
  * @slot icon - Icon displayed before the indicator
  * @slot label - Visible label (alternative to the `label` attribute)
- * @csspart base - The root (`role="progressbar"`)
- * @csspart indicator - The animated indicator
+ * @csspart root - The indicator (role=progressbar unless decorative); color current follows the text color
+ * @csspart icon - The icon before the indicator
+ * @csspart indicator - The animated indicator (ring, wave or bar)
  * @csspart label - The visible label
  */
 export class MinervaProgress extends MinervaElement {
@@ -100,6 +101,15 @@ export class MinervaProgress extends MinervaElement {
   private readonly aria = new AriaController(this);
   private readonly slots = new HasSlotController(this);
 
+  protected override hookStates() {
+    return {
+      // kebab-case state value
+      variant: this.variant === "dottedBar" ? "dotted-bar" : this.variant,
+      size: this.size,
+      color: this.color,
+    };
+  }
+
   protected override updated(): void {
     if (DEV && this.full && this.width) {
       devWarn(MinervaProgress.tagName, "width is ignored when full is set.");
@@ -145,7 +155,7 @@ export class MinervaProgress extends MinervaElement {
     const hasLabel = !!this.label || this.slots.test("label");
     const ariaLabel = this.aria.label;
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         progressIndicator: true,
         [this.color]: true,
@@ -169,7 +179,9 @@ export class MinervaProgress extends MinervaElement {
     >
       ${
         this.slots.test("icon")
-          ? html`<span class="icon"><slot name="icon"></slot></span>`
+          ? html`<span class="icon" part="icon"
+              ><slot name="icon"></slot
+            ></span>`
           : nothing
       }
       ${this.renderIndicator()}

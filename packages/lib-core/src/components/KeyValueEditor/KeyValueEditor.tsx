@@ -9,6 +9,7 @@ import { FormField } from "../FormControl/FormControl";
 import { IconButton } from "../IconButton";
 import { Textarea } from "../Textarea/Textarea";
 import type { KeyValueEditorProps, KeyValueEntry } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./keyValueEditor.module.scss";
 
 const EMPTY: KeyValueEntry[] = [];
@@ -119,11 +120,20 @@ export const KeyValueEditor = ({
   );
 
   return (
-    <div ref={ref} {...rest} className={cn(styles.root, className)}>
+    <div
+      ref={ref}
+      {...rest}
+      className={cn(styles.root, className)}
+      {...hooks("key-value-editor", "root", { disabled })}
+    >
       {entries.map((entry, index) => {
         const error = errors?.[entry.id];
         return (
-          <div className={styles.row} key={entry.id}>
+          <div
+            className={styles.row}
+            key={entry.id}
+            {...hooks("key-value-editor", "row")}
+          >
             <FormField
               label={numbered(keyText, index)}
               disabled={disabled}

@@ -76,10 +76,11 @@ const starStyles = css`
  *
  * @summary Star rating (display or interactive slider).
  * @tag minerva-rating
- * @csspart base - The root (role="slider", or role="img" when read-only)
+ * @csspart root - The root (role="slider", or role="img" when display-only)
  * @csspart stars - The star row
  * @csspart star - Each star
- * @csspart value - The score and count
+ * @csspart value - The score and the count
+ * @csspart count - The number of ratings
  * @fires change - The user changed the score
  * @fires minerva-change - The user changed the score; `detail: { value }`
  */
@@ -260,6 +261,10 @@ export class MinervaRating extends FormAssociatedElement {
     this.commit(next);
   }
 
+  protected override hookStates() {
+    return { readonly: !this.isInteractive, size: this.size };
+  }
+
   private renderStar(fill: RatingStarFill, px: number) {
     const size = styleMap({
       width: `${px}px`,
@@ -312,7 +317,7 @@ export class MinervaRating extends FormAssociatedElement {
       ? html`<span class="value" part="value"
           ><strong>${value.toFixed(1)}</strong>${
             this.ratingCount !== undefined
-              ? html`<span class="count"
+              ? html`<span class="count" part="count"
                   >(${this.ratingCount.toLocaleString("en-US")})</span
                 >`
               : nothing
@@ -328,7 +333,7 @@ export class MinervaRating extends FormAssociatedElement {
 
     if (!interactive) {
       return html`<span
-        part="base"
+        part="root"
         class=${classes}
         role="img"
         aria-label=${label}
@@ -339,7 +344,7 @@ export class MinervaRating extends FormAssociatedElement {
     }
 
     return html`<span
-      part="base"
+      part="root"
       class=${classes}
       role="slider"
       tabindex="0"
@@ -364,8 +369,8 @@ export class MinervaRating extends FormAssociatedElement {
  *
  * @summary Several labelled ratings on one scale.
  * @tag minerva-rating-scale
- * @csspart base - The list of rows
- * @csspart row - Each row
+ * @csspart root - The list of rows
+ * @csspart row - Each row (a label and a rating)
  * @csspart label - The label of a row
  * @fires minerva-change - The user rated a dimension; `detail: { key, value, dimensions }` (`dimensions` is already updated)
  */
@@ -416,8 +421,12 @@ export class MinervaRatingScale extends MinervaElement {
     this.emit("minerva-change", { key, value, dimensions: this.dimensions });
   }
 
+  protected override hookStates() {
+    return { readonly: !this.interactive || this.readOnly, size: this.size };
+  }
+
   protected override render() {
-    return html`<div class="scale" part="base">
+    return html`<div class="scale" part="root">
       ${this.dimensions.map(
         (dim) =>
           html`<div class="scaleRow" part="row" title=${dim.hint ?? nothing}>

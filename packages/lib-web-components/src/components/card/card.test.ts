@@ -17,7 +17,7 @@ afterEach(() => {
   resetDevWarnings();
 });
 
-const base = (el: Element) => $(el, "[part=base]");
+const base = (el: Element) => $(el, "[part=root]");
 
 const full = `<minerva-card>
   <minerva-card-header>

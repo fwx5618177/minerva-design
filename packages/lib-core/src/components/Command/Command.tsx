@@ -17,7 +17,14 @@ import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { cn } from "../../utils/cn";
-import { ModalContent, ModalHeader, ModalRoot } from "../Modal/Modal";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+} from "../../internal/Dialog";
+import { hooks } from "../../internal/stylingHooks";
+import modalStyles from "../Modal/modal.module.scss";
 import type { CommandDialogProps, CommandItem } from "./types";
 import styles from "./command.module.scss";
 
@@ -96,7 +103,7 @@ const CommandPanel = ({
 
   return (
     <>
-      <div className={styles.search}>
+      <div className={styles.search} {...hooks("command-dialog", "search")}>
         <span className={styles.searchIcon} aria-hidden="true">
           ⌕
         </span>
@@ -118,6 +125,7 @@ const CommandPanel = ({
             setActiveIndex(0);
           }}
           onKeyDown={onKeyDown}
+          {...hooks("command-dialog", "input")}
         />
         <kbd className={styles.enterHint} aria-hidden="true">
           {enterLabel}
@@ -128,9 +136,12 @@ const CommandPanel = ({
         className={styles.results}
         role="listbox"
         aria-label={resultsLabel}
+        {...hooks("command-dialog", "list")}
       >
         {results.length === 0 ? (
-          <div className={styles.empty}>{emptyText}</div>
+          <div className={styles.empty} {...hooks("command-dialog", "empty")}>
+            {emptyText}
+          </div>
         ) : (
           results.map((item, index) => {
             const active = index === activeIndex;
@@ -147,6 +158,7 @@ const CommandPanel = ({
                 className={styles.item}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => onSelect(item)}
+                {...hooks("command-dialog", "item")}
               >
                 <span className={styles.copy}>
                   <strong>{item.title}</strong>
@@ -236,17 +248,39 @@ export const CommandDialog = ({
   };
 
   return (
-    <ModalRoot open={open} onOpenChange={setOpen}>
-      <ModalContent
-        className={cn(styles.dialog, className)}
-        description={description ?? t("command.description")}
-        hideCloseButton
-        size="large"
+    // The markup of a large <Modal> without close button (same styles),
+    // with its own hooks.
+    <DialogRoot
+      componentName="CommandDialog"
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <DialogContent
+        overlayClassName={modalStyles.overlay}
+        overlayAttributes={hooks("command-dialog", "overlay")}
+        className={cn(
+          modalStyles.content,
+          modalStyles.large,
+          styles.dialog,
+          className,
+        )}
+        {...hooks("command-dialog", "content")}
       >
-        <ModalHeader className={styles.header}>
-          <span>{title ?? t("command.title")}</span>
-          {shortcutLabel && <kbd className={styles.kbd}>{shortcutLabel}</kbd>}
-        </ModalHeader>
+        <DialogDescription
+          className={modalStyles.description}
+          {...hooks("command-dialog", "description")}
+        >
+          {description ?? t("command.description")}
+        </DialogDescription>
+        <DialogTitle asChild>
+          <div
+            className={cn(modalStyles.header, styles.header)}
+            {...hooks("command-dialog", "header")}
+          >
+            <span>{title ?? t("command.title")}</span>
+            {shortcutLabel && <kbd className={styles.kbd}>{shortcutLabel}</kbd>}
+          </div>
+        </DialogTitle>
         <CommandPanel
           items={items}
           maxResults={maxResults}
@@ -257,8 +291,8 @@ export const CommandDialog = ({
           enterLabel={enterLabel ?? t("command.enter")}
           onSelect={select}
         />
-      </ModalContent>
-    </ModalRoot>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 

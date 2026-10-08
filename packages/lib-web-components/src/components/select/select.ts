@@ -94,12 +94,11 @@ const isPrintable = (event: KeyboardEvent) =>
  * @summary Single-choice dropdown (select-only combobox + listbox).
  * @tag minerva-select
  * @slot - `<minerva-option>`, `<minerva-option-group>`, `<minerva-select-separator>` elements
- * @csspart trigger - The combobox `<button>`
+ * @csspart root - The trigger (`<button role=combobox>`)
  * @csspart value - The selected label / placeholder
  * @csspart icon - The chevron
- * @csspart positioner - The positioned popup wrapper
- * @csspart listbox - The `role="listbox"` popup
- * @csspart option - An option rendered from the `options` property
+ * @csspart content - The listbox popup (`role=listbox`)
+ * @csspart item - An option rendered from the `options` property
  * @csspart group-label - A group heading rendered from the `options` property
  * @fires minerva-change - The user selected an option (`detail: { value }`)
  * @fires minerva-open-change - The user opened / closed the listbox (`detail: { open }`); cancelable: `preventDefault()` keeps the current state
@@ -180,6 +179,7 @@ export class MinervaSelect extends FormAssociatedElement {
     onDismiss: () => this.requestOpen(false),
     returnFocusOnEscape: () => this.trigger,
     focusable: true,
+    onPosition: () => this.syncHookStates(),
   }));
   private openIntent: OpenIntent = "selected";
   /** Scroll the highlighted option into view after the next update. */
@@ -360,6 +360,24 @@ export class MinervaSelect extends FormAssociatedElement {
       this.highlighted = target?.value ?? null;
     }
     if (changed.has("open") && !this.open) this.highlighted = null;
+  }
+
+  protected override hookStates() {
+    const positioned = this.open && this.floating.isOpen;
+    const placement = positioned ? this.floating.position.placement : undefined;
+    const { side, align } = placement
+      ? parsePlacement(placement)
+      : { side: undefined, align: undefined };
+    return {
+      state: this.open ? "open" : "closed",
+      disabled: this.isDisabled,
+      invalid: this.invalid,
+      required: this.required,
+      size: this.size,
+      side,
+      align,
+      placement,
+    };
   }
 
   protected override updated(changed: PropertyValues): void {
@@ -547,7 +565,7 @@ export class MinervaSelect extends FormAssociatedElement {
   private renderDataOption(option: SelectOptionData) {
     const selected = option.value === this.value;
     return html`<div
-      part="option"
+      part="item"
       class="item"
       role="option"
       tabindex="-1"
@@ -591,7 +609,7 @@ export class MinervaSelect extends FormAssociatedElement {
     const { side, align } = parsePlacement(this.floating.position.placement);
 
     return html`<button
-        part="trigger"
+        part="root"
         type="button"
         role="combobox"
         aria-haspopup="listbox"
@@ -637,15 +655,10 @@ export class MinervaSelect extends FormAssociatedElement {
       </button>
       ${
         this.open
-          ? html`<div
-              part="positioner"
-              class="positioner"
-              popover="manual"
-              data-side=${side}
-            >
+          ? html`<div class="positioner" popover="manual" data-side=${side}>
               <div
                 id="listbox"
-                part="listbox"
+                part="content"
                 role="listbox"
                 tabindex="-1"
                 aria-label=${label ?? nothing}

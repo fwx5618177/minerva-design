@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./button.module.scss";
 import type { ButtonProps } from "./types";
 
@@ -56,14 +57,22 @@ const Button = ({
     ...style,
   };
 
-  const spinner = <span className={styles.loadingSpinner} aria-hidden />;
+  const spinner = (
+    <span
+      className={styles.loadingSpinner}
+      aria-hidden
+      {...hooks("button", "spinner")}
+    />
+  );
 
   let content: React.ReactNode;
   if (loading && loadingText !== undefined) {
     content = (
       <>
         {spinner}
-        <span className={styles.label}>{loadingText}</span>
+        <span className={styles.label} {...hooks("button", "label")}>
+          {loadingText}
+        </span>
       </>
     );
   } else {
@@ -72,11 +81,26 @@ const Button = ({
       <>
         {loading && spinner}
         {startIcon != null && (
-          <span className={cn(styles.icon, hidden)}>{startIcon}</span>
+          <span
+            className={cn(styles.icon, hidden)}
+            {...hooks("button", "start-icon")}
+          >
+            {startIcon}
+          </span>
         )}
-        <span className={cn(styles.label, hidden)}>{children}</span>
+        <span
+          className={cn(styles.label, hidden)}
+          {...hooks("button", "label")}
+        >
+          {children}
+        </span>
         {endIcon != null && (
-          <span className={cn(styles.icon, hidden)}>{endIcon}</span>
+          <span
+            className={cn(styles.icon, hidden)}
+            {...hooks("button", "end-icon")}
+          >
+            {endIcon}
+          </span>
         )}
       </>
     );
@@ -105,6 +129,15 @@ const Button = ({
       disabled={disabled}
       style={customStyle}
       {...restProps}
+      {...hooks("button", "root", {
+        state: active ? "active" : "inactive",
+        disabled,
+        loading,
+        size,
+        variant,
+        color,
+        shape,
+      })}
     >
       {content}
     </button>

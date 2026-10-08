@@ -19,7 +19,7 @@ describe("<minerva-progress>", () => {
     const el = await mount<MinervaProgress>(
       `<minerva-progress></minerva-progress>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("progressIndicator");
     expect(base.classList).toContain("primary");
     expect(base).toHaveAttribute("role", "progressbar");
@@ -38,7 +38,7 @@ describe("<minerva-progress>", () => {
       `<minerva-progress variant="bar" size="large"></minerva-progress>`,
     );
     expect($(el, ".barContainer.large .bar")).not.toBeNull();
-    expect($(el, "[part=base]").classList).toContain("defaultWidth");
+    expect($(el, "[part=root]").classList).toContain("defaultWidth");
     for (const [variant, selector] of [
       ["dottedBar", ".dottedBarContainer .dottedBar"],
       ["wave", ".waveContainer .wave svg"],
@@ -54,7 +54,7 @@ describe("<minerva-progress>", () => {
     const el = await mount<MinervaProgress>(
       `<minerva-progress label="Saving"></minerva-progress>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("aria-labelledby", "label");
     expect(base).not.toHaveAttribute("aria-label");
     expect($(el, "#label").textContent).toContain("Saving");
@@ -69,7 +69,7 @@ describe("<minerva-progress>", () => {
     const el = await mount<MinervaProgress>(
       `<minerva-progress decorative color="current"></minerva-progress>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).not.toHaveAttribute("role");
     expect(base).toHaveAttribute("aria-hidden", "true");
     expect(base.classList).toContain("current");
@@ -79,7 +79,7 @@ describe("<minerva-progress>", () => {
     const el = await mount<MinervaProgress>(
       `<minerva-progress variant="bar" width="120px"></minerva-progress>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.style.width).toBe("120px");
     expect(base.classList).not.toContain("defaultWidth");
     el.width = undefined;
@@ -94,7 +94,7 @@ describe("<minerva-progress>", () => {
       `<minerva-config locale="fr"><minerva-progress></minerva-progress></minerva-config>`,
       "minerva-progress",
     );
-    expect($(el, "[part=base]").getAttribute("aria-label")).not.toBe("Loading");
+    expect($(el, "[part=root]").getAttribute("aria-label")).not.toBe("Loading");
   });
 
   it("warns when width and full are combined", async () => {

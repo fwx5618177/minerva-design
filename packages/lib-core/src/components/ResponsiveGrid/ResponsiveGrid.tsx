@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import { resolveSpace } from "@minerva/core";
 import type { ResponsiveGridProps } from "./types";
 import styles from "./responsiveGrid.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 const BREAKPOINTS = ["base", "sm", "md", "lg"] as const;
 
@@ -43,8 +44,11 @@ const ResponsiveGrid = ({
       className={cn(styles.root, className)}
       style={{ ...variables, ...style } as CSSProperties}
       {...rest}
+      {...hooks("responsive-grid", "root")}
     >
-      <div className={styles.layout}>{children}</div>
+      <div className={styles.layout} {...hooks("responsive-grid", "layout")}>
+        {children}
+      </div>
     </Tag>
   );
 };

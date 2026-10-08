@@ -1,6 +1,7 @@
 import { cn } from "../../utils/cn";
 import type { ListItemProps } from "./types";
 import styles from "./list.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /** Optional slots skip null, booleans and empty strings (0 is content) */
 const hasContent = (value: React.ReactNode) =>
@@ -19,19 +20,39 @@ export const ListItem = ({
   ref,
   ...rest
 }: ListItemProps) => (
-  <li ref={ref} className={cn(styles.item, className)} {...rest}>
+  <li
+    ref={ref}
+    className={cn(styles.item, className)}
+    {...rest}
+    {...hooks("list-item", "root")}
+  >
     {hasContent(icon) && (
-      <div className={styles.icon} aria-hidden="true">
+      <div
+        className={styles.icon}
+        aria-hidden="true"
+        {...hooks("list-item", "icon")}
+      >
         {icon}
       </div>
     )}
     <div className={styles.content}>
-      <div className={styles.primary}>{primary}</div>
+      <div className={styles.primary} {...hooks("list-item", "label")}>
+        {primary}
+      </div>
       {hasContent(secondary) && (
-        <div className={styles.secondary}>{secondary}</div>
+        <div
+          className={styles.secondary}
+          {...hooks("list-item", "description")}
+        >
+          {secondary}
+        </div>
       )}
     </div>
-    {hasContent(actions) && <div className={styles.actions}>{actions}</div>}
+    {hasContent(actions) && (
+      <div className={styles.actions} {...hooks("list-item", "actions")}>
+        {actions}
+      </div>
+    )}
   </li>
 );
 

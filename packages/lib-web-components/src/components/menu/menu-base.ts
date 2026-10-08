@@ -20,6 +20,7 @@ import {
   getLayerStack,
   getNextIndex,
   getTabbables,
+  parsePlacement,
   type AnchorElement,
   type GraceSide,
   type Placement,
@@ -72,7 +73,7 @@ const ITEM_SELECTOR = "[data-minerva-menu-item]";
 const SUB_OFFSET = { mainAxis: 4, crossAxis: -5 };
 
 const isDisabledItem = (item: HTMLElement) =>
-  item.hasAttribute("data-disabled");
+  item.hasAttribute("data-menu-disabled");
 const itemText = (item: HTMLElement) =>
   item.dataset.textValue ??
   item.querySelector(".text")?.textContent ??
@@ -693,13 +694,13 @@ export abstract class MenuBase extends MinervaElement {
   private readonly onPanelFocusIn = (event: FocusEvent) => {
     const target = event.composedPath()[0] as HTMLElement;
     if (target.matches?.(ITEM_SELECTOR))
-      target.setAttribute("data-highlighted", "");
+      target.setAttribute("data-menu-highlighted", "");
   };
 
   private readonly onPanelFocusOut = (event: FocusEvent) => {
     const target = event.composedPath()[0] as HTMLElement;
     if (target.matches?.(ITEM_SELECTOR))
-      target.removeAttribute("data-highlighted");
+      target.removeAttribute("data-menu-highlighted");
   };
 
   private onItemClick(event: MouseEvent) {
@@ -877,6 +878,19 @@ export abstract class MenuBase extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    // The root panel's final placement (after flip) once positioned.
+    const placement = this.levels[0]?.position.running
+      ? this.levels[0].position.placement
+      : this.rootPlacement();
+    return {
+      state: this.open && !this.disabled ? "open" : "closed",
+      size: this.size,
+      ...parsePlacement(placement),
+      placement,
+    };
+  }
+
   protected override updated(changed: PropertyValues): void {
     this.syncTrigger();
     if (
@@ -985,7 +999,7 @@ export abstract class MenuBase extends MinervaElement {
   ): TemplateResult {
     const parentId = depth === 0 ? "" : `item-${uid}`;
     return html`<div
-      part="menu"
+      part="content"
       id=${depth === 0 ? "menu" : `menu-${uid}`}
       class=${classMap({ content: true, small: this.size === "small" })}
       popover="manual"
@@ -1026,7 +1040,11 @@ export abstract class MenuBase extends MinervaElement {
             return html`<div class="label" part="label">${entry.label}</div>`;
           case "group": {
             const labelId = `label-${id.replace(/[:.]/g, "-")}`;
-            return html`<div role="group" aria-labelledby=${labelId}>
+            return html`<div
+              role="group"
+              part="group"
+              aria-labelledby=${labelId}
+            >
               <div id=${labelId} class="label" part="label">${entry.label}</div>
               ${this.renderEntries(entry.items, depth, `${id}.`)}
             </div>`;
@@ -1077,8 +1095,8 @@ export abstract class MenuBase extends MinervaElement {
       data-minerva-menu-item=""
       data-uid=${uid}
       data-text-value=${text ?? nothing}
-      data-disabled=${disabled ? "" : nothing}
-      data-state=${state ?? nothing}
+      data-menu-disabled=${disabled ? "" : nothing}
+      data-menu-state=${state ?? nothing}
       aria-disabled=${disabled ? "true" : nothing}
       aria-checked=${options.checked === undefined ? nothing : String(options.checked)}
       aria-haspopup=${submenu ? "menu" : nothing}
@@ -1096,8 +1114,8 @@ export abstract class MenuBase extends MinervaElement {
             >`
           : nothing
       }
-      <span class="text">${options.label}</span>
-      ${options.shortcut ? html`<span class="shortcut">${options.shortcut}</span>` : nothing}
+      <span class="text" part="item-label">${options.label}</span>
+      ${options.shortcut ? html`<span class="shortcut" part="shortcut">${options.shortcut}</span>` : nothing}
       ${options.trailing ?? nothing}
     </div>`;
   }
@@ -1144,7 +1162,10 @@ export abstract class MenuBase extends MinervaElement {
       shortcut: entry.shortcut,
       disabled: entry.disabled,
       checked,
-      indicator: html`<span class="indicator" aria-hidden="true"
+      indicator: html`<span
+        class="indicator"
+        part="item-indicator"
+        aria-hidden="true"
         >${checked ? IconCheck : nothing}</span
       >`,
       activate: () => this.toggleCheckbox(entry),
@@ -1157,6 +1178,7 @@ export abstract class MenuBase extends MinervaElement {
     const hasLabel = group.label != null && group.label !== "";
     return html`<div
       role="group"
+      part="group"
       aria-labelledby=${hasLabel ? labelId : nothing}
     >
       ${hasLabel ? html`<div id=${labelId} class="label" part="label">${group.label}</div>` : nothing}
@@ -1170,7 +1192,10 @@ export abstract class MenuBase extends MinervaElement {
           shortcut: item.shortcut,
           disabled: item.disabled,
           checked,
-          indicator: html`<span class="indicator" aria-hidden="true"
+          indicator: html`<span
+            class="indicator"
+            part="item-indicator"
+            aria-hidden="true"
             >${checked ? html`<span class="dot"></span>` : nothing}</span
           >`,
           activate: () => this.chooseRadio(group, item),

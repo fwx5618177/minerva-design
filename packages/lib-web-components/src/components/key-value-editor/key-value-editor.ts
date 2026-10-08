@@ -58,10 +58,10 @@ let nextEditor = 0;
  *
  * @summary Editable list of key / value pairs.
  * @tag minerva-key-value-editor
- * @csspart base - The container
- * @csspart row - Each row
- * @csspart remove-button - The remove button of a row
- * @csspart add-button - The add button
+ * @csspart root - The container
+ * @csspart row - Each row (key field, value field and remove button)
+ * @csspart remove-button - The remove button of a row (web components only: React renders an IconButton, styled with its own hooks)
+ * @csspart add-button - The add button (web components only: React renders a Button, styled with its own hooks)
  * @fires minerva-input - A key or value is being typed; `detail: { value }` (the entries)
  * @fires change - A row was committed (field blur), added or removed
  * @fires minerva-change - A row was committed (field blur), added or removed; `detail: { value }`
@@ -297,6 +297,10 @@ export class MinervaKeyValueEditor extends FormAssociatedElement {
     </minerva-form-control>`;
   }
 
+  protected override hookStates() {
+    return { disabled: this.isDisabled };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const keyText = this.keyLabel ?? t("keyValueEditor.key");
@@ -306,7 +310,7 @@ export class MinervaKeyValueEditor extends FormAssociatedElement {
     const label = this.aria.label;
     return html`<div
       class="root"
-      part="base"
+      part="root"
       role=${label ? "group" : nothing}
       aria-label=${label ?? nothing}
       aria-description=${this.aria.description ?? nothing}

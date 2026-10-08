@@ -95,10 +95,10 @@ interface Item {
  * @slot next-icon - Icon of the next-page button
  * @slot jump-prev-icon - Icon of the jump-backward item
  * @slot jump-next-icon - Icon of the jump-forward item
- * @csspart base - The `<nav>` landmark
- * @csspart item - Every page / prev / next / jump button
+ * @csspart root - The `<nav>` landmark
+ * @csspart item - A page / previous / next / jump button (the current page has aria-current=page)
  * @csspart total - The total text
- * @csspart jumper - The quick jumper label
+ * @csspart jumper - The quick jumper label (wraps its input)
  * @csspart size-changer - The page size `<select>`
  * @csspart simple-input - The page input of the simple mode
  * @fires minerva-page-change - The user changed the page or the page size (`detail: { page, pageSize }`); cancelable: `preventDefault()` keeps the current page and size (controlled pattern)
@@ -378,6 +378,15 @@ export class MinervaPagination extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.disabled,
+      size: this.size,
+      shape: this.shape,
+      variant: this.variant,
+    };
+  }
+
   private renderItem(item: Item) {
     const { type, target, key } = item;
     if (type === "ellipsis") {
@@ -578,7 +587,7 @@ export class MinervaPagination extends MinervaElement {
       t("pagination.pageSizeOption", { size });
 
     return html`<nav
-      part="base"
+      part="root"
       aria-label=${this.aria.label ?? labels?.nav ?? t("pagination.nav")}
       class=${classMap({
         pagination: true,

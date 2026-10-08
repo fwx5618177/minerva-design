@@ -13,6 +13,7 @@ import { useFormControlContext } from "../FormControl/context";
 import { IconButton } from "../IconButton";
 import { Textarea } from "../Textarea/Textarea";
 import type { JsonFieldProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./jsonField.module.scss";
 
 type Validation =
@@ -119,9 +120,17 @@ export const JsonField = ({
   };
 
   return (
-    <div className={cn(styles.root, className)}>
+    <div
+      className={cn(styles.root, className)}
+      {...hooks("json-field", "root", {
+        disabled,
+        invalid: syntaxInvalid || invalid || !!field?.invalid,
+        readonly: readOnly,
+        required,
+      })}
+    >
       {!hideToolbar && (
-        <div className={styles.toolbar}>
+        <div className={styles.toolbar} {...hooks("json-field", "toolbar")}>
           <IconButton
             type="button"
             label={formatLabel ?? t("jsonField.format")}
@@ -171,6 +180,7 @@ export const JsonField = ({
         role="status"
         aria-live="polite"
         className={cn(styles.status, syntaxInvalid && styles.statusInvalid)}
+        {...hooks("json-field", "status")}
       >
         {validation.status === "valid" && (
           <>

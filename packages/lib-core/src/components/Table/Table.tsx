@@ -16,6 +16,7 @@ import {
 } from "../../internal/icons";
 import { getColumnCompare, nextSortState } from "@minerva/core";
 import { computeFixedColumnLayout } from "./fixedColumns";
+import { hooks } from "../../internal/stylingHooks";
 import type {
   TableBodyProps,
   TableCellProps,
@@ -107,6 +108,7 @@ export const TableRoot = ({
         scrollY && styles.wrapperScrollY,
       )}
       style={wrapperStyle}
+      {...hooks("data-table", "viewport")}
     >
       <table
         ref={ref}
@@ -120,6 +122,7 @@ export const TableRoot = ({
         )}
         style={tableStyle}
         {...rest}
+        {...hooks("data-table", "table", { size, variant })}
       />
     </div>
   );
@@ -137,17 +140,17 @@ export const TableBody = ({ ref, ...props }: TableBodyProps) => (
 
 /** `<tr>` of a TableRoot */
 export const TableRow = ({ ref, ...props }: TableRowProps) => (
-  <tr ref={ref} {...props} />
+  <tr ref={ref} {...props} {...hooks("data-table", "row")} />
 );
 
 /** `<th>` of a TableRoot */
 export const TableHeader = ({ ref, ...props }: TableHeaderProps) => (
-  <th ref={ref} {...props} />
+  <th ref={ref} {...props} {...hooks("data-table", "header-cell")} />
 );
 
 /** `<td>` of a TableRoot */
 export const TableCell = ({ ref, ...props }: TableCellProps) => (
-  <td ref={ref} {...props} />
+  <td ref={ref} {...props} {...hooks("data-table", "cell")} />
 );
 
 const ARIA_SORT = { ascend: "ascending", descend: "descending" } as const;
@@ -336,7 +339,10 @@ export function Table<T>({
             {...cellPropsFor(col)}
             data-ellipsis={undefined}
           >
-            <span className={styles.skeleton} />
+            <span
+              className={styles.skeleton}
+              {...hooks("data-table", "skeleton")}
+            />
           </TableCell>
         ))}
       </TableRow>
@@ -344,9 +350,13 @@ export function Table<T>({
   } else if (data.length === 0) {
     body = (
       <TableRow>
-        <TableCell colSpan={columnCount} className={styles.empty}>
+        <td
+          colSpan={columnCount}
+          className={styles.empty}
+          {...hooks("data-table", "empty")}
+        >
           {emptyText ?? t("table.empty")}
-        </TableCell>
+        </td>
       </TableRow>
     );
   } else {
@@ -363,6 +373,7 @@ export function Table<T>({
               <input
                 type="checkbox"
                 className={styles.checkbox}
+                {...hooks("data-table", "checkbox")}
                 checked={selected}
                 disabled={isRowDisabled(row)}
                 aria-label={t("table.selectRow", {
@@ -408,6 +419,7 @@ export function Table<T>({
         <button
           type="button"
           className={styles.sortButton}
+          {...hooks("data-table", "sort-button")}
           data-sort-order={order ?? undefined}
           onClick={() => setSortState(nextSortState(sortState, col.key))}
         >
@@ -427,6 +439,7 @@ export function Table<T>({
               <input
                 type="checkbox"
                 className={styles.checkbox}
+                {...hooks("data-table", "checkbox")}
                 checked={allSelected}
                 disabled={selectable.length === 0 || loading}
                 aria-label={t("table.selectAll")}

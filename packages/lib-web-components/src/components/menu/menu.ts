@@ -64,10 +64,14 @@ export function setAttr(el: Element, name: string, value: string | null) {
  * @summary Dropdown action menu with submenus, checkbox / radio items and typeahead.
  * @tag minerva-menu
  * @slot trigger - The button opening the menu (gets `aria-haspopup="menu"`, `aria-expanded`, `data-state`)
- * @csspart menu - A menu panel (root menu and submenus)
- * @csspart item - A menu item
+ * @csspart content - A menu panel (`role="menu"`: the root menu and its submenus)
+ * @csspart item - An item (`role="menuitem"`, `menuitemcheckbox` or `menuitemradio`)
+ * @csspart item-indicator - The check mark / radio dot of a checkbox or radio item
  * @csspart icon - The icon of an item
- * @csspart label - A group / section label
+ * @csspart item-label - The label of an item
+ * @csspart shortcut - The keyboard shortcut hint of an item
+ * @csspart group - A group of entries (`role="group"`, also radio groups)
+ * @csspart label - A group heading or section label
  * @csspart separator - A separator
  * @fires minerva-open-change - The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-select - An action item was chosen (`detail: { value, item }`, `value` = the item key / `value`); cancelable: `preventDefault()` keeps the menu open

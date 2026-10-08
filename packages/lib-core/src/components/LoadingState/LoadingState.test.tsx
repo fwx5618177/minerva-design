@@ -33,9 +33,9 @@ it("renders the default visible label in one polite status region", () => {
     container.querySelectorAll('[aria-live="polite"], [aria-live="assertive"]'),
   ).toHaveLength(1);
   const indicator = status.querySelector<HTMLElement>(
-    `:scope > .${indicatorStyles.progressIndicator}`,
+    `:scope > .${styles.indicator} > .${indicatorStyles.progressIndicator}`,
   )!;
-  expect(indicator).toHaveClass(styles.indicator, indicatorStyles.current);
+  expect(indicator).toHaveClass(indicatorStyles.current);
   expect(indicator.hasAttribute("role")).toBe(false);
   expect(indicator.getAttribute("aria-hidden")).toBe("true");
   expect(indicator.hasAttribute("aria-label")).toBe(false);

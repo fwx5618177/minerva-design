@@ -16,7 +16,7 @@ describe("<minerva-empty>", () => {
 
   it("renders the default icon and localized description, named by it", async () => {
     const el = await mount<MinervaEmpty>(`<minerva-empty></minerva-empty>`);
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("empty");
     expect(base).toHaveAttribute("role", "status");
     expect(base).toHaveAttribute("aria-labelledby", "description");
@@ -34,7 +34,7 @@ describe("<minerva-empty>", () => {
     const el = await mount<MinervaEmpty>(
       `<minerva-empty heading="No orders" description="Create one to start"></minerva-empty>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("aria-labelledby", "title");
     expect(base).toHaveAttribute("aria-describedby", "description");
     expect($(el, "#title").textContent?.trim()).toBe("No orders");
@@ -47,7 +47,7 @@ describe("<minerva-empty>", () => {
     const el = await mount<MinervaEmpty>(
       `<minerva-empty heading="x" aria-label="Nothing here"></minerva-empty>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base).toHaveAttribute("aria-label", "Nothing here");
     expect(base).not.toHaveAttribute("aria-labelledby");
   });
@@ -60,7 +60,7 @@ describe("<minerva-empty>", () => {
         <a href="#">Docs</a>
       </minerva-empty>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("sized");
     expect(base.classList).toContain("size-small");
     expect(base.classList).toContain("showShadow");
@@ -78,7 +78,7 @@ describe("<minerva-empty>", () => {
     );
     expect(el.shadowRoot!.querySelector(".iconWrapper")).toBeNull();
     expect(el.shadowRoot!.querySelector(".description")).toBeNull();
-    expect($(el, "[part=base]")).not.toHaveAttribute("aria-describedby");
+    expect($(el, "[part=root]")).not.toHaveAttribute("aria-describedby");
   });
 
   it("follows the locale", async () => {

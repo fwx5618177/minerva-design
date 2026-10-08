@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { getVirtualRange } from "@minerva/core";
 import type { VirtualListItem, VirtualListProps, VirtualItem } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./virtualList.module.scss";
 import { useMergedRefs } from "../../internal/mergeRefs";
 import { ProgressIndicator } from "../ProgressIndicator";
@@ -247,6 +248,7 @@ const VirtualList = ({
         position: "relative",
       }}
       onScroll={handleRootScroll}
+      {...hooks("virtual-list", "root", { loading })}
     >
       {needsMeasure && (
         <div
@@ -266,6 +268,7 @@ const VirtualList = ({
         className={styles.virtualListContent}
         role="list"
         aria-label={ariaLabel}
+        {...hooks("virtual-list", "list")}
       >
         {finalItemHeight > 0 &&
           virtualItems.map((virtualItem) => (
@@ -315,6 +318,7 @@ const VirtualList = ({
                   : undefined
               }
               role="listitem"
+              {...hooks("virtual-list", "item")}
               // Only a window of items is in the DOM: expose the real position
               aria-setsize={items.length}
               aria-posinset={virtualItem.index + 1}
@@ -331,7 +335,10 @@ const VirtualList = ({
           ))}
       </div>
       {loading && (
-        <div className={styles.loadingWrapper}>
+        <div
+          className={styles.loadingWrapper}
+          {...hooks("virtual-list", "loading")}
+        >
           <ProgressIndicator variant="wave" size="small" />
         </div>
       )}

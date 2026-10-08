@@ -3,6 +3,7 @@ import { useTheme } from "../../contexts/ThemeProvider";
 import useI18n from "../../hooks/useI18n";
 import type { ThemeMode } from "../../theme-utils";
 import type { ThemeToggleProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./themeToggle.module.scss";
 
 /**
@@ -29,6 +30,7 @@ const ThemeToggle = ({
       role="group"
       aria-label={t("themeToggle.label", { theme: resolvedTheme })}
       {...rest}
+      {...hooks("theme-toggle", "root")}
     >
       {items.map((item) => (
         <button
@@ -38,6 +40,7 @@ const ThemeToggle = ({
           data-active={theme === item || undefined}
           aria-pressed={theme === item}
           onClick={() => setTheme(item)}
+          {...hooks("theme-toggle", "item")}
         >
           {labels?.[item] ?? t(`themeToggle.${item}`)}
         </button>

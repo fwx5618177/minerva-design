@@ -4,6 +4,7 @@ import { linkRel } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { safeHref } from "../../internal/safeUrl";
 import type { TextLinkProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./textLink.module.scss";
 
 /**
@@ -32,6 +33,7 @@ export const TextLink = ({
       className={cn(styles.textLink, styles[variant], className)}
       {...rest}
       {...link}
+      {...hooks("text-link", "root", { variant })}
     >
       <Slottable>{children}</Slottable>
       {variant === "subtle" && <IconChevronRight aria-hidden="true" />}

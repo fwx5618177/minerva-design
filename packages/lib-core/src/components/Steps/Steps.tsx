@@ -4,6 +4,7 @@ import styles from "./steps.module.scss";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * Steps: the stages of a workflow as an ordered list (<ol> / <li>). Earlier
@@ -48,16 +49,23 @@ const Steps = ({
       {...rest}
       ref={ref}
       className={cn(styles.steps, className)}
+      {...hooks("steps", "root", { readonly: readOnly })}
     >
       {items.map((item, index) => {
         const isCurrent = index === currentIndex;
         const isComplete = currentIndex > -1 && index < currentIndex;
         const content = (
           <>
-            <span className={styles.number} aria-hidden="true">
+            <span
+              className={styles.number}
+              aria-hidden="true"
+              {...hooks("steps", "indicator")}
+            >
               {index + 1}
             </span>
-            <span className={styles.label}>{item.label}</span>
+            <span className={styles.label} {...hooks("steps", "label")}>
+              {item.label}
+            </span>
           </>
         );
         return (
@@ -68,9 +76,13 @@ const Steps = ({
               [styles.complete]: isComplete,
             })}
             aria-current={readOnly && isCurrent ? "step" : undefined}
+            {...hooks("steps", "item")}
           >
             {readOnly ? (
-              <span className={cn(styles.button, styles.static)}>
+              <span
+                className={cn(styles.button, styles.static)}
+                {...hooks("steps", "button")}
+              >
                 {content}
               </span>
             ) : (
@@ -79,6 +91,7 @@ const Steps = ({
                 className={styles.button}
                 disabled={item.disabled}
                 aria-current={isCurrent ? "step" : undefined}
+                {...hooks("steps", "button")}
                 onClick={() => {
                   if (!isCurrent) setCurrent(item.value);
                 }}

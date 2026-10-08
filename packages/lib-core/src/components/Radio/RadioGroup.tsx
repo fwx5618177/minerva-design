@@ -4,6 +4,7 @@ import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps } from "../../internal/devWarnings";
 import { pickDataAttributes } from "../../internal/dataAttributes";
 import type { RadioGroupProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./radio.module.scss";
 import { useFormControlContext } from "../FormControl/context";
 
@@ -105,9 +106,21 @@ const RadioGroup = ({
       )}
       style={style}
       {...pickDataAttributes(rest)}
+      {...hooks("radio-group", "root", {
+        disabled: isDisabled,
+        invalid: isError,
+        required: isRequired,
+        orientation: direction,
+        size,
+        color,
+      })}
     >
       {label && (
-        <div id={labelId} className={styles.groupLabel}>
+        <div
+          id={labelId}
+          className={styles.groupLabel}
+          {...hooks("radio-group", "label")}
+        >
           {label}
         </div>
       )}
@@ -131,6 +144,7 @@ const RadioGroup = ({
           aria-required={isRequired}
           aria-invalid={isError}
           aria-disabled={isDisabled || undefined}
+          {...hooks("radio-group", "list")}
         >
           {children}
         </div>
@@ -139,6 +153,7 @@ const RadioGroup = ({
         <div
           id={helperId}
           className={cn(styles.helperText, isError && styles.errorText)}
+          {...hooks("radio-group", "helper-text")}
         >
           {helperText}
         </div>

@@ -8,7 +8,7 @@ import { read, walk } from "./utils";
 const FEATURES: Array<{
   feature: string;
   pattern: RegExp;
-  files: "styles" | "scripts";
+  files: "styles" | "scripts" | "build";
   row: string;
 }> = [
   {
@@ -79,18 +79,29 @@ const FEATURES: Array<{
     files: "scripts",
     row: "Popover API",
   },
+  {
+    feature: "CustomStateSet / :state()",
+    pattern: /\.states\b/,
+    files: "scripts",
+    row: "Custom states",
+  },
+  {
+    // added by the build to every published stylesheet (scripts/css-layer.mjs)
+    feature: "@layer",
+    pattern: /@layer \$\{CSS_LAYER\}/,
+    files: "build",
+    row: "Cascade layers",
+  },
 ];
 
 /** Modern features that are not used today: a first use must be documented */
 const UNUSED: Array<[string, RegExp]> = [
   ["CSS anchor positioning", /anchor-name\s*:|position-anchor\s*:/],
   ["@starting-style", /@starting-style/],
-  ["@layer", /@layer\b/],
   ["light-dark()", /light-dark\(/],
   ["View Transitions", /startViewTransition|view-transition-name/],
   ["Declarative shadow DOM", /shadowrootmode/],
   ["Intl.Segmenter", /Intl\.Segmenter/],
-  ["CustomStateSet / :state()", /\.states\.(add|delete)|:state\(/],
 ];
 
 const SOURCES = [
@@ -105,6 +116,7 @@ const styles = SOURCES.flatMap((d) => walk(d, (f) => /\.s?css$/.test(f))).map(
 const scripts = SOURCES.flatMap((d) =>
   walk(d, (f) => /\.tsx?$/.test(f) && notTest(f)),
 ).map((f) => read(f));
+const build = [read("scripts/css-layer.mjs")];
 const readme = read("README.md");
 const matrix = readme.slice(
   readme.indexOf("## 🌐 Browser support"),
@@ -119,7 +131,8 @@ describe("browser support matrix", () => {
   it.each(FEATURES.map((f) => [f.feature, f]))(
     "%s is used and documented with a minimum version and a fallback",
     (_, { pattern, files, row }) => {
-      const sources = files === "styles" ? styles : scripts;
+      const sources =
+        files === "styles" ? styles : files === "build" ? build : scripts;
       expect(
         sources.some((s) => pattern.test(s)),
         "still used",

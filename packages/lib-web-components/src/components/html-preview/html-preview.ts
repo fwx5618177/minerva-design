@@ -26,8 +26,8 @@ export type HtmlPreviewViewport = "desktop" | "mobile";
  *
  * @summary Sandboxed, sanitized preview of untrusted HTML.
  * @tag minerva-html-preview
- * @csspart base - The scrolling container
- * @csspart frame - The `<iframe>`
+ * @csspart root - The scrolling container
+ * @csspart frame - The sandboxed `<iframe>`
  */
 export class MinervaHtmlPreview extends MinervaElement {
   static override tagName = "minerva-html-preview";
@@ -89,7 +89,7 @@ export class MinervaHtmlPreview extends MinervaElement {
       Number.isFinite(this.height) && this.height > 0 ? this.height : 600;
     // A new key replaces the browsing context, so an earlier document can
     // never finish loading after the current one.
-    return html`<div part="base" class="preview">
+    return html`<div part="root" class="preview">
       ${keyed(
         this.doc,
         html`<iframe

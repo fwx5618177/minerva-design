@@ -33,9 +33,9 @@ export type BadgePosition =
  * @slot - Element the badge is attached to, or the text of a standalone badge
  * @slot content - Rich content of the badge (instead of `content`)
  * @slot icon - Icon displayed before the content
- * @csspart base - The root (the badge, or the wrapper when attached)
- * @csspart badge - The badge itself
- * @csspart icon - The icon wrapper
+ * @csspart root - The outermost element: the badge itself when standalone, the wrapper of the children when attached
+ * @csspart badge - The badge attached to a corner of the children (a standalone badge is the root)
+ * @csspart icon - The icon before the content
  */
 export class MinervaBadge extends MinervaElement {
   static override tagName = "minerva-badge";
@@ -98,6 +98,10 @@ export class MinervaBadge extends MinervaElement {
     );
   }
 
+  protected override hookStates() {
+    return { size: this.size, variant: this.variant, color: this.color };
+  }
+
   protected override updated(): void {
     if (
       DEV &&
@@ -132,7 +136,7 @@ export class MinervaBadge extends MinervaElement {
     }
 
     const badge = html`<span
-      part=${standalone ? "base badge" : "badge"}
+      part=${standalone ? "root" : "badge"}
       class=${classMap({
         badge: true,
         [this.color]: true,
@@ -158,7 +162,7 @@ export class MinervaBadge extends MinervaElement {
     >`;
 
     if (standalone) return badge;
-    return html`<div part="base" class="badgeWrapper">
+    return html`<div part="root" class="badgeWrapper">
       <div class="content"><slot></slot></div>
       ${badge}
     </div>`;

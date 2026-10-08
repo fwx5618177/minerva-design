@@ -28,8 +28,8 @@ import { sharedStyles } from "../../internal/styles";
  * @summary Responsive column grid for form fields.
  * @tag minerva-form-layout
  * @slot - Fields
- * @csspart base - The form layout box (lib-core's form root; also the grid's query container)
- * @csspart layout - The grid
+ * @csspart root - The form layout box (React: the native <form>; web components: the grid's query container, inside your own <form>)
+ * @csspart layout - The grid. Web components only: React renders a nested ResponsiveGrid (style its `responsive-grid` hooks)
  */
 export class MinervaFormLayout extends MinervaElement {
   static override tagName = "minerva-form-layout";
@@ -77,7 +77,7 @@ export class MinervaFormLayout extends MinervaElement {
       this.rowGap ?? this.gap,
       this.columnGap ?? this.gap,
     );
-    return html`<div class="root" part="base" style=${styleMap(variables)}>
+    return html`<div class="root" part="root" style=${styleMap(variables)}>
       <div class="layout" part="layout"><slot></slot></div>
     </div>`;
   }

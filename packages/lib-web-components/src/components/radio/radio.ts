@@ -51,8 +51,8 @@ const NAVIGATION_KEYS = new Set([
  * @summary Radio option of a radio group.
  * @tag minerva-radio
  * @slot - Label content (alternative to the `label` attribute)
- * @csspart base - The wrapper
- * @csspart mark - The visual radio mark
+ * @csspart root - The wrapper (the clickable row and the helper text)
+ * @csspart control - The visual radio mark
  * @csspart label - The label text
  * @csspart helper-text - The helper / error text
  * @fires minerva-change - A standalone radio was checked by the user; `detail: { checked: true, value }` (inside a group, the group fires it)
@@ -192,6 +192,17 @@ export class MinervaRadio extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    const group = this.group;
+    return {
+      state: this.checked ? "checked" : "unchecked",
+      disabled: this.isDisabled,
+      invalid: this.error,
+      size: group?.size ?? this.size,
+      color: group?.color ?? this.color,
+    };
+  }
+
   protected override render() {
     const group = this.group;
     const size = group?.size ?? this.size;
@@ -199,7 +210,7 @@ export class MinervaRadio extends MinervaElement {
     const helper = this.error ? this.errorMessage : this.helperText;
     const hasLabel = !!this.label || this.slots.test("[default]");
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         radioWrapper: true,
         [size]: true,
@@ -216,7 +227,7 @@ export class MinervaRadio extends MinervaElement {
           inert
           .checked=${this.checked}
         />
-        <span class="radioMark" part="mark"></span>
+        <span class="radioMark" part="control"></span>
         ${
           hasLabel
             ? html`<span class="label" part="label"
@@ -262,9 +273,9 @@ export class MinervaRadio extends MinervaElement {
  * @summary Group of radios with roving focus, submitted as one form value.
  * @tag minerva-radio-group
  * @slot - The `<minerva-radio>` options
- * @csspart base - The wrapper
+ * @csspart root - The wrapper
  * @csspart label - The visible group label
- * @csspart group - The element with role="radiogroup"
+ * @csspart list - The element with role="radiogroup" (the radios)
  * @csspart helper-text - The helper text
  * @fires change - The user selected another radio (like native radios)
  * @fires minerva-change - The user selected another radio; `detail: { value }`
@@ -482,6 +493,17 @@ export class MinervaRadioGroup extends FormAssociatedElement {
     if (active instanceof MinervaRadio) this.select(active);
   };
 
+  protected override hookStates() {
+    return {
+      disabled: this.isDisabled,
+      invalid: this.error || this.aria.attr("aria-invalid") === "true",
+      required: this.required,
+      orientation: this.direction,
+      size: this.size,
+      color: this.color,
+    };
+  }
+
   protected override render() {
     const invalid = this.error || this.aria.attr("aria-invalid") === "true";
     const label = this.label;
@@ -489,7 +511,7 @@ export class MinervaRadioGroup extends FormAssociatedElement {
       .filter(Boolean)
       .join(" ");
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({ radioGroupWrapper: true, error: invalid })}
     >
       ${
@@ -498,7 +520,7 @@ export class MinervaRadioGroup extends FormAssociatedElement {
           : nothing
       }
       <div
-        part="group"
+        part="list"
         class=${classMap({ radioGroup: true, [this.direction]: true })}
         role="radiogroup"
         aria-labelledby=${label ? "label" : nothing}

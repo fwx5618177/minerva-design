@@ -12,6 +12,7 @@ import { isAriaInvalid } from "../../internal/forms-field";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
 import { useFormControlProps } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import type { NumberInputProps } from "./types";
 import styles from "./numberInput.module.scss";
 
@@ -189,6 +190,13 @@ export const NumberInput = ({
         className,
       )}
       title={errorMessage}
+      {...hooks("number-input", "root", {
+        disabled: isDisabled,
+        invalid: isInvalid,
+        readonly: !!field.readOnly,
+        required: !!(field.required || field["aria-required"]),
+        size,
+      })}
     >
       <input
         ref={ref}
@@ -206,10 +214,15 @@ export const NumberInput = ({
         onChange={(event) => setDraft(event.currentTarget.value)}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
+        {...hooks("number-input", "input")}
       />
       {showStepper && (
         // Pointer convenience only: keyboard users step with the arrow keys.
-        <div className={styles.stepper} aria-hidden="true">
+        <div
+          className={styles.stepper}
+          aria-hidden="true"
+          {...hooks("number-input", "stepper")}
+        >
           <button
             type="button"
             className={cn(styles.step, styles.stepUp)}
@@ -217,6 +230,7 @@ export const NumberInput = ({
             disabled={isLocked || (max !== undefined && (current ?? 0) >= max)}
             onClick={() => adjust(step)}
             aria-label={incrementLabel ?? t("numberInput.increment")}
+            {...hooks("number-input", "increment")}
           >
             <IconChevronUp size={12} strokeWidth={2.5} aria-hidden />
           </button>
@@ -227,6 +241,7 @@ export const NumberInput = ({
             disabled={isLocked || (min !== undefined && (current ?? 0) <= min)}
             onClick={() => adjust(-step)}
             aria-label={decrementLabel ?? t("numberInput.decrement")}
+            {...hooks("number-input", "decrement")}
           >
             <IconChevronDown size={12} strokeWidth={2.5} aria-hidden />
           </button>

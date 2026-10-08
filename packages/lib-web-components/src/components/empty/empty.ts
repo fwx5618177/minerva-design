@@ -36,12 +36,12 @@ const toCss = (value: string | undefined) =>
  * @slot description - Description (alternative to the `description` attribute)
  * @slot action - Primary call to action
  * @slot secondary-action - Secondary action, after `action`
- * @csspart base - The root region
+ * @csspart root - The region (role=status); size only for the unframed sized layout
  * @csspart icon - The icon wrapper
- * @csspart heading - The heading
+ * @csspart title - The title (accessible name of the region)
  * @csspart description - The description
  * @csspart actions - The actions row
- * @csspart footer - The footer
+ * @csspart footer - The footer content
  */
 export class MinervaEmpty extends MinervaElement {
   static override tagName = "minerva-empty";
@@ -95,6 +95,10 @@ export class MinervaEmpty extends MinervaElement {
   private readonly aria = new AriaController(this);
   private readonly slots = new HasSlotController(this);
 
+  protected override hookStates() {
+    return { size: this.size };
+  }
+
   protected override updated(): void {
     if (DEV && this.hideDescription && this.description) {
       devWarn(
@@ -115,7 +119,7 @@ export class MinervaEmpty extends MinervaElement {
     const label = this.aria.label;
 
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         empty: true,
         showShadow: this.showShadow,
@@ -148,7 +152,7 @@ export class MinervaEmpty extends MinervaElement {
       }
       ${
         hasTitle
-          ? html`<div id="title" part="heading" class="title">
+          ? html`<div id="title" part="title" class="title">
               <slot name="heading">${this.heading}</slot>
             </div>`
           : nothing

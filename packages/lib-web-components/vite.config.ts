@@ -107,8 +107,13 @@ export default defineConfig({
       "tests/meta/**/*.test.ts",
       "tests/e2e/**/*.test.ts",
       "tests/runtime/**/*.test.ts",
+      "tests/styling-hooks/**/*.test.ts",
     ],
     alias: [
+      {
+        find: /^@minerva\/core\/styling-hooks$/,
+        replacement: here("../core/src/styling-hooks/index.ts"),
+      },
       {
         find: /^@minerva\/core$/,
         replacement: here("../core/src/index.ts"),

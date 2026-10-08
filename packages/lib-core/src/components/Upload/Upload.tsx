@@ -3,6 +3,7 @@ import { matchesAccept } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import { IconRotateCw, IconUpload, IconX } from "../../internal/icons";
 import type { UploadItem, UploadProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./upload.module.scss";
 import useI18n from "../../hooks/useI18n";
 import Button from "../Button/Button";
@@ -109,8 +110,13 @@ const Upload = ({
       role="group"
       aria-labelledby={labelId}
       aria-busy={loading}
+      {...hooks("upload", "root", {
+        disabled,
+        loading,
+        dragging: dragging && !blocked,
+      })}
     >
-      <span id={labelId} className={styles.label}>
+      <span id={labelId} className={styles.label} {...hooks("upload", "label")}>
         {label}
       </span>
       {/* Drop target only: the keyboard path is the select button inside */}
@@ -118,6 +124,7 @@ const Upload = ({
         className={cn(styles.dropzone, {
           [styles.dragging]: dragging && !blocked,
         })}
+        {...hooks("upload", "dropzone")}
         onDragOver={(event) => {
           event.preventDefault();
           if (!blocked) setDragging(true);
@@ -171,9 +178,13 @@ const Upload = ({
         </Alert>
       )}
       {value.length > 0 && (
-        <ul className={styles.list}>
+        <ul className={styles.list} {...hooks("upload", "list")}>
           {value.map((item) => (
-            <li key={item.id} className={styles.item}>
+            <li
+              key={item.id}
+              className={styles.item}
+              {...hooks("upload", "item")}
+            >
               {item.previewUrl && (
                 <img src={item.previewUrl} alt="" className={styles.preview} />
               )}

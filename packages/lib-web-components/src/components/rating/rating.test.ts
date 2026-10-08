@@ -32,12 +32,12 @@ describe("<minerva-rating>", () => {
     document.body.innerHTML = `<minerva-rating value="6" aria-label="Score"></minerva-rating>`;
     await settle();
     const el = document.querySelector("minerva-rating")!;
-    const base = el.shadowRoot!.querySelector("[part=base]")!;
+    const base = el.shadowRoot!.querySelector("[part=root]")!;
     expect(base).toHaveAttribute("role", "img");
     el.setAttribute("interactive", "");
     await settle();
     expect(
-      el.shadowRoot!.querySelector("[part=base]")!.getAttribute("role"),
+      el.shadowRoot!.querySelector("[part=root]")!.getAttribute("role"),
     ).toBe("slider");
   });
 

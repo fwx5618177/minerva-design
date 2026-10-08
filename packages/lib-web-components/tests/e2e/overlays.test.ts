@@ -34,7 +34,7 @@ describe("overlays (e2e)", () => {
     await settle();
     expect(modal.open).toBe(true);
 
-    $(select, "[part=trigger]").focus();
+    $(select, "[part=root]").focus();
     await userEvent.keyboard("{ArrowDown}");
     await settle();
     expect(select.open).toBe(true);
@@ -44,7 +44,7 @@ describe("overlays (e2e)", () => {
     await settle();
     expect(select.open).toBe(false);
     expect(modal.open).toBe(true);
-    expect(getActiveElement()).toBe($(select, "[part=trigger]"));
+    expect(getActiveElement()).toBe($(select, "[part=root]"));
 
     await userEvent.keyboard("{Escape}");
     await settle();
@@ -61,7 +61,7 @@ describe("overlays (e2e)", () => {
     const select = document.getElementById("lang") as MinervaSelect;
     modal.show();
     await settle();
-    $(select, "[part=trigger]").focus();
+    $(select, "[part=root]").focus();
     await userEvent.keyboard("{ArrowDown}");
     await settle();
     await userEvent.keyboard("{ArrowDown}{Enter}");

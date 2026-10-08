@@ -49,7 +49,10 @@ const skeletonStyles = [
  * @summary Loading placeholder (lines, avatar, title, paragraph, card).
  * @tag minerva-skeleton
  * @slot - Real content, rendered once `loaded` is set
- * @csspart base - The root (busy region, or the decorative block)
+ * @csspart root - The busy region (role=status), or the single block of a decorative skeleton
+ * @csspart avatar - The avatar placeholder
+ * @csspart title - The title placeholder
+ * @csspart line - Each line placeholder (also the paragraph lines)
  */
 export class MinervaSkeleton extends MinervaElement {
   static override tagName = "minerva-skeleton";
@@ -130,6 +133,10 @@ export class MinervaSkeleton extends MinervaElement {
   private readonly locale = new LocaleController(this);
   private readonly aria = new AriaController(this);
 
+  protected override hookStates() {
+    return { variant: this.variant };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     if (
       DEV &&
@@ -143,8 +150,9 @@ export class MinervaSkeleton extends MinervaElement {
     }
   }
 
-  private block(classes: Record<string, boolean>, style = {}) {
+  private block(part: string, classes: Record<string, boolean>, style = {}) {
     return html`<div
+      part=${part}
       class=${classMap({
         skeleton: true,
         [`animation-${this.animation}`]: true,
@@ -158,20 +166,21 @@ export class MinervaSkeleton extends MinervaElement {
     if (!this.avatar) return nothing;
     const size = toCss(this.avatarSize);
     return this.block(
+      "avatar",
       { avatar: true, [`avatar-${this.avatarShape}`]: true },
       { width: size, height: size },
     );
   }
 
   private renderTitle() {
-    return this.heading ? this.block({ title: true }) : nothing;
+    return this.heading ? this.block("title", { title: true }) : nothing;
   }
 
   private renderParagraph() {
     if (!this.paragraph) return nothing;
     const widths = ["100%", "100%", "92%", "60%"];
     return html`<div class="paragraph">
-      ${widths.map((width) => this.block({}, { width, height: "16px" }))}
+      ${widths.map((width) => this.block("line", {}, { width, height: "16px" }))}
     </div>`;
   }
 
@@ -182,6 +191,7 @@ export class MinervaSkeleton extends MinervaElement {
       : 0;
     return Array.from({ length: count }, () =>
       this.block(
+        "line",
         { [this.variant]: true },
         {
           width: toCss(this.width),
@@ -201,7 +211,7 @@ export class MinervaSkeleton extends MinervaElement {
           ? toCss(this.size ?? this.width ?? "32")
           : undefined;
       return html`<span
-        part="base"
+        part="root"
         aria-hidden="true"
         class=${classMap({
           skeleton: true,
@@ -232,7 +242,7 @@ export class MinervaSkeleton extends MinervaElement {
             </div>`;
 
     return html`<div
-      part="base"
+      part="root"
       role="status"
       aria-busy="true"
       aria-label=${this.aria.label ?? this.locale.t("common.loading")}
@@ -251,8 +261,8 @@ export class MinervaSkeleton extends MinervaElement {
  *
  * @summary Decorative block of text-line placeholders.
  * @tag minerva-skeleton-text
- * @csspart base - The block of lines
- * @csspart line - Each line
+ * @csspart root - The block of lines
+ * @csspart line - Each line placeholder
  */
 export class MinervaSkeletonText extends MinervaElement {
   static override tagName = "minerva-skeleton-text";
@@ -304,7 +314,7 @@ export class MinervaSkeletonText extends MinervaElement {
       ? Math.max(0, Math.floor(this.lines))
       : 0;
     return html`<div
-      part="base"
+      part="root"
       aria-hidden="true"
       class="skeletonText"
       style=${styleMap({ gap: resolveSpace(this.gap) })}

@@ -50,6 +50,10 @@ const testAlias: Alias[] = [
     replacement: src("../core/src/theme/tokens.scss"),
   },
   {
+    find: /^@minerva\/core\/styling-hooks$/,
+    replacement: src("../core/src/styling-hooks/index.ts"),
+  },
+  {
     find: /^@minerva\/core$/,
     replacement: src("../core/src/index.ts"),
   },

@@ -9,6 +9,7 @@ type OutputBundle = Rolldown.OutputBundle;
 type OutputChunk = Rolldown.OutputChunk;
 import pkg from "./package.json" with { type: "json" };
 import { writeDualDeclarations } from "../../scripts/dual-declarations.mjs";
+import { wrapInLayer } from "../../scripts/css-layer.mjs";
 
 // Everything the package depends on is resolved by the consumer, never bundled.
 // Matches bare ids and subpaths (e.g. react/jsx-runtime, react-icons/fa).
@@ -57,6 +58,8 @@ const kebab = (name: string) =>
  * - `styles/<component>.css`: one component folder (e.g. `styles/tag-input.css`)
  *   with the CSS of every lib-core module it imports (dependencies first),
  *   without the tokens, so apps can import only what they use.
+ * Every file is wrapped in `@layer minerva` (scripts/css-layer.mjs): unlayered
+ * app CSS overrides the library without `!important`.
  */
 const stylesheets = (): Plugin => ({
   name: "minerva-stylesheets",
@@ -125,12 +128,12 @@ const stylesheets = (): Plugin => ({
     this.emitFile({
       type: "asset",
       fileName: "style.css",
-      source: `${read([...tokens, ...all.filter((f) => !isTokens(f))])}\n`,
+      source: `${wrapInLayer(read(tokens))}\n${wrapInLayer(read(all.filter((f) => !isTokens(f))))}\n`,
     });
     this.emitFile({
       type: "asset",
       fileName: "styles/tokens.css",
-      source: `${read(tokens)}\n`,
+      source: `${wrapInLayer(read(tokens))}\n`,
     });
     // Group the modules of each component folder (barrels are flattened)
     const folders = new Map<string, OutputChunk[]>();
@@ -150,7 +153,7 @@ const stylesheets = (): Plugin => ({
       this.emitFile({
         type: "asset",
         fileName: `styles/${kebab(folder)}.css`,
-        source: `${read(files)}\n`,
+        source: `${wrapInLayer(read(files))}\n`,
       });
     }
   },
@@ -217,6 +220,12 @@ export default defineConfig({
         find: /^@minerva\/core\/tokens\.css$/,
         replacement: fileURLToPath(
           new URL("../core/src/theme/tokens.scss", import.meta.url),
+        ),
+      },
+      {
+        find: /^@minerva\/core\/styling-hooks$/,
+        replacement: fileURLToPath(
+          new URL("../core/src/styling-hooks/index.ts", import.meta.url),
         ),
       },
       {

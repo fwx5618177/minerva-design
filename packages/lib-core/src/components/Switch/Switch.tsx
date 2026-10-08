@@ -8,6 +8,7 @@ import {
   useFormControlContext,
   useFormControlProps,
 } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import type { SwitchProps } from "./types";
 import styles from "./switch.module.scss";
 
@@ -167,8 +168,21 @@ const Switch = ({
       onKeyDown={handleKeyDown}
       onFocus={onFocus}
       onBlur={onBlur}
+      {...hooks("switch", "input")}
     />
   );
+  const rootHooks = hooks("switch", "root", {
+    state: isChecked ? "checked" : "unchecked",
+    disabled: isDisabled,
+    loading,
+    invalid: !!fc?.invalid,
+    readonly: readOnly,
+    required: !!fc?.required,
+    size,
+    color,
+    shape,
+    variant: segmented ? "segmented" : "slider",
+  });
 
   if (segmented) {
     return (
@@ -176,7 +190,8 @@ const Switch = ({
       // named explicitly) and helper / error description (the FormControl
       // error message is referenced while invalid). aria-invalid and
       // aria-required are not supported on role="group": both states are
-      // exposed as data-invalid / data-required (and by the FormControl).
+      // exposed by the data-invalid / data-required hooks (and by the
+      // FormControl).
       <span
         role="group"
         id={field.id}
@@ -186,9 +201,8 @@ const Switch = ({
         }
         aria-describedby={field["aria-describedby"]}
         aria-disabled={blocked || undefined}
-        data-invalid={field["aria-invalid"] || undefined}
-        data-required={fc?.required || undefined}
         {...dataAttributes}
+        {...rootHooks}
         className={cn(
           styles.segmented,
           styles[size],
@@ -209,6 +223,7 @@ const Switch = ({
               disabled={blocked}
               aria-pressed={active}
               onClick={() => setState(segmentState)}
+              {...hooks("switch", "segment")}
             >
               {segmentState ? onLabel : offLabel}
             </button>
@@ -236,12 +251,22 @@ const Switch = ({
   );
 
   const control = (
-    <span className={styles.switchBase}>
+    <span className={styles.switchBase} {...hooks("switch", "control")}>
       {input}
-      <span className={styles.track} style={trackStyle} />
-      <span className={styles.thumb} style={thumbStyle}>
+      <span
+        className={styles.track}
+        style={trackStyle}
+        {...hooks("switch", "track")}
+      />
+      <span
+        className={styles.thumb}
+        style={thumbStyle}
+        {...hooks("switch", "thumb")}
+      >
         {iconPlacement === "start" && icon && (
-          <span className={styles.icon}>{icon}</span>
+          <span className={styles.icon} {...hooks("switch", "icon")}>
+            {icon}
+          </span>
         )}
       </span>
       {ripple && <span className={styles.rippleEffect} />}
@@ -249,7 +274,9 @@ const Switch = ({
   );
   const iconNode =
     iconPlacement === "end" && icon ? (
-      <span className={styles.icon}>{icon}</span>
+      <span className={styles.icon} {...hooks("switch", "icon")}>
+        {icon}
+      </span>
     ) : null;
 
   if (bilateral) {
@@ -261,6 +288,7 @@ const Switch = ({
           className={cn(styles.side, active && styles.sideActive)}
           disabled={blocked}
           onClick={() => setState(sideState)}
+          {...hooks("switch", "side")}
         >
           {sideState ? onLabel : offLabel}
         </button>
@@ -268,7 +296,12 @@ const Switch = ({
     };
     // A <span> root: the side buttons must not sit inside the input's label.
     return (
-      <span className={switchClasses} style={style} {...dataAttributes}>
+      <span
+        className={switchClasses}
+        style={style}
+        {...dataAttributes}
+        {...rootHooks}
+      >
         {side(false)}
         {control}
         {side(true)}
@@ -279,7 +312,9 @@ const Switch = ({
 
   const content = label ?? children;
   const labelNode = hasContent(content) ? (
-    <span className={styles.label}>{content}</span>
+    <span className={styles.label} {...hooks("switch", "label")}>
+      {content}
+    </span>
   ) : null;
   // Label before the control for start/top, after it for end/bottom; the
   // placement class only changes the flex direction (row vs column).
@@ -287,7 +322,12 @@ const Switch = ({
 
   return (
     // The label wraps the input, so clicking anywhere on it toggles the switch.
-    <label className={switchClasses} style={style} {...dataAttributes}>
+    <label
+      className={switchClasses}
+      style={style}
+      {...dataAttributes}
+      {...rootHooks}
+    >
       {labelFirst && labelNode}
       {control}
       {iconNode}

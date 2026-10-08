@@ -1,6 +1,7 @@
 import { cn } from "../../utils/cn";
 import type { ListProps } from "./types";
 import styles from "./list.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * List: a quiet operational list on a native <ul> (markers removed, list
@@ -24,6 +25,7 @@ export const List = ({
       className,
     )}
     {...rest}
+    {...hooks("list", "root")}
   />
 );
 

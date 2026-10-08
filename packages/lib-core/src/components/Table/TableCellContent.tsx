@@ -1,5 +1,6 @@
 import { cn } from "../../utils/cn";
 import type { TableCellContentProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./table.module.scss";
 
 /**
@@ -24,6 +25,7 @@ export const TableCellContent = ({
       className={cn(styles.cellContent, className)}
       style={{ maxWidth, ...style }}
       {...rest}
+      {...hooks("table-cell-content", "root")}
     >
       <Primary
         className={cn(
@@ -31,10 +33,18 @@ export const TableCellContent = ({
           monospace && styles.cellMono,
           hasSecondary && styles.cellStrong,
         )}
+        {...hooks("table-cell-content", "primary")}
       >
         {primary}
       </Primary>
-      {hasSecondary && <div className={styles.cellSecondary}>{secondary}</div>}
+      {hasSecondary && (
+        <div
+          className={styles.cellSecondary}
+          {...hooks("table-cell-content", "secondary")}
+        >
+          {secondary}
+        </div>
+      )}
     </div>
   );
 };

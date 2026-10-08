@@ -64,9 +64,9 @@ const sizeConverter = {
  * @tag minerva-avatar
  * @slot - Fallback content used when there is no name (e.g. an icon)
  * @slot fallback - Custom fallback content shown instead of the initials
- * @csspart base - The avatar root
- * @csspart image - The `<img>`
- * @csspart text - The initials / fallback wrapper
+ * @csspart root - The avatar box (role=img while the fallback is shown); no size state for a size in pixels
+ * @csspart image - The <img>
+ * @csspart fallback - The initials / fallback content wrapper (no image)
  */
 export class MinervaAvatar extends MinervaElement {
   static override tagName = "minerva-avatar";
@@ -119,6 +119,13 @@ export class MinervaAvatar extends MinervaElement {
   // re-renders when the fallback slots change
   private readonly slots = new HasSlotController(this);
 
+  protected override hookStates() {
+    return {
+      size: typeof this.size === "number" ? undefined : this.size,
+      shape: this.shape,
+    };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     if (
       DEV &&
@@ -155,7 +162,7 @@ export class MinervaAvatar extends MinervaElement {
     );
 
     if (showImage) {
-      return html`<span part="base" class=${classes} style=${style}
+      return html`<span part="root" class=${classes} style=${style}
         ><img
           part="image"
           class="avatarImg"
@@ -171,12 +178,12 @@ export class MinervaAvatar extends MinervaElement {
       ? html`<slot name="fallback"></slot>`
       : initials || html`<slot></slot>`;
     return html`<span
-      part="base"
+      part="root"
       role="img"
       aria-label=${label}
       class=${classes}
       style=${style}
-      ><span part="text" class="avatarText" aria-hidden="true"
+      ><span part="fallback" class="avatarText" aria-hidden="true"
         >${fallback}</span
       ></span
     >`;
@@ -195,9 +202,9 @@ export class MinervaAvatar extends MinervaElement {
  * @summary Overlapping group of avatars with a "+N" indicator.
  * @tag minerva-avatar-group
  * @slot - `<minerva-avatar>` elements
- * @csspart base - The group root (`role="group"`)
+ * @csspart root - The group (role=group)
  * @csspart item - The wrapper of each visible avatar
- * @csspart count - The "+N" indicator
+ * @csspart count - The "+N" indicator of the hidden avatars
  */
 export class MinervaAvatarGroup extends MinervaElement {
   static override tagName = "minerva-avatar-group";
@@ -273,7 +280,7 @@ export class MinervaAvatarGroup extends MinervaElement {
         ? this.locale.t("avatar.groupWithMore", { count: extra })
         : this.locale.t("avatar.group"));
     return html`<div
-      part="base"
+      part="root"
       role="group"
       class="avatarGroup"
       aria-label=${label}

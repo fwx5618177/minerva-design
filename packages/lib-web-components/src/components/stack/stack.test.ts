@@ -10,7 +10,7 @@ afterEach(() => {
   resetDevWarnings();
 });
 
-const base = (el: Element) => $(el, "[part=base]");
+const base = (el: Element) => $(el, "[part=root]");
 
 describe("<minerva-stack>", () => {
   it("registers the three tags", () => {

@@ -23,7 +23,7 @@ describe("<minerva-loading-state>", () => {
     const el = await mount<MinervaLoadingState>(
       `<minerva-loading-state></minerva-loading-state>`,
     );
-    const base = $(el, "[part=base]");
+    const base = $(el, "[part=root]");
     expect(base.classList).toContain("loadingState");
     expect(base.classList).toContain("medium");
     expect(base).toHaveAttribute("role", "status");
@@ -41,7 +41,7 @@ describe("<minerva-loading-state>", () => {
       `<minerva-loading-state label="Fetching orders" size="small"></minerva-loading-state>`,
     );
     expect($(el, ".label").textContent?.trim()).toBe("Fetching orders");
-    expect($(el, "[part=base]").classList).toContain("small");
+    expect($(el, "[part=root]").classList).toContain("small");
     el.size = "large";
     await el.updateComplete;
     expect(el.getAttribute("size")).toBe("large");

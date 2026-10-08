@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { createPointerGrace, parsePlacement } from "@minerva/core";
 import { cn } from "../../utils/cn";
+import { hooks } from "../../internal/stylingHooks";
 import { Slot } from "../../internal/Slot";
 import type { TooltipProps } from "./types";
 import { useFloatingLayer } from "../../internal/FloatingPanel";
@@ -291,6 +292,12 @@ const Tooltip = ({
     undefined;
   const useChildAsTrigger = asChild && isElementChild;
 
+  // The wrapper only: with asChild the child keeps its own hooks.
+  const triggerHooks = hooks("tooltip", "trigger", {
+    state: visible ? "open" : "closed",
+    disabled,
+  });
+
   let triggerNode: React.ReactNode;
   if (useChildAsTrigger) {
     // Disabled: render the child untouched (no handlers, no state hooks)
@@ -318,6 +325,7 @@ const Tooltip = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         aria-describedby={isElementChild ? undefined : describedBy}
+        {...triggerHooks}
       >
         {isElementChild
           ? cloneElement(children, { "aria-describedby": childDescribedBy })
@@ -337,7 +345,14 @@ const Tooltip = ({
             id={tooltipId}
             role="tooltip"
             aria-label={ariaLabel}
-            data-placement={finalPlacement}
+            {...hooks("tooltip", "content", {
+              state: "open",
+              color,
+              variant,
+              shape,
+              ...parsePlacement(finalPlacement),
+              placement: finalPlacement,
+            })}
             onMouseEnter={handleContentMouseEnter}
             onMouseLeave={followCursor || disabled ? undefined : scheduleHide}
             className={cn(
@@ -364,6 +379,7 @@ const Tooltip = ({
                 ref={setArrowEl}
                 className={styles.tooltipArrow}
                 style={arrowStyles}
+                {...hooks("tooltip", "arrow")}
               />
             )}
           </div>

@@ -18,6 +18,7 @@ import {
   isFocusInsideOrLost,
   moveFocusBeforeRemoval,
 } from "../../internal/focusAfterRemoval";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./alert.module.scss";
 
 const iconMap = {
@@ -177,12 +178,19 @@ const Alert = ({
       role={
         role ?? (color === "danger" || color === "warning" ? "alert" : "status")
       }
+      {...hooks("alert", "root", {
+        state: isCollapsible ? (expanded ? "open" : "closed") : undefined,
+        size,
+        variant,
+        color,
+      })}
     >
       {showIcon && (
         <span
           className={styles.icon}
           role="img"
           aria-label={iconLabel ?? t(`alert.icon.${color}`)}
+          {...hooks("alert", "icon")}
         >
           {icon || iconMap[color]}
         </span>
@@ -190,7 +198,7 @@ const Alert = ({
 
       <div className={styles.content}>
         {title && (
-          <div className={styles.title}>
+          <div className={styles.title} {...hooks("alert", "title")}>
             {title}
             {isCollapsible && (
               <button
@@ -204,6 +212,7 @@ const Alert = ({
                 }
                 aria-expanded={expanded}
                 aria-controls={expanded && hasContent ? contentId : undefined}
+                {...hooks("alert", "trigger")}
               >
                 {expanded ? <IconChevronUp /> : <IconChevronDown />}
               </button>
@@ -211,13 +220,21 @@ const Alert = ({
           </div>
         )}
         {hasContent && (!isCollapsible || expanded) && (
-          <div id={contentId} className={styles.message}>
+          <div
+            id={contentId}
+            className={styles.message}
+            {...hooks("alert", "description")}
+          >
             {children}
           </div>
         )}
       </div>
 
-      {action && <div className={styles.action}>{action}</div>}
+      {action && (
+        <div className={styles.action} {...hooks("alert", "action")}>
+          {action}
+        </div>
+      )}
 
       {closable && (
         <button
@@ -225,6 +242,7 @@ const Alert = ({
           onClick={handleClose}
           aria-label={closeLabel ?? t("alert.close")}
           type="button"
+          {...hooks("alert", "close-button")}
         >
           {closeIcon || <IconX />}
         </button>

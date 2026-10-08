@@ -30,11 +30,11 @@ export interface StepsItem {
  *
  * @summary Workflow steps, read-only or navigable.
  * @tag minerva-steps
- * @csspart base - The `<ol>`
- * @csspart step - Each `<li>`
- * @csspart button - The button (or static wrapper) of each step
- * @csspart number - The numbered indicator
- * @csspart label - The label of each step
+ * @csspart root - The `<ol>`
+ * @csspart item - A step `<li>` (the current step has aria-current=step)
+ * @csspart button - The `<button>` of a step (navigable) or its static wrapper (read-only)
+ * @csspart indicator - The numbered indicator of a step
+ * @csspart label - The label of a step
  * @fires minerva-change - The user navigated to a step (`detail: { value }`); cancelable: `preventDefault()` keeps the current step
  */
 export class MinervaSteps extends MinervaElement {
@@ -88,12 +88,16 @@ export class MinervaSteps extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return { readonly: !this.navigable };
+  }
+
   protected override render() {
     const items = this.items ?? [];
     const currentIndex = items.findIndex((item) => item.value === this.value);
     const readOnly = !this.navigable;
     return html`<ol
-      part="base"
+      part="root"
       class="steps"
       aria-label=${this.aria.label ?? this.locale.t("steps.label")}
     >
@@ -104,13 +108,13 @@ export class MinervaSteps extends MinervaElement {
           const isCurrent = index === currentIndex;
           const isComplete = currentIndex > -1 && index < currentIndex;
           const content = html`<span
-              part="number"
+              part="indicator"
               class="number"
               aria-hidden="true"
               >${index + 1}</span
             ><span part="label" class="label">${item.label}</span>`;
           return html`<li
-            part="step"
+            part="item"
             class=${classMap({
               step: true,
               current: isCurrent,

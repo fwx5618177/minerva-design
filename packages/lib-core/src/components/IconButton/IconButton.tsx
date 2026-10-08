@@ -6,6 +6,7 @@ import { ProgressIndicator } from "../ProgressIndicator";
 import useI18n from "../../hooks/useI18n";
 import { useControllableState } from "../../internal/useControllableState";
 import { warnControlledProps, warnOnce } from "../../internal/devWarnings";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./iconButton.module.scss";
 
 /**
@@ -113,16 +114,30 @@ const IconButton = ({
       aria-busy={loading || undefined}
       aria-disabled={(loading && !disabled) || undefined}
       {...props}
+      {...hooks("icon-button", "root", {
+        // always set: also replaces the data-state of a popup trigger
+        state: isToggle && isPressed ? "active" : "inactive",
+        disabled,
+        loading,
+        size,
+        variant,
+        color,
+        shape,
+      })}
     >
       {loading ? (
-        <ProgressIndicator size={size} variant="spinner" color="current" />
-      ) : children !== undefined && icon === undefined ? (
-        // Children icons are wrapped so they are always hidden from AT
-        <span className={styles.glyph} aria-hidden="true">
-          {glyph}
+        <span className={styles.glyph} {...hooks("icon-button", "spinner")}>
+          <ProgressIndicator size={size} variant="spinner" color="current" />
         </span>
       ) : (
-        glyph
+        // The icon is wrapped so it is always hidden from AT
+        <span
+          className={styles.glyph}
+          aria-hidden="true"
+          {...hooks("icon-button", "icon")}
+        >
+          {glyph}
+        </span>
       )}
     </button>
   );

@@ -97,8 +97,8 @@ export function gridVariables(
  * @summary Container-query column grid.
  * @tag minerva-responsive-grid
  * @slot - Grid items
- * @csspart base - The query container
- * @csspart layout - The grid
+ * @csspart root - The query container
+ * @csspart layout - The grid (its children are the grid items)
  */
 export class MinervaResponsiveGrid extends MinervaElement {
   static override tagName = "minerva-responsive-grid";
@@ -142,7 +142,7 @@ export class MinervaResponsiveGrid extends MinervaElement {
       this.rowGap ?? this.gap,
       this.columnGap ?? this.gap,
     );
-    return html`<div class="root" part="base" style=${styleMap(variables)}>
+    return html`<div class="root" part="root" style=${styleMap(variables)}>
       <div class="layout" part="layout"><slot></slot></div>
     </div>`;
   }

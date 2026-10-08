@@ -50,13 +50,13 @@ export type ConfirmCancelReason = Exclude<ConfirmCloseReason, "confirm">;
  * @slot - Optional extra content below the description
  * @slot header - Title (alternative to the `label` attribute)
  * @csspart overlay - The backdrop
- * @csspart panel - The dialog panel (`role="alertdialog"`)
- * @csspart header - The title wrapper
- * @csspart description - The description
- * @csspart body - The body wrapper
- * @csspart footer - The actions row
- * @csspart cancel-button - The Cancel `<minerva-button>`
- * @csspart confirm-button - The Confirm `<minerva-button>`
+ * @csspart content - The dialog panel (`role="alertdialog"`)
+ * @csspart header - The title (accessible name of the dialog)
+ * @csspart description - The description below the title
+ * @csspart body - The optional extra content
+ * @csspart footer - The actions row (Cancel and Confirm buttons)
+ * @csspart cancel-button - The Cancel `<minerva-button>` (web components only: in React it is a Button with its own hooks)
+ * @csspart confirm-button - The Confirm `<minerva-button>` (web components only: in React it is a Button with its own hooks)
  * @csspart close-button - The close (×) button
  * @fires minerva-confirm - The confirm button was pressed; cancelable: `preventDefault()` keeps the dialog open (close it yourself)
  * @fires minerva-cancel - The confirmation was cancelled and the dialog closed (`detail: { reason }`)
@@ -206,6 +206,14 @@ export class MinervaConfirmDialog extends MinervaElement {
     if (changed.has("open")) this.presence.sync(this.open);
   }
 
+  protected override hookStates() {
+    return {
+      state: this.open ? "open" : "closed",
+      color: this.color,
+      loading: this.loading || this.busy,
+    };
+  }
+
   protected override updated(changed: PropertyValues<this>): void {
     const present = this.open || this.presence.present;
     if (changed.has("open")) {
@@ -279,7 +287,7 @@ export class MinervaConfirmDialog extends MinervaElement {
         aria-hidden="true"
       ></div>
       <div
-        part="panel"
+        part="content"
         class="content small"
         popover="manual"
         role="alertdialog"

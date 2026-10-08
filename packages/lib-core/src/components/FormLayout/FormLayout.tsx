@@ -2,6 +2,7 @@ import { cn } from "../../utils/cn";
 import ResponsiveGrid from "../ResponsiveGrid/ResponsiveGrid";
 import type { FormLayoutProps } from "./types";
 import styles from "./formLayout.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * FormLayout: a native <form> laying its fields out on a ResponsiveGrid.
@@ -18,7 +19,12 @@ export const FormLayout = ({
   ref,
   ...rest
 }: FormLayoutProps) => (
-  <form ref={ref} className={cn(styles.root, className)} {...rest}>
+  <form
+    ref={ref}
+    className={cn(styles.root, className)}
+    {...rest}
+    {...hooks("form-layout", "root")}
+  >
     <ResponsiveGrid
       columns={columns}
       gap={gap}

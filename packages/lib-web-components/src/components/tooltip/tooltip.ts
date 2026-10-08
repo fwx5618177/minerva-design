@@ -156,9 +156,9 @@ export class MinervaTooltipProvider extends MinervaElement {
  * @tag minerva-tooltip
  * @slot - The trigger; prefer a single focusable element (button, link...)
  * @slot content - Rich tooltip content (alternative to the `content` attribute)
- * @csspart trigger - The wrapper around the trigger
- * @csspart tooltip - The tooltip panel (`role="tooltip"`)
- * @csspart arrow - The arrow (with `arrow`)
+ * @csspart trigger - The wrapper around the trigger (the slotted element)
+ * @csspart content - The positioned tooltip (`role="tooltip"`, while shown)
+ * @csspart arrow - The arrow pointing at the trigger (with `arrow`)
  * @fires minerva-open-change - Hover, focus, blur, pointer leave or Escape asked to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state
  */
 export class MinervaTooltip extends MinervaElement {
@@ -233,7 +233,7 @@ export class MinervaTooltip extends MinervaElement {
   @query(".tooltipTrigger")
   private wrapper?: HTMLElement;
 
-  @query("[part=tooltip]")
+  @query("[part=content]")
   private panel?: HTMLElement;
 
   @query(".tooltipArrow")
@@ -591,6 +591,19 @@ export class MinervaTooltip extends MinervaElement {
 
   private readonly handleSlotChange = () => this.requestUpdate();
 
+  protected override hookStates() {
+    const placement = this.currentPlacement;
+    return {
+      state: this.visible ? "open" : "closed",
+      disabled: this.disabled,
+      color: this.color,
+      variant: this.variant,
+      shape: this.shape,
+      ...parsePlacement(placement),
+      placement,
+    };
+  }
+
   protected override render() {
     const visible = this.visible;
     const placement = this.currentPlacement;
@@ -609,7 +622,7 @@ export class MinervaTooltip extends MinervaElement {
         visible
           ? html`<div
               id="tooltip"
-              part="tooltip"
+              part="content"
               popover="manual"
               role="tooltip"
               dir=${getDirection(this)}

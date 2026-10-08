@@ -95,6 +95,8 @@ describe("exports map", () => {
     const css = readFileSync(join(root, "dist/tokens.css"), "utf8");
     expect(css).toContain("--primary-color");
     expect(css).toContain("[data-palette=");
+    // inside the `minerva` cascade layer: unlayered app CSS wins
+    expect(css.trim()).toMatch(/^@layer minerva \{[\s\S]*\}$/);
   });
 
   it("published modules never contain `?inline` specifiers", () => {

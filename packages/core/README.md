@@ -80,6 +80,33 @@ import "@minerva/core/tokens.css";
 `@minerva/lib-core/style.css` already bundles these tokens; import
 `tokens.css` directly only when you use `@minerva/core` without lib-core.
 
+The stylesheet is wrapped in `@layer minerva`: unlayered application CSS
+overrides the tokens without `!important`.
+
+## Styling hooks manifest
+
+`@minerva/core/styling-hooks` describes the public styling hooks of every
+Minerva component (the same names in React and in the web components):
+component → parts → states, with their values, plus selector helpers.
+
+```ts
+import {
+  reactSelector,
+  stylingHooks,
+  wcSelector,
+} from "@minerva/core/styling-hooks";
+
+stylingHooks.button.parts; // { root, label, "start-icon", "end-icon", spinner }
+reactSelector("modal", "content", { state: "open" });
+// '[data-minerva="modal"][data-part="content"][data-state="open"]'
+wcSelector("modal", "content", { state: "open" });
+// "minerva-modal:state(open)::part(content)"
+```
+
+The surface is locked (`styling-hooks.lock.json` in the repository): adding a
+component, part, state or value is a minor change, removing or renaming one is
+a major change.
+
 ## Translations
 
 The `i18n` module ships the built-in strings of the components as plain data

@@ -11,6 +11,7 @@ import { IconX } from "../../internal/icons";
 import type { TagProps } from "./types";
 import styles from "./tag.module.scss";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 const RIPPLE_DURATION = 600;
 
@@ -140,14 +141,28 @@ const Tag = ({
   const content = (
     <>
       {loading ? (
-        <span className={styles.spinner} aria-hidden="true" />
+        <span
+          className={styles.spinner}
+          aria-hidden="true"
+          {...hooks("tag", "spinner")}
+        />
       ) : (
         <>
-          {icon && <span className={styles.icon}>{icon}</span>}
-          {avatar && <span className={styles.avatar}>{avatar}</span>}
+          {icon && (
+            <span className={styles.icon} {...hooks("tag", "icon")}>
+              {icon}
+            </span>
+          )}
+          {avatar && (
+            <span className={styles.avatar} {...hooks("tag", "avatar")}>
+              {avatar}
+            </span>
+          )}
         </>
       )}
-      <span className={styles.content}>{children}</span>
+      <span className={styles.content} {...hooks("tag", "label")}>
+        {children}
+      </span>
     </>
   );
 
@@ -174,6 +189,15 @@ const Tag = ({
       aria-busy={loading || undefined}
       // Lets layouts such as PageSection keep the tag's width (page.module.scss)
       data-component="tag"
+      {...hooks("tag", "root", {
+        state: clickable && pressed ? "active" : "inactive",
+        disabled,
+        loading,
+        size,
+        variant,
+        color,
+        shape,
+      })}
     >
       {clickable ? (
         <button
@@ -182,6 +206,7 @@ const Tag = ({
           onClick={handleClick}
           disabled={inactive}
           aria-pressed={pressed}
+          {...hooks("tag", "action")}
         >
           {content}
         </button>
@@ -196,6 +221,7 @@ const Tag = ({
           disabled={disabled}
           aria-label={resolvedCloseLabel}
           title={resolvedCloseLabel}
+          {...hooks("tag", "close-button")}
         >
           {closeIcon || <IconX aria-hidden focusable={false} />}
         </button>

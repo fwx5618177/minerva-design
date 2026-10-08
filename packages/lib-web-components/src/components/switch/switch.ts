@@ -49,13 +49,15 @@ const placementClass: Record<SwitchLabelPlacement, string> = {
  * @tag minerva-switch
  * @slot - Label content (alternative to the `label` attribute)
  * @slot icon - Icon inside the thumb (`icon-placement="start"`) or after the switch ("end")
- * @csspart base - The root (`<label>`, or `<span>` with side labels / segments)
+ * @csspart root - The outer element (<label>; a <span> with side labels; the group of segments)
  * @csspart input - The native `<input type="checkbox" role="switch">`
+ * @csspart control - The slider box (wraps the track and the thumb)
  * @csspart track - The track
  * @csspart thumb - The thumb
+ * @csspart icon - The icon (in the thumb or after the slider)
  * @csspart label - The label text
  * @csspart side - The off / on side labels (buttons)
- * @csspart segment - The off / on segments (buttons)
+ * @csspart segment - The off / on segments (buttons, variant="segmented")
  * @fires change - The state changed (re-dispatched from the inner input)
  * @fires minerva-change - The user toggled the switch; `detail: { checked, value }`
  */
@@ -273,6 +275,21 @@ export class MinervaSwitch extends FormAssociatedElement {
     this.input.click();
   }
 
+  protected override hookStates() {
+    return {
+      state: this.checked ? "checked" : "unchecked",
+      disabled: this.isDisabled,
+      loading: this.loading,
+      invalid: this.invalid || this.aria.attr("aria-invalid") === "true",
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+      color: this.color,
+      shape: this.shape,
+      variant: this.segmented ? "segmented" : "slider",
+    };
+  }
+
   private renderInput(segmented: boolean) {
     const invalid = this.invalid || this.aria.attr("aria-invalid") === "true";
     return html`<input
@@ -307,13 +324,11 @@ export class MinervaSwitch extends FormAssociatedElement {
 
     if (this.segmented) {
       return html`<span
-        part="base"
+        part="root"
         role="group"
         aria-label=${this.aria.label ?? nothing}
         aria-description=${this.aria.description ?? nothing}
         aria-disabled=${blocked ? "true" : nothing}
-        data-invalid=${this.invalid ? "true" : nothing}
-        data-required=${this.required ? "true" : nothing}
         class=${classMap({
           segmented: true,
           [this.size]: true,
@@ -353,13 +368,15 @@ export class MinervaSwitch extends FormAssociatedElement {
       ripple: !this.noRipple && this.rippleActive,
       bilateral,
     });
-    const control = html`<span class="switchBase">
+    const control = html`<span class="switchBase" part="control">
       ${this.renderInput(false)}
       <span class="track" part="track"></span>
       <span class="thumb" part="thumb"
         >${
           this.iconPlacement === "start" && hasIcon
-            ? html`<span class="icon"><slot name="icon"></slot></span>`
+            ? html`<span class="icon" part="icon"
+                ><slot name="icon"></slot
+              ></span>`
             : nothing
         }</span
       >
@@ -367,7 +384,7 @@ export class MinervaSwitch extends FormAssociatedElement {
     </span>`;
     const iconNode =
       this.iconPlacement === "end" && hasIcon
-        ? html`<span class="icon"><slot name="icon"></slot></span>`
+        ? html`<span class="icon" part="icon"><slot name="icon"></slot></span>`
         : nothing;
 
     if (bilateral) {
@@ -381,7 +398,7 @@ export class MinervaSwitch extends FormAssociatedElement {
         >
           ${sideState ? this.onLabel : this.offLabel}
         </button>`;
-      return html`<span part="base" class=${switchClasses}
+      return html`<span part="root" class=${switchClasses}
         >${side(false)}${control}${side(true)}${iconNode}</span
       >`;
     }
@@ -394,7 +411,7 @@ export class MinervaSwitch extends FormAssociatedElement {
       : nothing;
     const labelFirst =
       this.labelPlacement === "start" || this.labelPlacement === "top";
-    return html`<label part="base" class=${switchClasses}
+    return html`<label part="root" class=${switchClasses}
       >${labelFirst ? labelNode : nothing}${control}${iconNode}${
         labelFirst ? nothing : labelNode
       }</label

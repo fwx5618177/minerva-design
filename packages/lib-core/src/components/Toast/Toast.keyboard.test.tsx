@@ -66,7 +66,10 @@ describe("Toast keyboard", () => {
     expect(screen.getByRole("button", { name: "Close" })).toHaveFocus();
     await user.keyboard(key);
     expect(onClose).toHaveBeenCalledExactlyOnceWith(id);
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-state",
+      "closing",
+    );
   });
 
   it("runs the action with Space and closes the toast", async () => {
@@ -83,7 +86,10 @@ describe("Toast keyboard", () => {
     await user.tab();
     await user.keyboard(" ");
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-state",
+      "closing",
+    );
   });
 
   it("ignores other keys on the toast buttons", async () => {
@@ -96,6 +102,9 @@ describe("Toast keyboard", () => {
     await user.tab();
     await user.keyboard("{ArrowDown}a{Tab}");
     expect(onClose).not.toHaveBeenCalled();
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "open");
+    expect(screen.getByRole("status")).toHaveAttribute(
+      "data-toast-state",
+      "open",
+    );
   });
 });

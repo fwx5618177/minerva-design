@@ -48,11 +48,11 @@ const toCss = (value: string | number | undefined) =>
  *
  * @summary Read-only, scrollable code region with optional copy button.
  * @tag minerva-code-block
- * @csspart base - The outer wrapper (copyable / labelled blocks)
- * @csspart region - The `<pre>` region
+ * @csspart root - The positioned outer wrapper of the region and its actions (only when copyable, or with a language label)
+ * @csspart region - The `<pre>` scroll region (role=region): the visible box of the code
  * @csspart code - The `<code>` element
  * @csspart language - The language label
- * @csspart copy-button - The copy button
+ * @csspart copy-button - The copy button (while copyable)
  * @fires minerva-copy - The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success).
  */
 export class MinervaCodeBlock extends MinervaElement {
@@ -201,7 +201,7 @@ export class MinervaCodeBlock extends MinervaElement {
           ? "success"
           : "neutral";
 
-    return html`<div part="base" class="root" style=${styleMap({ maxHeight })}>
+    return html`<div part="root" class="root" style=${styleMap({ maxHeight })}>
       ${region}
       <div class="actions">
         ${

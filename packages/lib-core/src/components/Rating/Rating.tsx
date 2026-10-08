@@ -9,6 +9,7 @@ import { cn } from "../../utils/cn";
 import { IconStar, IconStarHalf } from "../../internal/icons";
 import { logicalArrowKey } from "../../internal/direction";
 import { warnOnce } from "../../internal/devWarnings";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./rating.module.scss";
 import type { RatingProps, RatingScaleProps } from "./types";
 
@@ -25,7 +26,11 @@ const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
   if (fill === "half") {
     // Empty outline with the filled left half drawn on top.
     return (
-      <span className={className} style={{ width: size, height: size }}>
+      <span
+        className={className}
+        style={{ width: size, height: size }}
+        {...hooks("rating", "star")}
+      >
         <IconStar size={size} strokeWidth={1.5} className={styles.halfBase} />
         <IconStarHalf
           size={size}
@@ -44,6 +49,7 @@ const Star = ({ fill, size }: { fill: RatingStarFill; size: number }) => {
       strokeWidth={1.5}
       aria-hidden
       focusable={false}
+      {...hooks("rating", "star")}
     />
   );
 };
@@ -151,8 +157,10 @@ const Rating = ({
     className,
   );
 
+  const rootHooks = hooks("rating", "root", { readonly: !interactive, size });
+
   const stars = (
-    <span className={styles.stars} aria-hidden>
+    <span className={styles.stars} aria-hidden {...hooks("rating", "stars")}>
       {STARS.map((i) =>
         interactive ? (
           <button
@@ -173,10 +181,10 @@ const Rating = ({
   );
 
   const valueNode = showValue && (
-    <span className={styles.value}>
+    <span className={styles.value} {...hooks("rating", "value")}>
       <strong>{value.toFixed(1)}</strong>
       {ratingCount !== undefined && (
-        <span className={styles.count}>
+        <span className={styles.count} {...hooks("rating", "count")}>
           ({ratingCount.toLocaleString("en-US")})
         </span>
       )}
@@ -192,6 +200,7 @@ const Rating = ({
         style={style}
         aria-label={label}
         role="img"
+        {...rootHooks}
       >
         {stars}
         {valueNode}
@@ -213,6 +222,7 @@ const Rating = ({
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onMouseLeave={() => setHoverIndex(null)}
+      {...rootHooks}
     >
       {stars}
       {valueNode}
@@ -234,14 +244,24 @@ const RatingScale = ({
   className,
   ref,
 }: RatingScaleProps) => (
-  <div ref={ref} className={cn(styles.scale, className)}>
+  <div
+    ref={ref}
+    className={cn(styles.scale, className)}
+    {...hooks("rating-scale", "root", {
+      readonly: !onChange || !!readOnly,
+      size,
+    })}
+  >
     {dimensions.map((dim) => (
       <div
         key={dim.key}
         className={styles.scaleRow}
         title={typeof dim.hint === "string" ? dim.hint : undefined}
+        {...hooks("rating-scale", "row")}
       >
-        <span className={styles.scaleLabel}>{dim.label}</span>
+        <span className={styles.scaleLabel} {...hooks("rating-scale", "label")}>
+          {dim.label}
+        </span>
         <Rating
           value={dim.value}
           max={max}

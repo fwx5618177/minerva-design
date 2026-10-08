@@ -71,14 +71,14 @@ const shortcutConverter = {
  * @summary Searchable command palette in a modal, with a global shortcut.
  * @tag minerva-command-dialog
  * @csspart overlay - The backdrop
- * @csspart panel - The dialog panel (`role="dialog"`)
- * @csspart header - The title row
- * @csspart description - The description
- * @csspart search - The search field wrapper
+ * @csspart content - The dialog panel (`role="dialog"`)
+ * @csspart header - The title row (accessible name of the dialog)
+ * @csspart description - The description below the title
+ * @csspart search - The search field (icon, input and Enter hint)
  * @csspart input - The search input (`role="combobox"`)
- * @csspart listbox - The results list (`role="listbox"`)
+ * @csspart list - The results list (`role="listbox"`)
  * @csspart item - A result (`role="option"`)
- * @csspart empty - The empty state
+ * @csspart empty - The text shown when no command matches
  * @fires minerva-select - A command was chosen (`detail: { value, item }`, `value` = the item's `id`); the palette then closes
  * @fires minerva-open-change - The user asked to open (shortcut) / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-after-open - The palette is open and focus moved to the search input
@@ -358,6 +358,10 @@ export class MinervaCommandDialog extends MinervaElement {
     this.wasPresent = present;
   }
 
+  protected override hookStates() {
+    return { state: this.open ? "open" : "closed" };
+  }
+
   private afterClose() {
     hideTopLayer(this.panel);
     hideTopLayer(this.overlay);
@@ -382,7 +386,7 @@ export class MinervaCommandDialog extends MinervaElement {
         aria-hidden="true"
       ></div>
       <div
-        part="panel"
+        part="content"
         class="content large dialog"
         popover="manual"
         role="dialog"
@@ -428,7 +432,7 @@ export class MinervaCommandDialog extends MinervaElement {
         </div>
         <div
           id="results"
-          part="listbox"
+          part="list"
           class="results"
           role="listbox"
           aria-label=${this.resultsLabel ?? t("command.results")}

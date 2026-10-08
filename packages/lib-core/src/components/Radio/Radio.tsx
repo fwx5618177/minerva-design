@@ -2,6 +2,7 @@ import React, { useContext, useId } from "react";
 import { cn } from "../../utils/cn";
 import { IconCircleInfoFilled } from "../../internal/icons";
 import { pickDataAttributes } from "../../internal/dataAttributes";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./radio.module.scss";
 import type { RadioProps } from "./types";
 import { RadioGroupContext } from "./RadioGroup";
@@ -74,6 +75,19 @@ const Radio = ({
       )}
       style={style}
       {...pickDataAttributes(rest)}
+      {...hooks("radio", "root", {
+        // An uncontrolled radio outside a group: the DOM holds the state
+        state:
+          isChecked === undefined
+            ? undefined
+            : isChecked
+              ? "checked"
+              : "unchecked",
+        disabled: isDisabled,
+        invalid: error,
+        size: radioSize,
+        color: radioColor,
+      })}
     >
       <label className={cn(styles.radio, isDisabled && styles.disabled)}>
         <input
@@ -96,10 +110,13 @@ const Radio = ({
               .join(" ") || undefined
           }
           className={styles.input}
+          {...hooks("radio", "input")}
         />
-        <span className={styles.radioMark} />
+        <span className={styles.radioMark} {...hooks("radio", "control")} />
         {content != null && content !== false && content !== "" && (
-          <span className={styles.label}>{content}</span>
+          <span className={styles.label} {...hooks("radio", "label")}>
+            {content}
+          </span>
         )}
       </label>
       {helper && (
@@ -112,6 +129,7 @@ const Radio = ({
           <span
             id={helperId}
             className={cn(styles.helperText, error && styles.errorText)}
+            {...hooks("radio", "helper-text")}
           >
             {helper}
           </span>

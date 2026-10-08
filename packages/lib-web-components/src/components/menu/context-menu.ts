@@ -60,10 +60,14 @@ const pointAnchor = (
  * @summary Menu opened at the pointer on right click / long press / Shift+F10.
  * @tag minerva-context-menu
  * @slot - The area (and the declarative menu entries, which are not displayed)
- * @csspart menu - A menu panel (root menu and submenus)
- * @csspart item - A menu item
+ * @csspart content - A menu panel (`role="menu"`: the root menu and its submenus)
+ * @csspart item - An item (`role="menuitem"`, `menuitemcheckbox` or `menuitemradio`)
+ * @csspart item-indicator - The check mark / radio dot of a checkbox or radio item
  * @csspart icon - The icon of an item
- * @csspart label - A group / section label
+ * @csspart item-label - The label of an item
+ * @csspart shortcut - The keyboard shortcut hint of an item
+ * @csspart group - A group of entries (`role="group"`, also radio groups)
+ * @csspart label - A group heading or section label
  * @csspart separator - A separator
  * @fires minerva-open-change - The menu opens / asks to close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-select - An action item was chosen (`detail: { value, item }`); cancelable: `preventDefault()` keeps the menu open

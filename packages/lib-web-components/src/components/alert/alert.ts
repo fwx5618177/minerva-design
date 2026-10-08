@@ -72,13 +72,13 @@ const ANIMATION_NAMES: readonly string[] = [
  * @slot icon - Custom icon replacing the status icon
  * @slot action - Action area (e.g. buttons) at the end
  * @slot close-icon - Custom close icon
- * @csspart base - The alert root
- * @csspart icon - The icon wrapper
- * @csspart heading - The title
- * @csspart message - The message wrapper
+ * @csspart root - The alert (role=alert for danger / warning, status otherwise); state open / closed only while collapsible
+ * @csspart icon - The icon (role=img)
+ * @csspart title - The title (holds the collapse button)
+ * @csspart trigger - The expand / collapse button of a collapsible alert
+ * @csspart description - The message
  * @csspart action - The action wrapper
  * @csspart close-button - The close button
- * @csspart toggle - The expand / collapse button
  * @fires minerva-close - The close button was activated; cancelable: `preventDefault()` keeps the alert visible
  * @fires minerva-expanded-change - The user expanded / collapsed the message (`detail: { expanded }`); cancelable
  */
@@ -285,6 +285,16 @@ export class MinervaAlert extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    const isCollapsible = this.collapsible && this.hasHeading;
+    return {
+      state: isCollapsible ? (this.collapsed ? "closed" : "open") : undefined,
+      size: this.size,
+      variant: this.variant,
+      color: this.color,
+    };
+  }
+
   protected override render() {
     const t = this.locale.t;
     const hasHeading = this.hasHeading;
@@ -300,7 +310,7 @@ export class MinervaAlert extends MinervaElement {
         : "status");
 
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         alert: true,
         [this.color]: true,
@@ -342,13 +352,13 @@ export class MinervaAlert extends MinervaElement {
       <div class="content">
         ${
           hasHeading
-            ? html`<div class="title" part="heading">
+            ? html`<div class="title" part="title">
                 <slot name="heading">${this.heading}</slot>
                 ${
                   isCollapsible
                     ? html`<button
                         type="button"
-                        part="toggle"
+                        part="trigger"
                         class="expandButton"
                         aria-label=${
                           expanded
@@ -368,7 +378,7 @@ export class MinervaAlert extends MinervaElement {
         }
         ${
           hasContent && (!isCollapsible || expanded)
-            ? html`<div id="message" class="message" part="message">
+            ? html`<div id="message" class="message" part="description">
                 <slot></slot>
               </div>`
             : nothing

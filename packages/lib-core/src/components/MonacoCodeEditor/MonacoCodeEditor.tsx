@@ -15,6 +15,7 @@ import Button from "../Button/Button";
 import ProgressIndicator from "../ProgressIndicator/ProgressIndicator";
 import { useEditorTheme } from "./useEditorTheme";
 import type { MonacoCodeEditorProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./monacoCodeEditor.module.scss";
 
 interface LoadState {
@@ -160,20 +161,26 @@ export const MonacoCodeEditor = ({
       style={style}
       role="group"
       aria-label={label}
+      {...hooks("code-editor", "root", { disabled, loading: busy })}
     >
       {/* Labels the fallback textarea, or Monaco's own input once mounted
           (its id is set in onMount), so clicking it focuses the editor. */}
-      <label className={styles.label} htmlFor={inputId}>
+      <label
+        className={styles.label}
+        htmlFor={inputId}
+        {...hooks("code-editor", "label")}
+      >
         {label}
       </label>
       <div
         className={styles.surface}
         style={{ height: editorHeight }}
         aria-busy={busy}
+        {...hooks("code-editor", "surface")}
       >
         {status === "error" ? (
           <>
-            <div className={styles.error}>
+            <div className={styles.error} {...hooks("code-editor", "error")}>
               <div className={styles.message} role="alert">
                 {unavailableText ?? t("monacoCodeEditor.unavailable")}
               </div>
@@ -195,6 +202,7 @@ export const MonacoCodeEditor = ({
               disabled={disabled}
               spellCheck={false}
               className={styles.fallback}
+              {...hooks("code-editor", "fallback")}
               onChange={(event) => {
                 if (!disabled) onChange(event.target.value);
               }}
@@ -203,7 +211,11 @@ export const MonacoCodeEditor = ({
         ) : (
           <>
             {busy && (
-              <div className={styles.loading} role="status">
+              <div
+                className={styles.loading}
+                role="status"
+                {...hooks("code-editor", "loading")}
+              >
                 <ProgressIndicator
                   size="small"
                   aria-label={loadingLabel ?? t("monacoCodeEditor.loading")}

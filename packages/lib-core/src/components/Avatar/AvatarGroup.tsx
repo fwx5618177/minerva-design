@@ -3,6 +3,7 @@ import { cn } from "../../utils/cn";
 import styles from "./avatarGroup.module.scss";
 import type { AvatarGroupProps } from "./types";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * AvatarGroup: overlapping avatars with an optional "+N" indicator.
@@ -37,17 +38,23 @@ const AvatarGroup = ({
           : t("avatar.group"))
       }
       {...rest}
+      {...hooks("avatar-group", "root")}
     >
       {visible.map((child, index) => (
         <div
           key={React.isValidElement(child) ? (child.key ?? index) : index}
           className={styles.avatarGroupItem}
+          {...hooks("avatar-group", "item")}
         >
           {child}
         </div>
       ))}
       {extra > 0 ? (
-        <div className={styles.count} aria-hidden="true">
+        <div
+          className={styles.count}
+          aria-hidden="true"
+          {...hooks("avatar-group", "count")}
+        >
           +{extra}
         </div>
       ) : null}

@@ -42,6 +42,15 @@ export default function App() {
 | `@minerva/lib-core/monaco`       | `MonacoCodeEditor` (optional peers `@monaco-editor/react` and `monaco-editor`)                              |
 | `@minerva/lib-core/prose.scss`   | The typography mixins of `Prose`                                                                            |
 
+Every stylesheet ships inside `@layer minerva`: your unlayered CSS overrides
+the library without `!important` (layered apps: `@layer reset, minerva, app;`).
+
+Styling hooks (public API): each component renders `data-minerva="<component>"`,
+`data-part="<part>"` and state attributes (`data-state`, `data-disabled`,
+`data-size`, `data-variant`...), e.g.
+`[data-minerva="button"][data-part="label"]`. The hooks of every component are
+listed on its docs page and in `@minerva/core/styling-hooks`.
+
 Documentation and live demos: https://fwx5618177.github.io/minerva/
 
 ## Browser support

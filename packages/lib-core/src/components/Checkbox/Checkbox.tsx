@@ -9,6 +9,7 @@ import {
   useFormControlContext,
   useFormControlProps,
 } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./checkbox.module.scss";
 import type { CheckboxProps } from "./types";
 
@@ -118,7 +119,23 @@ const Checkbox = ({
   );
 
   return (
-    <div className={cn(styles.checkboxWrapper, isError && styles.error)}>
+    <div
+      className={cn(styles.checkboxWrapper, isError && styles.error)}
+      {...hooks("checkbox", "root", {
+        state: indeterminate
+          ? "indeterminate"
+          : isChecked
+            ? "checked"
+            : "unchecked",
+        disabled: isDisabled,
+        invalid: isError,
+        readonly: isReadOnly,
+        required: isRequired,
+        size,
+        color,
+        shape,
+      })}
+    >
       <label
         className={labelClasses}
         style={style}
@@ -142,12 +159,15 @@ const Checkbox = ({
           aria-invalid={isError || undefined}
           aria-readonly={field["aria-readonly"]}
           aria-describedby={field["aria-describedby"]}
+          {...hooks("checkbox", "input")}
         />
-        <span className={styles.checkmark}>
+        <span className={styles.checkmark} {...hooks("checkbox", "control")}>
           {icon && isChecked && !indeterminate && icon}
         </span>
         {content != null && content !== false && content !== "" && (
-          <span className={styles.label}>{content}</span>
+          <span className={styles.label} {...hooks("checkbox", "label")}>
+            {content}
+          </span>
         )}
       </label>
       {helperText && (
@@ -160,6 +180,7 @@ const Checkbox = ({
           <span
             id={helperId}
             className={cn(styles.helperText, isError && styles.errorText)}
+            {...hooks("checkbox", "helper-text")}
           >
             {helperText}
           </span>

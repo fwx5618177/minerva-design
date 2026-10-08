@@ -13,6 +13,7 @@ import {
   findCascaderPath,
   flattenCascaderOptions,
   logicalArrowKey,
+  parsePlacement,
   type CascaderSearchEntry,
 } from "@minerva/core";
 import styles from "@lib-core-styles/components/Cascader/cascader.module.scss?inline";
@@ -134,14 +135,14 @@ let nextId = 0;
  *
  * @summary Hierarchical picker with one column per level, search and lazy loading.
  * @tag minerva-cascader
- * @csspart base - The root wrapper (`.cascader`)
- * @csspart selector - The field (`.selector`)
- * @csspart input - The native `<input role="combobox">`
- * @csspart clear-button - The clear button
- * @csspart arrow - The chevron
- * @csspart dropdown - The popup panel
- * @csspart column - A column of options (`role="listbox"`)
- * @csspart option - An option (column option or search result)
+ * @csspart root - The root wrapper (anchor of the dropdown)
+ * @csspart control - The field box (input, clear button, chevron)
+ * @csspart input - The native `<input role=combobox>`
+ * @csspart clear-button - The clear button (while there is a value)
+ * @csspart icon - The chevron
+ * @csspart content - The positioned dropdown
+ * @csspart column - A column of options (`role=listbox`)
+ * @csspart item - An option (column option or search result)
  * @fires minerva-change - A path was selected or the value was cleared (`detail: { value, selectedOptions }`)
  * @fires change - Same as `minerva-change`, without detail
  * @fires minerva-clear - The clear button emptied the value
@@ -324,6 +325,7 @@ export class MinervaCascader extends FormAssociatedElement {
     onDismiss: () => this.closeDropdown(),
     returnFocusOnEscape: () => this.input,
     focusable: true,
+    onPosition: () => this.syncHookStates(),
   }));
 
   /**
@@ -459,6 +461,26 @@ export class MinervaCascader extends FormAssociatedElement {
   }
 
   private widthApplied = false;
+
+  protected override hookStates() {
+    const open = this.open && !this.isDisabled;
+    const placement =
+      open && this.floating.isOpen
+        ? this.floating.position.placement
+        : undefined;
+    const { side, align } = placement
+      ? parsePlacement(placement)
+      : { side: undefined, align: undefined };
+    return {
+      state: open ? "open" : "closed",
+      disabled: this.isDisabled,
+      readonly: this.readOnly,
+      invalid: this.invalid,
+      side,
+      align,
+      placement,
+    };
+  }
 
   protected override updated(changed: PropertyValues<this>): void {
     super.updated(changed);
@@ -768,7 +790,7 @@ export class MinervaCascader extends FormAssociatedElement {
               ({ path }) =>
                 html`<div
                   class="searchOption"
-                  part="option"
+                  part="item"
                   role="option"
                   aria-selected="false"
                   tabindex="0"
@@ -822,7 +844,7 @@ export class MinervaCascader extends FormAssociatedElement {
                   disabled: Boolean(option.disabled),
                   loading: Boolean(option.loading),
                 })}
-                part="option"
+                part="item"
                 role="option"
                 aria-selected=${isSelected ? "true" : "false"}
                 aria-disabled=${option.disabled ? "true" : nothing}
@@ -891,12 +913,12 @@ export class MinervaCascader extends FormAssociatedElement {
 
     return html`<div
         class="cascader"
-        part="base"
+        part="root"
         @focusout=${this.handleFocusOut}
       >
         <div
           class=${classMap({ selector: true, disabled, focused: open })}
-          part="selector"
+          part="control"
           @click=${this.handleSelectorClick}
         >
           <div class="input" data-component="input" ?data-disabled=${disabled}>
@@ -938,7 +960,7 @@ export class MinervaCascader extends FormAssociatedElement {
           }
           <span
             class=${classMap({ arrow: true, open })}
-            part="arrow"
+            part="icon"
             aria-hidden="true"
             ><span class="icon">${IconChevronDown}</span></span
           >
@@ -948,7 +970,7 @@ export class MinervaCascader extends FormAssociatedElement {
         open
           ? html`<div
               class="dropdown"
-              part="dropdown"
+              part="content"
               popover="manual"
               @mousedown=${this.handleDropdownMouseDown}
               @focusout=${this.handleFocusOut}

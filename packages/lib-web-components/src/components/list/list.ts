@@ -21,7 +21,7 @@ export type ListDensity = "default" | "compact";
  * @summary Operational list of rows with optional dividers.
  * @tag minerva-list
  * @slot - `<minerva-list-item>` rows
- * @csspart base - The list wrapper
+ * @csspart root - The list (React: the <ul>; web components: its wrapper)
  */
 export class MinervaList extends MinervaElement {
   static override tagName = "minerva-list";
@@ -79,7 +79,7 @@ export class MinervaList extends MinervaElement {
 
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         list: true,
         compact: this.density === "compact",
@@ -103,11 +103,11 @@ export class MinervaList extends MinervaElement {
  * @slot secondary - Supporting content (alternative to the `secondary` attribute)
  * @slot icon - Decorative leading icon (hidden from assistive technologies)
  * @slot actions - Trailing controls
- * @csspart base - The row
- * @csspart icon - The icon wrapper
- * @csspart primary - The primary text
- * @csspart secondary - The secondary text
- * @csspart actions - The actions wrapper
+ * @csspart root - The row
+ * @csspart icon - The decorative leading icon wrapper
+ * @csspart label - The primary text
+ * @csspart description - The secondary text
+ * @csspart actions - The trailing actions wrapper
  */
 export class MinervaListItem extends MinervaElement {
   static override tagName = "minerva-list-item";
@@ -156,7 +156,7 @@ export class MinervaListItem extends MinervaElement {
 
   protected override render() {
     const hasSecondary = this.secondary !== "" || this.slots.test("secondary");
-    return html`<div part="base" class="item">
+    return html`<div part="root" class="item">
       ${
         this.slots.test("icon")
           ? html`<div part="icon" class="icon" aria-hidden="true">
@@ -165,10 +165,10 @@ export class MinervaListItem extends MinervaElement {
           : nothing
       }
       <div class="content">
-        <div part="primary" class="primary"><slot>${this.primary}</slot></div>
+        <div part="label" class="primary"><slot>${this.primary}</slot></div>
         ${
           hasSecondary
-            ? html`<div part="secondary" class="secondary">
+            ? html`<div part="description" class="secondary">
                 <slot name="secondary">${this.secondary}</slot>
               </div>`
             : nothing

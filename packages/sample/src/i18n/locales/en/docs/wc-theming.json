@@ -37,8 +37,8 @@
     "text": "The elements compile the same stylesheets as the React components, so they expose the same --<component>-* variables (--button-radius, --input-height, --card-padding, --table-cell-padding-y...), listed in the CSS variables table of each component page. They are read with fallbacks and never set by the element, so a value on the element, any ancestor or :root applies. Theme tokens (--primary-color...) can be overridden the same way:"
   },
   "parts": {
-    "title": "Styling internals with ::part()",
-    "text": "Elements expose their key internals as CSS parts (base, control, input, panel, listbox, item, label, icon...). ::part() styles them from the page without depending on internal class names, which are not a public API. The parts of each element are listed on its page."
+    "title": "Styling internals with ::part() and :state()",
+    "text": "Elements expose their key internals as CSS parts (root, label, content, overlay, list, item, input, control...) and their states as custom states (:state(open), :state(disabled), :state(size-small)...): the same names as the data-part and data-* hooks of the React components. They are public API, unlike internal class names. Each component page lists them in its \"Styling hooks\" section; see Styling & customization for the whole vocabulary."
   },
   "overlays": {
     "title": "Overlays stay in their scope",

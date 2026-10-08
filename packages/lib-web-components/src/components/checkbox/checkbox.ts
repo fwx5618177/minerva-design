@@ -42,10 +42,9 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
  * @tag minerva-checkbox
  * @slot - Label content (alternative to the `label` attribute)
  * @slot icon - Custom icon shown inside the box when checked
- * @csspart base - The wrapper
- * @csspart control - The `<label>` wrapping the box and the label
+ * @csspart root - The wrapper (the clickable row and the helper text)
  * @csspart input - The native `<input type="checkbox">`
- * @csspart checkmark - The visual box
+ * @csspart control - The visual box (draws the checkmark)
  * @csspart label - The label text
  * @csspart helper-text - The helper / error text
  * @fires change - The checked state changed (re-dispatched from the inner input)
@@ -206,6 +205,23 @@ export class MinervaCheckbox extends FormAssociatedElement {
     this.emit("minerva-change", { checked: this.checked, value: this.value });
   }
 
+  protected override hookStates() {
+    return {
+      state: this.indeterminate
+        ? "indeterminate"
+        : this.checked
+          ? "checked"
+          : "unchecked",
+      disabled: this.isDisabled,
+      invalid: this.error || this.aria.attr("aria-invalid") === "true",
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+      color: this.color,
+      shape: this.shape,
+    };
+  }
+
   protected override render() {
     const disabled = this.isDisabled;
     const hasLabel = !!this.label || this.slots.test("[default]");
@@ -214,11 +230,10 @@ export class MinervaCheckbox extends FormAssociatedElement {
       .join(" ");
     const invalid = this.error || this.aria.attr("aria-invalid") === "true";
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({ checkboxWrapper: true, error: invalid })}
     >
       <label
-        part="control"
         class=${classMap({
           checkbox: true,
           [this.size]: true,
@@ -244,7 +259,7 @@ export class MinervaCheckbox extends FormAssociatedElement {
           @click=${this.handleClick}
           @change=${this.handleChange}
         />
-        <span class="checkmark" part="checkmark"
+        <span class="checkmark" part="control"
           >${
             this.checked && !this.indeterminate
               ? html`<slot name="icon"></slot>`

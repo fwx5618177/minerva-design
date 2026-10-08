@@ -2,6 +2,7 @@ import { Slot } from "../../internal/Slot";
 import { cn } from "../../utils/cn";
 import type { GridItemProps } from "./types";
 import styles from "./responsiveGrid.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 
 /**
  * GridItem: a cell of a ResponsiveGrid (or any CSS grid). `fullWidth` spans the
@@ -18,6 +19,7 @@ const GridItem = ({
     <Component
       className={cn(styles.item, fullWidth && styles.fullWidth, className)}
       {...rest}
+      {...hooks("grid-item", "root")}
     />
   );
 };

@@ -53,8 +53,8 @@ const ownerOf = (el: Element): MinervaTabs | null =>
  * @tag minerva-tabs
  * @slot - `<minerva-tab-panel>` elements
  * @slot tab - `<minerva-tab>` elements (assigned automatically)
- * @csspart base - The root wrapper
- * @csspart tablist - The `role="tablist"` container
+ * @csspart root - The root wrapper of the tab list and the panels
+ * @csspart list - The role=tablist container of the tabs
  * @fires minerva-change - The user selected a tab (`detail: { value }`); cancelable: `preventDefault()` keeps the current selection (controlled pattern)
  */
 export class MinervaTabs extends MinervaElement {
@@ -239,6 +239,14 @@ export class MinervaTabs extends MinervaElement {
     else this.roving.refresh();
   }
 
+  protected override hookStates() {
+    return {
+      orientation: this.orientation,
+      variant: this.variant,
+      color: this.color,
+    };
+  }
+
   /** Re-checks the direction before core's roving focus handles a key. */
   private handleKeyDownCapture = () => this.ensureRoving();
 
@@ -251,7 +259,7 @@ export class MinervaTabs extends MinervaElement {
 
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         tabs: true,
         [this.color]: true,
@@ -261,7 +269,7 @@ export class MinervaTabs extends MinervaElement {
       @keydown=${{ handleEvent: this.handleKeyDownCapture, capture: true }}
     >
       <div
-        part="tablist"
+        part="list"
         role="tablist"
         aria-label=${this.label || this.aria.label || nothing}
         aria-orientation=${this.orientation}
@@ -288,7 +296,7 @@ export class MinervaTabs extends MinervaElement {
  * @summary A `role="tab"` trigger of `<minerva-tabs>`.
  * @tag minerva-tab
  * @slot - Tab content
- * @csspart base - The visual trigger
+ * @csspart root - The visual tab trigger
  */
 export class MinervaTab extends MinervaElement {
   private readonly internals = attachInternals(this);
@@ -410,12 +418,22 @@ export class MinervaTab extends MinervaElement {
     setHostAttribute(this, "data-orientation", orientation);
   }
 
+  protected override hookStates() {
+    return {
+      state: this.selected ? "active" : "inactive",
+      disabled: this.disabled,
+      orientation: this.group?.orientation ?? "horizontal",
+      variant: this.group?.variant ?? "line",
+      color: this.color,
+    };
+  }
+
   protected override render() {
     const group = this.group;
     const variant = group?.variant ?? "line";
     const vertical = group?.orientation === "vertical";
     return html`<span
-      part="base"
+      part="root"
       class=${classMap({
         trigger: true,
         [`${variant}Trigger`]: true,
@@ -448,7 +466,7 @@ export class MinervaTab extends MinervaElement {
  * @summary A `role="tabpanel"` of `<minerva-tabs>`.
  * @tag minerva-tab-panel
  * @slot - Panel content (or a `<template>` stamped only while active)
- * @csspart base - The panel wrapper
+ * @csspart root - The panel wrapper
  */
 export class MinervaTabPanel extends MinervaElement {
   private readonly internals = attachInternals(this);
@@ -537,11 +555,18 @@ export class MinervaTabPanel extends MinervaElement {
     if (!this.hasAttribute("tabindex")) setHostAttribute(this, "tabindex", "0");
   }
 
+  protected override hookStates() {
+    return {
+      state: this.selected ? "active" : "inactive",
+      orientation: this.orientation,
+    };
+  }
+
   protected override render() {
     // until `hidden` may be set on the host (hydration), an inactive panel
     // hides its content
     return html`<div
-      part="base"
+      part="root"
       class="panel"
       data-orientation=${this.orientation}
       ?hidden=${!this.selected && isHostDeferred(this) && !!ownerOf(this)}

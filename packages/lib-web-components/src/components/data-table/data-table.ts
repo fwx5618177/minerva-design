@@ -128,14 +128,19 @@ const SELECTION_WIDTH = 48;
  * @tag minerva-data-table
  * @slot empty - Content of the empty state (default: `empty-text` or the localized "No data")
  * @slot error - Content of the error state (default: the `error` text)
- * @csspart base - The outer wrapper
- * @csspart wrapper - The scroll wrapper
+ * @csspart root - The outer wrapper of the table, the error state and the pagination
+ * @csspart viewport - The scroll wrapper of the table (a focusable region while it scrolls)
  * @csspart table - The `<table>`
- * @csspart sort-button - The sort buttons of sortable headers
- * @csspart checkbox - The selection checkboxes
- * @csspart error - The error state
- * @csspart retry-button - The retry button
- * @csspart pagination - The `<minerva-pagination>`
+ * @csspart row - A `<tr>` (header and body rows; selected rows have aria-selected=true)
+ * @csspart header-cell - A `<th>` column header (sortable headers have aria-sort)
+ * @csspart cell - A `<td>` body cell
+ * @csspart sort-button - The sort button of a sortable header
+ * @csspart checkbox - A row / select-all selection checkbox
+ * @csspart empty - The cell of the empty state
+ * @csspart skeleton - A skeleton bar of the loading rows
+ * @csspart error - The error state (role=alert)
+ * @csspart retry-button - The retry button of the error state
+ * @csspart pagination - The `<minerva-pagination>` (its root and item parts are exported as pagination-root / pagination-item)
  * @fires minerva-sort-change - The user changed the sort (`detail: { key, order }`, order `null` = unsorted); cancelable: `preventDefault()` keeps the current sort
  * @fires minerva-selection-change - The user changed the selected rows (`detail: { selectedRowKeys, selectedRows }`); cancelable: `preventDefault()` keeps the current selection
  * @fires minerva-page-change - Re-dispatched from the pagination (`detail: { page, pageSize }`); cancelable
@@ -451,6 +456,7 @@ export class MinervaDataTable<
     const renderHeader = (col: TableColumn<T>) => {
       if (!col.sortable) {
         return html`<th
+          part="header-cell"
           scope="col"
           style=${styleMap(cellStyle(col))}
           data-ellipsis=${col.ellipsis ? "true" : nothing}
@@ -468,6 +474,7 @@ export class MinervaDataTable<
             ? IconChevronDown
             : IconChevronsUpDown;
       return html`<th
+        part="header-cell"
         scope="col"
         aria-sort=${order ? ARIA_SORT[order] : "none"}
         style=${styleMap(cellStyle(col))}
@@ -493,10 +500,11 @@ export class MinervaDataTable<
       body = Array.from(
         { length: this.loadingRows },
         () =>
-          html`<tr aria-hidden="true">
+          html`<tr part="row" aria-hidden="true">
             ${
               hasSelection
                 ? html`<td
+                    part="cell"
                     class="selectionCell"
                     style=${selectionStyle}
                     data-fixed=${selectionFixedAttr}
@@ -506,18 +514,19 @@ export class MinervaDataTable<
             ${columns.map(
               (col) =>
                 html`<td
+                  part="cell"
                   style=${styleMap(cellStyle(col))}
                   data-fixed=${col.fixed ?? nothing}
                   data-fixed-edge=${edge(col)}
                 >
-                  <span class="skeleton"></span>
+                  <span part="skeleton" class="skeleton"></span>
                 </td>`,
             )}
           </tr>`,
       );
     } else if (entries.length === 0) {
-      body = html`<tr>
-        <td colspan=${columnCount} class="empty">
+      body = html`<tr part="row">
+        <td part="empty" colspan=${columnCount} class="empty">
           <slot name="empty">${this.emptyText ?? t("table.empty")}</slot>
         </td>
       </tr>`;
@@ -528,12 +537,14 @@ export class MinervaDataTable<
         ({ row, index, key }, i) => {
           const selected = hasSelection && selectedSet.has(key);
           return html`<tr
+            part="row"
             aria-selected=${selected ? "true" : nothing}
             ?data-selected=${selected}
           >
             ${
               hasSelection
                 ? html`<td
+                    part="cell"
                     class="selectionCell"
                     style=${selectionStyle}
                     data-fixed=${selectionFixedAttr}
@@ -559,6 +570,7 @@ export class MinervaDataTable<
             ${columns.map(
               (col) =>
                 html`<td
+                  part="cell"
                   style=${styleMap(cellStyle(col))}
                   data-ellipsis=${col.ellipsis ? "true" : nothing}
                   data-fixed=${col.fixed ?? nothing}
@@ -583,7 +595,7 @@ export class MinervaDataTable<
     const scrollable = Boolean(scrollX || scrollY) || this.overflowing;
     const label = this.aria.label;
     return html`<div
-      part="wrapper"
+      part="viewport"
       class=${classMap({
         wrapper: true,
         wrapperBordered: this.variant === "bordered",
@@ -608,10 +620,11 @@ export class MinervaDataTable<
         aria-description=${this.aria.description ?? nothing}
       >
         <thead>
-          <tr>
+          <tr part="row">
             ${
               hasSelection
                 ? html`<th
+                    part="header-cell"
                     scope="col"
                     class="selectionCell"
                     style=${selectionStyle}
@@ -640,10 +653,14 @@ export class MinervaDataTable<
     </div>`;
   }
 
+  protected override hookStates() {
+    return { loading: this.loading, size: this.size, variant: this.variant };
+  }
+
   protected override render() {
     const showError = Boolean(this.error) && !this.loading;
     return html`<div
-      part="base"
+      part="root"
       class="dataTable"
       aria-busy=${this.loading ? "true" : nothing}
     >
@@ -675,7 +692,7 @@ export class MinervaDataTable<
               this.pagination
                 ? html`<minerva-pagination
                     part="pagination"
-                    exportparts="base: pagination-base, item: pagination-item"
+                    exportparts="root: pagination-root, item: pagination-item"
                     @minerva-page-change=${this.handlePageChange}
                   ></minerva-pagination>`
                 : nothing
@@ -693,7 +710,9 @@ export class MinervaDataTable<
  * @tag minerva-table-cell-content
  * @slot - Primary content (alternative to `primary`)
  * @slot secondary - Secondary line (alternative to `secondary`)
- * @csspart base - The wrapper
+ * @csspart root - The wrapper (bounded width)
+ * @csspart primary - The primary line (`<code>` when monospace)
+ * @csspart secondary - The muted secondary line
  */
 export class MinervaTableCellContent extends MinervaElement {
   static override tagName = "minerva-table-cell-content";
@@ -757,18 +776,18 @@ export class MinervaTableCellContent extends MinervaElement {
     });
     const primary = html`<slot>${this.primary}</slot>`;
     return html`<div
-      part="base"
+      part="root"
       class="cellContent"
       style=${styleMap({ maxWidth: toLength(this.maxWidth) })}
     >
       ${
         this.monospace
-          ? html`<code class=${classes}>${primary}</code>`
-          : html`<div class=${classes}>${primary}</div>`
+          ? html`<code part="primary" class=${classes}>${primary}</code>`
+          : html`<div part="primary" class=${classes}>${primary}</div>`
       }
       ${
         hasSecondary
-          ? html`<div class="cellSecondary">
+          ? html`<div part="secondary" class="cellSecondary">
               <slot name="secondary">${this.secondary}</slot>
             </div>`
           : nothing

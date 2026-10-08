@@ -4,6 +4,7 @@ import styles from "./empty.module.scss";
 import type { EmptyProps } from "./types";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
+import { hooks } from "../../internal/stylingHooks";
 
 /** Default icon; decorative, the description names the empty state */
 const DefaultIcon = () => (
@@ -117,30 +118,37 @@ const Empty = ({
       }
       aria-describedby={hasTitle && hasDescription ? descriptionId : undefined}
       {...rest}
+      {...hooks("empty", "root", { size })}
     >
       {!hideIcon && (
-        <div className={styles.iconWrapper}>
+        <div className={styles.iconWrapper} {...hooks("empty", "icon")}>
           {icon || (useSvg ? <DefaultSvg /> : <DefaultIcon />)}
         </div>
       )}
       {hasTitle && (
-        <div id={titleId} className={styles.title}>
+        <div id={titleId} className={styles.title} {...hooks("empty", "title")}>
           {title}
         </div>
       )}
       {hasDescription && (
-        <div id={descriptionId} className={styles.description}>
+        <div
+          id={descriptionId}
+          className={styles.description}
+          {...hooks("empty", "description")}
+        >
           {description}
         </div>
       )}
       {(isRenderable(action) || isRenderable(secondaryAction)) && (
-        <div className={styles.actions}>
+        <div className={styles.actions} {...hooks("empty", "actions")}>
           {action}
           {secondaryAction}
         </div>
       )}
       {isRenderable(children) && (
-        <div className={styles.footer}>{children}</div>
+        <div className={styles.footer} {...hooks("empty", "footer")}>
+          {children}
+        </div>
       )}
     </div>
   );

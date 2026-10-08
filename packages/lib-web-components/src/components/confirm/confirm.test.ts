@@ -16,7 +16,7 @@ import { resetDevWarnings } from "../../internal/dev";
 import { $, mount, settle, wait } from "../../../tests/utils";
 
 const panel = (el: MinervaConfirmDialog) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 const cancelButton = (el: MinervaConfirmDialog) =>
   $<MinervaButton>(el, "[part=cancel-button]");
 const confirmButton = (el: MinervaConfirmDialog) =>

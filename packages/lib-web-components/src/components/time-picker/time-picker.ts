@@ -26,6 +26,7 @@ import {
   formatHasSeconds,
   formatTime,
   resolveTimeFormat,
+  parsePlacement,
   parseTimeInput,
   parseTimeValue,
   secondsOfDay,
@@ -95,14 +96,14 @@ const units = (
  *
  * @summary Time field with a typable input and an hours / minutes / seconds panel.
  * @tag minerva-time-picker
- * @csspart base - The field wrapper (`.timePicker`)
- * @csspart control - The input box (`.root` of lib-core's Input)
+ * @csspart root - The field wrapper (anchor of the panel)
+ * @csspart control - The input box
  * @csspart input - The native `<input>`
  * @csspart clear-button - The clear button
  * @csspart icon - The clock icon (shown when there is no clear button)
- * @csspart panel - The popup panel (`role="dialog"`)
- * @csspart column - An hours / minutes / seconds / AM-PM column (`role="listbox"`)
- * @csspart item - A time unit (`role="option"`)
+ * @csspart content - The popup panel (`role=dialog`)
+ * @csspart column - An hours / minutes / seconds / AM-PM column (`role=listbox`)
+ * @csspart item - A time unit (`role=option`)
  * @fires minerva-change - The time was committed (picked, typed, normalized on blur or cleared), `detail: { value }` (`""` when cleared)
  * @fires minerva-input - The text of the input changed while typing, `detail: { value }` (the typed text)
  * @fires minerva-open-change - The user opened / closed the panel, `detail: { open }`; cancelable: `preventDefault()` keeps the current state
@@ -235,6 +236,7 @@ export class MinervaTimePicker extends FormAssociatedElement {
     onDismiss: () => this.requestOpenChange(false),
     returnFocusOnEscape: () => this.input,
     focusable: true,
+    onPosition: () => this.syncHookStates(),
   }));
 
   /** The user (or a script setting `value`) changed the value */
@@ -657,7 +659,7 @@ export class MinervaTimePicker extends FormAssociatedElement {
     const hasValue = current !== null;
     const columns = this.columns(current ?? startOfToday());
     return html`<div
-      part="panel"
+      part="content"
       class="popup"
       popover="manual"
       role="dialog"
@@ -717,6 +719,27 @@ export class MinervaTimePicker extends FormAssociatedElement {
     </div>`;
   }
 
+  protected override hookStates() {
+    const open = this.open && !this.isDisabled && !this.readOnly;
+    const placement =
+      open && this.floating.isOpen
+        ? this.floating.position.placement
+        : undefined;
+    const { side, align } = placement
+      ? parsePlacement(placement)
+      : { side: undefined, align: undefined };
+    return {
+      state: open ? "open" : "closed",
+      disabled: this.isDisabled,
+      readonly: this.readOnly,
+      invalid: this.invalid,
+      size: this.size,
+      side,
+      align,
+      placement,
+    };
+  }
+
   protected override render() {
     const { t } = this.locale;
     const disabled = this.isDisabled;
@@ -728,7 +751,7 @@ export class MinervaTimePicker extends FormAssociatedElement {
     const showClear =
       !this.hideClearButton && !!current && !disabled && !readonly;
 
-    return html`<div part="base" class="timePicker">
+    return html`<div part="root" class="timePicker">
         <div
           part="control"
           class=${classMap({

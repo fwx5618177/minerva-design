@@ -9,7 +9,7 @@ import { resetDevWarnings } from "../../internal/dev";
 import { mount, settle, wait } from "../../../tests/utils";
 
 const panel = (el: MinervaPopover) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 const byId = (id: string) => document.getElementById(id) as HTMLElement;
 
 const setup = (attrs = "") =>
@@ -56,9 +56,9 @@ describe("<minerva-popover>", () => {
     expect(dialog.classList).toContain("content");
     expect(dialog).toHaveAttribute("data-side", "bottom");
     expect(dialog.querySelector(".arrow")).toBeNull();
-    expect(
-      el.shadowRoot!.querySelector("[part=positioner]")!.classList,
-    ).toContain("positioner");
+    expect(el.shadowRoot!.querySelector(".positioner")!.classList).toContain(
+      "positioner",
+    );
   });
 
   it.each(["{Enter}", " "])(
@@ -220,7 +220,7 @@ describe("<minerva-popover>", () => {
     expect(stack).toHaveLength(1);
     const positioner = document
       .querySelector("minerva-popover")!
-      .shadowRoot!.querySelector("[part=positioner]");
+      .shadowRoot!.querySelector(".positioner");
     expect(stack[0].element).toBe(positioner);
   });
 

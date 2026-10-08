@@ -9,6 +9,7 @@ import {
 import type { DefinableElement } from "./define";
 import { emit, type EmitOptions, type MinervaEventName } from "./events";
 import { markServerRendered, scheduleHostSettle } from "./hydration";
+import { setCustomStates, type HookStates } from "./styling-hooks";
 
 /**
  * Base class of every Minerva element.
@@ -27,6 +28,10 @@ import { markServerRendered, scheduleHostSettle } from "./hydration";
  *   class calls `reconnectedCallback()`, which runs an update in which an
  *   open element sees `open` as changed: its open side effects run again,
  *   as if it had just been opened.
+ * - styling hooks: `hookStates()` returns the element's public state hooks,
+ *   applied as custom states of the host (`:state(open)`, see
+ *   `internal/styling-hooks.ts`) after every update; call
+ *   `syncHookStates()` when a state changes outside an update.
  * - hydration: an element that may be server-rendered markup (upgraded, or
  *   parsed while the document loads) defers the host attributes it writes
  *   itself (`setHostAttribute()` / `onHostSettled()` of
@@ -117,6 +122,22 @@ export class MinervaElement extends LitElement {
     } finally {
       updating.pop();
     }
+    this.syncHookStates();
+  }
+
+  /**
+   * Public state hooks of the element (`@minerva/core/styling-hooks`
+   * vocabulary: `{ state: "open", disabled: true, size: "small" }`), applied
+   * as custom states of the host. `undefined`: no state hooks.
+   */
+  protected hookStates(): HookStates | undefined {
+    return undefined;
+  }
+
+  /** Applies `hookStates()` now (states that change outside an update). */
+  protected syncHookStates(): void {
+    const states = this.hookStates();
+    if (states) setCustomStates(this, states);
   }
 
   override connectedCallback(): void {

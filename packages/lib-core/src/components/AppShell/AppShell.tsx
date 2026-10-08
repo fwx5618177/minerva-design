@@ -23,6 +23,7 @@ import type {
   AppShellProps,
 } from "./types";
 import styles from "./appShell.module.scss";
+import { hooks } from "../../internal/stylingHooks";
 import {
   DialogClose,
   DialogContent,
@@ -175,11 +176,15 @@ const AppShell = ({
         data-sidebar-mode={mode}
         data-sidebar-expanded={!collapsed || undefined}
         {...rest}
+        {...hooks("app-shell", "root", {
+          state: drawerOpen ? "open" : "closed",
+        })}
       >
         {skipLink !== false && (
           <a
             className={styles.skipLink}
             href={`#${mainId}`}
+            {...hooks("app-shell", "skip-link")}
             onClick={(event) => {
               // Focus main directly: no hash change (routers) and focus
               // really lands there (tabindex="-1")
@@ -195,6 +200,7 @@ const AppShell = ({
             id={sidebarId}
             className={styles.sidebar}
             aria-label={label}
+            {...hooks("app-shell", "sidebar")}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onFocusCapture={(event) => {
@@ -248,7 +254,7 @@ const AppShell = ({
           </aside>
         )}
         <div className={styles.workspace}>
-          <header className={styles.header}>
+          <header className={styles.header} {...hooks("app-shell", "header")}>
             {isMobile ? (
               <DialogTrigger asChild>
                 <IconButton
@@ -271,6 +277,7 @@ const AppShell = ({
             id={mainId}
             tabIndex={-1}
             className={styles.content}
+            {...hooks("app-shell", "main")}
           >
             {children}
           </main>
@@ -279,7 +286,9 @@ const AppShell = ({
       {isMobile && (
         <DialogContent
           overlayClassName={styles.overlay}
+          overlayAttributes={hooks("app-shell", "overlay")}
           className={styles.drawer}
+          {...hooks("app-shell", "content")}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
             headerToggle.current?.focus();
@@ -290,6 +299,7 @@ const AppShell = ({
           <DialogClose
             className={styles.drawerClose}
             aria-label={labels.closeNavigation}
+            {...hooks("app-shell", "close-button")}
           >
             <IconX aria-hidden="true" />
           </DialogClose>

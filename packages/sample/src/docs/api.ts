@@ -85,12 +85,15 @@ export const loadElementApis = (): Promise<void> =>
 export const getElementApi = (tag: string): ApiElement | undefined =>
   elements?.[`wc:${tag}`];
 
-/** Sections of an element API table, and their i18n key segment */
+/**
+ * Sections of an element API table, and their i18n key segment. The CSS
+ * parts are documented by the "Styling hooks" section (manifest of
+ * `@minerva/core/styling-hooks`).
+ */
 export const WC_SECTIONS = [
   "props",
   "events",
   "slots",
-  "parts",
   "cssVars",
   "methods",
 ] as const;
@@ -108,7 +111,6 @@ export const wcMembers = (
     props: api.properties,
     events: api.events,
     slots: api.slots,
-    parts: api.parts,
     cssVars: api.cssProperties,
     methods: api.methods,
   })[section];

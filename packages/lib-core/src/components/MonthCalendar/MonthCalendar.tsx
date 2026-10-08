@@ -16,6 +16,7 @@ import {
 } from "@minerva/core";
 import useI18n from "../../hooks/useI18n";
 import { logicalArrowKey } from "../../internal/direction";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./monthCalendar.module.scss";
 import type { MonthCalendarEvent, MonthCalendarProps } from "./types";
 
@@ -200,9 +201,15 @@ const MonthCalendar = ({
       ref={ref}
       className={cn(styles.monthCalendar, className)}
       aria-label={ariaLabel ?? t("monthCalendar.label")}
+      {...hooks("month-calendar", "root", { disabled })}
     >
       <div className={styles.toolbar}>
-        <h2 id={headingId} className={styles.heading} aria-live="polite">
+        <h2
+          id={headingId}
+          className={styles.heading}
+          aria-live="polite"
+          {...hooks("month-calendar", "heading")}
+        >
           {heading}
         </h2>
         <div className={styles.navigation}>
@@ -211,6 +218,7 @@ const MonthCalendar = ({
             className={cn(styles.navButton, styles.iconButton)}
             aria-label={previousMonthLabel ?? t("monthCalendar.previousMonth")}
             disabled={disabled}
+            {...hooks("month-calendar", "nav-button")}
             onClick={() => goToMonth(monthStart(month, -1))}
           >
             <IconChevronLeft aria-hidden focusable={false} />
@@ -219,6 +227,7 @@ const MonthCalendar = ({
             type="button"
             className={styles.navButton}
             disabled={disabled}
+            {...hooks("month-calendar", "nav-button")}
             onClick={() => goToMonth(new Date())}
           >
             <IconCalendar aria-hidden focusable={false} />
@@ -229,6 +238,7 @@ const MonthCalendar = ({
             className={cn(styles.navButton, styles.iconButton)}
             aria-label={nextMonthLabel ?? t("monthCalendar.nextMonth")}
             disabled={disabled}
+            {...hooks("month-calendar", "nav-button")}
             onClick={() => goToMonth(monthStart(month, 1))}
           >
             <IconChevronRight aria-hidden focusable={false} />
@@ -240,6 +250,7 @@ const MonthCalendar = ({
         aria-labelledby={headingId}
         aria-disabled={disabled || undefined}
         className={styles.grid}
+        {...hooks("month-calendar", "grid")}
       >
         <div role="row" className={styles.week}>
           {WEEKDAYS.map((day, index) => (
@@ -261,6 +272,7 @@ const MonthCalendar = ({
                   role="gridcell"
                   key={key}
                   className={styles.day}
+                  {...hooks("month-calendar", "day")}
                   ref={(element) => {
                     if (element) cells.current.set(key, element);
                     else cells.current.delete(key);
@@ -298,6 +310,7 @@ const MonthCalendar = ({
       {showSelectedDayEvents && value && (
         <section
           className={styles.events}
+          {...hooks("month-calendar", "events")}
           aria-label={
             getEventsLabel
               ? getEventsLabel(value)
@@ -313,19 +326,22 @@ const MonthCalendar = ({
                     <button
                       type="button"
                       className={styles.eventButton}
+                      {...hooks("month-calendar", "event")}
                       disabled={disabled}
                       onClick={() => onEventClick(event)}
                     >
                       {event.title}
                     </button>
                   ) : (
-                    <span>{event.title}</span>
+                    <span {...hooks("month-calendar", "event")}>
+                      {event.title}
+                    </span>
                   )}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className={styles.empty}>
+            <p className={styles.empty} {...hooks("month-calendar", "empty")}>
               {emptyEventsText ?? t("monthCalendar.noEvents")}
             </p>
           )}

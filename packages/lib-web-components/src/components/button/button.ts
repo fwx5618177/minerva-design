@@ -32,9 +32,11 @@ const radiusClass = (value: string) =>
  * @slot start - Icon before the label
  * @slot end - Icon after the label
  * @slot loading - Text shown instead of the label while `loading`
- * @csspart button - The native `<button>`
+ * @csspart root - The native `<button>`
  * @csspart label - The label wrapper
- * @csspart spinner - The loading spinner
+ * @csspart start-icon - The icon before the label
+ * @csspart end-icon - The icon after the label
+ * @csspart spinner - The loading spinner (while loading)
  */
 export class MinervaButton extends MinervaElement {
   static override tagName = "minerva-button";
@@ -156,6 +158,18 @@ export class MinervaButton extends MinervaElement {
     this.removeEventListener("click", this.blockInactiveClicks, true);
   }
 
+  protected override hookStates() {
+    return {
+      state: this.active ? "active" : "inactive",
+      disabled: this.disabled,
+      loading: this.loading,
+      size: this.size,
+      variant: this.variant,
+      color: this.color,
+      shape: this.shape,
+    };
+  }
+
   protected override updated(): void {
     if (DEV && this.shape === "circle" && !this.aria.label) {
       const text = this.textContent?.trim();
@@ -182,7 +196,7 @@ export class MinervaButton extends MinervaElement {
     ></span>`;
 
     return html`<button
-      part="button"
+      part="root"
       type="button"
       class=${classMap({
         customButton: true,
@@ -216,7 +230,9 @@ export class MinervaButton extends MinervaElement {
           : html`${this.loading ? spinner : nothing}
               ${
                 this.slots.test("start")
-                  ? html`<span class=${classMap({ icon: true, hidden })}
+                  ? html`<span
+                      class=${classMap({ icon: true, hidden })}
+                      part="start-icon"
                       ><slot name="start"></slot
                     ></span>`
                   : nothing
@@ -226,7 +242,9 @@ export class MinervaButton extends MinervaElement {
               ></span>
               ${
                 this.slots.test("end")
-                  ? html`<span class=${classMap({ icon: true, hidden })}
+                  ? html`<span
+                      class=${classMap({ icon: true, hidden })}
+                      part="end-icon"
                       ><slot name="end"></slot
                     ></span>`
                   : nothing

@@ -29,7 +29,7 @@ export type TextareaSize = "small" | "medium" | "large";
  *
  * @summary Multi-line text field.
  * @tag minerva-textarea
- * @csspart textarea - The native `<textarea>`
+ * @csspart root - The native `<textarea>`
  * @fires input - The value changed (each keystroke; native, composed)
  * @fires change - The value was committed (blur), re-dispatched from the inner textarea
  * @fires minerva-input - Same as `input`, with `detail: { value }`
@@ -195,10 +195,21 @@ export class MinervaTextarea extends FormAssociatedElement {
     this.emit("minerva-change", { value: this.value });
   }
 
+  protected override hookStates() {
+    return {
+      disabled: this.isDisabled,
+      invalid: this.invalid || this.aria.attr("aria-invalid") === "true",
+      readonly: this.readOnly,
+      required: this.required,
+      size: this.size,
+      variant: this.variant,
+    };
+  }
+
   protected override render() {
     const invalid = this.invalid || this.aria.attr("aria-invalid") === "true";
     return html`<textarea
-      part="textarea"
+      part="root"
       class=${classMap({
         textarea: true,
         [this.variant]: true,

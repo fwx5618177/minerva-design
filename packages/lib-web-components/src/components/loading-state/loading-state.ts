@@ -22,8 +22,8 @@ const SIZES: readonly string[] = ["small", "medium", "large"];
  * @summary Loading placeholder for a page, route or section.
  * @tag minerva-loading-state
  * @slot - Label (alternative to the `label` attribute)
- * @csspart base - The status region
- * @csspart indicator - The spinner (`<minerva-progress>`)
+ * @csspart root - The status region
+ * @csspart spinner - The decorative spinner (wraps a ProgressIndicator in React; the <minerva-progress> element in the web components)
  * @csspart label - The label
  */
 export class MinervaLoadingState extends MinervaElement {
@@ -49,6 +49,10 @@ export class MinervaLoadingState extends MinervaElement {
 
   private readonly locale = new LocaleController(this);
 
+  protected override hookStates() {
+    return { size: this.size };
+  }
+
   protected override updated(): void {
     if (DEV && !SIZES.includes(this.size)) {
       devWarn(
@@ -60,14 +64,14 @@ export class MinervaLoadingState extends MinervaElement {
 
   protected override render() {
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({ loadingState: true, [this.size]: true })}
       role="status"
       aria-live="polite"
       aria-atomic="true"
     >
       <minerva-progress
-        part="indicator"
+        part="spinner"
         class="indicator"
         color="current"
         decorative

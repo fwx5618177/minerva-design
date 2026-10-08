@@ -78,9 +78,8 @@ export function adjacentTabbable(
  * @tag minerva-popover
  * @slot - Panel content
  * @slot trigger - Element that toggles the popover when clicked
- * @csspart positioner - The positioned wrapper (top layer)
- * @csspart panel - The dialog panel
- * @csspart arrow - The arrow wrapper
+ * @csspart content - The positioned panel (`role="dialog"`)
+ * @csspart arrow - The arrow pointing at the anchor (with `arrow`)
  * @fires minerva-open-change - The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state
  * @fires minerva-after-open - The popover is open
  * @fires minerva-after-close - The popover finished closing (after its exit animation)
@@ -150,10 +149,10 @@ export class MinervaPopover extends MinervaElement {
   @property()
   anchor = "";
 
-  @query("[part=positioner]")
+  @query(".positioner")
   private positioner?: HTMLElement;
 
-  @query("[part=panel]")
+  @query(".content")
   private panel?: HTMLElement;
 
   @query("[part=arrow]")
@@ -366,6 +365,17 @@ export class MinervaPopover extends MinervaElement {
     this.wasPresent = present;
   }
 
+  protected override hookStates() {
+    const placement = this.position.placement;
+    const { side, align } = parsePlacement(placement);
+    return {
+      state: this.open ? "open" : "closed",
+      side,
+      align,
+      placement,
+    };
+  }
+
   protected override render() {
     const present = this.open || this.presence.present;
     if (!present) return html`<slot name="trigger"></slot>`;
@@ -375,14 +385,13 @@ export class MinervaPopover extends MinervaElement {
     const dir = this.isConnected ? getDirection(this) : "ltr";
     return html`<slot name="trigger"></slot>
       <div
-        part="positioner"
         class="positioner"
         popover="manual"
         data-side=${side}
         data-align=${align}
       >
         <div
-          part="panel"
+          part="content"
           class="content"
           role="dialog"
           aria-modal=${this.modal ? "true" : nothing}

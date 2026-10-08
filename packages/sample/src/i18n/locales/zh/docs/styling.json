@@ -1,0 +1,65 @@
+{
+  "title": "样式定制",
+  "description": "用你自己的 CSS 重新设计任意 Minerva 组件：设计令牌与 CSS 变量、公开的 data-minerva / data-part / 状态钩子、Web Components 的 ::part() 与 :state()，以及 minerva 级联层。",
+  "overview": {
+    "title": "三层公开的定制方式",
+    "text": "Minerva 提供三种稳定的组件定制方式，从轻到重依次使用。它们都是公开 API：在 minor 版本之间保持可用，而内部类名和 DOM 结构则不保证。",
+    "variables": "设计令牌和组件 CSS 变量：颜色、圆角、间距、控件高度……设置在 :root、主题作用域或任意元素上。",
+    "hooks": "样式钩子：React 中的 data-minerva（组件）、data-part（部件）与状态属性（data-state、data-disabled、data-size……）；Web Components 中的标签名、::part() 与 :state()。两个库使用相同的名字。",
+    "layer": "minerva 级联层：库的所有样式表都位于 @layer minerva 中，你未分层的 CSS 无需 !important 即可覆盖。"
+  },
+  "variables": {
+    "title": "CSS 变量",
+    "text": "优先使用变量：它们会随主题变化，并让组件自身的状态（悬停、聚焦、禁用）保持一致。每个组件页列出了它的 --<组件>-* 变量，令牌说明见「主题」。变量可以与下方的钩子组合：只为某个变体、尺寸或状态设置变量，而不必重写声明。"
+  },
+  "hooks": {
+    "title": "样式钩子（React）",
+    "text": "每个 React 组件都会在可样式化的元素上渲染 data-minerva=\"<组件>\" 与 data-part=\"<部件>\"，并以统一词汇的属性表示状态。组件的根元素为 data-part=\"root\"；通过 portal 渲染的浮层部件（弹出层、对话框、通知）同样带有 data-minerva，因此无论渲染在哪里都能匹配。服务端渲染的值与客户端完全一致（不会产生水合不匹配）。",
+    "selector": "推荐写法：复合选择器 [data-minerva=\"x\"][data-part=\"y\"]（优先级 0,2,0），再加上状态属性。它不受嵌套影响（Modal 中的 Button 是它自己的组件），也不受 portal 影响。避免使用内部类名组成的后代选择器：它们属于内部实现，会在版本之间变化。如需限定范围，可加上你自己的容器类名前缀，或给组件传入 className（它会落在根元素或该属性所说明的部件上）。"
+  },
+  "vocabulary": {
+    "title": "状态词汇",
+    "text": "所有组件使用相同的状态名称。在 React 中，它们是根元素（以及携带状态的部件，如浮层内容）上的 data-* 属性；在 Web Components 中，它们是宿主元素的自定义状态。",
+    "parts": "部件同样遵循统一词汇：root、label、description、icon、start-icon、end-icon、spinner、trigger、content、overlay、header、body、footer、title、close-button、list、item、item-indicator、group、separator、input、control、thumb、track、indicator……每个组件页的「样式钩子」一节列出了它在 React 与 Web Components 中的部件、选择器和状态。"
+  },
+  "wc": {
+    "title": "Web Components：::part() 与 :state()",
+    "text": "自定义元素暴露相同的名字：标签即组件，::part(<名称>) 选中 shadow root 中的部件，状态是宿主的自定义状态（ElementInternals.states），用 :state() 选择。它们不会给宿主添加属性，因此服务端渲染的标记可以无冲突地水合。::part() 与宿主上的规则总是优先于元素内部的 shadow 样式。",
+    "support": ":state() 需要 Chrome 125、Firefox 126 或 Safari 17.4。Chromium 90-124 使用旧的带横线语法（:--open）；其他引擎没有状态钩子：请改用宿主属性（[open]、[disabled]、[variant=\"ghost\"]）。部件在所有浏览器中都可用。"
+  },
+  "layers": {
+    "title": "级联层：@layer minerva",
+    "text": "@minerva/core/tokens.css、@minerva/lib-core/style.css、styles/*.css 和 @minerva/lib-web-components/tokens.css 都包裹在 @layer minerva 中。未分层的 CSS 无论优先级或先后顺序都会胜过任何层，因此你的规则无需 !important 即可覆盖库样式。如果你的应用使用了级联层，请在所有样式表之前声明一次层顺序。",
+    "resets": "注意：未分层的全局重置样式（button { background: none }、normalize.css……）现在同样会覆盖 Minerva 的样式。请像上面那样把它们导入到排在 minerva 之前的层中（layer(reset)）。"
+  },
+  "stability": {
+    "title": "稳定性策略",
+    "text": "钩子接口是机器可读的：@minerva/core/styling-hooks 导出清单（组件 → 部件 → 状态及其取值），文档即由它生成。契约测试会在各种状态下渲染每个 React 组件和每个自定义元素，只要缺少已文档化的钩子或出现未文档化的部件就会失败；锁定文件（styling-hooks.lock.json）会让任何接口变更导致构建失败，直到有意更新它。",
+    "minor": "minor 版本：新增组件、部件、状态或状态取值。",
+    "major": "major 版本：删除或重命名其中任何一项，或把状态移到另一个部件上。",
+    "private": "不在保证范围内：类名、没有钩子的元素的 DOM 结构，以及用 !important 覆盖内部样式。"
+  },
+  "next": {
+    "title": "下一步",
+    "theming": "主题、配色与设计令牌。",
+    "wcTheming": "Web Components 的令牌、主题与语言。"
+  },
+  "demos": {
+    "restyle-button": {
+      "title": "重新设计 Button",
+      "description": "通过 --button-* 变量实现胶囊形按钮，加粗 outline 变体的边框、标签大写，并在加载时为加载指示器着色：第一行是 React（data-* 钩子），第二行是 <minerva-button>（::part() / :state()）。"
+    },
+    "restyle-modal": {
+      "title": "重新设计 Modal",
+      "description": "模糊的遮罩层、带边框的面板，以及打开时着色的标题。React 面板通过 portal 渲染到 <body>，复合选择器 [data-minerva][data-part] 依然能匹配。"
+    },
+    "restyle-tabs": {
+      "title": "重新设计 Tabs",
+      "description": "通过标签页组件的状态钩子实现下划线样式、着色的当前标签和淡化的禁用标签。"
+    },
+    "restyle-table": {
+      "title": "重新设计 Table",
+      "description": "通过数据表格的部件实现大写表头单元格和悬停行高亮，React 中另有斑马纹行（::part() 只接受 :hover 等用户操作伪类，不接受 :nth-child）。"
+    }
+  }
+}

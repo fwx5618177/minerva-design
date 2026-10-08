@@ -174,20 +174,24 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The alert root"
+        "name": "root",
+        "description": "The alert (role=alert for danger / warning, status otherwise); state open / closed only while collapsible"
       },
       {
         "name": "icon",
-        "description": "The icon wrapper"
+        "description": "The icon (role=img)"
       },
       {
-        "name": "heading",
-        "description": "The title"
+        "name": "title",
+        "description": "The title (holds the collapse button)"
       },
       {
-        "name": "message",
-        "description": "The message wrapper"
+        "name": "trigger",
+        "description": "The expand / collapse button of a collapsible alert"
+      },
+      {
+        "name": "description",
+        "description": "The message"
       },
       {
         "name": "action",
@@ -196,10 +200,6 @@
       {
         "name": "close-button",
         "description": "The close button"
-      },
-      {
-        "name": "toggle",
-        "description": "The expand / collapse button"
       }
     ],
     "cssProperties": [
@@ -390,16 +390,16 @@
     ],
     "parts": [
       {
-        "name": "shell",
-        "description": "The shell root"
+        "name": "root",
+        "description": "The shell (`state`: whether the mobile navigation drawer is open)"
       },
       {
         "name": "skip-link",
-        "description": "The skip link"
+        "description": "The skip to content link"
       },
       {
         "name": "sidebar",
-        "description": "The desktop sidebar (`aside`)"
+        "description": "The desktop sidebar (<aside>)"
       },
       {
         "name": "header",
@@ -407,15 +407,19 @@
       },
       {
         "name": "main",
-        "description": "The `main` element"
+        "description": "The <main> landmark"
       },
       {
         "name": "overlay",
-        "description": "The drawer backdrop"
+        "description": "The backdrop of the mobile drawer"
       },
       {
-        "name": "drawer",
-        "description": "The mobile drawer (`role=\"dialog\"`)"
+        "name": "content",
+        "description": "The mobile navigation drawer (role=dialog)"
+      },
+      {
+        "name": "close-button",
+        "description": "The close button of the mobile drawer"
       }
     ],
     "cssProperties": [
@@ -764,8 +768,8 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root wrapper"
+        "name": "root",
+        "description": "The root wrapper (label, field and anchor of the dropdown)"
       },
       {
         "name": "label",
@@ -773,22 +777,22 @@
       },
       {
         "name": "field",
-        "description": "The input wrapper"
+        "description": "The input box"
       },
       {
         "name": "input",
-        "description": "The native `<input>`"
+        "description": "The native `<input role=combobox>`"
       },
       {
-        "name": "popup",
+        "name": "content",
         "description": "The positioned dropdown"
       },
       {
-        "name": "listbox",
-        "description": "The `role=\"listbox\"` list"
+        "name": "list",
+        "description": "The `role=listbox` list"
       },
       {
-        "name": "option",
+        "name": "item",
         "description": "An option"
       },
       {
@@ -797,11 +801,11 @@
       },
       {
         "name": "empty",
-        "description": "The empty state"
+        "description": "The empty state (no matching option)"
       },
       {
         "name": "loading",
-        "description": "The loading state"
+        "description": "The loading state (while loading)"
       }
     ],
     "cssProperties": [
@@ -929,16 +933,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The avatar root"
+        "name": "root",
+        "description": "The avatar box (role=img while the fallback is shown); no size state for a size in pixels"
       },
       {
         "name": "image",
-        "description": "The `<img>`"
+        "description": "The <img>"
       },
       {
-        "name": "text",
-        "description": "The initials / fallback wrapper"
+        "name": "fallback",
+        "description": "The initials / fallback content wrapper (no image)"
       }
     ],
     "cssProperties": [
@@ -1010,8 +1014,8 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The group root (`role=\"group\"`)"
+        "name": "root",
+        "description": "The group (role=group)"
       },
       {
         "name": "item",
@@ -1019,7 +1023,7 @@
       },
       {
         "name": "count",
-        "description": "The \"+N\" indicator"
+        "description": "The \"+N\" indicator of the hidden avatars"
       }
     ],
     "cssProperties": [
@@ -1147,16 +1151,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root (the badge, or the wrapper when attached)"
+        "name": "root",
+        "description": "The outermost element: the badge itself when standalone, the wrapper of the children when attached"
       },
       {
         "name": "badge",
-        "description": "The badge itself"
+        "description": "The badge attached to a corner of the children (a standalone badge is the root)"
       },
       {
         "name": "icon",
-        "description": "The icon wrapper"
+        "description": "The icon before the content"
       }
     ],
     "cssProperties": [
@@ -1474,7 +1478,7 @@
     ],
     "parts": [
       {
-        "name": "button",
+        "name": "root",
         "description": "The native `<button>`"
       },
       {
@@ -1482,8 +1486,16 @@
         "description": "The label wrapper"
       },
       {
+        "name": "start-icon",
+        "description": "The icon before the label"
+      },
+      {
+        "name": "end-icon",
+        "description": "The icon after the label"
+      },
+      {
         "name": "spinner",
-        "description": "The loading spinner"
+        "description": "The loading spinner (while loading)"
       }
     ],
     "cssProperties": [
@@ -1605,8 +1617,8 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The card root (`div`, `article`, `section`, `a` or `button`)"
+        "name": "root",
+        "description": "The card root (div, article, section, a or button)"
       }
     ],
     "cssProperties": [
@@ -1674,7 +1686,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The section box"
       }
     ],
@@ -1730,7 +1742,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The paragraph"
       }
     ],
@@ -1793,7 +1805,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The section box"
       }
     ],
@@ -1856,7 +1868,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The section box"
       }
     ],
@@ -1920,7 +1932,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The heading element"
       }
     ],
@@ -2210,35 +2222,35 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The root wrapper (`.cascader`)"
+        "name": "root",
+        "description": "The root wrapper (anchor of the dropdown)"
       },
       {
-        "name": "selector",
-        "description": "The field (`.selector`)"
+        "name": "control",
+        "description": "The field box (input, clear button, chevron)"
       },
       {
         "name": "input",
-        "description": "The native `<input role=\"combobox\">`"
+        "description": "The native `<input role=combobox>`"
       },
       {
         "name": "clear-button",
-        "description": "The clear button"
+        "description": "The clear button (while there is a value)"
       },
       {
-        "name": "arrow",
+        "name": "icon",
         "description": "The chevron"
       },
       {
-        "name": "dropdown",
-        "description": "The popup panel"
+        "name": "content",
+        "description": "The positioned dropdown"
       },
       {
         "name": "column",
-        "description": "A column of options (`role=\"listbox\"`)"
+        "description": "A column of options (`role=listbox`)"
       },
       {
-        "name": "option",
+        "name": "item",
         "description": "An option (column option or search result)"
       }
     ],
@@ -2488,20 +2500,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The wrapper"
-      },
-      {
-        "name": "control",
-        "description": "The `<label>` wrapping the box and the label"
+        "name": "root",
+        "description": "The wrapper (the clickable row and the helper text)"
       },
       {
         "name": "input",
         "description": "The native `<input type=\"checkbox\">`"
       },
       {
-        "name": "checkmark",
-        "description": "The visual box"
+        "name": "control",
+        "description": "The visual box (draws the checkmark)"
       },
       {
         "name": "label",
@@ -2610,12 +2618,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The outer wrapper (copyable / labelled blocks)"
+        "name": "root",
+        "description": "The positioned outer wrapper of the region and its actions (only when copyable, or with a language label)"
       },
       {
         "name": "region",
-        "description": "The `<pre>` region"
+        "description": "The `<pre>` scroll region (role=region): the visible box of the code"
       },
       {
         "name": "code",
@@ -2627,7 +2635,7 @@
       },
       {
         "name": "copy-button",
-        "description": "The copy button"
+        "description": "The copy button (while copyable)"
       }
     ],
     "cssProperties": [
@@ -2914,7 +2922,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `role=\"group\"` root"
       },
       {
@@ -2926,12 +2934,20 @@
         "description": "The editor surface (sized by `height`)"
       },
       {
+        "name": "loading",
+        "description": "The loading indicator (while the editor loads)"
+      },
+      {
+        "name": "error",
+        "description": "The unavailable message and retry action (when the editor failed)"
+      },
+      {
         "name": "fallback",
-        "description": "The fallback `<textarea>`"
+        "description": "The fallback `<textarea>` (when the editor failed)"
       },
       {
         "name": "retry-button",
-        "description": "The Retry `<minerva-button>`"
+        "description": "The retry `<minerva-button>`"
       }
     ],
     "cssProperties": [
@@ -3075,27 +3091,27 @@
         "description": "The backdrop"
       },
       {
-        "name": "panel",
+        "name": "content",
         "description": "The dialog panel (`role=\"dialog\"`)"
       },
       {
         "name": "header",
-        "description": "The title row"
+        "description": "The title row (accessible name of the dialog)"
       },
       {
         "name": "description",
-        "description": "The description"
+        "description": "The description below the title"
       },
       {
         "name": "search",
-        "description": "The search field wrapper"
+        "description": "The search field (icon, input and Enter hint)"
       },
       {
         "name": "input",
         "description": "The search input (`role=\"combobox\"`)"
       },
       {
-        "name": "listbox",
+        "name": "list",
         "description": "The results list (`role=\"listbox\"`)"
       },
       {
@@ -3104,7 +3120,7 @@
       },
       {
         "name": "empty",
-        "description": "The empty state"
+        "description": "The text shown when no command matches"
       }
     ],
     "cssProperties": [
@@ -3370,32 +3386,32 @@
         "description": "The backdrop"
       },
       {
-        "name": "panel",
+        "name": "content",
         "description": "The dialog panel (`role=\"alertdialog\"`)"
       },
       {
         "name": "header",
-        "description": "The title wrapper"
+        "description": "The title (accessible name of the dialog)"
       },
       {
         "name": "description",
-        "description": "The description"
+        "description": "The description below the title"
       },
       {
         "name": "body",
-        "description": "The body wrapper"
+        "description": "The optional extra content"
       },
       {
         "name": "footer",
-        "description": "The actions row"
+        "description": "The actions row (Cancel and Confirm buttons)"
       },
       {
         "name": "cancel-button",
-        "description": "The Cancel `<minerva-button>`"
+        "description": "The Cancel `<minerva-button>` (web components only: in React it is a Button with its own hooks)"
       },
       {
         "name": "confirm-button",
-        "description": "The Confirm `<minerva-button>`"
+        "description": "The Confirm `<minerva-button>` (web components only: in React it is a Button with its own hooks)"
       },
       {
         "name": "close-button",
@@ -3583,20 +3599,36 @@
     ],
     "parts": [
       {
-        "name": "menu",
-        "description": "A menu panel (root menu and submenus)"
+        "name": "content",
+        "description": "A menu panel (`role=\"menu\"`: the root menu and its submenus)"
       },
       {
         "name": "item",
-        "description": "A menu item"
+        "description": "An item (`role=\"menuitem\"`, `menuitemcheckbox` or `menuitemradio`)"
+      },
+      {
+        "name": "item-indicator",
+        "description": "The check mark / radio dot of a checkbox or radio item"
       },
       {
         "name": "icon",
         "description": "The icon of an item"
       },
       {
+        "name": "item-label",
+        "description": "The label of an item"
+      },
+      {
+        "name": "shortcut",
+        "description": "The keyboard shortcut hint of an item"
+      },
+      {
+        "name": "group",
+        "description": "A group of entries (`role=\"group\"`, also radio groups)"
+      },
+      {
         "name": "label",
-        "description": "A group / section label"
+        "description": "A group heading or section label"
       },
       {
         "name": "separator",
@@ -3775,36 +3807,56 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The outer wrapper"
+        "name": "root",
+        "description": "The outer wrapper of the table, the error state and the pagination"
       },
       {
-        "name": "wrapper",
-        "description": "The scroll wrapper"
+        "name": "viewport",
+        "description": "The scroll wrapper of the table (a focusable region while it scrolls)"
       },
       {
         "name": "table",
         "description": "The `<table>`"
       },
       {
+        "name": "row",
+        "description": "A `<tr>` (header and body rows; selected rows have aria-selected=true)"
+      },
+      {
+        "name": "header-cell",
+        "description": "A `<th>` column header (sortable headers have aria-sort)"
+      },
+      {
+        "name": "cell",
+        "description": "A `<td>` body cell"
+      },
+      {
         "name": "sort-button",
-        "description": "The sort buttons of sortable headers"
+        "description": "The sort button of a sortable header"
       },
       {
         "name": "checkbox",
-        "description": "The selection checkboxes"
+        "description": "A row / select-all selection checkbox"
+      },
+      {
+        "name": "empty",
+        "description": "The cell of the empty state"
+      },
+      {
+        "name": "skeleton",
+        "description": "A skeleton bar of the loading rows"
       },
       {
         "name": "error",
-        "description": "The error state"
+        "description": "The error state (role=alert)"
       },
       {
         "name": "retry-button",
-        "description": "The retry button"
+        "description": "The retry button of the error state"
       },
       {
         "name": "pagination",
-        "description": "The `<minerva-pagination>`"
+        "description": "The `<minerva-pagination>` (its root and item parts are exported as pagination-root / pagination-item)"
       }
     ],
     "cssProperties": [
@@ -3953,12 +4005,12 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<dl>`"
       },
       {
         "name": "row",
-        "description": "Each row"
+        "description": "Each row (one term / description pair)"
       },
       {
         "name": "term",
@@ -4065,12 +4117,12 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The `<hr>` / `role=\"separator\"` element"
+        "name": "root",
+        "description": "The <hr>, or the role=separator element of a divider with text (align: position of the text)"
       },
       {
-        "name": "text",
-        "description": "The text wrapper"
+        "name": "label",
+        "description": "The text between the two halves of the line"
       }
     ],
     "cssProperties": [
@@ -4222,24 +4274,24 @@
         "description": "The backdrop"
       },
       {
-        "name": "panel",
+        "name": "content",
         "description": "The dialog panel (`role=\"dialog\"`)"
       },
       {
         "name": "header",
-        "description": "The title wrapper"
+        "description": "The title (accessible name of the dialog)"
       },
       {
         "name": "description",
-        "description": "The description"
+        "description": "The description below the title (visually hidden when no description is given)"
       },
       {
         "name": "body",
-        "description": "The body wrapper"
+        "description": "The scrollable body"
       },
       {
         "name": "footer",
-        "description": "The footer wrapper"
+        "description": "The actions row"
       },
       {
         "name": "close-button",
@@ -4374,16 +4426,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root region"
+        "name": "root",
+        "description": "The region (role=status); size only for the unframed sized layout"
       },
       {
         "name": "icon",
         "description": "The icon wrapper"
       },
       {
-        "name": "heading",
-        "description": "The heading"
+        "name": "title",
+        "description": "The title (accessible name of the region)"
       },
       {
         "name": "description",
@@ -4395,7 +4447,7 @@
       },
       {
         "name": "footer",
-        "description": "The footer"
+        "description": "The footer content"
       }
     ],
     "cssProperties": [
@@ -4521,24 +4573,24 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The field container"
       },
       {
         "name": "label",
-        "description": "The `<label>`"
+        "description": "The <label>"
       },
       {
         "name": "required-indicator",
-        "description": "The required marker"
+        "description": "The required marker of the label"
       },
       {
         "name": "helper-text",
-        "description": "The helper text"
+        "description": "The helper text (hidden while invalid)"
       },
       {
         "name": "error-message",
-        "description": "The error message (role=\"alert\")"
+        "description": "The error message (role=\"alert\", while invalid)"
       }
     ],
     "cssProperties": [
@@ -4608,12 +4660,12 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The form layout box (lib-core's form root; also the grid's query container)"
+        "name": "root",
+        "description": "The form layout box (React: the native <form>; web components: the grid's query container, inside your own <form>)"
       },
       {
         "name": "layout",
-        "description": "The grid"
+        "description": "The grid. Web components only: React renders a nested ResponsiveGrid (style its `responsive-grid` hooks)"
       }
     ],
     "cssProperties": [
@@ -4737,7 +4789,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The flex container"
       }
     ],
@@ -4796,12 +4848,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The scrolling container"
       },
       {
         "name": "frame",
-        "description": "The `<iframe>`"
+        "description": "The sandboxed `<iframe>`"
       }
     ],
     "cssProperties": [
@@ -4950,20 +5002,20 @@
     ],
     "parts": [
       {
-        "name": "button",
-        "description": "The native `<button>`"
+        "name": "root",
+        "description": "The native <button>; state active while a toggle button is pressed, inactive otherwise"
       },
       {
-        "name": "glyph",
-        "description": "The icon wrapper"
+        "name": "icon",
+        "description": "The icon wrapper (hidden from assistive technologies)"
       },
       {
         "name": "spinner",
-        "description": "The loading indicator"
+        "description": "The loading indicator (while loading)"
       },
       {
         "name": "tooltip",
-        "description": "The tooltip (`role=\"tooltip\"`)"
+        "description": "The tooltip (role=tooltip). Web components only: React wraps the button in a <Tooltip> component, which has its own hooks"
       }
     ],
     "cssProperties": [
@@ -5305,20 +5357,28 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The field wrapper"
+        "name": "root",
+        "description": "The field box (wraps the input and its addons)"
       },
       {
         "name": "input",
         "description": "The native `<input>`"
       },
       {
+        "name": "prefix",
+        "description": "The content before the text"
+      },
+      {
+        "name": "suffix",
+        "description": "The content after the text"
+      },
+      {
         "name": "clear-button",
-        "description": "The clear button"
+        "description": "The clear button (while there is a value)"
       },
       {
         "name": "password-toggle",
-        "description": "The password visibility toggle"
+        "description": "The password visibility toggle (type=password)"
       },
       {
         "name": "count",
@@ -5557,20 +5617,24 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The wrapper"
       },
       {
-        "name": "format-button",
-        "description": "The format button"
+        "name": "toolbar",
+        "description": "The toolbar above the text (format button)"
       },
       {
-        "name": "textarea",
-        "description": "The native `<textarea>`"
+        "name": "format-button",
+        "description": "The format button (web components only: React renders an IconButton, styled with its own hooks)"
+      },
+      {
+        "name": "input",
+        "description": "The native <textarea> (web components only: React renders a Textarea, styled with its own hooks)"
       },
       {
         "name": "status",
-        "description": "The validation status line"
+        "description": "The validation status line (role=status)"
       }
     ],
     "cssProperties": [
@@ -5810,20 +5874,20 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The container"
       },
       {
         "name": "row",
-        "description": "Each row"
+        "description": "Each row (key field, value field and remove button)"
       },
       {
         "name": "remove-button",
-        "description": "The remove button of a row"
+        "description": "The remove button of a row (web components only: React renders an IconButton, styled with its own hooks)"
       },
       {
         "name": "add-button",
-        "description": "The add button"
+        "description": "The add button (web components only: React renders a Button, styled with its own hooks)"
       }
     ],
     "cssProperties": [
@@ -5901,8 +5965,8 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The list wrapper"
+        "name": "root",
+        "description": "The list (React: the <ul>; web components: its wrapper)"
       }
     ],
     "cssProperties": [
@@ -5976,24 +6040,24 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The row"
       },
       {
         "name": "icon",
-        "description": "The icon wrapper"
+        "description": "The decorative leading icon wrapper"
       },
       {
-        "name": "primary",
+        "name": "label",
         "description": "The primary text"
       },
       {
-        "name": "secondary",
+        "name": "description",
         "description": "The secondary text"
       },
       {
         "name": "actions",
-        "description": "The actions wrapper"
+        "description": "The trailing actions wrapper"
       }
     ],
     "cssProperties": [
@@ -6054,12 +6118,12 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The status region"
       },
       {
-        "name": "indicator",
-        "description": "The spinner (`<minerva-progress>`)"
+        "name": "spinner",
+        "description": "The decorative spinner (wraps a ProgressIndicator in React; the <minerva-progress> element in the web components)"
       },
       {
         "name": "label",
@@ -6228,20 +6292,36 @@
     ],
     "parts": [
       {
-        "name": "menu",
-        "description": "A menu panel (root menu and submenus)"
+        "name": "content",
+        "description": "A menu panel (`role=\"menu\"`: the root menu and its submenus)"
       },
       {
         "name": "item",
-        "description": "A menu item"
+        "description": "An item (`role=\"menuitem\"`, `menuitemcheckbox` or `menuitemradio`)"
+      },
+      {
+        "name": "item-indicator",
+        "description": "The check mark / radio dot of a checkbox or radio item"
       },
       {
         "name": "icon",
         "description": "The icon of an item"
       },
       {
+        "name": "item-label",
+        "description": "The label of an item"
+      },
+      {
+        "name": "shortcut",
+        "description": "The keyboard shortcut hint of an item"
+      },
+      {
+        "name": "group",
+        "description": "A group of entries (`role=\"group\"`, also radio groups)"
+      },
+      {
         "name": "label",
-        "description": "A group / section label"
+        "description": "A group heading or section label"
       },
       {
         "name": "separator",
@@ -6600,12 +6680,12 @@
         "description": "The backdrop"
       },
       {
-        "name": "panel",
+        "name": "content",
         "description": "The dialog panel (`role=\"dialog\"`)"
       },
       {
         "name": "header",
-        "description": "The title wrapper"
+        "description": "The title (accessible name of the dialog)"
       },
       {
         "name": "description",
@@ -6613,11 +6693,11 @@
       },
       {
         "name": "body",
-        "description": "The body wrapper"
+        "description": "The scrollable body"
       },
       {
         "name": "footer",
-        "description": "The footer wrapper"
+        "description": "The actions row"
       },
       {
         "name": "close-button",
@@ -6770,7 +6850,7 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The calendar `<section>`"
       },
       {
@@ -6783,19 +6863,23 @@
       },
       {
         "name": "grid",
-        "description": "The `role=\"grid\"` element"
+        "description": "The `role=grid` element"
       },
       {
         "name": "day",
-        "description": "Each day cell"
+        "description": "A day cell (`role=gridcell`)"
       },
       {
         "name": "events",
-        "description": "The selected day's events section"
+        "description": "The events section of the selected day"
       },
       {
         "name": "event",
-        "description": "Each event (button with `clickable-events`)"
+        "description": "An event (a button with `clickable-events`)"
+      },
+      {
+        "name": "empty",
+        "description": "The text shown when the selected day has no event"
       }
     ],
     "cssProperties": [
@@ -6888,16 +6972,32 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<nav>` landmark"
       },
       {
-        "name": "section",
-        "description": "A section"
+        "name": "group",
+        "description": "A section of items"
+      },
+      {
+        "name": "group-label",
+        "description": "The title of a section"
       },
       {
         "name": "item",
-        "description": "Every link / button row"
+        "description": "A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)"
+      },
+      {
+        "name": "icon",
+        "description": "The icon of an item"
+      },
+      {
+        "name": "label",
+        "description": "The label of an item"
+      },
+      {
+        "name": "description",
+        "description": "The secondary text of an item"
       }
     ],
     "cssProperties": [
@@ -7174,8 +7274,8 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The field wrapper"
+        "name": "root",
+        "description": "The field box (wraps the input and the stepper)"
       },
       {
         "name": "input",
@@ -7294,7 +7394,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The option row"
       },
       {
@@ -7303,7 +7403,7 @@
       },
       {
         "name": "indicator",
-        "description": "The check mark of the selected option"
+        "description": "The check mark (while selected)"
       }
     ],
     "cssProperties": [
@@ -7356,7 +7456,12 @@
         "description": "A `<minerva-select-label>` and `<minerva-option>` elements"
       }
     ],
-    "parts": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The group wrapper"
+      }
+    ],
     "cssProperties": [
       {
         "name": "--select-height",
@@ -7416,7 +7521,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The page column"
       }
     ],
@@ -7487,11 +7592,11 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<header>`"
       },
       {
-        "name": "heading",
+        "name": "title",
         "description": "The `<h1>`"
       },
       {
@@ -7578,16 +7683,20 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<section>`"
       },
       {
         "name": "header",
-        "description": "The heading row"
+        "description": "The title row (title, description and actions)"
       },
       {
-        "name": "heading",
+        "name": "title",
         "description": "The `<h2>`"
+      },
+      {
+        "name": "icon",
+        "description": "The decorative icon wrapper, inside the title"
       },
       {
         "name": "description",
@@ -7596,10 +7705,6 @@
       {
         "name": "actions",
         "description": "The actions wrapper"
-      },
-      {
-        "name": "icon",
-        "description": "The icon wrapper"
       }
     ],
     "cssProperties": [
@@ -7707,16 +7812,24 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The item wrapper"
       },
       {
         "name": "trigger",
-        "description": "The label `<button>`"
+        "description": "The label <button> (selects the page)"
+      },
+      {
+        "name": "icon",
+        "description": "The icon before the label"
       },
       {
         "name": "label",
         "description": "The (truncated) label"
+      },
+      {
+        "name": "action",
+        "description": "The wrapper of the separate control next to the label"
       },
       {
         "name": "close-button",
@@ -7841,12 +7954,12 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The `<nav>` landmark"
+        "name": "root",
+        "description": "The <nav> landmark"
       },
       {
         "name": "viewport",
-        "description": "The scrolling viewport"
+        "description": "The scrolling viewport of the items"
       },
       {
         "name": "list",
@@ -7854,11 +7967,11 @@
       },
       {
         "name": "scroll-button",
-        "description": "The scroll left / right buttons"
+        "description": "The scroll left / right buttons (while the items overflow)"
       },
       {
         "name": "actions",
-        "description": "The actions wrapper"
+        "description": "The global actions after the list"
       }
     ],
     "cssProperties": [
@@ -8097,12 +8210,12 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<nav>` landmark"
       },
       {
         "name": "item",
-        "description": "Every page / prev / next / jump button"
+        "description": "A page / previous / next / jump button (the current page has aria-current=page)"
       },
       {
         "name": "total",
@@ -8110,7 +8223,7 @@
       },
       {
         "name": "jumper",
-        "description": "The quick jumper label"
+        "description": "The quick jumper label (wraps its input)"
       },
       {
         "name": "size-changer",
@@ -8198,12 +8311,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The `role=\"group\"` wrapper"
+        "name": "root",
+        "description": "The role=group wrapper"
       },
       {
         "name": "item",
-        "description": "Every option button"
+        "description": "Every option button (aria-pressed on the selected one)"
       }
     ],
     "cssProperties": [
@@ -8371,16 +8484,12 @@
     ],
     "parts": [
       {
-        "name": "positioner",
-        "description": "The positioned wrapper (top layer)"
-      },
-      {
-        "name": "panel",
-        "description": "The dialog panel"
+        "name": "content",
+        "description": "The positioned panel (`role=\"dialog\"`)"
       },
       {
         "name": "arrow",
-        "description": "The arrow wrapper"
+        "description": "The arrow pointing at the anchor (with `arrow`)"
       }
     ],
     "cssProperties": [
@@ -8488,12 +8597,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root (`role=\"progressbar\"`)"
+        "name": "root",
+        "description": "The indicator (role=progressbar unless decorative); color current follows the text color"
+      },
+      {
+        "name": "icon",
+        "description": "The icon before the indicator"
       },
       {
         "name": "indicator",
-        "description": "The animated indicator"
+        "description": "The animated indicator (ring, wave or bar)"
       },
       {
         "name": "label",
@@ -8639,11 +8752,11 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The wrapper"
+        "name": "root",
+        "description": "The wrapper (the clickable row and the helper text)"
       },
       {
-        "name": "mark",
+        "name": "control",
         "description": "The visual radio mark"
       },
       {
@@ -8866,7 +8979,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The wrapper"
       },
       {
@@ -8874,8 +8987,8 @@
         "description": "The visible group label"
       },
       {
-        "name": "group",
-        "description": "The element with role=\"radiogroup\""
+        "name": "list",
+        "description": "The element with role=\"radiogroup\" (the radios)"
       },
       {
         "name": "helper-text",
@@ -9086,8 +9199,8 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The root (role=\"slider\", or role=\"img\" when read-only)"
+        "name": "root",
+        "description": "The root (role=\"slider\", or role=\"img\" when display-only)"
       },
       {
         "name": "stars",
@@ -9099,7 +9212,11 @@
       },
       {
         "name": "value",
-        "description": "The score and count"
+        "description": "The score and the count"
+      },
+      {
+        "name": "count",
+        "description": "The number of ratings"
       }
     ],
     "cssProperties": [
@@ -9188,12 +9305,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The list of rows"
       },
       {
         "name": "row",
-        "description": "Each row"
+        "description": "Each row (a label and a rating)"
       },
       {
         "name": "label",
@@ -9271,12 +9388,12 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The query container"
       },
       {
         "name": "layout",
-        "description": "The grid"
+        "description": "The grid (its children are the grid items)"
       }
     ],
     "cssProperties": [
@@ -9475,8 +9592,8 @@
     ],
     "parts": [
       {
-        "name": "trigger",
-        "description": "The combobox `<button>`"
+        "name": "root",
+        "description": "The trigger (`<button role=combobox>`)"
       },
       {
         "name": "value",
@@ -9487,15 +9604,11 @@
         "description": "The chevron"
       },
       {
-        "name": "positioner",
-        "description": "The positioned popup wrapper"
+        "name": "content",
+        "description": "The listbox popup (`role=listbox`)"
       },
       {
-        "name": "listbox",
-        "description": "The `role=\"listbox\"` popup"
-      },
-      {
-        "name": "option",
+        "name": "item",
         "description": "An option rendered from the `options` property"
       },
       {
@@ -9555,7 +9668,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The label"
       }
     ],
@@ -9606,7 +9719,7 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The line"
       }
     ],
@@ -9764,8 +9877,20 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root (busy region, or the decorative block)"
+        "name": "root",
+        "description": "The busy region (role=status), or the single block of a decorative skeleton"
+      },
+      {
+        "name": "avatar",
+        "description": "The avatar placeholder"
+      },
+      {
+        "name": "title",
+        "description": "The title placeholder"
+      },
+      {
+        "name": "line",
+        "description": "Each line placeholder (also the paragraph lines)"
       }
     ],
     "cssProperties": [
@@ -9839,12 +9964,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The block of lines"
       },
       {
         "name": "line",
-        "description": "Each line"
+        "description": "Each line placeholder"
       }
     ],
     "cssProperties": [
@@ -9913,7 +10038,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The query container"
       },
       {
@@ -9922,7 +10047,7 @@
       },
       {
         "name": "aside",
-        "description": "The aside column"
+        "description": "The aside column (when there is aside content)"
       }
     ],
     "cssProperties": [
@@ -9995,7 +10120,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The flex container"
       }
     ],
@@ -10056,20 +10181,20 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The card"
       },
       {
         "name": "icon",
-        "description": "The icon wrapper"
+        "description": "The decorative icon wrapper"
       },
       {
         "name": "label",
-        "description": "The `<dt>`"
+        "description": "The metric name (`<dt>`)"
       },
       {
         "name": "value",
-        "description": "The `<dd>`"
+        "description": "The metric value (`<dd>`)"
       },
       {
         "name": "description",
@@ -10141,24 +10266,24 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The `<ol>`"
       },
       {
-        "name": "step",
-        "description": "Each `<li>`"
+        "name": "item",
+        "description": "A step `<li>` (the current step has aria-current=step)"
       },
       {
         "name": "button",
-        "description": "The button (or static wrapper) of each step"
+        "description": "The `<button>` of a step (navigable) or its static wrapper (read-only)"
       },
       {
-        "name": "number",
-        "description": "The numbered indicator"
+        "name": "indicator",
+        "description": "The numbered indicator of a step"
       },
       {
         "name": "label",
-        "description": "The label of each step"
+        "description": "The label of a step"
       }
     ],
     "cssProperties": [
@@ -10423,12 +10548,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root (`<label>`, or `<span>` with side labels / segments)"
+        "name": "root",
+        "description": "The outer element (<label>; a <span> with side labels; the group of segments)"
       },
       {
         "name": "input",
         "description": "The native `<input type=\"checkbox\" role=\"switch\">`"
+      },
+      {
+        "name": "control",
+        "description": "The slider box (wraps the track and the thumb)"
       },
       {
         "name": "track",
@@ -10437,6 +10566,10 @@
       {
         "name": "thumb",
         "description": "The thumb"
+      },
+      {
+        "name": "icon",
+        "description": "The icon (in the thumb or after the slider)"
       },
       {
         "name": "label",
@@ -10448,7 +10581,7 @@
       },
       {
         "name": "segment",
-        "description": "The off / on segments (buttons)"
+        "description": "The off / on segments (buttons, variant=\"segmented\")"
       }
     ],
     "cssProperties": [
@@ -10531,8 +10664,8 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The visual trigger"
+        "name": "root",
+        "description": "The visual tab trigger"
       }
     ],
     "cssProperties": [
@@ -10602,7 +10735,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The panel wrapper"
       }
     ],
@@ -10690,8 +10823,16 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The wrapper"
+        "name": "root",
+        "description": "The wrapper (bounded width)"
+      },
+      {
+        "name": "primary",
+        "description": "The primary line (`<code>` when monospace)"
+      },
+      {
+        "name": "secondary",
+        "description": "The muted secondary line"
       }
     ],
     "cssProperties": [
@@ -10862,12 +11003,12 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The root wrapper"
+        "name": "root",
+        "description": "The root wrapper of the tab list and the panels"
       },
       {
-        "name": "tablist",
-        "description": "The `role=\"tablist\"` container"
+        "name": "list",
+        "description": "The role=tablist container of the tabs"
       }
     ],
     "cssProperties": [
@@ -11038,16 +11179,28 @@
     ],
     "parts": [
       {
-        "name": "base",
-        "description": "The tag root"
+        "name": "root",
+        "description": "The tag (a plain, non-interactive element); state active while a clickable tag is pressed, inactive otherwise"
       },
       {
         "name": "action",
-        "description": "The native `<button>` of a clickable tag"
+        "description": "The native <button> of a clickable tag"
       },
       {
         "name": "label",
         "description": "The label wrapper"
+      },
+      {
+        "name": "icon",
+        "description": "The icon before the label"
+      },
+      {
+        "name": "avatar",
+        "description": "The avatar before the label"
+      },
+      {
+        "name": "spinner",
+        "description": "The loading spinner (while loading)"
       },
       {
         "name": "close-button",
@@ -11289,7 +11442,7 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The wrapper"
       },
       {
@@ -11298,35 +11451,39 @@
       },
       {
         "name": "tag",
-        "description": "A tag"
+        "description": "A tag (web components only: React renders a Tag, styled with its own hooks)"
       },
       {
         "name": "remove-button",
-        "description": "The remove button of a tag"
+        "description": "The remove button of a tag (web components only, see tag)"
       },
       {
-        "name": "field",
-        "description": "The text field wrapper"
+        "name": "control",
+        "description": "The text field box (web components only: React renders an Input, styled with its own hooks)"
       },
       {
         "name": "input",
-        "description": "The native text `<input>` (`role=\"combobox\"`)"
+        "description": "The native text <input> (role=\"combobox\"; web components only, see control)"
       },
       {
-        "name": "listbox",
-        "description": "The suggestion list"
+        "name": "list",
+        "description": "The suggestion list (role=listbox, while open)"
       },
       {
         "name": "option",
-        "description": "A suggestion"
+        "description": "A suggestion (role=option; the highlighted one has aria-selected=\"true\")"
+      },
+      {
+        "name": "empty",
+        "description": "The text shown when no suggestion matches"
       },
       {
         "name": "add-button",
-        "description": "The add button"
+        "description": "The add button (web components only: React renders an IconButton, styled with its own hooks)"
       },
       {
         "name": "clear-button",
-        "description": "The clear button"
+        "description": "The clear button (web components only: React renders an IconButton, styled with its own hooks)"
       }
     ],
     "cssProperties": [
@@ -11500,8 +11657,8 @@
     ],
     "parts": [
       {
-        "name": "link",
-        "description": "The native `<a>`"
+        "name": "root",
+        "description": "The native <a> (React: the slotted child with asChild)"
       }
     ],
     "cssProperties": [
@@ -11733,7 +11890,7 @@
     "slots": [],
     "parts": [
       {
-        "name": "textarea",
+        "name": "root",
         "description": "The native `<textarea>`"
       }
     ],
@@ -11817,12 +11974,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The `role=\"group\"` wrapper"
+        "name": "root",
+        "description": "The role=group wrapper"
       },
       {
         "name": "item",
-        "description": "Every option button"
+        "description": "Every option button (aria-pressed on the selected one)"
       }
     ],
     "cssProperties": [
@@ -12113,12 +12270,12 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The field wrapper (`.timePicker`)"
+        "name": "root",
+        "description": "The field wrapper (anchor of the panel)"
       },
       {
         "name": "control",
-        "description": "The input box (`.root` of lib-core's Input)"
+        "description": "The input box"
       },
       {
         "name": "input",
@@ -12133,16 +12290,16 @@
         "description": "The clock icon (shown when there is no clear button)"
       },
       {
-        "name": "panel",
-        "description": "The popup panel (`role=\"dialog\"`)"
+        "name": "content",
+        "description": "The popup panel (`role=dialog`)"
       },
       {
         "name": "column",
-        "description": "An hours / minutes / seconds / AM-PM column (`role=\"listbox\"`)"
+        "description": "An hours / minutes / seconds / AM-PM column (`role=listbox`)"
       },
       {
         "name": "item",
-        "description": "A time unit (`role=\"option\"`)"
+        "description": "A time unit (`role=option`)"
       }
     ],
     "cssProperties": [
@@ -12303,40 +12460,36 @@
     "slots": [],
     "parts": [
       {
-        "name": "viewport",
+        "name": "root",
         "description": "The fixed stack (`role=\"region\"`)"
       },
       {
         "name": "toast",
-        "description": "A toast"
+        "description": "A toast (`role=\"status\"`, or `alert` for danger)"
       },
       {
         "name": "icon",
-        "description": "The icon wrapper of a toast"
-      },
-      {
-        "name": "content",
-        "description": "The title / description wrapper"
+        "description": "The icon of a toast (spinner while loading)"
       },
       {
         "name": "title",
-        "description": "The title"
+        "description": "The title of a toast"
       },
       {
         "name": "description",
-        "description": "The description"
+        "description": "The description of a toast"
       },
       {
         "name": "action",
-        "description": "The action button"
+        "description": "The action button of a toast"
       },
       {
         "name": "close-button",
-        "description": "The close (×) button"
+        "description": "The close (×) button of a toast"
       },
       {
         "name": "progress",
-        "description": "The countdown bar"
+        "description": "The countdown bar of a timed toast"
       }
     ],
     "cssProperties": [
@@ -12406,7 +12559,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The group"
       }
     ],
@@ -12569,15 +12722,15 @@
     "parts": [
       {
         "name": "trigger",
-        "description": "The wrapper around the trigger"
+        "description": "The wrapper around the trigger (the slotted element)"
       },
       {
-        "name": "tooltip",
-        "description": "The tooltip panel (`role=\"tooltip\"`)"
+        "name": "content",
+        "description": "The positioned tooltip (`role=\"tooltip\"`, while shown)"
       },
       {
         "name": "arrow",
-        "description": "The arrow (with `arrow`)"
+        "description": "The arrow pointing at the trigger (with `arrow`)"
       }
     ],
     "cssProperties": [
@@ -12893,8 +13046,8 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
-        "description": "The container (role=\"group\")"
+        "name": "root",
+        "description": "The container (`role=group`)"
       },
       {
         "name": "label",
@@ -12918,7 +13071,7 @@
       },
       {
         "name": "item",
-        "description": "Each file"
+        "description": "A file"
       },
       {
         "name": "remove-button",
@@ -13091,20 +13244,20 @@
     "slots": [],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The scroll container (`role=\"region\"`)"
       },
       {
         "name": "list",
-        "description": "The list (`role=\"list\"`)"
+        "description": "The list (`role=\"list\"`) sized to all the rows"
       },
       {
         "name": "item",
-        "description": "A row (`role=\"listitem\"`)"
+        "description": "A rendered row (`role=\"listitem\"`)"
       },
       {
         "name": "loading",
-        "description": "The loading indicator row"
+        "description": "The loading indicator row (while loading)"
       }
     ],
     "cssProperties": [
@@ -13213,7 +13366,7 @@
     ],
     "parts": [
       {
-        "name": "base",
+        "name": "root",
         "description": "The flex container"
       }
     ],

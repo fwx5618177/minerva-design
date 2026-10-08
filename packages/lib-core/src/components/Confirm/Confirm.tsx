@@ -8,8 +8,18 @@ import {
 } from "react";
 import { createRoot } from "react-dom/client";
 import Button from "../Button/Button";
-import { Modal, ModalBody, ModalFooter } from "../Modal/Modal";
 import useI18n from "../../hooks/useI18n";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogRoot,
+  DialogTitle,
+} from "../../internal/Dialog";
+import { IconX } from "../../internal/icons";
+import { hooks } from "../../internal/stylingHooks";
+import { cn } from "../../utils/cn";
+import styles from "../Modal/modal.module.scss";
 import {
   ThemeScopeContext,
   useThemeScope,
@@ -40,42 +50,72 @@ export const ConfirmDialog = ({
   confirmDisabled = false,
 }: ConfirmDialogProps) => {
   const { t } = useI18n();
+  // The markup of a small <Modal> (same styles), with its own hooks.
   return (
-    <Modal
+    <DialogRoot
+      componentName="ConfirmDialog"
       open={open}
       onOpenChange={onOpenChange}
-      title={title}
-      description={description}
-      size="small"
-      closeLabel={closeLabel}
-      // A confirmation interrupts the user and needs a response; Radix links
-      // the title (aria-labelledby) and description (aria-describedby).
-      role="alertdialog"
     >
-      <ModalBody />
-      <ModalFooter>
-        <Button
-          type="button"
-          color="neutral"
-          variant="outline"
-          onClick={() => onOpenChange(false)}
-          disabled={loading}
+      <DialogContent
+        overlayClassName={styles.overlay}
+        overlayAttributes={hooks("confirm-dialog", "overlay")}
+        className={cn(styles.content, styles.small)}
+        // A confirmation interrupts the user and needs a response; the title
+        // (aria-labelledby) and description (aria-describedby) are linked.
+        role="alertdialog"
+        {...hooks("confirm-dialog", "content", { color, loading })}
+      >
+        {description && (
+          <DialogDescription
+            className={styles.description}
+            {...hooks("confirm-dialog", "description")}
+          >
+            {description}
+          </DialogDescription>
+        )}
+        {title && (
+          <DialogTitle asChild>
+            <div
+              className={styles.header}
+              {...hooks("confirm-dialog", "header")}
+            >
+              {title}
+            </div>
+          </DialogTitle>
+        )}
+        <div className={styles.body} {...hooks("confirm-dialog", "body")} />
+        <div className={styles.footer} {...hooks("confirm-dialog", "footer")}>
+          <Button
+            type="button"
+            color="neutral"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
+            {cancelLabel ?? t("confirm.cancel")}
+          </Button>
+          <Button
+            type="button"
+            color={color}
+            variant="solid"
+            onClick={() => void onConfirm()}
+            loading={loading}
+            disabled={confirmDisabled}
+          >
+            {confirmLabel ??
+              (color === "danger" ? t("confirm.delete") : t("confirm.confirm"))}
+          </Button>
+        </div>
+        <DialogClose
+          className={styles.close}
+          aria-label={closeLabel ?? t("modal.close")}
+          {...hooks("confirm-dialog", "close-button")}
         >
-          {cancelLabel ?? t("confirm.cancel")}
-        </Button>
-        <Button
-          type="button"
-          color={color}
-          variant="solid"
-          onClick={() => void onConfirm()}
-          loading={loading}
-          disabled={confirmDisabled}
-        >
-          {confirmLabel ??
-            (color === "danger" ? t("confirm.delete") : t("confirm.confirm"))}
-        </Button>
-      </ModalFooter>
-    </Modal>
+          <IconX size={16} aria-hidden="true" />
+        </DialogClose>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 

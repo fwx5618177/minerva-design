@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "../../utils/cn";
 import type { DividerProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./divider.module.scss";
 
 /**
@@ -66,6 +67,12 @@ const Divider = ({
     className,
   );
 
+  const rootHooks = hooks("divider", "root", {
+    orientation,
+    variant,
+    align: hasText ? textAlign : undefined,
+  });
+
   if (hasText) {
     return (
       <div
@@ -75,8 +82,11 @@ const Divider = ({
         {...rest}
         className={dividerClasses}
         style={dividerStyle}
+        {...rootHooks}
       >
-        <span className={styles.text}>{children}</span>
+        <span className={styles.text} {...hooks("divider", "label")}>
+          {children}
+        </span>
       </div>
     );
   }
@@ -89,6 +99,7 @@ const Divider = ({
       {...rest}
       className={dividerClasses}
       style={dividerStyle}
+      {...rootHooks}
     />
   );
 };

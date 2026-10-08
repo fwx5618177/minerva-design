@@ -143,11 +143,13 @@ function onThemeChange(listener: () => void): () => void {
  * @summary Monaco code editor (local engine) with theme sync and a textarea fallback.
  * @tag minerva-code-editor
  * @slot editor - Created by the element: the light DOM container Monaco renders into
- * @csspart base - The `role="group"` root
+ * @csspart root - The `role="group"` root
  * @csspart label - The visible label
  * @csspart surface - The editor surface (sized by `height`)
- * @csspart fallback - The fallback `<textarea>`
- * @csspart retry-button - The Retry `<minerva-button>`
+ * @csspart loading - The loading indicator (while the editor loads)
+ * @csspart error - The unavailable message and retry action (when the editor failed)
+ * @csspart fallback - The fallback `<textarea>` (when the editor failed)
+ * @csspart retry-button - The retry `<minerva-button>`
  * @fires input - The value changed (each edit; composed)
  * @fires change - The value was committed (the editor lost focus after an edit)
  * @fires minerva-input - Same as `input`, with `detail: { value }` (lib-core's `onChange`)
@@ -520,6 +522,10 @@ export class MinervaCodeEditor extends FormAssociatedElement {
     }
   }
 
+  protected override hookStates() {
+    return { disabled: this.isDisabled, loading: this.status === "loading" };
+  }
+
   protected override render() {
     const minimum = positive(this.minHeight, 160);
     const maximum = Math.max(minimum, positive(this.maxHeight, 800));
@@ -530,7 +536,7 @@ export class MinervaCodeEditor extends FormAssociatedElement {
     const t = this.locale.t;
     const status = this.status;
     return html`<div
-      part="base"
+      part="root"
       class="root"
       role="group"
       aria-label=${this.label || nothing}
@@ -550,7 +556,7 @@ export class MinervaCodeEditor extends FormAssociatedElement {
       >
         ${
           status === "error"
-            ? html`<div class="error">
+            ? html`<div part="error" class="error">
                   <div class="message" role="alert">
                     ${this.unavailableText ?? t("monacoCodeEditor.unavailable")}
                   </div>
@@ -581,7 +587,7 @@ export class MinervaCodeEditor extends FormAssociatedElement {
                 ></textarea>`
             : html`${
                   status === "loading"
-                    ? html`<div class="loading" role="status">
+                    ? html`<div part="loading" class="loading" role="status">
                         <minerva-progress
                           size="small"
                           aria-label=${this.loadingLabel ?? t("monacoCodeEditor.loading")}

@@ -5,6 +5,7 @@ import { styleMap } from "lit/directives/style-map.js";
 import styles from "@lib-core-styles/components/Stack/stack.module.scss?inline";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
+import type { HookStates } from "../../internal/styling-hooks";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
 import { numberOrString, resolveSpace } from "../box/space";
@@ -77,7 +78,7 @@ const itemNodes = (host: HTMLElement): Array<Element | Text> =>
  * @summary Flex row / column layout with gap, alignment, separators and attached groups.
  * @tag minerva-stack
  * @slot - Items
- * @csspart base - The flex container
+ * @csspart root - The flex container
  */
 export class MinervaStack extends MinervaElement {
   static override tagName = "minerva-stack";
@@ -292,6 +293,14 @@ export class MinervaStack extends MinervaElement {
       )}<slot></slot>`;
   }
 
+  protected override hookStates(): HookStates {
+    return {
+      orientation: this.resolvedDirection.startsWith("row")
+        ? "horizontal"
+        : "vertical",
+    };
+  }
+
   protected override render() {
     void this.slots;
     const direction = this.resolvedDirection;
@@ -305,7 +314,7 @@ export class MinervaStack extends MinervaElement {
       style.justifyContent = justifyMap[this.justify];
     }
     return html`<div
-      part="base"
+      part="root"
       class=${classMap({
         stack: true,
         [direction]: true,
@@ -328,7 +337,7 @@ export class MinervaStack extends MinervaElement {
  * @summary Horizontal stack.
  * @tag minerva-hstack
  * @slot - Items
- * @csspart base - The flex container
+ * @csspart root - The flex container
  */
 export class MinervaHStack extends MinervaStack {
   static override tagName = "minerva-hstack";
@@ -340,6 +349,11 @@ export class MinervaHStack extends MinervaStack {
 
   protected override get resolvedDirection(): StackDirection {
     return "row";
+  }
+
+  /** The direction is fixed: no orientation state */
+  protected override hookStates(): HookStates {
+    return {};
   }
 
   protected override get resolvedAlign(): StackAlign | undefined {
@@ -354,7 +368,7 @@ export class MinervaHStack extends MinervaStack {
  * @summary Vertical stack.
  * @tag minerva-vstack
  * @slot - Items
- * @csspart base - The flex container
+ * @csspart root - The flex container
  */
 export class MinervaVStack extends MinervaStack {
   static override tagName = "minerva-vstack";
@@ -366,6 +380,11 @@ export class MinervaVStack extends MinervaStack {
 
   protected override get resolvedDirection(): StackDirection {
     return "column";
+  }
+
+  /** The direction is fixed: no orientation state */
+  protected override hookStates(): HookStates {
+    return {};
   }
 
   protected override get resolvedAlign(): StackAlign | undefined {

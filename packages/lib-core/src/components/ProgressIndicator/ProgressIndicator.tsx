@@ -7,6 +7,7 @@ import {
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import type { ProgressIndicatorProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./progressIndicator.module.scss";
 
 /**
@@ -33,17 +34,22 @@ const ProgressIndicator = ({
 }: ProgressIndicatorProps) => {
   const { t } = useI18n();
   const labelId = useId();
+  const indicator = hooks("progress", "indicator");
   const indicatorMap = {
     spinner: (
-      <IconSpinner className={cn(styles.spinner, styles[size])} aria-hidden />
+      <IconSpinner
+        className={cn(styles.spinner, styles[size])}
+        aria-hidden
+        {...indicator}
+      />
     ),
     bar: (
-      <div className={cn(styles.barContainer, styles[size])}>
+      <div className={cn(styles.barContainer, styles[size])} {...indicator}>
         <div className={styles.bar}></div>
       </div>
     ),
     wave: (
-      <div className={cn(styles.waveContainer, styles[size])}>
+      <div className={cn(styles.waveContainer, styles[size])} {...indicator}>
         <IconWaveSquare className={styles.wave} aria-hidden />
       </div>
     ),
@@ -51,10 +57,14 @@ const ProgressIndicator = ({
       <IconCircleNotch
         className={cn(styles.circle, styles[size])}
         aria-hidden
+        {...indicator}
       />
     ),
     dottedBar: (
-      <div className={cn(styles.dottedBarContainer, styles[size])}>
+      <div
+        className={cn(styles.dottedBarContainer, styles[size])}
+        {...indicator}
+      >
         <div className={styles.dottedBar}></div>
       </div>
     ),
@@ -90,11 +100,24 @@ const ProgressIndicator = ({
       style={{ ...style, width: width && !full ? width : style?.width }}
       {...a11y}
       {...rest}
+      {...hooks("progress", "root", {
+        variant: variant === "dottedBar" ? "dotted-bar" : variant,
+        size,
+        color,
+      })}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
+      {icon && (
+        <span className={styles.icon} {...hooks("progress", "icon")}>
+          {icon}
+        </span>
+      )}
       {indicatorMap[variant] ?? null}
       {hasLabel && (
-        <span id={labelId} className={styles.label}>
+        <span
+          id={labelId}
+          className={styles.label}
+          {...hooks("progress", "label")}
+        >
           {label}
         </span>
       )}

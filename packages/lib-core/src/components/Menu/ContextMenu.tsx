@@ -163,8 +163,10 @@ const ContextMenu = ({
     <>
       <Slot
         ref={setArea}
-        data-state={open ? "open" : "closed"}
-        data-disabled={disabled ? "" : undefined}
+        // Private attributes: the child (often a Minerva component) keeps
+        // its own state hooks.
+        data-menu-state={open ? "open" : "closed"}
+        data-menu-disabled={disabled ? "" : undefined}
         style={style}
         onContextMenu={onContextMenu}
         onKeyDown={onKeyDown}
@@ -176,6 +178,7 @@ const ContextMenu = ({
         {children}
       </Slot>
       <MenuRoot
+        component="context-menu"
         items={items}
         onSelect={onSelect}
         closeOnSelect={closeOnSelect}

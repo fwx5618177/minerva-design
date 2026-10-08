@@ -62,13 +62,14 @@ const monthConverter = {
  *
  * @summary Month grid with per-day event counts and keyboard navigation.
  * @tag minerva-month-calendar
- * @csspart base - The calendar `<section>`
+ * @csspart root - The calendar `<section>`
  * @csspart heading - The month heading
  * @csspart nav-button - The previous / today / next buttons
- * @csspart grid - The `role="grid"` element
- * @csspart day - Each day cell
- * @csspart events - The selected day's events section
- * @csspart event - Each event (button with `clickable-events`)
+ * @csspart grid - The `role=grid` element
+ * @csspart day - A day cell (`role=gridcell`)
+ * @csspart events - The events section of the selected day
+ * @csspart event - An event (a button with `clickable-events`)
+ * @csspart empty - The text shown when the selected day has no event
  * @fires minerva-change - The user selected a day (`detail: { value }`, "YYYY-MM-DD")
  * @fires minerva-month-change - The user displayed another month (`detail: { month }`, its first day at local midnight)
  * @fires minerva-event-click - An event of the selected day was activated (`detail: { event }`; requires `clickable-events`)
@@ -264,6 +265,10 @@ export class MinervaMonthCalendar extends MinervaElement {
     }
   }
 
+  protected override hookStates() {
+    return { disabled: this.disabled };
+  }
+
   protected override render() {
     const t = this.i18n.t;
     const first = this.displayed;
@@ -300,7 +305,7 @@ export class MinervaMonthCalendar extends MinervaElement {
     const disabled = this.disabled;
 
     return html`<section
-      part="base"
+      part="root"
       class="monthCalendar"
       aria-label=${this.aria.label ?? t("monthCalendar.label")}
     >
@@ -432,7 +437,7 @@ export class MinervaMonthCalendar extends MinervaElement {
                           </li>`,
                       )}
                     </ul>`
-                  : html`<p class="empty">
+                  : html`<p class="empty" part="empty">
                       ${this.emptyEventsText ?? t("monthCalendar.noEvents")}
                     </p>`
               }

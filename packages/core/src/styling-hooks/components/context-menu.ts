@@ -1,0 +1,49 @@
+import { defineHooks } from "../types";
+
+export default defineHooks({
+  description:
+    "A menu opened at the pointer on right click / long press / Shift+F10 in its area",
+  react: ["ContextMenu"],
+  wc: "minerva-context-menu",
+  parts: {
+    content: {
+      description:
+        "A menu panel (role=menu: the root menu and its submenus, each with its own placement)",
+      states: ["state", "size", "side", "align", "placement"],
+    },
+    item: {
+      description: "An item (role=menuitem, menuitemcheckbox or menuitemradio)",
+    },
+    "item-indicator": {
+      description: "The check mark / radio dot of a checkbox or radio item",
+    },
+    icon: { description: "The icon of an item" },
+    "item-label": { description: "The label of an item" },
+    shortcut: { description: "The keyboard shortcut hint of an item" },
+    group: {
+      description: "A group of entries (role=group, also radio groups)",
+    },
+    label: { description: "A group heading or section label" },
+    separator: { description: "A separator" },
+  },
+  states: {
+    state: ["open", "closed"],
+    size: ["small", "medium"],
+    side: ["top", "right", "bottom", "left"],
+    align: ["start", "center", "end"],
+    placement: [
+      "top",
+      "top-start",
+      "top-end",
+      "right",
+      "right-start",
+      "right-end",
+      "bottom",
+      "bottom-start",
+      "bottom-end",
+      "left",
+      "left-start",
+      "left-end",
+    ],
+  },
+});

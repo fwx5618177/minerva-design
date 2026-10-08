@@ -8,7 +8,7 @@ import { resetDevWarnings } from "../../internal/dev";
 import { $, mount, settle, wait } from "../../../tests/utils";
 
 const panel = (el: MinervaDrawer) =>
-  el.shadowRoot!.querySelector<HTMLElement>("[part=panel]");
+  el.shadowRoot!.querySelector<HTMLElement>("[part=content]");
 
 const setup = (attrs = "") =>
   mount<MinervaDrawer>(

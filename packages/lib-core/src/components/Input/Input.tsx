@@ -9,6 +9,7 @@ import {
 } from "../../internal/devWarnings";
 import { useControlledSwitchWarning } from "../../internal/useControllableState";
 import { useFormControlProps } from "../FormControl/context";
+import { hooks } from "../../internal/stylingHooks";
 import useI18n from "../../hooks/useI18n";
 import type { InputProps } from "./types";
 import styles from "./input.module.scss";
@@ -121,9 +122,22 @@ export const Input = ({
       )}
       // Lets layouts such as Toolbar size text fields (see page.module.scss)
       data-component="input"
+      {...hooks("input", "root", {
+        disabled: isDisabled,
+        invalid: isInvalid,
+        readonly: isReadOnly,
+        required: !!(field.required || field["aria-required"]),
+        size,
+        variant,
+      })}
     >
       {prefix != null && prefix !== false && (
-        <span className={cn(styles.addon, styles.start)}>{prefix}</span>
+        <span
+          className={cn(styles.addon, styles.start)}
+          {...hooks("input", "prefix")}
+        >
+          {prefix}
+        </span>
       )}
       <input
         ref={mergedRef}
@@ -133,6 +147,7 @@ export const Input = ({
         type={isPassword && passwordVisible ? "text" : type}
         onChange={handleChange}
         aria-invalid={invalid ? true : field["aria-invalid"]}
+        {...hooks("input", "input")}
       />
       {showClear && (
         <button
@@ -140,6 +155,7 @@ export const Input = ({
           className={styles.action}
           onClick={handleClear}
           aria-label={clearLabel ?? t("input.clear")}
+          {...hooks("input", "clear-button")}
         >
           <IconX aria-hidden focusable={false} />
         </button>
@@ -151,6 +167,7 @@ export const Input = ({
           onClick={() => setPasswordVisible((visible) => !visible)}
           aria-label={passwordLabel}
           disabled={isDisabled}
+          {...hooks("input", "password-toggle")}
         >
           {passwordVisible ? (
             <IconEyeOff aria-hidden focusable={false} />
@@ -160,14 +177,23 @@ export const Input = ({
         </button>
       )}
       {showCharCount && (
-        <span id={countId} className={styles.count}>
+        <span
+          id={countId}
+          className={styles.count}
+          {...hooks("input", "count")}
+        >
           {rest.maxLength != null && rest.maxLength >= 0
             ? `${currentValue.length} / ${rest.maxLength}`
             : currentValue.length}
         </span>
       )}
       {suffix != null && suffix !== false && (
-        <span className={cn(styles.addon, styles.end)}>{suffix}</span>
+        <span
+          className={cn(styles.addon, styles.end)}
+          {...hooks("input", "suffix")}
+        >
+          {suffix}
+        </span>
       )}
     </div>
   );
