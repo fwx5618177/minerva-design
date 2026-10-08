@@ -41,7 +41,7 @@ const BROWSER_GLOBALS = [
 ];
 
 export default defineConfig(
-  globalIgnores(["**/dist/", "**/coverage/"]),
+  globalIgnores(["**/dist/", "**/coverage/", "packages/angular/build/"]),
   js.configs.recommended,
   tseslint.configs.recommended,
   {
