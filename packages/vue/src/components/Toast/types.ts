@@ -1,0 +1,164 @@
+import type { VNodeChild } from "vue";
+import type { ColorScheme } from "@minerva/core";
+
+/**
+ * Content of a toast (the React `ReactNode` options: title, description,
+ * icon, action label): a string / number, a VNode (`h(...)`), or a render
+ * function returning either (called at render time, inside the toast, so it
+ * can use components and `inject` of the toast's scope).
+ */
+export type ToastContent = VNodeChild | (() => VNodeChild);
+
+/** Screen corner / edge where the toast stack is shown */
+export type ToastPosition =
+  | "top-right"
+  | "top-left"
+  | "top-center"
+  | "bottom-right"
+  | "bottom-left"
+  | "bottom-center";
+
+/** Button rendered inside a toast; activating it also closes the toast */
+export interface ToastAction {
+  /** Visible text of the button */
+  label: ToastContent;
+  /** Called when the button is activated, before the toast closes */
+  onClick: () => void;
+}
+
+/** Options of a toast */
+export interface ToastOptions {
+  /**
+   * Identifier of the toast; generated when omitted. Showing a toast with the
+   * id of a visible one replaces it (and restarts its timer) instead of
+   * stacking a duplicate
+   */
+  id?: string | number;
+  /**
+   * Semantic color of the toast; sets its accent, icon and ARIA role
+   * ("danger" is announced as an alert, the others as a status)
+   * @default "info"
+   */
+  color?: Extract<ColorScheme, "info" | "success" | "warning" | "danger">;
+  /**
+   * Shows a spinner instead of the icon and keeps the toast open (duration
+   * defaults to 0) until it is updated or dismissed; announced as a status
+   * @default false
+   */
+  loading?: boolean;
+  /** Main text */
+  title?: ToastContent;
+  /** Secondary text under the title */
+  description?: ToastContent;
+  /**
+   * Time in milliseconds before the toast closes automatically; 0 keeps it
+   * open. Loading toasts default to 0
+   * @default 4000
+   */
+  duration?: number;
+  /**
+   * Replaces the color icon (or the loading spinner); null hides it
+   */
+  icon?: ToastContent;
+  /**
+   * Shows the close button
+   * @default true
+   */
+  closable?: boolean;
+  /** Action button rendered in the toast (e.g. "Undo") */
+  action?: ToastAction;
+  /**
+   * Called once with the toast id when it closes, whatever the reason (timer,
+   * close button, action, dismiss, overflow of ToastProvider max)
+   */
+  onClose?: (id: string | number) => void;
+}
+
+/** Messages of `toast.promise`: content, or a function of the settled value */
+export interface ToastPromiseMessages<T> {
+  /** Title while the promise is pending */
+  loading: ToastContent;
+  /** Title once the promise resolves */
+  success: ToastContent | ((value: T) => ToastContent);
+  /** Title once the promise rejects */
+  error: ToastContent | ((error: unknown) => ToastContent);
+}
+
+/**
+ * The `toast` function, and the API returned by `useToast()` (bound to the
+ * caller's ConfigProvider scope)
+ */
+export interface ToastApi {
+  /** Shows a toast and returns its id */
+  (options: ToastOptions): string | number;
+  /** Shows an info toast with the given title */
+  info: (title: ToastContent, options?: ToastOptions) => string | number;
+  /** Shows a success toast with the given title */
+  success: (title: ToastContent, options?: ToastOptions) => string | number;
+  /** Shows a warning toast with the given title */
+  warning: (title: ToastContent, options?: ToastOptions) => string | number;
+  /** Shows a danger toast with the given title */
+  danger: (title: ToastContent, options?: ToastOptions) => string | number;
+  /** Shows a loading toast (spinner, no auto-close) with the given title */
+  loading: (title: ToastContent, options?: ToastOptions) => string | number;
+  /**
+   * Shows a loading toast while the promise is pending, then turns the same
+   * toast into a success or danger toast. Returns the given promise
+   */
+  promise: <T>(
+    promise: Promise<T>,
+    messages: ToastPromiseMessages<T>,
+    options?: Omit<ToastOptions, "color" | "loading" | "title">,
+  ) => Promise<T>;
+  /**
+   * Changes an open toast in place (merging the options) and restarts its
+   * timer; `loading: false` turns a loading toast into a regular one (with
+   * the default duration unless one is given). Unknown ids are ignored
+   */
+  update: (id: string | number, options: Omit<ToastOptions, "id">) => void;
+  /** Closes the toast with the given id, or every toast when omitted */
+  dismiss: (id?: string | number) => void;
+}
+
+/**
+ * Props of `ToastProvider` (same names and defaults as the React
+ * `ToastProviderProps`; the application content is the default slot).
+ */
+export interface ToastProviderProps {
+  /**
+   * Where the toasts are stacked
+   * @default "top-right"
+   */
+  position?: ToastPosition;
+  /**
+   * Maximum number of toasts shown at once; when exceeded the oldest close
+   * first
+   * @default Infinity
+   */
+  max?: number;
+  /**
+   * Pauses the auto-close timer while a toast is hovered or focused
+   * @default true
+   */
+  pauseOnHover?: boolean;
+  /**
+   * Accessible label of the toast region (used as is; the default one
+   * includes the hotkey). Set with the `aria-label` attribute
+   * @default "Notifications (F8)" (localized)
+   */
+  ariaLabel?: string;
+  /**
+   * Accessible label of the close buttons
+   * @default "Close" (localized)
+   */
+  closeLabel?: string;
+  /**
+   * Keys pressed together to move focus to the toast region (the first one
+   * holding toasts): key codes (`"F8"`, `"KeyT"`), keys or modifiers
+   * (`"altKey"`, `"ctrlKey"`, `"metaKey"`, `"shiftKey"`). Shown in the
+   * default region label, e.g. "Notifications (F8)". An empty array
+   * disables it
+   * @default ["F8"]
+   */
+  hotkey?: string[];
+}

@@ -51,13 +51,14 @@ export const Slot = defineComponent({
       const merged = mergeProps(rest, (child.props ?? {}) as never);
       // the child's own listeners run first, then the Slot's (like React's
       // composeEventHandlers): keep both
+      const chained: Record<string, unknown> = {};
       for (const key of Object.keys(rest)) {
         if (!/^on[A-Z]/.test(key)) continue;
         const own = child.props?.[key] as
           ((...a: unknown[]) => void) | undefined;
         const added = rest[key] as (...a: unknown[]) => void;
         if (own && own !== added) {
-          merged[key] = (...args: unknown[]) => {
+          chained[key] = merged[key] = (...args: unknown[]) => {
             own(...args);
             const event = args[0] as Event | undefined;
             if (!event?.defaultPrevented) added(...args);
@@ -65,6 +66,9 @@ export const Slot = defineComponent({
         }
       }
       const clone = cloneVNode(child, merged as never, true);
+      // cloneVNode merges `merged` into the child's props again, which would
+      // list the child's own listener twice ([own, chained]): keep the chain
+      Object.assign(clone.props!, chained);
       if (typeof _ref === "function") {
         return cloneVNode(clone, { ref: _ref as never }, true);
       }
