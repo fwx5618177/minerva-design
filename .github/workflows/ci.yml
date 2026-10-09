@@ -36,6 +36,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Published-package type checks resolve emitted declaration files.
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
@@ -50,9 +54,6 @@ jobs:
 
       - name: Check mini-program API documentation against source
         run: pnpm --filter @minerva/docs check:mini-api
-
-      - name: Build
-        run: pnpm build
 
       - name: Install Chromium for browser E2E
         run: pnpm exec playwright install --with-deps chromium
