@@ -29,6 +29,7 @@ export {
   resolveTheme,
 } from "@minerva/dom";
 export type { ClassDictionary, ClassValue, ColorScheme } from "@minerva/core";
+export { previewDocument } from "./components/HtmlPreview/previewDocument";
 
 /** Sticky offsets of the fixed columns of a `Table` (same as the main entry's). */
 export function computeFixedColumnLayout<T>(

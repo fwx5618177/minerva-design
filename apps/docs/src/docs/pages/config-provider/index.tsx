@@ -43,7 +43,7 @@ export default function Root() {
   );
 }`;
 
-const paletteCode = `import { ConfigProvider, useConfig } from "minerva-design";
+const paletteCode = `import { Button, ConfigProvider, useConfig } from "minerva-design";
 
 export default function Root() {
   return (
@@ -65,12 +65,12 @@ function Settings() {
   // mode: "light" | "dark" | "system"; resolvedMode: "light" | "dark"
   return (
     <>
-      <button onClick={() => setTheme(resolvedMode === "dark" ? "light" : "dark")}>
+      <Button onClick={() => setTheme(resolvedMode === "dark" ? "light" : "dark")}>
         {mode}
-      </button>
-      <button onClick={() => setPalette(palette === "tech" ? null : "tech")}>
+      </Button>
+      <Button onClick={() => setPalette(palette === "tech" ? null : "tech")}>
         {palette ?? "default"}
-      </button>
+      </Button>
     </>
   );
 }`;

@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -114,28 +122,28 @@ const WcThemingDoc: React.FC = () => {
           role="region"
           aria-label={k("config.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("config.attribute")}</th>
-                <th scope="col">{k("config.values")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("config.attribute")}</TableHeader>
+                <TableHeader scope="col">{k("config.values")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {CONFIG_ATTRIBUTES.map(([name, values]) => (
-                <tr key={name}>
-                  <th scope="row">
+                <TableRow key={name}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{name}</code>
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propType}>{values}</code>
-                  </td>
-                  <td>{k(`config.attrs.${name}`)}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{k(`config.attrs.${name}`)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <CodeBlock code={configCode} language="html" />
         <p className={styles.prose}>{k("config.event")}</p>

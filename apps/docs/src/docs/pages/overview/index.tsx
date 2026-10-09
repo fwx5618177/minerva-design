@@ -11,7 +11,7 @@ import "minerva-design/style.css";
 
 export default function App() {
   return (
-    <ConfigProvider theme="auto">
+    <ConfigProvider theme="system">
       <HStack gap={4}>
         <Button color="primary">Save</Button>
         <Switch label="Notifications" defaultChecked />

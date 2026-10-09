@@ -3,9 +3,11 @@ import { Button, Modal, ModalBody, ModalFooter } from "minerva-design";
 
 export default function BasicDemo() {
   const [open, setOpen] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   return (
     <>
       <Button onClick={() => setOpen(true)}>Delete record</Button>
+      {deleted && <p role="status">Record deleted</p>}
       <Modal
         open={open}
         onOpenChange={setOpen}
@@ -22,7 +24,13 @@ export default function BasicDemo() {
           >
             Cancel
           </Button>
-          <Button color="danger" onClick={() => setOpen(false)}>
+          <Button
+            color="danger"
+            onClick={() => {
+              setDeleted(true);
+              setOpen(false);
+            }}
+          >
             Delete
           </Button>
         </ModalFooter>

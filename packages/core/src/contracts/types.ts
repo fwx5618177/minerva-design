@@ -1,12 +1,12 @@
 /**
  * Component contracts: platform-neutral runtime metadata describing every
  * Minerva component once (props, events, slots, platform support), shared by
- * all renderers (React DOM, Web Components, and the planned Vue / Angular /
- * React Native / Taro / WeChat / uni-app renderers), the docs and the
+ * all renderers (React DOM, Web Components, Vue, Angular,
+ * React Native, Taro, WeChat and uni-app), the docs and the
  * cross-platform contract tests (tests/contracts).
  */
 
-/** Renderers of Minerva, existing and planned */
+/** Renderers of Minerva */
 export type Platform =
   "react" | "wc" | "vue" | "angular" | "native" | "taro" | "weapp" | "uni";
 

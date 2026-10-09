@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import CodeBlock from "@layout/CodeBlock";
@@ -50,17 +58,17 @@ const configProviderCode = `import { ConfigProvider, ToastProvider, toast } from
   </ToastProvider>
 </ConfigProvider>;`;
 
-const useThemeCode = `import { useTheme } from "minerva-design";
+const useThemeCode = `import { Button, useTheme } from "minerva-design";
 
 function Settings() {
   const { theme, resolvedTheme, palette, setTheme, setPalette } = useTheme();
   return (
     <>
       <p>{theme} → {resolvedTheme} · {palette ?? "default"}</p>
-      <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+      <Button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
         Toggle mode
-      </button>
-      <button onClick={() => setPalette("tech")}>Tech palette</button>
+      </Button>
+      <Button onClick={() => setPalette("tech")}>Tech palette</Button>
     </>
   );
 }`;
@@ -290,24 +298,24 @@ const ThemePaletteDoc: React.FC = () => {
           role="region"
           aria-label={k("axes.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("axes.value")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("axes.value")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {axisRows.map((row) => (
-                <tr key={row.value}>
-                  <th scope="row">
+                <TableRow key={row.value}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{row.value}</code>
-                  </th>
-                  <td>{row.text}</td>
-                </tr>
+                  </TableHeader>
+                  <TableCell>{row.text}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
 
@@ -364,28 +372,28 @@ const ThemePaletteDoc: React.FC = () => {
           role="region"
           aria-label={k("init.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("init.option")}</th>
-                <th scope="col">{k("init.default")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("init.option")}</TableHeader>
+                <TableHeader scope="col">{k("init.default")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {optionRows.map((row) => (
-                <tr key={row.name}>
-                  <th scope="row">
+                <TableRow key={row.name}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{row.name}</code>
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propType}>{row.value}</code>
-                  </td>
-                  <td>{row.text}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{row.text}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <CodeBlock code={initScriptCode} language="tsx" />
         <p className={styles.prose}>{k("init.order")}</p>
@@ -400,24 +408,24 @@ const ThemePaletteDoc: React.FC = () => {
           role="region"
           aria-label={k("helpers.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("helpers.name")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("helpers.name")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {helperRows.map((row) => (
-                <tr key={row.name}>
-                  <th scope="row">
+                <TableRow key={row.name}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{row.name}</code>
-                  </th>
-                  <td>{row.text}</td>
-                </tr>
+                  </TableHeader>
+                  <TableCell>{row.text}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
 
@@ -437,25 +445,25 @@ const ThemePaletteDoc: React.FC = () => {
           role="region"
           aria-label={k("tokens.semantic")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("tokens.variable")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("tokens.variable")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {SEMANTIC_TOKENS.map((token) => (
-                <tr key={token}>
-                  <th scope="row">
+                <TableRow key={token}>
+                  <TableHeader scope="row">
                     <Swatch token={token} />
                     <code className={styles.propName}>--{token}</code>
-                  </th>
-                  <td>{k(`tokens.items.${token}`)}</td>
-                </tr>
+                  </TableHeader>
+                  <TableCell>{k(`tokens.items.${token}`)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <p className={styles.prose}>{k("tokens.accentRole")}</p>
         <h3 style={{ marginTop: "var(--spacing-8)" }}>{k("tokens.scales")}</h3>
@@ -466,26 +474,28 @@ const ThemePaletteDoc: React.FC = () => {
           role="region"
           aria-label={k("tokens.scales")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("tokens.group")}</th>
-                <th scope="col">{k("tokens.variables")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("tokens.group")}</TableHeader>
+                <TableHeader scope="col">{k("tokens.variables")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {SCALE_GROUPS.map((group) => (
-                <tr key={group.key}>
-                  <th scope="row">{k(`tokens.groups.${group.key}.name`)}</th>
-                  <td>
+                <TableRow key={group.key}>
+                  <TableHeader scope="row">
+                    {k(`tokens.groups.${group.key}.name`)}
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propType}>{group.tokens}</code>
-                  </td>
-                  <td>{k(`tokens.groups.${group.key}.text`)}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{k(`tokens.groups.${group.key}.text`)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
     </DocPage>

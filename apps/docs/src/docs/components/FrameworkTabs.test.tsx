@@ -84,8 +84,10 @@ describe("global framework selector", () => {
     const panel = screen.getByRole("tabpanel");
     expect(panel).toHaveTextContent('import { Button } from "minerva-design";');
     expect(panel).not.toHaveTextContent("style.css");
-    const note = within(panel).getByRole("link", { name: "Installation" });
-    expect(note).toHaveAttribute("href", "/installation#global-stylesheet");
+    expect(panel).not.toHaveTextContent("Requires the global stylesheet");
+    expect(
+      within(panel).queryByRole("link", { name: "Installation" }),
+    ).toBeNull();
     expect(
       screen.getByRole("heading", { level: 2, name: "API" }),
     ).toBeInTheDocument();
@@ -104,7 +106,7 @@ describe("global framework selector", () => {
       'import { Button } from "minerva-design/vue";',
     );
     expect(panel).not.toHaveTextContent("isCustomElement");
-    expect(screen.queryByTestId("native-planned")).toBeNull();
+    expect(screen.queryByTestId("native-alternative")).toBeNull();
     // the demos load lazily: real Vue components, their single-file source
     expect(
       await within(panel).findByRole("heading", {
@@ -117,7 +119,7 @@ describe("global framework selector", () => {
     expect(
       await within(panel).findByRole(
         "button",
-        { name: "Save" },
+        { name: "Click me" },
         { timeout: 10_000 },
       ),
     ).toHaveAttribute("data-minerva", "button");
@@ -126,18 +128,11 @@ describe("global framework selector", () => {
       await within(panel).findByRole("heading", { level: 3, name: "<Button>" }),
     ).toBeInTheDocument();
     expect(within(panel).getAllByText("@click").length).toBeGreaterThan(0);
-    expect(within(panel).getByText("#start-icon")).toBeInTheDocument();
+    expect(within(panel).getAllByText("#start-icon").length).toBeGreaterThan(0);
     expect(localStorage.getItem("minerva-docs-framework")).toBe("vue");
   }, 15_000);
 
   it.each([
-    [
-      "Angular",
-      "angular",
-      "src/main.ts",
-      "CUSTOM_ELEMENTS_SCHEMA",
-      "@Component",
-    ],
     [
       "Svelte",
       "svelte",
@@ -189,11 +184,11 @@ describe("global framework selector", () => {
 
   it.each([
     ["Vue", false],
-    ["Angular", true],
+    ["Angular", false],
     ["Svelte", false],
     ["HTML", false],
   ])(
-    "%s is labelled as using the Web Components until its native renderer lands: %s",
+    "%s separates its Web Component demos from its available native renderer: %s",
     async (label, planned) => {
       const user = userEvent.setup();
       renderPage();
@@ -204,7 +199,7 @@ describe("global framework selector", () => {
           : null,
       );
       await user.click(tab);
-      const note = screen.queryByTestId("native-planned");
+      const note = screen.queryByTestId("native-alternative");
       if (!planned) {
         expect(note).toBeNull();
         return;
@@ -212,6 +207,9 @@ describe("global framework selector", () => {
       expect(note).toHaveTextContent(
         `${label} Web Components examples (native subset available)`,
       );
+      expect(
+        within(note!).getByRole("link", { name: "native Angular guide" }),
+      ).toHaveAttribute("href", "/angular");
       expect(
         within(note!).getByRole("link", { name: "Platform support" }),
       ).toHaveAttribute("href", "/platform-support");

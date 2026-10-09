@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getApiEntry, apiKey } from "../api";
@@ -48,52 +56,52 @@ const PropsTable: React.FC<PropsTableProps> = ({ page, name }) => {
         role="region"
         aria-label={displayName}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{t("doc.prop")}</th>
-              <th scope="col">{t("doc.type")}</th>
-              <th scope="col">{t("doc.default")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">{t("doc.prop")}</TableHeader>
+              <TableHeader scope="col">{t("doc.type")}</TableHeader>
+              <TableHeader scope="col">{t("doc.default")}</TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {entry.props.map((prop) => {
               const prefix = /^(wc|native):/.exec(name)?.[0] ?? "";
               const alias = getApiEntry(`${prefix}${prop.type}`);
               return (
-                <tr key={prop.name}>
-                  <th scope="row">
+                <TableRow key={prop.name}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{prop.name}</code>
                     {prop.required && (
                       <span className={styles.required}>
                         {t("doc.required")}
                       </span>
                     )}
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propType}>{prop.type}</code>
                     {alias?.kind === "alias" && (
                       <code className={styles.propAlias}>{alias.type}</code>
                     )}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     {prop.default !== undefined ? (
                       <code>{prop.default}</code>
                     ) : (
                       <span className={styles.muted}>-</span>
                     )}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     {t(`docs.${page}.api.${key}.${prop.name}`, {
                       defaultValue: prop.description ?? "",
                     })}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
     </div>
   );

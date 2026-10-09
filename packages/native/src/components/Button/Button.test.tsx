@@ -24,6 +24,22 @@ describe("Button", () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
+  it("provides the native bridge a label through loading transitions", async () => {
+    const { rerender } = await render(
+      <Button loading loadingText="Choosing">
+        Select files
+      </Button>,
+    );
+    expect(screen.getByRole("button").props.accessibilityLabel).toBe(
+      "Choosing",
+    );
+    await rerender(<Button>Select files</Button>);
+    const button = screen.getByRole("button", { name: "Select files" });
+    expect(button.props.accessibilityLabel).toBe("Select files");
+    expect(button).not.toBeBusy();
+    expect(button).toBeEnabled();
+  });
+
   it.each(["disabled", "loading"] as const)(
     "ignores presses when %s",
     async (state) => {

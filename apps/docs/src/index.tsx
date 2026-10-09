@@ -5,7 +5,6 @@ import "@fontsource-variable/geist/wght.css";
 import "@fontsource-variable/geist-mono/wght.css";
 import "minerva-design/style.css";
 import "@styles/global.scss";
-import "minerva-design/web-components";
 import App from "./App";
 import i18n, { loadLanguage } from "@i18n/config";
 

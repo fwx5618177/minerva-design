@@ -81,15 +81,13 @@
       "readonly": "lecture seule",
       "defaultSlot": "(par défaut)"
     },
-    "requiresStylesheet": "Nécessite la feuille de style globale — voir",
-    "requiresStylesheetLink": "Installation",
     "fw": {
       "setupTitle": "Mise en place",
       "guide": "Pour aller plus loin avec {{framework}} : <guide>le guide d'intégration complet</guide>.",
-      "viaWebComponents": "Exemples Web Components pour {{framework}} ; une partie des composants natifs est disponible. Consultez les <support>plateformes prises en charge</support> pour les imports et les composants implémentés.",
+      "viaWebComponents": "Exemples Web Components pour {{framework}} ; une partie des composants natifs est disponible. Consultez les <support>plateformes prises en charge</support> pour les imports et les composants implémentés. Pour les composants natifs et Angular Forms, consultez le <native>guide Angular natif</native>.",
       "viaWebComponentsShort": "Exemples Web Components {{framework}} (natif partiel)",
       "setup": {
-        "register": "Enregistrez les éléments et chargez les design tokens une seule fois, dans le fichier d'entrée —",
+        "register": "Enregistrez les éléments une seule fois dans le fichier d’entrée —",
         "vueCompiler": "Indiquez au compilateur de templates de Vue que les balises minerva-* sont des custom elements —",
         "types": "Ajoutez les typages {{framework}} : attributs, propriétés et événements sont vérifiés et complétés dans les templates —",
         "angularSchema": "Autorisez les custom elements dans chaque composant qui les utilise —",
@@ -119,7 +117,6 @@
       },
       "unavailable": "{{framework}} : ce composant n'a pas encore de Web Component. Voir <support>Plateformes prises en charge</support>."
     },
-    "requiresStylesheetEnd": ".",
     "vue": {
       "sections": {
         "props": "Props",
@@ -134,10 +131,12 @@
     "native": {
       "unavailable": "Ce composant n'est pas encore disponible dans minerva-design/native. Voir <support>Plateformes prises en charge</support> pour la feuille de route React Native.",
       "setup": "Enveloppez l'application une seule fois dans <code>MinervaProvider</code> (thème, palette, préréglage de design, langue, zones sûres) : voir le <guide>guide React Native</guide>.",
-      "examples": "Chaque exemple est un composant React Native (TSX) rendu en direct via react-native-web dans un cadre de téléphone ; le même code tourne sur iOS et Android avec Expo.",
+      "examples": "Chaque exemple est un composant React Native (TSX) rendu en direct via react-native-web dans un cadre de téléphone ; le même code tourne sur iOS et Android avec Expo. Le fournisseur natif utilise par défaut le préréglage touch : le Button moyen mesure 44px de haut, avec des marges internes et des angles plus grands, contre 40px sur le Web. Les couleurs et la taille de police utilisent les mêmes jetons de thème.",
       "api": "Props du composant React Native (minerva-design/native). Les props React Native de la primitive sous-jacente (testID, accessibilityLabel, style…) sont transmises.",
       "only": "Composant mobile : disponible uniquement dans minerva-design/native (React Native + Expo)."
-    }
+    },
+    "retry": "Réessayer",
+    "previewError": "Impossible de charger cet exemple"
   },
   "error": {
     "title": "Oups !",
@@ -175,31 +174,56 @@
   "home": {
     "support": {
       "label": "Frameworks pris en charge",
-      "webComponents": "Web Components :"
+      "webComponents": "Web Components :",
+      "native": "Natif :"
     },
     "title": "Des interfaces abouties.",
-    "subtitle": "Minerva est une bibliothèque de composants accessible et thématisable pour React, et pour tous les autres frameworks grâce aux Web Components standard.",
+    "subtitle": "Des composants accessibles et personnalisables pour React, Vue, Angular et React Native, ainsi que des Web Components et des moteurs pour mini-programmes. Consultez la matrice pour les API disponibles par plateforme.",
     "getStarted": "Commencer",
     "browse": "Parcourir les composants",
     "installLabel": "Commande d'installation",
     "showcase": {
-      "label": "Aperçu en direct : un panneau de déploiement construit avec les composants Minerva",
-      "title": "Déploiements",
-      "project": "Nom du projet",
-      "branch": "Branche",
-      "production": "Production",
-      "preview": "Prévisualisation",
-      "deploy": "Déployer",
-      "cancel": "Annuler",
-      "status": {
-        "ready": "Prêt",
-        "building": "Compilation",
-        "canceled": "Annulé"
+      "label": "Atelier de composants",
+      "title": "Essayez. Voyez le résultat.",
+      "description": "Changez le thème, la palette, l’espacement et les angles. Les composants et leur code se mettent à jour ensemble.",
+      "darkMode": "Aperçu sombre",
+      "palette": "Palette",
+      "variant": "Style du bouton",
+      "density": "Densité",
+      "radius": "Angles",
+      "disableButton": "Désactiver le bouton",
+      "reset": "Réinitialiser",
+      "previewTitle": "Votre espace",
+      "previewDescription": "Modifiez le nom, changez les notifications et essayez le bouton.",
+      "name": "Nom de l’espace",
+      "notifications": "Notifications",
+      "enabled": "Notifications activées",
+      "disabled": "Notifications désactivées",
+      "tryButton": "Essayer le bouton",
+      "clicks": "Clics",
+      "showCode": "Voir le code",
+      "hideCode": "Masquer le code",
+      "options": {
+        "minerva": "Minerva",
+        "tech": "Tech",
+        "editorial": "Éditorial",
+        "graphite": "Graphite",
+        "cool": "Froid",
+        "solid": "Plein",
+        "outline": "Contour",
+        "ghost": "Discret",
+        "compact": "Compacte",
+        "standard": "Standard",
+        "comfortable": "Confortable",
+        "none": "Carrés",
+        "small": "Petits",
+        "medium": "Moyens",
+        "large": "Grands"
       }
     },
     "featuresTitle": "Tout le nécessaire, rien de superflu",
     "frameworksTitle": "Un seul langage visuel, tous les frameworks",
-    "frameworksText": "Utilisez les composants React, ou les mêmes éléments personnalisés en HTML pur, Vue, Angular, Svelte ou Solid.",
+    "frameworksText": "Des composants accessibles et personnalisables pour React, Vue, Angular et React Native, ainsi que des Web Components et des moteurs pour mini-programmes. Consultez la matrice pour les API disponibles par plateforme.",
     "quickLinksTitle": "Pour commencer",
     "componentsCount": "{{count}} pages documentées",
     "features": {

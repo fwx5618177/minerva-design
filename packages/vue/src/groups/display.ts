@@ -22,3 +22,4 @@ export * from "../components/Prose";
 export * from "../components/HtmlPreview";
 export * from "../components/TextLink";
 export * from "../components/ThemeToggle";
+export * from "../components/AppShell";

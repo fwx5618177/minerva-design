@@ -226,8 +226,10 @@ export class MinervaScope {
     /** The default scope of an unconfigured application: no document effects */
     readonly passive = false,
     private readonly callbacks: ScopeCallbacks = {},
+    /** Embedded island: configuration and portals belong to the subtree. */
+    embedded = false,
   ) {
-    this.isRoot = !parent || parent.passive;
+    this.isRoot = !embedded && (!parent || parent.passive);
     const isRoot = this.isRoot;
 
     this.themeInput = computed(() => inputs.theme());

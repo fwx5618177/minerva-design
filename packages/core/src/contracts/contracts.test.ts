@@ -18,7 +18,7 @@ describe("component contracts", () => {
     expect(new Set(tags).size).toBe(tags.length);
   });
 
-  it("has a status on every platform: implemented platforms and explicitly planned components", () => {
+  it("has an implemented or explained host-specific status for every shipped contract", () => {
     for (const contract of componentContracts) {
       expect(Object.keys(contract.platforms).sort()).toEqual(
         [...PLATFORMS].sort(),
@@ -35,10 +35,15 @@ describe("component contracts", () => {
           contract.platforms.native.status === "beta",
       ).toBe(true);
       expect(contract.platforms.wc.status === "stable").toBe(!!contract.tag);
-      for (const platform of PLATFORMS.slice(2))
-        expect(["stable", "beta", "planned", "n/a"]).toContain(
-          contract.platforms[platform].status,
-        );
+      for (const platform of PLATFORMS.slice(2)) {
+        const support = contract.platforms[platform];
+        expect(
+          ["stable", "beta", "n/a"],
+          `${contract.name}/${platform}`,
+        ).toContain(support.status);
+        if (support.status === "n/a")
+          expect(support.notes, `${contract.name}/${platform}`).toBeTruthy();
+      }
     }
   });
 
@@ -84,8 +89,9 @@ describe("component contracts", () => {
     expect(Object.values(summary).reduce((a, b) => a + b, 0)).toBe(
       componentContracts.length,
     );
-    expect(getSupport(getContract("DataTable")!, "taro").status).toBe(
-      "planned",
+    expect(getSupport(getContract("DataTable")!, "taro").status).toBe("beta");
+    expect(getSupport(getContract("DataTable")!, "taro").notes).toContain(
+      "sorting",
     );
     expect(supportSummary("react").stable).toBeGreaterThan(90);
 

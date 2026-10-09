@@ -1,4 +1,5 @@
 import React from "react";
+import { Alert } from "minerva-design";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import CodeBlock from "@layout/CodeBlock";
@@ -107,6 +108,13 @@ const InstallationDoc: React.FC = () => {
 
   const intro = (
     <>
+      <Alert
+        color="warning"
+        title={t("docs.installation.migration.title")}
+        role="alert"
+      >
+        {t("docs.installation.migration.text")}
+      </Alert>
       <section className={styles.section} aria-labelledby="requirements">
         <h2 id="requirements">{t("docs.installation.requirements.title")}</h2>
         <ul>

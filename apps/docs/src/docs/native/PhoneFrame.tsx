@@ -2,6 +2,9 @@
 // scrollable screen (the app content, through react-native-web) and the
 // host of the RN modals (dialogs, sheets), all clipped to the screen.
 import React, { useState } from "react";
+import { themes } from "minerva-design";
+import { useTranslation } from "react-i18next";
+import { toLibLanguage } from "@i18n/libLanguage";
 import { MinervaProvider } from "minerva-design/native";
 import { useThemeMode } from "@/theme/ThemeModeContext";
 import { ModalHostContext } from "./modalHost";
@@ -17,6 +20,7 @@ export interface PhoneFrameProps {
 }
 
 const PhoneFrame: React.FC<PhoneFrameProps> = ({ label, children }) => {
+  const { i18n } = useTranslation();
   const { resolved, palette } = useThemeMode();
   const [host, setHost] = useState<HTMLElement | null>(null);
   const dark = resolved !== "light";
@@ -34,7 +38,15 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ label, children }) => {
         </div>
         <MinervaProvider
           theme={dark ? "dark" : "light"}
-          palette={palette === "default" ? undefined : palette}
+          palette={
+            palette === "default" || resolved === "github-dark" ? null : palette
+          }
+          overrides={
+            resolved === "github-dark" ? themes["github-dark"] : undefined
+          }
+          locale={{
+            language: toLibLanguage(i18n.resolvedLanguage ?? i18n.language),
+          }}
           insets={INSETS}
         >
           <ModalHostContext.Provider value={host}>

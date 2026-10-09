@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
-import { cpSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   coreImportsPlugin,
@@ -26,9 +26,16 @@ export default defineConfig({
     {
       name: "mini-styles",
       closeBundle() {
-        cpSync(
-          new URL("../../tools/styles/mini-controls.css", import.meta.url),
+        writeFileSync(
           `${outDir}/style.css`,
+          ["mini-controls.css", "taro-components.css"]
+            .map((name) =>
+              readFileSync(
+                new URL(`../../tools/styles/${name}`, import.meta.url),
+                "utf8",
+              ),
+            )
+            .join("\n"),
         );
       },
     },
@@ -36,7 +43,11 @@ export default defineConfig({
   build: {
     outDir,
     emptyOutDir: true,
-    lib: { entry: "src/index.ts", formats: ["es"], fileName: "index" },
+    lib: {
+      entry: { index: "src/index.ts", monaco: "src/monaco.tsx" },
+      formats: ["es"],
+      fileName: (_format, name) => `${name}.js`,
+    },
     rolldownOptions: {
       external: (id) => /^(react(?:\/|$)|@tarojs\/|@minerva\/)/.test(id),
     },

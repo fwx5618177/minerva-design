@@ -15,7 +15,7 @@
 //   back button (`onRequestClose` of the topmost React Native Modal);
 // - lowercase specs (`p`, `div`) are Text / View with `data-testid` as testID.
 import { createElement, Fragment, type ReactNode } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   act,
   fireEvent,
@@ -300,10 +300,11 @@ export const nativeDriver: Driver = {
 
   isChecked: (el) => isCheckedHost(unwrap(el)),
   // React Native has no CSS classes nor stylesheets: styles are objects
-  // computed from the resolved design tokens (see expected-differences.ts)
+  // computed from the resolved design tokens (checked by the native branch of suites/tokens.ts)
   classes: () => [],
   tokenVar: () => "",
   stylesheet: () => "",
+  nativeStyle: (el) => StyleSheet.flatten(unwrap(el).props.style) ?? {},
 
   services: {
     toast: {

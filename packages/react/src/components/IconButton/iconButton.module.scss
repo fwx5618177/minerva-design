@@ -125,8 +125,9 @@
   }
 
   svg {
-    fill: currentColor;
-    transition: fill var(--transition-base);
+    // Preserve the icon's own fill/stroke contract. Overriding fill here
+    // turns outlined icons (including AppShell controls) into solid blocks.
+    transition: color var(--transition-base);
   }
 
   // ---- States ----

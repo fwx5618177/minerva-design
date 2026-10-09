@@ -42,8 +42,9 @@ export const appConfig = { providers: [provideMinerva({ theme: "system" })] };
 
 ## Conventions (every component)
 
-**Files**: `src/components/<folder>/` with `<name>.ts`, `index.ts` (barrel),
-`<name>.test.ts`; a styling hooks fixture per manifest component in
+**Files**: controls live in `src/components/<folder>/`; layout, navigation,
+data, application and overlay components are grouped by function. Every
+manifest component has a styling hooks fixture in
 `src/testing/styling-hooks/<manifest-name>.ts` (also server-rendered and
 hydrated by `src/ssr.test.ts` / `src/hydration.test.ts`).
 
@@ -68,17 +69,18 @@ inputs (`input(undefined, { alias: "aria-label" })`) moved to the right inner
 element. `ReactNode` props are `MnContent` (a string or an `<ng-template>`);
 children are content projection (`<ng-content />`).
 
-**Two-way binding**: the value of a control is a `model()` (`[(checked)]`,
-`[(value)]`, `[(open)]`, `[(current)]`), with the `defaultX` input of React
-for the initial value when it is not bound. Like native inputs and Angular
-Material, a control updates its own model and emits `xChange` (no React
-"controlled" mode; see tests/contracts/expected-differences.ts).
+**Two-way binding**: bind state with `[(checked)]`, `[(value)]`, `[(open)]`
+or `[(current)]`, according to the component's public API. Signal models
+provide their corresponding `xChange` output. Checkbox and Switch also
+support authoritative one-way checked inputs: their outputs request a
+change, and the host decides whether to apply it.
 **Outputs**: `output()` named after the React callback without `on`
 (`onOpenChange` -> the model's `openChange`, `onSearch` -> `search`), never a
 native DOM event name (`change`, `input`, `click`, `focus`, `blur`, `select`,
 `close`, `toggle`, `submit`, `scroll`).
 
-**Forms**: every form control extends `MnFormValueControl<T>` and provides
+**Forms**: text and selection controls (including JsonField and KeyValueEditor)
+extend `MnFormValueControl<T>` and provide
 `provideValueAccessor(() => MnX)`: `ngModel` and Reactive Forms work, the
 form's disabled state applies, `controlInvalid()` (invalid and touched /
 submitted) shows the error state. `fieldWiring(injectFormField(), ...)`
@@ -107,9 +109,51 @@ runs in `afterRenderEffect` / `afterNextRender` or behind `injectIsBrowser()`.
 React's nested `ConfigProvider`), `injectMinerva()` for the scope's signals and
 `setTheme()` / `setPalette()`.
 
-## Tests
+## Optional Monaco editor
 
-`pnpm vitest run --project angular` (Analog's Vite plugin, AOT, zoneless
-TestBed under happy-dom; docs/adr/0007-spike-angular.md): unit tests per
-component, the styling hooks contract, server rendering and hydration. The shared cross-platform Angular contract driver and full user-flow suite are still pending. Styling contracts currently cover Button and Switch; the remaining entries are explicit TODOs. `pnpm --filter @minerva/angular typecheck` runs `ngc`
-(strict templates).
+Import `MnMonacoCodeEditor` from `minerva-design/angular/monaco`. The standard
+entry does not load Monaco. Pass `[monaco]="monaco"` from a local engine module
+that configures `MonacoEnvironment.getWorker` for your application's bundler.
+A `loader` can supply the engine asynchronously. The editable textarea stays
+available during loading and errors; retry preserves its value. Bind `[(value)]`
+and configure `language`, `readOnly`, `disabled`, `theme` or `options`. Without
+an explicit theme the editor follows its Minerva scope. Destruction disposes
+the editor, text model and change subscription.
+
+## Tests and documentation
+
+`pnpm vitest run --project angular` runs native component and interaction tests,
+all 86 manifest components’ styling contracts, the shared cross-platform contracts, and 138 manifest server
+rendering/hydration scenarios plus compound-API hydration coverage. Fixture completeness is a mandatory test.
+`pnpm --filter @minerva/angular typecheck` runs `ngc` with strict templates.
+
+The documentation site renders 135 native Angular examples. Its Vite plugin
+runs `scripts/docs-aot.mjs` to compile authored templates ahead of time and
+link the published APF packages. The browser bundle cannot include the Angular
+compiler. `scripts/generate-api.mjs` extracts signal inputs, models, outputs
+and public method types from the actual component declarations. Run it with
+`--check` to reject stale API documentation.
+
+## Composition and scoped services
+
+- `MnConfirmProvider` renders a scoped confirmation queue. Descendants inject
+  `MnConfirmService` and call `confirm({ title, description, onConfirm })`;
+  the promise resolves to a boolean. Async actions disable dismissal while
+  pending, display errors for retry, and pending requests resolve false when
+  the provider is destroyed. A template can call the provider through
+  `#confirmation="mnConfirmProvider"`.
+- `MnTooltipProvider` shares `enterDelay`, `leaveDelay` and `skipDelay` within
+  its subtree. `MnTooltip` can override delays; disabled scopes close active
+  hints and cancel timers. Only one tooltip is active in a provider at a time.
+- `[mnPopoverAnchor]="popover"` positions an exported `#popover="mnPopover"`
+  relative to another element. A projected `button[mnPopoverClose]` closes
+  its parent; the directive also accepts an explicit popover reference.
+- `MnMenu.items` supports named `{ type: "group", id, label, children }`
+  groups and `{ type: "radio", id, value }` entries. `[(radioValues)]` owns
+  one selection per group; `radioChange` reports `{ group, value }`.
+- `MnTableRoot` projects native `caption`, `thead`, `tbody` and `tfoot`.
+  Use `mnTableHead`, `mnTableBody`, `mnTableRow`, `mnTableHeader` and
+  `mnTableCell` on native table elements for custom headers, merged cells,
+  selection and sort hooks. Its scroll viewport is keyboard focusable when
+  explicitly configured or when content overflows. `MnDataTable` supplies
+  the separate declarative columns/rows API.

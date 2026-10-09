@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tag } from "minerva-design";
+import { Tag, Button } from "minerva-design";
 import { FaTimesCircle } from "react-icons/fa";
 
 const initialTags = ["Tag 1", "Tag 2", "Tag 3"];
@@ -14,6 +14,7 @@ export default function ClosableDemo() {
         <Tag
           key={tag}
           closable
+          closeLabel={(label) => `Remove ${label}`}
           closeIcon={index === 2 ? <FaTimesCircle aria-hidden /> : undefined}
           onClose={() => setTags((prev) => prev.filter((t) => t !== tag))}
           // clickable + closable: the tag and its close button are two
@@ -26,9 +27,9 @@ export default function ClosableDemo() {
       ))}
       {opened && <span>Opened: {opened}</span>}
       {tags.length === 0 && (
-        <button type="button" onClick={() => setTags(initialTags)}>
+        <Button type="button" onClick={() => setTags(initialTags)}>
           Reset
-        </button>
+        </Button>
       )}
     </>
   );

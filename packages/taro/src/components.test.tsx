@@ -44,8 +44,73 @@ it("Switch exposes a native controlled toggle", () => {
   );
   const input = container.querySelector(".mn-switch")!;
   fireEvent.click(input);
-  expect(onChange).toHaveBeenCalledWith(true);
+  expect(onChange).toHaveBeenCalledWith(true, expect.any(Object));
   rerender(<Switch checked disabled onChange={onChange} />);
   fireEvent.click(input);
   expect(onChange).toHaveBeenCalledTimes(1);
+});
+
+it("Button renders loading replacement and semantic appearance while blocking activation", () => {
+  const { rerender } = render(
+    <Button
+      color="danger"
+      size="xsmall"
+      variant="link"
+      startIcon="Start"
+      endIcon="End"
+      fullWidth
+    >
+      Save
+    </Button>,
+  );
+  expect(screen.getByRole("button", { name: "StartSaveEnd" })).toHaveClass(
+    "mn-color-danger",
+    "mn-size-xsmall",
+    "mn-full-width",
+  );
+  rerender(
+    <Button loading loadingText="Saving" startIcon="Start">
+      Save
+    </Button>,
+  );
+  expect(screen.getByRole("button", { name: "Saving" })).toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  expect(screen.queryByText("Start")).not.toBeInTheDocument();
+});
+it("Input supports uncontrolled editing, clearing and character counts", () => {
+  const change = vi.fn();
+  const { container } = render(
+    <Input
+      defaultValue="Ada"
+      clearable
+      showCharCount
+      maxLength={10}
+      onChange={change}
+    />,
+  );
+  expect(container.querySelector("input")).toHaveValue("Ada");
+  fireEvent.input(container.querySelector("input")!, {
+    target: { value: "Grace" },
+  });
+  expect(screen.getByText("5 / 10")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+  expect(container.querySelector("input")).toHaveValue("");
+  expect(change).toHaveBeenLastCalledWith("");
+});
+it("Switch supports uncontrolled state, labels and read only interaction guards", () => {
+  const change = vi.fn();
+  const { container, rerender } = render(
+    <Switch defaultChecked label="Enabled" onChange={change} />,
+  );
+  expect(screen.getByRole("switch", { name: "Enabled" })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
+  fireEvent.click(container.querySelector(".mn-switch")!);
+  expect(change).toHaveBeenCalledWith(false, expect.any(Object));
+  rerender(<Switch checked readOnly label="Enabled" onChange={change} />);
+  fireEvent.click(container.querySelector(".mn-switch")!);
+  expect(change).toHaveBeenCalledTimes(1);
 });

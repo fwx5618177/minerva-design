@@ -32,6 +32,7 @@
   }
 
   &.solid {
+    --_divider-line-style: solid;
     &.horizontal {
       border-top-style: solid;
     }
@@ -41,6 +42,7 @@
   }
 
   &.dashed {
+    --_divider-line-style: dashed;
     &.horizontal {
       border-top-style: dashed;
     }
@@ -50,6 +52,7 @@
   }
 
   &.dotted {
+    --_divider-line-style: dotted;
     &.horizontal {
       border-top-style: dotted;
     }
@@ -67,19 +70,19 @@
     &::after {
       content: "";
       flex: 1;
-      border-top: var(--divider-thickness, 1px) solid var(--divider-color, var(--border-color));
+      border-top: var(--divider-thickness, var(--_divider-thickness, 1px)) var(--_divider-line-style, solid) var(--divider-color, var(--border-color));
     }
   }
 
   &.textLeft {
     &::before {
-      width: 5%;
+      flex: 0 0 5%;
     }
   }
 
   &.textRight {
     &::after {
-      width: 5%;
+      flex: 0 0 5%;
     }
   }
 

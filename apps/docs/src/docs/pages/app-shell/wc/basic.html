@@ -1,23 +1,22 @@
-<!-- The transform makes the fixed sidebar relative to this preview frame. -->
+<!-- The transform contains the fixed sidebar inside this preview frame. -->
 <div style="height: 360px; overflow: auto; transform: translateZ(0)">
-  <minerva-app-shell brand="Minerva">
-    <nav slot="navigation" aria-label="Main">
-      <a
-        href="#dashboard"
-        aria-current="page"
-        style="display: block; padding: 6px 8px"
-        >Dashboard</a
-      >
-      <a href="#projects" style="display: block; padding: 6px 8px">Projects</a>
-      <a href="#settings" style="display: block; padding: 6px 8px">Settings</a>
-    </nav>
-    <minerva-button slot="header-actions" size="small" variant="ghost"
-      >Ada Lovelace</minerva-button
+  <minerva-app-shell
+    brand="Publishing Admin"
+    navigation-label="Workspace navigation"
+  >
+    <span slot="brand-icon" aria-hidden="true">◇</span>
+    <minerva-nav-tree
+      slot="navigation"
+      active-id="dashboard"
+      aria-label="Workspace"
+    ></minerva-nav-tree>
+    <minerva-badge slot="header-actions" color="neutral" variant="subtle"
+      >Workspace</minerva-badge
     >
     <minerva-page>
       <minerva-page-header
         heading="Dashboard"
-        description="Page content goes in the default slot, inside the main landmark. Tab once to reveal the skip link."
+        description="Select a section from the sidebar. Collapse it to keep more room for your content."
       ></minerva-page-header>
     </minerva-page>
   </minerva-app-shell>

@@ -1,0 +1,32 @@
+import { expect, it } from "vitest";
+import * as angular from "./index";
+it.each([
+  "MnTabs",
+  "MnTab",
+  "MnTabPanel",
+  "MnPageTabs",
+  "MnPageTab",
+  "MnPagination",
+  "MnSteps",
+  "MnThemeToggle",
+  "MnPaletteToggle",
+  "MnJsonField",
+  "MnKeyValueEditor",
+  "MnCodeBlock",
+  "MnHtmlPreview",
+  "MnVirtualList",
+  "MnMonthCalendar",
+  "MnNavTree",
+  "MnAlert",
+  "MnAppShell",
+  "MnDataTable",
+  "MnToastRegion",
+  "MnConfirmDialog",
+  "MnCommandDialog",
+  "MnPopover",
+  "MnTooltip",
+  "MnMenu",
+  "MnContextMenu",
+])("exports the native Angular %s component", (name) =>
+  expect((angular as Record<string, unknown>)[name]).toBeTypeOf("function"),
+);

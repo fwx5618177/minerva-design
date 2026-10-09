@@ -347,6 +347,246 @@
     "kind": "alias",
     "type": "\"subtle\" | \"outline\" | \"solid\""
   },
+  "native:AppShellNavigationState": {
+    "source": "native/src/components/AppShell/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "collapsed",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "isMobile",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "closeNavigation",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "expandNavigation",
+        "type": "() => void",
+        "required": true
+      }
+    ]
+  },
+  "native:AppShellProps": {
+    "source": "native/src/components/AppShell/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "brand",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "brandIcon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "navigation",
+        "type": "(state: AppShellNavigationState) => ReactNode",
+        "required": true
+      },
+      {
+        "name": "navigationLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "navigationKey",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "headerActions",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "pageNavigation",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "sidebarMode",
+        "type": "AppShellSidebarMode",
+        "required": false
+      },
+      {
+        "name": "defaultSidebarMode",
+        "type": "AppShellSidebarMode",
+        "required": false,
+        "default": "\"expanded\""
+      },
+      {
+        "name": "onSidebarModeChange",
+        "type": "(mode: AppShellSidebarMode) => void",
+        "required": false
+      }
+    ]
+  },
+  "native:AppShellSidebarMode": {
+    "source": "native/src/components/AppShell/index.tsx",
+    "kind": "alias",
+    "type": "\"expanded\" | \"compact\""
+  },
+  "native:AutoCompleteOption": {
+    "source": "native/src/components/AutoComplete/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "highlight",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:AutoCompleteProps": {
+    "source": "native/src/components/AutoComplete/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "options",
+        "type": "AutoCompleteOption[]",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\""
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false
+      },
+      {
+        "name": "onSelect",
+        "type": "(option: AutoCompleteOption) => void",
+        "required": false
+      },
+      {
+        "name": "onOptionClick",
+        "type": "(option: AutoCompleteOption) => void",
+        "required": false
+      },
+      {
+        "name": "groupBy",
+        "type": "(option: AutoCompleteOption) => string",
+        "required": false
+      },
+      {
+        "name": "renderOption",
+        "type": "(option: AutoCompleteOption) => ReactNode",
+        "required": false
+      },
+      {
+        "name": "renderEmpty",
+        "type": "() => ReactNode",
+        "required": false
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "inputProps",
+        "type": "Omit<InputProps, \"value\" | \"defaultValue\" | \"onChange\">",
+        "required": false
+      },
+      {
+        "name": "filterOption",
+        "type": "(value: string, option: AutoCompleteOption) => boolean",
+        "required": false
+      },
+      {
+        "name": "sortOption",
+        "type": "(a: AutoCompleteOption, b: AutoCompleteOption) => number",
+        "required": false
+      },
+      {
+        "name": "onDropdownVisibleChange",
+        "type": "(visible: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "onSubmit",
+        "type": "(value: string) => void",
+        "required": false
+      },
+      {
+        "name": "autoHighlight",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "fillOnSelect",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false
+      }
+    ]
+  },
   "native:AvatarGroupProps": {
     "source": "native/src/components/Avatar/Avatar.tsx",
     "kind": "interface",
@@ -620,6 +860,140 @@
     "description": "Props of `BottomSheet` (a `Popup` from the bottom edge)",
     "kind": "alias",
     "type": "Omit<PopupProps, \"placement\" | \"side\">"
+  },
+  "native:BoxProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "p",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "px",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "py",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "pt",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "pr",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "pb",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "pl",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "m",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "mx",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "my",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "mt",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "mr",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "mb",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "ml",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "w",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "h",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "minW",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "minH",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "maxW",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "maxH",
+        "type": "BoxSize",
+        "required": false
+      },
+      {
+        "name": "bg",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "rounded",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "boxShadow",
+        "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+        "required": false
+      }
+    ]
+  },
+  "native:BoxSize": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "alias",
+    "type": "DimensionValue"
+  },
+  "native:BoxSpace": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "alias",
+    "type": "number | string"
   },
   "native:ButtonProps": {
     "source": "native/src/components/Button/Button.tsx",
@@ -1027,6 +1401,149 @@
     "source": "native/src/components/Card/Card.tsx",
     "kind": "alias",
     "type": "\"default\" | \"elevated\" | \"filled\" | \"ghost\" | \"outline\""
+  },
+  "native:CascaderOption": {
+    "source": "native/src/components/Cascader/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "CascaderOption[]",
+        "required": false
+      },
+      {
+        "name": "isLeaf",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:CascaderProps": {
+    "source": "native/src/components/Cascader/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "options",
+        "type": "CascaderOption[]",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "(string | number)[]",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "(string | number)[]",
+        "required": false
+      },
+      {
+        "name": "onChange",
+        "type": "(value: (string | number)[], options: CascaderOption[]) => void",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "changeOnSelect",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "showSearch",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "filter",
+        "type": "(query: string, path: CascaderOption[]) => boolean",
+        "required": false
+      },
+      {
+        "name": "loadData",
+        "type": "(path: CascaderOption[]) => void",
+        "required": false
+      },
+      {
+        "name": "displayRender",
+        "type": "(labels: string[], path: CascaderOption[]) => ReactNode",
+        "required": false
+      },
+      {
+        "name": "optionRender",
+        "type": "(option: CascaderOption, level: number) => ReactNode",
+        "required": false
+      },
+      {
+        "name": "allowClear",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "maxLevel",
+        "type": "number",
+        "required": false,
+        "default": "6"
+      }
+    ]
   },
   "native:CellGroupProps": {
     "source": "native/src/components/Cell/Cell.tsx",
@@ -1503,6 +2020,88 @@
     "kind": "alias",
     "type": "NativeSize"
   },
+  "native:CodeBlockProps": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": false,
+        "default": "384"
+      },
+      {
+        "name": "copyable",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "copyText",
+        "type": "(text: string) => Promise<void> | void",
+        "required": false,
+        "description": "Native clipboard adapter, e.g. Expo Clipboard.setStringAsync."
+      },
+      {
+        "name": "onCopied",
+        "type": "(text: string) => void",
+        "required": false
+      },
+      {
+        "name": "onCopyError",
+        "type": "(error: unknown) => void",
+        "required": false
+      }
+    ]
+  },
+  "native:CodeEditorProps": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextareaProps, \"label\">"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "format",
+        "type": "(source: string) => string | Promise<string>",
+        "required": false
+      },
+      {
+        "name": "formatLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "onFormatError",
+        "type": "(error: unknown) => void",
+        "required": false
+      }
+    ]
+  },
   "native:CollapseItemProps": {
     "source": "native/src/components/Collapse/Collapse.tsx",
     "kind": "interface",
@@ -1619,6 +2218,237 @@
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the list"
+      }
+    ]
+  },
+  "native:CommandDialogProps": {
+    "source": "native/src/components/Command/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "items",
+        "type": "CommandItem[]",
+        "required": true
+      },
+      {
+        "name": "onSelect",
+        "type": "(item: CommandItem) => void",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "emptyText",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "maxResults",
+        "type": "number",
+        "required": false,
+        "default": "12"
+      },
+      {
+        "name": "filter",
+        "type": "(items: CommandItem[], query: string) => CommandItem[]",
+        "required": false
+      },
+      {
+        "name": "resultsLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:CommandItem": {
+    "source": "native/src/components/Command/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "keywords",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:ConfirmDialogProps": {
+    "source": "native/src/components/Confirm/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ConfirmOptions"
+    ],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "onConfirm",
+        "type": "() => void | Promise<void>",
+        "required": true
+      }
+    ]
+  },
+  "native:ConfirmFunction": {
+    "source": "native/src/components/Confirm/index.tsx",
+    "kind": "alias",
+    "type": "(options: ConfirmOptions) => Promise<boolean>"
+  },
+  "native:ConfirmOptions": {
+    "source": "native/src/components/Confirm/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "confirmLabel",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "cancelLabel",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "\"primary\" | \"danger\" | \"warning\"",
+        "required": false,
+        "default": "\"primary\""
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "confirmDisabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
+  "native:ConfirmProviderProps": {
+    "source": "native/src/components/Confirm/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:ContextMenuProps": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "alias",
+    "type": "MenuProps"
+  },
+  "native:DataTableProps": {
+    "source": "native/src/components/Table/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "TableProps<T>"
+    ],
+    "props": [
+      {
+        "name": "pagination",
+        "type": "PaginationProps",
+        "required": false
+      },
+      {
+        "name": "error",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "required": false
+      },
+      {
+        "name": "retryLabel",
+        "type": "string",
+        "required": false
       }
     ]
   },
@@ -1783,6 +2613,54 @@
     "source": "native/src/components/DatetimePicker/DatetimePicker.tsx",
     "kind": "alias",
     "type": "\"date\" | \"time\" | \"datetime\" | \"year-month\""
+  },
+  "native:DescriptionListItem": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "ReactNode",
+        "required": true
+      }
+    ]
+  },
+  "native:DescriptionListProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "DescriptionListItem[]",
+        "required": true
+      },
+      {
+        "name": "bordered",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "striped",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      }
+    ]
   },
   "native:DialogCloseReason": {
     "source": "native/src/components/Dialog/Dialog.tsx",
@@ -2202,6 +3080,44 @@
       }
     ]
   },
+  "native:FormControlProps": {
+    "source": "native/src/components/FormControl/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
   "native:FormErrors": {
     "source": "native/src/components/Form/formStore.ts",
     "description": "Errors of the invalid fields, by name",
@@ -2467,6 +3383,20 @@
       }
     ]
   },
+  "native:FormLayoutProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ResponsiveGridProps"
+    ],
+    "props": [
+      {
+        "name": "layout",
+        "type": "\"vertical\" | \"horizontal\"",
+        "required": false
+      }
+    ]
+  },
   "native:FormProps": {
     "source": "native/src/components/Form/Form.tsx",
     "kind": "interface",
@@ -2643,6 +3573,20 @@
     ],
     "props": [
       {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Span every column inside ResponsiveGrid or Grid."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Apply layout and press behavior to a single child."
+      },
+      {
         "name": "icon",
         "type": "ReactNode",
         "required": false,
@@ -2741,6 +3685,127 @@
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the grid"
+      }
+    ]
+  },
+  "native:HStackProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "alias",
+    "type": "Omit<StackProps, \"direction\">"
+  },
+  "native:HtmlPreviewDocumentProps": {
+    "source": "native/src/components/HtmlPreview/index.tsx",
+    "description": "Required capabilities passed to a WebView host; see the Expo example's platform adapters.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "source",
+        "type": "{ html: string }",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "javaScriptEnabled",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "domStorageEnabled",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "allowFileAccess",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "allowUniversalAccessFromFileURLs",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "allowFileAccessFromFileURLs",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "javaScriptCanOpenWindowsAutomatically",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "setSupportMultipleWindows",
+        "type": "false",
+        "required": true
+      },
+      {
+        "name": "originWhitelist",
+        "type": "string[]",
+        "required": true
+      },
+      {
+        "name": "mixedContentMode",
+        "type": "\"never\"",
+        "required": true
+      },
+      {
+        "name": "onShouldStartLoadWithRequest",
+        "type": "(request: { url: string }) => boolean",
+        "required": true
+      },
+      {
+        "name": "style",
+        "type": "{ width: \"100%\" | number; height: number }",
+        "required": true
+      }
+    ]
+  },
+  "native:HtmlPreviewProps": {
+    "source": "native/src/components/HtmlPreview/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "html",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "viewport",
+        "type": "\"desktop\" | \"mobile\"",
+        "required": false,
+        "default": "\"desktop\""
+      },
+      {
+        "name": "mobileWidth",
+        "type": "number",
+        "required": false,
+        "default": "375"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": false,
+        "default": "600"
+      },
+      {
+        "name": "renderDocument",
+        "type": "ComponentType<HtmlPreviewDocumentProps>",
+        "required": true,
+        "description": "Platform host (react-native-webview on iOS/Android, sandboxed iframe on web)."
       }
     ]
   },
@@ -3141,6 +4206,203 @@
     "kind": "alias",
     "type": "FieldVariant"
   },
+  "native:JsonFieldProps": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "TextareaProps"
+    ],
+    "props": [
+      {
+        "name": "rows",
+        "type": "number",
+        "required": false,
+        "default": "8"
+      },
+      {
+        "name": "hideToolbar",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "indent",
+        "type": "number",
+        "required": false,
+        "default": "2"
+      },
+      {
+        "name": "formatLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "validLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalidLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:KeyValueEditorProps": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"onChange\">"
+    ],
+    "props": [
+      {
+        "name": "entries",
+        "type": "KeyValueEntry[]",
+        "required": false
+      },
+      {
+        "name": "defaultEntries",
+        "type": "KeyValueEntry[]",
+        "required": false
+      },
+      {
+        "name": "onChange",
+        "type": "(entries: KeyValueEntry[]) => void",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "keyLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "valueLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "addLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "removeLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "errors",
+        "type": "Record<string, KeyValueEntryErrors>",
+        "required": false
+      }
+    ]
+  },
+  "native:KeyValueEntry": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "native:KeyValueEntryErrors": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:ListDensity": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "alias",
+    "type": "\"default\" | \"compact\" | \"comfortable\""
+  },
+  "native:ListItemProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "primary",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "secondary",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:ListProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "density",
+        "type": "ListDensity",
+        "required": false,
+        "default": "\"default\""
+      },
+      {
+        "name": "bordered",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "dividers",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      }
+    ]
+  },
   "native:LoadingProps": {
     "source": "native/src/components/Loading/Loading.tsx",
     "kind": "interface",
@@ -3195,6 +4457,251 @@
     "source": "native/src/components/Loading/Loading.tsx",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:MenuAction": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "textValue",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "shortcut",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "MenuEntry[]",
+        "required": false
+      }
+    ]
+  },
+  "native:MenuCheckboxEntry": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"checkbox\"",
+        "required": true
+      },
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(checked: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:MenuEntry": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "alias",
+    "type": "MenuAction | MenuCheckboxEntry | MenuRadioGroupEntry | MenuSeparatorEntry | MenuGroupEntry"
+  },
+  "native:MenuGroupEntry": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"group\"",
+        "required": true
+      },
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "MenuEntry[]",
+        "required": true
+      }
+    ]
+  },
+  "native:MenuProps": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactElement<ButtonProps>",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "MenuEntry[]",
+        "required": true
+      },
+      {
+        "name": "onSelect",
+        "type": "(item: MenuAction) => void",
+        "required": false
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:MenuRadioGroupEntry": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"radio-group\"",
+        "required": true
+      },
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "items",
+        "type": "{ value: string; label: ReactNode; disabled?: boolean }[]",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": false
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:MenuSeparatorEntry": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"separator\"",
+        "required": true
+      },
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      }
+    ]
   },
   "native:MinervaI18n": {
     "source": "native/src/theme/types.ts",
@@ -3398,6 +4905,49 @@
       }
     ]
   },
+  "native:ModalRootProps": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:ModalTriggerProps": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ButtonProps"
+    ],
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
   "native:NativeFonts": {
     "source": "native/src/theme/types.ts",
     "description": "Font families loaded by the app (e.g. with `expo-font`)",
@@ -3446,6 +4996,33 @@
     "description": "A toast queue of React nodes (`createToastQueue` of",
     "kind": "alias",
     "type": "ToastQueue<ReactNode>"
+  },
+  "native:NativeUploadFile": {
+    "source": "native/src/components/Upload/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "uri",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "mimeType",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false
+      }
+    ]
   },
   "native:NavBarProps": {
     "source": "native/src/components/NavBar/NavBar.tsx",
@@ -3535,6 +5112,131 @@
         "type": "StyleProp<TextStyle>",
         "required": false,
         "description": "Style of the title text"
+      }
+    ]
+  },
+  "native:NavTreeItem": {
+    "source": "native/src/components/NavTree/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "endContent",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "NavTreeItem[]",
+        "required": false
+      }
+    ]
+  },
+  "native:NavTreeProps": {
+    "source": "native/src/components/NavTree/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "sections",
+        "type": "NavTreeSection[]",
+        "required": true
+      },
+      {
+        "name": "activeId",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "collapsed",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "wrapLabels",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "defaultExpandedIds",
+        "type": "string[]",
+        "required": false
+      },
+      {
+        "name": "expandedIds",
+        "type": "string[]",
+        "required": false
+      },
+      {
+        "name": "onExpandedChange",
+        "type": "(ids: string[]) => void",
+        "required": false
+      },
+      {
+        "name": "onItemSelect",
+        "type": "(item: NavTreeItem) => void",
+        "required": false
+      },
+      {
+        "name": "onOpenError",
+        "type": "(error: unknown) => void",
+        "required": false
+      }
+    ]
+  },
+  "native:NavTreeSection": {
+    "source": "native/src/components/NavTree/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "items",
+        "type": "NavTreeItem[]",
+        "required": true
       }
     ]
   },
@@ -3689,6 +5391,129 @@
     "description": "Look of the stepper buttons",
     "kind": "alias",
     "type": "\"inline\" | \"compact\""
+  },
+  "native:PageHeaderProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:PageProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "maxWidth",
+        "type": "DimensionValue",
+        "required": false
+      }
+    ]
+  },
+  "native:PageSectionProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "PageHeaderProps"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:PageTabProps": {
+    "source": "native/src/components/PageTabs/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"onSelect\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Inferred from PageTabs when provided, otherwise false."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "onSelect",
+        "type": "() => void",
+        "required": false
+      }
+    ]
+  },
+  "native:PageTabsProps": {
+    "source": "native/src/components/PageTabs/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "activeValue",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
   },
   "native:PaginationProps": {
     "source": "native/src/components/Pagination/Pagination.tsx",
@@ -4046,6 +5871,63 @@
       }
     ]
   },
+  "native:PopoverContentProps": {
+    "source": "native/src/components/Popover/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<DialogProps, \"open\" | \"defaultOpen\" | \"onOpenChange\">"
+    ],
+    "props": [
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:PopoverProps": {
+    "source": "native/src/components/Popover/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:PopoverTriggerProps": {
+    "source": "native/src/components/Popover/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ButtonProps"
+    ],
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
   "native:PopupCloseReason": {
     "source": "native/src/components/Popup/Popup.tsx",
     "description": "Why a popup closed",
@@ -4304,6 +6186,20 @@
     "source": "native/src/components/Progress/Progress.tsx",
     "kind": "alias",
     "type": "\"line\" | \"circle\""
+  },
+  "native:ProseProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "TextProps"
+    ],
+    "props": [
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false
+      }
+    ]
   },
   "native:PullRefreshProps": {
     "source": "native/src/components/PullRefresh/PullRefresh.tsx",
@@ -4648,6 +6544,38 @@
     "kind": "alias",
     "type": "NativeSize"
   },
+  "native:RatingDimension": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "hint",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
   "native:RatingProps": {
     "source": "native/src/components/Rating/Rating.tsx",
     "kind": "interface",
@@ -4687,6 +6615,11 @@
         "required": false,
         "default": "false",
         "description": "Display only: presses and screen reader adjustments are ignored"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
       },
       {
         "name": "allowHalf",
@@ -4737,10 +6670,71 @@
       }
     ]
   },
+  "native:RatingScaleProps": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<RatingProps, \"value\" | \"defaultValue\" | \"onChange\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "dimensions",
+        "type": "readonly RatingDimension[]",
+        "required": true
+      },
+      {
+        "name": "onChange",
+        "type": "(key: string, value: number) => void",
+        "required": false
+      }
+    ]
+  },
   "native:RatingSize": {
     "source": "native/src/components/Rating/Rating.tsx",
     "kind": "alias",
     "type": "NativeSize"
+  },
+  "native:ResponsiveGridColumns": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "alias",
+    "type": "number | { base?: number; sm?: number; md?: number; lg?: number }"
+  },
+  "native:ResponsiveGridProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "columns",
+        "type": "ResponsiveGridColumns",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "gap",
+        "type": "BoxSpace",
+        "required": false,
+        "default": "4"
+      },
+      {
+        "name": "rowGap",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "columnGap",
+        "type": "BoxSpace",
+        "required": false
+      }
+    ]
   },
   "native:SearchBarProps": {
     "source": "native/src/components/SearchBar/SearchBar.tsx",
@@ -4889,6 +6883,58 @@
     "kind": "alias",
     "type": "OverlayCloseReason"
   },
+  "native:SelectGroupProps": {
+    "source": "native/src/components/Select/SelectParts.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:SelectItemProps": {
+    "source": "native/src/components/Select/SelectParts.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "textValue",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
   "native:SelectMultipleProps": {
     "source": "native/src/components/Select/Select.tsx",
     "kind": "interface",
@@ -4929,6 +6975,11 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "group",
+        "type": "string",
+        "required": false
+      },
       {
         "name": "label",
         "type": "string",
@@ -5121,10 +7172,133 @@
       }
     ]
   },
+  "native:SkeletonTextProps": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "SkeletonProps"
+    ],
+    "props": [
+      {
+        "name": "lines",
+        "type": "number",
+        "required": false,
+        "default": "3"
+      }
+    ]
+  },
   "native:SkeletonVariant": {
     "source": "native/src/components/Skeleton/Skeleton.tsx",
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\""
+  },
+  "native:SplitLayoutProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "aside",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "asideWidth",
+        "type": "number",
+        "required": false,
+        "default": "320"
+      },
+      {
+        "name": "collapseBelow",
+        "type": "\"md\" | \"lg\"",
+        "required": false,
+        "default": "\"md\""
+      },
+      {
+        "name": "gap",
+        "type": "BoxSpace",
+        "required": false,
+        "default": "6"
+      }
+    ]
+  },
+  "native:StackProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "direction",
+        "type": "ViewStyle[\"flexDirection\"]",
+        "required": false,
+        "default": "\"column\""
+      },
+      {
+        "name": "gap",
+        "type": "BoxSpace",
+        "required": false
+      },
+      {
+        "name": "align",
+        "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"",
+        "required": false
+      },
+      {
+        "name": "justify",
+        "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"",
+        "required": false
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "separator",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "attached",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      }
+    ]
+  },
+  "native:StatCardProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
   },
   "native:StepperProps": {
     "source": "native/src/components/NumberInput/NumberInput.tsx",
@@ -5687,6 +7861,181 @@
       }
     ]
   },
+  "native:TableCellContentProps": {
+    "source": "native/src/components/Parts/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "secondary",
+        "type": "ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:TableColumn": {
+    "source": "native/src/components/Table/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "header",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "render",
+        "type": "(row: T, index: number) => ReactNode",
+        "required": false
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "align",
+        "type": "\"left\" | \"center\" | \"right\"",
+        "required": false
+      },
+      {
+        "name": "ellipsis",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "sortable",
+        "type": "boolean | ((a: T, b: T) => number)",
+        "required": false
+      }
+    ]
+  },
+  "native:TableProps": {
+    "source": "native/src/components/Table/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"children\">"
+    ],
+    "props": [
+      {
+        "name": "columns",
+        "type": "TableColumn<T>[]",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "T[]",
+        "required": true
+      },
+      {
+        "name": "rowKey",
+        "type": "(row: T, index: number) => TableRowKey",
+        "required": false
+      },
+      {
+        "name": "emptyText",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\""
+      },
+      {
+        "name": "variant",
+        "type": "\"simple\" | \"striped\" | \"bordered\"",
+        "required": false,
+        "default": "\"simple\""
+      },
+      {
+        "name": "scroll",
+        "type": "{ x?: number; y?: number }",
+        "required": false
+      },
+      {
+        "name": "sortState",
+        "type": "TableSortState | null",
+        "required": false
+      },
+      {
+        "name": "defaultSortState",
+        "type": "TableSortState | null",
+        "required": false,
+        "default": "null"
+      },
+      {
+        "name": "onSortChange",
+        "type": "(state: TableSortState) => void",
+        "required": false
+      },
+      {
+        "name": "manualSort",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "rowSelection",
+        "type": "TableRowSelection<T>",
+        "required": false
+      }
+    ]
+  },
+  "native:TableRowKey": {
+    "source": "native/src/components/Table/index.tsx",
+    "kind": "alias",
+    "type": "string | number"
+  },
+  "native:TableRowSelection": {
+    "source": "native/src/components/Table/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "selectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false
+      },
+      {
+        "name": "defaultSelectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false
+      },
+      {
+        "name": "onChange",
+        "type": "(keys: TableRowKey[], rows: T[]) => void",
+        "required": false
+      },
+      {
+        "name": "getCheckboxProps",
+        "type": "(row: T) => { disabled?: boolean }",
+        "required": false
+      },
+      {
+        "name": "getRowLabel",
+        "type": "(row: T, index: number) => string",
+        "required": false
+      }
+    ]
+  },
   "native:TabListProps": {
     "source": "native/src/components/Tabs/Tabs.tsx",
     "kind": "interface",
@@ -5953,6 +8302,66 @@
     "source": "native/src/components/Tabs/Tabs.tsx",
     "kind": "alias",
     "type": "\"line\" | \"pills\" | \"soft\" | \"enclosed\""
+  },
+  "native:TagInputProps": {
+    "source": "native/src/components/Editors/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<InputProps, \"value\" | \"defaultValue\" | \"onChange\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly string[]",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly string[]",
+        "required": false
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string[]) => void",
+        "required": false
+      },
+      {
+        "name": "options",
+        "type": "readonly string[]",
+        "required": false
+      },
+      {
+        "name": "commitOnBlur",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "separators",
+        "type": "readonly string[]",
+        "required": false
+      },
+      {
+        "name": "emptyText",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "addLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "clearLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "removeLabel",
+        "type": "(tag: string) => string",
+        "required": false
+      }
+    ]
   },
   "native:TagProps": {
     "source": "native/src/components/Tag/Tag.tsx",
@@ -6259,6 +8668,36 @@
     "kind": "alias",
     "type": "FieldVariant"
   },
+  "native:TextLinkProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "TextProps"
+    ],
+    "props": [
+      {
+        "name": "href",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "\"default\" | \"subtle\" | \"action\"",
+        "required": false,
+        "default": "\"default\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onOpenError",
+        "type": "(error: unknown) => void",
+        "required": false
+      }
+    ]
+  },
   "native:ThemeToggleProps": {
     "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "interface",
@@ -6291,6 +8730,121 @@
     "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "alias",
     "type": "\"small\" | \"medium\""
+  },
+  "native:TimePickerProps": {
+    "source": "native/src/components/TimePicker/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "Date | null",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "Date",
+        "required": false
+      },
+      {
+        "name": "onChange",
+        "type": "(date: Date | undefined) => void",
+        "required": false
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "default": "\"HH:mm:ss\""
+      },
+      {
+        "name": "use12Hours",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "showSecond",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "hourStep",
+        "type": "number",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "minuteStep",
+        "type": "number",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "secondStep",
+        "type": "number",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "minTime",
+        "type": "Date",
+        "required": false
+      },
+      {
+        "name": "maxTime",
+        "type": "Date",
+        "required": false
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false
+      }
+    ]
   },
   "native:ToastAction": {
     "source": "native/src/components/Toast/Toast.tsx",
@@ -6544,6 +9098,332 @@
       }
     ]
   },
+  "native:ToolbarProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "ViewProps"
+    ],
+    "props": [
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "density",
+        "type": "\"default\" | \"compact\"",
+        "required": false,
+        "default": "\"default\""
+      }
+    ]
+  },
+  "native:TooltipProps": {
+    "source": "native/src/components/Tooltip/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactElement<ButtonProps>",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "color",
+        "type": "Exclude<NativeColor, \"primary\">",
+        "required": false,
+        "default": "\"neutral\""
+      },
+      {
+        "name": "variant",
+        "type": "\"solid\" | \"subtle\" | \"glass\"",
+        "required": false,
+        "default": "\"solid\""
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"rounded\" | \"square\"",
+        "required": false,
+        "default": "\"default\""
+      },
+      {
+        "name": "enterDelay",
+        "type": "number",
+        "required": false,
+        "default": "200"
+      },
+      {
+        "name": "leaveDelay",
+        "type": "number",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "onOpen",
+        "type": "() => void",
+        "required": false
+      },
+      {
+        "name": "onClose",
+        "type": "() => void",
+        "required": false
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TooltipRef>",
+        "required": false
+      }
+    ]
+  },
+  "native:TooltipProviderProps": {
+    "source": "native/src/components/Tooltip/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "enterDelay",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "leaveDelay",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  "native:TooltipRef": {
+    "source": "native/src/components/Tooltip/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "close",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "toggle",
+        "type": "() => void",
+        "required": true
+      }
+    ]
+  },
+  "native:UploadItem": {
+    "source": "native/src/components/Upload/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "type": "UploadItemStatus",
+        "required": true
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "previewUrl",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:UploadItemStatus": {
+    "source": "native/src/components/Upload/index.tsx",
+    "kind": "alias",
+    "type": "\"uploading\" | \"done\" | \"error\""
+  },
+  "native:UploadLabels": {
+    "source": "native/src/components/Upload/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "select",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "uploading",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "done",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "failed",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "tooMany",
+        "type": "(max: number) => string",
+        "required": false
+      },
+      {
+        "name": "invalidType",
+        "type": "(name: string) => string",
+        "required": false
+      },
+      {
+        "name": "tooLarge",
+        "type": "(name: string) => string",
+        "required": false
+      },
+      {
+        "name": "retry",
+        "type": "(name: string) => string",
+        "required": false
+      },
+      {
+        "name": "remove",
+        "type": "(name: string) => string",
+        "required": false
+      }
+    ]
+  },
+  "native:UploadProps": {
+    "source": "native/src/components/Upload/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "UploadItem[]",
+        "required": true
+      },
+      {
+        "name": "onFilesSelected",
+        "type": "(files: NativeUploadFile[]) => void",
+        "required": true
+      },
+      {
+        "name": "pickFiles",
+        "type": "(options: { accept: string; multiple: boolean; }) => Promise<NativeUploadFile[] | null>",
+        "required": true,
+        "description": "Connect a system document/image picker. null or [] means user cancellation."
+      },
+      {
+        "name": "onRemove",
+        "type": "(item: UploadItem) => void",
+        "required": false
+      },
+      {
+        "name": "onRetry",
+        "type": "(item: UploadItem) => void",
+        "required": false
+      },
+      {
+        "name": "accept",
+        "type": "string",
+        "required": false,
+        "default": "\"*\""
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "replace",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "maxCount",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "maxSize",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "labels",
+        "type": "UploadLabels",
+        "required": false
+      },
+      {
+        "name": "onError",
+        "type": "(error: Error) => void",
+        "required": false
+      }
+    ]
+  },
   "native:UsePullRefreshOptions": {
     "source": "native/src/components/PullRefresh/PullRefresh.tsx",
     "kind": "interface",
@@ -6601,5 +9481,100 @@
         "description": "A themed `RefreshControl`: pass it as the `refreshControl` of a `FlatList`, `SectionList` or `ScrollView`"
       }
     ]
+  },
+  "native:VirtualListItem": {
+    "source": "native/src/components/VirtualList/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string | number",
+        "required": true
+      },
+      {
+        "name": "metadata",
+        "type": "Record<string, string | number | boolean>",
+        "required": false
+      }
+    ]
+  },
+  "native:VirtualListProps": {
+    "source": "native/src/components/VirtualList/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<FlatListProps<T>, \"data\" | \"renderItem\" | \"onEndReached\" | \"getItemLayout\" | \"ref\">"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "T[]",
+        "required": true
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: T, index: number) => ReactNode",
+        "required": true
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "itemHeight",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "itemPadding",
+        "type": "number",
+        "required": false,
+        "default": "8"
+      },
+      {
+        "name": "overscan",
+        "type": "number",
+        "required": false,
+        "default": "5"
+      },
+      {
+        "name": "onLoadMore",
+        "type": "() => Promise<void> | void",
+        "required": false
+      },
+      {
+        "name": "onLoadError",
+        "type": "(error: unknown) => void",
+        "required": false
+      },
+      {
+        "name": "loadMoreThreshold",
+        "type": "number",
+        "required": false,
+        "default": "100"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onItemClick",
+        "type": "(item: T, index: number, event: GestureResponderEvent) => void",
+        "required": false
+      },
+      {
+        "name": "ref",
+        "type": "Ref<FlatList<T>>",
+        "required": false
+      }
+    ]
+  },
+  "native:VStackProps": {
+    "source": "native/src/components/Layout/index.tsx",
+    "kind": "alias",
+    "type": "HStackProps"
   }
 }

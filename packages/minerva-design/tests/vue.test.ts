@@ -62,16 +62,34 @@ async function bundle(code: string) {
 }
 
 describe("exports map", () => {
+  it("renders the optional Monaco component from its emitted entry without starting a browser engine", async () => {
+    const { MonacoCodeEditor } = await import(
+      new URL("../dist/vue/monaco.js", import.meta.url).href
+    );
+    expect(MonacoCodeEditor).toBeDefined();
+    const html = await renderToString(
+      createSSRApp({
+        render: () =>
+          h(MonacoCodeEditor, { modelValue: "source", label: "Source editor" }),
+      }),
+    );
+    expect(html).toContain('data-minerva="code-editor"');
+    expect(html).toContain('aria-label="Source editor"');
+    expect(html).toContain('aria-busy="true"');
+  });
   it("publishes minerva-design/vue (ESM only) and its optional entries", () => {
     expect(pkg.exports["./vue"]).toEqual({
       types: "./dist/vue/index.d.ts",
       default: "./dist/vue/index.js",
     });
-    expect(pkg.exports["./vue/monaco"]).toBeUndefined();
+    expect(pkg.exports["./vue/monaco"]).toEqual({
+      types: "./dist/vue/monaco.d.ts",
+      default: "./dist/vue/monaco.js",
+    });
     expect(pkg.exports["./vue/global"]).toEqual({
       types: "./dist/vue/global.d.ts",
     });
-    expect(VUE_SUBPATHS).toEqual(["./vue"]);
+    expect(VUE_SUBPATHS).toEqual(["./vue", "./vue/monaco"]);
     expect(Object.keys(PLANNED_RENDERERS)).not.toContain("vue");
     for (const file of ["index.js", "index.d.ts", "monaco.js", "global.d.ts"])
       expect(existsSync(join(vueDist, file)), file).toBe(true);

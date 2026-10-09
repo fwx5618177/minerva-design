@@ -1,3 +1,5 @@
+import { FrameworkIcon } from "@/site/FrameworkIcon";
+import { frameworkStyle } from "@/site/frameworkBranding";
 import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -32,6 +34,7 @@ import styles from "./docs.module.scss";
 
 // react-native-web and the native demos load with the React Native tab only
 const NativeSection = lazy(() => import("../native/NativeSection"));
+const AngularSection = lazy(() => import("../angular/AngularSection"));
 
 /** The React Native tab (or the whole content of a mobile-only page) */
 const NativeContent: React.FC<{ meta: DocPageMeta }> = ({ meta }) => {
@@ -40,20 +43,6 @@ const NativeContent: React.FC<{ meta: DocPageMeta }> = ({ meta }) => {
     <Suspense fallback={<p className={styles.muted}>{t("doc.loading")}</p>}>
       <NativeSection meta={meta} />
     </Suspense>
-  );
-};
-
-/** "Requires the global stylesheet — see Installation", under an import */
-export const StylesheetNote: React.FC = () => {
-  const { t } = useTranslation();
-  return (
-    <p className={styles.importNote}>
-      {t("doc.requiresStylesheet")}{" "}
-      <Link to="/installation#global-stylesheet">
-        {t("doc.requiresStylesheetLink")}
-      </Link>
-      {t("doc.requiresStylesheetEnd")}
-    </p>
   );
 };
 
@@ -94,12 +83,15 @@ const WebComponentSection: React.FC<{
     <>
       <section className={styles.section} aria-labelledby="wc-import">
         <h2 id="wc-import">{t("doc.fw.setupTitle")}</h2>
-        {framework.nativePlanned && (
-          <p className={styles.callout} data-testid="native-planned">
+        {framework.nativeGuide && (
+          <p className={styles.callout} data-testid="native-alternative">
             <Trans
               i18nKey="doc.fw.viaWebComponents"
               values={{ framework: framework.label }}
-              components={{ support: <Link to="/platform-support" /> }}
+              components={{
+                support: <Link to="/platform-support" />,
+                native: <Link to={`/${framework.nativeGuide}`} />,
+              }}
             />
           </p>
         )}
@@ -119,7 +111,6 @@ const WebComponentSection: React.FC<{
             <CodeBlock code={snippet.code} language={snippet.language} />
           </div>
         ))}
-        <StylesheetNote />
         <p className={styles.prose}>
           <Trans
             i18nKey="doc.fw.guide"
@@ -186,9 +177,12 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
 }) => {
   const { t } = useTranslation();
   const demos = useMemo(() => vueDemosOf(meta.id), [meta.id]);
-  const demoIds = (meta.wc?.demos ?? Object.keys(demos)).filter(
-    (id) => demos[id],
-  );
+  const demoIds = [
+    ...new Set([
+      ...(meta.demos ?? meta.wc?.demos ?? []),
+      ...Object.keys(demos),
+    ]),
+  ].filter((id) => demos[id]);
   const [loaded, setLoaded] = useState<Record<string, string> | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -216,10 +210,9 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
       <section className={styles.section} aria-labelledby="vue-import">
         <h2 id="vue-import">{t("doc.import")}</h2>
         <CodeBlock
-          code={`import { ${components.join(", ")} } from "minerva-design/vue";`}
+          code={`import { ${components.join(", ")} } from "minerva-design/vue${meta.id === "monaco-code-editor" ? "/monaco" : ""}";`}
           language="ts"
         />
-        <StylesheetNote />
         <p className={styles.prose}>
           <Trans
             i18nKey="doc.fw.guide"
@@ -238,10 +231,17 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
             <DemoBlock
               key={demoId}
               id={`vue-demo-${demoId}`}
-              title={t(`docs.${meta.id}.wc.demos.${demoId}.title`)}
+              title={t(`docs.${meta.id}.demos.${demoId}.title`, {
+                defaultValue: t(`docs.${meta.id}.wc.demos.${demoId}.title`),
+              })}
               description={t(
                 `docs.${meta.id}.vue.demos.${demoId}.description`,
-                { defaultValue: "" },
+                {
+                  defaultValue: t(
+                    `docs.${meta.id}.demos.${demoId}.description`,
+                    { defaultValue: "" },
+                  ),
+                },
               )}
               source={loaded[demoId] ?? ""}
               language={framework.language}
@@ -317,7 +317,6 @@ const DocPage: React.FC<DocPageProps> = ({
             code={importCode ?? importSnippet(meta.exports, meta.package)}
             language="tsx"
           />
-          <StylesheetNote />
         </section>
       )}
 
@@ -423,12 +422,15 @@ const FrameworkTabs: React.FC<{
             <Tab
               key={fw.id}
               value={fw.id}
+              className={styles.frameworkTab}
+              style={frameworkStyle(fw.id)}
               title={
-                fw.nativePlanned
+                fw.nativeGuide
                   ? t("doc.fw.viaWebComponentsShort", { framework: fw.label })
                   : undefined
               }
             >
+              <FrameworkIcon id={fw.id} />
               {fw.label}
             </Tab>
           ))}
@@ -442,6 +444,10 @@ const FrameworkTabs: React.FC<{
             <VueSection meta={meta} framework={fw} />
           ) : fw.renderer === "native" ? (
             <NativeContent meta={meta} />
+          ) : fw.renderer === "angular" ? (
+            <Suspense fallback={<p role="status">{t("doc.loading")}</p>}>
+              <AngularSection meta={meta} />
+            </Suspense>
           ) : meta.wc ? (
             <WebComponentSection
               meta={meta}
@@ -456,7 +462,9 @@ const FrameworkTabs: React.FC<{
               <Trans
                 i18nKey="doc.fw.unavailable"
                 values={{ framework: fw.label }}
-                components={{ support: <Link to="/platform-support" /> }}
+                components={{
+                  support: <Link to="/platform-support" />,
+                }}
               />
             </p>
           )}

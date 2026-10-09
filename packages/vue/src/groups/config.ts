@@ -1,5 +1,6 @@
 // Configuration, theme and i18n.
 export { default as ConfigProvider } from "../config/ConfigProvider.vue";
+export { default as ThemeProvider } from "../config/ThemeProvider.vue";
 export { useConfig } from "../config/context";
 export type {
   ConfigContext,

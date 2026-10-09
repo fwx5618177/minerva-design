@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -141,29 +149,31 @@ const TokenTable: React.FC<{ name: string }> = ({ name }) => {
       role="region"
       aria-label={name}
     >
-      <table className={styles.propsTable}>
-        <thead>
-          <tr>
-            <th scope="col">{t("docs.theming.tokens.variable")}</th>
-            <th scope="col">{t("doc.description")}</th>
-          </tr>
-        </thead>
-        <tbody>
+      <TableRoot className={styles.propsTable}>
+        <TableHead>
+          <TableRow>
+            <TableHeader scope="col">
+              {t("docs.theming.tokens.variable")}
+            </TableHeader>
+            <TableHeader scope="col">{t("doc.description")}</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {entry.props.map((prop) => (
-            <tr key={prop.name}>
-              <th scope="row">
+            <TableRow key={prop.name}>
+              <TableHeader scope="row">
                 <Swatch token={prop.name} />
                 <code className={styles.propName}>--{prop.name}</code>
-              </th>
-              <td>
+              </TableHeader>
+              <TableCell>
                 {t(`docs.theme-utils.api.${name}.${prop.name}`, {
                   defaultValue: prop.description ?? "",
                 })}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </TableRoot>
     </div>
   );
 };
@@ -229,13 +239,14 @@ const ThemeSwitcherShowcase: React.FC = () => {
   );
 };
 
-const colorSchemeCode = `import type { ColorScheme } from "minerva-design";
+const colorSchemeCode = `import { Button, Badge, Alert, Tooltip, toast } from "minerva-design";
+import type { ColorScheme } from "minerva-design";
 // "primary" | "neutral" | "success" | "warning" | "danger" | "info"
 
 <Button color="danger" variant="outline">Delete</Button>
 <Badge color="success" variant="subtle" content="Live" />
 <Alert color="warning" variant="solid" title="Quota almost reached" />
-<Tooltip color="info" content="Synced"><button>Status</button></Tooltip>
+<Tooltip color="info" content="Synced"><Button>Status</Button></Tooltip>
 toast.success("Saved"); // toast({ color: "success", title: "Saved" })`;
 
 const ThemingDoc: React.FC = () => {
@@ -273,24 +284,26 @@ const ThemingDoc: React.FC = () => {
           role="region"
           aria-label={t("docs.theming.values.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{t("docs.theming.values.value")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">
+                  {t("docs.theming.values.value")}
+                </TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {themeValues.map((row) => (
-                <tr key={row.value}>
-                  <th scope="row">
+                <TableRow key={row.value}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{row.value}</code>
-                  </th>
-                  <td>{row.text}</td>
-                </tr>
+                  </TableHeader>
+                  <TableCell>{row.text}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
 
@@ -346,32 +359,34 @@ const ThemingDoc: React.FC = () => {
           role="region"
           aria-label={t("docs.theming.tokens.roles")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{t("docs.theming.tokens.role")}</th>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">
+                  {t("docs.theming.tokens.role")}
+                </TableHeader>
                 {ROLE_SUFFIXES.map((suffix) => (
-                  <th scope="col" key={suffix}>
+                  <TableHeader scope="col" key={suffix}>
                     <code>{`--<role>-color${suffix}`}</code>
-                  </th>
+                  </TableHeader>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {ROLES.map((role) => (
-                <tr key={role}>
-                  <th scope="row">
+                <TableRow key={role}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{role}</code>
-                  </th>
+                  </TableHeader>
                   {ROLE_SUFFIXES.map((suffix) => (
-                    <td key={suffix} title={`--${role}-color${suffix}`}>
+                    <TableCell key={suffix} title={`--${role}-color${suffix}`}>
                       <Swatch token={`${role}-color${suffix}`} />
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <h3 style={{ marginTop: "var(--spacing-8)" }}>
           {t("docs.theming.tokens.component")}

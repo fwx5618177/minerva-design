@@ -7,4 +7,9 @@ export {
   type Locale,
   type MinervaConfig,
 } from "./scope";
-export { MnConfig, injectMinerva, provideMinerva } from "./config";
+export {
+  MnConfig,
+  injectMinerva,
+  provideMinerva,
+  provideEmbeddedMinerva,
+} from "./config";

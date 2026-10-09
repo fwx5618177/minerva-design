@@ -67,3 +67,13 @@ pnpm vitest run --project contracts-native  # shared contract suites
 
 See [`docs/adr/0002-spike-react-native.md`](../../docs/adr/0002-spike-react-native.md)
 for the test setup.
+
+## Expo host checks
+
+The workspace example has been exercised in Expo Go 57.0.9 on iOS 26.1
+(iPhone 17 Pro simulator) and Android 16 / API 36 (Pixel 8 ARM64 emulator).
+The checks cover input, tables, menus, document rendering and virtual lists;
+Android also verifies system file selection/removal and clipboard copy/paste.
+See the [host validation record](../../apps/expo-example/VALIDATION.md) for exact
+flows and reproduction steps. Physical devices and standalone release
+installation are not covered by those simulator checks.

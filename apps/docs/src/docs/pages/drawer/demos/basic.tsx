@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Button, Drawer, DrawerBody, DrawerFooter } from "minerva-design";
+import {
+  Button,
+  Checkbox,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+} from "minerva-design";
 
 export default function BasicDemo() {
   const [open, setOpen] = useState(false);
@@ -13,9 +19,7 @@ export default function BasicDemo() {
         description="Narrow the list of books."
       >
         <DrawerBody>
-          <label>
-            <input type="checkbox" defaultChecked /> Completed only
-          </label>
+          <Checkbox defaultChecked label="Completed only" />
         </DrawerBody>
         <DrawerFooter>
           <Button

@@ -1,6 +1,6 @@
 {
   "title": "Architecture",
-  "description": "How Minerva is split: a platform-neutral core (state machines, contracts, tokens, i18n) shared by every renderer, the DOM primitives of the web renderers, the React components, the Web Components and the planned native renderers.",
+  "description": "A platform-neutral core shared by React, Vue, Angular, Web Components, React Native, Taro, native WeChat and uni-app; web renderers additionally use DOM primitives.",
   "packages": {
     "title": "Packages",
     "text": "Minerva is a pnpm monorepo publishing one package, minerva-design, with one entry per renderer. Behaviour (headless state machines), component contracts, design tokens, theming data and translations are written once in the core; renderers only add rendering.",
@@ -15,7 +15,7 @@
   },
   "platforms": {
     "title": "Platforms",
-    "text": "Every renderer is a native implementation sharing the same headless core, shipped as a subpath of the single minerva-design package. Web renderers also use the DOM primitives; React Native and mini-program renderers resolve tokens to concrete values instead of CSS variables.",
+    "text": "Renderers expose separate entries in minerva-design. Web hosts add DOM primitives; React Native uses resolved native values and mini-programs use class-scoped CSS tokens. Statuses below are derived from the component support matrix.",
     "platform": "Platform",
     "entry": "Entry",
     "renderer": "Renderer",
@@ -57,15 +57,16 @@
         "name": "uni-app",
         "renderer": "Vue 3 components with uni-app built-ins, tokens.mini.css"
       }
-    }
+    },
+    "beta": "Beta"
   },
   "headless": {
     "title": "Shared headless layer",
-    "text": "So renderers never diverge, everything except rendering lives in the core:",
+    "text": "Shared contracts, tokens and state logic reduce divergence; rendering and host integration remain in each renderer.",
     "machines": "State machines (core/machines): framework-neutral stores { getState, send, subscribe } for disclosure and presence, the toast queue, selection, tabs, picker columns, fields and validation, pagination, rating, number stepper and toggles. The React and Web Component toasts, tabs, pagination and rating already run on them.",
     "contracts": "Component contracts (core/contracts): runtime metadata per component (props with enum values and defaults, events, slots, tracks, a support status per platform), checked against the React types and custom-elements.json.",
     "tokens": "Design tokens: TypeScript data generates tokens.css (byte-identical to the previous Sass output), class-based tokens.mini.css for mini-programs (split per palette) and resolveTokens() with an sRGB color-mix matching CSS.",
-    "tests": "Contract test suites written once (tests/contracts) run against a driver per renderer: React DOM and Web Components today, each new renderer adds its driver."
+    "tests": "Shared contract tests and renderer-specific unit and browser tests check the documented APIs. See Platform support for SDK, simulator and device verification boundaries."
   },
   "primitives": {
     "title": "DOM primitives",
@@ -91,13 +92,13 @@
     "text": "Floating UI (@floating-ui/dom) is the only third-party interaction dependency, used solely inside the positioning module of the DOM layer (dist/dom). There is no Radix UI or other headless library: Slot / asChild, Tabs, dialogs, menus and the select are developed in this repository and tested with Vitest, happy-dom, Testing Library and user-event."
   },
   "roadmap": {
-    "title": "Roadmap",
-    "text": "Each phase ships one renderer family on top of the shared core, adds its contract-test driver and moves its contract statuses from planned to beta, then stable.",
-    "phase0": "Foundation (done): platform-neutral core and the DOM layer (dist/dom), tokens pipeline, state machines, component contracts, contract test harness, pnpm catalogs and empty renderer packages.",
-    "phase1": "Vue 3 and Angular native renderers (minerva-design/vue, minerva-design/angular), replacing the Web Component usage of those frameworks.",
-    "phase2": "React Native + Expo (minerva-design/native).",
-    "phase3": "Mini-programs: Taro (minerva-design/taro), WeChat native components (dist/weapp through the miniprogram field) and uni-app (minerva-design/uni).",
-    "phase4": "toC components and the touch design preset across every platform."
+    "title": "Implementation and acceptance",
+    "text": "All listed renderer packages contain implementations. Beta status records their current maturity, not full device or production acceptance. The platform support matrix is the source of component-level status.",
+    "phase0": "Shared core and DOM layer: state machines, contracts, tokens, translations and test infrastructure are implemented.",
+    "phase1": "Vue 3 and Angular: native renderers and executable documentation examples are implemented.",
+    "phase2": "React Native and Expo: native components and simulator checks are implemented; physical-device and standalone release acceptance remain open.",
+    "phase3": "Taro, native WeChat and uni-app: implementations, official WeChat target compilation fixtures and documented browser/simulator checks are present.",
+    "phase4": "Touch presets and mobile extensions: use the documented platform-specific APIs; host limitations and acceptance boundaries remain explicit."
   },
   "next": {
     "title": "Next steps",

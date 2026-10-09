@@ -10,7 +10,7 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "在根部挂载一个 ToastProvider（本示例挂载了本页使用的那个），然后调用 toast.success / danger / warning / info。position 决定显示位置；max={3} 会在第四条出现时关闭最早的一条。页面上有多个 ToastProvider 时同一条通知也只会显示一次：只有最外层（或最先挂载）的那个负责渲染，并使用它自己的 position、max 和主题作用域；它卸载后由下一个接管。"
+      "description": "Success 显示 Saved，Danger 显示 Request failed，Warning 显示 Unsaved changes，Info 显示 New version；最多保留三条通知。"
     },
     "colors": {
       "title": "颜色",
@@ -122,5 +122,14 @@
         "focus": "将焦点移至该区域（与快捷键效果相同）。"
       }
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "Success 显示 Saved，Danger 显示 Request failed，Warning 显示 Unsaved changes，Info 显示 New version；最多保留三条通知。"
+      }
+    },
+    "limitations": "Native 中 top-left/top-center/top-right 映射为顶部通知，bottom-left/bottom-center/bottom-right 映射为底部通知；消息动作和最大条数一致，左右角定位不等同于 Web。"
   }
 }

@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { createContext, useContext, type ReactNode } from "react";
 import {
   Pressable,
@@ -119,27 +120,28 @@ export interface CheckboxProps extends Omit<
  * circle box, label at any side, semantic colors, three sizes. Inside a
  * `CheckboxGroup` (with a `value`) it reads and toggles the group.
  */
-export function Checkbox({
-  checked,
-  defaultChecked = false,
-  onChange,
-  indeterminate = false,
-  disabled = false,
-  label,
-  children,
-  color: colorProp,
-  size: sizeProp,
-  shape: shapeProp,
-  value,
-  error: errorProp = false,
-  labelPlacement = "end",
-  icon,
-  style,
-  labelStyle,
-  accessibilityState,
-  hitSlop,
-  ...rest
-}: CheckboxProps) {
+export function Checkbox(props: CheckboxProps) {
+  const {
+    checked,
+    defaultChecked = false,
+    onChange,
+    indeterminate = false,
+    disabled = false,
+    label,
+    children,
+    color: colorProp,
+    size: sizeProp,
+    shape: shapeProp,
+    value,
+    error: errorProp = false,
+    labelPlacement = "end",
+    icon,
+    style,
+    labelStyle,
+    accessibilityState,
+    hitSlop,
+    ...rest
+  } = useFormControlProps(props);
   const { tokens: t, fonts } = useTheme();
   const group = useContext(CheckboxGroupContext);
   const inGroup = group !== null && value !== undefined;

@@ -1,4 +1,6 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useFormControlProps } from "../../internal/FormControlContext";
+import { collectSelectOptions } from "./SelectParts";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
 import {
   Pressable,
   ScrollView,
@@ -28,6 +30,7 @@ import { PickerToolbar } from "../Picker/Picker";
 
 /** An option of the list */
 export interface SelectOption {
+  group?: string;
   /** Visible text (also the accessible name of the row) */
   label: string;
   /** Value reported by `onChange` */
@@ -42,6 +45,8 @@ export interface SelectOption {
 export type SelectCloseReason = OverlayCloseReason;
 
 interface SelectBaseProps {
+  readOnly?: boolean;
+  children?: ReactNode;
   /**
    * The options
    * @default []
@@ -130,16 +135,19 @@ const EMPTY: readonly string[] = [];
  * confirm button), optional search. The selection runs on the selection
  * machine of @minerva/core, the sheet on the disclosure machine.
  */
-export function Select(props: SelectProps) {
+export function Select(componentProps: SelectProps) {
+  const props = useFormControlProps(componentProps);
   const {
-    options = [],
+    options: suppliedOptions,
+    children,
     open,
     defaultOpen = false,
     onOpenChange,
     placeholder,
     size = "medium",
     invalid = false,
-    disabled = false,
+    disabled: disabledProp = false,
+    readOnly = false,
     label,
     title,
     searchable = false,
@@ -147,6 +155,11 @@ export function Select(props: SelectProps) {
     style,
     testID,
   } = props;
+  const disabled = disabledProp || readOnly;
+  const options = useMemo(
+    () => suppliedOptions ?? collectSelectOptions(children),
+    [suppliedOptions, children],
+  );
   const multiple = props.multiple === true;
   const { tokens: t, fonts } = useTheme();
   const { t: translate } = useI18n();
@@ -422,111 +435,128 @@ export function Select(props: SelectProps) {
                 {translate("empty.description")}
               </Text>
             ) : (
-              visible.map((option) => {
+              visible.map((option, index) => {
                 const checked = selection.value.includes(option.value);
                 const off = !!option.disabled;
                 return (
-                  <Pressable
-                    key={option.value}
-                    accessibilityRole={multiple ? "checkbox" : "radio"}
-                    accessibilityLabel={option.label}
-                    accessibilityHint={option.description}
-                    accessibilityState={{ checked, disabled: off }}
-                    aria-checked={checked}
-                    aria-disabled={off}
-                    disabled={off}
-                    onPress={() => {
-                      // picking the current value just closes the sheet
-                      if (!multiple && checked) overlay.close("action");
-                      else
-                        send({
-                          type: multiple ? "TOGGLE" : "SELECT",
-                          value: option.value,
-                        });
-                    }}
-                    style={({ pressed }) => ({
-                      minHeight: Math.max(t.touchTargetMin, 44) + t.space["2"],
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: t.space["3"],
-                      paddingHorizontal: t.space["5"],
-                      paddingVertical: t.space["2"],
-                      backgroundColor:
-                        pressed && !off
-                          ? t.colors["surface-muted-color"]
-                          : "transparent",
-                    })}
-                    {...part("select", "option", {
-                      selected: checked,
-                      disabled: off,
-                    })}
-                  >
-                    {multiple && (
-                      <View
-                        style={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: t.radius.sm,
-                          borderWidth: checked ? 0 : 1.5,
-                          borderColor: t.colors["border-strong-color"],
-                          backgroundColor: checked
-                            ? t.colors["primary-color"]
-                            : "transparent",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {checked && (
-                          <Icon
-                            name="check"
-                            size={14}
-                            color={t.colors["text-inverse-color"]}
-                          />
-                        )}
-                      </View>
-                    )}
-                    <View style={{ flex: 1, gap: t.space["0-5"] }}>
-                      <Text
-                        style={[
-                          textStyle(t, "md", fonts.sans),
-                          {
-                            color: off
-                              ? t.colors["text-disabled-color"]
-                              : checked && !multiple
-                                ? t.colors["primary-color"]
-                                : t.colors["text-color"],
-                            fontWeight:
-                              checked && !multiple
-                                ? weight(t, "semibold")
-                                : undefined,
-                          },
-                        ]}
-                      >
-                        {option.label}
-                      </Text>
-                      {option.description !== undefined && (
+                  <Fragment key={option.value}>
+                    {Boolean(option.group) &&
+                      option.group !== visible[index - 1]?.group && (
                         <Text
+                          accessibilityRole="header"
                           style={[
                             textStyle(t, "sm", fonts.sans),
                             {
-                              color: off
-                                ? t.colors["text-disabled-color"]
-                                : t.colors["text-muted-color"],
+                              paddingHorizontal: t.space["5"],
+                              paddingVertical: t.space["2"],
                             },
                           ]}
                         >
-                          {option.description}
+                          {option.group}
                         </Text>
                       )}
-                    </View>
-                    {!multiple && checked && (
-                      <Icon
-                        name="check"
-                        size={18}
-                        color={t.colors["primary-color"]}
-                      />
-                    )}
-                  </Pressable>
+                    <Pressable
+                      accessibilityRole={multiple ? "checkbox" : "radio"}
+                      accessibilityLabel={option.label}
+                      accessibilityHint={option.description}
+                      accessibilityState={{ checked, disabled: off }}
+                      aria-checked={checked}
+                      aria-disabled={off}
+                      disabled={off}
+                      onPress={() => {
+                        // picking the current value just closes the sheet
+                        if (!multiple && checked) overlay.close("action");
+                        else
+                          send({
+                            type: multiple ? "TOGGLE" : "SELECT",
+                            value: option.value,
+                          });
+                      }}
+                      style={({ pressed }) => ({
+                        minHeight:
+                          Math.max(t.touchTargetMin, 44) + t.space["2"],
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: t.space["3"],
+                        paddingHorizontal: t.space["5"],
+                        paddingVertical: t.space["2"],
+                        backgroundColor:
+                          pressed && !off
+                            ? t.colors["surface-muted-color"]
+                            : "transparent",
+                      })}
+                      {...part("select", "option", {
+                        selected: checked,
+                        disabled: off,
+                      })}
+                    >
+                      {multiple && (
+                        <View
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: t.radius.sm,
+                            borderWidth: checked ? 0 : 1.5,
+                            borderColor: t.colors["border-strong-color"],
+                            backgroundColor: checked
+                              ? t.colors["primary-color"]
+                              : "transparent",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {checked && (
+                            <Icon
+                              name="check"
+                              size={14}
+                              color={t.colors["text-inverse-color"]}
+                            />
+                          )}
+                        </View>
+                      )}
+                      <View style={{ flex: 1, gap: t.space["0-5"] }}>
+                        <Text
+                          style={[
+                            textStyle(t, "md", fonts.sans),
+                            {
+                              color: off
+                                ? t.colors["text-disabled-color"]
+                                : checked && !multiple
+                                  ? t.colors["primary-color"]
+                                  : t.colors["text-color"],
+                              fontWeight:
+                                checked && !multiple
+                                  ? weight(t, "semibold")
+                                  : undefined,
+                            },
+                          ]}
+                        >
+                          {option.label}
+                        </Text>
+                        {option.description !== undefined && (
+                          <Text
+                            style={[
+                              textStyle(t, "sm", fonts.sans),
+                              {
+                                color: off
+                                  ? t.colors["text-disabled-color"]
+                                  : t.colors["text-muted-color"],
+                              },
+                            ]}
+                          >
+                            {option.description}
+                          </Text>
+                        )}
+                      </View>
+                      {!multiple && checked && (
+                        <Icon
+                          name="check"
+                          size={18}
+                          color={t.colors["primary-color"]}
+                        />
+                      )}
+                    </Pressable>
+                  </Fragment>
                 );
               })
             )}

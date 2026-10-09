@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -198,32 +206,32 @@ const StylingDoc: React.FC = () => {
           role="region"
           aria-label={k("vocabulary.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{t("hooks.state")}</th>
-                <th scope="col">React</th>
-                <th scope="col">Web Components</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{t("hooks.state")}</TableHeader>
+                <TableHeader scope="col">React</TableHeader>
+                <TableHeader scope="col">Web Components</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {stateRows.map(([key, react, wc, description]) => (
-                <tr key={key}>
-                  <th scope="row">
+                <TableRow key={key}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{key}</code>
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propType}>{react}</code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <code className={styles.propType}>{wc}</code>
-                  </td>
-                  <td>{description}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{description}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <p className={styles.prose}>{k("vocabulary.parts")}</p>
       </section>

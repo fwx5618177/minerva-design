@@ -7,7 +7,7 @@
     margin-bottom: 12px;
   "
 >
-  <label><input id="lock" type="checkbox" /> Lock sidebar mode</label>
+  <minerva-checkbox id="lock" label="Lock sidebar mode"></minerva-checkbox>
   <minerva-button id="expand" size="small" variant="outline" color="neutral"
     >expandNavigation()</minerva-button
   >
@@ -28,10 +28,11 @@
     open-navigation-label="Show menu"
     close-navigation-label="Hide menu"
   >
-    <nav slot="navigation">
-      <a href="#inbox" style="display: block; padding: 6px 8px">Inbox</a>
-      <a href="#archive" style="display: block; padding: 6px 8px">Archive</a>
-    </nav>
+    <minerva-nav-tree
+      slot="navigation"
+      active-id="inbox"
+      aria-label="Workspace"
+    ></minerva-nav-tree>
     <minerva-page>
       <minerva-page-header
         heading="Inbox"

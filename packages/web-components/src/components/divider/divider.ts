@@ -39,9 +39,11 @@ export class MinervaDivider extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
       :host([orientation="vertical"]) {
         display: inline-flex;
+        width: auto;
         vertical-align: middle;
       }
       :host([orientation="vertical"][flex-item]) {
@@ -115,6 +117,7 @@ export class MinervaDivider extends MinervaElement {
     const style: Record<string, string> = {};
     if (this.thickness != null && !Number.isNaN(this.thickness)) {
       style.borderWidth = `${this.thickness}px`;
+      style["--_divider-thickness"] = `${this.thickness}px`;
     }
     if (this.length != null && this.length !== "") {
       style[horizontal ? "width" : "height"] = cssLength(this.length);

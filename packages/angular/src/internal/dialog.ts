@@ -8,8 +8,6 @@ import {
   effect,
   inject,
   input,
-  linkedSignal,
-  model,
   output,
   signal,
   untracked,
@@ -17,6 +15,7 @@ import {
   type Signal,
 } from "@angular/core";
 import { injectScope } from "../config/scope";
+import { controllable } from "./controllable";
 import { injectId } from "./ids";
 import { overlayLayer } from "./overlay";
 import { injectIsBrowser } from "./platform";
@@ -52,8 +51,17 @@ export const MN_DIALOG = new InjectionToken<DialogContext>("MN_DIALOG");
  */
 @Directive()
 export abstract class MnDialogBase implements DialogContext {
-  /** Open state (two-way: `[(open)]`) */
-  readonly open = model<boolean | undefined>(undefined);
+  /**
+   * Open state. Bound, the parent owns it (`[(open)]`; a one-way `[open]`
+   * only receives requests through `openChange`, React's controlled mode);
+   * unbound, the dialog owns it (`defaultOpen`, triggers)
+   */
+  readonly open = input<boolean | undefined, unknown>(undefined, {
+    transform: (v: unknown) =>
+      v === undefined || v === null ? undefined : booleanAttribute(v),
+  });
+  /** The user asked to open / close (trigger, close button, Escape, overlay) */
+  readonly openChange = output<boolean>();
   /**
    * Initial open state when `open` is not bound
    * @default false
@@ -85,11 +93,13 @@ export abstract class MnDialogBase implements DialogContext {
   readonly titleId = `${this.contentId}-title`;
   readonly descriptionId = `${this.contentId}-description`;
 
-  private readonly openState = linkedSignal(
-    () => this.open() ?? this.defaultOpen(),
-  );
+  private readonly openState = controllable({
+    bound: () => this.open(),
+    initial: () => this.defaultOpen(),
+    emit: (open) => this.openChange.emit(open),
+  });
   /** Current open state */
-  readonly isOpen = computed(() => this.openState());
+  readonly isOpen = this.openState.value;
   protected readonly state = computed(() =>
     this.isOpen() ? "open" : "closed",
   );
@@ -149,9 +159,7 @@ export abstract class MnDialogBase implements DialogContext {
   }
 
   setOpen(open: boolean): void {
-    if (open === this.openState()) return;
     this.openState.set(open);
-    this.open.set(open);
   }
 
   registerTitle(): () => void {

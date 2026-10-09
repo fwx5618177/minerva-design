@@ -109,6 +109,10 @@ describe("user-facing snippets use minerva-design", () => {
       for (const framework of FRAMEWORKS) {
         const snippets = framework.setup(page.wc!);
         for (const { code } of snippets) {
+          expect(
+            code,
+            `${page.id} repeats global stylesheet setup`,
+          ).not.toMatch(/(?:tokens|style)\.css/);
           expect(privateSpecifiers(code), `${page.id} ${framework.id}`).toEqual(
             [],
           );

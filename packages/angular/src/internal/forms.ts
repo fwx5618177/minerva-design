@@ -117,8 +117,12 @@ export const provideValueAccessor = (type: () => Type<unknown>): Provider => ({
  * `ngModel`, `formControl` / `formControlName` (Reactive Forms) and signal
  * state for the template:
  *
- * - `writeValue(value)`: implemented by the control (sets its model)
+ * - `formValue()`: the value written by the form (`undefined` without a
+ *   form): the control treats it like a bound (controlled) value, e.g.
+ *   `checked: this.checked() ?? this.formValue()`; `fromForm()` normalizes
+ *   what the form writes (`null` before a value is set...)
  * - `notifyChange(value)` / `notifyTouched()`: call on user interaction
+ *   (the form value follows the change)
  * - `formDisabled`: disabled by the form (`setDisabledState`)
  * - `controlInvalid`: the bound form control is invalid and touched (or its
  *   form was submitted), so the control shows its error state like an
@@ -138,9 +142,22 @@ export abstract class MnFormValueControl<T>
   /** The bound form control is invalid and touched / submitted */
   protected readonly controlInvalid = signal(false);
 
-  abstract writeValue(value: T): void;
+  /** The value written by the bound form (`undefined`: no form) */
+  protected readonly formValue = signal<T | undefined>(undefined);
+  private hasFormBinding = false;
+
+  /** Normalizes a value written by the form (override per control) */
+  protected fromForm(value: unknown): T {
+    return value as T;
+  }
+
+  writeValue(value: unknown): void {
+    this.hasFormBinding = true;
+    this.formValue.set(this.fromForm(value));
+  }
 
   registerOnChange(fn: (value: T) => void): void {
+    this.hasFormBinding = true;
     this.onChange = fn;
   }
 
@@ -154,6 +171,7 @@ export abstract class MnFormValueControl<T>
 
   /** Reports a user change to the bound form control */
   protected notifyChange(value: T): void {
+    if (this.hasFormBinding) this.formValue.set(value);
     this.onChange(value);
   }
 

@@ -32,6 +32,11 @@ describe("CodeBlock", () => {
       "const a = 1;",
     );
 
+    expect(screen.getByRole("region", { name: "a.ts code" })).toHaveAttribute(
+      "data-minerva",
+      "code-block",
+    );
+
     await user.click(screen.getByRole("button", { name: "Copy code" }));
 
     expect(writeText).toHaveBeenCalledWith("const a = 1;");

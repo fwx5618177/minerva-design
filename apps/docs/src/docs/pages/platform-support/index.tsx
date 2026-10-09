@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -10,9 +18,10 @@ import {
   type Platform,
   type SupportStatus,
   type Track,
-} from "@contracts";
+} from "@/docs/support";
 import DocPage from "@/docs/components/DocPage";
 import PlatformQuickStart from "./quick-start";
+import MiniApi from "./mini-api";
 import styles from "@/docs/components/docs.module.scss";
 
 /** Badge color of each support status */
@@ -70,22 +79,24 @@ const PlatformSupportDoc: React.FC = () => {
         role="region"
         aria-label={k("platformsTitle")}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{k("platform")}</th>
-              <th scope="col">{t("doc.description")}</th>
-              <th scope="col">{k("components")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">{k("platform")}</TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              <TableHeader scope="col">{k("components")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {PLATFORMS.map((platform) => {
               const summary = supportSummary(platform);
               return (
-                <tr key={platform}>
-                  <th scope="row">{platformName(platform)}</th>
-                  <td>{k(`platforms.${platform}.text`)}</td>
-                  <td>
+                <TableRow key={platform}>
+                  <TableHeader scope="row">
+                    {platformName(platform)}
+                  </TableHeader>
+                  <TableCell>{k(`platforms.${platform}.text`)}</TableCell>
+                  <TableCell>
                     {SUPPORT_STATUSES.filter((s) => summary[s] > 0).map(
                       (status) => (
                         <span key={status} className={styles.prose}>
@@ -96,12 +107,12 @@ const PlatformSupportDoc: React.FC = () => {
                         </span>
                       ),
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
       <ul className={styles.prose}>
         {SUPPORT_STATUSES.map((status) => (
@@ -117,6 +128,7 @@ const PlatformSupportDoc: React.FC = () => {
   return (
     <DocPage id="platform-support" intro={intro}>
       <PlatformQuickStart />
+      <MiniApi />
       <section className={styles.section} aria-labelledby="matrix">
         <h2 id="matrix">{k("matrixTitle")}</h2>
         <p className={styles.prose}>{k("matrixText")}</p>
@@ -139,22 +151,22 @@ const PlatformSupportDoc: React.FC = () => {
           role="region"
           aria-label={k("matrixTitle")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("component")}</th>
-                <th scope="col">{k("tracks")}</th>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("component")}</TableHeader>
+                <TableHeader scope="col">{k("tracks")}</TableHeader>
                 {PLATFORMS.map((platform) => (
-                  <th scope="col" key={platform}>
+                  <TableHeader scope="col" key={platform}>
                     {platformName(platform)}
-                  </th>
+                  </TableHeader>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {contracts.map((contract) => (
-                <tr key={contract.name}>
-                  <th scope="row">
+                <TableRow key={contract.name}>
+                  <TableHeader scope="row">
                     {contract.docs ? (
                       <Link to={`/${contract.docs}`}>
                         <code className={styles.propName}>{contract.name}</code>
@@ -168,16 +180,16 @@ const PlatformSupportDoc: React.FC = () => {
                         <code>{`<${contract.tag}>`}</code>
                       </>
                     )}
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     {contract.tracks
                       .map((track) => k(`track.${track}`))
                       .join(", ")}
-                  </td>
+                  </TableCell>
                   {PLATFORMS.map((platform) => {
                     const { status } = contract.platforms[platform];
                     return (
-                      <td
+                      <TableCell
                         key={platform}
                         title={
                           contract.platforms[platform].notes ??
@@ -192,13 +204,13 @@ const PlatformSupportDoc: React.FC = () => {
                           status={status}
                           label={statusLabel(status)}
                         />
-                      </td>
+                      </TableCell>
                     );
                   })}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
 

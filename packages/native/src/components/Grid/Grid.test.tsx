@@ -94,3 +94,30 @@ describe("Grid", () => {
     });
   });
 });
+
+it("slots GridItem layout and composes enabled press handlers", async () => {
+  const { Button } = await import("../Button");
+  const childPress = vi.fn(),
+    itemPress = vi.fn();
+  const { rerender } = await render(
+    <Grid columnNum={2}>
+      <GridItem asChild fullWidth testID="slotted" onPress={itemPress}>
+        <Button onPress={childPress}>Open</Button>
+      </GridItem>
+    </Grid>,
+  );
+  expect(screen.getByTestId("slotted")).toHaveStyle({ width: "100%" });
+  await fireEvent.press(screen.getByRole("button", { name: "Open" }));
+  expect(childPress).toHaveBeenCalledTimes(1);
+  expect(itemPress).toHaveBeenCalledTimes(1);
+  await rerender(
+    <Grid>
+      <GridItem asChild disabled onPress={itemPress}>
+        <Button onPress={childPress}>Open</Button>
+      </GridItem>
+    </Grid>,
+  );
+  await fireEvent.press(screen.getByRole("button", { name: "Open" }));
+  expect(childPress).toHaveBeenCalledTimes(1);
+  expect(itemPress).toHaveBeenCalledTimes(1);
+});

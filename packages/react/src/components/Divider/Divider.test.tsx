@@ -9,6 +9,19 @@ const renderDivider = (ui: ReactElement) => {
 };
 
 describe("Divider", () => {
+  it.each([0, 3])(
+    "passes thickness %s to the rendered text lines",
+    (thickness) => {
+      const divider = renderDivider(
+        <Divider variant="dashed" thickness={thickness}>
+          Chapter
+        </Divider>,
+      );
+      expect(divider.style.getPropertyValue("--_divider-thickness")).toBe(
+        `${thickness}px`,
+      );
+    },
+  );
   it("renders a solid horizontal divider by default", () => {
     const divider = renderDivider(<Divider />);
     expect(divider).toHaveClass("divider", "solid", "horizontal");

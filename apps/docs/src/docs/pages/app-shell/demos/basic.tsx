@@ -1,9 +1,21 @@
-import { AppShell, Button, Page, PageHeader } from "minerva-design";
-import { LuLayoutDashboard } from "react-icons/lu";
+import { useState } from "react";
+import { AppShell, Badge, NavTree, Page, PageHeader } from "minerva-design";
+import {
+  LuBookOpen,
+  LuLayoutDashboard,
+  LuMessageSquare,
+  LuSettings,
+} from "react-icons/lu";
 
-const links = ["Dashboard", "Books", "Reviews", "Settings"];
+const items = [
+  { id: "dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> },
+  { id: "books", label: "Books", icon: <LuBookOpen /> },
+  { id: "reviews", label: "Reviews", icon: <LuMessageSquare /> },
+  { id: "settings", label: "Settings", icon: <LuSettings /> },
+];
 
 export default function BasicDemo() {
+  const [active, setActive] = useState("dashboard");
   return (
     // The transform makes the fixed sidebar relative to this preview frame.
     <div
@@ -19,25 +31,28 @@ export default function BasicDemo() {
         brandIcon={<LuLayoutDashboard />}
         navigationLabel="Workspace navigation"
         style={{ minHeight: "100%" }}
-        headerActions={<Button size="small">Account</Button>}
+        headerActions={
+          <Badge color="neutral" variant="subtle">
+            Workspace
+          </Badge>
+        }
         navigation={({ collapsed, closeNavigation }) => (
-          <nav>
-            {links.map((link) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                title={link}
-                onClick={closeNavigation}
-                style={{ display: "block", padding: "6px 8px" }}
-              >
-                {collapsed ? link[0] : link}
-              </a>
-            ))}
-          </nav>
+          <NavTree
+            sections={[{ id: "workspace", items }]}
+            activeId={active}
+            collapsed={collapsed}
+            onItemSelect={(item) => {
+              setActive(item.id);
+              closeNavigation();
+            }}
+          />
         )}
       >
         <Page>
-          <PageHeader title="Dashboard" description="Main content area" />
+          <PageHeader
+            title={items.find((item) => item.id === active)?.label}
+            description="Select a section from the sidebar. Collapse it to keep more room for your content."
+          />
         </Page>
       </AppShell>
     </div>

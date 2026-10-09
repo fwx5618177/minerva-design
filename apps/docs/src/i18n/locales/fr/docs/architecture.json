@@ -1,6 +1,6 @@
 {
   "title": "Architecture",
-  "description": "Comment Minerva est découpé : un cœur indépendant de la plateforme (machines à états, contrats de composants, jetons de design, i18n) partagé par tous les moteurs de rendu, les primitives DOM des moteurs web, les composants React, les Web Components et les moteurs natifs prévus.",
+  "description": "React, Vue, Angular, Web Components, React Native, Taro, WeChat natif et uni-app partagent un cœur indépendant de la plateforme ; les moteurs Web ajoutent les primitives DOM.",
   "packages": {
     "title": "Paquets",
     "text": "Minerva est un monorepo pnpm qui publie un seul paquet, minerva-design, avec une entrée par moteur de rendu. Le comportement (machines à états headless), les contrats de composants, les jetons de design, les données de thème et les traductions sont écrits une seule fois dans le cœur ; les moteurs de rendu se chargent uniquement du rendu.",
@@ -15,7 +15,7 @@
   },
   "platforms": {
     "title": "Plateformes",
-    "text": "Chaque moteur de rendu est une implémentation native qui partage le même cœur headless, publiée comme sous-chemin du paquet unique minerva-design. Les moteurs web utilisent aussi les primitives DOM ; React Native et les mini-programmes résolvent les jetons en valeurs concrètes plutôt qu’en variables CSS.",
+    "text": "Chaque moteur possède son entrée minerva-design. Le Web utilise les primitives DOM, React Native des styles natifs résolus, et les mini-programmes des jetons CSS limités par classe. Les statuts proviennent de la matrice des composants.",
     "platform": "Plateforme",
     "entry": "Entrée",
     "renderer": "Moteur de rendu",
@@ -57,15 +57,16 @@
         "name": "uni-app",
         "renderer": "Composants Vue 3 avec les composants intégrés d’uni-app, tokens.mini.css"
       }
-    }
+    },
+    "beta": "Beta"
   },
   "headless": {
     "title": "Couche headless partagée",
-    "text": "Pour que les moteurs de rendu ne divergent jamais, tout sauf le rendu se trouve dans le cœur :",
+    "text": "Les contrats, jetons et états partagés réduisent les écarts ; chaque moteur gère son rendu et son intégration à l’hôte.",
     "machines": "Machines à états (core/machines) : des stores { getState, send, subscribe } indépendants de tout framework pour l’ouverture / fermeture et presence, la file des toasts, la sélection, les onglets, les colonnes de sélecteur, les champs et leur validation, la pagination, la notation, le champ numérique à pas et les interrupteurs. Les toasts, onglets, la pagination et la notation React et Web Components les utilisent déjà.",
     "contracts": "Contrats de composants (core/contracts) : métadonnées d’exécution par composant (props avec valeurs d’énumération et valeurs par défaut, événements, slots, cibles, statut de prise en charge par plateforme), vérifiées par rapport aux types React et à custom-elements.json.",
     "tokens": "Jetons de design : des données TypeScript génèrent tokens.css (identique octet pour octet à l’ancienne sortie Sass), un tokens.mini.css à base de classes pour les mini-programmes (découpé par palette) et resolveTokens() avec un color-mix sRGB conforme au CSS.",
-    "tests": "Des suites de tests de contrat écrites une seule fois (tests/contracts) s’exécutent avec un pilote par moteur de rendu : React DOM et Web Components aujourd’hui, chaque nouveau moteur ajoute le sien."
+    "tests": "Les tests de contrats, tests unitaires des moteurs et tests navigateur vérifient les API documentées. Consultez Plateformes pour les limites des validations SDK, simulateur et appareil."
   },
   "primitives": {
     "title": "Primitives DOM",
@@ -91,13 +92,13 @@
     "text": "Floating UI (@floating-ui/dom) est la seule dépendance d’interaction tierce, utilisée uniquement dans le module de positionnement de la couche DOM (dist/dom). Il n’y a ni Radix UI ni autre bibliothèque headless : Slot / asChild, Tabs, les boîtes de dialogue, les menus et la liste déroulante sont développés dans ce dépôt et testés avec Vitest, happy-dom, Testing Library et user-event."
   },
   "roadmap": {
-    "title": "Feuille de route",
-    "text": "Chaque phase livre une famille de moteurs de rendu au-dessus du cœur partagé, ajoute son pilote de tests de contrat et fait passer le statut de ses contrats de prévu à bêta, puis stable.",
-    "phase0": "Fondations (terminé) : cœur indépendant de la plateforme et couche DOM (dist/dom), chaîne des jetons, machines à états, contrats de composants, harnais de tests de contrat, catalogues pnpm et paquets de moteurs de rendu vides.",
-    "phase1": "Moteurs natifs Vue 3 et Angular (minerva-design/vue, minerva-design/angular), qui remplacent l’usage des Web Components dans ces frameworks.",
-    "phase2": "React Native + Expo (minerva-design/native).",
-    "phase3": "Mini-programmes : Taro (minerva-design/taro), composants natifs WeChat (dist/weapp via le champ miniprogram) et uni-app (minerva-design/uni).",
-    "phase4": "Composants grand public (toC) et préréglage de design touch sur toutes les plateformes."
+    "title": "Implémentation et validation",
+    "text": "Tous les moteurs listés contiennent des implémentations. Beta indique leur maturité actuelle, sans certifier les appareils physiques ni la production. La matrice précise le statut de chaque composant.",
+    "phase0": "Cœur partagé et couche DOM : états, contrats, jetons, traductions et infrastructure de test implémentés.",
+    "phase1": "Vue 3 et Angular : moteurs natifs et exemples exécutables implémentés.",
+    "phase2": "React Native et Expo : composants natifs et contrôles sur simulateur disponibles ; validation sur appareil physique et paquet Release autonome encore ouverte.",
+    "phase3": "Taro, WeChat natif et uni-app : implémentations, compilation officielle ciblant WeChat et contrôles navigateur/simulateur documentés disponibles.",
+    "phase4": "Préréglages tactiles et extensions mobiles : utilisez les API de chaque plateforme en respectant les limites documentées de l’hôte et de la validation."
   },
   "next": {
     "title": "Étapes suivantes",

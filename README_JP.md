@@ -2,11 +2,9 @@
 
 ## プラットフォームの実装状況
 
-メインワークスペースには Vue（`minerva-design/vue`）、React Native / Expo（`minerva-design/native`）、Angular の初期実装（`minerva-design/angular`：設定、Button、Switch、Modal とその構成部品）が統合されています。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）、WeChat ネイティブ（`miniprogram: dist/weapp`）では Button・Input・Switch を実装しています。全機能の互換性や npm 公開を意味するものではありません。範囲と検証状況は[対応表](https://fwx5618177.github.io/minerva-design/#/platform-support)をご覧ください。
+Vue（`minerva-design/vue`）、Angular（`minerva-design/angular`）、React Native / Expo（`minerva-design/native`）のネイティブ実装を統合しています。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）、WeChat ネイティブ（`miniprogram: dist/weapp`）もフォーム、ナビゲーション、オーバーレイ、データ表示、テーマを実装しています。各コンポーネントの実装範囲と制限は自動生成の[対応表](https://fwx5618177.github.io/minerva-design/#/platform-support)で確認できます。ホストテストとビルドの成功は、実機検証や npm 公開を意味しません。
 
-ルートは非公開の `minerva-design-workspace` で、`packages/minerva-design` が公開用の単一パッケージを組み立てます。`packages/core` はプラットフォーム非依存、`packages/dom` はブラウザー専用です。公開 `/core` は既存の Web API を維持します。隣接する `md-*` は未完了の変更を持つ Git worktree であり、別の公開パッケージではありません。
-
-[コード比較と実装レポート（中国語）](docs/research/2026-10-09-library-comparison.md)。
+ルートは非公開の `minerva-design-workspace` で、`packages/minerva-design` が公開用の単一パッケージを組み立てます。`packages/core` はプラットフォーム非依存、`packages/dom` はブラウザー専用です。公開 `/core` は既存の Web API を維持します。Vue・Angular・Native の開発 worktree は本ワークスペースに統合して削除済みです。スナップショットのブランチには開発履歴を保存しています。
 
 <div align="center">
 
@@ -352,21 +350,23 @@ pnpm dev
 
 ### スクリプト
 
-| コマンド                            | 説明                                                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| `pnpm dev`                          | `minerva-design` をビルドしてから、ドキュメント/デモサイトを起動                            |
-| `pnpm build`                        | `minerva-design`（core → react → web components）をビルドし、次にドキュメントサイトをビルド |
-| `pnpm test`                         | すべてのテストを実行：ユニット（全パッケージ・ドキュメント検査）と e2e ユーザーフロー       |
-| `pnpm test:unit` / `pnpm test:e2e`  | ユニットテストのみ / e2e ユーザーフロー（`tests/e2e`）のみを実行                            |
-| `pnpm test:dist`                    | ビルドした `minerva-design` とその tarball のテスト（ビルド後に実行）                       |
-| `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                                              |
-| `pnpm lint`                         | ESLint（flat config）を実行                                                                 |
-| `pnpm typecheck`                    | 全パッケージの型チェック                                                                    |
-| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                                              |
-| `pnpm clean`                        | ビルド成果物を削除                                                                          |
-| `pnpm changeset`                    | 変更内容を記述した changeset を追加                                                         |
-| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成                                  |
-| `pnpm release`                      | `minerva-design` をビルドして npm に公開                                                    |
+| コマンド                            | 説明                                                                       |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `pnpm dev`                          | `minerva-design` をビルドしてから、ドキュメント/デモサイトを起動           |
+| `pnpm build`                        | 全レンダラーを `minerva-design` にビルドし、次にドキュメントサイトをビルド |
+| `pnpm test`                         | 全 Vitest テスト：ユニット、ドキュメント検査、ホスト上のユーザーフロー     |
+| `pnpm test:unit` / `pnpm test:e2e`  | ユニット / ホストのフロー（happy-dom、React Native testing library）       |
+| `pnpm test:browser`                 | 実 Chromium で本番ドキュメントをテスト（ビルドと Chromium インストール後） |
+| `pnpm test:contracts:mini`          | Taro / uni-app 共通のボタン、選択、制御状態テスト                          |
+| `pnpm test:dist`                    | ビルドした `minerva-design` とその tarball のテスト（ビルド後に実行）      |
+| `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                             |
+| `pnpm lint`                         | ESLint（flat config）を実行                                                |
+| `pnpm typecheck`                    | 全パッケージの型チェック                                                   |
+| `pnpm format` / `pnpm format:check` | Prettier で整形 / 整形チェック                                             |
+| `pnpm clean`                        | ビルド成果物を削除                                                         |
+| `pnpm changeset`                    | 変更内容を記述した changeset を追加                                        |
+| `pnpm version-packages`             | 保留中の changeset を適用：バージョン更新と CHANGELOG 生成                 |
+| `pnpm release`                      | `minerva-design` をビルドして npm に公開                                   |
 
 ### ツール
 

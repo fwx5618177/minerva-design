@@ -31,6 +31,9 @@ import {
 } from "../apps/docs/scripts/generate-api.mjs";
 import { docPages } from "../apps/docs/src/docs/registry.ts";
 import { NATIVE_COMPONENTS } from "../packages/native/src/manifest.ts";
+import { taroComponentManifest } from "../packages/taro/src/manifest.ts";
+import { uniComponentManifest } from "../packages/uni/src/manifest.ts";
+import { weappComponentManifest } from "../packages/weapp/src/manifest.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const at = (path) => join(ROOT, path);
@@ -38,6 +41,14 @@ const at = (path) => join(ROOT, path);
 export const CONTRACTS_OUTPUT = at(
   "packages/core/src/contracts/components.generated.json",
 );
+export const SUPPORT_OUTPUT = at("apps/docs/src/docs/support.generated.json");
+
+/** The matrix needs support facts, not the complete props/events API payload. */
+export function projectSupport(contracts) {
+  return contracts.map(({ name, tag, docs, tracks, platforms }) =>
+    compact({ name, tag, docs, tracks, platforms }),
+  );
+}
 
 /** Every renderer, in display order */
 export const PLATFORMS = [
@@ -109,7 +120,7 @@ const VUE_ENTRIES = ["packages/vue/src/index.ts", "packages/vue/src/monaco.ts"];
  * (`export * from`, `export { a, b as c }`, `export { default as X }`,
  * `export const X`): `.vue` modules cannot be imported by this script.
  */
-export function readVue() {
+export function readValueExports(entries) {
   const names = new Set();
   const seen = new Set();
   const resolve = (from, specifier) => {
@@ -140,8 +151,189 @@ export function readVue() {
     ))
       names.add(name);
   };
-  for (const entry of VUE_ENTRIES) visit(at(entry));
+  for (const entry of entries) visit(at(entry));
   return names;
+}
+
+export const readVue = () => readValueExports(VUE_ENTRIES);
+export const readAngular = () =>
+  readValueExports([
+    "packages/angular/src/index.ts",
+    "packages/angular/monaco/index.ts",
+  ]);
+const angularExports = readAngular();
+
+// Angular uses standalone components/directives and DI rather than mirroring
+// React's compound tree. Every equivalent below names its public owner and the
+// actual API; an absent export is never evidence of implemented support.
+const ANGULAR_EQUIVALENTS = {
+  ConfigProvider: {
+    status: "beta",
+    exports: ["MnConfig"],
+    notes:
+      "MnConfig (mn-config): nested theme, palette, locale and design scopes.",
+  },
+  ThemeProvider: {
+    status: "beta",
+    exports: ["MnConfig", "provideMinerva"],
+    notes:
+      "provideMinerva() configures the root; MnConfig supplies reactive nested theme/palette scopes and portal inheritance.",
+  },
+  ToastProvider: {
+    status: "beta",
+    exports: ["MnToastService", "MnToastRegion"],
+    notes:
+      "Inject MnToastService to show/dismiss/clear notifications and render MnToastRegion in the desired scope; Angular DI supplies the service instead of a wrapper provider.",
+  },
+  Table: {
+    status: "beta",
+    exports: ["MnDataTable"],
+    notes:
+      "MnDataTable: declarative columns + rows, sort/selection models, loading/error/empty states. Use MnTableRoot and native table directives for custom headers or merged cells.",
+  },
+  DescriptionItem: {
+    exports: ["MnDescriptionList"],
+    notes:
+      "MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element.",
+  },
+  ModalRoot: {
+    exports: ["MnModal"],
+    notes:
+      "MnModal owns the open lifecycle and dialog context; projected header/body/footer and mnModalTrigger/mnModalClose compose with it.",
+  },
+  ModalContent: {
+    exports: ["MnModal"],
+    notes:
+      "MnModal renders its portalled, labelled dialog panel and projects Angular content. Panel sizing, class and focus/dismissal events are configured on MnModal.",
+  },
+  DrawerRoot: {
+    exports: ["MnDrawer"],
+    notes:
+      "MnDrawer owns the open lifecycle and dialog context; projected header/body/footer and mnDrawerTrigger/mnDrawerClose compose with it.",
+  },
+  DrawerContent: {
+    exports: ["MnDrawer"],
+    notes:
+      "MnDrawer renders its portalled panel and projects Angular content; side, size and focus/dismissal events are configured on MnDrawer.",
+  },
+  TabList: {
+    exports: ["MnTabs", "MnTab"],
+    notes:
+      "MnTabs renders the role=tablist around projected MnTab controls; label, orientation and activationMode configure the list and keyboard interaction.",
+  },
+  PopoverTrigger: {
+    exports: ["MnPopover"],
+    notes:
+      "MnPopover renders its native trigger button using label, disabled and the open model; it owns aria-expanded/controls and focus restoration.",
+  },
+  PopoverContent: {
+    exports: ["MnPopover"],
+    notes:
+      "MnPopover renders a labelled portalled dialog around projected content; placement, forceMount and the open model configure it.",
+  },
+  MenuItem: {
+    exports: ["MnMenu"],
+    notes:
+      "MnMenu.items entries { id, label, disabled, icon, shortcut, children } render native menuitem buttons; selected emits actions and expanded controls nested choices.",
+  },
+  MenuCheckboxItem: {
+    exports: ["MnMenu"],
+    notes:
+      "MnMenu.items entries with checked render menuitemcheckbox; checkedChange emits { id, checked } for the controlled owner.",
+  },
+  MenuRadioItem: {
+    exports: ["MnMenu"],
+    notes:
+      'MnMenu.items entries with type: "radio", value and optional group render menuitemradio; radioValues controls one value per group and radioChange emits { group, value }.',
+  },
+  MenuGroup: {
+    exports: ["MnMenu"],
+    notes:
+      'MnMenu.items entries with type: "group", label and children render named role=group containers and supply the default group id for radio choices.',
+  },
+  MenuLabel: {
+    exports: ["MnMenu"],
+    notes:
+      'MnMenu.items entries with type: "label" render noninteractive headings.',
+  },
+  MenuSeparator: {
+    exports: ["MnMenu"],
+    notes:
+      'MnMenu.items entries with type: "separator" render role=separator elements.',
+  },
+};
+
+/** Native Angular support, including optional entries and verified equivalent APIs. */
+export function angularSupport(name, exports = angularExports) {
+  const equivalent = ANGULAR_EQUIVALENTS[name];
+  if (equivalent && equivalent.exports.every((value) => exports.has(value)))
+    return {
+      status: equivalent.status ?? "n/a",
+      notes: `Native Angular: ${equivalent.notes}`,
+    };
+  const angularName = `Mn${name}`;
+  if (exports.has(angularName))
+    return {
+      status: "beta",
+      notes: `Native Angular: ${angularName}.${name === "MonacoCodeEditor" ? " Optional entry minerva-design/angular/monaco; inject a locally configured Monaco engine/loader and configure workers in the host application." : " Native standalone component/directive; see platform tests for validated scope."}`,
+    };
+  return { status: "planned" };
+}
+const miniManifests = {
+  taro: taroComponentManifest,
+  uni: uniComponentManifest,
+  weapp: weappComponentManifest,
+};
+
+// uni/WeApp expose these parts through parent data, not standalone components.
+// A missing manifest entry alone is never evidence for an equivalent API.
+const MINI_DATA_EQUIVALENTS = {
+  DescriptionItem:
+    "DescriptionList.items: { key, label, value }; uni also exposes scoped label/value slots, and WeApp exposes a named slot for each item.key.",
+  MenuItem:
+    "Menu.items: { key, label, disabled, shortcut, children }; children opens a submenu and the parent emits select/change.",
+  MenuCheckboxItem:
+    'Menu.items entries with type: "checkbox", checked/defaultChecked and disabled; uni emits checkedChange and WeApp emits checkedchange (or configure({ onCheckedChange })).',
+  MenuRadioItem:
+    'Menu.items entries with type: "radio-group" and items: [{ value, label, disabled }]; the group owns value/defaultValue; uni emits valueChange and WeApp emits valuechange (or configure({ onValueChange })).',
+  MenuGroup: 'Menu.items entries with type: "group", label and nested items.',
+  MenuLabel:
+    'A noninteractive heading in Menu.items: { type: "group", key, label, items: [] }; it is rendered as text, not a selectable action.',
+  MenuSeparator:
+    'Menu.items entries with type: "separator" render a noninteractive separator.',
+};
+const MINI_VALIDATION_NOTES = {
+  taro: "Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+  uni: "Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+  weapp:
+    "Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+};
+
+export function miniSupport(platform, name) {
+  const entry = miniManifests[platform]?.find((item) => item.name === name);
+  if (!entry) {
+    const equivalent =
+      (platform === "uni" || platform === "weapp") &&
+      MINI_DATA_EQUIVALENTS[name];
+    return equivalent
+      ? {
+          status: "n/a",
+          notes: `Data API rather than a standalone component. ${equivalent}`,
+        }
+      : { status: "planned" };
+  }
+  return {
+    status: entry.status === "n/a" ? "n/a" : "beta",
+    notes: [
+      entry.scope,
+      ...entry.limitations,
+      entry.status === "n/a"
+        ? entry.equivalent
+          ? `Use ${entry.equivalent} props/slots for the native equivalent.`
+          : "Unsupported on this platform."
+        : MINI_VALIDATION_NOTES[platform],
+    ].join(" "),
+  };
 }
 
 /** Support of a component on Vue (generated from the Vue exports) */
@@ -273,7 +465,13 @@ function reactKind(checker, type) {
  * Exported components and their props (declared in Minerva sources only):
  * every exported value `X` with an exported `XProps` type.
  */
-function readComponents({ entries, source, paths, propsOf = {} }) {
+function readComponents({
+  entries,
+  source,
+  paths,
+  propsOf = {},
+  inferCallableProps = false,
+}) {
   const program = ts.createProgram(entries, {
     strict: true,
     jsx: ts.JsxEmit.ReactJSX,
@@ -302,9 +500,26 @@ function readComponents({ entries, source, paths, propsOf = {} }) {
     if (!/^[A-Z]/.test(name) || NOT_COMPONENTS.has(name)) continue;
     if (!(symbol.flags & ts.SymbolFlags.Value)) continue;
     const propsSymbol = exports.get(propsOf[name] ?? `${name}Props`);
-    if (!propsSymbol || !(propsSymbol.flags & ts.SymbolFlags.Type)) continue;
-    const type = checker.getDeclaredTypeOfSymbol(propsSymbol);
-    const all = checker.getPropertiesOfType(type);
+    let type;
+    let parameterless = false;
+    if (propsSymbol && propsSymbol.flags & ts.SymbolFlags.Type) {
+      type = checker.getDeclaredTypeOfSymbol(propsSymbol);
+    } else if (inferCallableProps) {
+      const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
+      if (!declaration) continue;
+      const callable = checker.getTypeOfSymbolAtLocation(symbol, declaration);
+      const signatures = callable.getCallSignatures();
+      const parameter = signatures[0]?.getParameters()[0];
+      if (!signatures.length) continue;
+      parameterless = !parameter;
+      if (parameter)
+        type = checker.getTypeOfSymbolAtLocation(
+          parameter,
+          parameter.valueDeclaration ?? declaration,
+        );
+    }
+    if (!type && !parameterless) continue;
+    const all = type ? checker.getPropertiesOfType(type) : [];
     const props = [];
     for (const prop of all) {
       const own = (prop.declarations ?? []).some((d) =>
@@ -328,7 +543,9 @@ function readComponents({ entries, source, paths, propsOf = {} }) {
     }
     // declaration order of the props interface (inherited props after)
     const description = clean(
-      ts.displayPartsToString(propsSymbol.getDocumentationComment(checker)),
+      ts.displayPartsToString(
+        (propsSymbol ?? symbol).getDocumentationComment(checker),
+      ),
     );
     components.set(name, {
       props,
@@ -344,6 +561,7 @@ export function readReact() {
   return readComponents({
     entries: REACT_ENTRIES,
     source: MINERVA_SOURCE,
+    inferCallableProps: true,
     propsOf: REACT_PROPS,
     paths: {
       "@minerva/core": [at("packages/core/src/index.ts")],
@@ -361,6 +579,7 @@ export function readNative() {
   return readComponents({
     entries: NATIVE_ENTRIES,
     source: NATIVE_SOURCE,
+    inferCallableProps: true,
     paths: { "@minerva/core": [at("packages/core/src/index.ts")] },
   });
 }
@@ -442,16 +661,43 @@ const eventFor = (callback, events) => {
   ].find((candidate) => events.has(candidate));
 };
 
-/** `native` support of a contract implemented by minerva-design/native */
-function nativeSupport(name) {
+/** Web element-only composition maps to these existing native data APIs. */
+const NATIVE_DATA_PARTS = {
+  DescriptionItem:
+    "No standalone native element: DescriptionList.items accepts { key, label, value } rows and renders each term and description, including numeric zero.",
+  MenuItem:
+    "No standalone native element: Menu and ContextMenu items accept MenuAction entries with label, disabled, children and onSelect behavior.",
+  MenuCheckboxItem:
+    "No standalone native element: MenuCheckboxEntry (type: checkbox) renders an accessible checkbox with checked/defaultChecked, onCheckedChange and closeOnSelect behavior.",
+  MenuRadioItem:
+    "No standalone native element: MenuRadioGroupEntry (type: radio-group) supplies items with value, label and disabled; the group owns value/defaultValue and onValueChange.",
+  MenuGroup:
+    "No standalone native element: MenuGroupEntry (type: group) supplies a heading label and recursively rendered items.",
+  MenuLabel:
+    "No standalone native element: the label of MenuGroupEntry or MenuRadioGroupEntry renders an accessible native heading.",
+  MenuSeparator:
+    "No standalone native element: MenuSeparatorEntry (type: separator) renders the native Divider between menu entries.",
+};
+
+/** `native` support of a contract implemented by minerva-design/native. */
+export function nativeSupport(name) {
   const component = NATIVE_COMPONENTS.find((c) => c.contract === name);
-  if (!component) return { status: "planned" };
-  return compact({
-    status: "beta",
-    notes:
-      component.notes ??
-      (component.name === name ? undefined : `As ${component.name}`),
-  });
+  if (component)
+    return compact({
+      status: "beta",
+      notes:
+        component.notes ??
+        (component.name === name ? undefined : `As ${component.name}`),
+    });
+  if (Object.hasOwn(NATIVE_DATA_PARTS, name))
+    return { status: "n/a", notes: NATIVE_DATA_PARTS[name] };
+  if (name === "MonacoCodeEditor")
+    return {
+      status: "n/a",
+      notes:
+        "Monaco requires a browser DOM and is not embedded on iOS or Android. Native CodeEditor provides an accessible multiline source editor with an optional formatter; it does not claim Monaco language-service or DOM-editor behavior.",
+    };
+  return { status: "planned" };
 }
 
 /** Contract of a native-only (mobile) component, from its native types */
@@ -482,11 +728,21 @@ function buildNativeContract(component, native, docs) {
     );
   }
   const platforms = Object.fromEntries(
-    PLATFORMS.map((platform) => [platform, { status: "planned" }]),
+    PLATFORMS.map((platform) => [
+      platform,
+      {
+        status: "n/a",
+        notes:
+          "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component.",
+      },
+    ]),
   );
   platforms.react = { status: "n/a", notes: NOT_APPLICABLE_NOTES.native };
   platforms.wc = { status: "n/a", notes: NOT_APPLICABLE_NOTES.native };
   platforms.native = compact({ status: "beta", notes: component.notes });
+  for (const platform of ["taro", "uni", "weapp"])
+    if (miniManifests[platform].some((entry) => entry.name === component.name))
+      platforms[platform] = miniSupport(platform, component.name);
   return compact({
     name: component.name,
     docs,
@@ -590,30 +846,9 @@ function buildContract({
     : { status: "n/a", notes: NOT_APPLICABLE_NOTES.wc };
   platforms.vue = vueSupport(name, react, vueExports);
   platforms.native = nativeSupport(name);
-  const angularNames = {
-    ConfigProvider: "MnConfig / provideMinerva",
-    Button: "MnButton",
-    Switch: "MnSwitch",
-    Modal: "MnModal",
-    ModalHeader: "MnModalHeader",
-    ModalBody: "MnModalBody",
-    ModalFooter: "MnModalFooter",
-    ModalTrigger: "MnModalTrigger",
-    ModalClose: "MnModalClose",
-  };
-  if (angularNames[name])
-    platforms.angular = {
-      status: "beta",
-      notes: `Native Angular: ${angularNames[name]}. Initial subset; forms and other components remain in progress.`,
-    };
-  if (["Button", "Input", "Switch"].includes(name)) {
-    for (const platform of ["taro", "weapp", "uni"])
-      platforms[platform] = {
-        status: "beta",
-        notes:
-          "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending.",
-      };
-  }
+  platforms.angular = angularSupport(name);
+  for (const platform of ["taro", "uni", "weapp"])
+    platforms[platform] = miniSupport(platform, name);
   // the native callback of each React callback (same name, or its RN idiom)
   if (native) {
     const nativeProps = new Set(native.props.map((p) => p.name));
@@ -729,19 +964,23 @@ export async function serializeContracts(contracts = generateContracts()) {
 const isMain =
   process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
-  const next = await serializeContracts();
-  const name = relative(ROOT, CONTRACTS_OUTPUT);
-  if (process.argv.includes("--check")) {
-    const current = existsSync(CONTRACTS_OUTPUT)
-      ? readFileSync(CONTRACTS_OUTPUT, "utf8")
-      : "";
-    if (current !== next) {
-      console.error(`${name} is out of date. Run: pnpm gen:contracts`);
-      process.exit(1);
+  const contracts = generateContracts();
+  const outputs = [
+    [CONTRACTS_OUTPUT, await serializeContracts(contracts)],
+    [SUPPORT_OUTPUT, await serializeContracts(projectSupport(contracts))],
+  ];
+  for (const [output, next] of outputs) {
+    const name = relative(ROOT, output);
+    if (process.argv.includes("--check")) {
+      const current = existsSync(output) ? readFileSync(output, "utf8") : "";
+      if (current !== next) {
+        console.error(`${name} is out of date. Run: pnpm gen:contracts`);
+        process.exit(1);
+      }
+      console.log(`${name} is up to date`);
+    } else {
+      writeFileSync(output, next);
+      console.log(`Wrote ${name}`);
     }
-    console.log(`${name} is up to date`);
-  } else {
-    writeFileSync(CONTRACTS_OUTPUT, next);
-    console.log(`Wrote ${name}`);
   }
 }

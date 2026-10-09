@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoArrowUpOutline } from "react-icons/io5";
@@ -116,7 +117,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           );
         })}
       </ul>
-      <button
+      <Button
+        variant="ghost"
+        color="neutral"
+        size="small"
         type="button"
         className={styles.backToTop}
         onClick={() => {
@@ -129,7 +133,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
       >
         <IoArrowUpOutline aria-hidden />
         {t("toc.backToTop")}
-      </button>
+      </Button>
     </nav>
   );
 };

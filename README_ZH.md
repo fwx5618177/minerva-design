@@ -2,11 +2,9 @@
 
 ## 多平台实现进度
 
-主工作区现已接入原生 Vue（`minerva-design/vue`）、React Native / Expo（`minerva-design/native`），以及 Angular 的初始组件集（`minerva-design/angular`：配置、Button、Switch、Modal 及其组合部件）。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）和微信原生（`miniprogram: dist/weapp`）已实现 Button、Input、Switch。各平台仍在逐步完善，尚未与 React 全量对齐，也不代表 npm 已发布。范围、示例与验证限制见[平台支持矩阵](https://fwx5618177.github.io/minerva-design/#/platform-support)。
+工作区已包含原生 Vue（`minerva-design/vue`）、Angular（`minerva-design/angular`）和 React Native / Expo（`minerva-design/native`）渲染器。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）和微信原生（`miniprogram: dist/weapp`）也已扩展到原生表单、导航、浮层、数据展示及主题实现。自动生成的[平台支持矩阵](https://fwx5618177.github.io/minerva-design/#/platform-support)记录各组件的实现范围与限制；host 测试和构建通过不等同于真机验证或 npm 已发布。
 
-根工作区是私有包 `minerva-design-workspace`；`packages/minerva-design` 负责组装唯一的公开发布包。`packages/core` 保存平台无关逻辑，浏览器专属能力位于 `packages/dom`，公开的 `/core` 入口保留既有 Web API。旁边的 `md-*` 目录是含有未完成变更的 Git worktree，不是额外的发布包。
-
-[代码比较与接续实现报告](docs/research/2026-10-09-library-comparison.md)。
+根工作区是私有包 `minerva-design-workspace`；`packages/minerva-design` 负责组装唯一的公开发布包。`packages/core` 保存平台无关逻辑，浏览器专属能力位于 `packages/dom`，公开的 `/core` 入口保留既有 Web API。Vue、Angular 和 Native 的开发 worktree 已汇总到本工作区并移除目录；快照分支保留了开发历史。
 
 <div align="center">
 
@@ -352,21 +350,23 @@ pnpm dev
 
 ### 脚本
 
-| 命令                                | 说明                                                                   |
-| ----------------------------------- | ---------------------------------------------------------------------- |
-| `pnpm dev`                          | 构建 `minerva-design`，然后启动文档/演示站点                           |
-| `pnpm build`                        | 构建 `minerva-design`（core → react → web components），再构建文档站点 |
-| `pnpm test`                         | 运行全部测试：单元测试（所有包、文档校验）与 e2e 用户流程              |
-| `pnpm test:unit` / `pnpm test:e2e`  | 只运行单元测试 / 只运行 e2e 用户流程（`tests/e2e`）                    |
-| `pnpm test:dist`                    | 测试构建好的 `minerva-design` 及其打包的 tarball（构建后运行）         |
-| `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）                           |
-| `pnpm lint`                         | 运行 ESLint（flat config）                                             |
-| `pnpm typecheck`                    | 对所有包进行类型检查                                                   |
-| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                                        |
-| `pnpm clean`                        | 清理构建产物                                                           |
-| `pnpm changeset`                    | 添加描述本次改动的 changeset                                           |
-| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG                     |
-| `pnpm release`                      | 构建 `minerva-design` 并发布到 npm                                     |
+| 命令                                | 说明                                                           |
+| ----------------------------------- | -------------------------------------------------------------- |
+| `pnpm dev`                          | 构建 `minerva-design`，然后启动文档/演示站点                   |
+| `pnpm build`                        | 构建所有渲染器到 `minerva-design`，再构建文档站点              |
+| `pnpm test`                         | 运行全部 Vitest 测试：单元、文档校验及宿主用户流程             |
+| `pnpm test:unit` / `pnpm test:e2e`  | 单元测试 / 宿主流程（happy-dom、React Native 测试库）          |
+| `pnpm test:browser`                 | 在真实 Chromium 中测试生产文档站（先构建并安装 Chromium）      |
+| `pnpm test:contracts:mini`          | Taro / uni-app 共用的按钮、选择和受控状态契约                  |
+| `pnpm test:dist`                    | 测试构建好的 `minerva-design` 及其打包的 tarball（构建后运行） |
+| `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）                   |
+| `pnpm lint`                         | 运行 ESLint（flat config）                                     |
+| `pnpm typecheck`                    | 对所有包进行类型检查                                           |
+| `pnpm format` / `pnpm format:check` | 使用 Prettier 格式化 / 检查格式                                |
+| `pnpm clean`                        | 清理构建产物                                                   |
+| `pnpm changeset`                    | 添加描述本次改动的 changeset                                   |
+| `pnpm version-packages`             | 应用待发布的 changeset：更新版本号并生成 CHANGELOG             |
+| `pnpm release`                      | 构建 `minerva-design` 并发布到 npm                             |
 
 ### 工具链
 

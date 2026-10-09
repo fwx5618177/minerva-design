@@ -42,14 +42,56 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+      - name: Test source migration transforms
+        run: pnpm test:migration
+
       - name: Test with coverage
         run: pnpm test:coverage
 
+      - name: Check mini-program API documentation against source
+        run: pnpm --filter @minerva/docs check:mini-api
+
       - name: Build
         run: pnpm build
+
+      - name: Install Chromium for browser E2E
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Test production docs and mini renderer hosts in Chromium
+        run: pnpm test:browser
 
       - name: Test built packages
         run: pnpm test:dist
 
       - name: Check package exports
         run: pnpm check:package
+
+  mini-sdk-build:
+    name: Official mini SDK (${{ matrix.renderer }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: [taro, uni]
+    env:
+      # Leave headroom for webpack workers on the hosted Linux runner.
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: packages/${{ matrix.renderer }}/spike/device/package-lock.json
+
+      - name: Install isolated official SDK fixture
+        working-directory: packages/${{ matrix.renderer }}/spike/device
+        run: npm ci --no-audit --no-fund
+
+      - name: Compile current library source for WeChat
+        working-directory: packages/${{ matrix.renderer }}/spike/device
+        run: npm run build

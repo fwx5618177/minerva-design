@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -77,14 +78,17 @@ const ThemeMenu: React.FC = () => {
       aria-label={label}
       className={styles.menuPanel}
     >
-      <button
+      <Button
+        variant="ghost"
+        color="neutral"
+        size="small"
         type="button"
         className={styles.iconButton}
         aria-label={`${label}: ${t(LABEL_KEYS[mode])}`}
         title={label}
       >
         <Icon aria-hidden />
-      </button>
+      </Button>
     </Menu>
   );
 };

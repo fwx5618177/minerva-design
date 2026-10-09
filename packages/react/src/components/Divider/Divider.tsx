@@ -44,7 +44,10 @@ const Divider = ({
     children !== "";
   const dividerStyle: React.CSSProperties = {
     ...style,
-    ...(thickness != null && { borderWidth: thickness }),
+    ...(thickness != null && {
+      borderWidth: thickness,
+      "--_divider-thickness": `${thickness}px`,
+    }),
     ...(orientation === "vertical" && length != null && { height: length }),
     ...(orientation === "horizontal" && length != null && { width: length }),
     ...(spacing != null && {

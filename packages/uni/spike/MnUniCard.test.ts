@@ -41,7 +41,9 @@ describe("MnUniCard (uni-app)", () => {
     const w = mount(MnUniCard, {
       props: { title: "X" },
       global: {
-        stubs: { Text: { template: '<em class="stubbed"><slot /></em>' } },
+        stubs: {
+          UniTextHost: { template: '<em class="stubbed"><slot /></em>' },
+        },
       },
     });
     expect(w.find("em.stubbed").text()).toBe("X");

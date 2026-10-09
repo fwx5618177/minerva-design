@@ -82,10 +82,11 @@ export async function hydrate(
   component: Type<unknown>,
   providers: Array<Provider | EnvironmentProviders> = [],
 ): Promise<ApplicationRef> {
-  const part = (tag: string) =>
-    new RegExp(`<${tag}[^>]*>([\\s\\S]*)</${tag}>`).exec(html)?.[1] ?? "";
-  document.head.innerHTML = part("head");
-  document.body.innerHTML = part("body");
+  // Parse the document structurally: iframe srcdoc can itself contain head/body
+  // strings, which makes regular-expression extraction select the wrong nodes.
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  document.head.innerHTML = parsed.head.innerHTML;
+  document.body.innerHTML = parsed.body.innerHTML;
   const app = await bootstrapApplication(component, {
     providers: [
       provideZonelessChangeDetection(),

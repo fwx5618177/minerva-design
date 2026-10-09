@@ -1,6 +1,14 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoCheckmarkOutline, IoCopyOutline } from "react-icons/io5";
+import {
+  Button,
+  CodeBlock as LibraryCodeBlock,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+} from "minerva-design";
 import styles from "@styles/layout/code-block.module.scss";
 import { highlight } from "./prism";
 
@@ -57,8 +65,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const baseId = useId();
+  const codeRef = useRef<HTMLPreElement>(null);
   const tab = tabs?.[Math.min(tabIndex, tabs.length - 1)];
   const language = tab?.language ?? languageProp;
   const source = formatCode(tab?.code ?? code);
@@ -104,66 +111,51 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   const label = title ?? LANGUAGE_LABELS[language] ?? language;
 
-  const codeElement =
-    html !== undefined ? (
-      <code
-        className={`language-${language}`}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    ) : (
-      <code className={`language-${language}`}>{source}</code>
-    );
+  // Prism decorates the public CodeBlock ref; its text and region semantics
+  // remain the library's implementation. Only trusted highlighter output is HTML.
+  useLayoutEffect(() => {
+    const code = codeRef.current?.querySelector("code");
+    if (!code) return;
+    code.className = `language-${language}`;
+    if (html === undefined) code.textContent = source;
+    else code.innerHTML = html;
+  }, [source, language, html]);
 
-  const onTabKeyDown = (event: React.KeyboardEvent) => {
-    if (!tabs) return;
-    const last = tabs.length - 1;
-    const next = {
-      ArrowRight: tabIndex === last ? 0 : tabIndex + 1,
-      ArrowLeft: tabIndex === 0 ? last : tabIndex - 1,
-      Home: 0,
-      End: last,
-    }[event.key];
-    if (next === undefined) return;
-    event.preventDefault();
-    setTabIndex(next);
-    tabRefs.current[next]?.focus();
-  };
-
-  return (
-    <div className={styles.codeBlock} data-flush={flush || undefined}>
+  const region = (
+    <LibraryCodeBlock
+      ref={codeRef}
+      wrap={false}
+      maxHeight="none"
+      className={`${styles.pre} language-${language}`}
+      aria-label={t("doc.codeRegion", { language: label })}
+    >
+      {source}
+    </LibraryCodeBlock>
+  );
+  const content = (
+    <>
       <div className={styles.header}>
         {tabs ? (
-          <div
-            className={styles.tabs}
-            role="tablist"
-            aria-label={title ?? label}
-          >
+          <TabList className={styles.tabs} aria-label={title ?? label}>
             {tabs.map((item, index) => (
-              <button
+              <Tab
                 key={item.label}
-                ref={(el) => {
-                  tabRefs.current[index] = el;
-                }}
-                type="button"
-                role="tab"
-                id={`${baseId}-tab-${index}`}
-                aria-selected={item === tab}
-                aria-controls={`${baseId}-panel`}
-                tabIndex={item === tab ? 0 : -1}
+                value={String(index)}
                 className={styles.tab}
-                onClick={() => setTabIndex(index)}
-                onKeyDown={onTabKeyDown}
               >
                 {item.label}
-              </button>
+              </Tab>
             ))}
-          </div>
+          </TabList>
         ) : (
           <span className={styles.title} data-filename={!!title || undefined}>
             {label}
           </span>
         )}
-        <button
+        <Button
+          variant="ghost"
+          color="neutral"
+          size="small"
           type="button"
           className={styles.copyButton}
           onClick={handleCopy}
@@ -176,31 +168,32 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           ) : (
             <IoCopyOutline className={styles.icon} aria-hidden />
           )}
-        </button>
+        </Button>
         <span className="sr-only" aria-live="polite">
           {copied ? t("doc.copied") : ""}
         </span>
       </div>
       {tabs ? (
-        <pre
-          className={`${styles.pre} language-${language}`}
-          tabIndex={0}
-          id={`${baseId}-panel`}
-          role="tabpanel"
-          aria-labelledby={`${baseId}-tab-${tabIndex}`}
-        >
-          {codeElement}
-        </pre>
+        <TabPanel value={String(tabIndex)} style={{ padding: 0 }}>
+          {region}
+        </TabPanel>
       ) : (
-        <pre
-          className={`${styles.pre} language-${language}`}
-          tabIndex={0}
-          role="region"
-          aria-label={t("doc.codeRegion", { language: label })}
-        >
-          {codeElement}
-        </pre>
+        region
       )}
+    </>
+  );
+  return tabs ? (
+    <Tabs
+      className={styles.codeBlock}
+      data-flush={flush || undefined}
+      value={String(tabIndex)}
+      onChange={(value) => setTabIndex(Number(value))}
+    >
+      {content}
+    </Tabs>
+  ) : (
+    <div className={styles.codeBlock} data-flush={flush || undefined}>
+      {content}
     </div>
   );
 };

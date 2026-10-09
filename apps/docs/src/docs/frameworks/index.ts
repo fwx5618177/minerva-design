@@ -16,8 +16,8 @@
 // Adding a framework (Taro, WeChat mini programs, uni-app...)
 // is adding an entry: a new `renderer` kind for a new rendering strategy, or
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
-// Angular gets a native renderer later (see the Platform support page); until
-// then it renders the Web Components (`nativePlanned`).
+// Angular has a native package; this selector currently demonstrates its
+// separate Web Components integration and links to the native guide.
 import type { WcMeta } from "../registry";
 
 export type FrameworkId =
@@ -26,7 +26,8 @@ export type FrameworkId =
 /** Frameworks rendered from the Web Component demos */
 export type WcFrameworkId = Exclude<FrameworkId, "react" | "react-native">;
 
-export type FrameworkRenderer = "react" | "vue" | "native" | "web-components";
+export type FrameworkRenderer =
+  "react" | "vue" | "angular" | "native" | "web-components";
 
 export interface SetupSnippet {
   /** i18n key under `doc.fw.setup` describing the step */
@@ -48,17 +49,12 @@ export interface FrameworkDef {
   guide: string;
   /** Registration, compiler and typings steps for a component page */
   setup: (wc: WcMeta) => SetupSnippet[];
-  /**
-   * A native renderer is planned (`minerva-design/angular`): until it lands
-   * the page shows the Web Components "via Web Components (native coming
-   * soon)".
-   */
-  nativePlanned?: boolean;
+  /** Available native integration, separate from this Web Components demo. */
+  nativeGuide?: string;
 }
 
 const PKG = "minerva-design/web-components";
 /** Paths inside the published package (node_modules / CDN) */
-const TOKENS_FILE = "minerva-design/dist/core/tokens.css";
 const CDN_FILE = "minerva-design/dist/web-components/cdn/minerva.js";
 
 const register = (wc: WcMeta, file: string, extra = ""): SetupSnippet => ({
@@ -68,7 +64,7 @@ const register = (wc: WcMeta, file: string, extra = ""): SetupSnippet => ({
   code: `${extra}// registers ${wc.tags.map((tag) => `<${tag}>`).join(", ")} (and only them)
 import "${PKG}/${wc.entry}";
 // or every element at once: import "${PKG}";
-import "minerva-design/tokens.css";`,
+`,
 });
 
 export const FRAMEWORKS: readonly FrameworkDef[] = [
@@ -99,25 +95,10 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
   {
     id: "angular",
     label: "Angular",
-    renderer: "web-components",
-    nativePlanned: true,
+    renderer: "angular",
     language: "ts",
-    guide: "wc-angular",
-    setup: (wc) => [
-      register(wc, "src/main.ts"),
-      {
-        step: "angularSchema",
-        file: "*.component.ts",
-        language: "ts",
-        code: `import { CUSTOM_ELEMENTS_SCHEMA, Component } from "@angular/core";
-
-@Component({
-  // lets the template use <minerva-*> tags and bind their properties
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  // ...
-})`,
-      },
-    ],
+    guide: "angular",
+    setup: () => [],
   },
   {
     id: "svelte",
@@ -162,8 +143,7 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
         step: "htmlModule",
         file: "index.html",
         language: "html",
-        code: `<link rel="stylesheet" href="/node_modules/${TOKENS_FILE}" />
-<script type="module">
+        code: `<script type="module">
   import "${PKG}/${wc.entry}";
 </script>`,
       },
@@ -172,7 +152,6 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
         file: "index.html",
         language: "html",
         code: `<!-- no build step: the self-contained bundle registers every element -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/${TOKENS_FILE}" />
 <script type="module" src="https://cdn.jsdelivr.net/npm/${CDN_FILE}"></script>`,
       },
     ],

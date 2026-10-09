@@ -1,0 +1,4429 @@
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,7 @@
+   "type": "module",
+   "packageManager": "pnpm@9.15.9",
+   "engines": {
+-    "node": ">=20.10.0"
++    "node": "^20.19.0 || >=22.12.0"
+   },
+   "scripts": {
+     "dev": "vite",
+@@ -18,7 +18,6 @@
+     "test:watch": "vitest"
+   },
+   "dependencies": {
+-    "@novel-isr/ui": "^0.1.3",
+     "@simplewebauthn/browser": "^13.3.0",
+     "lucide-react": "^1.14.0",
+     "qrcode.react": "^4.2.0",
+@@ -27,7 +26,8 @@
+     "react-icons": "^5.6.0",
+     "react-router-dom": "^7.0.0",
+     "recharts": "^3.8.1",
+-    "swr": "^2.2.5"
++    "swr": "^2.2.5",
++    "minerva-design": "0.0.0"
+   },
+   "devDependencies": {
+     "@testing-library/dom": "^10.4.1",
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -29,7 +29,7 @@
+   TooltipProvider,
+   ToastProvider,
+   ConfirmProvider,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import {
+   FiActivity,
+   FiAlertTriangle,
+@@ -127,7 +127,7 @@
+ export function App() {
+   return (
+     <ThemeProvider defaultTheme="system">
+-      <TooltipProvider delayDuration={180}>
++      <TooltipProvider enterDelay={180}>
+         <ToastProvider position="top-right">
+           <ConfirmProvider>
+             {/* SWR 全局默认：管理后台是长驻 tab，工程师 alt-tab / 切窗口
+@@ -257,9 +257,9 @@
+     <div className={`layout ${sidebarCollapsed ? "layout-collapsed" : ""}`}>
+       <aside className="sidebar">
+         <Tooltip
+-          label={sidebarCollapsed ? "展开菜单" : "折叠菜单"}
+-          side="right"
+-          tone="dark"
++          content={sidebarCollapsed ? "展开菜单" : "折叠菜单"}
++          placement="right"
++          color="neutral"
+         >
+           <button
+             className="sidebar-toggle"
+@@ -281,7 +281,7 @@
+                 运行时配置与运营中心
+               </p>
+             </div>
+-            <Badge colorScheme="success">开发</Badge>
++            <Badge color="success">开发</Badge>
+           </HStack>
+         </div>
+         <div className="nav">
+@@ -310,9 +310,9 @@
+        * 移动端 drawer (z:60) 反而盖住 hamburger，无法关闭。
+        * 放在 .layout 直接子级 = 与 .sidebar 同层，z-index 70 真正生效。 */}
+       <Tooltip
+-        label={sidebarCollapsed ? "展开菜单" : "关闭菜单"}
+-        side="bottom"
+-        tone="dark"
++        content={sidebarCollapsed ? "展开菜单" : "关闭菜单"}
++        placement="bottom"
++        color="neutral"
+       >
+         <button
+           type="button"
+@@ -381,7 +381,7 @@
+                 whiteSpace: "nowrap",
+                 padding: "6px 14px",
+                 borderRadius: 6,
+-                background: "var(--ui-color-brand-500)",
++                background: "var(--primary-color)",
+                 color: "#fff",
+                 textDecoration: "none",
+                 fontWeight: 500,
+@@ -407,7 +407,7 @@
+       </main>
+ 
+       <CommandDialog
+-        isOpen={commandOpen}
++        open={commandOpen}
+         onOpenChange={setCommandOpen}
+         items={COMMAND_ITEMS}
+         title="全局搜索"
+@@ -447,10 +447,10 @@
+   return (
+     <Tooltip
+       key={item.id}
+-      label={item.description ? `${item.label} · ${item.description}` : item.label}
+-      side="right"
+-      align="center"
+-      tone="dark"
++      content={item.description ? `${item.label} · ${item.description}` : item.label}
++      placement="right"
++      
++      color="neutral"
+     >
+       {link}
+     </Tooltip>
+@@ -743,12 +743,12 @@
+         className="notification-menu"
+         side="bottom"
+         align="end"
+-        showArrow
++        arrow
+       >
+         <div className="popover-title">
+           <strong>运行通知</strong>
+           <HStack gap="2" align="center">
+-            <Badge colorScheme="warning">{notifications.length}</Badge>
++            <Badge color="warning">{notifications.length}</Badge>
+             {notifications.length > 0 ? (
+               <button
+                 type="button"
+@@ -815,17 +815,17 @@
+     <Popover>
+       <PopoverTrigger asChild>
+         <button className="account-trigger" type="button">
+-          <Avatar name={displayName} size="md" shape="circle" src={user?.avatarUrl ?? undefined} />
++          <Avatar name={displayName} size="medium" shape="circle" src={user?.avatarUrl ?? undefined} />
+         </button>
+       </PopoverTrigger>
+       <PopoverContent
+         className="account-menu"
+         side="bottom"
+         align="end"
+-        showArrow
++        arrow
+       >
+         <div className="account-menu-head">
+-          <Avatar name={displayName} size="md" shape="circle" src={user?.avatarUrl ?? undefined} />
++          <Avatar name={displayName} size="medium" shape="circle" src={user?.avatarUrl ?? undefined} />
+           <div>
+             <strong>{displayName}</strong>
+             <span>{email}</span>
+--- a/src/__test__/App.test.tsx
++++ b/src/__test__/App.test.tsx
+@@ -1,4 +1,4 @@
+-import type { NavTreeItem } from "@novel-isr/ui";
++import type { NavTreeItem } from "minerva-design";
+ import { describe, expect, it } from "vitest";
+ import { ADMIN_ROUTES, NAV_SECTIONS, ROUTE_PAGES } from "../routes";
+ 
+--- a/src/components/ErrorBoundary/ErrorBoundary.module.scss
++++ b/src/components/ErrorBoundary/ErrorBoundary.module.scss
+@@ -34,7 +34,7 @@
+     padding: 12px 14px;
+     border-top: 1px solid var(--admin-divider);
+     color: var(--admin-text);
+-    font-family: var(--ui-font-family-mono, ui-monospace, monospace);
++    font-family: var(--font-family-mono, ui-monospace, monospace);
+     font-size: 12px;
+     line-height: 1.55;
+     white-space: pre-wrap;
+--- a/src/components/ErrorBoundary/ErrorBoundary.tsx
++++ b/src/components/ErrorBoundary/ErrorBoundary.tsx
+@@ -4,7 +4,7 @@
+  * React 没把 error boundary 写进 hooks，必须用 class component 配合
+  * `getDerivedStateFromError` + `componentDidCatch` 才能拦下子树渲染期抛错。
+  *
+- * 抓到错以后渲染 ErrorFallback：用 @novel-isr/ui 的 Alert + Button 组合一个
++ * 抓到错以后渲染 ErrorFallback：用 minerva-design 的 Alert + Button 组合一个
+  * 完整页面级降级界面：标题 / 错误描述 / 「重试」按钮（重置 boundary 状态）/
+  * 「回首页」按钮。dev 模式下展开 stack 方便排查；prod 不下发 stack。
+  *
+@@ -12,7 +12,7 @@
+  * 这里只兜底 React 渲染期 / 同步抛错。
+  */
+ import { Component, type ErrorInfo, type ReactNode } from "react";
+-import { Alert, Button } from "@novel-isr/ui";
++import { Alert, Button } from "minerva-design";
+ import { FiRefreshCw, FiHome } from "react-icons/fi";
+ import styles from "./ErrorBoundary.module.scss";
+ 
+@@ -63,7 +63,7 @@
+     <div className={styles.page} role="alert" aria-live="assertive">
+       <div className={styles.body}>
+         <Alert
+-          status="danger"
++          color="danger"
+           variant="subtle"
+           title="后台界面遇到了一个错误"
+         >
+@@ -76,16 +76,16 @@
+           </details>
+         )}
+         <div className={styles.actions}>
+-          <Button intent="primary" onClick={onReset} leftIcon={<FiRefreshCw />}>
++          <Button color="primary" onClick={onReset} startIcon={<FiRefreshCw />}>
+             重试
+           </Button>
+           <Button
+             variant="ghost"
+-            intent="neutral"
++            color="neutral"
+             onClick={() => {
+               window.location.assign("/");
+             }}
+-            leftIcon={<FiHome />}
++            startIcon={<FiHome />}
+           >
+             回首页
+           </Button>
+--- a/src/components/LoadingPage/LoadingPage.tsx
++++ b/src/components/LoadingPage/LoadingPage.tsx
+@@ -1,10 +1,10 @@
+ /**
+  * LoadingPage —— 全屏加载占位。
+  *
+- * 用在 Suspense fallback 和首屏会话校验中。组合 @novel-isr/ui 的 Spinner，
++ * 用在 Suspense fallback 和首屏会话校验中。组合 minerva-design 的 ProgressIndicator，
+  * 套一层带 admin theme 颜色的容器，避免每个 fallback 各画各的。
+  */
+-import { Spinner } from "@novel-isr/ui";
++import { ProgressIndicator as Spinner } from "minerva-design";
+ import styles from "./LoadingPage.module.scss";
+ 
+ export interface LoadingPageProps {
+@@ -22,7 +22,7 @@
+       aria-live="polite"
+       aria-busy="true"
+     >
+-      <Spinner size="lg" colorScheme="brand" aria-hidden="true" />
++      <Spinner size="large" color="primary" aria-hidden="true" />
+       {label && <p className={styles.label}>{label}</p>}
+     </div>
+   );
+--- a/src/lib/__test__/admin-api.test.ts
++++ b/src/lib/__test__/admin-api.test.ts
+@@ -8,10 +8,10 @@
+ import { AdminApiError, adminApi, loginAdmin } from "../admin-api";
+ 
+ // 全局 toast 在测试里没有 Provider 的容器，mock 掉避免噪音 / 影响 jsdom
+-vi.mock("@novel-isr/ui", async () => {
+-  const actual = await vi.importActual<Record<string, unknown>>("@novel-isr/ui");
++vi.mock("minerva-design", async () => {
++  const actual = await vi.importActual<Record<string, unknown>>("minerva-design");
+   const noop = () => 0;
+-  const toast = Object.assign(noop, { error: noop, success: noop, info: noop, warning: noop });
++  const toast = Object.assign(noop, { danger: noop, success: noop, info: noop, warning: noop });
+   return { ...actual, toast };
+ });
+ 
+--- a/src/lib/admin-api.ts
++++ b/src/lib/admin-api.ts
+@@ -12,7 +12,7 @@
+  * 路径也提示一次（按 message 去重，不会被轮询刷屏）。极少数需要本地处理的场景
+  * （比如「删除时 404 视为成功」）传 `{ silent: true }` 关掉。
+  */
+-import { toast } from "@novel-isr/ui";
++import { toast } from "minerva-design";
+ 
+ const USER_KEY = "admin_user";
+ 
+@@ -376,7 +376,7 @@
+       : err instanceof Error
+         ? (err.message ?? "请求失败")
+         : "请求失败";
+-  toast.error(message, { id: `api-error:${message}` });
++  toast.danger(message, { id: `api-error:${message}` });
+ }
+ 
+ /**
+--- a/src/main.tsx
++++ b/src/main.tsx
+@@ -1,6 +1,6 @@
+ import { StrictMode } from "react";
+ import { createRoot } from "react-dom/client";
+-import "@novel-isr/ui/styles.css";
++import "minerva-design/style.css";
+ import { App } from "./App.tsx";
+ import "./styles/global.css";
+ 
+--- a/src/pages/account/AccountPage.module.scss
++++ b/src/pages/account/AccountPage.module.scss
+@@ -144,7 +144,7 @@
+ 
+ .scopeKey {
+   color: var(--admin-text);
+-  font-family: var(--ui-font-family-mono, ui-monospace, monospace);
++  font-family: var(--font-family-mono, ui-monospace, monospace);
+   font-size: 12.5px;
+   font-weight: 500;
+ }
+@@ -310,7 +310,7 @@
+ .recoveryCode {
+   display: block;
+   padding: 4px 8px;
+-  font-family: var(--ui-font-family-mono, monospace);
++  font-family: var(--font-family-mono, monospace);
+   font-size: 15px;
+   font-weight: 600;
+   letter-spacing: 0.5px;
+--- a/src/pages/account/AccountPage.tsx
++++ b/src/pages/account/AccountPage.tsx
+@@ -16,10 +16,10 @@
+   Modal,
+   ModalBody,
+   ModalFooter,
+-  Spinner,
++  ProgressIndicator as Spinner,
+   Table,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { startRegistration } from "@simplewebauthn/browser";
+ import { useEffect, useState, type FormEvent } from "react";
+ import { QRCodeSVG } from "qrcode.react";
+@@ -395,7 +395,7 @@
+     return (
+       <div className="page-shell">
+         <div className={styles.loadingShell}>
+-          <Spinner size="lg" colorScheme="brand" />
++          <Spinner size="large" color="primary" />
+         </div>
+       </div>
+     );
+@@ -409,10 +409,10 @@
+           <p>当前登录用户的身份、权限与活动会话；用户管理在「用户管理」页面。</p>
+         </div>
+         <Button
+-          size="sm"
++          size="small"
+           variant="outline"
+-          intent="neutral"
+-          leftIcon={<FiRefreshCw />}
++          color="neutral"
++          startIcon={<FiRefreshCw />}
+           onClick={() => void load()}
+         >
+           刷新
+@@ -429,7 +429,7 @@
+             <strong className={styles.displayName}>
+               {user?.displayName ?? "未读取"}
+             </strong>
+-            <Badge colorScheme={isAdmin ? "success" : "gray"}>
++            <Badge color={isAdmin ? "success" : "neutral"}>
+               {permissions?.role ?? "loading"}
+             </Badge>
+           </div>
+@@ -494,10 +494,10 @@
+           <div className={styles.passwordActions}>
+             <Button
+               type="submit"
+-              size="sm"
+-              intent="primary"
+-              leftIcon={<FiLock />}
+-              isLoading={changingPw}
++              size="small"
++              color="primary"
++              startIcon={<FiLock />}
++              loading={changingPw}
+             >
+               修改并重新登录
+             </Button>
+@@ -519,14 +519,14 @@
+         </header>
+ 
+         {twoFactorEnrolled && !twoFactorSetup && (
+-          <Alert status="success" variant="subtle" title="已绑定 TOTP">
++          <Alert color="success" variant="subtle" title="已绑定 TOTP">
+             <div className={styles.twoFactorBoundActions}>
+               <span>登录时会要求输入 Authenticator 显示的 6 位验证码。</span>
+               <Button
+-                size="xs"
++                size="xsmall"
+                 variant="outline"
+-                intent="danger"
+-                isLoading={twoFactorBusy}
++                color="danger"
++                loading={twoFactorBusy}
+                 onClick={() => void disableTwoFactor()}
+               >
+                 解绑
+@@ -538,15 +538,15 @@
+         {!twoFactorEnrolled && !twoFactorSetup && (
+           <div className={styles.twoFactorIdle}>
+             {isAdmin && (
+-              <Alert status="warning" variant="subtle" title="需要绑定">
++              <Alert color="warning" variant="subtle" title="需要绑定">
+                 你是 admin 角色，未绑定 2FA 前无法使用书库管理 / 用户管理 / 上传等管理端点。
+               </Alert>
+             )}
+             <Button
+-              size="sm"
+-              intent="primary"
+-              leftIcon={<FiSmartphone />}
+-              isLoading={twoFactorBusy}
++              size="small"
++              color="primary"
++              startIcon={<FiSmartphone />}
++              loading={twoFactorBusy}
+               onClick={() => void startTwoFactorEnroll()}
+             >
+               开始绑定 TOTP
+@@ -600,9 +600,9 @@
+               <div className={styles.twoFactorVerifyActions}>
+                 <Button
+                   type="button"
+-                  size="sm"
++                  size="small"
+                   variant="ghost"
+-                  intent="neutral"
++                  color="neutral"
+                   onClick={() => {
+                     setTwoFactorSetup(null);
+                     setTwoFactorCode("");
+@@ -613,9 +613,9 @@
+                 </Button>
+                 <Button
+                   type="submit"
+-                  size="sm"
+-                  intent="primary"
+-                  isLoading={twoFactorBusy}
++                  size="small"
++                  color="primary"
++                  loading={twoFactorBusy}
+                   disabled={twoFactorCode.length !== 6}
+                 >
+                   确认绑定
+@@ -639,17 +639,17 @@
+           </div>
+         </header>
+         {recoveryStatus?.hasActiveBatch ? (
+-          <Alert status="success" variant="subtle" title={`剩余 ${recoveryStatus.remaining} / ${recoveryStatus.perBatch}`}>
++          <Alert color="success" variant="subtle" title={`剩余 ${recoveryStatus.remaining} / ${recoveryStatus.perBatch}`}>
+             <div className={styles.twoFactorBoundActions}>
+               <span>
+                 批次 <code>{recoveryStatus.batchId?.slice(0, 8)}…</code>，生成于{" "}
+                 {recoveryStatus.generatedAt ? new Date(recoveryStatus.generatedAt).toLocaleString() : "—"}
+               </span>
+               <Button
+-                size="xs"
++                size="xsmall"
+                 variant="outline"
+-                intent="danger"
+-                isLoading={regeneratingCodes}
++                color="danger"
++                loading={regeneratingCodes}
+                 onClick={() => void regenerateRecoveryCodes()}
+               >
+                 重新生成（旧批失效）
+@@ -657,13 +657,13 @@
+             </div>
+           </Alert>
+         ) : (
+-          <Alert status="warning" variant="subtle" title="还没有恢复码">
++          <Alert color="warning" variant="subtle" title="还没有恢复码">
+             <div className={styles.twoFactorBoundActions}>
+               <span>绑定 TOTP 或 Passkey 后会自动生成；也可手动触发。</span>
+               <Button
+-                size="xs"
+-                intent="primary"
+-                isLoading={regeneratingCodes}
++                size="xsmall"
++                color="primary"
++                loading={regeneratingCodes}
+                 onClick={() => void regenerateRecoveryCodes()}
+               >
+                 生成恢复码
+@@ -694,10 +694,10 @@
+               excludeCredentials 自己拒绝（catch 里有友好提示），不在 UI 层 disable，
+               避免误伤"换台设备想绑"的合法场景。 */}
+           <Button
+-            size="sm"
+-            intent="primary"
+-            leftIcon={<FiSmartphone />}
+-            isLoading={registeringPasskey}
++            size="small"
++            color="primary"
++            startIcon={<FiSmartphone />}
++            loading={registeringPasskey}
+             onClick={() => void registerPasskey("platform")}
+           >
+             {credentials.some((c) => c.transports?.includes("internal"))
+@@ -705,11 +705,11 @@
+               : "添加本机生物识别（Touch ID / Windows Hello）"}
+           </Button>
+           <Button
+-            size="sm"
++            size="small"
+             variant="outline"
+-            intent="neutral"
+-            leftIcon={<FiKey />}
+-            isLoading={registeringPasskey}
++            color="neutral"
++            startIcon={<FiKey />}
++            loading={registeringPasskey}
+             onClick={() => void registerPasskey("cross-platform")}
+           >
+             添加外部安全密钥 / 跨设备 Passkey
+@@ -717,7 +717,7 @@
+         </div>
+         {credentials.length > 0 && (
+           <Table
+-            size="sm"
++            size="small"
+             variant="striped"
+             data={credentials}
+             rowKey={(row) => row.id}
+@@ -732,7 +732,7 @@
+                 header: "类型",
+                 width: 160,
+                 render: (row) => (
+-                  <Badge colorScheme={row.transports?.includes("internal") ? "brand" : "gray"}>
++                  <Badge color={row.transports?.includes("internal") ? "primary" : "neutral"}>
+                     {row.transports?.includes("internal") ? "platform" : row.transports?.join(",") ?? "—"}
+                   </Badge>
+                 ),
+@@ -756,10 +756,10 @@
+                 width: 100,
+                 render: (row) => (
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="danger"
+-                    leftIcon={<FiTrash2 />}
++                    color="danger"
++                    startIcon={<FiTrash2 />}
+                     onClick={() => void deletePasskey(row.id, row.deviceName)}
+                   >
+                     删除
+@@ -773,15 +773,15 @@
+ 
+       {/* ── 恢复码 modal ─────────────────────────────────── */}
+       <Modal
+-        isOpen={Boolean(recoveryCodesDisplay)}
+-        onClose={() => {
++        open={Boolean(recoveryCodesDisplay)}
++        onOpenChange={(open) => { if (!open) (() => {
+           if (recoveryAcknowledged) setRecoveryCodesDisplay(null);
+-        }}
++        })(); }}
+         title="保存这 10 个恢复码（只此一次）"
+-        size="lg"
++        size="large"
+       >
+         <ModalBody>
+-          <Alert status="warning" variant="solid" title="离开此页面后不再显示">
++          <Alert color="warning" variant="solid" title="离开此页面后不再显示">
+             把它们复制到密码管理器 / 抄到纸上。每个码只能用一次；丢了主认证器（手机 / Passkey
+             设备）时用这些登录。
+           </Alert>
+@@ -796,7 +796,7 @@
+             <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+               <Checkbox
+                 checked={recoveryAcknowledged}
+-                onCheckedChange={(checked: boolean) => setRecoveryAcknowledged(checked)}
++                onChange={(checked: boolean) => setRecoveryAcknowledged(checked)}
+               />
+               <span>我已经把这 10 个码保存到安全的地方</span>
+             </label>
+@@ -805,9 +805,9 @@
+         <ModalFooter>
+           <Button
+             type="button"
+-            size="sm"
++            size="small"
+             variant="outline"
+-            intent="neutral"
++            color="neutral"
+             onClick={() => {
+               if (recoveryCodesDisplay) {
+                 void navigator.clipboard.writeText(recoveryCodesDisplay.codes.join("\n"));
+@@ -819,8 +819,8 @@
+           </Button>
+           <Button
+             type="button"
+-            size="sm"
+-            intent="primary"
++            size="small"
++            color="primary"
+             disabled={!recoveryAcknowledged}
+             onClick={() => setRecoveryCodesDisplay(null)}
+           >
+@@ -839,7 +839,7 @@
+           </div>
+         </header>
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           data={SCOPE_CATALOG}
+           rowKey={(row) => row.id}
+@@ -862,7 +862,7 @@
+               render: (row) => (
+                 <span className={styles.scopeOwners}>
+                   {row.owners.map((role) => (
+-                    <Badge key={role} colorScheme={role === "admin" ? "success" : "gray"}>
++                    <Badge key={role} color={role === "admin" ? "success" : "neutral"}>
+                       {role}
+                     </Badge>
+                   ))}
+@@ -878,7 +878,7 @@
+                   permissions?.scopes.includes("*") ||
+                   permissions?.scopes.includes(row.id);
+                 return has ? (
+-                  <Badge colorScheme="success">已授权</Badge>
++                  <Badge color="success">已授权</Badge>
+                 ) : (
+                   <span className={styles.scopeNotGranted}>—</span>
+                 );
+@@ -900,11 +900,11 @@
+         {sessions.length > 1 && (
+           <div className={styles.sessionsToolbar}>
+             <Button
+-              size="xs"
++              size="xsmall"
+               variant="outline"
+-              intent="danger"
+-              leftIcon={<FiZap />}
+-              isLoading={revokingOthers}
++              color="danger"
++              startIcon={<FiZap />}
++              loading={revokingOthers}
+               onClick={() => void revokeOthers()}
+             >
+               撤销其它会话（保留当前）
+@@ -912,7 +912,7 @@
+           </div>
+         )}
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           data={sessions}
+           rowKey={(row) => row.id}
+@@ -940,11 +940,11 @@
+               width: 100,
+               render: (row) => (
+                 <Button
+-                  size="xs"
++                  size="xsmall"
+                   variant="ghost"
+-                  intent="danger"
+-                  leftIcon={<FiLogOut />}
+-                  isLoading={revokingId === row.id}
++                  color="danger"
++                  startIcon={<FiLogOut />}
++                  loading={revokingId === row.id}
+                   onClick={() => void revokeSession(row)}
+                 >
+                   撤销
+--- a/src/pages/analytics/AnalyticsPage.tsx
++++ b/src/pages/analytics/AnalyticsPage.tsx
+@@ -1,6 +1,6 @@
+ import useSWR from "swr";
+ import type { ReactNode } from "react";
+-import { Badge, Button, Table, Tooltip } from "@novel-isr/ui";
++import { Badge, Button, Table, Tooltip } from "minerva-design";
+ import { FiActivity, FiAlertTriangle, FiBarChart2, FiRefreshCw } from "react-icons/fi";
+ import { adminJson } from "../../lib/admin-api";
+ 
+@@ -103,24 +103,24 @@
+           </p>
+         </div>
+         <div className="hero-actions">
+-          <Badge colorScheme={hasData ? "success" : "warning"}>
++          <Badge color={hasData ? "success" : "warning"}>
+             {hasData ? "已接入" : "等待上报"}
+           </Badge>
+           {summary?.storage && (
+             <Tooltip
+-              label={
++              content={
+                 summary.storage.durable
+                   ? "上报已落到 Postgres，可长期查询"
+                   : "当前只在进程内保留窗口数据，生产需要检查 Postgres"
+               }
+-              tone="dark"
++              color="neutral"
+             >
+-              <Badge colorScheme={summary.storage.durable ? "success" : "warning"}>
++              <Badge color={summary.storage.durable ? "success" : "warning"}>
+                 {storageLabel(summary.storage.active)}
+               </Badge>
+             </Tooltip>
+           )}
+-          <Button size="sm" variant="outline" intent="neutral" onClick={refresh}>
++          <Button size="small" variant="outline" color="neutral" onClick={refresh}>
+             <FiRefreshCw aria-hidden="true" />
+             刷新
+           </Button>
+@@ -165,7 +165,7 @@
+             </div>
+           </div>
+           <Table
+-            size="sm"
++            size="small"
+             variant="striped"
+             data={summary?.webVitals ?? []}
+             rowKey={(row) => row.name}
+@@ -188,7 +188,7 @@
+                 header: "评级",
+                 width: 120,
+                 render: (row) => (
+-                  <Badge colorScheme={ratingTone(row.rating)}>{ratingLabel(row.rating)}</Badge>
++                  <Badge color={ratingTone(row.rating)}>{ratingLabel(row.rating)}</Badge>
+                 ),
+               },
+             ]}
+@@ -203,7 +203,7 @@
+             </div>
+           </div>
+           <Table
+-            size="sm"
++            size="small"
+             variant="striped"
+             data={summary?.topPages ?? []}
+             rowKey={(row) => row.path}
+@@ -213,7 +213,7 @@
+                 key: "path",
+                 header: "路径",
+                 render: (row) => (
+-                  <Tooltip label={row.path} tone="dark">
++                  <Tooltip content={row.path} color="neutral">
+                     <code className="truncate-inline">{row.path}</code>
+                   </Tooltip>
+                 ),
+@@ -230,10 +230,10 @@
+             <h3>最近错误</h3>
+             <p>来自全局错误、Promise rejection、资源加载失败和 Server Action 错误上报。</p>
+           </div>
+-          <Badge colorScheme="danger">{summary?.window.errorCount ?? 0}</Badge>
++          <Badge color="danger">{summary?.window.errorCount ?? 0}</Badge>
+         </div>
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           hoverable
+           data={errors?.errors ?? summary?.recentErrors ?? []}
+@@ -245,14 +245,14 @@
+               header: "级别",
+               width: 100,
+               render: (row) => (
+-                <Badge colorScheme={errorTone(row.level)}>{levelLabel(row.level)}</Badge>
++                <Badge color={errorTone(row.level)}>{levelLabel(row.level)}</Badge>
+               ),
+             },
+             {
+               key: "message",
+               header: "错误",
+               render: (row) => (
+-                <Tooltip label={row.message} tone="dark">
++                <Tooltip content={row.message} color="neutral">
+                   <span className="table-primary-text">{row.message}</span>
+                 </Tooltip>
+               ),
+@@ -279,10 +279,10 @@
+             <h3>最近事件</h3>
+             <p>所有事件都先进入有界队列，dashboard 只展示最近窗口，避免本地开发刷爆内存。</p>
+           </div>
+-          <Badge colorScheme="brand">{summary?.window.eventCount ?? 0}</Badge>
++          <Badge color="primary">{summary?.window.eventCount ?? 0}</Badge>
+         </div>
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           hoverable
+           data={events?.events ?? summary?.recentEvents ?? []}
+@@ -299,7 +299,7 @@
+               key: "path",
+               header: "路径",
+               render: (row) => (
+-                <Tooltip label={eventPath(row)} tone="dark" disabled={!eventPath(row)}>
++                <Tooltip content={eventPath(row)} color="neutral" disabled={!eventPath(row)}>
+                   <span className="table-primary-text">{eventPath(row) || "-"}</span>
+                 </Tooltip>
+               ),
+@@ -369,11 +369,11 @@
+   }).format(new Date(ts));
+ }
+ 
+-function ratingTone(rating: VitalRating): "success" | "warning" | "danger" | "gray" {
++function ratingTone(rating: VitalRating): "success" | "warning" | "danger" | "neutral" {
+   if (rating === "good") return "success";
+   if (rating === "needs-improvement") return "warning";
+   if (rating === "poor") return "danger";
+-  return "gray";
++  return "neutral";
+ }
+ 
+ function ratingLabel(rating: VitalRating): string {
+@@ -383,11 +383,11 @@
+   return "无样本";
+ }
+ 
+-function errorTone(level: ErrorReport["level"]): "danger" | "warning" | "brand" | "gray" {
++function errorTone(level: ErrorReport["level"]): "danger" | "warning" | "primary" | "neutral" {
+   if (level === "fatal" || level === "error") return "danger";
+   if (level === "warning") return "warning";
+-  if (level === "info") return "brand";
+-  return "gray";
++  if (level === "info") return "primary";
++  return "neutral";
+ }
+ 
+ function levelLabel(level: ErrorReport["level"]): string {
+--- a/src/pages/audit/AuditPage.tsx
++++ b/src/pages/audit/AuditPage.tsx
+@@ -1,4 +1,4 @@
+-import { Badge, Button, Table } from "@novel-isr/ui";
++import { Badge, Button, Table } from "minerva-design";
+ import { useEffect, useState } from "react";
+ import { adminJson } from "../../lib/admin-api";
+ 
+@@ -43,10 +43,10 @@
+           <p>展示登录、安全设置、内容审核和关键配置动作，供问题追踪、合规审计和回滚定位使用。</p>
+         </div>
+         <div className="toolbar-inline">
+-          <Badge colorScheme={error ? "warning" : "success"}>
++          <Badge color={error ? "warning" : "success"}>
+             {error ? "读取失败" : loading ? "加载中" : `${events.length} 条`}
+           </Badge>
+-          <Button size="sm" variant="outline" onClick={() => void loadAuditEvents()}>
++          <Button size="small" variant="outline" onClick={() => void loadAuditEvents()}>
+             刷新
+           </Button>
+         </div>
+@@ -61,7 +61,7 @@
+         </div>
+         {error ? <p className="muted-text">{error}</p> : null}
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={events}
+           rowKey={(row) => row.id}
+@@ -89,7 +89,7 @@
+               header: "结果",
+               width: 120,
+               render: (row) => (
+-                <Badge colorScheme={row.outcome === "success" ? "success" : "warning"}>
++                <Badge color={row.outcome === "success" ? "success" : "warning"}>
+                   {row.outcome}
+                 </Badge>
+               ),
+--- a/src/pages/auth/LoginPage.tsx
++++ b/src/pages/auth/LoginPage.tsx
+@@ -1,7 +1,7 @@
+ import { useState, type FormEvent } from "react";
+ import { useNavigate } from "react-router-dom";
+ import useSWR from "swr";
+-import { Alert, Button, Input, ThemeToggle, Tooltip, toast } from "@novel-isr/ui";
++import { Alert, Button, Input, ThemeToggle, Tooltip, toast } from "minerva-design";
+ import { startAuthentication } from "@simplewebauthn/browser";
+ import { FiKey, FiLifeBuoy, FiShield } from "react-icons/fi";
+ import {
+@@ -224,7 +224,7 @@
+             </p>
+           </div>
+           {errorMessage && (
+-            <Alert status="danger" variant="subtle" title="登录没有通过">
++            <Alert color="danger" variant="subtle" title="登录没有通过">
+               {errorMessage}
+             </Alert>
+           )}
+@@ -234,7 +234,7 @@
+                 <label className={styles.field}>
+                   恢复码
+                   <Input
+-                    size="md"
++                    size="medium"
+                     value={recoveryCodeInput}
+                     autoComplete="one-time-code"
+                     placeholder="12 字符恢复码（如 ABCDEF-GHIJKL）"
+@@ -245,7 +245,7 @@
+                 <label className={styles.field}>
+                   双重验证代码
+                   <Input
+-                    size="md"
++                    size="medium"
+                     value={code}
+                     inputMode="numeric"
+                     autoComplete="one-time-code"
+@@ -257,8 +257,8 @@
+               <div className={styles.actions}>
+                 <Button
+                   type="button"
+-                  intent="primary"
+-                  isLoading={submitting}
++                  color="primary"
++                  loading={submitting}
+                   onClick={recoveryMode ? submitRecoveryCode : submitTwoFactor}
+                 >
+                   完成登录
+@@ -266,8 +266,8 @@
+                 <Button
+                   type="button"
+                   variant="outline"
+-                  intent="neutral"
+-                  leftIcon={<FiLifeBuoy />}
++                  color="neutral"
++                  startIcon={<FiLifeBuoy />}
+                   onClick={() => {
+                     setRecoveryMode((m) => !m);
+                     setErrorMessage(null);
+@@ -294,7 +294,7 @@
+               <label className={styles.field}>
+                 账号
+                 <Input
+-                  size="md"
++                  size="medium"
+                   value={email}
+                   placeholder="name@company.com 或 handle"
+                   onChange={(event) => setEmail(event.target.value)}
+@@ -303,7 +303,7 @@
+               <label className={styles.field}>
+                 密码
+                 <Input
+-                  size="md"
++                  size="medium"
+                   type="password"
+                   value={password}
+                   placeholder="输入账号密码"
+@@ -311,7 +311,7 @@
+                 />
+               </label>
+               <div className={styles.actions}>
+-                <Button type="submit" intent="primary" isLoading={submitting}>
++                <Button type="submit" color="primary" loading={submitting}>
+                   进入后台
+                 </Button>
+                 <div className={styles.divider}>
+@@ -320,26 +320,26 @@
+                 <Button
+                   type="button"
+                   variant="outline"
+-                  intent="neutral"
++                  color="neutral"
+                   fullWidth
+-                  leftIcon={<FiKey aria-hidden />}
+-                  isLoading={passkeyStarting}
++                  startIcon={<FiKey aria-hidden />}
++                  loading={passkeyStarting}
+                   onClick={() => void startPasskeyLogin()}
+                 >
+                   使用 Passkey / Touch ID 登录
+                 </Button>
+-                <Tooltip label={ssoTooltip} side="top">
++                <Tooltip content={ssoTooltip} placement="top">
+                   {/* Tooltip 给 disabled 按钮也能正确触发：包一层 span，让 hover 落在 wrapper
+                       上，不被 button[disabled] 的 pointer-events:none 屏蔽。 */}
+                   <span className={styles.ssoWrap}>
+                     <Button
+                       type="button"
+                       variant="outline"
+-                      intent="neutral"
++                      color="neutral"
+                       fullWidth
+-                      leftIcon={<FiShield aria-hidden />}
++                      startIcon={<FiShield aria-hidden />}
+                       disabled={!ssoReady}
+-                      isLoading={ssoStarting}
++                      loading={ssoStarting}
+                       onClick={() => void startSso()}
+                     >
+                       使用 SSO 登录
+--- a/src/pages/books/BooksPage.tsx
++++ b/src/pages/books/BooksPage.tsx
+@@ -29,7 +29,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import {
+   AdminApiError,
+   adminDeleteJson,
+@@ -180,7 +180,7 @@
+             <h2>书库管理</h2>
+           </div>
+         </section>
+-        <Alert status="warning" variant="subtle" title="无权访问">
++        <Alert color="warning" variant="subtle" title="无权访问">
+           只有持有 <code>identity:rbac:manage</code> scope（默认 admin 角色）的账户可以管理书库。
+           当前角色：<b>{me || "未识别"}</b>。
+         </Alert>
+@@ -239,7 +239,7 @@
+           变成孤儿（DB 未设外键级联）——后续上线 admin 接口前可以先清理这些关联数据。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -266,17 +266,17 @@
+           </p>
+         </div>
+         <HStack gap="3">
+-          <Badge colorScheme="brand">{books?.length ?? 0} 本</Badge>
++          <Badge color="primary">{books?.length ?? 0} 本</Badge>
+           <Button
+-            size="sm"
++            size="small"
+             variant="outline"
+-            intent="neutral"
++            color="neutral"
+             onClick={() => void refreshBooks()}
+             disabled={isLoading}
+           >
+             刷新
+           </Button>
+-          <Button size="sm" intent="primary" onClick={() => setCreateOpen(true)}>
++          <Button size="small" color="primary" onClick={() => setCreateOpen(true)}>
+             新建书目
+           </Button>
+         </HStack>
+@@ -284,7 +284,7 @@
+ 
+       <section className="ledger-section">
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={books ?? []}
+           rowKey={(row) => row.id}
+@@ -302,14 +302,14 @@
+               render: (row) => (
+                 <HStack gap="2" align="center">
+                   <b>{row.title}</b>
+-                  <Tooltip label={`状态：${STATUS_LABELS[row.status]}`}>
++                  <Tooltip content={`状态：${STATUS_LABELS[row.status]}`}>
+                     <Badge
+-                      colorScheme={
++                      color={
+                         row.status === "completed"
+                           ? "success"
+                           : row.status === "dropped"
+                             ? "warning"
+-                            : "gray"
++                            : "neutral"
+                       }
+                     >
+                       {STATUS_LABELS[row.status]}
+@@ -330,7 +330,7 @@
+               header: "评分",
+               width: 110,
+               render: (row) => (
+-                <Tooltip label={`${row.ratingCount} 人评分`}>
++                <Tooltip content={`${row.ratingCount} 人评分`}>
+                   <span>{row.rating.toFixed(1)}</span>
+                 </Tooltip>
+               ),
+@@ -341,17 +341,17 @@
+               width: 200,
+               render: (row) =>
+                 row.tags.length === 0 ? (
+-                  <span style={{ color: "var(--ui-color-fg-muted)" }}>—</span>
++                  <span style={{ color: "var(--text-muted-color)" }}>—</span>
+                 ) : (
+                   <HStack gap="1">
+                     {row.tags.slice(0, 4).map((tag) => (
+-                      <Badge key={tag} colorScheme="gray">
++                      <Badge key={tag} color="neutral">
+                         {tag}
+                       </Badge>
+                     ))}
+                     {row.tags.length > 4 && (
+-                      <Tooltip label={row.tags.join(" / ")}>
+-                        <Badge colorScheme="gray">+{row.tags.length - 4}</Badge>
++                      <Tooltip content={row.tags.join(" / ")}>
++                        <Badge color="neutral">+{row.tags.length - 4}</Badge>
+                       </Tooltip>
+                     )}
+                   </HStack>
+@@ -370,18 +370,18 @@
+               render: (row) => (
+                 <HStack gap="1">
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="neutral"
++                    color="neutral"
+                     onClick={() => setEditTarget(row)}
+                     disabled={pendingId === row.id}
+                   >
+                     编辑
+                   </Button>
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="danger"
++                    color="danger"
+                     onClick={() => void deleteBook(row)}
+                     disabled={pendingId === row.id}
+                   >
+@@ -396,10 +396,10 @@
+ 
+       {/* 创建 modal */}
+       <Modal
+-        isOpen={createOpen}
+-        onClose={() => setCreateOpen(false)}
++        open={createOpen}
++        onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }}
+         title="新建书目"
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitCreate}>
+           <ModalBody>
+@@ -409,13 +409,13 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setCreateOpen(false)}
+               disabled={creating}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={creating}>
++            <Button type="submit" color="primary" loading={creating}>
+               创建
+             </Button>
+           </ModalFooter>
+@@ -424,10 +424,10 @@
+ 
+       {/* 编辑 modal */}
+       <Modal
+-        isOpen={Boolean(editTarget)}
+-        onClose={() => setEditTarget(null)}
++        open={Boolean(editTarget)}
++        onOpenChange={(open) => { if (!open) (() => setEditTarget(null))(); }}
+         title={editTarget ? `编辑《${editTarget.title}》` : "编辑书目"}
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitEdit}>
+           <ModalBody>
+@@ -437,13 +437,13 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setEditTarget(null)}
+               disabled={editing}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={editing}>
++            <Button type="submit" color="primary" loading={editing}>
+               保存
+             </Button>
+           </ModalFooter>
+@@ -527,7 +527,7 @@
+           <FormField className="admin-field" label="状态">
+             <Select
+               value={draft.status}
+-              onValueChange={(v) => set("status", v as BookStatus)}
++              onChange={(v) => set("status", v as BookStatus)}
+             >
+               <SelectItem value="ongoing">连载中</SelectItem>
+               <SelectItem value="completed">已完结</SelectItem>
+@@ -662,7 +662,7 @@
+     } catch (err) {
+       if (!(err instanceof AdminApiError) || err.status !== 503) {
+         const msg = err instanceof Error ? err.message : "上传失败";
+-        toast.error("封面上传失败", { description: msg });
++        toast.danger("封面上传失败", { description: msg });
+       }
+     } finally {
+       setUploading(false);
+@@ -670,7 +670,7 @@
+   }
+ 
+   return (
+-    <div style={{ display: "grid", gap: "var(--ui-space-2)" }}>
++    <div style={{ display: "grid", gap: "var(--space-2)" }}>
+       <HStack gap="2" align="center">
+         <Input
+           value={value}
+@@ -680,11 +680,11 @@
+         />
+         <Button
+           type="button"
+-          size="sm"
++          size="small"
+           variant="outline"
+-          intent="neutral"
++          color="neutral"
+           onClick={() => fileRef.current?.click()}
+-          isLoading={uploading}
++          loading={uploading}
+           disabled={cosUnavailable}
+         >
+           上传到 COS
+@@ -698,7 +698,7 @@
+         />
+       </HStack>
+       {cosUnavailable && (
+-        <Alert status="info" variant="subtle" title="COS 暂未配置">
++        <Alert color="info" variant="subtle" title="COS 暂未配置">
+           admin-server COS env 没注入；先手填封面 URL，或联系运维补
+           <code>COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION / COS_PUBLIC_URL_BASE</code>。
+         </Alert>
+@@ -710,8 +710,8 @@
+           style={{
+             maxWidth: 120,
+             maxHeight: 160,
+-            borderRadius: "var(--ui-radius-md)",
+-            border: "1px solid var(--ui-color-border)",
++            borderRadius: "var(--radius-md)",
++            border: "1px solid var(--border-color)",
+             objectFit: "cover",
+           }}
+           onError={(e) => {
+--- a/src/pages/build-tokens/BuildTokensPage.tsx
++++ b/src/pages/build-tokens/BuildTokensPage.tsx
+@@ -28,7 +28,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { FiCopy, FiEdit2, FiKey, FiPlus, FiTrash2 } from "react-icons/fi";
+ import {
+   adminDeleteJson,
+@@ -142,7 +142,7 @@
+             <h2>构建令牌</h2>
+           </div>
+         </section>
+-        <Alert status="warning" variant="subtle" title="无权访问">
++        <Alert color="warning" variant="subtle" title="无权访问">
+           只有持有 <code>identity:rbac:manage</code> scope（默认 admin 角色）的账户可以管理构建令牌。
+           当前角色：<b>{me || "未识别"}</b>。
+         </Alert>
+@@ -220,7 +220,7 @@
+           这个动作不可逆 —— 重新启用就只能新签一条。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "撤销",
+     });
+     if (!ok) return;
+@@ -262,20 +262,20 @@
+             </p>
+           </div>
+           <HStack gap="2">
+-            <Badge colorScheme="brand">{items.length} 条</Badge>
++            <Badge color="primary">{items.length} 条</Badge>
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => void refresh()}
+               disabled={isLoading}
+             >
+               刷新
+             </Button>
+             <Button
+-              size="sm"
+-              intent="primary"
+-              leftIcon={<FiPlus />}
++              size="small"
++              color="primary"
++              startIcon={<FiPlus />}
+               onClick={() => setCreateOpen(true)}
+             >
+               新建令牌
+@@ -286,12 +286,12 @@
+ 
+       <section className="ledger-section">
+         {items.length === 0 && !isLoading ? (
+-          <Alert status="info" variant="subtle" title="还没有签发过任何构建令牌" icon={<FiKey />}>
++          <Alert color="info" variant="subtle" title="还没有签发过任何构建令牌" icon={<FiKey />}>
+             点击右上角「新建令牌」签发一条；明文只会在创建时显示一次。
+           </Alert>
+         ) : (
+           <Table
+-            size="md"
++            size="medium"
+             variant="striped"
+             data={items}
+             rowKey={(row) => row.id}
+@@ -332,7 +332,7 @@
+                 width: 100,
+                 render: (row) => {
+                   const status = tokenStatus(row);
+-                  return <Badge colorScheme={status.tone}>{status.text}</Badge>;
++                  return <Badge color={status.tone}>{status.text}</Badge>;
+                 },
+               },
+               {
+@@ -360,12 +360,12 @@
+                 render: (row) =>
+                   row.revokedAt ? null : (
+                     <HStack gap="1">
+-                      <Tooltip label="改标签" side="top">
++                      <Tooltip content="改标签" placement="top">
+                         <Button
+-                          size="xs"
++                          size="xsmall"
+                           variant="ghost"
+-                          intent="neutral"
+-                          leftIcon={<FiEdit2 />}
++                          color="neutral"
++                          startIcon={<FiEdit2 />}
+                           onClick={() => setEditTarget(row)}
+                           aria-label={`编辑 ${row.label}`}
+                         >
+@@ -373,14 +373,14 @@
+                         </Button>
+                       </Tooltip>
+                       <Tooltip
+-                        label="撤销不可恢复；需要长寿请重签"
+-                        side="top"
++                        content="撤销不可恢复；需要长寿请重签"
++                        placement="top"
+                       >
+                         <Button
+-                          size="xs"
++                          size="xsmall"
+                           variant="ghost"
+-                          intent="danger"
+-                          leftIcon={<FiTrash2 />}
++                          color="danger"
++                          startIcon={<FiTrash2 />}
+                           onClick={() => revoke(row)}
+                           aria-label={`撤销 ${row.label}`}
+                         >
+@@ -395,7 +395,7 @@
+         )}
+       </section>
+ 
+-      <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="签发构建令牌">
++      <Modal open={createOpen} onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }} title="签发构建令牌">
+         <form onSubmit={submitCreate}>
+           <ModalBody>
+             <div className="admin-form-stacked">
+@@ -424,7 +424,7 @@
+                   required
+                 />
+               </FormField>
+-              <Alert status="warning" variant="subtle" title="明文只显示一次">
++              <Alert color="warning" variant="subtle" title="明文只显示一次">
+                 创建成功后明文会一次性返回；关闭对话框就再也无法查看，需要重新签发一条。
+               </Alert>
+             </div>
+@@ -433,7 +433,7 @@
+             <Button variant="ghost" onClick={() => setCreateOpen(false)} disabled={creating}>
+               取消
+             </Button>
+-            <Button type="submit" isLoading={creating} leftIcon={<FiKey />}>
++            <Button type="submit" loading={creating} startIcon={<FiKey />}>
+               签发
+             </Button>
+           </ModalFooter>
+@@ -441,8 +441,8 @@
+       </Modal>
+ 
+       <Modal
+-        isOpen={editTarget !== null}
+-        onClose={() => setEditTarget(null)}
++        open={editTarget !== null}
++        onOpenChange={(open) => { if (!open) (() => setEditTarget(null))(); }}
+         title="编辑构建令牌"
+       >
+         <form onSubmit={submitEdit}>
+@@ -478,7 +478,7 @@
+             <Button variant="ghost" onClick={() => setEditTarget(null)} disabled={editing}>
+               取消
+             </Button>
+-            <Button type="submit" isLoading={editing}>
++            <Button type="submit" loading={editing}>
+               保存
+             </Button>
+           </ModalFooter>
+@@ -486,12 +486,12 @@
+       </Modal>
+ 
+       <Modal
+-        isOpen={revealed !== null}
+-        onClose={() => setRevealed(null)}
++        open={revealed !== null}
++        onOpenChange={(open) => { if (!open) (() => setRevealed(null))(); }}
+         title="复制并保存这条令牌"
+       >
+         <ModalBody>
+-          <Alert status="warning" variant="subtle" title="只显示这一次">
++          <Alert color="warning" variant="subtle" title="只显示这一次">
+             关闭后服务器只保留 sha256 hash，明文无法再恢复。 请马上贴到 CI secrets / 本地{" "}
+             <code>.env</code>。
+           </Alert>
+@@ -506,7 +506,7 @@
+           <Button variant="ghost" onClick={() => setRevealed(null)}>
+             我已保存
+           </Button>
+-          <Button leftIcon={<FiCopy />} onClick={copySecret} isLoading={copying}>
++          <Button startIcon={<FiCopy />} onClick={copySecret} loading={copying}>
+             复制到剪贴板
+           </Button>
+         </ModalFooter>
+--- a/src/pages/dashboard/DashboardPage.tsx
++++ b/src/pages/dashboard/DashboardPage.tsx
+@@ -33,7 +33,7 @@
+   YAxis,
+ } from "recharts";
+ import { FiArrowRight, FiCheckCircle, FiChevronRight, FiExternalLink } from "react-icons/fi";
+-import { Badge, Modal, ModalBody, Table, Tooltip } from "@novel-isr/ui";
++import { Badge, Modal, ModalBody, Table, Tooltip } from "minerva-design";
+ import {
+   buildActionItems,
+   buildKpiCards,
+@@ -701,8 +701,8 @@
+       </section>
+ 
+       <Modal
+-        isOpen={Boolean(selectedVital)}
+-        onClose={() => setSelectedVital(null)}
++        open={Boolean(selectedVital)}
++        onOpenChange={(open) => { if (!open) (() => setSelectedVital(null))(); }}
+         title={`${selectedVital ?? "Web Vital"} 样本明细`}
+         description="按最差样本优先展示，帮助定位是哪条路径、哪个环境、哪个设备或哪次会话把 p75 / p95 拉高。"
+         size="full"
+@@ -720,7 +720,7 @@
+             </span>
+           </div>
+           <Table
+-            size="sm"
++            size="small"
+             variant="striped"
+             data={vitalSamples?.samples ?? []}
+             rowKey={(row) => row.id}
+@@ -732,7 +732,7 @@
+                 width: 150,
+                 render: (row) => (
+                   <span className={styles.sampleValue}>
+-                    <Badge colorScheme={ratingTone(row.rating)}>
++                    <Badge color={ratingTone(row.rating)}>
+                       {formatVital(row.name, row.value)}
+                     </Badge>
+                     {row.valueQuality !== "valid" && (
+@@ -793,10 +793,10 @@
+                 width: 210,
+                 render: (row) => (
+                   <span className={styles.sampleTextBlock}>
+-                    <Tooltip label={row.sessionId ?? "无 sessionId"} tone="dark">
++                    <Tooltip content={row.sessionId ?? "无 sessionId"} color="neutral">
+                       <code className={styles.sampleCode}>session {shortId(row.sessionId)}</code>
+                     </Tooltip>
+-                    <Tooltip label={row.anonymousId ?? "无 anonymousId"} tone="dark">
++                    <Tooltip content={row.anonymousId ?? "无 anonymousId"} color="neutral">
+                       <small>anon {shortId(row.anonymousId)}</small>
+                     </Tooltip>
+                   </span>
+@@ -825,7 +825,7 @@
+                       <FiExternalLink aria-hidden="true" />
+                     </a>
+                   ) : (
+-                    <Tooltip label={sampleHrefDisabledLabel(row, selectedSiteOrigin)} tone="dark">
++                    <Tooltip content={sampleHrefDisabledLabel(row, selectedSiteOrigin)} color="neutral">
+                       <span className={styles.sampleLinkDisabled}>
+                         <FiExternalLink aria-hidden="true" />
+                       </span>
+@@ -949,11 +949,11 @@
+ 
+ function ratingTone(
+   rating: ObservabilitySummary["webVitals"][number]["rating"],
+-): "success" | "warning" | "danger" | "gray" {
++): "success" | "warning" | "danger" | "neutral" {
+   if (rating === "good") return "success";
+   if (rating === "needs-improvement") return "warning";
+   if (rating === "poor") return "danger";
+-  return "gray";
++  return "neutral";
+ }
+ 
+ function formatDateTime(ts: number): string {
+--- a/src/pages/deployments/DeploymentsPage.tsx
++++ b/src/pages/deployments/DeploymentsPage.tsx
+@@ -11,12 +11,12 @@
+   Table,
+   Tooltip,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { adminJson, adminPostJson } from "../../lib/admin-api";
+ 
+ const fetcher = <T,>(url: string) => adminJson<T>(url);
+ 
+-type StatusTone = "success" | "warning" | "brand" | "gray" | "danger";
++type StatusTone = "success" | "warning" | "primary" | "neutral" | "danger";
+ type DeploymentStrategy = "direct" | "canary" | "blue-green" | "rollback";
+ 
+ interface CapabilityPayload {
+@@ -116,19 +116,19 @@
+       {
+         label: "环境",
+         value: String(environmentRows.length),
+-        tone: "brand",
++        tone: "primary",
+         state: "已配置",
+       },
+       {
+         label: "流水线",
+         value: String(pipelineRows.length),
+-        tone: "brand",
++        tone: "primary",
+         state: "已配置",
+       },
+       {
+         label: "运行记录",
+         value: String(runRows.length),
+-        tone: runRows.length > 0 ? "success" : "gray",
++        tone: runRows.length > 0 ? "success" : "neutral",
+         state: runRows.length > 0 ? "有记录" : "暂无",
+       },
+     ],
+@@ -178,10 +178,10 @@
+           </p>
+         </div>
+         <div className="hero-actions">
+-          <Badge colorScheme={executorAttached ? "success" : "warning"}>
++          <Badge color={executorAttached ? "success" : "warning"}>
+             {executorAttached ? "执行器在线" : "BFF 契约"}
+           </Badge>
+-          <Badge colorScheme="brand">{capabilities?.mode ?? "loading"}</Badge>
++          <Badge color="primary">{capabilities?.mode ?? "loading"}</Badge>
+         </div>
+       </section>
+ 
+@@ -190,7 +190,7 @@
+           <div className="metric-card" key={item.label}>
+             <span>{item.label}</span>
+             <strong>{item.value}</strong>
+-            <Badge colorScheme={item.tone as StatusTone}>{item.state}</Badge>
++            <Badge color={item.tone as StatusTone}>{item.state}</Badge>
+           </div>
+         ))}
+       </section>
+@@ -206,7 +206,7 @@
+         </div>
+         <form className="deployment-form" onSubmit={createRun}>
+           <FormField label="流水线">
+-            <Select value={pipelineId} onValueChange={setPipelineId} aria-label="选择流水线">
++            <Select value={pipelineId} onChange={setPipelineId} aria-label="选择流水线">
+               {pipelineRows.map((pipeline) => (
+                 <SelectItem key={pipeline.id} value={pipeline.id}>
+                   {pipeline.name}
+@@ -215,7 +215,7 @@
+             </Select>
+           </FormField>
+           <FormField label="环境">
+-            <Select value={environmentId} onValueChange={setEnvironmentId} aria-label="选择环境">
++            <Select value={environmentId} onChange={setEnvironmentId} aria-label="选择环境">
+               {environmentRows.map((environment) => (
+                 <SelectItem key={environment.id} value={environment.id}>
+                   {environment.name}
+@@ -226,7 +226,7 @@
+           <FormField label="策略">
+             <Select
+               value={strategy}
+-              onValueChange={(value) => setStrategy(value as DeploymentStrategy)}
++              onChange={(value) => setStrategy(value as DeploymentStrategy)}
+               aria-label="选择发布策略"
+             >
+               <SelectItem value="direct">直接发布</SelectItem>
+@@ -256,7 +256,7 @@
+           </div>
+         </div>
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={capabilities?.capabilities ?? []}
+           rowKey={(row) => row.id}
+@@ -282,7 +282,7 @@
+           </div>
+         </div>
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           hoverable
+           data={pipelineRows}
+@@ -295,7 +295,7 @@
+               key: "repository",
+               header: "仓库",
+               render: (row) => (
+-                <Tooltip label={row.repository} tone="dark">
++                <Tooltip content={row.repository} color="neutral">
+                   <span className="table-primary-text">{row.repository}</span>
+                 </Tooltip>
+               ),
+@@ -306,7 +306,7 @@
+               header: "执行器",
+               width: 120,
+               render: (row) => (
+-                <Badge colorScheme={row.executorAttached ? "success" : "warning"}>
++                <Badge color={row.executorAttached ? "success" : "warning"}>
+                   {row.executorAttached ? "已接入" : "待接入"}
+                 </Badge>
+               ),
+@@ -323,7 +323,7 @@
+           </div>
+         </div>
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={environmentRows}
+           rowKey={(row) => row.id}
+@@ -341,7 +341,7 @@
+               key: "siteUrl",
+               header: "前台站点",
+               render: (row) => (
+-                <Tooltip label={row.siteUrl} tone="dark">
++                <Tooltip content={row.siteUrl} color="neutral">
+                   <span className="table-primary-text">{row.siteUrl}</span>
+                 </Tooltip>
+               ),
+@@ -350,7 +350,7 @@
+               key: "apiBaseUrl",
+               header: "配置服务",
+               render: (row) => (
+-                <Tooltip label={row.apiBaseUrl} tone="dark">
++                <Tooltip content={row.apiBaseUrl} color="neutral">
+                   <span className="table-primary-text">{row.apiBaseUrl}</span>
+                 </Tooltip>
+               ),
+@@ -373,7 +373,7 @@
+           </div>
+         </div>
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           hoverable
+           data={runRows}
+@@ -385,7 +385,7 @@
+               header: "运行 ID",
+               width: 130,
+               render: (row) => (
+-                <Tooltip label={row.id} tone="dark">
++                <Tooltip content={row.id} color="neutral">
+                   <code>{shortId(row.id)}</code>
+                 </Tooltip>
+               ),
+@@ -417,18 +417,18 @@
+               render: (row) => (
+                 <HStack gap="1">
+                   <Button
+-                    size="sm"
++                    size="small"
+                     variant="ghost"
+-                    intent="neutral"
++                    color="neutral"
+                     onClick={() => mutateRun(row.id, "cancel")}
+                     disabled={["cancelled", "succeeded", "failed"].includes(row.status)}
+                   >
+                     取消
+                   </Button>
+                   <Button
+-                    size="sm"
++                    size="small"
+                     variant="ghost"
+-                    intent="primary"
++                    color="primary"
+                     onClick={() => mutateRun(row.id, "rollback")}
+                   >
+                     回滚
+@@ -444,17 +444,17 @@
+ }
+ 
+ function StatusBadge({ status }: { status: string }) {
+-  return <Badge colorScheme={statusTone(status)}>{statusLabel(status)}</Badge>;
++  return <Badge color={statusTone(status)}>{statusLabel(status)}</Badge>;
+ }
+ 
+ function statusTone(status: string): StatusTone {
+   if (["available", "contract-ready", "online", "succeeded", "queued"].includes(status)) {
+     return "success";
+   }
+-  if (["remote-executor", "running", "canary"].includes(status)) return "brand";
++  if (["remote-executor", "running", "canary"].includes(status)) return "primary";
+   if (["failed", "cancelled", "locked"].includes(status)) return "danger";
+   if (["external-required", "waiting-executor", "degraded"].includes(status)) return "warning";
+-  return "gray";
++  return "neutral";
+ }
+ 
+ function statusLabel(status: string): string {
+--- a/src/pages/experiments/ExperimentsPage.tsx
++++ b/src/pages/experiments/ExperimentsPage.tsx
+@@ -26,7 +26,7 @@
+   Textarea,
+   Tooltip,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import {
+   FiActivity,
+   FiAlertTriangle,
+@@ -84,13 +84,13 @@
+ 
+ const STATUS_BADGE: Record<
+   ExperimentStatus,
+-  "success" | "warning" | "danger" | "brand" | "gray"
++  "success" | "warning" | "danger" | "primary" | "neutral"
+ > = {
+-  draft: "gray",
++  draft: "neutral",
+   running: "success",
+   paused: "warning",
+   killed: "danger",
+-  concluded: "gray",
++  concluded: "neutral",
+ };
+ 
+ export function ExperimentsPage() {
+@@ -125,23 +125,23 @@
+           </p>
+         </div>
+         <div className="hero-actions">
+-          <Badge colorScheme={total > 0 ? "success" : "gray"}>
++          <Badge color={total > 0 ? "success" : "neutral"}>
+             共 {total} 个
+           </Badge>
+-          <Badge colorScheme="success">运行 {running}</Badge>
+-          {killed > 0 && <Badge colorScheme="danger">已 kill {killed}</Badge>}
++          <Badge color="success">运行 {running}</Badge>
++          {killed > 0 && <Badge color="danger">已 kill {killed}</Badge>}
+           <Button
+-            size="sm"
++            size="small"
+             variant="outline"
+-            intent="neutral"
++            color="neutral"
+             onClick={refresh}
+           >
+             <FiRefreshCw aria-hidden="true" />
+             刷新
+           </Button>
+           <Button
+-            size="sm"
+-            intent="primary"
++            size="small"
++            color="primary"
+             onClick={() => setCreateOpen(true)}
+           >
+             <FiPlus aria-hidden="true" />
+@@ -201,7 +201,7 @@
+                 key: "status",
+                 header: "状态",
+                 render: (row: ExperimentRow) => (
+-                  <Badge colorScheme={STATUS_BADGE[row.status]}>
++                  <Badge color={STATUS_BADGE[row.status]}>
+                     {STATUS_LABEL[row.status]}
+                   </Badge>
+                 ),
+@@ -230,7 +230,7 @@
+                 key: "updatedAt",
+                 header: "更新时间",
+                 render: (row: ExperimentRow) => (
+-                  <Tooltip label={row.updatedAt} tone="dark">
++                  <Tooltip content={row.updatedAt} color="neutral">
+                     <span>{formatRelative(row.updatedAt)}</span>
+                   </Tooltip>
+                 ),
+@@ -288,13 +288,13 @@
+   if (!detail) {
+     return (
+       <Modal
+-        isOpen={true}
+-        onClose={onClose}
++        open={true}
++        onOpenChange={(open) => { if (!open) (onClose)(); }}
+         title={`加载 ${experimentKey}…`}
+-        size="lg"
++        size="large"
+       >
+         <ModalBody>
+-          <Alert status="info">读取实验定义中…</Alert>
++          <Alert color="info">读取实验定义中…</Alert>
+         </ModalBody>
+       </Modal>
+     );
+@@ -326,16 +326,16 @@
+ 
+   return (
+     <Modal
+-      isOpen={true}
+-      onClose={onClose}
++      open={true}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title={detail.key}
+-      size="lg"
++      size="large"
+       description={detail.hypothesis ?? "—"}
+     >
+       <ModalBody>
+         <section className="experiment-detail-meta">
+           <HStack gap="2">
+-            <Badge colorScheme={STATUS_BADGE[detail.status]}>
++            <Badge color={STATUS_BADGE[detail.status]}>
+               {STATUS_LABEL[detail.status]}
+             </Badge>
+             <Badge>由 {detail.createdBy} 创建</Badge>
+@@ -354,8 +354,8 @@
+                   <strong>{v}</strong>
+                   <span className="variant-pct">{pct}%</span>
+                   {i === 0 && (
+-                    <Tooltip label="第一个变体作为 control（status=killed 时强制全流量回 control）" tone="dark">
+-                      <Badge colorScheme="gray">control</Badge>
++                    <Tooltip content="第一个变体作为 control（status=killed 时强制全流量回 control）" color="neutral">
++                      <Badge color="neutral">control</Badge>
+                     </Tooltip>
+                   )}
+                 </span>
+@@ -367,17 +367,17 @@
+           <HStack gap="2" style={{ marginBottom: 12 }}>
+             <Select
+               value={String(windowDays)}
+-              onValueChange={(v: string) => {
++              onChange={(v: string) => {
+                 setWindowDays(Number(v));
+                 void refreshStats();
+               }}
+-              size="sm"
++              size="small"
+             >
+               <SelectItem value="1">最近 1 天</SelectItem>
+               <SelectItem value="7">最近 7 天</SelectItem>
+               <SelectItem value="30">最近 30 天</SelectItem>
+             </Select>
+-            <Badge colorScheme="gray">
++            <Badge color="neutral">
+               曝光（distinct anon）：{totalExposures}
+             </Badge>
+           </HStack>
+@@ -413,7 +413,7 @@
+               rowKey={(row: ExperimentStatsRow) => row.variant}
+             />
+           ) : (
+-            <Alert status="info">
++            <Alert color="info">
+               本时间窗口内还没收到曝光事件。新上线的实验需要等 engine 至少
+               renderer 一次 SSR 才会有数据。
+             </Alert>
+@@ -425,9 +425,9 @@
+         <HStack gap="2">
+           {detail.status === "running" && (
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="warning"
++              color="warning"
+               disabled={savingStatus}
+               onClick={() => void handleStatusChange("paused")}
+             >
+@@ -436,8 +436,8 @@
+           )}
+           {(detail.status === "paused" || detail.status === "draft") && (
+             <Button
+-              size="sm"
+-              intent="primary"
++              size="small"
++              color="primary"
+               disabled={savingStatus}
+               onClick={() => void handleStatusChange("running")}
+             >
+@@ -446,16 +446,16 @@
+           )}
+           {detail.status !== "killed" && detail.status !== "concluded" && (
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="danger"
++              color="danger"
+               disabled={savingStatus}
+               onClick={() => void handleStatusChange("killed")}
+             >
+               <FiAlertTriangle aria-hidden="true" /> Kill（全流量回 control）
+             </Button>
+           )}
+-          <Button size="sm" variant="outline" intent="neutral" onClick={onClose}>
++          <Button size="small" variant="outline" color="neutral" onClick={onClose}>
+             关闭
+           </Button>
+         </HStack>
+@@ -494,11 +494,11 @@
+       .map((s) => Number(s.trim()))
+       .filter((n) => Number.isFinite(n));
+     if (variantList.length < 2) {
+-      toast.error("至少 2 个 variant");
++      toast.danger("至少 2 个 variant");
+       return;
+     }
+     if (weightList.length && weightList.length !== variantList.length) {
+-      toast.error("variants 和 weights 长度必须一致");
++      toast.danger("variants 和 weights 长度必须一致");
+       return;
+     }
+     setSaving(true);
+@@ -524,18 +524,18 @@
+ 
+   return (
+     <Modal
+-      isOpen={isOpen}
+-      onClose={onClose}
++      open={isOpen}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title="创建实验"
+       description="灰度发布从 99/1 起步；A/B 实验从 50/50 起步。key 不能改，慎重起名。"
+-      size="md"
++      size="medium"
+     >
+       <form onSubmit={handleSubmit}>
+         <ModalBody>
+           <FormField
+             label="实验 Key"
+             helperText="业务侧 getVariant('your-key') 用的 ID。字母数字 dash，2-64 长度。"
+-            isRequired
++            required
+           >
+             <Input
+               value={key}
+@@ -560,7 +560,7 @@
+           <FormField
+             label="变体（逗号分隔）"
+             helperText="第一个变体作为 control。建议命名：control, treatment / classic, bold 等。"
+-            isRequired
++            required
+           >
+             <Input
+               value={variants}
+@@ -580,7 +580,7 @@
+             />
+           </FormField>
+ 
+-          <Alert status="info">
++          <Alert color="info">
+             创建后状态是 draft，不下发到 engine。改 status='running' 后 60s 内
+             全 fleet 应用。
+           </Alert>
+@@ -589,15 +589,15 @@
+         <ModalFooter>
+           <HStack gap="2">
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="neutral"
++              color="neutral"
+               onClick={onClose}
+               type="button"
+             >
+               取消
+             </Button>
+-            <Button size="sm" intent="primary" type="submit" disabled={saving}>
++            <Button size="small" color="primary" type="submit" disabled={saving}>
+               <FiPlus aria-hidden="true" /> 创建
+             </Button>
+           </HStack>
+--- a/src/pages/i18n/I18nPage.tsx
++++ b/src/pages/i18n/I18nPage.tsx
+@@ -3,7 +3,7 @@
+ import {
+   Badge,
+   Button,
+-  EmptyState,
++  Empty as EmptyState,
+   FormField,
+   HStack,
+   Input,
+@@ -21,7 +21,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { FiPlus, FiSettings } from "react-icons/fi";
+ import {
+   LocaleCreateModal,
+@@ -223,7 +223,7 @@
+           其它语言下的同名 key 不受影响。前台读到该 key 时会回退到 fallback。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -327,11 +327,11 @@
+           </p>
+         </div>
+         <HStack gap="3">
+-          <Tooltip label="新建后会进入审核态，发布后由 admin API 下发到前台">
++          <Tooltip content="新建后会进入审核态，发布后由 admin API 下发到前台">
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="neutral"
++              color="neutral"
+               onClick={openCreateModal}
+             >
+               新建文案
+@@ -363,7 +363,7 @@
+         <div className="i18n-tab-row">
+           <Tabs
+             value={namespace}
+-            onValueChange={setNamespace}
++            onChange={setNamespace}
+             variant="line"
+             className="i18n-namespace-tabs"
+           >
+@@ -371,7 +371,7 @@
+               <Tab value="all">
+                 全部文案
+                 <Badge
+-                  colorScheme="brand"
++                  color="primary"
+                   variant={namespace === "all" ? "solid" : "subtle"}
+                 >
+                   {grandTotalKeys}
+@@ -388,7 +388,7 @@
+                   >
+                     {item.label}
+                     <Badge
+-                      colorScheme="brand"
++                      color="primary"
+                       variant={isActive ? "solid" : "subtle"}
+                     >
+                       {count}
+@@ -399,9 +399,9 @@
+             </TabList>
+           </Tabs>
+           <HStack gap="2" className="i18n-tab-actions">
+-            <Tooltip label="新建业务分组" side="top">
++            <Tooltip content="新建业务分组" placement="top">
+               <Button
+-                size="sm"
++                size="small"
+                 variant="ghost"
+                 onClick={() => setNamespaceCreateOpen(true)}
+                 aria-label="新建业务分组"
+@@ -409,9 +409,9 @@
+                 <FiPlus aria-hidden="true" />
+               </Button>
+             </Tooltip>
+-            <Tooltip label="管理业务分组" side="top">
++            <Tooltip content="管理业务分组" placement="top">
+               <Button
+-                size="sm"
++                size="small"
+                 variant="ghost"
+                 onClick={() => setNamespaceManageOpen(true)}
+                 aria-label="管理业务分组"
+@@ -437,7 +437,7 @@
+                 </span>
+                 {entry.isDefault && (
+                   <Badge
+-                    colorScheme="brand"
++                    color="primary"
+                     variant="subtle"
+                     className="language-tab-default-badge"
+                   >
+@@ -446,7 +446,7 @@
+                 )}
+               </button>
+             ))}
+-            <Tooltip label="新建语言" side="top">
++            <Tooltip content="新建语言" placement="top">
+               <button
+                 type="button"
+                 className="language-tab language-tab-add"
+@@ -456,7 +456,7 @@
+                 <FiPlus aria-hidden="true" />
+               </button>
+             </Tooltip>
+-            <Tooltip label="管理语言" side="top">
++            <Tooltip content="管理语言" placement="top">
+               <button
+                 type="button"
+                 className="language-tab language-tab-manage"
+@@ -469,7 +469,7 @@
+           </div>
+           <Input
+             className="data-search"
+-            size="md"
++            size="medium"
+             value={query}
+             placeholder="搜索 key / 文案内容 / 分组名称..."
+             onChange={(event) => setQuery(event.target.value)}
+@@ -483,7 +483,7 @@
+         >
+           {!manifestLoading && rows.length === 0 ? (
+             <EmptyState
+-              size="compact"
++              size="small"
+               title="暂无文案"
+               description={
+                 query.trim()
+@@ -492,9 +492,9 @@
+               }
+               action={
+                 <Button
+-                  size="sm"
++                  size="small"
+                   variant="outline"
+-                  intent="neutral"
++                  color="neutral"
+                   onClick={openCreateModal}
+                 >
+                   新建文案
+@@ -503,7 +503,7 @@
+             />
+           ) : (
+             <Table
+-              size="md"
++              size="medium"
+               variant="striped"
+               hoverable
+               loading={manifestLoading}
+@@ -517,7 +517,7 @@
+                   header: "文案 Key",
+                   width: "32%",
+                   render: (row) => (
+-                    <Tooltip label={row.key} tone="dark" delayDuration={120}>
++                    <Tooltip content={row.key} color="neutral" enterDelay={120}>
+                       <code className="code-pill truncate-inline">
+                         {row.key}
+                       </code>
+@@ -528,7 +528,7 @@
+                   key: "value",
+                   header: "文案内容",
+                   render: (row) => (
+-                    <Tooltip label={row.value} tone="dark" delayDuration={120}>
++                    <Tooltip content={row.value} color="neutral" enterDelay={120}>
+                       <span className="table-primary-text">
+                         {row.value}
+                       </span>
+@@ -540,7 +540,7 @@
+                   header: "所属分组",
+                   width: 150,
+                   render: (row) => (
+-                    <Badge colorScheme="gray" title={row.namespace.label}>
++                    <Badge color="neutral" title={row.namespace.label}>
+                       {row.namespace.label}
+                     </Badge>
+                   ),
+@@ -553,16 +553,16 @@
+                   render: (row) => (
+                     <HStack gap="1" justify="end">
+                       <Button
+-                        size="xs"
++                        size="xsmall"
+                         variant="ghost"
+                         onClick={() => openEditModal(row)}
+                       >
+                         编辑
+                       </Button>
+                       <Button
+-                        size="xs"
++                        size="xsmall"
+                         variant="ghost"
+-                        intent="danger"
++                        color="danger"
+                         onClick={() => deleteString(row)}
+                       >
+                         删除
+@@ -584,18 +584,18 @@
+             <Pagination
+               total={rows.length}
+               pageSize={pageSize}
+-              page={safePage}
+-              onPageChange={setPage}
++              current={safePage}
++              
+               pageSizeOptions={[20, 50, 100]}
+-              onPageSizeChange={setPageSize}
++              onChange={(page, pageSize) => { (setPageSize)(pageSize); (setPage)(page); }} showSizeChanger
+             />
+           </div>
+         )}
+       </section>
+ 
+       <Modal
+-        isOpen={isCreateOpen}
+-        onClose={() => setCreateOpen(false)}
++        open={isCreateOpen}
++        onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }}
+         title={
+           editingKey
+             ? bulkDraft.key !== editingKey
+@@ -608,7 +608,7 @@
+             ? "在每个 locale tab 下分别填入翻译。改 key 自动「写新+删旧」。空字符串表示该 locale 不维护此 key。"
+             : "为新 key 在多种语言下一次性写入文案。每个 tab 是一种语言；空字段会被跳过。"
+         }
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitCopy}>
+           <ModalBody>
+@@ -648,7 +648,7 @@
+                       ? namespaces[0]?.id ?? ""
+                       : matched.id;
+                   })()}
+-                  onValueChange={(nextNsId) =>
++                  onChange={(nextNsId) =>
+                     setBulkDraft((p) => ({
+                       ...p,
+                       key: rewriteKeyForNamespace(p.key, nextNsId, namespaces),
+@@ -674,7 +674,7 @@
+                 </div>
+                 <Tabs
+                   value={bulkDraft.editLocaleTab}
+-                  onValueChange={(v) =>
++                  onChange={(v) =>
+                     setBulkDraft((p) => ({ ...p, editLocaleTab: v }))
+                   }
+                   variant="line"
+@@ -686,7 +686,7 @@
+                         <Tab key={l.code} value={l.code}>
+                           {l.label} ({l.code})
+                           {filled && (
+-                            <Badge colorScheme="success" variant="subtle">
++                            <Badge color="success" variant="subtle">
+                               ✓
+                             </Badge>
+                           )}
+@@ -719,12 +719,12 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setCreateOpen(false)}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={isSaving}>
++            <Button type="submit" color="primary" loading={isSaving}>
+               {editingKey ? "保存修改" : "创建文案"}
+             </Button>
+           </ModalFooter>
+--- a/src/pages/i18n/i18nCrud.tsx
++++ b/src/pages/i18n/i18nCrud.tsx
+@@ -25,7 +25,7 @@
+   Textarea,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ 
+ // ─── Shared types ────────────────────────────────────────────────────────
+ 
+@@ -159,11 +159,11 @@
+ 
+   return (
+     <Modal
+-      isOpen={isOpen}
+-      onClose={onClose}
++      open={isOpen}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title="新建语言"
+       description="为站点添加新的 locale，加完后再到此 locale 下补齐对应文案。"
+-      size="md"
++      size="medium"
+     >
+       <form onSubmit={submit}>
+         <ModalBody>
+@@ -198,7 +198,7 @@
+             >
+               <Switch
+                 checked={makeDefault}
+-                onCheckedChange={(value) => setMakeDefault(value)}
++                onChange={(value) => setMakeDefault(value)}
+               />
+             </FormField>
+           </div>
+@@ -207,7 +207,7 @@
+           <Button type="button" variant="ghost" onClick={onClose}>
+             取消
+           </Button>
+-          <Button type="submit" intent="primary" disabled={saving}>
++          <Button type="submit" color="primary" disabled={saving}>
+             {saving ? "创建中..." : "创建"}
+           </Button>
+         </ModalFooter>
+@@ -284,7 +284,7 @@
+       title: `把 locale 从 ${entry.code} 改为 ${next}？`,
+       description:
+         "改名会级联到该 locale 下所有文案的 locale_code，整段事务化。如果新 code 已存在或新 code 校验不过，会回滚。",
+-      intent: "warning",
++      color: "warning",
+       confirmLabel: "改名",
+     });
+     if (!ok) return;
+@@ -323,7 +323,7 @@
+       title: `确定删除语言 ${entry.label} (${entry.code})？`,
+       description:
+         "该 locale 下不能有任何文案才允许删除。如果还有文案，请先在多语言文案页清空。",
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -338,11 +338,11 @@
+ 
+   return (
+     <Modal
+-      isOpen={isOpen}
+-      onClose={onClose}
++      open={isOpen}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title="管理语言"
+       description="编辑 locale code（改名级联文案）、显示名、切换默认 locale、或删除空 locale。"
+-      size="lg"
++      size="large"
+     >
+       <ModalBody>
+         <div className="i18n-manage-list">
+@@ -356,7 +356,7 @@
+                       改一条 locale code 会把它名下所有 strings 一起重命名 */}
+                   <Input
+                     className="i18n-manage-row-code"
+-                    size="sm"
++                    size="small"
+                     value={editingCode[entry.code] ?? entry.code}
+                     onChange={(event) =>
+                       setCodeDraft(entry.code, event.target.value)
+@@ -366,14 +366,14 @@
+                     aria-label={`locale code (${entry.code})`}
+                   />
+                   {entry.isDefault && (
+-                    <Badge colorScheme="brand" variant="solid">
++                    <Badge color="primary" variant="solid">
+                       默认
+                     </Badge>
+                   )}
+                 </div>
+                 <Input
+                   className="i18n-manage-row-input"
+-                  size="sm"
++                  size="small"
+                   value={editing[entry.code] ?? entry.label}
+                   onChange={(event) =>
+                     setLabelDraft(entry.code, event.target.value)
+@@ -385,7 +385,7 @@
+                 <HStack gap="2" align="center">
+                   {!entry.isDefault && (
+                     <Button
+-                      size="sm"
++                      size="small"
+                       variant="ghost"
+                       onClick={() => setDefault(entry)}
+                     >
+@@ -393,9 +393,9 @@
+                     </Button>
+                   )}
+                   <Button
+-                    size="sm"
++                    size="small"
+                     variant="ghost"
+-                    intent="danger"
++                    color="danger"
+                     onClick={() => remove(entry)}
+                     disabled={entry.isDefault}
+                   >
+@@ -472,11 +472,11 @@
+ 
+   return (
+     <Modal
+-      isOpen={isOpen}
+-      onClose={onClose}
++      open={isOpen}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title="新建业务分组"
+       description="为一组 key 前缀创建展示分组。同一字面前缀只能属一个 namespace。"
+-      size="md"
++      size="medium"
+     >
+       <form onSubmit={submit}>
+         <ModalBody>
+@@ -530,7 +530,7 @@
+           <Button type="button" variant="ghost" onClick={onClose}>
+             取消
+           </Button>
+-          <Button type="submit" intent="primary" disabled={saving}>
++          <Button type="submit" color="primary" disabled={saving}>
+             {saving ? "创建中..." : "创建"}
+           </Button>
+         </ModalFooter>
+@@ -640,7 +640,7 @@
+           已存在的 strings 仍保留但显示为「未分类」。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -655,11 +655,11 @@
+ 
+   return (
+     <Modal
+-      isOpen={isOpen}
+-      onClose={onClose}
++      open={isOpen}
++      onOpenChange={(open) => { if (!open) (onClose)(); }}
+       title="管理业务分组"
+       description="编辑 label / 说明 / prefixes，或删除已清空的 namespace。"
+-      size="lg"
++      size="large"
+     >
+       <ModalBody>
+         <div className="i18n-manage-list">
+@@ -676,11 +676,11 @@
+                 <ManageRow key={ns.id} variant="stacked">
+                   <div className="i18n-manage-row-head">
+                     <code className="code-pill">{ns.id}</code>
+-                    <Badge colorScheme="gray">{total} 条</Badge>
++                    <Badge color="neutral">{total} 条</Badge>
+                   </div>
+                   <FormField label="显示名">
+                     <Input
+-                      size="sm"
++                      size="small"
+                       value={draft.label}
+                       onChange={(event) =>
+                         setDraft(ns.id, { label: event.target.value })
+@@ -689,7 +689,7 @@
+                   </FormField>
+                   <FormField label="说明">
+                     <Input
+-                      size="sm"
++                      size="small"
+                       value={draft.description}
+                       onChange={(event) =>
+                         setDraft(ns.id, { description: event.target.value })
+@@ -698,7 +698,7 @@
+                   </FormField>
+                   <FormField label="Prefixes">
+                     <Input
+-                      size="sm"
++                      size="small"
+                       value={draft.prefixes}
+                       onChange={(event) =>
+                         setDraft(ns.id, { prefixes: event.target.value })
+@@ -708,17 +708,17 @@
+                   </FormField>
+                   <HStack gap="2" justify="end">
+                     <Button
+-                      size="sm"
++                      size="small"
+                       variant="ghost"
+-                      intent="danger"
++                      color="danger"
+                       onClick={() => remove(ns)}
+                       disabled={total > 0}
+                     >
+                       删除
+                     </Button>
+                     <Button
+-                      size="sm"
+-                      intent="primary"
++                      size="small"
++                      color="primary"
+                       onClick={() => save(ns)}
+                       disabled={savingId === ns.id}
+                     >
+--- a/src/pages/integrations/IntegrationsPage.tsx
++++ b/src/pages/integrations/IntegrationsPage.tsx
+@@ -15,7 +15,7 @@
+   Table,
+   Textarea,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { adminJson, adminPostJson } from "../../lib/admin-api";
+ 
+ interface IntegrationStatus {
+@@ -145,7 +145,7 @@
+             provider；未配置不会伪装成功。
+           </p>
+         </div>
+-        <Badge colorScheme="brand">
++        <Badge color="primary">
+           {configured}/{rows.length} 已配置
+         </Badge>
+       </section>
+@@ -170,7 +170,7 @@
+ 
+       <section className="ledger-section">
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={rows}
+           rowKey={(row) => row.id}
+@@ -181,7 +181,7 @@
+               header: "状态",
+               width: 130,
+               render: (row) => (
+-                <Badge colorScheme={row.status === "configured" ? "success" : "warning"}>
++                <Badge color={row.status === "configured" ? "success" : "warning"}>
+                   {row.status === "configured" ? "已配置" : "待配置"}
+                 </Badge>
+               ),
+@@ -201,8 +201,8 @@
+                 if (!label) return <span className="muted-text">查看状态</span>;
+                 return (
+                   <Button
+-                    size="sm"
+-                    intent={row.status === "configured" ? "primary" : "secondary"}
++                    size="small"
++                    color={row.status === "configured" ? "primary" : "neutral"}
+                     onClick={() => void runIntegration(row)}
+                   >
+                     {label}
+@@ -215,14 +215,14 @@
+       </section>
+ 
+       <Modal
+-        isOpen={Boolean(active)}
+-        onClose={() => {
++        open={Boolean(active)}
++        onOpenChange={(open) => { if (!open) (() => {
+           setActive(null);
+           setResult("");
+-        }}
++        })(); }}
+         title={active?.label ?? "外部接入"}
+         description="这些动作会调用 admin-server BFF，再由 BFF 调用真实外部 provider。"
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitActive}>
+           <ModalBody>
+@@ -230,7 +230,7 @@
+               <div className="admin-form-stacked">
+                 <p className="muted-text">{active.description}</p>
+                 {active.status === "not_configured" ? (
+-                  <Badge colorScheme="warning">
++                  <Badge color="warning">
+                     需要配置：{active.requiredEnv.join(", ") || "无"}
+                   </Badge>
+                 ) : null}
+@@ -238,7 +238,7 @@
+                 {result ? (
+                   <FormControl>
+                     <FormLabel>执行结果</FormLabel>
+-                    <Textarea value={result} readOnly resize="vertical" rows={8} />
++                    <Textarea value={result} readOnly  rows={8} />
+                     <FormHelperText>结果来自真实 BFF 调用；错误不会被吞掉。</FormHelperText>
+                   </FormControl>
+                 ) : null}
+@@ -251,7 +251,7 @@
+                 关闭
+               </Button>
+               {active && requiresForm ? (
+-                <Button type="submit" intent="primary" isLoading={submitting}>
++                <Button type="submit" color="primary" loading={submitting}>
+                   {activeActionLabel}
+                 </Button>
+               ) : null}
+@@ -321,11 +321,11 @@
+   if (id === "email") {
+     return (
+       <>
+-        <FormControl isRequired>
++        <FormControl required>
+           <FormLabel>收件人</FormLabel>
+           <Input value={form.emailTo} onChange={(event) => update({ emailTo: event.target.value })} />
+         </FormControl>
+-        <FormControl isRequired>
++        <FormControl required>
+           <FormLabel>主题</FormLabel>
+           <Input
+             value={form.emailSubject}
+@@ -337,7 +337,7 @@
+           <Textarea
+             value={form.emailText}
+             onChange={(event) => update({ emailText: event.target.value })}
+-            resize="none"
++            
+             rows={4}
+           />
+         </FormControl>
+@@ -347,16 +347,16 @@
+   if (id === "sms") {
+     return (
+       <>
+-        <FormControl isRequired>
++        <FormControl required>
+           <FormLabel>手机号</FormLabel>
+           <Input value={form.smsTo} onChange={(event) => update({ smsTo: event.target.value })} />
+         </FormControl>
+-        <FormControl isRequired>
++        <FormControl required>
+           <FormLabel>短信内容</FormLabel>
+           <Textarea
+             value={form.smsText}
+             onChange={(event) => update({ smsText: event.target.value })}
+-            resize="none"
++            
+             rows={3}
+           />
+         </FormControl>
+@@ -366,7 +366,7 @@
+   if (id === "storage") {
+     return (
+       <>
+-        <FormControl isRequired>
++        <FormControl required>
+           <FormLabel>对象 Key</FormLabel>
+           <Input value={form.objectKey} onChange={(event) => update({ objectKey: event.target.value })} />
+           <FormHelperText>返回 PUT presigned URL，由浏览器或上传服务直传对象存储。</FormHelperText>
+--- a/src/pages/mock/MockPage.tsx
++++ b/src/pages/mock/MockPage.tsx
+@@ -29,7 +29,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ 
+ interface MockDomain {
+   id: string;
+@@ -93,7 +93,7 @@
+   return (
+     <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+       {text}
+-      <Tooltip label={tip} side="top" tone="dark">
++      <Tooltip content={tip} placement="top" color="neutral">
+         <span
+           aria-label="字段说明"
+           style={{
+@@ -242,7 +242,7 @@
+           目标 {route.service}）。前台该路径会回退到下层 BFF 或 fallback。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -348,15 +348,15 @@
+           <p>按服务域管理本地响应体、代理和录制状态；让前台在真实服务未完成前也能稳定运行。</p>
+         </div>
+         <HStack gap="2">
+-          <Badge colorScheme={mockEnabled ? "warning" : "success"}>
++          <Badge color={mockEnabled ? "warning" : "success"}>
+             {mockEnabled ? "业务 API: Mock" : "业务 API: BFF"}
+           </Badge>
+-          <Badge colorScheme="brand">{rows.length} 个端点</Badge>
+-          <Tooltip label="新增本地模拟、代理或录制端点，前台无需等待真实服务完成">
++          <Badge color="primary">{rows.length} 个端点</Badge>
++          <Tooltip content="新增本地模拟、代理或录制端点，前台无需等待真实服务完成">
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="neutral"
++              color="neutral"
+               onClick={openCreateModal}
+             >
+               新建端点
+@@ -377,19 +377,19 @@
+           </span>
+         </div>
+         <Tooltip
+-          label={
++          content={
+             mockEnabled
+               ? "当前允许 mock route 截获请求。关闭后请求会进入真实 BFF；DB 不可用时会返回 503。"
+               : "当前使用真实 BFF。开启后可在本地无 DB 或真实服务未完成时继续联调前台。"
+           }
+-          tone="dark"
++          color="neutral"
+         >
+           <Switch
+             variant="slider"
+-            colorScheme="success"
++            color="success"
+             checked={mockEnabled}
+             disabled={isSwitchingSource}
+-            onCheckedChange={updateDataSource}
++            onChange={updateDataSource}
+             offLabel="Business BFF"
+             onLabel="Mock response"
+           />
+@@ -407,11 +407,11 @@
+         {/* 服务域 filter：用 soft 变体（segmented pill 风格），整组 tab 包在一个
+           * 圆角容器里 —— 跟 Mock 页之前手写 .segmented 的视觉一致；i18n / SEO
+           * 走 line 变体（底部高亮线），两套变体按页面信息密度区分用，不强求统一。 */}
+-        <Tabs value={domain} onValueChange={setDomain} variant="soft">
++        <Tabs value={domain} onChange={setDomain} variant="soft">
+           <TabList aria-label="选择服务域">
+             <Tab value="all">
+               全部服务
+-              <Badge colorScheme="brand" variant={domain === "all" ? "solid" : "subtle"}>
++              <Badge color="primary" variant={domain === "all" ? "solid" : "subtle"}>
+                 {data?.routes?.length ?? 0}
+               </Badge>
+             </Tab>
+@@ -423,7 +423,7 @@
+                 <Tab key={item.id} value={item.id} title={item.description}>
+                   {item.label}
+                   <Badge
+-                    colorScheme="brand"
++                    color="primary"
+                     variant={domain === item.id ? "solid" : "subtle"}
+                   >
+                     {cnt}
+@@ -444,7 +444,7 @@
+                * 社区下所有 mode 的总数，跟旁边三个 chip 的总和保持一致。 */
+               const cnt = m === "all" ? domainScopedRows.length : modeCounts[m] ?? 0;
+               return (
+-                <Tooltip key={m} label={MODE_TIPS[m]} side="bottom" tone="dark">
++                <Tooltip key={m} content={MODE_TIPS[m]} placement="bottom" color="neutral">
+                   <button
+                     type="button"
+                     className={cn("mock-mode-chip", mode === m && "is-active")}
+@@ -452,7 +452,7 @@
+                   >
+                     <span>{label}</span>
+                     <Badge
+-                      colorScheme="brand"
++                      color="primary"
+                       variant={mode === m ? "solid" : "subtle"}
+                     >
+                       {cnt}
+@@ -464,7 +464,7 @@
+           </HStack>
+           <Input
+             className="toolbar-search"
+-            size="sm"
++            size="small"
+             value={query}
+             placeholder="搜索路径 / 服务 / 方法"
+             onChange={(event) => setQuery(event.target.value)}
+@@ -472,7 +472,7 @@
+         </div>
+ 
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           hoverable
+           data={pageRows}
+@@ -484,7 +484,7 @@
+               header: "服务域",
+               width: 150,
+               render: (route) => (
+-                <Badge colorScheme="brand">{labelOf(domains, route.domain)}</Badge>
++                <Badge color="primary">{labelOf(domains, route.domain)}</Badge>
+               ),
+             },
+             { key: "method", header: "方法", width: 96 },
+@@ -498,7 +498,7 @@
+               key: "mode",
+               header: (
+                 <Tooltip
+-                  label={
++                  content={
+                     <span style={{ display: "block", maxWidth: 320 }}>
+                       <b>模拟（mock）</b>：admin 返回数据库中配置的响应体，不打后端，适合稳定复现联调场景。
+                       <br />
+@@ -509,8 +509,8 @@
+                       回放此存档而不再触发后端。适合录入定参联调。
+                     </span>
+                   }
+-                  side="top"
+-                  tone="dark"
++                  placement="top"
++                  color="neutral"
+                 >
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4, cursor: "help" }}>
+                     模式
+@@ -521,7 +521,7 @@
+               width: 96,
+               render: (route) => (
+                 <Tooltip
+-                  label={
++                  content={
+                     route.mode === "mock"
+                       ? "模拟：返回预设 JSON"
+                       : route.mode === "proxy"
+@@ -530,9 +530,9 @@
+                           ? "录制：抓后端响应存档回放"
+                           : route.mode
+                   }
+-                  tone="dark"
++                  color="neutral"
+                 >
+-                  <Badge colorScheme={modeTone(route.mode)}>{modeLabel(route.mode)}</Badge>
++                  <Badge color={modeTone(route.mode)}>{modeLabel(route.mode)}</Badge>
+                 </Tooltip>
+               ),
+             },
+@@ -567,8 +567,8 @@
+                 }
+                 return (
+                   <Tooltip
+-                    label={last ? `最近：${formatRelative(last)}（${last}）` : ""}
+-                    tone="dark"
++                    content={last ? `最近：${formatRelative(last)}（${last}）` : ""}
++                    color="neutral"
+                     disabled={!last}
+                   >
+                     <span className="muted" style={{ fontVariantNumeric: "tabular-nums" }}>
+@@ -592,16 +592,16 @@
+               render: (route) => (
+                 <HStack gap="1" justify="end">
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+                     onClick={() => openEditModal(route)}
+                   >
+                     编辑
+                   </Button>
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="danger"
++                    color="danger"
+                     onClick={() => deleteRoute(route)}
+                   >
+                     删除
+@@ -621,21 +621,21 @@
+             <Pagination
+               total={filteredRows.length}
+               pageSize={pageSize}
+-              page={safePage}
+-              onPageChange={setPage}
++              current={safePage}
++              
+               pageSizeOptions={[20, 50, 100]}
+-              onPageSizeChange={setPageSize}
++              onChange={(page, pageSize) => { (setPageSize)(pageSize); (setPage)(page); }} showSizeChanger
+             />
+           </div>
+         )}
+       </section>
+ 
+       <Modal
+-        isOpen={isCreateOpen}
+-        onClose={() => setCreateOpen(false)}
++        open={isCreateOpen}
++        onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }}
+         title={editingRouteId ? "编辑接口端点" : "新建接口端点"}
+         description="配置 mock、proxy 或 record 端点；mock 模式可直接配置 JSON 响应体。"
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitRoute}>
+           <ModalBody>
+@@ -649,7 +649,7 @@
+               >
+                 <Select
+                   value={draft.domain}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setDraft((current) => ({ ...current, domain: value }))
+                   }
+                   aria-label="选择服务域"
+@@ -670,7 +670,7 @@
+               >
+                 <Select
+                   value={draft.method}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setDraft((current) => ({
+                       ...current,
+                       method: value as MockRoute["method"],
+@@ -718,7 +718,7 @@
+               >
+                 <Select
+                   value={draft.mode}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setDraft((current) => ({
+                       ...current,
+                       mode: value as MockRoute["mode"],
+@@ -844,7 +844,7 @@
+               <div className="admin-field-wide">
+                 <Switch
+                   checked={draft.enabled}
+-                  onCheckedChange={(checked) =>
++                  onChange={(checked) =>
+                     setDraft((current) => ({ ...current, enabled: checked }))
+                   }
+                 >
+@@ -858,7 +858,7 @@
+               <Button
+                 type="button"
+                 variant="ghost"
+-                intent="neutral"
++                color="neutral"
+                 onClick={async () => {
+                   try {
+                     await adminPostJson(
+@@ -879,7 +879,7 @@
+               <Button
+                 type="button"
+                 variant="ghost"
+-                intent="danger"
++                color="danger"
+                 onClick={deleteFromEditModal}
+               >
+                 删除端点
+@@ -888,12 +888,12 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setCreateOpen(false)}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={isSaving}>
++            <Button type="submit" color="primary" loading={isSaving}>
+               {editingRouteId ? "更新端点" : "保存端点"}
+             </Button>
+           </ModalFooter>
+@@ -907,10 +907,10 @@
+   return domains.find((domain) => domain.id === id)?.label ?? id;
+ }
+ 
+-function modeTone(mode: MockRoute["mode"]): "brand" | "warning" | "success" {
++function modeTone(mode: MockRoute["mode"]): "primary" | "warning" | "success" {
+   if (mode === "proxy") return "warning";
+   if (mode === "record") return "success";
+-  return "brand";
++  return "primary";
+ }
+ 
+ function modeLabel(mode: MockRoute["mode"]): string {
+--- a/src/pages/operations/OperationsPages.tsx
++++ b/src/pages/operations/OperationsPages.tsx
+@@ -1,11 +1,11 @@
+ import useSWR from "swr";
+ import type { ReactNode } from "react";
+-import { Badge, Button, HStack, Table, toast } from "@novel-isr/ui";
++import { Badge, Button, HStack, Table, toast } from "minerva-design";
+ import { adminJson, adminPutJson } from "../../lib/admin-api";
+ 
+ const fetcher = <T,>(url: string) => adminJson<T>(url);
+ 
+-type Tone = "success" | "warning" | "brand" | "gray" | "danger";
++type Tone = "success" | "warning" | "primary" | "neutral" | "danger";
+ 
+ interface FlagPayload {
+   flags: Array<{
+@@ -88,7 +88,7 @@
+       badge={`${rows.length} 环境`}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.id}
+@@ -126,7 +126,7 @@
+       badge={`${rows.length} pipeline`}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.id}
+@@ -140,7 +140,7 @@
+             header: "执行器",
+             width: 140,
+             render: (row) => (
+-              <Badge colorScheme={row.executorAttached ? "success" : "warning"}>
++              <Badge color={row.executorAttached ? "success" : "warning"}>
+                 {row.executorAttached ? "已接入" : "待接入"}
+               </Badge>
+             ),
+@@ -162,7 +162,7 @@
+       badge={`${data?.summary.enabled ?? 0} 已启用`}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.id}
+@@ -200,7 +200,7 @@
+       badge={data?.summary.totalAmount ?? "¥0.00"}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.id}
+@@ -252,7 +252,7 @@
+       badge={error ? "接口异常" : `${pendingCount} 待处理`}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.id}
+@@ -261,7 +261,7 @@
+             key: "targetType",
+             header: "内容类型",
+             width: 130,
+-            render: (row) => <Badge colorScheme="brand">{targetTypeLabel(row.targetType)}</Badge>,
++            render: (row) => <Badge color="primary">{targetTypeLabel(row.targetType)}</Badge>,
+           },
+           { key: "targetId", header: "内容 ID", width: 220 },
+           { key: "reason", header: "举报原因" },
+@@ -284,24 +284,24 @@
+             render: (row) => (
+               <HStack gap="xs" wrap={false}>
+                 <Button
+-                  size="sm"
+-                  intent="secondary"
++                  size="small"
++                  color="neutral"
+                   onClick={() => updateReportStatus(row, "reviewing")}
+                   disabled={row.status === "reviewing"}
+                 >
+                   受理
+                 </Button>
+                 <Button
+-                  size="sm"
+-                  intent="primary"
++                  size="small"
++                  color="primary"
+                   onClick={() => updateReportStatus(row, "resolved")}
+                   disabled={row.status === "resolved"}
+                 >
+                   通过
+                 </Button>
+                 <Button
+-                  size="sm"
+-                  intent="danger"
++                  size="small"
++                  color="danger"
+                   onClick={() => updateReportStatus(row, "rejected")}
+                   disabled={row.status === "rejected"}
+                 >
+@@ -327,7 +327,7 @@
+       badge={`${data?.summary.ready ?? 0}/${data?.summary.total ?? 0} 已接`}
+     >
+       <Table
+-        size="md"
++        size="medium"
+         variant="striped"
+         data={rows}
+         rowKey={(row) => row.metric}
+@@ -377,7 +377,7 @@
+           <h2>{title}</h2>
+           <p>{description}</p>
+         </div>
+-        <Badge colorScheme="brand">{badge}</Badge>
++        <Badge color="primary">{badge}</Badge>
+       </section>
+       <section className="ledger-section">{children}</section>
+     </div>
+@@ -385,7 +385,7 @@
+ }
+ 
+ function StatusBadge({ status }: { status: string }) {
+-  return <Badge colorScheme={statusTone(status)}>{status}</Badge>;
++  return <Badge color={statusTone(status)}>{status}</Badge>;
+ }
+ 
+ function statusTone(status: string): Tone {
+@@ -399,9 +399,9 @@
+     return "warning";
+   }
+   if (["draft"].includes(status)) {
+-    return "brand";
++    return "primary";
+   }
+-  return "gray";
++  return "neutral";
+ }
+ 
+ function targetTypeLabel(type: ContentReport["targetType"]): string {
+--- a/src/pages/operations/SessionsPage.tsx
++++ b/src/pages/operations/SessionsPage.tsx
+@@ -14,7 +14,7 @@
+ import {
+   Badge,
+   Button,
+-  EmptyState,
++  Empty as EmptyState,
+   HStack,
+   Select,
+   SelectItem,
+@@ -22,7 +22,7 @@
+   Tag,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import { FiRefreshCw, FiLogOut } from "react-icons/fi";
+ import { adminDeleteJson, adminJson } from "../../lib/admin-api";
+ 
+@@ -77,7 +77,7 @@
+     const ok = await confirm({
+       title: `撤销 ${s.userId}？`,
+       description: `app: ${s.app} · tenant: ${s.tenantId ?? "-"}。Redis key 删除 + 通过 'live-sessions:revoke' 频道通知业务侧立刻失效该用户的 sessionToken。`,
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "撤销",
+     });
+     if (!ok) return;
+@@ -137,9 +137,9 @@
+           </div>
+           <Button
+             variant="ghost"
+-            size="sm"
++            size="small"
+             onClick={() => mutate()}
+-            isLoading={isValidating}
++            loading={isValidating}
+           >
+             <FiRefreshCw aria-hidden="true" /> 刷新
+           </Button>
+@@ -154,7 +154,7 @@
+           aria-label="按 app 过滤"
+           placeholder="全部应用"
+           value={app || ALL_OPTION}
+-          onValueChange={(v) => setApp(v === ALL_OPTION ? "" : (v ?? ""))}
++          onChange={(v) => setApp(v === ALL_OPTION ? "" : (v ?? ""))}
+         >
+           <SelectItem value={ALL_OPTION}>全部应用</SelectItem>
+           {apps.map((a) => (
+@@ -166,7 +166,7 @@
+         <Select
+           aria-label="活跃窗口"
+           value={since || ALL_OPTION}
+-          onValueChange={(v) => setSince(v === ALL_OPTION ? "" : (v ?? "60"))}
++          onChange={(v) => setSince(v === ALL_OPTION ? "" : (v ?? "60"))}
+         >
+           <SelectItem value="30">30 秒内</SelectItem>
+           <SelectItem value="60">1 分钟内</SelectItem>
+@@ -176,7 +176,7 @@
+       </HStack>
+ 
+       <Table
+-        size="sm"
++        size="small"
+         variant="striped"
+         hoverable
+         data={sessions}
+@@ -187,7 +187,7 @@
+             key: "app",
+             header: "应用",
+             width: 130,
+-            render: (s) => <Tag size="sm">{s.app}</Tag>,
++            render: (s) => <Tag size="small">{s.app}</Tag>,
+           },
+           {
+             key: "user",
+@@ -197,7 +197,7 @@
+               <div>
+                 <code className="code-pill">{s.userId}</code>
+                 {s.tenantId && (
+-                  <Badge colorScheme="brand" variant="subtle">
++                  <Badge color="primary" variant="subtle">
+                     {s.tenantId}
+                   </Badge>
+                 )}
+@@ -234,7 +234,7 @@
+             width: 110,
+             render: (s) =>
+               s.userId ? (
+-                <Button size="xs" variant="ghost" onClick={() => revoke(s)}>
++                <Button size="xsmall" variant="ghost" onClick={() => revoke(s)}>
+                   <FiLogOut aria-hidden="true" /> 撤销
+                 </Button>
+               ) : null,
+--- a/src/pages/seo/SeoPage.tsx
++++ b/src/pages/seo/SeoPage.tsx
+@@ -21,7 +21,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import {
+   adminDeleteJson,
+   adminJson,
+@@ -217,7 +217,7 @@
+           前台读到此 path 时会回退到默认值（不下发自定义 title/description）。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -332,12 +332,12 @@
+           </p>
+         </div>
+         <HStack gap="2" align="center">
+-          <Badge colorScheme="success">{data?.entries?.length ?? 0} 条</Badge>
+-          <Tooltip label="按 path 配置 title/description（多语言）、canonical 与 robots 策略">
++          <Badge color="success">{data?.entries?.length ?? 0} 条</Badge>
++          <Tooltip content="按 path 配置 title/description（多语言）、canonical 与 robots 策略">
+             <Button
+-              size="sm"
++              size="small"
+               variant="outline"
+-              intent="neutral"
++              color="neutral"
+               onClick={openCreateModal}
+             >
+               新建规则
+@@ -354,11 +354,11 @@
+       </div>
+ 
+       <section className="list-section">
+-        <Tabs value={group} onValueChange={setGroup} variant="line">
++        <Tabs value={group} onChange={setGroup} variant="line">
+           <TabList aria-label="选择 SEO 分层">
+             <Tab value="all">
+               全部分层
+-              <Badge colorScheme="brand" variant={group === "all" ? "solid" : "subtle"}>
++              <Badge color="primary" variant={group === "all" ? "solid" : "subtle"}>
+                 {data?.entries?.length ?? 0}
+               </Badge>
+             </Tab>
+@@ -368,7 +368,7 @@
+                 <Tab key={item.id} value={item.id} title={item.description}>
+                   {item.label}
+                   <Badge
+-                    colorScheme="brand"
++                    color="primary"
+                     variant={group === item.id ? "solid" : "subtle"}
+                   >
+                     {count}
+@@ -382,7 +382,7 @@
+         <div className="toolbar">
+           <Input
+             className="toolbar-search"
+-            size="sm"
++            size="small"
+             value={query}
+             placeholder="搜索路径 / 标题 / 描述（任何语言）"
+             onChange={(event) => setQuery(event.target.value)}
+@@ -390,7 +390,7 @@
+         </div>
+ 
+         <Table
+-          size="sm"
++          size="small"
+           variant="striped"
+           hoverable
+           data={pageRows}
+@@ -402,7 +402,7 @@
+               header: "分层",
+               width: 120,
+               render: (entry) => (
+-                <Badge colorScheme="brand" title={labelOf(groups, entry.group)}>
++                <Badge color="primary" title={labelOf(groups, entry.group)}>
+                   {labelOf(groups, entry.group)}
+                 </Badge>
+               ),
+@@ -412,7 +412,7 @@
+               header: "路径",
+               width: 160,
+               render: (entry) => (
+-                <Tooltip label={entry.path} tone="dark">
++                <Tooltip content={entry.path} color="neutral">
+                   <code className="truncate-inline">{entry.path}</code>
+                 </Tooltip>
+               ),
+@@ -427,9 +427,9 @@
+                   标题
+                   {allLocales.length > 1 && (
+                     <Select
+-                      size="sm"
++                      size="small"
+                       value={displayLocale}
+-                      onValueChange={setDisplayLocale}
++                      onChange={setDisplayLocale}
+                       aria-label="切换标题展示语言"
+                     >
+                       {allLocales.map((l) => (
+@@ -448,8 +448,8 @@
+                 const fallback = !entry.translations[displayLocale]?.title;
+                 return (
+                   <Tooltip
+-                    label={t ?? "未配置"}
+-                    tone="dark"
++                    content={t ?? "未配置"}
++                    color="neutral"
+                     disabled={!t}
+                   >
+                     <span
+@@ -481,11 +481,11 @@
+                     return (
+                       <Tooltip
+                         key={l.code}
+-                        label={`${l.label}: ${has ? "已译" : "未译"}`}
+-                        tone="dark"
++                        content={`${l.label}: ${has ? "已译" : "未译"}`}
++                        color="neutral"
+                       >
+                         <Badge
+-                          colorScheme={color}
++                          color={color}
+                           variant={has ? "solid" : "outline"}
+                         >
+                           {l.code}
+@@ -501,7 +501,7 @@
+               header: "收录",
+               width: 80,
+               render: (entry) => (
+-                <Badge colorScheme={entry.noindex ? "warning" : "success"}>
++                <Badge color={entry.noindex ? "warning" : "success"}>
+                   {entry.noindex ? "禁止" : "允许"}
+                 </Badge>
+               ),
+@@ -514,16 +514,16 @@
+               render: (entry) => (
+                 <HStack gap="1" justify="end">
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+                     onClick={() => openEditModal(entry)}
+                   >
+                     编辑
+                   </Button>
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="danger"
++                    color="danger"
+                     onClick={() => deleteEntry(entry)}
+                   >
+                     删除
+@@ -542,21 +542,21 @@
+             <Pagination
+               total={rows.length}
+               pageSize={pageSize}
+-              page={safePage}
+-              onPageChange={setPage}
++              current={safePage}
++              
+               pageSizeOptions={[20, 50, 100]}
+-              onPageSizeChange={setPageSize}
++              onChange={(page, pageSize) => { (setPageSize)(pageSize); (setPage)(page); }} showSizeChanger
+             />
+           </div>
+         )}
+       </section>
+ 
+       <Modal
+-        isOpen={isCreateOpen}
+-        onClose={() => setCreateOpen(false)}
++        open={isCreateOpen}
++        onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }}
+         title={editingPath ? `编辑 SEO 规则 · ${editingPath}` : "新建 SEO 规则"}
+         description="path / canonical / robots 全站共用；title / description 等面向用户字段按 locale 单独维护。"
+-        size="lg"
++        size="large"
+       >
+         <form onSubmit={submitSeoRule}>
+           <ModalBody>
+@@ -578,7 +578,7 @@
+               <FormField className="admin-field" label="治理分层">
+                 <Select
+                   value={draft.group}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setDraft((current) => ({ ...current, group: value }))
+                   }
+                   aria-label="选择 SEO 分层"
+@@ -596,7 +596,7 @@
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                     Canonical
+                     <Tooltip
+-                      label={
++                      content={
+                         <>
+                           告诉搜索引擎「此页面的唯一权威 URL」。多 path 指向相同
+                           内容时（如 ?utm_xxx 跟踪参数 / 同一书籍的不同入口路径），
+@@ -604,8 +604,8 @@
+                           留空 = 使用当前 path 作为 canonical。
+                         </>
+                       }
+-                      side="top"
+-                      tone="dark"
++                      placement="top"
++                      color="neutral"
+                     >
+                       <span aria-label="canonical 说明" style={{ cursor: "help", color: "var(--admin-fg-muted)" }}>
+                         ⓘ
+@@ -628,15 +628,15 @@
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                     OG Image
+                     <Tooltip
+-                      label={
++                      content={
+                         <>
+                           分享卡片（微信 / Twitter / 微博 / Slack 等）抓取的封面图。
+                           建议绝对 URL，比例 1.91:1（1200×630）效果最好。
+                           留空则不输出 og:image，平台用默认 favicon 替代。
+                         </>
+                       }
+-                      side="top"
+-                      tone="dark"
++                      placement="top"
++                      color="neutral"
+                     >
+                       <span aria-label="og image 说明" style={{ cursor: "help", color: "var(--admin-fg-muted)" }}>
+                         ⓘ
+@@ -660,15 +660,15 @@
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                     OG Type
+                     <Tooltip
+-                      label={
++                      content={
+                         <>
+                           OpenGraph 类型；website = 普通页面，article = 文章 / 评测 /
+                           话题，product = 商品。决定富媒体平台用哪种卡片渲染。
+                           留空 = website。
+                         </>
+                       }
+-                      side="top"
+-                      tone="dark"
++                      placement="top"
++                      color="neutral"
+                     >
+                       <span aria-label="og type 说明" style={{ cursor: "help", color: "var(--admin-fg-muted)" }}>
+                         ⓘ
+@@ -679,7 +679,7 @@
+               >
+                 <Select
+                   value={draft.ogType || "__default__"}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setDraft((current) => ({
+                       ...current,
+                       ogType: value === "__default__" ? "" : value,
+@@ -694,9 +694,9 @@
+                 </Select>
+               </FormField>
+               <Checkbox
+-                size="md"
++                size="medium"
+                 checked={draft.noindex}
+-                onCheckedChange={(checked) =>
++                onChange={(checked) =>
+                   setDraft((current) => ({ ...current, noindex: Boolean(checked) }))
+                 }
+               >
+@@ -710,7 +710,7 @@
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                     多语言替代链接（hreflang）
+                     <Tooltip
+-                      label={
++                      content={
+                         <>
+                           告诉搜索引擎此页面有哪些语言版本，每行一对：
+                           <code>hreflang</code>（如 zh-CN / en-US / x-default）+
+@@ -718,8 +718,8 @@
+                           对国际站点 SEO 有用；国内站点可留空。
+                         </>
+                       }
+-                      side="top"
+-                      tone="dark"
++                      placement="top"
++                      color="neutral"
+                     >
+                       <span aria-label="hreflang 说明" style={{ cursor: "help", color: "var(--admin-fg-muted)" }}>
+                         ⓘ
+@@ -760,9 +760,9 @@
+                       />
+                       <Button
+                         type="button"
+-                        size="sm"
++                        size="small"
+                         variant="ghost"
+-                        intent="danger"
++                        color="danger"
+                         onClick={() =>
+                           setDraft((current) => ({
+                             ...current,
+@@ -776,9 +776,9 @@
+                   ))}
+                   <Button
+                     type="button"
+-                    size="sm"
++                    size="small"
+                     variant="outline"
+-                    intent="neutral"
++                    color="neutral"
+                     onClick={() =>
+                       setDraft((current) => ({
+                         ...current,
+@@ -799,7 +799,7 @@
+                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                     JSON-LD 结构化数据
+                     <Tooltip
+-                      label={
++                      content={
+                         <>
+                           schema.org 结构化数据，让搜索引擎能直接抽取页面字段
+                           （书名、作者、评分、价格等），出现 rich result。
+@@ -808,8 +808,8 @@
+                           generateSeo 里动态拼，admin 这里只管模板与静态页。
+                         </>
+                       }
+-                      side="top"
+-                      tone="dark"
++                      placement="top"
++                      color="neutral"
+                     >
+                       <span aria-label="json-ld 说明" style={{ cursor: "help", color: "var(--admin-fg-muted)" }}>
+                         ⓘ
+@@ -823,7 +823,7 @@
+                   value={draft.jsonLdText}
+                   rows={6}
+                   placeholder={'{\n  "@context": "https://schema.org",\n  "@type": "WebSite",\n  "name": "新优书网"\n}'}
+-                  style={{ fontFamily: "var(--ui-font-family-mono, ui-monospace, monospace)" }}
++                  style={{ fontFamily: "var(--font-family-mono, ui-monospace, monospace)" }}
+                   onChange={(event) =>
+                     setDraft((current) => ({ ...current, jsonLdText: event.target.value }))
+                   }
+@@ -841,7 +841,7 @@
+                 </div>
+                 <Tabs
+                   value={editingLocale}
+-                  onValueChange={setEditingLocale}
++                  onChange={setEditingLocale}
+                   variant="line"
+                 >
+                   <TabList aria-label="选择编辑的语言">
+@@ -852,7 +852,7 @@
+                         <Tab key={l.code} value={l.code}>
+                           {l.label} ({l.code})
+                           {filled && (
+-                            <Badge colorScheme="success" variant="subtle">
++                            <Badge color="success" variant="subtle">
+                               ✓
+                             </Badge>
+                           )}
+@@ -919,12 +919,12 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setCreateOpen(false)}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={isSaving}>
++            <Button type="submit" color="primary" loading={isSaving}>
+               {editingPath ? "保存修改" : "创建规则"}
+             </Button>
+           </ModalFooter>
+@@ -937,11 +937,11 @@
+ /* per-locale 颜色循环：brand → success → warning → danger → gray。
+  * 5 种之内的 locale（zh / en / ja / ko / pt-BR ...）每个 locale 都拿到稳定颜色。 */
+ const LOCALE_BADGE_COLORS = [
+-  "brand",
++  "primary",
+   "success",
+   "warning",
+   "danger",
+-  "gray",
++  "neutral",
+ ] as const;
+ 
+ function labelOf(groups: SeoGroup[], id?: string | null): string {
+--- a/src/pages/users/UsersPage.tsx
++++ b/src/pages/users/UsersPage.tsx
+@@ -33,7 +33,7 @@
+   Tooltip,
+   confirm,
+   toast,
+-} from "@novel-isr/ui";
++} from "minerva-design";
+ import {
+   AdminApiError,
+   adminDeleteJson,
+@@ -192,7 +192,7 @@
+             <h2>账号管理</h2>
+           </div>
+         </section>
+-        <Alert status="warning" variant="subtle" title="无权访问">
++        <Alert color="warning" variant="subtle" title="无权访问">
+           只有持有 <code>identity:rbac:manage</code> scope（默认 admin 角色）的账户可以管理用户。
+           当前角色：<b>{me || "未识别"}</b>。
+         </Alert>
+@@ -246,7 +246,7 @@
+           书评、书单等关联数据也会按外键级联清理（onDelete cascade）。
+         </>
+       ),
+-      intent: "danger",
++      color: "danger",
+       confirmLabel: "删除",
+     });
+     if (!ok) return;
+@@ -348,7 +348,7 @@
+         <HStack gap="3">
+           <Tabs
+             value={kind}
+-            onValueChange={(value) =>
++            onChange={(value) =>
+               setKind(value === "end_user" ? "end_user" : "staff")
+             }
+             aria-label="账号类型"
+@@ -361,7 +361,7 @@
+           {kind === "end_user" && (
+             <Select
+               value={appFilter}
+-              onValueChange={setAppFilter}
++              onChange={setAppFilter}
+               aria-label="按业务过滤"
+             >
+               <SelectItem value={ALL_APPS_VALUE}>全部业务</SelectItem>
+@@ -372,17 +372,17 @@
+               ))}
+             </Select>
+           )}
+-          <Badge colorScheme="brand">{users?.length ?? 0} 个账号</Badge>
++          <Badge color="primary">{users?.length ?? 0} 个账号</Badge>
+           <Button
+-            size="sm"
++            size="small"
+             variant="outline"
+-            intent="neutral"
++            color="neutral"
+             onClick={() => void refreshUsers()}
+             disabled={isLoading}
+           >
+             刷新
+           </Button>
+-          <Button size="sm" intent="primary" onClick={() => setCreateOpen(true)}>
++          <Button size="small" color="primary" onClick={() => setCreateOpen(true)}>
+             新建账号
+           </Button>
+         </HStack>
+@@ -390,7 +390,7 @@
+ 
+       <section className="ledger-section">
+         <Table
+-          size="md"
++          size="medium"
+           variant="striped"
+           data={users ?? []}
+           rowKey={(row) => row.id}
+@@ -403,8 +403,8 @@
+                 <HStack gap="2" align="center">
+                   <b>{row.handle}</b>
+                   {row.disabledAt && (
+-                    <Tooltip label={`禁用时间：${new Date(row.disabledAt).toLocaleString()}`}>
+-                      <Badge colorScheme="warning">已禁用</Badge>
++                    <Tooltip content={`禁用时间：${new Date(row.disabledAt).toLocaleString()}`}>
++                      <Badge color="warning">已禁用</Badge>
+                     </Tooltip>
+                   )}
+                 </HStack>
+@@ -420,14 +420,14 @@
+               width: 160,
+               render: (row) =>
+                 row.principalKind === "staff" ? (
+-                  <Tooltip label="跨所有业务的平台 / 中台员工">
+-                    <Badge colorScheme="brand">平台</Badge>
++                  <Tooltip content="跨所有业务的平台 / 中台员工">
++                    <Badge color="primary">平台</Badge>
+                   </Tooltip>
+                 ) : (
+                   <Tooltip
+-                    label={`属于业务 ${row.appId ?? "未指定"}；只能登录该业务前台`}
++                    content={`属于业务 ${row.appId ?? "未指定"}；只能登录该业务前台`}
+                   >
+-                    <Badge colorScheme="gray">{row.appId ?? "未分配"}</Badge>
++                    <Badge color="neutral">{row.appId ?? "未分配"}</Badge>
+                   </Tooltip>
+                 ),
+             },
+@@ -435,7 +435,7 @@
+               key: "role",
+               header: "角色",
+               width: 120,
+-              render: (row) => <Badge colorScheme={row.role === "admin" ? "success" : "gray"}>{row.role}</Badge>,
++              render: (row) => <Badge color={row.role === "admin" ? "success" : "neutral"}>{row.role}</Badge>,
+             },
+             {
+               key: "createdAt",
+@@ -450,7 +450,7 @@
+               render: (row) => (
+                 <Switch
+                   checked={!row.disabledAt}
+-                  onCheckedChange={(checked) => void toggleDisabled(row, !checked)}
++                  onChange={(checked) => void toggleDisabled(row, !checked)}
+                   disabled={pendingId === row.id}
+                   aria-label={row.disabledAt ? `启用 ${row.handle}` : `禁用 ${row.handle}`}
+                 />
+@@ -463,27 +463,27 @@
+               render: (row) => (
+                 <HStack gap="1">
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="neutral"
++                    color="neutral"
+                     onClick={() => setEditTarget(row)}
+                     disabled={pendingId === row.id}
+                   >
+                     编辑
+                   </Button>
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="neutral"
++                    color="neutral"
+                     onClick={() => setResetTarget(row)}
+                     disabled={pendingId === row.id}
+                   >
+                     重置密码
+                   </Button>
+                   <Button
+-                    size="xs"
++                    size="xsmall"
+                     variant="ghost"
+-                    intent="danger"
++                    color="danger"
+                     onClick={() => void deleteUser(row)}
+                     disabled={pendingId === row.id}
+                   >
+@@ -497,7 +497,7 @@
+       </section>
+ 
+       {/* 新建账号 */}
+-      <Modal isOpen={createOpen} onClose={() => setCreateOpen(false)} title="新建账号" size="md">
++      <Modal open={createOpen} onOpenChange={(open) => { if (!open) (() => setCreateOpen(false))(); }} title="新建账号" size="medium">
+         <form onSubmit={submitCreate}>
+           <ModalBody>
+             <div className="admin-form-stacked">
+@@ -543,10 +543,10 @@
+             </div>
+           </ModalBody>
+           <ModalFooter>
+-            <Button type="button" variant="ghost" intent="neutral" onClick={() => setCreateOpen(false)}>
++            <Button type="button" variant="ghost" color="neutral" onClick={() => setCreateOpen(false)}>
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={creating}>
++            <Button type="submit" color="primary" loading={creating}>
+               创建
+             </Button>
+           </ModalFooter>
+@@ -555,10 +555,10 @@
+ 
+       {/* 编辑账号 */}
+       <Modal
+-        isOpen={!!editTarget}
+-        onClose={() => setEditTarget(null)}
++        open={!!editTarget}
++        onOpenChange={(open) => { if (!open) (() => setEditTarget(null))(); }}
+         title={editTarget ? `编辑 ${editTarget.handle}` : "编辑账号"}
+-        size="md"
++        size="medium"
+       >
+         <form onSubmit={submitEdit}>
+           <ModalBody>
+@@ -595,7 +595,7 @@
+               >
+                 <Select
+                   value={editDraft.roleId}
+-                  onValueChange={(value) =>
++                  onChange={(value) =>
+                     setEditDraft((prev) => ({ ...prev, roleId: value }))
+                   }
+                   aria-label="角色"
+@@ -613,12 +613,12 @@
+             <Button
+               type="button"
+               variant="ghost"
+-              intent="neutral"
++              color="neutral"
+               onClick={() => setEditTarget(null)}
+             >
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={editing}>
++            <Button type="submit" color="primary" loading={editing}>
+               保存
+             </Button>
+           </ModalFooter>
+@@ -627,10 +627,10 @@
+ 
+       {/* 重置密码 */}
+       <Modal
+-        isOpen={!!resetTarget}
+-        onClose={() => setResetTarget(null)}
++        open={!!resetTarget}
++        onOpenChange={(open) => { if (!open) (() => setResetTarget(null))(); }}
+         title={resetTarget ? `重置 ${resetTarget.handle} 的密码` : "重置密码"}
+-        size="md"
++        size="medium"
+       >
+         <form onSubmit={submitReset}>
+           <ModalBody>
+@@ -663,10 +663,10 @@
+             </div>
+           </ModalBody>
+           <ModalFooter>
+-            <Button type="button" variant="ghost" intent="neutral" onClick={() => setResetTarget(null)}>
++            <Button type="button" variant="ghost" color="neutral" onClick={() => setResetTarget(null)}>
+               取消
+             </Button>
+-            <Button type="submit" intent="primary" isLoading={resetting}>
++            <Button type="submit" color="primary" loading={resetting}>
+               更新密码
+             </Button>
+           </ModalFooter>
+--- a/src/routes.tsx
++++ b/src/routes.tsx
+@@ -1,6 +1,6 @@
+ import { lazy } from "react";
+ import type { ComponentType, LazyExoticComponent } from "react";
+-import type { CommandItem, NavTreeSection } from "@novel-isr/ui";
++import type { CommandItem, NavTreeSection } from "minerva-design";
+ import {
+   FiActivity,
+   FiBarChart2,
+--- a/src/styles/global.css
++++ b/src/styles/global.css
+@@ -124,7 +124,7 @@
+     margin: 0;
+     background: var(--admin-bg);
+     color: var(--admin-text);
+-    font-family: var(--ui-font-family-sans);
++    font-family: var(--font-family-sans);
+     font-size: 14px;
+     line-height: 1.5;
+     overflow-x: hidden;
+@@ -202,8 +202,8 @@
+     border-right: 1px solid var(--admin-divider);
+     box-shadow: none;
+     transition:
+-        width var(--ui-transition-base),
+-        background var(--ui-transition-base);
++        width var(--transition-base),
++        background var(--transition-base);
+ }
+ 
+ .sidebar-scrim {
+@@ -239,12 +239,12 @@
+     transform: translateY(-50%) translateX(-6px);
+     box-shadow: var(--admin-shadow-md);
+     transition:
+-        opacity var(--ui-transition-base),
+-        transform var(--ui-transition-base),
+-        background var(--ui-transition-fast),
+-        border-color var(--ui-transition-fast),
+-        color var(--ui-transition-fast),
+-        box-shadow var(--ui-transition-fast);
++        opacity var(--transition-base),
++        transform var(--transition-base),
++        background var(--transition-fast),
++        border-color var(--transition-fast),
++        color var(--transition-fast),
++        box-shadow var(--transition-fast);
+ }
+ 
+ /* 侧栏 hover / focus-within → 把手浮现到原位（translateX 0） */
+@@ -261,7 +261,7 @@
+     width: 18px;
+     height: 18px;
+     stroke-width: 2.25;
+-    transition: transform var(--ui-transition-base);
++    transition: transform var(--transition-base);
+ }
+ 
+ .sidebar-toggle:hover {
+@@ -303,7 +303,7 @@
+     box-shadow: inset 0 -1px 0 var(--admin-divider);
+ }
+ 
+-.brand > .ui-stack {
++.brand > [data-minerva="stack"][data-part="root"] {
+     width: 100%;
+     min-width: 0;
+ }
+@@ -363,15 +363,15 @@
+  * 折叠态用 max-width:0 + overflow:hidden + white-space:nowrap 让元素在 layout 中零宽度，
+  * 不会撑破 76px 的 rail；transition 同时带上 max-width，文字像「抽屉」一样滑出。 */
+ .brand-copy,
+-.brand .ui-badge {
++.brand [data-minerva="badge"][data-part="root"] {
+     transition:
+-        opacity var(--ui-transition-base),
+-        transform var(--ui-transition-base),
+-        max-width var(--ui-transition-base);
++        opacity var(--transition-base),
++        transform var(--transition-base),
++        max-width var(--transition-base);
+ }
+ 
+ .layout-collapsed .brand-copy,
+-.layout-collapsed .brand .ui-badge {
++.layout-collapsed .brand [data-minerva="badge"][data-part="root"] {
+     opacity: 0;
+     transform: translateX(-6px);
+     pointer-events: none;
+@@ -394,39 +394,35 @@
+     margin-top: 16px;
+ }
+ 
+-.sidebar .ui-nav-tree-section {
++.sidebar [data-minerva="nav-tree"][data-part="group"] {
+     border-color: var(--admin-divider);
+ }
+ 
+-.sidebar .ui-nav-tree-section-title {
++.sidebar [data-minerva="nav-tree"][data-part="group-label"] {
+     color: var(--admin-subtle);
+     font-weight: 720;
+ }
+ 
+-.sidebar .ui-nav-tree-children {
+-    border: 0;
+-}
+-
+-.sidebar .ui-nav-tree-item {
+-    color: var(--admin-muted);
+-}
+-
+-.sidebar .ui-nav-tree-item:hover {
++.sidebar [data-minerva="nav-tree"][data-part="item"] {
++    color: var(--admin-muted);
++}
++
++.sidebar [data-minerva="nav-tree"][data-part="item"]:hover {
+     background: var(--admin-hover-bg);
+     color: var(--admin-text);
+ }
+ 
+-.sidebar .ui-nav-tree-item-active {
++.sidebar [data-minerva="nav-tree"][data-part="item"][data-current] {
+     background: var(--admin-active-bg);
+     color: var(--admin-text);
+     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--admin-brand) 32%, transparent);
+ }
+ 
+-.sidebar .ui-nav-tree-item-active .ui-nav-tree-icon {
++.sidebar [data-minerva="nav-tree"][data-part="item"][data-current] [data-minerva="nav-tree"][data-part="icon"] {
+     color: var(--admin-brand);
+ }
+ 
+-[data-theme="light"] .sidebar .ui-nav-tree-item-active {
++[data-theme="light"] .sidebar [data-minerva="nav-tree"][data-part="item"][data-current] {
+     background: var(--admin-active-bg);
+     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--admin-brand) 28%, transparent);
+ }
+@@ -490,7 +486,7 @@
+     border-radius: 999px;
+     background: transparent;
+     content: "";
+-    transition: background var(--ui-transition-fast);
++    transition: background var(--transition-fast);
+ }
+ 
+ .nav-glyph {
+@@ -580,9 +576,9 @@
+ .nav-group-title,
+ .nav-copy {
+     transition:
+-        opacity var(--ui-transition-base),
+-        transform var(--ui-transition-base),
+-        max-width var(--ui-transition-base);
++        opacity var(--transition-base),
++        transform var(--transition-base),
++        max-width var(--transition-base);
+ }
+ 
+ .layout-collapsed .nav-group-title,
+@@ -631,15 +627,15 @@
+     display: inline-flex;
+     padding: 2px;
+     border: none;
+-    border-radius: var(--ui-radius-full);
++    border-radius: var(--radius-full);
+     background: var(--admin-surface-2);
+     color: inherit;
+     cursor: pointer;
+     box-shadow: var(--admin-ring);
+     transition:
+-        background var(--ui-transition-fast),
+-        box-shadow var(--ui-transition-fast),
+-        transform var(--ui-transition-fast);
++        background var(--transition-fast),
++        box-shadow var(--transition-fast),
++        transform var(--transition-fast);
+ }
+ 
+ .account-trigger:hover {
+@@ -707,9 +703,9 @@
+     cursor: pointer;
+     flex-shrink: 0;
+     transition:
+-        background var(--ui-transition-fast),
+-        border-color var(--ui-transition-fast),
+-        color var(--ui-transition-fast);
++        background var(--transition-fast),
++        border-color var(--transition-fast),
++        color var(--transition-fast);
+ }
+ 
+ .topbar-menu-btn svg {
+@@ -763,9 +759,9 @@
+     cursor: pointer;
+     text-align: left;
+     transition:
+-        border-color var(--ui-transition-fast),
+-        box-shadow var(--ui-transition-fast),
+-        background var(--ui-transition-fast);
++        border-color var(--transition-fast),
++        box-shadow var(--transition-fast),
++        background var(--transition-fast);
+ }
+ 
+ .command-trigger:hover,
+@@ -798,7 +794,7 @@
+     border-radius: 4px;
+     background: var(--admin-surface-3);
+     color: var(--admin-muted);
+-    font-family: var(--ui-font-family-mono);
++    font-family: var(--font-family-mono);
+     font-size: 11px;
+ }
+ 
+@@ -826,9 +822,9 @@
+     font-weight: 700;
+     box-shadow: var(--admin-ring);
+     transition:
+-        background var(--ui-transition-fast),
+-        box-shadow var(--ui-transition-fast),
+-        transform var(--ui-transition-fast);
++        background var(--transition-fast),
++        box-shadow var(--transition-fast),
++        transform var(--transition-fast);
+     text-decoration: none;
+ }
+ 
+@@ -853,7 +849,7 @@
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+-    background: var(--ui-color-danger-500);
++    background: var(--danger-color);
+ }
+ 
+ .admin-theme-toggle {
+@@ -914,7 +910,7 @@
+     border-top: 1px solid var(--admin-divider);
+ }
+ 
+-.ledger-section .ui-table-wrapper,
++.ledger-section [data-minerva="data-table"][data-part="viewport"],
+ .work-section {
+     min-width: 0;
+ }
+@@ -1327,8 +1323,8 @@
+     color: var(--admin-text);
+     text-decoration: none;
+     transition:
+-        background var(--ui-transition-fast),
+-        border-color var(--ui-transition-fast);
++        background var(--transition-fast),
++        border-color var(--transition-fast);
+ }
+ 
+ .task-item:hover,
+@@ -1547,7 +1543,7 @@
+ }
+ 
+ .mock-source-strip-text code {
+-    font-family: var(--ui-font-family-mono, ui-monospace, monospace);
++    font-family: var(--font-family-mono, ui-monospace, monospace);
+     color: var(--admin-cyan, #40a9ff);
+     background: rgba(64, 169, 255, 0.06);
+     padding: 1px 4px;
+@@ -1748,11 +1744,11 @@
+     align-items: end;
+ }
+ 
+-.deployment-form .ui-field {
+-    min-width: 0;
+-}
+-
+-.deployment-form .ui-button {
++.deployment-form [data-minerva="form-control"][data-part="root"] {
++    min-width: 0;
++}
++
++.deployment-form [data-minerva="button"][data-part="root"] {
+     min-height: 38px;
+     white-space: nowrap;
+ }
+@@ -1873,9 +1869,9 @@
+     font-size: 13px;
+     cursor: pointer;
+     transition:
+-        background-color var(--ui-transition-fast),
+-        border-color var(--ui-transition-fast),
+-        color var(--ui-transition-fast);
++        background-color var(--transition-fast),
++        border-color var(--transition-fast),
++        color var(--transition-fast);
+ }
+ 
+ .mock-mode-chip:hover:not(.is-active) {
+@@ -1937,7 +1933,7 @@
+     font-weight: 650;
+ }
+ 
+-.admin-field > .ui-form-label,
++.admin-field > [data-minerva="form-control"][data-part="label"],
+ .admin-check span {
+     overflow: hidden;
+     text-overflow: ellipsis;
+@@ -2021,20 +2017,20 @@
+  * 之前只挂在 .i18n-namespace-tabs 上，导致 Mock / SEO 切到 ui-lib Tabs 后
+  * 视觉对不齐 —— badge 间距、trigger 高度、行内 ellipsis 都不一样。 */
+ .i18n-namespace-tabs,
+-.list-section .ui-tabs {
+-    min-width: 0;
+-}
+-
+-.i18n-namespace-tabs .ui-tabs-list,
+-.list-section .ui-tabs-list {
++.list-section [data-minerva="tabs"][data-part="root"] {
++    min-width: 0;
++}
++
++.i18n-namespace-tabs [data-minerva="tabs"][data-part="list"],
++.list-section [data-minerva="tabs"][data-part="list"] {
+     align-items: center;
+     gap: 2px;
+     min-width: 0;
+     overflow: hidden;
+ }
+ 
+-.i18n-namespace-tabs .ui-tabs-trigger,
+-.list-section .ui-tabs-trigger {
++.i18n-namespace-tabs [data-minerva="tab"][data-part="root"],
++.list-section [data-minerva="tab"][data-part="root"] {
+     display: inline-flex;
+     align-items: center;
+     max-width: 168px;
+@@ -2070,9 +2066,9 @@
+     cursor: pointer;
+     font-weight: 500;
+     transition:
+-        background var(--ui-transition-fast),
+-        color var(--ui-transition-fast),
+-        box-shadow var(--ui-transition-fast);
++        background var(--transition-fast),
++        color var(--transition-fast),
++        box-shadow var(--transition-fast);
+ }
+ 
+ .language-tab:hover {
+@@ -2125,7 +2121,7 @@
+ .i18n-table-panel {
+     padding: 0;
+     overflow: hidden;
+-    transition: opacity var(--ui-transition-base);
++    transition: opacity var(--transition-base);
+ }
+ 
+ /* SWR 在切 namespace tab 时还在拉新数据 —— 此时旧表格变灰，
+@@ -2180,7 +2176,7 @@
+ }
+ 
+ /* 让 Tabs 内部的 line variant 与父容器的下划线对齐 */
+-.i18n-tab-row .ui-tabs-list {
++.i18n-tab-row [data-minerva="tabs"][data-part="list"] {
+     border-bottom: none;
+ }
+ 
+@@ -2283,27 +2279,27 @@
+ }
+ 
+ /* namespace 的字段块：label / 说明 / prefixes 各一行，紧贴右列 */
+-.i18n-manage-row-stacked .ui-form-control {
++.i18n-manage-row-stacked [data-minerva="form-control"][data-part="root"] {
+     display: grid;
+     grid-template-columns: minmax(64px, 80px) minmax(0, 1fr);
+     align-items: center;
+     gap: 0 12px;
+ }
+ 
+-.i18n-manage-row-stacked .ui-form-label {
++.i18n-manage-row-stacked [data-minerva="form-control"][data-part="label"] {
+     margin: 0;
+     color: var(--admin-fg-muted);
+     font-size: 12px;
+     font-weight: 500;
+ }
+ 
+-.i18n-manage-row-stacked .ui-form-control > input,
+-.i18n-manage-row-stacked .ui-form-control > textarea {
++.i18n-manage-row-stacked [data-minerva="form-control"][data-part="root"] > input,
++.i18n-manage-row-stacked [data-minerva="form-control"][data-part="root"] > textarea {
+     grid-column: 2;
+ }
+ 
+ /* namespace 行的操作按钮排在右列底部 */
+-.i18n-manage-row-stacked .ui-stack {
++.i18n-manage-row-stacked [data-minerva="stack"][data-part="root"] {
+     grid-column: 2;
+     margin-top: 6px;
+ }
+@@ -2319,7 +2315,7 @@
+     border: 1px solid rgba(64, 169, 255, 0.22);
+     padding: 4px 8px;
+     border-radius: 6px;
+-    font-family: var(--ui-font-family-mono);
++    font-family: var(--font-family-mono);
+     font-size: 13px;
+     max-width: 100%;
+ }
+@@ -2431,7 +2427,7 @@
+     border-radius: 6px;
+     background: var(--admin-surface);
+     color: var(--admin-brand-strong);
+-    font-family: var(--ui-font-family-mono);
++    font-family: var(--font-family-mono);
+     font-size: 12px;
+     max-width: 100%;
+     overflow: hidden;
+@@ -2439,24 +2435,24 @@
+     white-space: nowrap;
+ }
+ 
+-.ui-table {
++[data-minerva="data-table"][data-part="table"] {
+     table-layout: fixed;
+ }
+ 
+-.ui-table-wrapper {
++[data-minerva="data-table"][data-part="viewport"] {
+     /* 让窄视口下能横向滑表，而不是把右侧列吃掉。
+-     * 上游 @novel-isr/ui 默认就是 auto，这里跟着 auto，不再覆盖成 hidden。 */
++     * 上游 minerva-design 默认就是 auto，这里跟着 auto，不再覆盖成 hidden。 */
+     overflow-x: auto;
+ }
+ 
+-.ui-table th,
+-.ui-table td {
+-    overflow: hidden;
+-    text-overflow: ellipsis;
+-    white-space: nowrap;
+-}
+-
+-.ui-table td > * {
++[data-minerva="data-table"][data-part="table"] th,
++[data-minerva="data-table"][data-part="table"] td {
++    overflow: hidden;
++    text-overflow: ellipsis;
++    white-space: nowrap;
++}
++
++[data-minerva="data-table"][data-part="table"] td > * {
+     max-width: 100%;
+ }
+ 
+@@ -2465,7 +2461,7 @@
+     color: var(--admin-muted);
+ }
+ 
+-.ui-tooltip-content {
++[data-minerva="tooltip"][data-part="content"] {
+     max-width: 320px;
+ }
+ 
+@@ -2479,8 +2475,8 @@
+     box-shadow: var(--admin-shadow-md);
+ }
+ 
+-.account-menu .ui-popover-arrow,
+-.notification-menu .ui-popover-arrow {
++.account-menu [data-minerva="popover"][data-part="arrow"],
++.notification-menu [data-minerva="popover"][data-part="arrow"] {
+     fill: var(--admin-surface-2);
+     stroke: var(--admin-border-strong);
+ }
+@@ -2525,8 +2521,8 @@
+     color: var(--admin-subtle);
+     cursor: pointer;
+     transition:
+-        background var(--ui-transition-fast),
+-        color var(--ui-transition-fast);
++        background var(--transition-fast),
++        color var(--transition-fast);
+ }
+ 
+ .notification-dismiss:hover,
+@@ -2556,7 +2552,7 @@
+     font-size: 12px;
+     padding: 2px 6px;
+     border-radius: 4px;
+-    transition: background var(--ui-transition-fast);
++    transition: background var(--transition-fast);
+ }
+ 
+ .notification-bulk-action:hover,
+@@ -2705,9 +2701,9 @@
+ }
+ 
+ /* Modal 颜色跟随 admin theme token；overflow / 内部布局完全交给 upstream
+- * @novel-isr/ui 处理，不要在这里加 overflow: hidden / min-height 等结构性
++ * minerva-design 处理，不要在这里加 overflow: hidden / min-height 等结构性
+  * 覆盖 —— 那种修法很容易打架（之前就出过 body 不滚动的 bug）。 */
+-.ui-modal-content {
++[data-minerva="modal"][data-part="content"] {
+     background: var(--admin-surface-2);
+     color: var(--admin-text);
+     box-shadow:
+@@ -2731,7 +2727,7 @@
+         overflow: visible;
+     }
+ 
+-    .admin-theme-toggle .ui-theme-toggle-item {
++    .admin-theme-toggle [data-minerva="theme-toggle"][data-part="item"] {
+         min-width: 30px;
+         padding-inline: 6px;
+     }
+@@ -2799,17 +2795,17 @@
+         flex-wrap: wrap;
+     }
+ 
+-    .ledger-section .ui-table-wrapper,
+-    .work-section .ui-table-wrapper,
+-    .page-shell .ui-table-wrapper {
++    .ledger-section [data-minerva="data-table"][data-part="viewport"],
++    .work-section [data-minerva="data-table"][data-part="viewport"],
++    .page-shell [data-minerva="data-table"][data-part="viewport"] {
+         /* 窄视口同样需要横滑；min-width: 0 让 wrapper 可以收缩到父容器宽度，
+          * 内部 table 超出后由 overflow-x: auto 接管 */
+         overflow-x: auto;
+         min-width: 0;
+     }
+ 
+-    .ledger-section .ui-table,
+-    .page-shell .ui-table {
++    .ledger-section [data-minerva="data-table"][data-part="table"],
++    .page-shell [data-minerva="data-table"][data-part="table"] {
+         min-width: 0;
+     }
+ 
+@@ -2829,7 +2825,7 @@
+         grid-template-columns: repeat(2, minmax(0, 1fr));
+     }
+ 
+-    .deployment-form .ui-button {
++    .deployment-form [data-minerva="button"][data-part="root"] {
+         grid-column: 1 / -1;
+         justify-self: start;
+     }
+@@ -2883,8 +2879,8 @@
+         z-index: 60;
+         box-shadow: 18px 0 38px rgba(0, 0, 0, 0.28);
+         transition:
+-            transform var(--ui-transition-base),
+-            box-shadow var(--ui-transition-base);
++            transform var(--transition-base),
++            box-shadow var(--transition-base);
+     }
+ 
+     /* 折叠态 = 彻底滑出视口；展开态 = 滑回原位 */
+@@ -3023,8 +3019,8 @@
+         grid-column: auto;
+     }
+ 
+-    .ledger-section .ui-table,
+-    .page-shell .ui-table {
++    .ledger-section [data-minerva="data-table"][data-part="table"],
++    .page-shell [data-minerva="data-table"][data-part="table"] {
+         min-width: 0;
+     }
+ 
+--- /dev/null
++++ b/src/vite-env.d.ts
+@@ -0,0 +1 @@
++/// <reference types="vite/client" />

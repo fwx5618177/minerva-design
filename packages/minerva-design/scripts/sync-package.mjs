@@ -47,7 +47,7 @@ export const DUAL_SUBPATHS = {
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */
-export const VUE_SUBPATHS = ["./vue"];
+export const VUE_SUBPATHS = ["./vue", "./vue/monaco"];
 
 /** Reserved for unimplemented platform entries; all current renderers have an initial build. */
 export const PLANNED_RENDERERS = {};
@@ -77,19 +77,43 @@ export function expectedExports() {
     types: "./dist/angular/types/minerva-angular.d.ts",
     default: "./dist/angular/fesm2022/minerva-angular.mjs",
   };
+  exports["./angular/monaco"] = {
+    types: "./dist/angular/types/minerva-angular-monaco.d.ts",
+    default: "./dist/angular/fesm2022/minerva-angular-monaco.mjs",
+  };
   exports["./taro"] = {
     types: "./dist/taro/index.d.ts",
     default: "./dist/taro/index.js",
+  };
+  exports["./taro/monaco"] = {
+    types: "./dist/taro/monaco.d.ts",
+    default: "./dist/taro/monaco.js",
   };
   exports["./uni"] = {
     types: "./dist/uni/index.d.ts",
     default: "./dist/uni/index.js",
   };
-  for (const name of ["Button", "Input", "Switch"])
+  exports["./uni/monaco"] = {
+    types: "./dist/uni/monaco.d.ts",
+    default: "./dist/uni/monaco.js",
+  };
+  // Internal SFCs are bundled for relative imports but are not public entries.
+  const uniSource = readFileSync(
+    new URL("../../uni/src/index.ts", import.meta.url),
+    "utf8",
+  );
+  for (const name of [
+    ...uniSource.matchAll(
+      /export\s+\{\s*default\s+as\s+\w+\s*\}\s+from\s+["']\.\/([^"']+)\.vue["']/g,
+    ),
+  ]
+    .map((match) => match[1])
+    .sort())
     exports[`./uni/${name}.vue`] = {
       types: `./dist/uni/${name}.vue.d.ts`,
       default: `./dist/uni/${name}.vue`,
     };
+  exports["./weapp/types"] = { types: "./dist/weapp/types.d.ts" };
   exports["./taro/style.css"] = "./dist/taro/style.css";
   exports["./uni/style.css"] = "./dist/uni/style.css";
   exports["./tokens.mini.css"] = "./dist/core/tokens.mini.css";
@@ -124,6 +148,10 @@ export function expectedExports() {
     "./vue": {
       types: "./dist/vue/index.d.ts",
       default: "./dist/vue/index.js",
+    },
+    "./vue/monaco": {
+      types: "./dist/vue/monaco.d.ts",
+      default: "./dist/vue/monaco.js",
     },
     "./vue/global": { types: "./dist/vue/global.d.ts" },
     "./custom-elements.json": "./custom-elements.json",

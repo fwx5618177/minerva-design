@@ -1,21 +1,15 @@
 import React from "react";
 
-/** Minerva mark: a monochrome triangle (follows `currentColor`). */
-const Logo: React.FC<{ size?: number }> = ({ size = 22 }) => (
-  <svg
+/** The navigation mark and browser icon share the same SVG asset. */
+const Logo: React.FC<{ size?: number }> = ({ size = 26 }) => (
+  <img
+    src={`${import.meta.env.BASE_URL}favicon.svg`}
     width={size}
     height={size}
-    viewBox="0 0 24 24"
+    alt=""
     aria-hidden="true"
-    focusable="false"
-  >
-    <path d="M12 2.5 22.5 21h-21L12 2.5Z" fill="currentColor" />
-    <path
-      d="M12 10.2 16.4 18H7.6L12 10.2Z"
-      fill="var(--ds-bg, #fff)"
-      opacity="0.9"
-    />
-  </svg>
+    data-minerva-logo
+    style={{ flexShrink: 0 }}
+  />
 );
-
 export default Logo;

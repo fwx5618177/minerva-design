@@ -54,6 +54,36 @@
       { "name": "close-icon", "type": "any", "description": "Custom close icon" }
     ]
   },
+  "AppShell": {
+    "file": "packages/vue/src/components/AppShell/AppShell.vue",
+    "props": [
+      { "name": "brand", "type": "string", "required": false, "description": "Brand shown at the top of the sidebar (not a page heading), or the `brand` slot" },
+      { "name": "navigationLabel", "type": "string", "required": false, "description": "Accessible name of the sidebar landmark and title of the mobile drawer" },
+      { "name": "navigationKey", "type": "string", "required": false, "description": "Change it when a route commits to dismiss the mobile navigation" },
+      { "name": "sidebarMode", "type": "AppShellSidebarMode", "required": false, "description": "Sidebar mode (controlled, `v-model:sidebar-mode`)" },
+      { "name": "defaultSidebarMode", "type": "AppShellSidebarMode", "required": false, "description": "Initial sidebar mode (uncontrolled)" },
+      { "name": "labels", "type": "Partial<AppShellLabels>", "required": false, "description": "Overrides of the control names (localized defaults)" },
+      {
+        "name": "skipLink",
+        "type": "string | boolean",
+        "default": "true",
+        "required": false,
+        "description": "\"Skip to content\" link rendered as the first focusable element (visually\nhidden until focused); it moves focus to `main`. A string replaces its\ntext, `false` removes it"
+      }
+    ],
+    "events": [
+      { "name": "update:sidebarMode", "type": "[mode: AppShellSidebarMode]" },
+      { "name": "sidebarModeChange", "type": "[mode: AppShellSidebarMode]" }
+    ],
+    "slots": [
+      { "name": "navigation", "type": "AppShellNavigationState", "description": "The navigation, rendered in exactly one place: the sidebar on desktop,\nthe drawer on mobile" },
+      { "name": "brand", "type": "any", "description": "Brand (the `brand` prop)" },
+      { "name": "brand-icon", "type": "any", "description": "Decorative brand icon, still visible in the compact rail" },
+      { "name": "header-actions", "type": "any", "description": "Content of the top header bar (account menu, search...), outside `main`" },
+      { "name": "page-navigation", "type": "any", "description": "Rendered between the header and `main` (e.g. open-page tabs)" },
+      { "name": "default", "type": "any", "description": "Page content, rendered inside the single `main` landmark" }
+    ]
+  },
   "AutoComplete": {
     "file": "packages/vue/src/components/AutoComplete/AutoComplete.vue",
     "props": [
@@ -521,7 +551,7 @@
       },
       { "name": "persist", "type": "boolean", "default": "false", "required": false, "description": "Root only: persist theme and palette in cookies." },
       { "name": "locale", "type": "Locale", "required": false, "description": "Language of the built-in texts" },
-      { "name": "preset", "type": "\"editorial\" | \"minerva\" | \"compact\" | \"touch\"", "required": false, "description": "Design preset (brings its palette unless `palette` is set)" },
+      { "name": "preset", "type": "\"compact\" | \"editorial\" | \"minerva\" | \"touch\"", "required": false, "description": "Design preset (brings its palette unless `palette` is set)" },
       { "name": "density", "type": "\"compact\" | \"standard\" | \"comfortable\"", "required": false },
       { "name": "radius", "type": "\"medium\" | \"small\" | \"large\" | \"none\"", "required": false },
       { "name": "shadow", "type": "\"subtle\" | \"none\" | \"standard\"", "required": false },
@@ -996,6 +1026,8 @@
     "file": "packages/vue/src/components/IconButton/IconButton.vue",
     "props": [
       { "name": "label", "type": "string", "required": false, "description": "Accessible name of the button. Takes precedence over aria-label" },
+      { "name": "tooltip", "type": "Partial<TooltipProps>", "required": false, "description": "Tooltip options; defaults to the accessible label." },
+      { "name": "showTooltip", "type": "boolean", "required": false, "description": "Show the tooltip (defaults to true when a label is supplied)." },
       { "name": "color", "type": "ColorScheme", "default": "\"neutral\"", "required": false, "description": "Semantic color of the button" },
       {
         "name": "variant",
@@ -1278,6 +1310,35 @@
     "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false }],
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
+  },
+  "MonacoCodeEditor": {
+    "file": "packages/vue/src/components/MonacoCodeEditor/MonacoCodeEditor.vue",
+    "props": [
+      {
+        "name": "monaco",
+        "type": "typeof import(\"/Users/fengwenxuan/Desktop/startup-project/front-ui-components-library/minerva-design/node_modules/.pnpm/monaco-editor@0.52.2/node_modules/monaco-editor/esm/vs/editor/editor.api\")",
+        "required": false,
+        "description": "Local Monaco engine. Configure its workers in the host; never fetched from a CDN."
+      },
+      { "name": "modelValue", "type": "string", "required": true, "description": "Controlled source text, used with v-model." },
+      { "name": "label", "type": "string", "required": true, "description": "Visible and accessible editor label." },
+      { "name": "language", "type": "string", "default": "\"plaintext\"", "required": false },
+      { "name": "height", "type": "number", "default": "420", "required": false },
+      { "name": "minHeight", "type": "number", "default": "160", "required": false },
+      { "name": "maxHeight", "type": "number", "default": "800", "required": false },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false },
+      { "name": "theme", "type": "\"light\" | \"dark\"", "required": false },
+      { "name": "loadTimeout", "type": "number", "default": "10000", "required": false, "description": "Time allowed for a late engine injection before showing the editable fallback." },
+      { "name": "unavailableText", "type": "string", "required": false },
+      { "name": "retryText", "type": "string", "required": false },
+      { "name": "retryLabel", "type": "string", "required": false },
+      { "name": "loadingLabel", "type": "string", "required": false }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": []
   },
   "MonthCalendar": {
     "file": "packages/vue/src/components/MonthCalendar/MonthCalendar.vue",
@@ -2300,6 +2361,20 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Link content (with `asChild`: the single link element)" }]
   },
+  "ThemeProvider": {
+    "file": "packages/vue/src/config/ThemeProvider.vue",
+    "props": [
+      { "name": "defaultTheme", "type": "ThemeMode", "required": false, "description": "Initial mode (root default: \"system\")" },
+      { "name": "defaultPalette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null", "required": false, "description": "Initial palette" },
+      { "name": "disableStorage", "type": "boolean", "default": "false", "required": false, "description": "Do not persist the choice in cookies." },
+      { "name": "locale", "type": "Locale", "required": false, "description": "Language of the built-in texts" }
+    ],
+    "events": [
+      { "name": "themeChange", "type": "[theme: ThemeMode]" },
+      { "name": "paletteChange", "type": "[palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null]" }
+    ],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
   "ThemeToggle": {
     "file": "packages/vue/src/components/ThemeToggle/ThemeToggle.vue",
     "props": [
@@ -2522,9 +2597,9 @@
     ],
     "events": [
       { "name": "update:modelValue", "type": "[value: UploadItem[]]" },
+      { "name": "retry", "type": "[item: UploadItem]" },
       { "name": "filesSelected", "type": "[files: File[]]" },
-      { "name": "remove", "type": "[item: UploadItem]" },
-      { "name": "retry", "type": "[item: UploadItem]" }
+      { "name": "remove", "type": "[item: UploadItem]" }
     ],
     "slots": [{ "name": "select", "type": "any", "description": "Content of the select button (the `labels.select` text)" }]
   },

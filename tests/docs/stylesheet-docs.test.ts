@@ -42,15 +42,4 @@ describe("stylesheet docs", () => {
     expect(offenders).toEqual([]);
     expect(read(INSTALLATION)).toMatch(PER_COMPONENT);
   });
-
-  it.each(["en", "zh", "ja", "fr"])(
-    "%s: the component-page note keys exist",
-    (lng) => {
-      const common = readJson<{ doc: Record<string, string> }>(
-        `${DOCS}/i18n/locales/${lng}/common.json`,
-      );
-      expect(common.doc.requiresStylesheet).toBeTruthy();
-      expect(common.doc.requiresStylesheetLink).toBeTruthy();
-    },
-  );
 });

@@ -13,11 +13,14 @@ describe("SSR / Node import", () => {
     expect(typeof document).toBe("undefined");
   });
 
+  // Cold source import transforms and coverage-instruments every element.
+  // This checks SSR safety, not production import latency (covered in dist).
+  // Keep a finite budget under concurrent CI workloads.
   it("imports the all-in-one entry", async () => {
     const mod = await import("../../src/index");
     expect(mod.MinervaButton.tagName).toBe("minerva-button");
     expect(typeof mod.defineElement).toBe("function");
-  });
+  }, 30_000);
 
   it.each(Object.keys(entries).map((path) => [path.replace(/^.*\//, "")]))(
     "imports %s",

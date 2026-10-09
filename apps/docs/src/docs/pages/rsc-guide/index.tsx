@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -127,26 +135,28 @@ const RscGuideDoc: React.FC = () => {
           role="region"
           aria-label={k("entries.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("entries.entry")}</th>
-                <th scope="col">{k("entries.banner")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("entries.entry")}</TableHeader>
+                <TableHeader scope="col">{k("entries.banner")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {ENTRIES.map((row) => (
-                <tr key={row.entry}>
-                  <th scope="row">
+                <TableRow key={row.entry}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{row.entry}</code>
-                  </th>
-                  <td>{row.client ? k("entries.yes") : k("entries.no")}</td>
-                  <td>{k(`entries.${row.key}`)}</td>
-                </tr>
+                  </TableHeader>
+                  <TableCell>
+                    {row.client ? k("entries.yes") : k("entries.no")}
+                  </TableCell>
+                  <TableCell>{k(`entries.${row.key}`)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <CodeBlock code={bannerCode} language="tsx" />
       </section>

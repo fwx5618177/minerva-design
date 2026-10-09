@@ -22,13 +22,13 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 6. If your change affects the published package `minerva-design` (anything under `packages/core`, `packages/react`, `packages/web-components` or `packages/minerva-design`), add a changeset for `minerva-design` with `pnpm changeset`.
 7. Issue that pull request!
 
-`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
+`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. Real Chromium docs E2E runs after the production build (`pnpm exec playwright install chromium`, then `pnpm test:browser`). The existing `pnpm test:e2e` runs component workflows in happy-dom/RNTL; it does not certify browser or native-device rendering. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
 
 ## Development setup
 
 - Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 (`corepack enable` or `npm i -g pnpm`)
-- `pnpm install`, then `pnpm dev` to build `minerva-design` and start the docs site at http://127.0.0.1:3000/minerva/
-- Layout: `packages/core` (`@minerva/core`, platform-neutral: no DOM access, enforced by ESLint and a Node-environment test), `packages/dom` (`@minerva/dom`, the DOM primitives of the web renderers), `packages/react` (`@minerva/react`) and `packages/web-components` (`@minerva/web-components`) are the sources, as private workspace packages; their builds write `packages/minerva-design/dist/{core,dom,react,web-components}`, the one published package (`minerva-design`). `packages/{vue,angular,native,taro,weapp,uni}` are the planned native renderers (placeholders with their testing spike, see `docs/adr/`). `apps/docs` (`@minerva/docs`) is the docs site; `tools/` holds the shared build helpers (`css-layer.mjs`, `dual-declarations.mjs`, `core-imports.mjs`, `paths.mjs`) and codemods. React and framework versions per renderer family come from the pnpm catalogs of `pnpm-workspace.yaml` (`catalog:web`, `catalog:native`, `catalog:taro`...).
+- `pnpm install`, then `pnpm dev` to build `minerva-design` and start the docs site at http://127.0.0.1:3000/minerva-design/
+- Layout: `packages/core` (`@minerva/core`, platform-neutral: no DOM access, enforced by ESLint and a Node-environment test), `packages/dom` (`@minerva/dom`, the DOM primitives of the web renderers), `packages/react` (`@minerva/react`) and `packages/web-components` (`@minerva/web-components`) are the sources, as private workspace packages; their builds write `packages/minerva-design/dist/{core,dom,react,web-components}`, the one published package (`minerva-design`). `packages/{vue,angular,native,taro,weapp,uni}` contain the platform renderers; their public entries and assets are assembled into the same package. Consult the generated component contracts and renderer manifests for implemented scope and limitations. `apps/docs` (`@minerva/docs`) is the docs site; `tools/` holds the shared build helpers (`css-layer.mjs`, `dual-declarations.mjs`, `core-imports.mjs`, `paths.mjs`) and codemods. React and framework versions per renderer family come from the pnpm catalogs of `pnpm-workspace.yaml` (`catalog:web`, `catalog:native`, `catalog:taro`...).
 - User-facing code (docs pages, demos, READMEs) imports `minerva-design` entries only, never `@minerva/*` (checked by `apps/docs/src/docs/userImports.test.ts`). After adding a web component entry, run `pnpm --filter @minerva/web-components manifest` and `pnpm --filter minerva-design sync:package`.
 - Documentation pages live in `apps/docs/src/docs/pages/<page>/` (one file per live demo under `demos/`), their strings in `apps/docs/src/i18n/locales/<lng>/docs/<page>.json` (en, zh, ja, fr — keep all four in sync). API tables are generated from each component's `types.ts`: document props with JSDoc and `@default`, then run `pnpm --filter @minerva/docs gen:api`. `pnpm test` fails if a public export is undocumented, a locale is missing a key, or the generated API file is stale.
 
@@ -46,7 +46,8 @@ pnpm install            # refresh the lockfile
 pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
 pnpm build && pnpm test:dist && pnpm check:package
 (cd packages/minerva-design && npm pack --dry-run)   # lists what would be published, uploads nothing
-git commit -am "chore: release" && git push
+git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
+git commit -m "chore: release" && git push
 
 # 3. Log in to npm (account with publish rights on minerva-design, 2FA enabled)
 npm login --registry https://registry.npmjs.org/
@@ -59,7 +60,7 @@ git push --follow-tags  # push the minerva-design@<version> tag
 
 - `changeset publish` publishes `minerva-design` only, when its new version is not on npm yet; the `@minerva/*` workspace packages are private and listed in `ignore` of `.changeset/config.json`.
 - The published package sets `publishConfig.registry` to `https://registry.npmjs.org/` (a registry mirror in `~/.npmrc` is ignored for publishing) and `access: public`.
-- Published files come from `files` in `packages/minerva-design/package.json`: `dist/` (`react/`, `core/`, `web-components/`), `custom-elements.json`, `README.md`, `LICENSE` and `CHANGELOG.md`; tests and sources are never included. See the [README](./README.md#releasing-manual-npm-publishing) for the contents.
+- Published files come from `files` in `packages/minerva-design/package.json`: `dist/` (all public renderer entries and their required assets), `custom-elements.json`, `README.md`, `LICENSE` and `CHANGELOG.md`; tests and the docs site are excluded; the Native source entry is intentionally included. See the [README](./README.md#releasing-manual-npm-publishing) for the contents.
 
 ## Any contributions you make will be under the MIT Software License
 

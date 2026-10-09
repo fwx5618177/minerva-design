@@ -1,9 +1,11 @@
-import { Tooltip } from "minerva-design";
+import { Button, Tooltip } from "minerva-design";
 
 export default function FollowCursorDemo() {
   return (
     <Tooltip content="I follow your cursor" followCursor>
-      <button
+      <Button
+        color="neutral"
+        variant="outline"
         type="button"
         style={{
           width: 280,
@@ -18,7 +20,7 @@ export default function FollowCursorDemo() {
         }}
       >
         Move the mouse here
-      </button>
+      </Button>
     </Tooltip>
   );
 }

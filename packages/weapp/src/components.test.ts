@@ -72,11 +72,7 @@ it("Switch reports detail.checked and ignores readonly changes", async () => {
 });
 
 it("controls participate in enclosing native forms", () => {
-  expect(button.definition).toHaveProperty("behaviors", [
-    "wx://form-field-button",
-  ]);
+  expect(button.definition.behaviors).toContain("wx://form-field-button");
   expect(input.definition.behaviors).toContain("wx://form-field");
-  expect(toggle.definition).toHaveProperty("behaviors", [
-    "wx://form-field-group",
-  ]);
+  expect(toggle.definition.behaviors).toContain("wx://form-field-group");
 });

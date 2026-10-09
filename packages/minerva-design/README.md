@@ -2,11 +2,9 @@
 
 ## Platform implementation status
 
-The main workspace now includes native Vue (`minerva-design/vue`), React Native / Expo (`minerva-design/native`) and the initial Angular subset (`minerva-design/angular`: configuration, Button, Switch, Modal and its parts). Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) currently provide Button, Input and Switch. These are initial implementations, not full parity or a claim of npm publication. See the [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) for scope, examples and validation limits.
+The workspace includes native Vue (`minerva-design/vue`), Angular (`minerva-design/angular`) and React Native / Expo (`minerva-design/native`) renderers. Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) also provide native form, navigation, overlay, data-display and theme implementations. The generated [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) records each component’s implementation scope and limitations. Host tests and builds do not imply device certification or npm publication.
 
 The private root is `minerva-design-workspace`; `packages/minerva-design` assembles the single published package. `packages/core` is platform-neutral; browser-specific primitives live in `packages/dom`. The public `/core` entry preserves the existing Web API. Sibling `md-*` directories are linked development worktrees with unfinished changes, not extra packages.
-
-[Code comparison and continuation report](../../docs/research/2026-10-09-library-comparison.md).
 
 The Minerva design system in one package: accessible **React 19** components
 (SSR / React Server Components ready) and the same component set as
@@ -23,7 +21,7 @@ pnpm add minerva-design
 # or: npm install minerva-design / yarn add minerva-design
 ```
 
-- **React**: `react` and `react-dom` `^19.0.0` are (optional) peer dependencies, needed only by the React entries. React 18 is not supported.
+- **React DOM entries** require React / React DOM 19. The shared package declares optional peers `^18.3.0 || ^19.0.0` because the Taro 4.3 renderer also runs on React 18.3. npm cannot express peers per subpath; that union does not make the React DOM component entry compatible with React 18.
 - **Web Components**: nothing else to install. Lit is a regular dependency; React-only apps never load it (the web component entries are separate modules).
 - **Monaco editor** (optional): `minerva-design/monaco` and `minerva-design/web-components/code-editor` use the optional peers `@monaco-editor/react` / `monaco-editor`.
 
@@ -61,6 +59,8 @@ The hooks of every component are listed on its docs page and in
 `minerva-design/styling-hooks`.
 
 Every client module starts with `"use client"`; `minerva-design/utils` and `minerva-design/theme-utils` are server-safe (no `"use client"`, no React) for React Server Components and servers.
+
+Browser iframe adapters can call `previewDocument(html)` from `minerva-design/utils` to use the same sanitized, navigation-disabled document as HtmlPreview. Render it in an iframe with `sandbox=""`. Without a DOM, this helper returns an empty document body; generate the sanitized content after hydration rather than sanitizing untrusted HTML on the server with a browser-only sanitizer.
 
 ## Web Components
 

@@ -46,7 +46,9 @@ export function toggleSuite(driver: Driver) {
       contractTest(
         driver,
         SUITE,
-        "controlled: a press only requests the change",
+        driver.platform === "wc"
+          ? "element-owned: a press updates checked and the parent can restore it"
+          : "controlled: a press only requests the change",
         async () => {
           handle = await driver.render(
             h(component, { label: "Wi-Fi", checked: false }),
@@ -57,7 +59,14 @@ export function toggleSuite(driver: Driver) {
           ).toMatchObject({
             checked: true,
           });
-          expect(driver.isChecked(driver.getByRole(role))).toBe(false);
+          expect(driver.isChecked(driver.getByRole(role))).toBe(
+            driver.platform === "wc",
+          );
+          if (driver.platform === "wc") {
+            await handle.setProps({ checked: false });
+            expect(driver.isChecked(driver.getByRole(role))).toBe(false);
+            expect(handle.emitted(change.name, component)).toHaveLength(1);
+          }
         },
       );
 

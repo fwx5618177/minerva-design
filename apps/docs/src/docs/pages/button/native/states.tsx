@@ -1,22 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { Button } from "minerva-design/native";
-
 export default function States() {
   const [saving, setSaving] = useState(false);
-  const save = () => {
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  function save() {
     setSaving(true);
-    setTimeout(() => setSaving(false), 1500);
-  };
+    timer.current = setTimeout(() => setSaving(false), 1500);
+  }
   return (
-    <View style={{ gap: 12, alignItems: "flex-start" }}>
-      <Button loading={saving} loadingText="Saving..." onPress={save}>
-        Save
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+      <Button loading={saving} onPress={save}>
+        {saving ? "Saving…" : "Save"}
       </Button>
       <Button disabled>Disabled</Button>
-      <Button variant="outline" active>
-        Active
-      </Button>
+      <Button active>Active</Button>
     </View>
   );
 }

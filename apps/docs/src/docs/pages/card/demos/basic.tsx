@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Button,
   Card,
@@ -9,6 +10,7 @@ import {
 } from "minerva-design";
 
 export default function BasicDemo() {
+  const [opened, setOpened] = useState(false);
   return (
     <div style={{ width: 340 }}>
       <Card>
@@ -20,9 +22,12 @@ export default function BasicDemo() {
           A design system for building accessible, themeable interfaces.
         </CardContent>
         <CardFooter>
-          <Button size="small">Open</Button>
+          <Button size="small" onClick={() => setOpened(true)}>
+            Open
+          </Button>
         </CardFooter>
       </Card>
+      {opened && <p role="status">Opened Project Apollo</p>}
     </div>
   );
 }

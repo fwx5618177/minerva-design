@@ -1,47 +1,95 @@
-import { useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { DocumentPreviewScreen } from "./screens/DocumentPreviewScreen";
+import { AdvancedScreen } from "./screens/AdvancedScreen";
+import { VirtualListScreen } from "./screens/VirtualListScreen";
+import { useMemo, useState, type ComponentType } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import {
-  Button,
-  Dialog,
   MinervaProvider,
+  ToastProvider,
   useTheme,
+  type MinervaTheme,
 } from "minerva-design/native";
+import { NavigationProvider, useNavigation, type Route } from "./navigation";
+import {
+  SettingsContext,
+  type AppSettings,
+  type Language,
+  type Palette,
+  type Preset,
+} from "./settings";
+import { HomeScreen } from "./screens/HomeScreen";
+import { GeneralScreen } from "./screens/GeneralScreen";
+import { FormsScreen } from "./screens/FormsScreen";
+import { FeedbackScreen } from "./screens/FeedbackScreen";
+import { OverlaysScreen } from "./screens/OverlaysScreen";
+import { NavigationScreen } from "./screens/NavigationScreen";
+import { DataDisplayScreen } from "./screens/DataDisplayScreen";
+import { MobileScreen } from "./screens/MobileScreen";
+import { ThemingScreen } from "./screens/ThemingScreen";
 
-function Home() {
-  const { colors } = useTheme();
-  const [open, setOpen] = useState(false);
+const SCREENS: Record<Route, ComponentType> = {
+  home: HomeScreen,
+  advanced: AdvancedScreen,
+  "document-preview": DocumentPreviewScreen,
+  "virtual-list": VirtualListScreen,
+  general: GeneralScreen,
+  forms: FormsScreen,
+  feedback: FeedbackScreen,
+  overlays: OverlaysScreen,
+  navigation: NavigationScreen,
+  data: DataDisplayScreen,
+  mobile: MobileScreen,
+  theming: ThemingScreen,
+};
+
+function CurrentScreen() {
+  const { route } = useNavigation();
+  const { mode } = useTheme();
+  const Component = SCREENS[route];
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors["canvas-color"] }}
-      contentContainerStyle={{ padding: 16, gap: 12 }}
-    >
-      <Text style={{ color: colors["text-color"], fontSize: 22 }}>
-        Minerva Native
-      </Text>
-      <Button onPress={() => setOpen(true)}>Open dialog</Button>
-      <Dialog
-        open={open}
-        onOpenChange={setOpen}
-        title="Hello"
-        description="minerva-design/native on Expo SDK 57"
-        onConfirm={() => {}}
-      />
-    </ScrollView>
+    <>
+      <StatusBar style={mode === "dark" ? "light" : "dark"} />
+      <Component />
+    </>
   );
 }
 
 function Root() {
   const insets = useSafeAreaInsets();
+  const [themeMode, setThemeMode] =
+    useState<MinervaTheme["themeMode"]>("system");
+  const [palette, setPalette] = useState<Palette | null>(null);
+  const [preset, setPreset] = useState<Preset>("touch");
+  const [language, setLanguage] = useState<Language>("en");
+
+  const settings = useMemo<AppSettings>(
+    () => ({ language, setLanguage, preset, setPreset }),
+    [language, preset],
+  );
+  const locale = useMemo(() => ({ language }), [language]);
+
   return (
-    <MinervaProvider theme="system" insets={insets}>
-      <StatusBar style="auto" />
-      <Home />
-    </MinervaProvider>
+    <SettingsContext.Provider value={settings}>
+      <MinervaProvider
+        theme={themeMode}
+        onThemeChange={setThemeMode}
+        palette={palette}
+        onPaletteChange={setPalette}
+        preset={preset}
+        locale={locale}
+        insets={insets}
+      >
+        <ToastProvider position="top">
+          <NavigationProvider>
+            <CurrentScreen />
+          </NavigationProvider>
+        </ToastProvider>
+      </MinervaProvider>
+    </SettingsContext.Provider>
   );
 }
 

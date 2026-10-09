@@ -4,6 +4,7 @@
 export {
   ConfigProvider,
   MinervaProvider,
+  MinervaProvider as ThemeProvider,
   useI18n,
   useInsets,
   useTheme,
@@ -51,3 +52,24 @@ export * from "./components/Switch";
 export * from "./components/Rating";
 export * from "./components/SearchBar";
 export * from "./components/Form";
+export * from "./components/Table";
+export * from "./components/VirtualList";
+export * from "./components/Upload";
+export * from "./components/AutoComplete";
+export * from "./components/Cascader";
+export * from "./components/Command";
+export * from "./components/Menu";
+export * from "./components/Popover";
+export * from "./components/Tooltip";
+export * from "./components/Layout";
+export * from "./components/Display";
+export * from "./components/Editors";
+export * from "./components/NavTree";
+export * from "./components/AppShell";
+export * from "./components/PageTabs";
+export * from "./components/FormControl";
+export * from "./components/Confirm";
+export * from "./components/TimePicker";
+
+export * from "./components/Parts";
+export * from "./components/HtmlPreview";

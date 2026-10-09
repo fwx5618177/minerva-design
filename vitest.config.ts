@@ -23,7 +23,7 @@ export default defineConfig({
       // React Native (minerva-design/native): RNTL and react-native-web lanes
       "packages/native/vitest.config.ts",
       "packages/native/vitest.web.config.ts",
-      // Native framework renderers and initial mini-program implementations
+      // Native framework renderers and mini-program host regression suites
       "packages/vue",
       "packages/angular",
       "packages/taro",
@@ -32,13 +32,15 @@ export default defineConfig({
     ],
     coverage: {
       provider: "v8",
-      // Library sources only (the docs site is not measured)
+      // Coverage thresholds measure core, DOM, React, Web Components and Vue.
+      // All projects above still run; native/Angular/mini host tests are not
+      // included in this percentage, nor is the documentation application.
       include: [
-        "**/core/src/**/*.ts",
-        "**/dom/src/**/*.ts",
-        "**/react/src/**/*.{ts,tsx}",
-        "**/web-components/src/**/*.{ts,tsx}",
-        "**/packages/vue/src/**/*.{ts,vue}",
+        "packages/core/src/**/*.ts",
+        "packages/dom/src/**/*.ts",
+        "packages/react/src/**/*.{ts,tsx}",
+        "packages/web-components/src/**/*.{ts,tsx}",
+        "packages/vue/src/**/*.{ts,vue}",
       ],
       exclude: [
         "**/*.test.{ts,tsx}",
@@ -63,7 +65,7 @@ export default defineConfig({
         "**/test-utils/**",
       ],
       reporter: ["text-summary", "html", "lcov"],
-      // `pnpm test:coverage` fails below these (current: ~94/92/97/96)
+      // `pnpm test:coverage` fails below these thresholds.
       thresholds: {
         statements: 92,
         branches: 89,

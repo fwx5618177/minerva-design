@@ -1,3 +1,4 @@
+import type { TooltipProps } from "../Tooltip/types";
 import type { ColorScheme } from "@minerva/core";
 
 /**
@@ -12,6 +13,10 @@ export interface IconButtonProps {
    * Accessible name of the button. Takes precedence over aria-label
    */
   label?: string;
+  /** Tooltip options; defaults to the accessible label. */
+  tooltip?: Partial<TooltipProps>;
+  /** Show the tooltip (defaults to true when a label is supplied). */
+  showTooltip?: boolean;
   /**
    * Semantic color of the button
    * @default "neutral"

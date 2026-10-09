@@ -81,15 +81,13 @@
       "readonly": "read-only",
       "defaultSlot": "(default)"
     },
-    "requiresStylesheet": "Requires the global stylesheet — see",
-    "requiresStylesheetLink": "Installation",
     "fw": {
       "setupTitle": "Setup",
       "guide": "More on {{framework}}: <guide>the full integration guide</guide>.",
-      "viaWebComponents": "{{framework}} Web Components examples (native subset available): see <support>Platform support</support> for native imports and implemented components.",
+      "viaWebComponents": "{{framework}} Web Components examples (native subset available): see <support>Platform support</support> for native imports and implemented components. For native components and built-in Angular Forms support, use the <native>native Angular guide</native>.",
       "viaWebComponentsShort": "{{framework}} Web Components examples (native subset available)",
       "setup": {
-        "register": "Register the elements and load the design tokens once, in your entry file —",
+        "register": "Register the elements once in your entry file —",
         "vueCompiler": "Tell Vue's template compiler that minerva-* tags are custom elements —",
         "types": "Add the {{framework}} typings: attributes, properties and events are type-checked and completed in templates —",
         "angularSchema": "Allow custom elements in every component that uses them —",
@@ -119,7 +117,6 @@
       },
       "unavailable": "{{framework}}: this component has no Web Component yet. See <support>Platform support</support>."
     },
-    "requiresStylesheetEnd": ".",
     "vue": {
       "sections": {
         "props": "Props",
@@ -134,10 +131,12 @@
     "native": {
       "unavailable": "This component is not available in minerva-design/native yet. See <support>Platform support</support> for the React Native roadmap.",
       "setup": "Wrap your app once in <code>MinervaProvider</code> (theme, palette, design preset, locale, safe-area insets): see the <guide>React Native guide</guide>.",
-      "examples": "Each example is a React Native component (TSX) rendered live through react-native-web in a phone frame; the same code runs on iOS and Android with Expo.",
+      "examples": "Each example is a React Native component (TSX) rendered live through react-native-web in a phone frame; the same code runs on iOS and Android with Expo. The native provider defaults to the touch design preset: the medium Button is 44px high with larger padding and corners, compared with the 40px web default. Colors and font size share the same theme tokens.",
       "api": "Props of the React Native component (minerva-design/native). React Native props of the underlying primitive (testID, accessibilityLabel, style...) are forwarded.",
       "only": "Mobile component: available in minerva-design/native (React Native + Expo) only."
-    }
+    },
+    "retry": "Retry",
+    "previewError": "Unable to load this example"
   },
   "error": {
     "title": "Oops!",
@@ -175,31 +174,56 @@
   "home": {
     "support": {
       "label": "Supported frameworks",
-      "webComponents": "Web Components:"
+      "webComponents": "Web Components:",
+      "native": "Native:"
     },
     "title": "Interfaces that feel finished.",
-    "subtitle": "Minerva is an accessible, themable component library for React and every other framework through standard Web Components.",
+    "subtitle": "Accessible, themeable components for React, Vue, Angular and React Native, plus Web Components and mini-program renderers. See the support matrix for the implemented API on each platform.",
     "getStarted": "Get started",
     "browse": "Browse components",
     "installLabel": "Install command",
     "showcase": {
-      "label": "Live preview: a deploy panel built with Minerva components",
-      "title": "Deployments",
-      "project": "Project name",
-      "branch": "Branch",
-      "production": "Production",
-      "preview": "Preview",
-      "deploy": "Deploy",
-      "cancel": "Cancel",
-      "status": {
-        "ready": "Ready",
-        "building": "Building",
-        "canceled": "Canceled"
+      "label": "Component playground",
+      "title": "Try it. See it change.",
+      "description": "Switch the theme, palette, spacing and corners. These are real library components; the source updates with your choices.",
+      "darkMode": "Dark preview",
+      "palette": "Palette",
+      "variant": "Button style",
+      "density": "Density",
+      "radius": "Corners",
+      "disableButton": "Disable button",
+      "reset": "Reset playground",
+      "previewTitle": "Your workspace",
+      "previewDescription": "Edit the name, toggle notifications and press the button.",
+      "name": "Workspace name",
+      "notifications": "Notifications",
+      "enabled": "Notifications enabled",
+      "disabled": "Notifications disabled",
+      "tryButton": "Try button",
+      "clicks": "Clicks",
+      "showCode": "View example source",
+      "hideCode": "Hide example source",
+      "options": {
+        "minerva": "Minerva",
+        "tech": "Tech",
+        "editorial": "Editorial",
+        "graphite": "Graphite",
+        "cool": "Cool",
+        "solid": "Solid",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "compact": "Compact",
+        "standard": "Standard",
+        "comfortable": "Comfortable",
+        "none": "Square",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
       }
     },
     "featuresTitle": "Everything you need, nothing you don't",
     "frameworksTitle": "One design language, every framework",
-    "frameworksText": "Use the React components, or drop the same custom elements into plain HTML, Vue, Angular, Svelte or Solid.",
+    "frameworksText": "Accessible, themeable components for React, Vue, Angular and React Native, plus Web Components and mini-program renderers. See the support matrix for the implemented API on each platform.",
     "quickLinksTitle": "Start here",
     "componentsCount": "{{count}} documented pages",
     "features": {

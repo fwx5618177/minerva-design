@@ -48,8 +48,7 @@ function Preview() {
         <Switch label="Switch" defaultChecked />
       </HStack>
       <p style={{ margin: 0, color: "var(--text-muted-color)" }}>
-        data-theme=&quot;{resolvedTheme}&quot; data-palette=&quot;
-        {palette ?? ""}&quot;
+        Theme: {resolvedTheme}; palette: {palette ?? "default"}
       </p>
     </div>
   );

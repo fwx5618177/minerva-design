@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 // Landing page: the supported-frameworks pills of the hero and the live
-// deploy panel (real Minerva components, driven with user-event).
+// component playground (real Minerva components, driven with user-event).
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
@@ -22,20 +22,45 @@ const renderHome = () =>
 
 const panel = () =>
   screen.getByRole("region", {
-    name: "Live preview: a deploy panel built with Minerva components",
+    name: "Component playground",
   });
 
 describe("home page", () => {
-  it("lists React and the Web Components frameworks as pills", () => {
+  it("distinguishes native renderers from Web Components adapters", () => {
     renderHome();
     const group = screen.getByRole("group", { name: "Supported frameworks" });
-    expect(group).toHaveTextContent(/^React/);
+    expect(group).toHaveTextContent(/^Native:/);
     expect(within(group).getByText("Web Components:")).toBeInTheDocument();
     const pills = within(group)
       .getAllByRole("listitem")
       .map((li) => li.textContent);
-    expect(pills).toEqual(["Vue", "Angular", "Svelte", "Solid", "HTML"]);
+    expect(pills).toEqual([
+      "React",
+      "Vue",
+      "React Native",
+      "Angular",
+      "Taro",
+      "uni-app",
+      "WeChat",
+      "Svelte",
+      "Solid",
+      "HTML",
+    ]);
+    for (const item of within(group).getAllByRole("listitem")) {
+      expect(item.querySelector('[data-minerva="tag"]')).not.toBeNull();
+    }
     expect(screen.queryByText("React + Web Components")).toBeNull();
+  });
+
+  it("uses library links for the hero navigation without nesting buttons", () => {
+    renderHome();
+    for (const href of ["/installation", "/button"]) {
+      const link = document.querySelector(
+        `#home-title ~ div a[href="${href}"]`,
+      );
+      expect(link).toHaveAttribute("data-minerva", "text-link");
+      expect(link?.querySelector("button")).toBeNull();
+    }
   });
 
   it("translates the label but not the framework names", async () => {
@@ -52,54 +77,46 @@ describe("home page", () => {
     }
   });
 
-  it("renders the deploy panel controls", () => {
-    renderHome();
-    const view = within(panel());
-    expect(view.getByLabelText("Project name")).toHaveValue("minerva-app");
-    expect(view.getByRole("combobox", { name: "Branch" })).toHaveTextContent(
-      "main",
-    );
-    expect(view.getByRole("switch", { name: "Production" })).toBeChecked();
-    expect(view.getByRole("status")).toHaveTextContent("Ready");
-    expect(view.getByRole("button", { name: "Deploy" })).toBeEnabled();
-    expect(view.getByRole("button", { name: "Cancel" })).toBeDisabled();
-  });
-
-  it("the panel is interactive: edit, pick a branch, toggle, deploy, cancel", async () => {
-    const errors = vi.spyOn(console, "error");
+  it("updates scoped design tokens and displays real component interactions", async () => {
     const user = userEvent.setup();
     renderHome();
     const view = within(panel());
-
-    const name = view.getByLabelText("Project name");
-    await user.clear(name);
-    await user.type(name, "docs-site");
-    expect(view.getByText("docs-site")).toBeInTheDocument();
-
-    await user.click(view.getByRole("combobox", { name: "Branch" }));
-    await user.click(await screen.findByRole("option", { name: "develop" }));
-    expect(view.getByRole("combobox", { name: "Branch" })).toHaveTextContent(
-      "develop",
+    const preview = view.getByTestId("playground-preview");
+    const scope = preview.closest("[data-minerva-theme-scope]")!;
+    const rootTheme = document.documentElement.getAttribute("data-theme");
+    await user.click(view.getByRole("switch", { name: "Dark preview" }));
+    expect(scope).toHaveAttribute("data-theme", "dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe(rootTheme);
+    await user.click(view.getByRole("combobox", { name: "Palette" }));
+    await user.click(screen.getByRole("option", { name: "Graphite" }));
+    expect(scope).toHaveAttribute("data-palette", "graphite");
+    await user.click(view.getByRole("combobox", { name: "Corners" }));
+    await user.click(screen.getByRole("option", { name: "Square" }));
+    expect(scope).toHaveAttribute("data-radius", "none");
+    await user.click(view.getByRole("button", { name: "Try button" }));
+    expect(within(preview).getByRole("status")).toHaveTextContent("Clicks: 1");
+    await user.click(view.getByRole("switch", { name: "Disable button" }));
+    expect(view.getByRole("button", { name: "Try button" })).toBeDisabled();
+    await user.click(view.getByRole("button", { name: "View example source" }));
+    expect(view.getByRole("region", { name: "TSX code" })).toHaveTextContent(
+      'palette="graphite"',
     );
-
-    await user.click(view.getByRole("switch", { name: "Production" }));
-    expect(view.getByRole("switch", { name: "Production" })).not.toBeChecked();
-    expect(view.getByText("develop · Preview")).toBeInTheDocument();
-
-    await user.click(view.getByRole("button", { name: /Deploy/ }));
-    expect(view.getByRole("status")).toHaveTextContent("Building");
-    await user.click(view.getByRole("button", { name: "Cancel" }));
-    expect(view.getByRole("status")).toHaveTextContent("Canceled");
-
-    await user.click(view.getByRole("button", { name: /Deploy/ }));
-    expect(view.getByRole("status")).toHaveTextContent("Building");
-    await vi.waitFor(
-      () => expect(view.getByRole("status")).toHaveTextContent("Ready"),
-      { timeout: 3000 },
+    expect(view.getByRole("region", { name: "TSX code" })).toHaveTextContent(
+      'radius="none"',
     );
-
-    await user.clear(name);
-    expect(view.getByRole("button", { name: "Deploy" })).toBeDisabled();
-    expect(errors).not.toHaveBeenCalled();
   });
+});
+
+it("uses the shared highlighted code block and library copy control", async () => {
+  const { container } = renderHome();
+  expect(
+    await screen.findByRole("region", { name: "Terminal code" }),
+  ).toHaveTextContent("pnpm add minerva-design");
+  expect(screen.getByRole("button", { name: "Copy code" })).toHaveAttribute(
+    "data-minerva",
+    "button",
+  );
+  await vi.waitFor(() =>
+    expect(container.querySelector("code .token")).not.toBeNull(),
+  );
 });

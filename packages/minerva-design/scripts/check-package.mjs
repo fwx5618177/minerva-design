@@ -43,8 +43,11 @@ try {
     ),
     ...VUE_SUBPATHS,
     "./angular",
+    "./angular/monaco",
     "./taro",
+    "./taro/monaco",
     "./uni",
+    "./uni/monaco",
     "./vue/global",
   ];
   run("pnpm", ["exec", "attw", tarball, "--entrypoints", ...dual]);

@@ -152,3 +152,16 @@ export class MnConfig {
     this.scope.scopeDesignAttributes(),
   );
 }
+
+/** Embeds Angular in a host application without changing document-level theme attributes. */
+export function provideEmbeddedMinerva(
+  config: MinervaConfig = {},
+): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    {
+      provide: MN_SCOPE,
+      useFactory: () =>
+        new MinervaScope(null, staticInputs(config), false, {}, true),
+    },
+  ]);
+}

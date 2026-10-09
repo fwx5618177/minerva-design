@@ -6,20 +6,25 @@ driver per platform. The suites read the component contracts of
 support), so they follow the API instead of hard-coding it.
 
 ```
-pnpm test:contracts            # vitest run --project contracts
+pnpm test:contracts            # React / Vue / Web Components / React Native
+pnpm test:contracts:mini       # shared Button / toggle / selection suites on Taro / uni-app
+pnpm test:browser              # production docs in Chromium (build docs first)
 ```
 
 | Path                           | What                                                                  |
 | ------------------------------ | --------------------------------------------------------------------- |
-| `harness/types.ts`             | `Driver` / `Handle` API, `h()` spec builder, `ExpectedDifference`     |
+| `harness/types.ts`             | `Driver` / `Handle` API and `h()` spec builder                        |
 | `harness/dom.ts`               | shadow-piercing queries, ARIA roles and names (shared by DOM drivers) |
 | `harness/contracts.ts`         | contract helpers (`initialProps`, `eventWith`, `detailOf`, `hasProp`) |
-| `harness/suite.ts`             | `contractTest()`: `it`, or `it.fails` for a documented difference     |
+| `harness/suite.ts`             | `contractTest()`: every assertion must pass                           |
 | `suites/*.ts`                  | the contract suites (one function per suite, taking a `Driver`)       |
 | `drivers/react.tsx`            | React DOM (`@testing-library/react` + user-event)                     |
+| `drivers/vue.ts`               | Native Vue SFCs with user-event                                       |
+| `drivers/native.tsx`           | React Native components with RNTL                                     |
+| `drivers/taro.tsx`             | Taro components with their H5 event adapter                           |
+| `drivers/uni.ts`               | Real uni-app SFCs with native built-in event adapters                 |
 | `drivers/wc.ts`                | Web Components (Lit in happy-dom, events through `addEventListener`)  |
 | `react.test.tsx`, `wc.test.ts` | run every suite with one driver                                       |
-| `expected-differences.ts`      | behaviours that genuinely differ on a platform, with the reason       |
 
 ## Suites
 
@@ -56,7 +61,14 @@ custom elements log `event.detail`; React maps the callback arguments onto the
 contract's detail fields by position (`onChange(checked, event)` ->
 `{ checked }`).
 
-## Adding a renderer (Vue, Angular, React Native, Taro, WeChat, uni-app)
+The Taro and uni-app shared suites run within their package projects so each
+renderer uses its own React version or SFC compiler. They currently run the 11
+Button, toggle and selection assertions; the remaining suites are not claimed
+as covered there. Native device rendering and device E2E are separate from
+these host tests. WeChat templates, events and compound flows have package
+tests, without a shared driver yet.
+
+## Adding or extending a renderer
 
 1. Implement `Driver` in `drivers/<platform>.ts(x)`:
    - `render(spec, { locale })`: map contract names to the platform's
@@ -72,8 +84,8 @@ contract's detail fields by position (`onChange(checked, event)` ->
      the platform applies) and `services.toast`.
 2. Add `<platform>.test.ts` calling `runContractSuites(driver)`, with the
    platform's test environment (a separate vitest project when it needs one).
-3. Record genuine differences in `expected-differences.ts` (they run as
-   `it.fails`, so a converged behaviour is noticed), never by changing a suite
-   for one platform.
+3. Assert documented host semantics directly: custom elements own checked
+   state and accept parent updates; React Native checks resolved style objects
+   instead of CSS classes. Do not turn failures into expected passes.
 4. Set the platform's status to `beta` / `stable` in the contracts (the
    generator, `tools/generate-contracts.mjs`) once its suites pass.

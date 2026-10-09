@@ -10,6 +10,19 @@ afterEach(() => {
 });
 
 describe("<minerva-divider>", () => {
+  it.each([0, 3])(
+    "passes thickness %s to the rendered text lines",
+    async (thickness) => {
+      const el = await mount<MinervaDivider>(
+        `<minerva-divider variant="dashed" thickness="${thickness}">Chapter</minerva-divider>`,
+      );
+      expect(
+        $(el, "[role=separator]").style.getPropertyValue(
+          "--_divider-thickness",
+        ),
+      ).toBe(`${thickness}px`);
+    },
+  );
   it("registers", () => {
     expect(customElements.get("minerva-divider")).toBe(MinervaDivider);
   });

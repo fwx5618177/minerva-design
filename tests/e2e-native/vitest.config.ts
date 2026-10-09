@@ -17,6 +17,10 @@ const fromNative = (id: string) =>
 export default defineConfig({
   resolve: {
     alias: [
+      {
+        find: /^minerva-design\/native$/,
+        replacement: src("../../packages/native/src/index.ts"),
+      },
       { find: /^react$/, replacement: fromNative("react") },
       { find: /^react\/(.*)$/, replacement: `${fromNative("react")}/$1` },
       {

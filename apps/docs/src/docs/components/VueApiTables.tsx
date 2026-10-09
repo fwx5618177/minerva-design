@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getVueApi, vueDescriptionKeys, type VueSection } from "../vueApi";
@@ -60,32 +68,32 @@ const VueApiTables: React.FC<VueApiTablesProps> = ({
           role="region"
           aria-label={`${name} ${t(`doc.vue.sections.${section}`)}`}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
                 {head.map((h, index) => (
-                  <th scope="col" key={index}>
+                  <TableHeader scope="col" key={index}>
                     {h}
-                  </th>
+                  </TableHeader>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {rows.map((cells, i) => (
-                <tr key={i}>
+                <TableRow key={i}>
                   {cells.map((cell, j) =>
                     j === 0 ? (
-                      <th scope="row" key={j}>
+                      <TableHeader scope="row" key={j}>
                         {cell}
-                      </th>
+                      </TableHeader>
                     ) : (
-                      <td key={j}>{cell}</td>
+                      <TableCell key={j}>{cell}</TableCell>
                     ),
                   )}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </div>
     );

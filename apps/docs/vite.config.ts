@@ -8,6 +8,7 @@ import {
   bundleBudgetPlugin,
   docsMetaPlugin,
 } from "./scripts/build-plugins.mjs";
+import { angularExamplesPlugin } from "./src/docs/angular/vitePlugin.ts";
 import { wcFrameworksPlugin } from "./src/docs/frameworks/vitePlugin.ts";
 
 // App path aliases are defined once, in tsconfig.json "paths".
@@ -49,6 +50,10 @@ const nativeAlias: Alias[] = [
 // Unit tests import the workspace packages from source (no build needed),
 // exactly like tests/e2e does. Exact-match aliases: sub-entries first.
 const testAlias: Alias[] = [
+  {
+    find: /^minerva-design\/vue\/monaco$/,
+    replacement: src("../../packages/vue/src/monaco.ts"),
+  },
   {
     find: /^minerva-design\/theme-utils$/,
     replacement: src("../../packages/react/src/theme-utils.ts"),
@@ -98,6 +103,7 @@ const testAlias: Alias[] = [
 export default defineConfig({
   base: "/minerva-design/",
   plugins: [
+    ...(process.env.VITEST ? [] : [angularExamplesPlugin()]),
     react(),
     // the native Vue demos (pages/<id>/vue/*.vue) and, in tests, the Vue
     // renderer's single-file components
@@ -127,6 +133,18 @@ export default defineConfig({
         strictExecutionOrder: true,
         codeSplitting: {
           groups: [
+            {
+              name: "angular-preview",
+              test: /(?:@angular[\\/]|minerva-design[\\/]dist[\\/]angular[\\/])/,
+              maxSize: 350 * 1024,
+            },
+            {
+              // Shared UI translations have their own budget; page strings
+              // remain lazy-loaded with the page that needs them.
+              name: "locale-common",
+              test: /i18n[\\/]locales[\\/][^\\/]+[\\/]common\.json$/,
+              maxSize: 200 * 1024,
+            },
             {
               name: "native-preview",
               test: /(?:react-native-web|packages[\\/]native[\\/]src)/,

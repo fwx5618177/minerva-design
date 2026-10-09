@@ -7,19 +7,22 @@
  * focusable (aria-disabled + aria-busy) but ignores activation, including
  * the implicit form submission of `type="submit"`.
  */
-import { computed, getCurrentInstance, useAttrs } from "vue";
+import { computed, getCurrentInstance, useAttrs, ref } from "vue";
 import styles from "@react-styles/components/IconButton/iconButton.module.scss";
 import progressStyles from "@react-styles/components/ProgressIndicator/progressIndicator.module.scss";
 import { hooks } from "../../internal/hooks";
 import { IconSpinner } from "../../internal/icons";
 import { useControllable } from "../../internal/controllable";
 import { useI18n } from "../../config/useI18n";
+import Tooltip from "../Tooltip/Tooltip.vue";
 import type { IconButtonProps } from "./types";
 
 defineOptions({ name: "IconButton", inheritAttrs: false });
 
 const props = withDefaults(defineProps<IconButtonProps>(), {
   label: undefined,
+  tooltip: undefined,
+  showTooltip: undefined,
   color: "neutral",
   variant: "ghost",
   size: "medium",
@@ -42,6 +45,12 @@ defineSlots<{
 }>();
 
 const attrs = useAttrs();
+const button = ref<HTMLButtonElement | null>(null);
+defineExpose({
+  get $el() {
+    return button.value;
+  },
+});
 const { t } = useI18n();
 const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
 
@@ -114,39 +123,46 @@ const buttonAttrs = computed(() => ({
 </script>
 
 <template>
-  <button v-bind="buttonAttrs" @click="onClick">
-    <span
-      v-if="loading"
-      :class="styles.glyph"
-      v-bind="hooks('icon-button', 'spinner')"
-    >
-      <!-- the ProgressIndicator spinner (role="progressbar") -->
-      <div
-        :class="[progressStyles.progressIndicator, progressStyles.current]"
-        role="progressbar"
-        :aria-label="t('common.loading')"
-        v-bind="
-          hooks('progress', 'root', {
-            variant: 'spinner',
-            size,
-            color: 'current',
-          })
-        "
+  <Tooltip
+    v-bind="tooltip"
+    :content="tooltip?.content ?? label"
+    :disabled="!(showTooltip ?? label !== undefined) || disabled || loading"
+    as-child
+  >
+    <button ref="button" v-bind="buttonAttrs" @click="onClick">
+      <span
+        v-if="loading"
+        :class="styles.glyph"
+        v-bind="hooks('icon-button', 'spinner')"
       >
-        <IconSpinner
-          :class="[progressStyles.spinner, progressStyles[size]]"
-          v-bind="hooks('progress', 'indicator')"
-        />
-      </div>
-    </span>
-    <!-- The icon is wrapped so it is always hidden from AT -->
-    <span
-      v-else
-      :class="styles.glyph"
-      aria-hidden="true"
-      v-bind="hooks('icon-button', 'icon')"
-    >
-      <slot />
-    </span>
-  </button>
+        <!-- the ProgressIndicator spinner (role="progressbar") -->
+        <div
+          :class="[progressStyles.progressIndicator, progressStyles.current]"
+          role="progressbar"
+          :aria-label="t('common.loading')"
+          v-bind="
+            hooks('progress', 'root', {
+              variant: 'spinner',
+              size,
+              color: 'current',
+            })
+          "
+        >
+          <IconSpinner
+            :class="[progressStyles.spinner, progressStyles[size]]"
+            v-bind="hooks('progress', 'indicator')"
+          />
+        </div>
+      </span>
+      <!-- The icon is wrapped so it is always hidden from AT -->
+      <span
+        v-else
+        :class="styles.glyph"
+        aria-hidden="true"
+        v-bind="hooks('icon-button', 'icon')"
+      >
+        <slot />
+      </span>
+    </button>
+  </Tooltip>
 </template>

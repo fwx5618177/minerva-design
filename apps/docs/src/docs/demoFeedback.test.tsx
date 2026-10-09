@@ -47,11 +47,11 @@ const expectNoBrowserFeedback = () => {
 };
 
 describe("demo feedback uses Minerva components", () => {
-  it("button basic: a click shows a toast", async () => {
+  it("button basic: a click updates the same inline count as other renderers", async () => {
     const user = userEvent.setup();
     renderDemo(ButtonBasic);
     await user.click(screen.getByRole("button", { name: "Click me" }));
-    expect(await screen.findByText("Clicked!")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Clicked 1 times");
     expectNoBrowserFeedback();
   });
 

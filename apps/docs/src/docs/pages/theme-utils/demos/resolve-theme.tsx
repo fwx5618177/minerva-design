@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   Tag,
+  Select,
+  SelectItem,
   getSystemTheme,
   isBilingualTheme,
   resolveTheme,
@@ -35,23 +37,24 @@ export default function ResolveThemeDemo() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
         <label>
           theme{" "}
-          <select value={input} onChange={(e) => setInput(e.target.value)}>
+          <Select aria-label="theme" value={input} onChange={setInput}>
             {Object.keys(INPUTS).map((key) => (
-              <option key={key} value={key}>
+              <SelectItem key={key} value={key}>
                 {key}
-              </option>
+              </SelectItem>
             ))}
-          </select>
+          </Select>
         </label>
         <label>
           systemTheme{" "}
-          <select
+          <Select
+            aria-label="systemTheme"
             value={scheme}
-            onChange={(e) => setScheme(e.target.value as DefaultTheme)}
+            onChange={(value) => setScheme(value as DefaultTheme)}
           >
-            <option value="light">light</option>
-            <option value="dark">dark</option>
-          </select>
+            <SelectItem value="light">light</SelectItem>
+            <SelectItem value="dark">dark</SelectItem>
+          </Select>
         </label>
       </div>
       <div

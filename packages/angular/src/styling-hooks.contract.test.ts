@@ -39,31 +39,28 @@ describe("styling hooks contract (Angular)", () => {
     expect(names.filter((name) => !components.includes(name))).toEqual([]);
   });
 
-  for (const component of components.filter((name) => !scenariosOf(name))) {
-    it.todo(`${component}: renderer styling fixtures not implemented yet`);
-  }
-  it.each(components.filter((name) => scenariosOf(name)))(
-    "%s",
-    async (component) => {
-      const scenarios = scenariosOf(component);
-      expect(scenarios, `missing fixture ${component}.ts`).toBeDefined();
-      const coverage = new Coverage();
-      for (const scenario of scenarios) {
-        const fixture = await render(scenario.component);
-        if (scenario.setup) {
-          await scenario.setup({
-            user: user(),
-            fixture,
-            root: fixture.nativeElement as HTMLElement,
-          });
-        }
-        await settle(fixture);
-        const problems = checkReactDom(coverage);
-        expect(problems, `${component} / ${scenario.name}`).toEqual([]);
-        fixture.destroy();
-        document.body.innerHTML = "";
+  it("covers every renderer in the styling manifest", () => {
+    expect(components.filter((name) => !scenariosOf(name))).toEqual([]);
+  });
+  it.each(components)("%s", async (component) => {
+    const scenarios = scenariosOf(component);
+    expect(scenarios, `missing fixture ${component}.ts`).toBeDefined();
+    const coverage = new Coverage();
+    for (const scenario of scenarios) {
+      const fixture = await render(scenario.component);
+      if (scenario.setup) {
+        await scenario.setup({
+          user: user(),
+          fixture,
+          root: fixture.nativeElement as HTMLElement,
+        });
       }
-      expect(missingHooks(component, coverage, "react")).toEqual([]);
-    },
-  );
+      await settle(fixture);
+      const problems = checkReactDom(coverage);
+      expect(problems, `${component} / ${scenario.name}`).toEqual([]);
+      fixture.destroy();
+      document.body.innerHTML = "";
+    }
+    expect(missingHooks(component, coverage, "react")).toEqual([]);
+  });
 });

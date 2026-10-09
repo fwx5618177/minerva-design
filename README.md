@@ -2,11 +2,9 @@
 
 ## Platform implementation status
 
-The main workspace now includes native Vue (`minerva-design/vue`), React Native / Expo (`minerva-design/native`) and the initial Angular subset (`minerva-design/angular`: configuration, Button, Switch, Modal and its parts). Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) currently provide Button, Input and Switch. These are initial implementations, not full parity or a claim of npm publication. See the [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) for scope, examples and validation limits.
+The workspace includes native Vue (`minerva-design/vue`), Angular (`minerva-design/angular`) and React Native / Expo (`minerva-design/native`) renderers. Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) also provide native form, navigation, overlay, data-display and theme implementations. The generated [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) records each component’s implementation scope and limitations. Host tests and builds do not imply device certification or npm publication.
 
-The private root is `minerva-design-workspace`; `packages/minerva-design` assembles the single published package. `packages/core` is platform-neutral; browser-specific primitives live in `packages/dom`. The public `/core` entry preserves the existing Web API. Sibling `md-*` directories are linked development worktrees with unfinished changes, not extra packages.
-
-[Code comparison and continuation report](docs/research/2026-10-09-library-comparison.md).
+The private root is `minerva-design-workspace`; `packages/minerva-design` assembles the single published package. `packages/core` is platform-neutral; browser-specific primitives live in `packages/dom`. The public `/core` entry preserves the existing Web API. The Vue, Angular and Native development worktrees have been reconciled into this workspace and removed; their snapshot branches preserve the development history.
 
 <div align="center">
 
@@ -54,7 +52,7 @@ One package, [`minerva-design`](https://www.npmjs.com/package/minerva-design), w
 | `minerva-design/web-components/{react,vue,svelte,solid}`                       | Framework typings of the custom elements; `minerva-design/custom-elements.json` and `minerva-design/html-custom-data.json` (VS Code) describe them for tools.                                      |
 | `minerva-design/core`, `minerva-design/styling-hooks`                          | Advanced: the framework-agnostic primitives both libraries are built on (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme, i18n) and the styling hooks manifest.     |
 
-The repository is a pnpm monorepo: `packages/core` (platform-neutral), `packages/dom`, `packages/react` and `packages/web-components` hold the sources (private workspace packages; `packages/{vue,angular,native,taro,weapp,uni}` contain the native renderers at different stages of completion), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
+The repository is a pnpm monorepo: `packages/core` (platform-neutral), `packages/dom`, `packages/react` and `packages/web-components` hold the sources (private workspace packages; `packages/{vue,angular,native,taro,weapp,uni}` contain the framework and platform renderers), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
 
 ### Architecture
 
@@ -416,21 +414,23 @@ pnpm dev
 
 ### Scripts
 
-| Command                             | Description                                                                  |
-| ----------------------------------- | ---------------------------------------------------------------------------- |
-| `pnpm dev`                          | Build `minerva-design`, then start the docs/demo site                        |
-| `pnpm build`                        | Build `minerva-design` (core → react → web components), then the docs site   |
-| `pnpm test`                         | Run all tests: unit (all packages, docs checks) and e2e user flows           |
-| `pnpm test:unit` / `pnpm test:e2e`  | Run only the unit tests / only the e2e user flows (`tests/e2e`)              |
-| `pnpm test:dist`                    | Test the built `minerva-design` package and its packed tarball (after build) |
-| `pnpm test:coverage`                | Run all tests with coverage (thresholds enforced)                            |
-| `pnpm lint`                         | Run ESLint (flat config)                                                     |
-| `pnpm typecheck`                    | Type-check all packages                                                      |
-| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                      |
-| `pnpm clean`                        | Remove build output                                                          |
-| `pnpm changeset`                    | Add a changeset describing your change                                       |
-| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs                 |
-| `pnpm release`                      | Build `minerva-design` and publish it to npm                                 |
+| Command                             | Description                                                                                                                                                                   |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Build `minerva-design`, then start the docs/demo site                                                                                                                         |
+| `pnpm build`                        | Build every renderer into `minerva-design`, then the docs site                                                                                                                |
+| `pnpm test`                         | Run all Vitest tests: unit, docs checks and host user flows                                                                                                                   |
+| `pnpm test:unit` / `pnpm test:e2e`  | Run unit tests / host flows (happy-dom and React Native testing library)                                                                                                      |
+| `pnpm test:browser`                 | Test production docs, Taro H5 and the uni-app browser host in Chromium (after build and `pnpm exec playwright install chromium`); device runtimes require separate validation |
+| `pnpm test:contracts:mini`          | Run the shared Button/toggle/selection contracts against Taro and uni-app                                                                                                     |
+| `pnpm test:dist`                    | Test the built `minerva-design` package and its packed tarball (after build)                                                                                                  |
+| `pnpm test:coverage`                | Run all tests; coverage thresholds measure core / DOM / React / Web Components / Vue                                                                                          |
+| `pnpm lint`                         | Run ESLint (flat config)                                                                                                                                                      |
+| `pnpm typecheck`                    | Type-check all packages                                                                                                                                                       |
+| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                                                                                                                       |
+| `pnpm clean`                        | Remove build output                                                                                                                                                           |
+| `pnpm changeset`                    | Add a changeset describing your change                                                                                                                                        |
+| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs                                                                                                                  |
+| `pnpm release`                      | Build `minerva-design` and publish it to npm                                                                                                                                  |
 
 ### Tooling
 
@@ -459,7 +459,8 @@ Versioning and changelogs are managed with [Changesets](https://github.com/chang
    pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
    pnpm build && pnpm test:dist && pnpm check:package
    (cd packages/minerva-design && npm pack --dry-run)   # what would be published, nothing is uploaded
-   git commit -am "chore: release" && git push
+   git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
+   git commit -m "chore: release" && git push
    ```
 
 4. **Log in to npm** with an account that can publish `minerva-design`, with two-factor authentication enabled:
@@ -480,7 +481,7 @@ Versioning and changelogs are managed with [Changesets](https://github.com/chang
 
    `changeset publish` only publishes `minerva-design` when its version is not on npm yet (private packages are never published). With 2FA enabled for writes, npm prompts for a one-time password (or pass it up front: `pnpm release --otp <code>`, the argument is forwarded to `changeset publish`).
 
-What the package publishes (`files` in `packages/minerva-design/package.json`; tests, sources and the docs site are never included):
+What the package publishes (`files` in `packages/minerva-design/package.json`; tests and the docs site are excluded; the Native source entry and mini-program component assets are included where required):
 
 | Folder                 | Contents                                                                                                                                                                    |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

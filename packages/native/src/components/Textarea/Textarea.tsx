@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { useState, type ReactNode, type Ref } from "react";
 import {
   Text,
@@ -118,33 +119,34 @@ export interface TextareaProps extends Omit<
  * min / max rows), character count, the Input variants, sizes, error,
  * read-only and disabled states.
  */
-export function Textarea({
-  value: valueProp,
-  defaultValue = "",
-  onChange,
-  onChangeText,
-  variant = "outline",
-  size = "medium",
-  invalid = false,
-  disabled = false,
-  readOnly = false,
-  rows = 3,
-  autoSize = false,
-  showCharCount = false,
-  maxLength,
-  label,
-  style,
-  wrapperStyle,
-  inputStyle,
-  onFocus,
-  onBlur,
-  onContentSizeChange,
-  accessibilityLabel,
-  accessibilityState,
-  placeholderTextColor,
-  ref,
-  ...rest
-}: TextareaProps) {
+export function Textarea(props: TextareaProps) {
+  const {
+    value: valueProp,
+    defaultValue = "",
+    onChange,
+    onChangeText,
+    variant = "outline",
+    size = "medium",
+    invalid = false,
+    disabled = false,
+    readOnly = false,
+    rows = 3,
+    autoSize = false,
+    showCharCount = false,
+    maxLength,
+    label,
+    style,
+    wrapperStyle,
+    inputStyle,
+    onFocus,
+    onBlur,
+    onContentSizeChange,
+    accessibilityLabel,
+    accessibilityState,
+    placeholderTextColor,
+    ref,
+    ...rest
+  } = useFormControlProps(props);
   const { tokens: t, fonts } = useTheme();
   const [value, setValue] = useControllable(valueProp, defaultValue, onChange);
   const focus = useFocusState(onFocus, onBlur);

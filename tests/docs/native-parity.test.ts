@@ -12,6 +12,8 @@ import { NATIVE_COMPONENTS } from "../../packages/native/src/manifest";
  * (kept in sync with the React Native docs)
  */
 const NATIVE_DIFFERENCES: Record<string, string> = {
+  "CodeBlock.maxHeight":
+    "384 device-independent pixels on native; the web 24rem default is the same height at its 16px root baseline. Native has no CSS rem unit.",
   "ToastProvider.position":
     "full-width mobile toasts: top / center / bottom (default top); the web corner values are accepted and map to top or bottom",
   "Progress.variant":
@@ -20,6 +22,8 @@ const NATIVE_DIFFERENCES: Record<string, string> = {
     "semantic colors of the bar (the web indicator uses current / neutral / primary)",
   "Popup.side":
     "alias of `placement`, whose mobile default is bottom (bottom sheet) instead of the web drawer's right side",
+  "DrawerContent.side":
+    "the composition form of the native Popup uses its same bottom-sheet default; pass side=right for the web drawer's default placement",
   "Skeleton.size":
     "no implicit 32px circle: circular skeletons take `size`, else width / height",
   "FormField.invalid":
@@ -30,6 +34,16 @@ const native = readNative();
 
 describe("React Native contract parity", () => {
   const implemented = NATIVE_COMPONENTS.filter((c) => c.contract !== null);
+
+  it("extracts actual callable props for aliases and composition parts without named Props exports", () => {
+    expect(
+      native
+        .get("ThemeProvider")
+        ?.props.map((prop: { name: string }) => prop.name),
+    ).toContain("theme");
+    expect(native.get("SelectLabel")?.children).toBe(true);
+    expect(native.get("TableRoot")).toBeDefined();
+  });
 
   it.each(implemented.map((c) => [c.name, c] as const))(
     "%s: same defaults and enum values as its contract",

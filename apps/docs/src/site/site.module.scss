@@ -340,6 +340,20 @@ $bp-xl: 1280px;
     color var(--ds-duration) var(--ds-ease);
   @include focus-ring;
 
+  > [data-part="label"] {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    line-height: 1;
+  }
+
+  > [data-part="start-icon"],
+  > [data-part="end-icon"] {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+  }
+
   &:hover {
     border-color: var(--ds-border-strong);
     color: var(--ds-fg-muted);
@@ -351,6 +365,11 @@ $bp-xl: 1280px;
     justify-content: center;
     border-color: transparent;
     background: transparent;
+
+    > [data-part="label"],
+    > [data-part="end-icon"] {
+      display: none;
+    }
   }
 
   @media (min-width: $bp-lg) {

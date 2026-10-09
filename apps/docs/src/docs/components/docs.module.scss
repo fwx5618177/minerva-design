@@ -312,6 +312,12 @@ $demo: "[data-demo-preview]";
   width: 100%;
 }
 
+// Keep percentage-width Vue components at the same width as React demos.
+.vueMount {
+  width: 100%;
+  min-width: 0;
+}
+
 // ---- API tables ----
 
 .apiBlock {
@@ -529,5 +535,17 @@ $demo: "[data-demo-preview]";
 
   > p {
     margin-bottom: 8px !important;
+  }
+}
+
+.frameworkTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  &[aria-selected="true"] {
+    background: color-mix(in srgb, var(--framework-color) 14%, var(--ds-bg));
+    border-color: color-mix(in srgb, var(--framework-color) 45%, var(--ds-border));
+    color: var(--ds-fg-strong);
   }
 }

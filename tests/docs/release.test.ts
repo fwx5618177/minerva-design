@@ -114,6 +114,7 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
       "@angular/common",
       "@angular/core",
       "@angular/forms",
+      "@angular/platform-browser",
       "@monaco-editor/react",
       "@tarojs/components",
       "@tarojs/taro",
@@ -129,7 +130,11 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     for (const peer of Object.keys(pkg.peerDependencies ?? {})) {
       expect(pkg.peerDependenciesMeta?.[peer]?.optional, peer).toBe(true);
     }
+    // A single published package serves React DOM 19 and Taro's React 18.3 host.
+    // npm peers cannot vary by subpath; keep the union here and the stricter
+    // React DOM entry requirement in its renderer package and installation docs.
     expect(pkg.peerDependencies?.react).toBe("^18.3.0 || ^19.0.0");
+    expect(pkg.peerDependencies?.["react-dom"]).toBe("^18.3.0 || ^19.0.0");
     expect(pkg.peerDependencies?.vue).toBe("^3.5.0");
   });
 });

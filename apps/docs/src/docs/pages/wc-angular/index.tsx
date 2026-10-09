@@ -1,5 +1,7 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import { Link } from "react-router";
+import { Alert } from "minerva-design";
 import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
@@ -142,6 +144,16 @@ const WcAngularDoc: React.FC = () => {
 
   const intro = (
     <>
+      <Alert color="info">
+        <Trans
+          i18nKey="doc.fw.viaWebComponents"
+          values={{ framework: "Angular" }}
+          components={{
+            native: <Link to="/angular" />,
+            support: <Link to="/platform-support" />,
+          }}
+        />
+      </Alert>
       <section className={styles.section} aria-labelledby="setup">
         <h2 id="setup">{k("setup.title")}</h2>
         <p className={styles.prose}>{k("setup.text")}</p>

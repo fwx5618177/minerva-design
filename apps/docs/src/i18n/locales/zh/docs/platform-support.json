@@ -1,8 +1,8 @@
 {
   "title": "平台支持",
-  "description": "React、Web Components、原生 Vue、Angular、React Native 及首批 Taro / 微信原生 / uni-app 组件的实际实现进度。状态表示源码与构建能力，不代表已发布 npm。",
+  "description": "React、Web Components、Vue、Angular、React Native、Taro、微信和 uni-app 的源码实现覆盖情况。矩阵不代表 npm 已发布，也不代表 API、视觉或设备表现完全一致。",
   "platformsTitle": "平台",
-  "platformsText": "每个组件都只在一份与平台无关的契约中描述一次（属性、事件、插槽）。各渲染器用自己的组件实现这些契约，共享的契约测试确保它们行为一致。",
+  "platformsText": "共享契约描述组件属性、事件与插槽，各渲染器使用平台原语实现行为。已有源码实现仍可能存在 API 与交互缺口；请结合矩阵备注和各平台 manifest 查看已测试范围。",
   "platform": "平台",
   "components": "组件",
   "platforms": {
@@ -12,7 +12,7 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "基于 Lit 的通用自定义元素。Vue 已有原生 SFC，Angular 已有部分 standalone 组件。"
+      "text": "适用于 Web 框架的 Lit 自定义元素。Vue 与 Angular 也通过各自入口提供原生框架组件。"
     },
     "vue": {
       "name": "Vue",
@@ -20,23 +20,23 @@
     },
     "angular": {
       "name": "Angular",
-      "text": "原生 standalone 组件：配置、Button、Switch、Modal 及其组合部件（minerva-design/angular）。"
+      "text": "原生 Angular 独立组件（minerva-design/angular）。各组件的实现状态见下方矩阵。"
     },
     "native": {
       "name": "React Native",
-      "text": "面向 iOS 和 Android 的 React Native 组件（支持 Expo）。"
+      "text": "基于 Expo 的 iOS 与 Android 原生组件。已用 Expo Go 57.0.9 在 iOS 26.1 和 Android 16 模拟器验证输入、表格、菜单、WebView 与虚拟列表；Android 系统文件选择及剪贴板复制粘贴也已通过。真机与独立发行安装包仍未验证。"
     },
     "taro": {
       "name": "Taro",
-      "text": "首批原生 Button、Input、Switch；其余组件仍在规划中。"
+      "text": "面向小程序与 H5 的 Taro 组件。主入口已通过官方 Taro 4.3 微信目标编译 fixture；H5 键盘、焦点、上传和沙箱预览有真实 Chromium 覆盖。minerva-design/taro/monaco 是可选 H5 入口，由应用提供 Monaco 引擎；小程序原生宿主无法运行 Monaco。"
     },
     "weapp": {
       "name": "微信",
-      "text": "首批原生 Button、Input、Switch；其余组件仍在规划中。"
+      "text": "微信原生组件定义；文档注明的组合部件通过父组件属性或插槽表达。已在微信开发者工具模拟器验证部分交互，不代表实机或全量 API 已验证。微信原生组件宿主无法运行 Monaco。"
     },
     "uni": {
       "name": "uni-app",
-      "text": "首批原生 Button、Input、Switch；其余组件仍在规划中。"
+      "text": "分发源码 SFC，已通过官方 uni-app 5.31 Vue 3 编译器的微信目标编译；fixture 静态注册库内全部 SFC，H5 专用 Monaco 除外。H5 提供键盘、模态焦点、portal、文件输入、沙箱预览和可选 minerva-design/uni/monaco 入口。应用须提供 Monaco 引擎，原生小程序宿主无法运行它。"
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "不适用"
   },
   "legend": {
-    "stable": "已实现，并由共享契约测试覆盖；不代表已发布 npm 版本。",
-    "beta": "初步实现，API 和覆盖范围仍在完善；具体范围与验证限制见说明。",
+    "stable": "已实现，且文档注明范围有自动化验证；不表示 npm 已发布，也不表示跨平台完全一致。",
+    "beta": "已有实现，但存在平台范围限制、API 或验证缺口；使用前请阅读矩阵备注与 manifest。",
     "planned": "已列入路线图，暂不可用。",
     "na": "按设计在该平台上不是独立组件：平台以其他方式提供（将鼠标悬停在标签上查看详情）。"
   },
@@ -68,7 +68,20 @@
   "tracks": "方向",
   "contractsTitle": "组件契约",
   "contractsText": "该矩阵由组件契约生成：契约是从 React 属性类型和 Custom Elements Manifest 中提取的元数据（属性及其类型、枚举值和默认值，事件及其 detail 字段，插槽，产品方向以及各平台的支持情况）。当属性、特性或事件发生变化而未重新生成契约，或 React 与自定义元素的枚举值或默认值不一致时，测试会失败。",
-  "testsText": "同一套契约测试（点击、受控与非受控状态、选择、对话框、消息提示、翻译、设计令牌）通过各平台的驱动程序在每个渲染器上运行；新的渲染器在其驱动程序通过这些测试后即成为稳定版。",
+  "testsText": "共享契约测试、渲染器单测和真实 Chromium 检查覆盖文档注明的交互、翻译与设计令牌。独立 CI fixture 使用官方微信目标 SDK 编译 Taro 主入口与 uni-app SFC。微信开发者工具 2.01.2510280 / 基础库 3.17.2 模拟器记录了按钮与重试、禁用选项、选择回写、模态框打开和局部主题交互。复核已验证原生键盘输入 hello 与受控回写 HELLO，旧系统信息 API 和组件 WXSS 选择器警告已修复并在重新编译后消失。游客账号下 automator RPC 超时，安全信息接口仍报错。实机、其他平台目标和全量平台 API 仍未验证；模拟器证据不代表视觉与 API 完全一致。",
   "quickStartTitle": "原生框架和小程序接入",
-  "quickStartText": "Angular 当前导出配置、Button、Switch 和 Modal 及其组合部件。Taro、微信原生、uni-app 首批实现 Button、Input、Switch，只覆盖 Web API 的一部分。使用对应平台入口；Taro 使用 React 18，Web 主入口要求 React 19。测试使用 Taro H5、微信模拟器和 uni-app 宿主替身，尚未完成真机编译与验证。uni-app 分发源 SFC，由项目自己的 uni-app 编译器转换。"
+  "quickStartText": "请导入目标平台入口，遵循 peerDependencies 和宿主适配器要求。uni-app 分发源码 SFC，由应用的平台编译器处理。可选 H5 Monaco 入口为 minerva-design/taro/monaco 和 minerva-design/uni/monaco，应用须提供本地安装的 Monaco 引擎并配置 worker；它们不是原生小程序编辑器。官方微信目标 SDK 编译、H5 浏览器测试和已记录的开发者工具模拟器交互分别验收，仍需实机验证。",
+  "api": {
+    "title": "小程序组件 API",
+    "description": "选择平台和组件，查看当前实现的属性、事件和插槽。React 回调、Vue 事件和微信 event.detail 遵循各自宿主约定；原生宿主属性可能仅适用于特定目标平台。组合部件的等效用法和不支持的组件请参阅支持矩阵。",
+    "platform": "API 平台",
+    "component": "API 组件",
+    "props": "属性",
+    "events": "事件",
+    "slots": "插槽",
+    "methods": "公开实例成员",
+    "loading": "正在加载 API…",
+    "error": "API 加载失败，请刷新页面重试。",
+    "weapp": "使用 bind:事件=\"处理函数\" 接收 event.detail，通过 selectComponent 获取实例后调用公开方法；函数回调放入 configure(options)，不要作为 WXML 属性传递。"
+  }
 }

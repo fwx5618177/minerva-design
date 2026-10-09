@@ -1,6 +1,6 @@
 {
   "title": "アーキテクチャ",
-  "description": "Minerva の構成：すべてのレンダラーが共有するプラットフォーム非依存のコア（ステートマシン、コンポーネント契約、デザイントークン、i18n）、Web レンダラー向けの DOM プリミティブ、React コンポーネント、Web Components、そして計画中のネイティブレンダラー。",
+  "description": "React、Vue、Angular、Web Components、React Native、Taro、WeChat ネイティブ、uni-app がプラットフォーム非依存コアを共有し、Web レンダラーは DOM プリミティブも使用します。",
   "packages": {
     "title": "パッケージ",
     "text": "Minerva は 1 つのパッケージ minerva-design を公開する pnpm モノレポで、レンダラーごとにエントリーがあります。振る舞い（ヘッドレスなステートマシン）、コンポーネント契約、デザイントークン、テーマのデータ、翻訳はコアに一度だけ書かれ、各レンダラーは描画だけを担当します。",
@@ -15,7 +15,7 @@
   },
   "platforms": {
     "title": "プラットフォーム",
-    "text": "各レンダラーは同じヘッドレスなコアを共有するネイティブ実装で、単一の minerva-design パッケージのサブパスとして配布されます。Web レンダラーは DOM プリミティブも使い、React Native とミニプログラムのレンダラーは CSS 変数ではなく具体的な値に解決したトークンを使います。",
+    "text": "各レンダラーに minerva-design の専用エントリーがあります。Web は DOM プリミティブ、React Native は解決済みスタイル、ミニプログラムはクラススコープの CSS トークンを使用します。状態はコンポーネント対応表から集計されます。",
     "platform": "プラットフォーム",
     "entry": "エントリー",
     "renderer": "レンダラー",
@@ -57,15 +57,16 @@
         "name": "uni-app",
         "renderer": "uni-app の組み込みコンポーネントを使う Vue 3 コンポーネント、tokens.mini.css"
       }
-    }
+    },
+    "beta": "Beta"
   },
   "headless": {
     "title": "共有のヘッドレスレイヤー",
-    "text": "レンダラー同士が食い違わないよう、描画以外のすべてをコアに置いています：",
+    "text": "契約、トークン、状態ロジックの共有で差異を減らし、各レンダラーが描画とホスト連携を担当します。",
     "machines": "ステートマシン（core/machines）：開閉と presence、トーストのキュー、選択、タブ、ピッカーの列、フィールドとバリデーション、ページネーション、評価、数値ステッパー、トグル類のためのフレームワーク非依存な { getState, send, subscribe } ストア。React と Web Components のトースト、タブ、ページネーション、評価はすでにこれで動いています。",
     "contracts": "コンポーネント契約（core/contracts）：コンポーネントごとの実行時メタデータ（列挙値とデフォルト値つきのプロパティ、イベント、スロット、トラック、プラットフォームごとの対応状況）。React の型と custom-elements.json に照らして検証されます。",
     "tokens": "デザイントークン：TypeScript のデータから tokens.css（以前の Sass の出力とバイト単位で同一）、ミニプログラム向けのクラスベースの tokens.mini.css（パレットごとに分割）、CSS と一致する sRGB の color-mix を備えた resolveTokens() を生成します。",
-    "tests": "一度だけ書いた契約テストスイート（tests/contracts）をレンダラーごとのドライバーで実行します。現在は React DOM と Web Components で、新しいレンダラーは自分のドライバーを追加します。"
+    "tests": "共有契約テスト、レンダラー単体テスト、ブラウザーテストで文書化された API を検証します。SDK、シミュレーター、実機の検証範囲は対応表を参照してください。"
   },
   "primitives": {
     "title": "DOM プリミティブ",
@@ -91,13 +92,13 @@
     "text": "Floating UI（@floating-ui/dom）が唯一のサードパーティのインタラクション依存で、DOM 層（dist/dom）の位置決めモジュール内でのみ使われます。Radix UI などのヘッドレスライブラリは使いません。Slot / asChild、Tabs、ダイアログ、メニュー、セレクトはこのリポジトリで開発され、Vitest、happy-dom、Testing Library、user-event でテストされています。"
   },
   "roadmap": {
-    "title": "ロードマップ",
-    "text": "各フェーズで共有コアの上に 1 つのレンダラー群を提供し、契約テストのドライバーを追加し、契約の状態を計画中からベータ、安定版へと進めます。",
-    "phase0": "基盤（完了）：プラットフォーム非依存のコアと DOM 層（dist/dom）、トークンのパイプライン、ステートマシン、コンポーネント契約、契約テストの仕組み、pnpm catalogs、空のレンダラーパッケージ。",
-    "phase1": "Vue 3 と Angular のネイティブレンダラー（minerva-design/vue、minerva-design/angular）。これらのフレームワークでの Web Components の利用を置き換えます。",
-    "phase2": "React Native + Expo（minerva-design/native）。",
-    "phase3": "ミニプログラム：Taro（minerva-design/taro）、WeChat ネイティブコンポーネント（miniprogram フィールドから dist/weapp）、uni-app（minerva-design/uni）。",
-    "phase4": "toC 向けコンポーネントと touch デザインプリセットを全プラットフォームへ。"
+    "title": "実装と検証の進捗",
+    "text": "掲載されたレンダラーには実装があります。Beta は成熟度を示し、実機や本番検証の完了を意味しません。コンポーネントごとの状態は対応表を参照してください。",
+    "phase0": "共有コアと DOM 層：状態、契約、トークン、翻訳、テスト基盤を実装済み。",
+    "phase1": "Vue 3 と Angular：ネイティブレンダラーと実行可能な文書サンプルを実装済み。",
+    "phase2": "React Native と Expo：ネイティブコンポーネントとシミュレーター確認を実施済み。実機と独立 Release パッケージの検証は未完了。",
+    "phase3": "Taro、WeChat ネイティブ、uni-app：実装、公式 WeChat ターゲットのコンパイル、記載されたブラウザーとシミュレーター確認を実施済み。",
+    "phase4": "タッチプリセットとモバイル拡張：各プラットフォームの API を使用し、記載されたホスト制約と検証範囲に従ってください。"
   },
   "next": {
     "title": "次のステップ",

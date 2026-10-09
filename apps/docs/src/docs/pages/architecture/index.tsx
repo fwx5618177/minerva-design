@@ -1,4 +1,13 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
+import { supportSummary } from "../../support";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import CodeBlock from "@layout/CodeBlock";
@@ -23,34 +32,30 @@ const WORKSPACE = [
  * contracts (Platform support page).
  */
 const PLATFORMS = [
-  { key: "react", entry: "minerva-design", dom: true, status: "stable" },
+  { key: "react", entry: "minerva-design", dom: true },
   {
     key: "wc",
     entry: "minerva-design/web-components",
     dom: true,
-    status: "stable",
   },
-  { key: "vue", entry: "minerva-design/vue", dom: true, status: "planned" },
+  { key: "vue", entry: "minerva-design/vue", dom: true },
   {
     key: "angular",
     entry: "minerva-design/angular",
     dom: true,
-    status: "planned",
   },
   {
     key: "native",
     entry: "minerva-design/native",
     dom: false,
-    status: "planned",
   },
-  { key: "taro", entry: "minerva-design/taro", dom: false, status: "planned" },
+  { key: "taro", entry: "minerva-design/taro", dom: false },
   {
     key: "weapp",
     entry: "package.json miniprogram → dist/weapp",
     dom: false,
-    status: "planned",
   },
-  { key: "uni", entry: "minerva-design/uni", dom: false, status: "planned" },
+  { key: "uni", entry: "minerva-design/uni", dom: false },
 ] as const;
 
 const ROADMAP = ["phase0", "phase1", "phase2", "phase3", "phase4"] as const;
@@ -80,9 +85,9 @@ const layersCode = `core (dist/core)   platform-neutral TypeScript (no DOM): Rea
         │        │
  ┌──────┴────────┴──────────────┬─────────────────────────┬──────────────────────┐
  minerva-design         minerva-design/web-components   minerva-design/vue · /angular
- React 19 (DOM)         Lit custom elements             (planned, native)
+ React 19 (DOM)         Lit custom elements             (native renderers)
         │
- minerva-design/native · /taro · /uni · miniprogram → dist/weapp   (planned, core only)
+ minerva-design/native · /taro · /uni · miniprogram → dist/weapp   (native host renderers)
 
 minerva-design/core = core + dom (the web API)`;
 
@@ -115,24 +120,24 @@ const ArchitectureDoc: React.FC = () => {
         role="region"
         aria-label={k("packages.title")}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{k("packages.package")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">{k("packages.package")}</TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {PACKAGES.map((row) => (
-              <tr key={row.name}>
-                <th scope="row">
+              <TableRow key={row.name}>
+                <TableHeader scope="row">
                   <code className={styles.propName}>{row.name}</code>
-                </th>
-                <td>{k(`packages.${row.key}`)}</td>
-              </tr>
+                </TableHeader>
+                <TableCell>{k(`packages.${row.key}`)}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
       <p className={styles.prose}>{k("packages.workspace")}</p>
       <div
@@ -141,24 +146,24 @@ const ArchitectureDoc: React.FC = () => {
         role="region"
         aria-label={k("packages.workspaceTitle")}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{k("packages.package")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">{k("packages.package")}</TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {WORKSPACE.map((row) => (
-              <tr key={row.name}>
-                <th scope="row">
+              <TableRow key={row.name}>
+                <TableHeader scope="row">
                   <code className={styles.propName}>{row.name}</code>
-                </th>
-                <td>{k(`packages.${row.key}`)}</td>
-              </tr>
+                </TableHeader>
+                <TableCell>{k(`packages.${row.key}`)}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
       <CodeBlock code={layersCode} language="text" />
     </section>
@@ -175,32 +180,40 @@ const ArchitectureDoc: React.FC = () => {
           role="region"
           aria-label={k("platforms.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{k("platforms.platform")}</th>
-                <th scope="col">{k("platforms.entry")}</th>
-                <th scope="col">{k("platforms.renderer")}</th>
-                <th scope="col">{k("platforms.shared")}</th>
-                <th scope="col">{k("platforms.status")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{k("platforms.platform")}</TableHeader>
+                <TableHeader scope="col">{k("platforms.entry")}</TableHeader>
+                <TableHeader scope="col">{k("platforms.renderer")}</TableHeader>
+                <TableHeader scope="col">{k("platforms.shared")}</TableHeader>
+                <TableHeader scope="col">{k("platforms.status")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {PLATFORMS.map((row) => (
-                <tr key={row.key}>
-                  <th scope="row">{k(`platforms.rows.${row.key}.name`)}</th>
-                  <td>
+                <TableRow key={row.key}>
+                  <TableHeader scope="row">
+                    {k(`platforms.rows.${row.key}.name`)}
+                  </TableHeader>
+                  <TableCell>
                     <code className={styles.propName}>{row.entry}</code>
-                  </td>
-                  <td>{k(`platforms.rows.${row.key}.renderer`)}</td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
+                    {k(`platforms.rows.${row.key}.renderer`)}
+                  </TableCell>
+                  <TableCell>
                     <code>{row.dom ? "core + dom" : "core"}</code>
-                  </td>
-                  <td>{k(`platforms.${row.status}`)}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>
+                    {k(
+                      `platforms.${supportSummary(row.key).planned ? "planned" : supportSummary(row.key).beta ? "beta" : "stable"}`,
+                    )}
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
         <p className={styles.prose}>
           <Link to="/platform-support">{k("platforms.support")}</Link>

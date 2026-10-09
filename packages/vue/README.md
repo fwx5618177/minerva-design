@@ -1,7 +1,10 @@
 # @minerva/vue (private)
 
 The native Vue 3 renderer of Minerva, published inside the single package as
-`minerva-design/vue`. The Monaco-specific entry remains unimplemented and is not exported. Single-file components
+`minerva-design/vue`. The optional `minerva-design/vue/monaco` entry provides
+`MonacoCodeEditor`, with a host-supplied local Monaco engine and workers,
+controlled `v-model`, inherited themes, a recoverable textarea fallback and
+owned-model disposal. Its engine is not loaded by the main entry. Single-file components
 (`<script setup lang="ts">`) and composables on the shared headless core:
 `@minerva/core` (machines, contracts, tokens, i18n) and `@minerva/dom` (focus
 scope, dismissable layers, scroll lock, positioning, presence...). Not a

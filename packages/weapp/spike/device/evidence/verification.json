@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-09",
+  "tool": "WeChat DevTools Stable 2.01.2510280",
+  "baseLibrary": "3.17.2",
+  "mode": "touristappid simulator (not physical device)",
+  "verifiedBy": "native application accessibility actions and screenshots",
+  "observations": [
+    "Increment: Count 0 -> 1",
+    "Retry label Reconnect; activation increments owner count",
+    "Select opens Alpha/Blocked/Beta; Blocked is disabled and does not change Selection a; Beta commits Selection b",
+    "Disabled switch activation leaves Disabled events 0",
+    "Controlled modal opens Native dialog / Real native overlay",
+    "Toggle theme changes Theme light -> dark; nested dark provider renders its scoped colors",
+    "2026-10-09 19:17 recheck: native keyboard input hello -> Owner HELLO; button Count 0 -> 1; theme light -> dark; modal opens and closes.",
+    "Rebuilt component assets no longer report deprecated getSystemInfoSync or unsupported component WXSS selectors."
+  ],
+  "unverified": ["Physical device behavior", "Authenticated platform APIs"],
+  "platformErrors": [
+    "Tourist runtime: SystemError appServiceSDKScriptError webapi_getwxaasyncsecinfo:fail",
+    "Tourist wx.operateWXData results are restricted/simulated",
+    "Automator connection succeeds, but page RPC can time out; verify.cjs fails after 45 seconds rather than marking pass"
+  ],
+  "screenshots": ["evidence/modal.png", "evidence/theme.png", "evidence/recheck.png"],
+  "resolvedWarnings": [
+    "wx.getSystemInfoSync is deprecated by the current DevTools runtime",
+    "DevTools warns that config-provider component WXSS contains unsupported tag/ID/attribute selectors; observed theme and interaction checks remain limited to the recorded simulator flows"
+  ]
+}

@@ -31,15 +31,14 @@ export function selectionSuite(driver: Driver) {
           ),
         );
         const checked = () =>
-          driver
-            .queryAllByRole("radio")
-            .filter((r) => driver.isChecked(r))
-            .map((r) => (r as HTMLInputElement).value);
-        expect(checked()).toEqual(["a"]);
+          ["Apple", "Banana", "Cherry"].filter((name) =>
+            driver.isChecked(driver.getByRole("radio", { name })),
+          );
+        expect(checked()).toEqual(["Apple"]);
         await driver.press(driver.getByRole("radio", { name: "Banana" }));
-        expect(checked()).toEqual(["b"]);
+        expect(checked()).toEqual(["Banana"]);
         await driver.press(driver.getByRole("radio", { name: "Cherry" }));
-        expect(checked()).toEqual(["c"]);
+        expect(checked()).toEqual(["Cherry"]);
         expect(
           handle.emitted(change.name, "RadioGroup").map((e) => e.detail.value),
         ).toEqual(["b", "c"]);

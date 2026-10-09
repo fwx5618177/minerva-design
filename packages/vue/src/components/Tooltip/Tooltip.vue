@@ -358,7 +358,7 @@ const renderTrigger = (): VNode => {
   };
   if (props.asChild && child) {
     // Disabled: render the child untouched (no handlers, no state hooks)
-    if (props.disabled) return child;
+    if (props.disabled) return h(Slot, {}, () => [child]);
     return h(
       Slot,
       {

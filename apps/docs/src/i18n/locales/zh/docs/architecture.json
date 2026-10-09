@@ -1,6 +1,6 @@
 {
   "title": "架构",
-  "description": "Minerva 的分层：所有渲染器共享的平台无关核心（状态机、组件契约、设计令牌、i18n）、Web 渲染器使用的 DOM 原语、React 组件、Web Components，以及规划中的原生渲染器。",
+  "description": "React、Vue、Angular、Web Components、React Native、Taro、微信原生和 uni-app 共享平台无关核心，Web 渲染器额外使用 DOM 原语。",
   "packages": {
     "title": "包",
     "text": "Minerva 是一个 pnpm monorepo，只发布一个包 minerva-design，每个渲染器对应一个入口。行为（无头状态机）、组件契约、设计令牌、主题数据和翻译只在核心中编写一次；各渲染器只负责渲染。",
@@ -15,7 +15,7 @@
   },
   "platforms": {
     "title": "平台",
-    "text": "每个渲染器都是共享同一个无头核心的原生实现，并作为唯一的 minerva-design 包的子路径发布。Web 渲染器还会使用 DOM 原语；React Native 和小程序渲染器则把令牌解析为具体值，而不是 CSS 变量。",
+    "text": "各渲染器使用 minerva-design 的独立入口。Web 宿主使用 DOM 原语，React Native 使用解析后的原生样式值，小程序使用类作用域 CSS 令牌。下表状态由组件支持矩阵汇总生成。",
     "platform": "平台",
     "entry": "入口",
     "renderer": "渲染方式",
@@ -57,15 +57,16 @@
         "name": "uni-app",
         "renderer": "使用 uni-app 内置组件的 Vue 3 组件，使用 tokens.mini.css"
       }
-    }
+    },
+    "beta": "Beta"
   },
   "headless": {
     "title": "共享的无头层",
-    "text": "为了让各渲染器不产生分歧，除渲染以外的一切都放在核心中：",
+    "text": "共享契约、令牌与状态逻辑减少差异；各渲染器负责渲染和宿主接入。",
     "machines": "状态机（core/machines）：框架无关的 { getState, send, subscribe } store，覆盖展开收起与 presence、Toast 队列、选择、标签页、选择器列、表单字段与校验、分页、评分、数字步进器和开关类控件。React 与 Web Components 的 Toast、Tabs、Pagination 和 Rating 已经基于它们运行。",
     "contracts": "组件契约（core/contracts）：每个组件的运行时元数据（含枚举值与默认值的属性、事件、插槽、业务方向、各平台的支持状态），并与 React 类型和 custom-elements.json 进行一致性校验。",
     "tokens": "设计令牌：由 TypeScript 数据生成 tokens.css（与之前的 Sass 输出逐字节一致）、面向小程序的基于类名的 tokens.mini.css（按调色板拆分），以及带有与 CSS 一致的 sRGB color-mix 实现的 resolveTokens()。",
-    "tests": "契约测试套件只编写一次（tests/contracts），通过每个渲染器的驱动运行：目前有 React DOM 和 Web Components，新渲染器加入时补充自己的驱动。"
+    "tests": "共享契约测试、各渲染器单测和浏览器测试验证文档中的 API。SDK、模拟器和实机验收范围见平台支持页。"
   },
   "primitives": {
     "title": "DOM 原语",
@@ -91,13 +92,13 @@
     "text": "Floating UI（@floating-ui/dom）是唯一的第三方交互依赖，只在 DOM 层（dist/dom）的定位模块中使用。不使用 Radix UI 或其他 headless 库：Slot / asChild、Tabs、对话框、菜单和选择器都在本仓库中开发，并用 Vitest、happy-dom、Testing Library 和 user-event 测试。"
   },
   "roadmap": {
-    "title": "路线图",
-    "text": "每个阶段基于共享核心交付一类渲染器，补充其契约测试驱动，并把其契约状态从“规划中”推进到 beta，再到稳定。",
-    "phase0": "基础（已完成）：平台无关核心与 DOM 层（dist/dom）、令牌流水线、状态机、组件契约、契约测试框架、pnpm catalogs 和空的渲染器包。",
-    "phase1": "Vue 3 与 Angular 原生渲染器（minerva-design/vue、minerva-design/angular），取代这两个框架中对 Web Components 的使用。",
-    "phase2": "React Native + Expo（minerva-design/native）。",
-    "phase3": "小程序：Taro（minerva-design/taro）、微信原生组件（通过 miniprogram 字段指向 dist/weapp）和 uni-app（minerva-design/uni）。",
-    "phase4": "面向 C 端的组件与 touch 设计预设覆盖所有平台。"
+    "title": "实现与验收进度",
+    "text": "列出的渲染器包均包含实际实现。Beta 表示当前成熟度，不代表已完成实机或生产验收；组件级状态以平台支持矩阵为准。",
+    "phase0": "共享核心与 DOM 层：状态机、契约、令牌、翻译和测试基础设施已实现。",
+    "phase1": "Vue 3 与 Angular：原生渲染器及可运行文档示例已实现。",
+    "phase2": "React Native 与 Expo：原生组件和模拟器检查已实现；实机与独立 Release 包验收尚未完成。",
+    "phase3": "Taro、微信原生与 uni-app：已有实现、官方微信目标编译 fixture，以及文档注明的浏览器和模拟器检查。",
+    "phase4": "触控预设与移动扩展：使用各平台文档中的 API，明确保留宿主限制和验收边界。"
   },
   "next": {
     "title": "下一步",

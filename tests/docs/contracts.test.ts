@@ -10,6 +10,8 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import {
   CONTRACTS_OUTPUT,
+  SUPPORT_OUTPUT,
+  projectSupport,
   TAG_TO_REACT,
   generateContracts,
   literal,
@@ -22,6 +24,7 @@ import {
   getContract,
 } from "../../packages/core/src/contracts";
 import { readJson } from "./utils";
+import { NATIVE_COMPONENTS } from "../../packages/native/src/manifest";
 
 /**
  * Same prop, different declared default or values on purpose
@@ -42,6 +45,32 @@ const react = readReact();
 const elements = readElements();
 
 describe("component contracts", () => {
+  it("ships an up-to-date support projection without unused component API payloads", async () => {
+    const current = readFileSync(SUPPORT_OUTPUT, "utf8");
+    expect(current).toBe(await serializeContracts(projectSupport(contracts)));
+    expect(JSON.parse(current)).toEqual(projectSupport(contracts));
+    for (const entry of JSON.parse(current)) {
+      expect(entry).not.toHaveProperty("props");
+      expect(entry).not.toHaveProperty("events");
+      expect(entry).not.toHaveProperty("slots");
+    }
+  });
+  it("does not advertise native-specific extensions as unfinished web components", () => {
+    for (const extension of NATIVE_COMPONENTS.filter(
+      (entry) => entry.contract === null,
+    )) {
+      const contract = contracts.find(
+        (entry) => entry.name === extension.name,
+      )!;
+      for (const platform of ["react", "wc", "vue", "angular"] as const) {
+        expect(
+          contract.platforms[platform].status,
+          `${extension.name}/${platform}`,
+        ).toBe("n/a");
+        expect(contract.platforms[platform].notes).toBeTruthy();
+      }
+    }
+  });
   it("components.generated.json is up to date (run `pnpm gen:contracts`)", async () => {
     const current = readFileSync(CONTRACTS_OUTPUT, "utf8");
     expect(current === (await serializeContracts(contracts))).toBe(true);

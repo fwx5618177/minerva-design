@@ -41,10 +41,29 @@ const BROWSER_GLOBALS = [
 ];
 
 export default defineConfig(
-  globalIgnores(["**/dist/", "**/coverage/", "**/.expo/"]),
-  globalIgnores(["**/dist/", "**/coverage/", "packages/angular/build/"]),
+  globalIgnores([
+    "**/dist/",
+    "**/coverage/",
+    "**/.expo/",
+    "apps/expo-example/ios/",
+    "apps/expo-example/android/",
+    "**/.swc/",
+    "packages/*/spike/device/src/minerva/",
+    "packages/*/spike/device/src/core/",
+    "packages/*/spike/device/src/dom/",
+    "packages/weapp/spike/device/minerva/",
+    "apps/docs/src/docs/angular/.aot/",
+    "apps/docs/src/docs/angular/.aot-source/",
+    "packages/angular/build/",
+    "**/playwright-report/",
+    "**/test-results/",
+  ]),
   js.configs.recommended,
   tseslint.configs.recommended,
+  {
+    files: ["packages/*/spike/**/*.cjs"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -159,12 +178,18 @@ export default defineConfig(
     },
   },
   {
-    // Platform testing spikes of the planned renderers (packages/*/spike,
+    // Platform testing fixtures (packages/*/spike,
     // docs/adr): third-party runtimes with loose typings (mini-program
     // `Component` / `wx` globals, j-component, RNTL matchers).
-    files: ["packages/*/spike/**/*.{js,ts,tsx}"],
+    files: ["packages/*/spike/**/*.{js,cjs,ts,tsx}"],
     languageOptions: {
-      globals: { Component: "readonly", Behavior: "readonly", wx: "readonly" },
+      globals: {
+        Component: "readonly",
+        Behavior: "readonly",
+        wx: "readonly",
+        Page: "readonly",
+        App: "readonly",
+      },
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",

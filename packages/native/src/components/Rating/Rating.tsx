@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import {
   Pressable,
   Text,
@@ -49,6 +50,7 @@ export interface RatingProps extends Omit<ViewProps, "style"> {
    * @default false
    */
   readOnly?: boolean;
+  disabled?: boolean;
   /**
    * Pressing the left half of a star picks half a star; screen reader steps
    * are half stars
@@ -93,22 +95,25 @@ const formatScore = (value: number) => String(Math.round(value * 10) / 10);
  * star), screen reader adjustable (increment / decrement actions),
  * read-only and clearable modes.
  */
-export function Rating({
-  value,
-  defaultValue = 0,
-  onChange,
-  max = 10,
-  readOnly = false,
-  allowHalf = true,
-  clearable = false,
-  size = "medium",
-  color = "warning",
-  showValue = false,
-  ratingCount,
-  style,
-  accessibilityLabel,
-  ...rest
-}: RatingProps) {
+export function Rating(componentProps: RatingProps) {
+  const {
+    value,
+    defaultValue = 0,
+    onChange,
+    max = 10,
+    readOnly: readOnlyProp = false,
+    disabled = false,
+    allowHalf = true,
+    clearable = false,
+    size = "medium",
+    color = "warning",
+    showValue = false,
+    ratingCount,
+    style,
+    accessibilityLabel,
+    ...rest
+  } = useFormControlProps(componentProps);
+  const readOnly = readOnlyProp || disabled;
   const { tokens: t, fonts } = useTheme();
   const { t: translate } = useI18n();
   const props: RatingMachineProps = {
@@ -149,6 +154,7 @@ export function Rating({
     <View
       accessible
       accessibilityRole="adjustable"
+      accessibilityState={{ disabled }}
       accessibilityLabel={accessibilityLabel ?? translate("rating.label")}
       accessibilityValue={{
         min: 0,

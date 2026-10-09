@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Button } from "minerva-design/vue";
+import { Button, HStack } from "minerva-design/vue";
 const count = ref(0);
 </script>
 <template>
-  <Button @click="count++">Save</Button>
-  <span role="status">{{ count }}</span>
+  <HStack :gap="3" wrap>
+    <Button @click="count++">Click me</Button>
+    <output aria-live="polite">Clicked {{ count }} times</output>
+  </HStack>
 </template>

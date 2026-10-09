@@ -9,6 +9,7 @@ import { join } from "node:path";
 import { REPO_ROOT, contractOf } from "../harness/contracts";
 import { contractTest } from "../harness/suite";
 import { h, type Driver, type Handle } from "../harness/types";
+import { colorMix, resolveTokens } from "../../../packages/core/src";
 
 let tokenNames: Set<string> | undefined;
 /** Custom properties declared by the design tokens */
@@ -52,6 +53,51 @@ export function tokenSuite(driver: Driver) {
   afterEach(() => handle?.unmount());
 
   describe(SUITE, () => {
+    if (driver.platform === "native") {
+      contractTest(
+        driver,
+        SUITE,
+        "every color and variant resolves to the specified native token colors",
+        async () => {
+          expect(driver.nativeStyle).toBeTypeOf("function");
+          const { colors } = resolveTokens({
+            mode: "light",
+            design: { preset: "touch" },
+          });
+          for (const color of enumOf("color")) {
+            const solid =
+              color === "neutral"
+                ? colorMix(colors["text-color"], colors["background-color"], 80)
+                : color === "primary"
+                  ? colors["primary-color"]
+                  : (colors[`btn-bg-color-${color}`] ??
+                    colors[`${color}-color`]);
+            expect(solid).toBeTruthy();
+            for (const variant of enumOf("variant")) {
+              handle = await driver.render(
+                h("Button", { color, variant }, "Action"),
+              );
+              expect(
+                driver.nativeStyle!(driver.getByRole("button")),
+              ).toMatchObject({
+                backgroundColor: variant === "solid" ? solid : "transparent",
+                borderColor:
+                  variant === "solid"
+                    ? solid
+                    : variant === "outline"
+                      ? color === "neutral"
+                        ? colors["border-strong-color"]
+                        : colors[`${color}-color`]
+                      : "transparent",
+              });
+              await handle.unmount();
+              handle = undefined;
+            }
+          }
+        },
+      );
+      return;
+    }
     contractTest(
       driver,
       SUITE,

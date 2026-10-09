@@ -26,14 +26,10 @@ it("Input supports v-model and emits string change values", async () => {
 
 it("Switch supports v-model:checked and disabled/readonly guards", async () => {
   const w = mount(Switch, { props: { checked: false } });
-  await w
-    .find("[data-minerva='switch']")
-    .trigger("change", { detail: { value: true } });
+  await w.find("[data-minerva='switch']").setValue(true);
   expect(w.emitted("update:checked")).toEqual([[true]]);
-  expect(w.emitted("change")).toEqual([[true]]);
+  expect(w.emitted("change")).toEqual([[true, expect.any(Object)]]);
   await w.setProps({ checked: true, readOnly: true });
-  await w
-    .find("[data-minerva='switch']")
-    .trigger("change", { detail: { value: false } });
+  await w.find("[data-minerva='switch']").setValue(false);
   expect(w.emitted("change")).toHaveLength(1);
 });

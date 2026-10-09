@@ -1,8 +1,8 @@
 # Platform continuation implementation plan
 
-> Execute in this session with superpowers:executing-plans; preserve the three existing dirty worktrees.
+> Executed in the main checkout after consolidating the completed platform worktrees. Uncommitted user work is preserved.
 
-**Goal:** Bring committed Vue, Angular and React Native implementations into the main checkout, start shipping real Taro / WeChat / uni-app components, and document verified progress.
+**Goal:** Bring committed Vue, Angular and React Native implementations into the main checkout, complete the shared component API on Taro / WeChat / uni-app, validate migration, and keep documentation aligned with verified behavior.
 
 **Architecture:** Continue ADR 0001: platform-neutral core, native renderers, one assembled public package. Web renderers share the DOM layer. Mini-program components use platform primitives and class-based tokens, without importing DOM renderers.
 
@@ -12,11 +12,11 @@
 
 ## Constraints and decisions
 
-- Keep all uncommitted files in md-vue, md-angular and md-native intact; integrate committed tips only.
+- The platform worktrees have been consolidated into minerva-design; Git now lists only the main checkout.
 - Local and GitHub repository names already match minerva-design. Name the private root minerva-design-workspace to avoid colliding with the public package filter.
 - Keep packages/minerva-design: it assembles platform builds and exports; it is not a duplicate implementation.
 - Never claim beta means already published. Distinguish implemented, packaged and tested from device validation and npm publication.
-- Initial mini-program scope: Button, Input, Switch using native host elements, controlled values and disabled/loading guards. Other components remain planned.
+- The accepted scope expanded to the shared component API, real framework examples, optional editor entries, native host adapters, and consumer migration. Every support-table entry now identifies a real implementation or a documented host-specific/data API.
 
 ## Review focus
 
@@ -28,5 +28,5 @@ Disabled/loading event suppression; controlled updates; preservation of Vue and 
 - [x] Add regression tests for mini-program Button/Input/Switch events, controlled updates and disabled states; confirm missing exports fail.
 - [x] Implement Taro JSX, uni-app SFC and WeChat definitions/templates; add build output and package exports. Verify component tests and type checks.
 - [x] Wire Angular public entry, APF and optional peers. Verify Angular build and tests.
-- [x] Update generated contracts, platform support docs, usage examples and repository comparison. Explain worktrees and package boundaries.
+- [x] Update generated contracts, platform support docs, usage examples and migration instructions. Explain package boundaries; remove the unwanted comparison report.
 - [x] Run full Vitest suite, typecheck, library/docs builds and package checks. Record actual results and remaining platform validation limits.

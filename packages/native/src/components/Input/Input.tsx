@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { useState, type ReactNode, type Ref } from "react";
 import {
   Pressable,
@@ -177,38 +178,39 @@ function EyeGlyph({ color, open }: { color: string; open: boolean }) {
  * button, password visibility toggle, character count, error and disabled
  * states. The border takes the primary color while focused.
  */
-export function Input({
-  value: valueProp,
-  defaultValue = "",
-  onChange,
-  onChangeText,
-  variant = "outline",
-  size = "medium",
-  invalid = false,
-  disabled = false,
-  readOnly = false,
-  prefix,
-  suffix,
-  clearable = false,
-  clearLabel,
-  onClear,
-  type = "text",
-  showPasswordLabel,
-  hidePasswordLabel,
-  showCharCount = false,
-  maxLength,
-  label,
-  style,
-  wrapperStyle,
-  inputStyle,
-  onFocus,
-  onBlur,
-  accessibilityLabel,
-  accessibilityState,
-  placeholderTextColor,
-  ref,
-  ...rest
-}: InputProps) {
+export function Input(props: InputProps) {
+  const {
+    value: valueProp,
+    defaultValue = "",
+    onChange,
+    onChangeText,
+    variant = "outline",
+    size = "medium",
+    invalid = false,
+    disabled = false,
+    readOnly = false,
+    prefix,
+    suffix,
+    clearable = false,
+    clearLabel,
+    onClear,
+    type = "text",
+    showPasswordLabel,
+    hidePasswordLabel,
+    showCharCount = false,
+    maxLength,
+    label,
+    style,
+    wrapperStyle,
+    inputStyle,
+    onFocus,
+    onBlur,
+    accessibilityLabel,
+    accessibilityState,
+    placeholderTextColor,
+    ref,
+    ...rest
+  } = useFormControlProps(props);
   const { tokens: t, fonts } = useTheme();
   const { t: translate } = useI18n();
   const [value, setValue] = useControllable(valueProp, defaultValue, onChange);

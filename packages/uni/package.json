@@ -7,7 +7,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./monaco": "./src/monaco.ts"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -16,7 +17,10 @@
     "clean": "rimraf coverage"
   },
   "dependencies": {
-    "@minerva/core": "workspace:*"
+    "@minerva/core": "workspace:*",
+    "jsonc-parser": "^3.3.1",
+    "@minerva/dom": "workspace:*",
+    "dompurify": "^3.4.16"
   },
   "devDependencies": {
     "@dcloudio/types": "catalog:uni",
@@ -25,9 +29,16 @@
     "@vue/test-utils": "catalog:vue",
     "happy-dom": "^20.14.5",
     "vue": "catalog:vue",
-    "vue-tsc": "catalog:vue"
+    "vue-tsc": "catalog:vue",
+    "monaco-editor": "0.52.2"
   },
   "peerDependencies": {
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "monaco-editor": ">=0.52.0"
+  },
+  "peerDependenciesMeta": {
+    "monaco-editor": {
+      "optional": true
+    }
   }
 }

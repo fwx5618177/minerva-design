@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { IoLanguageOutline } from "react-icons/io5";
@@ -41,7 +42,10 @@ const LanguageMenu: React.FC = () => {
         },
       ]}
     >
-      <button
+      <Button
+        variant="ghost"
+        color="neutral"
+        size="small"
         type="button"
         className={styles.languageButton}
         aria-label={`${label}: ${currentName}`}
@@ -49,7 +53,7 @@ const LanguageMenu: React.FC = () => {
       >
         <IoLanguageOutline aria-hidden />
         <span aria-hidden>{current.toUpperCase()}</span>
-      </button>
+      </Button>
     </Menu>
   );
 };

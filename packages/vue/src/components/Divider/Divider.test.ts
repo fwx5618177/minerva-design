@@ -3,6 +3,20 @@ import { mount } from "@vue/test-utils";
 import { Divider } from ".";
 
 describe("Divider", () => {
+  it.each([0, 3])(
+    "passes thickness %s to the rendered text lines",
+    (thickness) => {
+      const w = mount(Divider, {
+        props: { variant: "dashed", thickness },
+        slots: { default: "Chapter" },
+      });
+      expect(
+        (w.element as HTMLElement).style.getPropertyValue(
+          "--_divider-thickness",
+        ),
+      ).toBe(`${thickness}px`);
+    },
+  );
   it("renders a native hr with the default styles", () => {
     const wrapper = mount(Divider, { attrs: { class: "mine" } });
     expect(wrapper.element.tagName).toBe("HR");

@@ -31,7 +31,10 @@ $bp-md: 768px;
 // Faint grid behind the hero, fading out
 .heroGrid {
   position: absolute;
-  inset: 0 -40px;
+  inset: 0 -20px;
+  @media (min-width: $bp-md) {
+    inset-inline: -40px;
+  }
   z-index: -1;
   background-image: linear-gradient(to right, var(--ds-border) 1px, transparent 1px), linear-gradient(to bottom, var(--ds-border) 1px, transparent 1px);
   background-size: 64px 64px;
@@ -40,10 +43,10 @@ $bp-md: 768px;
   pointer-events: none;
 }
 
-// Supported frameworks: React, then the Web Components stacks
+// Native renderers and Web Components stay grouped when the pills wrap.
 .support {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -64,30 +67,12 @@ $bp-md: 768px;
   list-style: none;
 }
 
-.pill {
-  display: inline-flex;
+.supportGroup {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 12px 0 10px;
-  border: 1px solid var(--ds-border);
-  border-radius: 999px;
-  background: var(--ds-bg);
-  color: var(--ds-fg);
-  white-space: nowrap;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    color: var(--ds-fg-muted);
-  }
-}
-
-.supportDivider {
-  width: 1px;
-  height: 16px;
-  margin: 0 4px;
-  background: var(--ds-border-strong);
+  justify-content: center;
+  gap: 8px;
 }
 
 .supportLabel {
@@ -125,57 +110,6 @@ $bp-md: 768px;
   justify-content: center;
   gap: 12px;
   margin-bottom: 40px;
-}
-
-.ctaPrimary,
-.ctaSecondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 20px;
-  border-radius: var(--ds-radius);
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    opacity var(--ds-duration) var(--ds-ease),
-    background-color var(--ds-duration) var(--ds-ease),
-    border-color var(--ds-duration) var(--ds-ease);
-
-  &:focus-visible {
-    outline: 2px solid var(--ds-focus);
-    outline-offset: 2px;
-  }
-}
-
-.ctaPrimary {
-  background: var(--ds-inverse-bg);
-  color: var(--ds-inverse-fg);
-  border: 1px solid var(--ds-inverse-bg);
-
-  &:hover {
-    opacity: 0.88;
-  }
-
-  svg {
-    transition: transform var(--ds-duration) var(--ds-ease);
-  }
-
-  &:hover svg {
-    transform: translateX(2px);
-  }
-}
-
-.ctaSecondary {
-  background: var(--ds-bg);
-  color: var(--ds-fg-strong);
-  border: 1px solid var(--ds-border);
-
-  &:hover {
-    border-color: var(--ds-border-strong);
-    background: var(--ds-bg-subtle);
-  }
 }
 
 // Install command (Minerva Tabs, soft variant)
@@ -254,120 +188,14 @@ $bp-md: 768px;
   }
 }
 
-// ---- Live showcase: a small deploy panel ----
+// ---- Interactive component playground ----
 
 .showcase {
+  display: grid;
+  gap: 12px;
   width: 100%;
-  max-width: 640px;
+  max-width: 960px;
   margin: 0 auto 112px;
-}
-
-.window {
-  border: 1px solid var(--ds-border);
-  border-radius: var(--ds-radius-xl);
-  overflow: hidden;
-  background: var(--ds-bg);
-  box-shadow: var(--ds-shadow-popover);
-}
-
-.windowBar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  height: 40px;
-  padding: 0 14px;
-  border-bottom: 1px solid var(--ds-border);
-  background: var(--ds-bg-subtle);
-}
-
-.windowDots {
-  display: flex;
-  gap: 6px;
-
-  span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ds-border-strong);
-    opacity: 0.6;
-  }
-}
-
-.windowTitle {
-  font-family: var(--ds-font-mono);
-  font-size: 12px;
-  color: var(--ds-fg-subtle);
-}
-
-// The library's own theme surface (not the site's)
-.windowBody {
-  display: grid;
-  gap: 24px;
-  padding: 24px;
-  background: var(--background-color);
-  color: var(--text-color);
-  text-align: left;
-
-  @media (min-width: $bp-md) {
-    padding: 28px 32px 32px;
-  }
-}
-
-.panelHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.panelHeading {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.panelProject {
-  overflow: hidden;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--text-color);
-}
-
-.panelMeta {
-  font-family: var(--ds-font-mono);
-  font-size: 12px;
-  color: var(--text-secondary-color);
-}
-
-.panelFields {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-
-  @media (min-width: 560px) {
-    grid-template-columns: 3fr 2fr;
-  }
-}
-
-.panelFooter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-}
-
-.panelActions {
-  display: flex;
-  gap: 8px;
-  margin-left: auto;
 }
 
 // ---- Sections ----
@@ -444,9 +272,14 @@ $bp-md: 768px;
   color: var(--ds-fg-strong);
 }
 
+.frameworkTag {
+  --tag-neutral-bg: color-mix(in srgb, var(--framework-color) 7%, var(--ds-bg));
+  border-color: color-mix(in srgb, var(--framework-color) 32%, var(--ds-border));
+}
+
 .frameworks {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   margin: 0;
   padding: 0;
@@ -455,31 +288,27 @@ $bp-md: 768px;
   border-radius: var(--ds-radius-xl);
   overflow: hidden;
   background: var(--ds-border);
-
   @media (min-width: $bp-md) {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
-
   li {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 28px 12px;
+    min-width: 0;
     background: var(--ds-bg);
-    color: var(--ds-fg-subtle);
-    font-size: 13px;
-    font-weight: 500;
-    transition: color var(--ds-duration) var(--ds-ease);
-
-    &:hover {
-      color: var(--ds-fg-strong);
-    }
   }
-
-  svg {
-    width: 28px;
-    height: 28px;
+}
+.frameworkLink {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  height: 100%;
+  min-height: 120px;
+  padding: 24px 8px;
+  border-radius: 0;
+  font-size: 13px;
+  background: color-mix(in srgb, var(--framework-color) 5%, var(--ds-bg));
+  &:hover {
+    background: color-mix(in srgb, var(--framework-color) 13%, var(--ds-bg));
   }
 }
 

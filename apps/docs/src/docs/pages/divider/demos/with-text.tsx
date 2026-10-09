@@ -5,7 +5,7 @@ export default function WithTextDemo() {
     <div style={{ width: "100%" }}>
       <Divider textAlign="left">Left</Divider>
       <Divider>Center</Divider>
-      <Divider textAlign="right" variant="dashed">
+      <Divider textAlign="right" variant="dashed" thickness={3}>
         Right
       </Divider>
     </div>

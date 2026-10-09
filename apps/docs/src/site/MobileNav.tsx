@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoMenuOutline } from "react-icons/io5";
@@ -23,13 +24,16 @@ const MobileNav: React.FC = () => {
       title={<span className={styles.drawerTitle}>Minerva UI</span>}
       className={styles.drawer}
       trigger={
-        <button
+        <Button
+          variant="ghost"
+          color="neutral"
+          size="small"
           type="button"
           className={`${styles.iconButton} ${styles.menuButton}`}
           aria-label={t("nav.openMenu")}
         >
           <IoMenuOutline aria-hidden />
-        </button>
+        </Button>
       }
     >
       <div className={styles.drawerBody}>

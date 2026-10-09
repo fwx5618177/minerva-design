@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React, { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoChevronDown } from "react-icons/io5";
@@ -56,7 +57,10 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
           {children}
         </div>
         <div className={styles.demoToolbar}>
-          <button
+          <Button
+            variant="ghost"
+            color="neutral"
+            size="small"
             type="button"
             className={styles.toggleCode}
             aria-expanded={showCode}
@@ -69,7 +73,7 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
               className={styles.toggleIcon}
               data-open={showCode || undefined}
             />
-          </button>
+          </Button>
         </div>
         <div id={codeId} hidden={!showCode} className={styles.demoCode}>
           <CodeBlock code={source} language={language} flush />

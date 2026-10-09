@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import CodeBlock from "@layout/CodeBlock";
@@ -17,7 +25,7 @@ const demos = collectDemos(
   }),
 );
 
-const standaloneCode = `import { useAutoTheme, useLocale } from "minerva-design";
+const standaloneCode = `import { Button, useAutoTheme, useLocale } from "minerva-design";
 
 // This is what ConfigProvider does internally. Use the hooks instead of
 // (not inside) a ConfigProvider: both write the same global state.
@@ -27,12 +35,12 @@ export function ThemeAndLanguage() {
 
   return (
     <>
-      <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      <Button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
         Toggle theme
-      </button>
-      <button onClick={() => setLocale({ language: "en" })}>
+      </Button>
+      <Button onClick={() => setLocale({ language: "en" })}>
         {locale.language}
-      </button>
+      </Button>
     </>
   );
 }`;
@@ -82,28 +90,32 @@ const HooksDoc: React.FC = () => {
         role="region"
         aria-label={t("docs.hooks.reference.title")}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{t("docs.hooks.reference.hook")}</th>
-              <th scope="col">{t("docs.hooks.reference.signature")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">
+                {t("docs.hooks.reference.hook")}
+              </TableHeader>
+              <TableHeader scope="col">
+                {t("docs.hooks.reference.signature")}
+              </TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {hooks.map((hook) => (
-              <tr key={hook.name}>
-                <th scope="row">
+              <TableRow key={hook.name}>
+                <TableHeader scope="row">
                   <code className={styles.propName}>{hook.name}</code>
-                </th>
-                <td>
+                </TableHeader>
+                <TableCell>
                   <code className={styles.propType}>{hook.signature}</code>
-                </td>
-                <td>{hook.description}</td>
-              </tr>
+                </TableCell>
+                <TableCell>{hook.description}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
       <p className={styles.callout}>{t("docs.hooks.reference.global")}</p>
     </section>

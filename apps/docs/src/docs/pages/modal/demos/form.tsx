@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Button, Modal, ModalBody, ModalFooter } from "minerva-design";
+import {
+  Button,
+  Input,
+  FormField,
+  Modal,
+  ModalBody,
+  ModalFooter,
+} from "minerva-design";
 
 export default function FormDemo() {
   const [open, setOpen] = useState(false);
@@ -16,9 +23,9 @@ export default function FormDemo() {
           }}
         >
           <ModalBody>
-            <label>
-              Name <input name="name" defaultValue={name} />
-            </label>
+            <FormField label="Name">
+              <Input name="name" defaultValue={name} />
+            </FormField>
           </ModalBody>
           <ModalFooter>
             <Button type="submit">Save</Button>

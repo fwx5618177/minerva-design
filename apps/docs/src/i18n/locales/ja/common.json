@@ -81,15 +81,13 @@
       "readonly": "読み取り専用",
       "defaultSlot": "（デフォルト）"
     },
-    "requiresStylesheet": "グローバルスタイルシートが必要です — 参照：",
-    "requiresStylesheetLink": "インストール",
     "fw": {
       "setupTitle": "セットアップ",
       "guide": "{{framework}} の詳細：<guide>統合ガイド</guide>。",
-      "viaWebComponents": "{{framework}} の Web Components サンプルです。ネイティブ版は一部対応しています。インポート方法と実装済みコンポーネントは<support>プラットフォーム対応</support>をご覧ください。",
+      "viaWebComponents": "{{framework}} の Web Components サンプルです。ネイティブ版は一部対応しています。インポート方法と実装済みコンポーネントは<support>プラットフォーム対応</support>をご覧ください。 ネイティブコンポーネントと Angular Forms の使い方は<native>ネイティブ Angular ガイド</native>をご覧ください。",
       "viaWebComponentsShort": "{{framework}} Web Components サンプル（ネイティブ版は一部対応）",
       "setup": {
-        "register": "エントリーファイルで要素を登録し、デザイントークンを一度だけ読み込みます —",
+        "register": "エントリーファイルで要素を一度だけ登録します —",
         "vueCompiler": "Vue のテンプレートコンパイラーに minerva-* タグがカスタム要素であることを伝えます —",
         "types": "{{framework}} の型定義を追加します。テンプレート内の属性・プロパティ・イベントが型チェックされ、補完されます —",
         "angularSchema": "カスタム要素を使うすべてのコンポーネントでカスタム要素を許可します —",
@@ -119,7 +117,6 @@
       },
       "unavailable": "{{framework}}：このコンポーネントにはまだ Web Component がありません。<support>プラットフォーム対応</support>を参照してください。"
     },
-    "requiresStylesheetEnd": "。",
     "vue": {
       "sections": {
         "props": "プロパティ（Props）",
@@ -134,10 +131,12 @@
     "native": {
       "unavailable": "このコンポーネントは minerva-design/native ではまだ提供されていません。React Native のロードマップは<support>プラットフォーム対応</support>を参照してください。",
       "setup": "アプリ全体を一度 <code>MinervaProvider</code>（テーマ、パレット、デザインプリセット、ロケール、セーフエリア）で包みます。詳しくは <guide>React Native ガイド</guide>を参照してください。",
-      "examples": "各サンプルは React Native コンポーネント（TSX）で、react-native-web によりスマートフォンのフレーム内でライブ表示されます。同じコードが Expo で iOS と Android でも動作します。",
+      "examples": "各サンプルは React Native コンポーネント（TSX）で、react-native-web によりスマートフォンのフレーム内でライブ表示されます。同じコードが Expo で iOS と Android でも動作します。 ネイティブの Provider は touch デザインプリセットが既定です。中サイズの Button は高さ 44px で余白と角丸が大きく、Web の既定は 40px です。色と文字サイズは同じテーマトークンを使います。",
       "api": "React Native コンポーネント（minerva-design/native）の props。内部のプリミティブの React Native props（testID、accessibilityLabel、style など）はそのまま渡されます。",
       "only": "モバイルコンポーネント：minerva-design/native（React Native + Expo）でのみ利用できます。"
-    }
+    },
+    "retry": "再試行",
+    "previewError": "サンプルを読み込めませんでした"
   },
   "error": {
     "title": "おっと！",
@@ -175,31 +174,56 @@
   "home": {
     "support": {
       "label": "対応フレームワーク",
-      "webComponents": "Web Components："
+      "webComponents": "Web Components：",
+      "native": "ネイティブ："
     },
     "title": "完成度の高いインターフェースを。",
-    "subtitle": "Minerva はアクセシブルでテーマ対応のコンポーネントライブラリです。React はもちろん、標準の Web Components であらゆるフレームワークから使えます。",
+    "subtitle": "React、Vue、Angular、React Native 向けのアクセシブルでテーマ変更可能なコンポーネント。Web Components とミニプログラムにも対応し、各 API の実装状況は対応表で確認できます。",
     "getStarted": "はじめる",
     "browse": "コンポーネント一覧",
     "installLabel": "インストールコマンド",
     "showcase": {
-      "label": "ライブプレビュー：Minerva のコンポーネントで作ったデプロイパネル",
-      "title": "デプロイ",
-      "project": "プロジェクト名",
-      "branch": "ブランチ",
-      "production": "本番環境",
-      "preview": "プレビュー環境",
-      "deploy": "デプロイ",
-      "cancel": "キャンセル",
-      "status": {
-        "ready": "準備完了",
-        "building": "ビルド中",
-        "canceled": "キャンセル済み"
+      "label": "コンポーネント体験",
+      "title": "調整して、変化を確認。",
+      "description": "テーマ、パレット、余白、角丸を変更すると、実際のコンポーネントとサンプルコードが同時に更新されます。",
+      "darkMode": "ダークプレビュー",
+      "palette": "パレット",
+      "variant": "ボタンのスタイル",
+      "density": "密度",
+      "radius": "角丸",
+      "disableButton": "ボタンを無効にする",
+      "reset": "リセット",
+      "previewTitle": "ワークスペース",
+      "previewDescription": "名前や通知を変更して、ボタンを押してみてください。",
+      "name": "ワークスペース名",
+      "notifications": "通知",
+      "enabled": "通知オン",
+      "disabled": "通知オフ",
+      "tryButton": "ボタンを試す",
+      "clicks": "クリック回数",
+      "showCode": "コードを表示",
+      "hideCode": "コードを閉じる",
+      "options": {
+        "minerva": "Minerva",
+        "tech": "テック",
+        "editorial": "エディトリアル",
+        "graphite": "グラファイト",
+        "cool": "クール",
+        "solid": "塗りつぶし",
+        "outline": "アウトライン",
+        "ghost": "ゴースト",
+        "compact": "コンパクト",
+        "standard": "標準",
+        "comfortable": "ゆったり",
+        "none": "四角",
+        "small": "小",
+        "medium": "中",
+        "large": "大"
       }
     },
     "featuresTitle": "必要なものはすべて、不要なものは何も",
     "frameworksTitle": "ひとつのデザイン言語を、すべてのフレームワークで",
-    "frameworksText": "React コンポーネントを使うか、同じカスタム要素を素の HTML、Vue、Angular、Svelte、Solid で使えます。",
+    "frameworksText": "React、Vue、Angular、React Native 向けのアクセシブルでテーマ変更可能なコンポーネント。Web Components とミニプログラムにも対応し、各 API の実装状況は対応表で確認できます。",
     "quickLinksTitle": "ここから始める",
     "componentsCount": "{{count}} ページのドキュメント",
     "features": {

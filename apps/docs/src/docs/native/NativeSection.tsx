@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { Alert } from "minerva-design";
 import CodeBlock from "@layout/CodeBlock";
 import type { DocPageMeta } from "../registry";
 import type { DemoEntry } from "../demos";
@@ -67,6 +68,9 @@ const NativeSection: React.FC<NativeSectionProps> = ({ meta }) => {
       <section className={styles.section} aria-labelledby="native-examples">
         <h2 id="native-examples">{t("doc.examples")}</h2>
         <p className={styles.prose}>{t("doc.native.examples")}</p>
+        {t(`docs.${meta.id}.native.limitations`, { defaultValue: "" }) && (
+          <Alert color="info">{t(`docs.${meta.id}.native.limitations`)}</Alert>
+        )}
         {!demos && <p className={styles.muted}>{t("doc.loading")}</p>}
         {demos &&
           native.demos.map((demoId) => {

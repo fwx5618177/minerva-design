@@ -1,4 +1,5 @@
 import { isValidElement, type ReactNode } from "react";
+import { colorMix } from "@minerva/core";
 import {
   ActivityIndicator,
   Pressable,
@@ -120,7 +121,37 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const { tokens: t, fonts } = useTheme();
-  const role = colorRole(t, color);
+  const baseRole = colorRole(t, color);
+  const c = t.colors;
+  // Match the shared web button recipe (other controls use colorRole unchanged).
+  const role = {
+    ...baseRole,
+    solid:
+      color === "neutral"
+        ? (colorMix(c["text-color"], c["background-color"], 80) ??
+          baseRole.solid)
+        : color === "primary"
+          ? c["primary-color"]
+          : (c[`btn-bg-color-${color}`] ?? baseRole.solid),
+    pressed:
+      color === "neutral"
+        ? (colorMix(c["text-color"], c["background-color"], 96) ??
+          baseRole.pressed)
+        : color === "primary"
+          ? (c["btn-bg-color-active"] ?? baseRole.pressed)
+          : baseRole.pressed,
+    hover:
+      color === "neutral"
+        ? (colorMix(c["text-color"], c["background-color"], 88) ??
+          baseRole.pressed)
+        : color === "primary"
+          ? (c["btn-bg-color-hover"] ?? c["primary-color-hover"])
+          : c[`${color}-color-hover`],
+    border:
+      color === "neutral" ? c["border-strong-color"] : c[`${color}-color`],
+    text: color === "neutral" ? c["text-secondary-color"] : baseRole.text,
+    onSolid: c["text-inverse-color"],
+  };
   const height = t.sizes[`control-height-${HEIGHT_STEP[size]}`];
   const paddingX = t.sizes[`control-padding-x-${HEIGHT_STEP[size]}`];
   const fontSize =
@@ -154,7 +185,7 @@ export function Button({
       case "outline":
         return {
           backgroundColor: down ? role.subtle : "transparent",
-          borderColor: role.border,
+          borderColor: down ? role.hover : role.border,
         };
       case "ghost":
         return {
@@ -168,16 +199,16 @@ export function Button({
   const foreground =
     variant === "solid"
       ? role.onSolid
-      : color === "neutral"
-        ? t.colors["text-color"]
-        : variant === "link"
-          ? role.solid
-          : role.text;
+      : variant === "link" && active
+        ? role.hover
+        : role.text;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={
+        accessibilityLabel ?? (textual ? String(label) : undefined)
+      }
       accessibilityState={{
         ...accessibilityState,
         disabled: inactive,

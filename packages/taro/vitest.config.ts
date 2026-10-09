@@ -27,6 +27,7 @@ export default defineConfig({
     "process.env.SUPPORT_TARO_POLYFILL": JSON.stringify("disabled"),
   },
   resolve: {
+    dedupe: ["react", "react-dom"],
     alias: [
       // Exact match only: components-react itself imports
       // "@tarojs/components/lib/react" and "@tarojs/components/dist/components"
@@ -47,6 +48,7 @@ export default defineConfig({
   },
   test: {
     name: "taro",
+    exclude: ["spike/device/**", "**/node_modules/**"],
     environment: "happy-dom",
     setupFiles: ["./spike/support/setup.ts"],
     include: ["spike/**/*.test.tsx", "src/**/*.test.{ts,tsx}"],

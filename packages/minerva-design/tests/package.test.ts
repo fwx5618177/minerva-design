@@ -39,8 +39,15 @@ const JS_ENTRIES = Object.keys(exportsMap).filter((key) => {
   return files.some((f) => /\.c?js$/.test(f));
 });
 const CLIENT_ENTRIES = new Set([".", "./monaco"]);
-/** Entries that need a React Native runtime (not loadable in Node) */
-const NATIVE_ENTRIES = new Set(["./native", "./taro", "./uni"]);
+/** Entries requiring native hosts or the mini/H5 framework compiler.
+ * Optional H5 entries are browser-compiled in mini.test.ts. */
+const NATIVE_ENTRIES = new Set([
+  "./native",
+  "./taro",
+  "./uni",
+  "./taro/monaco",
+  "./uni/monaco",
+]);
 const specifier = (key: string) =>
   key === "." ? "minerva-design" : `minerva-design/${key.slice(2)}`;
 const fileOf = (key: string, condition: "import" | "require") => {
@@ -305,8 +312,10 @@ describe("React Native entry (minerva-design/native)", () => {
     expect(pkg.typesVersions["*"].native).toEqual(["./dist/native/index.d.ts"]);
   });
 
-  it("imports only react, react-native and the shared core (one copy)", () => {
-    const allowed = /^(react|react\/jsx-runtime|react-native)$/;
+  it("imports only native runtime dependencies and the shared core (one copy)", () => {
+    const allowed =
+      /^(react|react\/jsx-runtime|react-native|jsonc-parser\/lib\/esm\/main\.js)$/;
+    expect(pkg.dependencies["jsonc-parser"]).toBeTruthy();
     expect(modules.length).toBeGreaterThan(20);
     for (const file of modules) {
       for (const spec of specifiers(readFileSync(file, "utf8"))) {

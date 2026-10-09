@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Popover,
   PopoverClose,
   PopoverContent,
@@ -15,12 +16,8 @@ export default function BasicDemo() {
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-label="Filters" arrow>
-        <label style={{ display: "block" }}>
-          <input type="checkbox" defaultChecked /> Read
-        </label>
-        <label style={{ display: "block" }}>
-          <input type="checkbox" /> Unread
-        </label>
+        <Checkbox defaultChecked label="Read" />
+        <Checkbox label="Unread" />
         <PopoverClose asChild>
           <Button size="small">Apply</Button>
         </PopoverClose>

@@ -23,6 +23,7 @@ const NAMES = [
   "matchesShortcut",
   "normalizeShortcuts",
   "palettes",
+  "previewDocument",
   "resolveTheme",
   "themes",
 ] as const;
@@ -35,6 +36,7 @@ describe("utils entry", () => {
   it("re-exports the same values as the main entry", () => {
     for (const name of NAMES) {
       if (name === "computeFixedColumnLayout") continue; // typed wrapper
+      if (name === "previewDocument") continue; // browser-host utility, not a client component export
       expect(utils[name], name).toBe(core[name]);
       expect(lib[name], name).toBeDefined();
     }
@@ -51,6 +53,12 @@ describe("utils entry", () => {
     expect(typeof window).toBe("undefined");
     expect(utils.cn("a", { b: true })).toBe("a b");
     expect(Object.keys(utils.themes).length).toBeGreaterThan(0);
+    const preview = utils.previewDocument(
+      '<script>alert(1)</script><a href="https://example.com">Leave</a>',
+    );
+    expect(preview).toContain("script-src 'none'");
+    expect(preview).toContain("<body></body>");
+    expect(preview).not.toContain("alert(1)");
     expect(
       utils.matchesShortcut(
         {

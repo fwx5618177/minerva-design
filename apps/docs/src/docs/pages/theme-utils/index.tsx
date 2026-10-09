@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import CodeBlock from "@layout/CodeBlock";
@@ -105,28 +113,32 @@ const ThemeUtilsDoc: React.FC = () => {
         role="region"
         aria-label={t("docs.theme-utils.reference.title")}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{t("docs.theme-utils.reference.name")}</th>
-              <th scope="col">{t("docs.theme-utils.reference.signature")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">
+                {t("docs.theme-utils.reference.name")}
+              </TableHeader>
+              <TableHeader scope="col">
+                {t("docs.theme-utils.reference.signature")}
+              </TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {utils.map((util) => (
-              <tr key={util.name}>
-                <th scope="row">
+              <TableRow key={util.name}>
+                <TableHeader scope="row">
                   <code className={styles.propName}>{util.name}</code>
-                </th>
-                <td>
+                </TableHeader>
+                <TableCell>
                   <code className={styles.propType}>{util.signature}</code>
-                </td>
-                <td>{util.description}</td>
-              </tr>
+                </TableCell>
+                <TableCell>{util.description}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
 
       <h3 style={{ marginTop: "var(--spacing-8)" }}>

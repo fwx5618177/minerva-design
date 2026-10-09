@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import CodeBlock from "@layout/CodeBlock";
@@ -119,32 +127,34 @@ const DesignPresetsDoc: React.FC = () => {
           role="region"
           aria-label={t("docs.design-presets.axes.title")}
         >
-          <table className={styles.propsTable}>
-            <thead>
-              <tr>
-                <th scope="col">{t("doc.prop")}</th>
-                <th scope="col">{t("docs.design-presets.axes.attribute")}</th>
-                <th scope="col">{t("doc.type")}</th>
-                <th scope="col">{t("doc.description")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <TableRoot className={styles.propsTable}>
+            <TableHead>
+              <TableRow>
+                <TableHeader scope="col">{t("doc.prop")}</TableHeader>
+                <TableHeader scope="col">
+                  {t("docs.design-presets.axes.attribute")}
+                </TableHeader>
+                <TableHeader scope="col">{t("doc.type")}</TableHeader>
+                <TableHeader scope="col">{t("doc.description")}</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {AXES.map(({ axis, attribute, values }) => (
-                <tr key={axis}>
-                  <th scope="row">
+                <TableRow key={axis}>
+                  <TableHeader scope="row">
                     <code className={styles.propName}>{axis}</code>
-                  </th>
-                  <td>
+                  </TableHeader>
+                  <TableCell>
                     <code>{attribute}</code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <code className={styles.propType}>{values}</code>
-                  </td>
-                  <td>{t(`docs.design-presets.axes.${axis}`)}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{t(`docs.design-presets.axes.${axis}`)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </TableRoot>
         </div>
       </section>
       <section className={styles.section} aria-labelledby="design-root">

@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
@@ -108,28 +109,29 @@ const nativeDriver = Platform.OS !== "web";
  * thumb (token duration, instant with reduced motion), on / off texts in
  * the track, loading state, semantic colors, three sizes.
  */
-export function Switch({
-  checked,
-  defaultChecked = false,
-  onChange,
-  disabled = false,
-  loading = false,
-  size = "medium",
-  color = "primary",
-  shape = "round",
-  label,
-  labelPlacement = "end",
-  onLabel,
-  offLabel,
-  value,
-  style,
-  trackStyle,
-  thumbStyle,
-  labelStyle,
-  accessibilityState,
-  hitSlop,
-  ...rest
-}: SwitchProps) {
+export function Switch(props: SwitchProps) {
+  const {
+    checked,
+    defaultChecked = false,
+    onChange,
+    disabled = false,
+    loading = false,
+    size = "medium",
+    color = "primary",
+    shape = "round",
+    label,
+    labelPlacement = "end",
+    onLabel,
+    offLabel,
+    value,
+    style,
+    trackStyle,
+    thumbStyle,
+    labelStyle,
+    accessibilityState,
+    hitSlop,
+    ...rest
+  } = useFormControlProps(props);
   const { tokens: t, fonts } = useTheme();
   const inactive = disabled || loading;
   const [state, send] = useMachine(createSwitchMachine, {

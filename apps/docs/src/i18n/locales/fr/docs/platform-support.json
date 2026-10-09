@@ -1,8 +1,8 @@
 {
   "title": "Plateformes prises en charge",
-  "description": "React et Web Components, implémentations natives Vue, Angular et React Native, ainsi que les premiers composants Taro, WeChat et uni-app. La matrice indique les sources implémentées, pas les versions publiées sur npm.",
+  "description": "Couverture du code source pour React, Web Components, Vue, Angular, React Native, Taro, WeChat et uni-app. Cette matrice ne prouve ni une publication npm ni une parité complète des API, du rendu ou des appareils.",
   "platformsTitle": "Plateformes",
-  "platformsText": "Chaque composant est décrit une seule fois dans un contrat indépendant de la plateforme (props, événements, slots). Chaque moteur de rendu implémente les contrats avec ses propres composants ; les tests de contrat partagés vérifient qu'ils se comportent de la même façon.",
+  "platformsText": "Les contrats communs décrivent les propriétés, événements et slots. Chaque moteur emploie les primitives de sa plateforme. Une implémentation peut encore présenter des lacunes d’API ou d’interaction ; consulter les notes et les manifestes pour connaître le périmètre testé.",
   "platform": "Plateforme",
   "components": "Composants",
   "platforms": {
@@ -12,7 +12,7 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "Éléments personnalisés Lit pour les frameworks web ; Vue propose aussi des SFC natifs et Angular un premier ensemble de composants standalone."
+      "text": "Éléments personnalisés Lit pour les frameworks web. Vue et Angular proposent aussi des composants natifs via leurs propres points d’entrée."
     },
     "vue": {
       "name": "Vue",
@@ -20,23 +20,23 @@
     },
     "angular": {
       "name": "Angular",
-      "text": "Composants standalone natifs : configuration, Button, Switch et Modal (minerva-design/angular)."
+      "text": "Composants Angular natifs autonomes (minerva-design/angular). Consultez la matrice pour connaître leur état d’implémentation."
     },
     "native": {
       "name": "React Native",
-      "text": "Composants React Native pour iOS et Android (avec Expo)."
+      "text": "Composants React Native pour iOS et Android avec Expo. Expo Go 57.0.9 a été vérifié sur simulateurs iOS 26.1 et Android 16 : saisie, tableaux, menus, WebView et listes virtuelles, plus sélection de fichiers système et copier-coller sous Android. Les appareils physiques et les versions autonomes restent non vérifiés."
     },
     "taro": {
       "name": "Taro",
-      "text": "Composants Taro pour les mini-programmes et le H5. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
+      "text": "Composants Taro pour mini-programmes et H5. Le point d’entrée principal passe la compilation WeChat officielle de Taro 4.3. Le clavier, le focus, les fichiers et les aperçus isolés H5 sont testés dans Chromium. minerva-design/taro/monaco est une entrée H5 optionnelle dont le moteur Monaco est fourni par l’application. Les hôtes natifs des mini-programmes ne peuvent pas exécuter Monaco."
     },
     "weapp": {
       "name": "WeChat",
-      "text": "Composants natifs de mini-programme WeChat. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
+      "text": "Composants WeChat natifs, avec les éléments de composition exprimés par les propriétés ou slots du parent lorsque cela est documenté. Certaines interactions ont été vérifiées dans le simulateur WeChat DevTools. Cela ne valide ni un appareil physique ni toutes les API. Monaco ne peut pas fonctionner dans cet hôte natif."
     },
     "uni": {
       "name": "uni-app",
-      "text": "Composants uni-app pour les mini-programmes, les applications et le H5. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
+      "text": "SFC distribués en source et compilés pour WeChat avec le compilateur officiel uni-app 5.31 Vue 3. Le projet de vérification enregistre tous les SFC de la bibliothèque, sauf Monaco réservé à H5. H5 propose clavier, focus modal, portails, sélection de fichiers, aperçu isolé et entrée optionnelle minerva-design/uni/monaco. L’application fournit le moteur Monaco ; les hôtes natifs des mini-programmes ne peuvent pas l’exécuter."
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "Sans objet"
   },
   "legend": {
-    "stable": "Implémenté et couvert par des tests de contrat partagés. Cela ne signifie pas que le package est publié sur npm.",
-    "beta": "API initiale implémentée ; la couverture varie selon la plateforme. Consultez les notes pour les limites et la validation.",
+    "stable": "Implémenté avec une validation automatisée du périmètre documenté. Ne signifie ni publication npm ni parité complète entre plateformes.",
+    "beta": "Implémenté avec un périmètre propre à la plateforme et des lacunes d’API ou de validation. Lire les notes et le manifeste avant utilisation.",
     "planned": "prévu dans la feuille de route, pas encore disponible.",
     "na": "pas un composant sur cette plateforme, par conception : la plateforme le couvre autrement (survolez le badge pour les détails)."
   },
@@ -68,7 +68,20 @@
   "tracks": "Types",
   "contractsTitle": "Contrats de composants",
   "contractsText": "La matrice est générée à partir des contrats de composants : des métadonnées extraites des types de props React et du Custom Elements Manifest (props avec leur nature, leurs valeurs énumérées et leurs valeurs par défaut, événements avec les champs de leur detail, slots, types de produit et prise en charge de chaque plateforme). Un test échoue lorsqu'une prop, un attribut ou un événement change sans les régénérer, et lorsque React et les éléments personnalisés ne s'accordent pas sur les valeurs énumérées ou par défaut.",
-  "testsText": "Les mêmes suites de tests de contrat (clics, état contrôlé et non contrôlé, sélection, boîtes de dialogue, notifications, traductions, jetons de design) s'exécutent sur chaque moteur de rendu grâce à un driver par plateforme ; un nouveau moteur de rendu devient stable dès que son driver les réussit.",
+  "testsText": "Les tests de contrats partagés, les tests unitaires et Chromium vérifient les interactions, traductions et tokens documentés. Des projets CI indépendants compilent l’entrée Taro et les SFC uni-app avec les SDK officiels ciblant WeChat. Le simulateur WeChat DevTools 2.01.2510280 / bibliothèque 3.17.2 a permis de vérifier boutons et nouvelle tentative, choix désactivés, sélection, ouverture de modale et thèmes locaux. Une nouvelle vérification a confirmé la saisie native hello et la valeur contrôlée HELLO. Les avertissements liés aux anciennes API système et aux sélecteurs WXSS des composants ont été corrigés et ont disparu après recompilation. En mode visiteur, les RPC automator expirent et l’API de sécurité de la plateforme signale toujours des erreurs. Les appareils physiques, les autres cibles et l’ensemble des API de plateforme restent non vérifiés. Ces résultats ne prouvent pas une équivalence visuelle ou fonctionnelle complète.",
   "quickStartTitle": "Premiers pas avec les frameworks natifs et les mini-programmes",
-  "quickStartText": "Angular expose la configuration, Button, Switch et Modal avec ses parties. Taro, WeChat et uni-app proposent initialement Button, Input et Switch, avec une partie de l’API web. Utilisez le point d’entrée de votre plateforme. Taro utilise React 18 ; l’entrée web principale requiert React 19. Les tests utilisent Taro H5, la simulation WeChat et des substituts de composants hôtes uni-app ; les builds sur appareil restent à valider. uni-app distribue les SFC sources pour son compilateur de plateforme."
+  "quickStartText": "Importez l’entrée de votre plateforme et respectez ses peerDependencies et exigences d’adaptation à l’hôte. uni-app fournit des SFC source pour son compilateur. Les entrées Monaco H5 optionnelles sont minerva-design/taro/monaco et minerva-design/uni/monaco : l’application doit fournir le moteur installé localement et configurer ses workers. Ce ne sont pas des éditeurs natifs de mini-programmes. La compilation SDK officielle pour WeChat, les tests H5 et les interactions documentées du simulateur DevTools sont vérifiés séparément ; les appareils physiques restent à valider.",
+  "api": {
+    "title": "API des composants mini-programmes",
+    "description": "Choisissez une plateforme et un composant pour consulter ses propriétés, événements et slots actuels. Les callbacks React, événements Vue et event.detail WeChat suivent les conventions de leur hôte. Certaines propriétés natives dépendent de la plateforme cible. Consultez la matrice pour les compositions équivalentes et les composants non pris en charge.",
+    "platform": "Plateforme API",
+    "component": "Composant API",
+    "props": "Propriétés",
+    "events": "Événements",
+    "slots": "Slots",
+    "methods": "API publique de l’instance",
+    "loading": "Chargement de l’API…",
+    "error": "Impossible de charger l’API. Rechargez la page.",
+    "weapp": "Utilisez bind:event=\"handler\" pour recevoir event.detail. Appelez les méthodes publiques sur une instance obtenue avec selectComponent. Passez les callbacks à configure(options), pas aux propriétés WXML."
+  }
 }

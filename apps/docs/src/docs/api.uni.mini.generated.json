@@ -1,0 +1,2388 @@
+{
+  "Alert": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "animationName", "type": "\"slideIn\" | \"fadeIn\" | \"bounce\" | \"zoom\" | undefined", "required": false, "default": "\"slideIn\"" },
+      { "name": "banner", "type": "boolean | undefined", "required": false },
+      { "name": "borderRadius", "type": "string | number | undefined", "required": false },
+      { "name": "closable", "type": "boolean | undefined", "required": false },
+      { "name": "closeIcon", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "collapseLabel", "type": "string | undefined", "required": false },
+      { "name": "collapsible", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "\"info\" | \"success\" | \"warning\" | \"danger\" | undefined", "required": false },
+      { "name": "defaultExpanded", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "elevation", "type": "boolean | undefined", "required": false },
+      { "name": "expanded", "type": "boolean | undefined", "required": false },
+      { "name": "expandLabel", "type": "string | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "iconLabel", "type": "string | undefined", "required": false },
+      { "name": "returnFocus", "type": "unknown", "required": false },
+      { "name": "role", "type": "string | undefined", "required": false },
+      { "name": "rounded", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "showIcon", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "status", "type": "string | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"subtle\" | \"outline\" | \"solid\" | undefined", "required": false, "default": "\"subtle\"" }
+    ],
+    "events": [
+      { "name": "close", "type": "[event: Event]" },
+      { "name": "expand", "type": "[expanded: boolean]" },
+      { "name": "update:expanded", "type": "[expanded: boolean]" }
+    ],
+    "slots": [
+      { "name": "action", "type": "{}" },
+      { "name": "close-icon", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" },
+      { "name": "title", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "AppShell": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "brand", "type": "string | undefined", "required": false },
+      { "name": "brandIcon", "type": "string | undefined", "required": false },
+      { "name": "defaultSidebarMode", "type": "Mode | undefined", "required": false, "default": "\"expanded\"" },
+      {
+        "name": "labels",
+        "type": "Partial<Record<\"expand\" | \"collapse\" | \"enableFloating\" | \"disableFloating\" | \"openNavigation\" | \"closeNavigation\", string>> | undefined",
+        "required": false,
+        "default": "{}"
+      },
+      { "name": "navigationKey", "type": "string | undefined", "required": false },
+      { "name": "navigationLabel", "type": "string | undefined", "required": false },
+      { "name": "sidebarMode", "type": "Mode | undefined", "required": false },
+      { "name": "sidebarWidth", "type": "number | undefined", "required": false, "default": "256" },
+      { "name": "skipLink", "type": "string | boolean | undefined", "required": false, "default": "true" }
+    ],
+    "events": [
+      { "name": "sidebarModeChange", "type": "[mode: Mode]" },
+      { "name": "update:sidebarMode", "type": "[mode: Mode]" }
+    ],
+    "slots": [
+      { "name": "brand", "type": "{}" },
+      { "name": "brand-icon", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "header", "type": "{}" },
+      { "name": "header-actions", "type": "{}" },
+      { "name": "navigation", "type": "{ collapsed: boolean; isMobile: boolean; closeNavigation: () => void; expandNavigation: () => void; }" },
+      { "name": "page-navigation", "type": "{}" },
+      { "name": "sidebar", "type": "{ collapsed: boolean; isMobile: boolean; closeNavigation: () => void; expandNavigation: () => void; }" }
+    ],
+    "methods": []
+  },
+  "AutoComplete": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "autoHighlight", "type": "boolean | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "dropdownClassName", "type": "string | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "fillOnSelect", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "filterOption", "type": "((input: string, option: Option) => boolean) | undefined", "required": false },
+      { "name": "groupBy", "type": "((option: Option) => string) | undefined", "required": false },
+      { "name": "groupMode", "type": "\"first\" | \"adjacent\" | undefined", "required": false, "default": "\"first\"" },
+      { "name": "inputProps", "type": "Record<string, any> | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "offset", "type": "{ x: number; y: number; } | undefined", "required": false, "default": "{ x: 0, y: 4 }" },
+      { "name": "options", "type": "Option[] | undefined", "required": false, "default": "[]" },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "placement", "type": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined", "required": false, "default": "\"bottom\"" },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "sortOption", "type": "((a: Option, b: Option) => number) | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: string]" },
+      { "name": "dropdownVisibleChange", "type": "[open: boolean]" },
+      { "name": "optionClick", "type": "[option: Option]" },
+      { "name": "select", "type": "[option: Option]" },
+      { "name": "submit", "type": "[value: string]" },
+      { "name": "update:modelValue", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "empty", "type": "{}" },
+      { "name": "loading", "type": "{}" },
+      { "name": "option", "type": "{ option: Option; }" }
+    ],
+    "methods": []
+  },
+  "Avatar": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "alt", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "fallback", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\" | undefined", "required": false, "default": "\"circle\"" },
+      { "name": "size", "type": "string | number | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "src", "type": "string | undefined", "required": false },
+      { "name": "stacked", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "fallback", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "AvatarGroup": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "count", "type": "number | undefined", "required": false, "default": "0" },
+      { "name": "items", "type": "{ src?: string | undefined; name?: string | undefined; }[] | undefined", "required": false, "default": "[]" },
+      { "name": "max", "type": "number | undefined", "required": false },
+      { "name": "size", "type": "string | number | undefined", "required": false, "default": "\"medium\"" }
+    ],
+    "events": [],
+    "slots": [],
+    "methods": []
+  },
+  "Badge": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "borderRadius", "type": "string | undefined", "required": false },
+      { "name": "borderWidth", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "content", "type": "string | number | undefined", "required": false },
+      { "name": "count", "type": "number | undefined", "required": false },
+      { "name": "dot", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false, "default": "99" },
+      { "name": "position", "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\" | undefined", "required": false, "default": "\"top-right\"" },
+      { "name": "role", "type": "string | undefined", "required": false, "default": "\"status\"" },
+      { "name": "showZero", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "status", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"subtle\" | \"outline\" | \"solid\" | undefined", "required": false, "default": "\"solid\"" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "content", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Box": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "background", "type": "string | undefined", "required": false },
+      { "name": "bg", "type": "string | undefined", "required": false },
+      { "name": "border", "type": "string | undefined", "required": false },
+      { "name": "boxShadow", "type": "string | undefined", "required": false },
+      { "name": "h", "type": "Space | undefined", "required": false },
+      { "name": "m", "type": "Space | undefined", "required": false },
+      { "name": "margin", "type": "Space | undefined", "required": false },
+      { "name": "maxH", "type": "Space | undefined", "required": false },
+      { "name": "maxW", "type": "Space | undefined", "required": false },
+      { "name": "mb", "type": "Space | undefined", "required": false },
+      { "name": "minH", "type": "Space | undefined", "required": false },
+      { "name": "minW", "type": "Space | undefined", "required": false },
+      { "name": "ml", "type": "Space | undefined", "required": false },
+      { "name": "mr", "type": "Space | undefined", "required": false },
+      { "name": "mt", "type": "Space | undefined", "required": false },
+      { "name": "mx", "type": "Space | undefined", "required": false },
+      { "name": "my", "type": "Space | undefined", "required": false },
+      { "name": "p", "type": "Space | undefined", "required": false },
+      { "name": "padding", "type": "Space | undefined", "required": false },
+      { "name": "pb", "type": "Space | undefined", "required": false },
+      { "name": "pl", "type": "Space | undefined", "required": false },
+      { "name": "pr", "type": "Space | undefined", "required": false },
+      { "name": "pt", "type": "Space | undefined", "required": false },
+      { "name": "px", "type": "Space | undefined", "required": false },
+      { "name": "py", "type": "Space | undefined", "required": false },
+      { "name": "radius", "type": "Space | undefined", "required": false },
+      { "name": "rounded", "type": "string | undefined", "required": false },
+      { "name": "w", "type": "Space | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Button": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "active", "type": "boolean | undefined", "required": false },
+      { "name": "borderRadius", "type": "string | number | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "endIcon", "type": "string | undefined", "required": false },
+      { "name": "fullWidth", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "loadingText", "type": "string | undefined", "required": false },
+      { "name": "shape", "type": "string | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | \"xlarge\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "startIcon", "type": "string | undefined", "required": false },
+      { "name": "type", "type": "\"submit\" | \"button\" | \"reset\" | undefined", "required": false, "default": "\"button\"" },
+      { "name": "variant", "type": "\"outline\" | \"solid\" | \"link\" | \"ghost\" | undefined", "required": false, "default": "\"solid\"" }
+    ],
+    "events": [{ "name": "click", "type": "[event: unknown]" }],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "endIcon", "type": "{}" },
+      { "name": "startIcon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Card": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "as", "type": "string | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "hoverable", "type": "boolean | undefined", "required": false },
+      { "name": "href", "type": "string | undefined", "required": false },
+      { "name": "interactive", "type": "boolean | undefined", "required": false },
+      { "name": "padding", "type": "\"medium\" | \"small\" | \"large\" | \"none\" | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false },
+      { "name": "type", "type": "\"submit\" | \"button\" | \"reset\" | undefined", "required": false },
+      { "name": "variant", "type": "string | undefined", "required": false, "default": "\"default\"" }
+    ],
+    "events": [{ "name": "click", "type": "[event: unknown]" }],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "header", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Cascader": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "allowClear", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "changeOnSelect", "type": "boolean | undefined", "required": false },
+      { "name": "clearLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "(string | number)[] | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "displayRender", "type": "((labels: string[], options: Option[]) => string) | undefined", "required": false },
+      { "name": "dropdownClassName", "type": "string | undefined", "required": false },
+      { "name": "dropdownStyle", "type": "CSSProperties | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "expandTrigger", "type": "\"click\" | \"hover\" | undefined", "required": false, "default": "\"click\"" },
+      { "name": "filter", "type": "((input: string, path: Option[]) => boolean) | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "loadData", "type": "((path: Option[]) => void) | undefined", "required": false },
+      { "name": "maxLevel", "type": "number | undefined", "required": false, "default": "6" },
+      { "name": "modelValue", "type": "(string | number)[] | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "options", "type": "Option[] | undefined", "required": false, "default": "[]" },
+      { "name": "optionStyle", "type": "CSSProperties | undefined", "required": false },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "showSearch", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "(string | number)[] | undefined", "required": false },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "240" }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: (string | number)[], options: Option[]]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "update:modelValue", "type": "[value: (string | number)[]]" }
+    ],
+    "slots": [
+      { "name": "option", "type": "{ option: Option; level: number; }" },
+      { "name": "search-option", "type": "{ path: Option[]; }" }
+    ],
+    "methods": []
+  },
+  "Checkbox": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "checked", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "\"info\" | \"success\" | \"warning\" | \"danger\" | \"primary\" | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "defaultChecked", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "error", "type": "boolean | undefined", "required": false },
+      { "name": "helperText", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "indeterminate", "type": "boolean | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"start\" | \"end\" | undefined", "required": false, "default": "\"end\"" },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\" | undefined", "required": false, "default": "\"square\"" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "any[]" },
+      { "name": "update:checked", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "errorIcon", "type": "{}" },
+      { "name": "icon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "CodeBlock": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "code", "type": "string | undefined", "required": false, "default": "\"\"" },
+      { "name": "copyable", "type": "boolean | undefined", "required": false, "default": "false" },
+      { "name": "language", "type": "string | undefined", "required": false },
+      { "name": "maxHeight", "type": "string | number | undefined", "required": false, "default": "\"24rem\"" },
+      { "name": "wrap", "type": "boolean | undefined", "required": false, "default": "true" }
+    ],
+    "events": [
+      { "name": "copied", "type": "[text: string]" },
+      { "name": "copy", "type": "[text: string]" },
+      { "name": "error", "type": "[error: unknown]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "CommandDialog": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "enterLabel", "type": "string | undefined", "required": false },
+      { "name": "filter", "type": "((items: CommandItem[], query: string) => CommandItem[]) | undefined", "required": false },
+      { "name": "items", "type": "CommandItem[] | undefined", "required": false, "default": "[]" },
+      { "name": "maxResults", "type": "number | undefined", "required": false, "default": "12" },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "resultsLabel", "type": "string | undefined", "required": false },
+      { "name": "shortcut", "type": "string | string[] | undefined", "required": false },
+      { "name": "shortcutLabel", "type": "string | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "select", "type": "[item: CommandItem]" },
+      { "name": "update:open", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "description", "type": "{}" },
+      { "name": "empty", "type": "{}" },
+      { "name": "enter", "type": "{}" },
+      { "name": "item", "type": "{ item: CommandItem; active: boolean; }" },
+      { "name": "shortcut", "type": "{}" },
+      { "name": "title", "type": "{}" }
+    ],
+    "methods": [
+      { "name": "close", "type": "() => void" },
+      {
+        "name": "handleShortcut",
+        "type": "(event: ShortcutEvent & { target?: EventTarget | null | undefined; isComposing?: boolean | undefined; preventDefault?: (() => void) | undefined; stopPropagation?: (() => void) | undefined; }) => void"
+      }
+    ]
+  },
+  "Confirm": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnOverlayClick", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "placement", "type": "string | undefined", "required": false, "default": "\"right\"" },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "cancel", "type": "any[]" },
+      { "name": "close", "type": "any[]" },
+      { "name": "confirm", "type": "any[]" },
+      { "name": "openChange", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "DataTable": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "columns", "type": "Column[] | undefined", "required": false },
+      { "name": "current", "type": "number | undefined", "required": false },
+      { "name": "data", "type": "Row[] | undefined", "required": false },
+      { "name": "defaultCurrent", "type": "number | undefined", "required": false },
+      { "name": "defaultSortState", "type": "{ key: string; order: string | null; } | null | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "error", "type": "string | undefined", "required": false },
+      { "name": "filters", "type": "Record<string, string[]> | undefined", "required": false },
+      { "name": "hoverable", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "manualFilter", "type": "boolean | undefined", "required": false },
+      { "name": "manualSort", "type": "boolean | undefined", "required": false },
+      { "name": "pageSize", "type": "number | undefined", "required": false },
+      { "name": "pagination", "type": "Record<string, any> | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "retryLabel", "type": "string | undefined", "required": false },
+      { "name": "rowKey", "type": "string | ((row: Row, index: number) => Key) | undefined", "required": false },
+      {
+        "name": "rowSelection",
+        "type": "{ selectedRowKeys?: Key[] | undefined; defaultSelectedRowKeys?: Key[] | undefined; getCheckboxProps?: ((row: Row) => { disabled?: boolean | undefined; }) | undefined; onChange?: ((keys: Key[], rows: Row[]) => void) | undefined; } | undefined",
+        "required": false
+      },
+      { "name": "scroll", "type": "{ x?: string | number | undefined; y?: string | number | undefined; } | undefined", "required": false },
+      { "name": "selectable", "type": "boolean | undefined", "required": false },
+      { "name": "selectedRowKeys", "type": "Key[] | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false },
+      { "name": "sortState", "type": "{ key: string; order: string | null; } | null | undefined", "required": false },
+      { "name": "variant", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "filterChange", "type": "any[]" },
+      { "name": "pageChange", "type": "any[]" },
+      { "name": "retry", "type": "any[]" },
+      { "name": "rowClick", "type": "any[]" },
+      { "name": "selectionChange", "type": "any[]" },
+      { "name": "sortChange", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "cell", "type": "{ row: Row; column: Column; }" },
+      { "name": "empty", "type": "{}" },
+      { "name": "error", "type": "{ error: string; }" },
+      { "name": "footer", "type": "{}" },
+      { "name": "header", "type": "{ column: Column; }" },
+      { "name": "loading", "type": "{}" },
+      { "name": "pagination-item", "type": "{ page: number; type: \"prev\" | \"next\" | \"page\" | \"jump-prev\" | \"jump-next\"; active: boolean; }" },
+      { "name": "pagination-total", "type": "{ total: number; range: [number, number]; }" }
+    ],
+    "methods": []
+  },
+  "DescriptionList": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "bordered", "type": "boolean | undefined", "required": false },
+      { "name": "columns", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "items", "type": "{ key?: string | undefined; label: string | number; value: string | number | null; }[] | undefined", "required": false, "default": "[]" },
+      { "name": "striped", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "label", "type": "{ item: { key?: string | undefined; label: string | number; value: string | number | null; }; index: number; }" },
+      { "name": "value", "type": "{ item: { key?: string | undefined; label: string | number; value: string | number | null; }; index: number; }" }
+    ],
+    "methods": []
+  },
+  "Divider": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "elevation", "type": "boolean | undefined", "required": false },
+      { "name": "flexItem", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | number | undefined", "required": false },
+      { "name": "length", "type": "string | number | undefined", "required": false },
+      { "name": "orientation", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false },
+      { "name": "spacing", "type": "number | undefined", "required": false, "default": "16" },
+      { "name": "textAlign", "type": "\"left\" | \"right\" | \"center\" | undefined", "required": false, "default": "\"center\"" },
+      { "name": "thickness", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "variant", "type": "\"solid\" | \"dashed\" | \"dotted\" | undefined", "required": false, "default": "\"solid\"" },
+      { "name": "vertical", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Drawer": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnOverlayClick", "type": "boolean | undefined", "required": false },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "hiddenDescription", "type": "string | undefined", "required": false },
+      { "name": "hideCloseButton", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "overlayClassName", "type": "string | undefined", "required": false },
+      { "name": "placement", "type": "string | undefined", "required": false },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\" | undefined", "required": false },
+      { "name": "side", "type": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"full\" | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "cancel", "type": "any[]" },
+      { "name": "close", "type": "any[]" },
+      { "name": "closeAutoFocus", "type": "any[]" },
+      { "name": "confirm", "type": "any[]" },
+      { "name": "escapeKeyDown", "type": "any[]" },
+      { "name": "interactOutside", "type": "any[]" },
+      { "name": "openAutoFocus", "type": "any[]" },
+      { "name": "openChange", "type": "any[]" },
+      { "name": "pointerDownOutside", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "description", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "title", "type": "{}" },
+      { "name": "trigger", "type": "{}" }
+    ],
+    "methods": [
+      { "name": "close", "type": "() => any" },
+      { "name": "dismissOutside", "type": "(event?: Event | undefined) => any" },
+      { "name": "element", "type": "() => any" }
+    ]
+  },
+  "Empty": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "action", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "description", "type": "string | number | false | null | undefined", "required": false },
+      { "name": "height", "type": "string | number | undefined", "required": false },
+      { "name": "icon", "type": "string | false | null | undefined", "required": false },
+      { "name": "secondaryAction", "type": "string | undefined", "required": false },
+      { "name": "showShadow", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false },
+      { "name": "title", "type": "string | number | undefined", "required": false },
+      { "name": "useSvg", "type": "boolean | undefined", "required": false },
+      { "name": "width", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "action", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "description", "type": "{}" },
+      { "name": "icon", "type": "{}" },
+      { "name": "secondaryAction", "type": "{}" },
+      { "name": "title", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "FormControl": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "FormField": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "errorMessage", "type": "string | undefined", "required": false },
+      { "name": "helperText", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "FormLayout": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "columnGap", "type": "string | number | undefined", "required": false },
+      { "name": "columns", "type": "number | { base?: number | undefined; sm?: number | undefined; md?: number | undefined; lg?: number | undefined; } | undefined", "required": false },
+      { "name": "gap", "type": "string | number | undefined", "required": false },
+      { "name": "reportSubmit", "type": "boolean | undefined", "required": false },
+      { "name": "rowGap", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "reset", "type": "[]" },
+      { "name": "submit", "type": "[detail: unknown]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "HtmlPreview": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "height", "type": "string | number | undefined", "required": false, "default": "600" },
+      { "name": "html", "type": "string | undefined", "required": false },
+      { "name": "mobileWidth", "type": "number | undefined", "required": false, "default": "375" },
+      { "name": "nodes", "type": "any[] | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false, "default": "\"HTML preview\"" },
+      { "name": "viewport", "type": "\"desktop\" | \"mobile\" | undefined", "required": false, "default": "\"desktop\"" }
+    ],
+    "events": [],
+    "slots": [],
+    "methods": []
+  },
+  "IconButton": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false, "default": "\"neutral\"" },
+      { "name": "defaultPressed", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "pressed", "type": "boolean | undefined", "required": false },
+      { "name": "shape", "type": "\"circle\" | \"square\" | undefined", "required": false, "default": "\"circle\"" },
+      { "name": "showTooltip", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | undefined", "required": false, "default": "\"medium\"" },
+      {
+        "name": "tooltip",
+        "type": "{ content?: string | undefined; color?: \"info\" | \"success\" | \"warning\" | \"danger\" | \"neutral\" | undefined; variant?: \"subtle\" | \"solid\" | \"glass\" | undefined; shape?: \"rounded\" | \"default\" | \"square\" | \"thought\" | undefined; arrow?: boolean | undefined; } | undefined",
+        "required": false
+      },
+      { "name": "type", "type": "\"submit\" | \"button\" | \"reset\" | undefined", "required": false, "default": "\"button\"" },
+      { "name": "variant", "type": "\"outline\" | \"solid\" | \"ghost\" | undefined", "required": false, "default": "\"ghost\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: Event]" },
+      { "name": "pressedChange", "type": "[pressed: boolean]" },
+      { "name": "update:pressed", "type": "[pressed: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" }
+    ],
+    "methods": [{ "name": "element", "type": "any" }]
+  },
+  "Input": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaActivedescendant", "type": "string | undefined", "required": false },
+      { "name": "ariaAutocomplete", "type": "\"none\" | \"inline\" | \"list\" | \"both\" | undefined", "required": false },
+      { "name": "ariaControls", "type": "string | undefined", "required": false },
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaExpanded", "type": "boolean | \"true\" | \"false\" | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "clearable", "type": "boolean | undefined", "required": false },
+      { "name": "clearLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "hidePasswordLabel", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "maxlength", "type": "number | undefined", "required": false, "default": "140" },
+      { "name": "maxLength", "type": "number | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "password", "type": "boolean | undefined", "required": false },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "prefix", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "role", "type": "string | undefined", "required": false },
+      { "name": "showCharCount", "type": "boolean | undefined", "required": false },
+      { "name": "showPasswordLabel", "type": "string | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "suffix", "type": "string | undefined", "required": false },
+      { "name": "type", "type": "string | undefined", "required": false, "default": "\"text\"" },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "string | undefined", "required": false, "default": "\"outline\"" }
+    ],
+    "events": [
+      { "name": "blur", "type": "[event: unknown]" },
+      { "name": "change", "type": "[value: string]" },
+      { "name": "clear", "type": "[]" },
+      { "name": "confirm", "type": "[value: string]" },
+      { "name": "focus", "type": "[event: unknown]" },
+      { "name": "update:modelValue", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "prefix", "type": "{}" },
+      { "name": "suffix", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "JsonField": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "formatLabel", "type": "string | undefined", "required": false },
+      { "name": "hideToolbar", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "indent", "type": "number | undefined", "required": false, "default": "2" },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "invalidLabel", "type": "string | undefined", "required": false },
+      { "name": "maxLength", "type": "number | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "rows", "type": "number | undefined", "required": false, "default": "8" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false },
+      { "name": "validLabel", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"outline\" | \"filled\" | \"unstyled\" | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "blur", "type": "[event: unknown]" },
+      { "name": "change", "type": "[text: string]" },
+      { "name": "error", "type": "[message: string]" },
+      { "name": "focus", "type": "[event: unknown]" },
+      { "name": "update:modelValue", "type": "[text: string]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "KeyValueEditor": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "addLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultEntries", "type": "Entry[] | undefined", "required": false, "default": "[]" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "entries", "type": "Entry[] | undefined", "required": false },
+      { "name": "errors", "type": "Record<string, { key?: string | undefined; value?: string | undefined; }> | undefined", "required": false },
+      { "name": "keyLabel", "type": "string | undefined", "required": false },
+      { "name": "modelValue", "type": "LegacyEntry[] | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "removeLabel", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "LegacyEntry[] | undefined", "required": false },
+      { "name": "valueLabel", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[entries: Entry[]]" },
+      { "name": "update:entries", "type": "[entries: Entry[]]" },
+      { "name": "update:modelValue", "type": "[entries: Entry[]]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "List": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "bordered", "type": "boolean | undefined", "required": false },
+      { "name": "density", "type": "\"default\" | \"compact\" | \"comfortable\" | undefined", "required": false, "default": "\"default\"" },
+      { "name": "divided", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "dividers", "type": "boolean | undefined", "required": false },
+      { "name": "items", "type": "{ id?: string | undefined; title: string; description?: string | undefined; disabled?: boolean | undefined; }[] | undefined", "required": false, "default": "[]" },
+      { "name": "role", "type": "string | undefined", "required": false, "default": "\"list\"" }
+    ],
+    "events": [{ "name": "itemClick", "type": "[item: { id?: string | undefined; title: string; description?: string | undefined; disabled?: boolean | undefined; }, index: number]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "LoadingState": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "error", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false, "default": "\"Loading…\"" },
+      { "name": "loading", "type": "boolean | undefined", "required": false, "default": "true" }
+    ],
+    "events": [{ "name": "retry", "type": "any[]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Menu": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "\"start\" | \"end\" | \"center\" | undefined", "required": false, "default": "\"end\"" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnSelect", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "dir", "type": "\"ltr\" | \"rtl\" | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "items", "type": "MenuEntry[] | undefined", "required": false, "default": "[]" },
+      { "name": "loop", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "side", "type": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined", "required": false, "default": "\"bottom\"" },
+      { "name": "size", "type": "\"medium\" | \"small\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[key: string]" },
+      { "name": "checkedChange", "type": "[key: string, checked: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "select", "type": "[item: MenuEntry]" },
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "valueChange", "type": "[key: string, value: string]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "item", "type": "{ item: MenuEntry; checked: boolean | undefined; }" },
+      { "name": "trigger", "type": "{ open: boolean; disabled: boolean; }" }
+    ],
+    "methods": []
+  },
+  "Modal": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnOverlayClick", "type": "boolean | undefined", "required": false },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "hiddenDescription", "type": "string | undefined", "required": false },
+      { "name": "hideCloseButton", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "overlayClassName", "type": "string | undefined", "required": false },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\" | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xlarge\" | \"full\" | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "cancel", "type": "any[]" },
+      { "name": "close", "type": "any[]" },
+      { "name": "closeAutoFocus", "type": "any[]" },
+      { "name": "confirm", "type": "any[]" },
+      { "name": "escapeKeyDown", "type": "any[]" },
+      { "name": "interactOutside", "type": "any[]" },
+      { "name": "openAutoFocus", "type": "any[]" },
+      { "name": "openChange", "type": "any[]" },
+      { "name": "pointerDownOutside", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "description", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "title", "type": "{}" },
+      { "name": "trigger", "type": "{}" }
+    ],
+    "methods": [
+      { "name": "close", "type": "() => any" },
+      { "name": "dismissOutside", "type": "(event?: Event | undefined) => any" },
+      { "name": "element", "type": "() => any" }
+    ]
+  },
+  "MonthCalendar": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultMonth", "type": "string | Date | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "disabledDates", "type": "readonly string[] | ((day: string) => boolean) | undefined", "required": false },
+      { "name": "emptyEventsText", "type": "string | undefined", "required": false },
+      { "name": "events", "type": "readonly CalendarEvent[] | undefined", "required": false, "default": "[]" },
+      { "name": "getDayLabel", "type": "((day: string, count: number) => string) | undefined", "required": false },
+      { "name": "getEventsLabel", "type": "((day: string) => string) | undefined", "required": false },
+      { "name": "locale", "type": "string | undefined", "required": false },
+      { "name": "max", "type": "string | undefined", "required": false },
+      { "name": "min", "type": "string | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "month", "type": "string | Date | undefined", "required": false },
+      { "name": "nextMonthLabel", "type": "string | undefined", "required": false },
+      { "name": "previousMonthLabel", "type": "string | undefined", "required": false },
+      { "name": "rangeEnd", "type": "string | undefined", "required": false },
+      { "name": "rangeStart", "type": "string | undefined", "required": false },
+      { "name": "showSelectedDayEvents", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "todayLabel", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "weekdayLabels", "type": "readonly string[] | undefined", "required": false },
+      { "name": "weekStartsOn", "type": "number | undefined", "required": false, "default": "1" }
+    ],
+    "events": [
+      { "name": "change", "type": "[day: string]" },
+      { "name": "eventClick", "type": "[event: CalendarEvent]" },
+      { "name": "monthChange", "type": "[date: Date]" },
+      { "name": "update:modelValue", "type": "[day: string]" },
+      { "name": "update:month", "type": "[date: Date]" }
+    ],
+    "slots": [
+      { "name": "day", "type": "{ date: Date; day: string; selected: boolean; count: number; }" },
+      { "name": "event", "type": "{ event: CalendarEvent; }" }
+    ],
+    "methods": []
+  },
+  "NavTree": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "activeId", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "collapsed", "type": "boolean | undefined", "required": false },
+      { "name": "defaultExpandedIds", "type": "string[] | undefined", "required": false, "default": "[]" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "expandedIds", "type": "string[] | undefined", "required": false },
+      { "name": "expandedKeys", "type": "string[] | undefined", "required": false },
+      { "name": "filter", "type": "string | ((node: Node) => boolean) | undefined", "required": false },
+      { "name": "items", "type": "Node[] | undefined", "required": false, "default": "[]" },
+      { "name": "sections", "type": "Section[] | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "wrapLabels", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[id: string]" },
+      { "name": "expandChange", "type": "[ids: string[]]" },
+      { "name": "expandedChange", "type": "[ids: string[]]" },
+      { "name": "itemSelect", "type": "[item: Node]" },
+      { "name": "select", "type": "[id: string]" },
+      { "name": "update:expandedIds", "type": "[ids: string[]]" }
+    ],
+    "slots": [
+      {
+        "name": "item",
+        "type": "{ item: Node; state: { active: boolean; ancestorActive: boolean; expanded: boolean; depth: number; collapsed: boolean; hasChildren: boolean; disabled: boolean; className: string; }; select: () => void; }"
+      },
+      {
+        "name": "link",
+        "type": "{ item: Node; state: { active: boolean; ancestorActive: boolean; expanded: boolean; depth: number; collapsed: boolean; hasChildren: boolean; disabled: boolean; className: string; }; select: () => void; }"
+      }
+    ],
+    "methods": []
+  },
+  "NumberInput": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "aboveMaxMessage", "type": "string | undefined", "required": false },
+      { "name": "allowEmpty", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "belowMinMessage", "type": "string | undefined", "required": false },
+      { "name": "decrementLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "number | null | undefined", "required": false, "default": "null" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "incrementLabel", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false },
+      { "name": "min", "type": "number | undefined", "required": false },
+      { "name": "modelValue", "type": "number | null | undefined", "required": false },
+      { "name": "notANumberMessage", "type": "string | undefined", "required": false },
+      { "name": "precision", "type": "number | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "showStepper", "type": "boolean | undefined", "required": false, "default": "false" },
+      { "name": "size", "type": "string | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "step", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "value", "type": "number | null | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "blur", "type": "any[]" },
+      { "name": "change", "type": "any[]" },
+      { "name": "update:modelValue", "type": "any[]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "Page": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "maxWidth", "type": "number | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "actions", "type": "{}" },
+      { "name": "default", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "PageTabs": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "activeValue", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      {
+        "name": "items",
+        "type": "{ value: string; label: string; disabled?: boolean | undefined; closable?: boolean | undefined; content?: string | undefined; }[] | undefined",
+        "required": false,
+        "default": "[]"
+      },
+      { "name": "scrollLeftLabel", "type": "string | undefined", "required": false },
+      { "name": "scrollRightLabel", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "any[]" },
+      { "name": "close", "type": "any[]" },
+      { "name": "update:modelValue", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "actions", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "tabs", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Pagination": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "boundaryCount", "type": "number | undefined", "required": false },
+      { "name": "current", "type": "number | undefined", "required": false },
+      { "name": "defaultCurrent", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "defaultPageSize", "type": "number | undefined", "required": false, "default": "10" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "hideEdges", "type": "boolean | undefined", "required": false },
+      { "name": "hideNumbers", "type": "boolean | undefined", "required": false },
+      { "name": "labels", "type": "Labels | undefined", "required": false, "default": "{}" },
+      { "name": "pageSize", "type": "number | undefined", "required": false },
+      { "name": "pageSizeOptions", "type": "number[] | undefined", "required": false, "default": "[10, 20, 50, 100]" },
+      { "name": "responsive", "type": "boolean | undefined", "required": false },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\" | undefined", "required": false, "default": "\"rounded\"" },
+      { "name": "showQuickJumper", "type": "boolean | undefined", "required": false },
+      { "name": "showSizeChanger", "type": "boolean | undefined", "required": false },
+      { "name": "showTotal", "type": "boolean | undefined", "required": false },
+      { "name": "siblingCount", "type": "number | undefined", "required": false },
+      { "name": "simple", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "total", "type": "number | undefined", "required": false, "default": "0" },
+      { "name": "variant", "type": "\"outline\" | \"solid\" | \"ghost\" | undefined", "required": false, "default": "\"solid\"" }
+    ],
+    "events": [
+      { "name": "change", "type": "[page: number, size: number]" },
+      { "name": "update:current", "type": "[page: number]" },
+      { "name": "update:pageSize", "type": "[size: number]" }
+    ],
+    "slots": [
+      { "name": "item", "type": "{ page: number; type: string; }" },
+      { "name": "total", "type": "{ total: number; range: [number, number]; }" }
+    ],
+    "methods": []
+  },
+  "Popover": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "content", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "placement", "type": "string | undefined", "required": false, "default": "\"bottom\"" }
+    ],
+    "events": [
+      { "name": "openChange", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "content", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "trigger", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "ProgressIndicator": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "\"primary\" | \"current\" | \"neutral\" | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "decorative", "type": "boolean | undefined", "required": false },
+      { "name": "full", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "indeterminate", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false, "default": "100" },
+      { "name": "showLabel", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | \"xlarge\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "status", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "number | undefined", "required": false },
+      { "name": "variant", "type": "\"circle\" | \"spinner\" | \"bar\" | \"wave\" | \"dottedBar\" | undefined", "required": false, "default": "\"spinner\"" },
+      { "name": "width", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "icon", "type": "{}" },
+      { "name": "label", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Prose": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "content", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Radio": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "checked", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "\"success\" | \"warning\" | \"danger\" | \"primary\" | undefined", "required": false },
+      { "name": "defaultChecked", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "error", "type": "boolean | undefined", "required": false },
+      { "name": "errorIcon", "type": "string | undefined", "required": false },
+      { "name": "errorMessage", "type": "string | undefined", "required": false },
+      { "name": "helperText", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false },
+      { "name": "value", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[checked: boolean, event?: unknown]" },
+      { "name": "update:checked", "type": "[checked: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "error-icon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Rating": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "allowClear", "type": "boolean | undefined", "required": false, "default": "false" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false, "default": "10" },
+      { "name": "ratingCount", "type": "number | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "showValue", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "number | undefined", "required": false, "default": "0" }
+    ],
+    "events": [
+      { "name": "change", "type": "any[]" },
+      { "name": "keydown", "type": "any[]" },
+      { "name": "update:modelValue", "type": "any[]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "ResponsiveGrid": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "columnGap", "type": "string | number | undefined", "required": false },
+      {
+        "name": "columns",
+        "type": "number | { base?: number | undefined; sm?: number | undefined; md?: number | undefined; lg?: number | undefined; } | undefined",
+        "required": false,
+        "default": "1"
+      },
+      { "name": "gap", "type": "string | number | undefined", "required": false, "default": "4" },
+      { "name": "minChildWidth", "type": "number | undefined", "required": false },
+      { "name": "rowGap", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Select": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "contentClassName", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "options", "type": "MiniSelectOption[] | undefined", "required": false, "default": "[]" },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "searchable", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "any[]" },
+      { "name": "openChange", "type": "any[]" },
+      { "name": "update:modelValue", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Skeleton": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "active", "type": "boolean | undefined", "required": false },
+      { "name": "animated", "type": "boolean | undefined", "required": false },
+      { "name": "animation", "type": "\"false\" | \"wave\" | \"pulse\" | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "avatar", "type": "boolean | undefined", "required": false },
+      { "name": "avatarShape", "type": "\"circle\" | \"square\" | undefined", "required": false, "default": "\"circle\"" },
+      { "name": "avatarSize", "type": "string | number | undefined", "required": false, "default": "40" },
+      { "name": "borderRadius", "type": "string | number | undefined", "required": false },
+      { "name": "circle", "type": "boolean | undefined", "required": false },
+      { "name": "decorative", "type": "boolean | undefined", "required": false },
+      { "name": "height", "type": "string | number | undefined", "required": false },
+      { "name": "lines", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "loading", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "paragraph", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "string | number | undefined", "required": false },
+      { "name": "title", "type": "boolean | undefined", "required": false },
+      { "name": "variant", "type": "\"rounded\" | \"button\" | \"text\" | \"circular\" | \"rectangular\" | \"image\" | \"card\" | undefined", "required": false, "default": "\"text\"" },
+      { "name": "width", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "SplitLayout": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "asideWidth", "type": "number | undefined", "required": false, "default": "320" },
+      { "name": "collapseBelow", "type": "\"md\" | \"lg\" | undefined", "required": false, "default": "\"md\"" },
+      { "name": "gap", "type": "string | number | undefined", "required": false, "default": "6" },
+      { "name": "reverse", "type": "boolean | undefined", "required": false },
+      { "name": "sidebarWidth", "type": "number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "aside", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "sidebar", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Stack": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "string | undefined", "required": false, "default": "\"stretch\"" },
+      { "name": "direction", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "default": "\"vertical\"" },
+      { "name": "gap", "type": "string | number | undefined", "required": false, "default": "12" },
+      { "name": "justify", "type": "string | undefined", "required": false, "default": "\"flex-start\"" },
+      { "name": "wrap", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Steps": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "current", "type": "number | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "direction", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "default": "\"horizontal\"" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "items", "type": "Item[] | undefined", "required": false, "default": "[]" },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: string | number]" },
+      { "name": "update:modelValue", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "icon", "type": "{ item: Item; index: number; current: boolean; }" },
+      { "name": "label", "type": "{ item: Item; index: number; }" }
+    ],
+    "methods": []
+  },
+  "Switch": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "checked", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "\"info\" | \"success\" | \"warning\" | \"danger\" | \"primary\" | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "defaultChecked", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "iconPlacement", "type": "\"start\" | \"end\" | undefined", "required": false, "default": "\"start\"" },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"start\" | \"end\" | undefined", "required": false, "default": "\"end\"" },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "offLabel", "type": "string | undefined", "required": false },
+      { "name": "onLabel", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "ripple", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "shape", "type": "\"square\" | \"round\" | undefined", "required": false, "default": "\"round\"" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "thumbStyle", "type": "CSSProperties | undefined", "required": false },
+      { "name": "trackStyle", "type": "CSSProperties | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"slider\" | \"segmented\" | undefined", "required": false, "default": "\"slider\"" }
+    ],
+    "events": [
+      { "name": "blur", "type": "[event: unknown]" },
+      { "name": "change", "type": "[checked: boolean, event?: unknown]" },
+      { "name": "focus", "type": "[event: unknown]" },
+      { "name": "update:checked", "type": "[checked: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" },
+      { "name": "offLabel", "type": "{}" },
+      { "name": "onLabel", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Table": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "columns", "type": "Column[] | undefined", "required": false, "default": "[]" },
+      { "name": "current", "type": "number | undefined", "required": false },
+      { "name": "data", "type": "Row[] | undefined", "required": false, "default": "[]" },
+      { "name": "defaultCurrent", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "defaultSortState", "type": "{ key: string; order: string | null; } | null | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "filters", "type": "Record<string, string[]> | undefined", "required": false },
+      { "name": "hoverable", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "manualFilter", "type": "boolean | undefined", "required": false },
+      { "name": "manualSort", "type": "boolean | undefined", "required": false },
+      { "name": "pageSize", "type": "number | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "rowKey", "type": "string | ((row: Row, index: number) => Key) | undefined", "required": false, "default": "\"id\"" },
+      {
+        "name": "rowSelection",
+        "type": "{ selectedRowKeys?: Key[] | undefined; defaultSelectedRowKeys?: Key[] | undefined; getCheckboxProps?: ((row: Row) => { disabled?: boolean | undefined; }) | undefined; onChange?: ((keys: Key[], rows: Row[]) => void) | undefined; } | undefined",
+        "required": false
+      },
+      { "name": "scroll", "type": "{ x?: string | number | undefined; y?: string | number | undefined; } | undefined", "required": false },
+      { "name": "selectable", "type": "boolean | undefined", "required": false },
+      { "name": "selectedRowKeys", "type": "Key[] | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "sortState", "type": "{ key: string; order: string | null; } | null | undefined", "required": false },
+      { "name": "variant", "type": "string | undefined", "required": false, "default": "\"simple\"" }
+    ],
+    "events": [
+      { "name": "filterChange", "type": "any[]" },
+      { "name": "pageChange", "type": "any[]" },
+      { "name": "rowClick", "type": "any[]" },
+      { "name": "selectionChange", "type": "any[]" },
+      { "name": "sortChange", "type": "any[]" }
+    ],
+    "slots": [
+      { "name": "cell", "type": "{ row: Row; column: Column; }" },
+      { "name": "empty", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "header", "type": "{ column: Column; }" },
+      { "name": "loading", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Tabs": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "activationMode", "type": "\"automatic\" | \"manual\" | undefined", "required": false, "default": "\"automatic\"" },
+      { "name": "color", "type": "string | undefined", "required": false, "default": "\"primary\"" },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "dir", "type": "\"ltr\" | \"rtl\" | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      {
+        "name": "items",
+        "type": "{ value: string; label: string; disabled?: boolean | undefined; closable?: boolean | undefined; content?: string | undefined; }[] | undefined",
+        "required": false,
+        "default": "[]"
+      },
+      { "name": "orientation", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "default": "\"horizontal\"" },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"line\" | \"enclosed\" | \"soft\" | \"pills\" | undefined", "required": false, "default": "\"line\"" }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: string]" },
+      { "name": "close", "type": "[value: string]" },
+      { "name": "update:modelValue", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "{ value: string | undefined; }" },
+      { "name": "tabs", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "Tag": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "clickable", "type": "boolean | undefined", "required": false },
+      { "name": "closable", "type": "boolean | undefined", "required": false },
+      { "name": "closeIcon", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | ((label: string) => string) | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false, "default": "\"neutral\"" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "elevation", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "pressed", "type": "boolean | undefined", "required": false },
+      { "name": "ripple", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\" | undefined", "required": false, "default": "\"rounded\"" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "status", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"subtle\" | \"outline\" | \"solid\" | undefined", "required": false, "default": "\"subtle\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: unknown]" },
+      { "name": "close", "type": "[event: unknown]" }
+    ],
+    "slots": [
+      { "name": "avatar", "type": "{}" },
+      { "name": "close-icon", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "TagInput": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "addLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "clearLabel", "type": "string | undefined", "required": false },
+      { "name": "commitOnBlur", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "createLabel", "type": "((tag: string) => string) | undefined", "required": false },
+      { "name": "defaultValue", "type": "readonly string[] | undefined", "required": false, "default": "[]" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "emptyText", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "maxTags", "type": "number | undefined", "required": false, "default": "Infinity" },
+      { "name": "modelValue", "type": "readonly string[] | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "options", "type": "readonly string[] | undefined", "required": false, "default": "[]" },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "removeLabel", "type": "((tag: string) => string) | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "separators", "type": "readonly string[] | undefined", "required": false, "default": "[...DEFAULT_TAG_SEPARATORS]" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "readonly string[] | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: string[]]" },
+      { "name": "update:modelValue", "type": "[value: string[]]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "TextLink": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "href", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "openType", "type": "string | undefined", "required": false }
+    ],
+    "events": [{ "name": "click", "type": "any[]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Textarea": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "autoHeight", "type": "boolean | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "maxlength", "type": "number | undefined", "required": false, "default": "-1" },
+      { "name": "maxLength", "type": "number | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "rows", "type": "number | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "\"outline\" | \"filled\" | \"unstyled\" | undefined", "required": false, "default": "\"outline\"" }
+    ],
+    "events": [
+      { "name": "blur", "type": "[event: unknown]" },
+      { "name": "change", "type": "[value: string]" },
+      { "name": "confirm", "type": "[value: string]" },
+      { "name": "focus", "type": "[event: unknown]" },
+      { "name": "update:modelValue", "type": "[value: string]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "ThemeToggle": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "defaultValue", "type": "ThemeMode | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "labels", "type": "Partial<Record<ThemeMode, string>> | undefined", "required": false, "default": "{}" },
+      { "name": "modelValue", "type": "ThemeMode | undefined", "required": false },
+      { "name": "showSystem", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "value", "type": "ThemeMode | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: ThemeMode]" },
+      { "name": "update:modelValue", "type": "[value: ThemeMode]" }
+    ],
+    "slots": [{ "name": "option", "type": "{ mode: ThemeMode; active: boolean; }" }],
+    "methods": []
+  },
+  "TimePicker": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "clearable", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "defaultValue", "type": "string | Date | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "end", "type": "string | undefined", "required": false },
+      { "name": "format", "type": "string | undefined", "required": false, "default": "\"HH:mm:ss\"" },
+      { "name": "hourStep", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "maxTime", "type": "Date | undefined", "required": false },
+      { "name": "minTime", "type": "Date | undefined", "required": false },
+      { "name": "minuteStep", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "modelValue", "type": "string | Date | null | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false, "default": "\"time-picker\"" },
+      { "name": "placeholder", "type": "string | undefined", "required": false },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "secondStep", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "showSecond", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "start", "type": "string | undefined", "required": false },
+      { "name": "use12Hours", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "string | Date | null | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: Date | undefined]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "update:modelValue", "type": "[value: Date | undefined]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "Toast": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "duration", "type": "number | undefined", "required": false, "default": "3000" },
+      { "name": "message", "type": "string | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "status", "type": "string | undefined", "required": false, "default": "\"info\"" }
+    ],
+    "events": [
+      { "name": "close", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Tooltip": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\" | undefined", "required": false, "default": "\"fade\"" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "arrow", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "\"info\" | \"success\" | \"warning\" | \"danger\" | \"neutral\" | undefined", "required": false, "default": "\"neutral\"" },
+      { "name": "content", "type": "string | undefined", "required": false },
+      { "name": "contentClassName", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "enterDelay", "type": "number | undefined", "required": false },
+      { "name": "followCursor", "type": "boolean | undefined", "required": false },
+      { "name": "leaveDelay", "type": "number | undefined", "required": false },
+      { "name": "offset", "type": "[number, number] | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "placement", "type": "string | undefined", "required": false, "default": "\"top\"" },
+      { "name": "shape", "type": "\"rounded\" | \"default\" | \"square\" | \"thought\" | undefined", "required": false, "default": "\"default\"" },
+      { "name": "variant", "type": "\"subtle\" | \"solid\" | \"glass\" | undefined", "required": false, "default": "\"solid\"" },
+      { "name": "zIndex", "type": "number | undefined", "required": false, "default": "1500" }
+    ],
+    "events": [
+      { "name": "close", "type": "[]" },
+      { "name": "open", "type": "[]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "update:open", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "content", "type": "{}" },
+      { "name": "default", "type": "{}" }
+    ],
+    "methods": [
+      { "name": "close", "type": "() => void" },
+      { "name": "toggle", "type": "() => void" }
+    ]
+  },
+  "Upload": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "accept", "type": "string | undefined", "required": false, "default": "\"*\"" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "labels", "type": "Labels | undefined", "required": false, "default": "{}" },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "maxCount", "type": "number | undefined", "required": false },
+      { "name": "maxSize", "type": "number | undefined", "required": false },
+      { "name": "multiple", "type": "boolean | undefined", "required": false },
+      { "name": "replace", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "Item[] | undefined", "required": false, "default": "[]" }
+    ],
+    "events": [
+      { "name": "change", "type": "[items: Item[]]" },
+      { "name": "error", "type": "[error: unknown]" },
+      { "name": "filesSelected", "type": "[files: NativeFile[]]" },
+      { "name": "remove", "type": "[item: Item]" },
+      { "name": "retry", "type": "[item: Item]" },
+      { "name": "select", "type": "[files: NativeFile[]]" }
+    ],
+    "slots": [
+      { "name": "item", "type": "{ item: Item; }" },
+      { "name": "select", "type": "{}" }
+    ],
+    "methods": [{ "name": "selectFiles", "type": "(files: NativeFile[]) => void" }]
+  },
+  "VirtualList": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "height", "type": "number | undefined", "required": false },
+      { "name": "highPerformance", "type": "boolean | undefined", "required": false },
+      { "name": "itemHeight", "type": "number | undefined", "required": false },
+      { "name": "itemPadding", "type": "number | undefined", "required": false, "default": "8" },
+      { "name": "items", "type": "any[] | undefined", "required": false, "default": "[]" },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "loadMoreThreshold", "type": "number | undefined", "required": false, "default": "100" },
+      { "name": "maxHeight", "type": "number | undefined", "required": false },
+      { "name": "onLoadMore", "type": "(() => void | Promise<void>) | undefined", "required": false },
+      { "name": "overscan", "type": "number | undefined", "required": false, "default": "5" }
+    ],
+    "events": [
+      { "name": "itemClick", "type": "[item: any, index: number, event: unknown]" },
+      { "name": "loadError", "type": "[error: unknown]" },
+      { "name": "scroll", "type": "[top: number, event: unknown]" }
+    ],
+    "slots": [{ "name": "default", "type": "{ item: any; index: number; }" }],
+    "methods": []
+  },
+  "ConfigProvider": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "design", "type": "DesignOptions | undefined", "required": false },
+      { "name": "dir", "type": "\"ltr\" | \"rtl\" | undefined", "required": false },
+      { "name": "locale", "type": "string | undefined", "required": false },
+      { "name": "mode", "type": "ThemeMode | undefined", "required": false },
+      { "name": "palette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false },
+      { "name": "theme", "type": "NativeTheme | undefined", "required": false }
+    ],
+    "events": [{ "name": "themeChange", "type": "any[]" }],
+    "slots": [{ "name": "default", "type": "{ mode: \"light\" | \"dark\"; palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined; }" }],
+    "methods": []
+  },
+  "ThemeProvider": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "defaultPalette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false, "default": "null" },
+      { "name": "defaultTheme", "type": "ThemeMode | undefined", "required": false, "default": "\"system\"" },
+      { "name": "design", "type": "DesignOptions | undefined", "required": false },
+      { "name": "disableStorage", "type": "boolean | undefined", "required": false },
+      { "name": "locale", "type": "string | undefined", "required": false },
+      { "name": "mode", "type": "ThemeMode | undefined", "required": false },
+      { "name": "palette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false },
+      { "name": "storageKey", "type": "string | undefined", "required": false, "default": "\"minerva-theme\"" }
+    ],
+    "events": [
+      { "name": "paletteChange", "type": "any[]" },
+      { "name": "themeChange", "type": "any[]" },
+      { "name": "update:mode", "type": "any[]" },
+      { "name": "update:palette", "type": "any[]" }
+    ],
+    "slots": [
+      {
+        "name": "default",
+        "type": "{ mode: \"light\" | \"dark\"; palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined; setTheme: (v: ThemeMode) => void; setPalette: (v: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null) => void; }"
+      }
+    ],
+    "methods": [
+      { "name": "setPalette", "type": "(v: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null) => void" },
+      { "name": "setTheme", "type": "(v: ThemeMode) => void" }
+    ]
+  },
+  "CardContent": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "padding", "type": "\"medium\" | \"small\" | \"large\" | \"none\" | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "CardDescription": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "CardFooter": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "padding", "type": "\"medium\" | \"small\" | \"large\" | \"none\" | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "CardHeader": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "padding", "type": "\"medium\" | \"small\" | \"large\" | \"none\" | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "CardTitle": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "DrawerBody": { "entry": "minerva-design/uni", "props": [], "events": [], "slots": [{ "name": "default", "type": "{}" }], "methods": [] },
+  "DrawerClose": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "disabled", "type": "boolean | undefined", "required": false }],
+    "events": [{ "name": "click", "type": "[event: Event]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "DrawerContent": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnOverlayClick", "type": "boolean | undefined", "required": false },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "hiddenDescription", "type": "string | undefined", "required": false },
+      { "name": "hideCloseButton", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "overlayClassName", "type": "string | undefined", "required": false },
+      { "name": "placement", "type": "string | undefined", "required": false },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\" | undefined", "required": false },
+      { "name": "side", "type": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"full\" | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "description", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "title", "type": "{}" },
+      { "name": "trigger", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "DrawerFooter": { "entry": "minerva-design/uni", "props": [], "events": [], "slots": [{ "name": "default", "type": "{}" }], "methods": [] },
+  "DrawerHeader": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "id", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "DrawerRoot": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "open", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "openChange", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [{ "name": "default", "type": "{ open: boolean; }" }],
+    "methods": []
+  },
+  "DrawerTrigger": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "disabled", "type": "boolean | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "FormErrorMessage": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "requiredIndicator", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "FormHelperText": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "requiredIndicator", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "FormLabel": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "requiredIndicator", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "HStack": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "string | undefined", "required": false },
+      { "name": "gap", "type": "string | number | undefined", "required": false },
+      { "name": "justify", "type": "string | undefined", "required": false },
+      { "name": "wrap", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "ListItem": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "actions", "type": "string | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "primary", "type": "string | number | undefined", "required": false },
+      { "name": "secondary", "type": "string | number | null | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [{ "name": "click", "type": "[event: unknown]" }],
+    "slots": [
+      { "name": "actions", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" },
+      { "name": "leading", "type": "{}" },
+      { "name": "primary", "type": "{}" },
+      { "name": "secondary", "type": "{}" },
+      { "name": "trailing", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "ModalBody": { "entry": "minerva-design/uni", "props": [], "events": [], "slots": [{ "name": "default", "type": "{}" }], "methods": [] },
+  "ModalClose": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "disabled", "type": "boolean | undefined", "required": false }],
+    "events": [{ "name": "click", "type": "[event: Event]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "ModalContent": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnOverlayClick", "type": "boolean | undefined", "required": false },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "hiddenDescription", "type": "string | undefined", "required": false },
+      { "name": "hideCloseButton", "type": "boolean | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "overlayClassName", "type": "string | undefined", "required": false },
+      { "name": "role", "type": "\"dialog\" | \"alertdialog\" | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xlarge\" | \"full\" | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "{}" },
+      { "name": "description", "type": "{}" },
+      { "name": "footer", "type": "{}" },
+      { "name": "title", "type": "{}" },
+      { "name": "trigger", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "ModalFooter": { "entry": "minerva-design/uni", "props": [], "events": [], "slots": [{ "name": "default", "type": "{}" }], "methods": [] },
+  "ModalHeader": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "id", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "ModalRoot": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "defaultOpen", "type": "boolean | undefined", "required": false },
+      { "name": "modal", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "open", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "openChange", "type": "any[]" },
+      { "name": "update:open", "type": "any[]" }
+    ],
+    "slots": [{ "name": "default", "type": "{ open: boolean; }" }],
+    "methods": []
+  },
+  "ModalTrigger": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "disabled", "type": "boolean | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "PageHeader": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "title", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "actions", "type": "{}" },
+      { "name": "default", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "PageSection": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "PageTab": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "active", "type": "boolean | undefined", "required": false },
+      { "name": "closable", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "icon", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string", "required": true }
+    ],
+    "events": [
+      { "name": "click", "type": "[value: string]" },
+      { "name": "close", "type": "[value: string]" },
+      { "name": "select", "type": "[]" }
+    ],
+    "slots": [
+      { "name": "action", "type": "{}" },
+      { "name": "default", "type": "{}" },
+      { "name": "icon", "type": "{}" }
+    ],
+    "methods": []
+  },
+  "RadioGroup": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaDescribedby", "type": "string | undefined", "required": false },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "ariaLabelledby", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "\"success\" | \"warning\" | \"danger\" | \"primary\" | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | number | undefined", "required": false },
+      { "name": "direction", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "default": "\"vertical\"" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "error", "type": "boolean | undefined", "required": false },
+      { "name": "helperText", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "invalid", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "modelValue", "type": "string | number | null | undefined", "required": false },
+      { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "options", "type": "{ value: string | number; label: string; disabled?: boolean | undefined; }[] | undefined", "required": false, "default": "[]" },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "required", "type": "boolean | undefined", "required": false },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false },
+      { "name": "value", "type": "string | number | null | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[value: string | number, event?: unknown]" },
+      { "name": "update:modelValue", "type": "[value: string | number]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "RatingScale": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "dimensions", "type": "{ key: string; label: string; value: number; hint?: string | undefined; }[] | undefined", "required": false, "default": "[]" },
+      { "name": "max", "type": "number | undefined", "required": false, "default": "10" },
+      { "name": "readOnly", "type": "boolean | undefined", "required": false },
+      { "name": "showValue", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "size", "type": "string | undefined", "required": false }
+    ],
+    "events": [{ "name": "change", "type": "any[]" }],
+    "slots": [],
+    "methods": []
+  },
+  "SelectGroup": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "SelectLabel": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "SelectSeparator": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "StatCard": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "trend", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Tab": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "closable", "type": "boolean | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "string", "required": true }
+    ],
+    "events": [
+      { "name": "click", "type": "[value: string]" },
+      { "name": "close", "type": "[value: string]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TabList": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "loop", "type": "boolean | undefined", "required": false, "default": "true" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TabPanel": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "string", "required": true }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableBody": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableCell": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableCellContent": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "maxWidth", "type": "string | number | undefined", "required": false, "default": "360" },
+      { "name": "monospace", "type": "boolean | undefined", "required": false },
+      { "name": "primary", "type": "string | undefined", "required": false },
+      { "name": "secondary", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableHead": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableHeader": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableRoot": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "scroll", "type": "{ x?: number | undefined; y?: number | undefined; } | undefined", "required": false },
+      { "name": "size", "type": "string | undefined", "required": false },
+      { "name": "variant", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "TableRow": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "Toolbar": {
+    "entry": "minerva-design/uni",
+    "props": [{ "name": "label", "type": "string | undefined", "required": false }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "VStack": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "string | undefined", "required": false },
+      { "name": "gap", "type": "string | number | undefined", "required": false },
+      { "name": "justify", "type": "string | undefined", "required": false },
+      { "name": "wrap", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "SelectItem": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "label", "type": "string | undefined", "required": false },
+      { "name": "textValue", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string", "required": true }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "ConfirmDialog": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "cancelLabel", "type": "string | undefined", "required": false },
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "\"warning\" | \"danger\" | \"primary\" | undefined", "required": false },
+      { "name": "confirmDisabled", "type": "boolean | undefined", "required": false },
+      { "name": "confirmLabel", "type": "string | undefined", "required": false },
+      { "name": "description", "type": "string | undefined", "required": false },
+      { "name": "loading", "type": "boolean | undefined", "required": false },
+      { "name": "onConfirm", "type": "(() => void | Promise<void>) | undefined", "required": false },
+      { "name": "open", "type": "boolean | undefined", "required": false },
+      { "name": "title", "type": "string", "required": true }
+    ],
+    "events": [
+      { "name": "cancel", "type": "[]" },
+      { "name": "error", "type": "[error: unknown]" },
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "update:open", "type": "[open: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "ConfirmProvider": {
+    "entry": "minerva-design/uni",
+    "props": [],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": [{ "name": "confirm", "type": "(options: ConfirmOptions) => Promise<boolean>" }]
+  },
+  "ContextMenu": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "closeOnSelect", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "dir", "type": "\"ltr\" | \"rtl\" | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "items", "type": "MenuEntry[] | undefined", "required": false, "default": "[]" },
+      { "name": "loop", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "modal", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "size", "type": "\"medium\" | \"small\" | undefined", "required": false, "default": "\"medium\"" }
+    ],
+    "events": [
+      { "name": "openChange", "type": "[open: boolean]" },
+      { "name": "select", "type": "[item: MenuEntry]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "GridItem": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "columnSpan", "type": "number | undefined", "required": false },
+      { "name": "fullWidth", "type": "boolean | undefined", "required": false },
+      { "name": "rowSpan", "type": "number | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "PaletteToggle": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "labels", "type": "Partial<Record<\"default\" | \"editorial\" | \"tech\" | \"graphite\" | \"cool\", string>> | undefined", "required": false },
+      { "name": "palettes", "type": "(\"editorial\" | \"tech\" | \"graphite\" | \"cool\")[] | undefined", "required": false, "default": "[...PALETTES]" },
+      { "name": "showDefault", "type": "boolean | undefined", "required": false },
+      { "name": "value", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "any[]" },
+      { "name": "update:modelValue", "type": "any[]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
+  "PopoverAnchor": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "asChild", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "PopoverContent": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "\"start\" | \"end\" | \"center\" | undefined", "required": false, "default": "\"center\"" },
+      { "name": "alignOffset", "type": "number | undefined", "required": false, "default": "0" },
+      { "name": "arrow", "type": "boolean | undefined", "required": false },
+      { "name": "collisionPadding", "type": "number | undefined", "required": false, "default": "8" },
+      { "name": "dismissLayer", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "forceMount", "type": "boolean | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "matchAnchorWidth", "type": "false | \"min\" | \"exact\" | undefined", "required": false, "default": "false" },
+      { "name": "portal", "type": "boolean | undefined", "required": false, "default": "false" },
+      { "name": "role", "type": "string | undefined", "required": false },
+      { "name": "side", "type": "Side | undefined", "required": false },
+      { "name": "sideOffset", "type": "number | undefined", "required": false, "default": "6" }
+    ],
+    "events": [
+      { "name": "closeAutoFocus", "type": "[event: Event]" },
+      { "name": "escapeKeyDown", "type": "[event: KeyboardEvent]" },
+      { "name": "focusOutside", "type": "[event: Event]" },
+      { "name": "interactOutside", "type": "[event: Event]" },
+      { "name": "openAutoFocus", "type": "[event: Event]" },
+      { "name": "pointerDownOutside", "type": "[event: Event]" }
+    ],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": [
+      { "name": "element", "type": "any" },
+      { "name": "measure", "type": "() => void" }
+    ]
+  },
+  "PopoverTrigger": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "asChild", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "PopoverClose": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "asChild", "type": "boolean | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "SkeletonText": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animated", "type": "boolean | undefined", "required": false },
+      { "name": "animation", "type": "\"false\" | \"wave\" | \"pulse\" | undefined", "required": false },
+      { "name": "gap", "type": "string | number | undefined", "required": false, "default": "2" },
+      { "name": "lastLineWidth", "type": "string | undefined", "required": false },
+      { "name": "lineHeight", "type": "string | number | undefined", "required": false, "default": "\"1em\"" },
+      { "name": "lines", "type": "number | undefined", "required": false, "default": "3" },
+      { "name": "shrinkLast", "type": "boolean | undefined", "required": false, "default": "true" }
+    ],
+    "events": [],
+    "slots": [],
+    "methods": []
+  },
+  "ToastProvider": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "closeLabel", "type": "string | undefined", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false, "default": "Infinity" },
+      { "name": "pauseOnHover", "type": "boolean | undefined", "required": false, "default": "true" },
+      { "name": "position", "type": "string | undefined", "required": false, "default": "\"top-right\"" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": [
+      {
+        "name": "toast",
+        "type": "((options: ToastOptions) => ToastId) & { dismiss: (id?: ToastId | undefined) => void; update: (id: ToastId, options: Omit<ToastOptions, \"id\">) => void; info: (title: string, options?: ToastOptions) => ToastId; success: (title: string, options?: ToastOptions) => ToastId; warning: (title: string, options?: ToastOptions) => ToastId; danger: (title: string, options?: ToastOptions) => ToastId; loading: (title: string, options?: ToastOptions) => ToastId; promise<T>(promise: Promise<T>, messages: ToastMessages<T>, options?: ToastOptions): Promise<T>; }"
+      }
+    ]
+  },
+  "TooltipProvider": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "enterDelay", "type": "number | undefined", "required": false, "default": "200" },
+      { "name": "leaveDelay", "type": "number | undefined", "required": false, "default": "0" },
+      { "name": "skipDelay", "type": "number | undefined", "required": false, "default": "300" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  }
+}

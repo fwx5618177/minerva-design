@@ -1,8 +1,8 @@
 {
   "title": "Platform support",
-  "description": "React and Web Components, native Vue, Angular and React Native implementations, plus the initial Taro / WeChat / uni-app controls. The matrix reports source implementation, not npm publication.",
+  "description": "Source implementation coverage for React, Web Components, Vue, Angular, React Native, Taro, WeChat and uni-app. This matrix does not indicate npm publication or complete API, visual or device parity.",
   "platformsTitle": "Platforms",
-  "platformsText": "Every component is described once in a platform-neutral contract (props, events, slots). Each renderer implements the contracts with its own components; the shared contract tests check that they behave the same.",
+  "platformsText": "Shared contracts describe component props, events and slots. Each renderer implements the behavior using its platform primitives. A source implementation can still have API and interaction gaps; consult the matrix notes and platform manifests for its tested scope.",
   "platform": "Platform",
   "components": "Components",
   "platforms": {
@@ -12,7 +12,7 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "Lit custom elements for any web framework; Vue also has native SFCs and Angular has an initial standalone subset."
+      "text": "Lit custom elements for web frameworks. Vue and Angular also provide native framework components through their own entries."
     },
     "vue": {
       "name": "Vue",
@@ -20,23 +20,23 @@
     },
     "angular": {
       "name": "Angular",
-      "text": "Native standalone components: configuration, Button, Switch and Modal (minerva-design/angular)."
+      "text": "Native standalone Angular components (minerva-design/angular). See the matrix for each component’s implementation status."
     },
     "native": {
       "name": "React Native",
-      "text": "React Native components for iOS and Android (with Expo)."
+      "text": "React Native components for iOS and Android with Expo. Expo Go 57.0.9 simulator checks cover iOS 26.1 and Android 16: input, tables, menus, WebView and virtual lists; Android system document selection and clipboard copy/paste also passed. Physical devices and standalone release installation remain unverified."
     },
     "taro": {
       "name": "Taro",
-      "text": "Taro components for mini-programs and H5. Initial native Button / Input / Switch; remaining components are planned."
+      "text": "Taro components for mini-programs and H5. The main entry passes the official Taro 4.3 WeChat compiler fixture. H5 keyboard, focus, uploads and sandboxed previews have Chromium coverage; minerva-design/taro/monaco is an optional H5 entry using an application-supplied Monaco engine. Mini-program hosts cannot run Monaco."
     },
     "weapp": {
       "name": "WeChat",
-      "text": "Native WeChat mini-program components. Initial native Button / Input / Switch; remaining components are planned."
+      "text": "Native WeChat component definitions, with composition parts expressed through parent properties or slots where documented. Selected interactions have been exercised in the WeChat DevTools simulator. This is not physical-device or complete API verification. Monaco cannot run in the native WeChat component host."
     },
     "uni": {
       "name": "uni-app",
-      "text": "uni-app components for mini-programs, apps and H5. Initial native Button / Input / Switch; remaining components are planned."
+      "text": "uni-app source SFCs compiled with the official uni-app 5.31 Vue 3 compiler for WeChat; the fixture registers all library SFCs except H5-only Monaco. H5 has keyboard, modal focus, portals, file input, sandboxed preview and optional minerva-design/uni/monaco support. The application supplies the Monaco engine; native mini-program hosts cannot run it."
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "N/A"
   },
   "legend": {
-    "stable": "Implemented and covered by shared contract tests. Does not indicate a published npm release.",
-    "beta": "Implemented initial API; coverage varies by platform. Check the notes for scope and validation limits.",
+    "stable": "Implemented with automated validation for its documented scope. Does not indicate a published npm release or complete cross-platform parity.",
+    "beta": "Implemented with platform-specific scope and remaining API or validation gaps. Read its matrix note and manifest before adopting it.",
     "planned": "on the roadmap, not available yet.",
     "na": "not a component on this platform by design: the platform covers it another way (hover the badge for details)."
   },
@@ -68,7 +68,20 @@
   "tracks": "Tracks",
   "contractsTitle": "Component contracts",
   "contractsText": "The matrix is generated from the component contracts: metadata extracted from the React props types and the Custom Elements Manifest (props with their kinds, enum values and defaults, events with their detail fields, slots, tracks and the support of every platform). A test fails when a prop, attribute or event changes without regenerating them, and when React and the custom elements disagree on enum values or defaults.",
-  "testsText": "The same contract test suites (presses, controlled and uncontrolled state, selection, dialogs, toasts, translations, design tokens) run against every renderer through a driver per platform; a new renderer becomes stable once its driver passes them.",
+  "testsText": "Shared contract tests, renderer unit tests and real Chromium checks cover documented interactions, translations and tokens. Independent CI fixtures compile the Taro main entry and uni-app SFCs with the official WeChat target SDKs. WeChat DevTools 2.01.2510280 / base library 3.17.2 simulator checks recorded button/retry, disabled choices, selection, modal opening and scoped themes. A recheck verified native keyboard input hello and controlled uppercase feedback HELLO. Deprecated system-info and component WXSS selector warnings were fixed and disappeared after recompilation. Tourist-account automator RPC timed out and the platform security-info API still reports errors. Physical devices, other platform targets and all platform APIs remain unverified; simulator evidence does not establish complete visual or API parity.",
   "quickStartTitle": "Native framework and mini-program quick start",
-  "quickStartText": "Angular currently exports configuration, Button, Switch and Modal with its parts. Taro, WeChat and uni-app initially implement Button, Input and Switch, with a subset of the web API. Use the platform entry; do not import the React DOM root on mobile. Taro uses React 18; the web root requires React 19. Tests use Taro H5 hosts, WeChat simulation and uni-app host shims; device builds are not yet validated. uni-app ships source SFCs for its own platform compiler."
+  "quickStartText": "Import the platform entry and follow its peer dependencies and host adapter requirements. uni-app ships source SFCs for its platform compiler. Optional H5 Monaco entries are minerva-design/taro/monaco and minerva-design/uni/monaco; provide the locally installed Monaco engine and configure its workers in your application. They are not native mini-program editors. Official WeChat-target SDK compilation is verified separately from H5/browser testing and the documented DevTools simulator flows; physical-device validation is still required.",
+  "api": {
+    "title": "Mini-program component API",
+    "description": "Choose a platform and component to view its current properties, events and slots. React callbacks, Vue events and WeChat event.detail follow their host conventions. Native host props may only apply to particular target platforms. See the support matrix for composition equivalents and unsupported components.",
+    "platform": "API platform",
+    "component": "API component",
+    "props": "Properties",
+    "events": "Events",
+    "slots": "Slots",
+    "methods": "Exposed instance API",
+    "loading": "Loading API…",
+    "error": "Unable to load the API. Reload this page to retry.",
+    "weapp": "Use bind:event=\"handler\" to receive event.detail. Obtain an instance with selectComponent to call its public methods; function callbacks belong in configure(options), not WXML properties."
+  }
 }

@@ -1,11 +1,14 @@
-// `minerva-input` fires on every keystroke with detail.value; `change` /
-// `minerva-change` when the value is committed (blur / Enter).
+// Web Components emit their next value in CustomEvent.detail.
+// The owner writes it back through the element's value property.
 export function setup(root: HTMLElement) {
-  const input = root.querySelector<HTMLElement>("#in-name")!;
-  const echo = root.querySelector<HTMLOutputElement>("#in-name-echo")!;
+  const input = root.querySelector<HTMLElement & { value: string }>(
+    "#controlled-name",
+  )!;
+  let value = "";
+  input.value = value;
   const onInput = (event: Event) => {
-    const { value } = (event as CustomEvent<{ value: string }>).detail;
-    echo.value = value ? `Hello, ${value}!` : "Hello!";
+    value = (event as CustomEvent<{ value: string }>).detail.value;
+    input.value = value;
   };
   input.addEventListener("minerva-input", onInput);
   return () => input.removeEventListener("minerva-input", onInput);

@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { createContext, useContext, type ReactNode } from "react";
 import {
   Pressable,
@@ -99,24 +100,25 @@ export interface RadioProps extends Omit<
  * the group's and a press selects it; standalone it is a checked /
  * defaultChecked toggle that a press can only turn on.
  */
-export function Radio({
-  checked,
-  defaultChecked = false,
-  onChange,
-  disabled = false,
-  value,
-  size: sizeProp,
-  color: colorProp,
-  label,
-  children,
-  error: errorProp = false,
-  labelPlacement = "end",
-  style,
-  labelStyle,
-  accessibilityState,
-  hitSlop,
-  ...rest
-}: RadioProps) {
+export function Radio(props: RadioProps) {
+  const {
+    checked,
+    defaultChecked = false,
+    onChange,
+    disabled = false,
+    value,
+    size: sizeProp,
+    color: colorProp,
+    label,
+    children,
+    error: errorProp = false,
+    labelPlacement = "end",
+    style,
+    labelStyle,
+    accessibilityState,
+    hitSlop,
+    ...rest
+  } = useFormControlProps(props);
   const { tokens: t, fonts } = useTheme();
   const group = useContext(RadioGroupContext);
   const inGroup = group !== null && value !== undefined;

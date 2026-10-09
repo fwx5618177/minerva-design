@@ -58,7 +58,7 @@ describe("buildSearchItems", () => {
       "Show the docs in HTML",
     ]);
     expect(frameworks[1].group).toBe("Framework");
-    expect(rankSearchItems(items, "angular")[0].id).toBe("wc-angular");
+    expect(rankSearchItems(items, "angular")[0].id).toBe("angular");
     expect(rankSearchItems(items, "angular").map((item) => item.id)).toContain(
       `${FRAMEWORK_ITEM_PREFIX}angular`,
     );

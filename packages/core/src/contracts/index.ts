@@ -20,27 +20,7 @@ import type {
 } from "./types";
 
 export type * from "./types";
-
-/** Every renderer, in display order (existing first, then planned) */
-export const PLATFORMS: readonly Platform[] = [
-  "react",
-  "wc",
-  "vue",
-  "angular",
-  "native",
-  "taro",
-  "weapp",
-  "uni",
-];
-
-export const SUPPORT_STATUSES: readonly SupportStatus[] = [
-  "stable",
-  "beta",
-  "planned",
-  "n/a",
-];
-
-export const TRACKS: readonly Track[] = ["toB", "toC"];
+export { PLATFORMS, SUPPORT_STATUSES, TRACKS } from "./constants";
 
 /** Every component contract, sorted by name */
 export const componentContracts =

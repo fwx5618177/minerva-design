@@ -1,3 +1,4 @@
+import { Button } from "minerva-design";
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
@@ -81,17 +82,22 @@ const TopNav: React.FC<TopNavProps> = ({ onSearch, withMenu = true }) => {
           </ul>
         </nav>
         <div className={styles.headerActions}>
-          <button
+          <Button
+            variant="ghost"
+            color="neutral"
+            size="small"
             type="button"
             className={styles.searchButton}
             onClick={onSearch}
             aria-label={t("search.title")}
             aria-keyshortcuts="Meta+K Control+K"
+            startIcon={
+              <IoSearchOutline aria-hidden className={styles.searchIcon} />
+            }
+            endIcon={<Kbd className={styles.searchKbd}>{modKeyLabel()}</Kbd>}
           >
-            <IoSearchOutline aria-hidden className={styles.searchIcon} />
             <span className={styles.searchLabel}>{t("search.button")}</span>
-            <Kbd className={styles.searchKbd}>{modKeyLabel()}</Kbd>
-          </button>
+          </Button>
           <a
             href={GITHUB_URL}
             className={styles.iconButton}

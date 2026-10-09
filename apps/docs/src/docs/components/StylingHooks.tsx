@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -31,27 +39,27 @@ const Table: React.FC<{
     role="region"
     aria-label={label}
   >
-    <table className={styles.propsTable}>
-      <thead>
-        <tr>
+    <TableRoot className={styles.propsTable}>
+      <TableHead>
+        <TableRow>
           {head.map((cell, index) => (
-            <th scope="col" key={index}>
+            <TableHeader scope="col" key={index}>
               {cell}
-            </th>
+            </TableHeader>
           ))}
-        </tr>
-      </thead>
-      <tbody>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {rows.map((cells, index) => (
-          <tr key={index}>
-            <th scope="row">{cells[0]}</th>
+          <TableRow key={index}>
+            <TableHeader scope="row">{cells[0]}</TableHeader>
             {cells.slice(1).map((cell, i) => (
-              <td key={i}>{cell}</td>
+              <TableCell key={i}>{cell}</TableCell>
             ))}
-          </tr>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </TableRoot>
   </div>
 );
 

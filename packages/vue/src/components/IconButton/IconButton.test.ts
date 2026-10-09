@@ -151,3 +151,14 @@ describe("IconButton", () => {
     expect((wrapper.vm.$el as HTMLElement).tagName).toBe("BUTTON");
   });
 });
+
+it("shows its label on focus and allows tooltip opt-out", async () => {
+  const user = userEvent.setup();
+  const view = render(IconButton, {
+    props: { label: "Settings", tooltip: { enterDelay: 0 } },
+  });
+  await user.tab();
+  expect(await screen.findByRole("tooltip")).toHaveTextContent("Settings");
+  await view.rerender({ showTooltip: false });
+  expect(screen.queryByRole("tooltip")).toBeNull();
+});

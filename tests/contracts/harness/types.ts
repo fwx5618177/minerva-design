@@ -1,6 +1,6 @@
 // The platform-neutral driver API of the contract suites. Every renderer
-// (React DOM and Web Components today; Vue, Angular, React Native, Taro,
-// WeChat and uni-app later) implements `Driver` once; the suites in
+// (React DOM, Web Components, Vue, Angular and React Native; mini hosts
+// additionally run their renderer-specific shared-contract suites) implements `Driver` once; the suites in
 // ../suites are written once against it and the component contracts of
 // @minerva/core/contracts.
 import type {
@@ -103,20 +103,10 @@ export interface Driver {
   tokenVar(el: Element, name: string): string;
   /** The CSS this platform applies to a component (stylesheet text) */
   stylesheet(component: string): string;
+  /** Flattened host style objects on platforms without CSS. */
+  nativeStyle?(el: Element): Record<string, unknown>;
 
   services: { toast: ToastService };
-}
-
-/**
- * A contract behaviour that genuinely differs on one platform: the suite
- * runs it as `it.fails` (still checked: it must keep failing) with the
- * documented reason.
- */
-export interface ExpectedDifference {
-  platform: Platform;
-  /** `<suite> > <test title>` */
-  test: string;
-  reason: string;
 }
 
 export type ContractLookup = (name: string) => ComponentContract;

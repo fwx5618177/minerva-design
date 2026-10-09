@@ -9,7 +9,7 @@ import {
   computed,
   inject,
   input,
-  model,
+  output,
   signal,
   viewChild,
 } from "@angular/core";
@@ -226,15 +226,23 @@ const optionalBoolean = (value: unknown): boolean | undefined =>
   `,
 })
 export class MnSwitch extends MnFormValueControl<boolean> {
-  /** Checked state (two-way: `[(checked)]`) */
-  readonly checked = model<boolean | undefined>(undefined);
+  /**
+   * Checked state. Bound (`[checked]`), the parent owns it: a toggle only
+   * emits `checkedChange` (two-way `[(checked)]` accepts it, React's
+   * controlled mode); unbound, the switch owns its state (`defaultChecked`)
+   */
+  readonly checked = input<boolean | undefined, unknown>(undefined, {
+    transform: optionalBoolean,
+  });
+  /** The user toggled the switch (the requested state) */
+  readonly checkedChange = output<boolean>();
   /** Initial state when `checked` is not bound @default false */
   readonly defaultChecked = input(false, { transform: booleanAttribute });
   /** Disables the switch (an explicit `false` opts out of the field's disabled state) */
   readonly disabled = input<boolean | undefined, unknown>(undefined, {
     transform: optionalBoolean,
   });
-  /** Explicit standalone validation and form states. */
+  /** Standalone validation and form states. */
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly required = input(false, { transform: booleanAttribute });
   readonly readOnly = input(false, { transform: booleanAttribute });
@@ -304,11 +312,14 @@ export class MnSwitch extends MnFormValueControl<boolean> {
       createSwitchMachine({
         defaultChecked: this.defaultChecked(),
         onCheckedChange: (checked) => {
-          this.checked.set(checked);
+          this.checkedChange.emit(checked);
           this.notifyChange(checked);
         },
       }),
-    () => ({ checked: this.checked(), disabled: this.blocked() }),
+    () => ({
+      checked: this.checked() ?? this.formValue(),
+      disabled: this.blocked(),
+    }),
   );
   protected readonly state = this.machine.state;
 
@@ -376,8 +387,8 @@ export class MnSwitch extends MnFormValueControl<boolean> {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.rippleTimer));
   }
 
-  writeValue(value: boolean): void {
-    this.checked.set(!!value);
+  protected override fromForm(value: unknown): boolean {
+    return !!value;
   }
 
   protected sideClass(on: boolean): string {

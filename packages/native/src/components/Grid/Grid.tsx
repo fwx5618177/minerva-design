@@ -1,4 +1,12 @@
-import { createContext, useContext, useMemo, type ReactNode } from "react";
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+  useMemo,
+  type ReactNode,
+} from "react";
 import {
   Pressable,
   StyleSheet,
@@ -59,6 +67,10 @@ export interface GridItemProps extends Omit<
   PressableProps,
   "children" | "style" | "disabled"
 > {
+  /** Span every column inside ResponsiveGrid or Grid. @default false */
+  fullWidth?: boolean;
+  /** Apply layout and press behavior to a single child. @default false */
+  asChild?: boolean;
   /** Icon (any element) */
   icon?: ReactNode;
   /** Text under (or next to) the icon */
@@ -84,6 +96,8 @@ interface GridContextValue {
   center: boolean;
   direction: GridDirection;
 }
+
+export const ResponsiveGridItemContext = createContext(false);
 
 const GridContext = createContext<GridContextValue>({
   columnNum: 4,
@@ -140,6 +154,8 @@ export function Grid({
 
 /** A cell of `Grid` (a button when `onPress` is set) */
 export function GridItem({
+  fullWidth = false,
+  asChild = false,
   icon,
   text,
   children,
@@ -152,8 +168,42 @@ export function GridItem({
   const { tokens: t, fonts } = useTheme();
   const { columnNum, square, gutter, border, center, direction } =
     useContext(GridContext);
+  const responsive = useContext(ResponsiveGridItemContext);
   const pressable = onPress !== undefined;
   const textual = typeof text === "string" || typeof text === "number";
+  const layoutStyle: ViewStyle = {
+    width: responsive || fullWidth ? "100%" : `${100 / columnNum}%`,
+    paddingRight: gutter,
+    paddingTop: gutter,
+    aspectRatio: square ? 1 : undefined,
+  };
+
+  if (asChild) {
+    const child = Children.only(children);
+    if (!isValidElement<PressableProps>(child)) {
+      throw new Error("GridItem asChild requires a single React element");
+    }
+    const childStyle = child.props.style;
+    const blocked = disabled || Boolean(child.props.disabled);
+    return cloneElement(child, {
+      ...rest,
+      disabled: blocked,
+      accessibilityState: {
+        ...child.props.accessibilityState,
+        ...accessibilityState,
+        disabled: blocked,
+      },
+      onPress: (event) => {
+        if (blocked) return;
+        child.props.onPress?.(event);
+        if (!event?.isDefaultPrevented?.()) onPress?.(event);
+      },
+      style:
+        typeof childStyle === "function"
+          ? (state) => [childStyle(state), layoutStyle, style]
+          : [childStyle, layoutStyle, style],
+    });
+  }
 
   const content = (pressed: boolean): ViewStyle => ({
     flex: 1,
@@ -203,15 +253,7 @@ export function GridItem({
   );
 
   return (
-    <View
-      style={{
-        width: `${100 / columnNum}%`,
-        paddingRight: gutter,
-        paddingTop: gutter,
-        aspectRatio: square ? 1 : undefined,
-      }}
-      {...part("grid", "item")}
-    >
+    <View style={layoutStyle} {...part("grid", "item")}>
       {pressable ? (
         <Pressable
           accessibilityRole="button"

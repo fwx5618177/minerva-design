@@ -1,3 +1,11 @@
+import {
+  TableRoot,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { getCssVars } from "../api";
@@ -26,28 +34,28 @@ const CssVarsTable: React.FC<CssVarsTableProps> = ({ page, folder }) => {
         role="region"
         aria-label={`${folder} ${t("doc.cssVars")}`}
       >
-        <table className={styles.propsTable}>
-          <thead>
-            <tr>
-              <th scope="col">{t("doc.variable")}</th>
-              <th scope="col">{t("doc.description")}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <TableRoot className={styles.propsTable}>
+          <TableHead>
+            <TableRow>
+              <TableHeader scope="col">{t("doc.variable")}</TableHeader>
+              <TableHeader scope="col">{t("doc.description")}</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {vars.map((cssVar) => (
-              <tr key={cssVar.name}>
-                <th scope="row">
+              <TableRow key={cssVar.name}>
+                <TableHeader scope="row">
                   <code className={styles.propName}>{cssVar.name}</code>
-                </th>
-                <td>
+                </TableHeader>
+                <TableCell>
                   {t(`docs.${page}.cssVars.${cssVar.name}`, {
                     defaultValue: cssVar.description,
                   })}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </TableRoot>
       </div>
     </div>
   );

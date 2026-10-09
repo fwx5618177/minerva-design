@@ -30,6 +30,8 @@ describe("docs site", () => {
     "home → component page → framework selector → search → dark mode",
     { timeout: 60_000 },
     async () => {
+      const errors = vi.spyOn(console, "error");
+      const warnings = vi.spyOn(console, "warn");
       const user = userEvent.setup();
       const { default: App } = await import("./App");
       render(<App />);
@@ -68,6 +70,17 @@ describe("docs site", () => {
         ),
       ).toBeInTheDocument();
 
+      const basicPreview = () =>
+        document.querySelector(
+          '[id$="demo-basic"] [data-demo-preview]',
+        ) as HTMLElement;
+      await user.click(
+        within(basicPreview()).getByRole("button", { name: "Click me" }),
+      );
+      expect(within(basicPreview()).getByRole("status")).toHaveTextContent(
+        "Clicked 1 times",
+      );
+
       // → framework selector: Vue (the choice follows the reader)
       await user.click(screen.getByRole("tab", { name: "Vue" }));
       // the native Vue renderer (minerva-design/vue)
@@ -75,6 +88,38 @@ describe("docs site", () => {
         'from "minerva-design/vue"',
       );
       expect(window.location.hash).toBe("#/button?framework=vue");
+
+      await user.click(
+        await screen.findByRole(
+          "button",
+          { name: "Click me" },
+          { timeout: ROUTE_TIMEOUT },
+        ),
+      );
+      expect(within(basicPreview()).getByRole("status")).toHaveTextContent(
+        "Clicked 1 times",
+      );
+      // The same action remains available in the native phone preview.
+      await user.click(screen.getByRole("tab", { name: "React Native" }));
+      const nativeButton = await screen.findByRole(
+        "button",
+        { name: "Click me" },
+        { timeout: ROUTE_TIMEOUT },
+      );
+      await user.click(nativeButton);
+      expect(within(basicPreview()).getByRole("status")).toHaveTextContent(
+        "Clicked 1 times",
+      );
+      for (const theme of ["Dark", "GitHub Dark", "Light"]) {
+        await user.click(screen.getByRole("button", { name: /^Theme:/ }));
+        await user.click(
+          await screen.findByRole("menuitemradio", { name: theme }),
+        );
+        const frame = screen.getByRole("figure", { name: "Basic usage" });
+        if (theme === "Light") expect(frame).not.toHaveAttribute("data-dark");
+        else expect(frame).toHaveAttribute("data-dark", "true");
+      }
+      await user.click(screen.getByRole("tab", { name: "Vue" }));
 
       // → search (⌘K) to another page
       await user.keyboard("{Meta>}k{/Meta}");
@@ -109,6 +154,9 @@ describe("docs site", () => {
       );
       expect(await screen.findByRole("dialog")).toBeInTheDocument();
       await user.keyboard("{Escape}");
+
+      expect(errors).not.toHaveBeenCalled();
+      expect(warnings).not.toHaveBeenCalled();
 
       // unknown routes show the 404 page
       act(() => {

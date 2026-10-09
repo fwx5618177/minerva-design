@@ -1,3 +1,4 @@
+import { useFormControlProps } from "../../internal/FormControlContext";
 import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import {
   Platform,
@@ -137,38 +138,39 @@ const REPEAT_MS = 120;
  * decrement / increment buttons (hold to repeat), screen-reader adjustable
  * actions, min / max / step / precision.
  */
-export function NumberInput({
-  value,
-  defaultValue = null,
-  onChange,
-  min,
-  max,
-  step = 1,
-  precision,
-  size = "medium",
-  invalid = false,
-  disabled = false,
-  readOnly = false,
-  showStepper = false,
-  stepperLayout = "inline",
-  allowEmpty = true,
-  incrementLabel,
-  decrementLabel,
-  label,
-  style,
-  inputStyle,
-  onFocus,
-  onBlur,
-  onSubmitEditing,
-  onChangeText,
-  accessibilityLabel,
-  accessibilityHint,
-  accessibilityState,
-  keyboardType,
-  placeholderTextColor,
-  ref,
-  ...rest
-}: NumberInputProps) {
+export function NumberInput(componentProps: NumberInputProps) {
+  const {
+    value,
+    defaultValue = null,
+    onChange,
+    min,
+    max,
+    step = 1,
+    precision,
+    size = "medium",
+    invalid = false,
+    disabled = false,
+    readOnly = false,
+    showStepper = false,
+    stepperLayout = "inline",
+    allowEmpty = true,
+    incrementLabel,
+    decrementLabel,
+    label,
+    style,
+    inputStyle,
+    onFocus,
+    onBlur,
+    onSubmitEditing,
+    onChangeText,
+    accessibilityLabel,
+    accessibilityHint,
+    accessibilityState,
+    keyboardType,
+    placeholderTextColor,
+    ref,
+    ...rest
+  } = useFormControlProps(componentProps);
   const { tokens: t, fonts } = useTheme();
   const { t: translate } = useI18n();
   const props: NumberStepperProps = {

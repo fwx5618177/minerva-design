@@ -44,7 +44,7 @@ describe("platform support page", () => {
     const button = table.getByRole("rowheader", { name: /^Button/ });
     expect(within(button).getByRole("link")).toHaveAttribute("href", "/button");
     const cells = within(button.closest("tr")!).getAllByRole("cell");
-    // tracks, react, wc, then the planned renderers
+    // Product tracks followed by the shared renderer display order.
     expect(cells.map((c) => c.textContent)).toEqual([
       "toB, toC",
       "Stable",

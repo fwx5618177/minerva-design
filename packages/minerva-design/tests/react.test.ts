@@ -265,17 +265,27 @@ describe("minerva-design React entries (dist/react)", () => {
       conditional("./utils").require,
     ]) {
       const code = readFileSync(dist(file), "utf8");
-      // only the shared core: no import of a "use client" module
+      // Shared core and the SSR-safe sanitizer: no client component imports.
       const specifiers = Array.from(
         code.matchAll(/(?:from\s*|require\()["']([^"']+)["']/g),
         (m) => m[1],
       );
       expect(
-        specifiers.filter((s) => !/^\.\.\/(core|dom)\/index\.c?js$/.test(s)),
+        specifiers.filter(
+          (s) =>
+            !/^\.\.\/(core|dom)\/index\.c?js$/.test(s) &&
+            !/^\.\/components\/HtmlPreview\/previewDocument\.c?js$/.test(s),
+        ),
         file,
       ).toEqual([]);
     }
     for (const mod of [esm, cjs]) {
+      const document = mod.previewDocument(
+        '<script>unsafe()</script><a href="https://example.com">Leave</a>',
+      );
+      expect(document).toContain("script-src 'none'");
+      expect(document).toContain("<body></body>");
+      expect(document).not.toContain("unsafe()");
       expect(mod.cn("a", false, { b: true }, ["c"])).toBe("a b c");
       for (const data of [
         mod.themes,

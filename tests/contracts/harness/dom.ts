@@ -95,6 +95,7 @@ function composedText(node: Node): string {
   if (node.nodeType === 3) return node.textContent ?? "";
   if (node.nodeType !== 1 && node.nodeType !== 11) return "";
   const el = node as Element;
+  if (el.getAttribute?.("aria-hidden") === "true") return "";
   if (el.localName === "slot")
     return slotted(el as HTMLSlotElement)
       .map(composedText)

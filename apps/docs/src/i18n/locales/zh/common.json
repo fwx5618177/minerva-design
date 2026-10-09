@@ -81,15 +81,13 @@
       "readonly": "只读",
       "defaultSlot": "（默认）"
     },
-    "requiresStylesheet": "需要全局样式表——参见",
-    "requiresStylesheetLink": "安装",
     "fw": {
       "setupTitle": "安装与配置",
       "guide": "关于 {{framework}} 的更多内容：<guide>完整集成指南</guide>。",
-      "viaWebComponents": "下方为 {{framework}} 使用 Web Components 的示例。原生渲染器已实现部分组件，原生导入方式和进度见 <support>平台支持</support>。",
+      "viaWebComponents": "下方为 {{framework}} 使用 Web Components 的示例。原生渲染器已实现部分组件，原生导入方式和进度见 <support>平台支持</support>。 原生组件和内置 Angular Forms 接入见<native>原生 Angular 指南</native>。",
       "viaWebComponentsShort": "{{framework}} Web Components 示例（部分原生组件可用）",
       "setup": {
-        "register": "在入口文件中注册元素并加载设计令牌（只需一次）——",
+        "register": "在入口文件中注册元素（只需一次）——",
         "vueCompiler": "告诉 Vue 模板编译器 minerva-* 标签是自定义元素——",
         "types": "添加 {{framework}} 类型声明：模板中的属性、特性和事件都会得到类型检查与补全——",
         "angularSchema": "在每个使用自定义元素的组件中允许自定义元素——",
@@ -119,7 +117,6 @@
       },
       "unavailable": "{{framework}}：该组件暂无 Web Component 版本。详见<support>平台支持</support>。"
     },
-    "requiresStylesheetEnd": "。",
     "vue": {
       "sections": {
         "props": "属性（Props）",
@@ -134,10 +131,12 @@
     "native": {
       "unavailable": "该组件暂未在 minerva-design/native 中提供。React Native 路线图见<support>平台支持</support>。",
       "setup": "在应用根部包裹一次 <code>MinervaProvider</code>（主题、配色、设计预设、语言、安全区域）：详见 <guide>React Native 指南</guide>。",
-      "examples": "每个示例都是一个 React Native 组件（TSX），通过 react-native-web 在手机框中实时渲染；同样的代码可借助 Expo 运行在 iOS 和 Android 上。",
+      "examples": "每个示例都是一个 React Native 组件（TSX），通过 react-native-web 在手机框中实时渲染；同样的代码可借助 Expo 运行在 iOS 和 Android 上。 原生 Provider 默认使用 touch 设计预设：中号 Button 高 44px，内边距和圆角更大；Web 默认高度为 40px。颜色和字号使用相同的主题令牌。",
       "api": "React Native 组件（minerva-design/native）的属性。底层原生组件的 React Native 属性（testID、accessibilityLabel、style 等）会被透传。",
       "only": "移动端组件：仅在 minerva-design/native（React Native + Expo）中提供。"
-    }
+    },
+    "retry": "重试",
+    "previewError": "无法加载此示例"
   },
   "error": {
     "title": "糟糕！",
@@ -175,31 +174,56 @@
   "home": {
     "support": {
       "label": "支持的框架",
-      "webComponents": "Web Components："
+      "webComponents": "Web Components：",
+      "native": "原生："
     },
     "title": "打磨到位的界面组件。",
-    "subtitle": "Minerva 是一个无障碍、可主题化的组件库：React 组件开箱即用，其他框架通过标准 Web Components 使用。",
+    "subtitle": "无障碍、可主题化的 React、Vue、Angular、React Native 组件，以及 Web Components 和小程序实现。各平台已实现的 API 以支持矩阵为准。",
     "getStarted": "快速开始",
     "browse": "浏览组件",
     "installLabel": "安装命令",
     "showcase": {
-      "label": "实时预览：用 Minerva 组件构建的部署面板",
-      "title": "部署",
-      "project": "项目名称",
-      "branch": "分支",
-      "production": "生产环境",
-      "preview": "预览环境",
-      "deploy": "部署",
-      "cancel": "取消",
-      "status": {
-        "ready": "就绪",
-        "building": "构建中",
-        "canceled": "已取消"
+      "label": "组件试用区",
+      "title": "调一调，立即看到变化",
+      "description": "切换主题、调色板、间距和圆角，直接体验当前组件库的效果；示例代码同步更新。",
+      "darkMode": "深色预览",
+      "palette": "调色板",
+      "variant": "按钮样式",
+      "density": "疏密",
+      "radius": "圆角",
+      "disableButton": "禁用按钮",
+      "reset": "重置试用区",
+      "previewTitle": "你的工作区",
+      "previewDescription": "编辑名称、切换通知，再点击按钮试试。",
+      "name": "工作区名称",
+      "notifications": "接收通知",
+      "enabled": "通知已开启",
+      "disabled": "通知已关闭",
+      "tryButton": "点击体验",
+      "clicks": "点击次数",
+      "showCode": "查看示例代码",
+      "hideCode": "收起示例代码",
+      "options": {
+        "minerva": "Minerva",
+        "tech": "科技",
+        "editorial": "编辑",
+        "graphite": "石墨",
+        "cool": "清冷",
+        "solid": "实心",
+        "outline": "描边",
+        "ghost": "轻量",
+        "compact": "紧凑",
+        "standard": "标准",
+        "comfortable": "宽松",
+        "none": "直角",
+        "small": "小",
+        "medium": "中",
+        "large": "大"
       }
     },
     "featuresTitle": "需要的都有，多余的没有",
     "frameworksTitle": "一套设计语言，适配所有框架",
-    "frameworksText": "使用 React 组件，或把同样的自定义元素用在纯 HTML、Vue、Angular、Svelte 或 Solid 中。",
+    "frameworksText": "无障碍、可主题化的 React、Vue、Angular、React Native 组件，以及 Web Components 和小程序实现。各平台已实现的 API 以支持矩阵为准。",
     "quickLinksTitle": "从这里开始",
     "componentsCount": "共 {{count}} 个文档页面",
     "features": {

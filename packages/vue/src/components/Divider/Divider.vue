@@ -40,7 +40,10 @@ const hasTextOf = (children: unknown) =>
 const dividerStyle = computed<CSSProperties>(() => {
   const horizontal = props.orientation === "horizontal";
   return {
-    ...(props.thickness != null && { borderWidth: px(props.thickness) }),
+    ...(props.thickness != null && {
+      borderWidth: px(props.thickness),
+      "--_divider-thickness": px(props.thickness),
+    }),
     ...(!horizontal && props.length != null && { height: px(props.length) }),
     ...(horizontal && props.length != null && { width: px(props.length) }),
     ...(props.spacing != null && {

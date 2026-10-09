@@ -1,11 +1,11 @@
 import { defineConfig } from "vitest/config";
 
-// Planned WeChat mini-program renderer. For now: the testing spike (native
-// custom components under miniprogram-simulate, object-form load), see
-// docs/adr/0004-spike-wechat-miniprogram.md.
+// Real native definitions and templates under miniprogram-simulate.
+// These host tests do not replace WeChat device validation.
 export default defineConfig({
   test: {
     name: "weapp",
+    setupFiles: ["./src/native-test-setup.ts"],
     // miniprogram-simulate needs a DOM (happy-dom or jsdom); importing it
     // installs the Component / Behavior / wx globals.
     environment: "happy-dom",
