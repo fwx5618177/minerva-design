@@ -67,14 +67,11 @@ describe("exports map", () => {
       types: "./dist/vue/index.d.ts",
       default: "./dist/vue/index.js",
     });
-    expect(pkg.exports["./vue/monaco"]).toEqual({
-      types: "./dist/vue/monaco.d.ts",
-      default: "./dist/vue/monaco.js",
-    });
+    expect(pkg.exports["./vue/monaco"]).toBeUndefined();
     expect(pkg.exports["./vue/global"]).toEqual({
       types: "./dist/vue/global.d.ts",
     });
-    expect(VUE_SUBPATHS).toEqual(["./vue", "./vue/monaco"]);
+    expect(VUE_SUBPATHS).toEqual(["./vue"]);
     expect(Object.keys(PLANNED_RENDERERS)).not.toContain("vue");
     for (const file of ["index.js", "index.d.ts", "monaco.js", "global.d.ts"])
       expect(existsSync(join(vueDist, file)), file).toBe(true);

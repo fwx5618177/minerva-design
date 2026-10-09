@@ -8,6 +8,8 @@ import { MARKDOWN, at, codeBlocks, type CodeBlock } from "./utils";
 import { htmlProblems } from "./html-check";
 
 const PATHS: Record<string, string[]> = {
+  "minerva-design/vue": ["packages/vue/src/index.ts"],
+  "minerva-design/angular": ["packages/angular/src/index.ts"],
   "minerva-design": ["packages/react/src/index.ts"],
   "minerva-design/theme-utils": ["packages/react/src/theme-utils.ts"],
   "minerva-design/utils": ["packages/react/src/utils-entry.ts"],
@@ -34,6 +36,8 @@ const GENERATED_TYPINGS =
 
 /** Framework APIs the examples use (not dependencies of this repository) */
 const FRAMEWORKS = `
+declare module "*.vue" { const component: import("vue").Component; export default component; }
+
 declare module "next/headers" {
   export function headers(): Promise<Headers>;
 }

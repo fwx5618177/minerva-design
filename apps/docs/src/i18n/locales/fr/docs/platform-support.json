@@ -1,6 +1,6 @@
 {
   "title": "Plateformes prises en charge",
-  "description": "Quels composants Minerva sont disponibles sur quelle plateforme : React et Web Components aujourd'hui, des moteurs de rendu natifs Vue, Angular, React Native, Taro, mini-programme WeChat et uni-app prévus.",
+  "description": "React et Web Components, implémentations natives Vue, Angular et React Native, ainsi que les premiers composants Taro, WeChat et uni-app. La matrice indique les sources implémentées, pas les versions publiées sur npm.",
   "platformsTitle": "Plateformes",
   "platformsText": "Chaque composant est décrit une seule fois dans un contrat indépendant de la plateforme (props, événements, slots). Chaque moteur de rendu implémente les contrats avec ses propres composants ; les tests de contrat partagés vérifient qu'ils se comportent de la même façon.",
   "platform": "Plateforme",
@@ -12,15 +12,15 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "Éléments personnalisés Lit pour n'importe quel framework, ou sans framework (minerva-design/web-components). Vue et Angular les utilisent en attendant leurs moteurs de rendu natifs."
+      "text": "Éléments personnalisés Lit pour les frameworks web ; Vue propose aussi des SFC natifs et Angular un premier ensemble de composants standalone."
     },
     "vue": {
       "name": "Vue",
-      "text": "Composants Vue 3 natifs."
+      "text": "SFC natifs Vue 3 (minerva-design/vue), avec des démonstrations et des tableaux API dédiés."
     },
     "angular": {
       "name": "Angular",
-      "text": "Composants Angular natifs."
+      "text": "Composants standalone natifs : configuration, Button, Switch et Modal (minerva-design/angular)."
     },
     "native": {
       "name": "React Native",
@@ -28,15 +28,15 @@
     },
     "taro": {
       "name": "Taro",
-      "text": "Composants Taro pour les mini-programmes et le H5."
+      "text": "Composants Taro pour les mini-programmes et le H5. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
     },
     "weapp": {
       "name": "WeChat",
-      "text": "Composants natifs de mini-programme WeChat."
+      "text": "Composants natifs de mini-programme WeChat. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
     },
     "uni": {
       "name": "uni-app",
-      "text": "Composants uni-app pour les mini-programmes, les applications et le H5."
+      "text": "Composants uni-app pour les mini-programmes, les applications et le H5. Première implémentation native de Button, Input et Switch ; les autres composants sont prévus."
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "Sans objet"
   },
   "legend": {
-    "stable": "disponible et couvert par les tests de contrat.",
-    "beta": "disponible ; l'API peut encore changer.",
+    "stable": "Implémenté et couvert par des tests de contrat partagés. Cela ne signifie pas que le package est publié sur npm.",
+    "beta": "API initiale implémentée ; la couverture varie selon la plateforme. Consultez les notes pour les limites et la validation.",
     "planned": "prévu dans la feuille de route, pas encore disponible.",
     "na": "pas un composant sur cette plateforme, par conception : la plateforme le couvre autrement (survolez le badge pour les détails)."
   },
@@ -68,5 +68,7 @@
   "tracks": "Types",
   "contractsTitle": "Contrats de composants",
   "contractsText": "La matrice est générée à partir des contrats de composants : des métadonnées extraites des types de props React et du Custom Elements Manifest (props avec leur nature, leurs valeurs énumérées et leurs valeurs par défaut, événements avec les champs de leur detail, slots, types de produit et prise en charge de chaque plateforme). Un test échoue lorsqu'une prop, un attribut ou un événement change sans les régénérer, et lorsque React et les éléments personnalisés ne s'accordent pas sur les valeurs énumérées ou par défaut.",
-  "testsText": "Les mêmes suites de tests de contrat (clics, état contrôlé et non contrôlé, sélection, boîtes de dialogue, notifications, traductions, jetons de design) s'exécutent sur chaque moteur de rendu grâce à un driver par plateforme ; un nouveau moteur de rendu devient stable dès que son driver les réussit."
+  "testsText": "Les mêmes suites de tests de contrat (clics, état contrôlé et non contrôlé, sélection, boîtes de dialogue, notifications, traductions, jetons de design) s'exécutent sur chaque moteur de rendu grâce à un driver par plateforme ; un nouveau moteur de rendu devient stable dès que son driver les réussit.",
+  "quickStartTitle": "Premiers pas avec les frameworks natifs et les mini-programmes",
+  "quickStartText": "Angular expose la configuration, Button, Switch et Modal avec ses parties. Taro, WeChat et uni-app proposent initialement Button, Input et Switch, avec une partie de l’API web. Utilisez le point d’entrée de votre plateforme. Taro utilise React 18 ; l’entrée web principale requiert React 19. Les tests utilisent Taro H5, la simulation WeChat et des substituts de composants hôtes uni-app ; les builds sur appareil restent à valider. uni-app distribue les SFC sources pour son compilateur de plateforme."
 }

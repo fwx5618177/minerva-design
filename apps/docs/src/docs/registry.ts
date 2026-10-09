@@ -106,6 +106,7 @@ export const docPages: DocPageMeta[] = [
   { id: "platform-support", category: "gettingStarted" },
   { id: "rsc-guide", category: "gettingStarted" },
   { id: "vue", category: "gettingStarted" },
+  { id: "react-native", category: "gettingStarted" },
   { id: "theming", category: "gettingStarted", demos: ["scoped-theme"] },
   {
     id: "styling",

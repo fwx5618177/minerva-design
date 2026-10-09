@@ -23,9 +23,8 @@ export default defineConfig({
       // React Native (minerva-design/native): RNTL and react-native-web lanes
       "packages/native/vitest.config.ts",
       "packages/native/vitest.web.config.ts",
-      // planned renderers: their platform testing spikes (docs/adr)
+      // Native framework renderers and initial mini-program implementations
       "packages/vue",
-      // planned renderers: their platform testing spikes (docs/adr)
       "packages/angular",
       "packages/taro",
       "packages/weapp",

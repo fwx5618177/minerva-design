@@ -1,5 +1,13 @@
 # Minerva Component Library
 
+## Platform implementation status
+
+The main workspace now includes native Vue (`minerva-design/vue`), React Native / Expo (`minerva-design/native`) and the initial Angular subset (`minerva-design/angular`: configuration, Button, Switch, Modal and its parts). Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) currently provide Button, Input and Switch. These are initial implementations, not full parity or a claim of npm publication. See the [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) for scope, examples and validation limits.
+
+The private root is `minerva-design-workspace`; `packages/minerva-design` assembles the single published package. `packages/core` is platform-neutral; browser-specific primitives live in `packages/dom`. The public `/core` entry preserves the existing Web API. Sibling `md-*` directories are linked development worktrees with unfinished changes, not extra packages.
+
+[Code comparison and continuation report](docs/research/2026-10-09-library-comparison.md).
+
 <div align="center">
 
 [![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
@@ -46,12 +54,13 @@ One package, [`minerva-design`](https://www.npmjs.com/package/minerva-design), w
 | `minerva-design/web-components/{react,vue,svelte,solid}`                       | Framework typings of the custom elements; `minerva-design/custom-elements.json` and `minerva-design/html-custom-data.json` (VS Code) describe them for tools.                                      |
 | `minerva-design/core`, `minerva-design/styling-hooks`                          | Advanced: the framework-agnostic primitives both libraries are built on (focus scope, dismissable layers, scroll lock, roving focus, positioning, theme, i18n) and the styling hooks manifest.     |
 
-The repository is a pnpm monorepo: `packages/core` (platform-neutral), `packages/dom`, `packages/react` and `packages/web-components` hold the sources (private workspace packages; `packages/{vue,angular,native,taro,weapp,uni}` are the planned native renderers), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
+The repository is a pnpm monorepo: `packages/core` (platform-neutral), `packages/dom`, `packages/react` and `packages/web-components` hold the sources (private workspace packages; `packages/{vue,angular,native,taro,weapp,uni}` contain the native renderers at different stages of completion), `packages/minerva-design` is the published package their builds are assembled into, and `apps/docs` is the docs/demo site deployed to GitHub Pages (private).
 
 ### Architecture
 
 ```
-minerva-design/core            framework-agnostic TypeScript (DOM only)
+packages/core                 platform-neutral TypeScript
+packages/dom                  browser interaction primitives
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
         ▲ React hooks                    ▲ Lit controllers
 minerva-design               minerva-design/web-components
@@ -480,7 +489,7 @@ What the package publishes (`files` in `packages/minerva-design/package.json`; t
 | `dist/web-components/` | ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, framework typings in `types/`, `html-custom-data.json`                            |
 | package root           | `custom-elements.json`, `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                              |
 
-The workspace packages (`@minerva/core`, `@minerva/dom`, `@minerva/react`, `@minerva/web-components`, the planned renderers `@minerva/{vue,angular,native,taro,weapp,uni}` and `@minerva/docs`) are private and never published.
+The workspace packages (`@minerva/core`, `@minerva/dom`, `@minerva/react`, `@minerva/web-components`, the platform renderers `@minerva/{vue,angular,native,taro,weapp,uni}` and `@minerva/docs`) are private and never published.
 
 ## 🤝 Contributing
 

@@ -10,8 +10,8 @@
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
 //   framework typings, the Custom Elements Manifest and the VS Code data.
-// - the native Vue 3 renderer (dist/vue/, ESM only): `./vue`, the optional
-//   `./vue/monaco` entry and the `./vue/global` typings (GlobalComponents of
+// - the native Vue 3 renderer (dist/vue/, ESM only): `./vue` and
+//   `./vue/global` typings (GlobalComponents of
 //   the `app.use(MinervaVue)` plugin).
 //   node scripts/sync-package.mjs          (write)
 //   node scripts/sync-package.mjs --check  (exit 1 when out of date)
@@ -47,21 +47,10 @@ export const DUAL_SUBPATHS = {
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */
-export const VUE_SUBPATHS = ["./vue", "./vue/monaco"];
+export const VUE_SUBPATHS = ["./vue"];
 
-/**
- * Native renderers planned for later phases (private workspace packages
- * `packages/<name>`, no build output yet). Their entries are deliberately
- * NOT in the exports map until the renderer is implemented; the WeChat
- * renderer will be published through the `miniprogram` field (dist/weapp)
- * rather than an export.
- */
-export const PLANNED_RENDERERS = {
-  angular: "./angular",
-  taro: "./taro",
-  uni: "./uni",
-  weapp: "miniprogram: dist/weapp",
-};
+/** Reserved for unimplemented platform entries; all current renderers have an initial build. */
+export const PLANNED_RENDERERS = {};
 
 /**
  * `./native` (React Native + Expo): Metro (`react-native` condition, package
@@ -84,6 +73,26 @@ export function expectedExports() {
     exports[`./${name}`] = dual(base, types);
   }
   exports["./native"] = NATIVE_ENTRY;
+  exports["./angular"] = {
+    types: "./dist/angular/types/minerva-angular.d.ts",
+    default: "./dist/angular/fesm2022/minerva-angular.mjs",
+  };
+  exports["./taro"] = {
+    types: "./dist/taro/index.d.ts",
+    default: "./dist/taro/index.js",
+  };
+  exports["./uni"] = {
+    types: "./dist/uni/index.d.ts",
+    default: "./dist/uni/index.js",
+  };
+  for (const name of ["Button", "Input", "Switch"])
+    exports[`./uni/${name}.vue`] = {
+      types: `./dist/uni/${name}.vue.d.ts`,
+      default: `./dist/uni/${name}.vue`,
+    };
+  exports["./taro/style.css"] = "./dist/taro/style.css";
+  exports["./uni/style.css"] = "./dist/uni/style.css";
+  exports["./tokens.mini.css"] = "./dist/core/tokens.mini.css";
   Object.assign(exports, {
     "./style.css": "./dist/react/style.css",
     "./styles/*.css": "./dist/react/styles/*.css",
@@ -115,10 +124,6 @@ export function expectedExports() {
     "./vue": {
       types: "./dist/vue/index.d.ts",
       default: "./dist/vue/index.js",
-    },
-    "./vue/monaco": {
-      types: "./dist/vue/monaco.d.ts",
-      default: "./dist/vue/monaco.js",
     },
     "./vue/global": { types: "./dist/vue/global.d.ts" },
     "./custom-elements.json": "./custom-elements.json",

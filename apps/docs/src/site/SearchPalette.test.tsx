@@ -50,6 +50,7 @@ describe("buildSearchItems", () => {
     );
     expect(frameworks.map((item) => item.title)).toEqual([
       "Show the docs in React",
+      "Show the docs in React Native",
       "Show the docs in Vue",
       "Show the docs in Angular",
       "Show the docs in Svelte",

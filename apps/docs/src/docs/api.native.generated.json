@@ -738,6 +738,189 @@
     "kind": "alias",
     "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\""
   },
+  "native:CalendarCloseReason": {
+    "source": "native/src/components/Calendar/Calendar.tsx",
+    "description": "Why a poppable calendar closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:CalendarProps": {
+    "source": "native/src/components/Calendar/Calendar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "CalendarType",
+        "required": false,
+        "default": "\"single\"",
+        "description": "Selection type: one day, several days, or a range"
+      },
+      {
+        "name": "value",
+        "type": "CalendarValue",
+        "required": false,
+        "description": "Selected day(s) (controlled; pair with `onChange`): a `Date` (`single`), `Date[]` (`multiple`) or `[start, end]` (`range`)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "CalendarValue",
+        "required": false,
+        "default": "null",
+        "description": "Initially selected day(s) (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: CalendarValue) => void",
+        "required": false,
+        "description": "Called with the new selection (a range once both ends are picked)"
+      },
+      {
+        "name": "onSelect",
+        "type": "(date: Date) => void",
+        "required": false,
+        "description": "Called with every pressed day"
+      },
+      {
+        "name": "month",
+        "type": "Date",
+        "required": false,
+        "description": "Displayed month (controlled; any day of the month; pair with `onMonthChange`)"
+      },
+      {
+        "name": "defaultMonth",
+        "type": "Date",
+        "required": false,
+        "default": "the month of the first selected day, else of today",
+        "description": "Initially displayed month (uncontrolled)"
+      },
+      {
+        "name": "onMonthChange",
+        "type": "(month: Date) => void",
+        "required": false,
+        "description": "Called with the first day of the month navigated to"
+      },
+      {
+        "name": "minDate",
+        "type": "Date",
+        "required": false,
+        "description": "Earliest selectable day (earlier days are disabled)"
+      },
+      {
+        "name": "maxDate",
+        "type": "Date",
+        "required": false,
+        "description": "Latest selectable day (later days are disabled)"
+      },
+      {
+        "name": "disabledDate",
+        "type": "(date: Date) => boolean",
+        "required": false,
+        "description": "Extra disabled days"
+      },
+      {
+        "name": "firstDayOfWeek",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "First column of the week (0: Sunday ... 6: Saturday)"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Cell density: compact (\"small\"), default (\"medium\") or comfortable (\"large\")"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks navigation and selection"
+      },
+      {
+        "name": "previousMonthLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"monthCalendar.previousMonth\" message",
+        "description": "Label of the previous-month button"
+      },
+      {
+        "name": "nextMonthLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"monthCalendar.nextMonth\" message",
+        "description": "Label of the next-month button"
+      },
+      {
+        "name": "poppable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders the calendar in a bottom sheet with a title and a confirm button (`open` / `defaultOpen` / `onOpenChange`)"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state of the poppable sheet"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state of the poppable sheet while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: CalendarCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state of the sheet and the close reason"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"calendar.title\" message",
+        "description": "Title of the poppable sheet"
+      },
+      {
+        "name": "confirmText",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"calendar.confirm\" message",
+        "description": "Text of the confirm button"
+      },
+      {
+        "name": "onConfirm",
+        "type": "(value: CalendarValue) => void",
+        "required": false,
+        "description": "Called by the confirm button of the poppable sheet with the selection"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the calendar"
+      }
+    ]
+  },
+  "native:CalendarType": {
+    "source": "native/src/components/Calendar/Calendar.tsx",
+    "description": "Selection type of `Calendar`",
+    "kind": "alias",
+    "type": "\"single\" | \"multiple\" | \"range\""
+  },
+  "native:CalendarValue": {
+    "source": "native/src/components/Calendar/Calendar.tsx",
+    "description": "Value of `Calendar`: a day (`single`, `null`: none), days (`multiple`) or a `[start, end]` range (`range`); every date is local midnight",
+    "kind": "alias",
+    "type": "Date | Date[] | [Date, Date] | null"
+  },
   "native:CardPadding": {
     "source": "native/src/components/Card/Card.tsx",
     "kind": "alias",
@@ -1439,6 +1622,168 @@
       }
     ]
   },
+  "native:DatetimeColumn": {
+    "source": "native/src/components/DatetimePicker/DatetimePicker.tsx",
+    "description": "A wheel column of the date / time",
+    "kind": "alias",
+    "type": "\"year\" | \"month\" | \"day\" | \"hour\" | \"minute\""
+  },
+  "native:DatetimePickerCloseReason": {
+    "source": "native/src/components/DatetimePicker/DatetimePicker.tsx",
+    "description": "Why the picker closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:DatetimePickerProps": {
+    "source": "native/src/components/DatetimePicker/DatetimePicker.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "DatetimePickerType",
+        "required": false,
+        "default": "\"date\"",
+        "description": "Columns shown: `date` (year / month / day), `time` (hour / minute), `datetime` (both) or `year-month`"
+      },
+      {
+        "name": "value",
+        "type": "Date",
+        "required": false,
+        "description": "Controlled confirmed value"
+      },
+      {
+        "name": "defaultValue",
+        "type": "Date",
+        "required": false,
+        "default": "now (clamped to the range)",
+        "description": "Initial confirmed value while uncontrolled"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: Date) => void",
+        "required": false,
+        "description": "Called on confirm with the picked date"
+      },
+      {
+        "name": "onPick",
+        "type": "(value: Date) => void",
+        "required": false,
+        "description": "Called while scrolling with the pending (unconfirmed) date"
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the cancel button closes the sheet"
+      },
+      {
+        "name": "minDate",
+        "type": "Date",
+        "required": false,
+        "default": "January 1st, 10 years ago",
+        "description": "Earliest selectable date (not applied to the `time` type)"
+      },
+      {
+        "name": "maxDate",
+        "type": "Date",
+        "required": false,
+        "default": "December 31st, 10 years ahead",
+        "description": "Latest selectable date (not applied to the `time` type)"
+      },
+      {
+        "name": "minuteStep",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Step of the minute column"
+      },
+      {
+        "name": "formatter",
+        "type": "(column: DatetimeColumn, value: number) => string",
+        "required": false,
+        "default": "zero-padded numbers (\"2024\", \"03\")",
+        "description": "Text of each row"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: DatetimePickerCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"confirm\", \"cancel\", \"mask\", \"back\")"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"datetimePicker.title\" message (\"datetimePicker.titleTime\" for `time`)",
+        "description": "Toolbar title"
+      },
+      {
+        "name": "confirmText",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"picker.confirm\" message",
+        "description": "Text of the confirm button"
+      },
+      {
+        "name": "cancelText",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"picker.cancel\" message",
+        "description": "Text of the cancel button"
+      },
+      {
+        "name": "itemHeight",
+        "type": "number",
+        "required": false,
+        "default": "44",
+        "description": "Height of a row in dp"
+      },
+      {
+        "name": "visibleItemCount",
+        "type": "number",
+        "required": false,
+        "default": "5",
+        "description": "Rows visible in each wheel"
+      },
+      {
+        "name": "closeOnMaskPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the mask"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the sheet"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:DatetimePickerType": {
+    "source": "native/src/components/DatetimePicker/DatetimePicker.tsx",
+    "kind": "alias",
+    "type": "\"date\" | \"time\" | \"datetime\" | \"year-month\""
+  },
   "native:DialogCloseReason": {
     "source": "native/src/components/Dialog/Dialog.tsx",
     "description": "Why a dialog closed",
@@ -1781,6 +2126,510 @@
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
   },
+  "native:FormApi": {
+    "source": "native/src/components/Form/formStore.ts",
+    "description": "Imperative API of a form (`useForm()`, the Form `ref`, `useFormContext()`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "submit",
+        "type": "() => Promise<boolean>",
+        "required": true,
+        "description": "Validates every field (marking them touched), then calls `onSubmit` with the values when all are valid, else `onSubmitFailed` with the errors. Resolves with the validity."
+      },
+      {
+        "name": "validate",
+        "type": "() => Promise<boolean>",
+        "required": true,
+        "description": "Validates every field without submitting; resolves with the validity"
+      },
+      {
+        "name": "reset",
+        "type": "(values?: FormValues) => void",
+        "required": true,
+        "description": "Back to the initial values (or `values`), untouched, no errors"
+      },
+      {
+        "name": "setFieldValue",
+        "type": "(name: string, value: unknown) => void",
+        "required": true,
+        "description": "Sets the value of a field (validated per its `validateOn`)"
+      },
+      {
+        "name": "getValues",
+        "type": "() => FormValues",
+        "required": true,
+        "description": "Current values"
+      },
+      {
+        "name": "getErrors",
+        "type": "() => FormErrors",
+        "required": true,
+        "description": "Current errors"
+      }
+    ]
+  },
+  "native:FormContextValue": {
+    "source": "native/src/components/Form/Form.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "store",
+        "type": "FormStore",
+        "required": true
+      },
+      {
+        "name": "initialValues",
+        "type": "FormValues",
+        "required": false
+      },
+      {
+        "name": "validateOn",
+        "type": "FieldValidateOn",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "native:FormErrors": {
+    "source": "native/src/components/Form/formStore.ts",
+    "description": "Errors of the invalid fields, by name",
+    "kind": "alias",
+    "type": "Record<string, FieldError[]>"
+  },
+  "native:FormFieldControlProps": {
+    "source": "native/src/components/Form/FormField.tsx",
+    "description": "Props given to the control (spread them on it)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "onBlur",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "native:FormFieldMeta": {
+    "source": "native/src/components/Form/FormField.tsx",
+    "description": "State of the field given to a render-function child",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "description": "First error message (`undefined`: valid)"
+      },
+      {
+        "name": "errors",
+        "type": "readonly FieldError[]",
+        "required": true
+      },
+      {
+        "name": "status",
+        "type": "FieldStatus",
+        "required": true
+      },
+      {
+        "name": "touched",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "dirty",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "native:FormFieldProps": {
+    "source": "native/src/components/Form/FormField.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the field in the Form values (required inside a Form)"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label of the field"
+      },
+      {
+        "name": "helperText",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Help text below the control (hidden while the field is invalid)"
+      },
+      {
+        "name": "errorMessage",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Error message; makes the field invalid unless `invalid` is set"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Forces the invalid state on / off (unset: invalid while a rule fails or `errorMessage` is set)"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Marks the field as required (indicator on the label, \"required\" for screen readers) and adds the `required` rule"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the control (also set by a disabled Form)"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the control read-only (also set by a read-only Form)"
+      },
+      {
+        "name": "rules",
+        "type": "FormFieldRules",
+        "required": false,
+        "description": "Validation rules"
+      },
+      {
+        "name": "validateOn",
+        "type": "FieldValidateOn",
+        "required": false,
+        "default": "\"blur\"",
+        "description": "First validation on every change, on blur or only on submit (then every change re-validates)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "unknown",
+        "required": false,
+        "default": "the Form's `initialValues[name]`, else the control's empty value (\"\", `false` for checked controls, `null` for NumberInput / RadioGroup, `[]` for CheckboxGroup)",
+        "description": "Initial value"
+      },
+      {
+        "name": "valuePropName",
+        "type": "string",
+        "required": false,
+        "default": "the control's (\"value\" / \"checked\")",
+        "description": "Prop of the control holding the value"
+      },
+      {
+        "name": "trigger",
+        "type": "string",
+        "required": false,
+        "default": "\"onChange\"",
+        "description": "Change callback of the control (first argument = new value)"
+      },
+      {
+        "name": "children",
+        "type": "ReactElement | ((control: FormFieldControlProps, meta: FormFieldMeta) => ReactNode)",
+        "required": true,
+        "description": "The control: one element (wired automatically: value, onChange, onBlur, invalid, disabled, accessibility label) or a render function receiving the control props and the field state"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:FormFieldRules": {
+    "source": "native/src/components/Form/FormField.tsx",
+    "description": "Validation rules of a field (messages from the `validation.*` i18n keys)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "required",
+        "type": "boolean | string",
+        "required": false,
+        "description": "Must not be empty (`\"\"`, `null`, `false`, `[]`); a string is the message"
+      },
+      {
+        "name": "email",
+        "type": "boolean | string",
+        "required": false,
+        "description": "Must be an email address; a string is the message"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "description": "Smallest number"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Largest number"
+      },
+      {
+        "name": "minLength",
+        "type": "number",
+        "required": false,
+        "description": "Fewest characters / items"
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "description": "Most characters / items"
+      },
+      {
+        "name": "pattern",
+        "type": "RegExp | string",
+        "required": false,
+        "description": "Whole-value pattern"
+      },
+      {
+        "name": "validate",
+        "type": "(value: unknown) => FormRuleResult",
+        "required": false,
+        "description": "Custom synchronous rule"
+      },
+      {
+        "name": "validateAsync",
+        "type": "(value: unknown) => Promise<FormRuleResult>",
+        "required": false,
+        "description": "Custom asynchronous rule (runs once the sync rules pass)"
+      }
+    ]
+  },
+  "native:FormHandlers": {
+    "source": "native/src/components/Form/formStore.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "onSubmit",
+        "type": "(values: FormValues) => void | Promise<void>",
+        "required": false
+      },
+      {
+        "name": "onSubmitFailed",
+        "type": "(errors: FormErrors) => void",
+        "required": false
+      }
+    ]
+  },
+  "native:FormInstance": {
+    "source": "native/src/components/Form/Form.tsx",
+    "description": "A form handle: the imperative API, its reactive state and its registry",
+    "kind": "interface",
+    "extends": [
+      "FormApi",
+      "FormSnapshot"
+    ],
+    "props": [
+      {
+        "name": "store",
+        "type": "FormStore",
+        "required": true,
+        "description": "The field registry (pass the whole instance to `<Form form>`)"
+      }
+    ]
+  },
+  "native:FormProps": {
+    "source": "native/src/components/Form/Form.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\">"
+    ],
+    "props": [
+      {
+        "name": "form",
+        "type": "FormInstance",
+        "required": false,
+        "description": "A handle from `useForm()` (else the form keeps its own)"
+      },
+      {
+        "name": "initialValues",
+        "type": "FormValues",
+        "required": false,
+        "description": "Initial values of the fields, by name"
+      },
+      {
+        "name": "onSubmit",
+        "type": "(values: FormValues) => void | Promise<void>",
+        "required": false,
+        "description": "Called with the values on a submit where every field is valid"
+      },
+      {
+        "name": "onSubmitFailed",
+        "type": "(errors: FormErrors) => void",
+        "required": false,
+        "description": "Called with the errors on a submit where a field is invalid"
+      },
+      {
+        "name": "validateOn",
+        "type": "FieldValidateOn",
+        "required": false,
+        "default": "\"blur\"",
+        "description": "When the fields validate first (each FormField may override it)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables every field"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes every field read-only"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "FormFields and any other content (e.g. a submit Button)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<FormApi>",
+        "required": false,
+        "description": "The form API (submit, reset, validate...)"
+      }
+    ]
+  },
+  "native:FormRuleResult": {
+    "source": "native/src/components/Form/FormField.tsx",
+    "description": "What a custom rule returns: `true` / nothing = valid, `false` = invalid, a string = the error message",
+    "kind": "alias",
+    "type": "boolean | string | null | undefined"
+  },
+  "native:FormSnapshot": {
+    "source": "native/src/components/Form/formStore.ts",
+    "description": "Reactive state of a form",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "values",
+        "type": "FormValues",
+        "required": true,
+        "description": "Values of the registered fields"
+      },
+      {
+        "name": "errors",
+        "type": "FormErrors",
+        "required": true,
+        "description": "Errors of the fields that failed validation"
+      },
+      {
+        "name": "isValid",
+        "type": "boolean",
+        "required": true,
+        "description": "No field currently has errors (fields not validated yet count as valid)"
+      },
+      {
+        "name": "isValidating",
+        "type": "boolean",
+        "required": true,
+        "description": "An async validator is running"
+      },
+      {
+        "name": "isSubmitting",
+        "type": "boolean",
+        "required": true,
+        "description": "`submit()` is waiting for the validators / `onSubmit`"
+      },
+      {
+        "name": "isDirty",
+        "type": "boolean",
+        "required": true,
+        "description": "A field value differs from its initial value"
+      }
+    ]
+  },
+  "native:FormStore": {
+    "source": "native/src/components/Form/formStore.ts",
+    "description": "The registry behind a form",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "api",
+        "type": "FormApi",
+        "required": true
+      },
+      {
+        "name": "register",
+        "type": "(name: string, machine: FieldMachine<unknown>) => () => void",
+        "required": true,
+        "description": "Adds a field; returns its removal"
+      },
+      {
+        "name": "subscribe",
+        "type": "(listener: () => void) => () => void",
+        "required": true
+      },
+      {
+        "name": "getSnapshot",
+        "type": "() => FormSnapshot",
+        "required": true
+      },
+      {
+        "name": "setHandlers",
+        "type": "(handlers: FormHandlers) => void",
+        "required": true,
+        "description": "The submit callbacks of the Form currently rendering the store"
+      }
+    ]
+  },
+  "native:FormValues": {
+    "source": "native/src/components/Form/formStore.ts",
+    "description": "Values of the registered fields, by name",
+    "kind": "alias",
+    "type": "Record<string, unknown>"
+  },
   "native:GridDirection": {
     "source": "native/src/components/Grid/Grid.tsx",
     "kind": "alias",
@@ -1892,6 +2741,235 @@
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the grid"
+      }
+    ]
+  },
+  "native:IconButtonProps": {
+    "source": "native/src/components/IconButton/IconButton.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "ReactNode | IconRender",
+        "required": false,
+        "description": "Icon element to display (children are used when omitted), or a function of the foreground color and icon size returning it"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode | IconRender",
+        "required": false,
+        "description": "Icon element (when `icon` is not set)"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Accessible name of the button (required: the button only shows an icon)"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Semantic color of the button"
+      },
+      {
+        "name": "variant",
+        "type": "IconButtonVariant",
+        "required": false,
+        "default": "\"ghost\"",
+        "description": "Visual style: `ghost` (transparent, tinted while pressed), `solid` (filled with the color) or `outline` (bordered)"
+      },
+      {
+        "name": "size",
+        "type": "IconButtonSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size (the `--control-height-*` tokens); the touch area always reaches 44pt"
+      },
+      {
+        "name": "shape",
+        "type": "IconButtonShape",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Button shape"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Replaces the icon with a spinner and ignores presses"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Pressed state of a toggle button (controlled; pair with onPressedChange). Setting pressed, defaultPressed or onPressedChange makes the button a toggle (`accessibilityState.selected`)"
+      },
+      {
+        "name": "defaultPressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Initial pressed state of an uncontrolled toggle button"
+      },
+      {
+        "name": "onPressedChange",
+        "type": "(pressed: boolean) => void",
+        "required": false,
+        "description": "Called with the requested pressed state of a toggle button"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called on press (not while disabled or loading)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the button"
+      }
+    ]
+  },
+  "native:IconButtonShape": {
+    "source": "native/src/components/IconButton/IconButton.tsx",
+    "kind": "alias",
+    "type": "\"circle\" | \"square\""
+  },
+  "native:IconButtonSize": {
+    "source": "native/src/components/IconButton/IconButton.tsx",
+    "kind": "alias",
+    "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\""
+  },
+  "native:IconButtonVariant": {
+    "source": "native/src/components/IconButton/IconButton.tsx",
+    "kind": "alias",
+    "type": "\"ghost\" | \"outline\" | \"solid\""
+  },
+  "native:IconRender": {
+    "source": "native/src/components/IconButton/IconButton.tsx",
+    "description": "Renders an icon in the button's foreground color and icon size",
+    "kind": "alias",
+    "type": "(color: string, size: number) => ReactNode"
+  },
+  "native:ImagePreviewCloseReason": {
+    "source": "native/src/components/ImagePreview/ImagePreview.tsx",
+    "description": "Why the preview closed",
+    "kind": "alias",
+    "type": "\"close-button\" | \"image\" | \"back\""
+  },
+  "native:ImagePreviewImage": {
+    "source": "native/src/components/ImagePreview/ImagePreview.tsx",
+    "description": "An image of `ImagePreview`: a URI or an `Image` source",
+    "kind": "alias",
+    "type": "string | ImageSourcePropType"
+  },
+  "native:ImagePreviewProps": {
+    "source": "native/src/components/ImagePreview/ImagePreview.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "images",
+        "type": "readonly ImagePreviewImage[]",
+        "required": true,
+        "description": "Images to page through"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: ImagePreviewCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"close-button\", \"image\" for a press on the image, \"back\")"
+      },
+      {
+        "name": "index",
+        "type": "number",
+        "required": false,
+        "description": "Index of the shown image (controlled; pair with `onChange`)"
+      },
+      {
+        "name": "defaultIndex",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Index of the image shown first (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(index: number) => void",
+        "required": false,
+        "description": "Called with the index of the image paged to"
+      },
+      {
+        "name": "closeOnPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the image"
+      },
+      {
+        "name": "showIndex",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the \"index / total\" counter"
+      },
+      {
+        "name": "closeable",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the close button"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"imagePreview.label\" message",
+        "description": "Accessible label of the viewer"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"imagePreview.close\" message",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the full-screen container"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
       }
     ]
   },
@@ -2612,6 +3690,362 @@
     "kind": "alias",
     "type": "\"inline\" | \"compact\""
   },
+  "native:PaginationProps": {
+    "source": "native/src/components/Pagination/Pagination.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "current",
+        "type": "number",
+        "required": false,
+        "description": "Current page (1-based, controlled); update it in onChange"
+      },
+      {
+        "name": "defaultCurrent",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Initial page when uncontrolled (current not set)"
+      },
+      {
+        "name": "total",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Total number of items"
+      },
+      {
+        "name": "pageSize",
+        "type": "number",
+        "required": false,
+        "description": "Number of items per page (controlled); update it in onChange"
+      },
+      {
+        "name": "defaultPageSize",
+        "type": "number",
+        "required": false,
+        "default": "10",
+        "description": "Initial number of items per page when uncontrolled (pageSize not set)"
+      },
+      {
+        "name": "onChange",
+        "type": "(page: number, pageSize: number) => void",
+        "required": false,
+        "description": "Called with the requested page and page size"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the pagination"
+      },
+      {
+        "name": "size",
+        "type": "PaginationSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Pagination size (page items of the `--control-height-xs|sm|md` heights; touch areas always reach 44pt)"
+      },
+      {
+        "name": "shape",
+        "type": "PaginationShape",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Shape of the page items"
+      },
+      {
+        "name": "variant",
+        "type": "PaginationVariant",
+        "required": false,
+        "default": "\"solid\"",
+        "description": "Visual style of the page items: `solid` (current page filled with the primary color), `outline` (current page bordered) or `ghost` (tinted)"
+      },
+      {
+        "name": "simple",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Simple mode: prev / next buttons around a \"2 / 5\" counter (best on narrow phone screens)"
+      },
+      {
+        "name": "siblingCount",
+        "type": "number",
+        "required": false,
+        "description": "Pages shown on each side of the current page; setting it (or boundaryCount) switches to the compact list with ellipses (try 1 on phones)"
+      },
+      {
+        "name": "boundaryCount",
+        "type": "number",
+        "required": false,
+        "description": "Pages always shown at both ends of the compact list"
+      },
+      {
+        "name": "hideEdges",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Hides the prev / next buttons"
+      },
+      {
+        "name": "hideNumbers",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Replaces the page buttons with a read-only \"current / total\" counter, keeping the prev / next buttons"
+      },
+      {
+        "name": "showTotal",
+        "type": "boolean | ((total: number, range: [number, number]) => ReactNode)",
+        "required": false,
+        "default": "false",
+        "description": "Shows the total number of items (\"Total N items\", localized); a function renders it from the total and the `[first, last]` item range"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the container"
+      }
+    ]
+  },
+  "native:PaginationShape": {
+    "source": "native/src/components/Pagination/Pagination.tsx",
+    "kind": "alias",
+    "type": "\"circle\" | \"rounded\" | \"square\""
+  },
+  "native:PaginationSize": {
+    "source": "native/src/components/Pagination/Pagination.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:PaginationVariant": {
+    "source": "native/src/components/Pagination/Pagination.tsx",
+    "kind": "alias",
+    "type": "\"ghost\" | \"outline\" | \"solid\""
+  },
+  "native:PaletteToggleProps": {
+    "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
+    "kind": "interface",
+    "extends": [
+      "ToggleBaseProps"
+    ],
+    "props": [
+      {
+        "name": "palettes",
+        "type": "readonly Palette[]",
+        "required": false,
+        "default": "every built-in palette",
+        "description": "Palettes offered, in order"
+      },
+      {
+        "name": "showDefault",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Also offer Minerva's default look (no palette) as the first option"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<PaletteToggleValue, string>>",
+        "required": false,
+        "description": "Override the option labels (`default` labels the no-palette option)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: PaletteToggleValue) => void",
+        "required": false,
+        "description": "Called with the chosen palette (`\"default\"`: no palette)"
+      }
+    ]
+  },
+  "native:PaletteToggleValue": {
+    "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
+    "description": "A palette choice: a built-in palette or `\"default\"` (no palette)",
+    "kind": "alias",
+    "type": "Palette | \"default\""
+  },
+  "native:PickerCloseReason": {
+    "source": "native/src/components/Picker/Picker.tsx",
+    "description": "Why a picker closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:PickerOption": {
+    "source": "native/src/components/Picker/Picker.tsx",
+    "description": "An option of a column; `children` feed the next column (cascade)",
+    "kind": "alias",
+    "type": "CorePickerOption<PickerValue>"
+  },
+  "native:PickerProps": {
+    "source": "native/src/components/Picker/Picker.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PickerViewProps, \"value\" | \"defaultValue\" | \"onChange\" | \"style\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly PickerValue[]",
+        "required": false,
+        "description": "Controlled confirmed value path"
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly PickerValue[]",
+        "required": false,
+        "description": "Initial confirmed value path while uncontrolled"
+      },
+      {
+        "name": "onChange",
+        "type": "(values: PickerValue[], selectedOptions: PickerOption[]) => void",
+        "required": false,
+        "description": "Called on confirm with the value path and the chosen options"
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the cancel button closes the sheet"
+      },
+      {
+        "name": "onPick",
+        "type": "(values: PickerValue[], selectedOptions: PickerOption[]) => void",
+        "required": false,
+        "description": "Called while scrolling with the pending (unconfirmed) values"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: PickerCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"confirm\", \"cancel\", \"mask\", \"back\")"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title in the toolbar (also the accessible name of the sheet)"
+      },
+      {
+        "name": "confirmText",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"picker.confirm\" message",
+        "description": "Text of the confirm button"
+      },
+      {
+        "name": "cancelText",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"picker.cancel\" message",
+        "description": "Text of the cancel button"
+      },
+      {
+        "name": "closeOnMaskPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the mask"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the sheet"
+      }
+    ]
+  },
+  "native:PickerValue": {
+    "source": "native/src/components/Picker/Picker.tsx",
+    "description": "Value of a picker option",
+    "kind": "alias",
+    "type": "string | number"
+  },
+  "native:PickerViewProps": {
+    "source": "native/src/components/Picker/Picker.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "options",
+        "type": "readonly PickerOption[]",
+        "required": false,
+        "description": "Cascading options tree: the first column, `children` the next ones"
+      },
+      {
+        "name": "columns",
+        "type": "readonly (readonly PickerOption[])[]",
+        "required": false,
+        "description": "Independent columns (used when `options` is not set)"
+      },
+      {
+        "name": "value",
+        "type": "readonly PickerValue[]",
+        "required": false,
+        "description": "Controlled value path, one value per column"
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly PickerValue[]",
+        "required": false,
+        "description": "Initial value path while uncontrolled (missing levels pick the first enabled option)"
+      },
+      {
+        "name": "onChange",
+        "type": "(values: PickerValue[], selectedOptions: PickerOption[]) => void",
+        "required": false,
+        "description": "Called with the value path and the chosen options when a column changes"
+      },
+      {
+        "name": "itemHeight",
+        "type": "number",
+        "required": false,
+        "default": "44",
+        "description": "Height of a row in dp"
+      },
+      {
+        "name": "visibleItemCount",
+        "type": "number",
+        "required": false,
+        "default": "5",
+        "description": "Rows visible in each wheel (odd: the middle one is the selection)"
+      },
+      {
+        "name": "columnLabels",
+        "type": "readonly string[]",
+        "required": false,
+        "default": "the \"picker.column\" message",
+        "description": "Accessible names of the columns"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the wheels container"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
   "native:PopupCloseReason": {
     "source": "native/src/components/Popup/Popup.tsx",
     "description": "Why a popup closed",
@@ -2756,6 +4190,34 @@
     "source": "native/src/components/Popup/Popup.tsx",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\" | \"full\""
+  },
+  "native:PresetToggleProps": {
+    "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
+    "kind": "interface",
+    "extends": [
+      "ToggleBaseProps"
+    ],
+    "props": [
+      {
+        "name": "presets",
+        "type": "readonly DesignPreset[]",
+        "required": false,
+        "default": "every built-in preset",
+        "description": "Presets offered, in order"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<DesignPreset, string>>",
+        "required": false,
+        "description": "Override the option labels"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: DesignPreset) => void",
+        "required": false,
+        "description": "Called with the chosen preset (after `setPreset`)"
+      }
+    ]
   },
   "native:ProgressProps": {
     "source": "native/src/components/Progress/Progress.tsx",
@@ -3186,6 +4648,352 @@
     "kind": "alias",
     "type": "NativeSize"
   },
+  "native:RatingProps": {
+    "source": "native/src/components/Rating/Rating.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": "Current score, from 0 to max (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Initial score (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: number) => void",
+        "required": false,
+        "description": "Called with the score the user picked"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "10",
+        "description": "Highest score; the score is always drawn on 5 stars (a star is `max / 5` points)"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Display only: presses and screen reader adjustments are ignored"
+      },
+      {
+        "name": "allowHalf",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pressing the left half of a star picks half a star; screen reader steps are half stars"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Picking the current score again clears it to 0"
+      },
+      {
+        "name": "size",
+        "type": "RatingSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Star size: 18, 24 or 32 dp (larger than the web's 12 / 16 / 20 px: touch targets)"
+      },
+      {
+        "name": "color",
+        "type": "SemanticColor",
+        "required": false,
+        "default": "\"warning\"",
+        "description": "Semantic color of the filled stars"
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the score (one decimal) after the stars"
+      },
+      {
+        "name": "ratingCount",
+        "type": "number",
+        "required": false,
+        "description": "Number of ratings, shown after the score when `showValue` is set"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:RatingSize": {
+    "source": "native/src/components/Rating/Rating.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:SearchBarProps": {
+    "source": "native/src/components/SearchBar/SearchBar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextInputProps, \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"multiline\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Search text (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial search text (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the new text on every edit and when cleared"
+      },
+      {
+        "name": "onSearch",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the text when the keyboard's search key is pressed"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"searchBar.placeholder\"",
+        "description": "Placeholder"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows a clear button while the field has text"
+      },
+      {
+        "name": "onClear",
+        "type": "() => void",
+        "required": false,
+        "description": "Called after the clear button emptied the field"
+      },
+      {
+        "name": "showCancel",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a Cancel button after the field"
+      },
+      {
+        "name": "cancelText",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"searchBar.cancel\"",
+        "description": "Text of the Cancel button"
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "required": false,
+        "description": "Called by the Cancel button (the text is cleared first)"
+      },
+      {
+        "name": "shape",
+        "type": "SearchBarShape",
+        "required": false,
+        "default": "\"round\"",
+        "description": "Field shape: `round` (pill) or `square` (theme radius)"
+      },
+      {
+        "name": "size",
+        "type": "SearchBarSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Field height and font size"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "prefix",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content before the field (e.g. a city picker)"
+      },
+      {
+        "name": "action",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content after the field, before Cancel (e.g. a filter button)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root row"
+      },
+      {
+        "name": "fieldStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the rounded field"
+      },
+      {
+        "name": "inputStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the TextInput"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false,
+        "description": "Ref of the TextInput"
+      }
+    ]
+  },
+  "native:SearchBarShape": {
+    "source": "native/src/components/SearchBar/SearchBar.tsx",
+    "kind": "alias",
+    "type": "\"round\" | \"square\""
+  },
+  "native:SearchBarSize": {
+    "source": "native/src/components/SearchBar/SearchBar.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:SelectCloseReason": {
+    "source": "native/src/components/Select/Select.tsx",
+    "description": "Why the options sheet closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:SelectMultipleProps": {
+    "source": "native/src/components/Select/Select.tsx",
+    "kind": "interface",
+    "extends": [
+      "SelectBaseProps"
+    ],
+    "props": [
+      {
+        "name": "multiple",
+        "type": "true",
+        "required": true,
+        "default": "false",
+        "description": "Several values (checkboxes and a confirm button)"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "description": "Selected values (controlled; pair with `onChange`)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "description": "Initially selected values (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string[]) => void",
+        "required": false,
+        "description": "Called with the confirmed values"
+      }
+    ]
+  },
+  "native:SelectOption": {
+    "source": "native/src/components/Select/Select.tsx",
+    "description": "An option of the list",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Visible text (also the accessible name of the row)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value reported by `onChange`"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the row"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Secondary text under the label"
+      }
+    ]
+  },
+  "native:SelectProps": {
+    "source": "native/src/components/Select/Select.tsx",
+    "kind": "alias",
+    "type": "SelectSingleProps | SelectMultipleProps"
+  },
+  "native:SelectSingleProps": {
+    "source": "native/src/components/Select/Select.tsx",
+    "kind": "interface",
+    "extends": [
+      "SelectBaseProps"
+    ],
+    "props": [
+      {
+        "name": "multiple",
+        "type": "false",
+        "required": false,
+        "default": "false",
+        "description": "Several values (checkboxes and a confirm button)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Selected value (controlled; pair with `onChange`)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the picked value (the sheet then closes)"
+      }
+    ]
+  },
   "native:SkeletonAnimation": {
     "source": "native/src/components/Skeleton/Skeleton.tsx",
     "kind": "alias",
@@ -3334,6 +5142,135 @@
       }
     ]
   },
+  "native:StepsDirection": {
+    "source": "native/src/components/Steps/Steps.tsx",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
+  "native:StepsItem": {
+    "source": "native/src/components/Steps/Steps.tsx",
+    "description": "One step",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "default": "its index as a string",
+        "description": "Unique value of the step, matched against the Steps value"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible title of the step"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Alias of `title` (React Steps vocabulary)"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the title"
+      },
+      {
+        "name": "status",
+        "type": "StepStatus",
+        "required": false,
+        "description": "Forces the status of this step (derived from the current step otherwise)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Prevents navigating to this step"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom indicator content (an icon) instead of the number / check"
+      }
+    ]
+  },
+  "native:StepsProps": {
+    "source": "native/src/components/Steps/Steps.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly StepsItem[]",
+        "required": true,
+        "description": "Steps, in order"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the current step (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "the first step",
+        "description": "Value of the initial current step (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the value of the step the user presses"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "true when onChange is not set, otherwise false",
+        "description": "Renders the steps as a read-only progress indicator (no buttons)"
+      },
+      {
+        "name": "direction",
+        "type": "StepsDirection",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Layout of the steps"
+      },
+      {
+        "name": "status",
+        "type": "StepStatus",
+        "required": false,
+        "default": "\"process\"",
+        "description": "Status of the current step (e.g. `error` when it failed)"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Steps\" (localized)",
+        "description": "Accessible label of the list"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the list"
+      }
+    ]
+  },
+  "native:StepStatus": {
+    "source": "native/src/components/Steps/Steps.tsx",
+    "kind": "alias",
+    "type": "\"finish\" | \"process\" | \"wait\" | \"error\""
+  },
   "native:SwipeCellAction": {
     "source": "native/src/components/SwipeCell/SwipeCell.tsx",
     "description": "An action button revealed by a swipe",
@@ -3476,6 +5413,144 @@
     "description": "Side of a swipe cell's actions",
     "kind": "alias",
     "type": "\"left\" | \"right\""
+  },
+  "native:SwitchColor": {
+    "source": "native/src/components/Switch/Switch.tsx",
+    "kind": "alias",
+    "type": "SemanticColor"
+  },
+  "native:SwitchLabelPlacement": {
+    "source": "native/src/components/Switch/Switch.tsx",
+    "kind": "alias",
+    "type": "LabelPlacement"
+  },
+  "native:SwitchProps": {
+    "source": "native/src/components/Switch/Switch.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the switch is on (controlled)"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial state (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(checked: boolean) => void",
+        "required": false,
+        "description": "Called with the requested state"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the switch"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner in the thumb and blocks interaction (`accessibilityState.busy`)"
+      },
+      {
+        "name": "size",
+        "type": "SwitchSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Switch size (track height from the control-height tokens)"
+      },
+      {
+        "name": "color",
+        "type": "SwitchColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the \"on\" track"
+      },
+      {
+        "name": "shape",
+        "type": "SwitchShape",
+        "required": false,
+        "default": "\"round\"",
+        "description": "Shape of the track and thumb"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label displayed next to the switch (a string also names it)"
+      },
+      {
+        "name": "labelPlacement",
+        "type": "SwitchLabelPlacement",
+        "required": false,
+        "default": "\"end\"",
+        "description": "Position of the label relative to the switch"
+      },
+      {
+        "name": "onLabel",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text shown inside the track while on (e.g. \"ON\")"
+      },
+      {
+        "name": "offLabel",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text shown inside the track while off (e.g. \"OFF\")"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the switch (reported by forms)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the pressable root"
+      },
+      {
+        "name": "trackStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the track"
+      },
+      {
+        "name": "thumbStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the thumb"
+      },
+      {
+        "name": "labelStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:SwitchShape": {
+    "source": "native/src/components/Switch/Switch.tsx",
+    "kind": "alias",
+    "type": "\"round\" | \"square\""
+  },
+  "native:SwitchSize": {
+    "source": "native/src/components/Switch/Switch.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
   },
   "native:TabBarItemProps": {
     "source": "native/src/components/TabBar/TabBar.tsx",
@@ -4183,6 +6258,39 @@
     "source": "native/src/components/Textarea/Textarea.tsx",
     "kind": "alias",
     "type": "FieldVariant"
+  },
+  "native:ThemeToggleProps": {
+    "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
+    "kind": "interface",
+    "extends": [
+      "ToggleBaseProps"
+    ],
+    "props": [
+      {
+        "name": "showSystem",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Show the \"system\" (follow the OS) option"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<ThemeMode, string>>",
+        "required": false,
+        "description": "Override the option labels (defaults are localized)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: ThemeMode) => void",
+        "required": false,
+        "description": "Called with the chosen mode (after `setThemeMode`)"
+      }
+    ]
+  },
+  "native:ThemeToggleSize": {
+    "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\""
   },
   "native:ToastAction": {
     "source": "native/src/components/Toast/Toast.tsx",

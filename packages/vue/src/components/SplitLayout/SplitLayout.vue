@@ -52,11 +52,7 @@ const rootAttrs = computed(() => ({
 <template>
   <div :class="styles.root" :style="layoutStyle" v-bind="rootAttrs">
     <div
-      :class="[
-        styles.grid,
-        styles[collapseBelow],
-        hasAside && styles.hasAside,
-      ]"
+      :class="[styles.grid, styles[collapseBelow], hasAside && styles.hasAside]"
     >
       <div :class="styles.main" v-bind="hooks('split-layout', 'main')">
         <slot />

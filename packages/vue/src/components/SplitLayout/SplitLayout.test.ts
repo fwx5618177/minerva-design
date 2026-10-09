@@ -16,7 +16,7 @@ describe("SplitLayout", () => {
     const style = (wrapper.element as HTMLElement).style;
     expect(style.getPropertyValue("--split-layout-aside-width")).toBe("320px");
     expect(style.getPropertyValue("--split-layout-gap")).toBe("var(--space-6)");
-    const grid = wrapper.element.firstElementChild!;
+    const grid = (wrapper.element as HTMLElement).firstElementChild!;
     expect(grid.className).toContain("grid");
     expect(grid.className).toContain("md");
     expect(grid.className).toContain("hasAside");

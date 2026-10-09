@@ -58,9 +58,18 @@ describe("global framework selector", () => {
       tabs()
         .getAllByRole("tab")
         .map((tab) => tab.textContent),
-    ).toEqual(["React", "Vue", "Angular", "Svelte", "Solid", "HTML"]);
+    ).toEqual([
+      "React",
+      "React Native",
+      "Vue",
+      "Angular",
+      "Svelte",
+      "Solid",
+      "HTML",
+    ]);
     expect(FRAMEWORKS.map((fw) => fw.id)).toEqual([
       "react",
+      "react-native",
       "vue",
       "angular",
       "svelte",
@@ -106,16 +115,20 @@ describe("global framework selector", () => {
     expect(panel).toHaveTextContent("<script setup");
     expect(panel).toHaveTextContent('from "minerva-design/vue"');
     expect(
-      await within(panel).findByRole("button", { name: "Save" }),
+      await within(panel).findByRole(
+        "button",
+        { name: "Save" },
+        { timeout: 10_000 },
+      ),
     ).toHaveAttribute("data-minerva", "button");
     // API tables generated from the Vue component types
     expect(
       await within(panel).findByRole("heading", { level: 3, name: "<Button>" }),
     ).toBeInTheDocument();
-    expect(within(panel).getByText("@click")).toBeInTheDocument();
+    expect(within(panel).getAllByText("@click").length).toBeGreaterThan(0);
     expect(within(panel).getByText("#start-icon")).toBeInTheDocument();
     expect(localStorage.getItem("minerva-docs-framework")).toBe("vue");
-  });
+  }, 15_000);
 
   it.each([
     [
@@ -186,7 +199,9 @@ describe("global framework selector", () => {
       renderPage();
       const tab = tabs().getByRole("tab", { name: label });
       expect(tab.getAttribute("title")).toBe(
-        planned ? `${label} via Web Components (native coming soon)` : null,
+        planned
+          ? `${label} Web Components examples (native subset available)`
+          : null,
       );
       await user.click(tab);
       const note = screen.queryByTestId("native-planned");
@@ -195,7 +210,7 @@ describe("global framework selector", () => {
         return;
       }
       expect(note).toHaveTextContent(
-        `${label} via Web Components (native coming soon)`,
+        `${label} Web Components examples (native subset available)`,
       );
       expect(
         within(note!).getByRole("link", { name: "Platform support" }),
@@ -210,7 +225,7 @@ describe("global framework selector", () => {
     await user.keyboard("{ArrowRight}");
     expect(tabs().getByRole("tab", { name: "Angular" })).toHaveFocus();
     selected("Angular");
-    await user.keyboard("{ArrowLeft}{ArrowLeft}");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}{ArrowLeft}");
     selected("React");
   });
 

@@ -1,5 +1,13 @@
 # minerva-design
 
+## Platform implementation status
+
+The main workspace now includes native Vue (`minerva-design/vue`), React Native / Expo (`minerva-design/native`) and the initial Angular subset (`minerva-design/angular`: configuration, Button, Switch, Modal and its parts). Taro (`minerva-design/taro`), uni-app (`minerva-design/uni`) and native WeChat (`miniprogram: dist/weapp`) currently provide Button, Input and Switch. These are initial implementations, not full parity or a claim of npm publication. See the [platform support matrix](https://fwx5618177.github.io/minerva-design/#/platform-support) for scope, examples and validation limits.
+
+The private root is `minerva-design-workspace`; `packages/minerva-design` assembles the single published package. `packages/core` is platform-neutral; browser-specific primitives live in `packages/dom`. The public `/core` entry preserves the existing Web API. Sibling `md-*` directories are linked development worktrees with unfinished changes, not extra packages.
+
+[Code comparison and continuation report](../../docs/research/2026-10-09-library-comparison.md).
+
 The Minerva design system in one package: accessible **React 19** components
 (SSR / React Server Components ready) and the same component set as
 framework-agnostic **Web Components** (Lit) for plain HTML, Vue, Angular,
@@ -214,7 +222,7 @@ shared by every entry (an app using React and the web components loads them
 once):
 
 - the **platform-neutral** layer (`dist/core`, no DOM access, also used by the
-  planned React Native and mini-program renderers): ids, controllable state,
+  React Native and mini-program renderers): ids, controllable state,
   keyboard navigation and typeahead math, theme data and design presets, i18n;
 - the **DOM** layer (`dist/dom`, web renderers only; its only runtime
   dependency is `@floating-ui/dom`): focus scope, layers, scroll lock,

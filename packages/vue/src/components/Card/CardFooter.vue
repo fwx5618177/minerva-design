@@ -7,12 +7,17 @@ import type { CardFooterProps } from "./types";
 
 defineOptions({ name: "CardFooter", inheritAttrs: false });
 
-const props = withDefaults(defineProps<CardFooterProps>(), { padding: undefined });
+const props = withDefaults(defineProps<CardFooterProps>(), {
+  padding: undefined,
+});
 
 defineSlots<{ default?: () => unknown }>();
 
 const attrs = useAttrs();
-const classes = computed(() => [styles.cardFooter, props.padding && styles[`pad-${props.padding}`]]);
+const classes = computed(() => [
+  styles.cardFooter,
+  props.padding && styles[`pad-${props.padding}`],
+]);
 const rootAttrs = computed(() => ({
   ...attrs,
   ...hooks("card-footer", "root"),

@@ -590,6 +590,30 @@ function buildContract({
     : { status: "n/a", notes: NOT_APPLICABLE_NOTES.wc };
   platforms.vue = vueSupport(name, react, vueExports);
   platforms.native = nativeSupport(name);
+  const angularNames = {
+    ConfigProvider: "MnConfig / provideMinerva",
+    Button: "MnButton",
+    Switch: "MnSwitch",
+    Modal: "MnModal",
+    ModalHeader: "MnModalHeader",
+    ModalBody: "MnModalBody",
+    ModalFooter: "MnModalFooter",
+    ModalTrigger: "MnModalTrigger",
+    ModalClose: "MnModalClose",
+  };
+  if (angularNames[name])
+    platforms.angular = {
+      status: "beta",
+      notes: `Native Angular: ${angularNames[name]}. Initial subset; forms and other components remain in progress.`,
+    };
+  if (["Button", "Input", "Switch"].includes(name)) {
+    for (const platform of ["taro", "weapp", "uni"])
+      platforms[platform] = {
+        status: "beta",
+        notes:
+          "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending.",
+      };
+  }
   // the native callback of each React callback (same name, or its RN idiom)
   if (native) {
     const nativeProps = new Set(native.props.map((p) => p.name));

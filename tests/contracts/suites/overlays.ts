@@ -11,7 +11,7 @@ export function overlaySuite(driver: Driver) {
   let handle: Handle | undefined;
   afterEach(async () => {
     await handle?.unmount();
-    driver.services.toast.reset();
+    await driver.services.toast.reset();
   });
 
   const MODAL = "Modal dismissal";
@@ -81,7 +81,7 @@ export function overlaySuite(driver: Driver) {
         );
         handle = await driver.render(h("ToastProvider", { max: 2 }));
         for (const title of ["First", "Second", "Third"])
-          driver.services.toast.show(title, { duration: 0 });
+          await driver.services.toast.show(title, { duration: 0 });
         await driver.settle(EXIT);
         const visible = [
           ...driver.queryAllByRole("status"),

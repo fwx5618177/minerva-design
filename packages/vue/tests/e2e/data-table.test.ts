@@ -24,10 +24,7 @@ const Browser = defineComponent({
     const rows = computed(() => {
       const sorted = [...USERS];
       if (sort.value?.order) {
-        const dir =
-          sort.value.order === "ascend" || sort.value.order === "ascending"
-            ? 1
-            : -1;
+        const dir = sort.value.order === "ascend" ? 1 : -1;
         sorted.sort((a, b) => (a.age - b.age) * dir);
       }
       return sorted.slice((page.value - 1) * 5, page.value * 5);

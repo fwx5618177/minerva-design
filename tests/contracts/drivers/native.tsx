@@ -161,14 +161,18 @@ function toNative(
   log: EmittedEvent[],
   key?: number,
 ): ReactNode {
-  if (typeof spec === "string") return spec;
+  if (typeof spec === "string") return createElement(Text, { key }, spec);
   const children = spec.children.map((child, i) => toNative(child, log, i));
   if (isNative(spec)) {
     const { "data-testid": testID, ...props } = spec.props;
     const inline = spec.children.every((child) => typeof child === "string");
     return createElement(
       inline ? Text : View,
-      { ...props, testID, key },
+      {
+        ...props,
+        testID: typeof testID === "string" ? testID : undefined,
+        key,
+      },
       ...children,
     );
   }
@@ -203,7 +207,7 @@ export const nativeDriver: Driver = {
     const log: EmittedEvent[] = [];
     const tree = () =>
       createElement(
-        Native.MinervaProvider as Component,
+        Native.MinervaProvider,
         { theme: "light", locale: { language: options.locale ?? "en" } },
         toNative(spec, log),
       );
@@ -303,13 +307,13 @@ export const nativeDriver: Driver = {
 
   services: {
     toast: {
-      show(title, options) {
-        act(() => {
+      async show(title, options) {
+        await act(() => {
           Native.toast.info(title, options);
         });
       },
-      reset() {
-        act(() => toastQueue.reset());
+      async reset() {
+        await act(() => toastQueue.reset());
       },
     },
   },

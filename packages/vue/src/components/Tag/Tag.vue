@@ -174,7 +174,11 @@ const rootAttrs = computed(() => ({
         v-bind="hooks('tag', 'spinner')"
       />
       <template v-else>
-        <span v-if="slots.icon" :class="styles.icon" v-bind="hooks('tag', 'icon')">
+        <span
+          v-if="slots.icon"
+          :class="styles.icon"
+          v-bind="hooks('tag', 'icon')"
+        >
           <slot name="icon" />
         </span>
         <span
@@ -197,7 +201,11 @@ const rootAttrs = computed(() => ({
         v-bind="hooks('tag', 'spinner')"
       />
       <template v-else>
-        <span v-if="slots.icon" :class="styles.icon" v-bind="hooks('tag', 'icon')">
+        <span
+          v-if="slots.icon"
+          :class="styles.icon"
+          v-bind="hooks('tag', 'icon')"
+        >
           <slot name="icon" />
         </span>
         <span

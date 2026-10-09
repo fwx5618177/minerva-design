@@ -76,6 +76,7 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     expect(effects).toContain("**/*.scss");
     // besides the stylesheets, only the web component define modules
     expect(effects.filter((p) => !/\*\.s?css$/.test(p)).sort()).toEqual([
+      "./dist/weapp/**",
       "dist/web-components/cdn/*.js",
       "dist/web-components/elements/*.js",
       "dist/web-components/index.js",
@@ -110,7 +111,12 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
 
   it("react / react-dom, vue and Monaco are optional peers", () => {
     expect(Object.keys(pkg.peerDependencies ?? {}).sort()).toEqual([
+      "@angular/common",
+      "@angular/core",
+      "@angular/forms",
       "@monaco-editor/react",
+      "@tarojs/components",
+      "@tarojs/taro",
       "monaco-editor",
       "react",
       "react-dom",
@@ -123,7 +129,7 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     for (const peer of Object.keys(pkg.peerDependencies ?? {})) {
       expect(pkg.peerDependenciesMeta?.[peer]?.optional, peer).toBe(true);
     }
-    expect(pkg.peerDependencies?.react).toBe("^19.0.0");
+    expect(pkg.peerDependencies?.react).toBe("^18.3.0 || ^19.0.0");
     expect(pkg.peerDependencies?.vue).toBe("^3.5.0");
   });
 });
@@ -144,23 +150,27 @@ describe("planned renderers", () => {
     const pkg = readJson<Pkg>("packages/vue/package.json");
     expect(pkg.name).toBe("@minerva/vue");
     expect(pkg.private).toBe(true);
-    expect(read("packages/vue/README.md")).not.toContain("Status: planned");
+    expect(read("packages/vue/README.md")).not.not.toContain("Status: planned");
     expect(Object.keys(published.exports)).toEqual(
-      expect.arrayContaining(["./vue", "./vue/monaco", "./vue/global"]),
+      expect.arrayContaining(["./vue", "./vue/global"]),
     );
   });
 
   it.each(["angular", "taro", "weapp", "uni"])(
-    "packages/%s is a private placeholder, not exported yet",
+    "packages/%s is a private renderer with real output",
     (name) => {
       const pkg = readJson<Pkg & { scripts: Record<string, string> }>(
         `packages/${name}/package.json`,
       );
       expect(pkg.name).toBe(`@minerva/${name}`);
       expect(pkg.private).toBe(true);
-      expect(read(`packages/${name}/README.md`)).toContain("Status: planned");
-      expect(read(`packages/${name}/src/index.ts`)).toMatch(/export \{\};/);
-      expect(Object.keys(published.exports)).not.toContain(`./${name}`);
+      expect(read(`packages/${name}/README.md`)).not.toContain(
+        "Status: planned",
+      );
+      expect(read(`packages/${name}/src/index.ts`)).not.toMatch(/export \{\};/);
+      if (name !== "weapp")
+        expect(Object.keys(published.exports)).toContain(`./${name}`);
+      expect(pkg.scripts.build).not.toContain("nothing to build");
     },
   );
 
@@ -173,8 +183,8 @@ describe("planned renderers", () => {
     expect(Object.keys(published.exports)).toContain("./native");
   });
 
-  it("WeChat ships later through the miniprogram field", () => {
-    expect(published).not.toHaveProperty("miniprogram");
+  it("WeChat ships through the miniprogram field", () => {
+    expect(published).toHaveProperty("miniprogram", "dist/weapp");
   });
 });
 

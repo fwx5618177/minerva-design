@@ -56,7 +56,9 @@ const hasDescription = computed(
   () => !!slots.description || !!description.value,
 );
 const hideIcon = computed(() => props.icon === null || props.icon === false);
-const hasActions = computed(() => !!slots.action || !!slots["secondary-action"]);
+const hasActions = computed(
+  () => !!slots.action || !!slots["secondary-action"],
+);
 
 const sizeStyle = computed<CSSProperties>(() => ({
   width: px(props.width),
@@ -92,7 +94,11 @@ const rootAttrs = computed(() => ({
     :style="sizeStyle"
     v-bind="rootAttrs"
   >
-    <div v-if="!hideIcon" :class="styles.iconWrapper" v-bind="hooks('empty', 'icon')">
+    <div
+      v-if="!hideIcon"
+      :class="styles.iconWrapper"
+      v-bind="hooks('empty', 'icon')"
+    >
       <slot name="icon">
         <svg
           v-if="useSvg"
@@ -147,11 +153,19 @@ const rootAttrs = computed(() => ({
     >
       <slot name="description">{{ description }}</slot>
     </div>
-    <div v-if="hasActions" :class="styles.actions" v-bind="hooks('empty', 'actions')">
+    <div
+      v-if="hasActions"
+      :class="styles.actions"
+      v-bind="hooks('empty', 'actions')"
+    >
       <slot name="action" />
       <slot name="secondary-action" />
     </div>
-    <div v-if="slots.default" :class="styles.footer" v-bind="hooks('empty', 'footer')">
+    <div
+      v-if="slots.default"
+      :class="styles.footer"
+      v-bind="hooks('empty', 'footer')"
+    >
       <slot />
     </div>
   </div>

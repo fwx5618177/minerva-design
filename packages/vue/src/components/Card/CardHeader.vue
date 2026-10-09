@@ -7,12 +7,17 @@ import type { CardHeaderProps } from "./types";
 
 defineOptions({ name: "CardHeader", inheritAttrs: false });
 
-const props = withDefaults(defineProps<CardHeaderProps>(), { padding: undefined });
+const props = withDefaults(defineProps<CardHeaderProps>(), {
+  padding: undefined,
+});
 
 defineSlots<{ default?: () => unknown }>();
 
 const attrs = useAttrs();
-const classes = computed(() => [styles.cardHeader, props.padding && styles[`pad-${props.padding}`]]);
+const classes = computed(() => [
+  styles.cardHeader,
+  props.padding && styles[`pad-${props.padding}`],
+]);
 const rootAttrs = computed(() => ({
   ...attrs,
   ...hooks("card-header", "root"),

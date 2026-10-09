@@ -94,12 +94,7 @@ const onError = () => {
 </script>
 
 <template>
-  <span
-    v-if="showImage"
-    :class="classes"
-    :style="sizeStyle"
-    v-bind="rootAttrs"
-  >
+  <span v-if="showImage" :class="classes" :style="sizeStyle" v-bind="rootAttrs">
     <img
       :alt="alt ?? label"
       :class="styles.avatarImg"

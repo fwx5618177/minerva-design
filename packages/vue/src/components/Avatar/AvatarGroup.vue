@@ -55,10 +55,7 @@ const rootAttrs = computed(() => {
     :aria-label="layout($slots.default?.()).label"
     v-bind="rootAttrs"
   >
-    <template
-      v-for="group in [layout($slots.default?.())]"
-      key="avatars"
-    >
+    <template v-for="group in [layout($slots.default?.())]" key="avatars">
       <div
         v-for="(child, index) in group.visible"
         :key="child.key ?? index"

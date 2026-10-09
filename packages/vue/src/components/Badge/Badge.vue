@@ -52,9 +52,7 @@ const hasContentProp = computed(
  */
 const isStandalone = (children: unknown) => {
   const nodes = flattenChildren(children);
-  return (
-    nodes.length === 0 || (isTextOnly(nodes) && !hasContentProp.value)
-  );
+  return nodes.length === 0 || (isTextOnly(nodes) && !hasContentProp.value);
 };
 
 const badgeClasses = (standalone: boolean) => [
@@ -88,7 +86,11 @@ const badgeAttrs = (standalone: boolean) => ({
     :style="badgeStyle"
     v-bind="badgeAttrs(true)"
   >
-    <span v-if="slots.icon" :class="styles.icon" v-bind="hooks('badge', 'icon')">
+    <span
+      v-if="slots.icon"
+      :class="styles.icon"
+      v-bind="hooks('badge', 'icon')"
+    >
       <slot name="icon" />
     </span>
     <template v-if="!dot">
@@ -96,14 +98,22 @@ const badgeAttrs = (standalone: boolean) => ({
       <slot v-else />
     </template>
   </span>
-  <div v-else :class="styles.badgeWrapper" v-bind="hooks('badge', 'root', states)">
+  <div
+    v-else
+    :class="styles.badgeWrapper"
+    v-bind="hooks('badge', 'root', states)"
+  >
     <div :class="styles.content"><slot /></div>
     <span
       :class="badgeClasses(false)"
       :style="badgeStyle"
       v-bind="badgeAttrs(false)"
     >
-      <span v-if="slots.icon" :class="styles.icon" v-bind="hooks('badge', 'icon')">
+      <span
+        v-if="slots.icon"
+        :class="styles.icon"
+        v-bind="hooks('badge', 'icon')"
+      >
         <slot name="icon" />
       </span>
       <template v-if="!dot">

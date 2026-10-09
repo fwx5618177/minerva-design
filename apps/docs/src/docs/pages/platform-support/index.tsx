@@ -12,6 +12,7 @@ import {
   type Track,
 } from "@contracts";
 import DocPage from "@/docs/components/DocPage";
+import PlatformQuickStart from "./quick-start";
 import styles from "@/docs/components/docs.module.scss";
 
 /** Badge color of each support status */
@@ -115,6 +116,7 @@ const PlatformSupportDoc: React.FC = () => {
 
   return (
     <DocPage id="platform-support" intro={intro}>
+      <PlatformQuickStart />
       <section className={styles.section} aria-labelledby="matrix">
         <h2 id="matrix">{k("matrixTitle")}</h2>
         <p className={styles.prose}>{k("matrixText")}</p>
@@ -178,11 +180,12 @@ const PlatformSupportDoc: React.FC = () => {
                       <td
                         key={platform}
                         title={
-                          status === "n/a"
+                          contract.platforms[platform].notes ??
+                          (status === "n/a"
                             ? k(
                                 `notApplicable.${platform === "react" ? "react" : "wc"}`,
                               )
-                            : undefined
+                            : undefined)
                         }
                       >
                         <StatusTag

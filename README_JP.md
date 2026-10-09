@@ -1,5 +1,13 @@
 # Minerva コンポーネントライブラリ
 
+## プラットフォームの実装状況
+
+メインワークスペースには Vue（`minerva-design/vue`）、React Native / Expo（`minerva-design/native`）、Angular の初期実装（`minerva-design/angular`：設定、Button、Switch、Modal とその構成部品）が統合されています。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）、WeChat ネイティブ（`miniprogram: dist/weapp`）では Button・Input・Switch を実装しています。全機能の互換性や npm 公開を意味するものではありません。範囲と検証状況は[対応表](https://fwx5618177.github.io/minerva-design/#/platform-support)をご覧ください。
+
+ルートは非公開の `minerva-design-workspace` で、`packages/minerva-design` が公開用の単一パッケージを組み立てます。`packages/core` はプラットフォーム非依存、`packages/dom` はブラウザー専用です。公開 `/core` は既存の Web API を維持します。隣接する `md-*` は未完了の変更を持つ Git worktree であり、別の公開パッケージではありません。
+
+[コード比較と実装レポート（中国語）](docs/research/2026-10-09-library-comparison.md)。
+
 <div align="center">
 
 [![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
@@ -51,7 +59,8 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 ### アーキテクチャ
 
 ```
-minerva-design/core            framework-agnostic TypeScript (DOM only)
+packages/core                 platform-neutral TypeScript
+packages/dom                  browser interaction primitives
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
         ▲ React hooks                    ▲ Lit controllers
 minerva-design               minerva-design/web-components
@@ -416,7 +425,7 @@ pnpm dev
 | `dist/web-components/` | 要素ごとの ESM、`elements/*` エントリー（任意の `code-editor` を含む）、`cdn/minerva.js`、`types/` のフレームワーク型定義、`html-custom-data.json`                                    |
 | パッケージのルート     | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                                                        |
 
-workspace パッケージ（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、計画中のレンダラー `@minerva/{vue,angular,native,taro,weapp,uni}`、`@minerva/docs`）は非公開で、公開されることはありません。
+workspace パッケージ（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、各プラットフォームのレンダラー `@minerva/{vue,angular,native,taro,weapp,uni}`、`@minerva/docs`）は非公開で、公開されることはありません。
 
 ## 🤝 コントリビューション
 

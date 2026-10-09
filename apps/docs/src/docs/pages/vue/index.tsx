@@ -70,7 +70,7 @@ import { ConfigProvider, ThemeToggle, useTheme } from "minerva-design/vue";
 const composablesCode = `import { useConfirm, useI18n, useTheme, useToast } from "minerva-design/vue";
 
 const theme = useTheme(); // theme.theme, theme.resolvedTheme, theme.setTheme("dark")
-const { t } = useI18n(); // t("modal.close") in the provider's language
+const { t } = useI18n(); // t(closeKey) in the provider's language
 const toast = useToast(); // toast.success("Saved")
 const confirm = useConfirm(); // await confirm({ title: "Delete?" }) -> boolean`;
 

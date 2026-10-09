@@ -104,6 +104,48 @@
         "default": "./dist/core/styling-hooks.cjs"
       }
     },
+    "./native": {
+      "source": "./dist/native/source/index.ts",
+      "react-native": {
+        "types": "./dist/native/index.d.ts",
+        "default": "./dist/native/index.js"
+      },
+      "import": {
+        "types": "./dist/native/index.d.ts",
+        "default": "./dist/native/index.js"
+      },
+      "require": {
+        "types": "./dist/native/index.d.cts",
+        "default": "./dist/native/index.cjs"
+      }
+    },
+    "./angular": {
+      "types": "./dist/angular/types/minerva-angular.d.ts",
+      "default": "./dist/angular/fesm2022/minerva-angular.mjs"
+    },
+    "./taro": {
+      "types": "./dist/taro/index.d.ts",
+      "default": "./dist/taro/index.js"
+    },
+    "./uni": {
+      "types": "./dist/uni/index.d.ts",
+      "default": "./dist/uni/index.js"
+    },
+    "./uni/Button.vue": {
+      "types": "./dist/uni/Button.vue.d.ts",
+      "default": "./dist/uni/Button.vue"
+    },
+    "./uni/Input.vue": {
+      "types": "./dist/uni/Input.vue.d.ts",
+      "default": "./dist/uni/Input.vue"
+    },
+    "./uni/Switch.vue": {
+      "types": "./dist/uni/Switch.vue.d.ts",
+      "default": "./dist/uni/Switch.vue"
+    },
+    "./taro/style.css": "./dist/taro/style.css",
+    "./uni/style.css": "./dist/uni/style.css",
+    "./tokens.mini.css": "./dist/core/tokens.mini.css",
     "./style.css": "./dist/react/style.css",
     "./styles/*.css": "./dist/react/styles/*.css",
     "./prose.scss": "./dist/react/prose.scss",
@@ -369,31 +411,12 @@
       "types": "./dist/vue/index.d.ts",
       "default": "./dist/vue/index.js"
     },
-    "./vue/monaco": {
-      "types": "./dist/vue/monaco.d.ts",
-      "default": "./dist/vue/monaco.js"
-    },
     "./vue/global": {
       "types": "./dist/vue/global.d.ts"
     },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
-    "./package.json": "./package.json",
-    "./native": {
-      "source": "./dist/native/source/index.ts",
-      "react-native": {
-        "types": "./dist/native/index.d.ts",
-        "default": "./dist/native/index.js"
-      },
-      "import": {
-        "types": "./dist/native/index.d.ts",
-        "default": "./dist/native/index.js"
-      },
-      "require": {
-        "types": "./dist/native/index.d.cts",
-        "default": "./dist/native/index.cjs"
-      }
-    }
+    "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
@@ -427,7 +450,8 @@
     "**/*.scss",
     "dist/web-components/index.js",
     "dist/web-components/elements/*.js",
-    "dist/web-components/cdn/*.js"
+    "dist/web-components/cdn/*.js",
+    "./dist/weapp/**"
   ],
   "customElements": "custom-elements.json",
   "publishConfig": {
@@ -435,7 +459,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build",
+    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build && pnpm --filter @minerva/angular build && pnpm --filter @minerva/taro build && pnpm --filter @minerva/uni build && pnpm --filter @minerva/weapp build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",
@@ -451,12 +475,17 @@
   "peerDependencies": {
     "@monaco-editor/react": "^4.7.0",
     "monaco-editor": ">=0.52.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.3.0 || ^19.0.0",
+    "react-dom": "^18.3.0 || ^19.0.0",
     "vue": "^3.5.0",
     "react-native": ">=0.79.0",
     "react-native-safe-area-context": ">=4.0.0",
-    "react-native-svg": ">=13.0.0"
+    "react-native-svg": ">=13.0.0",
+    "@angular/common": ">=22.0.0 <23.0.0",
+    "@angular/core": ">=22.0.0 <23.0.0",
+    "@angular/forms": ">=22.0.0 <23.0.0",
+    "@tarojs/components": "^4.3.0",
+    "@tarojs/taro": "^4.3.0"
   },
   "peerDependenciesMeta": {
     "@monaco-editor/react": {
@@ -482,6 +511,21 @@
     },
     "react-native-svg": {
       "optional": true
+    },
+    "@angular/common": {
+      "optional": true
+    },
+    "@angular/core": {
+      "optional": true
+    },
+    "@angular/forms": {
+      "optional": true
+    },
+    "@tarojs/components": {
+      "optional": true
+    },
+    "@tarojs/taro": {
+      "optional": true
     }
   },
   "devDependencies": {
@@ -496,5 +540,6 @@
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
-  }
+  },
+  "miniprogram": "dist/weapp"
 }

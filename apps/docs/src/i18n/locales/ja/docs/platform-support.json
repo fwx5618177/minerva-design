@@ -1,6 +1,6 @@
 {
   "title": "プラットフォーム対応",
-  "description": "Minerva の各コンポーネントがどのプラットフォームで使えるか：現在は React と Web Components、ネイティブの Vue、Angular、React Native、Taro、WeChat ミニプログラム、uni-app レンダラーを計画中です。",
+  "description": "React と Web Components に加え、Vue・Angular・React Native のネイティブ実装と、Taro・WeChat・uni-app の初期コンポーネントを提供します。対応表はソースの実装状況を示し、npm 公開状況とは異なります。",
   "platformsTitle": "プラットフォーム",
   "platformsText": "各コンポーネントは、プラットフォームに依存しないコントラクト（プロパティ、イベント、スロット）で一度だけ定義されます。各レンダラーは独自のコンポーネントでコントラクトを実装し、共通のコントラクトテストが同じ振る舞いであることを確認します。",
   "platform": "プラットフォーム",
@@ -12,15 +12,15 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "任意のフレームワーク（またはフレームワークなし）で使える Lit カスタム要素（minerva-design/web-components）。ネイティブレンダラーが提供されるまで、Vue と Angular はこれを使用します。"
+      "text": "各 Web フレームワークで利用できる Lit カスタム要素。Vue にはネイティブ SFC、Angular には初期 standalone コンポーネントもあります。"
     },
     "vue": {
       "name": "Vue",
-      "text": "ネイティブの Vue 3 コンポーネント。"
+      "text": "Vue 3 ネイティブ SFC（minerva-design/vue）。専用デモと API 表を提供します。"
     },
     "angular": {
       "name": "Angular",
-      "text": "ネイティブの Angular コンポーネント。"
+      "text": "ネイティブ standalone 実装：設定、Button、Switch、Modal（minerva-design/angular）。"
     },
     "native": {
       "name": "React Native",
@@ -28,15 +28,15 @@
     },
     "taro": {
       "name": "Taro",
-      "text": "ミニプログラムと H5 向けの Taro コンポーネント。"
+      "text": "ミニプログラムと H5 向けの Taro コンポーネント。 初期実装は Button・Input・Switch です。その他のコンポーネントは予定段階です。"
     },
     "weapp": {
       "name": "WeChat",
-      "text": "ネイティブの WeChat ミニプログラムコンポーネント。"
+      "text": "ネイティブの WeChat ミニプログラムコンポーネント。 初期実装は Button・Input・Switch です。その他のコンポーネントは予定段階です。"
     },
     "uni": {
       "name": "uni-app",
-      "text": "ミニプログラム、アプリ、H5 向けの uni-app コンポーネント。"
+      "text": "ミニプログラム、アプリ、H5 向けの uni-app コンポーネント。 初期実装は Button・Input・Switch です。その他のコンポーネントは予定段階です。"
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "対象外"
   },
   "legend": {
-    "stable": "提供済みで、コントラクトテストでカバーされています。",
-    "beta": "提供済みですが、API が変わる可能性があります。",
+    "stable": "実装済みで、共通コントラクトテストによる検証があります。npm 公開済みを意味しません。",
+    "beta": "初期 API を実装済み。検証範囲はプラットフォームごとに異なります。詳細の注記をご確認ください。",
     "planned": "ロードマップにあり、まだ利用できません。",
     "na": "設計上このプラットフォームでは独立したコンポーネントではなく、別の方法で提供されます（詳細はバッジにカーソルを合わせてください）。"
   },
@@ -68,5 +68,7 @@
   "tracks": "種類",
   "contractsTitle": "コンポーネントコントラクト",
   "contractsText": "この対応表はコンポーネントコントラクトから生成されます。コントラクトは React のプロパティ型と Custom Elements Manifest から抽出したメタデータです（プロパティの種類・列挙値・デフォルト値、イベントとその detail フィールド、スロット、プロダクトの種類、各プラットフォームの対応状況）。プロパティ、属性、イベントが変更されたのに再生成されていない場合や、React とカスタム要素で列挙値やデフォルト値が一致しない場合はテストが失敗します。",
-  "testsText": "同じコントラクトテスト（クリック、制御・非制御の状態、選択、ダイアログ、トースト、翻訳、デザイントークン）が、プラットフォームごとのドライバーを通じてすべてのレンダラーで実行されます。新しいレンダラーは、そのドライバーがテストに合格すると安定版になります。"
+  "testsText": "同じコントラクトテスト（クリック、制御・非制御の状態、選択、ダイアログ、トースト、翻訳、デザイントークン）が、プラットフォームごとのドライバーを通じてすべてのレンダラーで実行されます。新しいレンダラーは、そのドライバーがテストに合格すると安定版になります。",
+  "quickStartTitle": "ネイティブフレームワークとミニプログラムの導入",
+  "quickStartText": "Angular は設定、Button、Switch、Modal とその構成部品を公開しています。Taro・WeChat・uni-app は Web API の一部に対応する Button・Input・Switch を実装しています。各プラットフォーム専用の入口を使ってください。Taro は React 18、Web のルート入口は React 19 を使用します。テストは Taro H5、WeChat シミュレーター、uni-app のホスト代替で実行し、実機ビルドは未検証です。uni-app は専用コンパイラーで処理する SFC ソースを配布します。"
 }

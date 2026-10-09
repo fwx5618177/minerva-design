@@ -18,7 +18,7 @@ describe("component contracts", () => {
     expect(new Set(tags).size).toBe(tags.length);
   });
 
-  it("has a status on every platform: react / wc shipped, the rest planned", () => {
+  it("has a status on every platform: implemented platforms and explicitly planned components", () => {
     for (const contract of componentContracts) {
       expect(Object.keys(contract.platforms).sort()).toEqual(
         [...PLATFORMS].sort(),
@@ -31,11 +31,14 @@ describe("component contracts", () => {
       }
       expect(
         contract.platforms.react.status === "stable" ||
-          contract.platforms.wc.status === "stable",
+          contract.platforms.wc.status === "stable" ||
+          contract.platforms.native.status === "beta",
       ).toBe(true);
       expect(contract.platforms.wc.status === "stable").toBe(!!contract.tag);
       for (const platform of PLATFORMS.slice(2))
-        expect(contract.platforms[platform].status).toBe("planned");
+        expect(["stable", "beta", "planned", "n/a"]).toContain(
+          contract.platforms[platform].status,
+        );
     }
   });
 
@@ -60,7 +63,7 @@ describe("component contracts", () => {
         }
       }
       for (const event of contract.events)
-        expect(event.react ?? event.wc).toBeTruthy();
+        expect(event.react ?? event.wc ?? event.native).toBeTruthy();
     }
   });
 
@@ -69,14 +72,21 @@ describe("component contracts", () => {
     expect(getContract("minerva-button")).toBe(button);
     expect(getContract("Nope")).toBeUndefined();
     expect(getSupport(button, "react").status).toBe("stable");
-    expect(getSupport(button, "vue").status).toBe("planned");
+    expect(getSupport(button, "vue").status).toBe("stable");
     expect(button.props.find((p) => p.name === "variant")).toMatchObject({
       kind: "enum",
       attribute: "variant",
     });
 
     const summary = supportSummary("vue");
-    expect(summary.planned).toBe(componentContracts.length);
+    expect(summary.stable).toBeGreaterThan(0);
+    expect(summary.beta).toBeGreaterThan(0);
+    expect(Object.values(summary).reduce((a, b) => a + b, 0)).toBe(
+      componentContracts.length,
+    );
+    expect(getSupport(getContract("DataTable")!, "taro").status).toBe(
+      "planned",
+    );
     expect(supportSummary("react").stable).toBeGreaterThan(90);
 
     const toB = contractsForTrack("toB");

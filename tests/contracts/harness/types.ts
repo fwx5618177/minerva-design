@@ -67,9 +67,9 @@ export interface Handle {
 
 /** Platform services the suites need beyond rendering */
 export interface ToastService {
-  show(title: string, options?: { duration?: number }): void;
+  show(title: string, options?: { duration?: number }): void | Promise<void>;
   /** Removes every toast (between tests) */
-  reset(): void;
+  reset(): void | Promise<void>;
 }
 
 export interface Driver {

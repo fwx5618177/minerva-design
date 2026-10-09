@@ -59,7 +59,7 @@ describe("ProgressIndicator", () => {
       slots: { label: () => h("b", "Rich"), icon: () => h("svg", { id: "i" }) },
     });
     expect(slot.get('[data-part="label"] b').text()).toBe("Rich");
-    expect(slot.get('[data-part="icon"] #i').exists()).toBe(true);
+    expect(slot.find('[data-part="icon"] #i').exists()).toBe(true);
   });
 
   it("is purely visual when decorative", () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { h } from "vue";
-import { DescriptionList } from ".";
+import { DescriptionList, type DescriptionListItem } from ".";
 
 const items = [
   { key: "a", label: "Status", value: "Active" },
@@ -32,7 +32,7 @@ describe("DescriptionList", () => {
     const wrapper = mount(DescriptionList, {
       props: { items, bordered: true, striped: true },
       slots: {
-        label: ({ item }: { item: { label: string } }) => h("em", item.label),
+        label: ({ item }: { item: DescriptionListItem }) => h("em", item.label),
         value: ({ item }: { item: { key: string } }) => h("code", item.key),
       },
     });

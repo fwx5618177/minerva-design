@@ -1,4 +1,227 @@
 {
+  "Alert": {
+    "file": "packages/vue/src/components/Alert/Alert.vue",
+    "props": [
+      { "name": "title", "type": "string", "required": false, "description": "Alert title (or the `title` slot)" },
+      {
+        "name": "color",
+        "type": "\"info\" | \"success\" | \"warning\" | \"danger\"",
+        "default": "\"info\"",
+        "required": false,
+        "description": "Semantic (status) color, which also sets the default icon and the role"
+      },
+      {
+        "name": "variant",
+        "type": "\"subtle\" | \"outline\" | \"solid\"",
+        "default": "\"subtle\"",
+        "required": false,
+        "description": "Visual style: `subtle` (tinted background), `outline` (transparent\nbackground with a colored border) or `solid` (filled with the color)"
+      },
+      { "name": "size", "type": "AlertSize", "default": "\"medium\"", "required": false, "description": "Alert size" },
+      { "name": "showIcon", "type": "boolean", "default": "true", "required": false, "description": "Shows the status icon of the color (or the `icon` slot)" },
+      { "name": "closable", "type": "boolean", "default": "false", "required": false, "description": "Shows a close button" },
+      { "name": "animation", "type": "boolean", "default": "true", "required": false, "description": "Plays an entrance animation" },
+      { "name": "animationName", "type": "\"slideIn\" | \"fadeIn\" | \"bounce\" | \"zoom\"", "default": "\"slideIn\"", "required": false, "description": "Entrance animation name" },
+      { "name": "banner", "type": "boolean", "default": "false", "required": false, "description": "Banner mode, suited to page-level notices at the top of a page" },
+      { "name": "elevation", "type": "boolean", "default": "false", "required": false, "description": "Adds a drop shadow" },
+      { "name": "rounded", "type": "boolean", "default": "true", "required": false, "description": "Rounds the corners" },
+      { "name": "borderRadius", "type": "string | number", "required": false, "description": "Custom corner radius (a number is in px)" },
+      { "name": "collapsible", "type": "boolean", "default": "false", "required": false, "description": "Lets the content be expanded and collapsed (requires a title)" },
+      { "name": "expanded", "type": "boolean", "required": false, "description": "Whether the content is expanded (controlled, `v-model:expanded`)" },
+      { "name": "defaultExpanded", "type": "boolean", "required": false, "description": "Whether the content is initially expanded (uncontrolled)" },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close button" },
+      { "name": "expandLabel", "type": "string", "required": false, "description": "Accessible label of the toggle while the content is collapsed" },
+      { "name": "collapseLabel", "type": "string", "required": false, "description": "Accessible label of the toggle while the content is expanded" },
+      { "name": "iconLabel", "type": "string", "required": false, "description": "Accessible label of the status icon" },
+      {
+        "name": "returnFocus",
+        "type": "FocusTarget",
+        "required": false,
+        "description": "Element receiving focus after the alert is closed with its close button:\nan element, a ref or a getter. Without it focus moves to the next\nfocusable element after the alert (else the previous one, else its\ncontainer), never to <body>"
+      },
+      { "name": "role", "type": "string", "required": false, "description": "ARIA role of the alert. Danger and warning interrupt (\"alert\"), info\nand success are polite (\"status\")" }
+    ],
+    "events": [
+      { "name": "close", "type": "[event: MouseEvent]" },
+      { "name": "expand", "type": "[expanded: boolean]" },
+      { "name": "update:expanded", "type": "[expanded: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Alert content" },
+      { "name": "title", "type": "any", "description": "Alert title (the `title` prop)" },
+      { "name": "icon", "type": "any", "description": "Custom icon, replacing the status icon" },
+      { "name": "action", "type": "any", "description": "Action area rendered on the right, e.g. buttons" },
+      { "name": "close-icon", "type": "any", "description": "Custom close icon" }
+    ]
+  },
+  "AutoComplete": {
+    "file": "packages/vue/src/components/AutoComplete/AutoComplete.vue",
+    "props": [
+      { "name": "name", "type": "string", "required": false, "description": "Name of the input" },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Label of the input (without it, give the input an accessible name with\ninputProps[\"aria-label\"] or an enclosing FormControl label)"
+      },
+      {
+        "name": "mode",
+        "type": "\"basic\" | \"custom\"",
+        "default": "\"basic\"",
+        "required": false,
+        "description": "\"basic\" renders icon / label / description; \"custom\" uses the `option`\nslot"
+      },
+      { "name": "modelValue", "type": "string", "required": false, "description": "Input text (controlled, `v-model`)" },
+      { "name": "options", "type": "AutoCompleteOption[]", "default": "[]", "required": false, "description": "Options to suggest" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initial input value (uncontrolled)" },
+      { "name": "groupBy", "type": "((option: AutoCompleteOption) => string)", "required": false, "description": "Returns the group name of an option; options are grouped under headings" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Shows a loading indicator in the dropdown" },
+      {
+        "name": "inputProps",
+        "type": "Record<string, unknown>",
+        "required": false,
+        "description": "Props / attributes forwarded to the underlying Input (native\nattributes, aria-label, size, variant, prefix / suffix, clearable,\ndisabled, readOnly, listeners...)"
+      },
+      { "name": "emptyProps", "type": "Partial<EmptyProps>", "required": false, "description": "Props forwarded to the default Empty state" },
+      {
+        "name": "dropdownClassName",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name of the dropdown (teleported) element. It can set\nthe CSS custom properties `--auto-complete-dropdown-background`,\n`--auto-complete-option-hover-background` and\n`--auto-complete-option-highlight-background`"
+      },
+      {
+        "name": "placement",
+        "type": "\"bottom\" | \"top\" | \"left\" | \"right\"",
+        "default": "\"bottom\"",
+        "required": false,
+        "description": "Preferred dropdown side; the dropdown is aligned with the input's start\nedge, is at least as wide as the input, and flips / shifts to stay in the\nviewport"
+      },
+      {
+        "name": "offset",
+        "type": "{ x: number; y: number; }",
+        "default": "{ x: 0, y: 4 }",
+        "required": false,
+        "description": "Dropdown offset in pixels. For top / bottom placements `y` is the gap to\nthe input and `x` shifts along it; for left / right placements `x` is\nthe gap and `y` shifts along it"
+      },
+      { "name": "animation", "type": "boolean", "default": "true", "required": false, "description": "Animates the dropdown when it opens" },
+      {
+        "name": "filterOption",
+        "type": "((inputValue: string, option: AutoCompleteOption) => boolean)",
+        "required": false,
+        "description": "Custom filter; by default options whose label contains the input (case-insensitive) are shown"
+      },
+      { "name": "sortOption", "type": "((a: AutoCompleteOption, b: AutoCompleteOption) => number)", "required": false, "description": "Compare function used to sort the filtered options" },
+      {
+        "name": "autoHighlight",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Makes the first enabled option active whenever the dropdown opens or the\noptions change, so Enter picks it right away"
+      },
+      {
+        "name": "fillOnSelect",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Writes the label of the picked option into the input. Set to false to\nkeep the typed text, e.g. when picking navigates away"
+      },
+      {
+        "name": "groupMode",
+        "type": "\"first\" | \"adjacent\"",
+        "default": "\"first\"",
+        "required": false,
+        "description": "How groupBy groups options: \"first\" collects each group at its first\nappearance; \"adjacent\" groups runs of consecutive options (a group can\nappear several times). Options whose group is \"\" get no heading"
+      }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" },
+      { "name": "select", "type": "[option: AutoCompleteOption]" },
+      { "name": "optionClick", "type": "[option: AutoCompleteOption]" },
+      { "name": "dropdownVisibleChange", "type": "[visible: boolean]" },
+      { "name": "submit", "type": "[value: string]" }
+    ],
+    "slots": [
+      { "name": "option", "type": "{ option: AutoCompleteOption; }", "description": "Custom option content (`mode=\"custom\"`, React `renderOption`)" },
+      { "name": "empty", "type": "any", "description": "Custom content shown when no option matches (React `renderEmpty`)" }
+    ]
+  },
+  "Avatar": {
+    "file": "packages/vue/src/components/Avatar/Avatar.vue",
+    "props": [
+      { "name": "src", "type": "string", "required": false, "description": "Image URL. When omitted (or when it fails to load), the initials of name are shown" },
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"\"",
+        "required": false,
+        "description": "Name of the person; used for the initials (first letters of the first two\nwords, or the first CJK character), the alt text and the accessible label"
+      },
+      { "name": "alt", "type": "string", "required": false, "description": "Alternative text of the image; pass \"\" for a decorative avatar" },
+      { "name": "fallback", "type": "string", "required": false, "description": "Custom fallback text shown instead of the initials when there is no\nimage (or the `fallback` slot)" },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\"", "default": "\"circle\"", "required": false, "description": "Avatar shape" },
+      {
+        "name": "size",
+        "type": "AvatarSize",
+        "default": "\"medium\"",
+        "required": false,
+        "description": "Avatar size: a preset (xsmall 24px, small 32px, medium 48px, large 64px,\nxlarge 80px, xxlarge 96px) or a number of pixels"
+      },
+      { "name": "stacked", "type": "boolean", "default": "false", "required": false, "description": "Uses tighter margins for overlapping avatars" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Fallback content used when there is no name (e.g. an icon)" },
+      { "name": "fallback", "type": "any", "description": "Custom fallback content shown instead of the initials (the `fallback` prop)" }
+    ]
+  },
+  "AvatarGroup": {
+    "file": "packages/vue/src/components/Avatar/AvatarGroup.vue",
+    "props": [
+      { "name": "count", "type": "number", "required": false, "description": "Number of additional avatars, shown as a \"+N\" indicator" },
+      { "name": "max", "type": "number", "required": false, "description": "Maximum number of avatars to display; the others are counted in the\n\"+N\" indicator (added to count)" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Avatars (`v-if`-ed avatars are not counted)" }]
+  },
+  "Badge": {
+    "file": "packages/vue/src/components/Badge/Badge.vue",
+    "props": [
+      { "name": "color", "type": "ColorScheme", "default": "\"primary\"", "required": false, "description": "Semantic color of the badge" },
+      {
+        "name": "variant",
+        "type": "\"subtle\" | \"outline\" | \"solid\"",
+        "default": "\"solid\"",
+        "required": false,
+        "description": "Visual style: `solid` (filled), `subtle` (tinted background) or\n`outline` (bordered)"
+      },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "default": "\"medium\"", "required": false, "description": "Badge size" },
+      { "name": "content", "type": "string | number", "required": false, "description": "Content displayed inside the badge (count, short text); the `content`\nslot renders rich content" },
+      {
+        "name": "position",
+        "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\"",
+        "default": "\"top-right\"",
+        "required": false,
+        "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+      },
+      { "name": "dot", "type": "boolean", "default": "false", "required": false, "description": "Renders a small dot instead of content" },
+      { "name": "borderRadius", "type": "string", "required": false, "description": "Custom border radius (CSS value)" },
+      { "name": "borderWidth", "type": "string", "required": false, "description": "Custom border width (CSS value)" },
+      {
+        "name": "role",
+        "type": "string",
+        "default": "\"status\"",
+        "required": false,
+        "description": "ARIA role of the badge element; set it to \"presentation\" or \"none\" when\nthe badge must not be announced as a live status"
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Element the badge is attached to, or the text content of a standalone badge" },
+      { "name": "content", "type": "any", "description": "Rich content of the badge (the `content` prop)" },
+      { "name": "icon", "type": "any", "description": "Icon displayed before the content" }
+    ]
+  },
   "Box": {
     "file": "packages/vue/src/components/Box/Box.vue",
     "props": [
@@ -39,17 +262,17 @@
   "Button": {
     "file": "packages/vue/src/components/Button/Button.vue",
     "props": [
-      { "name": "type", "type": "\"button\" | \"submit\" | \"reset\"", "default": "\"button\"", "required": false },
+      { "name": "type", "type": "\"submit\" | \"button\" | \"reset\"", "default": "\"button\"", "required": false },
       { "name": "color", "type": "ColorScheme", "default": "\"primary\"", "required": false, "description": "Semantic color." },
-      { "name": "variant", "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\"", "default": "\"solid\"", "required": false, "description": "Visual variant." },
-      { "name": "size", "type": "\"medium\" | \"xsmall\" | \"small\" | \"large\" | \"xlarge\"", "default": "\"medium\"", "required": false },
+      { "name": "variant", "type": "\"outline\" | \"solid\" | \"link\" | \"ghost\"", "default": "\"solid\"", "required": false, "description": "Visual variant." },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | \"xlarge\"", "default": "\"medium\"", "required": false },
       { "name": "disabled", "type": "boolean", "default": "false", "required": false },
       { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Busy: spinner, `aria-busy`, ignores presses." },
       { "name": "loadingText", "type": "string", "required": false, "description": "Label while loading (or the `loading-text` slot)" },
       { "name": "fullWidth", "type": "boolean", "default": "false", "required": false, "description": "Takes the full width of its container." },
       { "name": "active", "type": "boolean", "default": "false", "required": false, "description": "Pressed / selected look (`data-state=\"active\"`)." },
-      { "name": "shape", "type": "\"rounded\" | \"square\" | \"circle\"", "required": false },
-      { "name": "borderRadius", "type": "number | \"medium\" | \"small\" | \"large\" | \"square\" | \"circle\" | \"none\"", "required": false, "description": "Corner radius: a scale step or px" }
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\"", "required": false },
+      { "name": "borderRadius", "type": "number | \"medium\" | \"small\" | \"large\" | \"circle\" | \"square\" | \"none\"", "required": false, "description": "Corner radius: a scale step or px" }
     ],
     "events": [{ "name": "click", "type": "[event: MouseEvent]" }],
     "slots": [
@@ -58,6 +281,192 @@
       { "name": "end-icon", "type": "any", "description": "Icon after the label" },
       { "name": "loading-text", "type": "any", "description": "Label while loading (replaces the content; the `loadingText` prop)" }
     ]
+  },
+  "Card": {
+    "file": "packages/vue/src/components/Card/Card.vue",
+    "props": [
+      {
+        "name": "variant",
+        "type": "CardVariant",
+        "default": "\"default\"",
+        "required": false,
+        "description": "Visual style of the card: bordered (`default`, `outline`), shadowed\n(`elevated`), a muted block (`filled`) or transparent until hovered\nwhen interactive (`ghost`)"
+      },
+      {
+        "name": "padding",
+        "type": "CardPadding",
+        "required": false,
+        "description": "Pads the card itself (sections then sit flush, separated by spacing and a\nfooter rule). When omitted the classic layout is used: each section pads\nitself and has its own background and divider"
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Adds hover and focus-visible feedback for clickable cards\n(combine with `as=\"a\"` / `as=\"button\"`)"
+      },
+      { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component rendered as the root, e.g. \"a\", \"button\", \"article\"" },
+      { "name": "type", "type": "\"submit\" | \"button\" | \"reset\"", "required": false, "description": "Native `type` of the root when `as=\"button\"`" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Card content, usually CardHeader, CardContent and CardFooter" }]
+  },
+  "CardContent": {
+    "file": "packages/vue/src/components/Card/CardContent.vue",
+    "props": [
+      { "name": "animation", "type": "\"slideIn\" | \"fadeIn\" | \"zoomIn\"", "required": false, "description": "Entrance animation of the content" },
+      { "name": "padding", "type": "CardPadding", "required": false, "description": "Overrides the inner spacing of this section" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "CardDescription": { "file": "packages/vue/src/components/Card/CardDescription.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "CardFooter": {
+    "file": "packages/vue/src/components/Card/CardFooter.vue",
+    "props": [{ "name": "padding", "type": "CardPadding", "required": false, "description": "Overrides the inner spacing of this section" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "CardHeader": {
+    "file": "packages/vue/src/components/Card/CardHeader.vue",
+    "props": [{ "name": "padding", "type": "CardPadding", "required": false, "description": "Overrides the inner spacing of this section" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "CardTitle": {
+    "file": "packages/vue/src/components/Card/CardTitle.vue",
+    "props": [{ "name": "as", "type": "\"h3\" | \"h1\" | \"h2\" | \"h4\" | \"h5\" | \"h6\"", "default": "\"h3\"", "required": false, "description": "Heading level rendered" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Cascader": {
+    "file": "packages/vue/src/components/Cascader/Cascader.vue",
+    "props": [
+      { "name": "label", "type": "string", "required": true, "description": "Label of the input" },
+      { "name": "name", "type": "string", "required": true, "description": "Name of the input" },
+      { "name": "options", "type": "CascaderOption[]", "default": "[]", "required": true, "description": "Option tree" },
+      { "name": "modelValue", "type": "CascaderValue", "required": false, "description": "Selected path of values (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "CascaderValue", "required": false, "description": "Initially selected path of values (uncontrolled)" },
+      {
+        "name": "displayRender",
+        "type": "((labels: string[], selectedOptions: CascaderOption[]) => string)",
+        "required": false,
+        "description": "Formats the text shown in the input; by default labels are joined with \" / \""
+      },
+      { "name": "disabled", "type": "boolean", "required": false, "description": "Disables the cascader; defaults to the enclosing FormControl's state" },
+      { "name": "placeholder", "type": "string", "required": false, "description": "Placeholder of the input" },
+      { "name": "allowClear", "type": "boolean", "default": "true", "required": false, "description": "Shows a clear button when a value is selected" },
+      { "name": "expandTrigger", "type": "\"click\" | \"hover\"", "default": "\"click\"", "required": false, "description": "How sub-menus are expanded" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the input (`aria-label`); overrides `label` and the\nlabel of an enclosing FormControl" },
+      { "name": "ariaLabelledby", "type": "string", "required": false, "description": "Id(s) of the element(s) labelling the input (`aria-labelledby`)" },
+      {
+        "name": "ariaDescribedby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) describing the input (`aria-describedby`);\nmerged with the helper / error text of an enclosing FormControl"
+      },
+      { "name": "id", "type": "string", "required": false, "description": "Id of the input; defaults to the id of an enclosing FormControl" },
+      { "name": "required", "type": "boolean", "required": false, "description": "Marks the input as required (aria-required); defaults to the enclosing\nFormControl's state" },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows the value without allowing changes (the dropdown does not open);\ndefaults to the enclosing FormControl's state"
+      },
+      { "name": "invalid", "type": "boolean", "required": false, "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing\nFormControl's state" },
+      { "name": "showSearch", "type": "boolean", "default": "false", "required": false, "description": "Allows typing to search all paths" },
+      {
+        "name": "filter",
+        "type": "((inputValue: string, path: CascaderOption[]) => boolean)",
+        "required": false,
+        "description": "Custom search predicate; by default paths whose labels contain the input match"
+      },
+      {
+        "name": "loadData",
+        "type": "((selectedOptions: CascaderOption[]) => void)",
+        "required": false,
+        "description": "Loads children lazily: clicking an option that has no children and is\nnot isLeaf expands it and calls loadData with its path (instead of\nselecting it). Add the children to `options` yourself; set `loading` on\nthe option meanwhile"
+      },
+      { "name": "dropdownClassName", "type": "ClassValue", "required": false, "description": "Additional class name of the dropdown" },
+      { "name": "width", "type": "string | number", "default": "240", "required": false, "description": "Width of the component" },
+      { "name": "maxLevel", "type": "number", "default": "6", "required": false, "description": "Maximum number of levels shown" },
+      { "name": "dropdownStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of the dropdown" },
+      { "name": "optionStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of every option" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: CascaderValue]" },
+      { "name": "change", "type": "[value: CascaderValue, selectedOptions: CascaderOption[]]" }
+    ],
+    "slots": [{ "name": "option", "type": "{ option: CascaderOption; level: number; }", "description": "Custom option content (the React `optionRender`)" }]
+  },
+  "Checkbox": {
+    "file": "packages/vue/src/components/Checkbox/Checkbox.vue",
+    "props": [
+      { "name": "modelValue", "type": "boolean", "required": false, "description": "Checked state (controlled, `v-model`)" },
+      { "name": "defaultChecked", "type": "boolean", "required": false, "description": "Initial checked state (uncontrolled)" },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the checkbox. Inherited from an enclosing FormControl when not\nset; an explicit `false` overrides the FormControl"
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows the indeterminate (partially checked) state. Controlled: it stays\napplied until this prop changes, also after the user clicks"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the input, used in forms" },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\"", "default": "\"square\"", "required": false, "description": "Box shape" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "default": "\"medium\"", "required": false, "description": "Checkbox size" },
+      { "name": "label", "type": "string", "required": false, "description": "Label text (or the `label` / default slot)" },
+      {
+        "name": "color",
+        "type": "\"info\" | \"primary\" | \"success\" | \"warning\" | \"danger\"",
+        "default": "\"primary\"",
+        "required": false,
+        "description": "Semantic color of the checked / indeterminate box"
+      },
+      { "name": "id", "type": "string", "required": false, "description": "id of the input (defaults to the enclosing FormControl's id)" },
+      { "name": "value", "type": "string", "required": false, "description": "Value submitted with the form when checked" },
+      { "name": "required", "type": "boolean", "required": false, "description": "Marks the input as required (inherited from an enclosing FormControl)" },
+      { "name": "error", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (also set by an invalid enclosing FormControl)" },
+      { "name": "helperText", "type": "string", "required": false, "description": "Helper or error text shown below the checkbox (linked with aria-describedby)" },
+      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"end\" | \"start\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the box" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[checked: boolean]" },
+      { "name": "change", "type": "[checked: boolean, event: Event]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Label content (alternative to the `label` prop / slot)" },
+      { "name": "label", "type": "any", "description": "Label content (the `label` prop)" },
+      { "name": "icon", "type": "any", "description": "Custom icon shown when checked" },
+      { "name": "error-icon", "type": "any", "description": "Icon before the helper text in the error state (default: info circle)" }
+    ]
+  },
+  "CodeBlock": {
+    "file": "packages/vue/src/components/CodeBlock/CodeBlock.vue",
+    "props": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": false,
+        "description": "Source text, rendered verbatim (never parsed as HTML). Without it, the\ntext of the default slot (templates condense whitespace in static text:\nprefer this prop or `{{ source }}` for multi-line code)"
+      },
+      { "name": "wrap", "type": "boolean", "default": "true", "required": false, "description": "Wraps long lines (pre-wrap) instead of scrolling horizontally" },
+      { "name": "maxHeight", "type": "string | number", "default": "\"24rem\"", "required": false, "description": "Maximum height before the block scrolls (numbers are pixels)" },
+      {
+        "name": "copyable",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows a copy button in the top-right corner that writes the text to the\nclipboard; its label switches to \"Copied\" / \"Copy failed\" for about two\nseconds and the result is announced through a polite live region. When\nset, the <pre> is wrapped in a <div> (see the interface description)"
+      }
+    ],
+    "events": [{ "name": "copied", "type": "[text: string]" }],
+    "slots": [{ "name": "default", "type": "any", "description": "Source text (when the `code` prop is not set)" }]
   },
   "CommandDialog": {
     "file": "packages/vue/src/components/Command/CommandDialog.vue",
@@ -88,9 +497,9 @@
       { "name": "className", "type": "ClassValue", "required": false, "description": "Additional class of the dialog panel (a `class` attribute works too)." }
     ],
     "events": [
+      { "name": "select", "type": "[item: CommandItem]" },
       { "name": "update:open", "type": "[open: boolean]" },
-      { "name": "openChange", "type": "[open: boolean]" },
-      { "name": "select", "type": "[item: CommandItem]" }
+      { "name": "openChange", "type": "[open: boolean]" }
     ],
     "slots": [
       { "name": "title", "type": "any" },
@@ -115,7 +524,7 @@
       { "name": "preset", "type": "\"editorial\" | \"minerva\" | \"compact\" | \"touch\"", "required": false, "description": "Design preset (brings its palette unless `palette` is set)" },
       { "name": "density", "type": "\"compact\" | \"standard\" | \"comfortable\"", "required": false },
       { "name": "radius", "type": "\"medium\" | \"small\" | \"large\" | \"none\"", "required": false },
-      { "name": "shadow", "type": "\"none\" | \"standard\" | \"subtle\"", "required": false },
+      { "name": "shadow", "type": "\"subtle\" | \"none\" | \"standard\"", "required": false },
       { "name": "fontScale", "type": "\"small\" | \"large\" | \"standard\"", "required": false }
     ],
     "events": [
@@ -138,6 +547,7 @@
         "required": false,
         "description": "Semantic color of the confirm button; `danger` marks a destructive\naction (and defaults its label to \"Delete\")"
       },
+      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close (×) button; defaults to the localized \"Close\"." },
       {
         "name": "loading",
         "type": "boolean",
@@ -153,7 +563,6 @@
         "description": "Label of the confirm button; defaults to the localized \"Confirm\", or \"Delete\" for `color=\"danger\"`."
       },
       { "name": "cancelLabel", "type": "ConfirmContent", "required": false, "description": "Label of the cancel button; defaults to the localized \"Cancel\"." },
-      { "name": "closeLabel", "type": "string", "required": false, "description": "Accessible label of the close (×) button; defaults to the localized \"Close\"." },
       {
         "name": "confirmDisabled",
         "type": "boolean",
@@ -180,6 +589,132 @@
     "props": [],
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Application subtree; `useConfirm()` / `confirm()` dialogs render here" }]
+  },
+  "ContextMenu": {
+    "file": "packages/vue/src/components/Menu/ContextMenu.vue",
+    "props": [
+      { "name": "items", "type": "MenuEntry[]", "required": true, "description": "Entries of the menu" },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)"
+      },
+      { "name": "size", "type": "MenuSize", "default": "\"medium\"", "required": false, "description": "Density of the items" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the context menu (the native one shows instead)" },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open"
+      },
+      { "name": "loop", "type": "boolean", "default": "true", "required": false, "description": "Arrow keys wrap around from the last item to the first (and back)" },
+      { "name": "dir", "type": "MenuDirection", "required": false, "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the menu panel (`aria-label`)" }
+    ],
+    "events": [
+      { "name": "select", "type": "[item: MenuAction]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "any", "description": "The area opening the menu (its single child gets the listeners)" }]
+  },
+  "DataTable": {
+    "file": "packages/vue/src/components/Table/DataTable.vue",
+    "props": [
+      {
+        "name": "pagination",
+        "type": "DataTablePagination",
+        "required": false,
+        "description": "Pagination rendered under the table (or the `pagination` slot). Rows\nare expected to be already paginated: fetching / slicing belongs to the\ndata owner"
+      },
+      { "name": "error", "type": "string", "required": false, "description": "Error message (or the `error` slot); replaces the table (and\npagination) with an alert" },
+      { "name": "onRetry", "type": "(() => void)", "required": false, "description": "Called by the retry button shown with `error` (`@retry`; no button\nwithout a listener)" },
+      { "name": "retryLabel", "type": "string", "required": false, "description": "Text of the retry button" },
+      { "name": "columns", "type": "TableColumn<T>[]", "required": true, "description": "Column definitions" },
+      { "name": "data", "type": "T[]", "required": true, "description": "Rows to render" },
+      { "name": "rowKey", "type": "((row: T, index: number) => TableRowKey)", "required": false, "description": "Extracts a stable key from a row (defaults to the row index)" },
+      { "name": "emptyText", "type": "string", "required": false, "description": "Content of the single row shown when `data` is empty (or the `empty`\nslot)" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Renders placeholder skeleton rows instead of the data" },
+      { "name": "loadingRows", "type": "number", "default": "5", "required": false, "description": "Number of skeleton rows rendered while loading" },
+      { "name": "sortState", "type": "TableSortState | null", "required": false, "description": "Sort state (controlled, `v-model:sortState`); `null` means unsorted" },
+      { "name": "defaultSortState", "type": "TableSortState | null", "default": "null", "required": false, "description": "Initial sort state (uncontrolled)" },
+      {
+        "name": "manualSort",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Skips local sorting: `data` is rendered as given (sorted by the data\nowner, e.g. a server) while the headers still reflect the sort state"
+      },
+      { "name": "rowSelection", "type": "TableRowSelection<T>", "required": false, "description": "Adds a leading checkbox column to select rows" },
+      {
+        "name": "selectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "description": "Keys of the selected rows (controlled, `v-model:selectedRowKeys`; wins\nover `rowSelection.selectedRowKeys`). Setting it (or\n`defaultSelectedRowKeys`) also enables the selection column"
+      },
+      {
+        "name": "defaultSelectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "description": "Keys of the initially selected rows (uncontrolled; wins over\n`rowSelection.defaultSelectedRowKeys`)"
+      },
+      { "name": "size", "type": "TableSize", "default": "\"medium\"", "required": false, "description": "Density of the cells" },
+      { "name": "variant", "type": "TableVariant", "default": "\"simple\"", "required": false, "description": "Visual style: plain rows, zebra stripes or bordered cells" },
+      { "name": "hoverable", "type": "boolean", "default": "false", "required": false, "description": "Highlights body rows on hover" },
+      {
+        "name": "scroll",
+        "type": "TableScrollConfig",
+        "required": false,
+        "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it"
+      }
+    ],
+    "events": [
+      { "name": "update:sortState", "type": "[sortState: TableSortState | null]" },
+      { "name": "sortChange", "type": "[sortState: TableSortState]" },
+      { "name": "update:selectedRowKeys", "type": "[selectedRowKeys: TableRowKey[]]" },
+      { "name": "selectionChange", "type": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]" }
+    ],
+    "slots": [
+      { "name": "error", "type": "any", "description": "Error message (the `error` prop); shows the error state" },
+      { "name": "pagination", "type": "any", "description": "Content under the table, replacing the `pagination` prop" },
+      { "name": "empty", "type": "any", "description": "Content of the empty row (the `emptyText` prop)" }
+    ]
+  },
+  "DescriptionList": {
+    "file": "packages/vue/src/components/DescriptionList/DescriptionList.vue",
+    "props": [
+      { "name": "items", "type": "DescriptionListItem[]", "required": true, "description": "Rows to render, in order" },
+      { "name": "bordered", "type": "boolean", "default": "false", "required": false, "description": "Frames the list as a card (full border, rounded corners, surface\nbackground, padded rows)" },
+      { "name": "striped", "type": "boolean", "default": "false", "required": false, "description": "Tints every other row (replaces the row separators)" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "label", "type": "{ item: DescriptionListItem; }", "description": "Term of a row (default: `item.label`)" },
+      { "name": "value", "type": "{ item: DescriptionListItem; }", "description": "Description of a row (default: `item.value`)" }
+    ]
+  },
+  "Divider": {
+    "file": "packages/vue/src/components/Divider/Divider.vue",
+    "props": [
+      { "name": "variant", "type": "DividerVariant", "default": "\"solid\"", "required": false, "description": "Line style" },
+      { "name": "orientation", "type": "DividerOrientation", "default": "\"horizontal\"", "required": false, "description": "Divider direction" },
+      { "name": "thickness", "type": "number", "default": "1", "required": false, "description": "Line thickness in pixels" },
+      { "name": "length", "type": "string | number", "required": false, "description": "Length of the line (width when horizontal, height when vertical)" },
+      { "name": "spacing", "type": "number", "default": "16", "required": false, "description": "Margin around the divider in pixels (top/bottom when horizontal, left/right when vertical)" },
+      { "name": "textAlign", "type": "DividerTextAlign", "default": "\"center\"", "required": false, "description": "Position of the text" },
+      { "name": "elevation", "type": "boolean", "default": "false", "required": false, "description": "Adds a subtle shadow" },
+      {
+        "name": "flexItem",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Vertical divider inside a flex container: stretches to the container\nheight (align-self: stretch) instead of the 1em inline height"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Text rendered inside a horizontal divider (ignored when vertical)" }]
   },
   "Drawer": {
     "file": "packages/vue/src/components/Drawer/Drawer.vue",
@@ -285,6 +820,124 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "Empty": {
+    "file": "packages/vue/src/components/Empty/Empty.vue",
+    "props": [
+      { "name": "icon", "type": "false | null", "required": false, "description": "`null` or `false` render no icon at all (the `icon` slot replaces the\ndefault one)" },
+      { "name": "title", "type": "string", "required": false, "description": "Heading of the empty state (or the `title` slot); also becomes its accessible name" },
+      { "name": "description", "type": "string | null", "required": false, "description": "Description text (or the `description` slot); `null` hides it" },
+      {
+        "name": "size",
+        "type": "EmptySize",
+        "required": false,
+        "description": "Switches to the unframed sized layout (transparent background, size-based\npadding, icon and font sizes). Omit it for the classic surface layout"
+      },
+      { "name": "useSvg", "type": "boolean", "default": "false", "required": false, "description": "Uses the built-in SVG illustration instead of the default icon" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the container (a number is in px)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the container (a number is in px)" },
+      { "name": "showShadow", "type": "boolean", "default": "false", "required": false, "description": "Adds a drop shadow" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Footer content, e.g. an action button" },
+      { "name": "icon", "type": "any", "description": "Custom icon, replacing the default one" },
+      { "name": "title", "type": "any", "description": "Heading (the `title` prop)" },
+      { "name": "description", "type": "any", "description": "Description (the `description` prop)" },
+      { "name": "action", "type": "any", "description": "Primary call to action (a Button, a link or a group of them)" },
+      { "name": "secondary-action", "type": "any", "description": "Secondary action rendered after `action`" }
+    ]
+  },
+  "FormControl": {
+    "file": "packages/vue/src/components/FormControl/FormControl.vue",
+    "props": [
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Marks the field as invalid: the control gets aria-invalid and the error\nmessage replaces the helper text"
+      },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required (aria-required on the control, indicator on the label)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the control inside the field" },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Makes the control inside the field read-only" },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the control; the label, helper and error ids derive from it\n(`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Field content: FormLabel, a control, FormHelperText, FormErrorMessage" }]
+  },
+  "FormErrorMessage": { "file": "packages/vue/src/components/FormControl/FormErrorMessage.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "FormField": {
+    "file": "packages/vue/src/components/FormControl/FormField.vue",
+    "props": [
+      { "name": "label", "type": "string", "required": false, "description": "Label of the field (or the `label` slot)" },
+      { "name": "helperText", "type": "string", "required": false, "description": "Help text below the control, hidden while invalid (or the `helper-text` slot)" },
+      { "name": "errorMessage", "type": "string", "required": false, "description": "Error message (or the `error-message` slot); makes the field invalid\nunless `invalid` is set explicitly" },
+      { "name": "invalid", "type": "boolean", "required": false, "description": "Marks the field as invalid: the control gets aria-invalid and the error\nmessage replaces the helper text" },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required (aria-required on the control, indicator on the label)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the control inside the field" },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Makes the control inside the field read-only" },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the control; the label, helper and error ids derive from it\n(`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted"
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "The control" },
+      { "name": "label", "type": "any", "description": "Label (the `label` prop)" },
+      { "name": "helper-text", "type": "any", "description": "Help text (the `helperText` prop)" },
+      { "name": "error-message", "type": "any", "description": "Error message (the `errorMessage` prop)" }
+    ]
+  },
+  "FormHelperText": { "file": "packages/vue/src/components/FormControl/FormHelperText.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "FormLabel": {
+    "file": "packages/vue/src/components/FormControl/FormLabel.vue",
+    "props": [
+      {
+        "name": "requiredIndicator",
+        "type": "string",
+        "default": "\"*\"",
+        "required": false,
+        "description": "Indicator shown after the text when the field is required (hidden from\nassistive technology, which gets aria-required instead); or the\n`required-indicator` slot"
+      },
+      { "name": "htmlFor", "type": "string", "required": false, "description": "`for` of the label (defaults to the FormControl's control id)" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Label text" },
+      { "name": "required-indicator", "type": "any", "description": "Required indicator (the `requiredIndicator` prop)" }
+    ]
+  },
+  "FormLayout": {
+    "file": "packages/vue/src/components/FormLayout/FormLayout.vue",
+    "props": [
+      {
+        "name": "columns",
+        "type": "ResponsiveGridColumns",
+        "default": "1",
+        "required": false,
+        "description": "Column counts of the inner ResponsiveGrid: a number, or `{ base, sm, md, lg }`\n(container widths 480 / 768 / 1200px). Integers 1-12"
+      },
+      {
+        "name": "gap",
+        "type": "string | number",
+        "default": "4",
+        "required": false,
+        "description": "Gap between fields: numbers and numeric strings select spacing tokens,\nother strings are CSS values"
+      },
+      { "name": "rowGap", "type": "string | number", "required": false, "description": "Gap between rows; defaults to `gap`" },
+      { "name": "columnGap", "type": "string | number", "required": false, "description": "Gap between columns; defaults to `gap`" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Fields" }]
+  },
   "GridItem": {
     "file": "packages/vue/src/components/ResponsiveGrid/GridItem.vue",
     "props": [
@@ -298,6 +951,7 @@
     "file": "packages/vue/src/components/Stack/HStack.vue",
     "props": [
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "gap",
         "type": "string | number",
@@ -306,7 +960,6 @@
       },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "separator",
         "type": "string",
@@ -325,6 +978,231 @@
     "slots": [
       { "name": "default", "type": "any", "description": "Items" },
       { "name": "separator", "type": "any", "description": "Rendered between every two items (the `separator` prop as content)" }
+    ]
+  },
+  "HtmlPreview": {
+    "file": "packages/vue/src/components/HtmlPreview/HtmlPreview.vue",
+    "props": [
+      { "name": "html", "type": "string", "required": true, "description": "Untrusted HTML to preview (sanitized with DOMPurify in the browser)" },
+      { "name": "title", "type": "string", "required": true, "description": "Accessible title of the iframe" },
+      { "name": "viewport", "type": "HtmlPreviewViewport", "default": "\"desktop\"", "required": false, "description": "Full-width desktop preview or a fixed-width mobile preview" },
+      { "name": "mobileWidth", "type": "number", "default": "375", "required": false, "description": "Width of the mobile preview in pixels (invalid values fall back to 375)" },
+      { "name": "height", "type": "number", "default": "600", "required": false, "description": "Height of the iframe in pixels (invalid values fall back to 600)" }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "IconButton": {
+    "file": "packages/vue/src/components/IconButton/IconButton.vue",
+    "props": [
+      { "name": "label", "type": "string", "required": false, "description": "Accessible name of the button. Takes precedence over aria-label" },
+      { "name": "color", "type": "ColorScheme", "default": "\"neutral\"", "required": false, "description": "Semantic color of the button" },
+      {
+        "name": "variant",
+        "type": "\"outline\" | \"solid\" | \"ghost\"",
+        "default": "\"ghost\"",
+        "required": false,
+        "description": "Visual style: `ghost` (transparent until hovered), `solid` (filled with\nthe color) or `outline` (bordered)"
+      },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\"", "default": "\"medium\"", "required": false, "description": "Button size" },
+      { "name": "shape", "type": "\"circle\" | \"square\"", "default": "\"circle\"", "required": false, "description": "Button shape" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the button and removes it from the tab order" },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Replaces the icon with a spinner and ignores activation (click, Enter,\nSpace, form submission) while staying focusable: exposed as\naria-busy + aria-disabled instead of the native disabled attribute"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Pressed state of a toggle button (controlled, `v-model:pressed`).\nSetting pressed, defaultPressed or a `pressedChange` / `update:pressed`\nlistener makes the button a toggle: clicking flips the state and it is\nexposed as aria-pressed"
+      },
+      { "name": "defaultPressed", "type": "boolean", "required": false, "description": "Initial pressed state of an uncontrolled toggle button" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: MouseEvent]" },
+      { "name": "update:pressed", "type": "[pressed: boolean]" },
+      { "name": "pressedChange", "type": "[pressed: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "any", "description": "The icon" }]
+  },
+  "Input": {
+    "file": "packages/vue/src/components/Input/Input.vue",
+    "props": [
+      { "name": "modelValue", "type": "string | number", "required": false, "description": "Current text (controlled, `v-model`). Omit for an uncontrolled field" },
+      { "name": "defaultValue", "type": "string | number", "required": false, "description": "Initial text of an uncontrolled field" },
+      { "name": "type", "type": "string", "default": "\"text\"", "required": false },
+      { "name": "variant", "type": "InputVariant", "default": "\"outline\"", "required": false, "description": "Visual style" },
+      { "name": "size", "type": "InputSize", "default": "\"medium\"", "required": false, "description": "Height and font size" },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl); sets aria-invalid" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)." },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Read-only field (also set by FormControl)." },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
+      { "name": "id", "type": "string", "required": false, "description": "id of the input (defaults to the enclosing FormControl's id)" },
+      { "name": "maxLength", "type": "number", "required": false, "description": "Maximum length (also shown by the character count)" },
+      { "name": "prefix", "type": "string", "required": false, "description": "Content before the text, e.g. \"@\" (or the `prefix` slot)" },
+      { "name": "suffix", "type": "string", "required": false, "description": "Content after the text, e.g. a unit (or the `suffix` slot)" },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows a clear button while the field has a value (not when disabled or\nread-only). Clearing emits an empty value and keeps focus in the field"
+      },
+      { "name": "clearLabel", "type": "string", "required": false, "description": "Accessible label of the clear button" },
+      {
+        "name": "showCharCount",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows the number of characters (and maxLength, when set) after the text;\nthe count is linked to the input with aria-describedby"
+      },
+      {
+        "name": "showPasswordLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the password visibility toggle (shown for\ntype=\"password\") while the password is hidden"
+      },
+      { "name": "hidePasswordLabel", "type": "string", "required": false, "description": "Accessible label of the password visibility toggle while the password\nis visible" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "clear", "type": "[]" }
+    ],
+    "slots": [
+      { "name": "prefix", "type": "any", "description": "Content before the text (the `prefix` prop)" },
+      { "name": "suffix", "type": "any", "description": "Content after the text (the `suffix` prop)" }
+    ]
+  },
+  "JsonField": {
+    "file": "packages/vue/src/components/JsonField/JsonField.vue",
+    "props": [
+      { "name": "modelValue", "type": "string", "required": false, "description": "JSON text (controlled, `v-model`); omit for an uncontrolled field" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initial text of an uncontrolled field" },
+      { "name": "hideToolbar", "type": "boolean", "default": "false", "required": false, "description": "Hides the format button; syntax feedback stays visible and associated" },
+      { "name": "indent", "type": "number", "default": "2", "required": false, "description": "Spaces per indentation level when formatting (0 to 10; 0 compacts the JSON)" },
+      { "name": "formatLabel", "type": "string", "required": false, "description": "Accessible label of the format button" },
+      { "name": "validLabel", "type": "string", "required": false, "description": "Status text for valid JSON" },
+      { "name": "invalidLabel", "type": "string", "required": false, "description": "Status text prefix for invalid JSON (followed by the parser error)" },
+      { "name": "rows", "type": "number", "default": "8", "required": false, "description": "Rows of the textarea" },
+      { "name": "spellCheck", "type": "boolean", "default": "false", "required": false, "description": "Spell checking of the textarea" },
+      { "name": "variant", "type": "TextareaVariant", "default": "\"outline\"", "required": false, "description": "Visual style" },
+      { "name": "size", "type": "TextareaSize", "default": "\"medium\"", "required": false, "description": "Font size and minimum height" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)." },
+      { "name": "id", "type": "string", "required": false, "description": "id of the textarea (defaults to the enclosing FormControl's id)" },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Read-only field (also set by FormControl)." },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl); sets aria-invalid" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": []
+  },
+  "KeyValueEditor": {
+    "file": "packages/vue/src/components/KeyValueEditor/KeyValueEditor.vue",
+    "props": [
+      { "name": "modelValue", "type": "KeyValueEntry[]", "required": false, "description": "Rows (controlled, `v-model`); omit for an uncontrolled editor" },
+      { "name": "defaultValue", "type": "KeyValueEntry[]", "required": false, "description": "Initial rows of an uncontrolled editor" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables every field and button" },
+      { "name": "keyLabel", "type": "string", "required": false, "description": "Label of the key fields (followed by the row number for screen readers)" },
+      { "name": "valueLabel", "type": "string", "required": false, "description": "Label of the value fields" },
+      { "name": "addLabel", "type": "string", "required": false, "description": "Text of the add button" },
+      { "name": "removeLabel", "type": "string", "required": false, "description": "Accessible label of the remove buttons (followed by the row number)" },
+      { "name": "errors", "type": "Record<string, KeyValueEntryErrors>", "required": false, "description": "Field errors by entry id; validation belongs to the consumer" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[entries: KeyValueEntry[]]" },
+      { "name": "change", "type": "[entries: KeyValueEntry[]]" }
+    ],
+    "slots": []
+  },
+  "List": {
+    "file": "packages/vue/src/components/List/List.vue",
+    "props": [
+      { "name": "density", "type": "ListDensity", "default": "\"default\"", "required": false, "description": "Minimum row height and vertical padding (56px / 12px, 40px / 8px or\n72px / 16px)" },
+      {
+        "name": "bordered",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Frames the list as a card (full border, rounded corners, surface\nbackground) whose rows are tinted on hover and while a control inside\nthem has the focus"
+      },
+      { "name": "dividers", "type": "boolean", "default": "true", "required": false, "description": "Draws token-colored separators between adjacent rows" },
+      { "name": "role", "type": "string", "default": "\"list\"", "required": false, "description": "List role; kept explicit so Safari / VoiceOver keep list semantics after\nthe markers are removed" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "ListItem": {
+    "file": "packages/vue/src/components/List/ListItem.vue",
+    "props": [
+      { "name": "primary", "type": "string | number", "required": false, "description": "Main content (medium weight), or the `primary` slot" },
+      { "name": "secondary", "type": "string | number", "required": false, "description": "Supporting content, muted and smaller (0 is rendered), or the `secondary` slot" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "primary", "type": "any", "description": "Main content (the `primary` prop)" },
+      { "name": "secondary", "type": "any", "description": "Supporting content (the `secondary` prop)" },
+      { "name": "icon", "type": "any", "description": "Decorative leading slot, hidden from assistive technologies" },
+      { "name": "actions", "type": "any", "description": "Trailing controls, owned by the caller (bounded to 50% of the row)" }
+    ]
+  },
+  "LoadingState": {
+    "file": "packages/vue/src/components/LoadingState/LoadingState.vue",
+    "props": [
+      { "name": "label", "type": "string", "required": false, "description": "Visible text, which is also what the status region announces" },
+      {
+        "name": "size",
+        "type": "LoadingStateSize",
+        "default": "\"medium\"",
+        "required": false,
+        "description": "Minimum height: small for a section, medium for a page or route, large for\ntall content such as a calendar"
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Menu": {
+    "file": "packages/vue/src/components/Menu/Menu.vue",
+    "props": [
+      { "name": "items", "type": "MenuEntry[]", "required": true, "description": "Entries of the menu" },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)"
+      },
+      { "name": "size", "type": "MenuSize", "default": "\"medium\"", "required": false, "description": "Density of the items" },
+      { "name": "align", "type": "MenuAlign", "default": "\"end\"", "required": false, "description": "Alignment of the menu against the trigger" },
+      { "name": "side", "type": "MenuSide", "default": "\"bottom\"", "required": false, "description": "Preferred side; the menu flips when there is not enough room" },
+      { "name": "open", "type": "boolean", "required": false, "description": "Whether the menu is open (controlled, `v-model:open`)" },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state (uncontrolled)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the trigger" },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open"
+      },
+      { "name": "loop", "type": "boolean", "default": "true", "required": false, "description": "Arrow keys wrap around from the last item to the first (and back)" },
+      { "name": "dir", "type": "MenuDirection", "required": false, "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the menu panel (`aria-label`; defaults to the trigger's label)" }
+    ],
+    "events": [
+      { "name": "select", "type": "[item: MenuAction]" },
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "trigger", "type": "any", "description": "The trigger element (its single child gets the trigger props)" },
+      { "name": "default", "type": "any", "description": "Alternative to the `trigger` slot" }
     ]
   },
   "Modal": {
@@ -401,6 +1279,107 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "MonthCalendar": {
+    "file": "packages/vue/src/components/MonthCalendar/MonthCalendar.vue",
+    "props": [
+      { "name": "month", "type": "Date", "required": false, "description": "Displayed month (controlled, `v-model:month`; any day of the month)" },
+      { "name": "defaultMonth", "type": "Date", "required": false, "description": "Initially displayed month (uncontrolled)" },
+      { "name": "modelValue", "type": "string", "required": false, "description": "Selected day, \"YYYY-MM-DD\" (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)" },
+      { "name": "events", "type": "readonly MonthCalendarEvent[]", "default": "NO_EVENTS", "required": false, "description": "Events; each day shows how many it has" },
+      { "name": "rangeStart", "type": "string", "required": false, "description": "First day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with\nrangeEnd)" },
+      { "name": "rangeEnd", "type": "string", "required": false, "description": "Last day of a highlighted range, \"YYYY-MM-DD\" (display only; pair with\nrangeStart)" },
+      { "name": "size", "type": "MonthCalendarSize", "default": "\"medium\"", "required": false, "description": "Cell density: compact (\"small\"), default (\"medium\") or comfortable\n(\"large\")" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Blocks navigation, selection and event clicks" },
+      { "name": "showSelectedDayEvents", "type": "boolean", "default": "true", "required": false, "description": "Lists the events of the selected day below the grid" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the calendar" },
+      { "name": "previousMonthLabel", "type": "string", "required": false, "description": "Label of the previous-month button" },
+      { "name": "nextMonthLabel", "type": "string", "required": false, "description": "Label of the next-month button" },
+      { "name": "todayLabel", "type": "string", "required": false, "description": "Label of the button that returns to the current month" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the month heading (Intl.DateTimeFormat)" },
+      { "name": "weekdayLabels", "type": "readonly string[]", "required": false, "description": "Column headers, Monday first (7 labels)" },
+      {
+        "name": "getDayLabel",
+        "type": "((day: string, eventCount: number) => string)",
+        "required": false,
+        "description": "Accessible label of a day button; receives the day (\"YYYY-MM-DD\") and its\nnumber of events"
+      },
+      { "name": "getEventsLabel", "type": "((day: string) => string)", "required": false, "description": "Accessible label of the selected day's event list" },
+      { "name": "emptyEventsText", "type": "string", "required": false, "description": "Text shown when the selected day has no events" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[day: string]" },
+      { "name": "change", "type": "[day: string]" },
+      { "name": "update:month", "type": "[month: Date]" },
+      { "name": "monthChange", "type": "[month: Date]" },
+      { "name": "eventClick", "type": "[event: MonthCalendarEvent]" }
+    ],
+    "slots": []
+  },
+  "NavTree": {
+    "file": "packages/vue/src/components/NavTree/NavTree.vue",
+    "props": [
+      { "name": "sections", "type": "NavTreeSection[]", "required": true, "description": "Sections of items" },
+      { "name": "activeId", "type": "string", "required": false, "description": "Id of the active (current page) item; its ancestors expand" },
+      { "name": "collapsed", "type": "boolean", "default": "false", "required": false, "description": "Compact mode: icons only (titles, labels, trailing content and children\nare hidden)" },
+      { "name": "wrapLabels", "type": "boolean", "default": "false", "required": false, "description": "Wraps long labels and descriptions instead of truncating them" },
+      { "name": "defaultExpandedIds", "type": "string[]", "required": false, "description": "Initially expanded branch ids (uncontrolled)" },
+      { "name": "expandedIds", "type": "string[]", "required": false, "description": "Expanded branch ids (controlled: `v-model:expandedIds`)" },
+      {
+        "name": "renderLink",
+        "type": "((item: NavTreeItem, content: VNodeChild, state: NavTreeItemState) => VNodeChild)",
+        "required": false,
+        "description": "Custom rendering of leaf links (e.g. a `<RouterLink>`), or the `link`\nscoped slot. Render `content` inside and put `state.className` on the\nlink"
+      }
+    ],
+    "events": [
+      { "name": "update:expandedIds", "type": "[expandedIds: string[]]" },
+      { "name": "expandedChange", "type": "[expandedIds: string[]]" },
+      { "name": "itemSelect", "type": "[item: NavTreeItem]" }
+    ],
+    "slots": [
+      {
+        "name": "link",
+        "type": "{ item: NavTreeItem; content: VNode<RendererNode, RendererElement, { [key: string]: any; }>[]; state: NavTreeItemState; }",
+        "description": "Custom leaf link (like `renderLink`): render `content` inside"
+      }
+    ]
+  },
+  "NumberInput": {
+    "file": "packages/vue/src/components/NumberInput/NumberInput.vue",
+    "props": [
+      { "name": "modelValue", "type": "number | null", "required": false, "description": "Current value (controlled, `v-model`); `null` is an empty field. Omit for an uncontrolled field" },
+      { "name": "defaultValue", "type": "number | null", "required": false, "description": "Initial value of an uncontrolled field" },
+      { "name": "min", "type": "number", "required": false, "description": "Smallest allowed value; committed values are clamped to it" },
+      { "name": "max", "type": "number", "required": false, "description": "Largest allowed value; committed values are clamped to it" },
+      { "name": "step", "type": "number", "default": "1", "required": false, "description": "Amount added / removed by ArrowUp / ArrowDown and the stepper" },
+      { "name": "precision", "type": "number", "required": false, "description": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)" },
+      { "name": "size", "type": "NumberInputSize", "default": "\"medium\"", "required": false, "description": "Field size" },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl or an out-of-range draft)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)" },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Focusable and copyable, but typing and stepping do not change the value\n(also set by FormControl)"
+      },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
+      { "name": "id", "type": "string", "required": false, "description": "id of the input (defaults to the enclosing FormControl's id)" },
+      { "name": "showStepper", "type": "boolean", "default": "false", "required": false, "description": "Shows increment / decrement buttons; the arrow keys always work" },
+      { "name": "allowEmpty", "type": "boolean", "default": "true", "required": false, "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)" },
+      { "name": "incrementLabel", "type": "string", "required": false, "description": "Accessible label of the increment button" },
+      { "name": "decrementLabel", "type": "string", "required": false, "description": "Accessible label of the decrement button" },
+      { "name": "notANumberMessage", "type": "string", "required": false, "description": "Hint shown (as the wrapper title) while the draft is not a number" },
+      { "name": "belowMinMessage", "type": "string", "required": false, "description": "Hint shown while the draft is below min" },
+      { "name": "aboveMaxMessage", "type": "string", "required": false, "description": "Hint shown while the draft is above max" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: number | null]" },
+      { "name": "change", "type": "[value: number | null]" }
+    ],
+    "slots": []
+  },
   "Page": {
     "file": "packages/vue/src/components/Page/Page.vue",
     "props": [{ "name": "maxWidth", "type": "string | number", "required": false, "description": "Maximum width: numbers are pixels, strings are CSS lengths (`style` wins)" }],
@@ -434,6 +1413,351 @@
       { "name": "actions", "type": "any", "description": "Actions next to the heading" },
       { "name": "icon", "type": "any", "description": "Decorative icon before the title, hidden from assistive technology" }
     ]
+  },
+  "PageTab": {
+    "file": "packages/vue/src/components/PageTabs/PageTab.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Identifier of the page (exposed as data-value)" },
+      { "name": "label", "type": "string", "required": true, "description": "Title of the page; truncated with an ellipsis, shown in full in a tooltip" },
+      { "name": "active", "type": "boolean", "default": "false", "required": false, "description": "Marks the item as the current page (aria-current=\"page\")" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the label button (the separate action keeps its own state)" }
+    ],
+    "events": [{ "name": "select", "type": "[]" }],
+    "slots": [
+      { "name": "icon", "type": "any", "description": "Icon displayed before the label" },
+      { "name": "action", "type": "any", "description": "Separate control rendered next to the label (e.g. a close IconButton)" }
+    ]
+  },
+  "PageTabs": {
+    "file": "packages/vue/src/components/PageTabs/PageTabs.vue",
+    "props": [
+      { "name": "activeValue", "type": "string", "required": true, "description": "Value of the current route's item. When it (or the set of items)\nchanges, the active item is scrolled into view" },
+      { "name": "scrollLeftLabel", "type": "string", "required": false, "description": "Accessible label of the \"scroll left\" button" },
+      { "name": "scrollRightLabel", "type": "string", "required": false, "description": "Accessible label of the \"scroll right\" button" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "PageTab items" },
+      { "name": "actions", "type": "any", "description": "Global actions shown after the scrollable list (e.g. a page menu)" }
+    ]
+  },
+  "Pagination": {
+    "file": "packages/vue/src/components/Pagination/Pagination.vue",
+    "props": [
+      { "name": "current", "type": "number", "required": false, "description": "Current page (1-based, controlled: `v-model:current`)" },
+      { "name": "defaultCurrent", "type": "number", "required": false, "description": "Initial page when uncontrolled (current not set)" },
+      { "name": "total", "type": "number", "default": "0", "required": false, "description": "Total number of items" },
+      { "name": "pageSize", "type": "number", "required": false, "description": "Number of items per page (controlled: `v-model:pageSize`)" },
+      { "name": "defaultPageSize", "type": "number", "required": false, "description": "Initial number of items per page when uncontrolled (pageSize not set)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the pagination" },
+      { "name": "showQuickJumper", "type": "boolean", "default": "false", "required": false, "description": "Shows an input to jump to a page" },
+      { "name": "showSizeChanger", "type": "boolean", "default": "false", "required": false, "description": "Shows a page size selector" },
+      { "name": "pageSizeOptions", "type": "number[]", "default": "[10, 20, 50, 100]", "required": false, "description": "Options of the page size selector" },
+      {
+        "name": "itemRender",
+        "type": "((page: number, type: PaginationItemType) => VNodeChild)",
+        "required": false,
+        "description": "Custom rendering of the page, prev/next and jump items (or the `item`\nscoped slot)"
+      },
+      {
+        "name": "showTotal",
+        "type": "boolean | ((total: number, range: [number, number]) => VNodeChild)",
+        "default": "false",
+        "required": false,
+        "description": "Shows the total number of items; a function renders it (same signature\nas totalRender)"
+      },
+      {
+        "name": "totalRender",
+        "type": "((total: number, range: [number, number]) => VNodeChild)",
+        "required": false,
+        "description": "Custom rendering of the total (or the `total` scoped slot); range is the\n[first, last] item index of the current page"
+      },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "default": "\"medium\"", "required": false, "description": "Pagination size" },
+      { "name": "shape", "type": "\"rounded\" | \"circle\" | \"square\"", "default": "\"rounded\"", "required": false, "description": "Shape of the page items" },
+      { "name": "variant", "type": "\"outline\" | \"solid\" | \"ghost\"", "default": "\"solid\"", "required": false, "description": "Visual style of the page items" },
+      { "name": "simple", "type": "boolean", "default": "false", "required": false, "description": "Simple mode: prev/next buttons with a page input" },
+      { "name": "siblingCount", "type": "number", "required": false, "description": "Number of pages shown on each side of the current page (switches to\nthe compact page list)" },
+      { "name": "boundaryCount", "type": "number", "required": false, "description": "Number of pages always shown at both ends of the compact page list" },
+      { "name": "hideEdges", "type": "boolean", "default": "false", "required": false, "description": "Hides the prev / next buttons" },
+      { "name": "hideNumbers", "type": "boolean", "default": "false", "required": false, "description": "Replaces the page buttons with a read-only \"current / total\" counter" },
+      { "name": "responsive", "type": "boolean", "default": "false", "required": false, "description": "Adapts the layout to small screens" },
+      {
+        "name": "icons",
+        "type": "{ prev?: VNodeChild; next?: VNodeChild; jumpPrev?: VNodeChild; jumpNext?: VNodeChild; }",
+        "required": false,
+        "description": "Custom icons for the prev, next and jump items (or the `prev-icon`,\n`next-icon`, `jump-prev-icon`, `jump-next-icon` slots)"
+      },
+      { "name": "labels", "type": "PaginationLabels", "required": false, "description": "Custom texts and accessible labels (override the localized defaults)" }
+    ],
+    "events": [
+      { "name": "change", "type": "[page: number, pageSize: number]" },
+      { "name": "update:current", "type": "[page: number]" },
+      { "name": "update:pageSize", "type": "[pageSize: number]" }
+    ],
+    "slots": [
+      { "name": "item", "type": "{ page: number; type: PaginationItemType; }", "description": "Content of a page / prev / next / jump item (like `itemRender`)" },
+      { "name": "total", "type": "{ total: number; range: [number, number]; }", "description": "The total text (like `totalRender`)" },
+      { "name": "prev-icon", "type": "any" },
+      { "name": "next-icon", "type": "any" },
+      { "name": "jump-prev-icon", "type": "any" },
+      { "name": "jump-next-icon", "type": "any" },
+      { "name": "jump-to", "type": "any", "description": "Visible text of the quick jumper (like `labels.jumpTo`)" }
+    ]
+  },
+  "PaletteToggle": {
+    "file": "packages/vue/src/components/ThemeToggle/PaletteToggle.vue",
+    "props": [
+      { "name": "palettes", "type": "(\"editorial\" | \"tech\" | \"graphite\" | \"cool\")[]", "default": "[...PALETTES]", "required": false, "description": "Palettes offered, in order" },
+      { "name": "showDefault", "type": "boolean", "default": "false", "required": false, "description": "Also offer Minerva's default look (no palette) as the first option" },
+      {
+        "name": "labels",
+        "type": "Partial<Record<\"default\" | \"editorial\" | \"tech\" | \"graphite\" | \"cool\", string>>",
+        "required": false,
+        "description": "Override the button labels (`default` labels the no-palette option)"
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Popover": {
+    "file": "packages/vue/src/components/Popover/Popover.vue",
+    "props": [
+      { "name": "open", "type": "boolean", "required": false, "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled." },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state while uncontrolled" },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Modal mode: traps focus inside the panel, locks page scrolling, hides the\nrest of the page from assistive technology and blocks outside pointer\ninteraction (an outside click still closes it)"
+      }
+    ],
+    "events": [
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [{ "name": "default", "type": "any", "description": "`PopoverTrigger` / `PopoverAnchor` and `PopoverContent`" }]
+  },
+  "PopoverAnchor": {
+    "file": "packages/vue/src/components/Popover/PopoverAnchor.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges onto the single child element instead of rendering a `<div>`" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "PopoverClose": {
+    "file": "packages/vue/src/components/Popover/PopoverClose.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "PopoverContent": {
+    "file": "packages/vue/src/components/Popover/PopoverContent.vue",
+    "props": [
+      { "name": "side", "type": "PopoverSide", "default": "\"bottom\"", "required": false, "description": "Preferred side; flips when there is not enough room" },
+      { "name": "align", "type": "PopoverAlign", "default": "\"center\"", "required": false, "description": "Alignment along the trigger" },
+      { "name": "sideOffset", "type": "number", "default": "6", "required": false, "description": "Gap to the trigger in pixels" },
+      { "name": "alignOffset", "type": "number", "default": "0", "required": false, "description": "Skid along the trigger in pixels (positive = towards the end)" },
+      {
+        "name": "collisionPadding",
+        "type": "number",
+        "default": "8",
+        "required": false,
+        "description": "Minimum distance kept to the viewport edges in pixels when flipping,\nshifting and sizing the panel"
+      },
+      {
+        "name": "matchAnchorWidth",
+        "type": "false | \"min\" | \"exact\"",
+        "default": "false",
+        "required": false,
+        "description": "Sizes the panel after the trigger / anchor width: `\"min\"` at least as\nwide, `\"exact\"` exactly as wide (also caps the width to the viewport)"
+      },
+      { "name": "arrow", "type": "boolean", "default": "false", "required": false, "description": "Renders an arrow pointing at the trigger" },
+      {
+        "name": "portal",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Renders the panel into a portal (the theme-scoped container of a nested\n`ConfigProvider`, else `document.body`)"
+      },
+      { "name": "forceMount", "type": "boolean", "default": "false", "required": false, "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for\nanimation libraries" }
+    ],
+    "events": [
+      { "name": "openAutoFocus", "type": "[event: Event]" },
+      { "name": "closeAutoFocus", "type": "[event: Event]" },
+      { "name": "escapeKeyDown", "type": "[event: KeyboardEvent]" },
+      { "name": "pointerDownOutside", "type": "[event: PointerEvent]" },
+      { "name": "interactOutside", "type": "[event: PointerEvent | FocusEvent]" },
+      { "name": "focusOutside", "type": "[event: FocusEvent]" }
+    ],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "PopoverTrigger": {
+    "file": "packages/vue/src/components/Popover/PopoverTrigger.vue",
+    "props": [{ "name": "asChild", "type": "boolean", "default": "false", "required": false, "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`" }],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "ProgressIndicator": {
+    "file": "packages/vue/src/components/ProgressIndicator/ProgressIndicator.vue",
+    "props": [
+      { "name": "variant", "type": "ProgressIndicatorVariant", "default": "\"spinner\"", "required": false, "description": "Indicator style" },
+      { "name": "size", "type": "ProgressIndicatorSize", "default": "\"medium\"", "required": false, "description": "Indicator size" },
+      {
+        "name": "color",
+        "type": "\"primary\" | \"neutral\" | \"current\"",
+        "default": "\"primary\"",
+        "required": false,
+        "description": "Semantic color of the indicator: theme primary or neutral gray.\n\"current\" is a special value that follows the surrounding text color\n(currentColor), e.g. inside buttons or colored containers"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Visible text shown next to the indicator (or the `label` slot); it also\nnames the progressbar unless aria-label is set"
+      },
+      {
+        "name": "decorative",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Purely visual: drops the progressbar role and hides the indicator from\nassistive technologies. Use it when a surrounding element (a status\nregion, a busy button) already conveys the loading state."
+      },
+      { "name": "width", "type": "string", "required": false, "description": "Custom width (ignored when full is set). Bars default to 200px; round\nindicators size to their content." },
+      { "name": "full", "type": "boolean", "default": "false", "required": false, "description": "Stretches the indicator to the full width of its container" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "icon", "type": "any", "description": "Icon displayed before the indicator" },
+      { "name": "label", "type": "any", "description": "Visible label (the `label` prop)" }
+    ]
+  },
+  "Prose": {
+    "file": "packages/vue/src/components/Prose/Prose.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Merges the prose class onto its single child (e.g. an editor host)\ninstead of rendering a wrapper <div>"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any" }]
+  },
+  "Radio": {
+    "file": "packages/vue/src/components/Radio/Radio.vue",
+    "props": [
+      { "name": "modelValue", "type": "boolean", "required": false, "description": "Whether the radio is checked (controlled, `v-model`). Ignored inside a RadioGroup" },
+      { "name": "defaultChecked", "type": "boolean", "required": false, "description": "Initial checked state (uncontrolled). Ignored inside a RadioGroup" },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the radio. Inherited from an enclosing FormControl when not set;\nan explicit `false` overrides the FormControl"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Native name attribute. Inside a RadioGroup the group's name is used" },
+      { "name": "value", "type": "string | number", "required": false, "description": "Value of the radio; identifies it within a RadioGroup" },
+      {
+        "name": "size",
+        "type": "\"medium\" | \"small\" | \"large\"",
+        "default": "\"medium\"",
+        "required": false,
+        "description": "Radio size. Overridden by the RadioGroup size when the group sets one"
+      },
+      {
+        "name": "color",
+        "type": "RadioColor",
+        "default": "\"primary\"",
+        "required": false,
+        "description": "Semantic color of the checked radio. Overridden by the RadioGroup color\nwhen the group sets one"
+      },
+      { "name": "label", "type": "string", "required": false, "description": "Label displayed next to the radio (or the `label` / default slot)" },
+      { "name": "id", "type": "string", "required": false, "description": "Id of the native `<input>` (e.g. for an external `<label for>`)" },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the input as required" },
+      { "name": "error", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (errorMessage replaces helperText and describes the\nradio)" },
+      { "name": "errorMessage", "type": "string", "required": false, "description": "Message shown below the radio when error is true (linked with aria-describedby)" },
+      { "name": "helperText", "type": "string", "required": false, "description": "Helper text shown below the radio (linked with aria-describedby)" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[checked: boolean]" },
+      { "name": "change", "type": "[checked: boolean, event: Event]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Label content (alternative to the `label` prop / slot)" },
+      { "name": "label", "type": "any", "description": "Label content (the `label` prop)" },
+      { "name": "error-icon", "type": "any", "description": "Icon before the error message (default: info circle)" }
+    ]
+  },
+  "RadioGroup": {
+    "file": "packages/vue/src/components/Radio/RadioGroup.vue",
+    "props": [
+      { "name": "modelValue", "type": "string | number | null", "required": false, "description": "Value of the selected radio (controlled, `v-model`; `null` = controlled with no selection)" },
+      { "name": "defaultValue", "type": "string | number", "required": false, "description": "Initially selected value (uncontrolled)" },
+      { "name": "name", "type": "string", "required": false, "description": "Name shared by all radios of the group (a unique name is generated when\nomitted, so arrow-key navigation always works)" },
+      { "name": "label", "type": "string", "required": false, "description": "Visible label of the group, also its accessible name (or the `label` slot)" },
+      { "name": "id", "type": "string", "required": false, "description": "id of the element with role=\"radiogroup\"" },
+      { "name": "disabled", "type": "boolean", "required": false, "description": "Disables every radio in the group (inherited from an enclosing\nFormControl when not set)" },
+      { "name": "direction", "type": "\"horizontal\" | \"vertical\"", "default": "\"vertical\"", "required": false, "description": "Layout direction of the radios" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "required": false, "description": "Size applied to every radio in the group; when not set each radio uses\nits own size" },
+      { "name": "error", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (also set by an invalid enclosing FormControl)" },
+      { "name": "helperText", "type": "string", "required": false, "description": "Helper text shown below the group (linked with aria-describedby)" },
+      { "name": "required", "type": "boolean", "required": false, "description": "Marks the group as required (aria-required; inherited from an enclosing\nFormControl)" },
+      {
+        "name": "color",
+        "type": "RadioColor",
+        "required": false,
+        "description": "Semantic color applied to every radio in the group (overrides the\nradios' own color); when not set each radio uses its own color"
+      }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string | number]" },
+      { "name": "change", "type": "[value: string | number, event: Event]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Radio elements" },
+      { "name": "label", "type": "any", "description": "Visible label (the `label` prop)" }
+    ]
+  },
+  "Rating": {
+    "file": "packages/vue/src/components/Rating/Rating.vue",
+    "props": [
+      { "name": "modelValue", "type": "number", "required": true, "description": "Current score, from 0 to max (`v-model`)" },
+      {
+        "name": "max",
+        "type": "number",
+        "default": "10",
+        "required": false,
+        "description": "Highest score; the score is always drawn on 5 stars (half stars for\nfractions between 0.25 and 0.75 of a star)"
+      },
+      { "name": "size", "type": "RatingSize", "default": "\"medium\"", "required": false, "description": "Star size: 12px, 16px or 20px" },
+      { "name": "showValue", "type": "boolean", "default": "false", "required": false, "description": "Shows the score (one decimal) after the stars" },
+      { "name": "ratingCount", "type": "number", "required": false, "description": "Number of ratings, shown after the score when showValue is set" },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Forces display mode even with a `change` / `update:modelValue` listener\n(which makes the rating interactive: hover previews, half-star clicks,\na keyboard slider)"
+      }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: number]" },
+      { "name": "change", "type": "[value: number]" }
+    ],
+    "slots": []
+  },
+  "RatingScale": {
+    "file": "packages/vue/src/components/Rating/RatingScale.vue",
+    "props": [
+      { "name": "dimensions", "type": "readonly RatingDimension[]", "required": true, "description": "Dimensions to rate, one row each" },
+      { "name": "max", "type": "number", "default": "10", "required": false, "description": "Highest score shared by every dimension" },
+      { "name": "size", "type": "RatingSize", "default": "\"medium\"", "required": false, "description": "Star size" },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Forces display mode even with a `change` listener (which makes the rows\ninteractive)" },
+      { "name": "showValue", "type": "boolean", "default": "true", "required": false, "description": "Shows the score at the end of each row" }
+    ],
+    "events": [{ "name": "change", "type": "[key: string, value: number]" }],
+    "slots": []
   },
   "ResponsiveGrid": {
     "file": "packages/vue/src/components/ResponsiveGrid/ResponsiveGrid.vue",
@@ -478,13 +1802,16 @@
       { "name": "required", "type": "boolean", "required": false, "description": "Marks the select as required (inherited from an enclosing FormControl)" },
       { "name": "name", "type": "string", "required": false, "description": "Name of the hidden native select, used in forms" },
       { "name": "id", "type": "string", "required": false, "description": "id of the trigger (defaults to the enclosing FormControl's id)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the trigger (`aria-label`), required when there is\nno visible label (also names the listbox)" },
+      { "name": "ariaLabelledby", "type": "string", "required": false, "description": "id(s) of the element(s) labelling the trigger (`aria-labelledby`; also\nnames the listbox)" },
+      { "name": "ariaDescribedby", "type": "string", "required": false, "description": "Extra ids of elements describing the trigger (`aria-describedby`)" },
       { "name": "contentClassName", "type": "string", "required": false, "description": "Additional class name of the popup" }
     ],
     "events": [
-      { "name": "update:open", "type": "[open: boolean]" },
-      { "name": "openChange", "type": "[open: boolean]" },
       { "name": "update:modelValue", "type": "[value: string]" },
-      { "name": "change", "type": "[value: string]" }
+      { "name": "change", "type": "[value: string]" },
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
     ],
     "slots": [
       { "name": "default", "type": "any", "description": "SelectItem / SelectGroup / SelectLabel / SelectSeparator elements" },
@@ -509,6 +1836,46 @@
   },
   "SelectLabel": { "file": "packages/vue/src/components/Select/SelectLabel.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any", "description": "Label content" }] },
   "SelectSeparator": { "file": "packages/vue/src/components/Select/SelectSeparator.vue", "props": [], "events": [], "slots": [] },
+  "Skeleton": {
+    "file": "packages/vue/src/components/Skeleton/Skeleton.vue",
+    "props": [
+      { "name": "variant", "type": "SkeletonVariant", "default": "\"text\"", "required": false, "description": "Shape of the placeholder" },
+      { "name": "animation", "type": "SkeletonAnimation", "default": "\"pulse\"", "required": false, "description": "Loading animation; \"false\" disables it" },
+      {
+        "name": "decorative",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Renders one bare decorative placeholder (`<span aria-hidden>`) instead of\nthe announced loading region. Use it to compose your own skeleton layout\ninside a container that already exposes the busy state"
+      },
+      { "name": "size", "type": "string | number", "required": false, "description": "Edge length of a decorative circular placeholder (numbers are pixels);\nwins over width/height" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of each line (numbers are pixels)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of each line (numbers are pixels)" },
+      { "name": "loading", "type": "boolean", "default": "true", "required": false, "description": "Shows the placeholder; set to false to render the default slot" },
+      { "name": "borderRadius", "type": "string | number", "required": false, "description": "Custom corner radius of each line" },
+      { "name": "lines", "type": "number", "default": "1", "required": false, "description": "Number of lines to render" },
+      { "name": "avatar", "type": "boolean", "default": "false", "required": false, "description": "Shows an avatar placeholder" },
+      { "name": "avatarSize", "type": "string | number", "default": "40", "required": false, "description": "Avatar size (numbers are pixels)" },
+      { "name": "avatarShape", "type": "\"circle\" | \"square\"", "default": "\"circle\"", "required": false, "description": "Avatar shape" },
+      { "name": "active", "type": "boolean", "default": "false", "required": false, "description": "Highlights the card variant as active" },
+      { "name": "paragraph", "type": "boolean", "default": "false", "required": false, "description": "Shows a paragraph placeholder (replaces the lines)" },
+      { "name": "title", "type": "boolean", "default": "false", "required": false, "description": "Shows a title placeholder (replaces the lines)" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Real content, rendered once loading is false" }]
+  },
+  "SkeletonText": {
+    "file": "packages/vue/src/components/Skeleton/SkeletonText.vue",
+    "props": [
+      { "name": "lines", "type": "number", "default": "3", "required": false, "description": "Number of text lines" },
+      { "name": "lineHeight", "type": "string | number", "default": "\"1em\"", "required": false, "description": "Height of each line (numbers are pixels)" },
+      { "name": "gap", "type": "string | number", "default": "2", "required": false, "description": "Space between lines: a spacing-scale step (2 -> var(--space-2)) or any CSS length" },
+      { "name": "shrinkLast", "type": "boolean", "default": "true", "required": false, "description": "Shrinks the last line to 70% width so the block reads like real text" },
+      { "name": "animation", "type": "SkeletonAnimation", "default": "\"pulse\"", "required": false, "description": "Loading animation; \"false\" disables it" }
+    ],
+    "events": [],
+    "slots": []
+  },
   "SplitLayout": {
     "file": "packages/vue/src/components/SplitLayout/SplitLayout.vue",
     "props": [
@@ -595,6 +1962,84 @@
       { "name": "description", "type": "any", "description": "Explanatory content under the value (the `description` prop)" }
     ]
   },
+  "Steps": {
+    "file": "packages/vue/src/components/Steps/Steps.vue",
+    "props": [
+      { "name": "items", "type": "StepsItem[]", "required": true, "description": "Steps, in order" },
+      { "name": "modelValue", "type": "string", "required": false, "description": "Value of the current step (controlled: `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Value of the initial current step (uncontrolled)" },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Renders the steps as a read-only progress indicator: plain list items\nwithout buttons, the current <li> marked aria-current=\"step\""
+      }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": [{ "name": "label", "type": "{ item: StepsItem; index: number; }", "description": "Label of a step (defaults to `item.label`)" }]
+  },
+  "Switch": {
+    "file": "packages/vue/src/components/Switch/Switch.vue",
+    "props": [
+      { "name": "modelValue", "type": "boolean", "required": false, "description": "Whether the switch is on (controlled, `v-model`)" },
+      { "name": "defaultChecked", "type": "boolean", "required": false, "description": "Initial state (uncontrolled)" },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the switch. Inherited from an enclosing FormControl when not\nset; an explicit `false` overrides the FormControl"
+      },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "default": "\"medium\"", "required": false, "description": "Switch size" },
+      { "name": "color", "type": "\"info\" | \"primary\" | \"success\" | \"warning\" | \"danger\"", "default": "\"primary\"", "required": false, "description": "Semantic color of the \"on\" state" },
+      { "name": "shape", "type": "\"square\" | \"round\"", "default": "\"round\"", "required": false, "description": "Shape of the track and thumb" },
+      {
+        "name": "variant",
+        "type": "SwitchVariant",
+        "default": "\"slider\"",
+        "required": false,
+        "description": "\"slider\" is the classic track + thumb; \"segmented\" renders two pressable\nsegments (requires offLabel and onLabel, otherwise falls back to slider)"
+      },
+      { "name": "label", "type": "string", "required": false, "description": "Label displayed next to the switch (or the `label` / default slot)" },
+      {
+        "name": "offLabel",
+        "type": "string",
+        "required": false,
+        "description": "Label of the \"off\" state (or the `off-label` slot). With onLabel, both\nlabels are rendered as buttons on each side of the slider (they replace\n`label`) or as the segments of the segmented variant"
+      },
+      { "name": "onLabel", "type": "string", "required": false, "description": "Label of the \"on\" state (or the `on-label` slot; see offLabel)" },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the input, used in forms" },
+      { "name": "id", "type": "string", "required": false, "description": "id of the input (defaults to the enclosing FormControl's id)" },
+      { "name": "value", "type": "string", "required": false, "description": "Value submitted with the form when on" },
+      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"end\" | \"start\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the switch" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Shows a loading state and blocks interaction" },
+      { "name": "ripple", "type": "boolean", "default": "true", "required": false, "description": "Shows a ripple effect on click" },
+      { "name": "trackStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of the track" },
+      { "name": "thumbStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of the thumb" },
+      {
+        "name": "iconPlacement",
+        "type": "\"end\" | \"start\"",
+        "default": "\"start\"",
+        "required": false,
+        "description": "Icon position (the `icon` slot): inside the thumb (\"start\") or after the\nswitch (\"end\")"
+      }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[checked: boolean]" },
+      { "name": "change", "type": "[checked: boolean, event: Event]" },
+      { "name": "focus", "type": "[event: FocusEvent]" },
+      { "name": "blur", "type": "[event: FocusEvent]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Label content (alternative to the `label` prop / slot)" },
+      { "name": "label", "type": "any", "description": "Label content (the `label` prop)" },
+      { "name": "icon", "type": "any", "description": "Custom icon (inside the thumb or after the switch: `iconPlacement`)" },
+      { "name": "off-label", "type": "any", "description": "Label of the \"off\" state (the `offLabel` prop)" },
+      { "name": "on-label", "type": "any", "description": "Label of the \"on\" state (the `onLabel` prop)" }
+    ]
+  },
   "Tab": {
     "file": "packages/vue/src/components/Tabs/Tab.vue",
     "props": [
@@ -605,6 +2050,90 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Tab content" }]
   },
+  "Table": {
+    "file": "packages/vue/src/components/Table/Table.vue",
+    "props": [
+      { "name": "columns", "type": "TableColumn<T>[]", "required": true, "description": "Column definitions" },
+      { "name": "data", "type": "T[]", "required": true, "description": "Rows to render" },
+      { "name": "rowKey", "type": "((row: T, index: number) => TableRowKey)", "required": false, "description": "Extracts a stable key from a row (defaults to the row index)" },
+      { "name": "emptyText", "type": "string", "required": false, "description": "Content of the single row shown when `data` is empty (or the `empty`\nslot)" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Renders placeholder skeleton rows instead of the data" },
+      { "name": "loadingRows", "type": "number", "default": "5", "required": false, "description": "Number of skeleton rows rendered while loading" },
+      { "name": "sortState", "type": "TableSortState | null", "required": false, "description": "Sort state (controlled, `v-model:sortState`); `null` means unsorted" },
+      { "name": "defaultSortState", "type": "TableSortState | null", "default": "null", "required": false, "description": "Initial sort state (uncontrolled)" },
+      {
+        "name": "manualSort",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Skips local sorting: `data` is rendered as given (sorted by the data\nowner, e.g. a server) while the headers still reflect the sort state"
+      },
+      { "name": "rowSelection", "type": "TableRowSelection<T>", "required": false, "description": "Adds a leading checkbox column to select rows" },
+      {
+        "name": "selectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "description": "Keys of the selected rows (controlled, `v-model:selectedRowKeys`; wins\nover `rowSelection.selectedRowKeys`). Setting it (or\n`defaultSelectedRowKeys`) also enables the selection column"
+      },
+      {
+        "name": "defaultSelectedRowKeys",
+        "type": "TableRowKey[]",
+        "required": false,
+        "description": "Keys of the initially selected rows (uncontrolled; wins over\n`rowSelection.defaultSelectedRowKeys`)"
+      },
+      { "name": "size", "type": "TableSize", "default": "\"medium\"", "required": false, "description": "Density of the cells" },
+      { "name": "variant", "type": "TableVariant", "default": "\"simple\"", "required": false, "description": "Visual style: plain rows, zebra stripes or bordered cells" },
+      { "name": "hoverable", "type": "boolean", "default": "false", "required": false, "description": "Highlights body rows on hover" },
+      {
+        "name": "scroll",
+        "type": "TableScrollConfig",
+        "required": false,
+        "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it"
+      }
+    ],
+    "events": [
+      { "name": "update:sortState", "type": "[sortState: TableSortState | null]" },
+      { "name": "sortChange", "type": "[sortState: TableSortState]" },
+      { "name": "update:selectedRowKeys", "type": "[selectedRowKeys: TableRowKey[]]" },
+      { "name": "selectionChange", "type": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]" }
+    ],
+    "slots": [{ "name": "empty", "type": "any", "description": "Content of the empty row (the `emptyText` prop)" }]
+  },
+  "TableBody": { "file": "packages/vue/src/components/Table/TableBody.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "TableCell": { "file": "packages/vue/src/components/Table/TableCell.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "TableCellContent": {
+    "file": "packages/vue/src/components/Table/TableCellContent.vue",
+    "props": [
+      { "name": "primary", "type": "string | number", "required": false, "description": "Main content (or the default slot)" },
+      { "name": "secondary", "type": "string | number", "required": false, "description": "Secondary, muted content rendered under the primary content (or the `secondary` slot)" },
+      { "name": "monospace", "type": "boolean", "default": "false", "required": false, "description": "Renders the primary content as `<code>` in the monospace font" },
+      { "name": "maxWidth", "type": "string | number", "default": "360", "required": false, "description": "Maximum width (numbers are pixels); long content wraps" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Main content (the `primary` prop)" },
+      { "name": "secondary", "type": "any", "description": "Secondary, muted line (the `secondary` prop)" }
+    ]
+  },
+  "TableHead": { "file": "packages/vue/src/components/Table/TableHead.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "TableHeader": { "file": "packages/vue/src/components/Table/TableHeader.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
+  "TableRoot": {
+    "file": "packages/vue/src/components/Table/TableRoot.vue",
+    "props": [
+      { "name": "size", "type": "TableSize", "default": "\"medium\"", "required": false, "description": "Density of the cells" },
+      { "name": "variant", "type": "TableVariant", "default": "\"simple\"", "required": false, "description": "Visual style: plain rows, zebra stripes or bordered cells" },
+      { "name": "hoverable", "type": "boolean", "default": "false", "required": false, "description": "Highlights body rows on hover" },
+      {
+        "name": "scroll",
+        "type": "TableScrollConfig",
+        "required": false,
+        "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Table sections (`TableHead`, `TableBody`...)" }]
+  },
+  "TableRow": { "file": "packages/vue/src/components/Table/TableRow.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any" }] },
   "TabList": {
     "file": "packages/vue/src/components/Tabs/TabList.vue",
     "props": [{ "name": "loop", "type": "boolean", "default": "true", "required": false, "description": "Moves focus from the last tab to the first (and back) with the arrow keys" }],
@@ -642,6 +2171,198 @@
       { "name": "change", "type": "[value: string]" }
     ],
     "slots": [{ "name": "default", "type": "any", "description": "`TabList` and `TabPanel` elements" }]
+  },
+  "Tag": {
+    "file": "packages/vue/src/components/Tag/Tag.vue",
+    "props": [
+      { "name": "color", "type": "ColorScheme", "default": "\"neutral\"", "required": false, "description": "Semantic color of the tag" },
+      {
+        "name": "variant",
+        "type": "\"subtle\" | \"outline\" | \"solid\"",
+        "default": "\"subtle\"",
+        "required": false,
+        "description": "Visual style: `subtle` (tinted background), `outline` (tinted background\nwith a border) or `solid` (filled with the color, inverse text)"
+      },
+      { "name": "size", "type": "TagSize", "default": "\"medium\"", "required": false, "description": "Tag size" },
+      { "name": "shape", "type": "TagShape", "default": "\"rounded\"", "required": false, "description": "Tag shape" },
+      { "name": "closable", "type": "boolean", "default": "false", "required": false, "description": "Shows a close button" },
+      {
+        "name": "clickable",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Renders the tag content as a native button (focusable, activated with\nEnter / Space). With closable, the close button is a sibling button"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter\n(requires clickable); sets aria-pressed and the selected style"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows a spinner instead of the icon / avatar, marks the tag busy and\nblocks its action; the close button is hidden"
+      },
+      { "name": "elevation", "type": "boolean", "default": "false", "required": false, "description": "Shows a shadow" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the tag and its close button" },
+      {
+        "name": "closeLabel",
+        "type": "string | ((label: string) => string)",
+        "required": false,
+        "description": "Accessible label of the close button: a string, or a function of the\ntag's text label (the text of its children)"
+      },
+      { "name": "ripple", "type": "boolean", "default": "true", "required": false, "description": "Shows a ripple effect when a clickable tag is activated" }
+    ],
+    "events": [
+      { "name": "close", "type": "[event: MouseEvent]" },
+      { "name": "click", "type": "[event: MouseEvent]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "Content of the tag" },
+      { "name": "icon", "type": "any", "description": "Icon displayed before the content" },
+      { "name": "avatar", "type": "any", "description": "Avatar (e.g. a small Avatar or image) displayed before the content" },
+      { "name": "close-icon", "type": "any", "description": "Custom close icon" }
+    ]
+  },
+  "TagInput": {
+    "file": "packages/vue/src/components/TagInput/TagInput.vue",
+    "props": [
+      { "name": "modelValue", "type": "readonly string[]", "required": false, "description": "Selected tags (controlled, `v-model`); omit for an uncontrolled field" },
+      { "name": "defaultValue", "type": "readonly string[]", "required": false, "description": "Initial tags of an uncontrolled field" },
+      { "name": "options", "type": "readonly string[]", "default": "[]", "required": false, "description": "Suggestions; already selected tags are hidden and duplicates merged" },
+      { "name": "commitOnBlur", "type": "boolean", "default": "true", "required": false, "description": "Adds the typed draft as a tag when the input loses focus" },
+      {
+        "name": "separators",
+        "type": "readonly string[]",
+        "default": "DEFAULT_TAG_SEPARATORS",
+        "required": false,
+        "description": "Keys that commit the draft: a literal string (e.g. \",\" or \";\") splits the\ntyped or pasted text into tags; \"Enter\" commits on the Enter key (and also\nsplits pasted text on line breaks)"
+      },
+      { "name": "id", "type": "string", "required": false, "description": "Id of the text input (defaults to the FormControl id)" },
+      { "name": "name", "type": "string", "required": false, "description": "Submits every selected tag under this name (hidden inputs); the draft is not submitted" },
+      { "name": "placeholder", "type": "string", "required": false, "description": "Placeholder of the text input" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the text input when there is no FormControl label (`aria-label`)" },
+      { "name": "ariaLabelledby", "type": "string", "required": false, "description": "Ids of the elements labelling the text input (`aria-labelledby`; wins over the FormControl label)" },
+      { "name": "ariaDescribedby", "type": "string", "required": false, "description": "Extra ids describing the text input (`aria-describedby`)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)" },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Shows the tags without editing controls (also set by FormControl)" },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl)" },
+      { "name": "size", "type": "TagInputSize", "default": "\"medium\"", "required": false, "description": "Size of the text input" },
+      { "name": "emptyText", "type": "string", "required": false, "description": "Text of the suggestion list when nothing matches" },
+      { "name": "addLabel", "type": "string", "required": false, "description": "Accessible label of the add button" },
+      { "name": "clearLabel", "type": "string", "required": false, "description": "Accessible label of the clear button" },
+      { "name": "removeLabel", "type": "((tag: string) => string)", "required": false, "description": "Accessible label of a tag's remove button" },
+      { "name": "createLabel", "type": "((tag: string) => string)", "required": false, "description": "Text of the \"create this tag\" suggestion" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string[]]" },
+      { "name": "change", "type": "[value: string[]]" }
+    ],
+    "slots": []
+  },
+  "Textarea": {
+    "file": "packages/vue/src/components/Textarea/Textarea.vue",
+    "props": [
+      { "name": "modelValue", "type": "string | number", "required": false, "description": "Current text (controlled, `v-model`). Omit for an uncontrolled field" },
+      { "name": "defaultValue", "type": "string | number", "required": false, "description": "Initial text of an uncontrolled field" },
+      { "name": "variant", "type": "TextareaVariant", "default": "\"outline\"", "required": false, "description": "Visual style" },
+      { "name": "size", "type": "TextareaSize", "default": "\"medium\"", "required": false, "description": "Font size and minimum height" },
+      { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl); sets aria-invalid" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)." },
+      { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Read-only field (also set by FormControl)." },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
+      { "name": "id", "type": "string", "required": false, "description": "id of the textarea (defaults to the enclosing FormControl's id)" }
+    ],
+    "events": [{ "name": "update:modelValue", "type": "[value: string]" }],
+    "slots": []
+  },
+  "TextLink": {
+    "file": "packages/vue/src/components/TextLink/TextLink.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Merges the link styling onto its single child element (e.g. a\n`<RouterLink>`) instead of rendering an extra `<a>`"
+      },
+      {
+        "name": "variant",
+        "type": "TextLinkVariant",
+        "default": "\"default\"",
+        "required": false,
+        "description": "default: underlined inline link; subtle: quiet link with a trailing chevron;\naction: full-width row link with a bottom rule (settings lists, menus)"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Link content (with `asChild`: the single link element)" }]
+  },
+  "ThemeToggle": {
+    "file": "packages/vue/src/components/ThemeToggle/ThemeToggle.vue",
+    "props": [
+      { "name": "showSystem", "type": "boolean", "default": "true", "required": false, "description": "Show the \"system\" (follow the OS) option" },
+      { "name": "labels", "type": "Partial<Record<ThemeMode, string>>", "required": false, "description": "Override the button labels (defaults come from the library's locale)" }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "TimePicker": {
+    "file": "packages/vue/src/components/TimePicker/TimePicker.vue",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "Date | null",
+        "required": false,
+        "description": "Selected time (controlled, `v-model`). `null` means \"no time\" while\nstaying controlled; `undefined` makes the picker uncontrolled."
+      },
+      { "name": "defaultValue", "type": "Date", "required": false, "description": "Initially selected time (uncontrolled)" },
+      { "name": "format", "type": "string", "default": "\"HH:mm:ss\"", "required": false, "description": "Display format: \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" or \"hh:mm a\"" },
+      { "name": "use12Hours", "type": "boolean", "default": "false", "required": false, "description": "Uses a 12-hour clock with an AM/PM column" },
+      { "name": "placeholder", "type": "string", "required": false, "description": "Placeholder of the input" },
+      { "name": "label", "type": "string", "required": false, "description": "Visible label of the input; without it the input is labelled \"Time\" (localized)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the input when no visible label is shown (`aria-label`)" },
+      {
+        "name": "ariaLabelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) labelling the input (`aria-labelledby`); inside\na FormControl it defaults to the FormLabel (unless `label` /\n`aria-label` is set)"
+      },
+      {
+        "name": "ariaDescribedby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) describing the input (`aria-describedby`);\nmerged with the helper / error text of an enclosing FormControl"
+      },
+      { "name": "id", "type": "string", "required": false, "description": "Id of the input; defaults to the id of an enclosing FormControl" },
+      { "name": "required", "type": "boolean", "required": false, "description": "Marks the input as required; defaults to the enclosing FormControl's state" },
+      { "name": "readOnly", "type": "boolean", "required": false, "description": "Shows the value without allowing changes (typing, panel, clearing);\ndefaults to the enclosing FormControl's state" },
+      { "name": "invalid", "type": "boolean", "required": false, "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing\nFormControl's state" },
+      { "name": "name", "type": "string", "default": "\"time-picker\"", "required": false, "description": "Name of the input" },
+      { "name": "disabled", "type": "boolean", "required": false, "description": "Disables the picker; defaults to the enclosing FormControl's state" },
+      { "name": "clearable", "type": "boolean", "default": "true", "required": false, "description": "Allows clearing the value with the suffix button" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "default": "\"medium\"", "required": false, "description": "Size of the input and panel" },
+      { "name": "minTime", "type": "Date", "required": false, "description": "Earliest selectable time; earlier options are disabled" },
+      { "name": "maxTime", "type": "Date", "required": false, "description": "Latest selectable time; later options are disabled" },
+      {
+        "name": "showSecond",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Shows seconds. `false` also removes the seconds token from `format`\n(\"HH:mm:ss\" -> \"HH:mm\"): the format in use is the single source of truth\nof the seconds column, the displayed text and parsing"
+      },
+      { "name": "hourStep", "type": "number", "default": "1", "required": false, "description": "Interval between hour options" },
+      { "name": "minuteStep", "type": "number", "default": "1", "required": false, "description": "Interval between minute options" },
+      { "name": "secondStep", "type": "number", "default": "1", "required": false, "description": "Interval between second options" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: Date | null]" },
+      { "name": "change", "type": "[date: Date | undefined]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": []
   },
   "ToastProvider": {
     "file": "packages/vue/src/components/Toast/ToastProvider.vue",
@@ -689,10 +2410,157 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "Tooltip": {
+    "file": "packages/vue/src/components/Tooltip/Tooltip.vue",
+    "props": [
+      { "name": "content", "type": "string", "required": false, "description": "Text displayed inside the tooltip (or the `content` slot)" },
+      { "name": "open", "type": "boolean", "required": false, "description": "Whether the tooltip is shown (controlled, `v-model:open`)" },
+      { "name": "defaultOpen", "type": "boolean", "required": false, "description": "Initial open state (uncontrolled)" },
+      { "name": "placement", "type": "TooltipPlacement", "default": "\"top\"", "required": false, "description": "Placement relative to the trigger" },
+      {
+        "name": "color",
+        "type": "\"info\" | \"neutral\" | \"success\" | \"warning\" | \"danger\"",
+        "default": "\"neutral\"",
+        "required": false,
+        "description": "Semantic color of the tooltip. With the `glass` variant the color only\ntints the border (neutral keeps the plain frosted surface)"
+      },
+      {
+        "name": "variant",
+        "type": "TooltipVariant",
+        "default": "\"solid\"",
+        "required": false,
+        "description": "Visual style: `solid` (filled; neutral is the inverted contrasting\nsurface), `subtle` (tinted surface with a border) or `glass` (frosted\nelevated surface)"
+      },
+      { "name": "shape", "type": "TooltipShape", "default": "\"default\"", "required": false, "description": "Shape of the tooltip" },
+      { "name": "animation", "type": "TooltipAnimation", "default": "\"fade\"", "required": false, "description": "Show / hide animation" },
+      { "name": "enterDelay", "type": "number", "required": false, "description": "Delay before showing on hover, in milliseconds" },
+      { "name": "leaveDelay", "type": "number", "required": false, "description": "Delay before hiding on mouse leave, in milliseconds" },
+      {
+        "name": "offset",
+        "type": "[number, number]",
+        "required": false,
+        "description": "Offset as [x, y] in pixels. For top/bottom placements `y` is the gap to\nthe trigger and `x` shifts along it; for left/right placements `x` is the\ngap and `y` shifts along it. Without it the tooltip sits 8px away."
+      },
+      { "name": "followCursor", "type": "boolean", "default": "false", "required": false, "description": "Makes the tooltip follow the mouse cursor" },
+      { "name": "zIndex", "type": "number", "default": "1500", "required": false, "description": "z-index of the tooltip" },
+      { "name": "arrow", "type": "boolean", "default": "false", "required": false, "description": "Shows an arrow pointing at the trigger" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the tooltip" },
+      { "name": "className", "type": "string", "default": "\"\"", "required": false, "description": "Additional class name of the trigger wrapper (`class` works too)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the tooltip element (`aria-label`)" },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Attaches the hover / focus handlers, the ref and `class` directly to the\nsingle child element instead of wrapping it in a `<div>` (keeps flex\nand grid layouts intact)."
+      },
+      {
+        "name": "contentClassName",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name of the tooltip (floating) element. To customize\nthe colors, set the `--tooltip-bg` (background, gradients allowed) and\n`--tooltip-color` (text) custom properties on it"
+      },
+      {
+        "name": "contentRef",
+        "type": "Ref<HTMLDivElement | null, HTMLDivElement | null> | ((element: HTMLDivElement | null) => void)",
+        "required": false,
+        "description": "Ref to the tooltip (floating) element, set while it is shown: a ref\nobject or a callback (also exposed as `contentElement`)"
+      }
+    ],
+    "events": [
+      { "name": "close", "type": "[]" },
+      { "name": "open", "type": "[]" },
+      { "name": "update:open", "type": "[open: boolean]" },
+      { "name": "openChange", "type": "[open: boolean]" }
+    ],
+    "slots": [
+      { "name": "default", "type": "any", "description": "The element that triggers the tooltip; prefer a focusable element" },
+      { "name": "content", "type": "any", "description": "Content displayed inside the tooltip (the `content` prop)" }
+    ]
+  },
+  "TooltipProvider": {
+    "file": "packages/vue/src/components/Tooltip/TooltipProvider.vue",
+    "props": [
+      { "name": "enterDelay", "type": "number", "required": false, "description": "Default delay before showing on hover, in milliseconds, for every Tooltip\ninside that does not set `enterDelay`" },
+      {
+        "name": "leaveDelay",
+        "type": "number",
+        "required": false,
+        "description": "Default delay before hiding on mouse leave, in milliseconds, for every\nTooltip inside that does not set `leaveDelay`"
+      },
+      {
+        "name": "skipDelay",
+        "type": "number",
+        "default": "300",
+        "required": false,
+        "description": "When another tooltip of the provider closed less than this many\nmilliseconds ago, the next one opens without waiting for its enter delay"
+      }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Content containing tooltips" }]
+  },
+  "Upload": {
+    "file": "packages/vue/src/components/Upload/Upload.vue",
+    "props": [
+      { "name": "label", "type": "string", "required": true, "description": "Visible label of the upload field (also names the file input)" },
+      { "name": "modelValue", "type": "UploadItem[]", "required": false, "description": "Files to list, with their transfer state (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "UploadItem[]", "required": false, "description": "Initial files of an uncontrolled list" },
+      { "name": "accept", "type": "string", "default": "\"*\"", "required": false, "description": "Accepted file types, as for <input accept> (\".pdf\", \"image/*\", \"application/json\"...)" },
+      { "name": "multiple", "type": "boolean", "default": "false", "required": false, "description": "Allows selecting several files" },
+      {
+        "name": "replace",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Single-file mode: lets a new file replace the listed one (the existing\nfile does not count toward maxCount)"
+      },
+      { "name": "maxCount", "type": "number", "required": false, "description": "Maximum number of files, including the listed ones" },
+      { "name": "maxSize", "type": "number", "required": false, "description": "Maximum size of a file, in bytes" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Busy state: blocks new selections and retries (removal stays possible)\nand sets aria-busy" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables selection, retry and removal" },
+      { "name": "labels", "type": "UploadLabels", "required": false, "description": "Custom texts; each one overrides the localized default" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: UploadItem[]]" },
+      { "name": "filesSelected", "type": "[files: File[]]" },
+      { "name": "remove", "type": "[item: UploadItem]" },
+      { "name": "retry", "type": "[item: UploadItem]" }
+    ],
+    "slots": [{ "name": "select", "type": "any", "description": "Content of the select button (the `labels.select` text)" }]
+  },
+  "VirtualList": {
+    "file": "packages/vue/src/components/VirtualList/VirtualList.vue",
+    "props": [
+      { "name": "items", "type": "readonly T[]", "required": true, "description": "Items to render" },
+      { "name": "itemHeight", "type": "number", "required": false, "description": "Fixed row height in pixels; measured from the first item when omitted" },
+      { "name": "itemPadding", "type": "number", "default": "8", "required": false, "description": "Padding of each row in pixels" },
+      { "name": "overscan", "type": "number", "default": "5", "required": false, "description": "Number of rows rendered above and below the visible area" },
+      { "name": "maxHeight", "type": "number", "required": true, "description": "Maximum height of the scroll container in pixels" },
+      {
+        "name": "renderItem",
+        "type": "((item: T, index: number) => VNodeChild)",
+        "required": false,
+        "description": "Renders the content of one row (the default scoped slot wins when both\nare given)"
+      },
+      {
+        "name": "onLoadMore",
+        "type": "(() => void | Promise<void>)",
+        "required": false,
+        "description": "`@load-more` listener: called when scrolling near the bottom; return a\npromise that resolves once new items are loaded (no new call happens\nuntil it settles). A function prop (not an emit) so its promise is seen"
+      },
+      { "name": "loadMoreThreshold", "type": "number", "default": "100", "required": false, "description": "Distance from the bottom (px) at which `load-more` is triggered" },
+      { "name": "highPerformance", "type": "boolean", "default": "false", "required": false, "description": "Batches scroll updates with requestAnimationFrame and requestIdleCallback" },
+      { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Shows a loading indicator at the bottom of the list" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the list" }
+    ],
+    "events": [{ "name": "itemClick", "type": "[item: T, index: number, event: MouseEvent | KeyboardEvent]" }],
+    "slots": [{ "name": "default", "type": "{ item: T; index: number; }", "description": "Content of one row (wins over `renderItem`)" }]
+  },
   "VStack": {
     "file": "packages/vue/src/components/Stack/VStack.vue",
     "props": [
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "gap",
         "type": "string | number",
@@ -701,7 +2569,6 @@
       },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "separator",
         "type": "string",

@@ -1,5 +1,38 @@
 [
   {
+    "name": "ActionSheet",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "open", "kind": "boolean", "required": false, "description": "Controlled open state", "only": "native" },
+      { "name": "defaultOpen", "kind": "boolean", "default": false, "required": false, "description": "Initial open state while uncontrolled", "only": "native" },
+      { "name": "title", "kind": "node", "required": false, "description": "Title above the actions (also the accessible name of the sheet)", "only": "native" },
+      { "name": "description", "kind": "node", "required": false, "description": "Description under the title", "only": "native" },
+      { "name": "actions", "kind": "array", "required": false, "description": "The entries", "only": "native" },
+      { "name": "closeOnSelect", "kind": "boolean", "default": true, "required": false, "description": "Closes the sheet after an action is pressed", "only": "native" },
+      { "name": "cancelText", "kind": "node", "required": false, "description": "Text of the cancel button; `null` hides it", "only": "native" },
+      { "name": "closeOnMaskPress", "kind": "boolean", "default": true, "required": false, "description": "Closes on a press on the mask", "only": "native" },
+      { "name": "safeArea", "kind": "boolean", "default": true, "required": false, "description": "Pads the sheet with the bottom safe-area inset (home indicator)", "only": "native" },
+      { "name": "testID", "kind": "string", "required": false, "only": "native" }
+    ],
+    "events": [
+      { "name": "open-change", "native": "onOpenChange", "description": "Called with the requested open state and, when closing, the reason (\"action\", \"cancel\", \"mask\", \"back\")" },
+      { "name": "select", "native": "onSelect", "description": "Called with the pressed action and its index" },
+      { "name": "cancel", "native": "onCancel", "description": "Called by the cancel button" }
+    ],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
     "name": "Alert",
     "tag": "minerva-alert",
     "docs": "alert",
@@ -82,13 +115,20 @@
       { "name": "alertRole", "kind": "string", "required": false, "description": "ARIA role (default: \"alert\" for danger / warning, \"status\" otherwise)", "attribute": "alert-role", "only": "wc" }
     ],
     "events": [
-      { "name": "minerva-close", "wc": "minerva-close", "description": "The close button was activated; cancelable: `preventDefault()` keeps the alert visible", "react": "onClose" },
+      {
+        "name": "minerva-close",
+        "wc": "minerva-close",
+        "description": "The close button was activated; cancelable: `preventDefault()` keeps the alert visible",
+        "react": "onClose",
+        "native": "onClose"
+      },
       {
         "name": "minerva-expanded-change",
         "wc": "minerva-expanded-change",
         "detail": ["expanded"],
         "description": "The user expanded / collapsed the message (`detail: { expanded }`); cancelable",
-        "react": "onExpand"
+        "react": "onExpand",
+        "native": "onExpand"
       }
     ],
     "slots": [
@@ -102,9 +142,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -372,7 +412,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -420,9 +460,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -452,9 +492,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -536,9 +576,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -590,7 +630,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -658,7 +698,7 @@
         "attribute": "border-radius"
       }
     ],
-    "events": [{ "name": "click", "wc": "click", "react": "onClick" }],
+    "events": [{ "name": "click", "wc": "click", "react": "onClick", "native": "onPress" }],
     "slots": [
       { "name": "default", "description": "Label" },
       { "name": "start", "description": "Icon before the label" },
@@ -669,12 +709,21 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
-      "taro": { "status": "planned" },
-      "weapp": { "status": "planned" },
-      "uni": { "status": "planned" }
+      "vue": { "status": "stable" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnButton. Initial subset; forms and other components remain in progress." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      }
     }
   },
   {
@@ -732,9 +781,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -757,7 +806,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -779,7 +828,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -803,7 +852,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -827,7 +876,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -849,7 +898,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -948,7 +997,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1026,7 +1075,14 @@
     ],
     "events": [
       { "name": "change", "wc": "change", "description": "The checked state changed (re-dispatched from the inner input)" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["checked", "value"], "description": "The user toggled the box; `detail: { checked, value }`", "react": "onChange" }
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["checked", "value"],
+        "description": "The user toggled the box; `detail: { checked, value }`",
+        "react": "onChange",
+        "native": "onChange"
+      }
     ],
     "slots": [
       { "name": "default", "description": "Label content (alternative to the `label` attribute)" },
@@ -1036,9 +1092,39 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "stable" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "CheckboxGroup",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "value", "kind": "array", "required": false, "description": "Checked values (controlled)", "only": "native" },
+      { "name": "defaultValue", "kind": "array", "required": false, "description": "Initially checked values (uncontrolled)", "only": "native" },
+      { "name": "max", "kind": "number", "required": false, "description": "Most boxes checked at once (the others are disabled when reached)", "only": "native" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables every checkbox", "only": "native" },
+      { "name": "direction", "kind": "enum", "values": ["horizontal", "vertical"], "default": "vertical", "required": false, "description": "Layout of the checkboxes", "only": "native" },
+      { "name": "label", "kind": "node", "required": false, "description": "Visible label of the group; a string is also its accessible name", "only": "native" },
+      { "name": "options", "kind": "array", "required": false, "description": "Checkboxes built from data (else pass `<Checkbox value>` children)", "only": "native" },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "required": false, "description": "Size of every checkbox", "only": "native" },
+      { "name": "color", "kind": "enum", "values": ["danger", "info", "primary", "success", "warning"], "required": false, "description": "Color of every checkbox", "only": "native" },
+      { "name": "shape", "kind": "enum", "values": ["circle", "rounded", "square"], "required": false, "description": "Shape of every checkbox", "only": "native" },
+      { "name": "error", "kind": "boolean", "default": false, "required": false, "description": "Error state of every checkbox", "only": "native" }
+    ],
+    "events": [{ "name": "change", "native": "onChange", "description": "Called with the requested checked values, in check order" }],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1100,9 +1186,38 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "Collapse",
+    "tracks": ["toC"],
+    "props": [
+      {
+        "name": "value",
+        "kind": "union",
+        "required": false,
+        "description": "Names of the expanded items (controlled; pair with `onChange`): an array, or a single name (`\"\"`: none) in `accordion` mode",
+        "only": "native"
+      },
+      { "name": "defaultValue", "kind": "union", "required": false, "description": "Names of the items expanded at first (uncontrolled)", "only": "native" },
+      { "name": "accordion", "kind": "boolean", "default": false, "required": false, "description": "Accordion: at most one item expanded at a time", "only": "native" },
+      { "name": "border", "kind": "boolean", "default": true, "required": false, "description": "Hairline borders above the list and under each item", "only": "native" }
+    ],
+    "events": [{ "name": "change", "native": "onChange", "description": "Called with the requested expanded names: an array, or the single expanded name (`\"\"`: none) in `accordion` mode" }],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1171,7 +1286,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1266,18 +1381,22 @@
         "wc": "minerva-theme-change",
         "detail": ["mode"],
         "description": "The resolved light / dark mode changed (`detail: { mode }`), e.g. the system preference with `theme=\"system\"`",
-        "react": "onThemeChange"
+        "react": "onThemeChange",
+        "native": "onThemeChange"
       },
-      { "name": "palette-change", "react": "onPaletteChange", "description": "Called after `setPalette` changes the palette" }
+      { "name": "palette-change", "react": "onPaletteChange", "description": "Called after `setPalette` changes the palette", "native": "onPaletteChange" }
     ],
     "slots": [{ "name": "default", "description": "Scoped content" }],
     "children": true,
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "vue": { "status": "stable" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnConfig / provideMinerva. Initial subset; forms and other components remain in progress." },
+      "native": {
+        "status": "beta",
+        "notes": "MinervaProvider (alias ConfigProvider): theme light / dark / system via useColorScheme, palette, design preset (touch by default), locale, safe-area insets"
+      },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1356,7 +1475,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1378,7 +1497,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1472,7 +1591,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1573,9 +1692,57 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "DatetimePicker",
+    "tracks": ["toC"],
+    "props": [
+      {
+        "name": "type",
+        "kind": "enum",
+        "values": ["date", "datetime", "time", "year-month"],
+        "default": "date",
+        "required": false,
+        "description": "Columns shown: `date` (year / month / day), `time` (hour / minute), `datetime` (both) or `year-month`",
+        "only": "native"
+      },
+      { "name": "value", "kind": "object", "required": false, "description": "Controlled confirmed value", "only": "native" },
+      { "name": "defaultValue", "kind": "object", "required": false, "description": "Initial confirmed value while uncontrolled", "only": "native" },
+      { "name": "minDate", "kind": "object", "required": false, "description": "Earliest selectable date (not applied to the `time` type)", "only": "native" },
+      { "name": "maxDate", "kind": "object", "required": false, "description": "Latest selectable date (not applied to the `time` type)", "only": "native" },
+      { "name": "minuteStep", "kind": "number", "default": 1, "required": false, "description": "Step of the minute column", "only": "native" },
+      { "name": "formatter", "kind": "function", "required": false, "description": "Text of each row", "only": "native" },
+      { "name": "open", "kind": "boolean", "required": false, "description": "Controlled open state", "only": "native" },
+      { "name": "defaultOpen", "kind": "boolean", "default": false, "required": false, "description": "Initial open state while uncontrolled", "only": "native" },
+      { "name": "title", "kind": "node", "required": false, "description": "Toolbar title", "only": "native" },
+      { "name": "confirmText", "kind": "node", "required": false, "description": "Text of the confirm button", "only": "native" },
+      { "name": "cancelText", "kind": "node", "required": false, "description": "Text of the cancel button", "only": "native" },
+      { "name": "itemHeight", "kind": "number", "default": 44, "required": false, "description": "Height of a row in dp", "only": "native" },
+      { "name": "visibleItemCount", "kind": "number", "default": 5, "required": false, "description": "Rows visible in each wheel", "only": "native" },
+      { "name": "closeOnMaskPress", "kind": "boolean", "default": true, "required": false, "description": "Closes on a press on the mask", "only": "native" },
+      { "name": "testID", "kind": "string", "required": false, "only": "native" }
+    ],
+    "events": [
+      { "name": "change", "native": "onChange", "description": "Called on confirm with the picked date" },
+      { "name": "pick", "native": "onPick", "description": "Called while scrolling with the pending (unconfirmed) date" },
+      { "name": "cancel", "native": "onCancel", "description": "Called when the cancel button closes the sheet" },
+      { "name": "open-change", "native": "onOpenChange", "description": "Called with the requested open state and, when closing, the reason (\"confirm\", \"cancel\", \"mask\", \"back\")" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1595,7 +1762,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1628,7 +1795,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1673,9 +1840,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1732,7 +1899,8 @@
         "wc": "minerva-open-change",
         "detail": ["open", "reason"],
         "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state",
-        "react": "onOpenChange"
+        "react": "onOpenChange",
+        "native": "onOpenChange"
       },
       { "name": "minerva-after-open", "wc": "minerva-after-open", "description": "The drawer is open and focus moved in" },
       { "name": "minerva-after-close", "wc": "minerva-after-close", "description": "The drawer finished closing (after its exit animation)" }
@@ -1747,9 +1915,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Popup / BottomSheet: placement bottom by default on mobile" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1794,7 +1962,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1825,7 +1993,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1846,7 +2014,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -1920,9 +2088,44 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "Form",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "form", "kind": "object", "required": false, "description": "A handle from `useForm()` (else the form keeps its own)", "only": "native" },
+      { "name": "initialValues", "kind": "object", "required": false, "description": "Initial values of the fields, by name", "only": "native" },
+      {
+        "name": "validateOn",
+        "kind": "enum",
+        "values": ["blur", "change", "submit"],
+        "default": "blur",
+        "required": false,
+        "description": "When the fields validate first (each FormField may override it)",
+        "only": "native"
+      },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables every field", "only": "native" },
+      { "name": "readOnly", "kind": "boolean", "default": false, "required": false, "description": "Makes every field read-only", "only": "native" }
+    ],
+    "events": [
+      { "name": "submit", "native": "onSubmit", "description": "Called with the values on a submit where every field is valid" },
+      { "name": "submit-failed", "native": "onSubmitFailed", "description": "Called with the errors on a submit where a field is invalid" }
+    ],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -1993,7 +2196,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2013,7 +2216,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2053,9 +2256,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "With Form / useForm: validation on the core field machine" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2073,7 +2276,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2101,7 +2304,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2142,9 +2345,42 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "Grid",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "columnNum", "kind": "number", "default": 4, "required": false, "description": "Number of columns", "only": "native" },
+      { "name": "square", "kind": "boolean", "default": false, "required": false, "description": "Square cells (height = width)", "only": "native" },
+      { "name": "gutter", "kind": "number", "default": 0, "required": false, "description": "Space between the cells, in dp (cells get their own border and radius when set)", "only": "native" },
+      { "name": "border", "kind": "boolean", "default": true, "required": false, "description": "Hairline borders between the cells", "only": "native" },
+      { "name": "center", "kind": "boolean", "default": true, "required": false, "description": "Centers the content of the cells", "only": "native" },
+      {
+        "name": "direction",
+        "kind": "enum",
+        "values": ["horizontal", "vertical"],
+        "default": "vertical",
+        "required": false,
+        "description": "Layout of icon and text in a cell: `vertical` (icon above) or `horizontal` (icon before)",
+        "only": "native"
+      }
+    ],
+    "events": [],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2174,7 +2410,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2247,7 +2483,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2299,7 +2535,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2391,7 +2627,8 @@
         "wc": "minerva-pressed-change",
         "detail": ["pressed"],
         "description": "A toggle button was activated (`detail: { pressed }`, the new state); cancelable: `preventDefault()` keeps the current state",
-        "react": "onPressedChange"
+        "react": "onPressedChange",
+        "native": "onPressedChange"
       }
     ],
     "slots": [{ "name": "default", "description": "The icon (hidden from assistive technologies)" }],
@@ -2399,9 +2636,46 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "ImagePreview",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "images", "kind": "array", "required": true, "description": "Images to page through", "only": "native" },
+      { "name": "open", "kind": "boolean", "required": false, "description": "Controlled open state", "only": "native" },
+      { "name": "defaultOpen", "kind": "boolean", "default": false, "required": false, "description": "Initial open state while uncontrolled", "only": "native" },
+      { "name": "index", "kind": "number", "required": false, "description": "Index of the shown image (controlled; pair with `onChange`)", "only": "native" },
+      { "name": "defaultIndex", "kind": "number", "default": 0, "required": false, "description": "Index of the image shown first (uncontrolled)", "only": "native" },
+      { "name": "closeOnPress", "kind": "boolean", "default": true, "required": false, "description": "Closes on a press on the image", "only": "native" },
+      { "name": "showIndex", "kind": "boolean", "default": true, "required": false, "description": "Shows the \"index / total\" counter", "only": "native" },
+      { "name": "closeable", "kind": "boolean", "default": true, "required": false, "description": "Shows the close button", "only": "native" },
+      { "name": "accessibilityLabel", "kind": "string", "required": false, "description": "Accessible label of the viewer", "only": "native" },
+      { "name": "closeLabel", "kind": "string", "required": false, "description": "Accessible label of the close button", "only": "native" },
+      { "name": "testID", "kind": "string", "required": false, "only": "native" }
+    ],
+    "events": [
+      {
+        "name": "open-change",
+        "native": "onOpenChange",
+        "description": "Called with the requested open state and, when closing, the reason (\"close-button\", \"image\" for a press on the image, \"back\")"
+      },
+      { "name": "change", "native": "onChange", "description": "Called with the index of the image paged to" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2506,7 +2780,7 @@
       { "name": "input", "wc": "input", "description": "The value changed (each keystroke; native, composed)" },
       { "name": "minerva-input", "wc": "minerva-input", "detail": ["value"], "description": "Same as `input`, with `detail: { value }`" },
       { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "Same as `change`, with `detail: { value }`" },
-      { "name": "minerva-clear", "wc": "minerva-clear", "description": "The clear button emptied the field", "react": "onClear" }
+      { "name": "minerva-clear", "wc": "minerva-clear", "description": "The clear button emptied the field", "react": "onClear", "native": "onClear" }
     ],
     "slots": [
       { "name": "prefix", "description": "Content before the text (icon, \"@\")" },
@@ -2516,12 +2790,21 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
-      "taro": { "status": "planned" },
-      "weapp": { "status": "planned" },
-      "uni": { "status": "planned" }
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      }
     }
   },
   {
@@ -2583,7 +2866,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2630,7 +2913,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2688,9 +2971,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "CellGroup: grouped settings-style rows" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2720,9 +3003,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Cell: settings-style row" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2753,9 +3036,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Loading (alias Spinner)" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -2858,7 +3141,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2887,7 +3170,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2912,7 +3195,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2943,7 +3226,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2965,7 +3248,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -2994,7 +3277,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3016,7 +3299,7 @@
     "platforms": {
       "react": { "status": "n/a", "notes": "Data object in React: an item of the parent component's items / entries prop." },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "n/a", "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop." },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3067,7 +3350,8 @@
         "wc": "minerva-open-change",
         "detail": ["open", "reason"],
         "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state",
-        "react": "onOpenChange"
+        "react": "onOpenChange",
+        "native": "onOpenChange"
       },
       { "name": "minerva-after-open", "wc": "minerva-after-open", "description": "The modal is open and focus moved in" },
       { "name": "minerva-after-close", "wc": "minerva-after-close", "description": "The modal finished closing (after its exit animation)" }
@@ -3082,9 +3366,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "vue": { "status": "stable" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnModal. Initial subset; forms and other components remain in progress." },
+      "native": { "status": "beta", "notes": "Dialog (alias Modal): Android back button closes it" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -3103,8 +3387,8 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnModalBody. Initial subset; forms and other components remain in progress." },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
@@ -3150,7 +3434,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3171,8 +3455,8 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnModalFooter. Initial subset; forms and other components remain in progress." },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
@@ -3192,8 +3476,8 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnModalHeader. Initial subset; forms and other components remain in progress." },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
@@ -3223,7 +3507,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3244,8 +3528,8 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnModalTrigger. Initial subset; forms and other components remain in progress." },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
@@ -3380,13 +3664,21 @@
       }
     ],
     "events": [
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected a day (`detail: { value }`, \"YYYY-MM-DD\")", "react": "onChange" },
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["value"],
+        "description": "The user selected a day (`detail: { value }`, \"YYYY-MM-DD\")",
+        "react": "onChange",
+        "native": "onChange"
+      },
       {
         "name": "minerva-month-change",
         "wc": "minerva-month-change",
         "detail": ["month"],
         "description": "The user displayed another month (`detail: { month }`, its first day at local midnight)",
-        "react": "onMonthChange"
+        "react": "onMonthChange",
+        "native": "onMonthChange"
       },
       {
         "name": "minerva-event-click",
@@ -3401,9 +3693,48 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta", "notes": "As Calendar" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "NavBar",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "title", "kind": "node", "required": false, "description": "Title in the middle (a string is rendered as a header Text)", "only": "native" },
+      { "name": "leftText", "kind": "node", "required": false, "description": "Text of the left (back) button", "only": "native" },
+      { "name": "leftArrow", "kind": "boolean", "default": false, "required": false, "description": "Shows a back chevron in the left button", "only": "native" },
+      { "name": "left", "kind": "node", "required": false, "description": "Custom left content, replacing the back button", "only": "native" },
+      { "name": "rightText", "kind": "node", "required": false, "description": "Text of the right button (pressable with `onPressRight`)", "only": "native" },
+      { "name": "right", "kind": "node", "required": false, "description": "Custom right content (e.g. icon buttons), replacing `rightText`", "only": "native" },
+      { "name": "backLabel", "kind": "string", "required": false, "description": "Accessible label of the back button", "only": "native" },
+      {
+        "name": "safeAreaInsetTop",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Pads the bar with the top safe-area inset (status bar / notch) of `MinervaProvider`",
+        "only": "native"
+      },
+      { "name": "border", "kind": "boolean", "default": true, "required": false, "description": "Hairline border under the bar", "only": "native" },
+      { "name": "titleStyle", "kind": "union", "required": false, "description": "Style of the title text", "only": "native" }
+    ],
+    "events": [
+      { "name": "back", "native": "onBack", "description": "Called by the left (back) button" },
+      { "name": "press-right", "native": "onPressRight", "description": "Called by the right text button" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -3461,7 +3792,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3518,16 +3849,23 @@
       { "name": "change", "wc": "change", "description": "A value was committed (blur / Enter / stepping)" },
       { "name": "input", "wc": "input", "description": "The draft text changed (native, composed)" },
       { "name": "minerva-input", "wc": "minerva-input", "detail": ["value"], "description": "The draft text changed; `detail: { value }` (the parsed draft, `null` when not a number)" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "A new value was committed; `detail: { value }` (`null` when cleared)", "react": "onChange" }
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["value"],
+        "description": "A new value was committed; `detail: { value }` (`null` when cleared)",
+        "react": "onChange",
+        "native": "onChange"
+      }
     ],
     "slots": [],
     "children": true,
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Stepper: the mobile stepper look (− / + buttons)" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -3547,7 +3885,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3578,7 +3916,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3612,7 +3950,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3662,7 +4000,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3702,7 +4040,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3788,7 +4126,12 @@
         "detail": ["page", "pageSize"],
         "description": "The user changed the page or the page size (`detail: { page, pageSize }`); cancelable: `preventDefault()` keeps the current page and size (controlled pattern)"
       },
-      { "name": "change", "react": "onChange", "description": "Called with the new page and page size when the page or page size changes (changing the page size resets to page 1)" }
+      {
+        "name": "change",
+        "react": "onChange",
+        "description": "Called with the new page and page size when the page or page size changes (changing the page size resets to page 1)",
+        "native": "onChange"
+      }
     ],
     "slots": [
       { "name": "prev-icon", "description": "Icon of the previous-page button" },
@@ -3800,9 +4143,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -3849,9 +4192,47 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "Picker",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "value", "kind": "array", "required": false, "description": "Controlled confirmed value path", "only": "native" },
+      { "name": "defaultValue", "kind": "array", "required": false, "description": "Initial confirmed value path while uncontrolled", "only": "native" },
+      { "name": "open", "kind": "boolean", "required": false, "description": "Controlled open state", "only": "native" },
+      { "name": "defaultOpen", "kind": "boolean", "default": false, "required": false, "description": "Initial open state while uncontrolled", "only": "native" },
+      { "name": "title", "kind": "node", "required": false, "description": "Title in the toolbar (also the accessible name of the sheet)", "only": "native" },
+      { "name": "confirmText", "kind": "node", "required": false, "description": "Text of the confirm button", "only": "native" },
+      { "name": "cancelText", "kind": "node", "required": false, "description": "Text of the cancel button", "only": "native" },
+      { "name": "closeOnMaskPress", "kind": "boolean", "default": true, "required": false, "description": "Closes on a press on the mask", "only": "native" },
+      { "name": "testID", "kind": "string", "required": false, "only": "native" },
+      { "name": "options", "kind": "array", "required": false, "description": "Cascading options tree: the first column, `children` the next ones", "only": "native" },
+      { "name": "columns", "kind": "array", "required": false, "description": "Independent columns (used when `options` is not set)", "only": "native" },
+      { "name": "itemHeight", "kind": "number", "default": 44, "required": false, "description": "Height of a row in dp", "only": "native" },
+      { "name": "visibleItemCount", "kind": "number", "default": 5, "required": false, "description": "Rows visible in each wheel (odd: the middle one is the selection)", "only": "native" },
+      { "name": "columnLabels", "kind": "array", "required": false, "description": "Accessible names of the columns", "only": "native" }
+    ],
+    "events": [
+      { "name": "change", "native": "onChange", "description": "Called on confirm with the value path and the chosen options" },
+      { "name": "cancel", "native": "onCancel", "description": "Called when the cancel button closes the sheet" },
+      { "name": "pick", "native": "onPick", "description": "Called while scrolling with the pending (unconfirmed) values" },
+      { "name": "open-change", "native": "onOpenChange", "description": "Called with the requested open state and, when closing, the reason (\"confirm\", \"cancel\", \"mask\", \"back\")" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -3946,7 +4327,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -3967,7 +4348,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4023,7 +4404,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4044,9 +4425,32 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "PresetToggle",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "presets", "kind": "array", "required": false, "description": "Presets offered, in order", "only": "native" },
+      { "name": "labels", "kind": "object", "required": false, "description": "Override the option labels", "only": "native" },
+      { "name": "size", "kind": "enum", "values": ["medium", "small"], "default": "medium", "required": false, "description": "Control size", "only": "native" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the control", "only": "native" }
+    ],
+    "events": [{ "name": "change", "native": "onChange", "description": "Called with the chosen preset (after `setPreset`)" }],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4108,9 +4512,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Value-based line / circle progress" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4139,9 +4543,35 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "PullRefresh",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "refreshing", "kind": "boolean", "required": false, "description": "Controlled refreshing state; unset, it follows the promise returned by `onRefresh`", "only": "native" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the pull", "only": "native" },
+      { "name": "pullingText", "kind": "string", "required": false, "description": "Text while pulling (iOS)", "only": "native" },
+      { "name": "loosingText", "kind": "string", "required": false, "description": "Text when releasing would refresh (iOS)", "only": "native" },
+      { "name": "loadingText", "kind": "string", "required": false, "description": "Text while refreshing", "only": "native" },
+      { "name": "successText", "kind": "string", "required": false, "description": "Text after a refresh", "only": "native" },
+      { "name": "successDuration", "kind": "number", "default": 500, "required": false, "description": "How long the success text stays, in ms (0: none)", "only": "native" }
+    ],
+    "events": [{ "name": "refresh", "native": "onRefresh", "description": "Called on a pull; may return a promise (refreshing until it settles)" }],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4209,7 +4639,8 @@
         "wc": "minerva-change",
         "detail": ["checked", "value"],
         "description": "A standalone radio was checked by the user; `detail: { checked: true, value }` (inside a group, the group fires it)",
-        "react": "onChange"
+        "react": "onChange",
+        "native": "onChange"
       }
     ],
     "slots": [{ "name": "default", "description": "Label content (alternative to the `label` attribute)" }],
@@ -4217,9 +4648,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4299,16 +4730,16 @@
     ],
     "events": [
       { "name": "change", "wc": "change", "description": "The user selected another radio (like native radios)" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected another radio; `detail: { value }`", "react": "onChange" }
+      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected another radio; `detail: { value }`", "react": "onChange", "native": "onChange" }
     ],
     "slots": [{ "name": "default", "description": "The `<minerva-radio>` options" }],
     "children": true,
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4368,7 +4799,7 @@
     ],
     "events": [
       { "name": "change", "wc": "change", "description": "The user changed the score" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user changed the score; `detail: { value }`", "react": "onChange" },
+      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user changed the score; `detail: { value }`", "react": "onChange", "native": "onChange" },
       { "name": "keydown", "wc": "keydown", "react": "onKeyDown" }
     ],
     "slots": [],
@@ -4376,9 +4807,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4422,7 +4853,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4464,9 +4895,54 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "SearchBar",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "value", "kind": "string", "required": false, "description": "Search text (controlled)", "only": "native" },
+      { "name": "defaultValue", "kind": "string", "default": "", "required": false, "description": "Initial search text (uncontrolled)", "only": "native" },
+      { "name": "placeholder", "kind": "string", "required": false, "description": "Placeholder", "only": "native" },
+      { "name": "clearable", "kind": "boolean", "default": true, "required": false, "description": "Shows a clear button while the field has text", "only": "native" },
+      { "name": "showCancel", "kind": "boolean", "default": false, "required": false, "description": "Shows a Cancel button after the field", "only": "native" },
+      { "name": "cancelText", "kind": "string", "required": false, "description": "Text of the Cancel button", "only": "native" },
+      {
+        "name": "shape",
+        "kind": "enum",
+        "values": ["round", "square"],
+        "default": "round",
+        "required": false,
+        "description": "Field shape: `round` (pill) or `square` (theme radius)",
+        "only": "native"
+      },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Field height and font size", "only": "native" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the field", "only": "native" },
+      { "name": "prefix", "kind": "node", "required": false, "description": "Content before the field (e.g. a city picker)", "only": "native" },
+      { "name": "action", "kind": "node", "required": false, "description": "Content after the field, before Cancel (e.g. a filter button)", "only": "native" },
+      { "name": "fieldStyle", "kind": "union", "required": false, "description": "Style of the rounded field", "only": "native" },
+      { "name": "inputStyle", "kind": "union", "required": false, "description": "Style of the TextInput", "only": "native" }
+    ],
+    "events": [
+      { "name": "change", "native": "onChange", "description": "Called with the new text on every edit and when cleared" },
+      { "name": "search", "native": "onSearch", "description": "Called with the text when the keyboard's search key is pressed" },
+      { "name": "clear", "native": "onClear", "description": "Called after the clear button emptied the field" },
+      { "name": "cancel", "native": "onCancel", "description": "Called by the Cancel button (the text is cleared first)" }
+    ],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "planned" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4507,13 +4983,14 @@
     "events": [
       { "name": "input", "wc": "input", "description": "The value changed (native-like, composed)" },
       { "name": "change", "wc": "change", "description": "The value changed (native-like)" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected an option (`detail: { value }`)", "react": "onChange" },
+      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected an option (`detail: { value }`)", "react": "onChange", "native": "onChange" },
       {
         "name": "minerva-open-change",
         "wc": "minerva-open-change",
         "detail": ["open"],
         "description": "The user opened / closed the listbox (`detail: { open }`); cancelable: `preventDefault()` keeps the current state",
-        "react": "onOpenChange"
+        "react": "onOpenChange",
+        "native": "onOpenChange"
       }
     ],
     "slots": [{ "name": "default", "description": "`<minerva-option>`, `<minerva-option-group>`, `<minerva-select-separator>` elements" }],
@@ -4521,9 +4998,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Options open in a bottom sheet (single or multiple)" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4543,7 +5020,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4580,7 +5057,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4602,7 +5079,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4624,7 +5101,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4711,9 +5188,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -4756,7 +5233,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4814,7 +5291,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4886,7 +5363,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4918,7 +5395,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -4961,7 +5438,8 @@
         "wc": "minerva-change",
         "detail": ["value"],
         "description": "The user navigated to a step (`detail: { value }`); cancelable: `preventDefault()` keeps the current step",
-        "react": "onChange"
+        "react": "onChange",
+        "native": "onChange"
       }
     ],
     "slots": [],
@@ -4969,9 +5447,38 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "SwipeCell",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "leftActions", "kind": "array", "required": false, "description": "Action buttons revealed by swiping right (shown on the left)", "only": "native" },
+      { "name": "rightActions", "kind": "array", "required": false, "description": "Action buttons revealed by swiping left (shown on the right)", "only": "native" },
+      { "name": "left", "kind": "node", "required": false, "description": "Custom content revealed on the left (replaces `leftActions`)", "only": "native" },
+      { "name": "right", "kind": "node", "required": false, "description": "Custom content revealed on the right (replaces `rightActions`)", "only": "native" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables swiping", "only": "native" },
+      { "name": "closeOnActionPress", "kind": "boolean", "default": true, "required": false, "description": "Closes the cell after an action button press", "only": "native" },
+      { "name": "contentStyle", "kind": "union", "required": false, "description": "Style of the sliding content", "only": "native" }
+    ],
+    "events": [
+      { "name": "open", "native": "onOpen", "description": "Called when a side opens" },
+      { "name": "close", "native": "onClose", "description": "Called when the cell closes" }
+    ],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5086,7 +5593,14 @@
     ],
     "events": [
       { "name": "change", "wc": "change", "description": "The state changed (re-dispatched from the inner input)" },
-      { "name": "minerva-change", "wc": "minerva-change", "detail": ["checked", "value"], "description": "The user toggled the switch; `detail: { checked, value }`", "react": "onChange" },
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["checked", "value"],
+        "description": "The user toggled the switch; `detail: { checked, value }`",
+        "react": "onChange",
+        "native": "onChange"
+      },
       { "name": "focus", "wc": "focus", "react": "onFocus" },
       { "name": "blur", "wc": "blur", "react": "onBlur" }
     ],
@@ -5098,12 +5612,21 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
-      "taro": { "status": "planned" },
-      "weapp": { "status": "planned" },
-      "uni": { "status": "planned" }
+      "vue": { "status": "stable" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnSwitch. Initial subset; forms and other components remain in progress." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Initial native controls: controlled value, disabled/loading guards and platform events. Subset of web API; host tests and package builds, device validation pending."
+      }
     }
   },
   {
@@ -5140,9 +5663,42 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
+      "vue": { "status": "stable" },
+      "angular": { "status": "planned" },
+      "native": { "status": "beta" },
+      "taro": { "status": "planned" },
+      "weapp": { "status": "planned" },
+      "uni": { "status": "planned" }
+    }
+  },
+  {
+    "name": "TabBar",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "value", "kind": "string", "required": false, "description": "Value of the selected item (controlled; pair with `onChange`)", "only": "native" },
+      { "name": "defaultValue", "kind": "string", "required": false, "description": "Value of the initially selected item (uncontrolled)", "only": "native" },
+      { "name": "activeColor", "kind": "string", "required": false, "description": "Icon / label color of the selected item", "only": "native" },
+      { "name": "inactiveColor", "kind": "string", "required": false, "description": "Icon / label color of the other items", "only": "native" },
+      {
+        "name": "safeAreaInsetBottom",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Pads the bar with the bottom safe-area inset (home indicator) of `MinervaProvider`",
+        "only": "native"
+      },
+      { "name": "border", "kind": "boolean", "default": true, "required": false, "description": "Hairline border above the bar", "only": "native" },
+      { "name": "accessibilityLabel", "kind": "string", "required": false, "description": "Accessible label of the tab list", "only": "native" }
+    ],
+    "events": [{ "name": "change", "native": "onChange", "description": "Called with the value of the item the user selects" }],
+    "slots": [],
+    "children": true,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
       "vue": { "status": "planned" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5194,7 +5750,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5215,7 +5771,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5236,7 +5792,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5266,7 +5822,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5287,7 +5843,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5308,7 +5864,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5346,7 +5902,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5367,7 +5923,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5388,9 +5944,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5413,9 +5969,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5477,7 +6033,8 @@
         "wc": "minerva-change",
         "detail": ["value"],
         "description": "The user selected a tab (`detail: { value }`); cancelable: `preventDefault()` keeps the current selection (controlled pattern)",
-        "react": "onChange"
+        "react": "onChange",
+        "native": "onChange"
       }
     ],
     "slots": [
@@ -5488,9 +6045,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5573,9 +6130,9 @@
       { "name": "noRipple", "kind": "boolean", "default": false, "required": false, "description": "Disables the ripple effect of clickable tags", "attribute": "no-ripple", "only": "wc" }
     ],
     "events": [
-      { "name": "minerva-close", "wc": "minerva-close", "description": "The close button was activated (`detail: {}`)", "react": "onClose" },
+      { "name": "minerva-close", "wc": "minerva-close", "description": "The close button was activated (`detail: {}`)", "react": "onClose", "native": "onClose" },
       { "name": "minerva-change", "wc": "minerva-change", "detail": ["pressed"], "description": "A `toggle` tag was toggled (`detail: { pressed }`)" },
-      { "name": "click", "wc": "click", "react": "onClick" }
+      { "name": "click", "wc": "click", "react": "onClick", "native": "onPress" }
     ],
     "slots": [
       { "name": "default", "description": "Label of the tag" },
@@ -5587,9 +6144,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5656,7 +6213,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5731,9 +6288,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5783,7 +6340,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -5867,9 +6424,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -5980,7 +6537,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6040,9 +6597,9 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "stable" },
       "angular": { "status": "planned" },
-      "native": { "status": "planned" },
+      "native": { "status": "beta", "notes": "Full-width mobile toasts (position top / center / bottom), safe-area aware" },
       "taro": { "status": "planned" },
       "weapp": { "status": "planned" },
       "uni": { "status": "planned" }
@@ -6082,7 +6639,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6187,7 +6744,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6232,7 +6789,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6324,7 +6881,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6389,7 +6946,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },
@@ -6462,7 +7019,7 @@
     "platforms": {
       "react": { "status": "stable" },
       "wc": { "status": "stable" },
-      "vue": { "status": "planned" },
+      "vue": { "status": "beta" },
       "angular": { "status": "planned" },
       "native": { "status": "planned" },
       "taro": { "status": "planned" },

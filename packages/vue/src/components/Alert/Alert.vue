@@ -9,7 +9,14 @@
  * - Closing moves focus out first (to `returnFocus`, else the next focusable
  *   element), so it never falls to <body>, then removes the alert.
  */
-import { computed, ref, shallowRef, useAttrs, useId, type CSSProperties } from "vue";
+import {
+  computed,
+  ref,
+  shallowRef,
+  useAttrs,
+  useId,
+  type CSSProperties,
+} from "vue";
 import styles from "@react-styles/components/Alert/alert.module.scss";
 import { hooks } from "../../internal/hooks";
 import { useControllable } from "../../internal/controllable";
@@ -181,7 +188,11 @@ const rootAttrs = computed(() => ({
     </span>
 
     <div :class="styles.content">
-      <div v-if="hasTitle" :class="styles.title" v-bind="hooks('alert', 'title')">
+      <div
+        v-if="hasTitle"
+        :class="styles.title"
+        v-bind="hooks('alert', 'title')"
+      >
         <slot name="title">{{ title }}</slot>
         <button
           v-if="isCollapsible"
@@ -211,7 +222,11 @@ const rootAttrs = computed(() => ({
       </div>
     </div>
 
-    <div v-if="slots.action" :class="styles.action" v-bind="hooks('alert', 'action')">
+    <div
+      v-if="slots.action"
+      :class="styles.action"
+      v-bind="hooks('alert', 'action')"
+    >
       <slot name="action" />
     </div>
 

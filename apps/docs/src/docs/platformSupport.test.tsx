@@ -49,7 +49,12 @@ describe("platform support page", () => {
       "toB, toC",
       "Stable",
       "Stable",
-      ...PLATFORMS.slice(2).map(() => "Planned"),
+      "Stable",
+      "Beta",
+      "Beta",
+      "Beta",
+      "Beta",
+      "Beta",
     ]);
   });
 

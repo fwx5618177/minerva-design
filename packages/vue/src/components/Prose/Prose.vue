@@ -21,7 +21,11 @@ const rootAttrs = computed(() => ({ ...attrs, ...hooks("prose", "root") }));
 </script>
 
 <template>
-  <component :is="asChild ? Slot : 'div'" :class="styles.prose" v-bind="rootAttrs">
+  <component
+    :is="asChild ? Slot : 'div'"
+    :class="styles.prose"
+    v-bind="rootAttrs"
+  >
     <slot />
   </component>
 </template>

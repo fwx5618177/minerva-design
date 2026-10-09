@@ -1,5 +1,13 @@
 # Minerva 组件库
 
+## 多平台实现进度
+
+主工作区现已接入原生 Vue（`minerva-design/vue`）、React Native / Expo（`minerva-design/native`），以及 Angular 的初始组件集（`minerva-design/angular`：配置、Button、Switch、Modal 及其组合部件）。Taro（`minerva-design/taro`）、uni-app（`minerva-design/uni`）和微信原生（`miniprogram: dist/weapp`）已实现 Button、Input、Switch。各平台仍在逐步完善，尚未与 React 全量对齐，也不代表 npm 已发布。范围、示例与验证限制见[平台支持矩阵](https://fwx5618177.github.io/minerva-design/#/platform-support)。
+
+根工作区是私有包 `minerva-design-workspace`；`packages/minerva-design` 负责组装唯一的公开发布包。`packages/core` 保存平台无关逻辑，浏览器专属能力位于 `packages/dom`，公开的 `/core` 入口保留既有 Web API。旁边的 `md-*` 目录是含有未完成变更的 Git worktree，不是额外的发布包。
+
+[代码比较与接续实现报告](docs/research/2026-10-09-library-comparison.md)。
+
 <div align="center">
 
 [![GitHub stars](https://img.shields.io/github/stars/fwx5618177/minerva-design.svg?style=social&label=Stars)](https://github.com/fwx5618177/minerva-design)
@@ -51,7 +59,8 @@ Minerva 是一个面向 Web 的 UI 组件库：React 19 组件，以及同一套
 ### 架构
 
 ```
-minerva-design/core            framework-agnostic TypeScript (DOM only)
+packages/core                 platform-neutral TypeScript
+packages/dom                  browser interaction primitives
   interaction primitives · positioning (@floating-ui/dom) · theme · tokens · i18n
         ▲ React hooks                    ▲ Lit controllers
 minerva-design               minerva-design/web-components
@@ -416,7 +425,7 @@ pnpm dev
 | `dist/web-components/` | 每个元素的 ESM、`elements/*` 入口（含可选的 `code-editor`）、`cdn/minerva.js`、`types/` 中的框架类型、`html-custom-data.json`                         |
 | 包根目录               | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                        |
 
-workspace 包（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、规划中的渲染器 `@minerva/{vue,angular,native,taro,weapp,uni}` 以及 `@minerva/docs`）都是私有包，永远不会发布。
+workspace 包（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、各平台渲染器 `@minerva/{vue,angular,native,taro,weapp,uni}` 以及 `@minerva/docs`）都是私有包，永远不会发布。
 
 ## 🤝 贡献
 

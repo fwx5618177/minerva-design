@@ -86,15 +86,15 @@ const REGION_ATTRS = [
   "tabIndex",
 ];
 const regionAttrs = computed(() => {
-  const ariaLabelledBy = attrs["aria-labelledby"];
+  const ariaLabelledBy = attrs["aria-labelledby"] as string | undefined;
   return {
     role: "region",
-    tabindex: attrs.tabindex ?? attrs.tabIndex ?? 0,
+    tabindex: (attrs.tabindex ?? attrs.tabIndex ?? 0) as string | number,
     "aria-label":
-      attrs["aria-label"] ??
+      (attrs["aria-label"] as string | undefined) ??
       (ariaLabelledBy !== undefined ? undefined : t("codeBlock.label")),
     "aria-labelledby": ariaLabelledBy,
-    "aria-describedby": attrs["aria-describedby"],
+    "aria-describedby": attrs["aria-describedby"] as string | undefined,
     "data-wrap": String(props.wrap),
   };
 });

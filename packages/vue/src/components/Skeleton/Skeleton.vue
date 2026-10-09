@@ -55,7 +55,7 @@ const decorativeAttrs = computed(() => {
       ? toCss(props.size ?? props.width ?? 32)
       : undefined;
   return {
-    "aria-hidden": "true",
+    "aria-hidden": "true" as const,
     ...otherAttrs.value,
     class: [
       styles.skeleton,
@@ -110,7 +110,7 @@ const paragraphLines = [
 
 const rootAttrs = computed(() => ({
   role: "status",
-  "aria-busy": "true",
+  "aria-busy": "true" as const,
   "aria-label": t("common.loading"),
   ...otherAttrs.value,
   class: [styles.skeletonRoot, props.avatar && styles.withAvatar, attrs.class],

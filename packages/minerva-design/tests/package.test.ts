@@ -40,7 +40,7 @@ const JS_ENTRIES = Object.keys(exportsMap).filter((key) => {
 });
 const CLIENT_ENTRIES = new Set([".", "./monaco"]);
 /** Entries that need a React Native runtime (not loadable in Node) */
-const NATIVE_ENTRIES = new Set(["./native"]);
+const NATIVE_ENTRIES = new Set(["./native", "./taro", "./uni"]);
 const specifier = (key: string) =>
   key === "." ? "minerva-design" : `minerva-design/${key.slice(2)}`;
 const fileOf = (key: string, condition: "import" | "require") => {
@@ -139,7 +139,15 @@ describe('"use client"', () => {
 describe("one copy of the core", () => {
   const coreDir = join(root, "dist/core");
   const domDir = join(root, "dist/dom");
-  const nonCore = ["react", "web-components", "native"].flatMap((dir) =>
+  const nonCore = [
+    "react",
+    "web-components",
+    "vue",
+    "angular",
+    "native",
+    "taro",
+    "uni",
+  ].flatMap((dir) =>
     walk(join(root, "dist", dir)).filter(
       (f) => /\.(c?js|d\.c?ts)$/.test(f) && !f.includes("/cdn/"),
     ),

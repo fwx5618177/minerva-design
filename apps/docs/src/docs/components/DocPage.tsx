@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Tab, TabList, TabPanel, Tabs } from "minerva-design";
@@ -185,7 +185,7 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
   framework,
 }) => {
   const { t } = useTranslation();
-  const demos = vueDemosOf(meta.id);
+  const demos = useMemo(() => vueDemosOf(meta.id), [meta.id]);
   const demoIds = (meta.wc?.demos ?? Object.keys(demos)).filter(
     (id) => demos[id],
   );
@@ -239,7 +239,10 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
               key={demoId}
               id={`vue-demo-${demoId}`}
               title={t(`docs.${meta.id}.wc.demos.${demoId}.title`)}
-              description={t(`docs.${meta.id}.wc.demos.${demoId}.description`)}
+              description={t(
+                `docs.${meta.id}.vue.demos.${demoId}.description`,
+                { defaultValue: "" },
+              )}
               source={loaded[demoId] ?? ""}
               language={framework.language}
             >
@@ -435,11 +438,11 @@ const FrameworkTabs: React.FC<{
         <TabPanel key={fw.id} value={fw.id}>
           {fw.renderer === "react" ? (
             react
-) : fw.renderer === "vue" ? (
-<VueSection meta={meta} framework={fw} />
-) : fw.renderer === "native" ? (
-<NativeContent meta={meta} />
-) : meta.wc ? (
+          ) : fw.renderer === "vue" ? (
+            <VueSection meta={meta} framework={fw} />
+          ) : fw.renderer === "native" ? (
+            <NativeContent meta={meta} />
+          ) : meta.wc ? (
             <WebComponentSection
               meta={meta}
               framework={

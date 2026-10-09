@@ -196,6 +196,8 @@ describe("overlays nested in a Modal", () => {
     const { user } = renderApp(() =>
       inModal(() =>
         h(Cascader, {
+          label: "Region",
+          name: "region",
           "aria-label": "Region",
           options: [
             {

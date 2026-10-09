@@ -60,7 +60,7 @@ const classes = computed(() => [
 const rootAttrs = computed(() => {
   const ariaLabel = attrs["aria-label"] as string | undefined;
   const a11y = props.decorative
-    ? { "aria-hidden": "true" }
+    ? { "aria-hidden": "true" as const }
     : {
         // Indeterminate progressbar (no aria-valuenow). Not focusable: it is
         // not interactive and is often rendered inside buttons.
@@ -89,7 +89,11 @@ const indicator = hooks("progress", "indicator");
 
 <template>
   <div :class="classes" v-bind="rootAttrs">
-    <span v-if="slots.icon" :class="styles.icon" v-bind="hooks('progress', 'icon')">
+    <span
+      v-if="slots.icon"
+      :class="styles.icon"
+      v-bind="hooks('progress', 'icon')"
+    >
       <slot name="icon" />
     </span>
     <IconSpinner

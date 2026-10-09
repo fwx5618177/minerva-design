@@ -128,6 +128,11 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             {
+              name: "native-preview",
+              test: /(?:react-native-web|packages[\\/]native[\\/]src)/,
+              maxSize: 200 * 1024,
+            },
+            {
               name: "react-vendor",
               test: /node_modules[\\/](react|react-dom|scheduler|react-router|@remix-run)[\\/]/,
             },

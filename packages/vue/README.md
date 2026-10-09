@@ -1,7 +1,7 @@
 # @minerva/vue (private)
 
 The native Vue 3 renderer of Minerva, published inside the single package as
-`minerva-design/vue` (and `minerva-design/vue/monaco`). Single-file components
+`minerva-design/vue`. The Monaco-specific entry remains unimplemented and is not exported. Single-file components
 (`<script setup lang="ts">`) and composables on the shared headless core:
 `@minerva/core` (machines, contracts, tokens, i18n) and `@minerva/dom` (focus
 scope, dismissable layers, scroll lock, positioning, presence...). Not a
@@ -10,6 +10,7 @@ wrapper around the Web Components.
 ```ts
 // main.ts
 import { createApp } from "vue";
+import App from "./App.vue";
 import "minerva-design/style.css"; // once: the same stylesheet as React
 import MinervaVue from "minerva-design/vue"; // optional: global <Mn*> components
 createApp(App).use(MinervaVue).mount("#app");

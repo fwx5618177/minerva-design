@@ -103,13 +103,9 @@ const VueDemo: React.FC<{ demo: VueDemoEntry }> = ({ demo }) => {
   });
 
   return (
-    <div
-      ref={ref}
-      className={styles.wcDemo}
-      data-vue-demo=""
-      aria-busy={!ready}
-    >
+    <div className={styles.wcDemo} data-vue-demo="" aria-busy={!ready}>
       {!ready && <span className={styles.muted}>{t("doc.loading")}</span>}
+      <div ref={ref} />
     </div>
   );
 };

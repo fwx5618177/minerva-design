@@ -31,13 +31,20 @@ try {
     dir,
     readdirSync(dir).find((f) => f.endsWith(".tgz")),
   );
-  const dual = [".", "./native", ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`)];
+  const dual = [
+    ".",
+    "./native",
+    ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`),
+  ];
   const esmOnly = [
     ...Object.keys(expectedExports()).filter(
       (key) =>
         key.startsWith("./web-components") && key !== "./web-components/cdn",
     ),
     ...VUE_SUBPATHS,
+    "./angular",
+    "./taro",
+    "./uni",
     "./vue/global",
   ];
   run("pnpm", ["exec", "attw", tarball, "--entrypoints", ...dual]);

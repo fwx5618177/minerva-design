@@ -58,7 +58,11 @@ const rootAttrs = computed(() => ({ ...attrs, ...hooks("list-item", "root") }));
         <slot name="secondary">{{ secondary }}</slot>
       </div>
     </div>
-    <div v-if="slots.actions" :class="styles.actions" v-bind="hooks('list-item', 'actions')">
+    <div
+      v-if="slots.actions"
+      :class="styles.actions"
+      v-bind="hooks('list-item', 'actions')"
+    >
       <slot name="actions" />
     </div>
   </li>

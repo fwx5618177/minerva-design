@@ -69,9 +69,7 @@ export function eventWith(
   const callback = (e: EventContract) =>
     platform === "wc" ? e.wc : platform === "native" ? e.native : e.react;
   const event = contract.events.find(
-    (e) =>
-      e.detail?.includes(field) &&
-      callback(e),
+    (e) => e.detail?.includes(field) && callback(e),
   );
   if (!event)
     throw new Error(

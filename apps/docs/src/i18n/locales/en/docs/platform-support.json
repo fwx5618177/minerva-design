@@ -1,6 +1,6 @@
 {
   "title": "Platform support",
-  "description": "Which Minerva components are available on which platform: React and Web Components today, native Vue, Angular, React Native, Taro, WeChat mini-program and uni-app renderers planned.",
+  "description": "React and Web Components, native Vue, Angular and React Native implementations, plus the initial Taro / WeChat / uni-app controls. The matrix reports source implementation, not npm publication.",
   "platformsTitle": "Platforms",
   "platformsText": "Every component is described once in a platform-neutral contract (props, events, slots). Each renderer implements the contracts with its own components; the shared contract tests check that they behave the same.",
   "platform": "Platform",
@@ -12,15 +12,15 @@
     },
     "wc": {
       "name": "Web Components",
-      "text": "Lit custom elements for any framework or none (minerva-design/web-components). Vue and Angular use them until their native renderers ship."
+      "text": "Lit custom elements for any web framework; Vue also has native SFCs and Angular has an initial standalone subset."
     },
     "vue": {
       "name": "Vue",
-      "text": "Native Vue 3 components."
+      "text": "Native Vue 3 SFC components (minerva-design/vue), with dedicated demos and API tables."
     },
     "angular": {
       "name": "Angular",
-      "text": "Native Angular components."
+      "text": "Native standalone components: configuration, Button, Switch and Modal (minerva-design/angular)."
     },
     "native": {
       "name": "React Native",
@@ -28,15 +28,15 @@
     },
     "taro": {
       "name": "Taro",
-      "text": "Taro components for mini-programs and H5."
+      "text": "Taro components for mini-programs and H5. Initial native Button / Input / Switch; remaining components are planned."
     },
     "weapp": {
       "name": "WeChat",
-      "text": "Native WeChat mini-program components."
+      "text": "Native WeChat mini-program components. Initial native Button / Input / Switch; remaining components are planned."
     },
     "uni": {
       "name": "uni-app",
-      "text": "uni-app components for mini-programs, apps and H5."
+      "text": "uni-app components for mini-programs, apps and H5. Initial native Button / Input / Switch; remaining components are planned."
     }
   },
   "status": {
@@ -46,8 +46,8 @@
     "na": "N/A"
   },
   "legend": {
-    "stable": "shipped and covered by the contract tests.",
-    "beta": "shipped; the API may still change.",
+    "stable": "Implemented and covered by shared contract tests. Does not indicate a published npm release.",
+    "beta": "Implemented initial API; coverage varies by platform. Check the notes for scope and validation limits.",
     "planned": "on the roadmap, not available yet.",
     "na": "not a component on this platform by design: the platform covers it another way (hover the badge for details)."
   },
@@ -68,5 +68,7 @@
   "tracks": "Tracks",
   "contractsTitle": "Component contracts",
   "contractsText": "The matrix is generated from the component contracts: metadata extracted from the React props types and the Custom Elements Manifest (props with their kinds, enum values and defaults, events with their detail fields, slots, tracks and the support of every platform). A test fails when a prop, attribute or event changes without regenerating them, and when React and the custom elements disagree on enum values or defaults.",
-  "testsText": "The same contract test suites (presses, controlled and uncontrolled state, selection, dialogs, toasts, translations, design tokens) run against every renderer through a driver per platform; a new renderer becomes stable once its driver passes them."
+  "testsText": "The same contract test suites (presses, controlled and uncontrolled state, selection, dialogs, toasts, translations, design tokens) run against every renderer through a driver per platform; a new renderer becomes stable once its driver passes them.",
+  "quickStartTitle": "Native framework and mini-program quick start",
+  "quickStartText": "Angular currently exports configuration, Button, Switch and Modal with its parts. Taro, WeChat and uni-app initially implement Button, Input and Switch, with a subset of the web API. Use the platform entry; do not import the React DOM root on mobile. Taro uses React 18; the web root requires React 19. Tests use Taro H5 hosts, WeChat simulation and uni-app host shims; device builds are not yet validated. uni-app ships source SFCs for its own platform compiler."
 }

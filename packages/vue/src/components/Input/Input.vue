@@ -6,7 +6,7 @@
  * invalid, required, disabled and read-only state. The `class` goes to the
  * wrapper; other attributes and native listeners go to the `<input>`.
  */
-import { computed, ref, useAttrs, useId } from "vue";
+import { computed, ref, useAttrs, useId, type InputHTMLAttributes } from "vue";
 import styles from "@react-styles/components/Input/input.module.scss";
 import { hooks } from "../../internal/hooks";
 import { IconEye, IconEyeOff, IconX } from "../../internal/icons";
@@ -159,8 +159,12 @@ const inputAttrs = computed(() => {
     maxlength: props.maxLength,
     "aria-describedby": wired["aria-describedby"],
     "aria-invalid": props.invalid ? true : wired["aria-invalid"],
-    "aria-required": wired["aria-required"] ?? rest["aria-required"],
-    "aria-readonly": wired["aria-readonly"] ?? rest["aria-readonly"],
+    "aria-required":
+      wired["aria-required"] ??
+      (rest["aria-required"] as InputHTMLAttributes["aria-required"]),
+    "aria-readonly":
+      wired["aria-readonly"] ??
+      (rest["aria-readonly"] as InputHTMLAttributes["aria-readonly"]),
     type: isPassword.value && passwordVisible.value ? "text" : props.type,
     value: text.value,
     ...hooks("input", "input"),

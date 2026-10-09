@@ -86,9 +86,7 @@ const separated = computed(
   >
     <template v-if="separated">
       <template
-        v-for="(child, index) in flattenChildren(
-          $slots.default?.(),
-        )"
+        v-for="(child, index) in flattenChildren($slots.default?.())"
         :key="child.key ?? index"
       >
         <slot v-if="index > 0" name="separator">{{ separator }}</slot>
