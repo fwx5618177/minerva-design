@@ -8,6 +8,10 @@
 // - Web Components: every custom element of the Custom Elements Manifest
 //   (packages/minerva-design/custom-elements.json): properties, attributes,
 //   events (with their `detail: { ... }` fields), slots.
+// - React Native: the components of minerva-design/native and the contract
+//   each implements (packages/native/src/manifest.ts): their `native`
+//   status is `beta`; native-only (mobile) components get a contract of
+//   their own (toC track, props / events read from their native types).
 // - Docs: the page documenting the component (apps/docs registry).
 // - Vue: the exports of the native Vue renderer (packages/vue, read
 //   statically from its barrels): `stable` when the cross-platform contract
@@ -26,6 +30,7 @@ import {
   generateElements,
 } from "../apps/docs/scripts/generate-api.mjs";
 import { docPages } from "../apps/docs/src/docs/registry.ts";
+import { NATIVE_COMPONENTS } from "../packages/native/src/manifest.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const at = (path) => join(ROOT, path);
@@ -156,6 +161,8 @@ const NOT_APPLICABLE_NOTES = {
     "Data object in React: an item of the parent component's items / entries prop.",
   wc: "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element.",
   vue: "Data object in Vue (like React): an item of the parent component's items / entries prop.",
+  native:
+    "Mobile component of minerva-design/native (React Native); on the web use the responsive web components.",
 };
 
 /**
@@ -228,6 +235,8 @@ const REACT_ENTRIES = [
   at("packages/react/src/monaco.ts"),
 ];
 const MINERVA_SOURCE = /[\\/]packages[\\/](react|core|dom)[\\/]src[\\/]/;
+const NATIVE_ENTRIES = [at("packages/native/src/index.ts")];
+const NATIVE_SOURCE = /[\\/]packages[\\/](native|core)[\\/]src[\\/]/;
 /** Composition / host props that are not part of the contract */
 const SKIPPED_REACT_PROPS = new Set([
   "children",
@@ -260,9 +269,12 @@ function reactKind(checker, type) {
   return { kind: "object" };
 }
 
-/** Exported React components and their props (Minerva-declared only) */
-export function readReact() {
-  const program = ts.createProgram(REACT_ENTRIES, {
+/**
+ * Exported components and their props (declared in Minerva sources only):
+ * every exported value `X` with an exported `XProps` type.
+ */
+function readComponents({ entries, source, paths, propsOf = {} }) {
+  const program = ts.createProgram(entries, {
     strict: true,
     jsx: ts.JsxEmit.ReactJSX,
     module: ts.ModuleKind.ESNext,
@@ -270,14 +282,11 @@ export function readReact() {
     target: ts.ScriptTarget.ES2022,
     skipLibCheck: true,
     noEmit: true,
-    paths: {
-      "@minerva/core": [at("packages/core/src/index.ts")],
-      "@minerva/dom": [at("packages/dom/src/index.ts")],
-    },
+    paths,
   });
   const checker = program.getTypeChecker();
   const exports = new Map();
-  for (const file of REACT_ENTRIES) {
+  for (const file of entries) {
     const module = checker.getSymbolAtLocation(program.getSourceFile(file));
     for (const symbol of checker.getExportsOfModule(module)) {
       exports.set(
@@ -292,14 +301,14 @@ export function readReact() {
   for (const [name, symbol] of exports) {
     if (!/^[A-Z]/.test(name) || NOT_COMPONENTS.has(name)) continue;
     if (!(symbol.flags & ts.SymbolFlags.Value)) continue;
-    const propsSymbol = exports.get(REACT_PROPS[name] ?? `${name}Props`);
+    const propsSymbol = exports.get(propsOf[name] ?? `${name}Props`);
     if (!propsSymbol || !(propsSymbol.flags & ts.SymbolFlags.Type)) continue;
     const type = checker.getDeclaredTypeOfSymbol(propsSymbol);
     const all = checker.getPropertiesOfType(type);
     const props = [];
     for (const prop of all) {
       const own = (prop.declarations ?? []).some((d) =>
-        MINERVA_SOURCE.test(d.getSourceFile().fileName),
+        source.test(d.getSourceFile().fileName),
       );
       if (!own || SKIPPED_REACT_PROPS.has(prop.name)) continue;
       const propType = checker.getTypeOfSymbol(prop);
@@ -328,6 +337,32 @@ export function readReact() {
     });
   }
   return components;
+}
+
+/** Exported React components and their props (Minerva-declared only) */
+export function readReact() {
+  return readComponents({
+    entries: REACT_ENTRIES,
+    source: MINERVA_SOURCE,
+    propsOf: REACT_PROPS,
+    paths: {
+      "@minerva/core": [at("packages/core/src/index.ts")],
+      "@minerva/dom": [at("packages/dom/src/index.ts")],
+    },
+  });
+}
+
+/**
+ * Exported React Native components (minerva-design/native) and their props
+ * (declared in the native / core sources: React Native's own props such as
+ * `PressableProps` are not part of the contract)
+ */
+export function readNative() {
+  return readComponents({
+    entries: NATIVE_ENTRIES,
+    source: NATIVE_SOURCE,
+    paths: { "@minerva/core": [at("packages/core/src/index.ts")] },
+  });
 }
 
 // --- Web Components (Custom Elements Manifest) ------------------------------
@@ -407,6 +442,68 @@ const eventFor = (callback, events) => {
   ].find((candidate) => events.has(candidate));
 };
 
+/** `native` support of a contract implemented by minerva-design/native */
+function nativeSupport(name) {
+  const component = NATIVE_COMPONENTS.find((c) => c.contract === name);
+  if (!component) return { status: "planned" };
+  return compact({
+    status: "beta",
+    notes:
+      component.notes ??
+      (component.name === name ? undefined : `As ${component.name}`),
+  });
+}
+
+/** Contract of a native-only (mobile) component, from its native types */
+function buildNativeContract(component, native, docs) {
+  const props = [];
+  const events = [];
+  for (const prop of native?.props ?? []) {
+    if (/^on[A-Z]/.test(prop.name) && prop.kind === "function") {
+      events.push(
+        compact({
+          name: kebab(prop.name.slice(2)).slice(1),
+          native: prop.name,
+          description: prop.description,
+        }),
+      );
+      continue;
+    }
+    props.push(
+      compact({
+        name: prop.name,
+        kind: prop.kind,
+        values: prop.values,
+        default: prop.default,
+        required: prop.required,
+        description: prop.description,
+        only: "native",
+      }),
+    );
+  }
+  const platforms = Object.fromEntries(
+    PLATFORMS.map((platform) => [platform, { status: "planned" }]),
+  );
+  platforms.react = { status: "n/a", notes: NOT_APPLICABLE_NOTES.native };
+  platforms.wc = { status: "n/a", notes: NOT_APPLICABLE_NOTES.native };
+  platforms.native = compact({ status: "beta", notes: component.notes });
+  return compact({
+    name: component.name,
+    docs,
+    descriptionKey: docs ? `docs.${docs}.description` : undefined,
+    description: native?.description,
+    tracks: ["toC"],
+    props,
+    events,
+    slots: [],
+    children: native?.children ?? false,
+    platforms,
+  });
+}
+
+/** React callback -> the native component's callback (RN idioms) */
+const NATIVE_CALLBACKS = { onClick: "onPress" };
+
 function buildContract({
   name,
   tag,
@@ -415,6 +512,7 @@ function buildContract({
   aliasTypes,
   docs,
   vueExports,
+  native,
 }) {
   // props: React declaration order, then element-only properties
   const props = [];
@@ -491,6 +589,18 @@ function buildContract({
     ? { status: "stable" }
     : { status: "n/a", notes: NOT_APPLICABLE_NOTES.wc };
   platforms.vue = vueSupport(name, react, vueExports);
+  platforms.native = nativeSupport(name);
+  // the native callback of each React callback (same name, or its RN idiom)
+  if (native) {
+    const nativeProps = new Set(native.props.map((p) => p.name));
+    for (const event of events.values()) {
+      if (!event.react) continue;
+      const callback = nativeProps.has(event.react)
+        ? event.react
+        : NATIVE_CALLBACKS[event.react];
+      if (callback && nativeProps.has(callback)) event.native = callback;
+    }
+  }
   return compact({
     name,
     tag,
@@ -509,14 +619,19 @@ function buildContract({
   });
 }
 
-/** Docs page of a React export / element tag */
+/** Docs page of a React export / element tag / native export */
 function docsIndex() {
   const index = new Map();
   for (const page of docPages) {
     for (const name of page.exports ?? []) index.set(name, page.id);
     for (const tag of page.wc?.tags ?? []) index.set(tag, page.id);
   }
-  return index;
+  const nativeIndex = new Map();
+  for (const page of docPages) {
+    for (const name of page.native?.exports ?? [])
+      nativeIndex.set(name, page.id);
+  }
+  return Object.assign(index, { native: nativeIndex });
 }
 
 /** Every component contract, sorted by name */
@@ -550,9 +665,31 @@ export function generateContracts() {
     if (byName.has(name)) continue;
     byName.set(name, { name, react: component, docs: docs.get(name) });
   }
-  return [...byName.values()]
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((input) => buildContract({ ...input, aliasTypes, vueExports }));
+  const native = readNative();
+  const contracts = [...byName.values()].map((input) =>
+    buildContract({
+      ...input,
+      aliasTypes,
+      vueExports,
+      native: native.get(
+        NATIVE_COMPONENTS.find((c) => c.contract === input.name)?.name,
+      ),
+    }),
+  );
+  // native-only (mobile) components
+  for (const component of NATIVE_COMPONENTS) {
+    if (component.contract !== null) continue;
+    if (byName.has(component.name))
+      throw new Error(`${component.name}: native-only name used on the web`);
+    contracts.push(
+      buildNativeContract(
+        component,
+        native.get(component.name),
+        docs.native.get(component.name),
+      ),
+    );
+  }
+  return contracts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /** Prettier-formatted JSON (the committed file is compared verbatim) */

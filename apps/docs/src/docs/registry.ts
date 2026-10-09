@@ -24,6 +24,7 @@ export type DocCategory =
   | "navigation"
   | "overlays"
   | "editors"
+  | "mobile"
   | "webComponents";
 
 export interface DocPageMeta {
@@ -51,6 +52,24 @@ export interface DocPageMeta {
    * and the demo ids (`pages/<id>/wc/<demo>.html` + optional `<demo>.ts`)
    */
   wc?: WcMeta;
+  /**
+   * React Native counterpart shown in the page's "React Native" tab
+   * (minerva-design/native): exports, API interfaces of
+   * api.native.generated.json (without the `native:` prefix) and demo ids
+   * (`pages/<id>/native/<demo>.tsx`, rendered through react-native-web in a
+   * phone frame). A page with `native` only (no `exports`) is a mobile
+   * component: the React Native content is the whole page.
+   */
+  native?: NativeMeta;
+}
+
+export interface NativeMeta {
+  /** Exports of minerva-design/native documented on the page */
+  exports: string[];
+  /** Interfaces rendered as API tables (`ButtonProps` = `native:ButtonProps`) */
+  api: string[];
+  /** Demo ids, in display order */
+  demos: string[];
 }
 
 export interface WcMeta {
@@ -74,6 +93,7 @@ export const categories: DocCategory[] = [
   "overlays",
   "navigation",
   "editors",
+  "mobile",
   "webComponents",
 ];
 
@@ -162,6 +182,17 @@ export const docPages: DocPageMeta[] = [
       entry: "button",
       tags: ["minerva-button"],
       demos: ["basic", "colors-variants", "sizes-shapes", "states", "form"],
+    },
+    native: {
+      exports: ["Button"],
+      api: ["ButtonProps"],
+      demos: [
+        "basic",
+        "colors-variants",
+        "sizes",
+        "states",
+        "shapes-full-width",
+      ],
     },
   },
   {
@@ -716,6 +747,11 @@ export const docPages: DocPageMeta[] = [
       entry: "modal",
       tags: ["minerva-modal"],
       demos: ["basic", "sizes", "form", "events"],
+    },
+    native: {
+      exports: ["Dialog", "Modal"],
+      api: ["DialogProps"],
+      demos: ["basic", "confirm", "custom-footer"],
     },
   },
   {

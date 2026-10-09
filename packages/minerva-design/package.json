@@ -1,7 +1,7 @@
 {
   "name": "minerva-design",
   "version": "0.0.0",
-  "description": "Minerva design system: accessible React 19 components (SSR / RSC ready), native Vue 3 components (SSR / Nuxt ready) and the same set as framework-agnostic Web Components (Lit), with design tokens, theming and i18n",
+  "description": "Minerva Design: React, Vue, Angular, Web Components and native platform components with shared design tokens and contracts",
   "license": "MIT",
   "author": "fwx5618177 <fwx5618177@gmail.com>",
   "repository": {
@@ -378,7 +378,22 @@
     },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./native": {
+      "source": "./dist/native/source/index.ts",
+      "react-native": {
+        "types": "./dist/native/index.d.ts",
+        "default": "./dist/native/index.js"
+      },
+      "import": {
+        "types": "./dist/native/index.d.ts",
+        "default": "./dist/native/index.js"
+      },
+      "require": {
+        "types": "./dist/native/index.d.cts",
+        "default": "./dist/native/index.cjs"
+      }
+    }
   },
   "typesVersions": {
     "*": {
@@ -396,6 +411,9 @@
       ],
       "styling-hooks": [
         "./dist/core/styling-hooks/index.d.ts"
+      ],
+      "native": [
+        "./dist/native/index.d.ts"
       ]
     }
   },
@@ -417,7 +435,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build",
+    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",
@@ -435,7 +453,10 @@
     "monaco-editor": ">=0.52.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "react-native": ">=0.79.0",
+    "react-native-safe-area-context": ">=4.0.0",
+    "react-native-svg": ">=13.0.0"
   },
   "peerDependenciesMeta": {
     "@monaco-editor/react": {
@@ -451,6 +472,15 @@
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "react-native-safe-area-context": {
+      "optional": true
+    },
+    "react-native-svg": {
       "optional": true
     }
   },

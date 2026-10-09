@@ -145,13 +145,19 @@ describe("packed tarball installed in a consumer project", () => {
       "dist/web-components/index.js",
       "dist/web-components/cdn/minerva.js",
       "dist/web-components/types/react.d.ts",
+      "dist/native/index.js",
+      "dist/native/index.cjs",
+      "dist/native/index.d.ts",
+      "dist/native/source/index.ts",
     ]) {
       expect(listing, file).toContain(file);
     }
-    // no sources, tests, build scripts or nested node_modules
+    // no sources, tests, build scripts or nested node_modules (the native
+    // TypeScript sources of the `source` condition are build output)
     expect(
       listing.filter((f) => /^(src|tests|scripts|node_modules)\//.test(f)),
     ).toEqual([]);
+    expect(listing.filter((f) => /\.test\.tsx?$/.test(f))).toEqual([]);
     const installed = JSON.parse(
       readFileSync(
         join(app, "node_modules/minerva-design/package.json"),

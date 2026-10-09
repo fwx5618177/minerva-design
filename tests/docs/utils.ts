@@ -21,10 +21,12 @@ export const PUBLISHED = {
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
   "packages/dom": "@minerva/dom",
+  // React Native renderer (minerva-design/native) and its example app
+  "packages/native": "@minerva/native",
+  "apps/expo-example": "@minerva/expo-example",
   // planned renderers (placeholders, see docs/adr/0001-platform-foundation.md)
   "packages/vue": "@minerva/vue",
   "packages/angular": "@minerva/angular",
-  "packages/native": "@minerva/native",
   "packages/taro": "@minerva/taro",
   "packages/weapp": "@minerva/weapp",
   "packages/uni": "@minerva/uni",

@@ -28,6 +28,7 @@ export interface ReactComponent {
   description?: string;
 }
 export declare function readReact(): Map<string, ReactComponent>;
+export declare function readNative(): Map<string, ReactComponent>;
 
 export interface ElementApi {
   summary?: string;

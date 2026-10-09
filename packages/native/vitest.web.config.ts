@@ -1,8 +1,10 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
-// React Native testing spike, option B: the components rendered through
-// react-native-web in happy-dom (DOM output, not native semantics).
+// The same components rendered through react-native-web in happy-dom (the
+// docs site's live previews run on react-native-web): DOM output, ARIA
+// mapping, presses as clicks. Native semantics are covered by
+// vitest.config.ts (docs/adr/0002-spike-react-native.md, option B).
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -22,7 +24,7 @@ export default defineConfig({
   test: {
     name: "native-web",
     environment: "happy-dom",
-    include: ["spike/web/**/*.test.{ts,tsx}"],
-    setupFiles: ["./spike/web/setup.ts"],
+    include: ["src/**/*.web.test.{ts,tsx}"],
+    setupFiles: ["./test/web/setup.ts"],
   },
 });

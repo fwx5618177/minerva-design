@@ -1,0 +1,4497 @@
+{
+  "native:ActionSheetAction": {
+    "source": "native/src/components/ActionSheet/ActionSheet.tsx",
+    "description": "An entry of the sheet",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Visible name (also the accessible name)"
+      },
+      {
+        "name": "subname",
+        "type": "string",
+        "required": false,
+        "description": "Secondary text under the name"
+      },
+      {
+        "name": "color",
+        "type": "\"primary\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+        "required": false,
+        "description": "Text color of the name (`danger` for destructive actions)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the entry"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows a spinner instead of the name and ignores presses"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Element rendered before the name"
+      }
+    ]
+  },
+  "native:ActionSheetCloseReason": {
+    "source": "native/src/components/ActionSheet/ActionSheet.tsx",
+    "description": "Why an action sheet closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:ActionSheetProps": {
+    "source": "native/src/components/ActionSheet/ActionSheet.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: ActionSheetCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"action\", \"cancel\", \"mask\", \"back\")"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title above the actions (also the accessible name of the sheet)"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Description under the title"
+      },
+      {
+        "name": "actions",
+        "type": "ActionSheetAction[]",
+        "required": false,
+        "default": "[]",
+        "description": "The entries"
+      },
+      {
+        "name": "onSelect",
+        "type": "(action: ActionSheetAction, index: number) => void",
+        "required": false,
+        "description": "Called with the pressed action and its index"
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes the sheet after an action is pressed"
+      },
+      {
+        "name": "cancelText",
+        "type": "ReactNode | null",
+        "required": false,
+        "default": "the \"actionSheet.cancel\" message",
+        "description": "Text of the cancel button; `null` hides it"
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "required": false,
+        "description": "Called by the cancel button"
+      },
+      {
+        "name": "closeOnMaskPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the mask"
+      },
+      {
+        "name": "safeArea",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pads the sheet with the bottom safe-area inset (home indicator)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom content rendered instead of the actions"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the sheet"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:AlertColor": {
+    "source": "native/src/components/Alert/Alert.tsx",
+    "kind": "alias",
+    "type": "\"info\" | \"success\" | \"warning\" | \"danger\""
+  },
+  "native:AlertProps": {
+    "source": "native/src/components/Alert/Alert.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Alert title"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Description (body) of the alert"
+      },
+      {
+        "name": "color",
+        "type": "AlertColor",
+        "required": false,
+        "default": "\"info\"",
+        "description": "Semantic (status) color, which also sets the default icon and the role"
+      },
+      {
+        "name": "variant",
+        "type": "AlertVariant",
+        "required": false,
+        "default": "\"subtle\"",
+        "description": "Visual style: `subtle` (tinted background), `outline` (colored border) or `solid` (filled)"
+      },
+      {
+        "name": "size",
+        "type": "AlertSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Alert size (padding and text sizes)"
+      },
+      {
+        "name": "showIcon",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the status icon of the color"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom icon, replacing the status icon"
+      },
+      {
+        "name": "iconLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"alert.icon.<color>\" message",
+        "description": "Accessible label of the status icon"
+      },
+      {
+        "name": "closable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a close button; pressing it hides the alert and calls `onClose`"
+      },
+      {
+        "name": "closeIcon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom close icon"
+      },
+      {
+        "name": "onClose",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called when the close button is pressed"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"alert.close\" message",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "action",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Action area rendered on the right, e.g. buttons"
+      },
+      {
+        "name": "banner",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Banner mode for page-level notices: full width, square corners, no side borders"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a drop shadow"
+      },
+      {
+        "name": "rounded",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Rounds the corners"
+      },
+      {
+        "name": "borderRadius",
+        "type": "number",
+        "required": false,
+        "description": "Custom corner radius"
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Plays an entrance animation (fade + slide; none under reduced motion)"
+      },
+      {
+        "name": "collapsible",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the description be expanded and collapsed (requires a title)"
+      },
+      {
+        "name": "expanded",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the description is expanded (controlled; pair with `onExpand`)"
+      },
+      {
+        "name": "defaultExpanded",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Whether the description is initially expanded (uncontrolled)"
+      },
+      {
+        "name": "onExpand",
+        "type": "(expanded: boolean) => void",
+        "required": false,
+        "description": "Called with the requested expanded state"
+      },
+      {
+        "name": "expandLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"alert.expand\" message",
+        "description": "Accessible label of the toggle while collapsed"
+      },
+      {
+        "name": "collapseLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"alert.collapse\" message",
+        "description": "Accessible label of the toggle while expanded"
+      },
+      {
+        "name": "role",
+        "type": "\"alert\" | \"status\"",
+        "required": false,
+        "default": "\"alert\" for danger / warning, else \"status\"",
+        "description": "Role of the alert: danger and warning interrupt (\"alert\", assertive live region), info and success are polite (\"status\")"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:AlertSize": {
+    "source": "native/src/components/Alert/Alert.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:AlertVariant": {
+    "source": "native/src/components/Alert/Alert.tsx",
+    "kind": "alias",
+    "type": "\"subtle\" | \"outline\" | \"solid\""
+  },
+  "native:AvatarGroupProps": {
+    "source": "native/src/components/Avatar/Avatar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The Avatar elements"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Maximum number of avatars to display; the others are counted in the \"+N\" avatar"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of additional avatars (not rendered), added to the \"+N\" avatar"
+      },
+      {
+        "name": "size",
+        "type": "AvatarSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Size of every avatar of the group"
+      },
+      {
+        "name": "shape",
+        "type": "AvatarShape",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Shape of every avatar of the group"
+      },
+      {
+        "name": "spacing",
+        "type": "number",
+        "required": false,
+        "default": "a quarter of the avatar size",
+        "description": "Overlap between avatars in dp"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the group (alias of `accessibilityLabel`)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the group"
+      }
+    ]
+  },
+  "native:AvatarProps": {
+    "source": "native/src/components/Avatar/Avatar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "src",
+        "type": "string | ImageSourcePropType",
+        "required": false,
+        "description": "Image: a URL or an `Image` source (`require(\"./me.png\")`). When omitted (or when it fails to load), the initials of `name` are shown"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Name of the person: initials (first letters of the first two words, or the first CJK character), the accessible label and the fallback color"
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": false,
+        "description": "Alternative text of the image; pass \"\" for a decorative avatar"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the avatar (alias of `accessibilityLabel`)"
+      },
+      {
+        "name": "fallback",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom fallback content shown instead of the initials"
+      },
+      {
+        "name": "shape",
+        "type": "AvatarShape",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Avatar shape"
+      },
+      {
+        "name": "size",
+        "type": "AvatarSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "A preset (xsmall 24, small 32, medium 48, large 64, xlarge 80, xxlarge 96) or a number of dp"
+      },
+      {
+        "name": "color",
+        "type": "SemanticColor",
+        "required": false,
+        "description": "Color of the initials fallback; picked from the name when omitted (the same name always gets the same color)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Fallback content when there is neither an image nor a name"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the avatar"
+      }
+    ]
+  },
+  "native:AvatarShape": {
+    "source": "native/src/components/Avatar/Avatar.tsx",
+    "kind": "alias",
+    "type": "\"circle\" | \"rounded\" | \"square\""
+  },
+  "native:AvatarSize": {
+    "source": "native/src/components/Avatar/Avatar.tsx",
+    "kind": "alias",
+    "type": "AvatarSizeName | number"
+  },
+  "native:AvatarSizeName": {
+    "source": "native/src/components/Avatar/Avatar.tsx",
+    "kind": "alias",
+    "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\" | \"xxlarge\""
+  },
+  "native:BadgePosition": {
+    "source": "native/src/components/Badge/Badge.tsx",
+    "kind": "alias",
+    "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\""
+  },
+  "native:BadgeProps": {
+    "source": "native/src/components/Badge/Badge.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the badge: a count (capped at `max`) or a short text. When omitted, `children` is the badge content of a standalone badge"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "99",
+        "description": "Counts above it show as `{max}+`"
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders a small dot instead of content"
+      },
+      {
+        "name": "showZero",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the badge when the count is 0"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the badge"
+      },
+      {
+        "name": "variant",
+        "type": "BadgeVariant",
+        "required": false,
+        "default": "\"solid\"",
+        "description": "Visual style: `solid` (filled), `subtle` (tinted background) or `outline` (bordered)"
+      },
+      {
+        "name": "size",
+        "type": "BadgeSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Badge size"
+      },
+      {
+        "name": "position",
+        "type": "BadgePosition",
+        "required": false,
+        "default": "\"top-right\"",
+        "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+      },
+      {
+        "name": "offset",
+        "type": "[number, number]",
+        "required": false,
+        "description": "Extra offset `[x, y]` of an attached badge, in dp (x moves inwards)"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon displayed before the content"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The element the badge is attached to. Without `content` / `dot`, a string child is the content of a standalone badge"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      },
+      {
+        "name": "badgeStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the badge itself"
+      },
+      {
+        "name": "textStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the content text"
+      }
+    ]
+  },
+  "native:BadgeSize": {
+    "source": "native/src/components/Badge/Badge.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:BadgeVariant": {
+    "source": "native/src/components/Badge/Badge.tsx",
+    "kind": "alias",
+    "type": "\"solid\" | \"subtle\" | \"outline\""
+  },
+  "native:BottomSheetProps": {
+    "source": "native/src/components/Popup/Popup.tsx",
+    "description": "Props of `BottomSheet` (a `Popup` from the bottom edge)",
+    "kind": "alias",
+    "type": "Omit<PopupProps, \"placement\" | \"side\">"
+  },
+  "native:ButtonProps": {
+    "source": "native/src/components/Button/Button.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label: a string (rendered as Text) or any element"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the button"
+      },
+      {
+        "name": "variant",
+        "type": "ButtonVariant",
+        "required": false,
+        "default": "\"solid\"",
+        "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent, tinted while pressed) or `link` (text link look)"
+      },
+      {
+        "name": "size",
+        "type": "ButtonSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Button size (heights from the `--control-height-*` tokens)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the button"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner and ignores presses (`accessibilityState.busy`)"
+      },
+      {
+        "name": "loadingText",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text shown instead of the label while loading"
+      },
+      {
+        "name": "startIcon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Element rendered before the label"
+      },
+      {
+        "name": "endIcon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Element rendered after the label"
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the button to the full width of its container"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renders the button in its pressed / active state"
+      },
+      {
+        "name": "shape",
+        "type": "\"square\" | \"rounded\" | \"circle\"",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Preset shape: `rounded` (theme radius), `square` (no radius) or `circle` (pill; a square button when the label is an icon)"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called on press (not while disabled or loading)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the pressable container"
+      },
+      {
+        "name": "textStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:ButtonSize": {
+    "source": "native/src/components/Button/Button.tsx",
+    "kind": "alias",
+    "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\""
+  },
+  "native:ButtonVariant": {
+    "source": "native/src/components/Button/Button.tsx",
+    "kind": "alias",
+    "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\""
+  },
+  "native:CardPadding": {
+    "source": "native/src/components/Card/Card.tsx",
+    "kind": "alias",
+    "type": "\"none\" | \"small\" | \"medium\" | \"large\""
+  },
+  "native:CardProps": {
+    "source": "native/src/components/Card/Card.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "variant",
+        "type": "CardVariant",
+        "required": false,
+        "default": "\"default\"",
+        "description": "Visual style: bordered (`default`, `outline` with a stronger border), shadowed (`elevated`), a muted block (`filled`) or borderless (`ghost`)"
+      },
+      {
+        "name": "padding",
+        "type": "CardPadding",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Inner padding of the header, body and footer"
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Pressable card (`accessibilityRole=\"button\"`, pressed feedback); implied by `onPress`"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called when an interactive card is pressed"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables an interactive card"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title of the header"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the title"
+      },
+      {
+        "name": "extra",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content at the end of the header (action, tag, menu button...)"
+      },
+      {
+        "name": "cover",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Media shown flush at the top of the card (e.g. an Image)"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer below a hairline (actions, meta)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Body content"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the card"
+      },
+      {
+        "name": "contentStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the body"
+      },
+      {
+        "name": "titleStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the title text"
+      }
+    ]
+  },
+  "native:CardVariant": {
+    "source": "native/src/components/Card/Card.tsx",
+    "kind": "alias",
+    "type": "\"default\" | \"elevated\" | \"filled\" | \"ghost\" | \"outline\""
+  },
+  "native:CellGroupProps": {
+    "source": "native/src/components/Cell/Cell.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Header text above the group"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer text below the group (hint, explanation)"
+      },
+      {
+        "name": "inset",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Inset card style (margins and rounded corners, like iOS inset grouped lists); full-width rows with top / bottom hairlines otherwise"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the hairlines between the rows and around a full-width group"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The Cell elements"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the group (the rows container)"
+      }
+    ]
+  },
+  "native:CellProps": {
+    "source": "native/src/components/Cell/Cell.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Main text (left)"
+      },
+      {
+        "name": "value",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Value shown on the right (muted)"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the title"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Leading element (icon, avatar...)"
+      },
+      {
+        "name": "rightIcon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Trailing element after the value (replaces the `isLink` chevron)"
+      },
+      {
+        "name": "isLink",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Navigation row: shows a chevron and makes the row pressable"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a required mark (`*`) before the title"
+      },
+      {
+        "name": "center",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Vertically centers the content (top-aligned otherwise, for long labels)"
+      },
+      {
+        "name": "size",
+        "type": "CellSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Row size (`large`: taller row, larger title)"
+      },
+      {
+        "name": "clickable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Pressable row with pressed feedback (`accessibilityRole=\"button\"`); implied by `onPress` and `isLink`"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called when the row is pressed"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables a pressable row"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the inset hairline under the row (never under the last row of a CellGroup)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom right content (a Switch, a Tag...), shown after the value"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the row"
+      },
+      {
+        "name": "titleStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the title text"
+      },
+      {
+        "name": "valueStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the value text"
+      }
+    ]
+  },
+  "native:CellSize": {
+    "source": "native/src/components/Cell/Cell.tsx",
+    "kind": "alias",
+    "type": "\"medium\" | \"large\""
+  },
+  "native:CheckboxColor": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "kind": "alias",
+    "type": "SemanticColor"
+  },
+  "native:CheckboxGroupContextValue": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "description": "What a CheckboxGroup shares with its checkboxes",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly string[]",
+        "required": true
+      },
+      {
+        "name": "toggle",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "full",
+        "type": "boolean",
+        "required": true,
+        "description": "`max` reached: unchecked boxes are disabled"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "size",
+        "type": "CheckboxSize",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "CheckboxColor",
+        "required": false
+      },
+      {
+        "name": "shape",
+        "type": "CheckboxShape",
+        "required": false
+      }
+    ]
+  },
+  "native:CheckboxGroupOption": {
+    "source": "native/src/components/Checkbox/CheckboxGroup.tsx",
+    "description": "An option of a CheckboxGroup built from `options`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:CheckboxGroupProps": {
+    "source": "native/src/components/Checkbox/CheckboxGroup.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Checked values (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly string[]",
+        "required": false,
+        "default": "[]",
+        "description": "Initially checked values (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string[]) => void",
+        "required": false,
+        "description": "Called with the requested checked values, in check order"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Most boxes checked at once (the others are disabled when reached)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables every checkbox"
+      },
+      {
+        "name": "direction",
+        "type": "\"vertical\" | \"horizontal\"",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "Layout of the checkboxes"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label of the group; a string is also its accessible name"
+      },
+      {
+        "name": "options",
+        "type": "readonly (string | CheckboxGroupOption)[]",
+        "required": false,
+        "description": "Checkboxes built from data (else pass `<Checkbox value>` children)"
+      },
+      {
+        "name": "size",
+        "type": "CheckboxSize",
+        "required": false,
+        "default": "each checkbox's own",
+        "description": "Size of every checkbox"
+      },
+      {
+        "name": "color",
+        "type": "CheckboxColor",
+        "required": false,
+        "default": "each checkbox's own",
+        "description": "Color of every checkbox"
+      },
+      {
+        "name": "shape",
+        "type": "CheckboxShape",
+        "required": false,
+        "default": "each checkbox's own",
+        "description": "Shape of every checkbox"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state of every checkbox"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "`<Checkbox value>` children"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:CheckboxLabelPlacement": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "kind": "alias",
+    "type": "LabelPlacement"
+  },
+  "native:CheckboxProps": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Checked state (controlled). Ignored inside a CheckboxGroup"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial checked state (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(checked: boolean, value?: string) => void",
+        "required": false,
+        "description": "Called with the requested state and the checkbox `value`"
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the indeterminate (partially checked) state; a press checks the box (and reports `onChange(true)`) while the prop stays in charge"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the checkbox (also set by a disabled group)"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label content (a string becomes Text and names the checkbox)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label content, when `label` is not set"
+      },
+      {
+        "name": "color",
+        "type": "CheckboxColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the checked / indeterminate box (a CheckboxGroup color overrides it)"
+      },
+      {
+        "name": "size",
+        "type": "CheckboxSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Box and label size (a CheckboxGroup size overrides it)"
+      },
+      {
+        "name": "shape",
+        "type": "CheckboxShape",
+        "required": false,
+        "default": "\"square\"",
+        "description": "Box shape (a CheckboxGroup shape overrides it)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the checkbox: identifies it inside a CheckboxGroup"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state: danger border (also set by an invalid group)"
+      },
+      {
+        "name": "labelPlacement",
+        "type": "CheckboxLabelPlacement",
+        "required": false,
+        "default": "\"end\"",
+        "description": "Position of the label relative to the box"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom glyph shown in the checked box"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the pressable root"
+      },
+      {
+        "name": "labelStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:CheckboxShape": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "kind": "alias",
+    "type": "\"square\" | \"rounded\" | \"circle\""
+  },
+  "native:CheckboxSize": {
+    "source": "native/src/components/Checkbox/Checkbox.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:CollapseItemProps": {
+    "source": "native/src/components/Collapse/Collapse.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name identifying the item in the `Collapse` value"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title of the header"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Secondary text under the title"
+      },
+      {
+        "name": "value",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text on the right of the header (before the chevron)"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Element before the title"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the item (cannot be toggled)"
+      },
+      {
+        "name": "isLink",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the chevron of the header"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content shown while expanded"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the item"
+      }
+    ]
+  },
+  "native:CollapseProps": {
+    "source": "native/src/components/Collapse/Collapse.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | string[]",
+        "required": false,
+        "description": "Names of the expanded items (controlled; pair with `onChange`): an array, or a single name (`\"\"`: none) in `accordion` mode"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | string[]",
+        "required": false,
+        "default": "[] (\"\" in accordion mode)",
+        "description": "Names of the items expanded at first (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string | string[]) => void",
+        "required": false,
+        "description": "Called with the requested expanded names: an array, or the single expanded name (`\"\"`: none) in `accordion` mode"
+      },
+      {
+        "name": "accordion",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Accordion: at most one item expanded at a time"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Hairline borders above the list and under each item"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "`CollapseItem` elements"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the list"
+      }
+    ]
+  },
+  "native:DialogCloseReason": {
+    "source": "native/src/components/Dialog/Dialog.tsx",
+    "description": "Why a dialog closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:DialogProps": {
+    "source": "native/src/components/Dialog/Dialog.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: DialogCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"mask\", \"back\" for the Android back button, \"close-button\", \"cancel\", \"confirm\")"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title (also the accessible name of the dialog)"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text under the title"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Body content"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom footer, replacing the confirm / cancel buttons"
+      },
+      {
+        "name": "confirmLabel",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label of the confirm button (shown when set or with `onConfirm`)"
+      },
+      {
+        "name": "cancelLabel",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label of the cancel button (shown when set or with `onCancel`)"
+      },
+      {
+        "name": "onConfirm",
+        "type": "() => void",
+        "required": false,
+        "description": "Called by the confirm button; the dialog then closes unless `confirmLoading`"
+      },
+      {
+        "name": "onCancel",
+        "type": "() => void",
+        "required": false,
+        "description": "Called by the cancel button; the dialog then closes"
+      },
+      {
+        "name": "confirmColor",
+        "type": "\"primary\" | \"danger\" | \"warning\" | \"success\"",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color of the confirm button"
+      },
+      {
+        "name": "confirmLoading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Spinner on the confirm button; the dialog stays open"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\" | \"full\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Width preset (`full`: the whole screen)"
+      },
+      {
+        "name": "hideCloseButton",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Hides the close (×) button"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"modal.close\" message",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "closeOnMaskPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the mask"
+      },
+      {
+        "name": "role",
+        "type": "\"dialog\" | \"alertdialog\"",
+        "required": false,
+        "default": "\"dialog\"",
+        "description": "`alertdialog` for confirmations that need an answer"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the panel"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:DividerOrientation": {
+    "source": "native/src/components/Divider/Divider.tsx",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
+  "native:DividerProps": {
+    "source": "native/src/components/Divider/Divider.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "orientation",
+        "type": "DividerOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Divider direction"
+      },
+      {
+        "name": "variant",
+        "type": "DividerVariant",
+        "required": false,
+        "default": "\"solid\"",
+        "description": "Line style"
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Line thickness in dp (1 renders a device hairline)"
+      },
+      {
+        "name": "spacing",
+        "type": "number",
+        "required": false,
+        "default": "16",
+        "description": "Margin around the divider in dp (top / bottom when horizontal, left / right when vertical)"
+      },
+      {
+        "name": "length",
+        "type": "DimensionValue",
+        "required": false,
+        "description": "Length of the line (width when horizontal, height when vertical)"
+      },
+      {
+        "name": "textAlign",
+        "type": "\"left\" | \"center\" | \"right\"",
+        "required": false,
+        "default": "\"center\"",
+        "description": "Position of the text of a horizontal divider"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a subtle shadow"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text (or element) shown within a horizontal divider"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      },
+      {
+        "name": "textStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the text"
+      }
+    ]
+  },
+  "native:DividerVariant": {
+    "source": "native/src/components/Divider/Divider.tsx",
+    "kind": "alias",
+    "type": "\"solid\" | \"dashed\" | \"dotted\""
+  },
+  "native:EdgeInsets": {
+    "source": "native/src/theme/types.ts",
+    "description": "Safe-area insets (status bar, notch, home indicator), in dp",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "top",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "right",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "bottom",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "left",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
+  "native:EmptyProps": {
+    "source": "native/src/components/Empty/Empty.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Heading of the empty state; also its accessible name"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode | null",
+        "required": false,
+        "default": "the \"empty.description\" message",
+        "description": "Description text; `null` hides it"
+      },
+      {
+        "name": "image",
+        "type": "ReactNode | null",
+        "required": false,
+        "description": "Custom illustration replacing the built-in box; `null` hides it"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode | null",
+        "required": false,
+        "description": "Custom icon (web contract name of `image`); `null` hides it"
+      },
+      {
+        "name": "action",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Primary call to action (e.g. a Button)"
+      },
+      {
+        "name": "secondaryAction",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Secondary action rendered after `action`"
+      },
+      {
+        "name": "size",
+        "type": "EmptySize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Illustration, text sizes and padding"
+      },
+      {
+        "name": "width",
+        "type": "DimensionValue",
+        "required": false,
+        "description": "Width of the container"
+      },
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false,
+        "description": "Height of the container"
+      },
+      {
+        "name": "showShadow",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Adds a drop shadow (and a surface background)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Extra content under the description"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:EmptySize": {
+    "source": "native/src/components/Empty/Empty.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:GridDirection": {
+    "source": "native/src/components/Grid/Grid.tsx",
+    "kind": "alias",
+    "type": "\"vertical\" | \"horizontal\""
+  },
+  "native:GridItemProps": {
+    "source": "native/src/components/Grid/Grid.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\">"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon (any element)"
+      },
+      {
+        "name": "text",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text under (or next to) the icon"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom content, replacing icon and text"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called on press: the cell becomes a button"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the cell's press"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the cell content"
+      }
+    ]
+  },
+  "native:GridProps": {
+    "source": "native/src/components/Grid/Grid.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "columnNum",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Number of columns"
+      },
+      {
+        "name": "square",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Square cells (height = width)"
+      },
+      {
+        "name": "gutter",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Space between the cells, in dp (cells get their own border and radius when set)"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Hairline borders between the cells"
+      },
+      {
+        "name": "center",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Centers the content of the cells"
+      },
+      {
+        "name": "direction",
+        "type": "GridDirection",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "Layout of icon and text in a cell: `vertical` (icon above) or `horizontal` (icon before)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "`GridItem` elements"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the grid"
+      }
+    ]
+  },
+  "native:InputProps": {
+    "source": "native/src/components/Input/Input.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextInputProps, | \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"readOnly\" | \"secureTextEntry\" | \"multiline\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Text of the field (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial text (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the new text on every edit and when the field is cleared"
+      },
+      {
+        "name": "variant",
+        "type": "InputVariant",
+        "required": false,
+        "default": "\"outline\"",
+        "description": "Visual style: `outline` (bordered), `filled` (tinted background) or `unstyled` (no frame)"
+      },
+      {
+        "name": "size",
+        "type": "InputSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Height (`--control-height-*`) and font size"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state: danger border (`aria-invalid` on the web)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Focusable and selectable, but the text cannot be edited"
+      },
+      {
+        "name": "prefix",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content before the text, e.g. an icon or \"@\""
+      },
+      {
+        "name": "suffix",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content after the text, e.g. a unit or a button"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a clear button while the field has a value (not when disabled or read-only). Clearing calls `onChange(\"\")` and `onClear`"
+      },
+      {
+        "name": "clearLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.clear\"",
+        "description": "Accessible label of the clear button"
+      },
+      {
+        "name": "onClear",
+        "type": "() => void",
+        "required": false,
+        "description": "Called after the clear button emptied the field"
+      },
+      {
+        "name": "type",
+        "type": "InputType",
+        "required": false,
+        "default": "\"text\"",
+        "description": "`password` hides the text and shows a visibility toggle"
+      },
+      {
+        "name": "showPasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.showPassword\"",
+        "description": "Label of the visibility toggle while hidden"
+      },
+      {
+        "name": "hidePasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.hidePassword\"",
+        "description": "Label of the visibility toggle while visible"
+      },
+      {
+        "name": "showCharCount",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of characters (and `maxLength`, when set) after the text"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view (label + frame)"
+      },
+      {
+        "name": "wrapperStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the frame around the text"
+      },
+      {
+        "name": "inputStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the TextInput"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false,
+        "description": "Ref of the TextInput (focus(), blur(), clear())"
+      }
+    ]
+  },
+  "native:InputSize": {
+    "source": "native/src/components/Input/Input.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:InputType": {
+    "source": "native/src/components/Input/Input.tsx",
+    "kind": "alias",
+    "type": "\"text\" | \"password\""
+  },
+  "native:InputVariant": {
+    "source": "native/src/components/Input/Input.tsx",
+    "kind": "alias",
+    "type": "FieldVariant"
+  },
+  "native:LoadingProps": {
+    "source": "native/src/components/Loading/Loading.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode | null",
+        "required": false,
+        "default": "the \"loadingState.label\" message",
+        "description": "Visible text next to the spinner, also its accessible name; `null` shows the spinner alone (named by the \"common.loading\" message)"
+      },
+      {
+        "name": "size",
+        "type": "LoadingSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Spinner and text size"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color of the spinner (`neutral`: the secondary text color)"
+      },
+      {
+        "name": "vertical",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stacks the label under the spinner instead of beside it"
+      },
+      {
+        "name": "overlay",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Covers its container (or the screen, at the root) with a translucent mask and centers the indicator on it"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:LoadingSize": {
+    "source": "native/src/components/Loading/Loading.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:MinervaI18n": {
+    "source": "native/src/theme/types.ts",
+    "description": "Value of `useI18n()`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "t",
+        "type": "TranslateFunction",
+        "required": true,
+        "description": "Translates a message key (`modal.close`, `pagination.next`...)"
+      },
+      {
+        "name": "language",
+        "type": "SupportedLanguage",
+        "required": true
+      }
+    ]
+  },
+  "native:MinervaProviderProps": {
+    "source": "native/src/theme/types.ts",
+    "description": "Props of `MinervaProvider` (alias `ConfigProvider`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "theme",
+        "type": "ThemeMode",
+        "required": false,
+        "default": "\"system\"",
+        "description": "Color mode: \"light\", \"dark\", or \"system\" (follows the OS appearance through `useColorScheme`). Same values as the web `ConfigProvider` modes. Uncontrolled after the first render: change it with `setThemeMode` (`useTheme()`) or by passing a new value."
+      },
+      {
+        "name": "palette",
+        "type": "Palette | null",
+        "required": false,
+        "default": "the preset's palette (`null` for \"minerva\" / \"touch\")",
+        "description": "Built-in palette (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look"
+      },
+      {
+        "name": "preset",
+        "type": "DesignPreset",
+        "required": false,
+        "default": "\"touch\"",
+        "description": "Design preset: \"minerva\" (default look), \"editorial\", \"compact\" or \"touch\" (consumer mobile apps: comfortable density, 44pt touch targets, large radius)"
+      },
+      {
+        "name": "density",
+        "type": "Density",
+        "required": false,
+        "default": "the preset's",
+        "description": "Spacing density of controls and rows"
+      },
+      {
+        "name": "radius",
+        "type": "RadiusScale",
+        "required": false,
+        "default": "the preset's",
+        "description": "Corner radius scale"
+      },
+      {
+        "name": "shadow",
+        "type": "ShadowScale",
+        "required": false,
+        "default": "the preset's",
+        "description": "Elevation shadow scale"
+      },
+      {
+        "name": "fontScale",
+        "type": "FontScale",
+        "required": false,
+        "default": "the preset's",
+        "description": "Type scale"
+      },
+      {
+        "name": "overrides",
+        "type": "Readonly<Record<string, TokenValue | undefined>> | Partial<ComponentTheme>",
+        "required": false,
+        "description": "Token overrides (names without `--`, e.g. `{ \"primary-color\": \"#e11d48\" }`), applied over the mode / palette / design; may reference other tokens (`var(--x)`) and use `color-mix()`"
+      },
+      {
+        "name": "locale",
+        "type": "NativeLocale",
+        "required": false,
+        "default": "{ language: \"en\" }",
+        "description": "Language and extra messages of the built-in texts"
+      },
+      {
+        "name": "insets",
+        "type": "Partial<EdgeInsets>",
+        "required": false,
+        "default": "{ top: StatusBar height on Android, else 0, right: 0, bottom: 0, left: 0 }",
+        "description": "Safe-area insets used by toasts, popups, action sheets and the nav / tab bars. Pass `useSafeAreaInsets()` of `react-native-safe-area-context`"
+      },
+      {
+        "name": "fonts",
+        "type": "NativeFonts",
+        "required": false,
+        "default": "the platform fonts",
+        "description": "Font families loaded by the app"
+      },
+      {
+        "name": "reducedMotion",
+        "type": "boolean",
+        "required": false,
+        "default": "the OS setting",
+        "description": "Instant transitions. Follows the OS \"Reduce motion\" setting when unset"
+      },
+      {
+        "name": "onThemeChange",
+        "type": "(theme: ThemeMode) => void",
+        "required": false,
+        "description": "Called when the color mode changes (`setThemeMode`, ThemeToggle)"
+      },
+      {
+        "name": "onPaletteChange",
+        "type": "(palette: Palette | null) => void",
+        "required": false,
+        "description": "Called when the palette changes (`setPalette`)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Application content"
+      }
+    ]
+  },
+  "native:MinervaTheme": {
+    "source": "native/src/theme/types.ts",
+    "description": "Value of `useTheme()`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "tokens",
+        "type": "ResolvedTokens",
+        "required": true,
+        "description": "Every design token as a concrete value (`resolveTokens` output)"
+      },
+      {
+        "name": "colors",
+        "type": "ResolvedTokens[\"colors\"]",
+        "required": true,
+        "description": "Shortcut for `tokens.colors`"
+      },
+      {
+        "name": "themeMode",
+        "type": "ThemeMode",
+        "required": true,
+        "description": "Mode chosen (\"system\" follows the OS)"
+      },
+      {
+        "name": "mode",
+        "type": "ResolvedThemeMode",
+        "required": true,
+        "description": "Mode applied"
+      },
+      {
+        "name": "palette",
+        "type": "Palette | null",
+        "required": true,
+        "description": "Active palette (`null`: default look)"
+      },
+      {
+        "name": "design",
+        "type": "ResolvedDesign",
+        "required": true,
+        "description": "Applied design axes and their preset"
+      },
+      {
+        "name": "reducedMotion",
+        "type": "boolean",
+        "required": true,
+        "description": "Instant transitions"
+      },
+      {
+        "name": "fonts",
+        "type": "NativeFonts",
+        "required": true,
+        "description": "Font families of the app"
+      },
+      {
+        "name": "setThemeMode",
+        "type": "(mode: ThemeMode) => void",
+        "required": true,
+        "description": "Changes the color mode"
+      },
+      {
+        "name": "setPalette",
+        "type": "(palette: Palette | null) => void",
+        "required": true,
+        "description": "Changes the palette"
+      },
+      {
+        "name": "setPreset",
+        "type": "(preset: DesignPreset) => void",
+        "required": true,
+        "description": "Changes the design preset (resets the axes to the preset's)"
+      }
+    ]
+  },
+  "native:NativeFonts": {
+    "source": "native/src/theme/types.ts",
+    "description": "Font families loaded by the app (e.g. with `expo-font`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "sans",
+        "type": "string",
+        "required": false,
+        "default": "the platform font",
+        "description": "Body text (`fontFamily` of every text)"
+      },
+      {
+        "name": "mono",
+        "type": "string",
+        "required": false,
+        "default": "the platform monospace font",
+        "description": "Code and tabular numbers"
+      }
+    ]
+  },
+  "native:NativeLocale": {
+    "source": "native/src/theme/types.ts",
+    "description": "Locale settings of the built-in texts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "language",
+        "type": "SupportedLanguage",
+        "required": false,
+        "default": "\"en\"",
+        "description": "Language of the built-in texts (close / cancel labels, pagination, validation messages...)"
+      },
+      {
+        "name": "messages",
+        "type": "Messages",
+        "required": false,
+        "description": "Extra / overriding messages, merged over the built-in ones"
+      }
+    ]
+  },
+  "native:NativeToastQueue": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "A toast queue of React nodes (`createToastQueue` of",
+    "kind": "alias",
+    "type": "ToastQueue<ReactNode>"
+  },
+  "native:NavBarProps": {
+    "source": "native/src/components/NavBar/NavBar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title in the middle (a string is rendered as a header Text)"
+      },
+      {
+        "name": "leftText",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text of the left (back) button"
+      },
+      {
+        "name": "leftArrow",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a back chevron in the left button"
+      },
+      {
+        "name": "left",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom left content, replacing the back button"
+      },
+      {
+        "name": "rightText",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text of the right button (pressable with `onPressRight`)"
+      },
+      {
+        "name": "right",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom right content (e.g. icon buttons), replacing `rightText`"
+      },
+      {
+        "name": "onBack",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called by the left (back) button"
+      },
+      {
+        "name": "onPressRight",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called by the right text button"
+      },
+      {
+        "name": "backLabel",
+        "type": "string",
+        "required": false,
+        "default": "`leftText` when a string, else the \"navBar.back\" message",
+        "description": "Accessible label of the back button"
+      },
+      {
+        "name": "safeAreaInsetTop",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pads the bar with the top safe-area inset (status bar / notch) of `MinervaProvider`"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Hairline border under the bar"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the bar"
+      },
+      {
+        "name": "titleStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the title text"
+      }
+    ]
+  },
+  "native:NumberInputProps": {
+    "source": "native/src/components/NumberInput/NumberInput.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextInputProps, | \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"readOnly\" | \"multiline\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": false,
+        "description": "Current value (controlled); `null` is an empty field"
+      },
+      {
+        "name": "defaultValue",
+        "type": "number | null",
+        "required": false,
+        "default": "null",
+        "description": "Initial value (uncontrolled); `null` is an empty field"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: number | null) => void",
+        "required": false,
+        "description": "Called with the committed value (`null`: emptied)"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "description": "Smallest allowed value; committed values are clamped to it"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Largest allowed value; committed values are clamped to it"
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Amount added / removed by the stepper buttons and the screen reader increment / decrement actions"
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "required": false,
+        "default": "inferred from step (0.01 -> 2)",
+        "description": "Decimal places of the value"
+      },
+      {
+        "name": "size",
+        "type": "NumberInputSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Field size (`--control-height-*`)"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state (also shown while the draft is not a number or out of range)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Typing and stepping do not change the value"
+      },
+      {
+        "name": "showStepper",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the decrement / increment buttons (`Stepper` always does)"
+      },
+      {
+        "name": "stepperLayout",
+        "type": "NumberInputStepperLayout",
+        "required": false,
+        "default": "\"inline\"",
+        "description": "`inline`: the buttons sit inside the field frame; `compact`: separate tinted buttons around a narrow value (mobile stepper, `Stepper`)"
+      },
+      {
+        "name": "allowEmpty",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)"
+      },
+      {
+        "name": "incrementLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"numberInput.increment\"",
+        "description": "Accessible label of the increment button"
+      },
+      {
+        "name": "decrementLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"numberInput.decrement\"",
+        "description": "Accessible label of the decrement button"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      },
+      {
+        "name": "inputStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the TextInput"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false,
+        "description": "Ref of the TextInput"
+      }
+    ]
+  },
+  "native:NumberInputSize": {
+    "source": "native/src/components/NumberInput/NumberInput.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:NumberInputStepperLayout": {
+    "source": "native/src/components/NumberInput/NumberInput.tsx",
+    "description": "Look of the stepper buttons",
+    "kind": "alias",
+    "type": "\"inline\" | \"compact\""
+  },
+  "native:PopupCloseReason": {
+    "source": "native/src/components/Popup/Popup.tsx",
+    "description": "Why a popup closed",
+    "kind": "alias",
+    "type": "OverlayCloseReason"
+  },
+  "native:PopupPlacement": {
+    "source": "native/src/components/Popup/Popup.tsx",
+    "kind": "alias",
+    "type": "OverlayPlacement"
+  },
+  "native:PopupProps": {
+    "source": "native/src/components/Popup/Popup.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled open state"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial open state while uncontrolled"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean, reason?: PopupCloseReason) => void",
+        "required": false,
+        "description": "Called with the requested open state and, when closing, the reason (\"mask\", \"back\" for the Android back button, \"close-button\")"
+      },
+      {
+        "name": "placement",
+        "type": "PopupPlacement",
+        "required": false,
+        "default": "\"bottom\"",
+        "description": "Edge the panel slides in from (`center`: a centered card). Mobile default \"bottom\" (a bottom sheet); the web Drawer slides from the right"
+      },
+      {
+        "name": "side",
+        "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+        "required": false,
+        "description": "Web Drawer name of `placement` (used when `placement` is not set)"
+      },
+      {
+        "name": "size",
+        "type": "PopupSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Size preset: the width of a side panel, the maximum height of a top / bottom sheet (`full`: the whole screen)"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Title (also the accessible name of the panel)"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Text under the title"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Panel content"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content pinned under the scrolling body (e.g. buttons)"
+      },
+      {
+        "name": "round",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Rounds the panel corners on its open edges"
+      },
+      {
+        "name": "hideCloseButton",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Hides the close (×) button"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"drawer.close\" message (\"modal.close\" when centered)",
+        "description": "Accessible label of the close button"
+      },
+      {
+        "name": "closeOnMaskPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes on a press on the mask"
+      },
+      {
+        "name": "safeArea",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pads the panel with the safe-area insets of its edge"
+      },
+      {
+        "name": "showHandle",
+        "type": "boolean",
+        "required": false,
+        "default": "true for placement \"bottom\"",
+        "description": "Shows the drag handle (visual only) at the top of a bottom sheet"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name of the panel when there is no string title"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the panel"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:PopupSize": {
+    "source": "native/src/components/Popup/Popup.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\" | \"full\""
+  },
+  "native:ProgressProps": {
+    "source": "native/src/components/Progress/Progress.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Completion, from 0 to 100 (clamped); ignored while `indeterminate`"
+      },
+      {
+        "name": "variant",
+        "type": "ProgressVariant",
+        "required": false,
+        "default": "\"line\"",
+        "description": "Shape: a horizontal bar or a ring"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color of the filled part"
+      },
+      {
+        "name": "size",
+        "type": "ProgressSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Thickness of the bar / diameter of the ring"
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "description": "Thickness of the bar or ring stroke in dp, overriding the size"
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value as text (after the bar, inside the ring)"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => ReactNode",
+        "required": false,
+        "default": "`${value}%`",
+        "description": "Formats the shown value"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label above the bar (beside the ring); also the accessible name"
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Unknown completion: an animated looping indicator without a value"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:ProgressSize": {
+    "source": "native/src/components/Progress/Progress.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:ProgressVariant": {
+    "source": "native/src/components/Progress/Progress.tsx",
+    "kind": "alias",
+    "type": "\"line\" | \"circle\""
+  },
+  "native:PullRefreshProps": {
+    "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ScrollViewProps, \"refreshControl\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "refreshing",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled refreshing state; unset, it follows the promise returned by `onRefresh`"
+      },
+      {
+        "name": "onRefresh",
+        "type": "() => unknown",
+        "required": false,
+        "description": "Called on a pull; may return a promise (refreshing until it settles)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the pull"
+      },
+      {
+        "name": "pullingText",
+        "type": "string",
+        "required": false,
+        "default": "the \"pullRefresh.pulling\" message",
+        "description": "Text while pulling (iOS)"
+      },
+      {
+        "name": "loosingText",
+        "type": "string",
+        "required": false,
+        "default": "the \"pullRefresh.loosing\" message",
+        "description": "Text when releasing would refresh (iOS)"
+      },
+      {
+        "name": "loadingText",
+        "type": "string",
+        "required": false,
+        "default": "the \"pullRefresh.loading\" message",
+        "description": "Text while refreshing"
+      },
+      {
+        "name": "successText",
+        "type": "string",
+        "required": false,
+        "default": "the \"pullRefresh.success\" message",
+        "description": "Text after a refresh"
+      },
+      {
+        "name": "successDuration",
+        "type": "number",
+        "required": false,
+        "default": "500",
+        "description": "How long the success text stays, in ms (0: none)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Scrollable content"
+      }
+    ]
+  },
+  "native:PullRefreshStatus": {
+    "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+    "description": "Status of a pull to refresh",
+    "kind": "alias",
+    "type": "\"idle\" | \"pulling\" | \"loosing\" | \"loading\" | \"success\""
+  },
+  "native:RadioColor": {
+    "source": "native/src/components/Radio/Radio.tsx",
+    "kind": "alias",
+    "type": "\"primary\" | \"success\" | \"warning\" | \"danger\""
+  },
+  "native:RadioGroupContextValue": {
+    "source": "native/src/components/Radio/Radio.tsx",
+    "description": "What a RadioGroup shares with its radios",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": true
+      },
+      {
+        "name": "select",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "size",
+        "type": "RadioSize",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "RadioColor",
+        "required": false
+      }
+    ]
+  },
+  "native:RadioGroupOption": {
+    "source": "native/src/components/Radio/RadioGroup.tsx",
+    "description": "An option of a RadioGroup built from `options`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "native:RadioGroupProps": {
+    "source": "native/src/components/Radio/RadioGroup.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": false,
+        "description": "Value of the selected radio (controlled; `null`: none selected)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "required": false,
+        "default": "null",
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the value of the radio the user selected"
+      },
+      {
+        "name": "direction",
+        "type": "\"vertical\" | \"horizontal\"",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "Layout direction of the radios"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables every radio in the group"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Radios show the value but presses do not change it"
+      },
+      {
+        "name": "size",
+        "type": "RadioSize",
+        "required": false,
+        "default": "each radio's own",
+        "description": "Size of every radio"
+      },
+      {
+        "name": "color",
+        "type": "RadioColor",
+        "required": false,
+        "default": "each radio's own",
+        "description": "Color of every checked radio"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label of the group; a string is also its accessible name"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state of every radio"
+      },
+      {
+        "name": "options",
+        "type": "readonly (string | RadioGroupOption)[]",
+        "required": false,
+        "description": "Radios built from data (else pass `<Radio value>` children)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "`<Radio value>` children"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:RadioLabelPlacement": {
+    "source": "native/src/components/Radio/Radio.tsx",
+    "kind": "alias",
+    "type": "LabelPlacement"
+  },
+  "native:RadioProps": {
+    "source": "native/src/components/Radio/Radio.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the radio is checked (controlled). Ignored inside a RadioGroup"
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initial checked state (uncontrolled). Ignored inside a RadioGroup"
+      },
+      {
+        "name": "onChange",
+        "type": "(checked: boolean, value?: string) => void",
+        "required": false,
+        "description": "Called when a press checks the radio, with its `value`"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the radio (also set by a disabled group)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the radio; identifies it within a RadioGroup"
+      },
+      {
+        "name": "size",
+        "type": "RadioSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Radio size (the RadioGroup size overrides it)"
+      },
+      {
+        "name": "color",
+        "type": "RadioColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the checked radio (the RadioGroup color overrides it)"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label displayed next to the radio (a string also names it)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label content, when `label` is not set"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state: danger border (also set by an invalid group)"
+      },
+      {
+        "name": "labelPlacement",
+        "type": "RadioLabelPlacement",
+        "required": false,
+        "default": "\"end\"",
+        "description": "Position of the label relative to the circle"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the pressable root"
+      },
+      {
+        "name": "labelStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:RadioSize": {
+    "source": "native/src/components/Radio/Radio.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:SkeletonAnimation": {
+    "source": "native/src/components/Skeleton/Skeleton.tsx",
+    "kind": "alias",
+    "type": "\"pulse\" | \"wave\" | false"
+  },
+  "native:SkeletonProps": {
+    "source": "native/src/components/Skeleton/Skeleton.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "variant",
+        "type": "SkeletonVariant",
+        "required": false,
+        "default": "\"text\"",
+        "description": "Shape of each placeholder block"
+      },
+      {
+        "name": "animation",
+        "type": "SkeletonAnimation",
+        "required": false,
+        "default": "\"pulse\"",
+        "description": "Loading animation (`false`: static; always static under reduced motion)"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the placeholder; `false` renders the children instead"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content shown once `loading` is false"
+      },
+      {
+        "name": "decorative",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "One bare placeholder block hidden from accessibility (no busy region), for composing custom layouts"
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "description": "Edge length of a circular placeholder (wins over width / height)"
+      },
+      {
+        "name": "width",
+        "type": "DimensionValue",
+        "required": false,
+        "description": "Width of each block (dp or percentage)"
+      },
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false,
+        "description": "Height of each block (dp or percentage)"
+      },
+      {
+        "name": "borderRadius",
+        "type": "number",
+        "required": false,
+        "description": "Corner radius of each block, overriding the variant's"
+      },
+      {
+        "name": "lines",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Number of blocks (lines) rendered"
+      },
+      {
+        "name": "avatar",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows an avatar placeholder before the lines"
+      },
+      {
+        "name": "avatarSize",
+        "type": "number",
+        "required": false,
+        "default": "40",
+        "description": "Avatar edge length in dp"
+      },
+      {
+        "name": "avatarShape",
+        "type": "\"circle\" | \"square\"",
+        "required": false,
+        "default": "\"circle\"",
+        "description": "Avatar shape"
+      },
+      {
+        "name": "title",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a title placeholder (replaces the lines)"
+      },
+      {
+        "name": "paragraph",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a four-line paragraph placeholder (replaces the lines)"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"common.loading\" message",
+        "description": "Accessible name of the busy region"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:SkeletonVariant": {
+    "source": "native/src/components/Skeleton/Skeleton.tsx",
+    "kind": "alias",
+    "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\""
+  },
+  "native:StepperProps": {
+    "source": "native/src/components/NumberInput/NumberInput.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<NumberInputProps, \"showStepper\" | \"stepperLayout\">"
+    ],
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "number | null",
+        "required": false,
+        "default": "min, else 0",
+        "description": "Initial value (uncontrolled). A stepper starts on a number, not empty (mobile-only component, unlike `NumberInput`)"
+      }
+    ]
+  },
+  "native:SwipeCellAction": {
+    "source": "native/src/components/SwipeCell/SwipeCell.tsx",
+    "description": "An action button revealed by a swipe",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "Text of the button (also its accessibility action label)"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "`text`",
+        "description": "Accessibility action name"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"danger\" for the last right action, else \"neutral\"",
+        "description": "Background color role"
+      },
+      {
+        "name": "onPress",
+        "type": "() => void",
+        "required": false,
+        "description": "Called by the button and its accessibility action"
+      }
+    ]
+  },
+  "native:SwipeCellHandle": {
+    "source": "native/src/components/SwipeCell/SwipeCell.tsx",
+    "description": "Imperative handle of `SwipeCell` (`ref`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "open",
+        "type": "(side?: SwipeCellSide) => void",
+        "required": true,
+        "description": "Reveals the actions of a side"
+      },
+      {
+        "name": "close",
+        "type": "() => void",
+        "required": true,
+        "description": "Hides the actions"
+      }
+    ]
+  },
+  "native:SwipeCellProps": {
+    "source": "native/src/components/SwipeCell/SwipeCell.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Row content"
+      },
+      {
+        "name": "leftActions",
+        "type": "readonly SwipeCellAction[]",
+        "required": false,
+        "description": "Action buttons revealed by swiping right (shown on the left)"
+      },
+      {
+        "name": "rightActions",
+        "type": "readonly SwipeCellAction[]",
+        "required": false,
+        "description": "Action buttons revealed by swiping left (shown on the right)"
+      },
+      {
+        "name": "left",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom content revealed on the left (replaces `leftActions`)"
+      },
+      {
+        "name": "right",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom content revealed on the right (replaces `rightActions`)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables swiping"
+      },
+      {
+        "name": "closeOnActionPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Closes the cell after an action button press"
+      },
+      {
+        "name": "onOpen",
+        "type": "(side: SwipeCellSide) => void",
+        "required": false,
+        "description": "Called when a side opens"
+      },
+      {
+        "name": "onClose",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the cell closes"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<SwipeCellHandle>",
+        "required": false,
+        "description": "Imperative `open(side)` / `close()`"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the row container"
+      },
+      {
+        "name": "contentStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the sliding content"
+      }
+    ]
+  },
+  "native:SwipeCellSide": {
+    "source": "native/src/components/SwipeCell/SwipeCell.tsx",
+    "description": "Side of a swipe cell's actions",
+    "kind": "alias",
+    "type": "\"left\" | \"right\""
+  },
+  "native:TabBarItemProps": {
+    "source": "native/src/components/TabBar/TabBar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value identifying the item (reported by `onChange`)"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label under the icon"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode | ((active: boolean, color: string) => ReactNode)",
+        "required": false,
+        "description": "Icon: an element, or a function of the selected state and the current item color returning one (e.g. a filled icon when active)"
+      },
+      {
+        "name": "badge",
+        "type": "number | string",
+        "required": false,
+        "description": "Badge content (a count or a short text) on the icon's corner"
+      },
+      {
+        "name": "badgeMax",
+        "type": "number",
+        "required": false,
+        "default": "99",
+        "description": "Largest count shown in the badge (`99+` beyond)"
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a small dot on the icon's corner instead of a badge"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the item"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the item"
+      }
+    ]
+  },
+  "native:TabBarProps": {
+    "source": "native/src/components/TabBar/TabBar.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the selected item (controlled; pair with `onChange`)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "the first enabled item's value",
+        "description": "Value of the initially selected item (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the value of the item the user selects"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Items: `TabBarItem` elements"
+      },
+      {
+        "name": "activeColor",
+        "type": "string",
+        "required": false,
+        "default": "the \"primary-color\" token",
+        "description": "Icon / label color of the selected item"
+      },
+      {
+        "name": "inactiveColor",
+        "type": "string",
+        "required": false,
+        "default": "the \"text-muted-color\" token",
+        "description": "Icon / label color of the other items"
+      },
+      {
+        "name": "safeAreaInsetBottom",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pads the bar with the bottom safe-area inset (home indicator) of `MinervaProvider`"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Hairline border above the bar"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"tabBar.label\" message",
+        "description": "Accessible label of the tab list"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the bar"
+      }
+    ]
+  },
+  "native:TabListProps": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The Tab elements"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the tab list (alias of `accessibilityLabel`)"
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Moves focus from the last tab to the first (and back) with the arrow keys (react-native-web)"
+      },
+      {
+        "name": "scrollable",
+        "type": "boolean",
+        "required": false,
+        "default": "true with more than 4 tabs",
+        "description": "Horizontal scrolling list (natural tab widths) instead of equal-width tabs"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the list"
+      }
+    ]
+  },
+  "native:TabPanelProps": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value of the tab this panel belongs to"
+      },
+      {
+        "name": "forceMount",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Keeps the panel mounted (hidden) while its tab is not selected"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Panel content"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the panel"
+      }
+    ]
+  },
+  "native:TabProps": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value identifying the tab and its panel"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label: a string (rendered as Text) or any element"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the tab"
+      },
+      {
+        "name": "color",
+        "type": "TabsColor",
+        "required": false,
+        "description": "Overrides the group color"
+      },
+      {
+        "name": "badge",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Count or short text shown in a small badge after the label"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called on press (after the selection)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the tab"
+      },
+      {
+        "name": "textStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:TabsColor": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "alias",
+    "type": "NativeColor"
+  },
+  "native:TabsItemData": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "description": "A tab of the data API (`items`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Value identifying the tab and its panel"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Visible label of the tab"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Disables the tab"
+      },
+      {
+        "name": "badge",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Count or short text shown in a small badge after the label"
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Panel content (renders a TabPanel for the tab)"
+      }
+    ]
+  },
+  "native:TabsProps": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Value of the selected tab (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Value of the initially selected tab (uncontrolled); the first enabled tab when omitted"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the value of the tab the user selects"
+      },
+      {
+        "name": "orientation",
+        "type": "TabsMachineOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Layout of the tab list"
+      },
+      {
+        "name": "activationMode",
+        "type": "TabsActivation",
+        "required": false,
+        "default": "\"automatic\"",
+        "description": "`automatic` selects a tab when it receives (keyboard) focus; `manual` only on press"
+      },
+      {
+        "name": "variant",
+        "type": "TabsVariant",
+        "required": false,
+        "default": "\"line\"",
+        "description": "Visual style: `line` (animated underline), `pills` (filled pill), `soft` (tinted background) or `enclosed` (segmented control)"
+      },
+      {
+        "name": "color",
+        "type": "TabsColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Color of the selection"
+      },
+      {
+        "name": "items",
+        "type": "readonly TabsItemData[]",
+        "required": false,
+        "description": "Data API: the tabs (and optional panel contents) rendered as a TabList (+ TabPanels) before the children"
+      },
+      {
+        "name": "listLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the tab list rendered from `items`"
+      },
+      {
+        "name": "scrollable",
+        "type": "boolean",
+        "required": false,
+        "default": "true with more than 4 items",
+        "description": "Scrollable tab list of the `items` API"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "TabList and TabPanel elements (or any content)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:TabsVariant": {
+    "source": "native/src/components/Tabs/Tabs.tsx",
+    "kind": "alias",
+    "type": "\"line\" | \"pills\" | \"soft\" | \"enclosed\""
+  },
+  "native:TagProps": {
+    "source": "native/src/components/Tag/Tag.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Label: a string (rendered as Text) or any element"
+      },
+      {
+        "name": "color",
+        "type": "NativeColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Semantic color of the tag"
+      },
+      {
+        "name": "variant",
+        "type": "TagVariant",
+        "required": false,
+        "default": "\"subtle\"",
+        "description": "Visual style: `subtle` (tinted background), `outline` (tinted background with a border) or `solid` (filled)"
+      },
+      {
+        "name": "size",
+        "type": "TagSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Tag size"
+      },
+      {
+        "name": "shape",
+        "type": "TagShape",
+        "required": false,
+        "default": "\"rounded\"",
+        "description": "Tag shape"
+      },
+      {
+        "name": "closable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a close button"
+      },
+      {
+        "name": "onClose",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called when the close button is pressed"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string | ((label: string) => string)",
+        "required": false,
+        "description": "Accessible label of the close button, or a function of the tag's text"
+      },
+      {
+        "name": "closeIcon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Custom close icon"
+      },
+      {
+        "name": "clickable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Makes the tag pressable (`accessibilityRole=\"button\"`); implied by `onPress`, `pressed` and `defaultPressed`"
+      },
+      {
+        "name": "onPress",
+        "type": "(event: GestureResponderEvent) => void",
+        "required": false,
+        "description": "Called when the tag is pressed"
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter (controlled; pair with onPressedChange)"
+      },
+      {
+        "name": "defaultPressed",
+        "type": "boolean",
+        "required": false,
+        "description": "Initial pressed state of an uncontrolled toggle tag"
+      },
+      {
+        "name": "onPressedChange",
+        "type": "(pressed: boolean) => void",
+        "required": false,
+        "description": "Called with the requested pressed state of a toggle tag"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the tag and its close button"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a spinner instead of the icon, marks the tag busy and blocks its action; the close button is hidden"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon displayed before the content"
+      },
+      {
+        "name": "avatar",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Avatar (e.g. a small Avatar) displayed before the content"
+      },
+      {
+        "name": "elevation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a shadow"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the tag"
+      },
+      {
+        "name": "textStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the label text"
+      }
+    ]
+  },
+  "native:TagShape": {
+    "source": "native/src/components/Tag/Tag.tsx",
+    "kind": "alias",
+    "type": "\"rounded\" | \"square\" | \"circle\""
+  },
+  "native:TagSize": {
+    "source": "native/src/components/Tag/Tag.tsx",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:TagVariant": {
+    "source": "native/src/components/Tag/Tag.tsx",
+    "kind": "alias",
+    "type": "\"solid\" | \"subtle\" | \"outline\""
+  },
+  "native:TextareaAutoSize": {
+    "source": "native/src/components/Textarea/Textarea.tsx",
+    "description": "Row bounds of an auto-growing textarea",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "minRows",
+        "type": "number",
+        "required": false,
+        "default": "rows",
+        "description": "Fewest rows shown"
+      },
+      {
+        "name": "maxRows",
+        "type": "number",
+        "required": false,
+        "default": "unlimited",
+        "description": "Most rows shown before the text scrolls"
+      }
+    ]
+  },
+  "native:TextareaProps": {
+    "source": "native/src/components/Textarea/Textarea.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextInputProps, | \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"readOnly\" | \"multiline\" | \"numberOfLines\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Text of the field (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial text (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the new text on every edit"
+      },
+      {
+        "name": "variant",
+        "type": "TextareaVariant",
+        "required": false,
+        "default": "\"outline\"",
+        "description": "Visual style: `outline` (bordered), `filled` (tinted background) or `unstyled` (no frame)"
+      },
+      {
+        "name": "size",
+        "type": "TextareaSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Font size and minimum height"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state: danger border (`aria-invalid` on the web)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Focusable and selectable, but the text cannot be edited"
+      },
+      {
+        "name": "rows",
+        "type": "number",
+        "required": false,
+        "default": "3",
+        "description": "Visible text rows (the height of the field)"
+      },
+      {
+        "name": "autoSize",
+        "type": "boolean | TextareaAutoSize",
+        "required": false,
+        "default": "false",
+        "description": "Grows with the text: `true` (from `rows`, unbounded) or row bounds"
+      },
+      {
+        "name": "showCharCount",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of characters (and `maxLength`, when set) under the text"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view (label + frame)"
+      },
+      {
+        "name": "wrapperStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the frame around the text"
+      },
+      {
+        "name": "inputStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the TextInput"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false,
+        "description": "Ref of the TextInput"
+      }
+    ]
+  },
+  "native:TextareaSize": {
+    "source": "native/src/components/Textarea/Textarea.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
+  },
+  "native:TextareaVariant": {
+    "source": "native/src/components/Textarea/Textarea.tsx",
+    "kind": "alias",
+    "type": "FieldVariant"
+  },
+  "native:ToastAction": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "Button rendered inside a toast; pressing it also closes the toast",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Visible text of the button"
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "required": true,
+        "description": "Called when the button is pressed, before the toast closes"
+      }
+    ]
+  },
+  "native:ToastApi": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "The `toast` function and the API returned by `useToast()`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "info",
+        "type": "(title: ReactNode, options?: ToastOptions) => ToastId",
+        "required": true
+      },
+      {
+        "name": "success",
+        "type": "(title: ReactNode, options?: ToastOptions) => ToastId",
+        "required": true
+      },
+      {
+        "name": "warning",
+        "type": "(title: ReactNode, options?: ToastOptions) => ToastId",
+        "required": true
+      },
+      {
+        "name": "danger",
+        "type": "(title: ReactNode, options?: ToastOptions) => ToastId",
+        "required": true
+      },
+      {
+        "name": "loading",
+        "type": "(title: ReactNode, options?: ToastOptions) => ToastId",
+        "required": true,
+        "description": "Spinner toast without auto-close (update or dismiss it later)"
+      },
+      {
+        "name": "promise",
+        "type": "<T>(promise: Promise<T>, messages: ToastPromiseMessages<T>, options?: Omit<ToastOptions, \"color\" | \"loading\" | \"title\">) => Promise<T>",
+        "required": true,
+        "description": "Loading toast while the promise is pending, then success / danger"
+      },
+      {
+        "name": "update",
+        "type": "(id: ToastId, options: Omit<ToastOptions, \"id\">) => void",
+        "required": true,
+        "description": "Changes an open toast in place and restarts its timer"
+      },
+      {
+        "name": "dismiss",
+        "type": "(id?: ToastId) => void",
+        "required": true,
+        "description": "Closes a toast, or every toast when no id is given"
+      },
+      {
+        "name": "dismissAll",
+        "type": "() => void",
+        "required": true,
+        "description": "Closes every toast"
+      }
+    ]
+  },
+  "native:ToastColor": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "kind": "alias",
+    "type": "\"info\" | \"success\" | \"warning\" | \"danger\""
+  },
+  "native:ToastId": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "kind": "alias",
+    "type": "ToastQueueId"
+  },
+  "native:ToastOptions": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "Options of a toast",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "ToastId",
+        "required": false,
+        "description": "Identifier; showing a toast with the id of a visible one replaces it (and restarts its timer). Generated when omitted"
+      },
+      {
+        "name": "color",
+        "type": "ToastColor",
+        "required": false,
+        "description": "Semantic color: accent, icon and role (\"alert\" for danger / warning)"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "description": "Spinner instead of the icon; no auto-close by default"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Main text (announced when the toast appears)"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Secondary text under the title"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "required": false,
+        "description": "Auto-close delay in ms; 0 keeps the toast open"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode | null",
+        "required": false,
+        "description": "Custom icon; `null` hides it"
+      },
+      {
+        "name": "closable",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows the close button (default true)"
+      },
+      {
+        "name": "action",
+        "type": "ToastAction",
+        "required": false,
+        "description": "Action button (e.g. \"Undo\")"
+      },
+      {
+        "name": "onClose",
+        "type": "(id: ToastId) => void",
+        "required": false,
+        "description": "Called once with the id when the toast starts closing"
+      }
+    ]
+  },
+  "native:ToastPosition": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "Mobile positions, and the web contract's corners (mapped to top / bottom)",
+    "kind": "alias",
+    "type": "\"top\" | \"center\" | \"bottom\" | \"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\""
+  },
+  "native:ToastPromiseMessages": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "description": "Messages of `toast.promise`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "loading",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "success",
+        "type": "ReactNode | ((value: T) => ReactNode)",
+        "required": true
+      },
+      {
+        "name": "error",
+        "type": "ReactNode | ((error: unknown) => ReactNode)",
+        "required": true
+      }
+    ]
+  },
+  "native:ToastProviderProps": {
+    "source": "native/src/components/Toast/Toast.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Application content; the toast layer is drawn over it"
+      },
+      {
+        "name": "position",
+        "type": "ToastPosition",
+        "required": false,
+        "default": "\"top\"",
+        "description": "Where the toasts are stacked. Mobile default \"top\" (the web default is \"top-right\"); the web corners map to \"top\" / \"bottom\" (toasts span the screen width on phones)"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Maximum number of toasts shown at once; the oldest close first (\"overflow\")"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "required": false,
+        "default": "4000",
+        "description": "Default auto-close delay of the toasts shown without `duration` (ms; 0 keeps them open)"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"toast.close\" message",
+        "description": "Accessible label of the close buttons"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "default": "the \"toast.region\" message",
+        "description": "Accessible label of the toast layer"
+      },
+      {
+        "name": "pauseOnPress",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pauses the auto-close timer while a toast is pressed"
+      },
+      {
+        "name": "queue",
+        "type": "NativeToastQueue",
+        "required": false,
+        "default": "the shared `toastQueue`",
+        "description": "Queue rendered by this provider"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the toast layer"
+      }
+    ]
+  },
+  "native:UsePullRefreshOptions": {
+    "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "refreshing",
+        "type": "boolean",
+        "required": false,
+        "description": "Controlled refreshing state (unset: follows the `onRefresh` promise)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the pull"
+      },
+      {
+        "name": "successDuration",
+        "type": "number",
+        "required": false,
+        "default": "500",
+        "description": "How long the success status stays, in ms (0: none)"
+      }
+    ]
+  },
+  "native:UsePullRefreshResult": {
+    "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "refreshing",
+        "type": "boolean",
+        "required": true,
+        "description": "Whether a refresh is running"
+      },
+      {
+        "name": "status",
+        "type": "Exclude<PullRefreshStatus, \"pulling\" | \"loosing\">",
+        "required": true,
+        "description": "Current status (\"success\" for `successDuration` after a refresh)"
+      },
+      {
+        "name": "refresh",
+        "type": "() => void",
+        "required": true,
+        "description": "Starts a refresh (what a pull does)"
+      },
+      {
+        "name": "refreshControl",
+        "type": "ReactElement<RefreshControlProps>",
+        "required": true,
+        "description": "A themed `RefreshControl`: pass it as the `refreshControl` of a `FlatList`, `SectionList` or `ScrollView`"
+      }
+    ]
+  }
+}

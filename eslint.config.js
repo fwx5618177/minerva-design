@@ -41,7 +41,7 @@ const BROWSER_GLOBALS = [
 ];
 
 export default defineConfig(
-  globalIgnores(["**/dist/", "**/coverage/"]),
+  globalIgnores(["**/dist/", "**/coverage/", "**/.expo/"]),
   js.configs.recommended,
   tseslint.configs.recommended,
   {
@@ -113,7 +113,11 @@ export default defineConfig(
     },
   },
   {
-    files: ["packages/react/src/**/*.{ts,tsx}", "apps/docs/src/**/*.{ts,tsx}"],
+    files: [
+      "packages/react/src/**/*.{ts,tsx}",
+      "packages/native/src/**/*.{ts,tsx}",
+      "apps/docs/src/**/*.{ts,tsx}",
+    ],
     plugins: {
       "react-hooks": reactHooks,
     },
@@ -181,4 +185,10 @@ export default defineConfig(
     },
   },
   prettier,
+  {
+    // Expo / Metro config files are CommonJS
+    files: ["apps/expo-example/*.js"],
+    languageOptions: { sourceType: "commonjs" },
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
 );

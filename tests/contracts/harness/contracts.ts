@@ -66,10 +66,12 @@ export function eventWith(
   field: string,
   platform: Platform,
 ): EventContract {
+  const callback = (e: EventContract) =>
+    platform === "wc" ? e.wc : platform === "native" ? e.native : e.react;
   const event = contract.events.find(
     (e) =>
       e.detail?.includes(field) &&
-      (apiOf(platform) === "react" ? e.react : e.wc),
+      callback(e),
   );
   if (!event)
     throw new Error(
@@ -79,8 +81,9 @@ export function eventWith(
 }
 
 /**
- * React callback arguments -> the contract's detail fields, by position
- * (`onChange(checked, event)` -> `{ checked }`); events are dropped.
+ * React / React Native callback arguments -> the contract's detail fields,
+ * by position (`onChange(checked, event)` -> `{ checked }`); events are
+ * dropped.
  */
 export function detailOf(
   event: EventContract,

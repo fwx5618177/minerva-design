@@ -31,7 +31,7 @@ try {
     dir,
     readdirSync(dir).find((f) => f.endsWith(".tgz")),
   );
-  const dual = [".", ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`)];
+  const dual = [".", "./native", ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`)];
   const esmOnly = [
     ...Object.keys(expectedExports()).filter(
       (key) =>

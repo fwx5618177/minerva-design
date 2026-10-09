@@ -61,8 +61,11 @@ export interface PropContract {
   description?: string;
   /** HTML attribute of the custom element (`wc` side), when reflected */
   attribute?: string;
-  /** Present on one platform only (React composition, element vocabulary) */
-  only?: "react" | "wc";
+  /**
+   * Present on one platform only (React composition, element vocabulary,
+   * native-only mobile components)
+   */
+  only?: "react" | "wc" | "native";
 }
 
 export interface EventContract {
@@ -75,6 +78,11 @@ export interface EventContract {
   react?: string;
   /** Custom element event (`minerva-change`) */
   wc?: string;
+  /**
+   * React Native callback prop of minerva-design/native (`onChange`; the
+   * RN idiom `onPress` for `onClick`)
+   */
+  native?: string;
   /** Fields of `event.detail` (custom element) */
   detail?: string[];
   description?: string;
