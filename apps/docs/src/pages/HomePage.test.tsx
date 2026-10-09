@@ -120,3 +120,35 @@ it("uses the shared highlighted code block and library copy control", async () =
     expect(container.querySelector("code .token")).not.toBeNull(),
   );
 });
+
+it("switches the film and captions with the site language and selected format", async () => {
+  const user = userEvent.setup();
+  const { container } = renderHome();
+  const video = () => container.querySelector("video")!;
+  expect(video()).not.toBeNull();
+  expect(video().getAttribute("src")).toContain("Film-en-landscape-1080p.mp4");
+  expect(video()).toHaveAttribute("preload", "none");
+  expect(video()).not.toHaveAttribute("autoplay");
+  await user.click(screen.getByRole("button", { name: "Portrait · 30s" }));
+  expect(video().getAttribute("src")).toContain("Film-en-portrait-1080p.mp4");
+  try {
+    await i18n.changeLanguage("zh");
+    await vi.waitFor(() =>
+      expect(video().getAttribute("src")).toContain(
+        "Film-zh-portrait-1080p.mp4",
+      ),
+    );
+    expect(video().querySelector("track")).toHaveAttribute("srclang", "zh");
+    expect(video().getAttribute("poster")).toContain(
+      "Film-zh-portrait-poster.jpg",
+    );
+    await i18n.changeLanguage("fr");
+    await vi.waitFor(() =>
+      expect(video().getAttribute("src")).toContain(
+        "Film-en-portrait-1080p.mp4",
+      ),
+    );
+  } finally {
+    await i18n.changeLanguage("en");
+  }
+});

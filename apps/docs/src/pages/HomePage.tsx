@@ -16,6 +16,7 @@ import { docPages } from "@/docs/registry";
 import Logo from "@/site/Logo";
 import CodeBlock from "@layout/CodeBlock";
 import styles from "./home.module.scss";
+import PromoFilm from "./PromoFilm";
 import ComponentPlayground from "./examples/ComponentPlayground";
 import {
   frameworkBrands,
@@ -137,6 +138,8 @@ const HomePage: React.FC = () => {
           ))}
         </Tabs>
       </section>
+
+      <PromoFilm />
 
       {/* Live components, rendered with the library's own theme */}
       <section
