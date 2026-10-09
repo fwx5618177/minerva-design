@@ -392,10 +392,11 @@ pnpm dev
 3. **レビュー**してから公開します：`git diff`（バージョン、CHANGELOG の内容）を確認し、Node 22（`.nvmrc`）で CI と同じチェックを実行します：
 
    ```bash
-   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
-   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm test:dist && pnpm check:package
    (cd packages/minerva-design && npm pack --dry-run)   # 公開される内容を確認（何もアップロードされません）
-   git commit -am "chore: release" && git push
+   git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
+   git commit -m "chore: release" && git push
    ```
 
 4. **npm にログイン**：`minerva-design` の公開権限があり、二要素認証（2FA）を有効にしたアカウントを使います：
@@ -416,7 +417,7 @@ pnpm dev
 
    `changeset publish` は npm にまだ存在しないバージョンの場合にだけ `minerva-design` を公開します（非公開パッケージは公開されません）。書き込みに 2FA を有効にしている場合はワンタイムパスワードを求められます（事前に渡す場合：`pnpm release --otp <code>`。引数は `changeset publish` に渡されます）。
 
-公開される内容（`packages/minerva-design/package.json` の `files`。テスト、ソース、ドキュメントサイトは含まれません）：
+公開される内容（`packages/minerva-design/package.json` の `files`。テストとドキュメントサイトは含まれません。Native のソースエントリーとミニプログラムのアセットは実行に必要なため含まれます）：
 
 | フォルダー             | 内容                                                                                                                                                                                  |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

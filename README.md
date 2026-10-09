@@ -456,8 +456,8 @@ Versioning and changelogs are managed with [Changesets](https://github.com/chang
 3. **Review** the result before anything leaves your machine: `git diff` (version, CHANGELOG entries), then run the same checks as CI on Node 22 (`.nvmrc`):
 
    ```bash
-   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
-   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm test:dist && pnpm check:package
    (cd packages/minerva-design && npm pack --dry-run)   # what would be published, nothing is uploaded
    git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
    git commit -m "chore: release" && git push

@@ -43,8 +43,8 @@ pnpm version-packages
 pnpm install            # refresh the lockfile
 
 # 2. Review: git diff (version, changelog), then the CI checks
-pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
-pnpm build && pnpm test:dist && pnpm check:package
+pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
+pnpm test:dist && pnpm check:package
 (cd packages/minerva-design && npm pack --dry-run)   # lists what would be published, uploads nothing
 git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
 git commit -m "chore: release" && git push

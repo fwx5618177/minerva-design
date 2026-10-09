@@ -392,10 +392,11 @@ pnpm dev
 3. **审查**，确认无误后再发布：`git diff`（版本号、CHANGELOG 条目），然后在 Node 22（`.nvmrc`）下运行与 CI 相同的检查：
 
    ```bash
-   pnpm lint && pnpm typecheck && pnpm format:check && pnpm test:coverage
-   pnpm build && pnpm test:dist && pnpm check:package
+   pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
+   pnpm test:dist && pnpm check:package
    (cd packages/minerva-design && npm pack --dry-run)   # 查看将发布的内容，不会上传任何东西
-   git commit -am "chore: release" && git push
+   git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
+   git commit -m "chore: release" && git push
    ```
 
 4. **登录 npm**：使用拥有 `minerva-design` 发布权限、并已开启双重验证（2FA）的账号：
@@ -416,7 +417,7 @@ pnpm dev
 
    `changeset publish` 只在 npm 上尚不存在该版本时发布 `minerva-design`（私有包永远不会发布）。开启写操作 2FA 时，npm 会提示输入一次性密码（也可以直接传入：`pnpm release --otp <code>`，该参数会转发给 `changeset publish`）。
 
-发布的内容（由 `packages/minerva-design/package.json` 的 `files` 决定；测试、源码和文档站点不会被发布）：
+发布的内容（由 `packages/minerva-design/package.json` 的 `files` 决定；测试和文档站点不会被发布；Native 源码入口及小程序组件资产按运行需要随包发布）：
 
 | 目录                   | 内容                                                                                                                                                  |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
