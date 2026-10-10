@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 for (const language of ["en", "zh"] as const) {
   for (const mobile of [false, true]) {
-    test(`${language} film plays in ${mobile ? "portrait" : "landscape"} with matching captions`, async ({
+    test(`${language} film plays in ${mobile ? "portrait" : "landscape"}`, async ({
       page,
     }) => {
       await page.setViewportSize(
@@ -22,7 +22,7 @@ for (const language of ["en", "zh"] as const) {
       const format = mobile ? "portrait" : "landscape";
       await expect(video).toHaveAttribute(
         "src",
-        `/minerva-design/media/promo-v3/Film-${language}-${format}-1080p.mp4`,
+        `/minerva-design/media/promo-v4/Film-${language}-${format}-1080p.mp4`,
       );
       await expect(video).toHaveAttribute("preload", "none");
       expect(movieRequests).toEqual([]);
@@ -35,7 +35,6 @@ for (const language of ["en", "zh"] as const) {
         .toBeGreaterThan(0.1);
       const media = await video.evaluate((el: HTMLVideoElement) => {
         el.pause();
-        el.textTracks[0].mode = "hidden";
         return {
           duration: el.duration,
           width: el.videoWidth,
@@ -51,9 +50,10 @@ for (const language of ["en", "zh"] as const) {
       });
       await expect
         .poll(() =>
-          video.evaluate(
-            (el: HTMLVideoElement) => el.textTracks[0].cues?.length ?? 0,
-          ),
+          video.evaluate((el: HTMLVideoElement) => {
+            el.textTracks[0].mode = "hidden";
+            return el.textTracks[0].cues?.length ?? 0;
+          }),
         )
         .toBeGreaterThan(0);
       await expect

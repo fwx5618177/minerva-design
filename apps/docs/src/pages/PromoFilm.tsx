@@ -18,7 +18,8 @@ export default function PromoFilm() {
     (i18n.resolvedLanguage ?? i18n.language).split("-")[0] === "zh"
       ? "zh"
       : "en";
-  const base = `${import.meta.env.BASE_URL}media/promo-v3/Film-${language}-${format}`;
+  const media = `${import.meta.env.BASE_URL}media/promo-v4`;
+  const base = `${media}/Film-${language}-${format}`;
 
   return (
     <section className={styles.section} aria-labelledby="home-film-title">
@@ -40,17 +41,27 @@ export default function PromoFilm() {
           </Button>
         ))}
       </div>
-      <FilmPlayer key={base} base={base} format={format} language={language} />
+      <FilmPlayer
+        key={base}
+        base={base}
+        captions={`${media}/captions-${language}.vtt`}
+        format={format}
+        language={language}
+      />
     </section>
   );
 }
 
+// The film has no narration: all copy is rendered on screen, so the caption
+// track only describes the music.
 function FilmPlayer({
   base,
+  captions,
   format,
   language,
 }: {
   base: string;
+  captions: string;
   format: Format;
   language: "zh" | "en";
 }) {
@@ -70,7 +81,7 @@ function FilmPlayer({
       >
         <track
           kind="captions"
-          src={`${base}.vtt`}
+          src={captions}
           srcLang={language}
           label={language === "zh" ? "中文" : "English"}
         />

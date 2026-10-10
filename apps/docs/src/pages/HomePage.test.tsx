@@ -121,7 +121,7 @@ it("uses the shared highlighted code block and library copy control", async () =
   );
 });
 
-it("switches the film and captions with the site language and selected format", async () => {
+it("switches the film with the site language and selected format", async () => {
   const user = userEvent.setup();
   const { container } = renderHome();
   const video = () => container.querySelector("video")!;
@@ -138,7 +138,11 @@ it("switches the film and captions with the site language and selected format", 
         "Film-zh-portrait-1080p.mp4",
       ),
     );
-    expect(video().querySelector("track")).toHaveAttribute("srclang", "zh");
+    expect(video().querySelector("track")).toHaveAttribute(
+      "src",
+      expect.stringContaining("captions-zh.vtt"),
+    );
+    expect(screen.getByText("配乐 · 中文画面文字")).toBeInTheDocument();
     expect(video().getAttribute("poster")).toContain(
       "Film-zh-portrait-poster.jpg",
     );
