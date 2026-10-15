@@ -19,7 +19,7 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes (`pnpm test`) and the build works (`pnpm build`).
 5. Make sure your code lints, type-checks and is formatted (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`).
-6. If your change affects the published package `minerva-design` (anything under `packages/core`, `packages/react`, `packages/web-components` or `packages/minerva-design`), add a changeset for `minerva-design` with `pnpm changeset`.
+6. If your change affects the published package `minerva-design` (changes to public APIs, styles or runtime behavior in any `packages/*` renderer or core package), add a changeset for `minerva-design` with `pnpm changeset`.
 7. Issue that pull request!
 
 `.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. Real Chromium docs E2E runs after the production build (`pnpm exec playwright install chromium`, then `pnpm test:browser`). The existing `pnpm test:e2e` runs component workflows in happy-dom/RNTL; it does not certify browser or native-device rendering. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
@@ -34,33 +34,11 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 ## Releasing (maintainers)
 
-Releases are versioned with [Changesets](https://github.com/changesets/changesets) and **published to npm by hand** from a maintainer's machine. There is no publish automation: CI never publishes.
+Publish the prepared **1.0.0** manually once. Later releases run automatically from main after all CI jobs pass, using Changesets and npm Trusted Publishing (OIDC). Add a changeset for `minerva-design` to each release-worthy PR, including changes to any internal renderer; do not manually bump the package version.
 
-```bash
-# 0. Node 22 (.nvmrc), up-to-date main, clean working tree
-# 1. Version: apply pending .changeset/*.md (bump the version + write CHANGELOG.md)
-pnpm version-packages
-pnpm install            # refresh the lockfile
+Configure npm's GitHub Trusted Publisher for `fwx5618177/minerva-design` and workflow filename `ci.yml`, then set the GitHub repository variable `NPM_AUTO_RELEASE=true`. Without that switch, CI does not publish. Documentation-only changes without changesets skip publishing. The publish job commits version metadata to main before uploading, and uses a version tag after success.
 
-# 2. Review: git diff (version, changelog), then the CI checks
-pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
-pnpm test:dist && pnpm check:package
-(cd packages/minerva-design && npm pack --dry-run)   # lists what would be published, uploads nothing
-git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
-git commit -m "chore: release" && git push
-
-# 3. Log in to npm (account with publish rights on minerva-design, 2FA enabled)
-npm login --registry https://registry.npmjs.org/
-npm whoami --registry https://registry.npmjs.org/
-
-# 4. Publish: builds minerva-design, then `changeset publish`
-pnpm release            # add `--otp <code>` to pass the 2FA one-time password up front
-git push --follow-tags  # push the minerva-design@<version> tag
-```
-
-- `changeset publish` publishes `minerva-design` only, when its new version is not on npm yet; the `@minerva/*` workspace packages are private and listed in `ignore` of `.changeset/config.json`.
-- The published package sets `publishConfig.registry` to `https://registry.npmjs.org/` (a registry mirror in `~/.npmrc` is ignored for publishing) and `access: public`.
-- Published files come from `files` in `packages/minerva-design/package.json`: `dist/` (all public renderer entries and their required assets), `custom-elements.json`, `README.md`, `LICENSE` and `CHANGELOG.md`; tests and the docs site are excluded; the Native source entry is intentionally included. See the [README](./README.md#releasing-manual-npm-publishing) for the contents.
+Follow the [release guide](./docs/releasing.md) for the first manual release, exact account settings, branch permissions, validation and failed-upload recovery. Only `minerva-design` is public; internal workspace packages, documentation and videos are excluded from the npm package.
 
 ## Any contributions you make will be under the MIT Software License
 

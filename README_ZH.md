@@ -377,56 +377,13 @@ pnpm dev
 - CI：`.github/workflows/ci.yml` 在每次推送到 `main` 和每个 Pull Request 时，于 Node 22 下运行 lint、类型检查、格式检查、带覆盖率的测试、构建、构建产物测试和包检查
 - 文档部署：`.github/workflows/deploy.yml` 在每次推送到 `main` 时构建 `minerva-design` 和文档站点（`apps/docs`），并发布到 GitHub Pages
 
-### 发布（手动发布到 npm）
+### 发布（首次手动，后续 main 自动）
 
-版本与变更日志由 [Changesets](https://github.com/changesets/changesets) 管理。发布是**手动**的，由维护者在本机完成：CI 中没有发布流程（`.github/workflows/ci.yml` 只做校验，`deploy.yml` 只部署文档站点）。
+首个正式版为 **1.0.0**，由维护者手动执行 `pnpm release`。之后使用 Changesets 和 npm Trusted Publishing（OIDC）：功能 PR 携带 changeset，合并 main 后，CI 全部通过才自动升级版本、发布 npm 并推送版本标签。没有 changeset 的文档修改不发布。
 
-1. **为每个改动写 changeset**（在对应 PR 中）：`pnpm changeset`，选择 `minerva-design`（唯一发布的包；`@minerva/*` workspace 包是私有的且被忽略）的语义化版本级别，并提交生成的 `.changeset/*.md`。
-2. **更新版本**（在最新的 `main` 上，工作区干净）：
+自动发布默认关闭。首次发布成功后，在 npm 配置 GitHub Trusted Publisher（`fwx5618177/minerva-design`，工作流 **`ci.yml`**），再设置 GitHub Repository variable `NPM_AUTO_RELEASE=true`。不需要长期 npm Token。
 
-   ```bash
-   pnpm version-packages   # changeset version：更新版本号、写入 CHANGELOG.md，并消费 .changeset/*.md
-   pnpm install            # 刷新 lockfile
-   ```
-
-3. **审查**，确认无误后再发布：`git diff`（版本号、CHANGELOG 条目），然后在 Node 22（`.nvmrc`）下运行与 CI 相同的检查：
-
-   ```bash
-   pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
-   pnpm test:dist && pnpm check:package
-   (cd packages/minerva-design && npm pack --dry-run)   # 查看将发布的内容，不会上传任何东西
-   git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
-   git commit -m "chore: release" && git push
-   ```
-
-4. **登录 npm**：使用拥有 `minerva-design` 发布权限、并已开启双重验证（2FA）的账号：
-
-   ```bash
-   npm login --registry https://registry.npmjs.org/
-   npm whoami --registry https://registry.npmjs.org/
-   ```
-
-   该包的 `publishConfig.registry` 指向 `https://registry.npmjs.org/`，因此即使 `~/.npmrc` 配置了镜像（如 npmmirror），发布也不会走镜像。
-
-5. **发布**：
-
-   ```bash
-   pnpm release            # 构建 minerva-design，然后执行 `changeset publish`
-   git push --follow-tags  # 推送 changeset publish 创建的 minerva-design@<版本> tag
-   ```
-
-   `changeset publish` 只在 npm 上尚不存在该版本时发布 `minerva-design`（私有包永远不会发布）。开启写操作 2FA 时，npm 会提示输入一次性密码（也可以直接传入：`pnpm release --otp <code>`，该参数会转发给 `changeset publish`）。
-
-发布的内容（由 `packages/minerva-design/package.json` 的 `files` 决定；测试和文档站点不会被发布；Native 源码入口及小程序组件资产按运行需要随包发布）：
-
-| 目录                   | 内容                                                                                                                                                  |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dist/react/`          | React 入口：按模块的 ESM + CJS、`.d.ts` / `.d.cts`、`style.css`、按组件的 `styles/*.css`、`prose.scss`、`./monaco`、`./theme-utils` 与 `./utils` 入口 |
-| `dist/core/`           | 两个组件库共用的框架无关核心（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）                                                                           |
-| `dist/web-components/` | 每个元素的 ESM、`elements/*` 入口（含可选的 `code-editor`）、`cdn/minerva.js`、`types/` 中的框架类型、`html-custom-data.json`                         |
-| 包根目录               | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                        |
-
-workspace 包（`@minerva/core`、`@minerva/dom`、`@minerva/react`、`@minerva/web-components`、各平台渲染器 `@minerva/{vue,angular,native,taro,weapp,uni}` 以及 `@minerva/docs`）都是私有包，永远不会发布。
+完整命令、一次性账号配置、分支权限和失败恢复见 [npm 发布流程](docs/releasing.md)。唯一公开包是 `packages/minerva-design`；其他 workspace 包和文档站保持私有，视频资源不会进入 npm 包。
 
 ## 🤝 贡献
 

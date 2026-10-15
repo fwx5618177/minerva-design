@@ -441,56 +441,13 @@ pnpm dev
 - CI: `.github/workflows/ci.yml` runs lint, typecheck, format check, tests with coverage, build, built-package tests and package checks on Node 22 for every push to `main` and every pull request
 - Docs deployment: `.github/workflows/deploy.yml` builds `minerva-design` and the docs site (`apps/docs`) and publishes it to GitHub Pages on every push to `main`
 
-### Releasing (manual npm publishing)
+### Releasing (manual first release, automated releases from main)
 
-Versioning and changelogs are managed with [Changesets](https://github.com/changesets/changesets). Publishing is **manual**, from a maintainer's machine: there is no publish workflow in CI (`.github/workflows/ci.yml` only verifies, `deploy.yml` only deploys the docs site).
+The first stable version is **1.0.0**, published manually with `pnpm release`. Subsequent changes use Changesets and npm Trusted Publishing (OIDC): include a changeset in the feature PR, merge to main, and CI versions, validates, publishes and tags the package after all checks pass. Documentation-only changes without a changeset do not publish.
 
-1. **Describe each change** (in its PR): `pnpm changeset`, pick the semver bump of `minerva-design` (the only published package; the `@minerva/*` workspace packages are private and ignored); commit the generated `.changeset/*.md`.
-2. **Version** (on an up-to-date `main`, clean working tree):
+Automatic publishing is off by default. After publishing 1.0.0, configure an npm GitHub Trusted Publisher for `fwx5618177/minerva-design`, workflow filename **`ci.yml`**, and set the GitHub repository variable `NPM_AUTO_RELEASE=true`. No long-lived npm token is needed.
 
-   ```bash
-   pnpm version-packages   # changeset version: bumps the version, writes CHANGELOG.md, consumes .changeset/*.md
-   pnpm install            # refresh the lockfile
-   ```
-
-3. **Review** the result before anything leaves your machine: `git diff` (version, CHANGELOG entries), then run the same checks as CI on Node 22 (`.nvmrc`):
-
-   ```bash
-   pnpm lint && pnpm build && pnpm typecheck && pnpm format:check && pnpm test:coverage
-   pnpm test:dist && pnpm check:package
-   (cd packages/minerva-design && npm pack --dry-run)   # what would be published, nothing is uploaded
-   git add .changeset packages/minerva-design/package.json packages/minerva-design/CHANGELOG.md pnpm-lock.yaml
-   git commit -m "chore: release" && git push
-   ```
-
-4. **Log in to npm** with an account that can publish `minerva-design`, with two-factor authentication enabled:
-
-   ```bash
-   npm login --registry https://registry.npmjs.org/
-   npm whoami --registry https://registry.npmjs.org/
-   ```
-
-   The package sets `publishConfig.registry` to `https://registry.npmjs.org/`, so a mirror configured in `~/.npmrc` (e.g. npmmirror) is not used for publishing.
-
-5. **Publish**:
-
-   ```bash
-   pnpm release            # builds minerva-design, then `changeset publish`
-   git push --follow-tags  # push the minerva-design@<version> tag created by changeset publish
-   ```
-
-   `changeset publish` only publishes `minerva-design` when its version is not on npm yet (private packages are never published). With 2FA enabled for writes, npm prompts for a one-time password (or pass it up front: `pnpm release --otp <code>`, the argument is forwarded to `changeset publish`).
-
-What the package publishes (`files` in `packages/minerva-design/package.json`; tests and the docs site are excluded; the Native source entry and mini-program component assets are included where required):
-
-| Folder                 | Contents                                                                                                                                                                    |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dist/react/`          | The React entries: ESM + CJS per module, `.d.ts` / `.d.cts`, `style.css`, per-component `styles/*.css`, `prose.scss`, the `./monaco`, `./theme-utils` and `./utils` entries |
-| `dist/core/`           | The framework-agnostic core shared by both libraries (ESM + CJS, `.d.ts` / `.d.cts`, `tokens.css`)                                                                          |
-| `dist/web-components/` | ESM per element, `elements/*` entries incl. the optional `code-editor`, `cdn/minerva.js`, framework typings in `types/`, `html-custom-data.json`                            |
-| package root           | `custom-elements.json`, `README.md`, `LICENSE`, `CHANGELOG.md`                                                                                                              |
-
-The workspace packages (`@minerva/core`, `@minerva/dom`, `@minerva/react`, `@minerva/web-components`, the platform renderers `@minerva/{vue,angular,native,taro,weapp,uni}` and `@minerva/docs`) are private and never published.
+See the [release guide](docs/releasing.md) for commands, account setup, branch permissions and failure recovery. Only `packages/minerva-design` is public; internal workspace packages, documentation and promotional media are not published to npm.
 
 ## 🤝 Contributing
 
