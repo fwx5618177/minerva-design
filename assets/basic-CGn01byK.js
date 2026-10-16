@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{t as n}from"./native-preview-CSBhExSa.js";import{V as r}from"./native-preview-pFjnTzer.js";function i(){return(0,a.jsx)(r,{label:`Notes`,placeholder:`Add a note`,maxLength:200,showCharCount:!0})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
