@@ -64,3 +64,4 @@ export type { AvatarSize } from "./Avatar";
 export * from "./Select";
 export * from "./Rating";
 export * from "./MonthCalendar";
+export * from "./DatePicker";

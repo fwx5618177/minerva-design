@@ -1,0 +1,234 @@
+// Public CSS variables (set them on the date picker or any ancestor; the
+// panel is portaled, so set its variables on :root or the popup class):
+// @css-var --date-picker-width Width of the field
+// @css-var --date-picker-panel-width Width of the popup calendar panel
+// @css-var --date-picker-panel-radius Corner radius of the popup panel (defaults to --radius-lg)
+// @css-var --date-picker-panel-padding Inner padding of the popup panel
+// @css-var --date-picker-cell-size Width and height of a day cell in the popup grid
+.datePicker {
+  display: inline-block;
+  position: relative;
+  width: var(--date-picker-width, 100%);
+
+  .clearButton {
+    opacity: 0.45;
+    transition: opacity var(--transition-base);
+    color: var(--text-secondary-color);
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+      color: var(--text-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+  }
+
+  &:hover .clearButton {
+    opacity: 0.8;
+  }
+
+  .calendarIcon {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--space-1-5);
+    color: var(--text-secondary-color);
+  }
+}
+
+.popup {
+  z-index: var(--z-dropdown);
+  outline: none;
+}
+
+.panel {
+  width: var(--date-picker-panel-width, 17.5rem);
+  padding: var(--date-picker-panel-padding, var(--space-3));
+  border: 1px solid var(--border-color);
+  border-radius: var(--date-picker-panel-radius, var(--radius-lg));
+  background: var(--surface-elevated-color, var(--surface-color));
+  box-shadow: var(--shadow-lg);
+  color: var(--text-color);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height-sm, 1.75rem);
+  height: var(--control-height-sm, 1.75rem);
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--hover-color);
+    border-color: var(--border-strong-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+  }
+}
+
+.grid {
+  width: 100%;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.weekday {
+  padding-block: var(--space-1);
+  text-align: center;
+  color: var(--text-muted-color);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--date-picker-cell-size, 2rem);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-color);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+
+  &:hover:not([aria-disabled="true"]) {
+    background: var(--hover-color);
+  }
+
+  &[data-outside] {
+    color: var(--text-disabled-color);
+  }
+
+  &[aria-current="date"] {
+    border-color: var(--primary-color);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &[aria-selected="true"] {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: var(--text-inverse-color);
+    font-weight: var(--font-weight-semibold);
+
+    &:hover {
+      background: var(--primary-color-hover, var(--primary-color));
+    }
+  }
+
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-color);
+}
+
+.footerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height-sm, 1.75rem);
+  padding: 0 var(--space-2-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--primary-color-text, var(--primary-color));
+  font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--hover-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navButton,
+  .day,
+  .footerButton {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .day[aria-selected="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

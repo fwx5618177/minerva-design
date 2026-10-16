@@ -45,6 +45,7 @@ const EXPECTED_EXPORTS = [
   "Skeleton",
   "Switch",
   "Tag",
+  "DatePicker",
   "TimePicker",
   "Tooltip",
   "VirtualList",

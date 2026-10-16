@@ -4,6 +4,7 @@ import {
   dayKey,
   localDate,
   monthStart,
+  parseDayKey,
   sameMonth,
 } from "./calendar-date";
 
@@ -36,5 +37,14 @@ describe("calendar dates", () => {
     expect(sameMonth(date, localDate(2024, 0, 31))).toBe(true);
     expect(sameMonth(date, localDate(2023, 0, 15))).toBe(false);
     expect(sameMonth(date, localDate(2024, 1, 15))).toBe(false);
+  });
+
+  it("parses valid day keys and rejects invalid calendar dates", () => {
+    expect(dayKey(parseDayKey("2026-12-31")!)).toBe("2026-12-31");
+    expect(parseDayKey("2026-2-5")).toBeNull();
+    expect(dayKey(parseDayKey("2026-2-5", false)!)).toBe("2026-02-05");
+    expect(parseDayKey("2026-02-30", false)).toBeNull();
+    expect(parseDayKey("2026-13-01", false)).toBeNull();
+    expect(parseDayKey("not-a-date", false)).toBeNull();
   });
 });

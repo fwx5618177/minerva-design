@@ -34,3 +34,28 @@ export function monthStart(date: Date, offset = 0): Date {
 export function sameMonth(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }
+
+const STRICT_DAY_KEY = /^(\d{4})-(\d{2})-(\d{2})$/;
+const LOOSE_DAY_KEY = /^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/;
+
+/**
+ * Parses a `"YYYY-MM-DD"` string (or `"YYYY-M-D"` when `strict` is `false`)
+ * into local midnight, rejecting out-of-range months and days (e.g. Feb 30).
+ */
+export function parseDayKey(text: string, strict = true): Date | null {
+  const match = (strict ? STRICT_DAY_KEY : LOOSE_DAY_KEY).exec(text);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const date = localDate(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+  return date;
+}

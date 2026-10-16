@@ -566,6 +566,7 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     "TimePicker",
     <lib.TimePicker defaultValue={new Date(2024, 0, 1, 9, 30, 0)} />,
   ],
+  ["DatePicker", <lib.DatePicker defaultValue="2026-10-17" />],
   [
     "Tooltip",
     <lib.Tooltip content="Tip" defaultOpen>
