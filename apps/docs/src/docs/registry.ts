@@ -530,6 +530,22 @@ export const docPages: DocPageMeta[] = [
       demos: ["basic"],
     },
   },
+  {
+    id: "date-picker",
+    cssVars: ["DatePicker"],
+    category: "dataEntry",
+    exports: ["DatePicker"],
+    api: ["DatePickerProps"],
+    demos: [
+      "basic",
+      "default-value",
+      "controlled",
+      "min-max",
+      "sizes",
+      "disabled",
+      "form-control",
+    ],
+  },
 
   // Data display
   {

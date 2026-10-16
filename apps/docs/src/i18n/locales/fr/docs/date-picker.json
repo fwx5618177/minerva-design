@@ -1,0 +1,76 @@
+{
+  "title": "DatePicker",
+  "description": "Sélectionne une date dans une grille mensuelle surgissante commençant le lundi, ou par saisie au format AAAA-MM-JJ.",
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Cliquez sur le champ (ou appuyez sur Flèche bas) pour ouvrir le calendrier surgissant. onChange reçoit une chaîne \"YYYY-MM-DD\", ou \"\" après effacement. Sans label, le champ est nommé \"Date\"."
+    },
+    "default-value": {
+      "title": "Valeur par défaut et effacement",
+      "description": "defaultValue définit la date initiale. Le bouton d'effacement est libellé \"Clear date\" (effacer la date) ; utilisez clearable={false} pour le masquer."
+    },
+    "controlled": {
+      "title": "Contrôlé",
+      "description": "Passez value et mettez-la à jour dans onChange. \"\" ou null garde le sélecteur contrôlé mais vide, tandis qu'undefined le rend non contrôlé."
+    },
+    "min-max": {
+      "title": "Plage de dates",
+      "description": "minDate et maxDate (\"YYYY-MM-DD\") désactivent les dates hors de la plage autorisée."
+    },
+    "sizes": {
+      "title": "Tailles",
+      "description": "Trois tailles : small, medium (par défaut) et large."
+    },
+    "disabled": {
+      "title": "Désactivé et lecture seule",
+      "description": "Un sélecteur désactivé ou en lecture seule ne peut être ni ouvert ni modifié."
+    },
+    "form-control": {
+      "title": "Avec FormField",
+      "description": "Dans un FormControl / FormField, DatePicker hérite de l'id, du libellé, du texte d'aide / d'erreur et des états required, disabled, readOnly et invalid."
+    }
+  },
+  "api": {
+    "DatePickerProps": {
+      "ref": "Ref vers l'élément <input>",
+      "value": "Date sélectionnée au format \"YYYY-MM-DD\" (contrôlé ; à associer à onChange). \"\" ou null signifie « aucune date » tout en restant contrôlé ; undefined rend le sélecteur non contrôlé",
+      "defaultValue": "Date sélectionnée initialement au format \"YYYY-MM-DD\" (non contrôlé)",
+      "onChange": "Appelé avec la date sélectionnée (\"YYYY-MM-DD\"), ou \"\" quand la valeur est effacée",
+      "placeholder": "Texte indicatif du champ ; par défaut \"Select date\" traduit selon la langue",
+      "label": "Étiquette visible du champ ; sans elle, le champ est libellé \"Date\" (traduit)",
+      "aria-label": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
+      "aria-labelledby": "Id(s) du ou des éléments qui libellent le champ ; dans un FormControl, pointe par défaut vers le FormLabel (sauf si label / aria-label est défini)",
+      "aria-describedby": "Id(s) du ou des éléments qui décrivent le champ ; fusionné avec le texte d'aide / d'erreur d'un FormControl englobant",
+      "id": "Id du champ ; par défaut, l'id du FormControl englobant",
+      "required": "Marque le champ comme obligatoire ; par défaut, l'état du FormControl englobant",
+      "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement) ; par défaut, l'état du FormControl englobant",
+      "invalid": "Marque le champ comme invalide (aria-invalid) ; par défaut, l'état du FormControl englobant",
+      "name": "Nom du champ",
+      "onOpenChange": "Appelé quand le calendrier surgissant s'ouvre ou se ferme",
+      "disabled": "Désactive le sélecteur ; par défaut, l'état du FormControl englobant",
+      "clearable": "Permet d'effacer la valeur avec le bouton de suffixe",
+      "size": "Taille du champ",
+      "minDate": "Date minimale sélectionnable (\"YYYY-MM-DD\") ; les jours antérieurs sont désactivés",
+      "maxDate": "Date maximale sélectionnable (\"YYYY-MM-DD\") ; les jours postérieurs sont désactivés",
+      "locale": "Locale du titre du mois (Intl.DateTimeFormat)",
+      "className": "Classe CSS supplémentaire",
+      "style": "Styles en ligne de l'élément racine"
+    }
+  },
+  "keyboard": {
+    "title": "Clavier et accessibilité",
+    "open": "Flèche bas sur le champ ouvre le calendrier surgissant et déplace le focus sur la cellule du jour actif ; un clic à l'extérieur le ferme.",
+    "navigate": "Les touches fléchées, Début / Fin et Page préc. / suiv. (avec Maj : un an) déplacent le focus dans la grille du calendrier.",
+    "select": "Entrée ou Espace choisit le jour qui a le focus et ferme le panneau.",
+    "close": "Échap ferme le panneau et rend le focus au champ.",
+    "typing": "Le texte saisi est validé dès qu'il forme une date YYYY-MM-DD complète dans la plage ; à la perte du focus, les formats souples comme YYYY/M/D sont normalisés."
+  },
+  "cssVars": {
+    "--date-picker-width": "Largeur du champ",
+    "--date-picker-panel-width": "Largeur du panneau de calendrier surgissant",
+    "--date-picker-panel-radius": "Rayon des coins du panneau surgissant (par défaut --radius-lg)",
+    "--date-picker-panel-padding": "Marge intérieure du panneau surgissant",
+    "--date-picker-cell-size": "Largeur et hauteur d'une cellule de jour dans la grille surgissante"
+  }
+}

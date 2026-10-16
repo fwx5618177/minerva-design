@@ -2971,6 +2971,32 @@
       }
     ]
   },
+  "css:DatePicker": {
+    "kind": "cssVars",
+    "source": "react/src/components/DatePicker",
+    "vars": [
+      {
+        "name": "--date-picker-width",
+        "description": "Width of the field"
+      },
+      {
+        "name": "--date-picker-panel-width",
+        "description": "Width of the popup calendar panel"
+      },
+      {
+        "name": "--date-picker-panel-radius",
+        "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--date-picker-panel-padding",
+        "description": "Inner padding of the popup panel"
+      },
+      {
+        "name": "--date-picker-cell-size",
+        "description": "Width and height of a day cell in the popup grid"
+      }
+    ]
+  },
   "css:DescriptionList": {
     "kind": "cssVars",
     "source": "react/src/components/DescriptionList",
@@ -4536,6 +4562,161 @@
         "required": false,
         "default": "\"Retry\" (localized)",
         "description": "Text of the retry button"
+      }
+    ]
+  },
+  "DatePickerProps": {
+    "source": "react/src/components/DatePicker/types.ts",
+    "description": "Props of DatePicker; `data-*` attributes are forwarded to the root element",
+    "kind": "interface",
+    "extends": [
+      "DataAttributes"
+    ],
+    "props": [
+      {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false,
+        "description": "Ref to the <input> element"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": false,
+        "description": "Selected date as `\"YYYY-MM-DD\"` (controlled; pair with `onChange`). `\"\"` or `null` means \"no date\" while staying controlled; `undefined` makes the picker uncontrolled."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Initially selected date as `\"YYYY-MM-DD\"` (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the selected date (`\"YYYY-MM-DD\"`), or `\"\"` when the value is cleared"
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "\"Select date\" (localized)",
+        "description": "Placeholder of the input"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Visible label of the input; without it the input is labelled \"Date\" (localized)"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the input when no visible label is shown"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the input; defaults to the id of an enclosing FormControl"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as required; defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"date-picker\"",
+        "description": "Name of the input"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false,
+        "description": "Called when the popup calendar opens or closes"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the picker; defaults to the enclosing FormControl's state"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Allows clearing the value with the suffix button"
+      },
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Size of the input"
+      },
+      {
+        "name": "minDate",
+        "type": "string",
+        "required": false,
+        "description": "Earliest selectable date (`\"YYYY-MM-DD\"`); earlier days are disabled"
+      },
+      {
+        "name": "maxDate",
+        "type": "string",
+        "required": false,
+        "description": "Latest selectable date (`\"YYYY-MM-DD\"`); later days are disabled"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the library language",
+        "description": "Locale of the month heading (`Intl.DateTimeFormat`)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
       }
     ]
   },
