@@ -443,9 +443,9 @@ pnpm dev
 
 ### Releasing (manual first release, automated releases from main)
 
-The first stable version is **1.0.0**, published manually with `pnpm release`. Subsequent changes use Changesets and npm Trusted Publishing (OIDC): include a changeset in the feature PR, merge to main, and CI versions, validates, publishes and tags the package after all checks pass. Documentation-only changes without a changeset do not publish.
+The first stable version is **1.0.0**, published manually with `pnpm release`. Subsequent pushes to `main` are automatically versioned and published by CI after all checks pass: you can either include a `.changeset/*.md` file or let CI automatically infer `patch` / `minor` / `major` from Conventional Commit messages since the last release tag.
 
-Automatic publishing is off by default. After publishing 1.0.0, configure an npm GitHub Trusted Publisher for `fwx5618177/minerva-design`, workflow filename **`ci.yml`**, and set the GitHub repository variable `NPM_AUTO_RELEASE=true`. No long-lived npm token is needed.
+Automatic publishing on `main` is enabled by default (`vars.NPM_AUTO_RELEASE != 'false'`). Configure an npm GitHub Trusted Publisher for `fwx5618177/minerva-design`, workflow filename **`ci.yml`** (or provide `NPM_TOKEN` in GitHub Secrets). Set `NPM_AUTO_RELEASE=false` only when you need to pause automatic releases.
 
 See the [release guide](docs/releasing.md) for commands, account setup, branch permissions and failure recovery. Only `packages/minerva-design` is public; internal workspace packages, documentation and promotional media are not published to npm.
 

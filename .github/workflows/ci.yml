@@ -108,7 +108,7 @@ jobs:
     if: >-
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      vars.NPM_AUTO_RELEASE == 'true'
+      vars.NPM_AUTO_RELEASE != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -163,10 +163,14 @@ jobs:
         if: steps.plan.outputs.mode == 'version' || steps.plan.outputs.mode == 'publish'
         env:
           RELEASE_VERSION: ${{ steps.plan.outputs.version }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
           mkdir -p "$GITHUB_WORKSPACE/.artifacts/npm"
           pnpm --filter minerva-design pack --pack-destination "$GITHUB_WORKSPACE/.artifacts/npm"
+          if [ -n "$NPM_TOKEN" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          fi
           npm publish "$GITHUB_WORKSPACE/.artifacts/npm/minerva-design-$RELEASE_VERSION.tgz" --access public --registry https://registry.npmjs.org/
       - name: Tag the published commit (safe to retry)
         if: steps.plan.outputs.mode != 'skip'

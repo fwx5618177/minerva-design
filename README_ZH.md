@@ -379,9 +379,9 @@ pnpm dev
 
 ### 发布（首次手动，后续 main 自动）
 
-首个正式版为 **1.0.0**，由维护者手动执行 `pnpm release`。之后使用 Changesets 和 npm Trusted Publishing（OIDC）：功能 PR 携带 changeset，合并 main 后，CI 全部通过才自动升级版本、发布 npm 并推送版本标签。没有 changeset 的文档修改不发布。
+首个正式版为 **1.0.0**，由维护者手动执行 `pnpm release`。之后每次推送或合并到 `main`，在 CI 全部通过后都会自动升级版本、提交 release 元数据、发布 npm 并推送版本标签：既可以在 PR 中携带 `.changeset/*.md`，也可以直接推送到 `main` 由 CI 根据自上次发布标签以来的 Conventional Commits（`feat` → minor、破坏性变更 → major、其余 → patch）自动生成版本升级。
 
-自动发布默认关闭。首次发布成功后，在 npm 配置 GitHub Trusted Publisher（`fwx5618177/minerva-design`，工作流 **`ci.yml`**），再设置 GitHub Repository variable `NPM_AUTO_RELEASE=true`。不需要长期 npm Token。
+`main` 分支自动发布默认开启（`vars.NPM_AUTO_RELEASE != 'false'`）。在 npm 配置 GitHub Trusted Publisher（`fwx5618177/minerva-design`，工作流 **`ci.yml`**）或配置 `NPM_TOKEN` Secret 即可。如需临时暂停自动发版，可将 GitHub Repository variable `NPM_AUTO_RELEASE` 设为 `false`。
 
 完整命令、一次性账号配置、分支权限和失败恢复见 [npm 发布流程](docs/releasing.md)。唯一公开包是 `packages/minerva-design`；其他 workspace 包和文档站保持私有，视频资源不会进入 npm 包。
 

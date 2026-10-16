@@ -1,6 +1,11 @@
 // Plan only: publishing and Git mutations are explicit steps in ci.yml.
 import { execFileSync } from "node:child_process";
-import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
+import {
+  appendFileSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { pathToFileURL } from "node:url";
 
 const stable = (version) => {
@@ -14,6 +19,28 @@ const compare = (a, b) => {
   const right = stable(b);
   return left[0] - right[0] || left[1] - right[1] || left[2] - right[2];
 };
+
+export function inferBump(commits = []) {
+  if (
+    commits.some(
+      (msg) =>
+        /^[a-z]+(\([^)]*\))?!:/i.test(msg) || /BREAKING CHANGE/i.test(msg),
+    )
+  ) {
+    return "major";
+  }
+  if (commits.some((msg) => /^feat(\([^)]*\))?:/i.test(msg))) {
+    return "minor";
+  }
+  return "patch";
+}
+
+export function bumpVersion(version, bump = "patch") {
+  const [major, minor, patch] = stable(version);
+  if (bump === "major") return `${major + 1}.0.0`;
+  if (bump === "minor") return `${major}.${minor + 1}.0`;
+  return `${major}.${minor}.${patch + 1}`;
+}
 
 export async function readRegistry(request = fetch) {
   const response = await request("https://registry.npmjs.org/minerva-design", {
@@ -34,6 +61,7 @@ export function releasePlan({
   releases,
   isCurrentMain,
   isReleaseCommit = false,
+  commits = [],
 }) {
   if (!isCurrentMain)
     return {
@@ -62,10 +90,18 @@ export function releasePlan({
       );
     return { mode: "publish", version };
   }
-  if (!releases.length)
-    return isReleaseCommit
-      ? { mode: "tag", version }
-      : { mode: "skip", reason: "No pending changesets" };
+  if (!releases.length) {
+    if (isReleaseCommit) return { mode: "tag", version };
+    const bump = inferBump(commits);
+    const nextVersion = bumpVersion(latest, bump);
+    const summary =
+      commits.filter(Boolean).join("\n") || "Automated release from main.";
+    return {
+      mode: "version",
+      version: nextVersion,
+      autoChangeset: { bump, summary },
+    };
+  }
   if (releases.length !== 1 || compare(releases[0].newVersion, latest) <= 0) {
     throw new Error("Changesets must advance the published stable version");
   }
@@ -108,15 +144,36 @@ async function main() {
     const { version } = JSON.parse(
       readFileSync("packages/minerva-design/package.json", "utf8"),
     );
+    const tag = `minerva-design@${version}`;
+    let hasTag = false;
+    try {
+      run("git", "rev-parse", "--verify", "--quiet", `refs/tags/${tag}`);
+      hasTag = true;
+    } catch {
+      // Tag does not exist yet
+    }
+    const logOutput = hasTag
+      ? run("git", "log", `${tag}..HEAD`, "--format=%s")
+      : run("git", "log", "-1", "--format=%s");
+    const commits = logOutput ? logOutput.split("\n").filter(Boolean) : [];
+    const headSubject = run("git", "log", "-1", "--format=%s");
+    const isReleaseCommit =
+      headSubject === `chore: release minerva-design ${version}` ||
+      (hasTag && commits.length === 0);
     plan = releasePlan({
       version,
       releases,
       registry: await readRegistry(),
       isCurrentMain: true,
-      isReleaseCommit:
-        run("git", "log", "-1", "--format=%s") ===
-        `chore: release minerva-design ${version}`,
+      isReleaseCommit,
+      commits,
     });
+    if (plan.autoChangeset) {
+      writeFileSync(
+        ".changeset/auto-release.md",
+        `---\n"minerva-design": ${plan.autoChangeset.bump}\n---\n\n${plan.autoChangeset.summary}\n`,
+      );
+    }
   }
   console.log(JSON.stringify(plan));
   appendFileSync(

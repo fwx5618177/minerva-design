@@ -74,31 +74,23 @@
 | Environment name          | 留空（此工作流未设置 environment） |
 | Allowed actions（若显示） | 允许直接 `npm publish`             |
 
-该流程使用 GitHub 托管 runner 和 npm OIDC，不需要创建 `NPM_TOKEN` / `NODE_AUTH_TOKEN` Secret。工作流仅发布 job 拥有 `id-token: write`，会安装 npm 11；其余工具仍使用 pnpm。公开仓库通过 Trusted Publishing 发布时 npm 自动附加 provenance。
-
-然后在 GitHub 仓库 Settings → Secrets and variables → Actions → **Variables** 新建：
+该流程默认在 `main` 分支开启（`vars.NPM_AUTO_RELEASE != 'false'`），优先使用 GitHub 托管 runner 和 npm OIDC（也兼容 `NPM_TOKEN` Secret）。需要临时暂停自动发布时，可在 GitHub 仓库 Settings → Secrets and variables → Actions → **Variables** 设置：
 
 ```text
-NPM_AUTO_RELEASE = true
+NPM_AUTO_RELEASE = false
 ```
-
-这是 Repository variable，不是 Secret。建议最后才打开它。需要暂停发布时将它改为 `false`；不会中断已经开始的上传。
 
 自动发布 job 通过 `GITHUB_TOKEN` 将版本号、CHANGELOG 和消费后的 changeset 提交回 main，并推送版本 tag。若 main 或 tag 有保护规则禁止该机器人写入，需要按组织规则配置最小范围的机器人写入权限；不要直接关闭 main 的整体保护。仓库显式声明 `contents: write`，仍受组织策略限制。若规则不允许机器人直接更新 main，应改用发布 PR 流程；当前流程会在 npm 上传前因推送失败而停止。
 
 参考：[npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/)。
 
-## 三、之后每次合并 main 自动发布
+## 三、之后每次推送/合并 main 自动发布
 
-1. 在功能分支开发，并添加 changeset：
+1. 推送或合并代码到 `main`：
+   - **自动推导（默认）**：无需手写 changeset，CI 会自动读取自上一个 `minerva-design@<version>` 标签以来的提交信息，按 Conventional Commits 规则推导版本级别（含 `feat` 升 `minor`、含 `!:` 或 `BREAKING CHANGE` 升 `major`、其余升 `patch`），自动生成变更说明并升级版本。
+   - **显式指定（可选）**：如需自定义发布说明或指定跨级版本，可执行 `pnpm changeset` 生成 `.changeset/*.md` 并随代码一起提交。**不用手动修改 package.json 版本，不用手动运行 version-packages。**
 
-   ```bash
-   pnpm changeset
-   ```
-
-   选择 `minerva-design`，选择 patch / minor / major，填写用户可见的变更说明。将生成的 `.changeset/*.md` 与代码一起提交到 PR。**不用手动修改 package.json 版本，不用手动运行 version-packages。**
-
-2. 合并到 main。流水线自动完成：
+2. 推送到 `main` 后，流水线自动完成：
 
    ```text
    CI verify + Taro/uni SDK 构建全部通过

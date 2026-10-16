@@ -36,7 +36,7 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 Publish the prepared **1.0.0** manually once. Later releases run automatically from main after all CI jobs pass, using Changesets and npm Trusted Publishing (OIDC). Add a changeset for `minerva-design` to each release-worthy PR, including changes to any internal renderer; do not manually bump the package version.
 
-Configure npm's GitHub Trusted Publisher for `fwx5618177/minerva-design` and workflow filename `ci.yml`, then set the GitHub repository variable `NPM_AUTO_RELEASE=true`. Without that switch, CI does not publish. Documentation-only changes without changesets skip publishing. The publish job commits version metadata to main before uploading, and uses a version tag after success.
+Configure npm's GitHub Trusted Publisher for `fwx5618177/minerva-design` and workflow filename `ci.yml` (or set `NPM_TOKEN` in repository secrets). Automated publishing is enabled by default on `main` (set `NPM_AUTO_RELEASE=false` to pause). If no explicit changeset is present, CI automatically infers `patch` / `minor` / `major` from commits since the last release tag. The publish job commits version metadata to main before uploading, and pushes a version tag after success.
 
 Follow the [release guide](./docs/releasing.md) for the first manual release, exact account settings, branch permissions, validation and failed-upload recovery. Only `minerva-design` is public; internal workspace packages, documentation and videos are excluded from the npm package.
 

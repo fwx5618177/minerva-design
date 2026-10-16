@@ -11,8 +11,47 @@ test("first release must be published manually even if automatic publishing is e
     /manually/,
   );
 });
-test("docs-only changes do not publish an already published version", () => {
-  assert.equal(releasePlan(input).mode, "skip");
+test("main pushes without explicit changesets auto-bump patch by default or minor/major from commits", () => {
+  assert.deepEqual(releasePlan(input), {
+    mode: "version",
+    version: "1.0.2",
+    autoChangeset: {
+      bump: "patch",
+      summary: "Automated release from main.",
+    },
+  });
+  assert.deepEqual(
+    releasePlan({
+      ...input,
+      commits: [
+        "docs: add DatePicker documentation",
+        "feat(react): add DatePicker component",
+      ],
+    }),
+    {
+      mode: "version",
+      version: "1.1.0",
+      autoChangeset: {
+        bump: "minor",
+        summary:
+          "docs: add DatePicker documentation\nfeat(react): add DatePicker component",
+      },
+    },
+  );
+  assert.deepEqual(
+    releasePlan({
+      ...input,
+      commits: ["feat(react)!: remove legacy prop"],
+    }),
+    {
+      mode: "version",
+      version: "2.0.0",
+      autoChangeset: {
+        bump: "major",
+        summary: "feat(react)!: remove legacy prop",
+      },
+    },
+  );
 });
 test("a pending changeset versions the sole public package", () => {
   assert.deepEqual(
