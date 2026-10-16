@@ -245,6 +245,33 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       { options: [{ value: "global", label: "Global" }] },
     ),
   ],
+  "date-picker": [
+    example(
+      "Choose a date",
+      ["MnDatePicker"],
+      `<mn-date-picker label="Meeting date" [(value)]="date"/><output>{{date || 'No date selected'}}</output>`,
+      { date: null },
+    ),
+    example(
+      "Date range",
+      ["MnDatePicker"],
+      `<mn-date-picker label="October booking" [(value)]="date" minDate="2026-10-10" maxDate="2026-10-20"/><output>{{date}}</output>`,
+      { date: "2026-10-15" },
+    ),
+    example(
+      "Form field",
+      ["MnDatePicker", "MnFormControl", "MnFormLabel", "MnFormHelperText"],
+      `<mn-form-control required><mn-form-label>Birthday</mn-form-label><mn-date-picker [(value)]="date"/><mn-form-helper-text>Type YYYY-MM-DD or choose a day from the calendar.</mn-form-helper-text></mn-form-control>`,
+      { date: null },
+    ),
+    example(
+      "Disabled and read-only dates",
+      ["MnDatePicker"],
+      stack(
+        `<mn-date-picker label="Read-only date" defaultValue="2026-10-15" readOnly/><mn-date-picker label="Disabled date" defaultValue="2026-10-15" disabled/>`,
+      ),
+    ),
+  ],
   "time-picker": [
     example(
       "Choose a time",

@@ -4002,6 +4002,323 @@
       }
     ]
   },
+  "wc:minerva-date-picker": {
+    "kind": "element",
+    "source": "web-components/src/components/date-picker/date-picker.ts",
+    "className": "MinervaDatePicker",
+    "summary": "Date field with a keyboard-accessible popup calendar and inclusive date bounds.",
+    "description": "Type a calendar date or choose it from an accessible popup month grid. Form-associated: submits YYYY-MM-DD, supports required, reset and disabled fieldsets.",
+    "properties": [
+      {
+        "name": "name",
+        "attribute": "name",
+        "type": "string",
+        "default": "\"date-picker\"",
+        "description": "Name submitted with form data."
+      },
+      {
+        "name": "defaultValue",
+        "attribute": "value",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Initial date, restored by form reset."
+      },
+      {
+        "name": "open",
+        "attribute": "open",
+        "type": "boolean",
+        "default": "false",
+        "description": "Whether the calendar is open."
+      },
+      {
+        "name": "label",
+        "attribute": "label",
+        "type": "string | undefined",
+        "description": "Accessible field and popup label."
+      },
+      {
+        "name": "placeholder",
+        "attribute": "placeholder",
+        "type": "string | undefined",
+        "description": "Input placeholder; localized by default."
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Calendar heading locale."
+      },
+      {
+        "name": "size",
+        "attribute": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "default": "\"medium\"",
+        "description": "Input control size."
+      },
+      {
+        "name": "invalid",
+        "attribute": "invalid",
+        "type": "boolean",
+        "default": "false",
+        "description": "Error state."
+      },
+      {
+        "name": "readOnly",
+        "attribute": "readonly",
+        "type": "boolean",
+        "default": "false",
+        "description": "Prevents typing, selection and clearing."
+      },
+      {
+        "name": "hideClearButton",
+        "attribute": "hide-clear-button",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the clear action."
+      },
+      {
+        "name": "minDate",
+        "attribute": "min-date",
+        "type": "string | undefined",
+        "description": "Earliest selectable date, inclusive (YYYY-MM-DD)."
+      },
+      {
+        "name": "maxDate",
+        "attribute": "max-date",
+        "type": "string | undefined",
+        "description": "Latest selectable date, inclusive (YYYY-MM-DD)."
+      },
+      {
+        "name": "disabled",
+        "attribute": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables the control (not focusable, not submitted, not validated)"
+      },
+      {
+        "name": "required",
+        "attribute": "required",
+        "type": "boolean",
+        "default": "false",
+        "description": "The control must have a value for the form to be submitted"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Current date (YYYY-MM-DD), or empty; property assignment controls the current value."
+      },
+      {
+        "name": "valueAsDate",
+        "readonly": true,
+        "description": "Current date as a local Date, null when empty or invalid."
+      },
+      {
+        "name": "isDisabled",
+        "type": "boolean",
+        "readonly": true,
+        "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+      },
+      {
+        "name": "form",
+        "type": "HTMLFormElement | null",
+        "readonly": true,
+        "description": "The form owning the element"
+      },
+      {
+        "name": "labels",
+        "type": "NodeList | null",
+        "readonly": true,
+        "description": "`<label>` elements associated with the element"
+      },
+      {
+        "name": "validity",
+        "type": "ValidityState | undefined",
+        "readonly": true,
+        "description": "Validity state (same as `<input>.validity`)"
+      },
+      {
+        "name": "validationMessage",
+        "type": "string",
+        "readonly": true,
+        "description": "Message describing the current validation error (empty when valid)"
+      },
+      {
+        "name": "willValidate",
+        "type": "boolean",
+        "readonly": true,
+        "description": "Whether the element is a candidate for constraint validation"
+      }
+    ],
+    "methods": [
+      {
+        "name": "focus",
+        "signature": "(options?: FocusOptions) => void"
+      },
+      {
+        "name": "blur",
+        "signature": "() => void"
+      },
+      {
+        "name": "checkValidity",
+        "signature": "() => boolean",
+        "description": "Checks validity; fires `invalid` when invalid."
+      },
+      {
+        "name": "reportValidity",
+        "signature": "() => boolean",
+        "description": "Checks validity and shows the browser's validation message."
+      },
+      {
+        "name": "setCustomValidity",
+        "signature": "(message: string) => void",
+        "description": "Sets (or clears, with `\"\"`) a custom validation error."
+      },
+      {
+        "name": "formResetCallback",
+        "signature": "() => void"
+      },
+      {
+        "name": "formDisabledCallback",
+        "signature": "(disabled: boolean) => void"
+      },
+      {
+        "name": "formStateRestoreCallback",
+        "signature": "(state: string | File | FormData | null) => void"
+      }
+    ],
+    "events": [
+      {
+        "name": "change",
+        "description": "Native-like bubbling change after a committed date"
+      },
+      {
+        "name": "minerva-change",
+        "description": "Committed date, detail: { value }; empty string when cleared"
+      },
+      {
+        "name": "minerva-input",
+        "description": "Draft input text, detail: { value }"
+      },
+      {
+        "name": "minerva-open-change",
+        "description": "Cancelable popup change, detail: { open }"
+      },
+      {
+        "name": "minerva-clear",
+        "description": "Cleared date"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "Field wrapper"
+      },
+      {
+        "name": "control",
+        "description": "Input box"
+      },
+      {
+        "name": "input",
+        "description": "Native text input"
+      },
+      {
+        "name": "clear-button",
+        "description": "Clear action"
+      },
+      {
+        "name": "icon",
+        "description": "Calendar icon"
+      },
+      {
+        "name": "content",
+        "description": "Popup dialog"
+      },
+      {
+        "name": "day",
+        "description": "Calendar day cell"
+      }
+    ],
+    "cssProperties": [
+      {
+        "name": "--input-height",
+        "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--input-padding-x",
+        "description": "Horizontal padding of the text (every size)"
+      },
+      {
+        "name": "--input-radius",
+        "description": "Corner radius (defaults to --radius-lg)"
+      },
+      {
+        "name": "--input-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--input-background",
+        "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--input-border-color",
+        "description": "Border color at rest"
+      },
+      {
+        "name": "--input-focus-color",
+        "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+      },
+      {
+        "name": "--icon-button-color",
+        "description": "Icon color"
+      },
+      {
+        "name": "--icon-button-hover-bg",
+        "description": "Background on hover"
+      },
+      {
+        "name": "--icon-button-pressed-color",
+        "description": "Icon color of a pressed toggle"
+      },
+      {
+        "name": "--icon-button-pressed-bg",
+        "description": "Background of a pressed toggle"
+      },
+      {
+        "name": "--icon-button-size",
+        "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+      },
+      {
+        "name": "--icon-button-icon-size",
+        "description": "Font size of the icon (every size)"
+      },
+      {
+        "name": "--icon-button-radius",
+        "description": "Corner radius of the square shape (defaults to --radius-lg)"
+      },
+      {
+        "name": "--date-picker-width",
+        "description": "Width of the field"
+      },
+      {
+        "name": "--date-picker-panel-width",
+        "description": "Width of the popup calendar panel"
+      },
+      {
+        "name": "--date-picker-panel-radius",
+        "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--date-picker-panel-padding",
+        "description": "Inner padding of the popup panel"
+      },
+      {
+        "name": "--date-picker-cell-size",
+        "description": "Width and height of a day cell in the popup grid"
+      }
+    ]
+  },
   "wc:minerva-description-item": {
     "kind": "element",
     "source": "web-components/src/components/description-list/description-list.ts",

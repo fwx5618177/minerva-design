@@ -72,5 +72,88 @@
     "--date-picker-panel-radius": "Corner radius of the popup panel (defaults to --radius-lg)",
     "--date-picker-panel-padding": "Inner padding of the popup panel",
     "--date-picker-cell-size": "Width and height of a day cell in the popup grid"
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Native calendar",
+        "description": "Tap the field to open the calendar. Selecting a day commits a local YYYY-MM-DD string immediately; clearing emits an empty string. minDate and maxDate bound selection. The native field uses touch day buttons instead of text entry or a DOM keyboard grid."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "Bounded date selection",
+        "description": "Type YYYY-MM-DD or choose a date between October 10 and 20. minerva-change emits { value }; clearing emits an empty string. The value attribute initializes the field; form reset restores it."
+      }
+    },
+    "minerva-date-picker": {
+      "props": {
+        "open": "Whether the panel is open.",
+        "readOnly": "Shows the value without allowing changes (typing, panel, clearing).",
+        "hideClearButton": "Hides the clear button (clearable={false} in React).",
+        "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+        "form": "The form owning the element (read-only).",
+        "labels": "The <label> elements associated with the element.",
+        "validity": "Validity state (same as <input>.validity).",
+        "validationMessage": "Message describing the current validation error (empty when valid).",
+        "willValidate": "Whether the element takes part in constraint validation.",
+        "valueAsDate": "The selected date as a local Date, or null when empty or invalid."
+      },
+      "events": {
+        "change": "Same as minerva-change (native-like, bubbles).",
+        "minerva-change": "The date was committed, detail: { value } in YYYY-MM-DD format; an empty string when cleared.",
+        "minerva-input": "The draft input changed, detail: { value }.",
+        "minerva-open-change": "The user opened or closed the panel, detail: { open }; cancelable: preventDefault() keeps the current state.",
+        "minerva-clear": "The date was cleared."
+      },
+      "cssVars": {
+        "--input-height": "Minimum height of the field (defaults to the density's control height for the size).",
+        "--input-padding-x": "Horizontal padding of the text.",
+        "--input-radius": "Corner radius of the field (defaults to --radius-lg).",
+        "--input-font-size": "Font size of the field.",
+        "--input-background": "Background color of the field.",
+        "--input-border-color": "Border color at rest.",
+        "--input-focus-color": "Border color while hovered or focused.",
+        "--icon-button-color": "Color of the clear button icon.",
+        "--icon-button-hover-bg": "Background of the clear button on hover.",
+        "--icon-button-pressed-color": "Icon color of the clear button while pressed.",
+        "--icon-button-pressed-bg": "Background of the clear button while pressed.",
+        "--icon-button-size": "Width and height of the clear button (defaults follow the density's control heights).",
+        "--icon-button-icon-size": "Size of the clear button icon.",
+        "--icon-button-radius": "Corner radius of the clear button (defaults to --radius-lg)."
+      },
+      "methods": {
+        "focus": "Focuses the inner input.",
+        "blur": "Removes focus from the inner input.",
+        "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+        "reportValidity": "Checks validity and shows the browser's validation message.",
+        "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+        "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+        "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+        "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+      }
+    }
+  },
+  "vue": {
+    "demos": {
+      "basic": {
+        "title": "Basic usage",
+        "description": "Bind v-model to a YYYY-MM-DD string or null. Choose a date, type it, or clear the field."
+      },
+      "range": {
+        "title": "Date range",
+        "description": "Only dates from October 10 through October 20 are selectable."
+      },
+      "form": {
+        "title": "Form field",
+        "description": "Inherits the label, required state and helper text from FormControl."
+      },
+      "states": {
+        "title": "Sizes and states",
+        "description": "Small, read-only, disabled, and non-clearable date fields."
+      }
+    }
   }
 }

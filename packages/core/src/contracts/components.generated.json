@@ -2040,9 +2040,10 @@
   },
   {
     "name": "DatePicker",
+    "tag": "minerva-date-picker",
     "docs": "date-picker",
     "descriptionKey": "docs.date-picker.description",
-    "description": "Props of DatePicker; `data-*` attributes are forwarded to the root element",
+    "description": "Date field with a keyboard-accessible popup calendar and inclusive date bounds.",
     "tracks": ["toB", "toC"],
     "props": [
       {
@@ -2051,49 +2052,78 @@
         "required": false,
         "description": "Selected date as `\"YYYY-MM-DD\"` (controlled; pair with `onChange`). `\"\"` or `null` means \"no date\" while staying controlled; `undefined` makes the picker uncontrolled."
       },
-      { "name": "defaultValue", "kind": "string", "required": false, "description": "Initially selected date as `\"YYYY-MM-DD\"` (uncontrolled)" },
-      { "name": "placeholder", "kind": "string", "required": false, "description": "Placeholder of the input" },
-      { "name": "label", "kind": "string", "required": false, "description": "Visible label of the input; without it the input is labelled \"Date\" (localized)" },
-      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the input when no visible label is shown" },
+      { "name": "defaultValue", "kind": "string", "required": false, "description": "Initially selected date as `\"YYYY-MM-DD\"` (uncontrolled)", "attribute": "value" },
+      { "name": "placeholder", "kind": "string", "required": false, "description": "Placeholder of the input", "attribute": "placeholder" },
+      { "name": "label", "kind": "string", "required": false, "description": "Visible label of the input; without it the input is labelled \"Date\" (localized)", "attribute": "label" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the input when no visible label is shown", "only": "react" },
       {
         "name": "aria-labelledby",
         "kind": "string",
         "required": false,
-        "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)"
+        "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)",
+        "only": "react"
       },
       {
         "name": "aria-describedby",
         "kind": "string",
         "required": false,
-        "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+        "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl",
+        "only": "react"
       },
-      { "name": "id", "kind": "string", "required": false, "description": "Id of the input; defaults to the id of an enclosing FormControl" },
-      { "name": "required", "kind": "boolean", "required": false, "description": "Marks the input as required; defaults to the enclosing FormControl's state" },
-      { "name": "readOnly", "kind": "boolean", "required": false, "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state" },
-      { "name": "invalid", "kind": "boolean", "required": false, "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state" },
-      { "name": "name", "kind": "string", "default": "date-picker", "required": false, "description": "Name of the input" },
-      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the picker; defaults to the enclosing FormControl's state" },
-      { "name": "clearable", "kind": "boolean", "default": true, "required": false, "description": "Allows clearing the value with the suffix button" },
-      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Size of the input" },
-      { "name": "minDate", "kind": "string", "required": false, "description": "Earliest selectable date (`\"YYYY-MM-DD\"`); earlier days are disabled" },
-      { "name": "maxDate", "kind": "string", "required": false, "description": "Latest selectable date (`\"YYYY-MM-DD\"`); later days are disabled" },
-      { "name": "locale", "kind": "string", "required": false, "description": "Locale of the month heading (`Intl.DateTimeFormat`)" }
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the input; defaults to the id of an enclosing FormControl", "only": "react" },
+      { "name": "required", "kind": "boolean", "required": false, "description": "Marks the input as required; defaults to the enclosing FormControl's state", "attribute": "required" },
+      {
+        "name": "readOnly",
+        "kind": "boolean",
+        "required": false,
+        "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state",
+        "attribute": "readonly"
+      },
+      { "name": "invalid", "kind": "boolean", "required": false, "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state", "attribute": "invalid" },
+      { "name": "name", "kind": "string", "default": "date-picker", "required": false, "description": "Name of the input", "attribute": "name" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the picker; defaults to the enclosing FormControl's state", "attribute": "disabled" },
+      { "name": "clearable", "kind": "boolean", "default": true, "required": false, "description": "Allows clearing the value with the suffix button", "only": "react" },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Size of the input", "attribute": "size" },
+      { "name": "minDate", "kind": "string", "required": false, "description": "Earliest selectable date (`\"YYYY-MM-DD\"`); earlier days are disabled", "attribute": "min-date" },
+      { "name": "maxDate", "kind": "string", "required": false, "description": "Latest selectable date (`\"YYYY-MM-DD\"`); later days are disabled", "attribute": "max-date" },
+      { "name": "locale", "kind": "string", "required": false, "description": "Locale of the month heading (`Intl.DateTimeFormat`)", "attribute": "locale" },
+      { "name": "open", "kind": "boolean", "default": false, "required": false, "description": "Whether the calendar is open.", "attribute": "open", "only": "wc" },
+      { "name": "hideClearButton", "kind": "boolean", "default": false, "required": false, "description": "Hides the clear action.", "attribute": "hide-clear-button", "only": "wc" }
     ],
     "events": [
-      { "name": "change", "react": "onChange", "description": "Called with the selected date (`\"YYYY-MM-DD\"`), or `\"\"` when the value is cleared" },
-      { "name": "open-change", "react": "onOpenChange", "description": "Called when the popup calendar opens or closes" }
+      { "name": "change", "wc": "change", "description": "Native-like bubbling change after a committed date" },
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["value"],
+        "description": "Committed date, detail: { value }; empty string when cleared",
+        "react": "onChange",
+        "native": "onChange"
+      },
+      { "name": "minerva-input", "wc": "minerva-input", "detail": ["value"], "description": "Draft input text, detail: { value }" },
+      { "name": "minerva-open-change", "wc": "minerva-open-change", "detail": ["open"], "description": "Cancelable popup change, detail: { open }", "react": "onOpenChange", "native": "onOpenChange" },
+      { "name": "minerva-clear", "wc": "minerva-clear", "description": "Cleared date" }
     ],
     "slots": [],
     "children": false,
     "platforms": {
       "react": { "status": "stable" },
-      "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
-      "taro": { "status": "planned" },
-      "weapp": { "status": "planned" },
-      "uni": { "status": "planned" }
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDatePicker. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta", "notes": "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid." },
+      "taro": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, real 42-day calendar with month navigation, valid-date and min/max checks, clearing, form locks, labels and open/change callbacks. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native touch calendar; browser roving focus and collision-aware popup positioning are not reproduced. Device validation is outstanding. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Native date picker selection/cancellation and serialized {value} / {open} events. Uses the host date picker rather than a browser calendar grid; locale and picker presentation follow the device. Native focus and picker presentation require device validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Popup MonthCalendar with month navigation; update:modelValue supports v-model. Native focus and popup placement need device validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
     }
   },
   {

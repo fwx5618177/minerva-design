@@ -58,6 +58,12 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   },
   { name: "Picker", contract: null, aliases: ["PickerView"] },
   { name: "DatetimePicker", contract: null },
+  {
+    name: "DatePicker",
+    contract: "DatePicker",
+    notes:
+      "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid.",
+  },
   { name: "Rating", contract: "Rating" },
   { name: "SearchBar", contract: null },
   {

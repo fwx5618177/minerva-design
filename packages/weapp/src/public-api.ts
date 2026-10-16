@@ -326,6 +326,14 @@ const events: Record<string, Event[]> = {
     ...tableEvents,
     event("retry", "{}", "Retry requested from the error state."),
   ],
+  datePicker: [
+    event(
+      "change",
+      "{ value: string }",
+      "YYYY-MM-DD, or an empty string on clear; null/empty value remains controlled.",
+    ),
+    open,
+  ],
   timePicker: [
     event(
       "change",

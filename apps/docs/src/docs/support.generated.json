@@ -670,17 +670,27 @@
   },
   {
     "name": "DatePicker",
+    "tag": "minerva-date-picker",
     "docs": "date-picker",
     "tracks": ["toB", "toC"],
     "platforms": {
       "react": { "status": "stable" },
-      "wc": { "status": "n/a", "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element." },
-      "vue": { "status": "planned" },
-      "angular": { "status": "planned" },
-      "native": { "status": "planned" },
-      "taro": { "status": "planned" },
-      "weapp": { "status": "planned" },
-      "uni": { "status": "planned" }
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDatePicker. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta", "notes": "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid." },
+      "taro": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, real 42-day calendar with month navigation, valid-date and min/max checks, clearing, form locks, labels and open/change callbacks. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native touch calendar; browser roving focus and collision-aware popup positioning are not reproduced. Device validation is outstanding. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Native date picker selection/cancellation and serialized {value} / {open} events. Uses the host date picker rather than a browser calendar grid; locale and picker presentation follow the device. Native focus and picker presentation require device validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Popup MonthCalendar with month navigation; update:modelValue supports v-model. Native focus and popup placement need device validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
     }
   },
   {

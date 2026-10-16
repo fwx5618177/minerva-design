@@ -35,6 +35,8 @@ import {
   resolveTokens,
   githubDark,
   clampNumber,
+  parseDayKey,
+  dayKey,
   formatNumberValue,
   inferStepPrecision,
   parseNumberDraft,
@@ -892,6 +894,145 @@ export const keyValueEditor = native(
     },
   },
 );
+// Native properties must be serializable. An object default distinguishes an
+// omitted value from explicit null (a controlled empty date).
+function datePickerCurrent(self: NativeInstance): string {
+  return typeof self.data.value === "string" || self.data.value === null
+    ? (self.data.value ?? "")
+    : (self.data.localDateValue ?? self.data.defaultValue ?? "");
+}
+function datePickerAllowed(self: NativeInstance, key: string) {
+  return (
+    (!self.data.minDate || key >= self.data.minDate) &&
+    (!self.data.maxDate || key <= self.data.maxDate)
+  );
+}
+function datePickerOpen(self: NativeInstance, open: boolean) {
+  if ((open && blocked(self)) || self.data.opened === open) return;
+  self.setData({ opened: open });
+  self.triggerEvent("openchange", { open });
+}
+function datePickerCommit(self: NativeInstance, key: string) {
+  if (blocked(self)) return;
+  if (typeof self.data.value !== "string" && self.data.value !== null)
+    self.setData({ localDateValue: key });
+  self.triggerEvent("change", { value: key });
+  self.setData({ display: datePickerCurrent(self) });
+}
+export const datePicker = native(
+  `<view class="mn-date-picker mn-size-{{size}}"><text wx:if="{{label}}">{{label}}</text><input id="{{id}}" class="mn-input" value="{{display}}" name="{{name}}" placeholder="{{placeholder || localeLabels.datePlaceholder}}" aria-label="{{label || ariaLabel || localeLabels.dateLabel}}" aria-required="{{required}}" aria-invalid="{{invalid}}" disabled="{{disabled || readOnly}}" bindinput="onInput" bindblur="onBlur" bindconfirm="onBlur"/><picker class="mn-date-native" mode="date" value="{{current}}" start="{{minDate || '0001-01-01'}}" end="{{maxDate || '9999-12-31'}}" disabled="{{disabled || readOnly}}" bindtap="onOpen" catchchange="onChoose" bindcancel="onClose"><button class="mn-button mn-variant-ghost" disabled="{{disabled || readOnly}}" aria-label="{{label || ariaLabel || localeLabels.dateLabel}}">{{current || placeholder || localeLabels.datePlaceholder}}</button></picker><button wx:if="{{clearable && current && !disabled && !readOnly}}" class="mn-close mn-clear" aria-label="{{localeLabels.dateClear}}" bindtouchstart="onTouchControl" catchtap="onClear">×</button></view>`,
+  {
+    ...common,
+    value: { type: null, value: {} },
+    defaultValue: string(),
+    minDate: string(),
+    maxDate: string(),
+    label: string(),
+    ariaLabel: string(),
+    id: string(),
+    placeholder: string(),
+    name: string("date-picker"),
+    clearable: { type: Boolean, value: true },
+    required: flag(),
+    invalid: flag(),
+    size: string("medium"),
+  },
+  {
+    onOpen(this: NativeInstance) {
+      datePickerOpen(this, true);
+    },
+    onClose(this: NativeInstance) {
+      datePickerOpen(this, false);
+    },
+    onChoose(this: NativeInstance, event: NativeEvent) {
+      const parsed = parseDayKey(event.detail.value, true);
+      if (parsed && datePickerAllowed(this, dayKey(parsed)))
+        datePickerCommit(this, dayKey(parsed));
+      this.setData({
+        display: datePickerCurrent(this),
+        current: datePickerCurrent(this),
+        dateDraft: null,
+      });
+      datePickerOpen(this, false);
+    },
+    onInput(this: NativeInstance, event: NativeEvent) {
+      if (blocked(this)) return this.data.display;
+      const text = event.detail.value,
+        parsed = parseDayKey(text, true);
+      this.setData({ dateDraft: text, display: text });
+      if (!text || (parsed && datePickerAllowed(this, dayKey(parsed)))) {
+        datePickerCommit(this, parsed ? dayKey(parsed) : "");
+        this.setData({ display: text, current: datePickerCurrent(this) });
+      }
+      return text;
+    },
+    onBlur(this: NativeInstance) {
+      if (this.data.touchingDateControl) {
+        this.setData({ touchingDateControl: false });
+        return;
+      }
+      if (blocked(this) || this.data.dateDraft === null) return;
+      const text = String(this.data.dateDraft).trim(),
+        parsed = parseDayKey(text, false);
+      const key = !text ? "" : parsed ? dayKey(parsed) : null;
+      if (
+        key !== null &&
+        (!key || datePickerAllowed(this, key)) &&
+        key !== datePickerCurrent(this)
+      )
+        datePickerCommit(this, key);
+      this.setData({
+        display: datePickerCurrent(this),
+        current: datePickerCurrent(this),
+        dateDraft: null,
+      });
+    },
+    onTouchControl(this: NativeInstance) {
+      this.setData({ touchingDateControl: true });
+    },
+    onClear(this: NativeInstance) {
+      if (blocked(this)) return;
+      datePickerCommit(this, "");
+      this.setData({
+        display: datePickerCurrent(this),
+        current: datePickerCurrent(this),
+        dateDraft: null,
+        touchingDateControl: false,
+      });
+    },
+  },
+  {
+    data: {
+      display: "",
+      current: "",
+      opened: false,
+      dateDraft: null,
+      touchingDateControl: false,
+    },
+    lifetimes: {
+      attached(this: NativeInstance) {
+        this.setData({ localDateValue: this.data.defaultValue });
+        this.setData({
+          display: datePickerCurrent(this),
+          current: datePickerCurrent(this),
+        });
+      },
+    },
+    observers: {
+      value: function (this: NativeInstance) {
+        this.setData({
+          display: datePickerCurrent(this),
+          current: datePickerCurrent(this),
+          dateDraft: null,
+        });
+      },
+      "disabled,readOnly": function (this: NativeInstance) {
+        if (blocked(this)) datePickerOpen(this, false);
+      },
+    },
+  },
+);
+
 export const timePicker = native(
   `<picker mode="time" value="{{value}}" start="{{start}}" end="{{end}}" disabled="{{disabled || readOnly}}" bindchange="onChange"><view class="mn-input">{{value || placeholder}}</view></picker>`,
   {
@@ -2762,6 +2903,7 @@ enhanceFormContext(
     rating,
     ratingScale,
     timePicker,
+    datePicker,
     upload,
   ],
 );
@@ -2788,6 +2930,7 @@ annotateNativeApi({
   jsonField,
   keyValueEditor,
   timePicker,
+  datePicker,
   monthCalendar,
   pagination,
   tabs,

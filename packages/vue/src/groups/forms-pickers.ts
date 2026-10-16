@@ -7,3 +7,4 @@ export * from "../components/TimePicker";
 export * from "../components/JsonField";
 export * from "../components/TagInput";
 export * from "../components/Cascader";
+export * from "../components/DatePicker";

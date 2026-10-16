@@ -62,6 +62,23 @@ test("a pending changeset versions the sole public package", () => {
     { mode: "version", version: "1.1.0" },
   );
 });
+test("non-publishing dependent records do not block an explicit patch release", () => {
+  assert.deepEqual(
+    releasePlan({
+      ...input,
+      version: "1.0.0",
+      registry: { versions: { "1.0.0": {} } },
+      commits: ["feat(react): add DatePicker"],
+      releases: [
+        { name: "minerva-design", type: "patch", newVersion: "1.0.1" },
+        { name: "@minerva/docs", type: "none", newVersion: "0.1.0" },
+        { name: "@minerva/expo-example", type: "none", newVersion: "0.0.0" },
+      ],
+    }),
+    { mode: "version", version: "1.0.1" },
+  );
+});
+
 test("an unpublished version commit resumes without another version bump", () => {
   assert.deepEqual(releasePlan({ ...input, version: "1.0.2" }), {
     mode: "publish",

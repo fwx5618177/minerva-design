@@ -7731,6 +7731,669 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/date-picker/date-picker.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Type a calendar date or choose it from an accessible popup month grid.\nForm-associated: submits YYYY-MM-DD, supports required, reset and disabled fieldsets.",
+          "name": "MinervaDatePicker",
+          "cssParts": [
+            {
+              "description": "Field wrapper",
+              "name": "root"
+            },
+            {
+              "description": "Input box",
+              "name": "control"
+            },
+            {
+              "description": "Native text input",
+              "name": "input"
+            },
+            {
+              "description": "Clear action",
+              "name": "clear-button"
+            },
+            {
+              "description": "Calendar icon",
+              "name": "icon"
+            },
+            {
+              "description": "Popup dialog",
+              "name": "content"
+            },
+            {
+              "description": "Calendar day cell",
+              "name": "day"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"date-picker\"",
+              "description": "Name submitted with form data.",
+              "attribute": "name",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Current date (YYYY-MM-DD), or empty; property assignment controls the current value."
+            },
+            {
+              "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initial date, restored by form reset.",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the calendar is open.",
+              "attribute": "open",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible field and popup label.",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Input placeholder; localized by default.",
+              "attribute": "placeholder"
+            },
+            {
+              "kind": "field",
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Calendar heading locale.",
+              "attribute": "locale"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Input control size.",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "invalid",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Error state.",
+              "attribute": "invalid",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "readOnly",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Prevents typing, selection and clearing.",
+              "attribute": "readonly",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "hideClearButton",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the clear action.",
+              "attribute": "hide-clear-button"
+            },
+            {
+              "kind": "field",
+              "name": "minDate",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Earliest selectable date, inclusive (YYYY-MM-DD).",
+              "attribute": "min-date"
+            },
+            {
+              "kind": "field",
+              "name": "maxDate",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Latest selectable date, inclusive (YYYY-MM-DD).",
+              "attribute": "max-date"
+            },
+            {
+              "kind": "field",
+              "name": "valueAsDate",
+              "description": "Current date as a local Date, null when empty or invalid.",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "blur"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "attribute": "disabled",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "attribute": "required",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDisabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the control is disabled (itself or by a disabled fieldset).",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "description": "The form owning the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "NodeList | null"
+              },
+              "description": "`<label>` elements associated with the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState | undefined"
+              },
+              "description": "Validity state (same as `<input>.validity`)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "description": "Message describing the current validation error (empty when valid)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the element is a candidate for constraint validation",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity; fires `invalid` when invalid.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity and shows the browser's validation message.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets (or clears, with `\"\"`) a custom validation error.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "disabled",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formStateRestoreCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "string | File | FormData | null"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Native-like bubbling change after a committed date"
+            },
+            {
+              "description": "Committed date, detail: { value }; empty string when cleared",
+              "name": "minerva-change"
+            },
+            {
+              "description": "Draft input text, detail: { value }",
+              "name": "minerva-input"
+            },
+            {
+              "description": "Cancelable popup change, detail: { open }",
+              "name": "minerva-open-change"
+            },
+            {
+              "description": "Cleared date",
+              "name": "minerva-clear"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"date-picker\"",
+              "description": "Name submitted with form data.",
+              "fieldName": "name",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initial date, restored by form reset.",
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the calendar is open.",
+              "fieldName": "open"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible field and popup label.",
+              "fieldName": "label"
+            },
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Input placeholder; localized by default.",
+              "fieldName": "placeholder"
+            },
+            {
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Calendar heading locale.",
+              "fieldName": "locale"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Input control size.",
+              "fieldName": "size"
+            },
+            {
+              "name": "invalid",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Error state.",
+              "fieldName": "invalid"
+            },
+            {
+              "name": "readonly",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Prevents typing, selection and clearing.",
+              "fieldName": "readOnly"
+            },
+            {
+              "name": "hide-clear-button",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the clear action.",
+              "fieldName": "hideClearButton"
+            },
+            {
+              "name": "min-date",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Earliest selectable date, inclusive (YYYY-MM-DD).",
+              "fieldName": "minDate"
+            },
+            {
+              "name": "max-date",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Latest selectable date, inclusive (YYYY-MM-DD).",
+              "fieldName": "maxDate"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "fieldName": "disabled",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "fieldName": "required",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-date-picker",
+          "customElement": true,
+          "summary": "Date field with a keyboard-accessible popup calendar and inclusive date bounds.",
+          "cssProperties": [
+            {
+              "name": "--input-height",
+              "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+            },
+            {
+              "name": "--input-padding-x",
+              "description": "Horizontal padding of the text (every size)"
+            },
+            {
+              "name": "--input-radius",
+              "description": "Corner radius (defaults to --radius-lg)"
+            },
+            {
+              "name": "--input-font-size",
+              "description": "Font size (every size)"
+            },
+            {
+              "name": "--input-background",
+              "description": "Background color of the outline variant"
+            },
+            {
+              "name": "--input-border-color",
+              "description": "Border color at rest"
+            },
+            {
+              "name": "--input-focus-color",
+              "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+            },
+            {
+              "name": "--icon-button-color",
+              "description": "Icon color"
+            },
+            {
+              "name": "--icon-button-hover-bg",
+              "description": "Background on hover"
+            },
+            {
+              "name": "--icon-button-pressed-color",
+              "description": "Icon color of a pressed toggle"
+            },
+            {
+              "name": "--icon-button-pressed-bg",
+              "description": "Background of a pressed toggle"
+            },
+            {
+              "name": "--icon-button-size",
+              "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+            },
+            {
+              "name": "--icon-button-icon-size",
+              "description": "Font size of the icon (every size)"
+            },
+            {
+              "name": "--icon-button-radius",
+              "description": "Corner radius of the square shape (defaults to --radius-lg)"
+            },
+            {
+              "name": "--date-picker-width",
+              "description": "Width of the field"
+            },
+            {
+              "name": "--date-picker-panel-width",
+              "description": "Width of the popup calendar panel"
+            },
+            {
+              "name": "--date-picker-panel-radius",
+              "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+            },
+            {
+              "name": "--date-picker-panel-padding",
+              "description": "Inner padding of the popup panel"
+            },
+            {
+              "name": "--date-picker-cell-size",
+              "description": "Width and height of a day cell in the popup grid"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaDatePicker",
+          "declaration": {
+            "name": "MinervaDatePicker",
+            "module": "src/components/date-picker/date-picker.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/description-list/description-list.ts",
       "declarations": [
         {

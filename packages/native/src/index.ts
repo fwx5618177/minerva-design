@@ -35,6 +35,7 @@ export * from "./components/ImagePreview";
 export * from "./components/Alert";
 export * from "./components/ActionSheet";
 export * from "./components/DatetimePicker";
+export * from "./components/DatePicker";
 export * from "./components/Empty";
 export * from "./components/Loading";
 export * from "./components/Picker";

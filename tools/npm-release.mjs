@@ -80,6 +80,8 @@ export function releasePlan({
   const latest = versions.sort(compare).at(-1);
   if (compare(version, latest) < 0)
     throw new Error(`Local ${version} is older than published ${latest}`);
+  // Changesets also reports private dependents whose version does not change.
+  releases = releases.filter((item) => item.type !== "none");
   if (releases.some((item) => item.name !== "minerva-design")) {
     throw new Error("Only minerva-design may be released");
   }

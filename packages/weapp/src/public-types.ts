@@ -406,3 +406,22 @@ export interface NativeToastProviderInstance extends NativeConfigConsumer {
     options?: NativeToastOptions,
   ): Promise<T>;
 }
+
+/** DatePicker data properties; omitted value is uncontrolled, null/empty stays controlled. */
+export interface NativeDatePickerProperties {
+  value?: string | null;
+  defaultValue?: string;
+  minDate?: string;
+  maxDate?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  invalid?: boolean;
+  clearable?: boolean;
+  label?: string;
+  ariaLabel?: string;
+  placeholder?: string;
+  name?: string;
+  id?: string;
+  size?: "small" | "medium" | "large";
+}

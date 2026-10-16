@@ -177,6 +177,17 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "DatePicker",
+    scope:
+      "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Native date picker selection/cancellation and serialized {value} / {open} events.",
+    limitations: [
+      "Uses the host date picker rather than a browser calendar grid; locale and picker presentation follow the device. Native focus and picker presentation require device validation.",
+    ],
+    tests: ["src/date-picker.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "TimePicker",
     scope:
       "Core strict/lenient typed parsing, controlled/default serialized time and null clear, seconds/format/12-hour mode, stepped hour/minute/second columns, bounds, labels/field flags, guarded opening and openchange.",

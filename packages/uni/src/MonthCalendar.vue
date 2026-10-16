@@ -49,6 +49,7 @@ const props = withDefaults(
 );
 const emit = defineEmits<{
   change: [day: string];
+  select: [day: string];
   "update:modelValue": [day: string];
   monthChange: [date: Date];
   "update:month": [date: Date];
@@ -157,6 +158,7 @@ function goTo(date: Date) {
 function choose(date: Date) {
   const day = dayKey(date);
   if (blocked(day)) return;
+  emit("select", day);
   const changed = day !== selected.value;
   if (props.value === undefined && props.modelValue === undefined)
     localValue.value = day;

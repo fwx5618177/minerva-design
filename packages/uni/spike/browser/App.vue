@@ -6,6 +6,7 @@ import { ref } from "vue";
 const activePage = ref("file-0");
 import {
   TimePicker,
+  DatePicker,
   PageTabs,
   PageTab,
   Popover,
@@ -26,6 +27,12 @@ import {
 } from "../../src";
 </script>
 <template>
+  <DatePicker
+    label="Start date"
+    default-value="2026-10-15"
+    min-date="2026-10-10"
+    max-date="2026-10-20"
+  />
   <Overlays />
   <Primitives />
   <Advanced />

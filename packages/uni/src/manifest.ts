@@ -185,6 +185,15 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "DatePicker",
+    scope:
+      "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Popup MonthCalendar with month navigation; update:modelValue supports v-model.",
+    limitations: ["Native focus and popup placement need device validation."],
+    tests: ["src/date-picker.test.ts", "spike/browser/date-picker.spec.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "TimePicker",
     scope:
       "Typed HH:mm or HH:mm:ss, hour/minute/second steps, normalized constraints, locale labels, clear, keyboard time columns, original string change and open-change notifications; measured collision-aware popup.",

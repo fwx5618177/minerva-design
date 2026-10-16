@@ -56,6 +56,7 @@ export * from "./elements/text-link";
 export * from "./elements/textarea";
 export * from "./elements/theme-toggle";
 export * from "./elements/time-picker";
+export * from "./elements/date-picker";
 export * from "./elements/toast";
 export * from "./elements/tooltip";
 export * from "./elements/upload";

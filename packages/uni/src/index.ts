@@ -123,3 +123,4 @@ export { default as ToastProvider } from "./ToastProvider.vue";
 export { default as TooltipProvider } from "./TooltipProvider.vue";
 export { confirm, toast } from "./feedback-store";
 export { useConfirm, useToast } from "./feedback-context";
+export { default as DatePicker } from "./DatePicker.vue";

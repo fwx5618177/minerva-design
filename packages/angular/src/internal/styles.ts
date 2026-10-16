@@ -525,6 +525,41 @@ export const commandStyles: ClassMap<
   searchIcon: "searchIcon",
 };
 
+/** components/DatePicker/datePicker.module.scss */
+export const datePickerStyles: ClassMap<
+  | "calendarIcon"
+  | "clearButton"
+  | "datePicker"
+  | "day"
+  | "footer"
+  | "footerButton"
+  | "grid"
+  | "header"
+  | "heading"
+  | "navButton"
+  | "navGroup"
+  | "panel"
+  | "popup"
+  | "week"
+  | "weekday"
+> = {
+  calendarIcon: "calendarIcon",
+  clearButton: "clearButton",
+  datePicker: "datePicker",
+  day: "day",
+  footer: "footer",
+  footerButton: "footerButton",
+  grid: "grid",
+  header: "header",
+  heading: "heading",
+  navButton: "navButton",
+  navGroup: "navGroup",
+  panel: "panel",
+  popup: "popup",
+  week: "week",
+  weekday: "weekday",
+};
+
 /** components/DescriptionList/descriptionList.module.scss */
 export const descriptionListStyles: ClassMap<
   "bordered" | "descriptionList" | "row" | "striped"

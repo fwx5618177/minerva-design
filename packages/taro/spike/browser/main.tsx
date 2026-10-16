@@ -212,6 +212,14 @@ function Fixture() {
             </M.DrawerFooter>
           </M.Drawer>
         </section>
+        <section id="date">
+          <M.DatePicker
+            label="Start date"
+            defaultValue="2026-10-15"
+            minDate="2026-10-10"
+            maxDate="2026-10-20"
+          />
+        </section>
         <section id="time">
           <h2>Time input</h2>
           <M.TimePicker

@@ -512,6 +512,41 @@
       { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
     ]
   },
+  "DatePicker": {
+    "entry": "minerva-design/date-picker/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "clearable", "type": "boolean", "required": false, "default": "true" },
+      { "name": "defaultValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disabled", "type": "any", "required": false, "default": "null" },
+      { "name": "id", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "invalid", "type": "any", "required": false, "default": "null" },
+      { "name": "label", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "maxDate", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "minDate", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "name", "type": "string", "required": false, "default": "\"date-picker\"" },
+      { "name": "placeholder", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "readOnly", "type": "any", "required": false, "default": "null" },
+      { "name": "required", "type": "any", "required": false, "default": "null" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "any", "required": false, "default": "{}" }
+    ],
+    "events": [
+      { "name": "change", "type": "{ value: string }", "description": "YYYY-MM-DD, or an empty string on clear; null/empty value remains controlled." },
+      { "name": "openchange", "type": "{ open: boolean }", "description": "Requested visible state; controlled owners may reject it." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      {
+        "name": "getFormState",
+        "type": "getFormState(): NativeFormState",
+        "description": "Read inherited disabled/readOnly/required/invalid. Null props inherit the nearest FormControl/FormField; explicit false overrides it."
+      },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
   "TimePicker": {
     "entry": "minerva-design/time-picker/index",
     "props": [

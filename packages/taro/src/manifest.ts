@@ -325,6 +325,18 @@ const families: Array<{
     tests: ["packages/taro/src/parity.test.tsx"],
   },
   {
+    names: ["DatePicker"],
+    scope:
+      "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, real 42-day calendar with month navigation, valid-date and min/max checks, clearing, form locks, labels and open/change callbacks.",
+    limitations: [
+      "Native touch calendar; browser roving focus and collision-aware popup positioning are not reproduced. Device validation is outstanding.",
+    ],
+    tests: [
+      "packages/taro/src/date-picker.test.tsx",
+      "packages/taro/spike/browser/date-picker.spec.ts",
+    ],
+  },
+  {
     names: ["TimePicker"],
     scope:
       "React Date/null values, core strict/lenient typed parsing and format-driven seconds, native 12/24-hour option columns, steps/minmax disabling, controlled draft rollback, onOpenChange, clear and form-context locks.",

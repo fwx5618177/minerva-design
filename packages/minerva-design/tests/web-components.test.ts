@@ -113,6 +113,24 @@ describe("per-element entries (tree-shaking)", () => {
     expect(others.filter((tag) => js.includes(`"${tag}"`))).toEqual([]);
   });
 
+  it("the DatePicker entry stays independent and within its measured size budget", async () => {
+    const { size, js } = await bundleSize(
+      `import "${join(root, "dist/web-components/elements/date-picker.js")}";`,
+      deps,
+    );
+    console.info(
+      `single element (minerva-date-picker, deps external): ${size} B`,
+    );
+    // Approximately 39.5 kB with shared input/calendar styling and form/floating
+    // controllers; allow 3.5 kB headroom while guarding against unrelated imports.
+    expect(size).toBeLessThan(43_000);
+    expect(js).toContain("minerva-date-picker");
+    const others = elements
+      .map((e) => e.tagName)
+      .filter((tag) => tag !== "minerva-date-picker");
+    expect(others.filter((tag) => js.includes(`"${tag}"`))).toEqual([]);
+  });
+
   it("the shared core is tree-shakable (no top-level side effects pulled in)", async () => {
     // e.g. the dev-message helper alone must not drag the i18n bundles,
     // theme tables or theme init script along
@@ -180,7 +198,12 @@ describe("CDN bundle", () => {
     expect(js).not.toContain('"minerva-code-editor"');
     expect(js).not.toContain("process.env.NODE_ENV");
     // fully minified (whitespace too), development warnings dropped
-    expect(Buffer.byteLength(js)).toBeLessThan(700_000);
+    // Adding DatePicker takes the measured CDN from 688,696 B without it
+    // (no source-map comment) to 702,768 B including the 36 B map comment.
+    // Its 14,036 B component cost adds a new public element entry;
+    // 715 kB preserves roughly the prior 11 kB headroom.
+    // The separate DatePicker entry has its own size/tree-shaking guard above.
+    expect(Buffer.byteLength(js)).toBeLessThan(715_000);
     // (template whitespace of <pre> / <textarea> templates is content)
     expect(js).not.toMatch(/\n\t/);
     expect(js).not.toContain("width is ignored when full is set");

@@ -22,6 +22,7 @@ import commandDialogHooks from "./components/command-dialog";
 import confirmDialogHooks from "./components/confirm-dialog";
 import contextMenuHooks from "./components/context-menu";
 import dataTableHooks from "./components/data-table";
+import datePickerHooks from "./components/date-picker";
 import descriptionListHooks from "./components/description-list";
 import dividerHooks from "./components/divider";
 import drawerHooks from "./components/drawer";
@@ -116,6 +117,7 @@ export const stylingHooks = {
   "confirm-dialog": confirmDialogHooks,
   "context-menu": contextMenuHooks,
   "data-table": dataTableHooks,
+  "date-picker": datePickerHooks,
   "description-list": descriptionListHooks,
   divider: dividerHooks,
   drawer: drawerHooks,

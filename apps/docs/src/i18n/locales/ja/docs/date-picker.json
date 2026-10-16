@@ -72,5 +72,88 @@
     "--date-picker-panel-radius": "ポップアップパネルの角丸（既定は --radius-lg）",
     "--date-picker-panel-padding": "ポップアップパネルの内側の余白",
     "--date-picker-cell-size": "ポップアップグリッド内の日付セルの幅と高さ"
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "ネイティブカレンダー",
+        "description": "フィールドをタップしてカレンダーを開きます。日付を選ぶとローカル日付の YYYY-MM-DD 文字列が即座に確定し、クリアすると空文字列が返ります。minDate と maxDate で選択範囲を制限します。ネイティブでは日付ボタンをタップし、テキスト入力や DOM グリッドのキーボード操作は使用しません。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "日付選択と範囲",
+        "description": "YYYY-MM-DD を入力するか、10 月 10 日から 20 日を選択します。minerva-change は { value } を返し、クリア時は空文字列になります。value 属性は初期値で、フォームのリセットで復元されます。"
+      }
+    },
+    "minerva-date-picker": {
+      "props": {
+        "open": "パネルが開いているかどうか。",
+        "readOnly": "値を表示するだけで変更はできません（入力・パネル・クリア不可）。",
+        "hideClearButton": "クリアボタンを非表示にします（React の clearable={false} に相当）。",
+        "isDisabled": "コントロールが無効かどうか（自身、または無効な <fieldset> による）。",
+        "form": "要素が属するフォーム（読み取り専用）。",
+        "labels": "要素に関連付けられた <label> 要素。",
+        "validity": "バリデーション状態（<input>.validity と同じ）。",
+        "validationMessage": "現在のバリデーションエラーを説明するメッセージ（有効なときは空）。",
+        "willValidate": "要素が制約バリデーションの対象かどうか。",
+        "valueAsDate": "選択した日付をローカル Date として取得します。空または無効な場合は null。"
+      },
+      "events": {
+        "change": "minerva-change と同じです（ネイティブ同様にバブリングします）。",
+        "minerva-change": "日付の確定時に detail: { value } を通知します。YYYY-MM-DD 形式、クリア時は空文字列。",
+        "minerva-input": "入力中のテキスト変更を detail: { value } で通知します。",
+        "minerva-open-change": "ユーザーがパネルを開閉しました。detail: { open }。キャンセル可能で、preventDefault() で現在の状態を維持します。",
+        "minerva-clear": "日付をクリアしたときに発火します。"
+      },
+      "cssVars": {
+        "--input-height": "フィールドの最小の高さ（既定値は密度とサイズに応じたコントロールの高さ）。",
+        "--input-padding-x": "テキストの左右の余白。",
+        "--input-radius": "フィールドの角の半径（既定値は --radius-lg）。",
+        "--input-font-size": "フィールドのフォントサイズ。",
+        "--input-background": "フィールドの背景色。",
+        "--input-border-color": "通常時の枠線の色。",
+        "--input-focus-color": "ホバー時・フォーカス時の枠線の色。",
+        "--icon-button-color": "クリアボタンのアイコンの色。",
+        "--icon-button-hover-bg": "ホバー時のクリアボタンの背景。",
+        "--icon-button-pressed-color": "押下時のクリアボタンのアイコンの色。",
+        "--icon-button-pressed-bg": "押下時のクリアボタンの背景。",
+        "--icon-button-size": "クリアボタンの幅と高さ（既定値は密度のコントロールの高さに従う）。",
+        "--icon-button-icon-size": "クリアボタンのアイコンのサイズ。",
+        "--icon-button-radius": "クリアボタンの角の半径（既定値は --radius-lg）。"
+      },
+      "methods": {
+        "focus": "内部の入力欄にフォーカスします。",
+        "blur": "内部の入力欄からフォーカスを外します。",
+        "checkValidity": "有効性を確認します。無効な場合は invalid を発火します。",
+        "reportValidity": "有効性を確認し、ブラウザのバリデーションメッセージを表示します。",
+        "setCustomValidity": "カスタムのバリデーションエラーを設定します（空文字列で解除）。",
+        "formResetCallback": "form.reset() 時にブラウザから呼ばれ、value 属性の値に戻します。",
+        "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザから呼ばれます。",
+        "formStateRestoreCallback": "値を復元するためにブラウザから呼ばれます（bfcache、自動入力）。"
+      }
+    }
+  },
+  "vue": {
+    "demos": {
+      "basic": {
+        "title": "基本的な使い方",
+        "description": "v-model に YYYY-MM-DD 文字列または null をバインドし、日付の選択、入力、クリアを行います。"
+      },
+      "range": {
+        "title": "日付範囲",
+        "description": "10 月 10 日から 10 月 20 日までの日付を選択できます。"
+      },
+      "form": {
+        "title": "フォームフィールド",
+        "description": "FormControl のラベル、必須状態、補足テキストを継承します。"
+      },
+      "states": {
+        "title": "サイズと状態",
+        "description": "小サイズ、読み取り専用、無効、クリア不可のフィールドを表示します。"
+      }
+    }
   }
 }

@@ -69,6 +69,8 @@ export interface CalendarProps extends Omit<ViewProps, "style" | "children"> {
   minDate?: Date;
   /** Latest selectable day (later days are disabled) */
   maxDate?: Date;
+  /** Locale of calendar month and accessible date names. */
+  locale?: string;
   /** Extra disabled days */
   disabledDate?: (date: Date) => boolean;
   /**
@@ -286,6 +288,7 @@ function CalendarView({
   maxDate,
   disabledDate,
   firstDayOfWeek = 0,
+  locale,
   size = "medium",
   disabled = false,
   previousMonthLabel,
@@ -380,7 +383,7 @@ function CalendarView({
 
   const fullDate = useMemo(() => {
     try {
-      const format = new Intl.DateTimeFormat(language, {
+      const format = new Intl.DateTimeFormat(locale ?? language, {
         weekday: "long",
         year: "numeric",
         month: "long",
@@ -390,7 +393,7 @@ function CalendarView({
     } catch {
       return (date: Date) => date.toDateString();
     }
-  }, [language]);
+  }, [language, locale]);
 
   const lead = (first.getDay() - firstDayOfWeek + 7) % 7;
   const daysInMonth = localDate(
@@ -587,10 +590,15 @@ function CalendarView({
           ]}
           {...part("calendar", "month-title")}
         >
-          {translate("calendar.monthTitle", {
-            year: first.getFullYear(),
-            month: first.getMonth() + 1,
-          })}
+          {locale
+            ? new Intl.DateTimeFormat(locale, {
+                year: "numeric",
+                month: "long",
+              }).format(first)
+            : translate("calendar.monthTitle", {
+                year: first.getFullYear(),
+                month: first.getMonth() + 1,
+              })}
         </Text>
         {navButton(1)}
       </View>

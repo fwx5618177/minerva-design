@@ -31,6 +31,7 @@ import {
   useFormControlProps,
 } from "../FormControl/context";
 import type { DatePickerProps } from "./types";
+import { hooks } from "../../internal/stylingHooks";
 import styles from "./datePicker.module.scss";
 
 const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
@@ -307,6 +308,13 @@ const DatePicker = ({
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
       {...pickDataAttributes(rest)}
+      {...hooks("date-picker", "root", {
+        state: open && !disabled && !readOnly ? "open" : "closed",
+        disabled,
+        readonly: readOnly,
+        invalid,
+        size,
+      })}
       ref={setField}
       className={cn(styles.datePicker, className)}
       style={style}
@@ -357,7 +365,11 @@ const DatePicker = ({
                 className={styles.clearButton}
               />
             ) : (
-              <span className={styles.calendarIcon} aria-hidden="true">
+              <span
+                className={styles.calendarIcon}
+                aria-hidden="true"
+                {...hooks("date-picker", "icon")}
+              >
                 <IconCalendar />
               </span>
             )
@@ -379,6 +391,7 @@ const DatePicker = ({
         aria-labelledby={labelledBy}
         className={styles.popup}
         onKeyDown={handlePanelKeyDown}
+        {...hooks("date-picker", "content", { state: "open" })}
       >
         <div className={styles.panel}>
           <div className={styles.header}>

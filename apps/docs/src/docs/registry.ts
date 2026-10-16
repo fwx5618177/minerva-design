@@ -545,6 +545,16 @@ export const docPages: DocPageMeta[] = [
       "disabled",
       "form-control",
     ],
+    wc: {
+      entry: "date-picker",
+      tags: ["minerva-date-picker"],
+      demos: ["basic"],
+    },
+    native: {
+      exports: ["DatePicker"],
+      api: ["DatePickerProps"],
+      demos: ["basic"],
+    },
   },
 
   // Data display
