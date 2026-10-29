@@ -22,6 +22,7 @@ const COMPONENT_CATEGORIES = new Set([
   "overlays",
   "navigation",
   "editors",
+  "charts",
 ]);
 
 export interface TopNavProps {

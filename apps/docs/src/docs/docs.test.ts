@@ -343,6 +343,18 @@ describe("docs: coverage of public exports", () => {
     expect(missing).toEqual([]);
   });
 
+  it("documents every runtime export of minerva-design/charts and charts/core", () => {
+    const charts = documented("minerva-design/charts");
+    const core = documented("minerva-design/charts/core");
+    const coreExports = valueExports(join(PACKAGES, "charts/src/core.ts"));
+    expect(coreExports.filter((name) => !core.has(name))).toEqual([]);
+    // minerva-design/charts re-exports the engine
+    const reactExports = valueExports(join(PACKAGES, "charts/src/index.ts"));
+    expect(
+      reactExports.filter((name) => !charts.has(name) && !core.has(name)),
+    ).toEqual([]);
+  });
+
   it("every component page has demos and an API table", () => {
     const incomplete = docPages
       .filter((p) => p.exports?.length)

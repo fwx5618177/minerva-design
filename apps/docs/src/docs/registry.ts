@@ -24,6 +24,7 @@ export type DocCategory =
   | "navigation"
   | "overlays"
   | "editors"
+  | "charts"
   | "mobile"
   | "webComponents";
 
@@ -34,7 +35,11 @@ export interface DocPageMeta {
   /** Runtime exports of the package documented on this page */
   exports?: string[];
   /** Package the exports come from */
-  package?: "minerva-design" | "minerva-design/web-components";
+  package?:
+    | "minerva-design"
+    | "minerva-design/web-components"
+    | "minerva-design/charts"
+    | "minerva-design/charts/core";
   /** Interfaces from api.generated.json rendered as API tables */
   api?: string[];
   /** Demo ids, in display order; each maps to `pages/<id>/demos/<demo>.tsx` */
@@ -93,6 +98,7 @@ export const categories: DocCategory[] = [
   "overlays",
   "navigation",
   "editors",
+  "charts",
   "mobile",
   "webComponents",
 ];
@@ -1700,6 +1706,78 @@ export const docPages: DocPageMeta[] = [
       api: ["CalendarProps"],
       demos: ["basic"],
     },
+  },
+
+  // Charts (minerva-design/charts: GPU engine + React components)
+  {
+    id: "charts",
+    category: "charts",
+    package: "minerva-design/charts",
+    exports: ["Chart"],
+    api: [
+      "ChartProps",
+      "ChartCommonProps",
+      "ChartHandle",
+      "ChartSeries",
+      "ChartPointDatum",
+      "ChartColumnData",
+      "ChartAxisOptions",
+      "ChartRectAnnotation",
+      "ChartLineAnnotation",
+      "ChartInteractionOptions",
+      "ChartTooltipOptions",
+      "ChartLegendOptions",
+      "ChartPadding",
+      "ChartHoverEvent",
+      "ChartHoverItem",
+      "ChartView",
+    ],
+    demos: ["mixed", "renderers", "annotations"],
+  },
+  {
+    id: "line-chart",
+    category: "charts",
+    package: "minerva-design/charts",
+    exports: ["LineChart"],
+    api: ["LineChartProps"],
+    demos: ["basic", "area", "time-series", "large-data"],
+  },
+  {
+    id: "bar-chart",
+    category: "charts",
+    package: "minerva-design/charts",
+    exports: ["BarChart"],
+    api: ["BarChartProps"],
+    demos: ["basic", "stacked", "combo"],
+  },
+  {
+    id: "scatter-chart",
+    category: "charts",
+    package: "minerva-design/charts",
+    exports: ["ScatterChart"],
+    api: ["ScatterChartProps"],
+    demos: ["basic", "labels", "large-data"],
+  },
+  {
+    id: "quadrant-chart",
+    category: "charts",
+    package: "minerva-design/charts",
+    exports: ["QuadrantChart"],
+    api: [
+      "QuadrantChartProps",
+      "QuadrantPoint",
+      "QuadrantRegions",
+      "QuadrantRegion",
+    ],
+    demos: ["basic", "eisenhower"],
+  },
+  {
+    id: "chart-engine",
+    category: "charts",
+    package: "minerva-design/charts/core",
+    exports: ["createChart", "formatCompact"],
+    api: ["ChartOptions", "ChartInstance", "ChartEventMap"],
+    demos: ["basic", "streaming"],
   },
 
   // Web Components (guides; every component page has a "Web Components" tab)

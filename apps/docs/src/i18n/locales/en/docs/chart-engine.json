@@ -1,0 +1,48 @@
+{
+  "title": "Chart engine",
+  "description": "The framework-free engine behind the React charts. createChart mounts a chart in any element, with the same options and renderers.",
+  "demos": {
+    "basic": {
+      "title": "Basic",
+      "description": "createChart in an effect, destroy() on cleanup; ready resolves with the backend and on(\"click\") reports the clicked bar."
+    },
+    "streaming": {
+      "title": "Streaming",
+      "description": "A point is appended every 500 ms with setOptions and a new data array; pause and resume the stream."
+    }
+  },
+  "api": {
+    "ChartOptions": {
+      "series": "Data series",
+      "xAxis": "X axis options",
+      "yAxis": "Y axis options",
+      "renderer": "Backend of the data layer (auto, webgpu, webgl2, canvas2d)",
+      "legend": "Legend; shown by default when there are several named series",
+      "tooltip": "Tooltip; false disables it",
+      "crosshair": "Vertical guide line following the pointer",
+      "annotations": "Background areas and reference lines",
+      "interaction": "Zoom, pan and keyboard; false makes the chart static",
+      "padding": "Space around the plot area",
+      "palette": "Colors of the series without color",
+      "ariaLabel": "Accessible name of the chart"
+    },
+    "ChartInstance": {
+      "setOptions": "Replaces the options; unchanged data arrays are not processed again",
+      "resize": "Measures the container again (automatic with a ResizeObserver)",
+      "resetZoom": "Shows the whole data range",
+      "getView": "Returns the visible range",
+      "setView": "Sets the visible range",
+      "getRenderer": "Backend in use, null until ready",
+      "ready": "Resolves with the backend once the first frame can be drawn",
+      "refreshTheme": "Reads the CSS variables again (theme changes are detected automatically)",
+      "on": "Subscribes to an event; returns the unsubscribe function",
+      "destroy": "Removes the DOM and frees the GPU resources"
+    },
+    "ChartEventMap": {
+      "hover": "Hovered or keyboard-focused points changed (null when cleared)",
+      "click": "A point or bar was clicked",
+      "zoom": "The user zoomed or panned; receives the view",
+      "renderer": "The backend is ready or fell back"
+    }
+  }
+}

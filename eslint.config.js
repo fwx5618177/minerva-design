@@ -135,6 +135,7 @@ export default defineConfig(
   {
     files: [
       "packages/react/src/**/*.{ts,tsx}",
+      "packages/charts/src/**/*.{ts,tsx}",
       "packages/native/src/**/*.{ts,tsx}",
       "apps/docs/src/**/*.{ts,tsx}",
     ],
@@ -151,6 +152,7 @@ export default defineConfig(
     // Accessibility rules for every React source (library, docs site, e2e).
     files: [
       "packages/react/src/**/*.tsx",
+      "packages/charts/src/**/*.tsx",
       "apps/docs/src/**/*.tsx",
       "tests/e2e/**/*.tsx",
     ],

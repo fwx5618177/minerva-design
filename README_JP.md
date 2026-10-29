@@ -33,7 +33,8 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 - **テーマ**：light / dark / system の各モードと `editorial`・`tech`・`graphite`・`cool` の 4 パレット。CSS カスタムプロパティで実現し、cookie での永続化と SSR 向けのちらつき防止スクリプト `THEME_INIT_SCRIPT`（`minerva-design/theme-utils`、サーバー安全）に対応
 - **デザインプリセット**：`<ConfigProvider preset="editorial">`（控えめで読みやすさ重視）や `density` / `radius` / `shadow` / `fontScale` の各軸でアプリ全体の見た目を切り替え。SSR 対応（`designAttributes()`、`createThemeInitScript({ design })`）で、ネストした provider でスコープを限定可能
 - **カスタマイズ**：各コンポーネントが安定した CSS カスタムプロパティ（`--button-height`、`--modal-width` など）を公開
-- **エントリー**：`minerva-design`、`/theme-utils`、`/monaco`、`style.css`（またはコンポーネント単位の `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`。コンポーネント単位で tree-shaking 可能で、アイコン / i18n の実行時依存なし
+- **エントリー**：`minerva-design`、`/theme-utils`、`/monaco`、`/charts`、`style.css`（またはコンポーネント単位の `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`。コンポーネント単位で tree-shaking 可能で、アイコン / i18n の実行時依存なし
+- **チャート**：GPU チャート（`minerva-design/charts`）：折れ線・面グラフ・棒グラフ・散布図・4 象限チャートを WebGPU で描画し、WebGL2、Canvas2D の順にフォールバック。数百万点でも 60 fps、ズーム / パン / キーボード操作、CSS 変数によるテーマ対応。依存ゼロで、フレームワーク非依存のエンジン（`minerva-design/charts/core`）も提供
 - **国際化**：英語・中国語・日本語・フランス語のロケールを内蔵
 - **ヘッドレスライブラリ不要**：オーバーレイ、メニュー、セレクト、タブ、`asChild` は `minerva-design/core` 上で自前実装。サードパーティのインタラクション依存は Floating UI のみ
 
@@ -41,16 +42,17 @@ Minerva は Web 向けの UI コンポーネントライブラリです。React 
 
 パッケージは [`minerva-design`](https://www.npmjs.com/package/minerva-design) の 1 つだけで、用途ごとにエントリーがあります：
 
-| エントリー                                                                     | 説明                                                                                                                                                                                                               |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `minerva-design`                                                               | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き、すべてのクライアントモジュールに `"use client"`。任意の Peer 依存：`react`、`react-dom` `^19.0.0`（React のエントリーでのみ必要）。               |
-| `minerva-design/style.css`                                                     | グローバルスタイルシート（デザイントークン + 全コンポーネント）。アプリのエントリーで 1 回読み込みます。コンポーネント単位の `minerva-design/styles/<component>.css` と `minerva-design/tokens.css` もあります。   |
-| `minerva-design/utils`、`minerva-design/theme-utils`                           | サーバーで安全に使えるヘルパー（`"use client"` なし、React 非依存）：`cn`、テーマ、テーマ Cookie、`THEME_INIT_SCRIPT`、デザインプリセットなど。React Server Components やサーバー向け。                            |
-| `minerva-design/monaco`                                                        | Monaco ベースのコードエディター（任意の Peer 依存 `@monaco-editor/react` と `monaco-editor`）。                                                                                                                    |
-| `minerva-design/web-components`                                                | フレームワーク非依存の Web Components（Lit）：すべての Minerva コンポーネントをカスタム要素として提供（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>` など）。ESM のみ。                                |
-| `minerva-design/web-components/<element>`、`minerva-design/web-components/cdn` | 要素ごとのエントリー（任意の `code-editor` を含む）と、`<script type="module">` / CDN 向けの自己完結バンドル。                                                                                                     |
-| `minerva-design/web-components/{react,vue,svelte,solid}`                       | カスタム要素のフレームワーク向け型定義。`minerva-design/custom-elements.json` と `minerva-design/html-custom-data.json`（VS Code）はツール向けの記述です。                                                         |
-| `minerva-design/core`、`minerva-design/styling-hooks`                          | 上級者向け：両ライブラリが共有するフレームワーク非依存のプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決め、テーマ、i18n）とスタイリングフックのマニフェスト。 |
+| エントリー                                                                     | 説明                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `minerva-design`                                                               | React 19 コンポーネントライブラリ。ESM + CJS、TypeScript 型付き、すべてのクライアントモジュールに `"use client"`。任意の Peer 依存：`react`、`react-dom` `^19.0.0`（React のエントリーでのみ必要）。                         |
+| `minerva-design/style.css`                                                     | グローバルスタイルシート（デザイントークン + 全コンポーネント）。アプリのエントリーで 1 回読み込みます。コンポーネント単位の `minerva-design/styles/<component>.css` と `minerva-design/tokens.css` もあります。             |
+| `minerva-design/utils`、`minerva-design/theme-utils`                           | サーバーで安全に使えるヘルパー（`"use client"` なし、React 非依存）：`cn`、テーマ、テーマ Cookie、`THEME_INIT_SCRIPT`、デザインプリセットなど。React Server Components やサーバー向け。                                      |
+| `minerva-design/monaco`                                                        | Monaco ベースのコードエディター（任意の Peer 依存 `@monaco-editor/react` と `monaco-editor`）。                                                                                                                              |
+| `minerva-design/charts`、`minerva-design/charts/core`                          | GPU チャート：`Chart`、`LineChart`、`BarChart`、`ScatterChart`、`QuadrantChart`（React、`"use client"` 付き）と、フレームワーク非依存のエンジン `createChart`（`"use client"` なし、依存なし）。WebGPU → WebGL2 → Canvas2D。 |
+| `minerva-design/web-components`                                                | フレームワーク非依存の Web Components（Lit）：すべての Minerva コンポーネントをカスタム要素として提供（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>` など）。ESM のみ。                                          |
+| `minerva-design/web-components/<element>`、`minerva-design/web-components/cdn` | 要素ごとのエントリー（任意の `code-editor` を含む）と、`<script type="module">` / CDN 向けの自己完結バンドル。                                                                                                               |
+| `minerva-design/web-components/{react,vue,svelte,solid}`                       | カスタム要素のフレームワーク向け型定義。`minerva-design/custom-elements.json` と `minerva-design/html-custom-data.json`（VS Code）はツール向けの記述です。                                                                   |
+| `minerva-design/core`、`minerva-design/styling-hooks`                          | 上級者向け：両ライブラリが共有するフレームワーク非依存のプリミティブ（フォーカススコープ、閉じられるレイヤー、スクロールロック、ロービングフォーカス、位置決め、テーマ、i18n）とスタイリングフックのマニフェスト。           |
 
 リポジトリは pnpm monorepo です：`packages/core`、`packages/react`、`packages/web-components` にソース（非公開の workspace パッケージ）、`packages/minerva-design` はそれらのビルド成果物をまとめた公開パッケージ、`apps/docs` は GitHub Pages にデプロイされるドキュメント/デモサイト（非公開）です。
 
@@ -81,6 +83,7 @@ minerva-design               minerva-design/web-components
 | オーバーレイ   | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Menu` / `ContextMenu`                                                                                                                                                                                                  |
 | ナビゲーション | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                 |
 | エディター     | `MonacoCodeEditor`（`minerva-design/monaco`）                                                                                                                                                                                                                                                                        |
+| チャート       | `Chart`、`LineChart`、`BarChart`、`ScatterChart`、`QuadrantChart`（`minerva-design/charts`）；`createChart`（`minerva-design/charts/core`）                                                                                                                                                                          |
 
 コンポーネントのほかに、`minerva-design` は `ConfigProvider`、`useConfig`、フック `useAutoTheme`・`useLocale`・`useI18n`、ユーティリティ `applyThemeStyles`・`generateCSSVariables`、および組み込みテーマ集 `themes`（`light`、`dark`、`github-dark`）をエクスポートしています。
 
@@ -423,6 +426,7 @@ pnpm dev
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `dist/react/`          | React のエントリー：モジュールごとの ESM + CJS、`.d.ts` / `.d.cts`、`style.css`、コンポーネント単位の `styles/*.css`、`prose.scss`、`./monaco`・`./theme-utils`・`./utils` エントリー |
 | `dist/core/`           | 両ライブラリが共有するフレームワーク非依存のコア（ESM + CJS、`.d.ts` / `.d.cts`、`tokens.css`）                                                                                       |
+| `dist/charts/`         | GPU チャート：React コンポーネント（`index`、`"use client"`）とフレームワーク非依存のエンジン（`core`）、ESM + CJS、`.d.ts` / `.d.cts`                                                |
 | `dist/web-components/` | 要素ごとの ESM、`elements/*` エントリー（任意の `code-editor` を含む）、`cdn/minerva.js`、`types/` のフレームワーク型定義、`html-custom-data.json`                                    |
 | パッケージのルート     | `custom-elements.json`、`README.md`、`LICENSE`、`CHANGELOG.md`                                                                                                                        |
 

@@ -6,3 +6,4 @@ export declare const REACT_DIST: string;
 export declare const WEB_COMPONENTS_DIST: string;
 export declare const VUE_DIST: string;
 export declare const NATIVE_DIST: string;
+export declare const CHARTS_DIST: string;

@@ -33,7 +33,8 @@ Minerva 是一个面向 Web 的 UI 组件库：React 19 组件，以及同一套
 - **主题**：light / dark / system 模式，以及 `editorial`、`tech`、`graphite`、`cool` 四种配色，基于 CSS 自定义属性；支持 cookie 持久化，SSR 下用 `THEME_INIT_SCRIPT` 避免闪烁（`minerva-design/theme-utils`，服务端安全）
 - **设计预设**：通过 `<ConfigProvider preset="editorial">`（克制、以阅读为主）或 `density` / `radius` / `shadow` / `fontScale` 维度切换整个应用的外观；支持 SSR（`designAttributes()`、`createThemeInitScript({ design })`），并可由嵌套 provider 限定作用域
 - **定制**：每个组件都文档化了一组稳定的 CSS 自定义属性（`--button-height`、`--modal-width`……）
-- **入口**：`minerva-design`、`/theme-utils`、`/monaco`、`style.css`（或按组件引入 `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`；按组件 tree-shaking，无图标 / i18n 运行时依赖
+- **入口**：`minerva-design`、`/theme-utils`、`/monaco`、`/charts`、`style.css`（或按组件引入 `styles/<component>.css` + `styles/tokens.css`）、`prose.scss`；按组件 tree-shaking，无图标 / i18n 运行时依赖
+- **图表**：GPU 图表（`minerva-design/charts`）：折线图、面积图、柱状图、散点图和四象限图，优先使用 WebGPU，依次降级到 WebGL2、Canvas2D；百万级数据点保持 60 fps，支持缩放 / 平移 / 键盘导航，主题跟随 CSS 变量；零依赖，并提供不依赖框架的引擎（`minerva-design/charts/core`）
 - **国际化**：内置英文、中文、日文和法文语言包
 - **无 headless 依赖**：浮层、菜单、选择器、标签页和 `asChild` 都基于 `minerva-design/core` 自主实现；Floating UI 是唯一的第三方交互依赖
 
@@ -41,16 +42,17 @@ Minerva 是一个面向 Web 的 UI 组件库：React 19 组件，以及同一套
 
 只有一个包 [`minerva-design`](https://www.npmjs.com/package/minerva-design)，按用途提供不同入口：
 
-| 入口                                                                           | 说明                                                                                                                                                     |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `minerva-design`                                                               | React 19 组件库。ESM + CJS，包含 TypeScript 类型，所有客户端模块带 `"use client"`。可选 Peer 依赖：`react`、`react-dom` `^19.0.0`（仅 React 入口需要）。 |
-| `minerva-design/style.css`                                                     | 全局样式表（设计令牌 + 所有组件），在应用入口引入一次。另提供按组件的 `minerva-design/styles/<component>.css` 和 `minerva-design/tokens.css`。           |
-| `minerva-design/utils`、`minerva-design/theme-utils`                           | 服务端安全的工具（无 `"use client"`、不依赖 React）：`cn`、主题、主题 Cookie、`THEME_INIT_SCRIPT`、设计预设等，供 React Server Components 和服务端使用。 |
-| `minerva-design/monaco`                                                        | 基于 Monaco 的代码编辑器（可选 Peer 依赖 `@monaco-editor/react` 与 `monaco-editor`）。                                                                   |
-| `minerva-design/web-components`                                                | 与框架无关的 Web Components（Lit）：每个 Minerva 组件都有对应的自定义元素（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>`……）。仅 ESM。       |
-| `minerva-design/web-components/<element>`、`minerva-design/web-components/cdn` | 每个元素一个入口（含可选的 `code-editor`），以及用于 `<script type="module">` / CDN 的自包含包。                                                         |
-| `minerva-design/web-components/{react,vue,svelte,solid}`                       | 自定义元素的框架类型；`minerva-design/custom-elements.json` 与 `minerva-design/html-custom-data.json`（VS Code）供工具使用。                             |
-| `minerva-design/core`、`minerva-design/styling-hooks`                          | 进阶：两个组件库共用的框架无关原语（焦点作用域、可关闭层、滚动锁定、漫游焦点、定位、主题、i18n）以及样式钩子清单。                                       |
+| 入口                                                                           | 说明                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `minerva-design`                                                               | React 19 组件库。ESM + CJS，包含 TypeScript 类型，所有客户端模块带 `"use client"`。可选 Peer 依赖：`react`、`react-dom` `^19.0.0`（仅 React 入口需要）。                                               |
+| `minerva-design/style.css`                                                     | 全局样式表（设计令牌 + 所有组件），在应用入口引入一次。另提供按组件的 `minerva-design/styles/<component>.css` 和 `minerva-design/tokens.css`。                                                         |
+| `minerva-design/utils`、`minerva-design/theme-utils`                           | 服务端安全的工具（无 `"use client"`、不依赖 React）：`cn`、主题、主题 Cookie、`THEME_INIT_SCRIPT`、设计预设等，供 React Server Components 和服务端使用。                                               |
+| `minerva-design/monaco`                                                        | 基于 Monaco 的代码编辑器（可选 Peer 依赖 `@monaco-editor/react` 与 `monaco-editor`）。                                                                                                                 |
+| `minerva-design/charts`、`minerva-design/charts/core`                          | GPU 图表：`Chart`、`LineChart`、`BarChart`、`ScatterChart`、`QuadrantChart`（React，带 `"use client"`），以及不依赖框架的引擎 `createChart`（无 `"use client"`、无依赖）。WebGPU → WebGL2 → Canvas2D。 |
+| `minerva-design/web-components`                                                | 与框架无关的 Web Components（Lit）：每个 Minerva 组件都有对应的自定义元素（`<minerva-button>`、`<minerva-select>`、`<minerva-modal>`……）。仅 ESM。                                                     |
+| `minerva-design/web-components/<element>`、`minerva-design/web-components/cdn` | 每个元素一个入口（含可选的 `code-editor`），以及用于 `<script type="module">` / CDN 的自包含包。                                                                                                       |
+| `minerva-design/web-components/{react,vue,svelte,solid}`                       | 自定义元素的框架类型；`minerva-design/custom-elements.json` 与 `minerva-design/html-custom-data.json`（VS Code）供工具使用。                                                                           |
+| `minerva-design/core`、`minerva-design/styling-hooks`                          | 进阶：两个组件库共用的框架无关原语（焦点作用域、可关闭层、滚动锁定、漫游焦点、定位、主题、i18n）以及样式钩子清单。                                                                                     |
 
 仓库是一个 pnpm monorepo：`packages/core`、`packages/react`、`packages/web-components` 存放源码（私有 workspace 包），`packages/minerva-design` 是由它们的构建产物组装而成的发布包，`apps/docs` 是部署在 GitHub Pages 的文档/演示站点（私有）。
 
@@ -81,6 +83,7 @@ minerva-design               minerva-design/web-components
 | 浮层     | `Modal`、`Drawer`、`ConfirmDialog` / `confirm()` / `useConfirm`、`CommandDialog`、`Popover`、`Menu` / `ContextMenu`                                                                                                                                                                                                  |
 | 导航     | `Tabs`、`PageTabs`、`NavTree`、`Pagination`、`Steps`                                                                                                                                                                                                                                                                 |
 | 编辑器   | `MonacoCodeEditor`（`minerva-design/monaco`）                                                                                                                                                                                                                                                                        |
+| 图表     | `Chart`、`LineChart`、`BarChart`、`ScatterChart`、`QuadrantChart`（`minerva-design/charts`）；`createChart`（`minerva-design/charts/core`）                                                                                                                                                                          |
 
 除组件外，`minerva-design` 还导出 `ConfigProvider`、`useConfig`，Hooks `useAutoTheme`、`useLocale`、`useI18n`，工具函数 `applyThemeStyles`、`generateCSSVariables`，以及内置主题集合 `themes`（`light`、`dark`、`github-dark`）。
 

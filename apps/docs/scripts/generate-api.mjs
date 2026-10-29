@@ -71,6 +71,10 @@ const sourceFiles = () => [
   { file: join(CORE_SRC, "theme/design.ts"), prefix: "" },
   // i18n types (SupportedLanguage, ...), re-exported by minerva-design
   { file: join(CORE_SRC, "i18n/types.ts"), prefix: "" },
+  // Charts: engine options (minerva-design/charts/core) and React props
+  // (minerva-design/charts)
+  { file: join(PACKAGES_DIR, "charts/src/engine/types.ts"), prefix: "" },
+  { file: join(PACKAGES_DIR, "charts/src/react/types.ts"), prefix: "" },
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();

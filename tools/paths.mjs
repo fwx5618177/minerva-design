@@ -6,6 +6,7 @@
 //   @minerva/web-components -> packages/minerva-design/dist/web-components
 //   @minerva/vue            -> packages/minerva-design/dist/vue
 //   @minerva/native         -> packages/minerva-design/dist/native
+//   @minerva/charts         -> packages/minerva-design/dist/charts
 import { fileURLToPath } from "node:url";
 
 /** packages/minerva-design (the published package) */
@@ -22,3 +23,4 @@ export const REACT_DIST = `${DIST_DIR}react`;
 export const WEB_COMPONENTS_DIST = `${DIST_DIR}web-components`;
 export const VUE_DIST = `${DIST_DIR}vue`;
 export const NATIVE_DIST = `${DIST_DIR}native`;
+export const CHARTS_DIST = `${DIST_DIR}charts`;

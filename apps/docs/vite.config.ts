@@ -51,6 +51,14 @@ const nativeAlias: Alias[] = [
 // exactly like tests/e2e does. Exact-match aliases: sub-entries first.
 const testAlias: Alias[] = [
   {
+    find: /^minerva-design\/charts\/core$/,
+    replacement: src("../../packages/charts/src/core.ts"),
+  },
+  {
+    find: /^minerva-design\/charts$/,
+    replacement: src("../../packages/charts/src/index.ts"),
+  },
+  {
     find: /^minerva-design\/vue\/monaco$/,
     replacement: src("../../packages/vue/src/monaco.ts"),
   },

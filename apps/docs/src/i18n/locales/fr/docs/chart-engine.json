@@ -1,0 +1,48 @@
+{
+  "title": "Moteur de graphiques",
+  "description": "Le moteur sans framework derrière les graphiques React. createChart monte un graphique dans n’importe quel élément, avec les mêmes options et moteurs de rendu.",
+  "demos": {
+    "basic": {
+      "title": "Base",
+      "description": "createChart dans un effet, destroy() au nettoyage ; ready se résout avec le backend et on(\"click\") signale la barre cliquée."
+    },
+    "streaming": {
+      "title": "Flux continu",
+      "description": "Un point est ajouté toutes les 500 ms avec setOptions et un nouveau tableau de données ; mettez le flux en pause ou reprenez-le."
+    }
+  },
+  "api": {
+    "ChartOptions": {
+      "series": "Séries de données",
+      "xAxis": "Options de l’axe X",
+      "yAxis": "Options de l’axe Y",
+      "renderer": "Backend de la couche de données (auto, webgpu, webgl2, canvas2d)",
+      "legend": "Légende ; affichée par défaut s’il y a plusieurs séries nommées",
+      "tooltip": "Infobulle ; false la désactive",
+      "crosshair": "Ligne de repère verticale qui suit le pointeur",
+      "annotations": "Zones de fond et lignes de référence",
+      "interaction": "Zoom, déplacement et clavier ; false rend le graphique statique",
+      "padding": "Espace autour de la zone de tracé",
+      "palette": "Couleurs des séries sans color",
+      "ariaLabel": "Nom accessible du graphique"
+    },
+    "ChartInstance": {
+      "setOptions": "Remplace les options ; les tableaux de données inchangés ne sont pas retraités",
+      "resize": "Remesure le conteneur (automatique avec un ResizeObserver)",
+      "resetZoom": "Affiche toute la plage de données",
+      "getView": "Renvoie la plage visible",
+      "setView": "Définit la plage visible",
+      "getRenderer": "Backend utilisé, null tant qu’il n’est pas prêt",
+      "ready": "Se résout avec le backend dès que la première image peut être dessinée",
+      "refreshTheme": "Relit les variables CSS (les changements de thème sont détectés automatiquement)",
+      "on": "S’abonne à un événement ; renvoie la fonction de désabonnement",
+      "destroy": "Retire le DOM et libère les ressources GPU"
+    },
+    "ChartEventMap": {
+      "hover": "Les points survolés ou ciblés au clavier ont changé (null une fois effacés)",
+      "click": "Un point ou une barre a été cliqué",
+      "zoom": "L’utilisateur a zoomé ou déplacé la vue ; reçoit la vue",
+      "renderer": "Le backend est prêt ou a basculé en repli"
+    }
+  }
+}

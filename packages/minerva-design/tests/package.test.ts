@@ -38,7 +38,7 @@ const JS_ENTRIES = Object.keys(exportsMap).filter((key) => {
   const files = targets(exportsMap[key]);
   return files.some((f) => /\.c?js$/.test(f));
 });
-const CLIENT_ENTRIES = new Set([".", "./monaco"]);
+const CLIENT_ENTRIES = new Set([".", "./monaco", "./charts"]);
 /** Entries requiring native hosts or the mini/H5 framework compiler.
  * Optional H5 entries are browser-compiled in mini.test.ts. */
 const NATIVE_ENTRIES = new Set([
@@ -148,6 +148,7 @@ describe("one copy of the core", () => {
   const domDir = join(root, "dist/dom");
   const nonCore = [
     "react",
+    "charts",
     "web-components",
     "vue",
     "angular",

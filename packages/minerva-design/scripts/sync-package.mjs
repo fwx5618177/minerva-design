@@ -44,6 +44,9 @@ export const DUAL_SUBPATHS = {
   monaco: ["react/monaco"],
   core: ["dom/core-web"],
   "styling-hooks": ["core/styling-hooks", "core/styling-hooks/index"],
+  // GPU charts: React components and the framework-free engine
+  charts: ["charts/index"],
+  "charts/core": ["charts/core"],
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */

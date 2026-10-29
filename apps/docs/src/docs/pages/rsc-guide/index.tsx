@@ -16,6 +16,8 @@ import styles from "@/docs/components/docs.module.scss";
 const ENTRIES = [
   { entry: "minerva-design", client: true, key: "main" },
   { entry: "minerva-design/monaco", client: true, key: "monaco" },
+  { entry: "minerva-design/charts", client: true, key: "charts" },
+  { entry: "minerva-design/charts/core", client: false, key: "chartsCore" },
   { entry: "minerva-design/theme-utils", client: false, key: "themeUtils" },
   { entry: "minerva-design/utils", client: false, key: "utils" },
 ] as const;

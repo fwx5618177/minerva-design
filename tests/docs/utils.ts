@@ -21,6 +21,8 @@ export const PUBLISHED = {
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
   "packages/dom": "@minerva/dom",
+  // GPU charts (minerva-design/charts, minerva-design/charts/core)
+  "packages/charts": "@minerva/charts",
   // React Native renderer (minerva-design/native) and its example app
   "packages/native": "@minerva/native",
   "apps/expo-example": "@minerva/expo-example",

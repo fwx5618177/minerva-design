@@ -11,6 +11,9 @@ export default defineConfig({
     projects: [
       "packages/core",
       "packages/dom",
+      // GPU charts (minerva-design/charts); not in the coverage percentage:
+      // the GPU backends are verified in real browsers (tests/browser)
+      "packages/charts",
       "packages/react",
       "packages/web-components",
       "apps/docs",
