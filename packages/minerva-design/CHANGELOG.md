@@ -1,5 +1,12 @@
 # minerva-design
 
+## 1.3.0
+
+### Minor Changes
+
+- docs(charts): document the new chart types, the gallery and a performance guide
+  feat(charts): add area, candlestick, heatmap, sparkline, pie, radar, gauge, funnel and treemap
+
 ## 1.2.0
 
 ### Minor Changes
