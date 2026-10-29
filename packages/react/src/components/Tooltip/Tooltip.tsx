@@ -300,17 +300,18 @@ const Tooltip = ({
 
   let triggerNode: React.ReactNode;
   if (useChildAsTrigger) {
-    // Disabled: render the child untouched (no handlers, no state hooks)
-    triggerNode = disabled ? (
-      children
-    ) : (
+    // Always render through the Slot, even when disabled: swapping between the
+    // bare child and a Slot changes the element type at this position, which
+    // remounts the child and drops its focus, pointer capture and any click in
+    // progress (e.g. toggling `disabled` on pointerdown).
+    triggerNode = (
       <Slot
         ref={setTriggerEl}
         className={className || undefined}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        onMouseEnter={disabled ? undefined : handleMouseEnter}
+        onMouseLeave={disabled ? undefined : handleMouseLeave}
+        onFocus={disabled ? undefined : handleFocus}
+        onBlur={disabled ? undefined : handleBlur}
       >
         {cloneElement(children, { "aria-describedby": childDescribedBy })}
       </Slot>

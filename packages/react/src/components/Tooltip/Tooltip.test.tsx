@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef, useState } from "react";
 import type React from "react";
 import {
   act,
@@ -202,6 +202,45 @@ describe("Tooltip", () => {
     expect(getTrigger()).toHaveFocus();
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
     expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it("keeps the asChild trigger mounted when disabled toggles", async () => {
+    const user = setup();
+    const onClick = vi.fn();
+    const onOpen = vi.fn();
+    const Harness = () => {
+      const [busy, setBusy] = useState(false);
+      return (
+        <Tooltip content="Hello" asChild disabled={busy} onOpen={onOpen}>
+          <button
+            type="button"
+            onPointerDown={() => setBusy(true)}
+            onClick={() => {
+              onClick();
+              setBusy(false);
+            }}
+          >
+            Trigger
+          </button>
+        </Tooltip>
+      );
+    };
+    render(<Harness />);
+    const before = getTrigger();
+
+    // Toggling disabled on pointerdown must not remount the button, otherwise
+    // the click that follows is lost.
+    await user.click(before);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(getTrigger()).toBe(before);
+    expect(before).toHaveFocus();
+
+    await user.unhover(before);
+    await user.hover(before);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(onOpen).toHaveBeenCalled();
   });
 
   it("opens on keyboard focus, closes on Escape and on blur", async () => {
