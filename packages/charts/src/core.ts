@@ -32,13 +32,9 @@ export {
 } from "./engine/controller";
 export { formatCompact } from "./engine/format";
 export {
-  barSeries,
-  DEFAULT_QUADRANT_COLORS,
-  lineSeries,
   quadrantCenter,
   quadrantChartOptions,
   quadrantOf,
-  scatterSeries,
   type QuadrantAxisLabels,
   type QuadrantConfig,
   type QuadrantCorner,

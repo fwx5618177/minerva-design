@@ -125,3 +125,31 @@ void notifications.promise(Promise.resolve(1), {
   success: (value) => `Done ${value}`,
   error: (error) => String(error),
 });
+declare const lineChart: import("minerva-design/weapp/types").NativeChartInstance;
+lineChart.configure({
+  yAxis: { format: (value) => `${value}%` },
+  renderTooltip: (event) =>
+    event.items.map((item) => `${item.seriesName}: ${item.y}`).join("\n"),
+});
+const chartProps: import("minerva-design/weapp/types").NativeLineChartProperties =
+  {
+    series: [{ name: "Visits", data: [1, 3, 2] }],
+    xAxis: { type: "time" },
+    area: true,
+    annotations: [{ type: "line", axis: "y", value: 2, label: "Goal" }],
+  };
+void chartProps;
+// @ts-expect-error tooltip text must be a string or null
+lineChart.configure({ renderTooltip: () => 1 });
+declare const matrix: import("minerva-design/weapp/types").NativeQuadrantChartInstance;
+matrix.configure({
+  renderTooltip: (point, index) => `${point.label} #${index}`,
+});
+const onDrop = (
+  event: NativeEvent<
+    import("minerva-design/weapp/types").NativeQuadrantChartEvents["pointdrop"]
+  >,
+) => `${event.detail.point.label} -> ${event.detail.target.quadrant}`;
+void onDrop;
+const view = matrix.getView();
+void view?.x[0];

@@ -17,6 +17,7 @@ const UNI_BUILT_IN_TAGS = new Set([
   "scroll-view",
   "input",
   "switch",
+  "canvas",
 ]);
 
 export default defineConfig({

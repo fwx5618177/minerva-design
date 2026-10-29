@@ -124,6 +124,11 @@ import ConfigProvider from "./minerva/src/ConfigProvider.vue";
 import AutoComplete from "./minerva/src/AutoComplete.vue";
 import ResponsiveGrid from "./minerva/src/ResponsiveGrid.vue";
 import LoadingState from "./minerva/src/LoadingState.vue";
+import Chart from "./minerva/src/Chart.vue";
+import LineChart from "./minerva/src/LineChart.vue";
+import BarChart from "./minerva/src/BarChart.vue";
+import ScatterChart from "./minerva/src/ScatterChart.vue";
+import QuadrantChart from "./minerva/src/QuadrantChart.vue";
 export function createApp() {
   const app = createSSRApp(App);
   app.component("Steps", Steps);
@@ -250,5 +255,10 @@ export function createApp() {
   app.component("AutoComplete", AutoComplete);
   app.component("ResponsiveGrid", ResponsiveGrid);
   app.component("LoadingState", LoadingState);
+  app.component("Chart", Chart);
+  app.component("LineChart", LineChart);
+  app.component("BarChart", BarChart);
+  app.component("ScatterChart", ScatterChart);
+  app.component("QuadrantChart", QuadrantChart);
   return { app };
 }

@@ -20,7 +20,16 @@ const COMPONENTS = [
   "ScatterChart",
   "QuadrantChart",
 ];
-const ENGINE = ["createChart", "formatCompact"];
+const ENGINE = [
+  "createChart",
+  "createCanvasChart",
+  "createChartController",
+  "scenePrimitives",
+  "formatCompact",
+  "quadrantChartOptions",
+  "quadrantOf",
+  "quadrantCenter",
+];
 
 describe("minerva-design/charts", () => {
   it("is declared in the exports map with ESM, CJS and both declaration flavours", () => {
@@ -54,17 +63,60 @@ describe("minerva-design/charts", () => {
     expect(code).not.toMatch(/from\s*["']react/);
   });
 
+  it("draws a canvas chart without any DOM (mini-programs)", async () => {
+    const { createCanvasChart, quadrantChartOptions } =
+      await import("minerva-design/charts/core");
+    const texts: string[] = [];
+    const ctx = new Proxy({} as Record<string, unknown>, {
+      get: (target, key: string) =>
+        key in target
+          ? target[key]
+          : key === "measureText"
+            ? (t: string) => ({ width: t.length * 6 })
+            : key === "createLinearGradient"
+              ? () => ({ addColorStop() {} })
+              : key === "fillText"
+                ? (t: string) => texts.push(t)
+                : () => {},
+      set: (target, key: string, value) => {
+        target[key] = value;
+        return true;
+      },
+    });
+    const frames: (() => void)[] = [];
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: () => ctx,
+      requestAnimationFrame: (cb: () => void) => frames.push(cb),
+    };
+    const chart = createCanvasChart({
+      canvas,
+      width: 320,
+      height: 240,
+      pixelRatio: 2,
+      options: quadrantChartOptions({
+        points: [{ x: 2, y: 8, label: "Task" }],
+        quadrants: { topLeft: { label: "Do first" } },
+      }),
+    });
+    frames.shift()?.();
+    expect(canvas.width).toBe(640);
+    expect(texts).toEqual(expect.arrayContaining(["Do first", "Task"]));
+    chart.destroy();
+  });
+
   it("server-renders an empty sized container (the chart mounts in the browser)", async () => {
     const { LineChart } = await import("minerva-design/charts");
     const html = renderToString(
       createElement(LineChart, { height: 200, series: [{ data: [1, 2, 3] }] }),
     );
     expect(html).toBe(
-      '<div style="position:relative;width:100%;height:200px"></div>',
+      '<div style="position:relative;width:100%;height:200px"><div style="position:absolute;inset:0"></div></div>',
     );
   });
 
-  it("has no runtime dependency besides React", () => {
+  it("has no runtime dependency besides React (and react-dom for portals)", () => {
     const walk = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
         e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)],
@@ -79,7 +131,7 @@ describe("minerva-design/charts", () => {
         /(?:from\s*|require\()["']([^"'.][^"']*)["']/g,
       )) {
         expect(
-          ["react", "react/jsx-runtime"],
+          ["react", "react/jsx-runtime", "react-dom"],
           `${file} imports ${specifier}`,
         ).toContain(specifier);
       }

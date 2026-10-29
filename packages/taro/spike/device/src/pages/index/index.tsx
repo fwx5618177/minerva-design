@@ -9,7 +9,12 @@ import {
   TabPanel,
   LoadingState,
   HtmlPreview,
+  QuadrantChart,
 } from "@minerva/taro";
+const tasks = [
+  { x: 2, y: 8, label: "Report" },
+  { x: 7, y: 3, label: "Emails" },
+];
 export default function Index() {
   const [count, setCount] = useState(0);
   return (
@@ -27,6 +32,12 @@ export default function Index() {
         </Tabs>
         <LoadingState loading={false}>Ready</LoadingState>
         <HtmlPreview html="<p>Native safe source</p>" />
+        <QuadrantChart
+          height={280}
+          points={tasks}
+          quadrants={{ topLeft: { label: "Do first" } }}
+          onPointClick={(point) => setCount(point.x)}
+        />
       </View>
     </ConfigProvider>
   );

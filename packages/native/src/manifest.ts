@@ -234,6 +234,20 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   { name: "SelectSeparator", contract: "SelectSeparator" },
 ];
 
+/**
+ * The chart components (@minerva/charts engine drawn with views). Not
+ * component contracts: the charts have no counterpart in the web contract
+ * matrix (minerva-design/charts is a separate entry), so they are listed
+ * apart and stay out of the generated contracts / support matrix.
+ */
+export const NATIVE_CHARTS: readonly string[] = [
+  "Chart",
+  "LineChart",
+  "BarChart",
+  "ScatterChart",
+  "QuadrantChart",
+];
+
 /** Native component of a contract (by contract name) */
 export const nativeComponentOf = (
   contract: string,

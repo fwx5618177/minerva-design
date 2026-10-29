@@ -90,7 +90,34 @@ export const UNI_BUILT_IN_TAGS = [
   "scroll-view",
   "input",
   "switch",
+  "canvas",
 ] as const;
+
+// Like uni-h5: a <uni-canvas> host carrying attrs / listeners around the real
+// <canvas> element (the 2D context is stubbed by the tests).
+const UniCanvas = defineComponent({
+  name: "UniCanvas",
+  inheritAttrs: false,
+  props: {
+    canvasId: String,
+    disableScroll: { type: [Boolean, String], default: false },
+    hidpi: { type: [Boolean, String], default: true },
+  },
+  setup(props, { attrs }) {
+    return () =>
+      h(
+        "uni-canvas",
+        {
+          ...attrs,
+          "canvas-id": props.canvasId,
+          "data-uni": "canvas",
+          "data-hidpi": String(props.hidpi),
+          "data-disable-scroll": String(props.disableScroll),
+        },
+        [h("canvas", { class: "uni-canvas-canvas", width: 300, height: 150 })],
+      );
+  },
+});
 
 export const uniBuiltIns: Record<string, Component> = {
   UniViewHost: uniShim("View", "div"),
@@ -100,4 +127,5 @@ export const uniBuiltIns: Record<string, Component> = {
   UniScrollViewHost: uniShim("ScrollView", "div"),
   UniInputHost: uniShim("Input", "input"),
   UniSwitchHost: UniSwitch,
+  UniCanvasHost: UniCanvas,
 };

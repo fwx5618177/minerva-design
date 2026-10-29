@@ -124,3 +124,30 @@ export { default as TooltipProvider } from "./TooltipProvider.vue";
 export { confirm, toast } from "./feedback-store";
 export { useConfirm, useToast } from "./feedback-context";
 export { default as DatePicker } from "./DatePicker.vue";
+// Charts: canvas renderer of the chart engine (outside the component contract matrix)
+export { default as Chart } from "./Chart.vue";
+export { default as LineChart } from "./LineChart.vue";
+export { default as BarChart } from "./BarChart.vue";
+export { default as ScatterChart } from "./ScatterChart.vue";
+export { default as QuadrantChart } from "./QuadrantChart.vue";
+export type {
+  ChartAnnotation,
+  ChartAxisOptions,
+  ChartHandle,
+  ChartHoverEvent,
+  ChartHoverItem,
+  ChartInteractionOptions,
+  ChartLegendOptions,
+  ChartPadding,
+  ChartPlotClickEvent,
+  ChartSeries,
+  ChartSeriesData,
+  ChartTooltipOptions,
+  ChartView,
+  QuadrantAxisLabels,
+  QuadrantCorner,
+  QuadrantDropTarget,
+  QuadrantPoint,
+  QuadrantRegion,
+  QuadrantRegions,
+} from "./chart-types";

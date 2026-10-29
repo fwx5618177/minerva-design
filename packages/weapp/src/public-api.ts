@@ -120,7 +120,94 @@ const configurations: Record<string, Method> = {
     "configure(config: { messages?: Record<string, Messages> }): void",
     "Merge custom message trees per language into inherited translations.",
   ),
+  quadrantChart: method(
+    "configure",
+    "configure(config: NativeQuadrantChartConfig): void",
+    "renderTooltip(point, index) returns the tooltip text of a point (lines separated by \\n) or null to hide it.",
+  ),
 };
+const chartConfiguration = method(
+  "configure",
+  "configure(config: NativeChartConfig): void",
+  "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it.",
+);
+for (const name of ["chart", "lineChart", "barChart", "scatterChart"])
+  configurations[name] = chartConfiguration;
+const chartMethods = [
+  method(
+    "resize",
+    "resize(): void",
+    "Measure the canvas again after a host layout change (e.g. a chart created hidden).",
+  ),
+  method("resetZoom", "resetZoom(): void", "Show the whole data range."),
+  method(
+    "getView",
+    "getView(): NativeChartView | null",
+    "Visible axis ranges; null before the canvas is ready.",
+  ),
+  method(
+    "setView",
+    "setView(view: Partial<NativeChartView>): void",
+    "Set the visible axis ranges.",
+  ),
+  method(
+    "getPlotRect",
+    "getPlotRect(): NativeChartRect | null",
+    "Plot area in px of the chart, for host overlays.",
+  ),
+  method(
+    "toPixel",
+    "toPixel(x: number, y: number): { x: number; y: number } | null",
+    "Data coordinates to px of the chart.",
+  ),
+  method(
+    "fromPixel",
+    "fromPixel(x: number, y: number): { x: number; y: number } | null",
+    "Px of the chart to data coordinates.",
+  ),
+];
+const chartEvent = {
+  hover: event(
+    "hover",
+    "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+    "Highlighted points after a tap or a finger scrub; items is empty when cleared.",
+  ),
+  zoom: event(
+    "zoom",
+    "{ x: [number, number]; y: [number, number] }",
+    "Visible range after a pinch, a pan or a double-tap reset.",
+  ),
+  layout: event(
+    "layout",
+    "{ x: number; y: number; width: number; height: number }",
+    "The plot area moved or was resized (px of the chart).",
+  ),
+};
+const seriesChartEvents = [
+  chartEvent.hover,
+  event(
+    "pointclick",
+    "{ items: NativeChartHoverItem[]; x: number; xLabel: string }",
+    "A point or bar was tapped.",
+  ),
+  event(
+    "plotclick",
+    "{ x: number; y: number }",
+    "The plot area was tapped where there is no point (data coordinates).",
+  ),
+  chartEvent.zoom,
+  chartEvent.layout,
+  event(
+    "pointdrag",
+    "{ item: NativeChartHoverItem; x: number; y: number }",
+    "A scatter point is dragged (interaction.dragPoints); the data is not changed.",
+  ),
+  event(
+    "pointdrop",
+    "{ item: NativeChartHoverItem; x: number; y: number }",
+    "A dragged scatter point was released; update the series to move it.",
+  ),
+];
 const tableEvents = [
   event(
     "sortchange",
@@ -150,6 +237,35 @@ const tableEvents = [
   ),
 ];
 const events: Record<string, Event[]> = {
+  chart: seriesChartEvents,
+  lineChart: seriesChartEvents,
+  barChart: seriesChartEvents,
+  scatterChart: seriesChartEvents,
+  quadrantChart: [
+    chartEvent.hover,
+    event(
+      "pointclick",
+      "{ point: NativeQuadrantPoint; index: number }",
+      "A dot was tapped.",
+    ),
+    event(
+      "quadrantclick",
+      "{ quadrant: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'; x: number; y: number }",
+      "The empty area of a quadrant was tapped.",
+    ),
+    event(
+      "pointdrag",
+      "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+      "A dot is dragged (draggable).",
+    ),
+    event(
+      "pointdrop",
+      "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+      "A dragged dot was released; update points to move it.",
+    ),
+    chartEvent.zoom,
+    chartEvent.layout,
+  ],
   drawer: [
     open,
     event(
@@ -529,6 +645,16 @@ export function annotateNativeApi(controls: Record<string, Control>) {
         ),
       );
     if (configurations[name]) methods.push(configurations[name]);
+    if (
+      [
+        "chart",
+        "lineChart",
+        "barChart",
+        "scatterChart",
+        "quadrantChart",
+      ].includes(name)
+    )
+      methods.push(...chartMethods);
     if (
       ["responsiveGrid", "formLayout", "splitLayout", "appShell"].includes(name)
     )

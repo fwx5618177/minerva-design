@@ -1397,3 +1397,59 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
 ] as const;
+
+/**
+ * Native chart components. Charts are outside the cross-platform component
+ * contract matrix (the web charts are not part of it either), so they are
+ * listed here instead of in `weappComponentManifest`.
+ */
+export const weappChartManifest = [
+  {
+    name: "Chart",
+    scope:
+      'Mixed line/area/bar/scatter series on a <canvas type="2d"> (DOM-free canvas engine): axes, legend with tap-to-toggle, tooltip, crosshair, annotations, tap/scrub hover, pan when zoomed, pinch zoom, double-tap reset, point dragging, Minerva theme/palette/design tokens from the nearest provider.',
+    limitations: [
+      "Properties are serialized by setData: data must be JSON (timestamps instead of Date, no typed arrays) and large data sets cost a copy per update.",
+      "Function options (axis format, tooltip text) use configure(); tooltips are canvas text, not ReactNode content. No renderer choice, wheel or keyboard navigation.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "LineChart",
+    scope: "Chart whose untyped series are lines, or areas with `area`.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BarChart",
+    scope: "Chart whose untyped series are bars, grouped or `stacked`.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "ScatterChart",
+    scope: "Chart whose untyped series are dots, zooming on both axes.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "QuadrantChart",
+    scope:
+      "Quadrant matrix with the web props (points, domains, splits, quadrants, axis labels, showTicks, reverseX, labels, pointSize); pointclick, quadrantclick and pointdrag/pointdrop events.",
+    limitations: [
+      "quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel().",
+      "Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler).",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+] as const;

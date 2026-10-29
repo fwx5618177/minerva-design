@@ -407,6 +407,301 @@ export interface NativeToastProviderInstance extends NativeConfigConsumer {
   ): Promise<T>;
 }
 
+/*
+ * Charts: chart, line-chart, bar-chart, scatter-chart and quadrant-chart draw
+ * on a `<canvas type="2d">`. Properties are serialized by setData, so data is
+ * JSON (timestamps instead of Date objects) and functions go through
+ * `configure()`.
+ */
+export type NativeChartSeriesType = "line" | "area" | "bar" | "scatter";
+/** X value: a number (timestamps on `time` axes) or a category name */
+export type NativeChartXValue = number | string;
+export interface NativeChartPointDatum {
+  /** X value; the datum index when omitted */
+  x?: NativeChartXValue;
+  /** Y value; `null` leaves a gap */
+  y: number | null;
+  /** Dot diameter in px (scatter) */
+  size?: number;
+  /** Dot color (scatter); any CSS color */
+  color?: string;
+  /** Text next to the dot (scatter with `showLabels`) and in the tooltip */
+  label?: string;
+}
+/** Column-oriented data */
+export interface NativeChartColumnData {
+  x?: readonly NativeChartXValue[];
+  y: readonly (number | null)[];
+  size?: readonly number[];
+}
+export type NativeChartSeriesData =
+  | readonly (number | null)[]
+  | readonly (readonly [NativeChartXValue, number | null])[]
+  | readonly NativeChartPointDatum[]
+  | NativeChartColumnData;
+export interface NativeChartSeries {
+  id?: string;
+  name?: string;
+  /** Defaults to the type of the component (`line` for chart) */
+  type?: NativeChartSeriesType;
+  data: NativeChartSeriesData;
+  /** Any CSS color, `var(--token, fallback)` included */
+  color?: string;
+  lineWidth?: number;
+  pointSize?: number;
+  opacity?: number;
+  stack?: string;
+  hidden?: boolean;
+  showLabels?: boolean;
+}
+/** Axis options; `format` is set with `configure({ xAxis: { format } })` */
+export interface NativeChartAxisOptions {
+  type?: "linear" | "time" | "category";
+  min?: number;
+  max?: number;
+  title?: string;
+  categories?: readonly string[];
+  tickCount?: number;
+  grid?: boolean;
+  visible?: boolean;
+  zero?: boolean;
+  reverse?: boolean;
+  nice?: boolean;
+}
+export type NativeChartLabelPosition =
+  "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+export type NativeChartAnnotation =
+  | {
+      type: "rect";
+      x0?: number;
+      x1?: number;
+      y0?: number;
+      y1?: number;
+      color?: string;
+      opacity?: number;
+      label?: string;
+      labelPosition?: NativeChartLabelPosition;
+      labelColor?: string;
+    }
+  | {
+      type: "line";
+      axis: "x" | "y";
+      value: number;
+      color?: string;
+      width?: number;
+      dash?: readonly number[];
+      label?: string;
+    }
+  | {
+      type: "text";
+      x?: number;
+      y?: number;
+      text: string;
+      anchor?: "center" | "top" | "bottom" | "left" | "right";
+      color?: string;
+      weight?: number;
+    };
+export interface NativeChartLegendOptions {
+  position?: "top" | "bottom";
+  /** Tapping an entry toggles its series @default true */
+  toggle?: boolean;
+}
+/** Tooltip options; the content is set with `configure({ renderTooltip })` */
+export interface NativeChartTooltipOptions {
+  mode?: "nearest" | "axis";
+}
+export interface NativeChartInteractionOptions {
+  /** Axes that zoom (pinch) and pan (drag when zoomed) */
+  zoom?: boolean | "x" | "y" | "xy";
+  pan?: boolean;
+  /** Scatter dots can be dragged (`pointdrag` / `pointdrop` events) */
+  dragPoints?: boolean;
+}
+export interface NativeChartPadding {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+}
+export interface NativeChartCommonProperties {
+  /** Numbers are px; any CSS length otherwise @default "100%" */
+  width?: number | string;
+  /** Numbers are px; any CSS length otherwise @default 320 */
+  height?: number | string;
+  legend?: boolean | NativeChartLegendOptions;
+  tooltip?: boolean | NativeChartTooltipOptions;
+  crosshair?: boolean;
+  annotations?: readonly NativeChartAnnotation[];
+  /** `false` makes the chart static */
+  interaction?: boolean | NativeChartInteractionOptions;
+  padding?: NativeChartPadding;
+  palette?: readonly string[];
+  ariaLabel?: string;
+  /** Stops the page from scrolling while the canvas is touched @default false */
+  disableScroll?: boolean;
+}
+export interface NativeChartProperties extends NativeChartCommonProperties {
+  series: readonly NativeChartSeries[];
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+}
+export interface NativeLineChartProperties extends NativeChartProperties {
+  /** Fills the area under the lines @default false */
+  area?: boolean;
+}
+export interface NativeBarChartProperties extends NativeChartProperties {
+  /** Stacks the bars @default false */
+  stacked?: boolean;
+}
+export type NativeScatterChartProperties = NativeChartProperties;
+export interface NativeChartHoverItem {
+  seriesIndex: number;
+  seriesId: string;
+  seriesName: string;
+  /** Index of the point in the series data */
+  index: number;
+  x: number;
+  y: number;
+  color: string;
+  label?: string;
+}
+export interface NativeChartHoverEvent {
+  items: NativeChartHoverItem[];
+  x: number;
+  xLabel: string;
+}
+export interface NativeChartView {
+  x: [number, number];
+  y: [number, number];
+}
+/** Rectangle in px relative to the chart */
+export interface NativeChartRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+export interface NativeChartDragEvent {
+  item: NativeChartHoverItem;
+  /** Data coordinates under the finger */
+  x: number;
+  y: number;
+}
+/** `event.detail` of the chart, line-chart, bar-chart and scatter-chart events */
+export interface NativeChartEvents {
+  /** Highlighted points; `items` is empty and `x` null when cleared */
+  hover: {
+    items: NativeChartHoverItem[];
+    x: number | null;
+    xLabel: string;
+  };
+  pointclick: NativeChartHoverEvent;
+  plotclick: { x: number; y: number };
+  zoom: NativeChartView;
+  layout: NativeChartRect;
+  pointdrag: NativeChartDragEvent;
+  pointdrop: NativeChartDragEvent;
+}
+export interface NativeChartConfig {
+  xAxis?: { format?: (value: number) => string };
+  yAxis?: { format?: (value: number) => string };
+  /** Tooltip text (`\n` separates lines); `null` hides the tooltip */
+  renderTooltip?: (event: NativeChartHoverEvent) => string | null;
+}
+interface NativeChartMethods extends NativeConfigConsumer {
+  /** Measures the canvas again (after a host layout change) */
+  resize(): void;
+  resetZoom(): void;
+  getView(): NativeChartView | null;
+  setView(view: Partial<NativeChartView>): void;
+  /** Plot area in px (`null` before the first frame) */
+  getPlotRect(): NativeChartRect | null;
+  /** Data coordinates -> px of the chart */
+  toPixel(x: number, y: number): { x: number; y: number } | null;
+  /** Px of the chart -> data coordinates */
+  fromPixel(x: number, y: number): { x: number; y: number } | null;
+}
+export interface NativeChartInstance extends NativeChartMethods {
+  configure(config: NativeChartConfig): void;
+}
+export interface NativeQuadrantPoint {
+  x: number;
+  y: number;
+  label?: string;
+  color?: string;
+  size?: number;
+}
+export interface NativeQuadrantRegion {
+  label?: string;
+  color?: string;
+}
+export interface NativeQuadrantRegions {
+  topLeft?: NativeQuadrantRegion;
+  topRight?: NativeQuadrantRegion;
+  bottomLeft?: NativeQuadrantRegion;
+  bottomRight?: NativeQuadrantRegion;
+}
+export type NativeQuadrantCorner = keyof NativeQuadrantRegions;
+export interface NativeQuadrantAxisLabels {
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+}
+export interface NativeQuadrantChartProperties extends NativeChartCommonProperties {
+  points: readonly NativeQuadrantPoint[];
+  /** @default [0, 10] */
+  xDomain?: [number, number];
+  /** @default [0, 10] */
+  yDomain?: [number, number];
+  xSplit?: number;
+  ySplit?: number;
+  quadrants?: NativeQuadrantRegions;
+  xLabel?: string;
+  yLabel?: string;
+  axisLabels?: NativeQuadrantAxisLabels;
+  /** @default true */
+  showTicks?: boolean;
+  reverseX?: boolean;
+  /** @default true */
+  showLabels?: boolean;
+  /** @default 12 */
+  pointSize?: number;
+  name?: string;
+  /** Dots can be dragged (`pointdrag` / `pointdrop`) @default false */
+  draggable?: boolean;
+}
+export interface NativeQuadrantDropTarget {
+  x: number;
+  y: number;
+  quadrant: NativeQuadrantCorner;
+}
+/** `event.detail` of the quadrant-chart events */
+export interface NativeQuadrantChartEvents {
+  hover: NativeChartEvents["hover"];
+  pointclick: { point: NativeQuadrantPoint; index: number };
+  quadrantclick: { quadrant: NativeQuadrantCorner; x: number; y: number };
+  pointdrag: {
+    point: NativeQuadrantPoint;
+    index: number;
+    target: NativeQuadrantDropTarget;
+  };
+  pointdrop: {
+    point: NativeQuadrantPoint;
+    index: number;
+    target: NativeQuadrantDropTarget;
+  };
+  zoom: NativeChartView;
+  layout: NativeChartRect;
+}
+export interface NativeQuadrantChartConfig {
+  /** Tooltip text of a point (`\n` separates lines); `null` hides it */
+  renderTooltip?: (point: NativeQuadrantPoint, index: number) => string | null;
+}
+export interface NativeQuadrantChartInstance extends NativeChartMethods {
+  configure(config: NativeQuadrantChartConfig): void;
+}
+
 /** DatePicker data properties; omitted value is uncontrolled, null/empty stays controlled. */
 export interface NativeDatePickerProperties {
   value?: string | null;

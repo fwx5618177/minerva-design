@@ -4,6 +4,15 @@ import { enhanceFeedback } from "./feedback-context";
 import { enhanceBasics } from "./basic-components";
 import { enhanceAdvanced } from "./advanced-components";
 import { annotateNativeApi } from "./public-api";
+import {
+  chart,
+  lineChart,
+  barChart,
+  scatterChart,
+  quadrantChart,
+} from "./charts";
+export { chart, lineChart, barChart, scatterChart, quadrantChart };
+export type { NativeChartConfig, NativeQuadrantChartConfig } from "./charts";
 export type { NativeConfiguration } from "./configuration";
 export type { Messages, TranslateOptions } from "@minerva/core";
 export type { NativeTableConfig, NativeTableCell } from "./table";
@@ -2911,7 +2920,17 @@ enhanceFeedback({ confirmProvider, toastProvider });
 
 enhanceConfiguration(
   { configProvider, themeProvider, themeToggle, paletteToggle },
-  [button, input, toggle, ...nativeControls],
+  [
+    button,
+    input,
+    toggle,
+    ...nativeControls,
+    chart,
+    lineChart,
+    barChart,
+    scatterChart,
+    quadrantChart,
+  ],
 );
 
 annotateNativeApi({
@@ -2989,4 +3008,9 @@ annotateNativeApi({
   confirmProvider,
   toastProvider,
   gridItem,
+  chart,
+  lineChart,
+  barChart,
+  scatterChart,
+  quadrantChart,
 });

@@ -13,3 +13,8 @@ for (const name of ["core", "dom"])
     path.join(__dirname, "../../../", name, "src"),
     path.join(__dirname, "src", name),
   );
+// Chart engine (only its DOM-free canvas entry is imported)
+copy(
+  path.join(__dirname, "../../../charts/src"),
+  path.join(__dirname, "src/minerva/charts-engine"),
+);

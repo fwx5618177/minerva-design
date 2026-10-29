@@ -21,6 +21,10 @@ export default {
         path.resolve(__dirname, "../src/dom/index.ts"),
       );
       chain.resolve.alias.set(
+        "@minerva/charts/canvas",
+        path.resolve(__dirname, "../src/minerva/charts-engine/canvas.ts"),
+      );
+      chain.resolve.alias.set(
         "@minerva/taro",
         path.resolve(__dirname, "../src/minerva/index.ts"),
       );
