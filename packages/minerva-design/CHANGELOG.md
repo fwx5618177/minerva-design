@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.0.2
+
+### Patch Changes
+
+- fix(react): keep Tooltip asChild trigger mounted when disabled toggles
+
 ## 1.0.1
 
 ### Patch Changes
