@@ -59,6 +59,8 @@
       "ariaLabel": "Accessible name of the chart",
       "onHover": "Called when the hovered (or keyboard-focused) points change",
       "onPointClick": "Called when a point or bar is clicked",
+      "onPlotClick": "Called with the data coordinates when the plot area is clicked where there is no point",
+      "renderTooltip": "React content of the tooltip; replaces the default content (the box, position and pointer handling are kept)",
       "onZoom": "Called when the user zooms or pans",
       "onRendererChange": "Called with the backend once ready, and after a GPU fallback",
       "className": "Additional class name of the root element",
@@ -132,11 +134,21 @@
       "dash": "Dash pattern, e.g. [4, 4]",
       "label": "Text drawn at the end of the line"
     },
+    "ChartTextAnnotation": {
+      "type": "Always \"text\"",
+      "x": "X position, in data units",
+      "y": "Y position, in data units",
+      "text": "Text to draw",
+      "anchor": "Side of the text that touches the position (center, top, bottom, left, right); the text stays inside the plot",
+      "color": "Text color (defaults to the secondary text color)",
+      "weight": "Font weight"
+    },
     "ChartInteractionOptions": {
       "zoom": "Axes that zoom and pan (x, y, xy); true picks them from the series types",
       "wheel": "Wheel zoom only with Ctrl / ⌘ (modifier) or always",
       "pan": "Drag to pan when zoomed",
-      "keyboard": "Arrows move the highlight, +/- zoom, 0 resets, Esc clears"
+      "keyboard": "Arrows move the highlight, +/- zoom, 0 resets, Esc clears",
+      "dragPoints": "Lets the user drag scatter points (drag / drop events; the chart does not move them)"
     },
     "ChartTooltipOptions": {
       "mode": "nearest shows the closest point, axis every series at the closest x",
@@ -167,9 +179,21 @@
       "color": "Resolved color of the point",
       "label": "Label of the point, if any"
     },
+    "ChartPlotClickEvent": {
+      "x": "X data coordinate of the click",
+      "y": "Y data coordinate of the click"
+    },
     "ChartView": {
       "x": "Visible x range [min, max]",
       "y": "Visible y range [min, max]"
+    }
+  },
+  "native": {
+    "demos": {
+      "mixed": {
+        "title": "Mixed series",
+        "description": "Bars and a line share the category axis, drawn with plain Views; tap a bar or a point of the line."
+      }
     }
   }
 }

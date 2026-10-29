@@ -1,0 +1,51 @@
+{
+  "title": "Mini-program charts",
+  "description": "Chart, LineChart, BarChart, ScatterChart and QuadrantChart for Taro, uni-app and native WeChat mini-programs, drawn on a canvas type=\"2d\" with the same options as the web charts.",
+  "intro": {
+    "title": "How they work",
+    "text": "The mini-program charts draw the whole chart (axes, data, legend, tooltip, annotations) on one <canvas type=\"2d\"> with the canvas renderer of the Minerva chart engine. They take the options and presets of the web charts of minerva-design/charts, and work on WeChat, Alipay, ByteDance and other mini-programs as well as H5. Only the 2D canvas part of the engine is bundled: no WebGPU or WebGL code.",
+    "engine": "They are built on createCanvasChart; use it directly from minerva-design/charts/core for another canvas host (see the <engine>Chart engine</engine>)."
+  },
+  "taro": {
+    "title": "Taro (React)",
+    "text": "Import the charts from minerva-design/taro. Props and callbacks are those of the web components; the chart fills the width of its parent (width defaults to 100%) and height defaults to 320 px.",
+    "ref": "ref exposes resetZoom(), getView(), setView(view), getInstance() (the canvas chart) and resize(). The canvas id is generated; pass id to set it."
+  },
+  "uni": {
+    "title": "uni-app (Vue)",
+    "text": "Import the single-file components from minerva-design/uni. Props are the web props (kebab-case in templates); height accepts any CSS length, rpx included. Replace series / points (or a series' data array) to update a chart: arrays mutated in place are not read again.",
+    "events": "Events: hover, point-click, plot-click and zoom. QuadrantChart emits point-click(point, index), quadrant-click(quadrant, { x, y }) and point-drop(point, index, { x, y, quadrant }) instead (dots are draggable when a point-drop listener is set), and accepts topLeft / topRight / bottomLeft / bottomRight slots placed over the quadrants. A template ref exposes resetZoom(), getView(), setView(view), getRenderer(), getInstance() and resize()."
+  },
+  "weapp": {
+    "title": "Native WeChat mini-program",
+    "text": "After npm install and Build npm in WeChat DevTools, register the components (chart, line-chart, bar-chart, scatter-chart, quadrant-chart) in usingComponents. Properties are kebab-case and go through setData; functions (axis formats, tooltip text) are passed with configure() on the instance returned by selectComponent.",
+    "events": "Events (event.detail): every chart emits hover ({ items, x, xLabel }), zoom ({ x, y } visible ranges) and layout (plot rectangle in px). Series charts also emit pointclick, plotclick ({ x, y }) and pointdrag / pointdrop ({ item, x, y }, with interaction.dragPoints); quadrant-chart emits pointclick ({ point, index }), quadrantclick ({ quadrant, x, y }) and pointdrag / pointdrop ({ point, index, target: { x, y, quadrant } }).",
+    "methods": "Instance methods: configure({ xAxis: { format }, yAxis: { format }, renderTooltip }) (quadrant-chart: renderTooltip(point, index)), returning text with \\n line breaks or null to hide the tooltip; resize(), resetZoom(), getView(), setView(view), getPlotRect(), toPixel(x, y) and fromPixel(x, y). Types are in minerva-design/weapp/types (NativeChartInstance, NativeQuadrantChartEvents...)."
+  },
+  "props": {
+    "title": "Props and events",
+    "shared": "Every chart: height (default 320, numbers are px), width (default 100%), legend, tooltip, crosshair, annotations, interaction, padding, palette, ariaLabel and disableScroll.",
+    "series": "Chart, LineChart, BarChart and ScatterChart add series, xAxis and yAxis; LineChart adds area and BarChart stacked. Chart takes series of any type.",
+    "quadrant": "QuadrantChart takes the quadrant settings: points, xDomain, yDomain, xSplit, ySplit, quadrants, xLabel, yLabel, axisLabels, showTicks, reverseX, showLabels, pointSize, name and draggable.",
+    "events": "Events mirror the web callbacks: hover, point click, plot click (a tap on the empty plot) and zoom; QuadrantChart reports point click (point, index), quadrant click (quadrant, { x, y }) and point drop (point, index, { x, y, quadrant }). The chart never moves points itself: update points."
+  },
+  "gestures": {
+    "title": "Gestures",
+    "text": "A tap shows the tooltip and reports the point, a finger dragged along the chart scrubs the highlight, two fingers pinch-zoom, one finger pans a zoomed chart, a double tap resets the zoom and a tap on a legend entry hides its series. Draggable quadrant dots follow the finger. On H5 and desktop mini-programs the mouse works too."
+  },
+  "theming": {
+    "title": "Theming",
+    "text": "Colors and fonts come from the Minerva tokens of the surrounding ConfigProvider / ThemeProvider (config-provider / theme-provider on WeChat): light and dark modes, palettes and custom token themes apply and are picked up when the provider changes; without a provider the light tokens are used. Colors in options may be var(--token, fallback) strings, and the --chart-series-1..8 tokens set the series palette."
+  },
+  "limitations": {
+    "title": "Limitations",
+    "canvas": "A <canvas type=\"2d\"> is required. There is no renderer choice: no WebGPU or WebGL2.",
+    "content": "Tooltips and overlays are drawn on the canvas: tooltip render / renderTooltip return text, not components. renderTooltip and quadrantContent with React content exist only on the web and in React Native. uni-app places views over the quadrants with slots; on WeChat use the layout event and toPixel() to position your own views.",
+    "input": "No wheel zoom (except Ctrl / ⌘ + wheel on uni-app H5) and no keyboard navigation.",
+    "scroll": "Set disableScroll (disable-scroll on WeChat) when the page must not scroll while a finger pans, pinches or drags on the chart; it is on by default for draggable quadrant charts on Taro and uni-app.",
+    "data": "WeChat properties go through setData: data must be JSON (timestamps instead of Date on time axes, no typed arrays) and every update copies it, so very large data sets are slower than on the web.",
+    "draggable": "On WeChat a component cannot tell whether a pointdrop handler is bound: set draggable explicitly to enable dragging.",
+    "hidden": "A chart hidden when it mounts measures 0 px: call resize() once it is visible (Taro retries for about two seconds).",
+    "more": "The components available on each platform are listed in <support>Platform support</support>; for rich React tooltips on mobile, use the <native>React Native</native> charts."
+  }
+}

@@ -59,6 +59,8 @@
       "ariaLabel": "图表的无障碍名称",
       "onHover": "悬停（或键盘聚焦）的数据点变化时调用",
       "onPointClick": "点击数据点或柱时调用",
+      "onPlotClick": "在绘图区没有点的位置被点击时调用，参数为数据坐标",
+      "renderTooltip": "提示框的 React 内容；替换默认内容（保留外框、定位和指针处理）",
       "onZoom": "用户缩放或平移时调用",
       "onRendererChange": "就绪后以及 GPU 回退后以当前后端调用",
       "className": "根元素的额外类名",
@@ -132,11 +134,21 @@
       "dash": "虚线样式，如 [4, 4]",
       "label": "绘制在线末端的文本"
     },
+    "ChartTextAnnotation": {
+      "type": "固定为 \"text\"",
+      "x": "X 位置，数据单位",
+      "y": "Y 位置，数据单位",
+      "text": "要绘制的文本",
+      "anchor": "文本贴合该位置的一侧（center、top、bottom、left、right）；文本始终保持在绘图区内",
+      "color": "文本颜色（默认为次要文本颜色）",
+      "weight": "字重"
+    },
     "ChartInteractionOptions": {
       "zoom": "可缩放和平移的轴（x、y、xy）；true 时根据系列类型选择",
       "wheel": "仅按住 Ctrl / ⌘ 时滚轮缩放（modifier），或始终缩放",
       "pan": "缩放后拖拽平移",
-      "keyboard": "方向键移动高亮，+/- 缩放，0 重置，Esc 清除"
+      "keyboard": "方向键移动高亮，+/- 缩放，0 重置，Esc 清除",
+      "dragPoints": "允许用户拖动散点（drag / drop 事件；图表不会自行移动它们）"
     },
     "ChartTooltipOptions": {
       "mode": "nearest 显示最近的点，axis 显示最近 x 处的所有系列",
@@ -167,9 +179,21 @@
       "color": "该点解析后的颜色",
       "label": "该点的标签（如有）"
     },
+    "ChartPlotClickEvent": {
+      "x": "点击位置的 X 数据坐标",
+      "y": "点击位置的 Y 数据坐标"
+    },
     "ChartView": {
       "x": "可见的 x 范围 [min, max]",
       "y": "可见的 y 范围 [min, max]"
+    }
+  },
+  "native": {
+    "demos": {
+      "mixed": {
+        "title": "混合系列",
+        "description": "柱状和折线共用分类轴，由普通 View 绘制；点击柱子或折线上的点。"
+      }
     }
   }
 }

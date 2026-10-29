@@ -58,6 +58,18 @@ const typeFilesIn = (componentsDir) => {
   return files.sort();
 };
 
+/**
+ * Engine modules of minerva-design/charts/core declaring public types besides
+ * engine/types.ts: quadrant presets, the 2D canvas chart, the platform-free
+ * controller and the theme input of the DOM-free hosts
+ */
+const CHART_ENGINE_FILES = [
+  "charts/src/engine/presets.ts",
+  "charts/src/engine/canvas.ts",
+  "charts/src/engine/controller.ts",
+  "charts/src/engine/theme.ts",
+];
+
 /** All files that declare public types, with the key prefix to use */
 const sourceFiles = () => [
   ...typeFilesIn(join(LIB_SRC, "components")).map((file) => ({
@@ -74,6 +86,10 @@ const sourceFiles = () => [
   // Charts: engine options (minerva-design/charts/core) and React props
   // (minerva-design/charts)
   { file: join(PACKAGES_DIR, "charts/src/engine/types.ts"), prefix: "" },
+  ...CHART_ENGINE_FILES.map((file) => ({
+    file: join(PACKAGES_DIR, file),
+    prefix: "",
+  })),
   { file: join(PACKAGES_DIR, "charts/src/react/types.ts"), prefix: "" },
 ];
 
@@ -210,15 +226,19 @@ const nativeFiles = () => {
         : [join(dir, entry.name)],
     );
   if (!existsSync(NATIVE_SRC)) return [];
-  return walk(NATIVE_SRC)
-    .filter(
-      (file) =>
-        /\.tsx?$/.test(file) &&
-        !/\.test\.tsx?$/.test(file) &&
-        /[\\/](components|theme)[\\/]/.test(file),
-    )
-    .sort()
-    .map((file) => ({ file, prefix: NATIVE_PREFIX }));
+  return [
+    ...walk(NATIVE_SRC)
+      .filter(
+        (file) =>
+          /\.tsx?$/.test(file) &&
+          !/\.test\.tsx?$/.test(file) &&
+          /[\\/](components|theme)[\\/]/.test(file),
+      )
+      .sort(),
+    // the native charts re-export the quadrant settings of the engine
+    // (QuadrantChartProps extends QuadrantConfig)
+    join(PACKAGES_DIR, "charts/src/engine/presets.ts"),
+  ].map((file) => ({ file, prefix: NATIVE_PREFIX }));
 };
 
 /** The exported types of minerva-design/native (`native:<Name>`) */

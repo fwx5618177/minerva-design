@@ -9,10 +9,21 @@
     "eisenhower": {
       "title": "Matrice d’Eisenhower",
       "description": "reverseX place les tâches urgentes à gauche ; onPointClick reçoit la tâche cliquée."
+    },
+    "draggable": {
+      "title": "Matrice de tâches déplaçables",
+      "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : faites glisser une tâche vers un autre quadrant (onPointDrop met à jour sa position), cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip affiche une infobulle React."
     }
   },
   "api": {
     "QuadrantChartProps": {
+      "onPointClick": "Appelé avec le point cliqué et son index",
+      "onQuadrantClick": "Appelé avec le quadrant et la position (données) quand la zone vide d’un quadrant est cliquée",
+      "onPointDrop": "Appelé avec le point, son index et la cible quand un point glissé est relâché ; le définir rend les points déplaçables (mettez à jour points pour les déplacer)",
+      "renderTooltip": "Contenu React de l’infobulle d’un point",
+      "quadrantContent": "Contenu React placé sur chaque quadrant (p. ex. un bouton d’ajout) ; seul ce contenu reçoit les événements de pointeur"
+    },
+    "QuadrantConfig": {
       "points": "Points à placer",
       "xDomain": "Plage de l’axe horizontal",
       "yDomain": "Plage de l’axe vertical",
@@ -21,11 +32,18 @@
       "quadrants": "Titres et couleurs des quadrants",
       "xLabel": "Titre de l’axe horizontal",
       "yLabel": "Titre de l’axe vertical",
+      "axisLabels": "Textes aux extrémités des séparateurs, dessinés dans la zone de tracé (p. ex. « Important » en haut)",
+      "showTicks": "Affiche les graduations numériques des axes ; false ne garde que la matrice",
       "reverseX": "Inverse l’axe horizontal (p. ex. urgent à gauche)",
       "showLabels": "Dessine les libellés à côté des points en évitant les chevauchements",
       "pointSize": "Diamètre des points en pixels",
       "name": "Nom des points dans l’infobulle",
-      "onPointClick": "Appelé avec le point cliqué et son index"
+      "draggable": "Permet de faire glisser les points (activé par défaut quand onPointDrop est défini)"
+    },
+    "QuadrantDropTarget": {
+      "x": "Coordonnée x (données) du dépôt",
+      "y": "Coordonnée y (données) du dépôt",
+      "quadrant": "Quadrant du dépôt, tel qu’affiché à l’écran"
     },
     "QuadrantPoint": {
       "x": "Position sur l’axe horizontal",
@@ -43,6 +61,24 @@
     "QuadrantRegion": {
       "label": "Titre dessiné dans l’angle extérieur du quadrant",
       "color": "Teinte de fond et couleur par défaut des points"
+    },
+    "QuadrantAxisLabels": {
+      "top": "Texte à l’extrémité haute du séparateur vertical",
+      "bottom": "Texte à l’extrémité basse du séparateur vertical",
+      "left": "Texte à l’extrémité gauche du séparateur horizontal",
+      "right": "Texte à l’extrémité droite du séparateur horizontal"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Base",
+        "description": "Matrice effort / impact dessinée avec de simples View ; touchez une fonctionnalité pour lire ses valeurs."
+      },
+      "draggable": {
+        "title": "Glisser entre quadrants",
+        "description": "Faites glisser une tâche vers un autre quadrant : onPointDrop reçoit la cible ; les boutons + viennent de quadrantContent et l’infobulle est une vue renderTooltip."
+      }
     }
   }
 }

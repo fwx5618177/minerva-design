@@ -855,6 +855,29 @@
     "kind": "alias",
     "type": "\"solid\" | \"subtle\" | \"outline\""
   },
+  "native:BarChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of BarChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as bars unless they set a `type` (e.g. a `line` overlay)"
+      },
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+      }
+    ]
+  },
   "native:BottomSheetProps": {
     "source": "native/src/components/Popup/Popup.tsx",
     "description": "Props of `BottomSheet` (a `Popup` from the bottom edge)",
@@ -1720,6 +1743,191 @@
     "source": "native/src/components/Cell/Cell.tsx",
     "kind": "alias",
     "type": "\"medium\" | \"large\""
+  },
+  "native:ChartCommonProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props shared by every chart component",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included)"
+      },
+      {
+        "name": "width",
+        "type": "DimensionValue",
+        "required": false,
+        "default": "\"100%\"",
+        "description": "Width of the chart"
+      },
+      {
+        "name": "xAxis",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "X axis"
+      },
+      {
+        "name": "yAxis",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "Y axis"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ChartLegendOptions",
+        "required": false,
+        "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean | ChartTooltipOptions",
+        "required": false,
+        "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+      },
+      {
+        "name": "crosshair",
+        "type": "boolean",
+        "required": false,
+        "description": "Vertical guide line following the finger"
+      },
+      {
+        "name": "annotations",
+        "type": "readonly ChartAnnotation[]",
+        "required": false,
+        "description": "Background areas, reference lines and texts"
+      },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "default": "true",
+        "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+      },
+      {
+        "name": "padding",
+        "type": "ChartPadding",
+        "required": false,
+        "description": "Space around the plot area, in pixels"
+      },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "onHover",
+        "type": "(event: ChartHoverEvent | null) => void",
+        "required": false,
+        "description": "Called when the highlighted points change"
+      },
+      {
+        "name": "onPointClick",
+        "type": "(event: ChartHoverEvent) => void",
+        "required": false,
+        "description": "Called when a point (or bar) is tapped"
+      },
+      {
+        "name": "onPlotClick",
+        "type": "(event: ChartPlotClickEvent) => void",
+        "required": false,
+        "description": "Called when the plot area is tapped where there is no point"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(event: ChartHoverEvent) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip (replaces the default content)"
+      },
+      {
+        "name": "onZoom",
+        "type": "(view: ChartView) => void",
+        "required": false,
+        "description": "Called when the user zooms or pans"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Styles of the root view"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false,
+        "description": "Test identifier of the root view"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<ChartHandle>",
+        "required": false,
+        "description": "Imperative handle"
+      }
+    ]
+  },
+  "native:ChartHandle": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Imperative handle of the chart components (`ref`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "resetZoom",
+        "type": "() => void",
+        "required": true,
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "type": "() => ChartView | null",
+        "required": true,
+        "description": "Visible range"
+      },
+      {
+        "name": "setView",
+        "type": "(view: Partial<ChartView>) => void",
+        "required": true,
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getPlotRect",
+        "type": "() => ChartRect | null",
+        "required": true,
+        "description": "Plot area in pixels of the chart (`null` before the first layout)"
+      },
+      {
+        "name": "getController",
+        "type": "() => ChartController | null",
+        "required": true,
+        "description": "The platform-free chart controller (scene, gestures, pixel <-> data)"
+      }
+    ]
+  },
+  "native:ChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of Chart: any mix of line, area, bar and scatter series",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Data series; each sets its own `type`"
+      }
+    ]
   },
   "native:CheckboxColor": {
     "source": "native/src/components/Checkbox/Checkbox.tsx",
@@ -4462,6 +4670,29 @@
       }
     ]
   },
+  "native:LineChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of LineChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as lines (or areas with `area`) unless they set a `type`"
+      },
+      {
+        "name": "area",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the area under the lines"
+      }
+    ]
+  },
   "native:ListDensity": {
     "source": "native/src/components/Display/index.tsx",
     "kind": "alias",
@@ -6396,6 +6627,295 @@
     "kind": "alias",
     "type": "\"idle\" | \"pulling\" | \"loosing\" | \"loading\" | \"success\""
   },
+  "native:QuadrantAxisLabels": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Texts at the four ends of the dividers, inside the plot",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "top",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "bottom",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "left",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "right",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:QuadrantChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of QuadrantChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<ChartCommonProps, \"onPointClick\" | \"onPlotClick\" | \"renderTooltip\" | \"xAxis\" | \"yAxis\">",
+      "QuadrantConfig"
+    ],
+    "props": [
+      {
+        "name": "onPointClick",
+        "type": "(point: QuadrantPoint, index: number) => void",
+        "required": false,
+        "description": "Called with the tapped point and its index"
+      },
+      {
+        "name": "onQuadrantClick",
+        "type": "(quadrant: QuadrantCorner, position: { x: number; y: number }) => void",
+        "required": false,
+        "description": "Called when the empty area of a quadrant is tapped"
+      },
+      {
+        "name": "onPointDrop",
+        "type": "(point: QuadrantPoint, index: number, target: QuadrantDropTarget) => void",
+        "required": false,
+        "description": "Called when a dragged point is released; the dots become draggable when it is set (the chart does not move them: update `points`)"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(point: QuadrantPoint, index: number) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip of a point"
+      },
+      {
+        "name": "quadrantContent",
+        "type": "Partial<Record<QuadrantCorner, ReactNode>>",
+        "required": false,
+        "description": "React content placed over each quadrant (e.g. an add button); the content receives touches, the rest of the quadrant does not"
+      }
+    ]
+  },
+  "native:QuadrantConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a quadrant matrix (the props of QuadrantChart)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "points",
+        "type": "readonly QuadrantPoint[]",
+        "required": true,
+        "description": "Points to place"
+      },
+      {
+        "name": "xDomain",
+        "type": "[number, number]",
+        "required": false,
+        "default": "[0, 10]",
+        "description": "Range of the horizontal axis"
+      },
+      {
+        "name": "yDomain",
+        "type": "[number, number]",
+        "required": false,
+        "default": "[0, 10]",
+        "description": "Range of the vertical axis"
+      },
+      {
+        "name": "xSplit",
+        "type": "number",
+        "required": false,
+        "description": "X value of the vertical divider (the middle of `xDomain` by default)"
+      },
+      {
+        "name": "ySplit",
+        "type": "number",
+        "required": false,
+        "description": "Y value of the horizontal divider (the middle of `yDomain` by default)"
+      },
+      {
+        "name": "quadrants",
+        "type": "QuadrantRegions",
+        "required": false,
+        "description": "Titles and colors of the quadrants"
+      },
+      {
+        "name": "xLabel",
+        "type": "string",
+        "required": false,
+        "description": "Title of the horizontal axis"
+      },
+      {
+        "name": "yLabel",
+        "type": "string",
+        "required": false,
+        "description": "Title of the vertical axis"
+      },
+      {
+        "name": "axisLabels",
+        "type": "QuadrantAxisLabels",
+        "required": false,
+        "description": "Texts at the ends of the dividers, drawn inside the plot (e.g. \"Important\" at the top)"
+      },
+      {
+        "name": "showTicks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the numeric ticks of the axes; `false` keeps only the matrix"
+      },
+      {
+        "name": "reverseX",
+        "type": "boolean",
+        "required": false,
+        "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)"
+      },
+      {
+        "name": "showLabels",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the labels next to the dots (overlapping labels are skipped)"
+      },
+      {
+        "name": "pointSize",
+        "type": "number",
+        "required": false,
+        "default": "12",
+        "description": "Dot diameter in pixels"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the points in the tooltip"
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "description": "Lets the user drag the dots (`drag` / `drop` events)"
+      }
+    ]
+  },
+  "native:QuadrantCorner": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A quadrant, as seen on screen",
+    "kind": "alias",
+    "type": "keyof QuadrantRegions"
+  },
+  "native:QuadrantDropTarget": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Where a dragged QuadrantChart point was dropped",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Data coordinates of the drop"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "quadrant",
+        "type": "QuadrantCorner",
+        "required": true,
+        "description": "Quadrant of the drop, as seen on screen"
+      }
+    ]
+  },
+  "native:QuadrantPoint": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A point of a QuadrantChart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Position on the horizontal axis"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true,
+        "description": "Position on the vertical axis"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Text drawn next to the dot and shown in the tooltip"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Dot color (any CSS color); the color of its quadrant by default"
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "description": "Dot diameter in pixels"
+      }
+    ]
+  },
+  "native:QuadrantRegion": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Title and color of a quadrant",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Title drawn in the outer corner of the quadrant"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Background tint and default dot color (any CSS color)"
+      }
+    ]
+  },
+  "native:QuadrantRegions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "The four quadrants of a QuadrantChart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "topLeft",
+        "type": "QuadrantRegion",
+        "required": false
+      },
+      {
+        "name": "topRight",
+        "type": "QuadrantRegion",
+        "required": false
+      },
+      {
+        "name": "bottomLeft",
+        "type": "QuadrantRegion",
+        "required": false
+      },
+      {
+        "name": "bottomRight",
+        "type": "QuadrantRegion",
+        "required": false
+      }
+    ]
+  },
   "native:RadioColor": {
     "source": "native/src/components/Radio/Radio.tsx",
     "kind": "alias",
@@ -6853,6 +7373,22 @@
         "name": "columnGap",
         "type": "BoxSpace",
         "required": false
+      }
+    ]
+  },
+  "native:ScatterChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of ScatterChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as dots unless they set a `type`"
       }
     ]
   },

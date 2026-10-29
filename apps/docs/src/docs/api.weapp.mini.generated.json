@@ -1,4 +1,268 @@
 {
+  "Chart": {
+    "entry": "minerva-design/chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "LineChart": {
+    "entry": "minerva-design/line-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "area", "type": "boolean", "required": false, "default": "false" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "BarChart": {
+    "entry": "minerva-design/bar-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "stacked", "type": "boolean", "required": false, "default": "false" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "ScatterChart": {
+    "entry": "minerva-design/scatter-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "QuadrantChart": {
+    "entry": "minerva-design/quadrant-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "axisLabels", "type": "any", "required": false, "default": "null" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "draggable", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "points", "type": "array", "required": false, "default": "[]" },
+      { "name": "pointSize", "type": "number", "required": false, "default": "12" },
+      { "name": "quadrants", "type": "any", "required": false, "default": "null" },
+      { "name": "reverseX", "type": "boolean", "required": false, "default": "false" },
+      { "name": "showLabels", "type": "boolean", "required": false, "default": "true" },
+      { "name": "showTicks", "type": "boolean", "required": false, "default": "true" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xDomain", "type": "any", "required": false, "default": "null" },
+      { "name": "xLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "xSplit", "type": "any", "required": false, "default": "null" },
+      { "name": "yDomain", "type": "any", "required": false, "default": "null" },
+      { "name": "yLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "ySplit", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "pointclick", "type": "{ point: NativeQuadrantPoint; index: number }", "description": "A dot was tapped." },
+      { "name": "pointdrag", "type": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }", "description": "A dot is dragged (draggable)." },
+      { "name": "pointdrop", "type": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }", "description": "A dragged dot was released; update points to move it." },
+      { "name": "quadrantclick", "type": "{ quadrant: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'; x: number; y: number }", "description": "The empty area of a quadrant was tapped." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeQuadrantChartConfig): void",
+        "description": "renderTooltip(point, index) returns the tooltip text of a point (lines separated by \\n) or null to hide it."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
   "TableCellContent": {
     "entry": "minerva-design/table-cell-content/index",
     "props": [

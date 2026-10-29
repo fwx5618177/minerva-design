@@ -406,6 +406,8 @@ const FrameworkTabs: React.FC<{
 }> = ({ meta, react }) => {
   const { t } = useTranslation();
   const [framework, setFramework] = useFramework();
+  // the charts are React (web), React Native and framework-free only
+  const charts = !!meta.package?.startsWith("minerva-design/charts");
   return (
     <Tabs
       value={framework}
@@ -440,10 +442,21 @@ const FrameworkTabs: React.FC<{
         <TabPanel key={fw.id} value={fw.id}>
           {fw.renderer === "react" ? (
             react
-          ) : fw.renderer === "vue" ? (
-            <VueSection meta={meta} framework={fw} />
           ) : fw.renderer === "native" ? (
             <NativeContent meta={meta} />
+          ) : charts ? (
+            <p className={styles.callout} data-testid="charts-unavailable">
+              <Trans
+                i18nKey="doc.fw.chartsUnavailable"
+                values={{ framework: fw.label }}
+                components={{
+                  engine: <Link to="/chart-engine" />,
+                  mini: <Link to="/mini-program-charts" />,
+                }}
+              />
+            </p>
+          ) : fw.renderer === "vue" ? (
+            <VueSection meta={meta} framework={fw} />
           ) : fw.renderer === "angular" ? (
             <Suspense fallback={<p role="status">{t("doc.loading")}</p>}>
               <AngularSection meta={meta} />

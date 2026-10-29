@@ -1,6 +1,19 @@
 {
   "title": "チャートエンジン",
-  "description": "React チャートを支えるフレームワーク非依存のエンジン。createChart は同じオプションとレンダラーで任意の要素にチャートをマウントします。",
+  "description": "React チャートを支えるフレームワーク非依存のエンジン。createChart は任意の要素にチャートをマウントし、createCanvasChart は任意の 2D キャンバス（ミニプログラム、OffscreenCanvas）に描画し、createChartController はキャンバスのないホスト向けにシーンを計算します。",
+  "intro": {
+    "choose": {
+      "title": "どのエントリーポイントを使うか",
+      "text": "3 つのエントリーポイントは同じオプション、レイアウト、ヒットテスト、ジェスチャーを共有します。違いはホストに求めるものです：",
+      "createChart": "createChart(container, options)：Web ページ向け。DOM 要素にチャートをマウントし、WebGPU、WebGL2、Canvas2D の順でデータを描画し、アクセシブルな DOM のツールチップと凡例を表示し、CSS 変数からテーマを読み取り、ホイール・ポインター・キーボード入力を自身で処理します。",
+      "createCanvasChart": "createCanvasChart({ canvas, width, height, pixelRatio, options, theme })：DOM をまったく使わず任意の 2D キャンバスに描画します（WeChat / Taro / uni-app の canvas type=\"2d\"、OffscreenCanvas、通常の <canvas>）。ツールチップや凡例を含むすべてをキャンバスに描画し、ホストはタッチまたはポインターイベントを転送し、テーマを通常の値として渡します。ミニプログラムのチャートはこれを基にしています。",
+      "createChartController": "createChartController({ options, measureText })：キャンバスを一切使いません。シーン（レイアウト、目盛り、凡例、ツールチップ、ハイライト）を計算してジェスチャーを処理します。scenePrimitives(scene) はデータを上限付きのピクセル図形のリストに変換し、ビューや SVG で描画するホストで使えます。React Native のチャートはこれを基にしています。"
+    },
+    "quadrant": {
+      "title": "象限ヘルパー",
+      "text": "quadrantChartOptions(config) は任意のエントリーポイント向けに QuadrantChart のエンジンオプションを生成します。quadrantOf(config, x, y) はデータ位置が画面上でどの象限にあるか（reverseX を考慮）を返し、quadrantCenter(config, corner) は象限の中心を返します。新しい点やドロップされた点の配置などに使えます。"
+    }
+  },
   "demos": {
     "basic": {
       "title": "基本",
@@ -9,6 +22,10 @@
     "streaming": {
       "title": "ストリーミング",
       "description": "setOptions と新しいデータ配列で 500 ms ごとにポイントを追加します。ストリームは一時停止・再開できます。"
+    },
+    "canvas": {
+      "title": "DOM なしのキャンバス",
+      "description": "通常の <canvas> で createCanvasChart を使います。devicePixelRatio でサイズを決め、ResizeObserver でリサイズし、pointerDown / Move / Up / Leave でポインターイベントを転送し、CSS 変数からテーマを一度読み取り、アンマウント時に destroy() を呼びます。"
     }
   },
   "api": {
@@ -32,6 +49,9 @@
       "resetZoom": "データの全範囲を表示します",
       "getView": "表示範囲を返します",
       "setView": "表示範囲を設定します",
+      "getPlotRect": "コンテナー内のプロット領域（CSS ピクセル）。最初のレイアウト前は null",
+      "toPixel": "データ座標をコンテナーのピクセルに変換します（最初のレイアウト前は null）",
+      "fromPixel": "コンテナーのピクセルをデータ座標に変換します（最初のレイアウト前は null）",
       "getRenderer": "使用中のバックエンド。準備前は null",
       "ready": "最初のフレームを描画できるとバックエンドで解決されます",
       "refreshTheme": "CSS 変数を再読み込みします（テーマ変更は自動で検出）",
@@ -41,8 +61,141 @@
     "ChartEventMap": {
       "hover": "ホバー中またはキーボードでフォーカス中のポイントが変わった（解除時は null）",
       "click": "ポイントまたは棒がクリックされた",
+      "plotClick": "プロット領域のポイントがない場所がクリックされた",
       "zoom": "ユーザーがズームまたはパンした。ビューを受け取ります",
-      "renderer": "バックエンドの準備完了、またはフォールバックした"
+      "renderer": "バックエンドの準備完了、またはフォールバックした",
+      "layout": "プロット領域が移動またはリサイズされた。その矩形を受け取ります",
+      "drag": "ポイントをドラッグ中（interaction.dragPoints）",
+      "drop": "ドラッグしたポイントが離された"
+    },
+    "ChartDragEvent": {
+      "item": "ドラッグ中のポイント",
+      "x": "ポインター位置の X データ座標",
+      "y": "ポインター位置の Y データ座標"
+    },
+    "ChartRect": {
+      "x": "左端（CSS ピクセル）",
+      "y": "上端（CSS ピクセル）",
+      "width": "幅（CSS ピクセル）",
+      "height": "高さ（CSS ピクセル）"
+    },
+    "CanvasChartConfig": {
+      "canvas": "描画先の 2D キャンバス（ミニプログラムの canvas ノード、HTMLCanvasElement、OffscreenCanvas）",
+      "width": "キャンバスの幅（CSS ピクセル。rpx はホストが変換）",
+      "height": "キャンバスの高さ（CSS ピクセル）",
+      "pixelRatio": "デバイスピクセル比（ミニプログラムでは wx.getWindowInfo().pixelRatio、Web では devicePixelRatio）",
+      "options": "チャートのオプション。createChart と同じです",
+      "theme": "色とフォント：Minerva の CSS 変数の値"
+    },
+    "CanvasChartInstance": {
+      "setOptions": "オプションを置き換えます。変更のないデータ配列は再処理されません",
+      "setTheme": "テーマを置き換えます（ライト / ダーク切り替え後など）",
+      "resize": "キャンバスの新しい CSS サイズ（とピクセル比）",
+      "render": "すぐに描画します（通常はフレームが自動でスケジュールされます）",
+      "touchStart": "タッチ開始：イベントの touches（キャンバス基準）を渡します",
+      "touchMove": "タッチ移動：イベントの touches を渡します",
+      "touchEnd": "タッチ終了：イベントの changedTouches を渡します",
+      "touchCancel": "タッチがキャンセルされた（システムジェスチャーなど）",
+      "pointerDown": "マウス・ペン・指がチャートのピクセル位置で押された",
+      "pointerMove": "ポインターがチャートのピクセル位置へ移動した",
+      "pointerUp": "ポインターがチャートのピクセル位置で離された",
+      "pointerLeave": "マウスがチャートから離れた",
+      "zoomAt": "ピクセルを中心にズームします（factor < 1 で拡大）",
+      "resetZoom": "データの全範囲を表示します",
+      "getView": "表示範囲を返します",
+      "setView": "表示範囲を設定します",
+      "toggleSeries": "凡例のタップと同様にシリーズを表示 / 非表示にします",
+      "clearHover": "ツールチップとハイライトを消します",
+      "getPlotRect": "プロット領域（CSS ピクセル）。最初のレイアウト前は null",
+      "toPixel": "データ座標をチャートのピクセルに変換します（最初のレイアウト前は null）",
+      "fromPixel": "チャートのピクセルをデータ座標に変換します（最初のレイアウト前は null）",
+      "getController": "プラットフォーム非依存のコントローラー（シーン、ジェスチャー）",
+      "on": "イベントを購読します（renderer を除く ChartEventMap の全イベント）。購読解除関数を返します",
+      "destroy": "描画を止め、リスナーを削除します"
+    },
+    "ChartCanvas": {
+      "width": "バッキングストアの幅（デバイスピクセル。チャートが設定）",
+      "height": "バッキングストアの高さ（デバイスピクセル。チャートが設定）",
+      "getContext": "2D コンテキストを返します",
+      "requestAnimationFrame": "キャンバスのフレームスケジューラー（ミニプログラムのキャンバス）。なければ globalThis.requestAnimationFrame",
+      "cancelAnimationFrame": "requestAnimationFrame でスケジュールしたフレームを取り消します"
+    },
+    "ChartTouch": {
+      "x": "キャンバス基準の X 位置（CSS ピクセル）",
+      "y": "キャンバス基準の Y 位置（CSS ピクセル）",
+      "identifier": "タッチの識別子（ピンチの追跡用）"
+    },
+    "ChartPointerOptions": {
+      "id": "ポインター ID（タッチの識別子）。既定は 0",
+      "touch": "タッチ入力：ツールチップが指に追従し、タップ後も表示されたままになります"
+    },
+    "ChartThemeInput": {
+      "variables": "Minerva の CSS 変数の値（--primary-color、--text-color、--chart-series-1…）。オプション内の var(--name) の色の解決にも使われます",
+      "palette": "シリーズの色（hex / rgb）",
+      "fontFamily": "ラベルのフォントファミリー",
+      "fontSize": "目盛りラベルのフォントサイズ（ピクセル）"
+    },
+    "ChartControllerConfig": {
+      "options": "チャートのオプション。createChart と同じです",
+      "theme": "色とフォント（Minerva 変数）。省略時はライトの既定値",
+      "measureText": "CSS フォントで描画したテキストの幅（ピクセル）を返します",
+      "onInvalidate": "シーンが変わり再描画が必要なときに呼ばれます"
+    },
+    "ChartController": {
+      "setOptions": "オプションを置き換えます。変更のないデータ配列は再処理されません",
+      "setTheme": "テーマを置き換えます（ライト / ダーク切り替え後など）",
+      "setSize": "チャートのサイズ（CSS ピクセル）",
+      "getScene": "描画する内容：レイアウト、目盛り、凡例、ツールチップ、ハイライト（サイズ確定前は null）",
+      "pointerDown": "マウス・ペン・指がチャートのピクセル位置で押された",
+      "pointerMove": "ポインターがチャートのピクセル位置へ移動した",
+      "pointerUp": "ポインターがチャートのピクセル位置で離された",
+      "pointerCancel": "ジェスチャーがキャンセルされた",
+      "pointerLeave": "マウスがチャートから離れた",
+      "zoomAt": "ピクセルを中心にズームします（factor < 1 で拡大）",
+      "resetZoom": "データの全範囲を表示します",
+      "getView": "表示範囲を返します",
+      "setView": "表示範囲を設定します",
+      "toggleSeries": "凡例のタップと同様にシリーズを表示 / 非表示にします",
+      "clearHover": "ツールチップとハイライトを消します",
+      "getPlotRect": "プロット領域（CSS ピクセル）。最初のレイアウト前は null",
+      "toPixel": "データ座標をチャートのピクセルに変換します（最初のレイアウト前は null）",
+      "fromPixel": "チャートのピクセルをデータ座標に変換します（最初のレイアウト前は null）",
+      "on": "イベントを購読します（renderer を除く ChartEventMap の全イベント）。購読解除関数を返します",
+      "destroy": "リスナーを削除し、アニメーションを止めます"
+    },
+    "ChartPrimitiveOptions": {
+      "maxDots": "シリーズごとに描画する点の上限。超えると占有セルごとに 1 点へまとめます",
+      "maxBars": "シリーズごとに描画する棒の上限。超えると同じピクセル列の棒をまとめます",
+      "columnWidth": "線を間引く列の幅（ピクセル、列ごとに最大 4 点）。大きいほど図形が減ります",
+      "dotCell": "点をまとめるセルのサイズ（既定は点のサイズ）"
+    },
+    "ChartLinePrimitive": {
+      "kind": "図形の種類",
+      "seriesIndex": "オプション内のシリーズのインデックス",
+      "color": "CSS カラー",
+      "width": "線の幅（ピクセル）",
+      "segments": "途切れのない点の連なり。x, y ピクセルを交互に並べたもの"
+    },
+    "ChartAreaPrimitive": {
+      "kind": "図形の種類",
+      "seriesIndex": "オプション内のシリーズのインデックス",
+      "color": "CSS カラー",
+      "opacity": "塗りの不透明度（0〜1）",
+      "baseline": "ベースラインの Y ピクセル",
+      "segments": "途切れのない点の連なり。x, y ピクセルを交互に並べたもの"
+    },
+    "ChartBarPrimitive": {
+      "kind": "図形の種類",
+      "seriesIndex": "オプション内のシリーズのインデックス",
+      "color": "CSS カラー",
+      "rects": "各棒の x, y, width, height を交互に並べたもの（ピクセル）"
+    },
+    "ChartDotPrimitive": {
+      "kind": "図形の種類",
+      "seriesIndex": "オプション内のシリーズのインデックス",
+      "opacity": "塗りの不透明度（0〜1）",
+      "dots": "各点の x, y, 直径を交互に並べたもの（ピクセル）",
+      "colors": "各点の CSS カラー"
     }
   }
 }

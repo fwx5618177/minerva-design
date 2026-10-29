@@ -1198,6 +1198,180 @@
       }
     ]
   },
+  "CanvasChartConfig": {
+    "source": "charts/src/engine/canvas.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "canvas",
+        "type": "ChartCanvas",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "Size of the canvas in CSS pixels (rpx converted by the host)"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "pixelRatio",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Device pixel ratio (`wx.getWindowInfo().pixelRatio` in mini-programs)"
+      },
+      {
+        "name": "options",
+        "type": "ChartOptions",
+        "required": true
+      },
+      {
+        "name": "theme",
+        "type": "ChartThemeInput",
+        "required": false,
+        "description": "Colors and fonts: values of the Minerva CSS variables"
+      }
+    ]
+  },
+  "CanvasChartInstance": {
+    "source": "charts/src/engine/canvas.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "setOptions",
+        "type": "(options: ChartOptions) => void",
+        "required": true
+      },
+      {
+        "name": "setTheme",
+        "type": "(theme: ChartThemeInput | undefined) => void",
+        "required": true
+      },
+      {
+        "name": "resize",
+        "type": "(width: number, height: number, pixelRatio?: number) => void",
+        "required": true,
+        "description": "New CSS size (and pixel ratio) of the canvas"
+      },
+      {
+        "name": "render",
+        "type": "() => void",
+        "required": true,
+        "description": "Draws now (frames are otherwise scheduled automatically)"
+      },
+      {
+        "name": "touchStart",
+        "type": "(touches: readonly ChartTouch[]) => void",
+        "required": true,
+        "description": "Touch handlers: pass the `touches` / `changedTouches` of the event"
+      },
+      {
+        "name": "touchMove",
+        "type": "(touches: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "touchEnd",
+        "type": "(changedTouches: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "touchCancel",
+        "type": "(changedTouches?: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "pointerDown",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true,
+        "description": "Mouse / pen handlers (H5, desktop mini-programs)"
+      },
+      {
+        "name": "pointerMove",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerUp",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerLeave",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "zoomAt",
+        "type": "(x: number, y: number, factor: number) => void",
+        "required": true,
+        "description": "Zooms around a pixel (factor < 1 zooms in)"
+      },
+      {
+        "name": "resetZoom",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "getView",
+        "type": "() => ChartView",
+        "required": true
+      },
+      {
+        "name": "setView",
+        "type": "(view: Partial<ChartView>) => void",
+        "required": true
+      },
+      {
+        "name": "toggleSeries",
+        "type": "(id: string) => void",
+        "required": true
+      },
+      {
+        "name": "clearHover",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "getPlotRect",
+        "type": "() => ChartRect | null",
+        "required": true
+      },
+      {
+        "name": "toPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true
+      },
+      {
+        "name": "fromPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true
+      },
+      {
+        "name": "getController",
+        "type": "() => ChartController",
+        "required": true,
+        "description": "The platform-free controller (scene, gestures)"
+      },
+      {
+        "name": "on",
+        "type": "(type: K, listener: (event: ChartControllerEventMap[K]) => void) => () => void",
+        "required": true
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true
+      }
+    ]
+  },
   "CardContentProps": {
     "source": "react/src/components/Card/types.ts",
     "kind": "interface",
@@ -1766,9 +1940,47 @@
   },
   "ChartAnnotation": {
     "source": "charts/src/engine/types.ts",
-    "description": "Background area or reference line",
+    "description": "Background area, reference line or text",
     "kind": "alias",
-    "type": "ChartRectAnnotation | ChartLineAnnotation"
+    "type": "ChartRectAnnotation | ChartLineAnnotation | ChartTextAnnotation"
+  },
+  "ChartAreaPrimitive": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"area\"",
+        "required": true
+      },
+      {
+        "name": "seriesIndex",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "opacity",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "baseline",
+        "type": "number",
+        "required": true,
+        "description": "Y pixel of the baseline"
+      },
+      {
+        "name": "segments",
+        "type": "number[][]",
+        "required": true
+      }
+    ]
   },
   "ChartAxisOptions": {
     "source": "charts/src/engine/types.ts",
@@ -1859,6 +2071,68 @@
     "description": "Scale of an axis",
     "kind": "alias",
     "type": "\"linear\" | \"time\" | \"category\""
+  },
+  "ChartBarPrimitive": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"bars\"",
+        "required": true
+      },
+      {
+        "name": "seriesIndex",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "rects",
+        "type": "number[]",
+        "required": true,
+        "description": "Interleaved x, y, width, height"
+      }
+    ]
+  },
+  "ChartCanvas": {
+    "source": "charts/src/engine/canvas.ts",
+    "description": "The canvas a chart draws on: a browser `HTMLCanvasElement`, an `OffscreenCanvas` or the node of a mini-program `<canvas type=\"2d\">` (`SelectorQuery.fields({ node: true })`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "getContext",
+        "type": "(type: \"2d\") => unknown",
+        "required": true
+      },
+      {
+        "name": "requestAnimationFrame",
+        "type": "(callback: () => void) => number",
+        "required": false,
+        "description": "Mini-program canvases schedule their frames themselves"
+      },
+      {
+        "name": "cancelAnimationFrame",
+        "type": "(id: number) => void",
+        "required": false
+      }
+    ]
   },
   "ChartColumnData": {
     "source": "charts/src/engine/types.ts",
@@ -1987,6 +2261,18 @@
         "description": "Called when a point (or bar) is clicked"
       },
       {
+        "name": "onPlotClick",
+        "type": "(event: ChartPlotClickEvent) => void",
+        "required": false,
+        "description": "Called when the plot area is clicked where there is no point"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(event: ChartHoverEvent) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip (replaces the default content)"
+      },
+      {
         "name": "onZoom",
         "type": "(view: ChartView) => void",
         "required": false,
@@ -2018,6 +2304,214 @@
       }
     ]
   },
+  "ChartController": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "setOptions",
+        "type": "(options: ChartOptions) => void",
+        "required": true
+      },
+      {
+        "name": "setTheme",
+        "type": "(theme: ChartThemeInput | undefined) => void",
+        "required": true
+      },
+      {
+        "name": "setSize",
+        "type": "(width: number, height: number) => void",
+        "required": true,
+        "description": "Size of the chart in CSS pixels"
+      },
+      {
+        "name": "getScene",
+        "type": "() => ChartScene | null",
+        "required": true,
+        "description": "What to draw (`null` until the size is known)"
+      },
+      {
+        "name": "pointerDown",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerMove",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerUp",
+        "type": "(x: number, y: number, options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerCancel",
+        "type": "(options?: ChartPointerOptions) => void",
+        "required": true
+      },
+      {
+        "name": "pointerLeave",
+        "type": "() => void",
+        "required": true,
+        "description": "The mouse left the chart"
+      },
+      {
+        "name": "zoomAt",
+        "type": "(x: number, y: number, factor: number) => void",
+        "required": true,
+        "description": "Zooms around a pixel (factor < 1 zooms in)"
+      },
+      {
+        "name": "resetZoom",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "getView",
+        "type": "() => ChartView",
+        "required": true
+      },
+      {
+        "name": "setView",
+        "type": "(view: Partial<ChartView>) => void",
+        "required": true
+      },
+      {
+        "name": "toggleSeries",
+        "type": "(id: string) => void",
+        "required": true,
+        "description": "Shows / hides a series (like a legend click)"
+      },
+      {
+        "name": "clearHover",
+        "type": "() => void",
+        "required": true,
+        "description": "Hides the tooltip"
+      },
+      {
+        "name": "getPlotRect",
+        "type": "() => ChartRect | null",
+        "required": true
+      },
+      {
+        "name": "toPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true
+      },
+      {
+        "name": "fromPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true
+      },
+      {
+        "name": "on",
+        "type": "(type: K, listener: (event: ChartControllerEventMap[K]) => void) => () => void",
+        "required": true
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true
+      }
+    ]
+  },
+  "ChartControllerConfig": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "options",
+        "type": "ChartOptions",
+        "required": true
+      },
+      {
+        "name": "theme",
+        "type": "ChartThemeInput",
+        "required": false,
+        "description": "Colors and fonts (Minerva variables); light defaults when omitted"
+      },
+      {
+        "name": "measureText",
+        "type": "(text: string, font: string) => number",
+        "required": true,
+        "description": "Width in pixels of `text` drawn with the CSS `font`"
+      },
+      {
+        "name": "onInvalidate",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the scene changed and must be drawn again"
+      }
+    ]
+  },
+  "ChartControllerEventMap": {
+    "source": "charts/src/engine/controller.ts",
+    "description": "Events of a controller (no renderer events: hosts draw themselves)",
+    "kind": "alias",
+    "type": "Omit<ChartEventMap, \"renderer\">"
+  },
+  "ChartDotPrimitive": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"dots\"",
+        "required": true
+      },
+      {
+        "name": "seriesIndex",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "opacity",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "dots",
+        "type": "number[]",
+        "required": true,
+        "description": "Interleaved x, y, diameter"
+      },
+      {
+        "name": "colors",
+        "type": "string[]",
+        "required": true,
+        "description": "CSS color of every dot"
+      }
+    ]
+  },
+  "ChartDragEvent": {
+    "source": "charts/src/engine/types.ts",
+    "description": "A dragged point (`drag` / `drop` events)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "item",
+        "type": "ChartHoverItem",
+        "required": true,
+        "description": "The point being dragged"
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Data coordinates under the pointer"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
   "ChartEventMap": {
     "source": "charts/src/engine/types.ts",
     "description": "Events of a chart instance",
@@ -2035,6 +2529,12 @@
         "required": true
       },
       {
+        "name": "plotClick",
+        "type": "ChartPlotClickEvent",
+        "required": true,
+        "description": "Click on the plot area where there is no point"
+      },
+      {
         "name": "zoom",
         "type": "ChartView",
         "required": true
@@ -2043,6 +2543,24 @@
         "name": "renderer",
         "type": "ChartRendererKind",
         "required": true
+      },
+      {
+        "name": "layout",
+        "type": "ChartRect",
+        "required": true,
+        "description": "The plot area moved or was resized"
+      },
+      {
+        "name": "drag",
+        "type": "ChartDragEvent",
+        "required": true,
+        "description": "A point is dragged (`interaction.dragPoints`)"
+      },
+      {
+        "name": "drop",
+        "type": "ChartDragEvent",
+        "required": true,
+        "description": "A dragged point was released"
       }
     ]
   },
@@ -2160,6 +2678,34 @@
       }
     ]
   },
+  "ChartHoverLayout": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "event",
+        "type": "ChartHoverEvent",
+        "required": true
+      },
+      {
+        "name": "marks",
+        "type": "HoverMark[]",
+        "required": true
+      },
+      {
+        "name": "crosshairX",
+        "type": "number | null",
+        "required": true,
+        "description": "X pixel of the guide line (`null` when hidden)"
+      },
+      {
+        "name": "tooltip",
+        "type": "ChartTooltipLayout | null",
+        "required": true
+      }
+    ]
+  },
   "ChartInstance": {
     "source": "charts/src/engine/types.ts",
     "description": "Chart created by `createChart`",
@@ -2195,6 +2741,24 @@
         "type": "(view: Partial<ChartView>) => void",
         "required": true,
         "description": "Sets the visible range"
+      },
+      {
+        "name": "getPlotRect",
+        "type": "() => ChartRect | null",
+        "required": true,
+        "description": "Plot area in CSS pixels of the container (`null` before the first frame)"
+      },
+      {
+        "name": "toPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true,
+        "description": "Data coordinates -> CSS pixels of the container (`null` before the first frame)"
+      },
+      {
+        "name": "fromPixel",
+        "type": "(x: number, y: number) => { x: number; y: number } | null",
+        "required": true,
+        "description": "CSS pixels of the container -> data coordinates (`null` before the first frame)"
       },
       {
         "name": "getRenderer",
@@ -2261,6 +2825,13 @@
         "required": false,
         "default": "true",
         "description": "Arrow keys move the highlight, +/- zoom, 0 resets, Esc clears"
+      },
+      {
+        "name": "dragPoints",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Scatter points can be dragged: `drag` events follow the pointer and a `drop` event ends the gesture (the data is not changed by the chart)"
       }
     ]
   },
@@ -2269,6 +2840,74 @@
     "description": "Position of an annotation label inside its area",
     "kind": "alias",
     "type": "\"top-left\" | \"top-right\" | \"bottom-left\" | \"bottom-right\" | \"center\""
+  },
+  "ChartLegendEntry": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true,
+        "description": "CSS color"
+      },
+      {
+        "name": "shape",
+        "type": "\"dot\" | \"line\" | \"square\"",
+        "required": true
+      },
+      {
+        "name": "hidden",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "box",
+        "type": "Rect",
+        "required": true,
+        "description": "Hit / draw box of the entry, pixels of the chart"
+      }
+    ]
+  },
+  "ChartLegendLayout": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "entries",
+        "type": "ChartLegendEntry[]",
+        "required": true
+      },
+      {
+        "name": "position",
+        "type": "\"top\" | \"bottom\"",
+        "required": true
+      },
+      {
+        "name": "toggle",
+        "type": "boolean",
+        "required": true,
+        "description": "Whether a tap toggles the series"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true,
+        "description": "Height taken by the legend"
+      }
+    ]
   },
   "ChartLegendOptions": {
     "source": "charts/src/engine/types.ts",
@@ -2336,6 +2975,40 @@
         "type": "string",
         "required": false,
         "description": "Text drawn at the end of the line"
+      }
+    ]
+  },
+  "ChartLinePrimitive": {
+    "source": "charts/src/engine/controller.ts",
+    "description": "A polyline (pixels of the chart): interleaved x, y",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"line\"",
+        "required": true
+      },
+      {
+        "name": "seriesIndex",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "segments",
+        "type": "number[][]",
+        "required": true,
+        "description": "Runs of points without gaps"
       }
     ]
   },
@@ -2448,6 +3121,25 @@
       }
     ]
   },
+  "ChartPlotClickEvent": {
+    "source": "charts/src/engine/types.ts",
+    "description": "A click (or tap) on the plot area outside the points",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Data coordinates of the click"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
   "ChartPointDatum": {
     "source": "charts/src/engine/types.ts",
     "description": "One datum written as an object",
@@ -2486,6 +3178,64 @@
       }
     ]
   },
+  "ChartPointerOptions": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "id",
+        "type": "number",
+        "required": false,
+        "description": "Pointer id (touch identifier); 0 by default"
+      },
+      {
+        "name": "touch",
+        "type": "boolean",
+        "required": false,
+        "description": "Touch input: the tooltip follows the finger and stays after a tap"
+      }
+    ]
+  },
+  "ChartPrimitive": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "alias",
+    "type": "ChartLinePrimitive | ChartAreaPrimitive | ChartBarPrimitive | ChartDotPrimitive"
+  },
+  "ChartPrimitiveOptions": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "maxDots",
+        "type": "number",
+        "required": false,
+        "default": "4000",
+        "description": "Upper bound of the dots drawn per series: above it the dots are merged into one per occupied cell of their size"
+      },
+      {
+        "name": "maxBars",
+        "type": "number",
+        "required": false,
+        "default": "2000",
+        "description": "Upper bound of the bars drawn per series: above it neighboring bars sharing a pixel column are merged"
+      },
+      {
+        "name": "columnWidth",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Width in pixels of the columns lines are decimated to (at most four points per column); larger values mean fewer shapes"
+      },
+      {
+        "name": "dotCell",
+        "type": "number",
+        "required": false,
+        "description": "Size of the cells dots are merged into (the dot size by default)"
+      }
+    ]
+  },
   "ChartProps": {
     "source": "charts/src/react/types.ts",
     "description": "Props of Chart: any mix of line, area, bar and scatter series",
@@ -2499,6 +3249,34 @@
         "type": "readonly ChartSeries[]",
         "required": true,
         "description": "Data series; each sets its own `type`"
+      }
+    ]
+  },
+  "ChartRect": {
+    "source": "charts/src/engine/types.ts",
+    "description": "Rectangle in CSS pixels, relative to the chart's container",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
       }
     ]
   },
@@ -2576,6 +3354,71 @@
     "description": "Requested backend: `auto` tries WebGPU, then WebGL2, then Canvas2D, and skips GPU backends that run in software (no hardware acceleration)",
     "kind": "alias",
     "type": "\"auto\" | ChartRendererKind"
+  },
+  "ChartScene": {
+    "source": "charts/src/engine/controller.ts",
+    "description": "Everything a host draws, in CSS pixels of the chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "theme",
+        "type": "ChartTheme",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "ChartModel",
+        "required": true
+      },
+      {
+        "name": "view",
+        "type": "ChartView",
+        "required": true
+      },
+      {
+        "name": "layout",
+        "type": "ChartLayout",
+        "required": true
+      },
+      {
+        "name": "annotations",
+        "type": "ResolvedAnnotation[]",
+        "required": true
+      },
+      {
+        "name": "pointLabels",
+        "type": "{ label: PointLabel; box: Rect }[]",
+        "required": true,
+        "description": "Labels of the dots that found a free slot"
+      },
+      {
+        "name": "legend",
+        "type": "ChartLegendLayout | null",
+        "required": true
+      },
+      {
+        "name": "hover",
+        "type": "ChartHoverLayout | null",
+        "required": true
+      },
+      {
+        "name": "dragging",
+        "type": "{ x: number; y: number; color: string; size: number } | null",
+        "required": true,
+        "description": "Point being dragged (`interaction.dragPoints`)"
+      }
+    ]
   },
   "ChartSeries": {
     "source": "charts/src/engine/types.ts",
@@ -2666,6 +3509,187 @@
     "kind": "alias",
     "type": "\"line\" | \"area\" | \"bar\" | \"scatter\""
   },
+  "ChartTextAnnotation": {
+    "source": "charts/src/engine/types.ts",
+    "description": "Text placed at a data position (omitted coordinates center it on the plot)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"text\"",
+        "required": true
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "anchor",
+        "type": "\"center\" | \"top\" | \"bottom\" | \"left\" | \"right\"",
+        "required": false,
+        "default": "\"center\"",
+        "description": "Side of the text that touches the position: `top` hangs the text below it, `left` starts it there, ...; the text always stays inside the plot"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Text color (defaults to the secondary text color)"
+      },
+      {
+        "name": "weight",
+        "type": "number",
+        "required": false,
+        "default": "500",
+        "description": "Font weight"
+      }
+    ]
+  },
+  "ChartTheme": {
+    "source": "charts/src/engine/theme.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "palette",
+        "type": "Rgba[]",
+        "required": true
+      },
+      {
+        "name": "text",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "textMuted",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "grid",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "axis",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "background",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "surface",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "primary",
+        "type": "Rgba",
+        "required": true
+      },
+      {
+        "name": "fontFamily",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "required": true,
+        "description": "Tick label font size in CSS pixels"
+      },
+      {
+        "name": "resolve",
+        "type": "ColorResolver",
+        "required": false,
+        "description": "Resolves the colors of the options (`var(--x)` included); static colors only when omitted"
+      }
+    ]
+  },
+  "ChartThemeInput": {
+    "source": "charts/src/engine/theme.ts",
+    "description": "Theme of the charts drawn without a DOM (mini-programs, React Native)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "variables",
+        "type": "Readonly<Record<string, string>>",
+        "required": false,
+        "description": "Values of the Minerva CSS variables (`--primary-color`, `--text-color`, `--chart-series-1`, ...) used for the theme colors and to resolve `var(--name)` colors of the options"
+      },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Series colors (hex / rgb)"
+      },
+      {
+        "name": "fontFamily",
+        "type": "string",
+        "required": false,
+        "description": "Font family of the labels"
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "required": false,
+        "default": "11",
+        "description": "Font size of the tick labels, in pixels"
+      }
+    ]
+  },
+  "ChartTooltipLayout": {
+    "source": "charts/src/engine/controller.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "content",
+        "type": "TooltipContent",
+        "required": true,
+        "description": "Default content (`text` is set instead when `tooltip.render` returns a string)"
+      },
+      {
+        "name": "text",
+        "type": "string[] | null",
+        "required": true,
+        "description": "Lines of a custom string tooltip"
+      },
+      {
+        "name": "box",
+        "type": "Rect",
+        "required": true,
+        "description": "Box of the tooltip, pixels of the chart"
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "required": true,
+        "description": "Line height used to lay the box out"
+      },
+      {
+        "name": "padding",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
   "ChartTooltipOptions": {
     "source": "charts/src/engine/types.ts",
     "description": "Tooltip options",
@@ -2684,6 +3708,29 @@
         "type": "(event: ChartHoverEvent) => string | Node | null",
         "required": false,
         "description": "Renders the tooltip content (a string is set as text)"
+      }
+    ]
+  },
+  "ChartTouch": {
+    "source": "charts/src/engine/canvas.ts",
+    "description": "A touch point relative to the canvas (`x` / `y`) with its identifier",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "identifier",
+        "type": "number",
+        "required": false
       }
     ]
   },
@@ -9461,13 +10508,80 @@
       }
     ]
   },
+  "QuadrantAxisLabels": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Texts at the four ends of the dividers, inside the plot",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "top",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "bottom",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "left",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "right",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
   "QuadrantChartProps": {
     "source": "charts/src/react/types.ts",
     "description": "Props of QuadrantChart",
     "kind": "interface",
     "extends": [
-      "Omit<ChartCommonProps, \"onPointClick\" | \"xAxis\" | \"yAxis\">"
+      "Omit<ChartCommonProps, \"onPointClick\" | \"onPlotClick\" | \"renderTooltip\" | \"xAxis\" | \"yAxis\">",
+      "QuadrantConfig"
     ],
+    "props": [
+      {
+        "name": "onPointClick",
+        "type": "(point: QuadrantPoint, index: number) => void",
+        "required": false,
+        "description": "Called with the clicked point and its index"
+      },
+      {
+        "name": "onQuadrantClick",
+        "type": "(quadrant: QuadrantCorner, position: { x: number; y: number }) => void",
+        "required": false,
+        "description": "Called when the empty area of a quadrant is clicked"
+      },
+      {
+        "name": "onPointDrop",
+        "type": "(point: QuadrantPoint, index: number, target: QuadrantDropTarget) => void",
+        "required": false,
+        "description": "Called when a dragged point is released; the dots become draggable when it is set (the chart does not move them: update `points`)"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(point: QuadrantPoint, index: number) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip of a point"
+      },
+      {
+        "name": "quadrantContent",
+        "type": "Partial<Record<QuadrantCorner, ReactNode>>",
+        "required": false,
+        "description": "React content placed over each quadrant (e.g. an add button); the content receives pointer events, the rest of the quadrant does not"
+      }
+    ]
+  },
+  "QuadrantConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a quadrant matrix (the props of QuadrantChart)",
+    "kind": "interface",
+    "extends": [],
     "props": [
       {
         "name": "points",
@@ -9520,6 +10634,19 @@
         "description": "Title of the vertical axis"
       },
       {
+        "name": "axisLabels",
+        "type": "QuadrantAxisLabels",
+        "required": false,
+        "description": "Texts at the ends of the dividers, drawn inside the plot (e.g. \"Important\" at the top)"
+      },
+      {
+        "name": "showTicks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the numeric ticks of the axes; `false` keeps only the matrix"
+      },
+      {
         "name": "reverseX",
         "type": "boolean",
         "required": false,
@@ -9546,15 +10673,46 @@
         "description": "Name of the points in the tooltip"
       },
       {
-        "name": "onPointClick",
-        "type": "(point: QuadrantPoint, index: number) => void",
+        "name": "draggable",
+        "type": "boolean",
         "required": false,
-        "description": "Called with the clicked point and its index"
+        "description": "Lets the user drag the dots (`drag` / `drop` events)"
+      }
+    ]
+  },
+  "QuadrantCorner": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A quadrant, as seen on screen",
+    "kind": "alias",
+    "type": "keyof QuadrantRegions"
+  },
+  "QuadrantDropTarget": {
+    "source": "charts/src/react/types.ts",
+    "description": "Where a dragged QuadrantChart point was dropped",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Data coordinates of the drop"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "quadrant",
+        "type": "QuadrantCorner",
+        "required": true,
+        "description": "Quadrant of the drop, as seen on screen"
       }
     ]
   },
   "QuadrantPoint": {
-    "source": "charts/src/react/types.ts",
+    "source": "charts/src/engine/presets.ts",
     "description": "A point of a QuadrantChart",
     "kind": "interface",
     "extends": [],
@@ -9592,7 +10750,7 @@
     ]
   },
   "QuadrantRegion": {
-    "source": "charts/src/react/types.ts",
+    "source": "charts/src/engine/presets.ts",
     "description": "Title and color of a quadrant",
     "kind": "interface",
     "extends": [],
@@ -9612,7 +10770,7 @@
     ]
   },
   "QuadrantRegions": {
-    "source": "charts/src/react/types.ts",
+    "source": "charts/src/engine/presets.ts",
     "description": "The four quadrants of a QuadrantChart",
     "kind": "interface",
     "extends": [],

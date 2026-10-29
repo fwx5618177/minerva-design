@@ -9,10 +9,21 @@
     "eisenhower": {
       "title": "アイゼンハワーマトリクス",
       "description": "reverseX で緊急のタスクを左に配置します。onPointClick はクリックされたタスクを受け取ります。"
+    },
+    "draggable": {
+      "title": "ドラッグできるタスクマトリクス",
+      "description": "showTicks={false} と axisLabels でチャートをタスクボードにします。タスクを別の象限へドラッグ（onPointDrop が位置を更新）し、空いている場所か +ボタン（quadrantContent）をクリックして追加します。renderTooltip は React のツールチップを表示します。"
     }
   },
   "api": {
     "QuadrantChartProps": {
+      "onPointClick": "クリックされたポイントとそのインデックスを渡して呼ばれます",
+      "onQuadrantClick": "象限の空いている場所をクリックしたときに、象限とデータ位置を渡して呼ばれます",
+      "onPointDrop": "ドラッグしたポイントを離したときに、ポイント・インデックス・ドロップ先を渡して呼ばれます。設定するとポイントがドラッグ可能になります（移動するには points を更新）",
+      "renderTooltip": "ポイントのツールチップの React コンテンツ",
+      "quadrantContent": "各象限の上に置く React コンテンツ（追加ボタンなど）。ポインターイベントを受け取るのはこのコンテンツだけです"
+    },
+    "QuadrantConfig": {
       "points": "配置するポイント",
       "xDomain": "横軸の範囲",
       "yDomain": "縦軸の範囲",
@@ -21,11 +32,18 @@
       "quadrants": "各象限のタイトルと色",
       "xLabel": "横軸のタイトル",
       "yLabel": "縦軸のタイトル",
+      "axisLabels": "区切り線の両端に、プロット内に描画するテキスト（例：上端に「重要」）",
+      "showTicks": "軸の数値目盛りを表示します。false でマトリクスのみになります",
       "reverseX": "横軸を反転します（例：緊急を左に）",
       "showLabels": "重なりを避けて点の横にラベルを描画",
       "pointSize": "点の直径（ピクセル）",
       "name": "ツールチップに表示するポイントの名前",
-      "onPointClick": "クリックされたポイントとそのインデックスを渡して呼ばれます"
+      "draggable": "ポイントをドラッグできるようにします（onPointDrop を設定すると既定で有効）"
+    },
+    "QuadrantDropTarget": {
+      "x": "ドロップ位置の X データ座標",
+      "y": "ドロップ位置の Y データ座標",
+      "quadrant": "ドロップ位置の象限（画面上の見た目どおり）"
     },
     "QuadrantPoint": {
       "x": "横軸上の位置",
@@ -43,6 +61,24 @@
     "QuadrantRegion": {
       "label": "象限の外側の角に描画するタイトル",
       "color": "背景の色合いと点の既定の色"
+    },
+    "QuadrantAxisLabels": {
+      "top": "垂直の区切り線の上端のテキスト",
+      "bottom": "垂直の区切り線の下端のテキスト",
+      "left": "水平の区切り線の左端のテキスト",
+      "right": "水平の区切り線の右端のテキスト"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "通常の View で描画した工数 / 効果のマトリクス。機能をタップすると値が表示されます。"
+      },
+      "draggable": {
+        "title": "象限間のドラッグ",
+        "description": "タスクを別の象限へドラッグします。onPointDrop がドロップ先を受け取り、+ ボタンは quadrantContent、ツールチップは renderTooltip のビューです。"
+      }
     }
   }
 }

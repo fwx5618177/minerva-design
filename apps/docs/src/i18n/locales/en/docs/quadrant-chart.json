@@ -9,10 +9,21 @@
     "eisenhower": {
       "title": "Eisenhower matrix",
       "description": "reverseX puts urgent tasks on the left; onPointClick receives the clicked task."
+    },
+    "draggable": {
+      "title": "Draggable task matrix",
+      "description": "showTicks={false} and axisLabels turn the chart into a task board: drag a task to another quadrant (onPointDrop updates its position), click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
     }
   },
   "api": {
     "QuadrantChartProps": {
+      "onPointClick": "Called with the clicked point and its index",
+      "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
+      "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
+      "renderTooltip": "React content of the tooltip of a point",
+      "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events"
+    },
+    "QuadrantConfig": {
       "points": "Points to place",
       "xDomain": "Range of the horizontal axis",
       "yDomain": "Range of the vertical axis",
@@ -21,11 +32,18 @@
       "quadrants": "Titles and colors of the quadrants",
       "xLabel": "Title of the horizontal axis",
       "yLabel": "Title of the vertical axis",
+      "axisLabels": "Texts at the ends of the dividers, drawn inside the plot (e.g. \"Important\" at the top)",
+      "showTicks": "Shows the numeric ticks of the axes; false keeps only the matrix",
       "reverseX": "Reverses the horizontal axis (e.g. urgent on the left)",
       "showLabels": "Draws the labels next to the dots, skipping overlaps",
       "pointSize": "Dot diameter in pixels",
       "name": "Name of the points in the tooltip",
-      "onPointClick": "Called with the clicked point and its index"
+      "draggable": "Lets the user drag the dots (on by default when onPointDrop is set)"
+    },
+    "QuadrantDropTarget": {
+      "x": "X data coordinate of the drop",
+      "y": "Y data coordinate of the drop",
+      "quadrant": "Quadrant of the drop, as seen on screen"
     },
     "QuadrantPoint": {
       "x": "Position on the horizontal axis",
@@ -43,6 +61,24 @@
     "QuadrantRegion": {
       "label": "Title drawn in the outer corner of the quadrant",
       "color": "Background tint and default dot color"
+    },
+    "QuadrantAxisLabels": {
+      "top": "Text at the top end of the vertical divider",
+      "bottom": "Text at the bottom end of the vertical divider",
+      "left": "Text at the left end of the horizontal divider",
+      "right": "Text at the right end of the horizontal divider"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "Effort / impact matrix drawn with plain Views; tap a feature to read its values."
+      },
+      "draggable": {
+        "title": "Drag between quadrants",
+        "description": "Drag a task to another quadrant: onPointDrop receives the drop target; the + buttons are quadrantContent and the tooltip is a renderTooltip view."
+      }
     }
   }
 }

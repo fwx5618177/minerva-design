@@ -59,6 +59,8 @@
       "ariaLabel": "Nom accessible du graphique",
       "onHover": "Appelé quand les points survolés (ou ciblés au clavier) changent",
       "onPointClick": "Appelé au clic sur un point ou une barre",
+      "onPlotClick": "Appelé avec les coordonnées de données quand la zone de tracé est cliquée hors de tout point",
+      "renderTooltip": "Contenu React de l’infobulle ; remplace le contenu par défaut (le cadre, la position et la gestion du pointeur sont conservés)",
       "onZoom": "Appelé quand l’utilisateur zoome ou déplace la vue",
       "onRendererChange": "Appelé avec le backend une fois prêt, et après un repli GPU",
       "className": "Classe supplémentaire de l’élément racine",
@@ -132,11 +134,21 @@
       "dash": "Motif de pointillés, p. ex. [4, 4]",
       "label": "Texte dessiné au bout de la ligne"
     },
+    "ChartTextAnnotation": {
+      "type": "Toujours « text »",
+      "x": "Position x, en unités de données",
+      "y": "Position y, en unités de données",
+      "text": "Texte à dessiner",
+      "anchor": "Côté du texte qui touche la position (center, top, bottom, left, right) ; le texte reste dans la zone de tracé",
+      "color": "Couleur du texte (couleur de texte secondaire par défaut)",
+      "weight": "Graisse de la police"
+    },
     "ChartInteractionOptions": {
       "zoom": "Axes de zoom et de déplacement (x, y, xy) ; true les déduit des types de séries",
       "wheel": "Zoom à la molette seulement avec Ctrl / ⌘ (modifier) ou toujours",
       "pan": "Glisser pour déplacer la vue zoomée",
-      "keyboard": "Les flèches déplacent la surbrillance, +/- zooment, 0 réinitialise, Esc efface"
+      "keyboard": "Les flèches déplacent la surbrillance, +/- zooment, 0 réinitialise, Esc efface",
+      "dragPoints": "Permet de faire glisser les points d’un nuage (événements drag / drop ; le graphique ne les déplace pas lui-même)"
     },
     "ChartTooltipOptions": {
       "mode": "nearest montre le point le plus proche, axis toutes les séries au x le plus proche",
@@ -167,9 +179,21 @@
       "color": "Couleur résolue du point",
       "label": "Libellé du point, s’il y en a un"
     },
+    "ChartPlotClickEvent": {
+      "x": "Coordonnée x (données) du clic",
+      "y": "Coordonnée y (données) du clic"
+    },
     "ChartView": {
       "x": "Plage x visible [min, max]",
       "y": "Plage y visible [min, max]"
+    }
+  },
+  "native": {
+    "demos": {
+      "mixed": {
+        "title": "Séries mixtes",
+        "description": "Des barres et une ligne partagent l’axe des catégories, dessinées avec de simples View ; touchez une barre ou un point de la ligne."
+      }
     }
   }
 }
