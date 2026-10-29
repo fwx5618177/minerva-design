@@ -111,8 +111,62 @@ export const resolveColor = (
     const parsed = parseColor(computed);
     if (parsed) return parsed;
   }
-  return parseWithCanvas(computed) ?? fallback;
+  return parseWithCanvas(computed) ?? resolveStaticColor(value, {}, fallback);
 };
+
+/** Resolves a color to RGBA, falling back to `fallback` */
+export type ColorResolver = (value: string, fallback: Rgba) => Rgba;
+
+/** Splits the arguments of `var(--name, fallback)` (the fallback may contain commas) */
+const parseVar = (
+  value: string,
+): { name: string; fallback?: string } | null => {
+  const match = /^var\(\s*(--[\w-]+)\s*(?:,([\s\S]*))?\)$/.exec(value.trim());
+  if (!match) return null;
+  const fallback = match[2]?.trim();
+  return { name: match[1], ...(fallback ? { fallback } : {}) };
+};
+
+/**
+ * Resolves a color without a DOM (mini-programs, React Native, workers):
+ * hex, `rgb()`, `transparent` and `var(--name, fallback)` looked up in
+ * `variables` (nested fallbacks included).
+ */
+export const resolveStaticColor = (
+  value: string,
+  variables: Readonly<Record<string, string>> = {},
+  fallback: Rgba = [0.4, 0.4, 0.4, 1],
+  depth = 0,
+): Rgba => {
+  const direct = parseColor(value);
+  if (direct) return direct;
+  const ref = depth < 8 ? parseVar(value) : null;
+  if (ref) {
+    const defined = variables[ref.name];
+    if (defined)
+      return resolveStaticColor(defined, variables, fallback, depth + 1);
+    if (ref.fallback)
+      return resolveStaticColor(ref.fallback, variables, fallback, depth + 1);
+  }
+  return NAMED[value.trim().toLowerCase()] ?? fallback;
+};
+
+const NAMED: Record<string, Rgba> = {
+  black: [0, 0, 0, 1],
+  white: [1, 1, 1, 1],
+  red: [1, 0, 0, 1],
+  green: [0, 128 / 255, 0, 1],
+  blue: [0, 0, 1, 1],
+  gray: [128 / 255, 128 / 255, 128 / 255, 1],
+  grey: [128 / 255, 128 / 255, 128 / 255, 1],
+  orange: [1, 165 / 255, 0, 1],
+};
+
+/** Resolver of the DOM: CSS variables and any CSS color syntax of `element` */
+export const domColorResolver =
+  (element: Element | null): ColorResolver =>
+  (value, fallback) =>
+    resolveColor(value, element, fallback);
 
 const hex2 = (v: number) =>
   Math.round(clamp01(v) * 255)

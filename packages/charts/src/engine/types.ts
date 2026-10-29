@@ -166,8 +166,30 @@ export interface ChartLineAnnotation {
   label?: string;
 }
 
-/** Background area or reference line */
-export type ChartAnnotation = ChartRectAnnotation | ChartLineAnnotation;
+/** Text placed at a data position (omitted coordinates center it on the plot) */
+export interface ChartTextAnnotation {
+  type: "text";
+  x?: number;
+  y?: number;
+  text: string;
+  /**
+   * Side of the text that touches the position: `top` hangs the text below
+   * it, `left` starts it there, ...; the text always stays inside the plot
+   * @default "center"
+   */
+  anchor?: "center" | "top" | "bottom" | "left" | "right";
+  /** Text color (defaults to the secondary text color) */
+  color?: string;
+  /**
+   * Font weight
+   * @default 500
+   */
+  weight?: number;
+}
+
+/** Background area, reference line or text */
+export type ChartAnnotation =
+  ChartRectAnnotation | ChartLineAnnotation | ChartTextAnnotation;
 
 /** Zoom / pan / keyboard options */
 export interface ChartInteractionOptions {
@@ -191,6 +213,12 @@ export interface ChartInteractionOptions {
    * @default true
    */
   keyboard?: boolean;
+  /**
+   * Scatter points can be dragged: `drag` events follow the pointer and a
+   * `drop` event ends the gesture (the data is not changed by the chart)
+   * @default false
+   */
+  dragPoints?: boolean;
 }
 
 /** Tooltip options */
@@ -287,12 +315,44 @@ export interface ChartView {
   y: [number, number];
 }
 
+/** Rectangle in CSS pixels, relative to the chart's container */
+export interface ChartRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** A dragged point (`drag` / `drop` events) */
+export interface ChartDragEvent {
+  /** The point being dragged */
+  item: ChartHoverItem;
+  /** Data coordinates under the pointer */
+  x: number;
+  y: number;
+}
+
+/** A click (or tap) on the plot area outside the points */
+export interface ChartPlotClickEvent {
+  /** Data coordinates of the click */
+  x: number;
+  y: number;
+}
+
 /** Events of a chart instance */
 export interface ChartEventMap {
   hover: ChartHoverEvent | null;
   click: ChartHoverEvent;
+  /** Click on the plot area where there is no point */
+  plotClick: ChartPlotClickEvent;
   zoom: ChartView;
   renderer: ChartRendererKind;
+  /** The plot area moved or was resized */
+  layout: ChartRect;
+  /** A point is dragged (`interaction.dragPoints`) */
+  drag: ChartDragEvent;
+  /** A dragged point was released */
+  drop: ChartDragEvent;
 }
 
 /** Chart created by `createChart` */
@@ -307,6 +367,12 @@ export interface ChartInstance {
   getView(): ChartView;
   /** Sets the visible range */
   setView(view: Partial<ChartView>): void;
+  /** Plot area in CSS pixels of the container (`null` before the first frame) */
+  getPlotRect(): ChartRect | null;
+  /** Data coordinates -> CSS pixels of the container (`null` before the first frame) */
+  toPixel(x: number, y: number): { x: number; y: number } | null;
+  /** CSS pixels of the container -> data coordinates (`null` before the first frame) */
+  fromPixel(x: number, y: number): { x: number; y: number } | null;
   /** Backend in use, `null` until ready */
   getRenderer(): ChartRendererKind | null;
   /** Resolves with the backend once the first frame can be drawn (`null` when the browser has no canvas support) */

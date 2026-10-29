@@ -1,4 +1,4 @@
-import type { CSSProperties, Ref } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 import type {
   ChartAnnotation,
   ChartAxisOptions,
@@ -7,12 +7,27 @@ import type {
   ChartLegendOptions,
   ChartInteractionOptions,
   ChartPadding,
+  ChartPlotClickEvent,
   ChartRendererKind,
   ChartRendererPreference,
   ChartSeries,
   ChartTooltipOptions,
   ChartView,
 } from "../engine/types";
+import type {
+  QuadrantConfig,
+  QuadrantCorner,
+  QuadrantPoint,
+} from "../engine/presets";
+
+export type {
+  QuadrantAxisLabels,
+  QuadrantConfig,
+  QuadrantCorner,
+  QuadrantPoint,
+  QuadrantRegion,
+  QuadrantRegions,
+} from "../engine/presets";
 
 /** Imperative handle of the chart components (`ref`) */
 export interface ChartHandle {
@@ -72,6 +87,10 @@ export interface ChartCommonProps {
   onHover?: (event: ChartHoverEvent | null) => void;
   /** Called when a point (or bar) is clicked */
   onPointClick?: (event: ChartHoverEvent) => void;
+  /** Called when the plot area is clicked where there is no point */
+  onPlotClick?: (event: ChartPlotClickEvent) => void;
+  /** React content of the tooltip (replaces the default content) */
+  renderTooltip?: (event: ChartHoverEvent) => ReactNode;
   /** Called when the user zooms or pans */
   onZoom?: (view: ChartView) => void;
   /** Called with the backend once it is ready (and when it falls back after a GPU loss) */
@@ -118,77 +137,44 @@ export interface ScatterChartProps extends ChartCommonProps {
   series: readonly ChartSeries[];
 }
 
-/** A point of a QuadrantChart */
-export interface QuadrantPoint {
-  /** Position on the horizontal axis */
+/** Where a dragged QuadrantChart point was dropped */
+export interface QuadrantDropTarget {
+  /** Data coordinates of the drop */
   x: number;
-  /** Position on the vertical axis */
   y: number;
-  /** Text drawn next to the dot and shown in the tooltip */
-  label?: string;
-  /** Dot color (any CSS color); the color of its quadrant by default */
-  color?: string;
-  /** Dot diameter in pixels */
-  size?: number;
-}
-
-/** Title and color of a quadrant */
-export interface QuadrantRegion {
-  /** Title drawn in the outer corner of the quadrant */
-  label?: string;
-  /** Background tint and default dot color (any CSS color) */
-  color?: string;
-}
-
-/** The four quadrants of a QuadrantChart */
-export interface QuadrantRegions {
-  topLeft?: QuadrantRegion;
-  topRight?: QuadrantRegion;
-  bottomLeft?: QuadrantRegion;
-  bottomRight?: QuadrantRegion;
+  /** Quadrant of the drop, as seen on screen */
+  quadrant: QuadrantCorner;
 }
 
 /** Props of QuadrantChart */
-export interface QuadrantChartProps extends Omit<
-  ChartCommonProps,
-  "onPointClick" | "xAxis" | "yAxis"
-> {
-  /** Points to place */
-  points: readonly QuadrantPoint[];
-  /**
-   * Range of the horizontal axis
-   * @default [0, 10]
-   */
-  xDomain?: [number, number];
-  /**
-   * Range of the vertical axis
-   * @default [0, 10]
-   */
-  yDomain?: [number, number];
-  /** X value of the vertical divider (the middle of `xDomain` by default) */
-  xSplit?: number;
-  /** Y value of the horizontal divider (the middle of `yDomain` by default) */
-  ySplit?: number;
-  /** Titles and colors of the quadrants */
-  quadrants?: QuadrantRegions;
-  /** Title of the horizontal axis */
-  xLabel?: string;
-  /** Title of the vertical axis */
-  yLabel?: string;
-  /** Reverses the horizontal axis (e.g. "urgent" on the left) */
-  reverseX?: boolean;
-  /**
-   * Draws the labels next to the dots (overlapping labels are skipped)
-   * @default true
-   */
-  showLabels?: boolean;
-  /**
-   * Dot diameter in pixels
-   * @default 12
-   */
-  pointSize?: number;
-  /** Name of the points in the tooltip */
-  name?: string;
+export interface QuadrantChartProps
+  extends
+    Omit<
+      ChartCommonProps,
+      "onPointClick" | "onPlotClick" | "renderTooltip" | "xAxis" | "yAxis"
+    >,
+    QuadrantConfig {
   /** Called with the clicked point and its index */
   onPointClick?: (point: QuadrantPoint, index: number) => void;
+  /** Called when the empty area of a quadrant is clicked */
+  onQuadrantClick?: (
+    quadrant: QuadrantCorner,
+    position: { x: number; y: number },
+  ) => void;
+  /**
+   * Called when a dragged point is released; the dots become draggable
+   * when it is set (the chart does not move them: update `points`)
+   */
+  onPointDrop?: (
+    point: QuadrantPoint,
+    index: number,
+    target: QuadrantDropTarget,
+  ) => void;
+  /** React content of the tooltip of a point */
+  renderTooltip?: (point: QuadrantPoint, index: number) => ReactNode;
+  /**
+   * React content placed over each quadrant (e.g. an add button); the
+   * content receives pointer events, the rest of the quadrant does not
+   */
+  quadrantContent?: Partial<Record<QuadrantCorner, ReactNode>>;
 }

@@ -137,6 +137,53 @@ describe("chart components", () => {
     expect(points).toContain(onPointClick.mock.calls[0][0]);
   });
 
+  it("drags quadrant points, reports quadrant clicks and renders overlays", async () => {
+    const onPointDrop = vi.fn();
+    const onQuadrantClick = vi.fn();
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8, label: "Write report" }];
+    const { container, getByText } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        reverseX
+        showTicks={false}
+        onPointDrop={onPointDrop}
+        onQuadrantClick={onQuadrantClick}
+        quadrantContent={{ topLeft: <button type="button">add</button> }}
+        renderTooltip={(point) => <strong>{point.label}</strong>}
+      />,
+    );
+    await flush();
+    expect(getByText("add")).toBeTruthy();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const fire = (type: string, at: { x: number; y: number }) =>
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: at.x,
+          clientY: at.y,
+          button: 0,
+          pointerId: 1,
+        }),
+      );
+    const from = chart.toPixel(2, 8)!;
+    const to = chart.toPixel(8, 2)!;
+    fire("pointermove", from);
+    expect(
+      container.querySelector(".minerva-chart-tooltip strong")?.textContent,
+    ).toBe("Write report");
+    fire("pointerdown", from);
+    fire("pointermove", { x: from.x + 20, y: from.y + 20 });
+    fire("pointermove", to);
+    fire("pointerup", to);
+    expect(onPointDrop).toHaveBeenCalledTimes(1);
+    expect(onPointDrop.mock.calls[0][2].quadrant).toBe("bottomLeft");
+    fire("pointerdown", to);
+    fire("pointerup", to);
+    expect(onQuadrantClick.mock.calls[0][0]).toBe("bottomLeft");
+  });
+
   it("renders scatter charts", () => {
     const { container } = render(
       <ScatterChart series={[{ data: [[1, 2]] }]} />,

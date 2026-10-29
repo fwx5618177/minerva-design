@@ -1,6 +1,12 @@
 // Chart colors and fonts read from the Minerva CSS variables.
 
-import { mix, resolveColor, type Rgba } from "./color";
+import {
+  domColorResolver,
+  mix,
+  resolveStaticColor,
+  type ColorResolver,
+  type Rgba,
+} from "./color";
 
 export interface ChartTheme {
   palette: Rgba[];
@@ -14,6 +20,8 @@ export interface ChartTheme {
   fontFamily: string;
   /** Tick label font size in CSS pixels */
   fontSize: number;
+  /** Resolves the colors of the options (`var(--x)` included); static colors only when omitted */
+  resolve?: ColorResolver;
 }
 
 /** Used when no CSS variable is defined (e.g. without the Minerva stylesheet) */
@@ -40,11 +48,71 @@ export const readTheme = (
     element && typeof getComputedStyle === "function"
       ? getComputedStyle(element)
       : null;
+  return buildTheme(
+    (name) => readVar(style, name),
+    domColorResolver(element),
+    palette,
+    style?.fontFamily ?? "",
+  );
+};
+
+/** Theme of the charts drawn without a DOM (mini-programs, React Native) */
+export interface ChartThemeInput {
+  /**
+   * Values of the Minerva CSS variables (`--primary-color`, `--text-color`,
+   * `--chart-series-1`, ...) used for the theme colors and to resolve
+   * `var(--name)` colors of the options
+   */
+  variables?: Readonly<Record<string, string>>;
+  /** Series colors (hex / rgb) */
+  palette?: readonly string[];
+  /** Font family of the labels */
+  fontFamily?: string;
+  /**
+   * Font size of the tick labels, in pixels
+   * @default 11
+   */
+  fontSize?: number;
+}
+
+/** Builds a theme from plain values (no DOM) */
+export const createTheme = (
+  input: ChartThemeInput = {},
+  palette?: readonly string[],
+): ChartTheme => {
+  const variables = input.variables ?? {};
+  const theme = buildTheme(
+    (name) => variables[name]?.trim() ?? "",
+    staticColorResolver(variables),
+    palette?.length ? palette : input.palette,
+    "",
+  );
+  return {
+    ...theme,
+    ...(input.fontFamily ? { fontFamily: input.fontFamily } : {}),
+    ...(input.fontSize ? { fontSize: input.fontSize } : {}),
+  };
+};
+
+/** Resolver of `var(--name, fallback)` colors against plain variables */
+export const staticColorResolver =
+  (variables: Readonly<Record<string, string>>): ColorResolver =>
+  (value, fallback) =>
+    resolveStaticColor(value, variables, fallback);
+
+const buildTheme = (
+  readVariable: (name: string) => string,
+  resolve: ColorResolver,
+  palette: readonly string[] | undefined,
+  inheritedFont: string,
+): ChartTheme => {
+  const fallbackGray: Rgba = [0.4, 0.4, 0.4, 1];
+  const resolveColor = (value: string) => resolve(value, fallbackGray);
   const color = (names: string[], fallback: string): Rgba => {
     for (const name of names) {
-      if (readVar(style, name)) return resolveColor(`var(${name})`, element);
+      if (readVariable(name)) return resolveColor(`var(${name})`);
     }
-    return resolveColor(fallback, element);
+    return resolveColor(fallback);
   };
 
   const background = color(
@@ -60,13 +128,12 @@ export const readTheme = (
 
   let colors: Rgba[];
   if (palette && palette.length) {
-    colors = palette.map((c) => resolveColor(c, element));
+    colors = palette.map((c) => resolveColor(c));
   } else {
     const custom: Rgba[] = [];
     for (let i = 1; i <= 8; i++) {
       const name = `--chart-series-${i}`;
-      if (readVar(style, name))
-        custom.push(resolveColor(`var(${name})`, element));
+      if (readVariable(name)) custom.push(resolveColor(`var(${name})`));
     }
     if (custom.length) {
       colors = custom;
@@ -78,20 +145,20 @@ export const readTheme = (
         "--danger-color",
         "--info-color",
       ].map((name, i) =>
-        readVar(style, name)
-          ? resolveColor(`var(${name})`, element)
-          : resolveColor(DEFAULT_PALETTE[i], element),
+        readVariable(name)
+          ? resolveColor(`var(${name})`)
+          : resolveColor(DEFAULT_PALETTE[i]),
       );
       colors = [
         ...themed,
-        ...DEFAULT_PALETTE.slice(5).map((c) => resolveColor(c, element)),
+        ...DEFAULT_PALETTE.slice(5).map((c) => resolveColor(c)),
       ];
     }
   }
 
   const fontFamily =
-    readVar(style, "--font-family-sans") ||
-    (style?.fontFamily ?? "") ||
+    readVariable("--font-family-sans") ||
+    inheritedFont ||
     "system-ui, -apple-system, 'Segoe UI', sans-serif";
 
   return {
@@ -105,6 +172,7 @@ export const readTheme = (
     primary: colors[0],
     fontFamily,
     fontSize: 11,
+    resolve,
   };
 };
 

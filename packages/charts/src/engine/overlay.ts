@@ -31,7 +31,17 @@ export interface ResolvedLine {
   label?: string;
 }
 
-export type ResolvedAnnotation = ResolvedRect | ResolvedLine;
+export interface ResolvedText {
+  type: "text";
+  x?: number;
+  y?: number;
+  text: string;
+  anchor: "center" | "top" | "bottom" | "left" | "right";
+  color: Rgba;
+  weight: number;
+}
+
+export type ResolvedAnnotation = ResolvedRect | ResolvedLine | ResolvedText;
 
 export interface PointLabel {
   x: number;
@@ -45,6 +55,28 @@ export const font = (theme: ChartTheme, size = theme.fontSize, weight = 400) =>
   `${weight} ${size}px ${theme.fontFamily}`;
 
 const crisp = (v: number) => Math.round(v) + 0.5;
+
+/** Box of a text annotation, kept inside the plot */
+export const textBox = (
+  a: ResolvedText,
+  s: Scales,
+  width: number,
+  height: number,
+): Rect => {
+  const { plot } = s;
+  const px = a.x === undefined ? plot.x + plot.width / 2 : s.xToPx(a.x);
+  const py = a.y === undefined ? plot.y + plot.height / 2 : s.yToPx(a.y);
+  const gap = 6;
+  let x = px - width / 2;
+  let y = py - height / 2;
+  if (a.anchor === "top") y = py + gap;
+  else if (a.anchor === "bottom") y = py - gap - height;
+  else if (a.anchor === "left") x = px + gap;
+  else if (a.anchor === "right") x = px - gap - width;
+  x = Math.max(plot.x + gap, Math.min(x, plot.x + plot.width - gap - width));
+  y = Math.max(plot.y + 2, Math.min(y, plot.y + plot.height - 2 - height));
+  return { x, y, width, height };
+};
 
 const rectOf = (a: ResolvedRect, s: Scales): Rect => {
   const { plot } = s;
@@ -241,6 +273,11 @@ export interface ForegroundInput {
   theme: ChartTheme;
   annotations: readonly ResolvedAnnotation[];
   pointLabels: readonly PointLabel[];
+  /**
+   * Clears the canvas first (off when the layers share one canvas)
+   * @default true
+   */
+  clear?: boolean;
 }
 
 export const drawForeground = (
@@ -249,7 +286,7 @@ export const drawForeground = (
 ) => {
   const { scales, theme } = input;
   const { plot } = scales;
-  ctx.clearRect(0, 0, input.width, input.height);
+  if (input.clear !== false) ctx.clearRect(0, 0, input.width, input.height);
   ctx.save();
   ctx.beginPath();
   ctx.rect(plot.x, plot.y, plot.width, plot.height);
@@ -318,6 +355,17 @@ export const drawForeground = (
     ctx.fillStyle = toCss(a.labelColor);
     ctx.fillText(a.label, tx, ty);
     occupied.push({ x: tx, y: ty, width: w, height: labelHeight });
+  }
+
+  // free texts
+  for (const a of input.annotations) {
+    if (a.type !== "text" || !a.text) continue;
+    ctx.font = font(theme, theme.fontSize, a.weight);
+    const box = textBox(a, scales, ctx.measureText(a.text).width, labelHeight);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    haloText(ctx, a.text, box.x, box.y + box.height / 2, toCss(a.color), halo);
+    occupied.push(box);
   }
 
   // point labels

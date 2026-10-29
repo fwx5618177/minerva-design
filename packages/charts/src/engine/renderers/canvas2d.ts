@@ -39,11 +39,31 @@ const lowerBoundX = (points: Float32Array, count: number, value: number) => {
   return lo;
 };
 
-export const createCanvas2dRenderer = (
-  canvas: HTMLCanvasElement,
-): ChartRenderer | null => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
+export interface Canvas2dPainter {
+  /**
+   * Draws the items in a `frame.width` x `frame.height` device-pixel area
+   * whose top-left corner is at (`left`, `top`) device pixels; nothing is
+   * cleared
+   */
+  paint(
+    items: readonly RenderItem[],
+    frame: RenderFrame,
+    left?: number,
+    top?: number,
+  ): void;
+  destroy(): void;
+}
+
+/**
+ * Data layer drawn with any 2D context (browser canvases, mini-program
+ * canvases, OffscreenCanvas). `scratchCanvas` creates the canvas used to
+ * rasterize very large scatter sets; without it they are drawn as one
+ * square per occupied pixel cell.
+ */
+export const createCanvas2dPainter = (
+  ctx: CanvasRenderingContext2D,
+  scratchCanvas?: () => HTMLCanvasElement | null,
+): Canvas2dPainter => {
   let scratch: HTMLCanvasElement | null = null;
 
   const mapper = (frame: RenderFrame) => {
@@ -179,11 +199,60 @@ export const createCanvas2dRenderer = (
     ctx.fill();
   };
 
+  /** One square per occupied cell (the last point of a cell wins, like the GPU) */
+  const drawScatterCells = (item: ScatterItem, frame: RenderFrame) => {
+    const m = mapper(frame);
+    const w = frame.width;
+    const h = frame.height;
+    const f = new Float32Array(item.instances, 0, item.count * 4);
+    const u = new Uint32Array(item.instances, 0, item.count * 4);
+    let cell = 0;
+    for (let i = 0; i < Math.min(item.count, 64); i++)
+      cell = Math.max(cell, f[i * 4 + 2]);
+    cell = Math.max(1, Math.round((cell || 2) * frame.dpr * 0.8));
+    const cols = Math.ceil(w / cell);
+    const rows = Math.ceil(h / cell);
+    const owner = new Int32Array(cols * rows).fill(-1);
+    for (let i = 0; i < item.count; i++) {
+      const x = f[i * 4];
+      const y = f[i * 4 + 1];
+      if (isGap(x) || isGap(y) || !(f[i * 4 + 2] > 0)) continue;
+      const cx = Math.floor(m.px(x) / cell);
+      const cy = Math.floor(m.py(y) / cell);
+      if (cx < 0 || cy < 0 || cx >= cols || cy >= rows) continue;
+      owner[cy * cols + cx] = i;
+    }
+    const groups = new Map<number, number[]>();
+    for (let c = 0; c < owner.length; c++) {
+      const i = owner[c];
+      if (i < 0) continue;
+      const packed = u[i * 4 + 3];
+      let list = groups.get(packed);
+      if (!list) groups.set(packed, (list = []));
+      list.push(c);
+    }
+    for (const [packed, cells] of groups) {
+      ctx.fillStyle = rgba(unpack(packed), Math.max(item.opacity, 0.6));
+      for (const c of cells) {
+        ctx.fillRect(
+          (c % cols) * cell,
+          Math.floor(c / cols) * cell,
+          cell,
+          cell,
+        );
+      }
+    }
+  };
+
   const drawScatterPixels = (item: ScatterItem, frame: RenderFrame) => {
     const m = mapper(frame);
-    const w = canvas.width;
-    const h = canvas.height;
-    scratch ??= document.createElement("canvas");
+    const w = frame.width;
+    const h = frame.height;
+    scratch ??= scratchCanvas?.() ?? null;
+    if (!scratch) {
+      drawScatterCells(item, frame);
+      return;
+    }
     scratch.width = w;
     scratch.height = h;
     const sctx = scratch.getContext("2d");
@@ -278,15 +347,12 @@ export const createCanvas2dRenderer = (
   };
 
   return {
-    kind: "canvas2d",
-    canvas,
-    resize(width, height) {
-      canvas.width = Math.max(1, width);
-      canvas.height = Math.max(1, height);
-    },
-    render(items, frame) {
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    paint(items, frame, left = 0, top = 0) {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, left, top);
+      ctx.beginPath();
+      ctx.rect(0, 0, frame.width, frame.height);
+      ctx.clip();
       for (const item of items) {
         switch (item.kind) {
           case "line":
@@ -303,9 +369,36 @@ export const createCanvas2dRenderer = (
             break;
         }
       }
+      ctx.restore();
     },
     destroy() {
       scratch = null;
+    },
+  };
+};
+
+export const createCanvas2dRenderer = (
+  canvas: HTMLCanvasElement,
+): ChartRenderer | null => {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  const painter = createCanvas2dPainter(ctx, () =>
+    typeof document === "undefined" ? null : document.createElement("canvas"),
+  );
+  return {
+    kind: "canvas2d",
+    canvas,
+    resize(width, height) {
+      canvas.width = Math.max(1, width);
+      canvas.height = Math.max(1, height);
+    },
+    render(items, frame) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      painter.paint(items, frame);
+    },
+    destroy() {
+      painter.destroy();
       canvas.width = 0;
       canvas.height = 0;
     },

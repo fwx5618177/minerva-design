@@ -1,7 +1,12 @@
 // Options -> chart model: normalized data, colors, bar layout and the full
-// ranges of the axes. Pure (no DOM besides color resolution).
+// ranges of the axes. Pure (colors go through the theme's resolver).
 
-import { resolveColor, toCss, type Rgba } from "./color";
+import {
+  resolveStaticColor,
+  toCss,
+  type ColorResolver,
+  type Rgba,
+} from "./color";
 import {
   collectCategories,
   normalizeData,
@@ -151,8 +156,12 @@ export const buildModel = (
   theme: ChartTheme,
   hidden: ReadonlySet<string>,
   cache: DataCache,
-  element: Element | null,
+  resolver: ColorResolver | null = null,
 ): ChartModel => {
+  const resolve: ColorResolver =
+    resolver ??
+    theme.resolve ??
+    ((value, fallback) => resolveStaticColor(value, {}, fallback));
   const input = options.series;
   const datas = input.map((s) => s.data);
   const xType = options.xAxis?.type ?? detectXType(datas);
@@ -180,11 +189,7 @@ export const buildModel = (
     }
     const type = s.type ?? "line";
     const color = s.color
-      ? resolveColor(
-          s.color,
-          element,
-          theme.palette[index % theme.palette.length],
-        )
+      ? resolve(s.color, theme.palette[index % theme.palette.length])
       : theme.palette[index % theme.palette.length];
     const cols = entry.cols;
     let pointColors: (Rgba | undefined)[] | null = null;
@@ -193,7 +198,7 @@ export const buildModel = (
       pointColors = cols.colors.map((c) => {
         if (c === undefined) return undefined;
         let rgba = resolved.get(c);
-        if (!rgba) resolved.set(c, (rgba = resolveColor(c, element, color)));
+        if (!rgba) resolved.set(c, (rgba = resolve(c, color)));
         return rgba;
       });
     }

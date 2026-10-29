@@ -1,9 +1,8 @@
 // createChart: mounts a chart in a container and keeps it in sync with its
 // options, its size, the theme and the user's interactions.
 
-import { axisTicks, type AxisTicks } from "./axis";
-import { mix, resolveColor, toCss } from "./color";
-import { lowerBound, nearestIndex } from "./data";
+import type { AxisTicks } from "./axis";
+import { lowerBound } from "./data";
 import {
   createBarHighlight,
   createChartDom,
@@ -13,23 +12,28 @@ import {
   swatch,
 } from "./dom";
 import { buildItems, type Origin } from "./items";
-import { computePlot, createScales, type Scales } from "./layout";
-import {
-  buildModel,
-  gridOf,
-  type ChartModel,
-  type DataCache,
-  type SeriesModel,
-} from "./model";
+import { createScales, type Scales } from "./layout";
+import { buildModel, type ChartModel, type DataCache } from "./model";
 import {
   drawBackground,
   drawForeground,
   font,
-  type PointLabel,
   type ResolvedAnnotation,
 } from "./overlay";
 import { createRenderer } from "./renderers/detect";
 import type { ChartRenderer, RenderItem } from "./renderers/types";
+import {
+  collectPointLabels,
+  hitTest,
+  hoverItemOf,
+  hoverMarks,
+  layoutChart,
+  pointOf,
+  resolveAnnotations,
+  sameHover,
+  showsCrosshair,
+  tooltipContent,
+} from "./scene";
 import { readTheme, watchTheme, type ChartTheme } from "./theme";
 import type {
   ChartEventMap,
@@ -50,20 +54,6 @@ import {
   zoomRange,
   type Range,
 } from "./viewport";
-
-const MAX_POINT_LABELS = 300;
-const DEFAULT_PADDING = { top: 12, right: 16, bottom: 4, left: 4 };
-
-interface Candidate {
-  series: SeriesModel;
-  index: number;
-  /** Pixel position of the point */
-  px: number;
-  py: number;
-  dx: number;
-  dist: number;
-  inside: boolean;
-}
 
 interface HoverState {
   event: ChartHoverEvent;
@@ -114,6 +104,15 @@ export const createChart = (
   let destroyed = false;
   let frameId = 0;
   let hover: HoverState | null = null;
+  let lastPlot = "";
+  let pointDrag: {
+    id: number;
+    item: ChartHoverItem;
+    x: number;
+    y: number;
+    moved: boolean;
+  } | null = null;
+  let ghost: HTMLDivElement | null = null;
   let drag: {
     id: number;
     x: number;
@@ -154,6 +153,7 @@ export const createChart = (
       wheel: o.wheel ?? "modifier",
       pan: o.pan ?? true,
       keyboard: o.keyboard ?? true,
+      dragPoints: o.dragPoints ?? false,
     };
   };
 
@@ -173,42 +173,8 @@ export const createChart = (
 
   // ---------------------------------------------------------------- model
 
-  const resolveAnnotations = (): ResolvedAnnotation[] =>
-    (options.annotations ?? []).map((a) => {
-      if (a.type === "rect") {
-        const color = a.color
-          ? resolveColor(a.color, dom.root, theme.primary)
-          : theme.primary;
-        return {
-          type: "rect",
-          x0: a.x0,
-          x1: a.x1,
-          y0: a.y0,
-          y1: a.y1,
-          color,
-          opacity: a.opacity ?? 0.08,
-          label: a.label,
-          labelPosition: a.labelPosition ?? "top-left",
-          labelColor: a.labelColor
-            ? resolveColor(a.labelColor, dom.root, color)
-            : mix(color, theme.text, 0.2),
-        };
-      }
-      return {
-        type: "line",
-        axis: a.axis,
-        value: a.value,
-        color: a.color
-          ? resolveColor(a.color, dom.root, theme.textMuted)
-          : theme.textMuted,
-        width: a.width ?? 1,
-        dash: [...(a.dash ?? [4, 4])],
-        label: a.label,
-      };
-    });
-
   const rebuild = () => {
-    model = buildModel(options, theme, hidden, cache, dom.root);
+    model = buildModel(options, theme, hidden, cache);
     const { base, zoom, minSpan } = model;
     if (!zoomed) {
       view = copyView(base);
@@ -248,7 +214,7 @@ export const createChart = (
       itemsDirty = true;
       if (hover && !hover.keyboard) hover = null;
     }
-    annotations = resolveAnnotations();
+    annotations = resolveAnnotations(options.annotations, theme);
     renderLegend();
     updateAccessibility();
     invalidate();
@@ -328,6 +294,7 @@ export const createChart = (
       options.ariaLabel ?? (names ? `Chart: ${names}` : "Chart"),
     );
     const keyboard = interaction()?.keyboard;
+    dom.stage.style.touchAction = interaction()?.dragPoints ? "none" : "pan-y";
     if (keyboard) dom.stage.tabIndex = 0;
     else dom.stage.removeAttribute("tabindex");
   };
@@ -354,32 +321,6 @@ export const createChart = (
     return reverse ? [-scale, -offset] : [scale, offset];
   };
 
-  const collectPointLabels = (s: Scales): PointLabel[] => {
-    const labels: PointLabel[] = [];
-    for (const series of model.series) {
-      if (series.hidden || series.type !== "scatter" || !series.showLabels)
-        continue;
-      const { x, y, count, labels: texts, size } = series.cols;
-      if (!texts) continue;
-      for (let i = 0; i < count && labels.length < MAX_POINT_LABELS; i++) {
-        const text = texts[i];
-        if (!text) continue;
-        const xi = x[i];
-        const yi = y[i];
-        if (
-          xi < view.x[0] ||
-          xi > view.x[1] ||
-          yi < view.y[0] ||
-          yi > view.y[1]
-        )
-          continue;
-        const d = size && size[i] > 0 ? size[i] : series.pointSize;
-        labels.push({ x: s.xToPx(xi), y: s.yToPx(yi), r: d / 2, text });
-      }
-    }
-    return labels;
-  };
-
   function frame() {
     frameId = 0;
     if (destroyed) return;
@@ -392,51 +333,35 @@ export const createChart = (
     const bg = dom.background.getContext("2d");
     const fg = dom.foreground.getContext("2d");
 
-    const fontSize = theme.fontSize;
-    // same count as the nice range of the model (its ends are then ticks),
-    // fewer on short charts
-    const yCount =
-      model.y.tickCount ??
-      (height >= 220 ? 5 : Math.max(2, Math.round((height - 48) / 52)));
-    yTicks = axisTicks(model.y, view.y, yCount);
-    let yLabelWidth = 0;
-    let categoryWidth = 48;
     if (bg) {
       bg.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg.font = font(theme);
-      if (model.y.visible) {
-        for (const label of yTicks.labels) {
-          yLabelWidth = Math.max(yLabelWidth, bg.measureText(label).width);
-        }
-      }
-      if (model.x.type === "category") {
-        categoryWidth = 0;
-        const step = Math.max(1, Math.floor(model.x.categories.length / 200));
-        for (let i = 0; i < model.x.categories.length; i += step) {
-          categoryWidth = Math.max(
-            categoryWidth,
-            bg.measureText(model.x.categories[i]).width,
-          );
-        }
-      }
     }
-    const padding = { ...DEFAULT_PADDING, ...options.padding };
-    const plot = computePlot({
+    const layout = layoutChart({
+      model,
+      view,
+      theme,
       width,
       height,
-      padding,
-      yLabelWidth: model.y.visible ? Math.ceil(yLabelWidth) : 0,
-      xAxisVisible: model.x.visible,
-      xTitle: !!model.x.title && model.x.visible,
-      yTitle: !!model.y.title && model.y.visible,
-      fontSize,
+      padding: options.padding,
+      measure: bg
+        ? (text) => bg.measureText(text).width
+        : (text) => text.length * theme.fontSize * 0.6,
     });
-    const xCount =
-      model.x.type === "category"
-        ? Math.max(1, Math.floor(plot.width / (categoryWidth + 14)))
-        : (model.x.tickCount ?? Math.max(2, Math.floor(plot.width / 96)));
-    xTicks = axisTicks(model.x, view.x, xCount);
-    scales = createScales(plot, view, model.x.reverse, model.y.reverse);
+    const { plot } = layout;
+    xTicks = layout.xTicks;
+    yTicks = layout.yTicks;
+    scales = layout.scales;
+    const rect = plotRect();
+    if (rect && rect.join() !== lastPlot) {
+      lastPlot = rect.join();
+      emit("layout", {
+        x: rect[0],
+        y: rect[1],
+        width: rect[2],
+        height: rect[3],
+      });
+    }
 
     if (bg) {
       drawBackground(bg, {
@@ -459,7 +384,7 @@ export const createChart = (
         scales,
         theme,
         annotations,
-        pointLabels: collectPointLabels(scales),
+        pointLabels: collectPointLabels(model, view, scales),
       });
     }
 
@@ -494,184 +419,44 @@ export const createChart = (
 
   // ------------------------------------------------------------ hit tests
 
-  const pointOf = (s: SeriesModel, i: number, sc: Scales) => {
-    const xv = s.cols.x[i] + (s.type === "bar" ? s.barOffset : 0);
-    const yv = s.type === "bar" && s.barTop ? s.barTop[i] : s.cols.y[i];
-    return { px: sc.xToPx(xv), py: sc.yToPx(yv) };
+  const hitAt = (px: number, py: number): ChartHoverEvent | null =>
+    scales ? hitTest(model, scales, xTicks, px, py) : null;
+
+  /** Plot area relative to the container: x, y, width, height */
+  const plotRect = (): [number, number, number, number] | null => {
+    const p = scales?.plot;
+    if (!p) return null;
+    return [
+      p.x + dom.stage.offsetLeft,
+      p.y + dom.stage.offsetTop,
+      p.width,
+      p.height,
+    ];
   };
 
-  const candidateOf = (
-    s: SeriesModel,
-    i: number,
-    px: number,
-    py: number,
-    sc: Scales,
-  ): Candidate => {
-    const p = pointOf(s, i, sc);
-    let inside = false;
-    if (s.type === "bar" && s.barBase) {
-      const half = s.barHalfWidth / sc.xPerPx;
-      const base = sc.yToPx(s.barBase[i]);
-      inside =
-        Math.abs(px - p.px) <= half &&
-        py >= Math.min(base, p.py) - 2 &&
-        py <= Math.max(base, p.py) + 2;
-    }
-    return {
-      series: s,
-      index: i,
-      px: p.px,
-      py: p.py,
-      dx: Math.abs(sc.xToPx(s.cols.x[i]) - px),
-      dist: inside ? 0 : Math.hypot(p.px - px, p.py - py),
-      inside,
-    };
-  };
-
-  const nearestScatter = (
-    s: SeriesModel,
-    px: number,
-    py: number,
-    sc: Scales,
-  ) => {
-    const radius = Math.max(s.pointSize / 2 + 6, 10);
-    const xv = sc.pxToX(px);
-    const yv = sc.pxToY(py);
-    const rx = radius * sc.xPerPx;
-    const ry = radius * sc.yPerPx;
-    let best = -1;
-    let bestDist = Infinity;
-    const { x, y, size } = s.cols;
-    gridOf(s).query(xv - rx, xv + rx, yv - ry, yv + ry, (i) => {
-      const d = Math.hypot(sc.xToPx(x[i]) - px, sc.yToPx(y[i]) - py);
-      const reach = Math.max(
-        (size && size[i] > 0 ? size[i] : s.pointSize) / 2 + 4,
-        8,
-      );
-      if (d <= reach && d <= bestDist) {
-        bestDist = d;
-        best = i;
-      }
-    });
-    return best;
-  };
-
-  const nearestX = (s: SeriesModel, xv: number) => {
-    const { x, y, count, sorted } = s.cols;
-    if (sorted) return nearestIndex(x, y, count, xv);
-    let best = -1;
-    let bestD = Infinity;
-    for (let i = 0; i < count; i++) {
-      if (!Number.isFinite(y[i])) continue;
-      const d = Math.abs(x[i] - xv);
-      if (d < bestD) {
-        bestD = d;
-        best = i;
-      }
-    }
-    return best;
-  };
-
-  const toItem = (c: Candidate): ChartHoverItem => {
-    const s = c.series;
-    const pc = s.pointColors?.[c.index];
-    const label = s.cols.labels?.[c.index];
-    return {
-      seriesIndex: s.index,
-      seriesId: s.id,
-      seriesName: s.name,
-      index: c.index,
-      x: s.cols.x[c.index],
-      y: s.cols.y[c.index],
-      color: pc ? toCss(pc) : s.colorCss,
-      ...(label !== undefined ? { label } : {}),
-    };
-  };
-
-  const eventOf = (candidates: Candidate[]): ChartHoverEvent | null => {
-    if (!candidates.length) return null;
-    candidates.sort((a, b) => a.series.index - b.series.index);
-    const hoverItems = candidates.map(toItem);
-    const x = hoverItems[0].x;
-    return {
-      items: hoverItems,
-      x,
-      xLabel: xTicks?.formatValue(x) ?? String(x),
-    };
-  };
-
-  const hitTest = (px: number, py: number): ChartHoverEvent | null => {
-    const sc = scales;
-    if (!sc) return null;
-    const { plot } = sc;
-    const margin = 6;
-    if (
-      px < plot.x - margin ||
-      px > plot.x + plot.width + margin ||
-      py < plot.y - margin ||
-      py > plot.y + plot.height + margin
-    ) {
-      return null;
-    }
-    const xv = sc.pxToX(px);
-    const scatter: Candidate[] = [];
-    const others: Candidate[] = [];
-    for (const s of model.series) {
-      if (s.hidden || s.cols.count === 0) continue;
-      if (s.type === "scatter") {
-        const i = nearestScatter(s, px, py, sc);
-        if (i >= 0) scatter.push(candidateOf(s, i, px, py, sc));
-      } else {
-        const i = nearestX(s, xv);
-        if (i >= 0) others.push(candidateOf(s, i, px, py, sc));
-      }
-    }
-    if (model.tooltipMode === "nearest") {
-      const all = [...scatter, ...others].filter(
-        (c) => c.inside || c.series.type === "scatter" || c.dist <= 32,
-      );
-      if (!all.length) return null;
-      const best = all.reduce((a, b) => (b.dist <= a.dist ? b : a));
-      return eventOf([best]);
-    }
-    if (!others.length) {
-      if (!scatter.length) return null;
-      return eventOf([scatter.reduce((a, b) => (b.dist <= a.dist ? b : a))]);
-    }
-    const bestDx = Math.min(...others.map((c) => c.dx));
-    const bandPx = model.x.type === "category" ? 0.5 / sc.xPerPx : 0;
-    const aligned = others.filter((c) => c.dx <= bestDx + Math.max(1, bandPx));
-    const first = aligned.reduce((a, b) => (b.dx < a.dx ? b : a));
-    const ordered = [first, ...aligned.filter((c) => c !== first), ...scatter];
-    const event = eventOf(ordered);
-    if (event) {
-      event.x = toItem(first).x;
-      event.xLabel = xTicks?.formatValue(event.x) ?? String(event.x);
-    }
-    return event;
+  /** A draggable point under the pointer (`interaction.dragPoints`) */
+  const draggableAt = (px: number, py: number) => {
+    if (!interaction()?.dragPoints) return null;
+    const hit = hitAt(px, py);
+    const item = hit?.items.find(
+      (it) => model.series[it.seriesIndex].type === "scatter",
+    );
+    return item ?? null;
   };
 
   // ---------------------------------------------------------------- hover
 
   const setHover = (next: HoverState | null) => {
-    const changed =
-      (hover === null) !== (next === null) ||
-      (hover &&
-        next &&
-        (hover.event.items.length !== next.event.items.length ||
-          hover.event.items.some(
-            (it, i) =>
-              it.index !== next.event.items[i].index ||
-              it.seriesIndex !== next.event.items[i].seriesIndex,
-          )));
+    const changed = !sameHover(hover?.event ?? null, next?.event ?? null);
     hover = next;
     renderHover();
     if (changed) emit("hover", next ? next.event : null);
   };
 
-  const tooltipContent = (event: ChartHoverEvent): Node | string | null => {
+  const tooltipNode = (event: ChartHoverEvent): Node | string | null => {
     const custom = tooltipOptions()?.render;
     if (custom) return custom(event);
+    const content = tooltipContent(model, event, yTicks);
     const fragment = doc.createDocumentFragment();
     const header = doc.createElement("div");
     styleElement(header, {
@@ -682,51 +467,29 @@ export const createChart = (
       marginBottom: "4px",
       color: "var(--text-color, #1f2937)",
     });
-    const row = (color: string | null, name: string, value: string) => {
+    if (content.titleColor)
+      header.appendChild(swatch(doc, content.titleColor, "dot"));
+    header.appendChild(doc.createTextNode(content.title));
+    fragment.append(header);
+    for (const row of content.rows) {
       const el = doc.createElement("div");
       styleElement(el, { display: "flex", alignItems: "center", gap: "8px" });
-      if (color) el.appendChild(swatch(doc, color, "dot"));
+      if (row.color) el.appendChild(swatch(doc, row.color, "dot"));
       const n = doc.createElement("span");
       styleElement(n, {
         flex: "1 1 auto",
         color: "var(--text-secondary-color, #6b7280)",
       });
-      n.textContent = name;
+      n.textContent = row.name;
       const v = doc.createElement("span");
       styleElement(v, {
         fontWeight: "600",
         fontVariantNumeric: "tabular-nums",
         marginLeft: "12px",
       });
-      v.textContent = value;
+      v.textContent = row.value;
       el.append(n, v);
-      return el;
-    };
-    const yFormat = yTicks?.formatValue ?? String;
-    const scatterOnly = event.items.every(
-      (it) => model.series[it.seriesIndex].type === "scatter",
-    );
-    if (scatterOnly && event.items.length === 1) {
-      const it = event.items[0];
-      header.append(
-        swatch(doc, it.color, "dot"),
-        doc.createTextNode(it.label ?? it.seriesName),
-      );
-      fragment.append(
-        header,
-        row(null, model.x.title ?? "x", event.xLabel),
-        row(null, model.y.title ?? "y", yFormat(it.y)),
-      );
-      if (it.label !== undefined && model.series.length > 1) {
-        fragment.append(row(null, "", it.seriesName));
-      }
-      return fragment;
-    }
-    header.textContent = event.xLabel;
-    fragment.append(header);
-    for (const it of event.items) {
-      const name = it.label ? `${it.seriesName} · ${it.label}` : it.seriesName;
-      fragment.append(row(it.color, name, yFormat(it.y)));
+      fragment.append(el);
     }
     return fragment;
   };
@@ -753,14 +516,7 @@ export const createChart = (
       const { plot } = sc;
       dom.hover.style.width = `${dom.stage.clientWidth}px`;
       dom.hover.style.height = `${dom.stage.clientHeight}px`;
-      const axisMode = model.tooltipMode === "axis";
-      const showCrosshair =
-        options.crosshair ??
-        (axisMode &&
-          hover.event.items.some(
-            (it) => model.series[it.seriesIndex].type !== "scatter",
-          ));
-      if (showCrosshair) {
+      if (showsCrosshair(model, hover.event, options.crosshair)) {
         const first = hover.event.items[0];
         const cx = sc.xToPx(first.x);
         if (cx >= plot.x && cx <= plot.x + plot.width) {
@@ -772,47 +528,26 @@ export const createChart = (
           });
         }
       }
-      for (const it of hover.event.items) {
-        const s = model.series[it.seriesIndex];
-        if (s.type === "bar" && s.barBase && s.barTop) {
-          const cx = sc.xToPx(it.x + s.barOffset);
-          const half = Math.max(s.barHalfWidth / sc.xPerPx, 1);
-          const a = sc.yToPx(s.barBase[it.index]);
-          const b = sc.yToPx(s.barTop[it.index]);
+      for (const mark of hoverMarks(model, sc, hover.event)) {
+        if (mark.kind === "bar") {
           const el = pooled(highlights, highlightCount++, () =>
             createBarHighlight(doc),
           );
           styleElement(el, {
-            left: `${cx - half}px`,
-            top: `${Math.min(a, b)}px`,
-            width: `${half * 2}px`,
-            height: `${Math.max(1, Math.abs(a - b))}px`,
+            left: `${mark.x}px`,
+            top: `${mark.y}px`,
+            width: `${mark.width}px`,
+            height: `${mark.height}px`,
           });
           continue;
         }
-        const px = sc.xToPx(it.x);
-        const py = sc.yToPx(it.y);
-        if (
-          px < plot.x - 1 ||
-          px > plot.x + plot.width + 1 ||
-          py < plot.y - 1 ||
-          py > plot.y + plot.height + 1
-        ) {
-          continue;
-        }
-        const d =
-          s.type === "scatter"
-            ? (s.cols.size && s.cols.size[it.index] > 0
-                ? s.cols.size[it.index]
-                : s.pointSize) + 6
-            : Math.max(10, s.lineWidth * 2 + 6);
         const el = pooled(markers, markerCount++, () => createMarker(doc));
         styleElement(el, {
-          left: `${px}px`,
-          top: `${py}px`,
-          width: `${d}px`,
-          height: `${d}px`,
-          background: it.color,
+          left: `${mark.x}px`,
+          top: `${mark.y}px`,
+          width: `${mark.size}px`,
+          height: `${mark.size}px`,
+          background: mark.color,
         });
       }
     }
@@ -823,15 +558,20 @@ export const createChart = (
 
     const tip = dom.tooltip;
     const content =
-      hover && sc && tooltipOptions() && !drag?.moved
-        ? tooltipContent(hover.event)
+      hover && sc && tooltipOptions() && !drag?.moved && !pointDrag?.moved
+        ? tooltipNode(hover.event)
         : null;
     if (!hover || content === null || content === "") {
       tip.style.display = "none";
       return;
     }
-    if (typeof content === "string") tip.textContent = content;
-    else tip.replaceChildren(content);
+    if (typeof content === "string") {
+      tip.textContent = content;
+      tip.style.whiteSpace = "pre";
+    } else {
+      tip.replaceChildren(content);
+      tip.style.whiteSpace = "nowrap";
+    }
     tip.style.display = "block";
     const stageW = dom.stage.clientWidth;
     const stageH = dom.stage.clientHeight;
@@ -880,8 +620,59 @@ export const createChart = (
     );
   };
 
+  const dataAt = (x: number, y: number) => {
+    const sc = scales;
+    if (!sc) return null;
+    const { plot } = sc;
+    const cx = Math.max(plot.x, Math.min(plot.x + plot.width, x));
+    const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
+    return { x: sc.pxToX(cx), y: sc.pxToY(cy) };
+  };
+
+  const moveGhost = (x: number, y: number, color: string | null) => {
+    if (color === null) {
+      if (ghost) ghost.style.display = "none";
+      return;
+    }
+    if (!ghost) {
+      ghost = createMarker(doc);
+      dom.hover.appendChild(ghost);
+    }
+    const s = model.series.find((series) => series.type === "scatter");
+    const size = (s?.pointSize ?? 8) + 8;
+    dom.hover.style.width = `${dom.stage.clientWidth}px`;
+    dom.hover.style.height = `${dom.stage.clientHeight}px`;
+    styleElement(ghost, {
+      display: "block",
+      left: `${x}px`,
+      top: `${y}px`,
+      width: `${size}px`,
+      height: `${size}px`,
+      background: color,
+    });
+  };
+
   const onPointerMove = (event: PointerEvent) => {
     const { x, y } = localPoint(event);
+    if (pointDrag && pointDrag.id === event.pointerId) {
+      if (
+        !pointDrag.moved &&
+        Math.hypot(x - pointDrag.x, y - pointDrag.y) > 3
+      ) {
+        pointDrag.moved = true;
+        dom.stage.setPointerCapture?.(event.pointerId);
+        dom.stage.style.cursor = "grabbing";
+      }
+      if (pointDrag.moved) {
+        const at = dataAt(x, y);
+        if (at) {
+          moveGhost(x, y, pointDrag.item.color);
+          renderHover();
+          emit("drag", { item: pointDrag.item, x: at.x, y: at.y });
+        }
+      }
+      return;
+    }
     if (drag && drag.id === event.pointerId) {
       const dx = x - drag.x;
       const dy = y - drag.y;
@@ -909,22 +700,54 @@ export const createChart = (
         return;
       }
     }
-    const event2 = hitTest(x, y);
+    const event2 = hitAt(x, y);
     setHover(
       event2
         ? { event: event2, anchorX: x, anchorY: y, keyboard: false }
         : null,
     );
+    if (!drag && interaction()?.dragPoints) {
+      dom.stage.style.cursor = draggableAt(x, y)
+        ? "grab"
+        : zoomed && interaction()?.pan
+          ? "grab"
+          : "";
+    }
   };
 
   const onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return;
     const { x, y } = localPoint(event);
     if (!inPlot(x, y)) return;
+    const draggable = draggableAt(x, y);
+    if (draggable) {
+      pointDrag = { id: event.pointerId, item: draggable, x, y, moved: false };
+      return;
+    }
     drag = { id: event.pointerId, x, y, view: copyView(view), moved: false };
   };
 
   const onPointerUp = (event: PointerEvent) => {
+    if (pointDrag && pointDrag.id === event.pointerId) {
+      const { item, moved } = pointDrag;
+      pointDrag = null;
+      if (dom.stage.hasPointerCapture?.(event.pointerId)) {
+        dom.stage.releasePointerCapture(event.pointerId);
+      }
+      moveGhost(0, 0, null);
+      const { x, y } = localPoint(event);
+      dom.stage.style.cursor = draggableAt(x, y) ? "grab" : "";
+      if (moved) {
+        const at = dataAt(x, y);
+        if (at && event.type !== "pointercancel")
+          emit("drop", { item, x: at.x, y: at.y });
+        renderHover();
+      } else {
+        const hit = hitAt(x, y);
+        if (hit) emit("click", hit);
+      }
+      return;
+    }
     if (!drag || drag.id !== event.pointerId) return;
     const moved = drag.moved;
     drag = null;
@@ -934,15 +757,19 @@ export const createChart = (
     dom.stage.style.cursor = zoomed && interaction()?.pan ? "grab" : "";
     if (!moved) {
       const { x, y } = localPoint(event);
-      const hit = hitTest(x, y);
+      const hit = hitAt(x, y);
       if (hit) emit("click", hit);
+      else if (event.type !== "pointercancel" && inPlot(x, y)) {
+        const at = dataAt(x, y);
+        if (at) emit("plotClick", at);
+      }
     } else {
       renderHover();
     }
   };
 
   const onPointerLeave = () => {
-    if (!drag?.moved) setHover(null);
+    if (!drag?.moved && !pointDrag?.moved) setHover(null);
   };
 
   const onWheel = (event: WheelEvent) => {
@@ -1023,10 +850,10 @@ export const createChart = (
       );
     }
     const p = pointOf(series, index, current2);
-    const leadItem = toItem(candidateOf(series, index, p.px, p.py, current2));
+    const leadItem = hoverItemOf(series, index);
     const others =
       model.tooltipMode === "axis" && series.type !== "scatter"
-        ? (hitTest(p.px, p.py)?.items ?? []).filter(
+        ? (hitAt(p.px, p.py)?.items ?? []).filter(
             (it) => it.seriesIndex !== series.index,
           )
         : [];
@@ -1193,6 +1020,26 @@ export const createChart = (
       setViewInternal({ x: next.x ?? view.x, y: next.y ?? view.y }, false);
     },
     getRenderer: () => renderer?.kind ?? null,
+    getPlotRect() {
+      const rect = plotRect();
+      return rect
+        ? { x: rect[0], y: rect[1], width: rect[2], height: rect[3] }
+        : null;
+    },
+    toPixel(x, y) {
+      if (!scales) return null;
+      return {
+        x: scales.xToPx(x) + dom.stage.offsetLeft,
+        y: scales.yToPx(y) + dom.stage.offsetTop,
+      };
+    },
+    fromPixel(x, y) {
+      if (!scales) return null;
+      return {
+        x: scales.pxToX(x - dom.stage.offsetLeft),
+        y: scales.pxToY(y - dom.stage.offsetTop),
+      };
+    },
     ready,
     refreshTheme,
     on(type, listener) {

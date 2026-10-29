@@ -15,9 +15,7 @@ export type {
   ChartProps,
   LineChartProps,
   QuadrantChartProps,
-  QuadrantPoint,
-  QuadrantRegion,
-  QuadrantRegions,
+  QuadrantDropTarget,
   ScatterChartProps,
 } from "./react/types";
 export * from "./core";

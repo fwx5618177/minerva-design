@@ -1,31 +1,21 @@
-import { useMemo } from "react";
-import type {
-  ChartAnnotation,
-  ChartSeries,
-  ChartSeriesType,
-} from "../engine/types";
+import { useMemo, type CSSProperties } from "react";
+import {
+  barSeries,
+  lineSeries,
+  quadrantChartOptions,
+  quadrantOf,
+  scatterSeries,
+  type QuadrantCorner,
+} from "../engine/presets";
+import type { ChartRect } from "../engine/types";
 import { ChartBase, engineOptions } from "./Chart";
 import type {
   BarChartProps,
   ChartCommonProps,
   LineChartProps,
   QuadrantChartProps,
-  QuadrantRegion,
   ScatterChartProps,
 } from "./types";
-
-const withType = (
-  series: readonly ChartSeries[],
-  type: ChartSeriesType,
-  stack?: string,
-): ChartSeries[] =>
-  series.map((s) => ({
-    ...s,
-    type: s.type ?? type,
-    ...(stack !== undefined && (s.type ?? type) === "bar"
-      ? { stack: s.stack ?? stack }
-      : {}),
-  }));
 
 const frameProps = (props: ChartCommonProps) => ({
   height: props.height,
@@ -35,17 +25,16 @@ const frameProps = (props: ChartCommonProps) => ({
   handleRef: props.ref,
   onHover: props.onHover,
   onPointClick: props.onPointClick,
+  onPlotClick: props.onPlotClick,
   onZoom: props.onZoom,
   onRendererChange: props.onRendererChange,
+  renderTooltip: props.renderTooltip,
 });
 
 /** Line (or area) chart; handles millions of points on the GPU */
 export function LineChart(props: LineChartProps) {
   const { series: input, area = false } = props;
-  const series = useMemo(
-    () => withType(input, area ? "area" : "line"),
-    [input, area],
-  );
+  const series = useMemo(() => lineSeries(input, area), [input, area]);
   return (
     <ChartBase
       options={engineOptions({ ...props, series })}
@@ -57,10 +46,7 @@ export function LineChart(props: LineChartProps) {
 /** Bar chart: grouped side by side, or stacked */
 export function BarChart(props: BarChartProps) {
   const { series: input, stacked = false } = props;
-  const series = useMemo(
-    () => withType(input, "bar", stacked ? "stack" : undefined),
-    [input, stacked],
-  );
+  const series = useMemo(() => barSeries(input, stacked), [input, stacked]);
   return (
     <ChartBase
       options={engineOptions({ ...props, series })}
@@ -72,7 +58,7 @@ export function BarChart(props: BarChartProps) {
 /** Scatter chart: zooms on both axes, hit testing through a spatial index */
 export function ScatterChart(props: ScatterChartProps) {
   const { series: input } = props;
-  const series = useMemo(() => withType(input, "scatter"), [input]);
+  const series = useMemo(() => scatterSeries(input), [input]);
   return (
     <ChartBase
       options={engineOptions({ ...props, series })}
@@ -81,164 +67,150 @@ export function ScatterChart(props: ScatterChartProps) {
   );
 }
 
-const DEFAULT_QUADRANT_COLORS = {
-  topLeft: "var(--danger-color, #ef4444)",
-  topRight: "var(--primary-color, #4f46e5)",
-  bottomLeft: "var(--warning-color, #f59e0b)",
-  bottomRight: "var(--text-secondary-color, #64748b)",
-} as const;
+const CORNERS: QuadrantCorner[] = [
+  "topLeft",
+  "topRight",
+  "bottomLeft",
+  "bottomRight",
+];
 
-type Corner = keyof typeof DEFAULT_QUADRANT_COLORS;
+const cornerStyle = (
+  corner: QuadrantCorner,
+  plot: ChartRect,
+  split: { x: number; y: number },
+): CSSProperties => {
+  const left = corner.endsWith("Left");
+  const top = corner.startsWith("top");
+  return {
+    position: "absolute",
+    left: left ? 0 : split.x - plot.x,
+    top: top ? 0 : split.y - plot.y,
+    width: left ? split.x - plot.x : plot.x + plot.width - split.x,
+    height: top ? split.y - plot.y : plot.y + plot.height - split.y,
+    pointerEvents: "none",
+  };
+};
 
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
  * quadrants with titles, dividers, and labelled dots placed without
- * overlapping labels.
+ * overlapping labels. Dots can be dragged to another quadrant.
  */
 export function QuadrantChart(props: QuadrantChartProps) {
   const {
     points,
-    xDomain = [0, 10],
-    yDomain = [0, 10],
+    xDomain,
+    yDomain,
     xSplit,
     ySplit,
     quadrants,
     xLabel,
     yLabel,
-    reverseX = false,
-    showLabels = true,
-    pointSize = 12,
+    axisLabels,
+    showTicks,
+    reverseX,
+    showLabels,
+    pointSize,
     name,
+    draggable,
     onPointClick,
+    onPointDrop,
+    onQuadrantClick,
+    renderTooltip,
+    quadrantContent,
   } = props;
-  const [x0, x1] = xDomain;
-  const [y0, y1] = yDomain;
-  const xs = xSplit ?? (x0 + x1) / 2;
-  const ys = ySplit ?? (y0 + y1) / 2;
+  const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
 
-  const regions = useMemo(() => {
-    const region = (
-      corner: Corner,
-    ): Required<Pick<QuadrantRegion, "color">> & QuadrantRegion => ({
-      ...quadrants?.[corner],
-      color: quadrants?.[corner]?.color ?? DEFAULT_QUADRANT_COLORS[corner],
-    });
-    return {
-      topLeft: region("topLeft"),
-      topRight: region("topRight"),
-      bottomLeft: region("bottomLeft"),
-      bottomRight: region("bottomRight"),
-    };
-  }, [quadrants]);
-
-  const series = useMemo((): ChartSeries[] => {
-    const cornerOf = (x: number, y: number): Corner => {
-      const right = reverseX ? x < xs : x >= xs;
-      const top = y >= ys;
-      return top
-        ? right
-          ? "topRight"
-          : "topLeft"
-        : right
-          ? "bottomRight"
-          : "bottomLeft";
-    };
-    return [
-      {
-        type: "scatter",
-        name: name ?? "",
-        pointSize,
-        showLabels,
-        opacity: 0.9,
-        data: points.map((p) => ({
-          x: p.x,
-          y: p.y,
-          label: p.label,
-          size: p.size,
-          color: p.color ?? regions[cornerOf(p.x, p.y)].color,
-        })),
-      },
-    ];
-  }, [points, regions, reverseX, xs, ys, name, pointSize, showLabels]);
-
-  const annotations = useMemo((): ChartAnnotation[] => {
-    // visual left / right -> data ranges
-    const left: [number, number] = reverseX ? [xs, x1] : [x0, xs];
-    const right: [number, number] = reverseX ? [x0, xs] : [xs, x1];
-    const rect = (
-      corner: Corner,
-      [xa, xb]: [number, number],
-      [ya, yb]: [number, number],
-      position: "top-left" | "top-right" | "bottom-left" | "bottom-right",
-    ): ChartAnnotation => ({
-      type: "rect",
-      x0: xa,
-      x1: xb,
-      y0: ya,
-      y1: yb,
-      color: regions[corner].color,
-      opacity: 0.07,
-      label: regions[corner].label,
-      labelPosition: position,
-    });
-    return [
-      rect("topLeft", left, [ys, y1], "top-left"),
-      rect("topRight", right, [ys, y1], "top-right"),
-      rect("bottomLeft", left, [y0, ys], "bottom-left"),
-      rect("bottomRight", right, [y0, ys], "bottom-right"),
-      {
-        type: "line",
-        axis: "x",
-        value: xs,
-        dash: [],
-        color: "var(--border-strong-color, var(--border-color, #cbd5e1))",
-      },
-      {
-        type: "line",
-        axis: "y",
-        value: ys,
-        dash: [],
-        color: "var(--border-strong-color, var(--border-color, #cbd5e1))",
-      },
-      ...(props.annotations ?? []),
-    ];
-  }, [regions, reverseX, x0, x1, y0, y1, xs, ys, props.annotations]);
-
-  const options = engineOptions({
-    ...props,
-    series,
-    annotations,
-    xAxis: {
-      min: x0,
-      max: x1,
-      title: xLabel,
-      reverse: reverseX,
-      nice: false,
-      grid: false,
-      tickCount: 4,
+  const options = quadrantChartOptions(
+    {
+      points,
+      xDomain,
+      yDomain,
+      xSplit,
+      ySplit,
+      quadrants,
+      xLabel,
+      yLabel,
+      axisLabels,
+      showTicks,
+      reverseX,
+      showLabels,
+      pointSize,
+      name,
+      draggable: draggable ?? !!onPointDrop,
     },
-    yAxis: {
-      min: y0,
-      max: y1,
-      title: yLabel,
-      nice: false,
-      grid: false,
-      tickCount: 4,
-    },
-    legend: props.legend ?? false,
-    interaction: props.interaction ?? { zoom: false },
-  });
+    engineOptions({ ...props, series: [] }),
+  );
+
+  const overlay = quadrantContent
+    ? (plot: ChartRect) => {
+        const [x0, x1] = xDomain ?? [0, 10];
+        const [y0, y1] = yDomain ?? [0, 10];
+        const xs = xSplit ?? (x0 + x1) / 2;
+        const ys = ySplit ?? (y0 + y1) / 2;
+        const fx = (xs - x0) / (x1 - x0 || 1);
+        const fy = (ys - y0) / (y1 - y0 || 1);
+        const split = {
+          x: plot.x + plot.width * (reverseX ? 1 - fx : fx),
+          y: plot.y + plot.height * (1 - fy),
+        };
+        return CORNERS.map((corner) =>
+          quadrantContent[corner] ? (
+            <div
+              key={corner}
+              className={`minerva-chart-quadrant minerva-chart-quadrant-${corner}`}
+              style={cornerStyle(corner, plot, split)}
+            >
+              {quadrantContent[corner]}
+            </div>
+          ) : null,
+        );
+      }
+    : undefined;
 
   return (
     <ChartBase
       options={options}
-      {...frameProps({ ...props, onPointClick: undefined })}
+      {...frameProps({
+        ...props,
+        onPointClick: undefined,
+        renderTooltip: undefined,
+      })}
+      overlay={overlay}
       onPointClick={
         onPointClick
           ? (event) => {
               const index = event.items[0]?.index;
               if (index !== undefined && points[index])
                 onPointClick(points[index], index);
+            }
+          : undefined
+      }
+      onPlotClick={
+        onQuadrantClick
+          ? (at) => onQuadrantClick(quadrantOf(geometry, at.x, at.y), at)
+          : undefined
+      }
+      onDrop={
+        onPointDrop
+          ? (event) => {
+              const index = event.item.index;
+              if (!points[index]) return;
+              onPointDrop(points[index], index, {
+                x: event.x,
+                y: event.y,
+                quadrant: quadrantOf(geometry, event.x, event.y),
+              });
+            }
+          : undefined
+      }
+      renderTooltip={
+        renderTooltip
+          ? (event) => {
+              const index = event.items[0]?.index;
+              return index !== undefined && points[index]
+                ? renderTooltip(points[index], index)
+                : null;
             }
           : undefined
       }
