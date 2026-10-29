@@ -1,6 +1,6 @@
 {
   "title": "チャートエンジン",
-  "description": "React チャートを支えるフレームワーク非依存のエンジン。createChart は任意の要素にチャートをマウントし、createCanvasChart は任意の 2D キャンバス（ミニプログラム、OffscreenCanvas）に描画し、createChartController はキャンバスのないホスト向けにシーンを計算します。",
+  "description": "React チャートを支えるフレームワーク非依存のエンジン。createChart は任意の要素にチャートをマウントし、createCanvasChart は任意の 2D キャンバス（ミニプログラム、OffscreenCanvas）に描画し、createChartController はキャンバスのないホスト向けにシーンを計算します。createShapeChart と createCanvasShapeChart は、円、ドーナツ、レーダー、ゲージ、ファネル、ツリーマップのチャートを同じように描画します。",
   "intro": {
     "choose": {
       "title": "どのエントリーポイントを使うか",
@@ -26,6 +26,10 @@
     "canvas": {
       "title": "DOM なしのキャンバス",
       "description": "通常の <canvas> で createCanvasChart を使います。devicePixelRatio でサイズを決め、ResizeObserver でリサイズし、pointerDown / Move / Up / Leave でポインターイベントを転送し、CSS 変数からテーマを一度読み取り、アンマウント時に destroy() を呼びます。"
+    },
+    "shapes": {
+      "title": "形状チャート",
+      "description": "effect 内で createShapeChart を使用します。ボタンは setOptions で円、中央に合計を表示するドーナツ、ファネルを切り替え（マークは前の値からアニメーションします）、on(\"click\") はクリックされた扇形や段階を通知し、アンマウント時に destroy() を呼びます。"
     }
   },
   "api": {
@@ -41,7 +45,8 @@
       "interaction": "ズーム、パン、キーボード。false で静的なチャートに",
       "padding": "プロットエリアの周囲の余白",
       "palette": "color を持たない系列の色",
-      "ariaLabel": "チャートのアクセシブルな名前"
+      "ariaLabel": "チャートのアクセシブルな名前",
+      "stackMode": "normal または percent。percent は各 x で積み上げ全体を 100% に換算します（軸はパーセント、ツールチップは実際の値を表示）"
     },
     "ChartInstance": {
       "setOptions": "オプションを置き換えます。変更のないデータ配列は再処理されません",
@@ -182,13 +187,16 @@
       "color": "CSS カラー",
       "opacity": "塗りの不透明度（0〜1）",
       "baseline": "ベースラインの Y ピクセル",
-      "segments": "途切れのない点の連なり。x, y ピクセルを交互に並べたもの"
+      "segments": "途切れのない点の連なり。x, y ピクセルを交互に並べたもの",
+      "bottoms": "積み上げ面グラフ：segments の各点の下にある下端の Y ピクセル"
     },
     "ChartBarPrimitive": {
       "kind": "図形の種類",
       "seriesIndex": "オプション内のシリーズのインデックス",
       "color": "CSS カラー",
-      "rects": "各棒の x, y, width, height を交互に並べたもの（ピクセル）"
+      "rects": "各棒の x, y, width, height を交互に並べたもの（ピクセル）",
+      "colors": "各矩形の CSS カラー（ローソク足、ヒートマップのセル、個別に色付けした棒）。ない場合は color",
+      "radius": "角丸の半径（ピクセル）"
     },
     "ChartDotPrimitive": {
       "kind": "図形の種類",
@@ -196,6 +204,106 @@
       "opacity": "塗りの不透明度（0〜1）",
       "dots": "各点の x, y, 直径を交互に並べたもの（ピクセル）",
       "colors": "各点の CSS カラー"
+    },
+    "ShapeChartInstance": {
+      "setOptions": "オプションを置き換えます（前の値からアニメーション）",
+      "resize": "コンテナーを再計測します（ResizeObserver で自動）",
+      "refreshTheme": "CSS 変数を再読み込みします（<html> / <body> のテーマ変更は自動で検出）",
+      "toggle": "インデックスで扇形・段階・レーダー系列を表示 / 非表示にします",
+      "on": "hover または click を購読します。購読解除関数を返します",
+      "destroy": "DOM とリスナーを削除します",
+      "getHidden": "非表示のスライス／段階／系列のインデックス"
+    },
+    "ShapeChartEventMap": {
+      "hover": "ホバー中（またはキーボードでフォーカス中）のマーク：index、name、value、percent、color（ツリーマップは path も）。ポインターが離れると null",
+      "click": "クリック、タップ、または Enter で操作されたマーク",
+      "toggle": "凡例項目（または `toggle()`）でスライス・段階・系列が表示／非表示になった"
+    },
+    "PieChartOptions": {
+      "type": "\"pie\"（ドーナツは innerRadius を指定した円グラフ）",
+      "data": "扇形：name、value（負の値は 0 扱い）、任意の color",
+      "innerRadius": "外半径に対する内半径の比率：0 で円、0.6 でドーナツ",
+      "startAngle": "最初の扇形の角度（12 時方向から時計回りの度数）",
+      "padAngle": "扇形同士の間隔（ピクセル。円は 1、ドーナツは 2）",
+      "cornerRadius": "扇形の角丸の半径（ピクセル。円は 0、ドーナツは 4）",
+      "rose": "ナイチンゲールのローズ図：角度ではなく半径で値を表します",
+      "labels": "扇形のラベル：outside（引き出し線付き。既定では 12 個まで）、inside、none",
+      "labelContent": "ラベルの内容：name、value、percent の組み合わせ",
+      "centerValue": "ドーナツの穴に表示する大きな文字（合計など）",
+      "centerLabel": "centerValue の下に表示する小さな文字"
+    },
+    "RadarChartOptions": {
+      "type": "\"radar\"",
+      "indicators": "軸（12 時方向から時計回り）：name、任意の min と max",
+      "series": "多角形：指標ごとに 1 つの値、任意の name、color、opacity",
+      "shape": "グリッドの形：polygon または circle",
+      "levels": "グリッドの輪の数（既定 4）",
+      "dots": "頂点に点を描画します（既定 true）"
+    },
+    "GaugeChartOptions": {
+      "type": "\"gauge\"",
+      "value": "円弧が示す値（描画時は min – max に収められます）",
+      "min": "円弧の始点の値（既定 0）",
+      "max": "円弧の終点の値（既定 100）",
+      "label": "値の下に表示する説明",
+      "sweep": "円弧全体の角度（度。既定 240）",
+      "thickness": "半径に対する円弧の太さの比率（既定 0.16）",
+      "bands": "トラックの色分け範囲（{ to, color }）。値の円弧は該当する範囲の色になります",
+      "color": "bands がないときの値の円弧の色（既定はパレットの最初の色）",
+      "needle": "値の円弧に加えて針を描画します",
+      "ticks": "両端と範囲の境界に目盛りラベルを表示します（既定 true）"
+    },
+    "FunnelChartOptions": {
+      "type": "\"funnel\"",
+      "data": "段階：name、value、任意の color",
+      "sort": "段階の順序：descending、ascending、none（データ順）",
+      "gap": "段階同士の縦の間隔（ピクセル。既定 4）",
+      "conversion": "前の段階からのコンバージョン率を表示します（既定 true）",
+      "shape": "段階の形：trapezoid（次の段階へ細くなる台形）または bar（中央揃えの棒）"
+    },
+    "TreemapChartOptions": {
+      "type": "\"treemap\"",
+      "data": "ノード：葉は value を持ち、親は子の合計になります",
+      "gap": "セル同士の間隔（ピクセル。既定 2）",
+      "headers": "子の上に親の名前を描画します（既定 true）"
+    },
+    "ShapeChartCommonOptions": {
+      "palette": "color のないマークの色（--chart-series-1..8、なければテーマカラー）",
+      "legend": "凡例（position、toggle）。円、ファネル、複数系列のレーダーでは既定で表示",
+      "tooltip": "ツールチップ。false で無効、render で内容を置き換えます",
+      "format": "ラベルとツールチップの値の書式（既定はコンパクトな数値）",
+      "animation": "登場時と更新時のアニメーション（視差効果を減らす設定では省略）",
+      "padding": "描画の周囲の余白（ピクセル）",
+      "ariaLabel": "チャートのアクセシブルな名前",
+      "percentFormat": "割合（ラベル・ツールチップ）の書式。既定は小数第 1 位まで",
+      "hidden": "非表示のスライス／段階／系列のインデックス（制御モード：凡例クリックは `toggle` イベントを発火するだけ）"
+    },
+    "CanvasShapeChartConfig": {
+      "canvas": "描画先のキャンバス：HTMLCanvasElement、OffscreenCanvas、ミニプログラムの canvas ノード",
+      "width": "キャンバスの幅（CSS ピクセル。rpx はホストが変換）",
+      "height": "キャンバスの高さ（CSS ピクセル）",
+      "pixelRatio": "デバイスピクセル比（ミニプログラムでは wx.getWindowInfo().pixelRatio、Web では devicePixelRatio）。既定 1",
+      "options": "形状チャートのオプション（pie、radar、gauge、funnel、treemap）",
+      "theme": "色とフォント：Minerva の CSS 変数の値"
+    },
+    "CanvasShapeChartInstance": {
+      "setOptions": "オプションを置き換えます（前の値からアニメーション）",
+      "setTheme": "テーマ入力を置き換えます",
+      "resize": "キャンバスの新しい CSS サイズ（とピクセル比）",
+      "render": "すぐに描画します（通常はフレームが自動でスケジュールされます）",
+      "touchStart": "touchstart イベントのタッチを転送します",
+      "touchMove": "touchmove イベントのタッチを転送します",
+      "touchEnd": "touchend イベントの changedTouches を転送します",
+      "touchCancel": "touchcancel イベントを転送します",
+      "pointerDown": "マウス / ペンを x, y で押下（H5、デスクトップ版ミニプログラム）",
+      "pointerMove": "マウス / ペンを x, y へ移動",
+      "pointerUp": "マウス / ペンを x, y で離す",
+      "pointerLeave": "ポインターがキャンバスから離れた",
+      "toggle": "扇形・段階・レーダー系列・ツリーマップの最上位ノードを表示 / 非表示にします",
+      "clearHover": "ホバーとツールチップを消します",
+      "on": "hover または click を購読します。購読解除関数を返します",
+      "destroy": "アニメーションとリスナーを停止します",
+      "getHidden": "非表示のスライス／段階／系列のインデックス"
     }
   }
 }

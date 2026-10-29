@@ -388,6 +388,43 @@
     "kind": "alias",
     "type": "\"expanded\" | \"compact\" | \"floating\""
   },
+  "AreaChartProps": {
+    "source": "charts/src/react/types.ts",
+    "description": "Props of AreaChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as areas unless they set a `type`"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"smooth\"",
+        "description": "Shape of the edges: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stacks the areas on top of each other"
+      },
+      {
+        "name": "percent",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      }
+    ]
+  },
   "AutoCompleteOption": {
     "source": "react/src/components/AutoComplete/types.ts",
     "description": "An option of the AutoComplete dropdown",
@@ -886,6 +923,20 @@
         "required": false,
         "default": "false",
         "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+      },
+      {
+        "name": "percent",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Writes the value above every bar"
       }
     ]
   },
@@ -1198,6 +1249,22 @@
       }
     ]
   },
+  "CandlestickChartProps": {
+    "source": "charts/src/react/types.ts",
+    "description": "Props of CandlestickChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as candles unless they set a `type` (e.g. a moving average `line`); data points carry `open`, `high`, `low` and `y` (the close)"
+      }
+    ]
+  },
   "CanvasChartConfig": {
     "source": "charts/src/engine/canvas.ts",
     "kind": "interface",
@@ -1369,6 +1436,153 @@
         "name": "destroy",
         "type": "() => void",
         "required": true
+      }
+    ]
+  },
+  "CanvasShapeChartConfig": {
+    "source": "charts/src/engine/shapes/canvas.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "canvas",
+        "type": "ChartCanvas",
+        "required": true,
+        "description": "Canvas to draw on (`HTMLCanvasElement`, `OffscreenCanvas` or a mini-program canvas node)"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "Width of the canvas in CSS pixels (rpx converted by the host)"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true,
+        "description": "Height of the canvas in CSS pixels"
+      },
+      {
+        "name": "pixelRatio",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Device pixel ratio (`wx.getWindowInfo().pixelRatio` in mini-programs)"
+      },
+      {
+        "name": "options",
+        "type": "ShapeChartOptions",
+        "required": true,
+        "description": "Chart options"
+      },
+      {
+        "name": "theme",
+        "type": "ChartThemeInput",
+        "required": false,
+        "description": "Colors and fonts: values of the Minerva CSS variables"
+      }
+    ]
+  },
+  "CanvasShapeChartInstance": {
+    "source": "charts/src/engine/shapes/canvas.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "setOptions",
+        "type": "(options: ShapeChartOptions) => void",
+        "required": true,
+        "description": "Replaces the options (animates from the previous values)"
+      },
+      {
+        "name": "setTheme",
+        "type": "(theme: ChartThemeInput | undefined) => void",
+        "required": true,
+        "description": "Replaces the theme input"
+      },
+      {
+        "name": "resize",
+        "type": "(width: number, height: number, pixelRatio?: number) => void",
+        "required": true,
+        "description": "New CSS size (and pixel ratio) of the canvas"
+      },
+      {
+        "name": "render",
+        "type": "() => void",
+        "required": true,
+        "description": "Draws now (frames are otherwise scheduled automatically)"
+      },
+      {
+        "name": "touchStart",
+        "type": "(touches: readonly ChartTouch[]) => void",
+        "required": true,
+        "description": "Touch handlers: pass the `touches` / `changedTouches` of the event"
+      },
+      {
+        "name": "touchMove",
+        "type": "(touches: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "touchEnd",
+        "type": "(changedTouches: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "touchCancel",
+        "type": "(changedTouches?: readonly ChartTouch[]) => void",
+        "required": true
+      },
+      {
+        "name": "pointerDown",
+        "type": "(x: number, y: number) => void",
+        "required": true,
+        "description": "Mouse / pen handlers (H5, desktop mini-programs)"
+      },
+      {
+        "name": "pointerMove",
+        "type": "(x: number, y: number) => void",
+        "required": true
+      },
+      {
+        "name": "pointerUp",
+        "type": "(x: number, y: number) => void",
+        "required": true
+      },
+      {
+        "name": "pointerLeave",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "toggle",
+        "type": "(index: number) => void",
+        "required": true,
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node and emits `toggle` (with the `hidden` option: only emits `toggle`)"
+      },
+      {
+        "name": "getHidden",
+        "type": "() => number[]",
+        "required": true,
+        "description": "Indexes of the hidden entries, ascending"
+      },
+      {
+        "name": "clearHover",
+        "type": "() => void",
+        "required": true,
+        "description": "Removes the hover (and the tooltip)"
+      },
+      {
+        "name": "on",
+        "type": "(type: K, listener: (event: ShapeChartEventMap[K]) => void) => () => void",
+        "required": true,
+        "description": "Subscribes to an event; returns the unsubscribe function"
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true,
+        "description": "Stops the animations and the listeners"
       }
     ]
   },
@@ -1979,6 +2193,12 @@
         "name": "segments",
         "type": "number[][]",
         "required": true
+      },
+      {
+        "name": "bottoms",
+        "type": "number[][]",
+        "required": false,
+        "description": "Stacked areas: y pixel of the bottom edge under every point of `segments`"
       }
     ]
   },
@@ -1993,7 +2213,7 @@
         "type": "ChartAxisType",
         "required": false,
         "default": "\"linear\"",
-        "description": "Scale of the axis: `linear` numbers, `time` timestamps / dates, `category` names"
+        "description": "Scale of the axis: `linear` numbers, `time` timestamps / dates, `category` names (x axis, and y axis of heatmaps)"
       },
       {
         "name": "min",
@@ -2097,6 +2317,18 @@
         "type": "number[]",
         "required": true,
         "description": "Interleaved x, y, width, height"
+      },
+      {
+        "name": "colors",
+        "type": "string[]",
+        "required": false,
+        "description": "CSS color of every rect (candlesticks, heatmap cells, colored bars); `color` otherwise"
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "description": "Corner radius in pixels"
       }
     ]
   },
@@ -2148,15 +2380,39 @@
       },
       {
         "name": "y",
-        "type": "ArrayLike<number> | readonly (number | null)[]",
+        "type": "ArrayLike<number> | readonly (number | string | null)[]",
         "required": true,
-        "description": "Y values (`NaN` / `null` leave a gap)"
+        "description": "Y values (`NaN` / `null` leave a gap); candlesticks: the closes; heatmaps: the rows"
       },
       {
         "name": "size",
         "type": "ArrayLike<number>",
         "required": false,
         "description": "Per-point diameters in CSS pixels (scatter)"
+      },
+      {
+        "name": "open",
+        "type": "ArrayLike<number>",
+        "required": false,
+        "description": "Candlestick: opening values"
+      },
+      {
+        "name": "high",
+        "type": "ArrayLike<number>",
+        "required": false,
+        "description": "Candlestick: highest values"
+      },
+      {
+        "name": "low",
+        "type": "ArrayLike<number>",
+        "required": false,
+        "description": "Candlestick: lowest values"
+      },
+      {
+        "name": "value",
+        "type": "ArrayLike<number> | readonly (number | null)[]",
+        "required": false,
+        "description": "Heatmap: values of the cells"
       }
     ]
   },
@@ -2453,6 +2709,12 @@
     "kind": "alias",
     "type": "Omit<ChartEventMap, \"renderer\">"
   },
+  "ChartCurve": {
+    "source": "charts/src/engine/types.ts",
+    "description": "Shape of a line (and of the edge of an area) between its points",
+    "kind": "alias",
+    "type": "\"linear\" | \"smooth\" | \"step\""
+  },
   "ChartDotPrimitive": {
     "source": "charts/src/engine/controller.ts",
     "kind": "interface",
@@ -2675,6 +2937,28 @@
         "name": "label",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "open",
+        "type": "number",
+        "required": false,
+        "description": "Candlestick: open / high / low (`y` is the close)"
+      },
+      {
+        "name": "high",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "low",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": "Heatmap: value of the cell"
       }
     ]
   },
@@ -3090,6 +3374,13 @@
         "type": "string",
         "required": false,
         "description": "Accessible name of the chart"
+      },
+      {
+        "name": "stackMode",
+        "type": "\"normal\" | \"percent\"",
+        "required": false,
+        "default": "\"normal\"",
+        "description": "`percent` scales every stack to 100% at each x (the axis shows percents, the tooltip the actual values)"
       }
     ]
   },
@@ -3154,9 +3445,9 @@
       },
       {
         "name": "y",
-        "type": "number | null",
+        "type": "number | string | null",
         "required": true,
-        "description": "Y value; `null` leaves a gap"
+        "description": "Y value; `null` leaves a gap. Candlesticks: the close. Heatmaps: the row (a number, or a category name of a `category` y axis)"
       },
       {
         "name": "size",
@@ -3168,13 +3459,37 @@
         "name": "color",
         "type": "string",
         "required": false,
-        "description": "Color of the dot (scatter); any CSS color"
+        "description": "Color of the dot or bar (scatter, bar); any CSS color"
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
         "description": "Text drawn next to the dot (scatter with `showLabels`) and shown in the tooltip"
+      },
+      {
+        "name": "open",
+        "type": "number",
+        "required": false,
+        "description": "Candlestick: opening value"
+      },
+      {
+        "name": "high",
+        "type": "number",
+        "required": false,
+        "description": "Candlestick: highest value"
+      },
+      {
+        "name": "low",
+        "type": "number",
+        "required": false,
+        "description": "Candlestick: lowest value"
+      },
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": false,
+        "description": "Heatmap: value of the cell, mapped to `colorScale`"
       }
     ]
   },
@@ -3238,7 +3553,7 @@
   },
   "ChartProps": {
     "source": "charts/src/react/types.ts",
-    "description": "Props of Chart: any mix of line, area, bar and scatter series",
+    "description": "Props of Chart: any mix of line, area, bar, scatter, candlestick and heatmap series",
     "kind": "interface",
     "extends": [
       "ChartCommonProps"
@@ -3249,6 +3564,13 @@
         "type": "readonly ChartSeries[]",
         "required": true,
         "description": "Data series; each sets its own `type`"
+      },
+      {
+        "name": "stackMode",
+        "type": "\"normal\" | \"percent\"",
+        "required": false,
+        "default": "\"normal\"",
+        "description": "`percent` scales every stack to 100% at each x"
       }
     ]
   },
@@ -3481,7 +3803,7 @@
         "name": "stack",
         "type": "string",
         "required": false,
-        "description": "Bars with the same stack id are stacked"
+        "description": "Series with the same stack id are stacked (bars, areas and lines; see `stackMode` for 100% stacks)"
       },
       {
         "name": "hidden",
@@ -3493,7 +3815,51 @@
         "name": "showLabels",
         "type": "boolean",
         "required": false,
-        "description": "Draws the `label` of each point next to it (scatter)"
+        "description": "Draws the `label` of each point next to it (scatter) or the value above each bar (bar)"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"linear\"",
+        "description": "Shape of the line between the points: straight, smooth (monotone, never overshoots the data) or steps (line / area)"
+      },
+      {
+        "name": "upColor",
+        "type": "string",
+        "required": false,
+        "description": "Candlestick: color of the rising candles (close >= open); `--success-color` by default"
+      },
+      {
+        "name": "downColor",
+        "type": "string",
+        "required": false,
+        "description": "Candlestick: color of the falling candles; `--danger-color` by default"
+      },
+      {
+        "name": "colorScale",
+        "type": "readonly string[]",
+        "required": false,
+        "default": "a ramp from the background to the series color",
+        "description": "Heatmap: colors from the lowest to the highest value (two or more)"
+      },
+      {
+        "name": "valueRange",
+        "type": "readonly [number, number]",
+        "required": false,
+        "description": "Heatmap: values mapped to the ends of `colorScale`; the data range by default"
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "description": "Bar / heatmap: corner radius in CSS pixels (bars: 3, heatmap cells: 2)"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the values of this series in the tooltip (the y axis format by default)"
       }
     ]
   },
@@ -3507,7 +3873,7 @@
     "source": "charts/src/engine/types.ts",
     "description": "How a series is drawn",
     "kind": "alias",
-    "type": "\"line\" | \"area\" | \"bar\" | \"scatter\""
+    "type": "\"line\" | \"area\" | \"bar\" | \"scatter\" | \"candlestick\" | \"heatmap\""
   },
   "ChartTextAnnotation": {
     "source": "charts/src/engine/types.ts",
@@ -6992,6 +7358,23 @@
     "kind": "alias",
     "type": "\"solid\" | \"dashed\" | \"dotted\""
   },
+  "DonutChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of DonutChart: a PieChart with a hole",
+    "kind": "interface",
+    "extends": [
+      "PieChartProps"
+    ],
+    "props": [
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0.62",
+        "description": "Inner radius as a fraction of the outer radius"
+      }
+    ]
+  },
   "DrawerContentProps": {
     "source": "react/src/components/Drawer/types.ts",
     "description": "Props of `DrawerContent`: the portalled overlay + sliding panel.",
@@ -7593,6 +7976,272 @@
       }
     ]
   },
+  "FunnelChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Funnel chart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonOptions"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"funnel\"",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true
+      },
+      {
+        "name": "sort",
+        "type": "\"descending\" | \"ascending\" | \"none\"",
+        "required": false,
+        "default": "\"none\" (data order)",
+        "description": "Order of the stages"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Vertical gap between the stages, in pixels"
+      },
+      {
+        "name": "conversion",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the conversion rate from the previous stage"
+      },
+      {
+        "name": "shape",
+        "type": "\"trapezoid\" | \"bar\"",
+        "required": false,
+        "default": "\"trapezoid\"",
+        "description": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+      }
+    ]
+  },
+  "FunnelChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of FunnelChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true,
+        "description": "Stages: a name, a value and an optional color"
+      },
+      {
+        "name": "sort",
+        "type": "\"descending\" | \"ascending\" | \"none\"",
+        "required": false,
+        "default": "\"none\" (data order)",
+        "description": "Order of the stages"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Vertical gap between the stages, in pixels"
+      },
+      {
+        "name": "conversion",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the conversion rate from the previous stage"
+      },
+      {
+        "name": "shape",
+        "type": "\"trapezoid\" | \"bar\"",
+        "required": false,
+        "default": "\"trapezoid\"",
+        "description": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+      }
+    ]
+  },
+  "GaugeBand": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "A colored range of a gauge",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "to",
+        "type": "number",
+        "required": true,
+        "description": "Upper bound of the band (the previous band's bound, or `min`, is the lower one)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "GaugeChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Gauge (speedometer) chart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonOptions"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"gauge\"",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Caption under the value"
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "default": "240",
+        "description": "Total angle of the arc, degrees"
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "default": "0.16",
+        "description": "Thickness of the arc as a fraction of the radius"
+      },
+      {
+        "name": "bands",
+        "type": "readonly GaugeBand[]",
+        "required": false,
+        "description": "Colored ranges of the track; the value arc takes the color of its band"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color of the value arc (when there are no bands); the first palette color by default"
+      },
+      {
+        "name": "needle",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Draws a needle in addition to the value arc"
+      },
+      {
+        "name": "ticks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Tick labels at the ends (and at the band bounds)"
+      }
+    ]
+  },
+  "GaugeChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of GaugeChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Value at the start of the arc"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Value at the end of the arc"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Caption under the value"
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "default": "240",
+        "description": "Total angle of the arc, degrees"
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "default": "0.16",
+        "description": "Thickness of the arc as a fraction of the radius"
+      },
+      {
+        "name": "bands",
+        "type": "readonly GaugeBand[]",
+        "required": false,
+        "description": "Colored ranges of the track; the value arc takes the color of its band"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "the first palette color",
+        "description": "Color of the value arc (when there are no bands)"
+      },
+      {
+        "name": "needle",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Draws a needle in addition to the value arc"
+      },
+      {
+        "name": "ticks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Tick labels at the ends (and at the band bounds)"
+      }
+    ]
+  },
   "GridItemProps": {
     "source": "react/src/components/ResponsiveGrid/types.ts",
     "kind": "interface",
@@ -7619,6 +8268,98 @@
         "required": false,
         "default": "false",
         "description": "Merges the item props, classes and ref into its single child instead of rendering a wrapper div"
+      }
+    ]
+  },
+  "HeatmapCell": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A cell of a HeatmapChart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "string | number",
+        "required": true,
+        "description": "Column: a category name (or a number on a numeric axis)"
+      },
+      {
+        "name": "y",
+        "type": "string | number",
+        "required": true,
+        "description": "Row: a category name (or a number on a numeric axis)"
+      },
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": true,
+        "description": "Value mapped to the color scale; `null` leaves the cell empty"
+      }
+    ]
+  },
+  "HeatmapChartProps": {
+    "source": "charts/src/react/types.ts",
+    "description": "Props of HeatmapChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<ChartCommonProps, \"crosshair\">",
+      "HeatmapConfig"
+    ],
+    "props": []
+  },
+  "HeatmapConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a heatmap (the props of HeatmapChart)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly HeatmapCell[]",
+        "required": true,
+        "description": "Cells"
+      },
+      {
+        "name": "xCategories",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Column names in order (collected from the data when omitted)"
+      },
+      {
+        "name": "yCategories",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Row names from bottom to top (collected from the data when omitted)"
+      },
+      {
+        "name": "colorScale",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default"
+      },
+      {
+        "name": "valueRange",
+        "type": "readonly [number, number]",
+        "required": false,
+        "description": "Values at the ends of the color scale; the data range by default"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the value in the tooltip"
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "description": "Corner radius of the cells, in pixels"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the values in the tooltip"
       }
     ]
   },
@@ -8136,6 +8877,47 @@
         "required": false,
         "default": "false",
         "description": "Fills the area under the lines"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"linear\"",
+        "description": "Shape of the lines: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stacks the series on top of each other"
+      },
+      {
+        "name": "percent",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Scales the stacks to 100% (with `stacked`)"
+      }
+    ]
+  },
+  "LineSeriesOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of the line-like components",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "description": "Stacks the series on top of each other"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "description": "Shape of the lines"
       }
     ]
   },
@@ -10191,6 +10973,163 @@
       }
     ]
   },
+  "PieChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Pie / donut chart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonOptions"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"pie\"",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true
+      },
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle of the first slice, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "padAngle",
+        "type": "number",
+        "required": false,
+        "default": "1 (pie), 2 (donut)",
+        "description": "Gap between the slices, in pixels"
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0 (pie), 4 (donut)",
+        "description": "Corner radius of the slices, in pixels"
+      },
+      {
+        "name": "rose",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Nightingale rose: the radius (instead of the angle) shows the value"
+      },
+      {
+        "name": "labels",
+        "type": "\"outside\" | \"inside\" | \"none\"",
+        "required": false,
+        "default": "\"outside\" (up to 12 slices), \"none\" otherwise",
+        "description": "Slice labels: `outside` with leader lines, `inside` the slices, or none"
+      },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"name\" | \"value\" | \"percent\")[]",
+        "required": false,
+        "description": "What a label shows: name, value, percent (combinable)"
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "description": "Big text in the hole of a donut (e.g. the total)"
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "description": "Small text under `centerValue`"
+      }
+    ]
+  },
+  "PieChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of PieChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true,
+        "description": "Slices: a name, a value (negative values count as 0) and an optional color"
+      },
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle of the first slice, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "padAngle",
+        "type": "number",
+        "required": false,
+        "default": "1 (pie), 2 (donut)",
+        "description": "Gap between the slices, in pixels"
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0 (pie), 4 (donut)",
+        "description": "Corner radius of the slices, in pixels"
+      },
+      {
+        "name": "rose",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Nightingale rose: the radius (instead of the angle) shows the value"
+      },
+      {
+        "name": "labels",
+        "type": "\"outside\" | \"inside\" | \"none\"",
+        "required": false,
+        "default": "\"outside\" (up to 12 slices), \"none\" otherwise",
+        "description": "Slice labels: `outside` with leader lines, `inside` the slices, or none"
+      },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"name\" | \"value\" | \"percent\")[]",
+        "required": false,
+        "default": "[\"name\", \"percent\"]",
+        "description": "What a label shows: name, value, percent (combinable)"
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "description": "Big text in the hole of a donut (e.g. the total)"
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "description": "Small text under `centerValue`"
+      }
+    ]
+  },
   "PopoverAlign": {
     "source": "react/src/components/Popover/types.ts",
     "description": "Alignment of the panel along the trigger.",
@@ -10794,6 +11733,152 @@
         "name": "bottomRight",
         "type": "QuadrantRegion",
         "required": false
+      }
+    ]
+  },
+  "RadarChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Radar (spider) chart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonOptions"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"radar\"",
+        "required": true
+      },
+      {
+        "name": "indicators",
+        "type": "readonly RadarIndicator[]",
+        "required": true
+      },
+      {
+        "name": "series",
+        "type": "readonly RadarSeries[]",
+        "required": true
+      },
+      {
+        "name": "shape",
+        "type": "\"polygon\" | \"circle\"",
+        "required": false,
+        "default": "\"polygon\"",
+        "description": "Grid shape"
+      },
+      {
+        "name": "levels",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Number of grid rings"
+      },
+      {
+        "name": "dots",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Dots on the vertices"
+      }
+    ]
+  },
+  "RadarChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of RadarChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "indicators",
+        "type": "readonly RadarIndicator[]",
+        "required": true,
+        "description": "Axes of the chart, clockwise from 12 o'clock"
+      },
+      {
+        "name": "series",
+        "type": "readonly RadarSeries[]",
+        "required": true,
+        "description": "Polygons: one value per indicator"
+      },
+      {
+        "name": "shape",
+        "type": "\"polygon\" | \"circle\"",
+        "required": false,
+        "default": "\"polygon\"",
+        "description": "Grid shape"
+      },
+      {
+        "name": "levels",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Number of grid rings"
+      },
+      {
+        "name": "dots",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Dots on the vertices"
+      }
+    ]
+  },
+  "RadarIndicator": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "An axis of a radar chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "Value at the rim; the largest value of the series when omitted"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Value at the center"
+      }
+    ]
+  },
+  "RadarSeries": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "A polygon of a radar chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "values",
+        "type": "readonly number[]",
+        "required": true,
+        "description": "One value per indicator"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "opacity",
+        "type": "number",
+        "required": false,
+        "default": "0.18",
+        "description": "Fill opacity, 0-1"
       }
     ]
   },
@@ -11808,6 +12893,431 @@
     "kind": "alias",
     "type": "(typeof SHADOW_SCALES)[number]"
   },
+  "ShapeChartCommonOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Options shared by every shape chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; shown by default for pie, funnel and multi-series radar charts"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean | ShapeTooltipOptions",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the values (labels, tooltip); compact numbers (1.2k, 3.4M) by default"
+      },
+      {
+        "name": "percentFormat",
+        "type": "(share: number) => string",
+        "required": false,
+        "default": "one decimal, e.g. \"40.0%\"",
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Indexes of the hidden slices / stages / radar series / top-level treemap nodes. When set, the chart is controlled: this list wins over the legend state, and legend clicks (or `toggle()`) only emit the `toggle` event, whose `hiddenIndexes` should be passed back here."
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Entry / update animation (skipped when the user prefers reduced motion)"
+      },
+      {
+        "name": "padding",
+        "type": "ChartPadding",
+        "required": false,
+        "description": "Space around the drawing, in CSS pixels"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name of the chart"
+      }
+    ]
+  },
+  "ShapeChartCommonProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props shared by PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart and TreemapChart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "default": "320 (GaugeChart: 240)",
+        "description": "Height of the chart (the legend included); numbers are pixels"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "default": "\"100%\"",
+        "description": "Width of the chart; numbers are pixels"
+      },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "default": "shown for pie, donut, funnel and multi-series radar charts",
+        "description": "Legend; clicking an item hides / shows its slice, stage or series"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean | ShapeTooltipOptions",
+        "required": false,
+        "default": "true",
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "default": "compact numbers (1.2k, 3.4M)",
+        "description": "Formats the values of the labels and the tooltip"
+      },
+      {
+        "name": "percentFormat",
+        "type": "(share: number) => string",
+        "required": false,
+        "default": "one decimal, e.g. \"40.0%\"",
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+      },
+      {
+        "name": "onToggle",
+        "type": "(event: ShapeToggleEvent) => void",
+        "required": false,
+        "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+      },
+      {
+        "name": "padding",
+        "type": "ChartPadding",
+        "required": false,
+        "default": "8 on every side",
+        "description": "Space around the drawing, in pixels"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "the chart type, e.g. \"Donut chart\"",
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "onHover",
+        "type": "(event: ShapeHoverEvent | null) => void",
+        "required": false,
+        "description": "Called when the hovered (or keyboard-focused) mark changes"
+      },
+      {
+        "name": "onClick",
+        "type": "(event: ShapeHoverEvent) => void",
+        "required": false,
+        "description": "Called when a mark is clicked, tapped or activated with Enter"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(event: ShapeHoverEvent) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip (replaces the default content)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name of the root element"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<ShapeChartHandle>",
+        "required": false,
+        "description": "Imperative handle"
+      }
+    ]
+  },
+  "ShapeChartEventMap": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Events of a shape chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "hover",
+        "type": "ShapeHoverEvent | null",
+        "required": true
+      },
+      {
+        "name": "click",
+        "type": "ShapeHoverEvent",
+        "required": true
+      },
+      {
+        "name": "toggle",
+        "type": "ShapeToggleEvent",
+        "required": true,
+        "description": "Legend click or `toggle()` call. Uncontrolled charts emit it after hiding / showing the entry; with the `hidden` option nothing changes until the new `hiddenIndexes` are passed back."
+      }
+    ]
+  },
+  "ShapeChartHandle": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Imperative handle of the shape chart components (`ref`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "getInstance",
+        "type": "() => ShapeChartInstance | null",
+        "required": true,
+        "description": "The underlying engine instance (minerva-design/charts/core)"
+      }
+    ]
+  },
+  "ShapeChartInstance": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Shape chart created by `createShapeChart`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "setOptions",
+        "type": "(options: ShapeChartOptions) => void",
+        "required": true,
+        "description": "Replaces the options (animates from the previous values)"
+      },
+      {
+        "name": "resize",
+        "type": "() => void",
+        "required": true,
+        "description": "Measures the container again (a ResizeObserver does it automatically)"
+      },
+      {
+        "name": "refreshTheme",
+        "type": "() => void",
+        "required": true,
+        "description": "Reads the CSS variables again (theme changes on `<html>` / `<body>` are detected automatically)"
+      },
+      {
+        "name": "toggle",
+        "type": "(index: number) => void",
+        "required": true,
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index and emits `toggle` (with the `hidden` option: only emits `toggle`)"
+      },
+      {
+        "name": "getHidden",
+        "type": "() => number[]",
+        "required": true,
+        "description": "Indexes of the hidden entries, ascending"
+      },
+      {
+        "name": "on",
+        "type": "(type: K, listener: (event: ShapeChartEventMap[K]) => void) => () => void",
+        "required": true,
+        "description": "Subscribes to an event; returns the unsubscribe function"
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true,
+        "description": "Removes the DOM"
+      }
+    ]
+  },
+  "ShapeChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Options of a shape chart, by `type`",
+    "kind": "alias",
+    "type": "PieChartOptions | RadarChartOptions | GaugeChartOptions | FunnelChartOptions | TreemapChartOptions"
+  },
+  "ShapeChartType": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Kind of shape chart",
+    "kind": "alias",
+    "type": "\"pie\" | \"radar\" | \"gauge\" | \"funnel\" | \"treemap\""
+  },
+  "ShapeDatum": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "A named value (pie slice, funnel stage)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name shown in the legend, the labels and the tooltip"
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "description": "Value (negative values count as 0)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color (any CSS color, `var(--x)` included); the palette when omitted"
+      }
+    ]
+  },
+  "ShapeHoverEvent": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "What the pointer is over",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true,
+        "description": "Index of the slice / stage / series / leaf (treemap: in the flattened leaves)"
+      },
+      {
+        "name": "indicator",
+        "type": "number",
+        "required": false,
+        "description": "Radar: index of the indicator closest to the pointer"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "percent",
+        "type": "number",
+        "required": true,
+        "description": "Share of the total, 0-1 (pie: of the visible total, funnel: of the first stage, treemap: of the root, gauge: of the range)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": true,
+        "description": "Resolved CSS color of the mark"
+      },
+      {
+        "name": "path",
+        "type": "string[]",
+        "required": false,
+        "description": "Treemap: names from the root to the leaf"
+      }
+    ]
+  },
+  "ShapeLegendOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Legend of a shape chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "position",
+        "type": "\"top\" | \"bottom\"",
+        "required": false,
+        "default": "\"bottom\"",
+        "description": "Legend position"
+      },
+      {
+        "name": "toggle",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Clicking an item hides / shows its slice, stage or series"
+      }
+    ]
+  },
+  "ShapeToggleEvent": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "A legend item was clicked (or `toggle()` was called)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true,
+        "description": "Index of the slice / stage / radar series / top-level treemap node"
+      },
+      {
+        "name": "hidden",
+        "type": "boolean",
+        "required": true,
+        "description": "Whether that entry is (or, in a controlled chart, would be) hidden"
+      },
+      {
+        "name": "hiddenIndexes",
+        "type": "number[]",
+        "required": true,
+        "description": "Every hidden index after the toggle, ascending"
+      }
+    ]
+  },
+  "ShapeTooltipOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Tooltip of a shape chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "render",
+        "type": "(event: ShapeHoverEvent) => string | Node | null",
+        "required": false,
+        "description": "Renders the tooltip content (a string is set as text)"
+      }
+    ]
+  },
   "SkeletonAnimation": {
     "source": "react/src/components/Skeleton/types.ts",
     "kind": "alias",
@@ -12009,6 +13519,76 @@
     "source": "react/src/components/Skeleton/types.ts",
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\" | \"card\""
+  },
+  "SparklineConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a sparkline (the props of Sparkline)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "data",
+        "type": "ChartSeries[\"data\"]",
+        "required": true,
+        "description": "Values (or `[x, y]` pairs, typed arrays, ...)"
+      },
+      {
+        "name": "type",
+        "type": "\"line\" | \"area\" | \"bar\"",
+        "required": false,
+        "default": "\"line\"",
+        "description": "How the values are drawn"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color (any CSS color); the first palette color by default"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"smooth\"",
+        "description": "Shape of the line"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name shown in the tooltip"
+      },
+      {
+        "name": "reference",
+        "type": "number",
+        "required": false,
+        "description": "Draws a reference line at this value (e.g. a target or the average)"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the value in the tooltip"
+      }
+    ]
+  },
+  "SparklineProps": {
+    "source": "charts/src/react/types.ts",
+    "description": "Props of Sparkline",
+    "kind": "interface",
+    "extends": [
+      "Pick<ChartCommonProps, | \"width\" | \"renderer\" | \"tooltip\" | \"palette\" | \"ariaLabel\" | \"onHover\" | \"renderTooltip\" | \"className\" | \"style\" | \"ref\">",
+      "SparklineConfig"
+    ],
+    "props": [
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "default": "48",
+        "description": "Height of the sparkline; numbers are pixels"
+      }
+    ]
   },
   "SplitLayoutCollapseBelow": {
     "source": "react/src/components/SplitLayout/types.ts",
@@ -14572,6 +16152,98 @@
     "description": "Visual style of a Tooltip. `solid` is a filled surface (the inverted, contrasting surface for the neutral color; the semantic color with inverse text otherwise), `subtle` a tinted surface with a border, `glass` a frosted elevated surface that follows the theme.",
     "kind": "alias",
     "type": "\"solid\" | \"subtle\" | \"glass\""
+  },
+  "TreemapChartOptions": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "Treemap chart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonOptions"
+    ],
+    "props": [
+      {
+        "name": "type",
+        "type": "\"treemap\"",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[]",
+        "required": true
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "headers",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the names of the parents above their children"
+      }
+    ]
+  },
+  "TreemapChartProps": {
+    "source": "charts/src/react/shapes.tsx",
+    "description": "Props of TreemapChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[]",
+        "required": true,
+        "description": "Nodes: leaves carry a value, parents sum their children"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "headers",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the names of the parents above their children"
+      }
+    ]
+  },
+  "TreemapNode": {
+    "source": "charts/src/engine/shapes/types.ts",
+    "description": "A node of a treemap: leaves carry a value, parents sum their children",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "children",
+        "type": "readonly TreemapNode[]",
+        "required": false
+      }
+    ]
   },
   "UploadItem": {
     "source": "react/src/components/Upload/types.ts",

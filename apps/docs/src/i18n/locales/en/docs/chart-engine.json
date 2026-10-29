@@ -1,6 +1,6 @@
 {
   "title": "Chart engine",
-  "description": "The framework-free engine behind the React charts: createChart mounts a chart in any element, createCanvasChart draws on any 2D canvas (mini-programs, OffscreenCanvas) and createChartController computes the scene for hosts without a canvas.",
+  "description": "The framework-free engine behind the React charts: createChart mounts a chart in any element, createCanvasChart draws on any 2D canvas (mini-programs, OffscreenCanvas) and createChartController computes the scene for hosts without a canvas. createShapeChart and createCanvasShapeChart do the same for pie, donut, radar, gauge, funnel and treemap charts.",
   "intro": {
     "choose": {
       "title": "Which entry point?",
@@ -26,6 +26,10 @@
     "canvas": {
       "title": "Canvas without DOM",
       "description": "createCanvasChart on a plain <canvas>: sized with devicePixelRatio, resized by a ResizeObserver, pointer events forwarded with pointerDown / Move / Up / Leave, the theme read once from the CSS variables, and destroy() on unmount."
+    },
+    "shapes": {
+      "title": "Shape charts",
+      "description": "createShapeChart in an effect: the buttons call setOptions to switch between a pie, a donut with a center total and a funnel (the marks animate from their previous values), on(\"click\") reports the clicked slice or stage, and destroy() runs on unmount."
     }
   },
   "api": {
@@ -41,7 +45,8 @@
       "interaction": "Zoom, pan and keyboard; false makes the chart static",
       "padding": "Space around the plot area",
       "palette": "Colors of the series without color",
-      "ariaLabel": "Accessible name of the chart"
+      "ariaLabel": "Accessible name of the chart",
+      "stackMode": "normal or percent: percent scales every stack to 100% at each x (the axis shows percents, the tooltip the actual values)"
     },
     "ChartInstance": {
       "setOptions": "Replaces the options; unchanged data arrays are not processed again",
@@ -182,13 +187,16 @@
       "color": "CSS color",
       "opacity": "Fill opacity, 0-1",
       "baseline": "Y pixel of the baseline",
-      "segments": "Runs of points without gaps, as interleaved x, y pixels"
+      "segments": "Runs of points without gaps, as interleaved x, y pixels",
+      "bottoms": "Stacked areas: y pixel of the bottom edge under every point of segments"
     },
     "ChartBarPrimitive": {
       "kind": "Kind of shape",
       "seriesIndex": "Index of the series in the options",
       "color": "CSS color",
-      "rects": "Interleaved x, y, width, height of every bar, in pixels"
+      "rects": "Interleaved x, y, width, height of every bar, in pixels",
+      "colors": "CSS color of every rect (candlesticks, heatmap cells, colored bars); color otherwise",
+      "radius": "Corner radius in pixels"
     },
     "ChartDotPrimitive": {
       "kind": "Kind of shape",
@@ -196,6 +204,106 @@
       "opacity": "Fill opacity, 0-1",
       "dots": "Interleaved x, y, diameter of every dot, in pixels",
       "colors": "CSS color of every dot"
+    },
+    "ShapeChartInstance": {
+      "setOptions": "Replaces the options (animates from the previous values)",
+      "resize": "Measures the container again (automatic with a ResizeObserver)",
+      "refreshTheme": "Reads the CSS variables again (theme changes on <html> / <body> are detected automatically)",
+      "toggle": "Hides / shows a slice, stage or radar series by index",
+      "on": "Subscribes to hover or click; returns the unsubscribe function",
+      "destroy": "Removes the DOM and the listeners",
+      "getHidden": "Indexes of the hidden slices / stages / series"
+    },
+    "ShapeChartEventMap": {
+      "hover": "The hovered (or keyboard-focused) mark: index, name, value, percent, color (treemap: path); null when the pointer leaves",
+      "click": "The mark clicked, tapped or activated with Enter",
+      "toggle": "A legend item (or `toggle()`) hid or showed a slice, stage or series"
+    },
+    "PieChartOptions": {
+      "type": "\"pie\" (a donut is a pie with innerRadius)",
+      "data": "Slices: name, value (negative values count as 0) and optional color",
+      "innerRadius": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut",
+      "startAngle": "Angle of the first slice, in degrees clockwise from 12 o’clock",
+      "padAngle": "Gap between the slices in pixels (pie 1, donut 2)",
+      "cornerRadius": "Corner radius of the slices in pixels (pie 0, donut 4)",
+      "rose": "Nightingale rose: the radius shows the value instead of the angle",
+      "labels": "Slice labels: outside with leader lines (default up to 12 slices), inside or none",
+      "labelContent": "What a label shows: name, value and / or percent",
+      "centerValue": "Big text in the hole of a donut (e.g. the total)",
+      "centerLabel": "Small text under centerValue"
+    },
+    "RadarChartOptions": {
+      "type": "\"radar\"",
+      "indicators": "Axes, clockwise from 12 o’clock: name, optional min and max",
+      "series": "Polygons: one value per indicator, optional name, color and opacity",
+      "shape": "Grid shape: polygon or circle",
+      "levels": "Number of grid rings (4 by default)",
+      "dots": "Dots on the vertices (true by default)"
+    },
+    "GaugeChartOptions": {
+      "type": "\"gauge\"",
+      "value": "Value shown by the arc (clamped to min – max for the drawing)",
+      "min": "Value at the start of the arc (0 by default)",
+      "max": "Value at the end of the arc (100 by default)",
+      "label": "Caption under the value",
+      "sweep": "Total angle of the arc in degrees (240 by default)",
+      "thickness": "Thickness of the arc as a fraction of the radius (0.16 by default)",
+      "bands": "Colored ranges of the track ({ to, color }); the value arc takes the color of its band",
+      "color": "Color of the value arc when there are no bands (the first palette color by default)",
+      "needle": "Draws a needle in addition to the value arc",
+      "ticks": "Tick labels at the ends and at the band bounds (true by default)"
+    },
+    "FunnelChartOptions": {
+      "type": "\"funnel\"",
+      "data": "Stages: name, value and optional color",
+      "sort": "Order of the stages: descending, ascending or none (data order)",
+      "gap": "Vertical gap between the stages in pixels (4 by default)",
+      "conversion": "Shows the conversion rate from the previous stage (true by default)",
+      "shape": "Shape of the stages: trapezoid (narrows to the next stage) or bar (centered bars)"
+    },
+    "TreemapChartOptions": {
+      "type": "\"treemap\"",
+      "data": "Nodes: leaves carry a value, parents sum their children",
+      "gap": "Gap between the cells in pixels (2 by default)",
+      "headers": "Draws the names of the parents above their children (true by default)"
+    },
+    "ShapeChartCommonOptions": {
+      "palette": "Colors of the marks without color (--chart-series-1..8, then the theme colors)",
+      "legend": "Legend (position, toggle); shown by default for pie, funnel and multi-series radar charts",
+      "tooltip": "Tooltip; false disables it, render replaces its content",
+      "format": "Formats the values of the labels and the tooltip (compact numbers by default)",
+      "animation": "Entry and update animations (skipped when the user prefers reduced motion)",
+      "padding": "Space around the drawing, in pixels",
+      "ariaLabel": "Accessible name of the chart",
+      "percentFormat": "Formats the shares (labels, tooltip); one decimal by default",
+      "hidden": "Indexes of the hidden slices / stages / series (controlled: legend clicks only emit `toggle`)"
+    },
+    "CanvasShapeChartConfig": {
+      "canvas": "Canvas to draw on: HTMLCanvasElement, OffscreenCanvas or a mini-program canvas node",
+      "width": "Width of the canvas in CSS pixels (rpx converted by the host)",
+      "height": "Height of the canvas in CSS pixels",
+      "pixelRatio": "Device pixel ratio (wx.getWindowInfo().pixelRatio in mini-programs, devicePixelRatio on the web); 1 by default",
+      "options": "Shape chart options (pie, radar, gauge, funnel or treemap)",
+      "theme": "Colors and fonts: values of the Minerva CSS variables"
+    },
+    "CanvasShapeChartInstance": {
+      "setOptions": "Replaces the options (animates from the previous values)",
+      "setTheme": "Replaces the theme input",
+      "resize": "New CSS size (and pixel ratio) of the canvas",
+      "render": "Draws now (frames are otherwise scheduled automatically)",
+      "touchStart": "Forwards the touches of a touchstart event",
+      "touchMove": "Forwards the touches of a touchmove event",
+      "touchEnd": "Forwards the changed touches of a touchend event",
+      "touchCancel": "Forwards a touchcancel event",
+      "pointerDown": "Mouse / pen pressed at x, y (H5, desktop mini-programs)",
+      "pointerMove": "Mouse / pen moved to x, y",
+      "pointerUp": "Mouse / pen released at x, y",
+      "pointerLeave": "The pointer left the canvas",
+      "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node",
+      "clearHover": "Removes the hover and the tooltip",
+      "on": "Subscribes to hover or click; returns the unsubscribe function",
+      "destroy": "Stops the animations and the listeners",
+      "getHidden": "Indexes of the hidden slices / stages / series"
     }
   }
 }

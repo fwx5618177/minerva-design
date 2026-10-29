@@ -1,6 +1,6 @@
 {
   "title": "Graphiques pour mini-programmes",
-  "description": "Chart, LineChart, BarChart, ScatterChart et QuadrantChart pour Taro, uni-app et les mini-programmes WeChat natifs, dessinés sur un canvas type=\"2d\" avec les mêmes options que les graphiques web.",
+  "description": "Chart, LineChart, BarChart, ScatterChart et QuadrantChart pour Taro, uni-app et les mini-programmes WeChat natifs, dessinés sur un canvas type=\"2d\" avec les mêmes options que les graphiques web, séries de chandeliers et cartes de chaleur comprises ; graphiques de formes via createCanvasShapeChart.",
   "intro": {
     "title": "Fonctionnement",
     "text": "Les graphiques pour mini-programmes dessinent tout le graphique (axes, données, légende, infobulle, annotations) sur un seul <canvas type=\"2d\"> avec le moteur de rendu canvas du moteur de graphiques Minerva. Ils acceptent les options et préréglages des graphiques web de minerva-design/charts et fonctionnent sur WeChat, Alipay, ByteDance et les autres mini-programmes ainsi qu’en H5. Seule la partie canvas 2D du moteur est embarquée : aucun code WebGPU ni WebGL.",
@@ -25,7 +25,7 @@
   "props": {
     "title": "Props et événements",
     "shared": "Tous les graphiques : height (320 par défaut, les nombres sont en px), width (100 % par défaut), legend, tooltip, crosshair, annotations, interaction, padding, palette, ariaLabel et disableScroll.",
-    "series": "Chart, LineChart, BarChart et ScatterChart ajoutent series, xAxis et yAxis ; LineChart ajoute area et BarChart stacked. Chart accepte des séries de tout type.",
+    "series": "Chart, LineChart, BarChart et ScatterChart ajoutent series, xAxis et yAxis ; LineChart ajoute area et BarChart stacked. Chart accepte des séries de tout type, chandeliers et cartes de chaleur compris.",
     "quadrant": "QuadrantChart accepte les réglages de quadrants : points, xDomain, yDomain, xSplit, ySplit, quadrants, xLabel, yLabel, axisLabels, showTicks, reverseX, showLabels, pointSize, name et draggable.",
     "events": "Les événements reprennent les callbacks web : survol, clic sur un point, clic sur la zone de tracé (appui dans le vide) et zoom ; QuadrantChart signale le clic sur un point (point, index), le clic sur un quadrant (quadrant, { x, y }) et le dépôt d’un point (point, index, { x, y, quadrant }). Le graphique ne déplace jamais les points lui-même : mettez à jour points."
   },
@@ -47,5 +47,17 @@
     "draggable": "Sur WeChat, un composant ne peut pas savoir si un gestionnaire pointdrop est lié : définissez draggable explicitement pour activer le glissement.",
     "hidden": "Un graphique masqué au montage mesure 0 px : appelez resize() une fois qu’il est visible (Taro réessaie pendant environ deux secondes).",
     "more": "Les composants disponibles sur chaque plateforme sont listés dans <support>Plateformes prises en charge</support> ; pour des infobulles React riches sur mobile, utilisez les graphiques <native>React Native</native>."
+  },
+  "newTypes": {
+    "title": "Chandeliers, cartes de chaleur, courbes et piles",
+    "text": "Les séries sont transmises telles quelles au moteur : les nouveautés des séries fonctionnent donc sur tous les graphiques de mini-programmes — type \"candlestick\" (points { x, open, high, low, y }, y étant la clôture) et type \"heatmap\" (cellules { x, y, value }) via Chart, curve: \"smooth\" ou \"step\" et stack sur les séries en ligne et en aire, showLabels pour les valeurs des barres, et une couleur par barre.",
+    "heatmap": "heatmapChartOptions({ data, xCategories, yCategories }) de minerva-design/charts/core renvoie la série, les axes de catégories et les réglages de légende, d’infobulle et d’interaction d’une carte de chaleur : passez-les à Chart.",
+    "limits": "Pas encore disponibles sur les mini-programmes : les composants dédiés AreaChart, CandlestickChart, HeatmapChart et Sparkline, la prop stackMode (piles à 100 %) et les props curve / stacked de LineChart — définissez plutôt curve et stack sur chaque série. Sur WeChat natif, les séries passent par setData : elles doivent être du JSON simple (pas de fonction format par série : utilisez configure() pour les formats d’axes et l’infobulle), et les types NativeChartSeries de minerva-design/weapp/types ne listent pas encore les nouveaux champs."
+  },
+  "shapes": {
+    "title": "Graphiques de formes sur un canvas",
+    "text": "Les graphiques en secteurs, anneau, radar, jauge, entonnoir et treemap n’ont pas encore de composants pour mini-programmes : dessinez-les avec createCanvasShapeChart de minerva-design/charts/core. Il prend la même configuration { canvas, width, height, pixelRatio, options, theme } que createCanvasChart et les options de createShapeChart, et dessine la légende et l’infobulle sur le canvas.",
+    "touches": "Transmettez les événements tactiles (les touches d’un canvas de mini-programme portent x / y relatifs au canvas ; en H5, soustrayez la position du canvas de clientX / clientY), appelez resize(width, height) quand la taille change et destroy() au déchargement de la page. Le thème est fait de valeurs simples : passez les variables CSS de Minerva utiles dans theme.variables.",
+    "weapp": "Projets WeChat natifs : l’étape « Construire npm » des WeChat DevTools ne copie que le dossier mini-programme de minerva-design, qui n’expose pas le moteur ; intégrez minerva-design/charts/core au code de votre page avec votre outil de build pour y appeler createCanvasShapeChart. Les graphiques de formes ne sont pas encore disponibles sur React Native."
   }
 }

@@ -4016,6 +4016,88 @@
       }
     ]
   },
+  "native:HeatmapCell": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A cell of a HeatmapChart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "string | number",
+        "required": true,
+        "description": "Column: a category name (or a number on a numeric axis)"
+      },
+      {
+        "name": "y",
+        "type": "string | number",
+        "required": true,
+        "description": "Row: a category name (or a number on a numeric axis)"
+      },
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": true,
+        "description": "Value mapped to the color scale; `null` leaves the cell empty"
+      }
+    ]
+  },
+  "native:HeatmapConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a heatmap (the props of HeatmapChart)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly HeatmapCell[]",
+        "required": true,
+        "description": "Cells"
+      },
+      {
+        "name": "xCategories",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Column names in order (collected from the data when omitted)"
+      },
+      {
+        "name": "yCategories",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Row names from bottom to top (collected from the data when omitted)"
+      },
+      {
+        "name": "colorScale",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default"
+      },
+      {
+        "name": "valueRange",
+        "type": "readonly [number, number]",
+        "required": false,
+        "description": "Values at the ends of the color scale; the data range by default"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the value in the tooltip"
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "description": "Corner radius of the cells, in pixels"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the values in the tooltip"
+      }
+    ]
+  },
   "native:HStackProps": {
     "source": "native/src/components/Layout/index.tsx",
     "kind": "alias",
@@ -4690,6 +4772,26 @@
         "required": false,
         "default": "false",
         "description": "Fills the area under the lines"
+      }
+    ]
+  },
+  "native:LineSeriesOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of the line-like components",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "description": "Stacks the series on top of each other"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "description": "Shape of the lines"
       }
     ]
   },
@@ -7847,6 +7949,58 @@
     "source": "native/src/components/Skeleton/Skeleton.tsx",
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\""
+  },
+  "native:SparklineConfig": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Settings of a sparkline (the props of Sparkline)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "data",
+        "type": "ChartSeries[\"data\"]",
+        "required": true,
+        "description": "Values (or `[x, y]` pairs, typed arrays, ...)"
+      },
+      {
+        "name": "type",
+        "type": "\"line\" | \"area\" | \"bar\"",
+        "required": false,
+        "default": "\"line\"",
+        "description": "How the values are drawn"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color (any CSS color); the first palette color by default"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"smooth\"",
+        "description": "Shape of the line"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name shown in the tooltip"
+      },
+      {
+        "name": "reference",
+        "type": "number",
+        "required": false,
+        "description": "Draws a reference line at this value (e.g. a target or the average)"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the value in the tooltip"
+      }
+    ]
   },
   "native:SplitLayoutProps": {
     "source": "native/src/components/Layout/index.tsx",

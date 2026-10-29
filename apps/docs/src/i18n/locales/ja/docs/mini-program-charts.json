@@ -1,6 +1,6 @@
 {
   "title": "ミニプログラムのチャート",
-  "description": "Taro、uni-app、ネイティブ WeChat ミニプログラム向けの Chart、LineChart、BarChart、ScatterChart、QuadrantChart。canvas type=\"2d\" に描画し、Web のチャートと同じオプションを使えます。",
+  "description": "Taro、uni-app、ネイティブ WeChat ミニプログラム向けの Chart、LineChart、BarChart、ScatterChart、QuadrantChart。canvas type=\"2d\" に描画し、ローソク足やヒートマップの系列を含め Web のチャートと同じオプションを使えます。形状チャートは createCanvasShapeChart で描画します。",
   "intro": {
     "title": "仕組み",
     "text": "ミニプログラムのチャートは、Minerva チャートエンジンのキャンバスレンダラーで、チャート全体（軸、データ、凡例、ツールチップ、注釈）を 1 つの <canvas type=\"2d\"> に描画します。minerva-design/charts の Web チャートと同じオプションとプリセットを受け取り、WeChat、Alipay、ByteDance などのミニプログラムと H5 で動作します。バンドルされるのはエンジンの 2D キャンバス部分のみで、WebGPU や WebGL のコードは含まれません。",
@@ -25,7 +25,7 @@
   "props": {
     "title": "プロパティとイベント",
     "shared": "すべてのチャート：height（既定 320、数値は px）、width（既定 100%）、legend、tooltip、crosshair、annotations、interaction、padding、palette、ariaLabel、disableScroll。",
-    "series": "Chart、LineChart、BarChart、ScatterChart は series、xAxis、yAxis を追加します。LineChart は area、BarChart は stacked を追加します。Chart は任意の type のシリーズを受け付けます。",
+    "series": "Chart、LineChart、BarChart、ScatterChart は series、xAxis、yAxis を追加します。LineChart は area、BarChart は stacked を追加します。Chart はローソク足やヒートマップを含む任意の type のシリーズを受け付けます。",
     "quadrant": "QuadrantChart は象限の設定を受け取ります：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name、draggable。",
     "events": "イベントは Web のコールバックに対応します：ホバー、ポイントのクリック、プロットのクリック（空いている場所のタップ）、ズーム。QuadrantChart はポイントのクリック（point, index）、象限のクリック（quadrant, { x, y }）、ポイントのドロップ（point, index, { x, y, quadrant }）を通知します。チャート自体はポイントを動かさないので、points を更新してください。"
   },
@@ -47,5 +47,17 @@
     "draggable": "WeChat ではコンポーネントが pointdrop ハンドラーの有無を判別できないため、ドラッグを有効にするには draggable を明示的に設定してください。",
     "hidden": "マウント時に非表示のチャートは 0 px と計測されます。表示後に resize() を呼んでください（Taro は約 2 秒間再試行します）。",
     "more": "各プラットフォームで使えるコンポーネントは<support>プラットフォーム対応</support>に一覧があります。モバイルで React のリッチなツールチップが必要なら <native>React Native</native> のチャートを使ってください。"
+  },
+  "newTypes": {
+    "title": "ローソク足、ヒートマップ、曲線、積み上げ",
+    "text": "系列はそのままエンジンに渡されるため、新しい系列の機能はすべてのミニプログラムのチャートで使えます。Chart で type \"candlestick\"（ポイントは { x, open, high, low, y }、y は終値）と type \"heatmap\"（セルは { x, y, value }）を使い、折れ線と面の系列に curve: \"smooth\" / \"step\" と stack を指定し、showLabels で棒の値を表示し、棒ごとに color を指定できます。",
+    "heatmap": "minerva-design/charts/core の heatmapChartOptions({ data, xCategories, yCategories }) は、ヒートマップの系列、カテゴリー軸、凡例・ツールチップ・操作の設定を返します。それらを Chart に渡してください。",
+    "limits": "ミニプログラムではまだ使えないもの：専用の AreaChart、CandlestickChart、HeatmapChart、Sparkline コンポーネント、stackMode プロパティ（100% 積み上げ）、LineChart の curve / stacked プロパティ。代わりに各系列で curve と stack を指定してください。ネイティブ WeChat では系列が setData を通るため、プレーンな JSON である必要があります（系列ごとの format 関数は渡せないので、軸の書式とツールチップには configure() を使います）。また minerva-design/weapp/types の NativeChartSeries 型にはまだ新しいフィールドが含まれていません。"
+  },
+  "shapes": {
+    "title": "キャンバス上の形状チャート",
+    "text": "円、ドーナツ、レーダー、ゲージ、ファネル、ツリーマップにはまだミニプログラム用コンポーネントがありません。minerva-design/charts/core の createCanvasShapeChart で描画してください。createCanvasChart と同じ { canvas, width, height, pixelRatio, options, theme } 設定と createShapeChart のオプションを受け取り、凡例とツールチップもキャンバス上に描画します。",
+    "touches": "タッチイベントを転送し（ミニプログラムの canvas のタッチはキャンバス基準の x / y を持ちます。H5 では clientX / clientY からキャンバスの位置を引きます）、サイズが変わったら resize(width, height)、ページのアンロード時に destroy() を呼びます。テーマはプレーンな値なので、必要な Minerva の CSS 変数を theme.variables に渡します。",
+    "weapp": "ネイティブ WeChat プロジェクト：WeChat DevTools の「npm をビルド」は minerva-design のミニプログラム用フォルダーだけをコピーし、そこにエンジンは含まれません。createCanvasShapeChart を使うには、ビルドツールで minerva-design/charts/core をページのコードにバンドルしてください。React Native ではまだ形状チャートを使えません。"
   }
 }

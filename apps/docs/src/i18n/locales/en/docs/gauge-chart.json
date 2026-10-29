@@ -1,0 +1,36 @@
+{
+  "title": "GaugeChart",
+  "description": "A single value on an arc, against a range and optional colored thresholds: KPIs, usage, scores. Changing value animates the arc (and the needle) from its current position.",
+  "demos": {
+    "basic": {
+      "title": "Basic",
+      "description": "Three small gauges with their own color, label and format."
+    },
+    "bands": {
+      "title": "Bands and needle",
+      "description": "bands colors the track by range (red, amber, green) and the value arc takes the color of its band; needle points at the value, min can be negative."
+    },
+    "live": {
+      "title": "Live value",
+      "description": "A timer updates value every 1.5 s and the gauge animates to it; sweep={180} draws a half circle and thickness widens the arc. The timer is cleared when paused or unmounted."
+    }
+  },
+  "api": {
+    "GaugeChartProps": {
+      "value": "Value shown by the arc (clamped to min - max for the drawing)",
+      "min": "Value at the start of the arc",
+      "max": "Value at the end of the arc",
+      "label": "Caption under the value",
+      "sweep": "Total angle of the arc, in degrees",
+      "thickness": "Thickness of the arc as a fraction of the radius",
+      "bands": "Colored ranges of the track; the value arc takes the color of its band",
+      "color": "Color of the value arc when there are no bands",
+      "needle": "Draws a needle in addition to the value arc",
+      "ticks": "Tick labels at the ends (and at the band bounds)"
+    },
+    "GaugeBand": {
+      "to": "Upper bound of the band (the previous band's bound, or min, is the lower one)",
+      "color": "Color of the band"
+    }
+  }
+}

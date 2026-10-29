@@ -1,6 +1,6 @@
 {
   "title": "Mini-program charts",
-  "description": "Chart, LineChart, BarChart, ScatterChart and QuadrantChart for Taro, uni-app and native WeChat mini-programs, drawn on a canvas type=\"2d\" with the same options as the web charts.",
+  "description": "Chart, LineChart, BarChart, ScatterChart and QuadrantChart for Taro, uni-app and native WeChat mini-programs, drawn on a canvas type=\"2d\" with the same options as the web charts, candlestick and heatmap series included; shape charts via createCanvasShapeChart.",
   "intro": {
     "title": "How they work",
     "text": "The mini-program charts draw the whole chart (axes, data, legend, tooltip, annotations) on one <canvas type=\"2d\"> with the canvas renderer of the Minerva chart engine. They take the options and presets of the web charts of minerva-design/charts, and work on WeChat, Alipay, ByteDance and other mini-programs as well as H5. Only the 2D canvas part of the engine is bundled: no WebGPU or WebGL code.",
@@ -25,7 +25,7 @@
   "props": {
     "title": "Props and events",
     "shared": "Every chart: height (default 320, numbers are px), width (default 100%), legend, tooltip, crosshair, annotations, interaction, padding, palette, ariaLabel and disableScroll.",
-    "series": "Chart, LineChart, BarChart and ScatterChart add series, xAxis and yAxis; LineChart adds area and BarChart stacked. Chart takes series of any type.",
+    "series": "Chart, LineChart, BarChart and ScatterChart add series, xAxis and yAxis; LineChart adds area and BarChart stacked. Chart takes series of any type, candlestick and heatmap included.",
     "quadrant": "QuadrantChart takes the quadrant settings: points, xDomain, yDomain, xSplit, ySplit, quadrants, xLabel, yLabel, axisLabels, showTicks, reverseX, showLabels, pointSize, name and draggable.",
     "events": "Events mirror the web callbacks: hover, point click, plot click (a tap on the empty plot) and zoom; QuadrantChart reports point click (point, index), quadrant click (quadrant, { x, y }) and point drop (point, index, { x, y, quadrant }). The chart never moves points itself: update points."
   },
@@ -47,5 +47,17 @@
     "draggable": "On WeChat a component cannot tell whether a pointdrop handler is bound: set draggable explicitly to enable dragging.",
     "hidden": "A chart hidden when it mounts measures 0 px: call resize() once it is visible (Taro retries for about two seconds).",
     "more": "The components available on each platform are listed in <support>Platform support</support>; for rich React tooltips on mobile, use the <native>React Native</native> charts."
+  },
+  "newTypes": {
+    "title": "Candlesticks, heatmaps, curves and stacks",
+    "text": "Series are handed to the engine as they are, so the new series features work on every mini-program chart: type \"candlestick\" (points { x, open, high, low, y }, y being the close) and type \"heatmap\" (cells { x, y, value }) through Chart, curve: \"smooth\" or \"step\" and stack on line and area series, showLabels for the values of bars, and a color per bar.",
+    "heatmap": "heatmapChartOptions({ data, xCategories, yCategories }) from minerva-design/charts/core returns the series, the category axes and the legend, tooltip and interaction settings of a heatmap: pass them to Chart.",
+    "limits": "Not available yet on mini-programs: dedicated AreaChart, CandlestickChart, HeatmapChart and Sparkline components, the stackMode prop (100% stacks), and the curve / stacked props of LineChart — set curve and stack on each series instead. On native WeChat, series go through setData, so they must be plain JSON (no format function per series: use configure() for the axis formats and the tooltip), and the NativeChartSeries typings of minerva-design/weapp/types do not list the new fields yet."
+  },
+  "shapes": {
+    "title": "Shape charts on a canvas",
+    "text": "Pie, donut, radar, gauge, funnel and treemap charts have no mini-program components yet: draw them with createCanvasShapeChart from minerva-design/charts/core. It takes the same { canvas, width, height, pixelRatio, options, theme } config as createCanvasChart and the options of createShapeChart, and draws the legend and the tooltip on the canvas.",
+    "touches": "Forward the touch events (mini-program canvas touches carry x / y relative to the canvas; on H5, subtract the canvas position from clientX / clientY), call resize(width, height) when the size changes and destroy() when the page unloads. The theme is plain values: pass the Minerva CSS variables you need in theme.variables.",
+    "weapp": "Native WeChat projects: the Build npm step of WeChat DevTools only copies the mini-program folder of minerva-design, which does not expose the engine; bundle minerva-design/charts/core into your page code with your build tool to call createCanvasShapeChart there. Shape charts are not available on React Native yet."
   }
 }

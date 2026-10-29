@@ -1,6 +1,6 @@
 {
   "title": "チャート",
-  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャート。Chart は折れ線・面・棒・散布図の系列を組み合わせられ、LineChart、BarChart、ScatterChart、QuadrantChart はそのプリセットです。",
+  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャートと、Canvas2D で描く形状チャート。Chart は折れ線・面・棒・散布図・ローソク足・ヒートマップの系列を組み合わせられ、LineChart、AreaChart、BarChart、ScatterChart、CandlestickChart、HeatmapChart、Sparkline、QuadrantChart はそのプリセットです。PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart は構成比、プロファイル、KPI、階層を表します。ホバー時は点の周りに柔らかなハロー、棒の背後に柔らかな帯が表示され、ツールチップも軽やかになりました。",
   "intro": {
     "rendering": {
       "title": "描画のしくみ",
@@ -37,11 +37,16 @@
     "annotations": {
       "title": "注釈",
       "description": "破線の基準線、水平の帯（y0 / y1 のみの rect）、x の範囲。それぞれにラベル付き。"
+    },
+    "gallery": {
+      "title": "ギャラリー",
+      "description": "すべてのチャートタイプの小さな例を、それぞれのページへリンクするカードで紹介します：折れ線、なめらかな積み上げ面グラフ、値ラベル付きの棒、散布図、ローソク足、ヒートマップ、スパークライン、円、ドーナツ、レーダー、ゲージ、ファネル、ツリーマップ、象限。ホバーすると、点には柔らかなハロー、棒には柔らかな帯が表示されます。"
     }
   },
   "api": {
     "ChartProps": {
-      "series": "データ系列。系列ごとに type を指定"
+      "series": "データ系列。系列ごとに type を指定",
+      "stackMode": "normal は値を積み上げ、percent は各 x で積み上げ全体を 100% に換算します"
     },
     "ChartCommonProps": {
       "height": "凡例を含むチャートの高さ。数値はピクセル",
@@ -77,27 +82,42 @@
     "ChartSeries": {
       "id": "固定の識別子（既定はインデックス）",
       "name": "凡例とツールチップに表示する名前",
-      "type": "系列の描画方法：line、area、bar、scatter",
+      "type": "系列の描画方法：line、area、bar、scatter、candlestick、heatmap",
       "data": "Y 値、[x, y] タプル、オブジェクト、または列",
       "color": "系列の色（var() を含む任意の CSS カラー）",
       "lineWidth": "線の幅（ピクセル、line / area）",
       "pointSize": "点の直径（ピクセル、scatter）",
       "opacity": "塗りの不透明度（area、scatter）、0〜1",
-      "stack": "同じ stack id の棒は積み上げられます",
+      "stack": "同じ stack id の系列は積み上げられます（棒、折れ線、面。100% 積み上げは stackMode を参照）",
       "hidden": "系列を非表示にします（凡例には残ります）",
-      "showLabels": "各ポイントの横にラベルを描画（scatter）"
+      "showLabels": "各ポイントの横にラベルを描画（scatter）、または各棒の上に値を描画（bar）",
+      "curve": "ポイント間の線の形：linear、smooth（単調補間でデータを超えない）、step（line / area）",
+      "upColor": "ローソク足：上昇（終値 ≥ 始値）の色。既定は --success-color",
+      "downColor": "ローソク足：下落の色。既定は --danger-color",
+      "colorScale": "ヒートマップ：最小値から最大値までの色（2 色以上）",
+      "valueRange": "ヒートマップ：colorScale の両端に対応する値。既定はデータの範囲",
+      "radius": "棒 / ヒートマップ：角丸の半径（ピクセル。棒は 3、セルは 2）",
+      "format": "ツールチップでのこの系列の値の書式（既定は y 軸の書式）"
     },
     "ChartPointDatum": {
       "x": "X 値（数値、Date、カテゴリ）。省略時はインデックス",
-      "y": "Y 値。null で途切れます",
+      "y": "Y 値。null で途切れます。ローソク足では終値、ヒートマップでは行",
       "size": "点の直径（ピクセル、scatter）",
-      "color": "点の色（scatter）",
-      "label": "点の横とツールチップに表示するテキスト"
+      "color": "点または棒の色（scatter、bar）",
+      "label": "点の横とツールチップに表示するテキスト",
+      "open": "ローソク足：始値",
+      "high": "ローソク足：高値",
+      "low": "ローソク足：安値",
+      "value": "ヒートマップ：セルの値（colorScale に対応）"
     },
     "ChartColumnData": {
       "x": "X 値。省略時はインデックス",
-      "y": "Y 値。NaN / null で途切れます",
-      "size": "ポイントごとの直径（ピクセル、scatter）"
+      "y": "Y 値。NaN / null で途切れます（ローソク足：終値、ヒートマップ：行）",
+      "size": "ポイントごとの直径（ピクセル、scatter）",
+      "open": "ローソク足：始値",
+      "high": "ローソク足：高値",
+      "low": "ローソク足：安値",
+      "value": "ヒートマップ：各セルの値"
     },
     "ChartAxisOptions": {
       "type": "スケール：linear、time、category（データから判定）",
@@ -175,9 +195,13 @@
       "seriesName": "系列の名前",
       "index": "系列データ内のポイントのインデックス",
       "x": "ポイントの X 値",
-      "y": "ポイントの Y 値",
+      "y": "ポイントの Y 値（ローソク足では終値）",
       "color": "ポイントの解決済みの色",
-      "label": "ポイントのラベル（ある場合）"
+      "label": "ポイントのラベル（ある場合）",
+      "open": "ローソク足：始値",
+      "high": "ローソク足：高値",
+      "low": "ローソク足：安値",
+      "value": "ヒートマップ：セルの値"
     },
     "ChartPlotClickEvent": {
       "x": "クリック位置の X データ座標",

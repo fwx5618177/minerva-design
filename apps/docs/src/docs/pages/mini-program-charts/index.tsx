@@ -156,6 +156,123 @@ const weappJs = `Page({
   },
 });`;
 
+const newTypesExample = `import { BarChart, Chart, LineChart } from "minerva-design/taro";
+import { heatmapChartOptions } from "minerva-design/charts/core";
+
+const prices = [
+  {
+    name: "ACME",
+    type: "candlestick",
+    data: [
+      { x: 1, open: 102, high: 108, low: 99, y: 106 },
+      { x: 2, open: 106, high: 107, low: 97, y: 98 },
+      { x: 3, open: 98, high: 104, low: 96, y: 103 },
+    ],
+  },
+] as const;
+
+const load = heatmapChartOptions({
+  data: [
+    { x: "Mon", y: "AM", value: 12 },
+    { x: "Mon", y: "PM", value: 30 },
+    { x: "Tue", y: "AM", value: 18 },
+    { x: "Tue", y: "PM", value: 26 },
+  ],
+});
+
+export function Charts() {
+  return (
+    <>
+      <Chart series={prices} height={220} />
+      <Chart
+        series={load.series}
+        xAxis={load.xAxis}
+        yAxis={load.yAxis}
+        legend={load.legend}
+        tooltip={load.tooltip}
+        interaction={load.interaction}
+        height={200}
+      />
+      {/* curve and stack are set on each series */}
+      <LineChart
+        area
+        series={[
+          { name: "Web", data: [20, 24, 30], curve: "smooth", stack: "users" },
+          { name: "App", data: [12, 18, 17], curve: "smooth", stack: "users" },
+        ]}
+      />
+      <BarChart
+        series={[
+          {
+            name: "Orders",
+            showLabels: true,
+            data: [
+              { x: "Q1", y: 128 },
+              { x: "Q2", y: 212, color: "#16a34a" },
+            ],
+          },
+        ]}
+      />
+    </>
+  );
+}`;
+
+const shapesExample = `import { useRef } from "react";
+import Taro, { useReady, useUnload } from "@tarojs/taro";
+import { Canvas } from "@tarojs/components";
+import {
+  createCanvasShapeChart,
+  type CanvasShapeChartInstance,
+} from "minerva-design/charts/core";
+
+export default function Plans() {
+  const chart = useRef<CanvasShapeChartInstance | null>(null);
+
+  useReady(() => {
+    Taro.createSelectorQuery()
+      .select("#plans")
+      .fields({ node: true, size: true })
+      .exec(([res]) => {
+        chart.current = createCanvasShapeChart({
+          canvas: res.node,
+          width: res.width,
+          height: res.height,
+          pixelRatio: Taro.getWindowInfo().pixelRatio,
+          options: {
+            type: "pie",
+            innerRadius: 0.62,
+            centerValue: "8.4k",
+            centerLabel: "users",
+            data: [
+              { name: "Free", value: 5400 },
+              { name: "Pro", value: 2100 },
+              { name: "Team", value: 860 },
+            ],
+          },
+          // plain values of the Minerva CSS variables
+          theme: { variables: { "--primary-color": "#4f46e5" } },
+        });
+        chart.current.on("click", (slice) =>
+          Taro.showToast({ title: slice.name, icon: "none" }),
+        );
+      });
+  });
+  useUnload(() => chart.current?.destroy());
+
+  // mini-program canvas touches carry x / y relative to the canvas
+  return (
+    <Canvas
+      type="2d"
+      id="plans"
+      style={{ width: "100%", height: "260px" }}
+      onTouchStart={(e) => chart.current?.touchStart(e.changedTouches)}
+      onTouchMove={(e) => chart.current?.touchMove(e.touches)}
+      onTouchEnd={(e) => chart.current?.touchEnd(e.changedTouches)}
+      onTouchCancel={(e) => chart.current?.touchCancel(e.changedTouches)}
+    />
+  );
+}`;
+
 export default function MiniProgramChartsDoc() {
   const { t } = useTranslation();
   return (
@@ -210,6 +327,41 @@ export default function MiniProgramChartsDoc() {
         </p>
         <p className={styles.prose}>
           {t("docs.mini-program-charts.weapp.methods")}
+        </p>
+      </section>
+
+      <section
+        className={styles.section}
+        aria-labelledby="mini-charts-new-types"
+      >
+        <h2 id="mini-charts-new-types">
+          {t("docs.mini-program-charts.newTypes.title")}
+        </h2>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.newTypes.text")}
+        </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.newTypes.heatmap")}
+        </p>
+        <CodeBlock language="tsx" code={newTypesExample} />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.newTypes.limits")}
+        </p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="mini-charts-shapes">
+        <h2 id="mini-charts-shapes">
+          {t("docs.mini-program-charts.shapes.title")}
+        </h2>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.text")}
+        </p>
+        <CodeBlock language="tsx" title="Plans.tsx" code={shapesExample} />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.touches")}
+        </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.weapp")}
         </p>
       </section>
 

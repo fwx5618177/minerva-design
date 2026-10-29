@@ -1,6 +1,6 @@
 {
   "title": "Charts",
-  "description": "GPU-accelerated charts that stay at 60 fps with millions of points. Chart mixes line, area, bar and scatter series; LineChart, BarChart, ScatterChart and QuadrantChart are presets.",
+  "description": "GPU-accelerated charts that stay at 60 fps with millions of points, plus Canvas2D shape charts. Chart mixes line, area, bar, scatter, candlestick and heatmap series; LineChart, AreaChart, BarChart, ScatterChart, CandlestickChart, HeatmapChart, Sparkline and QuadrantChart are presets, and PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart and TreemapChart cover shares, profiles, KPIs and hierarchies. Hovering draws a soft halo around dots, a soft band behind bars and a light tooltip.",
   "intro": {
     "rendering": {
       "title": "How it renders",
@@ -37,11 +37,16 @@
     "annotations": {
       "title": "Annotations",
       "description": "A dashed reference line, a horizontal band (rect with only y0 / y1) and an x range, each with a label."
+    },
+    "gallery": {
+      "title": "Gallery",
+      "description": "One small example of every chart type, each in a card linking to its page: line, smooth stacked area, bars with value labels, scatter, candlestick, heatmap, sparklines, pie, donut, radar, gauge, funnel, treemap and quadrant. Hover them: dots get a soft halo and bars a soft band."
     }
   },
   "api": {
     "ChartProps": {
-      "series": "Data series; each sets its own type"
+      "series": "Data series; each sets its own type",
+      "stackMode": "normal stacks the values; percent scales every stack to 100% at each x"
     },
     "ChartCommonProps": {
       "height": "Height of the chart, legend included; numbers are pixels",
@@ -77,27 +82,42 @@
     "ChartSeries": {
       "id": "Stable identifier (defaults to the index)",
       "name": "Name shown in the legend and the tooltip",
-      "type": "How the series is drawn: line, area, bar or scatter",
+      "type": "How the series is drawn: line, area, bar, scatter, candlestick or heatmap",
       "data": "Y values, [x, y] tuples, objects or columns",
       "color": "Series color (any CSS color, var() included)",
       "lineWidth": "Line width in pixels (line / area)",
       "pointSize": "Dot diameter in pixels (scatter)",
       "opacity": "Fill opacity (area, scatter), 0-1",
-      "stack": "Bars with the same stack id are stacked",
+      "stack": "Series with the same stack id are stacked (bars, lines and areas; see stackMode for 100% stacks)",
       "hidden": "Hides the series (it stays in the legend)",
-      "showLabels": "Draws the label of each point next to it (scatter)"
+      "showLabels": "Draws the label of each point next to it (scatter) or the value above each bar (bar)",
+      "curve": "Shape of the line between the points: linear, smooth (monotone, never overshoots the data) or step (line / area)",
+      "upColor": "Candlestick: color of the rising candles (close ≥ open); --success-color by default",
+      "downColor": "Candlestick: color of the falling candles; --danger-color by default",
+      "colorScale": "Heatmap: colors from the lowest to the highest value (two or more)",
+      "valueRange": "Heatmap: values mapped to the ends of colorScale; the data range by default",
+      "radius": "Bar / heatmap: corner radius in pixels (bars 3, cells 2)",
+      "format": "Formats the values of this series in the tooltip (the y axis format by default)"
     },
     "ChartPointDatum": {
       "x": "X value (number, Date or category); the index when omitted",
-      "y": "Y value; null leaves a gap",
+      "y": "Y value; null leaves a gap. Candlestick: the close; heatmap: the row",
       "size": "Dot diameter in pixels (scatter)",
-      "color": "Dot color (scatter)",
-      "label": "Text next to the dot and in the tooltip"
+      "color": "Color of the dot or bar (scatter, bar)",
+      "label": "Text next to the dot and in the tooltip",
+      "open": "Candlestick: opening value",
+      "high": "Candlestick: highest value",
+      "low": "Candlestick: lowest value",
+      "value": "Heatmap: value of the cell, mapped to colorScale"
     },
     "ChartColumnData": {
       "x": "X values; the index when omitted",
-      "y": "Y values; NaN / null leave a gap",
-      "size": "Per-point diameters in pixels (scatter)"
+      "y": "Y values; NaN / null leave a gap (candlestick: the closes; heatmap: the rows)",
+      "size": "Per-point diameters in pixels (scatter)",
+      "open": "Candlestick: opening values",
+      "high": "Candlestick: highest values",
+      "low": "Candlestick: lowest values",
+      "value": "Heatmap: values of the cells"
     },
     "ChartAxisOptions": {
       "type": "Scale: linear, time or category (detected from the data)",
@@ -175,9 +195,13 @@
       "seriesName": "Name of the series",
       "index": "Index of the point in the series data",
       "x": "X value of the point",
-      "y": "Y value of the point",
+      "y": "Y value of the point (candlestick: the close)",
       "color": "Resolved color of the point",
-      "label": "Label of the point, if any"
+      "label": "Label of the point, if any",
+      "open": "Candlestick: opening value",
+      "high": "Candlestick: highest value",
+      "low": "Candlestick: lowest value",
+      "value": "Heatmap: value of the cell"
     },
     "ChartPlotClickEvent": {
       "x": "X data coordinate of the click",

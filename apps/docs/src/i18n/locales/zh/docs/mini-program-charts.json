@@ -1,6 +1,6 @@
 {
   "title": "小程序图表",
-  "description": "适用于 Taro、uni-app 和原生微信小程序的 Chart、LineChart、BarChart、ScatterChart 与 QuadrantChart，绘制在 canvas type=\"2d\" 上，选项与 Web 图表相同。",
+  "description": "适用于 Taro、uni-app 和原生微信小程序的 Chart、LineChart、BarChart、ScatterChart 与 QuadrantChart，绘制在 canvas type=\"2d\" 上，选项与 Web 图表相同，包括 K 线和热力图系列；形状图表可通过 createCanvasShapeChart 绘制。",
   "intro": {
     "title": "工作原理",
     "text": "小程序图表使用 Minerva 图表引擎的画布渲染器，把整张图表（坐标轴、数据、图例、提示框、标注）绘制在一个 <canvas type=\"2d\"> 上。它们接受 minerva-design/charts 中 Web 图表的选项和预设，可用于微信、支付宝、抖音等小程序以及 H5。只打包引擎的 2D 画布部分，不含 WebGPU 或 WebGL 代码。",
@@ -25,7 +25,7 @@
   "props": {
     "title": "属性与事件",
     "shared": "所有图表：height（默认 320，数字为 px）、width（默认 100%）、legend、tooltip、crosshair、annotations、interaction、padding、palette、ariaLabel 和 disableScroll。",
-    "series": "Chart、LineChart、BarChart 和 ScatterChart 增加 series、xAxis 和 yAxis；LineChart 增加 area，BarChart 增加 stacked。Chart 接受任意 type 的系列。",
+    "series": "Chart、LineChart、BarChart 和 ScatterChart 增加 series、xAxis 和 yAxis；LineChart 增加 area，BarChart 增加 stacked。Chart 接受任意 type 的系列，包括 K 线和热力图。",
     "quadrant": "QuadrantChart 接受四象限设置：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name 和 draggable。",
     "events": "事件与 Web 回调对应：悬停、点击点、点击绘图区（点击空白处）和缩放；QuadrantChart 报告点击点（point, index）、点击象限（quadrant, { x, y }）和放下点（point, index, { x, y, quadrant }）。图表不会自行移动点：请更新 points。"
   },
@@ -47,5 +47,17 @@
     "draggable": "在微信中组件无法得知是否绑定了 pointdrop 处理函数：需要显式设置 draggable 才能拖动。",
     "hidden": "挂载时处于隐藏状态的图表测得的尺寸为 0 px：显示后请调用 resize()（Taro 会重试约两秒）。",
     "more": "各平台可用的组件列于<support>平台支持</support>；如需在移动端使用 React 富文本提示框，请使用 <native>React Native</native> 图表。"
+  },
+  "newTypes": {
+    "title": "K 线、热力图、曲线与堆叠",
+    "text": "系列会原样传给引擎，因此新的系列功能在所有小程序图表上都可用：通过 Chart 使用 type \"candlestick\"（数据点为 { x, open, high, low, y }，y 为收盘价）和 type \"heatmap\"（单元格为 { x, y, value }），在折线和面积系列上设置 curve: \"smooth\" 或 \"step\" 以及 stack，用 showLabels 显示柱的数值，并为每根柱单独设置 color。",
+    "heatmap": "minerva-design/charts/core 中的 heatmapChartOptions({ data, xCategories, yCategories }) 会返回热力图的系列、类目坐标轴以及图例、提示框和交互设置：把它们传给 Chart 即可。",
+    "limits": "小程序上暂不支持：专用的 AreaChart、CandlestickChart、HeatmapChart 和 Sparkline 组件，stackMode 属性（100% 堆叠），以及 LineChart 的 curve / stacked 属性——请改为在每个系列上设置 curve 和 stack。在原生微信小程序中，系列通过 setData 传递，因此必须是纯 JSON（不能为单个系列传 format 函数：坐标轴格式和提示框请用 configure()），而且 minerva-design/weapp/types 中的 NativeChartSeries 类型尚未列出这些新字段。"
+  },
+  "shapes": {
+    "title": "在画布上绘制形状图表",
+    "text": "饼图、环形图、雷达图、仪表盘、漏斗图和矩形树图暂无小程序组件：请使用 minerva-design/charts/core 中的 createCanvasShapeChart 绘制。它接受与 createCanvasChart 相同的 { canvas, width, height, pixelRatio, options, theme } 配置以及 createShapeChart 的选项，并在画布上绘制图例和提示框。",
+    "touches": "转发触摸事件（小程序 canvas 的触点带有相对画布的 x / y；在 H5 中请用 clientX / clientY 减去画布位置），尺寸变化时调用 resize(width, height)，页面卸载时调用 destroy()。主题是纯数值：在 theme.variables 中传入所需的 Minerva CSS 变量。",
+    "weapp": "原生微信小程序项目：微信开发者工具的“构建 npm”只会复制 minerva-design 的小程序目录，其中不包含引擎；请用你的构建工具把 minerva-design/charts/core 打包进页面代码，再在其中调用 createCanvasShapeChart。React Native 暂不支持形状图表。"
   }
 }
