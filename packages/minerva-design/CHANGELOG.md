@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.1.0
+
+### Minor Changes
+
+- feat(charts): add zero-dependency GPU charts (WebGPU, WebGL2, Canvas2D)
+
 ## 1.0.2
 
 ### Patch Changes
