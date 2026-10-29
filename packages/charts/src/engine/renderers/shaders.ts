@@ -6,8 +6,10 @@
 //   xform    = (xScale, xOffset, yScale, yOffset)  relative data -> clip
 //   viewport = (width px, height px, dpr, 0)
 //   color    = straight RGBA of the series
-//   params   = line: (half width px) | area: (baseline, opacity)
-//              bar: (half width in x units, radius px) | scatter: (opacity, stroke px)
+//   params   = line: (half width px) | area: (_, opacity)
+//              bar: (half width in x units, radius px, inset px, min half px)
+//              scatter: (opacity, stroke px)
+// Bars and scatter dots carry their own color (unorm8x4 per instance).
 // Output colors are premultiplied.
 
 const WGSL_COMMON = /* wgsl */ `
@@ -78,21 +80,21 @@ struct Out {
   @builtin(position) pos: vec4f,
   @location(0) t: f32,
 };
-@vertex fn vs(@builtin(vertex_index) vi: u32, @location(0) a: vec2f, @location(1) b: vec2f) -> Out {
+@vertex fn vs(@builtin(vertex_index) vi: u32, @location(0) a: vec3f, @location(1) b: vec3f) -> Out {
   var out: Out;
-  if (gap(a) || gap(b)) {
+  if (gap(a.xy) || gap(b.xy) || abs(a.z) > 1e37 || abs(b.z) > 1e37) {
     out.pos = HIDDEN;
     return out;
   }
   let c = corner(vi);
   let p = select(a, b, c.y > 0.5);
-  let y = select(u.params.x, p.y, c.x > 0.5);
+  let y = select(p.z, p.y, c.x > 0.5);
   out.pos = vec4f(toClip(vec2f(p.x, y)), 0.0, 1.0);
   out.t = c.x;
   return out;
 }
 @fragment fn fs(v: Out) -> @location(0) vec4f {
-  let a = u.color.a * u.params.y * (0.3 + 0.7 * v.t);
+  let a = u.color.a * u.params.y * (0.25 + 0.75 * v.t * v.t);
   return vec4f(u.color.rgb * a, a);
 }
 `;
@@ -102,33 +104,42 @@ struct Out {
   @builtin(position) pos: vec4f,
   @location(0) local: vec2f,
   @location(1) @interpolate(flat) hs: vec2f,
+  @location(2) @interpolate(flat) color: vec4f,
 };
-@vertex fn vs(@builtin(vertex_index) vi: u32, @location(0) inst: vec3f) -> Out {
+@vertex fn vs(@builtin(vertex_index) vi: u32, @location(0) inst: vec3f, @location(1) color: vec4f) -> Out {
   var out: Out;
   if (gap(inst.xy) || abs(inst.z) > 1e37) {
     out.pos = HIDDEN;
     return out;
   }
-  let hw = max(abs(u.params.x * u.xform.x) * 0.5 * u.viewport.x, 0.5);
+  let dpr = u.viewport.z;
+  let rawHw = abs(u.params.x * u.xform.x) * 0.5 * u.viewport.x;
   let p0 = toPx(inst.xy);
   let y1 = toPx(vec2f(inst.x, inst.z)).y;
   let lo = min(p0.y, y1);
   let hi = max(p0.y, y1);
-  let hsz = vec2f(hw, (hi - lo) * 0.5);
+  // the gap between cells fades out on small cells (dense heatmaps stay
+  // solid); without a gap, cells overlap by a pixel so no seam shows
+  let fade = clamp((min(rawHw, (hi - lo) * 0.5) - 3.0 * dpr) / (2.0 * dpr), 0.0, 1.0);
+  let inset = u.params.z * dpr * fade - select(0.0, 0.5 * (1.0 - fade), u.params.z > 0.0);
+  let minHalf = u.params.w * dpr;
+  let hw = max(max(rawHw - inset, 0.5), minHalf);
+  let hsz = vec2f(hw, max((hi - lo) * 0.5 - inset, minHalf));
   let center = vec2f(p0.x, (lo + hi) * 0.5);
   let ext = hsz + vec2f(1.0);
   let c = corner(vi) * 2.0 - 1.0;
   out.pos = pxToClip(center + c * ext);
   out.local = c * ext;
   out.hs = hsz;
+  out.color = color;
   return out;
 }
 @fragment fn fs(v: Out) -> @location(0) vec4f {
   let r = min(u.params.y * u.viewport.z, min(v.hs.x, v.hs.y));
   let q = abs(v.local) - v.hs + vec2f(r);
   let d = length(max(q, vec2f(0.0))) + min(max(q.x, q.y), 0.0) - r;
-  let a = clamp(0.5 - d, 0.0, 1.0) * u.color.a;
-  return vec4f(u.color.rgb * a, a);
+  let a = clamp(0.5 - d, 0.0, 1.0) * v.color.a;
+  return vec4f(v.color.rgb * a, a);
 }
 `;
 
@@ -218,15 +229,15 @@ void main() {
 
 export const GLSL_AREA = {
   vertex: /* glsl */ `${GLSL_VERTEX_COMMON}
-in vec2 a_a;
-in vec2 a_b;
+in vec3 a_a;
+in vec3 a_b;
 out float v_t;
 void main() {
   v_t = 0.0;
-  if (gap(a_a) || gap(a_b)) { gl_Position = HIDDEN; return; }
+  if (gap(a_a.xy) || gap(a_b.xy) || abs(a_a.z) > 1e37 || abs(a_b.z) > 1e37) { gl_Position = HIDDEN; return; }
   vec2 c = corner();
-  vec2 p = c.y > 0.5 ? a_b : a_a;
-  float y = c.x > 0.5 ? p.y : u_params.x;
+  vec3 p = c.y > 0.5 ? a_b : a_a;
+  float y = c.x > 0.5 ? p.y : p.z;
   gl_Position = vec4(toClip(vec2(p.x, y)), 0.0, 1.0);
   v_t = c.x;
 }`,
@@ -234,7 +245,7 @@ void main() {
 in float v_t;
 out vec4 outColor;
 void main() {
-  float a = u_color.a * u_params.y * (0.3 + 0.7 * v_t);
+  float a = u_color.a * u_params.y * (0.25 + 0.75 * v_t * v_t);
   outColor = vec4(u_color.rgb * a, a);
 }`,
 };
@@ -242,18 +253,26 @@ void main() {
 export const GLSL_BAR = {
   vertex: /* glsl */ `${GLSL_VERTEX_COMMON}
 in vec3 a_inst;
+in vec4 a_color;
 out vec2 v_local;
 flat out vec2 v_half;
+flat out vec4 v_color;
 void main() {
   v_local = vec2(0.0);
   v_half = vec2(0.0);
+  v_color = a_color;
   if (gap(a_inst.xy) || abs(a_inst.z) > 1e37) { gl_Position = HIDDEN; return; }
-  float hw = max(abs(u_params.x * u_xform.x) * 0.5 * u_viewport.x, 0.5);
+  float dpr = u_viewport.z;
+  float rawHw = abs(u_params.x * u_xform.x) * 0.5 * u_viewport.x;
   vec2 p0 = toPx(a_inst.xy);
   float y1 = toPx(vec2(a_inst.x, a_inst.z)).y;
   float lo = min(p0.y, y1);
   float hi = max(p0.y, y1);
-  vec2 hsz = vec2(hw, (hi - lo) * 0.5);
+  float fade = clamp((min(rawHw, (hi - lo) * 0.5) - 3.0 * dpr) / (2.0 * dpr), 0.0, 1.0);
+  float inset = u_params.z * dpr * fade - (u_params.z > 0.0 ? 0.5 * (1.0 - fade) : 0.0);
+  float minHalf = u_params.w * dpr;
+  float hw = max(max(rawHw - inset, 0.5), minHalf);
+  vec2 hsz = vec2(hw, max((hi - lo) * 0.5 - inset, minHalf));
   vec2 center = vec2(p0.x, (lo + hi) * 0.5);
   vec2 ext = hsz + vec2(1.0);
   vec2 c = corner() * 2.0 - 1.0;
@@ -264,13 +283,14 @@ void main() {
   fragment: /* glsl */ `${GLSL_HEADER}
 in vec2 v_local;
 flat in vec2 v_half;
+flat in vec4 v_color;
 out vec4 outColor;
 void main() {
   float r = min(u_params.y * u_viewport.z, min(v_half.x, v_half.y));
   vec2 q = abs(v_local) - v_half + vec2(r);
   float d = length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - r;
-  float a = clamp(0.5 - d, 0.0, 1.0) * u_color.a;
-  outColor = vec4(u_color.rgb * a, a);
+  float a = clamp(0.5 - d, 0.0, 1.0) * v_color.a;
+  outColor = vec4(v_color.rgb * a, a);
 }`,
 };
 

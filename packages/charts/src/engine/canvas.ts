@@ -15,6 +15,7 @@ import { buildItems, type Origin } from "./items";
 import { drawBackground, drawForeground, font } from "./overlay";
 import { createCanvas2dPainter } from "./renderers/canvas2d";
 import type { RenderItem } from "./renderers/types";
+import { itemsSignature } from "./signature";
 import type { ChartThemeInput } from "./theme";
 import type { ChartOptions, ChartRect, ChartView } from "./types";
 
@@ -168,6 +169,14 @@ export const drawScene = (
     ctx.globalAlpha = 1;
   }
 
+  // hover band of bars, below the data
+  for (const mark of scene.hover?.marks ?? []) {
+    if (mark.kind !== "band") continue;
+    roundedRect(ctx, mark.x, mark.y, mark.width, mark.height, 6);
+    ctx.fillStyle = toCss(theme.text, 0.06);
+    ctx.fill();
+  }
+
   // data
   const scale = (range: [number, number], o: number, reverse: boolean) => {
     const s = 2 / (range[1] - range[0]);
@@ -231,13 +240,23 @@ export const drawScene = (
       ctx.restore();
     }
     for (const mark of hover.marks) {
-      if (mark.kind === "bar") {
-        ctx.fillStyle = toCss(theme.text, 0.08);
-        ctx.fillRect(mark.x - 2, mark.y - 2, mark.width + 4, mark.height + 2);
+      if (mark.kind === "band") continue;
+      if (mark.kind === "cell") {
+        roundedRect(ctx, mark.x, mark.y, mark.width, mark.height, 3);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = toCss(theme.background);
+        ctx.stroke();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = toCss(theme.text, 0.55);
+        ctx.stroke();
         continue;
       }
       ctx.beginPath();
-      ctx.arc(mark.x, mark.y, mark.size / 2, 0, Math.PI * 2);
+      ctx.arc(mark.x, mark.y, mark.size / 2 + 4, 0, Math.PI * 2);
+      ctx.fillStyle = mark.halo;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(mark.x, mark.y, mark.size / 2 - 1, 0, Math.PI * 2);
       ctx.fillStyle = mark.color;
       ctx.fill();
       ctx.lineWidth = 2;
@@ -276,7 +295,7 @@ export const drawScene = (
       box.height - 1,
       8,
     );
-    ctx.strokeStyle = toCss(theme.axis);
+    ctx.strokeStyle = toCss(theme.axis, 0.6);
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.textBaseline = "middle";
@@ -347,6 +366,16 @@ export const createCanvasChart = (
   let frameId: number | null = null;
   let items: RenderItem[] = [];
   let itemsModel: unknown = null;
+  let itemsKey = "";
+  let options = config.options;
+  /** Ids of the themes seen (the controller replaces its theme on changes) */
+  const themeIds = new WeakMap<object, number>();
+  let themeCount = 0;
+  const themeId = (theme: object) => {
+    let id = themeIds.get(theme);
+    if (id === undefined) themeIds.set(theme, (id = ++themeCount));
+    return id;
+  };
   let origin: Origin = { x: 0, y: 0 };
   let version = 0;
   let fontSet = "";
@@ -379,8 +408,18 @@ export const createCanvasChart = (
     fontSet = "";
     if (itemsModel !== scene.model) {
       itemsModel = scene.model;
-      origin = { x: mid(scene.model.base.x), y: mid(scene.model.base.y) };
-      items = buildItems(scene.model, origin, ++version);
+      // a new model (any setOptions) keeps the items when nothing they
+      // depend on changed
+      const key = itemsSignature(
+        scene.model,
+        themeId(scene.theme),
+        (index) => options.series[index]?.stack,
+      );
+      if (key !== itemsKey) {
+        itemsKey = key;
+        origin = { x: mid(scene.model.base.x), y: mid(scene.model.base.y) };
+        items = buildItems(scene.model, origin, ++version);
+      }
     }
     drawScene(ctx, scene, items, origin, dpr, painter);
     fontSet = "";
@@ -408,7 +447,10 @@ export const createCanvasChart = (
   });
 
   return {
-    setOptions: (o) => controller.setOptions(o),
+    setOptions: (o) => {
+      options = o;
+      controller.setOptions(o);
+    },
     setTheme: (t) => controller.setTheme(t),
     resize(w, h, ratio) {
       width = w;

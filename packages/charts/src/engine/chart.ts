@@ -4,7 +4,7 @@
 import type { AxisTicks } from "./axis";
 import { lowerBound } from "./data";
 import {
-  createBarHighlight,
+  createBand,
   createChartDom,
   createDataCanvas,
   createMarker,
@@ -28,13 +28,20 @@ import {
   hoverItemOf,
   hoverMarks,
   layoutChart,
+  legendShape,
   pointOf,
   resolveAnnotations,
   sameHover,
   showsCrosshair,
   tooltipContent,
 } from "./scene";
-import { readTheme, watchTheme, type ChartTheme } from "./theme";
+import { itemsSignature } from "./signature";
+import {
+  readTheme,
+  themeColorsChanged,
+  watchTheme,
+  type ChartTheme,
+} from "./theme";
 import type {
   ChartEventMap,
   ChartHoverEvent,
@@ -121,16 +128,24 @@ export const createChart = (
     moved: boolean;
   } | null = null;
   const markers: HTMLDivElement[] = [];
-  const highlights: HTMLDivElement[] = [];
+  const bands: HTMLDivElement[] = [];
+  const cells: HTMLDivElement[] = [];
   let themeVersion = 0;
-  let itemsSignature = "";
-  const objectIds = new WeakMap<object, number>();
-  let objectCounter = 0;
-  const idOf = (value: object) => {
-    let id = objectIds.get(value);
-    if (id === undefined) objectIds.set(value, (id = ++objectCounter));
-    return id;
-  };
+  let itemsSignatureKey = "";
+  let legendKey = "";
+  /** What the hover layer shows: kept while the hovered points are the same */
+  let shownMarks: {
+    event: ChartHoverEvent;
+    model: ChartModel;
+    scales: Scales;
+  } | null = null;
+  let shownTip: {
+    event: ChartHoverEvent;
+    model: ChartModel;
+    yTicks: AxisTicks | null;
+    width: number;
+    height: number;
+  } | null = null;
 
   let resolveReady: (kind: ChartRendererKind | null) => void = () => {};
   const ready = new Promise<ChartRendererKind | null>((resolve) => {
@@ -144,17 +159,22 @@ export const createChart = (
     listeners[type]?.forEach((listener) => listener(event));
   };
 
+  let interactionOf: ChartOptions | null = null;
+  let interactionValue: Required<ChartInteractionOptions> | null = null;
+  /** Resolved `interaction` option (cached: read on every pointer move) */
   const interaction = (): Required<ChartInteractionOptions> | null => {
+    if (interactionOf === options) return interactionValue;
+    interactionOf = options;
     const value = options.interaction;
-    if (value === false) return null;
+    if (value === false) return (interactionValue = null);
     const o = typeof value === "object" ? value : {};
-    return {
+    return (interactionValue = {
       zoom: o.zoom ?? true,
       wheel: o.wheel ?? "modifier",
       pan: o.pan ?? true,
       keyboard: o.keyboard ?? true,
       dragPoints: o.dragPoints ?? false,
-    };
+    });
   };
 
   const tooltipOptions = (): ChartTooltipOptions | null =>
@@ -187,29 +207,13 @@ export const createChart = (
     }
     // Unchanged data and styles (e.g. a React re-render): keep the GPU
     // buffers and the hover state
-    const signature = [
+    const signature = itemsSignature(
+      model,
       themeVersion,
-      model.baseline,
-      base.x.join(),
-      base.y.join(),
-      ...model.series.map((s) =>
-        [
-          s.key,
-          s.type,
-          idOf(s.cols),
-          s.colorCss,
-          s.hidden,
-          s.lineWidth,
-          s.pointSize,
-          s.opacity,
-          s.barOffset,
-          s.barHalfWidth,
-          options.series[s.index].stack ?? "",
-        ].join("|"),
-      ),
-    ].join("\n");
-    if (signature !== itemsSignature) {
-      itemsSignature = signature;
+      (index) => options.series[index]?.stack,
+    );
+    if (signature !== itemsSignatureKey) {
+      itemsSignatureKey = signature;
       origin = { x: mid(base.x), y: mid(base.y) };
       itemsDirty = true;
       if (hover && !hover.keyboard) hover = null;
@@ -238,13 +242,21 @@ export const createChart = (
     const show = legendOption === undefined ? named > 1 : !!legendOption;
     const config = typeof legendOption === "object" ? legendOption : {};
     const toggle = config.toggle ?? true;
+    const bottom = config.position === "bottom";
+    // rebuild the DOM only when what it shows changed
+    let key = `${show}|${bottom}|${toggle}`;
+    if (show) {
+      for (const s of model.series)
+        key += `\n${s.id}\u0001${s.name}\u0001${s.colorCss}\u0001${legendShape(s.type)}\u0001${s.hidden}`;
+    }
+    if (key === legendKey) return;
+    legendKey = key;
     const focused = [...dom.legend.children].indexOf(
       doc.activeElement as Element,
     );
     dom.legend.replaceChildren();
     dom.legend.style.display = show ? "flex" : "none";
     if (!show) return;
-    const bottom = config.position === "bottom";
     dom.legend.style.order = bottom ? "1" : "0";
     dom.legend.style.padding = bottom ? "8px 4px 0" : "0 4px 8px";
     for (const s of model.series) {
@@ -274,11 +286,7 @@ export const createChart = (
         textDecoration: s.hidden ? "line-through" : "none",
       });
       item.append(
-        swatch(
-          doc,
-          s.colorCss,
-          s.type === "scatter" ? "dot" : s.type === "line" ? "line" : "square",
-        ),
+        swatch(doc, s.colorCss, legendShape(s.type)),
         doc.createTextNode(s.name),
       );
       dom.legend.appendChild(item);
@@ -384,7 +392,7 @@ export const createChart = (
         scales,
         theme,
         annotations,
-        pointLabels: collectPointLabels(model, view, scales),
+        pointLabels: collectPointLabels(model, view, scales, yTicks),
       });
     }
 
@@ -498,10 +506,11 @@ export const createChart = (
     pool: T[],
     i: number,
     make: () => T,
+    parent: HTMLElement = dom.hover,
   ) => {
     if (!pool[i]) {
       pool[i] = make();
-      dom.hover.appendChild(pool[i]);
+      parent.appendChild(pool[i]);
     }
     pool[i].style.display = "block";
     return pool[i];
@@ -509,10 +518,73 @@ export const createChart = (
 
   function renderHover() {
     const sc = scales;
+    const marksShown =
+      !!hover &&
+      !!sc &&
+      !!shownMarks &&
+      shownMarks.scales === sc &&
+      shownMarks.model === model &&
+      sameHover(shownMarks.event, hover.event);
+    // pointer moves over the same points: the markers stay where they are
+    if (!marksShown) renderMarks(sc);
+
+    const tip = dom.tooltip;
+    if (!hover || !sc || !tooltipOptions() || drag?.moved || pointDrag?.moved) {
+      tip.style.display = "none";
+      return;
+    }
+    const custom = tooltipOptions()?.render;
+    let w: number;
+    let h: number;
+    if (
+      !custom &&
+      shownTip &&
+      shownTip.model === model &&
+      shownTip.yTicks === yTicks &&
+      sameHover(shownTip.event, hover.event) &&
+      tip.style.display === "block"
+    ) {
+      // same content: only the position follows the pointer
+      w = shownTip.width;
+      h = shownTip.height;
+    } else {
+      shownTip = null;
+      const content = tooltipNode(hover.event);
+      if (content === null || content === "") {
+        tip.style.display = "none";
+        return;
+      }
+      if (typeof content === "string") {
+        tip.textContent = content;
+        tip.style.whiteSpace = "pre";
+      } else {
+        tip.replaceChildren(content);
+        tip.style.whiteSpace = "nowrap";
+      }
+      tip.style.display = "block";
+      w = tip.offsetWidth;
+      h = tip.offsetHeight;
+      if (!custom)
+        shownTip = { event: hover.event, model, yTicks, width: w, height: h };
+    }
+    const stageW = dom.stage.clientWidth;
+    const stageH = dom.stage.clientHeight;
+    let left = hover.anchorX + 16;
+    if (left + w > stageW - 4) left = hover.anchorX - 16 - w;
+    left = Math.max(4, Math.min(left, stageW - w - 4));
+    const top = Math.max(4, Math.min(hover.anchorY - h / 2, stageH - h - 4));
+    tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
+  }
+
+  /** Crosshair, point markers, bar bands and heatmap cell outlines */
+  function renderMarks(sc: Scales | null) {
     let markerCount = 0;
-    let highlightCount = 0;
+    let bandCount = 0;
+    let cellCount = 0;
+    shownMarks = null;
     dom.crosshair.style.display = "none";
     if (hover && sc) {
+      shownMarks = { event: hover.event, model, scales: sc };
       const { plot } = sc;
       dom.hover.style.width = `${dom.stage.clientWidth}px`;
       dom.hover.style.height = `${dom.stage.clientHeight}px`;
@@ -529,10 +601,18 @@ export const createChart = (
         }
       }
       for (const mark of hoverMarks(model, sc, hover.event)) {
-        if (mark.kind === "bar") {
-          const el = pooled(highlights, highlightCount++, () =>
-            createBarHighlight(doc),
-          );
+        if (mark.kind === "band" || mark.kind === "cell") {
+          const el =
+            mark.kind === "band"
+              ? pooled(bands, bandCount++, () => createBand(doc), dom.underlay)
+              : pooled(cells, cellCount++, () =>
+                  styleElement(createBand(doc), {
+                    background: "transparent",
+                    borderRadius: "3px",
+                    boxShadow:
+                      "0 0 0 1.5px var(--surface-color, var(--background-color, #fff)), 0 0 0 3px color-mix(in srgb, var(--text-color, #1f2937) 55%, transparent)",
+                  }),
+                );
           styleElement(el, {
             left: `${mark.x}px`,
             top: `${mark.y}px`,
@@ -548,40 +628,16 @@ export const createChart = (
           width: `${mark.size}px`,
           height: `${mark.size}px`,
           background: mark.color,
+          boxShadow: `0 0 0 4px ${mark.halo}`,
         });
       }
     }
     for (let i = markerCount; i < markers.length; i++)
       markers[i].style.display = "none";
-    for (let i = highlightCount; i < highlights.length; i++)
-      highlights[i].style.display = "none";
-
-    const tip = dom.tooltip;
-    const content =
-      hover && sc && tooltipOptions() && !drag?.moved && !pointDrag?.moved
-        ? tooltipNode(hover.event)
-        : null;
-    if (!hover || content === null || content === "") {
-      tip.style.display = "none";
-      return;
-    }
-    if (typeof content === "string") {
-      tip.textContent = content;
-      tip.style.whiteSpace = "pre";
-    } else {
-      tip.replaceChildren(content);
-      tip.style.whiteSpace = "nowrap";
-    }
-    tip.style.display = "block";
-    const stageW = dom.stage.clientWidth;
-    const stageH = dom.stage.clientHeight;
-    const w = tip.offsetWidth;
-    const h = tip.offsetHeight;
-    let left = hover.anchorX + 16;
-    if (left + w > stageW - 4) left = hover.anchorX - 16 - w;
-    left = Math.max(4, Math.min(left, stageW - w - 4));
-    const top = Math.max(4, Math.min(hover.anchorY - h / 2, stageH - h - 4));
-    tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
+    for (let i = bandCount; i < bands.length; i++)
+      bands[i].style.display = "none";
+    for (let i = cellCount; i < cells.length; i++)
+      cells[i].style.display = "none";
   }
 
   // ---------------------------------------------------------- interaction
@@ -946,8 +1002,11 @@ export const createChart = (
 
   const refreshTheme = () => {
     if (destroyed) return;
-    theme = readTheme(dom.root, options.palette);
-    themeVersion++;
+    const next = readTheme(dom.root, options.palette);
+    // the watcher fires on any class / style change of <html> / <body>:
+    // keep the GPU buffers unless a color really changed
+    if (themeColorsChanged(theme, next)) themeVersion++;
+    theme = next;
     rebuild();
   };
   const unwatchTheme = watchTheme(refreshTheme);

@@ -13,7 +13,11 @@ export type ChartRendererPreference = "auto" | ChartRendererKind;
 export type ChartAxisType = "linear" | "time" | "category";
 
 /** How a series is drawn */
-export type ChartSeriesType = "line" | "area" | "bar" | "scatter";
+export type ChartSeriesType =
+  "line" | "area" | "bar" | "scatter" | "candlestick" | "heatmap";
+
+/** Shape of a line (and of the edge of an area) between its points */
+export type ChartCurve = "linear" | "smooth" | "step";
 
 /** X value of a datum: a number, a `Date` (time axis) or a category name */
 export type ChartXValue = number | Date | string;
@@ -22,24 +26,43 @@ export type ChartXValue = number | Date | string;
 export interface ChartPointDatum {
   /** X value; the datum index when omitted */
   x?: ChartXValue;
-  /** Y value; `null` leaves a gap */
-  y: number | null;
+  /**
+   * Y value; `null` leaves a gap. Candlesticks: the close. Heatmaps: the
+   * row (a number, or a category name of a `category` y axis)
+   */
+  y: number | string | null;
   /** Diameter of the dot in CSS pixels (scatter) */
   size?: number;
-  /** Color of the dot (scatter); any CSS color */
+  /** Color of the dot or bar (scatter, bar); any CSS color */
   color?: string;
   /** Text drawn next to the dot (scatter with `showLabels`) and shown in the tooltip */
   label?: string;
+  /** Candlestick: opening value */
+  open?: number;
+  /** Candlestick: highest value */
+  high?: number;
+  /** Candlestick: lowest value */
+  low?: number;
+  /** Heatmap: value of the cell, mapped to `colorScale` */
+  value?: number | null;
 }
 
 /** Column-oriented data: the fastest form for large data sets (typed arrays are used as is) */
 export interface ChartColumnData {
   /** X values; the index when omitted */
   x?: ArrayLike<number> | readonly ChartXValue[];
-  /** Y values (`NaN` / `null` leave a gap) */
-  y: ArrayLike<number> | readonly (number | null)[];
+  /** Y values (`NaN` / `null` leave a gap); candlesticks: the closes; heatmaps: the rows */
+  y: ArrayLike<number> | readonly (number | string | null)[];
   /** Per-point diameters in CSS pixels (scatter) */
   size?: ArrayLike<number>;
+  /** Candlestick: opening values */
+  open?: ArrayLike<number>;
+  /** Candlestick: highest values */
+  high?: ArrayLike<number>;
+  /** Candlestick: lowest values */
+  low?: ArrayLike<number>;
+  /** Heatmap: values of the cells */
+  value?: ArrayLike<number> | readonly (number | null)[];
 }
 
 /**
@@ -80,18 +103,46 @@ export interface ChartSeries {
   pointSize?: number;
   /** Fill opacity (area, scatter), 0-1 */
   opacity?: number;
-  /** Bars with the same stack id are stacked */
+  /**
+   * Series with the same stack id are stacked (bars, areas and lines; see
+   * `stackMode` for 100% stacks)
+   */
   stack?: string;
   /** Hides the series (it stays in the legend) */
   hidden?: boolean;
-  /** Draws the `label` of each point next to it (scatter) */
+  /**
+   * Draws the `label` of each point next to it (scatter) or the value above
+   * each bar (bar)
+   */
   showLabels?: boolean;
+  /**
+   * Shape of the line between the points: straight, smooth (monotone, never
+   * overshoots the data) or steps (line / area)
+   * @default "linear"
+   */
+  curve?: ChartCurve;
+  /** Candlestick: color of the rising candles (close >= open); `--success-color` by default */
+  upColor?: string;
+  /** Candlestick: color of the falling candles; `--danger-color` by default */
+  downColor?: string;
+  /**
+   * Heatmap: colors from the lowest to the highest value (two or more)
+   * @default a ramp from the background to the series color
+   */
+  colorScale?: readonly string[];
+  /** Heatmap: values mapped to the ends of `colorScale`; the data range by default */
+  valueRange?: readonly [number, number];
+  /** Bar / heatmap: corner radius in CSS pixels (bars: 3, heatmap cells: 2) */
+  radius?: number;
+  /** Formats the values of this series in the tooltip (the y axis format by default) */
+  format?: (value: number) => string;
 }
 
 /** Options of an axis */
 export interface ChartAxisOptions {
   /**
-   * Scale of the axis: `linear` numbers, `time` timestamps / dates, `category` names
+   * Scale of the axis: `linear` numbers, `time` timestamps / dates, `category`
+   * names (x axis, and y axis of heatmaps)
    * @default "linear"
    */
   type?: ChartAxisType;
@@ -283,6 +334,12 @@ export interface ChartOptions {
   palette?: readonly string[];
   /** Accessible name of the chart */
   ariaLabel?: string;
+  /**
+   * `percent` scales every stack to 100% at each x (the axis shows percents,
+   * the tooltip the actual values)
+   * @default "normal"
+   */
+  stackMode?: "normal" | "percent";
 }
 
 /** A point under the pointer */
@@ -297,6 +354,12 @@ export interface ChartHoverItem {
   /** Resolved color of the point */
   color: string;
   label?: string;
+  /** Candlestick: open / high / low (`y` is the close) */
+  open?: number;
+  high?: number;
+  low?: number;
+  /** Heatmap: value of the cell */
+  value?: number;
 }
 
 /** Hover / click payload */

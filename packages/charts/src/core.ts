@@ -4,6 +4,33 @@
 // createChartController nothing at all.
 
 export { createChart } from "./engine/chart";
+export { createShapeChart } from "./engine/shapes/chart";
+export {
+  createCanvasShapeChart,
+  type CanvasShapeChartConfig,
+  type CanvasShapeChartInstance,
+} from "./engine/shapes/canvas";
+export type {
+  FunnelChartOptions,
+  GaugeBand,
+  GaugeChartOptions,
+  PieChartOptions,
+  RadarChartOptions,
+  RadarIndicator,
+  RadarSeries,
+  ShapeChartCommonOptions,
+  ShapeChartEventMap,
+  ShapeChartInstance,
+  ShapeChartOptions,
+  ShapeChartType,
+  ShapeDatum,
+  ShapeHoverEvent,
+  ShapeLegendOptions,
+  ShapeTooltipOptions,
+  ShapeToggleEvent,
+  TreemapChartOptions,
+  TreemapNode,
+} from "./engine/shapes/types";
 export {
   createCanvasChart,
   type CanvasChartConfig,
@@ -32,15 +59,20 @@ export {
 } from "./engine/controller";
 export { formatCompact } from "./engine/format";
 export {
+  heatmapChartOptions,
   quadrantCenter,
   quadrantChartOptions,
   quadrantOf,
+  sparklineOptions,
+  type HeatmapCell,
+  type HeatmapConfig,
   type QuadrantAxisLabels,
   type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantRegion,
   type QuadrantRegions,
+  type SparklineConfig,
 } from "./engine/presets";
 export type { ChartThemeInput } from "./engine/theme";
 export type {
@@ -48,6 +80,7 @@ export type {
   ChartAxisOptions,
   ChartAxisType,
   ChartColumnData,
+  ChartCurve,
   ChartDragEvent,
   ChartEventMap,
   ChartHoverEvent,

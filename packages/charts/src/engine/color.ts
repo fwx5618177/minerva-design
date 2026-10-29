@@ -168,6 +168,45 @@ export const domColorResolver =
   (value, fallback) =>
     resolveColor(value, element, fallback);
 
+/** A resolver remembering its results; `null` marks unresolvable colors */
+export interface MemoizedColorResolver extends ColorResolver {
+  readonly cache: ReadonlyMap<string, Rgba | null>;
+}
+
+const UNRESOLVED: Rgba = [NaN, NaN, NaN, NaN];
+
+/**
+ * Caches the colors of `resolve` by input string (DOM probes force a style
+ * recalculation). `resolve` must return `fallback` itself when it cannot
+ * resolve a color, as the resolvers of this module do. Create a new one to
+ * invalidate it (e.g. when the theme changes).
+ */
+export const memoizeColorResolver = (
+  resolve: ColorResolver,
+): MemoizedColorResolver => {
+  const cache = new Map<string, Rgba | null>();
+  const memoized = (value: string, fallback: Rgba): Rgba => {
+    let hit = cache.get(value);
+    if (hit === undefined) {
+      const resolved = resolve(value, UNRESOLVED);
+      hit = resolved === UNRESOLVED ? null : resolved;
+      cache.set(value, hit);
+    }
+    return hit ?? fallback;
+  };
+  return Object.assign(memoized, { cache });
+};
+
+/** Same channels (both `null` included) */
+export const sameColor = (a: Rgba | null, b: Rgba | null): boolean =>
+  a === b ||
+  (!!a &&
+    !!b &&
+    a[0] === b[0] &&
+    a[1] === b[1] &&
+    a[2] === b[2] &&
+    a[3] === b[3]);
+
 const hex2 = (v: number) =>
   Math.round(clamp01(v) * 255)
     .toString(16)
@@ -196,6 +235,22 @@ export const mix = (a: Rgba, b: Rgba, t: number): Rgba => [
   a[2] + (b[2] - a[2]) * t,
   a[3] + (b[3] - a[3]) * t,
 ];
+
+/** Inverse of `packColor` */
+export const unpackColor = (packed: number): Rgba => [
+  (packed & 0xff) / 255,
+  ((packed >>> 8) & 0xff) / 255,
+  ((packed >>> 16) & 0xff) / 255,
+  ((packed >>> 24) & 0xff) / 255,
+];
+
+/** Color at `t` (0-1) of a ramp through `stops` */
+export const rampColor = (stops: readonly Rgba[], t: number): Rgba => {
+  if (stops.length === 1) return stops[0];
+  const p = clamp01(t) * (stops.length - 1);
+  const i = Math.min(stops.length - 2, Math.floor(p));
+  return mix(stops[i], stops[i + 1], p - i);
+};
 
 /** Relative luminance (sRGB approximation) */
 export const luminance = (c: Rgba): number =>

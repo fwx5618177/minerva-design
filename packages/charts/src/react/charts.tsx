@@ -1,20 +1,28 @@
 import { useMemo, type CSSProperties } from "react";
 import {
+  areaSeries,
   barSeries,
+  candlestickSeries,
+  heatmapChartOptions,
   lineSeries,
   quadrantChartOptions,
   quadrantOf,
   scatterSeries,
+  sparklineOptions,
   type QuadrantCorner,
 } from "../engine/presets";
 import type { ChartRect } from "../engine/types";
 import { ChartBase, engineOptions } from "./Chart";
 import type {
+  AreaChartProps,
   BarChartProps,
+  CandlestickChartProps,
   ChartCommonProps,
+  HeatmapChartProps,
   LineChartProps,
   QuadrantChartProps,
   ScatterChartProps,
+  SparklineProps,
 } from "./types";
 
 const frameProps = (props: ChartCommonProps) => ({
@@ -33,8 +41,81 @@ const frameProps = (props: ChartCommonProps) => ({
 
 /** Line (or area) chart; handles millions of points on the GPU */
 export function LineChart(props: LineChartProps) {
-  const { series: input, area = false } = props;
-  const series = useMemo(() => lineSeries(input, area), [input, area]);
+  const {
+    series: input,
+    area = false,
+    curve,
+    stacked = false,
+    percent = false,
+  } = props;
+  const series = useMemo(
+    () => lineSeries(input, area, { curve, stacked: stacked || percent }),
+    [input, area, curve, stacked, percent],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({
+        ...props,
+        series,
+        stackMode: percent ? "percent" : undefined,
+      })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/** Area chart: smooth by default, stacked or 100% stacked */
+export function AreaChart(props: AreaChartProps) {
+  const {
+    series: input,
+    curve = "smooth",
+    stacked = false,
+    percent = false,
+  } = props;
+  const series = useMemo(
+    () => areaSeries(input, { curve, stacked: stacked || percent }),
+    [input, curve, stacked, percent],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({
+        ...props,
+        series,
+        stackMode: percent ? "percent" : undefined,
+      })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/** Bar chart: grouped side by side, stacked or 100% stacked, with optional value labels */
+export function BarChart(props: BarChartProps) {
+  const {
+    series: input,
+    stacked = false,
+    percent = false,
+    labels = false,
+  } = props;
+  const series = useMemo(
+    () => barSeries(input, stacked || percent, labels),
+    [input, stacked, percent, labels],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({
+        ...props,
+        series,
+        stackMode: percent ? "percent" : undefined,
+      })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/** Candlestick (OHLC) chart: rising and falling candles, zoomable on the GPU */
+export function CandlestickChart(props: CandlestickChartProps) {
+  const { series: input } = props;
+  const series = useMemo(() => candlestickSeries(input), [input]);
   return (
     <ChartBase
       options={engineOptions({ ...props, series })}
@@ -43,14 +124,113 @@ export function LineChart(props: LineChartProps) {
   );
 }
 
-/** Bar chart: grouped side by side, or stacked */
-export function BarChart(props: BarChartProps) {
-  const { series: input, stacked = false } = props;
-  const series = useMemo(() => barSeries(input, stacked), [input, stacked]);
+/** Heatmap: a grid of cells colored by value (categories or numbers on both axes) */
+export function HeatmapChart(props: HeatmapChartProps) {
+  const {
+    data,
+    xCategories,
+    yCategories,
+    colorScale,
+    valueRange,
+    name,
+    radius,
+    format,
+  } = props;
+  const series = useMemo(
+    () =>
+      heatmapChartOptions({
+        data,
+        xCategories,
+        yCategories,
+        colorScale,
+        valueRange,
+        name,
+        radius,
+        format,
+      }).series,
+    [
+      data,
+      xCategories,
+      yCategories,
+      colorScale,
+      valueRange,
+      name,
+      radius,
+      format,
+    ],
+  );
+  const base = engineOptions({ ...props, series });
   return (
     <ChartBase
-      options={engineOptions({ ...props, series })}
+      options={{
+        ...heatmapChartOptions(
+          { data, xCategories, yCategories },
+          {
+            ...base,
+            legend: props.legend,
+            interaction: props.interaction,
+            tooltip: props.tooltip,
+          },
+        ),
+        series,
+      }}
       {...frameProps(props)}
+    />
+  );
+}
+
+/** Word-sized chart without axes: a trend in a table cell, a KPI card, ... */
+export function Sparkline(props: SparklineProps) {
+  const {
+    data,
+    type,
+    color,
+    curve,
+    name,
+    reference,
+    format,
+    height = 48,
+    width,
+    renderer,
+    tooltip,
+    palette,
+    ariaLabel,
+    className,
+    style,
+    ref,
+    onHover,
+    renderTooltip,
+  } = props;
+  const options = useMemo(
+    () =>
+      sparklineOptions(
+        { data, type, color, curve, name, reference, format },
+        { renderer, tooltip, palette, ariaLabel },
+      ),
+    [
+      data,
+      type,
+      color,
+      curve,
+      name,
+      reference,
+      format,
+      renderer,
+      tooltip,
+      palette,
+      ariaLabel,
+    ],
+  );
+  return (
+    <ChartBase
+      options={options}
+      height={height}
+      width={width}
+      className={className}
+      style={style}
+      handleRef={ref}
+      onHover={onHover}
+      renderTooltip={renderTooltip}
     />
   );
 }

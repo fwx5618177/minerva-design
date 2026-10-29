@@ -3,9 +3,12 @@
 // pixel, so it stays usable with large data sets.
 
 import { decimateMinMax } from "../decimate";
-import type { Rgba } from "../color";
+import { unpackColor as unpack, type Rgba } from "../color";
 import {
+  AREA_STRIDE,
   GAP,
+  type AreaItem,
+  type BarItem,
   type ChartRenderer,
   type RenderFrame,
   type RenderItem,
@@ -18,25 +21,79 @@ export const SCATTER_PIXEL_THRESHOLD = 20000;
 const rgba = (c: Rgba, alpha: number) =>
   `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${c[3] * alpha})`;
 
-const unpack = (packed: number): Rgba => [
-  (packed & 0xff) / 255,
-  ((packed >>> 8) & 0xff) / 255,
-  ((packed >>> 16) & 0xff) / 255,
-  ((packed >>> 24) & 0xff) / 255,
-];
-
 const isGap = (v: number) => !Number.isFinite(v) || Math.abs(v) >= GAP * 0.5;
 
 /** First point index whose relative x is >= value (sorted, interleaved) */
-const lowerBoundX = (points: Float32Array, count: number, value: number) => {
+const lowerBoundX = (
+  points: Float32Array,
+  count: number,
+  value: number,
+  stride = 2,
+) => {
   let lo = 0;
   let hi = count;
   while (lo < hi) {
     const mid = (lo + hi) >>> 1;
-    if (points[mid * 2] < value) lo = mid + 1;
+    if (points[mid * stride] < value) lo = mid + 1;
     else hi = mid;
   }
   return lo;
+};
+
+/**
+ * Min-max decimation of area points (x, top, bottom): per pixel column the
+ * first, lowest, highest and last tops are kept with their bottoms
+ */
+const decimateArea = (
+  points: Float32Array,
+  start: number,
+  end: number,
+  column: (x: number) => number,
+): { points: Float64Array; length: number } => {
+  const out = new Float64Array(Math.max(0, end - start) * AREA_STRIDE);
+  let length = 0;
+  const push = (i: number) => {
+    out[length * 3] = points[i * 3];
+    out[length * 3 + 1] = points[i * 3 + 1];
+    out[length * 3 + 2] = points[i * 3 + 2];
+    length++;
+  };
+  let col = NaN;
+  let first = -1;
+  let min = -1;
+  let max = -1;
+  let last = -1;
+  const flush = () => {
+    if (first < 0) return;
+    const picks = [first, min, max, last].sort((a, b) => a - b);
+    let prev = -1;
+    for (const i of picks) {
+      if (i !== prev) push(i);
+      prev = i;
+    }
+    first = -1;
+  };
+  for (let i = start; i < end; i++) {
+    const y = points[i * 3 + 1];
+    if (isGap(points[i * 3]) || isGap(y) || isGap(points[i * 3 + 2])) {
+      flush();
+      col = NaN;
+      push(i);
+      continue;
+    }
+    const c = Math.floor(column(points[i * 3]));
+    if (c !== col || first < 0) {
+      flush();
+      col = c;
+      first = min = max = last = i;
+    } else {
+      if (y < points[min * 3 + 1]) min = i;
+      if (y > points[max * 3 + 1]) max = i;
+      last = i;
+    }
+  }
+  flush();
+  return { points: out, length };
 };
 
 export interface Canvas2dPainter {
@@ -84,7 +141,7 @@ export const createCanvas2dPainter = (
 
   /** Points actually drawn: decimated when there are many per pixel */
   const visiblePoints = (
-    item: Extract<RenderItem, { kind: "line" | "area" }>,
+    item: Extract<RenderItem, { kind: "line" }>,
     frame: RenderFrame,
   ): { points: ArrayLike<number>; length: number } => {
     if (!item.sorted || item.count <= frame.width * 2) {
@@ -127,76 +184,106 @@ export const createCanvas2dPainter = (
     ctx.stroke();
   };
 
-  const drawArea = (
-    item: Extract<RenderItem, { kind: "area" }>,
-    frame: RenderFrame,
-  ) => {
+  const drawArea = (item: AreaItem, frame: RenderFrame) => {
     const m = mapper(frame);
-    const { points, length } = visiblePoints(item, frame);
-    const base = m.py(item.baseline);
-    const gradient = ctx.createLinearGradient(0, 0, 0, base);
+    let points: ArrayLike<number> = item.points;
+    let length = item.count;
+    if (item.sorted && item.count > frame.width * 2) {
+      const [x0, x1] = m.xRange();
+      const start = Math.max(
+        0,
+        lowerBoundX(item.points, item.count, x0, AREA_STRIDE) - 1,
+      );
+      const end = Math.min(
+        item.count,
+        lowerBoundX(item.points, item.count, x1, AREA_STRIDE) + 1,
+      );
+      ({ points, length } = decimateArea(item.points, start, end, m.px));
+    }
+    const gradient = ctx.createLinearGradient(0, 0, 0, frame.height);
     gradient.addColorStop(0, rgba(item.color, item.opacity));
-    gradient.addColorStop(1, rgba(item.color, item.opacity * 0.3));
+    gradient.addColorStop(1, rgba(item.color, item.opacity * 0.25));
     ctx.fillStyle = gradient;
     ctx.beginPath();
+    // each run without gaps: along the tops, back along the bottoms
     let runStart = -1;
-    let lastX = 0;
-    const close = () => {
+    const close = (end: number) => {
       if (runStart < 0) return;
-      ctx.lineTo(lastX, base);
+      for (let k = end - 1; k >= runStart; k--) {
+        ctx.lineTo(m.px(points[k * 3]), m.py(points[k * 3 + 2]));
+      }
       ctx.closePath();
       runStart = -1;
     };
     for (let i = 0; i < length; i++) {
-      const x = points[i * 2];
-      const y = points[i * 2 + 1];
-      if (isGap(x) || isGap(y)) {
-        close();
+      const x = points[i * 3];
+      const y = points[i * 3 + 1];
+      if (isGap(x) || isGap(y) || isGap(points[i * 3 + 2])) {
+        close(i);
         continue;
       }
-      const px = m.px(x);
       if (runStart < 0) {
         runStart = i;
-        ctx.moveTo(px, base);
+        ctx.moveTo(m.px(x), m.py(y));
+      } else {
+        ctx.lineTo(m.px(x), m.py(y));
       }
-      ctx.lineTo(px, m.py(y));
-      lastX = px;
     }
-    close();
+    close(length);
     ctx.fill();
   };
 
-  const drawBars = (
-    item: Extract<RenderItem, { kind: "bar" }>,
-    frame: RenderFrame,
-  ) => {
+  const drawBars = (item: BarItem, frame: RenderFrame) => {
     const m = mapper(frame);
-    const half = Math.max(
-      Math.abs(item.halfWidth * frame.transform.xScale) * 0.5 * frame.width,
-      0.5,
-    );
-    const r = item.radius * frame.dpr;
-    ctx.fillStyle = rgba(item.color, 1);
-    ctx.beginPath();
-    const v = item.instances;
+    const dpr = frame.dpr;
+    const minHalf = item.minHalf * dpr;
+    const rawHalf =
+      Math.abs(item.halfWidth * frame.transform.xScale) * 0.5 * frame.width;
+    const r = item.radius * dpr;
+    const f = new Float32Array(item.instances, 0, item.count * 4);
+    const u = new Uint32Array(item.instances, 0, item.count * 4);
+    const [x0, x1] = m.xRange();
+    const pad = Math.abs(item.halfWidth);
+    // one path per color
+    const groups = new Map<number, number[]>();
     for (let i = 0; i < item.count; i++) {
-      const x = v[i * 3];
-      const y0 = v[i * 3 + 1];
-      const y1 = v[i * 3 + 2];
-      if (isGap(x) || isGap(y0) || isGap(y1)) continue;
-      const cx = m.px(x);
-      const a = m.py(y0);
-      const b = m.py(y1);
-      const top = Math.min(a, b);
-      const height = Math.abs(a - b);
-      const radius = Math.min(r, half, height / 2);
-      if (radius > 0.5 && typeof ctx.roundRect === "function") {
-        ctx.roundRect(cx - half, top, half * 2, height, radius);
-      } else {
-        ctx.rect(cx - half, top, half * 2, height);
-      }
+      const x = f[i * 4];
+      if (isGap(x) || isGap(f[i * 4 + 1]) || isGap(f[i * 4 + 2])) continue;
+      if (x < x0 - pad || x > x1 + pad) continue;
+      const packed = u[i * 4 + 3];
+      let list = groups.get(packed);
+      if (!list) groups.set(packed, (list = []));
+      list.push(i);
     }
-    ctx.fill();
+    const rounded = typeof ctx.roundRect === "function";
+    for (const [packed, list] of groups) {
+      ctx.fillStyle = rgba(unpack(packed), 1);
+      ctx.beginPath();
+      for (const i of list) {
+        const cx = m.px(f[i * 4]);
+        const a = m.py(f[i * 4 + 1]);
+        const b = m.py(f[i * 4 + 2]);
+        const rawHh = Math.abs(a - b) / 2;
+        // the gap between cells fades out on small cells (like the shaders)
+        const fade = Math.min(
+          1,
+          Math.max(0, (Math.min(rawHalf, rawHh) - 3 * dpr) / (2 * dpr)),
+        );
+        const inset =
+          item.inset * dpr * fade - (item.inset > 0 ? 0.5 * (1 - fade) : 0);
+        const half = Math.max(rawHalf - inset, 0.5, minHalf);
+        const hh = Math.max(rawHh - inset, minHalf);
+        if (hh <= 0) continue;
+        const cy = (a + b) / 2;
+        const radius = Math.min(r, half, hh);
+        if (radius > 0.5 && rounded) {
+          ctx.roundRect(cx - half, cy - hh, half * 2, hh * 2, radius);
+        } else {
+          ctx.rect(cx - half, cy - hh, half * 2, hh * 2);
+        }
+      }
+      ctx.fill();
+    }
   };
 
   /** One square per occupied cell (the last point of a cell wins, like the GPU) */

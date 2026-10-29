@@ -7,6 +7,8 @@ export interface ChartDom {
   legend: HTMLDivElement;
   stage: HTMLDivElement;
   background: HTMLCanvasElement;
+  /** Hover band of bars, drawn below the data */
+  underlay: HTMLDivElement;
   foreground: HTMLCanvasElement;
   hover: HTMLDivElement;
   crosshair: HTMLDivElement;
@@ -77,11 +79,17 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   }) as HTMLDivElement;
   hover.setAttribute("aria-hidden", "true");
 
+  const underlay = assign(layer(doc, "div"), {
+    right: "0",
+    bottom: "0",
+  }) as HTMLDivElement;
+  underlay.setAttribute("aria-hidden", "true");
+
   const crosshair = assign(doc.createElement("div"), {
     position: "absolute",
     width: "0",
     borderLeft:
-      "1px dashed color-mix(in srgb, var(--text-secondary-color, #6b7280) 55%, transparent)",
+      "1px dashed color-mix(in srgb, var(--text-secondary-color, #6b7280) 45%, transparent)",
     display: "none",
   }) as HTMLDivElement;
   hover.appendChild(crosshair);
@@ -95,17 +103,18 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
     pointerEvents: "none",
     minWidth: "128px",
     maxWidth: "320px",
-    padding: "8px 10px",
-    borderRadius: "8px",
-    border: "1px solid var(--border-color, #e5e7eb)",
+    padding: "8px 12px",
+    borderRadius: "10px",
+    border:
+      "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 60%, transparent)",
     background: "var(--surface-elevated-color, var(--background-color, #fff))",
     color: "var(--text-color, #1f2937)",
     boxShadow:
-      "0 8px 24px -6px rgba(15, 23, 42, 0.18), 0 2px 6px -2px rgba(15, 23, 42, 0.12)",
+      "0 12px 32px -8px rgba(15, 23, 42, 0.16), 0 4px 10px -4px rgba(15, 23, 42, 0.08)",
     fontSize: "12px",
-    lineHeight: "18px",
+    lineHeight: "20px",
     whiteSpace: "nowrap",
-    transition: "transform 60ms ease-out",
+    transition: "transform 80ms ease-out",
   }) as HTMLDivElement;
   tooltip.className = "minerva-chart-tooltip";
   tooltip.setAttribute("role", "tooltip");
@@ -121,7 +130,7 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   }) as HTMLDivElement;
   live.setAttribute("aria-live", "polite");
 
-  stage.append(background, foreground, hover, tooltip, live);
+  stage.append(background, underlay, foreground, hover, tooltip, live);
   root.append(legend, stage);
   container.appendChild(root);
   return {
@@ -129,6 +138,7 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
     legend,
     stage,
     background,
+    underlay,
     foreground,
     hover,
     crosshair,
@@ -162,27 +172,25 @@ export const swatch = (
   return el;
 };
 
-/** Marker of a hovered point (dot with a ring in the background color) */
+/** Marker of a hovered point: a dot with a thin ring in the background color and a soft halo */
 export const createMarker = (doc: Document) =>
   assign(doc.createElement("div"), {
     position: "absolute",
     boxSizing: "border-box",
     borderRadius: "50%",
     border: "2px solid var(--surface-color, var(--background-color, #fff))",
-    boxShadow:
-      "0 0 0 1px rgba(15, 23, 42, 0.12), 0 1px 4px rgba(15, 23, 42, 0.25)",
     transform: "translate(-50%, -50%)",
+    transition: "box-shadow 120ms ease-out",
   }) as HTMLDivElement;
 
-/** Highlight of a hovered bar */
-export const createBarHighlight = (doc: Document) =>
+/** Band behind the hovered bars (or outline of a heatmap cell) */
+export const createBand = (doc: Document) =>
   assign(doc.createElement("div"), {
     position: "absolute",
     boxSizing: "border-box",
-    borderRadius: "4px",
-    background: "rgba(255, 255, 255, 0.18)",
-    boxShadow:
-      "0 0 0 2px var(--surface-color, var(--background-color, #fff)) inset",
+    borderRadius: "6px",
+    background:
+      "color-mix(in srgb, var(--text-color, #1f2937) 6%, transparent)",
   }) as HTMLDivElement;
 
 export { assign as styleElement };

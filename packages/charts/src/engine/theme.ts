@@ -2,9 +2,12 @@
 
 import {
   domColorResolver,
+  memoizeColorResolver,
   mix,
   resolveStaticColor,
+  sameColor,
   type ColorResolver,
+  type MemoizedColorResolver,
   type Rgba,
 } from "./color";
 
@@ -39,7 +42,10 @@ const DEFAULT_PALETTE = [
 const readVar = (style: CSSStyleDeclaration | null, name: string) =>
   style?.getPropertyValue(name).trim() ?? "";
 
-/** Reads the theme from the computed style of `element` */
+/**
+ * Reads the theme from the computed style of `element`. Its resolver caches
+ * the colors (DOM probes are costly): read the theme again to see new values.
+ */
 export const readTheme = (
   element: Element | null,
   palette?: readonly string[],
@@ -50,10 +56,46 @@ export const readTheme = (
       : null;
   return buildTheme(
     (name) => readVar(style, name),
-    domColorResolver(element),
+    memoizeColorResolver(domColorResolver(element)),
     palette,
     style?.fontFamily ?? "",
   );
+};
+
+const THEME_COLORS = [
+  "text",
+  "textMuted",
+  "grid",
+  "axis",
+  "background",
+  "surface",
+  "primary",
+] as const;
+
+/**
+ * Whether `next` (a re-read of `previous`) resolves any color differently:
+ * the theme colors, the palette and every color `previous` has resolved so
+ * far (series, points, annotations...). `true` when it cannot tell.
+ */
+export const themeColorsChanged = (
+  previous: ChartTheme,
+  next: ChartTheme,
+): boolean => {
+  if (previous === next) return false;
+  if (previous.palette.length !== next.palette.length) return true;
+  if (previous.palette.some((c, i) => !sameColor(c, next.palette[i])))
+    return true;
+  if (THEME_COLORS.some((key) => !sameColor(previous[key], next[key])))
+    return true;
+  const cache = (previous.resolve as Partial<MemoizedColorResolver> | undefined)
+    ?.cache;
+  if (!cache || !next.resolve) return true;
+  const probe: Rgba = [NaN, NaN, NaN, NaN];
+  for (const [value, color] of cache) {
+    const resolved = next.resolve(value, probe);
+    if (!sameColor(color, resolved === probe ? null : resolved)) return true;
+  }
+  return false;
 };
 
 /** Theme of the charts drawn without a DOM (mini-programs, React Native) */

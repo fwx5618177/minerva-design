@@ -48,23 +48,26 @@ export interface LineItem extends RenderItemBase {
 
 export interface AreaItem extends RenderItemBase {
   kind: "area";
+  /** Interleaved relative x, y (top) and y of the bottom edge (baseline or stack below) */
   points: Float32Array;
   count: number;
-  /** Relative y of the baseline */
-  baseline: number;
   opacity: number;
   sorted: boolean;
 }
 
 export interface BarItem extends RenderItemBase {
   kind: "bar";
-  /** Interleaved relative x (center), y0, y1 */
-  instances: Float32Array;
+  /** Per bar: relative x (center) f32, y0 f32, y1 f32, color unorm8x4 */
+  instances: ArrayBuffer;
   count: number;
   /** Half of the bar width, in relative x units */
   halfWidth: number;
   /** Corner radius in CSS pixels */
   radius: number;
+  /** Space removed on every side, in CSS pixels (heatmap cells) */
+  inset: number;
+  /** Smallest half width / half height, in CSS pixels (wicks, flat candles) */
+  minHalf: number;
   /** Instances are sorted by x */
   sorted: boolean;
 }
@@ -94,3 +97,7 @@ export interface ChartRenderer {
 export type RendererLostHandler = () => void;
 
 export const SCATTER_STRIDE = 16;
+/** Bytes per bar instance */
+export const BAR_STRIDE = 16;
+/** Floats per area point */
+export const AREA_STRIDE = 3;

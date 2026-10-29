@@ -4,7 +4,8 @@
 // only draw: createCanvasChart on any 2D context, the React Native charts
 // with views.
 
-import { toCss } from "./color";
+import { toCss, unpackColor } from "./color";
+import { curvePoints } from "./curve";
 import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
 import { createScales, type Rect } from "./layout";
@@ -22,6 +23,7 @@ import {
   hitTest,
   hoverMarks,
   layoutChart,
+  legendShape,
   resolveAnnotations,
   sameHover,
   showsCrosshair,
@@ -287,8 +289,7 @@ export const createChartController = (
         id: s.id,
         name: s.name,
         color: s.colorCss,
-        shape:
-          s.type === "scatter" ? "dot" : s.type === "line" ? "line" : "square",
+        shape: legendShape(s.type),
         hidden: s.hidden,
         box: { x, y: row * LEGEND_ROW, width: w, height: LEGEND_ROW },
       });
@@ -372,7 +373,12 @@ export const createChartController = (
       top: legendTop,
       measure: (text) => measure(text),
     });
-    const labels = collectPointLabels(model, view, layout.scales);
+    const labels = collectPointLabels(
+      model,
+      view,
+      layout.scales,
+      layout.yTicks,
+    );
     const occupied: Rect[] = [];
     const labelHeight = theme.fontSize + 4;
     for (const a of annotations) {
@@ -846,6 +852,8 @@ export interface ChartAreaPrimitive {
   /** Y pixel of the baseline */
   baseline: number;
   segments: number[][];
+  /** Stacked areas: y pixel of the bottom edge under every point of `segments` */
+  bottoms?: number[][];
 }
 
 export interface ChartBarPrimitive {
@@ -854,6 +862,10 @@ export interface ChartBarPrimitive {
   color: string;
   /** Interleaved x, y, width, height */
   rects: number[];
+  /** CSS color of every rect (candlesticks, heatmap cells, colored bars); `color` otherwise */
+  colors?: string[];
+  /** Corner radius in pixels */
+  radius?: number;
 }
 
 export interface ChartDotPrimitive {
@@ -909,6 +921,15 @@ const visibleRange = (
   ];
 };
 
+const ORDER = {
+  heatmap: 0,
+  area: 1,
+  bar: 2,
+  candlestick: 3,
+  line: 4,
+  scatter: 5,
+} as const;
+
 /**
  * Data of a scene as simple shapes in pixels of the chart, for hosts
  * without a canvas (React Native views, SVG): lines are decimated to a few
@@ -925,38 +946,78 @@ export const scenePrimitives = (
   const maxDots = limits.maxDots ?? 4000;
   const maxBars = limits.maxBars ?? 2000;
   const column = Math.max(1, limits.columnWidth ?? 1);
-  const order = { area: 0, bar: 1, line: 2, scatter: 3 } as const;
   const out: ChartPrimitive[] = [];
   const series = model.series
     .filter((s) => !s.hidden && s.cols.count > 0)
-    .sort((a, b) => order[a.type] - order[b.type] || a.index - b.index);
+    .sort((a, b) => ORDER[a.type] - ORDER[b.type] || a.index - b.index);
   for (const s of series) {
     const { x, y, count, sorted } = s.cols;
     if (s.type === "line" || s.type === "area") {
       const [start, end] = visibleRange(x, count, sorted, view.x);
-      const interleaved = new Float64Array((end - start) * 2);
-      for (let i = start; i < end; i++) {
-        interleaved[(i - start) * 2] = x[i];
-        interleaved[(i - start) * 2 + 1] = y[i];
+      const top = s.stackTop ?? y;
+      // curve first (in data space), then decimation; the stacked bottom
+      // edge follows the same sampling
+      const curved = curvePoints(x, top, start, end, s.curve);
+      const bottom = s.stackBase
+        ? curvePoints(x, s.stackBase, start, end, s.curve).points
+        : null;
+      let n = curved.length;
+      let points = curved.points;
+      let bottoms = bottom;
+      if (sorted && n > (plot.width * 2) / column) {
+        if (bottom) {
+          // keep the bottoms aligned with the kept tops (same x)
+          const d = decimateMinMax(points, 0, n, (v) => sc.xToPx(v) / column);
+          const next = new Float64Array(d.length * 2);
+          const nextBottom = new Float64Array(d.length * 2);
+          let k = 0;
+          let j = 0;
+          for (let i = 0; i < d.length; i++) {
+            const xv = d.points[i * 2];
+            while (j < n - 1 && points[j * 2] < xv) j++;
+            next[k * 2] = xv;
+            next[k * 2 + 1] = d.points[i * 2 + 1];
+            nextBottom[k * 2] = xv;
+            nextBottom[k * 2 + 1] = bottom[j * 2 + 1];
+            k++;
+          }
+          points = next;
+          bottoms = nextBottom;
+          n = k;
+        } else {
+          const d = decimateMinMax(points, 0, n, (v) => sc.xToPx(v) / column);
+          points = d.points;
+          n = d.length;
+        }
       }
-      const n = end - start;
-      const line =
-        sorted && n > (plot.width * 2) / column
-          ? decimateMinMax(interleaved, 0, n, (v) => sc.xToPx(v) / column)
-          : { points: interleaved, length: n };
       const segments: number[][] = [];
+      const bottomSegments: number[][] = [];
       let run: number[] = [];
-      for (let i = 0; i < line.length; i++) {
-        const xv = line.points[i * 2];
-        const yv = line.points[i * 2 + 1];
-        if (!Number.isFinite(xv) || !Number.isFinite(yv)) {
-          if (run.length) segments.push(run);
+      let runBottom: number[] = [];
+      for (let i = 0; i < n; i++) {
+        const xv = points[i * 2];
+        const yv = points[i * 2 + 1];
+        const bv = bottoms ? bottoms[i * 2 + 1] : 0;
+        if (
+          !Number.isFinite(xv) ||
+          !Number.isFinite(yv) ||
+          !Number.isFinite(bv)
+        ) {
+          if (run.length) {
+            segments.push(run);
+            bottomSegments.push(runBottom);
+          }
           run = [];
+          runBottom = [];
           continue;
         }
         run.push(sc.xToPx(xv), sc.yToPx(yv));
+        if (bottoms) runBottom.push(sc.yToPx(bv));
       }
-      if (run.length) segments.push(run);
+      if (run.length) {
+        segments.push(run);
+        bottomSegments.push(runBottom);
+      }
       if (s.type === "area") {
         out.push({
           kind: "area",
@@ -965,6 +1026,7 @@ export const scenePrimitives = (
           opacity: s.opacity,
           baseline: sc.yToPx(model.baseline),
           segments,
+          ...(bottoms ? { bottoms: bottomSegments } : {}),
         });
       }
       out.push({
@@ -980,6 +1042,7 @@ export const scenePrimitives = (
       const [start, end] = visibleRange(x, count, sorted, view.x);
       const half = Math.max(s.barHalfWidth / sc.xPerPx, 0.5);
       const rects: number[] = [];
+      const colors: string[] = [];
       const merge = end - start > maxBars;
       let lastCol = NaN;
       for (let i = start; i < end; i++) {
@@ -1003,12 +1066,103 @@ export const scenePrimitives = (
         }
         lastCol = col;
         rects.push(cx - half, top, half * 2, h);
+        const pc = s.pointColors?.[i];
+        colors.push(pc ? toCss(pc) : s.colorCss);
       }
       out.push({
         kind: "bars",
         seriesIndex: s.index,
         color: s.colorCss,
         rects,
+        ...(s.pointColors ? { colors } : {}),
+        radius: s.radius,
+      });
+      continue;
+    }
+    if (s.type === "candlestick") {
+      const [start, end] = visibleRange(x, count, sorted, view.x);
+      const { open, high, low } = s.cols;
+      const half = Math.max(s.barHalfWidth / sc.xPerPx, 1);
+      const up = toCss(s.upColor);
+      const down = toCss(s.downColor);
+      const wicks: number[] = [];
+      const bodies: number[] = [];
+      const wickColors: string[] = [];
+      const bodyColors: string[] = [];
+      const step = Math.max(1, Math.ceil((end - start) / maxBars));
+      for (let i = start; i < end; i += step) {
+        const c = y[i];
+        const o = open ? open[i] : c;
+        if (!Number.isFinite(c) || !Number.isFinite(o)) continue;
+        const cx = sc.xToPx(x[i]);
+        if (cx + half < plot.x || cx - half > plot.x + plot.width) continue;
+        const color = c < o ? down : up;
+        const hi = sc.yToPx(high ? high[i] : Math.max(o, c));
+        const lo = sc.yToPx(low ? low[i] : Math.min(o, c));
+        wicks.push(cx - 0.5, Math.min(hi, lo), 1, Math.abs(lo - hi));
+        wickColors.push(color);
+        const ya = sc.yToPx(o);
+        const yb = sc.yToPx(c);
+        bodies.push(
+          cx - half,
+          Math.min(ya, yb),
+          half * 2,
+          Math.max(1, Math.abs(ya - yb)),
+        );
+        bodyColors.push(color);
+      }
+      out.push(
+        {
+          kind: "bars",
+          seriesIndex: s.index,
+          color: up,
+          rects: wicks,
+          colors: wickColors,
+        },
+        {
+          kind: "bars",
+          seriesIndex: s.index,
+          color: up,
+          rects: bodies,
+          colors: bodyColors,
+          radius: 1,
+        },
+      );
+      continue;
+    }
+    if (s.type === "heatmap") {
+      const hw = Math.abs(s.cellHalf.x / sc.xPerPx);
+      const hh = Math.abs(s.cellHalf.y / sc.yPerPx);
+      const rects: number[] = [];
+      const colors: string[] = [];
+      const inset = hw > 3 && hh > 3 ? 1 : 0;
+      for (let i = 0; i < count && rects.length / 4 < maxBars * 4; i++) {
+        const c = s.cellColors?.[i];
+        if (!c) continue;
+        const cx = sc.xToPx(x[i]);
+        const cy = sc.yToPx(y[i]);
+        if (
+          cx + hw < plot.x ||
+          cx - hw > plot.x + plot.width ||
+          cy + hh < plot.y ||
+          cy - hh > plot.y + plot.height
+        )
+          continue;
+        rects.push(
+          cx - hw + inset,
+          cy - hh + inset,
+          hw * 2 - inset * 2,
+          hh * 2 - inset * 2,
+        );
+        colors.push(toCss(unpackColor(c)));
+      }
+      out.push({
+        kind: "bars",
+        seriesIndex: s.index,
+        color: s.colorCss,
+        rects,
+        colors,
+        radius: s.radius,
       });
       continue;
     }

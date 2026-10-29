@@ -264,7 +264,7 @@ function thin(run: readonly number[], max: number): number[] {
   return out;
 }
 
-/** Vertical strips between the line and the baseline, one per column */
+/** Vertical strips between the line and the baseline (or the stack below), one per column */
 function areaStrips(
   key: string,
   run: readonly number[],
@@ -272,13 +272,17 @@ function areaStrips(
   color: string,
   opacity: number,
   plot: ChartRect,
+  /** Y pixel of the bottom edge under every point (stacked areas) */
+  bottom?: readonly number[],
 ): ReactElement[] {
   const n = run.length / 2;
   if (n < 2) return [];
   // left to right (reversed axes list their points right to left)
   const forward = run[0] <= run[n * 2 - 2];
-  const xs = (i: number) => run[(forward ? i : n - 1 - i) * 2];
-  const ys = (i: number) => run[(forward ? i : n - 1 - i) * 2 + 1];
+  const at = (i: number) => (forward ? i : n - 1 - i);
+  const xs = (i: number) => run[at(i) * 2];
+  const ys = (i: number) => run[at(i) * 2 + 1];
+  const bs = (i: number) => (bottom ? bottom[at(i)] : baseline);
   const from = Math.max(plot.x, xs(0));
   const to = Math.min(plot.x + plot.width, xs(n - 1));
   if (to <= from) return [];
@@ -293,15 +297,16 @@ function areaStrips(
     const x1 = xs(j + 1);
     const t = x1 === x0 ? 0 : Math.max(0, Math.min(1, (mid - x0) / (x1 - x0)));
     const y = ys(j) + (ys(j + 1) - ys(j)) * t;
-    if (Number.isFinite(y)) {
-      const top = Math.min(y, baseline);
+    const b = bs(j) + (bs(j + 1) - bs(j)) * t;
+    if (Number.isFinite(y) && Number.isFinite(b)) {
+      const top = Math.min(y, b);
       out.push(
         box(
           `${key}-${c}`,
           left - plot.x,
           top - plot.y,
           right - left,
-          Math.abs(baseline - y),
+          Math.abs(b - y),
           color,
           {
             opacity,
@@ -366,6 +371,7 @@ function drawData(scene: ChartScene): ReactElement[] {
             p.color,
             p.opacity,
             plot,
+            p.bottoms?.[r],
           ),
         ),
       );
@@ -416,8 +422,17 @@ function drawData(scene: ChartScene): ReactElement[] {
         count > barsLeft ? Math.ceil(count / Math.max(1, barsLeft)) : 1;
       for (let i = 0; i < count; i += stride) {
         const [x, y, w, h] = p.rects.slice(i * 4, i * 4 + 4);
+        const radius = Math.min(p.radius ?? 0, w / 2, h / 2);
         out.push(
-          box(`${key}-${i}`, x - ox, y - oy, Math.max(w, 0.5), h, p.color),
+          box(
+            `${key}-${i}`,
+            x - ox,
+            y - oy,
+            Math.max(w, 0.5),
+            h,
+            p.colors?.[i] ?? p.color,
+            radius > 0.5 ? { borderRadius: radius } : undefined,
+          ),
         );
       }
       barsLeft = Math.max(0, barsLeft - Math.ceil(count / stride));
@@ -850,20 +865,39 @@ export function drawHover(
     );
   }
   hover?.marks.forEach((m, i) => {
+    if (m.kind === "band") {
+      out.push(
+        box(`mark-${i}`, m.x, m.y, m.width, m.height, css(theme.text, 0.05), {
+          borderRadius: 6,
+        }),
+      );
+      return;
+    }
+    if (m.kind === "cell") {
+      out.push(
+        box(
+          `mark-${i}`,
+          m.x - 1.5,
+          m.y - 1.5,
+          m.width + 3,
+          m.height + 3,
+          "transparent",
+          {
+            borderRadius: 4,
+            borderWidth: 1.5,
+            borderColor: css(theme.text, 0.55),
+          },
+        ),
+      );
+      return;
+    }
+    // soft halo, then the dot with a thin ring in the background color
     out.push(
-      m.kind === "bar"
-        ? box(
-            `mark-${i}`,
-            m.x - 2,
-            m.y - 2,
-            m.width + 4,
-            m.height + 2,
-            css(theme.text, 0.08),
-          )
-        : dot(`mark-${i}`, m.x, m.y, m.size + 2, m.color, {
-            borderWidth: 2,
-            borderColor: background,
-          }),
+      dot(`halo-${i}`, m.x, m.y, m.size + 8, m.halo),
+      dot(`mark-${i}`, m.x, m.y, m.size, m.color, {
+        borderWidth: 2,
+        borderColor: background,
+      }),
     );
   });
   if (dragging) {

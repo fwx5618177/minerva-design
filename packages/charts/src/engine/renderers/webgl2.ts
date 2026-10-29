@@ -3,6 +3,8 @@
 import { instanceRange } from "./range";
 import { GLSL_AREA, GLSL_BAR, GLSL_LINE, GLSL_SCATTER } from "./shaders";
 import {
+  AREA_STRIDE,
+  BAR_STRIDE,
   SCATTER_STRIDE,
   type ChartRenderer,
   type RenderFrame,
@@ -30,7 +32,7 @@ interface ItemResources {
 const ATTRIBUTES: Record<RenderItem["kind"], string[]> = {
   line: ["a_a", "a_b"],
   area: ["a_a", "a_b"],
-  bar: ["a_inst"],
+  bar: ["a_inst", "a_color"],
   scatter: ["a_pos", "a_size", "a_color"],
 };
 
@@ -128,7 +130,6 @@ export const createWebGl2Renderer = (
     const F = gl.FLOAT;
     switch (item.kind) {
       case "line":
-      case "area":
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(0, 2, F, false, 8, first * 8);
         gl.vertexAttribDivisor(0, 1);
@@ -136,10 +137,30 @@ export const createWebGl2Renderer = (
         gl.vertexAttribPointer(1, 2, F, false, 8, first * 8 + 8);
         gl.vertexAttribDivisor(1, 1);
         break;
+      case "area": {
+        const stride = AREA_STRIDE * 4;
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 3, F, false, stride, first * stride);
+        gl.vertexAttribDivisor(0, 1);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 3, F, false, stride, (first + 1) * stride);
+        gl.vertexAttribDivisor(1, 1);
+        break;
+      }
       case "bar":
         gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(0, 3, F, false, 12, first * 12);
+        gl.vertexAttribPointer(0, 3, F, false, BAR_STRIDE, first * BAR_STRIDE);
         gl.vertexAttribDivisor(0, 1);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(
+          1,
+          4,
+          gl.UNSIGNED_BYTE,
+          true,
+          BAR_STRIDE,
+          first * BAR_STRIDE + 12,
+        );
+        gl.vertexAttribDivisor(1, 1);
         break;
       default:
         gl.enableVertexAttribArray(0);
@@ -184,7 +205,6 @@ export const createWebGl2Renderer = (
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     switch (item.kind) {
       case "line":
-      case "area":
         gl.bufferData(
           gl.ARRAY_BUFFER,
           item.points,
@@ -193,13 +213,13 @@ export const createWebGl2Renderer = (
           item.count * 2,
         );
         break;
-      case "bar":
+      case "area":
         gl.bufferData(
           gl.ARRAY_BUFFER,
-          item.instances,
+          item.points,
           gl.STATIC_DRAW,
           0,
-          item.count * 3,
+          item.count * AREA_STRIDE,
         );
         break;
       default:
@@ -219,16 +239,19 @@ export const createWebGl2Renderer = (
     return res;
   };
 
-  const params = (item: RenderItem, frame: RenderFrame): [number, number] => {
+  const params = (
+    item: RenderItem,
+    frame: RenderFrame,
+  ): [number, number, number, number] => {
     switch (item.kind) {
       case "line":
-        return [(item.width * frame.dpr) / 2, 0];
+        return [(item.width * frame.dpr) / 2, 0, 0, 0];
       case "area":
-        return [item.baseline, item.opacity];
+        return [0, item.opacity, 0, 0];
       case "bar":
-        return [item.halfWidth, item.radius];
+        return [item.halfWidth, item.radius, item.inset, item.minHalf];
       default:
-        return [item.opacity, item.stroke];
+        return [item.opacity, item.stroke, 0, 0];
     }
   };
 
@@ -265,8 +288,8 @@ export const createWebGl2Renderer = (
           item.color[2],
           item.color[3],
         );
-        const [p0, p1] = params(item, frame);
-        gl.uniform4f(program.params, p0, p1, 0, 0);
+        const [p0, p1, p2, p3] = params(item, frame);
+        gl.uniform4f(program.params, p0, p1, p2, p3);
         gl.bindVertexArray(res.vao);
         if (res.first !== first) {
           gl.bindBuffer(gl.ARRAY_BUFFER, res.buffer);

@@ -49,6 +49,8 @@ export interface PointLabel {
   /** Radius of the dot */
   r: number;
   text: string;
+  /** Fixed side (bar values); any free side around the dot otherwise */
+  placement?: "above" | "below";
 }
 
 export const font = (theme: ChartTheme, size = theme.fontSize, weight = 400) =>
@@ -250,12 +252,29 @@ export const placeLabels = (
   for (const label of labels) {
     const w = measure(label.text);
     const gap = label.r + 4;
-    const candidates: Rect[] = [
-      { x: label.x + gap, y: label.y - height / 2, width: w, height },
-      { x: label.x - gap - w, y: label.y - height / 2, width: w, height },
-      { x: label.x - w / 2, y: label.y - gap - height, width: w, height },
-      { x: label.x - w / 2, y: label.y + gap, width: w, height },
-    ];
+    const above = {
+      x: label.x - w / 2,
+      y: label.y - gap - height,
+      width: w,
+      height,
+    };
+    const below = { x: label.x - w / 2, y: label.y + gap, width: w, height };
+    const candidates: Rect[] =
+      label.placement === "above"
+        ? [above]
+        : label.placement === "below"
+          ? [below]
+          : [
+              { x: label.x + gap, y: label.y - height / 2, width: w, height },
+              {
+                x: label.x - gap - w,
+                y: label.y - height / 2,
+                width: w,
+                height,
+              },
+              above,
+              below,
+            ];
     const box = candidates.find(
       (c) => inside(c, plot) && !occupied.some((o) => overlaps(o, c)),
     );

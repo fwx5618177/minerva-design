@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode, Ref } from "react";
 import type {
   ChartAnnotation,
   ChartAxisOptions,
+  ChartCurve,
   ChartHoverEvent,
   ChartInstance,
   ChartLegendOptions,
@@ -15,18 +16,23 @@ import type {
   ChartView,
 } from "../engine/types";
 import type {
+  HeatmapConfig,
   QuadrantConfig,
   QuadrantCorner,
   QuadrantPoint,
+  SparklineConfig,
 } from "../engine/presets";
 
 export type {
+  HeatmapCell,
+  HeatmapConfig,
   QuadrantAxisLabels,
   QuadrantConfig,
   QuadrantCorner,
   QuadrantPoint,
   QuadrantRegion,
   QuadrantRegions,
+  SparklineConfig,
 } from "../engine/presets";
 
 /** Imperative handle of the chart components (`ref`) */
@@ -103,10 +109,15 @@ export interface ChartCommonProps {
   ref?: Ref<ChartHandle>;
 }
 
-/** Props of Chart: any mix of line, area, bar and scatter series */
+/** Props of Chart: any mix of line, area, bar, scatter, candlestick and heatmap series */
 export interface ChartProps extends ChartCommonProps {
   /** Data series; each sets its own `type` */
   series: readonly ChartSeries[];
+  /**
+   * `percent` scales every stack to 100% at each x
+   * @default "normal"
+   */
+  stackMode?: "normal" | "percent";
 }
 
 /** Props of LineChart */
@@ -118,6 +129,42 @@ export interface LineChartProps extends ChartCommonProps {
    * @default false
    */
   area?: boolean;
+  /**
+   * Shape of the lines: straight, smooth (monotone) or steps
+   * @default "linear"
+   */
+  curve?: ChartCurve;
+  /**
+   * Stacks the series on top of each other
+   * @default false
+   */
+  stacked?: boolean;
+  /**
+   * Scales the stacks to 100% (with `stacked`)
+   * @default false
+   */
+  percent?: boolean;
+}
+
+/** Props of AreaChart */
+export interface AreaChartProps extends ChartCommonProps {
+  /** Series drawn as areas unless they set a `type` */
+  series: readonly ChartSeries[];
+  /**
+   * Shape of the edges: straight, smooth (monotone) or steps
+   * @default "smooth"
+   */
+  curve?: ChartCurve;
+  /**
+   * Stacks the areas on top of each other
+   * @default false
+   */
+  stacked?: boolean;
+  /**
+   * Scales the stacks to 100% (implies `stacked`)
+   * @default false
+   */
+  percent?: boolean;
 }
 
 /** Props of BarChart */
@@ -129,6 +176,53 @@ export interface BarChartProps extends ChartCommonProps {
    * @default false
    */
   stacked?: boolean;
+  /**
+   * Scales the stacks to 100% (implies `stacked`)
+   * @default false
+   */
+  percent?: boolean;
+  /**
+   * Writes the value above every bar
+   * @default false
+   */
+  labels?: boolean;
+}
+
+/** Props of CandlestickChart */
+export interface CandlestickChartProps extends ChartCommonProps {
+  /**
+   * Series drawn as candles unless they set a `type` (e.g. a moving average
+   * `line`); data points carry `open`, `high`, `low` and `y` (the close)
+   */
+  series: readonly ChartSeries[];
+}
+
+/** Props of HeatmapChart */
+export interface HeatmapChartProps
+  extends Omit<ChartCommonProps, "crosshair">, HeatmapConfig {}
+
+/** Props of Sparkline */
+export interface SparklineProps
+  extends
+    Pick<
+      ChartCommonProps,
+      | "width"
+      | "renderer"
+      | "tooltip"
+      | "palette"
+      | "ariaLabel"
+      | "onHover"
+      | "renderTooltip"
+      | "className"
+      | "style"
+      | "ref"
+    >,
+    SparklineConfig {
+  /**
+   * Height of the sparkline; numbers are pixels
+   * @default 48
+   */
+  height?: number | string;
 }
 
 /** Props of ScatterChart */

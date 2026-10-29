@@ -31,20 +31,34 @@ export {
 } from "./engine/controller";
 export { formatCompact } from "./engine/format";
 export {
+  areaSeries,
   barSeries,
+  candlestickSeries,
   DEFAULT_QUADRANT_COLORS,
+  heatmapChartOptions,
   lineSeries,
   quadrantCenter,
   quadrantChartOptions,
   quadrantOf,
   scatterSeries,
+  sparklineOptions,
+  type HeatmapCell,
+  type HeatmapConfig,
   type QuadrantAxisLabels,
   type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantRegion,
   type QuadrantRegions,
+  type SparklineConfig,
 } from "./engine/presets";
 export { toCss } from "./engine/color";
 export type { ChartThemeInput } from "./engine/theme";
 export type * from "./engine/types";
+export {
+  createCanvasShapeChart,
+  type CanvasShapeChartConfig,
+  type CanvasShapeChartInstance,
+} from "./engine/shapes/canvas";
+export { drawShapeScene } from "./engine/shapes/draw";
+export type * from "./engine/shapes/types";

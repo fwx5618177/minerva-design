@@ -16,19 +16,33 @@ const require = createRequire(join(root, "package.json"));
 const COMPONENTS = [
   "Chart",
   "LineChart",
+  "AreaChart",
   "BarChart",
   "ScatterChart",
+  "CandlestickChart",
+  "HeatmapChart",
+  "Sparkline",
   "QuadrantChart",
+  "PieChart",
+  "DonutChart",
+  "RadarChart",
+  "GaugeChart",
+  "FunnelChart",
+  "TreemapChart",
 ];
 const ENGINE = [
   "createChart",
   "createCanvasChart",
   "createChartController",
   "scenePrimitives",
+  "createShapeChart",
+  "createCanvasShapeChart",
   "formatCompact",
   "quadrantChartOptions",
   "quadrantOf",
   "quadrantCenter",
+  "heatmapChartOptions",
+  "sparklineOptions",
 ];
 
 describe("minerva-design/charts", () => {

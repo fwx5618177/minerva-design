@@ -541,8 +541,9 @@ describe("buildItems", () => {
     ]);
     const area = items[0];
     if (area.kind !== "area") throw new Error("area expected");
+    // x, top, bottom (the baseline, 0 here)
     expect(Array.from(area.points)).toEqual(
-      [0, 1, 1, GAP, 2, 3].map(Math.fround),
+      [0, 1, 0, 1, GAP, 0, 2, 3, 0].map(Math.fround),
     );
     const scatter = items[3];
     if (scatter.kind !== "scatter") throw new Error("scatter expected");
@@ -652,8 +653,8 @@ describe("instanceRange", () => {
 
   it("pads bars by their width", () => {
     const instances = new Float32Array(
-      Array.from({ length: 10 }, (_, i) => [i, 0, 1]).flat(),
-    );
+      Array.from({ length: 10 }, (_, i) => [i, 0, 1, 0]).flat(),
+    ).buffer;
     const bar = {
       kind: "bar" as const,
       key: "b",
@@ -663,6 +664,8 @@ describe("instanceRange", () => {
       count: 10,
       halfWidth: 0.4,
       radius: 0,
+      inset: 0,
+      minHalf: 0,
       sorted: true,
     };
     expect(instanceRange(bar, frame(2.5, 4.5))).toEqual([3, 2]);

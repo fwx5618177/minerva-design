@@ -190,4 +190,49 @@ describe("chart components", () => {
     );
     expect(container.querySelector(".minerva-chart-stage")).not.toBeNull();
   });
+
+  it("skips the engine update when a re-render passes equal options", async () => {
+    const ref = createRef<ChartHandle>();
+    const data = [1, 3, 2];
+    const view = (props: { name: string; tooltip?: boolean }) => (
+      <LineChart
+        ref={ref}
+        // inline objects, as users write them
+        series={[{ name: props.name, data }]}
+        xAxis={{ title: "Day" }}
+        palette={["#ff0000"]}
+        renderTooltip={
+          props.tooltip ? (e) => <em>{e.items[0].y}</em> : undefined
+        }
+      />
+    );
+    const { container, rerender } = render(view({ name: "A" }));
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const setOptions = vi.spyOn(chart, "setOptions");
+    rerender(view({ name: "A" }));
+    rerender(view({ name: "A" }));
+    await flush();
+    expect(setOptions).not.toHaveBeenCalled();
+
+    rerender(view({ name: "B" }));
+    await flush();
+    expect(setOptions).toHaveBeenCalledTimes(1);
+    expect(setOptions.mock.calls[0][0].series[0].name).toBe("B");
+
+    // a React tooltip installs a render callback once, not on every render
+    rerender(view({ name: "B", tooltip: true }));
+    rerender(view({ name: "B", tooltip: true }));
+    await flush();
+    expect(setOptions).toHaveBeenCalledTimes(2);
+    const tooltip = setOptions.mock.calls[1][0].tooltip;
+    expect(typeof tooltip === "object" && tooltip.render).toBeTypeOf(
+      "function",
+    );
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    stage.dispatchEvent(
+      new PointerEvent("pointermove", { clientX: 250, clientY: 150 }),
+    );
+    expect(container.querySelector(".minerva-chart-tooltip em")).not.toBeNull();
+  });
 });

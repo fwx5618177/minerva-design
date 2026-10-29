@@ -4,6 +4,7 @@
 
 import type {
   ChartAnnotation,
+  ChartCurve,
   ChartInteractionOptions,
   ChartOptions,
   ChartSeries,
@@ -15,26 +16,201 @@ export const withSeriesType = (
   series: readonly ChartSeries[],
   type: ChartSeriesType,
   stack?: string,
+  curve?: ChartCurve,
 ): ChartSeries[] =>
-  series.map((s) => ({
-    ...s,
-    type: s.type ?? type,
-    ...(stack !== undefined && (s.type ?? type) === "bar"
-      ? { stack: s.stack ?? stack }
-      : {}),
-  }));
+  series.map((s) => {
+    const t = s.type ?? type;
+    return {
+      ...s,
+      type: t,
+      ...(stack !== undefined && t === type ? { stack: s.stack ?? stack } : {}),
+      ...(curve !== undefined && (t === "line" || t === "area")
+        ? { curve: s.curve ?? curve }
+        : {}),
+    };
+  });
+
+/** Options of the line-like components */
+export interface LineSeriesOptions {
+  /** Stacks the series on top of each other */
+  stacked?: boolean;
+  /** Shape of the lines */
+  curve?: ChartCurve;
+}
 
 /** Series of a LineChart (`area` fills them) */
-export const lineSeries = (series: readonly ChartSeries[], area = false) =>
-  withSeriesType(series, area ? "area" : "line");
+export const lineSeries = (
+  series: readonly ChartSeries[],
+  area = false,
+  extra: LineSeriesOptions = {},
+) =>
+  withSeriesType(
+    series,
+    area ? "area" : "line",
+    extra.stacked ? "stack" : undefined,
+    extra.curve,
+  );
 
-/** Series of a BarChart (`stacked` stacks them) */
-export const barSeries = (series: readonly ChartSeries[], stacked = false) =>
-  withSeriesType(series, "bar", stacked ? "stack" : undefined);
+/** Series of an AreaChart */
+export const areaSeries = (
+  series: readonly ChartSeries[],
+  extra: LineSeriesOptions = {},
+) => lineSeries(series, true, extra);
+
+/** Series of a BarChart (`stacked` stacks them, `labels` shows the values) */
+export const barSeries = (
+  series: readonly ChartSeries[],
+  stacked = false,
+  labels = false,
+) =>
+  withSeriesType(series, "bar", stacked ? "stack" : undefined).map((s) =>
+    labels && s.type === "bar" ? { ...s, showLabels: s.showLabels ?? true } : s,
+  );
 
 /** Series of a ScatterChart */
 export const scatterSeries = (series: readonly ChartSeries[]) =>
   withSeriesType(series, "scatter");
+
+/** Series of a CandlestickChart */
+export const candlestickSeries = (series: readonly ChartSeries[]) =>
+  withSeriesType(series, "candlestick");
+
+/** A cell of a HeatmapChart */
+export interface HeatmapCell {
+  /** Column: a category name (or a number on a numeric axis) */
+  x: string | number;
+  /** Row: a category name (or a number on a numeric axis) */
+  y: string | number;
+  /** Value mapped to the color scale; `null` leaves the cell empty */
+  value: number | null;
+}
+
+/** Settings of a heatmap (the props of HeatmapChart) */
+export interface HeatmapConfig {
+  /** Cells */
+  data: readonly HeatmapCell[];
+  /** Column names in order (collected from the data when omitted) */
+  xCategories?: readonly string[];
+  /** Row names from bottom to top (collected from the data when omitted) */
+  yCategories?: readonly string[];
+  /** Colors from the lowest to the highest value; a ramp of the first palette color by default */
+  colorScale?: readonly string[];
+  /** Values at the ends of the color scale; the data range by default */
+  valueRange?: readonly [number, number];
+  /** Name of the value in the tooltip */
+  name?: string;
+  /** Corner radius of the cells, in pixels */
+  radius?: number;
+  /** Formats the values in the tooltip */
+  format?: (value: number) => string;
+}
+
+/** Engine options of a heatmap */
+export const heatmapChartOptions = (
+  config: HeatmapConfig,
+  base: Partial<ChartOptions> = {},
+): ChartOptions => {
+  const numericX = config.data.some((c) => typeof c.x === "number");
+  const numericY = config.data.some((c) => typeof c.y === "number");
+  return {
+    ...base,
+    series: [
+      {
+        id: "heatmap",
+        name: config.name ?? "Value",
+        type: "heatmap",
+        data: config.data.map((c) => ({ x: c.x, y: c.y, value: c.value })),
+        colorScale: config.colorScale,
+        valueRange: config.valueRange,
+        radius: config.radius,
+        format: config.format,
+      },
+    ],
+    xAxis: {
+      ...(numericX
+        ? {}
+        : { type: "category" as const, categories: config.xCategories }),
+      grid: false,
+      ...base.xAxis,
+    },
+    yAxis: {
+      ...(numericY
+        ? {}
+        : { type: "category" as const, categories: config.yCategories }),
+      grid: false,
+      ...base.yAxis,
+    },
+    legend: base.legend ?? false,
+    interaction: base.interaction ?? { zoom: false },
+    tooltip: base.tooltip ?? { mode: "nearest" },
+  };
+};
+
+/** Settings of a sparkline (the props of Sparkline) */
+export interface SparklineConfig {
+  /** Values (or `[x, y]` pairs, typed arrays, ...) */
+  data: ChartSeries["data"];
+  /**
+   * How the values are drawn
+   * @default "line"
+   */
+  type?: "line" | "area" | "bar";
+  /** Color (any CSS color); the first palette color by default */
+  color?: string;
+  /**
+   * Shape of the line
+   * @default "smooth"
+   */
+  curve?: ChartCurve;
+  /** Name shown in the tooltip */
+  name?: string;
+  /** Draws a reference line at this value (e.g. a target or the average) */
+  reference?: number;
+  /** Formats the value in the tooltip */
+  format?: (value: number) => string;
+}
+
+/** Engine options of a sparkline: no axes, no legend, a tooltip only */
+export const sparklineOptions = (
+  config: SparklineConfig,
+  base: Partial<ChartOptions> = {},
+): ChartOptions => {
+  const type = config.type ?? "line";
+  return {
+    ...base,
+    series: [
+      {
+        id: "sparkline",
+        name: config.name ?? "Value",
+        type,
+        data: config.data,
+        color: config.color,
+        curve: type === "bar" ? undefined : (config.curve ?? "smooth"),
+        lineWidth: 1.5,
+        opacity: type === "area" ? 0.22 : undefined,
+        radius: type === "bar" ? 1.5 : undefined,
+        format: config.format,
+      },
+    ],
+    xAxis: { visible: false, grid: false, ...base.xAxis },
+    yAxis: { visible: false, grid: false, nice: false, ...base.yAxis },
+    legend: false,
+    padding: base.padding ?? { top: 4, right: 4, bottom: 4, left: 4 },
+    interaction: base.interaction ?? { zoom: false },
+    annotations:
+      config.reference !== undefined
+        ? [
+            ...(base.annotations ?? []),
+            {
+              type: "line",
+              axis: "y",
+              value: config.reference,
+              dash: [2, 3],
+            },
+          ]
+        : base.annotations,
+  };
+};
 
 /** A point of a QuadrantChart */
 export interface QuadrantPoint {

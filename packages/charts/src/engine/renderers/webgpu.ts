@@ -4,6 +4,8 @@ import type { ChartRendererKind } from "../types";
 import { instanceRange } from "./range";
 import { WGSL_AREA, WGSL_BAR, WGSL_LINE, WGSL_SCATTER } from "./shaders";
 import {
+  AREA_STRIDE,
+  BAR_STRIDE,
   SCATTER_STRIDE,
   type ChartRenderer,
   type RenderFrame,
@@ -105,26 +107,32 @@ export const createWebGpuRenderer = async (
       primitive: { topology: "triangle-strip" },
     });
   };
-  const segment: GPUVertexBufferLayout[] = [
+  const segment = (
+    stride: number,
+    format: GPUVertexFormat,
+  ): GPUVertexBufferLayout[] => [
     {
-      arrayStride: 8,
+      arrayStride: stride,
       stepMode: "instance",
-      attributes: [{ shaderLocation: 0, offset: 0, format: "float32x2" }],
+      attributes: [{ shaderLocation: 0, offset: 0, format }],
     },
     {
-      arrayStride: 8,
+      arrayStride: stride,
       stepMode: "instance",
-      attributes: [{ shaderLocation: 1, offset: 0, format: "float32x2" }],
+      attributes: [{ shaderLocation: 1, offset: 0, format }],
     },
   ];
   const pipelines = {
-    line: pipeline(WGSL_LINE, segment),
-    area: pipeline(WGSL_AREA, segment),
+    line: pipeline(WGSL_LINE, segment(8, "float32x2")),
+    area: pipeline(WGSL_AREA, segment(AREA_STRIDE * 4, "float32x3")),
     bar: pipeline(WGSL_BAR, [
       {
-        arrayStride: 12,
+        arrayStride: BAR_STRIDE,
         stepMode: "instance",
-        attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }],
+        attributes: [
+          { shaderLocation: 0, offset: 0, format: "float32x3" },
+          { shaderLocation: 1, offset: 12, format: "unorm8x4" },
+        ],
       },
     ]),
     scatter: pipeline(WGSL_SCATTER, [
@@ -146,10 +154,9 @@ export const createWebGpuRenderer = async (
   const vertexData = (item: RenderItem): ArrayBuffer | Float32Array => {
     switch (item.kind) {
       case "line":
-      case "area":
         return item.points.subarray(0, item.count * 2);
-      case "bar":
-        return item.instances.subarray(0, item.count * 3);
+      case "area":
+        return item.points.subarray(0, item.count * AREA_STRIDE);
       default:
         return item.instances;
     }
@@ -209,9 +216,9 @@ export const createWebGpuRenderer = async (
       case "line":
         return [(item.width * frame.dpr) / 2, 0, 0, 0];
       case "area":
-        return [item.baseline, item.opacity, 0, 0];
+        return [0, item.opacity, 0, 0];
       case "bar":
-        return [item.halfWidth, item.radius, 0, 0];
+        return [item.halfWidth, item.radius, item.inset, item.minHalf];
       default:
         return [item.opacity, item.stroke, 0, 0];
     }
@@ -264,8 +271,10 @@ export const createWebGpuRenderer = async (
         pass.setPipeline(pipelines[item.kind]);
         pass.setBindGroup(0, res.bindGroup);
         pass.setVertexBuffer(0, res.vertex);
-        if (item.kind === "line" || item.kind === "area") {
+        if (item.kind === "line") {
           pass.setVertexBuffer(1, res.vertex, 8);
+        } else if (item.kind === "area") {
+          pass.setVertexBuffer(1, res.vertex, AREA_STRIDE * 4);
         }
         pass.draw(4, instances, 0, first);
       }

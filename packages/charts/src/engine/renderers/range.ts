@@ -1,7 +1,7 @@
 // Instances to draw: sorted series only draw what is inside the view, so
 // zooming into a million points costs what is visible.
 
-import type { RenderFrame, RenderItem } from "./types";
+import { AREA_STRIDE, type RenderFrame, type RenderItem } from "./types";
 
 const lowerBound = (
   values: Float32Array,
@@ -37,11 +37,15 @@ export const instanceRange = (
     case "area": {
       const segments = Math.max(0, item.count - 1);
       if (!item.sorted || segments === 0) return [0, segments];
+      const stride = item.kind === "area" ? AREA_STRIDE : 2;
       const [x0, x1] = visibleX(frame);
-      const start = Math.max(0, lowerBound(item.points, 2, item.count, x0) - 1);
+      const start = Math.max(
+        0,
+        lowerBound(item.points, stride, item.count, x0) - 1,
+      );
       const end = Math.min(
         item.count - 1,
-        lowerBound(item.points, 2, item.count, x1),
+        lowerBound(item.points, stride, item.count, x1),
       );
       return [start, Math.max(0, end - start)];
     }
@@ -49,8 +53,9 @@ export const instanceRange = (
       if (!item.sorted) return [0, item.count];
       const [x0, x1] = visibleX(frame);
       const pad = Math.abs(item.halfWidth);
-      const start = lowerBound(item.instances, 3, item.count, x0 - pad);
-      const end = lowerBound(item.instances, 3, item.count, x1 + pad);
+      const f = new Float32Array(item.instances, 0, item.count * 4);
+      const start = lowerBound(f, 4, item.count, x0 - pad);
+      const end = lowerBound(f, 4, item.count, x1 + pad);
       return [start, Math.max(0, end - start)];
     }
     default:

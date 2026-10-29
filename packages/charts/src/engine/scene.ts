@@ -3,10 +3,11 @@
 // createCanvasChart (any 2D context) and the React Native views.
 
 import { axisTicks, type AxisTicks } from "./axis";
-import { mix, toCss, type Rgba } from "./color";
+import { mix, toCss, unpackColor, type Rgba } from "./color";
 import { nearestIndex } from "./data";
+import { formatValue } from "./format";
 import { computePlot, createScales, type Rect, type Scales } from "./layout";
-import { gridOf, type ChartModel, type SeriesModel } from "./model";
+import { gridOf, plottedY, type ChartModel, type SeriesModel } from "./model";
 import type { PointLabel, ResolvedAnnotation } from "./overlay";
 import type { ChartTheme } from "./theme";
 import type {
@@ -94,10 +95,14 @@ export interface LayoutInput {
 export const layoutChart = (input: LayoutInput): ChartLayout => {
   const { model, view, theme, width, height, measure } = input;
   // same count as the nice range of the model (its ends are then ticks),
-  // fewer on short charts
+  // fewer on short charts; category rows get a label each when they fit
   const yCount =
     model.y.tickCount ??
-    (height >= 220 ? 5 : Math.max(2, Math.round((height - 48) / 52)));
+    (model.y.type === "category"
+      ? Math.max(1, Math.floor((height - 40) / (theme.fontSize + 5)))
+      : height >= 220
+        ? 5
+        : Math.max(2, Math.round((height - 48) / 52)));
   const yTicks = axisTicks(model.y, view.y, yCount);
   let yLabelWidth = 0;
   if (model.y.visible) {
@@ -127,22 +132,46 @@ export const layoutChart = (input: LayoutInput): ChartLayout => {
   const xCount =
     model.x.type === "category"
       ? Math.max(1, Math.floor(plot.width / (categoryWidth + 14)))
-      : (model.x.tickCount ?? Math.max(2, Math.floor(plot.width / 96)));
+      : (model.x.tickCount ?? Math.max(3, Math.floor(plot.width / 88)));
   const xTicks = axisTicks(model.x, view.x, xCount);
   const scales = createScales(plot, view, model.x.reverse, model.y.reverse);
   return { plot, scales, xTicks, yTicks };
 };
 
-/** Labels of the visible scatter points (`showLabels`) */
+/** Labels of the visible scatter points and bar values (`showLabels`) */
 export const collectPointLabels = (
   model: ChartModel,
   view: ChartView,
   s: Scales,
+  yTicks?: AxisTicks | null,
 ): PointLabel[] => {
   const labels: PointLabel[] = [];
+  // 100% stacks: the axis shows percents, the labels the actual values
+  const axisFormat = model.percent
+    ? formatValue
+    : (yTicks?.formatValue ?? formatValue);
   for (const series of model.series) {
-    if (series.hidden || series.type !== "scatter" || !series.showLabels)
+    if (series.hidden || !series.showLabels) continue;
+    if (series.type === "bar" && series.barTop) {
+      const format = series.format ?? axisFormat;
+      const { x, y, count } = series.cols;
+      const top = series.barTop;
+      const [x0, x1] = view.x[0] <= view.x[1] ? view.x : [view.x[1], view.x[0]];
+      for (let i = 0; i < count && labels.length < MAX_POINT_LABELS; i++) {
+        const xv = x[i] + series.barOffset;
+        if (!Number.isFinite(y[i]) || xv < x0 || xv > x1) continue;
+        const negative = top[i] < (series.barBase?.[i] ?? 0);
+        labels.push({
+          x: s.xToPx(xv),
+          y: s.yToPx(top[i]),
+          r: 0,
+          text: format(y[i]),
+          placement: negative ? "below" : "above",
+        });
+      }
       continue;
+    }
+    if (series.type !== "scatter") continue;
     const { x, y, count, labels: texts, size } = series.cols;
     if (!texts) continue;
     for (let i = 0; i < count && labels.length < MAX_POINT_LABELS; i++) {
@@ -172,11 +201,10 @@ interface Candidate {
   inside: boolean;
 }
 
-/** Pixel position of a point (the top of a bar) */
+/** Pixel position of a point (the top of a bar or stack, the close of a candle) */
 export const pointOf = (s: SeriesModel, i: number, sc: Scales) => {
   const xv = s.cols.x[i] + (s.type === "bar" ? s.barOffset : 0);
-  const yv = s.type === "bar" && s.barTop ? s.barTop[i] : s.cols.y[i];
-  return { px: sc.xToPx(xv), py: sc.yToPx(yv) };
+  return { px: sc.xToPx(xv), py: sc.yToPx(plottedY(s, i)) };
 };
 
 const candidateOf = (
@@ -195,6 +223,15 @@ const candidateOf = (
       Math.abs(px - p.px) <= half &&
       py >= Math.min(base, p.py) - 2 &&
       py <= Math.max(base, p.py) + 2;
+  } else if (s.type === "candlestick") {
+    const { high, low, y } = s.cols;
+    const half = Math.max(s.barHalfWidth / sc.xPerPx, 3);
+    const a = sc.yToPx(high ? high[i] : y[i]);
+    const b = sc.yToPx(low ? low[i] : y[i]);
+    inside =
+      Math.abs(px - p.px) <= half &&
+      py >= Math.min(a, b) - 2 &&
+      py <= Math.max(a, b) + 2;
   }
   return {
     series: s,
@@ -237,6 +274,23 @@ const nearestScatter = (
   return best;
 };
 
+/** Heatmap cell containing a data position, -1 if none */
+const cellAt = (s: SeriesModel, xv: number, yv: number) => {
+  const { x: hx, y: hy } = s.cellHalf;
+  const { x, y } = s.cols;
+  let found = -1;
+  gridOf(s).query(xv - hx, xv + hx, yv - hy, yv + hy, (i) => {
+    if (
+      s.cellColors?.[i] &&
+      Math.abs(x[i] - xv) <= hx &&
+      Math.abs(y[i] - yv) <= hy
+    ) {
+      found = i;
+    }
+  });
+  return found;
+};
+
 const nearestX = (s: SeriesModel, xv: number) => {
   const { x, y, count, sorted } = s.cols;
   if (sorted) return nearestIndex(x, y, count, xv);
@@ -257,6 +311,21 @@ const nearestX = (s: SeriesModel, xv: number) => {
 export const hoverItemOf = (s: SeriesModel, index: number): ChartHoverItem => {
   const pc = s.pointColors?.[index];
   const label = s.cols.labels?.[index];
+  const { open, high, low, value } = s.cols;
+  let color = pc ? toCss(pc) : s.colorCss;
+  const extra: Partial<ChartHoverItem> = {};
+  if (s.type === "candlestick") {
+    const o = open ? open[index] : NaN;
+    if (Number.isFinite(o)) extra.open = o;
+    if (high && Number.isFinite(high[index])) extra.high = high[index];
+    if (low && Number.isFinite(low[index])) extra.low = low[index];
+    color = toCss(s.cols.y[index] < o ? s.downColor : s.upColor);
+  } else if (s.type === "heatmap") {
+    const v = value ? value[index] : s.cols.y[index];
+    if (Number.isFinite(v)) extra.value = v;
+    const packed = s.cellColors?.[index];
+    if (packed) color = toCss(unpackColor(packed));
+  }
   return {
     seriesIndex: s.index,
     seriesId: s.id,
@@ -264,8 +333,9 @@ export const hoverItemOf = (s: SeriesModel, index: number): ChartHoverItem => {
     index,
     x: s.cols.x[index],
     y: s.cols.y[index],
-    color: pc ? toCss(pc) : s.colorCss,
+    color,
     ...(label !== undefined ? { label } : {}),
+    ...extra,
   };
 };
 
@@ -311,6 +381,14 @@ export const hitTest = (
     if (s.type === "scatter") {
       const i = nearestScatter(s, px, py, sc, slop);
       if (i >= 0) scatter.push(candidateOf(s, i, px, py, sc));
+    } else if (s.type === "heatmap") {
+      const i = cellAt(s, sc.pxToX(px), sc.pxToY(py));
+      if (i >= 0) {
+        const c = candidateOf(s, i, px, py, sc);
+        c.inside = true;
+        c.dist = 0;
+        scatter.push(c);
+      }
     } else {
       const i = nearestX(s, xv);
       if (i >= 0) others.push(candidateOf(s, i, px, py, sc));
@@ -382,6 +460,28 @@ export const tooltipContent = (
   yTicks: AxisTicks | null,
 ): TooltipContent => {
   const yFormat = yTicks?.formatValue ?? String;
+  const first = event.items[0];
+  const firstSeries = first ? model.series[first.seriesIndex] : null;
+  if (event.items.length === 1 && firstSeries?.type === "heatmap") {
+    const yName =
+      model.y.type === "category"
+        ? (model.y.categories[Math.round(first.y)] ?? yFormat(first.y))
+        : yFormat(first.y);
+    return {
+      title: `${event.xLabel} · ${yName}`,
+      titleColor: null,
+      rows: [
+        {
+          color: first.color,
+          name: first.label ?? firstSeries.name,
+          value:
+            first.value === undefined
+              ? "–"
+              : (firstSeries.format ?? formatValue)(first.value),
+        },
+      ],
+    };
+  }
   const scatterOnly = event.items.every(
     (it) => model.series[it.seriesIndex].type === "scatter",
   );
@@ -395,23 +495,85 @@ export const tooltipContent = (
       rows.push({ color: null, name: "", value: it.seriesName });
     return { title: it.label ?? it.seriesName, titleColor: it.color, rows };
   }
-  return {
-    title: event.xLabel,
-    titleColor: null,
-    rows: event.items.map((it) => ({
+  const rows: TooltipRow[] = [];
+  /** Row of every item */
+  const rowOf: number[] = [];
+  for (const it of event.items) {
+    const s = model.series[it.seriesIndex];
+    rowOf.push(rows.length);
+    if (s.type === "candlestick") {
+      const change =
+        it.open !== undefined && it.open !== 0
+          ? ((it.y - it.open) / Math.abs(it.open)) * 100
+          : NaN;
+      rows.push({
+        color: it.color,
+        name: s.name,
+        value: Number.isFinite(change)
+          ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`
+          : "",
+      });
+      const ohlc: [string, number | undefined][] = [
+        ["Open", it.open],
+        ["High", it.high],
+        ["Low", it.low],
+        ["Close", it.y],
+      ];
+      for (const [name, v] of ohlc) {
+        if (v !== undefined && Number.isFinite(v))
+          rows.push({ color: null, name, value: (s.format ?? yFormat)(v) });
+      }
+      continue;
+    }
+    rows.push({
       color: it.color,
       name: it.label ? `${it.seriesName} · ${it.label}` : it.seriesName,
-      value: yFormat(it.y),
-    })),
-  };
+      value: (s.format ?? yFormat)(it.y),
+    });
+  }
+  if (model.percent) {
+    // 100% stacks: the share of every value next to it
+    const totals = new Map<string, number>();
+    for (const it of event.items) {
+      const stack = stackIdOf(model, it.seriesIndex);
+      if (stack !== null && Number.isFinite(it.y))
+        totals.set(stack, (totals.get(stack) ?? 0) + Math.abs(it.y));
+    }
+    event.items.forEach((it, k) => {
+      const stack = stackIdOf(model, it.seriesIndex);
+      const total = stack !== null ? totals.get(stack) : undefined;
+      const row = rows[rowOf[k]];
+      if (total && row && Number.isFinite(it.y)) {
+        const format = model.series[it.seriesIndex].format ?? formatValue;
+        row.value = `${format(it.y)} · ${((Math.abs(it.y) / total) * 100).toFixed(1)}%`;
+      }
+    });
+  }
+  return { title: event.xLabel, titleColor: null, rows };
 };
 
-/** Shape of the hover marker of an item: a ring on a point, or a bar highlight */
-export type HoverMark =
-  | { kind: "dot"; x: number; y: number; size: number; color: string }
-  | { kind: "bar"; x: number; y: number; width: number; height: number };
+/** Stack of a series in a 100% chart (`null` when it is not stacked) */
+const stackIdOf = (model: ChartModel, seriesIndex: number): string | null =>
+  model.series[seriesIndex].hidden ? null : model.stacks[seriesIndex];
 
-/** Markers of the hovered points (pixels of the stage) */
+/**
+ * Shape of the hover marker of an item: a dot with a soft halo on a point,
+ * a band behind the hovered bar group / candle, or the outline of a cell
+ */
+export type HoverMark =
+  | {
+      kind: "dot";
+      x: number;
+      y: number;
+      size: number;
+      color: string;
+      /** Translucent series color of the halo around the dot */
+      halo: string;
+    }
+  | { kind: "band"; x: number; y: number; width: number; height: number }
+  | { kind: "cell"; x: number; y: number; width: number; height: number };
+
+/** Markers of the hovered points (pixels of the stage); bands come first */
 export const hoverMarks = (
   model: ChartModel,
   sc: Scales,
@@ -419,24 +581,32 @@ export const hoverMarks = (
 ): HoverMark[] => {
   const marks: HoverMark[] = [];
   const { plot } = sc;
+  let bandLo = Infinity;
+  let bandHi = -Infinity;
   for (const it of event.items) {
     const s = model.series[it.seriesIndex];
-    if (s.type === "bar" && s.barBase && s.barTop) {
+    if (s.type === "bar" || s.type === "candlestick") {
       const cx = sc.xToPx(it.x + s.barOffset);
       const half = Math.max(s.barHalfWidth / sc.xPerPx, 1);
-      const a = sc.yToPx(s.barBase[it.index]);
-      const b = sc.yToPx(s.barTop[it.index]);
+      bandLo = Math.min(bandLo, cx - half);
+      bandHi = Math.max(bandHi, cx + half);
+      continue;
+    }
+    if (s.type === "heatmap") {
+      const cx = sc.xToPx(it.x);
+      const cy = sc.yToPx(it.y);
+      const hw = Math.abs(s.cellHalf.x / sc.xPerPx);
+      const hh = Math.abs(s.cellHalf.y / sc.yPerPx);
       marks.push({
-        kind: "bar",
-        x: cx - half,
-        y: Math.min(a, b),
-        width: half * 2,
-        height: Math.max(1, Math.abs(a - b)),
+        kind: "cell",
+        x: cx - hw,
+        y: cy - hh,
+        width: hw * 2,
+        height: hh * 2,
       });
       continue;
     }
-    const px = sc.xToPx(it.x);
-    const py = sc.yToPx(it.y);
+    const { px, py } = pointOf(s, it.index, sc);
     if (
       px < plot.x - 1 ||
       px > plot.x + plot.width + 1 ||
@@ -447,12 +617,41 @@ export const hoverMarks = (
     }
     const size =
       s.type === "scatter"
-        ? dotSize(s, it.index) + 6
-        : Math.max(10, s.lineWidth * 2 + 6);
-    marks.push({ kind: "dot", x: px, y: py, size, color: it.color });
+        ? dotSize(s, it.index) + 4
+        : Math.max(9, s.lineWidth * 2 + 5);
+    const rgba = s.pointColors?.[it.index] ?? s.color;
+    marks.push({
+      kind: "dot",
+      x: px,
+      y: py,
+      size,
+      color: it.color,
+      halo: toCss(rgba, 0.2),
+    });
+  }
+  if (bandHi > bandLo) {
+    // the group of bars plus a margin, clipped to the plot
+    const pad = Math.max(4, (bandHi - bandLo) * 0.14);
+    const x0 = Math.max(plot.x, bandLo - pad);
+    const x1 = Math.min(plot.x + plot.width, bandHi + pad);
+    if (x1 > x0) {
+      marks.unshift({
+        kind: "band",
+        x: x0,
+        y: plot.y,
+        width: x1 - x0,
+        height: plot.height,
+      });
+    }
   }
   return marks;
 };
+
+/** Swatch of a series in the legend */
+export const legendShape = (
+  type: SeriesModel["type"],
+): "dot" | "line" | "square" =>
+  type === "scatter" ? "dot" : type === "line" ? "line" : "square";
 
 /** Whether the guide line follows the pointer */
 export const showsCrosshair = (
@@ -462,4 +661,12 @@ export const showsCrosshair = (
 ) =>
   crosshair ??
   (model.tooltipMode === "axis" &&
-    event.items.some((it) => model.series[it.seriesIndex].type !== "scatter"));
+    event.items.some((it) => {
+      const type = model.series[it.seriesIndex].type;
+      return type === "line" || type === "area";
+    }) &&
+    // bars get a band instead
+    !event.items.some((it) => {
+      const type = model.series[it.seriesIndex].type;
+      return type === "bar" || type === "candlestick";
+    }));
