@@ -1,5 +1,13 @@
 # minerva-design
 
+## 1.2.0
+
+### Minor Changes
+
+- docs(charts): document canvas charts, mini-program and React Native charts
+  feat(charts): add charts for Taro, uni-app, WeChat and React Native
+  feat(charts): add headless controller, canvas renderer and draggable points
+
 ## 1.1.0
 
 ### Minor Changes
