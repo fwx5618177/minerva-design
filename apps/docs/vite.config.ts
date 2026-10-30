@@ -75,13 +75,17 @@ const testAlias: Alias[] = [
     replacement: src("../../packages/react/src/index.ts"),
   },
   {
+    find: /^minerva-design\/vue\/charts$/,
+    replacement: src("../../packages/vue/src/charts.ts"),
+  },
+  {
     find: /^minerva-design\/vue$/,
     replacement: src("../../packages/vue/src/index.ts"),
   },
   // the chart entries of the web components (chart, trading-chart,
-  // order-book, chart-3d)
+  // order-book, chart-3d, graph)
   {
-    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d)$/,
+    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d|graph)$/,
     replacement: src("../../packages/web-components/src/elements/$1.ts"),
   },
   {

@@ -4,7 +4,7 @@
   "intro": {
     "declarative": {
       "title": "Declarative indicators",
-      "text": "The indicators option lists the indicators in order: moving averages, Bollinger bands and VWAP are drawn over the price, volume (unless overlay), MACD, RSI, KDJ and ATR each get a pane below it. Every legend shows the values at the crosshair, and clicking an indicator name hides it.",
+      "text": "The indicators option lists the indicators in order: moving averages, Bollinger, Keltner and Donchian channels, VWAP, parabolic SAR, Ichimoku and SuperTrend are drawn over the price; volume (unless overlay), MACD, RSI, KDJ, ATR, OBV, CCI, stochastic RSI, DMI, Williams %R and MFI each get a pane below it. Every legend shows the values at the crosshair, and clicking an indicator name hides it.",
       "ids": "An indicator is identified by its type and parameters (\"ma:7\", \"macd:12:26:9\") unless it sets an id: indicatorToggle and setIndicatorVisible use it. Changing the list keeps the computed values of the indicators that did not change."
     },
     "functions": {
@@ -16,8 +16,10 @@
       "averages": "MA is the simple average, WMA weighs the newest bar the most, EMA uses 2 / (period + 1) and starts from the simple average of the first window, like TradingView.",
       "wilder": "RSI and ATR use Wilder's smoothing (1 / period); Bollinger bands use the population standard deviation.",
       "kdj": "KDJ starts K and D at 50 and smooths them over 3 bars by default; J = 3K − 2D can leave the 0-100 range.",
-      "vwap": "VWAP restarts every day (or week, month, never) in the time zone of utcOffset.",
-      "incremental": "On every tick, the chart recomputes only the values of the last bar: a stream of updates costs the same with a hundred or a million bars."
+      "vwap": "VWAP restarts every day (or week, month, never) in the time zone of timeZone or utcOffset.",
+      "incremental": "On every tick, the chart recomputes only the values of the last bar: a stream of updates costs the same with a hundred or a million bars.",
+      "zoom": "Zoomed out, indicators keep being computed on every bar and are drawn with the lowest and highest value of each pixel column, so spikes stay visible on a million bars.",
+      "ichimoku": "Ichimoku draws the leading spans displacement − 1 bars ahead (into the empty space after the last bar) and the lagging span as many bars back; the pure ichimoku function returns them unshifted."
     }
   },
   "demos": {
@@ -60,6 +62,30 @@
     "vanilla": {
       "title": "Without React",
       "description": "createTradingChart from minerva-design/charts/core mounts the same chart in any element: options, on() events and destroy(). Here sma() tells how far the hovered close is from its 50-day average."
+    },
+    "ichimoku": {
+      "title": "Ichimoku cloud",
+      "description": "Conversion and base lines, the lagging span, and the cloud between the leading spans: in the up color while span A is above span B, in the down color otherwise. rightOffset leaves room for the cloud drawn 26 bars ahead."
+    },
+    "supertrend": {
+      "title": "SuperTrend and parabolic SAR",
+      "description": "Trailing stops that flip with the trend: the SuperTrend band, colored up or down, and the SAR dots. The buy / sell markers are the flips computed with the pure supertrend function."
+    },
+    "channels": {
+      "title": "Keltner and Donchian channels",
+      "description": "Keltner channels sit a number of average true ranges around an EMA, Donchian channels follow the highest high and lowest low, Bollinger bands use the standard deviation."
+    },
+    "oscillators": {
+      "title": "Oscillators",
+      "description": "Stochastic RSI and MFI between 0 and 100 (20 / 80 bands), CCI around ±100 and Williams %R between −100 and 0. Each one gets its pane; the chart grows with them."
+    },
+    "dmi": {
+      "title": "DMI and ADX",
+      "description": "+DI and −DI in the up and down colors, ADX in amber with its 25 line: above it, the trend is strong. The line below reads the last values from the pure dmi function."
+    },
+    "obv": {
+      "title": "On-balance volume",
+      "description": "OBV adds the volume of up closes and subtracts the volume of down closes; its 20-bar average shows whether buying or selling pressure dominates. Large values use compact units of the page language."
     }
   },
   "data": {
@@ -105,7 +131,42 @@
     "vanillaAria": "Daily chart drawn with createTradingChart",
     "vanillaWarmup": "Not enough bars yet for the 50-day average",
     "vanillaAbove": "The close is {{value}} above its 50-day average",
-    "vanillaBelow": "The close is {{value}} below its 50-day average"
+    "vanillaBelow": "The close is {{value}} below its 50-day average",
+    "cloud": "Cloud",
+    "nikkei": "Nikkei 225",
+    "ichimokuAria": "Nikkei 225 daily chart with the Ichimoku cloud",
+    "bandDistance": "Band distance",
+    "atrs": "{{value}} ATR",
+    "parabolicSar": "Parabolic SAR",
+    "supertrendAria": "SOL/USDT four-hour chart with the SuperTrend and its flips",
+    "channel": "Channel",
+    "channels": {
+      "keltner": "Keltner",
+      "donchian": "Donchian",
+      "boll": "Bollinger"
+    },
+    "eurusd": "EUR/USD",
+    "channelsAria": "EUR/USD hourly chart with a price channel",
+    "oscillators": "Oscillators",
+    "oscillatorNames": {
+      "stochRsi": "Stoch RSI",
+      "cci": "CCI",
+      "williamsR": "Williams %R",
+      "mfi": "MFI"
+    },
+    "oscillatorsAria": "BTC/USDT four-hour chart with oscillator panes",
+    "dmiSummary": {
+      "strong": "ADX {{adx}}: a strong trend, {{direction}}",
+      "weak": "ADX {{adx}}: no strong trend, {{direction}} for now"
+    },
+    "directions": {
+      "up": "rising (+DI above −DI)",
+      "down": "falling (−DI above +DI)"
+    },
+    "dmiAria": "MSFT daily chart with the DMI pane",
+    "aapl": "AAPL",
+    "obvAria": "AAPL daily chart with the volume and the OBV",
+    "flips": "Trend changes: {{count}}"
   },
   "api": {
     "TradingMovingAverageIndicator": {
@@ -191,7 +252,25 @@
       "refreshTheme": "Reads the CSS variables again (theme changes are detected automatically)",
       "resize": "Draws again at the container size (resizes are detected automatically)",
       "on": "Subscribes to an event; returns the unsubscribe function",
-      "destroy": "Removes the chart and frees the GPU resources"
+      "destroy": "Removes the chart and frees the GPU resources",
+      "getVisibleTimeRange": "Times at the edges of the plot (interpolated between bars).",
+      "setVisibleTimeRange": "Shows the bars between two times.",
+      "setCrosshair": "Shows the crosshair at a time (and a price), as if the pointer were there; null hides it. Does not emit crosshairMove.",
+      "updateDrawing": "Changes the style or the content of a drawing (undoable).",
+      "undo": "Undoes the last change of the drawings (also Ctrl / ⌘ + Z).",
+      "redo": "Redoes the last undone change (also Ctrl / ⌘ + Shift + Z).",
+      "getUndoState": "Whether the drawings can be undone or redone.",
+      "startReplay": "Starts a bar replay: the bars after time are hidden, then added back by replayStep or replayPlay. Without time, the user picks the first bar with a click.",
+      "replayStep": "Shows the next bars of the replay.",
+      "replayPlay": "Adds speed bars per second (the current speed by default).",
+      "replayPause": "Pauses the replay.",
+      "stopReplay": "Ends the replay and shows every bar.",
+      "getReplayState": "State of the bar replay.",
+      "toDataURL": "Image of the chart (bars, axes, drawings and legends) as a data URL.",
+      "toBlob": "Image of the chart as a blob (null without canvas support).",
+      "requestFullscreen": "Shows the chart full screen.",
+      "exitFullscreen": "Leaves full screen.",
+      "isFullscreen": "Whether the chart is full screen."
     },
     "TradingChartEventMap": {
       "renderer": "The backend in use, again after a fallback",
@@ -199,11 +278,98 @@
       "click": "A pane was clicked",
       "visibleRangeChange": "The visible bars changed",
       "orderMove": "A draggable price line was dropped",
-      "drawingsChange": "Drawings were added, moved or deleted by the user",
+      "drawingsChange": "Drawings were added, moved, restyled, deleted, undone or redone.",
       "drawingSelect": "The selected drawing changed",
       "drawingToolChange": "The drawing tool changed",
       "indicatorToggle": "An indicator was shown or hidden from its legend",
-      "historyRequest": "The oldest bar came into view"
+      "historyRequest": "The oldest bar came into view",
+      "orderCreate": "The + order entry button was clicked.",
+      "orderCancel": "The close button of a price line was clicked.",
+      "undoChange": "Undo / redo became possible or impossible.",
+      "replayChange": "The bar replay started, stepped, played, paused or stopped.",
+      "fullscreenChange": "The chart entered (true) or left full screen."
+    },
+    "TradingParabolicSarIndicator": {
+      "type": "Parabolic SAR.",
+      "start": "Initial acceleration factor.",
+      "increment": "Increase of the factor at each new extreme.",
+      "maximum": "Largest acceleration factor.",
+      "color": "Color of the dots; the up / down colors by trend by default."
+    },
+    "TradingIchimokuIndicator": {
+      "type": "Ichimoku Kinkō Hyō.",
+      "conversionPeriod": "Bars of the conversion line (Tenkan-sen).",
+      "basePeriod": "Bars of the base line (Kijun-sen).",
+      "spanBPeriod": "Bars of the leading span B (Senkou span B).",
+      "displacement": "Shift of the leading spans (ahead) and of the lagging span (back), in bars.",
+      "colors": "Colors of the conversion, base, lagging, leading A and leading B lines.",
+      "cloud": "Fills the cloud between the leading spans: the up color while span A is above span B, the down color otherwise."
+    },
+    "TradingSupertrendIndicator": {
+      "type": "SuperTrend.",
+      "period": "Bars of the average true range.",
+      "multiplier": "Distance of the band, in average true ranges.",
+      "upColor": "Color of the band in an uptrend; the up color by default.",
+      "downColor": "Color of the band in a downtrend; the down color by default."
+    },
+    "TradingKeltnerIndicator": {
+      "type": "Keltner channel.",
+      "period": "Bars of the exponential average.",
+      "multiplier": "Distance of the bands, in average true ranges.",
+      "atrPeriod": "Bars of the average true range.",
+      "colors": "Colors of the middle, upper and lower lines.",
+      "fill": "Fills the channel."
+    },
+    "TradingDonchianIndicator": {
+      "type": "Donchian channel.",
+      "period": "Number of bars.",
+      "colors": "Colors of the middle, upper and lower lines.",
+      "fill": "Fills the channel."
+    },
+    "TradingObvIndicator": {
+      "type": "On-balance volume.",
+      "maPeriod": "Period of a moving average drawn over the line.",
+      "color": "Line color."
+    },
+    "TradingCciIndicator": {
+      "type": "Commodity channel index.",
+      "period": "Number of bars.",
+      "color": "Line color."
+    },
+    "TradingStochRsiIndicator": {
+      "type": "Stochastic RSI.",
+      "rsiPeriod": "Bars of the RSI.",
+      "stochPeriod": "Bars of the stochastic of the RSI.",
+      "kPeriod": "Smoothing of K.",
+      "dPeriod": "Smoothing of D.",
+      "colors": "Colors of the K and D lines."
+    },
+    "TradingDmiIndicator": {
+      "type": "Directional movement index.",
+      "period": "Bars of the directional indicators.",
+      "adxPeriod": "Smoothing of the ADX.",
+      "colors": "Colors of the +DI, −DI and ADX lines."
+    },
+    "TradingWilliamsRIndicator": {
+      "type": "Williams %R.",
+      "period": "Number of bars.",
+      "color": "Line color."
+    },
+    "TradingMfiIndicator": {
+      "type": "Money flow index.",
+      "period": "Number of bars.",
+      "color": "Line color."
+    },
+    "TradingVolumeProfile": {
+      "low": "Price at the bottom of the first row.",
+      "high": "Price at the top of the last row.",
+      "step": "Height of a row, in price.",
+      "up": "Volume of rising bars per row, bottom row first.",
+      "down": "Volume of falling bars per row.",
+      "total": "Total volume.",
+      "poc": "Row of the point of control (the largest volume); −1 without volume.",
+      "valueAreaFrom": "First row of the value area.",
+      "valueAreaTo": "Last row of the value area."
     }
   },
   "wc": {

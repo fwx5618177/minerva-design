@@ -1,6 +1,6 @@
 {
   "title": "小程序图表",
-  "description": "minerva-design/charts 中由画布引擎绘制的全部图表——Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart，以及形状图表 PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart 和 ShapeChart——适用于 Taro、uni-app 与原生微信小程序，绘制在 canvas type=\"2d\" 上，选项与 Web 图表一致。",
+  "description": "minerva-design/charts 中由画布引擎绘制的全部图表——Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart，以及形状图表 PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart、ChordChart 和 ShapeChart——适用于 Taro、uni-app 与原生微信小程序，绘制在 canvas type=\"2d\" 上，选项与 Web 图表一致。",
   "intro": {
     "title": "工作原理",
     "text": "小程序图表使用 Minerva 图表引擎的画布渲染器，把整张图表（坐标轴、数据、图例、提示框、标注）绘制在一个 <canvas type=\"2d\"> 上。它们接受 minerva-design/charts 中 Web 图表的选项和预设，可用于微信、支付宝、抖音等小程序以及 H5。只打包引擎的 2D 画布部分，不含 WebGPU 或 WebGL 代码。",
@@ -28,6 +28,22 @@
     "series": "系列图表（Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、CandlestickChart、RangeAreaChart、MixedChart、BubbleChart）增加 series、xAxis 和 yAxis，以及对应 Web 组件的属性（area、curve、stacked、percent、labels、yAxis2、stackMode、orientation、minSize / maxSize……）。HeatmapChart、Sparkline、HistogramChart、BoxPlotChart、WaterfallChart 和 GanttChart 接受各自的数据属性（data、values、groups、steps、tasks……）。Chart 接受任意 type 的系列，包括 K 线和热力图。",
     "quadrant": "QuadrantChart 接受四象限设置：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name 和 draggable。",
     "events": "事件与 Web 回调对应：悬停、点击点、点击绘图区（点击空白处）和缩放；QuadrantChart 报告点击点（point, index）、点击象限（quadrant, { x, y }）和放下点（point, index, { x, y, quadrant }）。图表不会自行移动点：请更新 points。"
+  },
+  "locale": {
+    "title": "语言与区域",
+    "text": "在 Web 端，图表读取页面语言（<html lang>）。小程序没有 <html lang>：未传 locale 时，文本和数字跟随运行环境的 navigator.language（若存在），否则使用英文（Taro 与 uni-app 的 H5 构建与 Web 一样读取 <html lang>）。请为每个图表通过 locale 属性传入应用语言；微信返回的语言形如 zh_CN，把下划线替换为连字符（zh-CN）后数字和日期也会按该语言格式化。",
+    "labels": "labels 覆盖坐标系图表的内置文本（ChartLabels：K 线的开盘 / 收盘行、箱线图各行、甘特图各行、默认系列名称……），texts 覆盖形状图表的内置文本（ShapeChartLabels：noData、value、share……）。在 HorizontalBarChart 与 WaterfallChart 上，labels 仍是显示数值的布尔值，因此它们的文本只跟随 locale。",
+    "update": "修改 locale、labels 或 texts 会重绘图表：用户切换应用语言时重新设置即可（原生微信中使用 setData）。",
+    "sample": {
+      "comment": "应用的语言：小程序没有 <html lang>",
+      "ticks": "函数通过 configure() 传入：弦图刻度的标签",
+      "open": "开盘",
+      "close": "收盘",
+      "noData": "暂无流量",
+      "apps": "应用",
+      "web": "网页",
+      "store": "商店"
+    }
   },
   "gestures": {
     "title": "手势",
@@ -60,7 +76,8 @@
     "props": "属性与 Web 组件一致：AreaChart 接受 curve、stacked 和 percent；HorizontalBarChart 接受 stacked、percent 和 labels；HistogramChart 接受 values 和 bins；BoxPlotChart 接受 groups 或 series；WaterfallChart 接受 steps；GanttChart 接受 tasks、today 和 todayLabel；HeatmapChart 接受 data 和分类；Sparkline 接受 data 和 type（默认高 48 px）。",
     "weapp": "以文件夹名注册所用组件。Date 对象无法经过 setData：请传时间戳（甘特图任务、时间轴）。函数选项通过 configure() 传入：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、坐标轴格式和 renderTooltip。",
     "drill": "SunburstChart 轻触父节点即可放大，轻触中心返回上一级：Taro 使用 onDrill，uni-app 与微信使用 drill 事件（bind:drill），实例上有 drill(path) 与 getDrillPath()；设置 drillPath 可使下钻受控。",
-    "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales 以及 3D 图表（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）需要 DOM 与 WebGPU / WebGL，因此没有小程序组件。请改用 web-view 页面展示 Web 组件。"
+    "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales 以及 3D 图表（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）需要 DOM 与 WebGPU / WebGL，因此没有小程序组件。请改用 web-view 页面展示 Web 组件。",
+    "presets": "Web 组件的预设选项同样可用：WaterfallChart 的 connector（true、false 或 { color, dash, width }）、HeatmapChart 的 colorScale（\"sequential\"、\"diverging\" 或颜色数组）与 colorMidpoint、GanttChart 的 dependenciesName（配合任务的 dependencies）、BoxPlotChart 的 outlierShape 与 outlierSize。"
   },
   "newTypes": {
     "title": "K 线、热力图、曲线与堆叠",
@@ -77,6 +94,7 @@
     "events": "事件（event.detail）：hover（高亮的图形：index、name、value、percent、color、path；取消高亮时 index 为 -1）、click（被轻触的图形）、toggle（{ index, hidden, hiddenIndexes }）和 drill（{ path }，旭日图）。方法：configure(config)、resize()、toggle(index)、getHidden()、clearHover()、drill(path) 和 getDrillPath()。类型：minerva-design/weapp/types 中的 NativeShapeChartInstance、NativeShapeChartEvents 以及各 *ChartProperties 接口。",
     "coreTitle": "在自己的画布上使用引擎",
     "core": "在任意 2D 画布上用 createCanvasShapeChart（以及 createCanvasChart）绘图。原生微信项目在“构建 npm”后 require(\"minerva-design/charts/core\")：包的小程序目录以 charts/core.js 提供不依赖 DOM 的引擎，图表组件共用同一模块（不额外增加体积）。Taro 与 uni-app 中从 minerva-design/charts/core 导入。",
-    "touches": "转发触摸事件（小程序画布的触点带有相对画布的 x / y；H5 上用 clientX / clientY 减去画布位置），尺寸变化时调用 resize(width, height)，页面卸载时调用 destroy()。主题是普通值：在 theme.variables 中传入所需的 Minerva CSS 变量。"
+    "touches": "转发触摸事件（小程序画布的触点带有相对画布的 x / y；H5 上用 clientX / clientY 减去画布位置），尺寸变化时调用 resize(width, height)，页面卸载时调用 destroy()。主题是普通值：在 theme.variables 中传入所需的 Minerva CSS 变量。",
+    "chord": "ChordChart 绘制弦图：分组（名称或 { name, color }）沿圆周排列，弦带来自矩阵或连接列表，支持有向箭头、排序、按来源 / 目标 / 渐变着色以及数值刻度——与 Web 组件的属性一致。默认高度 420 px；在原生微信中，tickFormat 通过 configure() 传入。"
   }
 }

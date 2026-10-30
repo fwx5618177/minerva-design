@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Alert } from "minerva-design";
 import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
@@ -50,6 +51,21 @@ const typesCode = `// tsconfig.json: Volar typings of the global <Mn*> component
   }
 }`;
 
+const chartsPluginCode = `// src/main.ts: the global chart components are opt-in (they load the chart engine)
+import { createApp } from "vue";
+import MinervaVue from "minerva-design/vue";
+import { MinervaVueCharts } from "minerva-design/vue/charts";
+import "minerva-design/style.css";
+import App from "./App.vue";
+
+createApp(App)
+  .use(MinervaVue) // <MnButton>, <MnModal>...
+  .use(MinervaVueCharts) // <MnLineChart>, <MnPieChart>... (same prefix option)
+  .mount("#app");
+
+// tsconfig.json: "types": ["minerva-design/vue/global", "minerva-design/vue/charts-global"]
+// without a plugin: import { LineChart } from "minerva-design/vue/charts";`;
+
 const themeCode = `<script setup lang="ts">
 import { ConfigProvider, ThemeToggle, useTheme } from "minerva-design/vue";
 </script>
@@ -82,8 +98,10 @@ export default defineNuxtConfig({
 
 // plugins/minerva.ts (optional: global <Mn*> components, SSR-safe)
 import MinervaVue from "minerva-design/vue";
+import { MinervaVueCharts } from "minerva-design/vue/charts";
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(MinervaVue);
+  nuxtApp.vueApp.use(MinervaVueCharts); // only if templates use <Mn*Chart>
 });`;
 
 const islandCode = `// a Vue island inside a page whose theme is owned by another framework
@@ -125,6 +143,13 @@ const VueDoc: React.FC = () => {
         <CodeBlock code={pluginCode} language="ts" />
         <p className={styles.prose}>{k("plugin.types")}</p>
         <CodeBlock code={typesCode} language="json" />
+
+        <h3 id="plugin-charts">{k("plugin.charts.title")}</h3>
+        <p className={styles.prose}>{k("plugin.charts.text")}</p>
+        <CodeBlock code={chartsPluginCode} language="ts" />
+        <Alert color="warning" title={k("plugin.charts.migration.title")}>
+          {k("plugin.charts.migration.text")}
+        </Alert>
       </section>
 
       <section className={styles.section} aria-labelledby="theming">

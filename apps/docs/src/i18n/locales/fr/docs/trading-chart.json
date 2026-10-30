@@ -6,9 +6,9 @@
       "title": "Présentation",
       "text": "TradingChart reçoit des bougies OHLCV (des objets, ou des colonnes de tableaux typés pour les très longs historiques) et les dessine avec les moteurs GPU du moteur de graphiques ; axes, étiquettes, dessins et réticule sont tracés sur une couche Canvas2D.",
       "axis": "L'axe du temps est un index de bougies : week-ends, nuits et jours fériés ne laissent aucun trou, et les étiquettes suivent l'unité de temps (nouveaux jours et mois en gras).",
-      "panes": "Moyennes mobiles, bandes de Bollinger et VWAP se superposent au prix ; volume, MACD, RSI, KDJ et ATR ont chacun leur panneau, tous partageant le zoom et le réticule. Faites glisser un séparateur pour redimensionner un panneau.",
-      "trading": "Ligne du dernier prix avec le compte à rebours de la clôture, plus haut / plus bas des bougies visibles, flèches d'achat / vente, et lignes d'ordre, de position, de prise de bénéfice, de stop et d'alerte que l'on peut faire glisser.",
-      "drawings": "Lignes de tendance, demi-droites, lignes horizontales et verticales, rectangles, retracements de Fibonacci et outil de mesure : de simples données, enregistrées et restaurées avec drawings et onDrawingsChange."
+      "panes": "Moyennes mobiles, canaux de Bollinger, Keltner et Donchian, VWAP, SAR parabolique, Ichimoku et SuperTrend se superposent au cours ; volume, MACD, RSI, KDJ, ATR, OBV, CCI, RSI stochastique, DMI, Williams %R et MFI ont chacun leur panneau, tous avec le même zoom et le même réticule. Faites glisser un séparateur pour redimensionner un panneau.",
+      "trading": "Ligne du dernier cours avec le compte à rebours de la clôture, plus haut / plus bas visibles, marqueurs d'achat / vente, profil de volume de la plage visible (point de contrôle et zone de valeur), et lignes d'ordre, de position, d'objectif, de stop et d'alerte que l'on peut déplacer, annuler ou créer depuis l'axe des prix.",
+      "drawings": "Lignes de tendance, demi-droites, flèches, lignes horizontales et verticales, canaux parallèles, fourchettes d'Andrews, rectangles, retracements de Fibonacci, notes de texte, outils de position acheteuse / vendeuse et outil de mesure, sur le panneau des prix ou sur un panneau d'indicateur. Une barre d'outils flottante change le style du dessin sélectionné ; Ctrl / ⌘ + Z annule. Les dessins sont des données simples, enregistrées et restaurées avec drawings et onDrawingsChange."
     },
     "streaming": {
       "title": "Temps réel",
@@ -19,19 +19,26 @@
       "title": "Commandes",
       "pointer": "Molette pour zoomer sous le pointeur (Maj ou balayage horizontal pour défiler), glisser pour se déplacer avec inertie.",
       "axes": "Faites glisser l'axe des prix pour zoomer verticalement et l'axe du temps pour changer la largeur des bougies ; double-cliquez sur un axe pour le réinitialiser.",
-      "keyboard": "Une fois le graphique sélectionné : les flèches déplacent le réticule bougie par bougie (Maj : dix) et annoncent les prix, + / − zooment, Début / Fin vont à la première / dernière bougie, Suppr efface le dessin sélectionné, Échap annule.",
+      "keyboard": "Une fois le graphique sélectionné : les flèches déplacent le réticule barre par barre (Maj : dix barres) et annoncent les prix, + / − zooment, Début / Fin vont à la première / dernière barre, Suppr efface le dessin sélectionné, Ctrl / ⌘ + Z annule et Ctrl / ⌘ + Maj + Z rétablit une modification des dessins, Échap annule.",
       "touch": "Sur écran tactile : glisser pour se déplacer, pincer pour zoomer."
     },
     "languages": {
       "title": "Langues",
       "text": "Les textes écrits par le graphique (noms OHLC, titres des lignes d'ordre et d'alerte, compte à rebours, outil de mesure, noms accessibles) existent en anglais, chinois, japonais et français et suivent la langue de la page (<html lang>), y compris quand elle change. Les volumes utilisent les unités de la langue (k, M, Md en français). Choisissez une autre langue avec locale et remplacez n'importe quel texte avec labels.",
       "colors": "Les couleurs ne suivent pas la langue : une page en chinois peut très bien afficher des actions américaines, la convention « rouge à la hausse » reste donc un colorConvention=\"redUp\" explicite."
+    },
+    "workflow": {
+      "title": "Méthode de travail",
+      "layouts": "Grilles de graphiques : syncCharts partage l'heure du réticule et la plage de temps visible entre les graphiques, même d'unités de temps différentes.",
+      "replay": "Relecture des barres : startReplay masque les barres après un point, puis replayStep et replayPlay les ramènent une à une, à la vitesse choisie, avec les indicateurs recalculés comme en direct.",
+      "time": "Fuseaux horaires et séances : timeZone règle l'horloge de l'axe du temps, des séparateurs de séance et des périodes du VWAP (heure d'été comprise).",
+      "export": "Images et plein écran : toDataURL et toBlob composent toutes les couches (barres, axes, dessins et légendes) en une image ; requestFullscreen affiche le graphique en plein écran."
     }
   },
   "demos": {
     "pro-terminal": {
       "title": "Terminal pro",
-      "description": "Quatre-vingt-dix jours de bougies d'une minute agrégées avec resampleBars pour les boutons d'unité de temps ; la barre d'outils change le style, les indicateurs et l'échelle des prix (auto, pourcentage, logarithmique). Cliquez sur le nom d'un indicateur dans une légende pour le masquer, faites glisser un séparateur pour redimensionner les panneaux."
+      "description": "Unités de temps de 1 minute à 1 semaine agrégées avec resampleBars, sept styles de graphique, indicateurs à la carte (moyennes mobiles, Bollinger, Ichimoku, SuperTrend, profil de volume, volume, MACD, RSI, KDJ), échelles linéaire / pourcentage / logarithmique, séparateurs de jours, téléchargement d'une image et plein écran."
     },
     "streaming": {
       "title": "Flux en direct",
@@ -47,7 +54,7 @@
     },
     "drawing-tools": {
       "title": "Outils de dessin",
-      "description": "Choisissez un outil, puis cliquez deux fois ou faites glisser sur le graphique. Avec le curseur, cliquez sur un dessin pour le sélectionner, faites-le glisser ou ses poignées pour le déplacer, Suppr pour l'effacer. drawings et onDrawingsChange les gardent dans l'état React, prêts à être enregistrés ; le retracement de Fibonacci et le support sont calculés à partir des données."
+      "description": "Quatorze outils : choisissez-en un, puis faites glisser ou cliquez les points d'ancrage (trois pour les canaux et les fourchettes). Sélectionnez un dessin pour changer son style depuis sa barre d'outils flottante (couleur, épaisseur, tirets, remplissage, verrou, suppression), faites-le glisser ou ses poignées, double-cliquez une note pour la modifier. Les dessins fonctionnent aussi sur le panneau RSI ; annulez / rétablissez avec les boutons ou Ctrl / ⌘ + Z."
     },
     "orders": {
       "title": "Ordres et positions",
@@ -55,7 +62,7 @@
     },
     "compare": {
       "title": "Comparer des actifs",
-      "description": "compare superpose d'autres actifs au prix ; avec l'échelle en pourcentage, chaque série part de 0 % à la première bougie visible, pour comparer les performances en faisant défiler. Les échelles logarithmique et linéaire montrent pourquoi."
+      "description": "compare superpose d'autres symboles au cours. En échelle pourcentage, chaque série part de 0 % à la première barre visible, avec sa dernière variation sur l'axe des prix et une ligne pointillée à 0 % ; les échelles logarithmique et linéaire gardent les prix."
     },
     "history": {
       "title": "Historique infini",
@@ -72,6 +79,30 @@
     "dark-terminal": {
       "title": "Terminal sombre",
       "description": "Le graphique prend ses couleurs dans des variables CSS : un conteneur les redéfinit pour un terminal sombre de plateforme d'échange, avec un bandeau de cotation, EMA 20 / 50, bandes de Bollinger, volume au bas du panneau des prix et RSI."
+    },
+    "volume-profile": {
+      "title": "Profil de volume",
+      "description": "volumeProfile trace le volume échangé à chaque prix sur les barres visibles (barres haussières puis baissières), avec le point de contrôle et la zone de valeur qui contient 70 % du volume. Il suit le défilement et le zoom ; la ligne du dessous vient de la fonction pure volumeProfile."
+    },
+    "multi-chart": {
+      "title": "Grille synchronisée",
+      "description": "Quatre graphiques synchronisés par syncCharts : survolez-en un et les autres affichent le réticule à la même heure ; faites défiler ou zoomez et les autres montrent les mêmes heures, graphique 4 heures compris."
+    },
+    "replay": {
+      "title": "Relecture des barres",
+      "description": "Entraînez-vous à lire le marché sans voir la suite : choisissez une barre sur le graphique, puis avancez barre par barre ou lancez la lecture à la vitesse choisie. Les moyennes et le volume sont recalculés à chaque barre ; Quitter réaffiche toutes les barres."
+    },
+    "order-entry": {
+      "title": "Saisie d'ordres",
+      "description": "Avec orderEntry, un bouton + suit le réticule à droite du panneau des prix : cliquez-le pour placer un ordre limite à ce prix (achat sous le dernier cours, vente au-dessus). Les ordres sont des lignes de prix déplaçables et annulables, gardées dans l'état React avec onOrderCreate, onOrderMove et onOrderCancel."
+    },
+    "sessions": {
+      "title": "Fuseaux horaires et séances",
+      "description": "Dix séances de New York en barres de 5 minutes. timeZone change l'horloge de l'axe du temps (heure d'été comprise) et les limites de jour des séparateurs de séance et du VWAP : à Shanghai, une séance de New York s'étend sur deux jours."
+    },
+    "export": {
+      "title": "Image et plein écran",
+      "description": "toDataURL et toBlob composent les barres, les axes, les dessins et les légendes en un PNG ; requestFullscreen affiche le graphique en plein écran (Échap pour en sortir)."
     }
   },
   "data": {
@@ -102,7 +133,10 @@
       "vol": "VOL",
       "macd": "MACD",
       "rsi": "RSI",
-      "kdj": "KDJ"
+      "kdj": "KDJ",
+      "ichimoku": "Ichimoku",
+      "st": "SuperTrend",
+      "vpvr": "Profil de volume"
     },
     "scales": {
       "linear": "Auto",
@@ -135,7 +169,13 @@
       "verticalLine": "Ligne verticale",
       "rectangle": "Rectangle",
       "fibRetracement": "Retracement de Fibonacci",
-      "measure": "Mesure"
+      "measure": "Mesure",
+      "arrow": "Flèche",
+      "parallelChannel": "Canal parallèle",
+      "pitchfork": "Fourchette d'Andrews",
+      "text": "Note de texte",
+      "longPosition": "Position acheteuse",
+      "shortPosition": "Position vendeuse"
     },
     "keepDrawing": "Rester en mode dessin",
     "clearDrawings": "Tout effacer",
@@ -174,7 +214,59 @@
     "high24h": "Plus haut 24 h",
     "low24h": "Plus bas 24 h",
     "volume24h": "Volume 24 h",
-    "darkAria": "Graphique BTCUSDT perpétuel en 15 minutes dans un terminal sombre"
+    "darkAria": "Graphique BTCUSDT perpétuel en 15 minutes dans un terminal sombre",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "downloadImage": "Télécharger l'image",
+    "fullscreen": "Plein écran",
+    "snapshot": "Capture",
+    "snapshotAlt": "Capture du graphique journalier de NVDA",
+    "snapshotCaption": "Composée par toDataURL : barres, axes, légendes et filigrane dans un seul PNG.",
+    "exportAria": "Graphique journalier de NVDA avec ses moyennes à 50 et 200 jours",
+    "nvda": "NVDA",
+    "volumeProfile": "Profil de volume",
+    "profileRows": "Lignes",
+    "profileSide": "Côté",
+    "sides": {
+      "right": "À droite",
+      "left": "À gauche"
+    },
+    "profileStatus": "Point de contrôle {{poc}} · zone de valeur {{low}} – {{high}} (70 % du volume)",
+    "profileAria": "Graphique 15 minutes de BTC/USDT avec le profil de volume des barres visibles",
+    "syncCrosshair": "Synchroniser le réticule",
+    "syncTime": "Synchroniser la plage de temps",
+    "layoutAria": "Graphique {{symbol}} {{timeframe}}",
+    "replayControls": "Commandes de relecture",
+    "replayStart": "Lancer la relecture",
+    "replayRestart": "Nouveau départ",
+    "play": "Lecture",
+    "replayStep": "Barre suivante",
+    "replaySpeed": "Vitesse",
+    "replayExit": "Quitter",
+    "replayIdle": "Lancez la relecture, puis cliquez une barre pour y revenir.",
+    "replayPicking": "Cliquez une barre : les suivantes sont masquées.",
+    "replayProgress": "Barre {{index}} sur {{total}}",
+    "replayAria": "Graphique horaire d'ETH/USDT pour la relecture des barres",
+    "orderPlacedBuy": "Achat limite placé à {{price}}",
+    "orderPlacedSell": "Vente limite placée à {{price}}",
+    "orderModified": "Ordre déplacé de {{from}} à {{to}}",
+    "orderCancelled": "Ordre à {{price}} annulé",
+    "orderEntryAria": "Graphique 5 minutes du perpétuel BTCUSDT avec saisie d'ordres",
+    "orderEntryHint": "Survolez le graphique et cliquez le + à droite pour placer un ordre ; faites glisser une ligne pour la déplacer, × l'annule.",
+    "timeZone": "Fuseau horaire",
+    "zones": {
+      "America_New_York": "New York",
+      "Europe_London": "Londres",
+      "Asia_Shanghai": "Shanghai",
+      "Asia_Tokyo": "Tokyo",
+      "UTC": "UTC"
+    },
+    "sessionBreaks": "Séparateurs de séance",
+    "sessionsAria": "Graphique 5 minutes d'AAPL sur dix séances avec le VWAP",
+    "noteText": "Canal haussier : attendre un retour",
+    "ordersTitle": "Ordres ouverts",
+    "rowCount": "{{count}} lignes",
+    "barsPerSecond": "{{count}} barres / s"
   },
   "api": {
     "TradingChartProps": {
@@ -192,7 +284,12 @@
       "onDrawingToolChange": "L'outil de dessin a changé, par exemple retour au curseur après un dessin",
       "onIndicatorToggle": "Un indicateur a été affiché ou masqué depuis sa légende",
       "onHistoryRequest": "La plus ancienne bougie est visible : chargez les précédentes et appelez prependBars",
-      "onRendererChange": "Le moteur utilisé, à nouveau après un repli (réinitialisation du GPU)"
+      "onRendererChange": "Le moteur utilisé, à nouveau après un repli (réinitialisation du GPU)",
+      "onOrderCreate": "Le bouton + de saisie d'ordre a été cliqué (voir orderEntry).",
+      "onOrderCancel": "Le bouton de fermeture d'une ligne de prix annulable a été cliqué.",
+      "onUndoChange": "L'annulation / le rétablissement des dessins devient possible ou impossible.",
+      "onReplayChange": "La relecture des barres a démarré, avancé, joué, été mise en pause ou arrêtée.",
+      "onFullscreenChange": "Le graphique est passé en plein écran (true) ou en est sorti."
     },
     "TradingChartOptions": {
       "bars": "Bougies, de la plus ancienne à la plus récente : objets ou colonnes de tableaux typés. Un nouveau tableau avec le même historique et des bougies plus récentes est appliqué comme un flux",
@@ -207,7 +304,7 @@
       "precision": "Décimales des prix ; détectées dans les données par défaut",
       "formatPrice": "Formate les prix de l'axe, de la légende et des étiquettes (remplace precision)",
       "locale": "Langue des textes, des nombres et des dates : par défaut celle de la page (<html lang>, suivie quand elle change)",
-      "utcOffset": "Décalage des heures affichées par rapport à UTC, en minutes (480 pour UTC+8) ; heure locale par défaut",
+      "utcOffset": "Décalage des heures affichées par rapport à UTC, en minutes (480 pour UTC+8) ; prime sur timeZone.",
       "crosshair": "magnet aimante la ligne horizontale à l'ouverture, au plus haut, au plus bas ou à la clôture ; free suit le pointeur",
       "legend": "Légendes avec les valeurs sous le réticule et les interrupteurs des indicateurs",
       "lastPriceLine": "Ligne pointillée et étiquette d'axe au dernier prix",
@@ -228,7 +325,12 @@
       "watermark": "Grand texte pâle derrière les bougies",
       "labels": "Remplace des textes intégrés (anglais, chinois, japonais et français sont fournis)",
       "renderer": "Moteur : auto essaie WebGPU, puis WebGL2, WebGL et Canvas2D",
-      "ariaLabel": "Étiquette accessible ; construite à partir du symbole par défaut"
+      "ariaLabel": "Étiquette accessible ; construite à partir du symbole par défaut",
+      "timeZone": "Fuseau horaire de l'axe du temps, des séparateurs de séance et des périodes du VWAP : un nom IANA (\"America/New_York\") ou \"UTC\" ; l'heure locale par défaut.",
+      "sessionBreaks": "Lignes verticales en tirets au début de chaque jour (barres intrajournalières).",
+      "orderEntry": "Un bouton + au prix du réticule, à droite du panneau des prix : un clic signale un ordre limite (orderCreate).",
+      "volumeProfile": "Volume par prix des barres visibles, avec son point de contrôle et sa zone de valeur (true pour les valeurs par défaut).",
+      "drawingToolbar": "Barre d'outils flottante au-dessus du dessin sélectionné (couleur, épaisseur, style, remplissage, verrou, suppression)."
     },
     "TradingChartHandle": {
       "update": "Envoie une bougie : à l'heure de la dernière elle la remplace, plus récente elle s'ajoute",
@@ -248,7 +350,25 @@
       "selectDrawing": "Sélectionne un dessin (null annule la sélection)",
       "setIndicatorVisible": "Affiche ou masque un indicateur par son id",
       "getRenderer": "Moteur utilisé, null tant qu'il n'est pas prêt",
-      "getInstance": "L'instance du moteur de minerva-design/charts/core"
+      "getInstance": "L'instance du moteur de minerva-design/charts/core",
+      "getVisibleTimeRange": "Heures aux bords du tracé, null avant le montage.",
+      "setVisibleTimeRange": "Affiche les barres entre deux heures.",
+      "setCrosshair": "Affiche le réticule à une heure (et un prix) ; null le masque.",
+      "setScaleMode": "Règle l'échelle du panneau des prix.",
+      "updateDrawing": "Modifie le style ou le contenu d'un dessin (annulable).",
+      "undo": "Annule la dernière modification des dessins.",
+      "redo": "Rétablit la dernière modification annulée des dessins.",
+      "getUndoState": "Indique si les dessins peuvent être annulés ou rétablis.",
+      "startReplay": "Lance une relecture après time ; sans time, l'utilisateur choisit la barre.",
+      "replayStep": "Affiche les barres suivantes de la relecture.",
+      "replayPlay": "Joue la relecture à speed barres par seconde.",
+      "replayPause": "Met la relecture en pause.",
+      "stopReplay": "Termine la relecture et affiche toutes les barres.",
+      "getReplayState": "État de la relecture, null avant le montage.",
+      "toDataURL": "Image du graphique en data URL (\"\" avant le montage).",
+      "toBlob": "Image du graphique en blob.",
+      "requestFullscreen": "Affiche le graphique en plein écran.",
+      "exitFullscreen": "Quitte le plein écran."
     },
     "TradingBar": {
       "time": "Heure d'ouverture en millisecondes depuis l'epoch",
@@ -275,7 +395,8 @@
       "quantity": "Quantité à côté de l'étiquette ; un nombre donne aussi le résultat d'une position",
       "color": "Couleur ; déduite du type et du sens par défaut",
       "draggable": "Peut être déplacée à un autre prix, signalé par onOrderMove",
-      "lineStyle": "solid, dashed ou dotted ; pointillée pour les ordres par défaut"
+      "lineStyle": "solid, dashed ou dotted ; pointillée pour les ordres par défaut",
+      "cancellable": "Affiche un bouton de fermeture sur l'étiquette (signalé par orderCancel)."
     },
     "TradingMarker": {
       "time": "Heure de la bougie (celle qui la contient)",
@@ -289,20 +410,26 @@
       "name": "Nom dans la légende",
       "data": "Valeurs par heure, associées aux bougies par leur heure",
       "color": "Couleur de la ligne ; une couleur du thème par défaut",
-      "id": "Identifiant ; le nom par défaut"
+      "id": "Identifiant ; le nom par défaut",
+      "lineWidth": "Épaisseur du trait en pixels."
     },
     "TradingDrawing": {
       "id": "Id unique",
       "type": "Outil qui l'a créé",
-      "points": "Ancres (heure et prix) : une pour les lignes horizontales / verticales, deux sinon",
+      "points": "Points d'ancrage : un pour les lignes horizontales / verticales et les textes, trois pour les canaux, fourchettes et positions (entrée, objectif, stop), deux sinon.",
       "color": "Couleur ; la couleur principale par défaut",
       "lineWidth": "Épaisseur du trait en pixels",
       "lineStyle": "solid, dashed ou dotted",
-      "locked": "Ne peut être ni déplacé ni effacé par l'utilisateur"
+      "locked": "Ne peut être ni déplacé ni effacé par l'utilisateur",
+      "pane": "Panneau du dessin : \"price\" ou l'id d'un panneau d'indicateur.",
+      "fill": "Remplit la forme (rectangles, canaux, fourchettes, niveaux de Fibonacci, notes).",
+      "text": "Texte d'un dessin de texte (\\n commence une ligne).",
+      "fontSize": "Taille de police d'un dessin de texte, en pixels.",
+      "quantity": "Quantité d'un dessin de position : affiche le gain en unités de prix."
     },
     "TradingDrawingPoint": {
       "time": "Heure ; au-delà de la dernière bougie, extrapolée avec la durée d'une bougie",
-      "price": "Prix"
+      "price": "Prix (ou valeur du panneau d'indicateur)."
     },
     "TradingChartLabels": {
       "open": "Ouverture dans la légende",
@@ -324,7 +451,27 @@
       "minutes": "Minutes de l'outil de mesure ; {count} est remplacé",
       "chart": "Étiquette accessible par défaut ; {symbol} est remplacé",
       "announcement": "Bougie lue à voix haute quand le clavier déplace le réticule ; {time}, {open}, {high}, {low} et {close} sont remplacés",
-      "timeframe": "Unité de temps après le symbole dans la légende ; l’option timeframe quand c’est une chaîne par défaut"
+      "timeframe": "Unité de temps après le symbole dans la légende ; l’option timeframe quand c’est une chaîne par défaut",
+      "ichimoku": "Titre de légende de l'Ichimoku.",
+      "supertrend": "Titre de légende du SuperTrend.",
+      "text": "Texte par défaut d'un nouveau dessin de texte.",
+      "color": "Bouton de couleur de la barre d'outils des dessins.",
+      "lineWidth": "Bouton d'épaisseur de la barre d'outils des dessins.",
+      "lineStyle": "Bouton de style de trait de la barre d'outils des dessins.",
+      "fill": "Bouton de remplissage de la barre d'outils des dessins.",
+      "editText": "Bouton de modification des textes dans la barre d'outils des dessins.",
+      "lock": "Bouton de verrouillage de la barre d'outils des dessins.",
+      "remove": "Bouton de suppression de la barre d'outils des dessins.",
+      "target": "Objectif des outils de position ; {price} et {change} sont remplacés.",
+      "stop": "Stop des outils de position ; {price} et {change} sont remplacés.",
+      "riskReward": "Rapport risque / rendement des outils de position ; {ratio} est remplacé.",
+      "profit": "Gain des outils de position au dernier cours ; {value} est remplacé.",
+      "long": "Outil de position acheteuse.",
+      "short": "Outil de position vendeuse.",
+      "replay": "Badge de la relecture ; {time} est remplacé.",
+      "replayHint": "Indication pendant le choix de la première barre d'une relecture.",
+      "buyLimit": "Bouton de saisie d'ordre sous le dernier cours ; {price} est remplacé.",
+      "sellLimit": "Bouton de saisie d'ordre au-dessus du dernier cours ; {price} est remplacé."
     },
     "TradingCrosshairEvent": {
       "index": "Index de la bougie survolée (peut dépasser la dernière)",
@@ -360,6 +507,40 @@
     "TradingHistoryRequestEvent": {
       "firstTime": "Heure de la plus ancienne bougie",
       "count": "Nombre de bougies"
+    },
+    "TradingVolumeProfileOptions": {
+      "rows": "Nombre de lignes de prix.",
+      "width": "Largeur de la plus longue ligne, en fraction de la largeur du tracé.",
+      "valueArea": "Part du volume dans la zone de valeur, autour du point de contrôle.",
+      "side": "Côté du tracé d'où partent les lignes.",
+      "upColor": "Couleur du volume des barres haussières ; la couleur de hausse par défaut.",
+      "downColor": "Couleur du volume des barres baissières ; la couleur de baisse par défaut.",
+      "pocColor": "Couleur de la ligne du point de contrôle."
+    },
+    "TradingOrderCreateEvent": {
+      "price": "Prix de l'ordre (arrondi à la précision des prix).",
+      "side": "buy sous le dernier cours, sell au-dessus."
+    },
+    "TradingOrderCancelEvent": {
+      "id": "Id de la ligne.",
+      "line": "La ligne."
+    },
+    "TradingReplayState": {
+      "active": "Les barres sont rejouées (les suivantes sont masquées).",
+      "picking": "L'utilisateur choisit la première barre.",
+      "playing": "Les barres sont ajoutées automatiquement.",
+      "speed": "Barres ajoutées par seconde pendant la lecture.",
+      "index": "Nombre de barres affichées.",
+      "total": "Nombre de barres de tout l'historique.",
+      "time": "Heure de la dernière barre affichée."
+    },
+    "TradingUndoState": {
+      "canUndo": "Une modification peut être annulée.",
+      "canRedo": "Une modification annulée peut être rétablie."
+    },
+    "TradingSyncOptions": {
+      "crosshair": "Affiche le réticule du graphique survolé sur les autres, à la même heure.",
+      "timeRange": "Affiche la même plage de temps sur tous les graphiques quand l'un défile ou zoome."
     }
   },
   "wc": {
@@ -388,7 +569,12 @@
         "minerva-drawing-tool-change": "L’outil de tracé a changé (retour au curseur après un tracé) ; detail : { tool }",
         "minerva-indicator-toggle": "Un indicateur a été affiché ou masqué depuis sa légende ; detail : { id, visible }",
         "minerva-history-request": "La barre la plus ancienne est visible : chargez les précédentes avec prependBars ; detail : { firstTime, count }",
-        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }",
+        "minerva-order-create": "Le bouton « + » de saisie d'ordre a été cliqué (option orderEntry) ; detail : { price, side }",
+        "minerva-order-cancel": "Le bouton de fermeture d'une ligne de prix annulable a été cliqué ; detail : { id, line }",
+        "minerva-undo-change": "Annuler / rétablir les dessins est devenu possible ou impossible ; detail : { canUndo, canRedo }",
+        "minerva-replay-change": "La relecture des barres a démarré, avancé, joué, été mise en pause ou arrêtée ; detail : { active, picking, playing, speed, index, total, time }",
+        "minerva-fullscreen-change": "Le graphique est passé en plein écran ou en est sorti ; detail : { fullscreen }"
       },
       "methods": {
         "updateBar": "Diffuse une barre : la même heure que la dernière la remplace, une heure plus tardive l’ajoute (update(bar) du moteur)",
@@ -407,7 +593,25 @@
         "removeDrawing": "Supprime un tracé",
         "selectDrawing": "Sélectionne un tracé (null efface la sélection)",
         "setIndicatorVisible": "Affiche ou masque un indicateur",
-        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt",
+        "getVisibleTimeRange": "Heures aux bords du tracé, null avant la création du moteur",
+        "setVisibleTimeRange": "Affiche les barres entre deux heures",
+        "setCrosshair": "Affiche le réticule à une heure (et un prix) ; null le masque",
+        "setScaleMode": "Définit l'échelle de prix du volet des prix (linear, log, percent, indexed)",
+        "updateDrawing": "Modifie le style ou le contenu d'un dessin (annulable)",
+        "undo": "Annule la dernière modification des dessins",
+        "redo": "Rétablit la dernière modification annulée des dessins",
+        "getUndoState": "Indique si les dessins peuvent être annulés ou rétablis",
+        "startReplay": "Démarre une relecture des barres après time (l'utilisateur choisit la barre sinon)",
+        "replayStep": "Affiche les barres suivantes de la relecture",
+        "replayPlay": "Joue la relecture à speed barres par seconde",
+        "replayPause": "Met la relecture en pause",
+        "stopReplay": "Termine la relecture et affiche toutes les barres",
+        "getReplayState": "État de la relecture des barres, null avant la création du moteur",
+        "toDataURL": "Image du graphique en data URL (\"\" avant la création du moteur)",
+        "toBlob": "Image du graphique en blob",
+        "requestChartFullscreen": "Affiche le graphique en plein écran (le requestFullscreen() de l'élément affiche l'élément lui-même)",
+        "exitChartFullscreen": "Quitte le plein écran"
       }
     }
   }

@@ -46,6 +46,9 @@ const renderPage = (url = "/button", id = "button") => {
 };
 
 const tabs = () => within(screen.getByRole("tablist", { name: "Framework" }));
+// chart pages render their body once the renderer bar (lazy) is loaded
+const findTabs = async () =>
+  within(await screen.findByRole("tablist", { name: "Framework" }));
 const selected = (name: string) =>
   expect(tabs().getByRole("tab", { name })).toHaveAttribute(
     "aria-selected",
@@ -272,7 +275,7 @@ describe("global framework selector", () => {
     async (label, id, entry) => {
       const user = userEvent.setup();
       renderPage("/line-chart", "line-chart");
-      await user.click(tabs().getByRole("tab", { name: label }));
+      await user.click((await findTabs()).getByRole("tab", { name: label }));
       expect(screen.getByRole("status", { name: "query" })).toHaveTextContent(
         `?framework=${id}`,
       );
@@ -295,7 +298,7 @@ describe("global framework selector", () => {
     async (label) => {
       const user = userEvent.setup();
       renderPage("/chart-engine", "chart-engine");
-      await user.click(tabs().getByRole("tab", { name: label }));
+      await user.click((await findTabs()).getByRole("tab", { name: label }));
       const fallback = await screen.findByTestId("chart-engine-fallback");
       expect(fallback).toHaveTextContent(
         'import { createChart } from "minerva-design/charts/core"',

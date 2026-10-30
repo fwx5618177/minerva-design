@@ -52,7 +52,8 @@ export default function RetentionDemo() {
       xCategories={periods}
       // oldest cohort at the top
       yCategories={[...cohorts].reverse()}
-      colorScale={["var(--background-color)", "var(--primary-color)"]}
+      // the default ramp: a tint of the surface to a deep (light theme) or
+      // bright (dark theme) primary color
       valueRange={[0, 1]}
       name={t("retained")}
       format={(value) => percent.format(value)}

@@ -1,6 +1,6 @@
 {
   "title": "瀑布图",
-  "description": "展示一系列增减如何把数值从起点带到终点，并带有小计和合计：利润桥、现金流、差异分析。",
+  "description": "展示一系列增减如何把数值从起点带到终点，并带有小计和合计：利润桥、现金流、差异分析。细虚线连接每根柱子与下一根柱子。",
   "demos": {
     "pnl": {
       "title": "损益桥",
@@ -90,7 +90,13 @@
       "start": "第一个变动的起始值",
       "labels": "在每个柱子末端写出变动值（或合计）",
       "format": "格式化数值（标签、提示框）",
-      "locale": "默认系列名称所用的语言区域；默认使用页面语言"
+      "locale": "默认系列名称所用的语言区域；默认使用页面语言",
+      "connector": "从每根柱子末端连到下一根的细线（次要文字颜色的虚线）；false 隐藏，对象可设置 color、dash 和 width"
+    },
+    "ChartConnectorOptions": {
+      "color": "线条颜色（任意 CSS 颜色）；默认为次要文字颜色",
+      "dash": "虚线样式（CSS 像素）；[] 为实线（默认 [3, 3]）",
+      "width": "线宽（CSS 像素，默认 1）"
     }
   },
   "wc": {
@@ -110,7 +116,8 @@
         "hideLabels": "隐藏每根柱子末端的变化值（或合计值）",
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
-        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null",
+        "hideConnectors": "隐藏每根柱子末端连到下一根柱子的细线"
       },
       "events": {
         "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",

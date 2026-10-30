@@ -15,6 +15,12 @@
     "forced": "renderer: \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\" forces a backend, software GPUs included; if it cannot start, the next one in the chain is used. Canvas2D is a good choice for small charts and screenshots; GPUs win from tens of thousands of points.",
     "lost": "When the GPU is lost (driver reset, too many contexts), the chart falls back to the next backend, redraws, and fires the renderer event again. Browsers limit live WebGL contexts (about 16): a dashboard with dozens of GPU charts should destroy the ones that leave the screen or use Canvas2D for the small ones."
   },
+  "global": {
+    "title": "One renderer for every chart",
+    "text": "setDefaultChartRenderer() sets the backend of every chart whose renderer is unset or \"auto\", in every framework: the default lives on globalThis, so the React components, the Vue and Angular wrappers and the Web Components share it, even when a page bundles several copies of the engine. Charts read it when they start: remount the charts already on screen (or listen with subscribeDefaultChartRenderer) to apply a change.",
+    "rules": "A chart's own renderer option always wins. A backend forced through the default counts as forced: it may run on a software GPU, and falls back to the next backend when it cannot start. \"auto\" restores the automatic detection.",
+    "docs": "The renderer bar at the top of the chart pages of these docs does exactly that: pick Canvas2D or WebGL there and every demo restarts on it, with a badge under each demo showing the backend actually in use. Here, the Auto option of each showcase follows it."
+  },
   "showcase": {
     "title": "Live showcases",
     "text": "The examples below draw up to a million marks in your browser. Their data is generated once, into typed arrays with a seeded random generator, when the example comes near the screen, and each animation stops while its example is off screen. Pick a backend to force it — the chart tells which one actually started — and let the camera tour zoom in and out, or take over with the mouse.",
@@ -55,7 +61,8 @@
       "webgpu": "WebGPU",
       "webgl2": "WebGL2",
       "webgl": "WebGL",
-      "canvas2d": "Canvas2D"
+      "canvas2d": "Canvas2D",
+      "page": "Page ({{backend}})"
     },
     "tour": "Camera tour",
     "stream": "Stream",
@@ -81,7 +88,9 @@
       "autoCanvas": "Auto picked {{backend}}: no hardware-accelerated GPU is available here (software GPUs are skipped).",
       "forced": "Drawn with {{backend}}, as requested.",
       "fallback": "{{requested}} could not start here: fell back to {{backend}}.",
-      "slow": "Tour paused: a frame takes {{ms}} of main thread with this backend. Turn it back on or pick another backend."
+      "slow": "Tour paused: a frame takes {{ms}} of main thread with this backend. Turn it back on or pick another backend.",
+      "page": "Drawn with {{backend}}, the renderer selected for the page.",
+      "pageSoftware": "{{requested}}, selected for the page, runs on a software GPU here: this demo uses {{backend}} so that the page stays responsive. Pick {{requested}} in this demo to force it."
     },
     "hintX": "Ctrl / ⌘ + wheel or pinch to zoom, drag to pan, double-click to reset. The y axis follows the visible range.",
     "hintXY": "Ctrl / ⌘ + wheel or pinch to zoom both axes, drag to pan, double-click to reset.",

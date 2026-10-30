@@ -6,9 +6,15 @@ import {
   TableBody,
   TableCell,
 } from "minerva-design";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getApiEntry, apiKey } from "../api";
+import {
+  getApiEntry,
+  apiKey,
+  chartApisLoaded,
+  loadChartApis,
+  NATIVE_API_PREFIX,
+} from "../api";
 import styles from "./docs.module.scss";
 
 export interface PropsTableProps {
@@ -26,6 +32,20 @@ export interface PropsTableProps {
 const PropsTable: React.FC<PropsTableProps> = ({ page, name }) => {
   const { t } = useTranslation();
   const entry = getApiEntry(name);
+  // the chart APIs are loaded on demand: render again once they are here
+  const [, setChartsLoaded] = useState(chartApisLoaded);
+  const pending =
+    !entry && !chartApisLoaded() && !name.startsWith(NATIVE_API_PREFIX);
+  useEffect(() => {
+    if (!pending) return;
+    let active = true;
+    void loadChartApis().then(() => {
+      if (active) setChartsLoaded(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, [pending]);
 
   if (!entry || entry.kind !== "interface") {
     return null;

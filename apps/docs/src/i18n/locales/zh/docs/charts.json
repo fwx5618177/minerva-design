@@ -1,6 +1,6 @@
 {
   "title": "图表",
-  "description": "GPU 加速的图表，百万级数据点下仍保持 60 fps，另有基于 Canvas2D 的形状图表：趋势、对比、统计、占比、层级与流向、金融与交易，以及 3D 图表。Chart 可混合折线、面积、柱状、散点、K 线和热力图系列；其余组件都是针对单一图表类型的预设。可以先浏览下方的图表一览：每种图表类型都有一个实时缩略图，并链接到对应页面。",
+  "description": "GPU 加速的图表，百万级数据点下仍保持 60 fps，另有基于 Canvas2D 的形状图表：趋势、对比、统计、占比、层级与流向、关系网络、依赖与树、金融与交易，以及 3D 图表。Chart 可混合折线、面积、柱状、散点、K 线和热力图系列；其余组件都是针对单一图表类型的预设。可以先浏览下方的图表一览：每种图表类型都有一个实时缩略图，并链接到对应页面。",
   "intro": {
     "rendering": {
       "title": "渲染方式",
@@ -26,14 +26,15 @@
     },
     "families": {
       "title": "图表家族",
-      "text": "下方按五个分组展示了每种图表类型的实时缩略图，每个标题都链接到对应图表的页面：",
+      "text": "下方按六个分组展示了每种图表类型的实时缩略图，每个标题都链接到对应图表的页面：",
       "basic": "基础 2D：<line>折线图</line>、<area>面积图</area>、<rangeArea>范围面积图</rangeArea>、<bar>柱状图</bar>、<horizontalBar>条形图</horizontalBar>、<mixed>组合图 / 双轴图</mixed>、<scatter>散点图</scatter>、<bubble>气泡图</bubble>和<sparkline>迷你图</sparkline>。",
       "statistics": "统计、KPI 与计划：<histogram>直方图</histogram>、<boxplot>箱线图</boxplot>、<waterfall>瀑布图</waterfall>、<heatmap>热力图</heatmap>、<calendar>日历热力图</calendar>、<gauge>仪表盘</gauge>、<bullet>子弹图</bullet>、<radialBar>径向条形图</radialBar>和<gantt>甘特图</gantt>。",
-      "relations": "占比、关系与层级：<pie>饼图与环形图</pie>、<radar>雷达图</radar>、<funnel>漏斗图</funnel>、<quadrant>四象限图</quadrant>、<treemap>矩形树图</treemap>、<sunburst>旭日图</sunburst>和<sankey>桑基图</sankey>。",
-      "finance": "金融与交易：<candlestick>K 线图</candlestick>、<trading>交易图表</trading>、<indicators>技术指标</indicators>、<depth>深度图</depth>、<orderBook>订单簿</orderBook>、<orderBookHeatmap>订单簿热力图</orderBookHeatmap>和<timeSales>逐笔成交</timeSales>。",
-      "threeD": "3D：<scatter>3D 散点图与 3D 折线图</scatter>、<surface>3D 曲面图</surface>和<bar>3D 柱状图</bar>。",
+      "relations": "占比、层级与流向：<pie>饼图与环形图</pie>、<radar>雷达图</radar>、<funnel>漏斗图</funnel>、<quadrant>四象限图</quadrant>、<treemap>矩形树图</treemap>、<sunburst>旭日图</sunburst>和<sankey>桑基图</sankey>。",
+      "graphs": "关系与层级图：<network>关系图</network>（力导向、环形和弧线布局，GPU 绘制，可达数万个节点）、<dag>依赖图</dag>（分层 DAG，可高亮关键路径）、<tree>树图</tree>（整齐树、径向树、思维导图、组织架构图）和<chord>弦图</chord>。",
+      "finance": "金融与交易：<candlestick>K 线图</candlestick>、<trading>专业交易图表</trading>（成交量分布、画线工具、K 线回放、多图联动和下单）及其 21 种内置<indicators>技术指标</indicators>（MA / EMA / WMA、布林带、VWAP、成交量、MACD、RSI、KDJ、ATR、抛物线 SAR、一目均衡表、SuperTrend、肯特纳通道、唐奇安通道、OBV、CCI、随机 RSI、DMI、威廉指标、MFI），以及<depth>深度图</depth>、<orderBook>订单簿</orderBook>、<orderBookHeatmap>订单簿热力图</orderBookHeatmap>和<timeSales>逐笔成交</timeSales>。",
+      "threeD": "3D：<scatter>3D 散点图与 3D 折线图</scatter>（支持发光、叠加混合的点云）、<surface>3D 曲面图</surface>和<bar>3D 柱状图</bar>。",
       "lazy": "缩略图只在接近可视区域时才挂载（IntersectionObserver）：页面保持流畅，同时占用的 GPU 上下文也不会超过浏览器的上限。订单簿类组件播放模拟行情，离开屏幕时自动暂停。",
-      "fallback": "GPU 图表按四级选择渲染后端：WebGPU → WebGL2 → WebGL → Canvas2D，因此能在所有浏览器中渲染，并能在 GPU 丢失后继续工作；详见<engine>图表引擎</engine>和<performance>性能</performance>页面。"
+      "fallback": "GPU 图表按四级选择渲染后端：WebGPU → WebGL2 → WebGL → Canvas2D，因此能在所有浏览器中渲染，并能在 GPU 丢失后继续工作。setDefaultChartRenderer() 可一次性修改所有图表的默认后端：本文档图表页面顶部固定的渲染器选择器就是用它实现的。详见<engine>图表引擎</engine>和<performance>性能</performance>页面。"
     }
   },
   "demos": {
@@ -46,16 +47,20 @@
       "description": "延迟直方图、各服务的箱线图、营收桥接瀑布图、一周负载热力图、提交日历、带色带的仪表盘、KPI 与目标对比的子弹图、进度环和发布计划甘特图。"
     },
     "gallery-relations": {
-      "title": "图表一览：占比、关系与层级",
+      "title": "图表一览：占比、层级与流向",
       "description": "浏览器份额饼图、显示总数的各套餐用户环形图、供应商雷达图、注册漏斗、优先级四象限、预算矩形树图、人员构成旭日图，以及从流量来源到注册的桑基图。"
+    },
+    "gallery-graphs": {
+      "title": "图表一览：关系网络、依赖与树",
+      "description": "以力导向网络展示微服务之间的调用、以弧线图展示同时出现的客服话题、以 DAG 展示数据流水线及其关键路径，还有组织架构图、旅行思维导图，以及展示客户在套餐之间迁移的弦图。悬停节点可高亮其相邻节点；Ctrl / ⌘ + 滚轮可缩放。"
     },
     "gallery-finance": {
       "title": "图表一览：金融与交易",
-      "description": "K 线图、带均线和成交量的专业交易图表、布林带与 RSI，以及播放模拟行情的订单簿类组件（深度图、价格档位、流动性热力图和逐笔成交）。它们在滚动到可视区域时才挂载；Ctrl / ⌘ + 滚轮可缩放。"
+      "description": "K 线图、带均线、成交量和成交量分布的专业交易图表、SuperTrend 与 MACD，以及播放模拟行情的订单簿类组件（深度图、价格档位、流动性热力图和逐笔成交）。它们在滚动到可视区域时才挂载；Ctrl / ⌘ + 滚轮可缩放。"
     },
     "gallery-3d": {
       "title": "图表一览：3D 图表",
-      "description": "缓慢旋转的 3D 散点聚类、螺旋轨迹、波纹曲面，以及按地区和季度展示销售额的 3D 柱状图。拖动可旋转；只在可见时渲染。"
+      "description": "缓慢旋转的 3D 散点聚类、螺旋轨迹、波纹曲面、按地区和季度展示销售额的 3D 柱状图，以及由 24,000 颗发光恒星叠加混合而成的旋涡星系。拖动可旋转；只在可见时渲染。"
     },
     "mixed": {
       "title": "混合系列",
@@ -275,13 +280,13 @@
       },
       "trading": {
         "title": "专业交易图表",
-        "description": "K 线、成交量、平移与缩放",
-        "aria": "BTC/USDT 小时价格与成交量"
+        "description": "K 线、成交量分布、平移与缩放",
+        "aria": "BTC/USDT 小时价格、均线、成交量与成交量分布"
       },
       "indicators": {
         "title": "技术指标",
-        "description": "MA、MACD、RSI、布林带…",
-        "aria": "BTC/USDT 日线价格、布林带与 RSI"
+        "description": "21 种指标",
+        "aria": "BTC/USDT 日线价格、SuperTrend 与 MACD"
       },
       "depth": {
         "title": "深度图",
@@ -322,6 +327,41 @@
         "title": "3D 柱状图",
         "description": "类别网格上的数值",
         "aria": "各地区各季度销售额"
+      },
+      "network": {
+        "title": "关系图",
+        "description": "服务之间的调用",
+        "aria": "微服务及其相互调用的网络"
+      },
+      "arc": {
+        "title": "弧线图",
+        "description": "同时出现的话题",
+        "aria": "按同一工单中同时出现的频率连接的客服话题"
+      },
+      "dag": {
+        "title": "依赖图",
+        "description": "流水线与关键路径",
+        "aria": "数据流水线的步骤及其依赖关系，并标出关键路径"
+      },
+      "org": {
+        "title": "组织架构图",
+        "description": "汇报关系",
+        "aria": "从首席执行官到各团队的组织架构图"
+      },
+      "mindMap": {
+        "title": "思维导图",
+        "description": "围绕主题的想法",
+        "aria": "暑期旅行的思维导图"
+      },
+      "chord": {
+        "title": "弦图",
+        "description": "分组之间的流动",
+        "aria": "一个季度内客户在各套餐之间的迁移"
+      },
+      "galaxy": {
+        "title": "发光 3D 散点",
+        "description": "叠加发光效果",
+        "aria": "由发光恒星组成的旋涡星系"
       }
     },
     "load": "负载",
@@ -454,6 +494,79 @@
       "south": "南区",
       "east": "东区",
       "west": "西区"
+    },
+    "customers": "{{value}} 位客户",
+    "galaxyCore": "核心",
+    "galaxyArms": "旋臂",
+    "graph": {
+      "services": {
+        "gateway": "API 网关",
+        "web": "Web 应用",
+        "auth": "认证",
+        "users": "用户",
+        "orders": "订单",
+        "payments": "支付",
+        "search": "搜索",
+        "inventory": "库存",
+        "database": "数据库",
+        "cache": "缓存",
+        "queue": "消息队列"
+      },
+      "tiers": {
+        "edge": "接入层",
+        "core": "服务层",
+        "data": "数据层"
+      },
+      "topics": {
+        "login": "登录",
+        "billing": "账单",
+        "export": "导出",
+        "mobile": "移动端",
+        "speed": "速度",
+        "alerts": "通知"
+      },
+      "steps": {
+        "extract": "抽取",
+        "clean": "清洗",
+        "enrich": "补全",
+        "join": "关联",
+        "train": "训练",
+        "report": "报表",
+        "publish": "发布"
+      },
+      "roles": {
+        "ceo": "首席执行官",
+        "cto": "首席技术官",
+        "cfo": "首席财务官",
+        "coo": "首席运营官",
+        "platform": "平台",
+        "product": "产品",
+        "finance": "财务",
+        "sales": "销售",
+        "support": "客服"
+      },
+      "trip": {
+        "trip": "暑期旅行",
+        "transport": "交通",
+        "stay": "住宿",
+        "food": "美食",
+        "activities": "活动",
+        "train": "火车",
+        "rentalCar": "租车",
+        "hotel": "酒店",
+        "camping": "露营",
+        "market": "集市",
+        "restaurants": "餐厅",
+        "museum": "博物馆",
+        "hiking": "徒步",
+        "beach": "海滩"
+      },
+      "plans": {
+        "free": "免费版",
+        "starter": "入门版",
+        "pro": "专业版",
+        "enterprise": "企业版"
+      }
     }
   },
   "api": {
@@ -514,13 +627,18 @@
       "curve": "点之间线条的形状：linear、smooth（单调插值，不会超出数据）或 step（line / area）",
       "upColor": "K 线：上涨蜡烛（收盘 ≥ 开盘）的颜色；默认为 --success-color",
       "downColor": "K 线：下跌蜡烛的颜色；默认为 --danger-color",
-      "colorScale": "热力图：从最小值到最大值的颜色（至少两个）",
+      "colorScale": "热力图：从最小值到最大值的颜色（至少两个，在 OKLab 中插值），或内置的主题感知色阶：sequential（默认）或 diverging",
       "valueRange": "热力图：映射到 colorScale 两端的数值；默认为数据范围",
       "radius": "柱 / 热力图：圆角半径，单位为像素（柱为 3，单元格为 2）",
       "format": "格式化该系列在提示框中的数值（默认使用 y 轴格式）",
       "yAxis": "系列的数值轴：\"right\" 让系列使用 yAxis2（双轴图，垂直方向）",
       "barWidth": "柱子与箱线图：柱子占类别宽度的比例，0-1（1 表示相互紧贴，如直方图）",
-      "valueName": "散点：提示框中数据点 value 的名称（气泡图）"
+      "valueName": "散点：提示框中数据点 value 的名称（气泡图）",
+      "colorMidpoint": "热力图：色阶中点对应的数值（发散型数据）；跨越 0 的 diverging 色阶默认为 0，否则为范围中点",
+      "tooltip": "设为 false 时该系列不参与命中检测和提示框（装饰性系列、甘特图任务进度等叠加层）",
+      "outlierShape": "箱线图：异常值绘制为系列颜色的空心圆环（hollow，默认）或实心圆点（filled）",
+      "outlierSize": "箱线图：异常值的直径（CSS 像素，默认 7）",
+      "connector": "柱形：从每根柱子末端连到下一根柱子的细线（瀑布图）；true 使用次要文字颜色的虚线，对象可设置 color、dash 和 width"
     },
     "ChartPointDatum": {
       "x": "X 值（数字、Date 或类目）；省略时为索引",
@@ -535,7 +653,8 @@
       "y0": "浮动柱的起点（瀑布图步骤、甘特图任务）或范围面积的下边界；日期为时间戳",
       "q1": "箱线图：下四分位数（箱体底部；y 为中位数）",
       "q3": "箱线图：上四分位数（箱体顶部）",
-      "outliers": "箱线图：超出须线的值，绘制为圆点"
+      "outliers": "箱线图：超出须线的值，绘制为圆点",
+      "details": "该数据点默认提示框中追加的行（{ name, value }），显示在数值之后"
     },
     "ChartColumnData": {
       "x": "X 值；省略时为索引",
@@ -550,7 +669,7 @@
       "q3": "箱线图：上四分位数"
     },
     "ChartAxisOptions": {
-      "type": "比例尺：linear、time 或 category（根据数据推断）",
+      "type": "比例尺：linear、log（以 10 为底，仅正数；用于 yAxis 和 yAxis2）、time 或 category（根据数据推断）",
       "min": "下界；省略时根据数据计算",
       "max": "上界；省略时根据数据计算",
       "title": "坐标轴标题",
@@ -602,7 +721,7 @@
       "dragPoints": "允许用户拖动散点（drag / drop 事件；图表不会自行移动它们）"
     },
     "ChartTooltipOptions": {
-      "mode": "nearest 显示最近的点，axis 显示最近 x 处的所有系列",
+      "mode": "nearest 显示最近的点，axis 显示最近 x 处的所有系列，item 只显示指针下的图形（空白处不显示）；默认 axis，全部为散点时为 nearest，时间轴上的区间柱（甘特图）为 item",
       "render": "渲染提示框内容（字符串会作为文本设置）",
       "labels": "默认提示框中各行的名称（箱线图统计量、OHLC、气泡数值），用于翻译"
     },
@@ -637,7 +756,8 @@
       "y0": "浮动柱与范围面积：起点（或下边界）；y 为终点",
       "q1": "箱线图：下四分位数（y 为中位数，low / high 为须线）",
       "q3": "箱线图：上四分位数",
-      "outliers": "箱线图：离群值的数量"
+      "outliers": "箱线图：离群值的数量",
+      "outlier": "箱线图：指针所在异常值的数值"
     },
     "ChartPlotClickEvent": {
       "x": "点击位置的 X 数据坐标",

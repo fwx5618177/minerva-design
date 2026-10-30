@@ -1280,6 +1280,502 @@ const CORRELATION = [
 ];
 const HEAT_HOURS = ["0–4", "4–8", "8–12", "12–16", "16–20", "20–24"];
 
+// Data of the graph and chord examples (localized names, shared by the
+// examples of a page)
+const GRAPH_CITIES = {
+  en: [
+    "Beijing",
+    "Shanghai",
+    "Tokyo",
+    "Seoul",
+    "Singapore",
+    "Dubai",
+    "Sydney",
+    "London",
+    "Paris",
+    "Frankfurt",
+    "New York",
+    "Chicago",
+    "Los Angeles",
+    "São Paulo",
+  ],
+  zh: [
+    "北京",
+    "上海",
+    "东京",
+    "首尔",
+    "新加坡",
+    "迪拜",
+    "悉尼",
+    "伦敦",
+    "巴黎",
+    "法兰克福",
+    "纽约",
+    "芝加哥",
+    "洛杉矶",
+    "圣保罗",
+  ],
+  ja: [
+    "北京",
+    "上海",
+    "東京",
+    "ソウル",
+    "シンガポール",
+    "ドバイ",
+    "シドニー",
+    "ロンドン",
+    "パリ",
+    "フランクフルト",
+    "ニューヨーク",
+    "シカゴ",
+    "ロサンゼルス",
+    "サンパウロ",
+  ],
+  fr: [
+    "Pékin",
+    "Shanghai",
+    "Tokyo",
+    "Séoul",
+    "Singapour",
+    "Dubaï",
+    "Sydney",
+    "Londres",
+    "Paris",
+    "Francfort",
+    "New York",
+    "Chicago",
+    "Los Angeles",
+    "São Paulo",
+  ],
+};
+const GRAPH_REGIONS = {
+  en: ["Asia", "Oceania", "Europe", "Americas"],
+  zh: ["亚洲", "大洋洲", "欧洲", "美洲"],
+  ja: ["アジア", "オセアニア", "ヨーロッパ", "南北アメリカ"],
+  fr: ["Asie", "Océanie", "Europe", "Amériques"],
+};
+const GRAPH_HUBS = [
+  [0, 8],
+  [0, 9],
+  [0, 9],
+  [0, 6],
+  [0, 8],
+  [0, 7],
+  [1, 5],
+  [2, 9],
+  [2, 8],
+  [2, 7],
+  [3, 9],
+  [3, 6],
+  [3, 7],
+  [3, 5],
+];
+const GRAPH_ROUTES = [
+  [0, 1, 120],
+  [0, 2, 40],
+  [1, 2, 55],
+  [2, 3, 60],
+  [1, 3, 35],
+  [1, 4, 30],
+  [4, 6, 28],
+  [2, 6, 14],
+  [4, 5, 25],
+  [5, 7, 42],
+  [5, 8, 21],
+  [5, 9, 20],
+  [7, 8, 70],
+  [7, 9, 50],
+  [8, 9, 35],
+  [7, 10, 80],
+  [8, 10, 40],
+  [9, 11, 14],
+  [10, 11, 90],
+  [10, 12, 85],
+  [11, 12, 60],
+  [12, 2, 28],
+  [12, 6, 14],
+  [10, 13, 21],
+  [12, 1, 18],
+  [0, 9, 12],
+  [4, 7, 21],
+].map(([a, b, value]) => ({ source: `c${a}`, target: `c${b}`, value }));
+const DAG_PIPELINE_TEXT = {
+  en: {
+    jobs: [
+      "Install dependencies",
+      "Lint",
+      "Type check",
+      "Unit tests",
+      "Build",
+      "E2E tests",
+      "Package",
+      "Deploy",
+    ],
+    minutes: "{n} min",
+    critical: "Critical path",
+  },
+  zh: {
+    jobs: [
+      "安装依赖",
+      "代码检查",
+      "类型检查",
+      "单元测试",
+      "构建",
+      "端到端测试",
+      "打包",
+      "部署",
+    ],
+    minutes: "{n} 分钟",
+    critical: "关键路径",
+  },
+  ja: {
+    jobs: [
+      "依存関係のインストール",
+      "Lint",
+      "型チェック",
+      "単体テスト",
+      "ビルド",
+      "E2E テスト",
+      "パッケージ化",
+      "デプロイ",
+    ],
+    minutes: "{n} 分",
+    critical: "クリティカルパス",
+  },
+  fr: {
+    jobs: [
+      "Installer les dépendances",
+      "Analyse statique",
+      "Vérification des types",
+      "Tests unitaires",
+      "Compilation",
+      "Tests E2E",
+      "Empaquetage",
+      "Déploiement",
+    ],
+    minutes: "{n} min",
+    critical: "Chemin critique",
+  },
+};
+const DAG_PIPELINE_EDGES = [
+  [0, 1],
+  [0, 2],
+  [0, 3],
+  [2, 4],
+  [4, 5],
+  [1, 6],
+  [3, 6],
+  [4, 6],
+  [6, 7],
+  [5, 7],
+].map(([a, b]) => ({ source: `j${a}`, target: `j${b}` }));
+const DAG_MODULES_TEXT = {
+  en: {
+    modules: [
+      "Utilities",
+      "HTTP",
+      "Translations",
+      "UI components",
+      "Charts",
+      "API client",
+      "Authentication",
+      "State store",
+      "Router",
+      "Dashboard",
+      "Reports",
+      "Application",
+    ],
+    layers: ["Shared", "Core", "Features", "Application"],
+    hint: "Click a module to highlight its dependencies",
+    selected: "Selected: ",
+  },
+  zh: {
+    modules: [
+      "工具函数",
+      "HTTP",
+      "多语言",
+      "UI 组件",
+      "图表",
+      "API 客户端",
+      "认证",
+      "状态管理",
+      "路由",
+      "仪表盘",
+      "报表",
+      "应用",
+    ],
+    layers: ["共享", "核心", "功能", "应用"],
+    hint: "点击一个模块以高亮其依赖",
+    selected: "已选择：",
+  },
+  ja: {
+    modules: [
+      "ユーティリティ",
+      "HTTP",
+      "翻訳",
+      "UI コンポーネント",
+      "チャート",
+      "API クライアント",
+      "認証",
+      "状態管理",
+      "ルーター",
+      "ダッシュボード",
+      "レポート",
+      "アプリ",
+    ],
+    layers: ["共有", "コア", "機能", "アプリ"],
+    hint: "モジュールをクリックすると依存関係が強調表示されます",
+    selected: "選択中: ",
+  },
+  fr: {
+    modules: [
+      "Utilitaires",
+      "HTTP",
+      "Traductions",
+      "Composants UI",
+      "Graphiques",
+      "Client API",
+      "Authentification",
+      "Gestion d'état",
+      "Routeur",
+      "Tableau de bord",
+      "Rapports",
+      "Application",
+    ],
+    layers: ["Partagé", "Cœur", "Fonctionnalités", "Application"],
+    hint: "Cliquez sur un module pour mettre en évidence ses dépendances",
+    selected: "Sélection : ",
+  },
+};
+const DAG_MODULES_EDGES = [
+  [0, 1],
+  [1, 5],
+  [5, 6],
+  [5, 7],
+  [6, 8],
+  [0, 4],
+  [2, 3],
+  [3, 9],
+  [3, 10],
+  [4, 9],
+  [4, 10],
+  [5, 9],
+  [5, 10],
+  [7, 9],
+  [7, 10],
+  [8, 11],
+  [9, 11],
+  [10, 11],
+  [6, 11],
+  [2, 11],
+].map(([a, b]) => ({ source: `m${a}`, target: `m${b}` }));
+const TREE_ORG_TEXT = {
+  en: {
+    roles: [
+      "Chief executive",
+      "Technology",
+      "Finance",
+      "Operations",
+      "Web team",
+      "Mobile team",
+      "Platform team",
+      "Accounting",
+      "Treasury",
+      "Customer support",
+      "Logistics",
+    ],
+    departments: ["Executive", "Engineering", "Finance", "Operations"],
+    hint: "Click a manager to collapse or expand the team",
+    collapsed: "{name}: collapsed",
+    expanded: "{name}: expanded",
+  },
+  zh: {
+    roles: [
+      "首席执行官",
+      "技术",
+      "财务",
+      "运营",
+      "Web 团队",
+      "移动团队",
+      "平台团队",
+      "会计",
+      "资金管理",
+      "客户支持",
+      "物流",
+    ],
+    departments: ["管理层", "研发", "财务", "运营"],
+    hint: "点击管理者以折叠或展开团队",
+    collapsed: "{name}：已折叠",
+    expanded: "{name}：已展开",
+  },
+  ja: {
+    roles: [
+      "最高経営責任者",
+      "技術",
+      "財務",
+      "運営",
+      "Web チーム",
+      "モバイルチーム",
+      "プラットフォームチーム",
+      "経理",
+      "資金管理",
+      "カスタマーサポート",
+      "物流",
+    ],
+    departments: ["経営", "エンジニアリング", "財務", "運営"],
+    hint: "マネージャーをクリックするとチームを折りたたみ / 展開します",
+    collapsed: "{name}: 折りたたみ",
+    expanded: "{name}: 展開",
+  },
+  fr: {
+    roles: [
+      "Direction générale",
+      "Technique",
+      "Finance",
+      "Opérations",
+      "Équipe web",
+      "Équipe mobile",
+      "Équipe plateforme",
+      "Comptabilité",
+      "Trésorerie",
+      "Support client",
+      "Logistique",
+    ],
+    departments: ["Direction", "Ingénierie", "Finance", "Opérations"],
+    hint: "Cliquez sur un responsable pour replier ou déplier l'équipe",
+    collapsed: "{name} : replié",
+    expanded: "{name} : déplié",
+  },
+};
+const TREE_ORG_PEOPLE = [
+  [-1, 0],
+  [0, 1],
+  [0, 2],
+  [0, 3],
+  [1, 1],
+  [1, 1],
+  [1, 1],
+  [2, 2],
+  [2, 2],
+  [3, 3],
+  [3, 3],
+];
+const TREE_TOPICS = {
+  en: [
+    "Product launch",
+    "Research",
+    "User interviews",
+    "Market analysis",
+    "Design",
+    "Prototype",
+    "Usability tests",
+    "Development",
+    "Web app",
+    "Mobile app",
+    "Marketing",
+    "Ad campaign",
+    "Press release",
+  ],
+  zh: [
+    "产品发布",
+    "调研",
+    "用户访谈",
+    "市场分析",
+    "设计",
+    "原型",
+    "可用性测试",
+    "开发",
+    "网页应用",
+    "移动应用",
+    "市场营销",
+    "广告投放",
+    "新闻稿",
+  ],
+  ja: [
+    "製品ローンチ",
+    "リサーチ",
+    "ユーザーインタビュー",
+    "市場分析",
+    "デザイン",
+    "プロトタイプ",
+    "ユーザビリティテスト",
+    "開発",
+    "Web アプリ",
+    "モバイルアプリ",
+    "マーケティング",
+    "広告キャンペーン",
+    "プレスリリース",
+  ],
+  fr: [
+    "Lancement produit",
+    "Recherche",
+    "Entretiens utilisateurs",
+    "Analyse du marché",
+    "Conception",
+    "Prototype",
+    "Tests d'utilisabilité",
+    "Développement",
+    "Application web",
+    "Application mobile",
+    "Marketing",
+    "Campagne publicitaire",
+    "Communiqué de presse",
+  ],
+};
+// parent of each topic (-1: the central topic)
+const TREE_PARENT = [-1, 0, 1, 1, 0, 4, 4, 0, 7, 7, 0, 10, 10];
+const treeBranchOf = (i: number): number =>
+  TREE_PARENT[i] <= 0 ? i : treeBranchOf(TREE_PARENT[i]);
+const CHORD_TEAMS = {
+  en: ["Design", "Engineering", "Product", "Marketing"],
+  zh: ["设计", "研发", "产品", "市场"],
+  ja: ["デザイン", "エンジニアリング", "プロダクト", "マーケティング"],
+  fr: ["Design", "Ingénierie", "Produit", "Marketing"],
+};
+const CHORD_MIGRATION_TEXT = {
+  en: {
+    regions: ["North", "South", "East", "West", "Center"],
+    hint: "Hover a ribbon to compare both directions",
+    flow: "{source} → {target}: {value}k · back: {reverse}k",
+    group: "{name}: {value}k",
+  },
+  zh: {
+    regions: ["北部", "南部", "东部", "西部", "中部"],
+    hint: "悬停在流带上以比较两个方向",
+    flow: "{source} → {target}：{value} 千人 · 反向：{reverse} 千人",
+    group: "{name}：{value} 千人",
+  },
+  ja: {
+    regions: ["北部", "南部", "東部", "西部", "中部"],
+    hint: "リボンにカーソルを合わせると両方向を比較できます",
+    flow: "{source} → {target}: {value} 千人 · 逆方向: {reverse} 千人",
+    group: "{name}: {value} 千人",
+  },
+  fr: {
+    regions: ["Nord", "Sud", "Est", "Ouest", "Centre"],
+    hint: "Survolez un ruban pour comparer les deux sens",
+    flow: "{source} → {target} : {value} k · retour : {reverse} k",
+    group: "{name} : {value} k",
+  },
+};
+// from, to (indexes in regions), thousands of people
+const CHORD_MOVES = [
+  [0, 1, 32],
+  [1, 0, 18],
+  [0, 4, 45],
+  [4, 0, 22],
+  [1, 4, 38],
+  [4, 1, 30],
+  [2, 4, 51],
+  [4, 2, 26],
+  [3, 4, 29],
+  [4, 3, 35],
+  [2, 3, 14],
+  [3, 2, 21],
+  [1, 2, 12],
+  [2, 1, 9],
+];
+
 Object.assign(angularExamples, {
   charts: [
     chart(
@@ -4650,6 +5146,349 @@ Object.assign(angularExamples, {
             products: ["Chaussures", "Sacs", "Montres"],
           },
         },
+      },
+    ),
+  ],
+  "graph-chart": [
+    chart(
+      "routes",
+      "Air routes between hubs",
+      ["MnGraphChart"],
+      `<mn-graph-chart
+  [nodes]="nodes()"
+  [edges]="edges"
+  [groups]="groups()"
+  [nodeSize]="[10, 34]"
+  [locale]="language()"
+  [height]="440"
+/>`,
+      {
+        cities: GRAPH_CITIES,
+        regions: GRAPH_REGIONS,
+        // region (index in regions) and size of the hub of each city
+        hubs: GRAPH_HUBS,
+        // weekly flights
+        edges: GRAPH_ROUTES,
+        nodes: code(
+          `computed(() =>
+    this.cities[this.language()].map((label, i) => ({
+      id: \`c\${i}\`,
+      label,
+      group: \`r\${this.hubs[i][0]}\`,
+      value: this.hubs[i][1],
+    })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        groups: code(
+          `computed(() =>
+    this.regions[this.language()].map((name, i) => ({ id: \`r\${i}\`, name })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+    chart(
+      "circular",
+      "Circular layout and selection",
+      ["MnGraphChart"],
+      `<mn-graph-chart
+  [nodes]="nodes()"
+  [edges]="edges"
+  [groups]="groups()"
+  layout="circular"
+  edgeColor="source"
+  [locale]="language()"
+  [height]="440"
+  (selectionChange)="selection.set($event)"
+/>
+<output aria-live="polite">{{ status() }}</output>`,
+      {
+        selection: code("signal<string[]>([])", {
+          "@angular/core": ["signal"],
+        }),
+        cities: GRAPH_CITIES,
+        regions: GRAPH_REGIONS,
+        hubs: GRAPH_HUBS,
+        edges: GRAPH_ROUTES,
+        labels: {
+          en: {
+            hint: "Click a city to see its routes",
+            selected: "Selected: ",
+          },
+          zh: { hint: "点击一个城市查看其航线", selected: "已选择：" },
+          ja: {
+            hint: "都市をクリックすると路線が表示されます",
+            selected: "選択中: ",
+          },
+          fr: {
+            hint: "Cliquez sur une ville pour voir ses liaisons",
+            selected: "Sélection : ",
+          },
+        },
+        nodes: code(
+          `computed(() =>
+    this.cities[this.language()].map((label, i) => ({
+      id: \`c\${i}\`,
+      label,
+      group: \`r\${this.hubs[i][0]}\`,
+    })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        groups: code(
+          `computed(() =>
+    this.regions[this.language()].map((name, i) => ({ id: \`r\${i}\`, name })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        status: code(
+          `computed(() => {
+    const t = this.labels[this.language()];
+    const names = this.cities[this.language()];
+    const ids = this.selection();
+    return ids.length
+      ? t.selected + ids.map((id) => names[Number(id.slice(1))]).join(", ")
+      : t.hint;
+  })`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+  ],
+  "dependency-graph": [
+    chart(
+      "pipeline",
+      "CI pipeline and critical path",
+      ["MnDependencyGraph", "MnSwitch"],
+      `@let t = text[language()];
+<mn-switch [(checked)]="critical" [label]="t.critical" />
+<mn-dependency-graph
+  [nodes]="nodes()"
+  [edges]="edges"
+  direction="LR"
+  edgeStyle="orthogonal"
+  [criticalPath]="critical"
+  [height]="380"
+/>`,
+      {
+        critical: true,
+        text: DAG_PIPELINE_TEXT,
+        // duration of each job, in minutes
+        minutes: [3, 2, 3, 6, 5, 9, 2, 4],
+        edges: DAG_PIPELINE_EDGES,
+        nodes: code(
+          `computed(() => {
+    const t = this.text[this.language()];
+    return t.jobs.map((label, i) => ({
+      id: \`j\${i}\`,
+      label,
+      subtitle: t.minutes.replace("{n}", String(this.minutes[i])),
+      value: this.minutes[i],
+    }));
+  })`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+    chart(
+      "modules",
+      "Module lineage",
+      ["MnDependencyGraph"],
+      `<mn-dependency-graph
+  [nodes]="nodes()"
+  [edges]="edges"
+  [groups]="groups()"
+  highlight="lineage"
+  [locale]="language()"
+  [height]="460"
+  (selectionChange)="selection.set($event)"
+/>
+<output aria-live="polite">{{ status() }}</output>`,
+      {
+        selection: code("signal<string[]>([])", {
+          "@angular/core": ["signal"],
+        }),
+        text: DAG_MODULES_TEXT,
+        // layer (index in layers) of each module
+        layer: [0, 1, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3],
+        edges: DAG_MODULES_EDGES,
+        nodes: code(
+          `computed(() =>
+    this.text[this.language()].modules.map((label, i) => ({
+      id: \`m\${i}\`,
+      label,
+      group: \`l\${this.layer[i]}\`,
+    })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        groups: code(
+          `computed(() =>
+    this.text[this.language()].layers.map((name, i) => ({ id: \`l\${i}\`, name })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        status: code(
+          `computed(() => {
+    const t = this.text[this.language()];
+    const ids = this.selection();
+    return ids.length
+      ? t.selected + ids.map((id) => t.modules[Number(id.slice(1))]).join(", ")
+      : t.hint;
+  })`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+  ],
+  "tree-chart": [
+    chart(
+      "org",
+      "Org chart with collapsible teams",
+      ["MnTreeChart"],
+      `<mn-tree-chart
+  [nodes]="nodes()"
+  [edges]="edges"
+  [groups]="groups()"
+  layout="org"
+  [locale]="language()"
+  [height]="460"
+  (nodeToggle)="toggled.set($event)"
+/>
+<output aria-live="polite">{{ status() }}</output>`,
+      {
+        toggled: code(
+          "signal<{ id: string; collapsed: boolean } | null>(null)",
+          { "@angular/core": ["signal"] },
+        ),
+        text: TREE_ORG_TEXT,
+        // manager (index in roles, -1: the root) and department of each role
+        people: TREE_ORG_PEOPLE,
+        edges: TREE_ORG_PEOPLE.flatMap(([manager], i) =>
+          manager < 0 ? [] : [{ source: `p${manager}`, target: `p${i}` }],
+        ),
+        nodes: code(
+          `computed(() =>
+    this.text[this.language()].roles.map((label, i) => ({
+      id: \`p\${i}\`,
+      label,
+      group: \`d\${this.people[i][1]}\`,
+    })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        groups: code(
+          `computed(() =>
+    this.text[this.language()].departments.map((name, i) => ({ id: \`d\${i}\`, name })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+        status: code(
+          `computed(() => {
+    const t = this.text[this.language()];
+    const toggled = this.toggled();
+    return toggled
+      ? (toggled.collapsed ? t.collapsed : t.expanded).replace(
+          "{name}",
+          t.roles[Number(toggled.id.slice(1))],
+        )
+      : t.hint;
+  })`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+    chart(
+      "mind-map",
+      "Mind map",
+      ["MnTreeChart"],
+      `<mn-tree-chart
+  [nodes]="nodes()"
+  [edges]="edges"
+  layout="mindmap"
+  [legend]="false"
+  [locale]="language()"
+  [height]="420"
+/>`,
+      {
+        topics: TREE_TOPICS,
+        // branch of each topic: its ancestor just below the central topic
+        branch: TREE_PARENT.map((_, i) => treeBranchOf(i)),
+        edges: TREE_PARENT.flatMap((parent, i) =>
+          parent < 0 ? [] : [{ source: `t${parent}`, target: `t${i}` }],
+        ),
+        nodes: code(
+          `computed(() =>
+    this.topics[this.language()].map((label, i) => ({
+      id: \`t\${i}\`,
+      label,
+      group: \`b\${this.branch[i]}\`,
+    })),
+  )`,
+          { "@angular/core": ["computed"] },
+        ),
+      },
+    ),
+  ],
+  "chord-chart": [
+    chart(
+      "teams",
+      "Messages between teams",
+      ["MnChordChart"],
+      `<mn-chord-chart [groups]="teams[language()]" [matrix]="matrix" />`,
+      {
+        teams: CHORD_TEAMS,
+        // messages sent in a week: row = sender, column = recipient
+        matrix: [
+          [0, 42, 28, 14],
+          [36, 0, 54, 8],
+          [30, 48, 0, 22],
+          [12, 6, 26, 0],
+        ],
+      },
+    ),
+    chart(
+      "migration",
+      "Directed flows in both directions",
+      ["MnChordChart"],
+      `<mn-chord-chart
+  [groups]="text[language()].regions"
+  [links]="links"
+  directed
+  ribbonColor="source"
+  (hover)="hovered.set($event)"
+/>
+<output aria-live="polite">{{ status() }}</output>`,
+      {
+        hovered: code(
+          "signal<import('minerva-design/charts/core').ShapeHoverEvent | null>(null)",
+          { "@angular/core": ["signal"] },
+        ),
+        text: CHORD_MIGRATION_TEXT,
+        // moves in a year (thousands of people) between regions, by index
+        links: CHORD_MOVES.map(([source, target, value]) => ({
+          source,
+          target,
+          value,
+        })),
+        status: code(
+          `computed(() => {
+    const t = this.text[this.language()];
+    const hovered = this.hovered();
+    if (!hovered) return t.hint;
+    if (hovered.source === undefined)
+      return t.group
+        .replace("{name}", hovered.name)
+        .replace("{value}", String(hovered.value));
+    return t.flow
+      .replace("{source}", hovered.source)
+      .replace("{target}", hovered.target ?? "")
+      .replace("{value}", String(hovered.value))
+      .replace("{reverse}", String(hovered.reverseValue ?? 0));
+  })`,
+          { "@angular/core": ["computed"] },
+        ),
       },
     ),
   ],

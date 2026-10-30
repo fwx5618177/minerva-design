@@ -11,13 +11,14 @@ const loadWebComponents = () =>
 
 /**
  * Registers the chart elements of an optional entry (each loads its chart
- * engine: cartesian / shape charts, trading, order book, 3D).
+ * engine: cartesian / shape charts, trading, order book, 3D, graphs).
  */
 const CHART_LOADERS: Record<ChartEntry, () => Promise<unknown>> = {
   chart: () => import("minerva-design/web-components/chart"),
   "trading-chart": () => import("minerva-design/web-components/trading-chart"),
   "order-book": () => import("minerva-design/web-components/order-book"),
   "chart-3d": () => import("minerva-design/web-components/chart-3d"),
+  graph: () => import("minerva-design/web-components/graph"),
 };
 const loadingCharts = new Map<ChartEntry, Promise<unknown>>();
 const loadChartElements = (entry: ChartEntry) => {

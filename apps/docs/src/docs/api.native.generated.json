@@ -983,6 +983,20 @@
         "required": false,
         "default": "\"vertical\"",
         "description": "`horizontal` lays the boxes out in rows"
+      },
+      {
+        "name": "outlierShape",
+        "type": "\"hollow\" | \"filled\"",
+        "required": false,
+        "default": "\"hollow\"",
+        "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own `outlierShape`)"
+      },
+      {
+        "name": "outlierSize",
+        "type": "number",
+        "required": false,
+        "default": "7",
+        "description": "Diameter of the outliers in pixels"
       }
     ]
   },
@@ -1535,7 +1549,7 @@
         "type": "number",
         "required": false,
         "default": "2",
-        "description": "Corner radius of the cells, in pixels (drawn square on React Native)"
+        "description": "Corner radius of the cells, in pixels"
       },
       {
         "name": "maxCellSize",
@@ -2694,6 +2708,118 @@
     "source": "native/src/components/Checkbox/Checkbox.tsx",
     "kind": "alias",
     "type": "NativeSize"
+  },
+  "native:ChordChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of ChordChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "groups",
+        "type": "readonly (string | ChordGroup)[]",
+        "required": false,
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended. With `matrix`, unnamed rows are numbered from 1."
+      },
+      {
+        "name": "matrix",
+        "type": "readonly (readonly number[])[]",
+        "required": false,
+        "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)"
+      },
+      {
+        "name": "links",
+        "type": "readonly ChordLink[]",
+        "required": false,
+        "description": "Flows as a list (by group name or index); takes precedence over `matrix`"
+      },
+      {
+        "name": "directed",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end. `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)"
+      },
+      {
+        "name": "arrows",
+        "type": "boolean",
+        "required": false,
+        "default": "true when `directed`",
+        "description": "Arrowheads at the target end of the ribbons"
+      },
+      {
+        "name": "padAngle",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Gap between the groups, in degrees"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle of the first group, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "sortGroups",
+        "type": "\"none\" | \"ascending\" | \"descending\"",
+        "required": false,
+        "default": "\"none\" (data order)",
+        "description": "Order of the groups around the circle"
+      },
+      {
+        "name": "sortSubgroups",
+        "type": "\"auto\" | \"none\" | \"ascending\" | \"descending\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings; otherwise the order of the groups, or by value"
+      },
+      {
+        "name": "ribbonColor",
+        "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\"",
+        "required": false,
+        "default": "\"gradient\"",
+        "description": "Color of the ribbons without `color`: a gradient from the source to the target color, one of the two, or a neutral gray"
+      },
+      {
+        "name": "ribbonOpacity",
+        "type": "number",
+        "required": false,
+        "default": "0.65",
+        "description": "Opacity of the ribbons, 0-1 (pressed ribbons are more opaque)"
+      },
+      {
+        "name": "arcWidth",
+        "type": "number",
+        "required": false,
+        "default": "6% of the radius (8-18 px)",
+        "description": "Thickness of the group arcs, in pixels"
+      },
+      {
+        "name": "ticks",
+        "type": "boolean | number",
+        "required": false,
+        "default": "true when the diagram is large enough",
+        "description": "Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks"
+      },
+      {
+        "name": "tickFormat",
+        "type": "(value: number) => string",
+        "required": false,
+        "default": "compact numbers of the `locale`",
+        "description": "Formats the tick labels"
+      },
+      {
+        "name": "labels",
+        "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks tangential when every name fits; colliding labels are shortened or skipped"
+      }
+    ]
   },
   "native:CodeBlockProps": {
     "source": "native/src/components/Editors/index.tsx",
@@ -4552,6 +4678,13 @@
         "description": "Formats the progress shares (tooltip)"
       },
       {
+        "name": "dependenciesName",
+        "type": "string",
+        "required": false,
+        "default": "\"Depends on\" (in the `locale`)",
+        "description": "Name of the dependencies row of the tooltip"
+      },
+      {
         "name": "locale",
         "type": "string",
         "required": false,
@@ -4632,6 +4765,12 @@
         "type": "boolean",
         "required": false,
         "description": "Draws a dot at `start` instead of a bar"
+      },
+      {
+        "name": "dependencies",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Names of the tasks this one waits for (shown in its tooltip)"
       }
     ]
   },
@@ -4936,15 +5075,23 @@
       },
       {
         "name": "colorScale",
-        "type": "readonly string[]",
+        "type": "readonly string[] | ChartColorScheme",
         "required": false,
-        "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default"
+        "default": "\"sequential\"",
+        "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color"
       },
       {
         "name": "valueRange",
         "type": "readonly [number, number]",
         "required": false,
         "description": "Values at the ends of the color scale; the data range by default"
+      },
+      {
+        "name": "colorMidpoint",
+        "type": "number",
+        "required": false,
+        "default": "0 for `diverging` ramps spanning it, else the middle of the range",
+        "description": "Value at the middle of the color scale (diverging data)"
       },
       {
         "name": "name",
@@ -7424,7 +7571,7 @@
         "type": "number",
         "required": false,
         "default": "0 (pie), 4 (donut)",
-        "description": "Corner radius of the slices, in pixels (drawn square on React Native)"
+        "description": "Corner radius of the slices, in pixels"
       },
       {
         "name": "rose",
@@ -7876,6 +8023,29 @@
     "description": "Status of a pull to refresh",
     "kind": "alias",
     "type": "\"idle\" | \"pulling\" | \"loosing\" | \"loading\" | \"success\""
+  },
+  "native:Quad": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "description": "A quadratic curve (device coordinates)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "from",
+        "type": "[number, number]",
+        "required": true
+      },
+      {
+        "name": "ctrl",
+        "type": "[number, number]",
+        "required": true
+      },
+      {
+        "name": "to",
+        "type": "[number, number]",
+        "required": true
+      }
+    ]
   },
   "native:QuadrantAxisLabels": {
     "source": "charts/src/engine/presets.ts",
@@ -9039,9 +9209,8 @@
   },
   "native:Segment": {
     "source": "native/src/components/ShapeChart/recorder.ts",
-    "description": "Straight segment to (x, y), or arc (implicitly joined by a segment to its start)",
     "kind": "alias",
-    "type": "{ t: \"L\"; x: number; y: number } | { t: \"A\"; cx: number; cy: number; r: number; /** Start angle and end angle (`a1 - a0` is the signed sweep) */ a0: number; a1: number; }"
+    "type": "{ t: \"L\"; x: number; y: number; q?: Quad } | { t: \"A\"; cx: number; cy: number; r: number; /** Start angle and end angle (`a1 - a0` is the signed sweep) */ a0: number; a1: number; }"
   },
   "native:SelectCloseReason": {
     "source": "native/src/components/Select/Select.tsx",
@@ -9257,7 +9426,7 @@
   },
   "native:ShapeChartCommonProps": {
     "source": "native/src/components/ShapeChart/types.ts",
-    "description": "Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap and BulletChart)",
+    "description": "Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart and ChordChart)",
     "kind": "interface",
     "extends": [
       "ShapeChartFrameProps"
@@ -9323,6 +9492,19 @@
         "required": false,
         "default": "the chart type, e.g. \"Donut chart\"",
         "description": "Accessible name of the chart"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the runtime's default locale, else English",
+        "description": "BCP 47 locale of the built-in texts (tooltip rows, accessible names, \"No data\") and of the numbers"
+      },
+      {
+        "name": "texts",
+        "type": "Partial<ShapeChartLabels>",
+        "required": false,
+        "description": "Replaces built-in texts of the `locale`"
       }
     ]
   },
@@ -9336,7 +9518,7 @@
         "name": "height",
         "type": "DimensionValue",
         "required": false,
-        "default": "320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, CalendarHeatmap and BulletChart: from the data)",
+        "default": "320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, ChordChart: 420, CalendarHeatmap and BulletChart: from the data)",
         "description": "Height of the chart (the legend included)"
       },
       {
@@ -10017,7 +10199,7 @@
         "type": "number",
         "required": false,
         "default": "2",
-        "description": "Corner radius of the sectors, in pixels (drawn square on React Native)"
+        "description": "Corner radius of the sectors, in pixels"
       },
       {
         "name": "labels",
@@ -12366,6 +12548,13 @@
         "type": "(value: number) => string",
         "required": false,
         "description": "Formats the values (labels, tooltip)"
+      },
+      {
+        "name": "connector",
+        "type": "boolean | ChartConnectorOptions",
+        "required": false,
+        "default": "true (dashed, secondary text color)",
+        "description": "Thin lines from the end of every bar to the next one; an object styles them"
       },
       {
         "name": "locale",

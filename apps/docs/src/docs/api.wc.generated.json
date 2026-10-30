@@ -1703,6 +1703,20 @@
         "description": "Reach of the whiskers in interquartile ranges (Tukey: 1.5), or `minmax`"
       },
       {
+        "name": "outlierShape",
+        "attribute": "outlier-shape",
+        "type": "\"hollow\" | \"filled\"",
+        "default": "\"hollow\"",
+        "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own)"
+      },
+      {
+        "name": "outlierSize",
+        "attribute": "outlier-size",
+        "type": "number",
+        "default": "7",
+        "description": "Diameter of the outliers in CSS pixels"
+      },
+      {
         "name": "orientation",
         "attribute": "orientation",
         "type": "\"vertical\" | \"horizontal\"",
@@ -3466,6 +3480,106 @@
       }
     ]
   },
+  "wc:minerva-chord-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaChordChart",
+    "summary": "Chord diagram of the flows between groups.",
+    "description": "Chord diagram of `minerva-design/charts/core` (the `<ChordChart>` of React): flows between groups around a circle, as ribbons whose ends are proportional to the flow in each direction; hovering a group highlights its ribbons, hovering a ribbon shows both directions (the `minerva-hover` detail of a ribbon also has `source`, `target` and `reverseValue`). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "directed",
+        "attribute": "directed",
+        "type": "boolean",
+        "default": "false",
+        "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows"
+      },
+      {
+        "name": "ribbonColor",
+        "attribute": "ribbon-color",
+        "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\"",
+        "default": "\"gradient\"",
+        "description": "Color of the ribbons without `color`"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\"",
+        "default": "\"auto\"",
+        "description": "Group labels along the arc (`tangential`), the radius (`radial`), whichever fits (`auto`), or none"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "groups",
+        "type": "readonly (string | ChordGroup)[] | undefined",
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; property only"
+      },
+      {
+        "name": "matrix",
+        "type": "readonly (readonly number[])[] | undefined",
+        "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used without `links`); property only"
+      },
+      {
+        "name": "links",
+        "type": "readonly ChordLink[] | undefined",
+        "description": "Flows `{ source, target, value }` by group name or index; take precedence over `matrix`; property only"
+      },
+      {
+        "name": "tickFormat",
+        "type": "(value: number) => string | undefined",
+        "description": "Formats the tick labels (compact numbers of the locale by default); property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<ChordChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-code-block": {
     "kind": "element",
     "source": "web-components/src/components/code-block/code-block.ts",
@@ -5202,6 +5316,196 @@
       }
     ]
   },
+  "wc:minerva-dependency-graph": {
+    "kind": "element",
+    "source": "web-components/src/components/graph/graph.ts",
+    "className": "MinervaDependencyGraph",
+    "summary": "Layered DAG with the critical path.",
+    "description": "Dependency graph of `minerva-design/charts/core` (the `<DependencyGraph>` of React): layered (Sugiyama) layout of a DAG with crossing reduction, spline or orthogonal edges with arrowheads, upstream / downstream highlight and the critical path. Published as the optional entry `minerva-design/web-components/graph`.",
+    "properties": [
+      {
+        "name": "direction",
+        "attribute": "direction",
+        "type": "GraphDirection",
+        "default": "\"TB\"",
+        "description": "Flow direction"
+      },
+      {
+        "name": "criticalPath",
+        "attribute": "critical-path",
+        "type": "boolean | readonly string[] | undefined",
+        "description": "Highlights the longest path (node `value` = duration); a list of node ids (property) sets it"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "480",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "nodeShape",
+        "attribute": "node-shape",
+        "type": "GraphNodeShape | undefined",
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "edgeStyle",
+        "attribute": "edge-style",
+        "type": "GraphEdgeStyle | undefined",
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeColor",
+        "attribute": "edge-color",
+        "type": "\"neutral\" | \"source\" | \"target\"",
+        "default": "\"neutral\"",
+        "description": "Edge colors: neutral or tinted with the source / target node"
+      },
+      {
+        "name": "highlight",
+        "attribute": "highlight",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "nodes",
+        "type": "readonly GraphNode[] | undefined",
+        "description": "Nodes `{ id, label, group, value, ... }`; property only"
+      },
+      {
+        "name": "edges",
+        "type": "readonly GraphEdge[] | undefined",
+        "description": "Edges `{ source, target, value, label, ... }`; property only"
+      },
+      {
+        "name": "groups",
+        "type": "readonly GraphGroup[] | undefined",
+        "description": "Groups `{ id, name, color }`: legend order, names and colors; property only"
+      },
+      {
+        "name": "selected",
+        "type": "readonly string[] | undefined",
+        "description": "Ids of the selected nodes (changing it updates the selection); property only"
+      },
+      {
+        "name": "options",
+        "type": "GraphBaseOptions | undefined",
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "fit",
+        "signature": "(animate?: boolean) => void",
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "signature": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "signature": "(data: GraphData) => void",
+        "description": "Replaces the data until the properties change again"
+      },
+      {
+        "name": "select",
+        "signature": "(ids: readonly string[] | string | null) => void",
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "signature": "() => string[]",
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "signature": "(id?: string) => void",
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "signature": "(id?: string) => void",
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "signature": "(id: string) => void",
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "signature": "() => Record<string, GraphPoint>",
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "signature": "() => void",
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-item-click",
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }"
+      },
+      {
+        "name": "minerva-selection-change",
+        "description": "The selection changed; detail: { ids }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A tree node was collapsed or expanded; detail: { id, collapsed }"
+      },
+      {
+        "name": "minerva-group-toggle",
+        "description": "The legend showed / hid a group; detail: { group, hidden }"
+      },
+      {
+        "name": "minerva-layout-end",
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-depth-chart": {
     "kind": "element",
     "source": "web-components/src/components/order-book/order-book.ts",
@@ -6282,23 +6586,26 @@
       {
         "name": "taskName",
         "attribute": "task-name",
-        "type": "string",
-        "default": "\"Tasks\"",
-        "description": "Name of the tasks without a group"
+        "type": "string | undefined",
+        "description": "Name of the tasks without a group (\"Tasks\" in the locale by default)"
       },
       {
         "name": "progressName",
         "attribute": "progress-name",
-        "type": "string",
-        "default": "\"Progress\"",
-        "description": "Name of the progress bars (legend, tooltip)"
+        "type": "string | undefined",
+        "description": "Name of the progress bars (legend, tooltip; \"Progress\" in the locale by default)"
       },
       {
         "name": "milestoneName",
         "attribute": "milestone-name",
-        "type": "string",
-        "default": "\"Milestones\"",
-        "description": "Name of the milestones (legend, tooltip)"
+        "type": "string | undefined",
+        "description": "Name of the milestones (legend, tooltip; \"Milestones\" in the locale by default)"
+      },
+      {
+        "name": "dependenciesName",
+        "attribute": "dependencies-name",
+        "type": "string | undefined",
+        "description": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)"
       },
       {
         "name": "todayLabel",
@@ -6501,6 +6808,196 @@
     ],
     "cssProperties": []
   },
+  "wc:minerva-graph-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/graph/graph.ts",
+    "className": "MinervaGraphChart",
+    "summary": "GPU relationship network with force, circular and layered layouts.",
+    "description": "Relationship network of `minerva-design/charts/core` (the `<GraphChart>` of React): force-directed by default (Barnes–Hut, a Web Worker for large graphs), or circular, arc diagram, layered or tree layouts; GPU rendering, pan / zoom, drag, neighbor highlight, legend toggles and keyboard navigation. Published as the optional entry `minerva-design/web-components/graph`.",
+    "properties": [
+      {
+        "name": "layout",
+        "attribute": "layout",
+        "type": "GraphLayoutType",
+        "default": "\"force\"",
+        "description": "Placement of the nodes"
+      },
+      {
+        "name": "direction",
+        "attribute": "direction",
+        "type": "GraphDirection | undefined",
+        "description": "Direction of the `dag` and `tree` layouts"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "480",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "nodeShape",
+        "attribute": "node-shape",
+        "type": "GraphNodeShape | undefined",
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "edgeStyle",
+        "attribute": "edge-style",
+        "type": "GraphEdgeStyle | undefined",
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeColor",
+        "attribute": "edge-color",
+        "type": "\"neutral\" | \"source\" | \"target\"",
+        "default": "\"neutral\"",
+        "description": "Edge colors: neutral or tinted with the source / target node"
+      },
+      {
+        "name": "highlight",
+        "attribute": "highlight",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "nodes",
+        "type": "readonly GraphNode[] | undefined",
+        "description": "Nodes `{ id, label, group, value, ... }`; property only"
+      },
+      {
+        "name": "edges",
+        "type": "readonly GraphEdge[] | undefined",
+        "description": "Edges `{ source, target, value, label, ... }`; property only"
+      },
+      {
+        "name": "groups",
+        "type": "readonly GraphGroup[] | undefined",
+        "description": "Groups `{ id, name, color }`: legend order, names and colors; property only"
+      },
+      {
+        "name": "selected",
+        "type": "readonly string[] | undefined",
+        "description": "Ids of the selected nodes (changing it updates the selection); property only"
+      },
+      {
+        "name": "options",
+        "type": "GraphBaseOptions | undefined",
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "fit",
+        "signature": "(animate?: boolean) => void",
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "signature": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "signature": "(data: GraphData) => void",
+        "description": "Replaces the data until the properties change again"
+      },
+      {
+        "name": "select",
+        "signature": "(ids: readonly string[] | string | null) => void",
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "signature": "() => string[]",
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "signature": "(id?: string) => void",
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "signature": "(id?: string) => void",
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "signature": "(id: string) => void",
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "signature": "() => Record<string, GraphPoint>",
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "signature": "() => void",
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-item-click",
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }"
+      },
+      {
+        "name": "minerva-selection-change",
+        "description": "The selection changed; detail: { ids }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A tree node was collapsed or expanded; detail: { id, collapsed }"
+      },
+      {
+        "name": "minerva-group-toggle",
+        "description": "The legend showed / hid a group; detail: { group, hidden }"
+      },
+      {
+        "name": "minerva-layout-end",
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-grid-item": {
     "kind": "element",
     "source": "web-components/src/components/responsive-grid/responsive-grid.ts",
@@ -6544,6 +7041,19 @@
     "description": "Heatmap of `minerva-design/charts/core` (the `<HeatmapChart>` of React): a grid of cells colored by value, categories (or numbers) on both axes. Published as the optional entry `minerva-design/web-components/chart`.",
     "properties": [
       {
+        "name": "colorScale",
+        "attribute": "color-scale",
+        "type": "readonly string[] | \"sequential\" | \"diverging\"",
+        "default": "\"sequential\"",
+        "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (`sequential` by default, or `diverging`); an array is property only"
+      },
+      {
+        "name": "colorMidpoint",
+        "attribute": "color-midpoint",
+        "type": "number | undefined",
+        "description": "Value at the middle of the color scale (diverging data; 0 for `diverging` ramps spanning it, else the middle of the range, by default)"
+      },
+      {
         "name": "valueName",
         "attribute": "value-name",
         "type": "string | undefined",
@@ -6576,11 +7086,6 @@
         "name": "yCategories",
         "type": "readonly string[] | undefined",
         "description": "Row names from bottom to top (collected from the data when omitted); property only"
-      },
-      {
-        "name": "colorScale",
-        "type": "readonly string[] | undefined",
-        "description": "Colors from the lowest to the highest value (a ramp of the first palette color by default); property only"
       },
       {
         "name": "valueRange",
@@ -17087,7 +17592,7 @@
       {
         "name": "options",
         "type": "Partial<TradingChartOptions> | undefined",
-        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, labels...); property only"
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only"
       },
       {
         "name": "instance",
@@ -17148,6 +17653,26 @@
         "description": "Shows the bars between two logical indices"
       },
       {
+        "name": "getVisibleTimeRange",
+        "signature": "() => { from: number; to: number } | null",
+        "description": "Times at the edges of the plot, `null` before the engine is created"
+      },
+      {
+        "name": "setVisibleTimeRange",
+        "signature": "(range: { from: number; to: number }) => void",
+        "description": "Shows the bars between two times"
+      },
+      {
+        "name": "setCrosshair",
+        "signature": "(time: number | null, price?: number) => void",
+        "description": "Shows the crosshair at a time (and a price); `null` hides it"
+      },
+      {
+        "name": "setScaleMode",
+        "signature": "(mode: TradingScaleMode) => void",
+        "description": "Sets the price scale of the price pane (`linear`, `log`, `percent`, `indexed`)"
+      },
+      {
         "name": "resetPriceScales",
         "signature": "() => void",
         "description": "Fits every price scale to the visible bars again"
@@ -17171,6 +17696,76 @@
         "name": "selectDrawing",
         "signature": "(id: string | null) => void",
         "description": "Selects a drawing (`null` clears the selection)"
+      },
+      {
+        "name": "updateDrawing",
+        "signature": "(id: string, patch: TradingDrawingPatch) => void",
+        "description": "Changes the style or the content of a drawing (undoable)"
+      },
+      {
+        "name": "undo",
+        "signature": "() => void",
+        "description": "Undoes the last change of the drawings"
+      },
+      {
+        "name": "redo",
+        "signature": "() => void",
+        "description": "Redoes the last undone change of the drawings"
+      },
+      {
+        "name": "getUndoState",
+        "signature": "() => TradingUndoState",
+        "description": "Whether the drawings can be undone or redone"
+      },
+      {
+        "name": "startReplay",
+        "signature": "(time?: number) => void",
+        "description": "Starts a bar replay after `time` (the user picks the bar without it)"
+      },
+      {
+        "name": "replayStep",
+        "signature": "(count?: number) => void",
+        "description": "Shows the next bars of the replay"
+      },
+      {
+        "name": "replayPlay",
+        "signature": "(speed?: number) => void",
+        "description": "Plays the replay at `speed` bars per second"
+      },
+      {
+        "name": "replayPause",
+        "signature": "() => void",
+        "description": "Pauses the replay"
+      },
+      {
+        "name": "stopReplay",
+        "signature": "() => void",
+        "description": "Ends the replay and shows every bar"
+      },
+      {
+        "name": "getReplayState",
+        "signature": "() => TradingReplayState | null",
+        "description": "State of the bar replay, `null` before the engine is created"
+      },
+      {
+        "name": "toDataURL",
+        "signature": "(type?: string, quality?: number) => string",
+        "description": "Image of the chart as a data URL (`\"\"` before the engine is created)"
+      },
+      {
+        "name": "toBlob",
+        "signature": "(type?: string, quality?: number) => Promise<Blob | null>",
+        "description": "Image of the chart as a blob"
+      },
+      {
+        "name": "requestChartFullscreen",
+        "signature": "() => Promise<void>",
+        "description": "Shows the chart full screen (the element's `requestFullscreen()` shows the element itself)"
+      },
+      {
+        "name": "exitChartFullscreen",
+        "signature": "() => Promise<void>",
+        "description": "Leaves full screen"
       },
       {
         "name": "setIndicatorVisible",
@@ -17201,6 +17796,14 @@
         "description": "A draggable price line was dropped; detail: { id, price, previousPrice, line }"
       },
       {
+        "name": "minerva-order-create",
+        "description": "The \"+\" order entry button was clicked (option `orderEntry`); detail: { price, side }"
+      },
+      {
+        "name": "minerva-order-cancel",
+        "description": "The close button of a `cancellable` price line was clicked; detail: { id, line }"
+      },
+      {
         "name": "minerva-drawings-change",
         "description": "The user added, moved or deleted drawings; detail: { drawings }"
       },
@@ -17213,12 +17816,215 @@
         "description": "The drawing tool changed (back to `cursor` after a drawing); detail: { tool }"
       },
       {
+        "name": "minerva-undo-change",
+        "description": "Undo / redo of the drawings became possible or impossible; detail: { canUndo, canRedo }"
+      },
+      {
+        "name": "minerva-replay-change",
+        "description": "The bar replay started, stepped, played, paused or stopped; detail: { active, picking, playing, speed, index, total, time }"
+      },
+      {
+        "name": "minerva-fullscreen-change",
+        "description": "The chart entered or left full screen; detail: { fullscreen }"
+      },
+      {
         "name": "minerva-indicator-toggle",
         "description": "An indicator was shown or hidden from its legend; detail: { id, visible }"
       },
       {
         "name": "minerva-history-request",
         "description": "The oldest bar came into view (load older bars with `prependBars`); detail: { firstTime, count }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-tree-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/graph/graph.ts",
+    "className": "MinervaTreeChart",
+    "summary": "Tidy tree, radial tree, mind map or org chart.",
+    "description": "Tree chart of `minerva-design/charts/core` (the `<TreeChart>` of React): tidy tree, radial tree, mind map or org chart, with animated collapse / expand of the subtrees. Published as the optional entry `minerva-design/web-components/graph`.",
+    "properties": [
+      {
+        "name": "layout",
+        "attribute": "layout",
+        "type": "\"tree\" | \"radial\" | \"mindmap\" | \"org\"",
+        "default": "\"tree\"",
+        "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart"
+      },
+      {
+        "name": "direction",
+        "attribute": "direction",
+        "type": "GraphDirection",
+        "default": "\"LR\"",
+        "description": "Direction of `layout=\"tree\"`"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "480",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "nodeShape",
+        "attribute": "node-shape",
+        "type": "GraphNodeShape | undefined",
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "edgeStyle",
+        "attribute": "edge-style",
+        "type": "GraphEdgeStyle | undefined",
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeColor",
+        "attribute": "edge-color",
+        "type": "\"neutral\" | \"source\" | \"target\"",
+        "default": "\"neutral\"",
+        "description": "Edge colors: neutral or tinted with the source / target node"
+      },
+      {
+        "name": "highlight",
+        "attribute": "highlight",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "nodes",
+        "type": "readonly GraphNode[] | undefined",
+        "description": "Nodes `{ id, label, group, value, ... }`; property only"
+      },
+      {
+        "name": "edges",
+        "type": "readonly GraphEdge[] | undefined",
+        "description": "Edges `{ source, target, value, label, ... }`; property only"
+      },
+      {
+        "name": "groups",
+        "type": "readonly GraphGroup[] | undefined",
+        "description": "Groups `{ id, name, color }`: legend order, names and colors; property only"
+      },
+      {
+        "name": "selected",
+        "type": "readonly string[] | undefined",
+        "description": "Ids of the selected nodes (changing it updates the selection); property only"
+      },
+      {
+        "name": "options",
+        "type": "GraphBaseOptions | undefined",
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "fit",
+        "signature": "(animate?: boolean) => void",
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "signature": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "signature": "(data: GraphData) => void",
+        "description": "Replaces the data until the properties change again"
+      },
+      {
+        "name": "select",
+        "signature": "(ids: readonly string[] | string | null) => void",
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "signature": "() => string[]",
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "signature": "(id?: string) => void",
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "signature": "(id?: string) => void",
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "signature": "(id: string) => void",
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "signature": "() => Record<string, GraphPoint>",
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "signature": "() => void",
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-item-click",
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }"
+      },
+      {
+        "name": "minerva-selection-change",
+        "description": "The selection changed; detail: { ids }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A tree node was collapsed or expanded; detail: { id, collapsed }"
+      },
+      {
+        "name": "minerva-group-toggle",
+        "description": "The legend showed / hid a group; detail: { group, hidden }"
+      },
+      {
+        "name": "minerva-layout-end",
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }"
       },
       {
         "name": "minerva-renderer-change",
@@ -17924,6 +18730,13 @@
         "description": "Hides the change (or total) written at the end of every bar"
       },
       {
+        "name": "hideConnectors",
+        "attribute": "hide-connectors",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the thin lines from the end of every bar to the next one"
+      },
+      {
         "name": "orientation",
         "attribute": "orientation",
         "type": "\"vertical\" | \"horizontal\"",
@@ -17946,6 +18759,11 @@
         "name": "format",
         "type": "(value: number) => string | undefined",
         "description": "Formats the values (labels, tooltip); property only"
+      },
+      {
+        "name": "connector",
+        "type": "ChartConnectorOptions | undefined",
+        "description": "Style of the connector lines `{ color, width, dash }` (dashed, secondary text color by default); property only"
       },
       {
         "name": "options",

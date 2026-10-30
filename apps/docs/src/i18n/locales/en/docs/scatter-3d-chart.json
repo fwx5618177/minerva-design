@@ -7,8 +7,8 @@
       "description": "Three species of an iris-like data set measured on three features: one series per class, and the legend toggles them. Drag to rotate, Shift + drag to pan, double-click to reset."
     },
     "galaxy": {
-      "title": "1,000,000 points",
-      "description": "A spiral galaxy of one million stars in typed-array columns, colored by their distance to the center through a custom color scale; box={false} hides the axis box."
+      "title": "1,000,000 stars",
+      "description": "A barred spiral galaxy of one million stars generated with a seeded random generator: a warm bulge, logarithmic arms of young blue stars and pink HII regions, dark dust lanes on their inner edge, a thin disk and a faint halo. Each star gets a black-body color through a 0xRRGGBB color column; pointStyle \"glow\" and blend \"additive\" make dense regions shine. The legend toggles the populations."
     },
     "color-by-value": {
       "title": "Color by value",
@@ -41,10 +41,15 @@
     "sepalWidth": "Sepal width (cm)",
     "petalLength": "Petal length (cm)",
     "clustersAria": "3D scatter chart of three flower species by sepal length, sepal width and petal length",
-    "stars": "Stars",
-    "distance": "Distance from the center",
+    "galaxy": {
+      "bulge": "Bulge and bar",
+      "disk": "Old disk",
+      "arms": "Young stars",
+      "nebulae": "HII regions",
+      "halo": "Halo"
+    },
     "kiloparsecs": "{{value}} kpc",
-    "galaxyAria": "A spiral galaxy of one million stars, colored by their distance to the center",
+    "galaxyAria": "A barred spiral galaxy of one million stars: bulge, spiral arms with young stars, HII regions and dust lanes, disk and halo",
     "sensors": "Sensors",
     "sensorLabel": "Sensor {{id}} · humidity {{humidity}}%",
     "celsius": "{{value}} °C",
@@ -140,7 +145,9 @@
       "pointSize": "Dot diameter in CSS pixels (a per-point size wins)",
       "opacity": "Opacity of the dots, 0-1",
       "colorBy": "Source of the colors: \"series\", or \"z\" / \"value\" through the color scale",
-      "perspectiveSize": "Scales the dots with their distance (perspective projection only)"
+      "perspectiveSize": "Scales the dots with their distance (perspective projection only)",
+      "pointStyle": "Look of the dots: \"sphere\" (shaded balls), \"disc\" (flat anti-aliased discs) or \"glow\" (soft discs with a gaussian halo, for stars and dense clouds)",
+      "blend": "\"additive\" accumulates the light of the dots (dense regions get brighter, meant for dark backgrounds; no depth sorting needed) instead of \"normal\" alpha blending"
     },
     "Line3DSeries": {
       "type": "Set by Line3DChart",
@@ -172,7 +179,8 @@
       "z": "Heights",
       "size": "Per-point diameters in CSS pixels",
       "value": "Per-point values mapped to the color scale",
-      "label": "Per-point texts shown in the tooltip"
+      "label": "Per-point texts shown in the tooltip",
+      "color": "Per-point colors as 0xRRGGBB numbers (a Uint32Array for large clouds); win over the series color and the color scale"
     },
     "Chart3DAxisOptions": {
       "title": "Axis title",

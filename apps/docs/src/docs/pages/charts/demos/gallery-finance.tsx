@@ -13,6 +13,7 @@ import {
   type OrderBookHeatmapHandle,
   type TimeAndSalesHandle,
   type TradingIndicator,
+  type TradingVolumeProfileOptions,
 } from "minerva-design/charts";
 import { GalleryCard, GalleryGrid } from "../gallery-card";
 // simulated markets shared with the trading and order book pages
@@ -52,11 +53,13 @@ const daily = generateBars({
 });
 const hourlyIndicators: TradingIndicator[] = [
   { type: "ma", period: 20 },
-  { type: "volume", height: 40 },
+  { type: "volume", overlay: true },
 ];
+// traded volume per price level of the visible bars
+const hourlyProfile: TradingVolumeProfileOptions = { rows: 24 };
 const dailyIndicators: TradingIndicator[] = [
-  { type: "boll", period: 20 },
-  { type: "rsi", period: 14, height: 50 },
+  { type: "supertrend", period: 10, multiplier: 3 },
+  { type: "macd", height: 50 },
 ];
 
 // the order book widgets stream a simulated market (paused off screen)
@@ -236,6 +239,7 @@ export default function GalleryFinanceDemo() {
           timeframe="1H"
           symbol="BTC/USDT"
           indicators={hourlyIndicators}
+          volumeProfile={hourlyProfile}
           legend={false}
           highLowMarkers={false}
           barSpacing={5}

@@ -16,7 +16,7 @@ import {
   type Clusters,
   type Signals,
 } from "../showcase/data";
-import { probeBackends, type BackendsSupport } from "../showcase/gpu";
+import { probeBackends, type BackendsSupport } from "../../../renderer/support";
 import { useFrameLoop, useInView } from "../showcase/meter";
 import { fpsClass, useShowcaseFormat } from "../showcase/text";
 import styles from "../showcase/showcase.module.scss";

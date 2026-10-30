@@ -6,9 +6,9 @@
       "title": "Overview",
       "text": "TradingChart takes OHLCV bars (objects, or typed-array columns for very long histories) and draws them with the GPU backends of the chart engine; axes, labels, drawings and the crosshair are drawn on a Canvas2D overlay.",
       "axis": "The time axis is an index of bars: weekends, nights and holidays leave no holes, and the labels follow the timeframe (new days and months in bold).",
-      "panes": "Moving averages, Bollinger bands and VWAP go over the price; volume, MACD, RSI, KDJ and ATR get their own pane, all sharing the zoom and the crosshair. Drag a separator to resize a pane.",
-      "trading": "Last price line with the countdown to the bar close, high / low of the visible bars, buy / sell markers, and order, position, take-profit, stop-loss and alert lines that can be dragged.",
-      "drawings": "Trend lines, rays, horizontal and vertical lines, rectangles, Fibonacci retracements and a measure tool: plain data, saved and restored through drawings and onDrawingsChange."
+      "panes": "Moving averages, Bollinger, Keltner and Donchian channels, VWAP, parabolic SAR, Ichimoku and SuperTrend go over the price; volume, MACD, RSI, KDJ, ATR, OBV, CCI, stochastic RSI, DMI, Williams %R and MFI get their own pane, all sharing the zoom and the crosshair. Drag a separator to resize a pane.",
+      "trading": "Last price line with the countdown to the bar close, high / low of the visible bars, buy / sell markers, a volume profile of the visible range (point of control and value area), and order, position, take-profit, stop-loss and alert lines that can be dragged, cancelled, or created from the price axis.",
+      "drawings": "Trend lines, rays, arrows, horizontal and vertical lines, parallel channels, Andrews pitchforks, rectangles, Fibonacci retracements, text notes, long / short position tools and a measure tool, on the price pane or any indicator pane. A floating toolbar restyles the selected drawing; Ctrl / ⌘ + Z undoes. Drawings are plain data, saved and restored through drawings and onDrawingsChange."
     },
     "streaming": {
       "title": "Streaming",
@@ -19,19 +19,26 @@
       "title": "Controls",
       "pointer": "Wheel to zoom at the pointer (Shift or a horizontal swipe to scroll), drag to pan with inertia.",
       "axes": "Drag the price axis to zoom it vertically and the time axis to change the bar width; double-click an axis to reset it.",
-      "keyboard": "Focus the chart: arrows move the crosshair bar by bar (Shift: ten bars) and announce its prices, + / − zoom, Home / End jump to the first / latest bar, Delete removes the selected drawing, Escape cancels.",
+      "keyboard": "Focus the chart: arrows move the crosshair bar by bar (Shift: ten bars) and announce its prices, + / − zoom, Home / End jump to the first / latest bar, Delete removes the selected drawing, Ctrl / ⌘ + Z undoes and Ctrl / ⌘ + Shift + Z redoes a drawing change, Escape cancels.",
       "touch": "On touch screens: drag to pan, pinch to zoom."
     },
     "languages": {
       "title": "Languages",
       "text": "The texts the chart writes (OHLC names, order and alert line titles, countdown, measure tool, accessible names) are built in for English, Chinese, Japanese and French and follow the page language (<html lang>), also when it changes. Volumes use the units of the language (万 / 亿 in Chinese). Set locale to pick another language and labels to replace any text.",
       "colors": "Colors don't follow the language: a Chinese page may well show US stocks, so the red-up convention of mainland China stays an explicit colorConvention=\"redUp\"."
+    },
+    "workflow": {
+      "title": "Workflow",
+      "layouts": "Multi-chart layouts: syncCharts shares the crosshair time and the visible time range between charts, timeframes included.",
+      "replay": "Bar replay: startReplay hides the bars after a point, then replayStep and replayPlay bring them back one by one, at the chosen speed, with the indicators recomputed as if live.",
+      "time": "Time zones and sessions: timeZone sets the clock of the time axis, the session breaks and the VWAP periods (daylight saving included).",
+      "export": "Images and full screen: toDataURL and toBlob compose every layer (bars, axes, drawings and legends) into one image; requestFullscreen shows the chart full screen."
     }
   },
   "demos": {
     "pro-terminal": {
       "title": "Pro terminal",
-      "description": "Ninety days of one-minute bars aggregated with resampleBars for the timeframe buttons; the toolbar switches the chart style, the indicators and the price scale (auto, percent, logarithmic). Click an indicator name in a legend to hide it, drag a pane separator to resize the panes."
+      "description": "Timeframes from 1 minute to 1 week aggregated with resampleBars, seven chart styles, indicator toggles (moving averages, Bollinger, Ichimoku, SuperTrend, volume profile, volume, MACD, RSI, KDJ), linear / percent / logarithmic scales, session breaks, an image download and full screen."
     },
     "streaming": {
       "title": "Live streaming",
@@ -47,7 +54,7 @@
     },
     "drawing-tools": {
       "title": "Drawing tools",
-      "description": "Pick a tool, then click twice or drag on the chart. With the cursor, click a drawing to select it, drag it or its handles to move it, press Delete to remove it. drawings and onDrawingsChange keep them in React state, ready to be saved; the Fibonacci retracement and the support line are computed from the data."
+      "description": "Fourteen tools: pick one, then drag or click the anchors (channels and pitchforks take three). Select a drawing to restyle it from its floating toolbar (color, width, dash, fill, lock, delete), drag it or its handles, double-click a note to edit it. Drawings also work on the RSI pane; undo / redo with the buttons or Ctrl / ⌘ + Z."
     },
     "orders": {
       "title": "Orders and positions",
@@ -55,7 +62,7 @@
     },
     "compare": {
       "title": "Compare symbols",
-      "description": "compare draws other symbols over the price; with the percent scale every series starts at 0% on the first visible bar, so performances can be compared while scrolling. The logarithmic and linear scales are there to see why."
+      "description": "compare draws other symbols over the price. On the percent scale every series starts at 0% on the first visible bar, with its last change on the price axis and a dotted 0% line; the log and linear scales keep the prices."
     },
     "history": {
       "title": "Infinite history",
@@ -72,6 +79,30 @@
     "dark-terminal": {
       "title": "Dark terminal",
       "description": "The chart takes its colors from CSS variables: a wrapper redefines them for an exchange-style dark terminal with a ticker header, EMA 20 / 50, Bollinger bands, volume at the bottom of the price pane and RSI."
+    },
+    "volume-profile": {
+      "title": "Volume profile",
+      "description": "volumeProfile draws the volume traded at each price over the visible bars (rising bars, then falling bars), with the point of control and the value area holding 70% of the volume. It follows scrolling and zooming; the line below is computed with the pure volumeProfile function."
+    },
+    "multi-chart": {
+      "title": "Synchronized layout",
+      "description": "Four charts kept in step by syncCharts: hover one and the others show the crosshair at the same time; scroll or zoom one and the others show the same hours, the 4-hour chart included."
+    },
+    "replay": {
+      "title": "Bar replay",
+      "description": "Practice reading the market without seeing the future: pick a bar on the chart, then step or play the following bars at the chosen speed. The averages and the volume are recomputed bar by bar; Exit shows every bar again."
+    },
+    "order-entry": {
+      "title": "Order entry",
+      "description": "With orderEntry, a + button follows the crosshair on the right of the price pane: click it to place a limit order at that price (buy below the last price, sell above). Orders are draggable and cancellable price lines kept in React state through onOrderCreate, onOrderMove and onOrderCancel."
+    },
+    "sessions": {
+      "title": "Time zones and sessions",
+      "description": "Ten New York sessions of 5-minute bars. timeZone moves the clock of the time axis (daylight saving included) and the day boundaries of the session breaks and of the VWAP: in Shanghai, a New York session spans two days."
+    },
+    "export": {
+      "title": "Image and full screen",
+      "description": "toDataURL and toBlob compose the bars, the axes, the drawings and the legends into one PNG; requestFullscreen shows the chart full screen (Escape leaves it)."
     }
   },
   "data": {
@@ -102,7 +133,10 @@
       "vol": "VOL",
       "macd": "MACD",
       "rsi": "RSI",
-      "kdj": "KDJ"
+      "kdj": "KDJ",
+      "ichimoku": "Ichimoku",
+      "st": "SuperTrend",
+      "vpvr": "VPVR"
     },
     "scales": {
       "linear": "Auto",
@@ -135,7 +169,13 @@
       "verticalLine": "Vertical line",
       "rectangle": "Rectangle",
       "fibRetracement": "Fibonacci retracement",
-      "measure": "Measure"
+      "measure": "Measure",
+      "arrow": "Arrow",
+      "parallelChannel": "Parallel channel",
+      "pitchfork": "Andrews pitchfork",
+      "text": "Text note",
+      "longPosition": "Long position",
+      "shortPosition": "Short position"
     },
     "keepDrawing": "Stay in drawing mode",
     "clearDrawings": "Remove all",
@@ -174,7 +214,59 @@
     "high24h": "24h high",
     "low24h": "24h low",
     "volume24h": "24h volume",
-    "darkAria": "BTCUSDT perpetual 15-minute chart in a dark terminal"
+    "darkAria": "BTCUSDT perpetual 15-minute chart in a dark terminal",
+    "undo": "Undo",
+    "redo": "Redo",
+    "downloadImage": "Download image",
+    "fullscreen": "Full screen",
+    "snapshot": "Snapshot",
+    "snapshotAlt": "Snapshot of the NVDA daily chart",
+    "snapshotCaption": "Composed by toDataURL: bars, axes, legends and the watermark in one PNG.",
+    "exportAria": "NVDA daily chart with its 50 and 200-day averages",
+    "nvda": "NVDA",
+    "volumeProfile": "Volume profile",
+    "profileRows": "Rows",
+    "profileSide": "Side",
+    "sides": {
+      "right": "Right",
+      "left": "Left"
+    },
+    "profileStatus": "Point of control {{poc}} · value area {{low}} – {{high}} (70% of the volume)",
+    "profileAria": "BTC/USDT 15-minute chart with the volume profile of the visible bars",
+    "syncCrosshair": "Sync the crosshair",
+    "syncTime": "Sync the time range",
+    "layoutAria": "{{symbol}} {{timeframe}} chart",
+    "replayControls": "Replay controls",
+    "replayStart": "Start replay",
+    "replayRestart": "New start",
+    "play": "Play",
+    "replayStep": "Next bar",
+    "replaySpeed": "Speed",
+    "replayExit": "Exit",
+    "replayIdle": "Start the replay, then click a bar to go back to it.",
+    "replayPicking": "Click a bar: the following bars are hidden.",
+    "replayProgress": "Bar {{index}} of {{total}}",
+    "replayAria": "ETH/USDT hourly chart for bar replay",
+    "orderPlacedBuy": "Buy limit placed at {{price}}",
+    "orderPlacedSell": "Sell limit placed at {{price}}",
+    "orderModified": "Order moved from {{from}} to {{to}}",
+    "orderCancelled": "Order at {{price}} cancelled",
+    "orderEntryAria": "BTCUSDT perpetual 5-minute chart with order entry",
+    "orderEntryHint": "Hover the chart and click the + on the right to place an order; drag a line to move it, × cancels it.",
+    "timeZone": "Time zone",
+    "zones": {
+      "America_New_York": "New York",
+      "Europe_London": "London",
+      "Asia_Shanghai": "Shanghai",
+      "Asia_Tokyo": "Tokyo",
+      "UTC": "UTC"
+    },
+    "sessionBreaks": "Session breaks",
+    "sessionsAria": "AAPL 5-minute chart over ten sessions with the VWAP",
+    "noteText": "Rally channel: wait for a retest",
+    "ordersTitle": "Open orders",
+    "rowCount": "{{count}} rows",
+    "barsPerSecond": "{{count}} bars / s"
   },
   "api": {
     "TradingChartProps": {
@@ -192,7 +284,12 @@
       "onDrawingToolChange": "The drawing tool changed, e.g. back to cursor after a drawing",
       "onIndicatorToggle": "An indicator was shown or hidden from its legend",
       "onHistoryRequest": "The oldest bar came into view: load older bars and call prependBars",
-      "onRendererChange": "The backend in use, again after a fallback (GPU reset)"
+      "onRendererChange": "The backend in use, again after a fallback (GPU reset)",
+      "onOrderCreate": "The + order entry button was clicked (see orderEntry).",
+      "onOrderCancel": "The close button of a cancellable price line was clicked.",
+      "onUndoChange": "Undo / redo of the drawings became possible or impossible.",
+      "onReplayChange": "The bar replay started, stepped, played, paused or stopped.",
+      "onFullscreenChange": "The chart entered (true) or left full screen."
     },
     "TradingChartOptions": {
       "bars": "Bars, oldest first: objects or typed-array columns. A new array with the same history and newer bars is applied as a stream",
@@ -207,7 +304,7 @@
       "precision": "Decimals of the prices; detected from the data by default",
       "formatPrice": "Formats the prices of the axis, legend and labels (overrides precision)",
       "locale": "Locale of the texts, numbers and dates: the page language (<html lang>, followed when it changes) by default",
-      "utcOffset": "Offset of the displayed times from UTC in minutes (480 for UTC+8); local time by default",
+      "utcOffset": "Offset of the displayed times from UTC, in minutes (480 for UTC+8); overrides timeZone.",
       "crosshair": "magnet snaps the horizontal line to the open, high, low or close; free follows the pointer",
       "legend": "Legends with the values at the crosshair and the indicator toggles",
       "lastPriceLine": "Dotted line and axis label at the last price",
@@ -228,7 +325,12 @@
       "watermark": "Large faint text behind the bars",
       "labels": "Overrides of the built-in texts (English, Chinese, Japanese and French are built in)",
       "renderer": "Backend: auto picks WebGPU, then WebGL2, WebGL and Canvas2D",
-      "ariaLabel": "Accessible label; built from the symbol by default"
+      "ariaLabel": "Accessible label; built from the symbol by default",
+      "timeZone": "Time zone of the time axis, the session breaks and the VWAP periods: an IANA name (\"America/New_York\") or \"UTC\"; the local time by default.",
+      "sessionBreaks": "Dashed vertical lines where a day starts (intraday bars).",
+      "orderEntry": "A + button at the crosshair price on the right of the price pane: clicking it reports a limit order (orderCreate).",
+      "volumeProfile": "Volume by price of the visible bars, with its point of control and value area (true for the defaults).",
+      "drawingToolbar": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)."
     },
     "TradingChartHandle": {
       "update": "Streams a bar: the time of the last bar replaces it, a later time appends it",
@@ -248,7 +350,25 @@
       "selectDrawing": "Selects a drawing (null clears the selection)",
       "setIndicatorVisible": "Shows or hides an indicator by id",
       "getRenderer": "Backend in use, null until ready",
-      "getInstance": "The engine instance of minerva-design/charts/core"
+      "getInstance": "The engine instance of minerva-design/charts/core",
+      "getVisibleTimeRange": "Times at the edges of the plot, null before mounting.",
+      "setVisibleTimeRange": "Shows the bars between two times.",
+      "setCrosshair": "Shows the crosshair at a time (and a price); null hides it.",
+      "setScaleMode": "Sets the price scale of the price pane.",
+      "updateDrawing": "Changes the style or the content of a drawing (undoable).",
+      "undo": "Undoes the last change of the drawings.",
+      "redo": "Redoes the last undone change of the drawings.",
+      "getUndoState": "Whether the drawings can be undone or redone.",
+      "startReplay": "Starts a bar replay after time; without it, the user picks the bar.",
+      "replayStep": "Shows the next bars of the replay.",
+      "replayPlay": "Plays the replay at speed bars per second.",
+      "replayPause": "Pauses the replay.",
+      "stopReplay": "Ends the replay and shows every bar.",
+      "getReplayState": "State of the bar replay, null before mounting.",
+      "toDataURL": "Image of the chart as a data URL (\"\" before mounting).",
+      "toBlob": "Image of the chart as a blob.",
+      "requestFullscreen": "Shows the chart full screen.",
+      "exitFullscreen": "Leaves full screen."
     },
     "TradingBar": {
       "time": "Opening time in milliseconds since the epoch",
@@ -275,7 +395,8 @@
       "quantity": "Quantity next to the label; numbers also give positions their profit",
       "color": "Color; from the kind and side by default",
       "draggable": "Can be dragged to another price, reported by onOrderMove",
-      "lineStyle": "solid, dashed or dotted; dashed for orders by default"
+      "lineStyle": "solid, dashed or dotted; dashed for orders by default",
+      "cancellable": "Shows a close button on the label (reported by orderCancel)."
     },
     "TradingMarker": {
       "time": "Time of the bar (the bar containing it)",
@@ -289,20 +410,26 @@
       "name": "Name in the legend",
       "data": "Values by time, matched with the bars",
       "color": "Line color; a theme color by default",
-      "id": "Identifier; the name by default"
+      "id": "Identifier; the name by default",
+      "lineWidth": "Line width in pixels."
     },
     "TradingDrawing": {
       "id": "Unique id",
       "type": "Tool that made it",
-      "points": "Anchors (time and price): one for horizontal / vertical lines, two otherwise",
+      "points": "Anchors: one for horizontal / vertical lines and texts, three for channels, pitchforks and positions (entry, target, stop), two otherwise.",
       "color": "Color; the primary color by default",
       "lineWidth": "Line width in pixels",
       "lineStyle": "solid, dashed or dotted",
-      "locked": "Can't be moved nor deleted by the user"
+      "locked": "Can't be moved nor deleted by the user",
+      "pane": "Pane of the drawing: \"price\" or the id of an indicator pane.",
+      "fill": "Fills the shape (rectangles, channels, pitchforks, Fibonacci levels, notes).",
+      "text": "Text of a text drawing (\\n starts a new line).",
+      "fontSize": "Font size of a text drawing, in pixels.",
+      "quantity": "Quantity of a position drawing: shows the profit in price units."
     },
     "TradingDrawingPoint": {
       "time": "Time; past the last bar it is extrapolated with the bar duration",
-      "price": "Price"
+      "price": "Price (or value of the indicator pane)."
     },
     "TradingChartLabels": {
       "open": "Open in the legend",
@@ -324,7 +451,27 @@
       "minutes": "Minutes of the measure tool; {count} is replaced",
       "chart": "Default accessible label; {symbol} is replaced",
       "announcement": "Bar read aloud when the keyboard moves the crosshair; {time}, {open}, {high}, {low} and {close} are replaced",
-      "timeframe": "Timeframe after the symbol in the legend; the timeframe option when it is a string by default"
+      "timeframe": "Timeframe after the symbol in the legend; the timeframe option when it is a string by default",
+      "ichimoku": "Legend title of the Ichimoku cloud.",
+      "supertrend": "Legend title of the SuperTrend.",
+      "text": "Default text of a new text drawing.",
+      "color": "Color button of the drawing toolbar.",
+      "lineWidth": "Line width button of the drawing toolbar.",
+      "lineStyle": "Line style button of the drawing toolbar.",
+      "fill": "Fill button of the drawing toolbar.",
+      "editText": "Edit button of text drawings in the drawing toolbar.",
+      "lock": "Lock button of the drawing toolbar.",
+      "remove": "Delete button of the drawing toolbar.",
+      "target": "Target of the position tools; {price} and {change} are replaced.",
+      "stop": "Stop of the position tools; {price} and {change} are replaced.",
+      "riskReward": "Risk / reward ratio of the position tools; {ratio} is replaced.",
+      "profit": "Profit of the position tools at the last price; {value} is replaced.",
+      "long": "Long position tool.",
+      "short": "Short position tool.",
+      "replay": "Badge of the bar replay; {time} is replaced.",
+      "replayHint": "Hint while picking the first bar of a replay.",
+      "buyLimit": "Order entry button, below the last price; {price} is replaced.",
+      "sellLimit": "Order entry button, above the last price; {price} is replaced."
     },
     "TradingCrosshairEvent": {
       "index": "Index of the hovered bar (may be past the last bar)",
@@ -360,6 +507,40 @@
     "TradingHistoryRequestEvent": {
       "firstTime": "Time of the oldest bar",
       "count": "Number of bars"
+    },
+    "TradingVolumeProfileOptions": {
+      "rows": "Number of price rows.",
+      "width": "Width of the longest row, as a fraction of the plot width.",
+      "valueArea": "Share of the volume in the value area, around the point of control.",
+      "side": "Side of the plot the rows grow from.",
+      "upColor": "Color of the volume of rising bars; the up color by default.",
+      "downColor": "Color of the volume of falling bars; the down color by default.",
+      "pocColor": "Color of the point of control line."
+    },
+    "TradingOrderCreateEvent": {
+      "price": "Price of the order (rounded to the price precision).",
+      "side": "buy below the last price, sell above it."
+    },
+    "TradingOrderCancelEvent": {
+      "id": "Id of the line.",
+      "line": "The line."
+    },
+    "TradingReplayState": {
+      "active": "Bars are being replayed (the later ones are hidden).",
+      "picking": "The user is picking the first bar.",
+      "playing": "Bars are added automatically.",
+      "speed": "Bars added per second while playing.",
+      "index": "Number of bars shown.",
+      "total": "Number of bars of the whole history.",
+      "time": "Time of the last bar shown."
+    },
+    "TradingUndoState": {
+      "canUndo": "A change can be undone.",
+      "canRedo": "An undone change can be redone."
+    },
+    "TradingSyncOptions": {
+      "crosshair": "Shows the crosshair of the hovered chart on the others, at the same time.",
+      "timeRange": "Shows the same time range on every chart when one scrolls or zooms."
     }
   },
   "wc": {
@@ -388,7 +569,12 @@
         "minerva-drawing-tool-change": "The drawing tool changed (back to cursor after a drawing); detail: { tool }",
         "minerva-indicator-toggle": "An indicator was shown or hidden from its legend; detail: { id, visible }",
         "minerva-history-request": "The oldest bar came into view: load older bars with prependBars; detail: { firstTime, count }",
-        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }",
+        "minerva-order-create": "The \"+\" order entry button was clicked (option orderEntry); detail: { price, side }",
+        "minerva-order-cancel": "The close button of a cancellable price line was clicked; detail: { id, line }",
+        "minerva-undo-change": "Undo / redo of the drawings became possible or impossible; detail: { canUndo, canRedo }",
+        "minerva-replay-change": "The bar replay started, stepped, played, paused or stopped; detail: { active, picking, playing, speed, index, total, time }",
+        "minerva-fullscreen-change": "The chart entered or left full screen; detail: { fullscreen }"
       },
       "methods": {
         "updateBar": "Streams a bar: the time of the last bar replaces it, a later time appends it (the update(bar) of the engine)",
@@ -407,7 +593,25 @@
         "removeDrawing": "Deletes a drawing",
         "selectDrawing": "Selects a drawing (null clears the selection)",
         "setIndicatorVisible": "Shows or hides an indicator",
-        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready",
+        "getVisibleTimeRange": "Times at the edges of the plot, null before the engine is created",
+        "setVisibleTimeRange": "Shows the bars between two times",
+        "setCrosshair": "Shows the crosshair at a time (and a price); null hides it",
+        "setScaleMode": "Sets the price scale of the price pane (linear, log, percent, indexed)",
+        "updateDrawing": "Changes the style or the content of a drawing (undoable)",
+        "undo": "Undoes the last change of the drawings",
+        "redo": "Redoes the last undone change of the drawings",
+        "getUndoState": "Whether the drawings can be undone or redone",
+        "startReplay": "Starts a bar replay after time (the user picks the bar without it)",
+        "replayStep": "Shows the next bars of the replay",
+        "replayPlay": "Plays the replay at speed bars per second",
+        "replayPause": "Pauses the replay",
+        "stopReplay": "Ends the replay and shows every bar",
+        "getReplayState": "State of the bar replay, null before the engine is created",
+        "toDataURL": "Image of the chart as a data URL (\"\" before the engine is created)",
+        "toBlob": "Image of the chart as a blob",
+        "requestChartFullscreen": "Shows the chart full screen (the element's own requestFullscreen() shows the element itself)",
+        "exitChartFullscreen": "Leaves full screen"
       }
     }
   }

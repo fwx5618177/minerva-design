@@ -7,8 +7,8 @@
       "description": "Trois espèces d'un jeu de données de type iris mesurées sur trois caractéristiques : une série par classe, que la légende masque ou affiche. Glisser pour tourner, Maj + glisser pour déplacer, double clic pour réinitialiser."
     },
     "galaxy": {
-      "title": "1 000 000 de points",
-      "description": "Une galaxie spirale d'un million d'étoiles en colonnes de tableaux typés, colorées selon leur distance au centre par une échelle de couleurs personnalisée ; box={false} masque la boîte des axes."
+      "title": "1 000 000 d'étoiles",
+      "description": "Une galaxie spirale barrée d'un million d'étoiles produite par un générateur aléatoire à graine : un bulbe chaud, des bras logarithmiques d'étoiles jeunes bleues et de régions HII roses, des bandes de poussière sombres sur leur bord intérieur, un disque mince et un halo ténu. Chaque étoile reçoit la couleur d'un corps noir par une colonne de couleurs 0xRRGGBB ; pointStyle \"glow\" et blend \"additive\" font briller les régions denses. La légende masque ou affiche les populations."
     },
     "color-by-value": {
       "title": "Couleur selon une valeur",
@@ -41,10 +41,15 @@
     "sepalWidth": "Largeur du sépale (cm)",
     "petalLength": "Longueur du pétale (cm)",
     "clustersAria": "Nuage de points 3D de trois espèces de fleurs selon la longueur et la largeur du sépale et la longueur du pétale",
-    "stars": "Étoiles",
-    "distance": "Distance au centre",
+    "galaxy": {
+      "bulge": "Bulbe et barre",
+      "disk": "Disque ancien",
+      "arms": "Étoiles jeunes",
+      "nebulae": "Régions HII",
+      "halo": "Halo"
+    },
     "kiloparsecs": "{{value}} kpc",
-    "galaxyAria": "Une galaxie spirale d'un million d'étoiles, colorées selon leur distance au centre",
+    "galaxyAria": "Une galaxie spirale barrée d'un million d'étoiles : bulbe, bras spiraux d'étoiles jeunes, régions HII et bandes de poussière, disque et halo",
     "sensors": "Capteurs",
     "sensorLabel": "Capteur {{id}} · humidité {{humidity}} %",
     "celsius": "{{value}} °C",
@@ -140,7 +145,9 @@
       "pointSize": "Diamètre des points en pixels CSS (la taille par point l'emporte)",
       "opacity": "Opacité des points, 0-1",
       "colorBy": "Source des couleurs : \"series\", ou \"z\" / \"value\" via l'échelle de couleurs",
-      "perspectiveSize": "Met les points à l'échelle selon leur distance (projection en perspective uniquement)"
+      "perspectiveSize": "Met les points à l'échelle selon leur distance (projection en perspective uniquement)",
+      "pointStyle": "Aspect des points : \"sphere\" (billes ombrées), \"disc\" (disques plats anticrénelés) ou \"glow\" (disques doux avec un halo gaussien, pour les étoiles et les nuages denses)",
+      "blend": "\"additive\" additionne la lumière des points (les zones denses brillent davantage, pour les fonds sombres ; aucun tri en profondeur) au lieu du mélange alpha \"normal\""
     },
     "Line3DSeries": {
       "type": "Défini par Line3DChart",
@@ -172,7 +179,8 @@
       "z": "Hauteurs",
       "size": "Diamètres par point en pixels CSS",
       "value": "Valeurs par point associées à l'échelle de couleurs",
-      "label": "Textes par point affichés dans l'infobulle"
+      "label": "Textes par point affichés dans l'infobulle",
+      "color": "Couleurs par point en nombres 0xRRGGBB (un Uint32Array pour les grands nuages) ; prioritaires sur la couleur de la série et l'échelle de couleurs"
     },
     "Chart3DAxisOptions": {
       "title": "Titre de l'axe",

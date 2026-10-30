@@ -17,8 +17,8 @@ const demos = collectDemos(
 );
 
 const importCode = `import { TradingChart } from "minerva-design/charts";
-// framework-free engine and pure indicator functions
-import { createTradingChart, resampleBars, ema } from "minerva-design/charts/core";`;
+// framework-free engine, layouts and pure indicator functions
+import { createTradingChart, syncCharts, resampleBars, ema } from "minerva-design/charts/core";`;
 
 const TradingChartDoc: React.FC = () => {
   const { t } = useTranslation();
@@ -50,6 +50,18 @@ const TradingChartDoc: React.FC = () => {
         <p className={styles.prose}>
           {t("docs.trading-chart.intro.streaming.performance")}
         </p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="trading-workflow">
+        <h2 id="trading-workflow">
+          {t("docs.trading-chart.intro.workflow.title")}
+        </h2>
+        <ul className={styles.prose}>
+          <li>{t("docs.trading-chart.intro.workflow.layouts")}</li>
+          <li>{t("docs.trading-chart.intro.workflow.replay")}</li>
+          <li>{t("docs.trading-chart.intro.workflow.time")}</li>
+          <li>{t("docs.trading-chart.intro.workflow.export")}</li>
+        </ul>
       </section>
 
       <section className={styles.section} aria-labelledby="trading-controls">

@@ -32,11 +32,14 @@ import VueDemo from "./VueDemo";
 import VueApiTables from "./VueApiTables";
 import StylingHooks from "./StylingHooks";
 import ChartFrameworkFallback from "./ChartFrameworkFallback";
+import { RENDERER_CATEGORIES } from "../renderer/context";
 import styles from "./docs.module.scss";
 
 // react-native-web and the native demos load with the React Native tab only
 const NativeSection = lazy(() => import("../native/NativeSection"));
 const AngularSection = lazy(() => import("../angular/AngularSection"));
+// the renderer bar of chart pages (it loads the chart engine)
+const RendererScope = lazy(() => import("../renderer/RendererScope"));
 
 /** The React Native tab (or the whole content of a mobile-only page) */
 const NativeContent: React.FC<{ meta: DocPageMeta }> = ({ meta }) => {
@@ -320,6 +323,7 @@ const DocPage: React.FC<DocPageProps> = ({
   const demoIds = meta.demos ?? Object.keys(demos);
   // a mobile component of minerva-design/native only
   const nativeOnly = !!meta.native && !meta.exports?.length && !meta.wc;
+  const rendererBar = RENDERER_CATEGORIES.includes(meta.category);
 
   const reactContent = (
     <>
@@ -382,6 +386,17 @@ const DocPage: React.FC<DocPageProps> = ({
     </>
   );
 
+  const body = nativeOnly ? (
+    <>
+      <NativeContent meta={meta} />
+      {children}
+    </>
+  ) : meta.wc || meta.native || isChartPage(meta) ? (
+    <FrameworkTabs meta={meta} react={reactContent} />
+  ) : (
+    reactContent
+  );
+
   return (
     <article className={styles.page}>
       <header className={styles.pageHeader}>
@@ -394,15 +409,13 @@ const DocPage: React.FC<DocPageProps> = ({
           </p>
         )}
       </header>
-      {nativeOnly ? (
-        <>
-          <NativeContent meta={meta} />
-          {children}
-        </>
-      ) : meta.wc || meta.native || isChartPage(meta) ? (
-        <FrameworkTabs meta={meta} react={reactContent} />
+      {rendererBar ? (
+        // the demos wait for the stored renderer (a few ms, cached after)
+        <Suspense fallback={null}>
+          <RendererScope>{body}</RendererScope>
+        </Suspense>
       ) : (
-        reactContent
+        body
       )}
     </article>
   );

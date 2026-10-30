@@ -1,6 +1,6 @@
 {
   "title": "Mini-program charts",
-  "description": "Every chart of minerva-design/charts drawn by the canvas engine — Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, QuadrantChart, CandlestickChart, HeatmapChart, Sparkline, RangeAreaChart, MixedChart, BubbleChart, HistogramChart, BoxPlotChart, WaterfallChart, GanttChart and the shape charts PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart and ShapeChart — for Taro, uni-app and native WeChat mini-programs, drawn on a canvas type=\"2d\" with the same options as the web charts.",
+  "description": "Every chart of minerva-design/charts drawn by the canvas engine — Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, QuadrantChart, CandlestickChart, HeatmapChart, Sparkline, RangeAreaChart, MixedChart, BubbleChart, HistogramChart, BoxPlotChart, WaterfallChart, GanttChart and the shape charts PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart, ChordChart and ShapeChart — for Taro, uni-app and native WeChat mini-programs, drawn on a canvas type=\"2d\" with the same options as the web charts.",
   "intro": {
     "title": "How they work",
     "text": "The mini-program charts draw the whole chart (axes, data, legend, tooltip, annotations) on one <canvas type=\"2d\"> with the canvas renderer of the Minerva chart engine. They take the options and presets of the web charts of minerva-design/charts, and work on WeChat, Alipay, ByteDance and other mini-programs as well as H5. Only the 2D canvas part of the engine is bundled: no WebGPU or WebGL code.",
@@ -28,6 +28,22 @@
     "series": "The series charts (Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, CandlestickChart, RangeAreaChart, MixedChart, BubbleChart) add series, xAxis and yAxis, plus the props of their web component (area, curve, stacked, percent, labels, yAxis2, stackMode, orientation, minSize / maxSize…). HeatmapChart, Sparkline, HistogramChart, BoxPlotChart, WaterfallChart and GanttChart take their data props (data, values, groups, steps, tasks…). Chart takes series of any type, candlestick and heatmap included.",
     "quadrant": "QuadrantChart takes the quadrant settings: points, xDomain, yDomain, xSplit, ySplit, quadrants, xLabel, yLabel, axisLabels, showTicks, reverseX, showLabels, pointSize, name and draggable.",
     "events": "Events mirror the web callbacks: hover, point click, plot click (a tap on the empty plot) and zoom; QuadrantChart reports point click (point, index), quadrant click (quadrant, { x, y }) and point drop (point, index, { x, y, quadrant }). The chart never moves points itself: update points."
+  },
+  "locale": {
+    "title": "Language and locale",
+    "text": "On the web, the charts read the page language (<html lang>). Mini-programs have no <html lang>: without a locale, the texts and numbers follow navigator.language when the runtime has one, else English (Taro and uni-app H5 builds read <html lang> like the web). Pass the app language with the locale prop of every chart; WeChat reports languages such as zh_CN, so replace the underscore with a hyphen (zh-CN) to format the numbers and dates too.",
+    "labels": "labels overrides built-in texts of the series charts (ChartLabels: the open / close rows of the candles, the box plot rows, the Gantt rows, the default series names…) and texts those of the shape charts (ShapeChartLabels: noData, value, share…). On HorizontalBarChart and WaterfallChart, labels stays the boolean that writes the values, so their texts follow locale only.",
+    "update": "Changing locale, labels or texts redraws the chart: set them again (setData on native WeChat) when the user switches the language of the app.",
+    "sample": {
+      "comment": "The language of the app: mini-programs have no <html lang>",
+      "ticks": "Functions go through configure(): the labels of the chord ticks",
+      "open": "Open",
+      "close": "Close",
+      "noData": "No flows yet",
+      "apps": "Apps",
+      "web": "Web",
+      "store": "Store"
+    }
   },
   "gestures": {
     "title": "Gestures",
@@ -60,7 +76,8 @@
     "props": "Props mirror the web components: AreaChart takes curve, stacked and percent; HorizontalBarChart stacked, percent and labels; HistogramChart values and bins; BoxPlotChart groups or series; WaterfallChart steps; GanttChart tasks, today and todayLabel; HeatmapChart data and the categories; Sparkline data and type (48 px high by default).",
     "weapp": "Register the components you use under their folder name. Dates do not survive setData: pass timestamps (gantt tasks, time axes). Function options go through configure(): format (heatmap-chart, sparkline, waterfall-chart), formatBin (histogram-chart), formatProgress (gantt-chart), the axis formats and renderTooltip.",
     "drill": "SunburstChart zooms into a parent on a tap and back up on the center: onDrill on Taro, the drill event on uni-app and WeChat (bind:drill), drill(path) and getDrillPath() on the instance; set drillPath to make the drill-down controlled.",
-    "domOnlyText": "TradingChart, DepthChart, OrderBook, OrderBookHeatmap, TimeAndSales and the 3D charts (Scatter3DChart, Surface3DChart, Bar3DChart, Line3DChart) need a DOM and WebGPU / WebGL: they have no mini-program component. Show the web component in a web-view page instead."
+    "domOnlyText": "TradingChart, DepthChart, OrderBook, OrderBookHeatmap, TimeAndSales and the 3D charts (Scatter3DChart, Surface3DChart, Bar3DChart, Line3DChart) need a DOM and WebGPU / WebGL: they have no mini-program component. Show the web component in a web-view page instead.",
+    "presets": "The preset options of the web components pass through: WaterfallChart connector (true, false or { color, dash, width }), HeatmapChart colorScale (\"sequential\", \"diverging\" or colors) and colorMidpoint, GanttChart dependenciesName (with the dependencies of the tasks), BoxPlotChart outlierShape and outlierSize."
   },
   "newTypes": {
     "title": "Candlesticks, heatmaps, curves and stacks",
@@ -77,6 +94,7 @@
     "events": "Events (event.detail): hover (the highlighted mark: index, name, value, percent, color, path; index is -1 when cleared), click (a tapped mark), toggle ({ index, hidden, hiddenIndexes }) and drill ({ path }, sunburst). Methods: configure(config), resize(), toggle(index), getHidden(), clearHover(), drill(path) and getDrillPath(). Types: NativeShapeChartInstance, NativeShapeChartEvents and the *ChartProperties interfaces of minerva-design/weapp/types.",
     "coreTitle": "The engine on your own canvas",
     "core": "createCanvasShapeChart (and createCanvasChart) draw on any 2D canvas. In native WeChat projects, require(\"minerva-design/charts/core\") after Build npm: the mini-program folder of the package ships the DOM-free engine as charts/core.js, a module the chart components share (no extra size). In Taro and uni-app, import it from minerva-design/charts/core.",
-    "touches": "Forward the touch events (mini-program canvas touches carry x / y relative to the canvas; on H5, subtract the canvas position from clientX / clientY), call resize(width, height) when the size changes and destroy() when the page unloads. The theme is plain values: pass the Minerva CSS variables you need in theme.variables."
+    "touches": "Forward the touch events (mini-program canvas touches carry x / y relative to the canvas; on H5, subtract the canvas position from clientX / clientY), call resize(width, height) when the size changes and destroy() when the page unloads. The theme is plain values: pass the Minerva CSS variables you need in theme.variables.",
+    "chord": "ChordChart draws a chord diagram: groups (names or { name, color }) placed around a circle and ribbons from a matrix or a list of links, directed with arrows, sorted, colored by source, target or a gradient, with value ticks — the props of the web component. It is 420 px high by default; on native WeChat, pass tickFormat with configure()."
   }
 }

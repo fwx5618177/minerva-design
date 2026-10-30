@@ -1,4 +1,5 @@
 import {
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -14,6 +15,12 @@ import type {
   ChartRendererPreference,
   ChartView,
 } from "minerva-design/charts";
+import { ChartRendererContext } from "../../../renderer/context";
+import {
+  autoPick,
+  probeBackends,
+  type BackendsSupport,
+} from "../../../renderer/support";
 import type { Range } from "./data";
 import {
   afterNextPaint,
@@ -104,6 +111,30 @@ export function Showcase<T>({
   const tourRef = useRef<{ start: number; base: ChartView } | null>(null);
   /** Consecutive slow frames of the tour */
   const slowFramesRef = useRef(0);
+  // the renderer of the page bar: what "auto" means here
+  const page = useContext(ChartRendererContext) ?? "auto";
+  const [support, setSupport] = useState<BackendsSupport | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void probeBackends().then((result) => {
+      if (!cancelled) setSupport(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // A GPU backend forced for the whole page may run on a software GPU here,
+  // which takes seconds per frame with these data sets: "auto" then uses
+  // the best hardware backend instead (picking it in this demo still forces it)
+  const pageSoftware = page !== "auto" && support?.[page] === "software";
+  const probing = page !== "auto" && page !== "canvas2d" && !support;
+  const chartRenderer: ChartRendererPreference =
+    renderer === "auto" && pageSoftware && support
+      ? autoPick(support)
+      : renderer;
+  const requested = renderer === "auto" ? page : renderer;
 
   useEffect(() => {
     if (!near || data) return;
@@ -193,18 +224,30 @@ export function Showcase<T>({
         {t("status.slow", { ms: text.ms(slow) })}
       </span>
     );
-  } else if (actual && renderer === "auto") {
+  } else if (actual && renderer === "auto" && pageSoftware) {
+    status = (
+      <span className={styles.fallback}>
+        {t("status.pageSoftware", {
+          requested: text.renderer(page),
+          backend: text.renderer(actual),
+        })}
+      </span>
+    );
+  } else if (actual && requested === "auto") {
     status =
       actual === "canvas2d"
         ? t("status.autoCanvas", { backend: text.renderer(actual) })
         : t("status.auto", { backend: text.renderer(actual) });
-  } else if (actual && actual === renderer) {
-    status = t("status.forced", { backend: text.renderer(actual) });
+  } else if (actual && actual === requested) {
+    status =
+      renderer === "auto"
+        ? t("status.page", { backend: text.renderer(actual) })
+        : t("status.forced", { backend: text.renderer(actual) });
   } else if (actual) {
     status = (
       <span className={styles.fallback}>
         {t("status.fallback", {
-          requested: text.renderer(renderer),
+          requested: text.renderer(requested),
           backend: text.renderer(actual),
         })}
       </span>
@@ -228,7 +271,15 @@ export function Showcase<T>({
           }}
         >
           {RENDERERS.map((kind) => (
-            <Radio key={kind} value={kind} label={text.renderer(kind)} />
+            <Radio
+              key={kind}
+              value={kind}
+              label={
+                kind === "auto" && page !== "auto"
+                  ? t("renderers.page", { backend: text.renderer(page) })
+                  : text.renderer(kind)
+              }
+            />
           ))}
         </RadioGroup>
         <Switch
@@ -278,11 +329,11 @@ export function Showcase<T>({
       </dl>
 
       <div ref={plotRef} className={styles.chart}>
-        {data ? (
+        {data && !probing ? (
           <Plot
             data={data.value}
             chartRef={chartRef}
-            renderer={renderer}
+            renderer={chartRenderer}
             onRendererChange={onRendererChange}
             onZoom={onZoom}
             running={running && motion}

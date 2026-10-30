@@ -16,7 +16,15 @@
   "plugin": {
     "title": "Enregistrement global",
     "text": "Préférez les imports nommés. Pour utiliser les composants dans tous les templates sans les importer, installez le plugin : il les enregistre comme <MnButton>, <MnModal>… (le préfixe est configurable).",
-    "types": "Les composants globaux sont typés pour Vue - Official (Volar) et vue-tsc par les typages minerva-design/vue/global :"
+    "types": "Les composants globaux sont typés pour Vue - Official (Volar) et vue-tsc par les typages minerva-design/vue/global :",
+    "charts": {
+      "title": "Graphiques",
+      "text": "MinervaVue n'enregistre pas les graphiques, pour qu'une application sans graphiques ne charge jamais le moteur de graphiques. Importez les graphiques par leur nom (depuis minerva-design/vue/charts ou minerva-design/vue), ou installez le plugin optionnel MinervaVueCharts de minerva-design/vue/charts : il enregistre <MnLineChart>, <MnPieChart>, <MnTradingChart>… avec la même option prefix, typés par minerva-design/vue/charts-global.",
+      "migration": {
+        "title": "Mise à jour depuis la 1.4",
+        "text": "Depuis la 1.5, app.use(MinervaVue) n'enregistre plus <MnChart>, <MnLineChart> ni les autres graphiques. Si vos templates les utilisent sans les importer, ajoutez app.use(MinervaVueCharts) depuis minerva-design/vue/charts (avec le même prefix que MinervaVue si vous l'avez changé) et ajoutez minerva-design/vue/charts-global aux types de tsconfig.json. Les imports nommés ne changent pas."
+      }
+    }
   },
   "theming": {
     "title": "Thèmes et i18n",
@@ -25,7 +33,7 @@
   },
   "nuxt": {
     "title": "Nuxt et rendu serveur",
-    "text": "Les composants se rendent côté serveur avec vue/server-renderer et s'hydratent sans écart : les surcouches (modales, popovers, toasts) se montent côté client, les id viennent du useId() de Vue et rien ne touche au DOM pendant le setup. Dans Nuxt, ajoutez la feuille de style à css et, si besoin, un plugin pour les composants globaux."
+    "text": "Les composants se rendent côté serveur avec vue/server-renderer et s'hydratent sans écart : les surcouches (modales, popovers, toasts) se montent côté client, les id viennent du useId() de Vue et rien ne touche au DOM pendant le setup. Dans Nuxt, ajoutez la feuille de style à css et, si besoin, un plugin pour les composants globaux (et MinervaVueCharts pour les graphiques globaux)."
   },
   "islands": {
     "title": "Îlots Vue",

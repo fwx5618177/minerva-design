@@ -2351,6 +2351,20 @@
         "description": "Reach of the whiskers in interquartile ranges (Tukey: 1.5), or `minmax`"
       },
       {
+        "name": "outlierShape",
+        "kind": "input",
+        "type": "\"hollow\" | \"filled\" | undefined",
+        "required": false,
+        "description": "Outliers drawn as rings of the series color or as filled dots; series may set their own (default `hollow`)"
+      },
+      {
+        "name": "outlierSize",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Diameter of the outliers in CSS pixels (default 7)"
+      },
+      {
         "name": "orientation",
         "kind": "input",
         "type": "ChartOrientation | undefined",
@@ -2583,6 +2597,13 @@
         "description": "Formats the values (labels, tooltip)"
       },
       {
+        "name": "connector",
+        "kind": "input",
+        "type": "boolean | ChartConnectorOptions | undefined",
+        "required": false,
+        "description": "Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed, secondary text color)"
+      },
+      {
         "name": "orientation",
         "kind": "input",
         "type": "ChartOrientation | undefined",
@@ -2798,6 +2819,13 @@
         "type": "((share: number) => string) | undefined",
         "required": false,
         "description": "Formats the progress shares (tooltip; default \"60%\")"
+      },
+      {
+        "name": "dependenciesName",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Name of the dependencies row of the tooltip (default \"Depends on\", in the `locale`)"
       },
       {
         "name": "today",
@@ -4163,9 +4191,9 @@
       {
         "name": "colorScale",
         "kind": "input",
-        "type": "readonly string[] | undefined",
+        "type": "readonly string[] | ChartColorScheme | undefined",
         "required": false,
-        "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default"
+        "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (default `sequential`)"
       },
       {
         "name": "valueRange",
@@ -4173,6 +4201,13 @@
         "type": "readonly [number, number] | undefined",
         "required": false,
         "description": "Values at the ends of the color scale; the data range by default"
+      },
+      {
+        "name": "colorMidpoint",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Value at the middle of the color scale (diverging data; default 0 for `diverging` ramps spanning it, else the middle of the range)"
       },
       {
         "name": "name",
@@ -4672,6 +4707,1038 @@
         "type": "number | string | undefined",
         "required": false,
         "description": "Width of the chart; numbers are pixels (default `100%`)"
+      }
+    ]
+  },
+  "MnGraphChart": {
+    "name": "MnGraphChart",
+    "source": "src/components/charts/graph.ts",
+    "description": "Relationship network: force-directed by default (Barnes–Hut, a Web\nWorker for large graphs), or circular, arc diagram, layered or tree\nlayouts; GPU rendering, pan / zoom, drag, neighbor highlight, legend\ntoggles and keyboard navigation (engine `createGraphChart`)",
+    "members": [
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (default 320)"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Width of the chart; numbers are pixels (default `100%`)"
+      },
+      {
+        "name": "nodes",
+        "kind": "input",
+        "type": "readonly GraphNode[]",
+        "required": true,
+        "description": "The nodes"
+      },
+      {
+        "name": "edges",
+        "kind": "input",
+        "type": "readonly GraphEdge[]",
+        "required": true,
+        "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
+      },
+      {
+        "name": "groups",
+        "kind": "input",
+        "type": "readonly GraphGroup[] | undefined",
+        "required": false,
+        "description": "Groups: legend order, names and colors"
+      },
+      {
+        "name": "nodeShape",
+        "kind": "input",
+        "type": "GraphNodeShape | undefined",
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "nodeSize",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
+      },
+      {
+        "name": "edgeStyle",
+        "kind": "input",
+        "type": "GraphEdgeStyle | undefined",
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeWidth",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
+      },
+      {
+        "name": "edgeColor",
+        "kind": "input",
+        "type": "\"neutral\" | \"source\" | \"target\" | undefined",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)"
+      },
+      {
+        "name": "arrows",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Arrowheads on the edges without `directed` (on for DAGs)"
+      },
+      {
+        "name": "nodeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | undefined",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)"
+      },
+      {
+        "name": "edgeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | \"hover\" | undefined",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      {
+        "name": "highlight",
+        "kind": "input",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "required": false,
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "selected",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Ids of the selected nodes (changing it updates the selection)"
+      },
+      {
+        "name": "animation",
+        "kind": "input",
+        "type": "boolean | number | undefined",
+        "required": false,
+        "description": "Animates layout and data changes; a number is the duration in ms (default `true`)"
+      },
+      {
+        "name": "fitPadding",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Padding around the graph when fitting it, in CSS pixels (default 24)"
+      },
+      {
+        "name": "controls",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Zoom buttons: zoom in, zoom out, fit (default `true`)"
+      },
+      {
+        "name": "legend",
+        "kind": "input",
+        "type": "boolean | GraphLegendOptions | undefined",
+        "required": false,
+        "description": "Legend of the groups; shown by default with several groups"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean | GraphTooltipOptions | undefined",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "interaction",
+        "kind": "input",
+        "type": "boolean | GraphInteractionOptions | undefined",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "ChartRendererPreference | undefined",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      {
+        "name": "palette",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "ariaLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "labels",
+        "kind": "input",
+        "type": "Partial<GraphChartLabels> | undefined",
+        "required": false,
+        "description": "Overrides of the built-in texts of the `locale`"
+      },
+      {
+        "name": "hover",
+        "kind": "output",
+        "type": "GraphHoverEvent | null",
+        "required": false,
+        "description": "The hovered (or keyboard-focused) node / edge changed (`null`: none)"
+      },
+      {
+        "name": "itemClick",
+        "kind": "output",
+        "type": "GraphHoverEvent",
+        "required": false,
+        "description": "A node or an edge was clicked (or a node activated with Enter)"
+      },
+      {
+        "name": "selectionChange",
+        "kind": "output",
+        "type": "string[]",
+        "required": false,
+        "description": "The selection changed: ids of the selected nodes"
+      },
+      {
+        "name": "nodeToggle",
+        "kind": "output",
+        "type": "GraphToggleEvent",
+        "required": false,
+        "description": "A tree node was collapsed or expanded"
+      },
+      {
+        "name": "groupToggle",
+        "kind": "output",
+        "type": "GraphGroupToggleEvent",
+        "required": false,
+        "description": "The legend showed / hid a group"
+      },
+      {
+        "name": "layoutEnd",
+        "kind": "output",
+        "type": "GraphLayoutEndEvent",
+        "required": false,
+        "description": "The layout is done (the force simulation cooled down)"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "ChartRendererKind",
+        "required": false,
+        "description": "The backend in use (again after a fallback)"
+      },
+      {
+        "name": "fit",
+        "kind": "method",
+        "type": "(animate?: boolean) => void",
+        "required": false,
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "kind": "method",
+        "type": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "required": false,
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "kind": "method",
+        "type": "(data: GraphData) => void",
+        "required": false,
+        "description": "Replaces the data until the inputs change again"
+      },
+      {
+        "name": "select",
+        "kind": "method",
+        "type": "(ids: readonly string[] | string | null) => void",
+        "required": false,
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "kind": "method",
+        "type": "() => string[]",
+        "required": false,
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "kind": "method",
+        "type": "(id: string) => void",
+        "required": false,
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "kind": "method",
+        "type": "() => Record<string, GraphPoint>",
+        "required": false,
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "kind": "method",
+        "type": "() => ChartRendererKind | null",
+        "required": false,
+        "description": "Backend in use, `null` until ready"
+      },
+      {
+        "name": "layout",
+        "kind": "input",
+        "type": "GraphLayoutType",
+        "required": false,
+        "default": "\"force\"",
+        "description": "Placement of the nodes (default `force`)"
+      },
+      {
+        "name": "direction",
+        "kind": "input",
+        "type": "GraphDirection | undefined",
+        "required": false,
+        "description": "Direction of the `dag` and `tree` layouts"
+      },
+      {
+        "name": "force",
+        "kind": "input",
+        "type": "GraphForceOptions | undefined",
+        "required": false,
+        "description": "Force layout settings (Barnes–Hut, worker for large graphs)"
+      },
+      {
+        "name": "circular",
+        "kind": "input",
+        "type": "GraphCircularOptions | undefined",
+        "required": false,
+        "description": "Circular / arc layout settings"
+      },
+      {
+        "name": "dag",
+        "kind": "input",
+        "type": "GraphDagOptions | undefined",
+        "required": false,
+        "description": "Layered layout settings (`layout=\"dag\"`)"
+      },
+      {
+        "name": "tree",
+        "kind": "input",
+        "type": "GraphTreeOptions | undefined",
+        "required": false,
+        "description": "Tree layout settings (tree layouts)"
+      }
+    ]
+  },
+  "MnDependencyGraph": {
+    "name": "MnDependencyGraph",
+    "source": "src/components/charts/graph.ts",
+    "description": "Dependency graph: layered (Sugiyama) layout of a DAG with crossing\nreduction, spline or orthogonal edges with arrowheads, upstream /\ndownstream highlight and the critical path (engine `createGraphChart`)",
+    "members": [
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (default 320)"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Width of the chart; numbers are pixels (default `100%`)"
+      },
+      {
+        "name": "nodes",
+        "kind": "input",
+        "type": "readonly GraphNode[]",
+        "required": true,
+        "description": "The nodes"
+      },
+      {
+        "name": "edges",
+        "kind": "input",
+        "type": "readonly GraphEdge[]",
+        "required": true,
+        "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
+      },
+      {
+        "name": "groups",
+        "kind": "input",
+        "type": "readonly GraphGroup[] | undefined",
+        "required": false,
+        "description": "Groups: legend order, names and colors"
+      },
+      {
+        "name": "nodeShape",
+        "kind": "input",
+        "type": "GraphNodeShape | undefined",
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "nodeSize",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
+      },
+      {
+        "name": "edgeStyle",
+        "kind": "input",
+        "type": "GraphEdgeStyle | undefined",
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeWidth",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
+      },
+      {
+        "name": "edgeColor",
+        "kind": "input",
+        "type": "\"neutral\" | \"source\" | \"target\" | undefined",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)"
+      },
+      {
+        "name": "arrows",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Arrowheads on the edges without `directed` (on for DAGs)"
+      },
+      {
+        "name": "nodeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | undefined",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)"
+      },
+      {
+        "name": "edgeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | \"hover\" | undefined",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      {
+        "name": "highlight",
+        "kind": "input",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "required": false,
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "selected",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Ids of the selected nodes (changing it updates the selection)"
+      },
+      {
+        "name": "animation",
+        "kind": "input",
+        "type": "boolean | number | undefined",
+        "required": false,
+        "description": "Animates layout and data changes; a number is the duration in ms (default `true`)"
+      },
+      {
+        "name": "fitPadding",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Padding around the graph when fitting it, in CSS pixels (default 24)"
+      },
+      {
+        "name": "controls",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Zoom buttons: zoom in, zoom out, fit (default `true`)"
+      },
+      {
+        "name": "legend",
+        "kind": "input",
+        "type": "boolean | GraphLegendOptions | undefined",
+        "required": false,
+        "description": "Legend of the groups; shown by default with several groups"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean | GraphTooltipOptions | undefined",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "interaction",
+        "kind": "input",
+        "type": "boolean | GraphInteractionOptions | undefined",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "ChartRendererPreference | undefined",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      {
+        "name": "palette",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "ariaLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "labels",
+        "kind": "input",
+        "type": "Partial<GraphChartLabels> | undefined",
+        "required": false,
+        "description": "Overrides of the built-in texts of the `locale`"
+      },
+      {
+        "name": "hover",
+        "kind": "output",
+        "type": "GraphHoverEvent | null",
+        "required": false,
+        "description": "The hovered (or keyboard-focused) node / edge changed (`null`: none)"
+      },
+      {
+        "name": "itemClick",
+        "kind": "output",
+        "type": "GraphHoverEvent",
+        "required": false,
+        "description": "A node or an edge was clicked (or a node activated with Enter)"
+      },
+      {
+        "name": "selectionChange",
+        "kind": "output",
+        "type": "string[]",
+        "required": false,
+        "description": "The selection changed: ids of the selected nodes"
+      },
+      {
+        "name": "nodeToggle",
+        "kind": "output",
+        "type": "GraphToggleEvent",
+        "required": false,
+        "description": "A tree node was collapsed or expanded"
+      },
+      {
+        "name": "groupToggle",
+        "kind": "output",
+        "type": "GraphGroupToggleEvent",
+        "required": false,
+        "description": "The legend showed / hid a group"
+      },
+      {
+        "name": "layoutEnd",
+        "kind": "output",
+        "type": "GraphLayoutEndEvent",
+        "required": false,
+        "description": "The layout is done (the force simulation cooled down)"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "ChartRendererKind",
+        "required": false,
+        "description": "The backend in use (again after a fallback)"
+      },
+      {
+        "name": "fit",
+        "kind": "method",
+        "type": "(animate?: boolean) => void",
+        "required": false,
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "kind": "method",
+        "type": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "required": false,
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "kind": "method",
+        "type": "(data: GraphData) => void",
+        "required": false,
+        "description": "Replaces the data until the inputs change again"
+      },
+      {
+        "name": "select",
+        "kind": "method",
+        "type": "(ids: readonly string[] | string | null) => void",
+        "required": false,
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "kind": "method",
+        "type": "() => string[]",
+        "required": false,
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "kind": "method",
+        "type": "(id: string) => void",
+        "required": false,
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "kind": "method",
+        "type": "() => Record<string, GraphPoint>",
+        "required": false,
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "kind": "method",
+        "type": "() => ChartRendererKind | null",
+        "required": false,
+        "description": "Backend in use, `null` until ready"
+      },
+      {
+        "name": "direction",
+        "kind": "input",
+        "type": "GraphDirection",
+        "required": false,
+        "default": "\"TB\"",
+        "description": "Flow direction (default `TB`)"
+      },
+      {
+        "name": "dag",
+        "kind": "input",
+        "type": "GraphDagOptions | undefined",
+        "required": false,
+        "description": "Layer / node spacing, crossing reduction sweeps"
+      },
+      {
+        "name": "criticalPath",
+        "kind": "input",
+        "type": "boolean | readonly string[] | undefined",
+        "required": false,
+        "description": "Highlights the longest path (node `value` = duration); `true` computes it, a list of ids sets it (default `false`)"
+      }
+    ]
+  },
+  "MnTreeChart": {
+    "name": "MnTreeChart",
+    "source": "src/components/charts/graph.ts",
+    "description": "Tree chart: tidy tree, radial tree, mind map or org chart, with animated\ncollapse / expand of the subtrees (engine `createGraphChart`)",
+    "members": [
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (default 320)"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Width of the chart; numbers are pixels (default `100%`)"
+      },
+      {
+        "name": "nodes",
+        "kind": "input",
+        "type": "readonly GraphNode[]",
+        "required": true,
+        "description": "The nodes"
+      },
+      {
+        "name": "edges",
+        "kind": "input",
+        "type": "readonly GraphEdge[]",
+        "required": true,
+        "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
+      },
+      {
+        "name": "groups",
+        "kind": "input",
+        "type": "readonly GraphGroup[] | undefined",
+        "required": false,
+        "description": "Groups: legend order, names and colors"
+      },
+      {
+        "name": "nodeShape",
+        "kind": "input",
+        "type": "GraphNodeShape | undefined",
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+      },
+      {
+        "name": "nodeSize",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
+      },
+      {
+        "name": "edgeStyle",
+        "kind": "input",
+        "type": "GraphEdgeStyle | undefined",
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted"
+      },
+      {
+        "name": "edgeWidth",
+        "kind": "input",
+        "type": "number | readonly [number, number] | undefined",
+        "required": false,
+        "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
+      },
+      {
+        "name": "edgeColor",
+        "kind": "input",
+        "type": "\"neutral\" | \"source\" | \"target\" | undefined",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)"
+      },
+      {
+        "name": "arrows",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Arrowheads on the edges without `directed` (on for DAGs)"
+      },
+      {
+        "name": "nodeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | undefined",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)"
+      },
+      {
+        "name": "edgeLabels",
+        "kind": "input",
+        "type": "boolean | \"auto\" | \"hover\" | undefined",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      {
+        "name": "highlight",
+        "kind": "input",
+        "type": "\"neighbors\" | \"lineage\" | \"none\" | undefined",
+        "required": false,
+        "description": "What hovering / selecting a node highlights"
+      },
+      {
+        "name": "selected",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Ids of the selected nodes (changing it updates the selection)"
+      },
+      {
+        "name": "animation",
+        "kind": "input",
+        "type": "boolean | number | undefined",
+        "required": false,
+        "description": "Animates layout and data changes; a number is the duration in ms (default `true`)"
+      },
+      {
+        "name": "fitPadding",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Padding around the graph when fitting it, in CSS pixels (default 24)"
+      },
+      {
+        "name": "controls",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Zoom buttons: zoom in, zoom out, fit (default `true`)"
+      },
+      {
+        "name": "legend",
+        "kind": "input",
+        "type": "boolean | GraphLegendOptions | undefined",
+        "required": false,
+        "description": "Legend of the groups; shown by default with several groups"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean | GraphTooltipOptions | undefined",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "interaction",
+        "kind": "input",
+        "type": "boolean | GraphInteractionOptions | undefined",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "ChartRendererPreference | undefined",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      {
+        "name": "palette",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "ariaLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default"
+      },
+      {
+        "name": "labels",
+        "kind": "input",
+        "type": "Partial<GraphChartLabels> | undefined",
+        "required": false,
+        "description": "Overrides of the built-in texts of the `locale`"
+      },
+      {
+        "name": "hover",
+        "kind": "output",
+        "type": "GraphHoverEvent | null",
+        "required": false,
+        "description": "The hovered (or keyboard-focused) node / edge changed (`null`: none)"
+      },
+      {
+        "name": "itemClick",
+        "kind": "output",
+        "type": "GraphHoverEvent",
+        "required": false,
+        "description": "A node or an edge was clicked (or a node activated with Enter)"
+      },
+      {
+        "name": "selectionChange",
+        "kind": "output",
+        "type": "string[]",
+        "required": false,
+        "description": "The selection changed: ids of the selected nodes"
+      },
+      {
+        "name": "nodeToggle",
+        "kind": "output",
+        "type": "GraphToggleEvent",
+        "required": false,
+        "description": "A tree node was collapsed or expanded"
+      },
+      {
+        "name": "groupToggle",
+        "kind": "output",
+        "type": "GraphGroupToggleEvent",
+        "required": false,
+        "description": "The legend showed / hid a group"
+      },
+      {
+        "name": "layoutEnd",
+        "kind": "output",
+        "type": "GraphLayoutEndEvent",
+        "required": false,
+        "description": "The layout is done (the force simulation cooled down)"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "ChartRendererKind",
+        "required": false,
+        "description": "The backend in use (again after a fallback)"
+      },
+      {
+        "name": "fit",
+        "kind": "method",
+        "type": "(animate?: boolean) => void",
+        "required": false,
+        "description": "Fits the visible nodes in the view"
+      },
+      {
+        "name": "focusNode",
+        "kind": "method",
+        "type": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+        "required": false,
+        "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+      },
+      {
+        "name": "setData",
+        "kind": "method",
+        "type": "(data: GraphData) => void",
+        "required": false,
+        "description": "Replaces the data until the inputs change again"
+      },
+      {
+        "name": "select",
+        "kind": "method",
+        "type": "(ids: readonly string[] | string | null) => void",
+        "required": false,
+        "description": "Selects nodes (`null` clears the selection)"
+      },
+      {
+        "name": "getSelection",
+        "kind": "method",
+        "type": "() => string[]",
+        "required": false,
+        "description": "Ids of the selected nodes"
+      },
+      {
+        "name": "expand",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Expands a node (all nodes without an id)"
+      },
+      {
+        "name": "collapse",
+        "kind": "method",
+        "type": "(id?: string) => void",
+        "required": false,
+        "description": "Collapses a node (all nodes with children without an id)"
+      },
+      {
+        "name": "toggle",
+        "kind": "method",
+        "type": "(id: string) => void",
+        "required": false,
+        "description": "Collapses / expands a node"
+      },
+      {
+        "name": "getPositions",
+        "kind": "method",
+        "type": "() => Record<string, GraphPoint>",
+        "required": false,
+        "description": "Current positions of the nodes in layout units"
+      },
+      {
+        "name": "relayout",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Computes the layout again"
+      },
+      {
+        "name": "getRenderer",
+        "kind": "method",
+        "type": "() => ChartRendererKind | null",
+        "required": false,
+        "description": "Backend in use, `null` until ready"
+      },
+      {
+        "name": "layout",
+        "kind": "input",
+        "type": "\"tree\" | \"radial\" | \"mindmap\" | \"org\"",
+        "required": false,
+        "default": "\"tree\"",
+        "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart (default `tree`)"
+      },
+      {
+        "name": "direction",
+        "kind": "input",
+        "type": "GraphDirection | undefined",
+        "required": false,
+        "description": "Direction of `layout=\"tree\"` (default `LR`)"
+      },
+      {
+        "name": "tree",
+        "kind": "input",
+        "type": "GraphTreeOptions | undefined",
+        "required": false,
+        "description": "Root, spacing, collapsing, card size"
       }
     ]
   },
@@ -5561,6 +6628,237 @@
         "type": "string | undefined",
         "required": false,
         "description": "Color of the target markers (default: the text color)"
+      }
+    ]
+  },
+  "MnChordChart": {
+    "name": "MnChordChart",
+    "source": "src/components/charts/shape-extended.ts",
+    "description": "Chord diagram: flows between groups around a circle; hovering a group\nhighlights its ribbons, hovering a ribbon shows both directions\n(`source`, `target` and `reverseValue` in the hover event)",
+    "members": [
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (default 320)"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Width of the chart; numbers are pixels (default `100%`)"
+      },
+      {
+        "name": "hover",
+        "kind": "output",
+        "type": "ShapeHoverEvent | null",
+        "required": false,
+        "description": "The hovered (or keyboard-focused) mark changed (`null`: none)"
+      },
+      {
+        "name": "itemClick",
+        "kind": "output",
+        "type": "ShapeHoverEvent",
+        "required": false,
+        "description": "A mark (slice, stage, series, cell) was clicked, tapped or activated with Enter"
+      },
+      {
+        "name": "visibilityChange",
+        "kind": "output",
+        "type": "ShapeToggleEvent",
+        "required": false,
+        "description": "An entry was hidden or shown (legend click or `toggle()`)"
+      },
+      {
+        "name": "toggle",
+        "kind": "method",
+        "type": "(index: number) => void",
+        "required": false,
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      },
+      {
+        "name": "palette",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      {
+        "name": "legend",
+        "kind": "input",
+        "type": "boolean | ShapeLegendOptions | undefined",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its entry (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean | ShapeTooltipOptions | undefined",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "format",
+        "kind": "input",
+        "type": "((value: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the values of the labels and the tooltip (default: compact numbers)"
+      },
+      {
+        "name": "percentFormat",
+        "kind": "input",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+      },
+      {
+        "name": "hidden",
+        "kind": "input",
+        "type": "readonly number[] | undefined",
+        "required": false,
+        "description": "Hidden entries by index; makes the visibility controlled (store the `hiddenIndexes` of `visibilityChange` and pass them back)"
+      },
+      {
+        "name": "animation",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+      },
+      {
+        "name": "padding",
+        "kind": "input",
+        "type": "ChartPadding | undefined",
+        "required": false,
+        "description": "Space around the drawing, in pixels (default 8 on every side)"
+      },
+      {
+        "name": "ariaLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart (default: the chart type)"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the runtime's default locale by default"
+      },
+      {
+        "name": "texts",
+        "kind": "input",
+        "type": "ShapeChartCommonOptions[\"texts\"] | undefined",
+        "required": false,
+        "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+      },
+      {
+        "name": "groups",
+        "kind": "input",
+        "type": "readonly (string | ChordGroup)[] | undefined",
+        "required": false,
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended"
+      },
+      {
+        "name": "matrix",
+        "kind": "input",
+        "type": "readonly (readonly number[])[] | undefined",
+        "required": false,
+        "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)"
+      },
+      {
+        "name": "links",
+        "kind": "input",
+        "type": "readonly ChordLink[] | undefined",
+        "required": false,
+        "description": "Flows as a list (by group name or index); takes precedence over `matrix`"
+      },
+      {
+        "name": "directed",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`)"
+      },
+      {
+        "name": "arrows",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Arrowheads at the target end of the ribbons (default `true` when `directed`)"
+      },
+      {
+        "name": "padAngle",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Gap between the groups, in degrees (default 2)"
+      },
+      {
+        "name": "startAngle",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Angle of the first group, degrees clockwise from 12 o'clock (default 0)"
+      },
+      {
+        "name": "sortGroups",
+        "kind": "input",
+        "type": "\"none\" | \"ascending\" | \"descending\" | undefined",
+        "required": false,
+        "description": "Order of the groups around the circle (default `none`: data order)"
+      },
+      {
+        "name": "sortSubgroups",
+        "kind": "input",
+        "type": "\"auto\" | \"none\" | \"ascending\" | \"descending\" | undefined",
+        "required": false,
+        "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings (default `auto`)"
+      },
+      {
+        "name": "ribbonColor",
+        "kind": "input",
+        "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\" | undefined",
+        "required": false,
+        "description": "Color of the ribbons without `color` (default `gradient`)"
+      },
+      {
+        "name": "ribbonOpacity",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Opacity of the ribbons, 0-1 (default 0.65)"
+      },
+      {
+        "name": "arcWidth",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Thickness of the group arcs, in pixels (default 6% of the radius)"
+      },
+      {
+        "name": "ticks",
+        "kind": "input",
+        "type": "boolean | number | undefined",
+        "required": false,
+        "description": "Value ticks outside the arcs; a number sets the step between ticks (default `true` when large enough)"
+      },
+      {
+        "name": "tickFormat",
+        "kind": "input",
+        "type": "((value: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the tick labels (default: compact numbers of the `locale`)"
+      },
+      {
+        "name": "labels",
+        "kind": "input",
+        "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\" | undefined",
+        "required": false,
+        "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks the one that fits (default `auto`)"
       }
     ]
   },
@@ -7535,7 +8833,7 @@
         "kind": "input",
         "type": "Partial<TradingChartOptions> | undefined",
         "required": false,
-        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, labels...)"
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...)"
       },
       {
         "name": "crosshairMove",
@@ -7566,6 +8864,20 @@
         "description": "A draggable price line was dropped at a new price"
       },
       {
+        "name": "orderCreate",
+        "kind": "output",
+        "type": "TradingOrderCreateEvent",
+        "required": false,
+        "description": "The \"+\" order entry button was clicked (see `options.orderEntry`)"
+      },
+      {
+        "name": "orderCancel",
+        "kind": "output",
+        "type": "TradingOrderCancelEvent",
+        "required": false,
+        "description": "The close button of a `cancellable` price line was clicked"
+      },
+      {
         "name": "drawingsChange",
         "kind": "output",
         "type": "readonly TradingDrawing[]",
@@ -7585,6 +8897,27 @@
         "type": "TradingDrawingTool",
         "required": false,
         "description": "The drawing tool changed (back to `cursor` after a drawing)"
+      },
+      {
+        "name": "undoChange",
+        "kind": "output",
+        "type": "TradingUndoState",
+        "required": false,
+        "description": "Undo / redo of the drawings became possible or impossible"
+      },
+      {
+        "name": "replayChange",
+        "kind": "output",
+        "type": "TradingReplayState",
+        "required": false,
+        "description": "The bar replay started, stepped, played, paused or stopped"
+      },
+      {
+        "name": "fullscreenChange",
+        "kind": "output",
+        "type": "boolean",
+        "required": false,
+        "description": "The chart entered (`true`) or left full screen"
       },
       {
         "name": "indicatorToggle",
@@ -7678,6 +9011,34 @@
         "description": "Shows the bars between two logical indices"
       },
       {
+        "name": "getVisibleTimeRange",
+        "kind": "method",
+        "type": "() => { from: number; to: number; } | null",
+        "required": false,
+        "description": "Times at the edges of the plot, `null` before the first render"
+      },
+      {
+        "name": "setVisibleTimeRange",
+        "kind": "method",
+        "type": "(range: { from: number; to: number }) => void",
+        "required": false,
+        "description": "Shows the bars between two times"
+      },
+      {
+        "name": "setCrosshair",
+        "kind": "method",
+        "type": "(time: number | null, price?: number) => void",
+        "required": false,
+        "description": "Shows the crosshair at a time (and a price); `null` hides it"
+      },
+      {
+        "name": "setScaleMode",
+        "kind": "method",
+        "type": "(mode: TradingScaleMode) => void",
+        "required": false,
+        "description": "Sets the price scale of the price pane"
+      },
+      {
         "name": "resetPriceScales",
         "kind": "method",
         "type": "() => void",
@@ -7711,6 +9072,104 @@
         "type": "(id: string | null) => void",
         "required": false,
         "description": "Selects a drawing (`null` clears the selection)"
+      },
+      {
+        "name": "updateDrawing",
+        "kind": "method",
+        "type": "(id: string, patch: TradingDrawingPatch) => void",
+        "required": false,
+        "description": "Changes the style or the content of a drawing (undoable)"
+      },
+      {
+        "name": "undo",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Undoes the last change of the drawings"
+      },
+      {
+        "name": "redo",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Redoes the last undone change of the drawings"
+      },
+      {
+        "name": "getUndoState",
+        "kind": "method",
+        "type": "() => TradingUndoState",
+        "required": false,
+        "description": "Whether the drawings can be undone or redone"
+      },
+      {
+        "name": "startReplay",
+        "kind": "method",
+        "type": "(time?: number) => void",
+        "required": false,
+        "description": "Starts a bar replay after `time` (the user picks the bar without it)"
+      },
+      {
+        "name": "replayStep",
+        "kind": "method",
+        "type": "(count?: number) => void",
+        "required": false,
+        "description": "Shows the next bars of the replay"
+      },
+      {
+        "name": "replayPlay",
+        "kind": "method",
+        "type": "(speed?: number) => void",
+        "required": false,
+        "description": "Plays the replay at `speed` bars per second"
+      },
+      {
+        "name": "replayPause",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Pauses the replay"
+      },
+      {
+        "name": "stopReplay",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Ends the replay and shows every bar"
+      },
+      {
+        "name": "getReplayState",
+        "kind": "method",
+        "type": "() => TradingReplayState | null",
+        "required": false,
+        "description": "State of the bar replay, `null` before the first render"
+      },
+      {
+        "name": "toDataURL",
+        "kind": "method",
+        "type": "(type?: string, quality?: number) => string",
+        "required": false,
+        "description": "Image of the chart as a data URL (`\"\"` before the first render)"
+      },
+      {
+        "name": "toBlob",
+        "kind": "method",
+        "type": "(type?: string, quality?: number) => Promise<Blob | null>",
+        "required": false,
+        "description": "Image of the chart as a blob"
+      },
+      {
+        "name": "requestFullscreen",
+        "kind": "method",
+        "type": "() => Promise<void>",
+        "required": false,
+        "description": "Shows the chart full screen"
+      },
+      {
+        "name": "exitFullscreen",
+        "kind": "method",
+        "type": "() => Promise<void>",
+        "required": false,
+        "description": "Leaves full screen"
       },
       {
         "name": "setIndicatorVisible",

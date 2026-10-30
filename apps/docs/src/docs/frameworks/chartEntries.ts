@@ -1,6 +1,6 @@
 // Optional define entries of the chart elements: `chart` (cartesian and
-// shape charts), `trading-chart`, `order-book` and `chart-3d` (their engines
-// are only loaded by the pages that use them). Used by the live demos (which
+// shape charts), `trading-chart`, `order-book`, `chart-3d` and `graph`
+// (their engines are only loaded by the pages that use them). Used by the live demos (which
 // entries to load) and by the framework conversions (which entries to
 // import).
 
@@ -10,6 +10,7 @@ export const CHART_ENTRIES = [
   "trading-chart",
   "order-book",
   "chart-3d",
+  "graph",
 ] as const;
 
 export type ChartEntry = (typeof CHART_ENTRIES)[number];
@@ -24,6 +25,8 @@ export const chartEntryOf = (tag: string): ChartEntry | undefined => {
   )
     return "order-book";
   if (/^minerva-[a-z]+-3d-chart$/.test(tag)) return "chart-3d";
+  if (/^minerva-(graph-chart|dependency-graph|tree-chart)$/.test(tag))
+    return "graph";
   if (
     /^minerva-([a-z-]+-)?chart$|^minerva-(sparkline|calendar-heatmap)$/.test(
       tag,

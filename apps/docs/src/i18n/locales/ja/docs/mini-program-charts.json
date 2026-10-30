@@ -1,6 +1,6 @@
 {
   "title": "ミニプログラムのチャート",
-  "description": "minerva-design/charts のうちキャンバスエンジンで描画するすべてのチャート — Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart と、シェイプチャート PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart、ShapeChart — を Taro・uni-app・ネイティブ WeChat ミニプログラム向けに提供します。canvas type=\"2d\" に描画し、Web のチャートと同じオプションを使います。",
+  "description": "minerva-design/charts のうちキャンバスエンジンで描画するすべてのチャート — Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart と、シェイプチャート PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart、ChordChart、ShapeChart — を Taro・uni-app・ネイティブ WeChat ミニプログラム向けに提供します。canvas type=\"2d\" に描画し、Web のチャートと同じオプションを使います。",
   "intro": {
     "title": "仕組み",
     "text": "ミニプログラムのチャートは、Minerva チャートエンジンのキャンバスレンダラーで、チャート全体（軸、データ、凡例、ツールチップ、注釈）を 1 つの <canvas type=\"2d\"> に描画します。minerva-design/charts の Web チャートと同じオプションとプリセットを受け取り、WeChat、Alipay、ByteDance などのミニプログラムと H5 で動作します。バンドルされるのはエンジンの 2D キャンバス部分のみで、WebGPU や WebGL のコードは含まれません。",
@@ -28,6 +28,22 @@
     "series": "系列チャート（Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、CandlestickChart、RangeAreaChart、MixedChart、BubbleChart）は series、xAxis、yAxis と、対応する Web コンポーネントの props（area、curve、stacked、percent、labels、yAxis2、stackMode、orientation、minSize / maxSize…）を追加します。HeatmapChart、Sparkline、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart はそれぞれのデータ props（data、values、groups、steps、tasks…）を受け取ります。Chart はローソク足やヒートマップを含む任意の type のシリーズを受け付けます。",
     "quadrant": "QuadrantChart は象限の設定を受け取ります：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name、draggable。",
     "events": "イベントは Web のコールバックに対応します：ホバー、ポイントのクリック、プロットのクリック（空いている場所のタップ）、ズーム。QuadrantChart はポイントのクリック（point, index）、象限のクリック（quadrant, { x, y }）、ポイントのドロップ（point, index, { x, y, quadrant }）を通知します。チャート自体はポイントを動かさないので、points を更新してください。"
+  },
+  "locale": {
+    "title": "言語とロケール",
+    "text": "Web ではチャートはページの言語（<html lang>）を読み取ります。ミニプログラムには <html lang> がないため、locale を指定しない場合、テキストと数値は実行環境の navigator.language（ある場合）に従い、なければ英語になります（Taro と uni-app の H5 ビルドは Web と同様に <html lang> を読み取ります）。すべてのチャートの locale prop にアプリの言語を渡してください。WeChat は zh_CN のような言語を返すため、アンダースコアをハイフンに置き換える（zh-CN）と数値と日付もその言語で書式化されます。",
+    "labels": "labels は座標系チャートの組み込みテキスト（ChartLabels：ローソク足の始値・終値の行、箱ひげ図の行、ガントの行、既定の系列名…）を、texts はシェイプチャートの組み込みテキスト（ShapeChartLabels：noData、value、share…）を上書きします。HorizontalBarChart と WaterfallChart では labels は値を表示する真偽値のままなので、テキストは locale にのみ従います。",
+    "update": "locale、labels、texts を変更するとチャートが再描画されます。ユーザーがアプリの言語を切り替えたら設定し直してください（ネイティブ WeChat では setData）。",
+    "sample": {
+      "comment": "アプリの言語：ミニプログラムには <html lang> がない",
+      "ticks": "関数は configure() で渡す：コードダイアグラムの目盛りラベル",
+      "open": "始値",
+      "close": "終値",
+      "noData": "フローはまだありません",
+      "apps": "アプリ",
+      "web": "Web",
+      "store": "ストア"
+    }
   },
   "gestures": {
     "title": "ジェスチャー",
@@ -60,7 +76,8 @@
     "props": "props は Web コンポーネントと同じです。AreaChart は curve、stacked、percent、HorizontalBarChart は stacked、percent、labels、HistogramChart は values と bins、BoxPlotChart は groups または series、WaterfallChart は steps、GanttChart は tasks、today、todayLabel、HeatmapChart は data とカテゴリ、Sparkline は data と type（既定の高さ 48 px）を受け取ります。",
     "weapp": "使うコンポーネントをフォルダ名で登録します。Date は setData を通らないため、タイムスタンプを渡してください（ガントのタスク、時間軸）。関数オプションは configure() で渡します：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、軸の書式、renderTooltip。",
     "drill": "SunburstChart は親をタップすると拡大し、中央をタップすると上の階層に戻ります。Taro では onDrill、uni-app と WeChat では drill イベント（bind:drill）、インスタンスでは drill(path) と getDrillPath() を使います。drillPath を指定するとドリルダウンを制御できます。",
-    "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales と 3D チャート（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）は DOM と WebGPU / WebGL が必要なため、ミニプログラムのコンポーネントはありません。代わりに web-view ページで Web コンポーネントを表示してください。"
+    "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales と 3D チャート（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）は DOM と WebGPU / WebGL が必要なため、ミニプログラムのコンポーネントはありません。代わりに web-view ページで Web コンポーネントを表示してください。",
+    "presets": "Web コンポーネントのプリセットオプションもそのまま使えます：WaterfallChart の connector（true、false または { color, dash, width }）、HeatmapChart の colorScale（\"sequential\"、\"diverging\" または色の配列）と colorMidpoint、GanttChart の dependenciesName（タスクの dependencies と併用）、BoxPlotChart の outlierShape と outlierSize。"
   },
   "newTypes": {
     "title": "ローソク足、ヒートマップ、曲線、積み上げ",
@@ -77,6 +94,7 @@
     "events": "イベント（event.detail）：hover（ハイライトされたマーク：index、name、value、percent、color、path。解除時は index が -1）、click（タップされたマーク）、toggle（{ index, hidden, hiddenIndexes }）、drill（{ path }、サンバースト）。メソッド：configure(config)、resize()、toggle(index)、getHidden()、clearHover()、drill(path)、getDrillPath()。型は minerva-design/weapp/types の NativeShapeChartInstance、NativeShapeChartEvents、各 *ChartProperties インターフェースです。",
     "coreTitle": "独自のキャンバスでエンジンを使う",
     "core": "任意の 2D キャンバスに createCanvasShapeChart（と createCanvasChart）で描画できます。ネイティブ WeChat プロジェクトでは「npm をビルド」後に require(\"minerva-design/charts/core\") します。パッケージのミニプログラムフォルダーは DOM 不要のエンジンを charts/core.js として含み、チャートコンポーネントも同じモジュールを共有します（サイズは増えません）。Taro と uni-app では minerva-design/charts/core からインポートします。",
-    "touches": "タッチイベントを転送し（ミニプログラムのキャンバスのタッチはキャンバス相対の x / y を持ちます。H5 では clientX / clientY からキャンバスの位置を引きます）、サイズが変わったら resize(width, height)、ページのアンロード時に destroy() を呼びます。テーマはプレーンな値で、必要な Minerva の CSS 変数を theme.variables に渡します。"
+    "touches": "タッチイベントを転送し（ミニプログラムのキャンバスのタッチはキャンバス相対の x / y を持ちます。H5 では clientX / clientY からキャンバスの位置を引きます）、サイズが変わったら resize(width, height)、ページのアンロード時に destroy() を呼びます。テーマはプレーンな値で、必要な Minerva の CSS 変数を theme.variables に渡します。",
+    "chord": "ChordChart はコードダイアグラムを描画します：グループ（名前または { name, color }）を円周上に並べ、行列またはリンクのリストからリボンを描き、矢印付きの有向フロー、並べ替え、送信元・送信先・グラデーションによる配色、値の目盛りに対応します（Web コンポーネントと同じ props）。既定の高さは 420 px。ネイティブ WeChat では tickFormat を configure() で渡します。"
   }
 }

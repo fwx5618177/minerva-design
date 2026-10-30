@@ -21,6 +21,34 @@
     "intraday": {
       "title": "日中足",
       "description": "1 セッションの 5 分足に VWAP を折れ線系列で重ね、ニュース発表を x の線で示します。時間軸は Intl.DateTimeFormat と timeZone で取引所の現地時刻を表示します。"
+    },
+    "bar-styles": {
+      "title": "バーチャート・ローソク足・中抜きローソク足",
+      "description": "TradingChart の chartStyle で同じ 70 日を 3 通りに表示します。バーチャート（左が始値、右が終値）、ローソク足、そして終値が始値より高いと実体が中抜きになり、色が前日終値との比較で決まる中抜きローソク足です。"
+    },
+    "ma-ribbon": {
+      "title": "移動平均リボン",
+      "description": "10〜80 本の 8 本の指数移動平均を暖色から寒色へ。トレンド中はリボンが広がり、転換点でねじれます。各平均線は色と太さを指定でき、凡例にクロスヘア位置の値が並びます。"
+    },
+    "volume-colors": {
+      "title": "ローソク足の色の出来高",
+      "description": "出来高のバーはローソク足と同じ色で、20 本の平均線付き。専用のペインにも、overlay で価格ペインの下部にも表示できます。"
+    },
+    "a-share": {
+      "title": "中国市場の配色",
+      "description": "colorConvention=\"redUp\" で中国本土と同じく陽線を赤、陰線を緑で描き、定番の MA 5 / 10 / 20 / 60・出来高・MACD を表示します。凡例はページの言語で表示されます（中国語なら 开 高 低 收）。"
+    },
+    "events": {
+      "title": "イベントマーカー",
+      "description": "markers で企業イベントをその日に固定します。決算・配当・株式分割はローソク足の上に、業績予想の下方修正は下に、それぞれの色と短いテキストで表示します。"
+    },
+    "live": {
+      "title": "リアルタイムのローソク足",
+      "description": "ref の update で 1 秒に 10 回、5 秒足を更新します。最後の足が伸び、5 秒ごとに新しい足が始まり、現在値の下のカウントダウンで確定までの時間がわかります。"
+    },
+    "dark": {
+      "title": "ダークテーマ",
+      "description": "チャートは CSS 変数から色を読み取ります。コンテナで変数（背景・文字・上昇 / 下落色）を設定すると、ローソク足・軸・凡例・クロスヘアの見た目が変わります。ここでは中抜きローソク足とウォーターマーク付き。"
     }
   },
   "native": {
@@ -53,7 +81,54 @@
     "volumeAria": "ORBT の日次出来高",
     "vwap": "VWAP",
     "guidanceCut": "業績見通しの下方修正",
-    "intradayAria": "ORBT の 1 セッションの 5 分足と VWAP"
+    "intradayAria": "ORBT の 1 セッションの 5 分足と VWAP",
+    "styleAria": {
+      "bars": "日足のバーチャート",
+      "candles": "日足のローソク足",
+      "hollowCandles": "日足の中抜きローソク足"
+    },
+    "styleNames": {
+      "bars": "バーチャート",
+      "candles": "ローソク足",
+      "hollowCandles": "中抜きローソク足"
+    },
+    "styleHints": {
+      "bars": "始値と終値を横線で",
+      "candles": "始値から終値までの実体",
+      "hollowCandles": "終値が高いと中抜き"
+    },
+    "eth": "ETH/USDT",
+    "ribbonAria": "8 本の指数移動平均付き ETH/USDT 4 時間足チャート",
+    "volumeLayout": "出来高の表示",
+    "volumePane": "専用ペイン",
+    "volumeOverlay": "価格の下に重ねる",
+    "btc": "BTC/USDT",
+    "volumeColorsAria": "ローソク足の色の出来高付き BTC/USDT 1 時間足チャート",
+    "catl": "CATL 300750",
+    "aShareAria": "陽線が赤の CATL 日足チャート",
+    "events": {
+      "earnings": "決",
+      "dividend": "配",
+      "split": "分",
+      "guidance": "予↓"
+    },
+    "eventNames": {
+      "earnings": "決算",
+      "dividend": "配当",
+      "split": "株式分割",
+      "guidance": "業績予想の下方修正"
+    },
+    "orbt": "ORBT",
+    "eventsAria": "決算・配当・株式分割付きの ORBT 日足チャート",
+    "pause": "一時停止",
+    "resume": "再開",
+    "liveStatus": "リアルタイム：毎秒 10 件の約定",
+    "livePaused": "一時停止中",
+    "ada": "ADA/USDT",
+    "fiveSeconds": "5 秒",
+    "liveAria": "リアルタイムで更新される ADA/USDT 5 秒足",
+    "nasdaq": "ナスダック 100",
+    "darkAria": "ダークテーマのナスダック 100 30 分足（中抜きローソク足）"
   },
   "api": {
     "CandlestickChartProps": {

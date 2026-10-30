@@ -57,6 +57,19 @@ export interface ApiCssVar {
 
 const entries = api as Record<string, ApiEntry>;
 
+// Chart APIs (minerva-design/charts) live in their own file, loaded on demand
+let chartEntries: Record<string, ApiEntry> | null = null;
+let chartLoading: Promise<void> | null = null;
+
+/** Loads the chart APIs (once); `getApiEntry` finds them afterwards */
+export const loadChartApis = (): Promise<void> =>
+  (chartLoading ??= import("./api.charts.generated.json").then((mod) => {
+    chartEntries = mod.default as unknown as Record<string, ApiEntry>;
+  }));
+
+/** Whether `loadChartApis` has resolved */
+export const chartApisLoaded = () => chartEntries !== null;
+
 // React Native APIs (`native:<Name>`) live in their own file, loaded on demand
 let nativeEntries: Record<string, ApiEntry> | null = null;
 let nativeLoading: Promise<void> | null = null;
@@ -71,10 +84,15 @@ export const loadNativeApis = (): Promise<void> =>
 export const NATIVE_API_PREFIX = "native:";
 
 export const getApiEntry = (name: string): ApiEntry | undefined => {
-  const source = name.startsWith(NATIVE_API_PREFIX) ? nativeEntries : entries;
-  return source && Object.prototype.hasOwnProperty.call(source, name)
-    ? source[name]
-    : undefined;
+  const sources = name.startsWith(NATIVE_API_PREFIX)
+    ? [nativeEntries]
+    : [entries, chartEntries];
+  for (const source of sources) {
+    if (source && Object.prototype.hasOwnProperty.call(source, name)) {
+      return source[name];
+    }
+  }
+  return undefined;
 };
 
 /** i18n-safe key for an interface name (":" is i18next's namespace separator) */

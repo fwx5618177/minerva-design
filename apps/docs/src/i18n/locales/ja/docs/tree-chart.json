@@ -1,0 +1,214 @@
+{
+  "title": "ツリー図",
+  "description": "整列ツリー、放射状ツリー、マインドマップ、組織図で階層構造を表します：組織、ファイルシステム、分類、計画。整列ツリー（Buchheim / Reingold–Tilford）はノードを重ねず、各親を子の中央に配置します。サブツリーはクリック、キーボード、API からアニメーション付きで折りたたみ・展開できます。",
+  "intro": {
+    "overview": {
+      "title": "概要",
+      "text": "TreeChart はノードと親 → 子のエッジを受け取ります。親を持たないノードがルートです（tree.root で指定可能）。閉路や 2 つ目の親を作るエッジは無視されます。",
+      "tidy": "整列ツリーは線形時間で動作し、各ノードの大きさを考慮します。ラベルは重ならず、親は子の中央に置かれ、同じ形のサブツリーは同じように描かれます。",
+      "layouts": "layout=\"tree\"（既定は左から右、任意の向き）、\"radial\"（ルートを囲む同心円、ラベルは半径方向）、\"mindmap\"（枝を左右にバランスよく配置し、枝ごとに色分け）、\"org\"（タイトルとサブタイトル付きのカード、直交線、末端のチームは縦に積む）。",
+      "collapse": "子を持つノードをクリックするか、Enter を押すか、expand / collapse / toggle を呼ぶと、サブツリーがアニメーションでノードに畳まれ、バッジが非表示のノード数を示します。ノードに collapsed を指定すると最初から畳まれます。"
+    }
+  },
+  "demos": {
+    "org-chart": {
+      "title": "組織図",
+      "description": "名前と役職を記したカードを部署ごとに色分けし、直交線で結びます。部下のいないチームは縦に積んで幅を抑えます。バックエンドチームは最初は畳まれています。マネージャーをクリックするとチームを開閉できます。"
+    },
+    "mind-map": {
+      "title": "マインドマップ",
+      "description": "中心テーマを囲むローンチ計画。枝はアイデアの数で左右にバランスよく配置され、枝ごとに色が付き、線は中心から離れるほど細くなります。"
+    },
+    "radial": {
+      "title": "放射状ツリー",
+      "description": "ライブラリ名を中心にデザインシステムのコンポーネントを配置し、ラベルは半径方向に並びます。葉の数に応じて半径が広がり、ラベルが重なりません。"
+    },
+    "file-tree": {
+      "title": "折りたたみ可能なファイルツリー",
+      "description": "左から右へのプロジェクトツリーをファイルの種類で色分け。深いフォルダは最初は畳まれています。フォルダをクリックして開くか、ref の expand()、collapse()、fit() を呼ぶボタンを使います。"
+    }
+  },
+  "api": {
+    "TreeChartProps": {
+      "layout": "ツリーの種類：整列ツリー、放射状ツリー、マインドマップ、組織図",
+      "direction": "layout=\"tree\" の向き：LR（既定）、RL、TB、BT",
+      "tree": "ツリーの設定：ルート、間隔、折りたたみ、コンパクトな列、カードサイズ"
+    },
+    "GraphTreeOptions": {
+      "root": "ルートの id。省略時は親を持たないノードがルート",
+      "levelGap": "隣り合う階層の間隔（レイアウト単位）。省略時はレイアウトとラベルに依存",
+      "siblingGap": "隣り合うノードの間隔（レイアウト単位）",
+      "collapsible": "子を持つノードのクリックで折りたたみ・展開",
+      "compact": "組織図：末端の子のカードを横一列ではなく親の下に縦一列で並べる",
+      "cardSize": "組織図のカードの幅と高さ（レイアウト単位）"
+    },
+    "GraphToggleEvent": {
+      "id": "ノードの id",
+      "collapsed": "新しい状態：折りたたみ時は true"
+    },
+    "GraphTreeLayoutOptions": {
+      "type": "ツリーの種類：tree、radial、mindmap、org",
+      "direction": "整列ツリーの向き",
+      "size": "各ノードの幅と高さ（レイアウト単位）",
+      "collapsed": "折りたたまれたノードのインデックス。その子孫は非表示"
+    },
+    "GraphTreeLayoutResult": {
+      "parent": "各ノードの親のインデックス。ルートは -1",
+      "depth": "各ノードの深さ。ルートは 0",
+      "visible": "表示中（折りたたまれたノードの下ではない）なら 1",
+      "side": "マインドマップ：左は -1、右は 1。放射状ツリー：ノードの角度（ラジアン）",
+      "children": "各ノードの子（順序どおり）",
+      "stacked": "ノードがコンパクトな列のカードなら 1（組織図）"
+    }
+  },
+  "data": {
+    "people": {
+      "ceo": "佐藤 美咲",
+      "cto": "鈴木 健太",
+      "cfo": "高橋 由美",
+      "coo": "田中 誠",
+      "cmo": "伊藤 彩",
+      "frontend": "渡辺 翔",
+      "backend": "山本 大輔",
+      "web1": "小林 陽菜",
+      "web2": "加藤 蓮",
+      "api1": "吉田 拓海",
+      "api2": "山田 さくら",
+      "api3": "佐々木 悠斗",
+      "controller": "山口 恵",
+      "analyst": "松本 亮",
+      "support": "井上 結衣",
+      "logistics": "木村 剛",
+      "brand": "林 真由",
+      "growth": "清水 達也"
+    },
+    "roles": {
+      "ceo": "最高経営責任者",
+      "cto": "最高技術責任者",
+      "cfo": "最高財務責任者",
+      "coo": "最高執行責任者",
+      "cmo": "最高マーケティング責任者",
+      "frontend": "フロントエンドリード",
+      "backend": "バックエンドリード",
+      "web1": "フロントエンドエンジニア",
+      "web2": "フロントエンドエンジニア",
+      "api1": "バックエンドエンジニア",
+      "api2": "バックエンドエンジニア",
+      "api3": "SRE",
+      "controller": "経理部長",
+      "analyst": "財務アナリスト",
+      "support": "サポートマネージャー",
+      "logistics": "物流マネージャー",
+      "brand": "ブランドマネージャー",
+      "growth": "グロースマネージャー"
+    },
+    "departments": {
+      "executive": "経営陣",
+      "engineering": "エンジニアリング",
+      "finance": "財務",
+      "operations": "オペレーション",
+      "marketing": "マーケティング"
+    },
+    "orgAria": "会社の組織図",
+    "orgHint": "マネージャーをクリックするとチームを開閉できます。",
+    "teamCollapsed": "{{name}} のチームを折りたたみました",
+    "teamExpanded": "{{name}} のチームを展開しました",
+    "mind": {
+      "launch": "製品ローンチ",
+      "goals": "目標",
+      "revenue": "有料ユーザー 1 万人",
+      "awareness": "ブランド認知",
+      "retention": "継続率 90%",
+      "audience": "ターゲット",
+      "teams": "プロダクトチーム",
+      "freelancers": "フリーランス",
+      "students": "学生",
+      "channels": "チャネル",
+      "launchEvent": "発表イベント",
+      "newsletter": "ニュースレター",
+      "partners": "パートナー",
+      "social": "SNS",
+      "timeline": "スケジュール",
+      "beta": "クローズドベータ",
+      "pressKit": "プレスキット",
+      "launchDay": "ローンチ日",
+      "risks": "リスク",
+      "delays": "遅延",
+      "pricing": "価格への反応",
+      "budget": "予算",
+      "ads": "広告",
+      "events": "イベント"
+    },
+    "mindAria": "製品ローンチ計画のマインドマップ",
+    "categories": {
+      "inputs": "入力",
+      "navigation": "ナビゲーション",
+      "feedback": "フィードバック",
+      "display": "データ表示",
+      "layout": "レイアウト",
+      "charts": "チャート"
+    },
+    "radialAria": "カテゴリ別のデザインシステムのコンポーネント",
+    "fileKinds": {
+      "folder": "フォルダ",
+      "code": "コード",
+      "style": "スタイル",
+      "data": "データ",
+      "doc": "ドキュメント"
+    },
+    "expandAll": "すべて展開",
+    "collapseAll": "すべて折りたたむ",
+    "fit": "全体表示",
+    "filesAria": "プロジェクトのファイル"
+  },
+  "wc": {
+    "demos": {
+      "org": {
+        "title": "チームを折りたためる組織図",
+        "description": "カードは部門ごとに色分けされ、末端のチームはマネージャーの下に積み重ねられます。マネージャーをクリックするとチームを折りたたみ / 展開し、そのイベントが下に表示されます。"
+      },
+      "mind-map": {
+        "title": "マインドマップ",
+        "description": "製品ローンチの計画：中心トピックの両側に枝が広がり、枝ごとに色が分かれます。トピックはページの言語に従います。"
+      }
+    },
+    "minerva-tree-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "nodes": "ノード { id, label, group, value… }。プロパティのみ",
+        "edges": "エッジ { source, target, value, label… }。プロパティのみ",
+        "groups": "グループ { id, name, color }：凡例の順序、名前、色。プロパティのみ",
+        "nodeShape": "shape のないノードの形（DAG・組織図・マインドマップは箱、それ以外は円）",
+        "edgeStyle": "エッジの形。省略時はレイアウトによって決まります",
+        "edgeColor": "エッジの色：ニュートラル、または始点 / 終点ノードの色",
+        "highlight": "ノードのホバー / 選択時に強調表示する範囲",
+        "locale": "組み込みテキスト（概要、読み上げ、ツールチップ、ボタン）の言語。既定はページの言語",
+        "selected": "選択中のノードの id（変更すると選択が更新されます）。プロパティのみ",
+        "options": "その他のエンジンオプション（GraphChartOptions：force、circular、dag、tree、nodeSize、edgeWidth、arrows、nodeLabels、edgeLabels、animation、legend、tooltip、interaction、renderer、palette、ariaLabel、labels…）。プロパティのみ",
+        "instance": "エンジンインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー中（またはキーボードでフォーカス中）のノード / エッジが変わりました。detail：{ type, id, node, edge, index, group, color, degree, clientX, clientY }、何もない場合は null",
+        "minerva-item-click": "ノードまたはエッジがクリックされました（または Enter でノードが有効化されました）。detail：{ type, id, node, edge, index, group, color, degree, clientX, clientY }",
+        "minerva-selection-change": "選択が変わりました。detail：{ ids }",
+        "minerva-toggle": "ツリーのノードが折りたたまれた / 展開されました。detail：{ id, collapsed }",
+        "minerva-group-toggle": "凡例でグループが表示 / 非表示になりました。detail：{ group, hidden }",
+        "minerva-layout-end": "レイアウトが完了しました（力学シミュレーションが収束）。detail：{ layout }",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "fit": "表示中のノードをビューに収めます",
+        "focusNode": "ノードを中央に表示します（折りたたまれた祖先を展開）。ズームも指定できます",
+        "setData": "プロパティが再び変わるまでデータを置き換えます",
+        "select": "ノードを選択します（null で選択を解除）",
+        "getSelection": "選択中のノードの id",
+        "expand": "ノードを展開します（id なしですべて）",
+        "collapse": "ノードを折りたたみます（id なしで子を持つすべてのノード）",
+        "toggle": "ノードを折りたたみ / 展開します",
+        "getPositions": "ノードの現在位置（レイアウト単位）",
+        "relayout": "レイアウトを再計算します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまで null"
+      }
+    }
+  }
+}

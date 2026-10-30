@@ -1,10 +1,10 @@
 {
   "title": "Heatmap",
-  "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to outline it and read its value.",
+  "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
   "demos": {
     "basic": {
       "title": "Weekly activity",
-      "description": "7 × 24 cells over category axes. The default scale goes from the background to the first palette color; yCategories lists the rows from bottom to top, hence the reversed weekdays."
+      "description": "7 × 24 cells over category axes. The default ramp is perceptual (OKLab) and follows the theme: from a near-white tint to a deep primary color in light mode, from a tint of the surface to a bright one in dark mode; the color legend shows its range. yCategories lists the rows from bottom to top, hence the reversed weekdays."
     },
     "color-scale": {
       "title": "Diverging scale",
@@ -16,11 +16,11 @@
     },
     "activity": {
       "title": "Contribution calendar",
-      "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month and a stepped green colorScale."
+      "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month, and palette={[\"var(--success-color)\"]} for a green ramp that reads well in light and dark themes."
     },
     "correlation": {
       "title": "Correlation matrix",
-      "description": "Pairwise correlations of product metrics on a diverging scale from -1 to 1; the same translated names are used for both axes."
+      "description": "Pairwise correlations of product metrics with colorScale=\"diverging\": the danger color below colorMidpoint (0), the primary color above, a neutral middle that follows the theme; the same translated names are used for both axes."
     },
     "retention": {
       "title": "Cohort retention",
@@ -65,11 +65,12 @@
       "data": "Cells: x, y and value",
       "xCategories": "Column names in order (collected from the data when omitted)",
       "yCategories": "Row names from bottom to top (collected from the data when omitted)",
-      "colorScale": "Colors from the lowest to the highest value; a ramp of the first palette color by default",
+      "colorScale": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp: sequential (default) or diverging",
       "valueRange": "Values at the ends of the color scale; the data range by default",
       "name": "Name of the value in the tooltip",
       "radius": "Corner radius of the cells, in pixels",
-      "format": "Formats the values in the tooltip"
+      "format": "Formats the values in the tooltip",
+      "colorMidpoint": "Value at the middle of the color scale (diverging data); 0 for diverging ramps spanning it, else the middle of the range"
     },
     "HeatmapCell": {
       "x": "Column: a category name or a number",

@@ -1,6 +1,6 @@
 {
   "title": "Waterfall chart",
-  "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances.",
+  "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances. Thin dashed connectors join every bar to the next one.",
   "demos": {
     "pnl": {
       "title": "Profit and loss bridge",
@@ -90,7 +90,13 @@
       "start": "Value the first change starts from",
       "labels": "Writes the change (or the total) at the end of every bar",
       "format": "Formats the values (labels, tooltip)",
-      "locale": "Locale of the default series name; the page language by default"
+      "locale": "Locale of the default series name; the page language by default",
+      "connector": "Thin lines from the end of every bar to the next one (dashed, secondary text color); false hides them, an object sets color, dash and width"
+    },
+    "ChartConnectorOptions": {
+      "color": "Line color (any CSS color); the secondary text color by default",
+      "dash": "Dash pattern in CSS pixels; [] draws solid lines (default [3, 3])",
+      "width": "Line width in CSS pixels (default 1)"
     }
   },
   "wc": {
@@ -110,7 +116,8 @@
         "hideLabels": "Hides the change (or total) written at the end of every bar",
         "height": "Height of the chart, the legend included: pixels or any CSS length",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
-        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected",
+        "hideConnectors": "Hides the thin lines from the end of every bar to the next one"
       },
       "events": {
         "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",

@@ -29,6 +29,28 @@ chart.on("renderer", (kind) => showRenderer(kind));
 // force a backend (also accepted on every React chart: renderer="webgl")
 createChart(other, { series, renderer: "canvas2d" });`;
 
+const globalExample = `import {
+  createChart,
+  getDefaultChartRenderer,
+  setDefaultChartRenderer,
+  subscribeDefaultChartRenderer,
+} from "minerva-design/charts/core";
+
+// every chart created from now on with renderer unset or "auto"
+// (React, Vue, Angular, Web Components) starts on WebGL2
+setDefaultChartRenderer("webgl2");
+getDefaultChartRenderer(); // "webgl2"
+
+// charts already on screen keep their backend: remount them on a change
+const unsubscribe = subscribeDefaultChartRenderer((preference) => {
+  remountCharts(preference);
+});
+
+// a chart's own option still wins
+createChart(container, { series, renderer: "canvas2d" });
+
+setDefaultChartRenderer("auto"); // back to WebGPU -> WebGL2 -> WebGL -> Canvas2D`;
+
 const dataExample = `const n = 1_000_000;
 const x = new Float64Array(n); // timestamps or indexes, sorted
 const y = new Float32Array(n);
@@ -131,6 +153,20 @@ export default function ChartPerformanceDoc() {
           <li>{t("docs.chart-performance.renderers.lost")}</li>
         </ul>
         <CodeBlock language="ts" code={rendererExample} />
+      </section>
+
+      <section className={styles.section} aria-labelledby="perf-global">
+        <h2 id="perf-global">{t("docs.chart-performance.global.title")}</h2>
+        <p className={styles.prose}>
+          {t("docs.chart-performance.global.text")}
+        </p>
+        <p className={styles.prose}>
+          {t("docs.chart-performance.global.rules")}
+        </p>
+        <CodeBlock language="ts" code={globalExample} />
+        <p className={styles.prose}>
+          {t("docs.chart-performance.global.docs")}
+        </p>
       </section>
 
       <section className={styles.section} aria-labelledby="perf-showcase">

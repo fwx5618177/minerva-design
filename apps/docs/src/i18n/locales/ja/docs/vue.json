@@ -16,7 +16,15 @@
   "plugin": {
     "title": "グローバル登録",
     "text": "名前付きインポートを推奨します。インポートせずにすべてのテンプレートで使いたい場合はプラグインをインストールします。<MnButton>、<MnModal> などとして登録されます（プレフィックスは変更可能）。",
-    "types": "グローバルコンポーネントは minerva-design/vue/global の型定義により Vue - Official（Volar）と vue-tsc で型付けされます："
+    "types": "グローバルコンポーネントは minerva-design/vue/global の型定義により Vue - Official（Volar）と vue-tsc で型付けされます：",
+    "charts": {
+      "title": "チャート",
+      "text": "チャートを使わないアプリがチャートエンジンを読み込まないよう、MinervaVue はチャートを登録しません。チャートは名前付きでインポートする（minerva-design/vue/charts または minerva-design/vue から）か、minerva-design/vue/charts のオプトインプラグイン MinervaVueCharts をインストールします。<MnLineChart>、<MnPieChart>、<MnTradingChart> などが同じ prefix オプションで登録され、minerva-design/vue/charts-global で型付けされます。",
+      "migration": {
+        "title": "1.4 からのアップグレード",
+        "text": "1.5 以降、app.use(MinervaVue) は <MnChart>、<MnLineChart> などのチャートコンポーネントを登録しなくなりました。テンプレートでインポートせずに使っている場合は、minerva-design/vue/charts の app.use(MinervaVueCharts) を追加し（プレフィックスを変更している場合は MinervaVue と同じ prefix を指定）、tsconfig.json の types に minerva-design/vue/charts-global を追加してください。名前付きインポートは変わりません。"
+      }
+    }
   },
   "theming": {
     "title": "テーマと i18n",
@@ -25,7 +33,7 @@
   },
   "nuxt": {
     "title": "Nuxt とサーバーレンダリング",
-    "text": "コンポーネントは vue/server-renderer でサーバーレンダリングされ、不一致なくハイドレートされます。オーバーレイ（モーダル、ポップオーバー、トースト）はクライアントでマウントされ、id は Vue の useId() から生成され、setup 中に DOM に触れません。Nuxt ではスタイルシートを css に追加し、必要に応じてグローバルコンポーネント用のプラグインを追加します。"
+    "text": "コンポーネントは vue/server-renderer でサーバーレンダリングされ、不一致なくハイドレートされます。オーバーレイ（モーダル、ポップオーバー、トースト）はクライアントでマウントされ、id は Vue の useId() から生成され、setup 中に DOM に触れません。Nuxt ではスタイルシートを css に追加し、必要に応じてグローバルコンポーネント用のプラグイン（グローバルなチャートには MinervaVueCharts も）を追加します。"
   },
   "islands": {
     "title": "Vue アイランド",

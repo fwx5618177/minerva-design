@@ -4,7 +4,7 @@
   "intro": {
     "declarative": {
       "title": "宣言的なインジケーター",
-      "text": "indicators オプションにインジケーターを順に並べます。移動平均、ボリンジャーバンド、VWAP は価格の上に、出来高（overlay を除く）、MACD、RSI、KDJ、ATR はそれぞれ下のペインに描かれます。凡例はクロスヘア位置の値を表示し、インジケーター名をクリックすると非表示になります。",
+      "text": "indicators オプションにインジケーターを順に並べます。移動平均、ボリンジャー・ケルトナー・ドンチャンの各チャネル、VWAP、パラボリック SAR、一目均衡表、スーパートレンドは価格に重ね、出来高（overlay 以外）・MACD・RSI・KDJ・ATR・OBV・CCI・ストキャスティクス RSI・DMI・ウィリアムズ %R・MFI はその下にそれぞれのペインを持ちます。凡例はクロスヘア位置の値を示し、インジケーター名をクリックすると非表示になります。",
       "ids": "インジケーターは id を指定しない限り種類とパラメーター（\"ma:7\"、\"macd:12:26:9\"）で識別され、indicatorToggle と setIndicatorVisible で使われます。一覧を変えても、変わらなかったインジケーターの計算結果は保持されます。"
     },
     "functions": {
@@ -16,8 +16,10 @@
       "averages": "MA は単純平均、WMA は最新の足に最も重みを置き、EMA は 2 / (期間 + 1) を使い、TradingView と同じく最初のウィンドウの単純平均から始めます。",
       "wilder": "RSI と ATR はワイルダーの平滑化（1 / 期間）、ボリンジャーバンドは母標準偏差を使います。",
       "kdj": "KDJ は K と D を 50 から始め、既定では 3 本で平滑化します。J = 3K − 2D は 0〜100 の範囲を外れることがあります。",
-      "vwap": "VWAP は utcOffset のタイムゾーンで毎日（または毎週、毎月、なし）リセットされます。",
-      "incremental": "ティックごとにチャートが再計算するのは最後の足の値だけなので、100 本でも 100 万本でも更新のコストは同じです。"
+      "vwap": "VWAP は timeZone または utcOffset のタイムゾーンで、毎日（または毎週・毎月・リセットなし）計算し直されます。",
+      "incremental": "ティックごとにチャートが再計算するのは最後の足の値だけなので、100 本でも 100 万本でも更新のコストは同じです。",
+      "zoom": "縮小表示でもインジケーターは全ての足で計算され、ピクセル列ごとの最小値と最大値で描かれるため、100 万本の足でもスパイクが見えます。",
+      "ichimoku": "一目均衡表の先行スパンは displacement − 1 本先（最新の足の後ろの余白）に、遅行スパンは同じ本数だけ前に描かれます。純粋関数 ichimoku はずらす前の値を返します。"
     }
   },
   "demos": {
@@ -60,6 +62,30 @@
     "vanilla": {
       "title": "React なしで",
       "description": "minerva-design/charts/core の createTradingChart は同じチャートを任意の要素にマウントします：オプション、on() のイベント、destroy()。ここでは sma() で、ホバー中の終値が 50 日平均からどれだけ離れているかを示します。"
+    },
+    "ichimoku": {
+      "title": "一目均衡表",
+      "description": "転換線・基準線・遅行スパンと、先行スパンの間の雲：先行スパン A が B より上なら上昇色、それ以外は下落色です。rightOffset で 26 本先に描かれる雲の余白を確保します。"
+    },
+    "supertrend": {
+      "title": "スーパートレンドとパラボリック SAR",
+      "description": "トレンドとともに反転するトレーリングストップ：上昇 / 下落で色が変わるスーパートレンドのバンドと SAR のドット。売買マーカーは純粋関数 supertrend で計算した反転点です。"
+    },
+    "channels": {
+      "title": "ケルトナーとドンチャンのチャネル",
+      "description": "ケルトナー・チャネルは EMA の上下に ATR の倍数、ドンチャン・チャネルは最高値と最安値、ボリンジャーバンドは標準偏差を使います。"
+    },
+    "oscillators": {
+      "title": "オシレーター",
+      "description": "ストキャスティクス RSI と MFI は 0〜100（20 / 80 のバンド）、CCI は ±100 付近、ウィリアムズ %R は −100〜0。それぞれにペインがあり、チャートは高さを増やします。"
+    },
+    "dmi": {
+      "title": "DMI と ADX",
+      "description": "+DI と −DI は上昇色・下落色、ADX は琥珀色で 25 のラインがあり、それを上回るとトレンドが強いことを示します。下の文は純粋関数 dmi の最新値です。"
+    },
+    "obv": {
+      "title": "オンバランスボリューム",
+      "description": "OBV は陽線引けの出来高を足し、陰線引けの出来高を引きます。20 本の平均で買い圧力と売り圧力のどちらが優勢かがわかります。大きな値はページの言語の単位で短く表示されます。"
     }
   },
   "data": {
@@ -105,7 +131,42 @@
     "vanillaAria": "createTradingChart で描いた日足チャート",
     "vanillaWarmup": "50 日平均を計算するには足がまだ足りません",
     "vanillaAbove": "終値は 50 日平均より {{value}} 上",
-    "vanillaBelow": "終値は 50 日平均より {{value}} 下"
+    "vanillaBelow": "終値は 50 日平均より {{value}} 下",
+    "cloud": "雲",
+    "nikkei": "日経平均",
+    "ichimokuAria": "一目均衡表付きの日経平均日足チャート",
+    "bandDistance": "バンドの距離",
+    "atrs": "{{value}} ATR",
+    "parabolicSar": "パラボリック SAR",
+    "supertrendAria": "スーパートレンドと反転点付きの SOL/USDT 4 時間足チャート",
+    "channel": "チャネル",
+    "channels": {
+      "keltner": "ケルトナー",
+      "donchian": "ドンチャン",
+      "boll": "ボリンジャー"
+    },
+    "eurusd": "ユーロ/ドル",
+    "channelsAria": "価格チャネル付きの EUR/USD 1 時間足チャート",
+    "oscillators": "オシレーター",
+    "oscillatorNames": {
+      "stochRsi": "ストキャス RSI",
+      "cci": "CCI",
+      "williamsR": "ウィリアムズ %R",
+      "mfi": "MFI"
+    },
+    "oscillatorsAria": "オシレーターのペイン付き BTC/USDT 4 時間足チャート",
+    "dmiSummary": {
+      "strong": "ADX {{adx}}：強いトレンド、{{direction}}",
+      "weak": "ADX {{adx}}：トレンドは弱く、現在は{{direction}}"
+    },
+    "directions": {
+      "up": "上昇（+DI が −DI より上）",
+      "down": "下落（−DI が +DI より上）"
+    },
+    "dmiAria": "DMI ペイン付きの MSFT 日足チャート",
+    "aapl": "アップル AAPL",
+    "obvAria": "出来高と OBV 付きの AAPL 日足チャート",
+    "flips": "トレンド転換：{{count}} 回"
   },
   "api": {
     "TradingMovingAverageIndicator": {
@@ -191,7 +252,25 @@
       "refreshTheme": "CSS 変数を読み直す（テーマの変更は自動で検出）",
       "resize": "コンテナのサイズで描き直す（リサイズは自動で検出）",
       "on": "イベントを購読。購読解除の関数を返す",
-      "destroy": "チャートを削除して GPU リソースを解放"
+      "destroy": "チャートを削除して GPU リソースを解放",
+      "getVisibleTimeRange": "描画領域の両端の時刻（足の間は補間）。",
+      "setVisibleTimeRange": "2 つの時刻の間の足を表示します。",
+      "setCrosshair": "ポインターがあるかのように、指定した時刻（と価格）にクロスヘアを表示します。null で非表示。crosshairMove は発生しません。",
+      "updateDrawing": "描画のスタイルや内容を変更します（元に戻せます）。",
+      "undo": "描画の直前の変更を元に戻します（Ctrl / ⌘ + Z でも可）。",
+      "redo": "元に戻した変更をやり直します（Ctrl / ⌘ + Shift + Z でも可）。",
+      "getUndoState": "描画を元に戻せるか、やり直せるか。",
+      "startReplay": "バーリプレイを開始します。time 以降の足を隠し、replayStep や replayPlay で戻します。time を省略するとユーザーがクリックで開始の足を選びます。",
+      "replayStep": "リプレイの次の足を表示します。",
+      "replayPlay": "毎秒 speed 本の足を追加します（既定は現在の速度）。",
+      "replayPause": "リプレイを一時停止します。",
+      "stopReplay": "リプレイを終了してすべての足を表示します。",
+      "getReplayState": "バーリプレイの状態。",
+      "toDataURL": "チャート（足・軸・描画・凡例）の画像を data URL で返します。",
+      "toBlob": "チャートの画像を Blob で返します（canvas 非対応なら null）。",
+      "requestFullscreen": "チャートを全画面表示します。",
+      "exitFullscreen": "全画面を終了します。",
+      "isFullscreen": "チャートが全画面かどうか。"
     },
     "TradingChartEventMap": {
       "renderer": "使用中のバックエンド。フォールバック後にも通知",
@@ -199,11 +278,98 @@
       "click": "ペインがクリックされた",
       "visibleRangeChange": "表示中の足が変わった",
       "orderMove": "ドラッグ可能な価格ラインが離された",
-      "drawingsChange": "ユーザーが描画を追加・移動・削除した",
+      "drawingsChange": "描画が追加・移動・スタイル変更・削除・取り消し・やり直しされた。",
       "drawingSelect": "選択中の描画が変わった",
       "drawingToolChange": "描画ツールが変わった",
       "indicatorToggle": "凡例からインジケーターが表示・非表示になった",
-      "historyRequest": "最も古い足が表示された"
+      "historyRequest": "最も古い足が表示された",
+      "orderCreate": "+ の注文ボタンがクリックされた。",
+      "orderCancel": "価格ラインの閉じるボタンがクリックされた。",
+      "undoChange": "元に戻す / やり直しが可能・不可能になった。",
+      "replayChange": "バーリプレイが開始・前進・再生・一時停止・終了した。",
+      "fullscreenChange": "チャートが全画面になった（true）または戻った。"
+    },
+    "TradingParabolicSarIndicator": {
+      "type": "パラボリック SAR。",
+      "start": "加速因子の初期値。",
+      "increment": "新しい極値ごとの加速因子の増分。",
+      "maximum": "加速因子の最大値。",
+      "color": "ドットの色。既定ではトレンドに応じて上昇色 / 下落色。"
+    },
+    "TradingIchimokuIndicator": {
+      "type": "一目均衡表。",
+      "conversionPeriod": "転換線の期間（本数）。",
+      "basePeriod": "基準線の期間（本数）。",
+      "spanBPeriod": "先行スパン 2 の期間（本数）。",
+      "displacement": "先行スパンを先へ、遅行スパンを前へずらす本数。",
+      "colors": "転換線・基準線・遅行スパン・先行スパン 1・2 の色。",
+      "cloud": "先行スパンの間の雲を塗ります。スパン 1 が上なら上昇色、それ以外は下落色。"
+    },
+    "TradingSupertrendIndicator": {
+      "type": "スーパートレンド。",
+      "period": "ATR の期間（本数）。",
+      "multiplier": "バンドの距離（ATR の倍数）。",
+      "upColor": "上昇トレンドのバンドの色。既定は上昇色。",
+      "downColor": "下降トレンドのバンドの色。既定は下落色。"
+    },
+    "TradingKeltnerIndicator": {
+      "type": "ケルトナー・チャネル。",
+      "period": "指数移動平均の期間（本数）。",
+      "multiplier": "バンドの距離（ATR の倍数）。",
+      "atrPeriod": "ATR の期間（本数）。",
+      "colors": "中央線・上限線・下限線の色。",
+      "fill": "チャネルを塗りつぶします。"
+    },
+    "TradingDonchianIndicator": {
+      "type": "ドンチャン・チャネル。",
+      "period": "期間（本数）。",
+      "colors": "中央線・上限線・下限線の色。",
+      "fill": "チャネルを塗りつぶします。"
+    },
+    "TradingObvIndicator": {
+      "type": "オンバランスボリューム。",
+      "maPeriod": "ラインに重ねる移動平均の期間。",
+      "color": "線の色。"
+    },
+    "TradingCciIndicator": {
+      "type": "商品チャネル指数。",
+      "period": "期間（本数）。",
+      "color": "線の色。"
+    },
+    "TradingStochRsiIndicator": {
+      "type": "ストキャスティクス RSI。",
+      "rsiPeriod": "RSI の期間（本数）。",
+      "stochPeriod": "RSI のストキャスティクスの期間（本数）。",
+      "kPeriod": "K の平滑化。",
+      "dPeriod": "D の平滑化。",
+      "colors": "K と D の線の色。"
+    },
+    "TradingDmiIndicator": {
+      "type": "方向性指数。",
+      "period": "方向性指標の期間（本数）。",
+      "adxPeriod": "ADX の平滑化。",
+      "colors": "+DI・−DI・ADX の線の色。"
+    },
+    "TradingWilliamsRIndicator": {
+      "type": "ウィリアムズ %R。",
+      "period": "期間（本数）。",
+      "color": "線の色。"
+    },
+    "TradingMfiIndicator": {
+      "type": "マネーフローインデックス。",
+      "period": "期間（本数）。",
+      "color": "線の色。"
+    },
+    "TradingVolumeProfile": {
+      "low": "最初の段の下端の価格。",
+      "high": "最後の段の上端の価格。",
+      "step": "1 段の価格の幅。",
+      "up": "段ごとの陽線の出来高（下の段から）。",
+      "down": "段ごとの陰線の出来高。",
+      "total": "出来高の合計。",
+      "poc": "POC（出来高最大）の段。出来高がなければ −1。",
+      "valueAreaFrom": "バリューエリアの最初の段。",
+      "valueAreaTo": "バリューエリアの最後の段。"
     }
   },
   "wc": {

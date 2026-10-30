@@ -1,9 +1,11 @@
 import { Button } from "minerva-design";
-import React, { useId, useState } from "react";
+import React, { useContext, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoChevronDown } from "react-icons/io5";
 import CodeBlock from "@layout/CodeBlock";
 import { scrollToHeading } from "@/site/toc";
+import { ChartRendererContext } from "../renderer/context";
+import RendererBadge from "../renderer/RendererBadge";
 import styles from "./docs.module.scss";
 
 export interface DemoBlockProps {
@@ -36,6 +38,9 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
   const [showCode, setShowCode] = useState(true);
   const codeId = useId();
   const titleId = `${id}-title`;
+  const previewRef = useRef<HTMLDivElement>(null);
+  // chart pages: the page-wide renderer (the preview remounts when it changes)
+  const renderer = useContext(ChartRendererContext);
 
   return (
     <section className={styles.demo} id={id} aria-labelledby={titleId}>
@@ -53,10 +58,22 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
       </h3>
       {description && <p className={styles.demoDescription}>{description}</p>}
       <div className={styles.demoFrame}>
-        <div className={styles.demoPreview} data-demo-preview data-toc-ignore>
-          {children}
+        <div
+          ref={previewRef}
+          className={styles.demoPreview}
+          data-demo-preview
+          data-toc-ignore
+        >
+          {renderer === null ? (
+            children
+          ) : (
+            <React.Fragment key={renderer}>{children}</React.Fragment>
+          )}
         </div>
         <div className={styles.demoToolbar}>
+          {renderer !== null && (
+            <RendererBadge targetRef={previewRef} requested={renderer} />
+          )}
           <Button
             variant="ghost"
             color="neutral"

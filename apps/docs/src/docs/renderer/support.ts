@@ -2,7 +2,7 @@
 // backend forced onto a software rasterizer (SwiftShader, llvmpipe… in VMs,
 // CI and headless browsers) takes seconds per frame with a million points
 // and would freeze the page.
-import type { ChartRendererKind } from "minerva-design/charts";
+import type { ChartRendererKind } from "minerva-design/charts/core";
 
 /**
  * - `hardware`: the backend starts on a real GPU (Canvas2D always does)
@@ -78,6 +78,15 @@ const probeWebGpu = async (): Promise<BackendSupport> => {
 
 let probed: Promise<BackendsSupport> | null = null;
 
+/**
+ * The backend `renderer: "auto"` starts on: the first hardware-accelerated
+ * one (auto skips software GPUs), else Canvas2D
+ */
+export const autoPick = (support: BackendsSupport): ChartRendererKind =>
+  (["webgpu", "webgl2", "webgl"] as const).find(
+    (kind) => support[kind] === "hardware",
+  ) ?? "canvas2d";
+
 /** Probes the backends once per page load */
 export const probeBackends = (): Promise<BackendsSupport> => {
   if (!probed) {
@@ -89,4 +98,9 @@ export const probeBackends = (): Promise<BackendsSupport> => {
     }));
   }
   return probed;
+};
+
+/** Forgets the probe (tests) */
+export const resetBackendsProbe = () => {
+  probed = null;
 };

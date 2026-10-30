@@ -21,6 +21,34 @@
     "intraday": {
       "title": "日内行情",
       "description": "单个交易时段的 5 分钟 K 线，VWAP 以折线系列绘制，一条 x 线标出新闻发布时刻；时间轴借助 Intl.DateTimeFormat 和 timeZone 显示交易所当地时间。"
+    },
+    "bar-styles": {
+      "title": "美国线、蜡烛图与空心蜡烛图",
+      "description": "用 TradingChart 的 chartStyle 以三种方式展示同样的 70 天：美国线（左侧为开盘、右侧为收盘）、蜡烛图，以及空心蜡烛图——收盘高于开盘时实体为空心，颜色取决于与前一收盘价的比较。"
+    },
+    "ma-ribbon": {
+      "title": "均线带",
+      "description": "8 条从 10 到 80 根的指数均线，由暖色到冷色：趋势中均线带展开，转折时相互缠绕。每条均线可设置颜色和线宽，图例显示十字光标处的数值。"
+    },
+    "volume-colors": {
+      "title": "按 K 线着色的成交量",
+      "description": "成交量柱使用对应 K 线的颜色，并带 20 根均线：可放在单独窗格中，也可用 overlay 放在价格窗格底部。"
+    },
+    "a-share": {
+      "title": "A 股配色",
+      "description": "colorConvention=\"redUp\" 按中国大陆习惯将上涨 K 线画成红色、下跌画成绿色，并配上常用的 MA 5 / 10 / 20 / 60、成交量和 MACD。图例跟随页面语言（中文显示开 高 低 收）。"
+    },
+    "events": {
+      "title": "事件标记",
+      "description": "markers 把公司事件标在对应的交易日上：财报、分红和拆股标在 K 线上方，下调业绩指引标在下方，各有颜色和简短文字。"
+    },
+    "live": {
+      "title": "实时 K 线",
+      "description": "通过 ref 上的 update 每秒推送十次 5 秒 K 线：最后一根不断变化，每 5 秒开始新的一根，最新价下方的倒计时显示收线时间。"
+    },
+    "dark": {
+      "title": "深色主题",
+      "description": "图表从 CSS 变量读取颜色：在容器上设置这些变量（背景、文字、涨跌色）即可改变 K 线、坐标轴、图例和十字光标的样式，此处配合空心蜡烛图和水印。"
     }
   },
   "native": {
@@ -53,7 +81,54 @@
     "volumeAria": "ORBT 每日成交量",
     "vwap": "VWAP",
     "guidanceCut": "下调业绩指引",
-    "intradayAria": "ORBT 单个交易时段的 5 分钟 K 线及 VWAP"
+    "intradayAria": "ORBT 单个交易时段的 5 分钟 K 线及 VWAP",
+    "styleAria": {
+      "bars": "日线美国线",
+      "candles": "日线蜡烛图",
+      "hollowCandles": "日线空心蜡烛图"
+    },
+    "styleNames": {
+      "bars": "美国线",
+      "candles": "蜡烛图",
+      "hollowCandles": "空心蜡烛图"
+    },
+    "styleHints": {
+      "bars": "左右短横线表示开盘和收盘",
+      "candles": "实体从开盘到收盘",
+      "hollowCandles": "收盘高于开盘时实体空心"
+    },
+    "eth": "ETH/USDT",
+    "ribbonAria": "ETH/USDT 4 小时图，含 8 条指数均线",
+    "volumeLayout": "成交量位置",
+    "volumePane": "单独窗格",
+    "volumeOverlay": "叠加在价格下方",
+    "btc": "BTC/USDT",
+    "volumeColorsAria": "BTC/USDT 1 小时图，成交量按 K 线着色",
+    "catl": "宁德时代 300750",
+    "aShareAria": "宁德时代日线图，上涨 K 线为红色",
+    "events": {
+      "earnings": "财",
+      "dividend": "息",
+      "split": "拆",
+      "guidance": "指引↓"
+    },
+    "eventNames": {
+      "earnings": "财报",
+      "dividend": "分红",
+      "split": "拆股",
+      "guidance": "下调指引"
+    },
+    "orbt": "ORBT",
+    "eventsAria": "ORBT 日线图，标有财报、分红和拆股",
+    "pause": "暂停",
+    "resume": "继续",
+    "liveStatus": "实时：每秒 10 笔成交",
+    "livePaused": "已暂停",
+    "ada": "ADA/USDT",
+    "fiveSeconds": "5 秒",
+    "liveAria": "实时更新的 ADA/USDT 5 秒 K 线",
+    "nasdaq": "纳斯达克 100",
+    "darkAria": "深色主题下的纳斯达克 100 30 分钟空心 K 线"
   },
   "api": {
     "CandlestickChartProps": {

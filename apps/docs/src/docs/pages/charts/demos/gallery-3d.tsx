@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar3DChart,
@@ -83,6 +83,44 @@ const sales = (() => {
   );
 })();
 
+// a two-armed spiral galaxy: a warm core and blue arms (columns of floats)
+const galaxy = (() => {
+  const next = random(11);
+  const gauss = () =>
+    Math.sqrt(-2 * Math.log(1 - next())) * Math.cos(2 * Math.PI * next());
+  const cloud = (count: number, place: (i: number) => number[]) => {
+    const x = new Float32Array(count);
+    const y = new Float32Array(count);
+    const z = new Float32Array(count);
+    for (let i = 0; i < count; i++) [x[i], y[i], z[i]] = place(i);
+    return { x, y, z };
+  };
+  const core = cloud(6000, () => {
+    const r = Math.abs(gauss()) * 1.4;
+    const angle = 2 * Math.PI * next();
+    return [r * Math.cos(angle), r * Math.sin(angle), gauss() * 0.5];
+  });
+  const arms = cloud(18000, (i) => {
+    const r = 1.5 + 10 * next() ** 0.7;
+    // logarithmic arms, scattered more and more outwards
+    const angle = (i % 2) * Math.PI + Math.log(r) * 2.6 + gauss() * 0.22;
+    return [r * Math.cos(angle), r * Math.sin(angle), gauss() * 0.25];
+  });
+  return { core, arms };
+})();
+
+/** Night-sky colors of the galaxy card (the chart theme reads them) */
+const space = {
+  background: "radial-gradient(ellipse at 50% 45%, #0e1430 0%, #05070f 70%)",
+  borderRadius: 8,
+  "--surface-color": "#05070f",
+  "--text-color": "#e6e9f2",
+  "--text-secondary-color": "#9aa3b8",
+  "--border-color": "#2a3247",
+} as CSSProperties;
+const galaxyCamera = { azimuth: 20, elevation: 40, zoom: 1.6 };
+const flatAspect = [1, 1, 0.35] as const;
+
 export default function Gallery3DDemo() {
   const { t, i18n } = useTranslation("common", {
     keyPrefix: "docs.charts.data",
@@ -110,9 +148,30 @@ export default function Gallery3DDemo() {
     ];
     const surface: Surface3DSeries[] = [{ name: t("ripple"), data: ripple }];
     const bars: Bar3DSeries[] = [{ name: t("sales"), data: sales }];
+    // glowing dots whose light adds up where the stars are dense
+    const stars: Scatter3DSeries[] = [
+      {
+        name: t("galaxyCore"),
+        data: galaxy.core,
+        color: "#ffc477",
+        pointSize: 2,
+        opacity: 0.16,
+        pointStyle: "glow",
+        blend: "additive",
+      },
+      {
+        name: t("galaxyArms"),
+        data: galaxy.arms,
+        color: "#9cc4ff",
+        pointSize: 2,
+        opacity: 0.1,
+        pointStyle: "glow",
+        blend: "additive",
+      },
+    ];
     const regionNames = regions.map((key) => t(`regions.${key}`));
     const quarters = [1, 2, 3, 4].map((n) => t("quarter", { n }));
-    return { scatter, line, surface, bars, regionNames, quarters };
+    return { scatter, line, surface, bars, stars, regionNames, quarters };
   }, [t]);
 
   // the 3D charts pause their rendering and auto-rotation off screen
@@ -179,6 +238,26 @@ export default function Gallery3DDemo() {
           locale={locale}
           height="100%"
           ariaLabel={t("cards.bar3d.aria")}
+        />
+      </GalleryCard>
+
+      <GalleryCard
+        title={t("cards.galaxy.title")}
+        component="Scatter3DChart"
+        page="scatter-3d-chart"
+        description={t("cards.galaxy.description")}
+      >
+        <Scatter3DChart
+          series={data.stars}
+          legend={false}
+          box={false}
+          aspect={flatAspect}
+          camera={galaxyCamera}
+          autoRotate={6}
+          locale={locale}
+          height="100%"
+          style={space}
+          ariaLabel={t("cards.galaxy.aria")}
         />
       </GalleryCard>
     </GalleryGrid>

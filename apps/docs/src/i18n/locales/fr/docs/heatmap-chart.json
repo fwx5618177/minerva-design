@@ -1,10 +1,10 @@
 {
   "title": "Carte de chaleur",
-  "description": "Une grille de cellules colorées selon leur valeur, avec des catégories ou des nombres sur les deux axes : activité par jour et par heure, matrices de corrélation, cartes d’une mesure. Survolez une cellule pour la cerner et lire sa valeur.",
+  "description": "Une grille de cellules colorées selon leur valeur, avec des catégories ou des nombres sur les deux axes : activité par jour et par heure, matrices de corrélation, cartes d’une mesure. Survolez une cellule pour la soulever, éclairer sa ligne et sa colonne et repérer sa valeur sur la légende de couleurs.",
   "demos": {
     "basic": {
       "title": "Activité hebdomadaire",
-      "description": "7 × 24 cellules sur des axes de catégories. L’échelle par défaut va du fond à la première couleur de la palette ; yCategories liste les lignes de bas en haut, d’où les jours inversés."
+      "description": "7 × 24 cellules sur des axes de catégories. L’échelle par défaut est perceptuelle (OKLab) et suit le thème : d’une teinte presque blanche à une couleur primaire profonde en mode clair, d’une teinte du fond à une couleur vive en mode sombre ; la légende de couleurs montre son étendue. yCategories liste les lignes de bas en haut, d’où les jours inversés."
     },
     "color-scale": {
       "title": "Échelle divergente",
@@ -16,11 +16,11 @@
     },
     "activity": {
       "title": "Calendrier de contributions",
-      "description": "Une année de contributions quotidiennes comme sur un profil GitHub : les semaines en colonnes numériques, les jours en lignes, un format x qui transforme le numéro de semaine en mois et un colorScale vert par paliers."
+      "description": "Une année de contributions quotidiennes comme sur un profil GitHub : les semaines en colonnes numériques, les jours en lignes, un format x qui transforme le numéro de semaine en mois, et palette={[\"var(--success-color)\"]} pour une échelle verte lisible en thème clair comme sombre."
     },
     "correlation": {
       "title": "Matrice de corrélation",
-      "description": "Corrélations deux à deux d'indicateurs produit sur une échelle divergente de -1 à 1 ; les mêmes noms traduits servent aux deux axes."
+      "description": "Corrélations deux à deux d’indicateurs produit avec colorScale=\"diverging\" : la couleur danger sous colorMidpoint (0), la couleur primaire au-dessus, un milieu neutre qui suit le thème ; les mêmes noms traduits servent aux deux axes."
     },
     "retention": {
       "title": "Rétention par cohorte",
@@ -65,11 +65,12 @@
       "data": "Cellules : x, y et value",
       "xCategories": "Noms des colonnes dans l’ordre (tirés des données si omis)",
       "yCategories": "Noms des lignes de bas en haut (tirés des données si omis)",
-      "colorScale": "Couleurs de la plus petite à la plus grande valeur ; par défaut, un dégradé de la première couleur de la palette",
+      "colorScale": "Couleurs de la plus petite à la plus grande valeur (interpolées en OKLab), ou une échelle intégrée qui suit le thème : sequential (par défaut) ou diverging",
       "valueRange": "Valeurs aux extrémités de l’échelle de couleurs ; l’étendue des données par défaut",
       "name": "Nom de la valeur dans l’infobulle",
       "radius": "Rayon des coins des cellules, en pixels",
-      "format": "Formate les valeurs dans l’infobulle"
+      "format": "Formate les valeurs dans l’infobulle",
+      "colorMidpoint": "Valeur au milieu de l’échelle de couleurs (données divergentes) ; 0 pour les échelles diverging qui le contiennent, sinon le milieu de l’étendue"
     },
     "HeatmapCell": {
       "x": "Colonne : un nom de catégorie ou un nombre",

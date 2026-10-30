@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Select, SelectItem } from "minerva-design";
 import {
   TradingChart,
   resampleBars,
+  type TradingChartHandle,
   type TradingChartStyle,
   type TradingIndicator,
   type TradingScaleMode,
@@ -43,6 +44,9 @@ const STUDIES: Record<string, TradingIndicator[]> = {
     { type: "ma", period: 99 },
   ],
   boll: [{ type: "boll" }],
+  ichimoku: [{ type: "ichimoku" }],
+  st: [{ type: "supertrend" }],
+  vpvr: [],
   vol: [{ type: "volume", maPeriod: 20, height: 90 }],
   macd: [{ type: "macd" }],
   rsi: [{ type: "rsi" }],
@@ -65,6 +69,22 @@ const divider: React.CSSProperties = {
   background: "var(--border-color)",
 };
 
+const Icon = ({ d }: { d: string }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d={d} />
+  </svg>
+);
+
 export default function ProTerminalDemo() {
   const { t } = useTranslation("common", {
     keyPrefix: "docs.trading-chart.data",
@@ -72,7 +92,19 @@ export default function ProTerminalDemo() {
   const [timeframe, setTimeframe] = useState<Timeframe>("15m");
   const [chartStyle, setChartStyle] = useState<TradingChartStyle>("candles");
   const [scaleMode, setScaleMode] = useState<TradingScaleMode>("linear");
-  const [studies, setStudies] = useState(["ma", "vol", "macd", "rsi"]);
+  const [studies, setStudies] = useState(["ma", "vpvr", "vol", "macd", "rsi"]);
+  const chart = useRef<TradingChartHandle>(null);
+
+  const download = async () => {
+    const blob = await chart.current?.toBlob();
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `btcusdt-${timeframe}.png`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   const bars = useMemo(
     () => (timeframe === "1m" ? minutes : resampleBars(minutes, timeframe)),
@@ -156,14 +188,38 @@ export default function ProTerminalDemo() {
             {t(`scales.${mode}`)}
           </Button>
         ))}
+        <span style={divider} />
+        <Button
+          size="small"
+          variant="ghost"
+          shape="square"
+          aria-label={t("downloadImage")}
+          title={t("downloadImage")}
+          onClick={() => void download()}
+        >
+          <Icon d="M2 5h2.5L6 3h4l1.5 2H14v8H2zM8 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+        </Button>
+        <Button
+          size="small"
+          variant="ghost"
+          shape="square"
+          aria-label={t("fullscreen")}
+          title={t("fullscreen")}
+          onClick={() => void chart.current?.requestFullscreen()}
+        >
+          <Icon d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" />
+        </Button>
       </div>
       <TradingChart
+        ref={chart}
         bars={bars}
         timeframe={timeframe}
         symbol={t("btc")}
         chartStyle={chartStyle}
         scaleMode={scaleMode}
         indicators={indicators}
+        volumeProfile={studies.includes("vpvr")}
+        sessionBreaks
         watermark={`${t("btc")} · ${t(`timeframes.${timeframe}`)}`}
         labels={{ timeframe: t(`timeframes.${timeframe}`) }}
         ariaLabel={t("terminalAria")}

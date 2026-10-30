@@ -16,7 +16,15 @@
   "plugin": {
     "title": "Global registration",
     "text": "Prefer named imports. To use the components in every template without importing them, install the plugin: it registers them as <MnButton>, <MnModal>... (the prefix is configurable).",
-    "types": "The global components are typed for Vue - Official (Volar) and vue-tsc by the minerva-design/vue/global typings:"
+    "types": "The global components are typed for Vue - Official (Volar) and vue-tsc by the minerva-design/vue/global typings:",
+    "charts": {
+      "title": "Charts",
+      "text": "MinervaVue does not register the charts, so that apps without charts never load the chart engine. Import the charts by name (from minerva-design/vue/charts or minerva-design/vue), or install the opt-in MinervaVueCharts plugin of minerva-design/vue/charts: it registers <MnLineChart>, <MnPieChart>, <MnTradingChart>... with the same prefix option, typed by minerva-design/vue/charts-global.",
+      "migration": {
+        "title": "Upgrading from 1.4",
+        "text": "Since 1.5, app.use(MinervaVue) no longer registers <MnChart>, <MnLineChart> and the other chart components. If your templates use them without importing them, add app.use(MinervaVueCharts) from minerva-design/vue/charts (with the same prefix as MinervaVue, if you changed it) and add minerva-design/vue/charts-global to the types of tsconfig.json. Named imports are unchanged."
+      }
+    }
   },
   "theming": {
     "title": "Theming and i18n",
@@ -25,7 +33,7 @@
   },
   "nuxt": {
     "title": "Nuxt and server rendering",
-    "text": "The components render on the server with vue/server-renderer and hydrate without mismatches: overlays (modals, popovers, toasts) mount on the client, ids come from Vue's useId(), and nothing touches the DOM during setup. In Nuxt, add the stylesheet to css and, optionally, a plugin for the global components."
+    "text": "The components render on the server with vue/server-renderer and hydrate without mismatches: overlays (modals, popovers, toasts) mount on the client, ids come from Vue's useId(), and nothing touches the DOM during setup. In Nuxt, add the stylesheet to css and, optionally, a plugin for the global components (and MinervaVueCharts for the global charts)."
   },
   "islands": {
     "title": "Vue islands",

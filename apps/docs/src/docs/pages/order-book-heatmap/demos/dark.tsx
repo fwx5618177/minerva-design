@@ -59,6 +59,8 @@ export default function DarkDemo() {
         height={420}
         colors={RAMP}
         contrast={0.7}
+        // exchange clock
+        timeZone="utc"
         interval={200}
         window={90_000}
         pricePrecision={1}

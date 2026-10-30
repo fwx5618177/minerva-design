@@ -80,10 +80,12 @@ const TechnicalIndicatorsDoc: React.FC = () => {
           <li>{t("docs.technical-indicators.intro.conventions.averages")}</li>
           <li>{t("docs.technical-indicators.intro.conventions.wilder")}</li>
           <li>{t("docs.technical-indicators.intro.conventions.kdj")}</li>
+          <li>{t("docs.technical-indicators.intro.conventions.ichimoku")}</li>
           <li>{t("docs.technical-indicators.intro.conventions.vwap")}</li>
           <li>
             {t("docs.technical-indicators.intro.conventions.incremental")}
           </li>
+          <li>{t("docs.technical-indicators.intro.conventions.zoom")}</li>
         </ul>
       </section>
     </>

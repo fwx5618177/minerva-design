@@ -1,6 +1,6 @@
 {
   "title": "Graphique en cascade",
-  "description": "Comment une suite de hausses et de baisses mène une valeur d'un début à une fin, avec sous-totaux et totaux : passages de résultat, trésorerie, écarts.",
+  "description": "Comment une suite de hausses et de baisses mène une valeur d'un début à une fin, avec sous-totaux et totaux : passages de résultat, trésorerie, écarts. De fins tirets relient chaque barre à la suivante.",
   "demos": {
     "pnl": {
       "title": "Du chiffre d'affaires au résultat",
@@ -90,7 +90,13 @@
       "start": "Valeur d'où part la première variation",
       "labels": "Écrit la variation (ou le total) au bout de chaque barre",
       "format": "Formate les valeurs (libellés, infobulle)",
-      "locale": "Langue du nom de série par défaut ; la langue de la page par défaut"
+      "locale": "Langue du nom de série par défaut ; la langue de la page par défaut",
+      "connector": "Fines lignes de la fin de chaque barre à la suivante (tirets, couleur de texte secondaire) ; false les masque, un objet règle color, dash et width"
+    },
+    "ChartConnectorOptions": {
+      "color": "Couleur des lignes (toute couleur CSS) ; la couleur de texte secondaire par défaut",
+      "dash": "Motif de tirets en pixels CSS ; [] trace des lignes pleines ([3, 3] par défaut)",
+      "width": "Épaisseur des lignes en pixels CSS (1 par défaut)"
     }
   },
   "wc": {
@@ -110,7 +116,8 @@
         "hideLabels": "Masque la variation (ou le total) écrite au bout de chaque barre",
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
-        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté",
+        "hideConnectors": "Masque les fines lignes reliant la fin de chaque barre à la suivante"
       },
       "events": {
         "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",

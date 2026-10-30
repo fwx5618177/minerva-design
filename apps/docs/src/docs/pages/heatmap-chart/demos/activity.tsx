@@ -40,15 +40,6 @@ const weekdays = (locale: string) => {
   );
 };
 
-// GitHub-like greens; 0 contributions = the empty cell color
-const greens = [
-  "var(--surface-muted-color)",
-  "#9be9a8",
-  "#40c463",
-  "#30a14e",
-  "#216e39",
-];
-
 export default function ActivityDemo() {
   const { t, i18n } = useTranslation("common", {
     keyPrefix: "docs.heatmap-chart.data",
@@ -83,7 +74,8 @@ export default function ActivityDemo() {
       <HeatmapChart
         data={data}
         yCategories={[...days].reverse()}
-        colorScale={greens}
+        // a ramp of the success color, readable in light and dark themes
+        palette={["var(--success-color)"]}
         valueRange={[0, 12]}
         name={t("contributions")}
         xAxis={{

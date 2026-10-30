@@ -50,6 +50,9 @@ export default function Basic() {
         height={300}
         labels="inside"
         labelContent={labelContent}
+        // Rounded slices, separated by a 2px gap
+        cornerRadius={6}
+        padAngle={2}
         format={(value) => number.format(value)}
         percentFormat={(share) => percent.format(share)}
         onClick={setSelected}

@@ -353,7 +353,7 @@ describe("transformWcDemo: every docs demo", () => {
       expect(syntaxErrors(htmlScript, "a.js")).toEqual([]);
       expect(htmlScript).toMatch(
         // the chart elements are optional entries
-        /import "minerva-design\/web-components(\/(chart|trading-chart|order-book|chart-3d))?";/,
+        /import "minerva-design\/web-components(\/(chart|trading-chart|order-book|chart-3d|graph))?";/,
       );
 
       // framework sources never reach into the DOM through the demo root

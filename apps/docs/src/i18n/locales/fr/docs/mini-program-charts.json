@@ -1,6 +1,6 @@
 {
   "title": "Graphiques pour mini-programmes",
-  "description": "Tous les graphiques de minerva-design/charts dessinés par le moteur canvas — Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, QuadrantChart, CandlestickChart, HeatmapChart, Sparkline, RangeAreaChart, MixedChart, BubbleChart, HistogramChart, BoxPlotChart, WaterfallChart, GanttChart et les graphiques de formes PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart et ShapeChart — pour Taro, uni-app et les mini-programmes WeChat natifs, dessinés sur un canvas type=\"2d\" avec les mêmes options que les graphiques web.",
+  "description": "Tous les graphiques de minerva-design/charts dessinés par le moteur canvas — Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, QuadrantChart, CandlestickChart, HeatmapChart, Sparkline, RangeAreaChart, MixedChart, BubbleChart, HistogramChart, BoxPlotChart, WaterfallChart, GanttChart et les graphiques de formes PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart, ChordChart et ShapeChart — pour Taro, uni-app et les mini-programmes WeChat natifs, dessinés sur un canvas type=\"2d\" avec les mêmes options que les graphiques web.",
   "intro": {
     "title": "Fonctionnement",
     "text": "Les graphiques pour mini-programmes dessinent tout le graphique (axes, données, légende, infobulle, annotations) sur un seul <canvas type=\"2d\"> avec le moteur de rendu canvas du moteur de graphiques Minerva. Ils acceptent les options et préréglages des graphiques web de minerva-design/charts et fonctionnent sur WeChat, Alipay, ByteDance et les autres mini-programmes ainsi qu’en H5. Seule la partie canvas 2D du moteur est embarquée : aucun code WebGPU ni WebGL.",
@@ -28,6 +28,22 @@
     "series": "Les graphiques à séries (Chart, LineChart, AreaChart, BarChart, HorizontalBarChart, ScatterChart, CandlestickChart, RangeAreaChart, MixedChart, BubbleChart) ajoutent series, xAxis et yAxis, ainsi que les props de leur composant web (area, curve, stacked, percent, labels, yAxis2, stackMode, orientation, minSize / maxSize…). HeatmapChart, Sparkline, HistogramChart, BoxPlotChart, WaterfallChart et GanttChart prennent leurs props de données (data, values, groups, steps, tasks…). Chart accepte des séries de tout type, chandeliers et cartes de chaleur compris.",
     "quadrant": "QuadrantChart accepte les réglages de quadrants : points, xDomain, yDomain, xSplit, ySplit, quadrants, xLabel, yLabel, axisLabels, showTicks, reverseX, showLabels, pointSize, name et draggable.",
     "events": "Les événements reprennent les callbacks web : survol, clic sur un point, clic sur la zone de tracé (appui dans le vide) et zoom ; QuadrantChart signale le clic sur un point (point, index), le clic sur un quadrant (quadrant, { x, y }) et le dépôt d’un point (point, index, { x, y, quadrant }). Le graphique ne déplace jamais les points lui-même : mettez à jour points."
+  },
+  "locale": {
+    "title": "Langue et paramètres régionaux",
+    "text": "Sur le web, les graphiques lisent la langue de la page (<html lang>). Les mini-programmes n’ont pas de <html lang> : sans locale, les textes et les nombres suivent navigator.language quand l’environnement en a un, sinon l’anglais (les builds H5 de Taro et uni-app lisent <html lang> comme le web). Passez la langue de l’application avec la prop locale de chaque graphique ; WeChat renvoie des langues comme zh_CN : remplacez le tiret bas par un trait d’union (zh-CN) pour que les nombres et les dates soient aussi formatés.",
+    "labels": "labels remplace des textes intégrés des graphiques à séries (ChartLabels : lignes ouverture / clôture des chandeliers, lignes des boîtes à moustaches et du Gantt, noms de séries par défaut…) et texts ceux des graphiques de formes (ShapeChartLabels : noData, value, share…). Sur HorizontalBarChart et WaterfallChart, labels reste le booléen qui écrit les valeurs : leurs textes suivent seulement locale.",
+    "update": "Modifier locale, labels ou texts redessine le graphique : redéfinissez-les (setData sur WeChat natif) quand l’utilisateur change la langue de l’application.",
+    "sample": {
+      "comment": "La langue de l’application : les mini-programmes n’ont pas de <html lang>",
+      "ticks": "Les fonctions passent par configure() : les libellés des graduations",
+      "open": "Ouverture",
+      "close": "Clôture",
+      "noData": "Aucun flux pour l’instant",
+      "apps": "Applis",
+      "web": "Web",
+      "store": "Boutique"
+    }
   },
   "gestures": {
     "title": "Gestes",
@@ -60,7 +76,8 @@
     "props": "Les props sont celles des composants web : AreaChart prend curve, stacked et percent ; HorizontalBarChart stacked, percent et labels ; HistogramChart values et bins ; BoxPlotChart groups ou series ; WaterfallChart steps ; GanttChart tasks, today et todayLabel ; HeatmapChart data et les catégories ; Sparkline data et type (48 px de haut par défaut).",
     "weapp": "Déclarez les composants utilisés sous leur nom de dossier. Les dates ne survivent pas à setData : passez des horodatages (tâches de Gantt, axes temporels). Les options fonctions passent par configure() : format (heatmap-chart, sparkline, waterfall-chart), formatBin (histogram-chart), formatProgress (gantt-chart), les formats d'axes et renderTooltip.",
     "drill": "SunburstChart zoome sur un parent touché et remonte avec un tap au centre : onDrill sur Taro, l'événement drill sur uni-app et WeChat (bind:drill), drill(path) et getDrillPath() sur l'instance ; définissez drillPath pour contrôler l'exploration.",
-    "domOnlyText": "TradingChart, DepthChart, OrderBook, OrderBookHeatmap, TimeAndSales et les graphiques 3D (Scatter3DChart, Surface3DChart, Bar3DChart, Line3DChart) ont besoin d'un DOM et de WebGPU / WebGL : ils n'ont pas de composant mini-programme. Affichez plutôt le composant web dans une page web-view."
+    "domOnlyText": "TradingChart, DepthChart, OrderBook, OrderBookHeatmap, TimeAndSales et les graphiques 3D (Scatter3DChart, Surface3DChart, Bar3DChart, Line3DChart) ont besoin d'un DOM et de WebGPU / WebGL : ils n'ont pas de composant mini-programme. Affichez plutôt le composant web dans une page web-view.",
+    "presets": "Les options des préréglages des composants web sont transmises : connector de WaterfallChart (true, false ou { color, dash, width }), colorScale (\"sequential\", \"diverging\" ou des couleurs) et colorMidpoint de HeatmapChart, dependenciesName de GanttChart (avec les dependencies des tâches), outlierShape et outlierSize de BoxPlotChart."
   },
   "newTypes": {
     "title": "Chandeliers, cartes de chaleur, courbes et piles",
@@ -77,6 +94,7 @@
     "events": "Événements (event.detail) : hover (la marque mise en avant : index, name, value, percent, color, path ; index vaut -1 quand elle est effacée), click (une marque touchée), toggle ({ index, hidden, hiddenIndexes }) et drill ({ path }, sunburst). Méthodes : configure(config), resize(), toggle(index), getHidden(), clearHover(), drill(path) et getDrillPath(). Types : NativeShapeChartInstance, NativeShapeChartEvents et les interfaces *ChartProperties de minerva-design/weapp/types.",
     "coreTitle": "Le moteur sur votre propre canvas",
     "core": "createCanvasShapeChart (et createCanvasChart) dessinent sur n'importe quel canvas 2D. Dans un projet WeChat natif, faites require(\"minerva-design/charts/core\") après « Build npm » : le dossier mini-programme du paquet contient le moteur sans DOM sous charts/core.js, un module partagé avec les composants de graphiques (aucun poids supplémentaire). Avec Taro et uni-app, importez-le depuis minerva-design/charts/core.",
-    "touches": "Transmettez les événements tactiles (les touches d'un canvas de mini-programme portent x / y relatifs au canvas ; en H5, soustrayez la position du canvas de clientX / clientY), appelez resize(width, height) quand la taille change et destroy() quand la page se ferme. Le thème est fait de valeurs : passez les variables CSS Minerva utiles dans theme.variables."
+    "touches": "Transmettez les événements tactiles (les touches d'un canvas de mini-programme portent x / y relatifs au canvas ; en H5, soustrayez la position du canvas de clientX / clientY), appelez resize(width, height) quand la taille change et destroy() quand la page se ferme. Le thème est fait de valeurs : passez les variables CSS Minerva utiles dans theme.variables.",
+    "chord": "ChordChart dessine un diagramme d’accords : des groupes (noms ou { name, color }) répartis sur un cercle et des rubans issus d’une matrice ou d’une liste de liens, orientés avec flèches, triés, colorés selon la source, la cible ou un dégradé, avec des graduations de valeurs — les props du composant web. Sa hauteur par défaut est de 420 px ; sur WeChat natif, passez tickFormat avec configure()."
   }
 }

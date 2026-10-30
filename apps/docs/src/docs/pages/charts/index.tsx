@@ -74,6 +74,17 @@ const ChartsDoc: React.FC = () => {
           </li>
           <li>
             <Trans
+              i18nKey="docs.charts.intro.families.graphs"
+              components={{
+                network: <Link to="/graph-chart" />,
+                dag: <Link to="/dependency-graph" />,
+                tree: <Link to="/tree-chart" />,
+                chord: <Link to="/chord-chart" />,
+              }}
+            />
+          </li>
+          <li>
+            <Trans
               i18nKey="docs.charts.intro.families.finance"
               components={{
                 candlestick: <Link to="/candlestick-chart" />,

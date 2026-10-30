@@ -248,6 +248,7 @@ const SHAPES = [
   "RadialBarChart",
   "CalendarHeatmap",
   "BulletChart",
+  "ChordChart",
   "ShapeChart",
 ];
 const DOM_ONLY = [
@@ -564,8 +565,124 @@ Page({
   onUnload() { this.chart?.destroy(); },
 });`;
 
+/** Localized values of the locale samples */
+interface LocaleSample {
+  comment: string;
+  ticks: string;
+  open: string;
+  close: string;
+  noData: string;
+  apps: string;
+  web: string;
+  store: string;
+}
+
+const taroLocale = (s: LocaleSample) => `import Taro from "@tarojs/taro";
+import { CandlestickChart, ChordChart, type ChartSeries } from "minerva-design/taro";
+
+// ${s.comment}
+const locale = Taro.getAppBaseInfo().language.replace("_", "-");
+
+export function Report({ candles }: { candles: ChartSeries[] }) {
+  return (
+    <>
+      <CandlestickChart
+        locale={locale}
+        labels={{ open: "${s.open}", close: "${s.close}" }}
+        series={candles}
+      />
+      <ChordChart
+        locale={locale}
+        texts={{ noData: "${s.noData}" }}
+        groups={["${s.apps}", "${s.web}", "${s.store}"]}
+        matrix={[
+          [0, 5, 2],
+          [3, 0, 4],
+          [1, 2, 0],
+        ]}
+      />
+    </>
+  );
+}`;
+
+const uniLocale = (s: LocaleSample) => `<script setup lang="ts">
+import { CandlestickChart, ChordChart } from "minerva-design/uni";
+
+defineProps<{ candles: object[] }>();
+// ${s.comment}
+const locale = uni.getLocale();
+const matrix = [
+  [0, 5, 2],
+  [3, 0, 4],
+  [1, 2, 0],
+];
+</script>
+
+<template>
+  <CandlestickChart
+    :series="candles"
+    :locale="locale"
+    :labels="{ open: '${s.open}', close: '${s.close}' }"
+  />
+  <ChordChart
+    :groups="['${s.apps}', '${s.web}', '${s.store}']"
+    :matrix="matrix"
+    :locale="locale"
+    :texts="{ noData: '${s.noData}' }"
+  />
+</template>`;
+
+const weappLocaleJson = `{
+  "usingComponents": {
+    "mn-candlestick-chart": "minerva-design/candlestick-chart/index",
+    "mn-chord-chart": "minerva-design/chord-chart/index"
+  }
+}`;
+
+const weappLocaleWxml = `<mn-candlestick-chart series="{{candles}}" locale="{{locale}}" labels="{{labels}}" />
+<mn-chord-chart
+  id="flows"
+  groups="{{groups}}"
+  matrix="{{matrix}}"
+  locale="{{locale}}"
+  texts="{{texts}}"
+/>`;
+
+const weappLocaleJs = (s: LocaleSample) => `Page({
+  data: {
+    // ${s.comment}
+    locale: wx.getAppBaseInfo().language.replace("_", "-"),
+    labels: { open: "${s.open}", close: "${s.close}" },
+    texts: { noData: "${s.noData}" },
+    groups: ["${s.apps}", "${s.web}", "${s.store}"],
+    matrix: [
+      [0, 5, 2],
+      [3, 0, 4],
+      [1, 2, 0],
+    ],
+    candles: [],
+  },
+  onReady() {
+    // ${s.ticks}
+    const ticks = new Intl.NumberFormat(this.data.locale, { notation: "compact" });
+    this.selectComponent("#flows").configure({
+      tickFormat: (value) => ticks.format(value),
+    });
+  },
+});`;
+
 export default function MiniProgramChartsDoc() {
   const { t } = useTranslation();
+  const sample: LocaleSample = {
+    comment: t("docs.mini-program-charts.locale.sample.comment"),
+    ticks: t("docs.mini-program-charts.locale.sample.ticks"),
+    open: t("docs.mini-program-charts.locale.sample.open"),
+    close: t("docs.mini-program-charts.locale.sample.close"),
+    noData: t("docs.mini-program-charts.locale.sample.noData"),
+    apps: t("docs.mini-program-charts.locale.sample.apps"),
+    web: t("docs.mini-program-charts.locale.sample.web"),
+    store: t("docs.mini-program-charts.locale.sample.store"),
+  };
   return (
     <DocPage id="mini-program-charts">
       <section className={styles.section} aria-labelledby="mini-charts-intro">
@@ -694,6 +811,9 @@ export default function MiniProgramChartsDoc() {
         <p className={styles.prose}>
           {t("docs.mini-program-charts.named.props")}
         </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.presets")}
+        </p>
         <h3>{t("docs.mini-program-charts.taro.title")}</h3>
         <CodeBlock language="tsx" title="Overview.tsx" code={taroNamed} />
         <h3>{t("docs.mini-program-charts.uni.title")}</h3>
@@ -739,6 +859,9 @@ export default function MiniProgramChartsDoc() {
         <p className={styles.prose}>
           {t("docs.mini-program-charts.shapes.text")}
         </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.chord")}
+        </p>
         <h3>{t("docs.mini-program-charts.taro.title")}</h3>
         <p className={styles.prose}>
           {t("docs.mini-program-charts.shapes.taro")}
@@ -779,6 +902,41 @@ export default function MiniProgramChartsDoc() {
           <li>{t("docs.mini-program-charts.props.quadrant")}</li>
           <li>{t("docs.mini-program-charts.props.events")}</li>
         </ul>
+      </section>
+
+      <section className={styles.section} aria-labelledby="mini-charts-locale">
+        <h2 id="mini-charts-locale">
+          {t("docs.mini-program-charts.locale.title")}
+        </h2>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.locale.text")}
+        </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.locale.labels")}
+        </p>
+        <h3>{t("docs.mini-program-charts.taro.title")}</h3>
+        <CodeBlock
+          language="tsx"
+          title="Report.tsx"
+          code={taroLocale(sample)}
+        />
+        <h3>{t("docs.mini-program-charts.uni.title")}</h3>
+        <CodeBlock
+          language="html"
+          title="Report.vue"
+          code={uniLocale(sample)}
+        />
+        <h3>{t("docs.mini-program-charts.weapp.title")}</h3>
+        <CodeBlock language="json" title="index.json" code={weappLocaleJson} />
+        <CodeBlock language="html" title="index.wxml" code={weappLocaleWxml} />
+        <CodeBlock
+          language="js"
+          title="index.js"
+          code={weappLocaleJs(sample)}
+        />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.locale.update")}
+        </p>
       </section>
 
       <section

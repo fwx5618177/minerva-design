@@ -64,7 +64,8 @@ const nativeCharts = new Set(
 
 /**
  * Chart widgets drawn with the DOM and the GPU (WebGPU / WebGL canvases,
- * DOM overlays and virtualized DOM lists): no React Native or mini program
+ * DOM overlays and virtualized DOM lists; the graph charts' pan / zoom,
+ * legend and keyboard layers): no React Native or mini program
  * counterpart
  */
 const DOM_ONLY_CHARTS = new Set([
@@ -77,6 +78,9 @@ const DOM_ONLY_CHARTS = new Set([
   "Line3DChart",
   "Surface3DChart",
   "Bar3DChart",
+  "GraphChart",
+  "DependencyGraph",
+  "TreeChart",
 ]);
 const DOM_ONLY_NOTE =
   "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view.";

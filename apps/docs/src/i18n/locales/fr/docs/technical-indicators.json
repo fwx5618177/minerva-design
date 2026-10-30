@@ -4,7 +4,7 @@
   "intro": {
     "declarative": {
       "title": "Indicateurs déclaratifs",
-      "text": "L'option indicators liste les indicateurs dans l'ordre : moyennes mobiles, bandes de Bollinger et VWAP se superposent au prix ; volume (sauf overlay), MACD, RSI, KDJ et ATR ont chacun un panneau en dessous. Chaque légende affiche les valeurs sous le réticule, et un clic sur le nom d'un indicateur le masque.",
+      "text": "L'option indicators liste les indicateurs dans l'ordre : moyennes mobiles, canaux de Bollinger, Keltner et Donchian, VWAP, SAR parabolique, Ichimoku et SuperTrend se tracent sur le cours ; volume (sauf overlay), MACD, RSI, KDJ, ATR, OBV, CCI, RSI stochastique, DMI, Williams %R et MFI ont chacun un panneau en dessous. Chaque légende donne les valeurs au réticule, et un clic sur le nom d'un indicateur le masque.",
       "ids": "Un indicateur est identifié par son type et ses paramètres (\"ma:7\", \"macd:12:26:9\") sauf s'il fixe un id : indicatorToggle et setIndicatorVisible l'utilisent. Modifier la liste conserve les valeurs calculées des indicateurs inchangés."
     },
     "functions": {
@@ -16,8 +16,10 @@
       "averages": "MA est la moyenne simple, WMA donne le plus de poids à la bougie la plus récente, EMA utilise 2 / (période + 1) et part de la moyenne simple de la première fenêtre, comme TradingView.",
       "wilder": "RSI et ATR utilisent le lissage de Wilder (1 / période) ; les bandes de Bollinger utilisent l'écart type de la population.",
       "kdj": "KDJ démarre K et D à 50 et les lisse sur 3 bougies par défaut ; J = 3K − 2D peut sortir de l'intervalle 0-100.",
-      "vwap": "Le VWAP repart chaque jour (ou semaine, mois, jamais) dans le fuseau horaire de utcOffset.",
-      "incremental": "À chaque mise à jour, le graphique ne recalcule que les valeurs de la dernière bougie : un flux coûte autant avec cent bougies qu'avec un million."
+      "vwap": "Le VWAP repart chaque jour (ou semaine, mois, jamais) dans le fuseau de timeZone ou utcOffset.",
+      "incremental": "À chaque mise à jour, le graphique ne recalcule que les valeurs de la dernière bougie : un flux coûte autant avec cent bougies qu'avec un million.",
+      "zoom": "En vue large, les indicateurs restent calculés sur chaque barre et sont tracés avec la valeur la plus basse et la plus haute de chaque colonne de pixels : les pics restent visibles sur un million de barres.",
+      "ichimoku": "Ichimoku trace les nuages displacement − 1 barres en avant (dans l'espace après la dernière barre) et la ligne retardée autant de barres en arrière ; la fonction pure ichimoku les renvoie sans décalage."
     }
   },
   "demos": {
@@ -60,6 +62,30 @@
     "vanilla": {
       "title": "Sans React",
       "description": "createTradingChart de minerva-design/charts/core monte le même graphique dans n'importe quel élément : options, événements on() et destroy(). Ici sma() indique l'écart de la clôture survolée avec sa moyenne sur 50 jours."
+    },
+    "ichimoku": {
+      "title": "Nuage Ichimoku",
+      "description": "Lignes de conversion et de base, ligne retardée, et le nuage entre les deux lignes avancées : couleur de hausse quand la ligne A est au-dessus de la B, de baisse sinon. rightOffset laisse la place au nuage tracé 26 barres en avant."
+    },
+    "supertrend": {
+      "title": "SuperTrend et SAR parabolique",
+      "description": "Des stops suiveurs qui basculent avec la tendance : la bande SuperTrend, en couleur de hausse ou de baisse, et les points du SAR. Les marqueurs d'achat / vente sont les retournements calculés avec la fonction pure supertrend."
+    },
+    "channels": {
+      "title": "Canaux de Keltner et Donchian",
+      "description": "Le canal de Keltner s'écarte d'un nombre de vrais intervalles moyens autour d'une EMA, celui de Donchian suit le plus haut et le plus bas, les bandes de Bollinger utilisent l'écart type."
+    },
+    "oscillators": {
+      "title": "Oscillateurs",
+      "description": "RSI stochastique et MFI entre 0 et 100 (bandes 20 / 80), CCI autour de ±100 et Williams %R entre −100 et 0. Chacun a son panneau ; le graphique s'agrandit avec eux."
+    },
+    "dmi": {
+      "title": "DMI et ADX",
+      "description": "+DI et −DI aux couleurs de hausse et de baisse, ADX en ambre avec sa ligne à 25 : au-dessus, la tendance est forte. La phrase du dessous lit les dernières valeurs de la fonction pure dmi."
+    },
+    "obv": {
+      "title": "Volume cumulé (OBV)",
+      "description": "L'OBV ajoute le volume des clôtures en hausse et retranche celui des clôtures en baisse ; sa moyenne sur 20 barres montre si la pression acheteuse ou vendeuse domine. Les grands nombres utilisent les unités compactes de la langue de la page."
     }
   },
   "data": {
@@ -105,7 +131,42 @@
     "vanillaAria": "Graphique quotidien dessiné avec createTradingChart",
     "vanillaWarmup": "Pas encore assez de bougies pour la moyenne sur 50 jours",
     "vanillaAbove": "La clôture est {{value}} au-dessus de sa moyenne sur 50 jours",
-    "vanillaBelow": "La clôture est {{value}} en dessous de sa moyenne sur 50 jours"
+    "vanillaBelow": "La clôture est {{value}} en dessous de sa moyenne sur 50 jours",
+    "cloud": "Nuage",
+    "nikkei": "Nikkei 225",
+    "ichimokuAria": "Graphique journalier du Nikkei 225 avec le nuage Ichimoku",
+    "bandDistance": "Distance de la bande",
+    "atrs": "{{value}} ATR",
+    "parabolicSar": "SAR parabolique",
+    "supertrendAria": "Graphique 4 heures de SOL/USDT avec le SuperTrend et ses retournements",
+    "channel": "Canal",
+    "channels": {
+      "keltner": "Keltner",
+      "donchian": "Donchian",
+      "boll": "Bollinger"
+    },
+    "eurusd": "EUR/USD",
+    "channelsAria": "Graphique horaire d'EUR/USD avec un canal de prix",
+    "oscillators": "Oscillateurs",
+    "oscillatorNames": {
+      "stochRsi": "RSI stochastique",
+      "cci": "CCI",
+      "williamsR": "Williams %R",
+      "mfi": "MFI"
+    },
+    "oscillatorsAria": "Graphique 4 heures de BTC/USDT avec des panneaux d'oscillateurs",
+    "dmiSummary": {
+      "strong": "ADX {{adx}} : tendance forte, {{direction}}",
+      "weak": "ADX {{adx}} : pas de tendance forte, {{direction}} pour l'instant"
+    },
+    "directions": {
+      "up": "haussière (+DI au-dessus de −DI)",
+      "down": "baissière (−DI au-dessus de +DI)"
+    },
+    "dmiAria": "Graphique journalier de MSFT avec le panneau DMI",
+    "aapl": "AAPL",
+    "obvAria": "Graphique journalier d'AAPL avec le volume et l'OBV",
+    "flips": "Retournements : {{count}}"
   },
   "api": {
     "TradingMovingAverageIndicator": {
@@ -191,7 +252,25 @@
       "refreshTheme": "Relit les variables CSS (les changements de thème sont détectés automatiquement)",
       "resize": "Redessine à la taille du conteneur (les redimensionnements sont détectés automatiquement)",
       "on": "S'abonne à un événement ; renvoie la fonction de désabonnement",
-      "destroy": "Retire le graphique et libère les ressources GPU"
+      "destroy": "Retire le graphique et libère les ressources GPU",
+      "getVisibleTimeRange": "Heures aux bords du tracé (interpolées entre les barres).",
+      "setVisibleTimeRange": "Affiche les barres entre deux heures.",
+      "setCrosshair": "Affiche le réticule à une heure (et un prix), comme si le pointeur y était ; null le masque. N'émet pas crosshairMove.",
+      "updateDrawing": "Modifie le style ou le contenu d'un dessin (annulable).",
+      "undo": "Annule la dernière modification des dessins (aussi Ctrl / ⌘ + Z).",
+      "redo": "Rétablit la dernière modification annulée (aussi Ctrl / ⌘ + Maj + Z).",
+      "getUndoState": "Indique si les dessins peuvent être annulés ou rétablis.",
+      "startReplay": "Lance une relecture : les barres après time sont masquées, puis rajoutées par replayStep ou replayPlay. Sans time, l'utilisateur choisit la première barre d'un clic.",
+      "replayStep": "Affiche les barres suivantes de la relecture.",
+      "replayPlay": "Ajoute speed barres par seconde (la vitesse actuelle par défaut).",
+      "replayPause": "Met la relecture en pause.",
+      "stopReplay": "Termine la relecture et affiche toutes les barres.",
+      "getReplayState": "État de la relecture des barres.",
+      "toDataURL": "Image du graphique (barres, axes, dessins et légendes) en data URL.",
+      "toBlob": "Image du graphique en blob (null sans prise en charge du canvas).",
+      "requestFullscreen": "Affiche le graphique en plein écran.",
+      "exitFullscreen": "Quitte le plein écran.",
+      "isFullscreen": "Indique si le graphique est en plein écran."
     },
     "TradingChartEventMap": {
       "renderer": "Le moteur utilisé, à nouveau après un repli",
@@ -199,11 +278,98 @@
       "click": "Un panneau a été cliqué",
       "visibleRangeChange": "Les bougies visibles ont changé",
       "orderMove": "Une ligne de prix déplaçable a été lâchée",
-      "drawingsChange": "L'utilisateur a ajouté, déplacé ou effacé des dessins",
+      "drawingsChange": "Des dessins ont été ajoutés, déplacés, restylés, supprimés, annulés ou rétablis.",
       "drawingSelect": "Le dessin sélectionné a changé",
       "drawingToolChange": "L'outil de dessin a changé",
       "indicatorToggle": "Un indicateur a été affiché ou masqué depuis sa légende",
-      "historyRequest": "La plus ancienne bougie est visible"
+      "historyRequest": "La plus ancienne bougie est visible",
+      "orderCreate": "Le bouton + de saisie d'ordre a été cliqué.",
+      "orderCancel": "Le bouton de fermeture d'une ligne de prix a été cliqué.",
+      "undoChange": "L'annulation / le rétablissement devient possible ou impossible.",
+      "replayChange": "La relecture a démarré, avancé, joué, été mise en pause ou arrêtée.",
+      "fullscreenChange": "Le graphique est passé en plein écran (true) ou en est sorti."
+    },
+    "TradingParabolicSarIndicator": {
+      "type": "SAR parabolique.",
+      "start": "Facteur d'accélération initial.",
+      "increment": "Augmentation du facteur à chaque nouvel extrême.",
+      "maximum": "Facteur d'accélération maximal.",
+      "color": "Couleur des points ; par défaut les couleurs de hausse / baisse selon la tendance."
+    },
+    "TradingIchimokuIndicator": {
+      "type": "Ichimoku Kinkō Hyō.",
+      "conversionPeriod": "Barres de la ligne de conversion (Tenkan-sen).",
+      "basePeriod": "Barres de la ligne de base (Kijun-sen).",
+      "spanBPeriod": "Barres de la ligne avancée B (Senkou span B).",
+      "displacement": "Décalage des lignes avancées (en avant) et de la ligne retardée (en arrière), en barres.",
+      "colors": "Couleurs des lignes de conversion, de base, retardée, avancée A et avancée B.",
+      "cloud": "Remplit le nuage entre les lignes avancées : couleur de hausse quand A est au-dessus de B, de baisse sinon."
+    },
+    "TradingSupertrendIndicator": {
+      "type": "SuperTrend.",
+      "period": "Barres du vrai intervalle moyen.",
+      "multiplier": "Distance de la bande, en vrais intervalles moyens.",
+      "upColor": "Couleur de la bande en tendance haussière ; la couleur de hausse par défaut.",
+      "downColor": "Couleur de la bande en tendance baissière ; la couleur de baisse par défaut."
+    },
+    "TradingKeltnerIndicator": {
+      "type": "Canal de Keltner.",
+      "period": "Barres de la moyenne exponentielle.",
+      "multiplier": "Distance des bandes, en vrais intervalles moyens.",
+      "atrPeriod": "Barres du vrai intervalle moyen.",
+      "colors": "Couleurs des lignes médiane, haute et basse.",
+      "fill": "Remplit le canal."
+    },
+    "TradingDonchianIndicator": {
+      "type": "Canal de Donchian.",
+      "period": "Nombre de barres.",
+      "colors": "Couleurs des lignes médiane, haute et basse.",
+      "fill": "Remplit le canal."
+    },
+    "TradingObvIndicator": {
+      "type": "Volume cumulé.",
+      "maPeriod": "Période d'une moyenne mobile tracée sur la ligne.",
+      "color": "Couleur du trait."
+    },
+    "TradingCciIndicator": {
+      "type": "Indice du canal des matières premières.",
+      "period": "Nombre de barres.",
+      "color": "Couleur du trait."
+    },
+    "TradingStochRsiIndicator": {
+      "type": "RSI stochastique.",
+      "rsiPeriod": "Barres du RSI.",
+      "stochPeriod": "Barres du stochastique du RSI.",
+      "kPeriod": "Lissage de K.",
+      "dPeriod": "Lissage de D.",
+      "colors": "Couleurs des lignes K et D."
+    },
+    "TradingDmiIndicator": {
+      "type": "Indice de mouvement directionnel.",
+      "period": "Barres des indicateurs directionnels.",
+      "adxPeriod": "Lissage de l'ADX.",
+      "colors": "Couleurs des lignes +DI, −DI et ADX."
+    },
+    "TradingWilliamsRIndicator": {
+      "type": "Williams %R.",
+      "period": "Nombre de barres.",
+      "color": "Couleur du trait."
+    },
+    "TradingMfiIndicator": {
+      "type": "Indice de flux monétaire.",
+      "period": "Nombre de barres.",
+      "color": "Couleur du trait."
+    },
+    "TradingVolumeProfile": {
+      "low": "Prix au bas de la première ligne.",
+      "high": "Prix en haut de la dernière ligne.",
+      "step": "Hauteur d'une ligne, en prix.",
+      "up": "Volume des barres haussières par ligne, de bas en haut.",
+      "down": "Volume des barres baissières par ligne.",
+      "total": "Volume total.",
+      "poc": "Ligne du point de contrôle (le plus grand volume) ; −1 sans volume.",
+      "valueAreaFrom": "Première ligne de la zone de valeur.",
+      "valueAreaTo": "Dernière ligne de la zone de valeur."
     }
   },
   "wc": {

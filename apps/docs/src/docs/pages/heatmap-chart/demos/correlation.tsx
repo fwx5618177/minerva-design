@@ -20,15 +20,6 @@ const matrix = [
   [0.35, 0.31, 0.22, 0.08, 0.46, 1],
 ];
 
-// Red for negative, neutral at 0, blue for positive
-const diverging = [
-  "#b2182b",
-  "#ef8a62",
-  "var(--background-color)",
-  "#67a9cf",
-  "#2166ac",
-];
-
 export default function CorrelationDemo() {
   const { t, i18n } = useTranslation("common", {
     keyPrefix: "docs.heatmap-chart.data",
@@ -59,7 +50,9 @@ export default function CorrelationDemo() {
       xCategories={names}
       // first metric at the top, like a table
       yCategories={[...names].reverse()}
-      colorScale={diverging}
+      // built-in theme-aware ramp: danger color below 0, primary above
+      colorScale="diverging"
+      colorMidpoint={0}
       valueRange={[-1, 1]}
       name={t("correlation")}
       format={(value) => coefficient.format(value)}

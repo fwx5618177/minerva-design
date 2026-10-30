@@ -42,6 +42,8 @@ export default function Donut() {
       data={data}
       height={300}
       format={format}
+      // Softer segment ends than the 4px default
+      cornerRadius={10}
       centerValue={format(pressed ? pressed.value : total)}
       centerLabel={
         pressed

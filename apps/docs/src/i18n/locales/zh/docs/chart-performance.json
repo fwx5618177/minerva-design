@@ -15,6 +15,12 @@
     "forced": "renderer: \"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 会强制使用某个后端，软件 GPU 也允许；如果无法启动，则使用链路中的下一个后端。Canvas2D 适合小图表和截图；数据点达到数万个以上时 GPU 更有优势。",
     "lost": "当 GPU 丢失（驱动重置、上下文过多）时，图表会回退到下一个后端、重新绘制，并再次触发 renderer 事件。浏览器会限制同时存在的 WebGL 上下文数量（约 16 个）：包含几十个 GPU 图表的仪表盘应销毁移出屏幕的图表，或对小图表使用 Canvas2D。"
   },
+  "global": {
+    "title": "为所有图表统一设置渲染器",
+    "text": "setDefaultChartRenderer() 为所有未设置 renderer 或设置为 \"auto\" 的图表指定后端，适用于所有框架：该默认值保存在 globalThis 上，因此 React 组件、Vue 和 Angular 封装以及 Web Components 共享同一设置，即使页面打包了多份引擎副本也是如此。图表在启动时读取它：要让更改生效，请重新挂载已显示的图表（或通过 subscribeDefaultChartRenderer 监听变化）。",
+    "rules": "图表自身的 renderer 选项始终优先。通过默认值强制指定的后端视为强制：它可以运行在软件 GPU 上，无法启动时回退到下一个后端。设为 \"auto\" 即恢复自动检测。",
+    "docs": "本文档图表页面顶部的渲染器栏正是这样实现的：在那里选择 Canvas2D 或 WebGL，所有示例都会以该后端重新启动，每个示例下方的徽标显示实际使用的后端。在本页中，每个展示的“自动”选项会跟随它。"
+  },
   "showcase": {
     "title": "实时演示",
     "text": "下面的示例会在你的浏览器中绘制多达一百万个标记。数据在示例接近屏幕时，用带种子的随机数生成器一次性生成到类型化数组中；示例移出屏幕时动画会暂停。选择一个后端即可强制使用它——图表会显示实际启动的是哪一个——然后让镜头巡游自动缩放，或者用鼠标亲自操作。",
@@ -55,7 +61,8 @@
       "webgpu": "WebGPU",
       "webgl2": "WebGL2",
       "webgl": "WebGL",
-      "canvas2d": "Canvas2D"
+      "canvas2d": "Canvas2D",
+      "page": "页面（{{backend}}）"
     },
     "tour": "镜头巡游",
     "stream": "数据流",
@@ -81,7 +88,9 @@
       "autoCanvas": "自动选择了 {{backend}}：当前环境没有可用的硬件加速 GPU（软件 GPU 会被跳过）。",
       "forced": "按要求使用 {{backend}} 绘制。",
       "fallback": "{{requested}} 无法在此启动，已回退到 {{backend}}。",
-      "slow": "镜头巡游已暂停：使用此后端时每帧占用主线程 {{ms}}。可以重新开启，或换一个后端。"
+      "slow": "镜头巡游已暂停：使用此后端时每帧占用主线程 {{ms}}。可以重新开启，或换一个后端。",
+      "page": "使用页面所选的渲染器 {{backend}} 绘制。",
+      "pageSoftware": "页面所选的 {{requested}} 在此设备上运行于软件 GPU：为保持页面流畅，此示例改用 {{backend}}。在此示例中选择 {{requested}} 可强制使用。"
     },
     "hintX": "Ctrl / ⌘ + 滚轮或双指捏合缩放，拖动平移，双击复位。y 轴随可见范围自动适配。",
     "hintXY": "Ctrl / ⌘ + 滚轮或双指捏合同时缩放两个轴，拖动平移，双击复位。",

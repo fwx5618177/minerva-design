@@ -4,7 +4,7 @@
   "intro": {
     "declarative": {
       "title": "声明式指标",
-      "text": "indicators 选项按顺序列出指标：均线、布林带和 VWAP 叠加在主图上，成交量（overlay 除外）、MACD、RSI、KDJ 和 ATR 各占下方一个副图。每个图例都显示十字光标处的数值，点击指标名称即可隐藏。",
+      "text": "indicators 选项按顺序列出指标：均线、布林带、肯特纳通道、唐奇安通道、VWAP、抛物线 SAR、一目均衡表和超级趋势画在价格上；成交量（overlay 时除外）、MACD、RSI、KDJ、ATR、OBV、CCI、随机 RSI、DMI、威廉指标和 MFI 各自在下方占一个窗格。图例显示十字光标处的数值，点击指标名称可隐藏该指标。",
       "ids": "指标默认由类型和参数标识（\"ma:7\"、\"macd:12:26:9\"），也可以设置 id：indicatorToggle 和 setIndicatorVisible 使用该标识。修改列表时，未变化指标的计算结果会被保留。"
     },
     "functions": {
@@ -16,8 +16,10 @@
       "averages": "MA 为简单平均，WMA 对最新的 K 线权重最大，EMA 使用 2 / (周期 + 1)，并以首个窗口的简单平均作为起点，与 TradingView 一致。",
       "wilder": "RSI 和 ATR 使用 Wilder 平滑（1 / 周期）；布林带使用总体标准差。",
       "kdj": "KDJ 的 K、D 初值为 50，默认按 3 根 K 线平滑；J = 3K − 2D 可能超出 0-100。",
-      "vwap": "VWAP 在 utcOffset 所指时区内每天（或每周、每月、从不）重新开始累计。",
-      "incremental": "每次推送时，图表只重新计算最后一根 K 线的数值：无论一百根还是一百万根 K 线，推送的开销都相同。"
+      "vwap": "VWAP 每天（或每周、每月、从不）重新开始计算，按 timeZone 或 utcOffset 的时区划分。",
+      "incremental": "每次推送时，图表只重新计算最后一根 K 线的数值：无论一百根还是一百万根 K 线，推送的开销都相同。",
+      "zoom": "缩小显示时，指标仍按每一根 K 线计算，并按每个像素列的最低和最高值绘制，因此在一百万根 K 线上尖峰依然可见。",
+      "ichimoku": "一目均衡表的先行带向前（最新 K 线之后的空白处）移动 displacement − 1 根，迟行线向后移动同样根数；纯函数 ichimoku 返回未移动的数值。"
     }
   },
   "demos": {
@@ -60,6 +62,30 @@
     "vanilla": {
       "title": "不使用 React",
       "description": "minerva-design/charts/core 中的 createTradingChart 可在任意元素中挂载同样的图表：选项、on() 事件和 destroy()。这里用 sma() 计算悬停 K 线的收盘价与 50 日均线的距离。"
+    },
+    "ichimoku": {
+      "title": "一目均衡表",
+      "description": "转换线、基准线、迟行线，以及两条先行带之间的云层：先行带 A 在 B 之上时为上涨色，否则为下跌色。rightOffset 为向前 26 根 K 线绘制的云层留出空间。"
+    },
+    "supertrend": {
+      "title": "超级趋势与抛物线 SAR",
+      "description": "随趋势翻转的跟踪止损：分上涨色 / 下跌色的超级趋势带，以及 SAR 点。买卖标记是用纯函数 supertrend 计算出的趋势翻转点。"
+    },
+    "channels": {
+      "title": "肯特纳与唐奇安通道",
+      "description": "肯特纳通道围绕 EMA 上下各若干倍平均真实波幅，唐奇安通道沿最高价和最低价，布林带使用标准差。"
+    },
+    "oscillators": {
+      "title": "震荡指标",
+      "description": "随机 RSI 和 MFI 在 0 到 100 之间（20 / 80 区间），CCI 围绕 ±100，威廉指标在 −100 到 0 之间。每个指标独占一个窗格，图表随之变高。"
+    },
+    "dmi": {
+      "title": "DMI 与 ADX",
+      "description": "+DI 和 −DI 分别为上涨色和下跌色，ADX 为琥珀色并有 25 参考线：高于 25 表示趋势强劲。下方文字读取纯函数 dmi 的最新值。"
+    },
+    "obv": {
+      "title": "能量潮 OBV",
+      "description": "OBV 累加收涨日的成交量、减去收跌日的成交量；其 20 根均线显示买压还是卖压占优。大数值使用页面语言的紧凑单位。"
     }
   },
   "data": {
@@ -105,7 +131,42 @@
     "vanillaAria": "用 createTradingChart 绘制的日线图",
     "vanillaWarmup": "K 线数量还不足以计算 50 日均线",
     "vanillaAbove": "收盘价高于 50 日均线 {{value}}",
-    "vanillaBelow": "收盘价低于 50 日均线 {{value}}"
+    "vanillaBelow": "收盘价低于 50 日均线 {{value}}",
+    "cloud": "云层",
+    "nikkei": "日经 225",
+    "ichimokuAria": "日经 225 日线图，含一目均衡表",
+    "bandDistance": "通道距离",
+    "atrs": "{{value}} 倍 ATR",
+    "parabolicSar": "抛物线 SAR",
+    "supertrendAria": "SOL/USDT 4 小时图，含超级趋势及其翻转点",
+    "channel": "通道",
+    "channels": {
+      "keltner": "肯特纳",
+      "donchian": "唐奇安",
+      "boll": "布林带"
+    },
+    "eurusd": "欧元/美元",
+    "channelsAria": "EUR/USD 1 小时图，含价格通道",
+    "oscillators": "震荡指标",
+    "oscillatorNames": {
+      "stochRsi": "随机 RSI",
+      "cci": "CCI",
+      "williamsR": "威廉指标",
+      "mfi": "MFI"
+    },
+    "oscillatorsAria": "BTC/USDT 4 小时图，含震荡指标窗格",
+    "dmiSummary": {
+      "strong": "ADX {{adx}}：趋势强劲，{{direction}}",
+      "weak": "ADX {{adx}}：趋势不强，目前{{direction}}"
+    },
+    "directions": {
+      "up": "偏多（+DI 在 −DI 之上）",
+      "down": "偏空（−DI 在 +DI 之上）"
+    },
+    "dmiAria": "MSFT 日线图，含 DMI 窗格",
+    "aapl": "苹果 AAPL",
+    "obvAria": "AAPL 日线图，含成交量和 OBV",
+    "flips": "趋势翻转：{{count}} 次"
   },
   "api": {
     "TradingMovingAverageIndicator": {
@@ -191,7 +252,25 @@
       "refreshTheme": "重新读取 CSS 变量（主题变化会自动检测）",
       "resize": "按容器尺寸重新绘制（尺寸变化会自动检测）",
       "on": "订阅事件；返回取消订阅的函数",
-      "destroy": "移除图表并释放 GPU 资源"
+      "destroy": "移除图表并释放 GPU 资源",
+      "getVisibleTimeRange": "绘图区左右边缘的时间（在 K 线间插值）。",
+      "setVisibleTimeRange": "显示两个时间之间的 K 线。",
+      "setCrosshair": "在某个时间（和价格）显示十字光标，如同指针在那里；null 隐藏。不会触发 crosshairMove。",
+      "updateDrawing": "修改画线的样式或内容（可撤销）。",
+      "undo": "撤销画线的上一次修改（也可按 Ctrl / ⌘ + Z）。",
+      "redo": "重做上一次撤销的修改（也可按 Ctrl / ⌘ + Shift + Z）。",
+      "getUndoState": "画线能否撤销或重做。",
+      "startReplay": "开始 K 线回放：隐藏 time 之后的 K 线，再由 replayStep 或 replayPlay 放出。不传 time 时由用户点击选择起始 K 线。",
+      "replayStep": "放出回放的下一根（或几根）K 线。",
+      "replayPlay": "每秒放出 speed 根 K 线（默认当前速度）。",
+      "replayPause": "暂停回放。",
+      "stopReplay": "结束回放并显示全部 K 线。",
+      "getReplayState": "K 线回放的状态。",
+      "toDataURL": "图表图片（K 线、坐标轴、画线和图例）的 data URL。",
+      "toBlob": "图表图片的 Blob（不支持 canvas 时为 null）。",
+      "requestFullscreen": "全屏显示图表。",
+      "exitFullscreen": "退出全屏。",
+      "isFullscreen": "图表是否处于全屏。"
     },
     "TradingChartEventMap": {
       "renderer": "当前使用的后端，降级后会再次触发",
@@ -199,11 +278,98 @@
       "click": "点击了某个窗格",
       "visibleRangeChange": "可见 K 线发生变化",
       "orderMove": "可拖动的价格线被放下",
-      "drawingsChange": "用户添加、移动或删除了画线",
+      "drawingsChange": "画线被添加、移动、修改样式、删除、撤销或重做。",
       "drawingSelect": "选中的画线发生变化",
       "drawingToolChange": "画线工具发生变化",
       "indicatorToggle": "通过图例显示或隐藏了指标",
-      "historyRequest": "最早的 K 线进入视图"
+      "historyRequest": "最早的 K 线进入视图",
+      "orderCreate": "点击了 + 下单按钮。",
+      "orderCancel": "点击了价格线的关闭按钮。",
+      "undoChange": "撤销 / 重做变为可用或不可用。",
+      "replayChange": "K 线回放开始、前进、播放、暂停或结束。",
+      "fullscreenChange": "图表进入（true）或退出全屏。"
+    },
+    "TradingParabolicSarIndicator": {
+      "type": "抛物线 SAR。",
+      "start": "初始加速因子。",
+      "increment": "每创新极值时加速因子的增量。",
+      "maximum": "加速因子的最大值。",
+      "color": "点的颜色；默认按趋势使用上涨 / 下跌色。"
+    },
+    "TradingIchimokuIndicator": {
+      "type": "一目均衡表。",
+      "conversionPeriod": "转换线（Tenkan-sen）的周期。",
+      "basePeriod": "基准线（Kijun-sen）的周期。",
+      "spanBPeriod": "先行带 B（Senkou span B）的周期。",
+      "displacement": "先行带向前、迟行线向后移动的 K 线数。",
+      "colors": "转换线、基准线、迟行线、先行带 A 和 B 的颜色。",
+      "cloud": "填充两条先行带之间的云层：A 在 B 之上时为上涨色，否则为下跌色。"
+    },
+    "TradingSupertrendIndicator": {
+      "type": "超级趋势。",
+      "period": "平均真实波幅的周期。",
+      "multiplier": "通道距离（ATR 的倍数）。",
+      "upColor": "上升趋势中通道的颜色；默认为上涨色。",
+      "downColor": "下降趋势中通道的颜色；默认为下跌色。"
+    },
+    "TradingKeltnerIndicator": {
+      "type": "肯特纳通道。",
+      "period": "指数均线的周期。",
+      "multiplier": "通道距离（ATR 的倍数）。",
+      "atrPeriod": "平均真实波幅的周期。",
+      "colors": "中轨、上轨和下轨的颜色。",
+      "fill": "填充通道。"
+    },
+    "TradingDonchianIndicator": {
+      "type": "唐奇安通道。",
+      "period": "K 线数量。",
+      "colors": "中轨、上轨和下轨的颜色。",
+      "fill": "填充通道。"
+    },
+    "TradingObvIndicator": {
+      "type": "能量潮。",
+      "maPeriod": "叠加在线上的均线周期。",
+      "color": "线条颜色。"
+    },
+    "TradingCciIndicator": {
+      "type": "顺势指标 CCI。",
+      "period": "K 线数量。",
+      "color": "线条颜色。"
+    },
+    "TradingStochRsiIndicator": {
+      "type": "随机 RSI。",
+      "rsiPeriod": "RSI 的周期。",
+      "stochPeriod": "RSI 随机值的周期。",
+      "kPeriod": "K 的平滑周期。",
+      "dPeriod": "D 的平滑周期。",
+      "colors": "K 线和 D 线的颜色。"
+    },
+    "TradingDmiIndicator": {
+      "type": "动向指标。",
+      "period": "方向指标的周期。",
+      "adxPeriod": "ADX 的平滑周期。",
+      "colors": "+DI、−DI 和 ADX 线的颜色。"
+    },
+    "TradingWilliamsRIndicator": {
+      "type": "威廉指标。",
+      "period": "K 线数量。",
+      "color": "线条颜色。"
+    },
+    "TradingMfiIndicator": {
+      "type": "资金流量指标。",
+      "period": "K 线数量。",
+      "color": "线条颜色。"
+    },
+    "TradingVolumeProfile": {
+      "low": "第一档底部的价格。",
+      "high": "最后一档顶部的价格。",
+      "step": "每档的价格高度。",
+      "up": "每档上涨 K 线的成交量，从最低档开始。",
+      "down": "每档下跌 K 线的成交量。",
+      "total": "总成交量。",
+      "poc": "POC（成交量最大）所在的档；无成交量时为 −1。",
+      "valueAreaFrom": "价值区的第一档。",
+      "valueAreaTo": "价值区的最后一档。"
     }
   },
   "wc": {

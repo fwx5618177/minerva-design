@@ -145,9 +145,12 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
   const limit = (side: Side) => {
     const spread = best.ask - best.bid;
     let index: number;
-    if (spread > 1 && random() < 0.6) {
-      // improve the price inside the spread
-      index = side === "bid" ? best.bid + 1 : best.ask - 1;
+    if (spread > 1 && random() < (spread > 4 ? 0.95 : 0.6)) {
+      // improve the price inside the spread; after a sweep, makers quote
+      // back into the gap (up to half of it at once): it closes in ms
+      const jump =
+        1 + Math.floor(random() * Math.max(1, Math.floor((spread - 1) / 2)));
+      index = side === "bid" ? best.bid + jump : best.ask - jump;
     } else {
       index = at(side, Math.floor(-Math.log(Math.max(1e-9, random())) * 7));
     }

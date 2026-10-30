@@ -6,9 +6,9 @@
       "title": "概览",
       "text": "TradingChart 接收 OHLCV K 线（对象数组，或用于超长历史的类型化数组列），通过图表引擎的 GPU 后端绘制；坐标轴、标签、画线与十字光标绘制在 Canvas2D 覆盖层上。",
       "axis": "时间轴按 K 线序号排列：周末、夜盘休市和节假日不会留下空白，刻度标签随周期变化（新的一天、新的月份加粗显示）。",
-      "panes": "均线、布林带和 VWAP 叠加在主图上；成交量、MACD、RSI、KDJ 和 ATR 各占一个副图，所有窗格共享缩放与十字光标。拖动分隔线即可调整窗格高度。",
-      "trading": "最新价线及 K 线收盘倒计时、可见区间最高 / 最低价标记、买卖点标记，以及可拖动的委托、持仓、止盈、止损和预警线。",
-      "drawings": "趋势线、射线、水平线、垂直线、矩形、斐波那契回撤与测量工具：均为纯数据，可通过 drawings 与 onDrawingsChange 保存和恢复。"
+      "panes": "均线、布林带、肯特纳通道、唐奇安通道、VWAP、抛物线 SAR、一目均衡表和超级趋势叠加在价格上；成交量、MACD、RSI、KDJ、ATR、OBV、CCI、随机 RSI、DMI、威廉指标和 MFI 各占一个窗格，共享缩放和十字光标。拖动分隔线即可调整窗格高度。",
+      "trading": "带收线倒计时的最新价线、可见区间的最高 / 最低价、买卖标记、可见区间的成交量分布（POC 与价值区），以及可拖动、可撤销、可从价格轴直接创建的委托、持仓、止盈、止损和预警线。",
+      "drawings": "趋势线、射线、箭头、水平线、垂直线、平行通道、安德鲁音叉、矩形、斐波那契回撤、文字注释、多 / 空头仓位工具和测量工具，可画在价格窗格或任意指标窗格上。选中画线后会出现浮动工具栏修改样式，Ctrl / ⌘ + Z 撤销。画线是普通数据，通过 drawings 和 onDrawingsChange 保存和恢复。"
     },
     "streaming": {
       "title": "实时推送",
@@ -19,19 +19,26 @@
       "title": "操作方式",
       "pointer": "滚轮在指针位置缩放（Shift 或横向滑动可平移），拖动平移并带有惯性。",
       "axes": "拖动价格轴可纵向缩放，拖动时间轴可调整 K 线宽度；双击坐标轴即可复位。",
-      "keyboard": "聚焦图表后：方向键逐根移动十字光标（Shift 一次十根）并朗读价格，+ / − 缩放，Home / End 跳到第一根 / 最新一根，Delete 删除选中的画线，Esc 取消。",
+      "keyboard": "聚焦图表后：方向键逐根移动十字光标（按住 Shift 一次十根）并朗读价格，+ / − 缩放，Home / End 跳到第一根 / 最新 K 线，Delete 删除选中的画线，Ctrl / ⌘ + Z 撤销、Ctrl / ⌘ + Shift + Z 重做画线修改，Escape 取消。",
       "touch": "触屏设备上：拖动平移，双指捏合缩放。"
     },
     "languages": {
       "title": "多语言",
       "text": "图表自身绘制的文字（开高低收名称、委托与预警线标题、倒计时、测量工具、无障碍名称）内置英文、中文、日文和法文，并跟随页面语言（<html lang>），切换语言时自动更新。成交量使用该语言的单位（中文为万 / 亿）。用 locale 指定其他语言，用 labels 替换任意文字。",
       "colors": "涨跌颜色不跟随语言：中文页面也可能展示美股，因此中国内地的红涨绿跌需要显式设置 colorConvention=\"redUp\"。"
+    },
+    "workflow": {
+      "title": "工作流",
+      "layouts": "多图布局：syncCharts 让多个图表共享十字光标时间和可见时间范围，不同周期也可以同步。",
+      "replay": "K 线回放：startReplay 隐藏某一时刻之后的 K 线，replayStep 和 replayPlay 再按所选速度逐根放出，指标会像实时行情一样重新计算。",
+      "time": "时区与交易时段：timeZone 决定时间轴、时段分隔线和 VWAP 周期使用的时钟（含夏令时）。",
+      "export": "图片与全屏：toDataURL 和 toBlob 把所有图层（K 线、坐标轴、画线和图例）合成为一张图片；requestFullscreen 让图表全屏显示。"
     }
   },
   "demos": {
     "pro-terminal": {
       "title": "专业终端",
-      "description": "九十天的一分钟 K 线，周期按钮通过 resampleBars 聚合；工具栏可切换图表样式、指标和价格坐标（自动、百分比、对数）。点击图例中的指标名称可隐藏该指标，拖动窗格分隔线可调整高度。"
+      "description": "1 分钟到 1 周的周期由 resampleBars 聚合，七种图表样式，指标开关（均线、布林带、一目均衡表、超级趋势、成交量分布、成交量、MACD、RSI、KDJ），线性 / 百分比 / 对数坐标，日分隔线，下载图片和全屏。"
     },
     "streaming": {
       "title": "实时行情",
@@ -47,7 +54,7 @@
     },
     "drawing-tools": {
       "title": "画线工具",
-      "description": "选择工具后在图上点击两次或拖动。使用光标时，点击画线可选中，拖动画线或其控制点可移动，按 Delete 删除。drawings 与 onDrawingsChange 把画线保存在 React 状态中，便于持久化；斐波那契回撤和支撑线由数据计算得出。"
+      "description": "十四种工具：选择后拖动或逐点点击锚点（通道和音叉需要三个点）。选中画线后可在浮动工具栏里修改颜色、线宽、线型、填充，锁定或删除；拖动画线或其控制点即可移动，双击文字注释可编辑。RSI 窗格上同样可以画线；撤销 / 重做可用按钮或 Ctrl / ⌘ + Z。"
     },
     "orders": {
       "title": "委托与持仓",
@@ -55,7 +62,7 @@
     },
     "compare": {
       "title": "多品种对比",
-      "description": "compare 在主图上叠加其他品种；使用百分比坐标时，每个序列都从首根可见 K 线的 0% 开始，滚动时也能直接比较涨幅。切换到对数和线性坐标即可看出区别。"
+      "description": "compare 在价格图上叠加其他品种。百分比坐标下每个序列都从第一根可见 K 线的 0% 开始，价格轴上标出各自的最新涨跌幅，并画出 0% 虚线；对数和线性坐标显示价格。"
     },
     "history": {
       "title": "无限历史",
@@ -72,6 +79,30 @@
     "dark-terminal": {
       "title": "暗色终端",
       "description": "图表的颜色来自 CSS 变量：外层容器重新定义这些变量，得到交易所风格的暗色终端，带行情头部、EMA 20 / 50、布林带、主图底部的成交量以及 RSI。"
+    },
+    "volume-profile": {
+      "title": "成交量分布",
+      "description": "volumeProfile 画出可见 K 线在各价位的成交量（先上涨 K 线后下跌 K 线），并标出成交量最大的 POC 和包含 70% 成交量的价值区。它随滚动和缩放更新；下方文字由纯函数 volumeProfile 计算。"
+    },
+    "multi-chart": {
+      "title": "多图联动布局",
+      "description": "四个图表由 syncCharts 联动：悬停其中一个，其他图表在同一时间显示十字光标；滚动或缩放一个，其他图表显示相同的时间段，包括 4 小时图。"
+    },
+    "replay": {
+      "title": "K 线回放",
+      "description": "在看不到未来行情的情况下练习盘感：在图上点选一根 K 线，然后按所选速度逐根或连续播放之后的 K 线。均线和成交量逐根重新计算；退出后恢复全部 K 线。"
+    },
+    "order-entry": {
+      "title": "图上下单",
+      "description": "开启 orderEntry 后，价格窗格右侧会有一个跟随十字光标的 + 按钮：点击即在该价格下限价单（低于最新价为买入，高于为卖出）。委托是可拖动、可撤销的价格线，通过 onOrderCreate、onOrderMove 和 onOrderCancel 保存在 React 状态里。"
+    },
+    "sessions": {
+      "title": "时区与交易时段",
+      "description": "十个纽约交易日的 5 分钟 K 线。timeZone 改变时间轴的时钟（含夏令时），以及时段分隔线和 VWAP 的日界：换成上海时间后，一个纽约交易日横跨两天。"
+    },
+    "export": {
+      "title": "图片与全屏",
+      "description": "toDataURL 和 toBlob 把 K 线、坐标轴、画线和图例合成为一张 PNG；requestFullscreen 让图表全屏显示（按 Escape 退出）。"
     }
   },
   "data": {
@@ -102,7 +133,10 @@
       "vol": "VOL",
       "macd": "MACD",
       "rsi": "RSI",
-      "kdj": "KDJ"
+      "kdj": "KDJ",
+      "ichimoku": "一目均衡表",
+      "st": "超级趋势",
+      "vpvr": "成交量分布"
     },
     "scales": {
       "linear": "自动",
@@ -135,7 +169,13 @@
       "verticalLine": "垂直线",
       "rectangle": "矩形",
       "fibRetracement": "斐波那契回撤",
-      "measure": "测量"
+      "measure": "测量",
+      "arrow": "箭头",
+      "parallelChannel": "平行通道",
+      "pitchfork": "安德鲁音叉",
+      "text": "文字注释",
+      "longPosition": "多头仓位",
+      "shortPosition": "空头仓位"
     },
     "keepDrawing": "保持画线模式",
     "clearDrawings": "全部删除",
@@ -174,7 +214,59 @@
     "high24h": "24 小时最高",
     "low24h": "24 小时最低",
     "volume24h": "24 小时成交量",
-    "darkAria": "暗色终端中的 BTCUSDT 永续 15 分钟图"
+    "darkAria": "暗色终端中的 BTCUSDT 永续 15 分钟图",
+    "undo": "撤销",
+    "redo": "重做",
+    "downloadImage": "下载图片",
+    "fullscreen": "全屏",
+    "snapshot": "截图",
+    "snapshotAlt": "NVDA 日线图截图",
+    "snapshotCaption": "由 toDataURL 合成：K 线、坐标轴、图例和水印都在同一张 PNG 中。",
+    "exportAria": "NVDA 日线图，含 50 日和 200 日均线",
+    "nvda": "英伟达 NVDA",
+    "volumeProfile": "成交量分布",
+    "profileRows": "价格档数",
+    "profileSide": "位置",
+    "sides": {
+      "right": "右侧",
+      "left": "左侧"
+    },
+    "profileStatus": "POC {{poc}} · 价值区 {{low}} – {{high}}（70% 成交量）",
+    "profileAria": "BTC/USDT 15 分钟图，含可见 K 线的成交量分布",
+    "syncCrosshair": "同步十字光标",
+    "syncTime": "同步时间范围",
+    "layoutAria": "{{symbol}} {{timeframe}} 图表",
+    "replayControls": "回放控制",
+    "replayStart": "开始回放",
+    "replayRestart": "重新选择起点",
+    "play": "播放",
+    "replayStep": "下一根",
+    "replaySpeed": "速度",
+    "replayExit": "退出",
+    "replayIdle": "点击开始回放，再点选一根 K 线回到那里。",
+    "replayPicking": "点选一根 K 线：之后的 K 线将被隐藏。",
+    "replayProgress": "第 {{index}} / {{total}} 根",
+    "replayAria": "用于 K 线回放的 ETH/USDT 1 小时图",
+    "orderPlacedBuy": "已在 {{price}} 挂限价买单",
+    "orderPlacedSell": "已在 {{price}} 挂限价卖单",
+    "orderModified": "委托已从 {{from}} 改到 {{to}}",
+    "orderCancelled": "已撤销 {{price}} 的委托",
+    "orderEntryAria": "可图上下单的 BTCUSDT 永续 5 分钟图",
+    "orderEntryHint": "在图上移动鼠标，点击右侧的 + 下单；拖动价格线改价，点 × 撤单。",
+    "timeZone": "时区",
+    "zones": {
+      "America_New_York": "纽约",
+      "Europe_London": "伦敦",
+      "Asia_Shanghai": "上海",
+      "Asia_Tokyo": "东京",
+      "UTC": "UTC"
+    },
+    "sessionBreaks": "交易日分隔线",
+    "sessionsAria": "AAPL 十个交易日的 5 分钟图，含 VWAP",
+    "noteText": "上涨通道：等待回踩确认",
+    "ordersTitle": "当前委托",
+    "rowCount": "{{count}} 档",
+    "barsPerSecond": "{{count}} 根 / 秒"
   },
   "api": {
     "TradingChartProps": {
@@ -192,7 +284,12 @@
       "onDrawingToolChange": "画线工具发生变化，例如画完后回到光标",
       "onIndicatorToggle": "通过图例显示或隐藏了某个指标",
       "onHistoryRequest": "最早的 K 线进入视图：加载更早的数据并调用 prependBars",
-      "onRendererChange": "当前使用的后端，降级（GPU 重置）后会再次触发"
+      "onRendererChange": "当前使用的后端，降级（GPU 重置）后会再次触发",
+      "onOrderCreate": "点击了 + 下单按钮（见 orderEntry）。",
+      "onOrderCancel": "点击了可撤销价格线的关闭按钮。",
+      "onUndoChange": "画线的撤销 / 重做变为可用或不可用。",
+      "onReplayChange": "K 线回放开始、前进、播放、暂停或结束。",
+      "onFullscreenChange": "图表进入（true）或退出全屏。"
     },
     "TradingChartOptions": {
       "bars": "K 线，按时间从早到晚：对象或类型化数组列。历史相同且包含更新 K 线的新数组会按推送方式应用",
@@ -207,7 +304,7 @@
       "precision": "价格小数位数；默认根据数据检测",
       "formatPrice": "格式化坐标轴、图例和标签中的价格（优先于 precision）",
       "locale": "文字、数字与日期的区域设置：默认跟随页面语言（<html lang>，切换时自动更新）",
-      "utcOffset": "显示时间相对 UTC 的偏移（分钟，UTC+8 为 480）；默认使用本地时间",
+      "utcOffset": "显示时间相对 UTC 的偏移（分钟，UTC+8 为 480）；优先于 timeZone。",
       "crosshair": "magnet 让水平线吸附到开高低收；free 跟随指针",
       "legend": "显示十字光标处数值的图例和指标开关",
       "lastPriceLine": "最新价处的点线和坐标轴标签",
@@ -228,7 +325,12 @@
       "watermark": "K 线背后的大号淡色文字",
       "labels": "覆盖内置文字（内置英文、中文、日文和法文）",
       "renderer": "后端：auto 依次尝试 WebGPU、WebGL2、WebGL 和 Canvas2D",
-      "ariaLabel": "无障碍标签；默认由品种名称生成"
+      "ariaLabel": "无障碍标签；默认由品种名称生成",
+      "timeZone": "时间轴、交易日分隔线和 VWAP 周期使用的时区：IANA 名称（\"America/New_York\"）或 \"UTC\"；默认为本地时间。",
+      "sessionBreaks": "在每天开始处画垂直虚线（日内 K 线）。",
+      "orderEntry": "在价格窗格右侧、十字光标价格处显示 + 按钮：点击后触发限价单事件（orderCreate）。",
+      "volumeProfile": "可见 K 线的成交量分布，含 POC 和价值区（true 使用默认设置）。",
+      "drawingToolbar": "选中画线时显示的浮动工具栏（颜色、线宽、线型、填充、锁定、删除）。"
     },
     "TradingChartHandle": {
       "update": "推送一根 K 线：与最后一根时间相同则替换，更晚则追加",
@@ -248,7 +350,25 @@
       "selectDrawing": "选中一条画线（null 取消选择）",
       "setIndicatorVisible": "按 id 显示或隐藏指标",
       "getRenderer": "当前使用的后端，就绪前为 null",
-      "getInstance": "minerva-design/charts/core 的引擎实例"
+      "getInstance": "minerva-design/charts/core 的引擎实例",
+      "getVisibleTimeRange": "绘图区左右边缘的时间，挂载前为 null。",
+      "setVisibleTimeRange": "显示两个时间之间的 K 线。",
+      "setCrosshair": "在某个时间（和价格）显示十字光标；null 隐藏。",
+      "setScaleMode": "设置价格窗格的坐标类型。",
+      "updateDrawing": "修改画线的样式或内容（可撤销）。",
+      "undo": "撤销画线的上一次修改。",
+      "redo": "重做上一次撤销的画线修改。",
+      "getUndoState": "画线能否撤销或重做。",
+      "startReplay": "从 time 之后开始 K 线回放；不传时由用户点选 K 线。",
+      "replayStep": "放出回放的下一根（或几根）K 线。",
+      "replayPlay": "以每秒 speed 根的速度播放回放。",
+      "replayPause": "暂停回放。",
+      "stopReplay": "结束回放并显示全部 K 线。",
+      "getReplayState": "K 线回放的状态，挂载前为 null。",
+      "toDataURL": "图表图片的 data URL（挂载前为 \"\"）。",
+      "toBlob": "图表图片的 Blob。",
+      "requestFullscreen": "全屏显示图表。",
+      "exitFullscreen": "退出全屏。"
     },
     "TradingBar": {
       "time": "开盘时间，自纪元起的毫秒数",
@@ -275,7 +395,8 @@
       "quantity": "标签旁显示的数量；为数字时持仓会显示盈亏",
       "color": "颜色；默认由类型和方向决定",
       "draggable": "可拖动到其他价格，由 onOrderMove 通知",
-      "lineStyle": "solid、dashed 或 dotted；委托默认为虚线"
+      "lineStyle": "solid、dashed 或 dotted；委托默认为虚线",
+      "cancellable": "在标签上显示关闭按钮（触发 orderCancel）。"
     },
     "TradingMarker": {
       "time": "K 线时间（包含该时间的 K 线）",
@@ -289,20 +410,26 @@
       "name": "图例中的名称",
       "data": "按时间排列的数值，与 K 线按时间匹配",
       "color": "线条颜色；默认为主题颜色",
-      "id": "标识；默认为名称"
+      "id": "标识；默认为名称",
+      "lineWidth": "线宽（像素）。"
     },
     "TradingDrawing": {
       "id": "唯一 id",
       "type": "创建它的工具",
-      "points": "锚点（时间和价格）：水平线 / 垂直线一个，其余两个",
+      "points": "锚点：水平线、垂直线和文字一个；通道、音叉和仓位工具三个（入场、止盈、止损）；其他两个。",
       "color": "颜色；默认为主色",
       "lineWidth": "线宽（像素）",
       "lineStyle": "solid、dashed 或 dotted",
-      "locked": "用户不能移动或删除"
+      "locked": "用户不能移动或删除",
+      "pane": "画线所在的窗格：\"price\" 或指标窗格的 id。",
+      "fill": "填充图形（矩形、通道、音叉、斐波那契层级、注释）。",
+      "text": "文字画线的文本（\\n 换行）。",
+      "fontSize": "文字画线的字号（像素）。",
+      "quantity": "仓位工具的数量：以价格单位显示盈亏。"
     },
     "TradingDrawingPoint": {
       "time": "时间；超出最后一根 K 线时按周期外推",
-      "price": "价格"
+      "price": "价格（或指标窗格中的数值）。"
     },
     "TradingChartLabels": {
       "open": "图例中的开盘",
@@ -324,7 +451,27 @@
       "minutes": "测量工具中的分钟数；{count} 会被替换",
       "chart": "默认无障碍标签；{symbol} 会被替换",
       "announcement": "键盘移动十字光标时朗读的 K 线信息；{time}、{open}、{high}、{low}、{close} 会被替换",
-      "timeframe": "图例中品种名称后显示的周期；默认为字符串形式的 timeframe 选项"
+      "timeframe": "图例中品种名称后显示的周期；默认为字符串形式的 timeframe 选项",
+      "ichimoku": "一目均衡表在图例中的标题。",
+      "supertrend": "超级趋势在图例中的标题。",
+      "text": "新文字画线的默认文本。",
+      "color": "画线工具栏的颜色按钮。",
+      "lineWidth": "画线工具栏的线宽按钮。",
+      "lineStyle": "画线工具栏的线型按钮。",
+      "fill": "画线工具栏的填充按钮。",
+      "editText": "画线工具栏中文字画线的编辑按钮。",
+      "lock": "画线工具栏的锁定按钮。",
+      "remove": "画线工具栏的删除按钮。",
+      "target": "仓位工具的止盈标签；{price} 和 {change} 会被替换。",
+      "stop": "仓位工具的止损标签；{price} 和 {change} 会被替换。",
+      "riskReward": "仓位工具的盈亏比；{ratio} 会被替换。",
+      "profit": "仓位工具按最新价计算的盈亏；{value} 会被替换。",
+      "long": "多头仓位工具。",
+      "short": "空头仓位工具。",
+      "replay": "K 线回放的标记；{time} 会被替换。",
+      "replayHint": "选择回放起始 K 线时的提示。",
+      "buyLimit": "低于最新价时下单按钮的文字；{price} 会被替换。",
+      "sellLimit": "高于最新价时下单按钮的文字；{price} 会被替换。"
     },
     "TradingCrosshairEvent": {
       "index": "悬停 K 线的序号（可能超出最后一根）",
@@ -360,6 +507,40 @@
     "TradingHistoryRequestEvent": {
       "firstTime": "最早一根 K 线的时间",
       "count": "K 线数量"
+    },
+    "TradingVolumeProfileOptions": {
+      "rows": "价格档的数量。",
+      "width": "最长一档的宽度，占绘图区宽度的比例。",
+      "valueArea": "价值区（围绕 POC）包含的成交量比例。",
+      "side": "各档从绘图区哪一侧向内延伸。",
+      "upColor": "上涨 K 线成交量的颜色；默认为上涨色。",
+      "downColor": "下跌 K 线成交量的颜色；默认为下跌色。",
+      "pocColor": "POC 线的颜色。"
+    },
+    "TradingOrderCreateEvent": {
+      "price": "委托价格（按价格精度取整）。",
+      "side": "低于最新价为 buy，高于为 sell。"
+    },
+    "TradingOrderCancelEvent": {
+      "id": "价格线的 id。",
+      "line": "该价格线。"
+    },
+    "TradingReplayState": {
+      "active": "正在回放（之后的 K 线已隐藏）。",
+      "picking": "用户正在选择起始 K 线。",
+      "playing": "正在自动放出 K 线。",
+      "speed": "播放时每秒放出的 K 线数。",
+      "index": "已显示的 K 线数。",
+      "total": "完整历史的 K 线数。",
+      "time": "最后一根已显示 K 线的时间。"
+    },
+    "TradingUndoState": {
+      "canUndo": "有可撤销的修改。",
+      "canRedo": "有可重做的修改。"
+    },
+    "TradingSyncOptions": {
+      "crosshair": "在其他图表上同一时间显示被悬停图表的十字光标。",
+      "timeRange": "任一图表滚动或缩放时，所有图表显示相同的时间范围。"
     }
   },
   "wc": {
@@ -388,7 +569,12 @@
         "minerva-drawing-tool-change": "画线工具发生变化（画完后回到光标）；detail：{ tool }",
         "minerva-indicator-toggle": "通过图例显示或隐藏了某个指标；detail：{ id, visible }",
         "minerva-history-request": "最早的 K 线进入视野：可用 prependBars 加载更早的数据；detail：{ firstTime, count }",
-        "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+        "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }",
+        "minerva-order-create": "点击了“+”下单按钮（orderEntry 选项）；detail：{ price, side }",
+        "minerva-order-cancel": "点击了可取消价格线的关闭按钮；detail：{ id, line }",
+        "minerva-undo-change": "绘图的撤销 / 重做变为可用或不可用；detail：{ canUndo, canRedo }",
+        "minerva-replay-change": "K 线回放开始、步进、播放、暂停或停止；detail：{ active, picking, playing, speed, index, total, time }",
+        "minerva-fullscreen-change": "图表进入或退出全屏；detail：{ fullscreen }"
       },
       "methods": {
         "updateBar": "流式更新一根 K 线：时间相同则替换最后一根，时间更晚则追加（即引擎的 update(bar)）",
@@ -407,7 +593,25 @@
         "removeDrawing": "删除一条画线",
         "selectDrawing": "选中一条画线（null 清除选择）",
         "setIndicatorVisible": "显示或隐藏某个指标",
-        "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+        "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null",
+        "getVisibleTimeRange": "绘图区边缘的时间，引擎创建前为 null",
+        "setVisibleTimeRange": "显示两个时间之间的 K 线",
+        "setCrosshair": "在某个时间（和价格）显示十字线；null 将其隐藏",
+        "setScaleMode": "设置价格窗格的价格刻度（linear、log、percent、indexed）",
+        "updateDrawing": "修改绘图的样式或内容（可撤销）",
+        "undo": "撤销绘图的上一次修改",
+        "redo": "重做上一次撤销的绘图修改",
+        "getUndoState": "绘图是否可以撤销或重做",
+        "startReplay": "从 time 之后开始 K 线回放（不传时由用户选择 K 线）",
+        "replayStep": "显示回放的后续 K 线",
+        "replayPlay": "以每秒 speed 根 K 线的速度播放回放",
+        "replayPause": "暂停回放",
+        "stopReplay": "结束回放并显示全部 K 线",
+        "getReplayState": "K 线回放的状态，引擎创建前为 null",
+        "toDataURL": "图表图片的 data URL（引擎创建前为 \"\"）",
+        "toBlob": "图表图片的 Blob",
+        "requestChartFullscreen": "全屏显示图表（元素自身的 requestFullscreen() 会全屏显示元素本身）",
+        "exitChartFullscreen": "退出全屏"
       }
     }
   }

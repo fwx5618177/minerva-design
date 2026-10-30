@@ -6,9 +6,9 @@
       "title": "概要",
       "text": "TradingChart は OHLCV の足（オブジェクト、または長い履歴向けの型付き配列の列）を受け取り、チャートエンジンの GPU バックエンドで描画します。軸、ラベル、描画、クロスヘアは Canvas2D のオーバーレイに描かれます。",
       "axis": "時間軸は足の番号で並びます。週末、夜間、祝日に空白はできず、ラベルは時間足に合わせて変わります（新しい日や月は太字）。",
-      "panes": "移動平均、ボリンジャーバンド、VWAP は価格の上に、出来高、MACD、RSI、KDJ、ATR はそれぞれ下のペインに描かれ、ズームとクロスヘアを共有します。区切り線をドラッグするとペインの高さを変えられます。",
-      "trading": "足の確定までのカウントダウン付き現在値ライン、表示範囲の高値・安値マーク、売買マーカー、ドラッグできる注文・ポジション・利確・損切り・アラートのライン。",
-      "drawings": "トレンドライン、レイ、水平線、垂直線、長方形、フィボナッチ・リトレースメント、計測ツール。ただのデータなので drawings と onDrawingsChange で保存・復元できます。"
+      "panes": "移動平均、ボリンジャー・ケルトナー・ドンチャンの各チャネル、VWAP、パラボリック SAR、一目均衡表、スーパートレンドは価格に重ねて、出来高・MACD・RSI・KDJ・ATR・OBV・CCI・ストキャスティクス RSI・DMI・ウィリアムズ %R・MFI はそれぞれのペインに描かれ、ズームとクロスヘアを共有します。区切り線をドラッグするとペインの高さを変えられます。",
+      "trading": "足確定までのカウントダウン付き現在値ライン、表示範囲の高値・安値、売買マーカー、表示範囲の価格帯別出来高（POC とバリューエリア）、ドラッグ・取消・価格軸からの新規作成ができる注文・建玉・利確・損切・アラートの各ライン。",
+      "drawings": "トレンドライン、レイ、矢印、水平線・垂直線、平行チャネル、アンドリューズ・ピッチフォーク、長方形、フィボナッチ・リトレースメント、テキストメモ、ロング / ショートのポジションツール、計測ツールを、価格ペインにもインジケーターペインにも描けます。選択した描画はフローティングツールバーでスタイルを変更でき、Ctrl / ⌘ + Z で元に戻せます。描画はただのデータで、drawings と onDrawingsChange で保存・復元できます。"
     },
     "streaming": {
       "title": "ストリーミング",
@@ -19,19 +19,26 @@
       "title": "操作",
       "pointer": "ホイールでポインター位置を中心にズーム（Shift または横スワイプでスクロール）、ドラッグで慣性付きのパン。",
       "axes": "価格軸のドラッグで縦方向にズーム、時間軸のドラッグで足の幅を変更。軸をダブルクリックするとリセットします。",
-      "keyboard": "チャートにフォーカスして：矢印キーでクロスヘアを 1 本ずつ移動（Shift で 10 本）して価格を読み上げ、+ / − でズーム、Home / End で最初 / 最新の足へ、Delete で選択中の描画を削除、Esc で取り消し。",
+      "keyboard": "チャートにフォーカスすると、矢印キーでクロスヘアを一本ずつ移動して価格を読み上げ（Shift で十本ずつ）、+ / − でズーム、Home / End で最初 / 最新の足へ移動、Delete で選択中の描画を削除、Ctrl / ⌘ + Z で描画の変更を元に戻し、Ctrl / ⌘ + Shift + Z でやり直し、Escape で取り消します。",
       "touch": "タッチ操作：ドラッグでパン、ピンチでズーム。"
     },
     "languages": {
       "title": "言語",
       "text": "チャート自身が描く文字（四本値の名前、注文・アラートラインのタイトル、カウントダウン、計測ツール、アクセシブルな名前）は英語・中国語・日本語・フランス語を内蔵し、ページの言語（<html lang>）に従い、切り替えにも追従します。出来高はその言語の単位（日本語では万 / 億）で表示します。別の言語は locale で、個々の文字は labels で指定できます。",
       "colors": "色は言語に従いません。日本語のページで米国株を表示することもあるため、赤が上昇の慣習は colorConvention=\"redUp\" で明示的に指定します。"
+    },
+    "workflow": {
+      "title": "ワークフロー",
+      "layouts": "マルチチャートレイアウト：syncCharts で複数のチャートがクロスヘアの時刻と表示時間範囲を共有します（時間足が違っても同期します）。",
+      "replay": "バーリプレイ：startReplay である時点以降の足を隠し、replayStep と replayPlay で選んだ速度で一本ずつ戻します。インジケーターはリアルタイムと同じように再計算されます。",
+      "time": "タイムゾーンとセッション：timeZone で時間軸・セッション区切り・VWAP の期間に使う時計を指定します（夏時間にも対応）。",
+      "export": "画像と全画面：toDataURL と toBlob はすべてのレイヤー（足、軸、描画、凡例）を一枚の画像に合成します。requestFullscreen でチャートを全画面表示します。"
     }
   },
   "demos": {
     "pro-terminal": {
       "title": "プロ端末",
-      "description": "90 日分の 1 分足を resampleBars で各時間足ボタン用に集約。ツールバーでチャートスタイル、インジケーター、価格スケール（自動・パーセント・対数）を切り替えます。凡例のインジケーター名をクリックすると非表示、ペインの区切り線をドラッグすると高さを変更できます。"
+      "description": "1 分足から週足まで resampleBars で集計、7 種類のチャートスタイル、インジケーターの切り替え（移動平均、ボリンジャー、一目均衡表、スーパートレンド、価格帯別出来高、出来高、MACD、RSI、KDJ）、リニア / パーセント / 対数スケール、日の区切り、画像のダウンロードと全画面表示。"
     },
     "streaming": {
       "title": "リアルタイム配信",
@@ -47,7 +54,7 @@
     },
     "drawing-tools": {
       "title": "描画ツール",
-      "description": "ツールを選んでチャート上で 2 回クリックするかドラッグします。カーソルでは描画をクリックして選択、本体やハンドルをドラッグして移動、Delete で削除。drawings と onDrawingsChange で React の状態に保持し、保存できます。フィボナッチとサポートラインはデータから計算しています。"
+      "description": "14 種類のツール：選んでからドラッグするか、アンカーをクリックします（チャネルとピッチフォークは 3 点）。描画を選択するとフローティングツールバーで色・太さ・線種・塗りつぶし・ロック・削除を操作でき、描画やハンドルをドラッグして移動、テキストメモはダブルクリックで編集できます。RSI ペインにも描けます。元に戻す / やり直しはボタンか Ctrl / ⌘ + Z で。"
     },
     "orders": {
       "title": "注文とポジション",
@@ -55,7 +62,7 @@
     },
     "compare": {
       "title": "銘柄比較",
-      "description": "compare で他の銘柄を価格の上に重ねます。パーセントスケールではどの系列も最初に表示された足で 0% から始まるので、スクロールしながら騰落率を比べられます。対数・線形スケールに切り替えると違いがわかります。"
+      "description": "compare で他の銘柄を価格に重ねます。パーセントスケールでは各系列が最初に見えている足の 0% から始まり、価格軸に最新の騰落率、0% の点線が表示されます。対数・リニアスケールでは価格のままです。"
     },
     "history": {
       "title": "無限の履歴",
@@ -72,6 +79,30 @@
     "dark-terminal": {
       "title": "ダーク端末",
       "description": "チャートの色は CSS 変数から取られます。外側の要素で変数を定義し直し、ティッカーヘッダー、EMA 20 / 50、ボリンジャーバンド、価格ペイン下部の出来高、RSI を備えた取引所風のダーク端末にしています。"
+    },
+    "volume-profile": {
+      "title": "価格帯別出来高",
+      "description": "volumeProfile は表示中の足の価格帯ごとの出来高（陽線、陰線の順）を描き、POC と出来高の 70% を含むバリューエリアを示します。スクロールやズームに追従します。下の文は純粋関数 volumeProfile で計算しています。"
+    },
+    "multi-chart": {
+      "title": "同期レイアウト",
+      "description": "syncCharts で 4 つのチャートを連動させます。どれかにカーソルを合わせると他のチャートも同じ時刻にクロスヘアを表示し、スクロールやズームをすると 4 時間足を含めて同じ時間帯を表示します。"
+    },
+    "replay": {
+      "title": "バーリプレイ",
+      "description": "未来を見ずに相場を読む練習：チャート上の足をクリックし、その後の足を選んだ速度で一本ずつ、または連続で再生します。移動平均と出来高は一本ごとに再計算され、終了するとすべての足が戻ります。"
+    },
+    "order-entry": {
+      "title": "チャート注文",
+      "description": "orderEntry を有効にすると、価格ペインの右端にクロスヘアに追従する + ボタンが現れます。クリックするとその価格に指値注文を出します（現在値より下は買い、上は売り）。注文はドラッグ・取消できる価格ラインで、onOrderCreate・onOrderMove・onOrderCancel で React の状態に保持します。"
+    },
+    "sessions": {
+      "title": "タイムゾーンとセッション",
+      "description": "ニューヨークの 10 セッション分の 5 分足。timeZone で時間軸の時計（夏時間を含む）と、セッション区切り・VWAP の日の境目が変わります。上海時間では、ニューヨークの 1 セッションが 2 日にまたがります。"
+    },
+    "export": {
+      "title": "画像と全画面",
+      "description": "toDataURL と toBlob は足・軸・描画・凡例を 1 枚の PNG に合成します。requestFullscreen でチャートを全画面表示します（Escape で戻ります）。"
     }
   },
   "data": {
@@ -102,7 +133,10 @@
       "vol": "出来高",
       "macd": "MACD",
       "rsi": "RSI",
-      "kdj": "KDJ"
+      "kdj": "KDJ",
+      "ichimoku": "一目均衡表",
+      "st": "スーパートレンド",
+      "vpvr": "価格帯別出来高"
     },
     "scales": {
       "linear": "自動",
@@ -135,7 +169,13 @@
       "verticalLine": "垂直線",
       "rectangle": "長方形",
       "fibRetracement": "フィボナッチ・リトレースメント",
-      "measure": "計測"
+      "measure": "計測",
+      "arrow": "矢印",
+      "parallelChannel": "平行チャネル",
+      "pitchfork": "アンドリューズ・ピッチフォーク",
+      "text": "テキストメモ",
+      "longPosition": "ロングポジション",
+      "shortPosition": "ショートポジション"
     },
     "keepDrawing": "描画モードを維持",
     "clearDrawings": "すべて削除",
@@ -174,7 +214,59 @@
     "high24h": "24 時間の高値",
     "low24h": "24 時間の安値",
     "volume24h": "24 時間の出来高",
-    "darkAria": "ダーク端末の BTCUSDT 無期限 15 分足チャート"
+    "darkAria": "ダーク端末の BTCUSDT 無期限 15 分足チャート",
+    "undo": "元に戻す",
+    "redo": "やり直す",
+    "downloadImage": "画像をダウンロード",
+    "fullscreen": "全画面",
+    "snapshot": "スナップショット",
+    "snapshotAlt": "NVDA 日足チャートのスナップショット",
+    "snapshotCaption": "toDataURL で合成：足・軸・凡例・ウォーターマークが 1 枚の PNG に。",
+    "exportAria": "50 日・200 日移動平均付きの NVDA 日足チャート",
+    "nvda": "エヌビディア NVDA",
+    "volumeProfile": "価格帯別出来高",
+    "profileRows": "価格帯の数",
+    "profileSide": "表示位置",
+    "sides": {
+      "right": "右",
+      "left": "左"
+    },
+    "profileStatus": "POC {{poc}} · バリューエリア {{low}} – {{high}}（出来高の 70%）",
+    "profileAria": "表示中の足の価格帯別出来高付き BTC/USDT 15 分足チャート",
+    "syncCrosshair": "クロスヘアを同期",
+    "syncTime": "時間範囲を同期",
+    "layoutAria": "{{symbol}} {{timeframe}} チャート",
+    "replayControls": "リプレイの操作",
+    "replayStart": "リプレイ開始",
+    "replayRestart": "開始点を選び直す",
+    "play": "再生",
+    "replayStep": "次の足",
+    "replaySpeed": "速度",
+    "replayExit": "終了",
+    "replayIdle": "リプレイを開始し、戻りたい足をクリックしてください。",
+    "replayPicking": "足をクリックすると、それ以降の足が隠れます。",
+    "replayProgress": "{{total}} 本中 {{index}} 本目",
+    "replayAria": "バーリプレイ用の ETH/USDT 1 時間足チャート",
+    "orderPlacedBuy": "{{price}} に指値買いを発注",
+    "orderPlacedSell": "{{price}} に指値売りを発注",
+    "orderModified": "注文を {{from}} から {{to}} に変更",
+    "orderCancelled": "{{price}} の注文を取消",
+    "orderEntryAria": "チャート注文ができる BTCUSDT 無期限 5 分足チャート",
+    "orderEntryHint": "チャート上でカーソルを動かし、右端の + をクリックして発注。ラインをドラッグで変更、× で取消。",
+    "timeZone": "タイムゾーン",
+    "zones": {
+      "America_New_York": "ニューヨーク",
+      "Europe_London": "ロンドン",
+      "Asia_Shanghai": "上海",
+      "Asia_Tokyo": "東京",
+      "UTC": "UTC"
+    },
+    "sessionBreaks": "セッション区切り",
+    "sessionsAria": "VWAP 付き AAPL 5 分足チャート（10 セッション）",
+    "noteText": "上昇チャネル：押し目を待つ",
+    "ordersTitle": "未約定の注文",
+    "rowCount": "{{count}} 段",
+    "barsPerSecond": "{{count}} 本 / 秒"
   },
   "api": {
     "TradingChartProps": {
@@ -192,7 +284,12 @@
       "onDrawingToolChange": "描画ツールが変わった（描画後にカーソルへ戻るなど）",
       "onIndicatorToggle": "凡例からインジケーターが表示・非表示になった",
       "onHistoryRequest": "最も古い足が表示された：古い足を読み込んで prependBars を呼びます",
-      "onRendererChange": "使用中のバックエンド。フォールバック（GPU リセット）後にも通知されます"
+      "onRendererChange": "使用中のバックエンド。フォールバック（GPU リセット）後にも通知されます",
+      "onOrderCreate": "+ の注文ボタンがクリックされた（orderEntry を参照）。",
+      "onOrderCancel": "取消可能な価格ラインの閉じるボタンがクリックされた。",
+      "onUndoChange": "描画の元に戻す / やり直しが可能・不可能になった。",
+      "onReplayChange": "バーリプレイが開始・前進・再生・一時停止・終了した。",
+      "onFullscreenChange": "チャートが全画面になった（true）または戻った。"
     },
     "TradingChartOptions": {
       "bars": "足（古い順）：オブジェクトまたは型付き配列の列。同じ履歴に新しい足を加えた配列は配信として適用されます",
@@ -207,7 +304,7 @@
       "precision": "価格の小数桁数。既定ではデータから検出",
       "formatPrice": "軸、凡例、ラベルの価格を整形（precision より優先）",
       "locale": "文字・数値・日付のロケール。既定ではページの言語（<html lang>、変更にも追従）",
-      "utcOffset": "表示時刻の UTC からのずれ（分、UTC+8 なら 480）。既定はローカル時刻",
+      "utcOffset": "表示時刻の UTC からのずれ（分。UTC+8 なら 480）。timeZone より優先します。",
       "crosshair": "magnet は水平線を始値・高値・安値・終値に吸着、free はポインターに追従",
       "legend": "クロスヘア位置の値とインジケーターの切り替えを表示する凡例",
       "lastPriceLine": "現在値の点線と軸ラベル",
@@ -228,7 +325,12 @@
       "watermark": "足の背後に描く大きな薄い文字",
       "labels": "組み込みの文字の上書き（英語・中国語・日本語・フランス語を内蔵）",
       "renderer": "バックエンド：auto は WebGPU、WebGL2、WebGL、Canvas2D の順に試します",
-      "ariaLabel": "アクセシブルラベル。既定では銘柄名から作成"
+      "ariaLabel": "アクセシブルラベル。既定では銘柄名から作成",
+      "timeZone": "時間軸・セッション区切り・VWAP の期間のタイムゾーン：IANA 名（\"America/New_York\"）または \"UTC\"。既定はローカル時刻です。",
+      "sessionBreaks": "日の始まりに破線の縦線を引きます（日中足）。",
+      "orderEntry": "価格ペイン右端のクロスヘア価格に + ボタンを表示し、クリックで指値注文を通知します（orderCreate）。",
+      "volumeProfile": "表示中の足の価格帯別出来高。POC とバリューエリアを含みます（true で既定値）。",
+      "drawingToolbar": "選択した描画の上に出るフローティングツールバー（色・太さ・線種・塗りつぶし・ロック・削除）。"
     },
     "TradingChartHandle": {
       "update": "足を配信：最後の足と同じ時刻なら置き換え、新しい時刻なら追加",
@@ -248,7 +350,25 @@
       "selectDrawing": "描画を選択（null で選択解除）",
       "setIndicatorVisible": "id でインジケーターを表示・非表示",
       "getRenderer": "使用中のバックエンド。準備前は null",
-      "getInstance": "minerva-design/charts/core のエンジンインスタンス"
+      "getInstance": "minerva-design/charts/core のエンジンインスタンス",
+      "getVisibleTimeRange": "描画領域の両端の時刻。マウント前は null。",
+      "setVisibleTimeRange": "2 つの時刻の間の足を表示します。",
+      "setCrosshair": "指定した時刻（と価格）にクロスヘアを表示します。null で非表示。",
+      "setScaleMode": "価格ペインのスケールを設定します。",
+      "updateDrawing": "描画のスタイルや内容を変更します（元に戻せます）。",
+      "undo": "描画の直前の変更を元に戻します。",
+      "redo": "元に戻した描画の変更をやり直します。",
+      "getUndoState": "描画を元に戻せるか、やり直せるか。",
+      "startReplay": "time 以降の足でバーリプレイを開始します。省略するとユーザーが足を選びます。",
+      "replayStep": "リプレイの次の足を表示します。",
+      "replayPlay": "毎秒 speed 本の速さでリプレイを再生します。",
+      "replayPause": "リプレイを一時停止します。",
+      "stopReplay": "リプレイを終了してすべての足を表示します。",
+      "getReplayState": "バーリプレイの状態。マウント前は null。",
+      "toDataURL": "チャートの画像を data URL で返します（マウント前は \"\"）。",
+      "toBlob": "チャートの画像を Blob で返します。",
+      "requestFullscreen": "チャートを全画面表示します。",
+      "exitFullscreen": "全画面を終了します。"
     },
     "TradingBar": {
       "time": "始まりの時刻（エポックからのミリ秒）",
@@ -275,7 +395,8 @@
       "quantity": "ラベル横の数量。数値ならポジションに損益も表示",
       "color": "色。既定は種類と方向から",
       "draggable": "別の価格へドラッグでき、onOrderMove で通知",
-      "lineStyle": "solid、dashed、dotted。注文の既定は破線"
+      "lineStyle": "solid、dashed、dotted。注文の既定は破線",
+      "cancellable": "ラベルに閉じるボタンを表示します（orderCancel で通知）。"
     },
     "TradingMarker": {
       "time": "足の時刻（その時刻を含む足）",
@@ -289,20 +410,26 @@
       "name": "凡例の名前",
       "data": "時刻ごとの値。足と時刻で対応付け",
       "color": "ラインの色。既定はテーマの色",
-      "id": "識別子。既定は名前"
+      "id": "識別子。既定は名前",
+      "lineWidth": "線の太さ（ピクセル）。"
     },
     "TradingDrawing": {
       "id": "一意の id",
       "type": "作成したツール",
-      "points": "アンカー（時刻と価格）：水平線・垂直線は 1 つ、その他は 2 つ",
+      "points": "アンカー：水平線・垂直線・テキストは 1 つ、チャネル・ピッチフォーク・ポジション（エントリー・利確・損切）は 3 つ、その他は 2 つ。",
       "color": "色。既定はプライマリカラー",
       "lineWidth": "線の太さ（ピクセル）",
       "lineStyle": "solid、dashed、dotted",
-      "locked": "ユーザーが移動・削除できない"
+      "locked": "ユーザーが移動・削除できない",
+      "pane": "描画のペイン：\"price\" またはインジケーターペインの id。",
+      "fill": "図形を塗りつぶします（長方形、チャネル、ピッチフォーク、フィボナッチ、メモ）。",
+      "text": "テキスト描画の文字列（\\n で改行）。",
+      "fontSize": "テキスト描画の文字サイズ（ピクセル）。",
+      "quantity": "ポジション描画の数量：損益を価格単位で表示します。"
     },
     "TradingDrawingPoint": {
       "time": "時刻。最後の足より先は足の長さで外挿",
-      "price": "価格"
+      "price": "価格（またはインジケーターペインの値）。"
     },
     "TradingChartLabels": {
       "open": "凡例の始値",
@@ -324,7 +451,27 @@
       "minutes": "計測ツールの分。{count} は置き換えられます",
       "chart": "既定のアクセシブルラベル。{symbol} は置き換えられます",
       "announcement": "キーボードで十字線を動かしたときに読み上げる足の情報。{time}、{open}、{high}、{low}、{close} は置き換えられます",
-      "timeframe": "凡例で銘柄名の後に表示する時間足。既定では文字列の timeframe オプション"
+      "timeframe": "凡例で銘柄名の後に表示する時間足。既定では文字列の timeframe オプション",
+      "ichimoku": "一目均衡表の凡例タイトル。",
+      "supertrend": "スーパートレンドの凡例タイトル。",
+      "text": "新しいテキスト描画の既定の文字列。",
+      "color": "描画ツールバーの色ボタン。",
+      "lineWidth": "描画ツールバーの線の太さボタン。",
+      "lineStyle": "描画ツールバーの線種ボタン。",
+      "fill": "描画ツールバーの塗りつぶしボタン。",
+      "editText": "描画ツールバーのテキスト編集ボタン。",
+      "lock": "描画ツールバーのロックボタン。",
+      "remove": "描画ツールバーの削除ボタン。",
+      "target": "ポジションツールの利確ラベル。{price} と {change} が置き換わります。",
+      "stop": "ポジションツールの損切ラベル。{price} と {change} が置き換わります。",
+      "riskReward": "ポジションツールのリスクリワード比。{ratio} が置き換わります。",
+      "profit": "現在値でのポジションツールの損益。{value} が置き換わります。",
+      "long": "ロングポジションツール。",
+      "short": "ショートポジションツール。",
+      "replay": "バーリプレイのバッジ。{time} が置き換わります。",
+      "replayHint": "リプレイ開始の足を選ぶときのヒント。",
+      "buyLimit": "現在値より下の注文ボタン。{price} が置き換わります。",
+      "sellLimit": "現在値より上の注文ボタン。{price} が置き換わります。"
     },
     "TradingCrosshairEvent": {
       "index": "ホバー中の足の番号（最後の足より先の場合あり）",
@@ -360,6 +507,40 @@
     "TradingHistoryRequestEvent": {
       "firstTime": "最も古い足の時刻",
       "count": "足の本数"
+    },
+    "TradingVolumeProfileOptions": {
+      "rows": "価格帯の数。",
+      "width": "最も長い段の幅（描画領域の幅に対する割合）。",
+      "valueArea": "POC を中心とするバリューエリアに含める出来高の割合。",
+      "side": "段が伸び始める描画領域の側。",
+      "upColor": "陽線の出来高の色。既定は上昇色。",
+      "downColor": "陰線の出来高の色。既定は下落色。",
+      "pocColor": "POC ラインの色。"
+    },
+    "TradingOrderCreateEvent": {
+      "price": "注文価格（価格の精度に丸め）。",
+      "side": "現在値より下は buy、上は sell。"
+    },
+    "TradingOrderCancelEvent": {
+      "id": "ラインの id。",
+      "line": "そのライン。"
+    },
+    "TradingReplayState": {
+      "active": "リプレイ中（以降の足は隠れています）。",
+      "picking": "ユーザーが開始の足を選んでいます。",
+      "playing": "足が自動で追加されています。",
+      "speed": "再生中に 1 秒あたり追加する足の数。",
+      "index": "表示中の足の数。",
+      "total": "全履歴の足の数。",
+      "time": "表示中の最後の足の時刻。"
+    },
+    "TradingUndoState": {
+      "canUndo": "元に戻せる変更があります。",
+      "canRedo": "やり直せる変更があります。"
+    },
+    "TradingSyncOptions": {
+      "crosshair": "カーソルを合わせたチャートのクロスヘアを、他のチャートにも同じ時刻で表示します。",
+      "timeRange": "どれかがスクロール・ズームすると、すべてのチャートで同じ時間範囲を表示します。"
     }
   },
   "wc": {
@@ -388,7 +569,12 @@
         "minerva-drawing-tool-change": "描画ツールが変わった（描画後はカーソルに戻る）；detail: { tool }",
         "minerva-indicator-toggle": "凡例からインジケーターが表示・非表示にされた；detail: { id, visible }",
         "minerva-history-request": "最も古いバーが表示された：prependBars で過去のバーを読み込みます；detail: { firstTime, count }",
-        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }",
+        "minerva-order-create": "「+」注文ボタンがクリックされました（orderEntry オプション）。detail：{ price, side }",
+        "minerva-order-cancel": "キャンセル可能な価格ラインの閉じるボタンがクリックされました。detail：{ id, line }",
+        "minerva-undo-change": "描画の元に戻す / やり直しが可能または不可能になりました。detail：{ canUndo, canRedo }",
+        "minerva-replay-change": "バーリプレイが開始・ステップ・再生・一時停止・停止しました。detail：{ active, picking, playing, speed, index, total, time }",
+        "minerva-fullscreen-change": "チャートが全画面表示に入った / 終了しました。detail：{ fullscreen }"
       },
       "methods": {
         "updateBar": "バーをストリーミングします：最後のバーと同時刻なら置換、より後なら追加（エンジンの update(bar)）",
@@ -407,7 +593,25 @@
         "removeDrawing": "描画を削除します",
         "selectDrawing": "描画を選択します（null で選択解除）",
         "setIndicatorVisible": "インジケーターを表示・非表示にします",
-        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null",
+        "getVisibleTimeRange": "プロット端の時刻。エンジン作成前は null",
+        "setVisibleTimeRange": "2 つの時刻の間のバーを表示します",
+        "setCrosshair": "指定した時刻（と価格）に十字線を表示します。null で非表示",
+        "setScaleMode": "価格ペインの価格スケールを設定します（linear、log、percent、indexed）",
+        "updateDrawing": "描画のスタイルや内容を変更します（元に戻せます）",
+        "undo": "描画の直前の変更を元に戻します",
+        "redo": "元に戻した描画の変更をやり直します",
+        "getUndoState": "描画を元に戻せるか / やり直せるか",
+        "startReplay": "time 以降のバーリプレイを開始します（省略時はユーザーがバーを選びます）",
+        "replayStep": "リプレイの次のバーを表示します",
+        "replayPlay": "1 秒あたり speed 本の速さでリプレイを再生します",
+        "replayPause": "リプレイを一時停止します",
+        "stopReplay": "リプレイを終了してすべてのバーを表示します",
+        "getReplayState": "バーリプレイの状態。エンジン作成前は null",
+        "toDataURL": "チャート画像の data URL（エンジン作成前は \"\"）",
+        "toBlob": "チャート画像の Blob",
+        "requestChartFullscreen": "チャートを全画面表示します（要素自体の requestFullscreen() は要素そのものを全画面にします）",
+        "exitChartFullscreen": "全画面表示を終了します"
       }
     }
   }

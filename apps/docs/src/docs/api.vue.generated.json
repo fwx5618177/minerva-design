@@ -497,12 +497,19 @@
         "required": false,
         "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
       },
+      { "name": "outlierSize", "type": "number", "required": false, "description": "Diameter of the outliers in CSS pixels (default 7)" },
       { "name": "groups", "type": "readonly BoxplotGroup[]", "required": false, "description": "Raw samples, one box each (an alternative to `series`)" },
       {
         "name": "whisker",
         "type": "number | \"minmax\"",
         "required": false,
         "description": "Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `minmax` extends them to the extremes"
+      },
+      {
+        "name": "outlierShape",
+        "type": "\"hollow\" | \"filled\"",
+        "required": false,
+        "description": "Outliers drawn as rings of the series color or as filled dots; series may set their own (default `hollow`)"
       }
     ],
     "events": [
@@ -1000,7 +1007,7 @@
       { "name": "required", "type": "boolean", "required": false, "description": "Marks the input as required (inherited from an enclosing FormControl)" },
       { "name": "error", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (also set by an invalid enclosing FormControl)" },
       { "name": "helperText", "type": "string", "required": false, "description": "Helper or error text shown below the checkbox (linked with aria-describedby)" },
-      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"end\" | \"start\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the box" }
+      { "name": "labelPlacement", "type": "\"start\" | \"end\" | \"bottom\" | \"top\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the box" }
     ],
     "events": [
       { "name": "update:modelValue", "type": "[checked: boolean]" },
@@ -1012,6 +1019,97 @@
       { "name": "icon", "type": "any", "description": "Custom icon shown when checked" },
       { "name": "error-icon", "type": "any", "description": "Icon before the helper text in the error state (default: info circle)" }
     ]
+  },
+  "ChordChart": {
+    "file": "packages/vue/src/components/Chart/ChordChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "ticks", "type": "number | boolean", "required": false, "description": "Value ticks outside the arcs; a number sets the step between ticks (default `true` when large enough)" },
+      { "name": "directed", "type": "boolean", "required": false, "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`)" },
+      { "name": "arrows", "type": "boolean", "required": false, "description": "Arrowheads at the target end of the ribbons (default `true` when `directed`)" },
+      {
+        "name": "labels",
+        "type": "\"auto\" | \"none\" | \"tangential\" | \"radial\"",
+        "required": false,
+        "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks the one that fits (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      {
+        "name": "groups",
+        "type": "readonly (string | ChordGroup)[]",
+        "required": false,
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended"
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the groups, in degrees (default 2)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first group, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "ribbonOpacity", "type": "number", "required": false, "description": "Opacity of the ribbons, 0-1 (default 0.65)" },
+      { "name": "arcWidth", "type": "number", "required": false, "description": "Thickness of the group arcs, in pixels (default 6% of the radius)" },
+      {
+        "name": "matrix",
+        "type": "readonly (readonly number[])[]",
+        "required": false,
+        "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)"
+      },
+      { "name": "links", "type": "readonly ChordLink[]", "required": false, "description": "Flows as a list (by group name or index); takes precedence over `matrix`" },
+      { "name": "sortGroups", "type": "\"none\" | \"ascending\" | \"descending\"", "required": false, "description": "Order of the groups around the circle (default `none`: data order)" },
+      {
+        "name": "sortSubgroups",
+        "type": "\"auto\" | \"none\" | \"ascending\" | \"descending\"",
+        "required": false,
+        "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings (default `auto`)"
+      },
+      { "name": "ribbonColor", "type": "\"neutral\" | \"target\" | \"gradient\" | \"source\"", "required": false, "description": "Color of the ribbons without `color` (default `gradient`)" },
+      { "name": "tickFormat", "type": "((value: number) => string)", "required": false, "description": "Formats the tick labels (default: compact numbers of the `locale`)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
   },
   "CodeBlock": {
     "file": "packages/vue/src/components/CodeBlock/CodeBlock.vue",
@@ -1278,6 +1376,77 @@
     ],
     "slots": []
   },
+  "DependencyGraph": {
+    "file": "packages/vue/src/components/Chart/DependencyGraph.vue",
+    "props": [
+      { "name": "animation", "type": "number | boolean", "required": false, "description": "Animates layout and data changes; a number is the duration in ms (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | GraphLegendOptions", "required": false, "description": "Legend of the groups; shown by default with several groups" },
+      { "name": "tooltip", "type": "boolean | GraphTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | GraphInteractionOptions",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      { "name": "arrows", "type": "boolean", "required": false, "description": "Arrowheads on the edges without `directed` (on for DAGs)" },
+      { "name": "direction", "type": "GraphDirection", "default": "\"TB\"", "required": false, "description": "Flow direction (default `TB`)" },
+      {
+        "name": "criticalPath",
+        "type": "boolean | readonly string[]",
+        "required": false,
+        "description": "Highlights the longest path (node `value` = duration); `true` computes it, a list of ids sets it (default `false`)"
+      },
+      { "name": "nodeLabels", "type": "boolean | \"auto\"", "required": false, "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)" },
+      {
+        "name": "edgeLabels",
+        "type": "boolean | \"auto\" | \"hover\"",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
+      { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "dag", "type": "GraphDagOptions", "required": false, "description": "Layer / node spacing, crossing reduction sweeps" },
+      { "name": "nodeShape", "type": "GraphNodeShape", "required": false, "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)" },
+      { "name": "nodeSize", "type": "number | readonly [number, number]", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`" },
+      { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
+      { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
+      { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
+      { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: GraphHoverEvent | null]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "toggle", "type": "[event: GraphToggleEvent]" },
+      { "name": "selectionChange", "type": "[ids: string[]]" },
+      { "name": "groupToggle", "type": "[event: GraphGroupToggleEvent]" },
+      { "name": "layoutEnd", "type": "[event: GraphLayoutEndEvent]" },
+      { "name": "itemClick", "type": "[event: GraphHoverEvent]" }
+    ],
+    "slots": []
+  },
   "DepthChart": {
     "file": "packages/vue/src/components/Chart/DepthChart.vue",
     "props": [
@@ -1415,9 +1584,9 @@
         "required": false,
         "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
       },
-      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
-      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
       { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the slices, in pixels (default 1, donut 2)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
       { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the slices, in pixels (default 0, donut 4)" },
       {
         "name": "labelContent",
@@ -1676,7 +1845,7 @@
       },
       { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
       { "name": "conversion", "type": "boolean", "required": false, "description": "Shows the conversion rate from the previous stage (default `true`)" },
-      { "name": "sort", "type": "\"none\" | \"descending\" | \"ascending\"", "required": false, "description": "Order of the stages (default `none`: the data order)" },
+      { "name": "sort", "type": "\"none\" | \"ascending\" | \"descending\"", "required": false, "description": "Order of the stages (default `none`: the data order)" },
       { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
       { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
       { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
@@ -1763,6 +1932,7 @@
       { "name": "taskName", "type": "string", "required": false, "description": "Name of the tasks without a group (default \"Tasks\")" },
       { "name": "progressName", "type": "string", "required": false, "description": "Name of the progress bars (legend, tooltip; default \"Progress\")" },
       { "name": "milestoneName", "type": "string", "required": false, "description": "Name of the milestones (legend, tooltip; default \"Milestones\")" },
+      { "name": "dependenciesName", "type": "string", "required": false, "description": "Name of the dependencies row of the tooltip (default \"Depends on\", in the `locale`)" },
       { "name": "todayLabel", "type": "string", "required": false, "description": "Label of the today line" },
       { "name": "tasks", "type": "readonly GanttTask[]", "required": true, "description": "Tasks and milestones, from top to bottom" },
       { "name": "formatProgress", "type": "((share: number) => string)", "required": false, "description": "Formats the progress shares (tooltip; default \"60%\")" }
@@ -1842,6 +2012,75 @@
     ],
     "slots": []
   },
+  "GraphChart": {
+    "file": "packages/vue/src/components/Chart/GraphChart.vue",
+    "props": [
+      { "name": "animation", "type": "number | boolean", "required": false, "description": "Animates layout and data changes; a number is the duration in ms (default `true`)" },
+      { "name": "layout", "type": "GraphLayoutType", "default": "\"force\"", "required": false, "description": "Placement of the nodes (default `force`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | GraphLegendOptions", "required": false, "description": "Legend of the groups; shown by default with several groups" },
+      { "name": "tooltip", "type": "boolean | GraphTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | GraphInteractionOptions",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      { "name": "arrows", "type": "boolean", "required": false, "description": "Arrowheads on the edges without `directed` (on for DAGs)" },
+      { "name": "nodeLabels", "type": "boolean | \"auto\"", "required": false, "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)" },
+      {
+        "name": "edgeLabels",
+        "type": "boolean | \"auto\" | \"hover\"",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "direction", "type": "GraphDirection", "required": false, "description": "Direction of the `dag` and `tree` layouts" },
+      { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
+      { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "dag", "type": "GraphDagOptions", "required": false, "description": "Layered layout settings (`layout=\"dag\"`)" },
+      { "name": "nodeShape", "type": "GraphNodeShape", "required": false, "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)" },
+      { "name": "nodeSize", "type": "number | readonly [number, number]", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`" },
+      { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
+      { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
+      { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
+      { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },
+      { "name": "tree", "type": "GraphTreeOptions", "required": false, "description": "Tree layout settings (tree layouts)" },
+      { "name": "force", "type": "GraphForceOptions", "required": false, "description": "Force layout settings (Barnes–Hut, worker for large graphs)" },
+      { "name": "circular", "type": "GraphCircularOptions", "required": false, "description": "Circular / arc layout settings" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: GraphHoverEvent | null]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "toggle", "type": "[event: GraphToggleEvent]" },
+      { "name": "selectionChange", "type": "[ids: string[]]" },
+      { "name": "groupToggle", "type": "[event: GraphGroupToggleEvent]" },
+      { "name": "layoutEnd", "type": "[event: GraphLayoutEndEvent]" },
+      { "name": "itemClick", "type": "[event: GraphHoverEvent]" }
+    ],
+    "slots": []
+  },
   "GridItem": {
     "file": "packages/vue/src/components/ResponsiveGrid/GridItem.vue",
     "props": [
@@ -1892,11 +2131,22 @@
         "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
       },
       { "name": "name", "type": "string", "required": false, "description": "Name of the value in the tooltip" },
-      { "name": "colorScale", "type": "readonly string[]", "required": false, "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default" },
+      {
+        "name": "colorScale",
+        "type": "readonly string[] | ChartColorScheme",
+        "required": false,
+        "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (default `sequential`)"
+      },
       { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values at the ends of the color scale; the data range by default" },
       { "name": "data", "type": "readonly HeatmapCell[]", "required": true, "description": "Cells `{ x, y, value }`" },
       { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values in the tooltip" },
       { "name": "radius", "type": "number", "required": false, "description": "Corner radius of the cells, in pixels" },
+      {
+        "name": "colorMidpoint",
+        "type": "number",
+        "required": false,
+        "description": "Value at the middle of the color scale (diverging data; default 0 for `diverging` ramps spanning it, else the middle of the range)"
+      },
       { "name": "xCategories", "type": "readonly string[]", "required": false, "description": "Column names in order (collected from the data when omitted)" },
       { "name": "yCategories", "type": "readonly string[]", "required": false, "description": "Row names from bottom to top (collected from the data when omitted)" }
     ],
@@ -2739,7 +2989,8 @@
       { "name": "priceSpan", "type": "number", "required": false, "description": "Price range shown around the mid; from `depth` by default" },
       { "name": "contrast", "type": "number", "required": false, "description": "Contrast of the colors (default 1)" },
       { "name": "bubbleSize", "type": "number", "required": false, "description": "Diameter of the largest bubble, in pixels (default 28)" },
-      { "name": "bubbleVolume", "type": "number", "required": false, "description": "Trade volume of the largest bubble; follows the data by default" }
+      { "name": "bubbleVolume", "type": "number", "required": false, "description": "Trade volume of the largest bubble; follows the data by default" },
+      { "name": "timeZone", "type": "ChartTimeZone", "required": false, "description": "Clock of the time axis and the tooltip: the local time or UTC, the clock of most exchanges (default `local`)" }
     ],
     "events": [
       { "name": "hover", "type": "[event: OrderBookHeatmapHoverEvent | null]" },
@@ -2943,9 +3194,9 @@
         "required": false,
         "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
       },
-      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
-      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
       { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the slices, in pixels (default 1, donut 2)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
       { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the slices, in pixels (default 0, donut 4)" },
       {
         "name": "labelContent",
@@ -3268,8 +3519,8 @@
         "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
       },
       { "name": "gap", "type": "number", "required": false, "description": "Gap between the rings, as a fraction of a ring's slot (default 0.28)" },
-      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius (default 0.3)" },
       { "name": "startAngle", "type": "number", "required": false, "description": "Angle where the bars start, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius (default 0.3)" },
       {
         "name": "labelContent",
         "type": "readonly (\"percent\" | \"value\" | \"name\")[]",
@@ -3527,14 +3778,14 @@
         "required": false,
         "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
       },
+      { "name": "links", "type": "readonly SankeyLink[]", "required": true, "description": "Flows between the nodes (by name or index); links closing a cycle are ignored" },
+      { "name": "nodes", "type": "readonly SankeyNode[]", "required": false, "description": "Nodes, in their initial order; nodes only named by a link are appended" },
       { "name": "align", "type": "\"left\" | \"right\" | \"center\" | \"justify\"", "required": false, "description": "Column of the nodes without a `column` (default `justify`)" },
       { "name": "nodeWidth", "type": "number", "required": false, "description": "Width of the node bars, in pixels (default 12)" },
       { "name": "nodePadding", "type": "number", "required": false, "description": "Vertical gap between the nodes of a column, in pixels (default 12)" },
       { "name": "iterations", "type": "number", "required": false, "description": "Relaxation passes that straighten the flows and reduce crossings (default 32)" },
       { "name": "linkOpacity", "type": "number", "required": false, "description": "Opacity of the links, 0-1 (default 0.4)" },
-      { "name": "links", "type": "readonly SankeyLink[]", "required": true, "description": "Flows between the nodes (by name or index); links closing a cycle are ignored" },
-      { "name": "nodes", "type": "readonly SankeyNode[]", "required": false, "description": "Nodes, in their initial order; nodes only named by a link are appended" },
-      { "name": "linkColor", "type": "\"neutral\" | \"target\" | \"source\" | \"gradient\"", "required": false, "description": "Color of the links without `color` (default `gradient`)" }
+      { "name": "linkColor", "type": "\"neutral\" | \"target\" | \"gradient\" | \"source\"", "required": false, "description": "Color of the links without `color` (default `gradient`)" }
     ],
     "events": [
       { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
@@ -3950,9 +4201,9 @@
         "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
       },
       { "name": "levels", "type": "number", "required": false, "description": "Rings shown at once below the focused node (default: every level)" },
-      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the center circle as a fraction of the outer radius (default 0.26)" },
-      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first node, degrees clockwise from 12 o'clock (default 0)" },
       { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the sectors, in pixels (default 1)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first node, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the center circle as a fraction of the outer radius (default 0.26)" },
       { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the sectors, in pixels (default 2)" },
       {
         "name": "drillPath",
@@ -4049,14 +4300,14 @@
       { "name": "name", "type": "string", "required": false, "description": "Name of the input, used in forms" },
       { "name": "id", "type": "string", "required": false, "description": "id of the input (defaults to the enclosing FormControl's id)" },
       { "name": "value", "type": "string", "required": false, "description": "Value submitted with the form when on" },
-      { "name": "labelPlacement", "type": "\"bottom\" | \"top\" | \"end\" | \"start\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the switch" },
+      { "name": "labelPlacement", "type": "\"start\" | \"end\" | \"bottom\" | \"top\"", "default": "\"end\"", "required": false, "description": "Position of the label relative to the switch" },
       { "name": "loading", "type": "boolean", "default": "false", "required": false, "description": "Shows a loading state and blocks interaction" },
       { "name": "ripple", "type": "boolean", "default": "true", "required": false, "description": "Shows a ripple effect on click" },
       { "name": "trackStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of the track" },
       { "name": "thumbStyle", "type": "CSSProperties", "required": false, "description": "Inline styles of the thumb" },
       {
         "name": "iconPlacement",
-        "type": "\"end\" | \"start\"",
+        "type": "\"start\" | \"end\"",
         "default": "\"start\"",
         "required": false,
         "description": "Icon position (the `icon` slot): inside the thumb (\"start\") or after the\nswitch (\"end\")"
@@ -4397,6 +4648,7 @@
         "required": false,
         "description": "Trades, oldest first; when the array grows, only the appended ones are added (other changes replace the tape)"
       },
+      { "name": "timeZone", "type": "ChartTimeZone", "required": false, "description": "Clock of the default time format: the local time or UTC, the clock of most exchanges (default `local`)" },
       { "name": "capacity", "type": "number", "required": false, "description": "Trades kept (default 200000)" },
       { "name": "largeTradeThreshold", "type": "number", "required": false, "description": "Highlights the trades at or above this size" },
       { "name": "priceColor", "type": "\"side\" | \"tick\"", "required": false, "description": "Price color: the side of the trade or the tick direction (default `side`)" },
@@ -4611,10 +4863,19 @@
       },
       { "name": "legend", "type": "boolean", "required": false, "description": "Legends with the values at the crosshair and the indicator toggles (default `true`)" },
       { "name": "grid", "type": "boolean", "required": false, "description": "Grid lines (default `true`)" },
+      { "name": "sessionBreaks", "type": "boolean", "required": false, "description": "Dashed vertical lines where a day starts (intraday bars; default `false`)" },
       { "name": "lastPriceLine", "type": "boolean", "required": false, "description": "Line and axis label at the last price (default `true`)" },
       { "name": "countdown", "type": "boolean", "required": false, "description": "Time left until the current bar closes, under the last price label (default `false`)" },
       { "name": "highLowMarkers", "type": "boolean", "required": false, "description": "Marks the highest and lowest prices of the visible bars (default `true`)" },
+      { "name": "orderEntry", "type": "boolean", "required": false, "description": "A \"+\" button at the crosshair price reporting a limit order (`orderCreate`; default `false`)" },
+      {
+        "name": "volumeProfile",
+        "type": "boolean | TradingVolumeProfileOptions",
+        "required": false,
+        "description": "Volume by price of the visible bars, with its point of control and value area (`true` for the defaults; default `false`)"
+      },
       { "name": "keepDrawingMode", "type": "boolean", "required": false, "description": "Keeps the drawing tool after a drawing is made (default `false`)" },
+      { "name": "drawingToolbar", "type": "boolean", "required": false, "description": "Floating toolbar over the selected drawing: color, width, style, fill, lock, delete (default `true`)" },
       { "name": "kineticScroll", "type": "boolean", "required": false, "description": "Keeps panning after a quick drag (default `true`)" },
       { "name": "symbol", "type": "string", "required": false, "description": "Name shown in the legend and the accessible label (`\"BTC/USDT\"`)" },
       { "name": "labels", "type": "Partial<TradingChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
@@ -4631,11 +4892,17 @@
       { "name": "colorConvention", "type": "TradingColorConvention", "required": false, "description": "Colors of rising / falling bars: `redUp` swaps the defaults (default `greenUp`)" },
       { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices (axis, legend, labels); overrides `precision`" },
       { "name": "precision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      {
+        "name": "timeZone",
+        "type": "string",
+        "required": false,
+        "description": "Time zone of the time axis, the session breaks and the VWAP periods (IANA name such as `\"America/New_York\"`, or `\"UTC\"`); local time by default"
+      },
       { "name": "indicators", "type": "readonly TradingIndicator[]", "required": false, "description": "Indicators, over the price or in panes below it, in this order" },
       { "name": "timeframe", "type": "TradingTimeframe", "required": false, "description": "Duration of a bar; inferred from the bar times by default" },
       { "name": "chartStyle", "type": "TradingChartStyle", "required": false, "description": "How the bars are drawn (default `candles`)" },
       { "name": "scaleMode", "type": "TradingScaleMode", "required": false, "description": "Price scale of the price pane (default `linear`)" },
-      { "name": "utcOffset", "type": "number", "required": false, "description": "Offset of the displayed times from UTC, in minutes (`480` for UTC+8); local time by default" },
+      { "name": "utcOffset", "type": "number", "required": false, "description": "Offset of the displayed times from UTC, in minutes (`480` for UTC+8); overrides `timeZone`" },
       { "name": "markers", "type": "readonly TradingMarker[]", "required": false, "description": "Buy / sell markers" },
       { "name": "compare", "type": "readonly TradingCompareSeries[]", "required": false, "description": "Comparison series (best read with `scaleMode: \"percent\"`)" },
       { "name": "drawings", "type": "readonly TradingDrawing[]", "required": false, "description": "Drawings; replaced when a new array is passed (see the `drawingsChange` event)" },
@@ -4652,11 +4919,88 @@
       { "name": "crosshairMove", "type": "[event: TradingCrosshairEvent | null]" },
       { "name": "visibleRangeChange", "type": "[range: TradingVisibleRange]" },
       { "name": "orderMove", "type": "[event: TradingOrderMoveEvent]" },
+      { "name": "orderCreate", "type": "[event: TradingOrderCreateEvent]" },
+      { "name": "orderCancel", "type": "[event: TradingOrderCancelEvent]" },
       { "name": "drawingsChange", "type": "[drawings: readonly TradingDrawing[]]" },
       { "name": "drawingSelect", "type": "[id: string | null]" },
       { "name": "drawingToolChange", "type": "[tool: TradingDrawingTool]" },
+      { "name": "undoChange", "type": "[state: TradingUndoState]" },
+      { "name": "replayChange", "type": "[state: TradingReplayState]" },
+      { "name": "fullscreenChange", "type": "[fullscreen: boolean]" },
       { "name": "indicatorToggle", "type": "[event: TradingIndicatorToggleEvent]" },
       { "name": "historyRequest", "type": "[event: TradingHistoryRequestEvent]" }
+    ],
+    "slots": []
+  },
+  "TreeChart": {
+    "file": "packages/vue/src/components/Chart/TreeChart.vue",
+    "props": [
+      { "name": "animation", "type": "number | boolean", "required": false, "description": "Animates layout and data changes; a number is the duration in ms (default `true`)" },
+      {
+        "name": "layout",
+        "type": "\"radial\" | \"tree\" | \"mindmap\" | \"org\"",
+        "default": "\"tree\"",
+        "required": false,
+        "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart (default `tree`)"
+      },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | GraphLegendOptions", "required": false, "description": "Legend of the groups; shown by default with several groups" },
+      { "name": "tooltip", "type": "boolean | GraphTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | GraphInteractionOptions",
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged, click selects, arrow keys move; `false` makes the chart static (default `true`)"
+      },
+      { "name": "arrows", "type": "boolean", "required": false, "description": "Arrowheads on the edges without `directed` (on for DAGs)" },
+      { "name": "nodeLabels", "type": "boolean | \"auto\"", "required": false, "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`)" },
+      {
+        "name": "edgeLabels",
+        "type": "boolean | \"auto\" | \"hover\"",
+        "required": false,
+        "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
+      },
+      { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "direction", "type": "GraphDirection", "required": false, "description": "Direction of `layout=\"tree\"` (default `LR`)" },
+      { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
+      { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "nodeShape", "type": "GraphNodeShape", "required": false, "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)" },
+      { "name": "nodeSize", "type": "number | readonly [number, number]", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`" },
+      { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
+      { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
+      { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
+      { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },
+      { "name": "tree", "type": "GraphTreeOptions", "required": false, "description": "Root, spacing, collapsing, card size" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: GraphHoverEvent | null]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "toggle", "type": "[event: GraphToggleEvent]" },
+      { "name": "selectionChange", "type": "[ids: string[]]" },
+      { "name": "groupToggle", "type": "[event: GraphGroupToggleEvent]" },
+      { "name": "layoutEnd", "type": "[event: GraphLayoutEndEvent]" },
+      { "name": "itemClick", "type": "[event: GraphHoverEvent]" }
     ],
     "slots": []
   },
@@ -4743,8 +5087,8 @@
     "events": [
       { "name": "update:modelValue", "type": "[value: UploadItem[]]" },
       { "name": "retry", "type": "[item: UploadItem]" },
-      { "name": "filesSelected", "type": "[files: File[]]" },
-      { "name": "remove", "type": "[item: UploadItem]" }
+      { "name": "remove", "type": "[item: UploadItem]" },
+      { "name": "filesSelected", "type": "[files: File[]]" }
     ],
     "slots": [{ "name": "select", "type": "any", "description": "Content of the select button (the `labels.select` text)" }]
   },
@@ -4830,6 +5174,12 @@
         "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
       },
       {
+        "name": "connector",
+        "type": "boolean | ChartConnectorOptions",
+        "required": false,
+        "description": "Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed, secondary text color)"
+      },
+      {
         "name": "renderer",
         "type": "ChartRendererPreference",
         "required": false,
@@ -4849,6 +5199,7 @@
         "required": false,
         "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
       },
+      { "name": "start", "type": "number", "required": false, "description": "Value the first change starts from (default 0)" },
       { "name": "name", "type": "string", "required": false, "description": "Name of the series (tooltip; default \"Change\")" },
       {
         "name": "orientation",
@@ -4857,7 +5208,6 @@
         "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
       },
       { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values (labels, tooltip)" },
-      { "name": "start", "type": "number", "required": false, "description": "Value the first change starts from (default 0)" },
       { "name": "upColor", "type": "string", "required": false, "description": "Color of the increases (the success color by default)" },
       { "name": "downColor", "type": "string", "required": false, "description": "Color of the decreases (the danger color by default)" },
       { "name": "totalColor", "type": "string", "required": false, "description": "Color of the totals and subtotals (the primary color by default)" },

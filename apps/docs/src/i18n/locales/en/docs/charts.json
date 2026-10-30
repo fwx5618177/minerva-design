@@ -1,6 +1,6 @@
 {
   "title": "Charts",
-  "description": "GPU-accelerated charts that stay at 60 fps with millions of points, plus Canvas2D shape charts: trends, comparisons, statistics, parts of a whole, hierarchies and flows, finance and trading, and 3D. Chart mixes line, area, bar, scatter, candlestick and heatmap series; every other component is a preset for one chart type. Start with the galleries below: a live thumbnail of every chart type, each linking to its page.",
+  "description": "GPU-accelerated charts that stay at 60 fps with millions of points, plus Canvas2D shape charts: trends, comparisons, statistics, parts of a whole, hierarchies and flows, networks, dependencies and trees, finance and trading, and 3D. Chart mixes line, area, bar, scatter, candlestick and heatmap series; every other component is a preset for one chart type. Start with the galleries below: a live thumbnail of every chart type, each linking to its page.",
   "intro": {
     "rendering": {
       "title": "How it renders",
@@ -26,14 +26,15 @@
     },
     "families": {
       "title": "Chart families",
-      "text": "Every chart type is shown below as a live thumbnail, grouped in five galleries; each caption links to the page of the chart:",
+      "text": "Every chart type is shown below as a live thumbnail, grouped in six galleries; each caption links to the page of the chart:",
       "basic": "Basic 2D: <line>line</line>, <area>area</area>, <rangeArea>range area</rangeArea>, <bar>bar</bar>, <horizontalBar>horizontal bar</horizontalBar>, <mixed>combination / dual axis</mixed>, <scatter>scatter</scatter>, <bubble>bubble</bubble> charts and <sparkline>sparklines</sparkline>.",
       "statistics": "Statistics, KPIs and planning: <histogram>histogram</histogram>, <boxplot>box plot</boxplot>, <waterfall>waterfall</waterfall>, <heatmap>heatmap</heatmap>, <calendar>calendar heatmap</calendar>, <gauge>gauge</gauge>, <bullet>bullet</bullet>, <radialBar>radial bar</radialBar> and <gantt>Gantt</gantt> charts.",
-      "relations": "Parts, relations and hierarchies: <pie>pie and donut</pie>, <radar>radar</radar>, <funnel>funnel</funnel>, <quadrant>quadrant</quadrant>, <treemap>treemap</treemap>, <sunburst>sunburst</sunburst> and <sankey>Sankey</sankey> charts.",
-      "finance": "Finance and trading: <candlestick>candlesticks</candlestick>, <trading>trading chart</trading>, <indicators>technical indicators</indicators>, <depth>depth chart</depth>, <orderBook>order book</orderBook>, <orderBookHeatmap>order book heatmap</orderBookHeatmap> and <timeSales>time & sales</timeSales>.",
-      "threeD": "3D: <scatter>3D scatter and 3D line</scatter>, <surface>3D surface</surface> and <bar>3D bar</bar> charts.",
+      "relations": "Parts of a whole, hierarchies and flows: <pie>pie and donut</pie>, <radar>radar</radar>, <funnel>funnel</funnel>, <quadrant>quadrant</quadrant>, <treemap>treemap</treemap>, <sunburst>sunburst</sunburst> and <sankey>Sankey</sankey> charts.",
+      "graphs": "Relationships and hierarchies: <network>network graphs</network> (force, circular and arc layouts, GPU-drawn up to tens of thousands of nodes), <dag>dependency graphs</dag> (layered DAGs with the critical path), <tree>trees</tree> (tidy and radial trees, mind maps, org charts) and <chord>chord diagrams</chord>.",
+      "finance": "Finance and trading: <candlestick>candlesticks</candlestick>, the <trading>trading chart</trading> (volume profile, drawing tools, bar replay, synchronized charts and order entry) with 21 built-in <indicators>technical indicators</indicators> (MA / EMA / WMA, Bollinger, VWAP, volume, MACD, RSI, KDJ, ATR, Parabolic SAR, Ichimoku, SuperTrend, Keltner, Donchian, OBV, CCI, Stochastic RSI, DMI, Williams %R, MFI), the <depth>depth chart</depth>, <orderBook>order book</orderBook>, <orderBookHeatmap>order book heatmap</orderBookHeatmap> and <timeSales>time & sales</timeSales>.",
+      "threeD": "3D: <scatter>3D scatter and 3D line</scatter> (glowing, additively blended point clouds included), <surface>3D surface</surface> and <bar>3D bar</bar> charts.",
       "lazy": "The thumbnails are mounted only while they are near the viewport (IntersectionObserver): the page stays fast and never holds more GPU contexts than the browser allows. The order book widgets stream a simulated market and pause off screen.",
-      "fallback": "The GPU charts pick their backend in four tiers, WebGPU → WebGL2 → WebGL → Canvas2D, so they render in every browser and survive a GPU loss; see the <engine>chart engine</engine> and <performance>performance</performance> pages."
+      "fallback": "The GPU charts pick their backend in four tiers, WebGPU → WebGL2 → WebGL → Canvas2D, so they render in every browser and survive a GPU loss. setDefaultChartRenderer() changes the default backend of every chart at once: the renderer selector pinned on the chart pages of these docs uses it. See the <engine>chart engine</engine> and <performance>performance</performance> pages."
     }
   },
   "demos": {
@@ -46,16 +47,20 @@
       "description": "A latency histogram, box plots per service, a revenue bridge waterfall, a weekly load heatmap, a commit calendar, a gauge with bands, bullet KPIs against their targets, progress rings and a release Gantt chart."
     },
     "gallery-relations": {
-      "title": "Gallery: parts, relations and hierarchies",
+      "title": "Gallery: parts of a whole, hierarchies and flows",
       "description": "Browser shares in a pie, users per plan in a donut with the total, a vendor radar, a sign-up funnel, a priority quadrant, a budget treemap, a headcount sunburst and a Sankey diagram from traffic sources to sign-ups."
+    },
+    "gallery-graphs": {
+      "title": "Gallery: networks, dependencies and trees",
+      "description": "Calls between microservices as a force-directed network, support topics in an arc diagram, a data pipeline as a DAG with its critical path, an org chart, a trip mind map and customers moving between plans in a chord diagram. Hover a node to highlight its neighbors; Ctrl / ⌘ + wheel zooms."
     },
     "gallery-finance": {
       "title": "Gallery: finance and trading",
-      "description": "Candlesticks, the trading chart with a moving average and volume, Bollinger bands with RSI, and the order book widgets (depth chart, price ladder, liquidity heatmap and time & sales) streaming a simulated market. They mount when scrolled into view; Ctrl / ⌘ + wheel zooms."
+      "description": "Candlesticks, the trading chart with a moving average, volume and a volume profile, SuperTrend with MACD, and the order book widgets (depth chart, price ladder, liquidity heatmap and time & sales) streaming a simulated market. They mount when scrolled into view; Ctrl / ⌘ + wheel zooms."
     },
     "gallery-3d": {
       "title": "Gallery: 3D charts",
-      "description": "Clusters in a slowly rotating 3D scatter, a spiral trajectory, a ripple surface and sales per region and quarter as 3D bars. Drag to rotate; they render only while visible."
+      "description": "Clusters in a slowly rotating 3D scatter, a spiral trajectory, a ripple surface, sales per region and quarter as 3D bars and a spiral galaxy of 24,000 glowing stars blended additively. Drag to rotate; they render only while visible."
     },
     "mixed": {
       "title": "Mixed series",
@@ -275,13 +280,13 @@
       },
       "trading": {
         "title": "Trading chart",
-        "description": "Candles, volume, pan and zoom",
-        "aria": "Hourly BTC/USDT price with volume"
+        "description": "Candles, volume profile, pan and zoom",
+        "aria": "Hourly BTC/USDT price with a moving average, volume and a volume profile"
       },
       "indicators": {
         "title": "Technical indicators",
-        "description": "MA, MACD, RSI, Bollinger…",
-        "aria": "Daily BTC/USDT price with Bollinger bands and RSI"
+        "description": "21 indicators",
+        "aria": "Daily BTC/USDT price with SuperTrend and MACD"
       },
       "depth": {
         "title": "Depth chart",
@@ -322,6 +327,41 @@
         "title": "3D bar chart",
         "description": "Values on a category grid",
         "aria": "Sales per region and quarter"
+      },
+      "network": {
+        "title": "Network graph",
+        "description": "Calls between services",
+        "aria": "Network of microservices and the calls between them"
+      },
+      "arc": {
+        "title": "Arc diagram",
+        "description": "Topics raised together",
+        "aria": "Support topics linked by how often they appear in the same ticket"
+      },
+      "dag": {
+        "title": "Dependency graph",
+        "description": "Pipeline and critical path",
+        "aria": "Data pipeline steps and their dependencies, with the critical path"
+      },
+      "org": {
+        "title": "Org chart",
+        "description": "Reporting lines",
+        "aria": "Organization chart from the CEO to the teams"
+      },
+      "mindMap": {
+        "title": "Mind map",
+        "description": "Ideas around a topic",
+        "aria": "Mind map of a summer trip"
+      },
+      "chord": {
+        "title": "Chord diagram",
+        "description": "Flows between groups",
+        "aria": "Customers moving between plans in a quarter"
+      },
+      "galaxy": {
+        "title": "Glowing 3D points",
+        "description": "Additive glow",
+        "aria": "Spiral galaxy of glowing stars"
       }
     },
     "load": "Load",
@@ -454,6 +494,79 @@
       "south": "South",
       "east": "East",
       "west": "West"
+    },
+    "customers": "{{value}} customers",
+    "galaxyCore": "Core",
+    "galaxyArms": "Arms",
+    "graph": {
+      "services": {
+        "gateway": "API gateway",
+        "web": "Web app",
+        "auth": "Auth",
+        "users": "Users",
+        "orders": "Orders",
+        "payments": "Payments",
+        "search": "Search",
+        "inventory": "Inventory",
+        "database": "Database",
+        "cache": "Cache",
+        "queue": "Queue"
+      },
+      "tiers": {
+        "edge": "Edge",
+        "core": "Services",
+        "data": "Data"
+      },
+      "topics": {
+        "login": "Login",
+        "billing": "Billing",
+        "export": "Export",
+        "mobile": "Mobile",
+        "speed": "Speed",
+        "alerts": "Alerts"
+      },
+      "steps": {
+        "extract": "Extract",
+        "clean": "Clean",
+        "enrich": "Enrich",
+        "join": "Join",
+        "train": "Train",
+        "report": "Report",
+        "publish": "Publish"
+      },
+      "roles": {
+        "ceo": "CEO",
+        "cto": "CTO",
+        "cfo": "CFO",
+        "coo": "COO",
+        "platform": "Platform",
+        "product": "Product",
+        "finance": "Finance",
+        "sales": "Sales",
+        "support": "Support"
+      },
+      "trip": {
+        "trip": "Summer trip",
+        "transport": "Transport",
+        "stay": "Stay",
+        "food": "Food",
+        "activities": "Activities",
+        "train": "Train",
+        "rentalCar": "Rental car",
+        "hotel": "Hotel",
+        "camping": "Camping",
+        "market": "Market",
+        "restaurants": "Restaurants",
+        "museum": "Museum",
+        "hiking": "Hiking",
+        "beach": "Beach"
+      },
+      "plans": {
+        "free": "Free",
+        "starter": "Starter",
+        "pro": "Pro",
+        "enterprise": "Enterprise"
+      }
     }
   },
   "api": {
@@ -514,13 +627,18 @@
       "curve": "Shape of the line between the points: linear, smooth (monotone, never overshoots the data) or step (line / area)",
       "upColor": "Candlestick: color of the rising candles (close ≥ open); --success-color by default",
       "downColor": "Candlestick: color of the falling candles; --danger-color by default",
-      "colorScale": "Heatmap: colors from the lowest to the highest value (two or more)",
+      "colorScale": "Heatmap: colors from the lowest to the highest value (two or more, interpolated in OKLab), or a built-in theme-aware ramp: sequential (default) or diverging",
       "valueRange": "Heatmap: values mapped to the ends of colorScale; the data range by default",
       "radius": "Bar / heatmap: corner radius in pixels (bars 3, cells 2)",
       "format": "Formats the values of this series in the tooltip (the y axis format by default)",
       "yAxis": "Value axis of the series: \"right\" plots it against yAxis2 (dual axis charts, vertical orientation)",
       "barWidth": "Bars and box plots: share of a category taken by the bars, 0-1 (1 makes them touch, e.g. histograms)",
-      "valueName": "Scatter: name of the value of the points in the tooltip (bubble charts)"
+      "valueName": "Scatter: name of the value of the points in the tooltip (bubble charts)",
+      "colorMidpoint": "Heatmap: value at the middle of the color scale (diverging data); 0 for diverging ramps spanning it, else the middle of the range",
+      "tooltip": "false leaves the series out of hit tests and tooltips (decorations, overlays such as the progress of Gantt tasks)",
+      "outlierShape": "Box plot: outliers drawn as rings of the series color (hollow, default) or as filled dots",
+      "outlierSize": "Box plot: diameter of the outliers in CSS pixels (7 by default)",
+      "connector": "Bars: thin lines from the end of every bar to the next bar (waterfalls); true draws dashed lines of the secondary text color, an object sets color, dash and width"
     },
     "ChartPointDatum": {
       "x": "X value (number, Date or category); the index when omitted",
@@ -535,7 +653,8 @@
       "y0": "Start of a floating bar (waterfall steps, Gantt tasks) or lower edge of a range area; dates are timestamps",
       "q1": "Box plot: first quartile (bottom of the box; y is the median)",
       "q3": "Box plot: third quartile (top of the box)",
-      "outliers": "Box plot: values beyond the whiskers, drawn as dots"
+      "outliers": "Box plot: values beyond the whiskers, drawn as dots",
+      "details": "Extra rows of the default tooltip of this point ({ name, value }), after its values"
     },
     "ChartColumnData": {
       "x": "X values; the index when omitted",
@@ -550,7 +669,7 @@
       "q3": "Box plots: third quartiles"
     },
     "ChartAxisOptions": {
-      "type": "Scale: linear, time or category (detected from the data)",
+      "type": "Scale: linear, log (base 10, positive values; yAxis and yAxis2), time or category (detected from the data)",
       "min": "Lower bound; computed from the data when omitted",
       "max": "Upper bound; computed from the data when omitted",
       "title": "Axis title",
@@ -602,7 +721,7 @@
       "dragPoints": "Lets the user drag scatter points (drag / drop events; the chart does not move them)"
     },
     "ChartTooltipOptions": {
-      "mode": "nearest shows the closest point, axis every series at the closest x",
+      "mode": "nearest shows the closest point, axis every series at the closest x, item only the shape under the pointer (nothing over empty space); axis by default, nearest when every series is a scatter, item for range bars on a time axis (Gantt)",
       "render": "Renders the tooltip content (a string is set as text)",
       "labels": "Names of the rows of the default tooltip (box plot statistics, OHLC, bubble values), for translations"
     },
@@ -637,7 +756,8 @@
       "y0": "Floating bars and range areas: the start (or lower edge); y is the end",
       "q1": "Box plot: first quartile (y is the median, low / high the whiskers)",
       "q3": "Box plot: third quartile",
-      "outliers": "Box plot: number of outliers"
+      "outliers": "Box plot: number of outliers",
+      "outlier": "Box plot: value of the hovered outlier (the pointer is on an outlier)"
     },
     "ChartPlotClickEvent": {
       "x": "X data coordinate of the click",

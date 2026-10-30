@@ -37,6 +37,14 @@ const WC_MANIFEST = join(PACKAGES_DIR, "minerva-design/custom-elements.json");
 /** Web-component elements are keyed with this prefix (`wc:minerva-button`) */
 export const WC_PREFIX = "wc:";
 export const OUTPUT = join(DOCS_ROOT, "src/docs/api.generated.json");
+/**
+ * Chart APIs (minerva-design/charts): a separate file, loaded on demand by
+ * the API tables, so that no single docs chunk carries every API
+ */
+export const OUTPUT_CHARTS = join(
+  DOCS_ROOT,
+  "src/docs/api.charts.generated.json",
+);
 /** Web Component APIs: a separate file, loaded only by the "Web Components" tabs */
 export const OUTPUT_WC = join(DOCS_ROOT, "src/docs/api.wc.generated.json");
 /** React Native APIs: loaded only by the "React Native" tabs */
@@ -75,6 +83,8 @@ const CHART_ENGINE_FILES = [
   "charts/src/engine/trading/types.ts",
   "charts/src/engine/orderbook/types.ts",
   "charts/src/engine/three-d/types.ts",
+  // relationship charts
+  "charts/src/engine/graph/types.ts",
 ];
 
 /** All files that declare public types, with the key prefix to use */
@@ -102,6 +112,7 @@ const sourceFiles = () => [
   { file: join(PACKAGES_DIR, "charts/src/react/trading.tsx"), prefix: "" },
   { file: join(PACKAGES_DIR, "charts/src/react/orderbook.tsx"), prefix: "" },
   { file: join(PACKAGES_DIR, "charts/src/react/three-d.tsx"), prefix: "" },
+  { file: join(PACKAGES_DIR, "charts/src/react/graph.tsx"), prefix: "" },
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();
@@ -369,11 +380,30 @@ export const sortKeys = (entries) =>
 
 export const serialize = (api) => `${JSON.stringify(api, null, 2)}\n`;
 
+/** Whether an API entry documents minerva-design/charts */
+const isChartEntry = (entry) => entry.source.startsWith("charts/");
+
+/**
+ * Splits the API into the entries of api.generated.json and those of
+ * api.charts.generated.json
+ * @returns {[Record<string, unknown>, Record<string, unknown>]}
+ */
+export const splitChartApis = (api) => {
+  const main = {};
+  const charts = {};
+  for (const [name, entry] of Object.entries(api)) {
+    (isChartEntry(entry) ? charts : main)[name] = entry;
+  }
+  return [main, charts];
+};
+
 const isMain =
   process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
+  const [mainApi, chartApi] = splitChartApis(generateApi());
   const outputs = [
-    [OUTPUT, serialize(generateApi())],
+    [OUTPUT, serialize(mainApi)],
+    [OUTPUT_CHARTS, serialize(chartApi)],
     [OUTPUT_WC, serialize(sortKeys(generateElements()))],
     [OUTPUT_NATIVE, serialize(generateNativeApi())],
   ];

@@ -1,6 +1,6 @@
 {
   "title": "チャート",
-  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャートと、Canvas2D で描く形状チャート：推移、比較、統計、構成比、階層とフロー、金融・トレーディング、3D をカバーします。Chart は折れ線・面・棒・散布図・ローソク足・ヒートマップの系列を組み合わせられ、その他のコンポーネントは 1 種類のチャートのプリセットです。まずは下のギャラリーから：すべてのチャートタイプをライブのサムネイルで紹介し、それぞれのページへリンクしています。",
+  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャートと、Canvas2D で描く形状チャート：推移、比較、統計、構成比、階層とフロー、ネットワーク・依存関係・ツリー、金融・トレーディング、3D をカバーします。Chart は折れ線・面・棒・散布図・ローソク足・ヒートマップの系列を組み合わせられ、その他のコンポーネントは 1 種類のチャートのプリセットです。まずは下のギャラリーから：すべてのチャートタイプをライブのサムネイルで紹介し、それぞれのページへリンクしています。",
   "intro": {
     "rendering": {
       "title": "描画のしくみ",
@@ -26,14 +26,15 @@
     },
     "families": {
       "title": "チャートの種類",
-      "text": "すべてのチャートタイプを 5 つのギャラリーに分けてライブのサムネイルで紹介します。各キャプションはそのチャートのページへリンクしています：",
+      "text": "すべてのチャートタイプを 6 つのギャラリーに分けてライブのサムネイルで紹介します。各キャプションはそのチャートのページへリンクしています：",
       "basic": "基本の 2D：<line>折れ線グラフ</line>、<area>面グラフ</area>、<rangeArea>範囲面グラフ</rangeArea>、<bar>棒グラフ</bar>、<horizontalBar>横棒グラフ</horizontalBar>、<mixed>複合 / 2 軸グラフ</mixed>、<scatter>散布図</scatter>、<bubble>バブルチャート</bubble>、<sparkline>スパークライン</sparkline>。",
       "statistics": "統計・KPI・計画：<histogram>ヒストグラム</histogram>、<boxplot>箱ひげ図</boxplot>、<waterfall>ウォーターフォールチャート</waterfall>、<heatmap>ヒートマップ</heatmap>、<calendar>カレンダーヒートマップ</calendar>、<gauge>ゲージ</gauge>、<bullet>ブレットグラフ</bullet>、<radialBar>円形棒グラフ</radialBar>、<gantt>ガントチャート</gantt>。",
-      "relations": "構成比・関係・階層：<pie>円グラフとドーナツグラフ</pie>、<radar>レーダーチャート</radar>、<funnel>ファネルチャート</funnel>、<quadrant>4 象限チャート</quadrant>、<treemap>ツリーマップ</treemap>、<sunburst>サンバースト図</sunburst>、<sankey>サンキー図</sankey>。",
-      "finance": "金融・トレーディング：<candlestick>ローソク足</candlestick>、<trading>トレーディングチャート</trading>、<indicators>テクニカル指標</indicators>、<depth>デプスチャート</depth>、<orderBook>板情報</orderBook>、<orderBookHeatmap>板情報ヒートマップ</orderBookHeatmap>、<timeSales>歩み値</timeSales>。",
-      "threeD": "3D：<scatter>3D 散布図と 3D 折れ線グラフ</scatter>、<surface>3D サーフェスチャート</surface>、<bar>3D 棒グラフ</bar>。",
+      "relations": "構成比・階層・フロー：<pie>円グラフとドーナツグラフ</pie>、<radar>レーダーチャート</radar>、<funnel>ファネルチャート</funnel>、<quadrant>4 象限チャート</quadrant>、<treemap>ツリーマップ</treemap>、<sunburst>サンバースト図</sunburst>、<sankey>サンキー図</sankey>。",
+      "graphs": "関係・階層チャート：<network>ネットワーク図</network>（力学・円形・アークのレイアウト、GPU 描画で数万ノードまで）、<dag>依存関係グラフ</dag>（クリティカルパス付きの階層型 DAG）、<tree>ツリー図</tree>（整列ツリー、放射状ツリー、マインドマップ、組織図）、<chord>コードダイアグラム</chord>。",
+      "finance": "金融・トレーディング：<candlestick>ローソク足</candlestick>、<trading>トレーディングチャート</trading>（価格帯別出来高、描画ツール、バーリプレイ、複数チャートの同期、注文入力）と 21 種類の組み込み<indicators>テクニカル指標</indicators>（MA / EMA / WMA、ボリンジャーバンド、VWAP、出来高、MACD、RSI、KDJ、ATR、パラボリック SAR、一目均衡表、SuperTrend、ケルトナーチャネル、ドンチャンチャネル、OBV、CCI、ストキャスティクス RSI、DMI、ウィリアムズ %R、MFI）、<depth>デプスチャート</depth>、<orderBook>板情報</orderBook>、<orderBookHeatmap>板情報ヒートマップ</orderBookHeatmap>、<timeSales>歩み値</timeSales>。",
+      "threeD": "3D：<scatter>3D 散布図と 3D 折れ線グラフ</scatter>（加算合成で光る点群にも対応）、<surface>3D サーフェスチャート</surface>、<bar>3D 棒グラフ</bar>。",
       "lazy": "サムネイルはビューポートの近くにあるときだけマウントされます（IntersectionObserver）。ページは軽快なまま、ブラウザの上限を超える GPU コンテキストを使うこともありません。板情報系のウィジェットはシミュレーションの相場を流し、画面外では一時停止します。",
-      "fallback": "GPU チャートは WebGPU → WebGL2 → WebGL → Canvas2D の 4 段階でバックエンドを選ぶため、どのブラウザでも描画でき、GPU が失われても動き続けます。<engine>チャートエンジン</engine>と<performance>パフォーマンス</performance>のページを参照してください。"
+      "fallback": "GPU チャートは WebGPU → WebGL2 → WebGL → Canvas2D の 4 段階でバックエンドを選ぶため、どのブラウザでも描画でき、GPU が失われても動き続けます。setDefaultChartRenderer() はすべてのチャートの既定のバックエンドを一度に切り替えます。このドキュメントのチャートページ上部に固定されたレンダラー切り替えもこれを使っています。<engine>チャートエンジン</engine>と<performance>パフォーマンス</performance>のページを参照してください。"
     }
   },
   "demos": {
@@ -46,16 +47,20 @@
       "description": "レイテンシのヒストグラム、サービスごとの箱ひげ図、売上ブリッジのウォーターフォール、曜日別負荷のヒートマップ、コミットのカレンダー、帯付きのゲージ、目標と比べる KPI のブレットグラフ、進捗リング、リリース計画のガントチャート。"
     },
     "gallery-relations": {
-      "title": "ギャラリー：構成比・関係・階層",
+      "title": "ギャラリー：構成比・階層・フロー",
       "description": "ブラウザシェアの円グラフ、合計を中央に表示したプラン別ユーザーのドーナツ、ベンダー比較のレーダー、登録ファネル、優先度の 4 象限、予算のツリーマップ、人員構成のサンバースト、流入元から登録までのサンキー図。"
+    },
+    "gallery-graphs": {
+      "title": "ギャラリー：ネットワーク・依存関係・ツリー",
+      "description": "マイクロサービス間の呼び出しを示す力学モデルのネットワーク、同時に寄せられるサポートの話題のアークダイアグラム、クリティカルパス付きのデータパイプラインの DAG、組織図、旅行のマインドマップ、プラン間の顧客の移動を示すコードダイアグラム。ノードにホバーすると隣接ノードを強調し、Ctrl / ⌘ + ホイールでズームします。"
     },
     "gallery-finance": {
       "title": "ギャラリー：金融・トレーディング",
-      "description": "ローソク足、移動平均と出来高付きのトレーディングチャート、ボリンジャーバンドと RSI、そしてシミュレーションの相場を流す板情報系ウィジェット（デプスチャート、価格ラダー、流動性ヒートマップ、歩み値）。スクロールして表示されたときにマウントされます。Ctrl / ⌘ + ホイールでズームします。"
+      "description": "ローソク足、移動平均・出来高・価格帯別出来高付きのトレーディングチャート、SuperTrend と MACD、そしてシミュレーションの相場を流す板情報系ウィジェット（デプスチャート、価格ラダー、流動性ヒートマップ、歩み値）。スクロールして表示されたときにマウントされます。Ctrl / ⌘ + ホイールでズームします。"
     },
     "gallery-3d": {
       "title": "ギャラリー：3D チャート",
-      "description": "ゆっくり回転する 3D 散布図のクラスター、らせんの軌跡、波紋のサーフェス、地域・四半期ごとの売上の 3D 棒グラフ。ドラッグで回転でき、表示中だけ描画されます。"
+      "description": "ゆっくり回転する 3D 散布図のクラスター、らせんの軌跡、波紋のサーフェス、地域・四半期ごとの売上の 3D 棒グラフ、そして加算合成で光る 24,000 個の星の渦巻銀河。ドラッグで回転でき、表示中だけ描画されます。"
     },
     "mixed": {
       "title": "混合系列",
@@ -275,13 +280,13 @@
       },
       "trading": {
         "title": "トレーディングチャート",
-        "description": "ローソク足・出来高・パンとズーム",
-        "aria": "BTC/USDT の 1 時間足と出来高"
+        "description": "ローソク足・価格帯別出来高・パンとズーム",
+        "aria": "BTC/USDT の 1 時間足と移動平均、出来高、価格帯別出来高"
       },
       "indicators": {
         "title": "テクニカル指標",
-        "description": "MA、MACD、RSI、ボリンジャーバンド…",
-        "aria": "BTC/USDT の日足とボリンジャーバンド、RSI"
+        "description": "21 種類の指標",
+        "aria": "BTC/USDT の日足と SuperTrend、MACD"
       },
       "depth": {
         "title": "デプスチャート",
@@ -322,6 +327,41 @@
         "title": "3D 棒グラフ",
         "description": "カテゴリ格子上の値",
         "aria": "地域・四半期ごとの売上"
+      },
+      "network": {
+        "title": "ネットワーク図",
+        "description": "サービス間の呼び出し",
+        "aria": "マイクロサービスとその呼び出し関係のネットワーク"
+      },
+      "arc": {
+        "title": "アークダイアグラム",
+        "description": "一緒に挙がる話題",
+        "aria": "同じチケットに現れる頻度で結ばれたサポートの話題"
+      },
+      "dag": {
+        "title": "依存関係グラフ",
+        "description": "パイプラインとクリティカルパス",
+        "aria": "データパイプラインの手順と依存関係、クリティカルパス"
+      },
+      "org": {
+        "title": "組織図",
+        "description": "レポートライン",
+        "aria": "CEO から各チームまでの組織図"
+      },
+      "mindMap": {
+        "title": "マインドマップ",
+        "description": "テーマをめぐるアイデア",
+        "aria": "夏の旅行のマインドマップ"
+      },
+      "chord": {
+        "title": "コードダイアグラム",
+        "description": "グループ間のフロー",
+        "aria": "四半期中のプラン間の顧客の移動"
+      },
+      "galaxy": {
+        "title": "光る 3D の点",
+        "description": "加算合成のグロー",
+        "aria": "光る星でできた渦巻銀河"
       }
     },
     "load": "負荷",
@@ -454,6 +494,79 @@
       "south": "南部",
       "east": "東部",
       "west": "西部"
+    },
+    "customers": "顧客 {{value}} 人",
+    "galaxyCore": "中心部",
+    "galaxyArms": "渦状腕",
+    "graph": {
+      "services": {
+        "gateway": "API ゲートウェイ",
+        "web": "Web アプリ",
+        "auth": "認証",
+        "users": "ユーザー",
+        "orders": "注文",
+        "payments": "決済",
+        "search": "検索",
+        "inventory": "在庫",
+        "database": "データベース",
+        "cache": "キャッシュ",
+        "queue": "キュー"
+      },
+      "tiers": {
+        "edge": "エッジ",
+        "core": "サービス",
+        "data": "データ"
+      },
+      "topics": {
+        "login": "ログイン",
+        "billing": "請求",
+        "export": "エクスポート",
+        "mobile": "モバイル",
+        "speed": "速度",
+        "alerts": "通知"
+      },
+      "steps": {
+        "extract": "抽出",
+        "clean": "クレンジング",
+        "enrich": "付加",
+        "join": "結合",
+        "train": "学習",
+        "report": "レポート",
+        "publish": "公開"
+      },
+      "roles": {
+        "ceo": "CEO",
+        "cto": "CTO",
+        "cfo": "CFO",
+        "coo": "COO",
+        "platform": "基盤",
+        "product": "プロダクト",
+        "finance": "経理",
+        "sales": "営業",
+        "support": "サポート"
+      },
+      "trip": {
+        "trip": "夏の旅行",
+        "transport": "移動",
+        "stay": "宿泊",
+        "food": "食事",
+        "activities": "アクティビティ",
+        "train": "電車",
+        "rentalCar": "レンタカー",
+        "hotel": "ホテル",
+        "camping": "キャンプ",
+        "market": "市場",
+        "restaurants": "レストラン",
+        "museum": "美術館",
+        "hiking": "ハイキング",
+        "beach": "ビーチ"
+      },
+      "plans": {
+        "free": "無料",
+        "starter": "スターター",
+        "pro": "プロ",
+        "enterprise": "エンタープライズ"
+      }
     }
   },
   "api": {
@@ -514,13 +627,18 @@
       "curve": "ポイント間の線の形：linear、smooth（単調補間でデータを超えない）、step（line / area）",
       "upColor": "ローソク足：上昇（終値 ≥ 始値）の色。既定は --success-color",
       "downColor": "ローソク足：下落の色。既定は --danger-color",
-      "colorScale": "ヒートマップ：最小値から最大値までの色（2 色以上）",
+      "colorScale": "ヒートマップ：最小値から最大値までの色（2 色以上、OKLab で補間）、または組み込みのテーマ対応スケール：sequential（既定）か diverging",
       "valueRange": "ヒートマップ：colorScale の両端に対応する値。既定はデータの範囲",
       "radius": "棒 / ヒートマップ：角丸の半径（ピクセル。棒は 3、セルは 2）",
       "format": "ツールチップでのこの系列の値の書式（既定は y 軸の書式）",
       "yAxis": "系列の値軸：\"right\" で yAxis2 に対して描画（2 軸グラフ、縦向き）",
       "barWidth": "棒と箱ひげ図：カテゴリ幅に対する棒の割合、0〜1（1 で隣接、ヒストグラムなど）",
-      "valueName": "散布図：ツールチップに表示する点の value の名前（バブルチャート）"
+      "valueName": "散布図：ツールチップに表示する点の value の名前（バブルチャート）",
+      "colorMidpoint": "ヒートマップ：カラースケールの中央に対応する値（発散型データ）。0 をまたぐ diverging では既定で 0、それ以外は範囲の中央",
+      "tooltip": "false にするとヒットテストとツールチップから除外します（装飾用の系列、ガントチャートの進捗などのオーバーレイ）",
+      "outlierShape": "箱ひげ図：外れ値を系列色の中抜きの円（hollow、既定）または塗りつぶしの点（filled）で描きます",
+      "outlierSize": "箱ひげ図：外れ値の直径（CSS ピクセル、既定 7）",
+      "connector": "棒：各棒の端から次の棒へ引く細い線（ウォーターフォール）。true で補助テキスト色の破線、オブジェクトで color・dash・width を指定"
     },
     "ChartPointDatum": {
       "x": "X 値（数値、Date、カテゴリ）。省略時はインデックス",
@@ -535,7 +653,8 @@
       "y0": "浮動棒の始点（ウォーターフォールのステップ、ガントのタスク）または範囲面の下端。日付はタイムスタンプ",
       "q1": "箱ひげ図：第 1 四分位数（箱の下端。y は中央値）",
       "q3": "箱ひげ図：第 3 四分位数（箱の上端）",
-      "outliers": "箱ひげ図：ひげの外側の値。点で描画"
+      "outliers": "箱ひげ図：ひげの外側の値。点で描画",
+      "details": "この点の既定ツールチップに追加する行（{ name, value }）。値の後に表示されます"
     },
     "ChartColumnData": {
       "x": "X 値。省略時はインデックス",
@@ -550,7 +669,7 @@
       "q3": "箱ひげ図：第 3 四分位数"
     },
     "ChartAxisOptions": {
-      "type": "スケール：linear、time、category（データから判定）",
+      "type": "スケール：linear、log（常用対数、正の値のみ。yAxis と yAxis2）、time、category（データから判定）",
       "min": "下限。省略時はデータから計算",
       "max": "上限。省略時はデータから計算",
       "title": "軸のタイトル",
@@ -602,7 +721,7 @@
       "dragPoints": "散布図のポイントをドラッグできるようにします（drag / drop イベント。チャート自体は移動しません）"
     },
     "ChartTooltipOptions": {
-      "mode": "nearest は最も近いポイント、axis は最も近い x の全系列を表示",
+      "mode": "nearest は最も近いポイント、axis は最も近い x の全系列、item はポインター下の図形のみ（空白では表示しない）。既定は axis、すべて散布図なら nearest、時間軸上の範囲棒（ガント）なら item",
       "render": "ツールチップの内容を描画（文字列はテキストとして設定）",
       "labels": "既定のツールチップの行名（箱ひげ図の統計量、OHLC、バブルの値）。翻訳用"
     },
@@ -637,7 +756,8 @@
       "y0": "浮動棒と範囲面：始点（または下端）。y は終点",
       "q1": "箱ひげ図：第 1 四分位数（y は中央値、low / high はひげ）",
       "q3": "箱ひげ図：第 3 四分位数",
-      "outliers": "箱ひげ図：外れ値の数"
+      "outliers": "箱ひげ図：外れ値の数",
+      "outlier": "箱ひげ図：ポインターが重なっている外れ値の値"
     },
     "ChartPlotClickEvent": {
       "x": "クリック位置の X データ座標",

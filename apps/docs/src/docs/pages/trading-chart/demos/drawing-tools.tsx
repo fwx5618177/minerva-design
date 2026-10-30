@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Switch } from "minerva-design";
 import {
   TradingChart,
+  type TradingChartHandle,
   type TradingDrawing,
   type TradingDrawingTool,
+  type TradingUndoState,
 } from "minerva-design/charts";
 import { HOUR, generateBars } from "../data";
 
@@ -17,52 +19,108 @@ const bars = generateBars({
   volume: 900,
 });
 
-// a Fibonacci retracement of the last rally and a support line, from the data
+// drawings made from the data: a channel around the last rally, a long
+// position on the last bar, a note and a line on the RSI pane
 const recent = bars.slice(-100);
 const bottom = recent.reduce((a, b) => (b.low < a.low ? b : a));
 const rally = recent.slice(recent.indexOf(bottom));
 const top = rally.reduce((a, b) => (b.high > a.high ? b : a));
-const initialDrawings: TradingDrawing[] = [
+const secondLow = rally
+  .slice(Math.floor(rally.length / 2))
+  .reduce((a, b) => (b.low < a.low ? b : a));
+const lastBar = bars[bars.length - 1];
+const entry = Math.round(lastBar.close);
+const end = lastBar.time + 16 * 4 * HOUR;
+
+const initialDrawings = (note: string): TradingDrawing[] => [
   {
-    id: "fib",
-    type: "fibRetracement",
+    id: "channel",
+    type: "parallelChannel",
+    color: "#a855f7",
     points: [
       { time: bottom.time, price: bottom.low },
+      { time: secondLow.time, price: secondLow.low },
       { time: top.time, price: top.high },
     ],
   },
   {
-    id: "support",
+    id: "long",
+    type: "longPosition",
+    quantity: 2,
+    points: [
+      { time: lastBar.time, price: entry },
+      { time: end, price: Math.round(entry * 1.035) },
+      { time: end, price: Math.round(entry * 0.9825) },
+    ],
+  },
+  {
+    id: "note",
+    type: "text",
+    color: "#0ea5e9",
+    text: note,
+    points: [{ time: bottom.time, price: top.high }],
+  },
+  {
+    id: "rsi-line",
     type: "horizontalLine",
-    points: [{ time: bottom.time, price: Math.round(bottom.low) }],
-    color: "var(--success-color)",
+    pane: "rsi:14",
+    color: "#f59e0b",
     lineStyle: "dashed",
+    points: [{ time: bottom.time, price: 50 }],
   },
 ];
 
 /** 18 px icons of the tools */
 const ICONS: Record<TradingDrawingTool, string> = {
   cursor: "M4 3l10 5-4.5 1.5L8 14z",
-  trendLine: "M3 15L15 3M3 15h0M15 3h0",
-  ray: "M3 14L16 4M3 14h0",
+  trendLine: "M3 15L15 3",
+  ray: "M3 14L16 4",
   extendedLine: "M1 16L17 2",
+  arrow: "M3 15L14 4M8 4h6v6",
   horizontalLine: "M1 9h16",
   verticalLine: "M9 1v16",
+  parallelChannel: "M2 11L11 3M7 16l9-8",
+  pitchfork: "M2 9h5M7 9l9-6M7 9h9M7 9l9 6",
   rectangle: "M3 4h12v10H3z",
   fibRetracement: "M2 3h14M2 7h14M2 10h14M2 15h14",
+  text: "M4 4h10M9 4v11",
+  longPosition: "M3 10h12M9 15V4M5.5 7.5L9 4l3.5 3.5",
+  shortPosition: "M3 8h12M9 3v11M5.5 10.5L9 14l3.5-3.5",
   measure: "M9 2v14M5 6l4-4 4 4M5 12l4 4 4-4",
 };
 
 const TOOLS = Object.keys(ICONS) as TradingDrawingTool[];
 
+const Icon = ({ d }: { d: string }) => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d={d} />
+  </svg>
+);
+
 export default function DrawingToolsDemo() {
   const { t } = useTranslation("common", {
     keyPrefix: "docs.trading-chart.data",
   });
+  const chart = useRef<TradingChartHandle>(null);
   const [tool, setTool] = useState<TradingDrawingTool>("cursor");
   const [keep, setKeep] = useState(false);
-  const [drawings, setDrawings] =
-    useState<readonly TradingDrawing[]>(initialDrawings);
+  const [history, setHistory] = useState<TradingUndoState>({
+    canUndo: false,
+    canRedo: false,
+  });
+  const [drawings, setDrawings] = useState<readonly TradingDrawing[]>(() =>
+    initialDrawings(t("noteText")),
+  );
 
   return (
     <div
@@ -99,19 +157,7 @@ export default function DrawingToolsDemo() {
             title={t(`tools.${name}`)}
             onClick={() => setTool(name)}
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d={ICONS[name]} />
-            </svg>
+            <Icon d={ICONS[name]} />
           </Button>
         ))}
       </div>
@@ -120,13 +166,35 @@ export default function DrawingToolsDemo() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 12,
+            gap: 8,
             flexWrap: "wrap",
             padding: "6px 10px",
             fontSize: 13,
             borderBottom: "1px solid var(--border-color)",
           }}
         >
+          <Button
+            size="small"
+            variant="ghost"
+            shape="square"
+            aria-label={t("undo")}
+            title={t("undo")}
+            disabled={!history.canUndo}
+            onClick={() => chart.current?.undo()}
+          >
+            <Icon d="M7 4L3 8l4 4M3 8h8a4 4 0 0 1 0 8H9" />
+          </Button>
+          <Button
+            size="small"
+            variant="ghost"
+            shape="square"
+            aria-label={t("redo")}
+            title={t("redo")}
+            disabled={!history.canRedo}
+            onClick={() => chart.current?.redo()}
+          >
+            <Icon d="M11 4l4 4-4 4M15 8H7a4 4 0 0 0 0 8h2" />
+          </Button>
           <Switch
             size="small"
             checked={keep}
@@ -153,17 +221,24 @@ export default function DrawingToolsDemo() {
           </span>
         </div>
         <TradingChart
+          ref={chart}
           bars={bars}
           timeframe="4H"
           symbol={t("eth")}
           drawings={drawings}
           onDrawingsChange={setDrawings}
+          onUndoChange={setHistory}
           drawingMode={tool}
           keepDrawingMode={keep}
           onDrawingToolChange={setTool}
-          indicators={[{ type: "ema", period: 50 }]}
+          indicators={[
+            { type: "ema", period: 50 },
+            { type: "rsi", height: 100 },
+          ]}
+          rightOffset={20}
+          barSpacing={5}
           ariaLabel={t("drawingAria")}
-          height={460}
+          height={560}
         />
       </div>
     </div>

@@ -15,6 +15,12 @@
     "forced": "renderer: \"webgpu\", \"webgl2\", \"webgl\" ou \"canvas2d\" impose un backend, GPU logiciels compris ; s’il ne peut pas démarrer, le suivant de la chaîne est utilisé. Canvas2D convient aux petits graphiques et aux captures d’écran ; le GPU l’emporte à partir de quelques dizaines de milliers de points.",
     "lost": "Quand le GPU est perdu (réinitialisation du pilote, trop de contextes), le graphique se replie sur le backend suivant, se redessine et émet de nouveau l’événement renderer. Les navigateurs limitent le nombre de contextes WebGL actifs (environ 16) : un tableau de bord comptant des dizaines de graphiques GPU doit détruire ceux qui sortent de l’écran ou utiliser Canvas2D pour les petits."
   },
+  "global": {
+    "title": "Un moteur de rendu pour tous les graphiques",
+    "text": "setDefaultChartRenderer() fixe le backend de tous les graphiques dont le renderer est absent ou \"auto\", quel que soit le framework : la valeur par défaut vit sur globalThis, si bien que les composants React, les wrappers Vue et Angular et les Web Components la partagent, même quand une page embarque plusieurs copies du moteur. Les graphiques la lisent au démarrage : remontez ceux déjà affichés (ou écoutez subscribeDefaultChartRenderer) pour appliquer un changement.",
+    "rules": "L’option renderer d’un graphique l’emporte toujours. Un backend forcé par la valeur par défaut compte comme forcé : il peut tourner sur un GPU logiciel et passe au backend suivant s’il ne peut pas démarrer. \"auto\" rétablit la détection automatique.",
+    "docs": "La barre de rendu en haut des pages de graphiques de cette documentation fait exactement cela : choisissez-y Canvas2D ou WebGL et tous les exemples redémarrent avec, un badge sous chaque exemple indiquant le backend réellement utilisé. Ici, l’option Auto de chaque démonstration la suit."
+  },
   "showcase": {
     "title": "Démonstrations en direct",
     "text": "Les exemples ci-dessous dessinent jusqu’à un million de marques dans votre navigateur. Leurs données sont générées une seule fois, dans des tableaux typés avec un générateur aléatoire à graine, quand l’exemple approche de l’écran, et chaque animation s’arrête tant que son exemple est hors de l’écran. Choisissez un backend pour l’imposer — le graphique indique celui qui a réellement démarré — puis laissez la visite guidée zoomer et dézoomer, ou prenez la main à la souris.",
@@ -55,7 +61,8 @@
       "webgpu": "WebGPU",
       "webgl2": "WebGL2",
       "webgl": "WebGL",
-      "canvas2d": "Canvas2D"
+      "canvas2d": "Canvas2D",
+      "page": "Page ({{backend}})"
     },
     "tour": "Visite guidée",
     "stream": "Flux",
@@ -81,7 +88,9 @@
       "autoCanvas": "Auto a choisi {{backend}} : aucun GPU avec accélération matérielle n’est disponible ici (les GPU logiciels sont ignorés).",
       "forced": "Dessiné avec {{backend}}, comme demandé.",
       "fallback": "{{requested}} ne peut pas démarrer ici : repli sur {{backend}}.",
-      "slow": "Visite guidée en pause : une image occupe le fil principal {{ms}} avec ce backend. Réactivez-la ou choisissez un autre backend."
+      "slow": "Visite guidée en pause : une image occupe le fil principal {{ms}} avec ce backend. Réactivez-la ou choisissez un autre backend.",
+      "page": "Dessiné avec {{backend}}, le moteur de rendu choisi pour la page.",
+      "pageSoftware": "{{requested}}, choisi pour la page, tourne ici sur un GPU logiciel : cet exemple utilise {{backend}} pour que la page reste fluide. Choisissez {{requested}} dans cet exemple pour le forcer."
     },
     "hintX": "Ctrl / ⌘ + molette ou pincement pour zoomer, glisser pour se déplacer, double-clic pour réinitialiser. L’axe y suit la plage visible.",
     "hintXY": "Ctrl / ⌘ + molette ou pincement pour zoomer sur les deux axes, glisser pour se déplacer, double-clic pour réinitialiser.",

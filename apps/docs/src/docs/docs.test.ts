@@ -10,12 +10,14 @@ import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import {
   OUTPUT,
+  OUTPUT_CHARTS,
   OUTPUT_WC,
   generateApi,
   generateCssVars,
   generateElements,
   serialize,
   sortKeys,
+  splitChartApis,
 } from "../../scripts/generate-api.mjs";
 import { docPages } from "./registry";
 import {
@@ -118,7 +120,9 @@ const valueExports = (file: string, seen = new Set<string>()): string[] => {
 
 describe("docs: API tables", () => {
   it("api.generated.json matches the current types (run `pnpm --filter @minerva/docs gen:api`)", () => {
-    expect(readFileSync(OUTPUT, "utf8")).toBe(serialize(generateApi()));
+    const [main, charts] = splitChartApis(generateApi());
+    expect(readFileSync(OUTPUT, "utf8")).toBe(serialize(main));
+    expect(readFileSync(OUTPUT_CHARTS, "utf8")).toBe(serialize(charts));
     expect(readFileSync(OUTPUT_WC, "utf8")).toBe(
       serialize(sortKeys(generateElements())),
     );

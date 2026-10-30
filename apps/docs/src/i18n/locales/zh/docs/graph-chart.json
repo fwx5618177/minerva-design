@@ -1,0 +1,424 @@
+{
+  "title": "关系图",
+  "description": "展示人物、组织、服务等实体之间的关系网络。节点由力导向布局（Barnes–Hut 算法，大图在 Web Worker 中计算）、环形布局或弧线图排布；节点和边由 GPU 绘制（WebGPU、WebGL2、WebGL，并可回退到 Canvas2D），数万个节点也能流畅交互。悬停节点高亮其邻居，可拖动节点、在图例中切换分组，也可以用键盘在图中漫游。",
+  "intro": {
+    "overview": {
+      "title": "概览",
+      "text": "GraphChart 接收节点、边以及可选的分组。分组决定颜色和图例，节点的数值决定圆的大小，边的标签说明关系类型。",
+      "layouts": "布局：力导向（默认），包含连接力、多体斥力、向心力和碰撞力，并使用确定性随机种子；环形布局（按分组排列，边经圆心汇聚）；弧线图；也支持 dag 和树形布局（见“依赖图”和“树图”）。各布局算法也以纯函数导出，可在 Worker 和小程序中使用。",
+      "gpu": "渲染与其他图表共用 GPU 后端，自动按 WebGPU → WebGL2 → WebGL → Canvas2D 回退；当前使用的渲染器通过 onRendererChange 和 data-renderer 属性告知。",
+      "labels": "标签会自动避让：缩小视图时只保留最重要节点的标签，放大或高亮时显示边的标签。"
+    },
+    "controls": {
+      "title": "交互与无障碍",
+      "pointer": "拖动背景平移，按住 Ctrl / ⌘ 滚动或双指捏合缩放，拖动节点移动它（力导向模拟会随之调整），点击选中（Ctrl / ⌘ + 点击可多选），双击背景适应视图。角落的按钮可缩放和适应视图。",
+      "keyboard": "聚焦图表后用方向键在节点间移动；Enter 选中，+ 和 - 缩放，0 适应视图，Esc 清除。聚焦的节点会连同其分组和关系数被朗读。",
+      "languages": "内置文案（摘要、朗读提示、提示框、按钮）提供英文、中文、日文和法文，并跟随页面语言；颜色跟随浅色和深色主题。"
+    }
+  },
+  "demos": {
+    "characters": {
+      "title": "人物关系图",
+      "description": "《三国演义》人物关系：按阵营着色、按重要程度决定大小，每条边标注关系。悬停人物查看其关系圈，悬停连线阅读关系，点击选中，并可在图例中切换阵营。"
+    },
+    "large-network": {
+      "title": "GPU 绘制一万个节点",
+      "description": "40 个生成的社区：10,000 个节点、约 20,000 条连线。模拟在 Web Worker 中运行（worker=\"auto\" 时超过 2,000 个节点即启用），GPU 每帧绘制；在你平移或缩放之前，视图会自动跟随布局。"
+    },
+    "circular": {
+      "title": "环形布局",
+      "description": "微服务之间的调用关系，按业务域沿圆周分组。边的粗细表示调用量，edgeColor=\"source\" 以调用方的颜色着色，tension 让边经圆心汇聚成束。"
+    },
+    "arc": {
+      "title": "弧线图",
+      "description": "编程语言之间的影响关系：节点按语言家族排列在一条直线上，每个影响关系是其上方的一条弧线。悬停某种语言可查看它的上下游。"
+    },
+    "vanilla": {
+      "title": "核心引擎",
+      "description": "不依赖 React，直接使用 minerva-design/charts/core 的 createGraphChart：通过 setOptions 切换布局，监听 click 和 layoutEnd 事件，并用 focusNode 将点击的节点居中。"
+    }
+  },
+  "api": {
+    "GraphChartProps": {
+      "layout": "节点布局：force、circular、arc、dag、tree、radial、mindmap、org，或 none（使用节点自身的坐标）",
+      "direction": "dag 和树形布局的方向：TB、LR、BT 或 RL",
+      "force": "力导向布局设置：连线距离、斥力、向心力、碰撞、随机种子、Worker",
+      "circular": "环形布局和弧线图设置：节点顺序和边的张力",
+      "dag": "分层布局（layout=\"dag\"）设置：间距、交叉优化轮数、关键路径",
+      "tree": "树形布局设置：根节点、间距、折叠、卡片尺寸"
+    },
+    "GraphCommonProps": {
+      "nodes": "节点：id、标签、分组、数值、颜色、大小、形状以及可选坐标",
+      "edges": "节点 id 之间的边（树中为父 → 子，DAG 中为前置 → 依赖方）；未知的 id 会被忽略",
+      "groups": "节点分组：图例顺序、名称和颜色；仅在节点中出现的分组会被自动补充",
+      "height": "图表高度（含图例）；数字表示像素",
+      "width": "图表宽度；数字表示像素",
+      "nodeShape": "未设置 shape 的节点形状；DAG、组织架构图和思维导图默认为方框，其余为圆形",
+      "nodeSize": "圆的直径（布局单位），或按节点数值缩放的 [最小, 最大] 范围",
+      "edgeStyle": "边的形状：straight、curve、spline 或 orthogonal；省略时由布局决定",
+      "edgeWidth": "边的宽度（像素），或按边的数值缩放的 [最小, 最大] 范围",
+      "edgeColor": "边的颜色：中性色，或使用起点 / 终点节点的颜色",
+      "arrows": "为未设置 directed 的边绘制箭头；DAG 默认开启",
+      "nodeLabels": "节点标签：始终显示、不显示，或 auto（缩小时隐藏次要和重叠的标签）。框内文字保持可读的最小字号，放不下时以省略号截断；只有框小到放不下任何文字或设为 false 时才隐藏",
+      "edgeLabels": "边的标签：始终显示、auto（放大或高亮时）、仅悬停时，或不显示",
+      "highlight": "悬停或选中节点时高亮的内容：邻居、完整上下游（祖先和后代），或不高亮",
+      "selected": "选中节点的 id；修改该属性会更新选中状态",
+      "animation": "为布局和数据变化（折叠、新数据）添加动画；数字表示时长（毫秒）",
+      "fitPadding": "适应视图时图形四周的留白（像素）",
+      "controls": "显示放大、缩小和适应视图按钮",
+      "legend": "分组图例（位置、切换）；有多个分组时默认显示",
+      "tooltip": "节点和边的提示框；false 关闭，render 自定义内容",
+      "interaction": "平移、缩放、滚轮模式、拖动节点、选择和键盘；false 使图表静态",
+      "renderer": "节点和边的渲染后端：auto 依次尝试 WebGPU、WebGL2、WebGL、Canvas2D",
+      "palette": "未设置颜色的分组所用的颜色；默认取图表 CSS 变量，其次为主题色",
+      "ariaLabel": "图表的无障碍名称",
+      "locale": "内置文案和数字的语言；默认跟随页面语言",
+      "labels": "覆盖内置文案",
+      "onHover": "悬停或键盘聚焦的节点 / 边变化时调用（无悬停时为 null）",
+      "onItemClick": "点击节点或边、或用 Enter 激活节点时调用",
+      "onSelectionChange": "选中状态变化时调用，参数为选中节点的 id",
+      "onToggle": "树节点折叠或展开时调用",
+      "onGroupToggle": "图例显示或隐藏分组时调用",
+      "onLayoutEnd": "布局完成时调用（力导向布局在模拟冷却后）",
+      "onRendererChange": "渲染后端就绪时调用，回退后会再次调用",
+      "className": "外层元素的类名",
+      "style": "外层元素的样式",
+      "ref": "命令式句柄：fit、focusNode、select、expand / collapse、getPositions 等"
+    },
+    "GraphChartHandle": {
+      "fit": "让可见节点适应视图（默认带动画）",
+      "focusNode": "将节点居中（会展开其折叠的祖先），可选缩放",
+      "setData": "替换节点、边和分组，直到下一次以新属性渲染",
+      "select": "按 id 选中节点；null 清除选择",
+      "getSelection": "选中节点的 id",
+      "expand": "展开树节点；不传 id 时展开全部",
+      "collapse": "折叠树节点；不传 id 时折叠所有有子节点的节点",
+      "toggle": "折叠已展开的节点，或展开已折叠的节点",
+      "getPositions": "节点当前的坐标（布局单位）",
+      "relayout": "重新计算布局（重启力导向模拟）",
+      "getRenderer": "当前使用的渲染后端，就绪前为 null",
+      "getInstance": "底层引擎实例（minerva-design/charts/core）"
+    },
+    "GraphNode": {
+      "id": "唯一标识，供边引用",
+      "label": "显示在节点旁或节点内的文字；省略时使用 id",
+      "subtitle": "方框和组织架构卡片的第二行（职位、版本、状态）",
+      "group": "分组 id：决定颜色和图例项",
+      "value": "节点权重：决定圆的大小和标签优先级；关键路径中表示任务时长",
+      "color": "节点颜色（任意 CSS 颜色，包括 var(--x)）；优先于分组颜色",
+      "size": "圆的直径或方框的高度（布局单位）",
+      "shape": "圆形或方框；省略时使用 nodeShape 选项",
+      "x": "水平坐标（none 布局，或力导向布局的初始位置）",
+      "y": "垂直坐标（none 布局，或力导向布局的初始位置）",
+      "fixed": "力导向布局将节点固定在其 x / y",
+      "collapsed": "树形布局：该节点的子节点初始隐藏",
+      "data": "任意数据，会在事件中传回"
+    },
+    "GraphEdge": {
+      "source": "起点节点的 id",
+      "target": "终点节点的 id",
+      "value": "边的权重：决定线宽和力导向布局中的连接强度",
+      "label": "绘制在边上的文字（关系名称）",
+      "directed": "在终点绘制箭头；省略时使用 arrows 选项",
+      "color": "线条颜色（任意 CSS 颜色）",
+      "width": "线宽（像素）；省略时由数值推导",
+      "dashed": "虚线（可选或较弱的关系）",
+      "data": "任意数据，会在事件中传回"
+    },
+    "GraphGroup": {
+      "id": "供节点 group 引用的 id",
+      "name": "显示在图例和提示框中的名称；省略时使用 id",
+      "color": "该分组节点的颜色；省略时取调色板",
+      "hidden": "初始隐藏（可在图例中显示）"
+    },
+    "GraphForceOptions": {
+      "linkDistance": "边的静止长度（节点边缘之间），布局单位",
+      "linkStrength": "边的刚度，0 到 1；省略时为两端较小度数的倒数",
+      "charge": "多体作用强度；负值使节点相互排斥",
+      "theta": "Barnes–Hut 精度：值越大越快、越不精确",
+      "gravity": "将每个节点拉向中心的力，使不连通的部分聚在一起",
+      "collide": "防止节点重叠；数字表示额外间距（布局单位）",
+      "velocityDecay": "每一步的速度衰减，0 到 1",
+      "iterations": "完整冷却所需的步数",
+      "seed": "随机扰动的种子：相同数据总得到相同布局",
+      "worker": "在 Web Worker 中运行模拟：auto 时超过 2,000 个节点启用；不可用时回退到主线程",
+      "animate": "模拟运行时实时显示；false 时只显示最终结果"
+    },
+    "GraphCircularOptions": {
+      "order": "节点顺序：按分组、按度数，或按数据顺序",
+      "tension": "环形布局中边向圆心弯曲的程度，0（直弦）到 1"
+    },
+    "GraphInteractionOptions": {
+      "pan": "拖动背景平移视图",
+      "zoom": "滚轮和双指缩放",
+      "wheel": "滚轮缩放：仅在按住 Ctrl / ⌘ 时（会显示提示）或始终",
+      "drag": "可拖动节点；力导向、环形和自由布局默认开启",
+      "select": "点击选中节点（Ctrl / ⌘ + 点击可多选）；multiple 时无需修饰键即可多选",
+      "keyboard": "方向键在节点间移动，Enter 选中或展开，+ / - 缩放，0 适应视图，Esc 清除",
+      "zoomRange": "最小和最大缩放比例"
+    },
+    "GraphLegendOptions": {
+      "position": "图例位于图表上方或下方",
+      "toggle": "点击图例项显示或隐藏该分组的节点"
+    },
+    "GraphTooltipOptions": {
+      "render": "渲染节点或边的提示框内容：字符串、DOM 节点，或返回 null 隐藏"
+    },
+    "GraphHoverEvent": {
+      "type": "对象类型：node 或 edge",
+      "id": "节点 id；边为 source→target",
+      "node": "节点（节点事件）",
+      "edge": "边（边事件）",
+      "index": "节点或边在数据中的索引",
+      "group": "节点的分组 id",
+      "color": "节点或边解析后的颜色",
+      "degree": "节点的关系数",
+      "clientX": "相对图表容器的水平位置（像素）",
+      "clientY": "相对图表容器的垂直位置（像素）"
+    },
+    "GraphChartLabels": {
+      "chart": "关系网络的角色描述和无障碍名称",
+      "tree": "树形布局的无障碍名称",
+      "dag": "分层布局的无障碍名称",
+      "summary": "包含节点数和关系数的摘要（{nodes}、{edges}）",
+      "groupsSummary": "分组摘要（{groups}）",
+      "keyboardHelp": "摘要中朗读的键盘操作说明",
+      "nodeFocus": "聚焦节点时的朗读（{name}、{degree}）",
+      "nodeFocusGroup": "聚焦分组内节点时的朗读（{name}、{group}、{degree}）",
+      "selected": "选择变化时的朗读（{count}）",
+      "selectionCleared": "清除选择时的朗读",
+      "expanded": "展开节点时的朗读（{name}）",
+      "collapsed": "折叠节点时的朗读（{name}、{count}）",
+      "shown": "图例显示分组时的朗读（{name}）",
+      "hidden": "图例隐藏分组时的朗读（{name}）",
+      "degree": "提示框行：关系数",
+      "incoming": "提示框行：入边",
+      "outgoing": "提示框行：出边",
+      "value": "提示框行：数值",
+      "group": "提示框行：分组",
+      "hiddenChildren": "提示框行：折叠节点下隐藏的后代数",
+      "critical": "关键路径上节点的提示框标记",
+      "zoomIn": "放大按钮",
+      "zoomOut": "缩小按钮",
+      "fit": "适应视图按钮",
+      "zoomHint": "直接滚动滚轮时显示的提示（{key} 为 Ctrl 或 ⌘）",
+      "listSeparator": "列表分隔符"
+    },
+    "GraphChartOptions": {
+      "nodes": "节点",
+      "edges": "边（未知的节点 id 会被忽略）",
+      "groups": "分组：图例顺序、名称和颜色",
+      "layout": "节点布局；默认为 force",
+      "direction": "dag（默认 TB）和 tree（默认 LR）的方向",
+      "force": "力导向布局设置",
+      "dag": "分层布局设置",
+      "tree": "树形布局设置",
+      "circular": "环形布局和弧线图设置",
+      "nodeShape": "未设置 shape 的节点形状",
+      "nodeSize": "圆的直径，或按数值缩放的 [最小, 最大] 范围",
+      "edgeStyle": "边的形状；省略时由布局决定",
+      "edgeWidth": "边的宽度（像素），或按数值缩放的 [最小, 最大] 范围",
+      "edgeColor": "中性色的边，或使用起点 / 终点颜色",
+      "arrows": "为未设置 directed 的边绘制箭头",
+      "nodeLabels": "节点标签：始终、不显示或 auto。框内文字保持可读的最小字号，放不下时以省略号截断；只有框小到放不下任何文字或设为 false 时才隐藏",
+      "edgeLabels": "边的标签：始终、auto、hover 或不显示",
+      "highlight": "悬停或选中节点的高亮方式：邻居、上下游或不高亮",
+      "selected": "选中节点的 id",
+      "animation": "为布局和数据变化添加动画；数字表示时长（毫秒）",
+      "fitPadding": "适应视图时四周的留白（像素）",
+      "controls": "缩放和适应视图按钮",
+      "legend": "分组图例",
+      "tooltip": "提示框；false 关闭",
+      "interaction": "平移、缩放、拖动、选择和键盘；false 使图表静态",
+      "renderer": "渲染后端：auto、webgpu、webgl2、webgl 或 canvas2d",
+      "palette": "未设置颜色的分组所用的颜色",
+      "ariaLabel": "图表的无障碍名称",
+      "locale": "内置文案和数字的语言",
+      "labels": "覆盖内置文案"
+    },
+    "GraphChartInstance": {
+      "setOptions": "替换选项；保留并以动画过渡剩余节点的位置",
+      "setData": "替换节点、边和分组",
+      "fit": "让可见节点适应视图",
+      "focusNode": "将节点居中（会展开其折叠的祖先），可选缩放",
+      "select": "选中节点；null 或空数组清除选择",
+      "getSelection": "选中节点的 id",
+      "expand": "展开节点；不传 id 时展开全部",
+      "collapse": "折叠节点；不传 id 时折叠所有有子节点的节点",
+      "toggle": "折叠或展开节点",
+      "getPositions": "节点当前的坐标（布局单位）",
+      "relayout": "重新计算布局",
+      "resize": "重新测量容器尺寸（ResizeObserver 会自动处理）",
+      "getRenderer": "当前使用的渲染后端，就绪前为 null",
+      "ready": "可绘制第一帧时以渲染后端 resolve",
+      "refreshTheme": "重新读取 CSS 变量（主题变化会被自动检测）",
+      "on": "订阅事件；返回取消订阅函数",
+      "destroy": "移除 DOM、停止模拟并释放 GPU 资源"
+    },
+    "GraphChartEventMap": {
+      "hover": "悬停或键盘聚焦的节点 / 边发生变化（无悬停时为 null）",
+      "click": "点击了节点或边，或用 Enter 激活了节点",
+      "select": "选择发生变化；包含选中节点的 id",
+      "toggle": "树节点被折叠或展开",
+      "groupToggle": "图例显示或隐藏了分组",
+      "layoutEnd": "布局完成",
+      "renderer": "渲染后端就绪（回退后也会触发）"
+    },
+    "GraphForceLayoutOptions": {
+      "radius": "每个节点用于碰撞的半径；省略时为 6"
+    },
+    "GraphForceSimulation": {
+      "x": "水平坐标，原地更新",
+      "y": "垂直坐标，原地更新",
+      "tick": "运行若干步；返回模拟是否仍未冷却",
+      "alpha": "模拟当前的温度",
+      "reheat": "从指定温度（默认 0.3）重新开始冷却",
+      "drag": "将节点固定在某位置并保持模拟活跃",
+      "release": "释放被拖动的节点，或保持固定",
+      "done": "模拟是否已冷却",
+      "settle": "推开重叠的节点；在最后一步之后调用"
+    }
+  },
+  "data": {
+    "characters": {
+      "liubei": "刘备",
+      "guanyu": "关羽",
+      "zhangfei": "张飞",
+      "zhugeliang": "诸葛亮",
+      "zhaoyun": "赵云",
+      "machao": "马超",
+      "huangzhong": "黄忠",
+      "pangtong": "庞统",
+      "jiangwei": "姜维",
+      "liushan": "刘禅",
+      "weiyan": "魏延",
+      "fazheng": "法正",
+      "caocao": "曹操",
+      "caopi": "曹丕",
+      "simayi": "司马懿",
+      "xiahoudun": "夏侯惇",
+      "xiahouyuan": "夏侯渊",
+      "zhangliao": "张辽",
+      "xuchu": "许褚",
+      "guojia": "郭嘉",
+      "xunyu": "荀彧",
+      "dianwei": "典韦",
+      "caozhi": "曹植",
+      "simazhao": "司马昭",
+      "dengai": "邓艾",
+      "sunquan": "孙权",
+      "sunce": "孙策",
+      "sunjian": "孙坚",
+      "zhouyu": "周瑜",
+      "lusu": "鲁肃",
+      "lumeng": "吕蒙",
+      "luxun": "陆逊",
+      "ganning": "甘宁",
+      "huanggai": "黄盖",
+      "xiaoqiao": "小乔",
+      "daqiao": "大乔",
+      "sunshangxiang": "孙尚香",
+      "lvbu": "吕布",
+      "dongzhuo": "董卓",
+      "diaochan": "貂蝉",
+      "yuanshao": "袁绍",
+      "xiandi": "汉献帝",
+      "wangyun": "王允"
+    },
+    "factions": {
+      "shu": "蜀汉",
+      "wei": "曹魏",
+      "wu": "东吴",
+      "qun": "群雄与汉室"
+    },
+    "relations": {
+      "brothers": "结义兄弟",
+      "serves": "效力",
+      "father": "父子",
+      "spouse": "夫妻",
+      "siblings": "手足",
+      "rival": "宿敌",
+      "mentor": "师徒",
+      "adoptive": "义父",
+      "ally": "同盟",
+      "defeated": "击败",
+      "friends": "总角之好"
+    },
+    "charactersAria": "《三国演义》人物关系，按阵营着色",
+    "charactersHint": "悬停人物或关系，点击选中；按住 Ctrl / ⌘ 滚动可缩放。",
+    "selectedHint": "已选中：{{name}}",
+    "relationHint": "{{source}} → {{target}}：{{relation}}",
+    "separator": "、",
+    "member": "成员 {{id}}",
+    "community": "社区 {{n}}",
+    "largeAria": "生成的网络：40 个社区共 10,000 名成员",
+    "largeStatus": "{{nodes}} 个节点 · {{edges}} 条连线 · 渲染器：{{renderer}} ·",
+    "largeRunning": "正在 Web Worker 中模拟…",
+    "largeDone": "布局用时 {{seconds}} 秒",
+    "domains": {
+      "edge": "接入层",
+      "commerce": "交易",
+      "identity": "身份",
+      "data": "数据"
+    },
+    "bundleEdges": "边经圆心汇聚成束",
+    "circularAria": "微服务之间的调用，按业务域分组",
+    "families": {
+      "systems": "系统级",
+      "functional": "函数式",
+      "objects": "面向对象",
+      "scripting": "脚本"
+    },
+    "influenced": "影响",
+    "arcAria": "编程语言之间的影响关系",
+    "layouts": {
+      "force": "力导向",
+      "circular": "环形",
+      "arc": "弧线图"
+    },
+    "layoutLabel": "布局",
+    "vanillaHint": "点击人物使其居中。",
+    "vanillaClick": "{{name}}：{{links}} 条关系",
+    "vanillaLayout": "布局：{{layout}}"
+  },
+  "wc": {
+    "demos": {
+      "routes": {
+        "title": "枢纽城市之间的航线",
+        "description": "枢纽城市的力导向网络：节点大小表示枢纽规模，连线粗细表示每周航班数，颜色按地区区分；城市名称跟随页面语言。"
+      },
+      "circular": {
+        "title": "环形布局与选择",
+        "description": "同一组航线按地区排列在圆环上，连线使用起点的颜色；点击城市（Ctrl / ⌘ + 点击可多选）会报告当前选择。"
+      }
+    },
+    "minerva-graph-chart": {
+      "props": {
+        "options": "其他引擎选项（GraphChartOptions：force、circular、dag、tree、nodeSize、edgeWidth、arrows、nodeLabels、edgeLabels、animation、legend、tooltip、interaction、renderer、palette、ariaLabel、labels…）；仅属性",
+        "instance": "引擎实例（minerva-design/charts/core），元素渲染并连接到文档前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的节点 / 连线发生变化；detail：{ type, id, node, edge, index, group, color, degree, clientX, clientY }，无悬停时为 null",
+        "minerva-item-click": "点击了节点或连线（或用 Enter 激活了节点）；detail：{ type, id, node, edge, index, group, color, degree, clientX, clientY }",
+        "minerva-selection-change": "选择发生变化；detail：{ ids }",
+        "minerva-toggle": "树节点被折叠或展开；detail：{ id, collapsed }",
+        "minerva-group-toggle": "图例显示 / 隐藏了某个分组；detail：{ group, hidden }",
+        "minerva-layout-end": "布局完成（力导向模拟已稳定）；detail：{ layout }",
+        "minerva-renderer-change": "后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+      },
+      "methods": {
+        "fit": "将可见节点适配到视图中",
+        "focusNode": "将某个节点居中（展开其已折叠的祖先），可选缩放",
+        "setData": "替换数据，直到属性再次变化",
+        "select": "选择节点（null 清除选择）",
+        "getSelection": "选中节点的 id",
+        "expand": "展开一个节点（不传 id 时展开全部）",
+        "collapse": "折叠一个节点（不传 id 时折叠所有有子节点的节点）",
+        "toggle": "折叠 / 展开一个节点",
+        "getPositions": "节点当前的位置（布局单位）",
+        "relayout": "重新计算布局",
+        "getRenderer": "正在使用的后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+      }
+    }
+  }
+}

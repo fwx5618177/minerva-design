@@ -169,6 +169,7 @@ describe("user-facing snippets use minerva-design", () => {
     for (const file of [
       "packages/minerva-design/custom-elements.json",
       "apps/docs/src/docs/api.generated.json",
+      "apps/docs/src/docs/api.charts.generated.json",
       "apps/docs/src/docs/api.wc.generated.json",
     ]) {
       expect(readFileSync(join(REPO, file), "utf8"), file).not.toMatch(

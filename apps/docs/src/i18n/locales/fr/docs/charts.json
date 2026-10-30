@@ -1,6 +1,6 @@
 {
   "title": "Graphiques",
-  "description": "Graphiques accélérés par GPU qui restent à 60 fps avec des millions de points, et graphiques de formes dessinés en Canvas2D : tendances, comparaisons, statistiques, parts d’un tout, hiérarchies et flux, finance et trading, et 3D. Chart combine des séries en ligne, aire, barres, nuage, chandeliers et carte de chaleur ; chaque autre composant est un préréglage pour un type de graphique. Commencez par les galeries ci-dessous : une miniature vivante de chaque type de graphique, chacune renvoyant à sa page.",
+  "description": "Des graphiques accélérés par le GPU qui restent à 60 fps avec des millions de points, et des graphiques de formes en Canvas2D : tendances, comparaisons, statistiques, parts d’un tout, hiérarchies et flux, réseaux, dépendances et arbres, finance et trading, et 3D. Chart combine des séries en lignes, aires, barres, points, chandeliers et cartes de chaleur ; les autres composants sont des préréglages pour un type de graphique. Commencez par les galeries ci-dessous : une miniature interactive de chaque type de graphique, avec un lien vers sa page.",
   "intro": {
     "rendering": {
       "title": "Comment le rendu fonctionne",
@@ -26,14 +26,15 @@
     },
     "families": {
       "title": "Familles de graphiques",
-      "text": "Chaque type de graphique est présenté ci-dessous en miniature vivante, réparti en cinq galeries ; chaque légende renvoie à la page du graphique :",
+      "text": "Chaque type de graphique est présenté ci-dessous en miniature interactive, en six galeries ; chaque légende renvoie à la page du graphique :",
       "basic": "2D de base : <line>courbes</line>, <area>aires</area>, <rangeArea>aires de plage</rangeArea>, <bar>barres</bar>, <horizontalBar>barres horizontales</horizontalBar>, <mixed>graphiques combinés / à double axe</mixed>, <scatter>nuages de points</scatter>, <bubble>bulles</bubble> et <sparkline>sparklines</sparkline>.",
       "statistics": "Statistiques, indicateurs et planification : <histogram>histogramme</histogram>, <boxplot>boîte à moustaches</boxplot>, <waterfall>cascade</waterfall>, <heatmap>carte de chaleur</heatmap>, <calendar>calendrier thermique</calendar>, <gauge>jauge</gauge>, <bullet>graphique à puces</bullet>, <radialBar>barres radiales</radialBar> et <gantt>diagramme de Gantt</gantt>.",
-      "relations": "Parts, relations et hiérarchies : <pie>secteurs et anneau</pie>, <radar>radar</radar>, <funnel>entonnoir</funnel>, <quadrant>matrice à quadrants</quadrant>, <treemap>treemap</treemap>, <sunburst>rayons de soleil</sunburst> et <sankey>diagramme de Sankey</sankey>.",
-      "finance": "Finance et trading : <candlestick>chandeliers</candlestick>, <trading>graphique de trading</trading>, <indicators>indicateurs techniques</indicators>, <depth>graphique de profondeur</depth>, <orderBook>carnet d'ordres</orderBook>, <orderBookHeatmap>carte de chaleur du carnet d'ordres</orderBookHeatmap> et <timeSales>flux des transactions</timeSales>.",
-      "threeD": "3D : <scatter>nuage de points 3D et courbe 3D</scatter>, <surface>surface 3D</surface> et <bar>histogramme 3D</bar>.",
+      "relations": "Parts d’un tout, hiérarchies et flux : <pie>secteurs et anneau</pie>, <radar>radar</radar>, <funnel>entonnoir</funnel>, <quadrant>matrice à quadrants</quadrant>, <treemap>treemap</treemap>, <sunburst>rayons de soleil</sunburst> et <sankey>Sankey</sankey>.",
+      "graphs": "Graphes et hiérarchies : <network>graphes de relations</network> (dispositions par forces, circulaire et en arcs, dessinés par le GPU jusqu’à des dizaines de milliers de nœuds), <dag>graphes de dépendances</dag> (DAG en couches avec le chemin critique), <tree>arbres</tree> (arbres ordonnés et radiaux, cartes mentales, organigrammes) et <chord>diagrammes d’accords</chord>.",
+      "finance": "Finance et trading : <candlestick>chandeliers</candlestick>, le <trading>graphique de trading</trading> (profil de volume, outils de dessin, relecture des barres, graphiques synchronisés et saisie d’ordres) avec 21 <indicators>indicateurs techniques</indicators> intégrés (MA / EMA / WMA, Bollinger, VWAP, volume, MACD, RSI, KDJ, ATR, SAR parabolique, Ichimoku, SuperTrend, Keltner, Donchian, OBV, CCI, RSI stochastique, DMI, Williams %R, MFI), le <depth>graphique de profondeur</depth>, le <orderBook>carnet d’ordres</orderBook>, sa <orderBookHeatmap>carte de chaleur</orderBookHeatmap> et le <timeSales>ruban des transactions</timeSales>.",
+      "threeD": "3D : <scatter>nuages de points et lignes 3D</scatter> (y compris des nuages lumineux en mélange additif), <surface>surfaces 3D</surface> et <bar>barres 3D</bar>.",
       "lazy": "Les miniatures ne sont montées que lorsqu’elles approchent de la zone visible (IntersectionObserver) : la page reste rapide et ne garde jamais plus de contextes GPU que le navigateur n’en autorise. Les widgets du carnet d’ordres diffusent un marché simulé et se mettent en pause hors de l’écran.",
-      "fallback": "Les graphiques GPU choisissent leur moteur de rendu en quatre niveaux, WebGPU → WebGL2 → WebGL → Canvas2D : ils s'affichent dans tous les navigateurs et survivent à une perte du GPU ; voir les pages <engine>moteur de graphiques</engine> et <performance>performances</performance>."
+      "fallback": "Les graphiques GPU choisissent leur moteur de rendu en quatre niveaux, WebGPU → WebGL2 → WebGL → Canvas2D : ils s’affichent dans tous les navigateurs et survivent à la perte du GPU. setDefaultChartRenderer() change d’un coup le moteur par défaut de tous les graphiques : le sélecteur de rendu épinglé sur les pages de graphiques de cette documentation l’utilise. Voir les pages <engine>moteur de graphiques</engine> et <performance>performances</performance>."
     }
   },
   "demos": {
@@ -46,16 +47,20 @@
       "description": "Un histogramme de latences, des boîtes à moustaches par service, une cascade de passage du chiffre d’affaires, une carte de chaleur de la charge hebdomadaire, un calendrier de commits, une jauge à plages, des indicateurs face à leurs objectifs, des anneaux de progression et le diagramme de Gantt d’une livraison."
     },
     "gallery-relations": {
-      "title": "Galerie : parts, relations et hiérarchies",
+      "title": "Galerie : parts d’un tout, hiérarchies et flux",
       "description": "Parts des navigateurs en secteurs, utilisateurs par offre dans un anneau avec le total, un radar de fournisseurs, un entonnoir d’inscription, une matrice de priorités, un treemap de budget, les effectifs en rayons de soleil et un diagramme de Sankey des sources de trafic jusqu’aux inscriptions."
+    },
+    "gallery-graphs": {
+      "title": "Galerie : réseaux, dépendances et arbres",
+      "description": "Les appels entre microservices en réseau par forces, des sujets de support en diagramme en arcs, un pipeline de données en DAG avec son chemin critique, un organigramme, la carte mentale d’un voyage et les clients qui changent d’offre dans un diagramme d’accords. Survolez un nœud pour mettre en valeur ses voisins ; Ctrl / ⌘ + molette zoome."
     },
     "gallery-finance": {
       "title": "Galerie : finance et trading",
-      "description": "Chandeliers, le graphique de trading avec une moyenne mobile et le volume, les bandes de Bollinger avec le RSI, et les widgets du carnet d’ordres (profondeur, échelle de prix, carte de chaleur de la liquidité et ruban des transactions) qui diffusent un marché simulé. Ils sont montés à l’arrivée dans la zone visible ; Ctrl / ⌘ + molette zoome."
+      "description": "Des chandeliers, le graphique de trading avec une moyenne mobile, le volume et un profil de volume, SuperTrend avec le MACD, et les widgets du carnet d’ordres (profondeur, échelle de prix, carte de chaleur de liquidité, ruban des transactions) alimentés par un marché simulé. Ils se montent quand on les fait défiler à l’écran ; Ctrl / ⌘ + molette zoome."
     },
     "gallery-3d": {
       "title": "Galerie : graphiques 3D",
-      "description": "Des groupes dans un nuage de points 3D qui tourne lentement, une trajectoire en spirale, une surface en ondulations et les ventes par région et trimestre en barres 3D. Faites glisser pour tourner ; ils ne sont dessinés que lorsqu’ils sont visibles."
+      "description": "Des groupes dans un nuage de points 3D qui tourne lentement, une trajectoire en spirale, une surface en ondulation, les ventes par région et trimestre en barres 3D et une galaxie spirale de 24 000 étoiles lumineuses en mélange additif. Faites glisser pour tourner ; ils ne s’affichent que lorsqu’ils sont visibles."
     },
     "mixed": {
       "title": "Séries mixtes",
@@ -275,13 +280,13 @@
       },
       "trading": {
         "title": "Graphique de trading",
-        "description": "Bougies, volume, déplacement et zoom",
-        "aria": "Cours horaire BTC/USDT avec le volume"
+        "description": "Bougies, profil de volume, zoom",
+        "aria": "Cours horaire BTC/USDT avec une moyenne mobile, le volume et un profil de volume"
       },
       "indicators": {
         "title": "Indicateurs techniques",
-        "description": "MM, MACD, RSI, Bollinger…",
-        "aria": "Cours quotidien BTC/USDT avec bandes de Bollinger et RSI"
+        "description": "21 indicateurs",
+        "aria": "Cours journalier BTC/USDT avec SuperTrend et le MACD"
       },
       "depth": {
         "title": "Graphique de profondeur",
@@ -322,6 +327,41 @@
         "title": "Histogramme 3D",
         "description": "Valeurs sur une grille de catégories",
         "aria": "Ventes par région et trimestre"
+      },
+      "network": {
+        "title": "Graphe de relations",
+        "description": "Appels entre services",
+        "aria": "Réseau de microservices et des appels entre eux"
+      },
+      "arc": {
+        "title": "Diagramme en arcs",
+        "description": "Sujets cités ensemble",
+        "aria": "Sujets de support reliés selon leur fréquence dans un même ticket"
+      },
+      "dag": {
+        "title": "Graphe de dépendances",
+        "description": "Pipeline et chemin critique",
+        "aria": "Étapes d’un pipeline de données et leurs dépendances, avec le chemin critique"
+      },
+      "org": {
+        "title": "Organigramme",
+        "description": "Liens hiérarchiques",
+        "aria": "Organigramme du PDG jusqu’aux équipes"
+      },
+      "mindMap": {
+        "title": "Carte mentale",
+        "description": "Idées autour d’un thème",
+        "aria": "Carte mentale d’un voyage d’été"
+      },
+      "chord": {
+        "title": "Diagramme d’accords",
+        "description": "Flux entre groupes",
+        "aria": "Clients passant d’une offre à l’autre en un trimestre"
+      },
+      "galaxy": {
+        "title": "Points 3D lumineux",
+        "description": "Halo additif",
+        "aria": "Galaxie spirale d’étoiles lumineuses"
       }
     },
     "load": "Charge",
@@ -454,6 +494,79 @@
       "south": "Sud",
       "east": "Est",
       "west": "Ouest"
+    },
+    "customers": "{{value}} clients",
+    "galaxyCore": "Noyau",
+    "galaxyArms": "Bras",
+    "graph": {
+      "services": {
+        "gateway": "Passerelle API",
+        "web": "App web",
+        "auth": "Auth",
+        "users": "Utilisateurs",
+        "orders": "Commandes",
+        "payments": "Paiements",
+        "search": "Recherche",
+        "inventory": "Stock",
+        "database": "Base de données",
+        "cache": "Cache",
+        "queue": "File"
+      },
+      "tiers": {
+        "edge": "Entrée",
+        "core": "Services",
+        "data": "Données"
+      },
+      "topics": {
+        "login": "Connexion",
+        "billing": "Facturation",
+        "export": "Export",
+        "mobile": "Mobile",
+        "speed": "Vitesse",
+        "alerts": "Alertes"
+      },
+      "steps": {
+        "extract": "Extraction",
+        "clean": "Nettoyage",
+        "enrich": "Enrichissement",
+        "join": "Jointure",
+        "train": "Entraînement",
+        "report": "Rapport",
+        "publish": "Publication"
+      },
+      "roles": {
+        "ceo": "PDG",
+        "cto": "DT",
+        "cfo": "DAF",
+        "coo": "DG délégué",
+        "platform": "Plateforme",
+        "product": "Produit",
+        "finance": "Finance",
+        "sales": "Ventes",
+        "support": "Support"
+      },
+      "trip": {
+        "trip": "Voyage d'été",
+        "transport": "Transport",
+        "stay": "Hébergement",
+        "food": "Repas",
+        "activities": "Activités",
+        "train": "Train",
+        "rentalCar": "Location",
+        "hotel": "Hôtel",
+        "camping": "Camping",
+        "market": "Marché",
+        "restaurants": "Restaurants",
+        "museum": "Musée",
+        "hiking": "Randonnée",
+        "beach": "Plage"
+      },
+      "plans": {
+        "free": "Gratuit",
+        "starter": "Starter",
+        "pro": "Pro",
+        "enterprise": "Entreprise"
+      }
     }
   },
   "api": {
@@ -514,13 +627,18 @@
       "curve": "Forme de la ligne entre les points : linear, smooth (monotone, ne dépasse jamais les données) ou step (line / area)",
       "upColor": "Chandeliers : couleur des bougies haussières (clôture ≥ ouverture) ; --success-color par défaut",
       "downColor": "Chandeliers : couleur des bougies baissières ; --danger-color par défaut",
-      "colorScale": "Carte de chaleur : couleurs de la plus petite à la plus grande valeur (au moins deux)",
+      "colorScale": "Carte de chaleur : couleurs de la plus petite à la plus grande valeur (au moins deux, interpolées en OKLab), ou une échelle intégrée qui suit le thème : sequential (par défaut) ou diverging",
       "valueRange": "Carte de chaleur : valeurs associées aux extrémités de colorScale ; l’étendue des données par défaut",
       "radius": "Barres / carte de chaleur : rayon des coins en pixels (barres 3, cellules 2)",
       "format": "Formate les valeurs de cette série dans l’infobulle (le format de l’axe y par défaut)",
       "yAxis": "Axe des valeurs de la série : \"right\" la place sur yAxis2 (graphiques à deux axes, orientation verticale)",
       "barWidth": "Barres et boîtes : part d'une catégorie occupée par les barres, 0-1 (1 les rend jointives, pour les histogrammes)",
-      "valueName": "Nuage de points : nom de la value des points dans l'infobulle (graphiques à bulles)"
+      "valueName": "Nuage de points : nom de la value des points dans l'infobulle (graphiques à bulles)",
+      "colorMidpoint": "Carte de chaleur : valeur au milieu de l’échelle de couleurs (données divergentes) ; 0 pour les échelles diverging qui le contiennent, sinon le milieu de l’étendue",
+      "tooltip": "false exclut la série de la détection au survol et des infobulles (décorations, surcouches comme l’avancement des tâches de Gantt)",
+      "outlierShape": "Boîte à moustaches : valeurs aberrantes en anneaux de la couleur de la série (hollow, par défaut) ou en points pleins (filled)",
+      "outlierSize": "Boîte à moustaches : diamètre des valeurs aberrantes en pixels CSS (7 par défaut)",
+      "connector": "Barres : fines lignes de la fin de chaque barre à la suivante (cascades) ; true trace des tirets de la couleur de texte secondaire, un objet règle color, dash et width"
     },
     "ChartPointDatum": {
       "x": "Valeur x (nombre, Date ou catégorie) ; l’index si omise",
@@ -535,7 +653,8 @@
       "y0": "Début d'une barre flottante (étapes d'une cascade, tâches d'un Gantt) ou bord inférieur d'une aire de plage ; les dates sont des horodatages",
       "q1": "Boîte à moustaches : premier quartile (bas de la boîte ; y est la médiane)",
       "q3": "Boîte à moustaches : troisième quartile (haut de la boîte)",
-      "outliers": "Boîte à moustaches : valeurs au-delà des moustaches, dessinées en points"
+      "outliers": "Boîte à moustaches : valeurs au-delà des moustaches, dessinées en points",
+      "details": "Lignes supplémentaires de l’infobulle par défaut de ce point ({ name, value }), après ses valeurs"
     },
     "ChartColumnData": {
       "x": "Valeurs x ; l’index si omises",
@@ -550,7 +669,7 @@
       "q3": "Boîtes à moustaches : troisièmes quartiles"
     },
     "ChartAxisOptions": {
-      "type": "Échelle : linear, time ou category (déduite des données)",
+      "type": "Échelle : linear, log (base 10, valeurs positives ; yAxis et yAxis2), time ou category (déduite des données)",
       "min": "Borne inférieure ; calculée à partir des données si omise",
       "max": "Borne supérieure ; calculée à partir des données si omise",
       "title": "Titre de l’axe",
@@ -602,7 +721,7 @@
       "dragPoints": "Permet de faire glisser les points d’un nuage (événements drag / drop ; le graphique ne les déplace pas lui-même)"
     },
     "ChartTooltipOptions": {
-      "mode": "nearest montre le point le plus proche, axis toutes les séries au x le plus proche",
+      "mode": "nearest montre le point le plus proche, axis toutes les séries au x le plus proche, item seulement la forme sous le pointeur (rien sur le vide) ; axis par défaut, nearest si toutes les séries sont des nuages de points, item pour les barres d’intervalle sur un axe temporel (Gantt)",
       "render": "Rend le contenu de l’infobulle (une chaîne est insérée comme texte)",
       "labels": "Noms des lignes de l'infobulle par défaut (statistiques des boîtes, OHLC, valeurs des bulles), pour les traductions"
     },
@@ -637,7 +756,8 @@
       "y0": "Barres flottantes et aires de plage : le début (ou bord inférieur) ; y est la fin",
       "q1": "Boîte à moustaches : premier quartile (y est la médiane, low / high les moustaches)",
       "q3": "Boîte à moustaches : troisième quartile",
-      "outliers": "Boîte à moustaches : nombre de valeurs extrêmes"
+      "outliers": "Boîte à moustaches : nombre de valeurs extrêmes",
+      "outlier": "Boîte à moustaches : valeur de la valeur aberrante survolée"
     },
     "ChartPlotClickEvent": {
       "x": "Coordonnée x (données) du clic",
