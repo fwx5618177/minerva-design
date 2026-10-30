@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.6.0
+
+### Minor Changes
+
+- feat(charts): gantt dependency arrows, x log axes, live renderer switching and 3d oit
+
 ## 1.5.0
 
 ### Minor Changes
