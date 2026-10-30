@@ -4,7 +4,8 @@
 // minerva-design/charts/core gives the last values outside of the chart.
 import { computed } from "vue";
 import { macd } from "minerva-design/charts/core";
-import { TradingChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TradingChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { macd: "MACD (12, 26, 9)" },

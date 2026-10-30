@@ -3,7 +3,8 @@
 // the color scale, shown in the color bar); the camera turns slowly around
 // it (`auto-rotate`).
 import { computed } from "vue";
-import { Line3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Line3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

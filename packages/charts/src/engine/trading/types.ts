@@ -71,10 +71,12 @@ export type TradingScaleMode = "linear" | "log" | "percent";
 export type TradingCrosshairMode = "magnet" | "free";
 
 /**
- * Colors of rising and falling bars: `greenUp` (most markets) or `redUp`
- * (mainland China, Japan, Korea, Taiwan conventions)
+ * Colors of rising and falling bars: `greenUp` (most markets), `redUp`
+ * (mainland China, Taiwan, Japan, Korea conventions) or `auto` (`redUp` when
+ * the region of the `locale` is CN, TW, JP or KR, or the language is Chinese,
+ * Japanese or Korean without a region; `greenUp` otherwise)
  */
-export type TradingColorConvention = "greenUp" | "redUp";
+export type TradingColorConvention = "greenUp" | "redUp" | "auto";
 
 /** Price used by an indicator */
 export type TradingPriceSource =
@@ -807,6 +809,16 @@ export interface TradingChartLabels {
   buyLimit?: string;
   /** Order entry button, above the last price; `{price}` is replaced @default "Sell limit {price}" */
   sellLimit?: string;
+  /** Read aloud while a keyboard order is armed or a line is selected @default "Arrows move the price, Enter confirms, Escape cancels" */
+  orderHint?: string;
+  /** Read aloud when the line selected by the keyboard can be cancelled @default "Delete cancels the order" */
+  orderCancelHint?: string;
+  /** Price line selected by the keyboard; `{title}` and `{price}` are replaced @default "{title} at {price}" */
+  orderLine?: string;
+  /** Read aloud when an order is created or moved; `{price}` is replaced @default "Order placed at {price}" */
+  orderPlaced?: string;
+  /** Read aloud when a keyboard order is abandoned or an order cancelled @default "Order cancelled" */
+  orderCancelled?: string;
 }
 
 /** Options of `createTradingChart` (and props of `<TradingChart>`) */
@@ -830,9 +842,10 @@ export interface TradingChartOptions {
    */
   scaleMode?: TradingScaleMode;
   /**
-   * Colors of rising / falling bars: `redUp` swaps the defaults. Not derived
-   * from `locale` (a Chinese page may still show global markets): set it
-   * explicitly
+   * Colors of rising / falling bars: `redUp` swaps the defaults, `auto`
+   * follows the market convention of the `locale` (red up for CN, TW, JP and
+   * KR). Not derived from the locale by default (a Chinese page may still
+   * show global markets)
    * @default "greenUp"
    */
   colorConvention?: TradingColorConvention;
@@ -893,7 +906,11 @@ export interface TradingChartOptions {
   priceLines?: readonly TradingPriceLine[];
   /**
    * A "+" button at the crosshair price, on the right of the price pane:
-   * clicking it reports a limit order (`orderCreate`) at that price
+   * clicking it reports a limit order (`orderCreate`) at that price. With the
+   * chart focused, `B` / `S` arm a buy / sell order at the crosshair price
+   * (or the last price), the arrows move it (Shift: ten ticks), Enter
+   * confirms and Escape cancels; `O` selects the draggable lines in turn to
+   * move them the same way, Delete cancels the `cancellable` ones
    * @default false
    */
   orderEntry?: boolean;
@@ -923,6 +940,12 @@ export interface TradingChartOptions {
    * @default true
    */
   drawingToolbar?: boolean;
+  /**
+   * The automatic price scale also fits the visible drawings of each pane
+   * (lines, channels, position tools...)
+   * @default false
+   */
+  autoscaleIncludesDrawings?: boolean;
   /** Price of the `baseline` style; the close of the first visible bar by default */
   baselinePrice?: number;
   /**
@@ -1008,7 +1031,7 @@ export interface TradingClickEvent {
   pane: string;
 }
 
-/** A draggable price line was dropped at a new price */
+/** A draggable price line was dropped at a new price (or moved with the keyboard) */
 export interface TradingOrderMoveEvent {
   /** Id of the line */
   id: string;
@@ -1020,15 +1043,15 @@ export interface TradingOrderMoveEvent {
   line: TradingPriceLine;
 }
 
-/** The "+" button of `orderEntry` was clicked */
+/** The "+" button of `orderEntry` was clicked, or an order confirmed with the keyboard */
 export interface TradingOrderCreateEvent {
   /** Price of the order (rounded to the price precision) */
   price: number;
-  /** `buy` below the last price, `sell` above it */
+  /** `buy` below the last price, `sell` above it (`B` / `S` with the keyboard) */
   side: "buy" | "sell";
 }
 
-/** The close button of a `cancellable` price line was clicked */
+/** The close button of a `cancellable` price line was clicked (or Delete pressed on it) */
 export interface TradingOrderCancelEvent {
   /** Id of the line */
   id: string;

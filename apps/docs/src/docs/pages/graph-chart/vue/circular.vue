@@ -3,7 +3,8 @@
 // color of their source; click cities (Ctrl / ⌘ + click to add) and
 // @selection-change lists the selection.
 import { computed, ref } from "vue";
-import { GraphChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GraphChart } from "minerva-design/vue/charts";
 
 const CITIES = {
   en: [

@@ -19,12 +19,19 @@ import {
   type Rect,
   type Scales,
 } from "./layout";
-import { gridOf, plottedY, type ChartModel, type SeriesModel } from "./model";
+import {
+  gridOf,
+  plottedY,
+  toPlotX,
+  type ChartModel,
+  type SeriesModel,
+} from "./model";
 import type { PointLabel, ResolvedAnnotation } from "./overlay";
 import type { ChartTheme } from "./theme";
 import type { Range } from "./viewport";
 import type {
   ChartAnnotation,
+  ChartDependency,
   ChartHoverEvent,
   ChartHoverItem,
   ChartOptions,
@@ -38,24 +45,27 @@ export const DEFAULT_PADDING = { top: 12, right: 16, bottom: 4, left: 4 };
 export const fallbackResolve = (_value: string, fallback: Rgba) => fallback;
 
 /**
- * Annotation colors resolved against the theme; `mapY` turns y values into
- * plotted units (log axes)
+ * Annotation colors resolved against the theme; `mapY` / `mapX` turn values
+ * into plotted units (log axes)
  */
 export const resolveAnnotations = (
   annotations: readonly ChartAnnotation[] | undefined,
   theme: ChartTheme,
   mapY?: (value: number) => number,
+  mapX?: (value: number) => number,
 ): ResolvedAnnotation[] => {
   const resolve = theme.resolve ?? fallbackResolve;
   const y = <T extends number | undefined>(v: T): T =>
     (mapY && v !== undefined ? mapY(v) : v) as T;
+  const x = <T extends number | undefined>(v: T): T =>
+    (mapX && v !== undefined ? mapX(v) : v) as T;
   return (annotations ?? []).map((a) => {
     if (a.type === "rect") {
       const color = a.color ? resolve(a.color, theme.primary) : theme.primary;
       return {
         type: "rect",
-        x0: a.x0,
-        x1: a.x1,
+        x0: x(a.x0),
+        x1: x(a.x1),
         y0: y(a.y0),
         y1: y(a.y1),
         color,
@@ -70,7 +80,7 @@ export const resolveAnnotations = (
     if (a.type === "text") {
       return {
         type: "text",
-        x: a.x,
+        x: x(a.x),
         y: y(a.y),
         text: a.text,
         anchor: a.anchor ?? "center",
@@ -81,7 +91,7 @@ export const resolveAnnotations = (
     return {
       type: "line",
       axis: a.axis,
-      value: a.axis === "y" ? y(a.value) : a.value,
+      value: a.axis === "y" ? y(a.value) : x(a.value),
       color: a.color ? resolve(a.color, theme.textMuted) : theme.textMuted,
       width: a.width ?? 1,
       dash: [...(a.dash ?? [4, 4])],
@@ -819,20 +829,31 @@ export const tooltipContent = (
         ],
       };
     }
+    const yAxisFormat =
+      s.yAxis === "right"
+        ? (y2Ticks?.formatValue ?? model.y2?.format ?? model.formatValue)
+        : yFormat;
     const rows: TooltipRow[] = [
       { color: null, name: model.x.title ?? names.x, value: event.xLabel },
       {
         color: null,
         name:
           (s.yAxis === "right" ? model.y2?.title : model.y.title) ?? names.y,
-        value: formatOf(s)(it.y),
+        // bubbles: `format` is the one of their value, y keeps the axis one
+        value: (it.value !== undefined ? yAxisFormat : formatOf(s))(it.y),
       },
       ...valueRow,
       ...detailRows(s, it.index),
     ];
-    if (it.label !== undefined && model.series.length > 1)
-      rows.push({ color: null, name: "", value: it.seriesName });
-    return { title: it.label ?? it.seriesName, titleColor: it.color, rows };
+    return {
+      title: it.label ?? it.seriesName,
+      titleColor: it.color,
+      // a named point of a group: the group under its name
+      ...(it.label !== undefined && model.series.length > 1
+        ? { subtitle: it.seriesName }
+        : {}),
+      rows,
+    };
   }
   const rows: TooltipRow[] = [];
   /** Row of every item */
@@ -1003,8 +1024,10 @@ export const hoverMarks = (
   let bandHi = -Infinity;
   for (const it of event.items) {
     const s = model.series[it.seriesIndex];
+    // plotted x (the logarithm on log x axes)
+    const itX = s.cols.x[it.index] ?? it.x;
     if (s.type === "boxplot" && it.outlier !== undefined) {
-      const p = toScreen(sc, it.x + slotOffset(s), plottedOutlier(s, it));
+      const p = toScreen(sc, itX + slotOffset(s), plottedOutlier(s, it));
       marks.push({
         kind: "dot",
         x: p.x,
@@ -1016,14 +1039,14 @@ export const hoverMarks = (
       continue;
     }
     if (s.type === "bar" || s.type === "candlestick" || s.type === "boxplot") {
-      const c = sc.xToPx(it.x + slotOffset(s));
+      const c = sc.xToPx(itX + slotOffset(s));
       const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
       bandLo = Math.min(bandLo, c - half);
       bandHi = Math.max(bandHi, c + half);
       continue;
     }
     if (s.type === "heatmap") {
-      const cx = sc.xToPx(it.x);
+      const cx = sc.xToPx(itX);
       const cy = sc.yToPx(it.y);
       const hw = Math.abs(s.cellHalf.x / sc.xPerPx);
       const hh = Math.abs(s.cellHalf.y / sc.yPerPx);
@@ -1172,6 +1195,155 @@ export const connectorSegments = (
   return out;
 };
 
+/** A dependency with its color resolved against the theme */
+export interface ResolvedDependency {
+  from: string;
+  to: string;
+  color: string;
+}
+
+/** Colors of the dependency arrows (resolved once per options / theme) */
+export const resolveDependencies = (
+  dependencies: readonly ChartDependency[] | undefined,
+  theme: ChartTheme,
+): ResolvedDependency[] => {
+  const resolve = theme.resolve ?? fallbackResolve;
+  const muted = toCss(theme.textMuted, 0.85);
+  return (dependencies ?? []).map((d) => ({
+    from: d.from,
+    to: d.to,
+    color: d.color ? toCss(resolve(d.color, theme.textMuted)) : muted,
+  }));
+};
+
+/**
+ * Elbow arrow between two bars, pixels of the stage: an axis-aligned
+ * polyline ending at the base of a filled triangular head
+ */
+export interface DependencyArrow {
+  /** Corners of the line, from the end of the predecessor to the base of the head */
+  points: { x: number; y: number }[];
+  /** Tip and the two base corners of the arrowhead */
+  head: [
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+  ];
+  color: string;
+  width: number;
+}
+
+/** Length and half width of the arrowheads, in CSS pixels */
+export const ARROW_HEAD = { length: 6, half: 3.5 };
+
+interface RowSpan {
+  /** Category position of the bar center */
+  at: number;
+  start: number;
+  end: number;
+  /** Half thickness of the bar / radius of the dot in pixels */
+  half: number;
+  /** A dot (milestone): the arrows stop at its edge */
+  dot: boolean;
+}
+
+/** Bars (or dots) of every category, the first visible one per category */
+const rowSpans = (model: ChartModel, sc: Scales): Map<number, RowSpan> => {
+  const rows = new Map<number, RowSpan>();
+  for (const s of model.series) {
+    if (s.hidden || !s.tooltip) continue;
+    if (s.type !== "bar" && s.type !== "scatter") continue;
+    const { x, y, count } = s.cols;
+    const bar = s.type === "bar" && s.barBase && s.barTop;
+    const half = bar ? s.barHalfWidth / Math.abs(sc.xPerPx) : dotSize(s, 0) / 2;
+    for (let i = 0; i < count; i++) {
+      const k = Math.round(x[i]);
+      if (rows.has(k)) continue;
+      const start = bar ? s.barBase![i] : y[i];
+      const end = bar ? s.barTop![i] : y[i];
+      if (!Number.isFinite(start) || !Number.isFinite(end)) continue;
+      rows.set(k, {
+        at: x[i] + slotOffset(s),
+        start: Math.min(start, end),
+        end: Math.max(start, end),
+        half,
+        dot: !bar,
+      });
+    }
+  }
+  return rows;
+};
+
+/**
+ * Dependency arrows (`dependencies`, Gantt charts): from the end of the
+ * predecessor to the start of the successor; when the successor starts
+ * too early the line turns around between the rows
+ */
+export const dependencyArrows = (
+  model: ChartModel,
+  sc: Scales,
+  dependencies: readonly ResolvedDependency[],
+): DependencyArrow[] => {
+  if (!dependencies.length || model.x.type !== "category") return [];
+  const rows = rowSpans(model, sc);
+  const index = new Map<string, number>();
+  model.x.categories.forEach((c, i) => {
+    if (!index.has(c)) index.set(c, i);
+  });
+  // (value pixel, category pixel) -> stage pixels
+  const horizontal = sc.horizontal;
+  const pt = (v: number, c: number) =>
+    horizontal ? { x: v, y: c } : { x: c, y: v };
+  const valuePx = (value: number) => {
+    const p = toScreen(sc, 0, value);
+    return horizontal ? p.x : p.y;
+  };
+  const categoryPx = (at: number) => {
+    const p = toScreen(sc, at, 0);
+    return horizontal ? p.y : p.x;
+  };
+  const dir = Math.sign(valuePx(sc.view.y[1]) - valuePx(sc.view.y[0])) || 1;
+  const rowPx = Math.abs(categoryPx(1) - categoryPx(0));
+  const { length, half } = ARROW_HEAD;
+  const gap = 8;
+  const out: DependencyArrow[] = [];
+  for (const d of dependencies) {
+    const a = rows.get(index.get(d.from) ?? NaN);
+    const b = rows.get(index.get(d.to) ?? NaN);
+    if (!a || !b || a === b) continue;
+    const ev = valuePx(a.end) + (a.dot ? dir * a.half : 0);
+    const ca = categoryPx(a.at);
+    const sv = valuePx(b.start) - dir * (b.dot ? b.half + 1 : 1);
+    const cb = categoryPx(b.at);
+    const base = sv - dir * length;
+    const points = [pt(ev, ca)];
+    const exit = ev + dir * gap;
+    if (dir * (base - exit) >= 0) {
+      // room before the successor: out, across the rows, in
+      points.push(pt(exit, ca), pt(exit, cb), pt(base, cb));
+    } else {
+      // around: out, to the gap between the rows, back, across, in
+      const side = Math.sign(cb - ca) || 1;
+      const between = ca + side * Math.max(a.half + 3, rowPx / 2);
+      const back = base - dir * gap;
+      points.push(
+        pt(exit, ca),
+        pt(exit, between),
+        pt(back, between),
+        pt(back, cb),
+        pt(base, cb),
+      );
+    }
+    out.push({
+      points,
+      head: [pt(sv, cb), pt(base, cb - half), pt(base, cb + half)],
+      color: d.color,
+      width: 1.25,
+    });
+  }
+  return out;
+};
+
 /** Visual map of a heatmap: its color ramp and the values at the ends */
 export interface ColorLegend {
   seriesIndex: number;
@@ -1250,7 +1422,11 @@ export const crosshairAt = (
   crosshair: boolean | undefined,
 ): number | null => {
   if (!showsCrosshair(model, event, crosshair)) return null;
-  const c = sc.xToPx(event.items[0].x);
+  const first = event.items[0];
+  const c = sc.xToPx(
+    model.series[first.seriesIndex]?.cols.x[first.index] ??
+      toPlotX(model, first.x),
+  );
   const lo = sc.horizontal ? sc.plot.y : sc.plot.x;
   const hi = lo + (sc.horizontal ? sc.plot.height : sc.plot.width);
   return c >= lo && c <= hi ? c : null;

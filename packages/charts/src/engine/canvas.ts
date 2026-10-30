@@ -371,6 +371,7 @@ export const drawScene = (
     pointLabels: [],
     clear: false,
     connectors: scene.connectors,
+    arrows: scene.arrows,
   });
   // dot labels placed by the scene
   if (scene.pointLabels.length) {

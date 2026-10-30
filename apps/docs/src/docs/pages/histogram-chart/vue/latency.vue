@@ -2,7 +2,8 @@
 // <HistogramChart> bins raw samples itself (`bins` "auto":
 // Freedman-Diaconis); a long tail of slow requests shows at a glance.
 import { computed } from "vue";
-import { HistogramChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HistogramChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { requests: "Requests", ms: "Response time (ms)" },

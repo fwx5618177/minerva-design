@@ -631,6 +631,8 @@ export function GanttChart(props: GanttChartProps) {
     milestoneName,
     formatProgress,
     dependenciesName,
+    dependencyArrows,
+    dependencyColor,
     today = false,
     todayLabel,
     xAxis,
@@ -650,6 +652,8 @@ export function GanttChart(props: GanttChartProps) {
         milestoneName,
         formatProgress,
         dependenciesName,
+        dependencyArrows,
+        dependencyColor,
         locale: lang,
       }),
     [
@@ -660,6 +664,8 @@ export function GanttChart(props: GanttChartProps) {
       milestoneName,
       formatProgress,
       dependenciesName,
+      dependencyArrows,
+      dependencyColor,
       lang,
     ],
   );
@@ -705,6 +711,7 @@ export function GanttChart(props: GanttChartProps) {
           ...yAxis,
         },
         annotations: [...(annotations ?? []), ...lines],
+        dependencies: gantt.dependencies,
         interaction: interaction ?? { zoom: "y" },
         legend: legend ?? gantt.series.length > 1,
       }}

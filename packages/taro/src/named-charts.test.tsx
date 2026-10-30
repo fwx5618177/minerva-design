@@ -8,15 +8,18 @@ import {
   BoxPlotChart,
   BubbleChart,
   CandlestickChart,
+  ConfigProvider,
   GanttChart,
   HeatmapChart,
   HistogramChart,
   HorizontalBarChart,
   MixedChart,
+  PieChart,
   RangeAreaChart,
   Sparkline,
   WaterfallChart,
   type ChartHandle,
+  type ShapeChartHandle,
 } from "./index";
 
 /** Options each chart was created with */
@@ -224,7 +227,34 @@ describe("named cartesian charts", () => {
       />,
     );
     expect(JSON.stringify(gantt.options.series)).toContain('"name":"After"');
+    expect(gantt.options.dependencies).toEqual([
+      { from: "Design", to: "Build" },
+    ]);
     gantt.unmount();
+    const colored = await mount(
+      <GanttChart
+        dependencyColor="#ff0000"
+        tasks={[
+          { name: "Design", start: 0, end: 40 },
+          { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+        ]}
+      />,
+    );
+    expect(colored.options.dependencies).toEqual([
+      { from: "Design", to: "Build", color: "#ff0000" },
+    ]);
+    colored.unmount();
+    const plain = await mount(
+      <GanttChart
+        dependencyArrows={false}
+        tasks={[
+          { name: "Design", start: 0, end: 40 },
+          { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+        ]}
+      />,
+    );
+    expect(plain.options.dependencies).toEqual([]);
+    plain.unmount();
     const box = await mount(
       <BoxPlotChart
         outlierShape="filled"
@@ -297,6 +327,58 @@ describe("named cartesian charts", () => {
       type: "line",
       value: start + day,
     });
+  });
+});
+
+describe("accessible names", () => {
+  it("names the charts in their locale, the ConfigProvider's by default", async () => {
+    fakeNode();
+    const area = createRef<ChartHandle>();
+    const pie = createRef<ShapeChartHandle>();
+    const zh = render(
+      <ConfigProvider locale="zh">
+        <AreaChart
+          ref={area}
+          series={[
+            { name: "营收", data: [["Jan", 1]] },
+            { name: "成本", data: [["Jan", 2]] },
+          ]}
+        />
+        <PieChart
+          ref={pie}
+          locale="ja"
+          data={[
+            { name: "A", value: 1 },
+            { name: "B", value: 2 },
+          ]}
+          animation={false}
+        />
+      </ConfigProvider>,
+    );
+    await waitFor(() => expect(area.current?.getInstance()).toBeTruthy());
+    expect(created[created.length - 1]!.locale).toBe("zh");
+    const [first, second] = zh.container.querySelectorAll(
+      "[data-minerva='chart']",
+    );
+    expect(first).toHaveAttribute("aria-label", "图表：营收、成本");
+    // an explicit locale wins over the provider
+    expect(second).toHaveAttribute("aria-label", "円グラフ");
+    zh.unmount();
+
+    const fr = await mount(
+      <Sparkline data={[1, 2]} name="Ventes" locale="fr" />,
+    );
+    expect(fr.container.firstElementChild?.getAttribute("aria-label")).toMatch(
+      /^Graphique\s:\sVentes$/,
+    );
+    fr.unmount();
+    const named = await mount(
+      <AreaChart ariaLabel="Traffic" series={[{ name: "Web", data: [] }]} />,
+    );
+    expect(named.container.firstElementChild).toHaveAttribute(
+      "aria-label",
+      "Traffic",
+    );
   });
 });
 

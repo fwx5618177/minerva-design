@@ -20,12 +20,13 @@
       "pointer": "ホイールでポインター位置を中心にズーム（Shift または横スワイプでスクロール）、ドラッグで慣性付きのパン。",
       "axes": "価格軸のドラッグで縦方向にズーム、時間軸のドラッグで足の幅を変更。軸をダブルクリックするとリセットします。",
       "keyboard": "チャートにフォーカスすると、矢印キーでクロスヘアを一本ずつ移動して価格を読み上げ（Shift で十本ずつ）、+ / − でズーム、Home / End で最初 / 最新の足へ移動、Delete で選択中の描画を削除、Ctrl / ⌘ + Z で描画の変更を元に戻し、Ctrl / ⌘ + Shift + Z でやり直し、Escape で取り消します。",
+      "orders": "orderEntry を有効にすると：B / S でクロスヘア価格（または現在値）に買い / 売りの指値注文を用意し、↑ / ↓ で 1 ティックずつ移動（Shift で 10 ティック）、Enter で発注、Escape で破棄します。O / Shift + O でドラッグ可能・取消可能なラインを順に選び、同じ操作で価格を変更でき、Delete で選択中の注文を取り消します。各操作は読み上げられ、ポインター操作と同じイベント（orderCreate、orderMove、orderCancel）を発生させます。",
       "touch": "タッチ操作：ドラッグでパン、ピンチでズーム。"
     },
     "languages": {
       "title": "言語",
       "text": "チャート自身が描く文字（四本値の名前、注文・アラートラインのタイトル、カウントダウン、計測ツール、アクセシブルな名前）は英語・中国語・日本語・フランス語を内蔵し、ページの言語（<html lang>）に従い、切り替えにも追従します。出来高はその言語の単位（日本語では万 / 億）で表示します。別の言語は locale で、個々の文字は labels で指定できます。",
-      "colors": "色は言語に従いません。日本語のページで米国株を表示することもあるため、赤が上昇の慣習は colorConvention=\"redUp\" で明示的に指定します。"
+      "colors": "色は既定では言語に従いません。日本語のページで米国株を表示することもあるためです。上昇を赤で示す市場では colorConvention=\"redUp\" を指定するか、colorConvention=\"auto\" でロケールから選びます：中国本土・台湾・日本・韓国（zh-CN、zh-TW、ja-JP、ko-KR、または地域なしの zh / ja / ko）は赤が上昇、それ以外（香港を含む）は緑が上昇です。"
     },
     "workflow": {
       "title": "ワークフロー",
@@ -54,7 +55,7 @@
     },
     "drawing-tools": {
       "title": "描画ツール",
-      "description": "14 種類のツール：選んでからドラッグするか、アンカーをクリックします（チャネルとピッチフォークは 3 点）。描画を選択するとフローティングツールバーで色・太さ・線種・塗りつぶし・ロック・削除を操作でき、描画やハンドルをドラッグして移動、テキストメモはダブルクリックで編集できます。RSI ペインにも描けます。元に戻す / やり直しはボタンか Ctrl / ⌘ + Z で。"
+      "description": "14 種類のツール：選んでからドラッグするか、アンカーをクリックします（チャネルとピッチフォークは 3 点）。描画を選択するとフローティングツールバーで色・太さ・線種・塗りつぶし・ロック・削除を操作でき、描画やハンドルをドラッグして移動、テキストメモはダブルクリックで編集できます。RSI ペインにも描けます。元に戻す / やり直しはボタンか Ctrl / ⌘ + Z で。autoscaleIncludesDrawings を有効にすると、価格スケールが表示中の描画（ここではポジションの利確と損切）も収めます。"
     },
     "orders": {
       "title": "注文とポジション",
@@ -74,7 +75,7 @@
     },
     "red-up": {
       "title": "赤が上昇、緑が下落",
-      "description": "colorConvention=\"redUp\" は中国本土、香港、日本、韓国の慣習に合わせます。utcOffset で上海証券取引所の時刻を表示。中国の証券アプリと同じく MA5 / 10 / 20 / 60、MA5 付きの出来高、KDJ を表示しています。配色の慣習はページの言語から推測されません（日本語のページで米国株を表示することもあるため）。明示的に指定してください。"
+      "description": "colorConvention=\"redUp\" は中国本土・台湾・日本・韓国の配色に従います。\"auto\" はページの言語から選びます（ドキュメントを中国語または日本語に切り替えると赤になります）。utcOffset で上海証券取引所の時刻を表示。MA5 / 10 / 20 / 60、MA5 付き出来高と KDJ は中国の証券アプリと同じ構成です。"
     },
     "dark-terminal": {
       "title": "ダーク端末",
@@ -94,7 +95,7 @@
     },
     "order-entry": {
       "title": "チャート注文",
-      "description": "orderEntry を有効にすると、価格ペインの右端にクロスヘアに追従する + ボタンが現れます。クリックするとその価格に指値注文を出します（現在値より下は買い、上は売り）。注文はドラッグ・取消できる価格ラインで、onOrderCreate・onOrderMove・onOrderCancel で React の状態に保持します。"
+      "description": "orderEntry を有効にすると、価格ペインの右端にクロスヘアに追従する + ボタンが表示されます。クリックするとその価格で指値注文を出します（現在値より下は買い、上は売り）。キーボードでも同じ操作ができます：Tab でチャートにフォーカスし、B または S を押し、矢印キーで価格を調整して Enter。O で既存の注文を選び、価格変更や Delete での取消ができます。注文はドラッグ・取消可能な価格ラインで、onOrderCreate、onOrderMove、onOrderCancel を通じて React の状態に保持されます。"
     },
     "sessions": {
       "title": "タイムゾーンとセッション",
@@ -178,6 +179,7 @@
       "shortPosition": "ショートポジション"
     },
     "keepDrawing": "描画モードを維持",
+    "fitDrawings": "描画をスケールに収める",
     "clearDrawings": "すべて削除",
     "drawingsStatus": "描画：{{count}}",
     "drawingAria": "描画付きの ETH/USDT 4 時間足チャート",
@@ -252,7 +254,7 @@
     "orderModified": "注文を {{from}} から {{to}} に変更",
     "orderCancelled": "{{price}} の注文を取消",
     "orderEntryAria": "チャート注文ができる BTCUSDT 無期限 5 分足チャート",
-    "orderEntryHint": "チャート上でカーソルを動かし、右端の + をクリックして発注。ラインをドラッグで変更、× で取消。",
+    "orderEntryHint": "チャート上でカーソルを動かし、右端の + をクリックして発注するか、チャートにフォーカスして B / S を押します。ラインをドラッグで変更、× で取消。",
     "timeZone": "タイムゾーン",
     "zones": {
       "America_New_York": "ニューヨーク",
@@ -266,7 +268,28 @@
     "noteText": "上昇チャネル：押し目を待つ",
     "ordersTitle": "未約定の注文",
     "rowCount": "{{count}} 段",
-    "barsPerSecond": "{{count}} 本 / 秒"
+    "barsPerSecond": "{{count}} 本 / 秒",
+    "colorConvention": "配色",
+    "conventions": {
+      "redUp": "赤が上昇",
+      "auto": "言語に従う",
+      "greenUp": "緑が上昇"
+    },
+    "keyboard": {
+      "title": "キーボード",
+      "armKeys": "B S",
+      "arm": "買い / 売り注文を用意",
+      "moveKeys": "↑ ↓",
+      "move": "価格を調整（Shift：×10）",
+      "confirmKeys": "Enter",
+      "confirm": "発注・変更を確定",
+      "cancelKeys": "Esc",
+      "cancel": "破棄",
+      "selectKeys": "O",
+      "select": "次の注文を選択",
+      "removeKeys": "Delete",
+      "remove": "選択中の注文を取消"
+    }
   },
   "api": {
     "TradingChartProps": {
@@ -298,7 +321,7 @@
       "chartStyle": "足の描き方：candles、hollowCandles、heikinAshi、bars、line、area、baseline",
       "indicators": "インジケーター：移動平均、ボリンジャーバンド、VWAP は価格の上、その他はこの順で下のペインに",
       "scaleMode": "価格ペインのスケール：linear、log、percent（最初に表示された足から）",
-      "colorConvention": "greenUp（多くの市場）または redUp（中国、日本、韓国）：既定の上昇・下落色を入れ替えます。ロケールからは決まらないため、明示的に指定します",
+      "colorConvention": "greenUp（多くの市場）、redUp（中国本土、台湾、日本、韓国）または auto（ロケールが上記の市場なら redUp、それ以外は greenUp）：既定の上昇・下落色を入れ替えます。既定ではロケールから決まりません",
       "upColor": "上昇した足の色（var() を含む任意の CSS カラー）",
       "downColor": "下落した足の色",
       "precision": "価格の小数桁数。既定ではデータから検出",
@@ -317,6 +340,7 @@
       "drawingMode": "使用中の描画ツール。cursor は描画の選択と移動",
       "keepDrawingMode": "描画後もカーソルに戻らずツールを維持",
       "baselinePrice": "ベースラインスタイルを分ける価格。既定は最初に表示された終値",
+      "autoscaleIncludesDrawings": "自動価格スケールに各ペインの表示中の描画（ライン、チャネル、ポジションツールなど）も収めます。",
       "rightOffset": "最後の足の後ろの余白（本数）",
       "barSpacing": "足の初期幅（ピクセル）",
       "wheel": "マウスホイール：zoom、modifier（Ctrl / ⌘ のときだけ。それ以外はページをスクロール）、none",
@@ -328,7 +352,7 @@
       "ariaLabel": "アクセシブルラベル。既定では銘柄名から作成",
       "timeZone": "時間軸・セッション区切り・VWAP の期間のタイムゾーン：IANA 名（\"America/New_York\"）または \"UTC\"。既定はローカル時刻です。",
       "sessionBreaks": "日の始まりに破線の縦線を引きます（日中足）。",
-      "orderEntry": "価格ペイン右端のクロスヘア価格に + ボタンを表示し、クリックで指値注文を通知します（orderCreate）。",
+      "orderEntry": "価格ペイン右端のクロスヘア価格に + ボタンを表示し、クリックで指値注文を通知します（orderCreate）。チャートにフォーカスがあるとき、B / S で買い / 売り注文を用意し、矢印キーで移動、Enter で確定、Escape で取消。O でドラッグ可能なラインを選んで移動し、Delete で取消可能な注文を取り消します。",
       "volumeProfile": "表示中の足の価格帯別出来高。POC とバリューエリアを含みます（true で既定値）。",
       "drawingToolbar": "選択した描画の上に出るフローティングツールバー（色・太さ・線種・塗りつぶし・ロック・削除）。"
     },
@@ -471,7 +495,12 @@
       "replay": "バーリプレイのバッジ。{time} が置き換わります。",
       "replayHint": "リプレイ開始の足を選ぶときのヒント。",
       "buyLimit": "現在値より下の注文ボタン。{price} が置き換わります。",
-      "sellLimit": "現在値より上の注文ボタン。{price} が置き換わります。"
+      "sellLimit": "現在値より上の注文ボタン。{price} が置き換わります。",
+      "orderHint": "キーボードで注文を用意中、またはラインを選択中に読み上げる案内。既定値 \"Arrows move the price, Enter confirms, Escape cancels\"。",
+      "orderCancelHint": "選択中のラインを取り消せるときに読み上げる案内。既定値 \"Delete cancels the order\"。",
+      "orderLine": "キーボードで選択したライン。{title} と {price} を置換。既定値 \"{title} at {price}\"。",
+      "orderPlaced": "発注・価格変更時に読み上げ。{price} を置換。既定値 \"Order placed at {price}\"。",
+      "orderCancelled": "キーボードの注文を破棄、または注文を取り消したときに読み上げ。既定値 \"Order cancelled\"。"
     },
     "TradingCrosshairEvent": {
       "index": "ホバー中の足の番号（最後の足より先の場合あり）",
@@ -519,7 +548,7 @@
     },
     "TradingOrderCreateEvent": {
       "price": "注文価格（価格の精度に丸め）。",
-      "side": "現在値より下は buy、上は sell。"
+      "side": "現在値より下は buy、上は sell（キーボードでは押したキー B または S）。"
     },
     "TradingOrderCancelEvent": {
       "id": "ラインの id。",

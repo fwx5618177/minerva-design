@@ -1535,6 +1535,13 @@
         "description": "Lighting of the surfaces and bars"
       },
       {
+        "name": "exposure",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+      },
+      {
         "name": "renderer",
         "type": "ChartRendererPreference",
         "required": false,
@@ -2224,6 +2231,13 @@
         "description": "Lighting of the surfaces and bars"
       },
       {
+        "name": "exposure",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Brightness of the light added by `blend: \"additive\"` series. On WebGPU and WebGL2 the added light is tone mapped (a soft shoulder that keeps the colors): dense glowing regions saturate gracefully instead of turning white, so raise it to bring out faint clouds; other backends scale the added light linearly"
+      },
+      {
         "name": "renderer",
         "type": "ChartRendererPreference",
         "required": false,
@@ -2448,7 +2462,7 @@
         "type": "ChartAxisType",
         "required": false,
         "default": "\"linear\"",
-        "description": "Scale of the axis: `linear` numbers, `time` timestamps / dates, `category` names (x axis, and y axis of heatmaps)"
+        "description": "Scale of the axis: `linear` numbers, `log` base-10 logarithms (positive values; on `x` too), `time` timestamps / dates, `category` names (x axis, and y axis of heatmaps)"
       },
       {
         "name": "min",
@@ -2530,7 +2544,7 @@
   },
   "ChartAxisType": {
     "source": "charts/src/engine/types.ts",
-    "description": "Scale of an axis; `log` (base 10, positive values only) applies to the value axes (`yAxis`, `yAxis2`)",
+    "description": "Scale of an axis; `log` (base 10, positive values only) applies to the numeric axes (`xAxis`, `yAxis`, `yAxis2`)",
     "kind": "alias",
     "type": "\"linear\" | \"log\" | \"time\" | \"category\""
   },
@@ -3066,6 +3080,32 @@
     "description": "Shape of a line (and of the edge of an area) between its points",
     "kind": "alias",
     "type": "\"linear\" | \"smooth\" | \"step\""
+  },
+  "ChartDependency": {
+    "source": "charts/src/engine/types.ts",
+    "description": "Arrow from one category to another (Gantt dependencies): an elbow connector from the end of the `from` bar (or dot) to the start of the `to` bar, with a filled arrowhead",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "description": "Category (x value) of the predecessor"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "description": "Category (x value) of the successor, where the arrow points"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color of the arrow (any CSS color); the secondary text color by default"
+      }
+    ]
   },
   "ChartDotPrimitive": {
     "source": "charts/src/engine/controller.ts",
@@ -3929,6 +3969,12 @@
         "description": "Background areas and reference lines"
       },
       {
+        "name": "dependencies",
+        "type": "readonly ChartDependency[]",
+        "required": false,
+        "description": "Arrows between categories (category x axis), e.g. the dependencies of a Gantt chart: from the end of a bar to the start of another"
+      },
+      {
         "name": "interaction",
         "type": "boolean | ChartInteractionOptions",
         "required": false,
@@ -4384,6 +4430,12 @@
         "type": "ConnectorSegment[]",
         "required": true,
         "description": "Lines between consecutive bars (waterfall connectors)"
+      },
+      {
+        "name": "arrows",
+        "type": "DependencyArrow[]",
+        "required": true,
+        "description": "Elbow arrows between bars (`dependencies`, Gantt charts)"
       }
     ]
   },
@@ -4918,19 +4970,21 @@
   },
   "ChartView": {
     "source": "charts/src/engine/types.ts",
-    "description": "Visible range of the axes",
+    "description": "Visible range of the axes, in values of the axes (not logarithms on log axes)",
     "kind": "interface",
     "extends": [],
     "props": [
       {
         "name": "x",
         "type": "[number, number]",
-        "required": true
+        "required": true,
+        "description": "Range of the x axis (category axes: indexes)"
       },
       {
         "name": "y",
         "type": "[number, number]",
-        "required": true
+        "required": true,
+        "description": "Range of the (left) y axis"
       }
     ]
   },
@@ -4976,7 +5030,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end, arcs sized by the outgoing flows. `true`: one ribbon per direction (same width at both ends), arcs sized by the outgoing plus the incoming flows; flows from a group to itself are ignored."
+        "description": "`false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix holds each relation in both cells and counts it once), arcs sized by the ribbons of the group, so a group that only receives flows keeps its arc. `true`: one ribbon per direction (same width at both ends), arcs sized by the outgoing plus the incoming flows; flows from a group to itself are ignored."
       },
       {
         "name": "arrows",
@@ -5088,7 +5142,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end. `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)"
+        "description": "`false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix counts each relation once). `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)"
       },
       {
         "name": "arrows",
@@ -5883,6 +5937,19 @@
         "description": "Name of the dependencies row of the tooltip"
       },
       {
+        "name": "dependencyArrows",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the dependencies as elbow arrows from the end of every predecessor to the start of the task"
+      },
+      {
+        "name": "dependencyColor",
+        "type": "string",
+        "required": false,
+        "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
+      },
+      {
         "name": "locale",
         "type": "string",
         "required": false,
@@ -5913,6 +5980,12 @@
         "type": "[number, number]",
         "required": true,
         "description": "Time range of the tasks with a small margin (the `min` / `max` of the value axis)"
+      },
+      {
+        "name": "dependencies",
+        "type": "ChartDependency[]",
+        "required": true,
+        "description": "Arrows of the dependencies between existing tasks (the `dependencies` of the chart)"
       }
     ]
   },
@@ -5968,7 +6041,7 @@
         "name": "dependencies",
         "type": "readonly string[]",
         "required": false,
-        "description": "Names of the tasks this one waits for (shown in its tooltip)"
+        "description": "Names of the tasks this one waits for (tooltip, and arrows from their ends)"
       }
     ]
   },
@@ -6670,6 +6743,13 @@
         "description": "Arrowheads on the edges without `directed`; on for `dag`, off otherwise"
       },
       {
+        "name": "arrowStyle",
+        "type": "\"open\" | \"filled\"",
+        "required": false,
+        "default": "\"open\"",
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)"
+      },
+      {
         "name": "nodeLabels",
         "type": "boolean | \"auto\"",
         "required": false,
@@ -6956,6 +7036,13 @@
         "type": "boolean",
         "required": false,
         "description": "Arrowheads on the edges without `directed`"
+      },
+      {
+        "name": "arrowStyle",
+        "type": "\"open\" | \"filled\"",
+        "required": false,
+        "default": "\"open\"",
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)"
       },
       {
         "name": "nodeLabels",
@@ -7442,6 +7529,13 @@
         "required": false,
         "default": "true",
         "description": "Shows the simulation while it runs; `false` computes it first and shows the result"
+      },
+      {
+        "name": "multilevel",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Multilevel start of large graphs (400+ nodes without known positions): the layout of a coarsened graph (merged neighbors) seeds a short refinement, several times faster than a full cooling; `false` always runs the full cooling"
       }
     ]
   },
@@ -8655,6 +8749,12 @@
         "description": "Adds trades (bubbles)"
       },
       {
+        "name": "clear",
+        "type": "() => void",
+        "required": true,
+        "description": "Removes the book, the history and the trades"
+      },
+      {
         "name": "resetView",
         "type": "() => void",
         "required": true,
@@ -8846,6 +8946,20 @@
         "description": "Best ask, in the screen reader summary"
       },
       {
+        "name": "bidSide",
+        "type": "string",
+        "required": true,
+        "default": "\"Bid side\"",
+        "description": "Side badge of a hovered bid row in the tooltip"
+      },
+      {
+        "name": "askSide",
+        "type": "string",
+        "required": true,
+        "default": "\"Ask side\"",
+        "description": "Side badge of a hovered ask row in the tooltip"
+      },
+      {
         "name": "name",
         "type": "string",
         "required": true,
@@ -8920,13 +9034,13 @@
         "name": "maxSize",
         "type": "number",
         "required": false,
-        "description": "Size drawn with the hottest color; follows the data when omitted"
+        "description": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used"
       },
       {
         "name": "colors",
         "type": "readonly string[]",
         "required": false,
-        "description": "Color ramp, coldest first, interpolated in OKLab after the floor color (the background, a shade darker in dark themes, shown where there is no liquidity); a perceptual heat ramp suited to the theme when omitted"
+        "description": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): make it a dark color in dark themes and a pale one in light themes. A perceptual heat ramp suited to the theme when omitted"
       },
       {
         "name": "bubbles",
@@ -9041,7 +9155,7 @@
         "name": "ref",
         "type": "Ref<OrderBookHeatmapHandle>",
         "required": false,
-        "description": "Imperative handle: `setBook`, `applyDeltas`, `addTrades`, `resetView`"
+        "description": "Imperative handle: `setBook`, `applyDeltas`, `addTrades`, `clear`, `resetView`"
       }
     ]
   },
@@ -13341,6 +13455,41 @@
         "required": false,
         "default": "\"Sell limit {price}\"",
         "description": "Order entry button, above the last price; `{price}` is replaced"
+      },
+      {
+        "name": "orderHint",
+        "type": "string",
+        "required": false,
+        "default": "\"Arrows move the price, Enter confirms, Escape cancels\"",
+        "description": "Read aloud while a keyboard order is armed or a line is selected"
+      },
+      {
+        "name": "orderCancelHint",
+        "type": "string",
+        "required": false,
+        "default": "\"Delete cancels the order\"",
+        "description": "Read aloud when the line selected by the keyboard can be cancelled"
+      },
+      {
+        "name": "orderLine",
+        "type": "string",
+        "required": false,
+        "default": "\"{title} at {price}\"",
+        "description": "Price line selected by the keyboard; `{title}` and `{price}` are replaced"
+      },
+      {
+        "name": "orderPlaced",
+        "type": "string",
+        "required": false,
+        "default": "\"Order placed at {price}\"",
+        "description": "Read aloud when an order is created or moved; `{price}` is replaced"
+      },
+      {
+        "name": "orderCancelled",
+        "type": "string",
+        "required": false,
+        "default": "\"Order cancelled\"",
+        "description": "Read aloud when a keyboard order is abandoned or an order cancelled"
       }
     ]
   },
@@ -13393,7 +13542,7 @@
         "type": "TradingColorConvention",
         "required": false,
         "default": "\"greenUp\"",
-        "description": "Colors of rising / falling bars: `redUp` swaps the defaults. Not derived from `locale` (a Chinese page may still show global markets): set it explicitly"
+        "description": "Colors of rising / falling bars: `redUp` swaps the defaults, `auto` follows the market convention of the `locale` (red up for CN, TW, JP and KR). Not derived from the locale by default (a Chinese page may still show global markets)"
       },
       {
         "name": "upColor",
@@ -13496,7 +13645,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price"
+        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price. With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels; `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones"
       },
       {
         "name": "volumeProfile",
@@ -13537,6 +13686,13 @@
         "required": false,
         "default": "true",
         "description": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)"
+      },
+      {
+        "name": "autoscaleIncludesDrawings",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "The automatic price scale also fits the visible drawings of each pane (lines, channels, position tools...)"
       },
       {
         "name": "baselinePrice",
@@ -13668,19 +13824,19 @@
         "name": "onOrderMove",
         "type": "(event: TradingOrderMoveEvent) => void",
         "required": false,
-        "description": "A draggable price line was dropped at a new price"
+        "description": "A draggable price line was dropped at a new price, or moved with the keyboard"
       },
       {
         "name": "onOrderCreate",
         "type": "(event: TradingOrderCreateEvent) => void",
         "required": false,
-        "description": "The \"+\" order entry button was clicked (see `orderEntry`)"
+        "description": "The \"+\" order entry button was clicked, or an order confirmed with the keyboard (see `orderEntry`)"
       },
       {
         "name": "onOrderCancel",
         "type": "(event: TradingOrderCancelEvent) => void",
         "required": false,
-        "description": "The close button of a `cancellable` price line was clicked"
+        "description": "The close button of a `cancellable` price line was clicked, or Delete pressed on it"
       },
       {
         "name": "onDrawingsChange",
@@ -13778,9 +13934,9 @@
   },
   "TradingColorConvention": {
     "source": "charts/src/engine/trading/types.ts",
-    "description": "Colors of rising and falling bars: `greenUp` (most markets) or `redUp` (mainland China, Japan, Korea, Taiwan conventions)",
+    "description": "Colors of rising and falling bars: `greenUp` (most markets), `redUp` (mainland China, Taiwan, Japan, Korea conventions) or `auto` (`redUp` when the region of the `locale` is CN, TW, JP or KR, or the language is Chinese, Japanese or Korean without a region; `greenUp` otherwise)",
     "kind": "alias",
-    "type": "\"greenUp\" | \"redUp\""
+    "type": "\"greenUp\" | \"redUp\" | \"auto\""
   },
   "TradingCompareSeries": {
     "source": "charts/src/engine/trading/types.ts",
@@ -14479,7 +14635,7 @@
   },
   "TradingOrderCancelEvent": {
     "source": "charts/src/engine/trading/types.ts",
-    "description": "The close button of a `cancellable` price line was clicked",
+    "description": "The close button of a `cancellable` price line was clicked (or Delete pressed on it)",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -14499,7 +14655,7 @@
   },
   "TradingOrderCreateEvent": {
     "source": "charts/src/engine/trading/types.ts",
-    "description": "The \"+\" button of `orderEntry` was clicked",
+    "description": "The \"+\" button of `orderEntry` was clicked, or an order confirmed with the keyboard",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -14513,13 +14669,13 @@
         "name": "side",
         "type": "\"buy\" | \"sell\"",
         "required": true,
-        "description": "`buy` below the last price, `sell` above it"
+        "description": "`buy` below the last price, `sell` above it (`B` / `S` with the keyboard)"
       }
     ]
   },
   "TradingOrderMoveEvent": {
     "source": "charts/src/engine/trading/types.ts",
-    "description": "A draggable price line was dropped at a new price",
+    "description": "A draggable price line was dropped at a new price (or moved with the keyboard)",
     "kind": "interface",
     "extends": [],
     "props": [

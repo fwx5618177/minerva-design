@@ -2,7 +2,8 @@
 // A portfolio: risk against return, bubbles sized by the share of each
 // asset; @point-click reports the clicked asset.
 import { computed, ref } from "vue";
-import { BubbleChart, useI18n, type ChartHoverEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BubbleChart, type ChartHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

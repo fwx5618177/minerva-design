@@ -528,6 +528,15 @@ export interface Chart3DOptions {
   /** Lighting of the surfaces and bars */
   lighting?: Chart3DLightingOptions;
   /**
+   * Brightness of the light added by `blend: "additive"` series. On WebGPU
+   * and WebGL2 the added light is tone mapped (a soft shoulder that keeps the
+   * colors): dense glowing regions saturate gracefully instead of turning
+   * white, so raise it to bring out faint clouds; other backends scale the
+   * added light linearly
+   * @default 1
+   */
+  exposure?: number;
+  /**
    * Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL,
    * then Canvas2D (CPU projection, decimated) and skips GPUs running in software
    * @default "auto"

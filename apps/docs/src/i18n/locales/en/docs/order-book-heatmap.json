@@ -68,6 +68,7 @@
       "setBook": "Replaces the book (closes the columns up to its time)",
       "applyDeltas": "Applies updates (closes the columns up to their time)",
       "addTrades": "Adds trades (bubbles)",
+      "clear": "Removes the book, the history and the trades",
       "resetView": "Follows the market again",
       "getInstance": "The underlying engine instance (minerva-design/charts/core)"
     },
@@ -80,8 +81,8 @@
       "priceSpan": "Visible price span (top − bottom); fits the best bid and ask of the window when omitted",
       "colorScale": "Scale from sizes to colors: log reveals thin liquidity next to the walls",
       "contrast": "Multiplies the sizes before the scale: above 1 brightens thin liquidity, below 1 keeps the walls",
-      "maxSize": "Size drawn with the hottest color; follows the data when omitted",
-      "colors": "Color ramp, coldest first, interpolated in OKLab after the floor color (the background, a shade darker in dark themes, shown where there is no liquidity); a perceptual heat ramp suited to the theme when omitted",
+      "maxSize": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used",
+      "colors": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): a dark color in dark themes, a pale one in light themes. A perceptual heat ramp suited to the theme when omitted",
       "bubbles": "Trades drawn as bubbles sized by volume (buy and sell colors)",
       "bubbleSize": "Largest bubble diameter, in pixels",
       "bubbleVolume": "Trade volume of the largest bubble; follows the data when omitted",
@@ -120,6 +121,8 @@
       "sells": "Sold volume of the hovered column",
       "bid": "Best bid, in the screen reader summary",
       "ask": "Best ask, in the screen reader summary",
+      "bidSide": "Side badge of a hovered bid row in the tooltip",
+      "askSide": "Side badge of a hovered ask row in the tooltip",
       "name": "Accessible name (when ariaLabel is not set)"
     },
     "OrderBookHeatmapHoverEvent": {

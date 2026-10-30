@@ -2,7 +2,8 @@
 // Each point carries open, high, low and y (the close); rising candles use
 // the success color, falling ones the danger color.
 import { computed } from "vue";
-import { CandlestickChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { CandlestickChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { price: "Price", day: "Day" },

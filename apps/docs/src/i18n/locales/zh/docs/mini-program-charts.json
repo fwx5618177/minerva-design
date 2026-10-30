@@ -33,6 +33,7 @@
     "title": "语言与区域",
     "text": "在 Web 端，图表读取页面语言（<html lang>）。小程序没有 <html lang>：未传 locale 时，文本和数字跟随运行环境的 navigator.language（若存在），否则使用英文（Taro 与 uni-app 的 H5 构建与 Web 一样读取 <html lang>）。请为每个图表通过 locale 属性传入应用语言；微信返回的语言形如 zh_CN，把下划线替换为连字符（zh-CN）后数字和日期也会按该语言格式化。",
     "labels": "labels 覆盖坐标系图表的内置文本（ChartLabels：K 线的开盘 / 收盘行、箱线图各行、甘特图各行、默认系列名称……），texts 覆盖形状图表的内置文本（ShapeChartLabels：noData、value、share……）。在 HorizontalBarChart 与 WaterfallChart 上，labels 仍是显示数值的布尔值，因此它们的文本只跟随 locale。",
+    "provider": "未传 locale 时，图表使用最近的 ConfigProvider（原生微信中为 config-provider）的 locale，因此一个 provider 即可本地化整个页面的图表；图表自身的 locale 仍然优先。无障碍名称（aria-label）同样会本地化：英文为 “Chart: Revenue, Costs”，中文为 “图表：营收、成本”，笛卡尔图表由系列名称组成；形状图表以其类型命名，例如 “Pie chart” / “饼图”、“Chord diagram” / “弦图”（仪表盘为 “仪表盘：CPU”）；ariaLabel 可替换它。",
     "update": "修改 locale、labels 或 texts 会重绘图表：用户切换应用语言时重新设置即可（原生微信中使用 setData）。",
     "sample": {
       "comment": "应用的语言：小程序没有 <html lang>",
@@ -77,7 +78,7 @@
     "weapp": "以文件夹名注册所用组件。Date 对象无法经过 setData：请传时间戳（甘特图任务、时间轴）。函数选项通过 configure() 传入：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、坐标轴格式和 renderTooltip。",
     "drill": "SunburstChart 轻触父节点即可放大，轻触中心返回上一级：Taro 使用 onDrill，uni-app 与微信使用 drill 事件（bind:drill），实例上有 drill(path) 与 getDrillPath()；设置 drillPath 可使下钻受控。",
     "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales 以及 3D 图表（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）需要 DOM 与 WebGPU / WebGL，因此没有小程序组件。请改用 web-view 页面展示 Web 组件。",
-    "presets": "Web 组件的预设选项同样可用：WaterfallChart 的 connector（true、false 或 { color, dash, width }）、HeatmapChart 的 colorScale（\"sequential\"、\"diverging\" 或颜色数组）与 colorMidpoint、GanttChart 的 dependenciesName（配合任务的 dependencies）、BoxPlotChart 的 outlierShape 与 outlierSize。"
+    "presets": "Web 组件的预设选项同样可用：WaterfallChart 的 connector（true、false 或 { color, dash, width }）、HeatmapChart 的 colorScale（\"sequential\"、\"diverging\" 或颜色数组）与 colorMidpoint、GanttChart 的 dependenciesName、dependencyArrows（从前置任务画出的折线箭头，默认开启）与 dependencyColor（配合任务的 dependencies）、BoxPlotChart 的 outlierShape 与 outlierSize。"
   },
   "newTypes": {
     "title": "K 线、热力图、曲线与堆叠",

@@ -2,11 +2,8 @@
 // A series with `type: "line"` is drawn over the candles: a 5-day moving
 // average of the closes.
 import { computed } from "vue";
-import {
-  CandlestickChart,
-  useI18n,
-  type ChartSeries,
-} from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { CandlestickChart, type ChartSeries } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { price: "Price", average: "5-day average" },

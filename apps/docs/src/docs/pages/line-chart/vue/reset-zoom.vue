@@ -2,12 +2,8 @@
 // Ctrl / ⌘ + wheel (or pinch) zooms, dragging pans; the template ref exposes
 // resetZoom, getView, setView and the engine instance.
 import { computed, ref } from "vue";
-import {
-  Button,
-  LineChart,
-  useI18n,
-  type ChartHandle,
-} from "minerva-design/vue";
+import { Button, useI18n } from "minerva-design/vue";
+import { LineChart, type ChartHandle } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { sensor: "Sensor", reset: "Reset zoom" },

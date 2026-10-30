@@ -90,7 +90,7 @@ export class MinervaTradingChart extends MinervaEngineElement<
   @property({ attribute: false })
   indicators?: readonly TradingIndicator[];
 
-  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only */
+  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, autoscaleIncludesDrawings, labels...); property only */
   @property({ attribute: false })
   options?: Partial<TradingChartOptions>;
 

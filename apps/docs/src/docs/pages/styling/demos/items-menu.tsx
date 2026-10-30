@@ -8,7 +8,7 @@ const css = `
 minerva-menu.accent-menu::part(item item--highlighted) {
   background: color-mix(in srgb, var(--primary-color) 18%, transparent);
   color: var(--primary-color);
-  box-shadow: inset 3px 0 0 var(--primary-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-color) 40%, transparent);
 }
 /* checked checkbox / radio items, disabled items */
 .accent-menu [data-minerva="menu"][data-part="item"][data-state="checked"],

@@ -338,6 +338,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "exposure", "type": "number", "required": false, "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (default 1)" },
       { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
       { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
       { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
@@ -1432,6 +1433,12 @@
       { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
       { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
       { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      {
+        "name": "arrowStyle",
+        "type": "\"open\" | \"filled\"",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
+      },
       { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" }
@@ -1906,6 +1913,12 @@
         "required": false,
         "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
       },
+      {
+        "name": "dependencyArrows",
+        "type": "boolean",
+        "required": false,
+        "description": "Draws the `dependencies` of the tasks as elbow arrows from the end of every predecessor to the start of the task (default `true`)"
+      },
       { "name": "today", "type": "number | boolean | Date", "default": "false", "required": false, "description": "Draws a line at this date (`true`: now)" },
       { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
@@ -1933,6 +1946,7 @@
       { "name": "progressName", "type": "string", "required": false, "description": "Name of the progress bars (legend, tooltip; default \"Progress\")" },
       { "name": "milestoneName", "type": "string", "required": false, "description": "Name of the milestones (legend, tooltip; default \"Milestones\")" },
       { "name": "dependenciesName", "type": "string", "required": false, "description": "Name of the dependencies row of the tooltip (default \"Depends on\", in the `locale`)" },
+      { "name": "dependencyColor", "type": "string", "required": false, "description": "Color of the dependency arrows (any CSS color); the secondary text color by default" },
       { "name": "todayLabel", "type": "string", "required": false, "description": "Label of the today line" },
       { "name": "tasks", "type": "readonly GanttTask[]", "required": true, "description": "Tasks and milestones, from top to bottom" },
       { "name": "formatProgress", "type": "((share: number) => string)", "required": false, "description": "Formats the progress shares (tooltip; default \"60%\")" }
@@ -2063,6 +2077,12 @@
       { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
       { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
       { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      {
+        "name": "arrowStyle",
+        "type": "\"open\" | \"filled\"",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
+      },
       { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },
@@ -2477,6 +2497,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "exposure", "type": "number", "required": false, "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (default 1)" },
       { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
       { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
       { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
@@ -3825,6 +3846,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "exposure", "type": "number", "required": false, "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (default 1)" },
       { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
       { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
       { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
@@ -4253,6 +4275,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "exposure", "type": "number", "required": false, "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (default 1)" },
       { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
       { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
       { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
@@ -4867,7 +4890,12 @@
       { "name": "lastPriceLine", "type": "boolean", "required": false, "description": "Line and axis label at the last price (default `true`)" },
       { "name": "countdown", "type": "boolean", "required": false, "description": "Time left until the current bar closes, under the last price label (default `false`)" },
       { "name": "highLowMarkers", "type": "boolean", "required": false, "description": "Marks the highest and lowest prices of the visible bars (default `true`)" },
-      { "name": "orderEntry", "type": "boolean", "required": false, "description": "A \"+\" button at the crosshair price reporting a limit order (`orderCreate`; default `false`)" },
+      {
+        "name": "orderEntry",
+        "type": "boolean",
+        "required": false,
+        "description": "A \"+\" button at the crosshair price reporting a limit order (`orderCreate`); with the chart focused, `B` / `S` arm a keyboard order (arrows move it, Enter confirms, Escape cancels; default `false`)"
+      },
       {
         "name": "volumeProfile",
         "type": "boolean | TradingVolumeProfileOptions",
@@ -4876,6 +4904,7 @@
       },
       { "name": "keepDrawingMode", "type": "boolean", "required": false, "description": "Keeps the drawing tool after a drawing is made (default `false`)" },
       { "name": "drawingToolbar", "type": "boolean", "required": false, "description": "Floating toolbar over the selected drawing: color, width, style, fill, lock, delete (default `true`)" },
+      { "name": "autoscaleIncludesDrawings", "type": "boolean", "required": false, "description": "The automatic price scale also fits the visible drawings of each pane (default `false`)" },
       { "name": "kineticScroll", "type": "boolean", "required": false, "description": "Keeps panning after a quick drag (default `true`)" },
       { "name": "symbol", "type": "string", "required": false, "description": "Name shown in the legend and the accessible label (`\"BTC/USDT\"`)" },
       { "name": "labels", "type": "Partial<TradingChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
@@ -4889,7 +4918,12 @@
       { "name": "priceLines", "type": "readonly TradingPriceLine[]", "required": false, "description": "Order, position, take profit / stop loss and alert lines" },
       { "name": "upColor", "type": "string", "required": false, "description": "Color of rising bars (any CSS color, `var(--x)` included)" },
       { "name": "downColor", "type": "string", "required": false, "description": "Color of falling bars" },
-      { "name": "colorConvention", "type": "TradingColorConvention", "required": false, "description": "Colors of rising / falling bars: `redUp` swaps the defaults (default `greenUp`)" },
+      {
+        "name": "colorConvention",
+        "type": "TradingColorConvention",
+        "required": false,
+        "description": "Colors of rising / falling bars: `redUp` swaps the defaults, `auto` follows the market convention of the `locale` (red up for CN, TW, JP, KR; default `greenUp`)"
+      },
       { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices (axis, legend, labels); overrides `precision`" },
       { "name": "precision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
       {
@@ -4988,6 +5022,12 @@
       { "name": "edgeStyle", "type": "GraphEdgeStyle", "required": false, "description": "Edge shape; depends on the layout when omitted" },
       { "name": "edgeWidth", "type": "number | readonly [number, number]", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`" },
       { "name": "edgeColor", "type": "\"neutral\" | \"target\" | \"source\"", "required": false, "description": "Edge colors: neutral or tinted with the source / target node (default `neutral`)" },
+      {
+        "name": "arrowStyle",
+        "type": "\"open\" | \"filled\"",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
+      },
       { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },

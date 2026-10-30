@@ -65,7 +65,8 @@ import {
   type WaterfallOptions,
   type WaterfallStep,
 } from "@minerva/charts/canvas";
-import { useThemeTokens } from "./theme";
+import { useOptionalTheme, useThemeTokens } from "./theme";
+import { describeCartesianChart } from "./chart-a11y";
 
 export type {
   BinOptions,
@@ -152,7 +153,10 @@ export interface ChartCommonProps {
   padding?: ChartPadding;
   /** Series colors (defaults to the `--chart-series-1..8` tokens, then the theme colors) */
   palette?: readonly string[];
-  /** Accessible name of the chart */
+  /**
+   * Accessible name of the chart
+   * @default the series names in the chart's locale, e.g. "Chart: Revenue, Costs"
+   */
   ariaLabel?: string;
   /**
    * Locale of the texts and numbers the chart writes (tooltip rows, compact
@@ -636,7 +640,7 @@ const RETRY_MS = 100;
 const MOUSE_AFTER_TOUCH_MS = 800;
 
 function ChartBase({
-  options,
+  options: input,
   height = 320,
   width = "100%",
   className,
@@ -650,6 +654,15 @@ function ChartBase({
   const generated = `mn-chart-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const canvasId = id ?? generated;
   const tokens = useThemeTokens();
+  // mini-programs have no `<html lang>`: the ConfigProvider's language
+  const providerLocale = useOptionalTheme()?.locale;
+  const options = useMemo(
+    () =>
+      input.locale || !providerLocale
+        ? input
+        : { ...input, locale: providerLocale },
+    [input, providerLocale],
+  );
   const themeKey = JSON.stringify(tokens.css);
   const theme = useMemo<ChartThemeInput>(
     () => ({
@@ -947,7 +960,7 @@ function ChartBase({
       className={cn("mn-chart", className)}
       data-minerva="chart"
       {...{ role: "img" }}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel || describeCartesianChart(options)}
       style={{
         position: "relative",
         width: toLength(width),
@@ -1459,6 +1472,8 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
       milestoneName,
       formatProgress,
       dependenciesName,
+      dependencyArrows,
+      dependencyColor,
       locale,
       today = false,
       todayLabel,
@@ -1472,6 +1487,8 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
           milestoneName,
           formatProgress,
           dependenciesName,
+          dependencyArrows,
+          dependencyColor,
           locale,
         }),
       [
@@ -1482,6 +1499,8 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
         milestoneName,
         formatProgress,
         dependenciesName,
+        dependencyArrows,
+        dependencyColor,
         locale,
       ],
     );
@@ -1515,6 +1534,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
         ...base,
         ...(locale ? { locale } : null),
         series: gantt.series,
+        dependencies: gantt.dependencies,
         orientation: "horizontal",
         xAxis: {
           type: "category",

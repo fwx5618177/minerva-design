@@ -154,6 +154,14 @@ export interface GraphForceOptions {
    * @default true
    */
   animate?: boolean;
+  /**
+   * Multilevel start of large graphs (400+ nodes without known positions):
+   * the layout of a coarsened graph (merged neighbors) seeds a short
+   * refinement, several times faster than a full cooling; `false` always runs
+   * the full cooling
+   * @default true
+   */
+  multilevel?: boolean;
 }
 
 /** Settings of the layered (Sugiyama) layout */
@@ -329,6 +337,12 @@ export interface GraphChartOptions {
   edgeColor?: "neutral" | "source" | "target";
   /** Arrowheads on the edges without `directed`; on for `dag`, off otherwise */
   arrows?: boolean;
+  /**
+   * Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a
+   * solid head in the edge color, which follows the theme and the highlight)
+   * @default "open"
+   */
+  arrowStyle?: "open" | "filled";
   /**
    * Node labels: `auto` hides minor labels when zoomed out and labels that would overlap.
    * Text inside boxes keeps a readable minimum size and is shortened with an ellipsis;

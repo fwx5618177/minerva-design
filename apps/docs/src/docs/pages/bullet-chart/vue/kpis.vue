@@ -2,7 +2,8 @@
 // One row per KPI: the bar is the value, the marker the target, the gray
 // bands qualitative ranges (named by `range-labels` in the tooltip).
 import { computed } from "vue";
-import { BulletChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BulletChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

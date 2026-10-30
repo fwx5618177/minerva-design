@@ -2,7 +2,8 @@
 // `stacked percent`: every row adds up to 100 %, a survey answered on a
 // three-point scale; the legend toggles an answer.
 import { computed } from "vue";
-import { HorizontalBarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HorizontalBarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

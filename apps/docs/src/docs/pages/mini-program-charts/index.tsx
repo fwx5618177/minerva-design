@@ -914,6 +914,9 @@ export default function MiniProgramChartsDoc() {
         <p className={styles.prose}>
           {t("docs.mini-program-charts.locale.labels")}
         </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.locale.provider")}
+        </p>
         <h3>{t("docs.mini-program-charts.taro.title")}</h3>
         <CodeBlock
           language="tsx"

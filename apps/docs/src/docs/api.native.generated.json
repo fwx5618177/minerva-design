@@ -2401,6 +2401,12 @@
         "required": false,
         "default": "\"vertical\"",
         "description": "`horizontal` puts the x axis (categories) down the left side"
+      },
+      {
+        "name": "dependencies",
+        "type": "readonly ChartDependency[]",
+        "required": false,
+        "description": "Arrows between categories, e.g. the dependencies of a Gantt chart (`ganttSeries(...).dependencies`): elbows from the end of a bar to the start of another"
       }
     ]
   },
@@ -2740,7 +2746,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end. `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)"
+        "description": "`false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix counts each relation once), arcs sized by the ribbons of the group. `true`: one ribbon per direction (same width at both ends), arcs sized by the outgoing plus the incoming flows; flows from a group to itself are ignored."
       },
       {
         "name": "arrows",
@@ -4685,6 +4691,19 @@
         "description": "Name of the dependencies row of the tooltip"
       },
       {
+        "name": "dependencyArrows",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the dependencies as elbow arrows from the end of every predecessor to the start of the task"
+      },
+      {
+        "name": "dependencyColor",
+        "type": "string",
+        "required": false,
+        "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
+      },
+      {
         "name": "locale",
         "type": "string",
         "required": false,
@@ -4715,6 +4734,12 @@
         "type": "[number, number]",
         "required": true,
         "description": "Time range of the tasks with a small margin (the `min` / `max` of the value axis)"
+      },
+      {
+        "name": "dependencies",
+        "type": "ChartDependency[]",
+        "required": true,
+        "description": "Arrows of the dependencies between existing tasks (the `dependencies` of the chart)"
       }
     ]
   },
@@ -4770,7 +4795,7 @@
         "name": "dependencies",
         "type": "readonly string[]",
         "required": false,
-        "description": "Names of the tasks this one waits for (shown in its tooltip)"
+        "description": "Names of the tasks this one waits for (tooltip, and arrows from their ends)"
       }
     ]
   },
@@ -9490,7 +9515,7 @@
         "name": "ariaLabel",
         "type": "string",
         "required": false,
-        "default": "the chart type, e.g. \"Donut chart\"",
+        "default": "the chart type in its locale, e.g. \"Donut chart\" (a gauge: \"Gauge: {label}\")",
         "description": "Accessible name of the chart"
       },
       {

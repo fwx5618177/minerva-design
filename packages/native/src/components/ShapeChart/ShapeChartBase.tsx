@@ -27,6 +27,7 @@ import {
 } from "react-native";
 import {
   createCanvasShapeChart,
+  describeShapeChart as describeShapeType,
   type CanvasShapeChartInstance,
   type ChartCanvas,
   type ChartThemeInput,
@@ -35,7 +36,7 @@ import {
   type ShapeHoverEvent,
   type ShapeToggleEvent,
 } from "@minerva/charts/canvas";
-import { useTheme } from "../../theme/MinervaProvider";
+import { useI18n, useTheme } from "../../theme/MinervaProvider";
 import { part } from "../../internal/parts";
 import { chartThemeInput } from "../Chart/theme";
 import { renderPrims } from "./draw";
@@ -71,39 +72,9 @@ interface TouchPoint {
   locationY?: number;
 }
 
-/** Default accessible name of a chart (like the web charts) */
-export const describeShapeChart = (o: ShapeChartOptions): string => {
-  switch (o.type) {
-    case "pie":
-      return o.rose
-        ? "Rose chart"
-        : (o.innerRadius ?? 0) > 0
-          ? "Donut chart"
-          : "Pie chart";
-    case "radar":
-      return "Radar chart";
-    case "gauge":
-      return o.label ? `Gauge: ${o.label}` : "Gauge";
-    case "funnel":
-      return "Funnel chart";
-    case "treemap":
-      return "Treemap";
-    case "sankey":
-      return "Sankey diagram";
-    case "sunburst":
-      return "Sunburst chart";
-    case "radialBar":
-      return "Radial bar chart";
-    case "calendarHeatmap":
-      return "Calendar heatmap";
-    case "bullet":
-      return "Bullet chart";
-    case "chord":
-      return "Chord diagram";
-    default:
-      return "Chart";
-  }
-};
+/** Default accessible name of a chart: its type, in its locale ("Pie chart", "弦图") */
+export const describeShapeChart = (o: ShapeChartOptions): string =>
+  o.ariaLabel ?? describeShapeType(o);
 
 interface ShapeStore {
   subscribe(listener: () => void): () => void;
@@ -383,11 +354,14 @@ export function ShapeChartBase({
   ...handlers
 }: ShapeChartBaseProps) {
   const { tokens, fonts, reducedMotion } = useTheme();
+  const { language } = useI18n();
   const family = fonts.sans;
   const theme = useMemo(() => chartThemeInput(tokens), [tokens]);
   const customTooltip = !!renderTooltip && options.tooltip !== false;
   const resolved = useMemo((): ShapeChartOptions => {
     let next = options;
+    // the provider's language when the chart has no locale (no `<html lang>` on devices)
+    if (!next.locale) next = { ...next, locale: language };
     if (reducedMotion && next.animation !== false)
       next = { ...next, animation: false };
     if (customTooltip) {
@@ -396,7 +370,7 @@ export function ShapeChartBase({
       next = { ...next, tooltip: { ...base, render: () => "" } };
     }
     return next;
-  }, [options, customTooltip, reducedMotion]);
+  }, [options, customTooltip, reducedMotion, language]);
 
   const [store] = useState(() =>
     createShapeStore(
@@ -468,7 +442,7 @@ export function ShapeChartBase({
         style={StyleSheet.absoluteFill}
         accessible
         accessibilityRole="image"
-        accessibilityLabel={options.ariaLabel ?? describeShapeChart(options)}
+        accessibilityLabel={describeShapeChart(resolved)}
         onStartShouldSetResponder={() => true}
         onResponderGrant={store.touchStart}
         onResponderMove={store.touchMove}

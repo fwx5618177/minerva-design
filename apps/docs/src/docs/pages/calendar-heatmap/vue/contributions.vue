@@ -2,7 +2,8 @@
 // A year of daily values, contributions-style: the month and weekday names
 // and the first day of the week follow `locale` (the page language here).
 import { computed } from "vue";
-import { CalendarHeatmap, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { CalendarHeatmap } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { locale: "en-US", unit: "contributions" },

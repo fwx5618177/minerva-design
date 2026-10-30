@@ -5,7 +5,7 @@ import {
   type TimeAndSalesHandle,
   type TimeAndSalesRowEvent,
 } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 export default function LiveDemo() {
   const { t, i18n } = useTranslation("common", {
@@ -13,15 +13,21 @@ export default function LiveDemo() {
   });
   const tapeRef = useRef<TimeAndSalesHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [feed] = useState(() => createMarketFeed({ seed: 32, activity: 220 }));
   const [paused, setPaused] = useState(false);
   const [picked, setPicked] = useState<TimeAndSalesRowEvent | null>(null);
 
   // trades go to the tape through the ref: React does not re-render
-  useFeedLoop(boxRef, (elapsed) => {
-    const { trades } = feed.step(elapsed);
-    if (trades.length) tapeRef.current?.addTrades(trades);
-  });
+  useMarketStream(
+    boxRef,
+    { seed: 32, activity: 220 },
+    {
+      // a fresh market on every mount: the tape starts empty
+      load: () => tapeRef.current?.clear(),
+      update: ({ trades }) => {
+        if (trades.length) tapeRef.current?.addTrades(trades);
+      },
+    },
+  );
 
   const price = new Intl.NumberFormat(i18n.language, {
     minimumFractionDigits: 1,

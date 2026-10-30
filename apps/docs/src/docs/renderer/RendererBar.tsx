@@ -16,13 +16,13 @@ export interface RendererBarProps {
   value: ChartRendererPreference;
 }
 
-/** Height of the site header (the bar sticks right under it) */
-const headerHeight = () =>
-  parseFloat(
+/** Where the bar sticks: under the site header, with the CSS gap (8px) */
+const stickyTop = () =>
+  (parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue(
       "--ds-header-height",
     ),
-  ) || 64;
+  ) || 64) + 8;
 
 /**
  * The sticky renderer switch of the chart pages: Auto / WebGPU / WebGL2 /
@@ -56,7 +56,7 @@ export default function RendererBar({ value }: RendererBarProps) {
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || typeof IntersectionObserver === "undefined") return;
-    const top = headerHeight();
+    const top = stickyTop();
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry) {

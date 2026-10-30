@@ -17,9 +17,9 @@
   },
   "global": {
     "title": "为所有图表统一设置渲染器",
-    "text": "setDefaultChartRenderer() 为所有未设置 renderer 或设置为 \"auto\" 的图表指定后端，适用于所有框架：该默认值保存在 globalThis 上，因此 React 组件、Vue 和 Angular 封装以及 Web Components 共享同一设置，即使页面打包了多份引擎副本也是如此。图表在启动时读取它：要让更改生效，请重新挂载已显示的图表（或通过 subscribeDefaultChartRenderer 监听变化）。",
+    "text": "setDefaultChartRenderer() 为所有未设置 renderer 或设置为 \"auto\" 的图表指定后端，适用于所有框架：该默认值保存在 globalThis 上，因此 React 组件、Vue 和 Angular 封装以及 Web Components 共享同一设置，即使页面打包了多份引擎副本也是如此。已显示的图表会实时跟随更改：它们就地重建渲染器，保留数据、缩放和状态。subscribeDefaultChartRenderer() 可以监听变化，例如让选择器保持同步。",
     "rules": "图表自身的 renderer 选项始终优先。通过默认值强制指定的后端视为强制：它可以运行在软件 GPU 上，无法启动时回退到下一个后端。设为 \"auto\" 即恢复自动检测。",
-    "docs": "本文档图表页面顶部的渲染器栏正是这样实现的：在那里选择 Canvas2D 或 WebGL，所有示例都会以该后端重新启动，每个示例下方的徽标显示实际使用的后端。在本页中，每个展示的“自动”选项会跟随它。"
+    "docs": "本文档图表页面顶部的渲染器栏正是这样实现的：在那里选择 Canvas2D 或 WebGL，页面上的所有图表都会切换到该后端，每个示例下方的徽标显示实际使用的后端。在本页中，每个展示的“自动”选项会跟随它。"
   },
   "showcase": {
     "title": "实时演示",

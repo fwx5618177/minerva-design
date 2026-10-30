@@ -93,11 +93,18 @@ export interface Frame3D {
   lighting: readonly [number, number, number, number];
   /** Background color: far points fade towards it */
   fog: Rgba;
+  /** Scale of the light of the additive points (tone mapped when possible) */
+  exposure: number;
 }
 
 export interface Renderer3D {
   readonly kind: ChartRendererKind;
   readonly canvas: HTMLCanvasElement;
+  /**
+   * Blends the transparent items in any order (weighted blended
+   * order-independent transparency): they need no depth sorting
+   */
+  readonly orderIndependent?: boolean;
   /** Drawing buffer size in device pixels */
   resize(width: number, height: number): void;
   render(items: readonly Item3D[], frame: Frame3D): void;
@@ -114,23 +121,26 @@ export const writesDepth = (item: Item3D): boolean => {
 };
 
 /**
- * Order of the draws: opaque meshes, opaque points, blended points,
- * transparent meshes, then lines (wireframes and contours stay visible over
- * transparent surfaces). Stable: items of a rank keep their order.
+ * Draw passes of the items: 0 opaque meshes, 1 opaque points, 2 blended
+ * items (transparent meshes and points: order independent, or sorted back to
+ * front together), 3 lines (wireframes and contours stay visible over
+ * transparent surfaces)
  */
-export const drawOrder = (items: readonly Item3D[]): Item3D[] => {
-  const rank = (item: Item3D) =>
-    item.kind === "mesh"
-      ? writesDepth(item)
+export const drawRank = (item: Item3D): number =>
+  item.kind === "lines"
+    ? 3
+    : !writesDepth(item)
+      ? 2
+      : item.kind === "mesh"
         ? 0
-        : 3
-      : item.kind === "points"
-        ? writesDepth(item)
-          ? 1
-          : 2
-        : 4;
-  return items
-    .map((item, i) => ({ item, i, r: rank(item) }))
+        : 1;
+
+/**
+ * Order of the draws (`drawRank`). Stable: items of a rank keep their order
+ * (the back-to-front order of the depth sorter for the blended items).
+ */
+export const drawOrder = (items: readonly Item3D[]): Item3D[] =>
+  items
+    .map((item, i) => ({ item, i, r: drawRank(item) }))
     .sort((a, b) => a.r - b.r || a.i - b.i)
     .map((e) => e.item);
-};

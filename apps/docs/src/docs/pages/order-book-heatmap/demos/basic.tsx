@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   OrderBookHeatmap,
   type OrderBookHeatmapHandle,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 export default function BasicDemo() {
   const { t } = useTranslation("common", {
@@ -12,25 +12,9 @@ export default function BasicDemo() {
   });
   const heatmapRef = useRef<OrderBookHeatmapHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  // two minutes of market recorded before the page opened, then live
-  const [market] = useState(() => createHistory({ seed: 21 }, 120_000));
-
-  // backfill: the book at the start, then every update with its exchange time
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = market.feed.step(elapsed);
-    heatmapRef.current?.applyDeltas(delta);
-    heatmapRef.current?.addTrades(trades);
-  });
+  // two minutes of market recorded before the page opened (backfilled with
+  // the exchange times), then the same market live
+  useHeatmapReplay(boxRef, heatmapRef, { seed: 21 }, 120_000);
 
   return (
     <div ref={boxRef} style={{ width: "100%" }}>

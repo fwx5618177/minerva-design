@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   OrderBookHeatmap,
   type OrderBookHeatmapHandle,
   type OrderBookHeatmapHoverEvent,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 export default function LargeTradesDemo() {
   const { t, i18n } = useTranslation("common", {
@@ -15,25 +15,14 @@ export default function LargeTradesDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<OrderBookHeatmapHoverEvent | null>(null);
   // block trades: aggressive whales sweeping several levels at once
-  const [market] = useState(() =>
-    createHistory({ seed: 27, whales: 0.03, activity: 180 }, 90_000),
+
+  // recorded history (backfilled), then the same market live
+  useHeatmapReplay(
+    boxRef,
+    heatmapRef,
+    { seed: 27, whales: 0.03, activity: 180 },
+    90_000,
   );
-
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = market.feed.step(elapsed);
-    heatmapRef.current?.applyDeltas(delta);
-    heatmapRef.current?.addTrades(trades);
-  });
 
   const size = new Intl.NumberFormat(i18n.language, {
     maximumFractionDigits: 3,

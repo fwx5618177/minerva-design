@@ -107,6 +107,13 @@ export interface Chart3DCommonProps {
   /** Lighting of the surfaces and bars */
   lighting?: Chart3DLightingOptions;
   /**
+   * Brightness of the light of `blend: "additive"` series, tone mapped on
+   * WebGPU and WebGL2 (dense glowing regions saturate instead of turning
+   * white)
+   * @default 1
+   */
+  exposure?: number;
+  /**
    * Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL,
    * then Canvas2D, skipping GPUs running in software
    * @default "auto"
@@ -349,6 +356,7 @@ function Chart3DFrame({
     tooltip,
     interaction,
     lighting,
+    exposure,
     renderer,
     palette,
     ariaLabel,
@@ -378,6 +386,7 @@ function Chart3DFrame({
     tooltip,
     interaction,
     lighting,
+    exposure,
     renderer,
     palette,
     ariaLabel,

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // The labels follow the language of the closest ConfigProvider.
 import { computed } from "vue";
-import { LineChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { LineChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

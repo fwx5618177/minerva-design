@@ -111,7 +111,7 @@ export const chartCommonProps = {
   padding: Object as PropType<ChartPadding>,
   /** Series colors (defaults to the theme colors) */
   palette: Array as PropType<readonly string[]>,
-  /** Accessible name of the chart */
+  /** Accessible name of the chart (default: the series names in the chart's locale, e.g. "Chart: Revenue, Costs") */
   ariaLabel: String,
   /**
    * Locale of the texts and numbers the chart writes (tooltip rows, compact
@@ -354,6 +354,10 @@ export const ganttChartProps = {
   formatProgress: Function as PropType<(share: number) => string>,
   /** Name of the tooltip row listing the dependencies of a task (default "Depends on") */
   dependenciesName: String,
+  /** Draws the dependencies as elbow arrows from the end of every predecessor to the start of the task (default `true`) */
+  dependencyArrows: { type: Boolean, default: undefined },
+  /** Color of the dependency arrows (any CSS color; default: the secondary text color) */
+  dependencyColor: String,
   /** Locale of the default names and of the progress shares */
   locale: String,
   /** Draws a line at this date (`true`: now) */

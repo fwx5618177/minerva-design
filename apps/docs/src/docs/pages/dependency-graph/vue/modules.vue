@@ -3,7 +3,8 @@
 // application at the bottom: hovering or clicking a module highlights its
 // whole lineage (what it needs and what needs it).
 import { computed, ref } from "vue";
-import { DependencyGraph, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { DependencyGraph } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

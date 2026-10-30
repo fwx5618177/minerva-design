@@ -2,7 +2,8 @@
 // Disk usage as rings: folders inside, their content outside; click a
 // folder to zoom into it, the center to go back up.
 import { computed } from "vue";
-import { SunburstChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { SunburstChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

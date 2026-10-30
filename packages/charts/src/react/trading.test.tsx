@@ -103,6 +103,33 @@ describe("TradingChart", () => {
     });
   });
 
+  it("forwards the keyboard order entry to onOrderCreate", async () => {
+    const onOrderCreate = vi.fn();
+    const { container } = render(
+      <TradingChart
+        bars={bars}
+        orderEntry
+        precision={2}
+        locale="en-US"
+        onOrderCreate={onOrderCreate}
+      />,
+    );
+    await flush();
+    const root = container.querySelector<HTMLElement>(
+      ".minerva-trading-chart",
+    )!;
+    const key = (k: string) =>
+      act(() => {
+        root.dispatchEvent(
+          new KeyboardEvent("keydown", { key: k, bubbles: true }),
+        );
+      });
+    key("s");
+    key("ArrowUp");
+    key("Enter");
+    expect(onOrderCreate).toHaveBeenCalledWith({ price: 220.01, side: "sell" });
+  });
+
   it("forwards the drawing, replay and view methods of the handle", async () => {
     const ref = createRef<TradingChartHandle>();
     const onDrawingsChange = vi.fn();

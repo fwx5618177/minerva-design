@@ -2,7 +2,8 @@
 // A two-week sprint: tasks without a group share one color; `today` draws
 // a dashed line with its label (`today-label`).
 import { computed } from "vue";
-import { GanttChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GanttChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

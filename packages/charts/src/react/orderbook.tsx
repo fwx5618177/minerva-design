@@ -112,6 +112,8 @@ export interface OrderBookHeatmapHandle {
   applyDeltas(deltas: OrderBookDelta | readonly OrderBookDelta[]): void;
   /** Adds trades (bubbles) */
   addTrades(trades: MarketTrade | readonly MarketTrade[]): void;
+  /** Removes the book, the history and the trades */
+  clear(): void;
   /** Follows the market again */
   resetView(): void;
   /** The underlying engine instance (minerva-design/charts/core) */
@@ -131,7 +133,7 @@ export interface OrderBookHeatmapProps
   onRendererChange?: (renderer: ChartRendererKind) => void;
   /** `true` while the view follows the market, `false` after a zoom / pan */
   onFollowChange?: (follow: boolean) => void;
-  /** Imperative handle: `setBook`, `applyDeltas`, `addTrades`, `resetView` */
+  /** Imperative handle: `setBook`, `applyDeltas`, `addTrades`, `clear`, `resetView` */
   ref?: Ref<OrderBookHeatmapHandle>;
 }
 
@@ -529,6 +531,7 @@ export function OrderBookHeatmap({
       setBook: (snapshot) => instanceRef.current?.setBook(snapshot),
       applyDeltas: (deltas) => instanceRef.current?.applyDeltas(deltas),
       addTrades: (list) => instanceRef.current?.addTrades(list),
+      clear: () => instanceRef.current?.clear(),
       resetView: () => instanceRef.current?.resetView(),
       getInstance: () => instanceRef.current,
     }),

@@ -4,7 +4,11 @@
   "demos": {
     "project": {
       "title": "项目计划",
-      "description": "每个分组有自己的颜色和图例项，进度以实心条覆盖在任务上，里程碑显示为圆点，today 在指定日期画一条线。悬停任务时，提示框只显示该任务：所属分组、起止日期、时长、进度和前置任务。"
+      "description": "每个分组有自己的颜色和图例项，进度以实心条覆盖在任务上，里程碑显示为圆点，today 在指定日期画一条线。悬停任务时，提示框只显示该任务：所属分组、起止日期、时长、进度和前置任务。依赖关系以箭头绘制。"
+    },
+    "dependencies": {
+      "title": "依赖关系",
+      "description": "每个任务在 dependencies 中列出它所等待的任务：从每个前置任务的结束处到该任务的开始处画一条折线箭头；任务在前置任务结束之前开始时，箭头从两行之间绕行，里程碑同样适用。dependencyArrows: false 只在提示框中列出依赖；dependencyColor 设置箭头颜色。"
     },
     "roadmap": {
       "title": "路线图",
@@ -97,7 +101,25 @@
       "chinese": "中文（zh-CN）",
       "french": "法语（fr-FR）"
     },
-    "localeAria": "发布计划，{{locale}}"
+    "localeAria": "发布计划，{{locale}}",
+    "pipeline": {
+      "kickoff": "启动",
+      "spec": "产品规格",
+      "api": "同步 API",
+      "ui": "应用界面",
+      "integration": "联调集成",
+      "security": "安全评审",
+      "storeAssets": "应用商店素材",
+      "beta": "Beta 测试",
+      "release": "上架发布"
+    },
+    "streams": {
+      "product": "产品",
+      "backend": "后端",
+      "mobile": "移动端"
+    },
+    "showDependencies": "依赖箭头",
+    "pipelineAria": "移动应用发布计划及任务之间的依赖关系"
   },
   "api": {
     "GanttChartProps": {
@@ -113,7 +135,7 @@
       "group": "分组（阶段、团队）：每组一种颜色和一个图例项",
       "color": "任务颜色（任意 CSS 颜色）；默认为所在分组的颜色",
       "milestone": "在开始时间画一个点而不是条形",
-      "dependencies": "该任务所依赖的任务名称，显示在其提示框中"
+      "dependencies": "该任务所依赖的任务名称：显示在其提示框中，并绘制为从这些任务结束处出发的箭头"
     },
     "GanttOptions": {
       "colors": "各分组按出现顺序使用的颜色（任意 CSS 颜色）；默认为图表调色板",
@@ -122,7 +144,9 @@
       "milestoneName": "里程碑的名称（图例、提示框）",
       "formatProgress": "格式化进度比例（提示框）",
       "locale": "默认名称和进度百分比所用的语言区域；默认使用页面语言",
-      "dependenciesName": "提示框中前置任务一行的名称（默认为当前语言的“前置任务”）"
+      "dependenciesName": "提示框中前置任务一行的名称（默认为当前语言的“前置任务”）",
+      "dependencyArrows": "将依赖关系绘制为折线箭头：从每个前置任务的结束处指向该任务的开始处",
+      "dependencyColor": "依赖箭头的颜色（任意 CSS 颜色），默认为次要文字颜色"
     }
   },
   "wc": {
@@ -139,6 +163,8 @@
     "minerva-gantt-chart": {
       "props": {
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "hideDependencyArrows": "隐藏从每个前置任务的结束处指向任务开始处的折线箭头（任务的依赖关系）",
+        "dependencyColor": "依赖箭头的颜色（任意 CSS 颜色）；默认为次要文字颜色",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
         "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
       },

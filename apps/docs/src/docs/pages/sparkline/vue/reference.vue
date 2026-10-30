@@ -2,7 +2,8 @@
 // `reference` draws a dashed target line; @hover reports the value under the
 // pointer (null when it leaves).
 import { computed, ref } from "vue";
-import { Sparkline, useI18n, type ChartHoverEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Sparkline, type ChartHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

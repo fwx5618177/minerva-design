@@ -20,12 +20,13 @@
       "pointer": "Molette pour zoomer sous le pointeur (Maj ou balayage horizontal pour défiler), glisser pour se déplacer avec inertie.",
       "axes": "Faites glisser l'axe des prix pour zoomer verticalement et l'axe du temps pour changer la largeur des bougies ; double-cliquez sur un axe pour le réinitialiser.",
       "keyboard": "Une fois le graphique sélectionné : les flèches déplacent le réticule barre par barre (Maj : dix barres) et annoncent les prix, + / − zooment, Début / Fin vont à la première / dernière barre, Suppr efface le dessin sélectionné, Ctrl / ⌘ + Z annule et Ctrl / ⌘ + Maj + Z rétablit une modification des dessins, Échap annule.",
+      "orders": "Avec orderEntry : B / S préparent un ordre limite d'achat / de vente au prix du réticule (ou au dernier cours), ↑ / ↓ le déplacent d'un pas de cotation (Maj : dix), Entrée le place et Échap l'abandonne. O / Maj + O sélectionnent tour à tour les lignes déplaçables ou annulables pour les déplacer de la même façon ; Suppr annule l'ordre sélectionné. Chaque étape est lue à voix haute et émet les mêmes événements que le pointeur (orderCreate, orderMove, orderCancel).",
       "touch": "Sur écran tactile : glisser pour se déplacer, pincer pour zoomer."
     },
     "languages": {
       "title": "Langues",
       "text": "Les textes écrits par le graphique (noms OHLC, titres des lignes d'ordre et d'alerte, compte à rebours, outil de mesure, noms accessibles) existent en anglais, chinois, japonais et français et suivent la langue de la page (<html lang>), y compris quand elle change. Les volumes utilisent les unités de la langue (k, M, Md en français). Choisissez une autre langue avec locale et remplacez n'importe quel texte avec labels.",
-      "colors": "Les couleurs ne suivent pas la langue : une page en chinois peut très bien afficher des actions américaines, la convention « rouge à la hausse » reste donc un colorConvention=\"redUp\" explicite."
+      "colors": "Par défaut, les couleurs ne suivent pas la langue : une page en chinois peut très bien afficher des actions américaines. Définissez colorConvention=\"redUp\" pour les marchés où la hausse est en rouge, ou colorConvention=\"auto\" pour la déduire de la locale : rouge en hausse pour la Chine continentale, Taïwan, le Japon et la Corée (zh-CN, zh-TW, ja-JP, ko-KR, ou zh / ja / ko sans région), vert ailleurs (Hong Kong compris)."
     },
     "workflow": {
       "title": "Méthode de travail",
@@ -54,7 +55,7 @@
     },
     "drawing-tools": {
       "title": "Outils de dessin",
-      "description": "Quatorze outils : choisissez-en un, puis faites glisser ou cliquez les points d'ancrage (trois pour les canaux et les fourchettes). Sélectionnez un dessin pour changer son style depuis sa barre d'outils flottante (couleur, épaisseur, tirets, remplissage, verrou, suppression), faites-le glisser ou ses poignées, double-cliquez une note pour la modifier. Les dessins fonctionnent aussi sur le panneau RSI ; annulez / rétablissez avec les boutons ou Ctrl / ⌘ + Z."
+      "description": "Quatorze outils : choisissez-en un, puis faites glisser ou cliquez les points d'ancrage (trois pour les canaux et les fourchettes). Sélectionnez un dessin pour changer son style depuis sa barre d'outils flottante (couleur, épaisseur, tirets, remplissage, verrou, suppression), faites-le glisser ou ses poignées, double-cliquez une note pour la modifier. Les dessins fonctionnent aussi sur le panneau RSI ; annulez / rétablissez avec les boutons ou Ctrl / ⌘ + Z. Avec autoscaleIncludesDrawings, l'échelle de prix contient aussi les tracés visibles (ici l'objectif et le stop de la position)."
     },
     "orders": {
       "title": "Ordres et positions",
@@ -74,7 +75,7 @@
     },
     "red-up": {
       "title": "Rouge à la hausse, vert à la baisse",
-      "description": "colorConvention=\"redUp\" suit les conventions de Chine continentale, Hong Kong, du Japon et de Corée ; utcOffset affiche l'heure de la Bourse de Shanghai. MA5 / 10 / 20 / 60, volume avec sa MA5 et KDJ, comme dans une application de courtage chinoise. La convention n'est pas déduite de la langue de la page (une page en chinois peut afficher des actions américaines) : définissez-la explicitement."
+      "description": "colorConvention=\"redUp\" suit les conventions de la Chine continentale, de Taïwan, du Japon et de la Corée ; \"auto\" la déduit de la langue de la page (passez la documentation en chinois ou en japonais pour la voir virer au rouge) ; utcOffset affiche les heures de la bourse de Shanghai. MA5 / 10 / 20 / 60, volume avec sa MA5 et KDJ, comme sur une application de courtage chinoise."
     },
     "dark-terminal": {
       "title": "Terminal sombre",
@@ -94,7 +95,7 @@
     },
     "order-entry": {
       "title": "Saisie d'ordres",
-      "description": "Avec orderEntry, un bouton + suit le réticule à droite du panneau des prix : cliquez-le pour placer un ordre limite à ce prix (achat sous le dernier cours, vente au-dessus). Les ordres sont des lignes de prix déplaçables et annulables, gardées dans l'état React avec onOrderCreate, onOrderMove et onOrderCancel."
+      "description": "Avec orderEntry, un bouton + suit le réticule à droite du panneau des prix : cliquez-le pour placer un ordre limite à ce prix (achat sous le dernier cours, vente au-dessus). Le clavier fait de même : donnez le focus au graphique (Tab), appuyez sur B ou S, ajustez le prix avec les flèches puis Entrée ; O sélectionne un ordre existant pour le déplacer ou l'annuler avec Suppr. Les ordres sont des lignes de prix déplaçables et annulables, conservées dans l'état React via onOrderCreate, onOrderMove et onOrderCancel."
     },
     "sessions": {
       "title": "Fuseaux horaires et séances",
@@ -178,6 +179,7 @@
       "shortPosition": "Position vendeuse"
     },
     "keepDrawing": "Rester en mode dessin",
+    "fitDrawings": "Inclure les tracés dans l'échelle",
     "clearDrawings": "Tout effacer",
     "drawingsStatus": "Dessins : {{count}}",
     "drawingAria": "Graphique ETH/USDT en quatre heures avec des dessins",
@@ -252,7 +254,7 @@
     "orderModified": "Ordre déplacé de {{from}} à {{to}}",
     "orderCancelled": "Ordre à {{price}} annulé",
     "orderEntryAria": "Graphique 5 minutes du perpétuel BTCUSDT avec saisie d'ordres",
-    "orderEntryHint": "Survolez le graphique et cliquez le + à droite pour placer un ordre ; faites glisser une ligne pour la déplacer, × l'annule.",
+    "orderEntryHint": "Survolez le graphique et cliquez le + à droite pour placer un ordre, ou donnez-lui le focus et appuyez sur B / S ; faites glisser une ligne pour la déplacer, × l'annule.",
     "timeZone": "Fuseau horaire",
     "zones": {
       "America_New_York": "New York",
@@ -266,7 +268,28 @@
     "noteText": "Canal haussier : attendre un retour",
     "ordersTitle": "Ordres ouverts",
     "rowCount": "{{count}} lignes",
-    "barsPerSecond": "{{count}} barres / s"
+    "barsPerSecond": "{{count}} barres / s",
+    "colorConvention": "Convention de couleurs",
+    "conventions": {
+      "redUp": "Hausse en rouge",
+      "auto": "Selon la langue",
+      "greenUp": "Hausse en vert"
+    },
+    "keyboard": {
+      "title": "Clavier",
+      "armKeys": "B S",
+      "arm": "Préparer un achat / une vente",
+      "moveKeys": "↑ ↓",
+      "move": "Ajuster le prix (Maj : ×10)",
+      "confirmKeys": "Entrée",
+      "confirm": "Placer ou déplacer l'ordre",
+      "cancelKeys": "Échap",
+      "cancel": "Abandonner",
+      "selectKeys": "O",
+      "select": "Sélectionner l'ordre suivant",
+      "removeKeys": "Suppr",
+      "remove": "Annuler l'ordre sélectionné"
+    }
   },
   "api": {
     "TradingChartProps": {
@@ -298,7 +321,7 @@
       "chartStyle": "Dessin des bougies : candles, hollowCandles, heikinAshi, bars, line, area ou baseline",
       "indicators": "Indicateurs : moyennes, bandes de Bollinger et VWAP sur le prix, les autres dans des panneaux en dessous, dans cet ordre",
       "scaleMode": "Échelle du panneau des prix : linear, log ou percent (depuis la première bougie visible)",
-      "colorConvention": "greenUp (la plupart des marchés) ou redUp (Chine, Japon, Corée) : inverse les couleurs de hausse / baisse par défaut. Ne dépend pas de la langue : à définir explicitement",
+      "colorConvention": "greenUp (la plupart des marchés), redUp (Chine continentale, Taïwan, Japon, Corée) ou auto (redUp si la locale est l'un de ces marchés, greenUp sinon) : inverse les couleurs de hausse / baisse par défaut. Ne dépend pas de la langue par défaut",
       "upColor": "Couleur des bougies haussières, toute couleur CSS, var() comprise",
       "downColor": "Couleur des bougies baissières",
       "precision": "Décimales des prix ; détectées dans les données par défaut",
@@ -317,6 +340,7 @@
       "drawingMode": "Outil de dessin actif ; cursor sélectionne et déplace les dessins",
       "keepDrawingMode": "Garde l'outil après un dessin au lieu de revenir au curseur",
       "baselinePrice": "Prix qui sépare le style baseline ; la première clôture visible par défaut",
+      "autoscaleIncludesDrawings": "L'échelle de prix automatique contient aussi les tracés visibles de chaque panneau (lignes, canaux, outils de position...).",
       "rightOffset": "Espace libre après la dernière bougie, en bougies",
       "barSpacing": "Largeur initiale d'une bougie en pixels",
       "wheel": "Molette : zoom, modifier (avec Ctrl / ⌘ seulement, la page défile sinon) ou none",
@@ -328,7 +352,7 @@
       "ariaLabel": "Étiquette accessible ; construite à partir du symbole par défaut",
       "timeZone": "Fuseau horaire de l'axe du temps, des séparateurs de séance et des périodes du VWAP : un nom IANA (\"America/New_York\") ou \"UTC\" ; l'heure locale par défaut.",
       "sessionBreaks": "Lignes verticales en tirets au début de chaque jour (barres intrajournalières).",
-      "orderEntry": "Un bouton + au prix du réticule, à droite du panneau des prix : un clic signale un ordre limite (orderCreate).",
+      "orderEntry": "Un bouton + au prix du réticule, à droite du panneau des prix : un clic signale un ordre limite (orderCreate). Graphique sélectionné, B / S préparent un achat / une vente, les flèches le déplacent, Entrée valide et Échap annule ; O sélectionne les lignes déplaçables pour les déplacer, Suppr annule les ordres annulables.",
       "volumeProfile": "Volume par prix des barres visibles, avec son point de contrôle et sa zone de valeur (true pour les valeurs par défaut).",
       "drawingToolbar": "Barre d'outils flottante au-dessus du dessin sélectionné (couleur, épaisseur, style, remplissage, verrou, suppression)."
     },
@@ -471,7 +495,12 @@
       "replay": "Badge de la relecture ; {time} est remplacé.",
       "replayHint": "Indication pendant le choix de la première barre d'une relecture.",
       "buyLimit": "Bouton de saisie d'ordre sous le dernier cours ; {price} est remplacé.",
-      "sellLimit": "Bouton de saisie d'ordre au-dessus du dernier cours ; {price} est remplacé."
+      "sellLimit": "Bouton de saisie d'ordre au-dessus du dernier cours ; {price} est remplacé.",
+      "orderHint": "Lu à voix haute pendant qu'un ordre clavier est préparé ou une ligne sélectionnée. Par défaut \"Arrows move the price, Enter confirms, Escape cancels\".",
+      "orderCancelHint": "Lu quand la ligne sélectionnée peut être annulée. Par défaut \"Delete cancels the order\".",
+      "orderLine": "Ligne sélectionnée au clavier ; {title} et {price} sont remplacés. Par défaut \"{title} at {price}\".",
+      "orderPlaced": "Lu quand un ordre est placé ou déplacé ; {price} est remplacé. Par défaut \"Order placed at {price}\".",
+      "orderCancelled": "Lu quand un ordre clavier est abandonné ou un ordre annulé. Par défaut \"Order cancelled\"."
     },
     "TradingCrosshairEvent": {
       "index": "Index de la bougie survolée (peut dépasser la dernière)",
@@ -519,7 +548,7 @@
     },
     "TradingOrderCreateEvent": {
       "price": "Prix de l'ordre (arrondi à la précision des prix).",
-      "side": "buy sous le dernier cours, sell au-dessus."
+      "side": "buy sous le dernier cours, sell au-dessus (au clavier : la touche pressée, B ou S)."
     },
     "TradingOrderCancelEvent": {
       "id": "Id de la ligne.",

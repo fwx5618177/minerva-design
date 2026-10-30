@@ -28,6 +28,7 @@ const {
   id,
   root,
   rootStyle,
+  ariaLabel,
   handle,
   onTouchStart,
   onTouchMove,
@@ -56,7 +57,7 @@ defineExpose(handle);
       :hidpi="false"
       :disable-scroll="scrollLocked"
       role="img"
-      :aria-label="props.ariaLabel"
+      :aria-label="ariaLabel"
       style="display: block; width: 100%; height: 100%"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"

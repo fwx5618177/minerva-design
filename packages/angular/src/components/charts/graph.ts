@@ -127,6 +127,8 @@ export abstract class MnGraphChartBase extends MnChartEngine<
   readonly arrows = input<boolean | undefined, unknown>(undefined, {
     transform: optionalBoolean,
   });
+  /** Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`) */
+  readonly arrowStyle = input<"open" | "filled" | undefined>(undefined);
   /** Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`) */
   readonly nodeLabels = input<boolean | "auto" | undefined>(undefined);
   /** Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`) */
@@ -211,6 +213,7 @@ export abstract class MnGraphChartBase extends MnChartEngine<
       edgeWidth: this.edgeWidth(),
       edgeColor: this.edgeColor(),
       arrows: this.arrows(),
+      arrowStyle: this.arrowStyle(),
       nodeLabels: this.nodeLabels(),
       edgeLabels: this.edgeLabels(),
       highlight: this.highlight(),

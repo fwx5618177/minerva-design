@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // A flat list: one rectangle per node, its area proportional to the value.
 import { computed } from "vue";
-import { TreemapChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TreemapChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: ["Asia", "Europe", "North America", "South America", "Africa", "Oceania"],

@@ -2,11 +2,8 @@
 // @drill reports the path from the root to the focused node: a breadcrumb
 // outside of the chart.
 import { computed, ref } from "vue";
-import {
-  SunburstChart,
-  useI18n,
-  type ShapeDrillEvent,
-} from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { SunburstChart, type ShapeDrillEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

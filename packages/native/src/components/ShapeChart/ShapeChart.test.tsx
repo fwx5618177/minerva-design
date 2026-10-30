@@ -393,4 +393,49 @@ describe("shape charts", () => {
     );
     expect(screen.getByText("Vide")).toBeTruthy();
   });
+
+  it("names the chart in the provider's language unless it has a locale", async () => {
+    const zh = await render(
+      <MinervaProvider locale={{ language: "zh" }}>
+        <PieChart data={DATA} animation={false} />
+      </MinervaProvider>,
+    );
+    expect(surface().accessibilityLabel).toBe("饼图");
+    await zh.unmount();
+    const ja = await render(
+      <MinervaProvider locale={{ language: "zh" }}>
+        <ShapeChart
+          options={{ type: "pie", data: [], locale: "ja", animation: false }}
+        />
+      </MinervaProvider>,
+    );
+    expect(surface().accessibilityLabel).toBe("円グラフ");
+    await ja.unmount();
+    const chord = await render(
+      <MinervaProvider locale={{ language: "zh" }}>
+        <ChordChart
+          groups={["A", "B"]}
+          matrix={[
+            [0, 1],
+            [2, 0],
+          ]}
+          animation={false}
+        />
+      </MinervaProvider>,
+    );
+    expect(surface().accessibilityLabel).toBe("弦图");
+    await chord.unmount();
+    await mount(
+      <ChordChart
+        groups={["A", "B"]}
+        matrix={[
+          [0, 1],
+          [2, 0],
+        ]}
+        ariaLabel="Flows"
+        animation={false}
+      />,
+    );
+    expect(surface().accessibilityLabel).toBe("Flows");
+  });
 });

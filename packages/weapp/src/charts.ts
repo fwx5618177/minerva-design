@@ -29,6 +29,7 @@ import {
 } from "@minerva/charts/canvas";
 import { githubDark, resolveTokens } from "@minerva/core";
 import type { NativeConfiguration } from "./configuration";
+import { describeCartesianChart } from "./chart-a11y";
 import type {
   NativeChartAnnotation,
   NativeChartAxisOptions,
@@ -202,6 +203,13 @@ const axisOption = (
   format: ((value: number) => string) | undefined,
 ) => (format ? { ...value, format } : value);
 
+/**
+ * Locale of the chart: its `locale`, else the ConfigProvider's language
+ * (mini-programs have no `<html lang>`)
+ */
+export const localeOf = (d: WechatMiniprogram.IAnyObject): string | undefined =>
+  (d.locale as string) || (d.localeLanguage as string) || undefined;
+
 /** Options shared by every chart (everything but the series and axes) */
 const baseOptions = (
   self: Instance,
@@ -217,7 +225,7 @@ const baseOptions = (
     padding: unset(d.padding),
     palette: nonEmpty(d.palette as string[]),
     ariaLabel: d.ariaLabel || undefined,
-    locale: (d.locale as string) || undefined,
+    locale: localeOf(d),
     // HorizontalBarChart / WaterfallChart use a boolean `labels` (value labels)
     labels: isRecord(d.labels)
       ? (d.labels as ChartOptions["labels"])
@@ -279,7 +287,7 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
   const input = (d.series as NativeChartSeries[] | null) ?? [];
   const curve = unset(d.curve as ChartOptions["series"][number]["curve"] | "");
   const orientation = unset(d.orientation as ChartOptions["orientation"] | "");
-  const locale = unset(d.locale as string);
+  const locale = localeOf(d);
   const percent = !!d.percent;
   switch (state.kind) {
     case "line":
@@ -429,6 +437,8 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
         milestoneName: d.milestoneName || undefined,
         formatProgress,
         dependenciesName: d.dependenciesName || undefined,
+        dependencyArrows: unset(d.dependencyArrows as boolean | null),
+        dependencyColor: d.dependencyColor || undefined,
         locale,
       });
       const today = unset(d.today as boolean | number | null);
@@ -455,6 +465,7 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
         ...base,
         ...(locale ? { locale } : {}),
         series: gantt.series,
+        dependencies: gantt.dependencies,
         orientation: "horizontal",
         xAxis: {
           type: "category",
@@ -489,7 +500,11 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
 
 const applyOptions = (self: Instance) => {
   const state = states.get(self);
-  state?.chart?.setOptions(chartOptions(self, state));
+  if (!state) return;
+  const options = chartOptions(self, state);
+  state.chart?.setOptions(options);
+  const label = describeCartesianChart(options);
+  if (label !== self.data.chartLabel) self.setData({ chartLabel: label });
 };
 
 const applyTheme = (self: Instance) => {
@@ -679,6 +694,8 @@ const KIND_PROPERTIES: Partial<
     progressName: text(),
     milestoneName: text(),
     dependenciesName: text(),
+    dependencyArrows: optional(),
+    dependencyColor: text(),
     locale: text(),
     today: optional(),
     todayLabel: text(),
@@ -741,7 +758,7 @@ function defineChart(kind: ChartKind): Control {
   ];
   const fallbackHeight = kind === "sparkline" ? "48px" : "320px";
   return {
-    template: `<view class="mn-chart" style="display:block;position:relative;width:{{chartWidth}};height:{{chartHeight}}"><canvas type="2d" class="mn-chart-canvas" style="display:block;width:100%;height:100%" disable-scroll="{{disableScroll}}" aria-role="img" aria-label="{{ariaLabel}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel"></canvas></view>`,
+    template: `<view class="mn-chart" style="display:block;position:relative;width:{{chartWidth}};height:{{chartHeight}}"><canvas type="2d" class="mn-chart-canvas" style="display:block;width:100%;height:100%" disable-scroll="{{disableScroll}}" aria-role="img" aria-label="{{chartLabel}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel"></canvas></view>`,
     definition: {
       properties: {
         width: { type: null, value: "100%" },
@@ -759,9 +776,11 @@ function defineChart(kind: ChartKind): Control {
         disableScroll: flag(),
         ...kindProperties,
       },
-      data: { chartWidth: "100%", chartHeight: fallbackHeight },
+      data: { chartWidth: "100%", chartHeight: fallbackHeight, chartLabel: "" },
       observers: {
-        [optionNames.join(",")]: function (this: Instance) {
+        [[...optionNames, "localeLanguage"].join(",")]: function (
+          this: Instance,
+        ) {
           applyOptions(this);
         },
         "width,height": function (this: Instance) {
@@ -789,6 +808,7 @@ function defineChart(kind: ChartKind): Control {
             chartWidth: cssSize(this.data.width, "100%"),
             chartHeight: cssSize(this.data.height, fallbackHeight),
           });
+          applyOptions(this);
         },
         ready(this: Instance) {
           stateOf(this, kind).ready = true;

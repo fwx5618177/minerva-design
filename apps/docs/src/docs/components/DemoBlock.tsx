@@ -39,7 +39,8 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
   const codeId = useId();
   const titleId = `${id}-title`;
   const previewRef = useRef<HTMLDivElement>(null);
-  // chart pages: the page-wide renderer (the preview remounts when it changes)
+  // chart pages: the page-wide renderer, shown by the badge (the charts
+  // themselves follow the engine's global default and swap backends live)
   const renderer = useContext(ChartRendererContext);
 
   return (
@@ -64,11 +65,7 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
           data-demo-preview
           data-toc-ignore
         >
-          {renderer === null ? (
-            children
-          ) : (
-            <React.Fragment key={renderer}>{children}</React.Fragment>
-          )}
+          {children}
         </div>
         <div className={styles.demoToolbar}>
           {renderer !== null && (

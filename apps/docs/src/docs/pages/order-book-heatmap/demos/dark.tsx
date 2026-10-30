@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import {
   OrderBookHeatmap,
   type OrderBookHeatmapHandle,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 const TERMINAL = {
   "--background-color": "#06080d",
@@ -23,8 +23,17 @@ const TERMINAL = {
   boxSizing: "border-box",
 } as CSSProperties;
 
-// a classic liquidity ramp: deep blue, cyan, yellow, orange, red
-const RAMP = ["#0a2a5c", "#0f6fb5", "#19c2d6", "#f5e663", "#ff9a1f", "#ff3b1f"];
+// a classic liquidity ramp: from the empty field (near black navy) through
+// deep blue, cyan, yellow and orange to red
+const RAMP = [
+  "#050b18",
+  "#0a2a5c",
+  "#0f6fb5",
+  "#19c2d6",
+  "#f5e663",
+  "#ff9a1f",
+  "#ff3b1f",
+];
 
 export default function DarkDemo() {
   const { t } = useTranslation("common", {
@@ -32,25 +41,9 @@ export default function DarkDemo() {
   });
   const heatmapRef = useRef<OrderBookHeatmapHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [market] = useState(() =>
-    createHistory({ seed: 24, whales: 0.012 }, 90_000),
-  );
 
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = market.feed.step(elapsed);
-    heatmapRef.current?.applyDeltas(delta);
-    heatmapRef.current?.addTrades(trades);
-  });
+  // recorded history (backfilled), then the same market live
+  useHeatmapReplay(boxRef, heatmapRef, { seed: 24, whales: 0.012 }, 90_000);
 
   return (
     <div ref={boxRef} style={TERMINAL}>

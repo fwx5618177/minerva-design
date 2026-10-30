@@ -27,6 +27,14 @@ export interface LayeredInput {
   sweeps: number;
 }
 
+/** Most passes of the neighbor transposition */
+const TRANSPOSE_PASSES = 24;
+/**
+ * Work budget of the transposition (neighbor positions compared): about
+ * 50-100 ms on large graphs, unbounded in practice below some 10k nodes
+ */
+const TRANSPOSE_BUDGET = 2e7;
+
 /** Crossings between two consecutive layers (Fenwick tree, O(E log V)) */
 const bilayerCrossings = (
   edges: [number, number][],
@@ -352,29 +360,91 @@ export const layeredLayout = (input: LayeredInput): GraphDagLayoutResult => {
     updatePos(list);
   });
 
-  // transposition of neighbors while it helps (small graphs)
-  if (N <= 3000 && best > 0) {
-    const pairCrossings = (u: number, v: number) => {
-      let c = 0;
-      for (const nb of [vPred, vSucc]) {
-        for (const a of nb[u]) for (const b of nb[v]) if (pos[a] > pos[b]) c++;
+  // transposition of neighbors while it helps, any size: crossings of a
+  // pair come from sorted neighbor positions (two pointers, O(deg u +
+  // deg v), so hubs stay cheap), only layers next to a change are revisited,
+  // and a work budget (deterministic, unlike a clock) bounds huge graphs
+  if (best > 0) {
+    const predStart = new Int32Array(N + 1);
+    const succStart = new Int32Array(N + 1);
+    for (let v = 0; v < N; v++) {
+      predStart[v + 1] = predStart[v] + vPred[v].length;
+      succStart[v + 1] = succStart[v] + vSucc[v].length;
+    }
+    const predPos = new Float64Array(predStart[N]);
+    const succPos = new Float64Array(succStart[N]);
+    let work = 0;
+    const prepare = (list: number[]) => {
+      for (const v of list) {
+        const p = vPred[v];
+        const s = vSucc[v];
+        for (let k = 0; k < p.length; k++)
+          predPos[predStart[v] + k] = pos[p[k]];
+        for (let k = 0; k < s.length; k++)
+          succPos[succStart[v] + k] = pos[s[k]];
+        if (p.length > 1)
+          predPos.subarray(predStart[v], predStart[v + 1]).sort();
+        if (s.length > 1)
+          succPos.subarray(succStart[v], succStart[v + 1]).sort();
+        work += p.length + s.length + 1;
       }
-      return c;
     };
-    for (let pass = 0, improved = true; improved && pass < 8; pass++) {
-      improved = false;
-      for (const list of layers) {
+    // crossings with u left of v minus crossings with v left of u, on one side
+    const sideGain = (
+      arr: Float64Array,
+      start: Int32Array,
+      u: number,
+      v: number,
+    ) => {
+      const a0 = start[u];
+      const a1 = start[u + 1];
+      const b0 = start[v];
+      const b1 = start[v + 1];
+      if (a0 === a1 || b0 === b1) return 0;
+      let cross = 0;
+      let ties = 0;
+      let j = b0;
+      for (let i = a0; i < a1; i++) {
+        const a = arr[i];
+        while (j < b1 && arr[j] < a) j++;
+        cross += j - b0;
+        if (j < b1 && arr[j] === a) ties++;
+      }
+      work += a1 - a0 + b1 - b0;
+      const pairs = (a1 - a0) * (b1 - b0);
+      return cross - (pairs - cross - ties);
+    };
+    let dirty = new Uint8Array(L).fill(1);
+    for (let pass = 0; pass < TRANSPOSE_PASSES; pass++) {
+      const changed = new Uint8Array(L);
+      let any = false;
+      for (let l = 0; l < L && work < TRANSPOSE_BUDGET; l++) {
+        if (!dirty[l]) continue;
+        const list = layers[l];
+        prepare(list);
         for (let i = 0; i + 1 < list.length; i++) {
           const u = list[i];
           const v = list[i + 1];
-          if (pairCrossings(v, u) < pairCrossings(u, v)) {
+          const gain =
+            sideGain(predPos, predStart, u, v) +
+            sideGain(succPos, succStart, u, v);
+          if (gain > 0) {
             list[i] = v;
             list[i + 1] = u;
             pos[u] = i + 1;
             pos[v] = i;
-            improved = true;
+            changed[l] = 1;
+            any = true;
           }
         }
+      }
+      if (!any || work >= TRANSPOSE_BUDGET) break;
+      dirty = new Uint8Array(L);
+      for (let l = 0; l < L; l++) {
+        if (!changed[l]) continue;
+        if (l > 0) dirty[l - 1] = 1;
+        dirty[l] = 1;
+        if (l + 1 < L) dirty[l + 1] = 1;
       }
     }
     best = totalCrossings();

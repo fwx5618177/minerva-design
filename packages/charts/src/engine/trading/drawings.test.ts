@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   anchorCount,
+  drawingPrices,
   handlePoints,
   hitDrawing,
   isFillable,
@@ -79,6 +80,50 @@ const context: DrawingPaintContext = {
 };
 
 describe("drawing tools", () => {
+  it("lists the prices a drawing spans over the visible bars (autoscale)", () => {
+    const index = (time: number) => time;
+    // horizontal lines always count, vertical lines never
+    expect(
+      drawingPrices(drawing("horizontalLine", [at(0, 42)]), index, 50, 60),
+    ).toEqual([42]);
+    expect(
+      drawingPrices(drawing("verticalLine", [at(55, 42)]), index, 50, 60),
+    ).toEqual([]);
+    // a trend line counts while it overlaps the range
+    const trend = drawing("trendLine", [at(10, 100), at(20, 140)]);
+    expect(drawingPrices(trend, index, 15, 30)).toEqual([100, 140]);
+    expect(drawingPrices(trend, index, 25, 30)).toEqual([]);
+    // rays and extended lines reach beyond their anchors
+    expect(
+      drawingPrices(drawing("ray", [at(10, 100), at(20, 140)]), index, 25, 30),
+    ).toEqual([100, 140]);
+    expect(
+      drawingPrices(
+        drawing("extendedLine", [at(10, 100), at(20, 140)]),
+        index,
+        0,
+        5,
+      ),
+    ).toEqual([100, 140]);
+    // channels add their parallel line; positions their target and stop
+    expect(
+      drawingPrices(
+        drawing("parallelChannel", [at(0, 100), at(10, 110), at(5, 85)]),
+        index,
+        0,
+        10,
+      ),
+    ).toEqual([100, 110, 85, 80, 90]);
+    expect(
+      drawingPrices(
+        drawing("longPosition", [at(0, 100), at(20, 120), at(20, 90)]),
+        index,
+        5,
+        6,
+      ),
+    ).toEqual([100, 120, 90]);
+  });
+
   it("knows how many clicks make each drawing", () => {
     const counts: Partial<Record<TradingDrawingTool, number>> = {
       horizontalLine: 1,
@@ -214,8 +259,12 @@ describe("drawing tools", () => {
       context,
       { selected: false, hovered: false },
     );
-    expect(box).toEqual({ x: 100, y: 400, w: 18 + 18, h: 2 * 18 + 10 });
+    // a note card: the text after a colored dot, a border all around (no
+    // accent bar on one side)
+    expect(box).toEqual({ x: 100, y: 400, w: 18 + 30, h: 2 * 18 + 10 });
     expect(text.calls).toContain("fillText:bcd");
+    expect(text.calls).toContain("arc");
+    expect(text.calls).not.toContain("fillRect");
     // an empty text shows the default text
     const empty = recorder();
     paintDrawing(empty.ctx, drawing("text", [at(10, 100)]), mapper, context, {

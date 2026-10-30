@@ -2,7 +2,8 @@
 // `shape="bar"` draws centered bars, `sort="descending"` orders the stages
 // by value.
 import { computed } from "vue";
-import { FunnelChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { FunnelChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: ["Interviews", "Applications", "Offers", "Screenings", "Hires"],

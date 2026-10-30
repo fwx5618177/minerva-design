@@ -2,7 +2,8 @@
 // `orientation="vertical"`: columns sharing the ranges of the component
 // (`ranges`), the targets in the danger color.
 import { computed } from "vue";
-import { BulletChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BulletChart } from "minerva-design/vue/charts";
 
 const QUARTERS = {
   en: ["Q1", "Q2", "Q3", "Q4"],

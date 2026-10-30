@@ -162,22 +162,24 @@ export default function OrdersDemo() {
           }}
         >
           <tbody>
-            {lines.map((line) => (
+            {lines.map((line, i) => (
               <tr
                 key={line.id}
-                style={{ borderTop: "1px solid var(--border-color)" }}
+                style={{
+                  background: i % 2 ? undefined : "var(--surface-subtle-color)",
+                }}
               >
-                <td style={{ padding: "6px 0" }}>{line.title}</td>
+                <td style={{ padding: "6px 8px" }}>{line.title}</td>
                 <td
                   style={{
-                    padding: "6px 0",
+                    padding: "6px 8px",
                     textAlign: "end",
                     color: "var(--text-secondary-color)",
                   }}
                 >
                   {line.quantity ?? ""}
                 </td>
-                <td style={{ padding: "6px 0", textAlign: "end" }}>
+                <td style={{ padding: "6px 8px", textAlign: "end" }}>
                   {usd.format(line.price)}
                 </td>
               </tr>

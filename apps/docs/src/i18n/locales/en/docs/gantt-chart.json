@@ -4,7 +4,11 @@
   "demos": {
     "project": {
       "title": "Project plan",
-      "description": "Each group gets a color and a legend entry, progress is drawn as a solid bar over the task, milestones are dots and today draws a line at a date. Hover a task: its tooltip shows only that task, with its group, dates, duration, progress and dependencies."
+      "description": "Each group gets a color and a legend entry, progress is drawn as a solid bar over the task, milestones are dots and today draws a line at a date. Hover a task: its tooltip shows only that task, with its group, dates, duration, progress and dependencies. Dependencies are drawn as arrows."
+    },
+    "dependencies": {
+      "title": "Dependencies",
+      "description": "Each task lists the tasks it waits for in dependencies: an elbow arrow goes from the end of every predecessor to the start of the task, around between the rows when the task starts before its predecessor ends, and into milestones too. dependencyArrows: false keeps them in the tooltip only; dependencyColor sets their color."
     },
     "roadmap": {
       "title": "Roadmap",
@@ -97,7 +101,25 @@
       "chinese": "Chinese (zh-CN)",
       "french": "French (fr-FR)"
     },
-    "localeAria": "Release plan, {{locale}}"
+    "localeAria": "Release plan, {{locale}}",
+    "pipeline": {
+      "kickoff": "Kick-off",
+      "spec": "Product spec",
+      "api": "Sync API",
+      "ui": "App screens",
+      "integration": "Integration",
+      "security": "Security review",
+      "storeAssets": "Store listing",
+      "beta": "Beta testing",
+      "release": "Store release"
+    },
+    "streams": {
+      "product": "Product",
+      "backend": "Backend",
+      "mobile": "Mobile"
+    },
+    "showDependencies": "Dependency arrows",
+    "pipelineAria": "Release plan of the mobile app with the dependencies between tasks"
   },
   "api": {
     "GanttChartProps": {
@@ -113,7 +135,7 @@
       "group": "Group (phase, team): a color and a legend entry per group",
       "color": "Color of the task (any CSS color); the color of its group by default",
       "milestone": "Draws a dot at start instead of a bar",
-      "dependencies": "Names of the tasks this one waits for, listed in its tooltip"
+      "dependencies": "Names of the tasks this one waits for: listed in its tooltip and drawn as arrows from their ends"
     },
     "GanttOptions": {
       "colors": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default",
@@ -122,7 +144,9 @@
       "milestoneName": "Name of the milestones (legend, tooltip)",
       "formatProgress": "Formats the progress shares (tooltip)",
       "locale": "Locale of the default names and of the progress percentages; the page language by default",
-      "dependenciesName": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)"
+      "dependenciesName": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)",
+      "dependencyArrows": "Draws the dependencies as elbow arrows from the end of every predecessor to the start of the task",
+      "dependencyColor": "Color of the dependency arrows (any CSS color); the secondary text color by default"
     }
   },
   "wc": {
@@ -139,6 +163,8 @@
     "minerva-gantt-chart": {
       "props": {
         "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "hideDependencyArrows": "Hides the elbow arrows drawn from the end of every predecessor to the start of the task (the dependencies of the tasks)",
+        "dependencyColor": "Color of the dependency arrows (any CSS color); the secondary text color by default",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
         "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
       },

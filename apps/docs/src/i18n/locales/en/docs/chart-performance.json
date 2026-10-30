@@ -17,9 +17,9 @@
   },
   "global": {
     "title": "One renderer for every chart",
-    "text": "setDefaultChartRenderer() sets the backend of every chart whose renderer is unset or \"auto\", in every framework: the default lives on globalThis, so the React components, the Vue and Angular wrappers and the Web Components share it, even when a page bundles several copies of the engine. Charts read it when they start: remount the charts already on screen (or listen with subscribeDefaultChartRenderer) to apply a change.",
+    "text": "setDefaultChartRenderer() sets the backend of every chart whose renderer is unset or \"auto\", in every framework: the default lives on globalThis, so the React components, the Vue and Angular wrappers and the Web Components share it, even when a page bundles several copies of the engine. Charts already on screen follow a change live: they recreate their renderer in place, keeping their data, zoom and state. subscribeDefaultChartRenderer() tells you about changes, e.g. to keep a picker in sync.",
     "rules": "A chart's own renderer option always wins. A backend forced through the default counts as forced: it may run on a software GPU, and falls back to the next backend when it cannot start. \"auto\" restores the automatic detection.",
-    "docs": "The renderer bar at the top of the chart pages of these docs does exactly that: pick Canvas2D or WebGL there and every demo restarts on it, with a badge under each demo showing the backend actually in use. Here, the Auto option of each showcase follows it."
+    "docs": "The renderer bar at the top of the chart pages of these docs does exactly that: pick Canvas2D or WebGL there and every chart of the page switches to it, with a badge under each demo showing the backend actually in use. Here, the Auto option of each showcase follows it."
   },
   "showcase": {
     "title": "Live showcases",

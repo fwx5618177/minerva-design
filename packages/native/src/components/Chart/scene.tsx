@@ -242,6 +242,86 @@ const dashedLine = (
 
 const crisp = (v: number, width = 1) => Math.round(v) + 0.5 - width / 2;
 
+/**
+ * Views of an elbow arrow (relative to `ox`, `oy`): a thin box per leg (the
+ * legs are horizontal or vertical) and a triangle made of borders
+ */
+export const arrowViews = (
+  key: string,
+  arrow: ChartScene["arrows"][number],
+  ox: number,
+  oy: number,
+): ReactElement[] => {
+  const out: ReactElement[] = [];
+  const w = arrow.width;
+  const pts = arrow.points;
+  for (let k = 1; k < pts.length; k++) {
+    const p = pts[k - 1]!;
+    const q = pts[k]!;
+    const x0 = Math.min(p.x, q.x) - ox;
+    const y0 = Math.min(p.y, q.y) - oy;
+    // legs overlap by half a width so the corners are closed
+    out.push(
+      p.y === q.y
+        ? box(
+            `${key}-${k}`,
+            x0 - w / 2,
+            y0 - w / 2,
+            Math.abs(q.x - p.x) + w,
+            w,
+            arrow.color,
+          )
+        : box(
+            `${key}-${k}`,
+            x0 - w / 2,
+            y0 - w / 2,
+            w,
+            Math.abs(q.y - p.y) + w,
+            arrow.color,
+          ),
+    );
+  }
+  const [tip, b0, b1] = arrow.head;
+  const length = Math.hypot(
+    tip.x - (b0.x + b1.x) / 2,
+    tip.y - (b0.y + b1.y) / 2,
+  );
+  const half = Math.hypot(b1.x - b0.x, b1.y - b0.y) / 2;
+  const clear = "transparent";
+  const style: ViewStyle = { position: "absolute", width: 0, height: 0 };
+  const baseX = (b0.x + b1.x) / 2;
+  const baseY = (b0.y + b1.y) / 2;
+  if (Math.abs(tip.x - baseX) >= Math.abs(tip.y - baseY)) {
+    const right = tip.x > baseX;
+    Object.assign(style, {
+      left: (right ? baseX : tip.x) - ox,
+      top: tip.y - half - oy,
+      borderTopWidth: half,
+      borderBottomWidth: half,
+      borderTopColor: clear,
+      borderBottomColor: clear,
+      ...(right
+        ? { borderLeftWidth: length, borderLeftColor: arrow.color }
+        : { borderRightWidth: length, borderRightColor: arrow.color }),
+    });
+  } else {
+    const down = tip.y > baseY;
+    Object.assign(style, {
+      left: tip.x - half - ox,
+      top: (down ? baseY : tip.y) - oy,
+      borderLeftWidth: half,
+      borderRightWidth: half,
+      borderLeftColor: clear,
+      borderRightColor: clear,
+      ...(down
+        ? { borderTopWidth: length, borderTopColor: arrow.color }
+        : { borderBottomWidth: length, borderBottomColor: arrow.color }),
+    });
+  }
+  out.push(<View key={`${key}-head`} style={style} />);
+  return out;
+};
+
 // ------------------------------------------------------------------ data
 
 /** Thins a run of interleaved points to `max` points and drops sub-pixel steps */
@@ -808,6 +888,11 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
             c.dash,
           )),
     );
+  });
+
+  // dependency arrows (Gantt charts): axis-aligned legs and a border triangle
+  scene.arrows.forEach((a, i) => {
+    out.push(...arrowViews(`arrow-${i}`, a, ox, oy));
   });
 
   annotations.forEach((a, i) => {

@@ -2,7 +2,8 @@
 // Two series on the same cells are stacked: sales in stores and online per
 // product and year; `bar-width` thins the bars, the legend toggles a channel.
 import { computed } from "vue";
-import { Bar3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Bar3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

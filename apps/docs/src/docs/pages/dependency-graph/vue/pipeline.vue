@@ -3,7 +3,8 @@
 // critical path (the longest chain of jobs) is highlighted and can be
 // switched off.
 import { computed, ref } from "vue";
-import { DependencyGraph, Switch, useI18n } from "minerva-design/vue";
+import { Switch, useI18n } from "minerva-design/vue";
+import { DependencyGraph } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

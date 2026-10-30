@@ -2,7 +2,8 @@
 // Air routes between hub cities: a force-directed network, node size from
 // the size of the hub, edge width from the weekly flights, colored by region.
 import { computed } from "vue";
-import { GraphChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GraphChart } from "minerva-design/vue/charts";
 
 const CITIES = {
   en: [

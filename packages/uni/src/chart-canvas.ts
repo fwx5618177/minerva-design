@@ -40,6 +40,7 @@ import {
   type ChartTouch,
 } from "@minerva/charts/canvas";
 import { useNativeId } from "./native-id";
+import { describeCartesianChart } from "./chart-a11y";
 import type { ChartHandle } from "./chart-types";
 
 interface ChartConfiguration {
@@ -47,6 +48,7 @@ interface ChartConfiguration {
   theme?: unknown;
   palette?: Palette | null;
   design?: DesignOptions;
+  locale?: string;
 }
 
 const themeCache = new Map<string, Readonly<Record<string, string>>>();
@@ -162,6 +164,17 @@ export function chartEngineOptions(
   };
 }
 
+/**
+ * Options with the provider's language when they have no locale (mini-programs
+ * have no `<html lang>`)
+ */
+export function withProviderLocale<T extends { locale?: string }>(
+  options: T,
+  locale: string | undefined,
+): T {
+  return options.locale || !locale ? options : { ...options, locale };
+}
+
 export interface CanvasChartFrame {
   width?: number | string;
   height?: number | string;
@@ -229,7 +242,10 @@ export function useCanvasChart(
     null,
   );
   const variables = computed(() => chartThemeVariables(config?.value));
-  const engineOptions = computed(options);
+  const engineOptions = computed(() =>
+    withProviderLocale(options(), config?.value?.locale),
+  );
+  const ariaLabel = computed(() => describeCartesianChart(engineOptions.value));
   const rootStyle = computed(() =>
     [
       "position: relative",
@@ -496,6 +512,7 @@ export function useCanvasChart(
     root,
     plot,
     rootStyle,
+    ariaLabel,
     handle,
     onTouchStart,
     onTouchMove,

@@ -39,7 +39,7 @@ export abstract class MinervaChart3DElement<
   @property({ attribute: false })
   series?: readonly S[];
 
-  /** Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only */
+  /** Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only */
   @property({ attribute: false })
   options?: Chart3DBaseOptions;
 

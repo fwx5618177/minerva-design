@@ -274,6 +274,30 @@ describe("named cartesian charts", () => {
     expect(options()).toBe(first);
   });
 
+  it("GanttChart draws the dependency arrows, colored or turned off", async () => {
+    const tasks = [
+      { name: "Design", start: 0, end: 40 },
+      { name: "Build", start: 50, end: 100, dependencies: ["Design"] },
+      { name: "Docs", start: 60, end: 110, dependencies: ["Build", "Nope"] },
+    ];
+    const arrowHeads = () =>
+      hostElements(queryPart("labels", "chart")!)
+        .map((el) => StyleSheet.flatten(el.props.style) as Box)
+        .filter((s) => (s as { borderLeftWidth?: number })?.borderLeftWidth);
+    const first = await mount(
+      <GanttChart tasks={tasks} dependencyColor="#ff0000" />,
+    );
+    expect(options().dependencies).toEqual([
+      { from: "Design", to: "Build", color: "#ff0000" },
+      { from: "Build", to: "Docs", color: "#ff0000" },
+    ]);
+    expect(arrowHeads()).toHaveLength(2);
+    await first.unmount();
+    await mount(<GanttChart tasks={tasks} dependencyArrows={false} />);
+    expect(options().dependencies).toEqual([]);
+    expect(arrowHeads()).toHaveLength(0);
+  });
+
   it("passes the preset options connector, colorMidpoint, dependenciesName and the outlier style", async () => {
     const r1 = await mount(
       <WaterfallChart

@@ -30,7 +30,8 @@ import {
   type ShapeLegendOptions,
   type ShapeTooltipOptions,
 } from "@minerva/charts/canvas";
-import { chartThemeVariables, plain } from "./chart-canvas";
+import { chartThemeVariables, plain, withProviderLocale } from "./chart-canvas";
+import { describeShapeChart } from "./chart-a11y";
 import { useNativeId } from "./native-id";
 import type { ShapeChartHandle } from "./shape-chart-types";
 
@@ -68,40 +69,6 @@ export function shapeCommonOptions(
     locale: props.locale || undefined,
     texts: plain(props.texts),
   };
-}
-
-/** Default accessible name of a chart (like the web charts) */
-export function describeShapeChart(options: ShapeChartOptions): string {
-  switch (options.type) {
-    case "pie":
-      return options.rose
-        ? "Rose chart"
-        : (options.innerRadius ?? 0) > 0
-          ? "Donut chart"
-          : "Pie chart";
-    case "radar":
-      return "Radar chart";
-    case "gauge":
-      return options.label ? `Gauge: ${options.label}` : "Gauge";
-    case "funnel":
-      return "Funnel chart";
-    case "treemap":
-      return "Treemap";
-    case "sankey":
-      return "Sankey diagram";
-    case "sunburst":
-      return "Sunburst chart";
-    case "radialBar":
-      return "Radial bar chart";
-    case "calendarHeatmap":
-      return "Calendar heatmap";
-    case "bullet":
-      return "Bullet chart";
-    case "chord":
-      return "Chord diagram";
-    default:
-      return "Chart";
-  }
 }
 
 /** Default height of a shape chart (like the web components): by type, or from the data */
@@ -199,11 +166,10 @@ export function useCanvasShapeChart(
     null,
   );
   const variables = computed(() => chartThemeVariables(config?.value));
-  const engineOptions = computed(options);
-  const ariaLabel = computed(
-    () =>
-      engineOptions.value.ariaLabel ?? describeShapeChart(engineOptions.value),
+  const engineOptions = computed(() =>
+    withProviderLocale(options(), config?.value?.locale),
   );
+  const ariaLabel = computed(() => describeShapeChart(engineOptions.value));
   const rootStyle = computed(() =>
     [
       "position: relative",

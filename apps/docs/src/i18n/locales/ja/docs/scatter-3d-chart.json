@@ -8,7 +8,7 @@
     },
     "galaxy": {
       "title": "1,000,000 個の星",
-      "description": "シード付き乱数で生成した 100 万個の星の棒渦巻銀河：暖色のバルジ、若い青い星とピンクの HII 領域からなる対数螺旋腕、腕の内側の暗い塵の帯、薄い円盤と淡いハロー。各星は 0xRRGGBB のカラー列で黒体放射の色を持ち、pointStyle \"glow\" と blend \"additive\" で密集部が輝きます。凡例で各種族を切り替えられます。"
+      "description": "シード付き乱数で生成した 100 万個の星の棒渦巻銀河：暖色のバルジ、若い青い星とピンクの HII 領域からなる対数渦巻腕、腕の内側の暗い塵の帯、薄い円盤とかすかなハロー。各星は 0xRRGGBB カラー列で黒体放射の色を持ちます。pointStyle \"glow\" と blend \"additive\" で密集部分が輝き、exposure がその光の明るさを調整します（トーンマッピングにより中心部も白飛びしません）。凡例で各種族を切り替えられます。"
     },
     "color-by-value": {
       "title": "値で色分け",
@@ -50,6 +50,8 @@
     },
     "kiloparsecs": "{{value}} kpc",
     "galaxyAria": "100 万個の星の棒渦巻銀河：バルジ、若い星の渦巻腕、HII 領域と塵の帯、円盤とハロー",
+    "exposure": "露出",
+    "exposureValue": "露出 ×{{value}}",
     "sensors": "センサー",
     "sensorLabel": "センサー {{id}} · 湿度 {{humidity}}%",
     "celsius": "{{value}} °C",
@@ -119,6 +121,7 @@
       "tooltip": "ツールチップ。false で無効、render で内容を置き換え",
       "interaction": "ドラッグで回転、右ドラッグ / Shift + ドラッグでパン、Ctrl / ⌘ + ホイールとピンチでズーム、ダブルクリックでリセット、矢印キーで回転。false で静的なチャート",
       "lighting": "サーフェスと棒の環境光、拡散光、鏡面ハイライト",
+      "exposure": "加算合成（blend \"additive\"）シリーズの光の明るさ。WebGPU と WebGL2 ではトーンマッピングされ、密集した発光部分も白飛びせずなめらかに飽和します",
       "renderer": "データレイヤーのバックエンド：auto は WebGPU、WebGL2、WebGL、Canvas2D の順に試し、ソフトウェア動作の GPU はスキップ",
       "palette": "系列の色（既定は CSS 変数 --chart-series-1..8、次にテーマカラー）",
       "ariaLabel": "チャートのアクセシブルな名前",

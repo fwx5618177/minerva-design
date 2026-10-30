@@ -6,7 +6,7 @@ import {
   type DepthChartHandle,
   type OrderBookColorConvention,
 } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 export default function RedUpDemo() {
   const { t } = useTranslation("common", {
@@ -16,11 +16,14 @@ export default function RedUpDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [convention, setConvention] =
     useState<OrderBookColorConvention>("red-up");
-  const [feed] = useState(() => createMarketFeed({ seed: 6 }));
-  const [book] = useState(() => feed.snapshot());
-
-  useFeedLoop(boxRef, (elapsed) =>
-    chartRef.current?.applyDeltas(feed.step(elapsed).delta),
+  // a fresh market on every mount: its snapshot, then its deltas
+  useMarketStream(
+    boxRef,
+    { seed: 6 },
+    {
+      load: (feed) => chartRef.current?.setBook(feed.snapshot()),
+      update: ({ delta }) => chartRef.current?.applyDeltas(delta),
+    },
   );
 
   return (
@@ -36,7 +39,6 @@ export default function RedUpDemo() {
       </RadioGroup>
       <DepthChart
         ref={chartRef}
-        book={book}
         // red bids, green asks
         colorConvention={convention}
         height={320}

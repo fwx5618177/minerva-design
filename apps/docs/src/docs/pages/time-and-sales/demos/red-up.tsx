@@ -6,7 +6,7 @@ import {
   type OrderBookColorConvention,
   type TimeAndSalesHandle,
 } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 export default function RedUpDemo() {
   const { t } = useTranslation("common", {
@@ -16,12 +16,18 @@ export default function RedUpDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [convention, setConvention] =
     useState<OrderBookColorConvention>("red-up");
-  const [feed] = useState(() => createMarketFeed({ seed: 37 }));
 
-  useFeedLoop(boxRef, (elapsed) => {
-    const { trades } = feed.step(elapsed);
-    if (trades.length) tapeRef.current?.addTrades(trades);
-  });
+  useMarketStream(
+    boxRef,
+    { seed: 37 },
+    {
+      // a fresh market on every mount: the tape starts empty
+      load: () => tapeRef.current?.clear(),
+      update: ({ trades }) => {
+        if (trades.length) tapeRef.current?.addTrades(trades);
+      },
+    },
+  );
 
   return (
     <div ref={boxRef} style={{ display: "grid", gap: 12, width: "100%" }}>

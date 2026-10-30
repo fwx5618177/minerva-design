@@ -27,6 +27,25 @@ code (`src/plugins.test.ts`). The charts are registered by `MinervaVueCharts`
 named imports stay available from both `minerva-design/vue` and
 `minerva-design/vue/charts`.
 
+### Charts and the Vite dev server
+
+Production builds tree-shake the charts (the package is side-effect free): an
+app that never imports a chart ships no chart code, with or without
+`app.use(MinervaVue)`. Vite's dev dependency optimizer, however, pre-bundles
+every export of `minerva-design/vue` into one file, so the chart wrappers and
+the engine (~0.7 MB unminified) are in the dev pre-bundle of the main entry
+even when no chart is used. This cannot change before 2.0 without breaking the
+named chart exports of `minerva-design/vue` (2.0 will export them only from
+`minerva-design/vue/charts`). Meanwhile:
+
+- import charts from `minerva-design/vue/charts` (the 2.0 entry);
+- if the app uses charts, pre-bundle both entries at startup:
+  `optimizeDeps: { include: ["minerva-design/vue", "minerva-design/vue/charts"] }`;
+- excluding `minerva-design/charts/core` from `optimizeDeps` has no effect (the
+  components reach the engine through a relative path inside the package), and
+  excluding `minerva-design/vue` makes the browser load hundreds of unbundled
+  modules, charts included.
+
 ```vue
 <script setup lang="ts">
 import { Button, Modal } from "minerva-design/vue"; // tree-shaken

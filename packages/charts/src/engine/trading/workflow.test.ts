@@ -9,6 +9,8 @@ import type {
   TradingDrawing,
   TradingOrderCancelEvent,
   TradingOrderCreateEvent,
+  TradingOrderMoveEvent,
+  TradingPriceLine,
   TradingReplayState,
   TradingUndoState,
 } from "./types";
@@ -470,6 +472,208 @@ describe("orders on the chart", () => {
     await frames(3);
     click(left + 52, 100);
     expect(cancelled.map((e) => e.id)).toEqual(["o1"]);
+  });
+});
+
+describe("keyboard order entry", () => {
+  const keys =
+    (root: HTMLElement) =>
+    (key: string, init: KeyboardEventInit = {}) =>
+      root.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key,
+          bubbles: true,
+          cancelable: true,
+          ...init,
+        }),
+      );
+
+  it("arms, nudges, confirms and abandons orders with the keyboard", async () => {
+    const data = bars(200);
+    const { chart, root } = await mount({
+      bars: data,
+      orderEntry: true,
+      precision: 2,
+    });
+    expect(root.getAttribute("aria-keyshortcuts")).toContain("B S O");
+    const live = root.querySelector("[aria-live]")!;
+    const created: TradingOrderCreateEvent[] = [];
+    chart.on("orderCreate", (e) => created.push(e));
+    const key = keys(root);
+    const last = Math.round((data[199]?.close ?? 0) * 100) / 100;
+    // at the last price without a crosshair
+    key("b");
+    expect(live.textContent).toContain("Buy limit");
+    expect(live.textContent).toContain("Enter confirms");
+    const range = chart.getVisibleRange();
+    key("ArrowUp");
+    key("ArrowUp", { shiftKey: true });
+    // the arrows move the order instead of zooming
+    expect(chart.getVisibleRange()).toEqual(range);
+    await frames();
+    key("Enter");
+    expect(created).toHaveLength(1);
+    expect(created[0]?.side).toBe("buy");
+    expect(created[0]?.price).toBeCloseTo(last + 0.11, 6);
+    expect(live.textContent).toContain("Order placed");
+    key("s");
+    key("ArrowDown");
+    key("Escape");
+    expect(created).toHaveLength(1);
+    expect(live.textContent).toBe("Order cancelled");
+    // back to zooming
+    key("ArrowUp");
+    await frames();
+    expect(chart.getVisibleRange().from).not.toBeCloseTo(range.from, 3);
+  });
+
+  it("picks, moves and cancels price lines with the keyboard", async () => {
+    const lines: TradingPriceLine[] = [
+      { id: "a", kind: "alert", price: 90 },
+      {
+        id: "o1",
+        kind: "order",
+        price: 100,
+        draggable: true,
+        cancellable: true,
+      },
+      { id: "tp", kind: "takeProfit", price: 110, draggable: true },
+    ];
+    const { chart, root } = await mount({
+      bars: bars(200),
+      orderEntry: true,
+      precision: 2,
+      priceLines: lines,
+    });
+    const live = root.querySelector("[aria-live]")!;
+    const moved: TradingOrderMoveEvent[] = [];
+    const cancelled: TradingOrderCancelEvent[] = [];
+    chart.on("orderMove", (e) => moved.push(e));
+    chart.on("orderCancel", (e) => cancelled.push(e));
+    const key = keys(root);
+    // the alert is neither draggable nor cancellable: skipped
+    key("o");
+    expect(live.textContent).toContain("Limit at 100.00");
+    expect(live.textContent).toContain("Delete cancels the order");
+    key("ArrowDown");
+    await frames();
+    key("Enter");
+    expect(moved).toEqual([
+      { id: "o1", price: 99.99, previousPrice: 100, line: lines[1] },
+    ]);
+    // Escape puts a moved line back, without event
+    key("o");
+    key("ArrowUp", { shiftKey: true });
+    key("Escape");
+    expect(moved).toHaveLength(1);
+    // the take profit cannot be cancelled; Shift+O goes back
+    key("o");
+    key("o");
+    expect(live.textContent).toContain("TP at 110.00");
+    key("Delete");
+    expect(cancelled).toHaveLength(0);
+    key("O", { shiftKey: true });
+    key("Delete");
+    expect(cancelled.map((e) => e.id)).toEqual(["o1"]);
+    expect(live.textContent).toBe("Order cancelled");
+  });
+
+  it("ignores the order keys without orderEntry", async () => {
+    const { chart, root } = await mount({ bars: bars(200) });
+    expect(root.hasAttribute("aria-keyshortcuts")).toBe(false);
+    const created: TradingOrderCreateEvent[] = [];
+    chart.on("orderCreate", (e) => created.push(e));
+    const key = keys(root);
+    key("b");
+    key("Enter");
+    expect(created).toHaveLength(0);
+  });
+});
+
+describe("options of 1.6", () => {
+  it("fits the drawings in the price scale with autoscaleIncludesDrawings", async () => {
+    const drawings: TradingDrawing[] = [
+      {
+        id: "h",
+        type: "horizontalLine",
+        points: [{ time: START, price: 300 }],
+      },
+    ];
+    const topPrice = async (options: TradingChartOptions) => {
+      const { chart, send } = await mount({
+        bars: bars(200),
+        crosshair: "free",
+        drawings,
+        ...options,
+      });
+      const prices: number[] = [];
+      chart.on("crosshairMove", (e) => e && prices.push(e.price));
+      send("pointermove", 100, 2);
+      await frames();
+      return prices[prices.length - 1] ?? NaN;
+    };
+    expect(await topPrice({})).toBeLessThan(150);
+    expect(await topPrice({ autoscaleIncludesDrawings: true })).toBeGreaterThan(
+      300,
+    );
+  });
+
+  it("picks the color convention of the locale with colorConvention auto", async () => {
+    const ohlc = async (options: TradingChartOptions) => {
+      const { root } = await mount({ bars: bars(50), ...options });
+      return root.querySelector<HTMLElement>("[data-html]")?.dataset.html;
+    };
+    const red = await ohlc({ colorConvention: "redUp", locale: "en-US" });
+    const green = await ohlc({ colorConvention: "greenUp", locale: "en-US" });
+    expect(red).not.toBe(green);
+    expect(await ohlc({ colorConvention: "auto", locale: "en-US" })).toBe(
+      green,
+    );
+    const zh = await ohlc({ colorConvention: "auto", locale: "zh-CN" });
+    expect(zh).toBe(await ohlc({ colorConvention: "redUp", locale: "zh-CN" }));
+    expect(zh).not.toBe(
+      await ohlc({ colorConvention: "greenUp", locale: "zh-CN" }),
+    );
+  });
+
+  it("keeps the legends inside their pane in narrow charts", async () => {
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(220);
+    const { root } = await mount({
+      bars: bars(200),
+      symbol: "A VERY LONG SYMBOL NAME/USDT",
+      indicators: [
+        { type: "ma", period: 7 },
+        { type: "boll" },
+        { type: "rsi", height: 60 },
+      ],
+    });
+    const boxes = Array.from(
+      root.querySelectorAll<HTMLElement>("[style*='flex-direction: column']"),
+    ).filter((box) => box.querySelector("button, span"));
+    expect(boxes.length).toBeGreaterThanOrEqual(2);
+    for (const box of boxes) {
+      expect(box.style.overflow).toBe("hidden");
+      expect(parseFloat(box.style.maxWidth)).toBeLessThanOrEqual(220);
+      expect(parseFloat(box.style.maxHeight)).toBeGreaterThan(0);
+      for (const item of Array.from(
+        box.querySelectorAll<HTMLElement>(":scope > div > *"),
+      )) {
+        expect(item.style.textOverflow).toBe("ellipsis");
+        expect(item.style.maxWidth).toBe("100%");
+      }
+    }
+  });
+
+  it("draws the SuperTrend zoomed out over many bars", async () => {
+    const { chart } = await mount({
+      bars: bars(4000),
+      barSpacing: 0.3,
+      indicators: [{ type: "supertrend" }],
+    });
+    await frames(2);
+    expect(
+      chart.getVisibleRange().to - chart.getVisibleRange().from,
+    ).toBeGreaterThan(1000);
   });
 });
 

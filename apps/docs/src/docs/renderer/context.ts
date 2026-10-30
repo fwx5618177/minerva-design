@@ -14,8 +14,8 @@ export const RENDERER_CATEGORIES: readonly DocCategory[] = [
 ];
 
 /**
- * The page-wide chart renderer (null outside chart pages). Demo blocks key
- * their preview by it, so every demo remounts with the new default.
+ * The page-wide chart renderer (null outside chart pages), shown by the demo
+ * badges. The charts follow it by themselves through the engine's default.
  */
 export const ChartRendererContext =
   createContext<ChartRendererPreference | null>(null);

@@ -19,10 +19,16 @@
     "types": "The global components are typed for Vue - Official (Volar) and vue-tsc by the minerva-design/vue/global typings:",
     "charts": {
       "title": "Charts",
-      "text": "MinervaVue does not register the charts, so that apps without charts never load the chart engine. Import the charts by name (from minerva-design/vue/charts or minerva-design/vue), or install the opt-in MinervaVueCharts plugin of minerva-design/vue/charts: it registers <MnLineChart>, <MnPieChart>, <MnTradingChart>... with the same prefix option, typed by minerva-design/vue/charts-global.",
+      "text": "MinervaVue does not register the charts, so that apps without charts never load the chart engine. Import the charts by name from minerva-design/vue/charts (recommended; they are also still exported by minerva-design/vue), or install the opt-in MinervaVueCharts plugin of minerva-design/vue/charts: it registers <MnLineChart>, <MnPieChart>, <MnTradingChart>... with the same prefix option, typed by minerva-design/vue/charts-global.",
       "migration": {
         "title": "Upgrading from 1.4",
         "text": "Since 1.5, app.use(MinervaVue) no longer registers <MnChart>, <MnLineChart> and the other chart components. If your templates use them without importing them, add app.use(MinervaVueCharts) from minerva-design/vue/charts (with the same prefix as MinervaVue, if you changed it) and add minerva-design/vue/charts-global to the types of tsconfig.json. Named imports are unchanged."
+      },
+      "dev": {
+        "title": "Charts and the Vite dev server",
+        "text": "Production builds tree-shake the charts: an app that never imports a chart ships no chart code, with or without app.use(MinervaVue). In development, however, Vite pre-bundles every export of minerva-design/vue into a single file, so the chart wrappers and the chart engine (about 0.7 MB unminified) are part of it even when no chart is used. The pre-bundle is cached in node_modules/.vite, so this only costs parsing time on a full page load. If your app uses charts, import them from minerva-design/vue/charts and list both entries in optimizeDeps.include, so that Vite pre-bundles them together at startup instead of re-optimizing and reloading the page the first time a chart is imported:",
+        "exclude": "Excluding minerva-design/charts/core from optimizeDeps does not help: the Vue components reach the engine through a relative path inside the package. Excluding minerva-design/vue does not help either: the browser would then load hundreds of unbundled modules, the charts included.",
+        "future": "minerva-design/vue keeps exporting the chart components until the next major version, because removing them would break existing named imports. In 2.0 they will only be exported by minerva-design/vue/charts, which will also remove them from the dev pre-bundle. Importing charts from minerva-design/vue/charts today makes that upgrade a no-op."
       }
     }
   },

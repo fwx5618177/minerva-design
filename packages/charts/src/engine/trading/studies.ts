@@ -89,6 +89,11 @@ export interface Study {
   mergeLegend?: boolean;
   /** The pane keeps 0 in view (MACD, OBV) */
   zero?: boolean;
+  /**
+   * A line that changes color with its direction (SuperTrend: `1` up, `-1`
+   * down), drawn joined at the flips once zoomed out; refreshed by `compute`
+   */
+  trend?: { value: Float64Array; direction: Float64Array };
   /** Default height of its pane */
   height: number;
   /** Values formatted as volumes (compact) rather than prices */
@@ -587,6 +592,7 @@ export const createStudy = (
             },
             from,
           );
+          study.trend = { value, direction };
           const [up, down] = study.outputs.map((o) => o.values);
           for (let i = from; i < store.length; i++) {
             up[i] = direction[i] === 1 ? value[i] : NaN;

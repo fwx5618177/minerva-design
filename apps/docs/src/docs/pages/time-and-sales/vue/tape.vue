@@ -2,7 +2,10 @@
 // <TimeAndSales>: the newest trade on top (the handle's `addTrades`), large
 // trades highlighted; hovering pauses the tape, new trades are counted.
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { TimeAndSales, type TimeAndSalesHandle } from "minerva-design/vue";
+import {
+  TimeAndSales,
+  type TimeAndSalesHandle,
+} from "minerva-design/vue/charts";
 
 const fraction = (value: number) => value - Math.floor(value);
 const round = (value: number) => Math.round(value * 100) / 100;

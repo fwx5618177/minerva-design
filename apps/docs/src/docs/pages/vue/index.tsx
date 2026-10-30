@@ -66,6 +66,21 @@ createApp(App)
 // tsconfig.json: "types": ["minerva-design/vue/global", "minerva-design/vue/charts-global"]
 // without a plugin: import { LineChart } from "minerva-design/vue/charts";`;
 
+const chartsDevCode = `// vite.config.ts: pre-bundle both entries together at startup
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig({
+  plugins: [vue()],
+  optimizeDeps: {
+    include: ["minerva-design/vue", "minerva-design/vue/charts"],
+  },
+});
+
+// components: charts from their own entry (the only one from 2.0)
+import { Button } from "minerva-design/vue";
+import { LineChart, PieChart } from "minerva-design/vue/charts";`;
+
 const themeCode = `<script setup lang="ts">
 import { ConfigProvider, ThemeToggle, useTheme } from "minerva-design/vue";
 </script>
@@ -149,6 +164,14 @@ const VueDoc: React.FC = () => {
         <CodeBlock code={chartsPluginCode} language="ts" />
         <Alert color="warning" title={k("plugin.charts.migration.title")}>
           {k("plugin.charts.migration.text")}
+        </Alert>
+
+        <h3 id="plugin-charts-dev">{k("plugin.charts.dev.title")}</h3>
+        <p className={styles.prose}>{k("plugin.charts.dev.text")}</p>
+        <CodeBlock code={chartsDevCode} language="ts" />
+        <p className={styles.prose}>{k("plugin.charts.dev.exclude")}</p>
+        <Alert color="info" title="2.0">
+          {k("plugin.charts.dev.future")}
         </Alert>
       </section>
 

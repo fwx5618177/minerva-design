@@ -15,6 +15,7 @@ import type {
   ChartColorScheme,
   ChartConnectorOptions,
   ChartCurve,
+  ChartDependency,
   ChartInteractionOptions,
   ChartOptions,
   ChartPointDatum,
@@ -1119,7 +1120,7 @@ export interface GanttTask {
   color?: string;
   /** Draws a dot at `start` instead of a bar */
   milestone?: boolean;
-  /** Names of the tasks this one waits for (shown in its tooltip) */
+  /** Names of the tasks this one waits for (tooltip, and arrows from their ends) */
   dependencies?: readonly string[];
 }
 
@@ -1150,6 +1151,14 @@ export interface GanttOptions {
    */
   dependenciesName?: string;
   /**
+   * Draws the dependencies as elbow arrows from the end of every
+   * predecessor to the start of the task
+   * @default true
+   */
+  dependencyArrows?: boolean;
+  /** Color of the dependency arrows (any CSS color); the secondary text color by default */
+  dependencyColor?: string;
+  /**
    * Locale of the default names and of the progress shares
    * @default the page language
    */
@@ -1163,6 +1172,8 @@ export interface GanttSeries {
   categories: string[];
   /** Time range of the tasks with a small margin (the `min` / `max` of the value axis) */
   domain: [number, number];
+  /** Arrows of the dependencies between existing tasks (the `dependencies` of the chart) */
+  dependencies: ChartDependency[];
 }
 
 const THEMED = [
@@ -1314,10 +1325,27 @@ export const ganttSeries = (
   }
   // room for the milestone dots at the ends
   const pad = Number.isFinite(hi - lo) ? Math.max((hi - lo) * 0.025, 1) : 0;
+  const known = new Set(tasks.map((t) => t.name));
+  const dependencies: ChartDependency[] = [];
+  if (options.dependencyArrows !== false) {
+    for (const t of tasks) {
+      for (const from of t.dependencies ?? []) {
+        if (from === t.name || !known.has(from)) continue;
+        dependencies.push({
+          from,
+          to: t.name,
+          ...(options.dependencyColor
+            ? { color: options.dependencyColor }
+            : {}),
+        });
+      }
+    }
+  }
   return {
     series,
     categories: tasks.map((t) => t.name),
     domain: Number.isFinite(lo) ? [lo - pad, hi + pad] : [0, 1],
+    dependencies,
   };
 };
 

@@ -2828,6 +2828,21 @@
         "description": "Name of the dependencies row of the tooltip (default \"Depends on\", in the `locale`)"
       },
       {
+        "name": "dependencyArrows",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the `dependencies` of the tasks as elbow arrows from the end of every predecessor to the start of the task"
+      },
+      {
+        "name": "dependencyColor",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
+      },
+      {
         "name": "today",
         "kind": "input",
         "type": "boolean | number | Date",
@@ -4793,6 +4808,13 @@
         "description": "Arrowheads on the edges without `directed` (on for DAGs)"
       },
       {
+        "name": "arrowStyle",
+        "kind": "input",
+        "type": "\"open\" | \"filled\" | undefined",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
+      },
+      {
         "name": "nodeLabels",
         "kind": "input",
         "type": "boolean | \"auto\" | undefined",
@@ -5151,6 +5173,13 @@
         "description": "Arrowheads on the edges without `directed` (on for DAGs)"
       },
       {
+        "name": "arrowStyle",
+        "kind": "input",
+        "type": "\"open\" | \"filled\" | undefined",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
+      },
+      {
         "name": "nodeLabels",
         "kind": "input",
         "type": "boolean | \"auto\" | undefined",
@@ -5486,6 +5515,13 @@
         "type": "boolean | undefined",
         "required": false,
         "description": "Arrowheads on the edges without `directed` (on for DAGs)"
+      },
+      {
+        "name": "arrowStyle",
+        "kind": "input",
+        "type": "\"open\" | \"filled\" | undefined",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
       },
       {
         "name": "nodeLabels",
@@ -8202,7 +8238,7 @@
         "kind": "input",
         "type": "Partial<Omit<Chart3DOptions, \"series\">> | undefined",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, renderer, palette...)"
+        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, exposure, renderer, palette...)"
       },
       {
         "name": "hover",
@@ -8363,7 +8399,7 @@
         "kind": "input",
         "type": "Partial<Omit<Chart3DOptions, \"series\">> | undefined",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, renderer, palette...)"
+        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, exposure, renderer, palette...)"
       },
       {
         "name": "hover",
@@ -8524,7 +8560,7 @@
         "kind": "input",
         "type": "Partial<Omit<Chart3DOptions, \"series\">> | undefined",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, renderer, palette...)"
+        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, exposure, renderer, palette...)"
       },
       {
         "name": "hover",
@@ -8699,7 +8735,7 @@
         "kind": "input",
         "type": "Partial<Omit<Chart3DOptions, \"series\">> | undefined",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, renderer, palette...)"
+        "description": "Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, exposure, renderer, palette...)"
       },
       {
         "name": "hover",
@@ -8833,7 +8869,7 @@
         "kind": "input",
         "type": "Partial<TradingChartOptions> | undefined",
         "required": false,
-        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...)"
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, autoscaleIncludesDrawings, labels...)"
       },
       {
         "name": "crosshairMove",

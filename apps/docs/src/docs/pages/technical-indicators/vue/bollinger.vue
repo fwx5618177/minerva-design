@@ -4,7 +4,8 @@
 // averages and the close as lines.
 import { computed } from "vue";
 import { bollinger, ema } from "minerva-design/charts/core";
-import { RangeAreaChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RangeAreaChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

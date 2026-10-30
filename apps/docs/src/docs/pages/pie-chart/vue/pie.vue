@@ -2,7 +2,8 @@
 // Slices are { name, value }; outside labels show the name and the share,
 // legend clicks hide / show a slice.
 import { computed } from "vue";
-import { PieChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { PieChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: ["Search", "Direct", "Social", "Email", "Referral"],

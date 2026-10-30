@@ -5,7 +5,9 @@ import {
   glContextAttributes,
   isSoftwareRenderer,
   itemParams,
+  type GlProgram,
 } from "./gl";
+import { claimGlSlot } from "./gl-budget";
 import { instanceRange } from "./range";
 import { GLSL_AREA, GLSL_BAR, GLSL_LINE, GLSL_SCATTER } from "./shaders";
 import {
@@ -13,6 +15,7 @@ import {
   BAR_STRIDE,
   SCATTER_STRIDE,
   type ChartRenderer,
+  type RenderFrame,
   type RenderItem,
   type RendererLostHandler,
 } from "./types";
@@ -46,22 +49,35 @@ export const createWebGl2Renderer = (
     return null;
   }
 
-  const line = compileProgram(gl, GLSL_LINE, ATTRIBUTES.line);
-  const area = compileProgram(gl, GLSL_AREA, ATTRIBUTES.area);
-  const bar = compileProgram(gl, GLSL_BAR, ATTRIBUTES.bar);
-  const scatter = compileProgram(gl, GLSL_SCATTER, ATTRIBUTES.scatter);
-  if (!line || !area || !bar || !scatter) return null;
-  const programs = { line, area, bar, scatter };
+  const compile = (): Record<RenderItem["kind"], GlProgram> | null => {
+    const line = compileProgram(gl, GLSL_LINE, ATTRIBUTES.line);
+    const area = compileProgram(gl, GLSL_AREA, ATTRIBUTES.area);
+    const bar = compileProgram(gl, GLSL_BAR, ATTRIBUTES.bar);
+    const scatter = compileProgram(gl, GLSL_SCATTER, ATTRIBUTES.scatter);
+    return line && area && bar && scatter ? { line, area, bar, scatter } : null;
+  };
+  let programs = compile();
+  if (!programs) return null;
 
   let lost = false;
-  const handleLost = (event: Event) => {
-    event.preventDefault();
-    lost = true;
-    onLost();
-  };
-  canvas.addEventListener("webglcontextlost", handleLost);
-
+  let last: { items: readonly RenderItem[]; frame: RenderFrame } | null = null;
   const resources = new Map<string, ItemResources>();
+  // past the page-wide context budget, the context may be suspended while
+  // off-screen: its GPU objects go, and come back with the context
+  const slot = claimGlSlot(canvas, gl, {
+    suspend: () => resources.clear(),
+    restore: () => {
+      programs = compile();
+      if (!programs) {
+        lost = true;
+        onLost();
+      } else if (last) draw(last.items, last.frame);
+    },
+    lost: () => {
+      lost = true;
+      onLost();
+    },
+  });
 
   /** WebGL2 has no base instance: the pointers start at the first instance */
   const setupAttributes = (item: RenderItem, first: number) => {
@@ -177,6 +193,51 @@ export const createWebGl2Renderer = (
     return res;
   };
 
+  const draw = (items: readonly RenderItem[], frame: RenderFrame) => {
+    if (!programs) return;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    const t = frame.transform;
+    const seen = new Set<string>();
+    for (const item of items) {
+      seen.add(item.key);
+      const [first, instances] = instanceRange(item, frame);
+      if (instances <= 0) continue;
+      const res = upload(item);
+      if (!res) continue;
+      const program = programs[item.kind];
+      gl.useProgram(program.program);
+      gl.uniform4f(program.xform, t.xScale, t.xOffset, t.yScale, t.yOffset);
+      gl.uniform4f(program.viewport, frame.width, frame.height, frame.dpr, 0);
+      gl.uniform4f(
+        program.color,
+        item.color[0],
+        item.color[1],
+        item.color[2],
+        item.color[3],
+      );
+      const [p0, p1, p2, p3] = itemParams(item, frame);
+      gl.uniform4f(program.params, p0, p1, p2, p3);
+      gl.bindVertexArray(res.vao);
+      if (res.first !== first) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, res.buffer);
+        setupAttributes(item, first);
+        res.first = first;
+      }
+      gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, instances);
+    }
+    gl.bindVertexArray(null);
+    for (const [key, res] of resources) {
+      if (!seen.has(key)) {
+        release(res);
+        resources.delete(key);
+      }
+    }
+  };
+
   return {
     kind: "webgl2",
     canvas,
@@ -185,57 +246,21 @@ export const createWebGl2Renderer = (
       canvas.height = Math.max(1, height);
     },
     render(items, frame) {
-      if (lost || gl.isContextLost()) return;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      const t = frame.transform;
-      const seen = new Set<string>();
-      for (const item of items) {
-        seen.add(item.key);
-        const [first, instances] = instanceRange(item, frame);
-        if (instances <= 0) continue;
-        const res = upload(item);
-        if (!res) continue;
-        const program = programs[item.kind];
-        gl.useProgram(program.program);
-        gl.uniform4f(program.xform, t.xScale, t.xOffset, t.yScale, t.yOffset);
-        gl.uniform4f(program.viewport, frame.width, frame.height, frame.dpr, 0);
-        gl.uniform4f(
-          program.color,
-          item.color[0],
-          item.color[1],
-          item.color[2],
-          item.color[3],
-        );
-        const [p0, p1, p2, p3] = itemParams(item, frame);
-        gl.uniform4f(program.params, p0, p1, p2, p3);
-        gl.bindVertexArray(res.vao);
-        if (res.first !== first) {
-          gl.bindBuffer(gl.ARRAY_BUFFER, res.buffer);
-          setupAttributes(item, first);
-          res.first = first;
-        }
-        gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, instances);
-      }
-      gl.bindVertexArray(null);
-      for (const [key, res] of resources) {
-        if (!seen.has(key)) {
-          release(res);
-          resources.delete(key);
-        }
-      }
+      last = { items, frame };
+      if (lost || !slot.use() || gl.isContextLost()) return;
+      draw(items, frame);
     },
     destroy() {
-      canvas.removeEventListener("webglcontextlost", handleLost);
+      slot.release();
+      last = null;
       if (!gl.isContextLost()) {
         for (const res of resources.values()) release(res);
-        for (const p of Object.values(programs)) gl.deleteProgram(p.program);
+        for (const p of Object.values(programs ?? {})) {
+          gl.deleteProgram(p.program);
+        }
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
       }
       resources.clear();
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
   };
 };

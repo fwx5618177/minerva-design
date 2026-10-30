@@ -2,9 +2,11 @@ import type { ReactElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 import { describe, expect, it } from "vitest";
+import { ganttSeries } from "@minerva/charts/canvas";
 import { MinervaProvider } from "../../theme/MinervaProvider";
 import { hostElements, queryPart, type Host } from "../../../test/queries";
 import { Chart, HorizontalBarChart } from "./index";
+import { arrowViews } from "./scene";
 
 const W = 360;
 const H = 240;
@@ -187,5 +189,145 @@ describe("charts: horizontal bars, ranges, box plots and dual axes", () => {
     expect(queryPart("surface", "chart")?.props.accessibilityLabel).toBe(
       "图表：系列 1",
     );
+  });
+
+  const BARS = [
+    {
+      type: "bar" as const,
+      data: [
+        ["a", 12000],
+        ["b", 52000],
+      ] as [string, number][],
+    },
+  ];
+  const label = () =>
+    queryPart("surface", "chart")?.props.accessibilityLabel as unknown;
+
+  it("falls back to the language of the provider", async () => {
+    await mount(
+      <MinervaProvider locale={{ language: "zh" }}>
+        <Chart series={BARS} />
+      </MinervaProvider>,
+    );
+    expect(screen.getByText("5万")).toBeTruthy();
+    expect(label()).toBe("图表：系列 1");
+  });
+
+  it("prefers its own locale over the provider language", async () => {
+    await mount(
+      <MinervaProvider locale={{ language: "zh" }}>
+        <Chart locale="fr" series={BARS} />
+      </MinervaProvider>,
+    );
+    expect(screen.queryByText("5万")).toBeNull();
+    expect(label()).toBe("Graphique : Série 1");
+  });
+
+  it("keeps an explicit accessible name", async () => {
+    await mount(
+      <MinervaProvider locale={{ language: "ja" }}>
+        <Chart ariaLabel="Sales" series={BARS} />
+      </MinervaProvider>,
+    );
+    expect(label()).toBe("Sales");
+  });
+
+  it("names the chart with the text overrides", async () => {
+    await mount(
+      <MinervaProvider locale={{ language: "ja" }}>
+        <Chart labels={{ chartOf: "売上：{series}" }} series={BARS} />
+      </MinervaProvider>,
+    );
+    expect(label()).toBe("売上：系列 1");
+  });
+
+  it("names the chart before its first layout", async () => {
+    await render(
+      <MinervaProvider locale={{ language: "fr" }}>
+        <Chart series={BARS} />
+      </MinervaProvider>,
+    );
+    expect(label()).toBe("Graphique");
+  });
+
+  it("draws the dependency arrows of Gantt charts", async () => {
+    const day = 86_400_000;
+    const t0 = Date.UTC(2026, 0, 5);
+    const gantt = ganttSeries(
+      [
+        { name: "Design", start: t0, end: t0 + 10 * day },
+        {
+          name: "Build",
+          start: t0 + 14 * day,
+          end: t0 + 30 * day,
+          dependencies: ["Design"],
+        },
+        {
+          name: "Docs",
+          start: t0 + 20 * day,
+          end: t0 + 32 * day,
+          dependencies: ["Build"],
+        },
+      ],
+      { locale: "en" },
+    );
+    await mount(
+      <Chart
+        orientation="horizontal"
+        series={gantt.series}
+        xAxis={{ type: "category", categories: gantt.categories }}
+        yAxis={{ type: "time", min: gantt.domain[0], max: gantt.domain[1] }}
+        dependencies={gantt.dependencies}
+      />,
+    );
+    const styles = hostElements(part("labels")!).map(
+      (el) => StyleSheet.flatten(el.props.style) as Record<string, unknown>,
+    );
+    // a border triangle per arrow, pointing right into the next task
+    const heads = styles.filter((s) => s && s.borderLeftWidth === 6);
+    expect(heads).toHaveLength(2);
+    expect(heads[0]!.borderTopColor).toBe("transparent");
+  });
+
+  it("builds the views of arrows in every direction", () => {
+    const style = (el: ReactElement) =>
+      StyleSheet.flatten((el.props as { style: object }).style) as Record<
+        string,
+        number | string
+      >;
+    const legs = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 20 },
+    ];
+    const head = (tip: [number, number], base: [number, number]) =>
+      [
+        { x: tip[0], y: tip[1] },
+        { x: base[0] - 1, y: base[1] - 1 },
+        { x: base[0] + 1, y: base[1] + 1 },
+      ] as [
+        { x: number; y: number },
+        { x: number; y: number },
+        { x: number; y: number },
+      ];
+    const draw = (h: ReturnType<typeof head>) =>
+      arrowViews("a", { points: legs, head: h, color: "red", width: 2 }, 0, 0);
+    const right = draw(head([16, 20], [10, 20]));
+    expect(right).toHaveLength(3);
+    // legs overlap at the corners
+    expect(style(right[0]!)).toMatchObject({ left: -1, top: -1, width: 12 });
+    expect(style(right[1]!)).toMatchObject({ width: 2, height: 22 });
+    expect(style(right[2]!)).toMatchObject({ borderLeftColor: "red" });
+    expect(style(draw(head([4, 20], [10, 20]))[2]!)).toMatchObject({
+      borderRightColor: "red",
+      left: 4,
+    });
+    expect(style(draw(head([10, 30], [10, 24]))[2]!)).toMatchObject({
+      borderTopColor: "red",
+    });
+    expect(style(draw(head([10, 4], [10, 10]))[2]!)).toMatchObject({
+      borderBottomColor: "red",
+      top: 4,
+    });
   });
 });

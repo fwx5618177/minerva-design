@@ -95,7 +95,7 @@ export const shapeCommonProps = {
   animation: { type: Boolean, default: undefined },
   /** Space around the drawing, in pixels (default 8 on every side) */
   padding: Object as PropType<ChartPadding>,
-  /** Accessible name of the chart (default: the chart type, e.g. "Donut chart") */
+  /** Accessible name of the chart (default: the chart type in its locale, e.g. "Donut chart"; a gauge: "Gauge: {label}") */
   ariaLabel: String,
   /**
    * Locale of the built-in texts and of the numbers (tooltip rows, "No data").
@@ -332,7 +332,7 @@ export const chordChartProps = {
   matrix: Array as PropType<readonly (readonly number[])[]>,
   /** Flows as a list (by group name or index); takes precedence over `matrix` */
   links: Array as PropType<readonly ChordLink[]>,
-  /** One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`) */
+  /** `false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix counts each relation once); `true`: one ribbon per direction (same width at both ends), arcs sized by the outgoing plus the incoming flows, self flows ignored (default `false`) */
   directed: { type: Boolean, default: undefined },
   /** Arrowheads at the target end of the ribbons (default `true` when `directed`) */
   arrows: { type: Boolean, default: undefined },

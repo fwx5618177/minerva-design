@@ -30,7 +30,7 @@
 // Anchors land below the sticky bar (header + bar)
 @media (min-width: 720px) {
   :global(html:has([data-renderer-bar])) {
-    scroll-padding-top: calc(var(--ds-header-height) + 24px + 56px);
+    scroll-padding-top: calc(var(--ds-header-height) + 24px + 64px);
   }
 }
 
@@ -55,21 +55,17 @@
   -webkit-backdrop-filter: saturate(180%) blur(12px);
   font-size: 13px;
   line-height: 1.4;
-  transition:
-    box-shadow var(--ds-duration) var(--ds-ease),
-    border-radius var(--ds-duration) var(--ds-ease);
+  transition: box-shadow var(--ds-duration) var(--ds-ease);
 
   // on phones it would hide too much of the page: it scrolls away there
   @media (min-width: 720px) {
     position: sticky;
-    top: var(--ds-header-height);
+    // floats just under the site header, keeping its full border
+    top: calc(var(--ds-header-height) + 8px);
   }
 
   &[data-stuck] {
-    border-top-color: transparent;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.4);
   }
 }
 

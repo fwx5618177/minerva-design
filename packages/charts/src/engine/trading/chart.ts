@@ -18,6 +18,7 @@ import {
 } from "../color";
 import { createDataCanvas, styleElement } from "../dom";
 import { createRenderer } from "../renderers/detect";
+import { followDefaultRenderer } from "../renderers/follow";
 import type { ChartRenderer, RenderItem } from "../renderers/types";
 import { stepDecimals } from "../scale";
 import {
@@ -30,6 +31,7 @@ import type { ChartRendererKind } from "../types";
 import { localeLabels, resolveLocale } from "../locale";
 import {
   anchorCount,
+  drawingPrices,
   handlePoints,
   hitDrawing,
   isFillable,
@@ -55,6 +57,7 @@ import {
   isTimeZone,
   pickTicks,
   priceFormatter,
+  redUpLocale,
   tickText,
   zoneOffset,
   type UtcOffset,
@@ -63,6 +66,7 @@ import {
   AreaBuffer,
   BarBuffer,
   LineBuffer,
+  TrendBuffer,
   candleMetrics,
   clampRange,
   pixelRange,
@@ -255,6 +259,21 @@ type Gesture =
   | { kind: "button"; action: () => void };
 
 /** Mounts a trading chart in `container` (which should have a height) */
+/** Keys of the keyboard order entry (`aria-keyshortcuts`) */
+const ORDER_KEYS =
+  "B S O Shift+O ArrowUp ArrowDown Shift+ArrowUp Shift+ArrowDown Enter Escape Delete";
+
+/** Legend items cut with an ellipsis when wider than the legend */
+const ELLIPSIS: Partial<CSSStyleDeclaration> = {
+  minWidth: "0",
+  maxWidth: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
+/** A name and its value in the OHLC legend, never split by the wrapping */
+const PAIR =
+  "display:inline-flex;gap:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis";
+
 export const createTradingChart = (
   container: HTMLElement,
   initial: TradingChartOptions = {},
@@ -412,6 +431,8 @@ export const createTradingChart = (
   let compares: CompareRuntime[] = [];
   /** Min / max pyramids of the indicator outputs (zoomed-out decimation) */
   const outputLods = new WeakMap<StudyOutput, RangePyramid>();
+  /** Min / max pyramids of the trend lines (SuperTrend) */
+  const trendLods = new WeakMap<Study, RangePyramid>();
   /** Changes when bars other than the last one change */
   let dataVersion = 0;
   /** Changes when the last bar changes */
@@ -453,6 +474,14 @@ export const createTradingChart = (
 
   let pointer: { x: number; y: number } | null = null;
   let keyboardIndex: number | null = null;
+  /**
+   * Keyboard order entry: an order armed with B / S, or a price line picked
+   * with O (its preview price lives in `lineOverrides`, like a drag)
+   */
+  let keyOrder:
+    | { kind: "create"; side: "buy" | "sell"; price: number }
+    | { kind: "move"; id: string; start: number; override?: number }
+    | null = null;
   let gesture: Gesture | null = null;
   const touches = new Map<number, { x: number; y: number }>();
   let pinch: { distance: number; spacing: number } | null = null;
@@ -536,7 +565,9 @@ export const createTradingChart = (
   const labels = () => texts;
   const n = () => store.length;
   const style = () => options.chartStyle ?? "candles";
-  const redUp = () => options.colorConvention === "redUp";
+  const redUp = () =>
+    options.colorConvention === "redUp" ||
+    (options.colorConvention === "auto" && redUpLocale(locale));
   const upCss = () => options.upColor ?? (redUp() ? DOWN : UP);
   const downCss = () => options.downColor ?? (redUp() ? UP : DOWN);
   const resolve = (css: string, fallback: Rgba = theme.primary): Rgba =>
@@ -641,6 +672,11 @@ export const createTradingChart = (
     const level = rangeLevel(lod, values, n(), v.level);
     return level;
   };
+  const trendLodOf = (study: Study) => {
+    let lod = trendLods.get(study);
+    if (!lod) trendLods.set(study, (lod = createRangePyramid()));
+    return lod;
+  };
   const lodOf = (out: StudyOutput) => {
     let lod = outputLods.get(out);
     if (!lod) outputLods.set(out, (lod = createRangePyramid()));
@@ -669,6 +705,8 @@ export const createTradingChart = (
         const lod = outputLods.get(out);
         if (lod) invalidateRangePyramid(lod, from);
       }
+      const trendLod = trendLods.get(study);
+      if (trendLod) invalidateRangePyramid(trendLod, from);
     }
     haValid = Math.min(haValid, from);
     for (const c of compares) {
@@ -1002,6 +1040,26 @@ export const createTradingChart = (
     }
   };
 
+  /**
+   * Extends `[lo, hi]` with the visible drawings of a pane
+   * (`autoscaleIncludesDrawings`); a drawing being dragged counts where it
+   * started, so the scale does not move under the pointer
+   */
+  const drawingsExtent = (paneId: string, range: [number, number]) => {
+    if (!options.autoscaleIncludesDrawings || !drawings.length) return;
+    const from = right - plotW / spacing;
+    const dragged = gesture?.kind === "drawing" ? gesture : null;
+    for (const drawing of drawings) {
+      if ((drawing.pane ?? PRICE) !== paneId) continue;
+      const d =
+        dragged && dragged.id === drawing.id ? dragged.original : drawing;
+      for (const price of drawingPrices(d, indexOfTimeExt, from, right)) {
+        if (price < range[0]) range[0] = price;
+        if (price > range[1]) range[1] = price;
+      }
+    }
+  };
+
   const autoscale = (v: Visible | null) => {
     volumeOverlayMax = 0;
     for (const pane of panes) {
@@ -1031,6 +1089,7 @@ export const createTradingChart = (
           for (const out of study.outputs)
             outputExtent(v, out.values, lodOf(out), out.shift, range);
         }
+        drawingsExtent(PRICE, range);
         let [lo, hi] = range;
         if (s === "baseline") {
           const b = baselinePrice();
@@ -1078,6 +1137,7 @@ export const createTradingChart = (
         }
         outputExtent(v, out.values, lodOf(out), out.shift, range);
       }
+      drawingsExtent(pane.id, range);
       let [lo, hi] = range;
       if (study.bands && finite(lo) && finite(hi)) {
         // reference bands (CCI ±100, DMI 25) stay in view
@@ -1252,6 +1312,66 @@ export const createTradingChart = (
             prevY = second;
           }
           return buffer.count > 1 ? [buffer.item("", 0, color, lineWidth)] : [];
+        };
+
+      /**
+       * Line colored by its direction once zoomed out: the min / max of each
+       * group in the color of its last bar, each run starting at the last
+       * point of the previous one so the line stays joined at the flips
+       */
+      const trendLayer =
+        (
+          trend: NonNullable<Study["trend"]>,
+          lod: RangePyramid,
+          upColor: Rgba,
+          downColor: Rgba,
+          lineWidth: number,
+        ): Layer =>
+        (ga, gb, isLive) => {
+          const r = groupRanges(v, trend.value, lod);
+          const count = n();
+          const line = new TrendBuffer(top, bottom);
+          let prevY = NaN;
+          for (let g = isLive ? Math.max(0, ga - 1) : ga; g <= gb; g++) {
+            const lo = r.min[g];
+            const hi = r.max[g];
+            if (!finite(lo) || !finite(hi)) {
+              line.break();
+              prevY = NaN;
+              continue;
+            }
+            const up =
+              trend.direction[Math.min(count - 1, g * v.size + v.size - 1)] !==
+              -1;
+            const x = X(g);
+            const yLo = Y(lo);
+            const yHi = Y(hi);
+            // start with the extreme closest to the previous point
+            const first =
+              finite(prevY) && Math.abs(prevY - yHi) < Math.abs(prevY - yLo)
+                ? yHi
+                : yLo;
+            const second = first === yHi ? yLo : yHi;
+            line.push(x, first, up);
+            if (second !== first) line.push(x, second, up);
+            prevY = second;
+          }
+          // a halo of the background under the line: zoomed out, it runs
+          // through the bars, drawn in the same colors
+          const halo: Rgba = [bg[0], bg[1], bg[2], 0.9];
+          const items: RenderItem[] = [];
+          for (const [buffer, key] of [
+            [line.up, "u"],
+            [line.down, "d"],
+          ] as const) {
+            if (buffer.count > 1)
+              items.push(buffer.item(`${key}h`, 0, halo, lineWidth + 2.5));
+          }
+          if (line.up.count > 1)
+            items.push(line.up.item("u", 0, upColor, lineWidth));
+          if (line.down.count > 1)
+            items.push(line.down.item("d", 0, downColor, lineWidth));
+          return items;
         };
 
       if (pane.id === PRICE) {
@@ -1448,6 +1568,20 @@ export const createTradingChart = (
             : [];
       for (const study of paneStudies) {
         if (!isVisible(study)) continue;
+        const trend = study.trend;
+        const [upOut, downOut] = study.outputs;
+        if (trend && v.level && upOut && downOut) {
+          result.push(
+            trendLayer(
+              trend,
+              trendLodOf(study),
+              resolve(colorOf(upOut.color)),
+              resolve(colorOf(downOut.color)),
+              upOut.width,
+            ),
+          );
+          continue;
+        }
         for (const out of study.outputs) {
           if (out.kind === "volume") {
             const y0 = Y(0);
@@ -2333,7 +2467,8 @@ export const createTradingChart = (
       ctx.strokeStyle = color;
       ctx.lineWidth =
         hoveredLine === line.id ||
-        (gesture?.kind === "order" && gesture.line.id === line.id)
+        (gesture?.kind === "order" && gesture.line.id === line.id) ||
+        (keyOrder?.kind === "move" && keyOrder.id === line.id)
           ? 1.5
           : 1;
       setDash(ctx, lineStyle, 1);
@@ -2379,6 +2514,14 @@ export const createTradingChart = (
       const total = widths.reduce((a, b) => a + b, 0) + grip;
       let x = Math.round(plotW - total - 56);
       const top = Math.round(y - 9.5);
+      if (keyOrder?.kind === "move" && keyOrder.id === line.id) {
+        // picked with the keyboard: a focus ring around the label
+        roundRect(ctx, x - 3.5, top - 3.5, total + 7, 25, 5);
+        ctx.strokeStyle = css(PRIMARY);
+        ctx.lineWidth = 2;
+        ctx.setLineDash([]);
+        ctx.stroke();
+      }
       roundRect(ctx, x - 0.5, top - 0.5, total + 1, 19, 3);
       ctx.fillStyle = bgCss;
       ctx.fill();
@@ -2589,6 +2732,45 @@ export const createTradingChart = (
       );
     }
 
+    // keyboard order entry: the armed order and the keys to use
+    if (keyOrder && count) {
+      if (keyOrder.kind === "create") {
+        const color = keyOrder.side === "buy" ? upC : downC;
+        const y = Math.round(yOf(price.scale, keyOrder.price)) + 0.5;
+        if (finite(y) && y >= price.top && y <= price.top + price.height) {
+          ctx.save();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(plotW, y);
+          ctx.stroke();
+          ctx.restore();
+          pill(
+            ctx,
+            fill(keyOrder.side === "buy" ? l.buyLimit : l.sellLimit, {
+              price: formatPrice(keyOrder.price),
+            }),
+            plotW - 56,
+            clamp(y - 11, price.top + 2, price.top + price.height - 24),
+            color,
+            "right",
+          );
+          axisLabel(
+            ctx,
+            y,
+            priceAxisText(keyOrder.price),
+            color,
+            textOn(color),
+          );
+        }
+      }
+      // the keys to use, on the left: order labels sit on the right
+      if (!replay && !replayPicking)
+        pill(ctx, l.orderHint, 8, badgeY, toCss(theme.text, 0.86), "left");
+    }
+
     // crosshair
     const cross = crosshairState();
     if (cross && v && !replayPicking) {
@@ -2703,14 +2885,17 @@ export const createTradingChart = (
   const legendBox = (id: string) => {
     let box = legendBoxes.get(id);
     if (!box) {
+      // narrow charts: rows wrap, long items are cut with an ellipsis and
+      // the rows that do not fit in the pane are hidden
       box = make("div", {
         position: "absolute",
-        left: "8px",
+        left: "4px",
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
         gap: "1px",
-        maxWidth: "calc(100% - 16px)",
+        maxWidth: "calc(100% - 12px)",
+        overflow: "hidden",
         fontSize: "12px",
         lineHeight: "18px",
         fontVariantNumeric: "tabular-nums",
@@ -2734,8 +2919,10 @@ export const createTradingChart = (
       flexWrap: "wrap",
       alignItems: "center",
       columnGap: "6px",
+      maxWidth: "100%",
+      minWidth: "0",
+      boxSizing: "border-box",
       padding: "0 4px",
-      marginLeft: "-4px",
       borderRadius: "4px",
       background:
         "color-mix(in srgb, var(--surface-color, var(--background-color, #fff)) 86%, transparent)",
@@ -2749,6 +2936,7 @@ export const createTradingChart = (
         color: "var(--text-color, #1f2937)",
         fontWeight: "500",
         borderRadius: "3px",
+        ...ELLIPSIS,
       });
       button.type = "button";
       button.textContent = title;
@@ -2769,13 +2957,13 @@ export const createTradingChart = (
       );
       row.appendChild(button);
     } else if (title) {
-      const label = make("span", { fontWeight: "600" });
+      const label = make("span", { fontWeight: "600", ...ELLIPSIS });
       label.textContent = title;
       row.appendChild(label);
     }
     const values: HTMLSpanElement[] = [];
     for (let i = 0; i < outputs; i++) {
-      const span = make("span", {});
+      const span = make("span", ELLIPSIS);
       row.appendChild(span);
       values.push(span);
     }
@@ -2862,12 +3050,14 @@ export const createTradingChart = (
       const box = legendBoxes.get(pane.id);
       if (!box) continue;
       box.style.top = `${pane.top + 6}px`;
-      // over the plot only, never over the price axis
-      const maxWidth = `${Math.max(80, Math.floor(plotW - 14))}px`;
+      // over the plot only, never over the price axis nor the next pane
+      const maxWidth = `${Math.max(60, Math.floor(plotW - 10))}px`;
       if (box.style.maxWidth !== maxWidth) box.style.maxWidth = maxWidth;
+      const maxHeight = `${Math.max(18, Math.floor(pane.height - 10))}px`;
+      if (box.style.maxHeight !== maxHeight) box.style.maxHeight = maxHeight;
     }
     const priceBox = legendBoxes.get(PRICE);
-    priceLegend = priceBox
+    const measured = priceBox
       ? Array.from(
           priceBox.children as HTMLCollectionOf<HTMLElement>,
           (row) => ({
@@ -2877,6 +3067,21 @@ export const createTradingChart = (
           }),
         )
       : [];
+    // the labels avoiding the legend were painted with the previous layout
+    // (a resize wraps the rows differently): paint them again
+    const moved =
+      measured.length !== priceLegend.length ||
+      measured.some((row, i) => {
+        const before = priceLegend[i];
+        return (
+          !before ||
+          before.right !== row.right ||
+          before.top !== row.top ||
+          before.bottom !== row.bottom
+        );
+      });
+    priceLegend = measured;
+    if (moved) invalidate();
     const count = n();
     const cross = crosshairState();
     const index = clamp(
@@ -2906,23 +3111,23 @@ export const createTradingChart = (
       ]
         .map(
           ([name, value]) =>
-            `<span style="color:var(--text-secondary-color,#6b7280)">${escapeHtml(String(name))}</span><span style="color:${color}">${escapeHtml(formatPrice(value as number))}</span>`,
+            `<span style="${PAIR}"><span style="color:var(--text-secondary-color,#6b7280)">${escapeHtml(String(name))}</span><span style="color:${color}">${escapeHtml(formatPrice(value as number))}</span></span>`,
         )
-        .join(" ");
+        .join("");
       const pct = prevClose ? (change / prevClose) * 100 : NaN;
       const changeName = l.change
         ? `<span style="color:var(--text-secondary-color,#6b7280)">${escapeHtml(l.change)}</span>`
         : "";
-      const changeHtml = `${changeName}<span style="color:${change >= 0 ? upC : downC}">${change >= 0 ? "+" : "−"}${escapeHtml(formatPrice(Math.abs(change)))} (${escapeHtml(formatPercent(pct, locale))})</span>`;
+      const changeHtml = `<span style="${PAIR}">${changeName}<span style="color:${change >= 0 ? upC : downC}">${change >= 0 ? "+" : "−"}${escapeHtml(formatPrice(Math.abs(change)))} (${escapeHtml(formatPercent(pct, locale))})</span></span>`;
       const vol = store.hasVolume
-        ? ` <span style="color:var(--text-secondary-color,#6b7280)">${escapeHtml(l.volume)}</span>${escapeHtml(formatVolume(store.volume[index], locale))}`
+        ? `<span style="${PAIR}"><span style="color:var(--text-secondary-color,#6b7280)">${escapeHtml(l.volume)}</span>${escapeHtml(formatVolume(store.volume[index], locale))}</span>`
         : "";
-      const next = `${html} ${changeHtml}${vol}`;
+      const next = `${html}${changeHtml}${vol}`;
       if (span && span.dataset.html !== next) {
         span.innerHTML = next;
         span.dataset.html = next;
         span.style.display = "inline-flex";
-        span.style.gap = "4px";
+        span.style.columnGap = "6px";
         span.style.flexWrap = "wrap";
       }
     }
@@ -3864,6 +4069,7 @@ export const createTradingChart = (
     const { x, y } = local(event);
     pointer = { x, y };
     keyboardIndex = null;
+    if (keyOrder) endKeyOrder(true);
     kinetic = null;
     scrollAnim = null;
     if (editing) closeEditor(true);
@@ -4239,7 +4445,169 @@ export const createTradingChart = (
     });
   };
 
+  const say = (text: string) => {
+    live.textContent = text;
+  };
+
+  /** Price lines the keyboard can pick: draggable or cancellable ones */
+  const keyLines = () =>
+    (options.priceLines ?? []).filter(
+      (line) => line.draggable || line.cancellable,
+    );
+
+  const lineTitle = (line: TradingPriceLine) => {
+    const key = PRICE_LINE_TITLES[line.kind ?? "line"];
+    return line.title ?? (key ? labels()[key] : "");
+  };
+
+  /** Leaves the keyboard order entry; `restore` puts a picked line back */
+  const endKeyOrder = (restore: boolean) => {
+    if (keyOrder?.kind === "move" && restore) {
+      if (keyOrder.override === undefined) lineOverrides.delete(keyOrder.id);
+      else lineOverrides.set(keyOrder.id, keyOrder.override);
+    }
+    keyOrder = null;
+  };
+
+  /** Order entry keys (`orderEntry`); returns whether the key was used */
+  const onOrderKey = (event: KeyboardEvent): boolean => {
+    const count = n();
+    if (
+      !options.orderEntry ||
+      !count ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey
+    )
+      return false;
+    const l = labels();
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    const orderText = (side: "buy" | "sell", value: number) =>
+      fill(side === "buy" ? l.buyLimit : l.sellLimit, {
+        price: formatPrice(value),
+      });
+    if (key === "b" || key === "s") {
+      endKeyOrder(true);
+      const cross = crosshairState();
+      const at =
+        cross && cross.pane.id === PRICE && finite(cross.price)
+          ? cross.price
+          : store.close[count - 1];
+      const side = key === "b" ? "buy" : "sell";
+      keyOrder = { kind: "create", side, price: roundPrice(at) };
+      say(`${orderText(side, keyOrder.price)}. ${l.orderHint}`);
+      return true;
+    }
+    if (key === "o") {
+      const lines = keyLines();
+      if (!lines.length) return false;
+      const current = keyOrder?.kind === "move" ? keyOrder.id : null;
+      endKeyOrder(true);
+      const at = lines.findIndex((line) => line.id === current);
+      const step = event.shiftKey ? -1 : 1;
+      const next =
+        at < 0
+          ? step > 0
+            ? 0
+            : lines.length - 1
+          : (at + step + lines.length) % lines.length;
+      const line = lines[next];
+      if (!line) return false;
+      keyOrder = {
+        kind: "move",
+        id: line.id,
+        start: linePrice(line),
+        override: lineOverrides.get(line.id),
+      };
+      const name = fill(l.orderLine, {
+        title: lineTitle(line),
+        price: formatPrice(linePrice(line)),
+      });
+      say(
+        [
+          name,
+          line.draggable ? l.orderHint : "",
+          line.cancellable ? l.orderCancelHint : "",
+        ]
+          .filter(Boolean)
+          .join(". "),
+      );
+      return true;
+    }
+    if (!keyOrder) return false;
+    const pickedId = keyOrder.kind === "move" ? keyOrder.id : null;
+    const picked = (options.priceLines ?? []).find(
+      (line) => line.id === pickedId,
+    );
+    switch (event.key) {
+      case "ArrowUp":
+      case "ArrowDown": {
+        const tick =
+          10 ** -precision() *
+          (event.shiftKey ? 10 : 1) *
+          (event.key === "ArrowUp" ? 1 : -1);
+        if (keyOrder.kind === "create") {
+          keyOrder.price = roundPrice(keyOrder.price + tick);
+          say(orderText(keyOrder.side, keyOrder.price));
+        } else if (picked?.draggable) {
+          const next = roundPrice(linePrice(picked) + tick);
+          lineOverrides.set(picked.id, next);
+          say(formatPrice(next));
+        }
+        return true;
+      }
+      case "Enter": {
+        if (keyOrder.kind === "create") {
+          const { price, side } = keyOrder;
+          endKeyOrder(false);
+          emit("orderCreate", { price, side });
+          say(fill(l.orderPlaced, { price: formatPrice(price) }));
+          return true;
+        }
+        const start = keyOrder.start;
+        endKeyOrder(false);
+        const next = picked ? lineOverrides.get(picked.id) : undefined;
+        if (picked && next !== undefined && next !== start) {
+          emit("orderMove", {
+            id: picked.id,
+            price: next,
+            previousPrice: start,
+            line: picked,
+          });
+          say(fill(l.orderPlaced, { price: formatPrice(next) }));
+        }
+        return true;
+      }
+      case "Escape":
+        if (keyOrder.kind === "create") say(l.orderCancelled);
+        else if (picked)
+          say(
+            fill(l.orderLine, {
+              title: lineTitle(picked),
+              price: formatPrice(keyOrder.start),
+            }),
+          );
+        endKeyOrder(true);
+        return true;
+      case "Delete":
+      case "Backspace":
+        if (picked?.cancellable) {
+          endKeyOrder(true);
+          emit("orderCancel", { id: picked.id, line: picked });
+          say(l.orderCancelled);
+        }
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
+    if (event.target === root && onOrderKey(event)) {
+      event.preventDefault();
+      invalidate();
+      return;
+    }
     if ((event.ctrlKey || event.metaKey) && !event.altKey) {
       const key = event.key.toLowerCase();
       if (key === "z" || key === "y") {
@@ -4326,6 +4694,10 @@ export const createTradingChart = (
   };
   const onBlur = () => {
     root.style.boxShadow = "";
+    if (keyOrder) {
+      endKeyOrder(true);
+      invalidate();
+    }
     if (keyboardIndex !== null) {
       keyboardIndex = null;
       invalidate();
@@ -4540,8 +4912,22 @@ export const createTradingChart = (
     ) {
       setTool(next.drawingMode ?? "cursor", false);
     }
-    if (previous && next.priceLines !== previous.priceLines)
+    if (previous && next.priceLines !== previous.priceLines) {
       lineOverrides.clear();
+      // the picked line is gone, or its new price is the reference now
+      if (keyOrder?.kind === "move") {
+        const id = keyOrder.id;
+        const line = keyLines().find((l) => l.id === id);
+        keyOrder = line
+          ? { kind: "move", id, start: line.price, override: undefined }
+          : null;
+      }
+    }
+    if (next.orderEntry) root.setAttribute("aria-keyshortcuts", ORDER_KEYS);
+    else {
+      root.removeAttribute("aria-keyshortcuts");
+      if (keyOrder) endKeyOrder(true);
+    }
     if (previous && next.chartStyle !== previous.chartStyle)
       haValid = Math.min(haValid, 0);
     optionsVersion++;
@@ -4551,6 +4937,10 @@ export const createTradingChart = (
 
   applyOptions(null);
   void initRenderer();
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
 
   // ------------------------------------------------------------------ api
 
@@ -4748,6 +5138,7 @@ export const createTradingChart = (
       if (replay?.timer) clearInterval(replay.timer);
       doc.removeEventListener("fullscreenchange", onFullscreen);
       resizeObserver?.disconnect();
+      unfollowDefault();
       unwatchTheme();
       langObserver?.disconnect();
       root.removeEventListener("wheel", onWheel);

@@ -36,14 +36,14 @@ const globalExample = `import {
   subscribeDefaultChartRenderer,
 } from "minerva-design/charts/core";
 
-// every chart created from now on with renderer unset or "auto"
-// (React, Vue, Angular, Web Components) starts on WebGL2
+// every chart with renderer unset or "auto" (React, Vue, Angular,
+// Web Components) switches to WebGL2, including the charts on screen
 setDefaultChartRenderer("webgl2");
 getDefaultChartRenderer(); // "webgl2"
 
-// charts already on screen keep their backend: remount them on a change
+// e.g. keep a renderer picker in sync
 const unsubscribe = subscribeDefaultChartRenderer((preference) => {
-  remountCharts(preference);
+  picker.value = preference;
 });
 
 // a chart's own option still wins

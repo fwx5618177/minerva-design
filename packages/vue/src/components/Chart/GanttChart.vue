@@ -35,6 +35,10 @@ const props = defineProps({
   formatProgress: Function as PropType<(share: number) => string>,
   /** Name of the dependencies row of the tooltip (default "Depends on", in the `locale`) */
   dependenciesName: String,
+  /** Draws the `dependencies` of the tasks as elbow arrows from the end of every predecessor to the start of the task (default `true`) */
+  dependencyArrows: { type: Boolean, default: undefined },
+  /** Color of the dependency arrows (any CSS color); the secondary text color by default */
+  dependencyColor: String,
   /** Draws a line at this date (`true`: now) */
   today: {
     type: [Boolean, Number, Date] as PropType<boolean | number | Date>,
@@ -66,6 +70,8 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
       milestoneName: props.milestoneName,
       formatProgress: props.formatProgress,
       dependenciesName: props.dependenciesName,
+      dependencyArrows: props.dependencyArrows,
+      dependencyColor: props.dependencyColor,
       locale: props.locale,
     });
     const today = props.today;
@@ -108,6 +114,7 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
         ...options.yAxis,
       },
       annotations: [...(options.annotations ?? []), ...lines],
+      dependencies: gantt.dependencies,
       interaction: options.interaction ?? { zoom: "y" },
       legend: options.legend ?? gantt.series.length > 1,
     };

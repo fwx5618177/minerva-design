@@ -64,7 +64,7 @@ export abstract class MnChart3DBase<
   );
   /** BCP 47 locale of the texts and numbers the engine writes; the runtime's default locale by default */
   readonly locale = input<string | undefined>(undefined);
-  /** Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, renderer, palette...) */
+  /** Other engine options (`Chart3DOptions`: aspect, box, valueRange, interaction, lighting, exposure, renderer, palette...) */
   readonly options = input<Partial<Omit<Chart3DOptions, "series">> | undefined>(
     undefined,
   );

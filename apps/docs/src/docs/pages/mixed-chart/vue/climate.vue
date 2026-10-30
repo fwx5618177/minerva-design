@@ -2,7 +2,8 @@
 // A climate chart: monthly precipitation as bars, the mean temperature as
 // a smooth line on the right axis; the crosshair reads both.
 import { computed } from "vue";
-import { MixedChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { MixedChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { rain: "Precipitation (mm)", temperature: "Temperature (°C)" },

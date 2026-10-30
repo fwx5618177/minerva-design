@@ -77,6 +77,7 @@ const {
   HorizontalBarChart,
   MixedChart,
   OrderBook,
+  Scatter3DChart,
   SunburstChart,
   TimeAndSales,
   TradingChart,
@@ -131,6 +132,22 @@ describe("extended cartesian and shape components", () => {
     });
   });
 
+  it("GanttChart draws the task dependencies as arrows", async () => {
+    const tasks = [
+      { name: "Design", start: 0, end: 10 },
+      { name: "Build", start: 10, end: 20, dependencies: ["Design"] },
+    ];
+    const gantt = mount(GanttChart, {
+      props: { tasks, dependencyColor: "red" },
+    });
+    const engine = last();
+    expect(engine.options.dependencies).toEqual([
+      { from: "Design", to: "Build", color: "red" },
+    ]);
+    await gantt.setProps({ dependencyArrows: false });
+    expect(engine.options.dependencies).toEqual([]);
+  });
+
   it("shape components: calendar height from the range, sunburst drills", async () => {
     const calendar = mount(CalendarHeatmap, {
       props: {
@@ -174,6 +191,21 @@ describe("TradingChart", () => {
     expect(chart.emitted("drawingToolChange")).toEqual([["cursor"]]);
     await chart.setProps({ chartStyle: "line" });
     expect(engine.options).toMatchObject({ chartStyle: "line" });
+  });
+
+  it("forwards the autoscale and color convention options", () => {
+    mount(TradingChart, {
+      props: {
+        bars: [],
+        autoscaleIncludesDrawings: true,
+        colorConvention: "auto",
+      },
+    });
+    expect(last().options).toEqual({
+      bars: [],
+      autoscaleIncludesDrawings: true,
+      colorConvention: "auto",
+    });
   });
 });
 
@@ -223,5 +255,15 @@ describe("3D components", () => {
     ).toEqual({ azimuth: 30 });
     last().fire("click", { index: 1 });
     expect(chart.emitted("pointClick")).toEqual([[{ index: 1 }]]);
+  });
+
+  it("pass the exposure of additive series", async () => {
+    const chart = mount(Scatter3DChart, {
+      props: { series: [{ data: [] }] as never, exposure: 0.6 },
+    });
+    const engine = last();
+    expect(engine.options.exposure).toBe(0.6);
+    await chart.setProps({ exposure: 1.4 });
+    expect(engine.options.exposure).toBe(1.4);
   });
 });

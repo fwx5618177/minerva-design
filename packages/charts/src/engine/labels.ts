@@ -118,3 +118,36 @@ export const chartAriaLabel = (model: {
         model.series.map((s) => s.name).join(listSeparator(model.locale)),
       )
     : model.labels.chart;
+
+/**
+ * Localized accessible description of a chart, for platforms that build their
+ * own accessible name ("Chart: Revenue, Costs", "营收：营收、成本").
+ * With a `title`, the title replaces the generic "Chart" word.
+ */
+export function describeChart(input: {
+  /** BCP 47 locale (default "en") */
+  locale?: string;
+  /** Series of the chart (only their names are used) */
+  series?: readonly { name: string }[];
+  /** Title of the chart */
+  title?: string;
+  /** Overrides of the built-in texts */
+  labels?: Partial<ChartLabels>;
+}): string {
+  const locale = input.locale ?? "en";
+  const labels = chartLabels(locale, input.labels);
+  const series = input.series ?? [];
+  const title = input.title?.trim();
+  const generic = chartAriaLabel({ labels, locale, series });
+  if (!title) return generic;
+  if (!series.length) return title;
+  const index = labels.chartOf.indexOf(labels.chart);
+  if (index < 0 || !labels.chart) return `${title}. ${generic}`;
+  const names = series.map((s) => s.name).join(listSeparator(locale));
+  const fill = (part: string) => part.split("{series}").join(names);
+  return (
+    fill(labels.chartOf.slice(0, index)) +
+    title +
+    fill(labels.chartOf.slice(index + labels.chart.length))
+  );
+}

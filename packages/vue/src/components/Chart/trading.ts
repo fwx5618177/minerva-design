@@ -36,7 +36,7 @@ export const tradingChartProps = {
   indicators: Array as PropType<readonly TradingIndicator[]>,
   /** Price scale of the price pane (default `linear`) */
   scaleMode: String as PropType<TradingScaleMode>,
-  /** Colors of rising / falling bars: `redUp` swaps the defaults (default `greenUp`) */
+  /** Colors of rising / falling bars: `redUp` swaps the defaults, `auto` follows the market convention of the `locale` (red up for CN, TW, JP, KR; default `greenUp`) */
   colorConvention: String as PropType<TradingColorConvention>,
   /** Color of rising bars (any CSS color, `var(--x)` included) */
   upColor: String,
@@ -68,7 +68,7 @@ export const tradingChartProps = {
   markers: Array as PropType<readonly TradingMarker[]>,
   /** Order, position, take profit / stop loss and alert lines */
   priceLines: Array as PropType<readonly TradingPriceLine[]>,
-  /** A "+" button at the crosshair price reporting a limit order (`orderCreate`; default `false`) */
+  /** A "+" button at the crosshair price reporting a limit order (`orderCreate`); with the chart focused, `B` / `S` arm a keyboard order (arrows move it, Enter confirms, Escape cancels; default `false`) */
   orderEntry: optionalBoolean,
   /** Volume by price of the visible bars, with its point of control and value area (`true` for the defaults; default `false`) */
   volumeProfile: {
@@ -87,6 +87,8 @@ export const tradingChartProps = {
   drawingToolbar: optionalBoolean,
   /** Price of the `baseline` style; the close of the first visible bar by default */
   baselinePrice: Number,
+  /** The automatic price scale also fits the visible drawings of each pane (default `false`) */
+  autoscaleIncludesDrawings: optionalBoolean,
   /** Empty space after the last bar, in bars (default 8) */
   rightOffset: Number,
   /** Initial width of a bar, in pixels (default 8) */

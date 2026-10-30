@@ -20,7 +20,7 @@
     },
     "transparency": {
       "title": "透明度",
-      "description": "两个不透明度小于 1 的曲面展示倾斜平面与碗状曲面的相交处；colorBy \"series\" 让各自使用图例颜色。"
+      "description": "两个不透明度小于 1 的曲面展示倾斜平面与碗状曲面的相交处；colorBy \"series\" 让各自使用图例颜色。在 WebGPU 和 WebGL2 上，透明的曲面、柱体和点以与顺序无关的方式混合（加权混合顺序无关透明），相交处保持平滑；WebGL 与 Canvas2D 则按从后到前的顺序排序绘制。"
     },
     "live-wave": {
       "title": "实时波动",
@@ -123,6 +123,7 @@
       "tooltip": "提示框；false 禁用，render 替换其内容",
       "interaction": "拖动旋转，右键 / Shift + 拖动平移，Ctrl / ⌘ + 滚轮与双指捏合缩放，双击复位，方向键旋转；false 使图表静止",
       "lighting": "曲面与柱体的环境光、漫反射和高光",
+      "exposure": "叠加混合（blend \"additive\"）系列的光亮度；在 WebGPU 和 WebGL2 上经过色调映射，密集的发光区域会平滑饱和而不会发白",
       "renderer": "数据层后端：auto 依次尝试 WebGPU、WebGL2、WebGL、Canvas2D，并跳过软件模拟的 GPU",
       "palette": "系列颜色（默认取 CSS 变量 --chart-series-1..8，其次为主题色）",
       "ariaLabel": "图表的无障碍名称",

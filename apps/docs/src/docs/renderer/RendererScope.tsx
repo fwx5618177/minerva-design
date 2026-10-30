@@ -7,9 +7,9 @@ import { restoreChartRenderer, useChartRenderer } from "./store";
 restoreChartRenderer();
 
 /**
- * Body of a chart page: the sticky renderer bar, then the content, whose
- * demo blocks remount their preview when the renderer changes. Loaded lazily
- * by DocPage so that other pages don't load the chart engine.
+ * Body of a chart page: the sticky renderer bar, then the content. Every
+ * chart with no explicit renderer switches backend live when it changes.
+ * Loaded lazily by DocPage so that other pages don't load the chart engine.
  */
 export default function RendererScope({ children }: { children: ReactNode }) {
   const renderer = useChartRenderer();

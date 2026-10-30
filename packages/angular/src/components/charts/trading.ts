@@ -84,7 +84,7 @@ export class MnTradingChart extends MnChartEngine<
   );
   /** Locale of the texts, numbers and dates (`"zh-CN"`); the page language by default */
   readonly locale = input<string | undefined>(undefined);
-  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...) */
+  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, autoscaleIncludesDrawings, labels...) */
   readonly options = input<Partial<TradingChartOptions> | undefined>(undefined);
 
   /** The crosshair moved (`null` when it left the chart) */

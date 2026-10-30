@@ -6,7 +6,7 @@
 //   xform    = (xScale, xOffset, yScale, yOffset)  relative data -> clip
 //   viewport = (width px, height px, dpr, 0)
 //   color    = straight RGBA of the series
-//   params   = line: (half width px) | area: (_, opacity)
+//   params   = line: (half width px) | area: (flat 0/1, opacity)
 //              bar: (half width in x units, radius px, inset px, min half px)
 //              scatter: (opacity, stroke px)
 // Bars and scatter dots carry their own color (unorm8x4 per instance).
@@ -90,11 +90,12 @@ struct Out {
   let p = select(a, b, c.y > 0.5);
   let y = select(p.z, p.y, c.x > 0.5);
   out.pos = vec4f(toClip(vec2f(p.x, y)), 0.0, 1.0);
-  out.t = c.x;
+  // one vertical gradient over the canvas, like Canvas2D (no per-column fade)
+  out.t = select((out.pos.y + 1.0) * 0.5, 1.0, u.params.x > 0.5);
   return out;
 }
 @fragment fn fs(v: Out) -> @location(0) vec4f {
-  let a = u.color.a * u.params.y * (0.25 + 0.75 * v.t * v.t);
+  let a = u.color.a * u.params.y * (0.25 + 0.75 * clamp(v.t, 0.0, 1.0));
   return vec4f(u.color.rgb * a, a);
 }
 `;
@@ -239,13 +240,14 @@ void main() {
   vec3 p = c.y > 0.5 ? a_b : a_a;
   float y = c.x > 0.5 ? p.y : p.z;
   gl_Position = vec4(toClip(vec2(p.x, y)), 0.0, 1.0);
-  v_t = c.x;
+  // one vertical gradient over the canvas, like Canvas2D (no per-column fade)
+  v_t = u_params.x > 0.5 ? 1.0 : (gl_Position.y + 1.0) * 0.5;
 }`,
   fragment: /* glsl */ `${GLSL_HEADER}
 in float v_t;
 out vec4 outColor;
 void main() {
-  float a = u_color.a * u_params.y * (0.25 + 0.75 * v_t * v_t);
+  float a = u_color.a * u_params.y * (0.25 + 0.75 * clamp(v_t, 0.0, 1.0));
   outColor = vec4(u_color.rgb * a, a);
 }`,
 };
@@ -407,13 +409,14 @@ void main() {
   vec3 p = a_corner.y > 0.5 ? a_b : a_a;
   float y = a_corner.x > 0.5 ? p.y : p.z;
   gl_Position = vec4(toClip(vec2(p.x, y)), 0.0, 1.0);
-  v_t = a_corner.x;
+  // one vertical gradient over the canvas, like Canvas2D (no per-column fade)
+  v_t = u_params.x > 0.5 ? 1.0 : (gl_Position.y + 1.0) * 0.5;
 }`,
   fragment: /* glsl */ `${GLSL1_FRAGMENT_COMMON}
 varying float v_t;
 varying vec4 v_color;
 void main() {
-  float a = v_color.a * (0.25 + 0.75 * v_t * v_t);
+  float a = v_color.a * (0.25 + 0.75 * clamp(v_t, 0.0, 1.0));
   gl_FragColor = vec4(v_color.rgb * a, a);
 }`,
 };

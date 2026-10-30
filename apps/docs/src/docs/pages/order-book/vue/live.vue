@@ -3,7 +3,7 @@
 // sizes flash), `last-price` moves the spread row (colored by its last
 // move); levels grouped by 0.1 (`grouping`).
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { OrderBook, type OrderBookHandle } from "minerva-design/vue";
+import { OrderBook, type OrderBookHandle } from "minerva-design/vue/charts";
 
 const fraction = (value: number) => value - Math.floor(value);
 const round = (value: number) => Math.round(value * 100) / 100;

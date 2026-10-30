@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Points are [x, y] pairs; Ctrl / ⌘ + wheel zooms on both axes.
 import { computed } from "vue";
-import { ScatterChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { ScatterChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { teamA: "Team A", teamB: "Team B", hours: "Hours", score: "Score" },

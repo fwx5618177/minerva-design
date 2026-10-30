@@ -30,10 +30,10 @@ const PREFERENCES: readonly ChartRendererPreference[] = [
 ];
 
 /**
- * Sets the backend used by charts created with `renderer` unset or "auto".
- * Charts read it when they (re)create their renderer, so remount mounted
- * charts (or call `subscribeDefaultChartRenderer`) to apply a change. "auto"
- * restores the automatic WebGPU -> WebGL2 -> WebGL -> Canvas2D detection.
+ * Sets the backend used by charts with `renderer` unset or "auto". Mounted
+ * charts follow the change live (they recreate their renderer); charts with
+ * an explicit backend are unaffected. "auto" restores the automatic
+ * WebGPU -> WebGL2 -> WebGL -> Canvas2D detection.
  */
 export const setDefaultChartRenderer = (
   preference: ChartRendererPreference,

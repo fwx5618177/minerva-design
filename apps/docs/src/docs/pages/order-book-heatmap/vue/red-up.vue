@@ -6,7 +6,7 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import {
   OrderBookHeatmap,
   type OrderBookHeatmapHandle,
-} from "minerva-design/vue";
+} from "minerva-design/vue/charts";
 
 const fraction = (value: number) => value - Math.floor(value);
 const round = (value: number) => Math.round(value * 100) / 100;

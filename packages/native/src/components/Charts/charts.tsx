@@ -441,6 +441,8 @@ export function GanttChart(props: GanttChartProps) {
     milestoneName,
     formatProgress,
     dependenciesName,
+    dependencyArrows,
+    dependencyColor,
     today = false,
     todayLabel,
     xAxis,
@@ -468,6 +470,8 @@ export function GanttChart(props: GanttChartProps) {
       milestoneName,
       formatProgress,
       dependenciesName,
+      dependencyArrows,
+      dependencyColor,
       locale: locale ?? base.locale,
     });
     const lines: ChartAnnotation[] =
@@ -487,6 +491,7 @@ export function GanttChart(props: GanttChartProps) {
       ...base,
       ...(locale ? { locale } : null),
       series: gantt.series,
+      dependencies: gantt.dependencies,
       orientation: "horizontal",
       xAxis: { type: "category", categories: gantt.categories, ...xAxis },
       yAxis: {
@@ -509,6 +514,8 @@ export function GanttChart(props: GanttChartProps) {
     milestoneName,
     formatProgress,
     dependenciesName,
+    dependencyArrows,
+    dependencyColor,
     now,
     todayLabel,
     xAxis,

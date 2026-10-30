@@ -132,11 +132,11 @@ export interface TradingChartProps extends TradingChartOptions {
   onClick?: (event: TradingClickEvent) => void;
   /** The visible bars changed */
   onVisibleRangeChange?: (range: TradingVisibleRange) => void;
-  /** A draggable price line was dropped at a new price */
+  /** A draggable price line was dropped at a new price, or moved with the keyboard */
   onOrderMove?: (event: TradingOrderMoveEvent) => void;
-  /** The "+" order entry button was clicked (see `orderEntry`) */
+  /** The "+" order entry button was clicked, or an order confirmed with the keyboard (see `orderEntry`) */
   onOrderCreate?: (event: TradingOrderCreateEvent) => void;
-  /** The close button of a `cancellable` price line was clicked */
+  /** The close button of a `cancellable` price line was clicked, or Delete pressed on it */
   onOrderCancel?: (event: TradingOrderCancelEvent) => void;
   /** The user added, moved or deleted drawings (pass them back as `drawings`) */
   onDrawingsChange?: (drawings: readonly TradingDrawing[]) => void;

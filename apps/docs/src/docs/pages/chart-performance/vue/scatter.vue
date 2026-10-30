@@ -2,7 +2,8 @@
 // 200,000 dots from typed arrays (`data: { x, y }`): drawn by the GPU,
 // hovered through a spatial index; zoom on both axes.
 import { computed } from "vue";
-import { ScatterChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { ScatterChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { points: "Measurements (200,000 points)" },

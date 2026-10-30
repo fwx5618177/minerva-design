@@ -3,12 +3,12 @@
 // (same time) or appends one (a later time) on every tick, without passing
 // the whole data set again; the countdown shows when the bar closes.
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { useI18n } from "minerva-design/vue";
 import {
   TradingChart,
-  useI18n,
   type TradingBar,
   type TradingChartHandle,
-} from "minerva-design/vue";
+} from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { watermark: "ACME · 1m · live" },

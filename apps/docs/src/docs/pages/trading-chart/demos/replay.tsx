@@ -72,7 +72,7 @@ export default function ReplayDemo() {
           gap: 6,
           padding: "6px 10px",
           fontSize: 13,
-          borderBottom: "1px solid var(--border-color)",
+          background: "var(--surface-subtle-color)",
         }}
       >
         <Button

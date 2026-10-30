@@ -33,6 +33,7 @@
     "title": "言語とロケール",
     "text": "Web ではチャートはページの言語（<html lang>）を読み取ります。ミニプログラムには <html lang> がないため、locale を指定しない場合、テキストと数値は実行環境の navigator.language（ある場合）に従い、なければ英語になります（Taro と uni-app の H5 ビルドは Web と同様に <html lang> を読み取ります）。すべてのチャートの locale prop にアプリの言語を渡してください。WeChat は zh_CN のような言語を返すため、アンダースコアをハイフンに置き換える（zh-CN）と数値と日付もその言語で書式化されます。",
     "labels": "labels は座標系チャートの組み込みテキスト（ChartLabels：ローソク足の始値・終値の行、箱ひげ図の行、ガントの行、既定の系列名…）を、texts はシェイプチャートの組み込みテキスト（ShapeChartLabels：noData、value、share…）を上書きします。HorizontalBarChart と WaterfallChart では labels は値を表示する真偽値のままなので、テキストは locale にのみ従います。",
+    "provider": "locale を指定しない場合、チャートは最も近い ConfigProvider（ネイティブ WeChat では config-provider）の locale を使うため、1 つの provider でページ内のすべてのチャートをローカライズできます。チャート自身の locale が優先されます。アクセシブルネーム（aria-label）もローカライズされます。英語では「Chart: Revenue, Costs」、日本語では「グラフ：売上、コスト」のように、直交座標系チャートは系列名から作られます。図形チャートは種類名で呼ばれます（例：「Pie chart」/「円グラフ」、「Chord diagram」/「コードダイアグラム」、ゲージは「ゲージ：CPU」）。ariaLabel で置き換えられます。",
     "update": "locale、labels、texts を変更するとチャートが再描画されます。ユーザーがアプリの言語を切り替えたら設定し直してください（ネイティブ WeChat では setData）。",
     "sample": {
       "comment": "アプリの言語：ミニプログラムには <html lang> がない",
@@ -77,7 +78,7 @@
     "weapp": "使うコンポーネントをフォルダ名で登録します。Date は setData を通らないため、タイムスタンプを渡してください（ガントのタスク、時間軸）。関数オプションは configure() で渡します：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、軸の書式、renderTooltip。",
     "drill": "SunburstChart は親をタップすると拡大し、中央をタップすると上の階層に戻ります。Taro では onDrill、uni-app と WeChat では drill イベント（bind:drill）、インスタンスでは drill(path) と getDrillPath() を使います。drillPath を指定するとドリルダウンを制御できます。",
     "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales と 3D チャート（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）は DOM と WebGPU / WebGL が必要なため、ミニプログラムのコンポーネントはありません。代わりに web-view ページで Web コンポーネントを表示してください。",
-    "presets": "Web コンポーネントのプリセットオプションもそのまま使えます：WaterfallChart の connector（true、false または { color, dash, width }）、HeatmapChart の colorScale（\"sequential\"、\"diverging\" または色の配列）と colorMidpoint、GanttChart の dependenciesName（タスクの dependencies と併用）、BoxPlotChart の outlierShape と outlierSize。"
+    "presets": "Web コンポーネントのプリセットオプションもそのまま使えます：WaterfallChart の connector（true、false または { color, dash, width }）、HeatmapChart の colorScale（\"sequential\"、\"diverging\" または色の配列）と colorMidpoint、GanttChart の dependenciesName、dependencyArrows（先行タスクからの折れ線の矢印、既定で表示）と dependencyColor（タスクの dependencies と併用）、BoxPlotChart の outlierShape と outlierSize。"
   },
   "newTypes": {
     "title": "ローソク足、ヒートマップ、曲線、積み上げ",

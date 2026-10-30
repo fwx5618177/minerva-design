@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   OrderBookHeatmap,
   type OrderBookHeatmapHandle,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 export default function CompactDemo() {
   const { t } = useTranslation("common", {
@@ -12,23 +12,9 @@ export default function CompactDemo() {
   });
   const heatmapRef = useRef<OrderBookHeatmapHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [market] = useState(() => createHistory({ seed: 25 }, 30_000));
 
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = market.feed.step(elapsed);
-    heatmapRef.current?.applyDeltas(delta);
-    heatmapRef.current?.addTrades(trades);
-  });
+  // recorded history (backfilled), then the same market live
+  useHeatmapReplay(boxRef, heatmapRef, { seed: 25 }, 30_000);
 
   // phone-sized: 30 s, no book profile, smaller bubbles; drag to pan
   return (

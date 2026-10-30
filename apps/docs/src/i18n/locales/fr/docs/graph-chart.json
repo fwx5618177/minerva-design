@@ -33,6 +33,10 @@
       "title": "Diagramme en arcs",
       "description": "Quels langages de programmation en ont influencé d’autres : les nœuds sont alignés par famille et chaque influence est un arc au-dessus. Survolez un langage pour voir ses ancêtres et ses descendants."
     },
+    "transitions": {
+      "title": "Machine à états : pointes, arêtes parallèles et boucles",
+      "description": "Les états d’une commande et les événements qui les relient. Plusieurs événements peuvent relier les deux mêmes états (dans un sens ou dans l’autre) : chacun a sa propre courbe. Les événements qui conservent l’état sont dessinés en boucles du côté libre de leur nœud. arrowStyle=\"filled\" dessine des pointes pleines de la couleur de l’arête, qui suivent le thème et la mise en évidence sur tous les moteurs de rendu."
+    },
     "vanilla": {
       "title": "Moteur seul",
       "description": "createGraphChart de minerva-design/charts/core, sans React : changez de disposition avec setOptions, écoutez les événements click et layoutEnd, et centrez le nœud cliqué avec focusNode."
@@ -59,6 +63,7 @@
       "edgeWidth": "Épaisseur des arêtes en pixels, ou intervalle [min, max] selon la valeur de l’arête",
       "edgeColor": "Couleur des arêtes : neutre, ou teintée par le nœud source ou cible",
       "arrows": "Flèches sur les arêtes qui ne précisent pas directed ; actives pour les DAG",
+      "arrowStyle": "Forme des pointes de flèche : open (une pointe fine au contour) ou filled (une pointe pleine de la couleur de l’arête, qui suit le thème et la mise en évidence)",
       "nodeLabels": "Libellés des nœuds : toujours, jamais, ou auto (les libellés secondaires et superposés disparaissent en vue éloignée). Le texte des boîtes garde une taille minimale lisible et est abrégé par des points de suspension ; il n’est masqué que si la boîte est trop petite pour tout texte, ou avec false",
       "edgeLabels": "Libellés des arêtes : toujours, auto (en zoomant ou mis en avant), au survol seulement, ou jamais",
       "highlight": "Ce que met en avant le survol ou la sélection d’un nœud : ses voisins, toute sa lignée (ancêtres et descendants) ou rien",
@@ -142,7 +147,8 @@
       "iterations": "Nombre de pas d’un refroidissement complet",
       "seed": "Graine des perturbations aléatoires : les mêmes données donnent toujours la même disposition",
       "worker": "Exécute la simulation dans un Web Worker : auto au-delà de 2 000 nœuds ; repli sur le fil principal",
-      "animate": "Montre la simulation pendant qu’elle tourne ; false ne montre que le résultat"
+      "animate": "Montre la simulation pendant qu’elle tourne ; false ne montre que le résultat",
+      "multilevel": "Démarrage multiniveau des grands graphes (400 nœuds ou plus sans position) : un graphe simplifié est disposé d’abord, puis affiné ; plusieurs fois plus rapide qu’un refroidissement complet. false lance toujours le refroidissement complet"
     },
     "GraphCircularOptions": {
       "order": "Ordre des nœuds : par groupe, par degré, ou celui des données",
@@ -220,6 +226,7 @@
       "edgeWidth": "Épaisseur des arêtes en pixels, ou intervalle [min, max] selon la valeur",
       "edgeColor": "Arêtes neutres, ou teintées par la source ou la cible",
       "arrows": "Flèches sur les arêtes qui ne précisent pas directed",
+      "arrowStyle": "Forme des pointes de flèche : open (une pointe fine au contour) ou filled (une pointe pleine de la couleur de l’arête, qui suit le thème et la mise en évidence)",
       "nodeLabels": "Libellés des nœuds : toujours, jamais ou auto. Le texte des boîtes garde une taille minimale lisible et est abrégé par des points de suspension ; il n’est masqué que si la boîte est trop petite pour tout texte, ou avec false",
       "edgeLabels": "Libellés des arêtes : toujours, auto, hover ou jamais",
       "highlight": "Mise en avant d’un nœud survolé ou sélectionné : voisins, lignée ou rien",
@@ -379,7 +386,39 @@
     "layoutLabel": "Disposition",
     "vanillaHint": "Cliquez sur un personnage pour le centrer.",
     "vanillaClick": "{{name}} : {{links}} relations",
-    "vanillaLayout": "Disposition : {{layout}}"
+    "vanillaLayout": "Disposition : {{layout}}",
+    "states": {
+      "cart": "Panier",
+      "pending": "En attente de paiement",
+      "paid": "Payée",
+      "shipped": "Expédiée",
+      "delivered": "Livrée",
+      "refunded": "Remboursée",
+      "cancelled": "Annulée"
+    },
+    "events": {
+      "checkout": "commande",
+      "edit": "modifier le panier",
+      "pay": "paiement",
+      "retry": "nouvel essai de paiement",
+      "timeout": "délai dépassé",
+      "cancel": "annulation",
+      "reverse": "paiement annulé",
+      "ship": "expédition",
+      "refund": "remboursement",
+      "track": "suivi mis à jour",
+      "deliver": "livraison",
+      "bounce": "retour à l’expéditeur",
+      "return": "retour",
+      "review": "avis"
+    },
+    "stages": {
+      "open": "En cours",
+      "fulfilment": "Traitement",
+      "closed": "Terminée"
+    },
+    "filledArrows": "Pointes pleines",
+    "transitionsAria": "États d’une commande et événements qui les relient"
   },
   "wc": {
     "demos": {

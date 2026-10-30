@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Switch } from "minerva-design";
 import { DepthChart, type DepthChartHandle } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 export default function LiveDemo() {
   const { t } = useTranslation("common", {
@@ -11,13 +11,16 @@ export default function LiveDemo() {
   const chartRef = useRef<DepthChartHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [running, setRunning] = useState(true);
-  const [feed] = useState(() => createMarketFeed({ seed: 2 }));
-  const [book] = useState(() => feed.snapshot());
 
-  // ~100 deltas a second: the chart eases to the latest book once per frame
-  useFeedLoop(
+  // a fresh market on every mount; ~100 deltas a second: the chart eases
+  // to the latest book once per frame
+  useMarketStream(
     boxRef,
-    (elapsed) => chartRef.current?.applyDeltas(feed.step(elapsed).delta),
+    { seed: 2 },
+    {
+      load: (feed) => chartRef.current?.setBook(feed.snapshot()),
+      update: ({ delta }) => chartRef.current?.applyDeltas(delta),
+    },
     { interval: 10, running },
   );
 
@@ -30,7 +33,6 @@ export default function LiveDemo() {
       />
       <DepthChart
         ref={chartRef}
-        book={book}
         height={340}
         pricePrecision={1}
         sizePrecision={4}

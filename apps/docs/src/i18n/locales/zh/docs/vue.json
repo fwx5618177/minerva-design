@@ -19,10 +19,16 @@
     "types": "全局组件的类型由 minerva-design/vue/global 提供，支持 Vue - Official（Volar）和 vue-tsc：",
     "charts": {
       "title": "图表",
-      "text": "MinervaVue 不会注册图表组件，因此不使用图表的应用永远不会加载图表引擎。请按名称导入图表（从 minerva-design/vue/charts 或 minerva-design/vue），或安装 minerva-design/vue/charts 中可选的 MinervaVueCharts 插件：它会注册 <MnLineChart>、<MnPieChart>、<MnTradingChart> 等，支持相同的 prefix 选项，类型由 minerva-design/vue/charts-global 提供。",
+      "text": "MinervaVue 不会注册图表组件，因此不使用图表的应用永远不会加载图表引擎。推荐从 minerva-design/vue/charts 按名称导入图表（minerva-design/vue 目前也仍然导出它们），或安装 minerva-design/vue/charts 中按需启用的 MinervaVueCharts 插件：它以相同的 prefix 选项注册 <MnLineChart>、<MnPieChart>、<MnTradingChart> 等组件，类型由 minerva-design/vue/charts-global 提供。",
       "migration": {
         "title": "从 1.4 升级",
         "text": "从 1.5 起，app.use(MinervaVue) 不再注册 <MnChart>、<MnLineChart> 及其他图表组件。如果你的模板在未导入的情况下使用了它们，请添加来自 minerva-design/vue/charts 的 app.use(MinervaVueCharts)（如果修改过前缀，请使用与 MinervaVue 相同的 prefix），并将 minerva-design/vue/charts-global 加入 tsconfig.json 的 types。具名导入保持不变。"
+      },
+      "dev": {
+        "title": "图表与 Vite 开发服务器",
+        "text": "生产构建会对图表进行 tree-shaking：从不导入图表的应用不会包含任何图表代码，无论是否使用 app.use(MinervaVue)。但在开发环境中，Vite 会把 minerva-design/vue 的全部导出预构建为单个文件，因此即使没有使用任何图表，图表封装组件和图表引擎（未压缩约 0.7 MB）也会包含在其中。预构建结果缓存在 node_modules/.vite 中，所以只会在整页加载时增加解析时间。如果应用使用了图表，请从 minerva-design/vue/charts 导入，并在 optimizeDeps.include 中同时列出两个入口，让 Vite 在启动时一起预构建，而不是在首次导入图表时重新优化依赖并刷新页面：",
+        "exclude": "在 optimizeDeps 中排除 minerva-design/charts/core 没有效果：Vue 组件是通过包内的相对路径引用引擎的。排除 minerva-design/vue 也没有帮助：浏览器会改为加载数百个未打包的模块，其中仍包括图表。",
+        "future": "在下一个主版本之前，minerva-design/vue 会继续导出图表组件，因为移除它们会破坏现有的具名导入。在 2.0 中，它们将只由 minerva-design/vue/charts 导出，届时也会从开发预构建中移除。现在就从 minerva-design/vue/charts 导入图表，升级时无需任何改动。"
       }
     }
   },

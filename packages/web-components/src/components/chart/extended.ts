@@ -416,6 +416,14 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
   @property({ attribute: "dependencies-name" })
   dependenciesName?: string;
 
+  /** Hides the elbow arrows drawn for the `dependencies` of the tasks */
+  @property({ type: Boolean, attribute: "hide-dependency-arrows" })
+  hideDependencyArrows = false;
+
+  /** Color of the dependency arrows (any CSS color); the secondary text color by default */
+  @property({ attribute: "dependency-color" })
+  dependencyColor?: string;
+
   /** Formats the progress shares (tooltip, default "60%"); property only */
   @property({ attribute: false })
   formatProgress?: (share: number) => string;
@@ -443,6 +451,8 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
       milestoneName: this.milestoneName,
       formatProgress: this.formatProgress,
       dependenciesName: this.dependenciesName,
+      dependencyArrows: !this.hideDependencyArrows,
+      dependencyColor: this.dependencyColor,
       locale: this.options?.locale,
     });
     const today = this.today;
@@ -484,6 +494,7 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
         ...options.yAxis,
       },
       annotations: [...(options.annotations ?? []), ...lines],
+      dependencies: gantt.dependencies,
       interaction: options.interaction ?? { zoom: "y" },
       legend: options.legend ?? gantt.series.length > 1,
     };

@@ -40,6 +40,13 @@ export interface ForceKernelInit {
   alpha: number;
   /** Width / height of the view: gravity stretches the layout to it */
   aspect: number;
+  /** Charge multiplier per node (merged nodes of a coarse level) */
+  mass?: Float64Array;
+  /**
+   * Multilevel start: a fresh layout of at least this many nodes is first
+   * computed on a coarsened graph (0 = never)
+   */
+  coarsen?: number;
 }
 
 export type ForceKernel = (init: ForceKernelInit) => GraphForceSimulation;
@@ -48,6 +55,10 @@ export type ForceKernel = (init: ForceKernelInit) => GraphForceSimulation;
 export function forceKernel(): ForceKernel {
   return function createSim(init: ForceKernelInit): GraphForceSimulation {
     const n = init.n;
+    // multilevel refinement: starting temperature and share of `iterations`
+    const REFINE_ALPHA = 0.3;
+    const REFINE_SHARE = 0.15;
+    const THETA_BOOST = 0.5;
     const x = init.x;
     const y = init.y;
     const radius = init.radius;
@@ -65,6 +76,14 @@ export function forceKernel(): ForceKernel {
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
     const jiggle = () => (random() - 0.5) * 1e-6;
+    const mass = init.mass;
+
+    // a fresh layout (no known position) of a large graph starts from the
+    // layout of a coarsened graph
+    let fresh = init.alpha >= 1 && n >= (init.coarsen || Infinity);
+    for (let i = 0; i < n && fresh; i++)
+      if (init.fixed[i] || Number.isFinite(x[i]) || Number.isFinite(y[i]))
+        fresh = false;
 
     // phyllotaxis start (like d3), seeded jitter keeps it deterministic
     const angle = Math.PI * (3 - Math.sqrt(5));
@@ -106,13 +125,149 @@ export function forceKernel(): ForceKernel {
 
     let alpha = init.alpha > 0 ? init.alpha : 1;
     const alphaMin = 0.001;
-    const alphaDecay = 1 - Math.pow(alphaMin, 1 / Math.max(1, init.iterations));
+    let alphaDecay = 1 - Math.pow(alphaMin, 1 / Math.max(1, init.iterations));
     let alphaTarget = 0;
-    const theta2 = init.theta * init.theta;
+    const theta = init.theta;
     const charge = init.charge;
+    const nodeCharge = new Float64Array(n);
+    for (let i = 0; i < n; i++) nodeCharge[i] = charge * (mass ? mass[i] : 1);
     const collidePad = init.collide;
     let maxRadius = 0;
     for (let i = 0; i < n; i++) maxRadius = Math.max(maxRadius, radius[i]);
+
+    // ---- multilevel start: neighbors are merged (a matching, then the
+    // leftover nodes join a neighbor's group), the coarse graph is laid out
+    // by a nested simulation (recursively coarsened), then its positions are
+    // spread to the members and refined with a short cooling
+    let coarse: GraphForceSimulation | null = null;
+    const group = fresh ? new Int32Array(n).fill(-1) : null;
+    const offsetX = fresh ? new Float64Array(n) : null;
+    const offsetY = fresh ? new Float64Array(n) : null;
+    if (group && offsetX && offsetY) {
+      const degree = new Int32Array(n);
+      for (let l = 0; l < m; l++) {
+        if (src[l] === tgt[l]) continue;
+        degree[src[l]]++;
+        degree[tgt[l]]++;
+      }
+      const adjStart = new Int32Array(n + 1);
+      for (let i = 0; i < n; i++) adjStart[i + 1] = adjStart[i] + degree[i];
+      const adj = new Int32Array(adjStart[n]);
+      const fill = adjStart.slice(0, n);
+      for (let l = 0; l < m; l++) {
+        if (src[l] === tgt[l]) continue;
+        adj[fill[src[l]]++] = tgt[l];
+        adj[fill[tgt[l]]++] = src[l];
+      }
+      // nodes by increasing degree (counting sort): leaves pair with hubs
+      let maxDegree = 0;
+      for (let i = 0; i < n; i++) maxDegree = Math.max(maxDegree, degree[i]);
+      const byDegree = new Int32Array(maxDegree + 2);
+      for (let i = 0; i < n; i++) byDegree[degree[i] + 1]++;
+      for (let d = 0; d <= maxDegree; d++) byDegree[d + 1] += byDegree[d];
+      const order = new Int32Array(n);
+      for (let i = 0; i < n; i++) order[byDegree[degree[i]]++] = i;
+      const weightOf = (i: number) => (mass ? mass[i] : 1);
+      const size = new Int32Array(n);
+      let cn = 0;
+      for (let o = 0; o < n; o++) {
+        const u = order[o];
+        if (group[u] >= 0) continue;
+        let best = -1;
+        for (let a = adjStart[u]; a < adjStart[u + 1]; a++) {
+          const v = adj[a];
+          if (v === u || group[v] >= 0) continue;
+          if (best < 0 || weightOf(v) < weightOf(best)) best = v;
+        }
+        if (best < 0) continue;
+        group[u] = group[best] = cn;
+        size[cn++] = 2;
+      }
+      for (let o = 0; o < n; o++) {
+        const u = order[o];
+        if (group[u] >= 0) continue;
+        let best = -1;
+        for (let a = adjStart[u]; a < adjStart[u + 1]; a++) {
+          const g = group[adj[a]];
+          // leaves always join their neighbor ("solar systems")
+          if (g < 0 || (degree[u] > 1 && size[g] >= 3)) continue;
+          if (best < 0 || size[g] < size[best]) best = g;
+        }
+        if (best >= 0) {
+          group[u] = best;
+          size[best]++;
+        } else {
+          group[u] = cn;
+          size[cn++] = 1;
+        }
+      }
+      if (cn <= n * 0.8) {
+        const cmass = new Float64Array(cn);
+        const cradius = new Float64Array(cn);
+        for (let i = 0; i < n; i++) {
+          cmass[group[i]] += weightOf(i);
+          cradius[group[i]] += radius[i] * radius[i];
+        }
+        for (let g = 0; g < cn; g++) cradius[g] = Math.sqrt(cradius[g]);
+        // coarse links: deduplicated pairs of groups
+        const keys: number[] = [];
+        for (let l = 0; l < m; l++) {
+          const a = group[src[l]];
+          const b = group[tgt[l]];
+          if (a !== b) keys.push(a < b ? a * cn + b : b * cn + a);
+        }
+        const sorted = Float64Array.from(keys).sort();
+        const cs: number[] = [];
+        const ct: number[] = [];
+        for (let k = 0; k < sorted.length; k++) {
+          if (k && sorted[k] === sorted[k - 1]) continue;
+          cs.push(Math.floor(sorted[k] / cn));
+          ct.push(sorted[k] % cn);
+        }
+        coarse = createSim({
+          ...init,
+          n: cn,
+          x: new Float64Array(cn).fill(NaN),
+          y: new Float64Array(cn).fill(NaN),
+          radius: cradius,
+          fixed: new Uint8Array(cn),
+          source: Int32Array.from(cs),
+          target: Int32Array.from(ct),
+          weight: new Float64Array(cs.length).fill(1),
+          mass: cmass,
+          alpha: 1,
+        });
+        // members spread around their group, a refinement finishes the layout
+        for (let i = 0; i < n; i++) {
+          const a = random() * Math.PI * 2;
+          const d =
+            (init.linkDistance * 0.5 + radius[i]) * (0.4 + 0.6 * random());
+          offsetX[i] = Math.cos(a) * d;
+          offsetY[i] = Math.sin(a) * d;
+        }
+        alpha = Math.min(alpha, REFINE_ALPHA);
+        alphaDecay =
+          1 -
+          Math.pow(
+            alphaMin / alpha,
+            1 / Math.max(1, Math.round(init.iterations * REFINE_SHARE)),
+          );
+      }
+    }
+    const project = () => {
+      if (!coarse || !group || !offsetX || !offsetY) return;
+      const cx = coarse.x;
+      const cy = coarse.y;
+      for (let i = 0; i < n; i++) {
+        x[i] = cx[group[i]] + offsetX[i];
+        y[i] = cy[group[i]] + offsetY[i];
+      }
+    };
+    const finishCoarse = () => {
+      project();
+      coarse = null;
+    };
+    project();
 
     // ---- flat quadtree (rebuilt every tick)
     let cap = 0;
@@ -259,7 +414,8 @@ export function forceKernel(): ForceKernel {
           qcy[q] = weight ? sy / weight : qy0[q];
         } else {
           let mass = 0;
-          for (let j = qpoint[q]; j >= 0; j = nextPoint[j]) mass += charge;
+          for (let j = qpoint[q]; j >= 0; j = nextPoint[j])
+            mass += nodeCharge[j];
           qmass[q] = mass;
           qcx[q] = x[qpoint[q]];
           qcy[q] = y[qpoint[q]];
@@ -268,13 +424,40 @@ export function forceKernel(): ForceKernel {
     };
 
     let stack = new Int32Array(256);
+    const spatial = new Int32Array(n);
     const manyBody = () => {
       if (!charge || n < 2) return;
       buildTree();
-      for (let i = 0; i < n; i++) {
+      // adaptive accuracy: a hot layout moves a lot anyway, coarser
+      // approximations are enough; full accuracy when it cools down
+      const t = theta * (1 + THETA_BOOST * Math.min(1, alpha / REFINE_ALPHA));
+      const open = 1 / (t * t);
+      // nodes in tree order: neighbors walk the same cells (cache friendly)
+      let count = 0;
+      let top = 0;
+      stack[top++] = 0;
+      while (top) {
+        const q = stack[--top];
+        if (qinner[q]) {
+          if (top + 4 > stack.length) {
+            const s = new Int32Array(stack.length * 2);
+            s.set(stack);
+            stack = s;
+          }
+          for (let k = 0; k < 4; k++) {
+            const c = qchild[q * 4 + k];
+            if (c >= 0) stack[top++] = c;
+          }
+        } else {
+          for (let j = qpoint[q]; j >= 0; j = nextPoint[j])
+            spatial[count++] = j;
+        }
+      }
+      for (let o = 0; o < count; o++) {
+        const i = spatial[o];
         const xi = x[i];
         const yi = y[i];
-        let top = 0;
+        top = 0;
         stack[top++] = 0;
         while (top) {
           const q = stack[--top];
@@ -284,7 +467,7 @@ export function forceKernel(): ForceKernel {
             const dy = qcy[q] - yi;
             const w = qsize[q];
             let l = dx * dx + dy * dy;
-            if ((w * w) / theta2 < l) {
+            if (w * w * open < l) {
               if (l < 1) l = Math.sqrt(l);
               const f = (qmass[q] * alpha) / l;
               vx[i] += dx * f;
@@ -315,7 +498,7 @@ export function forceKernel(): ForceKernel {
                 l += dy * dy;
               }
               if (l < 1) l = Math.sqrt(l);
-              const f = (charge * alpha) / l;
+              const f = (nodeCharge[j] * alpha) / l;
               vx[i] += dx * f;
               vy[i] += dy * f;
             }
@@ -525,24 +708,31 @@ export function forceKernel(): ForceKernel {
       if (orient) align();
     };
 
-    const done = () => alpha < alphaMin && alphaTarget === 0;
+    const done = () => !coarse && alpha < alphaMin && alphaTarget === 0;
 
     return {
       x,
       y,
       tick(k = 1) {
         for (let i = 0; i < k; i++) {
+          if (coarse) {
+            if (coarse.tick(1)) project();
+            else finishCoarse();
+            continue;
+          }
           if (done()) return false;
           step();
         }
         return !done();
       },
-      alpha: () => alpha,
+      alpha: () => (coarse ? Math.max(alpha, coarse.alpha()) : alpha),
       reheat(value = 0.3) {
+        if (coarse) finishCoarse();
         alpha = Math.max(alpha, value);
       },
       drag(i, px2, py2) {
         if (i < 0 || i >= n) return;
+        if (coarse) finishCoarse();
         fx[i] = x[i] = px2;
         fy[i] = y[i] = py2;
         alphaTarget = 0.3;
@@ -602,6 +792,8 @@ export const FORCE_DEFAULTS = {
   velocityDecay: 0.4,
   iterations: 300,
   seed: 1,
+  /** Smallest fresh layout computed with a multilevel start */
+  multilevel: 400,
 };
 
 /** Kernel input from index-based data */
@@ -647,6 +839,7 @@ export const forceInit = (
     seed: o.seed ?? FORCE_DEFAULTS.seed,
     alpha: extra.alpha ?? 1,
     aspect: extra.aspect ?? 1,
+    coarsen: o.multilevel === false ? 0 : FORCE_DEFAULTS.multilevel,
   };
 };
 

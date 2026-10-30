@@ -166,3 +166,16 @@ export const niceCeil = (value: number): number => {
   }
   return 10 * power;
 };
+
+/**
+ * Smallest number of a fine "nice" series (1, 1.2, 1.5, 2, 2.5, 3, 4, 5,
+ * 6, 8 × 10ⁿ) at least `value`: a scale at most a third above the value
+ */
+export const fineCeil = (value: number): number => {
+  if (!(value > 0) || !Number.isFinite(value)) return 0;
+  const power = 10 ** Math.floor(Math.log10(value));
+  for (const m of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) {
+    if (m * power >= value * (1 - 1e-9)) return +(m * power).toPrecision(12);
+  }
+  return 10 * power;
+};

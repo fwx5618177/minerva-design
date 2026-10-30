@@ -19,10 +19,16 @@
     "types": "グローバルコンポーネントは minerva-design/vue/global の型定義により Vue - Official（Volar）と vue-tsc で型付けされます：",
     "charts": {
       "title": "チャート",
-      "text": "チャートを使わないアプリがチャートエンジンを読み込まないよう、MinervaVue はチャートを登録しません。チャートは名前付きでインポートする（minerva-design/vue/charts または minerva-design/vue から）か、minerva-design/vue/charts のオプトインプラグイン MinervaVueCharts をインストールします。<MnLineChart>、<MnPieChart>、<MnTradingChart> などが同じ prefix オプションで登録され、minerva-design/vue/charts-global で型付けされます。",
+      "text": "MinervaVue はチャートを登録しないため、チャートを使わないアプリがチャートエンジンを読み込むことはありません。チャートは minerva-design/vue/charts から名前付きでインポートするか（推奨。minerva-design/vue からも引き続きエクスポートされています）、minerva-design/vue/charts のオプトインの MinervaVueCharts プラグインをインストールしてください。同じ prefix オプションで <MnLineChart>、<MnPieChart>、<MnTradingChart> などを登録し、型は minerva-design/vue/charts-global が提供します。",
       "migration": {
         "title": "1.4 からのアップグレード",
         "text": "1.5 以降、app.use(MinervaVue) は <MnChart>、<MnLineChart> などのチャートコンポーネントを登録しなくなりました。テンプレートでインポートせずに使っている場合は、minerva-design/vue/charts の app.use(MinervaVueCharts) を追加し（プレフィックスを変更している場合は MinervaVue と同じ prefix を指定）、tsconfig.json の types に minerva-design/vue/charts-global を追加してください。名前付きインポートは変わりません。"
+      },
+      "dev": {
+        "title": "チャートと Vite 開発サーバー",
+        "text": "本番ビルドではチャートは tree-shaking されます。チャートをインポートしないアプリには、app.use(MinervaVue) の有無にかかわらずチャートのコードは含まれません。一方、開発時の Vite は minerva-design/vue のすべてのエクスポートを 1 つのファイルに事前バンドルするため、チャートを使っていなくてもチャートのラッパーとチャートエンジン（未圧縮で約 0.7 MB）が含まれます。事前バンドルは node_modules/.vite にキャッシュされるので、コストはページ全体の読み込み時の解析時間だけです。チャートを使うアプリでは minerva-design/vue/charts からインポートし、両方のエントリを optimizeDeps.include に列挙してください。初めてチャートをインポートしたときに依存関係の再最適化とページの再読み込みが起きず、起動時にまとめて事前バンドルされます：",
+        "exclude": "optimizeDeps から minerva-design/charts/core を除外しても効果はありません。Vue コンポーネントはパッケージ内の相対パスでエンジンを参照しているためです。minerva-design/vue を除外しても改善しません。ブラウザがチャートを含む数百のバンドルされていないモジュールを読み込むことになります。",
+        "future": "既存の名前付きインポートを壊さないよう、minerva-design/vue は次のメジャーバージョンまでチャートコンポーネントをエクスポートし続けます。2.0 では minerva-design/vue/charts からのみエクスポートされ、開発時の事前バンドルからも外れます。今のうちに minerva-design/vue/charts からインポートしておけば、アップグレード時の変更は不要です。"
       }
     }
   },

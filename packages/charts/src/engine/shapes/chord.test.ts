@@ -108,18 +108,19 @@ describe("chord diagram", () => {
     expect(fromLinks.cellColors.get(1)).toBe("#00f");
   });
 
-  it("sizes the arcs by the outgoing flows and the ribbon ends by each direction", () => {
+  it("sizes the arcs and both ribbon ends by the flows of both directions", () => {
     const scene = layout(chord);
     expect(scene.type).toBe("chord");
     const [a, b, c] = arcs(scene).sort((x, y) => x.hit! - y.hit!);
-    // 15 : 10 : 3
-    expect(span(a) / span(b)).toBeCloseTo(1.5, 6);
-    expect(span(a) / span(c)).toBeCloseTo(5, 6);
-    // one ribbon per pair, from the larger direction
+    // pairs: A–B 14, A–C 6, B–C 8 → arcs 20 : 22 : 14
+    expect(span(a) / span(b)).toBeCloseTo(20 / 22, 6);
+    expect(span(c) / span(b)).toBeCloseTo(14 / 22, 6);
+    // one ribbon per pair, from the larger direction, as wide at both ends
     const r = ribbons(scene);
     expect(r.map((n) => n.hit).sort()).toEqual([4, 5, 8]);
     const ab = r.find((n) => n.hit === 4)!;
-    expect((ab.s1 - ab.s0) / (ab.t1 - ab.t0)).toBeCloseTo(10 / 4, 6);
+    expect(ab.s1 - ab.s0).toBeCloseTo(ab.t1 - ab.t0, 9);
+    expect((ab.s1 - ab.s0) / span(a)).toBeCloseTo(14 / 20, 6);
     expect(ab.head).toBe(0);
     expect(ab.color1).not.toBe(ab.color0);
     expect(ab.also).toEqual([0, 1]);
@@ -140,16 +141,18 @@ describe("chord diagram", () => {
     const group = tooltipContent(scene, { index: 0 })!;
     expect(group.title).toBe("A");
     expect(group.rows.map((r) => [r.name, r.value])).toEqual([
+      ["Value", "20"],
       ["Outgoing", "15"],
       ["Incoming", "5"],
-      ["Share", "53.6%"],
+      ["Share", "35.7%"],
     ]);
     const ribbon = tooltipContent(scene, { index: 4 })!;
     expect(ribbon.title).toBe("A \u2192 B");
+    // share of the pair (10 + 4) among all the pairs (28)
     expect(ribbon.rows.map((r) => [r.name, r.value])).toEqual([
       ["Value", "10"],
       ["Reverse", "4"],
-      ["Share", "35.7%"],
+      ["Share", "50.0%"],
     ]);
     expect(hoverEvent(scene, { index: 4 })).toMatchObject({
       name: "A \u2192 B",
@@ -158,6 +161,85 @@ describe("chord diagram", () => {
       target: "B",
       reverseValue: 4,
     });
+  });
+
+  it("gives an arc to the groups that only receive flows", () => {
+    // undirected links list: B and C never appear as a source
+    const links: ChordChartOptions = {
+      type: "chord",
+      animation: false,
+      links: [
+        { source: "A", target: "B", value: 6 },
+        { source: "A", target: "C", value: 2 },
+      ],
+    };
+    const scene = layout(links);
+    const [a, b, c] = arcs(scene).sort((x, y) => x.hit! - y.hit!);
+    expect(span(b)).toBeGreaterThan(0);
+    expect(span(a) / span(b)).toBeCloseTo(8 / 6, 6);
+    expect(span(a) / span(c)).toBeCloseTo(8 / 2, 6);
+    const ab = ribbons(scene).find((n) => n.hit === 4)!;
+    // the target end covers B's whole arc
+    expect(ab.t0).toBeCloseTo(b.a0, 6);
+    expect(ab.t1).toBeCloseTo(b.a1, 6);
+    expect(ab.s1 - ab.s0).toBeCloseTo(ab.t1 - ab.t0, 9);
+    expect(
+      tooltipContent(scene, { index: 1 })!.rows.map((r) => [r.name, r.value]),
+    ).toEqual([
+      ["Value", "6"],
+      ["Outgoing", "0"],
+      ["Incoming", "6"],
+      ["Share", "37.5%"],
+    ]);
+    expect(
+      tooltipContent(scene, { index: 4 })!.rows.map((r) => [r.name, r.value]),
+    ).toEqual([
+      ["Value", "6"],
+      ["Reverse", "0"],
+      ["Share", "75.0%"],
+    ]);
+    // in-only groups are also items and legend entries
+    expect(scene.items.map((it) => it.index)).toEqual(
+      expect.arrayContaining([0, 1, 2]),
+    );
+
+    // directed: B's arc holds the target end of A → B
+    const directed = layout({ ...links, directed: true });
+    const [da, db, dc] = arcs(directed).sort((x, y) => x.hit! - y.hit!);
+    expect(span(da) / span(db)).toBeCloseTo(8 / 6, 6);
+    expect(span(da) / span(dc)).toBeCloseTo(8 / 2, 6);
+    const dab = ribbons(directed).find((n) => n.hit === 4)!;
+    expect(dab.t0).toBeCloseTo(db.a0, 6);
+    expect(dab.t1).toBeCloseTo(db.a1, 6);
+    expect(dab.s1 - dab.s0).toBeCloseTo(dab.t1 - dab.t0, 9);
+  });
+
+  it("counts the relations of a symmetric matrix once", () => {
+    const scene = layout({
+      type: "chord",
+      animation: false,
+      groups: ["A", "B", "C"],
+      matrix: [
+        [2, 5, 1],
+        [5, 0, 3],
+        [1, 3, 0],
+      ],
+    });
+    const [a, b, c] = arcs(scene).sort((x, y) => x.hit! - y.hit!);
+    // row sums 8 : 8 : 4 (self flow included once)
+    expect(span(a) / span(b)).toBeCloseTo(1, 6);
+    expect(span(c) / span(b)).toBeCloseTo(0.5, 6);
+    const ab = ribbons(scene).find((n) => n.hit === 4)!;
+    expect((ab.s1 - ab.s0) / span(a)).toBeCloseTo(5 / 8, 6);
+    expect(
+      tooltipContent(scene, { index: 0 })!.rows.map((r) => r.name),
+    ).toEqual(["Value", "Share"]);
+    expect(
+      tooltipContent(scene, { index: 4 })!.rows.map((r) => [r.name, r.value]),
+    ).toEqual([
+      ["Value", "5"],
+      ["Share", "45.5%"],
+    ]);
   });
 
   it("draws one ribbon per direction with arrowheads when directed", () => {
@@ -194,14 +276,18 @@ describe("chord diagram", () => {
     const order = arcs(sorted)
       .sort((x, y) => x.a0 - y.a0)
       .map((s) => s.hit);
-    expect(order).toEqual([2, 1, 0]);
+    expect(order).toEqual([2, 0, 1]);
 
     const hidden = layout(chord, { hidden: new Set([1]) });
     expect(hidden.items.map((it) => it.index)).toEqual([0, 2, 5]);
-    expect(tooltipContent(hidden, { index: 0 })!.rows[0]).toMatchObject({
-      name: "Outgoing",
-      value: "5",
-    });
+    expect(
+      tooltipContent(hidden, { index: 0 })!.rows.map((r) => [r.name, r.value]),
+    ).toEqual([
+      ["Value", "6"],
+      ["Outgoing", "5"],
+      ["Incoming", "1"],
+      ["Share", "50.0%"],
+    ]);
     const values = shapeValues(chord, new Set([1]));
     expect(values.get("A\u2192B")).toBe(0);
     expect(values.get("A\u2192C")).toBe(5);
@@ -232,7 +318,7 @@ describe("chord diagram", () => {
         groups: [
           "North America and Caribbean",
           "Western Europe",
-          "Southeast Asia",
+          "Southeast Asia, Oceania and the Pacific",
         ],
         ticks: false,
       },

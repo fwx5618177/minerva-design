@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Radio, RadioGroup } from "minerva-design";
 import {
@@ -6,7 +6,7 @@ import {
   type OrderBookColorConvention,
   type OrderBookHeatmapHandle,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 export default function RedUpDemo() {
   const { t } = useTranslation("common", {
@@ -16,23 +16,9 @@ export default function RedUpDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [convention, setConvention] =
     useState<OrderBookColorConvention>("red-up");
-  const [market] = useState(() => createHistory({ seed: 26 }, 60_000));
 
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = market.feed.step(elapsed);
-    heatmapRef.current?.applyDeltas(delta);
-    heatmapRef.current?.addTrades(trades);
-  });
+  // recorded history (backfilled), then the same market live
+  useHeatmapReplay(boxRef, heatmapRef, { seed: 26 }, 60_000);
 
   return (
     <div ref={boxRef} style={{ display: "grid", gap: 12, width: "100%" }}>

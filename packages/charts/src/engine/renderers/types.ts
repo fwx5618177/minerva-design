@@ -53,6 +53,8 @@ export interface AreaItem extends RenderItemBase {
   count: number;
   opacity: number;
   sorted: boolean;
+  /** Uniform fill (no vertical fade): shapes such as arrowheads */
+  flat?: boolean;
 }
 
 export interface BarItem extends RenderItemBase {

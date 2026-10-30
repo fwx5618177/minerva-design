@@ -1,7 +1,7 @@
-import { useRef, useState, type CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { TimeAndSales, type TimeAndSalesHandle } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 const TERMINAL = {
   "--background-color": "#0b0e11",
@@ -27,12 +27,18 @@ export default function DarkDemo() {
   });
   const tapeRef = useRef<TimeAndSalesHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [feed] = useState(() => createMarketFeed({ seed: 35, activity: 180 }));
 
-  useFeedLoop(boxRef, (elapsed) => {
-    const { trades } = feed.step(elapsed);
-    if (trades.length) tapeRef.current?.addTrades(trades);
-  });
+  useMarketStream(
+    boxRef,
+    { seed: 35, activity: 180 },
+    {
+      // a fresh market on every mount: the tape starts empty
+      load: () => tapeRef.current?.clear(),
+      update: ({ trades }) => {
+        if (trades.length) tapeRef.current?.addTrades(trades);
+      },
+    },
+  );
 
   return (
     <div ref={boxRef} style={TERMINAL}>

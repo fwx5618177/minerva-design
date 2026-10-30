@@ -560,14 +560,13 @@ function pieceViews(piece: Piece, base: Base, color: string): Prim[] {
     y1 = Math.min(y1, base.cy + base.r1);
   }
   if (!(x1 > x0 && y1 > y0)) return [];
-  // the centroid may lie outside the disc: distances from it, generously
-  return clipViews(
-    planes,
-    base,
-    color,
-    ref,
-    2 * Math.hypot(x1 - x0, y1 - y0) + SEAM,
-  );
+  // the centroid may lie outside the disc: distances from it, generously;
+  // the squares must also reach the guards (pieces cut in gradient bands are
+  // much smaller than the outline they keep)
+  let extent = 2 * Math.hypot(x1 - x0, y1 - y0) + SEAM;
+  for (const guard of piece.guards)
+    extent = Math.max(extent, side(guard, ref) + SEAM);
+  return clipViews(planes, base, color, ref, extent);
 }
 
 // ------------------------------------------------------------ recognition
@@ -1006,14 +1005,31 @@ export function regionViews(
     const box = asRoundRect(firstSub.items);
     if (box) return [roundBox(box, color, shadow)];
     const ring = asConcentric(firstSub.items);
-    if (ring)
-      return (
-        roundedWedge(firstSub.items, ring.base, color) ??
-        wedgeViews(firstSub.items, ring.base, color) ??
-        piecesViews(convexPieces(ring.outline), ring.base, color)
-      );
+    const views =
+      ring &&
+      (roundedWedge(firstSub.items, ring.base, color) ??
+        wedgeViews(firstSub.items, ring.base, color));
+    if (views) return views;
   }
 
+  const out: Prim[] = [];
+  for (const part of regionParts(subs))
+    out.push(...piecesViews(part.pieces, part.base, color));
+  return out;
+}
+
+interface Part {
+  pieces: Piece[];
+  base: Base;
+}
+
+/** Convex pieces of closed subpaths (nonzero rule), on their clipping base */
+function regionParts(subs: readonly { start: Pt; items: Item[] }[]): Part[] {
+  const firstSub = subs[0];
+  if (subs.length === 1 && firstSub) {
+    const ring = asConcentric(firstSub.items);
+    if (ring) return [{ pieces: convexPieces(ring.outline), base: ring.base }];
+  }
   const polys = subs.map((s) => flatten(s.items, s.start));
   // an outline and a hole wound the other way (radar rings)
   const [outer, hole] = polys;
@@ -1024,10 +1040,134 @@ export function regionViews(
     area(outer) * area(hole) < 0 &&
     contains(outer, hole)
   )
-    return piecesViews(bandPieces(outer, hole), { t: "plane" }, color);
+    return [{ pieces: bandPieces(outer, hole), base: { t: "plane" } }];
+  return polys.map((poly) => ({
+    pieces: convexPieces(poly),
+    base: { t: "plane" },
+  }));
+}
+
+/** Most bands of a gradient fill */
+const MAX_BANDS = 8;
+/** Most convex pieces of a gradient fill, all bands together */
+const MAX_BAND_PIECES = 240;
+
+/**
+ * Keeps the part of a convex piece where `t(p) = n·p` lies in [lo, hi]; the
+ * new edges are shared with the neighbor bands (they overlap by the seam)
+ */
+function clipPiece(piece: Piece, n: Pt, lo: number, hi: number): Piece | null {
+  let pts = piece.pts;
+  let internal = piece.internal;
+  const cut = (inside: (p: Pt) => number) => {
+    const P: Pt[] = [];
+    const I: boolean[] = [];
+    pts.forEach((a, i) => {
+      const b = pt(pts, (i + 1) % pts.length);
+      const sa = inside(a);
+      const sb = inside(b);
+      const flag = internal[i] ?? false;
+      const at = (): Pt => {
+        const k = sa / (sa - sb);
+        return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+      };
+      if (sa >= 0) {
+        P.push(a);
+        I.push(flag);
+        if (sb < 0) {
+          P.push(at());
+          I.push(true);
+        }
+      } else if (sb >= 0) {
+        P.push(at());
+        I.push(flag);
+      }
+    });
+    pts = P;
+    internal = I;
+  };
+  const t = (p: Pt) => n[0] * p[0] + n[1] * p[1];
+  if (Number.isFinite(lo)) cut((p) => t(p) - lo);
+  if (Number.isFinite(hi)) cut((p) => hi - t(p));
+  // repeated points: the kept one takes the flag of the edge leaving the run
+  const kept: Pt[] = [];
+  const flags: boolean[] = [];
+  pts.forEach((p, i) => {
+    const last = kept[kept.length - 1];
+    if (last && dist(last, p) <= 1e-3)
+      flags[flags.length - 1] = internal[i] ?? true;
+    else {
+      kept.push(p);
+      flags.push(internal[i] ?? true);
+    }
+  });
+  while (
+    kept.length > 1 &&
+    dist(pt(kept, 0), pt(kept, kept.length - 1)) <= 1e-3
+  ) {
+    kept.pop();
+    flags.pop();
+  }
+  if (kept.length < 3 || Math.abs(area(kept)) < 0.05) return null;
+  return { pts: kept, internal: flags, guards: piece.guards };
+}
+
+/**
+ * Views filling the subpaths with a linear gradient: bands across its axis,
+ * each of the color at its middle, overlapping their neighbors by the seam.
+ * `null` when one color is enough.
+ */
+function gradientViews(
+  paths: readonly Subpath[],
+  colorAt: (p: Pt) => string,
+  g: { x0: number; y0: number; x1: number; y1: number },
+  delta: number,
+): Prim[] | null {
+  const len = Math.hypot(g.x1 - g.x0, g.y1 - g.y0);
+  if (len < 2 || delta < 8) return null;
+  const n: Pt = [(g.x1 - g.x0) / len, (g.y1 - g.y0) / len];
+  const t0 = n[0] * g.x0 + n[1] * g.y0;
+  const subs = paths
+    .map((sub) => ({ start: [sub.x, sub.y] as Pt, items: itemsOf(sub, true) }))
+    .filter((s) => s.items.length > 0);
+  const parts = regionParts(subs);
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const part of parts)
+    for (const piece of part.pieces)
+      for (const p of piece.pts) {
+        const t = n[0] * p[0] + n[1] * p[1] - t0;
+        lo = Math.min(lo, t);
+        hi = Math.max(hi, t);
+      }
+  // the colors only change between the ends of the axis
+  const a = Math.min(Math.max(0, lo), hi);
+  const b = Math.min(Math.max(len, lo), hi);
+  const count = Math.min(
+    MAX_BANDS,
+    Math.ceil(delta / 20),
+    Math.floor((b - a) / 6),
+  );
+  if (count < 2) return null;
   const out: Prim[] = [];
-  for (const poly of polys)
-    out.push(...piecesViews(convexPieces(poly), { t: "plane" }, color));
+  let budget = MAX_BAND_PIECES;
+  for (let k = 0; k < count && budget > 0; k++) {
+    const from = k === 0 ? -Infinity : t0 + a + ((b - a) * k) / count;
+    const to =
+      k === count - 1 ? Infinity : t0 + a + ((b - a) * (k + 1)) / count;
+    const mid = t0 + a + ((b - a) * (k + 0.5)) / count;
+    const color = colorAt([n[0] * mid, n[1] * mid]);
+    for (const part of parts)
+      for (const piece of part.pieces) {
+        if (budget <= 0) break;
+        const ts = piece.pts.map((p) => n[0] * p[0] + n[1] * p[1]);
+        if (Math.max(...ts) <= from || Math.min(...ts) >= to) continue;
+        const band = clipPiece(piece, n, from, to);
+        if (!band) continue;
+        budget--;
+        out.push(...pieceViews(band, part.base, color));
+      }
+  }
   return out;
 }
 
@@ -1311,7 +1451,37 @@ const boundsCenter = (paths: readonly Subpath[]): Pt => {
 };
 
 function fillOp(op: FillOp): Prim[] {
-  const color: Color = paintAt(op.paint, ...boundsCenter(op.paths));
+  const { paint } = op;
+  const stops = paint.gradient?.stops ?? [];
+  if (paint.gradient && stops.length > 1) {
+    const alpha = Math.max(...stops.map((s) => s.color.a));
+    const opacity = alpha * op.alpha;
+    if (opacity <= 0.002) return [];
+    let delta = 0;
+    for (const s of stops) {
+      const c = stops[0]?.color ?? s.color;
+      delta = Math.max(
+        delta,
+        Math.abs(s.color.r - c.r),
+        Math.abs(s.color.g - c.g),
+        Math.abs(s.color.b - c.b),
+        Math.abs(s.color.a - c.a) * 255,
+      );
+    }
+    const views = gradientViews(
+      op.paths,
+      (p) => {
+        const c = paintAt(paint, p[0], p[1]);
+        return alpha > 0 && c.a < alpha - 1e-3
+          ? cssWithAlpha(c, 1 / alpha)
+          : opaqueCss(c);
+      },
+      paint.gradient,
+      delta,
+    );
+    if (views) return wrap(views, opacity);
+  }
+  const color: Color = paintAt(paint, ...boundsCenter(op.paths));
   const opacity = color.a * op.alpha;
   if (opacity <= 0.002) return [];
   return wrap(regionViews(op.paths, opaqueCss(color), op.shadow), opacity);

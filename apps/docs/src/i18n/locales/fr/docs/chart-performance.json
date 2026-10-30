@@ -17,9 +17,9 @@
   },
   "global": {
     "title": "Un moteur de rendu pour tous les graphiques",
-    "text": "setDefaultChartRenderer() fixe le backend de tous les graphiques dont le renderer est absent ou \"auto\", quel que soit le framework : la valeur par défaut vit sur globalThis, si bien que les composants React, les wrappers Vue et Angular et les Web Components la partagent, même quand une page embarque plusieurs copies du moteur. Les graphiques la lisent au démarrage : remontez ceux déjà affichés (ou écoutez subscribeDefaultChartRenderer) pour appliquer un changement.",
+    "text": "setDefaultChartRenderer() fixe le backend de tous les graphiques dont le renderer est absent ou \"auto\", quel que soit le framework : la valeur par défaut vit sur globalThis, si bien que les composants React, les wrappers Vue et Angular et les Web Components la partagent, même quand une page embarque plusieurs copies du moteur. Les graphiques déjà affichés suivent un changement en direct : ils recréent leur moteur de rendu sur place, en gardant leurs données, leur zoom et leur état. subscribeDefaultChartRenderer() signale les changements, par exemple pour synchroniser un sélecteur.",
     "rules": "L’option renderer d’un graphique l’emporte toujours. Un backend forcé par la valeur par défaut compte comme forcé : il peut tourner sur un GPU logiciel et passe au backend suivant s’il ne peut pas démarrer. \"auto\" rétablit la détection automatique.",
-    "docs": "La barre de rendu en haut des pages de graphiques de cette documentation fait exactement cela : choisissez-y Canvas2D ou WebGL et tous les exemples redémarrent avec, un badge sous chaque exemple indiquant le backend réellement utilisé. Ici, l’option Auto de chaque démonstration la suit."
+    "docs": "La barre de rendu en haut des pages de graphiques de cette documentation fait exactement cela : choisissez-y Canvas2D ou WebGL et tous les graphiques de la page basculent dessus, un badge sous chaque exemple indiquant le backend réellement utilisé. Ici, l’option Auto de chaque démonstration la suit."
   },
   "showcase": {
     "title": "Démonstrations en direct",

@@ -286,7 +286,7 @@ describe("RendererBadge", () => {
 });
 
 describe("DemoBlock", () => {
-  it("remounts its preview when the page renderer changes", () => {
+  it("keeps its preview mounted when the page renderer changes (charts switch live)", () => {
     const mounted = vi.fn();
     const Demo = () => {
       useEffect(() => {
@@ -308,6 +308,6 @@ describe("DemoBlock", () => {
     rerender(<Page renderer="auto" />);
     expect(mounted).toHaveBeenCalledTimes(1);
     rerender(<Page renderer="webgl" />);
-    expect(mounted).toHaveBeenCalledTimes(2);
+    expect(mounted).toHaveBeenCalledTimes(1);
   });
 });

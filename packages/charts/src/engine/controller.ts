@@ -19,9 +19,13 @@ import {
 } from "./layout";
 import {
   buildModel,
+  fromPlotX,
   fromPlotY,
   heatPosition,
+  toPlotX,
   toPlotY,
+  viewFromValues,
+  viewToValues,
   type ChartModel,
   type DataCache,
   type SeriesModel,
@@ -39,6 +43,7 @@ import {
   colorLegend,
   connectorSegments,
   crosshairAt,
+  dependencyArrows,
   dotSize,
   hitTest,
   hoverMarks,
@@ -46,10 +51,13 @@ import {
   legendShape,
   legendShown,
   resolveAnnotations,
+  resolveDependencies,
   sameHover,
   tooltipContent,
   type ChartLayout,
   type ConnectorSegment,
+  type DependencyArrow,
+  type ResolvedDependency,
   type HoverMark,
   type TooltipContent,
 } from "./scene";
@@ -165,6 +173,8 @@ export interface ChartScene {
   dragging: { x: number; y: number; color: string; size: number } | null;
   /** Lines between consecutive bars (waterfall connectors) */
   connectors: ConnectorSegment[];
+  /** Elbow arrows between bars (`dependencies`, Gantt charts) */
+  arrows: DependencyArrow[];
 }
 
 export interface ChartPointerOptions {
@@ -244,6 +254,7 @@ export const createChartController = (
   let width = 0;
   let height = 0;
   let annotations: ResolvedAnnotation[] = [];
+  let dependencies: ResolvedDependency[] = [];
   let scene: ChartScene | null = null;
   let sceneDirty = true;
   let lastPlot = "";
@@ -305,7 +316,9 @@ export const createChartController = (
       options.annotations,
       theme,
       model.y.type === "log" ? Math.log10 : undefined,
+      model.x.type === "log" ? Math.log10 : undefined,
     );
+    dependencies = resolveDependencies(options.dependencies, theme);
     if (hover) {
       const stillThere = hover.event.items.every(
         (it) =>
@@ -526,6 +539,7 @@ export const createChartController = (
       hover: null,
       dragging: null,
       connectors: connectorSegments(model, layout.scales),
+      arrows: dependencyArrows(model, layout.scales, dependencies),
     };
     scene = next;
     if (hover) {
@@ -615,7 +629,7 @@ export const createChartController = (
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
     const p = toData(sc, cx, cy);
     // values of the axes (not logarithms)
-    return { x: p.x, y: fromPlotY(model, p.y) };
+    return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
   };
 
   const setViewInternal = (next: ChartView, notify: boolean) => {
@@ -625,7 +639,7 @@ export const createChartController = (
       y: clampRange(next.y, base.y, minSpan.y),
     };
     zoomed = !sameRange(view.x, base.x) || !sameRange(view.y, base.y);
-    if (notify) emit("zoom", copyView(view));
+    if (notify) emit("zoom", viewToValues(model, view));
     invalidate();
   };
 
@@ -880,10 +894,10 @@ export const createChartController = (
     },
     zoomAt,
     resetZoom,
-    getView: () => copyView(view),
+    getView: () => viewToValues(model, view),
     setView(next) {
       if (destroyed) return;
-      setViewInternal({ x: next.x ?? view.x, y: next.y ?? view.y }, false);
+      setViewInternal(viewFromValues(model, next, view), false);
     },
     toggleSeries,
     clearHover() {
@@ -895,13 +909,13 @@ export const createChartController = (
     },
     toPixel(x, y) {
       const sc = scales();
-      return sc ? toScreen(sc, x, toPlotY(model, y)) : null;
+      return sc ? toScreen(sc, toPlotX(model, x), toPlotY(model, y)) : null;
     },
     fromPixel(x, y) {
       const sc = scales();
       if (!sc) return null;
       const p = toData(sc, x, y);
-      return { x: p.x, y: fromPlotY(model, p.y) };
+      return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
     },
     on(type, listener) {
       let set = listeners[type] as Set<typeof listener> | undefined;

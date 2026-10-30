@@ -17,6 +17,7 @@ import {
   type ShapeHoverEvent,
 } from "@minerva/charts/canvas";
 import { chartTheme } from "./charts";
+import { describeShapeChart } from "./chart-a11y";
 import type { NativeConfiguration } from "./configuration";
 import type {
   NativeShapeChartConfig,
@@ -130,40 +131,6 @@ const stateOf = (self: Instance, kind: ShapeKind) => {
 
 const configOf = (self: Instance): NativeConfiguration | undefined =>
   typeof self.getConfig === "function" ? self.getConfig() : undefined;
-
-/** Default accessible name of a chart (like the web charts) */
-const describe = (o: ShapeChartOptions): string => {
-  switch (o.type) {
-    case "pie":
-      return o.rose
-        ? "Rose chart"
-        : (o.innerRadius ?? 0) > 0
-          ? "Donut chart"
-          : "Pie chart";
-    case "radar":
-      return "Radar chart";
-    case "gauge":
-      return o.label ? `Gauge: ${o.label}` : "Gauge";
-    case "funnel":
-      return "Funnel chart";
-    case "treemap":
-      return "Treemap";
-    case "sankey":
-      return "Sankey diagram";
-    case "sunburst":
-      return "Sunburst chart";
-    case "radialBar":
-      return "Radial bar chart";
-    case "calendarHeatmap":
-      return "Calendar heatmap";
-    case "bullet":
-      return "Bullet chart";
-    case "chord":
-      return "Chord diagram";
-    default:
-      return "Chart";
-  }
-};
 
 /** Function options of `configure()` merged into the engine options */
 const withConfig = <T extends ShapeChartCommonOptions>(
@@ -382,7 +349,10 @@ const shapeOptions = (self: Instance, state: ShapeState): ShapeChartOptions => {
         headers: unset(d.headers),
       };
   }
-  return withConfig(options, state.config);
+  const config = withConfig(options, state.config);
+  // mini-programs have no `<html lang>`: the ConfigProvider's language
+  const language = self.data.localeLanguage as string | undefined;
+  return config.locale || !language ? config : { ...config, locale: language };
 };
 
 const applyOptions = (self: Instance) => {
@@ -390,7 +360,7 @@ const applyOptions = (self: Instance) => {
   if (!state) return;
   const options = shapeOptions(self, state);
   state.chart?.setOptions(options);
-  const label = options.ariaLabel ?? describe(options);
+  const label = describeShapeChart(options);
   if (label !== self.data.chartLabel) self.setData({ chartLabel: label });
 };
 
@@ -647,7 +617,9 @@ function defineShapeChart(kind: ShapeKind): Control {
       },
       data: { chartWidth: "100%", chartHeight: fallback, chartLabel: "" },
       observers: {
-        [optionNames.join(",")]: function (this: Instance) {
+        [[...optionNames, "localeLanguage"].join(",")]: function (
+          this: Instance,
+        ) {
           applyOptions(this);
         },
         [["width", "height", ...optionNames].join(",")]: function (
@@ -677,7 +649,7 @@ function defineShapeChart(kind: ShapeKind): Control {
           this.setData({
             chartWidth: cssSize(this.data.width, "100%"),
             chartHeight: chartHeight(this),
-            chartLabel: options.ariaLabel ?? describe(options),
+            chartLabel: describeShapeChart(options),
           });
         },
         ready(this: Instance) {

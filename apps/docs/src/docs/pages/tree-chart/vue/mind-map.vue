@@ -2,7 +2,8 @@
 // A mind map of a product launch: the branches spread on both sides of the
 // central topic, colored by branch.
 import { computed } from "vue";
-import { TreeChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TreeChart } from "minerva-design/vue/charts";
 
 const TOPICS = {
   en: [

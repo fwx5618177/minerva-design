@@ -33,6 +33,10 @@
       "title": "Arc diagram",
       "description": "Which programming languages influenced which: the nodes sit on a line ordered by family, and each influence is an arc above it. Hover a language to see its ancestors and descendants."
     },
+    "transitions": {
+      "title": "State machine: arrowheads, parallel edges and loops",
+      "description": "Order states and the events between them. Several events join the same two states (in either direction): each gets its own curve. Events that keep the state are drawn as loops on the free side of their node. arrowStyle=\"filled\" draws solid arrowheads in the edge color; they follow the theme and the highlight on every renderer."
+    },
     "vanilla": {
       "title": "Core engine",
       "description": "createGraphChart from minerva-design/charts/core, without React: switch the layout with setOptions, listen to click and layoutEnd events, and center a clicked node with focusNode."
@@ -59,6 +63,7 @@
       "edgeWidth": "Edge width in pixels, or a [min, max] range scaled by the edge value",
       "edgeColor": "Edge colors: neutral, or tinted with the color of the source or target node",
       "arrows": "Arrowheads on the edges that do not set directed; on for DAGs",
+      "arrowStyle": "Shape of the arrowheads: open (a slim outlined head) or filled (a solid head in the edge color, following the theme and the highlight)",
       "nodeLabels": "Node labels: always, never, or auto (minor and overlapping labels are hidden when zoomed out). Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with false",
       "edgeLabels": "Edge labels: always, auto (zoomed in or highlighted), only hover, or never",
       "highlight": "What hovering or selecting a node highlights: its neighbors, its whole lineage (ancestors and descendants), or nothing",
@@ -142,7 +147,8 @@
       "iterations": "Number of ticks of a full cooling",
       "seed": "Seed of the random jitter: the same data always gives the same layout",
       "worker": "Runs the simulation in a Web Worker: auto above 2,000 nodes; falls back to the main thread",
-      "animate": "Shows the simulation while it runs; false shows only the result"
+      "animate": "Shows the simulation while it runs; false shows only the result",
+      "multilevel": "Multilevel start of large graphs (400+ nodes without positions): a coarsened graph is laid out first, then refined; several times faster than a full cooling. false always runs the full cooling"
     },
     "GraphCircularOptions": {
       "order": "Order of the nodes: by group, by degree, or the data order",
@@ -220,6 +226,7 @@
       "edgeWidth": "Edge width in pixels, or a [min, max] range scaled by the value",
       "edgeColor": "Neutral edges, or tinted with the source or target color",
       "arrows": "Arrowheads on the edges that do not set directed",
+      "arrowStyle": "Shape of the arrowheads: open (a slim outlined head) or filled (a solid head in the edge color, following the theme and the highlight)",
       "nodeLabels": "Node labels: always, never or auto. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with false",
       "edgeLabels": "Edge labels: always, auto, hover or never",
       "highlight": "Highlight of a hovered or selected node: neighbors, lineage or none",
@@ -379,7 +386,39 @@
     "layoutLabel": "Layout",
     "vanillaHint": "Click a character to center it.",
     "vanillaClick": "{{name}}: {{links}} relationships",
-    "vanillaLayout": "Layout: {{layout}}"
+    "vanillaLayout": "Layout: {{layout}}",
+    "states": {
+      "cart": "Cart",
+      "pending": "Awaiting payment",
+      "paid": "Paid",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled"
+    },
+    "events": {
+      "checkout": "checkout",
+      "edit": "edit cart",
+      "pay": "pay",
+      "retry": "retry payment",
+      "timeout": "timeout",
+      "cancel": "cancel",
+      "reverse": "payment reversed",
+      "ship": "ship",
+      "refund": "refund",
+      "track": "tracking update",
+      "deliver": "deliver",
+      "bounce": "returned to sender",
+      "return": "return",
+      "review": "review"
+    },
+    "stages": {
+      "open": "Open",
+      "fulfilment": "Fulfilment",
+      "closed": "Closed"
+    },
+    "filledArrows": "Filled arrowheads",
+    "transitionsAria": "Order states and the events between them"
   },
   "wc": {
     "demos": {

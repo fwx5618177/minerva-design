@@ -200,10 +200,13 @@ export const createCanvas2dPainter = (
       );
       ({ points, length } = decimateArea(item.points, start, end, m.px));
     }
-    const gradient = ctx.createLinearGradient(0, 0, 0, frame.height);
-    gradient.addColorStop(0, rgba(item.color, item.opacity));
-    gradient.addColorStop(1, rgba(item.color, item.opacity * 0.25));
-    ctx.fillStyle = gradient;
+    if (item.flat) ctx.fillStyle = rgba(item.color, item.opacity);
+    else {
+      const gradient = ctx.createLinearGradient(0, 0, 0, frame.height);
+      gradient.addColorStop(0, rgba(item.color, item.opacity));
+      gradient.addColorStop(1, rgba(item.color, item.opacity * 0.25));
+      ctx.fillStyle = gradient;
+    }
     ctx.beginPath();
     // each run without gaps: along the tops, back along the bottoms
     let runStart = -1;

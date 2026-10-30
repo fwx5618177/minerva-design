@@ -2,7 +2,8 @@
 // `stacked` piles the bars of each category (a series can still set its
 // own `type`, e.g. a line).
 import { computed } from "vue";
-import { BarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

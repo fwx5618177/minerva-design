@@ -33,6 +33,7 @@
     "title": "Language and locale",
     "text": "On the web, the charts read the page language (<html lang>). Mini-programs have no <html lang>: without a locale, the texts and numbers follow navigator.language when the runtime has one, else English (Taro and uni-app H5 builds read <html lang> like the web). Pass the app language with the locale prop of every chart; WeChat reports languages such as zh_CN, so replace the underscore with a hyphen (zh-CN) to format the numbers and dates too.",
     "labels": "labels overrides built-in texts of the series charts (ChartLabels: the open / close rows of the candles, the box plot rows, the Gantt rows, the default series names…) and texts those of the shape charts (ShapeChartLabels: noData, value, share…). On HorizontalBarChart and WaterfallChart, labels stays the boolean that writes the values, so their texts follow locale only.",
+    "provider": "Without a locale prop, the charts use the locale of the closest ConfigProvider (config-provider on native WeChat), so one provider localizes every chart of a page; a locale on the chart still wins. The accessible name (aria-label) is localized too: “Chart: Revenue, Costs” in English, “图表：营收、成本” in Chinese, built from the series of a cartesian chart; a shape chart is named by its type, e.g. “Pie chart” / “饼图”, “Chord diagram” / “弦图” (a gauge: “Gauge: CPU”); ariaLabel replaces it.",
     "update": "Changing locale, labels or texts redraws the chart: set them again (setData on native WeChat) when the user switches the language of the app.",
     "sample": {
       "comment": "The language of the app: mini-programs have no <html lang>",
@@ -77,7 +78,7 @@
     "weapp": "Register the components you use under their folder name. Dates do not survive setData: pass timestamps (gantt tasks, time axes). Function options go through configure(): format (heatmap-chart, sparkline, waterfall-chart), formatBin (histogram-chart), formatProgress (gantt-chart), the axis formats and renderTooltip.",
     "drill": "SunburstChart zooms into a parent on a tap and back up on the center: onDrill on Taro, the drill event on uni-app and WeChat (bind:drill), drill(path) and getDrillPath() on the instance; set drillPath to make the drill-down controlled.",
     "domOnlyText": "TradingChart, DepthChart, OrderBook, OrderBookHeatmap, TimeAndSales and the 3D charts (Scatter3DChart, Surface3DChart, Bar3DChart, Line3DChart) need a DOM and WebGPU / WebGL: they have no mini-program component. Show the web component in a web-view page instead.",
-    "presets": "The preset options of the web components pass through: WaterfallChart connector (true, false or { color, dash, width }), HeatmapChart colorScale (\"sequential\", \"diverging\" or colors) and colorMidpoint, GanttChart dependenciesName (with the dependencies of the tasks), BoxPlotChart outlierShape and outlierSize."
+    "presets": "The preset options of the web components pass through: WaterfallChart connector (true, false or { color, dash, width }), HeatmapChart colorScale (\"sequential\", \"diverging\" or colors) and colorMidpoint, GanttChart dependenciesName, dependencyArrows (elbow arrows from every predecessor, on by default) and dependencyColor (with the dependencies of the tasks), BoxPlotChart outlierShape and outlierSize."
   },
   "newTypes": {
     "title": "Candlesticks, heatmaps, curves and stacks",

@@ -3,7 +3,8 @@
 // the price, volume and RSI panes below; the texts, numbers and dates
 // follow the page language.
 import { computed } from "vue";
-import { TradingChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TradingChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { watermark: "ACME · 1D" },

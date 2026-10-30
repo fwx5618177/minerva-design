@@ -4,7 +4,11 @@
   "demos": {
     "project": {
       "title": "Plan de projet",
-      "description": "Chaque groupe a sa couleur et son entrée de légende, l'avancement est une barre pleine sur la tâche, les jalons sont des points et today trace une ligne à une date. Survolez une tâche : son infobulle ne montre qu’elle, avec son groupe, ses dates, sa durée, son avancement et ses dépendances."
+      "description": "Chaque groupe a sa couleur et son entrée de légende, l'avancement est une barre pleine sur la tâche, les jalons sont des points et today trace une ligne à une date. Survolez une tâche : son infobulle ne montre qu’elle, avec son groupe, ses dates, sa durée, son avancement et ses dépendances. Les dépendances sont dessinées en flèches."
+    },
+    "dependencies": {
+      "title": "Dépendances",
+      "description": "Chaque tâche liste dans dependencies les tâches qu’elle attend : une flèche coudée part de la fin de chaque prédécesseur vers le début de la tâche, contourne entre les lignes quand la tâche commence avant la fin de son prédécesseur, et rejoint aussi les jalons. dependencyArrows: false les garde seulement dans l’infobulle ; dependencyColor fixe leur couleur."
     },
     "roadmap": {
       "title": "Feuille de route",
@@ -97,7 +101,25 @@
       "chinese": "Chinois (zh-CN)",
       "french": "Français (fr-FR)"
     },
-    "localeAria": "Plan de sortie, {{locale}}"
+    "localeAria": "Plan de sortie, {{locale}}",
+    "pipeline": {
+      "kickoff": "Lancement du projet",
+      "spec": "Spécifications produit",
+      "api": "API de synchronisation",
+      "ui": "Écrans de l’app",
+      "integration": "Intégration",
+      "security": "Revue de sécurité",
+      "storeAssets": "Fiche store",
+      "beta": "Bêta-test",
+      "release": "Publication"
+    },
+    "streams": {
+      "product": "Produit",
+      "backend": "Back-end",
+      "mobile": "Mobile"
+    },
+    "showDependencies": "Flèches de dépendance",
+    "pipelineAria": "Plan de sortie de l’app mobile avec les dépendances entre les tâches"
   },
   "api": {
     "GanttChartProps": {
@@ -113,7 +135,7 @@
       "group": "Groupe (phase, équipe) : une couleur et une entrée de légende par groupe",
       "color": "Couleur de la tâche (toute couleur CSS) ; celle de son groupe par défaut",
       "milestone": "Dessine un point au début au lieu d'une barre",
-      "dependencies": "Noms des tâches dont celle-ci dépend, listés dans son infobulle"
+      "dependencies": "Noms des tâches dont celle-ci dépend : listés dans son infobulle et dessinés en flèches depuis leur fin"
     },
     "GanttOptions": {
       "colors": "Couleurs des groupes dans l'ordre d'apparition (toutes couleurs CSS) ; la palette du graphique par défaut",
@@ -122,7 +144,9 @@
       "milestoneName": "Nom des jalons (légende, infobulle)",
       "formatProgress": "Formate les parts réalisées (infobulle)",
       "locale": "Langue des noms par défaut et des pourcentages d'avancement ; la langue de la page par défaut",
-      "dependenciesName": "Nom de la ligne des dépendances dans l’infobulle (« Dépend de » dans la langue par défaut)"
+      "dependenciesName": "Nom de la ligne des dépendances dans l’infobulle (« Dépend de » dans la langue par défaut)",
+      "dependencyArrows": "Dessine les dépendances en flèches coudées, de la fin de chaque prédécesseur au début de la tâche",
+      "dependencyColor": "Couleur des flèches de dépendance (toute couleur CSS) ; la couleur du texte secondaire par défaut"
     }
   },
   "wc": {
@@ -139,6 +163,8 @@
     "minerva-gantt-chart": {
       "props": {
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "hideDependencyArrows": "Masque les flèches coudées tracées de la fin de chaque prédécesseur au début de la tâche (les dépendances des tâches)",
+        "dependencyColor": "Couleur des flèches de dépendance (toute couleur CSS) ; la couleur du texte secondaire par défaut",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
         "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
       },

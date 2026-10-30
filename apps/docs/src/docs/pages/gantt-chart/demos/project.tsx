@@ -43,7 +43,7 @@ export default function ProjectDemo() {
               start,
               end: end ?? start,
               progress,
-              // listed in the tooltip of the task
+              // listed in the tooltip, drawn as arrows from their ends
               dependencies: after.map((task) => t(`tasks.${task}`)),
             },
       ),

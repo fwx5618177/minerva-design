@@ -7,6 +7,7 @@ import {
   formatVolume,
   inferTimeframe,
   pickTicks,
+  redUpLocale,
   tickText,
 } from "./format";
 import { localeLabels } from "../locale";
@@ -141,6 +142,32 @@ describe("studies", () => {
     expect(second.studies[1].range).toEqual([0, 100]);
   });
 
+  it("exposes the SuperTrend as one line with its direction", () => {
+    const store = createStore();
+    setBars(
+      store,
+      Array.from({ length: 80 }, (_, i) =>
+        bar(i, 100 + (i < 40 ? i : 80 - i) * 2),
+      ),
+    );
+    const [st] = buildStudies(
+      [{ type: "supertrend", period: 5, multiplier: 1 }],
+      [],
+      0,
+    ).studies;
+    st.compute(store, 0);
+    const trend = st.trend!;
+    const [up, down] = st.outputs.map((o) => o.values);
+    let flips = 0;
+    for (let i = 6; i < 80; i++) {
+      // the line is the up or the down output, as its direction says
+      const shown = trend.direction[i] === 1 ? up[i] : down[i];
+      expect(shown).toBe(trend.value[i]);
+      if (trend.direction[i] !== trend.direction[i - 1]) flips++;
+    }
+    expect(flips).toBeGreaterThan(0);
+  });
+
   it("computes from the store and recomputes the tail", () => {
     const store = createStore();
     setBars(
@@ -184,6 +211,18 @@ describe("formatting", () => {
     expect(formatVolume(12_345_678, "zh-CN")).toBe("1,234.57万");
     expect(formatVolume(3.2e8, "ja-JP")).toBe("3.2億");
     expect(formatVolume(4_500, "fr-FR")).toBe("4,5 k");
+  });
+
+  it("knows the markets showing rising prices in red", () => {
+    for (const locale of ["zh-CN", "zh-TW", "zh-Hant-TW", "ja-JP", "ko-KR"])
+      expect(redUpLocale(locale), locale).toBe(true);
+    // a language without a region: its main market
+    for (const locale of ["zh", "zh-Hans", "ja", "ko", "zh_CN"])
+      expect(redUpLocale(locale), locale).toBe(true);
+    for (const locale of ["en-US", "en", "fr-FR", "zh-HK", "zh-SG"])
+      expect(redUpLocale(locale), locale).toBe(false);
+    // the region decides
+    expect(redUpLocale("en-JP")).toBe(true);
   });
 
   it("has every text in every built-in language", () => {

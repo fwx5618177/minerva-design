@@ -2,7 +2,8 @@
 // A user journey with drop-offs: `align="left"` keeps every step in its
 // column, `link-color="source"` colors a flow like the page it leaves.
 import { computed } from "vue";
-import { SankeyChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { SankeyChart } from "minerva-design/vue/charts";
 
 const STEPS = {
   en: ["Home page", "Search", "Product page", "Cart", "Checkout", "Left"],

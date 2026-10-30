@@ -34,7 +34,7 @@ function useEngineOptions(
     labels?: ChartCommonProps["labels"] | boolean;
   },
   series: readonly ChartSeries[],
-  extra?: Pick<ChartOptions, "orientation" | "yAxis2">,
+  extra?: Pick<ChartOptions, "orientation" | "yAxis2" | "dependencies">,
 ): ChartOptions {
   const {
     xAxis,
@@ -53,6 +53,7 @@ function useEngineOptions(
   const labels = typeof labelsProp === "object" ? labelsProp : undefined;
   const orientation = extra?.orientation;
   const yAxis2 = extra?.yAxis2;
+  const dependencies = extra?.dependencies;
   return useMemo(
     () => ({
       ...engineOptions({
@@ -72,11 +73,13 @@ function useEngineOptions(
       }),
       ...(orientation ? { orientation } : null),
       ...(yAxis2 ? { yAxis2 } : null),
+      ...(dependencies ? { dependencies } : null),
     }),
     [
       series,
       orientation,
       yAxis2,
+      dependencies,
       xAxis,
       yAxis,
       legend,
@@ -112,8 +115,12 @@ const frameProps = (props: Omit<ChartCommonProps, "labels">) => ({
  * Themed by the closest `MinervaProvider` (light / dark).
  */
 export function Chart(props: ChartProps) {
-  const { series, orientation, yAxis2 } = props;
-  const options = useEngineOptions(props, series, { orientation, yAxis2 });
+  const { series, orientation, yAxis2, dependencies } = props;
+  const options = useEngineOptions(props, series, {
+    orientation,
+    yAxis2,
+    dependencies,
+  });
   return <ChartBase options={options} {...frameProps(props)} />;
 }
 

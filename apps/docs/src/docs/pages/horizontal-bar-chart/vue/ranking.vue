@@ -2,7 +2,8 @@
 // <HorizontalBarChart>: categories down the left side, long names stay
 // readable; `labels` writes the value at the end of every bar.
 import { computed } from "vue";
-import { HorizontalBarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HorizontalBarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

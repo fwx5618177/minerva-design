@@ -4620,7 +4620,7 @@
               "type": {
                 "text": "Chart3DBaseOptions | undefined"
               },
-              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
               "inheritedFrom": {
                 "name": "MinervaChart3DElement",
                 "module": "src/components/chart-3d/chart-3d.ts"
@@ -4804,7 +4804,7 @@
               "type": {
                 "text": "Chart3DBaseOptions | undefined"
               },
-              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
               "inheritedFrom": {
                 "name": "MinervaChart3DElement",
                 "module": "src/components/chart-3d/chart-3d.ts"
@@ -5004,7 +5004,7 @@
               "type": {
                 "text": "Chart3DBaseOptions | undefined"
               },
-              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
               "inheritedFrom": {
                 "name": "MinervaChart3DElement",
                 "module": "src/components/chart-3d/chart-3d.ts"
@@ -5198,7 +5198,7 @@
               "type": {
                 "text": "Chart3DBaseOptions | undefined"
               },
-              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+              "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
               "inheritedFrom": {
                 "name": "MinervaChart3DElement",
                 "module": "src/components/chart-3d/chart-3d.ts"
@@ -9651,6 +9651,25 @@
             },
             {
               "kind": "field",
+              "name": "hideDependencyArrows",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the elbow arrows drawn for the `dependencies` of the tasks",
+              "attribute": "hide-dependency-arrows"
+            },
+            {
+              "kind": "field",
+              "name": "dependencyColor",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Color of the dependency arrows (any CSS color); the secondary text color by default",
+              "attribute": "dependency-color"
+            },
+            {
+              "kind": "field",
               "name": "formatProgress",
               "type": {
                 "text": "(share: number) => string | undefined"
@@ -9807,6 +9826,23 @@
               },
               "description": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)",
               "fieldName": "dependenciesName"
+            },
+            {
+              "name": "hide-dependency-arrows",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the elbow arrows drawn for the `dependencies` of the tasks",
+              "fieldName": "hideDependencyArrows"
+            },
+            {
+              "name": "dependency-color",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Color of the dependency arrows (any CSS color); the secondary text color by default",
+              "fieldName": "dependencyColor"
             },
             {
               "name": "today-label",
@@ -17995,6 +18031,20 @@
             },
             {
               "kind": "field",
+              "name": "arrowStyle",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "attribute": "arrow-style",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
               "name": "highlight",
               "type": {
                 "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
@@ -18346,6 +18396,19 @@
               }
             },
             {
+              "name": "arrow-style",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "fieldName": "arrowStyle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
               "name": "highlight",
               "type": {
                 "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
@@ -18551,6 +18614,20 @@
               "default": "\"neutral\"",
               "description": "Edge colors: neutral or tinted with the source / target node",
               "attribute": "edge-color",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "arrowStyle",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "attribute": "arrow-style",
               "inheritedFrom": {
                 "name": "MinervaGraphElement",
                 "module": "src/components/graph/graph.ts"
@@ -18909,6 +18986,19 @@
               }
             },
             {
+              "name": "arrow-style",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "fieldName": "arrowStyle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
               "name": "highlight",
               "type": {
                 "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
@@ -19115,6 +19205,20 @@
               "default": "\"neutral\"",
               "description": "Edge colors: neutral or tinted with the source / target node",
               "attribute": "edge-color",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "arrowStyle",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "attribute": "arrow-style",
               "inheritedFrom": {
                 "name": "MinervaGraphElement",
                 "module": "src/components/graph/graph.ts"
@@ -19468,6 +19572,19 @@
               "default": "\"neutral\"",
               "description": "Edge colors: neutral or tinted with the source / target node",
               "fieldName": "edgeColor",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "arrow-style",
+              "type": {
+                "text": "\"open\" | \"filled\""
+              },
+              "default": "\"open\"",
+              "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight)",
+              "fieldName": "arrowStyle",
               "inheritedFrom": {
                 "name": "MinervaGraphElement",
                 "module": "src/components/graph/graph.ts"
@@ -37544,7 +37661,7 @@
               "type": {
                 "text": "Partial<TradingChartOptions> | undefined"
               },
-              "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only"
+              "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, autoscaleIncludesDrawings, labels...); property only"
             },
             {
               "kind": "method",

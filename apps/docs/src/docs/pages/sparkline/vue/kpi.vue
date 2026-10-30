@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Word-sized trends (48px high by default) drawn as a line, an area or bars.
 import { computed } from "vue";
-import { Sparkline, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Sparkline } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { orders: "Orders", revenue: "Revenue", signups: "Sign-ups" },

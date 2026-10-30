@@ -2,7 +2,8 @@
 // Bars and a line on two value axes: the series with `yAxis: "right"` use
 // `yAxis2` (its ticks are aligned on the left grid).
 import { computed } from "vue";
-import { MixedChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { MixedChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { revenue: "Revenue (k€)", growth: "Growth" },

@@ -2,7 +2,8 @@
 // `data` holds { x, y, value } cells; categories set the order of the
 // columns and rows (rows from bottom to top).
 import { computed } from "vue";
-import { HeatmapChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HeatmapChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

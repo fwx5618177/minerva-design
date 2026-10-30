@@ -132,6 +132,7 @@ const sourceFrameworksAlias: Alias[] = process.env.DOCS_SOURCE_FRAMEWORKS
   ? [
       "minerva-design/web-components/chart",
       "minerva-design/web-components",
+      "minerva-design/vue/charts",
       "minerva-design/vue",
       "@react-styles/",
       "@minerva/core",

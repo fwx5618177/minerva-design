@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Parents sum their children and draw their name above them.
 import { computed } from "vue";
-import { TreemapChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TreemapChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

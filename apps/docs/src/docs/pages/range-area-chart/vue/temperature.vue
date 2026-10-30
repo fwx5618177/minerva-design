@@ -2,7 +2,8 @@
 // Daily minimum and maximum temperatures as a band, the average as a line;
 // `curve="linear"` keeps the measured values at the corners.
 import { computed } from "vue";
-import { RangeAreaChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RangeAreaChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { range: "Min – max", mean: "Average" },

@@ -653,6 +653,10 @@ describe("createGraphChart", () => {
     )!;
     expect(tooltip.textContent).toContain("Incoming");
     expect(tooltip.textContent).toContain("Critical path");
+    // a badge with a dot, no single-side accent border
+    const badge = tooltip.querySelector<HTMLElement>(".minerva-chart-badge")!;
+    expect(badge.querySelector("span")).not.toBeNull();
+    expect(badge.style.borderLeft).toBe(badge.style.borderRight);
     // explicit path, orthogonal edges, other directions
     c.setOptions({
       nodes,
@@ -938,7 +942,16 @@ describe("force worker", () => {
     } = {
       postMessage: (m) => posted.push(m as { type: string; x: Float64Array }),
     };
-    new Function("self", forceWorkerSource())(self);
+    new Function("self", "MessageChannel", forceWorkerSource())(
+      self,
+      // a channel delivering its messages as tasks (like browsers)
+      class {
+        port1: { onmessage: (() => void) | null } = { onmessage: null };
+        port2 = {
+          postMessage: () => setTimeout(() => this.port1.onmessage?.(), 0),
+        };
+      },
+    );
     const init = forceInit(
       5,
       Int32Array.from([0, 1, 2]),
@@ -963,6 +976,28 @@ describe("force worker", () => {
     expect(posted.some((m) => m.type === "end")).toBe(true);
     self.onmessage!({ data: { type: "stop" } });
     self.onmessage!({ data: { type: "drag", index: 0, x: 0, y: 0 } });
+  });
+
+  it("yields with timeouts where MessageChannel is missing", async () => {
+    const posted: { type: string }[] = [];
+    const self: {
+      onmessage?: (e: { data: unknown }) => void;
+      postMessage: (m: unknown) => void;
+    } = { postMessage: (m) => posted.push(m as { type: string }) };
+    new Function("self", "MessageChannel", forceWorkerSource())(
+      self,
+      undefined,
+    );
+    const init = forceInit(
+      4,
+      Int32Array.from([0, 1]),
+      Int32Array.from([1, 2]),
+      { iterations: 30 },
+    );
+    self.onmessage!({ data: { type: "init", init, stream: true } });
+    for (let i = 0; i < 100 && !posted.some((m) => m.type === "end"); i++)
+      await wait(10);
+    expect(posted.some((m) => m.type === "end")).toBe(true);
   });
 
   it("uses a worker when available and falls back without one", async () => {
@@ -1342,4 +1377,157 @@ describe("text inside boxes", () => {
     expect(shown).not.toContain("Root");
     expect(shown).not.toContain("CEO");
   });
+});
+
+describe("arrowheads, parallel edges and self-loops", () => {
+  /** Edges hovered along a screen segment (one pointer move per step) */
+  const hoveredAlong = async (
+    from: [number, number],
+    to: [number, number],
+    steps: number,
+  ) => {
+    const ids = new Set<string>();
+    const off = chart!.on("hover", (e) => {
+      if (e?.type === "edge") ids.add(`${e.id}#${e.index}`);
+    });
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      pointer(
+        "pointermove",
+        from[0] + (to[0] - from[0]) * t,
+        from[1] + (to[1] - from[1]) * t,
+      );
+      await flush(1);
+    }
+    off();
+    return ids;
+  };
+
+  const multiEdges: GraphEdge[] = [
+    { source: "a", target: "b", directed: true },
+    { source: "b", target: "a", directed: true },
+    { source: "a", target: "b", directed: true },
+    { source: "c", target: "c", directed: true, label: "self" },
+    { source: "c", target: "c" },
+    { source: "c", target: "d" },
+  ];
+
+  it("fills arrowheads with flat areas in the edge color", async () => {
+    await mount(freeOptions({ arrowStyle: "open" }));
+    expect(calls.closePath ?? 0).toBe(0);
+    chart!.setOptions(freeOptions({ arrowStyle: "filled" }));
+    await flush();
+    // flat triangles: closed runs of the area fill (Canvas2D)
+    expect(calls.closePath).toBeGreaterThan(0);
+    // highlighted and dimmed layers get their own heads
+    pointer("pointermove", ...screen(400, 0));
+    await flush();
+    chart!.setOptions(
+      freeOptions({ arrowStyle: "filled", edgeStyle: "curve", arrows: true }),
+    );
+    await flush();
+    expect(calls.closePath).toBeGreaterThan(2);
+  });
+
+  it("curves parallel edges apart and picks each of them", async () => {
+    await mount(freeOptions({ edges: multiEdges, arrowStyle: "filled" }));
+    // a → b: slots -1 (above), 0 (straight b → a) and 1 (below); the
+    // middle of a quadratic is half its control offset (0.4 × 400 / 2)
+    const ids = await hoveredAlong(screen(200, -100), screen(200, 100), 40);
+    expect(ids).toEqual(new Set(["a→b#0", "b→a#1", "a→b#2"]));
+  });
+
+  it("draws self-loops in the free side of their node and picks them", async () => {
+    await mount(freeOptions({ edges: multiEdges, edgeLabels: true }));
+    // c has one neighbor, d, on its left: its loops go right
+    chart!.focusNode("c", { animate: false, zoom: 2 });
+    await flush();
+    const [cx, cy] = [WIDTH / 2, HEIGHT / 2];
+    const ids = await hoveredAlong([cx + 4, cy], [cx + 64, cy], 60);
+    expect(ids.has("c→c#3")).toBe(true);
+    expect(ids.has("c→c#4")).toBe(true);
+    // the label of the loop is drawn at its far end
+    expect(texts).toContain("self");
+  });
+
+  it("draws parallel arcs, circular curves and loops in every layout", async () => {
+    for (const layout of ["arc", "circular", "force", "dag", "org"] as const) {
+      chart?.destroy();
+      texts = [];
+      await mount({
+        nodes: freeNodes.map(({ id, label }) => ({ id, label })),
+        edges: multiEdges,
+        layout,
+        animation: false,
+        force: { animate: false },
+        arrowStyle: "filled",
+      });
+      const pos = chart!.getPositions();
+      expect(Object.keys(pos)).toHaveLength(4);
+      expect(Number.isFinite(pos.c.x)).toBe(true);
+    }
+  });
+
+  it(
+    "picks edges of large graphs through a spatial index",
+    { timeout: 30_000 },
+    async () => {
+      // 71 × 30 nodes, 2,100 horizontal edges (above the index threshold)
+      const nodes: GraphNode[] = [];
+      const edges: GraphEdge[] = [];
+      for (let r = 0; r < 30; r++) {
+        for (let c = 0; c < 71; c++) {
+          nodes.push({ id: `n${r}-${c}`, x: c * 40, y: r * 40 });
+          if (c) edges.push({ source: `n${r}-${c - 1}`, target: `n${r}-${c}` });
+        }
+      }
+      edges.push({ source: "n0-0", target: "n29-70", label: "long" });
+      await mount({
+        nodes,
+        edges,
+        layout: "none",
+        nodeLabels: false,
+        nodeSize: 12,
+        animation: false,
+      });
+      chart!.focusNode("n10-10", { animate: false, zoom: 1 });
+      await flush();
+      const hovers: (GraphHoverEvent | null)[] = [];
+      chart!.on("hover", (e) => hovers.push(e));
+      // between n10-10 and n10-11
+      pointer("pointermove", WIDTH / 2 + 20, HEIGHT / 2);
+      await flush();
+      expect(last(hovers)?.id).toBe("n10-10→n10-11");
+      // between two rows: nothing
+      pointer("pointermove", WIDTH / 2 + 20, HEIGHT / 2 + 20);
+      await flush();
+      expect(last(hovers)).toBeNull();
+      // the long diagonal (0, 0) → (2800, 1160) crosses many cells: its
+      // point at y = 420 lies between two rows, right of n10-25 (1000, 400)
+      chart!.focusNode("n10-25", { animate: false, zoom: 1 });
+      await flush();
+      pointer(
+        "pointermove",
+        WIDTH / 2 + (420 * 2800) / 1160 - 1000,
+        HEIGHT / 2 + 20,
+      );
+      await flush();
+      expect(last(hovers)?.id).toBe("n0-0→n29-70");
+      // moving the nodes rebuilds the index
+      chart!.setOptions({
+        nodes: nodes.map((n) => ({ ...n, y: n.y! * 2 })),
+        edges,
+        layout: "none",
+        nodeLabels: false,
+        nodeSize: 12,
+        animation: false,
+      });
+      await flush();
+      chart!.focusNode("n10-10", { animate: false, zoom: 1 });
+      await flush();
+      pointer("pointermove", WIDTH / 2 + 20, HEIGHT / 2);
+      await flush();
+      expect(last(hovers)?.id).toBe("n10-10→n10-11");
+    },
+  );
 });

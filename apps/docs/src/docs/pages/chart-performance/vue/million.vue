@@ -3,7 +3,8 @@
 // indexes): decimated on the GPU at every zoom level. Ctrl / ⌘ + wheel or
 // pinch to zoom down to single samples.
 import { computed } from "vue";
-import { LineChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { LineChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { signal: "Sensor (1,000,000 samples)" },

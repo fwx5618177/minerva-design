@@ -170,6 +170,24 @@ describe("extended cartesian and shape elements", () => {
     });
   });
 
+  it("<minerva-gantt-chart> draws the dependencies unless hide-dependency-arrows", async () => {
+    const tasks = [
+      { name: "Design", start: 0, end: 10 },
+      { name: "Build", start: 10, end: 20, dependencies: ["Design"] },
+    ];
+    const el = await create(
+      "minerva-gantt-chart",
+      { tasks },
+      'dependency-color="red"',
+    );
+    expect(last().options.dependencies).toEqual([
+      { from: "Design", to: "Build", color: "red" },
+    ]);
+    el.setAttribute("hide-dependency-arrows", "");
+    await settle();
+    expect(last().options.dependencies).toEqual([]);
+  });
+
   it("<minerva-bubble-chart> sizes the dots by value", async () => {
     await create("minerva-bubble-chart", {
       series: [{ name: "A", data: [{ x: 1, y: 1, value: 100 }] }],

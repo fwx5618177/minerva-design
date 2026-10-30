@@ -465,6 +465,7 @@ describe("3D geometry", () => {
         dpr: 2,
         lighting: [0.5, 0.6, 0.2, 32],
         fog: [1, 1, 1, 1],
+        exposure: 1,
       },
       out,
     );
@@ -730,6 +731,7 @@ describe("transparent meshes", () => {
       dpr: 1,
       lighting: [0.5, 0.5, 0, 1],
       fog: [1, 1, 1, 1],
+      exposure: 1,
     } satisfies Frame3D;
   };
   const firstQuads = (indices: Uint32Array) =>

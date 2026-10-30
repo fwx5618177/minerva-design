@@ -59,7 +59,7 @@ const bar: React.CSSProperties = {
   alignItems: "center",
   gap: 4,
   padding: "6px 8px",
-  borderBottom: "1px solid var(--border-color)",
+  background: "var(--surface-subtle-color)",
 };
 
 const divider: React.CSSProperties = {

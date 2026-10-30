@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRenderer } from "./detect";
-import { GLSL1_AREA, GLSL1_BAR, GLSL1_LINE, GLSL1_SCATTER } from "./shaders";
+import {
+  GLSL1_AREA,
+  GLSL1_BAR,
+  GLSL1_LINE,
+  GLSL1_SCATTER,
+  GLSL_AREA,
+  WGSL_AREA,
+} from "./shaders";
 import type { BarItem, LineItem, RenderFrame, ScatterItem } from "./types";
 import { createWebGlRenderer } from "./webgl";
 
@@ -120,6 +127,18 @@ describe("GLSL ES 1.0 programs", () => {
       expect(program.fragment).toMatch(/gl_FragColor/);
       // a uniform shared by both stages would need the same precision
       expect(program.fragment).not.toMatch(/uniform/);
+    }
+  });
+
+  it("fade area fills over the canvas height like Canvas2D, on every backend", () => {
+    // opacity at the top, a quarter of it at the bottom, from the clip-space y
+    // (not per segment, which drew streaks under each point)
+    for (const vertex of [GLSL1_AREA.vertex, GLSL_AREA.vertex]) {
+      expect(vertex).toMatch(/\(gl_Position\.y \+ 1\.0\) \* 0\.5/);
+    }
+    expect(WGSL_AREA).toMatch(/\(out\.pos\.y \+ 1\.0\) \* 0\.5/);
+    for (const source of [GLSL1_AREA.fragment, GLSL_AREA.fragment, WGSL_AREA]) {
+      expect(source).toMatch(/0\.25 \+ 0\.75 \* clamp\(v[._]t, 0\.0, 1\.0\)/);
     }
   });
 });

@@ -73,7 +73,7 @@ export default function DarkTerminalDemo() {
           gap: 24,
           flexWrap: "wrap",
           padding: "12px 16px",
-          borderBottom: "1px solid var(--border-color)",
+          background: "var(--surface-subtle-color)",
         }}
       >
         <div>

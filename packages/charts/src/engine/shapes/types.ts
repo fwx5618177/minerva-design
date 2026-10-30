@@ -747,9 +747,11 @@ export interface ChordChartOptions extends ShapeChartCommonOptions {
   /** Flows as a list (by group name or index); takes precedence over `matrix` */
   links?: readonly ChordLink[];
   /**
-   * `false`: one ribbon per pair of groups, each end as wide as the flow
-   * leaving that end, arcs sized by the outgoing flows. `true`: one ribbon
-   * per direction (same width at both ends), arcs sized by the outgoing plus
+   * `false`: one ribbon per pair of groups, as wide as the flows between
+   * them in both directions (a symmetric matrix holds each relation in both
+   * cells and counts it once), arcs sized by the ribbons of the group, so a
+   * group that only receives flows keeps its arc. `true`: one ribbon per
+   * direction (same width at both ends), arcs sized by the outgoing plus
    * the incoming flows; flows from a group to itself are ignored.
    * @default false
    */

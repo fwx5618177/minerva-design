@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // <Chart> mixes series types (here bars and a line) on shared axes.
 import { computed } from "vue";
-import { Chart, useI18n, type ChartSeries } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Chart, type ChartSeries } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

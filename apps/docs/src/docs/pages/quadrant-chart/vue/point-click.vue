@@ -2,12 +2,12 @@
 // @point-click gives the clicked point, @quadrant-click the quadrant of a
 // click on the empty area (`reverse-x`: urgent on the left).
 import { computed, ref } from "vue";
+import { useI18n } from "minerva-design/vue";
 import {
   QuadrantChart,
-  useI18n,
   type QuadrantCorner,
   type QuadrantPoint,
-} from "minerva-design/vue";
+} from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

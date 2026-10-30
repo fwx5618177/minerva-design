@@ -404,7 +404,62 @@ export interface ForegroundInput {
     width: number;
     dash: readonly number[];
   }[];
+  /** Dependency arrows (Gantt charts), drawn over the connectors */
+  arrows?: readonly ArrowPath[];
 }
+
+/** An elbow arrow in stage pixels (see `dependencyArrows`) */
+export interface ArrowPath {
+  points: readonly { x: number; y: number }[];
+  head: readonly { x: number; y: number }[];
+  color: string;
+  width: number;
+}
+
+/** Elbow arrows: polylines with rounded corners and filled heads */
+export const drawArrows = (
+  ctx: CanvasRenderingContext2D,
+  arrows: readonly ArrowPath[],
+) => {
+  for (const a of arrows) {
+    const pts = a.points;
+    const first = pts[0];
+    if (!first) continue;
+    ctx.strokeStyle = a.color;
+    ctx.fillStyle = a.color;
+    ctx.lineWidth = a.width;
+    ctx.lineJoin = "round";
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(first.x, first.y);
+    for (let i = 1; i < pts.length; i++) {
+      const p = pts[i]!;
+      const next = pts[i + 1];
+      const prev = pts[i - 1]!;
+      if (next && typeof ctx.arcTo === "function") {
+        // rounded elbow, at most half of the shorter leg
+        const r = Math.min(
+          4,
+          Math.hypot(p.x - prev.x, p.y - prev.y) / 2,
+          Math.hypot(next.x - p.x, next.y - p.y) / 2,
+        );
+        ctx.arcTo(p.x, p.y, next.x, next.y, r);
+      } else {
+        ctx.lineTo(p.x, p.y);
+      }
+    }
+    ctx.stroke();
+    const [tip, b0, b1] = a.head;
+    if (tip && b0 && b1) {
+      ctx.beginPath();
+      ctx.moveTo(tip.x, tip.y);
+      ctx.lineTo(b0.x, b0.y);
+      ctx.lineTo(b1.x, b1.y);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+};
 
 export const drawForeground = (
   ctx: CanvasRenderingContext2D,
@@ -432,6 +487,7 @@ export const drawForeground = (
     ctx.stroke();
   }
   ctx.setLineDash([]);
+  if (input.arrows?.length) drawArrows(ctx, input.arrows);
 
   const halo = toCss(theme.background, 0.9);
   const occupied: Rect[] = [];

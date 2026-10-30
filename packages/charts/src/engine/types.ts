@@ -12,7 +12,7 @@ export type ChartRendererPreference = "auto" | ChartRendererKind;
 
 /**
  * Scale of an axis; `log` (base 10, positive values only) applies to the
- * value axes (`yAxis`, `yAxis2`)
+ * numeric axes (`xAxis`, `yAxis`, `yAxis2`)
  */
 export type ChartAxisType = "linear" | "log" | "time" | "category";
 
@@ -244,8 +244,9 @@ export interface ChartSeries {
 /** Options of an axis */
 export interface ChartAxisOptions {
   /**
-   * Scale of the axis: `linear` numbers, `time` timestamps / dates, `category`
-   * names (x axis, and y axis of heatmaps)
+   * Scale of the axis: `linear` numbers, `log` base-10 logarithms (positive
+   * values; on `x` too), `time` timestamps / dates, `category` names (x axis,
+   * and y axis of heatmaps)
    * @default "linear"
    */
   type?: ChartAxisType;
@@ -356,6 +357,20 @@ export interface ChartTextAnnotation {
 /** Background area, reference line or text */
 export type ChartAnnotation =
   ChartRectAnnotation | ChartLineAnnotation | ChartTextAnnotation;
+
+/**
+ * Arrow from one category to another (Gantt dependencies): an elbow
+ * connector from the end of the `from` bar (or dot) to the start of the
+ * `to` bar, with a filled arrowhead
+ */
+export interface ChartDependency {
+  /** Category (x value) of the predecessor */
+  from: string;
+  /** Category (x value) of the successor, where the arrow points */
+  to: string;
+  /** Color of the arrow (any CSS color); the secondary text color by default */
+  color?: string;
+}
 
 /** Zoom / pan / keyboard options */
 export interface ChartInteractionOptions {
@@ -539,6 +554,11 @@ export interface ChartOptions {
   crosshair?: boolean;
   /** Background areas and reference lines */
   annotations?: readonly ChartAnnotation[];
+  /**
+   * Arrows between categories (category x axis), e.g. the dependencies of
+   * a Gantt chart: from the end of a bar to the start of another
+   */
+  dependencies?: readonly ChartDependency[];
   /** Zoom / pan / keyboard; `false` makes the chart static */
   interaction?: boolean | ChartInteractionOptions;
   /** Space around the plot area */
@@ -604,9 +624,11 @@ export interface ChartHoverEvent {
   xLabel: string;
 }
 
-/** Visible range of the axes */
+/** Visible range of the axes, in values of the axes (not logarithms on log axes) */
 export interface ChartView {
+  /** Range of the x axis (category axes: indexes) */
   x: [number, number];
+  /** Range of the (left) y axis */
   y: [number, number];
 }
 

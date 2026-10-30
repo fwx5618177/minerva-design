@@ -12,29 +12,37 @@ export const WORKER_THRESHOLD = 2000;
 export const forceWorkerSource = (): string => `"use strict";
 const createSim = (${forceKernel.toString()})();
 let sim = null;
-let timer = 0;
+let pending = false;
 let stream = true;
+// yields between slices with a message: nested timeouts are clamped to 4 ms
+const channel = typeof MessageChannel === "function" ? new MessageChannel() : null;
+const schedule = () => {
+  pending = true;
+  if (channel) channel.port2.postMessage(0);
+  else setTimeout(loop, 0);
+};
 const send = (type) => {
   const x = new Float64Array(sim.x);
   const y = new Float64Array(sim.y);
   self.postMessage({ type, x, y, alpha: sim.alpha() }, [x.buffer, y.buffer]);
 };
 const loop = () => {
-  timer = 0;
+  pending = false;
   if (!sim) return;
   const start = performance.now();
   let hot = true;
   while (hot && performance.now() - start < 16) hot = sim.tick(1);
   if (hot) {
     if (stream) send("tick");
-    timer = setTimeout(loop, 0);
+    schedule();
   } else {
     sim.settle();
     send("end");
   }
 };
+if (channel) channel.port1.onmessage = loop;
 const run = () => {
-  if (!timer) timer = setTimeout(loop, 0);
+  if (!pending) schedule();
 };
 self.onmessage = (event) => {
   const m = event.data;
@@ -43,8 +51,6 @@ self.onmessage = (event) => {
     stream = m.stream !== false;
     run();
   } else if (m.type === "stop") {
-    if (timer) clearTimeout(timer);
-    timer = 0;
     sim = null;
   } else if (sim) {
     if (m.type === "drag") sim.drag(m.index, m.x, m.y);

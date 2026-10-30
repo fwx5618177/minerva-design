@@ -2,7 +2,8 @@
 // Messages sent between teams in a week, from a square matrix (row: the
 // sender, column: the recipient); hovering a team highlights its ribbons.
 import { computed } from "vue";
-import { ChordChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { ChordChart } from "minerva-design/vue/charts";
 
 const TEAMS = {
   en: ["Design", "Engineering", "Product", "Marketing"],

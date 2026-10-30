@@ -143,6 +143,7 @@ export type {
   ChartColumnData,
   ChartConnectorOptions,
   ChartCurve,
+  ChartDependency,
   ChartDragEvent,
   ChartEventMap,
   ChartHoverEvent,

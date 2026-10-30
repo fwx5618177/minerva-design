@@ -2,7 +2,8 @@
 // Raw samples per service (`groups`): the component computes the
 // quartiles, Tukey whiskers (1.5 IQR) and draws the outliers as dots.
 import { computed } from "vue";
-import { BoxPlotChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BoxPlotChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

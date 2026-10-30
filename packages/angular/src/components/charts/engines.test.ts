@@ -155,6 +155,26 @@ describe("extended cartesian and shape charts", () => {
     ]);
   });
 
+  it("MnGanttChart draws the task dependencies as arrows", async () => {
+    @Component({
+      imports: [MnGanttChart],
+      template: `<mn-gantt-chart [tasks]="tasks" dependencyColor="red" />
+        <mn-gantt-chart [tasks]="tasks" [dependencyArrows]="false" />`,
+    })
+    class Host {
+      tasks = [
+        { name: "Design", start: 0, end: 10 },
+        { name: "Build", start: 10, end: 20, dependencies: ["Design"] },
+      ];
+    }
+    const fixture = await render(Host);
+    await settle(fixture);
+    expect(engines.map((e) => e.options.dependencies)).toEqual([
+      [{ from: "Design", to: "Build", color: "red" }],
+      [],
+    ]);
+  });
+
   it("MnSunburstChart drills and reports drills", async () => {
     @Component({
       imports: [MnSunburstChart],
@@ -292,6 +312,7 @@ describe("graph components", () => {
         [force]="{ charge: -120 }"
         [height]="height()"
         edgeColor="source"
+        arrowStyle="filled"
         (itemClick)="log.push(['itemClick', $event])"
         (selectionChange)="log.push(['selectionChange', $event])"
         (nodeToggle)="log.push(['nodeToggle', $event])"
@@ -317,6 +338,7 @@ describe("graph components", () => {
       layout: "force",
       force: { charge: -120 },
       edgeColor: "source",
+      arrowStyle: "filled",
     });
     // the same node objects in a new array: no new options
     fixture.componentInstance.nodes.set([...nodes]);
@@ -381,8 +403,14 @@ describe("graph components", () => {
           [edges]="edges"
           [dag]="{ layerGap: 70 }"
           [criticalPath]="true"
+          arrowStyle="filled"
         />
-        <mn-tree-chart [nodes]="nodes" [edges]="edges" layout="radial" />
+        <mn-tree-chart
+          [nodes]="nodes"
+          [edges]="edges"
+          layout="radial"
+          arrowStyle="open"
+        />
         <mn-dependency-graph [nodes]="nodes" [edges]="edges" direction="LR" />`,
     })
     class Host {
@@ -396,9 +424,10 @@ describe("graph components", () => {
         layout: "dag",
         direction: "TB",
         dag: { layerGap: 70, criticalPath: true },
+        arrowStyle: "filled",
       },
-      { layout: "radial" },
-      { layout: "dag", direction: "LR", dag: undefined },
+      { layout: "radial", arrowStyle: "open" },
+      { layout: "dag", direction: "LR", dag: undefined, arrowStyle: undefined },
     ]);
   });
 });

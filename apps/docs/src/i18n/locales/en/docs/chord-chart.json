@@ -1,6 +1,6 @@
 {
   "title": "Chord diagram",
-  "description": "Flows between groups placed around a circle: each group is an arc sized by its flows, each flow a ribbon between two arcs. Undirected, a ribbon joins a pair of groups and each end is as wide as the flow leaving that end, so asymmetric exchanges show at a glance; directed, every direction has its own ribbon with an arrowhead. Hover a group to highlight its ribbons, hover a ribbon to read both directions; the legend hides / shows groups and the arrow keys walk through groups then ribbons.",
+  "description": "Flows between groups placed around a circle: each group is an arc sized by its flows, each flow a ribbon between two arcs. Undirected, a ribbon joins a pair of groups and is as wide as the flows between them in both directions (a symmetric matrix counts each relation once), so a group that only receives flows keeps its arc; directed, every direction has its own ribbon with an arrowhead. Hover a group to highlight its ribbons, hover a ribbon to read both directions; the legend hides / shows groups and the arrow keys walk through groups then ribbons.",
   "demos": {
     "basic": {
       "title": "Basic",
@@ -8,7 +8,7 @@
     },
     "migration": {
       "title": "Migration between regions",
-      "description": "Each region's arc is its emigration; a ribbon's two ends are the migrants in each direction. The diagonal (migration within a region) is drawn as a loop. groups sets the colors, format the unit, padAngle widens the gaps."
+      "description": "Each region's arc adds up the migrants leaving and arriving; a ribbon is as wide as the moves between two regions both ways, and its tooltip splits them (Value, Reverse). The diagonal (migration within a region) is drawn as a loop. groups sets the colors, format the unit, padAngle widens the gaps."
     },
     "dependencies": {
       "title": "Module dependency matrix",
@@ -49,7 +49,7 @@
       "groups": "Groups (names or { name, color }) in their order around the circle; groups only named by links are appended, unnamed matrix rows are numbered from 1",
       "matrix": "Square flow matrix: matrix[i][j] flows from group i to group j (used when links is absent)",
       "links": "Flows as a list of { source, target, value, color } (by group name or index); takes precedence over matrix",
-      "directed": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored); otherwise one ribbon per pair, each end as wide as the flow leaving it",
+      "directed": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored); otherwise one ribbon per pair, as wide as the flows of both directions (a symmetric matrix counts each relation once)",
       "arrows": "Arrowheads at the target end of the ribbons (true when directed by default)",
       "padAngle": "Gap between the groups, in degrees",
       "startAngle": "Angle of the first group, degrees clockwise from 12 o'clock",
@@ -66,7 +66,7 @@
       "groups": "Groups (names or { name, color }) in their order around the circle; groups only named by links are appended, unnamed matrix rows are numbered from 1",
       "matrix": "Square flow matrix: matrix[i][j] flows from group i to group j (used when links is absent)",
       "links": "Flows as a list of { source, target, value, color } (by group name or index); takes precedence over matrix",
-      "directed": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored); otherwise one ribbon per pair, each end as wide as the flow leaving it",
+      "directed": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored); otherwise one ribbon per pair, as wide as the flows of both directions (a symmetric matrix counts each relation once)",
       "arrows": "Arrowheads at the target end of the ribbons (true when directed by default)",
       "padAngle": "Gap between the groups, in degrees",
       "startAngle": "Angle of the first group, degrees clockwise from 12 o'clock",

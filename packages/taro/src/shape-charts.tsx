@@ -56,7 +56,8 @@ import {
   type TreemapChartOptions,
   type TreemapNode,
 } from "@minerva/charts/canvas";
-import { useThemeTokens } from "./theme";
+import { useOptionalTheme, useThemeTokens } from "./theme";
+import { describeShapeChart } from "./chart-a11y";
 
 export type {
   BulletDatum,
@@ -167,7 +168,7 @@ export interface ShapeChartCommonProps extends ShapeChartFrameProps {
   padding?: ChartPadding;
   /**
    * Accessible name of the chart
-   * @default the chart type, e.g. "Donut chart"
+   * @default the chart type in its locale, e.g. "Donut chart" (a gauge: "Gauge: {label}")
    */
   ariaLabel?: string;
   /**
@@ -609,9 +610,11 @@ export interface ChordChartProps extends ShapeChartCommonProps {
   /** Flows as a list (by group name or index); takes precedence over `matrix` */
   links?: readonly ChordLink[];
   /**
-   * `false`: one ribbon per pair of groups, each end as wide as the flow
-   * leaving that end. `true`: one ribbon per direction, arcs sized by the
-   * outgoing plus the incoming flows (self flows ignored)
+   * `false`: one ribbon per pair of groups, as wide as the flows between
+   * them in both directions (a symmetric matrix counts each relation once),
+   * arcs sized by the ribbons of the group. `true`: one ribbon per
+   * direction (same width at both ends), arcs sized by the outgoing plus
+   * the incoming flows; flows from a group to itself are ignored.
    * @default false
    */
   directed?: boolean;
@@ -778,43 +781,9 @@ const RETRY_MS = 100;
 /** Mouse events emulated after a touch are ignored for this long */
 const MOUSE_AFTER_TOUCH_MS = 800;
 
-/** Default accessible name of a chart (like the web charts) */
-const describe = (o: ShapeChartOptions): string => {
-  switch (o.type) {
-    case "pie":
-      return o.rose
-        ? "Rose chart"
-        : (o.innerRadius ?? 0) > 0
-          ? "Donut chart"
-          : "Pie chart";
-    case "radar":
-      return "Radar chart";
-    case "gauge":
-      return o.label ? `Gauge: ${o.label}` : "Gauge";
-    case "funnel":
-      return "Funnel chart";
-    case "treemap":
-      return "Treemap";
-    case "sankey":
-      return "Sankey diagram";
-    case "sunburst":
-      return "Sunburst chart";
-    case "radialBar":
-      return "Radial bar chart";
-    case "calendarHeatmap":
-      return "Calendar heatmap";
-    case "bullet":
-      return "Bullet chart";
-    case "chord":
-      return "Chord diagram";
-    default:
-      return "Chart";
-  }
-};
-
 /** Locates the canvas node, creates the engine on it and forwards the touches */
 function ShapeChartBase({
-  options,
+  options: input,
   height,
   width = "100%",
   className,
@@ -827,6 +796,15 @@ function ShapeChartBase({
   const generated = `mn-shape-chart-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const canvasId = id ?? generated;
   const tokens = useThemeTokens();
+  // mini-programs have no `<html lang>`: the ConfigProvider's language
+  const providerLocale = useOptionalTheme()?.locale;
+  const options = useMemo(
+    () =>
+      input.locale || !providerLocale
+        ? input
+        : { ...input, locale: providerLocale },
+    [input, providerLocale],
+  );
   const themeKey = JSON.stringify(tokens.css);
   const theme = useMemo<ChartThemeInput>(
     () => ({
@@ -1108,7 +1086,7 @@ function ShapeChartBase({
       className={cn("mn-chart", "mn-shape-chart", className)}
       data-minerva="chart"
       {...{ role: "img" }}
-      aria-label={options.ariaLabel ?? describe(options)}
+      aria-label={describeShapeChart(options)}
       style={{
         position: "relative",
         width: toLength(width),

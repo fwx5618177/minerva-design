@@ -1941,7 +1941,7 @@ export const docPages: DocPageMeta[] = [
     package: "minerva-design/charts",
     exports: ["BubbleChart", "bubbleSeries"],
     api: ["BubbleChartProps", "BubbleOptions"],
-    demos: ["countries", "portfolio", "pipeline"],
+    demos: ["countries", "log-scale", "portfolio", "pipeline"],
     native: {
       exports: ["BubbleChart"],
       api: ["BubbleChartProps"],
@@ -2050,7 +2050,7 @@ export const docPages: DocPageMeta[] = [
     package: "minerva-design/charts",
     exports: ["GanttChart", "ganttSeries"],
     api: ["GanttChartProps", "GanttTask", "GanttOptions"],
-    demos: ["project", "roadmap", "sprint", "locale"],
+    demos: ["project", "dependencies", "roadmap", "sprint", "locale"],
     native: {
       exports: ["GanttChart"],
       api: ["GanttChartProps"],
@@ -2714,7 +2714,14 @@ export const docPages: DocPageMeta[] = [
       "GraphForceLayoutOptions",
       "GraphForceSimulation",
     ],
-    demos: ["characters", "large-network", "circular", "arc", "vanilla"],
+    demos: [
+      "characters",
+      "large-network",
+      "transitions",
+      "circular",
+      "arc",
+      "vanilla",
+    ],
     wc: {
       entry: "graph",
       tags: ["minerva-graph-chart"],

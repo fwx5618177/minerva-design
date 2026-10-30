@@ -6,7 +6,7 @@ import {
   type OrderBookHandle,
   type OrderBookLevelEvent,
 } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../feed";
+import { useMarketStream } from "../feed";
 
 const THRESHOLDS = [2, 5, 10];
 
@@ -18,15 +18,19 @@ export default function LargeOrdersDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [threshold, setThreshold] = useState(5);
   const [picked, setPicked] = useState<OrderBookLevelEvent | null>(null);
-  // more whales than usual: walls of 5 to 30 BTC
-  const [feed] = useState(() => createMarketFeed({ seed: 8, whales: 0.03 }));
-  const [book] = useState(() => feed.snapshot());
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = feed.step(elapsed);
-    bookRef.current?.applyDeltas(delta);
-    if (trades.length) bookRef.current?.setLastPrice(feed.last());
-  });
+  // a fresh market on every mount: its snapshot, then its deltas; more
+  // whales than usual: walls of 5 to 30 BTC
+  useMarketStream(
+    boxRef,
+    { seed: 8, whales: 0.03 },
+    {
+      load: (feed) => bookRef.current?.setBook(feed.snapshot()),
+      update: ({ delta, trades }, feed) => {
+        bookRef.current?.applyDeltas(delta);
+        if (trades.length) bookRef.current?.setLastPrice(feed.last());
+      },
+    },
+  );
 
   const price = new Intl.NumberFormat(i18n.language, {
     minimumFractionDigits: 1,
@@ -53,7 +57,6 @@ export default function LargeOrdersDemo() {
       </RadioGroup>
       <OrderBook
         ref={bookRef}
-        book={book}
         largeOrderThreshold={threshold}
         depthBars="level"
         height={420}

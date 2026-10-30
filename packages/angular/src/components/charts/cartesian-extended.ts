@@ -338,6 +338,10 @@ export class MnGanttChart extends MnSeriesChartBase {
   );
   /** Name of the dependencies row of the tooltip (default "Depends on", in the `locale`) */
   readonly dependenciesName = input<string | undefined>(undefined);
+  /** Draws the `dependencies` of the tasks as elbow arrows from the end of every predecessor to the start of the task */
+  readonly dependencyArrows = input(true, { transform: booleanAttribute });
+  /** Color of the dependency arrows (any CSS color); the secondary text color by default */
+  readonly dependencyColor = input<string | undefined>(undefined);
   /** Draws a line at this date (`true`: now) */
   readonly today = input<boolean | number | Date>(false);
   /** Label of the today line */
@@ -353,6 +357,8 @@ export class MnGanttChart extends MnSeriesChartBase {
       milestoneName: this.milestoneName(),
       formatProgress: this.formatProgress(),
       dependenciesName: this.dependenciesName(),
+      dependencyArrows: this.dependencyArrows(),
+      dependencyColor: this.dependencyColor(),
       locale: this.locale(),
     });
     const today = this.today();
@@ -394,6 +400,7 @@ export class MnGanttChart extends MnSeriesChartBase {
         ...options.yAxis,
       },
       annotations: [...(options.annotations ?? []), ...lines],
+      dependencies: gantt.dependencies,
       interaction: options.interaction ?? { zoom: "y" },
       legend: options.legend ?? gantt.series.length > 1,
     };

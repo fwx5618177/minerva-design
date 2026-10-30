@@ -677,27 +677,34 @@ describe("graph components", () => {
   const cases: Array<[string, Record<string, unknown>, object]> = [
     [
       "GraphChart",
-      { force: { charge: -200 }, edgeColor: "source", nodeSize: [8, 30] },
+      {
+        force: { charge: -200 },
+        edgeColor: "source",
+        nodeSize: [8, 30],
+        arrowStyle: "filled",
+      },
       {
         layout: "force",
         force: { charge: -200 },
         edgeColor: "source",
         nodeSize: [8, 30],
+        arrowStyle: "filled",
       },
     ],
     [
       "DependencyGraph",
-      { dag: { layerGap: 80 }, criticalPath: true },
+      { dag: { layerGap: 80 }, criticalPath: true, arrowStyle: "open" },
       {
         layout: "dag",
         direction: "TB",
         dag: { layerGap: 80, criticalPath: true },
+        arrowStyle: "open",
       },
     ],
     [
       "TreeChart",
-      { layout: "org", tree: { root: "a" } },
-      { layout: "org", tree: { root: "a" } },
+      { layout: "org", tree: { root: "a" }, arrowStyle: "filled" },
+      { layout: "org", tree: { root: "a" }, arrowStyle: "filled" },
     ],
   ];
 

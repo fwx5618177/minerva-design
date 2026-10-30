@@ -3,7 +3,8 @@
 // row by row), lit and colored by height, with contour lines projected on
 // the floor.
 import { computed } from "vue";
-import { Surface3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Surface3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { name: "Ripple", height: "Height" },

@@ -279,25 +279,58 @@ export const localPoint = (
   return [event.clientX - rect.left, event.clientY - rect.top];
 };
 
-/** Rows of a tooltip: label / value pairs, an optional colored title */
+/**
+ * Rows of a tooltip: label / value pairs, an optional title (colored text,
+ * and a badge: a colored dot and a short text at its right)
+ */
 export const tooltipHtml = (
   doc: Document,
   tip: HTMLElement,
-  title: { text: string; color?: string } | null,
+  title: {
+    text: string;
+    color?: string;
+    badge?: { text: string; color: string };
+  } | null,
   rows: readonly (readonly [string, string])[],
 ) => {
   // the content only changes when the hovered values do
-  const key = `${title?.text ?? ""}|${title?.color ?? ""}|${rows.map((r) => r.join("=")).join("|")}`;
+  const badge = title?.badge;
+  const key = `${title?.text ?? ""}|${title?.color ?? ""}|${badge ? `${badge.text}:${badge.color}` : ""}|${rows.map((r) => r.join("=")).join("|")}`;
   if (tip.dataset.key === key) return;
   tip.dataset.key = key;
   tip.textContent = "";
   if (title) {
     const head = styleElement(doc.createElement("div"), {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "12px",
       fontWeight: "600",
       marginBottom: "2px",
       color: title.color ?? "inherit",
     });
-    head.textContent = title.text;
+    const text = doc.createElement("span");
+    text.textContent = title.text;
+    head.appendChild(text);
+    if (badge) {
+      const tag = styleElement(doc.createElement("span"), {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "5px",
+        fontWeight: "500",
+        color: badge.color,
+      });
+      tag.className = "minerva-orderbook-tooltip-badge";
+      const dot = styleElement(doc.createElement("span"), {
+        width: "7px",
+        height: "7px",
+        borderRadius: "50%",
+        background: badge.color,
+        flex: "none",
+      });
+      tag.append(dot, doc.createTextNode(badge.text));
+      head.appendChild(tag);
+    }
     tip.appendChild(head);
   }
   for (const [label, value] of rows) {

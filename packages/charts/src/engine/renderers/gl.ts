@@ -86,7 +86,7 @@ export const itemParams = (
     case "line":
       return [(item.width * frame.dpr) / 2, 0, 0, 0];
     case "area":
-      return [0, item.opacity, 0, 0];
+      return [item.flat ? 1 : 0, item.opacity, 0, 0];
     case "bar":
       return [item.halfWidth, item.radius, item.inset, item.minHalf];
     default:

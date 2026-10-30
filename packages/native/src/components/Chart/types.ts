@@ -4,6 +4,7 @@ import type {
   ChartAnnotation,
   ChartAxisOptions,
   ChartController,
+  ChartDependency,
   ChartHoverEvent,
   ChartInteractionOptions,
   ChartLabels,
@@ -142,6 +143,12 @@ export interface ChartProps extends ChartCommonProps {
    * @default "vertical"
    */
   orientation?: ChartOrientation;
+  /**
+   * Arrows between categories, e.g. the dependencies of a Gantt chart
+   * (`ganttSeries(...).dependencies`): elbows from the end of a bar to the
+   * start of another
+   */
+  dependencies?: readonly ChartDependency[];
 }
 
 /** Props of LineChart */

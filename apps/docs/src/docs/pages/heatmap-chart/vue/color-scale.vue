@@ -2,7 +2,8 @@
 // A diverging color scale over a fixed value range (-1 to 1): negative
 // correlations in blue, positive ones in red.
 import { computed } from "vue";
-import { HeatmapChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HeatmapChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

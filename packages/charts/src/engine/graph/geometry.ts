@@ -167,7 +167,12 @@ export const roundCorners = (
 };
 
 /** Upper half circle between two points of the x axis (arc diagrams) */
-export const arcPath = (ax: number, bx: number, y: number): number[] => {
+export const arcPath = (
+  ax: number,
+  bx: number,
+  y: number,
+  rise = 1,
+): number[] => {
   const cx = (ax + bx) / 2;
   const r = Math.abs(bx - ax) / 2;
   const segments = 2 * Math.max(4, Math.min(32, Math.ceil(r / 12)));
@@ -176,8 +181,41 @@ export const arcPath = (ax: number, bx: number, y: number): number[] => {
   const to = ax < bx ? 0 : Math.PI;
   for (let i = 0; i <= segments; i++) {
     const a = from + ((to - from) * i) / segments;
-    out.push(cx + r * Math.cos(a), y - r * Math.sin(a));
+    out.push(cx + r * Math.cos(a), y - r * rise * Math.sin(a));
   }
+  return out;
+};
+
+/**
+ * Self-loop of a node at (x, y): a teardrop leaving the boundary at
+ * `start` units from the center and coming back at `end` units, centered on
+ * the direction `angle`, reaching about `size` units beyond the boundary
+ */
+export const loopPath = (
+  x: number,
+  y: number,
+  angle: number,
+  start: number,
+  end: number,
+  size: number,
+): number[] => {
+  const open = 0.42;
+  const wide = 0.8;
+  const reach = Math.max(start, end) + size * 2.2;
+  const a0 = angle - open;
+  const a1 = angle + open;
+  const out = [x + Math.cos(a0) * start, y + Math.sin(a0) * start];
+  cubicPoints(
+    out,
+    out[0],
+    out[1],
+    x + Math.cos(angle - wide) * reach,
+    y + Math.sin(angle - wide) * reach,
+    x + Math.cos(angle + wide) * reach,
+    y + Math.sin(angle + wide) * reach,
+    x + Math.cos(a1) * end,
+    y + Math.sin(a1) * end,
+  );
   return out;
 };
 
@@ -300,6 +338,86 @@ export const arrowHead = (
   const nx = (rx + bx) / 2;
   const ny = (ry + by) / 2;
   out.push(tx, ty, mx, my, gap, gap, tx, ty, nx, ny, gap, gap);
+};
+
+/** Filled triangle as area points (x, top, bottom): two x-monotone pieces */
+export const triangleArea = (
+  out: number[],
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+  cx: number,
+  cy: number,
+  gap: number,
+): void => {
+  // sort the corners by x
+  let p = [ax, ay, bx, by, cx, cy];
+  if (p[0] > p[2]) p = [p[2], p[3], p[0], p[1], p[4], p[5]];
+  if (p[2] > p[4]) p = [p[0], p[1], p[4], p[5], p[2], p[3]];
+  if (p[0] > p[2]) p = [p[2], p[3], p[0], p[1], p[4], p[5]];
+  const [x1, y1, x2, y2, x3, y3] = p;
+  if (!(x3 - x1 > 1e-12)) return;
+  // the long side at the middle corner; the larger y is always the top, so
+  // every triangle winds the same way (overlapping ones never cancel)
+  const y13 = y1 + ((y3 - y1) * (x2 - x1)) / (x3 - x1);
+  out.push(
+    x1,
+    y1,
+    y1,
+    x2,
+    Math.max(y2, y13),
+    Math.min(y2, y13),
+    x3,
+    y3,
+    y3,
+    gap,
+    gap,
+    gap,
+  );
+};
+
+/** Corners of a filled ("stealth") arrowhead: tip, left, notch, right */
+const arrowCorners = (
+  tx: number,
+  ty: number,
+  ux: number,
+  uy: number,
+  length: number,
+): number[] => {
+  const w = length * 0.5;
+  const bx = tx - ux * length;
+  const by = ty - uy * length;
+  return [
+    tx,
+    ty,
+    bx - uy * w,
+    by + ux * w,
+    tx - ux * length * 0.72,
+    ty - uy * length * 0.72,
+    bx + uy * w,
+    by - ux * w,
+  ];
+};
+
+/**
+ * Filled arrowhead at (tx, ty) pointing along (ux, uy): area triangles in
+ * `fill`, its outline (anti-aliased edges) in `outline`
+ */
+export const filledArrow = (
+  fill: number[],
+  outline: number[],
+  tx: number,
+  ty: number,
+  ux: number,
+  uy: number,
+  length: number,
+  gap: number,
+): void => {
+  const [x0, y0, lx, ly, nx, ny, rx, ry] = arrowCorners(tx, ty, ux, uy, length);
+  triangleArea(fill, x0, y0, lx, ly, nx, ny, gap);
+  triangleArea(fill, x0, y0, nx, ny, rx, ry, gap);
+  outline.push(lx, ly, x0, y0, rx, ry, nx, ny, lx, ly, gap, gap);
 };
 
 /** Splits a polyline into dashes (`dash` / `space` in layout units) */

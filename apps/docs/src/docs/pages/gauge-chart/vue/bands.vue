@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Colored bands split the track; the value arc takes the color of its band.
 import { computed } from "vue";
-import { GaugeChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GaugeChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: "CPU load",

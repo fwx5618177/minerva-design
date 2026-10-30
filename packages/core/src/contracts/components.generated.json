@@ -802,6 +802,14 @@
       },
       { "name": "lighting", "kind": "object", "required": false, "description": "Lighting of the surfaces and bars", "only": "react" },
       {
+        "name": "exposure",
+        "kind": "number",
+        "default": 1,
+        "required": false,
+        "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)",
+        "only": "react"
+      },
+      {
         "name": "renderer",
         "kind": "enum",
         "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
@@ -824,7 +832,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
         "only": "wc"
       }
     ],
@@ -2410,7 +2418,7 @@
         "kind": "boolean",
         "default": false,
         "required": false,
-        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end. `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)",
+        "description": "`false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix counts each relation once). `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)",
         "attribute": "directed"
       },
       { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads at the target end of the ribbons", "only": "react" },
@@ -3411,6 +3419,15 @@
         "attribute": "edge-color"
       },
       { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "arrowStyle",
+        "kind": "enum",
+        "values": ["filled", "open"],
+        "default": "open",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)",
+        "attribute": "arrow-style"
+      },
       {
         "name": "nodeLabels",
         "kind": "union",
@@ -4788,6 +4805,30 @@
       { "name": "milestoneName", "kind": "string", "required": false, "description": "Name of the milestones (legend, tooltip)", "attribute": "milestone-name" },
       { "name": "formatProgress", "kind": "function", "default": "60%", "required": false, "description": "Formats the progress shares (tooltip)" },
       { "name": "dependenciesName", "kind": "string", "required": false, "description": "Name of the dependencies row of the tooltip", "attribute": "dependencies-name" },
+      {
+        "name": "dependencyArrows",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Draws the dependencies as elbow arrows from the end of every predecessor to the start of the task",
+        "only": "react"
+      },
+      {
+        "name": "dependencyColor",
+        "kind": "string",
+        "required": false,
+        "description": "Color of the dependency arrows (any CSS color); the secondary text color by default",
+        "attribute": "dependency-color"
+      },
+      {
+        "name": "hideDependencyArrows",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Hides the elbow arrows drawn for the `dependencies` of the tasks",
+        "attribute": "hide-dependency-arrows",
+        "only": "wc"
+      },
       { "name": "options", "kind": "object", "required": false, "description": "Other engine options (axes, legend, annotations, interaction...); property only", "only": "wc" }
     ],
     "events": [
@@ -4989,6 +5030,15 @@
         "attribute": "edge-color"
       },
       { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "arrowStyle",
+        "kind": "enum",
+        "values": ["filled", "open"],
+        "default": "open",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)",
+        "attribute": "arrow-style"
+      },
       {
         "name": "nodeLabels",
         "kind": "union",
@@ -6110,6 +6160,14 @@
       },
       { "name": "lighting", "kind": "object", "required": false, "description": "Lighting of the surfaces and bars", "only": "react" },
       {
+        "name": "exposure",
+        "kind": "number",
+        "default": 1,
+        "required": false,
+        "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)",
+        "only": "react"
+      },
+      {
         "name": "renderer",
         "kind": "enum",
         "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
@@ -6132,7 +6190,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
         "only": "wc"
       }
     ],
@@ -7812,12 +7870,18 @@
         "description": "Multiplies the sizes before the scale: above 1 brightens thin liquidity, below 1 keeps only the walls",
         "only": "react"
       },
-      { "name": "maxSize", "kind": "number", "required": false, "description": "Size drawn with the hottest color; follows the data when omitted", "only": "react" },
+      {
+        "name": "maxSize",
+        "kind": "number",
+        "required": false,
+        "description": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used",
+        "only": "react"
+      },
       {
         "name": "colors",
         "kind": "array",
         "required": false,
-        "description": "Color ramp, coldest first, interpolated in OKLab after the floor color (the background, a shade darker in dark themes, shown where there is no liquidity); a perceptual heat ramp suited to the theme when omitted",
+        "description": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): make it a dark color in dark themes and a pale one in light themes. A perceptual heat ramp suited to the theme when omitted",
         "only": "react"
       },
       { "name": "bubbles", "kind": "boolean", "default": true, "required": false, "description": "Trades drawn as bubbles sized by volume (buys / sells colors)", "only": "react" },
@@ -9913,6 +9977,14 @@
       },
       { "name": "lighting", "kind": "object", "required": false, "description": "Lighting of the surfaces and bars", "only": "react" },
       {
+        "name": "exposure",
+        "kind": "number",
+        "default": 1,
+        "required": false,
+        "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)",
+        "only": "react"
+      },
+      {
         "name": "renderer",
         "kind": "enum",
         "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
@@ -9935,7 +10007,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
         "only": "wc"
       }
     ],
@@ -11058,6 +11130,14 @@
       },
       { "name": "lighting", "kind": "object", "required": false, "description": "Lighting of the surfaces and bars", "only": "react" },
       {
+        "name": "exposure",
+        "kind": "number",
+        "default": 1,
+        "required": false,
+        "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)",
+        "only": "react"
+      },
+      {
         "name": "renderer",
         "kind": "enum",
         "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
@@ -11080,7 +11160,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, lighting, exposure, locale...); property only",
         "only": "wc"
       }
     ],
@@ -12879,10 +12959,10 @@
       {
         "name": "colorConvention",
         "kind": "enum",
-        "values": ["greenUp", "redUp"],
+        "values": ["auto", "greenUp", "redUp"],
         "default": "greenUp",
         "required": false,
-        "description": "Colors of rising / falling bars: `redUp` swaps the defaults. Not derived from `locale` (a Chinese page may still show global markets): set it explicitly",
+        "description": "Colors of rising / falling bars: `redUp` swaps the defaults, `auto` follows the market convention of the `locale` (red up for CN, TW, JP and KR). Not derived from the locale by default (a Chinese page may still show global markets)",
         "only": "react"
       },
       { "name": "upColor", "kind": "string", "required": false, "description": "Color of rising bars (any CSS color, `var(--x)` included)", "only": "react" },
@@ -12917,7 +12997,7 @@
         "kind": "boolean",
         "default": false,
         "required": false,
-        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price",
+        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price. With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels; `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones",
         "only": "react"
       },
       {
@@ -12971,6 +13051,14 @@
         "description": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)",
         "only": "react"
       },
+      {
+        "name": "autoscaleIncludesDrawings",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "The automatic price scale also fits the visible drawings of each pane (lines, channels, position tools...)",
+        "only": "react"
+      },
       { "name": "baselinePrice", "kind": "number", "required": false, "description": "Price of the `baseline` style; the close of the first visible bar by default", "only": "react" },
       { "name": "rightOffset", "kind": "number", "default": 8, "required": false, "description": "Empty space after the last bar, in bars", "only": "react" },
       { "name": "barSpacing", "kind": "number", "default": 8, "required": false, "description": "Initial width of a bar, in pixels", "only": "react" },
@@ -13001,7 +13089,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only",
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, autoscaleIncludesDrawings, labels...); property only",
         "only": "wc"
       }
     ],
@@ -13178,6 +13266,15 @@
         "attribute": "edge-color"
       },
       { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "arrowStyle",
+        "kind": "enum",
+        "values": ["filled", "open"],
+        "default": "open",
+        "required": false,
+        "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)",
+        "attribute": "arrow-style"
+      },
       {
         "name": "nodeLabels",
         "kind": "union",

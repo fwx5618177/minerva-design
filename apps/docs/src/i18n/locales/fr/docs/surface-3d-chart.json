@@ -20,7 +20,7 @@
     },
     "transparency": {
       "title": "Transparence",
-      "description": "Deux surfaces d'opacité inférieure à 1 montrent où un plan incliné coupe un bol ; colorBy \"series\" donne à chacune sa couleur de légende."
+      "description": "Deux surfaces d'opacité inférieure à 1 montrent où un plan incliné traverse un bol ; colorBy \"series\" donne à chacune sa couleur de légende. Sur WebGPU et WebGL2, surfaces, barres et points transparents se mélangent dans n'importe quel ordre (transparence indépendante de l'ordre par mélange pondéré) : les intersections restent nettes ; WebGL et Canvas2D les trient de l'arrière vers l'avant."
     },
     "live-wave": {
       "title": "Onde animée",
@@ -123,6 +123,7 @@
       "tooltip": "Infobulle ; false la désactive, render remplace son contenu",
       "interaction": "Glisser fait tourner, clic droit / Maj + glisser déplace, Ctrl / ⌘ + molette et pincement zooment, double clic réinitialise, les flèches font tourner ; false rend le graphique statique",
       "lighting": "Lumière ambiante, diffuse et spéculaire des surfaces et des barres",
+      "exposure": "Luminosité de la lumière des séries additives (blend \"additive\"), avec mappage tonal sur WebGPU et WebGL2 : les régions lumineuses denses saturent en douceur au lieu de virer au blanc",
       "renderer": "Moteur de la couche de données : auto essaie WebGPU, WebGL2, WebGL puis Canvas2D, en ignorant les GPU logiciels",
       "palette": "Couleurs des séries (par défaut les variables CSS --chart-series-1..8, puis les couleurs du thème)",
       "ariaLabel": "Nom accessible du graphique",

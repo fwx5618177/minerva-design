@@ -7,6 +7,7 @@
 
 import { luminance, parseColor, toCss, type Rgba } from "../color";
 import { resolveLocale } from "../locale";
+import { followDefaultRenderer } from "../renderers/follow";
 import { tickStep } from "../scale";
 import {
   readTheme,
@@ -549,9 +550,10 @@ export const createChart3D = (
             l.shininess ?? DEFAULT_LIGHTING.shininess,
           ],
           fog: theme.background,
+          exposure: Math.max(0, options.exposure ?? 1),
         };
         renderer.render(
-          renderer.kind === "canvas2d"
+          renderer.kind === "canvas2d" || renderer.orderIndependent
             ? geometry.items
             : sortTransparent(geometry.items, frame3d),
           frame3d,
@@ -1156,6 +1158,10 @@ export const createChart3D = (
   refreshColors();
   rebuild();
   void initRenderer();
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
 
   // ---------------------------------------------------------------- api
 
@@ -1223,6 +1229,7 @@ export const createChart3D = (
       doc.removeEventListener("visibilitychange", onVisibility);
       dprQuery?.removeEventListener?.("change", onDprChange);
       reducedMotion?.removeEventListener?.("change", onMotionChange);
+      unfollowDefault();
       unwatchTheme();
       langObserver?.disconnect();
       stage.removeEventListener("pointerdown", onPointerDown);

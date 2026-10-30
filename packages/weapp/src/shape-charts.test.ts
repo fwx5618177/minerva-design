@@ -495,3 +495,15 @@ it("forwards locale and texts to the engine", async () => {
   fake.flush();
   expect(fake.texts()).toContain("空");
 });
+
+it("names the chart in the ConfigProvider's language unless it has a locale", async () => {
+  const { w, fake } = await mount(pieChart, { data: [], animation: false });
+  w.setData({ localeLanguage: "zh" });
+  await tick();
+  fake.flush();
+  expect(w.instance.data.chartLabel).toBe("饼图");
+  expect(fake.texts()).toContain("暂无数据");
+  w.setData({ data, locale: "ja" });
+  await tick();
+  expect(w.instance.data.chartLabel).toBe("円グラフ");
+});

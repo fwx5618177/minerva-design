@@ -510,6 +510,10 @@ export interface OrderBookHeatmapLabels {
   bid: string;
   /** Best ask, in the screen reader summary @default "Ask" */
   ask: string;
+  /** Side badge of a hovered bid row in the tooltip @default "Bid side" */
+  bidSide: string;
+  /** Side badge of a hovered ask row in the tooltip @default "Ask side" */
+  askSide: string;
   /** Accessible name (when `ariaLabel` is not set) @default "Liquidity heatmap" */
   name: string;
 }
@@ -554,12 +558,16 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
    * @default 1
    */
   contrast?: number;
-  /** Size drawn with the hottest color; follows the data when omitted */
+  /**
+   * Size drawn with the hottest color; when omitted, the 98th percentile of
+   * the visible sizes (eased), so the whole ramp is used
+   */
   maxSize?: number;
   /**
-   * Color ramp, coldest first, interpolated in OKLab after the floor color
-   * (the background, a shade darker in dark themes, shown where there is no
-   * liquidity); a perceptual heat ramp suited to the theme when omitted
+   * Color ramp, coldest first, interpolated in OKLab. The first color also
+   * fills the cells without liquidity (the field is opaque, no holes): make
+   * it a dark color in dark themes and a pale one in light themes. A
+   * perceptual heat ramp suited to the theme when omitted
    */
   colors?: readonly string[];
   /**

@@ -99,6 +99,12 @@ export interface GraphCommonProps {
   /** Arrowheads on the edges without `directed` */
   arrows?: boolean;
   /**
+   * Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a
+   * solid head in the edge color, which follows the theme and the highlight)
+   * @default "open"
+   */
+  arrowStyle?: "open" | "filled";
+  /**
    * Node labels; `auto` hides minor and overlapping labels when zoomed out.
    * Text inside boxes keeps a readable minimum size and is shortened with an ellipsis;
    * it is hidden only when the box is too small for any text, or with `false`
@@ -407,6 +413,7 @@ function GraphFrame({
     edgeWidth,
     edgeColor,
     arrows,
+    arrowStyle,
     nodeLabels,
     edgeLabels,
     highlight,
@@ -444,6 +451,7 @@ function GraphFrame({
     edgeWidth,
     edgeColor,
     arrows,
+    arrowStyle,
     nodeLabels,
     edgeLabels,
     highlight,

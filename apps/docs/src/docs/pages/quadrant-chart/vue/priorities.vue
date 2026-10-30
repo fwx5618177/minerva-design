@@ -2,7 +2,8 @@
 // Points, quadrant titles and axis titles; dots are placed without
 // overlapping labels.
 import { computed } from "vue";
-import { QuadrantChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { QuadrantChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

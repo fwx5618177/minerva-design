@@ -3,7 +3,8 @@
 // their manager; clicking a manager collapses / expands the team and
 // @toggle reports it.
 import { computed, ref } from "vue";
-import { TreeChart, useI18n, type GraphToggleEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { TreeChart, type GraphToggleEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

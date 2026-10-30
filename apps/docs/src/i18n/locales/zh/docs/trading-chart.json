@@ -20,12 +20,13 @@
       "pointer": "滚轮在指针位置缩放（Shift 或横向滑动可平移），拖动平移并带有惯性。",
       "axes": "拖动价格轴可纵向缩放，拖动时间轴可调整 K 线宽度；双击坐标轴即可复位。",
       "keyboard": "聚焦图表后：方向键逐根移动十字光标（按住 Shift 一次十根）并朗读价格，+ / − 缩放，Home / End 跳到第一根 / 最新 K 线，Delete 删除选中的画线，Ctrl / ⌘ + Z 撤销、Ctrl / ⌘ + Shift + Z 重做画线修改，Escape 取消。",
+      "orders": "开启 orderEntry 后：B / S 在十字光标价格（或最新价）处预备一笔限价买单 / 卖单，↑ / ↓ 按最小价位调整（按住 Shift 一次十档），回车下单，Escape 放弃。O / Shift + O 依次选中可拖动或可撤销的价格线，用同样的方式改价，Delete 撤销选中的委托。每一步都会朗读，并触发与鼠标操作相同的事件（orderCreate、orderMove、orderCancel）。",
       "touch": "触屏设备上：拖动平移，双指捏合缩放。"
     },
     "languages": {
       "title": "多语言",
       "text": "图表自身绘制的文字（开高低收名称、委托与预警线标题、倒计时、测量工具、无障碍名称）内置英文、中文、日文和法文，并跟随页面语言（<html lang>），切换语言时自动更新。成交量使用该语言的单位（中文为万 / 亿）。用 locale 指定其他语言，用 labels 替换任意文字。",
-      "colors": "涨跌颜色不跟随语言：中文页面也可能展示美股，因此中国内地的红涨绿跌需要显式设置 colorConvention=\"redUp\"。"
+      "colors": "涨跌颜色默认不跟随语言：中文页面也可能展示美股。红涨绿跌的市场请设置 colorConvention=\"redUp\"；或设置 colorConvention=\"auto\" 按 locale 自动选择：中国内地、台湾、日本和韩国（zh-CN、zh-TW、ja-JP、ko-KR，或不带地区的 zh / ja / ko）为红涨，其余地区（包括香港）为绿涨。"
     },
     "workflow": {
       "title": "工作流",
@@ -54,7 +55,7 @@
     },
     "drawing-tools": {
       "title": "画线工具",
-      "description": "十四种工具：选择后拖动或逐点点击锚点（通道和音叉需要三个点）。选中画线后可在浮动工具栏里修改颜色、线宽、线型、填充，锁定或删除；拖动画线或其控制点即可移动，双击文字注释可编辑。RSI 窗格上同样可以画线；撤销 / 重做可用按钮或 Ctrl / ⌘ + Z。"
+      "description": "十四种工具：选择后拖动或逐点点击锚点（通道和音叉需要三个点）。选中画线后可在浮动工具栏里修改颜色、线宽、线型、填充，锁定或删除；拖动画线或其控制点即可移动，双击文字注释可编辑。RSI 窗格上同样可以画线；撤销 / 重做可用按钮或 Ctrl / ⌘ + Z。开启 autoscaleIncludesDrawings 后，价格刻度会同时容纳可见的画线（例如这里仓位工具的止盈和止损）。"
     },
     "orders": {
       "title": "委托与持仓",
@@ -74,7 +75,7 @@
     },
     "red-up": {
       "title": "红涨绿跌",
-      "description": "colorConvention=\"redUp\" 采用中国内地、香港、日本和韩国的配色习惯；utcOffset 按上海证券交易所时间显示。MA5 / 10 / 20 / 60、带 MA5 的成交量和 KDJ，与国内券商 App 一致。配色习惯不会根据页面语言自动推断（中文页面也可能展示美股），请显式设置。"
+      "description": "colorConvention=\"redUp\" 采用中国内地、台湾、日本和韩国的配色习惯；\"auto\" 根据页面语言自动选择（把文档切换为中文或日文即为红涨）；utcOffset 按上海证券交易所时间显示。MA5 / 10 / 20 / 60、带 MA5 的成交量和 KDJ，与国内券商 App 一致。"
     },
     "dark-terminal": {
       "title": "暗色终端",
@@ -94,7 +95,7 @@
     },
     "order-entry": {
       "title": "图上下单",
-      "description": "开启 orderEntry 后，价格窗格右侧会有一个跟随十字光标的 + 按钮：点击即在该价格下限价单（低于最新价为买入，高于为卖出）。委托是可拖动、可撤销的价格线，通过 onOrderCreate、onOrderMove 和 onOrderCancel 保存在 React 状态里。"
+      "description": "开启 orderEntry 后，价格窗格右侧会有一个跟随十字光标的 + 按钮：点击即在该价格下限价单（低于最新价为买入，高于为卖出）。键盘同样可以下单：Tab 聚焦图表，按 B 或 S，用方向键调整价格后回车；按 O 选中已有委托，可改价或按 Delete 撤单。委托是可拖动、可撤销的价格线，通过 onOrderCreate、onOrderMove 和 onOrderCancel 保存在 React 状态里。"
     },
     "sessions": {
       "title": "时区与交易时段",
@@ -178,6 +179,7 @@
       "shortPosition": "空头仓位"
     },
     "keepDrawing": "保持画线模式",
+    "fitDrawings": "价格刻度包含画线",
     "clearDrawings": "全部删除",
     "drawingsStatus": "画线：{{count}}",
     "drawingAria": "带画线的 ETH/USDT 四小时图",
@@ -252,7 +254,7 @@
     "orderModified": "委托已从 {{from}} 改到 {{to}}",
     "orderCancelled": "已撤销 {{price}} 的委托",
     "orderEntryAria": "可图上下单的 BTCUSDT 永续 5 分钟图",
-    "orderEntryHint": "在图上移动鼠标，点击右侧的 + 下单；拖动价格线改价，点 × 撤单。",
+    "orderEntryHint": "在图上移动鼠标，点击右侧的 + 下单，或聚焦图表后按 B / S；拖动价格线改价，点 × 撤单。",
     "timeZone": "时区",
     "zones": {
       "America_New_York": "纽约",
@@ -266,7 +268,28 @@
     "noteText": "上涨通道：等待回踩确认",
     "ordersTitle": "当前委托",
     "rowCount": "{{count}} 档",
-    "barsPerSecond": "{{count}} 根 / 秒"
+    "barsPerSecond": "{{count}} 根 / 秒",
+    "colorConvention": "涨跌配色",
+    "conventions": {
+      "redUp": "红涨绿跌",
+      "auto": "跟随语言",
+      "greenUp": "绿涨红跌"
+    },
+    "keyboard": {
+      "title": "键盘操作",
+      "armKeys": "B S",
+      "arm": "预备买单 / 卖单",
+      "moveKeys": "↑ ↓",
+      "move": "调整价格（Shift：×10）",
+      "confirmKeys": "Enter",
+      "confirm": "下单或确认改价",
+      "cancelKeys": "Esc",
+      "cancel": "放弃",
+      "selectKeys": "O",
+      "select": "选中下一笔委托",
+      "removeKeys": "Delete",
+      "remove": "撤销选中的委托"
+    }
   },
   "api": {
     "TradingChartProps": {
@@ -298,7 +321,7 @@
       "chartStyle": "K 线的绘制方式：candles、hollowCandles、heikinAshi、bars、line、area 或 baseline",
       "indicators": "指标：均线、布林带和 VWAP 叠加在主图上，其他指标按顺序显示在下方副图",
       "scaleMode": "主图价格坐标：linear、log 或 percent（相对首根可见 K 线）",
-      "colorConvention": "greenUp（多数市场）或 redUp（中国、日本、韩国）：互换默认的涨跌颜色。不会根据语言自动切换，需要显式设置",
+      "colorConvention": "greenUp（多数市场）、redUp（中国内地、台湾、日本、韩国）或 auto（locale 属于上述市场时为 redUp，否则为 greenUp）：互换默认的涨跌颜色。默认不根据语言切换",
       "upColor": "上涨 K 线颜色，可为任意 CSS 颜色，包括 var()",
       "downColor": "下跌 K 线颜色",
       "precision": "价格小数位数；默认根据数据检测",
@@ -317,6 +340,7 @@
       "drawingMode": "当前画线工具；cursor 用于选择和移动画线",
       "keepDrawingMode": "画完后保持当前工具，而不是回到光标",
       "baselinePrice": "基准线样式的分割价格；默认为首根可见 K 线的收盘价",
+      "autoscaleIncludesDrawings": "自动价格刻度同时容纳各窗格中可见的画线（直线、通道、多空仓位工具等）。",
       "rightOffset": "最后一根 K 线右侧的留白，单位为根",
       "barSpacing": "K 线初始宽度（像素）",
       "wheel": "鼠标滚轮：zoom、modifier（仅 Ctrl / ⌘，否则滚动页面）或 none",
@@ -328,7 +352,7 @@
       "ariaLabel": "无障碍标签；默认由品种名称生成",
       "timeZone": "时间轴、交易日分隔线和 VWAP 周期使用的时区：IANA 名称（\"America/New_York\"）或 \"UTC\"；默认为本地时间。",
       "sessionBreaks": "在每天开始处画垂直虚线（日内 K 线）。",
-      "orderEntry": "在价格窗格右侧、十字光标价格处显示 + 按钮：点击后触发限价单事件（orderCreate）。",
+      "orderEntry": "在价格窗格右侧、十字光标价格处显示 + 按钮：点击后触发限价单事件（orderCreate）。图表获得焦点时，B / S 预备买单 / 卖单，方向键调整价格，回车确认，Escape 取消；O 选中可拖动的价格线进行改价，Delete 撤销可撤销的委托。",
       "volumeProfile": "可见 K 线的成交量分布，含 POC 和价值区（true 使用默认设置）。",
       "drawingToolbar": "选中画线时显示的浮动工具栏（颜色、线宽、线型、填充、锁定、删除）。"
     },
@@ -471,7 +495,12 @@
       "replay": "K 线回放的标记；{time} 会被替换。",
       "replayHint": "选择回放起始 K 线时的提示。",
       "buyLimit": "低于最新价时下单按钮的文字；{price} 会被替换。",
-      "sellLimit": "高于最新价时下单按钮的文字；{price} 会被替换。"
+      "sellLimit": "高于最新价时下单按钮的文字；{price} 会被替换。",
+      "orderHint": "键盘预备委托或选中价格线时朗读的提示。默认 \"Arrows move the price, Enter confirms, Escape cancels\"。",
+      "orderCancelHint": "选中的价格线可撤销时朗读的提示。默认 \"Delete cancels the order\"。",
+      "orderLine": "键盘选中的价格线；替换 {title} 和 {price}。默认 \"{title} at {price}\"。",
+      "orderPlaced": "下单或改价后朗读；替换 {price}。默认 \"Order placed at {price}\"。",
+      "orderCancelled": "放弃键盘委托或撤单后朗读。默认 \"Order cancelled\"。"
     },
     "TradingCrosshairEvent": {
       "index": "悬停 K 线的序号（可能超出最后一根）",
@@ -519,7 +548,7 @@
     },
     "TradingOrderCreateEvent": {
       "price": "委托价格（按价格精度取整）。",
-      "side": "低于最新价为 buy，高于为 sell。"
+      "side": "低于最新价为 buy，高于为 sell（键盘下单时取决于按下的 B 或 S）。"
     },
     "TradingOrderCancelEvent": {
       "id": "价格线的 id。",

@@ -19,6 +19,7 @@ import { createOrderBookHeatmap, heatIntensity } from "./heatmap";
 import { createOrderBook } from "./ladder";
 import { createTimeAndSales } from "./tape";
 import { readTheme } from "../theme";
+import { setDefaultChartRenderer } from "../defaults";
 import type { MarketTrade } from "./types";
 
 /** 2D context double recording the texts drawn */
@@ -334,6 +335,55 @@ describe("order book heatmap", () => {
     expect(el.childElementCount).toBe(0);
   });
 
+  it("recreates its heat field when the default renderer switches live", async () => {
+    const fake2d = fakeContext().ctx;
+    // a WebGL double: every call succeeds
+    const gl = new Proxy({} as Record<string, unknown>, {
+      get(_target, key: string) {
+        if (key === "isContextLost") return () => false;
+        if (key === "getExtension") return () => null;
+        if (key === "getParameter") return () => "Apple M3";
+        if (/^[A-Z_0-9]+$/.test(key)) return key;
+        return () => (key.startsWith("get") ? true : {});
+      },
+    });
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(((
+      kind: string,
+    ) => (kind === "2d" ? fake2d : kind === "webgl2" ? gl : null)) as never);
+    const auto = createOrderBookHeatmap(mount(), { interval: 100 });
+    const fixed = createOrderBookHeatmap(mount(), {
+      interval: 100,
+      renderer: "canvas2d",
+    });
+    const switches: string[] = [];
+    auto.on("renderer", (kind) => switches.push(kind));
+    try {
+      setDefaultChartRenderer("canvas2d");
+      await auto.ready;
+      await frame();
+      expect(auto.getRenderer()).toBe("canvas2d");
+      setDefaultChartRenderer("webgl2");
+      await frame();
+      expect(auto.getRenderer()).toBe("webgl2");
+      setDefaultChartRenderer("canvas2d");
+      await frame();
+      expect(auto.getRenderer()).toBe("canvas2d");
+      expect(switches.slice(-2)).toEqual(["webgl2", "canvas2d"]);
+      // one heat field canvas at a time, the old one is removed
+      const root = document.querySelectorAll<HTMLElement>(
+        ".minerva-orderbook-heatmap",
+      )[0]!;
+      expect(root.dataset.renderer).toBe("canvas2d");
+      expect(root.querySelectorAll("canvas").length).toBe(2);
+      // an explicit backend doesn't follow the default
+      expect(fixed.getRenderer()).toBe("canvas2d");
+    } finally {
+      setDefaultChartRenderer("auto");
+      auto.destroy();
+      fixed.destroy();
+    }
+  });
+
   it("draws tags, the profile scale, hovers cells and pans / zooms", async () => {
     const el = mount();
     const heatmap = createOrderBookHeatmap(el, {
@@ -371,6 +421,10 @@ describe("order book heatmap", () => {
     await frame();
     expect(hovers.length).toBeGreaterThan(0);
     expect(typeof hovers[hovers.length - 1]).toBe("number");
+    // the tooltip keeps its full border (no single-side accent)
+    const tip = root.querySelector(".minerva-orderbook-tooltip") as HTMLElement;
+    expect(tip.style.display).toBe("block");
+    expect(tip.style.borderLeft).toBe("");
     // drag: pan (stops following), double click: follow again
     root.dispatchEvent(
       new PointerEvent("pointerdown", { clientX: 150, clientY: 120 }),

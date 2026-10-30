@@ -2,7 +2,8 @@
 // Energy flows from the sources to the uses through the grid: link
 // thickness is the flow, colored from the source to the target.
 import { computed } from "vue";
-import { SankeyChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { SankeyChart } from "minerva-design/vue/charts";
 
 const NODES = {
   en: [

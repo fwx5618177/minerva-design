@@ -9,7 +9,9 @@ import {
   glContextAttributes,
   isSoftwareRenderer,
   itemParams,
+  type GlProgram,
 } from "./gl";
+import { claimGlSlot } from "./gl-budget";
 import { instanceRange } from "./range";
 import { GLSL1_AREA, GLSL1_BAR, GLSL1_LINE, GLSL1_SCATTER } from "./shaders";
 import {
@@ -17,6 +19,7 @@ import {
   BAR_STRIDE,
   SCATTER_STRIDE,
   type ChartRenderer,
+  type RenderFrame,
   type RenderItem,
   type RendererLostHandler,
 } from "./types";
@@ -53,34 +56,60 @@ export const createWebGlRenderer = (
   if (!gl) return null;
   const loseContext = () =>
     gl.getExtension("WEBGL_lose_context")?.loseContext();
-  const instancing = gl.getExtension("ANGLE_instanced_arrays");
-  if (!instancing || (requireHardware && isSoftwareRenderer(gl))) {
+  const firstInstancing = gl.getExtension("ANGLE_instanced_arrays");
+  if (!firstInstancing || (requireHardware && isSoftwareRenderer(gl))) {
     loseContext();
     return null;
   }
+  let instancing: ANGLE_instanced_arrays = firstInstancing;
 
-  const line = compileProgram(gl, GLSL1_LINE, ATTRIBUTES.line);
-  const area = compileProgram(gl, GLSL1_AREA, ATTRIBUTES.area);
-  const bar = compileProgram(gl, GLSL1_BAR, ATTRIBUTES.bar);
-  const scatter = compileProgram(gl, GLSL1_SCATTER, ATTRIBUTES.scatter);
-  const corners = gl.createBuffer();
-  if (!line || !area || !bar || !scatter || !corners) {
+  /** Programs and the shared corner buffer (built again after a restore) */
+  const build = () => {
+    // extension objects don't survive a context restore
+    const ext = gl.getExtension("ANGLE_instanced_arrays");
+    if (!ext) return null;
+    instancing = ext;
+    const line = compileProgram(gl, GLSL1_LINE, ATTRIBUTES.line);
+    const area = compileProgram(gl, GLSL1_AREA, ATTRIBUTES.area);
+    const bar = compileProgram(gl, GLSL1_BAR, ATTRIBUTES.bar);
+    const scatter = compileProgram(gl, GLSL1_SCATTER, ATTRIBUTES.scatter);
+    const corners = gl.createBuffer();
+    if (!line || !area || !bar || !scatter || !corners) return null;
+    gl.bindBuffer(gl.ARRAY_BUFFER, corners);
+    gl.bufferData(gl.ARRAY_BUFFER, CORNERS, gl.STATIC_DRAW);
+    const programs: Record<RenderItem["kind"], GlProgram> = {
+      line,
+      area,
+      bar,
+      scatter,
+    };
+    return { programs, corners };
+  };
+  let built = build();
+  if (!built) {
     loseContext();
     return null;
   }
-  const programs = { line, area, bar, scatter };
-  gl.bindBuffer(gl.ARRAY_BUFFER, corners);
-  gl.bufferData(gl.ARRAY_BUFFER, CORNERS, gl.STATIC_DRAW);
 
   let lost = false;
-  const handleLost = (event: Event) => {
-    event.preventDefault();
-    lost = true;
-    onLost();
-  };
-  canvas.addEventListener("webglcontextlost", handleLost);
-
+  let last: { items: readonly RenderItem[]; frame: RenderFrame } | null = null;
   const resources = new Map<string, ItemResources>();
+  // past the page-wide context budget, the context may be suspended while
+  // off-screen: its GPU objects go, and come back with the context
+  const slot = claimGlSlot(canvas, gl, {
+    suspend: () => resources.clear(),
+    restore: () => {
+      built = build();
+      if (!built) {
+        lost = true;
+        onLost();
+      } else if (last) draw(last.items, last.frame);
+    },
+    lost: () => {
+      lost = true;
+      onLost();
+    },
+  });
 
   /** Float or normalized unorm8x4 attribute advancing once per instance */
   const instanced = (
@@ -107,6 +136,7 @@ export const createWebGlRenderer = (
     item: RenderItem,
     buffer: WebGLBuffer,
     first: number,
+    corners: WebGLBuffer,
   ) => {
     const F = gl.FLOAT;
     gl.bindBuffer(gl.ARRAY_BUFFER, corners);
@@ -181,6 +211,46 @@ export const createWebGlRenderer = (
     return res;
   };
 
+  const draw = (items: readonly RenderItem[], frame: RenderFrame) => {
+    if (!built) return;
+    const { programs, corners } = built;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    const t = frame.transform;
+    const seen = new Set<string>();
+    for (const item of items) {
+      seen.add(item.key);
+      const [first, instances] = instanceRange(item, frame);
+      if (instances <= 0) continue;
+      const res = upload(item);
+      if (!res) continue;
+      const program = programs[item.kind];
+      gl.useProgram(program.program);
+      gl.uniform4f(program.xform, t.xScale, t.xOffset, t.yScale, t.yOffset);
+      gl.uniform4f(program.viewport, frame.width, frame.height, frame.dpr, 0);
+      gl.uniform4f(
+        program.color,
+        item.color[0],
+        item.color[1],
+        item.color[2],
+        item.color[3],
+      );
+      const [p0, p1, p2, p3] = itemParams(item, frame);
+      gl.uniform4f(program.params, p0, p1, p2, p3);
+      bindAttributes(item, res.buffer, first, corners);
+      instancing.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 4, instances);
+    }
+    for (const [key, res] of resources) {
+      if (!seen.has(key)) {
+        gl.deleteBuffer(res.buffer);
+        resources.delete(key);
+      }
+    }
+  };
+
   return {
     kind: "webgl",
     canvas,
@@ -189,52 +259,24 @@ export const createWebGlRenderer = (
       canvas.height = Math.max(1, height);
     },
     render(items, frame) {
-      if (lost || gl.isContextLost()) return;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      const t = frame.transform;
-      const seen = new Set<string>();
-      for (const item of items) {
-        seen.add(item.key);
-        const [first, instances] = instanceRange(item, frame);
-        if (instances <= 0) continue;
-        const res = upload(item);
-        if (!res) continue;
-        const program = programs[item.kind];
-        gl.useProgram(program.program);
-        gl.uniform4f(program.xform, t.xScale, t.xOffset, t.yScale, t.yOffset);
-        gl.uniform4f(program.viewport, frame.width, frame.height, frame.dpr, 0);
-        gl.uniform4f(
-          program.color,
-          item.color[0],
-          item.color[1],
-          item.color[2],
-          item.color[3],
-        );
-        const [p0, p1, p2, p3] = itemParams(item, frame);
-        gl.uniform4f(program.params, p0, p1, p2, p3);
-        bindAttributes(item, res.buffer, first);
-        instancing.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 4, instances);
-      }
-      for (const [key, res] of resources) {
-        if (!seen.has(key)) {
-          gl.deleteBuffer(res.buffer);
-          resources.delete(key);
-        }
-      }
+      last = { items, frame };
+      if (lost || !slot.use() || gl.isContextLost()) return;
+      draw(items, frame);
     },
     destroy() {
-      canvas.removeEventListener("webglcontextlost", handleLost);
+      slot.release();
+      last = null;
       if (!gl.isContextLost()) {
         for (const res of resources.values()) gl.deleteBuffer(res.buffer);
-        for (const p of Object.values(programs)) gl.deleteProgram(p.program);
-        gl.deleteBuffer(corners);
+        if (built) {
+          for (const p of Object.values(built.programs)) {
+            gl.deleteProgram(p.program);
+          }
+          gl.deleteBuffer(built.corners);
+        }
+        loseContext();
       }
       resources.clear();
-      loseContext();
     },
   };
 };

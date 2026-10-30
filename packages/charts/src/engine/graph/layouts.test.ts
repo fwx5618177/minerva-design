@@ -21,12 +21,15 @@ import {
   dashPath,
   distanceToPath,
   endDirection,
+  filledArrow,
+  loopPath,
   orthogonalPath,
   pathLength,
   pointAt,
   quadraticPath,
   roundCorners,
   splinePath,
+  triangleArea,
   trimPath,
 } from "./geometry";
 import { GRAPH_LABELS, fill, graphLocale } from "./labels";
@@ -237,6 +240,91 @@ describe("force layout", () => {
     while (sim.tick(20));
     expect(sim.x.every(Number.isFinite)).toBe(true);
   });
+
+  /** Ticks until the simulation cools down */
+  const ticksOf = (sim: ReturnType<typeof createForceSimulation>) => {
+    let ticks = 0;
+    while (sim.tick(1)) ticks++;
+    return ticks;
+  };
+
+  it(
+    "starts large fresh layouts from a coarsened graph (multilevel)",
+    { timeout: 30_000 },
+    () => {
+      const g = community(1200, 11);
+      const options = { radius: () => 4, collide: 1 };
+      const multi = createForceSimulation(g.nodes, g.edges, options);
+      // coarse levels first: the positions follow them, the alpha stays hot
+      multi.tick(5);
+      expect(multi.alpha()).toBeGreaterThan(0.3);
+      expect(multi.x.every(Number.isFinite)).toBe(true);
+      // finer levels refine with a short cooling: far fewer full-size ticks
+      const flat = createForceSimulation(g.nodes, g.edges, {
+        ...options,
+        multilevel: false,
+      });
+      expect(ticksOf(flat)).toBe(299);
+      ticksOf(multi);
+      expect(multi.done()).toBe(true);
+      // deterministic, no overlaps after settling
+      const a = forceLayout(g.nodes, g.edges, options);
+      const b = forceLayout(g.nodes, g.edges, options);
+      expect(Array.from(a.x)).toEqual(Array.from(b.x));
+      let overlaps = 0;
+      for (let i = 0; i < 1200; i++)
+        for (let j = i + 1; j < 1200; j++)
+          if (Math.hypot(a.x[i] - a.x[j], a.y[i] - a.y[j]) < 10 - 1e-6)
+            overlaps++;
+      expect(overlaps).toBe(0);
+      // linked nodes end up close: the coarse layout keeps the communities
+      let linked = 0;
+      for (const e of g.edges) {
+        const s = Number(e.source.slice(1));
+        const t = Number(e.target.slice(1));
+        linked += Math.hypot(a.x[s] - a.x[t], a.y[s] - a.y[t]);
+      }
+      let random = 0;
+      for (let i = 0; i < 1199; i++)
+        random += Math.hypot(a.x[i] - a.x[1199 - i], a.y[i] - a.y[1199 - i]);
+      expect(linked / g.edges.length).toBeLessThan((random / 1199) * 0.5);
+    },
+  );
+
+  it("leaves the coarse levels when dragged or reheated", () => {
+    const g = community(600, 5);
+    const sim = createForceSimulation(g.nodes, g.edges);
+    sim.tick(2);
+    sim.drag(4, 123, 45);
+    expect(sim.x[4]).toBe(123);
+    sim.tick(3);
+    expect(sim.x[4]).toBe(123);
+    sim.release(4);
+    const other = createForceSimulation(g.nodes, g.edges);
+    other.tick(2);
+    other.reheat(0.5);
+    expect(other.alpha()).toBeCloseTo(0.5);
+    while (other.tick(20));
+    expect(other.x.every(Number.isFinite)).toBe(true);
+    // known positions (a refinement) never coarsen
+    const placed = g.nodes.map((node, i) => ({
+      ...node,
+      x: (i % 30) * 10,
+      y: Math.floor(i / 30) * 10,
+    }));
+    const refine = createForceSimulation(placed, g.edges, { iterations: 40 });
+    const plain = (list: GraphNode[], links: GraphEdge[]) =>
+      ticksOf(
+        createForceSimulation(list, links, {
+          iterations: 40,
+          multilevel: false,
+        }),
+      );
+    expect(ticksOf(refine)).toBe(plain(placed, g.edges));
+    // graphs without links do not shrink: the plain layout runs
+    const loose = createForceSimulation(nodes(500), [], { iterations: 40 });
+    expect(ticksOf(loose)).toBe(plain(nodes(500), []));
+  });
 });
 
 describe("dag layout", () => {
@@ -314,6 +402,90 @@ describe("dag layout", () => {
       ),
     ).toBe(2);
   });
+
+  /** Random layered DAG (each layer links to the next one or two) */
+  const layeredDag = (count: number, layers: number, extra: number) => {
+    let s = 7;
+    const rnd = () => {
+      s = (s * 16807) % 2147483647;
+      return s / 2147483647;
+    };
+    const per = Math.ceil(count / layers);
+    const source: number[] = [];
+    const target: number[] = [];
+    for (let v = per; v < count; v++) {
+      const l = Math.floor(v / per);
+      source.push(Math.floor((l - 1) * per + rnd() * per));
+      target.push(v);
+    }
+    for (let k = 0; k < extra; k++) {
+      const a = Math.floor(rnd() * (count - per));
+      const b = Math.min(
+        count - 1,
+        (Math.floor(a / per) + 1) * per + Math.floor(rnd() * per),
+      );
+      source.push(a);
+      target.push(b);
+    }
+    return {
+      n: count,
+      source,
+      target,
+      width: new Float64Array(count).fill(40),
+      height: new Float64Array(count).fill(20),
+      direction: "TB" as const,
+      layerGap: 56,
+      nodeGap: 24,
+    };
+  };
+
+  it(
+    "transposes neighbors in large graphs too (beyond 3,000 nodes)",
+    { timeout: 30_000 },
+    () => {
+      const input = layeredDag(5000, 25, 4000);
+      // no sweeps: every gain comes from the transposition
+      const only = layeredLayout({ ...input, sweeps: 0 });
+      expect(only.crossings.final).toBeLessThan(only.crossings.initial);
+      const both = layeredLayout({ ...input, sweeps: 8 });
+      expect(both.crossings.final).toBeLessThan(only.crossings.final);
+      // deterministic (a work budget, not a clock)
+      expect(layeredLayout({ ...input, sweeps: 8 }).order).toEqual(both.order);
+    },
+  );
+
+  it(
+    "keeps hubs cheap and stops at its work budget",
+    { timeout: 30_000 },
+    () => {
+      // two hubs above 4,000 shared children: pairs of hubs compare in
+      // linear time, the budget ends the passes on huge layers
+      const count = 4000;
+      const source: number[] = [];
+      const target: number[] = [];
+      for (let i = 0; i < count; i++) {
+        source.push(0, 1, 2 + i);
+        target.push(2 + i, 2 + ((i * 7) % count), 2 + count + (i % 50));
+      }
+      const n = 2 + count + 50;
+      const started = performance.now();
+      const result = layeredLayout({
+        n,
+        source,
+        target,
+        width: new Float64Array(n).fill(30),
+        height: new Float64Array(n).fill(20),
+        direction: "LR",
+        layerGap: 40,
+        nodeGap: 8,
+        sweeps: 2,
+      });
+      expect(performance.now() - started).toBeLessThan(10_000);
+      expect(result.crossings.final).toBeLessThanOrEqual(
+        result.crossings.initial,
+      );
+    },
+  );
 
   it("keeps nodes of a layer apart", () => {
     const g = community(60);
@@ -598,6 +770,40 @@ describe("geometry", () => {
       boundaryDistance(true, 40, 20, Math.SQRT1_2, Math.SQRT1_2),
     ).toBeCloseTo(10 / Math.SQRT1_2);
   });
+
+  it("builds filled arrowheads, self-loops and raised arcs", () => {
+    // a triangle as two x-monotone pieces: (x, top, bottom), then a gap
+    const tri: number[] = [];
+    triangleArea(tri, 10, 0, 0, 0, 5, 10, 9);
+    expect(tri).toEqual([0, 0, 0, 5, 10, 0, 10, 0, 0, 9, 9, 9]);
+    // the top is always the larger y (one winding for every triangle)
+    const flipped: number[] = [];
+    triangleArea(flipped, 0, 0, 5, -10, 10, 0, 9);
+    expect(flipped.slice(3, 6)).toEqual([5, 0, -10]);
+    // vertical slivers have no area
+    const none: number[] = [];
+    triangleArea(none, 1, 0, 1, 5, 1, 9, 9);
+    expect(none).toEqual([]);
+    const fill: number[] = [];
+    const outline: number[] = [];
+    filledArrow(fill, outline, 100, 0, 1, 0, 10, 1e9);
+    expect(fill).toHaveLength(24);
+    const xs = fill.filter((v, i) => i % 3 === 0 && v < 1e8);
+    expect(Math.max(...xs)).toBe(100);
+    expect(Math.min(...xs)).toBe(90);
+    expect(outline.slice(2, 4)).toEqual([100, 0]);
+    expect(outline.slice(-2)).toEqual([1e9, 1e9]);
+    // the loop leaves and returns at the boundary, and bulges along `angle`
+    const loop = loopPath(0, 0, 0, 6, 7, 10);
+    expect(Math.hypot(loop[0], loop[1])).toBeCloseTo(6);
+    const n = loop.length;
+    expect(Math.hypot(loop[n - 2], loop[n - 1])).toBeCloseTo(7);
+    expect(Math.max(...loop.filter((_, i) => i % 2 === 0))).toBeGreaterThan(15);
+    expect(Math.min(...loop.filter((_, i) => i % 2 === 0))).toBeGreaterThan(0);
+    // parallel arcs rise higher or lower
+    const high = arcPath(0, 100, 0, 1.5);
+    expect(Math.min(...high.filter((_, i) => i % 2 === 1))).toBeCloseTo(-75);
+  });
 });
 
 describe("model and labels", () => {
@@ -618,7 +824,11 @@ describe("model and labels", () => {
       [{ id: "y", name: "Why", color: "red", hidden: true }, { id: "y" }],
     );
     expect(model.n).toBe(3);
-    expect(model.m).toBe(2);
+    // the self-loop is kept (drawn as a loop), unknown ids are skipped
+    expect(model.m).toBe(3);
+    expect(model.hasLoops).toBe(true);
+    expect(model.bend[2]).toBe(0);
+    expect(Number.isNaN(model.bend[0])).toBe(true);
     expect(model.groups.map((g) => g.id)).toEqual(["y", "x"]);
     expect(model.groups[0].hidden).toBe(true);
     expect(model.valueRange).toEqual([1, 3]);
@@ -626,14 +836,34 @@ describe("model and labels", () => {
     expect(model.rank[0]).toBe(0);
     expect(Array.from(model.nodeInput)).toEqual([0, 1, 3]);
     const nodesMask = new Uint8Array(3);
-    const edgesMask = new Uint8Array(2);
+    const edgesMask = new Uint8Array(3);
     neighborhood(model, 0, nodesMask, edgesMask);
     expect(Array.from(nodesMask)).toEqual([1, 1, 0]);
     const all = new Uint8Array(3);
-    const allEdges = new Uint8Array(2);
+    const allEdges = new Uint8Array(3);
     lineage(model, 1, all, allEdges);
     expect(Array.from(all)).toEqual([1, 1, 1]);
-    expect(Array.from(allEdges)).toEqual([1, 1]);
+    expect(Array.from(allEdges)).toEqual([1, 1, 1]);
+  });
+
+  it("gives parallel edges distinct slots and numbers the self-loops", () => {
+    const model = buildModel(
+      [{ id: "a" }, { id: "b" }, { id: "c" }],
+      [
+        { source: "a", target: "b" },
+        { source: "b", target: "a" },
+        { source: "a", target: "b" },
+        { source: "b", target: "c" },
+        { source: "c", target: "c" },
+        { source: "c", target: "c" },
+      ],
+      undefined,
+    );
+    // slots -1, 0, 1 on the a → b side; b → a measures from its own direction
+    expect([model.bend[0], model.bend[1], model.bend[2]]).toEqual([-1, -0, 1]);
+    expect(Number.isNaN(model.bend[3])).toBe(true);
+    expect([model.bend[4], model.bend[5]]).toEqual([0, 1]);
+    expect(buildModel([{ id: "a" }], [], undefined).hasLoops).toBe(false);
   });
 
   it("resolves the labels of a locale", () => {

@@ -2,7 +2,8 @@
 // Tasks grouped by phase (one color and legend entry each), their progress
 // drawn over the bars and a milestone as a dot; zoom and pan along the time.
 import { computed } from "vue";
-import { GanttChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GanttChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

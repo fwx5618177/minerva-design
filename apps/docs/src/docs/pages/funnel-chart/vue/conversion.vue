@@ -2,7 +2,8 @@
 // Stages narrow to the next one; the labels show the conversion rate from
 // the previous stage.
 import { computed } from "vue";
-import { FunnelChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { FunnelChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: ["Visits", "Sign-ups", "Trials", "Purchases"],

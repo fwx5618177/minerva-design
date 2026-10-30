@@ -1,7 +1,7 @@
 // Chord diagram layout: groups as arcs around a circle (sized by their
 // flows), flows as ribbons between the arcs. Undirected: one ribbon per pair
-// whose ends are as wide as the flow leaving each end; directed: one ribbon
-// per direction, optionally with an arrowhead at the target. Ribbon ends are
+// as wide as the flows of both directions; directed: one ribbon per
+// direction, optionally with an arrowhead at the target. Ribbon ends are
 // ordered along each arc so that ribbons cross as little as possible.
 
 import { mix, toCss, type Rgba } from "../color";
@@ -123,8 +123,31 @@ export const chordValues = (
   });
 };
 
-/** Totals of a matrix: outgoing, incoming and arc value of every group */
-const totals = (matrix: readonly (readonly number[])[], directed: boolean) => {
+type Matrix = readonly (readonly number[])[];
+
+/** Whether a matrix is symmetric (up to rounding) */
+const isSymmetric = (m: Matrix) =>
+  m.every((row, i) =>
+    row.every((v, j) => {
+      const w = m[j]?.[i] ?? 0;
+      return Math.abs(v - w) <= 1e-9 * Math.max(1, Math.abs(v), Math.abs(w));
+    }),
+  );
+
+/**
+ * Undirected size of the ribbon joining `i` and `j`: a symmetric matrix holds
+ * every relation in both cells (counted once), otherwise the flows of both
+ * directions add up, so that a group with only incoming flows keeps its arc
+ */
+const pairValue = (m: Matrix, symmetric: boolean, i: number, j: number) =>
+  i === j || symmetric ? m[i][j] : m[i][j] + m[j][i];
+
+/**
+ * Totals of a matrix: outgoing, incoming and arc value of every group. The
+ * arc holds the ends of all the ribbons of the group: both directions when
+ * directed, the undirected pair sizes ({@link pairValue}) otherwise
+ */
+const totals = (matrix: Matrix, directed: boolean, symmetric: boolean) => {
   const n = matrix.length;
   const out = new Array<number>(n).fill(0);
   const inc = new Array<number>(n).fill(0);
@@ -137,7 +160,13 @@ const totals = (matrix: readonly (readonly number[])[], directed: boolean) => {
   return {
     out,
     inc,
-    value: out.map((v, i) => (directed ? v + inc[i] : v)),
+    value: out.map((v, i) =>
+      directed
+        ? v + inc[i]
+        : symmetric
+          ? v
+          : Math.max(0, v + inc[i] - matrix[i][i]),
+    ),
   };
 };
 
@@ -192,8 +221,14 @@ export const layoutChord = (
   const target = raw.map((row, i) =>
     row.map((v, j) => (flow(i, j) && !hidden.has(i) && !hidden.has(j) ? v : 0)),
   );
-  const now = totals(shown, directed);
-  const goal = totals(target, directed);
+  // undirected: does every relation appear in both cells?
+  const symmetric =
+    !directed &&
+    isSymmetric(raw.map((row, i) => row.map((v, j) => (flow(i, j) ? v : 0))));
+  const pair = (m: Matrix, i: number, j: number) =>
+    pairValue(m, symmetric, i, j);
+  const now = totals(shown, directed, symmetric);
+  const goal = totals(target, directed, symmetric);
   const whole = goal.value.reduce((a, b) => a + b, 0);
   const visibleWeight = names.map((_, i) =>
     goal.value[i] > 0 || now.value[i] > 1e-9
@@ -207,6 +242,7 @@ export const layoutChord = (
   const allGoal = totals(
     raw.map((row, i) => row.map((v, j) => (flow(i, j) ? v : 0))),
     directed,
+    symmetric,
   ).value;
   const order = names.map((_, i) => i);
   if (o.sortGroups === "ascending" || o.sortGroups === "descending") {
@@ -337,7 +373,11 @@ export const layoutChord = (
     });
     let a = arcs[i].a0;
     for (const s of list) {
-      const v = s.dir === "out" ? shown[i][s.j] : shown[s.j][i];
+      const v = !directed
+        ? pair(shown, i, s.j)
+        : s.dir === "out"
+          ? shown[i][s.j]
+          : shown[s.j][i];
       s.a0 = a;
       s.a1 = a + v * k;
       a = s.a1;
@@ -655,9 +695,6 @@ export const layoutChord = (
 
   // items: groups around the circle, then the ribbons by source
   const items: ShapeItem[] = [];
-  const asymmetric =
-    directed ||
-    raw.some((row, i) => row.some((v, j) => Math.abs(v - raw[j][i]) > 1e-12));
   for (const g of order) {
     const value = goal.value[g];
     if (!(value > 0) || hidden.has(g)) continue;
@@ -673,10 +710,8 @@ export const layoutChord = (
       x: cx + outer * Math.cos(mid),
       y: cy + outer * Math.sin(mid),
       rows: [
-        ...(directed || !asymmetric
-          ? [{ name: c.labels.value, value: c.format(value) }]
-          : []),
-        ...(asymmetric
+        { name: c.labels.value, value: c.format(value) },
+        ...(!symmetric
           ? [
               { name: c.labels.outgoing, value: c.format(goal.out[g]) },
               { name: c.labels.incoming, value: c.format(goal.inc[g]) },
@@ -686,10 +721,12 @@ export const layoutChord = (
       ],
     });
   }
-  const flowTotal = target.reduce(
-    (s, row) => s + row.reduce((a, b) => a + b, 0),
-    0,
-  );
+  // share of a ribbon: of all the flows (directed) or of all the pairs
+  const ribbonSize = (s: number, t: number) =>
+    directed ? target[s][t] : pair(target, s, t);
+  let flowTotal = 0;
+  for (let i = 0; i < n; i++)
+    for (let j = directed ? 0 : i; j < n; j++) flowTotal += ribbonSize(i, j);
   const ribbonItems = ribbons
     .filter((r) => target[r.s][r.t] > 0 || target[r.t][r.s] > 0)
     .sort(
@@ -702,7 +739,7 @@ export const layoutChord = (
       r.s !== r.t && target[r.s][r.t] + target[r.t][r.s] > 0
         ? raw[r.t][r.s]
         : 0;
-    const percent = flowTotal > 0 ? value / flowTotal : 0;
+    const percent = flowTotal > 0 ? ribbonSize(r.s, r.t) / flowTotal : 0;
     const source = names[r.s];
     const tgt = names[r.t];
     const ms = (r.src.a0 + r.src.a1) / 2;
@@ -731,7 +768,7 @@ export const layoutChord = (
       y,
       rows: [
         { name: c.labels.value, value: c.format(value) },
-        ...(r.s !== r.t && (!directed || reverse > 0)
+        ...(r.s !== r.t && (directed ? reverse > 0 : !symmetric)
           ? [{ name: c.labels.reverse, value: c.format(reverse) }]
           : []),
         { name: c.labels.share, value: c.percent(percent) },

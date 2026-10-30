@@ -1,20 +1,14 @@
 // createOrderBookHeatmap: Bookmap-style liquidity heatmap. The book is
-// sampled every `interval` ms into a column of price rows; columns are
-// drawn by the GPU renderers of the chart engine as bar instances (one per
-// cell), in chunks of CHUNK columns uploaded once, so streaming costs one
-// small chunk per column, over a solid "floor" color (the coldest end of
-// the ramp). The best bid / ask step lines, the spread band, the trade
-// bubbles, the grid, the axes, the book profile, the crosshair and the
-// tooltip are drawn on a Canvas2D layer above.
+// sampled every `interval` ms into a column of price rows; the visible
+// columns are rasterized into one image (a texel per column and price row,
+// see field.ts) drawn with nearest filtering by a WebGPU / WebGL / Canvas2D
+// backend over the cold end of the ramp: a continuous field without seams.
+// The best bid / ask step lines, the spread band, the trade bubbles, the
+// grid, the axes, the book profile, the crosshair and the tooltip are drawn
+// on a Canvas2D layer above.
 
 import { luminance, mixOklab, oklabRamp, toCss, type Rgba } from "../color";
-import { createRenderer } from "../renderers/detect";
-import {
-  BAR_STRIDE,
-  type BarItem,
-  type ChartRenderer,
-  type RenderItem,
-} from "../renderers/types";
+import { followDefaultRenderer } from "../renderers/follow";
 import { linearTicks } from "../scale";
 import { timeTicks } from "../time";
 import type { ChartRendererKind } from "../types";
@@ -37,12 +31,23 @@ import {
   type Formatters,
 } from "./format";
 import { localeLabels, type LabelDictionary } from "../locale";
+import {
+  HEAT_TABLE_SIZE,
+  buildHeatGrid,
+  createHeatFieldRenderer,
+  heatTable,
+  paintHeatGrid,
+  percentile,
+  type HeatFieldRenderer,
+  type HeatGrid,
+  type HeatSource,
+} from "./field";
 import { createEmitter, createHost, localPoint, tooltipHtml } from "./host";
 import {
+  fineCeil,
   fitPriceRange,
   fitTimeRange,
   layoutAxisLabels,
-  niceCeil,
   type AxisLabel,
 } from "./layout";
 import type {
@@ -57,37 +62,44 @@ import type {
   MarketTrade,
 } from "./types";
 
-/** Columns per GPU chunk */
-const CHUNK = 32;
 /** Colors of the ramp lookup table */
-const LUT_SIZE = 128;
+const LUT_SIZE = 256;
+/** Largest heat image (texels per side) */
+const MAX_TEXELS = 4096;
+/** Quantile of the visible sizes at the hottest color (auto scale) */
+const SCALE_QUANTILE = 0.98;
+/** Gamma of the color curve (> 1: less noise at the cold end) */
+const HEAT_GAMMA = 1.4;
 
 /**
- * Heat ramps after the floor color, interpolated in OKLab. Dark: lightness
- * rises from deep blue through cyan and green to yellow, then the hottest
- * walls turn orange / red (the Bookmap convention). Light: lightness falls
- * from pale blue through blue and violet to crimson.
+ * Heat ramps, interpolated in OKLab; the first color is also the empty
+ * field. Dark: from deep navy, lightness rises through blue, cyan and green
+ * to yellow, then the hottest walls turn orange / red (the Bookmap
+ * convention). Light: from a pale tint, lightness falls through blue and
+ * violet to crimson.
  */
 const DARK_RAMP = [
-  "#0b2140",
-  "#0f3a70",
-  "#1259a3",
-  "#1585bd",
-  "#1fb3b0",
-  "#62cf73",
-  "#d9e04a",
-  "#ffb23a",
-  "#ff6a33",
+  "#0a1830",
+  "#0f2c57",
+  "#134a8a",
+  "#1670b4",
+  "#1aa0bf",
+  "#2fc3a0",
+  "#8ad65a",
+  "#e8dc3f",
+  "#ffa733",
+  "#ff5a2e",
 ];
 const LIGHT_RAMP = [
-  "#dfecfb",
-  "#b3d2f5",
-  "#79abe8",
-  "#4580d6",
-  "#3b54b8",
-  "#5a33a0",
-  "#962a86",
-  "#cf2f55",
+  "#eef4fb",
+  "#cfe1f6",
+  "#9fc2ee",
+  "#679ee2",
+  "#3a73cf",
+  "#3f4bb0",
+  "#62309a",
+  "#9c2783",
+  "#d12c52",
 ];
 /** Height of the price tags of the axis, in pixels */
 const TAG_HEIGHT = 16;
@@ -103,6 +115,8 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     sells: "Sells",
     bid: "Bid",
     ask: "Ask",
+    bidSide: "Bid side",
+    askSide: "Ask side",
     name: "Liquidity heatmap",
   },
   zh: {
@@ -113,6 +127,8 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     sells: "主动卖出",
     bid: "买一",
     ask: "卖一",
+    bidSide: "买盘",
+    askSide: "卖盘",
     name: "订单簿热力图",
   },
   ja: {
@@ -123,6 +139,8 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     sells: "売り約定",
     bid: "最良買気配",
     ask: "最良売気配",
+    bidSide: "買い板",
+    askSide: "売り板",
     name: "板ヒートマップ",
   },
   fr: {
@@ -133,12 +151,14 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     sells: "Ventes",
     bid: "Meilleur achat",
     ask: "Meilleure vente",
+    bidSide: "Côté achat",
+    askSide: "Côté vente",
     name: "Carte de chaleur de la liquidité",
   },
 };
 
-interface Column {
-  /** Sequence number (chunk = seq / CHUNK) */
+interface Column extends HeatSource {
+  /** Sequence number */
   seq: number;
   /** Start time */
   time: number;
@@ -151,8 +171,6 @@ interface Column {
   buyNotional: number;
   sellVolume: number;
   sellNotional: number;
-  /** A robust "large" size of the column (4th largest), for the auto scale */
-  reference: number;
 }
 
 /** Normalized intensity (0-1) of a size */
@@ -190,7 +208,9 @@ export const createOrderBookHeatmap = (
   let fmt: Formatters = createFormatters(options, 2, 4);
   let colors = { up: [0, 0, 0, 1] as Rgba, down: [0, 0, 0, 1] as Rgba };
   let lut: Uint32Array = new Uint32Array(LUT_SIZE);
-  /** Color under the cells (no liquidity) */
+  /** Size → color table of the current ramp and color scale */
+  let table: Uint32Array = new Uint32Array(HEAT_TABLE_SIZE + 1);
+  /** The empty field: the cold end of the ramp */
   let floor: Rgba = [0, 0, 0, 1];
   let dark = false;
 
@@ -206,18 +226,25 @@ export const createOrderBookHeatmap = (
   let dataTime = NaN;
   let dataWall = 0;
 
+  /** Size at the hottest color (auto scale, eased) and its target */
   let scaleMax = 0;
+  let scaleTarget = 0;
+  let scaleAt = -Infinity;
   let bubbleRef = 0;
-  /** Size at the full width of the profile (eased) */
+  /** Size at the full width of the profile */
   let profileMax = 0;
-  const chunks = new Map<number, BarItem>();
-  const dirtyChunks = new Set<number>();
-  let itemVersion = 0;
-  let headItem: BarItem | null = null;
-  let headVersion = -1;
-  let origin = { x: NaN, y: NaN };
+  /** The rasterized field and the inputs it was built from */
+  let grid: HeatGrid | null = null;
+  let gridKey = "";
+  let paintKey = "";
+  /** The live book as a column, cached by store version */
+  let head: {
+    version: number;
+    bins: Float64Array;
+    sizes: Float32Array;
+  } | null = null;
 
-  let renderer: ChartRenderer | null = null;
+  let renderer: HeatFieldRenderer | null = null;
   let rendererToken = 0;
   let destroyed = false;
   let resolveReady: (kind: ChartRendererKind | null) => void = () => {};
@@ -256,7 +283,7 @@ export const createOrderBookHeatmap = (
     draw,
     onTheme: () => {
       refreshColors();
-      markAllDirty();
+      host.invalidate();
     },
   });
   const { root, doc } = host;
@@ -298,27 +325,17 @@ export const createOrderBookHeatmap = (
       1,
     ];
     dark = theme.background[3] > 0 ? luminance(background) < 0.4 : false;
-    // the floor: a shade darker than the surface in dark themes (the cold
-    // end of the ramp stays visible on it), the surface in light ones
-    floor = dark
-      ? mixOklab(background, [0, 0, 0, 1], 0.4)
-      : mixOklab(
-          background,
-          [theme.text[0], theme.text[1], theme.text[2], 1],
-          0.02,
-        );
-    lut = oklabRamp(
-      [
-        floor,
-        ...(options.colors?.length
-          ? options.colors
-          : dark
-            ? DARK_RAMP
-            : LIGHT_RAMP
-        ).map(resolve),
-      ],
-      LUT_SIZE,
-    );
+    const ramp = (
+      options.colors?.length ? options.colors : dark ? DARK_RAMP : LIGHT_RAMP
+    ).map(resolve);
+    // the field is opaque: the empty color is the cold end of the ramp
+    floor = ramp[0] ?? background;
+    lut = oklabRamp(ramp.length > 1 ? ramp : [floor, floor], LUT_SIZE);
+    const scale = options.colorScale ?? "log";
+    // a mild gamma after the scale: the thin noise of the book stays near
+    // the cold end, the walls stand out
+    table = heatTable(lut, (r) => heatIntensity(r, 1, scale, 1) ** HEAT_GAMMA);
+    paintKey = "";
   }
 
   const refreshFormat = () => {
@@ -331,22 +348,16 @@ export const createOrderBookHeatmap = (
     );
   };
 
-  const markAllDirty = () => {
-    for (const id of chunks.keys()) dirtyChunks.add(id);
-    headVersion = -1;
-    host.invalidate();
-  };
-
   const clearHistory = () => {
     columns = [];
-    chunks.clear();
-    dirtyChunks.clear();
-    headItem = null;
-    headVersion = -1;
+    grid = null;
+    gridKey = paintKey = "";
+    head = null;
     openStart = NaN;
-    origin = { x: NaN, y: NaN };
-    scaleMax = 0;
+    scaleMax = scaleTarget = 0;
+    scaleAt = -Infinity;
     bubbleRef = 0;
+    profileMax = 0;
     shownTime = NaN;
     open.buyVolume = open.buyNotional = open.sellVolume = open.sellNotional = 0;
   };
@@ -380,7 +391,6 @@ export const createOrderBookHeatmap = (
     const bins = new Float64Array(limit * 2);
     const sizes = new Float32Array(limit * 2);
     let n = 0;
-    const top = [0, 0, 0, 0];
     for (const side of ["bid", "ask"] as const) {
       const count = store.count(side);
       let rows = 0;
@@ -398,24 +408,13 @@ export const createOrderBookHeatmap = (
         rows++;
       }
     }
-    for (let i = 0; i < n; i++) {
-      const s = sizes[i]!;
-      if (s > top[3]!) {
-        top[3] = s;
-        top.sort((a, b) => b - a);
-      }
-    }
-    return {
-      bins: bins.subarray(0, n),
-      sizes: sizes.subarray(0, n),
-      reference: top[3]! || top[0]!,
-    };
+    return { bins: bins.slice(0, n), sizes: sizes.slice(0, n) };
   };
 
   /** Closes the open column at `start` with the current book */
   const closeColumn = (start: number) => {
     if (!(tick > 0)) return;
-    const { bins, sizes, reference } = sampleBook();
+    const { bins, sizes } = sampleBook();
     const column: Column = {
       seq: seq++,
       time: start,
@@ -427,35 +426,14 @@ export const createOrderBookHeatmap = (
       buyNotional: open.buyNotional,
       sellVolume: open.sellVolume,
       sellNotional: open.sellNotional,
-      reference,
     };
     open.buyVolume = open.buyNotional = open.sellVolume = open.sellNotional = 0;
     columns.push(column);
-    dirtyChunks.add(Math.floor(column.seq / CHUNK));
-    // the auto color scale: average reference of the recent columns, moved
-    // only on a clear change (a change recolors every chunk)
-    if (options.maxSize === undefined) {
-      const recent = columns.slice(-100);
-      let sum = 0;
-      for (const c of recent) sum += c.reference;
-      const target = (sum / recent.length) * 1.6;
-      if (!(scaleMax > 0) || Math.abs(target / scaleMax - 1) > 0.3) {
-        scaleMax = target;
-        for (const id of chunks.keys()) dirtyChunks.add(id);
-        headVersion = -1;
-      }
-    }
     // history
     const oldest = start - history();
     let drop = 0;
     while (drop < columns.length && columns[drop]!.time < oldest) drop++;
-    if (drop) {
-      columns = columns.slice(drop);
-      const first = columns[0] ? Math.floor(columns[0].seq / CHUNK) : Infinity;
-      for (const id of [...chunks.keys()]) {
-        if (id < first) chunks.delete(id);
-      }
-    }
+    if (drop) columns = columns.slice(drop);
   };
 
   /** Closes every column ending before `time` */
@@ -487,108 +465,95 @@ export const createOrderBookHeatmap = (
     return time;
   };
 
-  /** Column containing a time (`null` for the open one or outside) */
+  /**
+   * Column showing a time: the last one starting at or before it (a column
+   * lasts until the next one), `null` for the open one or before the data
+   */
   const columnAt = (time: number): Column | null => {
+    if (Number.isFinite(openStart) && time >= openStart) return null;
     let lo = 0;
-    let hi = columns.length - 1;
-    const step = interval();
-    while (lo <= hi) {
+    let hi = columns.length;
+    while (lo < hi) {
       const mid = (lo + hi) >>> 1;
-      const c = columns[mid]!;
-      if (time < c.time) hi = mid - 1;
-      else if (time >= c.time + step) lo = mid + 1;
-      else return c;
+      if (columns[mid]!.time <= time) lo = mid + 1;
+      else hi = mid;
     }
-    return null;
+    return lo > 0 ? columns[lo - 1]! : null;
   };
 
-  // --------------------------------------------------------------- items
+  // ----------------------------------------------------------------- field
 
-  const ensureOrigin = () => {
-    if (Number.isFinite(origin.x)) return;
-    const mid = store.mid();
-    origin = {
-      x: Number.isFinite(openStart) ? openStart : 0,
-      y: Number.isFinite(mid) ? mid : 0,
-    };
+  /** The live book as a column (sampled once per store version) */
+  const headSource = (): HeatSource | null => {
+    if (!Number.isFinite(openStart) || !(tick > 0)) return null;
+    const version = store.version();
+    if (!head || head.version !== version) head = { version, ...sampleBook() };
+    return { time: openStart, bins: head.bins, sizes: head.sizes };
   };
 
-  const intensityIndex = (size: number) => {
-    const t = heatIntensity(
-      size,
-      options.maxSize ?? scaleMax,
-      options.colorScale ?? "log",
-      Math.max(0.01, options.contrast ?? 1),
-    );
-    return Math.round(t * (LUT_SIZE - 1));
-  };
-
-  /** Bar instances of a set of columns (empty cells skipped) */
-  const cellsItem = (
-    key: string,
-    list: readonly { time: number; bins: Float64Array; sizes: Float32Array }[],
-  ): BarItem => {
+  /**
+   * The heat image of the view, rebuilt when its inputs change; the color
+   * scale follows the 98th percentile of the visible sizes (eased), so the
+   * whole ramp is used in light and dark themes alike
+   */
+  const heatGrid = (
+    x0: number,
+    x1: number,
+    y0: number,
+    y1: number,
+    end: number,
+    dt: number,
+  ): HeatGrid | null => {
     const step = interval();
-    let count = 0;
-    for (const c of list) {
-      for (let i = 0; i < c.sizes.length; i++) {
-        if (intensityIndex(c.sizes[i]!) > 0) count++;
-      }
+    const live = headSource();
+    const maxWidth = Math.min(MAX_TEXELS, Math.ceil(plot.w));
+    const maxHeight = Math.min(MAX_TEXELS, Math.ceil(plot.h));
+    const lastSeq = columns.length ? columns[columns.length - 1]!.seq : -1;
+    const key = [
+      x0,
+      x1,
+      y0,
+      y1,
+      Math.floor(end / step),
+      columns.length,
+      lastSeq,
+      head?.version ?? -1,
+      maxWidth,
+      maxHeight,
+      tick,
+    ].join("|");
+    if (key !== gridKey) {
+      const sources: HeatSource[] = live ? [...columns, live] : columns;
+      grid = buildHeatGrid(
+        { sources, step, tick, x0, x1, y0, y1, end, maxWidth, maxHeight },
+        grid,
+      );
+      gridKey = key;
+      paintKey = "";
     }
-    const instances = new ArrayBuffer(Math.max(1, count) * BAR_STRIDE);
-    const f = new Float32Array(instances);
-    const u = new Uint32Array(instances);
-    let k = 0;
-    // cells overlap a little: no seams between neighbours after rasterization
-    const half = (tick / 2) * 1.06;
-    for (const c of list) {
-      const x = c.time + step / 2 - origin.x;
-      for (let i = 0; i < c.sizes.length; i++) {
-        const level = intensityIndex(c.sizes[i]!);
-        if (level <= 0) continue;
-        const price = c.bins[i]! * tick - origin.y;
-        f[k * 4] = x;
-        f[k * 4 + 1] = price - half;
-        f[k * 4 + 2] = price + half;
-        u[k * 4 + 3] = lut[level]!;
-        k++;
+    if (!grid) return null;
+    // auto scale: a robust "hot" size, sampled at most 4 times a second
+    const fixed = options.maxSize;
+    if (fixed !== undefined && fixed > 0) scaleMax = fixed;
+    else {
+      const now = perfNow();
+      if (now - scaleAt > 250 || !(scaleTarget > 0)) {
+        const target = percentile(grid.cells, SCALE_QUANTILE);
+        if (target > 0) scaleTarget = target;
+        scaleAt = now;
       }
+      if (!(scaleMax > 0)) scaleMax = scaleTarget;
+      else if (scaleTarget > 0 && Math.abs(scaleTarget / scaleMax - 1) > 1e-3)
+        scaleMax += (scaleTarget - scaleMax) * ease(dt, 700);
     }
-    return {
-      kind: "bar",
-      key,
-      version: ++itemVersion,
-      color: [1, 1, 1, 1],
-      instances,
-      count,
-      halfWidth: (step / 2) * 1.06,
-      radius: 0,
-      // a positive inset turns on the renderers' overlap of small cells (no
-      // seam between neighbours); 0.01 px leaves no visible gap on large ones
-      inset: 0.01,
-      minHalf: 0,
-      sorted: true,
-    };
-  };
-
-  const chunkItems = (): BarItem[] => {
-    if (dirtyChunks.size) {
-      const byChunk = new Map<number, Column[]>();
-      for (const c of columns) {
-        const id = Math.floor(c.seq / CHUNK);
-        if (!dirtyChunks.has(id)) continue;
-        let list = byChunk.get(id);
-        if (!list) byChunk.set(id, (list = []));
-        list.push(c);
-      }
-      for (const id of dirtyChunks) {
-        const list = byChunk.get(id);
-        if (list) chunks.set(id, cellsItem(`heat:${id}`, list));
-        else chunks.delete(id);
-      }
-      dirtyChunks.clear();
+    const contrast = Math.max(0.01, options.contrast ?? 1);
+    const k = scaleMax > 0 ? (HEAT_TABLE_SIZE * contrast) / scaleMax : 0;
+    const paint = `${grid.version}|${k}`;
+    if (paint !== paintKey) {
+      paintHeatGrid(grid, table, k);
+      paintKey = `${grid.version}|${k}`;
     }
-    return [...chunks.values()];
+    return grid;
   };
 
   const visibleColumns = () => {
@@ -683,31 +648,65 @@ export const createOrderBookHeatmap = (
   ) => {
     if (options.bestLines === false) return;
     const step = interval();
-    const rows: [number, number, number][] = visible.map((c) => [
+    // [start, end, bid, ask]: a column lasts until the next one
+    const rows: [number, number, number, number][] = visible.map((c) => [
       c.time,
+      c.time + step,
       c.bestBid,
       c.bestAsk,
     ]);
     if (Number.isFinite(openStart))
-      rows.push([openStart, store.bestBid(), store.bestAsk()]);
+      rows.push([
+        openStart,
+        openStart + step,
+        store.bestBid(),
+        store.bestAsk(),
+      ]);
     if (!rows.length) return;
+    for (let i = 0; i + 1 < rows.length; i++) rows[i]![1] = rows[i + 1]![0];
     // wide columns: steps; narrow ones: a line through the column centers
     const steps = columnPx >= 2;
+    const xs = (row: readonly number[]): [number, number] => {
+      const xa = xOf(row[0]!);
+      const xb = xOf(row[1]!);
+      return steps ? [xa, xb] : [(xa + xb) / 2, (xa + xb) / 2];
+    };
     clipPlot(ctx);
+    // the spread band: one polygon per run of valid columns (no overlapping
+    // rectangles, so no seams where neighbours meet)
     ctx.beginPath();
-    for (const [t, bid, ask] of rows) {
-      if (!Number.isFinite(bid) || !Number.isFinite(ask) || !(ask > bid))
-        continue;
-      const xa = xOf(t);
-      const ya = yOf(ask);
-      ctx.rect(xa, ya, xOf(t + step) - xa, yOf(bid) - ya);
+    let run: (typeof rows)[number][] = [];
+    const flushRun = () => {
+      if (!run.length) return;
+      run.forEach((row, i) => {
+        const [xa, xb] = xs(row);
+        const y = yOf(row[3]);
+        if (i) ctx.lineTo(xa, y);
+        else ctx.moveTo(xa, y);
+        ctx.lineTo(xb, y);
+      });
+      for (let i = run.length - 1; i >= 0; i--) {
+        const [xa, xb] = xs(run[i]!);
+        const y = yOf(run[i]![2]);
+        ctx.lineTo(xb, y);
+        ctx.lineTo(xa, y);
+      }
+      ctx.closePath();
+      run = [];
+    };
+    for (const row of rows) {
+      const [, , bid, ask] = row;
+      if (Number.isFinite(bid) && Number.isFinite(ask) && ask > bid)
+        run.push(row);
+      else flushRun();
     }
-    ctx.fillStyle = toCss(host.theme.text, dark ? 0.07 : 0.06);
+    flushRun();
+    ctx.fillStyle = toCss(host.theme.text, dark ? 0.08 : 0.07);
     ctx.fill();
     ctx.lineJoin = "round";
     for (const [index, color] of [
-      [1, colors.up],
-      [2, colors.down],
+      [2, colors.up],
+      [3, colors.down],
     ] as const) {
       ctx.beginPath();
       let pen = false;
@@ -718,14 +717,10 @@ export const createOrderBookHeatmap = (
           continue;
         }
         const y = yOf(price);
-        const xa = xOf(row[0]);
-        const xb = xOf(row[0] + step);
-        if (steps) {
-          if (pen) ctx.lineTo(xa, y);
-          else ctx.moveTo(xa, y);
-          ctx.lineTo(xb, y);
-        } else if (pen) ctx.lineTo((xa + xb) / 2, y);
-        else ctx.moveTo((xa + xb) / 2, y);
+        const [xa, xb] = xs(row);
+        if (pen) ctx.lineTo(xa, y);
+        else ctx.moveTo(xa, y);
+        if (steps) ctx.lineTo(xb, y);
         pen = true;
       }
       // a dark halo keeps the line readable on hot cells
@@ -808,49 +803,56 @@ export const createOrderBookHeatmap = (
       }
       return { side, ...levels };
     });
-    // a nice scale, changed only on a clear change (no jumping bars)
-    if (
-      maxSize > profileMax ||
-      maxSize < profileMax * 0.35 ||
-      !(profileMax > 0)
-    )
-      profileMax = niceCeil(maxSize);
+    // a fine "nice" scale (the largest bar fills 75-100 % of the panel),
+    // changed only on a clear change: no jumping bars
+    if (maxSize > profileMax || maxSize < profileMax * 0.6 || !(profileMax > 0))
+      profileMax = fineCeil(maxSize);
     if (!(profileMax > 0)) return;
-    const left = px + 3;
-    const inner = profileW - 9;
-    // guides at half and full scale
-    ctx.strokeStyle = toCss(theme.text, 0.09);
+    const left = px + 2;
+    const inner = Math.max(4, profileW - 6);
+    // faint guides at half and full scale
+    ctx.strokeStyle = toCss(theme.text, 0.07);
     ctx.lineWidth = 1;
     ctx.setLineDash([2, 3]);
     ctx.beginPath();
     for (const f of [0.5, 1]) {
-      const x = Math.round(left + inner * f) + 0.5;
+      const x = Math.round(left + inner * f) - 0.5;
       ctx.moveTo(x, plot.y);
       ctx.lineTo(x, plot.y + plot.h);
     }
     ctx.stroke();
     ctx.setLineDash([]);
-    const gap = rowPx > 3 ? 1 : 0;
-    const height = Math.max(1, rowPx - gap);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(px, plot.y, profileW, plot.h);
+    ctx.clip();
+    // rows on whole pixels from the price edges; a 1 px gap when tall
+    const gap = rowPx >= 4 ? 1 : 0;
+    const bar = (p: number, s: number) => {
+      const top = Math.round(yOf(p + tick / 2));
+      const bottom = Math.max(top + 1, Math.round(yOf(p - tick / 2)) - gap);
+      const w = Math.max(1, Math.min(inner, (s / profileMax) * inner));
+      ctx.rect(left, top, w, bottom - top);
+    };
     for (const { side, price, size, count } of sides) {
       const color = side === "bid" ? colors.up : colors.down;
       ctx.beginPath();
       for (let i = 1; i < count; i++) {
         const p = price[i]!;
-        if (p < y0 || p > y1) continue;
-        const w = Math.max(1, Math.min(inner, (size[i]! / profileMax) * inner));
-        ctx.rect(left, yOf(p) - rowPx / 2 + gap / 2, w, height);
+        if (p >= y0 - tick && p <= y1 + tick) bar(p, size[i]!);
       }
-      ctx.fillStyle = toCss(color, 0.55);
+      ctx.fillStyle = toCss(color, dark ? 0.62 : 0.55);
       ctx.fill();
       // the best level, solid
       const best = price[0];
       if (count && best !== undefined && best >= y0 && best <= y1) {
-        const w = Math.max(1, Math.min(inner, (size[0]! / profileMax) * inner));
-        ctx.fillStyle = toCss(color, 0.95);
-        ctx.fillRect(left, yOf(best) - rowPx / 2 + gap / 2, w, height);
+        ctx.beginPath();
+        bar(best, size[0]!);
+        ctx.fillStyle = toCss(color);
+        ctx.fill();
       }
     }
+    ctx.restore();
     // size scale below the panel
     const y = Math.round(plot.y + plot.h + 4) + 0.5;
     ctx.strokeStyle = toCss(theme.textMuted, 0.7);
@@ -874,16 +876,6 @@ export const createOrderBookHeatmap = (
       ctx.textAlign = "left";
       ctx.fillText("0", left - 1, y + 4);
     }
-  };
-
-  const headCells = (): BarItem | null => {
-    if (!Number.isFinite(openStart) || !(tick > 0)) return null;
-    const version = store.version();
-    if (headItem && headVersion === version) return headItem;
-    const { bins, sizes } = sampleBook();
-    headItem = cellsItem("heat:head", [{ time: openStart, bins, sizes }]);
-    headVersion = version;
-    return headItem;
   };
 
   /** Hovered cell: pointer, time, price row */
@@ -992,7 +984,7 @@ export const createOrderBookHeatmap = (
     const axisW = Math.ceil(ctx.measureText(sample).width) + 18;
     ctx.font = regular;
     const profileW =
-      options.profile === false ? 0 : Math.round(clamp(width * 0.11, 44, 96));
+      options.profile === false ? 0 : Math.round(clamp(width * 0.12, 56, 120));
     const timeH = fontSize + 12;
     plot = {
       x: 0,
@@ -1054,45 +1046,36 @@ export const createOrderBookHeatmap = (
     const visible = visibleColumns();
     const columnPx = (step / (x1 - x0)) * plot.w;
 
-    // data layer: the cells on the GPU, over the floor color
+    // data layer: the heat field (an opaque image over the cold color)
     const floorCss = toCss(floor);
-    if (renderer && tick > 0) {
-      ensureOrigin();
+    if (renderer) {
       const canvas = renderer.canvas;
       canvas.style.left = `${plot.x}px`;
       canvas.style.top = `${plot.y}px`;
       canvas.style.width = `${plot.w}px`;
       canvas.style.height = `${plot.h}px`;
-      if (canvas.dataset.floor !== floorCss) {
-        canvas.dataset.floor = floorCss;
-        canvas.style.background = floorCss;
-      }
       const bw = Math.max(1, Math.round(plot.w * dpr));
       const bh = Math.max(1, Math.round(plot.h * dpr));
       if (canvas.width !== bw || canvas.height !== bh) renderer.resize(bw, bh);
-      const items: RenderItem[] = chunkItems();
-      const head = headCells();
-      if (head) items.push(head);
-      const xScale = 2 / (x1 - x0);
-      const yScale = 2 / (y1 - y0);
-      renderer.render(items, {
-        transform: {
-          xScale,
-          xOffset: (origin.x - x0) * xScale - 1,
-          yScale,
-          yOffset: (origin.y - y0) * yScale - 1,
-        },
-        width: bw,
-        height: bh,
-        dpr,
-      });
+      const heat =
+        ready && Number.isFinite(openStart)
+          ? heatGrid(x0, x1, y0, y1, time, dt)
+          : null;
+      // the image rectangle in device pixels of the plot canvas
+      const sx = bw / plot.w;
+      const sy = bh / plot.h;
+      const rect: [number, number, number, number] = heat
+        ? [
+            (xOf(heat.t0) - plot.x) * sx,
+            (yOf(heat.p1) - plot.y) * sy,
+            (xOf(heat.t1) - plot.x) * sx,
+            (yOf(heat.p0) - plot.y) * sy,
+          ]
+        : [0, 0, 0, 0];
+      renderer.render(heat, rect, floor);
     } else {
       ctx.fillStyle = floorCss;
       ctx.fillRect(plot.x, plot.y, plot.w, plot.h);
-    }
-    if (profileW) {
-      ctx.fillStyle = floorCss;
-      ctx.fillRect(px, plot.y, profileW, plot.h);
     }
 
     // grid over the cells
@@ -1161,13 +1144,11 @@ export const createOrderBookHeatmap = (
     ctx.textBaseline = "top";
     for (const t of xt.values) {
       const x = xOf(t);
-      if (x < 20 || x > px - 20) continue;
       const text = xt.format(t);
-      if (
-        cell &&
-        Math.abs(x - cell.hx) < hoverHalf + ctx.measureText(text).width / 2
-      )
-        continue;
+      const half = ctx.measureText(text).width / 2;
+      // labels stay whole inside the plot
+      if (x - half < plot.x + 2 || x + half > px - 2) continue;
+      if (cell && Math.abs(x - cell.hx) < hoverHalf + half) continue;
       ctx.fillText(text, x, plot.y + plot.h + 6);
     }
 
@@ -1343,7 +1324,7 @@ export const createOrderBookHeatmap = (
     );
 
     const sideColor =
-      side === "bid" ? colors.up : side === "ask" ? colors.down : theme.text;
+      side === "bid" ? colors.up : side === "ask" ? colors.down : null;
     tooltipHtml(
       doc,
       host.tooltip,
@@ -1354,6 +1335,14 @@ export const createOrderBookHeatmap = (
           options.timeZone,
         ),
         color: undefined,
+        // the side as a small colored badge (no accent border)
+        badge:
+          side && sideColor
+            ? {
+                text: side === "bid" ? l.bidSide : l.askSide,
+                color: toCss(sideColor),
+              }
+            : undefined,
       },
       [
         [l.price, fmt.price(rowPrice)],
@@ -1363,7 +1352,6 @@ export const createOrderBookHeatmap = (
       ],
     );
     host.tooltip.style.display = "block";
-    host.tooltip.style.borderLeft = `3px solid ${toCss(sideColor)}`;
     host.placeTooltip(
       host.tooltip,
       hx,
@@ -1390,7 +1378,7 @@ export const createOrderBookHeatmap = (
 
   const initRenderer = async (exclude: Set<ChartRendererKind> = new Set()) => {
     const token = ++rendererToken;
-    const next = await createRenderer(
+    const next = await createHeatFieldRenderer(
       options.renderer ?? "auto",
       () => {
         const canvas = doc.createElement("canvas");
@@ -1425,10 +1413,14 @@ export const createOrderBookHeatmap = (
       root.dataset.renderer = next.kind;
       root.insertBefore(next.canvas, host.canvas);
       emitter.emit("renderer", next.kind);
-    }
+    } else delete root.dataset.renderer;
     resolveReady(next?.kind ?? null);
     host.invalidate();
   };
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
 
   // --------------------------------------------------------- interaction
 
@@ -1671,7 +1663,7 @@ export const createOrderBookHeatmap = (
         void initRenderer();
       refreshColors();
       refreshFormat();
-      markAllDirty();
+      host.invalidate();
     },
     resetView() {
       windowSpan = NaN;
@@ -1689,6 +1681,7 @@ export const createOrderBookHeatmap = (
     },
     destroy() {
       destroyed = true;
+      unfollowDefault();
       root.removeEventListener("pointerdown", onPointerDown);
       root.removeEventListener("pointermove", onPointerMove);
       root.removeEventListener("pointerup", onPointerUp);

@@ -2,7 +2,8 @@
 // A profit and loss bridge: changes float from the running total,
 // `subtotal` / `total` steps start from zero; the values are written on the bars.
 import { computed } from "vue";
-import { WaterfallChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { WaterfallChart } from "minerva-design/vue/charts";
 
 const STEPS = {
   en: [

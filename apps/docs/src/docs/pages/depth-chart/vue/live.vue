@@ -2,7 +2,7 @@
 // Streaming updates: the handle's `applyDeltas` changes a few levels
 // (drawn once per frame, eased); the book is not passed again.
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { DepthChart, type DepthChartHandle } from "minerva-design/vue";
+import { DepthChart, type DepthChartHandle } from "minerva-design/vue/charts";
 
 const fraction = (value: number) => value - Math.floor(value);
 const round = (value: number) => Math.round(value * 100) / 100;

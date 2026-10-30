@@ -55,6 +55,28 @@ function covers(prims: readonly Prim[], p: Pt): boolean {
   return false;
 }
 
+/** Color of the topmost view painting the point */
+function colorOf(prims: readonly Prim[], p: Pt): string | undefined {
+  let found: string | undefined;
+  for (const prim of prims) {
+    if (prim.t === "group") found = colorOf(prim.children, p) ?? found;
+    else if (prim.t === "clip") {
+      const h = prim.size / 2;
+      const q = unrotate(p, [prim.x + h, prim.y + h], prim.rotate);
+      const local: Pt = [q[0] - prim.x, q[1] - prim.y];
+      if (
+        local[0] >= 0 &&
+        local[0] <= prim.size &&
+        local[1] >= 0 &&
+        local[1] <= prim.size
+      )
+        found = colorOf(prim.children, local) ?? found;
+    } else if (prim.t === "box" && covers([prim], p))
+      found = prim.color ?? prim.borderColor ?? found;
+  }
+  return found;
+}
+
 const unrotate = (p: Pt, c: Pt, angle: number): Pt => {
   const cos = Math.cos(-angle);
   const sin = Math.sin(-angle);
@@ -669,6 +691,80 @@ describe("shape chart geometry", () => {
     expect(colors[0]).toMatch(/^rgb\(2\d\d, 0, \d+\)$/);
     expect(colors[colors.length - 1]).toMatch(/^rgb\(\d+, 0, 2\d\d\)$/);
   });
+
+  it(
+    "fills gradient ribbons with bands along their axis",
+    { timeout: 30_000 },
+    () => {
+      const ribbon = {
+        kind: "ribbon",
+        cx: 100,
+        cy: 100,
+        r: 90,
+        s0: Math.PI * 0.9,
+        s1: Math.PI * 1.2,
+        t0: Math.PI * 1.9,
+        t1: Math.PI * 2.3,
+        head: 0,
+      };
+      const solid = framePrims(
+        record([{ ...ribbon, color0: "#ff0000", color1: "#ff0000" }]),
+      );
+      const banded = framePrims(
+        record([{ ...ribbon, color0: "#ff0000", color1: "#0000ff" }]),
+      );
+      // the same region, without seams
+      let checked = 0;
+      let mismatched = 0;
+      for (let x = 0; x <= 200; x += 2)
+        for (let y = 0; y <= 200; y += 2) {
+          const p: Pt = [x + 0.37, y + 0.61];
+          const a = covers(solid, p);
+          if (a) checked++;
+          if (a !== covers(banded, p)) mismatched++;
+        }
+      expect(checked).toBeGreaterThan(300);
+      expect(mismatched / checked).toBeLessThan(0.02);
+      // red at the source arc, blue at the target arc, purple between
+      const near = (a: number): Pt => [
+        100 + 84 * Math.cos(a),
+        100 + 84 * Math.sin(a),
+      ];
+      const rgb = (c: string | undefined) =>
+        (/rgba?\((\d+), (\d+), (\d+)/.exec(c ?? "") ?? []).slice(1).map(Number);
+      const [sr = 0, , sb = 0] = rgb(colorOf(banded, near(Math.PI * 1.05)));
+      const [tr = 0, , tb = 0] = rgb(colorOf(banded, near(Math.PI * 2.1)));
+      expect(sr).toBeGreaterThan(180);
+      expect(sb).toBeLessThan(75);
+      expect(tb).toBeGreaterThan(180);
+      expect(tr).toBeLessThan(75);
+      const colors = new Set<string>();
+      for (let x = 10; x <= 190; x += 4) {
+        const c = colorOf(banded, [x + 0.37, 100.61]);
+        if (c) colors.add(c);
+      }
+      expect(colors.size).toBeGreaterThan(3);
+      // a band adds at most two half-planes to a piece
+      expect(depth(banded)).toBeLessThanOrEqual(depth(solid) + 2);
+
+      // a flow to its own group: a thin notch cut lengthwise by the bands
+      const self = { ...ribbon, s0: -0.6, s1: 0, t0: 0.02, t1: 0.5 };
+      const selfSolid = framePrims(
+        record([{ ...self, color0: "#ff0000", color1: "#ff0000" }]),
+      );
+      const selfBanded = framePrims(
+        record([{ ...self, color0: "#ff0000", color1: "#0000ff" }]),
+      );
+      const holes: string[] = [];
+      for (let x = 100; x <= 200; x += 0.5)
+        for (let y = 40; y <= 160; y += 0.5) {
+          const p: Pt = [x + 0.13, y + 0.21];
+          if (covers(selfSolid, p) && !covers(selfBanded, p))
+            holes.push(p.join(","));
+        }
+      expect(holes).toEqual([]);
+    },
+  );
 
   it("records every engine chart type into views", () => {
     const all: ShapeChartOptions[] = [

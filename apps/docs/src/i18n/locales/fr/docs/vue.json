@@ -19,10 +19,16 @@
     "types": "Les composants globaux sont typés pour Vue - Official (Volar) et vue-tsc par les typages minerva-design/vue/global :",
     "charts": {
       "title": "Graphiques",
-      "text": "MinervaVue n'enregistre pas les graphiques, pour qu'une application sans graphiques ne charge jamais le moteur de graphiques. Importez les graphiques par leur nom (depuis minerva-design/vue/charts ou minerva-design/vue), ou installez le plugin optionnel MinervaVueCharts de minerva-design/vue/charts : il enregistre <MnLineChart>, <MnPieChart>, <MnTradingChart>… avec la même option prefix, typés par minerva-design/vue/charts-global.",
+      "text": "MinervaVue n'enregistre pas les graphiques : une application sans graphiques ne charge jamais le moteur de graphiques. Importez les graphiques par leur nom depuis minerva-design/vue/charts (recommandé ; minerva-design/vue les exporte encore aussi), ou installez le plugin optionnel MinervaVueCharts de minerva-design/vue/charts : il enregistre <MnLineChart>, <MnPieChart>, <MnTradingChart>... avec la même option prefix, typés par minerva-design/vue/charts-global.",
       "migration": {
         "title": "Mise à jour depuis la 1.4",
         "text": "Depuis la 1.5, app.use(MinervaVue) n'enregistre plus <MnChart>, <MnLineChart> ni les autres graphiques. Si vos templates les utilisent sans les importer, ajoutez app.use(MinervaVueCharts) depuis minerva-design/vue/charts (avec le même prefix que MinervaVue si vous l'avez changé) et ajoutez minerva-design/vue/charts-global aux types de tsconfig.json. Les imports nommés ne changent pas."
+      },
+      "dev": {
+        "title": "Graphiques et serveur de développement Vite",
+        "text": "Les builds de production éliminent les graphiques par tree-shaking : une application qui n'importe aucun graphique n'embarque aucun code de graphique, avec ou sans app.use(MinervaVue). En développement, en revanche, Vite pré-bundle tous les exports de minerva-design/vue dans un seul fichier : les composants de graphiques et le moteur (environ 0,7 Mo non minifié) en font partie même si aucun graphique n'est utilisé. Ce pré-bundle est mis en cache dans node_modules/.vite et ne coûte donc que du temps d'analyse lors d'un chargement complet de la page. Si votre application utilise des graphiques, importez-les depuis minerva-design/vue/charts et listez les deux entrées dans optimizeDeps.include, pour que Vite les pré-bundle ensemble au démarrage au lieu de ré-optimiser les dépendances et de recharger la page au premier import d'un graphique :",
+        "exclude": "Exclure minerva-design/charts/core de optimizeDeps n'a aucun effet : les composants Vue atteignent le moteur par un chemin relatif à l'intérieur du paquet. Exclure minerva-design/vue n'aide pas non plus : le navigateur chargerait alors des centaines de modules non bundlés, graphiques compris.",
+        "future": "minerva-design/vue continue d'exporter les composants de graphiques jusqu'à la prochaine version majeure, car les retirer casserait les imports nommés existants. En 2.0, ils ne seront exportés que par minerva-design/vue/charts, ce qui les retirera aussi du pré-bundle de développement. Importer les graphiques depuis minerva-design/vue/charts dès aujourd'hui rend cette mise à jour transparente."
       }
     }
   },

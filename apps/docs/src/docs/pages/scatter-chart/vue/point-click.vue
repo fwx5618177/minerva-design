@@ -1,11 +1,8 @@
 <script setup lang="ts">
 // @point-click reports the clicked point (series, index, x, y, label).
 import { computed, ref } from "vue";
-import {
-  ScatterChart,
-  useI18n,
-  type ChartHoverEvent,
-} from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { ScatterChart, type ChartHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

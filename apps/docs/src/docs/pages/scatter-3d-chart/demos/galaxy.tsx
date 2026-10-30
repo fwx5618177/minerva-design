@@ -1,5 +1,6 @@
-import { useMemo, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { Radio, RadioGroup } from "minerva-design";
 import { Scatter3DChart, type Scatter3DSeries } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
@@ -299,10 +300,14 @@ const SPACE = {
   "--border-color": "#2a3247",
 } as CSSProperties;
 
+/** Exposures offered (the light of the additive stars, tone mapped) */
+const EXPOSURES = [0.5, 1, 2, 4] as const;
+
 export default function GalaxyDemo() {
   const { t } = useTranslation("common", {
     keyPrefix: "docs.scatter-3d-chart.data",
   });
+  const [exposure, setExposure] = useState(1);
   // ~150 ms: generated once, when the demo mounts
   const stars = useMemo(() => galaxy(), []);
   const series = useMemo((): Scatter3DSeries[] => {
@@ -316,28 +321,28 @@ export default function GalaxyDemo() {
         name: t("galaxy.bulge"),
         color: "#ffc477",
         data: stars.bulge,
-        opacity: 0.08,
+        opacity: 0.11,
       },
       {
         ...common,
         name: t("galaxy.disk"),
         color: "#ffe2b8",
         data: stars.disk,
-        opacity: 0.06,
+        opacity: 0.08,
       },
       {
         ...common,
         name: t("galaxy.arms"),
         color: "#9cc4ff",
         data: stars.young,
-        opacity: 0.07,
+        opacity: 0.1,
       },
       {
         ...common,
         name: t("galaxy.nebulae"),
         color: "#ff6aa9",
         data: stars.nebulae,
-        opacity: 0.1,
+        opacity: 0.14,
       },
       {
         ...common,
@@ -351,18 +356,36 @@ export default function GalaxyDemo() {
 
   const kpc = (value: number) => t("kiloparsecs", { value: value.toFixed(1) });
   return (
-    <Scatter3DChart
-      series={series}
-      box={false}
-      aspect={[1, 1, 0.35]}
-      xAxis={{ min: -16, max: 16, format: kpc }}
-      yAxis={{ min: -16, max: 16, format: kpc }}
-      zAxis={{ min: -5.6, max: 5.6, format: kpc }}
-      camera={{ azimuth: 20, elevation: 34, zoom: 1.75, fov: 28 }}
-      autoRotate={4}
-      height={500}
-      style={SPACE}
-      ariaLabel={t("galaxyAria")}
-    />
+    <div style={{ display: "grid", gap: 12, width: "100%" }}>
+      <RadioGroup
+        aria-label={t("exposure")}
+        direction="horizontal"
+        size="small"
+        value={String(exposure)}
+        onChange={(value) => setExposure(Number(value))}
+      >
+        {EXPOSURES.map((value) => (
+          <Radio
+            key={value}
+            value={String(value)}
+            label={t("exposureValue", { value })}
+          />
+        ))}
+      </RadioGroup>
+      <Scatter3DChart
+        series={series}
+        box={false}
+        aspect={[1, 1, 0.35]}
+        xAxis={{ min: -16, max: 16, format: kpc }}
+        yAxis={{ min: -16, max: 16, format: kpc }}
+        zAxis={{ min: -5.6, max: 5.6, format: kpc }}
+        camera={{ azimuth: 20, elevation: 34, zoom: 1.75, fov: 28 }}
+        autoRotate={4}
+        exposure={exposure}
+        height={500}
+        style={SPACE}
+        ariaLabel={t("galaxyAria")}
+      />
+    </div>
   );
 }

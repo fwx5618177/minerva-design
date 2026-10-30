@@ -2,7 +2,8 @@
 // A forecast with its uncertainty: the band (`y0` - `y`) widens with the
 // horizon; the actual values and the forecast are lines (`type: "line"`).
 import { computed } from "vue";
-import { RangeAreaChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RangeAreaChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { actual: "Actual", forecast: "Forecast", band: "80 % interval" },

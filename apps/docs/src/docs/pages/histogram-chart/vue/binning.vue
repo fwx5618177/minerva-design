@@ -2,7 +2,8 @@
 // The same samples in fewer or more bins: `bins` takes a count or a rule
 // (`sturges`, `freedman-diaconis`, `auto`); two groups appear with enough bins.
 import { computed, ref } from "vue";
-import { HistogramChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { HistogramChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { count: "Count", bins: "Bins:", age: "Age" },

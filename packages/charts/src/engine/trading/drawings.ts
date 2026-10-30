@@ -80,6 +80,45 @@ export const isFillable = (type: DrawingType): boolean =>
 export const isPosition = (type: DrawingType): boolean =>
   type === "longPosition" || type === "shortPosition";
 
+/**
+ * Prices a drawing spans when it overlaps the bars `[from, to]` (logical
+ * indices), for `autoscaleIncludesDrawings`: its anchors and the parallel of
+ * channels; horizontal lines always count, vertical lines never
+ */
+export const drawingPrices = (
+  drawing: TradingDrawing,
+  index: (time: number) => number,
+  from: number,
+  to: number,
+): number[] => {
+  const pts = drawing.points;
+  const first = pts[0];
+  if (!first || drawing.type === "verticalLine") return [];
+  if (drawing.type === "horizontalLine")
+    return Number.isFinite(first.price) ? [first.price] : [];
+  const xs = pts.map((p) => index(p.time));
+  let lo = Math.min(...xs);
+  let hi = Math.max(...xs);
+  // lines extended past their anchors
+  if (drawing.type === "ray" || drawing.type === "pitchfork") hi = Infinity;
+  if (drawing.type === "extendedLine") {
+    lo = -Infinity;
+    hi = Infinity;
+  }
+  if (hi < from || lo > to) return [];
+  const prices = pts.map((p) => p.price);
+  const b = pts[1];
+  const c = pts[2];
+  if (drawing.type === "parallelChannel" && b && c) {
+    const xa = xs[0] ?? 0;
+    const dx = (xs[1] ?? 0) - xa;
+    const t = dx ? ((xs[2] ?? 0) - xa) / dx : 0;
+    const offset = c.price - (first.price + t * (b.price - first.price));
+    prices.push(first.price + offset, b.price + offset);
+  }
+  return prices.filter(Number.isFinite);
+};
+
 export const screenPoints = (
   drawing: TradingDrawing,
   m: DrawingMapper,
@@ -561,31 +600,37 @@ const paintText = (
   const lines = (drawing.text || c.defaultText).split("\n");
   ctx.font = `500 ${size}px ${c.fontFamily}`;
   const lineHeight = Math.round(size * 1.35);
-  const w = Math.max(...lines.map((t) => ctx.measureText(t).width)) + 18;
+  // a note card: room for the colored dot before the text
+  const inset = filled ? 22 : 10;
+  const w = Math.max(...lines.map((t) => ctx.measureText(t).width)) + inset + 8;
   const h = lines.length * lineHeight + 10;
   const box = { x: a.x, y: a.y, w, h };
   ctx.setLineDash([]);
   if (filled) {
-    // a note card: the plot background, a colored border and accent
-    roundRect(ctx, a.x, a.y, w, h, 5);
+    // a note card: the plot background tinted, a subtle border all around
+    // and a colored dot
+    roundRect(ctx, a.x + 0.5, a.y + 0.5, w - 1, h - 1, 5);
     ctx.globalAlpha = 0.94;
     ctx.fillStyle = c.background;
     ctx.fill();
-    ctx.globalAlpha = 0.12;
+    ctx.globalAlpha = 0.1;
     ctx.fillStyle = c.color;
     ctx.fill();
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.55;
     ctx.lineWidth = 1;
     ctx.strokeStyle = c.color;
     ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.fillStyle = c.color;
-    ctx.fillRect(a.x + 1, a.y + 4, 3, h - 8);
+    ctx.beginPath();
+    ctx.arc(a.x + 11, a.y + 5 + lineHeight / 2, 3.5, 0, Math.PI * 2);
+    ctx.fill();
   }
   ctx.fillStyle = filled ? c.text : c.color;
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
   lines.forEach((t, i) =>
-    ctx.fillText(t, a.x + 10, a.y + 5 + lineHeight * (i + 0.5)),
+    ctx.fillText(t, a.x + inset, a.y + 5 + lineHeight * (i + 0.5)),
   );
   return box;
 };

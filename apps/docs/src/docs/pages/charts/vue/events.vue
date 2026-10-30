@@ -2,7 +2,8 @@
 // The engine events are emits: hover (null when the pointer leaves),
 // point-click, plot-click, zoom, renderer-change.
 import { computed, ref } from "vue";
-import { Chart, useI18n, type ChartHoverEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Chart, type ChartHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

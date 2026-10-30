@@ -2,7 +2,8 @@
 // <Bar3DChart>: a bar per region × quarter cell, colored by height
 // (`colorBy: "z"`); the axes name the categories.
 import { computed } from "vue";
-import { Bar3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Bar3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

@@ -3,11 +3,8 @@
 // large order highlight; @level-click reports the clicked row (e.g. to fill
 // a price in an order form).
 import { computed, ref } from "vue";
-import {
-  OrderBook,
-  useI18n,
-  type OrderBookLevelEvent,
-} from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { OrderBook, type OrderBookLevelEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { price: "Price", size: "Size", hint: "Click a row" },

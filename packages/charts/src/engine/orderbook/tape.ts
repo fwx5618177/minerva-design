@@ -488,8 +488,17 @@ export const createTimeAndSales = (
         const k = clamp(Math.log2(row.size / threshold) / 3, 0, 1);
         ctx.fillStyle = toCss(color, 0.12 + 0.2 * k);
         ctx.fillRect(0, y + 1, width, rh - 2);
+        // a small dot in the left padding marks the large trade (no accent bar)
         ctx.fillStyle = toCss(color);
-        ctx.fillRect(0, y + 2, 3, rh - 4);
+        ctx.beginPath();
+        ctx.arc(
+          pad / 2,
+          y + rh / 2,
+          Math.min(2.5, pad / 2 - 1),
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
       }
       if (flash && Number.isFinite(row.arrival)) {
         const age = (now - row.arrival) / FLASH_MS;

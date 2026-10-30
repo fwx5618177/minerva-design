@@ -2,7 +2,8 @@
 // Key results completion on one scale (`max` 100): the labels sit before
 // the start of the bars, in the empty quarter left by the 270° sweep.
 import { computed } from "vue";
-import { RadialBarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RadialBarChart } from "minerva-design/vue/charts";
 
 const OKR = {
   en: ["Revenue", "New customers", "Retention", "NPS", "Hiring"],

@@ -847,7 +847,7 @@ describe("graph elements", () => {
     [
       "minerva-graph-chart",
       { options: { force: { charge: -200 }, nodeSize: [8, 30] } },
-      'layout="circular" direction="LR" node-shape="box" edge-style="curve" edge-color="source" highlight="lineage" locale="fr"',
+      'layout="circular" direction="LR" node-shape="box" edge-style="curve" edge-color="source" arrow-style="filled" highlight="lineage" locale="fr"',
       {
         layout: "circular",
         direction: "LR",
@@ -856,6 +856,7 @@ describe("graph elements", () => {
         nodeShape: "box",
         edgeStyle: "curve",
         edgeColor: "source",
+        arrowStyle: "filled",
         highlight: "lineage",
         locale: "fr",
       },
@@ -868,13 +869,19 @@ describe("graph elements", () => {
         layout: "dag",
         direction: "TB",
         dag: { layerGap: 80, criticalPath: true },
+        arrowStyle: "open",
       },
     ],
     [
       "minerva-tree-chart",
       { options: { tree: { root: "a" } } },
-      'layout="org" edge-color="target"',
-      { layout: "org", edgeColor: "target", tree: { root: "a" } },
+      'layout="org" edge-color="target" arrow-style="open"',
+      {
+        layout: "org",
+        edgeColor: "target",
+        arrowStyle: "open",
+        tree: { root: "a" },
+      },
     ],
   ];
 

@@ -2,7 +2,8 @@
 // Monthly cash flows from an opening balance: rows instead of
 // columns (`orientation="horizontal"`), values in the tooltip only.
 import { computed } from "vue";
-import { WaterfallChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { WaterfallChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { opening: "Opening", closing: "Closing" },

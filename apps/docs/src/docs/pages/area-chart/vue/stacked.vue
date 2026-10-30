@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // `stacked` piles the areas up; the curve is smooth by default.
 import { computed } from "vue";
-import { AreaChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { AreaChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

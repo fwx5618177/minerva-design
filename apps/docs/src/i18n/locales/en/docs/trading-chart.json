@@ -20,12 +20,13 @@
       "pointer": "Wheel to zoom at the pointer (Shift or a horizontal swipe to scroll), drag to pan with inertia.",
       "axes": "Drag the price axis to zoom it vertically and the time axis to change the bar width; double-click an axis to reset it.",
       "keyboard": "Focus the chart: arrows move the crosshair bar by bar (Shift: ten bars) and announce its prices, + / − zoom, Home / End jump to the first / latest bar, Delete removes the selected drawing, Ctrl / ⌘ + Z undoes and Ctrl / ⌘ + Shift + Z redoes a drawing change, Escape cancels.",
+      "orders": "With orderEntry: B / S arm a buy / sell limit order at the crosshair price (or the last price), ↑ / ↓ move it by one tick (Shift: ten), Enter places it and Escape abandons it. O / Shift + O pick the draggable or cancellable lines in turn to move them the same way; Delete cancels the picked order. Each step is read aloud and emits the same events as the pointer (orderCreate, orderMove, orderCancel).",
       "touch": "On touch screens: drag to pan, pinch to zoom."
     },
     "languages": {
       "title": "Languages",
       "text": "The texts the chart writes (OHLC names, order and alert line titles, countdown, measure tool, accessible names) are built in for English, Chinese, Japanese and French and follow the page language (<html lang>), also when it changes. Volumes use the units of the language (万 / 亿 in Chinese). Set locale to pick another language and labels to replace any text.",
-      "colors": "Colors don't follow the language: a Chinese page may well show US stocks, so the red-up convention of mainland China stays an explicit colorConvention=\"redUp\"."
+      "colors": "Colors don't follow the language by default: a Chinese page may well show US stocks. Set colorConvention=\"redUp\" for markets showing rises in red, or colorConvention=\"auto\" to pick it from the locale: red up for mainland China, Taiwan, Japan and Korea (zh-CN, zh-TW, ja-JP, ko-KR, or zh / ja / ko without a region), green up elsewhere (Hong Kong included)."
     },
     "workflow": {
       "title": "Workflow",
@@ -54,7 +55,7 @@
     },
     "drawing-tools": {
       "title": "Drawing tools",
-      "description": "Fourteen tools: pick one, then drag or click the anchors (channels and pitchforks take three). Select a drawing to restyle it from its floating toolbar (color, width, dash, fill, lock, delete), drag it or its handles, double-click a note to edit it. Drawings also work on the RSI pane; undo / redo with the buttons or Ctrl / ⌘ + Z."
+      "description": "Fourteen tools: pick one, then drag or click the anchors (channels and pitchforks take three). Select a drawing to restyle it from its floating toolbar (color, width, dash, fill, lock, delete), drag it or its handles, double-click a note to edit it. Drawings also work on the RSI pane; undo / redo with the buttons or Ctrl / ⌘ + Z. With autoscaleIncludesDrawings, the price scale also fits the visible drawings (the position target and stop here)."
     },
     "orders": {
       "title": "Orders and positions",
@@ -74,7 +75,7 @@
     },
     "red-up": {
       "title": "Red up, green down",
-      "description": "colorConvention=\"redUp\" follows the mainland China, Hong Kong, Japan and Korea conventions; utcOffset shows the times of the Shanghai exchange. MA5 / 10 / 20 / 60, volume with its MA5 and KDJ, as on a Chinese brokerage app. The convention is not inferred from the page language (a Chinese page can show US stocks): set it explicitly."
+      "description": "colorConvention=\"redUp\" follows the mainland China, Taiwan, Japan and Korea conventions; \"auto\" picks it from the language of the page (switch the docs to Chinese or Japanese to see it turn red); utcOffset shows the times of the Shanghai exchange. MA5 / 10 / 20 / 60, volume with its MA5 and KDJ, as on a Chinese brokerage app."
     },
     "dark-terminal": {
       "title": "Dark terminal",
@@ -94,7 +95,7 @@
     },
     "order-entry": {
       "title": "Order entry",
-      "description": "With orderEntry, a + button follows the crosshair on the right of the price pane: click it to place a limit order at that price (buy below the last price, sell above). Orders are draggable and cancellable price lines kept in React state through onOrderCreate, onOrderMove and onOrderCancel."
+      "description": "With orderEntry, a + button follows the crosshair on the right of the price pane: click it to place a limit order at that price (buy below the last price, sell above). The keyboard does the same: focus the chart (Tab), press B or S, move the price with the arrows and press Enter; O picks an existing order to move it or Delete to cancel it. Orders are draggable and cancellable price lines kept in React state through onOrderCreate, onOrderMove and onOrderCancel."
     },
     "sessions": {
       "title": "Time zones and sessions",
@@ -178,6 +179,7 @@
       "shortPosition": "Short position"
     },
     "keepDrawing": "Stay in drawing mode",
+    "fitDrawings": "Fit drawings in the scale",
     "clearDrawings": "Remove all",
     "drawingsStatus": "Drawings: {{count}}",
     "drawingAria": "ETH/USDT four-hour chart with drawings",
@@ -252,7 +254,7 @@
     "orderModified": "Order moved from {{from}} to {{to}}",
     "orderCancelled": "Order at {{price}} cancelled",
     "orderEntryAria": "BTCUSDT perpetual 5-minute chart with order entry",
-    "orderEntryHint": "Hover the chart and click the + on the right to place an order; drag a line to move it, × cancels it.",
+    "orderEntryHint": "Hover the chart and click the + on the right to place an order, or focus the chart and press B / S; drag a line to move it, × cancels it.",
     "timeZone": "Time zone",
     "zones": {
       "America_New_York": "New York",
@@ -266,7 +268,28 @@
     "noteText": "Rally channel: wait for a retest",
     "ordersTitle": "Open orders",
     "rowCount": "{{count}} rows",
-    "barsPerSecond": "{{count}} bars / s"
+    "barsPerSecond": "{{count}} bars / s",
+    "colorConvention": "Color convention",
+    "conventions": {
+      "redUp": "Red up",
+      "auto": "From the language",
+      "greenUp": "Green up"
+    },
+    "keyboard": {
+      "title": "Keyboard",
+      "armKeys": "B S",
+      "arm": "Arm a buy / sell order",
+      "moveKeys": "↑ ↓",
+      "move": "Move the price (Shift: ×10)",
+      "confirmKeys": "Enter",
+      "confirm": "Place or move the order",
+      "cancelKeys": "Esc",
+      "cancel": "Abandon",
+      "selectKeys": "O",
+      "select": "Pick the next order",
+      "removeKeys": "Delete",
+      "remove": "Cancel the picked order"
+    }
   },
   "api": {
     "TradingChartProps": {
@@ -298,7 +321,7 @@
       "chartStyle": "How the bars are drawn: candles, hollowCandles, heikinAshi, bars, line, area or baseline",
       "indicators": "Indicators: averages, Bollinger bands and VWAP over the price, the others in panes below, in this order",
       "scaleMode": "Price scale of the price pane: linear, log or percent (from the first visible bar)",
-      "colorConvention": "greenUp (most markets) or redUp (China, Japan, Korea): swaps the default up / down colors. Not derived from the locale: set it explicitly",
+      "colorConvention": "greenUp (most markets), redUp (mainland China, Taiwan, Japan, Korea) or auto (redUp when the locale is one of those markets, greenUp otherwise): swaps the default up / down colors. Not derived from the locale by default",
       "upColor": "Color of rising bars, any CSS color including var()",
       "downColor": "Color of falling bars",
       "precision": "Decimals of the prices; detected from the data by default",
@@ -317,6 +340,7 @@
       "drawingMode": "Active drawing tool; cursor selects and moves drawings",
       "keepDrawingMode": "Keeps the tool after a drawing instead of going back to cursor",
       "baselinePrice": "Price splitting the baseline style; the first visible close by default",
+      "autoscaleIncludesDrawings": "The automatic price scale also fits the visible drawings of each pane (lines, channels, position tools...).",
       "rightOffset": "Empty space after the last bar, in bars",
       "barSpacing": "Initial width of a bar in pixels",
       "wheel": "Mouse wheel: zoom, modifier (Ctrl / ⌘ only, the page scrolls otherwise) or none",
@@ -328,7 +352,7 @@
       "ariaLabel": "Accessible label; built from the symbol by default",
       "timeZone": "Time zone of the time axis, the session breaks and the VWAP periods: an IANA name (\"America/New_York\") or \"UTC\"; the local time by default.",
       "sessionBreaks": "Dashed vertical lines where a day starts (intraday bars).",
-      "orderEntry": "A + button at the crosshair price on the right of the price pane: clicking it reports a limit order (orderCreate).",
+      "orderEntry": "A + button at the crosshair price on the right of the price pane: clicking it reports a limit order (orderCreate). With the chart focused, B / S arm a buy / sell order, the arrows move it, Enter confirms and Escape cancels; O picks the draggable lines to move them, Delete cancels the cancellable ones.",
       "volumeProfile": "Volume by price of the visible bars, with its point of control and value area (true for the defaults).",
       "drawingToolbar": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)."
     },
@@ -471,7 +495,12 @@
       "replay": "Badge of the bar replay; {time} is replaced.",
       "replayHint": "Hint while picking the first bar of a replay.",
       "buyLimit": "Order entry button, below the last price; {price} is replaced.",
-      "sellLimit": "Order entry button, above the last price; {price} is replaced."
+      "sellLimit": "Order entry button, above the last price; {price} is replaced.",
+      "orderHint": "Read aloud while a keyboard order is armed or a line picked. Default \"Arrows move the price, Enter confirms, Escape cancels\".",
+      "orderCancelHint": "Read aloud when the picked line can be cancelled. Default \"Delete cancels the order\".",
+      "orderLine": "Line picked with the keyboard; {title} and {price} are replaced. Default \"{title} at {price}\".",
+      "orderPlaced": "Read aloud when an order is placed or moved; {price} is replaced. Default \"Order placed at {price}\".",
+      "orderCancelled": "Read aloud when a keyboard order is abandoned or an order cancelled. Default \"Order cancelled\"."
     },
     "TradingCrosshairEvent": {
       "index": "Index of the hovered bar (may be past the last bar)",
@@ -519,7 +548,7 @@
     },
     "TradingOrderCreateEvent": {
       "price": "Price of the order (rounded to the price precision).",
-      "side": "buy below the last price, sell above it."
+      "side": "buy below the last price, sell above it (the key pressed, B or S, with the keyboard)."
     },
     "TradingOrderCancelEvent": {
       "id": "Id of the line.",

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Series are grouped side by side; `labels` writes the value of every bar.
 import { computed } from "vue";
-import { BarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

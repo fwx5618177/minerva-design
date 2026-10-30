@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // `shape="circle"` draws round grid rings, `levels` sets how many.
 import { computed } from "vue";
-import { RadarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RadarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

@@ -154,6 +154,48 @@ export class LineBuffer {
   }
 }
 
+/**
+ * A line in two colors (the SuperTrend once zoomed out): each run of a color
+ * starts at the last point of the previous run, so the line stays joined
+ * where its color changes
+ */
+export class TrendBuffer {
+  readonly up: LineBuffer;
+  readonly down: LineBuffer;
+  private current: LineBuffer | null = null;
+  private px = NaN;
+  private py = NaN;
+
+  constructor(top: number, bottom: number) {
+    this.up = new LineBuffer(top, bottom);
+    this.down = new LineBuffer(top, bottom);
+  }
+
+  push(x: number, y: number, up: boolean): void {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      this.break();
+      return;
+    }
+    const buffer = up ? this.up : this.down;
+    if (buffer !== this.current) {
+      this.current?.break();
+      buffer.break();
+      buffer.push(this.px, this.py);
+      this.current = buffer;
+    }
+    buffer.push(x, y);
+    this.px = x;
+    this.py = y;
+  }
+
+  /** Breaks the line (no value) */
+  break(): void {
+    this.current?.break();
+    this.current = null;
+    this.px = this.py = NaN;
+  }
+}
+
 /** Area points (x, top, bottom), both edges clamped to a band */
 export class AreaBuffer {
   private p = new Float32Array(768);

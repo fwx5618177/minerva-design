@@ -2,7 +2,8 @@
 // `needle` adds a pointer to the arc; `min` / `max` set the scale, `sweep`
 // and `thickness` the shape of the arc.
 import { computed } from "vue";
-import { GaugeChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { GaugeChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: "Speed (km/h)",

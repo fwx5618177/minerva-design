@@ -114,6 +114,7 @@ export default function DrawingToolsDemo() {
   const chart = useRef<TradingChartHandle>(null);
   const [tool, setTool] = useState<TradingDrawingTool>("cursor");
   const [keep, setKeep] = useState(false);
+  const [fitDrawings, setFitDrawings] = useState(true);
   const [history, setHistory] = useState<TradingUndoState>({
     canUndo: false,
     canRedo: false,
@@ -142,7 +143,7 @@ export default function DrawingToolsDemo() {
           flexDirection: "column",
           gap: 2,
           padding: 6,
-          borderRight: "1px solid var(--border-color)",
+          background: "var(--surface-subtle-color)",
         }}
       >
         {TOOLS.map((name) => (
@@ -170,7 +171,7 @@ export default function DrawingToolsDemo() {
             flexWrap: "wrap",
             padding: "6px 10px",
             fontSize: 13,
-            borderBottom: "1px solid var(--border-color)",
+            background: "var(--surface-subtle-color)",
           }}
         >
           <Button
@@ -201,6 +202,12 @@ export default function DrawingToolsDemo() {
             onChange={setKeep}
             label={t("keepDrawing")}
           />
+          <Switch
+            size="small"
+            checked={fitDrawings}
+            onChange={setFitDrawings}
+            label={t("fitDrawings")}
+          />
           <Button
             size="small"
             variant="ghost"
@@ -230,6 +237,8 @@ export default function DrawingToolsDemo() {
           onUndoChange={setHistory}
           drawingMode={tool}
           keepDrawingMode={keep}
+          // the price scale keeps the visible drawings in view
+          autoscaleIncludesDrawings={fitDrawings}
           onDrawingToolChange={setTool}
           indicators={[
             { type: "ema", period: 50 },

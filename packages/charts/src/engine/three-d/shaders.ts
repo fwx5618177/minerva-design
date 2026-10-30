@@ -11,12 +11,18 @@
 //   light     unit vector towards the light, additive points (0/1)
 //   material  ambient, diffuse, specular, shininess
 //   params    opacity, perspective sizes (0/1) | line width (CSS px), distance, radius
-//   fog       background color (far points fade towards it)
+//   fog       background color (far points fade towards it), exposure of the
+//             additive light
+//
+// Points and meshes have a second fragment entry point writing the targets
+// of the order-independent transparency (`oit.ts`): `fsOit` in WGSL, the
+// `oit` variant of the GLSL programs (WebGL2).
 //
 // Point sizes are CSS pixels times the device pixel ratio (billboards: no
 // point size limit). Dots thinner than the smallest drawn radius keep their
 // energy: their alpha scales with the area they would cover.
 
+import { GLSL_OIT, WGSL_OIT } from "./oit";
 import { POINT_SPHERE, type Frame3D, type Item3D } from "./render-types";
 
 export { writesDepth } from "./render-types";
@@ -81,7 +87,7 @@ export const itemUniforms = (
     ],
     frame.lighting,
     [item.opacity, second, frame.distance, frame.radius],
-    [frame.fog[0], frame.fog[1], frame.fog[2], 1],
+    [frame.fog[0], frame.fog[1], frame.fog[2], frame.exposure],
   );
 };
 
@@ -107,7 +113,7 @@ fn depthCue(world: vec3f) -> f32 {
   let near = u.params.z - u.params.w;
   return clamp((length(world - u.eye.xyz) - near) / (2.0 * u.params.w), 0.0, 1.0);
 }
-`;
+${WGSL_OIT}`;
 
 export const WGSL_POINTS = /* wgsl */ `${WGSL_UNIFORMS}
 struct Out {
@@ -142,13 +148,12 @@ fn vs(
   out.offset = corner * reach;
   out.radius = radius;
   out.color = color;
-  out.fog = depthCue(pos) * 0.45;
+  out.fog = depthCue(pos);
   out.coverage = min(1.0, raw * raw / (radius * radius));
   return out;
 }
 
-@fragment
-fn fs(in: Out) -> @location(0) vec4f {
+fn shade(in: Out) -> vec4f {
   let d = length(in.offset);
   let r = in.radius;
   var alpha = clamp(r + 0.5 - d, 0.0, 1.0);
@@ -168,14 +173,26 @@ fn fs(in: Out) -> @location(0) vec4f {
     rgb = mix(rgb, shaded, smoothstep(1.5, 3.5, r));
   }
   if (alpha <= 0.004) { discard; }
+  let fog = in.fog * 0.45;
   if (u.light.w > 0.5) {
     // additive light fades with the distance
-    alpha = alpha * (1.0 - in.fog);
+    alpha = alpha * (1.0 - fog);
+    rgb = rgb * u.fog.w;
   } else {
-    rgb = mix(rgb, u.fog.rgb, in.fog);
+    rgb = mix(rgb, u.fog.rgb, fog);
   }
   alpha = alpha * in.coverage * in.color.a * u.params.x;
   return vec4f(rgb * alpha, alpha);
+}
+
+@fragment
+fn fs(in: Out) -> @location(0) vec4f {
+  return shade(in);
+}
+
+@fragment
+fn fsOit(in: Out) -> Oit {
+  return oit(shade(in), in.fog);
 }
 `;
 
@@ -201,8 +218,7 @@ fn vs(
   return out;
 }
 
-@fragment
-fn fs(in: Out) -> @location(0) vec4f {
+fn shade(in: Out) -> vec4f {
   var n = normalize(in.normal);
   let v = normalize(u.eye.xyz - in.world);
   if (dot(n, v) < 0.0) { n = -n; }
@@ -213,6 +229,16 @@ fn fs(in: Out) -> @location(0) vec4f {
   let rgb = in.color.rgb * (u.material.x + u.material.y * diffuse) + vec3f(specular);
   let alpha = in.color.a * u.params.x;
   return vec4f(rgb * alpha, alpha);
+}
+
+@fragment
+fn fs(in: Out) -> @location(0) vec4f {
+  return shade(in);
+}
+
+@fragment
+fn fsOit(in: Out) -> Oit {
+  return oit(shade(in), depthCue(in.world));
 }
 `;
 
@@ -301,7 +327,7 @@ void main() {
   v_radius = radius;
   v_color = a_color;
   float near = u_params.z - u_params.w;
-  v_fog = clamp((length(a_pos - u_eye.xyz) - near) / (2.0 * u_params.w), 0.0, 1.0) * 0.45;
+  v_fog = clamp((length(a_pos - u_eye.xyz) - near) / (2.0 * u_params.w), 0.0, 1.0);
   v_coverage = min(1.0, raw * raw / (radius * radius));
 }
 `;
@@ -331,13 +357,15 @@ void main() {
     rgb = mix(rgb, shaded, smoothstep(1.5, 3.5, r));
   }
   if (alpha <= 0.004) discard;
+  float fog = v_fog * 0.45;
   if (u_light.w > 0.5) {
-    alpha = alpha * (1.0 - v_fog);
+    alpha = alpha * (1.0 - fog);
+    rgb = rgb * u_fog.w;
   } else {
-    rgb = mix(rgb, u_fog.rgb, v_fog);
+    rgb = mix(rgb, u_fog.rgb, fog);
   }
   alpha = alpha * v_coverage * v_color.a * u_params.x;
-  FRAG = vec4(rgb * alpha, alpha);
+  EMIT(vec4(rgb * alpha, alpha), v_fog);
 }
 `;
 
@@ -370,7 +398,9 @@ void main() {
   float specular = pow(max(dot(n, h), 0.0), u_material.w) * u_material.z;
   vec3 rgb = v_color.rgb * (u_material.x + u_material.y * diffuse) + vec3(specular);
   float alpha = v_color.a * u_params.x;
-  FRAG = vec4(rgb * alpha, alpha);
+  float near = u_params.z - u_params.w;
+  float depth = (length(v_world - u_eye.xyz) - near) / (2.0 * u_params.w);
+  EMIT(vec4(rgb * alpha, alpha), depth);
 }
 `;
 
@@ -410,7 +440,7 @@ void main() {
   float coverage = clamp(max(core, 0.5) + 0.5 - abs(v_across), 0.0, 1.0) * min(1.0, core * 2.0);
   float alpha = coverage * v_color.a * u_params.x;
   if (alpha <= 0.0) discard;
-  FRAG = vec4(v_color.rgb * alpha, alpha);
+  EMIT(vec4(v_color.rgb * alpha, alpha), 0.0);
 }
 `;
 
@@ -427,15 +457,24 @@ export interface GlslSource {
   fragment: string;
 }
 
-const glsl = (vs: string, fs: string, version: 1 | 2): GlslSource =>
+const glsl = (
+  vs: string,
+  fs: string,
+  version: 1 | 2,
+  oit = false,
+): GlslSource =>
   version === 2
     ? {
         vertex: `#version 300 es\n#define attribute in\n#define varying out\n${GLSL_UNIFORMS}${vs}`,
-        fragment: `#version 300 es\nprecision highp float;\n#define varying in\nout vec4 fragColor;\n#define FRAG fragColor\n${GLSL_UNIFORMS}${fs}`,
+        fragment: `#version 300 es\nprecision highp float;\n#define varying in\n${GLSL_UNIFORMS}${
+          oit
+            ? GLSL_OIT
+            : "out vec4 fragColor;\n#define EMIT(c, d) fragColor = (c)\n"
+        }${fs}`,
       }
     : {
         vertex: `${GLSL_UNIFORMS}${vs}`,
-        fragment: `${PRECISION}#define FRAG gl_FragColor\n${GLSL_UNIFORMS}${fs}`,
+        fragment: `${PRECISION}#define EMIT(c, d) gl_FragColor = (c)\n${GLSL_UNIFORMS}${fs}`,
       };
 
 /** GLSL programs of the three primitives for WebGL (1) or WebGL2 */
@@ -443,6 +482,15 @@ export const glslPrograms = (version: 1 | 2) => ({
   points: glsl(GLSL_POINTS_VS, GLSL_POINTS_FS, version),
   mesh: glsl(GLSL_MESH_VS, GLSL_MESH_FS, version),
   lines: glsl(GLSL_LINES_VS, GLSL_LINES_FS, version),
+});
+
+/**
+ * Variants of the points and meshes writing the targets of the
+ * order-independent transparency (WebGL2)
+ */
+export const glslOitPrograms = () => ({
+  points: glsl(GLSL_POINTS_VS, GLSL_POINTS_FS, 2, true),
+  mesh: glsl(GLSL_MESH_VS, GLSL_MESH_FS, 2, true),
 });
 
 /** Attribute names of every program, bound to locations 0, 1, ... */

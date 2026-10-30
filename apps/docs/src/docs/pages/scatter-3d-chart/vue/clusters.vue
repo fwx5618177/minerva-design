@@ -3,7 +3,8 @@
 // x, y, z); drag to rotate, Ctrl / ⌘ + wheel to zoom, double-click to
 // reset the camera.
 import { computed } from "vue";
-import { Scatter3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Scatter3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

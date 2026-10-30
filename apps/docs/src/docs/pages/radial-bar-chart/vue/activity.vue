@@ -2,7 +2,8 @@
 // Activity rings: each bar has its own `max` (the goal), `sweep` 360 makes
 // full rings and the center texts summarize them.
 import { computed } from "vue";
-import { RadialBarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RadialBarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { rings: ["Move", "Exercise", "Stand"], today: "of today’s goals" },

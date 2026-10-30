@@ -72,6 +72,7 @@ const TradingChartDoc: React.FC = () => {
           <li>{t("docs.trading-chart.intro.controls.pointer")}</li>
           <li>{t("docs.trading-chart.intro.controls.axes")}</li>
           <li>{t("docs.trading-chart.intro.controls.keyboard")}</li>
+          <li>{t("docs.trading-chart.intro.controls.orders")}</li>
           <li>{t("docs.trading-chart.intro.controls.touch")}</li>
         </ul>
       </section>

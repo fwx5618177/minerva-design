@@ -396,12 +396,13 @@ const mapped = new WeakMap<
 >();
 
 /** Columns of a right-axis series in left axis units (cached with the data) */
-const mapColumns = (raw: SeriesColumns, map: AxisMap): SeriesColumns => {
+const mapColumns = (src: SeriesColumns, map: AxisMap): SeriesColumns => {
   const key = `${map.scale},${map.offset},${!!map.log}`;
-  const hit = mapped.get(raw);
+  const hit = mapped.get(src);
   if (hit && hit.key === key) return hit.cols;
   const f = mapper(map);
   const column = (a: Float64Array | null) => (a ? a.map(f) : null);
+  const raw = src;
   const cols: SeriesColumns = {
     ...raw,
     y: raw.y.map(f),
@@ -436,7 +437,7 @@ const mapColumns = (raw: SeriesColumns, map: AxisMap): SeriesColumns => {
     cols.yMin = Math.min(lo, hi);
     cols.yMax = Math.max(lo, hi);
   }
-  mapped.set(raw, { key, cols });
+  mapped.set(src, { key, cols });
   return cols;
 };
 
@@ -455,7 +456,7 @@ const logColumns = (s: SeriesModel, map: AxisMap, zero = -Infinity) => {
   const f = mapper(map);
   const column = (a: Float64Array | null) => (a ? a.map(f) : null);
   const rawBase = s.stackBase;
-  s.cols = mapColumns(s.raw, map);
+  s.cols = mapColumns(s.cols, map);
   s.barBase =
     s.barBase && !s.floating
       ? s.barBase.map((v) => (v === 0 ? (map.log ? -Infinity : f(0)) : f(v)))
@@ -485,6 +486,68 @@ export const toPlotY = (model: { y: AxisModel }, value: number): number =>
 /** Plotted y -> value of the y axis */
 export const fromPlotY = (model: { y: AxisModel }, value: number): number =>
   model.y.type === "log" ? 10 ** value : value;
+
+/** Value of the x axis -> plotted x (the logarithm on log axes) */
+export const toPlotX = (model: { x: AxisModel }, value: number): number =>
+  model.x.type === "log" ? Math.log10(value) : value;
+
+/** Plotted x -> value of the x axis */
+export const fromPlotX = (model: { x: AxisModel }, value: number): number =>
+  model.x.type === "log" ? 10 ** value : value;
+
+/** A view in plotted units -> the values of the axes (zoom events, `getView`) */
+export const viewToValues = (
+  model: { x: AxisModel; y: AxisModel },
+  view: { x: Range; y: Range },
+): { x: Range; y: Range } => ({
+  x: [fromPlotX(model, view.x[0]), fromPlotX(model, view.x[1])],
+  y: [fromPlotY(model, view.y[0]), fromPlotY(model, view.y[1])],
+});
+
+/** Values of the axes -> a view in plotted units (`setView`); missing axes keep `current` */
+export const viewFromValues = (
+  model: { x: AxisModel; y: AxisModel },
+  next: { x?: Range; y?: Range },
+  current: { x: Range; y: Range },
+): { x: Range; y: Range } => ({
+  x: next.x
+    ? [toPlotX(model, next.x[0]), toPlotX(model, next.x[1])]
+    : current.x,
+  y: next.y
+    ? [toPlotY(model, next.y[0]), toPlotY(model, next.y[1])]
+    : current.y,
+});
+
+const logXCache = new WeakMap<SeriesColumns, SeriesColumns>();
+
+/**
+ * Columns plotted on a log x axis: the logarithms of the x values; points
+ * without one (x <= 0) become gaps (cached with the data)
+ */
+const logXColumns = (raw: SeriesColumns): SeriesColumns => {
+  const hit = logXCache.get(raw);
+  if (hit) return hit;
+  const x = raw.x.map((v) => (v > 0 ? Math.log10(v) : NaN));
+  let y = raw.y;
+  let gaps = false;
+  for (let i = 0; i < raw.count; i++) {
+    if (Number.isFinite(x[i])) continue;
+    if (!gaps) y = Float64Array.from(raw.y);
+    gaps = true;
+    y[i] = NaN;
+  }
+  const [xMin, xMax] = extent(x);
+  const cols: SeriesColumns = {
+    ...raw,
+    x,
+    y,
+    xMin,
+    xMax,
+    sorted: raw.sorted && !gaps,
+  };
+  logXCache.set(raw, cols);
+  return cols;
+};
 
 /** Replaces the bases of bars / areas on log axes (`-Infinity`) by the bottom of the axis */
 const floorBases = (s: SeriesModel, floor: number) => {
@@ -764,6 +827,9 @@ export const buildModel = (
   });
 
   const visible = series.filter((s) => !s.hidden);
+  const xLog = xType === "log";
+  // log x axis: every series is plotted on the logarithms of its x values
+  if (xLog) for (const s of series) s.cols = logXColumns(s.raw);
   const allScatter =
     series.length > 0 &&
     series.every((s) => s.type === "scatter" || s.type === "heatmap");
@@ -899,9 +965,11 @@ export const buildModel = (
     if (nice && xType === "linear") {
       xRange = niceDomain(xRange[0], xRange[1], xOpts?.tickCount ?? 6);
     }
+    if (xLog && xOpts?.nice !== false) xRange = decades(xRange);
   }
-  if (xOpts?.min !== undefined) xRange[0] = xOpts.min;
-  if (xOpts?.max !== undefined) xRange[1] = xOpts.max;
+  const xBound = (v: number) => (xLog ? Math.log10(v) : v);
+  if (xOpts?.min !== undefined) xRange[0] = xBound(xOpts.min);
+  if (xOpts?.max !== undefined) xRange[1] = xBound(xOpts.max);
   xRange = ensureSpan(xRange[0], xRange[1]);
 
   // Log axis: the left series are plotted as logarithms (stacks are summed

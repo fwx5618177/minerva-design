@@ -22,9 +22,13 @@ import { createScales, toData, toScreen, type Scales } from "./layout";
 import { watchLocale } from "./locale";
 import {
   buildModel,
+  fromPlotX,
   fromPlotY,
   heatPosition,
+  toPlotX,
   toPlotY,
+  viewFromValues,
+  viewToValues,
   type ChartModel,
   type DataCache,
 } from "./model";
@@ -35,12 +39,14 @@ import {
   type ResolvedAnnotation,
 } from "./overlay";
 import { createRenderer } from "./renderers/detect";
+import { followDefaultRenderer } from "./renderers/follow";
 import type { ChartRenderer, RenderItem } from "./renderers/types";
 import {
   collectPointLabels,
   colorLegend,
   connectorSegments,
   crosshairAt,
+  dependencyArrows,
   hitTest,
   hoverItemOf,
   hoverMarks,
@@ -49,8 +55,10 @@ import {
   legendShown,
   pointOf,
   resolveAnnotations,
+  resolveDependencies,
   sameHover,
   tooltipContent,
+  type ResolvedDependency,
 } from "./scene";
 import { itemsSignature } from "./signature";
 import {
@@ -120,6 +128,7 @@ export const createChart = (
   let itemsDirty = true;
   let version = 0;
   let annotations: ResolvedAnnotation[] = [];
+  let dependencies: ResolvedDependency[] = [];
   let scales: Scales | null = null;
   let xTicks: AxisTicks | null = null;
   let yTicks: AxisTicks | null = null;
@@ -244,7 +253,9 @@ export const createChart = (
       options.annotations,
       theme,
       model.y.type === "log" ? Math.log10 : undefined,
+      model.x.type === "log" ? Math.log10 : undefined,
     );
+    dependencies = resolveDependencies(options.dependencies, theme);
     renderLegend();
     updateAccessibility();
     invalidate();
@@ -487,6 +498,7 @@ export const createChart = (
         annotations,
         pointLabels: collectPointLabels(model, view, scales, yTicks),
         connectors: connectorSegments(model, scales),
+        arrows: dependencyArrows(model, scales, dependencies),
       });
     }
 
@@ -856,7 +868,7 @@ export const createChart = (
     zoomed = !sameRange(view.x, base.x) || !sameRange(view.y, base.y);
     const it = interaction();
     dom.stage.style.cursor = zoomed && it?.pan ? "grab" : "";
-    if (notify) emit("zoom", copyView(view));
+    if (notify) emit("zoom", viewToValues(model, view));
     invalidate();
   };
 
@@ -890,7 +902,7 @@ export const createChart = (
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
     const p = toData(sc, cx, cy);
     // values of the axes (not logarithms)
-    return { x: p.x, y: fromPlotY(model, p.y) };
+    return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
   };
 
   const moveGhost = (x: number, y: number, color: string | null) => {
@@ -1271,6 +1283,10 @@ export const createChart = (
 
   rebuild();
   void initRenderer();
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
 
   const instance: ChartInstance = {
     setOptions(next) {
@@ -1289,10 +1305,10 @@ export const createChart = (
       invalidate();
     },
     resetZoom,
-    getView: () => copyView(view),
+    getView: () => viewToValues(model, view),
     setView(next) {
       if (destroyed) return;
-      setViewInternal({ x: next.x ?? view.x, y: next.y ?? view.y }, false);
+      setViewInternal(viewFromValues(model, next, view), false);
     },
     getRenderer: () => renderer?.kind ?? null,
     getPlotRect() {
@@ -1303,7 +1319,7 @@ export const createChart = (
     },
     toPixel(x, y) {
       if (!scales) return null;
-      const p = toScreen(scales, x, toPlotY(model, y));
+      const p = toScreen(scales, toPlotX(model, x), toPlotY(model, y));
       return {
         x: p.x + dom.stage.offsetLeft,
         y: p.y + dom.stage.offsetTop,
@@ -1316,7 +1332,7 @@ export const createChart = (
         x - dom.stage.offsetLeft,
         y - dom.stage.offsetTop,
       );
-      return { x: p.x, y: fromPlotY(model, p.y) };
+      return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
     },
     ready,
     refreshTheme,
@@ -1339,6 +1355,7 @@ export const createChart = (
         else clearTimeout(frameId);
       }
       resizeObserver?.disconnect();
+      unfollowDefault();
       unwatchTheme();
       unwatchLocale();
       stage.removeEventListener("wheel", onWheel);

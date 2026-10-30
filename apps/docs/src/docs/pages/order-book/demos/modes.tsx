@@ -6,7 +6,7 @@ import {
   type OrderBookHandle,
   type OrderBookMode,
 } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../feed";
+import { useMarketStream } from "../feed";
 
 export default function ModesDemo() {
   const { t } = useTranslation("common", {
@@ -15,14 +15,18 @@ export default function ModesDemo() {
   const bookRef = useRef<OrderBookHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<OrderBookMode>("both");
-  const [feed] = useState(() => createMarketFeed({ seed: 9 }));
-  const [book] = useState(() => feed.snapshot());
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = feed.step(elapsed);
-    bookRef.current?.applyDeltas(delta);
-    if (trades.length) bookRef.current?.setLastPrice(feed.last());
-  });
+  // a fresh market on every mount: its snapshot, then its deltas
+  useMarketStream(
+    boxRef,
+    { seed: 9 },
+    {
+      load: (feed) => bookRef.current?.setBook(feed.snapshot()),
+      update: ({ delta, trades }, feed) => {
+        bookRef.current?.applyDeltas(delta);
+        if (trades.length) bookRef.current?.setLastPrice(feed.last());
+      },
+    },
+  );
 
   return (
     <div ref={boxRef} style={{ display: "grid", gap: 12, width: "100%" }}>
@@ -38,7 +42,6 @@ export default function ModesDemo() {
       </RadioGroup>
       <OrderBook
         ref={bookRef}
-        book={book}
         // one side fills the whole height: twice the levels
         mode={mode}
         height={380}

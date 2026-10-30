@@ -1,6 +1,6 @@
 {
   "title": "Diagramme d’accords",
-  "description": "Flux entre des groupes disposés en cercle : chaque groupe est un arc dimensionné par ses flux, chaque flux un ruban entre deux arcs. Non orienté, un ruban relie une paire de groupes et chaque extrémité est aussi large que le flux qui en part, ce qui révèle d’un coup d’œil les échanges asymétriques ; orienté, chaque sens a son propre ruban, terminé par une flèche. Survolez un groupe pour mettre ses rubans en avant, un ruban pour lire les deux sens ; la légende masque / affiche les groupes et les flèches du clavier parcourent les groupes puis les rubans.",
+  "description": "Flux entre des groupes disposés en cercle : chaque groupe est un arc dimensionné par ses flux, chaque flux un ruban entre deux arcs. Non orienté, un ruban relie une paire de groupes et sa largeur est la somme des flux dans les deux sens (une matrice symétrique compte chaque relation une seule fois), si bien qu’un groupe qui ne fait que recevoir garde son arc ; orienté, chaque sens a son propre ruban, terminé par une flèche. Survolez un groupe pour mettre ses rubans en avant, un ruban pour lire les deux sens ; la légende masque / affiche les groupes et les flèches du clavier parcourent les groupes puis les rubans.",
   "demos": {
     "basic": {
       "title": "Exemple simple",
@@ -8,7 +8,7 @@
     },
     "migration": {
       "title": "Migrations entre régions",
-      "description": "L’arc de chaque région représente son émigration ; les deux extrémités d’un ruban, les migrants dans chaque sens. La diagonale (migrations internes à une région) est dessinée en boucle. groups fixe les couleurs, format l’unité, padAngle élargit les espaces."
+      "description": "L’arc de chaque région additionne les départs et les arrivées ; un ruban est aussi large que les migrations entre deux régions dans les deux sens, et son infobulle les distingue (Valeur, Sens inverse). La diagonale (migrations internes à une région) est dessinée en boucle. groups fixe les couleurs, format l’unité, padAngle élargit les espaces."
     },
     "dependencies": {
       "title": "Matrice de dépendances entre modules",
@@ -49,7 +49,7 @@
       "groups": "Groupes (noms ou { name, color }) dans leur ordre autour du cercle ; les groupes seulement nommés par links sont ajoutés à la fin, les lignes de matrice sans nom sont numérotées à partir de 1",
       "matrix": "Matrice carrée des flux : matrix[i][j] va du groupe i au groupe j (utilisée en l’absence de links)",
       "links": "Flux sous forme de liste de { source, target, value, color } (par nom ou indice de groupe) ; prioritaire sur matrix",
-      "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, chaque extrémité aussi large que le flux qui en part",
+      "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, aussi large que les flux des deux sens (une matrice symétrique compte chaque relation une seule fois)",
       "arrows": "Flèches à l’extrémité cible des rubans (true par défaut si orienté)",
       "padAngle": "Espace entre les groupes, en degrés",
       "startAngle": "Angle du premier groupe, en degrés dans le sens horaire depuis midi",
@@ -66,7 +66,7 @@
       "groups": "Groupes (noms ou { name, color }) dans leur ordre autour du cercle ; les groupes seulement nommés par links sont ajoutés à la fin, les lignes de matrice sans nom sont numérotées à partir de 1",
       "matrix": "Matrice carrée des flux : matrix[i][j] va du groupe i au groupe j (utilisée en l’absence de links)",
       "links": "Flux sous forme de liste de { source, target, value, color } (par nom ou indice de groupe) ; prioritaire sur matrix",
-      "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, chaque extrémité aussi large que le flux qui en part",
+      "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, aussi large que les flux des deux sens (une matrice symétrique compte chaque relation une seule fois)",
       "arrows": "Flèches à l’extrémité cible des rubans (true par défaut si orienté)",
       "padAngle": "Espace entre les groupes, en degrés",
       "startAngle": "Angle du premier groupe, en degrés dans le sens horaire depuis midi",

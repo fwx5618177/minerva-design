@@ -1,14 +1,17 @@
 import { mount, flushPromises } from "@vue/test-utils";
+import { h } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AreaChart from "./AreaChart.vue";
 import BoxPlotChart from "./BoxPlotChart.vue";
 import BubbleChart from "./BubbleChart.vue";
 import CandlestickChart from "./CandlestickChart.vue";
+import ConfigProvider from "./ConfigProvider.vue";
 import GanttChart from "./GanttChart.vue";
 import HeatmapChart from "./HeatmapChart.vue";
 import HistogramChart from "./HistogramChart.vue";
 import HorizontalBarChart from "./HorizontalBarChart.vue";
 import MixedChart from "./MixedChart.vue";
+import PieChart from "./PieChart.vue";
 import RangeAreaChart from "./RangeAreaChart.vue";
 import Sparkline from "./Sparkline.vue";
 import WaterfallChart from "./WaterfallChart.vue";
@@ -185,6 +188,19 @@ describe("named cartesian chart options", () => {
       start,
     );
     expect(JSON.stringify(gantt.series)).toContain('"name":"After"');
+    expect(gantt.dependencies).toEqual([{ from: "Design", to: "Build" }]);
+    const ganttTasks = [
+      { name: "Design", start, end: start + day },
+      { name: "Build", start, end: start + 2 * day, dependencies: ["Design"] },
+    ];
+    expect(
+      ganttChartOptions({ tasks: ganttTasks, dependencyColor: "#f00" }, start)
+        .dependencies,
+    ).toEqual([{ from: "Design", to: "Build", color: "#f00" }]);
+    expect(
+      ganttChartOptions({ tasks: ganttTasks, dependencyArrows: false }, start)
+        .dependencies,
+    ).toEqual([]);
     const box = boxPlotChartOptions({
       groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
       outlierShape: "filled",
@@ -274,6 +290,16 @@ describe("named cartesian chart components (H5 canvas)", () => {
     }
   });
 
+  it("keeps the dependency arrows of GanttChart on by default", async () => {
+    const gantt = mount(GanttChart, {
+      props: { tasks: [{ name: "Design", start, end: start + day }] },
+    });
+    await flushPromises();
+    // a Vue Boolean prop would default to false and turn the arrows off
+    expect(gantt.props("dependencyArrows")).toBeUndefined();
+    gantt.unmount();
+  });
+
   it("defaults the sparkline height and forwards prop updates", async () => {
     const spark = mount(Sparkline, { props: { data: [1, 2, 3] } });
     await flushPromises();
@@ -296,6 +322,48 @@ describe("named cartesian chart components (H5 canvas)", () => {
     flushFrames();
     expect(drawn.texts).toContain("Start");
     waterfall.unmount();
+  });
+});
+
+describe("accessible names", () => {
+  it("names the charts in their locale, the ConfigProvider's by default", async () => {
+    const wrapper = mount(ConfigProvider, {
+      props: { locale: "zh" },
+      slots: {
+        default: () => [
+          h(AreaChart, {
+            series: [
+              { name: "营收", data: [["Jan", 1]] },
+              { name: "成本", data: [["Jan", 2]] },
+            ],
+          }),
+          h(PieChart, {
+            locale: "ja",
+            animation: false,
+            data: [
+              { name: "A", value: 1 },
+              { name: "B", value: 2 },
+            ],
+          }),
+          h(Sparkline, { data: [1, 2], ariaLabel: "Trend" }),
+        ],
+      },
+    });
+    await flushPromises();
+    const labels = wrapper
+      .findAll("uni-canvas")
+      .map((canvas) => canvas.attributes("aria-label"));
+    // an explicit locale or name wins over the provider
+    expect(labels).toEqual(["图表：营收、成本", "円グラフ", "Trend"]);
+    wrapper.unmount();
+    const fr = mount(HistogramChart, {
+      props: { values: [1, 2, 3], name: "Âges", locale: "fr" },
+    });
+    await flushPromises();
+    expect(fr.find("uni-canvas").attributes("aria-label")).toMatch(
+      /^Graphique\s:\sÂges$/,
+    );
+    fr.unmount();
   });
 });
 

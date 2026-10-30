@@ -1,7 +1,7 @@
-import { useRef, useState, type CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { OrderBook, type OrderBookHandle } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../feed";
+import { useMarketStream } from "../feed";
 
 // a trading terminal palette: the ladder reads its colors from these
 // variables (a dark site theme works the same way, without the wrapper)
@@ -29,14 +29,18 @@ export default function DarkDemo() {
   });
   const bookRef = useRef<OrderBookHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [feed] = useState(() => createMarketFeed({ seed: 4 }));
-  const [book] = useState(() => feed.snapshot());
-
-  useFeedLoop(boxRef, (elapsed) => {
-    const { delta, trades } = feed.step(elapsed);
-    bookRef.current?.applyDeltas(delta);
-    if (trades.length) bookRef.current?.setLastPrice(feed.last());
-  });
+  // a fresh market on every mount: its snapshot, then its deltas
+  useMarketStream(
+    boxRef,
+    { seed: 4 },
+    {
+      load: (feed) => bookRef.current?.setBook(feed.snapshot()),
+      update: ({ delta, trades }, feed) => {
+        bookRef.current?.applyDeltas(delta);
+        if (trades.length) bookRef.current?.setLastPrice(feed.last());
+      },
+    },
+  );
 
   return (
     <div ref={boxRef} style={TERMINAL}>
@@ -53,7 +57,6 @@ export default function DarkDemo() {
       </div>
       <OrderBook
         ref={bookRef}
-        book={book}
         height={440}
         pricePrecision={1}
         sizePrecision={4}

@@ -2,7 +2,8 @@
 // Three values per point: wealth (x), life expectancy (y) and population
 // (`value`, the area of the bubble); the country is the point label.
 import { computed } from "vue";
-import { BubbleChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { BubbleChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

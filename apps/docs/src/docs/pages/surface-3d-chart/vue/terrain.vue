@@ -2,7 +2,8 @@
 // A terrain with a wireframe (`wireframe`, every 2nd grid line) and the
 // "terrain" color scale; hover a cell to read its elevation.
 import { computed } from "vue";
-import { Surface3DChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { Surface3DChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { name: "Terrain", axes: ["East (km)", "North (km)", "Elevation (m)"] },

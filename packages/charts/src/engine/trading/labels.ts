@@ -47,6 +47,11 @@ export const TRADING_LABELS: LabelDictionary<TradingTexts> = {
     replayHint: "Click a bar to start the replay",
     buyLimit: "Buy limit {price}",
     sellLimit: "Sell limit {price}",
+    orderHint: "Arrows move the price, Enter confirms, Escape cancels",
+    orderCancelHint: "Delete cancels the order",
+    orderLine: "{title} at {price}",
+    orderPlaced: "Order placed at {price}",
+    orderCancelled: "Order cancelled",
   },
   zh: {
     open: "开",
@@ -88,6 +93,11 @@ export const TRADING_LABELS: LabelDictionary<TradingTexts> = {
     replayHint: "点击一根 K 线开始回放",
     buyLimit: "限价买入 {price}",
     sellLimit: "限价卖出 {price}",
+    orderHint: "方向键调整价格，回车确认，Esc 取消",
+    orderCancelHint: "Delete 键撤销该订单",
+    orderLine: "{title}，价格 {price}",
+    orderPlaced: "已在 {price} 下单",
+    orderCancelled: "订单已取消",
   },
   ja: {
     open: "始",
@@ -129,6 +139,11 @@ export const TRADING_LABELS: LabelDictionary<TradingTexts> = {
     replayHint: "足をクリックしてリプレイを開始",
     buyLimit: "指値買い {price}",
     sellLimit: "指値売り {price}",
+    orderHint: "矢印キーで価格を調整、Enter で確定、Esc で取消",
+    orderCancelHint: "Delete キーで注文を取消",
+    orderLine: "{title}、価格 {price}",
+    orderPlaced: "{price} で注文しました",
+    orderCancelled: "注文を取り消しました",
   },
   fr: {
     open: "O",
@@ -171,6 +186,11 @@ export const TRADING_LABELS: LabelDictionary<TradingTexts> = {
     replayHint: "Cliquez sur une barre pour lancer la relecture",
     buyLimit: "Achat limite {price}",
     sellLimit: "Vente limite {price}",
+    orderHint: "Les flèches déplacent le prix, Entrée valide, Échap annule",
+    orderCancelHint: "Suppr annule l’ordre",
+    orderLine: "{title} à {price}",
+    orderPlaced: "Ordre placé à {price}",
+    orderCancelled: "Ordre annulé",
   },
 };
 

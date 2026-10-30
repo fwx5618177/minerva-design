@@ -15,10 +15,13 @@ import {
 } from "../color";
 import { resolveLocale, watchLocale } from "../locale";
 import { createRenderer } from "../renderers/detect";
+import { followDefaultRenderer } from "../renderers/follow";
 import {
+  AREA_STRIDE,
   BAR_STRIDE,
   GAP,
   SCATTER_STRIDE,
+  type AreaItem,
   type BarItem,
   type ChartRenderer,
   type LineItem,
@@ -44,6 +47,8 @@ import {
   dashPath,
   distanceToPath,
   endDirection,
+  filledArrow,
+  loopPath,
   orthogonalPath,
   pathLength,
   pointAt,
@@ -101,10 +106,12 @@ const TREE_TYPES = new Set<GraphLayoutType>([
   "org",
 ]);
 
-/** Edge tooltips / picking are skipped above this number of edges */
-const EDGE_PICK_LIMIT = 5000;
 /** Node halos are skipped above this number of nodes */
 const HALO_LIMIT = 5000;
+/** Sideways bow of parallel edges per slot, relative to their length */
+const PARALLEL_BOW = 0.4;
+/** Edge picking uses a spatial index from this number of edges */
+const EDGE_INDEX_MIN = 2000;
 const TWEEN_MS = 450;
 const VIEW_TWEEN_MS = 320;
 /** Smallest font (px) of the text inside boxes when zoomed out */
@@ -246,6 +253,8 @@ export const createGraphChart = (
   let descendants = new Int32Array(0);
   let paths: (number[] | null)[] = [];
   let pathsDirty = true;
+  /** Changes with the edge geometry (see the edge index) */
+  let geometryVersion = 0;
   let sceneDirty = true;
   let items: RenderItem[] = [];
   let version = 0;
@@ -683,6 +692,7 @@ export const createGraphChart = (
     refreshCritical();
     refreshColors();
     edgeLabelWidth = new Float64Array(model.m).fill(NaN);
+    edgeGrid = null;
     pathsDirty = true;
     sceneDirty = true;
     highlightKey = "";
@@ -875,22 +885,96 @@ export const createGraphChart = (
     return trimPath(points, a, b);
   };
 
+  /** Direction of the self-loops of a node: the middle of its widest free angle */
+  const loopAngle = (i: number): number => {
+    const angles: number[] = [];
+    // the label of a circle sits below it: keep that side free too
+    if (sizing.kind[i] === NodeKind.Circle && options.nodeLabels !== false)
+      angles.push(Math.PI / 2);
+    for (let a = model.adjStart[i]; a < model.adjStart[i + 1]; a++) {
+      const e = model.adjEdge[a];
+      const j = model.source[e] === i ? model.target[e] : model.source[e];
+      if (j === i || fade(j) <= 0) continue;
+      const dx = X[j] - X[i];
+      const dy = Y[j] - Y[i];
+      if (dx * dx + dy * dy > 1e-12) angles.push(Math.atan2(dy, dx));
+    }
+    if (!angles.length) return -Math.PI / 2;
+    angles.sort((a, b) => a - b);
+    const end = angles[angles.length - 1];
+    let best = angles[0] + Math.PI * 2 - end;
+    let angle = end + best / 2;
+    for (let k = 1; k < angles.length; k++) {
+      const gap = angles[k] - angles[k - 1];
+      if (gap > best + 1e-9) {
+        best = gap;
+        angle = angles[k - 1] + gap / 2;
+      }
+    }
+    return angle;
+  };
+
+  /** Reach of the self-loops of a node beyond its boundary */
+  const loopSize = (i: number) =>
+    Math.max(
+      12,
+      Math.min(40, Math.min(sizing.width[i], sizing.height[i]) * 0.9),
+    );
+
+  /** Self-loop of an edge whose ends are the same node */
+  const loopOf = (e: number): number[] => {
+    const i = model.source[e];
+    const angle = loopAngle(i);
+    const w = sizing.width[i];
+    const h = sizing.height[i];
+    const box = isBox(i);
+    const at = (a: number) =>
+      boundaryDistance(box, w, h, Math.cos(a), Math.sin(a));
+    return loopPath(
+      X[i],
+      Y[i],
+      angle,
+      at(angle - 0.42),
+      at(angle + 0.42) + (edgeArrow[e] ? 1 : 0),
+      loopSize(i) * (1 + 0.6 * model.bend[e]),
+    );
+  };
+
   /** Polyline of a curved edge (straight edges are built on the fly) */
   const edgePath = (e: number, style: GraphEdgeStyle): number[] | null => {
     const s = model.source[e];
     const t = model.target[e];
     const arrow = !!edgeArrow[e];
+    if (s === t) return loopOf(e);
+    // parallel edges: their own offsets (NaN: a single edge)
+    const bend = model.bend[e];
+    const parallel = Number.isFinite(bend);
     if (layoutType === "arc") {
-      return trimmed(arcPath(X[s], X[t], Y[s]), s, t, arrow);
+      // higher and lower arcs, by slot from the lower to the higher index
+      const rise = parallel ? 1 + 0.25 * (s < t ? bend : -bend) : 1;
+      return trimmed(arcPath(X[s], X[t], Y[s], rise), s, t, arrow);
     }
-    if (style === "straight") return null;
+    const dx = X[t] - X[s];
+    const dy = Y[t] - Y[s];
+    const bow = parallel ? bend * PARALLEL_BOW : 0;
+    if (style === "straight") {
+      if (!bow) return null;
+      const mx = (X[s] + X[t]) / 2;
+      const my = (Y[s] + Y[t]) / 2;
+      return trimmed(
+        quadraticPath(X[s], Y[s], mx - dy * bow, my + dx * bow, X[t], Y[t]),
+        s,
+        t,
+        arrow,
+      );
+    }
     if (layoutType === "circular" && style === "curve") {
       const tension = Math.max(
         0,
         Math.min(1, options.circular?.tension ?? 0.8),
       );
-      const cx = ((X[s] + X[t]) / 2) * (1 - tension);
-      const cy = ((Y[s] + Y[t]) / 2) * (1 - tension);
+      const cx = ((X[s] + X[t]) / 2) * (1 - tension) - dy * bow;
+      const cy = ((Y[s] + Y[t]) / 2) * (1 - tension) + dx * bow;
       return trimmed(
         quadraticPath(X[s], Y[s], cx, cy, X[t], Y[t]),
         s,
@@ -957,10 +1041,9 @@ export const createGraphChart = (
     // curve
     const mx = (X[s] + X[t]) / 2;
     const my = (Y[s] + Y[t]) / 2;
-    const dx = X[t] - X[s];
-    const dy = Y[t] - Y[s];
+    const c = parallel ? bow : 0.18;
     return trimmed(
-      quadraticPath(X[s], Y[s], mx - dy * 0.18, my + dx * 0.18, X[t], Y[t]),
+      quadraticPath(X[s], Y[s], mx - dy * c, my + dx * c, X[t], Y[t]),
       s,
       t,
       arrow,
@@ -977,6 +1060,7 @@ export const createGraphChart = (
           : null;
     }
     pathsDirty = false;
+    geometryVersion++;
   };
 
   /** Ends of a straight edge, trimmed at the node boundaries */
@@ -1068,6 +1152,40 @@ export const createGraphChart = (
       return b.buf;
     };
     const arrowLen = (w: number) => (6 + w * 1.6) / k;
+    const filledLen = (w: number) => (8 + w * 2.2) / k;
+    const filled = options.arrowStyle === "filled";
+    // filled heads: flat area triangles per layer and color, outlined by a
+    // thin line (anti-aliased edges on every backend)
+    const heads = [new Map(), new Map(), new Map()] as Map<
+      number,
+      { color: Rgba; points: number[] }
+    >[];
+    const tmp: number[] = [];
+    const head = (
+      buf: PointBuffer,
+      layer: number,
+      color: Rgba,
+      w: number,
+      x: number,
+      y: number,
+      ux: number,
+      uy: number,
+    ) => {
+      tmp.length = 0;
+      if (!filled) {
+        arrowHead(tmp, x, y, ux, uy, arrowLen(w), GAP);
+        buf.pushAll(tmp);
+        return;
+      }
+      const key = packColor(color);
+      let h = heads[layer].get(key);
+      if (!h) {
+        h = { color, points: [] };
+        heads[layer].set(key, h);
+      }
+      filledArrow(h.points, tmp, x, y, ux, uy, filledLen(w), GAP);
+      bucket(layer, color, Math.min(w, 1)).pushAll(tmp);
+    };
     for (let e = 0; e < model.m; e++) {
       const s = model.source[e];
       const t = model.target[e];
@@ -1097,47 +1215,49 @@ export const createGraphChart = (
         if (style !== "straight" || layoutType === "arc") continue;
         const ends = straightEnds(e);
         if (!ends) continue;
-        if (!edgeDashed[e]) {
+        if (!edgeDashed[e] && !(filled && edgeArrow[e])) {
           buf.push(ends[0], ends[1]);
           buf.push(ends[2], ends[3]);
           buf.push(GAP, GAP);
           if (edgeArrow[e]) {
-            const tmp: number[] = [];
             const l = Math.hypot(ends[2] - ends[0], ends[3] - ends[1]) || 1;
-            arrowHead(
-              tmp,
+            head(
+              buf,
+              layer,
+              color,
+              w,
               ends[2],
               ends[3],
               (ends[2] - ends[0]) / l,
               (ends[3] - ends[1]) / l,
-              arrowLen(w),
-              GAP,
             );
-            buf.pushAll(tmp);
           }
           continue;
         }
         points = [ends[0], ends[1], ends[2], ends[3]];
       }
       if (points.length < 4) continue;
-      if (edgeDashed[e]) buf.pushAll(dashPath(points, 5 / k, 4 / k, GAP));
+      let line = points;
+      // a filled head covers the end: the line stops at its notch
+      if (filled && edgeArrow[e])
+        line = trimPath(points.slice(), 0, filledLen(w) * 0.72);
+      if (edgeDashed[e]) buf.pushAll(dashPath(line, 5 / k, 4 / k, GAP));
       else {
-        buf.pushAll(points);
+        buf.pushAll(line);
         buf.push(GAP, GAP);
       }
       if (edgeArrow[e]) {
         const [ux, uy] = endDirection(points);
-        const tmp: number[] = [];
-        arrowHead(
-          tmp,
+        head(
+          buf,
+          layer,
+          color,
+          w,
           points[points.length - 2],
           points[points.length - 1],
           ux,
           uy,
-          arrowLen(w),
-          GAP,
         );
-        buf.pushAll(tmp);
       }
     }
     layers.forEach((map, layer) => {
@@ -1152,6 +1272,20 @@ export const createGraphChart = (
           count: b.buf.count(),
           width: b.width,
           sorted: false,
+        };
+        out.push(item);
+      }
+      for (const [key, h] of heads[layer]) {
+        const item: AreaItem = {
+          kind: "area",
+          key: `heads:${layer}:${key}`,
+          version,
+          color: h.color,
+          points: Float32Array.from(h.points),
+          count: h.points.length / AREA_STRIDE,
+          opacity: 1,
+          sorted: false,
+          flat: true,
         };
         out.push(item);
       }
@@ -1737,6 +1871,14 @@ export const createGraphChart = (
           const p = pointAt(path, pathLength(path) / 2);
           mx = p[0] * k + tx;
           my = p[1] * k + ty;
+          if (s === t) {
+            // beyond the far end of a loop (the pill would hide it)
+            const dx = mx - (X[s] * k + tx);
+            const dy = my - (Y[s] * k + ty);
+            const l = Math.hypot(dx, dy) || 1;
+            mx += (dx / l) * 10;
+            my += (dy / l) * 10;
+          }
         } else {
           mx = ((X[s] + X[t]) / 2) * k + tx;
           my = ((Y[s] + Y[t]) / 2) * k + ty;
@@ -1907,7 +2049,27 @@ export const createGraphChart = (
         const s = model.source[e];
         const t = model.target[e];
         if (!visible[s] || !visible[t]) continue;
-        y0 = Math.min(y0, TY[s] - Math.abs(TX[t] - TX[s]) / 2);
+        const b = model.bend[e];
+        const rise = s !== t && Number.isFinite(b) ? 1 + 0.25 * Math.abs(b) : 1;
+        y0 = Math.min(y0, TY[s] - (Math.abs(TX[t] - TX[s]) / 2) * rise);
+      }
+    }
+    // self-loops stick out of their node
+    if (model.hasLoops) {
+      for (let e = 0; e < model.m; e++) {
+        const i = model.source[e];
+        if (i !== model.target[e] || !visible[i]) continue;
+        const a = loopAngle(i);
+        const size = loopSize(i);
+        const reach =
+          Math.max(sizing.width[i], sizing.height[i]) / 2 +
+          size * (1 + 0.6 * model.bend[e]);
+        const lx = TX[i] + Math.cos(a) * reach;
+        const ly = TY[i] + Math.sin(a) * reach;
+        x0 = Math.min(x0, lx - size / 2);
+        x1 = Math.max(x1, lx + size / 2);
+        y0 = Math.min(y0, ly - size / 2);
+        y1 = Math.max(y1, ly + size / 2);
       }
     }
     const pad = options.fitPadding ?? 24;
@@ -2205,18 +2367,18 @@ export const createGraphChart = (
   };
 
   const pickEdge = (px: number, py: number): number => {
-    if (model.m > EDGE_PICK_LIMIT || forcePending) return -1;
+    if (forcePending) return -1;
     const wx = (px - tx) / k;
     const wy = (py - ty) / k;
     const tol = 4 / k;
     let best = -1;
     let bestD = tol * tol;
-    for (let e = 0; e < model.m; e++) {
-      if (Math.min(fade(model.source[e]), fade(model.target[e])) <= 0) continue;
+    const test = (e: number) => {
+      if (Math.min(fade(model.source[e]), fade(model.target[e])) <= 0) return;
       let points: readonly number[] | null = paths[e] ?? null;
       if (!points) {
         const ends = straightEnds(e);
-        if (!ends) continue;
+        if (!ends) return;
         points = ends;
       }
       const d = distanceToPath(points, wx, wy);
@@ -2224,8 +2386,148 @@ export const createGraphChart = (
         best = e;
         bestD = d;
       }
+    };
+    if (model.m < EDGE_INDEX_MIN) {
+      for (let e = 0; e < model.m; e++) test(e);
+      return best;
+    }
+    const index = edgeIndex();
+    if (!index) return -1;
+    // candidates from the buckets around the pointer, exact distances
+    const { cell, x0, y0, cols, rows, start, items, stamp } = index;
+    const c0 = Math.max(0, Math.floor((wx - tol - x0) / cell));
+    const c1 = Math.min(cols - 1, Math.floor((wx + tol - x0) / cell));
+    const r0 = Math.max(0, Math.floor((wy - tol - y0) / cell));
+    const r1 = Math.min(rows - 1, Math.floor((wy + tol - y0) / cell));
+    const visit = ++index.visit;
+    for (let r = r0; r <= r1; r++) {
+      for (let c = c0; c <= c1; c++) {
+        const b = r * cols + c;
+        for (let q = start[b]; q < start[b + 1]; q++) {
+          const e = items[q];
+          if (stamp[e] === visit) continue;
+          stamp[e] = visit;
+          test(e);
+        }
+      }
     }
     return best;
+  };
+
+  // ---- spatial index of the edges (large graphs): every segment is
+  // registered in the grid cells it crosses (CSR typed arrays)
+  interface EdgeIndex {
+    cell: number;
+    x0: number;
+    y0: number;
+    cols: number;
+    rows: number;
+    start: Int32Array;
+    items: Int32Array;
+    stamp: Int32Array;
+    visit: number;
+    geometry: number;
+    built: number;
+  }
+  let edgeGrid: EdgeIndex | null = null;
+
+  const edgeIndex = (): EdgeIndex | null => {
+    const current = edgeGrid;
+    if (current && current.geometry === geometryVersion) return current;
+    // a layout still moving: the last index stays good enough for the
+    // candidates for a moment (the distances are always exact)
+    if (current && runner?.running() && now() - current.built < 250)
+      return current;
+    const m = model.m;
+    const segment = (e: number): readonly number[] | null =>
+      Math.min(fade(model.source[e]), fade(model.target[e])) <= 0
+        ? null
+        : (paths[e] ?? straightEnds(e));
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    let length = 0;
+    let segments = 0;
+    for (let e = 0; e < m; e++) {
+      const p = segment(e);
+      if (!p) continue;
+      for (let i = 0; i < p.length; i += 2) {
+        x0 = Math.min(x0, p[i]);
+        x1 = Math.max(x1, p[i]);
+        y0 = Math.min(y0, p[i + 1]);
+        y1 = Math.max(y1, p[i + 1]);
+        if (i) length += Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]);
+      }
+      segments += p.length / 2 - 1;
+    }
+    if (!(x0 <= x1 && y0 <= y1)) return null;
+    // about two cells per segment on average, at most 512 x 512 cells
+    const span = Math.max(x1 - x0, y1 - y0, 1e-6);
+    const cell = Math.max(
+      span / 512,
+      (length / Math.max(1, segments)) * 0.5,
+      1e-6,
+    );
+    const cols = Math.min(512, Math.floor((x1 - x0) / cell) + 1);
+    const rows = Math.min(512, Math.floor((y1 - y0) / cell) + 1);
+    const counts = new Int32Array(cols * rows + 1);
+    const register = (pass: (b: number, e: number) => void) => {
+      for (let e = 0; e < m; e++) {
+        const p = segment(e);
+        if (!p) continue;
+        for (let i = 2; i < p.length; i += 2) {
+          // long segments are walked in steps of one cell
+          const ax = p[i - 2];
+          const ay = p[i - 1];
+          const steps = Math.max(
+            1,
+            Math.ceil(Math.hypot(p[i] - ax, p[i + 1] - ay) / cell),
+          );
+          let prev = -1;
+          for (let s = 0; s < steps; s++) {
+            const bx0 = ax + ((p[i] - ax) * s) / steps;
+            const by0 = ay + ((p[i + 1] - ay) * s) / steps;
+            const bx1 = ax + ((p[i] - ax) * (s + 1)) / steps;
+            const by1 = ay + ((p[i + 1] - ay) * (s + 1)) / steps;
+            const c0 = Math.floor((Math.min(bx0, bx1) - x0) / cell);
+            const c1 = Math.floor((Math.max(bx0, bx1) - x0) / cell);
+            const r0 = Math.floor((Math.min(by0, by1) - y0) / cell);
+            const r1 = Math.floor((Math.max(by0, by1) - y0) / cell);
+            for (let r = Math.max(0, r0); r <= Math.min(rows - 1, r1); r++) {
+              for (let c = Math.max(0, c0); c <= Math.min(cols - 1, c1); c++) {
+                const b = r * cols + c;
+                // consecutive pieces mostly share their cell
+                if (b === prev) continue;
+                prev = b;
+                pass(b, e);
+              }
+            }
+          }
+        }
+      }
+    };
+    register((b) => counts[b + 1]++);
+    for (let b = 0; b < cols * rows; b++) counts[b + 1] += counts[b];
+    const items = new Int32Array(counts[cols * rows]);
+    const cursor = counts.slice(0, cols * rows);
+    register((b, e) => {
+      items[cursor[b]++] = e;
+    });
+    edgeGrid = {
+      cell,
+      x0,
+      y0,
+      cols,
+      rows,
+      start: counts,
+      items,
+      stamp: new Int32Array(m),
+      visit: 0,
+      geometry: geometryVersion,
+      built: now(),
+    };
+    return edgeGrid;
   };
 
   const pickAt = (px: number, py: number): Hit | null => {
@@ -2418,12 +2720,25 @@ export const createGraphChart = (
       if (isTree() && descendants[i] > 0 && !hasVisibleChild(i))
         fragment.append(row(labels.hiddenChildren, loc.count(descendants[i])));
       if (critical?.nodes[i]) {
+        // a badge: full subtle border, tinted fill and a colored dot
+        const color = toCss(criticalColor);
         const tag = style(doc.createElement("div"), {
-          marginTop: "2px",
-          color: toCss(criticalColor),
-          fontWeight: "600",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "5px",
+          marginTop: "4px",
+          padding: "0 8px",
+          borderRadius: "999px",
+          border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
+          background: `color-mix(in srgb, ${color} 10%, transparent)`,
+          color: "var(--text-color, #1f2937)",
+          fontWeight: "500",
+          lineHeight: "18px",
         });
-        tag.textContent = labels.critical;
+        tag.className = "minerva-chart-badge";
+        const dot = swatch(doc, color);
+        style(dot, { width: "7px", height: "7px" });
+        tag.append(dot, doc.createTextNode(labels.critical));
         fragment.append(tag);
       }
       return fragment;
@@ -3048,6 +3363,10 @@ export const createGraphChart = (
   runLayout(new Map(), false);
   applySelectedOption();
   void initRenderer();
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
 
   // ---------------------------------------------------------------- api
 
@@ -3252,6 +3571,7 @@ export const createGraphChart = (
       hoverFrame = 0;
       stopRunner();
       resizeObserver?.disconnect();
+      unfollowDefault();
       unwatchTheme();
       unwatchLocale();
       stage.removeEventListener("pointerdown", onPointerDown);

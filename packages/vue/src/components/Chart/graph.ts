@@ -44,6 +44,8 @@ export const graphCommonProps = {
   edgeColor: String as PropType<"neutral" | "source" | "target">,
   /** Arrowheads on the edges without `directed` (on for DAGs) */
   arrows: { type: Boolean, default: undefined },
+  /** Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`) */
+  arrowStyle: String as PropType<"open" | "filled">,
   /** Node labels; `auto` hides minor and overlapping labels when zoomed out (default `auto`) */
   nodeLabels: {
     type: [Boolean, String] as PropType<boolean | "auto">,
@@ -108,6 +110,7 @@ export interface GraphCommonProps {
   edgeWidth?: number | readonly [number, number];
   edgeColor?: "neutral" | "source" | "target";
   arrows?: boolean;
+  arrowStyle?: "open" | "filled";
   nodeLabels?: boolean | "auto";
   edgeLabels?: boolean | "auto" | "hover";
   highlight?: "neighbors" | "lineage" | "none";
@@ -207,6 +210,7 @@ export const graphOptions = (
   edgeWidth: raw(props.edgeWidth),
   edgeColor: props.edgeColor,
   arrows: props.arrows,
+  arrowStyle: props.arrowStyle,
   nodeLabels: props.nodeLabels,
   edgeLabels: props.edgeLabels,
   highlight: props.highlight,

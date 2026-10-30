@@ -67,6 +67,8 @@ export const chart3DCommonProps = {
   },
   /** Lighting of the surfaces and bars */
   lighting: Object as PropType<Chart3DLightingOptions>,
+  /** Brightness of the light of `blend: "additive"` series, tone mapped on WebGPU and WebGL2 (default 1) */
+  exposure: Number,
   /** Backend of the data layer: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`) */
   renderer: String as PropType<ChartRendererPreference>,
   /** Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors) */
@@ -105,6 +107,7 @@ interface Common3DProps {
   tooltip?: boolean | Chart3DTooltipOptions;
   interaction?: boolean | Chart3DInteractionOptions;
   lighting?: Chart3DLightingOptions;
+  exposure?: number;
   renderer?: ChartRendererPreference;
   palette?: readonly string[];
   ariaLabel?: string;
@@ -140,6 +143,7 @@ export function useChart3D(
       tooltip: raw(props.tooltip),
       interaction: raw(props.interaction),
       lighting: raw(props.lighting),
+      exposure: props.exposure,
       renderer: props.renderer,
       palette: raw(props.palette),
       ariaLabel: props.ariaLabel,

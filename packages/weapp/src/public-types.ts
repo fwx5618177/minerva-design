@@ -713,7 +713,7 @@ export interface NativeGanttTask {
   group?: string;
   color?: string;
   milestone?: boolean;
-  /** Names of the tasks this one waits for (tooltip row) */
+  /** Names of the tasks this one waits for (tooltip row, and arrows from their ends) */
   dependencies?: readonly string[];
 }
 export interface NativeGanttChartProperties extends NativeChartCommonProperties {
@@ -724,6 +724,10 @@ export interface NativeGanttChartProperties extends NativeChartCommonProperties 
   milestoneName?: string;
   /** Tooltip row of the dependencies of a task @default "Depends on" */
   dependenciesName?: string;
+  /** Elbow arrows from the end of every predecessor to the start of the task @default true */
+  dependencyArrows?: boolean;
+  /** Color of the dependency arrows (any CSS color) @default the secondary text color */
+  dependencyColor?: string;
   locale?: string;
   /** Line at this timestamp (`true`: now) @default false */
   today?: boolean | number;
@@ -1162,7 +1166,12 @@ export interface NativeChordChartProperties extends NativeShapeChartCommonProper
   matrix?: readonly (readonly number[])[];
   /** Flows as a list; takes precedence over `matrix` */
   links?: readonly NativeChordLink[];
-  /** One ribbon per direction @default false */
+  /**
+   * `false`: one ribbon per pair of groups, as wide as the flows between them
+   * in both directions (a symmetric matrix counts each relation once); `true`:
+   * one ribbon per direction (same width at both ends), self flows ignored
+   * @default false
+   */
   directed?: boolean;
   /** Arrowheads at the target ends @default true when directed */
   arrows?: boolean;

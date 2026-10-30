@@ -3,11 +3,11 @@
 // `[price, size]` pairs or columns); @hover reports the hovered price and
 // the cumulative amount.
 import { computed, ref } from "vue";
+import { useI18n } from "minerva-design/vue";
 import {
   DepthChart,
-  useI18n,
   type DepthChartHoverEvent,
-} from "minerva-design/vue";
+} from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { price: "Price", total: "Total", hint: "Hover the curves" },

@@ -16,6 +16,23 @@ const numberFormat = (
   options: Intl.NumberFormatOptions,
 ): Intl.NumberFormat => sharedNumberFormat(resolveLocale(locale), options);
 
+const RED_UP_REGIONS = new Set(["CN", "TW", "JP", "KR"]);
+const RED_UP_LANGUAGES = new Set(["zh", "ja", "ko"]);
+
+/**
+ * Whether the markets of `locale` show rising prices in red (`colorConvention:
+ * "auto"`): regions CN, TW, JP and KR, or Chinese / Japanese / Korean without a
+ * region (`zh-Hant` too; `zh-HK` / `zh-SG` follow the global convention)
+ */
+export const redUpLocale = (locale: string): boolean => {
+  const parts = locale.split(/[-_]/);
+  const region = parts
+    .slice(1)
+    .find((part) => /^([A-Za-z]{2}|\d{3})$/.test(part));
+  if (region) return RED_UP_REGIONS.has(region.toUpperCase());
+  return RED_UP_LANGUAGES.has((parts[0] ?? "").toLowerCase());
+};
+
 /** Decimals needed by the prices (0-8), detected from a sample of them */
 export const detectPrecision = (
   values: ArrayLike<number>,

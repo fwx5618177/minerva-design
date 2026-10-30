@@ -2,7 +2,8 @@
 // One polygon per series, one value per indicator (axes clockwise from 12
 // o'clock); the legend hides / shows a series.
 import { computed } from "vue";
-import { RadarChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { RadarChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

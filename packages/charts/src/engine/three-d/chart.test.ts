@@ -148,6 +148,44 @@ describe("createChart3D with the Canvas2D backend", () => {
     vi.restoreAllMocks();
   });
 
+  it("scales the additive light with the exposure", async () => {
+    // records the alpha of the additive dots drawn on the data layer
+    const alphas: number[] = [];
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(
+      function (this: HTMLCanvasElement, kind: string) {
+        if (kind !== "2d") return null;
+        const ctx = fakeContext() as unknown as Record<string, unknown>;
+        return new Proxy(ctx, {
+          get(target, prop) {
+            if (prop === "fill")
+              return () => {
+                if (target.globalCompositeOperation === "lighter")
+                  alphas.push(target.globalAlpha as number);
+              };
+            return target[prop as string];
+          },
+        }) as never;
+      } as never,
+    );
+    const glow: Chart3DOptions = {
+      series: [
+        {
+          data: [[0, 0, 0]],
+          pointStyle: "glow",
+          blend: "additive",
+          opacity: 0.2,
+          pointSize: 8,
+        },
+      ],
+    };
+    const c = await mount(glow);
+    const base = alphas[alphas.length - 1]!;
+    expect(base).toBeGreaterThan(0);
+    c.setOptions({ ...glow, exposure: 2 });
+    await nextFrame();
+    expect(alphas[alphas.length - 1]).toBeCloseTo(base * 2);
+  });
+
   it("falls back to Canvas2D and reports it", async () => {
     const renderers: string[] = [];
     chart = createChart3D(container, POINTS);

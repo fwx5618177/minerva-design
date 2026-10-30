@@ -360,8 +360,17 @@ export const createOrderBook = (
       if (large) {
         ctx.fillStyle = toCss(color, 0.16);
         ctx.fillRect(0, row.y + 1, width, rh - 2);
+        // a small dot in the left padding marks the large level (no accent bar)
         ctx.fillStyle = toCss(color);
-        ctx.fillRect(0, row.y + 2, 3, rh - 4);
+        ctx.beginPath();
+        ctx.arc(
+          pad / 2,
+          row.y + rh / 2,
+          Math.min(2.5, pad / 2 - 1),
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
       }
       // flash: behind the size that changed (a whole-row flash makes a
       // ladder at 200 updates/s flicker)

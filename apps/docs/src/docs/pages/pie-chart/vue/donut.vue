@@ -2,7 +2,8 @@
 // <DonutChart>: a pie with a hole and center texts; @click reports the
 // clicked slice.
 import { computed, ref } from "vue";
-import { DonutChart, useI18n, type ShapeHoverEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { DonutChart, type ShapeHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Radio, RadioGroup } from "minerva-design";
 import { TimeAndSales, type TimeAndSalesHandle } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
 
 const THRESHOLDS = [0.5, 1, 5];
 
@@ -13,14 +13,18 @@ export default function LargeTradesDemo() {
   const tapeRef = useRef<TimeAndSalesHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [threshold, setThreshold] = useState(1);
-  const [feed] = useState(() =>
-    createMarketFeed({ seed: 33, whales: 0.03, activity: 160 }),
-  );
 
-  useFeedLoop(boxRef, (elapsed) => {
-    const { trades } = feed.step(elapsed);
-    if (trades.length) tapeRef.current?.addTrades(trades);
-  });
+  useMarketStream(
+    boxRef,
+    { seed: 33, whales: 0.03, activity: 160 },
+    {
+      // a fresh market on every mount: the tape starts empty
+      load: () => tapeRef.current?.clear(),
+      update: ({ trades }) => {
+        if (trades.length) tapeRef.current?.addTrades(trades);
+      },
+    },
+  );
 
   const size = new Intl.NumberFormat(i18n.language);
   return (

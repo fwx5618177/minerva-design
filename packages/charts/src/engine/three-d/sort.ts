@@ -1,4 +1,5 @@
-// Back-to-front order of the transparent meshes for the GPU backends:
+// Back-to-front order of the transparent items for the GPU backends without
+// order-independent transparency (WebGL 1, no float render targets):
 // transparent items are drawn without writing depth, so their triangles must
 // come farthest first to blend correctly where a surface folds over itself
 // or where several transparent surfaces / bar series overlap. Meshes are
@@ -8,11 +9,12 @@
 // moved. Several transparent meshes are merged into one item (opacity baked
 // into the vertex colors) so that their quads are sorted together; above
 // the sort budget, the meshes are drawn by decreasing depth of their center
-// with their own quads sorted. Canvas2D sorts every triangle of every item
-// itself (painter's algorithm).
+// with their own quads sorted. Blended point clouds and the transparent
+// meshes are then drawn by decreasing depth of their center. Canvas2D sorts
+// every triangle and dot of every item itself (painter's algorithm).
 
 import type { Frame3D, Item3D, MeshItem } from "./render-types";
-import { VERTEX_STRIDE, writesDepth } from "./render-types";
+import { POINT_STRIDE, VERTEX_STRIDE, writesDepth } from "./render-types";
 
 /** Largest number of transparent quads sorted: a 512 × 512 surface grid */
 export const MAX_SORTED_QUADS = 1 << 18;
@@ -156,20 +158,27 @@ const sameMatrix = (a: Float32Array | null, b: Float32Array) => {
 const isTransparentMesh = (item: Item3D): item is MeshItem =>
   item.kind === "mesh" && !writesDepth(item);
 
+/** Drawn without writing depth (transparent meshes, blended points) */
+const isBlended = (item: Item3D) => item.kind !== "lines" && !writesDepth(item);
+
 /** Made of whole quads: its triangles can be sorted by pairs */
 const isQuadMesh = (item: MeshItem) =>
   item.indices.length > 0 && item.indices.length % 6 === 0;
 
-/** Center of the bounding box of a mesh's vertices */
-const meshCenter = (item: MeshItem): [number, number, number] => {
+/** Center of the bounding box of a mesh's vertices or a cloud's points */
+export const itemCenter = (item: Item3D): [number, number, number] => {
+  const mesh = item.kind === "mesh";
+  const buffer = mesh ? item.vertices : item.data;
+  const stride = (mesh ? VERTEX_STRIDE : POINT_STRIDE) / 4;
+  const count = mesh ? item.vertexCount : item.count;
   const f = new Float32Array(
-    item.vertices,
+    buffer,
     0,
-    Math.min(item.vertices.byteLength / 4, item.vertexCount * FLOATS),
+    Math.min(Math.floor(buffer.byteLength / 4), count * stride),
   );
   const min = [Infinity, Infinity, Infinity];
   const max = [-Infinity, -Infinity, -Infinity];
-  for (let o = 0; o + 2 < f.length; o += FLOATS) {
+  for (let o = 0; o + 2 < f.length; o += stride) {
     for (let k = 0; k < 3; k++) {
       const v = f[o + k] ?? 0;
       if (v < (min[k] ?? 0)) min[k] = v;
@@ -182,12 +191,12 @@ const meshCenter = (item: MeshItem): [number, number, number] => {
 };
 
 /**
- * Sorter of the transparent meshes: returns the items with the transparent
+ * Sorter of the transparent items: returns the items with the transparent
  * meshes merged into one item (`MERGED_KEY`) whose quads are in back-to-front
  * order, or — above `MAX_SORTED_QUADS` or for meshes that aren't made of
- * quads — the transparent meshes ordered by decreasing depth of their
- * center, each with its own quads sorted. `order` changes when only the
- * indices must be uploaded again.
+ * quads — the transparent meshes each with its own quads sorted; the blended
+ * items (meshes and point clouds) come by decreasing depth of their center.
+ * `order` changes when only the indices must be uploaded again.
  */
 export const createDepthSorter = () => {
   const sorted = new Map<string, SortedMesh>();
@@ -244,11 +253,11 @@ export const createDepthSorter = () => {
     return { ...item, indices: entry!.indices, order: entry!.order };
   };
 
-  /** Camera depth of the center of a mesh (larger: farther) */
-  const centerDepth = (item: MeshItem, frame: Frame3D) => {
+  /** Camera depth of the center of an item (larger: farther) */
+  const centerDepth = (item: Item3D, frame: Frame3D) => {
     let entry = centers.get(item.key);
     if (!entry || entry.version !== item.version) {
-      entry = { version: item.version, center: meshCenter(item) };
+      entry = { version: item.version, center: itemCenter(item) };
       centers.set(item.key, entry);
     }
     const m = frame.viewProj;
@@ -262,9 +271,30 @@ export const createDepthSorter = () => {
     );
   };
 
+  /** The blended items of `items` by decreasing depth (stable) */
+  const byDepth = (items: Item3D[], frame: Frame3D): Item3D[] => {
+    const slots: number[] = [];
+    items.forEach((it, i) => {
+      if (isBlended(it)) slots.push(i);
+    });
+    if (slots.length < 2) return items;
+    const ordered = slots
+      .map((i, k) => ({
+        item: items[i]!,
+        k,
+        depth: centerDepth(items[i]!, frame),
+      }))
+      .sort((a, b) => b.depth - a.depth || a.k - b.k);
+    slots.forEach((i, k) => {
+      items[i] = ordered[k]!.item;
+    });
+    return items;
+  };
+
   return (items: readonly Item3D[], frame: Frame3D): readonly Item3D[] => {
     const transparent = items.filter(isTransparentMesh);
-    if (transparent.length === 0) {
+    const blended = items.filter(isBlended);
+    if (transparent.length === 0 && blended.length < 2) {
       sorted.clear();
       centers.clear();
       merged = null;
@@ -280,7 +310,10 @@ export const createDepthSorter = () => {
     let quads = 0;
     for (const m of transparent) quads += m.indices.length / 6;
     const result: Item3D[] = [];
-    if (
+    if (transparent.length === 0) {
+      merged = null;
+      result.push(...items);
+    } else if (
       transparent.length >= 2 &&
       quads <= MAX_SORTED_QUADS &&
       transparent.every(isQuadMesh)
@@ -306,18 +339,16 @@ export const createDepthSorter = () => {
       }
     } else {
       merged = null;
-      // farthest mesh first, its own quads sorted
-      const ordered = transparent
-        .map((m) => ({ m, depth: centerDepth(m, frame) }))
-        .sort((a, b) => b.depth - a.depth)
-        .map((e) => sortMesh(e.m, frame, moved, seen));
+      // each mesh with its own quads sorted (ordered with the clouds below)
       let next = 0;
+      const own = transparent.map((m) => sortMesh(m, frame, moved, seen));
       for (const it of items)
-        result.push(isTransparentMesh(it) ? ordered[next++]! : it);
+        result.push(isTransparentMesh(it) ? own[next++]! : it);
     }
     for (const key of sorted.keys()) if (!seen.has(key)) sorted.delete(key);
+    byDepth(result, frame);
     for (const key of centers.keys())
-      if (!transparent.some((m) => m.key === key)) centers.delete(key);
+      if (!result.some((it) => it.key === key)) centers.delete(key);
     return result;
   };
 };

@@ -2,7 +2,8 @@
 // `layout="months"`: a small calendar per month; `levels` sets the number
 // of color steps above the empty days, `thresholds` their bounds.
 import { computed } from "vue";
-import { CalendarHeatmap, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { CalendarHeatmap } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { locale: "en-US" },

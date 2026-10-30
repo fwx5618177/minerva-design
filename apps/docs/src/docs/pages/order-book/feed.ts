@@ -7,6 +7,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 import type {
   OrderBookDelta,
+  OrderBookHeatmapHandle,
   OrderBookLevel,
   OrderBookSnapshot,
   MarketTrade,
@@ -226,6 +227,26 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
       .sort((a, b) => (side === "bid" ? b[0] - a[0] : a[0] - b[0]))
       .map(([index, size]) => [priceOf(index), size]);
 
+  /**
+   * Safety net of the invariant best bid < best ask: any level at or
+   * through the other side's best is removed (the matching engine never
+   * produces one, this keeps the feed sound whatever the parameters)
+   */
+  const uncross = () => {
+    for (let guard = 0; guard < 64; guard++) {
+      const bid = Math.max(-Infinity, ...books.bid.keys());
+      const ask = Math.min(Infinity, ...books.ask.keys());
+      if (bid < ask) {
+        if (Number.isFinite(bid)) best.bid = bid;
+        if (Number.isFinite(ask)) best.ask = ask;
+        return;
+      }
+      // the older side wins: drop the level that crossed it
+      if (best.bid >= ask) set("bid", bid, 0);
+      else set("ask", ask, 0);
+    }
+  };
+
   return {
     tick,
     snapshot: () => ({ bids: levels("bid"), asks: levels("ask"), time }),
@@ -259,6 +280,7 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
         } else market(random() < bias, trades, now);
       }
       maintain();
+      uncross();
       const tuples = (side: Side): OrderBookLevel[] =>
         [...touched[side]].map(([index, size]) => [priceOf(index), size]);
       return {
@@ -329,4 +351,115 @@ export function useFeedLoop(
       observer?.disconnect();
     };
   }, [targetRef, interval, running]);
+}
+
+type HeatmapSink = Pick<
+  OrderBookHeatmapHandle,
+  "clear" | "setBook" | "applyDeltas" | "addTrades"
+>;
+
+/** Where a market stream goes (usually the handles of the widgets) */
+export interface MarketSink {
+  /**
+   * A fresh market starts (mount, remount): load its whole state, e.g.
+   * `setBook(feed.snapshot())` (live deltas only make sense on that book)
+   */
+  load(feed: MarketFeed): void;
+  /** One live update of the market */
+  update(update: FeedUpdate, feed: MarketFeed): void;
+  /** The market stops (unmount): forget its state */
+  reset?(): void;
+}
+
+/**
+ * Streams a simulated market into `sink` every `interval` ms (see
+ * `useFeedLoop`). The market is created inside the effect and loaded
+ * whole first: a remount (StrictMode, hot reload) starts again from a
+ * fresh, consistent book instead of applying live deltas to a stale
+ * snapshot (which crosses the ladder). `options` are read on mount.
+ */
+export function useMarketStream(
+  targetRef: RefObject<HTMLElement | null>,
+  options: FeedOptions,
+  sink: MarketSink,
+  {
+    interval = 20,
+    running = true,
+  }: { interval?: number; running?: boolean } = {},
+) {
+  const optionsRef = useRef(options);
+  const sinkRef = useRef(sink);
+  const marketRef = useRef<MarketFeed | null>(null);
+  useEffect(() => {
+    sinkRef.current = sink;
+  });
+  useEffect(() => {
+    const feed = createMarketFeed(optionsRef.current);
+    marketRef.current = feed;
+    sinkRef.current.load(feed);
+    return () => {
+      marketRef.current = null;
+      sinkRef.current.reset?.();
+    };
+  }, []);
+  useFeedLoop(
+    targetRef,
+    (elapsed) => {
+      const feed = marketRef.current;
+      if (feed) sinkRef.current.update(feed.step(elapsed), feed);
+    },
+    { interval, running },
+  );
+}
+
+/** Empty book: what a ladder or depth chart shows once its market stopped */
+export const EMPTY_BOOK: OrderBookSnapshot = { bids: [], asks: [] };
+
+/**
+ * Backfills a heatmap with `history` ms of recorded market, then streams
+ * the same market live. The market is created inside the effect and the
+ * heatmap cleared first: a remount (StrictMode, hot reload) starts again
+ * from a fresh, consistent book, never applying live deltas to a stale one.
+ */
+export function useHeatmapReplay(
+  targetRef: RefObject<HTMLElement | null>,
+  heatmapRef: RefObject<HeatmapSink | null>,
+  options: FeedOptions,
+  history: number,
+  { step = 100, interval = 20 }: { step?: number; interval?: number } = {},
+) {
+  const optionsRef = useRef(options);
+  const marketRef = useRef<MarketFeed | null>(null);
+  useEffect(() => {
+    const heatmap = heatmapRef.current;
+    if (!heatmap) return;
+    const { feed, snapshot, updates } = createHistory(
+      optionsRef.current,
+      history,
+      step,
+    );
+    heatmap.clear();
+    heatmap.setBook(snapshot);
+    for (const { delta, trades } of updates) {
+      heatmap.applyDeltas(delta);
+      heatmap.addTrades(trades);
+    }
+    marketRef.current = feed;
+    return () => {
+      marketRef.current = null;
+      heatmap.clear();
+    };
+  }, [heatmapRef, history, step]);
+  useFeedLoop(
+    targetRef,
+    (elapsed) => {
+      const feed = marketRef.current;
+      const heatmap = heatmapRef.current;
+      if (!feed || !heatmap) return;
+      const { delta, trades } = feed.step(elapsed);
+      heatmap.applyDeltas(delta);
+      heatmap.addTrades(trades);
+    },
+    { interval },
+  );
 }

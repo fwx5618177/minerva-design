@@ -672,6 +672,20 @@ it("passes the preset options, locale and labels to the engine", async () => {
     dependenciesName: "After",
   });
   expect(JSON.stringify(lastOptions().series)).toContain('"name":"After"');
+  expect(lastOptions().dependencies).toEqual([{ from: "Design", to: "Build" }]);
+  const ganttWithArrows = await mount(ganttChart, {
+    tasks: [
+      { name: "Design", start: 0, end: 40 },
+      { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+    ],
+    dependencyColor: "#f00",
+  });
+  expect(lastOptions().dependencies).toEqual([
+    { from: "Design", to: "Build", color: "#f00" },
+  ]);
+  ganttWithArrows.w.setData({ dependencyArrows: false });
+  await tick();
+  expect(lastOptions().dependencies).toEqual([]);
   await mount(boxPlotChart, {
     groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
     outlierShape: "filled",
@@ -702,6 +716,28 @@ it("passes the preset options, locale and labels to the engine", async () => {
     locale: "fr",
     labels: { value: "V" },
   });
+});
+
+it("names the charts in their locale, the ConfigProvider's by default", async () => {
+  expect(areaChart.template).toContain('aria-label="{{chartLabel}}"');
+  const { w } = await mount(areaChart, {
+    series: [
+      { name: "Web", data: [1, 2] },
+      { name: "App", data: [2, 1] },
+    ],
+  });
+  expect(w.instance.data.chartLabel).toBe("Chart: Web, App");
+  // the provider's language reaches the consumers as `localeLanguage`
+  w.setData({ localeLanguage: "zh" });
+  await tick();
+  expect(lastOptions().locale).toBe("zh");
+  expect(w.instance.data.chartLabel).toBe("图表：Web、App");
+  w.setData({ locale: "ja" });
+  await tick();
+  expect(w.instance.data.chartLabel).toBe("グラフ：Web、App");
+  w.setData({ ariaLabel: "Traffic" });
+  await tick();
+  expect(w.instance.data.chartLabel).toBe("Traffic");
 });
 
 it("does not export the DOM / GPU-only charts", () => {

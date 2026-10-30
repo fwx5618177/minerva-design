@@ -303,6 +303,8 @@ export function ganttChartOptions(
     milestoneName?: string;
     formatProgress?: (share: number) => string;
     dependenciesName?: string;
+    dependencyArrows?: boolean;
+    dependencyColor?: string;
     locale?: string;
     today?: boolean | number | Date;
     todayLabel?: string;
@@ -316,6 +318,8 @@ export function ganttChartOptions(
     milestoneName: props.milestoneName,
     formatProgress: props.formatProgress,
     dependenciesName: props.dependenciesName,
+    dependencyArrows: props.dependencyArrows,
+    dependencyColor: props.dependencyColor,
     locale: props.locale,
   });
   const today = props.today ?? false;
@@ -344,6 +348,7 @@ export function ganttChartOptions(
   return {
     ...base,
     ...defined({ locale: props.locale }),
+    dependencies: gantt.dependencies,
     orientation: "horizontal",
     xAxis: { type: "category", categories: gantt.categories, ...base.xAxis },
     yAxis: {

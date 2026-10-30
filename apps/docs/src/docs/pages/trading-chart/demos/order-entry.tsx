@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   TradingChart,
@@ -27,6 +27,21 @@ interface Order {
   price: number;
   quantity: number;
 }
+
+// keyboard order entry: focus the chart (Tab), then these keys
+const SHORTCUTS = ["arm", "move", "confirm", "cancel", "select", "remove"];
+
+const kbd: React.CSSProperties = {
+  minWidth: 20,
+  padding: "0 5px",
+  border: "1px solid var(--border-color)",
+  borderRadius: 4,
+  background: "var(--surface-subtle-color)",
+  font: "inherit",
+  fontSize: 11,
+  lineHeight: "18px",
+  textAlign: "center",
+};
 
 const INITIAL: Order[] = [
   { id: "o1", side: "buy", price: Math.round(last * 0.996), quantity: 0.25 },
@@ -128,14 +143,16 @@ export default function OrderEntryDemo() {
           }}
         >
           <tbody>
-            {orders.map((order) => (
+            {orders.map((order, i) => (
               <tr
                 key={order.id}
-                style={{ borderTop: "1px solid var(--border-color)" }}
+                style={{
+                  background: i % 2 ? undefined : "var(--surface-subtle-color)",
+                }}
               >
                 <td
                   style={{
-                    padding: "6px 0",
+                    padding: "6px 8px",
                     color:
                       order.side === "buy"
                         ? "var(--success-color)"
@@ -148,14 +165,14 @@ export default function OrderEntryDemo() {
                 </td>
                 <td
                   style={{
-                    padding: "6px 0",
+                    padding: "6px 8px",
                     textAlign: "end",
                     color: "var(--text-secondary-color)",
                   }}
                 >
                   {order.quantity}
                 </td>
-                <td style={{ padding: "6px 0", textAlign: "end" }}>
+                <td style={{ padding: "6px 8px", textAlign: "end" }}>
                   {usd.format(order.price)}
                 </td>
               </tr>
@@ -165,6 +182,33 @@ export default function OrderEntryDemo() {
         <span role="status" style={{ color: "var(--text-secondary-color)" }}>
           {log || t("orderEntryHint")}
         </span>
+        <strong style={{ marginTop: 8 }}>{t("keyboard.title")}</strong>
+        <dl
+          style={{
+            display: "grid",
+            gridTemplateColumns: "auto 1fr",
+            alignItems: "center",
+            gap: "6px 10px",
+            margin: 0,
+          }}
+        >
+          {SHORTCUTS.map((name) => (
+            <Fragment key={name}>
+              <dt style={{ display: "flex", gap: 4 }}>
+                {t(`keyboard.${name}Keys`)
+                  .split(" ")
+                  .map((key) => (
+                    <kbd key={key} style={kbd}>
+                      {key}
+                    </kbd>
+                  ))}
+              </dt>
+              <dd style={{ margin: 0, color: "var(--text-secondary-color)" }}>
+                {t(`keyboard.${name}`)}
+              </dd>
+            </Fragment>
+          ))}
+        </dl>
       </div>
     </div>
   );

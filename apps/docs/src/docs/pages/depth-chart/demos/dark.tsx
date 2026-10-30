@@ -1,7 +1,10 @@
-import { useMemo, useRef, useState, type CSSProperties } from "react";
+import { useMemo, useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { DepthChart, type DepthChartHandle } from "minerva-design/charts";
-import { createMarketFeed, useFeedLoop } from "../../order-book/feed";
+import { useMarketStream } from "../../order-book/feed";
+
+/** Price the simulated market starts at (BTC/USDT) */
+const PRICE = 64000;
 
 // a trading terminal palette, read by the chart from these variables
 const TERMINAL = {
@@ -28,32 +31,38 @@ export default function DarkDemo() {
   });
   const chartRef = useRef<DepthChartHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [feed] = useState(() => createMarketFeed({ seed: 4 }));
-  const [book] = useState(() => feed.snapshot());
 
-  useFeedLoop(boxRef, (elapsed) =>
-    chartRef.current?.applyDeltas(feed.step(elapsed).delta),
+  // a fresh market on every mount: its snapshot, then its deltas
+  useMarketStream(
+    boxRef,
+    { seed: 4, price: PRICE },
+    {
+      load: (feed) => chartRef.current?.setBook(feed.snapshot()),
+      update: ({ delta }) => chartRef.current?.applyDeltas(delta),
+    },
   );
 
   // your resting orders and the liquidation price of a position
-  const mid = feed.last();
   const myBid = t("myBid");
   const myAsk = t("myAsk");
   const liquidation = t("liquidation");
   const priceLines = useMemo(
     () => [
-      { price: Math.round(mid * 0.9992), label: myBid, color: "#0ecb81" },
-      { price: Math.round(mid * 1.0012), label: myAsk, color: "#f6465d" },
-      { price: Math.round(mid * 0.9978), label: liquidation, color: "#f0b90b" },
+      { price: Math.round(PRICE * 0.9992), label: myBid, color: "#0ecb81" },
+      { price: Math.round(PRICE * 1.0012), label: myAsk, color: "#f6465d" },
+      {
+        price: Math.round(PRICE * 0.9978),
+        label: liquidation,
+        color: "#f0b90b",
+      },
     ],
-    [mid, myBid, myAsk, liquidation],
+    [myBid, myAsk, liquidation],
   );
 
   return (
     <div ref={boxRef} style={TERMINAL}>
       <DepthChart
         ref={chartRef}
-        book={book}
         height={360}
         range={0.003}
         priceLines={priceLines}

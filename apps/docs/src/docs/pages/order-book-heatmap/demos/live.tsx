@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "minerva-design";
 import {
@@ -6,7 +6,7 @@ import {
   type ChartRendererKind,
   type OrderBookHeatmapHandle,
 } from "minerva-design/charts";
-import { createHistory, useFeedLoop } from "../../order-book/feed";
+import { useHeatmapReplay } from "../../order-book/feed";
 
 export default function LiveDemo() {
   const { t } = useTranslation("common", {
@@ -14,33 +14,14 @@ export default function LiveDemo() {
   });
   const heatmapRef = useRef<OrderBookHeatmapHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  // the last 15 s at 100 messages a second, then live at the same pace
-  const [market] = useState(() =>
-    createHistory({ seed: 22, activity: 200 }, 15_000, 10),
-  );
   const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);
   const [follow, setFollow] = useState(true);
-
-  useEffect(() => {
-    const heatmap = heatmapRef.current;
-    if (!heatmap) return;
-    heatmap.setBook(market.snapshot);
-    for (const { delta, trades } of market.updates) {
-      heatmap.applyDeltas(delta);
-      heatmap.addTrades(trades);
-    }
-  }, [market]);
-
-  // the heatmap samples the book every 50 ms: 20 columns a second
-  useFeedLoop(
-    boxRef,
-    (elapsed) => {
-      const { delta, trades } = market.feed.step(elapsed);
-      heatmapRef.current?.applyDeltas(delta);
-      heatmapRef.current?.addTrades(trades);
-    },
-    { interval: 10 },
-  );
+  // the last 15 s at 200 messages a second (one update every 10 ms), then
+  // live at the same pace; the heatmap samples the book every 50 ms
+  useHeatmapReplay(boxRef, heatmapRef, { seed: 22, activity: 200 }, 15_000, {
+    step: 10,
+    interval: 10,
+  });
 
   return (
     <div ref={boxRef} style={{ display: "grid", gap: 12, width: "100%" }}>

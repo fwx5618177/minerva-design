@@ -128,7 +128,7 @@ export interface ShapeChartCommonProps extends ShapeChartFrameProps {
   padding?: ChartPadding;
   /**
    * Accessible name of the chart
-   * @default the chart type, e.g. "Donut chart"
+   * @default the chart type in its locale, e.g. "Donut chart" (a gauge: "Gauge: {label}")
    */
   ariaLabel?: string;
   /**
@@ -577,9 +577,11 @@ export interface ChordChartProps extends ShapeChartCommonProps {
   /** Flows as a list (by group name or index); takes precedence over `matrix` */
   links?: readonly ChordLink[];
   /**
-   * `false`: one ribbon per pair of groups, each end as wide as the flow
-   * leaving that end. `true`: one ribbon per direction, arcs sized by the
-   * outgoing plus the incoming flows (self flows ignored)
+   * `false`: one ribbon per pair of groups, as wide as the flows between
+   * them in both directions (a symmetric matrix counts each relation once),
+   * arcs sized by the ribbons of the group. `true`: one ribbon per
+   * direction (same width at both ends), arcs sized by the outgoing plus
+   * the incoming flows; flows from a group to itself are ignored.
    * @default false
    */
   directed?: boolean;

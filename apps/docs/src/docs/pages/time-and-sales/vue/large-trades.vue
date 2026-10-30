@@ -3,11 +3,11 @@
 // are merged (`aggregate`), small ones hidden (`min-size`), large ones
 // highlighted; @trade-click reports the clicked row.
 import { computed, ref } from "vue";
+import { useI18n } from "minerva-design/vue";
 import {
   TimeAndSales,
-  useI18n,
   type TimeAndSalesRowEvent,
-} from "minerva-design/vue";
+} from "minerva-design/vue/charts";
 
 const TEXT = {
   en: { hint: "Click a trade", size: "lots" },

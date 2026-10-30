@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // `percent` scales every stack to 100%: the share of each source over time.
 import { computed } from "vue";
-import { AreaChart, useI18n } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { AreaChart } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

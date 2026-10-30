@@ -3,7 +3,8 @@
 // direction with arrowheads; @hover reads both directions of a ribbon
 // (`value` and `reverseValue`).
 import { computed, ref } from "vue";
-import { ChordChart, useI18n, type ShapeHoverEvent } from "minerva-design/vue";
+import { useI18n } from "minerva-design/vue";
+import { ChordChart, type ShapeHoverEvent } from "minerva-design/vue/charts";
 
 const TEXT = {
   en: {

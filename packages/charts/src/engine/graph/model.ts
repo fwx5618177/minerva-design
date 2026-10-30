@@ -40,6 +40,15 @@ export interface GraphModel {
   edgeValueRange: [number, number] | null;
   /** Nodes ordered by importance (value, then degree) */
   rank: Int32Array;
+  /**
+   * Parallel edges (same pair of nodes, either direction): offset of the
+   * edge among them, centered on 0 and measured to the left of its own
+   * direction; NaN for a single edge. Self-loops: index among the loops of
+   * their node.
+   */
+  bend: Float64Array;
+  /** Whether some edge is a self-loop */
+  hasLoops: boolean;
 }
 
 const range = (values: (number | undefined)[]): [number, number] | null => {
@@ -75,7 +84,7 @@ export const buildModel = (
   edgesIn.forEach((edge, k) => {
     const a = index.get(edge?.source);
     const b = index.get(edge?.target);
-    if (a === undefined || b === undefined || a === b) return;
+    if (a === undefined || b === undefined) return;
     edges.push(edge);
     input.push(k);
     s.push(a);
@@ -156,7 +165,43 @@ export const buildModel = (
     valueRange: range(unique.map((node) => node.value)),
     edgeValueRange: range(edges.map((edge) => edge.value)),
     rank,
+    ...bends(n, source, target),
   };
+};
+
+/** Offsets of the parallel edges and indices of the self-loops */
+const bends = (
+  n: number,
+  source: Int32Array,
+  target: Int32Array,
+): { bend: Float64Array; hasLoops: boolean } => {
+  const m = source.length;
+  const bend = new Float64Array(m).fill(NaN);
+  const loops = new Int32Array(n);
+  const pairs = new Map<number, number[]>();
+  let hasLoops = false;
+  for (let e = 0; e < m; e++) {
+    const s = source[e];
+    const t = target[e];
+    if (s === t) {
+      bend[e] = loops[s]++;
+      hasLoops = true;
+      continue;
+    }
+    const key = s < t ? s * n + t : t * n + s;
+    const list = pairs.get(key);
+    if (list) list.push(e);
+    else pairs.set(key, [e]);
+  }
+  for (const list of pairs.values()) {
+    if (list.length < 2) continue;
+    list.forEach((e, k) => {
+      // slots are counted on the side of the lower → higher direction
+      const slot = k - (list.length - 1) / 2;
+      bend[e] = source[e] < target[e] ? slot : -slot;
+    });
+  }
+  return { bend, hasLoops };
 };
 
 /** Neighbors of a node and the edges between them */

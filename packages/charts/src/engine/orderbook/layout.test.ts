@@ -4,6 +4,7 @@ import {
   fitTimeRange,
   layoutAxisLabels,
   niceCeil,
+  fineCeil,
 } from "./layout";
 
 describe("axis label layout", () => {
@@ -120,5 +121,20 @@ describe("heatmap view fit", () => {
     expect(niceCeil(100)).toBe(100);
     expect(niceCeil(0)).toBe(0);
     expect(niceCeil(Number.NaN)).toBe(0);
+  });
+
+  it("rounds scales up on a fine series (at most a third above)", () => {
+    expect(fineCeil(1)).toBe(1);
+    expect(fineCeil(1.1)).toBe(1.2);
+    expect(fineCeil(13)).toBe(15);
+    expect(fineCeil(0.031)).toBe(0.04);
+    expect(fineCeil(7)).toBe(8);
+    expect(fineCeil(8.5)).toBe(10);
+    expect(fineCeil(0)).toBe(0);
+    expect(fineCeil(Infinity)).toBe(0);
+    for (const v of [0.37, 4.2, 61, 999, 12345]) {
+      expect(fineCeil(v)).toBeGreaterThanOrEqual(v);
+      expect(fineCeil(v)).toBeLessThanOrEqual((v * 4) / 3 + 1e-9);
+    }
   });
 });

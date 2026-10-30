@@ -25,8 +25,8 @@ import {
   type ViewStyle,
 } from "react-native";
 import {
-  chartAriaLabel,
   createChartController,
+  describeChart,
   type ChartController,
   type ChartDragEvent,
   type ChartHoverEvent,
@@ -38,7 +38,7 @@ import {
   type ChartTooltipOptions,
   type ChartView,
 } from "@minerva/charts/canvas";
-import { useTheme } from "../../theme/MinervaProvider";
+import { useI18n, useTheme } from "../../theme/MinervaProvider";
 import { part } from "../../internal/parts";
 import { measureChartText } from "./measure";
 import { drawHover, drawStatic, tooltipCard } from "./scene";
@@ -407,14 +407,22 @@ export function ChartBase({
   ...handlers
 }: ChartBaseProps) {
   const { tokens, fonts } = useTheme();
+  const { language } = useI18n();
   const family = fonts.sans;
   const theme = useMemo(() => chartThemeInput(tokens), [tokens]);
   const customTooltip = !!renderTooltip && options.tooltip !== false;
   const resolved = useMemo((): ChartOptions => {
-    if (!customTooltip) return options;
+    // The chart's own locale wins over the language of the provider.
+    const localized = options.locale
+      ? options
+      : { ...options, locale: language };
+    if (!customTooltip) return localized;
     const base = typeof options.tooltip === "object" ? options.tooltip : {};
-    return { ...options, tooltip: { ...base, render: () => CUSTOM_TOOLTIP } };
-  }, [options, customTooltip]);
+    return {
+      ...localized,
+      tooltip: { ...base, render: () => CUSTOM_TOOLTIP },
+    };
+  }, [options, customTooltip, language]);
 
   const [store] = useState(() =>
     createChartStore(
@@ -514,7 +522,12 @@ export function ChartBase({
         accessible
         accessibilityRole="image"
         accessibilityLabel={
-          options.ariaLabel ?? (scene ? chartAriaLabel(scene.model) : undefined)
+          resolved.ariaLabel ??
+          describeChart({
+            locale: resolved.locale,
+            labels: resolved.labels,
+            series: scene?.model.series,
+          })
         }
         onStartShouldSetResponder={() => true}
         onResponderTerminationRequest={() => !store.holdsGesture()}

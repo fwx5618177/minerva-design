@@ -121,6 +121,10 @@ export abstract class MinervaGraphElement extends MinervaEngineElement<
   @property({ attribute: "edge-color" })
   edgeColor: "neutral" | "source" | "target" = "neutral";
 
+  /** Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, following the theme and the highlight) */
+  @property({ attribute: "arrow-style" })
+  arrowStyle: "open" | "filled" = "open";
+
   /** What hovering / selecting a node highlights */
   @property()
   highlight?: "neighbors" | "lineage" | "none";
@@ -161,6 +165,7 @@ export abstract class MinervaGraphElement extends MinervaEngineElement<
       nodeShape: this.nodeShape ?? this.options?.nodeShape,
       edgeStyle: this.edgeStyle ?? this.options?.edgeStyle,
       edgeColor: this.edgeColor,
+      arrowStyle: this.arrowStyle,
       highlight: this.highlight ?? this.options?.highlight,
       locale: this.locale ?? this.options?.locale,
       selected: this.selected ?? this.options?.selected,

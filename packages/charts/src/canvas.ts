@@ -31,7 +31,7 @@ export {
   type ChartTooltipLayout,
 } from "./engine/controller";
 export { formatCompact, formatDuration, formatValue } from "./engine/format";
-export { chartAriaLabel } from "./engine/labels";
+export { chartAriaLabel, describeChart } from "./engine/labels";
 export { drawPrimitives } from "./engine/canvas";
 export {
   lineOf as annotationLine,
@@ -96,4 +96,5 @@ export {
 } from "./engine/shapes/canvas";
 export { drawShapeScene } from "./engine/shapes/draw";
 export { calendarStrips } from "./engine/shapes/calendar";
+export { describeChart as describeShapeChart } from "./engine/shapes/layout";
 export type * from "./engine/shapes/types";
