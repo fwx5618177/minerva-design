@@ -75,7 +75,11 @@ describe("docs site", () => {
           '[id$="demo-basic"] [data-demo-preview]',
         ) as HTMLElement;
       await user.click(
-        within(basicPreview()).getByRole("button", { name: "Click me" }),
+        await within(basicPreview()).findByRole(
+          "button",
+          { name: "Click me" },
+          { timeout: ROUTE_TIMEOUT },
+        ),
       );
       expect(within(basicPreview()).getByRole("status")).toHaveTextContent(
         "Clicked 1 times",

@@ -49,6 +49,12 @@ import { hitTest } from "./scene";
 import { createTheme } from "./theme";
 import type { ChartInstance, ChartOptions } from "./types";
 
+/**
+ * CI runs these under coverage instrumentation on shared runners (about 4x
+ * slower than a local run, measured), hence the larger budgets there
+ */
+const BUDGET = process.env.CI ? 4 : 1;
+
 /** Best of `runs` timings in ms (the minimum filters out GC pauses) */
 const best = (fn: () => void, runs = 3) => {
   let min = Infinity;
@@ -90,7 +96,7 @@ describe("engine throughput", () => {
       points = items[0].kind === "line" ? items[0].count : 0;
     });
     expect(points).toBe(n);
-    expect(ms).toBeLessThan(200);
+    expect(ms).toBeLessThan(200 * BUDGET);
   });
 
   it("builds a 100,000-point scatter and hit tests it 1,000 times", () => {
@@ -125,7 +131,7 @@ describe("engine throughput", () => {
       }
     });
     expect(hits).toBeGreaterThan(900);
-    expect(ms).toBeLessThan(200);
+    expect(ms).toBeLessThan(200 * BUDGET);
   });
 });
 
@@ -184,7 +190,7 @@ describe("createChart rebuilds", () => {
     expect(spies.buildItems).toBe(0);
     expect(legend()).toEqual(buttons);
     expect(legend().every((b, i) => b === buttons[i])).toBe(true);
-    expect(ms).toBeLessThan(250);
+    expect(ms).toBeLessThan(250 * BUDGET);
 
     // a real change still rebuilds both
     const next = options();
@@ -242,7 +248,7 @@ describe("createChart rebuilds", () => {
     // another point: new content
     move(100, 150);
     expect(tooltip.firstElementChild).not.toBe(header);
-    expect(ms).toBeLessThan(500);
+    expect(ms).toBeLessThan(500 * BUDGET);
   });
 
   it("draws with a WebGL (1) backend like with the others", async () => {

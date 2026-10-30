@@ -23,6 +23,10 @@ export default defineConfig({
         replacement: src("../../packages/vue/src/index.ts"),
       },
       {
+        find: /^minerva-design\/charts\/core$/,
+        replacement: src("../../packages/charts/src/core.ts"),
+      },
+      {
         find: /^minerva-design\/web-components$/,
         replacement: src("../../packages/web-components/src/index.ts"),
       },

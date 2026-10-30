@@ -24,7 +24,8 @@ import { generateIcons } from "../../scripts/generate-icons.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 describe("generated files", () => {
-  it("custom-elements.json is up to date", () => {
+  // generating the manifest analyzes every element source (slow on CI runners)
+  it("custom-elements.json is up to date", { timeout: 30_000 }, () => {
     expect(readFileSync(MANIFEST, "utf8")).toBe(
       serializeManifest(generateManifest()),
     );
