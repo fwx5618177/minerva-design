@@ -1,5 +1,14 @@
 # minerva-design
 
+## 1.5.0
+
+### Minor Changes
+
+- test: give the heavy demo-source and rn corner geometry checks a ci timeout
+  chore(docs): keep the generated chart api file out of prettier
+  docs(charts): document relationship charts, renderer switch and new trading demos - new graphCharts category: graph-chart, dependency-graph, tree-chart and chord-chart - sticky renderer selector with per-demo backend badges on every chart page - new candlestick, trading-chart and technical-indicators demos, galaxy and heatmap polish - chart api tables load on demand from api.charts.generated.json
+  feat(charts): add graph, dag, tree and chord charts, pro trading tools and a global renderer - graph module: createGraphChart with force (barnes-hut, worker), dag (sugiyama), tree, radial, mind map, org, circular and arc layouts; GraphChart, DependencyGraph, TreeChart - shape engine: chord diagram (ChordChart), bullet names wrap instead of truncating - setDefaultChartRenderer / getDefaultChartRenderer / subscribeDefaultChartRenderer - gantt item tooltip, aligned tooltip columns, oklab heatmap ramps with legend and new hover, hollow box plot outliers, waterfall connectors, log axes on both y axes - trading: sar, ichimoku, supertrend, keltner, donchian, obv, cci, stoch rsi, dmi, williams r, mfi, volume profile, channel/pitchfork/arrow/text/position drawings, undo/redo, style toolbar, syncCharts, replay, sessions, time zones, export, order entry - order book heatmap: fixed spread fill, profile panel, axis label collisions and fit - 3d: glow and additive point styles, dpr-correct sizes, cross-mesh transparency sorting - vue: charts register through the opt-in MinervaVueCharts plugin (minerva-design/vue/charts) - wrappers for the new charts in vue, angular, web components, rn, taro, uni and weapp
+
 ## 1.4.0
 
 ### Minor Changes
