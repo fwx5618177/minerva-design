@@ -1,0 +1,87 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`// A mind map of a product launch: the branches spread on both sides of the
+// central topic, colored by branch.
+import type { MinervaTreeChart } from "minerva-design/web-components/graph";
+
+const TOPICS = {
+  en: [
+    "Product launch",
+    "Research",
+    "User interviews",
+    "Market analysis",
+    "Design",
+    "Prototype",
+    "Usability tests",
+    "Development",
+    "Web app",
+    "Mobile app",
+    "Marketing",
+    "Ad campaign",
+    "Press release",
+  ],
+  zh: [
+    "产品发布",
+    "调研",
+    "用户访谈",
+    "市场分析",
+    "设计",
+    "原型",
+    "可用性测试",
+    "开发",
+    "网页应用",
+    "移动应用",
+    "市场营销",
+    "广告投放",
+    "新闻稿",
+  ],
+  ja: [
+    "製品ローンチ",
+    "リサーチ",
+    "ユーザーインタビュー",
+    "市場分析",
+    "デザイン",
+    "プロトタイプ",
+    "ユーザビリティテスト",
+    "開発",
+    "Web アプリ",
+    "モバイルアプリ",
+    "マーケティング",
+    "広告キャンペーン",
+    "プレスリリース",
+  ],
+  fr: [
+    "Lancement produit",
+    "Recherche",
+    "Entretiens utilisateurs",
+    "Analyse du marché",
+    "Conception",
+    "Prototype",
+    "Tests d'utilisabilité",
+    "Développement",
+    "Application web",
+    "Application mobile",
+    "Marketing",
+    "Campagne publicitaire",
+    "Communiqué de presse",
+  ],
+};
+// parent of each topic of TOPICS (-1: the central topic)
+const PARENT = [-1, 0, 1, 1, 0, 4, 4, 0, 7, 7, 0, 10, 10];
+// branch of a topic: its ancestor just below the central topic
+const branchOf = (i: number): number =>
+  PARENT[i] <= 0 ? i : branchOf(PARENT[i]);
+
+export function setup(root: HTMLElement) {
+  const topics =
+    TOPICS[document.documentElement.lang as keyof typeof TOPICS] ?? TOPICS.en;
+  const chart = root.querySelector<MinervaTreeChart>("#launch")!;
+  chart.nodes = topics.map((label, i) => ({
+    id: \`t\${i}\`,
+    label,
+    group: \`b\${branchOf(i)}\`,
+  }));
+  chart.edges = PARENT.flatMap((parent, i) =>
+    parent < 0 ? [] : [{ source: \`t\${parent}\`, target: \`t\${i}\` }],
+  );
+  chart.options = { legend: false };
+}
+`})))()}n();export{t as default};

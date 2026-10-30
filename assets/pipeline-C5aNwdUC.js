@@ -1,0 +1,11 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: grid; gap: 12px; width: 100%">
+  <minerva-switch id="critical" checked></minerva-switch>
+  <minerva-dependency-graph
+    id="pipeline"
+    direction="LR"
+    edge-style="orthogonal"
+    critical-path
+    height="380"
+  ></minerva-dependency-graph>
+</div>
+`})))()}n();export{t as default};

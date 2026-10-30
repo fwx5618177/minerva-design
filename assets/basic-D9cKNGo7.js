@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{t as n}from"./native-preview-Dt9qda6R.js";import{I as r}from"./native-preview-D1pFhhMh.js";function i(){return(0,a.jsx)(r,{children:`import { Button } from "minerva-design/native";`})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
