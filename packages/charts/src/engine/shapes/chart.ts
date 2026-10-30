@@ -44,8 +44,9 @@ interface HoverState {
 }
 
 /**
- * Creates a pie / donut, radar, gauge, funnel or treemap chart in
- * `container` (drawn with Canvas2D, themed by the Minerva CSS variables).
+ * Creates a pie / donut, radar, gauge, funnel, treemap, sankey, sunburst,
+ * radial bar, calendar heatmap or bullet chart in `container` (drawn with
+ * Canvas2D, themed by the Minerva CSS variables).
  */
 export const createShapeChart = (
   container: HTMLElement,
@@ -86,7 +87,12 @@ export const createShapeChart = (
     [K in keyof ShapeChartEventMap]: Set<
       (event: ShapeChartEventMap[K]) => void
     >;
-  } = { hover: new Set(), click: new Set(), toggle: new Set() };
+  } = {
+    hover: new Set(),
+    click: new Set(),
+    toggle: new Set(),
+    drill: new Set(),
+  };
   const emit = <K extends keyof ShapeChartEventMap>(
     type: K,
     event: ShapeChartEventMap[K],
@@ -356,6 +362,25 @@ export const createShapeChart = (
     emit("toggle", event);
   }
 
+  function drill(path: readonly string[]) {
+    if (destroyed) return;
+    const event = runtime.drill(path);
+    if (!event) return;
+    if (options.type === "sunburst" && !options.drillPath) {
+      tipKey = "";
+      schedule();
+    }
+    emit("drill", event);
+  }
+
+  /** Sunburst: drills into / out of an activated item */
+  const activate = (hit: ShapeHover) => {
+    if (options.type !== "sunburst" || options.drill === false || !scene)
+      return;
+    const item = scene.items.find((it) => it.index === hit.index);
+    if (item?.drill) drill(item.drill);
+  };
+
   // -------------------------------------------------------- interaction
 
   const local = (event: { clientX: number; clientY: number }) => {
@@ -400,6 +425,7 @@ export const createShapeChart = (
     if (hit && scene) {
       const e = hoverEvent(scene, hit);
       if (e) emit("click", e);
+      activate(hit);
     }
   };
 
@@ -457,6 +483,15 @@ export const createShapeChart = (
         if (!e) return;
         event.preventDefault();
         emit("click", e);
+        activate(current);
+        break;
+      }
+      case "Backspace": {
+        if (options.type !== "sunburst" || options.drill === false) return;
+        const path = runtime.drillPath();
+        if (!path.length) return;
+        event.preventDefault();
+        drill(path.slice(0, -1));
         break;
       }
       case "Escape":
@@ -540,6 +575,8 @@ export const createShapeChart = (
     refreshTheme,
     toggle,
     getHidden: () => runtime.hiddenIndexes(),
+    drill,
+    getDrillPath: () => runtime.drillPath(),
     on(type, listener) {
       listeners[type].add(listener);
       return () => {
@@ -563,6 +600,7 @@ export const createShapeChart = (
       listeners.hover.clear();
       listeners.click.clear();
       listeners.toggle.clear();
+      listeners.drill.clear();
       dom.root.remove();
     },
   };

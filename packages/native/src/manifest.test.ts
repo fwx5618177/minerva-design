@@ -31,3 +31,20 @@ describe("component manifest", () => {
     expect(new Set(names).size).toBe(names.length);
   });
 });
+
+describe("chart manifest", () => {
+  it("lists the DOM-free charts of the engine, none of the DOM / GPU widgets", () => {
+    for (const name of [
+      "AreaChart",
+      "GanttChart",
+      "SankeyChart",
+      "SunburstChart",
+      "BulletChart",
+    ])
+      expect(NATIVE_CHARTS, name).toContain(name);
+    for (const name of ["TradingChart", "OrderBook", "Scatter3DChart"]) {
+      expect(NATIVE_CHARTS, name).not.toContain(name);
+      expect(name in Native, name).toBe(false);
+    }
+  });
+});

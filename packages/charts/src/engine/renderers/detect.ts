@@ -1,14 +1,16 @@
-// Backend selection: WebGPU -> WebGL2 -> Canvas2D.
+// Backend selection: WebGPU -> WebGL2 -> WebGL -> Canvas2D.
 
 import type { ChartRendererKind, ChartRendererPreference } from "../types";
 import { createCanvas2dRenderer } from "./canvas2d";
 import type { ChartRenderer, RendererLostHandler } from "./types";
+import { createWebGlRenderer } from "./webgl";
 import { createWebGl2Renderer } from "./webgl2";
 import { createWebGpuRenderer } from "./webgpu";
 
 export const RENDERER_ORDER: readonly ChartRendererKind[] = [
   "webgpu",
   "webgl2",
+  "webgl",
   "canvas2d",
 ];
 
@@ -34,6 +36,8 @@ const create = async (
       return createWebGpuRenderer(canvas, onLost, requireHardware);
     case "webgl2":
       return createWebGl2Renderer(canvas, onLost, requireHardware);
+    case "webgl":
+      return createWebGlRenderer(canvas, onLost, requireHardware);
     default:
       return createCanvas2dRenderer(canvas);
   }

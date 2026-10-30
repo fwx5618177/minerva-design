@@ -124,13 +124,26 @@ export { default as TooltipProvider } from "./TooltipProvider.vue";
 export { confirm, toast } from "./feedback-store";
 export { useConfirm, useToast } from "./feedback-context";
 export { default as DatePicker } from "./DatePicker.vue";
-// Charts: canvas renderer of the chart engine (outside the component contract matrix)
+// Charts: canvas renderer of the chart engine
 export { default as Chart } from "./Chart.vue";
 export { default as LineChart } from "./LineChart.vue";
+export { default as AreaChart } from "./AreaChart.vue";
 export { default as BarChart } from "./BarChart.vue";
+export { default as HorizontalBarChart } from "./HorizontalBarChart.vue";
 export { default as ScatterChart } from "./ScatterChart.vue";
 export { default as QuadrantChart } from "./QuadrantChart.vue";
+export { default as CandlestickChart } from "./CandlestickChart.vue";
+export { default as HeatmapChart } from "./HeatmapChart.vue";
+export { default as Sparkline } from "./Sparkline.vue";
+export { default as RangeAreaChart } from "./RangeAreaChart.vue";
+export { default as MixedChart } from "./MixedChart.vue";
+export { default as BubbleChart } from "./BubbleChart.vue";
+export { default as HistogramChart } from "./HistogramChart.vue";
+export { default as BoxPlotChart } from "./BoxPlotChart.vue";
+export { default as WaterfallChart } from "./WaterfallChart.vue";
+export { default as GanttChart } from "./GanttChart.vue";
 export type {
+  BoxplotGroup,
   ChartAnnotation,
   ChartAxisOptions,
   ChartHandle,
@@ -144,10 +157,48 @@ export type {
   ChartSeriesData,
   ChartTooltipOptions,
   ChartView,
+  GanttTask,
+  HeatmapCell,
   QuadrantAxisLabels,
   QuadrantCorner,
   QuadrantDropTarget,
   QuadrantPoint,
   QuadrantRegion,
   QuadrantRegions,
+  WaterfallStep,
 } from "./chart-types";
+// Shape charts: canvas renderer of the shape engine (any `type` with ShapeChart)
+export { default as PieChart } from "./PieChart.vue";
+export { default as DonutChart } from "./DonutChart.vue";
+export { default as RadarChart } from "./RadarChart.vue";
+export { default as GaugeChart } from "./GaugeChart.vue";
+export { default as FunnelChart } from "./FunnelChart.vue";
+export { default as TreemapChart } from "./TreemapChart.vue";
+export { default as SankeyChart } from "./SankeyChart.vue";
+export { default as SunburstChart } from "./SunburstChart.vue";
+export { default as RadialBarChart } from "./RadialBarChart.vue";
+export { default as CalendarHeatmap } from "./CalendarHeatmap.vue";
+export { default as BulletChart } from "./BulletChart.vue";
+export { default as ShapeChart } from "./ShapeChart.vue";
+export type {
+  BulletDatum,
+  CalendarDate,
+  CalendarDatum,
+  CanvasShapeChartInstance,
+  GaugeBand,
+  RadarIndicator,
+  RadarSeries,
+  RadialBarDatum,
+  SankeyLink,
+  SankeyNode,
+  ShapeChartHandle,
+  ShapeChartOptions,
+  ShapeChartType,
+  ShapeDatum,
+  ShapeDrillEvent,
+  ShapeHoverEvent,
+  ShapeLegendOptions,
+  ShapeToggleEvent,
+  ShapeTooltipOptions,
+  TreemapNode,
+} from "./shape-chart-types";

@@ -10,6 +10,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import manifest from "../../../minerva-design/custom-elements.json" with { type: "json" };
 import "../../src/index";
 import "../../src/elements/code-editor";
+import "../../src/elements/chart";
+import "../../src/elements/trading-chart";
+import "../../src/elements/order-book";
+import "../../src/elements/chart-3d";
 import { settle } from "../utils";
 
 const tags = (

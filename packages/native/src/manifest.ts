@@ -235,17 +235,43 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
 ];
 
 /**
- * The chart components (@minerva/charts engine drawn with views). Not
- * component contracts: the charts have no counterpart in the web contract
- * matrix (minerva-design/charts is a separate entry), so they are listed
- * apart and stay out of the generated contracts / support matrix.
+ * The chart components (@minerva/charts engine drawn with views: no SVG,
+ * canvas or GPU module). Read by tools/generate-contracts.mjs: their
+ * contract (the web chart element of the same name) is `beta` on native.
+ * The DOM / GPU widgets of minerva-design/charts (TradingChart, DepthChart,
+ * OrderBook, OrderBookHeatmap, TimeAndSales and the 3D charts) have no
+ * native counterpart: render the web component in a WebView.
  */
 export const NATIVE_CHARTS: readonly string[] = [
   "Chart",
   "LineChart",
+  "AreaChart",
   "BarChart",
+  "HorizontalBarChart",
   "ScatterChart",
   "QuadrantChart",
+  "CandlestickChart",
+  "HeatmapChart",
+  "Sparkline",
+  "RangeAreaChart",
+  "MixedChart",
+  "BubbleChart",
+  "HistogramChart",
+  "BoxPlotChart",
+  "WaterfallChart",
+  "GanttChart",
+  "PieChart",
+  "DonutChart",
+  "RadarChart",
+  "GaugeChart",
+  "FunnelChart",
+  "TreemapChart",
+  "SankeyChart",
+  "SunburstChart",
+  "RadialBarChart",
+  "CalendarHeatmap",
+  "BulletChart",
+  "ShapeChart",
 ];
 
 /** Native component of a contract (by contract name) */

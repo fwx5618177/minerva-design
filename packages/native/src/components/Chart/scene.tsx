@@ -14,6 +14,9 @@ import {
   type ViewStyle,
 } from "react-native";
 import {
+  annotationLine,
+  annotationRect,
+  annotationTextBox,
   scenePrimitives,
   toCss,
   type ChartPrimitive,
@@ -24,10 +27,6 @@ import { part } from "../../internal/parts";
 import { measureChartText } from "./measure";
 
 type Rgba = ChartScene["theme"]["text"];
-type Annotation = ChartScene["annotations"][number];
-type RectAnnotation = Extract<Annotation, { type: "rect" }>;
-type TextAnnotation = Extract<Annotation, { type: "text" }>;
-type Scales = ChartScene["layout"]["scales"];
 
 /** Upper bounds of the views drawn for the data of a chart */
 export const SHAPE_BUDGET = {
@@ -264,17 +263,29 @@ function thin(run: readonly number[], max: number): number[] {
   return out;
 }
 
-/** Vertical strips between the line and the baseline (or the stack below), one per column */
+/**
+ * Vertical strips between the line and the baseline (or the stack below),
+ * one per column; horizontal strips, one per row, for horizontal charts
+ */
 function areaStrips(
   key: string,
-  run: readonly number[],
+  points: readonly number[],
   baseline: number,
   color: string,
   opacity: number,
-  plot: ChartRect,
-  /** Y pixel of the bottom edge under every point (stacked areas) */
+  frame: ChartRect,
+  /** Y pixel (x pixel when `transposed`) of the bottom edge under every point */
   bottom?: readonly number[],
+  /** Horizontal charts: the area grows from the left edge */
+  transposed = false,
 ): ReactElement[] {
+  // horizontal charts are filled like vertical ones with x and y swapped
+  const run = transposed
+    ? points.map((_, i) => points[i % 2 ? i - 1 : i + 1])
+    : points;
+  const plot = transposed
+    ? { x: frame.y, y: frame.x, width: frame.height, height: frame.width }
+    : frame;
   const n = run.length / 2;
   if (n < 2) return [];
   // left to right (reversed axes list their points right to left)
@@ -300,18 +311,31 @@ function areaStrips(
     const b = bs(j) + (bs(j + 1) - bs(j)) * t;
     if (Number.isFinite(y) && Number.isFinite(b)) {
       const top = Math.min(y, b);
+      const h = Math.abs(b - y);
       out.push(
-        box(
-          `${key}-${c}`,
-          left - plot.x,
-          top - plot.y,
-          right - left,
-          Math.abs(b - y),
-          color,
-          {
-            opacity,
-          },
-        ),
+        transposed
+          ? box(
+              `${key}-${c}`,
+              top - plot.y,
+              left - plot.x,
+              h,
+              right - left,
+              color,
+              {
+                opacity,
+              },
+            )
+          : box(
+              `${key}-${c}`,
+              left - plot.x,
+              top - plot.y,
+              right - left,
+              h,
+              color,
+              {
+                opacity,
+              },
+            ),
       );
     }
     left = right;
@@ -372,6 +396,7 @@ function drawData(scene: ChartScene): ReactElement[] {
             p.opacity,
             plot,
             p.bottoms?.[r],
+            p.horizontal,
           ),
         ),
       );
@@ -431,7 +456,12 @@ function drawData(scene: ChartScene): ReactElement[] {
             Math.max(w, 0.5),
             h,
             p.colors?.[i] ?? p.color,
-            radius > 0.5 ? { borderRadius: radius } : undefined,
+            radius > 0.5 || p.opacity !== undefined
+              ? {
+                  ...(radius > 0.5 ? { borderRadius: radius } : null),
+                  ...(p.opacity !== undefined ? { opacity: p.opacity } : null),
+                }
+              : undefined,
           ),
         );
       }
@@ -462,52 +492,25 @@ function drawData(scene: ChartScene): ReactElement[] {
 
 // ------------------------------------------------------------ background
 
-const rectOf = (a: RectAnnotation, s: Scales): ChartRect => {
-  const { plot } = s;
-  const xa = a.x0 === undefined ? -Infinity : s.xToPx(a.x0);
-  const xb = a.x1 === undefined ? Infinity : s.xToPx(a.x1);
-  const ya = a.y0 === undefined ? Infinity : s.yToPx(a.y0);
-  const yb = a.y1 === undefined ? -Infinity : s.yToPx(a.y1);
-  const left = Math.max(plot.x, Math.min(xa, xb));
-  const right = Math.min(plot.x + plot.width, Math.max(xa, xb));
-  const top = Math.max(plot.y, Math.min(ya, yb));
-  const bottom = Math.min(plot.y + plot.height, Math.max(ya, yb));
-  return { x: left, y: top, width: right - left, height: bottom - top };
-};
-
-/** Box of a text annotation, kept inside the plot (engine `textBox`) */
-const textBox = (
-  a: TextAnnotation,
-  s: Scales,
-  width: number,
-  height: number,
-): ChartRect => {
-  const { plot } = s;
-  const px = a.x === undefined ? plot.x + plot.width / 2 : s.xToPx(a.x);
-  const py = a.y === undefined ? plot.y + plot.height / 2 : s.yToPx(a.y);
-  const gap = 6;
-  let x = px - width / 2;
-  let y = py - height / 2;
-  if (a.anchor === "top") y = py + gap;
-  else if (a.anchor === "bottom") y = py - gap - height;
-  else if (a.anchor === "left") x = px + gap;
-  else if (a.anchor === "right") x = px - gap - width;
-  x = Math.max(plot.x + gap, Math.min(x, plot.x + plot.width - gap - width));
-  y = Math.max(plot.y + 2, Math.min(y, plot.y + plot.height - 2 - height));
-  return { x, y, width, height };
-};
-
 const css = (c: Rgba, alpha?: number) => toCss(c, alpha);
 
 function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
   const { width, theme, model, layout, annotations } = scene;
-  const { plot, scales, xTicks, yTicks } = layout;
+  const { plot, scales, y2Ticks } = layout;
+  // horizontal charts: the value axis along the bottom, the x axis on the left
+  const horizontal = scales.horizontal;
+  const bottomAxis = horizontal ? model.y : model.x;
+  const leftAxis = horizontal ? model.x : model.y;
+  const bottomTicks = horizontal ? layout.yTicks : layout.xTicks;
+  const leftTicks = horizontal ? layout.xTicks : layout.yTicks;
+  const bottomPx = horizontal ? scales.yToPx : scales.xToPx;
+  const leftPx = horizontal ? scales.xToPx : scales.yToPx;
   const fs = theme.fontSize;
   const out: ReactElement[] = [];
 
   annotations.forEach((a, i) => {
     if (a.type !== "rect") return;
-    const r = rectOf(a, scales);
+    const r = annotationRect(a, scales);
     if (r.width <= 0 || r.height <= 0) return;
     out.push(
       box(`area-${i}`, r.x, r.y, r.width, r.height, css(a.color, a.opacity)),
@@ -515,16 +518,16 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
   });
 
   const grid = css(theme.grid);
-  if (model.y.grid) {
-    yTicks.values.forEach((v, i) => {
-      const py = scales.yToPx(v);
+  if (leftAxis.grid) {
+    leftTicks.values.forEach((v, i) => {
+      const py = leftPx(v);
       if (py < plot.y - 1 || py > plot.y + plot.height + 1) return;
       out.push(box(`ygrid-${i}`, plot.x, crisp(py), plot.width, 1, grid));
     });
   }
-  if (model.x.grid) {
-    xTicks.values.forEach((v, i) => {
-      const px = scales.xToPx(v);
+  if (bottomAxis.grid) {
+    bottomTicks.values.forEach((v, i) => {
+      const px = bottomPx(v);
       if (px < plot.x - 1 || px > plot.x + plot.width + 1) return;
       out.push(box(`xgrid-${i}`, crisp(px), plot.y, 1, plot.height, grid));
     });
@@ -540,13 +543,13 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
   };
   const bottom = plot.y + plot.height;
 
-  if (model.x.visible) {
+  if (bottomAxis.visible) {
     out.push(
       box("xaxis", plot.x, crisp(bottom), plot.width, 1, css(theme.axis)),
     );
     let lastRight = -Infinity;
-    xTicks.values
-      .map((v, i) => ({ px: scales.xToPx(v), text: xTicks.labels[i] ?? "" }))
+    bottomTicks.values
+      .map((v, i) => ({ px: bottomPx(v), text: bottomTicks.labels[i] ?? "" }))
       .sort((a, b) => a.px - b.px)
       .forEach(({ px, text }, i) => {
         if (!text || px < plot.x - 0.5 || px > plot.x + plot.width + 0.5)
@@ -568,11 +571,11 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
           ),
         );
       });
-    if (model.x.title)
+    if (bottomAxis.title)
       out.push(
         label(
           "xtitle",
-          model.x.title,
+          bottomAxis.title,
           plot.x + plot.width / 2,
           bottom + line + 10,
           "center",
@@ -583,29 +586,37 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
       );
   }
 
-  if (model.y.visible) {
-    yTicks.values.forEach((v, i) => {
-      const py = scales.yToPx(v);
-      const text = yTicks.labels[i];
-      if (!text || py < plot.y - 0.5 || py > plot.y + plot.height + 0.5) return;
-      out.push(
-        label(
-          `ytick-${i}`,
-          text,
-          plot.x - 8,
-          py,
-          "right",
-          "middle",
-          tick,
-          width,
-        ),
-      );
-    });
-    if (model.y.title)
+  if (leftAxis.visible) {
+    let lastBottom = -Infinity;
+    leftTicks.values
+      .map((v, i) => ({ py: leftPx(v), text: leftTicks.labels[i] ?? "" }))
+      .sort((a, b) => a.py - b.py)
+      .forEach(({ py, text }, i) => {
+        if (!text || py < plot.y - 0.5 || py > plot.y + plot.height + 0.5)
+          return;
+        // category rows of horizontal charts never overlap
+        if (horizontal) {
+          if (py - (fs + 2) / 2 < lastBottom) return;
+          lastBottom = py + (fs + 2) / 2;
+        }
+        out.push(
+          label(
+            `ytick-${i}`,
+            text,
+            plot.x - 8,
+            py,
+            "right",
+            "middle",
+            tick,
+            width,
+          ),
+        );
+      });
+    if (leftAxis.title)
       out.push(
         label(
           "ytitle",
-          model.y.title,
+          leftAxis.title,
           line / 2 + 4,
           plot.y + plot.height / 2,
           "center",
@@ -614,6 +625,44 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
           width,
           {
             transform: [{ rotate: "-90deg" }],
+          },
+        ),
+      );
+  }
+
+  const y2 = horizontal ? null : model.y2;
+  if (y2 && y2Ticks && y2.visible) {
+    const right = plot.x + plot.width;
+    y2Ticks.values.forEach((v, i) => {
+      const py = scales.yToPx(v);
+      const text = y2Ticks.labels[i];
+      if (!text || py < plot.y - 0.5 || py > plot.y + plot.height + 0.5) return;
+      out.push(
+        label(
+          `y2tick-${i}`,
+          text,
+          right + 8,
+          py,
+          "left",
+          "middle",
+          tick,
+          width,
+        ),
+      );
+    });
+    if (y2.title)
+      out.push(
+        label(
+          "y2title",
+          y2.title,
+          width - line / 2 - 4,
+          plot.y + plot.height / 2,
+          "center",
+          "middle",
+          title,
+          width,
+          {
+            transform: [{ rotate: "90deg" }],
           },
         ),
       );
@@ -677,8 +726,9 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
   annotations.forEach((a, i) => {
     if (a.type !== "line") return;
     const color = css(a.color);
-    if (a.axis === "y") {
-      const py = scales.yToPx(a.value);
+    const where = annotationLine(a, scales);
+    if (!where.vertical) {
+      const py = where.at;
       out.push(
         ...dashedLine(
           `line-${i}`,
@@ -705,7 +755,7 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
           ),
         );
     } else {
-      const px = scales.xToPx(a.value);
+      const px = where.at;
       out.push(
         ...dashedLine(
           `line-${i}`,
@@ -736,7 +786,7 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
 
   annotations.forEach((a, i) => {
     if (a.type !== "rect" || !a.label) return;
-    const r = rectOf(a, scales);
+    const r = annotationRect(a, scales);
     if (r.width <= 0 || r.height <= 0) return;
     const pad = 10;
     const pos = a.labelPosition;
@@ -773,7 +823,7 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
   annotations.forEach((a, i) => {
     if (a.type !== "text" || !a.text) return;
     const w = measureChartText(a.text, `${a.weight} ${fs}px sans-serif`);
-    const b = textBox(a, scales, w, labelHeight);
+    const b = annotationTextBox(a, scales, w, labelHeight);
     out.push(
       label(
         `text-${i}`,
@@ -844,6 +894,26 @@ export function drawHover(
   const { plot } = layout;
   const background = css(theme.background);
   const out: ReactElement[] = [];
+  if (hover && hover.crosshairY !== null) {
+    out.push(
+      <View
+        key="crosshair-y"
+        style={StyleSheet.absoluteFill}
+        {...part(C, "crosshair")}
+      >
+        {dashedLine(
+          "dash",
+          "y",
+          Math.round(hover.crosshairY),
+          plot.x,
+          plot.width,
+          1,
+          css(theme.textMuted, 0.55),
+          [3, 3],
+        )}
+      </View>,
+    );
+  }
   if (hover && hover.crosshairX !== null) {
     out.push(
       <View

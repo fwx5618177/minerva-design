@@ -6,6 +6,7 @@ import * as overlays from "./groups/overlays";
 import * as navigation from "./groups/navigation";
 import * as display from "./groups/display";
 import * as config from "./groups/config";
+import * as charts from "./groups/charts";
 
 /** Options of the `MinervaVue` plugin */
 export interface MinervaVueOptions {
@@ -33,6 +34,7 @@ export function allComponents(): Record<string, Component> {
     navigation,
     display,
     config,
+    charts,
   ] as Record<string, unknown>[];
   const result: Record<string, Component> = {};
   for (const module of modules) {

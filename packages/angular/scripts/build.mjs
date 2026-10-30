@@ -46,10 +46,15 @@ const json = (path, value) =>
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
 
 const reactDist = join(DIST_DIR, "react");
-for (const required of ["core/index.d.ts", "dom/index.d.ts", "react/index.js"])
+for (const required of [
+  "core/index.d.ts",
+  "dom/index.d.ts",
+  "react/index.js",
+  "charts/core.d.ts",
+])
   if (!existsSync(join(DIST_DIR, required)))
     throw new Error(
-      `dist/${required} is missing: build @minerva/core, @minerva/dom and @minerva/react first`,
+      `dist/${required} is missing: build @minerva/core, @minerva/dom, @minerva/charts and @minerva/react first`,
     );
 
 // 1. stage
@@ -115,6 +120,8 @@ json(join(STAGE, "tsconfig.lib.json"), {
         "core/styling-hooks/index.d.ts",
       ),
       "@minerva/dom": declarations("dom/index.d.ts"),
+      // the chart components (engine built by @minerva/charts, kept external)
+      "minerva-design/charts/core": declarations("charts/core.d.ts"),
     },
   },
   angularCompilerOptions: {
@@ -154,8 +161,15 @@ for (const file of walk(ANGULAR_DIST)) {
   let target = toPosix(relative(dirname(file), primary));
   if (!target.startsWith(".")) target = `./${target}`;
   code = code.replace(/(["'])@minerva\/angular\1/g, `$1${target}$1`);
-  if (/["']@minerva\//.test(code))
-    throw new Error(`${file}: unresolved @minerva/ import`);
+  // the chart engine: the one copy of dist/charts (shared with
+  // minerva-design/charts and the other renderers)
+  let charts = toPosix(
+    relative(dirname(file), join(DIST_DIR, "charts/core.js")),
+  );
+  if (!charts.startsWith(".")) charts = `./${charts}`;
+  code = code.replace(/(["'])minerva-design\/charts\/core\1/g, `$1${charts}$1`);
+  if (/["'](@minerva\/|minerva-design\/charts\/)/.test(code))
+    throw new Error(`${file}: unresolved workspace / chart engine import`);
   writeFileSync(file, code);
 }
 

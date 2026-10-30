@@ -11,6 +11,7 @@ export * from "./groups/overlays";
 export * from "./groups/navigation";
 export * from "./groups/display";
 export * from "./groups/config";
+export * from "./groups/charts";
 export { themes, light, dark, githubDark, palettes, cn } from "@minerva/core";
 export type {
   ColorScheme,

@@ -1,6 +1,7 @@
 // Draws a ShapeScene on any CanvasRenderingContext2D (browser, OffscreenCanvas,
 // mini-programs). Only uses the widely available path APIs: arc, arcTo,
-// quadraticCurveTo (no roundRect, no Path2D, no fill rules).
+// quadraticCurveTo, bezierCurveTo and linear gradients (no roundRect, no
+// Path2D, no fill rules).
 
 import { toCss } from "../color";
 import { font } from "../overlay";
@@ -8,9 +9,11 @@ import type { ChartTheme } from "../theme";
 import type { ShapeLegendBox, ShapeTooltipBox } from "./layout";
 import {
   TAU,
+  type LinkNode,
   type PolygonNode,
   type SectorNode,
   type ShapeHover,
+  type ShapeNode,
   type ShapeScene,
 } from "./scene";
 
@@ -223,6 +226,33 @@ const circle = (
   ctx.arc(x, y, Math.max(0, r), 0, TAU);
 };
 
+/** Whether a node is emphasized by the hovered item (its own or an `also` one) */
+export const nodeActive = (node: ShapeNode, hover: ShapeHover | null) =>
+  !!hover &&
+  node.hit !== undefined &&
+  (node.hit === hover.index || !!node.also?.includes(hover.index));
+
+/** Center line of a sankey link */
+const linkPath = (ctx: CanvasRenderingContext2D, node: LinkNode) => {
+  const xm = (node.x0 + node.x1) / 2;
+  ctx.beginPath();
+  ctx.moveTo(node.x0, node.y0);
+  ctx.bezierCurveTo(xm, node.y0, xm, node.y1, node.x1, node.y1);
+};
+
+const linkStyle = (ctx: CanvasRenderingContext2D, node: LinkNode) => {
+  if (
+    node.color0 === node.color1 ||
+    typeof ctx.createLinearGradient !== "function" ||
+    Math.abs(node.x1 - node.x0) < 1
+  )
+    return node.color0;
+  const gradient = ctx.createLinearGradient(node.x0, 0, node.x1, 0);
+  gradient.addColorStop(0, node.color0);
+  gradient.addColorStop(1, node.color1);
+  return gradient;
+};
+
 /**
  * Draws a scene in CSS pixels (the caller sets the pixel-ratio transform and
  * clears the canvas). `hover` emphasizes an item and dims the others.
@@ -245,19 +275,21 @@ export const drawShapeScene = (
 
   for (const node of scene.nodes) {
     const owned = node.hit !== undefined;
-    const active = !!hover && owned && node.hit === hover.index;
+    const active = nodeActive(node, hover);
+    // the hovered item itself (shadows, pop-out); `also` nodes are only emphasized
+    const focused = active && node.hit === hover?.index;
     let alpha = base * (node.alpha ?? 1);
     if (hover && owned && !active) alpha *= scene.dim;
     if (alpha <= 0.002) continue;
     ctx.globalAlpha = alpha;
-    const dx = active && node.shift ? node.shift[0] : 0;
-    const dy = active && node.shift ? node.shift[1] : 0;
+    const dx = focused && node.shift ? node.shift[0] : 0;
+    const dy = focused && node.shift ? node.shift[1] : 0;
 
     switch (node.kind) {
       case "sector": {
         sectorPath(ctx, node, dx, dy);
         ctx.fillStyle = node.fill;
-        if (active) {
+        if (focused) {
           ctx.save();
           ctx.shadowColor = SHADOW;
           ctx.shadowBlur = 14;
@@ -303,6 +335,19 @@ export const drawShapeScene = (
           ctx.fillStyle = BRIGHTEN;
           ctx.fill();
         }
+        if (focused && node.hoverStroke && node.width > 3 && node.height > 3) {
+          roundRectPath(
+            ctx,
+            node.x + dx + 0.75,
+            node.y + dy + 0.75,
+            node.width - 1.5,
+            node.height - 1.5,
+            Math.max(0, node.radius - 0.75),
+          );
+          ctx.strokeStyle = node.hoverStroke;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
         break;
       }
       case "arc": {
@@ -318,13 +363,13 @@ export const drawShapeScene = (
       }
       case "circle": {
         if (!node.fill && !node.stroke) break;
-        const focused =
+        const big =
           active &&
           (node.indicator === undefined || node.indicator === hover?.indicator);
-        const r = focused && node.hoverR ? node.hoverR : node.r;
+        const r = big && node.hoverR ? node.hoverR : node.r;
         const x = node.cx + dx;
         const y = node.cy + dy;
-        if (focused && node.halo) {
+        if (big && node.halo) {
           circle(ctx, x, y, r + 5);
           ctx.fillStyle = node.halo;
           ctx.fill();
@@ -360,14 +405,42 @@ export const drawShapeScene = (
         break;
       }
       case "text": {
-        const focused =
+        const strong =
           node.indicator !== undefined && hover?.indicator === node.indicator;
-        ctx.font = focused && node.hoverFont ? node.hoverFont : node.font;
-        ctx.fillStyle =
-          focused && node.hoverColor ? node.hoverColor : node.color;
+        ctx.font = strong && node.hoverFont ? node.hoverFont : node.font;
         ctx.textAlign = node.align;
         ctx.textBaseline = node.baseline;
-        ctx.fillText(node.text, node.x + dx, node.y + dy);
+        const rotated = !!node.rotate;
+        let x = node.x + dx;
+        let y = node.y + dy;
+        if (rotated) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(node.rotate ?? 0);
+          x = 0;
+          y = 0;
+        }
+        if (node.halo) {
+          ctx.strokeStyle = node.halo;
+          ctx.lineWidth = 3;
+          ctx.strokeText(node.text, x, y);
+        }
+        ctx.fillStyle =
+          strong && node.hoverColor ? node.hoverColor : node.color;
+        ctx.fillText(node.text, x, y);
+        if (rotated) ctx.restore();
+        break;
+      }
+      case "link": {
+        if (node.width <= 0) break;
+        if (active && node.activeAlpha !== undefined)
+          ctx.globalAlpha = base * node.activeAlpha;
+        linkPath(ctx, node);
+        ctx.lineCap = "butt";
+        ctx.lineWidth = Math.max(1, node.width);
+        ctx.strokeStyle = linkStyle(ctx, node);
+        ctx.stroke();
+        ctx.lineCap = "round";
         break;
       }
       case "guide": {

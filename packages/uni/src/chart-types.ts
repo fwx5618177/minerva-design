@@ -1,21 +1,32 @@
 import type { PropType } from "vue";
 import type {
+  BinOptions,
+  BoxplotGroup,
+  BoxplotStatsOptions,
   CanvasChartInstance,
   ChartAnnotation,
   ChartAxisOptions,
   ChartInteractionOptions,
   ChartLegendOptions,
+  ChartOrientation,
   ChartPadding,
   ChartSeries,
   ChartTooltipOptions,
   ChartView,
+  GanttTask,
+  HeatmapCell,
   QuadrantAxisLabels,
   QuadrantCorner,
   QuadrantPoint,
   QuadrantRegions,
+  WaterfallStep,
 } from "@minerva/charts/canvas";
 
 export type {
+  BoxplotGroup,
+  GanttTask,
+  HeatmapCell,
+  WaterfallStep,
   CanvasChartInstance,
   ChartAnnotation,
   ChartAxisOptions,
@@ -149,3 +160,190 @@ export const quadrantChartProps = {
   /** Lets the user drag the dots (default: when a `pointDrop` listener is set) */
   draggable: { type: Boolean, default: undefined },
 } as const;
+
+/** Shape of lines and area edges */
+const curveProp = String as PropType<"linear" | "smooth" | "step">;
+
+/** Props of AreaChart (besides the common, axis and series ones) */
+export const areaChartProps = {
+  /** Shape of the edges (default "smooth") */
+  curve: curveProp,
+  /** Stacks the areas on top of each other */
+  stacked: { type: Boolean, default: false },
+  /** Scales the stacks to 100% (implies `stacked`) */
+  percent: { type: Boolean, default: false },
+} as const;
+
+/** Props of HorizontalBarChart (besides the common, axis and series ones) */
+export const horizontalBarChartProps = {
+  /** Stacks the bars of every series */
+  stacked: { type: Boolean, default: false },
+  /** Scales the stacks to 100% (implies `stacked`) */
+  percent: { type: Boolean, default: false },
+  /** Writes the value at the end of every bar */
+  labels: { type: Boolean, default: false },
+} as const;
+
+/** Props of RangeAreaChart (besides the common, axis and series ones) */
+export const rangeAreaChartProps = {
+  /** Shape of the edges (default "smooth") */
+  curve: curveProp,
+} as const;
+
+/** Props of MixedChart (besides the common, axis and series ones) */
+export const mixedChartProps = {
+  /** Right value axis of the series with `yAxis: "right"` */
+  yAxis2: Object as PropType<ChartAxisOptions>,
+  /** `percent` scales every stack to 100% at each x (default "normal") */
+  stackMode: String as PropType<"normal" | "percent">,
+  /** `horizontal` puts the categories down the left side (default "vertical") */
+  orientation: String as PropType<ChartOrientation>,
+} as const;
+
+/** Props of BubbleChart (besides the common, axis and series ones) */
+export const bubbleChartProps = {
+  /** Diameter in pixels of the smallest bubbles (default 6) */
+  minSize: Number,
+  /** Diameter in pixels of the largest bubbles (default 48) */
+  maxSize: Number,
+  /** Value drawn at `maxSize` (default the largest value) */
+  maxValue: Number,
+} as const;
+
+/** Props of HeatmapChart (besides the common and axis ones) */
+export const heatmapChartProps = {
+  /** Cells: a column, a row and a value */
+  data: { type: Array as PropType<readonly HeatmapCell[]>, required: true },
+  /** Column names in order (collected from the data when omitted) */
+  xCategories: Array as PropType<readonly string[]>,
+  /** Row names from bottom to top (collected from the data when omitted) */
+  yCategories: Array as PropType<readonly string[]>,
+  /** Colors from the lowest to the highest value */
+  colorScale: Array as PropType<readonly string[]>,
+  /** Values at the ends of the color scale (default the data range) */
+  valueRange: Array as unknown as PropType<readonly [number, number]>,
+  /** Name of the value in the tooltip */
+  name: String,
+  /** Corner radius of the cells, in pixels */
+  radius: Number,
+  /** Formats the values in the tooltip */
+  format: Function as PropType<(value: number) => string>,
+} as const;
+
+/** Props of Sparkline (besides the tooltip / palette / ariaLabel ones) */
+export const sparklineProps = {
+  /** Values (or `[x, y]` pairs) */
+  data: {
+    type: [Array, Object] as PropType<ChartSeries["data"]>,
+    required: true,
+  },
+  /** How the values are drawn (default "line") */
+  type: String as PropType<"line" | "area" | "bar">,
+  /** Color (any CSS color) */
+  color: String,
+  /** Shape of the line (default "smooth") */
+  curve: curveProp,
+  /** Name shown in the tooltip */
+  name: String,
+  /** Draws a reference line at this value */
+  reference: Number,
+  /** Formats the value in the tooltip */
+  format: Function as PropType<(value: number) => string>,
+  /** Height of the sparkline; numbers are pixels */
+  height: { type: [Number, String] as PropType<number | string>, default: 48 },
+} as const;
+
+/** Props of HistogramChart (besides the common and axis ones) */
+export const histogramChartProps = {
+  /** Raw samples */
+  values: {
+    type: [Array, Object] as PropType<ArrayLike<number>>,
+    required: true,
+  },
+  /** Number of bins or the rule choosing it (default "auto") */
+  bins: [Number, String] as PropType<BinOptions["bins"]>,
+  /** Range binned (default the data range) */
+  domain: Array as unknown as PropType<readonly [number, number]>,
+  /** Rounds the bin edges (default `true`) */
+  nice: { type: Boolean, default: undefined },
+  /** Name of the counts (default "Count") */
+  name: String,
+  /** Bar color */
+  color: String,
+  /** Formats the edges of the bins in the tooltip */
+  formatBin: Function as PropType<(value: number) => string>,
+  /** More series drawn over the bins (e.g. a density `line`) */
+  series: Array as PropType<readonly ChartSeries[]>,
+} as const;
+
+/** Props of BoxPlotChart (besides the common and axis ones) */
+export const boxPlotChartProps = {
+  /** Series of box plots (computed statistics) */
+  series: Array as PropType<readonly ChartSeries[]>,
+  /** Raw samples, one box each (an alternative to `series`) */
+  groups: Array as PropType<readonly BoxplotGroup[]>,
+  /** Name of the series built from `groups` (default "Values") */
+  name: String,
+  /** Reach of the whiskers in interquartile ranges, or "minmax" (default 1.5) */
+  whisker: [Number, String] as PropType<BoxplotStatsOptions["whisker"]>,
+  /** `horizontal` lays the boxes out in rows (default "vertical") */
+  orientation: String as PropType<ChartOrientation>,
+} as const;
+
+/** Props of WaterfallChart (besides the common and axis ones) */
+export const waterfallChartProps = {
+  /** Changes, subtotals and totals, in order */
+  steps: { type: Array as PropType<readonly WaterfallStep[]>, required: true },
+  /** Name of the series (tooltip) */
+  name: String,
+  /** Color of the increases */
+  upColor: String,
+  /** Color of the decreases */
+  downColor: String,
+  /** Color of the totals and subtotals */
+  totalColor: String,
+  /** Value the first change starts from (default 0) */
+  start: Number,
+  /** Writes the change (or the total) at the end of every bar */
+  labels: { type: Boolean, default: true },
+  /** Formats the values (labels, tooltip) */
+  format: Function as PropType<(value: number) => string>,
+  /** Locale of the default name */
+  locale: String,
+  /** `horizontal` lays the steps out in rows (default "vertical") */
+  orientation: String as PropType<ChartOrientation>,
+} as const;
+
+/** Props of GanttChart (besides the common and axis ones) */
+export const ganttChartProps = {
+  /** Tasks and milestones, from top to bottom */
+  tasks: { type: Array as PropType<readonly GanttTask[]>, required: true },
+  /** Colors of the groups in order of appearance */
+  colors: Array as PropType<readonly string[]>,
+  /** Name of the tasks without a group */
+  taskName: String,
+  /** Name of the progress bars */
+  progressName: String,
+  /** Name of the milestones */
+  milestoneName: String,
+  /** Formats the progress shares (tooltip) */
+  formatProgress: Function as PropType<(share: number) => string>,
+  /** Locale of the default names and of the progress shares */
+  locale: String,
+  /** Draws a line at this date (`true`: now) */
+  today: {
+    type: [Boolean, Number, Date] as PropType<boolean | number | Date>,
+    default: false,
+  },
+  /** Label of the today line */
+  todayLabel: String,
+} as const;
+
+/** Frame props of Sparkline (no axes, legend, zoom or annotations) */
+export const sparklineFrameProps = {
+  width: chartCommonProps.width,
+  tooltip: chartCommonProps.tooltip,
+  palette: chartCommonProps.palette,
+  ariaLabel: chartCommonProps.ariaLabel,
+  disableScroll: chartCommonProps.disableScroll,
+};

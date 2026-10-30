@@ -6,7 +6,9 @@ import type {
   ChartController,
   ChartHoverEvent,
   ChartInteractionOptions,
+  ChartLabels,
   ChartLegendOptions,
+  ChartOrientation,
   ChartPadding,
   ChartPlotClickEvent,
   ChartRect,
@@ -28,8 +30,10 @@ export type {
   ChartHoverItem,
   ChartInteractionOptions,
   ChartLabelPosition,
+  ChartLabels,
   ChartLegendOptions,
   ChartLineAnnotation,
+  ChartOrientation,
   ChartPadding,
   ChartPlotClickEvent,
   ChartPointDatum,
@@ -39,6 +43,8 @@ export type {
   ChartSeriesData,
   ChartSeriesType,
   ChartTextAnnotation,
+  ChartTimeZone,
+  ChartTooltipLabels,
   ChartTooltipOptions,
   ChartView,
   ChartXValue,
@@ -99,6 +105,14 @@ export interface ChartCommonProps {
   palette?: readonly string[];
   /** Accessible name of the chart */
   ariaLabel?: string;
+  /**
+   * Locale of the texts and numbers the chart writes (tooltip rows, compact
+   * units `k` / `万`, separators, month and weekday names of time axes)
+   * @default the device language when the runtime exposes it, else English
+   */
+  locale?: string;
+  /** Overrides of the built-in texts of the `locale` */
+  labels?: Partial<ChartLabels>;
   /** Called when the highlighted points change */
   onHover?: (event: ChartHoverEvent | null) => void;
   /** Called when a point (or bar) is tapped */
@@ -117,10 +131,17 @@ export interface ChartCommonProps {
   ref?: Ref<ChartHandle>;
 }
 
-/** Props of Chart: any mix of line, area, bar and scatter series */
+/** Props of Chart: any mix of line, area, bar, scatter and box plot series */
 export interface ChartProps extends ChartCommonProps {
   /** Data series; each sets its own `type` */
   series: readonly ChartSeries[];
+  /** Right value axis of the series with `yAxis: "right"` (dual axis charts) */
+  yAxis2?: ChartAxisOptions;
+  /**
+   * `horizontal` puts the x axis (categories) down the left side
+   * @default "vertical"
+   */
+  orientation?: ChartOrientation;
 }
 
 /** Props of LineChart */
@@ -143,6 +164,15 @@ export interface BarChartProps extends ChartCommonProps {
    * @default false
    */
   stacked?: boolean;
+}
+
+/** Props of HorizontalBarChart */
+export interface HorizontalBarChartProps extends Omit<BarChartProps, "labels"> {
+  /**
+   * Writes the value at the end of every bar
+   * @default false
+   */
+  labels?: boolean;
 }
 
 /** Props of ScatterChart */

@@ -4,14 +4,21 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
   type ReactNode,
   type Ref,
 } from "react";
 import { createPortal, flushSync } from "react-dom";
 import type { ChartPadding } from "../engine/types";
+import { calendarStrips } from "../engine/shapes/calendar";
 import { createShapeChart } from "../engine/shapes/chart";
 import type {
+  BulletChartOptions,
+  BulletDatum,
+  CalendarDate,
+  CalendarDatum,
+  CalendarHeatmapOptions,
   FunnelChartOptions,
   GaugeBand,
   GaugeChartOptions,
@@ -19,14 +26,22 @@ import type {
   RadarChartOptions,
   RadarIndicator,
   RadarSeries,
+  RadialBarChartOptions,
+  RadialBarDatum,
+  SankeyChartOptions,
+  SankeyLink,
+  SankeyNode,
   ShapeChartCommonOptions,
   ShapeChartInstance,
+  ShapeChartLabels,
   ShapeChartOptions,
   ShapeDatum,
+  ShapeDrillEvent,
   ShapeHoverEvent,
   ShapeLegendOptions,
   ShapeToggleEvent,
   ShapeTooltipOptions,
+  SunburstChartOptions,
   TreemapChartOptions,
   TreemapNode,
 } from "../engine/shapes/types";
@@ -37,11 +52,15 @@ export interface ShapeChartHandle {
   getInstance(): ShapeChartInstance | null;
 }
 
-/** Props shared by PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart and TreemapChart */
+/**
+ * Props shared by PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart,
+ * TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap
+ * and BulletChart
+ */
 export interface ShapeChartCommonProps {
   /**
    * Height of the chart (the legend included); numbers are pixels
-   * @default 320 (GaugeChart: 240)
+   * @default 320 (GaugeChart: 240, RadialBarChart: 300, CalendarHeatmap and BulletChart: from the data)
    */
   height?: number | string;
   /**
@@ -52,8 +71,8 @@ export interface ShapeChartCommonProps {
   /** Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors) */
   palette?: readonly string[];
   /**
-   * Legend; clicking an item hides / shows its slice, stage or series
-   * @default shown for pie, donut, funnel and multi-series radar charts
+   * Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level
+   * @default shown for pie, donut, funnel, multi-series radar charts, calendar heatmaps and radial bar charts without labels
    */
   legend?: boolean | ShapeLegendOptions;
   /**
@@ -63,16 +82,26 @@ export interface ShapeChartCommonProps {
   tooltip?: boolean | ShapeTooltipOptions;
   /**
    * Formats the values of the labels and the tooltip
-   * @default compact numbers (1.2k, 3.4M)
+   * @default compact numbers of the `locale` (1.2k, 3.4M; 1.2万 in Chinese and Japanese)
    */
   format?: (value: number) => string;
   /**
    * Formats the shares (labels, conversion rates, tooltip); `share` is 0-1
-   * @default one decimal, e.g. "40.0%"
+   * @default a percent of the `locale` with one decimal, e.g. "40.0%", "40,0 %"
    */
   percentFormat?: (share: number) => string;
   /**
-   * Hidden slices / stages / radar series / top-level treemap nodes, by
+   * BCP 47 locale of the texts and numbers the chart writes (tooltip rows,
+   * accessible names, number and percent formats, calendar dates); built-in
+   * texts in English, Chinese, Japanese and French (English otherwise)
+   * @default the page language (`<html lang>`, followed when it changes), else the browser language
+   */
+  locale?: string;
+  /** Replaces built-in texts of the `locale` (tooltip rows, accessible names, "No data") */
+  texts?: Partial<ShapeChartLabels>;
+  /**
+   * Hidden slices / stages / radar series / top-level treemap or sunburst
+   * nodes / sankey nodes / radial bars / bullet rows / calendar levels, by
    * index. Makes the visibility controlled: legend clicks then only call
    * `onToggle`, whose `hiddenIndexes` should be stored and passed back.
    * Leave undefined to let the legend hide / show entries by itself.
@@ -95,7 +124,7 @@ export interface ShapeChartCommonProps {
   padding?: ChartPadding;
   /**
    * Accessible name of the chart
-   * @default the chart type, e.g. "Donut chart"
+   * @default the chart type in the `locale`, e.g. "Donut chart"
    */
   ariaLabel?: string;
   /** Called when the hovered (or keyboard-focused) mark changes */
@@ -276,10 +305,268 @@ export interface TreemapChartProps extends ShapeChartCommonProps {
   headers?: boolean;
 }
 
+/** Props of SankeyChart */
+export interface SankeyChartProps extends ShapeChartCommonProps {
+  /** Nodes, in their initial order; nodes only named by a link are appended */
+  nodes?: readonly SankeyNode[];
+  /** Flows between the nodes (by name or index); links closing a cycle are ignored */
+  links: readonly SankeyLink[];
+  /**
+   * Width of the node bars, in pixels
+   * @default 12
+   */
+  nodeWidth?: number;
+  /**
+   * Vertical gap between the nodes of a column, in pixels (reduced when space is short)
+   * @default 12
+   */
+  nodePadding?: number;
+  /**
+   * Column of the nodes without a `column`: `justify` puts the sinks in the
+   * last column, `left` / `right` align on the sources / sinks, `center`
+   * puts the sources next to their first target
+   * @default "justify"
+   */
+  align?: "justify" | "left" | "right" | "center";
+  /**
+   * Relaxation passes that straighten the flows and reduce crossings
+   * @default 32
+   */
+  iterations?: number;
+  /**
+   * Color of the links without `color`: a gradient from the source to the
+   * target color, one of the two, or a neutral gray
+   * @default "gradient"
+   */
+  linkColor?: "gradient" | "source" | "target" | "neutral";
+  /**
+   * Opacity of the links, 0-1 (hovered flows are more opaque)
+   * @default 0.4
+   */
+  linkOpacity?: number;
+  /**
+   * Node labels (name and value); overlapping labels are skipped
+   * @default true
+   */
+  labels?: boolean;
+  /**
+   * Shows the value after the name in the labels
+   * @default true
+   */
+  labelValues?: boolean;
+}
+
+/** Props of SunburstChart */
+export interface SunburstChartProps extends ShapeChartCommonProps {
+  /** Nodes: leaves carry a value, parents sum their children */
+  data: readonly TreemapNode[];
+  /**
+   * Radius of the center circle as a fraction of the outer radius
+   * @default 0.26
+   */
+  innerRadius?: number;
+  /**
+   * Rings shown at once below the focused node (fewer when they would be thinner than 18 px)
+   * @default every level
+   */
+  levels?: number;
+  /**
+   * Angle of the first node, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Gap between the sectors, in pixels
+   * @default 1
+   */
+  padAngle?: number;
+  /**
+   * Corner radius of the sectors, in pixels
+   * @default 2
+   */
+  cornerRadius?: number;
+  /**
+   * Sector labels: `auto` writes each name along the arc or along the
+   * radius, whichever fits best; labels that do not fit are shortened or skipped
+   * @default "auto"
+   */
+  labels?: "auto" | "tangential" | "radial" | "none";
+  /**
+   * Clicking (or Enter on) a parent zooms into it; clicking the center (or Backspace) goes back up
+   * @default true
+   */
+  drill?: boolean;
+  /**
+   * Names from the root to the focused node (`[]` = the root). Makes the
+   * drill-down controlled: clicks then only call `onDrill`, whose `path`
+   * should be stored and passed back.
+   */
+  drillPath?: readonly string[];
+  /** Called when a parent or the center is clicked (or the instance's `drill()` is called) */
+  onDrill?: (event: ShapeDrillEvent) => void;
+}
+
+/** Props of RadialBarChart */
+export interface RadialBarChartProps extends ShapeChartCommonProps {
+  /** Bars, from the outermost ring inward: a name, a value, an optional `max` and color */
+  data: readonly RadialBarDatum[];
+  /**
+   * Value of a full bar for the data without `max`
+   * @default the largest value
+   */
+  max?: number;
+  /**
+   * Radius of the innermost ring's inner edge, as a fraction of the outer radius
+   * @default 0.3
+   */
+  innerRadius?: number;
+  /**
+   * Angle where the bars start, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Angle of a full bar, degrees (360 = full rings)
+   * @default 270
+   */
+  sweep?: number;
+  /**
+   * Gap between the rings, as a fraction of a ring's slot (0-0.9)
+   * @default 0.28
+   */
+  gap?: number;
+  /**
+   * Background tracks behind the bars
+   * @default true
+   */
+  track?: boolean;
+  /**
+   * Rounded bar ends
+   * @default true
+   */
+  rounded?: boolean;
+  /**
+   * Labels before the start of the bars (in the empty part of the circle)
+   * @default true when `sweep` leaves room for them (up to 300°)
+   */
+  labels?: boolean;
+  /**
+   * What a label shows: name, value, percent of the bar's max (combinable)
+   * @default ["name", "value"]
+   */
+  labelContent?: readonly ("name" | "value" | "percent")[];
+  /** Big text in the center (e.g. the overall completion) */
+  centerValue?: string;
+  /** Small text under `centerValue` */
+  centerLabel?: string;
+}
+
+/** Props of CalendarHeatmap */
+export interface CalendarHeatmapProps extends ShapeChartCommonProps {
+  /** Daily values (several entries of the same day add up) */
+  data: readonly CalendarDatum[];
+  /**
+   * Days shown: a year (`2026`) or an inclusive `[start, end]` range
+   * @default the 53 weeks ending on the last day of the data
+   */
+  range?: number | readonly [CalendarDate, CalendarDate];
+  /**
+   * `weeks`: a column per week and a row per weekday (one strip per year
+   * when the range spans several years); `months`: a small calendar per month
+   * @default "weeks"
+   */
+  layout?: "weeks" | "months";
+  /**
+   * First day of the week, 0 = Sunday … 6 = Saturday
+   * @default from `locale`
+   */
+  weekStart?: number;
+  /**
+   * BCP 47 locale of the month and weekday names, of the tooltip dates, of the default `weekStart` and of the built-in texts
+   * @default the page language (`<html lang>`), else the browser language
+   */
+  locale?: string;
+  /**
+   * Color of the highest level (lower levels are lighter)
+   * @default the first palette color
+   */
+  color?: string;
+  /** Colors of the levels, lowest first (replaces `color` and sets the number of levels) */
+  colors?: readonly string[];
+  /**
+   * Number of color levels above the empty days
+   * @default 4
+   */
+  levels?: number;
+  /**
+   * Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2,
+   * 3-5, 6-10, more); an even split of the largest value by default
+   */
+  thresholds?: readonly number[];
+  /**
+   * Gap between the cells, in pixels
+   * @default 3
+   */
+  gap?: number;
+  /**
+   * Corner radius of the cells, in pixels
+   * @default 2
+   */
+  radius?: number;
+  /**
+   * Largest cell size, in pixels (cells shrink to fit the width)
+   * @default 16 (weeks), 28 (months)
+   */
+  maxCellSize?: number;
+  /**
+   * Month names (and years) around the cells
+   * @default true
+   */
+  monthLabels?: boolean;
+  /**
+   * Weekday names beside (weeks) or above (months) the cells
+   * @default true
+   */
+  weekdayLabels?: boolean;
+}
+
+/** Props of BulletChart */
+export interface BulletChartProps extends ShapeChartCommonProps {
+  /** Rows (columns when vertical): name, value, target, ranges and scale */
+  data: readonly BulletDatum[];
+  /**
+   * Horizontal rows or vertical columns
+   * @default "horizontal"
+   */
+  orientation?: "horizontal" | "vertical";
+  /** Qualitative ranges of the rows without `ranges`: upper bounds, ascending */
+  ranges?: readonly number[];
+  /** Names of the qualitative ranges, lowest first (tooltip) */
+  rangeLabels?: readonly string[];
+  /** Colors of the qualitative ranges, lowest first; shades of gray by default */
+  rangeColors?: readonly string[];
+  /**
+   * Thickness of the value bar as a fraction of the ranges' thickness
+   * @default 0.4
+   */
+  barSize?: number;
+  /**
+   * Color of the target markers
+   * @default the text color
+   */
+  targetColor?: string;
+  /**
+   * Tick labels of the scales (when there is room)
+   * @default true
+   */
+  ticks?: boolean;
+}
+
 interface Handlers {
   onHover?: (event: ShapeHoverEvent | null) => void;
   onClick?: (event: ShapeHoverEvent) => void;
   onToggle?: (event: ShapeToggleEvent) => void;
+  onDrill?: (event: ShapeDrillEvent) => void;
 }
 
 interface ShapeChartBaseProps extends Handlers {
@@ -299,6 +586,22 @@ const size = (value: number | string | undefined, fallback: string) =>
       ? `${value}px`
       : value;
 
+const subscribePageLanguage = (onChange: () => void) => {
+  if (typeof document === "undefined" || typeof MutationObserver !== "function")
+    return () => {};
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["lang"],
+  });
+  return () => observer.disconnect();
+};
+
+const pageLanguage = () =>
+  typeof document === "undefined" ? "" : document.documentElement.lang;
+
+const noPageLanguage = () => "";
+
 /** Engine options shared by every type, stable while the props are equal */
 const useCommonOptions = ({
   palette,
@@ -306,11 +609,20 @@ const useCommonOptions = ({
   tooltip,
   format,
   percentFormat,
+  locale,
+  texts,
   hidden,
   animation,
   padding,
   ariaLabel,
 }: ShapeChartCommonProps): ShapeChartCommonOptions => {
+  // without `locale`, follow the page language (`<html lang>`) as it changes
+  const language = useSyncExternalStore(
+    subscribePageLanguage,
+    pageLanguage,
+    noPageLanguage,
+  );
+  const resolvedLocale = locale ?? (language || undefined);
   // a new array with the same indexes keeps the options (and the animation)
   const hiddenKey = hidden ? hidden.join(",") : null;
   const stableHidden = useMemo(
@@ -329,6 +641,8 @@ const useCommonOptions = ({
       tooltip,
       format,
       percentFormat,
+      locale: resolvedLocale,
+      texts,
       hidden: stableHidden,
       animation,
       padding,
@@ -340,6 +654,8 @@ const useCommonOptions = ({
       tooltip,
       format,
       percentFormat,
+      resolvedLocale,
+      texts,
       stableHidden,
       animation,
       padding,
@@ -403,6 +719,7 @@ function ShapeChartBase({
       chart.on("hover", (e) => handlersRef.current.onHover?.(e)),
       chart.on("click", (e) => handlersRef.current.onClick?.(e)),
       chart.on("toggle", (e) => handlersRef.current.onToggle?.(e)),
+      chart.on("drill", (e) => handlersRef.current.onDrill?.(e)),
     ];
     return () => {
       offs.forEach((off) => off());
@@ -605,14 +922,291 @@ export function TreemapChart(props: TreemapChartProps) {
   return <ShapeHost props={props} options={options} defaultHeight={320} />;
 }
 
+/**
+ * Sankey diagram: flows between nodes in columns, link thickness
+ * proportional to the flow; hovering a node or a link highlights its flows
+ */
+export function SankeyChart(props: SankeyChartProps) {
+  const {
+    nodes,
+    links,
+    nodeWidth,
+    nodePadding,
+    align,
+    iterations,
+    linkColor,
+    linkOpacity,
+    labels,
+    labelValues,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): SankeyChartOptions => ({
+      ...common,
+      type: "sankey",
+      nodes,
+      links,
+      nodeWidth,
+      nodePadding,
+      align,
+      iterations,
+      linkColor,
+      linkOpacity,
+      labels,
+      labelValues,
+    }),
+    [
+      common,
+      nodes,
+      links,
+      nodeWidth,
+      nodePadding,
+      align,
+      iterations,
+      linkColor,
+      linkOpacity,
+      labels,
+      labelValues,
+    ],
+  );
+  return <ShapeHost props={props} options={options} defaultHeight={360} />;
+}
+
+/**
+ * Sunburst chart: a hierarchy as concentric rings; clicking a parent zooms
+ * into it, clicking the center goes back up
+ */
+export function SunburstChart(props: SunburstChartProps) {
+  const {
+    data,
+    innerRadius,
+    levels,
+    startAngle,
+    padAngle,
+    cornerRadius,
+    labels,
+    drill,
+    drillPath,
+    onDrill,
+  } = props;
+  const common = useCommonOptions(props);
+  // a new array with the same names keeps the options (and the animation)
+  const drillKey = drillPath ? JSON.stringify(drillPath) : null;
+  const stablePath = useMemo(
+    () => (drillKey === null ? undefined : (JSON.parse(drillKey) as string[])),
+    [drillKey],
+  );
+  const options = useMemo(
+    (): SunburstChartOptions => ({
+      ...common,
+      type: "sunburst",
+      data,
+      innerRadius,
+      levels,
+      startAngle,
+      padAngle,
+      cornerRadius,
+      labels,
+      drill,
+      drillPath: stablePath,
+    }),
+    [
+      common,
+      data,
+      innerRadius,
+      levels,
+      startAngle,
+      padAngle,
+      cornerRadius,
+      labels,
+      drill,
+      stablePath,
+    ],
+  );
+  return (
+    <ShapeHost
+      props={props}
+      options={options}
+      defaultHeight={360}
+      onDrill={onDrill}
+    />
+  );
+}
+
+/** Radial bar chart: concentric progress rings (activity rings, KPI completion) */
+export function RadialBarChart(props: RadialBarChartProps) {
+  const {
+    data,
+    max,
+    innerRadius,
+    startAngle,
+    sweep,
+    gap,
+    track,
+    rounded,
+    labels,
+    labelContent,
+    centerValue,
+    centerLabel,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): RadialBarChartOptions => ({
+      ...common,
+      type: "radialBar",
+      data,
+      max,
+      innerRadius,
+      startAngle,
+      sweep,
+      gap,
+      track,
+      rounded,
+      labels,
+      labelContent,
+      centerValue,
+      centerLabel,
+    }),
+    [
+      common,
+      data,
+      max,
+      innerRadius,
+      startAngle,
+      sweep,
+      gap,
+      track,
+      rounded,
+      labels,
+      labelContent,
+      centerValue,
+      centerLabel,
+    ],
+  );
+  return <ShapeHost props={props} options={options} defaultHeight={300} />;
+}
+
+/** Calendar heatmap: daily values on a calendar, contributions-style */
+export function CalendarHeatmap(props: CalendarHeatmapProps) {
+  const {
+    data,
+    range,
+    layout,
+    weekStart,
+    color,
+    colors,
+    levels,
+    thresholds,
+    gap,
+    radius,
+    maxCellSize,
+    monthLabels,
+    weekdayLabels,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): CalendarHeatmapOptions => ({
+      ...common,
+      type: "calendarHeatmap",
+      data,
+      range,
+      layout,
+      weekStart,
+      color,
+      colors,
+      levels,
+      thresholds,
+      gap,
+      radius,
+      maxCellSize,
+      monthLabels,
+      weekdayLabels,
+    }),
+    [
+      common,
+      data,
+      range,
+      layout,
+      weekStart,
+      color,
+      colors,
+      levels,
+      thresholds,
+      gap,
+      radius,
+      maxCellSize,
+      monthLabels,
+      weekdayLabels,
+    ],
+  );
+  const defaultHeight = useMemo(() => {
+    const legend = options.legend === false ? 0 : 34;
+    if (layout === "months") return 560;
+    return calendarStrips(options) * 120 + legend + 16;
+  }, [options, layout]);
+  return (
+    <ShapeHost props={props} options={options} defaultHeight={defaultHeight} />
+  );
+}
+
+/** Bullet chart: KPI bars against qualitative ranges and a target marker */
+export function BulletChart(props: BulletChartProps) {
+  const {
+    data,
+    orientation,
+    ranges,
+    rangeLabels,
+    rangeColors,
+    barSize,
+    targetColor,
+    ticks,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): BulletChartOptions => ({
+      ...common,
+      type: "bullet",
+      data,
+      orientation,
+      ranges,
+      rangeLabels,
+      rangeColors,
+      barSize,
+      targetColor,
+      ticks,
+    }),
+    [
+      common,
+      data,
+      orientation,
+      ranges,
+      rangeLabels,
+      rangeColors,
+      barSize,
+      targetColor,
+      ticks,
+    ],
+  );
+  const legend = options.legend ? 34 : 0;
+  const defaultHeight =
+    orientation === "vertical"
+      ? 320
+      : Math.max(96, data.length * 64 + 16) + legend;
+  return (
+    <ShapeHost props={props} options={options} defaultHeight={defaultHeight} />
+  );
+}
+
 function ShapeHost({
   props,
   options,
   defaultHeight,
+  onDrill,
 }: {
   props: ShapeChartCommonProps;
   options: ShapeChartOptions;
   defaultHeight: number;
+  onDrill?: (event: ShapeDrillEvent) => void;
 }) {
   return (
     <ShapeChartBase
@@ -625,6 +1219,7 @@ function ShapeHost({
       onHover={props.onHover}
       onClick={props.onClick}
       onToggle={props.onToggle}
+      onDrill={onDrill}
       renderTooltip={props.renderTooltip}
     />
   );

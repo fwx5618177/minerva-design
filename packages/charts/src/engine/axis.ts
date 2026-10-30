@@ -40,12 +40,14 @@ export const axisTicks = (
     return { values, labels: values.map(name), formatValue: name };
   }
   if (axis.type === "time") {
-    const ticks = timeTicks(min, max, count);
+    const { locale, timeZone = "local" } = axis;
+    const ticks = timeTicks(min, max, count, locale, timeZone);
     const unit: TimeUnit =
       ticks.unit === "day" || ticks.unit === "month" || ticks.unit === "year"
         ? "day"
         : ticks.unit;
-    const full = axis.format ?? ((v: number) => formatTime(v, unit));
+    const full =
+      axis.format ?? ((v: number) => formatTime(v, unit, locale, timeZone));
     return {
       values: ticks.values,
       labels: ticks.values.map(axis.format ?? ticks.format),
@@ -55,10 +57,12 @@ export const axisTicks = (
   const values = linearTicks(min, max, count);
   const step = tickStep(min, max, count);
   const tick =
-    axis.format ?? tickFormatter(step, Math.max(Math.abs(min), Math.abs(max)));
+    axis.format ??
+    tickFormatter(step, Math.max(Math.abs(min), Math.abs(max)), axis.locale);
   return {
     values,
     labels: values.map(tick),
-    formatValue: axis.format ?? formatValue,
+    formatValue:
+      axis.format ?? ((value: number) => formatValue(value, axis.locale)),
   };
 };

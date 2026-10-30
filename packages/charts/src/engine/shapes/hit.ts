@@ -1,7 +1,13 @@
 // Hit testing of a ShapeScene and keyboard navigation between its items.
 
 import { padAngleAt, sectorPad } from "./draw";
-import { TAU, type ShapeHover, type ShapeNode, type ShapeScene } from "./scene";
+import {
+  TAU,
+  type LinkNode,
+  type ShapeHover,
+  type ShapeNode,
+  type ShapeScene,
+} from "./scene";
 
 /** Distance (px) under which a radar vertex is picked */
 const VERTEX_RADIUS = 12;
@@ -76,26 +82,74 @@ const nodeContains = (node: ShapeNode, x: number, y: number): boolean => {
         pointInPolygon(x, y, node.points) &&
         !(node.hole && pointInPolygon(x, y, node.hole))
       );
-    case "rect":
+    case "rect": {
+      const pad = node.hitPad ?? 0;
       return (
-        x >= node.x &&
-        x <= node.x + node.width &&
-        y >= node.y &&
-        y <= node.y + node.height
+        x >= node.x - pad &&
+        x <= node.x + node.width + pad &&
+        y >= node.y - pad &&
+        y <= node.y + node.height + pad
       );
+    }
     case "circle":
       return Math.hypot(x - node.cx, y - node.cy) <= node.r;
     case "arc": {
       const d = Math.hypot(x - node.cx, y - node.cy);
-      if (Math.abs(d - node.r) > node.width / 2 + 4) return false;
+      if (Math.abs(d - node.r) > node.width / 2 + (node.hitPad ?? 4))
+        return false;
       if (node.a1 - node.a0 >= TAU - 1e-6) return true;
       const a = wrapFrom(Math.atan2(y - node.cy, x - node.cx), node.a0);
       return a <= node.a1;
     }
+    case "link":
+      return pointNearLink(x, y, node);
     default:
       return false;
   }
 };
+
+/** Segments of the polyline approximating a link's center curve */
+const LINK_SEGMENTS = 24;
+
+/** Whether a point is within a sankey link (its thickness, plus 2 px) */
+export const pointNearLink = (x: number, y: number, node: LinkNode) => {
+  const half = Math.max(1, node.width) / 2 + 2;
+  const left = Math.min(node.x0, node.x1);
+  const right = Math.max(node.x0, node.x1);
+  if (x < left - half || x > right + half) return false;
+  if (
+    y < Math.min(node.y0, node.y1) - half ||
+    y > Math.max(node.y0, node.y1) + half
+  )
+    return false;
+  const xm = (node.x0 + node.x1) / 2;
+  // cubic Bézier (x0, y0) (xm, y0) (xm, y1) (x1, y1)
+  const at = (t: number): [number, number] => {
+    const u = 1 - t;
+    const b0 = u * u * u;
+    const b1 = 3 * u * u * t;
+    const b2 = 3 * u * t * t;
+    const b3 = t * t * t;
+    return [
+      b0 * node.x0 + (b1 + b2) * xm + b3 * node.x1,
+      (b0 + b1) * node.y0 + (b2 + b3) * node.y1,
+    ];
+  };
+  let [px, py] = at(0);
+  for (let k = 1; k <= LINK_SEGMENTS; k++) {
+    const [qx, qy] = at(k / LINK_SEGMENTS);
+    const dx = qx - px;
+    const dy = qy - py;
+    const len2 = dx * dx + dy * dy;
+    const s = len2 > 0 ? clampUnit(((x - px) * dx + (y - py) * dy) / len2) : 0;
+    if (Math.hypot(x - (px + s * dx), y - (py + s * dy)) <= half) return true;
+    px = qx;
+    py = qy;
+  }
+  return false;
+};
+
+const clampUnit = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 /** Radar: the vertex under the pointer, else the smallest polygon containing it */
 const hitRadar = (
@@ -208,6 +262,14 @@ export const stepHover = (
       : { index: items[first].index };
   }
   const forward = direction === "next" || direction === "down";
+  if (scene.steps) {
+    const step =
+      direction === "next" || direction === "prev"
+        ? scene.steps.next
+        : scene.steps.down;
+    const target = items[pos + (forward ? step : -step)];
+    return { index: (target ?? items[pos]).index };
+  }
   if (radar && (direction === "next" || direction === "prev")) {
     const count = items[pos].indicators?.length ?? 1;
     const k = current?.indicator ?? 0;

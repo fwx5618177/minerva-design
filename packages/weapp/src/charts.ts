@@ -2,13 +2,25 @@
 // minerva-design/charts drawn on a `<canvas type="2d">`. Only the canvas entry
 // is imported so the WebGPU / WebGL2 / DOM code never reaches the bundle.
 import {
+  areaSeries,
   barSeries,
+  boxplotData,
+  boxplotSeries,
+  bubbleSeries,
+  candlestickSeries,
   createCanvasChart,
+  ganttSeries,
+  heatmapChartOptions,
+  histogramSeries,
   lineSeries,
   quadrantChartOptions,
   quadrantOf,
+  rangeAreaSeries,
   scatterSeries,
+  sparklineOptions,
+  waterfallSeries,
   type CanvasChartInstance,
+  type ChartAnnotation,
   type ChartCanvas,
   type ChartOptions,
   type ChartThemeInput,
@@ -36,7 +48,24 @@ export type {
 
 type Instance = WechatMiniprogram.Component.TrivialInstance;
 type Control = { template: string; definition: WechatMiniprogram.IAnyObject };
-type ChartKind = "chart" | "line" | "bar" | "scatter" | "quadrant";
+type ChartKind =
+  | "chart"
+  | "line"
+  | "area"
+  | "bar"
+  | "horizontalBar"
+  | "scatter"
+  | "quadrant"
+  | "candlestick"
+  | "heatmap"
+  | "sparkline"
+  | "rangeArea"
+  | "mixed"
+  | "bubble"
+  | "histogram"
+  | "boxplot"
+  | "waterfall"
+  | "gantt";
 type ChartConfig = NativeChartConfig | NativeQuadrantChartConfig;
 interface NativeTouch {
   x?: number;
@@ -54,6 +83,8 @@ interface ChartState {
   theme: ChartThemeInput | undefined;
   themeKey: string;
   ready: boolean;
+  /** Time of the first attach (`today: true` of gantt-chart) */
+  mountedAt: number;
 }
 
 const states = new WeakMap<object, ChartState>();
@@ -148,6 +179,7 @@ const stateOf = (self: Instance, kind: ChartKind) => {
       theme: undefined,
       themeKey: "",
       ready: false,
+      mountedAt: Date.now(),
     };
     states.set(self, state);
   }
@@ -231,22 +263,201 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
       ),
     );
   }
-  const { renderTooltip, xAxis, yAxis } = config as NativeChartConfig;
-  const input = (d.series as NativeChartSeries[] | null) ?? [];
-  const series =
-    state.kind === "line"
-      ? lineSeries(input, !!d.area)
-      : state.kind === "bar"
-        ? barSeries(input, !!d.stacked)
-        : state.kind === "scatter"
-          ? scatterSeries(input)
-          : input;
-  return {
+  const { renderTooltip, xAxis, yAxis, format, formatBin, formatProgress } =
+    config as NativeChartConfig;
+  const base: ChartOptions = {
     ...baseOptions(self, renderTooltip),
-    series,
+    series: [],
     xAxis: axisOption(unset(d.xAxis), xAxis?.format),
     yAxis: axisOption(unset(d.yAxis), yAxis?.format),
   };
+  const input = (d.series as NativeChartSeries[] | null) ?? [];
+  const curve = unset(d.curve as ChartOptions["series"][number]["curve"] | "");
+  const orientation = unset(d.orientation as ChartOptions["orientation"] | "");
+  const locale = unset(d.locale as string);
+  const percent = !!d.percent;
+  switch (state.kind) {
+    case "line":
+      return { ...base, series: lineSeries(input, !!d.area) };
+    case "area":
+      return {
+        ...base,
+        series: areaSeries(input, {
+          curve: curve ?? "smooth",
+          stacked: !!d.stacked || percent,
+        }),
+        ...(percent ? { stackMode: "percent" as const } : {}),
+      };
+    case "bar":
+      return { ...base, series: barSeries(input, !!d.stacked) };
+    case "horizontalBar":
+      return {
+        ...base,
+        series: barSeries(input, !!d.stacked || percent, !!d.labels),
+        orientation: "horizontal",
+        ...(percent ? { stackMode: "percent" as const } : {}),
+      };
+    case "scatter":
+      return { ...base, series: scatterSeries(input) };
+    case "candlestick":
+      return { ...base, series: candlestickSeries(input) };
+    case "rangeArea":
+      return { ...base, series: rangeAreaSeries(input, curve ?? "smooth") };
+    case "bubble":
+      return {
+        ...base,
+        series: bubbleSeries(input, {
+          minSize: unset(d.minSize),
+          maxSize: unset(d.maxSize),
+          maxValue: unset(d.maxValue),
+        }),
+      };
+    case "heatmap":
+      return heatmapChartOptions(
+        {
+          data: (d.data as []) ?? [],
+          xCategories: nonEmpty(d.xCategories as string[]),
+          yCategories: nonEmpty(d.yCategories as string[]),
+          colorScale: nonEmpty(d.colorScale as string[]),
+          valueRange: unset(d.valueRange),
+          name: d.name || undefined,
+          radius: unset(d.radius),
+          format,
+        },
+        base,
+      );
+    case "sparkline":
+      return sparklineOptions(
+        {
+          data: (d.data as []) ?? [],
+          type: unset(d.type),
+          color: d.color || undefined,
+          curve,
+          name: d.name || undefined,
+          reference: unset(d.reference),
+          format,
+        },
+        {
+          tooltip: base.tooltip,
+          palette: base.palette,
+          ariaLabel: base.ariaLabel,
+        },
+      );
+    case "histogram":
+      return {
+        ...base,
+        series: [
+          histogramSeries((d.values as number[] | null) ?? [], {
+            bins: unset(d.bins),
+            domain: unset(d.domain),
+            nice: unset(d.nice),
+            name: d.name || undefined,
+            color: d.color || undefined,
+            format: formatBin,
+          }),
+          ...input,
+        ],
+      };
+    case "boxplot": {
+      const groups = nonEmpty(d.groups as []);
+      return {
+        ...base,
+        series: boxplotSeries([
+          ...(groups
+            ? [
+                {
+                  id: "boxplot",
+                  name: d.name || "Values",
+                  data: boxplotData(groups, { whisker: unset(d.whisker) }),
+                },
+              ]
+            : []),
+          ...input,
+        ]),
+        ...(orientation ? { orientation } : {}),
+      };
+    }
+    case "waterfall":
+      return {
+        ...base,
+        ...(locale ? { locale } : {}),
+        series: [
+          waterfallSeries((d.steps as []) ?? [], {
+            name: d.name || undefined,
+            upColor: d.upColor || undefined,
+            downColor: d.downColor || undefined,
+            totalColor: d.totalColor || undefined,
+            start: unset(d.start),
+            labels: d.labels !== false,
+            format,
+            locale,
+          }),
+        ],
+        ...(orientation ? { orientation } : {}),
+      };
+    case "gantt": {
+      const gantt = ganttSeries((d.tasks as []) ?? [], {
+        colors: nonEmpty(d.colors as string[]),
+        taskName: d.taskName || undefined,
+        progressName: d.progressName || undefined,
+        milestoneName: d.milestoneName || undefined,
+        formatProgress,
+        locale,
+      });
+      const today = unset(d.today as boolean | number | null);
+      const now =
+        today === undefined || today === false
+          ? null
+          : today === true
+            ? state.mountedAt
+            : Number(today);
+      const lines: ChartAnnotation[] =
+        now === null || !Number.isFinite(now)
+          ? []
+          : [
+              {
+                type: "line",
+                axis: "y",
+                value: now,
+                color: "var(--danger-color, #dc2626)",
+                dash: [4, 3],
+                label: d.todayLabel || undefined,
+              },
+            ];
+      return {
+        ...base,
+        ...(locale ? { locale } : {}),
+        series: gantt.series,
+        orientation: "horizontal",
+        xAxis: {
+          type: "category",
+          categories: gantt.categories,
+          ...base.xAxis,
+        },
+        yAxis: {
+          type: "time",
+          min: gantt.domain[0],
+          max: gantt.domain[1],
+          ...base.yAxis,
+        },
+        annotations: [...(base.annotations ?? []), ...lines],
+        interaction: base.interaction ?? { zoom: "y" },
+        legend: base.legend ?? gantt.series.length > 1,
+      };
+    }
+    default: {
+      // chart and mixed-chart: any mix of series types
+      const yAxis2 = unset(d.yAxis2 as ChartOptions["yAxis2"] | null);
+      const stackMode = unset(d.stackMode as ChartOptions["stackMode"] | "");
+      return {
+        ...base,
+        series: input,
+        ...(yAxis2 ? { yAxis2 } : {}),
+        ...(stackMode ? { stackMode } : {}),
+        ...(orientation ? { orientation } : {}),
+      };
+    }
+  }
 };
 
 const applyOptions = (self: Instance) => {
@@ -373,7 +584,80 @@ const COMMON_OPTIONS = [
   "palette",
   "ariaLabel",
 ];
-const SERIES_OPTIONS = ["series", "xAxis", "yAxis"];
+
+/** Properties of each kind besides the common ones and (series kinds) series / xAxis / yAxis */
+const KIND_PROPERTIES: Partial<
+  Record<ChartKind, WechatMiniprogram.IAnyObject>
+> = {
+  chart: { yAxis2: optional(), stackMode: text(), orientation: text() },
+  mixed: { yAxis2: optional(), stackMode: text(), orientation: text() },
+  line: { area: flag() },
+  area: { curve: text(), stacked: flag(), percent: flag() },
+  bar: { stacked: flag() },
+  horizontalBar: { stacked: flag(), percent: flag(), labels: flag() },
+  rangeArea: { curve: text() },
+  bubble: { minSize: optional(), maxSize: optional(), maxValue: optional() },
+  heatmap: {
+    data: list(),
+    xCategories: list(),
+    yCategories: list(),
+    colorScale: list(),
+    valueRange: optional(),
+    name: text(),
+    radius: optional(),
+  },
+  sparkline: {
+    data: list(),
+    type: text(),
+    color: text(),
+    curve: text(),
+    name: text(),
+    reference: optional(),
+  },
+  histogram: {
+    values: list(),
+    bins: optional(),
+    domain: optional(),
+    nice: optional(),
+    name: text(),
+    color: text(),
+  },
+  boxplot: {
+    groups: list(),
+    name: text(),
+    whisker: optional(),
+    orientation: text(),
+  },
+  waterfall: {
+    steps: list(),
+    name: text(),
+    upColor: text(),
+    downColor: text(),
+    totalColor: text(),
+    start: optional(),
+    labels: flag(true),
+    locale: text(),
+    orientation: text(),
+  },
+  gantt: {
+    tasks: list(),
+    colors: list(),
+    taskName: text(),
+    progressName: text(),
+    milestoneName: text(),
+    locale: text(),
+    today: optional(),
+    todayLabel: text(),
+  },
+};
+
+/** Kinds with series / xAxis / yAxis properties (heatmap, waterfall and gantt build their series) */
+const seriesProperties = (kind: ChartKind): WechatMiniprogram.IAnyObject =>
+  kind === "sparkline"
+    ? {}
+    : kind === "heatmap" || kind === "waterfall" || kind === "gantt"
+      ? { xAxis: optional(), yAxis: optional() }
+      : { series: list(), xAxis: optional(), yAxis: optional() };
 const QUADRANT_OPTIONS = [
   "points",
   "xDomain",
@@ -412,24 +696,20 @@ function defineChart(kind: ChartKind): Control {
           name: text(),
           draggable: flag(),
         }
-      : {
-          series: list(),
-          xAxis: optional(),
-          yAxis: optional(),
-          ...(kind === "line" ? { area: flag() } : {}),
-          ...(kind === "bar" ? { stacked: flag() } : {}),
-        };
+      : { ...seriesProperties(kind), ...KIND_PROPERTIES[kind] };
   const optionNames = [
-    ...COMMON_OPTIONS,
-    ...(kind === "quadrant" ? QUADRANT_OPTIONS : SERIES_OPTIONS),
-    ...(kind === "line" ? ["area"] : kind === "bar" ? ["stacked"] : []),
+    ...(kind === "sparkline"
+      ? ["tooltip", "palette", "ariaLabel"]
+      : COMMON_OPTIONS),
+    ...(kind === "quadrant" ? QUADRANT_OPTIONS : Object.keys(kindProperties)),
   ];
+  const fallbackHeight = kind === "sparkline" ? "48px" : "320px";
   return {
     template: `<view class="mn-chart" style="display:block;position:relative;width:{{chartWidth}};height:{{chartHeight}}"><canvas type="2d" class="mn-chart-canvas" style="display:block;width:100%;height:100%" disable-scroll="{{disableScroll}}" aria-role="img" aria-label="{{ariaLabel}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel"></canvas></view>`,
     definition: {
       properties: {
         width: { type: null, value: "100%" },
-        height: { type: null, value: 320 },
+        height: { type: null, value: kind === "sparkline" ? 48 : 320 },
         legend: optional(),
         tooltip: optional(),
         crosshair: optional(),
@@ -441,14 +721,14 @@ function defineChart(kind: ChartKind): Control {
         disableScroll: flag(),
         ...kindProperties,
       },
-      data: { chartWidth: "100%", chartHeight: "320px" },
+      data: { chartWidth: "100%", chartHeight: fallbackHeight },
       observers: {
         [optionNames.join(",")]: function (this: Instance) {
           applyOptions(this);
         },
         "width,height": function (this: Instance) {
           const width = cssSize(this.data.width, "100%"),
-            height = cssSize(this.data.height, "320px");
+            height = cssSize(this.data.height, fallbackHeight);
           if (
             width === this.data.chartWidth &&
             height === this.data.chartHeight
@@ -469,7 +749,7 @@ function defineChart(kind: ChartKind): Control {
           stateOf(this, kind);
           this.setData({
             chartWidth: cssSize(this.data.width, "100%"),
-            chartHeight: cssSize(this.data.height, "320px"),
+            chartHeight: cssSize(this.data.height, fallbackHeight),
           });
         },
         ready(this: Instance) {
@@ -540,7 +820,7 @@ function defineChart(kind: ChartKind): Control {
   };
 }
 
-/** Any mix of line, area, bar and scatter series (each sets its `type`) */
+/** Any mix of line, area, bar, scatter, candlestick, heatmap and box plot series (each sets its `type`) */
 export const chart = defineChart("chart");
 /** Line chart (`area` fills the lines) */
 export const lineChart = defineChart("line");
@@ -550,3 +830,27 @@ export const barChart = defineChart("bar");
 export const scatterChart = defineChart("scatter");
 /** Four-quadrant matrix with labelled, optionally draggable dots */
 export const quadrantChart = defineChart("quadrant");
+/** Area chart: smooth by default, stacked or 100% stacked (`percent`) */
+export const areaChart = defineChart("area");
+/** Horizontal bar chart: categories down the left side */
+export const horizontalBarChart = defineChart("horizontalBar");
+/** Candlestick (OHLC) chart */
+export const candlestickChart = defineChart("candlestick");
+/** Heatmap: a grid of cells colored by value */
+export const heatmapChart = defineChart("heatmap");
+/** Word-sized chart without axes */
+export const sparkline = defineChart("sparkline");
+/** Range area chart: bands between `y0` and `y` */
+export const rangeAreaChart = defineChart("rangeArea");
+/** Combination chart: bars, lines and areas on one or two value axes */
+export const mixedChart = defineChart("mixed");
+/** Bubble chart: x, y and a value sized by area */
+export const bubbleChart = defineChart("bubble");
+/** Histogram of raw samples */
+export const histogramChart = defineChart("histogram");
+/** Box plot from raw samples (`groups`) or statistics (`series`) */
+export const boxPlotChart = defineChart("boxplot");
+/** Waterfall (bridge) chart */
+export const waterfallChart = defineChart("waterfall");
+/** Gantt chart: tasks on a time axis, progress, milestones and a today line */
+export const ganttChart = defineChart("gantt");

@@ -75,3 +75,5 @@ export * from "./components/TimePicker";
 export * from "./components/Parts";
 export * from "./components/HtmlPreview";
 export * from "./components/Chart";
+export * from "./components/Charts";
+export * from "./components/ShapeChart";

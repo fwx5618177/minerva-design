@@ -214,7 +214,7 @@ describe("custom-elements.json and typings", () => {
   it("lists every element with its tag", () => {
     expect(elements.length).toBeGreaterThan(0);
     for (const element of elements) {
-      expect(element.tagName).toMatch(/^minerva-[a-z-]+$/);
+      expect(element.tagName).toMatch(/^minerva-[a-z0-9-]+$/);
     }
   });
 

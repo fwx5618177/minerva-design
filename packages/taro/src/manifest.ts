@@ -649,3 +649,99 @@ export const taroComponentManifest: TaroComponentManifestEntry[] =
       ],
     })),
   );
+
+/**
+ * Chart components (Canvas 2D engine of minerva-design/charts). Read by
+ * tools/generate-contracts.mjs (`*ChartManifest`): `beta` on Taro, `n/a`
+ * for the DOM / GPU widgets, which are not exported.
+ */
+const chartFamilies: Array<{
+  names: string[];
+  status?: "n/a";
+  scope: string;
+  limitations: string[];
+  tests: string[];
+}> = [
+  {
+    names: [
+      "Chart",
+      "LineChart",
+      "AreaChart",
+      "BarChart",
+      "HorizontalBarChart",
+      "ScatterChart",
+      "QuadrantChart",
+      "CandlestickChart",
+      "HeatmapChart",
+      "Sparkline",
+      "RangeAreaChart",
+      "MixedChart",
+      "BubbleChart",
+      "HistogramChart",
+      "BoxPlotChart",
+      "WaterfallChart",
+      "GanttChart",
+    ],
+    scope:
+      "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize.",
+    limitations: [
+      "No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text.",
+    ],
+    tests: [
+      "packages/taro/src/charts.test.tsx",
+      "packages/taro/src/named-charts.test.tsx",
+    ],
+  },
+  {
+    names: [
+      "PieChart",
+      "DonutChart",
+      "RadarChart",
+      "GaugeChart",
+      "FunnelChart",
+      "TreemapChart",
+      "SankeyChart",
+      "SunburstChart",
+      "RadialBarChart",
+      "CalendarHeatmap",
+      "BulletChart",
+      "ShapeChart",
+    ],
+    scope:
+      "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options.",
+    limitations: [
+      "No keyboard navigation and no React tooltip content: tooltip.render may only return text.",
+    ],
+    tests: ["packages/taro/src/shape-charts.test.tsx"],
+  },
+  {
+    names: [
+      "TradingChart",
+      "DepthChart",
+      "OrderBook",
+      "OrderBookHeatmap",
+      "TimeAndSales",
+      "Scatter3DChart",
+      "Surface3DChart",
+      "Bar3DChart",
+      "Line3DChart",
+    ],
+    status: "n/a",
+    scope:
+      "Not exported: these components need a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["packages/taro/src/named-charts.test.tsx"],
+  },
+];
+export const taroChartManifest: TaroComponentManifestEntry[] =
+  chartFamilies.flatMap((family) =>
+    family.names.map((name) => ({
+      name,
+      scope: family.scope,
+      ...(family.status ? { status: family.status } : {}),
+      limitations: family.limitations,
+      tests: family.tests,
+    })),
+  );

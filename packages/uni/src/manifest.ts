@@ -1452,3 +1452,429 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
 ] as const;
+
+/**
+ * Chart components (canvas engine of minerva-design/charts). Read by
+ * tools/generate-contracts.mjs (`*ChartManifest`): `beta` on uni-app, `n/a`
+ * for the DOM / GPU widgets, which are not exported.
+ */
+export const uniChartManifest = [
+  {
+    name: "Chart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "LineChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "AreaChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BarChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HorizontalBarChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "ScatterChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "QuadrantChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "CandlestickChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HeatmapChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Sparkline",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RangeAreaChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "MixedChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BubbleChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HistogramChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BoxPlotChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "WaterfallChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "GanttChart",
+    scope:
+      'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
+    limitations: [
+      "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/charts.test.ts", "src/named-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "PieChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "DonutChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RadarChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "GaugeChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "FunnelChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "TreemapChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "SankeyChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "SunburstChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events and the sunburst drill event; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RadialBarChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "CalendarHeatmap",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BulletChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "ShapeChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events and the sunburst drill event; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "TradingChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "DepthChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "OrderBook",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "OrderBookHeatmap",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "TimeAndSales",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Scatter3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Surface3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Bar3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Line3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/named-charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+] as const;

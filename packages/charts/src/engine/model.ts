@@ -18,7 +18,10 @@ import {
   type SeriesColumns,
   type YResolver,
 } from "./data";
-import { ensureSpan, niceDomain } from "./scale";
+import { formatPercent, valueFormatter } from "./format";
+import { chartLabels } from "./labels";
+import { resolveLocale } from "./locale";
+import { ensureSpan, niceDomain, tickStep } from "./scale";
 import { GridIndex } from "./spatial";
 import type { ChartTheme } from "./theme";
 import type {
@@ -28,7 +31,9 @@ import type {
   ChartOptions,
   ChartSeries,
   ChartSeriesData,
+  ChartLabels,
   ChartSeriesType,
+  ChartTimeZone,
 } from "./types";
 import type { Range } from "./viewport";
 
@@ -41,6 +46,10 @@ export interface AxisModel {
   grid: boolean;
   visible: boolean;
   tickCount?: number;
+  /** Locale of the tick and tooltip labels (historical English texts when omitted) */
+  locale?: string;
+  /** Calendar of a time axis */
+  timeZone?: ChartTimeZone;
 }
 
 export interface SeriesModel {
@@ -58,7 +67,17 @@ export interface SeriesModel {
   hidden: boolean;
   showLabels: boolean;
   curve: ChartCurve;
+  /**
+   * Plotted columns: the data, mapped onto the left axis for the series of
+   * the right axis (`raw` keeps the values of the data)
+   */
   cols: SeriesColumns;
+  /** Columns of the data (shown in tooltips and labels) */
+  raw: SeriesColumns;
+  /** Value axis of the series */
+  yAxis: "left" | "right";
+  /** Bars with a start (`y0`): drawn from it, never stacked */
+  floating: boolean;
   /** Bars / candlesticks: x offset of the series inside a group and half of the bar width */
   barOffset: number;
   barHalfWidth: number;
@@ -83,12 +102,32 @@ export interface SeriesModel {
   radius: number;
   /** Tooltip format of the values */
   format?: (value: number) => string;
+  /** Scatter: name of the `value` of the points */
+  valueName?: string;
+}
+
+/** Linear map of the right axis onto the left one: `left = right * scale + offset` */
+export interface AxisMap {
+  scale: number;
+  offset: number;
 }
 
 export interface ChartModel {
   series: SeriesModel[];
   x: AxisModel;
   y: AxisModel;
+  /** Right value axis (`yAxis2`), `null` when no series uses it */
+  y2: AxisModel | null;
+  /** Right axis values -> left axis values */
+  y2Map: AxisMap | null;
+  /** The x axis runs down the left side, the values along the bottom */
+  horizontal: boolean;
+  /** Resolved locale (`locale` option, else the page language) */
+  locale: string;
+  /** Texts of the locale with the `labels` overrides */
+  labels: ChartLabels;
+  /** Tooltip value of the locale (series without `format`) */
+  formatValue: (value: number) => string;
   /** Full ranges (zoomed out) */
   base: { x: Range; y: Range };
   /** Every series is a scatter (or a heatmap): nearest tooltips, xy zoom */
@@ -144,6 +183,7 @@ const axisModel = (
   type: ChartAxisType,
   categories: string[],
   gridDefault: boolean,
+  locale: string,
 ): AxisModel => ({
   type,
   reverse: !!options?.reverse,
@@ -153,7 +193,19 @@ const axisModel = (
   grid: options?.grid ?? gridDefault,
   visible: options?.visible ?? true,
   tickCount: options?.tickCount,
+  locale,
+  timeZone: options?.timeZone ?? "local",
 });
+
+/** Defined entries only (`{ open: undefined }` keeps the built-in text) */
+const definedEntries = <T extends object>(value: T | undefined): Partial<T> => {
+  const out: Partial<T> = {};
+  if (!value) return out;
+  for (const key of Object.keys(value) as (keyof T)[]) {
+    if (value[key] !== undefined) out[key] = value[key];
+  }
+  return out;
+};
 
 const extent = (values: ArrayLike<number>): Range => {
   let min = Infinity;
@@ -263,6 +315,91 @@ const stackValues = (
 const DEFAULT_UP = "var(--success-color, #16a34a)";
 const DEFAULT_DOWN = "var(--danger-color, #dc2626)";
 
+/** Dates in the y values (or starts) of objects: a time value axis */
+const hasDateY = (datas: readonly ChartSeriesData[]): boolean => {
+  for (const data of datas) {
+    if (typeof data !== "object" || data === null || !("length" in data))
+      continue;
+    const list = data as ArrayLike<unknown>;
+    for (let i = 0; i < Math.min(list.length, 8); i++) {
+      const item = list[i];
+      if (item && typeof item === "object" && !Array.isArray(item)) {
+        const d = item as { y?: unknown; y0?: unknown };
+        if (d.y instanceof Date || d.y0 instanceof Date) return true;
+      }
+    }
+  }
+  return false;
+};
+
+const precise = (v: number) => Number(v.toPrecision(12));
+
+/** Next step of the 1, 2, 5 × 10^k sequence */
+const nextStep = (step: number) => {
+  const power = 10 ** Math.floor(Math.log10(step) + 1e-9);
+  const f = step / power;
+  return (f < 1.5 ? 2 : f < 3.5 ? 5 : 10) * power;
+};
+
+/**
+ * Range of the right axis covering [lo, hi] with as many tick intervals as
+ * the left range has (its ticks then line up with the left grid)
+ */
+export const alignedDomain = (
+  lo: number,
+  hi: number,
+  left: Range,
+  count: number,
+): Range => {
+  const [a0, a1] = left;
+  const stepL = tickStep(a0, a1, count);
+  const n = stepL > 0 ? Math.round((a1 - a0) / stepL) : 0;
+  [lo, hi] = ensureSpan(lo, hi);
+  if (n < 1 || Math.abs(n * stepL - (a1 - a0)) > stepL * 1e-6) {
+    return niceDomain(lo, hi, count);
+  }
+  let step = tickStep(lo, hi, n);
+  for (let k = 0; k < 40 && step > 0; k++) {
+    const start = Math.floor(lo / step + 1e-9) * step;
+    if (start + n * step >= hi - step * 1e-9) {
+      return [precise(start), precise(start + n * step)];
+    }
+    step = nextStep(step);
+  }
+  return niceDomain(lo, hi, count);
+};
+
+const mapped = new WeakMap<
+  SeriesColumns,
+  { key: string; cols: SeriesColumns }
+>();
+
+/** Columns of a right-axis series in left axis units (cached with the data) */
+const mapColumns = (raw: SeriesColumns, map: AxisMap): SeriesColumns => {
+  const key = `${map.scale},${map.offset}`;
+  const hit = mapped.get(raw);
+  if (hit && hit.key === key) return hit.cols;
+  const f = (v: number) => v * map.scale + map.offset;
+  const column = (a: Float64Array | null) => (a ? a.map(f) : null);
+  const lo = f(raw.yMin);
+  const hi = f(raw.yMax);
+  const cols: SeriesColumns = {
+    ...raw,
+    y: raw.y.map(f),
+    open: column(raw.open),
+    high: column(raw.high),
+    low: column(raw.low),
+    y0: column(raw.y0),
+    q1: column(raw.q1),
+    q3: column(raw.q3),
+    outliers: raw.outliers ? raw.outliers.map((list) => list?.map(f)) : null,
+    yMin: Math.min(lo, hi),
+    yMax: Math.max(lo, hi),
+  };
+  mapped.set(raw, { key, cols });
+  return cols;
+};
+
 export const buildModel = (
   options: ChartOptions,
   theme: ChartTheme,
@@ -275,6 +412,14 @@ export const buildModel = (
     theme.resolve ??
     ((value, fallback) => resolveStaticColor(value, {}, fallback));
   const input = options.series;
+  // resolved at every build: a page language switch shows on the next update
+  const locale = resolveLocale(options.locale);
+  const tooltipOptions =
+    typeof options.tooltip === "object" ? options.tooltip : undefined;
+  const labels = chartLabels(locale, {
+    ...definedEntries(tooltipOptions?.labels),
+    ...definedEntries(options.labels),
+  });
   const datas = input.map((s) => s.data);
   const xType = options.xAxis?.type ?? detectXType(datas);
   const categories =
@@ -296,7 +441,7 @@ export const buildModel = (
   const yType: ChartAxisType =
     yOpts?.type === "category" || yCategories.length
       ? "category"
-      : yOpts?.type === "time"
+      : yOpts?.type === "time" || (!yOpts?.type && hasDateY(datas))
         ? "time"
         : "linear";
   const yCategoryMap = new Map(yCategories.map((c, i) => [c, i]));
@@ -306,10 +451,15 @@ export const buildModel = (
       : typeof v === "string"
         ? yType === "category"
           ? (yCategoryMap.get(v) ?? NaN)
-          : Number(v)
-        : NaN;
+          : yType === "time"
+            ? Date.parse(v)
+            : Number(v)
+        : v instanceof Date
+          ? v.getTime()
+          : NaN;
   const resolverKey = `${xType}|${categories.join("\u0001")}|${yType}|${yCategories.join("\u0001")}`;
   const percent = options.stackMode === "percent";
+  const horizontal = options.orientation === "horizontal";
 
   const usedKeys = new Set<string>();
   const series: SeriesModel[] = input.map((s: ChartSeries, index) => {
@@ -330,7 +480,10 @@ export const buildModel = (
     const color = s.color ? resolve(s.color, paletteColor) : paletteColor;
     const cols = entry.cols;
     let pointColors: (Rgba | undefined)[] | null = null;
-    if ((type === "scatter" || type === "bar") && cols.colors) {
+    if (
+      (type === "scatter" || type === "bar" || type === "boxplot") &&
+      cols.colors
+    ) {
       const resolved = new Map<string, Rgba>();
       pointColors = cols.colors.map((c) => {
         if (c === undefined) return undefined;
@@ -367,18 +520,30 @@ export const buildModel = (
       index,
       key,
       id,
-      name: s.name ?? `Series ${index + 1}`,
+      name: s.name ?? `${labels.series} ${index + 1}`,
       type,
       color,
       colorCss: toCss(color),
-      lineWidth: s.lineWidth ?? (type === "candlestick" ? 1 : 2),
-      pointSize: s.pointSize ?? 8,
+      lineWidth:
+        s.lineWidth ??
+        (type === "candlestick" ? 1 : type === "boxplot" ? 1.5 : 2),
+      pointSize: s.pointSize ?? (type === "boxplot" ? 6 : 8),
       opacity:
-        s.opacity ?? (type === "area" ? 0.28 : type === "scatter" ? 0.78 : 1),
+        s.opacity ??
+        (type === "area"
+          ? 0.28
+          : type === "scatter"
+            ? 0.78
+            : type === "boxplot"
+              ? 0.22
+              : 1),
       hidden: !!s.hidden || hidden.has(id),
       showLabels: !!s.showLabels,
       curve: s.curve ?? "linear",
       cols,
+      raw: cols,
+      yAxis: s.yAxis === "right" && !horizontal ? "right" : "left",
+      floating: type === "bar" && !!cols.y0,
       barOffset: 0,
       barHalfWidth: 0,
       barBase: null,
@@ -398,8 +563,9 @@ export const buildModel = (
       cellHalf: { x: 0.5, y: 0.5 },
       colorScale,
       valueRange,
-      radius: s.radius ?? (type === "heatmap" ? 2 : 3),
+      radius: s.radius ?? (type === "heatmap" ? 2 : type === "boxplot" ? 0 : 3),
       format: s.format,
+      valueName: s.valueName,
     };
   });
 
@@ -408,35 +574,47 @@ export const buildModel = (
     series.length > 0 &&
     series.every((s) => s.type === "scatter" || s.type === "heatmap");
 
-  // Bars: groups (one slot per stack) and stacking
+  // Bars and box plots: groups (one slot per stack) and stacking; floating
+  // bars (with starts) are drawn from their starts
+  const slotted = visible.filter(
+    (s) => s.type === "bar" || s.type === "boxplot",
+  );
   const bars = visible.filter((s) => s.type === "bar");
-  const band = bandOf(bars, "x", xType === "category");
-  if (bars.length) {
+  const band = bandOf(slotted, "x", xType === "category");
+  if (slotted.length) {
     const slots = new Map<string, number>();
     const stackId = (s: SeriesModel) =>
       input[s.index].stack ?? `\u0000${s.key}`;
-    for (const s of bars) {
+    for (const s of slotted) {
       if (!slots.has(stackId(s))) slots.set(stackId(s), slots.size);
     }
-    const group = band * (slots.size > 1 ? 0.78 : 0.62);
+    let share = 0;
+    for (const s of slotted) {
+      const w = input[s.index].barWidth;
+      if (w !== undefined && w > share) share = Math.min(1, w);
+    }
+    const group = band * (share || (slots.size > 1 ? 0.78 : 0.62));
     const slotWidth = group / slots.size;
+    for (const s of slotted) {
+      const slot = slots.get(stackId(s)) ?? 0;
+      s.barOffset = -group / 2 + slotWidth * (slot + 0.5);
+      s.barHalfWidth = (slotWidth / 2) * (slots.size > 1 ? 0.86 : 1);
+    }
+    const stackedBars = bars.filter((s) => !s.floating);
     const stacked = stackValues(
-      bars.map((s) => ({ s, stack: stackId(s) })),
+      stackedBars.map((s) => ({ s, stack: stackId(s) })),
       false,
     );
     const percentStacked = percent
       ? stackValues(
-          bars
+          stackedBars
             .filter((s) => input[s.index].stack !== undefined)
             .map((s) => ({ s, stack: stackId(s) })),
           true,
         )
       : [];
     let p = 0;
-    bars.forEach((s, k) => {
-      const slot = slots.get(stackId(s)) ?? 0;
-      s.barOffset = -group / 2 + slotWidth * (slot + 0.5);
-      s.barHalfWidth = (slotWidth / 2) * (slots.size > 1 ? 0.86 : 1);
+    stackedBars.forEach((s, k) => {
       const values =
         percent && input[s.index].stack !== undefined
           ? percentStacked[p++]
@@ -444,6 +622,25 @@ export const buildModel = (
       s.barBase = values.base;
       s.barTop = values.top;
     });
+    for (const s of bars) {
+      const { y, y0, count } = s.cols;
+      if (!s.floating || !y0) continue;
+      const base = new Float64Array(count);
+      const top = new Float64Array(count);
+      for (let i = 0; i < count; i++) {
+        const valid = Number.isFinite(y[i]);
+        base[i] = valid ? (Number.isFinite(y0[i]) ? y0[i] : 0) : NaN;
+        top[i] = valid ? y[i] : NaN;
+      }
+      s.barBase = base;
+      s.barTop = top;
+    }
+  }
+
+  // Range areas: filled down to their lower edges
+  for (const s of visible) {
+    if (s.type === "area" && s.cols.y0 && input[s.index].stack === undefined)
+      s.stackBase = s.cols.y0;
   }
 
   // Stacked lines / areas
@@ -486,7 +683,7 @@ export const buildModel = (
     for (const s of visible) {
       values.push(s.cols.xMin, s.cols.xMax);
       const pad =
-        s.type === "bar"
+        s.type === "bar" || s.type === "boxplot"
           ? band / 2
           : s.type === "candlestick"
             ? candleBand / 2
@@ -513,37 +710,49 @@ export const buildModel = (
   if (xOpts?.max !== undefined) xRange[1] = xOpts.max;
   xRange = ensureSpan(xRange[0], xRange[1]);
 
-  // Y range
+  // Y range (left axis: the series of the right axis are mapped onto it)
+  const valuesOf = (list: SeriesModel[], zero: boolean | undefined) => {
+    const values: number[] = [];
+    for (const s of list) {
+      if (s.type === "bar" && s.barBase && s.barTop) {
+        values.push(...extent(s.barBase), ...extent(s.barTop));
+      } else if (s.stackBase && s.stackTop) {
+        values.push(...extent(s.stackBase), ...extent(s.stackTop));
+      } else if (s.type === "heatmap") {
+        values.push(s.cols.yMin - s.cellHalf.y, s.cols.yMax + s.cellHalf.y);
+      } else {
+        values.push(s.cols.yMin, s.cols.yMax);
+      }
+    }
+    const listBars = list.filter((s) => s.type === "bar");
+    if (listBars.some((s) => !s.floating) || zero) values.push(0);
+    if (listBars.some((s) => s.showLabels)) {
+      // room for the value labels above the tallest bar
+      const [lo, hi] = extent(values);
+      if (hi > 0) values.push(hi + (hi - Math.min(0, lo)) * 0.1);
+      if (lo < 0) values.push(lo - (Math.max(0, hi) - lo) * 0.1);
+    }
+    return values;
+  };
+  const leftVisible = visible.filter((s) => s.yAxis === "left");
+  const leftSeries = leftVisible.length ? leftVisible : visible;
+  const leftBars = leftSeries.filter((s) => s.type === "bar");
   let yRange: Range;
   if (yType === "category") {
     yRange = [-0.5, Math.max(1, yCategories.length) - 0.5];
   } else {
-    const yValues: number[] = [];
-    for (const s of visible) {
-      if (s.type === "bar" && s.barBase && s.barTop) {
-        yValues.push(...extent(s.barBase), ...extent(s.barTop));
-      } else if (s.stackBase && s.stackTop) {
-        yValues.push(...extent(s.stackBase), ...extent(s.stackTop));
-      } else if (s.type === "heatmap") {
-        yValues.push(s.cols.yMin - s.cellHalf.y, s.cols.yMax + s.cellHalf.y);
-      } else {
-        yValues.push(s.cols.yMin, s.cols.yMax);
-      }
-    }
-    const filled = bars.length > 0 || visible.some((s) => s.type === "area");
-    if (bars.length || yOpts?.zero) yValues.push(0);
-    if (bars.some((s) => s.showLabels)) {
-      // room for the value labels above the tallest bar
-      const [lo, hi] = extent(yValues);
-      if (hi > 0) yValues.push(hi + (hi - Math.min(0, lo)) * 0.1);
-      if (lo < 0) yValues.push(lo - (Math.max(0, hi) - lo) * 0.1);
-    }
+    const yValues = valuesOf(leftSeries, yOpts?.zero);
+    const filled =
+      leftBars.length > 0 || leftSeries.some((s) => s.type === "area");
     yRange = ensureSpan(...extent(yValues));
     if (series.every((s) => s.type === "scatter")) {
       const pad = (yRange[1] - yRange[0]) * 0.06;
       yRange = [yRange[0] - pad, yRange[1] + pad];
-    } else if (candles.length && !bars.length) {
-      // room above / below the wicks
+    } else if (
+      (candles.length || leftSeries.some((s) => s.type === "boxplot")) &&
+      !leftBars.length
+    ) {
+      // room above / below the wicks and the outliers
       const pad = (yRange[1] - yRange[0]) * 0.04;
       yRange = [yRange[0] - pad, yRange[1] + pad];
     }
@@ -563,6 +772,47 @@ export const buildModel = (
   if (yOpts?.max !== undefined) yRange[1] = yOpts.max;
   yRange = ensureSpan(yRange[0], yRange[1]);
 
+  // Right axis: a range aligned on the left ticks; its series are mapped
+  // onto the left axis
+  const y2Opts = options.yAxis2;
+  let y2: AxisModel | null = null;
+  let y2Map: AxisMap | null = null;
+  const rightSeries = series.filter((s) => s.yAxis === "right");
+  if (rightSeries.length && yType !== "category") {
+    const rightVisible = rightSeries.filter((s) => !s.hidden);
+    const values = valuesOf(rightVisible, y2Opts?.zero);
+    const [lo, hi] = ensureSpan(...extent(values));
+    let domain: Range =
+      y2Opts?.nice === false
+        ? [lo, hi]
+        : alignedDomain(lo, hi, yRange, yOpts?.tickCount ?? 5);
+    if (y2Opts?.min !== undefined) domain[0] = y2Opts.min;
+    if (y2Opts?.max !== undefined) domain[1] = y2Opts.max;
+    domain = ensureSpan(domain[0], domain[1]);
+    const scale = (yRange[1] - yRange[0]) / (domain[1] - domain[0]);
+    const map: AxisMap = { scale, offset: yRange[0] - domain[0] * scale };
+    y2Map = map;
+    const f = (v: number) => v * map.scale + map.offset;
+    const column = (a: Float64Array | null) => (a ? a.map(f) : null);
+    const zero = f(Math.min(Math.max(0, domain[0]), domain[1]));
+    for (const s of rightSeries) {
+      const rawBase = s.stackBase;
+      s.cols = mapColumns(s.raw, map);
+      s.barBase = column(s.barBase);
+      s.barTop = column(s.barTop);
+      s.stackTop = column(s.stackTop);
+      s.stackBase =
+        rawBase && rawBase === s.raw.y0
+          ? s.cols.y0
+          : rawBase
+            ? column(rawBase)
+            : s.type === "area"
+              ? new Float64Array(s.cols.count).fill(zero)
+              : null;
+    }
+    y2 = axisModel(y2Opts, "linear", [], false, locale);
+  }
+
   const zoomOption =
     options.interaction === false
       ? false
@@ -576,26 +826,29 @@ export const buildModel = (
         ? { x: true, y: allScatter }
         : { x: zoomOption.includes("x"), y: zoomOption.includes("y") };
 
-  const tooltip =
-    typeof options.tooltip === "object" ? options.tooltip : undefined;
-
   const yFormat =
     yOpts?.format ??
     (percent && (bars.length || stackedLines.length)
-      ? (v: number) => `${+v.toFixed(1)}%`
+      ? (v: number) => formatPercent(v, locale)
       : undefined);
 
   return {
     series,
-    x: axisModel(xOpts, xType, categories, false),
+    x: axisModel(xOpts, xType, categories, false, locale),
     y: {
-      ...axisModel(yOpts, yType, yCategories, yType !== "category"),
+      ...axisModel(yOpts, yType, yCategories, yType !== "category", locale),
       format: yFormat,
     },
+    y2,
+    y2Map,
+    horizontal,
+    locale,
+    labels,
+    formatValue: valueFormatter(locale),
     base: { x: xRange, y: yRange },
     allScatter,
     zoom: zoomAxes,
-    tooltipMode: tooltip?.mode ?? (allScatter ? "nearest" : "axis"),
+    tooltipMode: tooltipOptions?.mode ?? (allScatter ? "nearest" : "axis"),
     baseline: Math.min(Math.max(0, yRange[0]), yRange[1]),
     minSpan: {
       x: xType === "category" ? 1 : (xRange[1] - xRange[0]) * 1e-7,

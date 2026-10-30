@@ -137,8 +137,11 @@ describe("complete mini renderer distribution", () => {
   });
 
   it("all emitted WeChat templates bind to real registered handlers", () => {
+    // component folders (charts/ holds the chart engine module, not a component)
     const dirs = readdirSync(file("weapp"), { withFileTypes: true }).filter(
-      (entry) => entry.isDirectory(),
+      (entry) =>
+        entry.isDirectory() &&
+        existsSync(file(`weapp/${entry.name}/index.json`)),
     );
     expect(dirs.length).toBeGreaterThan(3);
     for (const { name } of dirs) {
@@ -159,6 +162,150 @@ describe("complete mini renderer distribution", () => {
           .component,
       ).toBe(true);
     }
+  });
+});
+
+describe("WeChat chart engine (charts/core)", () => {
+  /** Every file of a directory, recursively, relative to it */
+  const walk = (dir: string, prefix = ""): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory()
+        ? walk(`${dir}/${entry.name}`, `${prefix}${entry.name}/`)
+        : [`${prefix}${entry.name}`],
+    );
+
+  it("ships the DOM-free engine as a CommonJS module next to the components", () => {
+    const core = createRequire(import.meta.url)(
+      file("weapp/charts/core.js"),
+    ) as Record<string, unknown>;
+    for (const name of [
+      "createCanvasShapeChart",
+      "createCanvasChart",
+      "createChartController",
+      "drawShapeScene",
+      "lineSeries",
+      "quadrantChartOptions",
+      "toCss",
+    ])
+      expect(core[name], name).toBeTypeOf("function");
+    expect(readFileSync(file("weapp/charts/core.d.ts"), "utf8")).toContain(
+      "../../charts/canvas",
+    );
+    expect(existsSync(file("charts/canvas.d.ts"))).toBe(true);
+  });
+
+  it("draws a shape chart on a mini-program canvas without any DOM", () => {
+    const path = file("weapp/charts/core.js");
+    const calls: string[] = [];
+    const ctx = new Proxy({} as Record<string, unknown>, {
+      get: (target, key: string) =>
+        key in target
+          ? target[key]
+          : key === "measureText"
+            ? (text: string) => ({ width: text.length * 6 })
+            : () => calls.push(key),
+      set: (target, key: string, value) => {
+        target[key] = value;
+        return true;
+      },
+    });
+    // a context without window / document, like the WeChat JS engine
+    const sandbox: Record<string, unknown> = {
+      require: createRequire(path),
+      module: { exports: {} },
+      setTimeout,
+      clearTimeout,
+    };
+    sandbox.exports = (sandbox.module as { exports: object }).exports;
+    runInNewContext(readFileSync(path, "utf8"), sandbox);
+    const core = (sandbox.module as { exports: Record<string, unknown> })
+      .exports as {
+      createCanvasShapeChart: (config: unknown) => { destroy(): void };
+    };
+    const chart = core.createCanvasShapeChart({
+      canvas: { width: 0, height: 0, getContext: () => ctx },
+      width: 300,
+      height: 200,
+      pixelRatio: 2,
+      options: {
+        type: "pie",
+        animation: false,
+        data: [
+          { name: "A", value: 2 },
+          { name: "B", value: 1 },
+        ],
+      },
+    });
+    expect(calls).toContain("arc");
+    expect(calls).toContain("fillText");
+    chart.destroy();
+  });
+
+  it("shares one engine copy and emits only files WeChat packages", () => {
+    const controls = readFileSync(file("weapp/controls.js"), "utf8");
+    expect(controls).toContain('require("./charts/canvas.js")');
+    expect(controls).not.toMatch(/function createCanvasShapeChart\b/);
+    const files = walk(file("weapp"));
+    expect(files).toContain("charts/canvas.js");
+    expect(
+      files.filter(
+        (name) =>
+          !/\.(js|json|wxml|wxss)$/.test(name) && !name.endsWith(".d.ts"),
+      ),
+    ).toEqual([]);
+    const engine = readFileSync(file("weapp/charts/canvas.js"), "utf8");
+    expect(engine).not.toMatch(/\bdocument\.createElement|navigator\.gpu/);
+  });
+
+  it.each([
+    "pie-chart",
+    "donut-chart",
+    "radar-chart",
+    "gauge-chart",
+    "funnel-chart",
+    "treemap-chart",
+    "sankey-chart",
+    "sunburst-chart",
+    "radial-bar-chart",
+    "calendar-heatmap",
+    "bullet-chart",
+    "shape-chart",
+  ])("registers the %s shape chart component", (name) => {
+    const def = definition(name);
+    for (const method of [
+      "configure",
+      "resize",
+      "toggle",
+      "getHidden",
+      "drill",
+      "getDrillPath",
+    ])
+      expect(def.methods[method], method).toBeTypeOf("function");
+    expect(readFileSync(file(`weapp/${name}/index.wxml`), "utf8")).toContain(
+      '<canvas type="2d"',
+    );
+  });
+
+  it.each([
+    "area-chart",
+    "horizontal-bar-chart",
+    "candlestick-chart",
+    "heatmap-chart",
+    "sparkline",
+    "range-area-chart",
+    "mixed-chart",
+    "bubble-chart",
+    "histogram-chart",
+    "box-plot-chart",
+    "waterfall-chart",
+    "gantt-chart",
+  ])("registers the %s cartesian chart component", (name) => {
+    const def = definition(name);
+    for (const method of ["configure", "resize", "resetZoom", "getView"])
+      expect(def.methods[method], method).toBeTypeOf("function");
+    expect(readFileSync(file(`weapp/${name}/index.wxml`), "utf8")).toContain(
+      '<canvas type="2d"',
+    );
   });
 });
 

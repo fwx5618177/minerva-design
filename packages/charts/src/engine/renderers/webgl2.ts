@@ -1,5 +1,11 @@
 // WebGL2 backend: same instanced primitives as WebGPU, in GLSL ES 3.0.
 
+import {
+  compileProgram,
+  glContextAttributes,
+  isSoftwareRenderer,
+  itemParams,
+} from "./gl";
 import { instanceRange } from "./range";
 import { GLSL_AREA, GLSL_BAR, GLSL_LINE, GLSL_SCATTER } from "./shaders";
 import {
@@ -7,18 +13,9 @@ import {
   BAR_STRIDE,
   SCATTER_STRIDE,
   type ChartRenderer,
-  type RenderFrame,
   type RenderItem,
   type RendererLostHandler,
 } from "./types";
-
-interface Program {
-  program: WebGLProgram;
-  xform: WebGLUniformLocation | null;
-  viewport: WebGLUniformLocation | null;
-  color: WebGLUniformLocation | null;
-  params: WebGLUniformLocation | null;
-}
 
 interface ItemResources {
   version: number;
@@ -36,82 +33,23 @@ const ATTRIBUTES: Record<RenderItem["kind"], string[]> = {
   scatter: ["a_pos", "a_size", "a_color"],
 };
 
-const compile = (
-  gl: WebGL2RenderingContext,
-  source: { vertex: string; fragment: string },
-  attributes: string[],
-): Program | null => {
-  const shader = (type: number, code: string) => {
-    const s = gl.createShader(type);
-    if (!s) return null;
-    gl.shaderSource(s, code);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      gl.deleteShader(s);
-      return null;
-    }
-    return s;
-  };
-  const vs = shader(gl.VERTEX_SHADER, source.vertex);
-  const fs = shader(gl.FRAGMENT_SHADER, source.fragment);
-  const program = gl.createProgram();
-  if (!vs || !fs || !program) return null;
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  attributes.forEach((name, i) => gl.bindAttribLocation(program, i, name));
-  gl.linkProgram(program);
-  gl.deleteShader(vs);
-  gl.deleteShader(fs);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    gl.deleteProgram(program);
-    return null;
-  }
-  return {
-    program,
-    xform: gl.getUniformLocation(program, "u_xform"),
-    viewport: gl.getUniformLocation(program, "u_viewport"),
-    color: gl.getUniformLocation(program, "u_color"),
-    params: gl.getUniformLocation(program, "u_params"),
-  };
-};
-
-export const SOFTWARE_RENDERER =
-  /swiftshader|llvmpipe|softpipe|software|basic render driver|microsoft basic/i;
-
-/** Software rasterizer (SwiftShader, llvmpipe, ...) behind the WebGL context */
-const isSoftwareRenderer = (gl: WebGL2RenderingContext): boolean => {
-  const info = gl.getExtension("WEBGL_debug_renderer_info");
-  const name = info
-    ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)
-    : gl.getParameter(gl.RENDERER);
-  return SOFTWARE_RENDERER.test(String(name ?? ""));
-};
-
 export const createWebGl2Renderer = (
   canvas: HTMLCanvasElement,
   onLost: RendererLostHandler,
   /** Refuses software rendering (SwiftShader, blocklisted GPUs): Canvas2D with decimation is faster there */
   requireHardware = false,
 ): ChartRenderer | null => {
-  const gl = canvas.getContext("webgl2", {
-    alpha: true,
-    premultipliedAlpha: true,
-    antialias: false,
-    depth: false,
-    stencil: false,
-    preserveDrawingBuffer: false,
-    failIfMajorPerformanceCaveat: requireHardware,
-  });
+  const gl = canvas.getContext("webgl2", glContextAttributes(requireHardware));
   if (!gl) return null;
   if (requireHardware && isSoftwareRenderer(gl)) {
     gl.getExtension("WEBGL_lose_context")?.loseContext();
     return null;
   }
 
-  const line = compile(gl, GLSL_LINE, ATTRIBUTES.line);
-  const area = compile(gl, GLSL_AREA, ATTRIBUTES.area);
-  const bar = compile(gl, GLSL_BAR, ATTRIBUTES.bar);
-  const scatter = compile(gl, GLSL_SCATTER, ATTRIBUTES.scatter);
+  const line = compileProgram(gl, GLSL_LINE, ATTRIBUTES.line);
+  const area = compileProgram(gl, GLSL_AREA, ATTRIBUTES.area);
+  const bar = compileProgram(gl, GLSL_BAR, ATTRIBUTES.bar);
+  const scatter = compileProgram(gl, GLSL_SCATTER, ATTRIBUTES.scatter);
   if (!line || !area || !bar || !scatter) return null;
   const programs = { line, area, bar, scatter };
 
@@ -239,22 +177,6 @@ export const createWebGl2Renderer = (
     return res;
   };
 
-  const params = (
-    item: RenderItem,
-    frame: RenderFrame,
-  ): [number, number, number, number] => {
-    switch (item.kind) {
-      case "line":
-        return [(item.width * frame.dpr) / 2, 0, 0, 0];
-      case "area":
-        return [0, item.opacity, 0, 0];
-      case "bar":
-        return [item.halfWidth, item.radius, item.inset, item.minHalf];
-      default:
-        return [item.opacity, item.stroke, 0, 0];
-    }
-  };
-
   return {
     kind: "webgl2",
     canvas,
@@ -288,7 +210,7 @@ export const createWebGl2Renderer = (
           item.color[2],
           item.color[3],
         );
-        const [p0, p1, p2, p3] = params(item, frame);
+        const [p0, p1, p2, p3] = itemParams(item, frame);
         gl.uniform4f(program.params, p0, p1, p2, p3);
         gl.bindVertexArray(res.vao);
         if (res.first !== first) {

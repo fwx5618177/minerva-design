@@ -10,7 +10,12 @@ import {
   type ShapeLayoutInput,
 } from "./layout";
 import { easeOutCubic, type ShapeScene } from "./scene";
-import type { ShapeChartOptions, ShapeToggleEvent } from "./types";
+import { resolveSunburstPath } from "./sunburst";
+import type {
+  ShapeChartOptions,
+  ShapeDrillEvent,
+  ShapeToggleEvent,
+} from "./types";
 
 /** Duration of the entry animation, ms */
 export const ENTER_MS = 600;
@@ -36,7 +41,7 @@ export const prefersReducedMotion = () => {
 
 export type ShapeFrameInput = Omit<
   ShapeLayoutInput,
-  "options" | "hidden" | "enter" | "from" | "t"
+  "options" | "hidden" | "enter" | "from" | "t" | "focus"
 >;
 
 export interface ShapeRuntime {
@@ -50,6 +55,13 @@ export interface ShapeRuntime {
   toggle(index: number): ShapeToggleEvent | null;
   /** Hidden indexes, ascending */
   hiddenIndexes(): number[];
+  /**
+   * Sunburst: focuses the node at `path` (only proposes it when
+   * `options.drillPath` controls the focus); null when nothing would change
+   */
+  drill(path: readonly string[]): ShapeDrillEvent | null;
+  /** Sunburst: names from the root to the focused node */
+  drillPath(): string[];
   /** Lays the scene out at time `time`; `animating` asks for another frame */
   frame(
     time: number,
@@ -78,12 +90,19 @@ export const createShapeRuntime = (
   let entryStart: number | null = null;
   let update: { from: Map<string, number>; start: number | null } | null = null;
   let lastT = 1;
+  /** Sunburst focus of an uncontrolled chart */
+  let focus: string[] = [];
+  /** Focus in effect: the controlled `drillPath`, else the drilled one, made valid */
+  const currentFocus = (): string[] =>
+    options.type === "sunburst"
+      ? resolveSunburstPath(options, options.drillPath ?? focus, hidden)
+      : [];
 
   const animated = () => options.animation !== false && !reducedMotion();
 
   /** Values currently on screen */
   const displayed = () => {
-    const targets = shapeValues(options, hidden);
+    const targets = shapeValues(options, hidden, currentFocus());
     return update && lastT < 1
       ? blendValues(update.from, targets, lastT)
       : targets;
@@ -97,7 +116,7 @@ export const createShapeRuntime = (
       entered = true;
       return;
     }
-    if (!sameValues(from, shapeValues(options, hidden))) {
+    if (!sameValues(from, shapeValues(options, hidden, currentFocus()))) {
       update = { from, start: null };
       lastT = 0;
     }
@@ -112,6 +131,7 @@ export const createShapeRuntime = (
       if (next.type !== options.type) {
         options = next;
         hidden.clear();
+        focus = [];
         syncHidden();
         entered = false;
         entryStart = null;
@@ -139,6 +159,18 @@ export const createShapeRuntime = (
       return { index, hidden: nowHidden, hiddenIndexes: sorted(proposed) };
     },
     hiddenIndexes: () => sorted(hidden),
+    drill(path) {
+      if (options.type !== "sunburst") return null;
+      const before = currentFocus();
+      const next = resolveSunburstPath(options, path, hidden);
+      if (next.join("\u0000") === before.join("\u0000")) return null;
+      if (!options.drillPath)
+        transition(() => {
+          focus = next;
+        });
+      return { path: next };
+    },
+    drillPath: () => currentFocus(),
     frame(time, input) {
       let enter = 1;
       if (!entered) {
@@ -170,6 +202,7 @@ export const createShapeRuntime = (
         enter,
         from: update?.from ?? null,
         t,
+        focus: currentFocus(),
       });
       if (update && t >= 1) update = null;
       return { scene, animating: !entered || update !== null };

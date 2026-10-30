@@ -69,44 +69,144 @@ export const layoutGauge = (
   const a1 = a0 + sweep;
   const th = clamp(finite(o.thickness, 0.16), 0.04, 0.4);
   const semi = sweep <= (200 * Math.PI) / 180;
+  const bands = sortedBands(o.bands);
+  const ticks =
+    o.ticks === false
+      ? []
+      : [min, ...bands.map((b) => b.to), max].filter(
+          (v, i, all) =>
+            v >= min &&
+            v <= max &&
+            all.indexOf(v) === i &&
+            !(sweep >= Math.PI * 2 - 1e-6 && v === max),
+        );
+  const tickFont = font(theme, 11);
+  const tickTexts = ticks.map((v) => c.format(v));
+  const angleOf = (v: number) =>
+    a0 + sweep * clamp((v - min) / (max - min), 0, 1);
+  const hasBandScale = (R: number) => bands.length > 0 && R - R * th - 6 > 12;
+  /** Radius of the tick label anchors (inside the band scale or the track) */
+  const tickRadius = (R: number) =>
+    (hasBandScale(R) ? R - R * th - 7.5 : R - R * th) - 8;
 
-  // bounding box of the unit gauge: arc, round caps and the texts
-  const xs: number[] = [0];
-  const ys: number[] = [o.needle ? 0.62 : semi ? 0.26 : 0];
-  for (const a of [a0, a1]) {
-    const r = 1 - th / 2;
-    xs.push(r * Math.cos(a) - th / 2, r * Math.cos(a) + th / 2);
-    ys.push(r * Math.sin(a) - th / 2, r * Math.sin(a) + th / 2);
-  }
-  for (let k = -4; k <= 4; k++) {
-    const a = (k * Math.PI) / 2;
-    if (a > a0 && a < a1) {
-      xs.push(Math.cos(a));
-      ys.push(Math.sin(a));
+  // With a needle, the value and the label go below the hub, in the opening
+  // of the arc the needle never sweeps: the lowest the needle points is
+  // `phi` below the horizontal, so the text block starts below the needle's
+  // ray through its corners. Nearly closed gauges have no such opening:
+  // their needle is a pointer on the rim and the text stays in the middle.
+  const phi = Math.max(0, (sweep - Math.PI) / 2);
+  const pointer = !!o.needle && phi > (70 * Math.PI) / 180;
+  const below = !!o.needle && !pointer;
+  const HUB = 7;
+
+  /** Texts and their block at a radius (font sizes follow the radius) */
+  const textBlock = (R: number) => {
+    const size = below ? clamp(R * 0.24, 14, 34) : clamp(R * 0.28, 16, 40);
+    const valueFont = font(theme, size, 600);
+    const labelFont = font(theme, 12);
+    const rc = R - (R * th) / 2;
+    const maxW = rc * (semi || below ? 1.5 : 1.3);
+    const label = o.label ? ellipsize(o.label, maxW, labelFont, measure) : "";
+    // the widest of the ends and the value, so that the layout stays still
+    // while the value changes
+    const widest = Math.max(
+      ...[min, max, raw].map((v) => measure(c.format(v), valueFont)),
+    );
+    const half =
+      Math.max(Math.min(widest, maxW), label ? measure(label, labelFont) : 0) /
+      2;
+    return {
+      size,
+      valueFont,
+      labelFont,
+      maxW,
+      label,
+      half,
+      height: size + (label ? 18 : 0),
+    };
+  };
+
+  /** Top of the text block below the hub, relative to the center */
+  const blockTop = (R: number, block: ReturnType<typeof textBlock>) => {
+    const margin = 8;
+    let top = Math.max(HUB + margin, R * 0.12);
+    if (phi > 0)
+      top = Math.max(
+        top,
+        margin / Math.cos(phi) + (block.half + 2) * Math.tan(phi),
+      );
+    // tick labels below the center and above the block
+    if (R >= 48) {
+      const rt = tickRadius(R);
+      ticks.forEach((v, k) => {
+        const a = angleOf(v);
+        const cos = Math.cos(a);
+        const sin = Math.sin(a);
+        if (sin <= 0.05) return;
+        const w = measure(tickTexts[k] ?? "", tickFont);
+        const x = rt * cos;
+        const x0 = cos > 0.35 ? x - w : cos < -0.35 ? x : x - w / 2;
+        if (x0 > block.half + 4 || x0 + w < -block.half - 4) return;
+        const y = rt * sin;
+        const bottom = sin > 0.35 ? y : y + 6;
+        top = Math.max(top, bottom + 4);
+      });
     }
-  }
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const R = Math.max(
-    4,
-    Math.min(area.width / (maxX - minX), area.height / (maxY - minY)),
-  );
-  const cx = area.x + (area.width - (maxX - minX) * R) / 2 - minX * R;
-  const cy = area.y + (area.height - (maxY - minY) * R) / 2 - minY * R;
+    return top;
+  };
+
+  /** Radius and center fitting the area, the texts reaching `bottom` (unit) */
+  const fit = (bottom: number) => {
+    const xs: number[] = [0];
+    const ys: number[] = [bottom];
+    for (const a of [a0, a1]) {
+      const r = 1 - th / 2;
+      xs.push(r * Math.cos(a) - th / 2, r * Math.cos(a) + th / 2);
+      ys.push(r * Math.sin(a) - th / 2, r * Math.sin(a) + th / 2);
+    }
+    for (let k = -4; k <= 4; k++) {
+      const a = (k * Math.PI) / 2;
+      if (a > a0 && a < a1) {
+        xs.push(Math.cos(a));
+        ys.push(Math.sin(a));
+      }
+    }
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const R = Math.max(
+      4,
+      Math.min(area.width / (maxX - minX), area.height / (maxY - minY)),
+    );
+    return {
+      R,
+      cx: area.x + (area.width - (maxX - minX) * R) / 2 - minX * R,
+      cy: area.y + (area.height - (maxY - minY) * R) / 2 - minY * R,
+    };
+  };
+
+  let geometry = fit(below ? 0.62 : semi ? 0.26 : 0);
+  let block = textBlock(geometry.R);
+  let top = below ? blockTop(geometry.R, block) : 0;
+  if (below)
+    // the block size depends on the radius and the radius on the block
+    for (let k = 0; k < 4; k++) {
+      const bottom = (top + block.height + 2) / geometry.R;
+      geometry = fit(bottom);
+      block = textBlock(geometry.R);
+      top = blockTop(geometry.R, block);
+    }
+  const { R, cx, cy } = geometry;
   const lw = R * th;
   const rc = R - lw / 2;
 
-  const bands = sortedBands(o.bands);
   const bandColors = bands.map((b, i) =>
     resolveWith(theme, b.color, theme.palette[i % theme.palette.length]),
   );
   const band = gaugeBandIndex(bands, clamp(animated, min, max));
   const color = band >= 0 ? bandColors[band] : c.color(o.color, 0);
   const css = toCss(color);
-  const angleOf = (v: number) =>
-    a0 + sweep * clamp((v - min) / (max - min), 0, 1);
 
   const nodes: ShapeNode[] = [
     { kind: "circle", cx, cy, r: R, hit: 0 },
@@ -138,7 +238,7 @@ export const layoutGauge = (
 
   // thin band scale inside the track
   const rb = R - lw - 6;
-  if (bands.length && rb > 12) {
+  if (hasBandScale(R)) {
     let from = min;
     bands.forEach((b, i) => {
       const lo = Math.max(from, min);
@@ -161,17 +261,9 @@ export const layoutGauge = (
   }
 
   // tick labels at the ends and the band bounds
-  if (o.ticks !== false && R >= 48) {
-    const rt = (bands.length && rb > 12 ? rb - 1.5 : R - lw) - 8;
-    const values = [min, ...bands.map((b) => b.to), max].filter(
-      (v, i, all) =>
-        v >= min &&
-        v <= max &&
-        all.indexOf(v) === i &&
-        !(sweep >= Math.PI * 2 - 1e-6 && v === max),
-    );
-    const tickFont = font(theme, 11);
-    for (const v of values) {
+  if (ticks.length && R >= 48) {
+    const rt = tickRadius(R);
+    ticks.forEach((v, k) => {
       const a = angleOf(v);
       const cos = Math.cos(a);
       const sin = Math.sin(a);
@@ -179,61 +271,27 @@ export const layoutGauge = (
         kind: "text",
         x: cx + rt * cos,
         y: cy + rt * sin,
-        text: c.format(v),
+        text: tickTexts[k] ?? "",
         font: tickFont,
         color: toCss(theme.textMuted),
         align: cos > 0.35 ? "right" : cos < -0.35 ? "left" : "center",
         baseline: sin > 0.35 ? "bottom" : sin < -0.35 ? "top" : "middle",
       });
-    }
+    });
   }
 
-  // needle
-  if (o.needle) {
-    const an = a0 + sweep * frac;
-    const len = rc;
-    const nx = Math.cos(an + Math.PI / 2);
-    const ny = Math.sin(an + Math.PI / 2);
-    const tx = cx + len * Math.cos(an);
-    const ty = cy + len * Math.sin(an);
-    nodes.push(
-      {
-        kind: "polygon",
-        points: [
-          cx + nx * 3.5,
-          cy + ny * 3.5,
-          tx + nx * 1,
-          ty + ny * 1,
-          tx - nx * 1,
-          ty - ny * 1,
-          cx - nx * 3.5,
-          cy - ny * 3.5,
-        ],
-        fill: toCss(theme.text, 0.85),
-        radius: 1,
-      },
-      { kind: "circle", cx, cy, r: 7, fill: toCss(theme.text, 0.9) },
-      { kind: "circle", cx, cy, r: 2.5, fill: toCss(theme.background) },
-    );
-  }
-
-  // value and label
-  const size = clamp(R * 0.28, 16, 40);
-  const valueFont = font(theme, size, 600);
-  const labelFont = font(theme, 12);
-  const maxW = rc * (semi ? 1.5 : 1.3);
+  // value and label: below the hub (needle), else in the middle
+  const { size, valueFont, labelFont, maxW, label } = block;
   const valueText = ellipsize(c.format(shown), maxW, valueFont, measure);
-  const label = o.label ? ellipsize(o.label, maxW, labelFont, measure) : "";
-  const blockH = size + (label ? 18 : 0);
-  const top = o.needle
-    ? cy + Math.max(14, R * 0.16)
-    : semi
+  const blockY = below
+    ? cy + top
+    : semi && !pointer
       ? cy - size - 2
-      : cy - blockH / 2;
+      : cy - block.height / 2;
   nodes.push({
     kind: "text",
     x: cx,
-    y: top + size / 2,
+    y: blockY + size / 2,
     text: valueText,
     font: valueFont,
     color: toCss(theme.text),
@@ -244,7 +302,7 @@ export const layoutGauge = (
     nodes.push({
       kind: "text",
       x: cx,
-      y: semi && !o.needle ? cy + 12 : top + size + 11,
+      y: semi && !o.needle ? cy + 12 : blockY + size + 11,
       text: label,
       font: labelFont,
       color: toCss(theme.textMuted),
@@ -252,13 +310,55 @@ export const layoutGauge = (
       baseline: "middle",
     });
 
+  // needle: from the hub, or a pointer on the rim around the centered texts
+  if (o.needle) {
+    const an = a0 + sweep * frac;
+    const len = rc;
+    const ux = Math.cos(an);
+    const uy = Math.sin(an);
+    const nx = -uy;
+    const ny = ux;
+    const tx = cx + len * ux;
+    const ty = cy + len * uy;
+    const inner = pointer
+      ? clamp(
+          Math.hypot(block.half, block.height / 2) + 6,
+          rc * 0.35,
+          Math.max(rc * 0.35, rc - 14),
+        )
+      : 0;
+    const bx = cx + inner * ux;
+    const by = cy + inner * uy;
+    const base = pointer ? 2.5 : 3.5;
+    nodes.push({
+      kind: "polygon",
+      points: [
+        bx + nx * base,
+        by + ny * base,
+        tx + nx * 1,
+        ty + ny * 1,
+        tx - nx * 1,
+        ty - ny * 1,
+        bx - nx * base,
+        by - ny * base,
+      ],
+      fill: toCss(theme.text, 0.85),
+      radius: 1,
+    });
+    if (!pointer)
+      nodes.push(
+        { kind: "circle", cx, cy, r: HUB, fill: toCss(theme.text, 0.9) },
+        { kind: "circle", cx, cy, r: 2.5, fill: toCss(theme.background) },
+      );
+  }
+
   const percent = clamp((raw - min) / (max - min), 0, 1);
   return {
     nodes,
     items: [
       {
         index: 0,
-        name: o.label ?? "Value",
+        name: o.label ?? c.labels.value,
         value: raw,
         percent,
         share: c.percent(percent),
@@ -266,8 +366,8 @@ export const layoutGauge = (
         x: cx + rc * Math.cos(angleOf(raw)),
         y: cy + rc * Math.sin(angleOf(raw)),
         rows: [
-          { name: "Value", value: c.format(raw) },
-          { name: "Of range", value: c.percent(percent) },
+          { name: c.labels.value, value: c.format(raw) },
+          { name: c.labels.ofRange, value: c.percent(percent) },
         ],
       },
     ],

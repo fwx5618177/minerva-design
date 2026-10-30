@@ -12,7 +12,9 @@ import {
   swatch,
 } from "./dom";
 import { buildItems, type Origin } from "./items";
-import { createScales, type Scales } from "./layout";
+import { chartAriaLabel } from "./labels";
+import { createScales, toData, toScreen, type Scales } from "./layout";
+import { watchLocale } from "./locale";
 import { buildModel, type ChartModel, type DataCache } from "./model";
 import {
   drawBackground,
@@ -24,6 +26,7 @@ import { createRenderer } from "./renderers/detect";
 import type { ChartRenderer, RenderItem } from "./renderers/types";
 import {
   collectPointLabels,
+  crosshairAt,
   hitTest,
   hoverItemOf,
   hoverMarks,
@@ -32,7 +35,6 @@ import {
   pointOf,
   resolveAnnotations,
   sameHover,
-  showsCrosshair,
   tooltipContent,
 } from "./scene";
 import { itemsSignature } from "./signature";
@@ -78,7 +80,7 @@ const copyView = (v: ChartView): ChartView => ({
 
 /**
  * Creates a chart inside `container` (which must have a size). The data
- * layer uses WebGPU when available, then WebGL2, then Canvas2D.
+ * layer uses WebGPU when available, then WebGL2, then WebGL, then Canvas2D.
  */
 export const createChart = (
   container: HTMLElement,
@@ -106,6 +108,7 @@ export const createChart = (
   let scales: Scales | null = null;
   let xTicks: AxisTicks | null = null;
   let yTicks: AxisTicks | null = null;
+  let y2Ticks: AxisTicks | null = null;
   let renderer: ChartRenderer | null = null;
   let rendererToken = 0;
   let destroyed = false;
@@ -296,10 +299,9 @@ export const createChart = (
   };
 
   const updateAccessibility = () => {
-    const names = model.series.map((s) => s.name).join(", ");
     dom.stage.setAttribute(
       "aria-label",
-      options.ariaLabel ?? (names ? `Chart: ${names}` : "Chart"),
+      options.ariaLabel ?? chartAriaLabel(model),
     );
     const keyboard = interaction()?.keyboard;
     dom.stage.style.touchAction = interaction()?.dragPoints ? "none" : "pan-y";
@@ -359,6 +361,7 @@ export const createChart = (
     const { plot } = layout;
     xTicks = layout.xTicks;
     yTicks = layout.yTicks;
+    y2Ticks = layout.y2Ticks;
     scales = layout.scales;
     const rect = plotRect();
     if (rect && rect.join() !== lastPlot) {
@@ -380,6 +383,8 @@ export const createChart = (
         y: model.y,
         xTicks,
         yTicks,
+        y2: model.y2,
+        y2Ticks,
         theme,
         annotations,
       });
@@ -398,14 +403,21 @@ export const createChart = (
 
     if (renderer) {
       const canvas = renderer.canvas;
+      // horizontal charts: the data layer is drawn as a vertical chart on a
+      // transposed canvas (its x axis runs down the plot, its y axis right)
+      const transposed = model.horizontal;
+      const cw = transposed ? plot.height : plot.width;
+      const ch = transposed ? plot.width : plot.height;
       styleElement(canvas, {
         left: `${plot.x}px`,
         top: `${plot.y}px`,
-        width: `${plot.width}px`,
-        height: `${plot.height}px`,
+        width: `${cw}px`,
+        height: `${ch}px`,
+        transformOrigin: transposed ? "0 0" : "",
+        transform: transposed ? "matrix(0, 1, 1, 0, 0, 0)" : "",
       });
-      const bw = Math.max(1, Math.round(plot.width * dpr));
-      const bh = Math.max(1, Math.round(plot.height * dpr));
+      const bw = Math.max(1, Math.round(cw * dpr));
+      const bh = Math.max(1, Math.round(ch * dpr));
       if (canvas.width !== bw || canvas.height !== bh) renderer.resize(bw, bh);
       ensureOrigin();
       if (itemsDirty) {
@@ -414,7 +426,12 @@ export const createChart = (
         itemsDirty = false;
       }
       const [xScale, xOffset] = transformFor(view.x, origin.x, model.x.reverse);
-      const [yScale, yOffset] = transformFor(view.y, origin.y, model.y.reverse);
+      const [yScale, yOffset] = transformFor(
+        view.y,
+        origin.y,
+        // the top of the transposed canvas is the left of the plot
+        transposed ? !model.y.reverse : model.y.reverse,
+      );
       renderer.render(items, {
         transform: { xScale, xOffset, yScale, yOffset },
         width: bw,
@@ -464,7 +481,7 @@ export const createChart = (
   const tooltipNode = (event: ChartHoverEvent): Node | string | null => {
     const custom = tooltipOptions()?.render;
     if (custom) return custom(event);
-    const content = tooltipContent(model, event, yTicks);
+    const content = tooltipContent(model, event, yTicks, y2Ticks);
     const fragment = doc.createDocumentFragment();
     const header = doc.createElement("div");
     styleElement(header, {
@@ -588,17 +605,32 @@ export const createChart = (
       const { plot } = sc;
       dom.hover.style.width = `${dom.stage.clientWidth}px`;
       dom.hover.style.height = `${dom.stage.clientHeight}px`;
-      if (showsCrosshair(model, hover.event, options.crosshair)) {
-        const first = hover.event.items[0];
-        const cx = sc.xToPx(first.x);
-        if (cx >= plot.x && cx <= plot.x + plot.width) {
-          styleElement(dom.crosshair, {
-            display: "block",
-            left: `${Math.round(cx)}px`,
-            top: `${plot.y}px`,
-            height: `${plot.height}px`,
-          });
-        }
+      const guide = crosshairAt(model, sc, hover.event, options.crosshair);
+      if (guide !== null) {
+        const line =
+          "1px dashed color-mix(in srgb, var(--text-secondary-color, #6b7280) 45%, transparent)";
+        styleElement(
+          dom.crosshair,
+          sc.horizontal
+            ? {
+                display: "block",
+                left: `${plot.x}px`,
+                top: `${Math.round(guide)}px`,
+                width: `${plot.width}px`,
+                height: "0",
+                borderLeft: "0",
+                borderTop: line,
+              }
+            : {
+                display: "block",
+                left: `${Math.round(guide)}px`,
+                top: `${plot.y}px`,
+                width: "0",
+                height: `${plot.height}px`,
+                borderLeft: line,
+                borderTop: "0",
+              },
+        );
       }
       for (const mark of hoverMarks(model, sc, hover.event)) {
         if (mark.kind === "band" || mark.kind === "cell") {
@@ -659,8 +691,9 @@ export const createChart = (
     const sc = scales;
     if (!sc) return;
     const next = copyView(view);
-    if (model.zoom.x) next.x = zoomRange(view.x, sc.pxToX(px), factor);
-    if (model.zoom.y) next.y = zoomRange(view.y, sc.pxToY(py), factor);
+    const at = toData(sc, px, py);
+    if (model.zoom.x) next.x = zoomRange(view.x, at.x, factor);
+    if (model.zoom.y) next.y = zoomRange(view.y, at.y, factor);
     setViewInternal(next, true);
   };
 
@@ -682,7 +715,7 @@ export const createChart = (
     const { plot } = sc;
     const cx = Math.max(plot.x, Math.min(plot.x + plot.width, x));
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
-    return { x: sc.pxToX(cx), y: sc.pxToY(cy) };
+    return toData(sc, cx, cy);
   };
 
   const moveGhost = (x: number, y: number, color: string | null) => {
@@ -742,16 +775,10 @@ export const createChart = (
       }
       if (drag.moved && scales) {
         const next = copyView(drag.view);
-        if (model.zoom.x)
-          next.x = panRange(
-            drag.view.x,
-            -dx * scales.xPerPx * (model.x.reverse ? -1 : 1),
-          );
-        if (model.zoom.y)
-          next.y = panRange(
-            drag.view.y,
-            dy * scales.yPerPx * (model.y.reverse ? -1 : 1),
-          );
+        const from = toData(scales, drag.x, drag.y);
+        const to = toData(scales, x, y);
+        if (model.zoom.x) next.x = panRange(drag.view.x, from.x - to.x);
+        if (model.zoom.y) next.y = panRange(drag.view.y, from.y - to.y);
         setViewInternal(next, true);
         return;
       }
@@ -849,6 +876,7 @@ export const createChart = (
       zoomed &&
       model.zoom.x &&
       scales &&
+      !scales.horizontal &&
       Math.abs(event.deltaX) > Math.abs(event.deltaY)
     ) {
       event.preventDefault();
@@ -903,6 +931,7 @@ export const createChart = (
         view,
         model.x.reverse,
         model.y.reverse,
+        model.horizontal,
       );
     }
     const p = pointOf(series, index, current2);
@@ -932,8 +961,16 @@ export const createChart = (
     switch (event.key) {
       case "ArrowRight":
       case "ArrowLeft":
+        if (model.horizontal) return;
         event.preventDefault();
         moveFocus((event.key === "ArrowRight") !== model.x.reverse ? 1 : -1);
+        break;
+      case "ArrowDown":
+      case "ArrowUp":
+        // horizontal charts: the x axis runs down
+        if (!model.horizontal) return;
+        event.preventDefault();
+        moveFocus((event.key === "ArrowDown") !== model.x.reverse ? 1 : -1);
         break;
       case "+":
       case "=": {
@@ -1010,6 +1047,10 @@ export const createChart = (
     rebuild();
   };
   const unwatchTheme = watchTheme(refreshTheme);
+  // charts without `locale` follow the page language
+  const unwatchLocale = watchLocale(() => {
+    if (!destroyed && !options.locale) rebuild();
+  });
 
   // ------------------------------------------------------------- renderer
 
@@ -1087,17 +1128,15 @@ export const createChart = (
     },
     toPixel(x, y) {
       if (!scales) return null;
+      const p = toScreen(scales, x, y);
       return {
-        x: scales.xToPx(x) + dom.stage.offsetLeft,
-        y: scales.yToPx(y) + dom.stage.offsetTop,
+        x: p.x + dom.stage.offsetLeft,
+        y: p.y + dom.stage.offsetTop,
       };
     },
     fromPixel(x, y) {
       if (!scales) return null;
-      return {
-        x: scales.pxToX(x - dom.stage.offsetLeft),
-        y: scales.pxToY(y - dom.stage.offsetTop),
-      };
+      return toData(scales, x - dom.stage.offsetLeft, y - dom.stage.offsetTop);
     },
     ready,
     refreshTheme,
@@ -1121,6 +1160,7 @@ export const createChart = (
       }
       resizeObserver?.disconnect();
       unwatchTheme();
+      unwatchLocale();
       stage.removeEventListener("wheel", onWheel);
       renderer?.destroy();
       renderer = null;

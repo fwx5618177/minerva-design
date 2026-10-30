@@ -2,11 +2,16 @@ import { act, render } from "@testing-library/react";
 import { createRef } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  BulletChart,
+  CalendarHeatmap,
   DonutChart,
   FunnelChart,
   GaugeChart,
   PieChart,
   RadarChart,
+  RadialBarChart,
+  SankeyChart,
+  SunburstChart,
   TreemapChart,
   type ShapeChartHandle,
 } from "./shapes";
@@ -190,5 +195,134 @@ describe("shape chart components", () => {
     );
     expect(spy).not.toHaveBeenCalled();
     await flush();
+  });
+
+  it("renders the flow, hierarchy, progress, calendar and KPI charts", () => {
+    const { container } = render(
+      <>
+        <SankeyChart links={[{ source: "a", target: "b", value: 1 }]} />
+        <SunburstChart data={data} />
+        <RadialBarChart data={data} />
+        <CalendarHeatmap
+          range={2026}
+          data={[{ date: "2026-02-03", value: 2 }]}
+        />
+        <BulletChart
+          data={[
+            { name: "a", value: 1, target: 2 },
+            { name: "b", value: 3 },
+          ]}
+        />
+      </>,
+    );
+    const roots = [...container.children] as HTMLElement[];
+    expect(roots.map((r) => r.style.height)).toEqual([
+      "360px",
+      "360px",
+      "300px",
+      "170px",
+      "144px",
+    ]);
+    const labels = [...container.querySelectorAll(".minerva-chart-stage")].map(
+      (s) => s.getAttribute("aria-label"),
+    );
+    expect(labels).toEqual([
+      "Sankey diagram",
+      "Sunburst chart",
+      "Radial bar chart",
+      "Calendar heatmap",
+      "Bullet chart",
+    ]);
+    // calendar levels in the legend
+    expect(
+      roots[3].querySelectorAll(".minerva-chart-legend button").length,
+    ).toBe(4);
+  });
+
+  it("reports sunburst drill-downs, controlled or not", async () => {
+    const tree = [
+      {
+        name: "A",
+        children: [
+          { name: "a1", value: 1 },
+          { name: "a2", value: 2 },
+        ],
+      },
+      { name: "B", value: 3 },
+    ];
+    const onDrill = vi.fn();
+    const ref = createRef<ShapeChartHandle>();
+    const { container, rerender } = render(
+      <SunburstChart
+        ref={ref}
+        data={tree}
+        animation={false}
+        onDrill={onDrill}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    act(() => chart.drill(["A"]));
+    expect(onDrill).toHaveBeenLastCalledWith({ path: ["A"] });
+    expect(chart.getDrillPath()).toEqual(["A"]);
+    await flush();
+    // Backspace goes back up
+    const stage = container.querySelector<HTMLElement>(".minerva-chart-stage")!;
+    act(() => {
+      stage.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Backspace", bubbles: true }),
+      );
+    });
+    expect(onDrill).toHaveBeenLastCalledWith({ path: [] });
+    expect(chart.getDrillPath()).toEqual([]);
+
+    // controlled
+    rerender(
+      <SunburstChart
+        ref={ref}
+        data={tree}
+        animation={false}
+        drillPath={["A"]}
+        onDrill={onDrill}
+      />,
+    );
+    expect(chart.getDrillPath()).toEqual(["A"]);
+    await flush();
+    // the center goes up, but the prop wins
+    act(() => {
+      stage.dispatchEvent(pointer("pointerdown", 200, 150));
+      stage.dispatchEvent(pointer("pointerup", 200, 150));
+    });
+    expect(onDrill).toHaveBeenLastCalledWith({ path: [] });
+    expect(chart.getDrillPath()).toEqual(["A"]);
+  });
+
+  it("follows the page language unless `locale` is set", async () => {
+    const initial = document.documentElement.lang;
+    try {
+      document.documentElement.lang = "en";
+      const { container } = render(
+        <>
+          <PieChart data={data} animation={false} />
+          <GaugeChart value={40} label="CPU" locale="fr" />
+          <BulletChart
+            data={[{ name: "Revenue", value: 3, target: 4 }]}
+            texts={{ bulletChart: "KPIs" }}
+          />
+        </>,
+      );
+      const names = () =>
+        [...container.querySelectorAll(".minerva-chart-stage")].map((s) =>
+          s.getAttribute("aria-label"),
+        );
+      expect(names()).toEqual(["Pie chart", "Jauge : CPU", "KPIs"]);
+      await act(async () => {
+        document.documentElement.lang = "zh-CN";
+        await Promise.resolve();
+      });
+      expect(names()).toEqual(["饼图", "Jauge : CPU", "KPIs"]);
+    } finally {
+      document.documentElement.lang = initial;
+    }
   });
 });

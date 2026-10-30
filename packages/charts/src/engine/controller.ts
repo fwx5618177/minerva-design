@@ -8,17 +8,31 @@ import { toCss, unpackColor } from "./color";
 import { curvePoints } from "./curve";
 import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
-import { createScales, type Rect } from "./layout";
-import { buildModel, type ChartModel, type DataCache } from "./model";
+import {
+  createScales,
+  screenRect,
+  toData,
+  toScreen,
+  type Rect,
+  type Scales,
+} from "./layout";
+import {
+  buildModel,
+  type ChartModel,
+  type DataCache,
+  type SeriesModel,
+} from "./model";
 import {
   font,
   placeLabels,
+  rectOf,
   textBox,
   type PointLabel,
   type ResolvedAnnotation,
 } from "./overlay";
 import {
   collectPointLabels,
+  crosshairAt,
   dotSize,
   hitTest,
   hoverMarks,
@@ -26,7 +40,6 @@ import {
   legendShape,
   resolveAnnotations,
   sameHover,
-  showsCrosshair,
   tooltipContent,
   type ChartLayout,
   type HoverMark,
@@ -98,8 +111,10 @@ export interface ChartTooltipLayout {
 export interface ChartHoverLayout {
   event: ChartHoverEvent;
   marks: HoverMark[];
-  /** X pixel of the guide line (`null` when hidden) */
+  /** X pixel of the vertical guide line (`null` when hidden) */
   crosshairX: number | null;
+  /** Y pixel of the horizontal guide line of horizontal charts (`null` when hidden) */
+  crosshairY: number | null;
   tooltip: ChartTooltipLayout | null;
 }
 
@@ -323,7 +338,12 @@ export const createChartController = (
       if (result === null || result === "") return null;
       if (typeof result === "string") text = result.split("\n");
     }
-    const content = tooltipContent(model, event, scene?.layout.yTicks ?? null);
+    const content = tooltipContent(
+      model,
+      event,
+      scene?.layout.yTicks ?? null,
+      scene?.layout.y2Ticks ?? null,
+    );
     const lineHeight = 18;
     const padding = 8;
     let w = 0;
@@ -395,30 +415,21 @@ export const createChartController = (
       }
       if (a.type !== "rect" || !a.label) continue;
       // keep the dot labels off the area titles (drawForeground does the same)
-      const s = layout.scales;
-      const x0 = a.x0 === undefined ? layout.plot.x : s.xToPx(a.x0);
-      const x1 =
-        a.x1 === undefined ? layout.plot.x + layout.plot.width : s.xToPx(a.x1);
-      const y0 =
-        a.y0 === undefined ? layout.plot.y + layout.plot.height : s.yToPx(a.y0);
-      const y1 = a.y1 === undefined ? layout.plot.y : s.yToPx(a.y1);
+      const r = rectOf(a, layout.scales);
+      if (r.width <= 0 || r.height <= 0) continue;
       const w = measure(a.label, theme.fontSize + 1, 600);
-      const left = Math.min(x0, x1);
-      const right = Math.max(x0, x1);
-      const top = Math.min(y0, y1);
-      const bottom = Math.max(y0, y1);
       const pos = a.labelPosition;
       occupied.push({
         x: pos.endsWith("left")
-          ? left + 10
+          ? r.x + 10
           : pos.endsWith("right")
-            ? right - 10 - w
-            : (left + right - w) / 2,
+            ? r.x + r.width - 10 - w
+            : r.x + (r.width - w) / 2,
         y: pos.startsWith("top")
-          ? top + 10
+          ? r.y + 10
           : pos.startsWith("bottom")
-            ? bottom - 10 - labelHeight
-            : (top + bottom - labelHeight) / 2,
+            ? r.y + r.height - 10 - labelHeight
+            : r.y + (r.height - labelHeight) / 2,
         width: w,
         height: labelHeight,
       });
@@ -445,17 +456,18 @@ export const createChartController = (
     };
     scene = next;
     if (hover) {
-      const crosshair = showsCrosshair(model, hover.event, options.crosshair);
-      const cx = layout.scales.xToPx(hover.event.items[0].x);
+      const guide = crosshairAt(
+        model,
+        layout.scales,
+        hover.event,
+        options.crosshair,
+      );
+      const horizontal = layout.scales.horizontal;
       next.hover = {
         event: hover.event,
         marks: hoverMarks(model, layout.scales, hover.event),
-        crosshairX:
-          crosshair &&
-          cx >= layout.plot.x &&
-          cx <= layout.plot.x + layout.plot.width
-            ? cx
-            : null,
+        crosshairX: horizontal ? null : guide,
+        crosshairY: horizontal ? guide : null,
         tooltip:
           gesture?.kind === "pan" || gesture?.kind === "point"
             ? null
@@ -521,7 +533,7 @@ export const createChartController = (
     const { plot } = sc;
     const cx = Math.max(plot.x, Math.min(plot.x + plot.width, x));
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
-    return { x: sc.pxToX(cx), y: sc.pxToY(cy) };
+    return toData(sc, cx, cy);
   };
 
   const setViewInternal = (next: ChartView, notify: boolean) => {
@@ -539,8 +551,9 @@ export const createChartController = (
     const sc = scales();
     if (!sc || (!model.zoom.x && !model.zoom.y)) return;
     const next = copyView(view);
-    if (model.zoom.x) next.x = zoomRange(view.x, sc.pxToX(x), factor);
-    if (model.zoom.y) next.y = zoomRange(view.y, sc.pxToY(y), factor);
+    const at = toData(sc, x, y);
+    if (model.zoom.x) next.x = zoomRange(view.x, at.x, factor);
+    if (model.zoom.y) next.y = zoomRange(view.y, at.y, factor);
     setViewInternal(next, true);
   };
 
@@ -640,18 +653,20 @@ export const createChartController = (
         gesture.view,
         model.x.reverse,
         model.y.reverse,
+        model.horizontal,
       );
       const factor = gesture.distance / distance;
       const next = copyView(gesture.view);
+      const from = toData(start, gesture.midX, gesture.midY);
+      const to = toData(start, midX, midY);
+      // the data under the first midpoint follows the fingers
       if (model.zoom.x) {
-        next.x = zoomRange(gesture.view.x, start.pxToX(gesture.midX), factor);
-        const shift = (midX - gesture.midX) * start.xPerPx * factor;
-        next.x = panRange(next.x, model.x.reverse ? shift : -shift);
+        next.x = zoomRange(gesture.view.x, from.x, factor);
+        next.x = panRange(next.x, (from.x - to.x) * factor);
       }
       if (model.zoom.y) {
-        next.y = zoomRange(gesture.view.y, start.pxToY(gesture.midY), factor);
-        const shift = (midY - gesture.midY) * start.yPerPx * factor;
-        next.y = panRange(next.y, model.y.reverse ? -shift : shift);
+        next.y = zoomRange(gesture.view.y, from.y, factor);
+        next.y = panRange(next.y, (from.y - to.y) * factor);
       }
       setViewInternal(next, true);
       return;
@@ -669,19 +684,11 @@ export const createChartController = (
       if (!p.moved) return;
       const sc = scales();
       if (!sc) return;
-      const dx = x - gesture.x;
-      const dy = y - gesture.y;
       const next = copyView(gesture.view);
-      if (model.zoom.x)
-        next.x = panRange(
-          gesture.view.x,
-          -dx * sc.xPerPx * (model.x.reverse ? -1 : 1),
-        );
-      if (model.zoom.y)
-        next.y = panRange(
-          gesture.view.y,
-          dy * sc.yPerPx * (model.y.reverse ? -1 : 1),
-        );
+      const from = toData(sc, gesture.x, gesture.y);
+      const to = toData(sc, x, y);
+      if (model.zoom.x) next.x = panRange(gesture.view.x, from.x - to.x);
+      if (model.zoom.y) next.y = panRange(gesture.view.y, from.y - to.y);
       setViewInternal(next, true);
       return;
     }
@@ -806,11 +813,11 @@ export const createChartController = (
     },
     toPixel(x, y) {
       const sc = scales();
-      return sc ? { x: sc.xToPx(x), y: sc.yToPx(y) } : null;
+      return sc ? toScreen(sc, x, y) : null;
     },
     fromPixel(x, y) {
       const sc = scales();
-      return sc ? { x: sc.pxToX(x), y: sc.pxToY(y) } : null;
+      return sc ? toData(sc, x, y) : null;
     },
     on(type, listener) {
       let set = listeners[type] as Set<typeof listener> | undefined;
@@ -849,11 +856,16 @@ export interface ChartAreaPrimitive {
   seriesIndex: number;
   color: string;
   opacity: number;
-  /** Y pixel of the baseline */
+  /** Y pixel of the baseline (x pixel when `horizontal`) */
   baseline: number;
   segments: number[][];
-  /** Stacked areas: y pixel of the bottom edge under every point of `segments` */
+  /**
+   * Stacked and range areas: y pixel (x pixel when `horizontal`) of the
+   * bottom edge under every point of `segments`
+   */
   bottoms?: number[][];
+  /** Horizontal charts: the area is filled toward the left edge (`baseline` / `bottoms` are x pixels) */
+  horizontal?: boolean;
 }
 
 export interface ChartBarPrimitive {
@@ -866,6 +878,8 @@ export interface ChartBarPrimitive {
   colors?: string[];
   /** Corner radius in pixels */
   radius?: number;
+  /** Opacity of the fill (box plot boxes, translucent bars) */
+  opacity?: number;
 }
 
 export interface ChartDotPrimitive {
@@ -925,10 +939,27 @@ const ORDER = {
   heatmap: 0,
   area: 1,
   bar: 2,
+  boxplot: 2,
   candlestick: 3,
   line: 4,
   scatter: 5,
 } as const;
+
+/**
+ * Rectangles collected along the axes (`x` along the x axis, `y` along the
+ * value axis) and turned into screen rects
+ */
+const toRects = (sc: Scales, along: number[]): number[] => {
+  if (!sc.horizontal) return along;
+  const out = new Array<number>(along.length);
+  for (let k = 0; k < along.length; k += 4) {
+    out[k] = along[k + 1];
+    out[k + 1] = along[k];
+    out[k + 2] = along[k + 3];
+    out[k + 3] = along[k + 2];
+  }
+  return out;
+};
 
 /**
  * Data of a scene as simple shapes in pixels of the chart, for hosts
@@ -943,9 +974,13 @@ export const scenePrimitives = (
   const { model, view, layout } = scene;
   const sc = layout.scales;
   const { plot } = layout;
+  const horizontal = sc.horizontal;
   const maxDots = limits.maxDots ?? 4000;
   const maxBars = limits.maxBars ?? 2000;
   const column = Math.max(1, limits.columnWidth ?? 1);
+  // the x axis in pixels (along `xToPx`)
+  const xLo = horizontal ? plot.y : plot.x;
+  const xHi = xLo + (horizontal ? plot.height : plot.width);
   const out: ChartPrimitive[] = [];
   const series = model.series
     .filter((s) => !s.hidden && s.cols.count > 0)
@@ -964,7 +999,7 @@ export const scenePrimitives = (
       let n = curved.length;
       let points = curved.points;
       let bottoms = bottom;
-      if (sorted && n > (plot.width * 2) / column) {
+      if (sorted && n > ((xHi - xLo) * 2) / column) {
         if (bottom) {
           // keep the bottoms aligned with the kept tops (same x)
           const d = decimateMinMax(points, 0, n, (v) => sc.xToPx(v) / column);
@@ -990,10 +1025,24 @@ export const scenePrimitives = (
           n = d.length;
         }
       }
+      // range areas: a line on the lower edge too
+      const band = s.type === "area" && !!s.cols.y0 && !!bottoms;
       const segments: number[][] = [];
       const bottomSegments: number[][] = [];
+      const lowerSegments: number[][] = [];
       let run: number[] = [];
       let runBottom: number[] = [];
+      let runLower: number[] = [];
+      const flush = () => {
+        if (run.length) {
+          segments.push(run);
+          bottomSegments.push(runBottom);
+          if (band) lowerSegments.push(runLower);
+        }
+        run = [];
+        runBottom = [];
+        runLower = [];
+      };
       for (let i = 0; i < n; i++) {
         const xv = points[i * 2];
         const yv = points[i * 2 + 1];
@@ -1003,21 +1052,18 @@ export const scenePrimitives = (
           !Number.isFinite(yv) ||
           !Number.isFinite(bv)
         ) {
-          if (run.length) {
-            segments.push(run);
-            bottomSegments.push(runBottom);
-          }
-          run = [];
-          runBottom = [];
+          flush();
           continue;
         }
-        run.push(sc.xToPx(xv), sc.yToPx(yv));
+        const p = toScreen(sc, xv, yv);
+        run.push(p.x, p.y);
         if (bottoms) runBottom.push(sc.yToPx(bv));
+        if (band) {
+          const q = toScreen(sc, xv, bv);
+          runLower.push(q.x, q.y);
+        }
       }
-      if (run.length) {
-        segments.push(run);
-        bottomSegments.push(runBottom);
-      }
+      flush();
       if (s.type === "area") {
         out.push({
           kind: "area",
@@ -1027,20 +1073,33 @@ export const scenePrimitives = (
           baseline: sc.yToPx(model.baseline),
           segments,
           ...(bottoms ? { bottoms: bottomSegments } : {}),
+          ...(horizontal ? { horizontal: true } : {}),
         });
       }
-      out.push({
-        kind: "line",
-        seriesIndex: s.index,
-        color: s.colorCss,
-        width: s.type === "area" ? Math.min(s.lineWidth, 2) : s.lineWidth,
-        segments,
-      });
+      if (s.lineWidth > 0) {
+        const width =
+          s.type === "area" ? Math.min(s.lineWidth, 2) : s.lineWidth;
+        out.push({
+          kind: "line",
+          seriesIndex: s.index,
+          color: s.colorCss,
+          width,
+          segments,
+        });
+        if (band)
+          out.push({
+            kind: "line",
+            seriesIndex: s.index,
+            color: s.colorCss,
+            width,
+            segments: lowerSegments,
+          });
+      }
       continue;
     }
     if (s.type === "bar" && s.barBase && s.barTop) {
       const [start, end] = visibleRange(x, count, sorted, view.x);
-      const half = Math.max(s.barHalfWidth / sc.xPerPx, 0.5);
+      const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 0.5);
       const rects: number[] = [];
       const colors: string[] = [];
       const merge = end - start > maxBars;
@@ -1050,14 +1109,14 @@ export const scenePrimitives = (
         const b = s.barTop[i];
         if (!Number.isFinite(a) || !Number.isFinite(b)) continue;
         const cx = sc.xToPx(x[i] + s.barOffset);
-        if (cx + half < plot.x || cx - half > plot.x + plot.width) continue;
+        if (cx + half < xLo || cx - half > xHi) continue;
         const ya = sc.yToPx(a);
         const yb = sc.yToPx(b);
         const top = Math.min(ya, yb);
         const h = Math.max(1, Math.abs(ya - yb));
         const col = Math.floor(cx);
         if (merge && col === lastCol && rects.length) {
-          // widen the previous bar of the same pixel column vertically
+          // widen the previous bar of the same pixel column along the values
           const k = rects.length - 4;
           const bottom = Math.max(rects[k + 1] + rects[k + 3], top + h);
           rects[k + 1] = Math.min(rects[k + 1], top);
@@ -1073,16 +1132,21 @@ export const scenePrimitives = (
         kind: "bars",
         seriesIndex: s.index,
         color: s.colorCss,
-        rects,
+        rects: toRects(sc, rects),
         ...(s.pointColors ? { colors } : {}),
         radius: s.radius,
+        ...(s.opacity < 1 ? { opacity: s.opacity } : {}),
       });
+      continue;
+    }
+    if (s.type === "boxplot") {
+      out.push(...boxPrimitives(s, sc, view.x, xLo, xHi, maxBars));
       continue;
     }
     if (s.type === "candlestick") {
       const [start, end] = visibleRange(x, count, sorted, view.x);
       const { open, high, low } = s.cols;
-      const half = Math.max(s.barHalfWidth / sc.xPerPx, 1);
+      const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
       const up = toCss(s.upColor);
       const down = toCss(s.downColor);
       const wicks: number[] = [];
@@ -1095,7 +1159,7 @@ export const scenePrimitives = (
         const o = open ? open[i] : c;
         if (!Number.isFinite(c) || !Number.isFinite(o)) continue;
         const cx = sc.xToPx(x[i]);
-        if (cx + half < plot.x || cx - half > plot.x + plot.width) continue;
+        if (cx + half < xLo || cx - half > xHi) continue;
         const color = c < o ? down : up;
         const hi = sc.yToPx(high ? high[i] : Math.max(o, c));
         const lo = sc.yToPx(low ? low[i] : Math.min(o, c));
@@ -1116,14 +1180,14 @@ export const scenePrimitives = (
           kind: "bars",
           seriesIndex: s.index,
           color: up,
-          rects: wicks,
+          rects: toRects(sc, wicks),
           colors: wickColors,
         },
         {
           kind: "bars",
           seriesIndex: s.index,
           color: up,
-          rects: bodies,
+          rects: toRects(sc, bodies),
           colors: bodyColors,
           radius: 1,
         },
@@ -1139,20 +1203,25 @@ export const scenePrimitives = (
       for (let i = 0; i < count && rects.length / 4 < maxBars * 4; i++) {
         const c = s.cellColors?.[i];
         if (!c) continue;
-        const cx = sc.xToPx(x[i]);
-        const cy = sc.yToPx(y[i]);
+        const r = screenRect(
+          sc,
+          sc.xToPx(x[i]) - hw,
+          sc.xToPx(x[i]) + hw,
+          sc.yToPx(y[i]) - hh,
+          sc.yToPx(y[i]) + hh,
+        );
         if (
-          cx + hw < plot.x ||
-          cx - hw > plot.x + plot.width ||
-          cy + hh < plot.y ||
-          cy - hh > plot.y + plot.height
+          r.x + r.width < plot.x ||
+          r.x > plot.x + plot.width ||
+          r.y + r.height < plot.y ||
+          r.y > plot.y + plot.height
         )
           continue;
         rects.push(
-          cx - hw + inset,
-          cy - hh + inset,
-          hw * 2 - inset * 2,
-          hh * 2 - inset * 2,
+          r.x + inset,
+          r.y + inset,
+          r.width - inset * 2,
+          r.height - inset * 2,
         );
         colors.push(toCss(unpackColor(c)));
       }
@@ -1174,30 +1243,31 @@ export const scenePrimitives = (
       return c ? toCss(c) : s.colorCss;
     };
     const visible: number[] = [];
+    const screen: number[] = [];
     for (let i = 0; i < count; i++) {
       const xv = x[i];
       const yv = y[i];
       if (!Number.isFinite(xv) || !Number.isFinite(yv)) continue;
-      const px = sc.xToPx(xv);
-      const py = sc.yToPx(yv);
+      const p = toScreen(sc, xv, yv);
       if (
-        px < plot.x ||
-        px > plot.x + plot.width ||
-        py < plot.y ||
-        py > plot.y + plot.height
+        p.x < plot.x ||
+        p.x > plot.x + plot.width ||
+        p.y < plot.y ||
+        p.y > plot.y + plot.height
       )
         continue;
       visible.push(i);
+      screen.push(p.x, p.y);
     }
     if (visible.length > maxDots) {
       const cell = Math.max(2, limits.dotCell ?? s.pointSize * 0.8);
       const cols = Math.ceil(plot.width / cell) + 1;
       const owner = new Map<number, number>();
-      for (const i of visible) {
-        const cx = Math.floor((sc.xToPx(x[i]) - plot.x) / cell);
-        const cy = Math.floor((sc.yToPx(y[i]) - plot.y) / cell);
+      visible.forEach((i, k) => {
+        const cx = Math.floor((screen[k * 2] - plot.x) / cell);
+        const cy = Math.floor((screen[k * 2 + 1] - plot.y) / cell);
         owner.set(cy * cols + cx, i);
-      }
+      });
       for (const [key, i] of owner) {
         dots.push(
           plot.x + ((key % cols) + 0.5) * cell,
@@ -1207,10 +1277,10 @@ export const scenePrimitives = (
         colors.push(colorOf(i));
       }
     } else {
-      for (const i of visible) {
-        dots.push(sc.xToPx(x[i]), sc.yToPx(y[i]), dotSize(s, i));
+      visible.forEach((i, k) => {
+        dots.push(screen[k * 2], screen[k * 2 + 1], dotSize(s, i));
         colors.push(colorOf(i));
-      }
+      });
     }
     out.push({
       kind: "dots",
@@ -1221,4 +1291,95 @@ export const scenePrimitives = (
     });
   }
   return out;
+};
+
+/** Box plot shapes: translucent boxes, then whiskers, caps, edges and medians, then outliers */
+const boxPrimitives = (
+  s: SeriesModel,
+  sc: Scales,
+  range: Range,
+  xLo: number,
+  xHi: number,
+  maxBars: number,
+): ChartPrimitive[] => {
+  const { x, y, count, sorted, high, low, q1, q3, outliers } = s.cols;
+  const [start, end] = visibleRange(x, count, sorted, range);
+  const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
+  const lw = Math.max(1, s.lineWidth);
+  const boxes: number[] = [];
+  const lines: number[] = [];
+  const boxColors: string[] = [];
+  const lineColors: string[] = [];
+  const dots: number[] = [];
+  const dotColors: string[] = [];
+  const step = Math.max(1, Math.ceil((end - start) / maxBars));
+  /** A line along the values (a whisker or a side) */
+  const vertical = (cx: number, a: number, b: number) => {
+    lines.push(cx - lw / 2, Math.min(a, b), lw, Math.abs(a - b));
+  };
+  /** A line across the box (an edge, a cap or the median) */
+  const across = (cx: number, h: number, at: number, thick = lw) => {
+    lines.push(cx - h, at - thick / 2, h * 2, thick);
+  };
+  for (let i = start; i < end; i += step) {
+    const m = y[i];
+    if (!Number.isFinite(m)) continue;
+    const cx = sc.xToPx(x[i] + s.barOffset);
+    if (cx + half < xLo || cx - half > xHi) continue;
+    const pc = s.pointColors?.[i];
+    const color = pc ? toCss(pc) : s.colorCss;
+    const lo = sc.yToPx(low && Number.isFinite(low[i]) ? low[i] : m);
+    const hi = sc.yToPx(high && Number.isFinite(high[i]) ? high[i] : m);
+    const a = sc.yToPx(q1 && Number.isFinite(q1[i]) ? q1[i] : m);
+    const b = sc.yToPx(q3 && Number.isFinite(q3[i]) ? q3[i] : m);
+    const before = lines.length;
+    boxes.push(cx - half, Math.min(a, b), half * 2, Math.abs(a - b));
+    boxColors.push(color);
+    vertical(cx, lo, a);
+    vertical(cx, b, hi);
+    vertical(cx - half, a, b);
+    vertical(cx + half, a, b);
+    across(cx, half / 2, lo);
+    across(cx, half / 2, hi);
+    across(cx, half, a);
+    across(cx, half, b);
+    across(cx, half, sc.yToPx(m), Math.max(2, lw * 1.6));
+    for (let k = before; k < lines.length; k += 4) lineColors.push(color);
+    const out = outliers?.[i];
+    if (out) {
+      for (const v of out) {
+        const p = sc.horizontal
+          ? { x: sc.yToPx(v), y: cx }
+          : { x: cx, y: sc.yToPx(v) };
+        dots.push(p.x, p.y, s.pointSize);
+        dotColors.push(color);
+      }
+    }
+  }
+  const prims: ChartPrimitive[] = [
+    {
+      kind: "bars",
+      seriesIndex: s.index,
+      color: s.colorCss,
+      rects: toRects(sc, boxes),
+      colors: boxColors,
+      opacity: s.opacity,
+    },
+    {
+      kind: "bars",
+      seriesIndex: s.index,
+      color: s.colorCss,
+      rects: toRects(sc, lines),
+      colors: lineColors,
+    },
+  ];
+  if (dots.length)
+    prims.push({
+      kind: "dots",
+      seriesIndex: s.index,
+      opacity: 0.85,
+      dots,
+      colors: dotColors,
+    });
+  return prims;
 };

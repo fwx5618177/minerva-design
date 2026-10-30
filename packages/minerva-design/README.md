@@ -288,27 +288,27 @@ helpers are published as `minerva-design/styling-hooks`.
 
 ## Entries
 
-| Entry                                                                 | Contents                                                                                                                    |
-| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `minerva-design`                                                      | Every React component, hook and theme utility (ESM + CJS, TypeScript types, `"use client"`)                                 |
-| `minerva-design/style.css`                                            | All component styles and the design tokens (import once, in the app entry)                                                  |
-| `minerva-design/styles/*.css`                                         | Per-component stylesheets (`styles/button.css`...; `styles/tokens.css` for the tokens alone)                                |
-| `minerva-design/tokens.css`                                           | The design tokens only (e.g. for the web components)                                                                        |
-| `minerva-design/prose.scss`                                           | The typography mixins of `Prose`                                                                                            |
-| `minerva-design/theme-utils`                                          | Server-safe theme helpers (`THEME_INIT_SCRIPT`, `THEME_INIT_SCRIPT_HASH`, cookie parsing, design presets)                   |
-| `minerva-design/utils`                                                | Server-safe non-component utilities (`cn`, `themes`, `palettes`, `resolveTheme`, ...) for Server Components                 |
-| `minerva-design/monaco`                                               | `MonacoCodeEditor` (optional peers `@monaco-editor/react` and `monaco-editor`)                                              |
-| `minerva-design/charts`                                               | GPU charts (WebGPU → WebGL2 → Canvas2D): `Chart`, `LineChart`, `BarChart`, `ScatterChart`, `QuadrantChart` (`"use client"`) |
-| `minerva-design/charts/core`                                          | The framework-free chart engine: `createChart`, `formatCompact` (server-safe import, no dependencies)                       |
-| `minerva-design/web-components`                                       | Registers every custom element; exports the element classes, their types and the authoring utilities (ESM)                  |
-| `minerva-design/web-components/<name>`                                | Registers one element (and its parts / dependencies), e.g. `/button`, `/select`, `/modal`, `/config`                        |
-| `minerva-design/web-components/code-editor`                           | Optional: `<minerva-code-editor>` (Monaco), needs the optional peer `monaco-editor`; not in the all-in-one / CDN            |
-| `minerva-design/web-components/cdn`                                   | Self-contained ES module bundle (`dist/web-components/cdn/minerva.js`)                                                      |
-| `minerva-design/web-components/react` · `/vue` · `/svelte` · `/solid` | Template typings of the custom elements (types only)                                                                        |
-| `minerva-design/custom-elements.json`                                 | [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest)                                       |
-| `minerva-design/html-custom-data.json`                                | VS Code HTML custom data                                                                                                    |
-| `minerva-design/core`                                                 | Advanced: the framework-agnostic primitives (ESM + CJS)                                                                     |
-| `minerva-design/styling-hooks`                                        | The styling hooks manifest and selector helpers (ESM + CJS)                                                                 |
+| Entry                                                                 | Contents                                                                                                                   |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `minerva-design`                                                      | Every React component, hook and theme utility (ESM + CJS, TypeScript types, `"use client"`)                                |
+| `minerva-design/style.css`                                            | All component styles and the design tokens (import once, in the app entry)                                                 |
+| `minerva-design/styles/*.css`                                         | Per-component stylesheets (`styles/button.css`...; `styles/tokens.css` for the tokens alone)                               |
+| `minerva-design/tokens.css`                                           | The design tokens only (e.g. for the web components)                                                                       |
+| `minerva-design/prose.scss`                                           | The typography mixins of `Prose`                                                                                           |
+| `minerva-design/theme-utils`                                          | Server-safe theme helpers (`THEME_INIT_SCRIPT`, `THEME_INIT_SCRIPT_HASH`, cookie parsing, design presets)                  |
+| `minerva-design/utils`                                                | Server-safe non-component utilities (`cn`, `themes`, `palettes`, `resolveTheme`, ...) for Server Components                |
+| `minerva-design/monaco`                                               | `MonacoCodeEditor` (optional peers `@monaco-editor/react` and `monaco-editor`)                                             |
+| `minerva-design/charts`                                               | GPU charts (WebGPU → WebGL2 → WebGL → Canvas2D): 2D, statistics, hierarchies, trading, order books and 3D (`"use client"`) |
+| `minerva-design/charts/core`                                          | The framework-free chart engine: `createChart`, `formatCompact` (server-safe import, no dependencies)                      |
+| `minerva-design/web-components`                                       | Registers every custom element; exports the element classes, their types and the authoring utilities (ESM)                 |
+| `minerva-design/web-components/<name>`                                | Registers one element (and its parts / dependencies), e.g. `/button`, `/select`, `/modal`, `/config`                       |
+| `minerva-design/web-components/code-editor`                           | Optional: `<minerva-code-editor>` (Monaco), needs the optional peer `monaco-editor`; not in the all-in-one / CDN           |
+| `minerva-design/web-components/cdn`                                   | Self-contained ES module bundle (`dist/web-components/cdn/minerva.js`)                                                     |
+| `minerva-design/web-components/react` · `/vue` · `/svelte` · `/solid` | Template typings of the custom elements (types only)                                                                       |
+| `minerva-design/custom-elements.json`                                 | [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest)                                      |
+| `minerva-design/html-custom-data.json`                                | VS Code HTML custom data                                                                                                   |
+| `minerva-design/core`                                                 | Advanced: the framework-agnostic primitives (ESM + CJS)                                                                    |
+| `minerva-design/styling-hooks`                                        | The styling hooks manifest and selector helpers (ESM + CJS)                                                                |
 
 ## Links
 

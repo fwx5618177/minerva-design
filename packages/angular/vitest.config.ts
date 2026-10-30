@@ -26,6 +26,10 @@ export default defineConfig({
         replacement: here("../core/src/index.ts"),
       },
       { find: /^@minerva\/dom$/, replacement: here("../dom/src/index.ts") },
+      {
+        find: /^minerva-design\/charts\/core$/,
+        replacement: here("../charts/src/core.ts"),
+      },
     ],
   },
   test: {

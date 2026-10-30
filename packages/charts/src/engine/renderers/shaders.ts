@@ -1,8 +1,8 @@
-// WGSL (WebGPU) and GLSL ES 3.0 (WebGL2) programs. Every primitive is an
-// instanced 4-vertex triangle strip; anti-aliasing comes from signed
-// distance functions in pixel space (no MSAA needed).
+// WGSL (WebGPU), GLSL ES 3.0 (WebGL2) and GLSL ES 1.0 (WebGL) programs.
+// Every primitive is an instanced 4-vertex triangle strip; anti-aliasing
+// comes from signed distance functions in pixel space (no MSAA needed).
 //
-// Uniforms (both backends):
+// Uniforms (all backends):
 //   xform    = (xScale, xOffset, yScale, yOffset)  relative data -> clip
 //   viewport = (width px, height px, dpr, 0)
 //   color    = straight RGBA of the series
@@ -325,5 +325,177 @@ void main() {
   float inner = clamp(0.5 - (d + u_params.y * u_viewport.z), 0.0, 1.0);
   float a = v_color.a * (inner * u_params.x + (cover - inner));
   outColor = vec4(v_color.rgb * a, a);
+}`,
+};
+
+// GLSL ES 1.0 (WebGL): no gl_VertexID (the corner comes from a per-vertex
+// attribute, location 0), no flat varyings (every vertex of an instance
+// writes the same value, so interpolation keeps it) and the fragment shaders
+// read no uniform: a uniform shared by both stages must have the same
+// precision, and highp is optional in WebGL fragment shaders.
+
+const GLSL1_VERTEX_COMMON = /* glsl */ `precision highp float;
+uniform vec4 u_xform;
+uniform vec4 u_viewport;
+uniform vec4 u_color;
+uniform vec4 u_params;
+attribute vec2 a_corner;
+bool gap(vec2 p) { return abs(p.x) > 1e37 || abs(p.y) > 1e37; }
+vec2 toClip(vec2 p) { return vec2(p.x * u_xform.x + u_xform.y, p.y * u_xform.z + u_xform.w); }
+vec2 toPx(vec2 p) { return (toClip(p) * 0.5 + 0.5) * u_viewport.xy; }
+vec4 pxToClip(vec2 p) { return vec4(p / u_viewport.xy * 2.0 - 1.0, 0.0, 1.0); }
+const vec4 HIDDEN = vec4(2.0, 2.0, 2.0, 1.0);
+`;
+
+const GLSL1_FRAGMENT_COMMON = /* glsl */ `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+`;
+
+export const GLSL1_LINE = {
+  vertex: /* glsl */ `${GLSL1_VERTEX_COMMON}
+attribute vec2 a_a;
+attribute vec2 a_b;
+varying vec2 v_local;
+varying float v_len;
+varying float v_hw;
+varying vec4 v_color;
+void main() {
+  v_local = vec2(0.0);
+  v_len = 0.0;
+  v_hw = u_params.x;
+  v_color = u_color;
+  if (gap(a_a) || gap(a_b)) { gl_Position = HIDDEN; return; }
+  vec2 pa = toPx(a_a);
+  vec2 pb = toPx(a_b);
+  vec2 d = pb - pa;
+  float len = length(d);
+  vec2 dir = len > 1e-6 ? d / len : vec2(1.0, 0.0);
+  vec2 nrm = vec2(-dir.y, dir.x);
+  float hw = u_params.x + 1.0;
+  float along = mix(-hw, len + hw, a_corner.x);
+  float across = mix(-hw, hw, a_corner.y);
+  gl_Position = pxToClip(pa + dir * along + nrm * across);
+  v_local = vec2(along, across);
+  v_len = len;
+}`,
+  fragment: /* glsl */ `${GLSL1_FRAGMENT_COMMON}
+varying vec2 v_local;
+varying float v_len;
+varying float v_hw;
+varying vec4 v_color;
+void main() {
+  float x = clamp(v_local.x, 0.0, v_len);
+  float dist = length(vec2(v_local.x - x, v_local.y));
+  float a = clamp(v_hw - dist + 0.5, 0.0, 1.0) * v_color.a;
+  gl_FragColor = vec4(v_color.rgb * a, a);
+}`,
+};
+
+export const GLSL1_AREA = {
+  vertex: /* glsl */ `${GLSL1_VERTEX_COMMON}
+attribute vec3 a_a;
+attribute vec3 a_b;
+varying float v_t;
+varying vec4 v_color;
+void main() {
+  v_t = 0.0;
+  v_color = vec4(u_color.rgb, u_color.a * u_params.y);
+  if (gap(a_a.xy) || gap(a_b.xy) || abs(a_a.z) > 1e37 || abs(a_b.z) > 1e37) { gl_Position = HIDDEN; return; }
+  vec3 p = a_corner.y > 0.5 ? a_b : a_a;
+  float y = a_corner.x > 0.5 ? p.y : p.z;
+  gl_Position = vec4(toClip(vec2(p.x, y)), 0.0, 1.0);
+  v_t = a_corner.x;
+}`,
+  fragment: /* glsl */ `${GLSL1_FRAGMENT_COMMON}
+varying float v_t;
+varying vec4 v_color;
+void main() {
+  float a = v_color.a * (0.25 + 0.75 * v_t * v_t);
+  gl_FragColor = vec4(v_color.rgb * a, a);
+}`,
+};
+
+export const GLSL1_BAR = {
+  vertex: /* glsl */ `${GLSL1_VERTEX_COMMON}
+attribute vec3 a_inst;
+attribute vec4 a_color;
+varying vec2 v_local;
+varying vec2 v_half;
+varying float v_radius;
+varying vec4 v_color;
+void main() {
+  v_local = vec2(0.0);
+  v_half = vec2(0.0);
+  v_radius = u_params.y * u_viewport.z;
+  v_color = a_color;
+  if (gap(a_inst.xy) || abs(a_inst.z) > 1e37) { gl_Position = HIDDEN; return; }
+  float dpr = u_viewport.z;
+  float rawHw = abs(u_params.x * u_xform.x) * 0.5 * u_viewport.x;
+  vec2 p0 = toPx(a_inst.xy);
+  float y1 = toPx(vec2(a_inst.x, a_inst.z)).y;
+  float lo = min(p0.y, y1);
+  float hi = max(p0.y, y1);
+  float fade = clamp((min(rawHw, (hi - lo) * 0.5) - 3.0 * dpr) / (2.0 * dpr), 0.0, 1.0);
+  float inset = u_params.z * dpr * fade - (u_params.z > 0.0 ? 0.5 * (1.0 - fade) : 0.0);
+  float minHalf = u_params.w * dpr;
+  float hw = max(max(rawHw - inset, 0.5), minHalf);
+  vec2 hsz = vec2(hw, max((hi - lo) * 0.5 - inset, minHalf));
+  vec2 center = vec2(p0.x, (lo + hi) * 0.5);
+  vec2 ext = hsz + vec2(1.0);
+  vec2 c = a_corner * 2.0 - 1.0;
+  gl_Position = pxToClip(center + c * ext);
+  v_local = c * ext;
+  v_half = hsz;
+}`,
+  fragment: /* glsl */ `${GLSL1_FRAGMENT_COMMON}
+varying vec2 v_local;
+varying vec2 v_half;
+varying float v_radius;
+varying vec4 v_color;
+void main() {
+  float r = min(v_radius, min(v_half.x, v_half.y));
+  vec2 q = abs(v_local) - v_half + vec2(r);
+  float d = length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - r;
+  float a = clamp(0.5 - d, 0.0, 1.0) * v_color.a;
+  gl_FragColor = vec4(v_color.rgb * a, a);
+}`,
+};
+
+export const GLSL1_SCATTER = {
+  vertex: /* glsl */ `${GLSL1_VERTEX_COMMON}
+attribute vec2 a_pos;
+attribute float a_size;
+attribute vec4 a_color;
+varying vec2 v_local;
+varying float v_r;
+varying vec2 v_style;
+varying vec4 v_color;
+void main() {
+  v_local = vec2(0.0);
+  v_r = 0.0;
+  v_style = vec2(u_params.x, u_params.y * u_viewport.z);
+  v_color = a_color;
+  if (gap(a_pos) || !(a_size > 0.0)) { gl_Position = HIDDEN; return; }
+  float r = a_size * 0.5 * u_viewport.z;
+  float ext = r + 1.0;
+  vec2 c = a_corner * 2.0 - 1.0;
+  gl_Position = pxToClip(toPx(a_pos) + c * ext);
+  v_local = c * ext;
+  v_r = r;
+}`,
+  fragment: /* glsl */ `${GLSL1_FRAGMENT_COMMON}
+varying vec2 v_local;
+varying float v_r;
+varying vec2 v_style;
+varying vec4 v_color;
+void main() {
+  float d = length(v_local) - v_r;
+  float cover = clamp(0.5 - d, 0.0, 1.0);
+  float inner = clamp(0.5 - (d + v_style.y), 0.0, 1.0);
+  float a = v_color.a * (inner * v_style.x + (cover - inner));
+  gl_FragColor = vec4(v_color.rgb * a, a);
 }`,
 };

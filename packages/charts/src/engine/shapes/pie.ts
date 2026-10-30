@@ -264,8 +264,8 @@ export const layoutPie = (
         x: cx + r1 * Math.cos(m),
         y: cy + r1 * Math.sin(m),
         rows: [
-          { name: "Value", value: c.format(targets[i]) },
-          { name: "Share", value: c.percent(shares[i]) },
+          { name: c.labels.value, value: c.format(targets[i]) },
+          { name: c.labels.share, value: c.percent(shares[i]) },
         ],
       });
     }

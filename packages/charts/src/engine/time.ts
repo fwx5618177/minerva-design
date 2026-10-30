@@ -1,5 +1,8 @@
-// Ticks and labels of time axes (timestamps in ms, local time).
+// Ticks and labels of time axes (timestamps in ms). Calendar steps follow
+// the local time or UTC (`timeZone`); labels use `Intl.DateTimeFormat` of a
+// locale (month / weekday names), or ISO-like texts without a locale.
 
+import { dateFormat } from "./locale";
 import { linearTicks, tickStep } from "./scale";
 
 const SECOND = 1000;
@@ -11,6 +14,9 @@ const YEAR = 365 * DAY;
 
 export type TimeUnit =
   "millisecond" | "second" | "minute" | "hour" | "day" | "month" | "year";
+
+/** Time zone of the calendar of a time axis */
+export type TimeZone = "local" | "utc";
 
 interface Interval {
   unit: TimeUnit;
@@ -42,6 +48,70 @@ const INTERVALS: Interval[] = [
 
 const pad = (n: number, width = 2) => String(n).padStart(width, "0");
 
+/** Calendar fields of a timestamp */
+interface Parts {
+  year: number;
+  /** 0-11 */
+  month: number;
+  date: number;
+  /** 0 = Sunday */
+  day: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  ms: number;
+}
+
+const partsOf = (t: number, utc: boolean): Parts => {
+  const d = new Date(t);
+  return utc
+    ? {
+        year: d.getUTCFullYear(),
+        month: d.getUTCMonth(),
+        date: d.getUTCDate(),
+        day: d.getUTCDay(),
+        hours: d.getUTCHours(),
+        minutes: d.getUTCMinutes(),
+        seconds: d.getUTCSeconds(),
+        ms: d.getUTCMilliseconds(),
+      }
+    : {
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        date: d.getDate(),
+        day: d.getDay(),
+        hours: d.getHours(),
+        minutes: d.getMinutes(),
+        seconds: d.getSeconds(),
+        ms: d.getMilliseconds(),
+      };
+};
+
+/** Timestamp of calendar fields (out of range fields carry over) */
+const timeOf = (
+  utc: boolean,
+  year: number,
+  month: number,
+  date = 1,
+  hours = 0,
+  minutes = 0,
+  seconds = 0,
+): number => {
+  if (utc) {
+    const t = Date.UTC(year, month, date, hours, minutes, seconds);
+    // years 0-99 are mapped to 1900-1999 by Date.UTC
+    if (year >= 0 && year < 100) {
+      const d = new Date(t);
+      d.setUTCFullYear(d.getUTCFullYear() - 1900);
+      return d.getTime();
+    }
+    return t;
+  }
+  const d = new Date(year, month, date, hours, minutes, seconds);
+  if (year >= 0 && year < 100) d.setFullYear(d.getFullYear() - 1900);
+  return d.getTime();
+};
+
 const chooseInterval = (span: number, count: number): Interval => {
   const target = span / Math.max(1, count);
   if (target < SECOND * 0.75) {
@@ -59,64 +129,65 @@ const chooseInterval = (span: number, count: number): Interval => {
 };
 
 /** Start of the tick sequence: `t` floored to the unit, aligned on the step */
-const floorTo = (t: number, { unit, step }: Interval): Date => {
-  const d = new Date(t);
+const floorTo = (t: number, { unit, step }: Interval, utc: boolean): number => {
+  const p = partsOf(t, utc);
   switch (unit) {
     case "second":
-      d.setMilliseconds(0);
-      d.setSeconds(d.getSeconds() - (d.getSeconds() % step));
-      break;
+      return timeOf(
+        utc,
+        p.year,
+        p.month,
+        p.date,
+        p.hours,
+        p.minutes,
+        p.seconds - (p.seconds % step),
+      );
     case "minute":
-      d.setSeconds(0, 0);
-      d.setMinutes(d.getMinutes() - (d.getMinutes() % step));
-      break;
+      return timeOf(
+        utc,
+        p.year,
+        p.month,
+        p.date,
+        p.hours,
+        p.minutes - (p.minutes % step),
+      );
     case "hour":
-      d.setMinutes(0, 0, 0);
-      d.setHours(d.getHours() - (d.getHours() % step));
-      break;
+      return timeOf(utc, p.year, p.month, p.date, p.hours - (p.hours % step));
     case "day":
-      d.setHours(0, 0, 0, 0);
       // weeks start on Monday
-      if (step === 7) d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-      break;
+      return timeOf(
+        utc,
+        p.year,
+        p.month,
+        p.date - (step === 7 ? (p.day + 6) % 7 : 0),
+      );
     case "month":
-      d.setHours(0, 0, 0, 0);
-      d.setDate(1);
-      d.setMonth(d.getMonth() - (d.getMonth() % step));
-      break;
+      return timeOf(utc, p.year, p.month - (p.month % step));
     case "year":
-      d.setHours(0, 0, 0, 0);
-      d.setMonth(0, 1);
-      d.setFullYear(d.getFullYear() - (d.getFullYear() % step));
-      break;
+      return timeOf(utc, p.year - (p.year % step), 0);
     default:
-      break;
+      return t;
   }
-  return d;
 };
 
-const advance = (d: Date, { unit, step }: Interval) => {
+const advance = (t: number, { unit, step }: Interval, utc: boolean): number => {
+  const p = partsOf(t, utc);
+  const { year, month, date, hours, minutes, seconds } = p;
   switch (unit) {
     case "second":
-      d.setSeconds(d.getSeconds() + step);
-      break;
+      return timeOf(utc, year, month, date, hours, minutes, seconds + step);
     case "minute":
-      d.setMinutes(d.getMinutes() + step);
-      break;
+      return timeOf(utc, year, month, date, hours, minutes + step, seconds);
     case "hour":
-      d.setHours(d.getHours() + step);
-      break;
+      return timeOf(utc, year, month, date, hours + step, minutes, seconds);
     case "day":
-      d.setDate(d.getDate() + step);
-      break;
+      return timeOf(utc, year, month, date + step, hours, minutes, seconds);
     case "month":
-      d.setMonth(d.getMonth() + step);
-      break;
+      return timeOf(utc, year, month + step, date, hours, minutes, seconds);
     case "year":
-      d.setFullYear(d.getFullYear() + step);
-      break;
+      return timeOf(utc, year + step, month, date, hours, minutes, seconds);
     default:
-      break;
+      return t + step;
   }
 };
 
@@ -126,11 +197,17 @@ export interface TimeTicks {
   format: (value: number) => string;
 }
 
-/** Calendar-aligned ticks between two timestamps */
+/**
+ * Calendar-aligned ticks between two timestamps
+ * @param locale labels in this locale (ISO-like labels without it)
+ * @param timeZone calendar of the steps and labels
+ */
 export const timeTicks = (
   min: number,
   max: number,
   count: number,
+  locale?: string,
+  timeZone: TimeZone = "local",
 ): TimeTicks => {
   if (min > max) [min, max] = [max, min];
   const interval = chooseInterval(max - min, count);
@@ -138,64 +215,134 @@ export const timeTicks = (
     return {
       values: linearTicks(min, max, count),
       unit: "millisecond",
-      format: (v) => formatTime(v, "millisecond"),
+      format: (v) => formatTime(v, "millisecond", locale, timeZone),
     };
   }
+  const utc = timeZone === "utc";
   const values: number[] = [];
-  const d = floorTo(min, interval);
-  while (d.getTime() < min) advance(d, interval);
-  while (d.getTime() <= max && values.length < 500) {
-    values.push(d.getTime());
-    advance(d, interval);
+  let t = floorTo(min, interval, utc);
+  while (t < min) t = advance(t, interval, utc);
+  while (t <= max && values.length < 500) {
+    values.push(t);
+    t = advance(t, interval, utc);
   }
   const { unit } = interval;
-  return { values, unit, format: (v) => formatTick(v, unit) };
+  return {
+    values,
+    unit,
+    format: (v) => formatTick(v, unit, locale, timeZone),
+  };
 };
 
-const ymd = (d: Date) =>
-  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const hm = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const ymd = (p: Parts) => `${p.year}-${pad(p.month + 1)}-${pad(p.date)}`;
+const hm = (p: Parts) => `${pad(p.hours)}:${pad(p.minutes)}`;
+
+const HM: Intl.DateTimeFormatOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+};
+const HMS: Intl.DateTimeFormatOptions = { ...HM, second: "2-digit" };
+const MONTH_DAY: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+};
+const DATE: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
+
+/** Cached formatter of a locale and time zone */
+const intl = (
+  locale: string,
+  timeZone: TimeZone,
+  options: Intl.DateTimeFormatOptions,
+) =>
+  dateFormat(
+    locale,
+    timeZone === "utc" ? { ...options, timeZone: "UTC" } : options,
+  );
 
 /** Short tick label; day boundaries show the date, year boundaries the year */
-const formatTick = (value: number, unit: TimeUnit): string => {
-  const d = new Date(value);
-  const midnight =
-    d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0;
+const formatTick = (
+  value: number,
+  unit: TimeUnit,
+  locale: string | undefined,
+  timeZone: TimeZone,
+): string => {
+  const p = partsOf(value, timeZone === "utc");
+  const midnight = p.hours === 0 && p.minutes === 0 && p.seconds === 0;
+  const newYear = p.month === 0 && p.date === 1;
+  if (locale) {
+    const f = (options: Intl.DateTimeFormatOptions) =>
+      intl(locale, timeZone, options).format(value);
+    switch (unit) {
+      case "second":
+        return f(HMS);
+      case "minute":
+      case "hour":
+        return f(midnight ? MONTH_DAY : HM);
+      case "day":
+        return f(newYear ? { year: "numeric" } : MONTH_DAY);
+      case "month":
+        return f(p.month === 0 ? { year: "numeric" } : { month: "short" });
+      default:
+        return f({ year: "numeric" });
+    }
+  }
   switch (unit) {
     case "second":
-      return `${hm(d)}:${pad(d.getSeconds())}`;
+      return `${hm(p)}:${pad(p.seconds)}`;
     case "minute":
     case "hour":
-      return midnight ? `${pad(d.getMonth() + 1)}-${pad(d.getDate())}` : hm(d);
+      return midnight ? `${pad(p.month + 1)}-${pad(p.date)}` : hm(p);
     case "day":
-      return d.getMonth() === 0 && d.getDate() === 1
-        ? String(d.getFullYear())
-        : `${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      return newYear ? String(p.year) : `${pad(p.month + 1)}-${pad(p.date)}`;
     case "month":
-      return d.getMonth() === 0
-        ? String(d.getFullYear())
-        : `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+      return p.month === 0 ? String(p.year) : `${p.year}-${pad(p.month + 1)}`;
     default:
-      return String(d.getFullYear());
+      return String(p.year);
   }
 };
 
-/** Full label (tooltips): precision follows the unit of the ticks */
+/**
+ * Full label (tooltips): precision follows the unit of the ticks; dates
+ * show the weekday with a `locale`
+ */
 export const formatTime = (
   value: number,
   unit: TimeUnit = "minute",
+  locale?: string,
+  timeZone: TimeZone = "local",
 ): string => {
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "–";
+  if (!Number.isFinite(value) || Number.isNaN(new Date(value).getTime()))
+    return "–";
+  const p = partsOf(value, timeZone === "utc");
+  if (locale) {
+    const f = (options: Intl.DateTimeFormatOptions) =>
+      intl(locale, timeZone, options).format(value);
+    switch (unit) {
+      case "millisecond":
+        return `${f({ ...DATE, ...HMS })}.${pad(p.ms, 3)}`;
+      case "second":
+        return f({ ...DATE, ...HMS });
+      case "minute":
+      case "hour":
+        return f({ ...DATE, ...HM });
+      default:
+        return f({ ...DATE, weekday: "short" });
+    }
+  }
   switch (unit) {
     case "millisecond":
-      return `${ymd(d)} ${hm(d)}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+      return `${ymd(p)} ${hm(p)}:${pad(p.seconds)}.${pad(p.ms, 3)}`;
     case "second":
-      return `${ymd(d)} ${hm(d)}:${pad(d.getSeconds())}`;
+      return `${ymd(p)} ${hm(p)}:${pad(p.seconds)}`;
     case "minute":
     case "hour":
-      return `${ymd(d)} ${hm(d)}`;
+      return `${ymd(p)} ${hm(p)}`;
     default:
-      return ymd(d);
+      return ymd(p);
   }
 };

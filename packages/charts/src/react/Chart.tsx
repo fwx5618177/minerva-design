@@ -53,7 +53,10 @@ export const engineOptions = (
     | "padding"
     | "palette"
     | "ariaLabel"
+    | "locale"
+    | "labels"
   > &
+    Partial<Pick<ChartOptions, "yAxis2" | "orientation">> &
     Pick<ChartOptions, "series" | "stackMode">,
 ): ChartOptions => ({
   series: props.series,
@@ -68,7 +71,11 @@ export const engineOptions = (
   padding: props.padding,
   palette: props.palette,
   ariaLabel: props.ariaLabel,
+  locale: props.locale,
+  labels: props.labels,
   stackMode: props.stackMode,
+  ...(props.yAxis2 ? { yAxis2: props.yAxis2 } : {}),
+  ...(props.orientation ? { orientation: props.orientation } : {}),
 });
 
 interface ChartBaseProps extends Handlers {
@@ -295,9 +302,9 @@ export function ChartBase({
 }
 
 /**
- * GPU chart (WebGPU, then WebGL2, then Canvas2D) mixing line, area, bar and
- * scatter series; zoomable, keyboard accessible and themed by the Minerva
- * CSS variables.
+ * GPU chart (WebGPU, then WebGL2, then WebGL, then Canvas2D) mixing line,
+ * area, bar and scatter series; zoomable, keyboard accessible and themed by
+ * the Minerva CSS variables.
  */
 export function Chart(props: ChartProps) {
   const {

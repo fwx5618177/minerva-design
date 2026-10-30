@@ -153,3 +153,26 @@ const onDrop = (
 void onDrop;
 const view = matrix.getView();
 void view?.x[0];
+import type {
+  NativeShapeChartEvents,
+  NativeShapeChartInstance,
+  NativePieChartProperties,
+} from "minerva-design/weapp/types";
+declare const pie: NativeShapeChartInstance;
+pie.configure({
+  format: (value) => `${value} kg`,
+  renderTooltip: (event) => (event.index < 0 ? null : event.name),
+});
+// @ts-expect-error percentFormat receives a number share
+pie.configure({ percentFormat: (share: string) => share });
+const hidden: number[] = pie.getHidden();
+void hidden;
+const onToggle = (event: NativeEvent<NativeShapeChartEvents["toggle"]>) =>
+  event.detail.hiddenIndexes.length;
+void onToggle;
+const slices: NativePieChartProperties = {
+  data: [{ name: "Search", value: 3 }],
+  innerRadius: 0.6,
+  labels: "inside",
+};
+void slices;

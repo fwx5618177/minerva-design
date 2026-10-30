@@ -5,6 +5,10 @@ import { describe, expect, it } from "vitest";
 import manifest from "../../../minerva-design/custom-elements.json";
 import "../index";
 import "../elements/code-editor";
+import "../elements/chart";
+import "../elements/trading-chart";
+import "../elements/order-book";
+import "../elements/chart-3d";
 import { sharedStyles } from "./styles";
 
 type StyledClass = CustomElementConstructor & {

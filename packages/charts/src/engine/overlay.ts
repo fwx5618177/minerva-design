@@ -3,7 +3,7 @@
 
 import { toCss, type Rgba } from "./color";
 import type { AxisTicks } from "./axis";
-import type { Rect, Scales } from "./layout";
+import { screenRect, toScreen, type Rect, type Scales } from "./layout";
 import type { AxisModel } from "./model";
 import type { ChartTheme } from "./theme";
 import type { ChartLabelPosition } from "./types";
@@ -49,8 +49,11 @@ export interface PointLabel {
   /** Radius of the dot */
   r: number;
   text: string;
-  /** Fixed side (bar values); any free side around the dot otherwise */
-  placement?: "above" | "below";
+  /**
+   * Fixed side (bar values: above / below, left / right of horizontal
+   * bars); any free side around the dot otherwise
+   */
+  placement?: "above" | "below" | "left" | "right";
 }
 
 export const font = (theme: ChartTheme, size = theme.fontSize, weight = 400) =>
@@ -66,8 +69,12 @@ export const textBox = (
   height: number,
 ): Rect => {
   const { plot } = s;
-  const px = a.x === undefined ? plot.x + plot.width / 2 : s.xToPx(a.x);
-  const py = a.y === undefined ? plot.y + plot.height / 2 : s.yToPx(a.y);
+  const at = toScreen(s, a.x ?? 0, a.y ?? 0);
+  const free = s.horizontal
+    ? { x: a.y === undefined, y: a.x === undefined }
+    : { x: a.x === undefined, y: a.y === undefined };
+  const px = free.x ? plot.x + plot.width / 2 : at.x;
+  const py = free.y ? plot.y + plot.height / 2 : at.y;
   const gap = 6;
   let x = px - width / 2;
   let y = py - height / 2;
@@ -80,17 +87,41 @@ export const textBox = (
   return { x, y, width, height };
 };
 
-const rectOf = (a: ResolvedRect, s: Scales): Rect => {
+/** Screen box of an area annotation, clipped to the plot */
+export const rectOf = (a: ResolvedRect, s: Scales): Rect => {
   const { plot } = s;
-  const xa = a.x0 === undefined ? -Infinity : s.xToPx(a.x0);
-  const xb = a.x1 === undefined ? Infinity : s.xToPx(a.x1);
-  const ya = a.y0 === undefined ? Infinity : s.yToPx(a.y0);
-  const yb = a.y1 === undefined ? -Infinity : s.yToPx(a.y1);
-  const left = Math.max(plot.x, Math.min(xa, xb));
-  const right = Math.min(plot.x + plot.width, Math.max(xa, xb));
-  const top = Math.max(plot.y, Math.min(ya, yb));
-  const bottom = Math.min(plot.y + plot.height, Math.max(ya, yb));
-  return { x: left, y: top, width: right - left, height: bottom - top };
+  // clamp every edge to the plot first: an open edge maps to ±Infinity and
+  // `Infinity - Infinity` would make the size NaN (nothing drawn)
+  const [xLo, xHi] = s.horizontal
+    ? [plot.y, plot.y + plot.height]
+    : [plot.x, plot.x + plot.width];
+  const [yLo, yHi] = s.horizontal
+    ? [plot.x, plot.x + plot.width]
+    : [plot.y, plot.y + plot.height];
+  const along = (px: number, lo: number, hi: number) =>
+    px < lo ? lo : px > hi ? hi : px;
+  return screenRect(
+    s,
+    along(s.xToPx(a.x0 ?? -Infinity), xLo, xHi),
+    along(s.xToPx(a.x1 ?? Infinity), xLo, xHi),
+    along(s.yToPx(a.y0 ?? -Infinity), yLo, yHi),
+    along(s.yToPx(a.y1 ?? Infinity), yLo, yHi),
+  );
+};
+
+/**
+ * Where a reference line goes: `vertical` lines run at screen x `at`,
+ * horizontal ones at screen y `at`
+ */
+export const lineOf = (
+  a: ResolvedLine,
+  s: Scales,
+): { vertical: boolean; at: number } => {
+  const vertical = (a.axis === "x") !== s.horizontal;
+  return {
+    vertical,
+    at: a.axis === "x" ? s.xToPx(a.value) : s.yToPx(a.value),
+  };
 };
 
 export interface BackgroundInput {
@@ -101,6 +132,9 @@ export interface BackgroundInput {
   y: AxisModel;
   xTicks: AxisTicks;
   yTicks: AxisTicks;
+  /** Right axis (dual axis charts) */
+  y2?: AxisModel | null;
+  y2Ticks?: AxisTicks | null;
   theme: ChartTheme;
   annotations: readonly ResolvedAnnotation[];
 }
@@ -109,8 +143,15 @@ export const drawBackground = (
   ctx: CanvasRenderingContext2D,
   input: BackgroundInput,
 ) => {
-  const { scales, theme, x, y, xTicks, yTicks } = input;
+  const { scales, theme, xTicks, yTicks } = input;
   const { plot } = scales;
+  // horizontal charts: the value axis along the bottom, the x axis on the left
+  const x = scales.horizontal ? input.y : input.x;
+  const y = scales.horizontal ? input.x : input.y;
+  const bottomTicks = scales.horizontal ? yTicks : xTicks;
+  const leftTicks = scales.horizontal ? xTicks : yTicks;
+  const bottomPx = scales.horizontal ? scales.yToPx : scales.xToPx;
+  const leftPx = scales.horizontal ? scales.xToPx : scales.yToPx;
   ctx.clearRect(0, 0, input.width, input.height);
 
   // areas
@@ -132,16 +173,16 @@ export const drawBackground = (
   ctx.strokeStyle = toCss(theme.grid);
   ctx.beginPath();
   if (y.grid) {
-    for (const v of yTicks.values) {
-      const py = crisp(scales.yToPx(v));
+    for (const v of leftTicks.values) {
+      const py = crisp(leftPx(v));
       if (py < plot.y - 1 || py > plot.y + plot.height + 1) continue;
       ctx.moveTo(plot.x, py);
       ctx.lineTo(plot.x + plot.width, py);
     }
   }
   if (x.grid) {
-    for (const v of xTicks.values) {
-      const px = crisp(scales.xToPx(v));
+    for (const v of bottomTicks.values) {
+      const px = crisp(bottomPx(v));
       if (px < plot.x - 1 || px > plot.x + plot.width + 1) continue;
       ctx.moveTo(px, plot.y);
       ctx.lineTo(px, plot.y + plot.height);
@@ -165,8 +206,8 @@ export const drawBackground = (
     ctx.textAlign = "center";
     let lastRight = -Infinity;
     // left to right (reversed axes list their ticks right to left)
-    const order = xTicks.values
-      .map((v, i) => ({ px: scales.xToPx(v), text: xTicks.labels[i] }))
+    const order = bottomTicks.values
+      .map((v, i) => ({ px: bottomPx(v), text: bottomTicks.labels[i] }))
       .sort((a, b) => a.px - b.px);
     for (const { px, text } of order) {
       if (px < plot.x - 0.5 || px > plot.x + plot.width + 0.5) continue;
@@ -193,11 +234,20 @@ export const drawBackground = (
     ctx.fillStyle = toCss(theme.textMuted);
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
-    yTicks.values.forEach((v, i) => {
-      const py = scales.yToPx(v);
-      if (py < plot.y - 0.5 || py > plot.y + plot.height + 0.5) return;
-      ctx.fillText(yTicks.labels[i], plot.x - 8, py);
-    });
+    let lastBottom = -Infinity;
+    // top to bottom: category rows of horizontal charts never overlap
+    const rows = leftTicks.values
+      .map((v, i) => ({ py: leftPx(v), text: leftTicks.labels[i] }))
+      .sort((a, b) => a.py - b.py);
+    const rowHeight = theme.fontSize + 2;
+    for (const { py, text } of rows) {
+      if (py < plot.y - 0.5 || py > plot.y + plot.height + 0.5) continue;
+      if (scales.horizontal) {
+        if (py - rowHeight / 2 < lastBottom) continue;
+        lastBottom = py + rowHeight / 2;
+      }
+      ctx.fillText(text, plot.x - 8, py);
+    }
     if (y.title) {
       ctx.save();
       ctx.font = font(theme, theme.fontSize + 1, 500);
@@ -206,6 +256,32 @@ export const drawBackground = (
       ctx.rotate(-Math.PI / 2);
       ctx.textAlign = "center";
       ctx.fillText(y.title, 0, 0);
+      ctx.restore();
+    }
+  }
+
+  // right axis
+  const y2 = scales.horizontal ? null : input.y2;
+  const y2Ticks = input.y2Ticks;
+  if (y2 && y2Ticks && y2.visible) {
+    const right = plot.x + plot.width;
+    ctx.font = font(theme);
+    ctx.fillStyle = toCss(theme.textMuted);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    y2Ticks.values.forEach((v, i) => {
+      const py = scales.yToPx(v);
+      if (py < plot.y - 0.5 || py > plot.y + plot.height + 0.5) return;
+      ctx.fillText(y2Ticks.labels[i], right + 8, py);
+    });
+    if (y2.title) {
+      ctx.save();
+      ctx.font = font(theme, theme.fontSize + 1, 500);
+      ctx.fillStyle = toCss(theme.text, 0.8);
+      ctx.translate(input.width - line / 2 - 4, plot.y + plot.height / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.textAlign = "center";
+      ctx.fillText(y2.title, 0, 0);
       ctx.restore();
     }
   }
@@ -259,22 +335,43 @@ export const placeLabels = (
       height,
     };
     const below = { x: label.x - w / 2, y: label.y + gap, width: w, height };
+    const right = {
+      x: label.x + gap,
+      y: label.y - height / 2,
+      width: w,
+      height,
+    };
+    const left = {
+      x: label.x - gap - w,
+      y: label.y - height / 2,
+      width: w,
+      height,
+    };
     const candidates: Rect[] =
       label.placement === "above"
         ? [above]
         : label.placement === "below"
           ? [below]
-          : [
-              { x: label.x + gap, y: label.y - height / 2, width: w, height },
-              {
-                x: label.x - gap - w,
-                y: label.y - height / 2,
-                width: w,
-                height,
-              },
-              above,
-              below,
-            ];
+          : label.placement === "right"
+            ? [right, left]
+            : label.placement === "left"
+              ? [left, right]
+              : [
+                  {
+                    x: label.x + gap,
+                    y: label.y - height / 2,
+                    width: w,
+                    height,
+                  },
+                  {
+                    x: label.x - gap - w,
+                    y: label.y - height / 2,
+                    width: w,
+                    height,
+                  },
+                  above,
+                  below,
+                ];
     const box = candidates.find(
       (c) => inside(c, plot) && !occupied.some((o) => overlaps(o, c)),
     );
@@ -322,8 +419,9 @@ export const drawForeground = (
     ctx.lineWidth = a.width;
     ctx.setLineDash(a.dash);
     ctx.beginPath();
-    if (a.axis === "y") {
-      const py = crisp(scales.yToPx(a.value));
+    const where = lineOf(a, scales);
+    if (!where.vertical) {
+      const py = crisp(where.at);
       ctx.moveTo(plot.x, py);
       ctx.lineTo(plot.x + plot.width, py);
       ctx.stroke();
@@ -335,7 +433,7 @@ export const drawForeground = (
         haloText(ctx, a.label, plot.x + plot.width - 6, py - 3, color, halo);
       }
     } else {
-      const px = crisp(scales.xToPx(a.value));
+      const px = crisp(where.at);
       ctx.moveTo(px, plot.y);
       ctx.lineTo(px, plot.y + plot.height);
       ctx.stroke();

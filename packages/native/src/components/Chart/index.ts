@@ -1,6 +1,7 @@
 export {
   BarChart,
   Chart,
+  HorizontalBarChart,
   LineChart,
   QuadrantChart,
   ScatterChart,

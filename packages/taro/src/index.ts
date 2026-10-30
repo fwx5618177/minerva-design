@@ -7,3 +7,4 @@ export * from "./data";
 export * from "./theme";
 export * from "./date-picker";
 export * from "./charts";
+export * from "./shape-charts";

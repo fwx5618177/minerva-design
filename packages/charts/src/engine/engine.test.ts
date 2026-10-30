@@ -677,12 +677,23 @@ describe("rendererCandidates", () => {
     expect(rendererCandidates("auto")).toEqual([
       "webgpu",
       "webgl2",
+      "webgl",
       "canvas2d",
     ]);
-    expect(rendererCandidates("webgl2")).toEqual(["webgl2", "canvas2d"]);
+    expect(rendererCandidates("webgl2")).toEqual([
+      "webgl2",
+      "webgl",
+      "canvas2d",
+    ]);
+    expect(rendererCandidates("webgl")).toEqual(["webgl", "canvas2d"]);
+    expect(rendererCandidates("canvas2d")).toEqual(["canvas2d"]);
     expect(rendererCandidates("auto", new Set(["webgpu"]))).toEqual([
       "webgl2",
+      "webgl",
       "canvas2d",
     ]);
+    expect(rendererCandidates("webgpu", new Set(["webgpu", "webgl2"]))).toEqual(
+      ["webgl", "canvas2d"],
+    );
   });
 });

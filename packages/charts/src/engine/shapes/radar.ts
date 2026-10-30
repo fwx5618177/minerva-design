@@ -3,6 +3,7 @@
 
 import { toCss } from "../color";
 import { font } from "../overlay";
+import { interpolate } from "./labels";
 import {
   clamp,
   ellipsize,
@@ -15,7 +16,7 @@ import {
   type ShapeNode,
   type ShapeRect,
 } from "./scene";
-import type { RadarChartOptions } from "./types";
+import type { RadarChartOptions, ShapeChartLabels } from "./types";
 
 /** Value range of every indicator (center, rim) */
 export const radarRanges = (o: RadarChartOptions): [number, number][] =>
@@ -49,8 +50,11 @@ export const radarValues = (
   });
 };
 
-export const seriesName = (o: RadarChartOptions, si: number) =>
-  o.series[si]?.name ?? `Series ${si + 1}`;
+export const seriesName = (
+  o: RadarChartOptions,
+  si: number,
+  labels: ShapeChartLabels,
+) => o.series[si]?.name ?? interpolate(labels.series, { index: si + 1 });
 
 export const layoutRadar = (
   o: RadarChartOptions,
@@ -221,7 +225,7 @@ export const layoutRadar = (
     });
     items.push({
       index: si,
-      name: seriesName(o, si),
+      name: seriesName(o, si, c.labels),
       value: indicators[0].value,
       percent: indicators[0].percent,
       color: css,

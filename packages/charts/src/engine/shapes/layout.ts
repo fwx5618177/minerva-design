@@ -3,16 +3,31 @@
 // accessible descriptions. Pure: no DOM, no canvas.
 
 import { toCss } from "../color";
+import { resolveLocale } from "../locale";
 import { font } from "../overlay";
 import type { ChartTheme } from "../theme";
+import { bulletValues, layoutBullet } from "./bullet";
+import {
+  calendarLegend,
+  calendarModel,
+  calendarValues,
+  layoutCalendar,
+} from "./calendar";
 import { funnelOrder, funnelValues, layoutFunnel } from "./funnel";
 import { gaugeValues, layoutGauge } from "./gauge";
+import {
+  interpolate,
+  localeFormat,
+  localePercent,
+  SHAPE_LABELS,
+  shapeLabels,
+} from "./labels";
 import { layoutPie, pieValues } from "./pie";
 import { layoutRadar, radarValues, seriesName } from "./radar";
+import { layoutRadialBar, radialBarLabels, radialBarValues } from "./radialBar";
+import { layoutSankey, resolveSankey, sankeyValues } from "./sankey";
 import {
   clamp,
-  defaultFormat,
-  formatPercent,
   inset,
   resolveWith,
   type LayoutContext,
@@ -24,6 +39,7 @@ import {
   type ShapeScene,
   type ShapeTooltipRow,
 } from "./scene";
+import { layoutSunburst, sunburstValues } from "./sunburst";
 import { layoutTreemap, treemapValues } from "./treemap";
 import type {
   ShapeChartOptions,
@@ -48,9 +64,12 @@ export interface ShapeLayoutInput {
   from?: ReadonlyMap<string, number> | null;
   /** Update animation progress, eased (1 = done) */
   t?: number;
+  /** Sunburst: names from the root to the focused node */
+  focus?: readonly string[];
 }
 
 const NO_HIDDEN: ReadonlySet<number> = new Set();
+const NO_FOCUS: readonly string[] = [];
 
 /** Lays a shape chart out */
 export const layoutShapeScene = (input: ShapeLayoutInput): ShapeScene => {
@@ -59,6 +78,8 @@ export const layoutShapeScene = (input: ShapeLayoutInput): ShapeScene => {
   const from = input.from ?? null;
   const t = clamp(input.t ?? 1, 0, 1);
   const palette = theme.palette.length ? theme.palette : [theme.primary];
+  const locale = resolveLocale(o.locale);
+  const labels = shapeLabels(o);
   const c: LayoutContext = {
     theme,
     measure: input.measure,
@@ -69,10 +90,13 @@ export const layoutShapeScene = (input: ShapeLayoutInput): ShapeScene => {
       const start = from.get(key) ?? 0;
       return start + (target - start) * t;
     },
-    format: o.format ?? defaultFormat,
-    percent: o.percentFormat ?? formatPercent,
+    format: o.format ?? localeFormat(locale),
+    percent: o.percentFormat ?? localePercent(locale),
+    labels,
+    locale,
     color: (css, i) => resolveWith(theme, css, palette[i % palette.length]),
     area: inset(bounds, o.padding),
+    focus: input.focus ?? NO_FOCUS,
   };
   let result: LayoutResult;
   switch (o.type) {
@@ -88,17 +112,33 @@ export const layoutShapeScene = (input: ShapeLayoutInput): ShapeScene => {
     case "funnel":
       result = layoutFunnel(o, c);
       break;
+    case "sankey":
+      result = layoutSankey(o, c);
+      break;
+    case "sunburst":
+      result = layoutSunburst(o, c);
+      break;
+    case "radialBar":
+      result = layoutRadialBar(o, c);
+      break;
+    case "calendarHeatmap":
+      result = layoutCalendar(o, c);
+      break;
+    case "bullet":
+      result = layoutBullet(o, c);
+      break;
     default:
       result = layoutTreemap(o, c);
       break;
   }
-  return { type: o.type, width, height, ...result };
+  return { type: o.type, width, height, labels, locale, ...result };
 };
 
 /** Target values of the animated quantities, by key */
 export const shapeValues = (
   o: ShapeChartOptions,
   hidden: ReadonlySet<number> = NO_HIDDEN,
+  focus: readonly string[] = NO_FOCUS,
 ): Map<string, number> => {
   const out = new Map<string, number>();
   switch (o.type) {
@@ -113,6 +153,21 @@ export const shapeValues = (
       break;
     case "funnel":
       funnelValues(o, hidden, out);
+      break;
+    case "sankey":
+      sankeyValues(o, hidden, out);
+      break;
+    case "sunburst":
+      sunburstValues(o, hidden, focus, out);
+      break;
+    case "radialBar":
+      radialBarValues(o, hidden, out);
+      break;
+    case "calendarHeatmap":
+      calendarValues(o, hidden, out);
+      break;
+    case "bullet":
+      bulletValues(o, hidden, out);
       break;
     default:
       treemapValues(o, hidden, out);
@@ -193,12 +248,13 @@ export const shapeLegend = (
       shown ||= o.series.length > 1;
       entries = o.series.map((s, i) => ({
         index: i,
-        name: seriesName(o, i),
+        name: seriesName(o, i, shapeLabels(o)),
         color: color(s.color, i),
         hidden: hidden.has(i),
       }));
       break;
     case "treemap":
+    case "sunburst":
       entries = o.data.map((d, i) => ({
         index: i,
         name: d.name,
@@ -206,15 +262,61 @@ export const shapeLegend = (
         hidden: hidden.has(i),
       }));
       break;
+    case "radialBar":
+      shown ||= !radialBarLabels(o);
+      entries = o.data.map((d, i) => ({
+        index: i,
+        name: d.name,
+        color: color(d.color, i),
+        hidden: hidden.has(i),
+      }));
+      break;
+    case "bullet":
+      entries = o.data.map((d, i) => ({
+        index: i,
+        name: d.name,
+        color: color(d.color, i),
+        hidden: hidden.has(i),
+      }));
+      break;
+    case "sankey": {
+      const g = resolveSankey(o);
+      entries = g.names.map((name, i) => ({
+        index: i,
+        name,
+        color: color(g.colors[i], i),
+        hidden: hidden.has(i),
+      }));
+      break;
+    }
+    case "calendarHeatmap":
+      shown = true;
+      entries = calendarLegend(o, theme, hidden);
+      break;
     default:
       break;
   }
   return shown && entries.length ? entries : null;
 };
 
-/** Number of toggleable entries (slices, stages, series, top-level nodes) */
-export const toggleCount = (o: ShapeChartOptions) =>
-  o.type === "radar" ? o.series.length : o.type === "gauge" ? 0 : o.data.length;
+/**
+ * Number of toggleable entries (slices, stages, series, top-level nodes,
+ * sankey nodes, bars, rows, calendar levels)
+ */
+export const toggleCount = (o: ShapeChartOptions): number => {
+  switch (o.type) {
+    case "radar":
+      return o.series.length;
+    case "gauge":
+      return 0;
+    case "sankey":
+      return resolveSankey(o).names.length;
+    case "calendarHeatmap":
+      return calendarModel(o)?.count ?? 0;
+    default:
+      return o.data.length;
+  }
+};
 
 /** Event of a hovered item */
 export const hoverEvent = (
@@ -243,6 +345,7 @@ export const hoverEvent = (
     percent: item.percent,
     color: item.color,
     ...(item.path ? { path: item.path } : {}),
+    ...item.event,
   };
 };
 
@@ -283,33 +386,46 @@ export const describeItem = (scene: ShapeScene, hover: ShapeHover) => {
     return `${item.name}, ${item.indicators[k].name}: ${item.rows[k]?.value ?? item.indicators[k].value}`;
   }
   const name = item.path ? item.path.join(" / ") : item.name;
-  return `${name}: ${item.rows[0]?.value ?? item.value} (${item.share ?? formatPercent(item.percent)})`;
+  return `${name}: ${item.rows[0]?.value ?? item.value} (${item.share ?? localePercent(scene.locale)(item.percent)})`;
 };
 
-/** Default accessible name of a chart */
+/** Default accessible name of a chart (in its `locale`) */
 export const describeChart = (o: ShapeChartOptions) => {
+  const l = shapeLabels(o);
   switch (o.type) {
     case "pie":
       return o.rose
-        ? "Rose chart"
+        ? l.roseChart
         : (o.innerRadius ?? 0) > 0
-          ? "Donut chart"
-          : "Pie chart";
+          ? l.donutChart
+          : l.pieChart;
     case "radar":
-      return "Radar chart";
+      return l.radarChart;
     case "gauge":
-      return o.label ? `Gauge: ${o.label}` : "Gauge";
+      return o.label
+        ? interpolate(l.gaugeChartNamed, { label: o.label })
+        : l.gaugeChart;
     case "funnel":
-      return "Funnel chart";
+      return l.funnelChart;
+    case "sankey":
+      return l.sankeyChart;
+    case "sunburst":
+      return l.sunburstChart;
+    case "radialBar":
+      return l.radialBarChart;
+    case "calendarHeatmap":
+      return l.calendarHeatmap;
+    case "bullet":
+      return l.bulletChart;
     default:
-      return "Treemap";
+      return l.treemapChart;
   }
 };
 
 /** Text summary of the data (screen readers) */
 export const describeScene = (scene: ShapeScene) =>
   scene.empty
-    ? "No data"
+    ? (scene.labels ?? SHAPE_LABELS.en).noData
     : scene.items
         .slice(0, 12)
         .map((item) =>

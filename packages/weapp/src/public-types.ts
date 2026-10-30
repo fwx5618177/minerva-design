@@ -554,6 +554,154 @@ export interface NativeBarChartProperties extends NativeChartProperties {
   stacked?: boolean;
 }
 export type NativeScatterChartProperties = NativeChartProperties;
+type NativeCurve = "linear" | "smooth" | "step";
+export interface NativeAreaChartProperties extends NativeChartProperties {
+  /** @default "smooth" */
+  curve?: NativeCurve;
+  stacked?: boolean;
+  /** 100% stacks (implies `stacked`) */
+  percent?: boolean;
+}
+export interface NativeHorizontalBarChartProperties extends NativeChartProperties {
+  stacked?: boolean;
+  percent?: boolean;
+  /** Values at the end of the bars */
+  labels?: boolean;
+}
+export type NativeCandlestickChartProperties = NativeChartProperties;
+export interface NativeRangeAreaChartProperties extends NativeChartProperties {
+  /** @default "smooth" */
+  curve?: NativeCurve;
+}
+export interface NativeMixedChartProperties extends NativeChartProperties {
+  /** Right value axis of the series with `yAxis: "right"` */
+  yAxis2?: NativeChartAxisOptions;
+  /** @default "normal" */
+  stackMode?: "normal" | "percent";
+  /** @default "vertical" */
+  orientation?: "vertical" | "horizontal";
+}
+export interface NativeBubbleChartProperties extends NativeChartProperties {
+  /** @default 6 */
+  minSize?: number;
+  /** @default 48 */
+  maxSize?: number;
+  maxValue?: number;
+}
+export interface NativeHeatmapCell {
+  x: string | number;
+  y: string | number;
+  value: number | null;
+}
+export interface NativeHeatmapChartProperties extends NativeChartCommonProperties {
+  data: readonly NativeHeatmapCell[];
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+  xCategories?: readonly string[];
+  yCategories?: readonly string[];
+  colorScale?: readonly string[];
+  valueRange?: [number, number];
+  name?: string;
+  radius?: number;
+}
+export interface NativeSparklineProperties {
+  data: readonly (number | [number, number])[];
+  /** @default "line" */
+  type?: "line" | "area" | "bar";
+  color?: string;
+  /** @default "smooth" */
+  curve?: NativeCurve;
+  name?: string;
+  reference?: number;
+  /** @default "100%" */
+  width?: number | string;
+  /** @default 48 */
+  height?: number | string;
+  tooltip?: boolean | NativeChartTooltipOptions;
+  palette?: readonly string[];
+  ariaLabel?: string;
+  disableScroll?: boolean;
+}
+export interface NativeHistogramChartProperties extends NativeChartCommonProperties {
+  values: readonly number[];
+  /** @default "auto" */
+  bins?: number | "auto" | "sturges" | "freedman-diaconis";
+  domain?: [number, number];
+  /** @default true */
+  nice?: boolean;
+  /** @default "Count" */
+  name?: string;
+  color?: string;
+  /** More series drawn over the bins */
+  series?: readonly NativeChartSeries[];
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+}
+export interface NativeBoxplotGroup {
+  x: string | number;
+  values: readonly number[];
+  color?: string;
+}
+export interface NativeBoxPlotChartProperties extends NativeChartCommonProperties {
+  series?: readonly NativeChartSeries[];
+  groups?: readonly NativeBoxplotGroup[];
+  /** @default "Values" */
+  name?: string;
+  /** @default 1.5 */
+  whisker?: number | "minmax";
+  /** @default "vertical" */
+  orientation?: "vertical" | "horizontal";
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+}
+export interface NativeWaterfallStep {
+  label: string;
+  value?: number;
+  /** @default "change" */
+  kind?: "change" | "subtotal" | "total";
+  color?: string;
+}
+export interface NativeWaterfallChartProperties extends NativeChartCommonProperties {
+  steps: readonly NativeWaterfallStep[];
+  name?: string;
+  upColor?: string;
+  downColor?: string;
+  totalColor?: string;
+  /** @default 0 */
+  start?: number;
+  /** @default true */
+  labels?: boolean;
+  locale?: string;
+  /** @default "vertical" */
+  orientation?: "vertical" | "horizontal";
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+}
+export interface NativeGanttTask {
+  name: string;
+  /** Timestamp (ms) */
+  start: number;
+  /** Timestamp (ms); milestones omit it */
+  end?: number;
+  /** 0-1 */
+  progress?: number;
+  group?: string;
+  color?: string;
+  milestone?: boolean;
+}
+export interface NativeGanttChartProperties extends NativeChartCommonProperties {
+  tasks: readonly NativeGanttTask[];
+  colors?: readonly string[];
+  taskName?: string;
+  progressName?: string;
+  milestoneName?: string;
+  locale?: string;
+  /** Line at this timestamp (`true`: now) @default false */
+  today?: boolean | number;
+  todayLabel?: string;
+  xAxis?: NativeChartAxisOptions;
+  yAxis?: NativeChartAxisOptions;
+}
 export interface NativeChartHoverItem {
   seriesIndex: number;
   seriesId: string;
@@ -607,6 +755,12 @@ export interface NativeChartConfig {
   yAxis?: { format?: (value: number) => string };
   /** Tooltip text (`\n` separates lines); `null` hides the tooltip */
   renderTooltip?: (event: NativeChartHoverEvent) => string | null;
+  /** heatmap-chart, sparkline and waterfall-chart: formats the values */
+  format?: (value: number) => string;
+  /** histogram-chart: formats the edges of the bins (tooltip) */
+  formatBin?: (value: number) => string;
+  /** gantt-chart: formats the progress shares (tooltip) */
+  formatProgress?: (share: number) => string;
 }
 interface NativeChartMethods extends NativeConfigConsumer {
   /** Measures the canvas again (after a host layout change) */
@@ -700,6 +854,318 @@ export interface NativeQuadrantChartConfig {
 }
 export interface NativeQuadrantChartInstance extends NativeChartMethods {
   configure(config: NativeQuadrantChartConfig): void;
+}
+
+/** A named value of a shape chart (pie slice, funnel stage) */
+export interface NativeShapeDatum {
+  name: string;
+  /** Negative values count as 0 */
+  value: number;
+  /** Any CSS color, `var(--x)` included; the palette when omitted */
+  color?: string;
+}
+export interface NativeTreemapNode {
+  name: string;
+  /** Leaves carry a value, parents sum their children */
+  value?: number;
+  color?: string;
+  children?: readonly NativeTreemapNode[];
+}
+export interface NativeRadarIndicator {
+  name: string;
+  /** @default the largest value of the indicator */
+  max?: number;
+  /** @default 0 */
+  min?: number;
+}
+export interface NativeRadarSeries {
+  name?: string;
+  /** One value per indicator */
+  values: readonly number[];
+  color?: string;
+  /** Fill opacity */
+  opacity?: number;
+}
+export interface NativeGaugeBand {
+  /** Upper bound of the band */
+  to: number;
+  color: string;
+}
+export interface NativeShapeLegendOptions {
+  /** @default "bottom" */
+  position?: "top" | "bottom";
+  /** Tapping an item hides / shows its entry @default true */
+  toggle?: boolean;
+}
+/** Properties of every shape chart component */
+export interface NativeShapeChartFrameProperties {
+  /** Numbers are px; any CSS length otherwise @default "100%" */
+  width?: number | string;
+  /** Numbers are px; any CSS length otherwise @default 320 (gauge-chart: 240, radial-bar-chart: 300, sankey- and sunburst-chart: 360, calendar-heatmap and bullet-chart: from the data) */
+  height?: number | string;
+  /** Stops the page from scrolling while the canvas is touched @default false */
+  disableScroll?: boolean;
+}
+/** Properties shared by pie-, donut-, radar-, gauge-, funnel- and treemap-chart */
+export interface NativeShapeChartCommonProperties extends NativeShapeChartFrameProperties {
+  palette?: readonly string[];
+  /** Shown by default for pie, donut, funnel and multi-series radar charts */
+  legend?: boolean | NativeShapeLegendOptions;
+  /** Tooltip drawn on the canvas; `false` disables it */
+  tooltip?: boolean;
+  /** Hidden entries by index; set (even `[]`) it is controlled: legend taps only emit `toggle` */
+  hidden?: readonly number[] | null;
+  /** @default true */
+  animation?: boolean;
+  padding?: NativeChartPadding;
+  ariaLabel?: string;
+}
+export interface NativePieChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeShapeDatum[];
+  /** Fraction of the outer radius @default 0 (donut-chart: 0.62) */
+  innerRadius?: number;
+  /** Degrees clockwise from 12 o'clock @default 0 */
+  startAngle?: number;
+  /** Gap between the slices in px */
+  padAngle?: number;
+  /** Corner radius of the slices in px */
+  cornerRadius?: number;
+  rose?: boolean;
+  labels?: "outside" | "inside" | "none";
+  labelContent?: readonly ("name" | "value" | "percent")[];
+  centerValue?: string;
+  centerLabel?: string;
+}
+export type NativeDonutChartProperties = NativePieChartProperties;
+export interface NativeRadarChartProperties extends NativeShapeChartCommonProperties {
+  indicators: readonly NativeRadarIndicator[];
+  series: readonly NativeRadarSeries[];
+  /** @default "polygon" */
+  shape?: "polygon" | "circle";
+  /** @default 4 */
+  levels?: number;
+  /** @default true */
+  dots?: boolean;
+}
+export interface NativeGaugeChartProperties extends NativeShapeChartCommonProperties {
+  value: number;
+  /** @default 0 */
+  min?: number;
+  /** @default 100 */
+  max?: number;
+  label?: string;
+  /** Degrees @default 240 */
+  sweep?: number;
+  /** Fraction of the radius @default 0.16 */
+  thickness?: number;
+  bands?: readonly NativeGaugeBand[];
+  color?: string;
+  needle?: boolean;
+  /** @default true */
+  ticks?: boolean;
+}
+export interface NativeFunnelChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeShapeDatum[];
+  /** @default "none" */
+  sort?: "descending" | "ascending" | "none";
+  /** @default 4 */
+  gap?: number;
+  /** @default true */
+  conversion?: boolean;
+  /** @default "trapezoid" */
+  shape?: "trapezoid" | "bar";
+}
+export interface NativeTreemapChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeTreemapNode[];
+  /** @default 2 */
+  gap?: number;
+  /** @default true */
+  headers?: boolean;
+}
+export interface NativeSankeyNode {
+  name: string;
+  color?: string;
+  column?: number;
+}
+export interface NativeSankeyLink {
+  source: string | number;
+  target: string | number;
+  value: number;
+  color?: string;
+}
+export interface NativeSankeyChartProperties extends NativeShapeChartCommonProperties {
+  nodes?: readonly NativeSankeyNode[];
+  links: readonly NativeSankeyLink[];
+  /** @default 12 */
+  nodeWidth?: number;
+  /** @default 12 */
+  nodePadding?: number;
+  /** @default "justify" */
+  align?: "justify" | "left" | "right" | "center";
+  /** @default 32 */
+  iterations?: number;
+  /** @default "gradient" */
+  linkColor?: "gradient" | "source" | "target" | "neutral";
+  /** @default 0.4 */
+  linkOpacity?: number;
+  /** @default true */
+  labels?: boolean;
+  /** @default true */
+  labelValues?: boolean;
+}
+export interface NativeSunburstChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeTreemapNode[];
+  /** @default 0.26 */
+  innerRadius?: number;
+  levels?: number;
+  /** @default 0 */
+  startAngle?: number;
+  /** @default 1 */
+  padAngle?: number;
+  /** @default 2 */
+  cornerRadius?: number;
+  /** @default "auto" */
+  labels?: "auto" | "tangential" | "radial" | "none";
+  /** Tapping a parent zooms into it, the center goes back up @default true */
+  drill?: boolean;
+  /** Controlled drill-down: taps only emit `drill` */
+  drillPath?: readonly string[] | null;
+}
+export interface NativeRadialBarDatum extends NativeShapeDatum {
+  max?: number;
+}
+export interface NativeRadialBarChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeRadialBarDatum[];
+  max?: number;
+  /** @default 0.3 */
+  innerRadius?: number;
+  /** @default 0 */
+  startAngle?: number;
+  /** @default 270 */
+  sweep?: number;
+  /** @default 0.28 */
+  gap?: number;
+  /** @default true */
+  track?: boolean;
+  /** @default true */
+  rounded?: boolean;
+  labels?: boolean;
+  labelContent?: readonly ("name" | "value" | "percent")[];
+  centerValue?: string;
+  centerLabel?: string;
+}
+export interface NativeCalendarDatum {
+  /** `YYYY-MM-DD` or a timestamp */
+  date: string | number;
+  value: number;
+}
+export interface NativeCalendarHeatmapProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeCalendarDatum[];
+  /** A year or an inclusive `[start, end]` range */
+  range?: number | [string | number, string | number];
+  /** @default "weeks" */
+  layout?: "weeks" | "months";
+  weekStart?: number;
+  locale?: string;
+  color?: string;
+  colors?: readonly string[];
+  /** @default 4 */
+  levels?: number;
+  thresholds?: readonly number[];
+  /** @default 3 */
+  gap?: number;
+  /** @default 2 */
+  radius?: number;
+  maxCellSize?: number;
+  /** @default true */
+  monthLabels?: boolean;
+  /** @default true */
+  weekdayLabels?: boolean;
+}
+export interface NativeBulletDatum {
+  name: string;
+  /** Small text under the name */
+  subtitle?: string;
+  value: number;
+  target?: number;
+  ranges?: readonly number[];
+  min?: number;
+  max?: number;
+  color?: string;
+}
+export interface NativeBulletChartProperties extends NativeShapeChartCommonProperties {
+  data: readonly NativeBulletDatum[];
+  /** @default "horizontal" */
+  orientation?: "horizontal" | "vertical";
+  ranges?: readonly number[];
+  rangeLabels?: readonly string[];
+  rangeColors?: readonly string[];
+  /** @default 0.4 */
+  barSize?: number;
+  targetColor?: string;
+  /** @default true */
+  ticks?: boolean;
+}
+/** shape-chart: any shape type of the engine from its options */
+export interface NativeShapeChartProperties extends NativeShapeChartFrameProperties {
+  /** Options by `type` ("pie", "radar", "gauge", "funnel", "treemap"...) without functions (see `configure`) */
+  options: { type: string; [option: string]: unknown };
+}
+export interface NativeShapeHoverEvent {
+  /** Index of the slice / stage / series / leaf; -1 when the highlight is cleared (`hover`) */
+  index: number;
+  /** Radar: index of the closest indicator */
+  indicator?: number;
+  name: string;
+  value: number;
+  /** Share, 0-1 */
+  percent: number;
+  color: string;
+  /** Treemap / sunburst: names from the root */
+  path?: string[];
+  /** Calendar heatmap: `YYYY-MM-DD` */
+  date?: string;
+  /** Sankey link ends */
+  source?: string;
+  target?: string;
+}
+export interface NativeShapeToggleEvent {
+  index: number;
+  /** Whether the entry is (or, controlled, would be) hidden */
+  hidden: boolean;
+  hiddenIndexes: number[];
+}
+/** `event.detail` of the shape chart events */
+export interface NativeShapeChartEvents {
+  hover: NativeShapeHoverEvent;
+  click: NativeShapeHoverEvent;
+  toggle: NativeShapeToggleEvent;
+  /** sunburst-chart (and shape-chart with a sunburst): names from the root to the focused node */
+  drill: { path: string[] };
+}
+/** Function options of the shape charts (not serializable as properties) */
+export interface NativeShapeChartConfig {
+  /** Values of the labels and the tooltip */
+  format?: (value: number) => string;
+  /** Shares (0-1) of the labels and the tooltip */
+  percentFormat?: (share: number) => string;
+  /** Tooltip text (`\n` separates lines); `null` hides the tooltip */
+  renderTooltip?: (event: NativeShapeHoverEvent) => string | null;
+}
+export interface NativeShapeChartInstance extends NativeConfigConsumer {
+  configure(config: NativeShapeChartConfig): void;
+  /** Measures the canvas again (after a host layout change) */
+  resize(): void;
+  /** Hides / shows an entry (emits `toggle`) */
+  toggle(index: number): void;
+  /** Indexes of the hidden entries */
+  getHidden(): number[];
+  /** Removes the highlight and the tooltip */
+  clearHover(): void;
+  /** Sunburst: focuses the node at this path (`[]` = the root), emits `drill` */
+  drill(path: readonly string[]): void;
+  /** Sunburst: names from the root to the focused node */
+  getDrillPath(): string[];
 }
 
 /** DatePicker data properties; omitted value is uncontrolled, null/empty stays controlled. */

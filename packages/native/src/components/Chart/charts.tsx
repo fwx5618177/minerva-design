@@ -18,6 +18,7 @@ import type {
   BarChartProps,
   ChartCommonProps,
   ChartProps,
+  HorizontalBarChartProps,
   LineChartProps,
   QuadrantChartProps,
   ScatterChartProps,
@@ -27,9 +28,13 @@ import type {
 function useEngineOptions(
   props: Omit<
     ChartCommonProps,
-    "onPointClick" | "onPlotClick" | "renderTooltip"
-  >,
+    "onPointClick" | "onPlotClick" | "renderTooltip" | "labels"
+  > & {
+    /** Texts of the engine (a boolean is the `labels` of a bar chart) */
+    labels?: ChartCommonProps["labels"] | boolean;
+  },
   series: readonly ChartSeries[],
+  extra?: Pick<ChartOptions, "orientation" | "yAxis2">,
 ): ChartOptions {
   const {
     xAxis,
@@ -42,10 +47,15 @@ function useEngineOptions(
     padding,
     palette,
     ariaLabel,
+    locale,
+    labels: labelsProp,
   } = props;
+  const labels = typeof labelsProp === "object" ? labelsProp : undefined;
+  const orientation = extra?.orientation;
+  const yAxis2 = extra?.yAxis2;
   return useMemo(
-    () =>
-      engineOptions({
+    () => ({
+      ...engineOptions({
         series,
         xAxis,
         yAxis,
@@ -57,9 +67,16 @@ function useEngineOptions(
         padding,
         palette,
         ariaLabel,
+        locale,
+        labels,
       }),
+      ...(orientation ? { orientation } : null),
+      ...(yAxis2 ? { yAxis2 } : null),
+    }),
     [
       series,
+      orientation,
+      yAxis2,
       xAxis,
       yAxis,
       legend,
@@ -70,11 +87,13 @@ function useEngineOptions(
       padding,
       palette,
       ariaLabel,
+      locale,
+      labels,
     ],
   );
 }
 
-const frameProps = (props: ChartCommonProps) => ({
+const frameProps = (props: Omit<ChartCommonProps, "labels">) => ({
   height: props.height,
   width: props.width,
   style: props.style,
@@ -93,7 +112,8 @@ const frameProps = (props: ChartCommonProps) => ({
  * Themed by the closest `MinervaProvider` (light / dark).
  */
 export function Chart(props: ChartProps) {
-  const options = useEngineOptions(props, props.series);
+  const { series, orientation, yAxis2 } = props;
+  const options = useEngineOptions(props, series, { orientation, yAxis2 });
   return <ChartBase options={options} {...frameProps(props)} />;
 }
 
@@ -110,6 +130,22 @@ export function BarChart(props: BarChartProps) {
   const { series: input, stacked = false } = props;
   const series = useMemo(() => barSeries(input, stacked), [input, stacked]);
   const options = useEngineOptions(props, series);
+  return <ChartBase options={options} {...frameProps(props)} />;
+}
+
+/**
+ * Horizontal bar chart: categories down the left side (rankings, long
+ * names, surveys), grouped, stacked or with the values at the bar ends
+ */
+export function HorizontalBarChart(props: HorizontalBarChartProps) {
+  const { series: input, stacked = false, labels = false } = props;
+  const series = useMemo(
+    () => barSeries(input, stacked, labels),
+    [input, stacked, labels],
+  );
+  const options = useEngineOptions(props, series, {
+    orientation: "horizontal",
+  });
   return <ChartBase options={options} {...frameProps(props)} />;
 }
 

@@ -25,6 +25,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import {
+  chartAriaLabel,
   createChartController,
   type ChartController,
   type ChartDragEvent,
@@ -67,6 +68,8 @@ export const engineOptions = (
     | "padding"
     | "palette"
     | "ariaLabel"
+    | "locale"
+    | "labels"
   > &
     Pick<ChartOptions, "series">,
 ): ChartOptions => ({
@@ -81,6 +84,8 @@ export const engineOptions = (
   padding: props.padding,
   palette: props.palette,
   ariaLabel: props.ariaLabel,
+  locale: props.locale,
+  labels: props.labels,
 });
 
 type TooltipResult = Exclude<
@@ -508,7 +513,9 @@ export function ChartBase({
         style={StyleSheet.absoluteFill}
         accessible
         accessibilityRole="image"
-        accessibilityLabel={options.ariaLabel}
+        accessibilityLabel={
+          options.ariaLabel ?? (scene ? chartAriaLabel(scene.model) : undefined)
+        }
         onStartShouldSetResponder={() => true}
         onResponderTerminationRequest={() => !store.holdsGesture()}
         onResponderGrant={store.touchStart}

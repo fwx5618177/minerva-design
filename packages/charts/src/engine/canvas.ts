@@ -6,9 +6,11 @@
 import { toCss } from "./color";
 import {
   createChartController,
+  scenePrimitives,
   type ChartController,
   type ChartControllerEventMap,
   type ChartPointerOptions,
+  type ChartPrimitive,
   type ChartScene,
 } from "./controller";
 import { buildItems, type Origin } from "./items";
@@ -114,6 +116,89 @@ const roundedRect = (
   ctx.closePath();
 };
 
+/**
+ * Draws the shapes of `scenePrimitives` (CSS pixels of the chart) clipped to
+ * the plot: the data of horizontal charts
+ */
+export const drawPrimitives = (
+  ctx: CanvasRenderingContext2D,
+  primitives: readonly ChartPrimitive[],
+  plot: { x: number; y: number; width: number; height: number },
+) => {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(plot.x, plot.y, plot.width, plot.height);
+  ctx.clip();
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  for (const p of primitives) {
+    if (p.kind === "area") {
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      p.segments.forEach((run, k) => {
+        const bottoms = p.bottoms?.[k];
+        const n = run.length / 2;
+        if (n < 2) return;
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+          if (i === 0) ctx.moveTo(run[0], run[1]);
+          else ctx.lineTo(run[i * 2], run[i * 2 + 1]);
+        }
+        // back along the bottom edge (or the baseline)
+        for (let i = n - 1; i >= 0; i--) {
+          const b = bottoms ? bottoms[i] : p.baseline;
+          if (p.horizontal) ctx.lineTo(b, run[i * 2 + 1]);
+          else ctx.lineTo(run[i * 2], b);
+        }
+        ctx.closePath();
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    } else if (p.kind === "line") {
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = p.width;
+      ctx.beginPath();
+      for (const run of p.segments) {
+        for (let i = 0; i < run.length; i += 2) {
+          if (i === 0) ctx.moveTo(run[0], run[1]);
+          else ctx.lineTo(run[i], run[i + 1]);
+        }
+      }
+      ctx.stroke();
+    } else if (p.kind === "bars") {
+      ctx.globalAlpha = p.opacity ?? 1;
+      const r = p.radius ?? 0;
+      for (let k = 0; k < p.rects.length; k += 4) {
+        const [x, y, w, h] = [
+          p.rects[k],
+          p.rects[k + 1],
+          p.rects[k + 2],
+          p.rects[k + 3],
+        ];
+        ctx.fillStyle = p.colors?.[k / 4] ?? p.color;
+        const radius = Math.min(r, w / 2, h / 2);
+        if (radius > 0.5) {
+          roundedRect(ctx, x, y, w, h, radius);
+          ctx.fill();
+        } else {
+          ctx.fillRect(x, y, w, h);
+        }
+      }
+      ctx.globalAlpha = 1;
+    } else {
+      ctx.globalAlpha = p.opacity;
+      for (let k = 0; k < p.dots.length; k += 3) {
+        ctx.fillStyle = p.colors[k / 3] ?? "#888";
+        ctx.beginPath();
+        ctx.arc(p.dots[k], p.dots[k + 1], p.dots[k + 2] / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+  ctx.restore();
+};
+
 /** Draws a scene (legend, axes, data, labels, hover) on a 2D context */
 export const drawScene = (
   ctx: CanvasRenderingContext2D,
@@ -137,6 +222,8 @@ export const drawScene = (
     y: model.y,
     xTicks: layout.xTicks,
     yTicks: layout.yTicks,
+    y2: model.y2,
+    y2Ticks: layout.y2Ticks,
     theme,
     annotations: scene.annotations,
   });
@@ -177,25 +264,32 @@ export const drawScene = (
     ctx.fill();
   }
 
-  // data
-  const scale = (range: [number, number], o: number, reverse: boolean) => {
-    const s = 2 / (range[1] - range[0]);
-    const offset = (o - range[0]) * s - 1;
-    return reverse ? [-s, -offset] : [s, offset];
-  };
-  const [xScale, xOffset] = scale(view.x, origin.x, model.x.reverse);
-  const [yScale, yOffset] = scale(view.y, origin.y, model.y.reverse);
-  painter.paint(
-    items,
-    {
-      transform: { xScale, xOffset, yScale, yOffset },
-      width: Math.max(1, Math.round(plot.width * dpr)),
-      height: Math.max(1, Math.round(plot.height * dpr)),
-      dpr,
-    },
-    Math.round(plot.x * dpr),
-    Math.round(plot.y * dpr),
-  );
+  // data (horizontal charts: as shapes, the painter draws vertical charts)
+  if (scales.horizontal) {
+    drawPrimitives(ctx, scenePrimitives(scene), plot);
+  } else {
+    paintData();
+  }
+  function paintData() {
+    const scale = (range: [number, number], o: number, reverse: boolean) => {
+      const s = 2 / (range[1] - range[0]);
+      const offset = (o - range[0]) * s - 1;
+      return reverse ? [-s, -offset] : [s, offset];
+    };
+    const [xScale, xOffset] = scale(view.x, origin.x, model.x.reverse);
+    const [yScale, yOffset] = scale(view.y, origin.y, model.y.reverse);
+    painter.paint(
+      items,
+      {
+        transform: { xScale, xOffset, yScale, yOffset },
+        width: Math.max(1, Math.round(plot.width * dpr)),
+        height: Math.max(1, Math.round(plot.height * dpr)),
+        dpr,
+      },
+      Math.round(plot.x * dpr),
+      Math.round(plot.y * dpr),
+    );
+  }
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   drawForeground(ctx, {
@@ -236,6 +330,18 @@ export const drawScene = (
       const cx = Math.round(hover.crosshairX) + 0.5;
       ctx.moveTo(cx, plot.y);
       ctx.lineTo(cx, plot.y + plot.height);
+      ctx.stroke();
+      ctx.restore();
+    }
+    if (hover.crosshairY !== null) {
+      ctx.save();
+      ctx.strokeStyle = toCss(theme.textMuted, 0.55);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      const cy = Math.round(hover.crosshairY) + 0.5;
+      ctx.moveTo(plot.x, cy);
+      ctx.lineTo(plot.x + plot.width, cy);
       ctx.stroke();
       ctx.restore();
     }

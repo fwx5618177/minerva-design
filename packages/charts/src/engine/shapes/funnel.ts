@@ -267,11 +267,11 @@ export const layoutFunnel = (
 
     const percent = first > 0 ? targets[k] / first : 0;
     const rows: ShapeTooltipRow[] = [
-      { name: "Value", value: valueTexts[k] },
-      { name: "Of first stage", value: c.percent(percent) },
+      { name: c.labels.value, value: valueTexts[k] },
+      { name: c.labels.ofFirstStage, value: c.percent(percent) },
     ];
     if (k > 0) {
-      rows.push({ name: "Conversion", value: c.percent(rates[k]) });
+      rows.push({ name: c.labels.conversion, value: c.percent(rates[k]) });
       if (showConversion) {
         const boundary = bar ? Math.max(widths[k - 1], wt) : wt;
         labels.push({

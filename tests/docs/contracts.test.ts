@@ -38,6 +38,8 @@ const EXPECTED_DIFFERENCES: Record<string, string> = {
   "minerva-tooltip.leaveDelay": "provider, then 0ms",
   "minerva-hstack.direction": "fixed by the element (React omits the prop)",
   "minerva-vstack.direction": "fixed by the element (React omits the prop)",
+  "minerva-gantt-chart.formatProgress":
+    'a function: its React @default documents the output ("60%")',
 };
 
 const contracts = generateContracts();

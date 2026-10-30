@@ -36,7 +36,8 @@ export const linearTicks = (
   const ticks: number[] = [];
   // Guard against pathological ranges
   for (let i = start; i <= end && ticks.length < 1000; i++) {
-    ticks.push(roundTo(i * step, step));
+    // `|| 0`: no -0 for the formatters (Intl writes "-0")
+    ticks.push(roundTo(i * step, step) || 0);
   }
   return ticks;
 };

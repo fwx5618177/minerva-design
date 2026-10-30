@@ -2,14 +2,77 @@
 // mini-programs, React Native): they turn component props into engine
 // options.
 
+import {
+  localeLabels,
+  numberFormat,
+  resolveLocale,
+  type LabelDictionary,
+} from "./locale";
+import { tickStep } from "./scale";
 import type {
   ChartAnnotation,
   ChartCurve,
   ChartInteractionOptions,
   ChartOptions,
+  ChartPointDatum,
   ChartSeries,
   ChartSeriesType,
+  ChartXValue,
 } from "./types";
+
+/** Default series names of the presets */
+interface PresetLabels {
+  value: string;
+  values: string;
+  count: string;
+  change: string;
+  tasks: string;
+  progress: string;
+  milestones: string;
+}
+
+const PRESET_LABELS: LabelDictionary<PresetLabels> = {
+  en: {
+    value: "Value",
+    values: "Values",
+    count: "Count",
+    change: "Change",
+    tasks: "Tasks",
+    progress: "Progress",
+    milestones: "Milestones",
+  },
+  zh: {
+    value: "数值",
+    values: "数值",
+    count: "数量",
+    change: "变化",
+    tasks: "任务",
+    progress: "进度",
+    milestones: "里程碑",
+  },
+  ja: {
+    value: "値",
+    values: "値",
+    count: "件数",
+    change: "増減",
+    tasks: "タスク",
+    progress: "進捗",
+    milestones: "マイルストーン",
+  },
+  fr: {
+    value: "Valeur",
+    values: "Valeurs",
+    count: "Effectif",
+    change: "Variation",
+    tasks: "Tâches",
+    progress: "Avancement",
+    milestones: "Jalons",
+  },
+};
+
+/** Default series names of the presets in a locale (the page language by default) */
+export const presetLabels = (locale?: string): PresetLabels =>
+  localeLabels(PRESET_LABELS, locale);
 
 /** Gives the series without a `type` the type of the component */
 export const withSeriesType = (
@@ -117,7 +180,7 @@ export const heatmapChartOptions = (
     series: [
       {
         id: "heatmap",
-        name: config.name ?? "Value",
+        name: config.name ?? presetLabels(base.locale).value,
         type: "heatmap",
         data: config.data.map((c) => ({ x: c.x, y: c.y, value: c.value })),
         colorScale: config.colorScale,
@@ -181,7 +244,7 @@ export const sparklineOptions = (
     series: [
       {
         id: "sparkline",
-        name: config.name ?? "Value",
+        name: config.name ?? presetLabels(base.locale).value,
         type,
         data: config.data,
         color: config.color,
@@ -519,3 +582,703 @@ export const quadrantChartOptions = (
     interaction,
   };
 };
+
+// ------------------------------------------------------------- statistics
+
+/** Finite values of a list, as a sorted typed array */
+const sortedFinite = (values: ArrayLike<number>): Float64Array => {
+  let n = 0;
+  for (let i = 0; i < values.length; i++) if (Number.isFinite(values[i])) n++;
+  const out = new Float64Array(n);
+  let k = 0;
+  for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    if (Number.isFinite(v)) out[k++] = v;
+  }
+  return out.sort();
+};
+
+/** Quantile `p` (0-1) of sorted values, linearly interpolated (NumPy / Excel) */
+const quantileOf = (sorted: ArrayLike<number>, p: number): number => {
+  const n = sorted.length;
+  if (!n) return NaN;
+  const at = Math.min(1, Math.max(0, p)) * (n - 1);
+  const lo = Math.floor(at);
+  const hi = Math.min(n - 1, lo + 1);
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (at - lo);
+};
+
+/**
+ * Quantiles of values (`[0.5, 0.95, 0.99]` gives the median, p95 and p99),
+ * linearly interpolated like NumPy and Excel; non-finite values are ignored
+ */
+export const quantiles = (
+  values: ArrayLike<number>,
+  ps: readonly number[],
+): number[] => {
+  const sorted = sortedFinite(values);
+  return ps.map((p) => quantileOf(sorted, p));
+};
+
+/** How the bins of a histogram are chosen: a count, or a rule */
+export type HistogramBinning =
+  number | "auto" | "sturges" | "freedman-diaconis";
+
+/** Options of `binValues` */
+export interface BinOptions {
+  /**
+   * Number of bins, or the rule choosing it: `sturges` (log2 n + 1, for
+   * small normal-ish samples), `freedman-diaconis` (bin width from the
+   * interquartile range, robust to outliers); `auto` uses Freedman-Diaconis
+   * and Sturges when the spread is zero
+   * @default "auto"
+   */
+  bins?: HistogramBinning;
+  /** Range covered by the bins (values outside are not counted); the data range by default */
+  domain?: readonly [number, number];
+  /**
+   * Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it
+   * @default true
+   */
+  nice?: boolean;
+}
+
+/** Bins of a histogram */
+export interface HistogramBins {
+  /** Edges of the bins: one more than the bins */
+  edges: number[];
+  /** Number of values in every bin */
+  counts: number[];
+  /** Width of a bin */
+  width: number;
+  /** Number of values counted (finite, inside the domain) */
+  total: number;
+}
+
+/** At most this many values are sorted to estimate the spread (Freedman-Diaconis) */
+const SPREAD_SAMPLE = 100_000;
+
+/**
+ * Counts values into bins of equal width: linear in the number of values
+ * (a million samples take a few milliseconds; the spread of large samples
+ * is estimated on an even subsample)
+ */
+export const binValues = (
+  values: ArrayLike<number>,
+  options: BinOptions = {},
+): HistogramBins => {
+  let n = 0;
+  let min = Infinity;
+  let max = -Infinity;
+  for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    if (!Number.isFinite(v)) continue;
+    n++;
+    if (v < min) min = v;
+    if (v > max) max = v;
+  }
+  let [lo, hi] = options.domain ?? [min, max];
+  if (!n || !Number.isFinite(lo) || !Number.isFinite(hi)) {
+    return { edges: [0, 1], counts: [0], width: 1, total: 0 };
+  }
+  if (lo > hi) [lo, hi] = [hi, lo];
+  if (hi === lo) {
+    lo -= 0.5;
+    hi += 0.5;
+  }
+  const span = hi - lo;
+  const rule = options.bins ?? "auto";
+  const sturges = Math.ceil(Math.log2(n)) + 1;
+  let count: number;
+  if (typeof rule === "number") {
+    count = Math.round(rule);
+  } else if (rule === "sturges") {
+    count = sturges;
+  } else {
+    // Freedman-Diaconis: width = 2 IQR / n^(1/3)
+    const stride = Math.max(1, Math.floor(values.length / SPREAD_SAMPLE));
+    const sample: number[] = [];
+    for (let i = 0; i < values.length; i += stride) {
+      const v = values[i];
+      if (Number.isFinite(v)) sample.push(v);
+    }
+    const sorted = Float64Array.from(sample).sort();
+    const iqr = quantileOf(sorted, 0.75) - quantileOf(sorted, 0.25);
+    const width = (2 * iqr) / Math.cbrt(n);
+    count = width > 0 ? Math.ceil(span / width) : sturges;
+  }
+  count = Math.max(1, Math.min(1000, count || 1));
+  let width = span / count;
+  let start = lo;
+  if (options.nice ?? true) {
+    width = tickStep(lo, hi, count) || width;
+    start = Math.floor(lo / width + 1e-9) * width;
+    count = Math.max(1, Math.ceil((hi - start) / width - 1e-9));
+  }
+  const end = start + count * width;
+  const counts = new Array<number>(count).fill(0);
+  let total = 0;
+  for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    if (!(v >= start && v <= end)) continue;
+    // the last bin includes its right edge
+    const k = Math.min(count - 1, Math.floor((v - start) / width));
+    counts[k]++;
+    total++;
+  }
+  const edges: number[] = [];
+  for (let k = 0; k <= count; k++)
+    edges.push(Number((start + k * width).toPrecision(12)));
+  return { edges, counts, width, total };
+};
+
+/** Options of `histogramSeries` */
+export interface HistogramSeriesOptions extends BinOptions {
+  /** Name of the series (legend, tooltip) */
+  name?: string;
+  /** Bar color (any CSS color) */
+  color?: string;
+  /** Formats the edges of the bins in the tooltip */
+  format?: (value: number) => string;
+  /** Bins already computed (`binValues`): `values` are then ignored */
+  binned?: HistogramBins;
+  /**
+   * Locale of the default name and of the bin edges
+   * @default the page language
+   */
+  locale?: string;
+}
+
+/** Bar series of a histogram: one touching bar per bin, labelled with its range */
+export const histogramSeries = (
+  values: ArrayLike<number>,
+  options: HistogramSeriesOptions = {},
+): ChartSeries => {
+  const bins = options.binned ?? binValues(values, options);
+  const locale = resolveLocale(options.locale);
+  const format =
+    options.format ?? ((value: number) => formatEdge(value, locale));
+  return {
+    id: "histogram",
+    name: options.name ?? presetLabels(locale).count,
+    type: "bar",
+    color: options.color,
+    barWidth: 1,
+    radius: 1,
+    data: bins.counts.map((count, k) => {
+      const a = bins.edges[k] ?? 0;
+      const b = bins.edges[k + 1] ?? a;
+      return {
+        x: (a + b) / 2,
+        y: count,
+        label: `${format(a)} – ${format(b)}`,
+      };
+    }),
+  };
+};
+
+const formatEdge = (value: number, locale: string) =>
+  numberFormat(locale, { maximumSignificantDigits: 6 }).format(value);
+
+/** Options of `boxplotStats` */
+export interface BoxplotStatsOptions {
+  /**
+   * Reach of the whiskers in interquartile ranges beyond the box (Tukey:
+   * 1.5); `"minmax"` extends them to the extremes (no outliers)
+   * @default 1.5
+   */
+  whisker?: number | "minmax";
+}
+
+/** Five-number summary of a sample, with the outliers */
+export interface BoxplotStats {
+  /** Lower whisker: the smallest value within reach */
+  low: number;
+  /** First quartile */
+  q1: number;
+  median: number;
+  /** Third quartile */
+  q3: number;
+  /** Upper whisker: the largest value within reach */
+  high: number;
+  /** Values beyond the whiskers */
+  outliers: number[];
+  min: number;
+  max: number;
+  mean: number;
+  /** Number of finite values */
+  count: number;
+}
+
+/** Quartiles, whiskers (Tukey's 1.5 IQR by default) and outliers of raw values */
+export const boxplotStats = (
+  values: ArrayLike<number>,
+  options: BoxplotStatsOptions = {},
+): BoxplotStats => {
+  const sorted = sortedFinite(values);
+  const n = sorted.length;
+  if (!n) {
+    return {
+      low: NaN,
+      q1: NaN,
+      median: NaN,
+      q3: NaN,
+      high: NaN,
+      outliers: [],
+      min: NaN,
+      max: NaN,
+      mean: NaN,
+      count: 0,
+    };
+  }
+  const q1 = quantileOf(sorted, 0.25);
+  const median = quantileOf(sorted, 0.5);
+  const q3 = quantileOf(sorted, 0.75);
+  const min = sorted[0];
+  const max = sorted[n - 1];
+  let sum = 0;
+  for (let i = 0; i < n; i++) sum += sorted[i];
+  const whisker = options.whisker ?? 1.5;
+  let low = min;
+  let high = max;
+  const outliers: number[] = [];
+  if (whisker !== "minmax") {
+    const reach = (q3 - q1) * whisker;
+    const from = q1 - reach;
+    const to = q3 + reach;
+    let i = 0;
+    while (i < n && sorted[i] < from) outliers.push(sorted[i++]);
+    low = i < n ? sorted[i] : q1;
+    let j = n - 1;
+    const upper: number[] = [];
+    while (j >= 0 && sorted[j] > to) upper.push(sorted[j--]);
+    high = j >= 0 ? sorted[j] : q3;
+    outliers.push(...upper.reverse());
+  }
+  return {
+    low: Math.min(low, q1),
+    q1,
+    median,
+    q3,
+    high: Math.max(high, q3),
+    outliers,
+    min,
+    max,
+    mean: sum / n,
+    count: n,
+  };
+};
+
+/** A sample of a box plot */
+export interface BoxplotGroup {
+  /** Category (or position) of the box */
+  x: ChartXValue;
+  /** Raw values: their quartiles, whiskers and outliers are computed */
+  values: ArrayLike<number>;
+  /** Color of the box (any CSS color) */
+  color?: string;
+}
+
+/** Box plot data of raw samples (one datum per group) */
+export const boxplotData = (
+  groups: readonly BoxplotGroup[],
+  options: BoxplotStatsOptions = {},
+): ChartPointDatum[] =>
+  groups.map((g) => {
+    const s = boxplotStats(g.values, options);
+    return {
+      x: g.x,
+      y: Number.isFinite(s.median) ? s.median : null,
+      low: s.low,
+      q1: s.q1,
+      q3: s.q3,
+      high: s.high,
+      outliers: s.outliers,
+      ...(g.color ? { color: g.color } : {}),
+    };
+  });
+
+/** Series of a BoxPlotChart */
+export const boxplotSeries = (series: readonly ChartSeries[]) =>
+  withSeriesType(series, "boxplot");
+
+// ---------------------------------------------------------------- waterfall
+
+/** A bar of a waterfall chart */
+export interface WaterfallStep {
+  /** Category name of the bar */
+  label: string;
+  /** Change (positive or negative); ignored by totals */
+  value?: number;
+  /**
+   * `subtotal` and `total` bars show the running total, from zero
+   * @default "change"
+   */
+  kind?: "change" | "subtotal" | "total";
+  /** Color of this bar (any CSS color) */
+  color?: string;
+}
+
+/** Options of `waterfallSeries` */
+export interface WaterfallOptions {
+  /** Name of the series (tooltip) */
+  name?: string;
+  /** Color of the increases @default the success color */
+  upColor?: string;
+  /** Color of the decreases @default the danger color */
+  downColor?: string;
+  /** Color of the totals and subtotals @default the primary color */
+  totalColor?: string;
+  /**
+   * Value the first change starts from
+   * @default 0
+   */
+  start?: number;
+  /**
+   * Writes the change (or the total) at the end of every bar
+   * @default false
+   */
+  labels?: boolean;
+  /** Formats the values (labels, tooltip) */
+  format?: (value: number) => string;
+  /**
+   * Locale of the default name
+   * @default the page language
+   */
+  locale?: string;
+}
+
+/**
+ * Floating bar series of a waterfall (bridge) chart: every change starts
+ * where the previous one ended; totals and subtotals start from zero
+ */
+export const waterfallSeries = (
+  steps: readonly WaterfallStep[],
+  options: WaterfallOptions = {},
+): ChartSeries => {
+  const up = options.upColor ?? "var(--success-color, #16a34a)";
+  const down = options.downColor ?? "var(--danger-color, #dc2626)";
+  const total = options.totalColor ?? "var(--primary-color, #4f46e5)";
+  let running = options.start ?? 0;
+  const data: ChartPointDatum[] = steps.map((step) => {
+    if (step.kind === "total" || step.kind === "subtotal") {
+      return { x: step.label, y: running, color: step.color ?? total };
+    }
+    const value = step.value ?? 0;
+    const from = running;
+    running += value;
+    return {
+      x: step.label,
+      y0: from,
+      y: running,
+      color: step.color ?? (value >= 0 ? up : down),
+    };
+  });
+  return {
+    id: "waterfall",
+    name: options.name ?? presetLabels(options.locale).change,
+    type: "bar",
+    color: total,
+    data,
+    showLabels: options.labels ?? false,
+    format: options.format,
+  };
+};
+
+// ------------------------------------------------------------------ bubbles
+
+/** Options of `bubbleSeries` */
+export interface BubbleOptions {
+  /**
+   * Diameter in pixels of the smallest bubbles
+   * @default 6
+   */
+  minSize?: number;
+  /**
+   * Diameter in pixels of the largest value
+   * @default 48
+   */
+  maxSize?: number;
+  /** Value drawn with `maxSize` (share a scale between charts); the largest value by default */
+  maxValue?: number;
+}
+
+/**
+ * Scatter series whose dots are sized by the `value` of their points: the
+ * area of a bubble is proportional to its value (diameter ∝ √value), the
+ * scale is shared by every series. Points are drawn from the largest to
+ * the smallest, so small bubbles stay on top (hover indexes refer to that
+ * order).
+ */
+export const bubbleSeries = (
+  series: readonly ChartSeries[],
+  options: BubbleOptions = {},
+): ChartSeries[] => {
+  const minSize = options.minSize ?? 6;
+  const maxSize = options.maxSize ?? 48;
+  const valuesOf = (data: ChartSeries["data"]): ArrayLike<number> | null => {
+    if (typeof data !== "object" || data === null) return null;
+    if (!("length" in data)) {
+      const v = (data as { value?: ArrayLike<number> }).value;
+      return v ?? null;
+    }
+    const list = data as ArrayLike<unknown>;
+    const out = new Float64Array(list.length).fill(NaN);
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (item && typeof item === "object" && !Array.isArray(item)) {
+        const v = (item as { value?: unknown }).value;
+        if (typeof v === "number") out[i] = v;
+      }
+    }
+    return out;
+  };
+  let top = options.maxValue ?? 0;
+  if (options.maxValue === undefined) {
+    for (const s of series) {
+      const values = valuesOf(s.data);
+      if (!values) continue;
+      for (let i = 0; i < values.length; i++) {
+        const v = Math.abs(values[i]);
+        if (v > top) top = v;
+      }
+    }
+  }
+  const sizeOf = (v: number) =>
+    Number.isFinite(v) && top > 0
+      ? Math.max(minSize, maxSize * Math.sqrt(Math.min(1, Math.abs(v) / top)))
+      : minSize;
+  return series.map((s) => {
+    const base: ChartSeries = {
+      ...s,
+      type: s.type ?? "scatter",
+      opacity: s.opacity ?? 0.68,
+    };
+    if (base.type !== "scatter") return base;
+    const data = s.data;
+    if (typeof data === "object" && data !== null && !("length" in data)) {
+      const values = (data as { value?: ArrayLike<number> }).value;
+      if (!values) return base;
+      const size = new Float32Array(values.length);
+      for (let i = 0; i < values.length; i++) size[i] = sizeOf(values[i]);
+      return { ...base, data: { ...data, size } };
+    }
+    const list = data as ArrayLike<unknown>;
+    const points: ChartPointDatum[] = [];
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+      const d = item as ChartPointDatum;
+      points.push({
+        ...d,
+        size: d.size ?? sizeOf(typeof d.value === "number" ? d.value : NaN),
+      });
+    }
+    points.sort((a, b) => (b.size ?? 0) - (a.size ?? 0));
+    return { ...base, data: points };
+  });
+};
+
+// -------------------------------------------------------------------- gantt
+
+/** A task (or milestone) of a Gantt chart */
+export interface GanttTask {
+  /** Row name (unique) */
+  name: string;
+  /** Start (a timestamp or a date) */
+  start: number | Date;
+  /** End; omitted for milestones */
+  end?: number | Date;
+  /** Share done, 0-1: drawn as a solid bar over the task */
+  progress?: number;
+  /** Group (phase, team): a color and a legend entry per group */
+  group?: string;
+  /** Color of the task (any CSS color); the color of its group by default */
+  color?: string;
+  /** Draws a dot at `start` instead of a bar */
+  milestone?: boolean;
+}
+
+/** Options of `ganttSeries` */
+export interface GanttOptions {
+  /** Colors of the groups in order of appearance (any CSS colors); the chart palette by default */
+  colors?: readonly string[];
+  /**
+   * Name of the tasks without a group
+   * @default "Tasks" (in the `locale`)
+   */
+  taskName?: string;
+  /**
+   * Name of the progress bars (legend, tooltip)
+   * @default "Progress" (in the `locale`)
+   */
+  progressName?: string;
+  /**
+   * Name of the milestones (legend, tooltip)
+   * @default "Milestones" (in the `locale`)
+   */
+  milestoneName?: string;
+  /** Formats the progress shares (tooltip) @default "60%" */
+  formatProgress?: (share: number) => string;
+  /**
+   * Locale of the default names and of the progress shares
+   * @default the page language
+   */
+  locale?: string;
+}
+
+/** Series of a Gantt chart and the row names in order */
+export interface GanttSeries {
+  series: ChartSeries[];
+  /** Task names from top to bottom (the `categories` of the x axis) */
+  categories: string[];
+  /** Time range of the tasks with a small margin (the `min` / `max` of the value axis) */
+  domain: [number, number];
+}
+
+const THEMED = [
+  "--primary-color",
+  "--success-color",
+  "--warning-color",
+  "--danger-color",
+  "--info-color",
+];
+const FALLBACK = [
+  "#4f46e5",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#0ea5e9",
+  "#8b5cf6",
+  "#14b8a6",
+  "#f97316",
+];
+
+/** Color `k` of the chart palette as a CSS color (theme variables first) */
+export const paletteColor = (k: number): string => {
+  const i = k % 8;
+  const fallback = FALLBACK[i] ?? "#4f46e5";
+  const themed = THEMED[i];
+  return themed
+    ? `var(--chart-series-${i + 1}, var(${themed}, ${fallback}))`
+    : `var(--chart-series-${i + 1}, ${fallback})`;
+};
+
+const time = (v: number | Date | undefined) =>
+  v instanceof Date ? v.getTime() : v === undefined ? NaN : v;
+
+/**
+ * Floating bar series of a Gantt chart (horizontal, on a time axis): a
+ * translucent bar per task with its progress drawn over it, one series per
+ * group, and the milestones as dots
+ */
+export const ganttSeries = (
+  tasks: readonly GanttTask[],
+  options: GanttOptions = {},
+): GanttSeries => {
+  const locale = resolveLocale(options.locale);
+  const names = presetLabels(locale);
+  const taskName = options.taskName ?? names.tasks;
+  const groups: string[] = [];
+  for (const t of tasks) {
+    const g = t.group ?? taskName;
+    if (!t.milestone && !groups.includes(g)) groups.push(g);
+  }
+  const colorOf = (g: string) => {
+    const k = Math.max(0, groups.indexOf(g));
+    return options.colors?.[k] ?? paletteColor(k);
+  };
+  const formatProgress =
+    options.formatProgress ??
+    ((share: number) =>
+      numberFormat(locale, {
+        style: "percent",
+        maximumFractionDigits: 0,
+      }).format(share));
+  const series: ChartSeries[] = groups.map((g) => ({
+    id: `gantt:${g}`,
+    name: g,
+    type: "bar",
+    stack: "gantt",
+    color: colorOf(g),
+    opacity: 0.3,
+    barWidth: 0.62,
+    radius: 4,
+    data: tasks
+      .filter((t) => !t.milestone && (t.group ?? taskName) === g)
+      .map((t) => ({
+        x: t.name,
+        y0: time(t.start),
+        y: time(t.end ?? t.start),
+        ...(t.color ? { color: t.color } : {}),
+      })),
+  }));
+  const progress = tasks.filter(
+    (t) => !t.milestone && t.progress !== undefined && t.progress > 0,
+  );
+  if (progress.length) {
+    series.push({
+      id: "gantt:progress",
+      name: options.progressName ?? names.progress,
+      type: "bar",
+      stack: "gantt",
+      // every bar has the color of its task: a neutral legend swatch
+      color: "var(--text-secondary-color, #6b7280)",
+      radius: 4,
+      data: progress.map((t) => {
+        const start = time(t.start);
+        const end = time(t.end ?? t.start);
+        const share = Math.min(1, Math.max(0, t.progress ?? 0));
+        return {
+          x: t.name,
+          y0: start,
+          y: start + (end - start) * share,
+          label: formatProgress(share),
+          color: t.color ?? colorOf(t.group ?? taskName),
+        };
+      }),
+    });
+  }
+  const milestones = tasks.filter((t) => t.milestone);
+  if (milestones.length) {
+    series.push({
+      id: "gantt:milestones",
+      name: options.milestoneName ?? names.milestones,
+      type: "scatter",
+      color: "var(--text-color, #1f2937)",
+      pointSize: 13,
+      opacity: 1,
+      data: milestones.map((t) => ({
+        x: t.name,
+        y: time(t.start),
+        ...(t.color ? { color: t.color } : {}),
+      })),
+    });
+  }
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const t of tasks) {
+    for (const v of [time(t.start), time(t.end ?? t.start)]) {
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    }
+  }
+  // room for the milestone dots at the ends
+  const pad = Number.isFinite(hi - lo) ? Math.max((hi - lo) * 0.025, 1) : 0;
+  return {
+    series,
+    categories: tasks.map((t) => t.name),
+    domain: Number.isFinite(lo) ? [lo - pad, hi + pad] : [0, 1],
+  };
+};
+
+// -------------------------------------------------------------- range areas
+
+/** Series of a RangeAreaChart: bands between `y0` and `y` (thin edges) */
+export const rangeAreaSeries = (
+  series: readonly ChartSeries[],
+  curve?: ChartCurve,
+) =>
+  withSeriesType(series, "area", undefined, curve).map((s) =>
+    s.type === "area" ? { ...s, lineWidth: s.lineWidth ?? 1.5 } : s,
+  );

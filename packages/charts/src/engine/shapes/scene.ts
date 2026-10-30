@@ -2,11 +2,15 @@
 // produced by the (DOM-free) layouts and consumed by draw / hit testing.
 
 import { mix, parseColor, toCss, type Rgba } from "../color";
-import { formatCompact } from "../format";
+
 import { font } from "../overlay";
 import type { ChartTheme } from "../theme";
 import type { ChartPadding } from "../types";
-import type { ShapeChartType } from "./types";
+import type {
+  ShapeChartLabels,
+  ShapeChartType,
+  ShapeHoverEvent,
+} from "./types";
 
 export const TAU = Math.PI * 2;
 
@@ -21,6 +25,12 @@ export interface ShapeRect {
 interface NodeBase {
   /** Index of the item the node belongs to (hover, dimming); none for decorations */
   hit?: number;
+  /**
+   * Other items whose hover also emphasizes the node (the flows of a hovered
+   * sankey node, the ancestors of a hovered sunburst sector); hit testing
+   * only uses `hit`
+   */
+  also?: readonly number[];
   /** Opacity multiplier */
   alpha?: number;
   /** Offset applied while the node's item is hovered (pie slices pop out) */
@@ -71,6 +81,10 @@ export interface RectNode extends NodeBase {
   radius: number;
   fill: string;
   brighten?: boolean;
+  /** Outline drawn inside the rectangle while its item is hovered */
+  hoverStroke?: string;
+  /** Distance (px) around the rectangle still picked by hit testing (default 0) */
+  hitPad?: number;
 }
 
 /** Stroked arc (gauge track / value) */
@@ -84,6 +98,8 @@ export interface ArcNode extends NodeBase {
   width: number;
   color: string;
   cap: "round" | "butt";
+  /** Distance (px) beyond the stroke still picked by hit testing (default 4) */
+  hitPad?: number;
 }
 
 /** Dot; without fill nor stroke it is only a hit area */
@@ -123,6 +139,28 @@ export interface TextNode extends NodeBase {
   indicator?: number;
   hoverColor?: string;
   hoverFont?: string;
+  /** Rotation around (x, y), radians clockwise */
+  rotate?: number;
+  /** Outline drawn behind the text so it reads over other marks */
+  halo?: string;
+}
+
+/**
+ * Sankey flow: a horizontal S-curve (cubic Bézier) of constant thickness
+ * from (x0, y0) to (x1, y1), filled with a gradient from `color0` to `color1`
+ */
+export interface LinkNode extends NodeBase {
+  kind: "link";
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  /** Thickness, in pixels */
+  width: number;
+  color0: string;
+  color1: string;
+  /** Opacity while the link (or one of its `also` items) is hovered */
+  activeAlpha?: number;
 }
 
 /** Radar: dashed guide from the center to the hovered indicator */
@@ -143,7 +181,8 @@ export type ShapeNode =
   | CircleNode
   | LineNode
   | TextNode
-  | GuideNode;
+  | GuideNode
+  | LinkNode;
 
 /** A row of the default tooltip */
 export interface ShapeTooltipRow {
@@ -176,6 +215,10 @@ export interface ShapeItem {
     x: number;
     y: number;
   }[];
+  /** Extra fields of the hover event (calendar date, sankey link ends) */
+  event?: Pick<ShapeHoverEvent, "date" | "source" | "target">;
+  /** Sunburst: path focused when the item is activated (click, Enter) */
+  drill?: string[];
 }
 
 /** What is hovered: an item (and a radar indicator) */
@@ -204,6 +247,11 @@ export interface ShapeScene {
   dim: number;
   /** Entry animation of funnels / treemaps: fade and scale around a point */
   enter?: { alpha: number; scale: number; cx: number; cy: number };
+  /**
+   * Arrow-key moves in a grid of items (calendar heatmap), in positions of
+   * `items`: `next` for Left / Right, `down` for Up / Down; no wrapping
+   */
+  steps?: { next: number; down: number };
   /** Radar geometry used by hit testing (and to keep the tooltip off the labels) */
   radar?: {
     cx: number;
@@ -216,6 +264,10 @@ export interface ShapeScene {
   };
   /** No data to draw (placeholder shown) */
   empty: boolean;
+  /** Built-in texts of the chart's locale (accessible descriptions) */
+  labels?: ShapeChartLabels;
+  /** Resolved locale of the chart */
+  locale?: string;
 }
 
 /** Measures a text in a CSS font */
@@ -237,15 +289,24 @@ export interface LayoutContext {
   /** Displayed (animated) value of a key */
   value(key: string, target: number): number;
   format(value: number): string;
-  /** Formats a share (0-1): `percentFormat` or one decimal */
+  /** Formats a share (0-1): `percentFormat` or a locale percent with one decimal */
   percent(share: number): string;
+  /** Built-in texts (locale and `texts` overrides) */
+  labels: ShapeChartLabels;
+  /** Resolved locale */
+  locale: string;
   /** Color of the `i`-th mark (custom `color` or the palette) */
   color(css: string | undefined, i: number): Rgba;
   /** Drawing area, padding excluded */
   area: ShapeRect;
+  /** Sunburst: names from the root to the focused node */
+  focus: readonly string[];
 }
 
-export type LayoutResult = Omit<ShapeScene, "type" | "width" | "height">;
+export type LayoutResult = Omit<
+  ShapeScene,
+  "type" | "width" | "height" | "labels" | "locale"
+>;
 
 export const clamp = (v: number, lo: number, hi: number) =>
   v < lo ? lo : v > hi ? hi : v;
@@ -265,11 +326,15 @@ export const sum = (values: readonly number[]) => {
 
 export const easeOutCubic = (t: number) => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
 
-export const defaultFormat = (value: number) => formatCompact(value);
-
-/** Share 0-1 as a percent with one decimal: `0.4` -> `40.0%` */
-export const formatPercent = (p: number) =>
-  Number.isFinite(p) ? `${(p * 100).toFixed(1)}%` : "–";
+/** Angle brought into (-π/2, π/2] so that text rotated by it reads left to right */
+export const upright = (a: number) => {
+  let r = a % TAU;
+  if (r > Math.PI) r -= TAU;
+  if (r <= -Math.PI) r += TAU;
+  if (r > Math.PI / 2) r -= Math.PI;
+  else if (r <= -Math.PI / 2) r += Math.PI;
+  return r;
+};
 
 export const inset = (rect: ShapeRect, padding?: ChartPadding): ShapeRect => {
   const top = padding?.top ?? 8;
@@ -389,7 +454,7 @@ export const resolveWith = (
     : (parseColor(css) ?? fallback);
 };
 
-/** Placeholder of a chart without data: a muted ring and "No data" */
+/** Placeholder of a chart without data: a muted ring and "No data" (localized) */
 export const emptyLayout = (c: LayoutContext): LayoutResult => {
   const { area, theme } = c;
   const cx = area.x + area.width / 2;
@@ -413,7 +478,7 @@ export const emptyLayout = (c: LayoutContext): LayoutResult => {
         kind: "text",
         x: cx,
         y: cy,
-        text: "No data",
+        text: c.labels.noData,
         font: font(theme, 12),
         color: toCss(theme.textMuted),
         align: "center",

@@ -1,31 +1,48 @@
-import { useMemo, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import {
   areaSeries,
   barSeries,
+  boxplotData,
+  boxplotSeries,
+  bubbleSeries,
   candlestickSeries,
+  ganttSeries,
   heatmapChartOptions,
+  histogramSeries,
   lineSeries,
+  presetLabels,
   quadrantChartOptions,
   quadrantOf,
+  rangeAreaSeries,
   scatterSeries,
   sparklineOptions,
+  waterfallSeries,
   type QuadrantCorner,
 } from "../engine/presets";
-import type { ChartRect } from "../engine/types";
-import { ChartBase, engineOptions } from "./Chart";
+import { resolveLocale } from "../engine/locale";
+import type { ChartAnnotation, ChartRect } from "../engine/types";
+import { Chart, ChartBase, engineOptions } from "./Chart";
 import type {
   AreaChartProps,
   BarChartProps,
+  BoxPlotChartProps,
+  BubbleChartProps,
   CandlestickChartProps,
   ChartCommonProps,
+  GanttChartProps,
   HeatmapChartProps,
+  HistogramChartProps,
+  HorizontalBarChartProps,
   LineChartProps,
+  MixedChartProps,
   QuadrantChartProps,
+  RangeAreaChartProps,
   ScatterChartProps,
   SparklineProps,
+  WaterfallChartProps,
 } from "./types";
 
-const frameProps = (props: ChartCommonProps) => ({
+const frameProps = (props: Omit<ChartCommonProps, "labels">) => ({
   height: props.height,
   width: props.width,
   className: props.className,
@@ -104,6 +121,7 @@ export function BarChart(props: BarChartProps) {
     <ChartBase
       options={engineOptions({
         ...props,
+        labels: undefined,
         series,
         stackMode: percent ? "percent" : undefined,
       })}
@@ -195,6 +213,8 @@ export function Sparkline(props: SparklineProps) {
     tooltip,
     palette,
     ariaLabel,
+    locale,
+    labels,
     className,
     style,
     ref,
@@ -205,7 +225,7 @@ export function Sparkline(props: SparklineProps) {
     () =>
       sparklineOptions(
         { data, type, color, curve, name, reference, format },
-        { renderer, tooltip, palette, ariaLabel },
+        { renderer, tooltip, palette, ariaLabel, locale, labels },
       ),
     [
       data,
@@ -219,6 +239,8 @@ export function Sparkline(props: SparklineProps) {
       tooltip,
       palette,
       ariaLabel,
+      locale,
+      labels,
     ],
   );
   return (
@@ -394,6 +416,263 @@ export function QuadrantChart(props: QuadrantChartProps) {
             }
           : undefined
       }
+    />
+  );
+}
+
+/**
+ * Horizontal bar chart: categories down the left side, values from the
+ * left (rankings, long names, diverging surveys, stacked progress)
+ */
+export function HorizontalBarChart(props: HorizontalBarChartProps) {
+  return <BarChart {...props} orientation="horizontal" />;
+}
+
+/**
+ * Range area chart: bands between a lower (`y0`) and an upper edge
+ * (confidence intervals, min-max ranges), mixable with lines
+ */
+export function RangeAreaChart(props: RangeAreaChartProps) {
+  const { series: input, curve = "smooth" } = props;
+  const series = useMemo(() => rangeAreaSeries(input, curve), [input, curve]);
+  return (
+    <ChartBase
+      options={engineOptions({ ...props, series })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/**
+ * Combination chart: bars, lines and areas on one or two value axes
+ * (`yAxis: "right"` series use `yAxis2`, aligned on the left grid)
+ */
+export function MixedChart(props: MixedChartProps) {
+  return <Chart {...props} />;
+}
+
+/** Bubble chart: x, y and a value sized by area (√value diameters) */
+export function BubbleChart(props: BubbleChartProps) {
+  const { series: input, minSize, maxSize, maxValue } = props;
+  const series = useMemo(
+    () => bubbleSeries(input, { minSize, maxSize, maxValue }),
+    [input, minSize, maxSize, maxValue],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({ ...props, series })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/**
+ * Histogram: the distribution of raw samples in bins of equal width
+ * (Freedman-Diaconis, Sturges or a count); millions of samples are binned
+ * in milliseconds
+ */
+export function HistogramChart(props: HistogramChartProps) {
+  const {
+    values,
+    bins,
+    domain,
+    nice,
+    name,
+    color,
+    formatBin,
+    series: extra,
+    locale,
+  } = props;
+  // page language read at every render: a language switch renames the series
+  const lang = resolveLocale(locale);
+  const series = useMemo(
+    () => [
+      histogramSeries(values, {
+        bins,
+        domain,
+        nice,
+        name,
+        color,
+        format: formatBin,
+        locale: lang,
+      }),
+      ...(extra ?? []),
+    ],
+    [values, bins, domain, nice, name, color, formatBin, extra, lang],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({ ...props, series })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/**
+ * Box plot: medians, quartiles, whiskers and outliers of samples, from raw
+ * values (`groups`) or computed statistics (`series`)
+ */
+export function BoxPlotChart(props: BoxPlotChartProps) {
+  const { series: input, groups, name, whisker, orientation, locale } = props;
+  const groupName = name ?? presetLabels(resolveLocale(locale)).values;
+  const series = useMemo(
+    () =>
+      boxplotSeries([
+        ...(groups?.length
+          ? [
+              {
+                id: "boxplot",
+                name: groupName,
+                data: boxplotData(groups, { whisker }),
+              },
+            ]
+          : []),
+        ...(input ?? []),
+      ]),
+    [input, groups, groupName, whisker],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({ ...props, series, orientation })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/**
+ * Waterfall (bridge) chart: how changes take a value from a start to an
+ * end, with subtotals and totals (P&L bridges, budget variances)
+ */
+export function WaterfallChart(props: WaterfallChartProps) {
+  const {
+    steps,
+    name,
+    upColor,
+    downColor,
+    totalColor,
+    start,
+    labels = true,
+    format,
+    orientation,
+    locale,
+  } = props;
+  const lang = resolveLocale(locale);
+  const series = useMemo(
+    () => [
+      waterfallSeries(steps, {
+        name,
+        upColor,
+        downColor,
+        totalColor,
+        start,
+        labels,
+        format,
+        locale: lang,
+      }),
+    ],
+    [steps, name, upColor, downColor, totalColor, start, labels, format, lang],
+  );
+  return (
+    <ChartBase
+      options={engineOptions({
+        ...props,
+        labels: undefined,
+        series,
+        orientation,
+      })}
+      {...frameProps(props)}
+    />
+  );
+}
+
+/**
+ * Gantt chart: tasks as bars on a time axis with their progress, groups,
+ * milestones and a today line; zooms and pans along the time
+ */
+export function GanttChart(props: GanttChartProps) {
+  const {
+    tasks,
+    colors,
+    taskName,
+    progressName,
+    milestoneName,
+    formatProgress,
+    today = false,
+    todayLabel,
+    xAxis,
+    yAxis,
+    annotations,
+    interaction,
+    legend,
+    locale,
+  } = props;
+  const lang = resolveLocale(locale);
+  const gantt = useMemo(
+    () =>
+      ganttSeries(tasks, {
+        colors,
+        taskName,
+        progressName,
+        milestoneName,
+        formatProgress,
+        locale: lang,
+      }),
+    [
+      tasks,
+      colors,
+      taskName,
+      progressName,
+      milestoneName,
+      formatProgress,
+      lang,
+    ],
+  );
+  const [mountedAt] = useState(() => Date.now());
+  const now =
+    today === false
+      ? null
+      : today === true
+        ? mountedAt
+        : today instanceof Date
+          ? today.getTime()
+          : today;
+  const lines: ChartAnnotation[] =
+    now === null
+      ? []
+      : [
+          {
+            type: "line",
+            axis: "y",
+            value: now,
+            color: "var(--danger-color, #dc2626)",
+            dash: [4, 3],
+            label: todayLabel,
+          },
+        ];
+  return (
+    <ChartBase
+      options={{
+        ...engineOptions({
+          ...props,
+          series: gantt.series,
+          orientation: "horizontal",
+        }),
+        xAxis: {
+          type: "category",
+          categories: gantt.categories,
+          ...xAxis,
+        },
+        yAxis: {
+          type: "time",
+          min: gantt.domain[0],
+          max: gantt.domain[1],
+          ...yAxis,
+        },
+        annotations: [...(annotations ?? []), ...lines],
+        interaction: interaction ?? { zoom: "y" },
+        legend: legend ?? gantt.series.length > 1,
+      }}
+      {...frameProps(props)}
     />
   );
 }

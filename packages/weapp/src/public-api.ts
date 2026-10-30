@@ -129,10 +129,99 @@ const configurations: Record<string, Method> = {
 const chartConfiguration = method(
   "configure",
   "configure(config: NativeChartConfig): void",
-  "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it.",
+  "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart).",
 );
-for (const name of ["chart", "lineChart", "barChart", "scatterChart"])
-  configurations[name] = chartConfiguration;
+/** Cartesian chart components drawn from series (every chart but quadrant-chart) */
+const SERIES_CHARTS = [
+  "chart",
+  "lineChart",
+  "areaChart",
+  "barChart",
+  "horizontalBarChart",
+  "scatterChart",
+  "candlestickChart",
+  "heatmapChart",
+  "sparkline",
+  "rangeAreaChart",
+  "mixedChart",
+  "bubbleChart",
+  "histogramChart",
+  "boxPlotChart",
+  "waterfallChart",
+  "ganttChart",
+];
+for (const name of SERIES_CHARTS) configurations[name] = chartConfiguration;
+/** Shape chart components (pie-chart ... shape-chart) */
+const SHAPE_CHARTS = [
+  "pieChart",
+  "donutChart",
+  "radarChart",
+  "gaugeChart",
+  "funnelChart",
+  "treemapChart",
+  "sankeyChart",
+  "sunburstChart",
+  "radialBarChart",
+  "calendarHeatmap",
+  "bulletChart",
+  "shapeChart",
+];
+for (const name of SHAPE_CHARTS)
+  configurations[name] = method(
+    "configure",
+    "configure(config: NativeShapeChartConfig): void",
+    "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it.",
+  );
+const shapeChartMethods = [
+  method(
+    "resize",
+    "resize(): void",
+    "Measure the canvas again after a host layout change (e.g. a chart created hidden).",
+  ),
+  method(
+    "toggle",
+    "toggle(index: number): void",
+    "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit).",
+  ),
+  method(
+    "getHidden",
+    "getHidden(): number[]",
+    "Indexes of the hidden entries, ascending.",
+  ),
+  method(
+    "clearHover",
+    "clearHover(): void",
+    "Remove the highlight and the tooltip.",
+  ),
+  method(
+    "drill",
+    "drill(path: string[]): void",
+    "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit).",
+  ),
+  method(
+    "getDrillPath",
+    "getDrillPath(): string[]",
+    "Sunburst: names from the root to the focused node.",
+  ),
+];
+const shapeChartEvents = [
+  event(
+    "hover",
+    "NativeShapeHoverEvent",
+    "Highlighted mark after a tap (index -1 when cleared).",
+  ),
+  event("click", "NativeShapeHoverEvent", "A mark was tapped."),
+  event(
+    "toggle",
+    "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+    "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden.",
+  ),
+  event(
+    "drill",
+    "{ path: string[] }",
+    "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath.",
+  ),
+];
 const chartMethods = [
   method(
     "resize",
@@ -237,10 +326,8 @@ const tableEvents = [
   ),
 ];
 const events: Record<string, Event[]> = {
-  chart: seriesChartEvents,
-  lineChart: seriesChartEvents,
-  barChart: seriesChartEvents,
-  scatterChart: seriesChartEvents,
+  ...Object.fromEntries(SHAPE_CHARTS.map((name) => [name, shapeChartEvents])),
+  ...Object.fromEntries(SERIES_CHARTS.map((name) => [name, seriesChartEvents])),
   quadrantChart: [
     chartEvent.hover,
     event(
@@ -645,16 +732,9 @@ export function annotateNativeApi(controls: Record<string, Control>) {
         ),
       );
     if (configurations[name]) methods.push(configurations[name]);
-    if (
-      [
-        "chart",
-        "lineChart",
-        "barChart",
-        "scatterChart",
-        "quadrantChart",
-      ].includes(name)
-    )
+    if (SERIES_CHARTS.includes(name) || name === "quadrantChart")
       methods.push(...chartMethods);
+    if (SHAPE_CHARTS.includes(name)) methods.push(...shapeChartMethods);
     if (
       ["responsiveGrid", "formLayout", "splitLayout", "appShell"].includes(name)
     )

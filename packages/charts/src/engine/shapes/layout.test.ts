@@ -1007,3 +1007,77 @@ describe("hit testing", () => {
     });
   });
 });
+
+describe("gauge needle", () => {
+  /** Distance from a point to the segment a-b */
+  const toSegment = (
+    px: number,
+    py: number,
+    ax: number,
+    ay: number,
+    bx: number,
+    by: number,
+  ) => {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const t = clamp01(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy));
+    return Math.hypot(px - ax - t * dx, py - ay - t * dy);
+  };
+  const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+  it("keeps the value and the label clear of the needle and the hub", () => {
+    for (const sweep of [180, 240, 270, 300]) {
+      for (const [width, height] of [
+        [160, 140],
+        [300, 240],
+        [600, 300],
+      ] as const) {
+        for (const value of [0, 3, 50, 97, 100]) {
+          const scene = layoutShapeScene({
+            options: {
+              type: "gauge",
+              value,
+              sweep,
+              needle: true,
+              label: "Availability",
+              format: (v) => `${v.toFixed(1)} km/h`,
+            },
+            theme,
+            width,
+            height,
+            measure,
+          });
+          const needle = scene.nodes.find(
+            (n): n is PolygonNode => n.kind === "polygon",
+          );
+          expect(needle).toBeDefined();
+          const p = needle?.points ?? [];
+          // axis of the needle: middle of the base to the tip
+          const ax = ((p[0] ?? 0) + (p[6] ?? 0)) / 2;
+          const ay = ((p[1] ?? 0) + (p[7] ?? 0)) / 2;
+          const bx = ((p[2] ?? 0) + (p[4] ?? 0)) / 2;
+          const by = ((p[3] ?? 0) + (p[5] ?? 0)) / 2;
+          for (const t of texts(scene).filter(
+            (n) => n.align === "center" && n.baseline === "middle",
+          )) {
+            const size = Number(/(\d+(?:\.\d+)?)px/.exec(t.font)?.[1] ?? 12);
+            const w = measure(t.text) / 2;
+            const h = size / 2;
+            // corners and edge middles of the text box
+            for (const [x, y] of [
+              [t.x - w, t.y - h],
+              [t.x + w, t.y - h],
+              [t.x, t.y - h],
+              [t.x - w, t.y + h],
+              [t.x + w, t.y + h],
+            ] as const)
+              expect(toSegment(x, y, ax, ay, bx, by)).toBeGreaterThan(4);
+            expect(t.y - h).toBeGreaterThan(ay + 7);
+            // inside the drawing
+            expect(t.y + h).toBeLessThanOrEqual(height + 1);
+          }
+        }
+      }
+    }
+  });
+});

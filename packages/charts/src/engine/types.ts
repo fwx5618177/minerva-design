@@ -1,11 +1,12 @@
 // Public types of the chart engine (minerva-design/charts/core).
 
 /** GPU / CPU backend that draws the data layer */
-export type ChartRendererKind = "webgpu" | "webgl2" | "canvas2d";
+export type ChartRendererKind = "webgpu" | "webgl2" | "webgl" | "canvas2d";
 
 /**
- * Requested backend: `auto` tries WebGPU, then WebGL2, then Canvas2D, and
- * skips GPU backends that run in software (no hardware acceleration)
+ * Requested backend: `auto` tries WebGPU, then WebGL2, then WebGL (1), then
+ * Canvas2D, and skips GPU backends that run in software (no hardware
+ * acceleration). A forced backend falls back along the same chain.
  */
 export type ChartRendererPreference = "auto" | ChartRendererKind;
 
@@ -14,7 +15,10 @@ export type ChartAxisType = "linear" | "time" | "category";
 
 /** How a series is drawn */
 export type ChartSeriesType =
-  "line" | "area" | "bar" | "scatter" | "candlestick" | "heatmap";
+  "line" | "area" | "bar" | "scatter" | "candlestick" | "heatmap" | "boxplot";
+
+/** Direction of the value axis: `horizontal` puts the x (category) axis on the left */
+export type ChartOrientation = "vertical" | "horizontal";
 
 /** Shape of a line (and of the edge of an area) between its points */
 export type ChartCurve = "linear" | "smooth" | "step";
@@ -31,19 +35,37 @@ export interface ChartPointDatum {
    * row (a number, or a category name of a `category` y axis)
    */
   y: number | string | null;
+  /**
+   * Start of a floating bar (waterfall steps, Gantt tasks) or lower edge of
+   * a range area (confidence bands, min-max ranges); dates are timestamps
+   */
+  y0?: number | Date | null;
   /** Diameter of the dot in CSS pixels (scatter) */
   size?: number;
   /** Color of the dot or bar (scatter, bar); any CSS color */
   color?: string;
-  /** Text drawn next to the dot (scatter with `showLabels`) and shown in the tooltip */
+  /**
+   * Text drawn next to the dot (scatter with `showLabels`) or at the end of
+   * the bar instead of its value (bar with `showLabels`), and shown in the
+   * tooltip
+   */
   label?: string;
   /** Candlestick: opening value */
   open?: number;
-  /** Candlestick: highest value */
+  /** Candlestick: highest value; box plot: upper whisker (the maximum) */
   high?: number;
-  /** Candlestick: lowest value */
+  /** Candlestick: lowest value; box plot: lower whisker (the minimum) */
   low?: number;
-  /** Heatmap: value of the cell, mapped to `colorScale` */
+  /** Box plot: first quartile (bottom of the box; `y` is the median) */
+  q1?: number;
+  /** Box plot: third quartile (top of the box) */
+  q3?: number;
+  /** Box plot: values beyond the whiskers, drawn as dots */
+  outliers?: readonly number[];
+  /**
+   * Heatmap: value of the cell, mapped to `colorScale`; scatter (bubbles):
+   * a value shown in the tooltip
+   */
   value?: number | null;
 }
 
@@ -53,15 +75,21 @@ export interface ChartColumnData {
   x?: ArrayLike<number> | readonly ChartXValue[];
   /** Y values (`NaN` / `null` leave a gap); candlesticks: the closes; heatmaps: the rows */
   y: ArrayLike<number> | readonly (number | string | null)[];
+  /** Starts of floating bars / lower edges of range areas (`NaN` / `null`: from zero) */
+  y0?: ArrayLike<number> | readonly (number | null)[];
   /** Per-point diameters in CSS pixels (scatter) */
   size?: ArrayLike<number>;
   /** Candlestick: opening values */
   open?: ArrayLike<number>;
-  /** Candlestick: highest values */
+  /** Candlestick: highest values; box plots: the maximums */
   high?: ArrayLike<number>;
-  /** Candlestick: lowest values */
+  /** Candlestick: lowest values; box plots: the minimums */
   low?: ArrayLike<number>;
-  /** Heatmap: values of the cells */
+  /** Box plots: first quartiles */
+  q1?: ArrayLike<number>;
+  /** Box plots: third quartiles */
+  q3?: ArrayLike<number>;
+  /** Heatmap: values of the cells; scatter: values shown in the tooltip */
   value?: ArrayLike<number> | readonly (number | null)[];
 }
 
@@ -136,6 +164,21 @@ export interface ChartSeries {
   radius?: number;
   /** Formats the values of this series in the tooltip (the y axis format by default) */
   format?: (value: number) => string;
+  /**
+   * Value axis of the series: `right` plots it against `yAxis2` (dual axis
+   * charts; vertical orientation only)
+   * @default "left"
+   */
+  yAxis?: "left" | "right";
+  /**
+   * Bars / box plots: share of the space of a category taken by the bars,
+   * 0-1 (`1` makes them touch, e.g. histograms); the widest value of the
+   * visible series is used
+   * @default 0.62 (one series), 0.78 (groups)
+   */
+  barWidth?: number;
+  /** Scatter: name of the `value` of the points in the tooltip (bubble charts) */
+  valueName?: string;
 }
 
 /** Options of an axis */
@@ -177,7 +220,16 @@ export interface ChartAxisOptions {
   reverse?: boolean;
   /** Rounds the automatic range to tick values; on by default except for category axes */
   nice?: boolean;
+  /**
+   * Calendar of a `time` axis: steps and labels of the ticks and tooltips in
+   * local time or in UTC (UTC data aligned on UTC midnights / months)
+   * @default "local"
+   */
+  timeZone?: ChartTimeZone;
 }
+
+/** Calendar of a time axis */
+export type ChartTimeZone = "local" | "utc";
 
 /** Position of an annotation label inside its area */
 export type ChartLabelPosition =
@@ -202,7 +254,10 @@ export interface ChartRectAnnotation {
   labelColor?: string;
 }
 
-/** Reference line annotation at a value of the x or y axis */
+/**
+ * Reference line annotation at a value of the x or y axis (`y` lines are
+ * vertical in horizontal charts)
+ */
 export interface ChartLineAnnotation {
   type: "line";
   axis: "x" | "y";
@@ -281,6 +336,77 @@ export interface ChartTooltipOptions {
   mode?: "nearest" | "axis";
   /** Renders the tooltip content (a string is set as text) */
   render?: (event: ChartHoverEvent) => string | Node | null;
+  /**
+   * Names of the rows of the default tooltip; alias of the matching
+   * `ChartOptions.labels` (which win)
+   */
+  labels?: ChartTooltipLabels;
+}
+
+/** Row names of the default tooltip (candlesticks, box plots, ranges, bubbles) */
+export interface ChartTooltipLabels {
+  /** @default "Open" */
+  open?: string;
+  /** @default "High" */
+  high?: string;
+  /** @default "Low" */
+  low?: string;
+  /** @default "Close" */
+  close?: string;
+  /** Box plot upper whisker @default "Max" */
+  max?: string;
+  /** @default "Q3" */
+  q3?: string;
+  /** @default "Median" */
+  median?: string;
+  /** @default "Q1" */
+  q1?: string;
+  /** Box plot lower whisker @default "Min" */
+  min?: string;
+  /** Number of outliers @default "Outliers" */
+  outliers?: string;
+  /** Scatter `value` (bubbles) when the series has no `valueName` @default "Value" */
+  value?: string;
+}
+
+/**
+ * Texts the engine writes itself, built in for English, Chinese, Japanese
+ * and French (the language of `locale`); override any of them with
+ * `ChartOptions.labels`
+ */
+export interface ChartLabels {
+  /** Candlestick open @default "Open" */
+  open: string;
+  /** Candlestick high @default "High" */
+  high: string;
+  /** Candlestick low @default "Low" */
+  low: string;
+  /** Candlestick close @default "Close" */
+  close: string;
+  /** Box plot upper whisker @default "Max" */
+  max: string;
+  /** Box plot third quartile @default "Q3" */
+  q3: string;
+  /** Box plot median @default "Median" */
+  median: string;
+  /** Box plot first quartile @default "Q1" */
+  q1: string;
+  /** Box plot lower whisker @default "Min" */
+  min: string;
+  /** Number of outliers of a box @default "Outliers" */
+  outliers: string;
+  /** Scatter `value` (bubbles) when the series has no `valueName` @default "Value" */
+  value: string;
+  /** Tooltip row of the x of a scatter point when the axis has no title @default "x" */
+  x: string;
+  /** Tooltip row of the y of a scatter point when the axis has no title @default "y" */
+  y: string;
+  /** Default series names: `"Series 1"`, `"Series 2"`... @default "Series" */
+  series: string;
+  /** Accessible name of a chart without named series @default "Chart" */
+  chart: string;
+  /** Accessible name of a chart; `{series}` is the list of the series names @default "Chart: {series}" */
+  chartOf: string;
 }
 
 /** Legend options */
@@ -314,6 +440,18 @@ export interface ChartOptions {
   /** Y axis */
   yAxis?: ChartAxisOptions;
   /**
+   * Second value axis on the right, for the series with `yAxis: "right"`;
+   * its range is aligned on the ticks of the left axis (the grid follows
+   * the left axis). Ignored by horizontal charts
+   */
+  yAxis2?: ChartAxisOptions;
+  /**
+   * `horizontal` swaps the axes: the x axis (categories) runs down the
+   * left side, the values along the bottom (horizontal bars, Gantt charts)
+   * @default "vertical"
+   */
+  orientation?: ChartOrientation;
+  /**
    * Backend of the data layer
    * @default "auto"
    */
@@ -322,7 +460,7 @@ export interface ChartOptions {
   legend?: boolean | ChartLegendOptions;
   /** Tooltip; `false` disables it */
   tooltip?: boolean | ChartTooltipOptions;
-  /** Vertical guide line following the pointer (default on for `axis` tooltips) */
+  /** Guide line following the pointer across the x axis (default on for `axis` tooltips of lines / areas) */
   crosshair?: boolean;
   /** Background areas and reference lines */
   annotations?: readonly ChartAnnotation[];
@@ -334,6 +472,15 @@ export interface ChartOptions {
   palette?: readonly string[];
   /** Accessible name of the chart */
   ariaLabel?: string;
+  /**
+   * Locale of the texts and numbers the engine writes (tooltip rows, compact
+   * units `k` / `万`, separators, month and weekday names of time axes);
+   * resolved at every options update
+   * @default the page language (`<html lang>`), else the browser language
+   */
+  locale?: string;
+  /** Overrides of the built-in texts of the `locale` */
+  labels?: Partial<ChartLabels>;
   /**
    * `percent` scales every stack to 100% at each x (the axis shows percents,
    * the tooltip the actual values)
@@ -358,8 +505,16 @@ export interface ChartHoverItem {
   open?: number;
   high?: number;
   low?: number;
-  /** Heatmap: value of the cell */
+  /** Heatmap: value of the cell; scatter: the `value` of the point (bubbles) */
   value?: number;
+  /** Floating bars / range areas: the start (or lower edge); `y` is the end */
+  y0?: number;
+  /** Box plot: first quartile (`y` is the median, `low` / `high` the whiskers) */
+  q1?: number;
+  /** Box plot: third quartile */
+  q3?: number;
+  /** Box plot: number of outliers */
+  outliers?: number;
 }
 
 /** Hover / click payload */

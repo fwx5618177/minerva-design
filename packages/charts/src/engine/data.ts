@@ -15,6 +15,12 @@ export interface SeriesColumns {
   low: Float64Array | null;
   /** Heatmaps: values of the cells */
   value: Float64Array | null;
+  /** Floating bars / range areas: starts (lower edges); NaN where missing */
+  y0: Float64Array | null;
+  /** Box plots: quartiles and outliers */
+  q1: Float64Array | null;
+  q3: Float64Array | null;
+  outliers: (readonly number[] | undefined)[] | null;
   count: number;
   /** x is non-decreasing (binary search, decimation) */
   sorted: boolean;
@@ -34,7 +40,17 @@ export type YResolver = (value: unknown) => number;
 
 type Extra = Pick<
   SeriesColumns,
-  "size" | "colors" | "labels" | "open" | "high" | "low" | "value"
+  | "size"
+  | "colors"
+  | "labels"
+  | "open"
+  | "high"
+  | "low"
+  | "value"
+  | "y0"
+  | "q1"
+  | "q3"
+  | "outliers"
 >;
 
 const isColumns = (
@@ -42,10 +58,13 @@ const isColumns = (
 ): data is {
   x?: ArrayLike<number> | readonly ChartXValue[];
   y: ArrayLike<number> | readonly (number | string | null)[];
+  y0?: ArrayLike<number> | readonly (number | null)[];
   size?: ArrayLike<number>;
   open?: ArrayLike<number>;
   high?: ArrayLike<number>;
   low?: ArrayLike<number>;
+  q1?: ArrayLike<number>;
+  q3?: ArrayLike<number>;
   value?: ArrayLike<number> | readonly (number | null)[];
 } =>
   typeof data === "object" &&
@@ -72,7 +91,25 @@ export const xResolver = (
 };
 
 const toNumber = (v: unknown): number =>
-  typeof v === "number" ? v : v === null || v === undefined ? NaN : Number(v);
+  typeof v === "number"
+    ? v
+    : v === null || v === undefined
+      ? NaN
+      : v instanceof Date
+        ? v.getTime()
+        : Number(v);
+
+/** Includes the finite values of a column at `i` in an extent */
+const widen = (
+  column: Float64Array | null,
+  i: number,
+  range: { min: number; max: number },
+) => {
+  if (!column) return;
+  const v = column[i];
+  if (v < range.min) range.min = v;
+  if (v > range.max) range.max = v;
+};
 
 /** Category names used by string y values (heatmap rows), in order of appearance */
 export const collectYCategories = (
@@ -139,11 +176,13 @@ const finalize = (
 ): SeriesColumns => {
   let xMin = Infinity;
   let xMax = -Infinity;
-  let yMin = Infinity;
-  let yMax = -Infinity;
   let sorted = true;
   let prev = -Infinity;
-  const { high, low, value } = extra;
+  const { high, low, value, y0, q1, q3, outliers } = extra;
+  let yMin = Infinity;
+  let yMax = -Infinity;
+  const range = { min: Infinity, max: -Infinity };
+  const more = !!(high || low || y0 || q1 || q3 || outliers);
   for (let i = 0; i < count; i++) {
     const xi = x[i];
     if (!Number.isFinite(xi)) {
@@ -158,15 +197,24 @@ const finalize = (
     if (xi > xMax) xMax = xi;
     if (yi < yMin) yMin = yi;
     if (yi > yMax) yMax = yi;
-    if (high) {
-      const h = high[i];
-      if (h > yMax) yMax = h;
-      if (h < yMin) yMin = h;
-    }
-    if (low) {
-      const l = low[i];
-      if (l < yMin) yMin = l;
-      if (l > yMax) yMax = l;
+    if (more) {
+      // comparisons with NaN are false: missing values are skipped
+      range.min = yMin;
+      range.max = yMax;
+      widen(high, i, range);
+      widen(low, i, range);
+      widen(y0, i, range);
+      widen(q1, i, range);
+      widen(q3, i, range);
+      const out = outliers?.[i];
+      if (out) {
+        for (const v of out) {
+          if (v < range.min) range.min = v;
+          if (v > range.max) range.max = v;
+        }
+      }
+      yMin = range.min;
+      yMax = range.max;
     }
   }
   let valueMin = Infinity;
@@ -222,6 +270,10 @@ export const normalizeData = (
     high: null,
     low: null,
     value: null,
+    y0: null,
+    q1: null,
+    q3: null,
+    outliers: null,
   };
   if (isColumns(data)) {
     const count = data.y.length;
@@ -264,6 +316,9 @@ export const normalizeData = (
       high: column(data.high, count),
       low: column(data.low, count),
       value: column(data.value, count),
+      y0: column(data.y0, count),
+      q1: column(data.q1, count),
+      q3: column(data.q3, count),
     });
   }
 
@@ -278,6 +333,10 @@ export const normalizeData = (
   let high: Float64Array | null = null;
   let low: Float64Array | null = null;
   let value: Float64Array | null = null;
+  let y0: Float64Array | null = null;
+  let q1: Float64Array | null = null;
+  let q3: Float64Array | null = null;
+  let outliers: (readonly number[] | undefined)[] | null = null;
   const nanColumn = () => new Float64Array(count).fill(NaN);
 
   for (let i = 0; i < count; i++) {
@@ -299,6 +358,10 @@ export const normalizeData = (
         high?: number;
         low?: number;
         value?: number | null;
+        y0?: number | Date | null;
+        q1?: number;
+        q3?: number;
+        outliers?: readonly number[];
       };
       x[i] = d.x === undefined ? i : resolveX(d.x, i);
       y[i] = resolveY(d.y);
@@ -318,6 +381,13 @@ export const normalizeData = (
       if (d.high !== undefined) (high ??= nanColumn())[i] = toNumber(d.high);
       if (d.low !== undefined) (low ??= nanColumn())[i] = toNumber(d.low);
       if (d.value !== undefined) (value ??= nanColumn())[i] = toNumber(d.value);
+      if (d.y0 !== undefined) (y0 ??= nanColumn())[i] = toNumber(d.y0);
+      if (d.q1 !== undefined) (q1 ??= nanColumn())[i] = toNumber(d.q1);
+      if (d.q3 !== undefined) (q3 ??= nanColumn())[i] = toNumber(d.q3);
+      if (d.outliers !== undefined && d.outliers.length) {
+        outliers ??= new Array<readonly number[] | undefined>(count);
+        outliers[i] = d.outliers;
+      }
     } else {
       x[i] = i;
       y[i] = NaN;
@@ -331,6 +401,10 @@ export const normalizeData = (
     high,
     low,
     value,
+    y0,
+    q1,
+    q3,
+    outliers,
   });
 };
 

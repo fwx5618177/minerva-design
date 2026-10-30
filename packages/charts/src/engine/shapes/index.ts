@@ -1,4 +1,5 @@
-// Shape charts: pie / donut / rose, radar, gauge, funnel and treemap.
+// Shape charts: pie / donut / rose, radar, gauge, funnel, treemap, sankey,
+// sunburst, radial bar, calendar heatmap and bullet.
 
 export { createShapeChart } from "./chart";
 export {
@@ -32,6 +33,9 @@ export {
 } from "./layout";
 export { gaugeBandIndex } from "./gauge";
 export { squarify, treemapLeaves } from "./treemap";
+export { resolveSankey, sankeyColumns } from "./sankey";
+export { calendarDay, calendarIso, localeWeekStart } from "./calendar";
+export { bulletScale } from "./bullet";
 export type {
   MeasureText,
   ShapeHover,
@@ -43,6 +47,11 @@ export type {
   ShapeTooltipRow,
 } from "./scene";
 export type {
+  BulletChartOptions,
+  BulletDatum,
+  CalendarDate,
+  CalendarDatum,
+  CalendarHeatmapOptions,
   FunnelChartOptions,
   GaugeBand,
   GaugeChartOptions,
@@ -50,16 +59,24 @@ export type {
   RadarChartOptions,
   RadarIndicator,
   RadarSeries,
+  RadialBarChartOptions,
+  RadialBarDatum,
+  SankeyChartOptions,
+  SankeyLink,
+  SankeyNode,
   ShapeChartCommonOptions,
   ShapeChartEventMap,
   ShapeChartInstance,
+  ShapeChartLabels,
   ShapeChartOptions,
   ShapeChartType,
   ShapeDatum,
+  ShapeDrillEvent,
   ShapeHoverEvent,
   ShapeLegendOptions,
   ShapeToggleEvent,
   ShapeTooltipOptions,
+  SunburstChartOptions,
   TreemapChartOptions,
   TreemapNode,
 } from "./types";

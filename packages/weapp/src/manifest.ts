@@ -1399,9 +1399,9 @@ export const weappComponentManifest = [
 ] as const;
 
 /**
- * Native chart components. Charts are outside the cross-platform component
- * contract matrix (the web charts are not part of it either), so they are
- * listed here instead of in `weappComponentManifest`.
+ * Native chart components (canvas engine of minerva-design/charts). Read by
+ * tools/generate-contracts.mjs (`*ChartManifest`): `beta` on WeChat, `n/a`
+ * for the DOM / GPU widgets, which are not exported.
  */
 export const weappChartManifest = [
   {
@@ -1450,6 +1450,324 @@ export const weappChartManifest = [
     ],
     tests: ["src/charts.test.ts"],
     status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "PieChart",
+    scope:
+      'Pie / rose chart on a <canvas type="2d"> (DOM-free shape engine): slices with gaps and corners, outside / inside labels, legend with tap-to-toggle (hidden for controlled visibility), canvas tooltip, tap highlight with pop-out, entry and update animations, Minerva theme tokens from the nearest provider.',
+    limitations: [
+      "Properties are serialized by setData (JSON data only); function options (format, percentFormat, tooltip text) use configure().",
+      "Tooltips are canvas text (no renderTooltip node); no keyboard navigation.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "DonutChart",
+    scope:
+      "PieChart with a hole (innerRadius 0.62) and centerValue / centerLabel.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RadarChart",
+    scope:
+      "Radar chart: indicators, series, polygon / circle grid, levels, vertex dots, per-indicator tooltip, legend toggles.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "GaugeChart",
+    scope:
+      "Gauge: value arc on a track, min / max, sweep, thickness, colored bands, needle, end / band ticks; animates to new values.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "FunnelChart",
+    scope:
+      "Funnel chart: trapezoid or bar stages, sort, gap, conversion rates, legend toggles.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "TreemapChart",
+    scope:
+      "Treemap: nested nodes (squarified), parent headers, gap, path in the events.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "ShapeChart",
+    scope:
+      "Any shape type of the engine (pie, radar, gauge, funnel, treemap and the newer types) from a serializable options property.",
+    limitations: ["Same as PieChart; function options go through configure()."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "AreaChart",
+    scope:
+      "Chart whose untyped series are areas: smooth by default (`curve`), `stacked` or 100% (`percent`).",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HorizontalBarChart",
+    scope:
+      "Chart whose untyped series are bars from the left (categories down the left side), `stacked` / `percent`, value `labels`.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "CandlestickChart",
+    scope:
+      "Chart whose untyped series are OHLC candles (`open`, `high`, `low`, `y`).",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HeatmapChart",
+    scope:
+      "Grid of cells colored by value from `data` cells (categories or numbers on both axes), colorScale / valueRange / radius; format() through configure().",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Sparkline",
+    scope:
+      "Word-sized line / area / bar without axes or legend (default height 48), reference line, tooltip; format() through configure().",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RangeAreaChart",
+    scope:
+      "Chart whose untyped series are bands between `y0` and `y` (smooth by default).",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "MixedChart",
+    scope:
+      "Bars, lines, areas and dots each with its `type`, right axis (`yAxis2`), `stackMode` and `orientation`.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BubbleChart",
+    scope:
+      "Scatter series sized by `value` (√value diameters, minSize / maxSize / maxValue).",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "HistogramChart",
+    scope:
+      "Histogram of the raw `values` (bins rule or count, domain, nice), extra series over the bins; formatBin() through configure().",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BoxPlotChart",
+    scope:
+      "Box plots from raw `groups` (Tukey whiskers or minmax) or statistics `series`, vertical or horizontal.",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "WaterfallChart",
+    scope:
+      "Waterfall of changes, subtotals and totals (`steps`), colors, start, labels, locale, orientation; format() through configure().",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "GanttChart",
+    scope:
+      "Tasks / milestones on a time axis (timestamps), groups and progress, `today` line (true or a timestamp), zoom along the time; formatProgress() through configure().",
+    limitations: ["Same as Chart."],
+    tests: ["src/charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "SankeyChart",
+    scope:
+      "Sankey diagram: nodes in columns and links with thickness proportional to the flow, alignment, link colors / opacity, labels.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "SunburstChart",
+    scope:
+      "Sunburst: hierarchy as rings, sector labels, tap a parent to drill in and the center to go back (`drill` event, drill() / getDrillPath(), controlled drillPath).",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "RadialBarChart",
+    scope:
+      "Radial bar chart: concentric progress rings with tracks, rounded ends, labels and center texts.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "CalendarHeatmap",
+    scope:
+      "Calendar heatmap: daily values in weeks or months layouts, color levels / thresholds, month and weekday labels, locale.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "BulletChart",
+    scope:
+      "Bullet chart: value bars against qualitative ranges and a target marker, horizontal or vertical, scale ticks.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "TradingChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "DepthChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "OrderBook",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "OrderBookHeatmap",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "TimeAndSales",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Scatter3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Surface3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Bar3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
+    deviceE2E: false,
+  },
+  {
+    name: "Line3DChart",
+    scope:
+      "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",
+    limitations: [
+      "Use a web-view page that renders the web component (minerva-design/charts) on mini-programs.",
+    ],
+    tests: ["src/charts.test.ts"],
+    status: "n/a",
     deviceE2E: false,
   },
 ] as const;

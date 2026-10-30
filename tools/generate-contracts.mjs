@@ -2,7 +2,8 @@
 // (packages/core/src/contracts/components.generated.json) from the sources:
 //
 // - React: every exported component `X` of minerva-design (packages/react)
-//   with an exported `XProps` type; its props are read with the TypeScript
+//   and of minerva-design/charts (packages/charts) with an exported `XProps`
+//   type; its props are read with the TypeScript
 //   checker (inherited Minerva props included, native DOM props excluded):
 //   kind, string literal values, `@default`, required, description.
 // - Web Components: every custom element of the Custom Elements Manifest
@@ -16,6 +17,9 @@
 // - Vue: the exports of the native Vue renderer (packages/vue, read
 //   statically from its barrels): `stable` when the cross-platform contract
 //   suites cover the component (tests/contracts), `beta` otherwise.
+// - Charts on React Native and the mini programs: their chart lists /
+//   manifests (`NATIVE_CHARTS`, `<platform>ChartManifest`); the DOM / GPU
+//   widgets (trading, order book, 3D) are `n/a` there with an explanation.
 //
 //   node tools/generate-contracts.mjs          -> writes the JSON
 //   node tools/generate-contracts.mjs --check  -> exits 1 when it is stale
@@ -30,10 +34,52 @@ import {
   generateElements,
 } from "../apps/docs/scripts/generate-api.mjs";
 import { docPages } from "../apps/docs/src/docs/registry.ts";
-import { NATIVE_COMPONENTS } from "../packages/native/src/manifest.ts";
-import { taroComponentManifest } from "../packages/taro/src/manifest.ts";
-import { uniComponentManifest } from "../packages/uni/src/manifest.ts";
-import { weappComponentManifest } from "../packages/weapp/src/manifest.ts";
+import * as nativeManifest from "../packages/native/src/manifest.ts";
+import * as taroManifest from "../packages/taro/src/manifest.ts";
+import * as uniManifest from "../packages/uni/src/manifest.ts";
+import * as weappManifest from "../packages/weapp/src/manifest.ts";
+
+const { NATIVE_COMPONENTS } = nativeManifest;
+const { taroComponentManifest } = taroManifest;
+const { uniComponentManifest } = uniManifest;
+const { weappComponentManifest } = weappManifest;
+
+/** Entries of the chart manifests of a module (`*ChartManifest` exports) */
+const chartManifestOf = (module) =>
+  Object.entries(module)
+    .filter(
+      ([key, value]) => /ChartManifest$/.test(key) && Array.isArray(value),
+    )
+    .flatMap(([, value]) => value);
+
+/** Chart components of minerva-design/native (`NATIVE_CHARTS`: names, or `{ name }` entries) */
+const nativeCharts = new Set(
+  [
+    ...(Array.isArray(nativeManifest.NATIVE_CHARTS)
+      ? nativeManifest.NATIVE_CHARTS
+      : []),
+    ...chartManifestOf(nativeManifest),
+  ].map((entry) => (typeof entry === "string" ? entry : entry.name)),
+);
+
+/**
+ * Chart widgets drawn with the DOM and the GPU (WebGPU / WebGL canvases,
+ * DOM overlays and virtualized DOM lists): no React Native or mini program
+ * counterpart
+ */
+const DOM_ONLY_CHARTS = new Set([
+  "TradingChart",
+  "DepthChart",
+  "OrderBook",
+  "OrderBookHeatmap",
+  "TimeAndSales",
+  "Scatter3DChart",
+  "Line3DChart",
+  "Surface3DChart",
+  "Bar3DChart",
+]);
+const DOM_ONLY_NOTE =
+  "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view.";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const at = (path) => join(ROOT, path);
@@ -83,6 +129,12 @@ export const TAG_TO_REACT = {
   "minerva-menu-group": null,
   "minerva-menu-separator": null,
   "minerva-menu-label": null,
+  // the generic shape chart (engine options of any type): React has the named ones only
+  "minerva-shape-chart": null,
+  "minerva-scatter-3d-chart": "Scatter3DChart",
+  "minerva-line-3d-chart": "Line3DChart",
+  "minerva-surface-3d-chart": "Surface3DChart",
+  "minerva-bar-3d-chart": "Bar3DChart",
 };
 
 /** React props interfaces not named `<Component>Props` */
@@ -284,6 +336,12 @@ const miniManifests = {
   uni: uniComponentManifest,
   weapp: weappComponentManifest,
 };
+/** Chart manifests of the mini program renderers (`<platform>ChartManifest`) */
+const miniChartManifests = {
+  taro: chartManifestOf(taroManifest),
+  uni: chartManifestOf(uniManifest),
+  weapp: chartManifestOf(weappManifest),
+};
 
 // uni/WeApp expose these parts through parent data, not standalone components.
 // A missing manifest entry alone is never evidence for an equivalent API.
@@ -310,8 +368,13 @@ const MINI_VALIDATION_NOTES = {
 };
 
 export function miniSupport(platform, name) {
-  const entry = miniManifests[platform]?.find((item) => item.name === name);
+  const entry = [
+    ...(miniManifests[platform] ?? []),
+    ...(miniChartManifests[platform] ?? []),
+  ].find((item) => item.name === name);
   if (!entry) {
+    if (DOM_ONLY_CHARTS.has(name))
+      return { status: "n/a", notes: DOM_ONLY_NOTE };
     const equivalent =
       (platform === "uni" || platform === "weapp") &&
       MINI_DATA_EQUIVALENTS[name];
@@ -425,8 +488,10 @@ const literalUnion = (text) =>
 const REACT_ENTRIES = [
   at("packages/react/src/index.ts"),
   at("packages/react/src/monaco.ts"),
+  // minerva-design/charts: the chart components (and the engine re-exports)
+  at("packages/charts/src/index.ts"),
 ];
-const MINERVA_SOURCE = /[\\/]packages[\\/](react|core|dom)[\\/]src[\\/]/;
+const MINERVA_SOURCE = /[\\/]packages[\\/](react|core|dom|charts)[\\/]src[\\/]/;
 const NATIVE_ENTRIES = [at("packages/native/src/index.ts")];
 const NATIVE_SOURCE = /[\\/]packages[\\/](native|core)[\\/]src[\\/]/;
 /** Composition / host props that are not part of the contract */
@@ -697,6 +762,13 @@ export function nativeSupport(name) {
       notes:
         "Monaco requires a browser DOM and is not embedded on iOS or Android. Native CodeEditor provides an accessible multiline source editor with an optional formatter; it does not claim Monaco language-service or DOM-editor behavior.",
     };
+  if (nativeCharts.has(name))
+    return {
+      status: "beta",
+      notes:
+        "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+    };
+  if (DOM_ONLY_CHARTS.has(name)) return { status: "n/a", notes: DOM_ONLY_NOTE };
   return { status: "planned" };
 }
 
@@ -840,7 +912,13 @@ function buildContract({
   );
   platforms.react = react
     ? { status: "stable" }
-    : { status: "n/a", notes: NOT_APPLICABLE_NOTES.react };
+    : {
+        status: "n/a",
+        notes:
+          tag === "minerva-shape-chart"
+            ? "Generic shape chart configured by the engine options (any type); React has the named components (PieChart, RadarChart, SankeyChart…) and createShapeChart of minerva-design/charts/core."
+            : NOT_APPLICABLE_NOTES.react,
+      };
   platforms.wc = element
     ? { status: "stable" }
     : { status: "n/a", notes: NOT_APPLICABLE_NOTES.wc };

@@ -75,6 +75,13 @@ export interface CanvasShapeChartInstance {
   toggle(index: number): void;
   /** Indexes of the hidden entries, ascending */
   getHidden(): number[];
+  /**
+   * Sunburst: zooms into the node at `path` (names from the root, `[]` =
+   * the root) and emits `drill` (with the `drillPath` option: only emits `drill`)
+   */
+  drill(path: readonly string[]): void;
+  /** Sunburst: names from the root to the focused node (`[]` = the root) */
+  getDrillPath(): string[];
   /** Removes the hover (and the tooltip) */
   clearHover(): void;
   /** Subscribes to an event; returns the unsubscribe function */
@@ -120,7 +127,12 @@ export const createCanvasShapeChart = (
     [K in keyof ShapeChartEventMap]: Set<
       (event: ShapeChartEventMap[K]) => void
     >;
-  } = { hover: new Set(), click: new Set(), toggle: new Set() };
+  } = {
+    hover: new Set(),
+    click: new Set(),
+    toggle: new Set(),
+    drill: new Set(),
+  };
   const emit = <K extends keyof ShapeChartEventMap>(
     type: K,
     event: ShapeChartEventMap[K],
@@ -277,6 +289,14 @@ export const createCanvasShapeChart = (
     emit("toggle", event);
   };
 
+  const drill = (path: readonly string[]) => {
+    if (destroyed) return;
+    const event = runtime.drill(path);
+    if (!event) return;
+    if (options.type === "sunburst" && !options.drillPath) schedule();
+    emit("drill", event);
+  };
+
   /** Tap / click: legend toggle, else hover + click event */
   const tap = (x: number, y: number) => {
     const box = legendAt(x, y);
@@ -289,6 +309,9 @@ export const createCanvasShapeChart = (
       setHover(hit, x, y);
       const e = hoverEvent(scene, hit);
       if (e) emit("click", e);
+      const item = scene.items.find((it) => it.index === hit.index);
+      if (item?.drill && options.type === "sunburst" && options.drill !== false)
+        drill(item.drill);
     } else setHover(null, x, y);
   };
 
@@ -363,6 +386,8 @@ export const createCanvasShapeChart = (
     },
     toggle,
     getHidden: () => runtime.hiddenIndexes(),
+    drill,
+    getDrillPath: () => runtime.drillPath(),
     clearHover: () => setHover(null, 0, 0),
     on(type, listener) {
       listeners[type].add(listener);
@@ -377,6 +402,7 @@ export const createCanvasShapeChart = (
       listeners.hover.clear();
       listeners.click.clear();
       listeners.toggle.clear();
+      listeners.drill.clear();
     },
   };
 };

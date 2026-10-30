@@ -1,6 +1,6 @@
 // Private entry of the platform packages (Taro, uni-app, WeChat, React
 // Native): the DOM-free part of the engine only, so their bundles never
-// include the WebGPU / WebGL2 renderers nor the DOM chart.
+// include the WebGPU / WebGL renderers nor the DOM chart.
 
 export {
   createCanvasChart,
@@ -29,8 +29,39 @@ export {
   type ChartScene,
   type ChartTooltipLayout,
 } from "./engine/controller";
-export { formatCompact } from "./engine/format";
+export { formatCompact, formatValue } from "./engine/format";
+export { chartAriaLabel } from "./engine/labels";
+export { drawPrimitives } from "./engine/canvas";
 export {
+  lineOf as annotationLine,
+  rectOf as annotationRect,
+  textBox as annotationTextBox,
+} from "./engine/overlay";
+export { toData, toScreen } from "./engine/layout";
+export {
+  binValues,
+  boxplotData,
+  boxplotStats,
+  bubbleSeries,
+  ganttSeries,
+  histogramSeries,
+  quantiles,
+  waterfallSeries,
+  type BinOptions,
+  type BoxplotGroup,
+  type BoxplotStats,
+  type BoxplotStatsOptions,
+  type BubbleOptions,
+  type GanttOptions,
+  type GanttSeries,
+  type GanttTask,
+  type HistogramBinning,
+  type HistogramBins,
+  type HistogramSeriesOptions,
+  type WaterfallOptions,
+  type WaterfallStep,
+  boxplotSeries,
+  rangeAreaSeries,
   areaSeries,
   barSeries,
   candlestickSeries,
@@ -42,6 +73,8 @@ export {
   quadrantOf,
   scatterSeries,
   sparklineOptions,
+  withSeriesType,
+  type LineSeriesOptions,
   type HeatmapCell,
   type HeatmapConfig,
   type QuadrantAxisLabels,
@@ -61,4 +94,5 @@ export {
   type CanvasShapeChartInstance,
 } from "./engine/shapes/canvas";
 export { drawShapeScene } from "./engine/shapes/draw";
+export { calendarStrips } from "./engine/shapes/calendar";
 export type * from "./engine/shapes/types";

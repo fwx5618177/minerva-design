@@ -21,12 +21,36 @@ await build({
     emptyOutDir: false,
     minify: false,
     lib: {
-      entry: fileURLToPath(new URL("../src/index.ts", import.meta.url)),
+      entry: {
+        controls: fileURLToPath(new URL("../src/index.ts", import.meta.url)),
+        // The DOM-free chart engine (createCanvasShapeChart, createCanvasChart,
+        // presets...) for pages and custom components:
+        // require("minerva-design/charts/core") after "Build npm". The
+        // components import the same module, so controls.js requires this
+        // file instead of bundling a second copy of the engine.
+        "charts/core": fileURLToPath(
+          new URL("../../charts/src/canvas.ts", import.meta.url),
+        ),
+      },
       formats: ["cjs"],
-      fileName: () => "controls.js",
+      fileName: (_format, name) => `${name}.js`,
+    },
+    rollupOptions: {
+      // WeChat only packages `.js` files: the engine shared by controls.js and
+      // charts/core.js gets a stable `.js` name too
+      output: { chunkFileNames: "charts/[name].js" },
     },
   },
 });
+// Types of charts/core: the declarations of the DOM-free chart entry
+writeFileSync(
+  `${dir}/charts/core.d.ts`,
+  [
+    "// DOM-free chart engine of the native WeChat build (minerva-design/charts/core in a mini-program)",
+    'export * from "../../charts/canvas";',
+    "",
+  ].join("\n"),
+);
 const controls = createRequire(import.meta.url)(`${dir}/controls.js`);
 
 cpSync(

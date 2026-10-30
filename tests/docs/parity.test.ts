@@ -58,6 +58,12 @@ const INTERFACE: Record<string, string | null> = {
   "minerva-menu-group": null,
   "minerva-menu-separator": null,
   "minerva-menu-label": null,
+  // the generic shape chart (options of any type): React has the named ones only
+  "minerva-shape-chart": null,
+  "minerva-scatter-3d-chart": "Scatter3DChartProps",
+  "minerva-line-3d-chart": "Line3DChartProps",
+  "minerva-surface-3d-chart": "Surface3DChartProps",
+  "minerva-bar-3d-chart": "Bar3DChartProps",
 };
 
 const pascal = (tag: string) =>
@@ -77,30 +83,31 @@ const literals = (type?: string) =>
     ? Array.from(type.matchAll(/"([^"]*)"/g), (m) => m[1]).sort()
     : null;
 
+/** React entries: minerva-design, its Monaco entry and the React charts */
+const REACT_ENTRIES = [
+  at("packages/react/src/index.ts"),
+  at("packages/react/src/monaco.ts"),
+  at("packages/charts/src/index.ts"),
+];
+
 /** All prop names of the exported React props interfaces (inherited included) */
 function reactPropNames(names: string[]) {
-  const program = ts.createProgram(
-    [at("packages/react/src/index.ts"), at("packages/react/src/monaco.ts")],
-    {
-      strict: true,
-      jsx: ts.JsxEmit.ReactJSX,
-      module: ts.ModuleKind.ESNext,
-      moduleResolution: ts.ModuleResolutionKind.Bundler,
-      target: ts.ScriptTarget.ES2022,
-      skipLibCheck: true,
-      noEmit: true,
-      paths: {
-        "@minerva/core": [at("packages/core/src/index.ts")],
-        "@minerva/dom": [at("packages/dom/src/index.ts")],
-      },
+  const program = ts.createProgram(REACT_ENTRIES, {
+    strict: true,
+    jsx: ts.JsxEmit.ReactJSX,
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    target: ts.ScriptTarget.ES2022,
+    skipLibCheck: true,
+    noEmit: true,
+    paths: {
+      "@minerva/core": [at("packages/core/src/index.ts")],
+      "@minerva/dom": [at("packages/dom/src/index.ts")],
     },
-  );
+  });
   const checker = program.getTypeChecker();
   const result = new Map<string, Set<string>>();
-  for (const file of [
-    at("packages/react/src/index.ts"),
-    at("packages/react/src/monaco.ts"),
-  ]) {
+  for (const file of REACT_ENTRIES) {
     const source = program.getSourceFile(file)!;
     const module = checker.getSymbolAtLocation(source)!;
     for (const symbol of checker.getExportsOfModule(module)) {

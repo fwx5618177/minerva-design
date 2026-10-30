@@ -1,12 +1,20 @@
 import { act, render } from "@testing-library/react";
-import { createRef } from "react";
+import { createRef, type ReactElement, type Ref } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BarChart,
+  BoxPlotChart,
+  BubbleChart,
   Chart,
+  GanttChart,
+  HistogramChart,
+  HorizontalBarChart,
   LineChart,
+  MixedChart,
   QuadrantChart,
+  RangeAreaChart,
   ScatterChart,
+  WaterfallChart,
 } from "../index";
 import type { ChartHandle } from "./types";
 
@@ -234,5 +242,183 @@ describe("chart components", () => {
       new PointerEvent("pointermove", { clientX: 250, clientY: 150 }),
     );
     expect(container.querySelector(".minerva-chart-tooltip em")).not.toBeNull();
+  });
+});
+
+describe("cartesian chart components", () => {
+  const optionsOf = async (ui: (ref: Ref<ChartHandle>) => ReactElement) => {
+    const ref = createRef<ChartHandle>();
+    const { unmount, container } = render(ui(ref));
+    await flush();
+    const instance = ref.current!.getInstance()!;
+    const setOptions = vi.spyOn(instance, "setOptions");
+    return { ref, instance, setOptions, unmount, container };
+  };
+
+  it("HorizontalBarChart: horizontal orientation, value labels", async () => {
+    const { ref, container } = await optionsOf((r) => (
+      <HorizontalBarChart
+        ref={r}
+        labels
+        series={[
+          {
+            data: [
+              ["a", 3],
+              ["b", 5],
+            ],
+          },
+        ]}
+      />
+    ));
+    // categories on the x axis: the plot is taller than its share of rows
+    expect(ref.current!.getView()?.x).toEqual([-0.5, 1.5]);
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    expect(stage).not.toBeNull();
+  });
+
+  it("RangeAreaChart, MixedChart, BubbleChart mount with their options", async () => {
+    const range = await optionsOf((r) => (
+      <RangeAreaChart
+        ref={r}
+        series={[
+          {
+            data: [
+              { x: 0, y0: 1, y: 3 },
+              { x: 1, y0: 2, y: 5 },
+            ],
+          },
+        ]}
+      />
+    ));
+    expect(range.ref.current!.getView()?.y[0]).toBeLessThanOrEqual(1);
+    range.unmount();
+
+    const mixed = await optionsOf((r) => (
+      <MixedChart
+        ref={r}
+        yAxis2={{ title: "Rate" }}
+        series={[
+          {
+            type: "bar",
+            data: [
+              ["a", 100],
+              ["b", 200],
+            ],
+          },
+          {
+            type: "line",
+            yAxis: "right",
+            data: [
+              ["a", 0.1],
+              ["b", 0.3],
+            ],
+          },
+        ]}
+      />
+    ));
+    // the left axis keeps the bars' range, the line is mapped onto it
+    expect(mixed.ref.current!.getView()?.y).toEqual([0, 200]);
+    mixed.unmount();
+
+    const bubbles = await optionsOf((r) => (
+      <BubbleChart
+        ref={r}
+        maxSize={40}
+        series={[
+          {
+            data: [
+              { x: 1, y: 1, value: 4 },
+              { x: 2, y: 2, value: 1 },
+            ],
+          },
+        ]}
+      />
+    ));
+    expect(bubbles.ref.current!.getInstance()).not.toBeNull();
+    bubbles.unmount();
+  });
+
+  it("HistogramChart bins raw values", async () => {
+    const values = Float64Array.from({ length: 1000 }, (_, i) => i % 50);
+    const { ref } = await optionsOf((r) => (
+      <HistogramChart ref={r} values={values} bins={5} domain={[0, 50]} />
+    ));
+    expect(ref.current!.getView()?.x).toEqual([0, 50]);
+    expect(ref.current!.getView()?.y[1]).toBeGreaterThanOrEqual(200);
+  });
+
+  it("BoxPlotChart computes boxes from raw groups", async () => {
+    const { ref } = await optionsOf((r) => (
+      <BoxPlotChart
+        ref={r}
+        groups={[
+          { x: "a", values: [1, 2, 3, 4, 100] },
+          { x: "b", values: [2, 3, 4] },
+        ]}
+      />
+    ));
+    // the outlier is in the range
+    expect(ref.current!.getView()?.y[1]).toBeGreaterThanOrEqual(100);
+  });
+
+  it("WaterfallChart and GanttChart", async () => {
+    const waterfall = await optionsOf((r) => (
+      <WaterfallChart
+        ref={r}
+        steps={[
+          { label: "Start", value: 100 },
+          { label: "Costs", value: -30 },
+          { label: "End", kind: "total" },
+        ]}
+      />
+    ));
+    // room above the highest bar for its label
+    expect(waterfall.ref.current!.getView()?.y).toEqual([0, 120]);
+    waterfall.unmount();
+
+    const gantt = await optionsOf((r) => (
+      <GanttChart
+        ref={r}
+        today={50}
+        tasks={[
+          { name: "Design", start: 0, end: 40, progress: 0.5 },
+          { name: "Build", start: 40, end: 100 },
+        ]}
+      />
+    ));
+    const view = gantt.ref.current!.getView()!;
+    // a small margin around the tasks on the time axis
+    expect(view.y[0]).toBeLessThan(0);
+    expect(view.y[1]).toBeGreaterThan(100);
+    expect(view.x).toEqual([-0.5, 1.5]);
+  });
+
+  it("writes the texts of the locale and follows the page language", async () => {
+    const lang = document.documentElement.lang;
+    document.documentElement.lang = "fr";
+    const { container, unmount } = render(
+      <Chart series={[{ data: [1, 2, 3] }]} />,
+    );
+    await flush();
+    const stage = () =>
+      container
+        .querySelector(".minerva-chart-stage")
+        ?.getAttribute("aria-label");
+    expect(stage()).toBe("Graphique : Série 1");
+    document.documentElement.lang = "ja";
+    await flush();
+    expect(stage()).toBe("グラフ：系列 1");
+    unmount();
+    const zh = render(
+      <HistogramChart values={[1, 2, 2, 3]} locale="zh-CN" bins={2} />,
+    );
+    await flush();
+    expect(
+      zh.container
+        .querySelector(".minerva-chart-stage")
+        ?.getAttribute("aria-label"),
+    ).toBe("图表：数量");
+    zh.unmount();
+    document.documentElement.lang = lang;
   });
 });

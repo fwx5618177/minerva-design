@@ -4,7 +4,11 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const spies = vi.hoisted(() => ({ buildItems: 0, render: 0 }));
+const spies = vi.hoisted(() => ({
+  buildItems: 0,
+  render: 0,
+  kind: "canvas2d" as string,
+}));
 
 vi.mock("./items", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./items")>();
@@ -22,7 +26,7 @@ vi.mock("./renderers/detect", () => ({
   createRenderer: async () => {
     const canvas = document.createElement("canvas");
     return {
-      kind: "canvas2d",
+      kind: spies.kind,
       canvas,
       resize(width: number, height: number) {
         canvas.width = width;
@@ -64,6 +68,7 @@ const nextFrame = () =>
 beforeEach(() => {
   spies.buildItems = 0;
   spies.render = 0;
+  spies.kind = "canvas2d";
 });
 
 describe("engine throughput", () => {
@@ -238,6 +243,19 @@ describe("createChart rebuilds", () => {
     move(100, 150);
     expect(tooltip.firstElementChild).not.toBe(header);
     expect(ms).toBeLessThan(500);
+  });
+
+  it("draws with a WebGL (1) backend like with the others", async () => {
+    spies.kind = "webgl";
+    const c = await mount();
+    expect(c.getRenderer()).toBe("webgl");
+    expect(
+      container.querySelector<HTMLElement>("[data-renderer]")?.dataset.renderer,
+    ).toBe("webgl");
+    c.setView({ x: [100, 200] });
+    await nextFrame();
+    // zooming only changes the transform
+    expect(spies.buildItems).toBe(0);
   });
 });
 

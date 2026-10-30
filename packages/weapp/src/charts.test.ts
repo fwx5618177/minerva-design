@@ -4,13 +4,26 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, expect, it } from "vitest";
 import { chartTheme } from "./charts";
+import * as weapp from "./index";
 import {
+  areaChart,
   barChart,
+  boxPlotChart,
+  bubbleChart,
+  candlestickChart,
   chart,
   configProvider,
+  ganttChart,
+  heatmapChart,
+  histogramChart,
+  horizontalBarChart,
   lineChart,
+  mixedChart,
   quadrantChart,
+  rangeAreaChart,
   scatterChart,
+  sparkline,
+  waterfallChart,
 } from "./index";
 import { weappChartManifest } from "./manifest";
 
@@ -473,10 +486,138 @@ it("chart manifest lists every chart component with real tests", () => {
     "BarChart",
     "ScatterChart",
     "QuadrantChart",
+    "PieChart",
+    "DonutChart",
+    "RadarChart",
+    "GaugeChart",
+    "FunnelChart",
+    "TreemapChart",
+    "ShapeChart",
+    "AreaChart",
+    "HorizontalBarChart",
+    "CandlestickChart",
+    "HeatmapChart",
+    "Sparkline",
+    "RangeAreaChart",
+    "MixedChart",
+    "BubbleChart",
+    "HistogramChart",
+    "BoxPlotChart",
+    "WaterfallChart",
+    "GanttChart",
+    "SankeyChart",
+    "SunburstChart",
+    "RadialBarChart",
+    "CalendarHeatmap",
+    "BulletChart",
+    "TradingChart",
+    "DepthChart",
+    "OrderBook",
+    "OrderBookHeatmap",
+    "TimeAndSales",
+    "Scatter3DChart",
+    "Surface3DChart",
+    "Bar3DChart",
+    "Line3DChart",
   ]);
   for (const entry of weappChartManifest) {
     expect(entry.limitations.length, entry.name).toBeGreaterThan(0);
     for (const test of entry.tests)
       expect(existsSync(join(root, test.split(":")[0])), test).toBe(true);
+  }
+});
+
+it("draws the named charts from their web props", async () => {
+  const day = 86_400_000;
+  const start = Date.UTC(2026, 0, 5);
+  const cases: [Control, Record<string, unknown>, string][] = [
+    [
+      areaChart,
+      {
+        series: [
+          {
+            name: "Web",
+            data: [
+              ["Jan", 1],
+              ["Feb", 3],
+            ],
+          },
+        ],
+        percent: true,
+      },
+      "Jan",
+    ],
+    [
+      horizontalBarChart,
+      {
+        series: [
+          {
+            data: [
+              ["Maps", 27],
+              ["Notes", 12],
+            ],
+          },
+        ],
+        labels: true,
+      },
+      "Maps",
+    ],
+    [
+      candlestickChart,
+      { series: [{ data: [{ x: 0, open: 1, high: 3, low: 0, y: 2 }] }] },
+      "",
+    ],
+    [heatmapChart, { data: [{ x: "Mon", y: "AM", value: 3 }] }, "Mon"],
+    [sparkline, { data: [1, 4, 2, 5] }, ""],
+    [rangeAreaChart, { series: [{ data: [{ x: 0, y0: 1, y: 3 }] }] }, ""],
+    [
+      mixedChart,
+      {
+        series: [
+          { type: "bar", data: [["Q1", 3]] },
+          { type: "line", yAxis: "right", data: [["Q1", 0.2]] },
+        ],
+        yAxis2: { title: "Growth" },
+      },
+      "Growth",
+    ],
+    [bubbleChart, { series: [{ data: [{ x: 1, y: 2, value: 3 }] }] }, ""],
+    [histogramChart, { values: [1, 2, 2, 3, 9], name: "Orders" }, ""],
+    [boxPlotChart, { groups: [{ x: "A", values: [1, 2, 3, 4, 20] }] }, "A"],
+    [
+      waterfallChart,
+      {
+        steps: [
+          { label: "Start", value: 10 },
+          { label: "Sales", value: 4 },
+        ],
+      },
+      "Sales",
+    ],
+    [
+      ganttChart,
+      {
+        tasks: [{ name: "Design", start, end: start + 3 * day }],
+        today: start + day,
+        todayLabel: "Today",
+      },
+      "Design",
+    ],
+  ];
+  for (const [control, props, text] of cases) {
+    const { fake } = await mount(control, props);
+    expect(fake.calls.length, JSON.stringify(props)).toBeGreaterThan(0);
+    if (text) expect(fake.texts(), text).toContain(text);
+  }
+  const { w } = await mount(sparkline, { data: [1, 2] });
+  expect(w.instance.data.chartHeight).toBe("48px");
+});
+
+it("does not export the DOM / GPU-only charts", () => {
+  for (const entry of weappChartManifest) {
+    const exported = Object.keys(weapp).some(
+      (key) => key.toLowerCase() === entry.name.toLowerCase(),
+    );
+    expect(exported, entry.name).toBe(entry.status !== "n/a");
   }
 });

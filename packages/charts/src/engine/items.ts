@@ -1,6 +1,6 @@
 // Chart model -> GPU-ready buffers (positions relative to an origin).
 
-import { packColor } from "./color";
+import { packColor, type Rgba } from "./color";
 import { curvePoints } from "./curve";
 import type { ChartModel, SeriesModel } from "./model";
 import {
@@ -24,6 +24,7 @@ const DRAW_ORDER = {
   heatmap: 0,
   area: 1,
   bar: 2,
+  boxplot: 2,
   candlestick: 3,
   line: 4,
   scatter: 5,
@@ -141,6 +142,7 @@ export const buildItems = (
             sorted,
           });
         }
+        if (s.lineWidth <= 0) break;
         (s.type === "area" ? outlines : items).push({
           kind: "line",
           key: `${s.key}:line`,
@@ -151,19 +153,44 @@ export const buildItems = (
           width: s.lineWidth,
           sorted,
         });
+        if (s.type === "area" && s.cols.y0 && baseAt) {
+          // range areas: the lower edge is drawn too
+          const lower = new Float32Array(n * 2);
+          for (let i = 0; i < n; i++) {
+            lower[i * 2] = pts[i * 2];
+            lower[i * 2 + 1] = rel(baseAt(i), origin.y);
+          }
+          outlines.push({
+            kind: "line",
+            key: `${s.key}:lower`,
+            version,
+            color: s.color,
+            points: lower,
+            count: n,
+            width: s.lineWidth,
+            sorted,
+          });
+        }
         break;
       }
       case "bar": {
         const base = s.barBase ?? new Float64Array(count);
         const top = s.barTop ?? y;
-        const seriesColor = packColor(s.color);
-        const shared = model.series.some(
-          (o) =>
-            o !== s &&
-            !o.hidden &&
-            o.type === "bar" &&
-            o.barOffset === s.barOffset,
-        );
+        const fade = (c: Rgba): Rgba =>
+          s.opacity < 1 ? [c[0], c[1], c[2], c[3] * s.opacity] : c;
+        const seriesColor = packColor(fade(s.color));
+        // floating bars (ranges, Gantt progress) keep their corners
+        const shared =
+          !s.floating &&
+          model.series.some(
+            (o) =>
+              o !== s &&
+              !o.hidden &&
+              o.type === "bar" &&
+              !o.floating &&
+              o.barOffset === s.barOffset,
+          );
+        const touching = s.barHalfWidth > 0 && isTouching(model, s);
         items.push(
           barItem(
             `${s.key}:bar`,
@@ -176,13 +203,14 @@ export const buildItems = (
               f[i * 4 + 1] = valid ? base[i] - origin.y : GAP;
               f[i * 4 + 2] = valid ? top[i] - origin.y : GAP;
               const pc = s.pointColors?.[i];
-              u[i * 4 + 3] = pc ? packColor(pc) : seriesColor;
+              u[i * 4 + 3] = pc ? packColor(fade(pc)) : seriesColor;
             },
             {
               halfWidth: s.barHalfWidth,
               // stacked segments stay square so the stack reads as one bar
               radius: shared ? 0 : s.radius,
-              inset: 0,
+              // bars filling their category (histograms): a hairline apart
+              inset: touching ? 0.5 : 0,
               minHalf: 0,
               sorted,
             },
@@ -247,6 +275,9 @@ export const buildItems = (
         );
         break;
       }
+      case "boxplot":
+        items.push(...boxItems(s, origin, version));
+        break;
       case "heatmap": {
         const colors = s.cellColors;
         const hy = s.cellHalf.y;
@@ -305,5 +336,167 @@ export const buildItems = (
     }
   }
   items.push(...outlines);
+  return items;
+};
+
+/** Bars of a series fill their whole category (`barWidth: 1`, histograms) */
+const isTouching = (model: ChartModel, s: SeriesModel) => {
+  let band = 1;
+  if (model.x.type !== "category") {
+    const { x, count } = s.cols;
+    band = Infinity;
+    for (let i = 1; i < Math.min(count, 64); i++) {
+      const d = Math.abs(x[i] - x[i - 1]);
+      if (d > 0 && d < band) band = d;
+    }
+    if (!Number.isFinite(band)) return false;
+  }
+  return s.barHalfWidth * 2 >= band * 0.98;
+};
+
+/**
+ * Box plot: a translucent box, whiskers and box sides (zero-width bars of
+ * the line width), caps, box edges and the median (zero-height bars), and
+ * the outliers as dots
+ */
+const boxItems = (
+  s: SeriesModel,
+  origin: Origin,
+  version: number,
+): RenderItem[] => {
+  const { x, y, count, high, low, q1, q3, outliers } = s.cols;
+  const color = packColor(s.color);
+  const fill = packColor([
+    s.color[0],
+    s.color[1],
+    s.color[2],
+    s.color[3] * s.opacity,
+  ]);
+  const colorAt = (i: number, alpha = false) => {
+    const pc = s.pointColors?.[i];
+    if (!pc) return alpha ? fill : color;
+    return packColor(alpha ? [pc[0], pc[1], pc[2], pc[3] * s.opacity] : pc);
+  };
+  const half = s.barHalfWidth;
+  const lw = Math.max(1, s.lineWidth);
+  const at = (column: Float64Array | null, i: number) =>
+    column && Number.isFinite(column[i]) ? column[i] : y[i];
+  const ox = (i: number, dx = 0) => rel(x[i] + s.barOffset + dx, origin.x);
+  const oy = (v: number) => v - origin.y;
+  /** Several bars per point: `parts` gives their (x shift, from, to) */
+  const multi = (
+    key: string,
+    parts: number,
+    write: (i: number, k: number) => [number, number, number],
+    extra: Pick<BarItem, "halfWidth" | "minHalf">,
+  ): BarItem => {
+    const buffer = new ArrayBuffer(count * parts * BAR_STRIDE);
+    const f = new Float32Array(buffer);
+    const u = new Uint32Array(buffer);
+    for (let i = 0; i < count; i++) {
+      const valid = Number.isFinite(y[i]) && Number.isFinite(x[i]);
+      for (let k = 0; k < parts; k++) {
+        const j = (i * parts + k) * 4;
+        const [dx, a, b] = valid ? write(i, k) : [0, NaN, NaN];
+        f[j] = valid ? ox(i, dx) : GAP;
+        f[j + 1] = valid ? oy(a) : GAP;
+        f[j + 2] = valid ? oy(b) : GAP;
+        u[j + 3] = colorAt(i);
+      }
+    }
+    return {
+      kind: "bar",
+      key: `${s.key}:${key}`,
+      version,
+      color: s.color,
+      instances: buffer,
+      count: count * parts,
+      radius: 0,
+      inset: 0,
+      sorted: false,
+      ...extra,
+    };
+  };
+  const box = barItem(
+    `${s.key}:box`,
+    version,
+    s,
+    count,
+    (i, f, u) => {
+      const valid = Number.isFinite(y[i]) && Number.isFinite(x[i]);
+      f[i * 4] = valid ? ox(i) : GAP;
+      f[i * 4 + 1] = valid ? oy(at(q1, i)) : GAP;
+      f[i * 4 + 2] = valid ? oy(at(q3, i)) : GAP;
+      u[i * 4 + 3] = colorAt(i, true);
+    },
+    { halfWidth: half, radius: 0, inset: 0, minHalf: 0, sorted: false },
+  );
+  // whiskers and sides of the box
+  const stems = multi(
+    "stems",
+    4,
+    (i, k) =>
+      k === 0
+        ? [0, at(low, i), at(q1, i)]
+        : k === 1
+          ? [0, at(q3, i), at(high, i)]
+          : [k === 2 ? -half : half, at(q1, i), at(q3, i)],
+    { halfWidth: 0, minHalf: lw / 2 },
+  );
+  const caps = multi(
+    "caps",
+    2,
+    (i, k) => {
+      const v = at(k === 0 ? low : high, i);
+      return [0, v, v];
+    },
+    { halfWidth: half / 2, minHalf: lw / 2 },
+  );
+  const edges = multi(
+    "edges",
+    2,
+    (i, k) => {
+      const v = at(k === 0 ? q1 : q3, i);
+      return [0, v, v];
+    },
+    { halfWidth: half, minHalf: lw / 2 },
+  );
+  const median = multi("median", 1, (i) => [0, y[i], y[i]], {
+    halfWidth: half,
+    minHalf: Math.max(1, lw * 0.8),
+  });
+  const items: RenderItem[] = [box, stems, caps, edges, median];
+  if (outliers) {
+    let n = 0;
+    for (let i = 0; i < count; i++) n += outliers[i]?.length ?? 0;
+    if (n) {
+      const buffer = new ArrayBuffer(n * SCATTER_STRIDE);
+      const f = new Float32Array(buffer);
+      const u = new Uint32Array(buffer);
+      let j = 0;
+      for (let i = 0; i < count; i++) {
+        const list = outliers[i];
+        if (!list) continue;
+        for (const v of list) {
+          const valid = Number.isFinite(v) && Number.isFinite(x[i]);
+          f[j * 4] = valid ? ox(i) : GAP;
+          f[j * 4 + 1] = valid ? oy(v) : GAP;
+          f[j * 4 + 2] = s.pointSize;
+          u[j * 4 + 3] = colorAt(i);
+          j++;
+        }
+      }
+      items.push({
+        kind: "scatter",
+        key: `${s.key}:outliers`,
+        version,
+        color: s.color,
+        instances: buffer,
+        count: n,
+        opacity: 0.85,
+        stroke: n <= 5000 ? 1.25 : 0,
+      });
+    }
+  }
   return items;
 };

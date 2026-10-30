@@ -5,8 +5,19 @@
 import { axisTicks, type AxisTicks } from "./axis";
 import { mix, toCss, unpackColor, type Rgba } from "./color";
 import { nearestIndex } from "./data";
-import { formatValue } from "./format";
-import { computePlot, createScales, type Rect, type Scales } from "./layout";
+import { formatPercent, tickFormatter } from "./format";
+import { numberFormat } from "./locale";
+import {
+  alongX,
+  alongY,
+  computePlot,
+  createScales,
+  screenRect,
+  toData,
+  toScreen,
+  type Rect,
+  type Scales,
+} from "./layout";
 import { gridOf, plottedY, type ChartModel, type SeriesModel } from "./model";
 import type { PointLabel, ResolvedAnnotation } from "./overlay";
 import type { ChartTheme } from "./theme";
@@ -75,6 +86,8 @@ export interface ChartLayout {
   scales: Scales;
   xTicks: AxisTicks;
   yTicks: AxisTicks;
+  /** Ticks of the right axis: at the left tick positions, labelled in right axis units */
+  y2Ticks: AxisTicks | null;
 }
 
 export interface LayoutInput {
@@ -94,6 +107,7 @@ export interface LayoutInput {
 /** Ticks, room for the axes and the plot rectangle */
 export const layoutChart = (input: LayoutInput): ChartLayout => {
   const { model, view, theme, width, height, measure } = input;
+  if (model.horizontal) return layoutHorizontal(input);
   // same count as the nice range of the model (its ends are then ticks),
   // fewer on short charts; category rows get a label each when they fit
   const yCount =
@@ -109,6 +123,12 @@ export const layoutChart = (input: LayoutInput): ChartLayout => {
     for (const label of yTicks.labels)
       yLabelWidth = Math.max(yLabelWidth, measure(label));
   }
+  const y2Ticks = rightTicks(model, yTicks);
+  let y2LabelWidth = 0;
+  if (y2Ticks && model.y2?.visible) {
+    for (const label of y2Ticks.labels)
+      y2LabelWidth = Math.max(y2LabelWidth, measure(label));
+  }
   let categoryWidth = 48;
   if (model.x.type === "category") {
     categoryWidth = 0;
@@ -123,6 +143,8 @@ export const layoutChart = (input: LayoutInput): ChartLayout => {
     height,
     padding,
     yLabelWidth: model.y.visible ? Math.ceil(yLabelWidth) : 0,
+    y2LabelWidth: Math.ceil(y2LabelWidth),
+    y2Title: !!model.y2?.title && !!model.y2.visible,
     xAxisVisible: model.x.visible,
     xTitle: !!model.x.title && model.x.visible,
     yTitle: !!model.y.title && model.y.visible,
@@ -135,7 +157,79 @@ export const layoutChart = (input: LayoutInput): ChartLayout => {
       : (model.x.tickCount ?? Math.max(3, Math.floor(plot.width / 88)));
   const xTicks = axisTicks(model.x, view.x, xCount);
   const scales = createScales(plot, view, model.x.reverse, model.y.reverse);
-  return { plot, scales, xTicks, yTicks };
+  return { plot, scales, xTicks, yTicks, y2Ticks };
+};
+
+/** Right axis ticks: the left ticks labelled in right axis units */
+const rightTicks = (model: ChartModel, yTicks: AxisTicks): AxisTicks | null => {
+  const axis = model.y2;
+  const map = model.y2Map;
+  if (!axis || !map || !map.scale) return null;
+  const raw = yTicks.values.map((v) => (v - map.offset) / map.scale);
+  const step = raw.length > 1 ? Math.abs(raw[1] - raw[0]) : 1;
+  let maxAbs = 0;
+  for (const v of raw) maxAbs = Math.max(maxAbs, Math.abs(v));
+  const tick = axis.format ?? tickFormatter(step, maxAbs, model.locale);
+  return {
+    values: yTicks.values,
+    labels: raw.map(tick),
+    formatValue: axis.format ?? model.formatValue,
+  };
+};
+
+/** Horizontal charts: the x axis on the left, the values along the bottom */
+const layoutHorizontal = (input: LayoutInput): ChartLayout => {
+  const { model, view, theme, width, height, measure } = input;
+  const rows = Math.max(1, Math.floor((height - 40) / (theme.fontSize + 5)));
+  const xCount =
+    model.x.tickCount ??
+    (model.x.type === "category"
+      ? rows
+      : height >= 220
+        ? 5
+        : Math.max(2, Math.round((height - 48) / 52)));
+  const xTicks = axisTicks(model.x, view.x, xCount);
+  let xLabelWidth = 0;
+  if (model.x.visible) {
+    if (model.x.type === "category") {
+      // every name (the visible ones change when zooming)
+      const names = model.x.categories;
+      const step = Math.max(1, Math.floor(names.length / 200));
+      for (let i = 0; i < names.length; i += step) {
+        const name = model.x.format ? model.x.format(i) : names[i];
+        xLabelWidth = Math.max(xLabelWidth, measure(name));
+      }
+    } else {
+      for (const label of xTicks.labels)
+        xLabelWidth = Math.max(xLabelWidth, measure(label));
+    }
+  }
+  const padding = { ...DEFAULT_PADDING, ...input.padding };
+  const plot = computePlot({
+    width,
+    height,
+    padding,
+    yLabelWidth: model.x.visible ? Math.ceil(xLabelWidth) : 0,
+    xAxisVisible: model.y.visible,
+    xTitle: !!model.y.title && model.y.visible,
+    yTitle: !!model.x.title && model.x.visible,
+    fontSize: theme.fontSize,
+  });
+  if (input.top) plot.y += input.top;
+  const yCount =
+    model.y.tickCount ??
+    (model.y.type === "category"
+      ? Math.max(1, Math.floor(plot.width / 60))
+      : Math.max(3, Math.min(8, Math.floor(plot.width / 88))));
+  const yTicks = axisTicks(model.y, view.y, yCount);
+  const scales = createScales(
+    plot,
+    view,
+    model.x.reverse,
+    model.y.reverse,
+    true,
+  );
+  return { plot, scales, xTicks, yTicks, y2Ticks: null };
 };
 
 /** Labels of the visible scatter points and bar values (`showLabels`) */
@@ -148,25 +242,46 @@ export const collectPointLabels = (
   const labels: PointLabel[] = [];
   // 100% stacks: the axis shows percents, the labels the actual values
   const axisFormat = model.percent
-    ? formatValue
-    : (yTicks?.formatValue ?? formatValue);
+    ? model.formatValue
+    : (yTicks?.formatValue ?? model.formatValue);
   for (const series of model.series) {
     if (series.hidden || !series.showLabels) continue;
     if (series.type === "bar" && series.barTop) {
-      const format = series.format ?? axisFormat;
-      const { x, y, count } = series.cols;
+      // 100% stacks and right axis series: the values of the data
+      const format =
+        series.format ??
+        (series.yAxis === "right"
+          ? (model.y2?.format ?? model.formatValue)
+          : axisFormat);
+      const { x, count } = series.cols;
+      const { y, y0, labels: texts } = series.raw;
       const top = series.barTop;
       const [x0, x1] = view.x[0] <= view.x[1] ? view.x : [view.x[1], view.x[0]];
       for (let i = 0; i < count && labels.length < MAX_POINT_LABELS; i++) {
         const xv = x[i] + series.barOffset;
         if (!Number.isFinite(y[i]) || xv < x0 || xv > x1) continue;
+        // the end away from the base (the top, or the bottom of negative bars)
         const negative = top[i] < (series.barBase?.[i] ?? 0);
+        const reversed = negative !== model.y.reverse;
+        const p = toScreen(s, xv, top[i]);
+        const step = series.floating && y0 && Number.isFinite(y0[i]);
+        // ranges on a time axis (Gantt tasks) have no value to write
+        if (step && model.y.type === "time" && !texts?.[i]) continue;
+        const delta = step ? y[i] - (y0?.[i] ?? 0) : 0;
         labels.push({
-          x: s.xToPx(xv),
-          y: s.yToPx(top[i]),
+          x: p.x,
+          y: p.y,
           r: 0,
-          text: format(y[i]),
-          placement: negative ? "below" : "above",
+          text:
+            texts?.[i] ??
+            (step ? `${delta > 0 ? "+" : ""}${format(delta)}` : format(y[i])),
+          placement: s.horizontal
+            ? reversed
+              ? "left"
+              : "right"
+            : reversed
+              ? "below"
+              : "above",
         });
       }
       continue;
@@ -182,7 +297,8 @@ export const collectPointLabels = (
       if (xi < view.x[0] || xi > view.x[1] || yi < view.y[0] || yi > view.y[1])
         continue;
       const d = size && size[i] > 0 ? size[i] : series.pointSize;
-      labels.push({ x: s.xToPx(xi), y: s.yToPx(yi), r: d / 2, text });
+      const p = toScreen(s, xi, yi);
+      labels.push({ x: p.x, y: p.y, r: d / 2, text });
     }
   }
   return labels;
@@ -196,15 +312,42 @@ interface Candidate {
   /** Pixel position of the point */
   px: number;
   py: number;
+  /** Distance along the x axis */
   dx: number;
   dist: number;
   inside: boolean;
 }
 
-/** Pixel position of a point (the top of a bar or stack, the close of a candle) */
+/** Bars and box plots sit in a slot of their category */
+const slotOffset = (s: SeriesModel) =>
+  s.type === "bar" || s.type === "boxplot" ? s.barOffset : 0;
+
+/**
+ * Screen position of a point (the end of a bar or stack, the close of a
+ * candle, the median of a box)
+ */
 export const pointOf = (s: SeriesModel, i: number, sc: Scales) => {
-  const xv = s.cols.x[i] + (s.type === "bar" ? s.barOffset : 0);
-  return { px: sc.xToPx(xv), py: sc.yToPx(plottedY(s, i)) };
+  const p = toScreen(sc, s.cols.x[i] + slotOffset(s), plottedY(s, i));
+  return { px: p.x, py: p.y };
+};
+
+/** Whether a pixel (along x, along y) is on a column from `a` to `b` */
+const onColumn = (
+  sc: Scales,
+  center: number,
+  half: number,
+  a: number,
+  b: number,
+  ax: number,
+  ay: number,
+) => {
+  const pa = sc.yToPx(a);
+  const pb = sc.yToPx(b);
+  return (
+    Math.abs(ax - center) <= half &&
+    ay >= Math.min(pa, pb) - 2 &&
+    ay <= Math.max(pa, pb) + 2
+  );
 };
 
 const candidateOf = (
@@ -215,30 +358,26 @@ const candidateOf = (
   sc: Scales,
 ): Candidate => {
   const p = pointOf(s, i, sc);
+  const ax = alongX(sc, px, py);
+  const ay = alongY(sc, px, py);
+  const center = sc.xToPx(s.cols.x[i] + slotOffset(s));
   let inside = false;
-  if (s.type === "bar" && s.barBase) {
-    const half = s.barHalfWidth / sc.xPerPx;
-    const base = sc.yToPx(s.barBase[i]);
-    inside =
-      Math.abs(px - p.px) <= half &&
-      py >= Math.min(base, p.py) - 2 &&
-      py <= Math.max(base, p.py) + 2;
-  } else if (s.type === "candlestick") {
+  if (s.type === "bar" && s.barBase && s.barTop) {
+    const half = s.barHalfWidth / Math.abs(sc.xPerPx);
+    inside = onColumn(sc, center, half, s.barBase[i], s.barTop[i], ax, ay);
+  } else if (s.type === "candlestick" || s.type === "boxplot") {
     const { high, low, y } = s.cols;
-    const half = Math.max(s.barHalfWidth / sc.xPerPx, 3);
-    const a = sc.yToPx(high ? high[i] : y[i]);
-    const b = sc.yToPx(low ? low[i] : y[i]);
-    inside =
-      Math.abs(px - p.px) <= half &&
-      py >= Math.min(a, b) - 2 &&
-      py <= Math.max(a, b) + 2;
+    const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 3);
+    const a = high ? high[i] : y[i];
+    const b = low ? low[i] : y[i];
+    inside = onColumn(sc, center, half, a, b, ax, ay);
   }
   return {
     series: s,
     index: i,
     px: p.px,
     py: p.py,
-    dx: Math.abs(sc.xToPx(s.cols.x[i]) - px),
+    dx: Math.abs(sc.xToPx(s.cols.x[i]) - ax),
     dist: inside ? 0 : Math.hypot(p.px - px, p.py - py),
     inside,
   };
@@ -248,6 +387,21 @@ const candidateOf = (
 export const dotSize = (s: SeriesModel, i: number) =>
   s.cols.size && s.cols.size[i] > 0 ? s.cols.size[i] : s.pointSize;
 
+const maxSizes = new WeakMap<Float32Array, number>();
+
+/** Largest dot of a series (bubbles reach further than plain dots) */
+const maxDot = (s: SeriesModel) => {
+  const sizes = s.cols.size;
+  if (!sizes) return s.pointSize;
+  let max = maxSizes.get(sizes);
+  if (max === undefined) {
+    max = s.pointSize;
+    for (let i = 0; i < sizes.length; i++) if (sizes[i] > max) max = sizes[i];
+    maxSizes.set(sizes, max);
+  }
+  return max;
+};
+
 const nearestScatter = (
   s: SeriesModel,
   px: number,
@@ -255,16 +409,16 @@ const nearestScatter = (
   sc: Scales,
   slop: number,
 ) => {
-  const radius = Math.max(s.pointSize / 2 + 6, 10) + slop;
-  const xv = sc.pxToX(px);
-  const yv = sc.pxToY(py);
-  const rx = radius * sc.xPerPx;
-  const ry = radius * sc.yPerPx;
+  const radius = Math.max(maxDot(s) / 2 + 6, 10) + slop;
+  const at = toData(sc, px, py);
+  const rx = radius * Math.abs(sc.xPerPx);
+  const ry = radius * Math.abs(sc.yPerPx);
   let best = -1;
   let bestDist = Infinity;
   const { x, y } = s.cols;
-  gridOf(s).query(xv - rx, xv + rx, yv - ry, yv + ry, (i) => {
-    const d = Math.hypot(sc.xToPx(x[i]) - px, sc.yToPx(y[i]) - py);
+  gridOf(s).query(at.x - rx, at.x + rx, at.y - ry, at.y + ry, (i) => {
+    const p = toScreen(sc, x[i], y[i]);
+    const d = Math.hypot(p.x - px, p.y - py);
     const reach = Math.max(dotSize(s, i) / 2 + 4, 8) + slop;
     if (d <= reach && d <= bestDist) {
       bestDist = d;
@@ -307,11 +461,11 @@ const nearestX = (s: SeriesModel, xv: number) => {
   return best;
 };
 
-/** Hover payload item of a point */
+/** Hover payload item of a point (values of the data, right axis included) */
 export const hoverItemOf = (s: SeriesModel, index: number): ChartHoverItem => {
   const pc = s.pointColors?.[index];
-  const label = s.cols.labels?.[index];
-  const { open, high, low, value } = s.cols;
+  const { open, high, low, value, y0, q1, q3, outliers, labels } = s.raw;
+  const label = labels?.[index];
   let color = pc ? toCss(pc) : s.colorCss;
   const extra: Partial<ChartHoverItem> = {};
   if (s.type === "candlestick") {
@@ -319,20 +473,31 @@ export const hoverItemOf = (s: SeriesModel, index: number): ChartHoverItem => {
     if (Number.isFinite(o)) extra.open = o;
     if (high && Number.isFinite(high[index])) extra.high = high[index];
     if (low && Number.isFinite(low[index])) extra.low = low[index];
-    color = toCss(s.cols.y[index] < o ? s.downColor : s.upColor);
+    color = toCss(s.raw.y[index] < o ? s.downColor : s.upColor);
   } else if (s.type === "heatmap") {
-    const v = value ? value[index] : s.cols.y[index];
+    const v = value ? value[index] : s.raw.y[index];
     if (Number.isFinite(v)) extra.value = v;
     const packed = s.cellColors?.[index];
     if (packed) color = toCss(unpackColor(packed));
+  } else if (s.type === "boxplot") {
+    if (high && Number.isFinite(high[index])) extra.high = high[index];
+    if (low && Number.isFinite(low[index])) extra.low = low[index];
+    if (q1 && Number.isFinite(q1[index])) extra.q1 = q1[index];
+    if (q3 && Number.isFinite(q3[index])) extra.q3 = q3[index];
+    const out = outliers?.[index];
+    if (out) extra.outliers = out.length;
+  } else {
+    if (y0 && Number.isFinite(y0[index])) extra.y0 = y0[index];
+    if (s.type === "scatter" && value && Number.isFinite(value[index]))
+      extra.value = value[index];
   }
   return {
     seriesIndex: s.index,
     seriesId: s.id,
     seriesName: s.name,
     index,
-    x: s.cols.x[index],
-    y: s.cols.y[index],
+    x: s.raw.x[index],
+    y: s.raw.y[index],
     color,
     ...(label !== undefined ? { label } : {}),
     ...extra,
@@ -373,7 +538,7 @@ export const hitTest = (
   ) {
     return null;
   }
-  const xv = sc.pxToX(px);
+  const at = toData(sc, px, py);
   const scatter: Candidate[] = [];
   const others: Candidate[] = [];
   for (const s of model.series) {
@@ -382,7 +547,7 @@ export const hitTest = (
       const i = nearestScatter(s, px, py, sc, slop);
       if (i >= 0) scatter.push(candidateOf(s, i, px, py, sc));
     } else if (s.type === "heatmap") {
-      const i = cellAt(s, sc.pxToX(px), sc.pxToY(py));
+      const i = cellAt(s, at.x, at.y);
       if (i >= 0) {
         const c = candidateOf(s, i, px, py, sc);
         c.inside = true;
@@ -390,7 +555,7 @@ export const hitTest = (
         scatter.push(c);
       }
     } else {
-      const i = nearestX(s, xv);
+      const i = nearestX(s, at.x);
       if (i >= 0) others.push(candidateOf(s, i, px, py, sc));
     }
   }
@@ -410,7 +575,7 @@ export const hitTest = (
     );
   }
   const bestDx = Math.min(...others.map((c) => c.dx));
-  const bandPx = model.x.type === "category" ? 0.5 / sc.xPerPx : 0;
+  const bandPx = model.x.type === "category" ? 0.5 / Math.abs(sc.xPerPx) : 0;
   const aligned = others.filter((c) => c.dx <= bestDx + Math.max(1, bandPx));
   const first = aligned.reduce((a, b) => (b.dx < a.dx ? b : a));
   const ordered = [first, ...aligned.filter((c) => c !== first), ...scatter];
@@ -439,6 +604,13 @@ export const sameHover = (
 
 // ------------------------------------------------------------------ tooltip
 
+/** Change of a candlestick: `+1.25%` */
+const CHANGE_PERCENT: Intl.NumberFormatOptions = {
+  style: "percent",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+};
+
 export interface TooltipRow {
   /** Swatch color (CSS) */
   color: string | null;
@@ -453,13 +625,23 @@ export interface TooltipContent {
   rows: TooltipRow[];
 }
 
-/** Default tooltip content of a hover payload */
+/**
+ * Default tooltip content of a hover payload; `y2Ticks` formats the values
+ * of the right axis series
+ */
 export const tooltipContent = (
   model: ChartModel,
   event: ChartHoverEvent,
   yTicks: AxisTicks | null,
+  y2Ticks: AxisTicks | null = null,
 ): TooltipContent => {
   const yFormat = yTicks?.formatValue ?? String;
+  const formatOf = (s: SeriesModel) =>
+    s.format ??
+    (s.yAxis === "right"
+      ? (y2Ticks?.formatValue ?? model.y2?.format ?? model.formatValue)
+      : yFormat);
+  const names = model.labels;
   const first = event.items[0];
   const firstSeries = first ? model.series[first.seriesIndex] : null;
   if (event.items.length === 1 && firstSeries?.type === "heatmap") {
@@ -477,7 +659,7 @@ export const tooltipContent = (
           value:
             first.value === undefined
               ? "–"
-              : (firstSeries.format ?? formatValue)(first.value),
+              : (firstSeries.format ?? model.formatValue)(first.value),
         },
       ],
     };
@@ -487,9 +669,37 @@ export const tooltipContent = (
   );
   if (scatterOnly && event.items.length === 1) {
     const it = event.items[0];
+    const s = model.series[it.seriesIndex];
+    const valueRow: TooltipRow[] =
+      it.value !== undefined
+        ? [
+            {
+              color: null,
+              name: s.valueName ?? names.value,
+              value: (s.format ?? model.formatValue)(it.value),
+            },
+          ]
+        : [];
+    if (model.x.type === "category") {
+      // a dot on a category (Gantt milestones, dot plots)
+      return {
+        title: it.label ?? event.xLabel,
+        titleColor: null,
+        rows: [
+          { color: it.color, name: it.seriesName, value: formatOf(s)(it.y) },
+          ...valueRow,
+        ],
+      };
+    }
     const rows: TooltipRow[] = [
-      { color: null, name: model.x.title ?? "x", value: event.xLabel },
-      { color: null, name: model.y.title ?? "y", value: yFormat(it.y) },
+      { color: null, name: model.x.title ?? names.x, value: event.xLabel },
+      {
+        color: null,
+        name:
+          (s.yAxis === "right" ? model.y2?.title : model.y.title) ?? names.y,
+        value: formatOf(s)(it.y),
+      },
+      ...valueRow,
     ];
     if (it.label !== undefined && model.series.length > 1)
       rows.push({ color: null, name: "", value: it.seriesName });
@@ -498,8 +708,17 @@ export const tooltipContent = (
   const rows: TooltipRow[] = [];
   /** Row of every item */
   const rowOf: number[] = [];
+  // one labelled bar on a numeric axis (a histogram bin): the label is the title
+  const binTitle =
+    event.items.length === 1 &&
+    firstSeries?.type === "bar" &&
+    model.x.type !== "category" &&
+    first?.label !== undefined
+      ? first.label
+      : null;
   for (const it of event.items) {
     const s = model.series[it.seriesIndex];
+    const format = formatOf(s);
     rowOf.push(rows.length);
     if (s.type === "candlestick") {
       const change =
@@ -510,25 +729,62 @@ export const tooltipContent = (
         color: it.color,
         name: s.name,
         value: Number.isFinite(change)
-          ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`
+          ? `${change >= 0 ? "+" : ""}${numberFormat(model.locale, CHANGE_PERCENT).format(change / 100)}`
           : "",
       });
       const ohlc: [string, number | undefined][] = [
-        ["Open", it.open],
-        ["High", it.high],
-        ["Low", it.low],
-        ["Close", it.y],
+        [names.open, it.open],
+        [names.high, it.high],
+        [names.low, it.low],
+        [names.close, it.y],
       ];
       for (const [name, v] of ohlc) {
         if (v !== undefined && Number.isFinite(v))
-          rows.push({ color: null, name, value: (s.format ?? yFormat)(v) });
+          rows.push({ color: null, name, value: format(v) });
       }
       continue;
     }
+    if (s.type === "boxplot") {
+      rows.push({
+        color: it.color,
+        name: it.label ? `${it.seriesName} · ${it.label}` : it.seriesName,
+        value: "",
+      });
+      const stats: [string, number | undefined][] = [
+        [names.max, it.high],
+        [names.q3, it.q3],
+        [names.median, it.y],
+        [names.q1, it.q1],
+        [names.min, it.low],
+      ];
+      for (const [name, v] of stats) {
+        if (v !== undefined && Number.isFinite(v))
+          rows.push({ color: null, name, value: format(v) });
+      }
+      if (it.outliers)
+        rows.push({
+          color: null,
+          name: names.outliers,
+          value: String(it.outliers),
+        });
+      continue;
+    }
+    let value = format(it.y);
+    if (it.y0 !== undefined) {
+      // waterfall steps: the change; time ranges and bands: both ends
+      const delta = it.y - it.y0;
+      value =
+        s.type === "bar" && model.y.type !== "time"
+          ? `${delta > 0 ? "+" : ""}${format(delta)}`
+          : `${format(it.y0)} – ${format(it.y)}`;
+    }
     rows.push({
       color: it.color,
-      name: it.label ? `${it.seriesName} · ${it.label}` : it.seriesName,
-      value: (s.format ?? yFormat)(it.y),
+      name:
+        it.label && binTitle === null
+          ? `${it.seriesName} · ${it.label}`
+          : it.seriesName,
+      value,
     });
   }
   if (model.percent) {
@@ -544,12 +800,12 @@ export const tooltipContent = (
       const total = stack !== null ? totals.get(stack) : undefined;
       const row = rows[rowOf[k]];
       if (total && row && Number.isFinite(it.y)) {
-        const format = model.series[it.seriesIndex].format ?? formatValue;
-        row.value = `${format(it.y)} · ${((Math.abs(it.y) / total) * 100).toFixed(1)}%`;
+        const format = model.series[it.seriesIndex].format ?? model.formatValue;
+        row.value = `${format(it.y)} · ${formatPercent((Math.abs(it.y) / total) * 100, model.locale, true)}`;
       }
     });
   }
-  return { title: event.xLabel, titleColor: null, rows };
+  return { title: binTitle ?? event.xLabel, titleColor: null, rows };
 };
 
 /** Stack of a series in a 100% chart (`null` when it is not stacked) */
@@ -585,11 +841,11 @@ export const hoverMarks = (
   let bandHi = -Infinity;
   for (const it of event.items) {
     const s = model.series[it.seriesIndex];
-    if (s.type === "bar" || s.type === "candlestick") {
-      const cx = sc.xToPx(it.x + s.barOffset);
-      const half = Math.max(s.barHalfWidth / sc.xPerPx, 1);
-      bandLo = Math.min(bandLo, cx - half);
-      bandHi = Math.max(bandHi, cx + half);
+    if (s.type === "bar" || s.type === "candlestick" || s.type === "boxplot") {
+      const c = sc.xToPx(it.x + slotOffset(s));
+      const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
+      bandLo = Math.min(bandLo, c - half);
+      bandHi = Math.max(bandHi, c + half);
       continue;
     }
     if (s.type === "heatmap") {
@@ -599,10 +855,7 @@ export const hoverMarks = (
       const hh = Math.abs(s.cellHalf.y / sc.yPerPx);
       marks.push({
         kind: "cell",
-        x: cx - hw,
-        y: cy - hh,
-        width: hw * 2,
-        height: hh * 2,
+        ...screenRect(sc, cx - hw, cx + hw, cy - hh, cy + hh),
       });
       continue;
     }
@@ -632,15 +885,16 @@ export const hoverMarks = (
   if (bandHi > bandLo) {
     // the group of bars plus a margin, clipped to the plot
     const pad = Math.max(4, (bandHi - bandLo) * 0.14);
-    const x0 = Math.max(plot.x, bandLo - pad);
-    const x1 = Math.min(plot.x + plot.width, bandHi + pad);
-    if (x1 > x0) {
+    const lo = sc.horizontal ? plot.y : plot.x;
+    const hi = lo + (sc.horizontal ? plot.height : plot.width);
+    const a = Math.max(lo, bandLo - pad);
+    const b = Math.min(hi, bandHi + pad);
+    if (b > a) {
       marks.unshift({
         kind: "band",
-        x: x0,
-        y: plot.y,
-        width: x1 - x0,
-        height: plot.height,
+        ...(sc.horizontal
+          ? { x: plot.x, y: a, width: plot.width, height: b - a }
+          : { x: a, y: plot.y, width: b - a, height: plot.height }),
       });
     }
   }
@@ -668,5 +922,19 @@ export const showsCrosshair = (
     // bars get a band instead
     !event.items.some((it) => {
       const type = model.series[it.seriesIndex].type;
-      return type === "bar" || type === "candlestick";
+      return type === "bar" || type === "candlestick" || type === "boxplot";
     }));
+
+/** Pixel of the guide line along the x axis (`null` when hidden / outside the plot) */
+export const crosshairAt = (
+  model: ChartModel,
+  sc: Scales,
+  event: ChartHoverEvent,
+  crosshair: boolean | undefined,
+): number | null => {
+  if (!showsCrosshair(model, event, crosshair)) return null;
+  const c = sc.xToPx(event.items[0].x);
+  const lo = sc.horizontal ? sc.plot.y : sc.plot.x;
+  const hi = lo + (sc.horizontal ? sc.plot.height : sc.plot.width);
+  return c >= lo && c <= hi ? c : null;
+};

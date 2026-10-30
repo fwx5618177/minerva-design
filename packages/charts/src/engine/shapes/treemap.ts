@@ -338,8 +338,8 @@ export const layoutTreemap = (
           x: cell.x + cell.width / 2,
           y: cell.y + cell.height / 2,
           rows: [
-            { name: "Value", value: c.format(b.target) },
-            { name: "Share", value: c.percent(percent) },
+            { name: c.labels.value, value: c.format(b.target) },
+            { name: c.labels.share, value: c.percent(percent) },
           ],
         });
       }
