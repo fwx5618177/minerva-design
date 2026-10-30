@@ -1,0 +1,93 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<script setup lang="ts">
+// Tasks grouped by phase (one color and legend entry each), their progress
+// drawn over the bars and a milestone as a dot; zoom and pan along the time.
+import { computed } from "vue";
+import { useI18n } from "minerva-design/vue";
+import { GanttChart } from "minerva-design/vue/charts";
+
+const TEXT = {
+  en: {
+    phases: ["Design", "Build", "Launch"],
+    tasks: [
+      "Research",
+      "Wireframes",
+      "Visual design",
+      "Frontend",
+      "Backend",
+      "Testing",
+      "Release",
+    ],
+    progress: "Progress",
+    milestones: "Milestones",
+  },
+  zh: {
+    phases: ["设计", "开发", "发布"],
+    tasks: ["用户调研", "线框图", "视觉设计", "前端", "后端", "测试", "上线"],
+    progress: "进度",
+    milestones: "里程碑",
+  },
+  ja: {
+    phases: ["設計", "開発", "リリース"],
+    tasks: [
+      "リサーチ",
+      "ワイヤーフレーム",
+      "ビジュアルデザイン",
+      "フロントエンド",
+      "バックエンド",
+      "テスト",
+      "公開",
+    ],
+    progress: "進捗",
+    milestones: "マイルストーン",
+  },
+  fr: {
+    phases: ["Conception", "Développement", "Lancement"],
+    tasks: [
+      "Recherche",
+      "Maquettes",
+      "Design visuel",
+      "Front-end",
+      "Back-end",
+      "Tests",
+      "Mise en ligne",
+    ],
+    progress: "Avancement",
+    milestones: "Jalons",
+  },
+};
+
+const DAY = 86_400_000;
+const START = Date.UTC(2026, 2, 2);
+// phase, first day, duration (days), share done
+const PLAN = [
+  [0, 0, 6, 1],
+  [0, 4, 6, 1],
+  [0, 8, 8, 0.7],
+  [1, 12, 14, 0.4],
+  [1, 12, 16, 0.3],
+  [2, 26, 6, 0],
+];
+
+const { language } = useI18n();
+const text = computed(() => TEXT[language.value] ?? TEXT.en);
+const tasks = computed(() => [
+  ...PLAN.map(([phase, day, days, progress], i) => ({
+    name: text.value.tasks[i],
+    group: text.value.phases[phase],
+    start: START + day * DAY,
+    end: START + (day + days) * DAY,
+    progress,
+  })),
+  { name: text.value.tasks[6], start: START + 33 * DAY, milestone: true },
+]);
+<\/script>
+
+<template>
+  <GanttChart
+    :tasks="tasks"
+    :progress-name="text.progress"
+    :milestone-name="text.milestones"
+    :height="320"
+  />
+</template>
+`})))()}n();export{t as default};
